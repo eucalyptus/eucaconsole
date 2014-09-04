@@ -29,8 +29,9 @@ Forms for S3 buckets and objects
 
 """
 import wtforms
+from wtforms import validators
 
-from . import BaseSecureForm
+from . import BaseSecureForm, BLANK_CHOICE
 from ..i18n import _
 from ..forms import TextEscapedField
 
@@ -42,7 +43,29 @@ class BucketDetailsForm(BaseSecureForm):
 
 class BucketItemDetailsForm(BaseSecureForm):
     """S3 Bucket item (folder/object) form"""
-    pass
+    friendly_name_error_msg = _(
+        'Name is required and may not contain "/" characters or may not modify the file extension')
+    friendly_name = TextEscapedField(
+        label=_(u'Name'),
+        validators=[validators.DataRequired(message=friendly_name_error_msg)]
+    )
+
+    def __init__(self, request, bucket_object=None, unprefixed_name='', **kwargs):
+        super(BucketItemDetailsForm, self).__init__(request, **kwargs)
+        self.bucket_object = bucket_object
+        self.unprefixed_name = unprefixed_name
+        self.friendly_name_pattern = self.get_friendly_name_pattern()
+        if bucket_object:
+            self.friendly_name.data = unprefixed_name
+            self.friendly_name.error_msg = self.friendly_name_error_msg
+
+    def get_friendly_name_pattern(self):
+        """Get the friendly name patter to prevent file extension modification"""
+        if '.' in self.unprefixed_name:
+            suffix = self.unprefixed_name.split('.')[-1]
+            ends_with_regex = '.+\.{0}$'.format(suffix)
+            return ends_with_regex
+        return '.+'
 
 
 class BucketUpdateVersioningForm(BaseSecureForm):
@@ -95,6 +118,7 @@ class MetadataForm(BaseSecureForm):
 
     def get_metadata_key_choices(self):
         choices = [
+            BLANK_CHOICE,
             ('Cache-Control', _('Cache-Control')),
             ('Content-Disposition', _('Content-Disposition')),
             ('Content-Type', _('Content-Type')),

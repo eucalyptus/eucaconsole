@@ -23,8 +23,7 @@
                 </a>
             </div>
             <div metal:fill-slot="tile_header">
-                <a ng-href="{{ item.contents_url }}">
-                    <i class="fi-paint-bucket"></i>
+                <a ng-href="{{ item.contents_url }}" class="has-bucket-icon">
                     {{ item.bucket_name }}
                 </a>
             </div>
@@ -39,7 +38,8 @@
                 <div>
                     <span class="label" title="Versioning" i18n:attributes="title" data-tooltip="">VE</span>
                     <span>
-                        <b>{{ item.versioning_status }}</b>
+                        <span class="dots" ng-show="versioningStatusLoading[item.bucket_name]"></span>
+                        <b>{{ bucketVersioningStatus[item.bucket_name] }}</b>
                     </span>
                 </div>
                 <div>
@@ -60,12 +60,12 @@
                     <li>
                         <a i18n:translate="" ng-href="{{ item.details_url }}">View details</a>
                     </li>
-                    <li>
+                    <li ng-show="!versioningStatusLoading[item.bucket_name]">
                         <a ng-click="revealModal('update-versioning', item)" class="update-versioning-action">
-                            <span i18n:translate="" ng-show="item.update_versioning_action == 'enable'">
+                            <span i18n:translate="" ng-show="bucketVersioningAction[item.bucket_name] == 'enable'">
                                 Enable versioning
                             </span>
-                            <span i18n:translate="" ng-show="item.update_versioning_action != 'enable'">
+                            <span i18n:translate="" ng-show="bucketVersioningAction[item.bucket_name] != 'enable'">
                                 Suspend versioning
                             </span>
                         </a>
@@ -84,8 +84,7 @@
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
                 <td>
-                    <a ng-href="{{ item.contents_url }}">
-                        <i class="fi-paint-bucket"></i>
+                    <a ng-href="{{ item.contents_url }}" class="has-bucket-icon">
                         {{ item.bucket_name }}
                     </a>
                 </td>
@@ -93,7 +92,10 @@
                     <span class="dots" ng-show="countsLoading[item.bucket_name]"></span>
                     {{ bucketCounts[item.bucket_name] }}
                 </td>
-                <td>{{ item.versioning_status }}</td>
+                <td>
+                    <span class="dots" ng-show="versioningStatusLoading[item.bucket_name]"></span>
+                    {{ bucketVersioningStatus[item.bucket_name] }}
+                </td>
                 <td>{{ item.creation_date | date: '${layout.angular_date_format}' }}</td>
                 <td>
                     <span class="actions">
@@ -107,12 +109,12 @@
                             <li>
                                 <a i18n:translate="" ng-href="{{ item.details_url }}">View details</a>
                             </li>
-                            <li>
+                            <li ng-show="!versioningStatusLoading[item.bucket_name]">
                                 <a ng-click="revealModal('update-versioning', item)" class="update-versioning-action">
-                                    <span i18n:translate="" ng-show="item.update_versioning_action == 'enable'">
+                                    <span i18n:translate="" ng-show="bucketVersioningAction[item.bucket_name] == 'enable'">
                                         Enable versioning
                                     </span>
-                                    <span i18n:translate="" ng-show="item.update_versioning_action != 'enable'">
+                                    <span i18n:translate="" ng-show="bucketVersioningAction[item.bucket_name] != 'enable'">
                                         Suspend versioning
                                     </span>
                                 </a>

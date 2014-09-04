@@ -71,7 +71,7 @@ class BucketsView(LandingPageView):
             sort_keys=self.sort_keys,
             filter_fields=False,
             filter_keys=['bucket_name'],
-            bucket_objects_count_url=self.request.route_path('bucket_objects_count_json', name='_name_'),
+            bucket_objects_count_url=self.request.route_path('bucket_objects_count_versioning_json', name='_name_'),
         )
 
     @view_config(route_name='buckets', renderer=VIEW_TEMPLATE)
@@ -94,22 +94,20 @@ class BucketsJsonView(BaseView):
             items = self.get_items()
             for item in items:
                 bucket_name = item.name
-                versioning_status = BucketDetailsView.get_versioning_status(item)
                 buckets.append(dict(
                     bucket_name=bucket_name,
                     contents_url=self.request.route_path('bucket_contents', subpath=bucket_name),
                     details_url=self.request.route_path('bucket_details', name=bucket_name),
-                    versioning_status=versioning_status,
-                    update_versioning_action=BucketDetailsView.get_versioning_update_action(versioning_status),
                     creation_date=item.creation_date,
                 ))
             return dict(results=buckets)
 
-    @view_config(route_name='bucket_objects_count_json', renderer='json')
-    def bucket_object_counts_json(self):
+    @view_config(route_name='bucket_objects_count_versioning_json', renderer='json')
+    def bucket_objects_count_versioning_json(self):
         bucket = BucketContentsView.get_bucket(self.request, self.s3_conn) if self.s3_conn else []
         results = dict(
             object_count=len(tuple(bucket.list())),
+            versioning_status=BucketDetailsView.get_versioning_status(bucket),
         )
         return dict(results=results)
 
@@ -175,7 +173,7 @@ class BucketContentsView(LandingPageView):
         bucket_name = bucket_name or request.matchdict.get('name') or subpath[0]
         bucket = s3_conn.lookup(bucket_name, validate=False) if bucket_name else None
         if bucket is None:
-            return HTTPNotFound()
+            raise HTTPNotFound()
         return bucket
 
     @staticmethod
@@ -304,7 +302,8 @@ class BucketDetailsView(BaseView):
             update_versioning_action=self.get_versioning_update_action(self.versioning_status),
             logging_status=self.get_logging_status(),
             bucket_contents_url=self.request.route_path('bucket_contents', subpath=self.bucket.name),
-            bucket_objects_count_url=self.request.route_path('bucket_objects_count_json', name=self.bucket.name)
+            bucket_objects_count_url=self.request.route_path(
+                'bucket_objects_count_versioning_json', name=self.bucket.name)
         )
 
     @view_config(route_name='bucket_details', renderer=VIEW_TEMPLATE)
@@ -429,8 +428,14 @@ class BucketItemDetailsView(BaseView):
             self.bucket_item_acl = self.bucket_item.get_acl() if self.bucket_item else None
         if self.bucket_item is None:
             raise HTTPNotFound()
-        self.is_folder = self.bucket_item and self.bucket_item.size == 0 and DELIMITER in self.bucket_item.name
-        self.details_form = BucketItemDetailsForm(request, formdata=self.request.params or None)
+        unprefixed_name = BucketContentsView.get_unprefixed_key_name(self.bucket_item.name)
+        self.friendly_name_param = self.request.params.get('friendly_name')
+        self.name_updated = True if self.friendly_name_param and self.friendly_name_param != unprefixed_name else False
+        self.bucket_item_name = self.bucket_item.name
+        self.details_form = BucketItemDetailsForm(
+            request, bucket_object=self.bucket_item, unprefixed_name=unprefixed_name,
+            formdata=self.request.params or None
+        )
         self.sharing_form = SharingPanelForm(
             request, bucket_object=self.bucket, sharing_acl=self.bucket_item_acl, formdata=self.request.params or None)
         self.versioning_form = BucketUpdateVersioningForm(request, formdata=self.request.params or None)
@@ -443,9 +448,8 @@ class BucketItemDetailsView(BaseView):
             bucket=self.bucket,
             bucket_name=self.bucket.name,
             bucket_item=self.bucket_item,
-            is_folder=self.is_folder,
             key_name=self.bucket_item.name,
-            item_name=BucketContentsView.get_unprefixed_key_name(self.bucket_item.name),
+            item_name=unprefixed_name,
             item_link=self.bucket_item.generate_url(expires_in=BUCKET_ITEM_URL_EXPIRES),
             item_download_url=BucketContentsView.get_item_download_url(self.bucket_item),
         )
@@ -457,14 +461,23 @@ class BucketItemDetailsView(BaseView):
     @view_config(route_name='bucket_item_update', renderer=VIEW_TEMPLATE, request_method='POST')
     def bucket_item_update(self):
         if self.bucket and self.bucket_item and self.details_form.validate():
+            # Set proper redirect location, handling an object name change when applicable
             location = self.request.route_path(
-                'bucket_item_details', name=self.bucket.name, subpath=self.request.subpath)
+                'bucket_item_details',
+                name=self.bucket.name,
+                subpath='{0}/{1}'.format(
+                    DELIMITER.join(self.request.subpath[:-1]),
+                    self.friendly_name_param
+                ) if self.name_updated else self.request.subpath
+            )
             with boto_error_handler(self.request, location):
+                # Update name
+                self.update_name()
                 # Update ACL
                 self.update_acl()
                 # Update metadata
                 self.update_metadata()
-                msg = '{0} {1}'.format(_(u'Successfully modified item'), self.bucket_item.name)
+                msg = '{0} {1}'.format(_(u'Successfully modified'), self.bucket_item.name)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
         else:
@@ -489,23 +502,83 @@ class BucketItemDetailsView(BaseView):
 
     def update_metadata(self):
         """Update metadata and remove deleted metadata"""
-        # Update metadata
-        metadata_param = self.request.params.get('metadata') or '{}'
-        metadata = json.loads(metadata_param)
-        if metadata:
-            for key, val in metadata.items():
-                self.bucket_item.set_metadata(key, val)
         # Removed deleted metadata
         metadata_keys_to_delete_param = self.request.params.get('metadata_keys_to_delete') or '[]'
         metadata_keys_to_delete = json.loads(metadata_keys_to_delete_param)
         if metadata_keys_to_delete:
             for mkey in metadata_keys_to_delete:
                 if self.bucket_item.get_metadata(mkey):
+                    # Delete true metadata
                     del self.bucket_item.metadata[mkey]
+                else:
+                    # Delete removed header-like "metadata"
+                    # NOTE: The 'Content-Type' header "metadata" cannot be fully removed,
+                    #       as it will be set to 'binary/octet-stream' if removed and/or missing
+                    normalized_mkey = mkey.replace('-', '_').lower()
+                    if getattr(self.bucket_item, normalized_mkey, None):
+                        delattr(self.bucket_item, normalized_mkey)
+        # Update metadata
+        metadata_param = self.request.params.get('metadata') or '{}'
+        metadata = json.loads(metadata_param)
+        metadata_attr_mapping = self.metadata_attribute_mapping()
+        if metadata:
+            for key, val in metadata.items():
+                metadata_attribute = metadata_attr_mapping.get(key.lower())
+                if metadata_attribute:
+                    setattr(self.bucket_item, metadata_attribute, val)
+                else:
+                    self.bucket_item.set_metadata(key, val)
+
         if metadata or metadata_keys_to_delete:
             # The only way to update the metadata appears to be to copy the object
             copied_item = self.bucket_item.copy(
-                self.bucket_name, self.bucket_item.name, self.bucket_item.metadata, preserve_acl=True)
+                self.bucket_name, self.bucket_item_name, metadata=self.bucket_item.metadata, preserve_acl=True)
+            # Delete the old object if we performed a rename
+            if self.name_updated:
+                old_key = self.bucket_item.name
+                self.bucket.delete_key(old_key)
             self.bucket_item = copied_item
 
+    def update_name(self):
+        friendly_name_param = self.request.params.get('friendly_name')
+        key_name = self.bucket_item.name
+        old_name = BucketContentsView.get_unprefixed_key_name(self.bucket_item.name)
+        if friendly_name_param and friendly_name_param != old_name:
+            new_name = '{0}/{1}'.format(
+                DELIMITER.join(key_name.split(DELIMITER)[:-1]),
+                friendly_name_param
+            )
+            self.bucket_item_name = new_name
+
+    @staticmethod
+    def attribute_metadata_mapping():
+        """
+        Map so-called "metadata" with their object attribute names
+        :return: dict of attribute/header key/value pairs
+        """
+        return dict(
+            content_disposition='Content-Disposition',
+            content_type='Content-Type',
+            content_language='Content-Language',
+            content_encoding='Content-Encoding',
+            cache_control='Cache-Control',
+        )
+
+    @classmethod
+    def metadata_attribute_mapping(cls):
+        """Converts metadata_attribute_mapping to be based on the header rather than the attribute name"""
+        mapping = {}
+        for key, val in cls.attribute_metadata_mapping().items():
+            mapping[val] = key
+        return mapping
+
+    @classmethod
+    def get_extended_metadata(cls, bucket_item):
+        """Extend object metadata with metadata-like attributes"""
+        metadata = bucket_item.metadata
+        metadata_attr_mapping = cls.attribute_metadata_mapping()
+        for attr in metadata_attr_mapping:
+            if getattr(bucket_item, attr, None):
+                metadata[metadata_attr_mapping[attr]] = getattr(bucket_item, attr)
+        return metadata
 

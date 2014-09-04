@@ -4,7 +4,7 @@
  *
  */
 angular.module('S3MetadataEditor', ['ngSanitize'])
-    .controller('S3MetadataEditorCtrl', function ($scope, $sanitize) {
+    .controller('S3MetadataEditorCtrl', function ($scope, $timeout, $sanitize) {
         $scope.metadataEditor = $('#s3-metadata-editor');
         $scope.metadataTextarea = $scope.metadataEditor.find('textarea#metadata');
         $scope.metadataKeysToDeleteTextarea = $scope.metadataEditor.find('textarea#metadata-keys-to-delete');
@@ -23,7 +23,9 @@ angular.module('S3MetadataEditor', ['ngSanitize'])
             // Update metadata keys to delete
             $scope.metadataKeysToDeleteTextarea.val(JSON.stringify($scope.metadataKeysToDelete));
         };
-        $scope.initMetadata = function(metadataJson) {
+        $scope.initMetadata = function(metadataJson, metadataKeyCreateOptionText, metadataKeyNoResultsText) {
+            $scope.metadataKeyOptionText = metadataKeyCreateOptionText;
+            $scope.metadataKeyNoResultsText = metadataKeyNoResultsText;
             // Parse metadata JSON and convert to a list of metadata.
             metadataJson = metadataJson.replace(/__apos__/g, "\'").replace(/__dquote__/g, '\\"').replace(/__bslash__/g, "\\");
             $scope.metadataObj = JSON.parse(metadataJson);
@@ -34,10 +36,25 @@ angular.module('S3MetadataEditor', ['ngSanitize'])
                 });
             });
             $scope.syncMetadata();
+            $scope.initChosenSelectors();
             $scope.setWatch();
         };
         $scope.getSafeTitle = function (metadata) {
             return $sanitize(metadata.name + ' = ' + metadata.value);
+        };
+        $scope.initChosenSelectors = function () {
+            $('#metadata_key').chosen({search_contains: true, create_option: function(term){
+                    var chosen = this;
+                    $timeout(function() {
+                        chosen.append_option({
+                            value: term,
+                            text: term
+                        });
+                    });
+                },
+                'create_option_text': $scope.metadataKeyOptionText,
+                'no_results_text': $scope.metadataKeyNoResultsText
+            });
         };
         $scope.removeMetadata = function (index, $event) {
             var removedKey = $scope.metadataArray[index].name;

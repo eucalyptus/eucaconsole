@@ -179,7 +179,7 @@ urls = [
     # Contents/detail pages
     Route(name='bucket_contents', pattern='/bucketcontents/*subpath'),
     Route(name='bucket_details', pattern='/buckets/{name}/details'),
-    Route(name='bucket_objects_count_json', pattern='/buckets/{name}/objectscount.json'),
+    Route(name='bucket_objects_count_versioning_json', pattern='/buckets/{name}/objectscount.json'),
     Route(name='bucket_update', pattern='/buckets/{name}/update'),
     Route(name='bucket_update_versioning', pattern='/buckets/{name}/updateversioning'),
     Route(name='bucket_item_details', pattern='/buckets/{name}/itemdetails/*subpath'),
