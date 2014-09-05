@@ -8,10 +8,12 @@
 angular.module('BucketDetailsPage', ['S3SharingPanel'])
     .controller('BucketDetailsPageCtrl', function ($scope, $http) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+        $scope.bucketDetailsForm = $('#bucket-details-form');
         $scope.objectsCountLoading = true;
         $scope.initController = function (bucketObjectsCountUrl) {
             $scope.bucketObjectsCountUrl = bucketObjectsCountUrl;
             $scope.getBucketObjectsCount();
+            $scope.handleUnsavedSharingEntry($scope.bucketDetailsForm);
         };
         $scope.getBucketObjectsCount = function () {
             $http.get($scope.bucketObjectsCountUrl).success(function(oData) {
@@ -33,6 +35,18 @@ angular.module('BucketDetailsPage', ['S3SharingPanel'])
             var modal = $('#' + action + '-modal');
             modal.foundation('reveal', 'open');
             modal.find('h3').click();  // Workaround for dropdown menu not closing
+        };
+        $scope.handleUnsavedSharingEntry = function (form) {
+            // Display warning when there's an unsaved Sharing Panel entry
+            form.on('submit', function (event) {
+                var accountInputField = form.find('#share_account');
+                if (accountInputField.length && accountInputField.val() != '') {
+                    event.preventDefault();
+                    $scope.isSubmitted = false;
+                    $('#unsaved-sharing-warning-modal').foundation('reveal', 'open');
+                    return false;
+                }
+            });
         };
     })
 ;

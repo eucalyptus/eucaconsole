@@ -44,5 +44,13 @@
         </a>
         <textarea id="s3-sharing-acl" name="s3_sharing_acl" class="hidden"></textarea>
     </div>
+    <div id="unsaved-sharing-warning-modal" class="reveal-modal small" data-reveal="">
+        <h3 i18n:translate="">Warning: Unsaved Sharing Entry</h3>
+        <p i18n:translate="">
+            You must click the "Add Account" button in the Sharing section
+            before you submit this for your entry to be included.
+        </p>
+        <a href="#" class="close-reveal-modal">&#215;</a>
+    </div>
     <script src="${request.static_path('eucaconsole:static/js/widgets/s3_sharing_panel.js')}"></script>
 </div>

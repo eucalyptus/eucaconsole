@@ -8,12 +8,14 @@
 angular.module('BucketItemDetailsPage', ['S3SharingPanel', 'S3MetadataEditor'])
     .controller('BucketItemDetailsPageCtrl', function ($scope, $http) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+        $scope.bucketItemDetailsForm = $('#bucket-item-details-form');
         $scope.isSubmitted = false;
         $scope.hasChangesToBeSaved = false;
         $scope.objectName = '';
         $scope.initController = function () {
             $scope.setInitialValues();
             $scope.addSharingPanelListeners();
+            $scope.handleUnsavedSharingEntry($scope.bucketItemDetailsForm);
         };
         $scope.setInitialValues = function () {
             $scope.objectName = $('#friendly_name').val();
@@ -42,6 +44,18 @@ angular.module('BucketItemDetailsPage', ['S3SharingPanel', 'S3MetadataEditor'])
                     return $('#warning-message-unsaved-changes').text();
                 }
             };
+        };
+        $scope.handleUnsavedSharingEntry = function (form) {
+            // Display warning when there's an unsaved Sharing Panel entry
+            form.on('submit', function (event) {
+                var accountInputField = form.find('#share_account');
+                if (accountInputField.length && accountInputField.val() != '') {
+                    event.preventDefault();
+                    $scope.isSubmitted = false;
+                    $('#unsaved-sharing-warning-modal').foundation('reveal', 'open');
+                    return false;
+                }
+            });
         };
     })
 ;
