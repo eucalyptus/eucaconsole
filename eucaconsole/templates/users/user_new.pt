@@ -25,7 +25,6 @@
             <div class="panel no-title">
                 <form id="user-new-form" ng-submit="submit($event)" data-abide="abide">
                     ${structure:user_form['csrf_token']}
-                    <input type='hidden' name='as-account' value="${as_account}" tal:condition="as_account">
                     <div class="section">
                         <div class="row columns" tal:condition="layout.account != 'eucalyptus'">
                             <p><span class="subsection-label" i18n:translate="">Add user(s) to account:</span>&nbsp;${layout.account}</p>
