@@ -33,6 +33,7 @@ import simplejson as json
 
 from boto.s3.acl import ACL, Grant, Policy
 from boto.s3.prefix import Prefix
+from boto.exception import BotoServerError
 
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from pyramid.view import view_config

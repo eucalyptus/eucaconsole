@@ -56,12 +56,12 @@ angular.module('BucketContentsPage', ['LandingPage'])
                 }
                 if ($scope.deletingAll == true) {
                     var chunks = $scope.total / $scope.chunkSize;
+                    $scope.index = $scope.index + 1;
                     if ($scope.index >= chunks) {
                         Notify.success(oData.message);
                         $('#delete-all-modal').foundation('reveal', 'close');
                     }
                     else {
-                        $scope.index = $scope.index + 1;
                         $scope.deleteChunk();
                     }
                 }
@@ -70,8 +70,9 @@ angular.module('BucketContentsPage', ['LandingPage'])
                 console.log("some kind of error");
               });
         };
-        $scope.cancelDelete = function () {
+        $scope.cancelDeleting = function () {
             $scope.deletingAll = false;
+            $('#delete-all-modal').foundation('reveal', 'close');
         };
         $scope.$on('itemsLoaded', function($event, items) {
             $scope.items = items;
