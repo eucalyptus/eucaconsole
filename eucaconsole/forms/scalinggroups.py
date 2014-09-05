@@ -225,7 +225,7 @@ class ScalingGroupCreateForm(BaseScalingGroupForm):
     )
 
     def __init__(self, request, scaling_group=None, 
-        autoscale_conn=None, ec2_conn=None, vpc_conn=None, launch_configs=None, **kwargs):
+                 autoscale_conn=None, ec2_conn=None, vpc_conn=None, launch_configs=None, **kwargs):
         super(ScalingGroupCreateForm, self).__init__(
             request, scaling_group=scaling_group, autoscale_conn=autoscale_conn,
             ec2_conn=ec2_conn, vpc_conn=vpc_conn, launch_configs=launch_configs, **kwargs)
@@ -258,7 +258,7 @@ class ScalingGroupEditForm(BaseScalingGroupForm):
     )
 
     def __init__(self, request, scaling_group=None, 
-        autoscale_conn=None, ec2_conn=None, vpc_conn=None, launch_configs=None, **kwargs):
+                 autoscale_conn=None, ec2_conn=None, vpc_conn=None, launch_configs=None, **kwargs):
         super(ScalingGroupEditForm, self).__init__(
             request, scaling_group=scaling_group, autoscale_conn=autoscale_conn,
             ec2_conn=ec2_conn, vpc_conn=vpc_conn, launch_configs=launch_configs, **kwargs)
