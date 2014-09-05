@@ -68,6 +68,11 @@ class BucketItemDetailsForm(BaseSecureForm):
         return '.+'
 
 
+class BucketDeleteForm(BaseSecureForm):
+    """Delete form"""
+    pass
+
+
 class BucketUpdateVersioningForm(BaseSecureForm):
     """Update versioning info form"""
     pass

@@ -39,7 +39,7 @@ from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from pyramid.view import view_config
 
 from ..forms.buckets import (
-    BucketDetailsForm, BucketItemDetailsForm, SharingPanelForm, BucketUpdateVersioningForm, MetadataForm)
+    BucketDetailsForm, BucketItemDetailsForm, SharingPanelForm, BucketUpdateVersioningForm, MetadataForm, BucketDeleteForm)
 from ..i18n import _
 from ..models import Notification
 from ..views import BaseView, LandingPageView, JSONResponse
@@ -66,6 +66,7 @@ class BucketsView(LandingPageView):
         self.render_dict = dict(
             prefix=self.prefix,
             versioning_form=BucketUpdateVersioningForm(request, formdata=self.request.params or None),
+            delete_form=BucketDeleteForm(request),
             update_versioning_url=request.route_path('bucket_update_versioning', name='_name_'),
             initial_sort_key='bucket_name',
             json_items_endpoint=self.get_json_endpoint('buckets_json'),
@@ -80,6 +81,16 @@ class BucketsView(LandingPageView):
         # sort_keys are passed to sorting drop-down
         return self.render_dict
 
+    @view_config(route_name='bucket_delete', renderer=VIEW_TEMPLATE)
+    def bucket_delete(self):
+        bucket_name = self.request.matchdict.get('name')
+        s3_conn = self.get_connection(conn_type='s3')
+        with boto_error_handler(self.request):
+            bucket = s3_conn.head_bucket(bucket_name)
+            bucket.delete()
+            msg = '{0} {1}'.format(_(u'Successfully deteted bucket'), bucket_name)
+            self.request.session.flash(msg, queue=Notification.SUCCESS)
+        return HTTPFound(location=self.request.route_path('buckets'))
 
 class BucketsJsonView(BaseView):
     def __init__(self, request):
@@ -134,7 +145,7 @@ class BucketXHRView(BaseView):
         for k in keys.split(','):
             key = bucket.get_key(k, validate=False)
             try:
-                key.delete()
+                pass #key.delete()
             except BotoServerError as err:
                 self.log_request("Couldn't delete "+k+":"+err.message)
                 errors.append(k)
@@ -324,6 +335,7 @@ class BucketDetailsView(BaseView):
             details_form=self.details_form,
             sharing_form=self.sharing_form,
             versioning_form=self.versioning_form,
+            delete_form=BucketDeleteForm(request),
             bucket=self.bucket,
             bucket_creation_date=self.get_bucket_creation_date(self.s3_conn, self.bucket.name),
             bucket_name=self.bucket.name,
