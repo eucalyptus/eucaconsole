@@ -56,6 +56,20 @@
             <div class="row">
                 <div class="small-${leftcol_width} columns">&nbsp;</div>
                 <div class="small-${rightcol_width} columns rules-title">
+                    <a ng-click="isRuleExpanded[groupID] = !isRuleExpanded[groupID]">
+                        <i class="fi-plus" ng-show="!isRuleExpanded[groupID]"></i>
+                        <i class="fi-minus" ng-show="isRuleExpanded[groupID]"></i>
+                    </a>
+                    <span class="rule-description-label">
+                        <i class="fi-alert"></i>
+                        <span i18n:translate="">Rules for </span>
+                        {{ securityGroupChoices[groupID] }}
+                    </span>
+                </div>
+            </div>
+            <div class="row" ng-show="isRuleExpanded[groupID]">
+                <div class="small-${leftcol_width} columns">&nbsp;</div>
+                <div class="small-${rightcol_width} columns rules-title">
                     <p>
                         <strong i18n:translate="">WARNING: </strong>
                         <span i18n:translate="">Your instance(s) will not be accessible until you add ingress rules to security group {{ securityGroupChoices[groupID] }} 
