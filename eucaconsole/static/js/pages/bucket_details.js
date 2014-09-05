@@ -16,7 +16,7 @@ angular.module('BucketDetailsPage', ['S3SharingPanel'])
         $scope.getBucketObjectsCount = function () {
             $http.get($scope.bucketObjectsCountUrl).success(function(oData) {
                 var results = oData ? oData.results : {};
-                $scope.bucketObjectsCount = results['object_count'];
+                $scope.bucketCount = results['object_count'];
                 $scope.objectsCountLoading = false;
             }).error(function (oData, status) {
                 var errorMsg = oData['message'] || null;

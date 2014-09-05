@@ -145,7 +145,7 @@ class BucketXHRView(BaseView):
         for k in keys.split(','):
             key = bucket.get_key(k, validate=False)
             try:
-                pass #key.delete()
+                key.delete()
             except BotoServerError as err:
                 self.log_request("Couldn't delete "+k+":"+err.message)
                 errors.append(k)
