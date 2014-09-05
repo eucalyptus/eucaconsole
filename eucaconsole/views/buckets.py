@@ -122,19 +122,19 @@ class BucketXHRView(BaseView):
         self.s3_conn = self.get_connection(conn_type='s3')
         self.bucket_name = request.matchdict.get('name')
 
-    @view_config(route_name='bucket_delete_keys', renderer='json', request_method='POST')
+    @view_config(route_name='bucket_delete_keys', renderer='json', request_method='POST', xhr=True)
     def bucket_delete_keys(self):
         """
         Deletes keys from a bucket, attempting to do as many as possible, reporting errors back at the end.
         """
         keys = self.request.params.get('keys')
-        bucket = self.s3_conn.get_bucket(self.bucket_name)
+        bucket = self.s3_conn.head_bucket(self.bucket_name)
         errors = []
         self.log_request(_(u"Deleting keys from {0} : {1}").format(self.bucket_name, keys))
         for k in keys.split(','):
-            key = bucket.get_key(k)
+            key = bucket.get_key(k, validate=False)
             try:
-                pass #key.delete()
+                key.delete()
             except BotoServerError as err:
                 self.log_request("Couldn't delete "+k+":"+err.message)
                 errors.append(k)

@@ -39,7 +39,12 @@ angular.module('BucketContentsPage', ['LandingPage'])
             var chunk = $scope.items.slice(start, end);
             var names = [];
             for (var j=0; j < chunk.length; j++) {
-                names.push($scope.prefix+'/'+chunk[j].name);
+                if ($scope.prefix.length > 0) {
+                    names.push($scope.prefix+'/'+chunk[j].name);
+                }
+                else {
+                    names.push(chunk[j].name);
+                }
             }
             console.log("chunk : "+names.join(','));
             var data = "csrf_token="+$('#csrf_token').val()+"&keys="+names.join(',');
@@ -75,6 +80,7 @@ angular.module('BucketContentsPage', ['LandingPage'])
         $scope.cancelDeleting = function () {
             $scope.deletingAll = false;
             $('#delete-all-modal').foundation('reveal', 'close');
+            $scope.$broadcast('refresh');
         };
         $scope.$on('itemsLoaded', function($event, items) {
             $scope.items = items;
