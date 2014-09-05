@@ -100,7 +100,8 @@
                             </div>
                         </div>
                         <!--! Step 3: Security tab content -->
-                        <div class="content" id="step3">
+                        <div class="content" id="step3"
+                            tal:define="security_group_attrs {'data-placeholder': security_group_placeholder_text};">
                             <p class="description" i18n:translate="">Specify VPC settings, key pair and security group.</p>
                             ${panel('form_field', field=launch_form['vpc_network'], ng_attrs={'model': 'instanceVPC'}, leftcol_width=4, rightcol_width=8)}
                             <div ng-show="instanceVPC != ''">
@@ -115,7 +116,7 @@
                                     <a ng-click="showCreateKeypairModal()" i18n:translate="">Create key pair</a>
                                 </div>
                             </div>
-                            ${panel('form_field', field=launch_form['securitygroup'], leftcol_width=4, rightcol_width=8, ng_attrs={'model': 'securityGroups', 'options': 'k as v for (k, v) in securityGroupChoices'})}
+                            ${panel('form_field', field=launch_form['securitygroup'], leftcol_width=4, rightcol_width=8, ng_attrs={'model': 'securityGroups', 'options': 'k as v for (k, v) in securityGroupChoices'}, **security_group_attrs)}
                             <div class="row">
                                 <div class="small-8 columns right" id="create-securitygroup-link">
                                     <span class="or" i18n:translate="">Or: </span>

@@ -370,6 +370,7 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
             securitygroup_choices_json=self.securitygroup_choices_json,
             role_choices_json=self.role_choices_json,
             preset='',
+            security_group_placeholder_text=_(u'Select...'),
         )
 
     @view_config(route_name='launchconfig_new', renderer=TEMPLATE, request_method='GET')

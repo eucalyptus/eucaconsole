@@ -898,6 +898,7 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
             securitygroup_choices_json=self.securitygroup_choices_json,
             vpc_subnet_choices_json=self.vpc_subnet_choices_json,
             role_choices_json=self.role_choices_json,
+            security_group_placeholder_text=_(u'Select...'),
         )
 
     @view_config(route_name='instance_create', renderer=TEMPLATE, request_method='GET')
