@@ -35,7 +35,7 @@
                 <a class="tiny secondary button dropdown right" data-dropdown="item-dropdown_{{ item.id }}"><i class="fi-widget"></i></a>
                 <ul id="item-dropdown_{{ item.id }}" class="f-dropdown" data-dropdown-content="">
                     <li><a i18n:translate="" ng-href="${prefix}/{{ item.id }}">View details</a></li>
-                    <li ng-show="item.root_device_type == 'instance-store' && item.fake_id != None">
+                    <li ng-show="item.root_device_type == 'instance-store' &amp;&amp; item.fake_id">
                         <a id="cancel-image-creation-action" ng-click="cancelCreate($event, item)" i18n:translate="">Cancel image creation</a>
                     </li>
                     <li ng-show="!item.transitional &amp;&amp; item.status !== 'failed'">
@@ -127,7 +127,7 @@
                         <a class="tiny secondary button dropdown round" data-dropdown="item-dropdown_{{ item.id }}"><i class="fi-widget"></i></a>
                         <ul id="item-dropdown_{{ item.id }}" class="f-dropdown" data-dropdown-content="">
                             <li><a i18n:translate="" ng-href="${prefix}/{{ item.id }}">View details</a></li>
-                            <li ng-show="item.root_device_type == 'instance-store' && item.fake_id != None">
+                            <li ng-show="item.root_device_type == 'instance-store' &amp;&amp; item.fake_id">
                                 <a id="cancel-image-creation-action" ng-click="cancelCreate($event, item)" i18n:translate="">Cancel image creation</a>
                             </li>
                             <li ng-show="!item.transitional &amp;&amp; item.status !== 'failed'">
