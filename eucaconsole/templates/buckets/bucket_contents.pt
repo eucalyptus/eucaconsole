@@ -5,7 +5,7 @@
 </head>
 
 <div metal:fill-slot="main_content" ng-app="BucketContentsPage" ng-controller="BucketContentsCtrl"
-        ng-init="initController('${request.route_path('bucket_delete_keys', name=bucket_name)}')">
+        ng-init="initController('${request.route_path('bucket_delete_keys', name=bucket_name)}', '${key_prefix}')">
     <div class="row" id="contentwrap" ng-app="LandingPage" ng-controller="ItemsCtrl"
          ng-init="initController('bucketcontents', '${initial_sort_key}', '${json_items_endpoint}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">

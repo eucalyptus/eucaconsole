@@ -134,7 +134,7 @@ class BucketXHRView(BaseView):
         for k in keys.split(','):
             key = bucket.get_key(k)
             try:
-                key.delete()
+                pass #key.delete()
             except BotoServerError as err:
                 self.log_request("Couldn't delete "+k+":"+err.message)
                 errors.append(k)
@@ -170,6 +170,7 @@ class BucketContentsView(LandingPageView):
         json_route_path = self.request.route_path('bucket_contents', name=self.bucket_name, subpath=self.subpath)
         self.render_dict.update(
             prefix=self.prefix,
+            key_prefix='/'.join(self.subpath[1:]) if len(self.subpath) > 0 else '',
             display_path='/'.join(self.subpath),
             initial_sort_key='name',
             json_items_endpoint=self.get_json_endpoint(json_route_path, path=True),

@@ -8,14 +8,16 @@ angular.module('BucketContentsPage', ['LandingPage'])
     .controller('BucketContentsCtrl', function ($scope, $http) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.bucketName = '';
+        $scope.prefix = '';
         $scope.deletingAll = false;
         $scope.progress = 0;
         $scope.total = 0;
         $scope.chunkSize = 10;  // set this based on how many keys we want to delete at once
         $scope.index = 0;
         $scope.items = null;
-        $scope.initController = function (deleteKeysUrl) {
+        $scope.initController = function (deleteKeysUrl, prefix) {
             $scope.deleteKeysUrl = deleteKeysUrl;
+            $scope.prefix = prefix;
         };
         $scope.revealModal = function (action, bucket) {
             var modal = $('#' + action + '-bucket-modal');
@@ -37,7 +39,7 @@ angular.module('BucketContentsPage', ['LandingPage'])
             var chunk = $scope.items.slice(start, end);
             var names = [];
             for (var j=0; j < chunk.length; j++) {
-                names.push(chunk[j].name);
+                names.push($scope.prefix+'/'+chunk[j].name);
             }
             console.log("chunk : "+names.join(','));
             var data = "csrf_token="+$('#csrf_token').val()+"&keys="+names.join(',');
@@ -51,7 +53,7 @@ angular.module('BucketContentsPage', ['LandingPage'])
                 if ($scope.progress > $scope.total) {
                     $scope.progress = $scope.total;
                 }
-                for (var i=0; i<$scope.chunkSize; i++) {
+                for (var i=0; i<$scope.chunkSize; i++) { // remove deleted items from table
                     $scope.items.shift();
                 }
                 if ($scope.deletingAll == true) {
