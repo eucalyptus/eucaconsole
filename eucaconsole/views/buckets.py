@@ -145,7 +145,7 @@ class BucketXHRView(BaseView):
         for k in keys.split(','):
             key = bucket.get_key(k, validate=False)
             try:
-                key.delete()
+                pass #key.delete()
             except BotoServerError as err:
                 self.log_request("Couldn't delete "+k+":"+err.message)
                 errors.append(k)
@@ -299,6 +299,21 @@ class BucketContentsJsonView(BaseView):
                 details_url=self.request.route_path('bucket_item_details', name=self.bucket.name, subpath=key.name),
             ))
             items.append(item)
+        return dict(results=items)
+
+    @view_config(route_name='bucket_contents_keys', renderer='json', request_method='POST', xhr=True)
+    def bucket_contents_json(self):
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
+        items = []
+        list_prefix = '{0}/'.format(DELIMITER.join(self.subpath[1:])) if len(self.subpath) > 1 else ''
+        params = dict(delimiter=DELIMITER)
+        if list_prefix:
+            params.update(dict(prefix=list_prefix))
+        bucket_items = self.bucket.list(**params)
+
+        for key in bucket_items:
+            items.append(key)
         return dict(results=items)
 
     def get_absolute_path(self, key_name):

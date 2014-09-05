@@ -15,8 +15,9 @@ angular.module('BucketContentsPage', ['LandingPage'])
         $scope.chunkSize = 10;  // set this based on how many keys we want to delete at once
         $scope.index = 0;
         $scope.items = null;
-        $scope.initController = function (deleteKeysUrl, prefix) {
+        $scope.initController = function (deleteKeysUrl, getKeysUrl, prefix) {
             $scope.deleteKeysUrl = deleteKeysUrl;
+            $scope.getKeysUrl = getKeysUrl;
             $scope.prefix = prefix;
         };
         $scope.revealModal = function (action, bucket) {
@@ -29,6 +30,15 @@ angular.module('BucketContentsPage', ['LandingPage'])
             $scope.total = $scope.items.length;
             $scope.index = 0;
             $scope.deleteChunk();
+            var data = "csrf_token="+$('#csrf_token').val()+"&keys="+names.join(',');
+            $http({method:'POST', url:$scope.deleteKeysUrl, data:data,
+                   headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
+              success(function(oData) {
+                console.log(oData);
+              }).
+              error(function (oData, status) {
+                console.log("some kind of error");
+              });
         };
         $scope.deleteChunk = function () {
             var start = 0;
