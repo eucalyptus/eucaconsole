@@ -51,7 +51,7 @@
                         ${structure:group_form['csrf_token']}
                         <div class="section columns">
                             <div class="row">
-                                <p><span i18n:translate="">Add group to account:</span>&nbsp;${layout.account}</p>
+                                <p><span class="subsection-label" i18n:translate="">Add group to account:</span>&nbsp;${layout.account}</p>
                             </div>
                             ${panel('form_field', field=group_form.group_name, leftcol_width=1, rightcol_width=11, autofocus='', ng_attrs={'model': 'groupName'}, **html_attrs)}
                         </div>

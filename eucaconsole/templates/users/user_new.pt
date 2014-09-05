@@ -30,10 +30,13 @@
                         <div class="row columns" tal:condition="layout.account != 'eucalyptus'">
                             <p><span class="subsection-label" i18n:translate="">Add user(s) to account:</span>&nbsp;${layout.account}</p>
                         </div>
-                        <div class="row columns" tal:condition="layout.account == 'eucalyptus'">
-                            <p>
-                                <span class="subsection-label" i18n:translate="">Add user(s) to account:</span>${structure:user_form['as_account']}
-                            </p>
+                        <div class="row" tal:condition="layout.account == 'eucalyptus'">
+                            <div class="columns small-5">
+                                <span class="subsection-label" i18n:translate="">Add user(s) to account:</span>
+                            </div>
+                            <div class="columns small-7">
+                                ${structure:user_form['as_account']}
+                            </div>
                         </div>
                         ${panel('user_editor')}
                         <div>${structure:user_form['random_password']}&nbsp;${user_form.random_password.label}</div>

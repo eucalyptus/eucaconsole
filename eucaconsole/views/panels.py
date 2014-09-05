@@ -290,11 +290,12 @@ def policy_generator(context, request, policy_actions=None, create_form=None, re
 
 
 @panel_config('quotas_panel', renderer='../templates/users/quotas.pt')
-def quotas_panel(context, request, quota_form=None, quota_err=None):
+def quotas_panel(context, request, quota_form=None, quota_err=None, in_user=True):
     """quota form for 2 different user pages."""
     return dict(
         quota_form=quota_form,
         quota_err=quota_err,
+        in_user=in_user,
     )
 
 

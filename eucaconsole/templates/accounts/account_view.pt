@@ -101,22 +101,25 @@
                     </div>
                 </div>
                 <div class="content panel has-actions" id="quotas-tab">
-                    <metal:block metal:use-macro="layout.global_macros['actions_menu']">
-                        <metal:actions metal:fill-slot="actions">
+                    <div class="actions-menu">
+                        <span class="button dropdown" data-dropdown="actions-dropdown2">
+                            <span i18n:translate="">Actions</span>
+                        </span>
+                        <ul id="actions-dropdown2" class="f-dropdown" data-dropdown-content="">
                             <li>
                                 <a id="delete-account-action" data-reveal-id="delete-account-modal" i18n:translate="">
                                     Delete account
                                 </a>
                             </li>
-                        </metal:actions>
-                    </metal:block>
+                        </ul>
+                    </div>
                     <div class="columns section">
                         <form action="${request.route_path('account_update', name=account.account_name)}" method="post" data-abide="abide">
                             ${structure:account_update_form['csrf_token']}
                             <div class="expando" id="quotas-section">
                                 <h6 i18n:translate="">Quotas</h6>
                                 <div class="quotas-content">
-                                    ${panel('quotas_panel', quota_form=quotas_form, quota_err=quota_err)}
+                                    ${panel('quotas_panel', quota_form=quotas_form, quota_err=quota_err, in_user=False)}
                                 </div>
                                 <div class="section row">
                                     <div class="small-6 columns">

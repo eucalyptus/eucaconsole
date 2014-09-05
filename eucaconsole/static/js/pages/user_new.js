@@ -27,7 +27,7 @@ angular.module('UserNew', ['UserEditor', 'Quotas'])
             $scope.accountRedirect = accountRedirect;
             $scope.getFileEndpoint = getFileEndpoint;
             $scope.setWatch();
-            $('#as_account').chosen({'width': '50%', 'search_contains': true});
+            $('#as_account').chosen({'width': '75%', 'search_contains': true});
             $('#user-name-field').focus();
         }
         $scope.setWatch = function () {
