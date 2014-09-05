@@ -9,10 +9,13 @@ angular.module('BucketDetailsPage', ['S3SharingPanel'])
     .controller('BucketDetailsPageCtrl', function ($scope, $http) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.bucketDetailsForm = $('#bucket-details-form');
+        $scope.isSubmitted = false;
+        $scope.hasChangesToBeSaved = false;
         $scope.objectsCountLoading = true;
         $scope.initController = function (bucketObjectsCountUrl) {
             $scope.bucketObjectsCountUrl = bucketObjectsCountUrl;
             $scope.getBucketObjectsCount();
+            $scope.handleUnsavedChanges();
             $scope.handleUnsavedSharingEntry($scope.bucketDetailsForm);
         };
         $scope.getBucketObjectsCount = function () {
@@ -35,6 +38,31 @@ angular.module('BucketDetailsPage', ['S3SharingPanel'])
             var modal = $('#' + action + '-modal');
             modal.foundation('reveal', 'open');
             modal.find('h3').click();  // Workaround for dropdown menu not closing
+        };
+        $scope.handleUnsavedChanges = function () {
+            // Listen for sharing panel update
+            $scope.$on('s3:sharingPanelAclUpdated', function () {
+                $scope.hasChangesToBeSaved = true;
+            });
+            // Listen for metadata update
+            $scope.$on('s3:objectMetadataUpdated', function () {
+                $scope.hasChangesToBeSaved = true;
+            });
+            $scope.$watch('objectName', function (newVal, oldVal) {
+                if (newVal != oldVal) {
+                    $scope.hasChangesToBeSaved = true;
+                }
+            });
+            // Turn "isSubmitted" flag to true when a form (except the logout form) is submitted
+            $('form[id!="euca-logout-form"]').on('submit', function () {
+                $scope.isSubmitted = true;
+            });
+            // Warn the user about the unsaved changes
+            window.onbeforeunload = function() {
+                if ($scope.hasChangesToBeSaved && !$scope.isSubmitted) {
+                    return $('#warning-message-unsaved-changes').text();
+                }
+            };
         };
         $scope.handleUnsavedSharingEntry = function (form) {
             // Display warning when there's an unsaved Sharing Panel entry
