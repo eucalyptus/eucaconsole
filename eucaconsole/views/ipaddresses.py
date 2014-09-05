@@ -59,6 +59,7 @@ class IPAddressesView(LandingPageView):
             associate_form=self.associate_form,
             disassociate_form=self.disassociate_form,
             release_form=self.release_form,
+            allocate_ip_dialog_error_message='Please enter a whole number greater than zero',
         )
 
     @view_config(route_name='ipaddresses', renderer=VIEW_TEMPLATE)

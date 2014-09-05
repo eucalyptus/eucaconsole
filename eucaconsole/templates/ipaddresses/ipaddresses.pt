@@ -103,7 +103,7 @@
             <p i18n:translate="">How many IP addresses would you like to allocate?</p>
             <form action="${request.route_path('ipaddresses')}" method="post" data-abide="abide"
                  tal:define="html_attrs {'pattern': '^[1-9]\d*$', 'min': '1',
-                         'error_msg': 'Please enter a whole number greater than zero'};">
+                         'error_msg': allocate_ip_dialog_error_message};">
                 ${structure:allocate_form['csrf_token']}
                 ${panel('form_field', field=allocate_form.domain, leftcol_width=6, rightcol_width=6)}
                 ${panel('form_field', field=allocate_form.ipcount, leftcol_width=6, rightcol_width=6, **html_attrs)}

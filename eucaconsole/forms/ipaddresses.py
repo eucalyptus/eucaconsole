@@ -46,7 +46,7 @@ class AllocateIPsForm(BaseSecureForm):
 
     def __init__(self, request, **kwargs):
         super(AllocateIPsForm, self).__init__(request, **kwargs)
-        self.domain.choices = [(_(u'standard'), _(u'Standard')), (_(u'vpc'), _(u'VPC'))]
+        self.domain.choices = [('standard', _(u'Standard')), ('vpc', _(u'VPC'))]
         self.ipcount.data = 1
         self.ipcount.error_msg = self.ipcount_error_msg
 
