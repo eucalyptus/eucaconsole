@@ -451,6 +451,7 @@ class BucketItemDetailsView(BaseView):
             item_name=unprefixed_name,
             item_link=self.bucket_item.generate_url(expires_in=BUCKET_ITEM_URL_EXPIRES),
             item_download_url=BucketContentsView.get_item_download_url(self.bucket_item),
+            cancel_link_url=self.get_cancel_link_url(),
         )
 
     @view_config(route_name='bucket_item_details', renderer=VIEW_TEMPLATE)
@@ -548,6 +549,10 @@ class BucketItemDetailsView(BaseView):
                 friendly_name_param
             )
             self.bucket_item_name = new_name
+
+    def get_cancel_link_url(self):
+        subpath = '{0}/{1}'.format(self.bucket_name, DELIMITER.join(self.request.subpath[:-1]))
+        return self.request.route_path('bucket_contents', subpath=subpath)
 
     @staticmethod
     def attribute_metadata_mapping():

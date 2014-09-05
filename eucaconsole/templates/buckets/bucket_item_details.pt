@@ -84,7 +84,7 @@
                                 ng-disabled="!hasChangesToBeSaved">
                             <span i18n:translate="">Save Changes</span>
                         </button>
-                        <a href="${request.route_path('buckets')}" id="bucket-details-cancel-link"
+                        <a href="${cancel_link_url}" id="bucket-details-cancel-link"
                            class="cancel-link" i18n:translate="">Cancel</a>
                     </div>
                 </form>
