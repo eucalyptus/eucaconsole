@@ -231,9 +231,11 @@ urls = [
     # Accounts #####
     Route(name='accounts', pattern='/accounts'),
     Route(name='accounts_json', pattern='/accounts/json'),
+    Route(name='account_new', pattern='/accounts/new'),
     Route(name='accounts_delete', pattern='/accounts/delete'),
     Route(name='account_create', pattern='/accounts/create'),
     Route(name='account_view', pattern='/accounts/{name}'),
+    Route(name='account_summary_json', pattern='/accounts/{name}/summary'),
     Route(name='account_update', pattern='/accounts/{name}/update'),
     Route(name='account_delete', pattern='/accounts/{name}/delete'),
     Route(name='account_policies_json', pattern='/accounts/{name}/policies_json'),

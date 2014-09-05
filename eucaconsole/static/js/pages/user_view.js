@@ -6,7 +6,7 @@
 
 
 // user view page includes the User Editor editor
-angular.module('UserView', ['PolicyList'])
+angular.module('UserView', ['PolicyList', 'Quotas'])
     .controller('UserViewCtrl', function ($scope, $http) {
         $scope.disable_url = '';
         $scope.allUsersRedirect = '';
