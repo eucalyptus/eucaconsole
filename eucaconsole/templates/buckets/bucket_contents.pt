@@ -137,7 +137,7 @@
             </p>
             <div ng-show="!deletingAll">
                 <p>
-                    <span i18n:translate="">Are you sure you want to delete all</span>&nbsp;{{ total }}&nbsp;<span i18n:translate=""> objects in </span>&nbsp;<b>${display_path}</b>
+                    <span i18n:translate="">Are you sure you want to delete all</span>&nbsp;{{ total }}&nbsp;<span i18n:translate=""> objects in </span>&nbsp;<b>${display_path}</b><span>?</span>
                 </p>
                 <a class="button expand" id="delete-all-btn" i18n:translate="" ng-click="deleteAll()">
                     Yes, Delete Everything
