@@ -115,6 +115,34 @@ class BucketsJsonView(BaseView):
         return self.s3_conn.get_all_buckets() if self.s3_conn else []
 
 
+class BucketXHRView(BaseView):
+    def __init__(self, request):
+        super(BucketXHRView, self).__init__(request)
+        self.s3_conn = self.get_connection(conn_type='s3')
+        self.bucket_name = request.matchdict.get('name')
+
+    @view_config(route_name='bucket_delete_keys', renderer='json', request_method='POST')
+    def bucket_delete_keys(self):
+        """
+        Deletes keys from a bucket, attempting to do as many as possible, reporting errors back at the end.
+        """
+        keys = self.request.params.get('keys')
+        bucket = self.s3_conn.get_bucket(self.bucket_name)
+        errors = []
+        self.log_request(_(u"Deleting keys from {0} : {1}").format(self.bucket_name, keys))
+        for k in keys.split(','):
+            key = bucket.get_key(k)
+            try:
+                pass #key.delete()
+            except BotoServerError as err:
+                self.log_request("Couldn't delete "+k+":"+err.message)
+                errors.append(k)
+        if len(errors) == 0:
+            return dict(msg=_(u"Successfully deleted all keys."))
+        else:
+            return dict(msg=_(u"Failed to delete all keys."), errors=errors)
+
+
 class BucketContentsView(LandingPageView):
     """Views for actions on single bucket"""
     VIEW_TEMPLATE = '../templates/buckets/bucket_contents.pt'

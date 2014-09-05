@@ -4,7 +4,8 @@
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/bucket_contents.css')}" />
 </head>
 
-<div metal:fill-slot="main_content" ng-app="BucketContentsPage" ng-controller="BucketContentsCtrl" ng-init="initController()">
+<div metal:fill-slot="main_content" ng-app="BucketContentsPage" ng-controller="BucketContentsCtrl"
+        ng-init="initController('${request.route_path('bucket_delete_keys', name=bucket_name)}')">
     <div class="row" id="contentwrap" ng-app="LandingPage" ng-controller="ItemsCtrl"
          ng-init="initController('bucketcontents', '${initial_sort_key}', '${json_items_endpoint}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
@@ -134,12 +135,20 @@
             <p>
                 <span i18n:translate="">Deleting all objects and folders can take some time. Leaving this page while the delete is in progress will cancel the operation.</span>
             </p>
-            <p>
-                <span i18n:translate="">Are you sure you want to delete all X objects in </span>&nbsp;<b>${display_path}</b>
-            </p>
-            <a class="button expand" id="delete-all-btn" i18n:translate="" ng-click="deleteAll()">
-                Yes, Delete Everything
-            </a>
+            <div ng-show="!deletingAll">
+                <p>
+                    <span i18n:translate="">Are you sure you want to delete all</span>&nbsp;{{ total }}&nbsp;<span i18n:translate=""> objects in </span>&nbsp;<b>${display_path}</b>
+                </p>
+                <a class="button expand" id="delete-all-btn" i18n:translate="" ng-click="deleteAll()">
+                    Yes, Delete Everything
+                </a>
+            </div>
+            <div ng-show="deletingAll">
+                <!-- insert progress bar here -->
+                <a class="button expand" id="delete-all-btn" i18n:translate="" ng-click="deleteAll()">
+                    Cancel Remaining Deletions
+                </a>
+            </div>
             <a href="#" id="delete_all_close_link" class="close-reveal-modal">&#215;</a>
         </div>
     </div>
