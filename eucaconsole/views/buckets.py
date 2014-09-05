@@ -133,14 +133,14 @@ class BucketXHRView(BaseView):
         for k in keys.split(','):
             key = bucket.get_key(k)
             try:
-                pass #key.delete()
+                key.delete()
             except BotoServerError as err:
                 self.log_request("Couldn't delete "+k+":"+err.message)
                 errors.append(k)
         if len(errors) == 0:
-            return dict(msg=_(u"Successfully deleted all keys."))
+            return dict(message=_(u"Successfully deleted all keys."))
         else:
-            return dict(msg=_(u"Failed to delete all keys."), errors=errors)
+            return dict(message=_(u"Failed to delete all keys."), errors=errors)
 
 
 class BucketContentsView(LandingPageView):

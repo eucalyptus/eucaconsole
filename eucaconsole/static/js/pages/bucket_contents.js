@@ -29,7 +29,7 @@ angular.module('BucketContentsPage', ['LandingPage'])
             $scope.deleteChunk();
         };
         $scope.deleteChunk = function () {
-            var start = $scope.index * $scope.chunkSize;
+            var start = 0;
             var end = start + $scope.chunkSize;
             if (end > $scope.total) {
                 end = $scope.total;
@@ -47,18 +47,31 @@ angular.module('BucketContentsPage', ['LandingPage'])
                 if (oData.errors !== undefined) {
                     console.log('error deleting some keys '+oData.errors);
                 }
-                var chunks = $scope.total / $scope.chunkSize;
-                if ($scope.index >= chunks) {
-                    Notify.success(oData.message);
+                $scope.progress = $scope.progress + $scope.chunkSize;
+                if ($scope.progress > $scope.total) {
+                    $scope.progress = $scope.total;
                 }
-                else {
-                    $scope.index += 1;
-                    $scope.deleteChunk();
+                for (var i=0; i<$scope.chunkSize; i++) {
+                    $scope.items.shift();
+                }
+                if ($scope.deletingAll == true) {
+                    var chunks = $scope.total / $scope.chunkSize;
+                    if ($scope.index >= chunks) {
+                        Notify.success(oData.message);
+                        $('#delete-all-modal').foundation('reveal', 'close');
+                    }
+                    else {
+                        $scope.index = $scope.index + 1;
+                        $scope.deleteChunk();
+                    }
                 }
               }).
               error(function (oData, status) {
                 console.log("some kind of error");
               });
+        };
+        $scope.cancelDelete = function () {
+            $scope.deletingAll = false;
         };
         $scope.$on('itemsLoaded', function($event, items) {
             $scope.items = items;

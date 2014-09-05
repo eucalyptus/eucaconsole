@@ -144,8 +144,10 @@
                 </a>
             </div>
             <div ng-show="deletingAll">
-                <!-- insert progress bar here -->
-                <a class="button expand" id="delete-all-btn" i18n:translate="" ng-click="deleteAll()">
+                <div class="progress">
+                    <span class="meter" style="width: {{ progress }}">Deleted {{ progress }} of {{ total }}</span>
+                </div>
+                <a class="button expand" id="cancel-delete-btn" i18n:translate="" ng-click="cancelDeleting()">
                     Cancel Remaining Deletions
                 </a>
             </div>

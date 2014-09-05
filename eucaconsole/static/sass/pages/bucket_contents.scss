@@ -16,3 +16,19 @@
     }
 }
 
+.progress {
+    text-align: left;
+    position: relative;
+    border: none;
+    .meter {
+        background-color: lighten($euca-darkblue, 20%);
+        color: black;
+        position: relative;
+        top: -2px; left: -2px;
+        padding: 1px 0 1px 8px;
+        display: inline-block;
+        white-space: nowrap;
+        font-weight: bold;
+    }
+}
+
