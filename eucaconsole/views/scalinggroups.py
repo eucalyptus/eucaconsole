@@ -601,32 +601,29 @@ class ScalingGroupWizardView(BaseScalingGroupView):
                 vpc_network = self.request.params.get('vpc_network') or None
                 vpc_subnets = self.request.params.getall('vpc_subnet')
                 scaling_group = ''
+                params = dict(
+                    name=scaling_group_name,
+                    launch_config=launch_config_name,
+                    load_balancers=self.request.params.getall('load_balancers'),
+                    health_check_type=self.request.params.get('health_check_type'),
+                    health_check_period=self.request.params.get('health_check_period'),
+                    desired_capacity=self.request.params.get('desired_capacity'),
+                    min_size=self.request.params.get('min_size'),
+                    max_size=self.request.params.get('max_size'),
+                    tags=self.parse_tags_param(scaling_group_name=scaling_group_name),
+                )
                 if vpc_network is None:
-                    scaling_group = AutoScalingGroup(
-                        name=scaling_group_name,
-                        launch_config=launch_config_name,
+                    # EC2-Classic case
+                    params.update(dict(
                         availability_zones=self.request.params.getall('availability_zones'),
-                        load_balancers=self.request.params.getall('load_balancers'),
-                        health_check_type=self.request.params.get('health_check_type'),
-                        health_check_period=self.request.params.get('health_check_period'),
-                        desired_capacity=self.request.params.get('desired_capacity'),
-                        min_size=self.request.params.get('min_size'),
-                        max_size=self.request.params.get('max_size'),
-                        tags=self.parse_tags_param(scaling_group_name=scaling_group_name),
-                    )
+                    ))
+                    scaling_group = AutoScalingGroup(**params)
                 else:
-                    scaling_group = AutoScalingGroup(
-                        name=scaling_group_name,
-                        launch_config=launch_config_name,
+                    # EC2-VPC case
+                    params.update(dict(
                         vpc_zone_identifier=vpc_subnets, 
-                        load_balancers=self.request.params.getall('load_balancers'),
-                        health_check_type=self.request.params.get('health_check_type'),
-                        health_check_period=self.request.params.get('health_check_period'),
-                        desired_capacity=self.request.params.get('desired_capacity'),
-                        min_size=self.request.params.get('min_size'),
-                        max_size=self.request.params.get('max_size'),
-                        tags=self.parse_tags_param(scaling_group_name=scaling_group_name),
-                    )
+                    ))
+                    scaling_group = AutoScalingGroup(**params)
 
                 self.autoscale_conn.create_auto_scaling_group(scaling_group)
                 msg = _(u'Successfully created scaling group')
