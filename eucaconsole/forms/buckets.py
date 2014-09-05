@@ -97,6 +97,7 @@ class SharingPanelForm(BaseSecureForm):
     @staticmethod
     def get_permission_choices():
         return (
+            ('FULL_CONTROL', _('Full Control')),
             ('READ', _('Read-only')),
             ('WRITE', _('Read-Write')),
             ('READ_ACP', _('Read sharing permissions')),
