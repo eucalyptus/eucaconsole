@@ -13,12 +13,12 @@ angular.module('BucketItemDetailsPage', ['S3SharingPanel', 'S3MetadataEditor'])
         $scope.objectName = '';
         $scope.initController = function () {
             $scope.setInitialValues();
-            $scope.addListeners();
+            $scope.addSharingPanelListeners();
         };
         $scope.setInitialValues = function () {
             $scope.objectName = $('#friendly_name').val();
         };
-        $scope.addListeners = function () {
+        $scope.addSharingPanelListeners = function () {
             // Listen for sharing panel update
             $scope.$on('s3:sharingPanelAclUpdated', function () {
                 $scope.hasChangesToBeSaved = true;

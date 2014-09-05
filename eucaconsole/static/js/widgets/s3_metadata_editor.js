@@ -11,8 +11,9 @@ angular.module('S3MetadataEditor', ['ngSanitize'])
         $scope.metadataArray = [];
         $scope.newMetadataKey = '';
         $scope.newMetadataValue = '';
+        $scope.newMetadataContentType = '';
         $scope.metadataKeysToDelete = [];
-        $scope.isMetadataNotComplete = true;
+        $scope.addMetadataBtnDisabled = true;
         $scope.syncMetadata = function () {
             // Update metadata to keep
             var metadataObj = {};
@@ -37,7 +38,7 @@ angular.module('S3MetadataEditor', ['ngSanitize'])
             });
             $scope.syncMetadata();
             $scope.initChosenSelectors();
-            $scope.setWatch();
+            $scope.addMetadataListeners();
         };
         $scope.getSafeTitle = function (metadata) {
             return $sanitize(metadata.name + ' = ' + metadata.value);
@@ -74,6 +75,9 @@ angular.module('S3MetadataEditor', ['ngSanitize'])
                 metadataArrayLength = $scope.metadataArray.length,
                 existingMetadataFound = false,
                 form = $($event.currentTarget).closest('form');
+            if (!metadataValueField.is(':visible')) {
+                metadataValueField = metadataEntry.find('[name=metadata_content_type]');
+            }
             if (metadataKeyField.val() && metadataValueField.val()) {
                 // Avoid adding a new metadata if the name duplicates an existing one.
                 for (var i=0; i < metadataArrayLength; i++) {
@@ -103,13 +107,25 @@ angular.module('S3MetadataEditor', ['ngSanitize'])
             $scope.$emit('s3:objectMetadataUpdated');
         };
         $scope.checkRequiredInput = function () {
-            $scope.isMetadataNotComplete = !!($scope.newMetadataKey === '' || $scope.newMetadataValue === '');
+            var ctHeader = 'Content-Type';
+            if ($scope.newMetadataKey === '') {
+                $scope.addMetadataBtnDisabled = true;
+            } else {
+                if ($scope.newMetadataKey === ctHeader) {
+                    $scope.addMetadataBtnDisabled = $scope.newMetadataContentType === '';
+                } else {
+                    $scope.addMetadataBtnDisabled = $scope.newMetadataValue === '';
+                }
+            }
         };
-        $scope.setWatch = function () {
+        $scope.addMetadataListeners = function () {
             $scope.$watch('newMetadataKey', function () {
                 $scope.checkRequiredInput();
             });
             $scope.$watch('newMetadataValue', function () {
+                $scope.checkRequiredInput();
+            });
+            $scope.$watch('newMetadataContentType', function () {
                 $scope.checkRequiredInput();
             });
         };
