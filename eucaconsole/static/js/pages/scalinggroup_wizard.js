@@ -51,6 +51,10 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor'])
             $(document).ready(function () {
                 $scope.displayLaunchConfigWarning(launchConfigCount);
             });
+            // Timeout is needed for the chosen widget to initialize
+            $timeout(function () {
+                $scope.adjustVPCSubnetSelectAbide();
+            }, 500);
         };
         $scope.checkRequiredInput = function () {
             if( $scope.currentStepIndex == 1 ){ 
@@ -103,10 +107,22 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor'])
             $scope.$watch('vpcNetwork', function () {
                 $scope.updateVPCSubnetChoices();
                 $scope.updateSelectedVPCNetworkName();
+                $scope.adjustVPCSubnetSelectAbide();
             });
             $scope.$watch('vpcSubnets', function () { 
                 $scope.updateSelectedVPCSubnetNames();
             });
+        };
+        $scope.adjustVPCSubnetSelectAbide = function () {
+            // If VPC option is not chosen, remove the 'required' attribute
+            // from the VPC subnet select field and set the value to be 'None'
+            if ($scope.vpcNetwork == '') {
+                $('#vpc_subnet').removeAttr('required');
+                $('#vpc_subnet').find('option').first().attr("selected",true);
+            } else {
+                $('#vpc_subnet').find('option').first().removeAttr("selected");
+                $('#vpc_subnet').attr("required", "required");
+            }
         };
         $scope.updateVPCSubnetChoices = function () {
             var foundVPCSubnets = false;
@@ -120,7 +136,7 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor'])
                 }
             }); 
             if (!foundVPCSubnets) {
-                $scope.vpcSubnetChoices[''] = $('#vpc_subnet_empty_option').text();
+                $scope.vpcSubnetChoices['None'] = $('#vpc_subnet_empty_option').text();
             }
             // Timeout is need for the chosen widget to react after Angular has updated the option list
             $timeout(function() {
