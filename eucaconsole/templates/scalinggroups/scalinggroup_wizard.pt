@@ -141,7 +141,7 @@
                         <label i18n:translate="">VPC network:</label>
                         <div class="columns value">{{ vpcNetworkName }}</div>
                     </div>
-                    <div class="row" ng-show="vpcSubnetNames.length > 0">
+                    <div class="row" ng-show="vpcSubnetNames.length">
                         <label i18n:translate="">VPC subnet:</label>
                         <div class="columns value">
                             <div ng-repeat="vpcSubnetName in vpcSubnetNames">{{ vpcSubnetName }}</div>

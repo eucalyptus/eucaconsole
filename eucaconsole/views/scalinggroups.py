@@ -295,7 +295,7 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
     def update_properties(self):
         self.scaling_group.desired_capacity = self.request.params.get('desired_capacity', 1)
         self.scaling_group.launch_config_name = self.unescape_braces(self.request.params.get('launch_config'))
-        self.scaling_group.vpc_zone_identifier = ', '.join(
+        self.scaling_group.vpc_zone_identifier = ','.join(
             [str(x) for x in self.request.params.getall('vpc_subnet')]
         )
         # If VPC subnet exists, do not specify availability zones; the API will figure them out based on the VPC subnets
@@ -575,7 +575,7 @@ class ScalingGroupWizardView(BaseScalingGroupView):
             self.create_form = ScalingGroupCreateForm(
                 self.request, autoscale_conn=self.autoscale_conn, ec2_conn=self.ec2_conn,
                 vpc_conn=self.vpc_conn, elb_conn=self.elb_conn, formdata=self.request.params or None)
-            self.vpc_subnet_choices_json = BaseView.escape_json(json.dumps(self.get_vpc_subnets_json()))
+            self.vpc_subnet_choices_json = BaseView.escape_json(json.dumps(self.get_vpc_subnets_list()))
         self.render_dict = dict(
             create_form=self.create_form,
             launchconfigs_count=len(self.create_form.launch_config.choices) - 1,  # Ignore blank choice
@@ -638,7 +638,7 @@ class ScalingGroupWizardView(BaseScalingGroupView):
             self.request.error_messages = self.create_form.get_errors_list()
         return self.render_dict
 
-    def get_vpc_subnets_json(self):
+    def get_vpc_subnets_list(self):
         subnets = []
         if self.vpc_conn:
             with boto_error_handler(self.request):
