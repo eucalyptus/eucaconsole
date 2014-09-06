@@ -139,13 +139,15 @@ class BucketXHRView(BaseView):
         Deletes keys from a bucket, attempting to do as many as possible, reporting errors back at the end.
         """
         keys = self.request.params.get('keys')
+        if not keys:
+            return dict(message=_(u"keys must be specified."), errors=errors)
         bucket = self.s3_conn.head_bucket(self.bucket_name)
         errors = []
         self.log_request(_(u"Deleting keys from {0} : {1}").format(self.bucket_name, keys))
         for k in keys.split(','):
             key = bucket.get_key(k, validate=False)
             try:
-                pass #key.delete()
+                key.delete()
             except BotoServerError as err:
                 self.log_request("Couldn't delete "+k+":"+err.message)
                 errors.append(k)
@@ -301,19 +303,19 @@ class BucketContentsJsonView(BaseView):
             items.append(item)
         return dict(results=items)
 
-    @view_config(route_name='bucket_contents_keys', renderer='json', request_method='POST', xhr=True)
-    def bucket_contents_json(self):
+    @view_config(route_name='bucket_keys', renderer='json', request_method='POST', xhr=True)
+    def bucket_keys_json(self):
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
         items = []
         list_prefix = '{0}/'.format(DELIMITER.join(self.subpath[1:])) if len(self.subpath) > 1 else ''
-        params = dict(delimiter=DELIMITER)
+        params = dict()
         if list_prefix:
             params.update(dict(prefix=list_prefix))
         bucket_items = self.bucket.list(**params)
 
         for key in bucket_items:
-            items.append(key)
+            items.append(key.name)
         return dict(results=items)
 
     def get_absolute_path(self, key_name):

@@ -5,7 +5,7 @@
 </head>
 
 <div metal:fill-slot="main_content" ng-app="BucketContentsPage" ng-controller="BucketContentsCtrl"
-        ng-init="initController('${request.route_path('bucket_delete_keys', name=bucket_name)}', '${request.route_path('bucket_contents_keys', name=bucket_name)}', '${key_prefix}')">
+        ng-init="initController('${request.route_path('bucket_delete_keys', name=bucket_name)}', '${request.route_path('bucket_keys', subpath=request.subpath)}', '${key_prefix}')">
     <div class="row" id="contentwrap" ng-app="LandingPage" ng-controller="ItemsCtrl"
          ng-init="initController('bucketcontents', '${initial_sort_key}', '${json_items_endpoint}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
@@ -35,7 +35,7 @@
                     Create New Folder
                 </a>
                 &nbsp;&nbsp;
-                <a class="button secondary ng-binding" id="delete-all-btn" i18n:translate="" data-reveal-id="delete-all-modal">
+                <a class="button secondary ng-binding" id="delete-all-btn" i18n:translate="" ng-click="revealModal('delete-all')">
                     Delete All Objects/Folders
                 </a>
             </div>
