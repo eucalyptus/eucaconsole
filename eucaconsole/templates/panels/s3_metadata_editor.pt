@@ -43,5 +43,13 @@
         <textarea id="metadata" name="metadata" class="hidden"></textarea>
         <textarea id="metadata-keys-to-delete" name="metadata_keys_to_delete" class="hidden"></textarea>
     </div>
+    <div id="unsaved-metadata-warning-modal" class="reveal-modal small" data-reveal="">
+        <h3 i18n:translate="">Warning: Unsaved Metadata Entry</h3>
+        <p i18n:translate="">
+            You must click the "Add Metadata Pair" button in the Metadata section
+            before you submit this for your entry to be included.
+        </p>
+        <a href="#" class="close-reveal-modal">&#215;</a>
+    </div>
     <script src="${request.static_path('eucaconsole:static/js/widgets/s3_metadata_editor.js')}"></script>
 </div>

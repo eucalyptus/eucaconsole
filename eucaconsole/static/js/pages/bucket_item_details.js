@@ -16,6 +16,7 @@ angular.module('BucketItemDetailsPage', ['S3SharingPanel', 'S3MetadataEditor'])
             $scope.setInitialValues();
             $scope.handleUnsavedChanges();
             $scope.handleUnsavedSharingEntry($scope.bucketItemDetailsForm);
+            $scope.handleUnsavedMetadataEntry($scope.bucketItemDetailsForm);
         };
         $scope.setInitialValues = function () {
             $scope.objectName = $('#friendly_name').val();
@@ -53,6 +54,18 @@ angular.module('BucketItemDetailsPage', ['S3SharingPanel', 'S3MetadataEditor'])
                     event.preventDefault();
                     $scope.isSubmitted = false;
                     $('#unsaved-sharing-warning-modal').foundation('reveal', 'open');
+                    return false;
+                }
+            });
+        };
+        $scope.handleUnsavedMetadataEntry = function (form) {
+            // Display warning when there's an unsaved Metadata Pair entry
+            form.on('submit', function (event) {
+                var metadataKeyInputField = form.find('#metadata_key');
+                if (metadataKeyInputField.length && metadataKeyInputField.val() != '') {
+                    event.preventDefault();
+                    $scope.isSubmitted = false;
+                    $('#unsaved-metadata-warning-modal').foundation('reveal', 'open');
                     return false;
                 }
             });
