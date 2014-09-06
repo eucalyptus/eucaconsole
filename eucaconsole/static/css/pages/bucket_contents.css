@@ -106,5 +106,6 @@
 
 .button.cancel { background-color: #990000; }
 
-.progress { text-align: left; position: relative; border: none; }
-.progress .meter { background-color: #0683c2; color: black; position: relative; top: -2px; left: -2px; padding: 1px 0 1px 8px; display: inline-block; white-space: nowrap; font-weight: bold; }
+.bucket-progress { border: 1px solid black; position: relative; width: 100%; height: 30px; margin-bottom: 15px; }
+.bucket-progress .meter { position: absolute; background-color: #0683c2; padding-left: 3px; height: 30px; margin: 0px; }
+.bucket-progress .status { position: absolute; width: 100%; text-align: center; margin-top: 5px; margin-bottom: 0px; font-size: 1.0rem; font-weight: bold; text-align: center; }
