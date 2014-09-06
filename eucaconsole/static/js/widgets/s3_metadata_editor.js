@@ -47,14 +47,18 @@ angular.module('S3MetadataEditor', ['ngSanitize'])
             $('#metadata_key').chosen({search_contains: true, create_option: function(term){
                     var chosen = this;
                     $timeout(function() {
-                        chosen.append_option({
-                            value: term,
-                            text: term
-                        });
+                        chosen.append_option({value: term, text: term});
                     });
                 },
                 'create_option_text': $scope.metadataKeyOptionText,
                 'no_results_text': $scope.metadataKeyNoResultsText
+            });
+            $('#metadata_content_type').chosen({search_contains: true, create_option: function(term){
+                    var chosen = this;
+                    $timeout(function() {
+                        chosen.append_option({value: term, text: term});
+                    });
+                },
             });
         };
         $scope.removeMetadata = function (index, $event) {
