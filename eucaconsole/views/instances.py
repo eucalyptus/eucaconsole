@@ -972,7 +972,7 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
                     ))
                     reservation = self.conn.run_instances(image_id, **params)
                 else:
-                    # Use the EC2-Classi setting
+                    # Use the EC2-Classic setting
                     params.update(dict(
                         placement=availability_zone,
                         security_group_ids=securitygroup_ids,
