@@ -28,6 +28,7 @@
 Pyramid views for Eucalyptus Object Store and AWS S3 Buckets
 
 """
+from datetime import datetime
 import mimetypes
 import simplejson as json
 
@@ -447,6 +448,7 @@ class BucketItemDetailsView(BaseView):
             bucket=self.bucket,
             bucket_name=self.bucket.name,
             bucket_item=self.bucket_item,
+            last_modified=self.get_last_modified_time(self.bucket_item),
             key_name=self.bucket_item.name,
             item_name=unprefixed_name,
             item_link=self.bucket_item.generate_url(expires_in=BUCKET_ITEM_URL_EXPIRES),
@@ -555,9 +557,20 @@ class BucketItemDetailsView(BaseView):
         return self.request.route_path('bucket_contents', subpath=subpath)
 
     @staticmethod
+    def get_last_modified_time(bucket_object):
+        """
+        :returns an ISO-8601 formatted timestamp of an object's last-modified date/time
+        :rtype str or None
+        """
+        if bucket_object and bucket_object.last_modified:
+            parsed_time = datetime.strptime(bucket_object.last_modified, '%a, %d %b %Y %H:%M:%S %Z')
+            return '{0}Z'.format(parsed_time.isoformat())
+        return None
+
+    @staticmethod
     def attribute_metadata_mapping():
         """
-        Map so-called "metadata" with their object attribute names
+        Map header "metadata" with their object attribute names
         :return: dict of attribute/header key/value pairs
         """
         return dict(

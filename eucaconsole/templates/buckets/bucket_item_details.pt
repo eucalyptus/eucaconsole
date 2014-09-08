@@ -63,7 +63,7 @@
                     <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Last modified</label></div>
                         <div class="small-8 columns value" ng-cloak="">
-                            {{'${bucket_item.last_modified}' | date:'${layout.angular_date_format}'}}
+                            {{'${last_modified}' | date:'${layout.angular_date_format}'}}
                         </div>
                     </div>
                     <div class="row controls-wrapper readonly">
