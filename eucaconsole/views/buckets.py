@@ -105,7 +105,8 @@ class BucketsJsonView(BaseView):
 
     @view_config(route_name='bucket_objects_count_versioning_json', renderer='json')
     def bucket_objects_count_versioning_json(self):
-        bucket = BucketContentsView.get_bucket(self.request, self.s3_conn) if self.s3_conn else []
+        with boto_error_handler(self.request):
+            bucket = BucketContentsView.get_bucket(self.request, self.s3_conn) if self.s3_conn else []
         results = dict(
             object_count=len(tuple(bucket.list())),
             versioning_status=BucketDetailsView.get_versioning_status(bucket),
@@ -217,8 +218,9 @@ class BucketContentsView(LandingPageView):
 class BucketContentsJsonView(BaseView):
     def __init__(self, request):
         super(BucketContentsJsonView, self).__init__(request)
-        self.s3_conn = self.get_connection(conn_type='s3')
-        self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
+        with boto_error_handler(request):
+            self.s3_conn = self.get_connection(conn_type='s3')
+            self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
         self.bucket_name = self.bucket.name
         self.subpath = request.subpath
 
