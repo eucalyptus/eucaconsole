@@ -130,6 +130,9 @@ class BucketsJsonView(BaseView):
 
 
 class BucketXHRView(BaseView):
+    """
+    A view for bucket related XHR calls that carrys very little overhead
+    """
     def __init__(self, request):
         super(BucketXHRView, self).__init__(request)
         self.s3_conn = self.get_connection(conn_type='s3')
