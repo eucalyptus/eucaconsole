@@ -1268,6 +1268,7 @@ class InstanceCreateImageView(BaseInstanceView, BlockDeviceMappingItemView):
                     tags = json.loads(tags_json)
                     self.ec2_conn.create_tags(image_id, tags)
                     msg = _(u'Successfully sent create image request.  It may take a few minutes to create the image.')
+                    self.invalidate_images_cache()
                     self.request.session.flash(msg, queue=Notification.SUCCESS)
                     return HTTPFound(location=self.request.route_path('image_view', id=image_id))
         else:

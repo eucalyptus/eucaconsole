@@ -80,7 +80,7 @@
                 <!--! Help goes here -->
             </div>
         </div>
-        <div id="instance-shutdown-warn-modal" class="reveal-modal small" data-reveal="">
+        <div id="instance-shutdown-warn-modal" class="reveal-modal medium" data-reveal="">
             <h3 i18n:translate="">Warning</h3>
             <p i18n:translate="">
                 Your instance will be shut down and restarted as part of this process. You will not have access to your instance during this time.
@@ -88,9 +88,27 @@
             <p i18n:translate="">
                 Please be sure you have completed the following steps prior to initiating this operation to ensure a functional image is created:
             </p>
-            <p i18n:translate="">
-                Steps TBD
-            </p>
+            <ul>
+                <li i18n:translate="">Remove any credentials, such as SSH keys, that you do not want to be part of the EMI.</li>
+                <li i18n:translate="">Remove shell command history and log files.</li>
+                <li i18n:translate="">On Linux instances, clear the network-related persistent udev rules:
+                    <div class="code">
+                        <span i18n:translate="">
+                            echo "" > /etc/udev/rules.d/70-persistent-net.rules
+                        </span>
+                        <br/>
+                        <span i18n:translate="">
+                            echo "" > /lib/udev/rules.d/75-persistent-net-generator.rules
+                        </span>
+                    </div>
+                </li>
+                <li i18n:translate="">On Windows instances, run Sysprep:
+                    <ul>
+                        <li i18n:translate="">Open the Eucalyptus Windows Integration popup (Windows Programs > Eucalyptus > Eucalyptus Setup).</li>
+                        <li i18n:translate="">Under General tab, click Run Sysprep button.</li>
+                    </ul>
+                </li>
+            </ul>
             <div class="dialog-submit-button">
                 <a id="instance-shutdown-warn-ok" class="button expand" i18n:translate="" ng-click="submitCreate()">I Understand, Let's Do This!</a>
             </div>
