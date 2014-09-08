@@ -39,7 +39,9 @@ from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from pyramid.view import view_config
 
 from ..forms.buckets import (
-    BucketDetailsForm, BucketItemDetailsForm, SharingPanelForm, BucketUpdateVersioningForm, MetadataForm)
+    BucketDetailsForm, BucketItemDetailsForm, SharingPanelForm, BucketUpdateVersioningForm,
+    MetadataForm, CreateBucketForm,
+)
 from ..i18n import _
 from ..models import Notification
 from ..views import BaseView, LandingPageView, JSONResponse
@@ -601,3 +603,28 @@ class BucketItemDetailsView(BaseView):
                 metadata[metadata_attr_mapping[attr]] = getattr(bucket_item, attr)
         return metadata
 
+
+class CreateBucketView(BaseView):
+    """Views for creating a bucket"""
+    VIEW_TEMPLATE = '../templates/buckets/bucket_new.pt'
+
+    def __init__(self, request):
+        super(CreateBucketView, self).__init__(request)
+        with boto_error_handler(request):
+            self.s3_conn = self.get_connection(conn_type='s3')
+        self.create_form = CreateBucketForm(request, formdata=self.request.params or None)
+        self.sharing_form = SharingPanelForm(request, formdata=self.request.params or None)
+        self.render_dict = dict(
+            create_form=self.create_form,
+            sharing_form=self.sharing_form,
+        )
+
+    @view_config(route_name='bucket_new', renderer=VIEW_TEMPLATE)
+    def bucket_ne(self):
+        return self.render_dict
+
+    @view_config(route_name='bucket_create', renderer=VIEW_TEMPLATE, request_method='POST')
+    def bucket_create(self):
+        if self.create_form.validate():
+            bucket_name = self.request.params.get('bucket_name')
+            location = self.request.route_path('bucket_details', name=bucket_name)

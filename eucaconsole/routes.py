@@ -177,6 +177,8 @@ urls = [
     Route(name='buckets', pattern='/buckets'),
     Route(name='buckets_json', pattern='/buckets/json'),
     # Contents/detail pages
+    Route(name='bucket_new', pattern='/buckets/new'),
+    Route(name='bucket_create', pattern='/buckets/create'),
     Route(name='bucket_contents', pattern='/bucketcontents/*subpath'),
     Route(name='bucket_details', pattern='/buckets/{name}/details'),
     Route(name='bucket_objects_count_versioning_json', pattern='/buckets/{name}/objectscount.json'),

@@ -1,0 +1,44 @@
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
+
+<div metal:fill-slot="main_content">
+    <div class="row" id="contentwrap" ng-app="CreateBucketPage" ng-controller="CreateBucketPageCtrl">
+        <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+            <metal:crumbs metal:fill-slot="crumbs">
+                <li><a href="${request.route_path('buckets')}" i18n:translate="">Buckets</a></li>
+                <li class="current"><a href="#" i18n:translate="">Create new bucket</a></li>
+            </metal:crumbs>
+        </metal:breadcrumbs>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
+        <h3 id="pagetitle" i18n:translate="">Create new bucket</h3>
+        <div class="large-7 columns">
+            <div class="panel">
+                <form id="create-bucket-form" method="post" data-abide="abide" ng-cloak="">
+                    ${structure:create_form['csrf_token']}
+                    ${panel('form_field', field=create_form.bucket_name, leftcol_width=12, rightcol_width=12)}
+                    ${panel('s3_sharing_panel', sharing_form=sharing_form)}
+                    <hr />
+                    <div>
+                        <button type="submit" class="button" id="create-bucket-submit-button">
+                            <span i18n:translate="">Create bucket</span>
+                        </button>
+                        <a href="${request.route_path('buckets')}" id="cancel-create-bucket-link"
+                           class="cancel-link" i18n:translate="">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="large-5 columns">
+            <metal:block metal:use-macro="layout.global_macros['help_expando']" />
+            <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
+                <!--! pull in help content here-->
+            </div>
+        </div>
+    </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_path('eucaconsole:static/js/pages/bucket_new.js')}"></script>
+</div>
+</metal:block>
+

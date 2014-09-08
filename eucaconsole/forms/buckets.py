@@ -90,6 +90,9 @@ class SharingPanelForm(BaseSecureForm):
         if bucket_object is not None:
             self.share_type.data = self.get_share_type()
 
+        if bucket_object is None:
+            self.share_type.data = 'public'
+
     def get_share_type(self):
         if 'AllUsers = READ' in str(self.sharing_acl):
             return 'public'
@@ -157,4 +160,22 @@ class MetadataForm(BaseSecureForm):
         choices = [BLANK_CHOICE]
         choices.extend([(ct, ct) for ct in content_types])
         return choices
+
+
+class CreateBucketForm(BaseSecureForm):
+    """S3 Create Bucket form"""
+    bucket_name_error_msg = _(
+        'Name is required')
+    bucket_name = TextEscapedField(
+        label=_(u'Name'),
+        validators=[validators.DataRequired(message=bucket_name_error_msg)]
+    )
+    enable_versioning = wtforms.BooleanField(
+        label=_(u'Enable versioning')
+    )
+
+    def __init__(self, request, **kwargs):
+        super(CreateBucketForm, self).__init__(request, **kwargs)
+        self.bucket_name.error_msg = self.bucket_name_error_msg
+
 

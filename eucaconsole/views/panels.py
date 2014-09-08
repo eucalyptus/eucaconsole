@@ -51,6 +51,8 @@ def get_object_type(bucket_object):
     Detect object type
     :return: object type (one of 'bucket', 'folder', 'object')
     """
+    if bucket_object is None:
+        return ''
     object_type = 'bucket' if isinstance(bucket_object, Bucket) else 'object'
     if object_type == 'object' and bucket_object.size == 0 and DELIMITER in bucket_object.name:
         object_type = 'folder'
@@ -115,7 +117,7 @@ def form_field_row(context, request, field=None, reverse=False, leftcol_width=4,
             html_attrs['ng-{0}'.format(ngkey)] = ngvalue
 
     return dict(
-        field=field, error_msg=error_msg, html_attrs=html_attrs, inline=inline, 
+        field=field, error_msg=error_msg, html_attrs=html_attrs, inline=inline,
         leftcol_width=leftcol_width, rightcol_width=rightcol_width, reverse=reverse
     )
 
