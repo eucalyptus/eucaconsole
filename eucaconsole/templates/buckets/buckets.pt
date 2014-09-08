@@ -5,7 +5,7 @@
 </head>
 
 <div metal:fill-slot="main_content" ng-app="BucketsPage" ng-controller="BucketsCtrl"
-     ng-init="initController('${bucket_objects_count_url}')">
+     ng-init="initController('${bucket_objects_count_url}', '${update_versioning_url}')">
     <div class="row" id="contentwrap" ng-app="LandingPage" ng-controller="ItemsCtrl"
          ng-init="initController('buckets', '${initial_sort_key}', '${json_items_endpoint}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
@@ -23,7 +23,9 @@
                 </a>
             </div>
             <div metal:fill-slot="tile_header">
-                <a ng-href="{{ item.bucket_contents_url }}">{{ item.bucket_name }}</a>
+                <a ng-href="{{ item.contents_url }}" class="has-bucket-icon">
+                    {{ item.bucket_name }}
+                </a>
             </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
                 <div>
@@ -34,15 +36,10 @@
                     </span>
                 </div>
                 <div>
-                    <span class="label" title="Owner" i18n:attributes="title" data-tooltip="">OW</span>
-                    <span ng-show="item.owner">
-                        <b>{{ item.owner }}</b>
-                    </span>
-                </div>
-                <div>
                     <span class="label" title="Versioning" i18n:attributes="title" data-tooltip="">VE</span>
-                    <span ng-show="item.versioning">
-                        <b>{{ item.versioning }}</b>
+                    <span>
+                        <span class="dots" ng-show="versioningStatusLoading[item.bucket_name]"></span>
+                        <b>{{ bucketVersioningStatus[item.bucket_name] }}</b>
                     </span>
                 </div>
                 <div>
@@ -57,29 +54,37 @@
                    class="tiny secondary button dropdown right"
                    data-dropdown="item-dropdown_{{ item.bucket_name |  escapeHTMLTagID }}"><i class="fi-widget"></i></a>
                 <ul id="item-dropdown_{{ item.bucket_name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
-                    <li ng-show="item.bucket_name">
-                        <a i18n:translate="" ng-href="{{ item.bucket_contents_url }}">View contents</a>
+                    <li>
+                        <a i18n:translate="" ng-href="{{ item.contents_url }}">View contents</a>
                     </li>
-                    <li ng-show="item.bucket_name">
-                        <a i18n:translate="" ng-click="revealModal('details', item)">View details</a>
+                    <li>
+                        <a i18n:translate="" ng-href="{{ item.details_url }}">View details</a>
                     </li>
-                    <li ng-show="item.bucket_name">
-                        <a i18n:translate=""
-                           ng-click="revealModal('delete', item)">Delete</a>
+                    <li ng-show="!versioningStatusLoading[item.bucket_name]">
+                        <a ng-click="revealModal('update-versioning', item)" class="update-versioning-action">
+                            <span i18n:translate="" ng-show="bucketVersioningAction[item.bucket_name] == 'enable'">
+                                Enable versioning
+                            </span>
+                            <span i18n:translate="" ng-show="bucketVersioningAction[item.bucket_name] != 'enable'">
+                                Suspend versioning
+                            </span>
+                        </a>
+                    </li>
+                    <li>
+                        <a i18n:translate="" ng-click="revealModal('delete', item)">Delete</a>
                     </li>
                 </ul>
             </div>
             <metal:block metal:fill-slot="tableview_headers">
                 <th i18n:translate="">Name</th>
                 <th i18n:translate="">Objects</th>
-                <th i18n:translate="">Owner</th>
-                <th i18n:translate="">Creation Date</th>
+                <th i18n:translate="">Versioning</th>
+                <th i18n:translate="">Creation Time</th>
                 <th i18n:translate="" class="actions">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
                 <td>
-                    <a ng-href="{{ item.bucket_contents_url }}">
-                        <i class="fi-paint-bucket"></i>
+                    <a ng-href="{{ item.contents_url }}" class="has-bucket-icon">
                         {{ item.bucket_name }}
                     </a>
                 </td>
@@ -87,7 +92,10 @@
                     <span class="dots" ng-show="countsLoading[item.bucket_name]"></span>
                     {{ bucketCounts[item.bucket_name] }}
                 </td>
-                <td>{{ item.owner }}</td>
+                <td>
+                    <span class="dots" ng-show="versioningStatusLoading[item.bucket_name]"></span>
+                    {{ bucketVersioningStatus[item.bucket_name] }}
+                </td>
                 <td>{{ item.creation_date | date: '${layout.angular_date_format}' }}</td>
                 <td>
                     <span class="actions">
@@ -95,13 +103,23 @@
                            class="tiny secondary button dropdown right round"
                            data-dropdown="item-dropdown_{{ item.bucket_name | escapeHTMLTagID }}"><i class="fi-widget"></i></a>
                         <ul id="item-dropdown_{{ item.bucket_name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
-                            <li ng-show="item.bucket_name">
-                                <a i18n:translate="" ng-href="{{ item.bucket_contents_url }}">View contents</a>
+                            <li>
+                                <a i18n:translate="" ng-href="{{ item.contents_url }}">View contents</a>
                             </li>
-                            <li ng-show="item.bucket_name">
-                                <a i18n:translate="" ng-click="revealModal('details', item)">View details</a>
+                            <li>
+                                <a i18n:translate="" ng-href="{{ item.details_url }}">View details</a>
                             </li>
-                            <li ng-show="item.bucket_name">
+                            <li ng-show="!versioningStatusLoading[item.bucket_name]">
+                                <a ng-click="revealModal('update-versioning', item)" class="update-versioning-action">
+                                    <span i18n:translate="" ng-show="bucketVersioningAction[item.bucket_name] == 'enable'">
+                                        Enable versioning
+                                    </span>
+                                    <span i18n:translate="" ng-show="bucketVersioningAction[item.bucket_name] != 'enable'">
+                                        Suspend versioning
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
                                 <a i18n:translate="" ng-click="revealModal('delete', item)">Delete</a>
                             </li>
                         </ul>
@@ -109,6 +127,8 @@
                 </td>
             </metal:block>
         </div>
+        <!--! Modal dialogs reused across landing and detail page -->
+        ${panel('bucket_dialogs', landingpage=True, versioning_form=versioning_form)}
     </div>
 </div>
 

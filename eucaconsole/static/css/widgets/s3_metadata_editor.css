@@ -1,0 +1,9 @@
+@charset "UTF-8";
+/* @fileOverview S3 Sharing panel widget Sass CSS styles */
+/* Dropdown elements */
+/* Set the link colors and styles for top-level nav */
+#s3-metadata-editor .items { margin-bottom: 6px; }
+#s3-metadata-editor .items .metadataentry { color: #333; background-color: #e6e7e8; margin-right: 8px; }
+#s3-metadata-editor .items .metadataentry a { color: white; }
+#s3-metadata-editor #metadata_key, #s3-metadata-editor #metadata_value, #s3-metadata-editor #metadata_content_type { width: 50%; }
+#s3-metadata-editor #controls_metadata_key, #s3-metadata-editor #controls_metadata_value, #s3-metadata-editor #controls_metadata_content_type { margin-bottom: 0.5rem; }

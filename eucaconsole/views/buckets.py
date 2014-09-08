@@ -28,18 +28,26 @@
 Pyramid views for Eucalyptus Object Store and AWS S3 Buckets
 
 """
+from datetime import datetime
 import mimetypes
+import simplejson as json
 
+from boto.s3.acl import ACL, Grant, Policy
 from boto.s3.prefix import Prefix
-from pyramid.httpexceptions import HTTPNotFound
+
+from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from pyramid.view import view_config
 
+from ..forms.buckets import (
+    BucketDetailsForm, BucketItemDetailsForm, SharingPanelForm, BucketUpdateVersioningForm, MetadataForm)
 from ..i18n import _
+from ..models import Notification
 from ..views import BaseView, LandingPageView, JSONResponse
 from . import boto_error_handler
 
 
 DELIMITER = '/'
+BUCKET_ITEM_URL_EXPIRES = 300  # Link to item expires in ___ seconds (after page load)
 
 
 class BucketsView(LandingPageView):
@@ -51,29 +59,29 @@ class BucketsView(LandingPageView):
         # self.items = self.get_items()  # Only need this when filters are displayed on the landing page
         self.prefix = '/buckets'
         self.location = self.get_redirect_location('buckets')
-        self.render_dict = dict(
-            prefix=self.prefix,
-        )
-
-    @view_config(route_name='buckets', renderer=VIEW_TEMPLATE)
-    def buckets_landing(self):
-        # sort_keys are passed to sorting drop-down
         self.sort_keys = [
             dict(key='bucket_name', name=_(u'Bucket name: A to Z')),
             dict(key='-bucket_name', name=_(u'Bucket name: Z to A')),
         ]
-        self.render_dict.update(
+        self.render_dict = dict(
+            prefix=self.prefix,
+            versioning_form=BucketUpdateVersioningForm(request, formdata=self.request.params or None),
+            update_versioning_url=request.route_path('bucket_update_versioning', name='_name_'),
             initial_sort_key='bucket_name',
             json_items_endpoint=self.get_json_endpoint('buckets_json'),
             sort_keys=self.sort_keys,
             filter_fields=False,
             filter_keys=['bucket_name'],
-            bucket_objects_count_url=self.request.route_path('bucket_objects_count_json', name='_name_')
+            bucket_objects_count_url=self.request.route_path('bucket_objects_count_versioning_json', name='_name_'),
         )
+
+    @view_config(route_name='buckets', renderer=VIEW_TEMPLATE)
+    def buckets_landing(self):
+        # sort_keys are passed to sorting drop-down
         return self.render_dict
 
 
-class BucketsJsonView(LandingPageView):
+class BucketsJsonView(BaseView):
     def __init__(self, request):
         super(BucketsJsonView, self).__init__(request)
         self.s3_conn = self.get_connection(conn_type='s3')
@@ -89,28 +97,24 @@ class BucketsJsonView(LandingPageView):
                 bucket_name = item.name
                 buckets.append(dict(
                     bucket_name=bucket_name,
-                    bucket_contents_url=self.request.route_path('bucket_contents', subpath=bucket_name),
-                    owner='me',
-                    creation_date=item.creation_date
+                    contents_url=self.request.route_path('bucket_contents', subpath=bucket_name),
+                    details_url=self.request.route_path('bucket_details', name=bucket_name),
+                    creation_date=item.creation_date,
                 ))
             return dict(results=buckets)
 
-    def get_items(self):
-        return self.s3_conn.get_all_buckets() if self.s3_conn else []
-
-
-class BucketsObjectCountsJsonView(BaseView):
-    def __init__(self, request):
-        super(BucketsObjectCountsJsonView, self).__init__(request)
-        self.s3_conn = self.get_connection(conn_type='s3')
-
-    @view_config(route_name='bucket_objects_count_json', renderer='json')
-    def bucket_object_counts_json(self):
-        bucket = BucketContentsView.get_bucket(self.request, self.s3_conn) if self.s3_conn else []
+    @view_config(route_name='bucket_objects_count_versioning_json', renderer='json')
+    def bucket_objects_count_versioning_json(self):
+        with boto_error_handler(self.request):
+            bucket = BucketContentsView.get_bucket(self.request, self.s3_conn) if self.s3_conn else []
         results = dict(
             object_count=len(tuple(bucket.list())),
+            versioning_status=BucketDetailsView.get_versioning_status(bucket),
         )
         return dict(results=results)
+
+    def get_items(self):
+        return self.s3_conn.get_all_buckets() if self.s3_conn else []
 
 
 class BucketContentsView(LandingPageView):
@@ -166,13 +170,22 @@ class BucketContentsView(LandingPageView):
 
     @staticmethod
     def get_bucket(request, s3_conn, bucket_name=None):
-        with boto_error_handler(request):
-            subpath = request.matchdict.get('subpath')
-            bucket_name = bucket_name or request.matchdict.get('name') or subpath[0]
-            bucket = s3_conn.lookup(bucket_name, validate=False) if bucket_name else None
-            if bucket is None:
-                return HTTPNotFound()
-            return bucket
+        subpath = request.matchdict.get('subpath')
+        bucket_name = bucket_name or request.matchdict.get('name') or subpath[0]
+        bucket = s3_conn.lookup(bucket_name, validate=False) if bucket_name else None
+        if bucket is None:
+            raise HTTPNotFound()
+        return bucket
+
+    @staticmethod
+    def get_item_download_url(bucket_item):
+        if bucket_item.size == 0 and DELIMITER in bucket_item.name:
+            return ''  # skip if folder
+        item_name = BucketContentsView.get_unprefixed_key_name(bucket_item.name)
+        return bucket_item.generate_url(
+            expires_in=BUCKET_ITEM_URL_EXPIRES,
+            response_headers={'response-content-disposition': 'attachment; filename={0}'.format(item_name)},
+        )
 
     @staticmethod
     def get_icon_class(key_name):
@@ -202,11 +215,12 @@ class BucketContentsView(LandingPageView):
         return icon_mapping.get(mime_type, 'fi-page')
 
 
-class BucketContentsJsonView(LandingPageView):
+class BucketContentsJsonView(BaseView):
     def __init__(self, request):
         super(BucketContentsJsonView, self).__init__(request)
-        self.s3_conn = self.get_connection(conn_type='s3')
-        self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
+        with boto_error_handler(request):
+            self.s3_conn = self.get_connection(conn_type='s3')
+            self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
         self.bucket_name = self.bucket.name
         self.subpath = request.subpath
 
@@ -224,29 +238,32 @@ class BucketContentsJsonView(LandingPageView):
         for key in bucket_items:
             if self.skip_item(key):
                 continue
-            if isinstance(key, Prefix):
+            if isinstance(key, Prefix):  # Is folder
                 item = dict(
                     size=0,
                     is_folder=True,
                     last_modified=None,
                     icon='fi-folder',
+                    download_url='',
                 )
-            else:
+            else:  # Is not folder
                 item = dict(
                     size=key.size,
                     is_folder=False,
                     last_modified=key.last_modified,
                     icon=BucketContentsView.get_icon_class(key.name),
+                    download_url=BucketContentsView.get_item_download_url(key),
                 )
             item.update(dict(
                 name=BucketContentsView.get_unprefixed_key_name(key.name),
                 absolute_path=self.get_absolute_path(key.name),
+                details_url=self.request.route_path('bucket_item_details', name=self.bucket.name, subpath=key.name),
             ))
             items.append(item)
         return dict(results=items)
 
     def get_absolute_path(self, key_name):
-        return '/buckets/{0}/{1}'.format(self.bucket_name, key_name)
+        return '/bucketcontents/{0}/{1}'.format(self.bucket_name, key_name)
 
     def skip_item(self, key):
         """Skip item if it contains a folder path that doesn't match the current request subpath"""
@@ -258,3 +275,329 @@ class BucketContentsJsonView(LandingPageView):
             else:
                 return False
         return False
+
+
+class BucketDetailsView(BaseView):
+    """Views for Bucket details"""
+    VIEW_TEMPLATE = '../templates/buckets/bucket_details.pt'
+
+    def __init__(self, request):
+        super(BucketDetailsView, self).__init__(request)
+        self.s3_conn = self.get_connection(conn_type='s3')
+        with boto_error_handler(request):
+            self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
+            self.bucket_acl = self.bucket.get_acl() if self.bucket else None
+        self.details_form = BucketDetailsForm(request, formdata=self.request.params or None)
+        self.sharing_form = SharingPanelForm(
+            request, bucket_object=self.bucket, sharing_acl=self.bucket_acl, formdata=self.request.params or None)
+        self.versioning_form = BucketUpdateVersioningForm(request, formdata=self.request.params or None)
+        self.versioning_status = self.get_versioning_status(self.bucket)
+        self.render_dict = dict(
+            details_form=self.details_form,
+            sharing_form=self.sharing_form,
+            versioning_form=self.versioning_form,
+            bucket=self.bucket,
+            bucket_creation_date=self.get_bucket_creation_date(self.s3_conn, self.bucket.name),
+            bucket_name=self.bucket.name,
+            owner=self.get_bucket_owner_name(self.bucket_acl),
+            versioning_status=self.versioning_status,
+            update_versioning_action=self.get_versioning_update_action(self.versioning_status),
+            logging_status=self.get_logging_status(),
+            bucket_contents_url=self.request.route_path('bucket_contents', subpath=self.bucket.name),
+            bucket_objects_count_url=self.request.route_path(
+                'bucket_objects_count_versioning_json', name=self.bucket.name)
+        )
+
+    @view_config(route_name='bucket_details', renderer=VIEW_TEMPLATE)
+    def bucket_details(self):
+        return self.render_dict
+
+    @view_config(route_name='bucket_update', renderer=VIEW_TEMPLATE, request_method='POST')
+    def bucket_update(self):
+        if self.bucket and self.details_form.validate():
+            location = self.request.route_path('bucket_details', name=self.bucket.name)
+            with boto_error_handler(self.request, location):
+                share_type = self.request.params.get('share_type')
+                if share_type == 'public':
+                    self.bucket.make_public(recursive=True)
+                else:
+                    self.set_sharing_acl(self.request, bucket_object=self.bucket, item_acl=self.bucket_acl)
+                msg = '{0} {1}'.format(_(u'Successfully modified bucket'), self.bucket.name)
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
+            return HTTPFound(location=location)
+        else:
+            self.request.error_messages = self.details_form.get_errors_list()
+        return self.render_dict
+
+    @view_config(route_name='bucket_update_versioning', request_method='POST')
+    def bucket_update_versioning(self):
+        if self.bucket and self.versioning_form.validate():
+            location = self.request.route_path('bucket_details', name=self.bucket.name)
+            if self.request.params.get('source') == 'landingpage':
+                location = self.request.route_path('buckets')
+            with boto_error_handler(self.request, location):
+                versioning_param = self.request.params.get('versioning_action')
+                versioning_bool = True if versioning_param == 'enable' else False
+                self.bucket.configure_versioning(versioning_bool)
+                msg = '{0} {1}'.format(_(u'Successfully modified versioning status for bucket'), self.bucket.name)
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
+            return HTTPFound(location=location)
+        else:
+            self.request.error_messages = self.versioning_form.get_errors_list()
+        return self.render_dict
+
+    def get_logging_status(self):
+        """Returns the logging status as a dict, with the logs URL included for templates"""
+        if self.cloud_type == 'euca':  # TODO: Remove this block when Euca supports bucket logging
+            return dict(enabled=False)
+        if self.bucket:
+            status = self.bucket.get_logging_status()
+            logging_enabled = hasattr(status, 'LoggingEnabled')
+            logging_prefix = getattr(status, 'prefix', '')
+            if logging_prefix and DELIMITER in logging_prefix:
+                logging_prefix = '{0}/'.format(logging_prefix.split(DELIMITER)[0])
+            logging_subpath = '{0}/{1}'.format(self.bucket.name, logging_prefix)
+            return dict(
+                enabled=logging_enabled,
+                logs_prefix=logging_prefix,
+                logs_url=self.request.route_path('bucket_contents', subpath=logging_subpath)
+            )
+
+    @staticmethod
+    def set_sharing_acl(request, bucket_object=None, item_acl=None):
+        sharing_grants_json = request.params.get('s3_sharing_acl')
+        if sharing_grants_json:
+            sharing_grants = json.loads(sharing_grants_json)
+            grants = []
+            for grant in sharing_grants:
+                grants.append(Grant(
+                    permission=grant.get('permission'),
+                    id=grant.get('id'),
+                    display_name=grant.get('display_name'),
+                    type=grant.get('grant_type'),
+                    uri=grant.get('uri'),
+                ))
+            sharing_acl = ACL()
+            sharing_acl.grants = grants
+            sharing_policy = Policy()
+            sharing_policy.acl = sharing_acl
+            sharing_policy.owner = item_acl.owner
+            bucket_object.set_acl(sharing_policy)
+
+    @staticmethod
+    def get_bucket_creation_date(s3_conn, bucket_name):
+        """Due to limitations in the AWS API, the creation date is missing when fetching a single bucket,
+           so as a workaround we need to fetch all buckets and match the current one to get the creation timestamp.
+           FIXME: Remove this hack if/when we have bucket.creation_date available via s3_conn.get_bucket()
+        """
+        buckets = s3_conn.get_all_buckets() if s3_conn else []
+        matched_bucket = [bucket for bucket in buckets if bucket.name == bucket_name]
+        if matched_bucket:
+            return getattr(matched_bucket[0], 'creation_date', None)
+
+    @staticmethod
+    def get_bucket_owner_name(bucket_acl):
+        if bucket_acl:
+            owner_obj = bucket_acl.owner
+            if owner_obj:
+                return owner_obj.display_name
+
+    @staticmethod
+    def get_versioning_status(bucket):
+        """Returns 'Disabled', 'Enabled', or 'Suspended'"""
+        if bucket:
+            status = bucket.get_versioning_status()
+            return status.get('Versioning', 'Disabled')
+
+    @staticmethod
+    def get_versioning_update_action(versioning_status):
+        """Returns 'enable' if status is Disabled or Suspended, otherwise returns 'disable'"""
+        if versioning_status:
+            return 'enable' if versioning_status in ['Disabled', 'Suspended'] else 'disable'
+
+
+class BucketItemDetailsView(BaseView):
+    """Views for Bucket item (folder/object) details"""
+    VIEW_TEMPLATE = '../templates/buckets/bucket_item_details.pt'
+
+    def __init__(self, request):
+        super(BucketItemDetailsView, self).__init__(request)
+        self.s3_conn = self.get_connection(conn_type='s3')
+        with boto_error_handler(request):
+            self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
+            self.bucket_name = self.bucket.name
+            self.bucket_item = self.get_bucket_item()
+            self.bucket_item_acl = self.bucket_item.get_acl() if self.bucket_item else None
+        if self.bucket_item is None:
+            raise HTTPNotFound()
+        unprefixed_name = BucketContentsView.get_unprefixed_key_name(self.bucket_item.name)
+        self.friendly_name_param = self.request.params.get('friendly_name')
+        self.name_updated = True if self.friendly_name_param and self.friendly_name_param != unprefixed_name else False
+        self.bucket_item_name = self.bucket_item.name
+        self.details_form = BucketItemDetailsForm(
+            request, bucket_object=self.bucket_item, unprefixed_name=unprefixed_name,
+            formdata=self.request.params or None
+        )
+        self.sharing_form = SharingPanelForm(
+            request, bucket_object=self.bucket, sharing_acl=self.bucket_item_acl, formdata=self.request.params or None)
+        self.versioning_form = BucketUpdateVersioningForm(request, formdata=self.request.params or None)
+        self.metadata_form = MetadataForm(request, formdata=self.request.params or None)
+        self.render_dict = dict(
+            sharing_form=self.sharing_form,
+            details_form=self.details_form,
+            versioning_form=self.versioning_form,
+            metadata_form=self.metadata_form,
+            bucket=self.bucket,
+            bucket_name=self.bucket.name,
+            bucket_item=self.bucket_item,
+            last_modified=self.get_last_modified_time(self.bucket_item),
+            key_name=self.bucket_item.name,
+            item_name=unprefixed_name,
+            item_link=self.bucket_item.generate_url(expires_in=BUCKET_ITEM_URL_EXPIRES),
+            item_download_url=BucketContentsView.get_item_download_url(self.bucket_item),
+            cancel_link_url=self.get_cancel_link_url(),
+        )
+
+    @view_config(route_name='bucket_item_details', renderer=VIEW_TEMPLATE)
+    def bucket_item_details(self):
+        return self.render_dict
+
+    @view_config(route_name='bucket_item_update', renderer=VIEW_TEMPLATE, request_method='POST')
+    def bucket_item_update(self):
+        if self.bucket and self.bucket_item and self.details_form.validate():
+            # Set proper redirect location, handling an object name change when applicable
+            location = self.request.route_path(
+                'bucket_item_details',
+                name=self.bucket.name,
+                subpath='{0}/{1}'.format(
+                    DELIMITER.join(self.request.subpath[:-1]),
+                    self.friendly_name_param
+                ) if self.name_updated else self.request.subpath
+            )
+            with boto_error_handler(self.request, location):
+                # Update name
+                self.update_name()
+                # Update ACL
+                self.update_acl()
+                # Update metadata
+                self.update_metadata()
+                msg = '{0} {1}'.format(_(u'Successfully modified'), self.bucket_item.name)
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
+            return HTTPFound(location=location)
+        else:
+            self.request.error_messages = self.details_form.get_errors_list()
+        return self.render_dict
+
+    def get_bucket_item(self):
+        subpath = self.request.subpath
+        item_key_name = DELIMITER.join(subpath)
+        item = self.bucket.get_key(item_key_name)
+        if item is None:  # Folder requires the trailing slash, which request.subpath omits
+            item = self.bucket.get_key('{0}/'.format(item_key_name))
+        return item
+
+    def update_acl(self):
+        share_type = self.request.params.get('share_type')
+        if share_type == 'public':
+            self.bucket.make_public()
+        else:
+            BucketDetailsView.set_sharing_acl(
+                self.request, bucket_object=self.bucket_item, item_acl=self.bucket_item_acl)
+
+    def update_metadata(self):
+        """Update metadata and remove deleted metadata"""
+        # Removed deleted metadata
+        metadata_keys_to_delete_param = self.request.params.get('metadata_keys_to_delete') or '[]'
+        metadata_keys_to_delete = json.loads(metadata_keys_to_delete_param)
+        if metadata_keys_to_delete:
+            for mkey in metadata_keys_to_delete:
+                if self.bucket_item.get_metadata(mkey):
+                    # Delete true metadata
+                    del self.bucket_item.metadata[mkey]
+                else:
+                    # Delete removed header-like "metadata"
+                    # NOTE: The 'Content-Type' header "metadata" cannot be fully removed,
+                    #       as it will be set to 'binary/octet-stream' if removed and/or missing
+                    normalized_mkey = mkey.replace('-', '_').lower()
+                    if getattr(self.bucket_item, normalized_mkey, None):
+                        delattr(self.bucket_item, normalized_mkey)
+        # Update metadata
+        metadata_param = self.request.params.get('metadata') or '{}'
+        metadata = json.loads(metadata_param)
+        metadata_attr_mapping = self.metadata_attribute_mapping()
+        if metadata:
+            for key, val in metadata.items():
+                metadata_attribute = metadata_attr_mapping.get(key.lower())
+                if metadata_attribute:
+                    setattr(self.bucket_item, metadata_attribute, val)
+                else:
+                    self.bucket_item.set_metadata(key, val)
+
+        if metadata or metadata_keys_to_delete:
+            # The only way to update the metadata appears to be to copy the object
+            copied_item = self.bucket_item.copy(
+                self.bucket_name, self.bucket_item_name, metadata=self.bucket_item.metadata, preserve_acl=True)
+            # Delete the old object if we performed a rename
+            if self.name_updated:
+                old_key = self.bucket_item.name
+                self.bucket.delete_key(old_key)
+            self.bucket_item = copied_item
+
+    def update_name(self):
+        friendly_name_param = self.request.params.get('friendly_name')
+        key_name = self.bucket_item.name
+        old_name = BucketContentsView.get_unprefixed_key_name(self.bucket_item.name)
+        if friendly_name_param and friendly_name_param != old_name:
+            new_name = '{0}/{1}'.format(
+                DELIMITER.join(key_name.split(DELIMITER)[:-1]),
+                friendly_name_param
+            )
+            self.bucket_item_name = new_name
+
+    def get_cancel_link_url(self):
+        subpath = '{0}/{1}'.format(self.bucket_name, DELIMITER.join(self.request.subpath[:-1]))
+        return self.request.route_path('bucket_contents', subpath=subpath)
+
+    @staticmethod
+    def get_last_modified_time(bucket_object):
+        """
+        :returns an ISO-8601 formatted timestamp of an object's last-modified date/time
+        :rtype str or None
+        """
+        if bucket_object and bucket_object.last_modified:
+            parsed_time = datetime.strptime(bucket_object.last_modified, '%a, %d %b %Y %H:%M:%S %Z')
+            return '{0}Z'.format(parsed_time.isoformat())
+        return None
+
+    @staticmethod
+    def attribute_metadata_mapping():
+        """
+        Map header "metadata" with their object attribute names
+        :return: dict of attribute/header key/value pairs
+        """
+        return dict(
+            content_disposition='Content-Disposition',
+            content_type='Content-Type',
+            content_language='Content-Language',
+            content_encoding='Content-Encoding',
+            cache_control='Cache-Control',
+        )
+
+    @classmethod
+    def metadata_attribute_mapping(cls):
+        """Converts metadata_attribute_mapping to be based on the header rather than the attribute name"""
+        mapping = {}
+        for key, val in cls.attribute_metadata_mapping().items():
+            mapping[val] = key
+        return mapping
+
+    @classmethod
+    def get_extended_metadata(cls, bucket_item):
+        """Extend object metadata with metadata-like attributes"""
+        metadata = bucket_item.metadata
+        metadata_attr_mapping = cls.attribute_metadata_mapping()
+        for attr in metadata_attr_mapping:
+            if getattr(bucket_item, attr, None):
+                metadata[metadata_attr_mapping[attr]] = getattr(bucket_item, attr)
+        return metadata
+

@@ -296,7 +296,7 @@ class BaseView(object):
         BaseView.log_message(request, message, level='error')
         if request.is_xhr:
             raise JSONError(message=message, status=status or 403)
-        if status == 403:
+        if status == 403 or 'token has expired' in message:  # S3 token expiration responses return a 400 status
             notice = _(u'Your session has timed out. This may be due to inactivity, a policy that does not provide login permissions, or an unexpected error. Please log in again, and contact your cloud administrator if the problem persists.')
             request.session.flash(notice, queue=Notification.WARNING)
             raise HTTPFound(location=request.route_path('login'))

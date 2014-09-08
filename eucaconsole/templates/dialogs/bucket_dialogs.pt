@@ -1,0 +1,56 @@
+<!--! Modal dialogs for buckets on landing and detail page -->
+<div tal:omit-tag="" i18n:domain="eucaconsole">
+    <div id="update-versioning-modal" class="reveal-modal small" data-reveal="">
+        <h3 i18n:translate="">Update versioning</h3>
+        <p>
+            <span i18n:translate="">Are you sure you want to</span>
+            <span tal:condition="bucket" tal:omit-tag="">
+                <span tal:condition="update_versioning_action == 'enable'" tal:omit-tag="" i18n:translate="">
+                    enable
+                </span>
+                <span tal:condition="update_versioning_action != 'enable'" tal:omit-tag="" i18n:translate="">
+                    suspend
+                </span>
+                <span i18n:translate="">versioning for</span>
+                <b>${bucket_name}</b>
+            </span>
+            <span tal:condition="not bucket" tal:omit-tag="">
+                 <span ng-show="updateVersioningAction == 'enable'" i18n:translate="">enable</span>
+                 <span ng-show="updateVersioningAction != 'enable'" i18n:translate="">suspend</span>
+                 <span i18n:translate="">versioning for</span>
+                <b>{{ bucketName }}</b>
+            </span>
+            ?
+        </p>
+        <form action="${request.route_path('bucket_update_versioning', name=bucket.name if bucket else '_name_')}"
+              method="post">
+            ${structure:versioning_form['csrf_token']}
+            <div tal:condition="landingpage" tal:omit-tag="">
+                <input type="hidden" name="name" value="{{ bucketName }}"/>
+                <input type="hidden" name="versioning_action" value="{{ updateVersioningAction }}" />
+            </div>
+            <div tal:condition="not landingpage" tal:omit-tag="">
+                <input type="hidden" name="name" value="${bucket_name}" />
+                <input type="hidden" name="versioning_action" value="${update_versioning_action}" />
+            </div>
+            <input type="hidden" name="source" value="${'landingpage' if landingpage else 'detailpage'}" />
+            <div class="dialog-submit-button">
+                <button type="submit" id="update_versioning_submit_button" class="button expand" i18n:translate="">
+                    <span i18n:translate="">Yes,</span>
+                    <span tal:condition="bucket" tal:omit-tag="">
+                        ${update_versioning_action.capitalize()}
+                    </span>
+                    <span tal:condition="not bucket" tal:omit-tag="">
+                        <span ng-show="updateVersioningAction == 'enable'" i18n:translate="">Enable</span>
+                        <span ng-show="updateVersioningAction != 'enable'" i18n:translate="">Suspend</span>
+                    </span>
+                    <span i18n:translate="">Versioning</span>
+                </button>
+            </div>
+            <div class="dialog-progress-display hide">
+                <span i18n:translate="">Sending request </span>&nbsp;<em><span class="dots">&nbsp;</span></em>
+            </div>
+        </form>
+        <a href="#" id="update_versioning_close_link" class="close-reveal-modal">&#215;</a>
+    </div>
+ </div>
