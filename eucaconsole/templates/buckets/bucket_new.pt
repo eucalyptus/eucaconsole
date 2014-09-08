@@ -15,7 +15,10 @@
             <div class="panel">
                 <form id="create-bucket-form" method="post" data-abide="abide" ng-cloak="">
                     ${structure:create_form['csrf_token']}
-                    ${panel('form_field', field=create_form.bucket_name, leftcol_width=12, rightcol_width=12)}
+                    ${panel('form_field', field=create_form.bucket_name, leftcol_width=12, rightcol_width=12, inline=False)}
+                    <div class="row controls-wrapper">
+                        ${panel('form_field', field=create_form.enable_versioning, reverse=True, checkbox=True)}
+                    </div>
                     ${panel('s3_sharing_panel', sharing_form=sharing_form)}
                     <hr />
                     <div>

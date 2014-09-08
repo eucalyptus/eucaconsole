@@ -77,12 +77,12 @@ def landingpage_filters(context, request, filters_form=None):
 
 @panel_config('form_field', renderer='../templates/panels/form_field_row.pt')
 def form_field_row(context, request, field=None, reverse=False, leftcol_width=4, rightcol_width=8,
-                   inline='', ng_attrs=None, **kwargs):
+                   inline=True, checkbox=False, ng_attrs=None, **kwargs):
     """ Widget for a singe form field row.
         The left/right column widths are Zurb Foundation grid units.
             e.g. leftcol_width=3 would set column for labels with a wrapper of <div class="small-3 columns">...</div>
         Pass any HTML attributes to this widget as keyword arguments.
-            e.g. ${panel('form_field', field=the_field, readonly='readonly')}
+            e.g. ${panel('form_field', field=the_field)}
     """
     html_attrs = {}
     error_msg = kwargs.get('error_msg') or getattr(field, 'error_msg', None) 
@@ -117,7 +117,7 @@ def form_field_row(context, request, field=None, reverse=False, leftcol_width=4,
             html_attrs['ng-{0}'.format(ngkey)] = ngvalue
 
     return dict(
-        field=field, error_msg=error_msg, html_attrs=html_attrs, inline=inline,
+        field=field, error_msg=error_msg, html_attrs=html_attrs, inline=inline, checkbox=checkbox,
         leftcol_width=leftcol_width, rightcol_width=rightcol_width, reverse=reverse
     )
 
