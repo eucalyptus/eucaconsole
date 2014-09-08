@@ -34,6 +34,7 @@ import logging
 
 from boto.exception import BotoServerError
 from boto.ec2.image import Image
+from boto.s3.key import Key
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.view import view_config
 import pylibmc
@@ -85,6 +86,7 @@ class ImageBundlingMixin(BlockDeviceMappingItemView):
                            )
                 tags = json.loads(metadata['tags'])
                 self.conn.create_tags(image_id, tags)
+                self.invalidate_images_cache()
             # cleanup creds
             iam_conn = self.get_connection(conn_type='iam')
             iam_conn.delete_access_key(metadata['access'])
@@ -124,6 +126,25 @@ class ImageBundlingMixin(BlockDeviceMappingItemView):
             fakeimage.block_device_mapping = {}
             fakeimage.tags = json.loads(metadata['tags'])
             return fakeimage
+
+    def cancelBundling(self, instance):
+        bundling_tag = instance.tags.get('ec_bundling') or None
+        if bundling_tag is None:
+            return None
+        bucket, bundle_id = bundling_tag.split('/')
+        self.conn.cancel_bundle_task(bundle_id)
+        # cleanup creds
+        s3_conn = self.get_connection(conn_type='s3')
+        k = Key(s3_conn.get_bucket(bucket))
+        k.key = bundle_id
+        metadata = json.loads(k.get_contents_as_string())
+        iam_conn = self.get_connection(conn_type='iam')
+        iam_conn.delete_access_key(metadata['access'])
+        # cleanup metadata
+        k.delete()
+        self.conn.delete_tags(instance.id, ['ec_bundling'])
+        return None
+
 
 class ImagesView(LandingPageView):
     TEMPLATE = '../templates/images/images.pt'
@@ -194,21 +215,27 @@ class ImagesJsonView(LandingPageView, ImageBundlingMixin):
         for instance in instances:
             image = self.handle_instance_being_bundled(instance)
             if image is not None:
+                image.fake_id = 'p'+instance.id
                 items.append(image)
         # Apply filters, skipping owner_alias since it's leveraged in self.get_items() below
         filtered_items = self.filter_items(items, ignore=['owner_alias', 'platform'])
         if self.request.params.getall('platform'):
             filtered_items = self.filter_by_platform(filtered_items)
         images = []
+        should_invalidate_image_cache = False
         for image in filtered_items:
             platform = ImageView.get_platform(image)
+            transitional = image.state not in ['available', 'failed', 'deleted']
+            if transitional:
+                should_invalidate_image_cache = True
             images.append(dict(
                 architecture=image.architecture,
                 description=image.description,
                 id=image.id,
+                fake_id=getattr(image, 'fake_id', None),
                 name=image.name,
                 state=image.state,
-                transitional=image.state not in ['available', 'failed', 'deleted'],
+                transitional=transitional,
                 progress=0,  # this is valid for transitional images till we get something better
                 location=image.location,
                 tagged_name=TaggedItemView.get_display_name(image, escapebraces=False),
@@ -220,6 +247,8 @@ class ImagesJsonView(LandingPageView, ImageBundlingMixin):
                 root_device_type=image.root_device_type,
                 snapshot_id=ImageView.get_image_snapshot_id(image),
             ))
+        if should_invalidate_image_cache:
+            self.invalidate_images_cache()
         return dict(results=images)
 
     @view_config(route_name='image_json', renderer='json', request_method='GET')
@@ -270,7 +299,7 @@ class ImagesJsonView(LandingPageView, ImageBundlingMixin):
             """Return current image status"""
             image_status = image.state if image else 'deleted'
             return dict(
-                results=dict(image_status=image_status, url=url)
+                results=dict(image_status=image_status, progress=0, url=url)
             )
 
     def get_items(self):
@@ -513,6 +542,18 @@ class ImageView(TaggedItemView, ImageBundlingMixin):
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
                 return HTTPFound(location=location)
         return self.render_dict
+
+    @view_config(route_name='image_cancel', request_method='POST', renderer='json')
+    def image_cancel(self):
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
+        image_param = self.request.matchdict.get('id') or self.request.params.get('image_id')
+        images_param = [image_param]
+        with boto_error_handler(self.request):
+            if image_param.find('pi-') == 0:
+                instances = self.conn.get_only_instances([image_param[1:]])
+                result = self.cancelBundling(instances[0])
+                return dict(message=_(u"Successfully cancelled image creation"), results=result)
 
     @staticmethod
     def get_platform(image):

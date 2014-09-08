@@ -19,7 +19,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.instanceNumber = 1;
         $scope.instanceNames = [];
         $scope.instanceVPC = '';
-        $scope.subnetVPC = '';
+        $scope.subnetVPC = 'None';
         $scope.vpcSubnetList = {};
         $scope.vpcSubnetChoices = {};
         $scope.keyPair = '';
@@ -521,7 +521,8 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 }
             }); 
             if ($scope.subnetVPC == '') {
-                $scope.vpcSubnetChoices[''] = $('#hidden_vpc_subnet_empty_option').text();
+                $scope.vpcSubnetChoices['None'] = $('#hidden_vpc_subnet_empty_option').text();
+                $scope.subnetVPC = 'None';
             }
         };
     })

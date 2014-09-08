@@ -25,6 +25,9 @@
 .items .account-id-icon { color: #333; background-color: #e6e7e8; margin-right: 8px; }
 .items .account-id-icon a { color: white; }
 
+.progress { text-align: left; position: relative; border: none; }
+.progress .meter { background-color: #0683c2; color: black; position: relative; top: -2px; left: -2px; padding: 1px 0 1px 8px; display: inline-block; white-space: nowrap; font-weight: bold; }
+
 /* ----------------------------------------- Extra Element Padding
 ----------------------------------------- */
 .padded-element { padding: 5px 5px; }

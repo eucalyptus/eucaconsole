@@ -28,6 +28,7 @@
 Pyramid views for Eucalyptus Object Store and AWS S3 Buckets
 
 """
+from datetime import datetime
 import mimetypes
 import simplejson as json
 
@@ -116,7 +117,8 @@ class BucketsJsonView(BaseView):
 
     @view_config(route_name='bucket_objects_count_versioning_json', renderer='json')
     def bucket_objects_count_versioning_json(self):
-        bucket = BucketContentsView.get_bucket(self.request, self.s3_conn) if self.s3_conn else []
+        with boto_error_handler(self.request):
+            bucket = BucketContentsView.get_bucket(self.request, self.s3_conn) if self.s3_conn else []
         results = dict(
             object_count=len(tuple(bucket.list())),
             versioning_status=BucketDetailsView.get_versioning_status(bucket),
@@ -260,8 +262,9 @@ class BucketContentsView(LandingPageView):
 class BucketContentsJsonView(BaseView):
     def __init__(self, request):
         super(BucketContentsJsonView, self).__init__(request)
-        self.s3_conn = self.get_connection(conn_type='s3')
-        self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
+        with boto_error_handler(request):
+            self.s3_conn = self.get_connection(conn_type='s3')
+            self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
         self.bucket_name = self.bucket.name
         self.subpath = request.subpath
 
@@ -507,10 +510,12 @@ class BucketItemDetailsView(BaseView):
             bucket=self.bucket,
             bucket_name=self.bucket.name,
             bucket_item=self.bucket_item,
+            last_modified=self.get_last_modified_time(self.bucket_item),
             key_name=self.bucket_item.name,
             item_name=unprefixed_name,
             item_link=self.bucket_item.generate_url(expires_in=BUCKET_ITEM_URL_EXPIRES),
             item_download_url=BucketContentsView.get_item_download_url(self.bucket_item),
+            cancel_link_url=self.get_cancel_link_url(),
         )
 
     @view_config(route_name='bucket_item_details', renderer=VIEW_TEMPLATE)
@@ -609,10 +614,25 @@ class BucketItemDetailsView(BaseView):
             )
             self.bucket_item_name = new_name
 
+    def get_cancel_link_url(self):
+        subpath = '{0}/{1}'.format(self.bucket_name, DELIMITER.join(self.request.subpath[:-1]))
+        return self.request.route_path('bucket_contents', subpath=subpath)
+
+    @staticmethod
+    def get_last_modified_time(bucket_object):
+        """
+        :returns an ISO-8601 formatted timestamp of an object's last-modified date/time
+        :rtype str or None
+        """
+        if bucket_object and bucket_object.last_modified:
+            parsed_time = datetime.strptime(bucket_object.last_modified, '%a, %d %b %Y %H:%M:%S %Z')
+            return '{0}Z'.format(parsed_time.isoformat())
+        return None
+
     @staticmethod
     def attribute_metadata_mapping():
         """
-        Map so-called "metadata" with their object attribute names
+        Map header "metadata" with their object attribute names
         :return: dict of attribute/header key/value pairs
         """
         return dict(

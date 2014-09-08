@@ -51,7 +51,7 @@
                         ${structure:role_form['csrf_token']}
                         <div class="section columns">
                             <div class="row">
-                                <p><span i18n:translate="">Add role to account:</span>&nbsp;${layout.account}</p>
+                                <p><span class="subsection-label" i18n:translate="">Add role to account:</span>&nbsp;${layout.account}</p>
                             </div>
                             ${panel('form_field', field=role_form.role_name, leftcol_width=1, rightcol_width=11, autofocus='', **html_attrs)}
                             <div class="row controls-wrapper">

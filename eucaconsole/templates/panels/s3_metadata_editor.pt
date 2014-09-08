@@ -1,12 +1,12 @@
 
 <!--! S3 Object Metadata panel -->
-<div id="s3-metadata-editor" class="row controls-wrapper" ng-app="S3MetadataEditor" i18n:domain="eucaconsole"
+<div id="s3-metadata-editor" ng-app="S3MetadataEditor" i18n:domain="eucaconsole"
      ng-controller="S3MetadataEditorCtrl"
      ng-init="initMetadata('${metadata_json}', '${metadata_key_create_option_text}', '${metadata_key_no_results_text}')">
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/s3_metadata_editor.css')}" />
     <hr id="s3-metadata-editor-top-hr-tag" />
-    <div class="columns"><h6 i18n:translate="">Metadata</h6></div>
-    <div class="columns field" ng-cloak="">
+    <h6 i18n:translate="">Metadata</h6>
+    <div ng-cloak="">
         <div class="items">
             <span class="label radius secondary metadataentry"
                   ng-repeat="metadata in metadataArray" ng-cloak="cloak">
@@ -19,28 +19,37 @@
                    title="Remove metadata"><i class="fi-x"></i></a>
             </span>
         </div>
-        <div class="row add-label">
-            <div class="columns small-8 right subheader" ng-cloak="">
-                <span class="subsection-label" i18n:translate="" ng-show="metadataArray.length">Add another metadata pair</span>
-                <span class="subsection-label" i18n:translate="" ng-show="metadataArray == 0" >Add a metadata pair</span>:
-            </div>
+        <div ng-cloak="">
+            <span class="subsection-label" i18n:translate="" ng-show="metadataArray.length">Add another metadata pair</span>
+            <span class="subsection-label" i18n:translate="" ng-show="metadataArray == 0" >Add a metadata pair</span>:
         </div>
-        <div class="row metadataentry controls-wrapper">
+        <div>&nbsp;</div>
+        <div class="metadataentry">
             <div>
-                ${panel('form_field', field=metadata_form['metadata_key'], ng_attrs={'model': 'newMetadataKey'})}
-                ${panel('form_field', field=metadata_form['metadata_value'], ng_attrs={'model': 'newMetadataValue'})}
+                ${panel('form_field', field=metadata_form['metadata_key'], leftcol_width=2, rightcol_width=10, ng_attrs={'model': 'newMetadataKey'})}
+            </div>
+            <div ng-show="newMetadataKey != 'Content-Type'">
+                ${panel('form_field', field=metadata_form['metadata_value'], leftcol_width=2, rightcol_width=10, ng_attrs={'model': 'newMetadataValue'})}
+            </div>
+            <div ng-show="newMetadataKey == 'Content-Type'">
+                ${panel('form_field', field=metadata_form['metadata_content_type'], leftcol_width=2, rightcol_width=10, ng_attrs={'model': 'newMetadataContentType'})}
             </div>
             <div>&nbsp;</div>
-            <div>
-                <div class="small-8 columns right">
-                    <a href="#" ng-click="addMetadata($event)"
-                       class="button round tiny" id="add-metadata-btn" ng-disabled="isMetadataNotComplete"
-                       title="Add metadata pair" i18n:translate="">Add Metadata Pair</a>
-                </div>
-            </div>
+            <a href="#" ng-click="addMetadata($event)" class="button round tiny" id="add-metadata-btn"
+               ng-disabled="addMetadataBtnDisabled" title="Add metadata pair" i18n:translate="">
+                Add Metadata Pair
+            </a>
         </div>
         <textarea id="metadata" name="metadata" class="hidden"></textarea>
         <textarea id="metadata-keys-to-delete" name="metadata_keys_to_delete" class="hidden"></textarea>
+    </div>
+    <div id="unsaved-metadata-warning-modal" class="reveal-modal small" data-reveal="">
+        <h3 i18n:translate="">Warning: Unsaved Metadata Entry</h3>
+        <p i18n:translate="">
+            You must click the "Add Metadata Pair" button in the Metadata section
+            before you submit this for your entry to be included.
+        </p>
+        <a href="#" class="close-reveal-modal">&#215;</a>
     </div>
     <script src="${request.static_path('eucaconsole:static/js/widgets/s3_metadata_editor.js')}"></script>
 </div>

@@ -61,20 +61,19 @@ class BucketItemDetailsForm(BaseSecureForm):
 
     def get_friendly_name_pattern(self):
         """Get the friendly name patter to prevent file extension modification"""
+        no_slashes_pattern = '[^\/]+'
         if '.' in self.unprefixed_name:
             suffix = self.unprefixed_name.split('.')[-1]
-            ends_with_regex = '.+\.{0}$'.format(suffix)
-            return ends_with_regex
-        return '.+'
-
-
-class BucketDeleteForm(BaseSecureForm):
-    """Delete form"""
-    pass
+            return '^{0}\.{1}$'.format(no_slashes_pattern, suffix)
+        return '^{0}$'.format(no_slashes_pattern)
 
 
 class BucketUpdateVersioningForm(BaseSecureForm):
     """Update versioning info form"""
+    pass
+
+class BucketDeleteForm(BaseSecureForm):
+    """Delete form"""
     pass
 
 
@@ -103,6 +102,7 @@ class SharingPanelForm(BaseSecureForm):
     @staticmethod
     def get_permission_choices():
         return (
+            ('FULL_CONTROL', _('Full Control')),
             ('READ', _('Read-only')),
             ('WRITE', _('Read-Write')),
             ('READ_ACP', _('Read sharing permissions')),
@@ -114,12 +114,14 @@ class MetadataForm(BaseSecureForm):
     """Form for S3 object metadata"""
     metadata_key = wtforms.SelectField(label=_(u'Key'))
     metadata_value = TextEscapedField(label=_(u'Value'))
+    metadata_content_type = wtforms.SelectField(label=_(u'Value'))
 
     def __init__(self, request, **kwargs):
         super(MetadataForm, self).__init__(request, **kwargs)
         self.request = request
         # Set choices
         self.metadata_key.choices = self.get_metadata_key_choices()
+        self.metadata_content_type.choices = self.get_content_type_choices()
 
     def get_metadata_key_choices(self):
         choices = [
@@ -128,7 +130,6 @@ class MetadataForm(BaseSecureForm):
             ('Content-Disposition', _('Content-Disposition')),
             ('Content-Type', _('Content-Type')),
             ('Content-Language', _('Content-Language')),
-            ('Expires', _('Expires')),
             ('Content-Encoding', _('Content-Encoding')),
         ]
         if self.request.session.get('cloud_type') == 'aws':
@@ -136,5 +137,28 @@ class MetadataForm(BaseSecureForm):
                 ('Website-Redirect-Location', _('Website-Redirect-Location')),
                 ('x-amz-meta', _('x-amz-meta')),
             ])
+        return choices
+
+    @staticmethod
+    def get_content_type_choices():
+        """Note that this is by no means a comprehensive list.
+           We're simply mirroring the choices in the AWS Mgmt Console (as of mid-2014)"""
+        content_types = [
+            'image/jpeg',
+            'image/png',
+            'image/gif',
+            'image/bmp',
+            'image/tiff',
+            'text/plain',
+            'text/rtf',
+            'application/msword',
+            'application/zip',
+            'audio/mpeg',
+            'application/pdf',
+            'application/x-gzip',
+            'application/x-compressed',
+        ]
+        choices = [BLANK_CHOICE]
+        choices.extend([(ct, ct) for ct in content_types])
         return choices
 

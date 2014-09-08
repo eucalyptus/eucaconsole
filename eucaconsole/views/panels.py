@@ -259,7 +259,7 @@ def bdmapping_editor(context, request, image=None, launch_config=None, snapshot_
                 size=getattr(ebs, 'volume_size', None),
                 delete_on_termination=True,
             )
-    bdm_json = json.dumps(bdm_dict)
+    bdm_json = BaseView.escape_json(json.dumps(bdm_dict))
     return dict(image=image, snapshot_choices=snapshot_choices, bdm_json=bdm_json, read_only=read_only)
 
 
@@ -305,11 +305,12 @@ def policy_generator(context, request, policy_actions=None, create_form=None, re
 
 
 @panel_config('quotas_panel', renderer='../templates/users/quotas.pt')
-def quotas_panel(context, request, quota_form=None, quota_err=None):
+def quotas_panel(context, request, quota_form=None, quota_err=None, in_user=True):
     """quota form for 2 different user pages."""
     return dict(
         quota_form=quota_form,
         quota_err=quota_err,
+        in_user=in_user,
     )
 
 

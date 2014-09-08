@@ -54,7 +54,7 @@
                         <span i18n:translate="">Object</span>
                     </h6>
                     <div>
-                        ${panel('form_field', field=details_form.friendly_name, pattern=details_form.friendly_name_pattern)}
+                        ${panel('form_field', field=details_form.friendly_name, pattern=details_form.friendly_name_pattern, ng_attrs={'model': 'objectName'})}
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="bucket_item.version_id">
                         <div class="small-4 columns"><label i18n:translate="">Version</label></div>
@@ -63,7 +63,7 @@
                     <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Last modified</label></div>
                         <div class="small-8 columns value" ng-cloak="">
-                            {{'${bucket_item.last_modified}' | date:'${layout.angular_date_format}'}}
+                            {{'${last_modified}' | date:'${layout.angular_date_format}'}}
                         </div>
                     </div>
                     <div class="row controls-wrapper readonly">
@@ -73,7 +73,7 @@
                     <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Link</label></div>
                         <div class="small-8 columns value">
-                            <a href="${item_link}">${item_link.split('?')[0]}</a>
+                            <a href="${item_link}" class="breakword">${item_link.split('?')[0]}</a>
                         </div>
                     </div>
                     ${panel('s3_metadata_editor', bucket_object=bucket_item, metadata_form=metadata_form)}
@@ -81,10 +81,10 @@
                     <hr />
                     <div>
                         <button type="submit" id="save_changes_volume_submit_button" class="button"
-                                ng-disabled="isNotChanged">
+                                ng-disabled="!hasChangesToBeSaved">
                             <span i18n:translate="">Save Changes</span>
                         </button>
-                        <a href="${request.route_path('buckets')}" id="bucket-details-cancel-link"
+                        <a href="${cancel_link_url}" id="bucket-details-cancel-link"
                            class="cancel-link" i18n:translate="">Cancel</a>
                     </div>
                 </form>

@@ -20,6 +20,33 @@ angular.module('AccountPage', ['PolicyList', 'Quotas'])
                 $scope.isNotChanged = false;
                 $scope.$apply();
             });
+            // Leave button is clicked on the warning unsaved changes modal
+            $(document).on('click', '#unsaved-changes-warning-modal-stay-button', function () {
+                $('#unsaved-changes-warning-modal').foundation('reveal', 'close');
+            });
+            // Stay button is clicked on the warning unsaved changes modal
+            $(document).on('click', '#unsaved-changes-warning-modal-leave-link', function () {
+                $scope.unsavedChangesWarningModalLeaveCallback();
+            });
+            // Turn "isSubmiited" flag to true when a submit button is clicked on the page
+            $('form[id!="euca-logout-form"]').on('submit', function () {
+                $scope.isSubmitted = true;
+            });
+            // Conditions to check before navigate away
+            window.onbeforeunload = function(event) {
+                if ($scope.isSubmitted === true) {
+                   // The action is "submit". OK to proceed
+                   return;
+                }else if ($scope.isNotChanged === false) {
+                    // Warn the user about the unsaved changes
+                    return $('#warning-message-unsaved-changes').text();
+                }
+                return;
+            };
+            // Do not perfom the unsaved changes check if the cancel link is clicked
+            $(document).on('click', '.cancel-link', function(event) {
+                window.onbeforeunload = null;
+            });
         };
         $scope.setFocus = function () {
             $(document).on('ready', function(){
@@ -71,6 +98,15 @@ angular.module('AccountPage', ['PolicyList', 'Quotas'])
                 return;
             } 
             $scope.toggleTab(tab);
+        };
+        $scope.openModalById = function (modalID) {
+            var modal = $('#' + modalID);
+            modal.foundation('reveal', 'open');
+            modal.find('h3').click();  // Workaround for dropdown menu not closing
+            // Clear the pending modal ID if opened
+            if ($scope.pendingModalID === modalID) {
+                $scope.pendingModalID = '';
+            }
         };
     })
 ;

@@ -29,6 +29,7 @@ angular.module('S3SharingPanel', [])
                 $('input[name="share_type"]').on('change', function() {
                     $scope.$apply(function () {
                         $scope.shareType = $('input[name="share_type"]:checked').val();
+                        $scope.$emit('s3:sharingPanelAclUpdated');
                     });
                 });
             });
