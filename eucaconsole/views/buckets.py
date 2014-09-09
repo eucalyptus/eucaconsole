@@ -32,6 +32,7 @@ from datetime import datetime
 import mimetypes
 import simplejson as json
 
+from boto.exception import StorageCreateError
 from boto.s3.acl import ACL, Grant, Policy
 from boto.s3.prefix import Prefix
 
@@ -632,12 +633,17 @@ class CreateBucketView(BaseView):
             enable_versioning = self.request.params.get('enable_versioning') == 'y'
             location = self.request.route_path('bucket_details', name=bucket_name)
             with boto_error_handler(self.request):
-                new_bucket = self.s3_conn.create_bucket(bucket_name)
-                self.set_acl(new_bucket)
-                if enable_versioning:
-                    new_bucket.configure_versioning(True)
-                msg = '{0} {1}'.format(_(u'Successfully created'), bucket_name)
-                self.request.session.flash(msg, queue=Notification.SUCCESS)
+                try:
+                    new_bucket = self.s3_conn.create_bucket(bucket_name)
+                    self.set_acl(new_bucket)
+                    if enable_versioning:
+                        new_bucket.configure_versioning(True)
+                    msg = '{0} {1}'.format(_(u'Successfully created'), bucket_name)
+                    self.request.session.flash(msg, queue=Notification.SUCCESS)
+                except StorageCreateError as err:
+                    # Handle bucket name conflict
+                    self.request.error_messages = [err.message]
+                    return self.render_dict
             return HTTPFound(location=location)
         else:
             self.request.error_messages = self.create_form.get_errors_list()
