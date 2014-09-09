@@ -269,7 +269,7 @@ class EucaAuthenticator(object):
 
 class AWSAuthenticator(object):
 
-    def __init__(self, package, validate_certs=False):
+    def __init__(self, package, validate_certs=False, **validate_kwargs):
         """
         Configure connection to AWS STS service
 
@@ -281,6 +281,7 @@ class AWSAuthenticator(object):
         self.port = 443
         self.package = package
         self.validate_certs = validate_certs
+        self.kwargs = validate_kwargs
 
     def authenticate(self, timeout=20):
         """ Make authentication request to AWS STS service

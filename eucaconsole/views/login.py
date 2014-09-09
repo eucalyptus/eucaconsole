@@ -172,8 +172,13 @@ class LoginView(BaseView):
             package = self.request.params.get('package')
             package = base64.decodestring(package)
             aws_region = self.request.params.get('aws-region')
+            validate_certs = asbool(self.request.registry.settings.get('connection.ssl.validation', False))
+            conn = AWSAuthConnection(None)
+            ca_certs_file = conn.ca_certificates_file
+            conn = None
+            ca_certs_file = self.request.registry.settings.get('connection.ssl.certfile', ca_certs_file)
+            auth = AWSAuthenticator(package=package, validate_certs=validate_certs, ca_certs=ca_certs_file)
             try:
-                auth = AWSAuthenticator(package=package)
                 creds = auth.authenticate(timeout=10)
                 default_region = self.request.registry.settings.get('aws.default.region', 'us-east-1')
                 # self.invalidate_connection_cache()
