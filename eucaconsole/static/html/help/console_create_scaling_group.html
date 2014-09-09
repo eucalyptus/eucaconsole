@@ -106,7 +106,7 @@
         <div class="body taskbody"><p class="shortdesc">In this section, you can specify availability zones and health checks for the
             instances that run in your auto scaling group. </p>
 
-            <ol class="ol steps"><li class="li step">
+            <ol class="ol steps"><li class="li step stepexpand">
                     <span class="ph cmd">Select the type of health check for your auto scaling group from the
                             <span class="ph uicontrol">Type</span> drop-down list box. The auto scaling health
                         check uses EC2 instance status checks to determine the health state of each
@@ -114,18 +114,18 @@
                         load balancer, auto scaling will use both EC2 instance status checks and
                         load balancing instance health checks.</span>
                 </li>
-<li class="li step">
+<li class="li step stepexpand">
                     <span class="ph cmd">Type the amount of grace period, in seconds, into the <span class="ph uicontrol">Grace
                             period</span> text box. This is the amount of time after a new
                         instance is launched in your auto scaling group before health checks start
                         for the instance. </span>
                 </li>
-<li class="li step">
+<li class="li step stepexpand">
                     <span class="ph cmd">Select one or more availability zones for your new scaling group from the
                             <span class="ph uicontrol">Availability zones</span> drop-down list box.</span>
-                     You can remove a selected availability zone by clicking on the
+                    <div class="itemgroup info">You can remove a selected availability zone by clicking on the
                             <span class="ph uicontrol">x</span> next to the availability zone's name in the
-                            <span class="ph uicontrol">Availability Zones</span> field.
+                            <span class="ph uicontrol">Availability Zones</span> field.</div>
                 </li>
 </ol>
 
