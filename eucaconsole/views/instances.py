@@ -945,42 +945,36 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
                     self.iam_conn.add_role_to_instance_profile(profile_name, role)
                 self.log_request(_(u"Running instance(s) (num={0}, image={1}, type={2})").format(
                     num_instances, image_id, instance_type))
+                # Create base params for run_instances()
+                params = dict(
+                    min_count=num_instances,
+                    max_count=num_instances,
+                    key_name=key_name,
+                    user_data=self.get_user_data(),
+                    addressing_type=addressing_type,
+                    instance_type=instance_type,
+                    kernel_id=kernel_id,
+                    ramdisk_id=ramdisk_id,
+                    monitoring_enabled=monitoring_enabled,
+                    block_device_map=block_device_map,
+                    instance_profile_arn=instance_profile.arn if instance_profile else None,
+                )
                 if vpc_network is not None:
                     network_interface = NetworkInterfaceSpecification(subnet_id=vpc_subnet,
                         groups=securitygroup_ids,associate_public_ip_address=associate_public_ip_address)
                     network_interfaces = NetworkInterfaceCollection(network_interface)
-                    reservation = self.conn.run_instances(
-                        image_id,
-                        min_count=num_instances,
-                        max_count=num_instances,
-                        key_name=key_name,
-                        user_data=self.get_user_data(),
-                        addressing_type=addressing_type,
-                        instance_type=instance_type,
-                        kernel_id=kernel_id,
-                        ramdisk_id=ramdisk_id,
-                        monitoring_enabled=monitoring_enabled,
-                        block_device_map=block_device_map,
-                        instance_profile_arn=instance_profile.arn if instance_profile else None,
+                    # Specify VPC setting for the instances
+                    params.update(dict(
                         network_interfaces=network_interfaces,
-                    )
+                    ))
+                    reservation = self.conn.run_instances(image_id, **params)
                 else:
-                    reservation = self.conn.run_instances(
-                        image_id,
-                        min_count=num_instances,
-                        max_count=num_instances,
-                        key_name=key_name,
-                        user_data=self.get_user_data(),
-                        addressing_type=addressing_type,
-                        instance_type=instance_type,
+                    # Use the EC2-Classic setting
+                    params.update(dict(
                         placement=availability_zone,
                         security_group_ids=securitygroup_ids,
-                        kernel_id=kernel_id,
-                        ramdisk_id=ramdisk_id,
-                        monitoring_enabled=monitoring_enabled,
-                        block_device_map=block_device_map,
-                        instance_profile_arn=instance_profile.arn if instance_profile else None,
-                    )
+                    ))
+                    reservation = self.conn.run_instances(image_id, **params)
 
                 for idx, instance in enumerate(reservation.instances):
                     # Add tags for newly launched instance(s)
@@ -1056,6 +1050,10 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
             self.request, image=self.image, instance=self.instance,
             conn=self.conn, formdata=self.request.params or None)
         self.role = None
+        self.associate_public_ip_address = 'Disabled'
+        if self.instance.interfaces:
+            if self.instance.interfaces[0] and hasattr(self.instance.interfaces[0], 'association'):
+                self.associate_public_ip_address = 'Enabled'
         if self.instance.instance_profile:
             arn = self.instance.instance_profile['arn']
             profile_name = arn[(arn.index('/')+1):]
@@ -1065,6 +1063,7 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
             image=self.image,
             instance=self.instance,
             instance_name=self.instance_name,
+            associate_public_ip_address=self.associate_public_ip_address,
             launch_more_form=self.launch_more_form,
             snapshot_choices=self.get_snapshot_choices(),
             role=self.role,
@@ -1082,9 +1081,15 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
             source_instance_tags = self.instance.tags
             key_name = self.instance.key_name
             num_instances = int(self.request.params.get('number', 1))
-            security_groups = [group.name for group in self.instance.groups]
+            security_groups = [group.id for group in self.instance.groups]
             instance_type = self.instance.instance_type
             availability_zone = self.instance.placement
+            vpc_network = self.instance.vpc_id or None
+            vpc_subnet = self.instance.subnet_id or None
+            if self.associate_public_ip_address == 'Enabled':
+                associate_public_ip_address = True
+            else:
+                associate_public_ip_address = False
             kernel_id = self.request.params.get('kernel_id') or None
             ramdisk_id = self.request.params.get('ramdisk_id') or None
             monitoring_enabled = self.request.params.get('monitoring_enabled') == 'y'
@@ -1101,22 +1106,37 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
                     self.iam_conn.add_role_to_instance_profile(profile_name, self.role)
                 self.log_request(_(u"Running instance(s) (num={0}, image={1}, type={2})").format(
                     num_instances, image_id, instance_type))
-                reservation = self.conn.run_instances(
-                    image_id,
+                # Create base params for run_instances()
+                params = dict(
                     min_count=num_instances,
                     max_count=num_instances,
                     key_name=key_name,
                     user_data=self.get_user_data(),
                     addressing_type=addressing_type,
                     instance_type=instance_type,
-                    placement=availability_zone,
                     kernel_id=kernel_id,
                     ramdisk_id=ramdisk_id,
                     monitoring_enabled=monitoring_enabled,
                     block_device_map=block_device_map,
-                    security_group_ids=security_groups,
-                    instance_profile_arn=instance_profile.arn if instance_profile else None
+                    instance_profile_arn=instance_profile.arn if instance_profile else None,
                 )
+                if vpc_network is not None:
+                    network_interface = NetworkInterfaceSpecification(subnet_id=vpc_subnet,
+                        groups=security_groups,associate_public_ip_address=associate_public_ip_address)
+                    network_interfaces = NetworkInterfaceCollection(network_interface)
+                    # Use the EC2-VPC setting
+                    params.update(dict(
+                        network_interfaces=network_interfaces,
+                    ))
+                    reservation = self.conn.run_instances(image_id, **params)
+                else:
+                    # Use the EC2-Classic setting
+                    params.update(dict(
+                        placement=availability_zone,
+                        security_group_ids=security_groups,
+                    ))
+                    reservation = self.conn.run_instances(image_id, **params)
+
                 for idx, instance in enumerate(reservation.instances):
                     # Add tags for newly launched instance(s)
                     # Try adding name tag (from collection of name input fields)
@@ -1249,6 +1269,7 @@ class InstanceCreateImageView(BaseInstanceView, BlockDeviceMappingItemView):
                     tags = json.loads(tags_json)
                     self.ec2_conn.create_tags(image_id, tags)
                     msg = _(u'Successfully sent create image request.  It may take a few minutes to create the image.')
+                    self.invalidate_images_cache()
                     self.request.session.flash(msg, queue=Notification.SUCCESS)
                     return HTTPFound(location=self.request.route_path('image_view', id=image_id))
         else:

@@ -64,8 +64,9 @@ from ..models.auth import ConnectionManager
 def escape_braces(event):
     """Escape double curly braces in template variables to prevent AngularJS expression injections"""
     for k, v in event.rendering_val.items():
-        if type(v) in [str, unicode] or isinstance(v, Markup) or isinstance(v, TranslationString):
-            event.rendering_val[k] = BaseView.escape_braces(v)
+        if not k.endswith('_json'):
+            if type(v) in [str, unicode] or isinstance(v, Markup) or isinstance(v, TranslationString):
+                event.rendering_val[k] = BaseView.escape_braces(v)
 
 
 class JSONResponse(Response):
@@ -295,7 +296,7 @@ class BaseView(object):
         BaseView.log_message(request, message, level='error')
         if request.is_xhr:
             raise JSONError(message=message, status=status or 403)
-        if status == 403:
+        if status == 403 or 'token has expired' in message:  # S3 token expiration responses return a 400 status
             notice = _(u'Your session has timed out. This may be due to inactivity, a policy that does not provide login permissions, or an unexpected error. Please log in again, and contact your cloud administrator if the problem persists.')
             request.session.flash(notice, queue=Notification.WARNING)
             raise HTTPFound(location=request.route_path('login'))

@@ -34,12 +34,27 @@ from operator import itemgetter
 
 import simplejson as json
 
+from boto.s3.bucket import Bucket
+
 from wtforms.fields import IntegerField
 from wtforms.validators import Length
 from pyramid_layout.panel import panel_config
 
 from ..constants.securitygroups import RULE_PROTOCOL_CHOICES, RULE_ICMP_CHOICES
+from ..i18n import _
 from ..views import BaseView
+from ..views.buckets import DELIMITER, BucketItemDetailsView
+
+
+def get_object_type(bucket_object):
+    """
+    Detect object type
+    :return: object type (one of 'bucket', 'folder', 'object')
+    """
+    object_type = 'bucket' if isinstance(bucket_object, Bucket) else 'object'
+    if object_type == 'object' and bucket_object.size == 0 and DELIMITER in bucket_object.name:
+        object_type = 'folder'
+    return object_type
 
 
 @panel_config('top_nav', renderer='../templates/panels/top_nav.pt')
@@ -244,7 +259,7 @@ def bdmapping_editor(context, request, image=None, launch_config=None, snapshot_
                 size=getattr(ebs, 'volume_size', None),
                 delete_on_termination=True,
             )
-    bdm_json = json.dumps(bdm_dict)
+    bdm_json = BaseView.escape_json(json.dumps(bdm_dict))
     return dict(image=image, snapshot_choices=snapshot_choices, bdm_json=bdm_json, read_only=read_only)
 
 
@@ -290,11 +305,12 @@ def policy_generator(context, request, policy_actions=None, create_form=None, re
 
 
 @panel_config('quotas_panel', renderer='../templates/users/quotas.pt')
-def quotas_panel(context, request, quota_form=None, quota_err=None):
+def quotas_panel(context, request, quota_form=None, quota_err=None, in_user=True):
     """quota form for 2 different user pages."""
     return dict(
         quota_form=quota_form,
         quota_err=quota_err,
+        in_user=in_user,
     )
 
 
@@ -310,3 +326,37 @@ def securitygroup_rules_egress_landingpage(context, request, tile_view=False):
     return dict(
         tile_view=tile_view,
     )
+
+
+@panel_config('s3_sharing_panel', renderer='../templates/panels/s3_sharing_panel.pt')
+def s3_sharing_panel(context, request, bucket_object=None, sharing_form=None):
+    grants_list = []
+    if bucket_object is not None:
+        for grant in bucket_object.get_acl().acl.grants:
+            grants_list.append(dict(
+                id=grant.id,
+                display_name=grant.display_name,
+                permission=grant.permission,
+                grant_type=grant.type,
+                uri=grant.uri,
+            ))
+    return dict(
+        bucket_object=bucket_object,
+        object_type=get_object_type(bucket_object),
+        sharing_form=sharing_form,
+        grants_json=json.dumps(grants_list),
+    )
+
+
+@panel_config('s3_metadata_editor', renderer='../templates/panels/s3_metadata_editor.pt')
+def s3_metadata_editor(context, request, bucket_object=None, metadata_form=None):
+    """ S3 object metadata editor panel"""
+    metadata = BucketItemDetailsView.get_extended_metadata(bucket_object)
+    metadata_json = BaseView.escape_json(json.dumps(metadata))
+    return dict(
+        metadata_json=metadata_json,
+        metadata_form=metadata_form,
+        metadata_key_create_option_text=_(u'Add Metadata'),
+        metadata_key_no_results_text=_(u'Click below to add the new key'),
+    )
+

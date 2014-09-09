@@ -157,7 +157,7 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize'])
             }).error(function (oData, status) {
                 var errorMsg = oData['message'] || null;
                 if (errorMsg) {
-                    if (status === 403) {
+                    if (status === 403 || status === 400) {  // S3 token expiration responses return a 400
                         $('#timed-out-modal').foundation('reveal', 'open');
                     } else {
                         Notify.failure(errorMsg);

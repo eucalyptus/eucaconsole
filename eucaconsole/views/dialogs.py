@@ -32,6 +32,7 @@ See http://docs.pylonsproject.org/projects/pyramid_layout/en/latest/layouts.html
 from pyramid_layout.panel import panel_config
 
 from ..views import BaseView
+from ..views.buckets import BucketDetailsView
 
 
 @panel_config('ipaddress_dialogs', renderer='../templates/dialogs/ipaddress_dialogs.pt')
@@ -222,6 +223,7 @@ def role_dialogs(context, request, role=None, landingpage=False, delete_form=Non
         delete_form=delete_form,
     )
 
+
 @panel_config('image_dialogs', renderer='../templates/dialogs/image_dialogs.pt')
 def image_dialogs(context, request, image=None, image_name_id='', landingpage=False,
                   deregister_form=None, snapshot_images_registered=0):
@@ -233,3 +235,22 @@ def image_dialogs(context, request, image=None, image_name_id='', landingpage=Fa
         deregister_form=deregister_form,
         snapshot_images_registered=snapshot_images_registered,
     )
+
+
+@panel_config('bucket_dialogs', renderer='../templates/dialogs/bucket_dialogs.pt')
+def bucket_dialogs(context, request, bucket=None, landingpage=False, versioning_form=None):
+    """ Modal dialogs for Bucket landing and detail page."""
+    versioning_status = bucket.get_versioning_status() if bucket else None
+    update_versioning_action = ''
+    if versioning_status:
+        versioning_status = versioning_status.get('Versioning', 'Disabled')
+        update_versioning_action = BucketDetailsView.get_versioning_update_action(versioning_status)
+    return dict(
+        bucket=bucket,
+        bucket_name=bucket.name if bucket else '',
+        versioning_status=versioning_status,
+        landingpage=landingpage,
+        versioning_form=versioning_form,
+        update_versioning_action=update_versioning_action,
+    )
+

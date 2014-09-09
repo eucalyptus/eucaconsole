@@ -173,7 +173,9 @@ class LaunchInstanceForm(BaseSecureForm):
             self.zone.data = self.zone.choices[1][0]
         # Set the defailt option to be the first choice
         if len(self.securitygroup.choices) > 1:
-            self.securitygroup.data = [value for value, label in self.securitygroup.choices]
+            self.securitygroup.data = self.securitygroup.choices[0][0]
+        if len(self.vpc_subnet.choices) > 1:
+            self.vpc_subnet.data = self.vpc_subnet.choices[0][0]
 
     def set_error_messages(self):
         self.number.error_msg = self.number_error_msg
