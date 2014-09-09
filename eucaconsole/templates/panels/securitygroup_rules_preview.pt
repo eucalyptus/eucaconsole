@@ -61,7 +61,8 @@
                         <i class="fi-minus" ng-show="isRuleExpanded[groupID]"></i>
                     </a>
                     <span class="rule-description-label">
-                        <i class="fi-alert"></i>
+                        <i class="fi-alert" data-tooltip="" i18n:attributes="title"
+                           title="Warning: No rules defined for security group"></i>
                         <span i18n:translate="">Rules for </span>
                         {{ securityGroupChoices[groupID] }}
                     </span>

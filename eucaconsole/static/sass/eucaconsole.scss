@@ -121,12 +121,12 @@ body {
     position: relative;
     color: #333;
     min-height: 100%;
-    font-family: Lato, Helvetica, Arial, sans-serif;
+    font-family: $euca-text-font-family;
     overflow-y: scroll;
 }
 
 h1, h2, h3, h4, h5, h6 {
-    font-family: Oswald, Helvetica, Arial, sans-serif;
+    font-family: $euca-header-font-family;
     letter-spacing: 1px;
     color: $euca-darkblue;
 }

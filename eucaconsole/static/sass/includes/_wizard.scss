@@ -103,6 +103,23 @@ $wizard-tab-padding: 8px 1rem;
             }
         }
     }
+    // Alert icon for missing security group rules
+    .fi-alert {
+        color: darkred;
+    }
+    // Style placeholder in multi-chosen widget to look like a standard select drop-down choice
+    .chosen-container-multi {
+        .chosen-choices {
+            li.search-field {
+                input.default {
+                    color: #333;
+                    font-size: 14px;
+                    font-family: $euca-text-font-family;
+                    margin-left: 3px;
+                }
+            }
+        }
+    }
 }
 
 .summary {
