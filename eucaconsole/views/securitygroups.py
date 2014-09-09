@@ -46,11 +46,13 @@ class SecurityGroupsView(LandingPageView):
     def __init__(self, request):
         super(SecurityGroupsView, self).__init__(request)
         self.conn = self.get_connection()
+        self.vpc_conn = self.get_connection(conn_type='vpc')
         self.initial_sort_key = 'name'
         self.prefix = '/securitygroups'
         self.json_items_endpoint = self.get_json_endpoint('securitygroups_json')
         self.delete_form = SecurityGroupDeleteForm(self.request, formdata=self.request.params or None)
-        self.filters_form = SecurityGroupsFiltersForm(self.request, formdata=self.request.params or None)
+        self.filters_form = SecurityGroupsFiltersForm(
+            self.request, vpc_conn=self.vpc_conn, formdata=self.request.params or None)
         self.render_dict = dict(
             prefix=self.prefix,
             delete_form=self.delete_form,
@@ -60,7 +62,7 @@ class SecurityGroupsView(LandingPageView):
     @view_config(route_name='securitygroups', renderer=TEMPLATE)
     def securitygroups_landing(self):
         # filter_keys are passed to client-side filtering in search box
-        self.filter_keys = ['name', 'description', 'tags']
+        self.filter_keys = ['name', 'description', 'vpc_id', 'tags']
         # sort_keys are passed to sorting drop-down
         self.sort_keys = [
             dict(key='name', name=_(u'Name: A to Z')),
