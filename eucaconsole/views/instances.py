@@ -146,7 +146,7 @@ class InstancesView(LandingPageView, BaseInstanceView):
     def instances_landing(self):
         filter_keys = [
             'id', 'name', 'image_id', 'instance_type', 'ip_address', 'key_name', 'placement',
-            'root_device', 'security_groups_string', 'state', 'tags', 'roles']
+            'root_device', 'security_groups_string', 'state', 'tags', 'roles', 'vpc_id']
         # filter_keys are passed to client-side filtering in search box
         self.filter_keys = filter_keys
         # sort_keys are passed to sorting drop-down
@@ -161,9 +161,10 @@ class InstancesView(LandingPageView, BaseInstanceView):
         ]
         autoscale_conn = self.get_connection(conn_type='autoscale')
         iam_conn = self.get_connection(conn_type='iam')
+        vpc_conn = self.get_connection(conn_type='vpc')
         filters_form = InstancesFiltersForm(
             self.request, ec2_conn=self.conn, autoscale_conn=autoscale_conn,
-            iam_conn=iam_conn,
+            iam_conn=iam_conn, vpc_conn=vpc_conn,
             cloud_type=self.cloud_type, formdata=self.request.params or None)
         self.render_dict.update(dict(
             filter_fields=True,

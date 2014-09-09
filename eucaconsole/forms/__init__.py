@@ -398,9 +398,11 @@ class ChoicesManager(object):
 
     ### VPC connection type choices
     ##
-    def vpc_networks(self, vpc_networks=None, escapebraces=True):
+    def vpc_networks(self, vpc_networks=None, add_blank=True,  escapebraces=True):
         from ..views import TaggedItemView
-        choices = [('', _(u'No VPC'))]
+        choices = []
+        if add_blank:
+            choices = [('', _(u'No VPC'))]
         vpc_network_list = vpc_networks or []
         if not vpc_network_list and self.conn is not None:
             vpc_network_list = self.conn.get_all_vpcs()
