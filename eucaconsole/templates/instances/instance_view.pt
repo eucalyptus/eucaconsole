@@ -146,8 +146,16 @@
                         <div class="small-4 columns"><label i18n:translate="">Availability zone</label></div>
                         <div class="small-8 columns value">${instance.placement}</div>
                     </div>
+                    <div class="row controls-wrapper readonly">
+                        <div class="small-4 columns"><label i18n:translate="">VPC network</label></div>
+                        <div class="small-8 columns value">${instance.vpc_name}</div>
+                    </div>
+                    <div class="row controls-wrapper readonly">
+                        <div class="small-4 columns"><label i18n:translate="">VPC subnet</label></div>
+                        <div class="small-8 columns value">${instance.subnet_id}</div>
+                    </div>
                     <div class="row controls-wrapper readonly" ng-show="instancePublicIP != null">
-                        <div class="small-4 columns"><label i18n:translate="">IP address</label></div>
+                        <div class="small-4 columns"><label i18n:translate="">Public IP address</label></div>
                         <div class="small-8 columns value" ng-cloak="">{{ instancePublicIP }}</div>
                     </div>
                     <div class="row controls-wrapper readonly" ng-show="PublicDNS != ''">

@@ -178,7 +178,7 @@ class ChoicesManager(object):
                     choices.append((value, label))
         return choices
 
-    def security_groups(self, securitygroups=None, add_blank=True, escapebraces=True):
+    def security_groups(self, securitygroups=None, use_id=False, add_blank=True, escapebraces=True):
         choices = []
         if add_blank:
             choices.append(BLANK_CHOICE)
@@ -189,7 +189,10 @@ class ChoicesManager(object):
             sg_name = sgroup.name
             if escapebraces:
                 sg_name = self.BaseView.escape_braces(sg_name)
-            choices.append((sg_name, sg_name))
+            if use_id:
+                choices.append((sgroup.id, sg_name))
+            else:
+                choices.append((sg_name, sg_name))
         if not security_groups:
             choices.append(('default', 'default'))
         return sorted(set(choices))
@@ -363,6 +366,20 @@ class ChoicesManager(object):
             choices.append((rname, rname))
         return sorted(set(choices))
 
+    def accounts(self, add_blank=True, escapebraces=True):
+        choices = []
+        if add_blank:
+            choices.append(BLANK_CHOICE)
+        account_list = []
+        if self.conn is not None:
+            account_list = self.conn.get_response('ListAccounts', params={}, list_marker='Accounts').accounts
+        for account in account_list:
+            rname = account.account_name
+            if escapebraces:
+                rname = self.BaseView.escape_braces(rname)
+            choices.append((rname, rname))
+        return sorted(set(choices))
+
     ### S3 connection type choices
     ##
     def buckets(self, buckets=None, add_blank=True, escapebraces=True):
@@ -390,5 +407,16 @@ class ChoicesManager(object):
         for vpc in vpc_network_list:
             vpc_name = TaggedItemView.get_display_name(vpc, escapebraces=escapebraces) 
             choices.append((vpc.id, vpc_name))
+        return sorted(set(choices))
+
+    def vpc_subnets(self, vpc_subnets=None, add_blank=True, escapebraces=True):
+        choices = []
+        if add_blank:
+            choices.append(('None', _(u'No subnets found')))
+        vpc_subnet_list = vpc_subnets or []
+        if not vpc_subnet_list and self.conn is not None:
+            vpc_subnet_list = self.conn.get_all_subnets()
+        for vpc in vpc_subnet_list:
+            choices.append((vpc.id, vpc.cidr_block))
         return sorted(set(choices))
 

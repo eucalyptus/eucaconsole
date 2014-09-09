@@ -1,0 +1,18 @@
+/* @fileOverview Buckets contents page CSS */
+@import "../includes/eucavariables";
+
+@import "../includes/landingpage";
+
+.icon {
+    display: inline-block;
+    width: 20px;
+    color: $euca-darkgreen;
+}
+
+#primary-buttons {
+    .button {
+        padding-left: 2rem;
+        padding-right: 2rem;
+    }
+}
+

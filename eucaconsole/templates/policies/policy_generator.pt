@@ -1,7 +1,7 @@
 <table id="policy-generator" class="table actions-wrapper" xmlns="http://www.w3.org/1999/html" i18n:domain="eucaconsole">
     <thead>
         <tr>
-            <th class="allow" i18n:translate="">Allow</th>
+            <th class="allow" i18n:translate="" tal:condition="resource_type!='account'">Allow</th>
             <th class="deny" i18n:translate="">Deny</th>
             <th class="actions">&nbsp;</th>
         </tr>
@@ -9,7 +9,7 @@
     <tbody>
         <metal:block tal:repeat="actions_ns policy_actions">
             <tr class="namespace ${namespace}" tal:define="namespace actions_ns.name">
-                <td class="allow">
+                <td class="allow" tal:condition="resource_type!='account'">
                     <a ng-click="selectAll($event)">
                         <i class="fi-check tick" data-namespace="${namespace}" data-effect="Allow"
                            data-action="${namespace}:*" data-resource="*"></i>

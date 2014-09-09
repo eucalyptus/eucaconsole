@@ -120,6 +120,21 @@
                             </div>
                         </div>
                     </li>
+                    <li class="panel" id="buckets" tal:case="'buckets'">
+                        <div class="tile">
+                            <h5 class="subheader" i18n:translate="">Buckets (S3)</h5>
+                            <div class="content">
+                                <a href="${request.route_path('buckets')}">
+                                    <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
+                                        <span ng-show="!itemsLoading" id="buckets-count" ng-cloak="">{{ totals.buckets }}</span></em>
+                                    </i>
+                                </a>
+                            </div>
+                            <div class="footer">
+                                <a href="#" i18n:translate="">Create bucket</a>
+                            </div>
+                        </div>
+                    </li>
                     <li class="panel" id="security-groups" tal:case="'security-groups'">
                         <div class="tile">
                             <h5 class="subheader" i18n:translate="">Security groups</h5>
@@ -161,7 +176,7 @@
                                 </a>
                             </div>
                             <div class="footer">
-                                <a href="${request.route_path('account_view', name='new')}" i18n:translate="">Create accounts</a>
+                                <a href="${request.route_path('account_view', name='new')}" i18n:translate="">Create account</a>
                             </div>
                         </div>
                     </li>

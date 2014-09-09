@@ -38,8 +38,10 @@ from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.view import view_config
 
 from ..forms.accounts import AccountForm, AccountUpdateForm, DeleteAccountForm
+from ..forms.quotas import QuotasForm
 from ..i18n import _
 from ..models import Notification
+from ..models.quotas import Quotas
 from ..views import BaseView, LandingPageView, JSONResponse
 from . import boto_error_handler
 from .users import PasswordGeneration
@@ -108,7 +110,9 @@ class AccountsJsonView(BaseView):
         for account in self.get_items():
             policies = []
             try:
-                policies = self.conn.get_response('ListAccountPolicies', params={'AccoutnName':account.account_name}, list_marker='PolicyNames')
+                policies = self.conn.get_response(
+                        'ListAccountPolicies',
+                        params={'AccountName':account.account_name}, list_marker='PolicyNames')
                 policies = policies.policy_names
             except BotoServerError as exc:
                 pass
@@ -119,6 +123,22 @@ class AccountsJsonView(BaseView):
             ))
         return dict(results=accounts)
 
+    @view_config(route_name='account_summary_json', renderer='json', request_method='GET')
+    def account_summary_json(self):
+        name = self.request.matchdict.get('name')
+        with boto_error_handler(self.request):
+            users = self.conn.get_response('ListUsers', params={'DelegateAccount':name}, list_marker='Users')
+            groups = self.conn.get_response('ListGroups', params={'DelegateAccount':name}, list_marker='Groups')
+            roles = self.conn.get_response('ListRoles', params={'DelegateAccount':name}, list_marker='Roles')
+            return dict(
+                results=dict(
+                    account_name=name,
+                    user_count=len(users.list_users_response.list_users_result.users),
+                    group_count=len(groups.list_groups_response.list_groups_result.groups),
+                    role_count=len(roles.list_roles_response.list_roles_result.roles),
+                )
+            )
+
     def get_items(self):
         with boto_error_handler(self.request):
             return self.conn.get_response('ListAccounts', params={}, list_marker='Accounts').accounts
@@ -127,6 +147,7 @@ class AccountsJsonView(BaseView):
 class AccountView(BaseView):
     """Views for single Account"""
     TEMPLATE = '../templates/accounts/account_view.pt'
+    NEW_TEMPLATE = '../templates/accounts/account_new.pt'
 
     def __init__(self, request):
         super(AccountView, self).__init__(request)
@@ -136,12 +157,15 @@ class AccountView(BaseView):
         self.account_form = AccountForm(self.request, account=self.account, formdata=self.request.params or None)
         self.account_update_form = AccountUpdateForm(self.request, account=self.account, formdata=self.request.params or None)
         self.delete_form = DeleteAccountForm(self.request, formdata=self.request.params)
+        self.quotas_form = QuotasForm(self.request, account=self.account, conn=self.conn)
         self.render_dict = dict(
             account=self.account,
             account_route_id=self.account_route_id,
             account_form=self.account_form,
             account_update_form=self.account_update_form,
             delete_form=self.delete_form,
+            quota_err=_(u"Requires non-negative integer (or may be empty)"),
+            quotas_form=self.quotas_form,
         )
 
     def get_account(self):
@@ -157,11 +181,26 @@ class AccountView(BaseView):
             pass
         return account
 
+    @view_config(route_name='account_new', renderer=NEW_TEMPLATE)
+    def account_new(self):
+        return self.render_dict
+
     @view_config(route_name='account_view', renderer=TEMPLATE)
     def account_view(self):
         if self.account is not None:
-            users = self.conn.get_response('ListUsers', params={'DelegateAccount':self.account.account_name}, list_marker='Users')
-            self.render_dict['users'] = users.list_users_response.list_users_result.users
+            with boto_error_handler(self.request):
+                users = self.conn.get_response(
+                        'ListUsers',
+                        params={'DelegateAccount':self.account.account_name}, list_marker='Users')
+                self.render_dict['users'] = users.list_users_response.list_users_result.users
+                groups = self.conn.get_response(
+                        'ListGroups',
+                        params={'DelegateAccount':self.account.account_name}, list_marker='Groups')
+                self.render_dict['groups'] = groups.list_groups_response.list_groups_result.groups
+                roles = self.conn.get_response(
+                        'ListRoles',
+                        params={'DelegateAccount':self.account.account_name}, list_marker='Roles')
+                self.render_dict['roles'] = roles.list_roles_response.list_roles_result.roles
         return self.render_dict
  
     @view_config(route_name='account_create', request_method='POST', renderer='json')
@@ -179,6 +218,10 @@ class AccountView(BaseView):
                 creds = self.conn.get_response('CreateAccessKey', params=params, verb='POST')
                 access_id = creds.access_key.access_key_id
                 secret_key = creds.access_key.secret_access_key
+
+                quotas = Quotas()
+                quotas.create_quota_policy(self, account=new_account_name)
+
                 users_json = self.request.params.get('users')
                 user_list = []
                 if users_json:
@@ -216,14 +259,10 @@ class AccountView(BaseView):
     @view_config(route_name='account_update', request_method='POST', renderer=TEMPLATE)
     def account_update(self):
         if self.account_update_form.validate():
-            account_name_param = self.request.params.get('account_name')
-            new_account_name = account_name_param if self.account.account_name != account_name_param else None
-            this_account_name = new_account_name if new_account_name is not None else self.account.account_name
-            location = self.request.route_path('account_view', name=this_account_name)
-            if new_account_name is not None:
-                with boto_error_handler(self.request, location):
-                    self.log_request(_(u"Updating account {0}").format(account_name_param))
-                    self.account_update_name(new_account_name)
+            location = self.request.route_path('account_view', name=self.account.account_name)
+            with boto_error_handler(self.request, location):
+                quotas = Quotas()
+                quotas.update_quotas(self, account=self.account.account_name, as_account='')
             return HTTPFound(location=location)
 
         return self.render_dict

@@ -4,8 +4,9 @@
         #quotas-panel .expando { margin-bottom: 1rem; }
         #quotas-panel .expando .title { margin-bottom: 0.5rem; display: block; }
     </style>
-    <div id="quotas-panel" class="section">
-        <p i18n:translate="">Define limits on resources that this user is allowed to create. Leave blank for unlimited rights.</p>
+    <div id="quotas-panel" class="section" ng-app="Quotas" ng-controller="QuotasCtrl" ng-init="initController()">
+        <p tal:condition="in_user" i18n:translate="">Define limits on resources that this user is allowed to create. Leave blank for unlimited rights.</p>
+        <p tal:condition="not in_user" i18n:translate="">Define limits on resources that users in this account are allowed to create. Leave blank for unlimited rights.</p>
         <div class="expando" id="ec2-section" ng-cloak="">
             <span class="title" >
                 <a ng-click="toggleEC2Content()">
@@ -80,5 +81,6 @@
             </div>
         </div>
     </div>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/quotas.js')}"></script>
 </div>
 

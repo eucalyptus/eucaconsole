@@ -52,7 +52,8 @@ from pyramid.response import Response
 from pyramid.security import NO_PERMISSION_REQUIRED
 from pyramid.view import notfound_view_config, view_config
 
-from ..caches import default_term
+from ..caches import default_term, long_term
+from ..caches import invalidate_cache
 from ..constants.images import AWS_IMAGE_OWNER_ALIAS_CHOICES, EUCA_IMAGE_OWNER_ALIAS_CHOICES
 from ..forms.login import EucaLogoutForm
 from ..i18n import _
@@ -63,17 +64,18 @@ from ..models.auth import ConnectionManager
 def escape_braces(event):
     """Escape double curly braces in template variables to prevent AngularJS expression injections"""
     for k, v in event.rendering_val.items():
-        if type(v) in [str, unicode] or isinstance(v, Markup) or isinstance(v, TranslationString):
-            event.rendering_val[k] = BaseView.escape_braces(v)
+        if not k.endswith('_json'):
+            if type(v) in [str, unicode] or isinstance(v, Markup) or isinstance(v, TranslationString):
+                event.rendering_val[k] = BaseView.escape_braces(v)
 
 
 class JSONResponse(Response):
-    def __init__(self, status=200, message=None, **kwargs):
+    def __init__(self, status=200, message=None, id=None, **kwargs):
         super(JSONResponse, self).__init__(**kwargs)
         self.status = status
         self.content_type = 'application/json'
         self.body = json.dumps(
-            dict(message=message)
+            dict(message=message, id=id)
         )
 
 
@@ -177,6 +179,61 @@ class BaseView(object):
             userdata = userdata_file or userdata_input or None  # Look up file upload first
         return userdata
 
+    @long_term.cache_on_arguments(namespace='images')
+    def _get_images_cached_(self, _owners, _executors, _ec2_region, acct):
+        """
+        This method is decorated and will cache the image set
+        """
+        return self._get_images_(_owners, _executors, _ec2_region)
+
+    def _get_images_(self, _owners, _executors, _ec2_region):
+        """
+        this method produces a cachable list of images
+        """
+        with boto_error_handler(self.request):
+            logging.info("loading images from server (not cache)")
+            filters = {'image-type': 'machine'}
+            images = self.get_connection().get_all_images(owners=_owners, executable_by=_executors, filters=filters)
+            ret = []
+            for img in images:
+                # trim some un-necessary items we don't need to cache
+                del img.connection
+                del img.region
+                del img.product_codes
+                del img.billing_products
+                # alter things we want to cache, but are un-picklable
+                if img.block_device_mapping:
+                    for bdm in img.block_device_mapping.keys():
+                        mapping_type = img.block_device_mapping[bdm]
+                        del mapping_type.connection
+                ret.append(img)
+            return ret
+
+    def get_images(self, conn, owners, executors, ec2_region):
+        """
+        This method sets the right account value so we cache private images per-acct
+        and handles caching error by fetching the data from the server.
+        """
+        acct = self.request.session.get('account', '')
+        if acct == '':
+            acct = self.request.session.get('access_id', '')
+        if 'amazon' in owners or 'aws-marketplace' in owners:
+            acct = ''
+        try:
+            return self._get_images_cached_(owners, executors, ec2_region, acct)
+        except pylibmc.Error as err:
+            logging.warn('memcached not responding')
+            return self._get_images_(owners, executors, ec2_region)
+
+    def invalidate_images_cache(self):
+        region = self.request.session.get('region')
+        acct = self.request.session.get('account', '')
+        if acct == '':
+            acct = self.request.session.get('access_id', '')
+        invalidate_cache(long_term, 'images', None, [], [], region, acct)
+        invalidate_cache(long_term, 'images', None, [u'self'], [], region, acct)
+        invalidate_cache(long_term, 'images', None, [], [u'self'], region, acct)
+
     @staticmethod
     def escape_braces(s):
         if type(s) in [str, unicode] or isinstance(s, Markup) or isinstance(s, TranslationString):
@@ -239,7 +296,7 @@ class BaseView(object):
         BaseView.log_message(request, message, level='error')
         if request.is_xhr:
             raise JSONError(message=message, status=status or 403)
-        if status == 403:
+        if status == 403 or 'token has expired' in message:  # S3 token expiration responses return a 400 status
             notice = _(u'Your session has timed out. This may be due to inactivity, a policy that does not provide login permissions, or an unexpected error. Please log in again, and contact your cloud administrator if the problem persists.')
             request.session.flash(notice, queue=Notification.WARNING)
             raise HTTPFound(location=request.route_path('login'))
@@ -477,9 +534,9 @@ class LandingPageView(BaseView):
                     return True
         return False
 
-    def get_json_endpoint(self, route):
+    def get_json_endpoint(self, route, path=False):
         return '{0}{1}'.format(
-            self.request.route_path(route),
+            self.request.route_path(route) if path is False else route,
             '?{0}'.format(urlencode(self.request.params)) if self.request.params else ''
         )
 

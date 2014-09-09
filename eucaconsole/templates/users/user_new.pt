@@ -8,10 +8,11 @@
             ng-init="initController('${request.route_path('user_create')}',
                                     '${request.route_path('users')}',
                                     '${request.route_path('user_view', name='_name_')}',
+                                    '${request.route_path('account_view', name='_name_')}',
                                     '${request.route_path('file_download')}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
-                <li><a href="${request.route_path('users')}" i18n:translate="">IAM users</a></li>
+                <li><a href="${request.route_path('users')}" i18n:translate="">Users</a></li>
                 <li class="current" i18n:translate="">Create new users</li>
             </metal:crumbs>
         </metal:breadcrumbs>
@@ -24,10 +25,14 @@
             <div class="panel no-title">
                 <form id="user-new-form" ng-submit="submit($event)" data-abide="abide">
                     ${structure:user_form['csrf_token']}
-                    <input type='hidden' name='as-account' value="${as_account}" tal:condition="as_account">
                     <div class="section">
-                        <div class="row columns">
-                            <p><span i18n:translate="">Add user(s) to account:</span>&nbsp;${layout.account}</p>
+                        <div class="row columns" tal:condition="layout.account != 'eucalyptus'">
+                            <p><span class="subsection-label" i18n:translate="">Add user(s) to account:</span>&nbsp;${layout.account}</p>
+                        </div>
+                        <div tal:condition="layout.account == 'eucalyptus'">
+                            <span class="subsection-label" i18n:translate="">Add user(s) to account:</span>
+                            &nbsp;&nbsp;
+                            ${structure:user_form['as_account']}
                         </div>
                         ${panel('user_editor')}
                         <div>${structure:user_form['random_password']}&nbsp;${user_form.random_password.label}</div>
@@ -43,7 +48,7 @@
                             </a>
                         </h6>
                         <div class="quotas-content" ng-show="quotas_expanded">
-                            ${panel('quotas_panel', quota_form=user_form, quota_err=quota_err)}
+                            ${panel('quotas_panel', quota_form=quotas_form, quota_err=quota_err)}
                         </div>
                     </div>
                     <hr/>
@@ -56,7 +61,7 @@
                             </a>
                         </h6>
                         <div class="advance-content" ng-show="adv_expanded">
-                            ${panel('form_field', field=user_form['path'])}
+                            ${panel('form_field', field=user_form['path'], leftcol_width=2, rightcol_width=10)}
                         </div>
                     </div>
                     <hr />
@@ -100,6 +105,9 @@
 </div>
 
 <div metal:fill-slot="tail_js">
+    <div tal:condition="layout.account == 'eucalyptus'" tal:omit-tag="">
+        <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    </div>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/jquery.generateFile.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/user_new.js')}"></script>
 </div>

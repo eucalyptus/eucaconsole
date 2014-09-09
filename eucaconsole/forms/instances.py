@@ -101,6 +101,13 @@ class LaunchInstanceForm(BaseSecureForm):
         validators=[validators.InputRequired(message=instance_type_error_msg)],
     )
     zone = wtforms.SelectField(label=_(u'Availability zone'))
+    vpc_network = wtforms.SelectField(label=_(u'VPC network'))
+    vpc_network_helptext = _(u'Launch your instance into one of your Virtual Private Clouds')
+    vpc_subnet = wtforms.SelectField(label=_(u'VPC subnet'))
+    associate_public_ip_address = wtforms.SelectField(label=_(u'Auto-assign public IP'))
+    associate_public_ip_address_helptext = _(u"Give your instance a non-persistent IP address \
+        from the subnet\'s pool so it is accessible from the Internet. \
+        If you want a persistent address, select Disabled and assign an elastic IP after launch.")
     keypair_error_msg = _(u'Key pair is required')
     keypair = wtforms.SelectField(
         label=_(u'Key name'),
@@ -120,9 +127,10 @@ class LaunchInstanceForm(BaseSecureForm):
     monitoring_enabled = wtforms.BooleanField(label=_(u'Enable monitoring'))
     private_addressing = wtforms.BooleanField(label=_(u'Use private addressing only'))
 
-    def __init__(self, request, image=None, securitygroups=None, conn=None, iam_conn=None, **kwargs):
+    def __init__(self, request, image=None, securitygroups=None, conn=None, vpc_conn=None, iam_conn=None, **kwargs):
         super(LaunchInstanceForm, self).__init__(request, **kwargs)
         self.conn = conn
+        self.vpc_conn=vpc_conn
         self.iam_conn = iam_conn
         self.image = image
         self.securitygroups = securitygroups
@@ -130,6 +138,7 @@ class LaunchInstanceForm(BaseSecureForm):
         self.set_error_messages()
         self.monitoring_enabled.data = True
         self.choices_manager = ChoicesManager(conn=conn)
+        self.vpc_choices_manager = ChoicesManager(conn=vpc_conn)
         self.set_help_text()
         self.set_choices(request)
         self.role.data = ''
@@ -141,15 +150,20 @@ class LaunchInstanceForm(BaseSecureForm):
 
     def set_help_text(self):
         self.number.help_text = self.number_helptext
+        self.vpc_network.label_help_text = self.vpc_network_helptext
+        self.associate_public_ip_address.label_help_text = self.associate_public_ip_address_helptext
         self.userdata_file.help_text = self.userdata_file_helptext
 
     def set_choices(self, request):
         self.instance_type.choices = self.choices_manager.instance_types(cloud_type=self.cloud_type, add_blank=False)
         region = request.session.get('region')
         self.zone.choices = self.get_availability_zone_choices(region)
+        self.vpc_network.choices = self.vpc_choices_manager.vpc_networks()
+        self.vpc_subnet.choices = self.vpc_choices_manager.vpc_subnets()
+        self.associate_public_ip_address.choices = self.get_associate_public_ip_address_choices()
         self.keypair.choices = self.get_keypair_choices()
         self.securitygroup.choices = self.choices_manager.security_groups(
-            securitygroups=self.securitygroups, add_blank=False)
+            securitygroups=self.securitygroups, use_id=True, add_blank=False)
         self.role.choices = ChoicesManager(self.iam_conn).roles(add_blank=True)
         self.kernel_id.choices = self.choices_manager.kernels(image=self.image)
         self.ramdisk_id.choices = self.choices_manager.ramdisks(image=self.image)
@@ -157,9 +171,11 @@ class LaunchInstanceForm(BaseSecureForm):
         # Set default choices where applicable, defaulting to first non-blank choice
         if self.cloud_type == 'aws' and len(self.zone.choices) > 1:
             self.zone.data = self.zone.choices[1][0]
-        # Set the defailt option to be "Default" security group
+        # Set the defailt option to be the first choice
         if len(self.securitygroup.choices) > 1:
-            self.securitygroup.data = "default"
+            self.securitygroup.data = self.securitygroup.choices[0][0]
+        if len(self.vpc_subnet.choices) > 1:
+            self.vpc_subnet.data = self.vpc_subnet.choices[0][0]
 
     def set_error_messages(self):
         self.number.error_msg = self.number_error_msg
@@ -174,6 +190,10 @@ class LaunchInstanceForm(BaseSecureForm):
     def get_availability_zone_choices(self, region):
         choices = [('', _(u'No preference'))]
         choices.extend(self.choices_manager.availability_zones(region, add_blank=False))
+        return choices
+
+    def get_associate_public_ip_address_choices(self):
+        choices = [('None', _(u'Enabled (use subnet setting)')), ('true', _(u'Enabled')), ('false', _(u'Disabled'))]
         return choices
 
 

@@ -14,7 +14,7 @@
          ng-app="RolePage" ng-controller="RolePageCtrl" ng-init="initController(${all_users}, '${assume_role_policy_document}', '${trusted_entity}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
-                <li><a href="${request.route_path('roles')}" i18n:translate="">IAM roles</a></li>
+                <li><a href="${request.route_path('roles')}" i18n:translate="">Roles</a></li>
                 <li class="current">
                     <a tal:condition="role" href="#">${role.role_name}</a>
                     <a tal:condition="not role and role_route_id == 'new'" i18n:translate="">Create new role</a>
@@ -46,12 +46,12 @@
                 </metal:block>
                 <div tal:condition="not role and role_route_id == 'new'" i18n:translate=""
                     tal:define="html_attrs {'pattern': '^[a-zA-Z0-9\+\=\,\.\@\-]{1,64}$',
-                         'error_msg': 'IAM role names must be between 1 and 64 characters long, and may contain letters, numbers, \'+\', \'=\', \',\', \'.\'. \'@\' and \'-\' and cannot contain spaces'};">
+                         'error_msg': 'Role names must be between 1 and 64 characters long, and may contain letters, numbers, \'+\', \'=\', \',\', \'.\'. \'@\' and \'-\' and cannot contain spaces'};">
                     <form action="${request.route_path('role_create')}" method="post" data-abide="abide">
                         ${structure:role_form['csrf_token']}
                         <div class="section columns">
                             <div class="row">
-                                <p><span i18n:translate="">Add role to account:</span>&nbsp;${layout.account}</p>
+                                <p><span class="subsection-label" i18n:translate="">Add role to account:</span>&nbsp;${layout.account}</p>
                             </div>
                             ${panel('form_field', field=role_form.role_name, leftcol_width=1, rightcol_width=11, autofocus='', **html_attrs)}
                             <div class="row controls-wrapper">
@@ -68,7 +68,7 @@
                                         <div class="cross-acct-block">
                                             <input type="radio" name="roletype" value="xacct" ng-model="roleType"/>
                                             <label><span i18n:translate="" class="ip-label">Cross-account access</span></label>
-                                            <span class="helptext-icon" data-tooltip="" title="Allows IAM users from an account you specify (regardless of owner) to access this account. If specified, the external ID must be entered in addition to the account ID before a user from that account can access this account. This field is only used when you are granting access to an account that you do not own." i18n:translate="title">?</span>
+                                            <span class="helptext-icon" data-tooltip="" title="Allows Users from an account you specify (regardless of owner) to access this account. If specified, the external ID must be entered in addition to the account ID before a user from that account can access this account. This field is only used when you are granting access to an account that you do not own." i18n:translate="title">?</span>
                                             <div id="xacct-section" ng-cloak="">
                                                 <div class="section" ng-show="roleType == 'xacct'">
                                                     <div class="row controls-wrapper">

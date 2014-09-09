@@ -1,0 +1,155 @@
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
+
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/bucket_contents.css')}" />
+</head>
+
+<div metal:fill-slot="main_content" ng-app="BucketContentsPage" ng-controller="BucketContentsCtrl" ng-init="initController()">
+    <div class="row" id="contentwrap" ng-app="LandingPage" ng-controller="ItemsCtrl"
+         ng-init="initController('bucketcontents', '${initial_sort_key}', '${json_items_endpoint}')">
+        <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+            <metal:crumbs metal:fill-slot="crumbs">
+                <li><a href="${request.route_path('buckets')}">Buckets</a></li>
+                <li>
+                    <a href="${request.route_path('bucket_contents', subpath=bucket_name)}"
+                       i18n:translate="">${bucket_name}</a>
+                </li>
+                <li tal:repeat="folder request.subpath[1:]" class="${'current' if repeat.folder.end else ''}">
+                    <a tal:condition="repeat.folder.end" ng-non-bindable="">${folder}</a>
+                    <a href="${request.route_path('bucket_contents', subpath='/'.join(request.subpath[:repeat.folder.index+2]))}"
+                       ng-non-bindable="" tal:condition="not repeat.folder.end">${folder}</a>
+                </li>
+            </metal:crumbs>
+        </metal:breadcrumbs>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
+        <h3 id="pagetitle"><strong i18n:translate="" ng-non-bindable="">${request.subpath[-1]}</strong></h3>
+        <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
+            <div metal:fill-slot="new_button">
+                <a class="button" id="upload-file-btn" i18n:translate="">
+                    Upload File(s)
+                </a>
+                &nbsp;&nbsp;
+                <a class="button" id="create-folder-btn" i18n:translate="">
+                    Create New Folder
+                </a>
+                &nbsp;&nbsp;
+                <a class="button secondary ng-binding" id="delete-all-btn" i18n:translate="" data-reveal-id="delete-all-modal">
+                    Delete All Objects/Folders
+                </a>
+            </div>
+            <div metal:fill-slot="tile_header">
+                <a ng-href="{{ item.absolute_path }}" ng-if="item.is_folder">
+                    <i class="{{ item.icon || 'fi-folder' }} icon"></i>{{ item.name }}
+                </a>
+                <a ng-if="!item.is_folder" ng-href="{{ item.details_url }}">
+                    <i class="{{ item.icon || 'fi-page' }} icon"></i>{{ item.name }}
+                </a>
+            </div>
+            <div metal:fill-slot="tile_content" tal:omit-tag="">
+                <div ng-show="!item.is_folder">
+                    <span class="label" title="Size" i18n:attributes="title" data-tooltip="">SZ</span>
+                    <span ng-show="item.size">{{ item.size | bytes }}</span>
+                </div>
+                <div ng-show="!item.is_folder">
+                    <span class="label" title="Last Modified" i18n:attributes="title" data-tooltip="">LM</span>
+                    <span ng-show="item.last_modified">
+                        <b>{{ item.last_modified | date: '${layout.angular_date_format}' }}</b>
+                    </span>
+                </div>
+            </div>
+            <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
+                <a id="tile-item-dropdown_${bucket_name}_{{ item.name | escapeHTMLTagID }}"
+                   class="tiny secondary button dropdown right"
+                   data-dropdown="item-dropdown_${bucket_name}_{{ item.name |  escapeHTMLTagID }}"><i class="fi-widget"></i></a>
+                <ul id="item-dropdown_${bucket_name}_{{ item.name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
+                    <li ng-show="item.is_folder">
+                        <a i18n:translate="" ng-href="{{ item.absolute_path }}">View contents</a>
+                    </li>
+                    <li ng-show="!item.is_folder">
+                        <a i18n:translate="" ng-href="{{ item.details_url }}">View details</a>
+                    </li>
+                    <li ng-show="!item.is_folder">
+                        <a i18n:translate="" ng-href="{{ item.details_url }}">Manage permissions</a>
+                    </li>
+                    <li ng-show="!item.is_folder">
+                        <a i18n:translate="" ng-href="{{ item.download_url }}">Download</a>
+                    </li>
+                    <li ng-show="!item.is_folder">
+                        <a i18n:translate="" href="#">Copy object</a>
+                    </li>
+                    <li>
+                        <a i18n:translate="" ng-click="revealModal('delete', item)">Delete</a>
+                    </li>
+                </ul>
+            </div>
+            <metal:block metal:fill-slot="tableview_headers">
+                <th i18n:translate="">Name</th>
+                <th i18n:translate="">Size</th>
+                <th i18n:translate="">Last Modified</th>
+                <th i18n:translate="" class="actions">Actions</th>
+            </metal:block>
+            <metal:block metal:fill-slot="tableview_columns">
+                <td>
+                    <a ng-href="{{ item.absolute_path }}" ng-if="item.is_folder">
+                        <i class="{{ item.icon || 'fi-folder' }} icon"></i>{{ item.name }}
+                    </a>
+                    <a ng-if="!item.is_folder" ng-href="{{ item.details_url }}">
+                        <i class="{{ item.icon || 'fi-page' }} icon"></i>{{ item.name }}
+                    </a>
+                </td>
+                <td>{{ item.size | bytes }}</td>
+                <td>{{ item.last_modified | date: '${layout.angular_date_format}' }}</td>
+                <td>
+                    <span class="actions">
+                        <a id="table-item-dropdown_${bucket_name}_{{ item.name | escapeHTMLTagID }}"
+                           class="tiny secondary button dropdown right round"
+                           data-dropdown="item-dropdown_${bucket_name}_{{ item.name | escapeHTMLTagID }}"><i class="fi-widget"></i></a>
+                        <ul id="item-dropdown_${bucket_name}_{{ item.name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
+                            <li ng-show="item.is_folder">
+                                <a i18n:translate="" ng-href="{{ item.absolute_path }}">View contents</a>
+                            </li>
+                            <li ng-show="!item.is_folder">
+                                <a i18n:translate="" ng-href="{{ item.details_url }}">View details</a>
+                            </li>
+                            <li ng-show="!item.is_folder">
+                                <a i18n:translate="" ng-href="{{ item.details_url }}">Manage permissions</a>
+                            </li>
+                            <li ng-show="!item.is_folder">
+                                <a i18n:translate="" ng-href="{{ item.download_url }}">Download</a>
+                            </li>
+                            <li ng-show="!item.is_folder">
+                                <a i18n:translate="" href="#">Copy object</a>
+                            </li>
+                            <li>
+                                <a i18n:translate="" ng-click="revealModal('delete', item)">Delete</a>
+                            </li>
+                        </ul>
+                    </span>
+                </td>
+            </metal:block>
+        </div>
+        <div id="delete-all-modal" class="reveal-modal small" data-reveal="">
+            <h3 i18n:translate="">Delete all objects/folders</h3>
+            <p>
+                <span i18n:translate="">Deleting all objects and folders can take some time. Leaving this page while the delete is in progress will cancel the operation.</span>
+            </p>
+            <p>
+                <span i18n:translate="">Are you sure you want to delete all X objects in </span>&nbsp;<b>${bucket_name}.</b>
+            </p>
+            <a class="button expand" id="delete-all-btn" i18n:translate="" ng-click="deleteAll()">
+                Yes, Delete Everything
+            </a>
+            <a href="#" id="delete_all_close_link" class="close-reveal-modal">&#215;</a>
+        </div>
+    </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_path('eucaconsole:static/js/pages/custom_filters.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/landingpage.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/bucket_contents.js')}"></script>
+</div>
+
+</metal:block>
+
