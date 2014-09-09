@@ -1,5 +1,12 @@
 <metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
+<head metal:fill-slot="head_css">
+    <style type="text/css">
+        .expando .content { padding-left: 1.5rem; }
+        .required-fields-indicator { margin-top: 0.8rem; margin-right: 2rem; }
+    </style>
+</head>
+
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="CreateBucketPage" ng-controller="CreateBucketPageCtrl"
          ng-init="initController('${controller_options_json}')">
@@ -18,18 +25,35 @@
                       action="${request.route_path('bucket_create')}">
                     ${structure:create_form['csrf_token']}
                     ${panel('form_field', field=create_form.bucket_name, pattern=bucket_name_pattern, leftcol_width=12, rightcol_width=12, inline=False, ng_attrs={'model': 'bucketName'})}
-                    <div class="row controls-wrapper">
-                        ${panel('form_field', field=create_form.enable_versioning, reverse=True, checkbox=True)}
-                    </div>
                     ${panel('s3_sharing_panel', sharing_form=sharing_form)}
                     <hr />
-                    <div>
-                        <button type="submit" class="button" id="create-bucket-submit-button"
-                                ng-disabled="!hasChangesToBeSaved">
-                            <span i18n:translate="">Create bucket</span>
-                        </button>
-                        <a href="${request.route_path('buckets')}" id="cancel-create-bucket-link"
-                           class="cancel-link" i18n:translate="">Cancel</a>
+                    <div class="expando" id="create-bucket-advanced-section" ng-cloak="" ng-init="advancedExpanded=false">
+                        <h6 class="title" >
+                            <a ng-click="advancedExpanded = !advancedExpanded">
+                                <i class="fi-plus" ng-show="!advancedExpanded"></i>
+                                <i class="fi-minus" ng-show="advancedExpanded"></i>
+                                &nbsp;<span i18n:translate="">Advanced</span>
+                            </a>
+                        </h6>
+                        <div class="content" ng-show="advancedExpanded">
+                            <div class="row controls-wrapper">
+                                ${panel('form_field', field=create_form.enable_versioning, reverse=True, checkbox=True)}
+                            </div>
+                        </div>
+                        <hr />
+                    </div>
+                    <div class="row">
+                        <div class="small-7 columns">
+                            <button type="submit" class="button" id="create-bucket-submit-button"
+                                    ng-disabled="!hasChangesToBeSaved">
+                                <span i18n:translate="">Create Bucket</span>
+                            </button>
+                            <a href="${request.route_path('buckets')}" id="cancel-create-bucket-link"
+                               class="cancel-link" i18n:translate="">Cancel</a>
+                        </div>
+                        <div class="small-5 columns">
+                            <metal:block metal:use-macro="layout.global_macros['required_fields_label']" />
+                        </div>
                     </div>
                 </form>
             </div>
