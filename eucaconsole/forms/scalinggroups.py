@@ -407,14 +407,20 @@ class ScalingGroupsFiltersForm(BaseSecureForm):
     launch_config_name = wtforms.SelectMultipleField(label=_(u'Launch configuration'))
     availability_zones = wtforms.SelectMultipleField(label=_(u'Availability zone'))
     tags = TextEscapedField(label=_(u'Tags'))
+    vpc_zone_identifier = wtforms.SelectMultipleField(label=_(u'VPC'))
 
-    def __init__(self, request, ec2_conn=None, autoscale_conn=None, **kwargs):
+    def __init__(self, request, 
+                 ec2_conn=None, autoscale_conn=None, vpc_conn=None, **kwargs):
         super(ScalingGroupsFiltersForm, self).__init__(request, **kwargs)
         self.request = request
         self.ec2_conn = ec2_conn
         self.autoscale_conn = autoscale_conn
+        self.vpc_conn = vpc_conn
         self.ec2_choices_manager = ChoicesManager(conn=ec2_conn)
         self.autoscale_choices_manager = ChoicesManager(conn=autoscale_conn)
+        self.vpc_choices_manager = ChoicesManager(conn=vpc_conn)
         self.launch_config_name.choices = self.autoscale_choices_manager.launch_configs(add_blank=False)
         region = request.session.get('region')
         self.availability_zones.choices = self.ec2_choices_manager.availability_zones(region, add_blank=False)
+        self.vpc_zone_identifier.choices = self.vpc_choices_manager.vpc_subnets(add_blank=False) 
+

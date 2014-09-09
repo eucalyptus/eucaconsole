@@ -87,10 +87,12 @@ class ScalingGroupsView(LandingPageView, DeleteScalingGroupMixin):
         self.json_items_endpoint = self.get_json_endpoint('scalinggroups_json')
         self.ec2_conn = self.get_connection()
         self.autoscale_conn = self.get_connection(conn_type='autoscale')
+        self.vpc_conn = self.get_connection(conn_type='vpc')
         self.filters_form = ScalingGroupsFiltersForm(
             self.request, formdata=self.request.params or None,
-            ec2_conn=self.ec2_conn, autoscale_conn=self.autoscale_conn)
-        self.filter_keys = ['availability_zones', 'launch_config', 'name', 'placement_group']
+            ec2_conn=self.ec2_conn, autoscale_conn=self.autoscale_conn, vpc_conn=self.vpc_conn)
+        self.filter_keys = [
+            'availability_zones', 'launch_config', 'name', 'placement_group', 'vpc_zone_identifier']
         # sort_keys are passed to sorting drop-down
         self.render_dict = dict(
             filter_fields=True,
@@ -151,7 +153,10 @@ class ScalingGroupsJsonView(LandingPageView):
             return JSONResponse(status=400, message="missing CSRF token")
         scalinggroups = []
         with boto_error_handler(self.request):
-            items = self.filter_items(self.get_items(), autoscale=True)
+            items = self.filter_items(
+                self.get_items(), ignore=['vpc_zone_identifier'],  autoscale=True)
+            if self.request.params.getall('vpc_zone_identifier'):
+                items = self.filter_by_vpc_zone_identifier(items)
         for group in items:
             group_instances = group.instances or []
             all_healthy = all(instance.health_status == 'Healthy' for instance in group_instances)
@@ -173,6 +178,17 @@ class ScalingGroupsJsonView(LandingPageView):
     def get_items(self):
         conn = self.get_connection(conn_type='autoscale')
         return conn.get_all_groups() if conn else []
+
+    def filter_by_vpc_zone_identifier(self, items):
+        filtered_items = []
+        for item in items:
+            isMatched = True
+            for vpc_zone in self.request.params.getall('vpc_zone_identifier'):
+                if item.vpc_zone_identifier.find(vpc_zone) == -1:
+                    isMatched = False
+            if isMatched:
+                filtered_items.append(item)
+        return filtered_items
 
 
 class BaseScalingGroupView(BaseView):
