@@ -165,10 +165,13 @@ class MetadataForm(BaseSecureForm):
 class CreateBucketForm(BaseSecureForm):
     """S3 Create Bucket form"""
     bucket_name_error_msg = _(
-        'Name is required')
+        'Name is required and must contain lowercase letters, numbers, and/or hyphens')
     bucket_name = TextEscapedField(
         label=_(u'Name'),
-        validators=[validators.DataRequired(message=bucket_name_error_msg)]
+        validators=[
+            validators.DataRequired(message=bucket_name_error_msg),
+            validators.Length(max=63, message=_(u'Bucket name must not exceed 63 characters')),
+        ]
     )
     enable_versioning = wtforms.BooleanField(
         label=_(u'Enable versioning')
@@ -177,5 +180,8 @@ class CreateBucketForm(BaseSecureForm):
     def __init__(self, request, **kwargs):
         super(CreateBucketForm, self).__init__(request, **kwargs)
         self.bucket_name.error_msg = self.bucket_name_error_msg
+        self.enable_versioning.help_text = _(
+            u'With versioning enabled, objects are prevented from being deleted or overwritten by mistake, '
+            u'or objects can be archived to retrieve previous versions if necessary.')
 
 

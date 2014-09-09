@@ -50,6 +50,7 @@ from . import boto_error_handler
 
 DELIMITER = '/'
 BUCKET_ITEM_URL_EXPIRES = 300  # Link to item expires in ___ seconds (after page load)
+BUCKET_NAME_PATTERN = '^[a-z0-9-]+$'
 
 
 class BucketsView(LandingPageView):
@@ -383,7 +384,7 @@ class BucketDetailsView(BaseView):
             sharing_acl.grants = grants
             sharing_policy = Policy()
             sharing_policy.acl = sharing_acl
-            sharing_policy.owner = item_acl.owner
+            sharing_policy.owner = item_acl.owner if item_acl else bucket_object.get_acl().owner
             bucket_object.set_acl(sharing_policy)
 
     @staticmethod
@@ -617,14 +618,35 @@ class CreateBucketView(BaseView):
         self.render_dict = dict(
             create_form=self.create_form,
             sharing_form=self.sharing_form,
+            bucket_name_pattern=BUCKET_NAME_PATTERN,
         )
 
     @view_config(route_name='bucket_new', renderer=VIEW_TEMPLATE)
-    def bucket_ne(self):
+    def bucket_new(self):
         return self.render_dict
 
     @view_config(route_name='bucket_create', renderer=VIEW_TEMPLATE, request_method='POST')
     def bucket_create(self):
         if self.create_form.validate():
-            bucket_name = self.request.params.get('bucket_name')
+            bucket_name = self.request.params.get('bucket_name').lower()
+            enable_versioning = self.request.params.get('enable_versioning') == 'y'
             location = self.request.route_path('bucket_details', name=bucket_name)
+            with boto_error_handler(self.request):
+                new_bucket = self.s3_conn.create_bucket(bucket_name)
+                self.set_acl(new_bucket)
+                if enable_versioning:
+                    new_bucket.configure_versioning(True)
+                msg = '{0} {1}'.format(_(u'Successfully created'), bucket_name)
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
+            return HTTPFound(location=location)
+        else:
+            self.request.error_messages = self.create_form.get_errors_list()
+        return self.render_dict
+
+    def set_acl(self, bucket=None):
+        share_type = self.request.params.get('share_type')
+        if share_type == 'public':
+            bucket.make_public()
+        else:
+            BucketDetailsView.set_sharing_acl(self.request, bucket_object=bucket)
+
