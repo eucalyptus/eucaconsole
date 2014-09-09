@@ -252,6 +252,8 @@ class EucaAuthenticator(object):
         try:
             conn.request('GET', auth_path, '', headers)
             response = conn.getresponse()
+            if response.status != 200:
+                raise urllib2.HTTPError(url='', code=response.status, msg=response.reason, hdrs=None, fp=None)
             body = response.read()
 
             # parse AccessKeyId, SecretAccessKey and SessionToken
@@ -292,15 +294,24 @@ class AWSAuthenticator(object):
                         **self.kwargs)
         else:
             conn = httplib.HTTPSConnection(self.host, self.port, timeout=timeout)
+
         headers = {"Content-type": "application/x-www-form-urlencoded"}
-        conn.request('POST', '', self.package, headers)
-        response = conn.getresponse()
-        body = response.read()
-        
-        # parse AccessKeyId, SecretAccessKey and SessionToken
-        creds = Credentials()
-        h = BotoXmlHandler(creds, None)
-        xml.sax.parseString(body, h)
-        logging.info("Authenticated AWS user")
-        return creds
+        try:
+            conn.request('POST', '', self.package, headers)
+            response = conn.getresponse()
+            if response.status != 200:
+                raise urllib2.HTTPError(url='', code=response.status, msg=response.reason, hdrs=None, fp=None)
+            body = response.read()
+            
+            # parse AccessKeyId, SecretAccessKey and SessionToken
+            creds = Credentials()
+            h = BotoXmlHandler(creds, None)
+            xml.sax.parseString(body, h)
+            logging.info("Authenticated AWS user")
+            return creds
+        except SSLError as err:
+            if err.message != '':
+                raise urllib2.URLError(err.message)
+            else:
+                raise urllib2.URLError(err[1])
 

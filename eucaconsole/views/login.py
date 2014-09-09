@@ -199,6 +199,12 @@ class LoginView(BaseView):
                 if err.msg == 'Forbidden':
                     msg = _(u'Invalid access key and/or secret key.')
                     self.login_form_errors.append(msg)
+            except URLError, err:
+                if err.reason.find('ssl') > -1:
+                    msg = _(u"This cloud's SSL server certificate isn't valid. Please contact your cloud administrator.")
+                else:
+                    msg = _(u'No response from host')
+                self.login_form_errors.append(msg)
         return self.render_dict
 
 
