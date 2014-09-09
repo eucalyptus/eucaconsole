@@ -35,18 +35,21 @@ import string
 import StringIO
 import simplejson as json
 import sys
+from boto.connection import AWSAuthConnection
 
 from urllib2 import HTTPError, URLError
 from urllib import urlencode
 
 from boto.exception import BotoServerError
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
+from pyramid.settings import asbool
 from pyramid.view import view_config
 
 from ..forms.users import (
     UserForm, ChangePasswordForm, GeneratePasswordForm, DeleteUserForm, AddToGroupForm, DisableUserForm, EnableUserForm)
 from ..i18n import _
 from ..models import Notification
+from ..models.auth import EucaAuthenticator
 from ..views import BaseView, LandingPageView, JSONResponse
 from . import boto_error_handler
 
@@ -485,7 +488,16 @@ class UserView(BaseView):
             password = self.request.params.get('password')
             new_pass = self.request.params.get('new_password')
 
-            auth = self.get_connection(conn_type='sts')
+            host = self.request.registry.settings.get('clchost', 'localhost')
+            port = int(self.request.registry.settings.get('clcport', 8773))
+            host = self.request.registry.settings.get('sts.host', host)
+            port = int(self.request.registry.settings.get('sts.port', port))
+            validate_certs = asbool(self.request.registry.settings.get('connection.ssl.validation', False))
+            conn = AWSAuthConnection(None)
+            ca_certs_file = conn.ca_certificates_file
+            conn = None
+            ca_certs_file = self.request.registry.settings.get('connection.ssl.certfile', ca_certs_file)
+            auth = EucaAuthenticator(host, port, validate_certs=validate_certs, ca_certs=ca_certs_file)
             session = self.request.session
             account = session['account']
             username = session['username']
