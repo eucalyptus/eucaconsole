@@ -252,6 +252,8 @@ class EucaAuthenticator(object):
         try:
             conn.request('GET', auth_path, '', headers)
             response = conn.getresponse()
+            if response.status != 200:
+                raise urllib2.HTTPError(url='', code=response.status, msg=response.reason, hdrs=None, fp=None)
             body = response.read()
 
             # parse AccessKeyId, SecretAccessKey and SessionToken
@@ -269,7 +271,7 @@ class EucaAuthenticator(object):
 
 class AWSAuthenticator(object):
 
-    def __init__(self, package):
+    def __init__(self, package, validate_certs=False, **validate_kwargs):
         """
         Configure connection to AWS STS service
 
@@ -277,20 +279,39 @@ class AWSAuthenticator(object):
         :param package: a pre-signed request string for the STS GetSessionToken call
 
         """
-        self.endpoint = 'https://sts.amazonaws.com'
+        self.host = 'sts.amazonaws.com'
+        self.port = 443
         self.package = package
+        self.validate_certs = validate_certs
+        self.kwargs = validate_kwargs
 
     def authenticate(self, timeout=20):
         """ Make authentication request to AWS STS service
             Timeout defaults to 20 seconds"""
-        req = urllib2.Request(self.endpoint, data=self.package)
-        response = urllib2.urlopen(req, timeout=timeout)
-        body = response.read()
+        if self.validate_certs:
+            conn = CertValidatingHTTPSConnection(
+                        self.host, self.port, timeout=timeout,
+                        **self.kwargs)
+        else:
+            conn = httplib.HTTPSConnection(self.host, self.port, timeout=timeout)
 
-        # parse AccessKeyId, SecretAccessKey and SessionToken
-        creds = Credentials()
-        h = BotoXmlHandler(creds, None)
-        xml.sax.parseString(body, h)
-        logging.info("Authenticated AWS user")
-        return creds
+        headers = {"Content-type": "application/x-www-form-urlencoded"}
+        try:
+            conn.request('POST', '', self.package, headers)
+            response = conn.getresponse()
+            if response.status != 200:
+                raise urllib2.HTTPError(url='', code=response.status, msg=response.reason, hdrs=None, fp=None)
+            body = response.read()
+            
+            # parse AccessKeyId, SecretAccessKey and SessionToken
+            creds = Credentials()
+            h = BotoXmlHandler(creds, None)
+            xml.sax.parseString(body, h)
+            logging.info("Authenticated AWS user")
+            return creds
+        except SSLError as err:
+            if err.message != '':
+                raise urllib2.URLError(err.message)
+            else:
+                raise urllib2.URLError(err[1])
 
