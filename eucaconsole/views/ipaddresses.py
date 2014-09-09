@@ -86,7 +86,7 @@ class IPAddressesView(LandingPageView):
             json_items_endpoint=self.get_json_endpoint('ipaddresses_json'),
             filter_fields=True,
             filters_form=IPAddressesFiltersForm(self.request, conn=self.conn, formdata=self.request.params or None),
-            filter_keys=['public_ip', 'instance_id'],
+            filter_keys=['public_ip', 'instance_id', 'domain'],
             sort_keys=self.get_sort_keys(),
         )
         return self.render_dict
@@ -164,7 +164,7 @@ class IPAddressesJsonView(LandingPageView):
             return JSONResponse(status=400, message="missing CSRF token")
         ipaddresses = []
         with boto_error_handler(self.request):
-            items = self.get_items()
+            items = self.filter_items(self.get_items(), ignore=['assignment'])
             if self.request.params.getall('assignment'):
                 items = self.filter_by_assignment(items)
             instances = self.get_instances(items)
