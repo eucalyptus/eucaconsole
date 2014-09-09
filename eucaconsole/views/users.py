@@ -543,7 +543,7 @@ class UserView(BaseView):
                 user=self.user.user_name, key=result.access_key.access_key_id),
                 'text/csv', string_output.getvalue())
             return dict(message=_(u"Successfully generated access keys"), results=dict(
-                        access=result.access_key.access_key_id, secret=results.access_key.secret_access_key
+                        access=result.access_key.access_key_id, secret=result.access_key.secret_access_key
                       ))
 
     @view_config(route_name='user_delete_key', request_method='POST', renderer='json')

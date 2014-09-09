@@ -49,8 +49,8 @@ angular.module('ManageCredentialsView', [])
                 var results = oData ? oData.results : [];
                 $('#create-keys-modal').foundation('reveal', 'close');
                 Notify.success(oData.message);
-                $scope.access_key = oData.access;
-                $scope.secret_key = oData.secret;
+                $scope.access_key = results.access;
+                $scope.secret_key = results.secret;
             }).error(function (oData, status) {
                 var errorMsg = oData['message'] || '';
                 if (errorMsg && status === 403) {
@@ -62,7 +62,7 @@ angular.module('ManageCredentialsView', [])
             });
             return false;
           };
-        $scope.generateKeys = function(url) {
+        $scope.downloadKeys = function(url) {
             var csrf_token = $('input[name="csrf_token"]').val();
             $.generateFile({
                 csrf_token: csrf_token,
