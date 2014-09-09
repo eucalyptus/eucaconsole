@@ -25,7 +25,7 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 """
-Pyramid views for Change password
+Pyramid views for Manage Credentials
 
 """
 import logging
@@ -43,11 +43,11 @@ from ..models import Notification
 from ..views import BaseView
 
 
-class ChangePasswordView(BaseView):
-    template = '../templates/changepassword.pt'
+class ManageCredentialsView(BaseView):
+    template = '../templates/managecredentials.pt'
 
     def __init__(self, request):
-        super(ChangePasswordView, self).__init__(request)
+        super(ManageCredentialsView, self).__init__(request)
         self.changepassword_form = EucaChangePasswordForm(self.request)
         referrer = urlparse(self.request.url).path
         referrer_root = referrer.split('?')[0]
@@ -57,7 +57,7 @@ class ChangePasswordView(BaseView):
         self.came_from = self.sanitize_url(self.request.params.get('came_from', referrer))
         self.changepassword_form_errors = []
 
-    @view_config(route_name='changepassword', request_method='GET', renderer=template, permission=NO_PERMISSION_REQUIRED)
+    @view_config(route_name='managecredentials', request_method='GET', renderer=template, permission=NO_PERMISSION_REQUIRED)
     def changepassword_page(self):
         session = self.request.session
         try:
