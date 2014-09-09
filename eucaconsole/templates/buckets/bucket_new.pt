@@ -1,7 +1,8 @@
 <metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
 <div metal:fill-slot="main_content">
-    <div class="row" id="contentwrap" ng-app="CreateBucketPage" ng-controller="CreateBucketPageCtrl">
+    <div class="row" id="contentwrap" ng-app="CreateBucketPage" ng-controller="CreateBucketPageCtrl"
+         ng-init="initController('${controller_options_json}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('buckets')}" i18n:translate="">Buckets</a></li>
@@ -16,14 +17,15 @@
                 <form id="create-bucket-form" method="post" data-abide="abide" ng-cloak=""
                       action="${request.route_path('bucket_create')}">
                     ${structure:create_form['csrf_token']}
-                    ${panel('form_field', field=create_form.bucket_name, pattern=bucket_name_pattern, leftcol_width=12, rightcol_width=12, inline=False)}
+                    ${panel('form_field', field=create_form.bucket_name, pattern=bucket_name_pattern, leftcol_width=12, rightcol_width=12, inline=False, ng_attrs={'model': 'bucketName'})}
                     <div class="row controls-wrapper">
                         ${panel('form_field', field=create_form.enable_versioning, reverse=True, checkbox=True)}
                     </div>
                     ${panel('s3_sharing_panel', sharing_form=sharing_form)}
                     <hr />
                     <div>
-                        <button type="submit" class="button" id="create-bucket-submit-button">
+                        <button type="submit" class="button" id="create-bucket-submit-button"
+                                ng-disabled="!hasChangesToBeSaved">
                             <span i18n:translate="">Create bucket</span>
                         </button>
                         <a href="${request.route_path('buckets')}" id="cancel-create-bucket-link"

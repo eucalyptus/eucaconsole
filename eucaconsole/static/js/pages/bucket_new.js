@@ -11,7 +11,15 @@ angular.module('CreateBucketPage', ['S3SharingPanel'])
         $scope.createBucketForm = $('#create-bucket-form');
         $scope.isSubmitted = false;
         $scope.hasChangesToBeSaved = false;
-        $scope.initController = function () {
+        $scope.bucketName = '';
+        $scope.initController = function (optionsJson) {
+            var unescapedJson = optionsJson.replace(/__apos__/g, "\'").replace(/__dquote__/g, '\\"').replace(/__bslash__/g, "\\");
+            var options = JSON.parse(unescapedJson);
+            $scope.bucketName = options['bucket_name'];
+            if (options['share_type'] == 'private') {
+                $('#share_type').find('input[value="private"]').click();
+            }
+            $scope.handleUnsavedChanges();
             $scope.handleUnsavedSharingEntry($scope.createBucketForm);
         };
         $scope.handleUnsavedChanges = function () {

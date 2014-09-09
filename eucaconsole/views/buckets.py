@@ -369,9 +369,9 @@ class BucketDetailsView(BaseView):
 
     @staticmethod
     def set_sharing_acl(request, bucket_object=None, item_acl=None):
-        sharing_grants_json = request.params.get('s3_sharing_acl')
-        if sharing_grants_json:
-            sharing_grants = json.loads(sharing_grants_json)
+        sharing_grants_json = request.params.get('s3_sharing_acl', '[]')
+        sharing_grants = json.loads(sharing_grants_json)
+        if sharing_grants:
             grants = []
             for grant in sharing_grants:
                 grants.append(Grant(
@@ -620,6 +620,7 @@ class CreateBucketView(BaseView):
             create_form=self.create_form,
             sharing_form=self.sharing_form,
             bucket_name_pattern=BUCKET_NAME_PATTERN,
+            controller_options_json=self.get_controller_options_json(),
         )
 
     @view_config(route_name='bucket_new', renderer=VIEW_TEMPLATE)
@@ -655,4 +656,10 @@ class CreateBucketView(BaseView):
             bucket.make_public()
         else:
             BucketDetailsView.set_sharing_acl(self.request, bucket_object=bucket)
+
+    def get_controller_options_json(self):
+        return BaseView.escape_json(json.dumps({
+            'bucket_name': self.request.params.get('bucket_name', ''),
+            'share_type': self.request.params.get('share_type', 'public'),
+        }))
 
