@@ -423,6 +423,6 @@ class ScalingGroupsFiltersForm(BaseSecureForm):
         region = request.session.get('region')
         self.availability_zones.choices = self.ec2_choices_manager.availability_zones(region, add_blank=False)
         self.vpc_zone_identifier.choices = self.vpc_choices_manager.vpc_subnets(add_blank=False) 
-        self.vpc_zone_identifier.choices.append(('None', _(u'No VPC')))
+        self.vpc_zone_identifier.choices.append(('None', _(u'No subnets')))
         self.vpc_zone_identifier.choices = sorted(self.vpc_zone_identifier.choices)
 
