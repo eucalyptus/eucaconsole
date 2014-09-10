@@ -272,7 +272,7 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
 
     @view_config(route_name='scalinggroup_update', request_method='POST', renderer=TEMPLATE)
     def scalinggroup_update(self):
-        
+        if self.edit_form.validate():
             location = self.request.route_path('scalinggroup_view', id=self.scaling_group.name)
             with boto_error_handler(self.request, location):
                 self.log_request(_(u"Updating scaling group {0}").format(self.scaling_group.name))
