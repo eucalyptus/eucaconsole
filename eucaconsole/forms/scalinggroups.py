@@ -406,7 +406,7 @@ class ScalingGroupsFiltersForm(BaseSecureForm):
     """Form class for filters on landing page"""
     launch_config_name = wtforms.SelectMultipleField(label=_(u'Launch configuration'))
     availability_zones = wtforms.SelectMultipleField(label=_(u'Availability zone'))
-    vpc_zone_identifier = wtforms.SelectMultipleField(label=_(u'VPC'))
+    vpc_zone_identifier = wtforms.SelectMultipleField(label=_(u'VPC subnet'))
     tags = TextEscapedField(label=_(u'Tags'))
 
     def __init__(self, request, 
@@ -423,4 +423,6 @@ class ScalingGroupsFiltersForm(BaseSecureForm):
         region = request.session.get('region')
         self.availability_zones.choices = self.ec2_choices_manager.availability_zones(region, add_blank=False)
         self.vpc_zone_identifier.choices = self.vpc_choices_manager.vpc_subnets(add_blank=False) 
+        self.vpc_zone_identifier.choices.append(('None', _(u'No VPC')))
+        self.vpc_zone_identifier.choices = sorted(self.vpc_zone_identifier.choices)
 

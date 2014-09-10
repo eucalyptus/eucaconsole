@@ -182,11 +182,15 @@ class ScalingGroupsJsonView(LandingPageView):
     def filter_by_vpc_zone_identifier(self, items):
         filtered_items = []
         for item in items:
+            # Begins with the item being included
             isMatched = True
             for vpc_zone in self.request.params.getall('vpc_zone_identifier'):
-                if item.vpc_zone_identifier is None:
-                    isMatched = False
+                if item.vpc_zone_identifier is None or item.vpc_zone_identifier == '':
+                    # Handle the 'No VPC' Case
+                    if vpc_zone != 'None':
+                        isMatched = False
                 elif item.vpc_zone_identifier and item.vpc_zone_identifier.find(vpc_zone) == -1:
+                    # Filter out if the subnet is not part of vpc_zone_identifier
                     isMatched = False
             if isMatched:
                 filtered_items.append(item)
