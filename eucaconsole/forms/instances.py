@@ -358,6 +358,7 @@ class InstancesFiltersForm(BaseSecureForm):
         self.scaling_group.choices = self.autoscale_choices_manager.scaling_groups(add_blank=False)
         self.roles.choices = self.iam_choices_manager.roles(add_blank=False)
         self.vpc_id.choices = self.vpc_choices_manager.vpc_networks(add_blank=False)
+        self.vpc_id.choices.append(('None', _(u'No VPC')))
 
     def get_availability_zone_choices(self, region):
         return self.ec2_choices_manager.availability_zones(region, add_blank=False)
