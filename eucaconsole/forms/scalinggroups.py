@@ -406,8 +406,8 @@ class ScalingGroupsFiltersForm(BaseSecureForm):
     """Form class for filters on landing page"""
     launch_config_name = wtforms.SelectMultipleField(label=_(u'Launch configuration'))
     availability_zones = wtforms.SelectMultipleField(label=_(u'Availability zone'))
-    tags = TextEscapedField(label=_(u'Tags'))
     vpc_zone_identifier = wtforms.SelectMultipleField(label=_(u'VPC'))
+    tags = TextEscapedField(label=_(u'Tags'))
 
     def __init__(self, request, 
                  ec2_conn=None, autoscale_conn=None, vpc_conn=None, **kwargs):
