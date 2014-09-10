@@ -184,7 +184,9 @@ class ScalingGroupsJsonView(LandingPageView):
         for item in items:
             isMatched = True
             for vpc_zone in self.request.params.getall('vpc_zone_identifier'):
-                if item.vpc_zone_identifier.find(vpc_zone) == -1:
+                if item.vpc_zone_identifier is None:
+                    isMatched = False
+                elif item.vpc_zone_identifier and item.vpc_zone_identifier.find(vpc_zone) == -1:
                     isMatched = False
             if isMatched:
                 filtered_items.append(item)
