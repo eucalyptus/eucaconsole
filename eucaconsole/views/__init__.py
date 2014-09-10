@@ -128,9 +128,6 @@ class BaseView(object):
             elif conn_type == 'iam':
                 host = self.request.registry.settings.get('iam.host', host)
                 port = int(self.request.registry.settings.get('iam.port', port))
-            elif conn_type == 'sts':
-                host = self.request.registry.settings.get('sts.host', host)
-                port = int(self.request.registry.settings.get('sts.port', port))
             elif conn_type == 's3':
                 host = self.request.registry.settings.get('s3.host', host)
                 port = int(self.request.registry.settings.get('s3.port', port))
