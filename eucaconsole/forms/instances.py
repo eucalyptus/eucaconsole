@@ -130,7 +130,7 @@ class LaunchInstanceForm(BaseSecureForm):
     def __init__(self, request, image=None, securitygroups=None, conn=None, vpc_conn=None, iam_conn=None, **kwargs):
         super(LaunchInstanceForm, self).__init__(request, **kwargs)
         self.conn = conn
-        self.vpc_conn=vpc_conn
+        self.vpc_conn = vpc_conn
         self.iam_conn = iam_conn
         self.image = image
         self.securitygroups = securitygroups
@@ -341,7 +341,7 @@ class InstancesFiltersForm(BaseSecureForm):
     vpc_id = wtforms.SelectMultipleField(label=_(u'VPC network'))
     subnet_id = wtforms.SelectMultipleField(label=_(u'VPC subnet'))
 
-    def __init__(self, request, ec2_conn=None, autoscale_conn=None, 
+    def __init__(self, request, ec2_conn=None, autoscale_conn=None,
                  iam_conn=None, vpc_conn=None, cloud_type='euca', **kwargs):
         super(InstancesFiltersForm, self).__init__(request, **kwargs)
         self.request = request
@@ -444,4 +444,3 @@ class InstanceCreateImageForm(BaseSecureForm):
         self.s3_bucket.help_text = s3_bucket_helptext
         s3_prefix_helptext = _(u'The beginning of your image file name')
         self.s3_prefix.help_text = s3_prefix_helptext
-

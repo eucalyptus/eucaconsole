@@ -141,14 +141,14 @@ class SecurityGroupsJsonView(LandingPageView):
                 vpc_name = ''
                 if securitygroup.vpc_id != '':
                     vpc = self.get_vpc_by_id(securitygroup.vpc_id)
-                    vpc_name = TaggedItemView.get_display_name(vpc) if vpc else '' 
+                    vpc_name = TaggedItemView.get_display_name(vpc) if vpc else ''
                 securitygroups.append(dict(
                     id=securitygroup.id,
                     description=securitygroup.description,
                     name=securitygroup.name,
                     owner_id=securitygroup.owner_id,
                     vpc_id=securitygroup.vpc_id,
-                    vpc_name=vpc_name, 
+                    vpc_name=vpc_name,
                     rules=SecurityGroupsView.get_rules(securitygroup.rules),
                     rules_egress=SecurityGroupsView.get_rules(securitygroup.rules_egress),
                     tags=TaggedItemView.get_tags_display(securitygroup.tags),
@@ -165,7 +165,7 @@ class SecurityGroupsJsonView(LandingPageView):
         for vpc in self.vpcs:
             if vpc_id == vpc.id:
                 return vpc
-        return None 
+        return None
 
 
 class SecurityGroupView(TaggedItemView):
@@ -180,7 +180,7 @@ class SecurityGroupView(TaggedItemView):
         self.security_group_vpc = ''
         if self.security_group and self.security_group.vpc_id:
             self.vpc = self.vpc_conn.get_all_vpcs(vpc_ids=self.security_group.vpc_id)[0]
-            self.security_group_vpc = TaggedItemView.get_display_name(self.vpc) if self.vpc else '' 
+            self.security_group_vpc = TaggedItemView.get_display_name(self.vpc) if self.vpc else ''
         self.securitygroup_form = SecurityGroupForm(
             self.request, self.vpc_conn, security_group=self.security_group, formdata=self.request.params or None)
         self.delete_form = SecurityGroupDeleteForm(self.request, formdata=self.request.params or None)
@@ -316,8 +316,8 @@ class SecurityGroupView(TaggedItemView):
                 owner_id = grant.get('owner_id')
                 group_id = grant.get('group_id')
 
-            auth_args = dict(group_id=security_group.id, ip_protocol=ip_protocol, 
-                from_port=from_port, to_port=to_port, cidr_ip=cidr_ip)
+            auth_args = dict(group_id=security_group.id, ip_protocol=ip_protocol,
+                             from_port=from_port, to_port=to_port, cidr_ip=cidr_ip)
 
             if traffic_type == 'ingress':
                 if group_id:
@@ -345,11 +345,11 @@ class SecurityGroupView(TaggedItemView):
     def revoke_all_rules(self, security_group=None, traffic_type='ingress'):
         if security_group is None:
             security_group = self.security_group
-        rules = [] 
+        rules = []
         if traffic_type == 'ingress':
-            rules = security_group.rules 
+            rules = security_group.rules
         else:
-            rules = security_group.rules_egress 
+            rules = security_group.rules_egress
         for rule in rules:
             grants = rule.grants
             from_port = int(rule.from_port) if rule.from_port else None
@@ -379,4 +379,3 @@ class SecurityGroupView(TaggedItemView):
                     self.conn.revoke_security_group(**params)
                 else:
                     self.conn.revoke_security_group_egress(**params)
-

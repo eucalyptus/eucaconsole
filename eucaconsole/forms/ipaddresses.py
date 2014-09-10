@@ -101,4 +101,3 @@ class IPAddressesFiltersForm(BaseSecureForm):
             ('standard', 'Standard'),
             ('vpc', 'VPC'),
         )
-

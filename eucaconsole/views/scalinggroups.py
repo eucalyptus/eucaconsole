@@ -44,9 +44,10 @@ from pyramid.view import view_config
 from ..constants.cloudwatch import METRIC_TYPES
 from ..forms.alarms import CloudWatchAlarmCreateForm
 from ..forms.scalinggroups import (
-    ScalingGroupDeleteForm, ScalingGroupEditForm, ScalingGroupCreateForm, ScalingGroupInstancesMarkUnhealthyForm,
-    ScalingGroupInstancesTerminateForm, ScalingGroupPolicyCreateForm, ScalingGroupPolicyDeleteForm,
-    ScalingGroupsFiltersForm)
+    ScalingGroupDeleteForm, ScalingGroupEditForm,
+    ScalingGroupCreateForm, ScalingGroupInstancesMarkUnhealthyForm,
+    ScalingGroupInstancesTerminateForm, ScalingGroupPolicyCreateForm,
+    ScalingGroupPolicyDeleteForm, ScalingGroupsFiltersForm)
 from ..i18n import _
 from ..models import Notification
 from ..views import LandingPageView, BaseView, TaggedItemView, JSONResponse
@@ -261,7 +262,7 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
             self.scaling_group = self.get_scaling_group()
             self.policies = self.get_policies(self.scaling_group)
             self.vpc = self.get_vpc(self.scaling_group)
-            self.vpc_name = TaggedItemView.get_display_name(self.vpc) if self.vpc else '' 
+            self.vpc_name = TaggedItemView.get_display_name(self.vpc) if self.vpc else ''
         self.edit_form = ScalingGroupEditForm(
             self.request, scaling_group=self.scaling_group, autoscale_conn=self.autoscale_conn, ec2_conn=self.ec2_conn,
             vpc_conn=self.vpc_conn, elb_conn=self.elb_conn, formdata=self.request.params or None)
@@ -336,7 +337,7 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
             )
         # If VPC subnet exists, do not specify availability zones; the API will figure them out based on the VPC subnets
         if not self.scaling_group.vpc_zone_identifier:
-            self.scaling_group.availability_zones = self.request.params.getall('availability_zones') 
+            self.scaling_group.availability_zones = self.request.params.getall('availability_zones')
         else:
             self.scaling_group.availability_zones = ''
         self.scaling_group.termination_policies = self.request.params.getall('termination_policies')
@@ -479,12 +480,12 @@ class ScalingGroupPoliciesView(BaseScalingGroupView):
 
     def __init__(self, request):
         super(ScalingGroupPoliciesView, self).__init__(request)
-        policy_ids = {};
+        policy_ids = {}
         with boto_error_handler(request):
             self.scaling_group = self.get_scaling_group()
             self.policies = self.get_policies(self.scaling_group)
             for policy in self.policies:
-                policy_ids[policy.name] = md5(policy.name).hexdigest()[:8] 
+                policy_ids[policy.name] = md5(policy.name).hexdigest()[:8]
             self.alarms = self.get_alarms()
         self.create_form = ScalingGroupPolicyCreateForm(
             self.request, scaling_group=self.scaling_group, alarms=self.alarms, formdata=self.request.params or None)
@@ -657,7 +658,7 @@ class ScalingGroupWizardView(BaseScalingGroupView):
                 else:
                     # EC2-VPC case
                     params.update(dict(
-                        vpc_zone_identifier=vpc_subnets, 
+                        vpc_zone_identifier=vpc_subnets,
                     ))
                     scaling_group = AutoScalingGroup(**params)
 
@@ -685,4 +686,3 @@ class ScalingGroupWizardView(BaseScalingGroupView):
                         cidr_block=vpc_subnet.cidr_block,
                     ))
         return subnets
-

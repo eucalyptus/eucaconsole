@@ -285,4 +285,3 @@ class IPAddressView(BaseView):
             instances = self.conn.get_only_instances(instance_ids=[self.elastic_ip.instance_id])
             return instances[0] if instances else None
         return None
-
