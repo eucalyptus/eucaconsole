@@ -80,7 +80,7 @@ class ReleaseIPForm(BaseSecureForm):
 class IPAddressesFiltersForm(BaseSecureForm):
     """Form class for filters on landing page"""
     assignment = wtforms.SelectMultipleField(label=_(u'Assignment'))
-    domain = wtforms.SelectMultipleField(label=_(u'VPC'))
+    domain = wtforms.SelectMultipleField(label=_(u'Scope'))
 
     def __init__(self, request, conn=None, **kwargs):
         super(IPAddressesFiltersForm, self).__init__(request, **kwargs)
