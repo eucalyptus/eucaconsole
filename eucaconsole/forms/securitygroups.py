@@ -92,4 +92,5 @@ class SecurityGroupsFiltersForm(BaseSecureForm):
         self.vpc_choices_manager = ChoicesManager(conn=vpc_conn)
         self.vpc_id.choices = self.vpc_choices_manager.vpc_networks(add_blank=False)
         self.vpc_id.choices.append(('None', _(u'No VPC')))
+        self.vpc_id.choices = sorted(self.vpc_id.choices)
 
