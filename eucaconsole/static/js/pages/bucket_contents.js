@@ -9,6 +9,8 @@ angular.module('BucketContentsPage', ['LandingPage'])
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.bucketName = '';
         $scope.prefix = '';
+        $scope.folder = '';  // gets set if we are deleting a folder specifically
+        $scope.obj_key = '';  // gets set if we are deleting an object specifically
         $scope.deletingAll = false;
         $scope.progress = 0;
         $scope.total = 0;
@@ -20,11 +22,17 @@ angular.module('BucketContentsPage', ['LandingPage'])
             $scope.getKeysUrl = getKeysUrl;
             $scope.prefix = prefix;
         };
-        $scope.revealModal = function (action) {
+        $scope.revealModal = function (action, item) {
             var modal = $('#' + action + '-modal');
-            if (action == 'delete-all') {
+            if (action == 'delete-all' || action == 'delete-folder') {
+                var url = $scope.getKeysUrl;
+                $scope.folder = '';
+                if (action == 'delete-folder') {
+                    url = url + '/' + item.name;
+                    $scope.folder = item.name;
+                }
                 var data = "csrf_token="+$('#csrf_token').val();
-                $http({method:'POST', url:$scope.getKeysUrl, data:data,
+                $http({method:'POST', url:url, data:data,
                        headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
                   success(function(oData) {
                     $scope.total = oData.results.length;
@@ -37,6 +45,7 @@ angular.module('BucketContentsPage', ['LandingPage'])
                   });
             }
             else {
+                $scope.obj_key = item.name;
                 modal.foundation('reveal', 'open');
             }
         };
@@ -62,14 +71,16 @@ angular.module('BucketContentsPage', ['LandingPage'])
                 if ($scope.progress > $scope.total) {
                     $scope.progress = $scope.total;
                 }
-                for (var i=0; i<chunk.length; i++) { // remove deleted items from table
-                    for (var j=0; j<$scope.items.length; j++) {
-                        var name = chunk[i].split('/').pop();
-                        if (name.indexOf('_$folder$') > -1) {
-                            name = name.slice(0, name.length - 9);
-                        }
-                        if (name == $scope.items[j].name) {
-                            $scope.items.splice(j, 1);
+                if ($scope.folder == '') {
+                    for (var i=0; i<chunk.length; i++) { // remove deleted items from table
+                        for (var j=0; j<$scope.items.length; j++) {
+                            var name = chunk[i].split('/').pop();
+                            if (name.indexOf('_$folder$') > -1) {
+                                name = name.slice(0, name.length - 9);
+                            }
+                            if (name == $scope.items[j].name) {
+                                $scope.items.splice(j, 1);
+                            }
                         }
                     }
                 }
@@ -79,7 +90,22 @@ angular.module('BucketContentsPage', ['LandingPage'])
                     if ($scope.index >= chunks) {
                         $scope.deletingAll = false;
                         Notify.success(oData.message);
-                        $('#delete-all-modal').foundation('reveal', 'close');
+                        if ($scope.folder != '') {
+                            $('#delete-folder-modal').foundation('reveal', 'close');
+                            for (var j=0; j<$scope.items.length; j++) {
+                                var name = $scope.folder;
+                                if (name.indexOf('_$folder$') > -1) {
+                                    name = name.slice(0, name.length - 9);
+                                }
+                                if (name == $scope.items[j].name) {
+                                    $scope.items.splice(j, 1);
+                                }
+                            }
+                            $scope.folder = '';
+                        }
+                        else {
+                            $('#delete-all-modal').foundation('reveal', 'close');
+                        }
                     }
                     else {
                         $scope.deleteChunk();
@@ -94,6 +120,28 @@ angular.module('BucketContentsPage', ['LandingPage'])
             $scope.deletingAll = false;
             $('#delete-all-modal').foundation('reveal', 'close');
             $scope.$broadcast('refresh');
+        };
+        $scope.deleteObject = function () {
+            var data = "csrf_token="+$('#csrf_token').val()+"&keys="+$scope.prefix+'/'+$scope.obj_key;
+            $http({method:'POST', url:$scope.deleteKeysUrl, data:data,
+                   headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
+              success(function(oData) {
+                if (oData.errors !== undefined) {
+                    console.log('error deleting some keys '+oData.errors);
+                }
+                for (var j=0; j<$scope.items.length; j++) {
+                    var name = $scope.obj_key;
+                    if (name == $scope.items[j].name) {
+                        $scope.items.splice(j, 1);
+                    }
+                }
+                $('#delete-object-modal').foundation('reveal', 'close');
+                Notify.success(oData.message);
+                $scope.obj_key = '';
+              }).
+              error(function (oData, status) {
+                Notify.failure("some kind of error");
+              });
         };
         $scope.$on('itemsLoaded', function($event, items) {
             $scope.items = items;
