@@ -40,14 +40,15 @@
                     <td tal:condition="not read_only">
                         <span ng-if="!isEphemeral(val)">
                             <input class="number" value="{{ val.size }}" size="4" required="required" pattern="integer"
-                                   ng-keyup="updateRootDevice($event, key, val.is_root)" ng-show="val.volume_type !== 'ephemeral'" />
+                                   ng-keyup="updateRootDeviceSize($event, key, val.is_root)" ng-show="val.volume_type !== 'ephemeral'" />
                             <small class="error" i18n:translate="">Size is required</small>
                         </span>
                     </td>
                     <td tal:condition="read_only">{{ val.size }}</td>
                     <td tal:condition="not read_only">
                         <span ng-if="!isEphemeral(val)">
-                            <input ng-show="showDOTflag(val)" type="checkbox" ng-checked="val.delete_on_termination === true"/>
+                            <input ng-show="showDOTflag(val)" type="checkbox" ng-checked="val.delete_on_termination === true"
+                                   ng-click="updateRootDeviceDelete($event, key, val.is_root)"/>
                         </span>
                     </td>
                     <td tal:condition="read_only">
