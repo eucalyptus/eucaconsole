@@ -515,8 +515,8 @@ class LandingPageView(BaseView):
                                 else:
                                     if filterkey_val in filter_value:
                                         matchedkey_count += 1
-                            elif filter_key == 'vpc_id' and filter_value[0] == 'None':
-                                # Handle the special case where vpc_id is None
+                            elif filter_value[0] == 'None':
+                                # Handle the special case where the filter value is None
                                 if filterkey_val is None:
                                     matchedkey_count += 1
                     else:
