@@ -338,7 +338,8 @@ class InstancesFiltersForm(BaseSecureForm):
     scaling_group = wtforms.SelectMultipleField(label=_(u'Scaling group'))
     tags = TextEscapedField(label=_(u'Tags'))
     roles = wtforms.SelectMultipleField(label=_(u'Roles'))
-    vpc_id = wtforms.SelectMultipleField(label=_(u'VPC'))
+    vpc_id = wtforms.SelectMultipleField(label=_(u'VPC network'))
+    subnet_id = wtforms.SelectMultipleField(label=_(u'VPC subnet'))
 
     def __init__(self, request, ec2_conn=None, autoscale_conn=None, 
                  iam_conn=None, vpc_conn=None, cloud_type='euca', **kwargs):
@@ -360,6 +361,7 @@ class InstancesFiltersForm(BaseSecureForm):
         self.vpc_id.choices = self.vpc_choices_manager.vpc_networks(add_blank=False)
         self.vpc_id.choices.append(('None', _(u'No VPC')))
         self.vpc_id.choices = sorted(self.vpc_id.choices)
+        self.subnet_id.choices = self.vpc_choices_manager.vpc_subnets(add_blank=False)
 
     def get_availability_zone_choices(self, region):
         return self.ec2_choices_manager.availability_zones(region, add_blank=False)
