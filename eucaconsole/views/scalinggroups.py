@@ -154,7 +154,9 @@ class ScalingGroupsJsonView(LandingPageView):
         scalinggroups = []
         with boto_error_handler(self.request):
             items = self.filter_items(
-                self.get_items(), ignore=['vpc_zone_identifier'],  autoscale=True)
+                self.get_items(), ignore=['availability_zones', 'vpc_zone_identifier'],  autoscale=True)
+            if self.request.params.getall('availability_zones'):
+                items = self.filter_by_availability_zones(items)
             if self.request.params.getall('vpc_zone_identifier'):
                 items = self.filter_by_vpc_zone_identifier(items)
         for group in items:
@@ -178,6 +180,18 @@ class ScalingGroupsJsonView(LandingPageView):
     def get_items(self):
         conn = self.get_connection(conn_type='autoscale')
         return conn.get_all_groups() if conn else []
+
+    def filter_by_availability_zones(self, items):
+        filtered_items = []
+        for item in items:
+            isMatched = False
+            for zone in self.request.params.getall('availability_zones'):
+                for selected_zone in item.availability_zones:
+                    if selected_zone == zone:
+                        isMatched = True
+            if isMatched:
+                filtered_items.append(item)
+        return filtered_items
 
     def filter_by_vpc_zone_identifier(self, items):
         filtered_items = []
