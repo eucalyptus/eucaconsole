@@ -163,11 +163,12 @@
         <div id="delete-folder-modal" class="reveal-modal small" data-reveal="">
             <h3 i18n:translate="">Delete folder and contents</h3>
             <p>
-                <span i18n:translate="">Deleting a folders also deletes all the object that folder contains. Leaving this page while the delete is in progress will cancel the operation.</span>
+                <span i18n:translate="">Deleting a folder also deletes all the objects that folder contains. Leaving this page while the delete is in progress will cancel the operation.</span>
             </p>
             <div ng-show="!deletingAll">
                 <p>
-                    <span i18n:translate="">Are you sure you want to delete all</span>&nbsp;{{ total }}&nbsp;<span i18n:translate=""> objects in </span>&nbsp;<b>${display_path}/{{ folder }}</b><span>?</span>
+                    <span i18n:translate="">Are you sure you want to delete</span>&nbsp;<span><b>${display_path}/{{ folder }}</b></span>
+                    &nbsp;<span i18n:translate="">and all</span>&nbsp;{{ total }}&nbsp;<span i18n:translate=""> objects it contains?</span>
                 </p>
                 <a class="button expand" id="delete-folder-btn" i18n:translate="" ng-click="deleteAll()">
                     Yes, Delete Folder and Contents
@@ -187,7 +188,7 @@
         <div id="delete-object-modal" class="reveal-modal small" data-reveal="">
             <h3 i18n:translate="">Delete object</h3>
             <p>
-                <span i18n:translate="">Deleting action cannot be undone. Are you sure you want to delete object.</span>&nbsp;<b>{{ obj_key }}</b><span>?</span>
+                <span i18n:translate="">This action cannot be undone. Are you sure you want to delete </span>&nbsp;<b>{{ obj_key }}</b><span>?</span>
             </p>
             <a class="button expand" id="delete-object-btn" i18n:translate="" ng-click="deleteObject()">
                 Yes, Delete Object
