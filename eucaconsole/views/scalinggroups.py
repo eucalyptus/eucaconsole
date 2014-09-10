@@ -272,7 +272,7 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
 
     @view_config(route_name='scalinggroup_update', request_method='POST', renderer=TEMPLATE)
     def scalinggroup_update(self):
-        if self.edit_form.validate():
+        
             location = self.request.route_path('scalinggroup_view', id=self.scaling_group.name)
             with boto_error_handler(self.request, location):
                 self.log_request(_(u"Updating scaling group {0}").format(self.scaling_group.name))
@@ -317,9 +317,11 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
     def update_properties(self):
         self.scaling_group.desired_capacity = self.request.params.get('desired_capacity', 1)
         self.scaling_group.launch_config_name = self.unescape_braces(self.request.params.get('launch_config'))
-        self.scaling_group.vpc_zone_identifier = ','.join(
-            [str(x) for x in self.request.params.getall('vpc_subnet')]
-        )
+        vpc_subnets = self.request.params.getall('vpc_subnet')
+        if vpc_subnets and vpc_subnets[0] != 'None':
+            self.scaling_group.vpc_zone_identifier = ','.join(
+                [str(x) for x in vpc_subnets]
+            )
         # If VPC subnet exists, do not specify availability zones; the API will figure them out based on the VPC subnets
         if not self.scaling_group.vpc_zone_identifier:
             self.scaling_group.availability_zones = self.request.params.getall('availability_zones') 
