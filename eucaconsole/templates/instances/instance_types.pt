@@ -1,0 +1,44 @@
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
+
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/instances.css')}" />
+</head>
+
+<div metal:fill-slot="main_content">
+    <div class="row" id="contentwrap">
+        <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+            <metal:crumbs metal:fill-slot="crumbs">
+                <li class="current"><a href="#" i18n:translate="">Instance Types</a></li>
+            </metal:crumbs>
+        </metal:breadcrumbs>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
+        <h3 id="pagetitle"><strong i18n:translate="">Instance Types</strong></h3>
+        <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
+            <metal:block metal:fill-slot="tableview_headers">
+                <th i18n:translate="">NAME (ID)</th>
+                <th i18n:translate="">STATUS</th>
+            </metal:block>
+            <metal:block metal:fill-slot="tableview_columns">
+                <td class="id breakword">{{ item.id }}</td>
+                <td class="status">
+                    <span class="label radius status {{ item.status }}">{{ item.status }}</span>
+                    <span class="dots" ng-show="item.transitional">&nbsp;</span>
+                </td>
+            </metal:block>
+        </div>
+    </div>
+</div>
+
+<metal:block metal:fill-slot="offcanvas_right">
+    <div id="help-content-div" class="help-content">
+        ${panel('help_instances', 'instance_landing_page' )}
+    </div>
+</metal:block>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_path('eucaconsole:static/js/pages/landingpage.js')}"></script>
+</div>
+
+</metal:block>
+

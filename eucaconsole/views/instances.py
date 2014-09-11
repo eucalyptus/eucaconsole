@@ -1298,3 +1298,21 @@ class InstanceCreateImageView(BaseInstanceView, BlockDeviceMappingItemView):
         my_hmac.update(policy)
         return base64.b64encode(my_hmac.digest())
 
+
+class InstanceTypesView(LandingPageView, BaseInstanceView):
+
+    def __init__(self, request):
+        super(InstanceTypesView, self).__init__(request)
+        self.request = request
+        self.conn = self.get_connection()
+        self.render_dict = dict(
+            filter_fields=True,
+            sort_keys=[],
+            filter_keys=[],
+            prefix='',
+        )
+
+    @view_config(route_name='instance_types', renderer='../templates/instances/instance_types.pt')
+    def instances_landing(self):
+        return self.render_dict
+
