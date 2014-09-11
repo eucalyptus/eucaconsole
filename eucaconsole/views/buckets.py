@@ -41,7 +41,7 @@ from pyramid.view import view_config
 
 from ..forms.buckets import (
     BucketDetailsForm, BucketItemDetailsForm, SharingPanelForm, BucketUpdateVersioningForm,
-    MetadataForm, CreateBucketForm,
+    MetadataForm, CreateBucketForm, CreateFolderForm
 )
 from ..i18n import _
 from ..models import Notification
@@ -130,9 +130,11 @@ class BucketContentsView(LandingPageView):
         self.s3_conn = self.get_connection(conn_type='s3')
         self.prefix = '/buckets'
         self.bucket_name = self.get_bucket_name(request)
+        self.create_folder_form = CreateFolderForm(request, formdata=self.request.params or None)
         self.subpath = request.subpath
         self.render_dict = dict(
             bucket_name=self.bucket_name,
+            create_folder_form=self.create_folder_form,
         )
 
     @view_config(route_name='bucket_contents', renderer=VIEW_TEMPLATE)
@@ -154,6 +156,10 @@ class BucketContentsView(LandingPageView):
             filter_keys=['name'],
         )
         return self.render_dict
+
+    @view_config(route_name='bucket_create_folder', renderer='json', request_method='POST', xhr=True)
+    def bucket_create_folder(self):
+        pass
 
     @staticmethod
     def get_bucket_name(request):

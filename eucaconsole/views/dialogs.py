@@ -254,3 +254,12 @@ def bucket_dialogs(context, request, bucket=None, landingpage=False, versioning_
         update_versioning_action=update_versioning_action,
     )
 
+
+@panel_config('create_folder_dialog', renderer='../templates/dialogs/create_folder_dialog.pt')
+def create_folder_dialog(context, request, bucket_name=None, create_folder_form=None):
+    """ Modal dialog creating a folder in a bucket."""
+    return dict(
+        bucket_name=bucket_name,
+        create_folder_form=create_folder_form,
+    )
+

@@ -185,3 +185,19 @@ class CreateBucketForm(BaseSecureForm):
             u'or objects can be archived to retrieve previous versions if necessary.')
 
 
+class CreateFolderForm(BaseSecureForm):
+    """S3 Create Folder form"""
+    folder_name_error_msg = _(
+        'Name is required and must contain lowercase letters, numbers, and/or hyphens')
+    folder_name = TextEscapedField(
+        label=_(u'Name'),
+        validators=[
+            validators.DataRequired(message=folder_name_error_msg),
+        ]
+    )
+
+    def __init__(self, request, **kwargs):
+        super(CreateFolderForm, self).__init__(request, **kwargs)
+        self.folder_name.error_msg = self.folder_name_error_msg
+
+
