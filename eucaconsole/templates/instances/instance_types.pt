@@ -5,7 +5,8 @@
 </head>
 
 <div metal:fill-slot="main_content">
-    <div class="row" id="contentwrap">
+    <div class="row" id="contentwrap" ng-app="LandingPage" ng-controller="ItemsCtrl"
+         ng-init="initController('instance_types', '', '${json_items_endpoint}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li class="current"><a href="#" i18n:translate="">Instance Types</a></li>
@@ -14,29 +15,56 @@
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
         <h3 id="pagetitle"><strong i18n:translate="">Instance Types</strong></h3>
-        <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
-            <metal:block metal:fill-slot="tableview_headers">
-                <th i18n:translate="">NAME (ID)</th>
-                <th i18n:translate="">STATUS</th>
-            </metal:block>
-            <metal:block metal:fill-slot="tableview_columns">
-                <td class="id breakword">{{ item.id }}</td>
-                <td class="status">
-                    <span class="label radius status {{ item.status }}">{{ item.status }}</span>
-                    <span class="dots" ng-show="item.transitional">&nbsp;</span>
-                </td>
-            </metal:block>
+        <div class="large-8 columns datagrid" id="landing-page-items">
+            <div ng-show="itemsLoading"><span class="dots"></span></div>
+            <div id="tableview" class="gridwrapper" ng-cloak="">
+                <!-- Begin table view -->
+                <table class="table" ng-show="!itemsLoading" ng-cloak="true">
+                    <thead>
+                        <tr>
+                            <th i18n:translate="">Name</th>
+                            <th i18n:translate="">CPU</th>
+                            <th i18n:translate="">Memory</th>
+                            <th i18n:translate="">Disk</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-cloak="true" ng-repeat="item in items | orderBy: sortBy | limitTo:displayCount">
+                            <td>{{ item.name }}</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr ng-show="!itemsLoading"></tr>
+                    </tbody>
+                </table>
+                <div ng-if="!itemsLoading">
+                    <div data-alert="alert" class="alert-box secondary" ng-if="items.length == 0" ng-cloak="">
+                        <span i18n:translate="">No items were found</span>
+                        <a href="#" class="close">&times;</a>
+                    </div>
+                </div>
+            </div>
+            <div>&nbsp;</div>
+            <div ng-cloak="" ng-if="items.length > displayCount" id="show-more-btn">
+                <span i18n:translate="">Displaying</span>
+                <strong>{{ displayCount }}</strong>
+                <span i18n:translate="">of</span>
+                <strong>{{ items.length }}</strong>
+                <span i18n:translate="">items</span>
+            </div>
+        </div>
+    </div>
+    <div class="large-4 columns">
+        <metal:block metal:use-macro="layout.global_macros['help_expando']" />
+        <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
         </div>
     </div>
 </div>
 
-<metal:block metal:fill-slot="offcanvas_right">
-    <div id="help-content-div" class="help-content">
-        ${panel('help_instances', 'instance_landing_page' )}
-    </div>
-</metal:block>
 
 <div metal:fill-slot="tail_js">
+    <script src="${request.static_path('eucaconsole:static/js/pages/custom_filters.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/landingpage.js')}"></script>
 </div>
 

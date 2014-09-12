@@ -1305,14 +1305,22 @@ class InstanceTypesView(LandingPageView, BaseInstanceView):
         super(InstanceTypesView, self).__init__(request)
         self.request = request
         self.conn = self.get_connection()
+        self.json_items_endpoint = self.get_json_endpoint('instance_types_json')
         self.render_dict = dict(
             filter_fields=True,
             sort_keys=[],
             filter_keys=[],
             prefix='',
+            json_items_endpoint=self.json_items_endpoint,
         )
 
     @view_config(route_name='instance_types', renderer='../templates/instances/instance_types.pt')
     def instances_landing(self):
         return self.render_dict
 
+    @view_config(route_name='instance_types_json', renderer='json', request_method='POST')
+    def instance_types_json(self):
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
+        instances = []
+        return dict(results=instances)

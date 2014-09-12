@@ -107,6 +107,7 @@ urls = [
 
     # Instance Types page
     Route(name='instance_types', pattern='/instance_types'),
+    Route(name='instance_types_json', pattern='/instance_types/json'),
 
     # Scaling Groups #####
     # Landing page
