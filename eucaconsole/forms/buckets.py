@@ -187,8 +187,7 @@ class CreateBucketForm(BaseSecureForm):
 
 class CreateFolderForm(BaseSecureForm):
     """S3 Create Folder form"""
-    folder_name_error_msg = _(
-        'Name is required and must contain lowercase letters, numbers, and/or hyphens')
+    folder_name_error_msg = _('Name is required and may not contain slashes')
     folder_name = TextEscapedField(
         label=_(u'Name'),
         validators=[

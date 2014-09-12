@@ -31,6 +31,7 @@ Pyramid views for Eucalyptus Object Store and AWS S3 Buckets
 from datetime import datetime
 import mimetypes
 import simplejson as json
+import urllib
 
 from boto.exception import StorageCreateError
 from boto.s3.acl import ACL, Grant, Policy
@@ -52,6 +53,7 @@ from . import boto_error_handler
 DELIMITER = '/'
 BUCKET_ITEM_URL_EXPIRES = 300  # Link to item expires in ___ seconds (after page load)
 BUCKET_NAME_PATTERN = '^[a-z0-9-]+$'
+FOLDER_NAME_PATTERN = '^[^\/]+$'
 
 
 class BucketsView(LandingPageView):
@@ -157,9 +159,25 @@ class BucketContentsView(LandingPageView):
         )
         return self.render_dict
 
-    @view_config(route_name='bucket_create_folder', renderer='json', request_method='POST', xhr=True)
+    @view_config(route_name='bucket_create_folder', request_method='POST')
     def bucket_create_folder(self):
-        pass
+        folder_name = self.request.params.get('folder_name')
+        if folder_name and self.create_folder_form.validate():
+            folder_name = folder_name.replace('/', '_')
+            subpath = self.request.subpath
+            prefix = DELIMITER.join(subpath[1:])
+            new_folder_key = '{0}/{1}/'.format(prefix, folder_name)
+            location = self.request.route_path('bucket_contents', name=self.bucket_name, subpath=subpath)
+            with boto_error_handler(self.request):
+                bucket = self.get_bucket(self.request, self.s3_conn, bucket_name=self.bucket_name)
+                new_folder = bucket.new_key(new_folder_key)
+                new_folder.set_contents_from_string('')
+                msg = '{0} {1}'.format(_(u'Successfully added folder'), folder_name)
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
+            return HTTPFound(location=location)
+        else:
+            self.request.error_messages = self.create_folder_form.get_errors_list()
+        return self.render_dict
 
     @staticmethod
     def get_bucket_name(request):
@@ -273,6 +291,7 @@ class BucketContentsJsonView(BaseView):
         return dict(results=items)
 
     def get_absolute_path(self, key_name):
+        key_name = urllib.quote(key_name, '')
         return '/bucketcontents/{0}/{1}'.format(self.bucket_name, key_name)
 
     def skip_item(self, key):
