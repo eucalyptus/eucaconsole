@@ -44,9 +44,10 @@ from pyramid.view import view_config
 from ..constants.cloudwatch import METRIC_TYPES
 from ..forms.alarms import CloudWatchAlarmCreateForm
 from ..forms.scalinggroups import (
-    ScalingGroupDeleteForm, ScalingGroupEditForm, ScalingGroupCreateForm, ScalingGroupInstancesMarkUnhealthyForm,
-    ScalingGroupInstancesTerminateForm, ScalingGroupPolicyCreateForm, ScalingGroupPolicyDeleteForm,
-    ScalingGroupsFiltersForm)
+    ScalingGroupDeleteForm, ScalingGroupEditForm,
+    ScalingGroupCreateForm, ScalingGroupInstancesMarkUnhealthyForm,
+    ScalingGroupInstancesTerminateForm, ScalingGroupPolicyCreateForm,
+    ScalingGroupPolicyDeleteForm, ScalingGroupsFiltersForm)
 from ..i18n import _
 from ..models import Notification
 from ..views import LandingPageView, BaseView, TaggedItemView, JSONResponse
@@ -87,10 +88,12 @@ class ScalingGroupsView(LandingPageView, DeleteScalingGroupMixin):
         self.json_items_endpoint = self.get_json_endpoint('scalinggroups_json')
         self.ec2_conn = self.get_connection()
         self.autoscale_conn = self.get_connection(conn_type='autoscale')
+        self.vpc_conn = self.get_connection(conn_type='vpc')
         self.filters_form = ScalingGroupsFiltersForm(
             self.request, formdata=self.request.params or None,
-            ec2_conn=self.ec2_conn, autoscale_conn=self.autoscale_conn)
-        self.filter_keys = ['availability_zones', 'launch_config', 'name', 'placement_group']
+            ec2_conn=self.ec2_conn, autoscale_conn=self.autoscale_conn, vpc_conn=self.vpc_conn)
+        self.filter_keys = [
+            'availability_zones', 'launch_config', 'name', 'placement_group', 'vpc_zone_identifier']
         # sort_keys are passed to sorting drop-down
         self.render_dict = dict(
             filter_fields=True,
@@ -151,7 +154,12 @@ class ScalingGroupsJsonView(LandingPageView):
             return JSONResponse(status=400, message="missing CSRF token")
         scalinggroups = []
         with boto_error_handler(self.request):
-            items = self.filter_items(self.get_items(), autoscale=True)
+            items = self.filter_items(
+                self.get_items(), ignore=['availability_zones', 'vpc_zone_identifier'],  autoscale=True)
+            if self.request.params.getall('availability_zones'):
+                items = self.filter_by_availability_zones(items)
+            if self.request.params.getall('vpc_zone_identifier'):
+                items = self.filter_by_vpc_zone_identifier(items)
         for group in items:
             group_instances = group.instances or []
             all_healthy = all(instance.health_status == 'Healthy' for instance in group_instances)
@@ -173,6 +181,33 @@ class ScalingGroupsJsonView(LandingPageView):
     def get_items(self):
         conn = self.get_connection(conn_type='autoscale')
         return conn.get_all_groups() if conn else []
+
+    def filter_by_availability_zones(self, items):
+        filtered_items = []
+        for item in items:
+            isMatched = False
+            for zone in self.request.params.getall('availability_zones'):
+                for selected_zone in item.availability_zones:
+                    if selected_zone == zone:
+                        isMatched = True
+            if isMatched:
+                filtered_items.append(item)
+        return filtered_items
+
+    def filter_by_vpc_zone_identifier(self, items):
+        filtered_items = []
+        for item in items:
+            isMatched = False
+            for vpc_zone in self.request.params.getall('vpc_zone_identifier'):
+                if item.vpc_zone_identifier is None or item.vpc_zone_identifier == '':
+                    # Handle the 'No subnets' Case
+                    if vpc_zone == 'None':
+                        isMatched = True
+                elif item.vpc_zone_identifier and item.vpc_zone_identifier.find(vpc_zone) != -1:
+                    isMatched = True
+            if isMatched:
+                filtered_items.append(item)
+        return filtered_items
 
 
 class BaseScalingGroupView(BaseView):
@@ -227,7 +262,7 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
             self.scaling_group = self.get_scaling_group()
             self.policies = self.get_policies(self.scaling_group)
             self.vpc = self.get_vpc(self.scaling_group)
-            self.vpc_name = TaggedItemView.get_display_name(self.vpc) if self.vpc else '' 
+            self.vpc_name = TaggedItemView.get_display_name(self.vpc) if self.vpc else ''
         self.edit_form = ScalingGroupEditForm(
             self.request, scaling_group=self.scaling_group, autoscale_conn=self.autoscale_conn, ec2_conn=self.ec2_conn,
             vpc_conn=self.vpc_conn, elb_conn=self.elb_conn, formdata=self.request.params or None)
@@ -295,12 +330,14 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
     def update_properties(self):
         self.scaling_group.desired_capacity = self.request.params.get('desired_capacity', 1)
         self.scaling_group.launch_config_name = self.unescape_braces(self.request.params.get('launch_config'))
-        self.scaling_group.vpc_zone_identifier = ','.join(
-            [str(x) for x in self.request.params.getall('vpc_subnet')]
-        )
+        vpc_subnets = self.request.params.getall('vpc_subnet')
+        if vpc_subnets and vpc_subnets[0] != 'None':
+            self.scaling_group.vpc_zone_identifier = ','.join(
+                [str(x) for x in vpc_subnets]
+            )
         # If VPC subnet exists, do not specify availability zones; the API will figure them out based on the VPC subnets
         if not self.scaling_group.vpc_zone_identifier:
-            self.scaling_group.availability_zones = self.request.params.getall('availability_zones') 
+            self.scaling_group.availability_zones = self.request.params.getall('availability_zones')
         else:
             self.scaling_group.availability_zones = ''
         self.scaling_group.termination_policies = self.request.params.getall('termination_policies')
@@ -443,12 +480,12 @@ class ScalingGroupPoliciesView(BaseScalingGroupView):
 
     def __init__(self, request):
         super(ScalingGroupPoliciesView, self).__init__(request)
-        policy_ids = {};
+        policy_ids = {}
         with boto_error_handler(request):
             self.scaling_group = self.get_scaling_group()
             self.policies = self.get_policies(self.scaling_group)
             for policy in self.policies:
-                policy_ids[policy.name] = md5(policy.name).hexdigest()[:8] 
+                policy_ids[policy.name] = md5(policy.name).hexdigest()[:8]
             self.alarms = self.get_alarms()
         self.create_form = ScalingGroupPolicyCreateForm(
             self.request, scaling_group=self.scaling_group, alarms=self.alarms, formdata=self.request.params or None)
@@ -621,7 +658,7 @@ class ScalingGroupWizardView(BaseScalingGroupView):
                 else:
                     # EC2-VPC case
                     params.update(dict(
-                        vpc_zone_identifier=vpc_subnets, 
+                        vpc_zone_identifier=vpc_subnets,
                     ))
                     scaling_group = AutoScalingGroup(**params)
 
@@ -649,4 +686,3 @@ class ScalingGroupWizardView(BaseScalingGroupView):
                         cidr_block=vpc_subnet.cidr_block,
                     ))
         return subnets
-
