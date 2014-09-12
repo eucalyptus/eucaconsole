@@ -9,35 +9,60 @@
          ng-init="initController('instance_types', '', '${json_items_endpoint}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
-                <li class="current"><a href="#" i18n:translate="">Instance Types</a></li>
+                <li class="current"><a href="#" i18n:translate="">Instance types</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
-        <h3 id="pagetitle"><strong i18n:translate="">Instance Types</strong></h3>
-        <div class="large-8 columns datagrid" id="landing-page-items">
+        <h3 id="pagetitle"><strong i18n:translate="">Instance types</strong></h3>
+        <div class="large-8 columns" id="landing-page-items">
             <div ng-show="itemsLoading"><span class="dots"></span></div>
             <div id="tableview" class="gridwrapper" ng-cloak="">
                 <!-- Begin table view -->
                 <table class="table" ng-show="!itemsLoading" ng-cloak="true">
                     <thead>
                         <tr>
-                            <th i18n:translate="">Name</th>
+                            <th i18n:translate="">NAME</th>
                             <th i18n:translate="">CPU</th>
-                            <th i18n:translate="">Memory</th>
-                            <th i18n:translate="">Disk</th>
+                            <th i18n:translate="">MEMORY</th>
+                            <th i18n:translate="">DISK</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr ng-cloak="true" ng-repeat="item in items | orderBy: sortBy | limitTo:displayCount">
                             <td>{{ item.name }}</td>
-                            <td>{{ item.cpu }}</td>
-                            <td>{{ item.memory }}</td>
-                            <td>{{ item.disk }}</td>
+                            <td>
+                                <select>
+                                    <option value="{{ item.cpu }}">{{ item.cpu }}</option>
+                                    <option value="2">2</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select>
+                                    <option value="{{ item.memory }}">{{ item.memory }}</option>
+                                    <option value="2GB">2GB</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select>
+                                    <option value="{{ item.disk }}">{{ item.disk }}</option>
+                                    <option value="2TB">2TB</option>
+                                </select>
+                            </td>
                         </tr>
                         <tr ng-show="!itemsLoading"></tr>
                     </tbody>
                 </table>
+                <hr />
+                <div>
+                    <button type="submit" class="button" ng-disabled="isNotValid" i18n:translate="">
+                        Save Changes
+                    </button>
+                    <a href="${request.route_path('instance_types')}"
+                        class="cancel-link" i18n:translate="">Cancel</a>
+               </div>
+            </div>
+            <div>
                 <div ng-if="!itemsLoading">
                     <div data-alert="alert" class="alert-box secondary" ng-if="items.length == 0" ng-cloak="">
                         <span i18n:translate="">No items were found</span>
@@ -45,19 +70,13 @@
                     </div>
                 </div>
             </div>
-            <div>&nbsp;</div>
-            <div ng-cloak="" ng-if="items.length > displayCount" id="show-more-btn">
-                <span i18n:translate="">Displaying</span>
-                <strong>{{ displayCount }}</strong>
-                <span i18n:translate="">of</span>
-                <strong>{{ items.length }}</strong>
-                <span i18n:translate="">items</span>
-            </div>
         </div>
-    </div>
-    <div class="large-4 columns">
-        <metal:block metal:use-macro="layout.global_macros['help_expando']" />
-        <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
+        <div class="large-4 columns">
+            <metal:block metal:use-macro="layout.global_macros['help_expando']" />
+            <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
+                <!--! HELP CONTENT HERE -->
+                <div id="help-html-console_instance_detail" ng-include="'${layout.help_path('console_instance_detail.html')}'"></div> 
+            </div>
         </div>
     </div>
 </div>
