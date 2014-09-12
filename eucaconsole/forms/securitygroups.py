@@ -82,7 +82,7 @@ class SecurityGroupDeleteForm(BaseSecureForm):
 
 class SecurityGroupsFiltersForm(BaseSecureForm):
     """Form class for filters on landing page"""
-    vpc_id = wtforms.SelectMultipleField(label=_(u'VPC'))
+    vpc_id = wtforms.SelectMultipleField(label=_(u'VPC network'))
     tags = TextEscapedField(label=_(u'Tags'))
 
     def __init__(self, request, vpc_conn=None, cloud_type='euca', **kwargs):
