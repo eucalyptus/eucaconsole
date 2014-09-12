@@ -174,7 +174,7 @@ class ConnectionManager(object):
                 path = '/services/Euare'
                 conn_class = boto.iam.IAMConnection
             elif conn_type == 's3':
-                path = '/services/Walrus'
+                path = '/services/objectstorage'
                 conn_class = S3Connection
             elif conn_type == 'vpc':
                 conn_class = boto.vpc.VPCConnection
