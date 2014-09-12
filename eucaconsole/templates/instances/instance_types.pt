@@ -31,9 +31,9 @@
                     <tbody>
                         <tr ng-cloak="true" ng-repeat="item in items | orderBy: sortBy | limitTo:displayCount">
                             <td>{{ item.name }}</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
+                            <td>{{ item.cpu }}</td>
+                            <td>{{ item.memory }}</td>
+                            <td>{{ item.disk }}</td>
                         </tr>
                         <tr ng-show="!itemsLoading"></tr>
                     </tbody>

@@ -1323,4 +1323,16 @@ class InstanceTypesView(LandingPageView, BaseInstanceView):
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
         instances = []
+        instances.append(dict(
+            name='micro',
+            cpu=1,
+            memory='2GB',
+            disk='4TB',
+        ))
+        instances.append(dict(
+            name='small',
+            cpu=2,
+            memory='4GB',
+            disk='8TB',
+        ))
         return dict(results=instances)
