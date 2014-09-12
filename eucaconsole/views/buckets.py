@@ -82,16 +82,18 @@ class BucketsView(LandingPageView):
         # sort_keys are passed to sorting drop-down
         return self.render_dict
 
-    @view_config(route_name='bucket_delete', renderer=VIEW_TEMPLATE)
+    @view_config(route_name='bucket_delete', renderer=VIEW_TEMPLATE, request_method='POST')
     def bucket_delete(self):
-        bucket_name = self.request.matchdict.get('name')
-        s3_conn = self.get_connection(conn_type='s3')
-        with boto_error_handler(self.request):
-            bucket = s3_conn.head_bucket(bucket_name)
-            bucket.delete()
-            msg = '{0} {1}'.format(_(u'Successfully deteted bucket'), bucket_name)
-            self.request.session.flash(msg, queue=Notification.SUCCESS)
-        return HTTPFound(location=self.request.route_path('buckets'))
+        if self.is_csrf_valid():
+            bucket_name = self.request.matchdict.get('name')
+            s3_conn = self.get_connection(conn_type='s3')
+            with boto_error_handler(self.request):
+                bucket = s3_conn.head_bucket(bucket_name)
+                bucket.delete()
+                msg = '{0} {1}'.format(_(u'Successfully deteted bucket'), bucket_name)
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
+            return HTTPFound(location=self.request.route_path('buckets'))
+        return self.render_dict
 
 class BucketsJsonView(BaseView):
     def __init__(self, request):
@@ -143,6 +145,8 @@ class BucketXHRView(BaseView):
         """
         Deletes keys from a bucket, attempting to do as many as possible, reporting errors back at the end.
         """
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
         keys = self.request.params.get('keys')
         if not keys:
             return dict(message=_(u"keys must be specified."), errors=errors)
