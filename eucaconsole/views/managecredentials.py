@@ -32,14 +32,17 @@ import logging
 
 from urllib2 import HTTPError, URLError
 from urlparse import urlparse
+from boto.connection import AWSAuthConnection
 
 from pyramid.httpexceptions import HTTPFound
 from pyramid.security import NO_PERMISSION_REQUIRED, remember
+from pyramid.settings import asbool
 from pyramid.view import view_config
 
 from ..forms.login import EucaChangePasswordForm
 from ..i18n import _
 from ..models import Notification
+from ..models.auth import EucaAuthenticator
 from ..views import BaseView
 
 
@@ -86,7 +89,16 @@ class ManageCredentialsView(BaseView):
         account="huh?"
         username="what?"
 
-        auth = self.get_connection(conn_type='sts', cloud_type='euca')
+        host = self.request.registry.settings.get('clchost', 'localhost')
+        port = int(self.request.registry.settings.get('clcport', 8773))
+        host = self.request.registry.settings.get('sts.host', host)
+        port = int(self.request.registry.settings.get('sts.port', port))
+        validate_certs = asbool(self.request.registry.settings.get('connection.ssl.validation', False))
+        conn = AWSAuthConnection(None)
+        ca_certs_file = conn.ca_certificates_file
+        conn = None
+        ca_certs_file = self.request.registry.settings.get('connection.ssl.certfile', ca_certs_file)
+        auth = EucaAuthenticator(host, port, validate_certs=validate_certs, ca_certs=ca_certs_file)
         changepassword_form = EucaChangePasswordForm(self.request, formdata=self.request.params)
         if changepassword_form.validate():
             account = self.request.params.get('account')

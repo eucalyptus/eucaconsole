@@ -27,8 +27,7 @@
 Tests for change password forms
 
 """
-from urllib2 import URLError
-
+import socket
 from pyramid.testing import DummyRequest
 
 from eucaconsole.forms.login import EucaChangePasswordForm
@@ -63,5 +62,5 @@ class EucaChangePasswordTestCase(BaseTestCase):
     def test_euca_authentication_failure(self):
         kwargs = dict(account=self.account, user=self.username, passwd=self.current_password,
                       new_passwd=self.new_password, duration=self.duration)
-        self.assertRaises(URLError, self.auth.authenticate, **kwargs)
+        self.assertRaises(socket.gaierror, self.auth.authenticate, **kwargs)
 

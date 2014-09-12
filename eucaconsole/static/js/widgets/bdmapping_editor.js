@@ -135,13 +135,24 @@ angular.module('BlockDeviceMappingEditor', [])
             if (val.virtual_name && val.virtual_name.indexOf('ephemeral') == 0) return true;
             return false;
         };
-        $scope.updateRootDevice = function ($event, key, is_root) {
+        $scope.updateRootDeviceSize = function ($event, key, is_root) {
             var bdMappingText = $scope.bdmTextarea.val();
             if (bdMappingText && is_root) {
                 var bdMapping = JSON.parse(bdMappingText);
                 var rootDevice = bdMapping[key] || '';
                 if (rootDevice) {
                     bdMapping[key]['size'] = parseInt($($event.target).val(), 10);
+                    $scope.bdmTextarea.val(JSON.stringify(bdMapping));
+                }
+            }
+        };
+        $scope.updateRootDeviceDelete = function ($event, key, is_root) {
+            var bdMappingText = $scope.bdmTextarea.val();
+            if (bdMappingText && is_root) {
+                var bdMapping = JSON.parse(bdMappingText);
+                var rootDevice = bdMapping[key] || '';
+                if (rootDevice) {
+                    bdMapping[key]['delete_on_termination'] = ($($event.target).val().toLowerCase() === 'true');
                     $scope.bdmTextarea.val(JSON.stringify(bdMapping));
                 }
             }
