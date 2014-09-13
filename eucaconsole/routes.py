@@ -52,6 +52,7 @@ urls = [
     # Login/logout #####
     Route(name='login', pattern='/login'),
     Route(name='logout', pattern='/logout'),
+    Route(name='managecredentials', pattern='/managecredentials'),
     Route(name='changepassword', pattern='/changepassword'),
 
     # Common #####
