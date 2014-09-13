@@ -60,10 +60,10 @@
                 </div>
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
-                <a id="tile-item-dropdown_${bucket_name}_{{ item.name | escapeHTMLTagID }}"
+                <a id="{{ ('tile-item-dropdown_${bucket_name}_'+item.name) | escapeHTMLTagID }}"
                    class="tiny secondary button dropdown right"
-                   data-dropdown="item-dropdown_${bucket_name}_{{ item.name |  escapeHTMLTagID }}"><i class="fi-widget"></i></a>
-                <ul id="item-dropdown_${bucket_name}_{{ item.name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
+                   data-dropdown="{{ ('item-dropdown_${bucket_name}_'+item.name) |  escapeHTMLTagID }}"><i class="fi-widget"></i></a>
+                <ul id="{{ ('item-dropdown_${bucket_name}_'+item.name) | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
                     <li ng-show="item.is_folder">
                         <a i18n:translate="" ng-href="{{ item.absolute_path }}">View contents</a>
                     </li>
@@ -109,10 +109,10 @@
                 <td>{{ item.last_modified | date: '${layout.angular_date_format}' }}</td>
                 <td>
                     <span class="actions">
-                        <a id="table-item-dropdown_${bucket_name}_{{ item.name | escapeHTMLTagID }}"
+                        <a id="{{ ('table-item-dropdown_${bucket_name}_'+item.name) | escapeHTMLTagID }}"
                            class="tiny secondary button dropdown right round"
-                           data-dropdown="item-dropdown_${bucket_name}_{{ item.name | escapeHTMLTagID }}"><i class="fi-widget"></i></a>
-                        <ul id="item-dropdown_${bucket_name}_{{ item.name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
+                           data-dropdown="{{ ('item-dropdown_${bucket_name}_'+item.name) | escapeHTMLTagID }}"><i class="fi-widget"></i></a>
+                        <ul id="{{ ('item-dropdown_${bucket_name}_'+item.name) | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
                             <li ng-show="item.is_folder">
                                 <a i18n:translate="" ng-href="{{ item.absolute_path }}">View contents</a>
                             </li>
