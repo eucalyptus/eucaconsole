@@ -27,6 +27,7 @@
 Tests for login forms
 
 """
+import socket
 from urllib2 import HTTPError, URLError
 
 import boto
@@ -75,11 +76,12 @@ class EucaAuthTestCase(BaseTestCase):
 
     def test_euca_authentication_failure(self):
         kwargs = dict(account=self.account, user=self.username, passwd=self.password, duration=self.duration)
-        self.assertRaises(URLError, self.auth.authenticate, **kwargs)
+        self.assertRaises(socket.gaierror, self.auth.authenticate, **kwargs)
 
 
 class AWSAuthTestCase(BaseTestCase):
-    endpoint = 'https://sts.amazonaws.com'
+    host = 'sts.amazonaws.com'
+    port = 443
     expected_url = ''.join([
         'Action=GetSessionToken',
         '&AWSAccessKeyId=12345678901234567890&DurationSeconds=3600',
@@ -90,14 +92,15 @@ class AWSAuthTestCase(BaseTestCase):
     auth = AWSAuthenticator(package=expected_url)
 
     def test_aws_authenticator(self):
-        self.assertEqual(self.auth.endpoint, self.endpoint)
+        self.assertEqual(self.auth.host, self.host)
+        self.assertEqual(self.auth.port, self.port)
         self.assertEqual(self.auth.package, self.expected_url)
 
     def test_aws_authentication_failure(self):
         import logging; logging.info("url = "+self.expected_url)
         try:
             self.auth.authenticate(timeout=10)
-            self.asertFalse(True, msg="Auth should have thrown an exception")
+            self.assertFalse(True, msg="Auth should have thrown an exception")
         except (HTTPError, URLError):
             self.assertTrue(True, msg="Auth threw an exception, to be expected")
 

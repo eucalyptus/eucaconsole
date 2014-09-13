@@ -42,6 +42,7 @@ from ..views import LandingPageView, TaggedItemView, BaseView, JSONResponse
 from ..views.images import ImagesView
 from . import boto_error_handler
 
+import panels
 
 class SnapshotsView(LandingPageView):
     VIEW_TEMPLATE = '../templates/snapshots/snapshots.pt'
@@ -115,17 +116,12 @@ class SnapshotsView(LandingPageView):
         else:
             return dict(results=None)
 
-    # same code is in SnapshotView below. Remove duplicate when GUI-662 refactoring happens
-    def get_root_device_name(self, img):
-        return img.root_device_name.replace('&#x2f;', '/').replace(
-            '&#x2f;', '/') if img.root_device_name is not None else '/dev/sda'
-
     def get_images_registered(self, snap_id):
         ret = []
         images = self.conn.get_all_images(owners='self')
         for img in images:
             if img.block_device_mapping is not None:
-                vol = img.block_device_mapping.get(self.get_root_device_name(img), None)
+                vol = img.block_device_mapping.get(panels.get_root_device_name(img), None)
                 if vol is not None and snap_id == vol.snapshot_id:
                     ret.append(img)
         return ret or None
@@ -269,16 +265,12 @@ class SnapshotView(TaggedItemView):
             return len(self.snapshot_form.volume_id.choices)
         return 0
 
-    def get_root_device_name(self, img):
-        return img.root_device_name.replace('&#x2f;', '/').replace(
-            '&#x2f;', '/') if img.root_device_name is not None else '/dev/sda'
-
     def get_images_registered(self, snap_id):
         ret = []
         images = self.conn.get_all_images(owners='self')
         for img in images:
             if img.block_device_mapping is not None:
-                vol = img.block_device_mapping.get(self.get_root_device_name(img), None)
+                vol = img.block_device_mapping.get(panels.get_root_device_name(img), None)
                 if vol is not None and snap_id == vol.snapshot_id:
                     ret.append(img)
         return ret or None

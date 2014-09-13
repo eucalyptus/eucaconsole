@@ -66,11 +66,11 @@
                 </li>
 <li class="li step stepexpand">
                     <span class="ph cmd"> You can optionally enter one or more names for your new instance(s) in the
-                            <span class="ph uicontrol">Name(s)</span> text box(es). </span>
+                            <span class="ph uicontrol">Instance name(s)</span> text box(es). </span>
                 </li>
 <li class="li step stepexpand">
-                    <span class="ph cmd"> Select an instance type from the <span class="ph uicontrol">Instance type</span>
-                        drop-down list box.. </span>
+                    <span class="ph cmd"> Select an instance size from the <span class="ph uicontrol">Instance size</span>
+                        drop-down list box.</span>
                     <div class="itemgroup info">
                         <div class="note note"><span class="notetitle">Note:</span>  Information about the instance size is displayed when you click the
                             instance size link. </div>
@@ -81,6 +81,11 @@
                     <span class="ph cmd"> If you want to specify an availability zone other than the default, select
                         an availability zone using the <span class="ph uicontrol">Availability zone</span>
                         drop-down list box. </span>
+                    <div class="itemgroup info">
+                        <div class="note note"><span class="notetitle">Note:</span>  The availability zone does not apply if you choose a VPC network for
+                            your security settings in the proceeding panel. </div>
+
+                    </div>
                 </li>
 <li class="li step stepexpand">
                     <span class="ph cmd">To help you manage your cloud's instances, images, and other Eucalyptus
@@ -129,16 +134,28 @@
 
         
 
-        <div class="body taskbody"><p class="shortdesc">This panel allows you to specify the key pair and security group that will be
+        <div class="body taskbody"><p class="shortdesc">This panel allows you to specify a Virtual Private Cloud (VPC) network, key pair and security group that will be
             used by your new instance(s). NOTE: if you create a key pair or security group in this
             section, they will automatically be selected for use in your new instance. </p>
 
             <ol class="ol steps"><li class="li step stepexpand">
+                    <span class="ph cmd"> Select a VPC network from the drop-down list box.</span>
+                    <div class="itemgroup stepresult">If a VPC network is selected, the <span class="ph uicontrol">VPC subnet</span>
+                        and the <span class="ph uicontrol">Auto-assign public IP</span> drop-down list boxes display.</div>
+                </li>
+<li class="li step stepexpand">
+                    <span class="ph cmd"> Select a CIDR range from the <span class="ph uicontrol">VPC subnet</span> drop-down list box.</span>
+                </li>
+<li class="li step stepexpand">
+                    <span class="ph cmd"> Select whether to enable or disable public IP auto assignment from the
+                        <span class="ph uicontrol">Auto-assign public IP</span> drop-down list box.</span>
+                </li>
+<li class="li step stepexpand">
                     <span class="ph cmd"> Select a key pair using the <span class="ph uicontrol">Key name</span> drop-down list
                         box. </span>
                     <div class="itemgroup info">
                         <div class="note note"><span class="notetitle">Note:</span>  You can also create a new key pair by clicking the <span class="ph uicontrol">Create
-                                key pair</span> link.</div>
+                                a key pair</span> link.</div>
 </div>
 
                 </li>
@@ -146,14 +163,16 @@
                     <span class="ph cmd"> Select a security group using the <span class="ph uicontrol">Security group</span>
                         drop-down list box. </span>
                     <div class="itemgroup info">
-                        <div class="note note"><span class="notetitle">Note:</span>  You can also create a new security group by clicking the
-                                <span class="ph uicontrol">Create security group</span> link. </div>
-
                         <div class="note note"><span class="notetitle">Note:</span>  If you select the default security group, make sure that you've added
                             rules to the default security group so that you can access your
                             instances. </div>
 
+                        <div class="note note"><span class="notetitle">Note:</span>  You can also create a new security group by clicking the
+                                <span class="ph uicontrol">Create a security group</span> link. This opens the Create Security Group dialog box.</div>
+
                     </div>
+                    <div class="itemgroup stepresult"> If one of the existing security groups is chosen, the rules associated with
+                    the security group display.</div>
                 </li>
 <li class="li step stepexpand">
                     <span class="ph cmd"> You can optionally specify an IAM role using the <span class="ph uicontrol">Role</span>
@@ -202,7 +221,7 @@
                             <span class="ph uicontrol">RAM disk ID (RAMFS)</span> drop-down list box. </span>
                 </li>
 <li class="li step">
-                    <span class="ph cmd">Click the <span class="ph uicontrol">Enable monitoring</span> check box to specify that
+                    <span class="ph cmd"> Click the <span class="ph uicontrol">Enable monitoring</span> check box to specify that
                         detailed CloudWatch metric gathering should be enabled for your new
                         instance(s).</span>
                 </li>
@@ -213,7 +232,7 @@
                         Translation) device or an elastic IP address mapped to the instance. </span>
                 </li>
 <li class="li step">
-                    <span class="ph cmd">The Storage section will only display if you have an EBS-backed image. If
+                    <span class="ph cmd"> The Storage section will only display if you have an EBS-backed image. If
                         this is the case, you can configure additional storage for your
                         instance:</span>
                     <ol type="a" class="ol substeps" id="launch_instances_ui_advanced_steps__launch_instances_ui_advanced_storage_steps">
@@ -223,13 +242,13 @@
                         </li>
 
                         <li class="li substep">
-                            <span class="ph cmd">Type the desired mapping for the storage into the
+                            <span class="ph cmd"> Type the desired mapping for the storage into the
                                 <span class="ph uicontrol">Mapping</span> text box (for example:<samp class="ph codeph">
                                     /dev/sdb</samp>).</span>
                         </li>
 
                         <li class="li substep">
-                            <span class="ph cmd">If you want to create the storage from an existing snapshot,
+                            <span class="ph cmd"> If you want to create the storage from an existing snapshot,
                                 specify it in the <span class="ph uicontrol">Create from snapshot</span>
                                 drop-down list box.</span>
                         </li>
@@ -246,7 +265,7 @@
                         </li>
 
                         <li class="li substep">
-                            <span class="ph cmd">Click the <span class="ph uicontrol">Add device</span> button to add this storage.</span>
+                            <span class="ph cmd"> Click the <span class="ph uicontrol">Add device</span> button to add this storage.</span>
                         </li>
 
                         <li class="li substep">

@@ -130,7 +130,7 @@ class LaunchInstanceForm(BaseSecureForm):
     def __init__(self, request, image=None, securitygroups=None, conn=None, vpc_conn=None, iam_conn=None, **kwargs):
         super(LaunchInstanceForm, self).__init__(request, **kwargs)
         self.conn = conn
-        self.vpc_conn=vpc_conn
+        self.vpc_conn = vpc_conn
         self.iam_conn = iam_conn
         self.image = image
         self.securitygroups = securitygroups
@@ -338,14 +338,18 @@ class InstancesFiltersForm(BaseSecureForm):
     scaling_group = wtforms.SelectMultipleField(label=_(u'Scaling group'))
     tags = TextEscapedField(label=_(u'Tags'))
     roles = wtforms.SelectMultipleField(label=_(u'Roles'))
+    vpc_id = wtforms.SelectMultipleField(label=_(u'VPC network'))
+    subnet_id = wtforms.SelectMultipleField(label=_(u'VPC subnet'))
 
-    def __init__(self, request, ec2_conn=None, autoscale_conn=None, iam_conn=None, cloud_type='euca', **kwargs):
+    def __init__(self, request, ec2_conn=None, autoscale_conn=None,
+                 iam_conn=None, vpc_conn=None, cloud_type='euca', **kwargs):
         super(InstancesFiltersForm, self).__init__(request, **kwargs)
         self.request = request
         self.cloud_type = cloud_type
         self.ec2_choices_manager = ChoicesManager(conn=ec2_conn)
         self.autoscale_choices_manager = ChoicesManager(conn=autoscale_conn)
         self.iam_choices_manager = ChoicesManager(conn=iam_conn)
+        self.vpc_choices_manager = ChoicesManager(conn=vpc_conn)
         region = request.session.get('region')
         self.availability_zone.choices = self.get_availability_zone_choices(region)
         self.state.choices = self.get_status_choices()
@@ -354,6 +358,10 @@ class InstancesFiltersForm(BaseSecureForm):
         self.security_group.choices = self.ec2_choices_manager.security_groups(add_blank=False)
         self.scaling_group.choices = self.autoscale_choices_manager.scaling_groups(add_blank=False)
         self.roles.choices = self.iam_choices_manager.roles(add_blank=False)
+        self.vpc_id.choices = self.vpc_choices_manager.vpc_networks(add_blank=False)
+        self.vpc_id.choices.append(('None', _(u'No VPC')))
+        self.vpc_id.choices = sorted(self.vpc_id.choices)
+        self.subnet_id.choices = self.vpc_choices_manager.vpc_subnets(add_blank=False)
 
     def get_availability_zone_choices(self, region):
         return self.ec2_choices_manager.availability_zones(region, add_blank=False)
@@ -436,4 +444,3 @@ class InstanceCreateImageForm(BaseSecureForm):
         self.s3_bucket.help_text = s3_bucket_helptext
         s3_prefix_helptext = _(u'The beginning of your image file name')
         self.s3_prefix.help_text = s3_prefix_helptext
-
