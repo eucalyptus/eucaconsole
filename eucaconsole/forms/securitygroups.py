@@ -56,7 +56,7 @@ class SecurityGroupForm(BaseSecureForm):
 
     def __init__(self, request, vpc_conn=None, security_group=None, **kwargs):
         super(SecurityGroupForm, self).__init__(request, **kwargs)
-        self.vpc_conn=vpc_conn
+        self.vpc_conn = vpc_conn
         self.name.error_msg = self.name_error_msg  # Used for Foundation Abide error message
         self.description.error_msg = self.desc_error_msg  # Used for Foundation Abide error message
         self.choices_manager = ChoicesManager(conn=vpc_conn)
@@ -82,4 +82,14 @@ class SecurityGroupDeleteForm(BaseSecureForm):
 
 class SecurityGroupsFiltersForm(BaseSecureForm):
     """Form class for filters on landing page"""
+    vpc_id = wtforms.SelectMultipleField(label=_(u'VPC network'))
     tags = TextEscapedField(label=_(u'Tags'))
+
+    def __init__(self, request, vpc_conn=None, cloud_type='euca', **kwargs):
+        super(SecurityGroupsFiltersForm, self).__init__(request, **kwargs)
+        self.request = request
+        self.cloud_type = cloud_type
+        self.vpc_choices_manager = ChoicesManager(conn=vpc_conn)
+        self.vpc_id.choices = self.vpc_choices_manager.vpc_networks(add_blank=False)
+        self.vpc_id.choices.append(('None', _(u'No VPC')))
+        self.vpc_id.choices = sorted(self.vpc_id.choices)

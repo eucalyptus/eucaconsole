@@ -34,7 +34,12 @@
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
                 <a class="tiny secondary button dropdown right" data-dropdown="item-dropdown_{{ item.id }}"><i class="fi-widget"></i></a>
                 <ul id="item-dropdown_{{ item.id }}" class="f-dropdown" data-dropdown-content="">
-                    <li><a i18n:translate="" ng-href="${prefix}/{{ item.id }}">View details</a></li>
+                    <li ng-show="!item.fake_id">
+                        <a i18n:translate="" ng-href="${prefix}/{{ item.id }}">View details</a>
+                    </li>
+                    <li ng-show="item.fake_id">
+                        <a i18n:translate="" ng-href="${prefix}/{{ item.fake_id }}">View details</a>
+                    </li>
                     <li ng-show="item.root_device_type == 'instance-store' &amp;&amp; item.fake_id">
                         <a id="cancel-image-creation-action" ng-click="cancelCreate($event, item)" i18n:translate="">Cancel image creation</a>
                     </li>
@@ -51,7 +56,12 @@
                 </ul>
             </div>
             <div metal:fill-slot="tile_header">
-                <a ng-href="${prefix}/{{ item.id }}">{{ item.tagged_name || item.id }}</a>
+                <span ng-show="!item.fake_id">
+                    <a ng-href="${prefix}/{{ item.id }}">{{ item.tagged_name || item.id }}</a>
+                </span>
+                <span ng-show="item.fake_id">
+                    <a ng-href="${prefix}/{{ item.fake_id }}">{{ item.id }}</a>
+                </span>
             </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
                 <div>
@@ -108,7 +118,12 @@
                 <th i18n:translate="">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
-                <td class="id breakword"><a ng-href="${prefix}/{{ item.id }}">{{ item.tagged_name || item.id | ellipsis: 30 }}</a></td>
+                <td class="id breakword" ng-show="!item.fake_id">
+                    <a ng-href="${prefix}/{{ item.id }}">{{ item.tagged_name || item.id | ellipsis: 30 }}</a>
+                </td>
+                <td class="id breakword" ng-show="item.fake_id">
+                    <a ng-href="${prefix}/{{ item.fake_id }}">{{ item.id }}</a>
+                </td>
                 <td class="status">
                     <div class="progress" ng-show="item.transitional"><span
                             class="meter" style="width: {{ item.progress }}">{{ item.progress }}%</span><span>({{ item.state }})</span>
@@ -126,7 +141,12 @@
                     <span class="actions">
                         <a class="tiny secondary button dropdown round" data-dropdown="item-dropdown_{{ item.id }}"><i class="fi-widget"></i></a>
                         <ul id="item-dropdown_{{ item.id }}" class="f-dropdown" data-dropdown-content="">
-                            <li><a i18n:translate="" ng-href="${prefix}/{{ item.id }}">View details</a></li>
+                            <li ng-show="!item.fake_id">
+                                <a i18n:translate="" ng-href="${prefix}/{{ item.id }}">View details</a>
+                            </li>
+                            <li ng-show="item.fake_id">
+                                <a i18n:translate="" ng-href="${prefix}/{{ item.fake_id }}">View details</a>
+                            </li>
                             <li ng-show="item.root_device_type == 'instance-store' &amp;&amp; item.fake_id">
                                 <a id="cancel-image-creation-action" ng-click="cancelCreate($event, item)" i18n:translate="">Cancel image creation</a>
                             </li>

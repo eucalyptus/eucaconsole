@@ -80,7 +80,7 @@ class JSONResponse(Response):
 
 
 # Can use this for 1.5, but the fix below for 1.4 also works in 1.5.
-#class JSONError(HTTPException):
+# class JSONError(HTTPException):
 class JSONError(HTTPUnprocessableEntity):
     def __init__(self, status=400, message=None, **kwargs):
         super(JSONError, self).__init__(**kwargs)
@@ -145,9 +145,9 @@ class BaseView(object):
 
     def _store_file_(self, filename, mime_type, contents):
         # disable using memcache for file storage
-        #try:
+        # try:
         #    default_term.set('file_cache', (filename, mime_type, contents))
-        #except pylibmc.Error as ex:
+        # except pylibmc.Error as ex:
         #    logging.warn("memcached misconfigured or not reachable, using session storage")
         # to re-enable, uncomment lines above and indent 2 lines below
         session = self.request.session
@@ -156,9 +156,9 @@ class BaseView(object):
     def _has_file_(self):
         # check both cache and session
         # disable using memcache for file storage
-        #try:
+        # try:
         #    return not isinstance(default_term.get('file_cache'), NoValue)
-        #except pylibmc.Error as ex:
+        # except pylibmc.Error as ex:
         # to re-enable, uncomment lines above and indent 2 lines below
         session = self.request.session
         return 'file_cache' in session
@@ -273,7 +273,7 @@ class BaseView(object):
         elif level == 'error':
             logging.error(log_message)
         # Very useful to use this when an error is logged and you need more details
-        #import traceback; traceback.print_exc()
+        # import traceback; traceback.print_exc()
 
     def log_request(self, message):
         self.log_message(self.request, message)
@@ -512,6 +512,10 @@ class LandingPageView(BaseView):
                                 else:
                                     if filterkey_val in filter_value:
                                         matchedkey_count += 1
+                            elif filter_value[0] == 'None':
+                                # Handle the special case where the filter value is None
+                                if filterkey_val is None:
+                                    matchedkey_count += 1
                     else:
                         matchedkey_count += 1  # Handle empty param values
                 if matchedkey_count == len(filter_params):
@@ -571,7 +575,7 @@ def boto_error_handler(request, location=None, template="{0}"):
 @view_config(route_name='file_download', request_method='POST')
 def file_download(request):
     # disable using memcache for file storage
-    #try:
+    # try:
     #    file_value = default_term.get('file_cache')
     #    if not isinstance(file_value, NoValue):
     #        (filename, mime_type, contents) = file_value
@@ -580,7 +584,7 @@ def file_download(request):
     #        response.body = str(contents)
     #        response.content_disposition = 'attachment; filename="{name}"'.format(name=filename)
     #        return response
-    #except pylibmc.Error as ex:
+    # except pylibmc.Error as ex:
     #    logging.warn('memcached not responding')
     # try session instead
     session = request.session
@@ -602,10 +606,10 @@ _magic_desc = magic.Magic(mime=False)
 _magic_desc._thread_check = lambda: None
 _magic_lock = threading.Lock()
 
+
 def guess_mimetype_from_buffer(buffer, mime=False):
     with _magic_lock:
         if mime:
             return _magic_type.from_buffer(buffer)
         else:
             return _magic_desc.from_buffer(buffer)
-        
