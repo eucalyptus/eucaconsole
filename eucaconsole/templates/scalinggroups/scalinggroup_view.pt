@@ -67,6 +67,7 @@
                         ${panel('form_field', field=edit_form['vpc_subnet'], **vpc_subnet_html_attrs)}
                     </div>
                     <div tal:condition="not vpc_network">
+                        <input type="hidden" name="vpc_subnet" value="None" />
                         ${panel('form_field', field=edit_form['availability_zones'], **avail_zone_html_attrs)}
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="vpc_network">
