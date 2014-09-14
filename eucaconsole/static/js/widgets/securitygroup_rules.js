@@ -265,7 +265,7 @@ angular.module('SecurityGroupRules', [])
                     'name': name,
                     'owner_id': owner_id
                 }],
-                'type': $scope.ruleType,
+                'rule_type': $scope.ruleType,
                 'fresh': 'new'
             }; 
         };
@@ -366,8 +366,8 @@ angular.module('SecurityGroupRules', [])
             }
             $scope.ruleType = storeRuleType;   // Restore the ruleType value
         };
-        $scope.selectRuleType = function (type) {
-            $scope.ruleType = type;
+        $scope.selectRuleType = function (ruleType) {
+            $scope.ruleType = ruleType;
             if ($scope.ruleType === 'inbound') {
                 $scope.inboundButtonClass = 'active';
                 $scope.outboundButtonClass = 'inactive';

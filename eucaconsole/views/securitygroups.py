@@ -108,7 +108,7 @@ class SecurityGroupsView(LandingPageView):
         return security_group
 
     @staticmethod
-    def get_rules(rules, type='inbound'):
+    def get_rules(rules, rule_type='inbound'):
         rules_list = []
         for rule in rules:
             grants = [
@@ -119,7 +119,7 @@ class SecurityGroupsView(LandingPageView):
                 from_port=rule.from_port,
                 to_port=rule.to_port,
                 grants=grants,
-                type=type,
+                rule_type=rule_type,
             ))
         return rules_list
 
@@ -151,7 +151,7 @@ class SecurityGroupsJsonView(LandingPageView):
                     vpc_id=securitygroup.vpc_id,
                     vpc_name=vpc_name,
                     rules=SecurityGroupsView.get_rules(securitygroup.rules),
-                    rules_egress=SecurityGroupsView.get_rules(securitygroup.rules_egress, type='outbound'),
+                    rules_egress=SecurityGroupsView.get_rules(securitygroup.rules_egress, rule_type='outbound'),
                     tags=TaggedItemView.get_tags_display(securitygroup.tags),
                 ))
         return dict(results=securitygroups)

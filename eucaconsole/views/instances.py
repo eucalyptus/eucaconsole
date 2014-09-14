@@ -1012,7 +1012,7 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
         for security_group in self.securitygroups:
             rules = SecurityGroupsView.get_rules(security_group.rules)
             if security_group.vpc_id is not None:
-                rules_egress = SecurityGroupsView.get_rules(security_group.rules_egress, type='outbound')
+                rules_egress = SecurityGroupsView.get_rules(security_group.rules_egress, rule_type='outbound')
                 rules = rules + rules_egress 
             rules_dict[security_group.id] = rules
         return rules_dict
