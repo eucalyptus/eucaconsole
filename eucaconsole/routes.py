@@ -52,6 +52,7 @@ urls = [
     # Login/logout #####
     Route(name='login', pattern='/login'),
     Route(name='logout', pattern='/logout'),
+    Route(name='managecredentials', pattern='/managecredentials'),
     Route(name='changepassword', pattern='/changepassword'),
 
     # Common #####
@@ -66,6 +67,7 @@ urls = [
     Route(name='image_state_json', pattern='/images/{id}/state/json'),
     Route(name='image_update', pattern='/images/{id}/update'),
     Route(name='image_deregister', pattern='/images/{id}/deregister'),
+    Route(name='image_cancel', pattern='/images/{id}/cancel'),
 
     # Instances #####
     # Landing page
@@ -180,9 +182,12 @@ urls = [
     Route(name='bucket_new', pattern='/buckets/new'),
     Route(name='bucket_create', pattern='/buckets/create'),
     Route(name='bucket_contents', pattern='/bucketcontents/*subpath'),
+    Route(name='bucket_keys', pattern='/bucketkeys/*subpath'),
     Route(name='bucket_details', pattern='/buckets/{name}/details'),
     Route(name='bucket_objects_count_versioning_json', pattern='/buckets/{name}/objectscount.json'),
     Route(name='bucket_update', pattern='/buckets/{name}/update'),
+    Route(name='bucket_delete', pattern='/buckets/{name}/delete'),
+    Route(name='bucket_delete_keys', pattern='/buckets/{name}/delete_keys'),
     Route(name='bucket_update_versioning', pattern='/buckets/{name}/updateversioning'),
     Route(name='bucket_item_details', pattern='/buckets/{name}/itemdetails/*subpath'),
     Route(name='bucket_item_update', pattern='/buckets/{name}/itemupdate/*subpath'),
@@ -233,9 +238,11 @@ urls = [
     # Accounts #####
     Route(name='accounts', pattern='/accounts'),
     Route(name='accounts_json', pattern='/accounts/json'),
+    Route(name='account_new', pattern='/accounts/new'),
     Route(name='accounts_delete', pattern='/accounts/delete'),
     Route(name='account_create', pattern='/accounts/create'),
     Route(name='account_view', pattern='/accounts/{name}'),
+    Route(name='account_summary_json', pattern='/accounts/{name}/summary'),
     Route(name='account_update', pattern='/accounts/{name}/update'),
     Route(name='account_delete', pattern='/accounts/{name}/delete'),
     Route(name='account_policies_json', pattern='/accounts/{name}/policies_json'),

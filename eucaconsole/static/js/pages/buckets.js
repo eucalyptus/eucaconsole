@@ -21,11 +21,12 @@ angular.module('BucketsPage', ['LandingPage'])
         $scope.revealModal = function (action, bucket) {
             var modal = $('#' + action + '-modal');
             $scope.bucketName = bucket['bucket_name'];
+            $scope.bucketCount = $scope.bucketCounts[$scope.bucketName];
             $scope.updateVersioningAction = bucket['update_versioning_action'];
-            modal.on('opened', function () {
-                // Set form action based on bucket choice
-                modal.find('form').attr('action', $scope.updateVersioningFormUrl.replace('_name_', $scope.bucketName));
-            });
+            // Set form action based on bucket choice
+            var form_action = $('#' + action + '-form').attr('action');
+            form_action = form_action.replace('_name_', $scope.bucketName);
+            $('#' + action + '-form').attr('action', form_action);
             modal.foundation('reveal', 'open');
         };
         $scope.getVersioningActionFromStatus = function (versioningStatus) {

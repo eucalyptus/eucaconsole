@@ -14,7 +14,7 @@
                                     '${request.route_path('user_delete', name=user.user_name)}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
-                <li><a href="${request.route_path('users')}" i18n:translate="">IAM users</a></li>
+                <li><a href="${request.route_path('users')}" i18n:translate="">Users</a></li>
                 <li class="current"><a href="#">${user.user_name}</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
@@ -64,7 +64,7 @@
                                 </div>
                                 <div class="row controls-wrapper readonly">
                                     <div class="small-3 columns"><label i18n:translate="">ARN</label></div>
-                                    <div class="small-9 columns value">${user_arn if user_arn else ''}</div>
+                                    <div class="small-9 columns value" ng-non-bindable="">${user_arn if user_arn else ''}</div>
                                 </div>
                                 ${panel('form_field', field=user_form['path'], leftcol_width=3, rightcol_width=9)}
                             </div>
@@ -365,7 +365,7 @@
                             <div class="section">
                                 <h6 i18n:translate="">Quotas</h6>
                                 ${structure:user_form['csrf_token']}
-                                ${panel('quotas_panel', quota_form=user_form, quota_err=quota_err)}
+                                ${panel('quotas_panel', quota_form=quotas_form, quota_err=quota_err)}
                             </div>
                             <hr />
                             <small id="quota-error" ng-cloak="" class="error" i18n:translate="">Quota values must be integers greater than zero.</small>

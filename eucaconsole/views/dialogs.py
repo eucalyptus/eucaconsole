@@ -238,7 +238,7 @@ def image_dialogs(context, request, image=None, image_name_id='', landingpage=Fa
 
 
 @panel_config('bucket_dialogs', renderer='../templates/dialogs/bucket_dialogs.pt')
-def bucket_dialogs(context, request, bucket=None, landingpage=False, versioning_form=None):
+def bucket_dialogs(context, request, bucket=None, landingpage=False, versioning_form=None, delete_form=None):
     """ Modal dialogs for Bucket landing and detail page."""
     versioning_status = bucket.get_versioning_status() if bucket else None
     update_versioning_action = ''
@@ -251,6 +251,7 @@ def bucket_dialogs(context, request, bucket=None, landingpage=False, versioning_
         versioning_status=versioning_status,
         landingpage=landingpage,
         versioning_form=versioning_form,
+        delete_form=delete_form,
         update_versioning_action=update_versioning_action,
     )
 

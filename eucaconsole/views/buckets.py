@@ -36,13 +36,14 @@ import urllib
 from boto.exception import StorageCreateError
 from boto.s3.acl import ACL, Grant, Policy
 from boto.s3.prefix import Prefix
+from boto.exception import BotoServerError
 
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from pyramid.view import view_config
 
 from ..forms.buckets import (
     BucketDetailsForm, BucketItemDetailsForm, SharingPanelForm, BucketUpdateVersioningForm,
-    MetadataForm, CreateBucketForm, CreateFolderForm
+    MetadataForm, CreateBucketForm, CreateFolderForm, BucketDeleteForm
 )
 from ..i18n import _
 from ..models import Notification
@@ -72,6 +73,7 @@ class BucketsView(LandingPageView):
         self.render_dict = dict(
             prefix=self.prefix,
             versioning_form=BucketUpdateVersioningForm(request, formdata=self.request.params or None),
+            delete_form=BucketDeleteForm(request),
             update_versioning_url=request.route_path('bucket_update_versioning', name='_name_'),
             initial_sort_key='bucket_name',
             json_items_endpoint=self.get_json_endpoint('buckets_json'),
@@ -84,6 +86,19 @@ class BucketsView(LandingPageView):
     @view_config(route_name='buckets', renderer=VIEW_TEMPLATE)
     def buckets_landing(self):
         # sort_keys are passed to sorting drop-down
+        return self.render_dict
+
+    @view_config(route_name='bucket_delete', renderer=VIEW_TEMPLATE, request_method='POST')
+    def bucket_delete(self):
+        if self.is_csrf_valid():
+            bucket_name = self.request.matchdict.get('name')
+            s3_conn = self.get_connection(conn_type='s3')
+            with boto_error_handler(self.request):
+                bucket = s3_conn.head_bucket(bucket_name)
+                bucket.delete()
+                msg = '{0} {1}'.format(_(u'Successfully deteted bucket'), bucket_name)
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
+            return HTTPFound(location=self.request.route_path('buckets'))
         return self.render_dict
 
 
@@ -123,6 +138,41 @@ class BucketsJsonView(BaseView):
         return self.s3_conn.get_all_buckets() if self.s3_conn else []
 
 
+class BucketXHRView(BaseView):
+    """
+    A view for bucket related XHR calls that carrys very little overhead
+    """
+    def __init__(self, request):
+        super(BucketXHRView, self).__init__(request)
+        self.s3_conn = self.get_connection(conn_type='s3')
+        self.bucket_name = request.matchdict.get('name')
+
+    @view_config(route_name='bucket_delete_keys', renderer='json', request_method='POST', xhr=True)
+    def bucket_delete_keys(self):
+        """
+        Deletes keys from a bucket, attempting to do as many as possible, reporting errors back at the end.
+        """
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
+        keys = self.request.params.get('keys')
+        if not keys:
+            return dict(message=_(u"keys must be specified."), errors=[])
+        bucket = self.s3_conn.head_bucket(self.bucket_name)
+        errors = []
+        self.log_request(_(u"Deleting keys from {0} : {1}").format(self.bucket_name, keys))
+        for k in keys.split(','):
+            key = bucket.get_key(k, validate=False)
+            try:
+                key.delete()
+            except BotoServerError as err:
+                self.log_request("Couldn't delete "+k+":"+err.message)
+                errors.append(k)
+        if len(errors) == 0:
+            return dict(message=_(u"Successfully deleted all keys."))
+        else:
+            return dict(message=_(u"Failed to delete all keys."), errors=errors)
+
+
 class BucketContentsView(LandingPageView):
     """Views for actions on single bucket"""
     VIEW_TEMPLATE = '../templates/buckets/bucket_contents.pt'
@@ -151,6 +201,8 @@ class BucketContentsView(LandingPageView):
         json_route_path = self.request.route_path('bucket_contents', name=self.bucket_name, subpath=self.subpath)
         self.render_dict.update(
             prefix=self.prefix,
+            key_prefix='/'.join(self.subpath[1:]) if len(self.subpath) > 0 else '',
+            display_path='/'.join(self.subpath),
             initial_sort_key='name',
             json_items_endpoint=self.get_json_endpoint(json_route_path, path=True),
             sort_keys=self.sort_keys,
@@ -290,6 +342,21 @@ class BucketContentsJsonView(BaseView):
             items.append(item)
         return dict(results=items)
 
+    @view_config(route_name='bucket_keys', renderer='json', request_method='POST', xhr=True)
+    def bucket_keys_json(self):
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
+        items = []
+        list_prefix = '{0}/'.format(DELIMITER.join(self.subpath[1:])) if len(self.subpath) > 1 else ''
+        params = dict()
+        if list_prefix:
+            params.update(dict(prefix=list_prefix))
+        bucket_items = self.bucket.list(**params)
+
+        for key in bucket_items:
+            items.append(key.name)
+        return dict(results=items)
+
     def get_absolute_path(self, key_name):
         key_name = urllib.quote(key_name, '')
         return '/bucketcontents/{0}/{1}'.format(self.bucket_name, key_name)
@@ -325,6 +392,7 @@ class BucketDetailsView(BaseView):
             details_form=self.details_form,
             sharing_form=self.sharing_form,
             versioning_form=self.versioning_form,
+            delete_form=BucketDeleteForm(request),
             bucket=self.bucket,
             bucket_creation_date=self.get_bucket_creation_date(self.s3_conn, self.bucket.name),
             bucket_name=self.bucket.name,

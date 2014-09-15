@@ -55,6 +55,10 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row controls-wrapper readonly">
+                        <div class="small-3 columns"><label i18n:translate="">VPC IP Assignment</label></div>
+                        <div class="small-9 columns value">${launch_config_vpc_ip_assignment}</div>
+                    </div>
                     <div class="row controls-wrapper readonly"
                          tal:define="monitored launch_config.instance_monitoring.enabled == 'true'">
                         <div class="small-3 columns"><label i18n:translate="">Monitoring</label></div>

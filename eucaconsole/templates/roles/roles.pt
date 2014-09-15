@@ -9,12 +9,12 @@
          ng-init="initController('roles', '${initial_sort_key}', '${json_items_endpoint}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
-                <li class="current"><a href="#" i18n:translate="">IAM roles</a></li>
+                <li class="current"><a href="#" i18n:translate="">Roles</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
-        <h3 id="pagetitle"><strong i18n:translate="">IAM Roles</strong></h3>
+        <h3 id="pagetitle"><strong i18n:translate="">Roles</strong></h3>
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
                 <a class="button" i18n:translate="" id="add-role-btn"

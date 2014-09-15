@@ -37,14 +37,16 @@ from . import BaseSecureForm, ChoicesManager
 
 class AllocateIPsForm(BaseSecureForm):
     """Allocate IP Addresses form, used on IP Addresses landing page in modal dialog"""
+    domain = wtforms.SelectField(label=_(u'Scope'))
     ipcount_error_msg = _(u'Please enter a whole number greater than zero')
     ipcount = wtforms.IntegerField(
-        label=_(u'Number to allocate:'),
+        label=_(u'Number of addresses'),
         validators=[validators.InputRequired(message=ipcount_error_msg)],
     )
 
     def __init__(self, request, **kwargs):
         super(AllocateIPsForm, self).__init__(request, **kwargs)
+        self.domain.choices = [('standard', _(u'Standard')), ('vpc', _(u'VPC'))]
         self.ipcount.data = 1
         self.ipcount.error_msg = self.ipcount_error_msg
 
@@ -78,11 +80,13 @@ class ReleaseIPForm(BaseSecureForm):
 class IPAddressesFiltersForm(BaseSecureForm):
     """Form class for filters on landing page"""
     assignment = wtforms.SelectMultipleField(label=_(u'Assignment'))
+    domain = wtforms.SelectMultipleField(label=_(u'Scope'))
 
     def __init__(self, request, conn=None, **kwargs):
         super(IPAddressesFiltersForm, self).__init__(request, **kwargs)
         self.request = request
         self.assignment.choices = self.get_assignment_choices()
+        self.domain.choices = self.get_domain_choices()
 
     @staticmethod
     def get_assignment_choices():
@@ -91,3 +95,9 @@ class IPAddressesFiltersForm(BaseSecureForm):
             ('', 'Unassigned'),
         )
 
+    @staticmethod
+    def get_domain_choices():
+        return (
+            ('standard', 'Standard'),
+            ('vpc', 'VPC'),
+        )

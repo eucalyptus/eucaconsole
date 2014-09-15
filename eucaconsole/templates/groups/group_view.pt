@@ -13,7 +13,7 @@
          ng-app="GroupPage" ng-controller="GroupPageCtrl" ng-init="initController(${group_users}, ${all_users})">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
-                <li><a href="${request.route_path('groups')}" i18n:translate="">IAM groups</a></li>
+                <li><a href="${request.route_path('groups')}" i18n:translate="">Groups</a></li>
                 <li class="current">
                     <a tal:condition="group" href="#">${group.group_name}</a>
                     <a tal:condition="not group and group_route_id == 'new'" i18n:translate="">Create new group</a>
@@ -46,12 +46,12 @@
                 <!--! TODO: Move IAM group name error_msg to view and mark for i18n -->
                 <div tal:condition="not group and group_route_id == 'new'"
                     tal:define="html_attrs {'pattern': '^[a-zA-Z0-9\+\=\,\.\@\-]{1,128}$',
-                         'error_msg': 'IAM group names must be between 1 and 128 characters long, and may contain letters, numbers, \'+\', \'=\', \',\', \'.\'. \'@\' and \'-\''};">
+                         'error_msg': 'Group names must be between 1 and 128 characters long, and may contain letters, numbers, \'+\', \'=\', \',\', \'.\'. \'@\' and \'-\''};">
                     <form action="${request.route_path('group_create')}" method="post" data-abide="abide">
                         ${structure:group_form['csrf_token']}
                         <div class="section columns">
                             <div class="row">
-                                <p><span i18n:translate="">Add group to account:</span>&nbsp;${layout.account}</p>
+                                <p><span class="subsection-label" i18n:translate="">Add group to account:</span>&nbsp;${layout.account}</p>
                             </div>
                             ${panel('form_field', field=group_form.group_name, leftcol_width=1, rightcol_width=11, autofocus='', ng_attrs={'model': 'groupName'}, **html_attrs)}
                         </div>
@@ -108,7 +108,7 @@
                             </div>
                             <div class="row controls-wrapper readonly">
                                 <div class="small-3 columns"><label class="right" i18n:translate="">ARN</label></div>
-                                <div class="small-9 columns value inline breakword">${group_arn if group_arn else ''}</div>
+                                <div class="small-9 columns value inline breakword" ng-non-bindable="">${group_arn if group_arn else ''}</div>
                             </div>
                             <div class="top-bottom-padding">
                                 ${panel('form_field', field=group_update_form['path'], leftcol_width=3, rightcol_width=9)}

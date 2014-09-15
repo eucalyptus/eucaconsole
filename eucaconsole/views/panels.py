@@ -261,7 +261,7 @@ def bdmapping_editor(context, request, image=None, launch_config=None, snapshot_
                 size=getattr(ebs, 'volume_size', None),
                 delete_on_termination=True,
             )
-    bdm_json = json.dumps(bdm_dict)
+    bdm_json = BaseView.escape_json(json.dumps(bdm_dict))
     return dict(image=image, snapshot_choices=snapshot_choices, bdm_json=bdm_json, read_only=read_only)
 
 
@@ -287,12 +287,13 @@ def image_picker(context, request, image=None, images_json_endpoint=None, filter
 
 
 @panel_config('policy_generator', renderer='../templates/policies/policy_generator.pt')
-def policy_generator(context, request, policy_actions=None, create_form=None, resource_choices=None):
+def policy_generator(context, request, policy_actions=None, create_form=None, resource_choices=None, resource_type=''):
     """IAM Policy generator"""
     policy_actions = policy_actions or {}
     resource_choices = resource_choices or {}
     return dict(
         policy_actions=policy_actions,
+        resource_type=resource_type,
         create_form=create_form,
         instance_choices=resource_choices.get('instances'),
         image_choices=resource_choices.get('images'),
@@ -306,11 +307,12 @@ def policy_generator(context, request, policy_actions=None, create_form=None, re
 
 
 @panel_config('quotas_panel', renderer='../templates/users/quotas.pt')
-def quotas_panel(context, request, quota_form=None, quota_err=None):
+def quotas_panel(context, request, quota_form=None, quota_err=None, in_user=True):
     """quota form for 2 different user pages."""
     return dict(
         quota_form=quota_form,
         quota_err=quota_err,
+        in_user=in_user,
     )
 
 

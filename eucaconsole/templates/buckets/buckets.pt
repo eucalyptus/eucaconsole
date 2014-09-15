@@ -71,7 +71,7 @@
                         </a>
                     </li>
                     <li>
-                        <a i18n:translate="" ng-click="revealModal('delete', item)">Delete</a>
+                        <a i18n:translate="" ng-click="revealModal('delete-bucket', item)">Delete</a>
                     </li>
                 </ul>
             </div>
@@ -120,7 +120,7 @@
                                 </a>
                             </li>
                             <li>
-                                <a i18n:translate="" ng-click="revealModal('delete', item)">Delete</a>
+                                <a i18n:translate="" ng-click="revealModal('delete-bucket', item)">Delete</a>
                             </li>
                         </ul>
                     </span>
@@ -128,7 +128,7 @@
             </metal:block>
         </div>
         <!--! Modal dialogs reused across landing and detail page -->
-        ${panel('bucket_dialogs', landingpage=True, versioning_form=versioning_form)}
+        ${panel('bucket_dialogs', landingpage=True, versioning_form=versioning_form, delete_form=delete_form)}
     </div>
 </div>
 

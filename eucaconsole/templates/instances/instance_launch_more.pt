@@ -56,16 +56,32 @@
                         <div class="small-4 columns"><label i18n:translate="">Type</label></div>
                         <div class="small-8 columns value">${instance.instance_type}</div>
                     </div>
-                    <div class="row controls-wrapper readonly">
-                        <div class="small-4 columns"><label i18n:translate="">Zone</label></div>
-                        <div class="small-8 columns value">${instance.placement}</div>
+                    <div tal:condition="not instance.vpc_name">
+                        <div class="row controls-wrapper readonly">
+                            <div class="small-4 columns"><label i18n:translate="">Zone</label></div>
+                            <div class="small-8 columns value">${instance.placement}</div>
+                        </div>
+                    </div>
+                    <div tal:condition="instance.vpc_name">
+                        <div class="row controls-wrapper readonly">
+                            <div class="small-4 columns"><label i18n:translate="">VPC network</label></div>
+                            <div class="small-8 columns value">${instance.vpc_name}</div>
+                        </div>
+                        <div class="row controls-wrapper readonly">
+                            <div class="small-4 columns"><label i18n:translate="">VPC subnet(s)</label></div>
+                            <div class="small-8 columns value">${instance.subnet_id}</div>
+                        </div>
+                        <div class="row controls-wrapper readonly">
+                            <div class="small-4 columns"><label i18n:translate="">Auto-assign public IP</label></div>
+                            <div class="small-8 columns value">${associate_public_ip_address}</div>
+                        </div>
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Key name</label></div>
                         <div class="small-8 columns value">${instance.key_name or 'None'}</div>
                     </div>
                     <div class="row controls-wrapper readonly">
-                        <div class="small-4 columns"><label i18n:translate="">Security group</label></div>
+                        <div class="small-4 columns"><label i18n:translate="">Security group(s)</label></div>
                         <div class="small-8 columns value">
                             <div tal:repeat="group instance.groups" ng-non-bindable="">${group.name}</div>
                         </div>

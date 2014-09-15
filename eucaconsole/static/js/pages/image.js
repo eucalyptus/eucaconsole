@@ -8,9 +8,11 @@
 angular.module('ImagePage', ['BlockDeviceMappingEditor', 'TagEditor'])
     .controller('ImagePageCtrl', function ($scope, $http, $timeout) {
         $scope.imageState = '';
+        $scope.imageProgess = 0;
         $scope.imageStatusEndpoint = '';
+        $scope.imageCancelUrl = '';
+        $scope.imagesUrl = '';
         $scope.transitionalStates = ['pending', 'storing'];
-        $scope.imageState = '';
         $scope.isPublic = '';
         $scope.errorClass= '';
         $scope.launchPermissions = [];
@@ -20,10 +22,13 @@ angular.module('ImagePage', ['BlockDeviceMappingEditor', 'TagEditor'])
         $scope.isSubmitted = false;
         $scope.disabledExplanationVisible = false;
         $scope.pendingModalID = '';
-        $scope.initController = function (isPublic, launchPermissions, stateUrl){
+        $scope.cancelling = false;
+        $scope.initController = function (isPublic, launchPermissions, stateUrl, imageCancelUrl, imagesUrl){
             $scope.isPublic = isPublic;
             $scope.launchPermissions = launchPermissions;
             $scope.imageStatusEndpoint = stateUrl;
+            $scope.imageCancelUrl = imageCancelUrl;
+            $scope.imagesUrl = imagesUrl;
             if (stateUrl) {
                 $scope.getImageState();
             }
@@ -152,10 +157,14 @@ angular.module('ImagePage', ['BlockDeviceMappingEditor', 'TagEditor'])
             });
         };
         $scope.getImageState = function () {
+            if ($scope.cancelling == true) {
+                return;
+            }
             $http.post($scope.imageStatusEndpoint).success(function(oData) {
                 var results = oData ? oData.results : '';
                 if (results) {
                     $scope.imageState = results['image_status'];
+                    $scope.imageProgress = results['progress'];
                     // Poll to obtain desired end state if current state is transitional
                     if ($scope.isTransitional($scope.imageState)) {
                         $scope.isUpdating = true;
@@ -201,6 +210,26 @@ angular.module('ImagePage', ['BlockDeviceMappingEditor', 'TagEditor'])
                }
            }
            return false;
+        };
+        $scope.cancelCreate = function ($event) {
+            $scope.cancelling = true;
+            var data = "csrf_token="+$('#csrf_token').val();
+            $http({method:'POST', url:$scope.imageCancelUrl, data:data,
+                   headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
+              success(function(oData) {
+                var results = oData ? oData.results : [];
+                // could put data back into form, but form already contains changes
+                if (oData.error == undefined) {
+                    Notify.success(oData.message);
+                    window.location = $scope.imagesUrl;
+                } else {
+                    Notify.failure(oData.message);
+                }
+              }).
+              error(function (oData, status) {
+                var errorMsg = oData['message'] || '';
+                Notify.failure(errorMsg);
+              });
         };
     })
 ;

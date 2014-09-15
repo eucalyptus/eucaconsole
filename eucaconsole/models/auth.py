@@ -29,12 +29,15 @@ Authentication and Authorization models
 
 """
 import base64
+import httplib
 import logging
+from ssl import SSLError
 import urllib2
 import xml
 
 from boto import ec2
 from boto import vpc
+from boto.https_connection import CertValidatingHTTPSConnection
 from boto.ec2.connection import EC2Connection
 from boto.s3.connection import S3Connection
 from boto.s3.connection import OrdinaryCallingFormat
@@ -129,7 +132,7 @@ class ConnectionManager(object):
         return _aws_connection(region, access_key, secret_key, token, conn_type)
 
     @staticmethod
-    def euca_connection(clchost, port, access_id, secret_key, token, conn_type):
+    def euca_connection(clchost, port, access_id, secret_key, token, conn_type, validate_certs=False):
         """Return Eucalyptus connection object
         Pulls from Beaker cache on subsequent calls to avoid connection overhead
 
@@ -179,11 +182,8 @@ class ConnectionManager(object):
             elif conn_type == 'vpc':
                 conn_class = boto.vpc.VPCConnection
 
-            if conn_type == 'sts':
-                conn = EucaAuthenticator(_clchost, _port)
-
             # IAM and S3 connections need host instead of region info
-            elif conn_type in ['iam', 's3']:
+            if conn_type in ['iam', 's3']:
                 conn = conn_class(
                     _access_id, _secret_key, host=_clchost, port=_port, path=path, is_secure=True, security_token=_token
                 )
@@ -198,12 +198,11 @@ class ConnectionManager(object):
             if conn_type == 'autoscale':
                 conn.auth_region_name = 'Eucalyptus'
 
-            if conn_type != 'sts':  # this is the only non-boto connection
-                setattr(conn, 'APIVersion', api_version)
-                conn.https_validate_certificates = False
-                conn.http_connection_kwargs['timeout'] = 30
-                # uncomment to enable boto request logger. Use only for development
-                #conn.set_request_hook(RequestLogger())
+            setattr(conn, 'APIVersion', api_version)
+            conn.https_validate_certificates = validate_certs
+            conn.http_connection_kwargs['timeout'] = 30
+            # uncomment to enable boto request logger. Use only for development
+            #conn.set_request_hook(RequestLogger())
             return conn
 
         return _euca_connection(clchost, port, access_id, secret_key, token, conn_type)
@@ -217,9 +216,9 @@ def groupfinder(user_id, request):
 
 class EucaAuthenticator(object):
     """Eucalyptus cloud token authenticator"""
-    TEMPLATE = 'https://{host}:{port}/services/Tokens?Action=GetAccessToken&DurationSeconds={dur}&Version=2011-06-15'
+    TEMPLATE = '/services/Tokens?Action=GetAccessToken&DurationSeconds={dur}&Version=2011-06-15'
 
-    def __init__(self, host, port):
+    def __init__(self, host, port, validate_certs=False, **validate_kwargs):
         """
         Configure connection to Eucalyptus STS service to authenticate with the CLC (cloud controller)
 
@@ -232,17 +231,22 @@ class EucaAuthenticator(object):
         """
         self.host = host
         self.port = port
+        self.validate_certs = validate_certs
+        self.kwargs = validate_kwargs
 
     def authenticate(self, account, user, passwd, new_passwd=None, timeout=15, duration=3600):
         if user == 'admin' and duration > 3600:  # admin cannot have more than 1 hour duration
             duration = 3600
         # because of the variability, we need to keep this here, not in __init__
-        self.auth_url = self.TEMPLATE.format(
-            host=self.host,
-            port=self.port,
+        auth_path = self.TEMPLATE.format(
             dur=duration,
         )
-        req = urllib2.Request(self.auth_url)
+        if self.validate_certs:
+            conn = CertValidatingHTTPSConnection(
+                        self.host, self.port, timeout=timeout,
+                        **self.kwargs)
+        else:
+            conn = httplib.HTTPSConnection(self.host, self.port, timeout=timeout)
 
         if new_passwd:
             auth_string = "{user}@{account};{pw}@{new_pw}".format(
@@ -258,21 +262,30 @@ class EucaAuthenticator(object):
                 pw=passwd
             )
         encoded_auth = base64.b64encode(auth_string)
-        req.add_header('Authorization', "Basic %s" % encoded_auth)
-        response = urllib2.urlopen(req, timeout=timeout)
-        body = response.read()
+        headers = {'Authorization': "Basic %s" % encoded_auth}
+        try:
+            conn.request('GET', auth_path, '', headers)
+            response = conn.getresponse()
+            if response.status != 200:
+                raise urllib2.HTTPError(url='', code=response.status, msg=response.reason, hdrs=None, fp=None)
+            body = response.read()
 
-        # parse AccessKeyId, SecretAccessKey and SessionToken
-        creds = Credentials()
-        h = BotoXmlHandler(creds, None)
-        xml.sax.parseString(body, h)
-        logging.info("Authenticated Eucalyptus user: " + account + "/" + user)
-        return creds
+            # parse AccessKeyId, SecretAccessKey and SessionToken
+            creds = Credentials()
+            h = BotoXmlHandler(creds, None)
+            xml.sax.parseString(body, h)
+            logging.info("Authenticated Eucalyptus user: " + account + "/" + user)
+            return creds
+        except SSLError as err:
+            if err.message != '':
+                raise urllib2.URLError(err.message)
+            else:
+                raise urllib2.URLError(err[1])
 
 
 class AWSAuthenticator(object):
 
-    def __init__(self, package):
+    def __init__(self, package, validate_certs=False, **validate_kwargs):
         """
         Configure connection to AWS STS service
 
@@ -280,20 +293,39 @@ class AWSAuthenticator(object):
         :param package: a pre-signed request string for the STS GetSessionToken call
 
         """
-        self.endpoint = 'https://sts.amazonaws.com'
+        self.host = 'sts.amazonaws.com'
+        self.port = 443
         self.package = package
+        self.validate_certs = validate_certs
+        self.kwargs = validate_kwargs
 
     def authenticate(self, timeout=20):
         """ Make authentication request to AWS STS service
             Timeout defaults to 20 seconds"""
-        req = urllib2.Request(self.endpoint, data=self.package)
-        response = urllib2.urlopen(req, timeout=timeout)
-        body = response.read()
+        if self.validate_certs:
+            conn = CertValidatingHTTPSConnection(
+                        self.host, self.port, timeout=timeout,
+                        **self.kwargs)
+        else:
+            conn = httplib.HTTPSConnection(self.host, self.port, timeout=timeout)
 
-        # parse AccessKeyId, SecretAccessKey and SessionToken
-        creds = Credentials()
-        h = BotoXmlHandler(creds, None)
-        xml.sax.parseString(body, h)
-        logging.info("Authenticated AWS user")
-        return creds
+        headers = {"Content-type": "application/x-www-form-urlencoded"}
+        try:
+            conn.request('POST', '', self.package, headers)
+            response = conn.getresponse()
+            if response.status != 200:
+                raise urllib2.HTTPError(url='', code=response.status, msg=response.reason, hdrs=None, fp=None)
+            body = response.read()
+            
+            # parse AccessKeyId, SecretAccessKey and SessionToken
+            creds = Credentials()
+            h = BotoXmlHandler(creds, None)
+            xml.sax.parseString(body, h)
+            logging.info("Authenticated AWS user")
+            return creds
+        except SSLError as err:
+            if err.message != '':
+                raise urllib2.URLError(err.message)
+            else:
+                raise urllib2.URLError(err[1])
 

@@ -8,10 +8,11 @@
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="IAMPolicyWizard" ng-controller="IAMPolicyWizardCtrl"
-         ng-init="initController(${controller_options}, '${request.route_path('iam_policy_create')}')">
+         ng-init="initController(${controller_options}, '${request.route_path('iam_policy_create')}')"
+         tal:define="type request.params.get('type', '');">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
-                <li class="current"><a href="#" i18n:translate="">Create IAM policy</a></li>
+                <li class="current"><a href="#" i18n:translate="">Create access policy</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
         <!-- Notifications -->
@@ -20,7 +21,7 @@
             <h3>
                 <strong i18n:translate="">Add access policy for:</strong>
                 <em>
-                    <span>${request.params.get('type', '').capitalize()}</span>
+                    <span>${type.capitalize()}</span>
                     <span>${request.params.get('id', '')}</span>
                 </em>
             </h3>
@@ -32,7 +33,7 @@
             </div>
             <div class="wizard no-title" ng-cloak="">
                 <dl class="tabs" data-tab="">
-                    <dd class="active">
+                    <dd class="active" tal:condition="type!='account'">
                         <a id="select-template-tab" href="#step1">
                             <b i18n:translate="">Select a template</b>
                         </a>
@@ -45,7 +46,7 @@
                 </dl>
                 <div class="tabs-content">
                     <!--! Tab 1: Select a template -->
-                    <div class="content active" id="step1">
+                    <div class="content active" id="step1" tal:condition="type!='account'">
                         <div class="columns">
                             <div class="row choice">
                                 <div class="small-10 columns">
@@ -92,7 +93,7 @@
                                 This tool helps you easily create a policy without needing to understand policy language
                             </p>
                             <div ng-show="policyGenExpanded">
-                                ${panel('policy_generator', policy_actions=policy_actions, create_form=create_form, resource_choices=resource_choices)}
+                                ${panel('policy_generator', policy_actions=policy_actions, create_form=create_form, resource_choices=resource_choices, resource_type=type)}
                             </div>
                         </div>
                         <div class="choice">

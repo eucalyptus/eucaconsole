@@ -178,7 +178,7 @@
                                 </a>
                             </div>
                             <div class="footer">
-                                <a href="${request.route_path('account_view', name='new')}" i18n:translate="">Create accounts</a>
+                                <a href="${request.route_path('account_view', name='new')}" i18n:translate="">Create account</a>
                             </div>
                         </div>
                     </li>

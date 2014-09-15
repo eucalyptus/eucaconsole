@@ -88,8 +88,7 @@ class ChoicesManager(object):
         self.BaseView = BaseView
         self.conn = conn
 
-    #### EC2 connection type choices
-    ##
+    # EC2 connection type choices
 
     def availability_zones(self, region, zones=None, add_blank=True):
         """Returns a list of availability zone choices. Will fetch zones if not passed"""
@@ -107,11 +106,12 @@ class ChoicesManager(object):
         @extra_long_term.cache_on_arguments(namespace='availability_zones')
         def _get_zones_cache_(self, region):
             return _get_zones_(self, region)
+
         def _get_zones_(self, region):
             zones = []
             if self.conn is not None:
                 zones = self.conn.get_all_zones()
-            return zones;
+            return zones
         try:
             return _get_zones_cache_(self, region)
         except pylibmc.Error as err:
@@ -140,9 +140,11 @@ class ChoicesManager(object):
             choices.append(BLANK_CHOICE)
         if cloud_type == 'euca':
             types = []
+
             @extra_long_term.cache_on_arguments(namespace='instance_types')
             def _get_instance_types_cache_(self):
                 return _get_instance_types_(self)
+
             def _get_instance_types_(self):
                 types = []
                 if self.conn is not None:
@@ -178,7 +180,7 @@ class ChoicesManager(object):
                     choices.append((value, label))
         return choices
 
-    def security_groups(self, securitygroups=None, add_blank=True, escapebraces=True):
+    def security_groups(self, securitygroups=None, use_id=False, add_blank=True, escapebraces=True):
         choices = []
         if add_blank:
             choices.append(BLANK_CHOICE)
@@ -189,7 +191,10 @@ class ChoicesManager(object):
             sg_name = sgroup.name
             if escapebraces:
                 sg_name = self.BaseView.escape_braces(sg_name)
-            choices.append((sg_name, sg_name))
+            if use_id:
+                choices.append((sgroup.id, sg_name))
+            else:
+                choices.append((sg_name, sg_name))
         if not security_groups:
             choices.append(('default', 'default'))
         return sorted(set(choices))
@@ -256,8 +261,7 @@ class ChoicesManager(object):
             choices.append((image.ramdisk_id, image.ramdisk_id))
         return sorted(set(choices))
 
-    #### AutoScale connection type choices
-    ##
+    # AutoScale connection type choices
 
     def scaling_groups(self, scaling_groups=None, add_blank=True, escapebraces=True):
         """Returns a list of scaling group choices"""
@@ -291,8 +295,7 @@ class ChoicesManager(object):
             choices.append((lc_name, lc_name))
         return sorted(choices)
 
-    #### ELB connection type choices
-    ##
+    # ELB connection type choices
 
     def load_balancers(self, load_balancers=None, add_blank=True, escapebraces=True):
         """Returns a list of load balancer choices.  Will fetch load balancers if not passed"""
@@ -314,11 +317,9 @@ class ChoicesManager(object):
                 logging.info("ELB service not available, disabling polling")
             else:
                 raise ex
-            
         return sorted(choices)
 
-    ### Special version of this to handle case where back end doesn't have ELB configured
-    ##
+    # Special version of this to handle case where back end doesn't have ELB configured
 
     def get_all_load_balancers(self, load_balancer_names=None):
         params = {}
@@ -346,9 +347,9 @@ class ChoicesManager(object):
             boto.log.error('%s %s' % (response.status, response.reason))
             boto.log.error('%s' % body)
             raise self.conn.ResponseError(response.status, response.reason, body)
-        
-    ### IAM options
-    ##
+
+    # IAM options
+
     def roles(self, roles=None, add_blank=True, escapebraces=True):
         choices = []
         if add_blank:
@@ -363,8 +364,22 @@ class ChoicesManager(object):
             choices.append((rname, rname))
         return sorted(set(choices))
 
-    ### S3 connection type choices
-    ##
+    def accounts(self, add_blank=True, escapebraces=True):
+        choices = []
+        if add_blank:
+            choices.append(BLANK_CHOICE)
+        account_list = []
+        if self.conn is not None:
+            account_list = self.conn.get_response('ListAccounts', params={}, list_marker='Accounts').accounts
+        for account in account_list:
+            rname = account.account_name
+            if escapebraces:
+                rname = self.BaseView.escape_braces(rname)
+            choices.append((rname, rname))
+        return sorted(set(choices))
+
+    # S3 connection type choices
+
     def buckets(self, buckets=None, add_blank=True, escapebraces=True):
         choices = []
         if add_blank:
@@ -379,16 +394,28 @@ class ChoicesManager(object):
             choices.append((bname, bname))
         return sorted(set(choices))
 
-    ### VPC connection type choices
-    ##
-    def vpc_networks(self, vpc_networks=None, escapebraces=True):
+    # VPC connection type choices
+
+    def vpc_networks(self, vpc_networks=None, add_blank=True,  escapebraces=True):
         from ..views import TaggedItemView
-        choices = [('', _(u'No VPC'))]
+        choices = []
+        if add_blank:
+            choices = [('', _(u'No VPC'))]
         vpc_network_list = vpc_networks or []
         if not vpc_network_list and self.conn is not None:
             vpc_network_list = self.conn.get_all_vpcs()
         for vpc in vpc_network_list:
-            vpc_name = TaggedItemView.get_display_name(vpc, escapebraces=escapebraces) 
+            vpc_name = TaggedItemView.get_display_name(vpc, escapebraces=escapebraces)
             choices.append((vpc.id, vpc_name))
         return sorted(set(choices))
 
+    def vpc_subnets(self, vpc_subnets=None, add_blank=True, escapebraces=True):
+        choices = []
+        if add_blank:
+            choices.append(('None', _(u'No subnets found')))
+        vpc_subnet_list = vpc_subnets or []
+        if not vpc_subnet_list and self.conn is not None:
+            vpc_subnet_list = self.conn.get_all_subnets()
+        for vpc in vpc_subnet_list:
+            choices.append((vpc.id, vpc.cidr_block))
+        return sorted(set(choices))
