@@ -4,7 +4,8 @@
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/bucket_contents.css')}" />
 </head>
 
-<div metal:fill-slot="main_content" ng-app="BucketContentsPage" ng-controller="BucketContentsCtrl" ng-init="initController()">
+<div metal:fill-slot="main_content" ng-app="BucketContentsPage" ng-controller="BucketContentsCtrl"
+        ng-init="initController('${request.route_path('bucket_delete_keys', name=bucket_name)}', '${request.route_path('bucket_keys', subpath=request.subpath)}', '${key_prefix}')">
     <div class="row" id="contentwrap" ng-app="LandingPage" ng-controller="ItemsCtrl"
          ng-init="initController('bucketcontents', '${initial_sort_key}', '${json_items_endpoint}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
@@ -34,7 +35,7 @@
                     Create New Folder
                 </a>
                 &nbsp;&nbsp;
-                <a class="button secondary ng-binding" id="delete-all-btn" i18n:translate="" data-reveal-id="delete-all-modal">
+                <a class="button secondary ng-binding" id="delete-all-btn" i18n:translate="" ng-click="revealModal('delete-all')">
                     Delete All Objects/Folders
                 </a>
             </div>
@@ -78,8 +79,11 @@
                     <li ng-show="!item.is_folder">
                         <a i18n:translate="" href="#">Copy object</a>
                     </li>
-                    <li>
-                        <a i18n:translate="" ng-click="revealModal('delete', item)">Delete</a>
+                    <li ng-show="item.is_folder">
+                        <a i18n:translate="" ng-click="revealModal('delete-folder', item)">Delete</a>
+                    </li>
+                    <li ng-show="!item.is_folder">
+                        <a i18n:translate="" ng-click="revealModal('delete-object', item)">Delete</a>
                     </li>
                 </ul>
             </div>
@@ -121,8 +125,11 @@
                             <li ng-show="!item.is_folder">
                                 <a i18n:translate="" href="#">Copy object</a>
                             </li>
-                            <li>
-                                <a i18n:translate="" ng-click="revealModal('delete', item)">Delete</a>
+                            <li ng-show="item.is_folder">
+                                <a i18n:translate="" ng-click="revealModal('delete-folder', item)">Delete</a>
+                            </li>
+                            <li ng-show="!item.is_folder">
+                                <a i18n:translate="" ng-click="revealModal('delete-object', item)">Delete</a>
                             </li>
                         </ul>
                     </span>
@@ -134,13 +141,59 @@
             <p>
                 <span i18n:translate="">Deleting all objects and folders can take some time. Leaving this page while the delete is in progress will cancel the operation.</span>
             </p>
-            <p>
-                <span i18n:translate="">Are you sure you want to delete all X objects in </span>&nbsp;<b>${bucket_name}.</b>
-            </p>
-            <a class="button expand" id="delete-all-btn" i18n:translate="" ng-click="deleteAll()">
-                Yes, Delete Everything
-            </a>
+            <div ng-show="!deletingAll">
+                <p>
+                    <span i18n:translate="">Are you sure you want to delete all</span>&nbsp;{{ total }}&nbsp;<span i18n:translate=""> objects in </span>&nbsp;<b>${display_path}</b><span>?</span>
+                </p>
+                <a class="button expand" id="delete-all-btn" i18n:translate="" ng-click="deleteAll()">
+                    Yes, Delete Everything
+                </a>
+            </div>
+            <div ng-show="deletingAll">
+                <div class="bucket-progress">
+                    <span class="meter" style="width: {{ (progress/total)*100 }}%"></span>
+                    <span class="status">Deleted {{ progress }} of {{ total }}</span>
+                </div>
+                <a class="button expand cancel" id="cancel-delete-btn" i18n:translate="" ng-click="cancelDeleting()">
+                    Cancel Remaining Deletions
+                </a>
+            </div>
             <a href="#" id="delete_all_close_link" class="close-reveal-modal">&#215;</a>
+        </div>
+        <div id="delete-folder-modal" class="reveal-modal small" data-reveal="">
+            <h3 i18n:translate="">Delete folder and contents</h3>
+            <p>
+                <span i18n:translate="">Deleting a folder also deletes all the objects that folder contains. Leaving this page while the delete is in progress will cancel the operation.</span>
+            </p>
+            <div ng-show="!deletingAll">
+                <p>
+                    <span i18n:translate="">Are you sure you want to delete</span>&nbsp;<span><b>${display_path}/{{ folder }}</b></span>
+                    &nbsp;<span i18n:translate="">and all</span>&nbsp;{{ total }}&nbsp;<span i18n:translate=""> objects it contains?</span>
+                </p>
+                <a class="button expand" id="delete-folder-btn" i18n:translate="" ng-click="deleteAll()">
+                    Yes, Delete Folder and Contents
+                </a>
+            </div>
+            <div ng-show="deletingAll">
+                <div class="bucket-progress">
+                    <span class="meter" style="width: {{ (progress/total)*100 }}%"></span>
+                    <span class="status">Deleted {{ progress }} of {{ total }}</span>
+                </div>
+                <a class="button expand cancel" id="cancel-delete-btn" i18n:translate="" ng-click="cancelDeleting()">
+                    Cancel Remaining Deletions
+                </a>
+            </div>
+            <a href="#" id="delete_folder_close_link" class="close-reveal-modal">&#215;</a>
+        </div>
+        <div id="delete-object-modal" class="reveal-modal small" data-reveal="">
+            <h3 i18n:translate="">Delete object</h3>
+            <p>
+                <span i18n:translate="">This action cannot be undone. Are you sure you want to delete </span>&nbsp;<b>{{ obj_key }}</b><span>?</span>
+            </p>
+            <a class="button expand" id="delete-object-btn" i18n:translate="" ng-click="deleteObject()">
+                Yes, Delete Object
+            </a>
+            <a href="#" id="delete_object_close_link" class="close-reveal-modal">&#215;</a>
         </div>
     </div>
 </div>

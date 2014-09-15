@@ -72,6 +72,10 @@ class BucketUpdateVersioningForm(BaseSecureForm):
     """Update versioning info form"""
     pass
 
+class BucketDeleteForm(BaseSecureForm):
+    """Delete form"""
+    pass
+
 
 class SharingPanelForm(BaseSecureForm):
     """S3 Sharing Panel form for buckets/objects"""
