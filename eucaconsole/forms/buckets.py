@@ -185,8 +185,7 @@ class CreateBucketForm(BaseSecureForm):
         super(CreateBucketForm, self).__init__(request, **kwargs)
         self.bucket_name.error_msg = self.bucket_name_error_msg
         self.enable_versioning.help_text = _(
-            u'With versioning enabled, objects are prevented from being deleted or overwritten by mistake, '
-            u'or objects can be archived to retrieve previous versions if necessary.')
+            u'With versioning enabled, objects are prevented from being deleted or overwritten by mistake.')
 
 
 class CreateFolderForm(BaseSecureForm):
