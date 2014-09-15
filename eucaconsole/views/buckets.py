@@ -733,7 +733,7 @@ class CreateBucketView(BaseView):
             with boto_error_handler(self.request):
                 try:
                     new_bucket = self.s3_conn.create_bucket(bucket_name)
-                    self.set_acl(new_bucket)
+                    BucketDetailsView.update_acl(self.request, bucket_object=new_bucket)
                     if enable_versioning:
                         new_bucket.configure_versioning(True)
                     msg = '{0} {1}'.format(_(u'Successfully created'), bucket_name)
@@ -746,13 +746,6 @@ class CreateBucketView(BaseView):
         else:
             self.request.error_messages = self.create_form.get_errors_list()
         return self.render_dict
-
-    def set_acl(self, bucket=None):
-        share_type = self.request.params.get('share_type')
-        if share_type == 'public':
-            bucket.make_public()
-        else:
-            BucketDetailsView.set_sharing_acl(self.request, bucket_object=bucket)
 
     def get_controller_options_json(self):
         return BaseView.escape_json(json.dumps({
