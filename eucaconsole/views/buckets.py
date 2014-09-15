@@ -35,6 +35,7 @@ import urllib
 
 from boto.exception import StorageCreateError
 from boto.s3.acl import ACL, Grant, Policy
+from boto.s3.bucket import Bucket
 from boto.s3.prefix import Prefix
 from boto.exception import BotoServerError
 
@@ -458,23 +459,41 @@ class BucketDetailsView(BaseView):
 
     @staticmethod
     def update_acl(request, bucket_object=None):
+        is_bucket = isinstance(bucket_object, Bucket)
         share_type = request.params.get('share_type')
         acl_type = request.params.get('acl_type')
         canned_acl = request.params.get('canned_acl')
+        bucket_keys = []
+        if is_bucket:
+            bucket_keys = bucket_object.get_all_keys()
         if share_type == 'public':
-            bucket_object.make_public()
+            params = {}
+            if is_bucket:
+                params = dict(recursive=True)
+            bucket_object.make_public(**params)
         elif share_type == 'private' and acl_type:
             if acl_type == 'canned':
                 bucket_object.set_canned_acl(canned_acl)
+                if is_bucket:
+                    # Set canned ACL recursively
+                    for key in bucket_keys:
+                        key.set_canned_acl(canned_acl)
             else:
                 # Save manually entered ACLs
-                BucketDetailsView.set_sharing_acl(
+                sharing_acl = BucketDetailsView.get_sharing_acl(
                     request, bucket_object=bucket_object, item_acl=bucket_object.get_acl())
+                if sharing_acl:
+                    bucket_object.set_acl(sharing_acl)
+                    if is_bucket:
+                        # Set manual ACL recursively
+                        for key in bucket_keys:
+                            key.set_acl(sharing_acl)
 
     @staticmethod
-    def set_sharing_acl(request, bucket_object=None, item_acl=None):
+    def get_sharing_acl(request, bucket_object=None, item_acl=None):
         sharing_grants_json = request.params.get('s3_sharing_acl', '[]')
         sharing_grants = json.loads(sharing_grants_json)
+        sharing_policy = None
         if sharing_grants:
             grants = []
             for grant in sharing_grants:
@@ -490,7 +509,7 @@ class BucketDetailsView(BaseView):
             sharing_policy = Policy()
             sharing_policy.acl = sharing_acl
             sharing_policy.owner = item_acl.owner if item_acl else bucket_object.get_acl().owner
-            bucket_object.set_acl(sharing_policy)
+        return sharing_policy
 
     @staticmethod
     def get_bucket_creation_date(s3_conn, bucket_name):
