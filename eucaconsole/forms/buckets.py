@@ -29,6 +29,8 @@ Forms for S3 buckets and objects
 
 """
 import wtforms
+
+from boto.s3.bucket import Bucket
 from wtforms import validators
 
 from . import BaseSecureForm, BLANK_CHOICE
@@ -72,6 +74,7 @@ class BucketUpdateVersioningForm(BaseSecureForm):
     """Update versioning info form"""
     pass
 
+
 class BucketDeleteForm(BaseSecureForm):
     """Delete form"""
     pass
@@ -83,6 +86,7 @@ class SharingPanelForm(BaseSecureForm):
     share_type = wtforms.RadioField(choices=SHARE_TYPE_CHOICES)
     share_account = TextEscapedField(label=_(u'Account ID'))
     share_permissions = wtforms.SelectField(label=_(u'Permissions'))
+    canned_acl = wtforms.SelectField()
 
     def __init__(self, request, bucket_object=None, sharing_acl=None, **kwargs):
         super(SharingPanelForm, self).__init__(request, **kwargs)
@@ -90,6 +94,7 @@ class SharingPanelForm(BaseSecureForm):
         self.sharing_acl = sharing_acl
         # Set choices
         self.share_permissions.choices = self.get_permission_choices()
+        self.canned_acl.choices = self.get_canned_acl_choices()
 
         if bucket_object is not None:
             self.share_type.data = self.get_share_type()
@@ -101,6 +106,20 @@ class SharingPanelForm(BaseSecureForm):
         if 'AllUsers = READ' in str(self.sharing_acl):
             return 'public'
         return 'private'
+
+    def get_canned_acl_choices(self):
+        choices = [
+            ('private', _('Private')),
+            ('public-read', _('Public read')),
+            ('public-read-write', _('Public read-write')),
+            ('authenticated-read', _('Authenticated read')),
+        ]
+        if self.bucket_object is not None and not isinstance(self.bucket_object, Bucket):
+            choices.extend([
+                ('bucket-owner-read', _('Bucket owner read')),
+                ('bucket-owner-full-control', _('Bucket owner full control')),
+            ])
+        return choices
 
     @staticmethod
     def get_permission_choices():

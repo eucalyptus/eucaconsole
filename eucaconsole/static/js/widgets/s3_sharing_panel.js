@@ -4,12 +4,13 @@
  *
  */
 angular.module('S3SharingPanel', [])
-    .controller('S3SharingPanelCtrl', function ($scope, $timeout) {
+    .controller('S3SharingPanelCtrl', function ($scope) {
         $scope.s3AclTextarea = $('#s3-sharing-acl');
         $scope.sharingAccountList = [];
         $scope.isNotValid = true;
         $scope.grantsArray = [];
         $scope.shareType = '';
+        $scope.aclType = 'manual';
         $scope.addAccountBtnDisabled = true;
         $scope.initS3SharingPanel = function (grants_json) {
             $scope.setInitialValues();
