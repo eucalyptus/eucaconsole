@@ -1315,11 +1315,13 @@ class InstanceTypesView(LandingPageView, BaseInstanceView):
         )
 
     @view_config(route_name='instance_types', renderer='../templates/instances/instance_types.pt')
-    def instances_landing(self):
+    def instance_types_landing(self):
         return self.render_dict
 
     @view_config(route_name='instance_types_json', renderer='json', request_method='POST')
     def instance_types_json(self):
+        if not(self.request.session['account_access']):
+            return JSONResponse(status=400, message="eucalyptus admin access only")
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
         instances = []
