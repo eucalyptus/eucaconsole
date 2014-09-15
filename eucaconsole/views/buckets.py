@@ -52,7 +52,7 @@ from . import boto_error_handler
 
 DELIMITER = '/'
 BUCKET_ITEM_URL_EXPIRES = 300  # Link to item expires in ___ seconds (after page load)
-BUCKET_NAME_PATTERN = '^[a-z0-9-]+$'
+BUCKET_NAME_PATTERN = '^[a-z0-9-\.]+$'
 FOLDER_NAME_PATTERN = '^[^\/]+$'
 
 

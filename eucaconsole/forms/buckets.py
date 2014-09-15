@@ -165,7 +165,7 @@ class MetadataForm(BaseSecureForm):
 class CreateBucketForm(BaseSecureForm):
     """S3 Create Bucket form"""
     bucket_name_error_msg = _(
-        'Name is required and must contain lowercase letters, numbers, and/or hyphens')
+        'Name is required and may contain lowercase letters, numbers, hyphens, and/or dots')
     bucket_name = TextEscapedField(
         label=_(u'Name'),
         validators=[
