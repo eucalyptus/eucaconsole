@@ -24,8 +24,11 @@
             display: inline-block;
         }
     }
-    #share_account, #share_permissions {
+    #share_account, #share_permissions, #canned_acl {
         width: 50%;
+    }
+    #canned_acl {
+        margin-left: 1.6rem;
     }
     #controls_share_account label {
         white-space: nowrap;

@@ -27,17 +27,24 @@ angular.module('S3SharingPanel', [])
         };
         $scope.addListeners = function () {
             $(document).ready(function() {
+                // Set appropriate share type value
                 $('input[name="share_type"]').on('change', function() {
                     $scope.$apply(function () {
                         $scope.shareType = $('input[name="share_type"]:checked').val();
                         $scope.$emit('s3:sharingPanelAclUpdated');
                     });
                 });
-            });
-            $('#share_account').on('keyup', function () {
-                var that = $(this);
-                $scope.$apply(function () {
-                    $scope.addAccountBtnDisabled = that.val() == '';
+                $('input[name="acl_type"]').on('change', function() {
+                    $scope.$apply(function () {
+                        $scope.$emit('s3:sharingPanelAclUpdated');
+                    });
+                });
+                // Disable Add Account button if account ID input is empty
+                $('#share_account').on('keyup', function () {
+                    var that = $(this);
+                    $scope.$apply(function () {
+                        $scope.addAccountBtnDisabled = that.val() == '';
+                    });
                 });
             });
         };

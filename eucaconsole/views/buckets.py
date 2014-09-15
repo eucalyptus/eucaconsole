@@ -414,11 +414,7 @@ class BucketDetailsView(BaseView):
         if self.bucket and self.details_form.validate():
             location = self.request.route_path('bucket_details', name=self.bucket.name)
             with boto_error_handler(self.request, location):
-                share_type = self.request.params.get('share_type')
-                if share_type == 'public':
-                    self.bucket.make_public(recursive=True)
-                else:
-                    self.set_sharing_acl(self.request, bucket_object=self.bucket, item_acl=self.bucket_acl)
+                self.update_acl(self.request, bucket_object=self.bucket)
                 msg = '{0} {1}'.format(_(u'Successfully modified bucket'), self.bucket.name)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
@@ -459,6 +455,21 @@ class BucketDetailsView(BaseView):
                 logs_prefix=logging_prefix,
                 logs_url=self.request.route_path('bucket_contents', subpath=logging_subpath)
             )
+
+    @staticmethod
+    def update_acl(request, bucket_object=None):
+        share_type = request.params.get('share_type')
+        acl_type = request.params.get('acl_type')
+        canned_acl = request.params.get('canned_acl')
+        if share_type == 'public':
+            bucket_object.make_public()
+        elif share_type == 'private' and acl_type:
+            if acl_type == 'canned':
+                bucket_object.set_canned_acl(canned_acl)
+            else:
+                # Save manually entered ACLs
+                BucketDetailsView.set_sharing_acl(
+                    request, bucket_object=bucket_object, item_acl=bucket_object.get_acl())
 
     @staticmethod
     def set_sharing_acl(request, bucket_object=None, item_acl=None):
@@ -536,7 +547,8 @@ class BucketItemDetailsView(BaseView):
             formdata=self.request.params or None
         )
         self.sharing_form = SharingPanelForm(
-            request, bucket_object=self.bucket, sharing_acl=self.bucket_item_acl, formdata=self.request.params or None)
+            request, bucket_object=self.bucket_item, sharing_acl=self.bucket_item_acl,
+            formdata=self.request.params or None)
         self.versioning_form = BucketUpdateVersioningForm(request, formdata=self.request.params or None)
         self.metadata_form = MetadataForm(request, formdata=self.request.params or None)
         self.render_dict = dict(
@@ -575,7 +587,7 @@ class BucketItemDetailsView(BaseView):
                 # Update name
                 self.update_name()
                 # Update ACL
-                self.update_acl()
+                BucketDetailsView.update_acl(self.request, bucket_object=self.bucket_item)
                 # Update metadata
                 self.update_metadata()
                 msg = '{0} {1}'.format(_(u'Successfully modified'), self.bucket_item.name)
@@ -592,14 +604,6 @@ class BucketItemDetailsView(BaseView):
         if item is None:  # Folder requires the trailing slash, which request.subpath omits
             item = self.bucket.get_key('{0}/'.format(item_key_name))
         return item
-
-    def update_acl(self):
-        share_type = self.request.params.get('share_type')
-        if share_type == 'public':
-            self.bucket.make_public()
-        else:
-            BucketDetailsView.set_sharing_acl(
-                self.request, bucket_object=self.bucket_item, item_acl=self.bucket_item_acl)
 
     def update_metadata(self):
         """Update metadata and remove deleted metadata"""

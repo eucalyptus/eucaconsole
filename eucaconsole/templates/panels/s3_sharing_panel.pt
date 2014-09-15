@@ -21,37 +21,41 @@
             <span i18n:translate="" tal:condition="object_type == 'object'">object.</span>
         </p>
         <h6 i18n:translate="" class="sharing-label">Share with others</h6>
-        <input type="radio" name="acl_type" value="canned" id="acl-type-canned" ng-model="aclType" />
-        <label for="acl-type-canned" i18n:translate="">Use canned ACL</label>
-        <input type="radio" name="acl_type" value="manual" id="acl-type-manual" ng-model="aclType" />
-        <label for="acl-type-manual" i18n:translate="">Manually define sharing</label>
-        <div id="canned-acl-wrapper" ng-show="aclType == 'canned'">
-            ${panel('form_field', field=sharing_form.canned_acl, leftcol_width=2, rightcol_width=10)}
+        <div id="canned-acl-wrapper">
+            <input type="radio" name="acl_type" value="canned" id="acl-type-canned" ng-model="aclType" />
+            <label for="acl-type-canned" i18n:translate="">Use canned ACL</label>
+            <div ng-show="aclType == 'canned'">
+                ${structure: sharing_form.canned_acl}
+            </div>
         </div>
-        <div id="manual-acl-wrapper" ng-show="aclType == 'manual'">
-            <div class="items">
-                <span class="label radius secondary grantentry" ng-repeat="grant in grantsArray" ng-cloak="cloak">
-                    {{ grant.display_name || grant.id || grant.uri.split('/').pop() }}: {{ grant.permission }}
-                    <a href="#" class="remove" ng-click="removeGrant($index, $event)"
-                       title="Remove permission"><i class="fi-x"></i></a>
-                </span>
+        <div id="manual-acl-wrapper">
+            <input type="radio" name="acl_type" value="manual" id="acl-type-manual" ng-model="aclType" />
+            <label for="acl-type-manual" i18n:translate="">Manually define sharing</label>
+            <div ng-show="aclType == 'manual'">
+                <div class="items">
+                    <span class="label radius secondary grantentry" ng-repeat="grant in grantsArray" ng-cloak="cloak">
+                        {{ grant.display_name || grant.id || grant.uri.split('/').pop() }}: {{ grant.permission }}
+                        <a href="#" class="remove" ng-click="removeGrant($index, $event)"
+                           title="Remove permission"><i class="fi-x"></i></a>
+                    </span>
+                </div>
+                <div class="subheader" ng-cloak="">
+                    <span class="subsection-label" ng-show="grantsArray.length == 0" i18n:translate="">
+                        Add an account
+                    </span>
+                    <span class="subsection-label" ng-show="grantsArray.length" i18n:translate="">
+                        Add another account
+                    </span>
+                    :
+                </div>
+                ${panel('form_field', field=sharing_form.share_account, leftcol_width=2, rightcol_width=10, ng_attrs={'model': 'shareAccount'})}
+                ${panel('form_field', field=sharing_form.share_permissions, leftcol_width=2, rightcol_width=10)}
+                <a class="button round tiny" ng-click="addGrant($event)"
+                   ng-disabled="addAccountBtnDisabled" i18n:translate="">
+                    Add Account
+                </a>
+                <textarea id="s3-sharing-acl" name="s3_sharing_acl" class="hidden"></textarea>
             </div>
-            <div class="subheader" ng-cloak="">
-                <span class="subsection-label" ng-show="grantsArray.length == 0" i18n:translate="">
-                    Add an account
-                </span>
-                <span class="subsection-label" ng-show="grantsArray.length" i18n:translate="">
-                    Add another account
-                </span>
-                :
-            </div>
-            ${panel('form_field', field=sharing_form.share_account, leftcol_width=2, rightcol_width=10, ng_attrs={'model': 'shareAccount'})}
-            ${panel('form_field', field=sharing_form.share_permissions, leftcol_width=2, rightcol_width=10)}
-            <a class="button round tiny" ng-click="addGrant($event)"
-               ng-disabled="addAccountBtnDisabled" i18n:translate="">
-                Add Account
-            </a>
-            <textarea id="s3-sharing-acl" name="s3_sharing_acl" class="hidden"></textarea>
         </div>
     </div>
     <div id="unsaved-sharing-warning-modal" class="reveal-modal small" data-reveal="">

@@ -7,5 +7,6 @@
 #s3-sharing-panel .items .grantentry a { color: white; }
 #s3-sharing-panel #share_type { list-style-type: none; margin-bottom: 0; }
 #s3-sharing-panel #share_type li { display: inline-block; }
-#s3-sharing-panel #share_account, #s3-sharing-panel #share_permissions { width: 50%; }
+#s3-sharing-panel #share_account, #s3-sharing-panel #share_permissions, #s3-sharing-panel #canned_acl { width: 50%; }
+#s3-sharing-panel #canned_acl { margin-left: 1.6rem; }
 #s3-sharing-panel #controls_share_account label { white-space: nowrap; }
