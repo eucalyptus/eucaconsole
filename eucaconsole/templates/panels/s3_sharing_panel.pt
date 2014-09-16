@@ -66,5 +66,19 @@
         </p>
         <a href="#" class="close-reveal-modal">&#215;</a>
     </div>
+    <div id="changed-sharing-warning-modal" class="reveal-modal small" data-reveal=""
+         tal:condition="object_type == 'bucket'"><!--! object_type is 'bucket' only on bucket details page -->
+        <h3 i18n:translate="">Changing sharing settings</h3>
+        <p i18n:translate="">
+            Sharing settings on this bucket will be propagated to all objects this bucket contains.
+        </p>
+        <p>
+            <span i18n:translate="">Are you sure you want to adjust sharing settings on</span>
+            <strong>${sharing_form.bucket_object.name}</strong>?
+        </p>
+        <a id="confirm-changed-sharing-warning-modal-btn"
+           class="button expand" i18n:translate="">Yes, Let's Do This</a>
+        <a href="#" class="close-reveal-modal">&#215;</a>
+    </div>
     <script src="${request.static_path('eucaconsole:static/js/widgets/s3_sharing_panel.js')}"></script>
 </div>

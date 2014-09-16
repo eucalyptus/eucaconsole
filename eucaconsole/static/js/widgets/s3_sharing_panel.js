@@ -12,10 +12,12 @@ angular.module('S3SharingPanel', [])
         $scope.shareType = '';
         $scope.aclType = 'manual';
         $scope.addAccountBtnDisabled = true;
+        $scope.displayBucketSharingChangeWarning = false;
         $scope.initS3SharingPanel = function (grants_json) {
             $scope.setInitialValues();
             $scope.initGrants(grants_json);
             $scope.grantsArray = JSON.parse(grants_json);
+            $scope.initSharingPropagationWarning();
             $scope.addListeners();
         };
         $scope.setInitialValues = function () {
@@ -24,6 +26,27 @@ angular.module('S3SharingPanel', [])
                     $scope.shareType = $('input[name="share_type"]:checked').val()
                 });
             });
+        };
+        $scope.initSharingPropagationWarning = function () {
+            // Display warning when ACLs are modified on the bucket details page.
+            var warningModal = $('#changed-sharing-warning-modal'),
+                warningModalConfirmBtn = $('#confirm-changed-sharing-warning-modal-btn');
+            // Modal exists only on bucket details page
+            if (warningModal.length) {
+                $scope.displayBucketSharingChangeWarning = true;
+                $scope.$on('s3:sharingPanelAclUpdated', function () {
+                    if ($scope.displayBucketSharingChangeWarning) {
+                        warningModal.foundation('reveal', 'open');
+                    }
+                });
+                // Prevent warning modal from displaying more than once per page
+                warningModalConfirmBtn.on('click', function () {
+                    warningModal.foundation('reveal', 'close');
+                    $scope.$apply(function () {
+                        $scope.displayBucketSharingChangeWarning = false;
+                    });
+                });
+            }
         };
         $scope.addListeners = function () {
             $(document).ready(function() {
