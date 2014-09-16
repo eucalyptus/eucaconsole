@@ -172,9 +172,7 @@ class BucketXHRView(BaseView):
         subpath = self.request.subpath
         src_bucket = self.request.params.get('src_bucket')
         src_key = self.request.params.get('src_key')
-        dest_key = src_key
-        if len(subpath) > 0:
-            dest_key = '/'.join(subpath) + src_key[src_key.rfind('/'):]
+        dest_key = '/'.join(subpath) + src_key[src_key.rfind('/'):]
         with boto_error_handler(self.request):
             self.log_request(_(u"Copying key from {0}:{1} to {2}:{3}").format(src_bucket, src_key, self.bucket_name, dest_key))
             bucket = self.s3_conn.get_bucket(self.bucket_name, validate=False)
