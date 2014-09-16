@@ -190,7 +190,7 @@ urls = [
     Route(name='bucket_item_update', pattern='/buckets/{name}/itemupdate/*subpath'),
     Route(name='bucket_put_item', pattern='/buckets/{name}/*subpath'),
     Route(name='bucket_upload', pattern='/bucketupload/{name}/*subpath'),
-    Route(name='bucket_get_url', pattern='/bucketgeturl/{name}/*subpath'),
+    Route(name='bucket_sign_req', pattern='/bucketsignreq/{name}/*subpath'),
 
 
     # Security Groups #####

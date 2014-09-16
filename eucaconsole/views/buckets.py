@@ -236,8 +236,8 @@ class BucketContentsView(LandingPageView):
             )
         return self.render_dict
 
-    @view_config(route_name='bucket_get_url', renderer='json', request_method='POST', xhr=True)
-    def bucket_get_url(self):
+    @view_config(route_name='bucket_sign_req', renderer='json', request_method='POST', xhr=True)
+    def bucket_sign_req(self):
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
         url = self.s3_conn.generate_url(
