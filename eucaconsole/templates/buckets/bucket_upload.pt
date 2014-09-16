@@ -1,0 +1,85 @@
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
+
+<head metal:fill-slot="head_css">
+    <style type="text/css">
+        .expando .content { padding-left: 1.5rem; }
+        .required-fields-indicator { margin-top: 0.8rem; margin-right: 2rem; }
+    </style>
+</head>
+
+<div metal:fill-slot="main_content">
+    <div class="row" id="contentwrap" ng-app="UploadFilePage" ng-controller="UploadFilePageCtrl"
+         ng-init="initController('${request.route_path('bucket_get_url', name=bucket_name, subpath=request.subpath)}')">
+        <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+            <metal:crumbs metal:fill-slot="crumbs">
+                <li><a href="${request.route_path('buckets')}" i18n:translate="">Buckets</a></li>
+                <li>
+                    <a href="${request.route_path('bucket_contents', subpath=bucket_name)}"
+                       i18n:translate="">${bucket_name}</a>
+                </li>
+                <li tal:repeat="folder request.subpath[1:]" class="${'current' if repeat.folder.end else ''}">
+                    <a tal:condition="repeat.folder.end" ng-non-bindable="">${folder}</a>
+                    <a href="${request.route_path('bucket_contents', subpath='/'.join(request.subpath[:repeat.folder.index+2]))}"
+                       ng-non-bindable="" tal:condition="not repeat.folder.end">${folder}</a>
+                </li>
+                <li class="current"><a href="#" i18n:translate="">Upload file</a></li>
+            </metal:crumbs>
+        </metal:breadcrumbs>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
+        <h3 id="pagetitle" i18n:translate="">Upload file</h3>
+        <div class="large-7 columns">
+            <div class="panel">
+                <form id="upload-file-form" method="post" data-abide="abide" ng-cloak=""
+                      action="${request.route_path('bucket_upload', name=bucket_name, subpath='')}">
+                    ${structure:upload_form['csrf_token']}
+                    <p>
+                        <label class='subheading-label' for="upload-file" i18n:translate=''>Select file(s)</label>
+                        <input type="file" id="upload-file" data-file="files" multiple="">
+                    </p>
+                    ${panel('s3_sharing_panel', bucket_object=bucket, sharing_form=sharing_form)}
+                    <hr />
+                    <div class="row">
+                        <div class="small-7 columns">
+                            <button type="submit" class="button" id="create-bucket-submit-button"
+                                    ng-disabled="!hasChangesToBeSaved" ng-click="startUpload($event)">
+                                <span i18n:translate="">Upload File(s)</span>
+                            </button>
+                            <a href="${request.route_path('buckets')}" id="cancel-create-bucket-link"
+                               class="cancel-link" i18n:translate="">Cancel</a>
+                        </div>
+                        <div class="small-5 columns">
+                            <metal:block metal:use-macro="layout.global_macros['required_fields_label']" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="large-5 columns">
+            <metal:block metal:use-macro="layout.global_macros['help_expando']" />
+            <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
+                <!--! pull in help content here-->
+            </div>
+        </div>
+        <div id="upload-progress-modal" class="reveal-modal small" data-reveal="">
+            <h3 i18n:translate="">Upload file(s)</h3>
+            <p>
+                <span i18n:translate="">Uploading files can take some time. Leaving this page while the upload is in progress will cancel the operation.</span>
+            </p>
+            <div class="bucket-progress">
+                <span class="meter" style="width: {{ (progress/total)*100 }}%"></span>
+                <span class="status">Uploaded {{ progress }} of {{ total }}</span>
+            </div>
+            <a class="button expand cancel" id="cancel-upload-btn" i18n:translate="" ng-click="cancelUploading()">
+                Cancel Upload
+            </a>
+            <a href="#" id="delete_object_close_link" class="close-reveal-modal">&#215;</a>
+        </div>
+    </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_path('eucaconsole:static/js/pages/bucket_upload.js')}"></script>
+</div>
+</metal:block>
+

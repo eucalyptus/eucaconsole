@@ -40,7 +40,7 @@ from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from pyramid.view import view_config
 
 from ..forms.buckets import (
-    BucketDetailsForm, BucketItemDetailsForm, SharingPanelForm, BucketUpdateVersioningForm, MetadataForm, BucketDeleteForm)
+    BucketDetailsForm, BucketItemDetailsForm, SharingPanelForm, BucketUpdateVersioningForm, MetadataForm, BucketDeleteForm, BucketUploadForm)
 from ..i18n import _
 from ..models import Notification
 from ..views import BaseView, LandingPageView, JSONResponse
@@ -221,6 +221,32 @@ class BucketContentsView(LandingPageView):
             filter_keys=['name'],
         )
         return self.render_dict
+
+    @view_config(route_name='bucket_upload', renderer='../templates/buckets/bucket_upload.pt')
+    def bucket_upload(self):
+        with boto_error_handler(self.request):
+            bucket = BucketContentsView.get_bucket(self.request, self.s3_conn)
+            bucket_acl = bucket.get_acl() if bucket else None
+            sharing_form = SharingPanelForm(
+                self.request, bucket_object=bucket, sharing_acl=bucket_acl, formdata=self.request.params or None)
+            self.render_dict.update(
+                bucket=bucket,
+                upload_form=BucketUploadForm(self.request),
+                sharing_form=sharing_form,
+            )
+        return self.render_dict
+
+    @view_config(route_name='bucket_get_url', renderer='json', request_method='POST', xhr=True)
+    def bucket_get_url(self):
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
+        url = self.s3_conn.generate_url(
+                       expires_in=6000,
+                       method="POST",
+                       bucket=self.bucket_name,
+                       key=self.subpath
+                   )
+        return dict(results=url)
 
     @staticmethod
     def get_bucket_name(request):
