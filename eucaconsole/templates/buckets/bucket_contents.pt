@@ -38,6 +38,11 @@
                 <a class="button secondary ng-binding" id="delete-all-btn" i18n:translate="" ng-click="revealModal('delete-all')">
                     Delete All Objects/Folders
                 </a>
+                &nbsp;&nbsp;
+                <a class="button secondary ng-binding" id="paste-btn" i18n:translate=""
+                    ng-show="hasCopyItem()" ng-click="doPaste('${bucket_name}', nil, '${key_prefix}')">
+                    Paste Object
+                </a>
             </div>
             <div metal:fill-slot="tile_header">
                 <a ng-href="{{ item.absolute_path }}" ng-if="item.is_folder">

@@ -102,7 +102,9 @@
 @media screen and (max-width: 920px) { .columns.datagrid { padding-left: 1rem; } }
 .icon { display: inline-block; width: 20px; color: #468400; }
 
-#primary-buttons .button { padding-left: 2rem; padding-right: 2rem; }
+#primary-buttons .button { padding-left: 1rem; padding-right: 1rem; }
+
+#paste-btn { background-color: #8cc63e; }
 
 .button.cancel { background-color: #990000; }
 

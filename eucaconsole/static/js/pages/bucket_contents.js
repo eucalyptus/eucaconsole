@@ -155,13 +155,15 @@ angular.module('BucketContentsPage', ['LandingPage'])
         $scope.hasCopyItem = function () {
             return Modernizr.localstorage && localStorage.getItem('copy-object-buffer');
         };
-        $scope.doPaste = function (bucketName, item) {
+        $scope.doPaste = function (bucketName, item, subpath) {
             var id = $('.open').attr('id');  // hack to close action menu
             $('#table-'+id).trigger('click');
             var path = Modernizr.localstorage && localStorage.getItem('copy-object-buffer');
             var bucket = path.slice(0, path.indexOf('/'));
             var key = path.slice(path.indexOf('/')+1);
-            var subpath = item.details_url.slice(item.details_url.indexOf('itemdetails')+12);
+            if (subpath === undefined) {
+                subpath = item.details_url.slice(item.details_url.indexOf('itemdetails')+12);
+            }
             var url = $scope.copyObjUrl.replace('_name_', bucketName).replace('_subpath_', subpath);
             var data = "csrf_token="+$('#csrf_token').val()+'&src_bucket='+bucket+'&src_key='+key;
             $http({method:'POST', url:url, data:data,
@@ -171,6 +173,9 @@ angular.module('BucketContentsPage', ['LandingPage'])
                 if (oData.error == undefined) {
                     Notify.success(oData.message);
                     Modernizr.localstorage && localStorage.removeItem('copy-object-buffer');
+                    if (item === undefined) {    // in case where we're pasting in current context,
+                        $scope.$broadcast('refresh');
+                    }
                 } else {
                     Notify.failure(oData.message);
                 }
