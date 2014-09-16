@@ -172,8 +172,6 @@ class LaunchInstanceForm(BaseSecureForm):
         if self.cloud_type == 'aws' and len(self.zone.choices) > 1:
             self.zone.data = self.zone.choices[1][0]
         # Set the defailt option to be the first choice
-        if len(self.securitygroup.choices) > 1:
-            self.securitygroup.data = self.securitygroup.choices[0][0]
         if len(self.vpc_subnet.choices) > 1:
             self.vpc_subnet.data = self.vpc_subnet.choices[0][0]
 
