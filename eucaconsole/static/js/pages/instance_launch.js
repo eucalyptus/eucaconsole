@@ -28,14 +28,14 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.keyPairModal = $('#create-keypair-modal');
         $scope.showKeyPairMaterial = false;
         $scope.isLoadingKeyPair = false;
-        $scope.securityGroup = '';
-        $scope.securityGroupName = '';
+        $scope.securityGroups = [];
         $scope.securityGroupsRules = {};
         $scope.securityGroupCollection = {};
-        $scope.selectedGroupRules = [];
+        $scope.selectedGroupRules = {};
         $scope.securityGroupModal = $('#create-securitygroup-modal');
         $scope.securityGroupForm = $('#create-securitygroup-form');
         $scope.securityGroupChoices = {};
+        $scope.isRuleExpanded = {};
         $scope.newSecurityGroupName = '';
         $scope.isLoadingSecurityGroup = false;
         $scope.role = '';
@@ -70,13 +70,18 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             $scope.setInitialValues();
             $scope.updateSelectedSecurityGroupRules();
             $scope.preventFormSubmitOnEnter();
+            $scope.initChosenSelectors();
             $scope.watchTags();
             $scope.focusEnterImageID();
             $scope.setWatcher();
         };
+        $scope.initChosenSelectors = function () {
+            $('#securitygroup').chosen({'width': '100%', search_contains: true});
+        }
         $scope.updateSelectedSecurityGroupRules = function () {
-            $scope.selectedGroupRules = $scope.securityGroupsRules[$scope.securityGroup];
-            $scope.securityGroupName = $scope.securityGroupChoices[$scope.securityGroup];
+            angular.forEach($scope.securityGroups, function(securityGroupID) {
+                $scope.selectedGroupRules[securityGroupID] = $scope.securityGroupsRules[securityGroupID];
+            });
         };
         $scope.preventFormSubmitOnEnter = function () {
             $(document).ready(function () {
@@ -100,7 +105,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             if (lastSecGroup != null && $scope.securityGroupChoices[lastSecGroup] !== undefined) {
                 $('#securitygroup').val(lastSecGroup);
             }
-            $scope.securityGroup = $('#securitygroup').find(':selected').val();
+            $scope.securityGroups.push($('#securitygroup').find(':selected').val());
             $scope.imageID = $scope.urlParams['image_id'] || '';
             if( $scope.imageID == '' ){
                 $scope.currentStepIndex = 1;
@@ -165,9 +170,11 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                     $scope.isNotValid = false;
                 }
             }else if( $scope.currentStepIndex == 3 ){
-                if( $scope.keyPair === '' || $scope.keyPair === undefined ){
+                if ($scope.keyPair === '' || $scope.keyPair === undefined) {
                     $scope.isNotValid = true;
-                }else{
+                } else if ($scope.securityGroups == undefined || $scope.securityGroups.length == 0) {
+                    $scope.isNotValid = true;
+                } else {
                     $scope.isNotValid = false;
                 }
             }
@@ -197,8 +204,9 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             $scope.$watch('keyPair', function(){
                 $scope.checkRequiredInput();
             });
-            $scope.$watch('securityGroup', function () { 
+            $scope.$watch('securityGroups', function () { 
                 $scope.updateSelectedSecurityGroupRules();
+                $scope.checkRequiredInput();
             });
             $scope.$watch('securityGroupVPC', function () {
                 $scope.$broadcast('updateVPC', $scope.securityGroupVPC);
@@ -271,7 +279,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 }else{
                     var inputElement = modal.find('input[type!=hidden]').get(0);
                     var modalButton = modal.find('button').get(0);
-                    if (!!inputElement) {
+                    if (!!inputElement && inputElement.value == '') {
                         inputElement.focus();
                     } else if (!!modalButton) {
                         modalButton.focus();
@@ -454,13 +462,21 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                     newSecurityGroupID = oData.id;
                 }
                 $scope.securityGroupChoices[newSecurityGroupID] = $scope.newSecurityGroupName;
-                $scope.securityGroup = newSecurityGroupID;
-                $scope.selectedGroupRules = JSON.parse($('#rules').val());
-                $scope.securityGroupsRules[newSecurityGroupID] = $scope.selectedGroupRules;
+                $scope.securityGroups.push(newSecurityGroupID);
+                var groupRulesObject = JSON.parse($('#rules').val());
+                var groupRulesEgressObject = JSON.parse($('#rules_egress').val());
+                var groupRulesObjectCombined = groupRulesObject.concat(groupRulesEgressObject); 
+                $scope.selectedGroupRules[newSecurityGroupID] = groupRulesObjectCombined; 
+                $scope.securityGroupsRules[newSecurityGroupID] = groupRulesObjectCombined;
                 // Reset values
                 $scope.newSecurityGroupName = '';
                 $scope.newSecurityGroupDesc = '';
                 $('textarea#rules').val('');
+                $('textarea#rules_egress').val('');
+                // Timeout is needed for chosen to react after Angular updates the options
+                $timeout(function(){
+                    $('#securitygroup').trigger('chosen:updated');
+                }, 500);
                 var modal = $scope.securityGroupModal;
                 modal.foundation('reveal', 'close');
                 Notify.success(oData.message);
@@ -491,10 +507,14 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             if ($.isEmptyObject($scope.securityGroupCollection)) {
                 return;
             }
-            $scope.securityGroup = $scope.securityGroupCollection[0]['id'];
-            angular.forEach($scope.securityGroupCollection, function(securityGroup){
-                $scope.securityGroupChoices[securityGroup['id']] = securityGroup['name'];
+            $scope.securityGroups = [];
+            angular.forEach($scope.securityGroupCollection, function(sGroup){
+                $scope.securityGroupChoices[sGroup['id']] = sGroup['name'];
             }); 
+            // Timeout is needed for chosen to react after Angular updates the options
+            $timeout(function(){
+                $('#securitygroup').trigger('chosen:updated');
+            }, 500);
         };
         $scope.updateVPCSubnetChoices = function () {
             $scope.vpcSubnetChoices = {};

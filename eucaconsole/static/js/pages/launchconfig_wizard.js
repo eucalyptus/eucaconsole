@@ -17,10 +17,9 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
         $scope.summarySection = $('.summary');
         $scope.launchconfigName = '';
         $scope.instanceTypeSelected = '';
-        $scope.securityGroup = '';
-        $scope.securityGroupName = '';
+        $scope.securityGroups = [];
         $scope.securityGroupJsonEndpoint = '';
-        $scope.securityGroupList = {};
+        $scope.securityGroupCollection = {};
         $scope.securityGroupsRules = {};
         $scope.keyPairChoices = {};
         $scope.keyPair = '';
@@ -29,10 +28,11 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
         $scope.keyPairModal = $('#create-keypair-modal');
         $scope.showKeyPairMaterial = false;
         $scope.isLoadingKeyPair = false;
-        $scope.selectedGroupRules = [];
+        $scope.selectedGroupRules = {};
         $scope.securityGroupModal = $('#create-securitygroup-modal');
         $scope.securityGroupForm = $('#create-securitygroup-form');
         $scope.securityGroupChoices = {};
+        $scope.isRuleExpanded = {};
         $scope.newSecurityGroupName = '';
         $scope.securityGroupSelected = '';
         $scope.isLoadingSecurityGroup = false;
@@ -63,9 +63,13 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             $scope.getAllSecurityGroups(); 
             $scope.setInitialValues();
             $scope.preventFormSubmitOnEnter();
+            $scope.initChosenSelectors();
             $scope.setWatcher();
             $scope.setFocus();
         };
+        $scope.initChosenSelectors = function () {
+            $('#securitygroup').chosen({'width': '100%', search_contains: true});
+        }
         $scope.preventFormSubmitOnEnter = function () {
             $(document).ready(function () {
                 $('#image-id-input').keydown(function(evt) {
@@ -83,7 +87,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             }).success(function(oData) {
                 var results = oData ? oData.results : [];
-                $scope.securityGroupList = results;
+                $scope.securityGroupCollection = results;
             }).error(function (oData) {
                 if (oData.message) {
                     Notify.failure(oData.message);
@@ -91,24 +95,23 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             });
         };
         $scope.updateSecurityGroup = function () {
-            $scope.selectedGroupRules = $scope.securityGroupsRules[$scope.securityGroup];
-            $scope.securityGroupName = $scope.securityGroupChoices[$scope.securityGroup];
+            angular.forEach($scope.securityGroups, function(securityGroupID) {
+                $scope.selectedGroupRules[securityGroupID] = $scope.securityGroupsRules[securityGroupID];
+            });
         };
         $scope.updateSecurityGroupChoices = function () {
-            $scope.securityGroupChoices = {};
-            if ($.isEmptyObject($scope.securityGroupList)) {
-                return;
-            }
-            $scope.securityGroup = $scope.securityGroupList[0]['id'];
-            for( var i=0; i < $scope.securityGroupList.length; i++){
-                var securityGroupID = $scope.securityGroupList[i]['id'];
-                var securityGroupName = $scope.securityGroupList[i]['name'];
-                var securityGroupVPCID = $scope.securityGroupList[i]['vpc_id'];
-                if (securityGroupVPCID !== null) {
-                    securityGroupName = securityGroupName + " (" + securityGroupVPCID + ")";
+            $scope.securityGroups = [];
+            angular.forEach($scope.securityGroupCollection, function(sGroup){
+                var securityGroupName = sGroup['name'];
+                if (sGroup['vpc_id'] !== null) {
+                    securityGroupName = securityGroupName + " (" + sGroup['vpc_id'] + ")";
                 } 
-                $scope.securityGroupChoices[securityGroupID] = securityGroupName;
-            } 
+                $scope.securityGroupChoices[sGroup['id']] = securityGroupName;
+            }); 
+            // Timeout is needed for chosen to react after Angular updates the options
+            $timeout(function(){
+                $('#securitygroup').trigger('chosen:updated');
+            }, 500);
         };
         $scope.setInitialValues = function () {
             $scope.instanceType = 'm1.small';
@@ -124,7 +127,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             if (lastSecGroup != null && $scope.securityGroupChoices[lastSecGroup] !== undefined) {
                 $('#securitygroup').val(lastSecGroup);
             }
-            $scope.securityGroup = $('#securitygroup').find(':selected').val() || 'default';
+            $scope.securityGroups.push($('#securitygroup').find(':selected').val() || 'default');
             $scope.imageID = $scope.urlParams['image_id'] || '';
             $scope.keyPairSelected = $scope.urlParams['keypair'] || '';
             $scope.securityGroupSelected = $scope.urlParams['security_group'] || '';
@@ -133,7 +136,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             if( $scope.keyPairSelected != '' )
                 $scope.keyPair = $scope.keyPairSelected;
             if( $scope.securityGroupSelected != '' ){
-                $scope.securityGroup = $scope.securityGroupSelected;
+                $scope.securityGroups.push($scope.securityGroupSelected);
             }
             if( $scope.imageID == '' ){
                 $scope.currentStepIndex = 1;
@@ -181,13 +184,15 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                     $scope.isNotValid = false;
                 }
             }else if( $scope.currentStepIndex == 3 ){
-                if( $scope.keyPair === '' || $scope.keyPair === undefined ){
+                if ($scope.keyPair === '' || $scope.keyPair === undefined) {
                     if ($scope.urlParams.hasOwnProperty('keypair')) {
                         $scope.isNotValid = false;  // Prevent disabling primary button when keypair is preset to "none"
                     } else {
                         $scope.isNotValid = true;
                     }
-                }else{
+                } else if ($scope.securityGroups == undefined || $scope.securityGroups.length == 0) {
+                    $scope.isNotValid = true;
+                } else {
                     $scope.isNotValid = false;
                 }
             }
@@ -199,13 +204,14 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                  }
                 $scope.checkRequiredInput();
             });
-            $scope.$watch('securityGroup', function(){
+            $scope.$watch('securityGroups', function(){
                 $scope.updateSecurityGroup();
+                $scope.checkRequiredInput();
             });
             $scope.$watch('securityGroupVPC', function () {
                 $scope.$broadcast('updateVPC', $scope.securityGroupVPC);
             });
-            $scope.$watch('securityGroupList', function () {
+            $scope.$watch('securityGroupCollection', function () {
                 $scope.updateSecurityGroupChoices();
             });
             $scope.$watch('imageID', function(newID, oldID){
@@ -292,7 +298,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                 }else{
                     var inputElement = modal.find('input[type!=hidden]').get(0);
                     var modalButton = modal.find('button').get(0);
-                    if (!!inputElement) {
+                    if (!!inputElement && inputElement.value == '') {
                         inputElement.focus();
                     } else if (!!modalButton) {
                         modalButton.focus();
@@ -431,13 +437,21 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                     newlyCreatedSecurityGroupName = newlyCreatedSecurityGroupName + " (" + $scope.securityGroupVPC + ")";
                 }
                 $scope.securityGroupChoices[newSecurityGroupID] = newlyCreatedSecurityGroupName;
-                $scope.securityGroup = newSecurityGroupID;
-                $scope.selectedGroupRules = JSON.parse($('#rules').val());
-                $scope.securityGroupsRules[newSecurityGroupID] = $scope.selectedGroupRules;
+                $scope.securityGroups.push(newSecurityGroupID);
+                var groupRulesObject = JSON.parse($('#rules').val());
+                var groupRulesEgressObject = JSON.parse($('#rules_egress').val());
+                var groupRulesObjectCombined = groupRulesObject.concat(groupRulesEgressObject); 
+                $scope.selectedGroupRules[newSecurityGroupID] = groupRulesObjectCombined; 
+                $scope.securityGroupsRules[newSecurityGroupID] = groupRulesObjectCombined;
                 // Reset values
                 $scope.newSecurityGroupName = '';
                 $scope.newSecurityGroupDesc = '';
                 $('textarea#rules').val('');
+                $('textarea#rules_egress').val('');
+                // Timeout is needed for chosen to react after Angular updates the options
+                $timeout(function(){
+                    $('#securitygroup').trigger('chosen:updated');
+                }, 500);
                 var modal = $scope.securityGroupModal;
                 modal.foundation('reveal', 'close');
                 Notify.success(oData.message);

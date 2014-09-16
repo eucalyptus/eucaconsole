@@ -46,7 +46,7 @@ from ..constants.instances import AWS_INSTANCE_TYPE_CHOICES
 from ..i18n import _
 
 
-BLANK_CHOICE = ('', _(u'select...'))
+BLANK_CHOICE = ('', _(u'Select...'))
 
 
 class BaseSecureForm(SecureForm):
