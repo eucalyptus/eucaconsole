@@ -1324,17 +1324,14 @@ class InstanceTypesView(LandingPageView, BaseInstanceView):
             return JSONResponse(status=400, message="eucalyptus admin access only")
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
-        instances = []
-        instances.append(dict(
-            name='micro',
-            cpu=1,
-            memory='2GB',
-            disk='4TB',
-        ))
-        instances.append(dict(
-            name='small',
-            cpu=2,
-            memory='4GB',
-            disk='8TB',
-        ))
-        return dict(results=instances)
+        instance_types_results = []
+        with boto_error_handler(self.request):
+            instance_types = self.conn.get_all_instance_types()
+            for instance_type in instance_types:
+                 instance_types_results.append(dict( 
+                    name=instance_type.name,
+                    cpu=instance_type.cores,
+                    memory=instance_type.memory,
+                    disk=instance_type.disk,
+                ))
+        return dict(results=instance_types_results)
