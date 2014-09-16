@@ -171,7 +171,6 @@ angular.module('BucketContentsPage', ['LandingPage'])
               success(function(oData) {
                 var results = oData ? oData.results : [];
                 if (oData.error == undefined) {
-                    Notify.success(oData.message);
                     Modernizr.localstorage && localStorage.removeItem('copy-object-buffer');
                     if (item === undefined) {    // in case where we're pasting in current context,
                         $scope.$broadcast('refresh');
