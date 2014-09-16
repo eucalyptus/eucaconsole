@@ -1334,4 +1334,15 @@ class InstanceTypesView(LandingPageView, BaseInstanceView):
                     memory=instance_type.memory,
                     disk=instance_type.disk,
                 ))
+        self.modify_instance_type_attribute("c1.medium", 1, 1048, 55)
+        self.modify_instance_type_attribute("c1.xlarge", 100, 222, 333)
         return dict(results=instance_types_results)
+
+    def modify_instance_type_attribute(self, name, cpu, memory, disk):
+        params = {'Name': name,
+                  'Cpu': cpu,
+                  'Memory': memory,
+                  'Disk': disk} 
+        with boto_error_handler(self.request):
+            self.conn.get_status('ModifyInstanceTypeAttribute', params, verb='POST')
+        return
