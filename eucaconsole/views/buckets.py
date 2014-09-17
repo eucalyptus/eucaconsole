@@ -149,7 +149,7 @@ class BucketXHRView(BaseView):
             return JSONResponse(status=400, message="missing CSRF token")
         keys = self.request.params.get('keys')
         if not keys:
-            return dict(message=_(u"keys must be specified."), errors=errors)
+            return dict(message=_(u"keys must be specified."), errors=[])
         bucket = self.s3_conn.head_bucket(self.bucket_name)
         errors = []
         self.log_request(_(u"Deleting keys from {0} : {1}").format(self.bucket_name, keys))
