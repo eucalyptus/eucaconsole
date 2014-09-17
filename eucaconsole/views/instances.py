@@ -1334,8 +1334,8 @@ class InstanceTypesView(LandingPageView, BaseInstanceView):
                     memory=instance_type.memory,
                     disk=instance_type.disk,
                 ))
-        self.modify_instance_type_attribute("c1.medium", 1, 1048, 55)
-        self.modify_instance_type_attribute("c1.xlarge", 100, 222, 333)
+        self.modify_instance_type_attribute("c1.medium", 1, 1024, 55)
+        self.modify_instance_type_attribute("c1.xlarge", 100, 512, 333)
         return dict(results=instance_types_results)
 
     def modify_instance_type_attribute(self, name, cpu, memory, disk):

@@ -5,8 +5,8 @@
 </head>
 
 <div metal:fill-slot="main_content">
-    <div class="row" id="contentwrap" ng-app="LandingPage" ng-controller="ItemsCtrl"
-         ng-init="initController('instance_types', '', '${json_items_endpoint}')">
+    <div class="row" id="contentwrap" ng-app="InstanceTypesPage" ng-controller="InstanceTypesCtrl"
+         ng-init="initController('instance_types', '${json_items_endpoint}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li class="current"><a href="#" i18n:translate="">Instance types</a></li>
@@ -25,29 +25,29 @@
                             <tr>
                                 <th i18n:translate="">NAME</th>
                                 <th i18n:translate="">CPU</th>
-                                <th i18n:translate="">MEMORY</th>
-                                <th i18n:translate="">DISK</th>
+                                <th i18n:translate="">MEMORY (GB)</th>
+                                <th i18n:translate="">DISK (GB)</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr ng-cloak="true" ng-repeat="item in items | orderBy: sortBy | limitTo:displayCount">
+                            <tr ng-cloak="true" ng-repeat="item in items" on-finish-render="">
                                 <td>{{ item.name }}</td>
                                 <td>
-                                    <select>
-                                        <option value="{{ item.cpu }}">{{ item.cpu }}</option>
-                                        <option value="2">2</option>
+                                    <select id="select-cpu-{{item.name}}" ng-model="cpuSelected[item.name]"
+                                        ng-options="cpu as cpu for cpu in cpuList"
+                                        ng-init="cpuSelected[item.name] = item.cpu">
                                     </select>
                                 </td>
                                 <td>
-                                    <select>
-                                        <option value="{{ item.memory }}">{{ item.memory }}</option>
-                                        <option value="2GB">2GB</option>
+                                    <select id="select-memory-{{item.name}}" ng-model="memorySelected[item.name]"
+                                        ng-options="memory as memory for memory in memoryList"
+                                        ng-init="memorySelected[item.name] = item.memory">
                                     </select>
                                 </td>
                                 <td>
-                                    <select>
-                                        <option value="{{ item.disk }}">{{ item.disk }}</option>
-                                        <option value="2TB">2TB</option>
+                                    <select id="select-disk-{{item.name}}" ng-model="diskSelected[item.name]"
+                                        ng-options="disk as disk for disk in diskList"
+                                        ng-init="diskSelected[item.name] = item.disk">
                                     </select>
                                 </td>
                             </tr>
@@ -87,8 +87,8 @@
 
 
 <div metal:fill-slot="tail_js">
-    <script src="${request.static_path('eucaconsole:static/js/pages/custom_filters.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/pages/landingpage.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/instance_types.js')}"></script>
 </div>
 
 </metal:block>
