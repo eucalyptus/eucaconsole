@@ -179,6 +179,8 @@ urls = [
     Route(name='buckets', pattern='/buckets'),
     Route(name='buckets_json', pattern='/buckets/json'),
     # Contents/detail pages
+    Route(name='bucket_new', pattern='/buckets/new'),
+    Route(name='bucket_create', pattern='/buckets/create'),
     Route(name='bucket_contents', pattern='/bucketcontents/*subpath'),
     Route(name='bucket_keys', pattern='/bucketkeys/*subpath'),
     Route(name='bucket_details', pattern='/buckets/{name}/details'),
@@ -189,6 +191,7 @@ urls = [
     Route(name='bucket_update_versioning', pattern='/buckets/{name}/updateversioning'),
     Route(name='bucket_item_details', pattern='/buckets/{name}/itemdetails/*subpath'),
     Route(name='bucket_item_update', pattern='/buckets/{name}/itemupdate/*subpath'),
+    Route(name='bucket_create_folder', pattern='/buckets/{name}/createfolder/*subpath'),
 
 
     # Security Groups #####

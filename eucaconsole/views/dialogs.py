@@ -32,7 +32,7 @@ See http://docs.pylonsproject.org/projects/pyramid_layout/en/latest/layouts.html
 from pyramid_layout.panel import panel_config
 
 from ..views import BaseView
-from ..views.buckets import BucketDetailsView
+from ..views.buckets import BucketDetailsView, FOLDER_NAME_PATTERN
 
 
 @panel_config('ipaddress_dialogs', renderer='../templates/dialogs/ipaddress_dialogs.pt')
@@ -253,5 +253,15 @@ def bucket_dialogs(context, request, bucket=None, landingpage=False, versioning_
         versioning_form=versioning_form,
         delete_form=delete_form,
         update_versioning_action=update_versioning_action,
+    )
+
+
+@panel_config('create_folder_dialog', renderer='../templates/dialogs/create_folder_dialog.pt')
+def create_folder_dialog(context, request, bucket_name=None, create_folder_form=None):
+    """ Modal dialog creating a folder in a bucket."""
+    return dict(
+        bucket_name=bucket_name,
+        create_folder_form=create_folder_form,
+        folder_name_pattern=FOLDER_NAME_PATTERN,
     )
 

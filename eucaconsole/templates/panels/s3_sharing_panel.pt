@@ -10,15 +10,15 @@
     <div id="sharing-public" ng-show="shareType == 'public'" ng-cloak="">
         <p>
             <span i18n:translate="">Anyone can access this</span>
-            <span i18n:translate="" tal:condition="object_type == 'bucket'">bucket and its contents.</span>
-            <span i18n:translate="" tal:condition="object_type != 'bucket'">object.</span>
+            <span i18n:translate="" tal:condition="object_type in ['bucket', '']">bucket and its contents.</span>
+            <span i18n:translate="" tal:condition="object_type == 'object'">object.</span>
         </p>
     </div>
     <div id="sharing-private" ng-show="shareType == 'private'" ng-cloak="">
         <p>
             <span i18n:translate="">Only my account and accounts that I share with can access this</span>
-            <span i18n:translate="" tal:condition="object_type == 'bucket'">bucket and its contents.</span>
-            <span i18n:translate="" tal:condition="object_type != 'bucket'">object.</span>
+            <span i18n:translate="" tal:condition="object_type in ['bucket', '']">bucket and its contents.</span>
+            <span i18n:translate="" tal:condition="object_type == 'object'">object.</span>
         </p>
         <div class="items">
             <span class="label radius secondary grantentry" ng-repeat="grant in grantsArray" ng-cloak="cloak">
