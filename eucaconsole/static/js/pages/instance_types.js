@@ -148,6 +148,7 @@ angular.module('InstanceTypesPage', [])
         $scope.submit = function($event) {
             var form = $($event.target);
             var data = form.serialize();
+            data += "&name=c1.medium&cpu=3&memory=1024&disk=3333";
             console.log(data);
             $http({method:'POST', url:$scope.submitEndpoint, data:data,
                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).

@@ -1340,8 +1340,11 @@ class InstanceTypesView(LandingPageView, BaseInstanceView):
     def instance_types_update(self):
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
-        self.modify_instance_type_attribute("c1.medium", 1, 1024, 55)
-        self.modify_instance_type_attribute("c1.xlarge", 100, 512, 3344)
+        name = self.request.params.get('name')
+        cpu = self.request.params.get('cpu')
+        memory = self.request.params.get('memory')
+        disk = self.request.params.get('disk')
+        self.modify_instance_type_attribute(name, cpu, memory, disk)
         return dict(message=_(u"Successfully updated instance types information"))
 
     def modify_instance_type_attribute(self, name, cpu, memory, disk):
