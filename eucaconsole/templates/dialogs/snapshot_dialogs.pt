@@ -47,8 +47,12 @@
             <input type="hidden" name="snapshot_id" value="{{ snapshotID }}" />
             ${panel('form_field', field=register_form['name'], **html_attrs)}
             ${panel('form_field', field=register_form['description'])}
-            ${panel('form_field', reverse='true', field=register_form['dot'], **dot_html_attrs)}
-            ${panel('form_field', reverse='true', field=register_form['reg_as_windows'])}
+            <div class="row">
+                <div class="large-8 columns right">
+                    ${panel('form_field', reverse='true', field=register_form['dot'], **dot_html_attrs)}
+                    ${panel('form_field', reverse='true', field=register_form['reg_as_windows'])}
+                </div>
+            </div>
             <div>
                 <label>
                     <span class="req">*</span>
