@@ -49,7 +49,7 @@ angular.module('InstanceTypesPage', [])
         };
         $scope.initChosen = function(selector){
             $(selector).chosen({
-                search_contains: true, create_option: function(term){
+                'width': '80%', search_contains: true, create_option: function(term){
                     var chosen = this;
                     var new_value = term;
                     $timeout(function() {
