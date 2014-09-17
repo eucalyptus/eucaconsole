@@ -401,6 +401,9 @@ class DisassociateIpFromInstanceForm(BaseSecureForm):
     """CSRF-protected form to disassociate IP from an instance"""
     pass
 
+class InstanceTypeForm(BaseSecureForm):
+    """CSRF-protected form to disassociate IP from an instance"""
+    pass
 
 class InstanceCreateImageForm(BaseSecureForm):
     """CSRF-protected form to create an image from an instance"""

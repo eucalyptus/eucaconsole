@@ -52,7 +52,8 @@ from ..forms.images import ImagesFiltersForm
 from ..forms.instances import (
     InstanceForm, AttachVolumeForm, DetachVolumeForm, LaunchInstanceForm, LaunchMoreInstancesForm,
     RebootInstanceForm, StartInstanceForm, StopInstanceForm, TerminateInstanceForm, InstanceCreateImageForm,
-    BatchTerminateInstancesForm, InstancesFiltersForm, AssociateIpToInstanceForm, DisassociateIpFromInstanceForm)
+    BatchTerminateInstancesForm, InstancesFiltersForm, InstanceTypeForm,
+    AssociateIpToInstanceForm, DisassociateIpFromInstanceForm)
 from ..forms import GenerateFileForm
 from ..forms.keypairs import KeyPairForm
 from ..forms.securitygroups import SecurityGroupForm
@@ -1305,13 +1306,12 @@ class InstanceTypesView(LandingPageView, BaseInstanceView):
         super(InstanceTypesView, self).__init__(request)
         self.request = request
         self.conn = self.get_connection()
-        self.json_items_endpoint = self.get_json_endpoint('instance_types_json')
         self.render_dict = dict(
+            instance_type_form=InstanceTypeForm(self.request),
             filter_fields=True,
             sort_keys=[],
             filter_keys=[],
             prefix='',
-            json_items_endpoint=self.json_items_endpoint,
         )
 
     @view_config(route_name='instance_types', renderer='../templates/instances/instance_types.pt')
@@ -1334,9 +1334,15 @@ class InstanceTypesView(LandingPageView, BaseInstanceView):
                     memory=instance_type.memory,
                     disk=instance_type.disk,
                 ))
-        self.modify_instance_type_attribute("c1.medium", 1, 1024, 55)
-        self.modify_instance_type_attribute("c1.xlarge", 100, 512, 333)
         return dict(results=instance_types_results)
+
+    @view_config(route_name='instance_types_update', renderer='json', request_method='POST')
+    def instance_types_update(self):
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
+        self.modify_instance_type_attribute("c1.medium", 1, 1024, 55)
+        self.modify_instance_type_attribute("c1.xlarge", 100, 512, 3344)
+        return dict(message=_(u"Successfully updated instance types information"))
 
     def modify_instance_type_attribute(self, name, cpu, memory, disk):
         params = {'Name': name,

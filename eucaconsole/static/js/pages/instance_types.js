@@ -28,10 +28,12 @@ angular.module('InstanceTypesPage', [])
         $scope.diskSelected = [];
         $scope.itemsLoading = true;
         $scope.jsonEndpoint = '';
+        $scope.submitEndpoint = '';
         $scope.pageResource = '';
-        $scope.initController = function (pageResource, jsonItemsEndpoint) {
+        $scope.initController = function (pageResource, jsonItemsEndpoint, submitEndpoint) {
             pageResource = pageResource || window.location.pathname.split('/')[0];
             $scope.jsonEndpoint = jsonItemsEndpoint;
+            $scope.submitEndpoint = submitEndpoint;
             $scope.getItems();
             $scope.setWatch();
             $scope.setFocus();
@@ -49,7 +51,7 @@ angular.module('InstanceTypesPage', [])
         };
         $scope.initChosen = function(selector){
             $(selector).chosen({
-                'width': '80%', search_contains: true, create_option: function(term){
+                width: '80%', search_contains: true, create_option: function(term){
                     var chosen = this;
                     var new_value = term;
                     $timeout(function() {
@@ -141,6 +143,24 @@ angular.module('InstanceTypesPage', [])
             });
             $scope.diskList.sort(function(a,b){
                 return a - b;
+            });
+        };
+        $scope.submit = function($event) {
+            var form = $($event.target);
+            var data = form.serialize();
+            console.log(data);
+            $http({method:'POST', url:$scope.submitEndpoint, data:data,
+                   headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
+              success(function(oData) {
+                var results = oData ? oData.results : [];
+                Notify.success(oData.message);
+                $scope.getItems();
+            }).error(function (oData, status) {
+                var errorMsg = oData['message'] || '';
+                if (errorMsg && status === 403) {
+                    $('#timed-out-modal').foundation('reveal', 'open');
+                }
+                Notify.failure(errorMsg);
             });
         };
     })

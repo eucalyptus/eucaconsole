@@ -6,7 +6,9 @@
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="InstanceTypesPage" ng-controller="InstanceTypesCtrl"
-         ng-init="initController('instance_types', '${json_items_endpoint}')">
+         ng-init="initController('instance_types',
+                                  '${request.route_path('instance_types_json')}',
+                                  '${request.route_path('instance_types_update')}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li class="current"><a href="#" i18n:translate="">Instance types</a></li>
@@ -56,7 +58,8 @@
                     </table>
                     <hr />
                     <div>
-                        <form>
+                        <form id="form-instance-type" ng-submit="submit($event)">
+                            ${structure:instance_type_form['csrf_token']}
                             <button type="submit" class="button" ng-disabled="isNotValid" i18n:translate="">
                                 Save Changes
                             </button>
