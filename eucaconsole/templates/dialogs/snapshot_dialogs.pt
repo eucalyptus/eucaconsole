@@ -49,8 +49,8 @@
             ${panel('form_field', field=register_form['description'])}
             <div class="row">
                 <div class="large-8 columns right">
-                    ${panel('form_field', reverse='true', field=register_form['dot'], **dot_html_attrs)}
-                    ${panel('form_field', reverse='true', field=register_form['reg_as_windows'])}
+                    ${panel('form_field', reverse=True, field=register_form['dot'], **dot_html_attrs)}
+                    ${panel('form_field', reverse=True, field=register_form['reg_as_windows'])}
                 </div>
             </div>
             <div>
