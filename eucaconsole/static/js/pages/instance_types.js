@@ -206,6 +206,19 @@ angular.module('InstanceTypesPage', [])
                 var cpu = $scope.cpuSelected[name];
                 var memory = $scope.memorySelected[name];
                 var disk = $scope.diskSelected[name];
+                // Handle the cases where the input was typed rather than selected
+                if (cpu == undefined) {
+                    var selector = '#select_cpu_'+name.replace(".", "_")+'_chosen';
+                    cpu = $(selector).find('.chosen-single').text();
+                }
+                if (memory == undefined) {
+                    var selector = '#select_memory_'+name.replace(".", "_")+'_chosen';
+                    memory = $(selector).find('.chosen-single').text();
+                }
+                if (disk == undefined) {
+                    var selector = '#select_disk_'+name.replace(".", "_")+'_chosen';
+                    disk = $(selector).find('.chosen-single').text();
+                }
                 update.push({name: name, cpu: cpu, memory: memory, disk: disk}); 
             }
             return update;
