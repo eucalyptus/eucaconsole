@@ -26,6 +26,7 @@ angular.module('InstanceTypesPage', [])
         $scope.cpuSelected = [];
         $scope.memorySelected = [];
         $scope.diskSelected = [];
+        $scope.updatedItemList = [];
         $scope.itemsLoading = true;
         $scope.jsonEndpoint = '';
         $scope.submitEndpoint = '';
@@ -145,25 +146,78 @@ angular.module('InstanceTypesPage', [])
                 return a - b;
             });
         };
-        $scope.submit = function($event) {
-            var form = $($event.target);
-            var csrf_token = form.find('input[name="csrf_token"]').val();
-            var update = [ {name: 'c1.medium', cpu: 5, memory: 1024, disk: 2333},
-                           {name: 'c1.xlarge', cpu: 7, memory: 2048, disk: 5333}];
-            $http({method:'POST', url:$scope.submitEndpoint,
-                   data: $.param({'csrf_token': csrf_token, update: update}),
-                   headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
-              success(function(oData) {
-                var results = oData ? oData.results : [];
-                Notify.success(oData.message);
-                $scope.getItems();
-            }).error(function (oData, status) {
-                var errorMsg = oData['message'] || '';
-                if (errorMsg && status === 403) {
-                    $('#timed-out-modal').foundation('reveal', 'open');
-                }
-                Notify.failure(errorMsg);
+        $scope.checkForUpdatedCPUList = function () {
+            var count = 0;
+            angular.forEach($scope.items, function(item){
+                if ($scope.cpuSelected[item.name] != item.cpu) {
+                    $scope.updatedItemList[item.name] = true;
+                    count++;
+                } 
             });
+            return count;
+        };
+        $scope.checkForUpdatedMemoryList = function () {
+            var count = 0;
+            angular.forEach($scope.items, function(item){
+                if ($scope.memorySelected[item.name] != item.memory) {
+                    $scope.updatedItemList[item.name] = true;
+                    count++;
+                } 
+            });
+            return count;
+        };
+        $scope.checkForUpdatedDiskList = function () {
+            var count = 0;
+            angular.forEach($scope.items, function(item){
+                if ($scope.diskSelected[item.name] != item.disk) {
+                    $scope.updatedItemList[item.name] = true;
+                    count++;
+                } 
+            });
+            return count;
+        };
+        $scope.checkForUpdatedItems = function () {
+            var count = 0;
+            count += $scope.checkForUpdatedCPUList();
+            count += $scope.checkForUpdatedMemoryList();
+            count += $scope.checkForUpdatedDiskList();
+            return count;
+        };
+        $scope.buildUpdateObject = function () {
+            var update = [];
+            for (key in $scope.updatedItemList) {
+                var name = key;
+                var cpu = $scope.cpuSelected[name];
+                var memory = $scope.memorySelected[name];
+                var disk = $scope.diskSelected[name];
+                update.push({name: name, cpu: cpu, memory: memory, disk: disk}); 
+            }
+            return update;
+        };
+        $scope.submit = function($event) {
+            if ($scope.checkForUpdatedItems() > 0) {
+                var form = $($event.target);
+                var update = $scope.buildUpdateObject();
+                var csrf_token = form.find('input[name="csrf_token"]').val();
+                $http({method:'POST', url:$scope.submitEndpoint,
+                       data: $.param({'csrf_token': csrf_token, update: update}),
+                       headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
+                    success(function(oData) {
+                        var results = oData ? oData.results : [];
+                        Notify.success(oData.message);
+                        $scope.submitCompleted();
+                    }).error(function (oData, status) {
+                        var errorMsg = oData['message'] || '';
+                        if (errorMsg && status === 403) {
+                            $('#timed-out-modal').foundation('reveal', 'open');
+                        }
+                        Notify.failure(errorMsg);
+                    });
+            } 
+        };
+        $scope.submitCompleted = function () {
+            $scope.updatedItemList = [];
+            $scope.getItems();
         };
     })
 ;
