@@ -42,32 +42,55 @@ angular.module('InstanceTypesPage', [])
         };
         $scope.initChosenWidgets = function () {
             angular.forEach($scope.items, function(item){
-                $scope.initChosen('#select-cpu-'+item.name.replace(".", "\\."))
+                $scope.initChosen('#select-cpu-'+item.name.replace(".", "\\."),
+                    function(term){
+                        var chosen = this;
+                        var new_index = $(chosen).get(0).form_field.length;
+                        var new_value = term;
+                        $timeout(function() {
+                            chosen.append_option({
+                                value: new_index,
+                                text: new_value 
+                            });
+                        });
+                    })
             });
             angular.forEach($scope.items, function(item){
-                $scope.initChosen('#select-memory-'+item.name.replace(".", "\\."))
+                $scope.initChosen('#select-memory-'+item.name.replace(".", "\\."),
+                    function(term){
+                        var chosen = this;
+                        var new_index = $(chosen).get(0).form_field.length;
+                        var new_value = term;
+                        $timeout(function() {
+                            chosen.append_option({
+                                value: new_index,
+                                text: new_value 
+                            });
+                        });
+                    })
             });
             angular.forEach($scope.items, function(item){
-                $scope.initChosen('#select-disk-'+item.name.replace(".", "\\."))
+                $scope.initChosen('#select-disk-'+item.name.replace(".", "\\."),
+                    function(term){
+                        var chosen = this;
+                        var new_index = $(chosen).get(0).form_field.length;
+                        var new_value = term;
+                        $timeout(function() {
+                            chosen.append_option({
+                                value: new_index,
+                                text: new_value 
+                            });
+                        });
+                    })
             });
         };
-        $scope.initChosen = function(selector){
+        $scope.initChosen = function(selector, createOptionCallback){
             $(selector).chosen({
                 width: '80%', search_contains: true, 
                 persistent_create_option: true,
                 skip_no_results: true,
-                create_option: function(term){
-                    var chosen = this;
-                    var new_index = $(chosen).get(0).form_field.length;
-                    var new_value = term;
-                    $timeout(function() {
-                        chosen.append_option({
-                            value: new_index,
-                            text: new_value 
-                        });
-                    });
-                },
                 create_option_text: 'Insert a new value',
+                create_option: createOptionCallback,
             });
         }; 
         $scope.setWatch = function () {
