@@ -27,6 +27,9 @@ angular.module('InstanceTypesPage', [])
         $scope.memorySelected = {};
         $scope.diskSelected = {};
         $scope.updatedItemList = [];
+        $scope.cpuInputError = {};
+	$scope.memoryInputError = {};
+        $scope.diskInputError = {};
         $scope.itemsLoading = true;
         $scope.isNotChanged = true;
         $scope.jsonEndpoint = '';
@@ -49,14 +52,23 @@ angular.module('InstanceTypesPage', [])
                         var new_value = Number(term);
                         // Must be integer, greater than 0
                         if (new_value <= 0 || new_value != parseInt(new_value)) {
-                            return false; 
-                        }
-                        $timeout(function() {
-                            chosen.append_option({
-                                value: new_index,
-                                text: new_value 
+                            $scope.cpuInputError[item.name] = true;
+                            // Make the error message disappear in 2 sec
+                            $timeout(function() {
+                                $scope.cpuInputError[item.name] = false;
+                                $scope.$apply();
+                            }, 2000);
+                        } else {
+                            // Slight delay prior to the option update
+                            $timeout(function() {
+                                chosen.append_option({
+                                    value: new_index,
+                                    text: new_value 
+                                });
+                                $scope.cpuInputError[item.name] = false;
                             });
-                        });
+                        }
+                        $scope.$apply();
                     })
             });
             angular.forEach($scope.items, function(item){
@@ -67,14 +79,23 @@ angular.module('InstanceTypesPage', [])
                         var new_value = Number(term);
                         // Must be .25 .5 or .75 in case of decimals
                         if (new_value <= 0 || new_value * 4 != parseInt(new_value * 4)) {
-                            return false; 
-                        }
-                        $timeout(function() {
-                            chosen.append_option({
-                                value: new_index,
-                                text: new_value 
+                            $scope.memoryInputError[item.name] = true;
+                            // Make the error message disappear in 2 sec
+                            $timeout(function() {
+                                $scope.memoryInputError[item.name] = false;
+                                $scope.$apply();
+                            }, 2000);
+                        } else {
+                            // Slight delay prior to the option update
+                            $timeout(function() {
+                                chosen.append_option({
+                                    value: new_index,
+                                    text: new_value 
+                                });
+                                $scope.memoryInputError[item.name] = false;
                             });
-                        });
+                        }
+                        $scope.$apply();
                     })
             });
             angular.forEach($scope.items, function(item){
@@ -85,14 +106,23 @@ angular.module('InstanceTypesPage', [])
                         var new_value = Number(term);
                         // Must be integer, greater than 0
                         if (new_value <= 0 || new_value != parseInt(new_value)) {
-                            return false; 
-                        }
-                        $timeout(function() {
-                            chosen.append_option({
-                                value: new_index,
-                                text: new_value 
+                            $scope.diskInputError[item.name] = true;
+                            // Make the error message disappear in 2 sec
+                            $timeout(function() {
+                                $scope.diskInputError[item.name] = false;
+                                $scope.$apply();
+                            }, 2000);
+                        } else {
+                            // Slight delay prior to the option update
+                            $timeout(function() {
+                                chosen.append_option({
+                                    value: new_index,
+                                    text: new_value 
+                                });
+                                $scope.diskInputError[item.name] = false;
                             });
-                        });
+                        }
+                        $scope.$apply();
                     })
             });
         };

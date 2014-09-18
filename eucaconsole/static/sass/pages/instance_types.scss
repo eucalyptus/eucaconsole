@@ -13,7 +13,11 @@
         margin: 0 0 0 0;
     }
     a.chosen-single span{
-       color: black;
+       color: $euca-darkgrey;
+    }
+    .error {
+       margin-top: 0.3rem;
+       color: $euca-validation-error-color;
     }
 }
 

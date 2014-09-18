@@ -39,18 +39,36 @@
                                         ng-options="cpu as cpu for cpu in cpuList"
                                         ng-init="cpuSelected[item.name] = item.cpu">
                                     </select>
+                                    <div id="error-cpu-{{item.name}}" class="error"
+                                        ng-show="cpuInputError[item.name]"
+                                        ng-init="cpuInputError[item.name] = false"
+                                        i18n:translate="">
+                                        error message
+                                    </div>
                                 </td>
                                 <td>
                                     <select id="select-memory-{{item.name}}" ng-model="memorySelected[item.name]"
                                         ng-options="memory as memory for memory in memoryList"
                                         ng-init="memorySelected[item.name] = convertMBtoGB(item.memory)">
                                     </select>
+                                    <div id="error-cpu-{{item.name}}" class="error"
+                                        ng-show="memoryInputError[item.name]" 
+                                        ng-init="memoryInputError[item.name] = false"
+                                        i18n:translate="">
+                                        error message
+                                    </div>
                                 </td>
                                 <td>
                                     <select id="select-disk-{{item.name}}" ng-model="diskSelected[item.name]"
                                         ng-options="disk as disk for disk in diskList"
                                         ng-init="diskSelected[item.name] = item.disk">
                                     </select>
+                                    <div id="error-cpu-{{item.name}}" class="error"
+                                        ng-show="diskInputError[item.name]"
+                                        ng-init="diskInputError[item.name] = false"
+                                        i18n:translate="">
+                                        error message
+                                    </div>
                                 </td>
                             </tr>
                             <tr ng-show="!itemsLoading"></tr>
