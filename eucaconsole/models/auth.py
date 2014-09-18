@@ -32,6 +32,7 @@ import base64
 import httplib
 import logging
 from ssl import SSLError
+import socket
 import urllib2
 import xml
 
@@ -267,6 +268,8 @@ class EucaAuthenticator(object):
                 raise urllib2.URLError(err.message)
             else:
                 raise urllib2.URLError(err[1])
+        except socket.error as err:
+            raise urllib2.URLError(err.message)
 
 
 class AWSAuthenticator(object):
@@ -314,4 +317,6 @@ class AWSAuthenticator(object):
                 raise urllib2.URLError(err.message)
             else:
                 raise urllib2.URLError(err[1])
+        except socket.error as err:
+            raise urllib2.URLError(err.message)
 
