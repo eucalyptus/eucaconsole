@@ -46,7 +46,11 @@ angular.module('InstanceTypesPage', [])
                     function(term){
                         var chosen = this;
                         var new_index = $(chosen).get(0).form_field.length;
-                        var new_value = term;
+                        var new_value = Number(term);
+                        // Must be integer, greater than 0
+                        if (new_value <= 0 || new_value != parseInt(new_value)) {
+                            return false; 
+                        }
                         $timeout(function() {
                             chosen.append_option({
                                 value: new_index,
@@ -62,7 +66,7 @@ angular.module('InstanceTypesPage', [])
                         var new_index = $(chosen).get(0).form_field.length;
                         var new_value = Number(term);
                         // Must be .25 .5 or .75 in case of decimals
-                        if (new_value * 4 != parseInt(new_value * 4)) {
+                        if (new_value <= 0 || new_value * 4 != parseInt(new_value * 4)) {
                             return false; 
                         }
                         $timeout(function() {
@@ -78,7 +82,11 @@ angular.module('InstanceTypesPage', [])
                     function(term){
                         var chosen = this;
                         var new_index = $(chosen).get(0).form_field.length;
-                        var new_value = term;
+                        var new_value = Number(term);
+                        // Must be integer, greater than 0
+                        if (new_value <= 0 || new_value != parseInt(new_value)) {
+                            return false; 
+                        }
                         $timeout(function() {
                             chosen.append_option({
                                 value: new_index,
