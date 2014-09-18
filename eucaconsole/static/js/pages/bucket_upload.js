@@ -75,28 +75,23 @@ angular.module('UploadFilePage', ['S3SharingPanel'])
                 $http({method:'POST', url:url, data:data,
                        headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
                   success(function(oData) {
-                    var url = oData ? oData.results : [];
-                    console.log("upload url = "+url);
+                    var results = oData ? oData.results : [];
+                    console.log("upload url = "+results.url);
                     var fd = new FormData()
+                    angular.forEach(results.fields, function(value, key) {
+                        this.append(key, value);
+                    }, fd);
                     fd.append('file', file);
-                    $http.post(url, fd, headers: {'Content-Type': file.type}).
+                    $http.post(results.url, fd, {
+                            transformRequest: angular.identity,
+                            headers: {'Content-Type': file.type}
+                          }).
                         success(function(oData) {
                             Notify.success("uploaded file: "+file.name);
                         }).
                         error(function(oData, status) {
-                            Notify.failure('S3 returned status: "+status);
+                            Notify.failure("S3 returned status: "+status);
                         });
-                    /*
-                    var reader = new FileReader();
-                    reader.onloadend = function(evt) {
-                        if (evt.target.readyState == FileReader.DONE) {
-                            $('#key-import-contents').val(evt.target.result).trigger('keyup');
-                            $scope.keypairMaterial = evt.target.result;
-                            $scope.$apply();
-                        }
-                    }
-                    reader.readAsText(file);
-                    */
                   }).
                   error(function (oData, status) {
                     var errorMsg = oData['message'] || '';
@@ -104,22 +99,6 @@ angular.module('UploadFilePage', ['S3SharingPanel'])
                   });
                 console.log("file = "+file);
             }
-            $http({method:'POST', url:$scope.uploadUrl, data:data,
-                   headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
-              success(function(oData) {
-                var results = oData ? oData.results : [];
-                // could put data back into form, but form already contains changes
-                if (oData.error == undefined) {
-                    Notify.success(oData.message);
-                    window.location = $scope.allUsersRedirect;
-                } else {
-                    Notify.failure(oData.message);
-                }
-              }).
-              error(function (oData, status) {
-                var errorMsg = oData['message'] || '';
-                Notify.failure(errorMsg);
-              });
         };
     })
 ;

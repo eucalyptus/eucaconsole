@@ -9,7 +9,7 @@
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="UploadFilePage" ng-controller="UploadFilePageCtrl"
-         ng-init="initController('${request.route_path('bucket_get_url', name=bucket_name, subpath=request.subpath)}')">
+         ng-init="initController('${request.route_path('bucket_sign_req', name=bucket_name, subpath=request.subpath)}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('buckets')}" i18n:translate="">Buckets</a></li>
@@ -30,8 +30,8 @@
         <h3 id="pagetitle" i18n:translate="">Upload file</h3>
         <div class="large-7 columns">
             <div class="panel">
-                <form id="upload-file-form" method="post" data-abide="abide" ng-cloak=""
-                      action="${request.route_path('bucket_upload', name=bucket_name, subpath='')}">
+                <form id="upload-file-form" data-abide="abide" ng-cloak=""
+                      ng-submit="startUpload($event)">
                     ${structure:upload_form['csrf_token']}
                     <p>
                         <label class='subheading-label' for="upload-file" i18n:translate=''>Select file(s)</label>
@@ -41,8 +41,7 @@
                     <hr />
                     <div class="row">
                         <div class="small-7 columns">
-                            <button type="submit" class="button" id="create-bucket-submit-button"
-                                    ng-disabled="!hasChangesToBeSaved" ng-click="startUpload($event)">
+                            <button type="submit" class="button" id="create-bucket-submit-button" ng-disabled="!hasChangesToBeSaved">
                                 <span i18n:translate="">Upload File(s)</span>
                             </button>
                             <a href="${request.route_path('buckets')}" id="cancel-create-bucket-link"

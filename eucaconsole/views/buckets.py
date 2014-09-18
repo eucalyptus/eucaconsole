@@ -240,13 +240,27 @@ class BucketContentsView(LandingPageView):
     def bucket_sign_req(self):
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
-        url = self.s3_conn.generate_url(
-                       expires_in=6000,
-                       method="POST",
-                       bucket=self.bucket_name,
-                       key=self.subpath
-                   )
-        return dict(results=url)
+        access = self.request.session['access_id']
+        secret = self.request.session['secret_key']
+        token = self.request.session['session_token']
+        policy = BaseView.generate_default_policy(self.bucket_name, self.subpath, token)
+        policy_signature = BaseView.gen_policy_signature(policy, secret)
+
+        url = "http://{host}:{port}/{path}/{bucket_name}".format(
+                  host=self.s3_conn.host, port=str(self.s3_conn.port),
+                  path=self.s3_conn.path, bucket_name=self.bucket_name
+              )
+        url = url.replace('///', '/')
+        fields = {
+            'key': self.subpath,
+            'acl': 'ec2-bundle-read',
+            'AWSAccessKeyId': access,
+            'Policy': policy,
+            'x-amz-security-token': token,
+            'Signature': policy_signature
+        }
+              
+        return dict(results=dict(url=url, fields=fields))
 
     @staticmethod
     def get_bucket_name(request):

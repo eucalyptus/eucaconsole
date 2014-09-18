@@ -28,10 +28,15 @@
 Core views
 
 """
+import base64
+import hashlib
+import hmac
 import logging
 import pylibmc
 import simplejson as json
 import textwrap
+import time
+from datetime import datetime, timedelta
 import threading
 
 from cgi import FieldStorage
@@ -319,6 +324,31 @@ class BaseView(object):
         """Convert a timezone-unaware datetime object to tz-aware one and return it as an ISO-8601 formatted string"""
         return dt_obj.replace(tzinfo=tz.gettz(tzone)).isoformat()
 
+    # these methods copied from euca2ools:bundleinstance.py and used with small changes
+    @staticmethod
+    def generate_default_policy(bucket, prefix, token=None):
+        delta = timedelta(hours=24)
+        expire_time = (datetime.utcnow() + delta).replace(microsecond=0)
+
+        conditions = [{'acl': 'ec2-bundle-read'},
+                      {'bucket': bucket},
+                      ['starts-with', '$key', prefix]]
+        if token is not None:
+            conditions[0]['x-amz-security-token'] = token
+                      
+        policy = {'conditions': conditions,
+                  'expiration': time.strftime('%Y-%m-%dT%H:%M:%SZ',
+                                              expire_time.timetuple())}
+        policy_json = json.dumps(policy)
+        return base64.b64encode(policy_json)
+
+    @staticmethod
+    def gen_policy_signature(policy, secret_key):
+        # hmac cannot handle unicode
+        secret_key = secret_key.encode('ascii', 'ignore')
+        my_hmac = hmac.new(secret_key, digestmod=hashlib.sha1)
+        my_hmac.update(policy)
+        return base64.b64encode(my_hmac.digest())
 
 class TaggedItemView(BaseView):
     """Common view for items that have tags (e.g. security group)"""
