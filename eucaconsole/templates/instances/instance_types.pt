@@ -43,7 +43,7 @@
                                 <td>
                                     <select id="select-memory-{{item.name}}" ng-model="memorySelected[item.name]"
                                         ng-options="memory as memory for memory in memoryList"
-                                        ng-init="memorySelected[item.name] = item.memory">
+                                        ng-init="memorySelected[item.name] = convertMBtoGB(item.memory)">
                                     </select>
                                 </td>
                                 <td>

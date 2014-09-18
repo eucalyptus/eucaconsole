@@ -134,12 +134,12 @@ angular.module('InstanceTypesPage', [])
             angular.forEach($scope.items, function(item){
                 var isDup = false;
                 angular.forEach($scope.memoryList, function(memory){
-                    if (memory == item.memory) {
+                    if (memory == $scope.convertMBtoGB(item.memory)) {
                         isDup = true;
                     }
                 });
                 if (!isDup ) {
-                    $scope.memoryList.push(item.memory);
+                    $scope.memoryList.push($scope.convertMBtoGB(item.memory));
                 }
             });
             $scope.memoryList.sort(function(a,b){
@@ -175,7 +175,7 @@ angular.module('InstanceTypesPage', [])
         $scope.checkForUpdatedMemoryList = function () {
             var count = 0;
             angular.forEach($scope.items, function(item){
-                if ($scope.memorySelected[item.name] != item.memory) {
+                if ($scope.memorySelected[item.name] != $scope.convertMBtoGB(item.memory)) {
                     $scope.updatedItemList[item.name] = true;
                     count++;
                 } 
@@ -219,6 +219,8 @@ angular.module('InstanceTypesPage', [])
                     var selector = '#select_disk_'+name.replace(".", "_")+'_chosen';
                     disk = $(selector).find('.chosen-single').text();
                 }
+                // Convert the memory unit back to MB
+                memory = $scope.convertGBtoMB(memory);
                 update.push({name: name, cpu: cpu, memory: memory, disk: disk}); 
             }
             return update;
@@ -249,5 +251,11 @@ angular.module('InstanceTypesPage', [])
             $scope.isNotChanged = true;
             $scope.getItems();
         };
+        $scope.convertMBtoGB = function (mb) {
+            return Number(mb) / 1024;
+        }
+        $scope.convertGBtoMB = function (gb) {
+            return Number(gb) * 1024;
+        }
     })
 ;
