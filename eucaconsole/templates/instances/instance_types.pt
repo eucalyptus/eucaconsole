@@ -60,7 +60,7 @@
                     <div>
                         <form id="form-instance-type" ng-submit="submit($event)">
                             ${structure:instance_type_form['csrf_token']}
-                            <button type="submit" class="button" ng-disabled="isNotValid" i18n:translate="">
+                            <button type="submit" class="button" ng-disabled="isNotChanged" i18n:translate="">
                                 Save Changes
                             </button>
                             <a href="${request.route_path('instance_types')}"

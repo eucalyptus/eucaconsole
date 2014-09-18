@@ -23,11 +23,12 @@ angular.module('InstanceTypesPage', [])
         $scope.cpuList = [];
         $scope.memoryList = [];
         $scope.diskList = [];
-        $scope.cpuSelected = [];
-        $scope.memorySelected = [];
-        $scope.diskSelected = [];
+        $scope.cpuSelected = {};
+        $scope.memorySelected = {};
+        $scope.diskSelected = {};
         $scope.updatedItemList = [];
         $scope.itemsLoading = true;
+        $scope.isNotChanged = true;
         $scope.jsonEndpoint = '';
         $scope.submitEndpoint = '';
         $scope.pageResource = '';
@@ -74,6 +75,21 @@ angular.module('InstanceTypesPage', [])
             $scope.$on('ngRepeatFinished', function () {
                 $scope.initChosenWidgets();
             });
+            $scope.$watch('cpuSelected', function () {
+                if ($scope.checkForUpdatedCPUList() > 0) {
+                    $scope.isNotChanged = false;
+                }
+            }, true);
+            $scope.$watch('memorySelected', function () {
+                if ($scope.checkForUpdatedMemoryList() > 0) {
+                    $scope.isNotChanged = false;
+                }
+            }, true);
+            $scope.$watch('diskSelected', function () {
+                if ($scope.checkForUpdatedDiskList() > 0) {
+                    $scope.isNotChanged = false;
+                }
+            }, true);
         };
         $scope.setFocus = function () {
         };
@@ -195,7 +211,7 @@ angular.module('InstanceTypesPage', [])
             return update;
         };
         $scope.submit = function($event) {
-            if ($scope.checkForUpdatedItems() > 0) {
+            if (!$scope.isNotChanged) {
                 var form = $($event.target);
                 var update = $scope.buildUpdateObject();
                 var csrf_token = form.find('input[name="csrf_token"]').val();
@@ -217,6 +233,7 @@ angular.module('InstanceTypesPage', [])
         };
         $scope.submitCompleted = function () {
             $scope.updatedItemList = [];
+            $scope.isNotChanged = true;
             $scope.getItems();
         };
     })
