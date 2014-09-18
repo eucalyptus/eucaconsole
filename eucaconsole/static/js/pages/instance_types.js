@@ -147,10 +147,11 @@ angular.module('InstanceTypesPage', [])
         };
         $scope.submit = function($event) {
             var form = $($event.target);
-            var data = form.serialize();
-            data += "&name=c1.medium&cpu=3&memory=1024&disk=3333";
-            console.log(data);
-            $http({method:'POST', url:$scope.submitEndpoint, data:data,
+            var csrf_token = form.find('input[name="csrf_token"]').val();
+            var update = [ {name: 'c1.medium', cpu: 5, memory: 1024, disk: 2333},
+                           {name: 'c1.xlarge', cpu: 7, memory: 2048, disk: 5333}];
+            $http({method:'POST', url:$scope.submitEndpoint,
+                   data: $.param({'csrf_token': csrf_token, update: update}),
                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
               success(function(oData) {
                 var results = oData ? oData.results : [];

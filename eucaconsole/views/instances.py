@@ -39,6 +39,7 @@ import time
 from M2Crypto import RSA
 import pylibmc
 import logging
+import re
 
 from boto.exception import BotoServerError
 from boto.s3.key import Key
@@ -1340,11 +1341,21 @@ class InstanceTypesView(LandingPageView, BaseInstanceView):
     def instance_types_update(self):
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
-        name = self.request.params.get('name')
-        cpu = self.request.params.get('cpu')
-        memory = self.request.params.get('memory')
-        disk = self.request.params.get('disk')
-        self.modify_instance_type_attribute(name, cpu, memory, disk)
+        # Extract the list of instance type updates
+        update = {} 
+        for param in self.request.params.items():
+            match = re.search('update\[(\d+)\]\[(\w+)\]', param[0])
+            if match:
+                index = match.group(1)
+                attr = match.group(2)
+                value = param[1]
+                instance_type = {} 
+                if index in update: 
+                    instance_type = update[index]
+                instance_type[attr] = value 
+                update[index] = instance_type
+        for item in update.itervalues():
+            self.modify_instance_type_attribute(item['name'], item['cpu'], item['memory'], item['disk'])
         return dict(message=_(u"Successfully updated instance types information"))
 
     def modify_instance_type_attribute(self, name, cpu, memory, disk):
