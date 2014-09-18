@@ -55,6 +55,7 @@ angular.module('InstanceTypesPage', [])
             $(selector).chosen({
                 width: '80%', search_contains: true, 
                 persistent_create_option: true,
+                skip_no_results: true,
                 create_option: function(term){
                     var chosen = this;
                     var new_index = $(chosen).get(0).form_field.length;
