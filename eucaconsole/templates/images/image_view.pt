@@ -145,10 +145,10 @@
                                 <div class="small-12 columns value">
                                     <div id="sharing-radio-buttons">
                                          <span class="padded-element"> 
-                                            <input type="radio" name="sharing" value="true" ng-model="isPublic"> Public
+                                            <input type="radio" name="sharing" value="true" ng-model="isPublic" /> Public
                                         </span>
                                         <span class="padded-element"> 
-                                            <input type="radio" class="padded-element" name="sharing" value="false" ng-model="isPublic"> Private
+                                            <input type="radio" class="padded-element" name="sharing" value="false" ng-model="isPublic" /> Private
                                         </span>
                                     </div>
                                     <div class="bottom-padding" ng-show="isPublic">
@@ -176,7 +176,7 @@
                                                 {{ account }}
                                             </span>
                                             <a ng-click="removeAccount(account)"><i class="fi-x"></i></a>
-                                            <input type="hidden" name="launch-permissions-inputbox" ng-value="account">
+                                            <input type="hidden" name="launch-permissions-inputbox" ng-value="account" />
                                         </span>
                                     </div>
                                     <div class="subsection-label top-bottom-padding">

@@ -1528,6 +1528,7 @@ form .error .chosen-container .chosen-single { border-color: darkred; background
 .row.controls-wrapper .helptext-icon.reverse { position: relative; left: 1.5rem; }
 .row.controls-wrapper div.reverse { position: relative; }
 .row.controls-wrapper div.reverse input { position: absolute; right: -2rem; top: 5px; }
+.row.controls-wrapper .checkbox-row { margin-left: 1rem; }
 .row.controls-wrapper .field input { display: inline-block; margin-bottom: 0.3rem; }
 .row.controls-wrapper .field select { margin-bottom: 0.3rem; margin-top: 0.3rem; padding-top: 6px; padding-bottom: 6px; }
 .row.controls-wrapper .field textarea { margin-top: 0.3rem; }
@@ -1536,7 +1537,8 @@ form .error .chosen-container .chosen-single { border-color: darkred; background
 .row.controls-wrapper.inline { margin-bottom: 4px; }
 .row.controls-wrapper.inline label { right: -6px; }
 
-form .controls-wrapper > [class*='small-'] label { font-weight: bold; padding-top: 0.3rem; position: relative; right: -1rem; }
+form .controls-wrapper > [class*='small-'] label { font-weight: bold; padding-top: 0.3rem; }
+form .controls-wrapper > [class*='small-'] label.right { position: relative; right: -1rem; }
 
 [data-abide] .controls-wrapper .error input, [data-abide] .controls-wrapper .error select { border: 1px solid darkred; background-color: #ffe9ec; }
 [data-abide] .controls-wrapper .error small.error { margin-bottom: 6px; background-color: transparent; color: darkred; font-weight: bold; padding-left: 0; font-style: normal; padding-bottom: 4px; }
