@@ -4,9 +4,8 @@
  *
  */
 
-// Image page includes the tag editor, so pull in that module as well.
-angular.module('ImagePage', ['BlockDeviceMappingEditor', 'TagEditor'])
-    .controller('ImagePageCtrl', function ($scope, $http, $timeout) {
+angular.module('ImagePage', ['BlockDeviceMappingEditor', 'TagEditor', 'EucaConsoleUtils'])
+    .controller('ImagePageCtrl', function ($scope, $http, $timeout, eucaUnescapeJson) {
         $scope.imageState = '';
         $scope.imageProgess = 0;
         $scope.imageStatusEndpoint = '';
@@ -24,8 +23,7 @@ angular.module('ImagePage', ['BlockDeviceMappingEditor', 'TagEditor'])
         $scope.pendingModalID = '';
         $scope.cancelling = false;
         $scope.initController = function (optionsJson) {
-            var unescapedJson = EUCACONSOLE.unescapeJson(optionsJson);
-            var options = JSON.parse(unescapedJson);
+            var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.isPublic = options['is_public'];
             $scope.launchPermissions = options['image_launch_permissions'];
             $scope.imageStatusEndpoint = options['image_state_json_url'];

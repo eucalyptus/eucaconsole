@@ -4,9 +4,8 @@
  *
  */
 
-// Snapshot page includes the tag editor, so pull in that module as well.
-angular.module('SnapshotPage', ['TagEditor'])
-    .controller('SnapshotPageCtrl', function ($scope, $http, $timeout) {
+angular.module('SnapshotPage', ['TagEditor', 'EucaConsoleUtils'])
+    .controller('SnapshotPageCtrl', function ($scope, $http, $timeout, eucaUnescapeJson) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.snapshotStatusEndpoint = '';
         $scope.transitionalStates = ['pending', 'deleting'];
@@ -34,8 +33,7 @@ angular.module('SnapshotPage', ['TagEditor'])
             });
         };
         $scope.initController = function (optionsJson) {
-            var unescapedJson = EUCACONSOLE.unescapeJson(optionsJson);
-            var options = JSON.parse(unescapedJson);
+            var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.volumeCount = options['volume_count'];
             $scope.displayVolumeWarning($scope.volumeCount);
             $scope.initChosenSelector();

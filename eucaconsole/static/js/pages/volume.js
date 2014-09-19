@@ -4,9 +4,8 @@
  *
  */
 
-// Volume page includes the tag editor, so pull in that module as well.
-angular.module('VolumePage', ['TagEditor'])
-    .controller('VolumePageCtrl', function ($scope, $http, $timeout) {
+angular.module('VolumePage', ['TagEditor', 'EucaConsoleUtils'])
+    .controller('VolumePageCtrl', function ($scope, $http, $timeout, eucaUnescapeJson) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.volumeStatusEndpoint = '';
         $scope.transitionalStates = ['creating', 'deleting', 'attaching', 'detaching'];
@@ -24,8 +23,7 @@ angular.module('VolumePage', ['TagEditor'])
         $scope.urlParams = $.url().param();
         $scope.pendingModalID = '';
         $scope.initController = function (optionsJson) {
-            var unescapedJson = EUCACONSOLE.unescapeJson(optionsJson);
-            var options = JSON.parse(unescapedJson);
+            var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.initChosenSelectors();
             $scope.initAvailZoneChoice();
             $scope.volumeStatusEndpoint = options['volume_status_json_url'];

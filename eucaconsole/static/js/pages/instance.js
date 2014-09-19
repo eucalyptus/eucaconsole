@@ -4,9 +4,8 @@
  *
  */
 
-// Instance page includes the tag editor, so pull in that module as well.
-angular.module('InstancePage', ['TagEditor'])
-    .controller('InstancePageCtrl', function ($scope, $http, $timeout) {
+angular.module('InstancePage', ['TagEditor', 'EucaConsoleUtils'])
+    .controller('InstancePageCtrl', function ($scope, $http, $timeout, eucaUnescapeJson) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.instanceStateEndpoint = '';
         $scope.instanceUserDataEndpoint = '';
@@ -25,8 +24,7 @@ angular.module('InstancePage', ['TagEditor'])
             return $scope.transitionalStates.indexOf(state) !== -1;
         };
         $scope.initController = function (optionsJson) {
-            var unescapedJson = optionsJson.replace(/__apos__/g, "\'").replace(/__dquote__/g, '\\"').replace(/__bslash__/g, "\\");
-            var options = JSON.parse(unescapedJson);
+            var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.instanceStateEndpoint = options['instance_state_json_url'];
             $scope.instanceUserDataEndpoint = options['instance_userdata_json_url'];
             $scope.instanceIPAddressEndpoint = options['instance_ip_address_json_url'];
