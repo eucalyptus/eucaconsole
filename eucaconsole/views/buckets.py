@@ -149,7 +149,7 @@ class BucketXHRView(BaseView):
             return JSONResponse(status=400, message="missing CSRF token")
         keys = self.request.params.get('keys')
         if not keys:
-            return dict(message=_(u"keys must be specified."), errors=errors)
+            return dict(message=_(u"keys must be specified."), errors=[])
         bucket = self.s3_conn.head_bucket(self.bucket_name)
         errors = []
         self.log_request(_(u"Deleting keys from {0} : {1}").format(self.bucket_name, keys))
@@ -174,7 +174,8 @@ class BucketXHRView(BaseView):
         src_key = self.request.params.get('src_key')
         dest_key = '/'.join(subpath) + '/' + src_key[src_key.rfind('/')+1:]
         with boto_error_handler(self.request):
-            self.log_request(_(u"Copying key from {0}:{1} to {2}:{3}").format(src_bucket, src_key, self.bucket_name, dest_key))
+            self.log_request(_(u"Copying key from {0}:{1} to {2}:{3}").format(
+                src_bucket, src_key, self.bucket_name, dest_key))
             bucket = self.s3_conn.get_bucket(self.bucket_name, validate=False)
             bucket.copy_key(
                 new_key_name=dest_key,
