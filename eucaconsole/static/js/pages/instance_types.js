@@ -10,9 +10,10 @@ angular.module('InstanceTypesPage', [])
             restrict: 'A',
             link: function (scope, element, attr) {
                 if (scope.$last === true) {
+                    // Slight timedelay to ensure angular DOM completes  
                     $timeout(function () {
                         scope.$emit('ngRepeatFinished');
-                    }, 1);
+                    });
                 }
             }
         }
@@ -42,7 +43,6 @@ angular.module('InstanceTypesPage', [])
             $scope.submitEndpoint = submitEndpoint;
             $scope.getItems();
             $scope.setWatch();
-            $scope.setFocus();
         };
         $scope.initChosenWidgets = function () {
             angular.forEach($scope.items, function(item){
@@ -163,8 +163,6 @@ angular.module('InstanceTypesPage', [])
                     $scope.isNotChanged = false;
                 }
             }, true);
-        };
-        $scope.setFocus = function () {
         };
         $scope.getItems = function () {
             var csrf_token = $('#csrf_token').val();

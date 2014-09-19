@@ -106,9 +106,9 @@ urls = [
     Route(name='instance_volume_detach', pattern='/instances/{id}/volumes/{volume_id}/detach'),
 
     # Instance Types page
-    Route(name='instance_types', pattern='/instance_types'),
-    Route(name='instance_types_json', pattern='/instance_types/json'),
-    Route(name='instance_types_update', pattern='/instance_types/update'),
+    Route(name='instance_types', pattern='/instance-types'),
+    Route(name='instance_types_json', pattern='/instance-types/json'),
+    Route(name='instance_types_update', pattern='/instance-types/update'),
 
     # Scaling Groups #####
     # Landing page
