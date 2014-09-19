@@ -23,13 +23,15 @@ angular.module('VolumePage', ['TagEditor'])
         $scope.snapshotSize = 1;
         $scope.urlParams = $.url().param();
         $scope.pendingModalID = '';
-        $scope.initController = function (jsonEndpoint, status, attachStatus) {
+        $scope.initController = function (optionsJson) {
+            var unescapedJson = EUCACONSOLE.unescapeJson(optionsJson);
+            var options = JSON.parse(unescapedJson);
             $scope.initChosenSelectors();
             $scope.initAvailZoneChoice();
-            $scope.volumeStatusEndpoint = jsonEndpoint;
-            $scope.volumeStatus = status.replace('-', ' ');
-            $scope.volumeAttachStatus = attachStatus;
-            if (jsonEndpoint) {
+            $scope.volumeStatusEndpoint = options['volume_status_json_url'];
+            $scope.volumeStatus = options['volume_status'] ? options['volume_status'].replace('-', ' ') : '';
+            $scope.volumeAttachStatus = options['attach_status'];
+            if ($scope.volumeStatusEndpoint) {
                 $scope.getVolumeState();
             }
             $scope.setWatch();

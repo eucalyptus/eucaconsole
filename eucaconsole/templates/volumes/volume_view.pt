@@ -12,9 +12,7 @@
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap"
          ng-app="VolumePage" ng-controller="VolumePageCtrl"
-         ng-init="initController('${request.route_path('volume_state_json', id=volume.id) if volume else ''}',
-                 '${volume.status if volume else ''}',
-                 '${volume.attach_data.status if volume else ''}')">
+         ng-init="initController('${controller_options_json}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('volumes')}" i18n:translate="">Volumes</a></li>

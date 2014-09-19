@@ -165,6 +165,7 @@
     // Initialize all Zurb Foundation components
     $(document).foundation();
 </script>
+<script type="text/javascript" src="${request.static_path('eucaconsole:static/js/eucaconsole.js')}"></script>
 <div metal:define-slot="tail_js"></div>
 </div></div><!--! /end off-canvas wraps -->
 </body>

@@ -268,6 +268,7 @@ class VolumeView(TaggedItemView, BaseVolumeView):
             delete_form=self.delete_form,
             attach_form=self.attach_form,
             detach_form=self.detach_form,
+            controller_options_json=self.get_controller_options_json(),
         )
 
     @view_config(route_name='volume_view', renderer=VIEW_TEMPLATE, request_method='GET')
@@ -314,7 +315,8 @@ class VolumeView(TaggedItemView, BaseVolumeView):
                 snapshot = self.get_snapshot(snapshot_id)
                 kwargs['snapshot'] = snapshot
             with boto_error_handler(self.request, self.request.route_path('volumes')):
-                self.log_request(_(u"Creating volume (size={0}, zone={1}, snapshot_id={2})").format(size, zone, snapshot_id))
+                self.log_request(_(u"Creating volume (size={0}, zone={1}, snapshot_id={2})").format(
+                    size, zone, snapshot_id))
                 volume = self.conn.create_volume(**kwargs)
                 # Add name tag
                 if name:
@@ -365,7 +367,8 @@ class VolumeView(TaggedItemView, BaseVolumeView):
     def volume_detach(self):
         if self.detach_form.validate():
             with boto_error_handler(self.request, self.location):
-                self.log_request(_(u"Detaching volume {0} from {1}").format(self.volume.id, self.volume.attach_data.instance_id))
+                self.log_request(_(u"Detaching volume {0} from {1}").format(
+                    self.volume.id, self.volume.attach_data.instance_id))
                 self.volume.detach()
                 msg = _(u'Request successfully submitted.  It may take a moment to detach the volume.')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
@@ -389,6 +392,15 @@ class VolumeView(TaggedItemView, BaseVolumeView):
         if self.volume:
             return TaggedItemView.get_display_name(self.volume)
         return None
+
+    def get_controller_options_json(self):
+        if not self.volume:
+            return '{}'
+        return BaseView.escape_json(json.dumps({
+            'volume_status_json_url': self.request.route_path('volume_state_json', id=self.volume.id),
+            'volume_status': self.volume.status,
+            'attach_status': self.volume.attach_data.status,
+        }))
 
 
 class VolumeStateView(BaseVolumeView):
