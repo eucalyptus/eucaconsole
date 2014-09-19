@@ -37,18 +37,18 @@ from boto.ec2.image import Image
 from boto.s3.key import Key
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.view import view_config
-import pylibmc
 
 from ..constants.images import PLATFORM_CHOICES, PlatformChoice
 from ..forms.images import ImageForm, ImagesFiltersForm, DeregisterImageForm
 from ..i18n import _
 from ..models import Notification
 from ..models.auth import User
-from ..views import LandingPageView, TaggedItemView, JSONResponse, BlockDeviceMappingItemView
+from ..views import BaseView, LandingPageView, TaggedItemView, JSONResponse, BlockDeviceMappingItemView
 from . import boto_error_handler
 from ..layout import __version__ as curr_version
 
 import panels
+
 
 class ImageBundlingMixin(BlockDeviceMappingItemView):
     """
@@ -358,6 +358,7 @@ class ImageView(TaggedItemView, ImageBundlingMixin):
             deregister_form=self.deregister_form,
             account_id=self.account_id,
             snapshot_images_registered=self.get_images_registered_from_snapshot_count(),
+            controller_options_json=self.get_controller_options_json(),
         )
 
     def check_if_image_owned_by_user(self):
@@ -562,6 +563,17 @@ class ImageView(TaggedItemView, ImageBundlingMixin):
                 instances = self.conn.get_only_instances([image_param[1:]])
                 result = self.cancelBundling(instances[0])
                 return dict(message=_(u"Successfully cancelled image creation"), results=result)
+
+    def get_controller_options_json(self):
+        if not self.image:
+            return '{}'
+        return BaseView.escape_json(json.dumps({
+            'is_public': self.is_public,
+            'image_launch_permissions': self.image_launch_permissions,
+            'image_state_json_url': self.request.route_path('image_state_json', id=self.image.id),
+            'image_cancel_url': self.request.route_path('image_cancel', id=self.image.id),
+            'images_url': self.request.route_path('images'),
+        }))
 
     @staticmethod
     def get_platform(image):

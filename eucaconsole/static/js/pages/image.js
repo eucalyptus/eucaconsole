@@ -23,13 +23,15 @@ angular.module('ImagePage', ['BlockDeviceMappingEditor', 'TagEditor'])
         $scope.disabledExplanationVisible = false;
         $scope.pendingModalID = '';
         $scope.cancelling = false;
-        $scope.initController = function (isPublic, launchPermissions, stateUrl, imageCancelUrl, imagesUrl){
-            $scope.isPublic = isPublic;
-            $scope.launchPermissions = launchPermissions;
-            $scope.imageStatusEndpoint = stateUrl;
-            $scope.imageCancelUrl = imageCancelUrl;
-            $scope.imagesUrl = imagesUrl;
-            if (stateUrl) {
+        $scope.initController = function (optionsJson) {
+            var unescapedJson = EUCACONSOLE.unescapeJson(optionsJson);
+            var options = JSON.parse(unescapedJson);
+            $scope.isPublic = options['is_public'];
+            $scope.launchPermissions = options['image_launch_permissions'];
+            $scope.imageStatusEndpoint = options['image_state_json_url'];
+            $scope.imageCancelUrl = options['image_cancel_url'];
+            $scope.imagesUrl = options['images_url'];
+            if ($scope.imageStatusEndpoint) {
                 $scope.getImageState();
             }
             $scope.setWatch();

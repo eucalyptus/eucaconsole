@@ -6,11 +6,7 @@
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" 
-         ng-app="ImagePage" ng-controller="ImagePageCtrl" ng-init="initController('${is_public}',
-                    ${image_launch_permissions},
-                    '${request.route_path('image_state_json', id=image_id)}',
-                    '${request.route_path('image_cancel', id=image_id)}',
-                    '${request.route_path('images')}')">
+         ng-app="ImagePage" ng-controller="ImagePageCtrl" ng-init="initController('${controller_options_json}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('images')}" i18n:translate="">Images</a></li>

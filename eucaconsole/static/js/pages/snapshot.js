@@ -34,7 +34,6 @@ angular.module('SnapshotPage', ['TagEditor'])
             });
         };
         $scope.initController = function (optionsJson) {
-            // jsonEndpoint, status, progress, volumeCount, imagesURL
             var unescapedJson = EUCACONSOLE.unescapeJson(optionsJson);
             var options = JSON.parse(unescapedJson);
             $scope.volumeCount = options['volume_count'];
