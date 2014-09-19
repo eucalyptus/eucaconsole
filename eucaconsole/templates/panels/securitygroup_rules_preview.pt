@@ -15,7 +15,7 @@
                     </span>
                 </div>
             </div>
-            <div class="row controls-wrapper rules-display" ng-repeat="rule in selectedGroupRules[groupID] | filter: {type: 'inbound'}" ng-show="isRuleExpanded[groupID]">
+            <div class="row controls-wrapper rules-display" ng-repeat="rule in selectedGroupRules[groupID] | filter: {rule_type: 'inbound'}" ng-show="isRuleExpanded[groupID]">
                 <div ng-if="$first">
                     <div class="small-${leftcol_width} columns">&nbsp;</div>
                     <div class="small-${rightcol_width} columns rules-title">
@@ -33,7 +33,7 @@
                     </span>
                 </div>
             </div>
-            <div class="row controls-wrapper rules-display" ng-repeat="rule in selectedGroupRules[groupID] | filter: {type: 'outbound'}" ng-show="isRuleExpanded[groupID]">
+            <div class="row controls-wrapper rules-display" ng-repeat="rule in selectedGroupRules[groupID] | filter: {rule_type: 'outbound'}" ng-show="isRuleExpanded[groupID]">
                 <div ng-if="$first">
                     <div class="small-${leftcol_width} columns">&nbsp;</div>
                     <div class="small-${rightcol_width} columns rules-title">
