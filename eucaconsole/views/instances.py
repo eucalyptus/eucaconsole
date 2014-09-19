@@ -691,6 +691,8 @@ class InstanceView(TaggedItemView, BaseInstanceView):
         return has_elastic_ip
 
     def get_controller_options_json(self):
+        if not self.instance:
+            return ''
         return BaseView.escape_json(json.dumps({
             'instance_state_json_url': self.request.route_path('instance_state_json', id=self.instance.id),
             'instance_userdata_json_url': self.request.route_path('instance_userdata_json', id=self.instance.id),
