@@ -91,7 +91,7 @@
                             <button type="submit" class="button" ng-disabled="isNotChanged" i18n:translate="">
                                 Save Changes
                             </button>
-                            <a href="${request.route_path('instance_types')}"
+                            <a href="${request.route_path('dashboard')}"
                                 class="cancel-link" i18n:translate="">Cancel</a>
                        </form>
                    </div>
