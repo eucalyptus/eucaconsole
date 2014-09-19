@@ -222,7 +222,7 @@ class BucketContentsView(LandingPageView):
         )
         return self.render_dict
 
-    @view_config(route_name='bucket_upload', renderer='../templates/buckets/bucket_upload.pt')
+    @view_config(route_name='bucket_upload', renderer='../templates/buckets/bucket_upload.pt', request_method='GET')
     def bucket_upload(self):
         with boto_error_handler(self.request):
             bucket = BucketContentsView.get_bucket(self.request, self.s3_conn)
@@ -234,6 +234,14 @@ class BucketContentsView(LandingPageView):
                 upload_form=BucketUploadForm(self.request),
                 sharing_form=sharing_form,
             )
+        return self.render_dict
+
+    @view_config(route_name='bucket_upload', renderer='../templates/buckets/bucket_upload.pt', request_method='POST')
+    def bucket_upload_post(self):
+        #if not(self.is_csrf_valid()):
+        #    return JSONResponse(status=400, message="missing CSRF token")
+        import pdb; pdb.set_trace()
+        result = self.request.storage.save(self.request.POST['file'], replace=True)
         return self.render_dict
 
     @view_config(route_name='bucket_sign_req', renderer='json', request_method='POST', xhr=True)

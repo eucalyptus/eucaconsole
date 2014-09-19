@@ -23,8 +23,9 @@ angular.module('UploadFilePage', ['S3SharingPanel'])
         $scope.isSubmitted = false;
         $scope.hasChangesToBeSaved = false;
         $scope.files = [];
-        $scope.initController = function (uploadUrl) {
+        $scope.initController = function (uploadUrl, signUrl) {
             $scope.uploadUrl = uploadUrl;
+            $scope.signUrl = signUrl;
             $scope.handleUnsavedChanges();
             $scope.handleUnsavedSharingEntry($scope.createBucketForm);
         };
@@ -71,7 +72,7 @@ angular.module('UploadFilePage', ['S3SharingPanel'])
                 // file.path
                 // file.size
                 // file.type
-                var url = $scope.uploadUrl + '/' + file.name;
+                var url = $scope.signUrl + '/' + file.name;
                 $http({method:'POST', url:url, data:data,
                        headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
                   success(function(oData) {
@@ -81,10 +82,11 @@ angular.module('UploadFilePage', ['S3SharingPanel'])
                     angular.forEach(results.fields, function(value, key) {
                         this.append(key, value);
                     }, fd);
+                    fd.append('csrf_token', $('#csrf_token').val());
                     fd.append('file', file);
-                    $http.post(results.url, fd, {
-                            transformRequest: angular.identity,
-                            headers: {'Content-Type': file.type}
+                    var url = $scope.uploadUrl + '/' + file.name;
+                    $http.post(url, fd, {
+                            headers: {'Content-Type': 'application/x-www-form-urlencoded'}
                           }).
                         success(function(oData) {
                             Notify.success("uploaded file: "+file.name);
