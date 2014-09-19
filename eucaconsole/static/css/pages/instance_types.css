@@ -106,6 +106,6 @@
 .table #div-column-cpu { width: 6rem; }
 .table #div-column-memory { width: 8rem; }
 .table #div-column-disk { width: 9rem; }
-.table .type-updated { color: #8cc63e; }
+.table .type-updated { color: #03405f; }
 .table a.chosen-single span { color: #444444; }
 .table .error { margin-top: 0.3rem; color: darkred; }
