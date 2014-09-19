@@ -12,6 +12,18 @@
     .label {
         margin: 0 0 0 0;
     }
+    #div-column-name {
+        width: 9rem;
+    }
+    #div-column-cpu {
+        width: 6rem;
+    }
+    #div-column-memory {
+        width: 8rem;
+    }
+    #div-column-disk {
+        width: 9rem;
+    }
     a.chosen-single span{
        color: $euca-darkgrey;
     }

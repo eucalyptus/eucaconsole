@@ -33,12 +33,18 @@
                         </thead>
                         <tbody>
                             <tr ng-cloak="true" ng-repeat="item in items" on-finish-render="">
-                                <td>{{ item.name }}</td>
                                 <td>
-                                    <select id="select-cpu-{{item.name}}" ng-model="cpuSelected[item.name]"
-                                        ng-options="cpu as cpu for cpu in cpuList"
-                                        ng-init="cpuSelected[item.name] = item.cpu">
-                                    </select>
+                                    <div id="div-column-name">
+                                        {{ item.name }}
+                                    </div>
+                                </td>
+                                <td>
+                                    <div id="div-column-cpu">
+                                        <select id="select-cpu-{{item.name}}" ng-model="cpuSelected[item.name]"
+                                            ng-options="cpu as cpu for cpu in cpuList"
+                                            ng-init="cpuSelected[item.name] = item.cpu">
+                                        </select>
+                                    </div>
                                     <div id="error-cpu-{{item.name}}" class="error"
                                         ng-show="cpuInputError[item.name]"
                                         ng-init="cpuInputError[item.name] = false"
@@ -47,10 +53,12 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <select id="select-memory-{{item.name}}" ng-model="memorySelected[item.name]"
-                                        ng-options="memory as memory for memory in memoryList"
-                                        ng-init="memorySelected[item.name] = convertMBtoGB(item.memory)">
-                                    </select>
+                                    <div id="div-column-memory">
+                                        <select id="select-memory-{{item.name}}" ng-model="memorySelected[item.name]"
+                                            ng-options="memory as memory for memory in memoryList"
+                                            ng-init="memorySelected[item.name] = convertMBtoGB(item.memory)">
+                                         </select>
+                                    </div>
                                     <div id="error-cpu-{{item.name}}" class="error"
                                         ng-show="memoryInputError[item.name]" 
                                         ng-init="memoryInputError[item.name] = false"
@@ -59,10 +67,12 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <select id="select-disk-{{item.name}}" ng-model="diskSelected[item.name]"
-                                        ng-options="disk as disk for disk in diskList"
-                                        ng-init="diskSelected[item.name] = item.disk">
-                                    </select>
+                                    <div id="div-column-disk">
+                                        <select id="select-disk-{{item.name}}" ng-model="diskSelected[item.name]"
+                                            ng-options="disk as disk for disk in diskList"
+                                            ng-init="diskSelected[item.name] = item.disk">
+                                        </select>
+                                    </div>
                                     <div id="error-cpu-{{item.name}}" class="error"
                                         ng-show="diskInputError[item.name]"
                                         ng-init="diskInputError[item.name] = false"

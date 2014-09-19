@@ -102,5 +102,9 @@
 @media screen and (max-width: 920px) { .columns.datagrid { padding-left: 1rem; } }
 .table th, .table td { padding: 4px 7px; }
 .table .label { margin: 0 0 0 0; }
+.table #div-column-name { width: 9rem; }
+.table #div-column-cpu { width: 6rem; }
+.table #div-column-memory { width: 8rem; }
+.table #div-column-disk { width: 9rem; }
 .table a.chosen-single span { color: #444444; }
 .table .error { margin-top: 0.3rem; color: darkred; }
