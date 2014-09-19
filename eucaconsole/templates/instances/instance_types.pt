@@ -19,9 +19,9 @@
         <h3 id="pagetitle"><strong i18n:translate="">Instance types</strong></h3>
         <div class="large-8 columns" id="landing-page-items">
             <div class="panel">
-                <div ng-show="itemsLoading"><span class="dots"></span></div>
                 <p class="note" i18n:translate="">To change the configuration of an instance type, select from the available options.
                     You can enter any value you would like if you do not see it listed.</p>
+                <div ng-show="itemsLoading"><span class="dots"></span></div>
                 <div id="tableview" class="gridwrapper" ng-cloak="">
                     <!-- Begin table view -->
                     <table class="table" ng-show="!itemsLoading" ng-cloak="true">
