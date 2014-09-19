@@ -1354,15 +1354,19 @@ class InstanceTypesView(LandingPageView, BaseInstanceView):
                     instance_type = update[index]
                 instance_type[attr] = value 
                 update[index] = instance_type
+        # Modify instance type 
         for item in update.itervalues():
-            self.modify_instance_type_attribute(item['name'], item['cpu'], item['memory'], item['disk'])
-        return dict(message=_(u"Successfully updated instance types information"))
+            is_updated = self.modify_instance_type_attribute(
+                item['name'], item['cpu'], item['memory'], item['disk'])
+            if not is_updated:
+                return JSONResponse(status=400, message=_(u"Failed to instance type attributes"))
+        return dict(message=_(u"Successfully updated instance type attributes"))
 
     def modify_instance_type_attribute(self, name, cpu, memory, disk):
-        params = {'Name': name,
-                  'Cpu': cpu,
-                  'Memory': memory,
-                  'Disk': disk} 
+        # Ensure that the attributes are positive integers
+        if cpu <= 0 or memory <= 0 or disk <= 0:
+            return False
+        params = {'Name': name, 'Cpu': cpu, 'Memory': memory, 'Disk': disk} 
         with boto_error_handler(self.request):
-            self.conn.get_status('ModifyInstanceTypeAttribute', params, verb='POST')
-        return
+            return self.conn.get_status('ModifyInstanceTypeAttribute', params, verb='POST')
+        return False
