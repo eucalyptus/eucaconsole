@@ -33,14 +33,18 @@ angular.module('SnapshotPage', ['TagEditor'])
                 $('#volume_id').val('').trigger('chosen:updated'); 
             });
         };
-        $scope.initController = function (jsonEndpoint, status, progress, volumeCount, imagesURL) {
-            $scope.displayVolumeWarning(volumeCount);
+        $scope.initController = function (optionsJson) {
+            // jsonEndpoint, status, progress, volumeCount, imagesURL
+            var unescapedJson = EUCACONSOLE.unescapeJson(optionsJson);
+            var options = JSON.parse(unescapedJson);
+            $scope.volumeCount = options['volume_count'];
+            $scope.displayVolumeWarning($scope.volumeCount);
             $scope.initChosenSelector();
-            $scope.snapshotStatusEndpoint = jsonEndpoint;
-            $scope.snapshotStatus = status;
-            $scope.snapshotProgress = progress;
-            $scope.imagesURL = imagesURL;
-            if (jsonEndpoint) {
+            $scope.snapshotStatusEndpoint = options['snapshot_status_json_url'];
+            $scope.snapshotStatus = options['snapshot_status'];
+            $scope.snapshotProgress = options['snapshot_status'];
+            $scope.imagesURL = options['snapshot_images_json_url'];
+            if ($scope.snapshotStatusEndpoint) {
                 $scope.getSnapshotState();
             }
             $scope.setWatch();

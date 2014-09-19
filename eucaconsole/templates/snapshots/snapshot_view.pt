@@ -7,9 +7,7 @@
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap"
          ng-app="SnapshotPage" ng-controller="SnapshotPageCtrl"
-         ng-init="initController('${request.route_path('snapshot_state_json', id=snapshot.id) if snapshot else ''}',
-                 '${snapshot.status if snapshot else ''}', '${snapshot.progress if snapshot else ''}', ${volume_count},
-                 '${request.route_path('snapshot_images_json', id=snapshot.id) if snapshot else ''}')">
+         ng-init="initController('${controller_options_json}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('snapshots')}" i18n:translate="">Snapshots</a></li>
