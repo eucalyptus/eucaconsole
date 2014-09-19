@@ -24,17 +24,19 @@ angular.module('InstancePage', ['TagEditor'])
         $scope.isTransitional = function (state) {
             return $scope.transitionalStates.indexOf(state) !== -1;
         };
-        $scope.initController = function (jsonEndpoint, userDataEndpoint, ipaddressEndpoint, consoleEndpoint, state, id, public_ip, public_dns_name, platform, has_elastic_ip) {
-            $scope.instanceStateEndpoint = jsonEndpoint;
-            $scope.instanceUserDataEndpoint = userDataEndpoint;
-            $scope.instanceIPAddressEndpoint = ipaddressEndpoint;
-            $scope.consoleOutputEndpoint = consoleEndpoint;
-            $scope.instanceState = state;
-            $scope.instanceID = id;
-            $scope.instancePublicIP = public_ip;
-            $scope.publicDNS = public_dns_name;
-            $scope.platform = platform;
-            $scope.hasElasticIP = Boolean(has_elastic_ip.toLowerCase());
+        $scope.initController = function (optionsJson) {
+            var unescapedJson = optionsJson.replace(/__apos__/g, "\'").replace(/__dquote__/g, '\\"').replace(/__bslash__/g, "\\");
+            var options = JSON.parse(unescapedJson);
+            $scope.instanceStateEndpoint = options['instance_state_json_url'];
+            $scope.instanceUserDataEndpoint = options['instance_userdata_json_url'];
+            $scope.instanceIPAddressEndpoint = options['instance_ip_address_json_url'];
+            $scope.consoleOutputEndpoint = options['instance_console_json_url'];
+            $scope.instanceState = options['instance_state'];
+            $scope.instanceID = options['instance_id'];
+            $scope.instancePublicIP = options['instance_ip_address'];
+            $scope.publicDNS = options['instance_public_dns'];
+            $scope.platform = options['instance_platform'];
+            $scope.hasElasticIP = options['has_elastic_ip'];
             $scope.getInstanceState();
             $scope.getUserData();
             $scope.activateWidget();
