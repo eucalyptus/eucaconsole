@@ -30,7 +30,7 @@
         </p>
         <form id="enable-form" ng-submit="enableUser($event)">
             ${structure:enable_form['csrf_token']}
-            ${panel('form_field', field=enable_form['random_password'], leftcol_width=4, rightcol_wdth=8, reverse='true')}
+            ${panel('form_field', field=enable_form['random_password'], leftcol_width=4, rightcol_wdth=8, reverse=True)}
             <div>&nbsp;</div>
             <div class="row">
                 <div>

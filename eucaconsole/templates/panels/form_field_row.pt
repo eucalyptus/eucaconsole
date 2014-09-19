@@ -18,9 +18,9 @@
         </div>
     </div>
     <div tal:condition="reverse" tal:omit-tag="">
-        <div tal:condition="checkbox" class="small-12 columns checkbox-row">
+        <div tal:condition="checkbox" class="columns field">
             ${structure:field(**html_attrs)}
-            <label for="${field.name}">${field.label.text}</label>&nbsp;
+            <label for="${field.name}" class="left-align">${field.label.text}</label>&nbsp;
             <span tal:condition="field.flags.required" class="req">*</span>
             <span tal:condition="getattr(field, 'help_text', None)"
                   class="helptext-icon" data-tooltip="" title="${field.help_text}">?</span>
