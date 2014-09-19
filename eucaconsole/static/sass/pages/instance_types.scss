@@ -24,7 +24,10 @@
     #div-column-disk {
         width: 9rem;
     }
-    a.chosen-single span{
+    .type-updated {
+       color: $euca-green;
+    }
+    a.chosen-single span {
        color: $euca-darkgrey;
     }
     .error {

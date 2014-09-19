@@ -34,7 +34,7 @@
                         <tbody>
                             <tr ng-cloak="true" ng-repeat="item in items" on-finish-render="">
                                 <td>
-                                    <div id="div-column-name">
+                                    <div id="div-column-name" ng-class="nameColumnClass[item.name]">
                                         {{ item.name }}
                                     </div>
                                 </td>

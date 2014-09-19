@@ -23,10 +23,11 @@ angular.module('InstanceTypesPage', [])
         $scope.cpuList = [];
         $scope.memoryList = [];
         $scope.diskList = [];
+        $scope.nameColumnClass = {};
         $scope.cpuSelected = {};
         $scope.memorySelected = {};
         $scope.diskSelected = {};
-        $scope.updatedItemList = [];
+        $scope.updatedItemList = {};
         $scope.cpuInputError = {};
 	$scope.memoryInputError = {};
         $scope.diskInputError = {};
@@ -144,6 +145,9 @@ angular.module('InstanceTypesPage', [])
             $scope.$on('ngRepeatFinished', function () {
                 $scope.initChosenWidgets();
             });
+            $scope.$watch('updatedItemList', function () {
+                $scope.updateNameColumnClass();
+            }, true); 
             $scope.$watch('cpuSelected', function () {
                 if ($scope.checkForUpdatedCPUList() > 0) {
                     $scope.isNotChanged = false;
@@ -316,9 +320,15 @@ angular.module('InstanceTypesPage', [])
             } 
         };
         $scope.submitCompleted = function () {
-            $scope.updatedItemList = [];
+            $scope.updatedItemList = {};
+            $scope.nameColumnClass = {};
             $scope.isNotChanged = true;
             $scope.getItems();
+        };
+        $scope.updateNameColumnClass = function () {
+            for (key in $scope.updatedItemList) {
+                $scope.nameColumnClass[key] = 'type-updated';
+            }
         };
         $scope.convertMBtoGB = function (mb) {
             return Number(mb) / 1024;
