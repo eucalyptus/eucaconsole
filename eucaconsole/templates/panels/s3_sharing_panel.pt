@@ -31,7 +31,7 @@
         <div id="manual-acl-wrapper">
             <input type="radio" name="acl_type" value="manual" id="acl-type-manual" ng-model="aclType" />
             <label for="acl-type-manual" i18n:translate="">Manually define sharing</label>
-            <div ng-show="aclType == 'manual'">
+            <div ng-show="aclType == 'manual'" class="manual-controls">
                 <div class="items">
                     <span class="label radius secondary grantentry" ng-repeat="grant in grantsArray" ng-cloak="cloak">
                         {{ grant.display_name || grant.id || grant.uri.split('/').pop() }}: {{ grant.permission }}

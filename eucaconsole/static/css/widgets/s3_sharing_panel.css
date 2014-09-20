@@ -10,3 +10,4 @@
 #s3-sharing-panel #share_account, #s3-sharing-panel #share_permissions, #s3-sharing-panel #canned_acl { width: 50%; }
 #s3-sharing-panel #canned_acl { margin-left: 1.6rem; }
 #s3-sharing-panel #controls_share_account label { white-space: nowrap; }
+#s3-sharing-panel #manual-acl-wrapper .manual-controls { margin-left: 1.6rem; }
