@@ -85,6 +85,8 @@ class SharingPanelForm(BaseSecureForm):
     """S3 Sharing Panel form for buckets/objects"""
     SHARE_TYPE_CHOICES = (('public', _(u'Public')), ('private', _(u'Private')))
     share_type = wtforms.RadioField(choices=SHARE_TYPE_CHOICES)
+    share_account_error_msg = _(
+        u'Account ID may contain alpha-numeric characters and is a 12-digit account ID or the 64-digit canonical ID.')
     share_account = TextEscapedField(label=_(u'Account ID'))
     share_permissions = wtforms.SelectField(label=_(u'Permissions'))
     canned_acl = wtforms.SelectField()
@@ -94,6 +96,8 @@ class SharingPanelForm(BaseSecureForm):
         self.bucket_object = bucket_object
         self.is_object = isinstance(bucket_object, Key)
         self.sharing_acl = sharing_acl
+        # Set error messages
+        self.share_account.error_msg = self.share_account_error_msg
         # Set choices
         self.share_permissions.choices = self.get_permission_choices()
         self.canned_acl.choices = self.get_canned_acl_choices()

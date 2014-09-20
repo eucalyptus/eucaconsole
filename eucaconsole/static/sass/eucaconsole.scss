@@ -656,6 +656,9 @@ form {
         select, input, .chosen-container {
             text-align: left;
         }
+        &.nowrap {
+            white-space: nowrap;
+        }
     }
     label.reverse {
         display: inline-block;

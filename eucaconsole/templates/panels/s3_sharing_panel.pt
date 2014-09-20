@@ -1,5 +1,5 @@
 <!--! S3 bucket/object sharing panel -->
-<div id="s3-sharing-panel" ng-app="S3SharingPanel" i18n:domain="eucaconsole"
+<div id="s3-sharing-panel" ng-app="S3SharingPanel" i18n:domain="eucaconsole" ng-form="sharingPanelForm"
      ng-controller="S3SharingPanelCtrl" ng-init="initS3SharingPanel('${grants_json}')">
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/s3_sharing_panel.css')}" />
     <hr id="s3-sharing-panel-top-hr-tag" />
@@ -48,7 +48,17 @@
                     </span>
                     :
                 </div>
-                ${panel('form_field', field=sharing_form.share_account, leftcol_width=2, rightcol_width=10, ng_attrs={'model': 'shareAccount'})}
+                <div class="row controls-wrapper">
+                    <div class="small-2 columns">
+                        <label class="right nowrap">
+                            ${sharing_form.share_account.label.text}&nbsp;<span class="req">*</span>
+                        </label>
+                    </div>
+                    <div class="small-10 columns">
+                        ${structure: sharing_form.share_account(**{'ng-model': 'shareAccount'})}
+                        <small class="error">${sharing_form.share_account_error_msg}</small>
+                    </div>
+                </div>
                 ${panel('form_field', field=sharing_form.share_permissions, leftcol_width=2, rightcol_width=10)}
                 <a class="button round tiny" ng-click="addGrant($event)"
                    ng-disabled="addAccountBtnDisabled" i18n:translate="">

@@ -1524,6 +1524,7 @@ form .error .chosen-container .chosen-single { border-color: darkred; background
 .row.controls-wrapper { margin-bottom: 0.5rem; }
 .row.controls-wrapper label { padding-top: 4px; font-weight: bold; text-align: right; line-height: 1rem; }
 .row.controls-wrapper label select, .row.controls-wrapper label input, .row.controls-wrapper label .chosen-container { text-align: left; }
+.row.controls-wrapper label.nowrap { white-space: nowrap; }
 .row.controls-wrapper label.reverse { display: inline-block; text-align: left; position: relative; left: 1.5rem; }
 .row.controls-wrapper .helptext-icon.reverse { position: relative; left: 1.5rem; }
 .row.controls-wrapper div.reverse { position: relative; }
