@@ -30,6 +30,7 @@ Forms for S3 buckets and objects
 """
 import wtforms
 
+from boto.s3.key import Key
 from boto.s3.bucket import Bucket
 from wtforms import validators
 
@@ -91,6 +92,7 @@ class SharingPanelForm(BaseSecureForm):
     def __init__(self, request, bucket_object=None, sharing_acl=None, **kwargs):
         super(SharingPanelForm, self).__init__(request, **kwargs)
         self.bucket_object = bucket_object
+        self.is_object = isinstance(bucket_object, Key)
         self.sharing_acl = sharing_acl
         # Set choices
         self.share_permissions.choices = self.get_permission_choices()
@@ -121,15 +123,15 @@ class SharingPanelForm(BaseSecureForm):
             ])
         return choices
 
-    @staticmethod
-    def get_permission_choices():
-        return (
+    def get_permission_choices(self):
+        choices = (
             ('FULL_CONTROL', _('Full Control')),
-            ('READ', _('Read-only')),
-            ('WRITE', _('Read-Write')),
+            ('READ', _('Read-only') if self.is_object else _('List objects')),
+            ('WRITE', _('Create/delete objects')) if not self.is_object else None,  # Hide for object details
             ('READ_ACP', _('Read sharing permissions')),
             ('WRITE_ACP', _('Write sharing permissions')),
         )
+        return [choice for choice in choices if choice is not None]
 
 
 class MetadataForm(BaseSecureForm):
