@@ -165,6 +165,12 @@
     // Initialize all Zurb Foundation components
     $(document).foundation();
 </script>
+<script type="text/javascript">
+    // Prevent cancel link click from displaying unsaved changes warning
+    $(document).on('click', '.cancel-link', function(event) {
+        window.onbeforeunload = null;
+    });
+</script>
 <div metal:define-slot="tail_js"></div>
 </div></div><!--! /end off-canvas wraps -->
 </body>

@@ -82,7 +82,7 @@ angular.module('S3SharingPanel', [])
             $scope.$emit('s3:sharingPanelAclUpdated');
             // Reset form values
             $('#share_account').val('');
-            $('#share_permissions').val('READ');
+            $('#share_permissions').val('FULL_CONTROL');
         };
         $scope.removeGrant = function (index, $event) {
             $event.preventDefault();
@@ -114,6 +114,7 @@ angular.module('S3SharingPanel', [])
                     'grant_type': 'CanonicalUser'
                 });
                 $scope.syncGrants();
+                $scope.addAccountBtnDisabled = true;
             } else {
                 grantAccountField.val() ? grantPermissionField.focus() : grantAccountField.focus();
             }
