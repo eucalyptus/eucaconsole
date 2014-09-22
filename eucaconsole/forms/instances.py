@@ -408,9 +408,16 @@ class DisassociateIpFromInstanceForm(BaseSecureForm):
     pass
 
 
+class InstanceTypeForm(BaseSecureForm):
+    """CSRF-protected form to disassociate IP from an instance"""
+    pass
+
+
 class InstanceCreateImageForm(BaseSecureForm):
     """CSRF-protected form to create an image from an instance"""
-    name_error_msg = _(u'Name must be 3-128 alphanumeric characters (and may include parens, period (.), slashes (/), dashes (-) or underscores (_) but not spaces')
+    name_error_msg = _(
+        u'Name must be 3-128 alphanumeric characters (and may include parens, period (.), '
+        u'slashes (/), dashes (-) or underscores (_) but not spaces')
     name = wtforms.TextField(
         label=_(u'Name'),
         validators=[validators.Required(message=name_error_msg)],
@@ -436,7 +443,9 @@ class InstanceCreateImageForm(BaseSecureForm):
         # Set error msg
         self.name.error_msg = self.name_error_msg
         # Set help text
-        no_reboot_helptext = _(u'When checked, the instance will not be shut down before the image is created. May impact file integrity of the image.')
+        no_reboot_helptext = _(
+            u'When checked, the instance will not be shut down before the image is created. '
+            u'May impact file integrity of the image.')
         self.no_reboot.help_text = no_reboot_helptext
         s3_bucket_helptext = _(u'Choose from your existing buckets, or enter a name to create a new bucket')
         self.s3_bucket.help_text = s3_bucket_helptext
