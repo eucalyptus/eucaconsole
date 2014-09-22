@@ -173,6 +173,25 @@ class BucketXHRView(BaseView):
         else:
             return dict(message=_(u"Failed to delete all keys."), errors=errors)
 
+    @view_config(route_name='bucket_put_item', renderer='json', request_method='POST', xhr=True)
+    def bucket_put_item(self):
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
+        subpath = self.request.subpath
+        src_bucket = self.request.params.get('src_bucket')
+        src_key = self.request.params.get('src_key')
+        dest_key = '/'.join(subpath) + '/' + src_key[src_key.rfind('/')+1:]
+        with boto_error_handler(self.request):
+            self.log_request(_(u"Copying key from {0}:{1} to {2}:{3}").format(
+                src_bucket, src_key, self.bucket_name, dest_key))
+            bucket = self.s3_conn.get_bucket(self.bucket_name, validate=False)
+            bucket.copy_key(
+                new_key_name=dest_key,
+                src_bucket_name=src_bucket,
+                src_key_name=src_key
+            )
+            return dict(message=_(u"Successfully copied object."))
+
 
 class BucketContentsView(LandingPageView):
     """Views for actions on single bucket"""
