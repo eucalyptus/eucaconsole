@@ -5,7 +5,7 @@
 </head>
 
 <div metal:fill-slot="main_content" ng-app="BucketsPage" ng-controller="BucketsCtrl"
-     ng-init="initController('${bucket_objects_count_url}', '${update_versioning_url}')">
+     ng-init="initController('${bucket_objects_count_url}', '${update_versioning_url}', '${request.route_path('bucket_put_item', name='_name_', subpath='_subpath_')}')">
     <div class="row" id="contentwrap" ng-app="LandingPage" ng-controller="ItemsCtrl"
          ng-init="initController('buckets', '${initial_sort_key}', '${json_items_endpoint}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
@@ -18,7 +18,7 @@
         <h3 id="pagetitle"><strong i18n:translate="">Buckets</strong></h3>
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
-                <a class="button" id="create-bucket-btn" i18n:translate="">
+                <a class="button" id="create-bucket-btn" i18n:translate="" href="${request.route_path('bucket_new')}">
                     Create Bucket
                 </a>
             </div>
@@ -70,8 +70,11 @@
                             </span>
                         </a>
                     </li>
+                    <li ng-show="hasCopyItem()">
+                        <a i18n:translate="" ng-click="doPaste(item)">Paste object</a>
+                    </li>
                     <li>
-                        <a i18n:translate="" ng-click="revealModal('delete', item)">Delete</a>
+                        <a i18n:translate="" ng-click="revealModal('delete-bucket', item)">Delete</a>
                     </li>
                 </ul>
             </div>
@@ -119,8 +122,11 @@
                                     </span>
                                 </a>
                             </li>
+                            <li ng-show="hasCopyItem()">
+                                <a i18n:translate="" ng-click="doPaste(item)">Paste object</a>
+                            </li>
                             <li>
-                                <a i18n:translate="" ng-click="revealModal('delete', item)">Delete</a>
+                                <a i18n:translate="" ng-click="revealModal('delete-bucket', item)">Delete</a>
                             </li>
                         </ul>
                     </span>
@@ -128,7 +134,7 @@
             </metal:block>
         </div>
         <!--! Modal dialogs reused across landing and detail page -->
-        ${panel('bucket_dialogs', landingpage=True, versioning_form=versioning_form)}
+        ${panel('bucket_dialogs', landingpage=True, versioning_form=versioning_form, delete_form=delete_form)}
     </div>
 </div>
 

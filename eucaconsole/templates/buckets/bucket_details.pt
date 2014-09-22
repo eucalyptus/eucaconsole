@@ -38,7 +38,7 @@
                                id="suspend-versioning-action" i18n:translate="">Suspend versioning</a>
                         </li>
                         <li>
-                            <a id="delete-bucket-action" i18n:translate="">Delete</a>
+                            <a id="delete-bucket-action" data-reveal-id="delete-bucket-modal" i18n:translate="">Delete</a>
                         </li>
                     </metal:actions>
                 </metal:block>
@@ -59,7 +59,7 @@
                         <div class="small-8 columns value" ng-cloak="">
                             <span class="dots" ng-show="objectsCountLoading"></span>
                             <a ng-show="!objectsCountLoading" href="${bucket_contents_url}">
-                                <strong>{{ bucketObjectsCount }}</strong>
+                                <strong>{{ bucketCount }}</strong>
                             </a>
                         </div>
                     </div>
@@ -101,7 +101,7 @@
             <div class="help-content" ng-show="isHelpExpanded" ng-cloak=""></div>
         </div>
         <!--! Modal dialogs reused across landing and detail page -->
-        ${panel('bucket_dialogs', landingpage=False, bucket=bucket, versioning_form=versioning_form)}
+        ${panel('bucket_dialogs', landingpage=False, bucket=bucket, versioning_form=versioning_form, delete_form=delete_form)}
     </div>
 </div>
 

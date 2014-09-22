@@ -22,7 +22,7 @@
             </span>
             ?
         </p>
-        <form action="${request.route_path('bucket_update_versioning', name=bucket.name if bucket else '_name_')}"
+        <form id="update-versioning-form" action="${request.route_path('bucket_update_versioning', name=bucket.name if bucket else '_name_')}"
               method="post">
             ${structure:versioning_form['csrf_token']}
             <div tal:condition="landingpage" tal:omit-tag="">
@@ -35,7 +35,7 @@
             </div>
             <input type="hidden" name="source" value="${'landingpage' if landingpage else 'detailpage'}" />
             <div class="dialog-submit-button">
-                <button type="submit" id="update_versioning_submit_button" class="button expand" i18n:translate="">
+                <button type="submit" id="update_versioning_submit_button" class="button expand">
                     <span i18n:translate="">Yes,</span>
                     <span tal:condition="bucket" tal:omit-tag="">
                         ${update_versioning_action.capitalize()}
@@ -52,5 +52,26 @@
             </div>
         </form>
         <a href="#" id="update_versioning_close_link" class="close-reveal-modal">&#215;</a>
+    </div>
+    <div id="delete-bucket-modal" class="reveal-modal small" data-reveal="">
+        <h3 i18n:translate="">Delete bucket</h3>
+        <p ng-show="bucketCount == 0">
+            <span i18n:translate="">Are you sure you want to delete bucket</span>&nbsp;{{ bucketName }}?
+        </p>
+        <p ng-show="bucketCount > 0">
+            <span i18n:translate="">You cannot delete a bucket unless it is empty. Please delete all the files and folders this bucket contains and retry this operation.</span>
+        </p>
+        <form id='delete-bucket-form' action="${request.route_path('bucket_delete', name=bucket.name if bucket else '_name_')}" method="post">
+            ${structure:delete_form['csrf_token']}
+            <div class="dialog-submit-button" ng-show="bucketCount == 0">
+                <button type="submit" id="delete_bucket_submit_button" class="button expand">
+                    <span i18n:translate="">Yes, Delete Bucket</span>
+                </button>
+            </div>
+            <div class="dialog-progress-display hide">
+                <span i18n:translate="">Sending request </span>&nbsp;<em><span class="dots">&nbsp;</span></em>
+            </div>
+        </form>
+        <a href="#" id="delete_bucket_close_link" class="close-reveal-modal">&#215;</a>
     </div>
  </div>

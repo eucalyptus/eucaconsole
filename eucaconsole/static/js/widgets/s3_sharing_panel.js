@@ -4,7 +4,7 @@
  *
  */
 angular.module('S3SharingPanel', [])
-    .controller('S3SharingPanelCtrl', function ($scope) {
+    .controller('S3SharingPanelCtrl', function ($scope, $timeout) {
         $scope.s3AclTextarea = $('#s3-sharing-acl');
         $scope.sharingAccountList = [];
         $scope.isNotValid = true;

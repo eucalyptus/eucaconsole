@@ -32,7 +32,7 @@ See http://docs.pylonsproject.org/projects/pyramid_layout/en/latest/layouts.html
 from pyramid_layout.panel import panel_config
 
 from ..views import BaseView
-from ..views.buckets import BucketDetailsView
+from ..views.buckets import BucketDetailsView, FOLDER_NAME_PATTERN
 
 
 @panel_config('ipaddress_dialogs', renderer='../templates/dialogs/ipaddress_dialogs.pt')
@@ -238,7 +238,7 @@ def image_dialogs(context, request, image=None, image_name_id='', landingpage=Fa
 
 
 @panel_config('bucket_dialogs', renderer='../templates/dialogs/bucket_dialogs.pt')
-def bucket_dialogs(context, request, bucket=None, landingpage=False, versioning_form=None):
+def bucket_dialogs(context, request, bucket=None, landingpage=False, versioning_form=None, delete_form=None):
     """ Modal dialogs for Bucket landing and detail page."""
     versioning_status = bucket.get_versioning_status() if bucket else None
     update_versioning_action = ''
@@ -251,6 +251,17 @@ def bucket_dialogs(context, request, bucket=None, landingpage=False, versioning_
         versioning_status=versioning_status,
         landingpage=landingpage,
         versioning_form=versioning_form,
+        delete_form=delete_form,
         update_versioning_action=update_versioning_action,
+    )
+
+
+@panel_config('create_folder_dialog', renderer='../templates/dialogs/create_folder_dialog.pt')
+def create_folder_dialog(context, request, bucket_name=None, create_folder_form=None):
+    """ Modal dialog creating a folder in a bucket."""
+    return dict(
+        bucket_name=bucket_name,
+        create_folder_form=create_folder_form,
+        folder_name_pattern=FOLDER_NAME_PATTERN,
     )
 

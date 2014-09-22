@@ -37,8 +37,6 @@ import os
 import simplejson as json
 import time
 from M2Crypto import RSA
-import pylibmc
-import logging
 import re
 
 from boto.exception import BotoServerError
@@ -89,7 +87,7 @@ class BaseInstanceView(BaseView):
                         instance.platform = _(u"linux")
                     if instance.vpc_id:
                         vpc = self.vpc_conn.get_all_vpcs(vpc_ids=[instance.vpc_id])[0]
-                        instance.vpc_name = TaggedItemView.get_display_name(vpc, escapebraces=True) 
+                        instance.vpc_name = TaggedItemView.get_display_name(vpc, escapebraces=True)
                     else:
                         instance.vpc_name = ''
                     instance.instance_profile_id = None
@@ -148,7 +146,7 @@ class InstancesView(LandingPageView, BaseInstanceView):
     def instances_landing(self):
         filter_keys = [
             'id', 'name', 'image_id', 'instance_type', 'ip_address', 'key_name', 'placement',
-            'root_device', 'security_groups_string', 'state', 'tags', 'roles']
+            'root_device', 'security_groups_string', 'state', 'tags', 'roles', 'vpc_id', 'subnet_id']
         # filter_keys are passed to client-side filtering in search box
         self.filter_keys = filter_keys
         # sort_keys are passed to sorting drop-down
@@ -163,9 +161,10 @@ class InstancesView(LandingPageView, BaseInstanceView):
         ]
         autoscale_conn = self.get_connection(conn_type='autoscale')
         iam_conn = self.get_connection(conn_type='iam')
+        vpc_conn = self.get_connection(conn_type='vpc')
         filters_form = InstancesFiltersForm(
             self.request, ec2_conn=self.conn, autoscale_conn=autoscale_conn,
-            iam_conn=iam_conn,
+            iam_conn=iam_conn, vpc_conn=vpc_conn,
             cloud_type=self.cloud_type, formdata=self.request.params or None)
         self.render_dict.update(dict(
             filter_fields=True,
@@ -409,12 +408,13 @@ class InstancesJsonView(LandingPageView):
         for vpc in self.vpcs:
             if vpc_id == vpc.id:
                 return vpc
+
     def get_image_by_id(self, images, id):
         if images:
             for image in images:
                 if image.id == id:
                     return image
-        return None 
+        return None
 
     def filter_by_scaling_group(self, items):
         filtered_items = []
@@ -456,7 +456,7 @@ class InstanceJsonView(BaseInstanceView):
                     ip_address=instance.ip_address,
                     root_device_name=instance.root_device_name,
                     root_device_type=instance.root_device_type,
-                ))
+               ))
 
 
 class InstanceView(TaggedItemView, BaseInstanceView):
@@ -507,7 +507,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
             associate_ip_form=self.associate_ip_form,
             disassociate_ip_form=self.disassociate_ip_form,
             has_elastic_ip=self.has_elastic_ip,
-            role = self.role,
+            role=self.role,
             running_create=self.running_create,
         )
 
@@ -686,7 +686,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
         if ip_address is not None:
             for ip in elastic_ips:
                 if ip_address == ip.public_ip:
-                    has_elastic_ip = True  
+                    has_elastic_ip = True
         return has_elastic_ip
 
 
@@ -712,11 +712,11 @@ class InstanceStateView(BaseInstanceView):
                 unencoded = base64.b64decode(user_data)
                 mime_type = guess_mimetype_from_buffer(unencoded, mime=True)
                 if mime_type.find('text') == 0:
-                    user_data=unencoded
+                    user_data = unencoded
                 else:
                     # get more descriptive text
                     mime_type = guess_mimetype_from_buffer(unencoded)
-                    user_data=None
+                    user_data = None
             else:
                 user_data = ''
                 mime_type = ''
@@ -732,7 +732,7 @@ class InstanceStateView(BaseInstanceView):
             private_ip_address=self.instance.private_ip_address,
             private_dns_name=self.instance.private_dns_name,
             has_elastic_ip=has_elastic_ip,
-        ) 
+        )
         return ip_address_dict
 
     @view_config(route_name='instance_nextdevice_json', renderer='json', request_method='GET')
@@ -764,7 +764,7 @@ class InstanceStateView(BaseInstanceView):
         if ip_address is not None:
             for ip in elastic_ips:
                 if ip_address == ip.public_ip:
-                    has_elastic_ip = True  
+                    has_elastic_ip = True
         return has_elastic_ip
 
 
@@ -900,6 +900,7 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
             securitygroup_choices_json=self.securitygroup_choices_json,
             vpc_subnet_choices_json=self.vpc_subnet_choices_json,
             role_choices_json=self.role_choices_json,
+            security_group_placeholder_text=_(u'Select...'),
         )
 
     @view_config(route_name='instance_create', renderer=TEMPLATE, request_method='GET')
@@ -919,14 +920,10 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
                 key_name = None  # Handle "None (advanced)" option
             if key_name:
                 key_name = self.unescape_braces(key_name)
-            securitygroup = self.request.params.get('securitygroup', 'default')
-            if securitygroup:
-                securitygroup = self.unescape_braces(securitygroup)
+            securitygroup_ids = self.request.params.getall('securitygroup')
             instance_type = self.request.params.get('instance_type', 'm1.small')
             availability_zone = self.request.params.get('zone') or None
             vpc_network = self.request.params.get('vpc_network') or None
-            #securitygroup_id = self.get_securitygroup_id(securitygroup, vpc_network)
-            securitygroup_ids = [securitygroup]
             vpc_subnet = self.request.params.get('vpc_subnet') or None
             associate_public_ip_address = self.request.params.get('associate_public_ip_address')
             if associate_public_ip_address == 'true':
@@ -965,8 +962,11 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
                     instance_profile_arn=instance_profile.arn if instance_profile else None,
                 )
                 if vpc_network is not None:
-                    network_interface = NetworkInterfaceSpecification(subnet_id=vpc_subnet,
-                        groups=securitygroup_ids,associate_public_ip_address=associate_public_ip_address)
+                    network_interface = NetworkInterfaceSpecification(
+                        subnet_id=vpc_subnet,
+                        groups=securitygroup_ids,
+                        associate_public_ip_address=associate_public_ip_address,
+                    )
                     network_interfaces = NetworkInterfaceCollection(network_interface)
                     # Specify VPC setting for the instances
                     params.update(dict(
@@ -1010,9 +1010,13 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
     def get_securitygroups_rules(self):
         rules_dict = {}
         for security_group in self.securitygroups:
-            rules_dict[security_group.id] = SecurityGroupsView.get_rules(security_group.rules)
+            rules = SecurityGroupsView.get_rules(security_group.rules)
+            if security_group.vpc_id is not None:
+                rules_egress = SecurityGroupsView.get_rules(security_group.rules_egress, rule_type='outbound')
+                rules = rules + rules_egress 
+            rules_dict[security_group.id] = rules
         return rules_dict
-            
+
     def get_securitygroup_id(self, name, vpc_network=None):
         for security_group in self.securitygroups:
             if security_group.vpc_id == vpc_network and security_group.name == name:
@@ -1122,8 +1126,11 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
                     instance_profile_arn=instance_profile.arn if instance_profile else None,
                 )
                 if vpc_network is not None:
-                    network_interface = NetworkInterfaceSpecification(subnet_id=vpc_subnet,
-                        groups=security_groups,associate_public_ip_address=associate_public_ip_address)
+                    network_interface = NetworkInterfaceSpecification(
+                        subnet_id=vpc_subnet,
+                        groups=security_groups,
+                        associate_public_ip_address=associate_public_ip_address,
+                    )
                     network_interfaces = NetworkInterfaceCollection(network_interface)
                     # Use the EC2-VPC setting
                     params.update(dict(
@@ -1228,28 +1235,31 @@ class InstanceCreateImageView(BaseInstanceView, BlockDeviceMappingItemView):
                     access_key = creds.access_key.access_key_id
                     secret_key = creds.access_key.secret_access_key
                     # we need to make the call ourselves to override boto's auto-signing
-                    params = {'InstanceId': instance_id,
-                              'Storage.S3.Bucket': s3_bucket,
-                              'Storage.S3.Prefix': s3_prefix,
-                              'Storage.S3.UploadPolicy': upload_policy}
-                    params['Storage.S3.AWSAccessKeyId'] = access_key
-                    params['Storage.S3.UploadPolicySignature'] = InstanceCreateImageView.gen_policy_signature(upload_policy, secret_key)
+                    params = {
+                        'InstanceId': instance_id,
+                        'Storage.S3.Bucket': s3_bucket,
+                        'Storage.S3.Prefix': s3_prefix,
+                        'Storage.S3.UploadPolicy': upload_policy,
+                        'Storage.S3.AWSAccessKeyId': access_key,
+                        'Storage.S3.UploadPolicySignature': InstanceCreateImageView.gen_policy_signature(
+                            upload_policy, secret_key)
+                    }
                     result = self.conn.get_object('BundleInstance', params, BundleInstanceTask, verb='POST')
-                
                     bundle_metadata = {
-                        'version':curr_version,
-                        'name':name,
-                        'description':description,
-                        'prefix':s3_prefix,
-                        'virt_type':self.instance.virtualization_type,
-                        'arch':self.instance.architecture,
-                        'platform':self.instance.platform,
-                        'kernel_id':self.instance.kernel,
-                        'ramdisk_id':self.instance.ramdisk,
-                        'bdm':bdm_json,
-                        'tags':tags_json,
-                        'access':access_key,
-                        'bundle_id':result.id}
+                        'version': curr_version,
+                        'name': name,
+                        'description': description,
+                        'prefix': s3_prefix,
+                        'virt_type': self.instance.virtualization_type,
+                        'arch': self.instance.architecture,
+                        'platform': self.instance.platform,
+                        'kernel_id': self.instance.kernel,
+                        'ramdisk_id': self.instance.ramdisk,
+                        'bdm': bdm_json,
+                        'tags': tags_json,
+                        'access': access_key,
+                        'bundle_id': result.id,
+                    }
                     self.ec2_conn.create_tags(instance_id, {'ec_bundling': '%s/%s' % (s3_bucket, result.id)})
                     s3_conn = self.get_connection(conn_type='s3')
                     k = Key(s3_conn.get_bucket(s3_bucket))

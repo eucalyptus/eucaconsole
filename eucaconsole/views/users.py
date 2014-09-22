@@ -306,7 +306,7 @@ class UserView(BaseView):
         """Return user access keys list"""
         as_account = self.request.params.get('as_account', '')
         with boto_error_handler(self.request):
-            keys = self.conn.get_response('ListAccessKeys', params={'UserName':self.user.user_name, 'DelegateAccount':as_account})
+            keys = self.conn.get_response('ListAccessKeys', params={'UserName':self.user.user_name, 'DelegateAccount':as_account}, list_marker='AccessKeyMetadata')
             return dict(results=sorted(keys.list_access_keys_result.access_key_metadata))
 
     @view_config(route_name='user_groups_json', renderer='json', request_method='GET')
@@ -554,7 +554,9 @@ class UserView(BaseView):
                 "{acct}-{user}-{key}-creds.csv".format(acct=account,
                 user=self.user.user_name, key=result.access_key.access_key_id),
                 'text/csv', string_output.getvalue())
-            return dict(message=_(u"Successfully generated access keys"), results="true")
+            return dict(message=_(u"Successfully generated access keys"), results=dict(
+                        access=result.access_key.access_key_id, secret=result.access_key.secret_access_key
+                      ))
 
     @view_config(route_name='user_delete_key', request_method='POST', renderer='json')
     def user_delete_key(self):

@@ -19,6 +19,7 @@
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/jquery-2.0.3.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular-1.2.21.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular-sanitize-1.2.21.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/jquery.generateFile.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/notify.js')}"></script>
     <script type="text/javascript">
         $(document).ready(function () {
@@ -50,7 +51,7 @@
                 <ul id="user-dropdown" class="f-dropdown" data-dropdown-content="">
                     <li><a href="${layout.help_url}" target="_blank" i18n:translate="">Help</a></li>
                     <li tal:condition="layout.cloud_type == 'euca'">
-                        <a href="${request.route_path('changepassword')}" i18n:translate="">Change password</a>
+                        <a href="${request.route_path('managecredentials')}" i18n:translate="">Manage credentials</a>
                     </li>
                     <li>
                         <a i18n:translate="" data-reveal-id="about-modal">About your cloud</a>
@@ -115,6 +116,16 @@
             <input type="submit" style="display:none;" id="euca-logout-button"/>
         </form>
     </footer>
+    <div id="denied-keys-modal" class="reveal-modal small" data-reveal="">
+        <h3 i18n:translate="">Permission denied</h3>
+        <p>
+            <span i18n:translate="">You do not have the correct permissions to create your own access keys.</span>
+        </p>
+        <p>
+            <span i18n:translate="">Please contact your cloud administrator to have them either update your permissions or generate a new set of access keys for you.</span>
+        </p>
+        <a class="close-reveal-modal">&#215;</a>
+    </div>
     <div id="about-modal" class="reveal-modal small" data-reveal="">
         <h3 i18n:translate="">About your cloud</h3>
         <p>

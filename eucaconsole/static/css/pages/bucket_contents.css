@@ -102,4 +102,12 @@
 @media screen and (max-width: 920px) { .columns.datagrid { padding-left: 1rem; } }
 .icon { display: inline-block; width: 20px; color: #468400; }
 
-#primary-buttons .button { padding-left: 2rem; padding-right: 2rem; }
+#primary-buttons .button { padding-left: 1rem; padding-right: 1rem; }
+
+#paste-btn { background-color: #8cc63e; }
+
+.button.cancel { background-color: #990000; }
+
+.bucket-progress { border: 1px solid black; position: relative; width: 100%; height: 30px; margin-bottom: 15px; }
+.bucket-progress .meter { position: absolute; background-color: #0683c2; padding-left: 3px; height: 30px; margin: 0px; }
+.bucket-progress .status { position: absolute; width: 100%; text-align: center; margin-top: 5px; margin-bottom: 0px; font-size: 1.0rem; font-weight: bold; text-align: center; }

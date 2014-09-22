@@ -1,38 +1,85 @@
 <!--! Security group rules preview (used in Launch Instance and Create Launch Configuration wizards) -->
 <div tal:omit-tag="" i18n:domain="eucaconsole">
-    <div ng-show="selectedGroupRules.length > 0 &amp;&amp; selectedGroupRules[0].ip_protocol != '-1'">
-        <div class="row">
-            <div class="small-${leftcol_width} columns">&nbsp;</div>
-            <div class="small-${rightcol_width} columns rules-title">
-                <span i18n:translate="">Incoming traffic rules for security group</span>
-                <b>{{ securityGroupName }}</b>:
+    <div ng-repeat="groupID in securityGroups" ng-init="isRuleExpanded[groupID] = false;">
+        <div ng-show="selectedGroupRules[groupID].length > 0 &amp;&amp; selectedGroupRules[groupID][0].ip_protocol != '-1'">
+            <div class="row">
+                <div class="small-${leftcol_width} columns">&nbsp;</div>
+                <div class="small-${rightcol_width} columns rules-title">
+                    <a ng-click="isRuleExpanded[groupID] = !isRuleExpanded[groupID]">
+                        <i class="fi-plus" ng-show="!isRuleExpanded[groupID]"></i>
+                        <i class="fi-minus" ng-show="isRuleExpanded[groupID]"></i>
+                    </a>
+                    <span class="rule-description-label">
+                        <span i18n:translate="">Rules for </span>
+                        {{ securityGroupChoices[groupID] }}
+                    </span>
+                </div>
             </div>
+            <div class="row controls-wrapper rules-display" ng-repeat="rule in selectedGroupRules[groupID] | filter: {rule_type: 'inbound'}" ng-show="isRuleExpanded[groupID]">
+                <div ng-if="$first">
+                    <div class="small-${leftcol_width} columns">&nbsp;</div>
+                    <div class="small-${rightcol_width} columns rules-title">
+                        <span id="security-group-rule-type" i18n:translate="">Inbound:</span>
+                    </div>
+                </div>
+                <div class="small-${leftcol_width} columns">&nbsp;</div>
+                <div class="small-${rightcol_width} columns">
+                    <strong i18n:translate="">Rule</strong>:
+                    {{ rule.ip_protocol.toUpperCase() }}
+                    ({{ rule.from_port }}<span ng-show="rule.to_port != rule.from_port"> - {{ rule.to_port }}</span>)
+                    <span ng-repeat="grant in rule.grants">
+                        <span ng-show="grant.cidr_ip">{{ grant.cidr_ip }}</span>
+                        <span ng-show="grant.name">{{ grant.owner_id }}/{{ grant.name }}</span>
+                    </span>
+                </div>
+            </div>
+            <div class="row controls-wrapper rules-display" ng-repeat="rule in selectedGroupRules[groupID] | filter: {rule_type: 'outbound'}" ng-show="isRuleExpanded[groupID]">
+                <div ng-if="$first">
+                    <div class="small-${leftcol_width} columns">&nbsp;</div>
+                    <div class="small-${rightcol_width} columns rules-title">
+                        <span id="security-group-rule-type" i18n:translate="">Outbound:</span>
+                    </div>
+                </div>
+                <div class="small-${leftcol_width} columns">&nbsp;</div>
+                <div class="small-${rightcol_width} columns">
+                    <strong i18n:translate="">Rule</strong>:
+                    {{ rule.ip_protocol.toUpperCase() }}
+                    ({{ rule.from_port }}<span ng-show="rule.to_port != rule.from_port"> - {{ rule.to_port }}</span>)
+                    <span ng-repeat="grant in rule.grants">
+                        <span ng-show="grant.cidr_ip">{{ grant.cidr_ip }}</span>
+                        <span ng-show="grant.name">{{ grant.owner_id }}/{{ grant.name }}</span>
+                    </span>
+                </div>
+           </div>
         </div>
-        <div class="row controls-wrapper" ng-repeat="rule in selectedGroupRules ">
-            <div class="small-${leftcol_width} columns">&nbsp;</div>
-            <div class="small-${rightcol_width} columns">
-                <strong i18n:translate="">Rule</strong>:
-                {{ rule.ip_protocol.toUpperCase() }}
-                ({{ rule.from_port }}<span ng-show="rule.to_port != rule.from_port"> - {{ rule.to_port }}</span>)
-                <span ng-repeat="grant in rule.grants">
-                    <span ng-show="grant.cidr_ip">{{ grant.cidr_ip }}</span>
-                    <span ng-show="grant.name">{{ grant.owner_id }}/{{ grant.name }}</span>
-                </span>
-             </div>
-        </div>
-    </div>
-    <div ng-show="selectedGroupRules.length === 0 || selectedGroupRules[0].ip_protocol == '-1'">
-        <div class="row">
-            <div class="small-${leftcol_width} columns">&nbsp;</div>
-            <div class="small-${rightcol_width} columns rules-title">
-                <p>
-                    <strong i18n:translate="">WARNING: </strong>
-                    <span i18n:translate="">Your instance(s) will not be accessible until you add ingress rules to security group {{ securityGroupName }} 
-                    (for example, open port 22 for SSH access to Linux instances). </span>
-                </p>
-                <p i18n:translate="">    
-                    Please remember to edit your security group after you launch your instance(s).
-                </p>
+        <div ng-show="selectedGroupRules[groupID].length === 0 || selectedGroupRules[groupID][0].ip_protocol == '-1'">
+            <div class="row">
+                <div class="small-${leftcol_width} columns">&nbsp;</div>
+                <div class="small-${rightcol_width} columns rules-title">
+                    <a ng-click="isRuleExpanded[groupID] = !isRuleExpanded[groupID]">
+                        <i class="fi-plus" ng-show="!isRuleExpanded[groupID]"></i>
+                        <i class="fi-minus" ng-show="isRuleExpanded[groupID]"></i>
+                    </a>
+                    <span class="rule-description-label">
+                        <i class="fi-alert" data-tooltip="" i18n:attributes="title"
+                           title="Warning: No rules defined for security group"></i>
+                        <span i18n:translate="">Rules for </span>
+                        {{ securityGroupChoices[groupID] }}
+                    </span>
+                </div>
+            </div>
+            <div class="row rules-display" ng-show="isRuleExpanded[groupID]">
+                <div class="small-${leftcol_width} columns">&nbsp;</div>
+                <div class="small-${rightcol_width} columns rules-title">
+                    <p>
+                        <strong i18n:translate="">WARNING: </strong>
+                        <span i18n:translate="">Your instance(s) will not be accessible until you add ingress rules to security group {{ securityGroupChoices[groupID] }} 
+                        (for example, open port 22 for SSH access to Linux instances). </span>
+                    </p>
+                    <p i18n:translate="">    
+                        Please remember to edit your security group after you launch your instance(s).
+                    </p>
+                </div>
             </div>
         </div>
     </div>

@@ -72,6 +72,10 @@ class BucketUpdateVersioningForm(BaseSecureForm):
     """Update versioning info form"""
     pass
 
+class BucketDeleteForm(BaseSecureForm):
+    """Delete form"""
+    pass
+
 
 class SharingPanelForm(BaseSecureForm):
     """S3 Sharing Panel form for buckets/objects"""
@@ -89,6 +93,9 @@ class SharingPanelForm(BaseSecureForm):
 
         if bucket_object is not None:
             self.share_type.data = self.get_share_type()
+
+        if bucket_object is None:
+            self.share_type.data = 'public'
 
     def get_share_type(self):
         if 'AllUsers = READ' in str(self.sharing_acl):
@@ -157,4 +164,42 @@ class MetadataForm(BaseSecureForm):
         choices = [BLANK_CHOICE]
         choices.extend([(ct, ct) for ct in content_types])
         return choices
+
+
+class CreateBucketForm(BaseSecureForm):
+    """S3 Create Bucket form"""
+    bucket_name_error_msg = _(
+        'Name is required and may contain lowercase letters, numbers, hyphens, and/or dots')
+    bucket_name = TextEscapedField(
+        label=_(u'Name'),
+        validators=[
+            validators.DataRequired(message=bucket_name_error_msg),
+            validators.Length(max=63, message=_(u'Bucket name must not exceed 63 characters')),
+        ]
+    )
+    enable_versioning = wtforms.BooleanField(
+        label=_(u'Enable versioning')
+    )
+
+    def __init__(self, request, **kwargs):
+        super(CreateBucketForm, self).__init__(request, **kwargs)
+        self.bucket_name.error_msg = self.bucket_name_error_msg
+        self.enable_versioning.help_text = _(
+            u'With versioning enabled, objects are prevented from being deleted or overwritten by mistake.')
+
+
+class CreateFolderForm(BaseSecureForm):
+    """S3 Create Folder form"""
+    folder_name_error_msg = _('Name is required and may not contain slashes')
+    folder_name = TextEscapedField(
+        label=_(u'Name'),
+        validators=[
+            validators.DataRequired(message=folder_name_error_msg),
+        ]
+    )
+
+    def __init__(self, request, **kwargs):
+        super(CreateFolderForm, self).__init__(request, **kwargs)
+        self.folder_name.error_msg = self.folder_name_error_msg
+
 
