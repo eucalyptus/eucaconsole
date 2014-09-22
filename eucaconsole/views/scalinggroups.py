@@ -272,11 +272,11 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
             scaling_group_name=self.escape_braces(self.scaling_group.name) if self.scaling_group else '',
             vpc_network=self.vpc_name,
             policies=self.policies,
-            policies_count=len(self.policies),
             edit_form=self.edit_form,
             delete_form=self.delete_form,
             avail_zone_placeholder_text=_(u'Select one or more availability zones...'),
-            termination_policies_placeholder_text=_(u'Select one or more termination policies...')
+            termination_policies_placeholder_text=_(u'Select one or more termination policies...'),
+            controller_options_json=self.get_controller_options_json()
         )
 
     @view_config(route_name='scalinggroup_view', renderer=TEMPLATE)
@@ -360,6 +360,12 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
                         if this_vpc:
                             return this_vpc[0]
         return None
+
+    def get_controller_options_json(self):
+        return BaseView.escape_json(json.dumps({
+            'scaling_group_name': self.scaling_group.name,
+            'policies_count': len(self.policies),
+        }))
 
 
 class ScalingGroupInstancesView(BaseScalingGroupView):
