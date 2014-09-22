@@ -483,6 +483,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
         self.location = self.get_redirect_location()
         self.instance_name = TaggedItemView.get_display_name(self.instance)
         self.has_elastic_ip = self.check_has_elastic_ip(self.instance.ip_address) if self.instance else False
+        self.vpc_subnet_display = self.get_vpc_subnet_display(self.instance.subnet_id)
         self.role = None
         if self.instance and self.instance.instance_profile:
             arn = self.instance.instance_profile['arn']
@@ -507,6 +508,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
             associate_ip_form=self.associate_ip_form,
             disassociate_ip_form=self.disassociate_ip_form,
             has_elastic_ip=self.has_elastic_ip,
+            vpc_subnet_display=self.vpc_subnet_display,
             role=self.role,
             running_create=self.running_create,
         )
@@ -688,6 +690,15 @@ class InstanceView(TaggedItemView, BaseInstanceView):
                 if ip_address == ip.public_ip:
                     has_elastic_ip = True
         return has_elastic_ip
+
+    def get_vpc_subnet_display(self, subnet_id):
+        if self.vpc_conn and subnet_id:
+            with boto_error_handler(self.request):
+                vpc_subnet = self.vpc_conn.get_all_subnets(subnet_ids=[subnet_id])
+                if vpc_subnet:
+                    return "{0} ({1})".format(vpc_subnet[0].cidr_block, subnet_id) 
+        return ''
+        
 
 
 class InstanceStateView(BaseInstanceView):
