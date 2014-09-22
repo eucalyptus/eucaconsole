@@ -99,6 +99,6 @@
 ----------------------------------------- */
 @media screen and (max-width: 1024px) { #filters { margin-top: 1rem; } }
 /* Small screen */
-@media screen and (max-width: 920px) { .columns.datagrid { padding-left: 1rem; } }
+@media screen and (max-width: 1020px) { .columns.datagrid { padding-left: 1rem; } }
 .gridwrapper .has-bucket-icon { padding-left: 20px; background: url(../../img/svg/bucket_solo_green.svg) no-repeat; }
 .gridwrapper .tile .header a.has-bucket-icon { padding-left: 20px; }
