@@ -4,13 +4,15 @@
  *
  */
 
-angular.module('LaunchConfigPage', ['BlockDeviceMappingEditor'])
-    .controller('LaunchConfigPageCtrl', function ($scope) {
-        $scope.initController = function (inUse, image) {
-            $scope.launchConfigInUse = inUse;
+angular.module('LaunchConfigPage', ['BlockDeviceMappingEditor', 'EucaConsoleUtils'])
+    .controller('LaunchConfigPageCtrl', function ($scope, eucaUnescapeJson) {
+        $scope.initController = function (optionsJson) {
+            var options = JSON.parse(eucaUnescapeJson(optionsJson));
+            $scope.launchConfigInUse = options['in_use'];
+            $scope.hasImage = options['has_image'];
             $scope.setWatch();
             $scope.setFocus();
-            if (image == '') {
+            if (!$scope.hasImage) {
                 $('#image-missing-modal').foundation('reveal', 'open');
             }
         };
