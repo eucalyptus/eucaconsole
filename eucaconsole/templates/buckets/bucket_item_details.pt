@@ -73,7 +73,7 @@
                     <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Link</label></div>
                         <div class="small-8 columns value">
-                            <a href="${item_link}" class="breakword">${item_link.split('?')[0]}</a>
+                            <a href="${item_link}" class="breakword" target="_blank">${item_link.split('?')[0]}</a>
                         </div>
                     </div>
                     ${panel('s3_metadata_editor', bucket_object=bucket_item, metadata_form=metadata_form)}
