@@ -1329,7 +1329,7 @@ class InstanceTypesView(LandingPageView, BaseInstanceView):
         with boto_error_handler(self.request):
             instance_types = self.conn.get_all_instance_types()
             for instance_type in instance_types:
-                 instance_types_results.append(dict( 
+                instance_types_results.append(dict(
                     name=instance_type.name,
                     cpu=instance_type.cores,
                     memory=instance_type.memory,
@@ -1369,4 +1369,3 @@ class InstanceTypesView(LandingPageView, BaseInstanceView):
         params = {'Name': name, 'Cpu': cpu, 'Memory': memory, 'Disk': disk} 
         with boto_error_handler(self.request):
             return self.conn.get_status('ModifyInstanceTypeAttribute', params, verb='POST')
-        return False

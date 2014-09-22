@@ -30,15 +30,14 @@ angular.module('InstanceTypesPage', [])
         $scope.diskSelected = {};
         $scope.updatedItemList = {};
         $scope.cpuInputError = {};
-	$scope.memoryInputError = {};
+        $scope.memoryInputError = {};
         $scope.diskInputError = {};
         $scope.itemsLoading = true;
         $scope.isNotChanged = true;
         $scope.jsonEndpoint = '';
         $scope.submitEndpoint = '';
         $scope.pageResource = '';
-        $scope.initController = function (pageResource, jsonItemsEndpoint, submitEndpoint) {
-            pageResource = pageResource || window.location.pathname.split('/')[0];
+        $scope.initController = function (jsonItemsEndpoint, submitEndpoint) {
             $scope.jsonEndpoint = jsonItemsEndpoint;
             $scope.submitEndpoint = submitEndpoint;
             $scope.getItems();
@@ -100,7 +99,7 @@ angular.module('InstanceTypesPage', [])
                     })
             });
             angular.forEach($scope.items, function(item){
-                $scope.initChosen('#select-disk-'+item.name.replace(".", "\\."),
+                $scope.initChosen('#select-disk-' + item.name.replace(".", "\\."),
                     function(term){
                         var chosen = this;
                         var new_index = $(chosen).get(0).form_field.length;
@@ -133,7 +132,7 @@ angular.module('InstanceTypesPage', [])
                 persistent_create_option: true,
                 skip_no_results: true,
                 create_option_text: 'Insert a new value',
-                create_option: createOptionCallback,
+                create_option: createOptionCallback
             });
         }; 
         $scope.setWatch = function () {
@@ -272,22 +271,23 @@ angular.module('InstanceTypesPage', [])
         };
         $scope.buildUpdateObject = function () {
             var update = [];
-            for (key in $scope.updatedItemList) {
+            var selector = null;
+            for (var key in $scope.updatedItemList) {
                 var name = key;
                 var cpu = $scope.cpuSelected[name];
                 var memory = $scope.memorySelected[name];
                 var disk = $scope.diskSelected[name];
                 // Handle the cases where the input was typed rather than selected
                 if (cpu == undefined) {
-                    var selector = '#select_cpu_'+name.replace(".", "_")+'_chosen';
+                    selector = '#select_cpu_' + name.replace(".", "_") + '_chosen';
                     cpu = $(selector).find('.chosen-single').text();
                 }
                 if (memory == undefined) {
-                    var selector = '#select_memory_'+name.replace(".", "_")+'_chosen';
+                    selector = '#select_memory_' + name.replace(".", "_") + '_chosen';
                     memory = $(selector).find('.chosen-single').text();
                 }
                 if (disk == undefined) {
-                    var selector = '#select_disk_'+name.replace(".", "_")+'_chosen';
+                    selector = '#select_disk_' + name.replace(".", "_") + '_chosen';
                     disk = $(selector).find('.chosen-single').text();
                 }
                 // Convert the memory unit back to MB
@@ -324,13 +324,13 @@ angular.module('InstanceTypesPage', [])
             $scope.getItems();
         };
         $scope.updateNameColumnClass = function () {
-            for (key in $scope.updatedItemList) {
+            for (var key in $scope.updatedItemList) {
                 $scope.nameColumnClass[key] = 'type-updated';
             }
         };
         $scope.convertMBtoGB = function (mb) {
             return Number(mb) / 1024;
-        }
+        };
         $scope.convertGBtoMB = function (gb) {
             return Number(gb) * 1024;
         }

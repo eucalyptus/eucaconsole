@@ -6,9 +6,8 @@
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="InstanceTypesPage" ng-controller="InstanceTypesCtrl"
-         ng-init="initController('instance_types',
-                                  '${request.route_path('instance_types_json')}',
-                                  '${request.route_path('instance_types_update')}')">
+         ng-init="initController('${request.route_path('instance_types_json')}',
+                                 '${request.route_path('instance_types_update')}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li class="current"><a href="#" i18n:translate="">Instance types</a></li>
