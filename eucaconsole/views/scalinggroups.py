@@ -362,6 +362,8 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
         return None
 
     def get_controller_options_json(self):
+        if self.scaling_group is None:
+            return '{}'
         return BaseView.escape_json(json.dumps({
             'scaling_group_name': self.scaling_group.name,
             'policies_count': len(self.policies),
