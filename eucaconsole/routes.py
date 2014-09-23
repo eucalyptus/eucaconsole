@@ -106,6 +106,10 @@ urls = [
     Route(name='instance_volume_attach', pattern='/instances/{id}/volumes/attach'),
     Route(name='instance_volume_detach', pattern='/instances/{id}/volumes/{volume_id}/detach'),
 
+    # Instance Types page
+    Route(name='instance_types', pattern='/instance-types'),
+    Route(name='instance_types_json', pattern='/instance-types/json'),
+    Route(name='instance_types_update', pattern='/instance-types/update'),
 
     # Scaling Groups #####
     # Landing page
@@ -191,6 +195,7 @@ urls = [
     Route(name='bucket_update_versioning', pattern='/buckets/{name}/updateversioning'),
     Route(name='bucket_item_details', pattern='/buckets/{name}/itemdetails/*subpath'),
     Route(name='bucket_item_update', pattern='/buckets/{name}/itemupdate/*subpath'),
+    Route(name='bucket_put_item', pattern='/buckets/{name}/putitem/*subpath'),
     Route(name='bucket_create_folder', pattern='/buckets/{name}/createfolder/*subpath'),
 
 

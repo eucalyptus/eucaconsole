@@ -5,7 +5,7 @@
 </head>
 
 <div metal:fill-slot="main_content" ng-app="BucketsPage" ng-controller="BucketsCtrl"
-     ng-init="initController('${bucket_objects_count_url}', '${update_versioning_url}')">
+     ng-init="initController('${bucket_objects_count_url}', '${update_versioning_url}', '${request.route_path('bucket_put_item', name='_name_', subpath='_subpath_')}')">
     <div class="row" id="contentwrap" ng-app="LandingPage" ng-controller="ItemsCtrl"
          ng-init="initController('buckets', '${initial_sort_key}', '${json_items_endpoint}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
@@ -70,6 +70,9 @@
                             </span>
                         </a>
                     </li>
+                    <li ng-show="hasCopyItem()">
+                        <a i18n:translate="" ng-click="doPaste(item)">Paste object</a>
+                    </li>
                     <li>
                         <a i18n:translate="" ng-click="revealModal('delete-bucket', item)">Delete</a>
                     </li>
@@ -118,6 +121,9 @@
                                         Suspend versioning
                                     </span>
                                 </a>
+                            </li>
+                            <li ng-show="hasCopyItem()">
+                                <a i18n:translate="" ng-click="doPaste(item)">Paste object</a>
                             </li>
                             <li>
                                 <a i18n:translate="" ng-click="revealModal('delete-bucket', item)">Delete</a>

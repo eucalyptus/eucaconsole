@@ -1,4 +1,4 @@
-/* @fileOverview Scaling Group detail page CSS */
+/* @fileOverview Instance types page CSS */
 /* Dropdown elements */
 /* Set the link colors and styles for top-level nav */
 /* Dropdown elements */
@@ -99,41 +99,13 @@
 ----------------------------------------- */
 @media screen and (max-width: 1024px) { #filters { margin-top: 1rem; } }
 /* Small screen */
-@media screen and (max-width: 1020px) { .columns.datagrid { padding-left: 1rem; } }
-.panel.has-actions { padding-top: 60px; }
-
-#breadcrumbs .icon-block { display: none; }
-
-input[type="number"] { width: 3rem; }
-
-#health_check_period, #default_cooldown, #cooldown { width: 4rem; }
-
-#launch_config, #health_check_type { max-width: 10rem; }
-
-#controls_min_size, #controls_desired_capacity, #controls_max_size { display: inline-block; margin-left: 1rem; }
-
-#controls_max_size { margin-left: -1rem; }
-
-[data-abide] #capacity-section .error small.error { position: absolute; width: 15rem; left: 8px; bottom: -1.5rem; }
-
-#availability_zones, #termination_policies { visibility: hidden; }
-
-.tile { background-color: white; border: 1px solid #cccccc; width: 190px; height: 160px; }
-.tile .footer { height: 24px; padding-top: 2px; }
-.tile.policy .header .title { cursor: default; color: black; }
-.tile.policy .header .title:hover { color: black; }
-
-.tile .footer.healthy { background-color: #8cc63e; }
-.tile .footer.healthy.pending { background-color: #8dc640; }
-
-#adjustment_amount { width: 4rem; }
-
-#evaluation_periods, #period { display: inline-block; width: 4rem; }
-
-#threshold { width: 100%; }
-
-#unit { position: relative; left: -9999rem; }
-
-.unit-label { position: relative; top: 6px; }
-
-.dialog-option { text-align: left; }
+@media screen and (max-width: 920px) { .columns.datagrid { padding-left: 1rem; } }
+.table th, .table td { padding: 4px 7px; }
+.table .label { margin: 0 0 0 0; }
+.table #div-column-name { width: 9rem; }
+.table #div-column-cpu { width: 6rem; }
+.table #div-column-memory { width: 8rem; }
+.table #div-column-disk { width: 9rem; }
+.table .type-updated { color: #03405f; }
+.table a.chosen-single span { color: #444444; }
+.table .error { margin-top: 0.3rem; color: darkred; }

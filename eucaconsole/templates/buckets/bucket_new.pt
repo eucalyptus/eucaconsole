@@ -37,7 +37,7 @@
                         </h6>
                         <div class="content" ng-show="advancedExpanded">
                             <div class="row controls-wrapper">
-                                ${panel('form_field', field=create_form.enable_versioning, reverse=True, checkbox=True)}
+                                ${panel('form_field', field=create_form.enable_versioning, reverse=True)}
                             </div>
                         </div>
                         <hr />

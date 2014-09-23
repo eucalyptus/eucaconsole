@@ -35,6 +35,7 @@ import urllib
 
 from boto.exception import StorageCreateError
 from boto.s3.acl import ACL, Grant, Policy
+from boto.s3.bucket import Bucket
 from boto.s3.prefix import Prefix
 from boto.exception import BotoServerError
 
@@ -171,6 +172,25 @@ class BucketXHRView(BaseView):
             return dict(message=_(u"Successfully deleted all keys."))
         else:
             return dict(message=_(u"Failed to delete all keys."), errors=errors)
+
+    @view_config(route_name='bucket_put_item', renderer='json', request_method='POST', xhr=True)
+    def bucket_put_item(self):
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
+        subpath = self.request.subpath
+        src_bucket = self.request.params.get('src_bucket')
+        src_key = self.request.params.get('src_key')
+        dest_key = '/'.join(subpath) + '/' + src_key[src_key.rfind('/')+1:]
+        with boto_error_handler(self.request):
+            self.log_request(_(u"Copying key from {0}:{1} to {2}:{3}").format(
+                src_bucket, src_key, self.bucket_name, dest_key))
+            bucket = self.s3_conn.get_bucket(self.bucket_name, validate=False)
+            bucket.copy_key(
+                new_key_name=dest_key,
+                src_bucket_name=src_bucket,
+                src_key_name=src_key
+            )
+            return dict(message=_(u"Successfully copied object."))
 
 
 class BucketContentsView(LandingPageView):
@@ -414,11 +434,7 @@ class BucketDetailsView(BaseView):
         if self.bucket and self.details_form.validate():
             location = self.request.route_path('bucket_details', name=self.bucket.name)
             with boto_error_handler(self.request, location):
-                share_type = self.request.params.get('share_type')
-                if share_type == 'public':
-                    self.bucket.make_public(recursive=True)
-                else:
-                    self.set_sharing_acl(self.request, bucket_object=self.bucket, item_acl=self.bucket_acl)
+                self.update_acl(self.request, bucket_object=self.bucket)
                 msg = '{0} {1}'.format(_(u'Successfully modified bucket'), self.bucket.name)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
@@ -461,9 +477,42 @@ class BucketDetailsView(BaseView):
             )
 
     @staticmethod
-    def set_sharing_acl(request, bucket_object=None, item_acl=None):
+    def update_acl(request, bucket_object=None):
+        is_bucket = isinstance(bucket_object, Bucket)
+        share_type = request.params.get('share_type')
+        acl_type = request.params.get('acl_type')
+        canned_acl = request.params.get('canned_acl')
+        bucket_keys = []
+        if is_bucket:
+            bucket_keys = bucket_object.get_all_keys()
+        if share_type == 'public':
+            params = {}
+            if is_bucket:
+                params = dict(recursive=True)
+            bucket_object.make_public(**params)
+        elif share_type == 'private' and acl_type:
+            if acl_type == 'canned':
+                bucket_object.set_canned_acl(canned_acl)
+                if is_bucket:
+                    # Set canned ACL recursively
+                    for key in bucket_keys:
+                        key.set_canned_acl(canned_acl)
+            else:
+                # Save manually entered ACLs
+                sharing_acl = BucketDetailsView.get_sharing_acl(
+                    request, bucket_object=bucket_object, item_acl=bucket_object.get_acl())
+                if sharing_acl:
+                    bucket_object.set_acl(sharing_acl)
+                    if is_bucket:
+                        # Set manual ACL recursively
+                        for key in bucket_keys:
+                            key.set_acl(sharing_acl)
+
+    @staticmethod
+    def get_sharing_acl(request, bucket_object=None, item_acl=None):
         sharing_grants_json = request.params.get('s3_sharing_acl', '[]')
         sharing_grants = json.loads(sharing_grants_json)
+        sharing_policy = None
         if sharing_grants:
             grants = []
             for grant in sharing_grants:
@@ -479,7 +528,7 @@ class BucketDetailsView(BaseView):
             sharing_policy = Policy()
             sharing_policy.acl = sharing_acl
             sharing_policy.owner = item_acl.owner if item_acl else bucket_object.get_acl().owner
-            bucket_object.set_acl(sharing_policy)
+        return sharing_policy
 
     @staticmethod
     def get_bucket_creation_date(s3_conn, bucket_name):
@@ -536,7 +585,8 @@ class BucketItemDetailsView(BaseView):
             formdata=self.request.params or None
         )
         self.sharing_form = SharingPanelForm(
-            request, bucket_object=self.bucket, sharing_acl=self.bucket_item_acl, formdata=self.request.params or None)
+            request, bucket_object=self.bucket_item, sharing_acl=self.bucket_item_acl,
+            formdata=self.request.params or None)
         self.versioning_form = BucketUpdateVersioningForm(request, formdata=self.request.params or None)
         self.metadata_form = MetadataForm(request, formdata=self.request.params or None)
         self.render_dict = dict(
@@ -575,7 +625,7 @@ class BucketItemDetailsView(BaseView):
                 # Update name
                 self.update_name()
                 # Update ACL
-                self.update_acl()
+                BucketDetailsView.update_acl(self.request, bucket_object=self.bucket_item)
                 # Update metadata
                 self.update_metadata()
                 msg = '{0} {1}'.format(_(u'Successfully modified'), self.bucket_item.name)
@@ -592,14 +642,6 @@ class BucketItemDetailsView(BaseView):
         if item is None:  # Folder requires the trailing slash, which request.subpath omits
             item = self.bucket.get_key('{0}/'.format(item_key_name))
         return item
-
-    def update_acl(self):
-        share_type = self.request.params.get('share_type')
-        if share_type == 'public':
-            self.bucket.make_public()
-        else:
-            BucketDetailsView.set_sharing_acl(
-                self.request, bucket_object=self.bucket_item, item_acl=self.bucket_item_acl)
 
     def update_metadata(self):
         """Update metadata and remove deleted metadata"""
@@ -729,7 +771,7 @@ class CreateBucketView(BaseView):
             with boto_error_handler(self.request):
                 try:
                     new_bucket = self.s3_conn.create_bucket(bucket_name)
-                    self.set_acl(new_bucket)
+                    BucketDetailsView.update_acl(self.request, bucket_object=new_bucket)
                     if enable_versioning:
                         new_bucket.configure_versioning(True)
                     msg = '{0} {1}'.format(_(u'Successfully created'), bucket_name)
@@ -742,13 +784,6 @@ class CreateBucketView(BaseView):
         else:
             self.request.error_messages = self.create_form.get_errors_list()
         return self.render_dict
-
-    def set_acl(self, bucket=None):
-        share_type = self.request.params.get('share_type')
-        if share_type == 'public':
-            bucket.make_public()
-        else:
-            BucketDetailsView.set_sharing_acl(self.request, bucket_object=bucket)
 
     def get_controller_options_json(self):
         return BaseView.escape_json(json.dumps({

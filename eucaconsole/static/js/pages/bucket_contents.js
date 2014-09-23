@@ -17,10 +17,11 @@ angular.module('BucketContentsPage', ['LandingPage'])
         $scope.chunkSize = 10;  // set this based on how many keys we want to delete at once
         $scope.index = 0;
         $scope.items = null;
-        $scope.initController = function (deleteKeysUrl, getKeysUrl, prefix) {
+        $scope.initController = function (deleteKeysUrl, getKeysUrl, prefix, copyObjUrl) {
             $scope.deleteKeysUrl = deleteKeysUrl;
             $scope.getKeysUrl = getKeysUrl;
             $scope.prefix = prefix;
+            $scope.copyObjUrl = copyObjUrl;
         };
         $scope.revealModal = function (action, item) {
             var modal = $('#' + action + '-modal');
@@ -146,9 +147,46 @@ angular.module('BucketContentsPage', ['LandingPage'])
                     Notify.failure("some kind of error");
                 });
         };
+        $scope.saveKey = function (path, key) {
+            var id = $('.open').attr('id');  // hack to close action menu
+            $('#table-'+id).trigger('click');
+            Modernizr.localstorage && localStorage.setItem('copy-object-buffer', path+'/'+key);
+        };
         $scope.$on('itemsLoaded', function($event, items) {
             $scope.items = items;
         });
+        $scope.hasCopyItem = function () {
+            return Modernizr.localstorage && localStorage.getItem('copy-object-buffer');
+        };
+        $scope.doPaste = function (bucketName, item, subpath) {
+            var id = $('.open').attr('id');  // hack to close action menu
+            $('#table-'+id).trigger('click');
+            var path = Modernizr.localstorage && localStorage.getItem('copy-object-buffer');
+            var bucket = path.slice(0, path.indexOf('/'));
+            var key = path.slice(path.indexOf('/')+1);
+            if (subpath === undefined) {
+                subpath = item.details_url.slice(item.details_url.indexOf('itemdetails')+12);
+            }
+            var url = $scope.copyObjUrl.replace('_name_', bucketName).replace('_subpath_', subpath);
+            var data = "csrf_token="+$('#csrf_token').val()+'&src_bucket='+bucket+'&src_key='+key;
+            $http({method:'POST', url:url, data:data,
+                   headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
+              success(function(oData) {
+                var results = oData ? oData.results : [];
+                if (oData.error == undefined) {
+                    Modernizr.localstorage && localStorage.removeItem('copy-object-buffer');
+                    if (item === undefined) {    // in case where we're pasting in current context,
+                        $scope.$broadcast('refresh');
+                    }
+                } else {
+                    Notify.failure(oData.message);
+                }
+              }).
+              error(function (oData, status) {
+                var errorMsg = oData['message'] || '';
+                Notify.failure(errorMsg);
+              });
+        };
     })
 ;
 

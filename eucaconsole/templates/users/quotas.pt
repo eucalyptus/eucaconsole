@@ -16,12 +16,12 @@
                 </a>
             </span>
             <div class="ec2-content" ng-show="ec2_expanded">
-                ${panel('form_field', field=quota_form['ec2_images_max'], reverse='true', leftcol_width=2, rightcol_width=10, pattern=layout.non_negative_pattern, error_msg=quota_err)}
-                ${panel('form_field', field=quota_form['ec2_instances_max'], reverse='true', leftcol_width=2, rightcol_width=10, pattern=layout.non_negative_pattern, error_msg=quota_err)}
-                ${panel('form_field', field=quota_form['ec2_volumes_max'], reverse='true', leftcol_width=2, rightcol_width=10, pattern=layout.non_negative_pattern, error_msg=quota_err)}
-                ${panel('form_field', field=quota_form['ec2_total_size_all_vols'], reverse='true', leftcol_width=2, rightcol_width=10, pattern=layout.non_negative_pattern, error_msg=quota_err)}
-                ${panel('form_field', field=quota_form['ec2_snapshots_max'], reverse='true', leftcol_width=2, rightcol_width=10, pattern=layout.non_negative_pattern, error_msg=quota_err)}
-                ${panel('form_field', field=quota_form['ec2_elastic_ip_max'], reverse='true', leftcol_width=2, rightcol_width=10, pattern=layout.non_negative_pattern, error_msg=quota_err)}
+                ${panel('form_field', field=quota_form['ec2_images_max'], reverse=True, leftcol_width=2, rightcol_width=10, pattern=layout.non_negative_pattern, error_msg=quota_err)}
+                ${panel('form_field', field=quota_form['ec2_instances_max'], reverse=True, leftcol_width=2, rightcol_width=10, pattern=layout.non_negative_pattern, error_msg=quota_err)}
+                ${panel('form_field', field=quota_form['ec2_volumes_max'], reverse=True, leftcol_width=2, rightcol_width=10, pattern=layout.non_negative_pattern, error_msg=quota_err)}
+                ${panel('form_field', field=quota_form['ec2_total_size_all_vols'], reverse=True, leftcol_width=2, rightcol_width=10, pattern=layout.non_negative_pattern, error_msg=quota_err)}
+                ${panel('form_field', field=quota_form['ec2_snapshots_max'], reverse=True, leftcol_width=2, rightcol_width=10, pattern=layout.non_negative_pattern, error_msg=quota_err)}
+                ${panel('form_field', field=quota_form['ec2_elastic_ip_max'], reverse=True, leftcol_width=2, rightcol_width=10, pattern=layout.non_negative_pattern, error_msg=quota_err)}
             </div>
         </div>
         <div class="expando" id="s3-section" ng-cloak="">
@@ -33,10 +33,10 @@
                 </a>
             </span>
             <div class="s3-content" ng-show="s3_expanded">
-                ${panel('form_field', field=quota_form['s3_buckets_max'], reverse='true', leftcol_width=2, rightcol_width=10, pattern=layout.non_negative_pattern, error_msg=quota_err)}
-                ${panel('form_field', field=quota_form['s3_objects_per_max'], reverse='true', leftcol_width=2, rightcol_width=10, pattern=layout.non_negative_pattern, error_msg=quota_err)}
-                ${panel('form_field', field=quota_form['s3_bucket_size'], reverse='true', leftcol_width=2, rightcol_width=10, pattern=layout.non_negative_pattern, error_msg=quota_err)}
-                ${panel('form_field', field=quota_form['s3_total_size_all_buckets'], reverse='true', leftcol_width=2, rightcol_width=10, pattern=layout.non_negative_pattern, error_msg=quota_err)}
+                ${panel('form_field', field=quota_form['s3_buckets_max'], reverse=True, leftcol_width=2, rightcol_width=10, pattern=layout.non_negative_pattern, error_msg=quota_err)}
+                ${panel('form_field', field=quota_form['s3_objects_per_max'], reverse=True, leftcol_width=2, rightcol_width=10, pattern=layout.non_negative_pattern, error_msg=quota_err)}
+                ${panel('form_field', field=quota_form['s3_bucket_size'], reverse=True, leftcol_width=2, rightcol_width=10, pattern=layout.non_negative_pattern, error_msg=quota_err)}
+                ${panel('form_field', field=quota_form['s3_total_size_all_buckets'], reverse=True, leftcol_width=2, rightcol_width=10, pattern=layout.non_negative_pattern, error_msg=quota_err)}
             </div>
         </div>
         <div class="expando" id="autoscale-section" ng-cloak="">
@@ -48,9 +48,9 @@
                 </a>
             </span>
             <div class="autoscale-content" ng-show="autoscale_expanded">
-                ${panel('form_field', field=quota_form['autoscale_groups_max'], reverse='true', leftcol_width=2, rightcol_width=10, pattern=layout.non_negative_pattern, error_msg=quota_err)}
-                ${panel('form_field', field=quota_form['launch_configs_max'], reverse='true', leftcol_width=2, rightcol_width=10, pattern=layout.non_negative_pattern, error_msg=quota_err)}
-                ${panel('form_field', field=quota_form['scaling_policies_max'], reverse='true', leftcol_width=2, rightcol_width=10, pattern=layout.non_negative_pattern, error_msg=quota_err)}
+                ${panel('form_field', field=quota_form['autoscale_groups_max'], reverse=True, leftcol_width=2, rightcol_width=10, pattern=layout.non_negative_pattern, error_msg=quota_err)}
+                ${panel('form_field', field=quota_form['launch_configs_max'], reverse=True, leftcol_width=2, rightcol_width=10, pattern=layout.non_negative_pattern, error_msg=quota_err)}
+                ${panel('form_field', field=quota_form['scaling_policies_max'], reverse=True, leftcol_width=2, rightcol_width=10, pattern=layout.non_negative_pattern, error_msg=quota_err)}
             </div>
         </div>
         <div class="expando" id="elb-section" ng-cloak="">
@@ -62,7 +62,7 @@
                 </a>
             </span>
             <div class="elb-content" ng-show="elb_expanded">
-                ${panel('form_field', field=quota_form['elb_load_balancers_max'], reverse='true', leftcol_width=2, rightcol_width=10, pattern=layout.non_negative_pattern, error_msg=quota_err)}
+                ${panel('form_field', field=quota_form['elb_load_balancers_max'], reverse=True, leftcol_width=2, rightcol_width=10, pattern=layout.non_negative_pattern, error_msg=quota_err)}
             </div>
         </div>
         <div class="expando" id="iam-section" ng-cloak="">
@@ -74,10 +74,10 @@
                 </a>
             </span>
             <div class="iam-content" ng-show="iam_expanded">
-                ${panel('form_field', field=quota_form['iam_groups_max'], reverse='true', leftcol_width=2, rightcol_width=10, pattern=layout.non_negative_pattern, error_msg=quota_err)}
-                ${panel('form_field', field=quota_form['iam_users_max'], reverse='true', leftcol_width=2, rightcol_width=10, pattern=layout.non_negative_pattern, error_msg=quota_err)}
-                ${panel('form_field', field=quota_form['iam_roles_max'], reverse='true', leftcol_width=2, rightcol_width=10, pattern=layout.non_negative_pattern, error_msg=quota_err)}
-                ${panel('form_field', field=quota_form['iam_inst_profiles_max'], reverse='true', leftcol_width=2, rightcol_width=10, pattern=layout.non_negative_pattern, error_msg=quota_err)}
+                ${panel('form_field', field=quota_form['iam_groups_max'], reverse=True, leftcol_width=2, rightcol_width=10, pattern=layout.non_negative_pattern, error_msg=quota_err)}
+                ${panel('form_field', field=quota_form['iam_users_max'], reverse=True, leftcol_width=2, rightcol_width=10, pattern=layout.non_negative_pattern, error_msg=quota_err)}
+                ${panel('form_field', field=quota_form['iam_roles_max'], reverse=True, leftcol_width=2, rightcol_width=10, pattern=layout.non_negative_pattern, error_msg=quota_err)}
+                ${panel('form_field', field=quota_form['iam_inst_profiles_max'], reverse=True, leftcol_width=2, rightcol_width=10, pattern=layout.non_negative_pattern, error_msg=quota_err)}
             </div>
         </div>
     </div>

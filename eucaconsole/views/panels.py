@@ -36,7 +36,7 @@ import simplejson as json
 
 from boto.s3.bucket import Bucket
 
-from wtforms.fields import IntegerField
+from wtforms.fields import IntegerField, BooleanField
 from wtforms.validators import Length
 from pyramid_layout.panel import panel_config
 
@@ -77,7 +77,7 @@ def landingpage_filters(context, request, filters_form=None):
 
 @panel_config('form_field', renderer='../templates/panels/form_field_row.pt')
 def form_field_row(context, request, field=None, reverse=False, leftcol_width=4, rightcol_width=8,
-                   inline=True, checkbox=False, ng_attrs=None, **kwargs):
+                   inline=True, ng_attrs=None, **kwargs):
     """ Widget for a singe form field row.
         The left/right column widths are Zurb Foundation grid units.
             e.g. leftcol_width=3 would set column for labels with a wrapper of <div class="small-3 columns">...</div>
@@ -85,7 +85,7 @@ def form_field_row(context, request, field=None, reverse=False, leftcol_width=4,
             e.g. ${panel('form_field', field=the_field)}
     """
     html_attrs = {}
-    error_msg = kwargs.get('error_msg') or getattr(field, 'error_msg', None) 
+    error_msg = kwargs.get('error_msg') or getattr(field, 'error_msg', None)
 
     # Add required="required" HTML attribute to form field if any "required" validators
     if field.flags.required:
@@ -103,6 +103,10 @@ def form_field_row(context, request, field=None, reverse=False, leftcol_width=4,
         html_attrs['pattern'] = 'integer'  # Uses Zurb Foundation Abide's 'integer' named pattern
         html_attrs['type'] = 'number'  # Use input type="number" for IntegerField inputs
         html_attrs['min'] = kwargs.get('min', 0)
+
+    checkbox = False
+    if isinstance(field, BooleanField):
+        checkbox = True
 
     # Add any passed kwargs to field's HTML attributes
     for key, value in kwargs.items():
