@@ -22,27 +22,29 @@
         <h2 class="title topictitle2">Capacity</h2>
 
         
-        <div class="body taskbody"><p class="shortdesc">This tab is where you specify the minimum, maximum, and desired number of
-            instances your scaling group will keep running.</p>
+        <div class="body taskbody"><p class="shortdesc">Use the capacity values to manually scale your scaling groups.</p>
 
             <ol class="ol steps"><li class="li step">
-                    <span class="ph cmd">Select the maximum number of instances you want running in your auto
-                        scaling group using the <span class="ph uicontrol">Maximum</span> control.</span>
+                    <span class="ph cmd">Use the <span class="ph uicontrol">Min</span> control to change the minimum number of instances you want running in your auto
+                        scaling group.</span>
                 </li>
 <li class="li step">
-                    <span class="ph cmd">Specify the minimum number of instances you want running using the
-                            <span class="ph uicontrol">Minimum</span> control. </span>
+                    <span class="ph cmd">Use the <span class="ph uicontrol">Desired</span> control to change the desired number of instances you want running. </span>
                 </li>
 <li class="li step">
-                    <span class="ph cmd">Specify the desired number of instances you want running using the
-                            <span class="ph uicontrol">Desired</span> control. </span>
+                    <span class="ph cmd">Use the <span class="ph uicontrol">Max</span> control to change the maximum number of instances you want running. </span>
                 </li>
 <li class="li step">
                     <span class="ph cmd">A termination policy defines how instances that are no longer needed in the
-                        scaling group are terminated. Select one or more termination policies from
-                        the T<span class="ph uicontrol">ermination policies</span> drop-down list box. The
-                        termination policies will be executed in the order you select them.</span>
+                        scaling group are terminated. A default termination policy is already
+                        pre-selected and you can add termination policies by selecting them from the
+                            <span class="ph uicontrol">Termination policies</span> field. The termination
+                        policies are executed in the order they are listed. </span>
                 </li>
+<li class="li step">
+                   <span class="ph cmd">You can remove a selected termination policy by clicking on the <span class="ph uicontrol">X</span> next to the policy name in the
+                       <span class="ph uicontrol">Termination policies</span> field.</span>  
+               </li>
 </ol>
 
         </div>
@@ -50,54 +52,43 @@
     </div>
 
     <div class="topic task nested1" id="scaling_group_detail_ui_help_steps_tags">
-        <h2 class="title topictitle2">Details</h2>
+        <h2 class="title topictitle2">Scaling group</h2>
 
         
-        <div class="body taskbody"><p class="shortdesc">You can change the scaling group's launch configuration, availability zones, and
-            cooldown period here.</p>
+        <div class="body taskbody"><p class="shortdesc">You can change the scaling group's VPC network(s), availability zones, load balancers, and
+            health check grace period here.</p>
 
-            <ol class="ol steps"><li class="li step stepexpand">
-                    <span class="ph cmd"> Select a launch configuration from the <span class="ph uicontrol">Launch
-                            Configuration</span> drop-down list box. A launch configuration
-                        defines the properties of the instances that are launched as part of your
-                        auto scaling group.</span>
-                </li>
-<li class="li step stepexpand">
-                    <span class="ph cmd">You can update the availability zones for your scaling group using the
-                            <span class="ph uicontrol">Availability zones</span> drop-down list box.</span>
-                    <div class="itemgroup info">You can remove a selected availability zone by clicking on the
-                            <span class="ph uicontrol">x</span> next to the availability zone's name in the
-                            <span class="ph uicontrol">Availability Zones</span> field.</div>
-                </li>
-<li class="li step stepexpand">
-                    <span class="ph cmd">The <em class="ph i">cooldown period</em> is the number of seconds after a scaling
-                        activity completes before any new scaling activity can start. Use the
-                            <span class="ph uicontrol">Default cooldown period (seconds)</span> control to
-                        select the cooldown period for your auto scaling group. </span>
-                </li>
-</ol>
-
-        </div>
-
-    </div>
-
-    <div class="topic task nested1" id="scaling_group_detail_ui_help_steps_membership">
-        <h2 class="title topictitle2">Health Check</h2>
-
-        
-        <div class="body taskbody"><p class="shortdesc">The auto scaling health check uses EC2 instance status checks to determine the
-            health state of each instance in your auto scaling group. Use this section to change the
-            type of health check used for your scaling group. </p>
+            <div class="section context">If a VPC network was selected for the scaling group, the VPC network and its subnets display. 
+                If no VPC network was selected, the VPC components are not shown and the availability zone(s) are editable.</div>
 
             <ol class="ol steps"><li class="li step">
-                    <span class="ph cmd">Select the type of health check for your auto scaling group from the
-                            <span class="ph uicontrol">Type</span> drop-down list box. </span>
+                    <span class="ph cmd"> You can add VPC subnets by selecting them from the <span class="ph uicontrol">VPC subnet(s)</span> field.
+                        </span>
                 </li>
 <li class="li step">
-                    <span class="ph cmd">Type the amount of grace period, in seconds, into the <span class="ph uicontrol">Grace
-                            period</span> text box. This is the amount of time after a new
-                        instance is launched in your auto scaling group before health checks start
-                        for the instance. </span>
+                    <span class="ph cmd"> You can remove a selected VPC subnet by clicking on the <span class="ph uicontrol">X</span> next to the IP address associated with each subnet in the
+                        <span class="ph uicontrol">VPC subnet(s)</span> field.</span>
+                </li>
+<li class="li step">
+                    <span class="ph cmd">If a VPC network was associated with your scaling group, availability zones are view-only and are not editable. 
+                        You can add availability zones by selecting them from the <span class="ph uicontrol">Availability Zones</span> field.</span>
+                    
+                </li>
+<li class="li step">
+                    <span class="ph cmd"> You can remove a selected availability zone by clicking on the
+                        <span class="ph uicontrol">x</span> next to the availability zone's name in the
+                        <span class="ph uicontrol">Availability Zones</span> field.</span>
+                </li>
+<li class="li step">
+                    <span class="ph cmd"> You can add load balancers by selecting them from the <span class="ph uicontrol">Load balancer(s)</span> field.</span>
+                </li>
+<li class="li step">
+                    <span class="ph cmd"> You can remove a selected load balancer by clicking on the <span class="ph uicontrol">X</span> next to each load balancer in the
+                        <span class="ph uicontrol">Load balancer(s)</span> field.</span>
+                </li>
+<li class="li step">
+                    <span class="ph cmd">You can change the amount of time after a new instance is launched in your auto scaling group before health checks start
+                        for the instance by editing the grace period, in seconds, in the <span class="ph uicontrol">Health check grace period (secs)</span> control. </span>
                 </li>
 </ol>
 
@@ -114,7 +105,7 @@
             group and for instances that run in your scaling group.</p>
 
             <ol class="ol steps"><li class="li step">
-                    <span class="ph cmd">If you want to apply the new tag to instances running in the scaling group,
+                    <span class="ph cmd">If you want to apply a new tag to instances running in the scaling group,
                         select the <span class="ph uicontrol">Propagate</span> check box.</span>
                 </li>
 <li class="li step">
@@ -126,10 +117,10 @@
                         box.</span>
                 </li>
 <li class="li step">
-                    <span class="ph cmd">If you wish to add additional tags, click the <strong class="ph b">Add Tag</strong> button.</span>
+                    <span class="ph cmd">If you wish to add additional tags, click the <span class="ph uicontrol">Add Tag</span> button.</span>
                 </li>
 <li class="li step">
-                    <span class="ph cmd">If you wish to delete a tag that you've already entered, click the <strong class="ph b">x</strong>
+                    <span class="ph cmd">If you wish to delete a tag that you have already entered, click the <span class="ph uicontrol">X</span>
                         on the tag icon.</span>
                 </li>
 </ol>
@@ -145,13 +136,13 @@
         <div class="body taskbody"><p class="shortdesc"/>
 
             <div class="li step p">
-                    <span class="ph cmd">Once you're satisfied with the edits you've made to your scaling group,
-                        click the <span class="ph uicontrol">Save changes</span> button, or click the
-                            <span class="ph uicontrol">x</span> button in the upper right corner to cancel the
+                    <span class="ph cmd">Once you are satisfied with the edits you made to your scaling group,
+                        click the <span class="ph uicontrol">Save Changes</span> button, or click the
+                            <span class="ph uicontrol">X</span> button in the upper right corner to cancel the
                         updates.</span>
                 </div>
 
-            <div class="section result">For more information on Auto Scaling, see Eucalyptus User Guide.</div>
+            <div class="section result">For more information on Auto Scaling, see <em class="ph i">Eucalyptus User Guide.</em></div>
 
         </div>
 
