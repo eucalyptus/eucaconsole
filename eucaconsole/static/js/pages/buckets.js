@@ -4,8 +4,8 @@
  *
  */
 
-angular.module('BucketsPage', ['LandingPage'])
-    .controller('BucketsCtrl', function ($scope, $http) {
+angular.module('BucketsPage', ['LandingPage', 'EucaConsoleUtils'])
+    .controller('BucketsCtrl', function ($scope, $http, eucaUnescapeJson) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.bucketName = '';
         $scope.updateVersioningAction = '';
@@ -14,10 +14,11 @@ angular.module('BucketsPage', ['LandingPage'])
         $scope.bucketVersioningAction = {};
         $scope.countsLoading = {};
         $scope.versioningStatusLoading = {};
-        $scope.initController = function (bucketObjectsCountUrl, updateVersioningFormUrl, copyObjUrl) {
-            $scope.bucketObjectsCountUrl = bucketObjectsCountUrl;
-            $scope.updateVersioningFormUrl = updateVersioningFormUrl;
-            $scope.copyObjUrl = copyObjUrl;
+        $scope.initController = function (optionsJson) {
+            var options = JSON.parse(eucaUnescapeJson(optionsJson));
+            $scope.bucketObjectsCountUrl = options['bucket_objects_count_url'];
+            $scope.updateVersioningFormUrl = options['update_versioning_url'];
+            $scope.copyObjUrl = options['copy_object_url'];
         };
         $scope.revealModal = function (action, bucket) {
             var modal = $('#' + action + '-modal');
