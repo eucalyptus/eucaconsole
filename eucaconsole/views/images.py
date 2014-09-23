@@ -66,24 +66,26 @@ class ImageBundlingMixin(BlockDeviceMappingItemView):
         k.key = bundle_id
         metadata = json.loads(k.get_contents_as_string())
         tasks = self.conn.get_all_bundle_tasks([bundle_id])
+        image_id = None
         if do_not_finish and len(tasks) > 0:
             tasks[0].state = 'pending'
         if len(tasks) == 0 or tasks[0].state == 'complete':
             # handle registration
             if metadata['version'] != curr_version:
-                self.log_request(_(u"Bundle operation {0} from previous software version will be ignored.").format(bundle_id))
+                self.log_request(
+                    _(u"Bundle operation {0} from previous software version will be ignored.").format(bundle_id))
             else:
                 self.log_request(_(u"Registering image from bundle operation {0}").format(bundle_id))
                 bdm = self.get_block_device_map(metadata['bdm'])
                 image_id = self.conn.register_image(
-                                name=metadata['name'],
-                                description=metadata['description'],
-                                image_location="%s/%s.manifest.xml" % (bucket, metadata['prefix']),
-                                virtualization_type=metadata['virt_type'],
-                                block_device_map=bdm,
-                                kernel_id=metadata['kernel_id'],
-                                ramdisk_id=metadata['ramdisk_id']
-                           )
+                    name=metadata['name'],
+                    description=metadata['description'],
+                    image_location="%s/%s.manifest.xml" % (bucket, metadata['prefix']),
+                    virtualization_type=metadata['virt_type'],
+                    block_device_map=bdm,
+                    kernel_id=metadata['kernel_id'],
+                    ramdisk_id=metadata['ramdisk_id']
+                )
                 tags = json.loads(metadata['tags'])
                 self.conn.create_tags(image_id, tags)
                 self.invalidate_images_cache()
@@ -127,7 +129,7 @@ class ImageBundlingMixin(BlockDeviceMappingItemView):
             fakeimage.tags = json.loads(metadata['tags'])
             return fakeimage
 
-    def cancelBundling(self, instance):
+    def cancel_bundling(self, instance):
         bundling_tag = instance.tags.get('ec_bundling') or None
         if bundling_tag is None:
             return None
@@ -211,7 +213,7 @@ class ImagesJsonView(LandingPageView, ImageBundlingMixin):
         # actual images
         items = self.get_items()
         # fetch instances that have been marked for bundling
-        instances = self.conn.get_only_instances(filters={'tag-key':'ec_bundling'})
+        instances = self.conn.get_only_instances(filters={'tag-key': 'ec_bundling'})
         for instance in instances:
             image = self.handle_instance_being_bundled(instance)
             if image is not None:
@@ -335,7 +337,8 @@ class ImageView(TaggedItemView, ImageBundlingMixin):
         self.conn = self.get_connection()
         self.account_id = User.get_account_id(ec2_conn=self.conn, request=self.request)
         self.image = self.get_image()
-        self.image_form = ImageForm(self.request, image=self.image, conn=self.conn, formdata=self.request.params or None)
+        self.image_form = ImageForm(
+            self.request, image=self.image, conn=self.conn, formdata=self.request.params or None)
         self.deregister_form = DeregisterImageForm(self.request, formdata=self.request.params or None)
         self.tagged_obj = self.image
         self.image_display_name = self.get_display_name()
@@ -348,9 +351,9 @@ class ImageView(TaggedItemView, ImageBundlingMixin):
         self.render_dict = dict(
             image=self.image,
             image_id=image_id,
-            is_public = self.is_public,
-            is_owned_by_user = self.is_owned_by_user,
-            image_launch_permissions = self.image_launch_permissions,
+            is_public=self.is_public,
+            is_owned_by_user=self.is_owned_by_user,
+            image_launch_permissions=self.image_launch_permissions,
             image_description=self.image.description if self.image else '',
             image_display_name=self.image_display_name,
             image_name_id=ImageView.get_image_name_id(self.image),
@@ -427,7 +430,7 @@ class ImageView(TaggedItemView, ImageBundlingMixin):
                 if self.image.description != description:
                     if self.cloud_type == 'aws' and description == '':
                         description = "-"
-                    params = { 'ImageId': self.image.id, 'Description.Value': description }
+                    params = {'ImageId': self.image.id, 'Description.Value': description}
                     with boto_error_handler(self.request):
                         self.conn.get_status('ModifyImageAttribute', params, verb='POST')
 
@@ -437,9 +440,9 @@ class ImageView(TaggedItemView, ImageBundlingMixin):
                 if is_public != current_is_public:
                     lp_params = {}
                     if is_public == "true":
-                        lp_params = { 'ImageId': self.image.id, 'LaunchPermission.Add.1.Group': 'all' }
+                        lp_params = {'ImageId': self.image.id, 'LaunchPermission.Add.1.Group': 'all'}
                     else:
-                        lp_params = { 'ImageId': self.image.id, 'LaunchPermission.Remove.1.Group': 'all' }
+                        lp_params = {'ImageId': self.image.id, 'LaunchPermission.Remove.1.Group': 'all'}
                     with boto_error_handler(self.request):
                         self.conn.get_status('ModifyImageAttribute', lp_params, verb='POST')
 
@@ -545,7 +548,7 @@ class ImageView(TaggedItemView, ImageBundlingMixin):
                             snapshot_id = self.image.block_device_mapping[key].snapshot_id
                             self.conn.delete_snapshot(snapshot_id)
                             break
-                ImagesView.invalidate_images_cache()  # clear images cache
+                self.invalidate_images_cache()  # clear images cache
                 location = self.request.route_path('images')
                 msg = _(u'Successfully sent request to deregistered image.')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
@@ -557,11 +560,10 @@ class ImageView(TaggedItemView, ImageBundlingMixin):
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
         image_param = self.request.matchdict.get('id') or self.request.params.get('image_id')
-        images_param = [image_param]
         with boto_error_handler(self.request):
             if image_param.find('pi-') == 0:
                 instances = self.conn.get_only_instances([image_param[1:]])
-                result = self.cancelBundling(instances[0])
+                result = self.cancel_bundling(instances[0])
                 return dict(message=_(u"Successfully cancelled image creation"), results=result)
 
     def get_controller_options_json(self):
