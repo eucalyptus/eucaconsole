@@ -136,7 +136,9 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor'])
                 }
             }); 
             if (!foundVPCSubnets) {
+                // Case of No VPC or no existing subnets, set the default to 'None'
                 $scope.vpcSubnetChoices['None'] = $('#vpc_subnet_empty_option').text();
+                $scope.vpcSubnets.push('None');
             }
             // Timeout is need for the chosen widget to react after Angular has updated the option list
             $timeout(function() {
