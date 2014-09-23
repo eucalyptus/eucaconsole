@@ -5,7 +5,7 @@
 </head>
 
 <div metal:fill-slot="main_content" ng-app="ImagesPage" ng-controller="ImagesCtrl"
-     ng-init="initController('${request.route_path('snapshot_images_json', id='_id_')}', '${request.route_path('image_cancel', id='_id_')}')">
+     ng-init="initController('${controller_options_json}')">
     <div class="row" id="contentwrap" ng-app="LandingPage" ng-controller="ItemsCtrl"
          ng-init="initController('images', '${initial_sort_key}', '${json_items_endpoint}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
@@ -181,6 +181,7 @@
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/custom_filters.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/landingpage.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/eucaconsole_utils.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/images.js')}"></script>
     <script tal:condition="layout.cloud_type == 'aws'">
         // Set "owned by Amazon" as default filter if on AWS

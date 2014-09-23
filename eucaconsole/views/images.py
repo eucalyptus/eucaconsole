@@ -173,6 +173,7 @@ class ImagesView(LandingPageView):
             filters_form=self.filters_form,
             deregister_form=self.deregister_form,
             account_id=self.account_id,
+            controller_options_json=self.get_controller_options_json(),
         )
 
     @view_config(route_name='images', renderer=TEMPLATE)
@@ -180,6 +181,12 @@ class ImagesView(LandingPageView):
         # filter_keys are passed to client-side filtering in search box
         # sort_keys are passed to sorting drop-down
         return self.render_dict
+
+    def get_controller_options_json(self):
+        return BaseView.escape_json(json.dumps({
+            'snapshot_images_json_url': self.request.route_path('snapshot_images_json', id='_id_'),
+            'image_cancel_url': self.request.route_path('image_cancel', id='_id_'),
+        }))
 
     @staticmethod
     def get_filter_keys():

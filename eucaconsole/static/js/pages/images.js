@@ -4,14 +4,15 @@
  *
  */
 
-angular.module('ImagesPage', ['LandingPage'])
-    .controller('ImagesCtrl', function ($scope, $http) {
+angular.module('ImagesPage', ['LandingPage', 'EucaConsoleUtils'])
+    .controller('ImagesCtrl', function ($scope, $http, eucaUnescapeJson) {
         $scope.imageID = '';
         $scope.disabledExplanationVisible = false;
         $scope.snapshotImagesRegistered = [];
-        $scope.initController = function (imagesUrl, cancelUrl) {
-            $scope.imagesUrl = imagesUrl;
-            $scope.imageCancelUrl = cancelUrl;
+        $scope.initController = function (optionsJson) {
+            var options = JSON.parse(eucaUnescapeJson(optionsJson));
+            $scope.imagesUrl = options['snapshot_images_json_url'];
+            $scope.imageCancelUrl = options['image_cancel_url'];
         };
         $scope.revealModal = function (action, image) {
             var modal = $('#' + action + '-image-modal');
