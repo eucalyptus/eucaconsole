@@ -204,6 +204,7 @@ class BucketContentsView(LandingPageView):
         self.bucket_name = self.get_bucket_name(request)
         self.create_folder_form = CreateFolderForm(request, formdata=self.request.params or None)
         self.subpath = request.subpath
+        self.key_prefix = '/'.join(self.subpath[1:]) if len(self.subpath) > 0 else ''
         self.render_dict = dict(
             bucket_name=self.bucket_name,
             create_folder_form=self.create_folder_form,
@@ -221,13 +222,14 @@ class BucketContentsView(LandingPageView):
         json_route_path = self.request.route_path('bucket_contents', name=self.bucket_name, subpath=self.subpath)
         self.render_dict.update(
             prefix=self.prefix,
-            key_prefix='/'.join(self.subpath[1:]) if len(self.subpath) > 0 else '',
+            key_prefix=self.key_prefix,
             display_path='/'.join(self.subpath),
             initial_sort_key='name',
             json_items_endpoint=self.get_json_endpoint(json_route_path, path=True),
             sort_keys=self.sort_keys,
             filter_fields=False,
             filter_keys=['name'],
+            controller_options_json=self.get_controller_options_json(),
         )
         return self.render_dict
 
@@ -250,6 +252,14 @@ class BucketContentsView(LandingPageView):
         else:
             self.request.error_messages = self.create_folder_form.get_errors_list()
         return self.render_dict
+
+    def get_controller_options_json(self):
+        return BaseView.escape_json(json.dumps({
+            'delete_keys_url': self.request.route_path('bucket_delete_keys', name=self.bucket_name),
+            'get_keys_url': self.request.route_path('bucket_keys', subpath=self.request.subpath),
+            'key_prefix': self.key_prefix,
+            'copy_object_url': self.request.route_path('bucket_put_item', name='_name_', subpath='_subpath_'),
+        }))
 
     @staticmethod
     def get_bucket_name(request):

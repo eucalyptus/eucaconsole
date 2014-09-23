@@ -4,8 +4,8 @@
  *
  */
 
-angular.module('BucketContentsPage', ['LandingPage'])
-    .controller('BucketContentsCtrl', function ($scope, $http) {
+angular.module('BucketContentsPage', ['LandingPage', 'EucaConsoleUtils'])
+    .controller('BucketContentsCtrl', function ($scope, $http, eucaUnescapeJson) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.bucketName = '';
         $scope.prefix = '';
@@ -17,11 +17,12 @@ angular.module('BucketContentsPage', ['LandingPage'])
         $scope.chunkSize = 10;  // set this based on how many keys we want to delete at once
         $scope.index = 0;
         $scope.items = null;
-        $scope.initController = function (deleteKeysUrl, getKeysUrl, prefix, copyObjUrl) {
-            $scope.deleteKeysUrl = deleteKeysUrl;
-            $scope.getKeysUrl = getKeysUrl;
-            $scope.prefix = prefix;
-            $scope.copyObjUrl = copyObjUrl;
+        $scope.initController = function (optionsJson) {
+            var options = JSON.parse(eucaUnescapeJson(optionsJson));
+            $scope.deleteKeysUrl = options['delete_keys_url'];
+            $scope.getKeysUrl = options['get_keys_url'];
+            $scope.prefix = options['key_prefix'];
+            $scope.copyObjUrl = options['copy_object_url'];
         };
         $scope.revealModal = function (action, item) {
             var modal = $('#' + action + '-modal');
@@ -175,7 +176,7 @@ angular.module('BucketContentsPage', ['LandingPage'])
                 var results = oData ? oData.results : [];
                 if (oData.error == undefined) {
                     Modernizr.localstorage && localStorage.removeItem('copy-object-buffer');
-                    if (item === undefined) {    // in case where we're pasting in current context,
+                    if (!item) {  // in case where we're pasting in current context,
                         $scope.$broadcast('refresh');
                     }
                 } else {
