@@ -277,6 +277,15 @@ class SecurityGroupView(TaggedItemView):
             raise HTTPNotFound()
         return security_group
 
+    def exists_security_group(self, group_id=None):
+        group_param = group_id
+        if group_param is None:
+            return None  # If missing, we're going to return an empty security group form
+        groupids = [group_param]
+        security_groups = self.conn.get_all_security_groups(group_ids=groupids)
+        security_group = security_groups[0] if security_groups else None
+        return security_group
+
     def get_security_group_names(self):
         groups = []
         if self.conn:
@@ -330,11 +339,13 @@ class SecurityGroupView(TaggedItemView):
             else:
                 if group_id:
                     auth_args['src_group_id'] = group_id
-
-            if traffic_type == 'ingress':
-                self.conn.authorize_security_group(**auth_args)
-            else:
-                self.conn.authorize_security_group_egress(**auth_args)
+            
+            # If group_id is empty, or if group_id is not empty, make sure it hasn't been deleted
+            if not group_id or self.exists_security_group(group_id) is not None:
+                if traffic_type == 'ingress':
+                    self.conn.authorize_security_group(**auth_args)
+                else:
+                    self.conn.authorize_security_group_egress(**auth_args)
 
     def update_rules(self):
         # Remove existing rules prior to updating, since we're doing a fresh update
