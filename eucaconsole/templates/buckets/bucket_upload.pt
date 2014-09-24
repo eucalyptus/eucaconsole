@@ -39,6 +39,9 @@
                     <p>
                         <label class='subheading-label' for="upload-file" i18n:translate=''>Select file(s)</label>
                         <input type="file" id="files" data-file="files" multiple="" name='files'>
+                        <div ng-show="files.length > 1">
+                            <span ng-repeat="files">{{ file.name }}</span>
+                        </div>
                     </p>
                     ${panel('s3_sharing_panel', bucket_object=bucket, sharing_form=sharing_form, show_caution=True)}
                     ${panel('s3_metadata_editor', bucket_object=bucket, metadata_form=metadata_form)}
