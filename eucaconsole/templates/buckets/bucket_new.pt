@@ -64,6 +64,19 @@
                 <!--! pull in help content here-->
             </div>
         </div>
+        <!--! Modal to warn of conflicting bucket name -->
+        <div id="conflict-warn-modal" class="reveal-modal small" data-reveal="">
+            <h3 i18n:translate="">Warning: Bucket name conflict</h3>
+            <p i18n:translate="">
+                The requested bucket name is not available.
+                The bucket namespace is shared by all users of the system.
+                Please select a different name and try again.
+            </p>
+            <a id="name-conflict-warning-button" class="button expand" ng-click="confirmWarning()" i18n:translate="">
+                Understood, let me try again
+            </a>
+            <a class="close-reveal-modal">&#215;</a>
+        </div>
     </div>
 </div>
 

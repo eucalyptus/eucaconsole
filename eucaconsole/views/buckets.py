@@ -805,5 +805,9 @@ class CreateBucketView(BaseView):
         return BaseView.escape_json(json.dumps({
             'bucket_name': self.request.params.get('bucket_name', ''),
             'share_type': self.request.params.get('share_type', 'public'),
+            'existing_bucket_names': self.get_existing_bucket_names(),
         }))
+
+    def get_existing_bucket_names(self):
+        return [bucket.name for bucket in self.s3_conn.get_all_buckets()]
 
