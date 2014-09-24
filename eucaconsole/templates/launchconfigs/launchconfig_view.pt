@@ -2,7 +2,7 @@
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="LaunchConfigPage" ng-controller="LaunchConfigPageCtrl"
-         ng-init="initController(${'true' if in_use else 'false'}, '${'true' if image else ''}')">
+         ng-init="initController('${controller_options_json}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('launchconfigs')}" i18n:translate="">Launch configurations</a></li>
@@ -162,6 +162,7 @@
 </div>
 
 <div metal:fill-slot="tail_js">
+    <script src="${request.static_path('eucaconsole:static/js/pages/eucaconsole_utils.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/launchconfig.js')}"></script>
 </div>
 

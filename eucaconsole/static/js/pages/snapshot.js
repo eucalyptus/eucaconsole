@@ -4,9 +4,8 @@
  *
  */
 
-// Snapshot page includes the tag editor, so pull in that module as well.
-angular.module('SnapshotPage', ['TagEditor'])
-    .controller('SnapshotPageCtrl', function ($scope, $http, $timeout) {
+angular.module('SnapshotPage', ['TagEditor', 'EucaConsoleUtils'])
+    .controller('SnapshotPageCtrl', function ($scope, $http, $timeout, eucaUnescapeJson) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.snapshotStatusEndpoint = '';
         $scope.transitionalStates = ['pending', 'deleting'];
@@ -33,14 +32,16 @@ angular.module('SnapshotPage', ['TagEditor'])
                 $('#volume_id').val('').trigger('chosen:updated'); 
             });
         };
-        $scope.initController = function (jsonEndpoint, status, progress, volumeCount, imagesURL) {
-            $scope.displayVolumeWarning(volumeCount);
+        $scope.initController = function (optionsJson) {
+            var options = JSON.parse(eucaUnescapeJson(optionsJson));
+            $scope.volumeCount = options['volume_count'];
+            $scope.displayVolumeWarning($scope.volumeCount);
             $scope.initChosenSelector();
-            $scope.snapshotStatusEndpoint = jsonEndpoint;
-            $scope.snapshotStatus = status;
-            $scope.snapshotProgress = progress;
-            $scope.imagesURL = imagesURL;
-            if (jsonEndpoint) {
+            $scope.snapshotStatusEndpoint = options['snapshot_status_json_url'];
+            $scope.snapshotStatus = options['snapshot_status'];
+            $scope.snapshotProgress = options['snapshot_status'];
+            $scope.imagesURL = options['snapshot_images_json_url'];
+            if ($scope.snapshotStatusEndpoint) {
                 $scope.getSnapshotState();
             }
             $scope.setWatch();

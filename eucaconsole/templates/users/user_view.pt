@@ -8,21 +8,18 @@
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="UserView" ng-controller="UserViewCtrl"
-            ng-init="initController('${user.user_name}',
-                                    '${request.route_path('user_disable', name=user.user_name)}',
-                                    '${request.route_path('users')}',
-                                    '${request.route_path('user_delete', name=user.user_name)}')">
+            ng-init="initController('${controller_options_json}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('users')}" i18n:translate="">Users</a></li>
-                <li class="current"><a href="#">${user.user_name}</a></li>
+                <li class="current"><a href="#">${user_name}</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
         <h3 class="pagetitle">
             <strong i18n:translate="">Details for user:</strong>
-            <em>${user.user_name}</em>
+            <em>${user_name}</em>
         </h3>
         <div class="large-8 columns">
             <dl class="tabs">
@@ -53,7 +50,7 @@
                                 <h6 i18n:translate="">User</h6>
                                 <div class="row controls-wrapper readonly">
                                     <div class="small-3 columns"><label i18n:translate="">Name</label></div>
-                                    <div class="small-9 columns value">${user.user_name}</div>
+                                    <div class="small-9 columns value">${user_name}</div>
                                 </div>
                                 <!-- ${panel('form_field', field=user_form['email'])} -->
                                 <div class="row controls-wrapper readonly" tal:condition="user_create_date">
@@ -399,6 +396,7 @@
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/utils/zxcvbn-async.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/jquery.generateFile.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/eucaconsole_utils.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/user_view.js')}"></script>
 </div>
 

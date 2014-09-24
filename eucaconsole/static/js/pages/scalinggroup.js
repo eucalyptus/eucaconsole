@@ -5,8 +5,8 @@
  */
 
 // Scaling Group page includes the AutoScale tag editor, so pull in that module as well.
-angular.module('ScalingGroupPage', ['AutoScaleTagEditor'])
-    .controller('ScalingGroupPageCtrl', function ($scope, $timeout) {
+angular.module('ScalingGroupPage', ['AutoScaleTagEditor', 'EucaConsoleUtils'])
+    .controller('ScalingGroupPageCtrl', function ($scope, $timeout, eucaUnescapeJson) {
         $scope.minSize = 1;
         $scope.desiredCapacity = 1;
         $scope.maxSize = 1;
@@ -31,9 +31,11 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor'])
             $scope.desiredCapacity = parseInt($('#desired_capacity').val(), 10);
             $scope.maxSize = parseInt($('#max_size').val(), 10);
         };
-        $scope.initController = function (scalingGroupName, policiesCount) {
-            $scope.scalingGroupName = scalingGroupName.replace(/__apos__/g, "\'");
-            $scope.policiesCount = policiesCount;
+        $scope.initController = function (optionsJson) {
+            var options = JSON.parse(eucaUnescapeJson(optionsJson));
+            // scalingGroupName, policiesCount
+            $scope.scalingGroupName = options['scaling_group_name'];
+            $scope.policiesCount = options['policies_count'];
             $scope.setInitialValues();
             $scope.initChosenSelectors();
             $scope.setWatch();

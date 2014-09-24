@@ -117,6 +117,7 @@ class KeyPairView(BaseView):
             keypair_import_form=self.keypair_import_form,
             delete_form=self.delete_form,
             keypair_names=self.get_keypair_names(),
+            controller_options_json=self.get_controller_options_json(),
         )
 
     def get_keypair(self):
@@ -215,5 +216,10 @@ class KeyPairView(BaseView):
             return HTTPFound(location=location)
 
         return self.render_dict
+
+    def get_controller_options_json(self):
+        return BaseView.escape_json(json.dumps({
+            'route_id': self.keypair_route_id,
+        }))
 
 

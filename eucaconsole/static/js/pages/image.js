@@ -4,9 +4,8 @@
  *
  */
 
-// Image page includes the tag editor, so pull in that module as well.
-angular.module('ImagePage', ['BlockDeviceMappingEditor', 'TagEditor'])
-    .controller('ImagePageCtrl', function ($scope, $http, $timeout) {
+angular.module('ImagePage', ['BlockDeviceMappingEditor', 'TagEditor', 'EucaConsoleUtils'])
+    .controller('ImagePageCtrl', function ($scope, $http, $timeout, eucaUnescapeJson) {
         $scope.imageState = '';
         $scope.imageProgess = 0;
         $scope.imageStatusEndpoint = '';
@@ -23,13 +22,14 @@ angular.module('ImagePage', ['BlockDeviceMappingEditor', 'TagEditor'])
         $scope.disabledExplanationVisible = false;
         $scope.pendingModalID = '';
         $scope.cancelling = false;
-        $scope.initController = function (isPublic, launchPermissions, stateUrl, imageCancelUrl, imagesUrl){
-            $scope.isPublic = isPublic;
-            $scope.launchPermissions = launchPermissions;
-            $scope.imageStatusEndpoint = stateUrl;
-            $scope.imageCancelUrl = imageCancelUrl;
-            $scope.imagesUrl = imagesUrl;
-            if (stateUrl) {
+        $scope.initController = function (optionsJson) {
+            var options = JSON.parse(eucaUnescapeJson(optionsJson));
+            $scope.isPublic = options['is_public'];
+            $scope.launchPermissions = options['image_launch_permissions'];
+            $scope.imageStatusEndpoint = options['image_state_json_url'];
+            $scope.imageCancelUrl = options['image_cancel_url'];
+            $scope.imagesUrl = options['images_url'];
+            if ($scope.imageStatusEndpoint) {
                 $scope.getImageState();
             }
             $scope.setWatch();
