@@ -39,10 +39,10 @@ from ..forms.snapshots import SnapshotForm, DeleteSnapshotForm, RegisterSnapshot
 from ..i18n import _
 from ..models import Notification
 from ..views import LandingPageView, TaggedItemView, BaseView, JSONResponse
-from ..views.images import ImagesView
 from . import boto_error_handler
 
 import panels
+
 
 class SnapshotsView(LandingPageView):
     VIEW_TEMPLATE = '../templates/snapshots/snapshots.pt'
@@ -246,6 +246,7 @@ class SnapshotView(TaggedItemView):
         self.delete_form = DeleteSnapshotForm(self.request, formdata=self.request.params or None)
         self.register_form = RegisterSnapshotForm(self.request, formdata=self.request.params or None)
         self.tagged_obj = self.snapshot
+        self.volume_count = self.get_volume_count()
         with boto_error_handler(request, self.location):
             self.images_registered = self.get_images_registered(self.snapshot.id) if self.snapshot else None
         self.render_dict = dict(
@@ -257,7 +258,7 @@ class SnapshotView(TaggedItemView):
             snapshot_form=self.snapshot_form,
             delete_form=self.delete_form,
             register_form=self.register_form,
-            volume_count=self.get_volume_count()
+            controller_options_json=self.get_controller_options_json(),
         )
 
     def get_volume_count(self):
@@ -394,6 +395,19 @@ class SnapshotView(TaggedItemView):
         except BotoServerError as err:
             return None
         return volumes_list[0] if volumes_list else None
+
+    def get_controller_options_json(self):
+        options = {
+            'volume_count': self.volume_count,
+        }
+        if self.snapshot:
+            options.update({
+                'snapshot_status_json_url': self.request.route_path('snapshot_state_json', id=self.snapshot.id),
+                'snapshot_status': self.snapshot.status,
+                'snapshot_progress': self.snapshot.progress,
+                'snapshot_images_json_url': self.request.route_path('snapshot_images_json', id=self.snapshot.id),
+            })
+        return BaseView.escape_json(json.dumps(options))
 
 
 class SnapshotStateView(BaseView):

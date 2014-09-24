@@ -6,8 +6,8 @@
 
 
 // user view page includes the User Editor editor
-angular.module('UserView', ['PolicyList', 'Quotas'])
-    .controller('UserViewCtrl', function ($scope, $http) {
+angular.module('UserView', ['PolicyList', 'Quotas', 'EucaConsoleUtils'])
+    .controller('UserViewCtrl', function ($scope, $http, eucaUnescapeJson) {
         $scope.disable_url = '';
         $scope.allUsersRedirect = '';
         $scope.form = $('#user-update-form');
@@ -64,11 +64,12 @@ angular.module('UserView', ['PolicyList', 'Quotas'])
             } 
             $scope.toggleTab(tab);
         };
-        $scope.initController = function(user_name, disable_url, allRedirect, delete_url) {
-            $scope.userName = user_name;
-            $scope.disable_url = disable_url;
-            $scope.allUsersRedirect = allRedirect;
-            $('#delete-user-form').attr('action', delete_url);
+        $scope.initController = function(optionsJson) {
+            var options = JSON.parse(eucaUnescapeJson(optionsJson));
+            $scope.userName = options['user_name'];
+            $scope.disable_url = options['user_disable_url'];
+            $scope.allUsersRedirect = options['all_users_redirect'];
+            $('#delete-user-form').attr('action', options['user_delete_url']);
             $scope.setFocus();
             $scope.setWatch();
             $scope.setDropdownMenusListener();

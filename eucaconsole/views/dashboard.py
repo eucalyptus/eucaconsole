@@ -28,6 +28,8 @@
 Pyramid views for Dashboard
 
 """
+import simplejson as json
+
 from pyramid.view import view_config
 from boto.exception import BotoServerError
 
@@ -49,16 +51,26 @@ class DashboardView(BaseView):
         with boto_error_handler(self.request):
             region = self.request.session.get('region')
             availability_zones = ChoicesManager(self.conn).get_availability_zones(region)
-        tiles=self.request.cookies.get("%s_dash_order" % (self.request.session[
-                        'account' if self.request.session['cloud_type'] == 'euca' else 'access_id']))
+        tiles = self.request.cookies.get("{0}_dash_order".format(
+            self.request.session['account' if self.request.session['cloud_type'] == 'euca' else 'access_id']))
         if tiles is not None:
             tiles = tiles.replace('%2C', ',')
         else:
-            tiles = u'instances-running,instances-stopped,scaling-groups,elastic-ips,volumes,snapshots,buckets,security-groups,key-pairs,accounts,users,groups,roles,health'
+            tiles = u'instances-running,instances-stopped,scaling-groups,elastic-ips,volumes,snapshots,buckets,' \
+                    u'security-groups,key-pairs,accounts,users,groups,roles,health'
         return dict(
             availability_zones=availability_zones,
             tiles=tiles.split(','),
+            controller_options_json=self.get_controller_options_json(),
         )
+
+    def get_controller_options_json(self):
+        return BaseView.escape_json(json.dumps({
+            'json_items_url': self.request.route_path('dashboard_json'),
+            'service_status_url': self.request.route_path('service_status_json'),
+            'cloud_type': self.cloud_type,
+            'account_display_name': self.get_account_display_name(),
+        }))
 
 
 class DashboardJsonView(BaseView):
@@ -107,7 +119,8 @@ class DashboardJsonView(BaseView):
                 if session['username'] == 'admin':
                     iam_conn = self.get_connection(conn_type="iam")
                     if session['account_access']:
-                        accounts_count = len(iam_conn.get_response('ListAccounts', params={}, list_marker='Accounts').accounts)
+                        accounts_count = len(iam_conn.get_response(
+                            'ListAccounts', params={}, list_marker='Accounts').accounts)
                     users_count = len(iam_conn.get_all_users().users)
                     groups_count = len(iam_conn.get_all_groups().groups)
                     roles_count = len(iam_conn.list_roles().roles)
@@ -176,6 +189,5 @@ class DashboardJsonView(BaseView):
                 except BotoServerError:
                     cloudwatch = False
                 health.append(dict(name=_(u'Identity & Access Mgmt'), up=iam))
-
 
             return dict(health=health)

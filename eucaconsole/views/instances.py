@@ -505,6 +505,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
             has_elastic_ip=self.has_elastic_ip,
             role=self.role,
             running_create=self.running_create,
+            controller_options_json=self.get_controller_options_json(),
         )
 
     @view_config(route_name='instance_view', renderer=VIEW_TEMPLATE, request_method='GET')
@@ -684,6 +685,22 @@ class InstanceView(TaggedItemView, BaseInstanceView):
                 if ip_address == ip.public_ip:
                     has_elastic_ip = True
         return has_elastic_ip
+
+    def get_controller_options_json(self):
+        if not self.instance:
+            return ''
+        return BaseView.escape_json(json.dumps({
+            'instance_state_json_url': self.request.route_path('instance_state_json', id=self.instance.id),
+            'instance_userdata_json_url': self.request.route_path('instance_userdata_json', id=self.instance.id),
+            'instance_ip_address_json_url': self.request.route_path('instance_ip_address_json', id=self.instance.id),
+            'instance_console_json_url': self.request.route_path('instance_console_output_json', id=self.instance.id),
+            'instance_state': self.instance.state,
+            'instance_id': self.instance.id,
+            'instance_ip_address': self.instance.ip_address,
+            'instance_public_dns': self.instance.public_dns_name,
+            'instance_platform': self.instance.platform,
+            'has_elastic_ip': self.has_elastic_ip,
+        }))
 
 
 class InstanceStateView(BaseInstanceView):

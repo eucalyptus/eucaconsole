@@ -4,8 +4,8 @@
  *
  */
 
-angular.module('Dashboard', [])
-    .controller('DashboardCtrl', function ($scope, $http) {
+angular.module('Dashboard', ['EucaConsoleUtils'])
+    .controller('DashboardCtrl', function ($scope, $http, eucaUnescapeJson) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.jsonEndpoint = '';
         $scope.statusEndpoint = '';
@@ -18,10 +18,12 @@ angular.module('Dashboard', [])
             var storedZone = Modernizr.localstorage && localStorage.getItem($scope.storedZoneKey);
             $scope.selectedZone = storedZone || '';
         };
-        $scope.initController = function (jsonItemsEndpoint, statusEndpoint, cloud_type, account) {
-            $scope.jsonEndpoint = jsonItemsEndpoint;
-            $scope.statusEndpoint = statusEndpoint;
-            $scope.storedZoneKey = 'dashboard_availability_zone_'+cloud_type;
+        $scope.initController = function (optionsJson) {
+            var options = JSON.parse(eucaUnescapeJson(optionsJson));
+            $scope.jsonEndpoint = options['json_items_url'];
+            $scope.statusEndpoint = options['service_status_url'];
+            $scope.storedZoneKey = 'dashboard_availability_zone_' + options['cloud_type'];
+            $scope.accountName = options['account_display_name'];
             $scope.setInitialZone();
             $scope.setFocus();
             $scope.getItemCounts();
@@ -29,7 +31,7 @@ angular.module('Dashboard', [])
             $scope.getServiceStatus();
             $('#sortable').sortable({
                 stop: function(event, ui) {
-                    $.cookie(account+"_dash_order", $('#sortable').sortable('toArray'), {expires: 180});
+                    $.cookie($scope.accountName + "_dash_order", $('#sortable').sortable('toArray'), {expires: 180});
                 }
             });
             $('#sortable').disableSelection();
