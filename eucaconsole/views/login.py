@@ -145,7 +145,7 @@ class LoginView(BaseView):
                 session['access_id'] = creds.access_key
                 session['secret_key'] = creds.secret_key
                 session['region'] = 'euca'
-                session['username_label'] = '{user}@{account}'.format(user=username, account=account)
+                session['username_label'] = user_account
                 headers = remember(self.request, user_account)
                 return HTTPFound(location=self.came_from, headers=headers)
             except HTTPError, err:

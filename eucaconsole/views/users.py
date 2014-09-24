@@ -493,7 +493,7 @@ class UserView(BaseView):
             host = self.request.registry.settings.get('sts.host', host)
             port = int(self.request.registry.settings.get('sts.port', port))
             validate_certs = asbool(self.request.registry.settings.get('connection.ssl.validation', False))
-            conn = AWSAuthConnection(None)
+            conn = AWSAuthConnection(None, aws_access_key_id='', aws_secret_access_key='')
             ca_certs_file = conn.ca_certificates_file
             conn = None
             ca_certs_file = self.request.registry.settings.get('connection.ssl.certfile', ca_certs_file)
