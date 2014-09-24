@@ -1,6 +1,7 @@
 <metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
 <head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/bucket_contents.css')}" />
     <style type="text/css">
         .expando .content { padding-left: 1.5rem; }
         .required-fields-indicator { margin-top: 0.8rem; margin-right: 2rem; }
@@ -34,17 +35,17 @@
         <div class="large-7 columns">
             <div class="panel">
                 <form id="upload-file-form" data-abide="abide" ng-cloak="" action="${request.route_path('bucket_upload', name=bucket_name, subpath=request.subpath)}" method="POST" accept-charset="utf-8" enctype="multipart/form-data">
-                      <!--ng-submit="startUpload($event)"-->
                     ${structure:upload_form['csrf_token']}
                     <p>
                         <label class='subheading-label' for="upload-file" i18n:translate=''>Select file(s)</label>
-                        <input type="file" id="upload-file" data-file="files" multiple="" name='file'>
+                        <input type="file" id="files" data-file="files" multiple="" name='files'>
                     </p>
-                    ${panel('s3_sharing_panel', bucket_object=bucket, sharing_form=sharing_form)}
+                    ${panel('s3_sharing_panel', bucket_object=bucket, sharing_form=sharing_form, show_caution=True)}
+                    ${panel('s3_metadata_editor', bucket_object=bucket, metadata_form=metadata_form)}
                     <hr />
                     <div class="row">
                         <div class="small-7 columns">
-                            <button type="submit" class="button" id="create-bucket-submit-button" ng-disabled="!hasChangesToBeSaved">
+                            <button type="submit" class="button" id="create-bucket-submit-button" ng-disabled="!hasChangesToBeSaved" ng-click="showConfirm($event)">
                                 <span i18n:translate="">Upload File(s)</span>
                             </button>
                             <a href="${request.route_path('buckets')}" id="cancel-create-bucket-link"
@@ -63,24 +64,37 @@
                 <!--! pull in help content here-->
             </div>
         </div>
-        <div id="upload-progress-modal" class="reveal-modal small" data-reveal="">
-            <h3 i18n:translate="">Upload file(s)</h3>
-            <p>
-                <span i18n:translate="">Uploading files can take some time. Leaving this page while the upload is in progress will cancel the operation.</span>
-            </p>
-            <div class="bucket-progress">
-                <span class="meter" style="width: {{ (progress/total)*100 }}%"></span>
-                <span class="status">Uploaded {{ progress }} of {{ total }}</span>
+        <div id="upload-files-modal" class="reveal-modal small" data-reveal="">
+            <h3 i18n:translate="">Confirm file upload</h3>
+            <div ng-show="!uploading">
+                <p>
+                    <span i18n:translate="">File transfer over the web can negatively affect performance and bandwidth for ALL console users (not just you) while the transfer is in progress. Performance for all console operations may get extremely slow or stop completely.</span>
+                    <br>&nbsp;</br>
+                    <span i18n:translate="">You can optimize this by uploading files when you know fewer people will be using the console concurrently.</span>
+                </p>
+                <a class="button expand" id="upload-files-btn" i18n:translate="" ng-click="startUpload()">
+                    OK, Let's Do This Now!
+                </a>
             </div>
-            <a class="button expand cancel" id="cancel-upload-btn" i18n:translate="" ng-click="cancelUploading()">
-                Cancel Upload
-            </a>
+            <div ng-show="uploading">
+                <p>
+                    <span i18n:translate="">Uploading files can take some time. Leaving this page while the upload is in progress will cancel the operation.</span>
+                </p>
+                <div class="bucket-progress">
+                    <span class="meter" style="width: {{ (progress/total)*100 }}%"></span>
+                    <span class="status">Uploaded {{ progress }} of {{ total }}</span>
+                </div>
+                <a class="button expand cancel" id="cancel-upload-btn" i18n:translate="" ng-click="cancelUploading()">
+                    Cancel Upload
+                </a>
+            </div>
             <a href="#" id="delete_object_close_link" class="close-reveal-modal">&#215;</a>
         </div>
     </div>
 </div>
 
 <div metal:fill-slot="tail_js">
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/bucket_upload.js')}"></script>
 </div>
 </metal:block>

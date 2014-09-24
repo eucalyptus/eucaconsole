@@ -114,7 +114,7 @@ angular.module('BucketContentsPage', ['LandingPage'])
                 }
               }).
               error(function (oData, status) {
-                Notify.failure("some kind of error");
+                Notify.failure(oData.message);
               });
         };
         $scope.cancelDeleting = function () {

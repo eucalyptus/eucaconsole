@@ -4,6 +4,9 @@
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/s3_sharing_panel.css')}" />
     <hr id="s3-sharing-panel-top-hr-tag" />
     <h6 i18n:translate="" class="sharing-label">Sharing</h6>
+    <div tal:condition="show_caution" tal:omit-tag="">
+        <p i18n:translate="">The sharing options for the selected object(s) have been automatically set to match their bucket. Only adjust these options if you want them to change.</p>
+    </div>
     <div>
         ${structure:sharing_form.share_type()}
     </div>
