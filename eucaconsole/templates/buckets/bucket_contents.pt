@@ -31,12 +31,17 @@
                     Upload File(s)
                 </a>
                 &nbsp;&nbsp;
-                <a class="button" id="create-folder-btn" i18n:translate="">
+                <a class="button" id="create-folder-btn" i18n:translate="" data-reveal-id="create-folder-modal">
                     Create New Folder
                 </a>
                 &nbsp;&nbsp;
                 <a class="button secondary ng-binding" id="delete-all-btn" i18n:translate="" ng-click="revealModal('delete-all')">
                     Delete All Objects/Folders
+                </a>
+                &nbsp;&nbsp;
+                <a class="button secondary ng-binding" id="paste-btn" i18n:translate=""
+                    ng-show="hasCopyItem()" ng-click="doPaste('${bucket_name}', nil, '${key_prefix}')">
+                    Paste Object
                 </a>
             </div>
             <div metal:fill-slot="tile_header">
@@ -201,6 +206,8 @@
             </a>
             <a href="#" id="delete_object_close_link" class="close-reveal-modal">&#215;</a>
         </div>
+        <!--! Create folder modal dialog -->
+        ${panel('create_folder_dialog', bucket_name=bucket_name, create_folder_form=create_folder_form)}
     </div>
 </div>
 

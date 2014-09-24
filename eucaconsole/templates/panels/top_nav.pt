@@ -3,7 +3,19 @@
     <li><a id="resource-menu-dashboard" class="lnk-dashboard" i18n:translate=""
            href="${request.route_path('dashboard')}">Dashboard</a></li>
     <li><a id="resource-menu-images" href="${request.route_path('images')}" i18n:translate="">Images</a></li>
-    <li><a id="resource-menu-instances" href="${request.route_path('instances')}" i18n:translate="">Instances</a></li>
+    <li tal:condition="not layout.account_access">
+        <a id="resource-menu-instances" href="${request.route_path('instances')}" i18n:translate="">Instances</a>
+    </li>
+    <li class="has-dropdown" tal:condition="layout.account_access">
+        <a id="resource-menu-instances" i18n:translate="">Instances</a>
+        <ul class="dropdown">
+            <li><a id="resource-menuitem-instances" i18n:translate=""
+                   href="${request.route_path('instances')}">Instances</a></li>
+            <li class="divider" tal:condition="not off_canvas"></li>
+            <li><a id="resource-menuitem-instance-types" i18n:translate=""
+                   href="${request.route_path('instance_types')}">Instance Types</a></li>
+        </ul>
+    </li>
     <li class="has-dropdown">
         <a id="resource-menu-autoscaling" i18n:translate="">Auto Scaling</a>
         <ul class="dropdown">

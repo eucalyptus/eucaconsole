@@ -33,8 +33,7 @@ from operator import attrgetter
 import os
 import simplejson as json
 from M2Crypto import RSA
-import pylibmc
-import logging
+import re
 
 from boto.exception import BotoServerError
 from boto.s3.key import Key
@@ -48,7 +47,8 @@ from ..forms.images import ImagesFiltersForm
 from ..forms.instances import (
     InstanceForm, AttachVolumeForm, DetachVolumeForm, LaunchInstanceForm, LaunchMoreInstancesForm,
     RebootInstanceForm, StartInstanceForm, StopInstanceForm, TerminateInstanceForm, InstanceCreateImageForm,
-    BatchTerminateInstancesForm, InstancesFiltersForm, AssociateIpToInstanceForm, DisassociateIpFromInstanceForm)
+    BatchTerminateInstancesForm, InstancesFiltersForm, InstanceTypeForm,
+    AssociateIpToInstanceForm, DisassociateIpFromInstanceForm)
 from ..forms import GenerateFileForm
 from ..forms.keypairs import KeyPairForm
 from ..forms.securitygroups import SecurityGroupForm
@@ -896,6 +896,7 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
             securitygroup_choices_json=self.securitygroup_choices_json,
             vpc_subnet_choices_json=self.vpc_subnet_choices_json,
             role_choices_json=self.role_choices_json,
+            security_group_placeholder_text=_(u'Select...'),
         )
 
     @view_config(route_name='instance_create', renderer=TEMPLATE, request_method='GET')
@@ -915,13 +916,10 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
                 key_name = None  # Handle "None (advanced)" option
             if key_name:
                 key_name = self.unescape_braces(key_name)
-            securitygroup = self.request.params.get('securitygroup', 'default')
-            if securitygroup:
-                securitygroup = self.unescape_braces(securitygroup)
+            securitygroup_ids = self.request.params.getall('securitygroup')
             instance_type = self.request.params.get('instance_type', 'm1.small')
             availability_zone = self.request.params.get('zone') or None
             vpc_network = self.request.params.get('vpc_network') or None
-            securitygroup_ids = [securitygroup]
             vpc_subnet = self.request.params.get('vpc_subnet') or None
             associate_public_ip_address = self.request.params.get('associate_public_ip_address')
             if associate_public_ip_address == 'true':
@@ -1008,7 +1006,11 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
     def get_securitygroups_rules(self):
         rules_dict = {}
         for security_group in self.securitygroups:
-            rules_dict[security_group.id] = SecurityGroupsView.get_rules(security_group.rules)
+            rules = SecurityGroupsView.get_rules(security_group.rules)
+            if security_group.vpc_id is not None:
+                rules_egress = SecurityGroupsView.get_rules(security_group.rules_egress, rule_type='outbound')
+                rules = rules + rules_egress 
+            rules_dict[security_group.id] = rules
         return rules_dict
 
     def get_securitygroup_id(self, name, vpc_network=None):
@@ -1229,12 +1231,15 @@ class InstanceCreateImageView(BaseInstanceView, BlockDeviceMappingItemView):
                     access_key = creds.access_key.access_key_id
                     secret_key = creds.access_key.secret_access_key
                     # we need to make the call ourselves to override boto's auto-signing
-                    params = {'InstanceId': instance_id,
-                              'Storage.S3.Bucket': s3_bucket,
-                              'Storage.S3.Prefix': s3_prefix,
-                              'Storage.S3.UploadPolicy': upload_policy}
-                    params['Storage.S3.AWSAccessKeyId'] = access_key
-                    params['Storage.S3.UploadPolicySignature'] = BaseView.gen_policy_signature(upload_policy, secret_key)
+                    params = {
+                        'InstanceId': instance_id,
+                        'Storage.S3.Bucket': s3_bucket,
+                        'Storage.S3.Prefix': s3_prefix,
+                        'Storage.S3.UploadPolicy': upload_policy,
+                        'Storage.S3.AWSAccessKeyId': access_key,
+                        'Storage.S3.UploadPolicySignature': BaseView.gen_policy_signature(
+                            upload_policy, secret_key)
+                    }
                     result = self.conn.get_object('BundleInstance', params, BundleInstanceTask, verb='POST')
                     bundle_metadata = {
                         'version': curr_version,
@@ -1278,3 +1283,72 @@ class InstanceCreateImageView(BaseInstanceView, BlockDeviceMappingItemView):
             self.request.error_messages = self.create_image_form.get_errors_list()
         return self.render_dict
 
+
+class InstanceTypesView(LandingPageView, BaseInstanceView):
+
+    def __init__(self, request):
+        super(InstanceTypesView, self).__init__(request)
+        self.request = request
+        self.conn = self.get_connection()
+        self.render_dict = dict(
+            instance_type_form=InstanceTypeForm(self.request),
+            filter_fields=True,
+            sort_keys=[],
+            filter_keys=[],
+            prefix='',
+        )
+
+    @view_config(route_name='instance_types', renderer='../templates/instances/instance_types.pt')
+    def instance_types_landing(self):
+        return self.render_dict
+
+    @view_config(route_name='instance_types_json', renderer='json', request_method='POST')
+    def instance_types_json(self):
+        if not(self.request.session['account_access']):
+            return JSONResponse(status=401, message=_(u"Unauthorized"))
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
+        instance_types_results = []
+        with boto_error_handler(self.request):
+            instance_types = self.conn.get_all_instance_types()
+            for instance_type in instance_types:
+                instance_types_results.append(dict(
+                    name=instance_type.name,
+                    cpu=instance_type.cores,
+                    memory=instance_type.memory,
+                    disk=instance_type.disk,
+                ))
+        return dict(results=instance_types_results)
+
+    @view_config(route_name='instance_types_update', renderer='json', request_method='POST')
+    def instance_types_update(self):
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
+        # Extract the list of instance type updates
+        update = {} 
+        for param in self.request.params.items():
+            match = re.search('update\[(\d+)\]\[(\w+)\]', param[0])
+            if match:
+                index = match.group(1)
+                attr = match.group(2)
+                value = param[1]
+                instance_type = {} 
+                if index in update: 
+                    instance_type = update[index]
+                instance_type[attr] = value 
+                update[index] = instance_type
+        # Modify instance type 
+        for item in update.itervalues():
+            is_updated = self.modify_instance_type_attribute(
+                item['name'], item['cpu'], item['memory'], item['disk'])
+            if not is_updated:
+                return JSONResponse(status=400, message=_(u"Failed to instance type attributes"))
+        return dict(message=_(u"Successfully updated instance type attributes"))
+
+    def modify_instance_type_attribute(self, name, cpu, memory, disk):
+        # Ensure that the attributes are positive integers
+        if cpu <= 0 or memory <= 0 or disk <= 0:
+            return False
+        params = {'Name': name, 'Cpu': cpu, 'Memory': memory, 'Disk': disk} 
+        with boto_error_handler(self.request):
+            return self.conn.get_status('ModifyInstanceTypeAttribute', params, verb='POST')

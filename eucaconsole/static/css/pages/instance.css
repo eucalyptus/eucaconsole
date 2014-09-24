@@ -99,7 +99,7 @@
 ----------------------------------------- */
 @media screen and (max-width: 1024px) { #filters { margin-top: 1rem; } }
 /* Small screen */
-@media screen and (max-width: 920px) { .columns.datagrid { padding-left: 1rem; } }
+@media screen and (max-width: 1020px) { .columns.datagrid { padding-left: 1rem; } }
 .row .status.running { background-color: #03405f; }
 
 .row .status.pending { background-color: #0683c2; }

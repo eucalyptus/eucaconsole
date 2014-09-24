@@ -1,0 +1,127 @@
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
+
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/instance_types.css')}" />
+</head>
+
+<div metal:fill-slot="main_content">
+    <div class="row" id="contentwrap" ng-app="InstanceTypesPage" ng-controller="InstanceTypesCtrl"
+         ng-init="initController('${request.route_path('instance_types_json')}',
+                                 '${request.route_path('instance_types_update')}')">
+        <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+            <metal:crumbs metal:fill-slot="crumbs">
+                <li class="current"><a href="#" i18n:translate="">Instance types</a></li>
+            </metal:crumbs>
+        </metal:breadcrumbs>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
+        <h3 id="pagetitle"><strong i18n:translate="">Instance types</strong></h3>
+        <div class="large-8 columns" id="landing-page-items">
+            <div class="panel">
+                <p class="note" i18n:translate="">To change the configuration of an instance type, select from the available options.
+                    You can enter any value you would like if you do not see it listed.</p>
+                <div ng-show="itemsLoading"><span class="dots"></span></div>
+                <div id="tableview" class="gridwrapper" ng-cloak="">
+                    <!-- Begin table view -->
+                    <table class="table" ng-show="!itemsLoading" ng-cloak="true">
+                        <thead>
+                            <tr>
+                                <th i18n:translate="">NAME</th>
+                                <th i18n:translate="">CPU</th>
+                                <th i18n:translate="">MEMORY (GB)</th>
+                                <th i18n:translate="">DISK (GB)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-cloak="true" ng-repeat="item in items" on-finish-render="">
+                                <td>
+                                    <div id="div-column-name" ng-class="nameColumnClass[item.name]">
+                                        {{ item.name }}
+                                    </div>
+                                </td>
+                                <td>
+                                    <div id="div-column-cpu">
+                                        <select id="select-cpu-{{item.name}}" ng-model="cpuSelected[item.name]"
+                                            ng-options="cpu as cpu for cpu in cpuList"
+                                            ng-init="cpuSelected[item.name] = item.cpu">
+                                        </select>
+                                    </div>
+                                    <div id="error-cpu-{{item.name}}" class="error"
+                                        ng-show="cpuInputError[item.name]"
+                                        ng-init="cpuInputError[item.name] = false"
+                                        i18n:translate="">
+                                        CPU values must be positive, whole numbers.
+                                    </div>
+                                </td>
+                                <td>
+                                    <div id="div-column-memory">
+                                        <select id="select-memory-{{item.name}}" ng-model="memorySelected[item.name]"
+                                            ng-options="memory as memory for memory in memoryList"
+                                            ng-init="memorySelected[item.name] = convertMBtoGB(item.memory)">
+                                         </select>
+                                    </div>
+                                    <div id="error-cpu-{{item.name}}" class="error"
+                                        ng-show="memoryInputError[item.name]" 
+                                        ng-init="memoryInputError[item.name] = false"
+                                        i18n:translate="">
+                                        Memory values must be positive numbers.
+                                    </div>
+                                </td>
+                                <td>
+                                    <div id="div-column-disk">
+                                        <select id="select-disk-{{item.name}}" ng-model="diskSelected[item.name]"
+                                            ng-options="disk as disk for disk in diskList"
+                                            ng-init="diskSelected[item.name] = item.disk">
+                                        </select>
+                                    </div>
+                                    <div id="error-cpu-{{item.name}}" class="error"
+                                        ng-show="diskInputError[item.name]"
+                                        ng-init="diskInputError[item.name] = false"
+                                        i18n:translate="">
+                                        Disk values must be positive numbers.
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr ng-show="!itemsLoading"></tr>
+                        </tbody>
+                    </table>
+                    <hr />
+                    <div>
+                        <form id="form-instance-type" ng-submit="submit($event)">
+                            ${structure:instance_type_form['csrf_token']}
+                            <button type="submit" class="button" ng-disabled="isNotChanged" i18n:translate="">
+                                Save Changes
+                            </button>
+                            <a href="${request.route_path('dashboard')}"
+                                class="cancel-link" i18n:translate="">Cancel</a>
+                       </form>
+                   </div>
+                </div>
+                <div>
+                    <div ng-if="!itemsLoading">
+                        <div data-alert="alert" class="alert-box secondary" ng-if="items.length == 0" ng-cloak="">
+                            <span i18n:translate="">No items were found</span>
+                            <a href="#" class="close">&times;</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="large-4 columns">
+            <metal:block metal:use-macro="layout.global_macros['help_expando']" />
+            <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
+                <!--! HELP CONTENT HERE -->
+                <div id="help-html-console_instance_types" ng-include="'${layout.help_path('console_instance_types.html')}'"></div> 
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/instance_types.js')}"></script>
+</div>
+
+</metal:block>
+

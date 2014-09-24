@@ -105,6 +105,10 @@ urls = [
     Route(name='instance_volume_attach', pattern='/instances/{id}/volumes/attach'),
     Route(name='instance_volume_detach', pattern='/instances/{id}/volumes/{volume_id}/detach'),
 
+    # Instance Types page
+    Route(name='instance_types', pattern='/instance-types'),
+    Route(name='instance_types_json', pattern='/instance-types/json'),
+    Route(name='instance_types_update', pattern='/instance-types/update'),
 
     # Scaling Groups #####
     # Landing page
@@ -178,6 +182,8 @@ urls = [
     Route(name='buckets', pattern='/buckets'),
     Route(name='buckets_json', pattern='/buckets/json'),
     # Contents/detail pages
+    Route(name='bucket_new', pattern='/buckets/new'),
+    Route(name='bucket_create', pattern='/buckets/create'),
     Route(name='bucket_contents', pattern='/bucketcontents/*subpath'),
     Route(name='bucket_keys', pattern='/bucketkeys/*subpath'),
     Route(name='bucket_details', pattern='/buckets/{name}/details'),
@@ -188,7 +194,8 @@ urls = [
     Route(name='bucket_update_versioning', pattern='/buckets/{name}/updateversioning'),
     Route(name='bucket_item_details', pattern='/buckets/{name}/itemdetails/*subpath'),
     Route(name='bucket_item_update', pattern='/buckets/{name}/itemupdate/*subpath'),
-    Route(name='bucket_put_item', pattern='/buckets/{name}/*subpath'),
+    Route(name='bucket_put_item', pattern='/buckets/{name}/putitem/*subpath'),
+    Route(name='bucket_create_folder', pattern='/buckets/{name}/createfolder/*subpath'),
     Route(name='bucket_upload', pattern='/bucketupload/{name}/*subpath'),
     Route(name='bucket_sign_req', pattern='/bucketsignreq/{name}/*subpath'),
 

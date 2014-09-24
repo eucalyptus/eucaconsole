@@ -7,7 +7,9 @@
 <div metal:fill-slot="main_content">
     <div class="row" id="dashboard" ng-app="Dashboard" ng-controller="DashboardCtrl"
         tal:define="username layout.account if layout.cloud_type == 'euca' else layout.access_id;"
-        ng-init="initController('${request.route_path('dashboard_json')}', '${request.route_path('service_status_json')}', '${layout.cloud_type}', '${username}')">
+        ng-init="initController('${request.route_path('dashboard_json')}',
+                                '${request.route_path('service_status_json')}',
+                                '${layout.cloud_type}', '${username}')">
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
         <div id="pagetitle">
             <h3 i18n:translate="">Dashboard</h3>
@@ -131,7 +133,7 @@
                                 </a>
                             </div>
                             <div class="footer">
-                                <a href="#" i18n:translate="">Create bucket</a>
+                                <a href="${request.route_path('bucket_new')}" i18n:translate="">Create bucket</a>
                             </div>
                         </div>
                     </li>

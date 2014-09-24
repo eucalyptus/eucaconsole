@@ -985,7 +985,7 @@ table thead tr th, table tfoot tr th, table tbody tr td, table tr td, table tfoo
   .tooltip.tip-left, .tooltip.tip-right { float: none !important; }
   .tooltip.tip-left > .nub { border-color: transparent transparent transparent #333333; right: -10px; left: auto; top: 50%; margin-top: -5px; }
   .tooltip.tip-right > .nub { border-color: transparent #333333 transparent transparent; right: auto; left: -10px; top: 50%; margin-top: -5px; } }
-meta.foundation-mq-topbar { font-family: "/only screen and (min-width:40.063em)/"; width: 920px; }
+meta.foundation-mq-topbar { font-family: "/only screen and (min-width:40.063em)/"; width: 1020px; }
 
 /* Wrapped around .top-bar to contain to grid width */
 .contain-to-grid { width: 100%; background: white; }
@@ -1190,7 +1190,7 @@ blockquote, blockquote p { line-height: 1.6; color: #6f6f6f; }
   .print-only { display: block !important; }
   .hide-for-print { display: none !important; }
   .show-for-print { display: inherit !important; } }
-meta.foundation-mq-topbar { font-family: "/only screen and (min-width:40.063em)/"; width: 920px; }
+meta.foundation-mq-topbar { font-family: "/only screen and (min-width:40.063em)/"; width: 1020px; }
 
 .off-canvas-wrap { -webkit-backface-visibility: hidden; position: relative; width: 100%; overflow: hidden; }
 
@@ -1421,7 +1421,7 @@ h1, h2, h3, h4, h5, h6 { font-family: Oswald, Helvetica, Arial, sans-serif; lett
 
 #contentwrap { position: relative; padding-bottom: 3rem; min-height: 30rem; }
 
-@media screen and (min-width: 920px) { #login-panel { margin-bottom: 5rem; }
+@media screen and (min-width: 1020px) { #login-panel { margin-bottom: 5rem; }
   #maincontent { min-height: 480px; } }
 /* ----------------------------------------- Misc
 ----------------------------------------- */
@@ -1524,10 +1524,12 @@ form .error .chosen-container .chosen-single { border-color: darkred; background
 .row.controls-wrapper { margin-bottom: 0.5rem; }
 .row.controls-wrapper label { padding-top: 4px; font-weight: bold; text-align: right; line-height: 1rem; }
 .row.controls-wrapper label select, .row.controls-wrapper label input, .row.controls-wrapper label .chosen-container { text-align: left; }
+.row.controls-wrapper label.nowrap { white-space: nowrap; }
 .row.controls-wrapper label.reverse { display: inline-block; text-align: left; position: relative; left: 1.5rem; }
 .row.controls-wrapper .helptext-icon.reverse { position: relative; left: 1.5rem; }
 .row.controls-wrapper div.reverse { position: relative; }
 .row.controls-wrapper div.reverse input { position: absolute; right: -2rem; top: 5px; }
+.row.controls-wrapper .checkbox-row { margin-left: 1rem; }
 .row.controls-wrapper .field input { display: inline-block; margin-bottom: 0.3rem; }
 .row.controls-wrapper .field select { margin-bottom: 0.3rem; margin-top: 0.3rem; padding-top: 6px; padding-bottom: 6px; }
 .row.controls-wrapper .field textarea { margin-top: 0.3rem; }
@@ -1536,7 +1538,8 @@ form .error .chosen-container .chosen-single { border-color: darkred; background
 .row.controls-wrapper.inline { margin-bottom: 4px; }
 .row.controls-wrapper.inline label { right: -6px; }
 
-form .controls-wrapper > [class*='small-'] label { font-weight: bold; padding-top: 0.3rem; position: relative; right: -1rem; }
+form .controls-wrapper > [class*='small-'] label { font-weight: bold; padding-top: 0.3rem; }
+form .controls-wrapper > [class*='small-'] label.right { position: relative; right: -1rem; }
 
 [data-abide] .controls-wrapper .error input, [data-abide] .controls-wrapper .error select { border: 1px solid darkred; background-color: #ffe9ec; }
 [data-abide] .controls-wrapper .error small.error { margin-bottom: 6px; background-color: transparent; color: darkred; font-weight: bold; padding-left: 0; font-style: normal; padding-bottom: 4px; }
@@ -1639,7 +1642,7 @@ footer .copyright { font-size: 0.9em; }
   #logobar #user-dropdown-section .dropdown { position: relative; width: 4rem; margin-right: 1rem; padding-right: 12px; }
   #logobar #user-dropdown-section .dropdown .aws.down-caret { position: absolute; top: 8px; right: 0; } }
 @media screen and (max-width: 640px) { #logo { width: 20px !important; } }
-@media screen and (max-width: 920px) { #logobar { border-bottom: 1px solid black; margin-top: 8px; }
+@media screen and (max-width: 1020px) { #logobar { border-bottom: 1px solid black; margin-top: 8px; }
   #logobar .dropdown { position: relative; top: 4px; }
   #logobar #offcanvas-icon { display: inline-block !important; margin-right: 12px; }
   #logobar #user-dropdown-section { position: relative; left: -10px; }
@@ -1648,9 +1651,9 @@ footer .copyright { font-size: 0.9em; }
 @media screen and (max-width: 65rem) { #pagetitle.landingpage { top: -0.5rem; }
   #landing-page-filters { padding-top: 1rem; margin-bottom: 1rem; } }
 /* Other Small screen tweaks */
-@media screen and (max-width: 920px) { .columns.datagrid { padding-left: 1rem; }
+@media screen and (max-width: 1020px) { .columns.datagrid { padding-left: 1rem; }
   .sub-nav { top: 0; left: 0; margin-top: -28px; margin-left: 4px; margin-bottom: 1.5rem; } }
-@media screen and (min-width: 920px) { span.hide-for-small { display: inline !important; } }
+@media screen and (min-width: 1020px) { span.hide-for-small { display: inline !important; } }
 /* ----------------------------------------- Debug
 ----------------------------------------- */
 #pDebugToolbarHandle { top: 120px !important; }

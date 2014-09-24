@@ -29,6 +29,9 @@ Forms for S3 buckets and objects
 
 """
 import wtforms
+
+from boto.s3.key import Key
+from boto.s3.bucket import Bucket
 from wtforms import validators
 
 from . import BaseSecureForm, BLANK_CHOICE
@@ -72,6 +75,7 @@ class BucketUpdateVersioningForm(BaseSecureForm):
     """Update versioning info form"""
     pass
 
+
 class BucketDeleteForm(BaseSecureForm):
     """Delete form"""
     pass
@@ -85,33 +89,57 @@ class SharingPanelForm(BaseSecureForm):
     """S3 Sharing Panel form for buckets/objects"""
     SHARE_TYPE_CHOICES = (('public', _(u'Public')), ('private', _(u'Private')))
     share_type = wtforms.RadioField(choices=SHARE_TYPE_CHOICES)
+    share_account_error_msg = _(
+        u'Account ID may contain alpha-numeric characters and is a 12-digit account ID or the 64-digit canonical ID.')
     share_account = TextEscapedField(label=_(u'Account ID'))
     share_permissions = wtforms.SelectField(label=_(u'Permissions'))
+    canned_acl = wtforms.SelectField()
 
     def __init__(self, request, bucket_object=None, sharing_acl=None, **kwargs):
         super(SharingPanelForm, self).__init__(request, **kwargs)
         self.bucket_object = bucket_object
+        self.is_object = isinstance(bucket_object, Key)
         self.sharing_acl = sharing_acl
+        # Set error messages
+        self.share_account.error_msg = self.share_account_error_msg
         # Set choices
         self.share_permissions.choices = self.get_permission_choices()
+        self.canned_acl.choices = self.get_canned_acl_choices()
 
         if bucket_object is not None:
             self.share_type.data = self.get_share_type()
+
+        if bucket_object is None:
+            self.share_type.data = 'public'
 
     def get_share_type(self):
         if 'AllUsers = READ' in str(self.sharing_acl):
             return 'public'
         return 'private'
 
-    @staticmethod
-    def get_permission_choices():
-        return (
+    def get_canned_acl_choices(self):
+        choices = [
+            ('private', _('Private')),
+            ('public-read', _('Public read')),
+            ('public-read-write', _('Public read-write')),
+            ('authenticated-read', _('Authenticated read')),
+        ]
+        if self.bucket_object is not None and not isinstance(self.bucket_object, Bucket):
+            choices.extend([
+                ('bucket-owner-read', _('Bucket owner read')),
+                ('bucket-owner-full-control', _('Bucket owner full control')),
+            ])
+        return choices
+
+    def get_permission_choices(self):
+        choices = (
             ('FULL_CONTROL', _('Full Control')),
-            ('READ', _('Read-only')),
-            ('WRITE', _('Read-Write')),
+            ('READ', _('Read-only') if self.is_object else _('List objects')),
+            ('WRITE', _('Create/delete objects')) if not self.is_object else None,  # Hide for object details
             ('READ_ACP', _('Read sharing permissions')),
             ('WRITE_ACP', _('Write sharing permissions')),
         )
+        return [choice for choice in choices if choice is not None]
 
 
 class MetadataForm(BaseSecureForm):
@@ -165,4 +193,42 @@ class MetadataForm(BaseSecureForm):
         choices = [BLANK_CHOICE]
         choices.extend([(ct, ct) for ct in content_types])
         return choices
+
+
+class CreateBucketForm(BaseSecureForm):
+    """S3 Create Bucket form"""
+    bucket_name_error_msg = _(
+        'Name is required and may contain lowercase letters, numbers, hyphens, and/or dots')
+    bucket_name = TextEscapedField(
+        label=_(u'Name'),
+        validators=[
+            validators.DataRequired(message=bucket_name_error_msg),
+            validators.Length(max=63, message=_(u'Bucket name must not exceed 63 characters')),
+        ]
+    )
+    enable_versioning = wtforms.BooleanField(
+        label=_(u'Enable versioning')
+    )
+
+    def __init__(self, request, **kwargs):
+        super(CreateBucketForm, self).__init__(request, **kwargs)
+        self.bucket_name.error_msg = self.bucket_name_error_msg
+        self.enable_versioning.help_text = _(
+            u'With versioning enabled, objects are prevented from being deleted or overwritten by mistake.')
+
+
+class CreateFolderForm(BaseSecureForm):
+    """S3 Create Folder form"""
+    folder_name_error_msg = _('Name is required and may not contain slashes')
+    folder_name = TextEscapedField(
+        label=_(u'Name'),
+        validators=[
+            validators.DataRequired(message=folder_name_error_msg),
+        ]
+    )
+
+    def __init__(self, request, **kwargs):
+        super(CreateFolderForm, self).__init__(request, **kwargs)
+        self.folder_name.error_msg = self.folder_name_error_msg
+
 

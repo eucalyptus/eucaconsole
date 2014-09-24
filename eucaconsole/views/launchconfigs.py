@@ -370,6 +370,7 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
             securitygroup_choices_json=self.securitygroup_choices_json,
             role_choices_json=self.role_choices_json,
             preset='',
+            security_group_placeholder_text=_(u'Select...'),
         )
 
     @view_config(route_name='launchconfig_new', renderer=TEMPLATE, request_method='GET')
@@ -391,10 +392,7 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
                 key_name = None  # Handle "None (advanced)" option
             if key_name:
                 key_name = self.unescape_braces(key_name)
-            securitygroup = self.request.params.get('securitygroup', 'default')
-            if securitygroup:
-                securitygroup = self.unescape_braces(securitygroup)
-            security_groups = [securitygroup]  # Security group ids
+            security_groups = self.request.params.getall('securitygroup')
             instance_type = self.request.params.get('instance_type', 'm1.small')
             associate_public_ip_address = self.request.params.get('associate_public_ip_address')
             # associate_public_ip_address's value can be None, True, or False 
@@ -449,6 +447,10 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
     def get_securitygroups_rules(self):
         rules_dict = {}
         for security_group in self.securitygroups:
-            rules_dict[security_group.id] = SecurityGroupsView.get_rules(security_group.rules)
+            rules = SecurityGroupsView.get_rules(security_group.rules)
+            if security_group.vpc_id is not None:
+                rules_egress = SecurityGroupsView.get_rules(security_group.rules_egress, rule_type='outbound')
+                rules = rules + rules_egress 
+            rules_dict[security_group.id] = rules
         return rules_dict
 

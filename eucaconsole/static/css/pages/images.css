@@ -99,7 +99,7 @@
 ----------------------------------------- */
 @media screen and (max-width: 1024px) { #filters { margin-top: 1rem; } }
 /* Small screen */
-@media screen and (max-width: 920px) { .columns.datagrid { padding-left: 1rem; } }
+@media screen and (max-width: 1020px) { .columns.datagrid { padding-left: 1rem; } }
 .tile .header a { padding-right: 4px; }
 .tile .label.has-tip { background: white; color: #03405f; font-weight: bold; border-bottom: 1px solid #444444; }
 .tile .footer .action { display: block; position: absolute; left: 0; right: 0; bottom: 0; line-height: 1.5rem; text-align: center; background-color: #8cc63e; color: white; }

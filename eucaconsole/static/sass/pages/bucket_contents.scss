@@ -11,9 +11,13 @@
 
 #primary-buttons {
     .button {
-        padding-left: 2rem;
-        padding-right: 2rem;
+        padding-left: 1rem;
+        padding-right: 1rem;
     }
+}
+
+#paste-btn {
+    background-color: $euca-green;
 }
 
 .button.cancel {
