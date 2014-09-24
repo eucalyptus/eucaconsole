@@ -9,7 +9,7 @@ angular.module('EucaConsoleUtils', [])
     /**
      * Unescape JSON escaped server-side via BaseView.escape_json() custom method
      * @param {string} jsonString - JSON string, with single/double quotes and backslashes escaped.
-     * @return {string} escaped JSON string
+     * @return {string} unescaped JSON string
      */
     return function(jsonString) {
         return jsonString.replace(/__apos__/g, "\'").replace(/__dquote__/g, '\\"').replace(/__bslash__/g, "\\");
