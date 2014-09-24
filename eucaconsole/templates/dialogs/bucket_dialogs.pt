@@ -37,7 +37,12 @@
                 <button type="submit" id="update_versioning_submit_button" class="button expand">
                     <span i18n:translate="">Yes,</span>
                     <span tal:condition="bucket" tal:omit-tag="">
-                        ${update_versioning_action.capitalize()}
+                        <span tal:condition="update_versioning_action == 'enable'" tal:omit-tag="" i18n:translate="">
+                            Enable
+                        </span>
+                        <span tal:condition="update_versioning_action != 'enable'" tal:omit-tag="" i18n:translate="">
+                            Suspend
+                        </span>
                     </span>
                     <span tal:condition="not bucket" tal:omit-tag="">
                         <span ng-show="updateVersioningAction == 'enable'" i18n:translate="">Enable</span>
