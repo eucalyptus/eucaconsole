@@ -23,11 +23,23 @@ angular.module('BucketsPage', ['LandingPage'])
             var modal = $('#' + action + '-modal');
             $scope.bucketName = bucket['bucket_name'];
             $scope.bucketCount = $scope.bucketCounts[$scope.bucketName];
-            $scope.updateVersioningAction = bucket['update_versioning_action'];
             // Set form action based on bucket choice
             var form_action = $('#' + action + '-form').attr('action');
             form_action = form_action.replace('_name_', $scope.bucketName);
             $('#' + action + '-form').attr('action', form_action);
+            modal.foundation('reveal', 'open');
+        };
+        $scope.revealVersioningModal = function (versioningAction, bucket) {
+            // Need distinct handling of the versioning modal since bucket versioning info is lazy-loaded
+            var modal = $('#update-versioning-modal');
+            var versioningForm = $('#update-versioning-form');
+            var form_action = versioningForm.attr('action');
+            $scope.updateVersioningAction = versioningAction;
+            $scope.bucketName = bucket['bucket_name'];
+            $scope.bucketCount = $scope.bucketCounts[$scope.bucketName];
+            // Set form action based on bucket choice
+            form_action = form_action.replace('_name_', $scope.bucketName);
+            versioningForm.attr('action', form_action);
             modal.foundation('reveal', 'open');
         };
         $scope.getVersioningActionFromStatus = function (versioningStatus) {
