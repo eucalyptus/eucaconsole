@@ -34,7 +34,6 @@ import random
 import string
 import StringIO
 import simplejson as json
-import sys
 from boto.connection import AWSAuthConnection
 
 from urllib2 import HTTPError, URLError
@@ -245,6 +244,7 @@ class UserView(BaseView):
         self.no_groups_defined_text = _(u"There are no groups defined")
         self.render_dict = dict(
             user=self.user,
+            user_name=self.user.user_name,
             user_arn=self.user.arn if self.user else '',
             prefix=self.prefix,
             user_create_date=getattr(self.user, 'create_date', None),
@@ -254,6 +254,7 @@ class UserView(BaseView):
             disable_form=DisableUserForm(self.request),
             enable_form=EnableUserForm(self.request),
             quota_err=_(u"Requires non-negative integer (or may be empty)"),
+            controller_options_json=self.get_controller_options_json(),
         )
 
     def get_user(self):
@@ -265,6 +266,14 @@ class UserView(BaseView):
         else:
             return None
 
+    def get_controller_options_json(self):
+        return BaseView.escape_json(json.dumps({
+            'user_name': self.user.user_name,
+            'user_disable_url': self.request.route_path('user_disable', name=self.user.user_name),
+            'all_users_redirect': self.request.route_path('users'),
+            'user_delete_url': self.request.route_path('user_delete', name=self.user.user_name),
+        }))
+
     @view_config(route_name='user_view', renderer=TEMPLATE)
     def user_view(self):
         if self.user is None:
@@ -272,7 +281,8 @@ class UserView(BaseView):
         as_account = self.request.params.get('as_account', None)
         has_password = False
         try:
-            profile = self.conn.get_response('GetLoginProfile', params={'UserName':self.user.user_name, 'DelegateAccount':as_account})
+            profile = self.conn.get_response(
+                'GetLoginProfile', params={'UserName': self.user.user_name, 'DelegateAccount': as_account})
             # this call returns 404 if no password found
             has_password = True
         except BotoServerError as err:
@@ -306,7 +316,11 @@ class UserView(BaseView):
         """Return user access keys list"""
         as_account = self.request.params.get('as_account', '')
         with boto_error_handler(self.request):
-            keys = self.conn.get_response('ListAccessKeys', params={'UserName':self.user.user_name, 'DelegateAccount':as_account}, list_marker='AccessKeyMetadata')
+            keys = self.conn.get_response(
+                'ListAccessKeys',
+                params={'UserName': self.user.user_name, 'DelegateAccount': as_account},
+                list_marker='AccessKeyMetadata'
+            )
             return dict(results=sorted(keys.list_access_keys_result.access_key_metadata))
 
     @view_config(route_name='user_groups_json', renderer='json', request_method='GET')
@@ -314,7 +328,11 @@ class UserView(BaseView):
         """Return user groups list"""
         as_account = self.request.params.get('as_account', '')
         with boto_error_handler(self.request):
-            groups = self.conn.get_response('ListGroupsForUser', params={'UserName':self.user.user_name, 'DelegateAccount':as_account}, list_marker='Groups')
+            groups = self.conn.get_response(
+                'ListGroupsForUser',
+                params={'UserName': self.user.user_name, 'DelegateAccount': as_account},
+                list_marker='Groups'
+            )
             for g in groups.groups:
                 g['title'] = g.group_name
             return dict(results=groups.groups)
@@ -325,7 +343,11 @@ class UserView(BaseView):
         as_account = self.request.params.get('as_account', '')
         with boto_error_handler(self.request):
             taken_groups = [
-                group.group_name for group in self.conn.get_response('ListGroupsForUser', params={'UserName':self.user.user_name, 'DelegateAccount':as_account}, list_marker='Groups').groups
+                group.group_name for group in self.conn.get_response(
+                    'ListGroupsForUser',
+                    params={'UserName': self.user.user_name, 'DelegateAccount': as_account},
+                    list_marker='Groups'
+                ).groups
             ]
             all_groups = [group.group_name for group in self.conn.get_all_groups().groups]
             avail_groups = list(set(all_groups) - set(taken_groups))
@@ -343,7 +365,11 @@ class UserView(BaseView):
         if self.user.user_name == 'admin':
             return dict(results=[])
         with boto_error_handler(self.request):
-            policies = self.conn.get_response('ListUserPolicies', params={'UserName':self.user.user_name, 'DelegateAccount':as_account}, list_marker='PolicyNames')
+            policies = self.conn.get_response(
+                'ListUserPolicies',
+                params={'UserName': self.user.user_name, 'DelegateAccount': as_account},
+                list_marker='PolicyNames'
+            )
             return dict(results=policies.policy_names)
 
     @view_config(route_name='user_policy_json', renderer='json', request_method='GET')
@@ -352,7 +378,11 @@ class UserView(BaseView):
         as_account = self.request.params.get('as_account', '')
         with boto_error_handler(self.request):
             policy_name = self.request.matchdict.get('policy')
-            policy = self.conn.get_response('GetUserPolicy', params={'UserName':self.user.user_name, 'PolicyName':policy_name, 'DelegateAccount':as_account}, verb='POST')
+            policy = self.conn.get_response(
+                'GetUserPolicy',
+                params={'UserName': self.user.user_name, 'PolicyName': policy_name, 'DelegateAccount': as_account},
+                verb='POST'
+            )
             parsed = json.loads(policy.policy_document)
             return dict(results=json.dumps(parsed, indent=2))
 
@@ -378,16 +408,21 @@ class UserView(BaseView):
                 users = json.loads(users_json)
                 for (name, email) in users.items():
                     self.log_request(_(u"Creating user {0}").format(name))
-                    user = self.conn.get_response('CreateUser', params={'UserName':name, 'Path':path, 'DelegateAccount':as_account})
+                    user = self.conn.get_response(
+                        'CreateUser', params={'UserName': name, 'Path': path, 'DelegateAccount': as_account})
                     user_data = {'account': account, 'username': name}
                     if random_password == 'y':
                         self.log_request(_(u"Generating password for user {0}").format(name))
                         password = PasswordGeneration.generate_password()
-                        self.conn.get_response('CreateLoginProfile', params={'UserName':name, 'Password':password, 'DelegateAccount':as_account})
+                        self.conn.get_response(
+                            'CreateLoginProfile',
+                            params={'UserName': name, 'Password': password, 'DelegateAccount': as_account}
+                        )
                         user_data['password'] = password
                     if access_keys == 'y':
                         self.log_request(_(u"Creating access keys for user {0}").format(name))
-                        creds = self.conn.get_response('CreateAccessKey', params={'UserName':name, 'DelegateAccount':as_account})
+                        creds = self.conn.get_response(
+                            'CreateAccessKey', params={'UserName': name, 'DelegateAccount': as_account})
                         user_data['access_id'] = creds.access_key.access_key_id
                         user_data['secret_key'] = creds.access_key.secret_access_key
                     # store this away for file creation later
@@ -429,10 +464,16 @@ class UserView(BaseView):
         with boto_error_handler(self.request):
             new_name = self.request.params.get('user_name', self.user.user_name)
             path = self.request.params.get('path', None)
-            self.log_request(_(u"Updating user {0} (new_name={1}, path={2})").format(self.user.user_name, new_name, path))
+            self.log_request(
+                _(u"Updating user {0} (new_name={1}, path={2})").format(self.user.user_name, new_name, path))
             if new_name == self.user.user_name:
                 new_name = None
-            result = self.conn.get_response('UpdateUser', params={'UserName':self.user.user_name, 'NewUserName':new_name, 'Path':path, 'DelegateAccount':as_account})
+            result = self.conn.get_response(
+                'UpdateUser',
+                params={
+                    'UserName': self.user.user_name, 'NewUserName': new_name,
+                    'Path': path, 'DelegateAccount': as_account}
+            )
             self.user.path = path
             if self.user.user_name != new_name:
                 pass  # TODO: need to force view refresh if name changes
@@ -467,12 +508,19 @@ class UserView(BaseView):
             self.log_request(_(u"Change password for user {0}").format(self.user.user_name))
             try:
                 # try to fetch login profile.
-                self.conn.get_response('GetLoginProfile', params={'UserName':self.user.user_name, 'DelegateAccount':as_account})
+                self.conn.get_response(
+                    'GetLoginProfile', params={'UserName': self.user.user_name, 'DelegateAccount': as_account})
                 # if that worked, update the profile
-                result = self.conn.get_response('UpdateLoginProfile', params={'UserName':self.user.user_name, 'Password':new_pass, 'DelegateAccount':as_account})
+                self.conn.get_response(
+                    'UpdateLoginProfile',
+                    params={'UserName': self.user.user_name, 'Password': new_pass, 'DelegateAccount': as_account}
+                )
             except BotoServerError:
                 # if that failed, create the profile
-                result = self.conn.get_response('CreateLoginProfile', params={'UserName':self.user.user_name, 'Password':new_pass, 'DelegateAccount':as_account})
+                self.conn.get_response(
+                    'CreateLoginProfile',
+                    params={'UserName': self.user.user_name, 'Password': new_pass, 'DelegateAccount': as_account}
+                )
             # assemble file response
             account = self.request.session['account']
             string_output = StringIO.StringIO()
@@ -504,12 +552,20 @@ class UserView(BaseView):
             self.log_request(_(u"Generating password for user {0}").format(self.user.user_name))
             try:
                 # try to fetch login profile.
-                self.conn.get_response('GetLoginProfile', params={'UserName':self.user.user_name, 'DelegateAccount':as_account})
+                self.conn.get_response(
+                    'GetLoginProfile',
+                    params={'UserName': self.user.user_name, 'DelegateAccount': as_account})
                 # if that worked, update the profile
-                result = self.conn.get_response('UpdateLoginProfile', params={'UserName':self.user.user_name, 'Password':new_pass, 'DelegateAccount':as_account})
+                self.conn.get_response(
+                    'UpdateLoginProfile',
+                    params={'UserName': self.user.user_name, 'Password': new_pass, 'DelegateAccount': as_account}
+                )
             except BotoServerError:
                 # if that failed, create the profile
-                result = self.conn.get_response('CreateLoginProfile', params={'UserName':self.user.user_name, 'Password':new_pass, 'DelegateAccount':as_account})
+                self.conn.get_response(
+                    'CreateLoginProfile',
+                    params={'UserName': self.user.user_name, 'Password': new_pass, 'DelegateAccount': as_account}
+                )
             # assemble file response
             account = self.request.session['account']
             string_output = StringIO.StringIO()
@@ -531,7 +587,8 @@ class UserView(BaseView):
         as_account = self.request.params.get('as_account', '')
         with boto_error_handler(self.request):
             self.log_request(_(u"Deleting password for user {0}").format(self.user.user_name))
-            self.conn.get_response('DeleteLoginProfile', params={'UserName':self.user.user_name, 'DelegateAccount':as_account})
+            self.conn.get_response(
+                'DeleteLoginProfile', params={'UserName': self.user.user_name, 'DelegateAccount': as_account})
             return dict(message=_(u"Successfully deleted user password"), results="true")
 
     @view_config(route_name='user_generate_keys', request_method='POST', renderer='json')
@@ -542,7 +599,10 @@ class UserView(BaseView):
         as_account = self.request.params.get('as_account', '')
         with boto_error_handler(self.request):
             self.log_request(_(u"Creating access keys for user {0}").format(self.user.user_name))
-            result = self.conn.get_response('CreateAccessKey', params={'UserName':self.user.user_name, 'DelegateAccount':as_account})
+            result = self.conn.get_response(
+                'CreateAccessKey',
+                params={'UserName': self.user.user_name, 'DelegateAccount': as_account}
+            )
             account = self.request.session['account']
             string_output = StringIO.StringIO()
             csv_w = csv.writer(string_output)
@@ -554,9 +614,12 @@ class UserView(BaseView):
                 "{acct}-{user}-{key}-creds.csv".format(acct=account,
                 user=self.user.user_name, key=result.access_key.access_key_id),
                 'text/csv', string_output.getvalue())
-            return dict(message=_(u"Successfully generated access keys"), results=dict(
-                        access=result.access_key.access_key_id, secret=result.access_key.secret_access_key
-                      ))
+            return dict(
+                message=_(u"Successfully generated access keys"),
+                results=dict(
+                    access=result.access_key.access_key_id, secret=result.access_key.secret_access_key
+                )
+            )
 
     @view_config(route_name='user_delete_key', request_method='POST', renderer='json')
     def user_delete_key(self):
@@ -567,7 +630,10 @@ class UserView(BaseView):
         key_id = self.request.matchdict.get('key')
         with boto_error_handler(self.request):
             self.log_request(_(u"Deleting access key {0} for user {1}").format(key_id, self.user.user_name))
-            result = self.conn.get_response('DeleteAccessKey', params={'UserName':self.user.user_name, 'AccessKeyId':key_id, 'DelegateAccount':as_account})
+            self.conn.get_response(
+                'DeleteAccessKey',
+                params={'UserName': self.user.user_name, 'AccessKeyId': key_id, 'DelegateAccount': as_account}
+            )
             return dict(message=_(u"Successfully deleted key"))
 
     @view_config(route_name='user_deactivate_key', request_method='POST', renderer='json')
@@ -579,7 +645,13 @@ class UserView(BaseView):
         key_id = self.request.matchdict.get('key')
         with boto_error_handler(self.request):
             self.log_request(_(u"Deactivating access key {0} for user {1}").format(key_id, self.user.user_name))
-            result = self.conn.get_response('UpdateAccessKey', params={'UserName':self.user.user_name, 'AccessKeyId':key_id, 'Statue':'Inactive', 'DelegateAccount':as_account})
+            self.conn.get_response(
+                'UpdateAccessKey',
+                params={
+                    'UserName': self.user.user_name, 'AccessKeyId': key_id,
+                    'Statue': 'Inactive', 'DelegateAccount': as_account
+                }
+            )
             return dict(message=_(u"Successfully deactivated key"))
 
     @view_config(route_name='user_activate_key', request_method='POST', renderer='json')
@@ -591,7 +663,13 @@ class UserView(BaseView):
         key_id = self.request.matchdict.get('key')
         with boto_error_handler(self.request):
             self.log_request(_(u"Activating access key {0} for user {1}").format(key_id, self.user.user_name))
-            result = self.conn.get_response('UpdateAccessKey', params={'UserName':self.user.user_name, 'AccessKeyId':key_id, 'Statue':'Active', 'DelegateAccount':as_account})
+            self.conn.get_response(
+                'UpdateAccessKey',
+                params={
+                    'UserName': self.user.user_name, 'AccessKeyId': key_id,
+                    'Statue': 'Active', 'DelegateAccount': as_account
+                }
+            )
             return dict(message=_(u"Successfully activated key"))
 
     @view_config(route_name='user_add_to_group', request_method='POST', renderer='json')
@@ -603,9 +681,11 @@ class UserView(BaseView):
         group = self.request.matchdict.get('group')
         with boto_error_handler(self.request):
             self.log_request(_(u"Adding user {0} to group {1}").format(self.user.user_name, group))
-            result = self.conn.get_response('AddUserToGroup', params={'UserName':self.user.user_name, 'GroupName':group, 'DelegateAccount':as_account})
-            return dict(message=_(u"Successfully added user to group"),
-                        results=result)
+            result = self.conn.get_response(
+                'AddUserToGroup',
+                params={'UserName': self.user.user_name, 'GroupName': group, 'DelegateAccount': as_account}
+            )
+            return dict(message=_(u"Successfully added user to group"), results=result)
 
     @view_config(route_name='user_remove_from_group', request_method='POST', renderer='json')
     def user_remove_from_group(self):
@@ -616,9 +696,11 @@ class UserView(BaseView):
         group = self.request.matchdict.get('group')
         with boto_error_handler(self.request):
             self.log_request(_(u"Removing user {0} from group {1}").format(self.user.user_name, group))
-            result = self.conn.get_response('RemoveUserFromGroup', params={'UserName':self.user.user_name, 'GroupName':group, 'DelegateAccount':as_account})
-            return dict(message=_(u"Successfully removed user from group"),
-                        results=result)
+            result = self.conn.get_response(
+                'RemoveUserFromGroup',
+                params={'UserName': self.user.user_name, 'GroupName': group, 'DelegateAccount': as_account}
+            )
+            return dict(message=_(u"Successfully removed user from group"), results=result)
 
     @view_config(route_name='user_delete', request_method='POST')
     def user_delete(self):
@@ -647,7 +729,14 @@ class UserView(BaseView):
         with boto_error_handler(self.request):
             self.log_request(_(u"Updating policy {0} for user {1}").format(policy, self.user.user_name))
             policy_text = self.request.params.get('policy_text')
-            result = self.conn.get_response('PutUserPolicy', params={'UserName':self.user.user_name, 'PolicyName':policy, 'PolicyDocument':json.dumps(policy_text), 'DelegateAccount':as_account}, verb='POST')
+            result = self.conn.get_response(
+                'PutUserPolicy',
+                params={
+                    'UserName': self.user.user_name, 'PolicyName': policy,
+                    'PolicyDocument': json.dumps(policy_text), 'DelegateAccount': as_account
+                },
+                verb='POST'
+            )
             return dict(message=_(u"Successfully updated user policy"), results=result)
 
     @view_config(route_name='user_delete_policy', request_method='POST', renderer='json')
@@ -659,7 +748,11 @@ class UserView(BaseView):
         policy = self.request.matchdict.get('policy')
         with boto_error_handler(self.request):
             self.log_request(_(u"Deleting policy {0} for user {1}").format(policy, self.user.user_name))
-            result = self.conn.get_response('DeleteUserPolicy', params={'UserName':self.user.user_name, 'PolicyName':policy, 'DelegateAccount':as_account}, verb='POST')
+            result = self.conn.get_response(
+                'DeleteUserPolicy',
+                params={'UserName': self.user.user_name, 'PolicyName': policy, 'DelegateAccount': as_account},
+                verb='POST'
+            )
             return dict(message=_(u"Successfully deleted user policy"), results=result)
 
     @view_config(route_name='user_update_quotas', request_method='POST', renderer='json')
