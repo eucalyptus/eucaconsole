@@ -106,7 +106,7 @@ class SharingPanelForm(BaseSecureForm):
             self.share_type.data = self.get_share_type()
 
         if bucket_object is None:
-            self.share_type.data = 'public'
+            self.share_type.data = 'private'
 
     def get_share_type(self):
         if 'AllUsers = READ' in str(self.sharing_acl):
