@@ -190,15 +190,16 @@ class KeyPairView(BaseView):
             key_material = self.request.params.get('key_material')
             msg = ""
             material = ""
-            location = self.request.route_path('keypair_view', id=name)
-            with boto_error_handler(self.request, location):
-                self.log_request(_(u"Importing keypair ")+name)
+            failure_location = self.request.route_path('keypair_view', id='new2')  # Return to import form if failure
+            success_location = self.request.route_path('keypair_view', id=name)
+            with boto_error_handler(self.request, failure_location):
+                self.log_request(_(u"Importing keypair ") + name)
                 new_keypair = self.conn.import_key_pair(name, key_material)
                 material = new_keypair.material
                 msg_template = _(u'Successfully imported key pair {keypair}')
                 msg = msg_template.format(keypair=name)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
-            return HTTPFound(location=location)
+            return HTTPFound(location=success_location)
 
         return self.render_dict
 
