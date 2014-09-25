@@ -107,6 +107,45 @@
         </div>
         <!--! Modal dialogs reused across landing and detail page -->
         ${panel('securitygroup_dialogs', security_group=security_group, delete_form=delete_form)}
+        <div id="invalid-rules-warning-modal" class="reveal-modal small" data-reveal="">
+            <h3 i18n:translate="">Warning: Invalid rules deteced</h3>
+            <p>
+                <span i18n:translate="">This security group contains the following rules which reference other security groups that no longer exist. Those rules will be deleted for you when you save changes on this page. </span>
+            </p>
+            <div>
+                <div ng-show="invalidRulesArray.length">
+                    <span i18n:translate="">Inbound rules:</span> 
+                </div>
+                <span class="label radius secondary rulesentry" ng-repeat="rule in invalidRulesArray">
+                    {{ rule.ip_protocol.toUpperCase() }}
+                    ({{ rule.from_port }}<span ng-show="rule.to_port != rule.from_port"> - {{ rule.to_port }}</span>)
+                    <span ng-repeat="grant in rule.grants">
+                        <span ng-show="grant.cidr_ip">{{ grant.cidr_ip }}</span>
+                        <span ng-show="grant.owner_id">{{ grant.owner_id }}/</span>
+                        <span ng-show="grant.name">{{ grant.name }}</span>
+                        <span ng-show="grant.name == undefined &amp;&amp; grant.group_id">{{ grant.group_id }}</span>
+                    </span>
+                </span>
+                <div ng-show="invalidRulesEgressArray.length">
+                    <span i18n:translate="">Outbound rules:</span> 
+                </div>
+                <span class="label radius secondary rulesentry" ng-repeat="rule in invalidRulesEgressArray">
+                    {{ rule.ip_protocol.toUpperCase() }}
+                    ({{ rule.from_port }}<span ng-show="rule.to_port != rule.from_port"> - {{ rule.to_port }}</span>)
+                    <span ng-repeat="grant in rule.grants">
+                        <span ng-show="grant.cidr_ip">{{ grant.cidr_ip }}</span>
+                        <span ng-show="grant.owner_id">{{ grant.owner_id }}/</span>
+                        <span ng-show="grant.name">{{ grant.name }}</span>
+                        <span ng-show="grant.name == undefined &amp;&amp; grant.group_id">{{ grant.group_id }}</span>
+                    </span>
+                </span>
+            </div>
+            <br />
+            <div class="dialog-submit-button">
+                <button id="invalid-rules-warning-close-button" class="button expand" i18n:translate="">OK, Continue to Page</button>
+            </div>
+            <a href="#" class="close-reveal-modal">&#215;</a>
+        </div>
     </div>
 </div>
 

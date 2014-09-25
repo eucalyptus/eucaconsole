@@ -58,7 +58,6 @@ angular.module('SecurityGroupRules', [])
               success(function(oData) {
                 var results = oData ? oData.results : [];
                 $scope.securityGroupList = results;
-                console.log($scope.securityGroupList);
             });
         };
         $scope.cleanupSelections = function () {
@@ -175,6 +174,8 @@ angular.module('SecurityGroupRules', [])
         // Run through the existing rules to verify that
         // the security groups in the rules are still valid
         $scope.checkRulesForDeletedSecurityGroups = function () {
+            var invalidRulesArray = [];
+            var invalidRulesEgressArray = [];
             // Check the ingress rules
             angular.forEach($scope.rulesArray, function (rule) {
                 if (rule.grants[0].group_id != null) {
@@ -184,7 +185,9 @@ angular.module('SecurityGroupRules', [])
                             exists = true;
                         } 
                     });
-                    console.log(exists);
+                    if (!exists) {
+                        invalidRulesArray.push(rule); 
+                    }
                 }
             });
             // Check the egress rules
@@ -196,9 +199,15 @@ angular.module('SecurityGroupRules', [])
                             exists = true;
                         } 
                     });
-                    console.log(exists);
+                    if (!exists) {
+                        invalidRulesEgressArray.push(rule); 
+                    }
                 }
             });
+            // Emit the signal to trigger invalid rules warning
+            if (invalidRulesArray.length > 0 || invalidRulesEgressArray.length > 0) {
+                $scope.$emit('invalidRulesWarning', invalidRulesArray, invalidRulesEgressArray);
+            }
         };
         // Run through the existing rules with the newly create rule
         // to ensure that the new rule does not exist already
