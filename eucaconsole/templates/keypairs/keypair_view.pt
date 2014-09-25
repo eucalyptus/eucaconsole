@@ -4,7 +4,7 @@
     <div class="row" id="contentwrap"
             tal:define="html_attrs {'disabled': 'disabled'} if keypair else {};
                         html_attrs_val {'pattern': '^[^\/\\\]{1,255}$'};"
-            ng-app="KeypairPage" ng-controller="KeypairPageCtrl" ng-init="initController('${keypair_route_id}')">
+            ng-app="KeypairPage" ng-controller="KeypairPageCtrl" ng-init="initController('${controller_options_json}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('keypairs')}" i18n:translate="">Key pairs</a></li>
@@ -137,6 +137,7 @@
 </div>
 
 <div metal:fill-slot="tail_js">
+    <script src="${request.static_path('eucaconsole:static/js/pages/eucaconsole_utils.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/keypair.js')}"></script>
 </div>
 

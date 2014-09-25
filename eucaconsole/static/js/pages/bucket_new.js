@@ -4,17 +4,15 @@
  *
  */
 
-/* Create Bucket page includes the S3 Sharing Panel */
-angular.module('CreateBucketPage', ['S3SharingPanel'])
-    .controller('CreateBucketPageCtrl', function ($scope, $http) {
+angular.module('CreateBucketPage', ['S3SharingPanel', 'EucaConsoleUtils'])
+    .controller('CreateBucketPageCtrl', function ($scope, $http, eucaUnescapeJson) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.createBucketForm = $('#create-bucket-form');
         $scope.isSubmitted = false;
         $scope.hasChangesToBeSaved = false;
         $scope.bucketName = '';
         $scope.initController = function (optionsJson) {
-            var unescapedJson = optionsJson.replace(/__apos__/g, "\'").replace(/__dquote__/g, '\\"').replace(/__bslash__/g, "\\");
-            var options = JSON.parse(unescapedJson);
+            var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.bucketName = options['bucket_name'];
             if (options['share_type'] == 'private') {
                 $('#share_type').find('input[value="private"]').click();

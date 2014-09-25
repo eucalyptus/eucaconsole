@@ -4,30 +4,23 @@
  *
  */
 
-angular.module('KeypairPage', [])
-    .controller('KeypairPageCtrl', function ($scope) {
+angular.module('KeypairPage', ['EucaConsoleUtils'])
+    .controller('KeypairPageCtrl', function ($scope, eucaUnescapeJson) {
         $scope.keypairName = '';
         $scope.keypairMaterial = '';
         $scope.isNotValid = true;
         $scope.routeID = '';
-        $scope.initController = function (routeID) {
-            $scope.routeID = routeID;
+        $scope.initController = function (optionsJson) {
+            var options = JSON.parse(eucaUnescapeJson(optionsJson));
+            $scope.routeID = options['route_id'];
             $scope.setWatch();
             $scope.setFocus();
         };
         $scope.checkRequiredInput = function () {
-            if( $scope.keypairName === '' || $scope.keypairName === undefined ){
-                $scope.isNotValid = true;
-            }else{
-                $scope.isNotValid = false;
-            }
+            $scope.isNotValid = $scope.keypairName === '' || $scope.keypairName === undefined;
             // Extra check for Import Keypair case
-            if( $scope.routeID === 'new2' ){
-                if( $scope.keypairMaterial === '' || $scope.keypairMaterial === undefined ){
-                    $scope.isNotValid = true;
-                }else{
-                    $scope.isNotValid = false;
-                }
+            if ($scope.routeID === 'new2') {
+                $scope.isNotValid = $scope.keypairMaterial === '' || $scope.keypairMaterial === undefined;
             }
         };
         $scope.setWatch = function () {

@@ -140,6 +140,11 @@ class BaseView(object):
 
         return conn
 
+    def get_account_display_name(self):
+        if self.cloud_type == 'euca':
+            return self.request.session.get('account')
+        return self.request.session.get('access_id')  # AWS
+
     def is_csrf_valid(self):
         return self.request.session.get_csrf_token() == self.request.params.get('csrf_token')
 

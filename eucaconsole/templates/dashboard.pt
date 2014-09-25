@@ -6,10 +6,7 @@
 
 <div metal:fill-slot="main_content">
     <div class="row" id="dashboard" ng-app="Dashboard" ng-controller="DashboardCtrl"
-        tal:define="username layout.account if layout.cloud_type == 'euca' else layout.access_id;"
-        ng-init="initController('${request.route_path('dashboard_json')}',
-                                '${request.route_path('service_status_json')}',
-                                '${layout.cloud_type}', '${username}')">
+        ng-init="initController('${controller_options_json}')">
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
         <div id="pagetitle">
             <h3 i18n:translate="">Dashboard</h3>
@@ -259,6 +256,7 @@
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/jquery-1.11.0-ui.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/jquery.cookie.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/eucaconsole_utils.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/dashboard.js')}"></script>
 </div>
 

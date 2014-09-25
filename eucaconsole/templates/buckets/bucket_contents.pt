@@ -5,7 +5,7 @@
 </head>
 
 <div metal:fill-slot="main_content" ng-app="BucketContentsPage" ng-controller="BucketContentsCtrl"
-        ng-init="initController('${request.route_path('bucket_delete_keys', name=bucket_name)}', '${request.route_path('bucket_keys', subpath=request.subpath)}', '${key_prefix}', '${request.route_path('bucket_put_item', name='_name_', subpath='_subpath_')}')">
+        ng-init="initController('${controller_options_json}')">
     <div class="row" id="contentwrap" ng-app="LandingPage" ng-controller="ItemsCtrl"
          ng-init="initController('bucketcontents', '${initial_sort_key}', '${json_items_endpoint}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
@@ -40,7 +40,7 @@
                 </a>
                 &nbsp;&nbsp;
                 <a class="button secondary ng-binding" id="paste-btn" i18n:translate=""
-                    ng-show="hasCopyItem()" ng-click="doPaste('${bucket_name}', nil, '${key_prefix}')">
+                    ng-show="hasCopyItem()" ng-click="doPaste('${bucket_name}', null, '${key_prefix}')">
                     Paste Object
                 </a>
             </div>
@@ -214,6 +214,7 @@
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/pages/custom_filters.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/landingpage.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/eucaconsole_utils.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/bucket_contents.js')}"></script>
 </div>
 
