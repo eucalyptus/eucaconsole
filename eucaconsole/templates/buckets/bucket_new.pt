@@ -66,14 +66,12 @@
         </div>
         <!--! Modal to warn of conflicting bucket name -->
         <div id="conflict-warn-modal" class="reveal-modal small" data-reveal="">
-            <h3 i18n:translate="">Warning: Bucket name conflict</h3>
+            <h3 i18n:translate="">Bucket already exists</h3>
             <p i18n:translate="">
-                The requested bucket name is not available.
-                The bucket namespace is shared by all users of the system.
-                Please select a different name and try again.
+                The bucket name you specified already exists, and is owned by you.
             </p>
             <a id="name-conflict-warning-button" class="button expand" ng-click="confirmWarning()" i18n:translate="">
-                Understood, let me try again
+                OK
             </a>
             <a class="close-reveal-modal">&#215;</a>
         </div>
