@@ -181,7 +181,8 @@ class LaunchConfigsJsonView(LandingPageView):
         if groupids:
             for id in groupids:
                 security_group = ''
-                # Due to the issue that AWS-Classic and AWS-VPC different values, name and id, for .securitygroup for launch config object
+                # Due to the issue that AWS-Classic and AWS-VPC different values,
+                # name and id, for .securitygroup for launch config object
                 if id.startswith('sg-'):
                     security_group = self.get_security_group_by_id(id)
                 else:
@@ -218,6 +219,7 @@ class LaunchConfigView(BaseView):
             self.launch_config = self.get_launch_config()
             self.image = self.get_image()
             self.security_groups = self.get_security_groups()
+            self.in_use = self.is_in_use()
         self.delete_form = LaunchConfigDeleteForm(self.request, formdata=self.request.params or None)
         self.role = None
         if self.launch_config and self.launch_config.instance_profile_name:
@@ -243,15 +245,16 @@ class LaunchConfigView(BaseView):
             launch_config=self.launch_config,
             launch_config_name=self.escape_braces(self.launch_config.name) if self.launch_config else '',
             launch_config_key_name=self.escape_braces(self.launch_config.key_name) if self.launch_config else '',
-            launch_config_vpc_ip_assignment=self.get_vpc_ip_assignment_display(self.launch_config.associate_public_ip_address) \
-                if self.launch_config else '',
+            launch_config_vpc_ip_assignment=self.get_vpc_ip_assignment_display(
+                self.launch_config.associate_public_ip_address) if self.launch_config else '',
             lc_created_time=self.dt_isoformat(self.launch_config.created_time),
             escaped_launch_config_name=quote(self.launch_config.name),
-            in_use=self.is_in_use(),
+            in_use=self.in_use,
             image=self.image,
             security_groups=self.security_groups,
             delete_form=self.delete_form,
-            role = self.role,
+            role=self.role,
+            controller_options_json=self.get_controller_options_json(),
         )
 
     @view_config(route_name='launchconfig_view', renderer=TEMPLATE)
@@ -269,7 +272,7 @@ class LaunchConfigView(BaseView):
                 self.log_request(_(u"Deleting launch configuration {0}").format(name))
                 self.autoscale_conn.delete_launch_configuration(name)
                 arn = self.launch_config.instance_profile_name
-                if arn != None:
+                if arn is not None:
                     profile_name = arn[(arn.index('/')+1):]
                     self.iam_conn.delete_instance_profile(profile_name)
                 prefix = _(u'Successfully deleted launch configuration.')
@@ -318,7 +321,8 @@ class LaunchConfigView(BaseView):
             launch_configs = [group.launch_config_name for group in self.autoscale_conn.get_all_groups()]
         return self.launch_config.name in launch_configs
 
-    def get_vpc_ip_assignment_display(self, value):
+    @staticmethod
+    def get_vpc_ip_assignment_display(value):
         choices = [
             ('None', _(u'Only for instances in default VPC & subnet')), 
             ('True', _(u'For all instances')), 
@@ -327,7 +331,14 @@ class LaunchConfigView(BaseView):
         for choice in choices:
             if choice[0] == str(value):
                 return choice[1]
-        return  ''
+        return ''
+
+    def get_controller_options_json(self):
+        return BaseView.escape_json(json.dumps({
+            'in_use': self.in_use,
+            'has_image': True if self.image else False,
+        }))
+
 
 class CreateLaunchConfigView(BlockDeviceMappingItemView):
     """Create Launch Configuration wizard"""
