@@ -45,6 +45,7 @@ from boto.exception import BotoServerError
 from pyramid.httpexceptions import HTTPFound, HTTPException, HTTPUnprocessableEntity
 from pyramid.response import Response
 from pyramid.security import NO_PERMISSION_REQUIRED
+from pyramid.settings import asbool
 from pyramid.view import notfound_view_config, view_config
 
 from ..constants.images import AWS_IMAGE_OWNER_ALIAS_CHOICES, EUCA_IMAGE_OWNER_ALIAS_CHOICES
@@ -92,9 +93,10 @@ class BaseView(object):
         if cloud_type is None:
             cloud_type = self.cloud_type
 
+        validate_certs = asbool(self.request.registry.settings.get('connection.ssl.validation', False))
         if cloud_type == 'aws':
             conn = ConnectionManager.aws_connection(
-                self.region, self.access_key, self.secret_key, self.security_token, conn_type)
+                self.region, self.access_key, self.secret_key, self.security_token, conn_type, validate_certs)
         elif cloud_type == 'euca':
             host = self.request.registry.settings.get('clchost', 'localhost')
             port = int(self.request.registry.settings.get('clcport', 8773))
@@ -115,7 +117,7 @@ class BaseView(object):
                 port = int(self.request.registry.settings.get('iam.port', port))
 
             conn = ConnectionManager.euca_connection(
-                host, port, self.access_key, self.secret_key, self.security_token, conn_type)
+                host, port, self.access_key, self.secret_key, self.security_token, conn_type, validate_certs)
 
         return conn
 
