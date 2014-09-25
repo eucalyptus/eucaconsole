@@ -99,7 +99,7 @@
 ----------------------------------------- */
 @media screen and (max-width: 1024px) { #filters { margin-top: 1rem; } }
 /* Small screen */
-@media screen and (max-width: 920px) { .columns.datagrid { padding-left: 1rem; } }
+@media screen and (max-width: 1020px) { .columns.datagrid { padding-left: 1rem; } }
 .table th, .table td { padding: 4px 7px; }
 .table .label { margin: 0 0 0 0; }
 .table #div-column-name { width: 9rem; }

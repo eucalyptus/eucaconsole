@@ -32,6 +32,9 @@ angular.module('UploadFilePage', ['S3SharingPanel', 'S3MetadataEditor'])
             $scope.handleUnsavedChanges();
             $scope.handleUnsavedSharingEntry($scope.createBucketForm);
         };
+        $scope.toggleAdvContent = function () {
+            $scope.adv_expanded = !$scope.adv_expanded;
+        };
         $scope.handleUnsavedChanges = function () {
             // Listen for sharing panel update
             $scope.$on('s3:sharingPanelAclUpdated', function () {
@@ -101,11 +104,15 @@ angular.module('UploadFilePage', ['S3SharingPanel', 'S3MetadataEditor'])
                     }
                 }).
                 error(function(oData, status) {
+                    $('#upload-files-modal').foundation('reveal', 'close');
+                    $scope.uploading = false;
+                    $scope.progress = 0;
                     Notify.failure(oData.message);
                 });
         };
         $scope.cancelUpload = function () {
             $scope.uploading = false;
+            $scope.progress = 0;
             $('#upload-files-modal').foundation('reveal', 'close');
             $scope.hasChangesToBeSaved = false;
             window.history.back()

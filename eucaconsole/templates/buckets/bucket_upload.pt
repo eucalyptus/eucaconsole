@@ -11,8 +11,8 @@
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="UploadFilePage" ng-controller="UploadFilePageCtrl"
          ng-init="initController(
-         '${request.route_path('bucket_upload', name=bucket_name, subpath=request.subpath)}',
-         '${request.route_path('bucket_sign_req', name=bucket_name, subpath=request.subpath)}'
+         '${request.route_path('bucket_upload', name=bucket.name, subpath=request.subpath)}',
+         '${request.route_path('bucket_sign_req', name=bucket.name, subpath=request.subpath)}'
          )">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
@@ -36,16 +36,26 @@
             <div class="panel">
                 <form id="upload-file-form" data-abide="abide" ng-cloak="" action="${request.route_path('bucket_upload', name=bucket_name, subpath=request.subpath)}" method="POST" accept-charset="utf-8" enctype="multipart/form-data">
                     ${structure:upload_form['csrf_token']}
-                    <p>
-                        <label class='subheading-label' for="upload-file" i18n:translate=''>Select file(s)</label>
-                        <input type="file" id="files" data-file="files" multiple="" name='files'>
-                        <div ng-show="files.length > 1">
-                            <span ng-repeat="files">{{ file.name }}</span>
-                        </div>
+                    <h6 class='subheading-label' i18n:translate=''>Select file(s)</h6>
+                    <input type="file" id="files" data-file="files" multiple="" name='files'>
+                    <p class="file-list" ng-show="files.length > 1">
+                        <span ng-repeat="file in files">{{ file.name }}<br/></span>
                     </p>
-                    ${panel('s3_sharing_panel', bucket_object=bucket, sharing_form=sharing_form, show_caution=True)}
-                    ${panel('s3_metadata_editor', bucket_object=bucket, metadata_form=metadata_form)}
-                    <hr />
+                    <hr/>
+                    <div class="expando" id="advance-section">
+                        <h6 class="title" >
+                            <a ng-click="toggleAdvContent()">
+                                <i class="fi-plus" ng-show="!adv_expanded"></i>
+                                <i class="fi-minus" ng-show="adv_expanded"></i>
+                                &nbsp;<span i18n:translate="">Advanced</span>
+                            </a>
+                        </h6>
+                        <div class="advance-content" ng-show="adv_expanded">
+                            ${panel('s3_sharing_panel', bucket_object=bucket, sharing_form=sharing_form, show_caution=True)}
+                            ${panel('s3_metadata_editor', bucket_object=bucket, metadata_form=metadata_form)}
+                        </div>
+                    </div>
+                    <hr/>
                     <div class="row">
                         <div class="small-7 columns">
                             <button type="submit" class="button" id="create-bucket-submit-button" ng-disabled="!hasChangesToBeSaved" ng-click="showConfirm($event)">
