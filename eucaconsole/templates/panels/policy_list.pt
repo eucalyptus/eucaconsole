@@ -50,12 +50,7 @@
             </p>
             
             <form ng-submit="doDelete($event)" id="delete-policy-form">
-                <div class="row">
-                    <div class="small-4 columns">&nbsp;</div>
-                    <div class="small-8 columns field inline">
-                        <input type="submit" class="button" value="Yes, Delete" i18n:attributes="value" />
-                    </div>
-                </div>
+                <input type="submit" class="button expand" value="Yes, Delete" i18n:attributes="value" />
             </form>
             
             <a class="close-reveal-modal">&#215;</a>
