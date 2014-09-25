@@ -25,6 +25,7 @@
 
 
 import inspect
+import pylibmc
 from hashlib import sha1
 from dogpile.cache import make_region
 
@@ -50,7 +51,10 @@ def euca_key_generator(namespace, fn):
 
 def invalidate_cache(cache, namespace, *arg):
     key = euca_key_generator(namespace, None)(*arg)
-    cache.delete(key)
+    try:
+        cache.delete(key)
+    except pylibmc.Error as err:
+        pass  # ignore memcached communication error... we tried
 
 # caches available within the app
 short_term = make_region(function_key_generator=euca_key_generator)
