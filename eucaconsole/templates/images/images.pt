@@ -71,7 +71,10 @@
                 <div>
                     <span class="label" title="EMI Name" i18n:attributes="title" data-tooltip="" tal:condition="layout.cloud_type == 'euca'">EM</span>
                     <span class="label" title="AMI Name" i18n:attributes="title" data-tooltip="" tal:condition="layout.cloud_type == 'aws'">AM</span>
-                    {{ item.name }}
+                    {{ item.name | limitTo: 64 }}
+                    <span ng-show="item.name.length &gt; 64"
+                          data-tooltip="tooltip" class="label round has-tip ellipsis"
+                          title="{{ sanitizeContent(item.name) }}">...</span>
                 </div>
                 <div ng-show="item.platform_name">
                     <span class="label" title="Platform" i18n:attributes="title" data-tooltip="">PL</span>

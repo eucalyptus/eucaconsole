@@ -91,7 +91,12 @@
                 </div>
                 <div>
                     <span class="label" title="Root device" i18n:attributes="title" data-tooltip="">IM</span>
-                    <a ng-href="/images/{{ item.image_id }}">{{ item.image_name || item.image_id }}</a>
+                    <a ng-href="/images/{{ item.image_id }}">
+                        {{ item.image_name | limitTo: 64 || item.image_id }}
+                        <span ng-show="item.image_name &amp;&amp; item.image_name.length &gt; 64"
+                              data-tooltip="tooltip" class="label round has-tip ellipsis"
+                              title="{{ sanitizeContent(item.image_name) }}">...</span>
+                    </a>
                 </div>
                 <div>
                     <span class="label" title="IP address" i18n:attributes="title" data-tooltip="">IP</span>
