@@ -19,6 +19,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.instanceNumber = 1;
         $scope.instanceNames = [];
         $scope.instanceVPC = '';
+        $scope.instanceVPCName = '';
         $scope.subnetVPC = 'None';
         $scope.vpcSubnetList = {};
         $scope.vpcSubnetChoices = {};
@@ -215,6 +216,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 $scope.updateSecurityGroupChoices();
             });
             $scope.$watch('instanceVPC', function () {
+                $scope.getInstanceVPCName($scope.instanceVPC);
                 $scope.getAllSecurityGroups($scope.instanceVPC);
                 $scope.updateVPCSubnetChoices();
             });
@@ -519,7 +521,6 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.updateVPCSubnetChoices = function () {
             $scope.vpcSubnetChoices = {};
             $scope.subnetVPC = '';
-            //for( var i=0; i < $scope.vpcSubnetList.length; i++){
             angular.forEach($scope.vpcSubnetList, function(vpcSubnet){
                 if (vpcSubnet['vpc_id'] === $scope.instanceVPC) {
                     if ($scope.instanceZone == '') {
@@ -545,6 +546,18 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 $scope.subnetVPC = 'None';
             }
         };
+        $scope.getInstanceVPCName = function (vpcID) {
+            if (vpcID == '') {
+                $scope.instanceVPCName = '';
+                return;
+            }
+            var vpcOptions = $('#vpc_network').find('option'); 
+            vpcOptions.each(function() {
+                if (this.value == vpcID) {
+                    $scope.instanceVPCName = this.text;
+                } 
+            });
+        }
     })
 ;
 

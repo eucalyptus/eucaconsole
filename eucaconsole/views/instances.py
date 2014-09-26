@@ -113,6 +113,14 @@ class BaseInstanceView(BaseView):
                 pass
         return None
 
+    def get_vpc_subnet_display(self, subnet_id):
+        if self.vpc_conn and subnet_id:
+            with boto_error_handler(self.request):
+                vpc_subnet = self.vpc_conn.get_all_subnets(subnet_ids=[subnet_id])
+                if vpc_subnet:
+                    return "{0} ({1})".format(vpc_subnet[0].cidr_block, subnet_id) 
+        return ''
+
 
 class InstancesView(LandingPageView, BaseInstanceView):
     def __init__(self, request):
@@ -507,6 +515,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
             associate_ip_form=self.associate_ip_form,
             disassociate_ip_form=self.disassociate_ip_form,
             has_elastic_ip=self.has_elastic_ip,
+            vpc_subnet_display=self.get_vpc_subnet_display(self.instance.subnet_id),
             role=self.role,
             running_create=self.running_create,
             controller_options_json=self.get_controller_options_json(),
@@ -1088,6 +1097,7 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
             associate_public_ip_address=self.associate_public_ip_address,
             launch_more_form=self.launch_more_form,
             snapshot_choices=self.get_snapshot_choices(),
+            vpc_subnet_display=self.get_vpc_subnet_display(self.instance.subnet_id),
             role=self.role,
         )
 
