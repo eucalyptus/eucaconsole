@@ -26,9 +26,8 @@ angular.module('UploadFilePage', ['S3SharingPanel', 'S3MetadataEditor'])
         $scope.uploading = false;
         $scope.progress = 0;
         $scope.total = 0;
-        $scope.initController = function (uploadUrl, signUrl) {
+        $scope.initController = function (uploadUrl) {
             $scope.uploadUrl = uploadUrl;
-            $scope.signUrl = signUrl;
             $scope.handleUnsavedChanges();
             $scope.handleUnsavedSharingEntry($scope.createBucketForm);
         };

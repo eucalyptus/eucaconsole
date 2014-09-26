@@ -11,9 +11,7 @@
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="UploadFilePage" ng-controller="UploadFilePageCtrl"
          ng-init="initController(
-         '${request.route_path('bucket_upload', name=bucket.name, subpath=request.subpath)}',
-         '${request.route_path('bucket_sign_req', name=bucket.name, subpath=request.subpath)}'
-         )">
+         '${request.route_path('bucket_upload', name=bucket_name, subpath=request.subpath)}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('buckets')}" i18n:translate="">Buckets</a></li>
@@ -21,9 +19,9 @@
                     <a href="${request.route_path('bucket_contents', subpath=bucket_name)}"
                        i18n:translate="">${bucket_name}</a>
                 </li>
-                <li tal:repeat="folder request.subpath[1:]" class="${'current' if repeat.folder.end else ''}">
+                <li tal:repeat="folder request.subpath" class="${'current' if repeat.folder.end else ''}">
                     <a tal:condition="repeat.folder.end" ng-non-bindable="">${folder}</a>
-                    <a href="${request.route_path('bucket_contents', subpath='/'.join(request.subpath[:repeat.folder.index+2]))}"
+                    <a href="${request.route_path('bucket_contents', subpath=bucket_name+'/'+'/'.join(request.subpath[:repeat.folder.index+1]))}"
                        ng-non-bindable="" tal:condition="not repeat.folder.end">${folder}</a>
                 </li>
                 <li class="current"><a href="#" i18n:translate="">Upload file</a></li>
@@ -51,7 +49,7 @@
                             </a>
                         </h6>
                         <div class="advance-content" ng-show="adv_expanded">
-                            ${panel('s3_sharing_panel', bucket_object=bucket, sharing_form=sharing_form, show_caution=True)}
+                            ${panel('s3_sharing_panel', bucket_object=acl_obj, sharing_form=sharing_form, show_caution=True)}
                             ${panel('s3_metadata_editor', bucket_object=bucket, metadata_form=metadata_form)}
                         </div>
                     </div>

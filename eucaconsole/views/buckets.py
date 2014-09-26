@@ -36,6 +36,7 @@ import urllib
 from boto.exception import StorageCreateError
 from boto.s3.acl import ACL, Grant, Policy
 from boto.s3.bucket import Bucket
+from boto.s3.key import Key
 from boto.s3.prefix import Prefix
 from boto.exception import BotoServerError
 
@@ -249,8 +250,12 @@ class BucketContentsView(LandingPageView):
             sharing_form = SharingPanelForm(
                 self.request, bucket_object=bucket, sharing_acl=bucket_acl, formdata=self.request.params or None)
             metadata_form = MetadataForm(self.request, formdata=self.request.params or None)
+            acl_obj = Key(bucket, '')
+            acl_obj.set_acl(bucket.get_acl())
             self.render_dict.update(
                 bucket=bucket,
+                bucket_name=bucket.name,
+                acl_obj=acl_obj,
                 upload_form=BucketUploadForm(self.request),
                 sharing_form=sharing_form,
                 metadata_form=metadata_form,
