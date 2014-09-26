@@ -32,6 +32,7 @@ import base64
 import httplib
 import logging
 from ssl import SSLError
+import socket
 import urllib2
 import xml
 
@@ -88,7 +89,7 @@ class User(object):
 class ConnectionManager(object):
     """Returns connection objects, pulling from Beaker cache when available"""
     @staticmethod
-    def aws_connection(region, access_key, secret_key, token, conn_type):
+    def aws_connection(region, access_key, secret_key, token, conn_type, validate_certs=False):
         """Return AWS EC2 connection object
         Pulls from Beaker cache on subsequent calls to avoid connection overhead
 
@@ -103,6 +104,9 @@ class ConnectionManager(object):
 
         :type conn_type: string
         :param conn_type: Connection type ('ec2', 'autoscale', 'cloudwatch', 'elb', or 's3')
+
+        :type validate_certs: bool
+        :param validate_certs: indicates to check the ssl cert the server provides
 
         """
         cache_key = 'aws_connection_cache_{conn_type}_{region}'.format(conn_type=conn_type, region=region)
@@ -127,6 +131,7 @@ class ConnectionManager(object):
             if conn_type == 'vpc':
                 conn = vpc.connect_to_region(
                     _region, aws_access_key_id=_access_key, aws_secret_access_key=_secret_key, security_token=_token)
+            conn.https_validate_certificates = validate_certs
             return conn
 
         return _aws_connection(region, access_key, secret_key, token, conn_type)
@@ -150,6 +155,9 @@ class ConnectionManager(object):
 
         :type conn_type: string
         :param conn_type: Connection type ('ec2', 'autoscale', 'cloudwatch', 'elb', 'iam', 'sts', or 's3')
+
+        :type validate_certs: bool
+        :param validate_certs: indicates to check the ssl cert the server provides
 
         """
         cache_key = 'euca_connection_cache_{conn_type}_{clchost}_{port}'.format(
@@ -281,6 +289,8 @@ class EucaAuthenticator(object):
                 raise urllib2.URLError(err.message)
             else:
                 raise urllib2.URLError(err[1])
+        except socket.error as err:
+            raise urllib2.URLError(err.message)
 
 
 class AWSAuthenticator(object):
@@ -328,4 +338,6 @@ class AWSAuthenticator(object):
                 raise urllib2.URLError(err.message)
             else:
                 raise urllib2.URLError(err[1])
+        except socket.error as err:
+            raise urllib2.URLError(err.message)
 

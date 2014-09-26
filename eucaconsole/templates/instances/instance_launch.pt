@@ -253,6 +253,14 @@
                     </div>
                 </div>
                 <div class="section step3 hide">
+                    <div class="row" ng-show="instanceVPC != ''">
+                        <label i18n:translate="">Network:</label>
+                        <div class="columns value">{{ instanceVPCName }}</div>
+                    </div>
+                    <div class="row" ng-show="instanceVPC != ''">
+                        <label i18n:translate="">Subnet:</label>
+                        <div class="columns value">{{ vpcSubnetChoices[subnetVPC] }}</div>
+                    </div>
                     <div class="row">
                         <label i18n:translate="">Key:</label>
                         <div class="columns value">{{ keyPair }}</div>

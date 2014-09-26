@@ -1535,6 +1535,7 @@ form .error .chosen-container .chosen-single { border-color: darkred; background
 .row.controls-wrapper .field textarea { margin-top: 0.3rem; }
 .row.controls-wrapper.readonly { margin-top: 0; margin-bottom: 0; }
 .row.controls-wrapper.readonly label { padding-top: 0; position: relative; right: -12px; }
+.row.controls-wrapper.readonly .value { padding-bottom: 6px; }
 .row.controls-wrapper.inline { margin-bottom: 4px; }
 .row.controls-wrapper.inline label { right: -6px; }
 

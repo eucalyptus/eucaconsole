@@ -8,7 +8,7 @@
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="IAMPolicyWizard" ng-controller="IAMPolicyWizardCtrl"
-         ng-init="initController(${controller_options}, '${request.route_path('iam_policy_create')}')"
+         ng-init="initController('${controller_options_json}')"
          tal:define="type request.params.get('type', '');">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
@@ -142,7 +142,8 @@
                         </span>
                     </div>
                     <div>
-                        <button type="submit" class="button" id="create-iam-policy-btn" i18n:translate="">
+                        <button type="submit" class="button" id="create-iam-policy-btn" i18n:translate=""
+                                ng-disabled="isCreating">
                             Create Policy
                         </button>
                         <a class="cancel-link" id="return-link" href="${cancel_link_url}">Cancel</a>
@@ -186,6 +187,7 @@
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/javascript.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/active-line.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/jquery.datetimepicker.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/eucaconsole_utils.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/iam_policy_wizard.js')}"></script>
 </div>
 
