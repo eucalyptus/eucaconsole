@@ -247,11 +247,11 @@ class BucketContentsView(LandingPageView):
             if not hasattr(bucket, 'metadata'):
                 bucket.metadata = {}
             bucket_acl = bucket.get_acl() if bucket else None
-            sharing_form = SharingPanelForm(
-                self.request, bucket_object=bucket, sharing_acl=bucket_acl, formdata=self.request.params or None)
-            metadata_form = MetadataForm(self.request, formdata=self.request.params or None)
             acl_obj = Key(bucket, '')
-            acl_obj.set_acl(bucket.get_acl())
+            acl_obj.set_acl(bucket_acl)
+            sharing_form = SharingPanelForm(
+                self.request, bucket_object=acl_obj, sharing_acl=bucket_acl, formdata=self.request.params or None)
+            metadata_form = MetadataForm(self.request, formdata=self.request.params or None)
             self.render_dict.update(
                 bucket=bucket,
                 bucket_name=bucket.name,
