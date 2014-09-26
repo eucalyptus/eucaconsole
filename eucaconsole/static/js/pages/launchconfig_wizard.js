@@ -207,7 +207,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             $scope.$watch('securityGroups', function(){
                 $scope.updateSecurityGroup();
                 $scope.checkRequiredInput();
-            });
+            }, true);
             $scope.$watch('securityGroupVPC', function () {
                 $scope.$broadcast('updateVPC', $scope.securityGroupVPC);
             });

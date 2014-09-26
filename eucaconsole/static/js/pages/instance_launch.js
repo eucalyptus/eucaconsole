@@ -208,7 +208,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             $scope.$watch('securityGroups', function () { 
                 $scope.updateSelectedSecurityGroupRules();
                 $scope.checkRequiredInput();
-            });
+            }, true);
             $scope.$watch('securityGroupVPC', function () {
                 $scope.$broadcast('updateVPC', $scope.securityGroupVPC);
             });
