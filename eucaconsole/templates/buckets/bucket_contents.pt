@@ -39,7 +39,7 @@
                     Delete All Objects/Folders
                 </a>
                 &nbsp;&nbsp;
-                <a class="button secondary ng-binding" id="paste-btn" i18n:translate=""
+                <a class="button secondary ng-binding" id="paste-btn" i18n:translate="" ng-cloak=""
                     ng-show="hasCopyItem()" ng-click="doPaste('${bucket_name}', null, '${key_prefix}')">
                     Paste Object
                 </a>

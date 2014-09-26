@@ -272,12 +272,11 @@ class BucketContentsView(LandingPageView):
         files = self.request.POST.getall('files')
         with boto_error_handler(self.request):
             bucket = self.s3_conn.get_bucket(bucket_name)
-            for file in files:
+            for upload_file in files:
                 bucket_item = bucket.new_key("/".join(subpath))
-                bucket_item.set_metadata('Content-Type', file.type)
-                headers = {'Content-Type': file.type, 'x-amz-acl': 'public-read'}
-                bucket_item.set_contents_from_file(fp=file.file, headers=headers, replace=True)
-                share_type = self.request.params.get('share_type')
+                bucket_item.set_metadata('Content-Type', upload_file.type)
+                headers = {'Content-Type': upload_file.type, 'x-amz-acl': 'public-read'}
+                bucket_item.set_contents_from_file(fp=upload_file.file, headers=headers, replace=True)
                 BucketDetailsView.update_acl(self.request, bucket_object=bucket_item)
                 metadata_param = self.request.params.get('metadata') or '{}'
                 metadata = json.loads(metadata_param)
@@ -290,7 +289,7 @@ class BucketContentsView(LandingPageView):
                         else:
                             bucket_item.set_metadata(key, val)
                     # The only way to update the metadata appears to be to copy the object
-                    copied_item = bucket_item.copy(
+                    bucket_item.copy(
                         bucket_name, bucket_item.name, metadata=bucket_item.metadata, preserve_acl=True)
                         
             return dict(results=True)
@@ -306,9 +305,9 @@ class BucketContentsView(LandingPageView):
         policy_signature = BaseView.gen_policy_signature(policy, secret)
 
         url = "http://{host}:{port}/{path}/{bucket_name}".format(
-                  host=self.s3_conn.host, port=str(self.s3_conn.port),
-                  path=self.s3_conn.path, bucket_name=self.bucket_name
-              )
+            host=self.s3_conn.host, port=str(self.s3_conn.port),
+            path=self.s3_conn.path, bucket_name=self.bucket_name
+        )
         url = url.replace('///', '/')
         fields = {
             'key': self.subpath,
