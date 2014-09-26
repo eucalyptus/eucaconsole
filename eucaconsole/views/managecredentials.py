@@ -120,6 +120,8 @@ class ManageCredentialsView(BaseView):
                     session['session_token'] = creds.session_token
                     session['access_id'] = creds.access_key
                     session['secret_key'] = creds.secret_key
+                    session['account'] = account
+                    session['username'] = username
                     session['region'] = 'euca'
                     session['username_label'] = user_account
                     headers = remember(self.request, user_account)
