@@ -103,7 +103,7 @@ class ConnectionManager(object):
         :type conn_type: string
         :param conn_type: Connection type ('ec2', 'autoscale', 'cloudwatch', or 'elb')
 
-        :type validate_certs: string
+        :type validate_certs: bool
         :param validate_certs: indicates to check the ssl cert the server provides
 
         """
@@ -147,9 +147,9 @@ class ConnectionManager(object):
         :param secret_key: Eucalyptus secret key
 
         :type conn_type: string
-        :param conn_type: Connection type ('ec2', 'autoscale', 'cloudwatch', or 'elb')
+        :param conn_type: Connection type ('ec2', 'autoscale', 'cloudwatch', or 'elb', 'iam')
 
-        :type validate_certs: string
+        :type validate_certs: bool
         :param validate_certs: indicates to check the ssl cert the server provides
 
         """
