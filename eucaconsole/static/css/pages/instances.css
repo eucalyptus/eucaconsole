@@ -115,6 +115,8 @@
 .table th, .table td { padding: 4px 7px; }
 .table .label { margin: 0 0 0 0; }
 
+.tile { height: 244px; max-height: 244px; }
+
 #terminate-instances-btn { margin-left: 1rem; border: none; }
 
 .connect-center { text-align: center; }
