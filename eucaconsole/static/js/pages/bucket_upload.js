@@ -109,10 +109,10 @@ angular.module('UploadFilePage', ['S3SharingPanel', 'S3MetadataEditor'])
                     Notify.failure(oData.message);
                 });
         };
-        $scope.cancelUpload = function () {
+        $scope.cancelUploading = function () {
+            $('#upload-files-modal').foundation('reveal', 'close');
             $scope.uploading = false;
             $scope.progress = 0;
-            $('#upload-files-modal').foundation('reveal', 'close');
             $scope.hasChangesToBeSaved = false;
             window.history.back()
         };
