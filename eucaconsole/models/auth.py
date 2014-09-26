@@ -87,7 +87,7 @@ class User(object):
 class ConnectionManager(object):
     """Returns connection objects, pulling from Beaker cache when available"""
     @staticmethod
-    def aws_connection(region, access_key, secret_key, token, conn_type):
+    def aws_connection(region, access_key, secret_key, token, conn_type, validate_certs=False):
         """Return AWS EC2 connection object
         Pulls from Beaker cache on subsequent calls to avoid connection overhead
 
@@ -102,6 +102,9 @@ class ConnectionManager(object):
 
         :type conn_type: string
         :param conn_type: Connection type ('ec2', 'autoscale', 'cloudwatch', or 'elb')
+
+        :type validate_certs: bool
+        :param validate_certs: indicates to check the ssl cert the server provides
 
         """
         cache_key = 'aws_connection_cache_{conn_type}_{region}'.format(conn_type=conn_type, region=region)
@@ -121,6 +124,7 @@ class ConnectionManager(object):
             if conn_type == 'elb':
                 conn = ec2.elb.connect_to_region(
                     _region, aws_access_key_id=_access_key, aws_secret_access_key=_secret_key, security_token=_token)
+            conn.https_validate_certificates = validate_certs
             return conn
 
         return _aws_connection(region, access_key, secret_key, token, conn_type)
@@ -143,7 +147,10 @@ class ConnectionManager(object):
         :param secret_key: Eucalyptus secret key
 
         :type conn_type: string
-        :param conn_type: Connection type ('ec2', 'autoscale', 'cloudwatch', or 'elb')
+        :param conn_type: Connection type ('ec2', 'autoscale', 'cloudwatch', or 'elb', 'iam')
+
+        :type validate_certs: bool
+        :param validate_certs: indicates to check the ssl cert the server provides
 
         """
         cache_key = 'euca_connection_cache_{conn_type}_{clchost}_{port}'.format(
