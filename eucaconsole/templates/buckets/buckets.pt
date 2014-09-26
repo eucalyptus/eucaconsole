@@ -61,7 +61,8 @@
                         <a i18n:translate="" ng-href="{{ item.details_url }}">View details</a>
                     </li>
                     <li ng-show="!versioningStatusLoading[item.bucket_name]">
-                        <a ng-click="revealModal('update-versioning', item)" class="update-versioning-action">
+                        <a ng-click="revealVersioningModal(bucketVersioningAction[item.bucket_name], item)"
+                           class="update-versioning-action">
                             <span i18n:translate="" ng-show="bucketVersioningAction[item.bucket_name] == 'enable'">
                                 Enable versioning
                             </span>
@@ -113,7 +114,8 @@
                                 <a i18n:translate="" ng-href="{{ item.details_url }}">View details</a>
                             </li>
                             <li ng-show="!versioningStatusLoading[item.bucket_name]">
-                                <a ng-click="revealModal('update-versioning', item)" class="update-versioning-action">
+                                <a ng-click="revealVersioningModal(bucketVersioningAction[item.bucket_name], item)"
+                                   class="update-versioning-action">
                                     <span i18n:translate="" ng-show="bucketVersioningAction[item.bucket_name] == 'enable'">
                                         Enable versioning
                                     </span>
