@@ -515,7 +515,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
             associate_ip_form=self.associate_ip_form,
             disassociate_ip_form=self.disassociate_ip_form,
             has_elastic_ip=self.has_elastic_ip,
-            vpc_subnet_display=self.get_vpc_subnet_display(self.instance.subnet_id),
+            vpc_subnet_display=self.get_vpc_subnet_display(self.instance.subnet_id) if self.instance else None,
             role=self.role,
             running_create=self.running_create,
             controller_options_json=self.get_controller_options_json(),
@@ -1097,7 +1097,7 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
             associate_public_ip_address=self.associate_public_ip_address,
             launch_more_form=self.launch_more_form,
             snapshot_choices=self.get_snapshot_choices(),
-            vpc_subnet_display=self.get_vpc_subnet_display(self.instance.subnet_id),
+            vpc_subnet_display=self.get_vpc_subnet_display(self.instance.subnet_id) if self.instance else None,
             role=self.role,
         )
 
