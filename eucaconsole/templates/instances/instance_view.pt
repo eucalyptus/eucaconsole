@@ -249,7 +249,7 @@
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Image name</label></div>
-                        <div tal:condition="image" class="small-8 columns value">${image.name}</div>
+                        <div tal:condition="image" class="small-8 columns value breakword">${image.name}</div>
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Image manifest</label></div>
