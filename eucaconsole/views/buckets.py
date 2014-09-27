@@ -36,6 +36,7 @@ import urllib
 from boto.exception import StorageCreateError
 from boto.s3.acl import ACL, Grant, Policy
 from boto.s3.bucket import Bucket
+from boto.s3.key import Key
 from boto.s3.prefix import Prefix
 from boto.exception import BotoServerError
 
@@ -44,7 +45,7 @@ from pyramid.view import view_config
 
 from ..forms.buckets import (
     BucketDetailsForm, BucketItemDetailsForm, SharingPanelForm, BucketUpdateVersioningForm,
-    MetadataForm, CreateBucketForm, CreateFolderForm, BucketDeleteForm
+    MetadataForm, CreateBucketForm, CreateFolderForm, BucketDeleteForm, BucketUploadForm
 )
 from ..i18n import _
 from ..models import Notification
@@ -238,6 +239,86 @@ class BucketContentsView(LandingPageView):
             controller_options_json=self.get_controller_options_json(),
         )
         return self.render_dict
+
+    @view_config(route_name='bucket_upload', renderer='../templates/buckets/bucket_upload.pt', request_method='GET')
+    def bucket_upload(self):
+        with boto_error_handler(self.request):
+            bucket = BucketContentsView.get_bucket(self.request, self.s3_conn)
+            if not hasattr(bucket, 'metadata'):
+                bucket.metadata = {}
+            bucket_acl = bucket.get_acl() if bucket else None
+            acl_obj = Key(bucket, '')
+            acl_obj.set_acl(bucket_acl)
+            sharing_form = SharingPanelForm(
+                self.request, bucket_object=acl_obj, sharing_acl=bucket_acl, formdata=self.request.params or None)
+            metadata_form = MetadataForm(self.request, formdata=self.request.params or None)
+            self.render_dict.update(
+                bucket=bucket,
+                bucket_name=bucket.name,
+                acl_obj=acl_obj,
+                upload_form=BucketUploadForm(self.request),
+                sharing_form=sharing_form,
+                metadata_form=metadata_form,
+            )
+        return self.render_dict
+
+    @view_config(route_name='bucket_upload', renderer='json', request_method='POST', xhr=True)
+    def bucket_upload_post(self):
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
+
+        bucket_name = self.request.matchdict.get('name')
+        subpath = self.request.matchdict.get('subpath')
+        files = self.request.POST.getall('files')
+        with boto_error_handler(self.request):
+            bucket = self.s3_conn.get_bucket(bucket_name)
+            for upload_file in files:
+                bucket_item = bucket.new_key("/".join(subpath))
+                bucket_item.set_metadata('Content-Type', upload_file.type)
+                headers = {'Content-Type': upload_file.type, 'x-amz-acl': 'public-read'}
+                bucket_item.set_contents_from_file(fp=upload_file.file, headers=headers, replace=True)
+                BucketDetailsView.update_acl(self.request, bucket_object=bucket_item)
+                metadata_param = self.request.params.get('metadata') or '{}'
+                metadata = json.loads(metadata_param)
+                metadata_attr_mapping = BucketItemDetailsView.metadata_attribute_mapping()
+                if metadata:
+                    for key, val in metadata.items():
+                        metadata_attribute = metadata_attr_mapping.get(key.lower())
+                        if metadata_attribute:
+                            setattr(bucket_item, metadata_attribute, val)
+                        else:
+                            bucket_item.set_metadata(key, val)
+                    # The only way to update the metadata appears to be to copy the object
+                    bucket_item.copy(
+                        bucket_name, bucket_item.name, metadata=bucket_item.metadata, preserve_acl=True)
+                        
+            return dict(results=True)
+
+    @view_config(route_name='bucket_sign_req', renderer='json', request_method='POST', xhr=True)
+    def bucket_sign_req(self):
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
+        access = self.request.session['access_id']
+        secret = self.request.session['secret_key']
+        token = self.request.session['session_token']
+        policy = BaseView.generate_default_policy(self.bucket_name, self.subpath, token)
+        policy_signature = BaseView.gen_policy_signature(policy, secret)
+
+        url = "http://{host}:{port}/{path}/{bucket_name}".format(
+            host=self.s3_conn.host, port=str(self.s3_conn.port),
+            path=self.s3_conn.path, bucket_name=self.bucket_name
+        )
+        url = url.replace('///', '/')
+        fields = {
+            'key': self.subpath,
+            'acl': 'ec2-bundle-read',
+            'AWSAccessKeyId': access,
+            'Policy': policy,
+            'x-amz-security-token': token,
+            'Signature': policy_signature
+        }
+              
+        return dict(results=dict(url=url, fields=fields))
 
     @view_config(route_name='bucket_create_folder', request_method='POST')
     def bucket_create_folder(self):
@@ -738,11 +819,11 @@ class BucketItemDetailsView(BaseView):
             cache_control='Cache-Control',
         )
 
-    @classmethod
-    def metadata_attribute_mapping(cls):
+    @staticmethod
+    def metadata_attribute_mapping():
         """Converts metadata_attribute_mapping to be based on the header rather than the attribute name"""
         mapping = {}
-        for key, val in cls.attribute_metadata_mapping().items():
+        for key, val in BucketItemDetailsView.attribute_metadata_mapping().items():
             mapping[val] = key
         return mapping
 

@@ -28,10 +28,15 @@
 Core views
 
 """
+import base64
+import hashlib
+import hmac
 import logging
 import pylibmc
 import simplejson as json
 import textwrap
+import time
+from datetime import datetime, timedelta
 import threading
 
 from cgi import FieldStorage
@@ -42,7 +47,6 @@ from urllib import urlencode
 from urlparse import urlparse
 import magic
 
-from dogpile.cache.api import NoValue
 from boto.ec2.blockdevicemapping import BlockDeviceType, BlockDeviceMapping
 from boto.exception import BotoServerError
 
@@ -53,7 +57,7 @@ from pyramid.security import NO_PERMISSION_REQUIRED
 from pyramid.settings import asbool
 from pyramid.view import notfound_view_config, view_config
 
-from ..caches import default_term, long_term
+from ..caches import long_term
 from ..caches import invalidate_cache
 from ..constants.images import AWS_IMAGE_OWNER_ALIAS_CHOICES, EUCA_IMAGE_OWNER_ALIAS_CHOICES
 from ..forms.login import EucaLogoutForm
@@ -303,7 +307,9 @@ class BaseView(object):
         if request.is_xhr:
             raise JSONError(message=message, status=status or 403)
         if status == 403 or 'token has expired' in message:  # S3 token expiration responses return a 400 status
-            notice = _(u'Your session has timed out. This may be due to inactivity, a policy that does not provide login permissions, or an unexpected error. Please log in again, and contact your cloud administrator if the problem persists.')
+            notice = _(u'Your session has timed out. This may be due to inactivity, '
+                       u'a policy that does not provide login permissions, or an unexpected error. '
+                       u'Please log in again, and contact your cloud administrator if the problem persists.')
             request.session.flash(notice, queue=Notification.WARNING)
             raise HTTPFound(location=request.route_path('login'))
         request.session.flash(message, queue=Notification.ERROR)
@@ -327,6 +333,32 @@ class BaseView(object):
     def dt_isoformat(dt_obj, tzone='UTC'):
         """Convert a timezone-unaware datetime object to tz-aware one and return it as an ISO-8601 formatted string"""
         return dt_obj.replace(tzinfo=tz.gettz(tzone)).isoformat()
+
+    # these methods copied from euca2ools:bundleinstance.py and used with small changes
+    @staticmethod
+    def generate_default_policy(bucket, prefix, token=None):
+        delta = timedelta(hours=24)
+        expire_time = (datetime.utcnow() + delta).replace(microsecond=0)
+
+        conditions = [{'acl': 'ec2-bundle-read'},
+                      {'bucket': bucket},
+                      ['starts-with', '$key', prefix]]
+        if token is not None:
+            conditions[0]['x-amz-security-token'] = token
+                      
+        policy = {'conditions': conditions,
+                  'expiration': time.strftime('%Y-%m-%dT%H:%M:%SZ',
+                                              expire_time.timetuple())}
+        policy_json = json.dumps(policy)
+        return base64.b64encode(policy_json)
+
+    @staticmethod
+    def gen_policy_signature(policy, secret_key):
+        # hmac cannot handle unicode
+        secret_key = secret_key.encode('ascii', 'ignore')
+        my_hmac = hmac.new(secret_key, digestmod=hashlib.sha1)
+        my_hmac.update(policy)
+        return base64.b64encode(my_hmac.digest())
 
 
 class TaggedItemView(BaseView):

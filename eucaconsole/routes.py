@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2013-2014 Eucalyptus Systems, Inc.
 #
 # Redistribution and use of this software in source and binary forms,
@@ -197,6 +196,8 @@ urls = [
     Route(name='bucket_item_update', pattern='/buckets/{name}/itemupdate/*subpath'),
     Route(name='bucket_put_item', pattern='/buckets/{name}/putitem/*subpath'),
     Route(name='bucket_create_folder', pattern='/buckets/{name}/createfolder/*subpath'),
+    Route(name='bucket_upload', pattern='/buckets/{name}/upload/*subpath'),
+    Route(name='bucket_sign_req', pattern='/bucketsignreq/{name}/*subpath'),
 
 
     # Security Groups #####

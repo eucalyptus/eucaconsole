@@ -25,6 +25,7 @@
                       action="${request.route_path('bucket_create')}">
                     ${structure:create_form['csrf_token']}
                     ${panel('form_field', field=create_form.bucket_name, pattern=bucket_name_pattern, leftcol_width=12, rightcol_width=12, inline=False, ng_attrs={'model': 'bucketName'})}
+                    <hr />
                     ${panel('s3_sharing_panel', sharing_form=sharing_form)}
                     <hr />
                     <div class="expando" id="create-bucket-advanced-section" ng-cloak="" ng-init="advancedExpanded=false">
