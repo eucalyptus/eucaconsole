@@ -34,7 +34,6 @@ import random
 import string
 import StringIO
 import simplejson as json
-from boto.connection import AWSAuthConnection
 
 from urllib2 import HTTPError, URLError
 from urllib import urlencode
@@ -50,7 +49,6 @@ from ..forms.quotas import QuotasForm
 from ..i18n import _
 from ..models import Notification
 from ..models.quotas import Quotas
-from ..models.auth import EucaAuthenticator
 from ..views import BaseView, LandingPageView, JSONResponse
 from . import boto_error_handler
 
@@ -490,16 +488,7 @@ class UserView(BaseView):
             password = self.request.params.get('password')
             new_pass = self.request.params.get('new_password')
 
-            host = self.request.registry.settings.get('clchost', 'localhost')
-            port = int(self.request.registry.settings.get('clcport', 8773))
-            host = self.request.registry.settings.get('sts.host', host)
-            port = int(self.request.registry.settings.get('sts.port', port))
-            validate_certs = asbool(self.request.registry.settings.get('connection.ssl.validation', False))
-            conn = AWSAuthConnection(None, aws_access_key_id='', aws_secret_access_key='')
-            ca_certs_file = conn.ca_certificates_file
-            conn = None
-            ca_certs_file = self.request.registry.settings.get('connection.ssl.certfile', ca_certs_file)
-            auth = EucaAuthenticator(host, port, validate_certs=validate_certs, ca_certs=ca_certs_file)
+            auth = self.get_euca_authenticator()
             session = self.request.session
             account = session['account']
             username = session['username']

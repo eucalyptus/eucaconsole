@@ -89,9 +89,6 @@ class ImageBundlingMixin(BlockDeviceMappingItemView):
                 tags = json.loads(metadata['tags'])
                 self.conn.create_tags(image_id, tags)
                 self.invalidate_images_cache()
-            # cleanup creds
-            iam_conn = self.get_connection(conn_type='iam')
-            iam_conn.delete_access_key(metadata['access'])
             # cleanup metadata
             k.delete()
             self.conn.delete_tags(instance.id, ['ec_bundling'])
@@ -102,9 +99,6 @@ class ImageBundlingMixin(BlockDeviceMappingItemView):
         elif tasks[0].state == 'failed':
             # generate error message, need to let user know somehow
             logging.warn("bundle task failed! " + tasks[0].message)
-            # cleanup creds
-            iam_conn = self.get_connection(conn_type='iam')
-            iam_conn.delete_access_key(metadata['access'])
             # cleanup metadata
             k.delete()
             self.conn.delete_tags(instance.id, ['ec_bundling'])
@@ -140,8 +134,6 @@ class ImageBundlingMixin(BlockDeviceMappingItemView):
         k = Key(s3_conn.get_bucket(bucket))
         k.key = bundle_id
         metadata = json.loads(k.get_contents_as_string())
-        iam_conn = self.get_connection(conn_type='iam')
-        iam_conn.delete_access_key(metadata['access'])
         # cleanup metadata
         k.delete()
         self.conn.delete_tags(instance.id, ['ec_bundling'])

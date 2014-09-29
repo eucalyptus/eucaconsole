@@ -32,7 +32,6 @@ import logging
 
 from urllib2 import HTTPError, URLError
 from urlparse import urlparse
-from boto.connection import AWSAuthConnection
 
 from pyramid.httpexceptions import HTTPFound
 from pyramid.security import NO_PERMISSION_REQUIRED, remember
@@ -42,7 +41,6 @@ from pyramid.view import view_config
 from ..forms.login import EucaChangePasswordForm
 from ..i18n import _
 from ..models import Notification
-from ..models.auth import EucaAuthenticator
 from ..views import BaseView
 
 
@@ -84,21 +82,11 @@ class ManageCredentialsView(BaseView):
 
         changepassword_form = self.changepassword_form
         session = self.request.session
-        clchost = self.request.registry.settings.get('clchost')
         duration = self.request.registry.settings.get('session.cookie_expires')
         account="huh?"
         username="what?"
 
-        host = self.request.registry.settings.get('clchost', 'localhost')
-        port = int(self.request.registry.settings.get('clcport', 8773))
-        host = self.request.registry.settings.get('sts.host', host)
-        port = int(self.request.registry.settings.get('sts.port', port))
-        validate_certs = asbool(self.request.registry.settings.get('connection.ssl.validation', False))
-        conn = AWSAuthConnection(None, aws_access_key_id='', aws_secret_access_key='')
-        ca_certs_file = conn.ca_certificates_file
-        conn = None
-        ca_certs_file = self.request.registry.settings.get('connection.ssl.certfile', ca_certs_file)
-        auth = EucaAuthenticator(host, port, validate_certs=validate_certs, ca_certs=ca_certs_file)
+        auth = self.get_euca_authenticator()
         changepassword_form = EucaChangePasswordForm(self.request, formdata=self.request.params)
         if changepassword_form.validate():
             account = self.request.params.get('account')
@@ -136,6 +124,7 @@ class ManageCredentialsView(BaseView):
                 except URLError, err:
                     logging.info("url error "+str(vars(err)))
                     if str(err.reason) == 'timed out':
+                        clchost = self.request.registry.settings.get('clchost')
                         self.changepassword_form_errors.append(u'No response from host ' + clchost)
         return dict(
             changepassword_form=changepassword_form,

@@ -1248,24 +1248,26 @@ class InstanceCreateImageView(BaseInstanceView, BlockDeviceMappingItemView):
                 if s3_bucket:
                     s3_bucket = self.unescape_braces(s3_bucket)
                 s3_prefix = self.request.params.get('s3_prefix', '')
-                upload_policy = BaseView.generate_default_policy(s3_bucket, s3_prefix)
                 secret = self.request.session['secret_key']
                 with boto_error_handler(self.request, self.location):
                     self.log_request(_(u"Bundling instance {0}").format(instance_id))
-                    iam_conn = self.get_connection(conn_type='iam')
+                    account = self.request.session['account']
                     username = self.request.session['username']
-                    creds = iam_conn.create_access_key(username)
-                    access_key = creds.access_key.access_key_id
-                    secret_key = creds.access_key.secret_access_key
+                    password = self.request.params.get('password')
+                    auth = self.get_euca_authenticator()
+                    creds = auth.authenticate(
+                        account=account, user=username, passwd=password,
+                        timeout=8, duration=86400)  #24 hours
+                    upload_policy = BaseView.generate_default_policy(s3_bucket, s3_prefix, token=creds.session_token)
                     # we need to make the call ourselves to override boto's auto-signing
                     params = {
                         'InstanceId': instance_id,
                         'Storage.S3.Bucket': s3_bucket,
                         'Storage.S3.Prefix': s3_prefix,
                         'Storage.S3.UploadPolicy': upload_policy,
-                        'Storage.S3.AWSAccessKeyId': access_key,
+                        'Storage.S3.AWSAccessKeyId': creds.access_key,
                         'Storage.S3.UploadPolicySignature': BaseView.gen_policy_signature(
-                            upload_policy, secret_key)
+                            upload_policy, creds.secret_key)
                     }
                     result = self.conn.get_object('BundleInstance', params, BundleInstanceTask, verb='POST')
                     bundle_metadata = {
@@ -1280,7 +1282,6 @@ class InstanceCreateImageView(BaseInstanceView, BlockDeviceMappingItemView):
                         'ramdisk_id': self.instance.ramdisk,
                         'bdm': bdm_json,
                         'tags': tags_json,
-                        'access': access_key,
                         'bundle_id': result.id,
                     }
                     self.ec2_conn.create_tags(instance_id, {'ec_bundling': '%s/%s' % (s3_bucket, result.id)})

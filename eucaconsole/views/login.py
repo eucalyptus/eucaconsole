@@ -41,7 +41,7 @@ from pyramid.view import view_config, forbidden_view_config
 
 from ..forms.login import EucaLoginForm, EucaLogoutForm, AWSLoginForm
 from ..i18n import _
-from ..models.auth import AWSAuthenticator, EucaAuthenticator, ConnectionManager
+from ..models.auth import AWSAuthenticator, ConnectionManager
 from ..views import BaseView
 from ..views import JSONResponse
 from ..constants import AWS_REGIONS
@@ -114,17 +114,7 @@ class LoginView(BaseView):
 
     def handle_euca_login(self):
         new_passwd = None
-        host = self.request.registry.settings.get('clchost', 'localhost')
-        port = int(self.request.registry.settings.get('clcport', 8773))
-        host = self.request.registry.settings.get('sts.host', host)
-        port = int(self.request.registry.settings.get('sts.port', port))
-        validate_certs = asbool(self.request.registry.settings.get('connection.ssl.validation', False))
-        conn = AWSAuthConnection(None, aws_access_key_id='', aws_secret_access_key='')
-        
-        ca_certs_file = conn.ca_certificates_file
-        conn = None
-        ca_certs_file = self.request.registry.settings.get('connection.ssl.certfile', ca_certs_file)
-        auth = EucaAuthenticator(host, port, validate_certs=validate_certs, ca_certs=ca_certs_file)
+        auth = self.get_euca_authenticator()
         session = self.request.session
 
         if self.euca_login_form.validate():

@@ -47,6 +47,8 @@ angular.module('InstanceCreateImage', ['TagEditor'])
             }
         };
         $scope.submitCreate = function() {
+            var pass = $('#bundle-password').val();
+            $scope.form.find('#password').val(pass);
             $('#instance-shutdown-warn-modal').foundation('reveal', 'close');
             $scope.form.submit();
         };
