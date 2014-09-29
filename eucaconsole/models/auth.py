@@ -125,12 +125,14 @@ class ConnectionManager(object):
             elif conn_type == 's3':
                 conn = boto.connect_s3(  # Don't specify region when connecting to S3
                     aws_access_key_id=_access_key, aws_secret_access_key=_secret_key, security_token=_token)
-            if conn_type == 'elb':
+            elif conn_type == 'elb':
                 conn = ec2.elb.connect_to_region(
                     _region, aws_access_key_id=_access_key, aws_secret_access_key=_secret_key, security_token=_token)
-            if conn_type == 'vpc':
+            elif conn_type == 'vpc':
                 conn = vpc.connect_to_region(
                     _region, aws_access_key_id=_access_key, aws_secret_access_key=_secret_key, security_token=_token)
+            elif conn_type == 'iam':
+                return None
             conn.https_validate_certificates = validate_certs
             return conn
 
