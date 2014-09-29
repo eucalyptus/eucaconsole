@@ -35,7 +35,6 @@ from urlparse import urlparse
 
 from pyramid.httpexceptions import HTTPFound
 from pyramid.security import NO_PERMISSION_REQUIRED, remember
-from pyramid.settings import asbool
 from pyramid.view import view_config
 
 from ..forms.login import EucaChangePasswordForm
@@ -62,8 +61,8 @@ class ManageCredentialsView(BaseView):
     def changepassword_page(self):
         session = self.request.session
         try:
-            account=session['account']
-            username=session['username']
+            account = session['account']
+            username = session['username']
         except KeyError:
             account = self.request.params.get('account')
             username = self.request.params.get('username')
@@ -83,8 +82,8 @@ class ManageCredentialsView(BaseView):
         changepassword_form = self.changepassword_form
         session = self.request.session
         duration = self.request.registry.settings.get('session.cookie_expires')
-        account="huh?"
-        username="what?"
+        account = "huh?"
+        username = "what?"
 
         auth = self.get_euca_authenticator()
         changepassword_form = EucaChangePasswordForm(self.request, formdata=self.request.params)
@@ -100,7 +99,7 @@ class ManageCredentialsView(BaseView):
                 try:
                     creds = auth.authenticate(account=account, user=username,
                                 passwd=password, new_passwd=new_password, timeout=8, duration=duration)
-                    #logging.debug("auth creds = "+str(creds.__dict__))
+                    # logging.debug("auth creds = "+str(creds.__dict__))
                     user_account = '{user}@{account}'.format(user=username, account=account)
                     session['cloud_type'] = 'euca'
                     session['account'] = account
@@ -134,5 +133,3 @@ class ManageCredentialsView(BaseView):
             account=account,
             username=username
         )
-
-

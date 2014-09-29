@@ -133,7 +133,6 @@ class ImageBundlingMixin(BlockDeviceMappingItemView):
         s3_conn = self.get_connection(conn_type='s3')
         k = Key(s3_conn.get_bucket(bucket))
         k.key = bundle_id
-        metadata = json.loads(k.get_contents_as_string())
         # cleanup metadata
         k.delete()
         self.conn.delete_tags(instance.id, ['ec_bundling'])
@@ -366,13 +365,13 @@ class ImageView(TaggedItemView, ImageBundlingMixin):
     def check_if_image_owned_by_user(self):
         if self.image and self.image.owner_id == self.account_id:
             return True
-        return False 
+        return False
 
     def get_image_launch_permissions_array(self):
-        if self.is_owned_by_user is False: 
-            return [] 
+        if self.is_owned_by_user is False:
+            return []
         launch_permissions = self.image.get_launch_permissions()
-        if launch_permissions is None or not 'user_ids' in launch_permissions:
+        if launch_permissions is None or 'user_ids' not in launch_permissions:
             return []
         lp_array = [lp.encode('ascii', 'ignore') for lp in launch_permissions['user_ids']]
         return lp_array
@@ -417,13 +416,13 @@ class ImageView(TaggedItemView, ImageBundlingMixin):
         if self.image is None:
             raise HTTPNotFound()
         return self.render_dict
- 
+
     @view_config(route_name='image_update', request_method='POST', renderer=TEMPLATE)
     def image_update(self):
         if self.image_form.validate():
             self.update_tags()
 
-            if self.image and self.is_owned_by_user is True: 
+            if self.image and self.is_owned_by_user is True:
                 # Update the Image Description
                 description = self.request.params.get('description', '')
                 if self.image.description != description:
@@ -463,7 +462,7 @@ class ImageView(TaggedItemView, ImageBundlingMixin):
 
         self.image_add_new_launch_permissions(new_launch_permissions)
         self.image_remove_deleted_launch_permissions(new_launch_permissions)
-        return 
+        return
 
     def image_add_new_launch_permissions(self, new_launch_permissions):
         success_msg = ''

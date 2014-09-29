@@ -173,7 +173,7 @@ class LoginView(BaseView):
                     self.login_form_errors.append(msg)
             except URLError, err:
                 logging.info("url error "+str(vars(err)))
-                #if str(err.reason) == 'timed out':
+                # if str(err.reason) == 'timed out':
                 # opened this up since some other errors should be reported as well.
                 if err.reason.find('ssl') > -1:
                     msg = _(u"This cloud's SSL server certificate isn't valid. Please contact your cloud administrator.")
@@ -238,4 +238,3 @@ class LogoutView(BaseView):
             self.request.session.invalidate()
             # self.invalidate_connection_cache()
             return HTTPFound(location=self.login_url)
-
