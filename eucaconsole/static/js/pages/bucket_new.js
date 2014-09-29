@@ -11,12 +11,15 @@ angular.module('CreateBucketPage', ['S3SharingPanel', 'EucaConsoleUtils'])
         $scope.isSubmitted = false;
         $scope.hasChangesToBeSaved = false;
         $scope.bucketName = '';
+        $scope.existingBuckets = [];
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.bucketName = options['bucket_name'];
+            $scope.existingBuckets = options['existing_bucket_names'];
             if (options['share_type'] == 'private') {
                 $('#share_type').find('input[value="private"]').click();
             }
+            $scope.initNameConflictWarningListener();
             $scope.handleUnsavedChanges();
             $scope.handleUnsavedSharingEntry($scope.createBucketForm);
         };
@@ -50,6 +53,19 @@ angular.module('CreateBucketPage', ['S3SharingPanel', 'EucaConsoleUtils'])
                     $scope.isSubmitted = false;
                     $('#unsaved-sharing-warning-modal').foundation('reveal', 'open');
                     return false;
+                }
+            });
+        };
+        $scope.confirmWarning = function () {
+            var modal = $('#conflict-warn-modal');
+            modal.foundation('reveal', 'close');
+        };
+        $scope.initNameConflictWarningListener = function () {
+            $scope.createBucketForm.on('submit', function(evt) {
+                var bucketName = $('#bucket_name').val();
+                if ($scope.existingBuckets.indexOf(bucketName) !== -1) {
+                    evt.preventDefault();
+                    $('#conflict-warn-modal').foundation('reveal', 'open');
                 }
             });
         };
