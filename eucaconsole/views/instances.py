@@ -29,13 +29,9 @@ Pyramid views for Eucalyptus and AWS instances
 
 """
 import base64
-from datetime import datetime, timedelta
 from operator import attrgetter
-import hashlib
-import hmac
 import os
 import simplejson as json
-import time
 from M2Crypto import RSA
 import re
 
@@ -515,7 +511,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
             associate_ip_form=self.associate_ip_form,
             disassociate_ip_form=self.disassociate_ip_form,
             has_elastic_ip=self.has_elastic_ip,
-            vpc_subnet_display=self.get_vpc_subnet_display(self.instance.subnet_id),
+            vpc_subnet_display=self.get_vpc_subnet_display(self.instance.subnet_id) if self.instance else None,
             role=self.role,
             running_create=self.running_create,
             controller_options_json=self.get_controller_options_json(),
@@ -1097,7 +1093,7 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
             associate_public_ip_address=self.associate_public_ip_address,
             launch_more_form=self.launch_more_form,
             snapshot_choices=self.get_snapshot_choices(),
-            vpc_subnet_display=self.get_vpc_subnet_display(self.instance.subnet_id),
+            vpc_subnet_display=self.get_vpc_subnet_display(self.instance.subnet_id) if self.instance else None,
             role=self.role,
         )
 
@@ -1252,7 +1248,7 @@ class InstanceCreateImageView(BaseInstanceView, BlockDeviceMappingItemView):
                 if s3_bucket:
                     s3_bucket = self.unescape_braces(s3_bucket)
                 s3_prefix = self.request.params.get('s3_prefix', '')
-                upload_policy = InstanceCreateImageView.generate_default_policy(s3_bucket, s3_prefix)
+                upload_policy = BaseView.generate_default_policy(s3_bucket, s3_prefix)
                 secret = self.request.session['secret_key']
                 with boto_error_handler(self.request, self.location):
                     self.log_request(_(u"Bundling instance {0}").format(instance_id))
@@ -1268,7 +1264,7 @@ class InstanceCreateImageView(BaseInstanceView, BlockDeviceMappingItemView):
                         'Storage.S3.Prefix': s3_prefix,
                         'Storage.S3.UploadPolicy': upload_policy,
                         'Storage.S3.AWSAccessKeyId': access_key,
-                        'Storage.S3.UploadPolicySignature': InstanceCreateImageView.gen_policy_signature(
+                        'Storage.S3.UploadPolicySignature': BaseView.gen_policy_signature(
                             upload_policy, secret_key)
                     }
                     result = self.conn.get_object('BundleInstance', params, BundleInstanceTask, verb='POST')
@@ -1313,29 +1309,6 @@ class InstanceCreateImageView(BaseInstanceView, BlockDeviceMappingItemView):
         else:
             self.request.error_messages = self.create_image_form.get_errors_list()
         return self.render_dict
-
-    # these methods copied from euca2ools:bundleinstance.py and used with small changes
-    @staticmethod
-    def generate_default_policy(bucket, prefix):
-        delta = timedelta(hours=24)
-        expire_time = (datetime.utcnow() + delta).replace(microsecond=0)
-
-        conditions = [{'acl': 'ec2-bundle-read'},
-                      {'bucket': bucket},
-                      ['starts-with', '$key', prefix]]
-        policy = {'conditions': conditions,
-                  'expiration': time.strftime('%Y-%m-%dT%H:%M:%SZ',
-                                              expire_time.timetuple())}
-        policy_json = json.dumps(policy)
-        return base64.b64encode(policy_json)
-
-    @staticmethod
-    def gen_policy_signature(policy, secret_key):
-        # hmac cannot handle unicode
-        secret_key = secret_key.encode('ascii', 'ignore')
-        my_hmac = hmac.new(secret_key, digestmod=hashlib.sha1)
-        my_hmac.update(policy)
-        return base64.b64encode(my_hmac.digest())
 
 
 class InstanceTypesView(LandingPageView, BaseInstanceView):

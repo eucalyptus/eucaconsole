@@ -61,7 +61,7 @@
                                     <label i18n:translate="" tal:condition="layout.cloud_type == 'euca'">EMI name</label>
                                     <label i18n:translate="" tal:condition="layout.cloud_type == 'aws'">AMI name</label>
                                 </div>
-                                <div class="small-8 columns value">${image.name if image.name else ''}</div>
+                                <div class="small-8 columns value breakword">${image.name if image.name else ''}</div>
                             </div>
                             <div tal:condition="not is_owned_by_user">
                                 <div class="row controls-wrapper readonly">

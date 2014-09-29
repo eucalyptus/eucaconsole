@@ -12,15 +12,14 @@
                     suspend
                 </span>
                 <span i18n:translate="">versioning for</span>
-                <b>${bucket_name}</b>
+                <b>${bucket_name}</b>?
             </span>
             <span tal:condition="not bucket" tal:omit-tag="">
-                 <span ng-show="updateVersioningAction == 'enable'" i18n:translate="">enable</span>
-                 <span ng-show="updateVersioningAction != 'enable'" i18n:translate="">suspend</span>
-                 <span i18n:translate="">versioning for</span>
-                <b>{{ bucketName }}</b>
+                <span ng-show="updateVersioningAction == 'enable'" i18n:translate="">enable</span>
+                <span ng-show="updateVersioningAction != 'enable'" i18n:translate="">suspend</span>
+                <span i18n:translate="">versioning for</span>
+                <b>{{ bucketName }}</b>?
             </span>
-            ?
         </p>
         <form id="update-versioning-form" action="${request.route_path('bucket_update_versioning', name=bucket.name if bucket else '_name_')}"
               method="post">
@@ -38,7 +37,12 @@
                 <button type="submit" id="update_versioning_submit_button" class="button expand">
                     <span i18n:translate="">Yes,</span>
                     <span tal:condition="bucket" tal:omit-tag="">
-                        ${update_versioning_action.capitalize()}
+                        <span tal:condition="update_versioning_action == 'enable'" tal:omit-tag="" i18n:translate="">
+                            Enable
+                        </span>
+                        <span tal:condition="update_versioning_action != 'enable'" tal:omit-tag="" i18n:translate="">
+                            Suspend
+                        </span>
                     </span>
                     <span tal:condition="not bucket" tal:omit-tag="">
                         <span ng-show="updateVersioningAction == 'enable'" i18n:translate="">Enable</span>

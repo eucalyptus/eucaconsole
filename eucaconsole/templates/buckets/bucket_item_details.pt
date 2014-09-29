@@ -76,7 +76,9 @@
                             <a href="${item_link}" class="breakword" target="_blank">${item_link.split('?')[0]}</a>
                         </div>
                     </div>
+                    <hr />
                     ${panel('s3_metadata_editor', bucket_object=bucket_item, metadata_form=metadata_form)}
+                    <hr />
                     ${panel('s3_sharing_panel', bucket_object=bucket_item, sharing_form=sharing_form)}
                     <hr />
                     <div>

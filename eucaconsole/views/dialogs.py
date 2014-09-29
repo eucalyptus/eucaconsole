@@ -241,7 +241,7 @@ def image_dialogs(context, request, image=None, image_name_id='', landingpage=Fa
 def bucket_dialogs(context, request, bucket=None, landingpage=False, versioning_form=None, delete_form=None):
     """ Modal dialogs for Bucket landing and detail page."""
     versioning_status = bucket.get_versioning_status() if bucket else None
-    update_versioning_action = ''
+    update_versioning_action = 'enable'  # Buckets that have never enabled versioning return an empty status
     if versioning_status:
         versioning_status = versioning_status.get('Versioning', 'Disabled')
         update_versioning_action = BucketDetailsView.get_versioning_update_action(versioning_status)
