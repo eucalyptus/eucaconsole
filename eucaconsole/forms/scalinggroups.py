@@ -135,7 +135,7 @@ class BaseScalingGroupForm(BaseSecureForm):
         self.elb_choices_manager = ChoicesManager(conn=elb_conn) if elb_conn else None
         self.launch_config.choices = self.get_launch_config_choices()
         self.vpc_network.choices = self.vpc_choices_manager.vpc_networks()
-        self.vpc_subnet.choices = self.vpc_choices_manager.vpc_subnets(add_blank=True)
+        self.vpc_subnet.choices = self.vpc_choices_manager.vpc_subnets(show_zone=True, add_blank=True)
         self.health_check_type.choices = self.get_healthcheck_type_choices()
         region = request.session.get('region')
         self.availability_zones.choices = self.get_availability_zone_choices(region)
