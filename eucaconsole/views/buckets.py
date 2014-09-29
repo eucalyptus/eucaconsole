@@ -615,8 +615,9 @@ class BucketDetailsView(BaseView):
             for grant in sharing_grants:
                 grants.append(Grant(
                     permission=grant.get('permission'),
-                    id=grant.get('id'),
-                    display_name=grant.get('display_name'),
+                    id=grant.get('id') or None,
+                    display_name=grant.get('display_name') or None,
+                    email_address=grant.get('email_address') or None,
                     type=grant.get('grant_type'),
                     uri=grant.get('uri'),
                 ))

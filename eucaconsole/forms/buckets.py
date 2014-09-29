@@ -80,6 +80,7 @@ class BucketDeleteForm(BaseSecureForm):
     """Delete form"""
     pass
 
+
 class BucketUploadForm(BaseSecureForm):
     """Upload form"""
     pass
@@ -91,7 +92,10 @@ class SharingPanelForm(BaseSecureForm):
     share_type = wtforms.RadioField(choices=SHARE_TYPE_CHOICES)
     share_account_error_msg = _(
         u'Account ID may contain alpha-numeric characters and is a 12-digit account ID or the 64-digit canonical ID.')
-    share_account = TextEscapedField(label=_(u'Account ID'))
+    share_account_helptext = _(
+        u"Even if you enter a user's email address, sharing will be extended to all users in their account."
+    )
+    share_account = TextEscapedField(label=_(u'Account ID or email'))
     share_permissions = wtforms.SelectField(label=_(u'Permissions'))
     canned_acl = wtforms.SelectField()
 
@@ -105,6 +109,8 @@ class SharingPanelForm(BaseSecureForm):
         # Set choices
         self.share_permissions.choices = self.get_permission_choices()
         self.canned_acl.choices = self.get_canned_acl_choices()
+        # Set help text
+        self.share_account.help_text = self.share_account_helptext
 
         if bucket_object is not None:
             self.share_type.data = self.get_share_type()
@@ -230,5 +236,3 @@ class CreateFolderForm(BaseSecureForm):
     def __init__(self, request, **kwargs):
         super(CreateFolderForm, self).__init__(request, **kwargs)
         self.folder_name.error_msg = self.folder_name_error_msg
-
-
