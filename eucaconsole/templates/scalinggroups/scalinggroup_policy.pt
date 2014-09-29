@@ -11,7 +11,7 @@
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('scalinggroups')}" i18n:translate="">Scaling groups</a></li>
                 <li><a href="${request.route_path('scalinggroup_view', id=scaling_group.name)}">${scaling_group_name}</a></li>
-                <li class="current"><a href="#">Create policy</a></li>
+                <li class="current"><a href="#">Create scaling policy</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
         <!-- Notifications -->
@@ -52,7 +52,7 @@
                     </div>
                     <div>
                         <button type="submit" class="button" i18n:translate="" id="create-policy-btn" ng-disabled="isNotValid">
-                            Add Policy
+                            Create Scaling Policy
                         </button>
                         <a class="cancel-link" i18n:translate=""
                            href="${request.route_path('scalinggroup_view', id=scaling_group.name)}">Cancel</a>
