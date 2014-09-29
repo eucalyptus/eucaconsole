@@ -116,16 +116,6 @@
             <input type="submit" style="display:none;" id="euca-logout-button"/>
         </form>
     </footer>
-    <div id="denied-keys-modal" class="reveal-modal small" data-reveal="">
-        <h3 i18n:translate="">Permission denied</h3>
-        <p>
-            <span i18n:translate="">You do not have the correct permissions to create your own access keys.</span>
-        </p>
-        <p>
-            <span i18n:translate="">Please contact your cloud administrator to have them either update your permissions or generate a new set of access keys for you.</span>
-        </p>
-        <a class="close-reveal-modal">&#215;</a>
-    </div>
     <div id="about-modal" class="reveal-modal small" data-reveal="">
         <h3 i18n:translate="">About your cloud</h3>
         <p>

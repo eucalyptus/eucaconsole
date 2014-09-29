@@ -6,6 +6,7 @@
 
 angular.module('ManageCredentialsView', [])
     .controller('ManageCredentialsViewCtrl', function ($scope, $http) {
+        $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.initController = function() {
             var newPasswordForm = $('#new_password');
             // add password strength meter to first new password field
@@ -53,8 +54,11 @@ angular.module('ManageCredentialsView', [])
                 $scope.secret_key = results.secret;
             }).error(function (oData, status) {
                 var errorMsg = oData['message'] || '';
-                if (errorMsg && status === 403) {
+                if (errorMsg == 'Session Timed Out' && status === 403) {
                     $('#timed-out-modal').foundation('reveal', 'open');
+                }
+                else if (status === 409) {
+                    Notify.failure(errorMsg);
                 }
                 else {
                     $('#denied-keys-modal').foundation('reveal', 'open');
