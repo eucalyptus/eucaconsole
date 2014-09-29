@@ -349,10 +349,82 @@ class SecurityGroupView(TaggedItemView):
 
     def update_rules(self):
         # Remove existing rules prior to updating, since we're doing a fresh update
-        self.revoke_all_rules()
-        self.revoke_all_rules(traffic_type='egress')
-        self.add_rules()
-        self.add_rules(traffic_type='egress')
+        #self.revoke_all_rules()
+        #self.revoke_all_rules(traffic_type='egress')
+        #self.add_rules()
+        #self.add_rules(traffic_type='egress')
+
+        current_rules = self.build_rules_dict(self.security_group.rules)
+        new_rules_json = self.request.params.get('rules')
+        new_rules = json.loads(new_rules_json) if new_rules_json else []
+        self.compare_rules(current_rules, new_rules)
+
+    def build_rules_dict(self, rules):
+        traffic_type = 'ingress'
+        current_rules = []
+        for rule in rules:
+            grants = rule.grants
+            from_port = int(rule.from_port) if rule.from_port else None
+            to_port = int(rule.to_port) if rule.to_port else None
+            params = dict(
+                ip_protocol=rule.ip_protocol,
+                from_port=from_port,
+                to_port=to_port,
+            )
+            grants_params = []
+            for grant in grants:
+                g_params = {}
+                if grant.cidr_ip:
+                    g_params.update(dict(
+                        cidr_ip=grant.cidr_ip,
+                    ))
+                elif grant.group_id:
+                    if traffic_type == 'ingress':
+                        g_params.update(dict(
+                            src_security_group_group_id=grant.group_id,
+                            src_security_group_owner_id=grant.owner_id,
+                        ))
+                    else:
+                        g_params.update(dict(
+                            src_group_id=grant.group_id,
+                        ))
+                grants_params.append(g_params)
+            params.update(dict( grants=grants_params ))
+            current_rules.append(params)
+        return current_rules
+
+    def compare_rules(self, current_rules, new_rules):
+        print
+        print "new rules: " , new_rules
+        print
+        print "current rules: " , current_rules
+        print
+        print "removed rules: " , self.detect_removed_rules(current_rules, new_rules)
+
+    # Detect removed rules
+    def detect_removed_rules(self, current_rules, new_rules):
+        removed_rules = []
+        # loop through current rules
+        for rule in current_rules:
+            is_removed = True 
+            c_grants = rule['grants']
+            c_from_port = int(rule['from_port']) if rule['from_port'] else None
+            c_to_port = int(rule['to_port']) if rule['to_port'] else None
+            # loop through new rules
+            for new_rule in new_rules:
+                n_grants = new_rule['grants']
+                n_from_port = int(new_rule['from_port']) if new_rule['from_port'] else None
+                n_to_port = int(new_rule['to_port']) if new_rule['to_port'] else None
+                if c_from_port == n_from_port and c_to_port == n_to_port:
+                    if 'cidr_ip' in c_grants[0] and 'cidr_ip' in n_grants[0]:
+                        if  c_grants[0]['cidr_ip'] == n_grants[0]['cidr_ip']:
+                            is_removed = False
+                    elif 'src_security_group_group_id' in c_grants[0] and 'group_id' in n_grants[0]:
+                        if c_grants[0]['src_security_group_group_id'] == n_grants[0]['group_id']:
+                            is_removed = False 
+            if is_removed:
+                removed_rules.append(rule)
+        return removed_rules
 
     def revoke_all_rules(self, security_group=None, traffic_type='ingress'):
         if security_group is None:
