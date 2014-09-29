@@ -127,6 +127,11 @@ angular.module('SecurityGroupRules', [])
             $scope.$watch('securityGroupVPC', function() {
                 $scope.getAllSecurityGroups($scope.securityGroupVPC);
             });
+            $scope.$watch('securityGroupList', function() {
+                if ($scope.securityGroupList.length) {
+                    $scope.checkRulesForDeletedSecurityGroups();
+                }
+            }, true);
             $scope.$on('updateVPC', function($event, vpc) {
                 if (vpc === undefined || $scope.securityGroupVPC == vpc) {
                     return;
@@ -166,7 +171,46 @@ angular.module('SecurityGroupRules', [])
                 return 'disabled';
             }
         };
-        // Run through the existing rules with the newly create rule to ensure that the new rule does not exist already
+        // Run through the existing rules to verify that
+        // the security groups in the rules are still valid
+        $scope.checkRulesForDeletedSecurityGroups = function () {
+            var invalidRulesArray = [];
+            var invalidRulesEgressArray = [];
+            // Check the ingress rules
+            angular.forEach($scope.rulesArray, function (rule) {
+                if (rule.grants[0].group_id != null) {
+                    var exists = false;
+                    angular.forEach($scope.securityGroupList, function (sg) {
+                        if (sg.id == rule.grants[0].group_id) {
+                            exists = true;
+                        } 
+                    });
+                    if (!exists) {
+                        invalidRulesArray.push(rule); 
+                    }
+                }
+            });
+            // Check the egress rules
+            angular.forEach($scope.rulesEgressArray, function (rule) {
+                if (rule.grants[0].group_id != null) {
+                    var exists = false;
+                    angular.forEach($scope.securityGroupList, function (sg) {
+                        if (sg.id == rule.grants[0].group_id) {
+                            exists = true;
+                        } 
+                    });
+                    if (!exists) {
+                        invalidRulesEgressArray.push(rule); 
+                    }
+                }
+            });
+            // Emit the signal to trigger invalid rules warning
+            if (invalidRulesArray.length > 0 || invalidRulesEgressArray.length > 0) {
+                $scope.$emit('invalidRulesWarning', invalidRulesArray, invalidRulesEgressArray);
+            }
+        };
+        // Run through the existing rules with the newly create rule
+        // to ensure that the new rule does not exist already
         $scope.checkForDuplicatedRules = function () {
             $scope.hasDuplicatedRule = false;
             // Create a new array block based on the current user input on the panel
