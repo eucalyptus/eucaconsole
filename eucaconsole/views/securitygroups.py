@@ -400,6 +400,8 @@ class SecurityGroupView(TaggedItemView):
         print "current rules: " , current_rules
         print
         print "removed rules: " , self.detect_removed_rules(current_rules, new_rules)
+        print
+        print "added rules: " , self.detect_added_rules(current_rules, new_rules)
 
     # Detect removed rules
     def detect_removed_rules(self, current_rules, new_rules):
@@ -425,6 +427,31 @@ class SecurityGroupView(TaggedItemView):
             if is_removed:
                 removed_rules.append(rule)
         return removed_rules
+
+    # Detect added rules
+    def detect_added_rules(self, current_rules, new_rules):
+        added_rules = []
+        # loop through new rules
+        for new_rule in new_rules:
+            is_added = True 
+            n_grants = new_rule['grants']
+            n_from_port = int(new_rule['from_port']) if new_rule['from_port'] else None
+            n_to_port = int(new_rule['to_port']) if new_rule['to_port'] else None
+            # loop through existing rules
+            for rule in current_rules:
+                c_grants = rule['grants']
+                c_from_port = int(rule['from_port']) if rule['from_port'] else None
+                c_to_port = int(rule['to_port']) if rule['to_port'] else None
+                if c_from_port == n_from_port and c_to_port == n_to_port:
+                    if 'cidr_ip' in c_grants[0] and 'cidr_ip' in n_grants[0]:
+                        if  c_grants[0]['cidr_ip'] == n_grants[0]['cidr_ip']:
+                            is_added = False
+                    elif 'src_security_group_group_id' in c_grants[0] and 'group_id' in n_grants[0]:
+                        if c_grants[0]['src_security_group_group_id'] == n_grants[0]['group_id']:
+                            is_added = False 
+            if is_added:
+                added_rules.append(new_rule)
+        return added_rules
 
     def revoke_all_rules(self, security_group=None, traffic_type='ingress'):
         if security_group is None:
