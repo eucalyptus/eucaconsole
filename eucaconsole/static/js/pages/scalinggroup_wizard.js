@@ -113,7 +113,7 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor'])
             $scope.$watch('vpcSubnets', function () { 
                 $scope.disableVPCSubnetOptions();
                 $scope.updateSelectedVPCSubnetNames();
-            });
+            }, true);
         };
         $scope.adjustVPCSubnetSelectAbide = function () {
             // If VPC option is not chosen, remove the 'required' attribute

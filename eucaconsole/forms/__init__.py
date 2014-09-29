@@ -409,15 +409,19 @@ class ChoicesManager(object):
             choices.append((vpc.id, vpc_name))
         return sorted(set(choices))
 
-    def vpc_subnets(self, vpc_subnets=None, show_zone=False, add_blank=True, escapebraces=True):
+    def vpc_subnets(self, vpc_subnets=None, vpc_id=None, show_zone=False, add_blank=True, escapebraces=True):
         choices = []
         if add_blank:
             choices.append(('None', _(u'No subnets found')))
         vpc_subnet_list = vpc_subnets or []
         if not vpc_subnet_list and self.conn is not None:
-            vpc_subnet_list = self.conn.get_all_subnets()
+            if vpc_id:
+                vpc_subnet_list = self.conn.get_all_subnets(filters={'vpcId': [vpc_id]})
+            else:
+                vpc_subnet_list = self.conn.get_all_subnets()
         for vpc in vpc_subnet_list:
             if show_zone:
+                # Format the VPC subnet display string for select options
                 subnet_string = vpc.cidr_block + " (" + vpc.id + ") | " + vpc.availability_zone 
                 choices.append((vpc.id, subnet_string))
             else:
