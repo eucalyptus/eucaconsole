@@ -357,10 +357,16 @@ class SecurityGroupView(TaggedItemView):
         current_rules = self.build_rules_dict(self.security_group.rules)
         new_rules_json = self.request.params.get('rules')
         new_rules = json.loads(new_rules_json) if new_rules_json else []
+        print "-- compare ingress rules --"
         self.compare_rules(current_rules, new_rules)
+        print
+        current_egress_rules = self.build_rules_dict(self.security_group.rules_egress, traffic_type='egress')
+        new_egress_rules_json = self.request.params.get('rules_egress')
+        new_egress_rules = json.loads(new_egress_rules_json) if new_egress_rules_json else []
+        print "-- compare egress rules --"
+        self.compare_rules(current_egress_rules, new_egress_rules, traffic_type='egress')
 
-    def build_rules_dict(self, rules):
-        traffic_type = 'ingress'
+    def build_rules_dict(self, rules, traffic_type='ingress'):
         current_rules = []
         for rule in rules:
             grants = rule.grants
@@ -393,62 +399,84 @@ class SecurityGroupView(TaggedItemView):
             current_rules.append(params)
         return current_rules
 
-    def compare_rules(self, current_rules, new_rules):
+    def compare_rules(self, current_rules, new_rules, traffic_type='ingress'):
         print
         print "new rules: " , new_rules
         print
         print "current rules: " , current_rules
         print
-        print "removed rules: " , self.detect_removed_rules(current_rules, new_rules)
+        print "removed rules: " , self.detect_removed_rules(current_rules, new_rules, traffic_type)
         print
-        print "added rules: " , self.detect_added_rules(current_rules, new_rules)
+        print "added rules: " , self.detect_added_rules(current_rules, new_rules, traffic_type)
 
     # Detect removed rules
-    def detect_removed_rules(self, current_rules, new_rules):
+    def detect_removed_rules(self, current_rules, new_rules, traffic_type='ingress'):
         removed_rules = []
         # loop through current rules
         for rule in current_rules:
             is_removed = True 
             c_grants = rule['grants']
+            c_ip_protocol = rule['ip_protocol'] if rule['ip_protocol'] else None
             c_from_port = int(rule['from_port']) if rule['from_port'] else None
             c_to_port = int(rule['to_port']) if rule['to_port'] else None
             # loop through new rules
             for new_rule in new_rules:
                 n_grants = new_rule['grants']
+                n_ip_protocol = new_rule['ip_protocol'] if new_rule['ip_protocol'] else None
                 n_from_port = int(new_rule['from_port']) if new_rule['from_port'] else None
                 n_to_port = int(new_rule['to_port']) if new_rule['to_port'] else None
-                if c_from_port == n_from_port and c_to_port == n_to_port:
+                # check if the ip protocol, from_port, and to_port match
+                if c_ip_protocol == n_ip_protocol and c_from_port == n_from_port and c_to_port == n_to_port:
+                    # check if the cidr_ip matches
                     if 'cidr_ip' in c_grants[0] and 'cidr_ip' in n_grants[0]:
                         if  c_grants[0]['cidr_ip'] == n_grants[0]['cidr_ip']:
                             is_removed = False
-                    elif 'src_security_group_group_id' in c_grants[0] and 'group_id' in n_grants[0]:
-                        if c_grants[0]['src_security_group_group_id'] == n_grants[0]['group_id']:
-                            is_removed = False 
+                    elif traffic_type == 'ingress':
+                        # check if source group id matches
+                        if 'src_security_group_group_id' in c_grants[0] and 'group_id' in n_grants[0]:
+                            if c_grants[0]['src_security_group_group_id'] == n_grants[0]['group_id']:
+                                is_removed = False 
+                    elif traffic_type == 'egress':
+                        # check if source group id matches
+                        if 'src_group_id' in c_grants[0] and 'group_id' in n_grants[0]:
+                            if c_grants[0]['src_group_id'] == n_grants[0]['group_id']:
+                                is_removed = False 
             if is_removed:
                 removed_rules.append(rule)
         return removed_rules
 
     # Detect added rules
-    def detect_added_rules(self, current_rules, new_rules):
+    def detect_added_rules(self, current_rules, new_rules, traffic_type='ingress'):
         added_rules = []
         # loop through new rules
         for new_rule in new_rules:
             is_added = True 
             n_grants = new_rule['grants']
+            n_ip_protocol = new_rule['ip_protocol'] if new_rule['ip_protocol'] else None
             n_from_port = int(new_rule['from_port']) if new_rule['from_port'] else None
             n_to_port = int(new_rule['to_port']) if new_rule['to_port'] else None
             # loop through existing rules
             for rule in current_rules:
                 c_grants = rule['grants']
+                c_ip_protocol = rule['ip_protocol'] if rule['ip_protocol'] else None
                 c_from_port = int(rule['from_port']) if rule['from_port'] else None
                 c_to_port = int(rule['to_port']) if rule['to_port'] else None
-                if c_from_port == n_from_port and c_to_port == n_to_port:
+                # check if the ip protocol, from_port, and to_port match
+                if c_ip_protocol == n_ip_protocol and c_from_port == n_from_port and c_to_port == n_to_port:
+                    # check if the cidr_ip matches
                     if 'cidr_ip' in c_grants[0] and 'cidr_ip' in n_grants[0]:
                         if  c_grants[0]['cidr_ip'] == n_grants[0]['cidr_ip']:
                             is_added = False
-                    elif 'src_security_group_group_id' in c_grants[0] and 'group_id' in n_grants[0]:
-                        if c_grants[0]['src_security_group_group_id'] == n_grants[0]['group_id']:
-                            is_added = False 
+                    elif traffic_type == 'ingress':
+                        # check if source group id matches
+                        if 'src_security_group_group_id' in c_grants[0] and 'group_id' in n_grants[0]:
+                            if c_grants[0]['src_security_group_group_id'] == n_grants[0]['group_id']:
+                                is_added = False 
+                    elif traffic_type == 'egress':
+                        # check if source group id matches
+                        if 'src_group_id' in c_grants[0] and 'group_id' in n_grants[0]:
+                            if c_grants[0]['src_group_id'] == n_grants[0]['group_id']:
+                                is_added = False 
             if is_added:
                 added_rules.append(new_rule)
         return added_rules
