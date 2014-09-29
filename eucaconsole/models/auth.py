@@ -286,11 +286,11 @@ class EucaAuthenticator(object):
             return creds
         except SSLError as err:
             if err.message != '':
-                raise urllib2.URLError(err.message)
+                raise urllib2.URLError(str(err))
             else:
                 raise urllib2.URLError(err[1])
         except socket.error as err:
-            raise urllib2.URLError(err.message)
+            raise urllib2.URLError(str(err))
 
 
 class AWSAuthenticator(object):
