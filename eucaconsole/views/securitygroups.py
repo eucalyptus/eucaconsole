@@ -347,25 +347,32 @@ class SecurityGroupView(TaggedItemView):
                 else:
                     self.conn.authorize_security_group_egress(**auth_args)
 
+    # Update security group rules when the request arrives
     def update_rules(self):
-        # Remove existing rules prior to updating, since we're doing a fresh update
-        #self.revoke_all_rules()
-        #self.revoke_all_rules(traffic_type='egress')
-        #self.add_rules()
-        #self.add_rules(traffic_type='egress')
+        self.update_ingress_rules()
+        self.update_egress_rules()
 
+    # Handle the update of the ingress rules
+    def update_ingress_rules(self):
+        # build rules dict for existing ingress rules
         current_rules = self.build_rules_dict(self.security_group.rules)
-        new_rules_json = self.request.params.get('rules')
-        new_rules = json.loads(new_rules_json) if new_rules_json else []
-        print "-- compare ingress rules --"
-        self.compare_rules(current_rules, new_rules)
-        print
-        current_egress_rules = self.build_rules_dict(self.security_group.rules_egress, traffic_type='egress')
-        new_egress_rules_json = self.request.params.get('rules_egress')
-        new_egress_rules = json.loads(new_egress_rules_json) if new_egress_rules_json else []
-        print "-- compare egress rules --"
-        self.compare_rules(current_egress_rules, new_egress_rules, traffic_type='egress')
+        # build rules dict for new ingress rules from the request 
+        new_rules_params = self.request.params.get('rules')
+        new_rules = json.loads(new_rules_params) if new_rules_params else []
+        # compare the rules and update the rules
+        self.compare_and_update_rules(current_rules, new_rules)
 
+    # Handle the update of the egress rules
+    def update_egress_rules(self):
+        # build rules dict for existing egress rules
+        current_egress_rules = self.build_rules_dict(self.security_group.rules_egress, traffic_type='egress')
+        # build rules dict for new egress rules from the request
+        new_egress_rules_params = self.request.params.get('rules_egress')
+        new_egress_rules = json.loads(new_egress_rules_params) if new_egress_rules_params else []
+        # compare the rules and update the rules
+        self.compare_and_update_rules(current_egress_rules, new_egress_rules, traffic_type='egress')
+
+    # Build security group rules dictionary for comparison and update purpose
     def build_rules_dict(self, rules, traffic_type='ingress'):
         current_rules = []
         for rule in rules:
@@ -396,76 +403,81 @@ class SecurityGroupView(TaggedItemView):
                         ))
                 grants_params.append(g_params)
             params.update(dict( grants=grants_params ))
+            # append the parameters into the rules dictionary
             current_rules.append(params)
         return current_rules
 
-    def compare_rules(self, current_rules, new_rules, traffic_type='ingress'):
-        print
-        print "new rules: " , new_rules
-        print
-        print "current rules: " , current_rules
-        print
+    # Compare the security group rules dictionaries and update added or removed rules
+    def compare_and_update_rules(self, current_rules, new_rules, traffic_type='ingress'):
+        self.compare_and_update_removed_rules(current_rules, new_rules, traffic_type)
+        self.compare_and_update_added_rules(current_rules, new_rules, traffic_type)
+
+    # Detect the removed rules and make API calls to remove them
+    def compare_and_update_removed_rules(self, current_rules, new_rules, traffic_type='ingress'):
+        # detect removed rules 
         removed_rules_dict = self.detect_removed_rules(current_rules, new_rules, traffic_type)
-        # convert the rules dict to boto params
+        # convert the removed rules dict to boto params
         removed_rules = self.build_rules_params(removed_rules_dict, traffic_type)
-        print "removed rules: " , removed_rules
         for rule in removed_rules:
             if traffic_type == 'ingress':
                 self.conn.revoke_security_group(**rule)
             else:
                 self.conn.revoke_security_group_egress(**rule)
-        print
+
+    # Detect the added rules and make API calls to add them
+    def compare_and_update_added_rules(self, current_rules, new_rules, traffic_type='ingress'):
+        # detect added rules 
         added_rules_dict = self.detect_added_rules(current_rules, new_rules, traffic_type)
-        # convert the rules dict to boto params
+        # convert the added rules dict to boto params
         added_rules = self.build_rules_params(added_rules_dict, traffic_type) 
-        print "added rules: " , added_rules
         for rule in added_rules:
             if traffic_type == 'ingress':
                 self.conn.authorize_security_group(**rule)
             else:
                 self.conn.authorize_security_group_egress(**rule)
 
-    # Build rules params for boto calls
+    # Build security group rules params from security group dictionary for boto calls
     def build_rules_params(self, rules_dict, traffic_type='ingress'):
         rules_params = []
         for rule in rules_dict:
             ip_protocol = rule['ip_protocol']
             from_port = rule['from_port']
             to_port = rule['to_port']
+            grants = rule['grants']
             cidr_ip = None
             group_id = ''
             group_name = ''
             owner_id = ''
-
+            # ensure that the from_port is greater than to_port
             if from_port is not None and to_port is not None:
                 from_port = int(from_port)
                 to_port = int(to_port)
                 if to_port < from_port:
                     to_port = from_port
-
-            src_group = None
-            grants = rule['grants']
-
+            # check each grant access for the rule
             for grant in grants:
                 cidr_ip = grant['cidr_ip'] if 'cidr_ip' in grant else ''
+                # detect the name of the source security group
                 if 'name' in grant:
                     group_name = grant['name']
                 elif 'src_security_group_name' in grant:
                     group_name = grant['src_security_group_name']
+                # detect the owner id of the source security group 
                 if 'owner_id' in grant:
                     owner_id = grant['owner_id']
                 elif 'src_security_group_owner_id' in grant:
                     owner_id = grant['src_security_group_owner_id']
+                # detec the group id of the source security group 
                 if 'group_id' in grant:
                     group_id = grant['group_id']
                 elif 'src_security_group_group_id' in grant: 
                     group_id = grant['src_security_group_group_id']
                 elif 'src_group_id' in grant: 
                     group_id = grant['src_group_id']
-
+            # create the argument dictionary for boto call
             auth_args = dict(group_id=self.security_group.id, ip_protocol=ip_protocol,
                              from_port=from_port, to_port=to_port, cidr_ip=cidr_ip)
-
+            # the parameters below are different for EC2-Classic and EC2-VPC
             if traffic_type == 'ingress':
                 if group_id:
                     auth_args['src_security_group_group_id'] = group_id
@@ -476,10 +488,11 @@ class SecurityGroupView(TaggedItemView):
             else:
                 if group_id:
                     auth_args['src_group_id'] = group_id
+            # append the rules parameters
             rules_params.append(auth_args)
         return rules_params
 
-    # Detect removed rules
+    # Detect removed rules and return the removed rules dictionary
     def detect_removed_rules(self, current_rules, new_rules, traffic_type='ingress'):
         removed_rules = []
         # loop through current rules
@@ -515,7 +528,7 @@ class SecurityGroupView(TaggedItemView):
                 removed_rules.append(rule)
         return removed_rules
 
-    # Detect added rules
+    # Detect added rules and return the added rules dictonary
     def detect_added_rules(self, current_rules, new_rules, traffic_type='ingress'):
         added_rules = []
         # loop through new rules
