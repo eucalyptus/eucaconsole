@@ -422,7 +422,7 @@ class ChoicesManager(object):
         for vpc in vpc_subnet_list:
             if show_zone:
                 # Format the VPC subnet display string for select options
-                subnet_string = vpc.cidr_block + " (" + vpc.id + ") | " + vpc.availability_zone 
+                subnet_string = '{0} ({1}) | {2}'.format(vpc.cidr_block, vpc.id, vpc.availability_zone)
                 choices.append((vpc.id, subnet_string))
             else:
                 choices.append((vpc.id, vpc.cidr_block))
