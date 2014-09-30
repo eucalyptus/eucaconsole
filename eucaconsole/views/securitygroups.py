@@ -405,9 +405,70 @@ class SecurityGroupView(TaggedItemView):
         print
         print "current rules: " , current_rules
         print
-        print "removed rules: " , self.detect_removed_rules(current_rules, new_rules, traffic_type)
+        removed_rules_dict = self.detect_removed_rules(current_rules, new_rules, traffic_type)
+        # convert the rules dict to boto params
+        removed_rules = self.build_rules_params(removed_rules_dict, traffic_type)
+        print "removed rules: " , removed_rules
+        for rule in removed_rules:
+            if traffic_type == 'ingress':
+                self.conn.revoke_security_group(**rule)
+            else:
+                self.conn.revoke_security_group_egress(**rule)
         print
-        print "added rules: " , self.detect_added_rules(current_rules, new_rules, traffic_type)
+        added_rules_dict = self.detect_added_rules(current_rules, new_rules, traffic_type)
+        # convert the rules dict to boto params
+        added_rules = self.build_rules_params(added_rules_dict, traffic_type) 
+        print "added rules: " , added_rules
+        for rule in added_rules:
+            if traffic_type == 'ingress':
+                self.conn.authorize_security_group(**rule)
+            else:
+                self.conn.authorize_security_group_egress(**rule)
+
+    # Build rules params for boto calls
+    def build_rules_params(self, rules_dict, traffic_type='ingress'):
+        rules_params = []
+        for rule in rules_dict:
+            ip_protocol = rule['ip_protocol']
+            from_port = rule['from_port']
+            to_port = rule['to_port']
+            cidr_ip = None
+
+            if from_port is not None and to_port is not None:
+                from_port = int(from_port)
+                to_port = int(to_port)
+                if to_port < from_port:
+                    to_port = from_port
+
+            src_group = None
+            grants = rule['grants']
+
+            for grant in grants:
+                cidr_ip = grant['cidr_ip'] if 'cidr_ip' in grant else ''
+                # need to refactor below arrangement
+                group_name = grant['name'] if 'name' in grant else ''
+                owner_id = grant['owner_id'] if 'owner_id' in grant else ''
+                group_id = grant['group_id'] if 'group_id' in grant else ''
+                group_name = grant['src_security_group_name'] if 'src_security_group_name' in grant else ''
+                owner_id = grant['src_security_group_owner_id'] if 'src_security_group_owner_id' in grant else ''
+                group_id = grant['src_security_group_group_id'] if 'src_security_group_group_id' in grant else ''
+
+            auth_args = dict(group_id=self.security_group.id, ip_protocol=ip_protocol,
+                             from_port=from_port, to_port=to_port, cidr_ip=cidr_ip)
+
+            if traffic_type == 'ingress':
+                if group_id:
+                    auth_args['src_security_group_group_id'] = group_id
+                elif group_name:
+                    auth_args['src_security_group_name'] = group_name
+                if owner_id:
+                    auth_args['src_security_group_owner_id'] = owner_id
+            else:
+                if group_id:
+                    auth_args['src_group_id'] = group_id
+            rules_params.append(auth_args)
+        print "rules_params: ", rules_params
+        return rules_params
 
     # Detect removed rules
     def detect_removed_rules(self, current_rules, new_rules, traffic_type='ingress'):
