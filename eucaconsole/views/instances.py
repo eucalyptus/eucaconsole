@@ -56,6 +56,7 @@ from ..i18n import _
 from ..models import Notification
 from ..views import BaseView, LandingPageView, TaggedItemView, BlockDeviceMappingItemView, JSONResponse
 from ..views.images import ImageView
+from ..views.roles import RoleView
 from ..views.securitygroups import SecurityGroupsView
 from . import boto_error_handler
 from . import guess_mimetype_from_buffer
@@ -237,16 +238,7 @@ class InstancesView(LandingPageView, BaseInstanceView):
         if self.terminate_form.validate():
             with boto_error_handler(self.request, self.location):
                 self.log_request(_(u"Terminating instance {0}").format(instance_id))
-                instances = self.conn.get_only_instances([instance_id])
                 self.conn.terminate_instances([instance_id])
-                if len(instances) > 0:
-                    instance = instances[0]
-                    profile = instance.instance_profile
-                    # TODO: check tags to see if this was part of scaling group before removing profile
-                    if instance.state == 'running' and profile is not None and hasattr(profile, 'arn'):
-                        arn = profile['arn']
-                        profile_name = arn[(arn.index('/')+1):]
-                        self.iam_conn.delete_instance_profile(profile_name)
                 msg = _(
                     u'Successfully sent terminate instance request.  It may take a moment to shut down the instance.')
                 if self.request.is_xhr:
@@ -264,14 +256,6 @@ class InstancesView(LandingPageView, BaseInstanceView):
         if self.batch_terminate_form.validate():
             with boto_error_handler(self.request, self.location):
                 self.log_request(_(u"Terminating instances {0}").format(str(instance_ids)))
-                instances = self.conn.get_only_instances(instance_ids)
-                for instance in instances:
-                    profile = instance.instance_profile
-                    # TODO: check tags to see if this was part of scaling group before removing profile
-                    if profile is not None and hasattr(profile, 'arn'):
-                        arn = profile['arn']
-                        profile_name = arn[(arn.index('/')+1):]
-                        self.iam_conn.delete_instance_profile(profile_name)
                 self.conn.terminate_instances(instance_ids=instance_ids)
                 prefix = _(u'Successfully sent request to terminate the following instances:')
                 msg = '{0} {1}'.format(prefix, ', '.join(instance_ids))
@@ -610,12 +594,6 @@ class InstanceView(TaggedItemView, BaseInstanceView):
             with boto_error_handler(self.request, self.location):
                 self.log_request(_(u"Terminating instance {0}").format(self.instance.id))
                 self.instance.terminate()
-                profile = self.instance.instance_profile
-                # TODO: check tags to see if this was part of scaling group before removing profile
-                if self.instance.state == 'running' and profile is not None and hasattr(profile, 'arn'):
-                    arn = profile['arn']
-                    profile_name = arn[(arn.index('/')+1):]
-                    self.iam_conn.delete_instance_profile(profile_name)
                 msg = _(
                     u'Successfully sent terminate instance request.  It may take a moment to shut down the instance.')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
@@ -966,9 +944,7 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
             with boto_error_handler(self.request, self.location):
                 instance_profile = None
                 if role != '':  # need to set up instance profile, add role and supply to run_instances
-                    profile_name = 'instance_profile_{0}'.format(os.urandom(16).encode('base64').strip('=\/\n'))
-                    instance_profile = self.iam_conn.create_instance_profile(profile_name, path='/'+role)
-                    self.iam_conn.add_role_to_instance_profile(profile_name, role)
+                    instance_profile = RoleView.get_or_create_instance_profile(self.iam_conn, role)
                 self.log_request(_(u"Running instance(s) (num={0}, image={1}, type={2})").format(
                     num_instances, image_id, instance_type))
                 # Create base params for run_instances()
@@ -1129,11 +1105,6 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
             block_device_map = self.get_block_device_map(bdmapping_json)
             new_instance_ids = []
             with boto_error_handler(self.request, self.location):
-                instance_profile = None
-                if self.role is not None:  # need to set up instance profile, add role and supply to run_instances
-                    profile_name = 'instance_profile_{0}'.format(os.urandom(16).encode('base64').rstrip('=/\n'))
-                    instance_profile = self.iam_conn.create_instance_profile(profile_name, path='/' + self.role)
-                    self.iam_conn.add_role_to_instance_profile(profile_name, self.role)
                 self.log_request(_(u"Running instance(s) (num={0}, image={1}, type={2})").format(
                     num_instances, image_id, instance_type))
                 # Create base params for run_instances()
@@ -1148,7 +1119,7 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
                     ramdisk_id=ramdisk_id,
                     monitoring_enabled=monitoring_enabled,
                     block_device_map=block_device_map,
-                    instance_profile_arn=instance_profile.arn if instance_profile else None,
+                    instance_profile_arn=self.instance.instance_profile.arn if self.instance.instance_profile else None,
                 )
                 if vpc_network is not None:
                     network_interface = NetworkInterfaceSpecification(
