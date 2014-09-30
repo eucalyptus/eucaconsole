@@ -1061,7 +1061,7 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
                 self.associate_public_ip_address = 'Enabled'
         if self.instance.instance_profile:
             arn = self.instance.instance_profile['arn']
-            profile_name = arn[(arn.index('/')+1):]
+            profile_name = arn[(arn.rindex('/')+1):]
             inst_profile = self.iam_conn.get_instance_profile(profile_name)
             self.role = inst_profile.roles.member.role_name
         self.render_dict = dict(
@@ -1119,7 +1119,7 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
                     ramdisk_id=ramdisk_id,
                     monitoring_enabled=monitoring_enabled,
                     block_device_map=block_device_map,
-                    instance_profile_arn=self.instance.instance_profile.arn if self.instance.instance_profile else None,
+                    instance_profile_arn=self.instance.instance_profile['arn'] if self.instance.instance_profile else None,
                 )
                 if vpc_network is not None:
                     network_interface = NetworkInterfaceSpecification(
