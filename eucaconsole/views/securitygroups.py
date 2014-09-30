@@ -433,6 +433,9 @@ class SecurityGroupView(TaggedItemView):
             from_port = rule['from_port']
             to_port = rule['to_port']
             cidr_ip = None
+            group_id = ''
+            group_name = ''
+            owner_id = ''
 
             if from_port is not None and to_port is not None:
                 from_port = int(from_port)
@@ -445,13 +448,20 @@ class SecurityGroupView(TaggedItemView):
 
             for grant in grants:
                 cidr_ip = grant['cidr_ip'] if 'cidr_ip' in grant else ''
-                # need to refactor below arrangement
-                group_name = grant['name'] if 'name' in grant else ''
-                owner_id = grant['owner_id'] if 'owner_id' in grant else ''
-                group_id = grant['group_id'] if 'group_id' in grant else ''
-                group_name = grant['src_security_group_name'] if 'src_security_group_name' in grant else ''
-                owner_id = grant['src_security_group_owner_id'] if 'src_security_group_owner_id' in grant else ''
-                group_id = grant['src_security_group_group_id'] if 'src_security_group_group_id' in grant else ''
+                if 'name' in grant:
+                    group_name = grant['name']
+                elif 'src_security_group_name' in grant:
+                    group_name = grant['src_security_group_name']
+                if 'owner_id' in grant:
+                    owner_id = grant['owner_id']
+                elif 'src_security_group_owner_id' in grant:
+                    owner_id = grant['src_security_group_owner_id']
+                if 'group_id' in grant:
+                    group_id = grant['group_id']
+                elif 'src_security_group_group_id' in grant: 
+                    group_id = grant['src_security_group_group_id']
+                elif 'src_group_id' in grant: 
+                    group_id = grant['src_group_id']
 
             auth_args = dict(group_id=self.security_group.id, ip_protocol=ip_protocol,
                              from_port=from_port, to_port=to_port, cidr_ip=cidr_ip)
@@ -467,7 +477,6 @@ class SecurityGroupView(TaggedItemView):
                 if group_id:
                     auth_args['src_group_id'] = group_id
             rules_params.append(auth_args)
-        print "rules_params: ", rules_params
         return rules_params
 
     # Detect removed rules
