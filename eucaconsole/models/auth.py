@@ -139,7 +139,7 @@ class ConnectionManager(object):
         return _aws_connection(region, access_key, secret_key, token, conn_type)
 
     @staticmethod
-    def euca_connection(clchost, port, access_id, secret_key, token, conn_type, validate_certs=False, cert_file=None):
+    def euca_connection(clchost, port, access_id, secret_key, token, conn_type, validate_certs=False, certs_file=None):
         """Return Eucalyptus connection object
         Pulls from Beaker cache on subsequent calls to avoid connection overhead
 
