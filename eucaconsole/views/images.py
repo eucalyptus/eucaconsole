@@ -576,12 +576,12 @@ class ImageView(TaggedItemView, ImageBundlingMixin):
     def get_controller_options_json(self):
         if not self.image:
             return '{}'
-        id = self.image.fake_id or self.image.id
+        image_id = self.image.fake_id or self.image.id
         return BaseView.escape_json(json.dumps({
             'is_public': self.is_public,
             'image_launch_permissions': self.image_launch_permissions,
-            'image_state_json_url': self.request.route_path('image_state_json', id=id),
-            'image_cancel_url': self.request.route_path('image_cancel', id=id),
+            'image_state_json_url': self.request.route_path('image_state_json', id=image_id),
+            'image_cancel_url': self.request.route_path('image_cancel', id=image_id),
             'images_url': self.request.route_path('images'),
         }))
 
