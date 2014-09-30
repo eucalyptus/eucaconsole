@@ -339,7 +339,7 @@ class SecurityGroupView(TaggedItemView):
             else:
                 if group_id:
                     auth_args['src_group_id'] = group_id
-            
+
             # If group_id is empty, or if group_id is not empty, make sure it hasn't been deleted
             if not group_id or self.exists_security_group(group_id) is not None:
                 if traffic_type == 'ingress':
@@ -356,7 +356,7 @@ class SecurityGroupView(TaggedItemView):
     def update_ingress_rules(self):
         # build rules dict for existing ingress rules
         current_rules = self.build_rules_dict(self.security_group.rules)
-        # build rules dict for new ingress rules from the request 
+        # build rules dict for new ingress rules from the request
         new_rules_params = self.request.params.get('rules')
         new_rules = json.loads(new_rules_params) if new_rules_params else []
         # compare the rules and update the rules
@@ -402,7 +402,7 @@ class SecurityGroupView(TaggedItemView):
                             src_group_id=grant.group_id,
                         ))
                 grants_params.append(g_params)
-            params.update(dict( grants=grants_params ))
+            params.update(dict(grants=grants_params))
             # append the parameters into the rules dictionary
             current_rules.append(params)
         return current_rules
@@ -414,7 +414,7 @@ class SecurityGroupView(TaggedItemView):
 
     # Detect the removed rules and make API calls to remove them
     def compare_and_update_removed_rules(self, current_rules, new_rules, traffic_type='ingress'):
-        # detect removed rules 
+        # detect removed rules
         removed_rules_dict = self.detect_removed_rules(current_rules, new_rules, traffic_type)
         # convert the removed rules dict to boto params
         removed_rules = self.build_rules_params(removed_rules_dict, traffic_type)
@@ -426,10 +426,10 @@ class SecurityGroupView(TaggedItemView):
 
     # Detect the added rules and make API calls to add them
     def compare_and_update_added_rules(self, current_rules, new_rules, traffic_type='ingress'):
-        # detect added rules 
+        # detect added rules
         added_rules_dict = self.detect_added_rules(current_rules, new_rules, traffic_type)
         # convert the added rules dict to boto params
-        added_rules = self.build_rules_params(added_rules_dict, traffic_type) 
+        added_rules = self.build_rules_params(added_rules_dict, traffic_type)
         for rule in added_rules:
             if traffic_type == 'ingress':
                 self.conn.authorize_security_group(**rule)
@@ -462,17 +462,17 @@ class SecurityGroupView(TaggedItemView):
                     group_name = grant['name']
                 elif 'src_security_group_name' in grant:
                     group_name = grant['src_security_group_name']
-                # detect the owner id of the source security group 
+                # detect the owner id of the source security group
                 if 'owner_id' in grant:
                     owner_id = grant['owner_id']
                 elif 'src_security_group_owner_id' in grant:
                     owner_id = grant['src_security_group_owner_id']
-                # detec the group id of the source security group 
+                # detec the group id of the source security group
                 if 'group_id' in grant:
                     group_id = grant['group_id']
-                elif 'src_security_group_group_id' in grant: 
+                elif 'src_security_group_group_id' in grant:
                     group_id = grant['src_security_group_group_id']
-                elif 'src_group_id' in grant: 
+                elif 'src_group_id' in grant:
                     group_id = grant['src_group_id']
             # create the argument dictionary for boto call
             auth_args = dict(group_id=self.security_group.id, ip_protocol=ip_protocol,
@@ -497,7 +497,7 @@ class SecurityGroupView(TaggedItemView):
         removed_rules = []
         # loop through current rules
         for rule in current_rules:
-            is_removed = True 
+            is_removed = True
             c_grants = rule['grants']
             c_ip_protocol = rule['ip_protocol'] if rule['ip_protocol'] else None
             c_from_port = int(rule['from_port']) if rule['from_port'] else None
@@ -518,12 +518,12 @@ class SecurityGroupView(TaggedItemView):
                         # check if source group id matches
                         if 'src_security_group_group_id' in c_grants[0] and 'group_id' in n_grants[0]:
                             if c_grants[0]['src_security_group_group_id'] == n_grants[0]['group_id']:
-                                is_removed = False 
+                                is_removed = False
                     elif traffic_type == 'egress':
                         # check if source group id matches
                         if 'src_group_id' in c_grants[0] and 'group_id' in n_grants[0]:
                             if c_grants[0]['src_group_id'] == n_grants[0]['group_id']:
-                                is_removed = False 
+                                is_removed = False
             if is_removed:
                 removed_rules.append(rule)
         return removed_rules
@@ -533,7 +533,7 @@ class SecurityGroupView(TaggedItemView):
         added_rules = []
         # loop through new rules
         for new_rule in new_rules:
-            is_added = True 
+            is_added = True
             n_grants = new_rule['grants']
             n_ip_protocol = new_rule['ip_protocol'] if new_rule['ip_protocol'] else None
             n_from_port = int(new_rule['from_port']) if new_rule['from_port'] else None
@@ -554,12 +554,12 @@ class SecurityGroupView(TaggedItemView):
                         # check if source group id matches
                         if 'src_security_group_group_id' in c_grants[0] and 'group_id' in n_grants[0]:
                             if c_grants[0]['src_security_group_group_id'] == n_grants[0]['group_id']:
-                                is_added = False 
+                                is_added = False
                     elif traffic_type == 'egress':
                         # check if source group id matches
                         if 'src_group_id' in c_grants[0] and 'group_id' in n_grants[0]:
                             if c_grants[0]['src_group_id'] == n_grants[0]['group_id']:
-                                is_added = False 
+                                is_added = False
             if is_added:
                 added_rules.append(new_rule)
         return added_rules
