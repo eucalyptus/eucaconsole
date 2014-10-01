@@ -235,7 +235,9 @@
                                 <input type="radio" id="inputtype" name="inputtype" value="file" ng-model="inputtype">
                                     <label id='userdatalabel' i18n:translate="">Upload file</label>
                                 </input>
-                                <input id="userdata_file" type="file" ng-model="userDataFile" ng-disabled="isNotStopped" name="userdata_file" disabled="disabled" ng-show="inputtype=='file'"></input><span id="userdatatype"></span>
+                                <input id="userdata_file" type="file" ng-model="userDataFile" ng-disabled="isNotStopped"
+                                       name="userdata_file" disabled="disabled" ng-show="inputtype=='file'" />
+                                <span id="userdatatype"></span>
                             </div>
                         </div>
                     </div>

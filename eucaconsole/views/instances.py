@@ -352,26 +352,17 @@ class InstancesJsonView(LandingPageView):
             # Set default alias to 'amazon' for AWS
             owner_alias = 'amazon'
         region = self.request.session.get('region')
-        images = self.get_images(self.conn, [], [], region)
         for instance in filtered_items:
             is_transitional = instance.state in transitional_states
             security_groups_array = sorted({'name': group.name, 'id': group.id} for group in instance.groups)
             if instance.platform is None:
                 instance.platform = _(u"linux")
             has_elastic_ip = instance.ip_address in elastic_ips
-            image = self.get_image_by_id(images, instance.image_id)
-            image_name = None
-            if image:
-                image_name = '{0}{1}'.format(
-                    image.name if image.name else image.id,
-                    ' ({0})'.format(image.id) if image.name else ''
-                )
             instances.append(dict(
                 id=instance.id,
                 name=TaggedItemView.get_display_name(instance, escapebraces=False),
                 instance_type=instance.instance_type,
                 image_id=instance.image_id,
-                image_name=image_name,
                 ip_address=instance.ip_address,
                 has_elastic_ip=has_elastic_ip,
                 public_dns_name=instance.public_dns_name,
@@ -387,6 +378,17 @@ class InstancesJsonView(LandingPageView):
                 transitional=is_transitional,
                 running_create=True if instance.tags.get('ec_bundling') else False,
             ))
+        image_ids = [i['image_id'] for i in instances]
+        images = self.conn.get_all_images(filters={'image-id':image_ids})
+        for instance in instances:
+            image = self.get_image_by_id(images, instance['image_id'])
+            image_name = None
+            if image:
+                image_name = '{0}{1}'.format(
+                    image.name if image.name else image.id,
+                    ' ({0})'.format(image.id) if image.name else ''
+                )
+            instance['image_name']=image_name
         return dict(results=instances)
 
     def get_items(self, filters=None):
