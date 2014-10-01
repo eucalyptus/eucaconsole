@@ -32,6 +32,8 @@ angular.module('InstanceTypesPage', [])
         $scope.cpuInputError = {};
         $scope.memoryInputError = {};
         $scope.diskInputError = {};
+        $scope.chosenCreateOptionText = '';
+        $scope.chosenNoResultsText = '';
         $scope.itemsLoading = true;
         $scope.isNotChanged = true;
         $scope.jsonEndpoint = '';
@@ -40,8 +42,14 @@ angular.module('InstanceTypesPage', [])
         $scope.initController = function (jsonItemsEndpoint, submitEndpoint) {
             $scope.jsonEndpoint = jsonItemsEndpoint;
             $scope.submitEndpoint = submitEndpoint;
+            $scope.initValues();
             $scope.getItems();
             $scope.setWatch();
+        };
+        $scope.initValues = function () {
+            // Init text values
+            $scope.chosenCreateOptionText = $('#chosen-create-option-text').text();
+            $scope.chosenNoResultsText = $('#chosen-no-results-text').text();
         };
         $scope.initChosenWidgets = function () {
             angular.forEach($scope.items, function(item){
@@ -130,8 +138,8 @@ angular.module('InstanceTypesPage', [])
             $(selector).chosen({
                 width: '80%', search_contains: true, 
                 persistent_create_option: true,
-                skip_no_results: true,
-                create_option_text: 'Insert a new value',
+                no_results_text: $scope.chosenNoResultsText, 
+                create_option_text: $scope.chosenCreateOptionText,
                 create_option: createOptionCallback
             });
         }; 
