@@ -16,12 +16,12 @@
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('buckets')}" i18n:translate="">Buckets</a></li>
                 <li>
-                    <a href="${request.route_path('bucket_contents', subpath=bucket_name)}"
+                    <a href="${request.route_path('bucket_contents', name=bucket_name, subpath='')}"
                        i18n:translate="">${bucket_name}</a>
                 </li>
                 <li tal:repeat="folder request.subpath" class="${'current' if repeat.folder.end else ''}">
                     <a tal:condition="repeat.folder.end" ng-non-bindable="">${folder}</a>
-                    <a href="${request.route_path('bucket_contents', subpath=bucket_name+'/'+'/'.join(request.subpath[:repeat.folder.index+1]))}"
+                    <a href="${request.route_path('bucket_contents', name=bucket_name, subpath='/'.join(request.subpath[:repeat.folder.index+1]))}"
                        ng-non-bindable="" tal:condition="not repeat.folder.end">${folder}</a>
                 </li>
                 <li class="current"><a href="#" i18n:translate="">Upload file</a></li>
@@ -32,7 +32,9 @@
         <h3 id="pagetitle" i18n:translate="">Upload file</h3>
         <div class="large-7 columns">
             <div class="panel">
-                <form id="upload-file-form" data-abide="abide" ng-cloak="" action="${request.route_path('bucket_upload', name=bucket_name, subpath=request.subpath)}" method="POST" accept-charset="utf-8" enctype="multipart/form-data">
+                <form id="upload-file-form" data-abide="abide" ng-cloak=""
+                      action="${request.route_path('bucket_upload', name=bucket_name, subpath=request.subpath)}"
+                      method="POST" accept-charset="utf-8" enctype="multipart/form-data">
                     ${structure:upload_form['csrf_token']}
                     <h6 class='subheading-label' i18n:translate=''>Select file(s)</h6>
                     <input type="file" id="files" data-file="files" multiple="" name='files'>

@@ -148,10 +148,10 @@ angular.module('BucketContentsPage', ['LandingPage', 'EucaConsoleUtils'])
                     Notify.failure("some kind of error");
                 });
         };
-        $scope.saveKey = function (path, key) {
+        $scope.saveKey = function (bucket_name, key) {
             var id = $('.open').attr('id');  // hack to close action menu
             $('#table-'+id).trigger('click');
-            Modernizr.localstorage && localStorage.setItem('copy-object-buffer', path+'/'+key);
+            Modernizr.localstorage && localStorage.setItem('copy-object-buffer', bucket_name + '/' + key);
         };
         $scope.$on('itemsLoaded', function($event, items) {
             $scope.items = items;

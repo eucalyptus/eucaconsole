@@ -184,20 +184,20 @@ urls = [
     # Contents/detail pages
     Route(name='bucket_new', pattern='/buckets/new'),
     Route(name='bucket_create', pattern='/buckets/create'),
-    Route(name='bucket_contents', pattern='/bucketcontents/*subpath'),
-    Route(name='bucket_keys', pattern='/bucketkeys/*subpath'),
     Route(name='bucket_details', pattern='/buckets/{name}/details'),
     Route(name='bucket_objects_count_versioning_json', pattern='/buckets/{name}/objectscount.json'),
     Route(name='bucket_update', pattern='/buckets/{name}/update'),
     Route(name='bucket_delete', pattern='/buckets/{name}/delete'),
     Route(name='bucket_delete_keys', pattern='/buckets/{name}/delete_keys'),
     Route(name='bucket_update_versioning', pattern='/buckets/{name}/updateversioning'),
+    Route(name='bucket_contents', pattern='/buckets/{name}/contents/*subpath'),
+    Route(name='bucket_keys', pattern='/buckets/{name}/keys/*subpath'),
     Route(name='bucket_item_details', pattern='/buckets/{name}/itemdetails/*subpath'),
     Route(name='bucket_item_update', pattern='/buckets/{name}/itemupdate/*subpath'),
     Route(name='bucket_put_item', pattern='/buckets/{name}/putitem/*subpath'),
     Route(name='bucket_create_folder', pattern='/buckets/{name}/createfolder/*subpath'),
     Route(name='bucket_upload', pattern='/buckets/{name}/upload/*subpath'),
-    Route(name='bucket_sign_req', pattern='/bucketsignreq/{name}/*subpath'),
+    Route(name='bucket_sign_req', pattern='/buckets/{name}/signreq/*subpath'),
 
 
     # Security Groups #####
