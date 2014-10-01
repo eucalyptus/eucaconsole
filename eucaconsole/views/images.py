@@ -113,6 +113,7 @@ class ImageBundlingMixin(BlockDeviceMappingItemView):
             # add this into image list
             fakeimage = Image()
             fakeimage.id = _(u'Pending')
+            fakeimage.fake_id = 'p'+instance.id
             fakeimage.location = "%s/%s.manifest.xml" % (bucket, metadata['prefix'])
             fakeimage.owner_id = ''  # do we need this?
             fakeimage.state = tasks[0].state
@@ -224,7 +225,6 @@ class ImagesJsonView(LandingPageView, ImageBundlingMixin):
         for instance in instances:
             image = self.handle_instance_being_bundled(instance)
             if image is not None:
-                image.fake_id = 'p'+instance.id
                 items.append(image)
         # Apply filters, skipping owner_alias since it's leveraged in self.get_items() below
         filtered_items = self.filter_items(items, ignore=['owner_alias', 'platform'])
@@ -576,11 +576,12 @@ class ImageView(TaggedItemView, ImageBundlingMixin):
     def get_controller_options_json(self):
         if not self.image:
             return '{}'
+        image_id = self.image.fake_id or self.image.id
         return BaseView.escape_json(json.dumps({
             'is_public': self.is_public,
             'image_launch_permissions': self.image_launch_permissions,
-            'image_state_json_url': self.request.route_path('image_state_json', id=self.image.id),
-            'image_cancel_url': self.request.route_path('image_cancel', id=self.image.id),
+            'image_state_json_url': self.request.route_path('image_state_json', id=image_id),
+            'image_cancel_url': self.request.route_path('image_cancel', id=image_id),
             'images_url': self.request.route_path('images'),
         }))
 
