@@ -65,8 +65,19 @@ class DashboardView(BaseView):
         )
 
     def get_controller_options_json(self):
+        services=[
+            dict(name=_(u'Compute'), status=''),
+            dict(name=_(u'Object Storage'), status=''),
+            dict(name=_(u'Auto Scaling'), status=''),
+            dict(name=_(u'Elastic Load Balancing'), status=''),
+            dict(name=_(u'CloudWatch'), status=''),
+        ]
+        session = self.request.session
+        if session['cloud_type'] == 'euca':
+            services.append(dict(name=_(u'Identity & Access Mgmt'), status=''))
         return BaseView.escape_json(json.dumps({
             'json_items_url': self.request.route_path('dashboard_json'),
+            'services': services,
             'service_status_url': self.request.route_path('service_status_json'),
             'cloud_type': self.cloud_type,
             'account_display_name': self.get_account_display_name(),
@@ -140,54 +151,43 @@ class DashboardJsonView(BaseView):
                 users=users_count,
                 groups=groups_count,
                 roles=roles_count,
-                health = [
-                    dict(name=_(u'Compute'), up=True),  # this determined client-side
-                ],
+                health = dict(name=_(u'Compute'), status='up'),  # this determined client-side
             )
 
     @view_config(route_name='service_status_json', request_method='GET', renderer='json')
     def service_status_json(self):
-        ec2_conn = self.get_connection()
+        svc = self.request.params.get('svc')
         with boto_error_handler(self.request):
-            #TODO: add s3 health
-            s3 = True
-            conn = self.get_connection(conn_type="s3")
-            try:
-                conn.get_all_buckets()
-            except BotoServerError:
-                s3 = False
-            autoscaling = True
-            conn = self.get_connection(conn_type="autoscale")
-            try:
-                conn.get_all_groups(max_records=1)
-            except BotoServerError:
-                autoscaling = False
-            elb = True
-            conn = self.get_connection(conn_type="elb")
-            try:
-                conn.get_all_load_balancers()
-            except BotoServerError:
-                elb = False
-            cloudwatch = True
-            conn = self.get_connection(conn_type="cloudwatch")
-            try:
-                conn.list_metrics(namespace="AWS/EC2")
-            except BotoServerError:
-                cloudwatch = False
-            health=[
-                dict(name=_(u'Object Storage'), up=s3),
-                dict(name=_(u'Auto Scaling'), up=autoscaling),
-                dict(name=_(u'Elastic Load Balancing'), up=elb),
-                dict(name=_(u'CloudWatch'), up=cloudwatch),
-            ]
-            session = self.request.session
-            if session['cloud_type'] == 'euca':
-                iam = True
+            status = 'up'
+            if svc == _(u'Object Storage'):
+                conn = self.get_connection(conn_type="s3")
+                try:
+                    conn.get_all_buckets()
+                except BotoServerError:
+                    status = 'down'
+            elif svc == _(u'Auto Scaling'):
+                conn = self.get_connection(conn_type="autoscale")
+                try:
+                    conn.get_all_groups(max_records=1)
+                except BotoServerError:
+                    status = 'down'
+            elif svc == _(u'Elastic Load Balancing'):
+                conn = self.get_connection(conn_type="elb")
+                try:
+                    conn.get_all_load_balancers()
+                except BotoServerError:
+                    status = 'down'
+            elif svc == _(u'CloudWatch'):
+                conn = self.get_connection(conn_type="cloudwatch")
+                try:
+                    conn.list_metrics(namespace="AWS/EC2")
+                except BotoServerError:
+                    status = 'down'
+            elif svc == _(u'Identiy & Access Mgmt'):
                 conn = self.get_connection(conn_type="iam")
                 try:
                     conn.get_all_groups(path_prefix="/notlikely")
                 except BotoServerError:
-                    cloudwatch = False
-                health.append(dict(name=_(u'Identity & Access Mgmt'), up=iam))
+                    status = 'down'
 
-            return dict(health=health)
+            return dict(health=dict(name=svc, status=status))
