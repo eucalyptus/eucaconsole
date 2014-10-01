@@ -10,6 +10,8 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor', 'EucaConsoleUtils'])
         $scope.minSize = 1;
         $scope.desiredCapacity = 1;
         $scope.maxSize = 1;
+        $scope.vpcSubnets = [];
+        $scope.vpcSubnetZonesMap = {};
         $scope.isNotChanged = true;
         $scope.isSubmitted = false;
         $scope.pendingModalID = '';
@@ -18,7 +20,8 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor', 'EucaConsoleUtils'])
             // Remove the option if it has no vpc subnet ID associated
             var selectVPCSubnetObject = $('#vpc_subnet option');
             if (selectVPCSubnetObject.length > 0) {
-                if (selectVPCSubnetObject.first().attr('value') == '') {
+                if (selectVPCSubnetObject.first().attr('value') == ''
+                    || selectVPCSubnetObject.first().attr('value') == 'None') {
                     selectVPCSubnetObject.first().remove();
                 } 
             }
@@ -30,6 +33,8 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor', 'EucaConsoleUtils'])
             $scope.minSize = parseInt($('#min_size').val(), 10);
             $scope.desiredCapacity = parseInt($('#desired_capacity').val(), 10);
             $scope.maxSize = parseInt($('#max_size').val(), 10);
+            $scope.createVPCSubnetZonesMap();
+            $scope.setInitialVPCSubnets();
         };
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
@@ -73,6 +78,9 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor', 'EucaConsoleUtils'])
             }
         };
         $scope.setWatch = function () {
+            $scope.$watch('vpcSubnets', function () { 
+                $scope.disableVPCSubnetOptions();
+            }, true);
             // Monitor the action menu click
             $(document).on('click', 'a[id$="action"]', function (event) {
                 // Ingore the action if the link has a ng-click attribute
@@ -180,6 +188,51 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor', 'EucaConsoleUtils'])
                     }
                 });
             }
+        };
+        // Disable the vpc subnet options if they are in the same zone as the selected vpc subnets
+        $scope.disableVPCSubnetOptions = function () {
+            $('#vpc_subnet').find('option').each(function() {
+                var vpcSubnetID = $(this).attr('value');
+                var isDisabled = false;
+                angular.forEach($scope.vpcSubnets, function (subnetID) {
+                    if ($scope.vpcSubnetZonesMap[vpcSubnetID] == $scope.vpcSubnetZonesMap[subnetID]) {
+                        if (vpcSubnetID != subnetID) {
+                            isDisabled = true;
+                        }
+                    }
+                }); 
+                if (isDisabled) {
+                    $(this).attr('disabled', 'disabled'); 
+                } else {
+                    $(this).removeAttr('disabled');
+                }
+            });
+            // Timeout is need for the chosen widget to react after Angular has updated the option list
+            $timeout(function() {
+                $('#vpc_subnet').trigger('chosen:updated');
+            }, 500);
+        };
+        // Initialize VPC subnet availablity zone map 
+        $scope.createVPCSubnetZonesMap = function () {
+            $scope.vpcSubnetZonesMap = {};
+            $('#vpc_subnet').find('option').each(function() {
+                var vpcSubnetID = $(this).attr('value');
+                if (vpcSubnetID != null) {
+                    var vpcSubnetString = $(this).text();
+                    var splitArray = vpcSubnetString.split(' ');
+                    $scope.vpcSubnetZonesMap[vpcSubnetID] = splitArray[splitArray.length-1];
+                }
+            });
+        };
+        // Set the initial values for VPCSubnets array from #vpc_subnet select options
+        $scope.setInitialVPCSubnets = function () {
+            $scope.vpcSubnets = [];
+            $('#vpc_subnet').find('option').each(function() {
+                var vpcSubnetID = $(this).attr('value');
+                if ($(this).attr('selected')) {
+                    $scope.vpcSubnets.push(vpcSubnetID);
+                }
+            });
         };
     })
 ;
