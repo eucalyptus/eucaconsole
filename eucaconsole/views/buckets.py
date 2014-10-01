@@ -71,6 +71,8 @@ class BucketsView(LandingPageView):
         self.sort_keys = [
             dict(key='bucket_name', name=_(u'Bucket name: A to Z')),
             dict(key='-bucket_name', name=_(u'Bucket name: Z to A')),
+            dict(key='creation_date', name=_(u'Creation time: Oldest to Newest')),
+            dict(key='-creation_date', name=_(u'Creation time: Newest to Oldest')),
         ]
         self.render_dict = dict(
             prefix=self.prefix,
@@ -225,6 +227,8 @@ class BucketContentsView(LandingPageView):
             dict(key='-name', name=_(u'Name: Z to A')),
             dict(key='-size', name=_(u'Size: Largest to smallest')),
             dict(key='size', name=_(u'Size: Smallest to largest')),
+            dict(key='-last_modified', name=_(u'Modified time: Newest to Oldest')),
+            dict(key='last_modified', name=_(u'Modified time: Oldest to Newest ')),
         ]
         json_route_path = self.request.route_path('bucket_contents', name=self.bucket_name, subpath=self.subpath)
         self.render_dict.update(
