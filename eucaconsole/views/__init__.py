@@ -363,7 +363,7 @@ class BaseView(object):
                       {'bucket': bucket},
                       ['starts-with', '$key', prefix]]
         if token is not None:
-            conditions[0]['x-amz-security-token'] = token
+            conditions.append({'x-amz-security-token': token})
                       
         policy = {'conditions': conditions,
                   'expiration': time.strftime('%Y-%m-%dT%H:%M:%SZ',
