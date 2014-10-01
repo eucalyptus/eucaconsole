@@ -89,8 +89,8 @@
             <div>
                 <p>
                     <span i18n:translate="">Are you sure you want to terminate</span>
-                    <strong tal:condition="not landingpage">${instance_name}</strong>
-                    <strong tal:condition="landingpage">{{ instanceName }}</strong>?
+                    <strong tal:condition="not landingpage" class="breakword">${instance_name}</strong>
+                    <strong tal:condition="landingpage" class="breakword">{{ instanceName }}</strong>?
                 </p>
             </div>
             <form method="post" action="${action}" id="terminate-form">
