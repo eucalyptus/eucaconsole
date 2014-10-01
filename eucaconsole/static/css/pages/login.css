@@ -5,6 +5,9 @@
 
 #notifications-wrapper { padding-top: 2rem; }
 
+#ssl-warning .fi-alert { color: darkred; }
+#ssl-warning p { line-height: 1.2rem; margin-top: 0.25rem; }
+
 #login-wrapper { position: relative; padding: 10px; }
 #login-wrapper label { font-weight: bold; color: #444444; white-space: nowrap; vertical-align: middle; position: relative; top: 0px; left: 0px; bottom: 10px; }
 #login-wrapper input { background-color: #e6e7e8; }
