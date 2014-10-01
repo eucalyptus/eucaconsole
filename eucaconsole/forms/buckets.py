@@ -93,9 +93,9 @@ class SharingPanelForm(BaseSecureForm):
     share_account_error_msg = _(
         u'Account ID may contain alpha-numeric characters and is a 12-digit account ID or the 64-digit canonical ID.')
     share_account_helptext = _(
-        u"Even if you enter a user's email address, sharing will be extended to all users in their account."
+        u"Enter an account ID or a user's email address. If you enter an email address, sharing will be extended to all users in their account."
     )
-    share_account = TextEscapedField(label=_(u'Account ID or email'))
+    share_account = TextEscapedField(label=_(u'Account'))
     share_permissions = wtforms.SelectField(label=_(u'Permissions'))
     canned_acl = wtforms.SelectField()
 
