@@ -26,27 +26,10 @@
                     ${structure:create_form['csrf_token']}
                     ${panel('form_field', field=create_form.bucket_name, pattern=bucket_name_pattern, leftcol_width=12, rightcol_width=12, inline=False, ng_attrs={'model': 'bucketName'})}
                     <hr />
-                    ${panel('s3_sharing_panel', sharing_form=sharing_form)}
-                    <hr />
-                    <div class="expando" id="create-bucket-advanced-section" ng-cloak="" ng-init="advancedExpanded=false">
-                        <h6 class="title" >
-                            <a ng-click="advancedExpanded = !advancedExpanded">
-                                <i class="fi-plus" ng-show="!advancedExpanded"></i>
-                                <i class="fi-minus" ng-show="advancedExpanded"></i>
-                                &nbsp;<span i18n:translate="">Advanced</span>
-                            </a>
-                        </h6>
-                        <div class="content" ng-show="advancedExpanded">
-                            <div class="row controls-wrapper">
-                                ${panel('form_field', field=create_form.enable_versioning, reverse=True)}
-                            </div>
-                        </div>
-                        <hr />
-                    </div>
                     <div class="row">
                         <div class="small-7 columns">
                             <button type="submit" class="button" id="create-bucket-submit-button"
-                                    ng-disabled="!hasChangesToBeSaved">
+                                    ng-disabled="!bucketName">
                                 <span i18n:translate="">Create Bucket</span>
                             </button>
                             <a href="${request.route_path('buckets')}" id="cancel-create-bucket-link"
