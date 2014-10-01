@@ -30,7 +30,6 @@ Pyramid views for Eucalyptus and AWS launch configurations
 """
 from urllib import quote
 import simplejson as json
-import os
 
 from boto.ec2.autoscale.launchconfig import LaunchConfiguration
 

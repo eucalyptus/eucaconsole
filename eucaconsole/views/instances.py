@@ -30,7 +30,6 @@ Pyramid views for Eucalyptus and AWS instances
 """
 import base64
 from operator import attrgetter
-import os
 import simplejson as json
 from M2Crypto import RSA
 import re
@@ -421,7 +420,9 @@ class InstancesJsonView(LandingPageView):
         filtered_items = []
         profiles = []
         for role in self.request.params.getall('roles'):
-            for profile in iam_conn.list_instance_profiles(path_prefix='/'+role).list_instance_profiles_response.list_instance_profiles_result.instance_profiles:
+            instance_profiles_list = iam_conn.list_instance_profiles(
+                path_prefix='/'+role).list_instance_profiles_response.list_instance_profiles_result.instance_profiles
+            for profile in instance_profiles_list:
                 profiles.append(profile.instance_profile_id)
         for item in items:
             if len(item.instance_profile) > 0 and item.instance_profile['id'] in profiles:
@@ -1107,6 +1108,7 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
             with boto_error_handler(self.request, self.location):
                 self.log_request(_(u"Running instance(s) (num={0}, image={1}, type={2})").format(
                     num_instances, image_id, instance_type))
+                instance_profile_arn = self.instance.instance_profile['arn'] if self.instance.instance_profile else None
                 # Create base params for run_instances()
                 params = dict(
                     min_count=num_instances,
@@ -1119,7 +1121,7 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
                     ramdisk_id=ramdisk_id,
                     monitoring_enabled=monitoring_enabled,
                     block_device_map=block_device_map,
-                    instance_profile_arn=self.instance.instance_profile['arn'] if self.instance.instance_profile else None,
+                    instance_profile_arn=instance_profile_arn,
                 )
                 if vpc_network is not None:
                     network_interface = NetworkInterfaceSpecification(
