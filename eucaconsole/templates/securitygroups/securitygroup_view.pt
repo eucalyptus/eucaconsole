@@ -112,12 +112,12 @@
             <h3 i18n:translate="">Warning: Invalid rules detected</h3>
             <p>
                 <span i18n:translate="">
-                    This security group contains the following rules which reference other security groups that no longer exist. Those rules will be deleted for you when you save changes on this page.
+                    This security group contains the following rules which reference other security groups that no longer exist. 
                 </span>
             </p>
             <p>
                 <span i18n:translate="">
-                    You may want to manually delete these rules yourself, or if you still need them, you can add new ones referencing valid security groups.
+                    You should delete these rulesand then create new ones referencing valid security groups if you still need them.
                 </span>
             </p>
             <div>
