@@ -27,7 +27,7 @@ angular.module('InstanceCreateImage', ['TagEditor'])
                         });
                     });
                 },
-                create_option_text: 'Create Bucket',
+                create_option_text: 'Create Bucket'
             });
             $scope.$watch('name', function () {
                 $scope.checkRequiredInput();

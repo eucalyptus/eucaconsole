@@ -34,7 +34,8 @@
             </p>
         </div>
         <div id="ssl-warning" ng-show="showHttpsWarning" ng-cloak="">
-            <strong i18n:translate="">SSL not enabled</strong>
+            <i class="fi-alert"></i>
+            <strong i18n:translate="">WARNING: SSL not enabled</strong>
             <p i18n:translate="">
                 This connection is untrusted because SSL is not enabled on the server.
                 Credentials will be sent over the wire in clear text.

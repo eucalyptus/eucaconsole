@@ -29,6 +29,7 @@ Pyramid views for Eucalyptus and AWS Roles
 """
 from datetime import datetime
 from dateutil import parser
+import os
 import simplejson as json
 from urllib import urlencode
 
@@ -250,6 +251,8 @@ class RoleView(BaseView):
                     self.conn.create_role(role_name=new_role_name, path=new_path, assume_role_policy_document=json.dumps(policy))
                 else:
                     self.conn.create_role(role_name=new_role_name, path=new_path)
+                # now add instance profile
+                RoleView.get_or_create_instance_profile(self.conn, new_role_name)
                 msg_template = _(u'Successfully created role {role}')
                 msg = msg_template.format(role=new_role_name)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
@@ -326,3 +329,18 @@ class RoleView(BaseView):
             result = self.conn.delete_role_policy(role_name=self.role.role_name, policy_name=policy)
             return dict(message=_(u"Successfully deleted role policy"), results=result)
 
+    @staticmethod
+    def get_or_create_instance_profile(iam_conn, role_name):
+        """
+        Returns an instance profile either by looking up one that goes with the passes role, or
+        by creating a new one an adding the role to it.
+        """
+        profiles = iam_conn.list_instance_profiles(path_prefix='/'+role_name)
+        profiles = profiles.list_instance_profiles_response.list_instance_profiles_result.instance_profiles
+        instance_profile = profiles[0] if len(profiles) > 0 else None
+        if instance_profile is None:
+            profile_name = 'instance_profile_{0}'.format(os.urandom(16).encode('base64').rstrip('=\n'))
+            profile_name = "".join(profile_name.split('/'))
+            instance_profile = iam_conn.create_instance_profile(profile_name, path='/' + role_name)
+            iam_conn.add_role_to_instance_profile(profile_name, role_name)
+        return instance_profile

@@ -92,7 +92,10 @@
                     This operation requires the password of the person making the request. Please enter your password below:
                 </p>
                 <div class="">
-                    <label> Your password <span class="req">*</span> </label><input id="bundle-password" type="password" value="" required="required" maxlength="-1">
+                    <label for="bundle-password">
+                        <span i18n:translate="">Your password</span>&nbsp;<span class="req">*</span>
+                    </label>
+                    <input id="bundle-password" type="password" value="" required="required" maxlength="-1" />
                 </div>
             </div>
             <p i18n:translate="">

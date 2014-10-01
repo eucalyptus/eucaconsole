@@ -1,0 +1,8 @@
+/* @fileOverview Snapshot detail page CSS */
+/* Dropdown elements */
+/* Set the link colors and styles for top-level nav */
+.invalid-rule-type { padding-top: 8px; padding-bottom: 14px; }
+
+.invalid-rule-type-label { color: #03405f; }
+
+.invalid-rule { padding-bottom: 8px; }

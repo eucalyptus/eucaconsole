@@ -57,7 +57,8 @@ class ManageCredentialsView(BaseView):
         self.came_from = self.sanitize_url(self.request.params.get('came_from', referrer))
         self.changepassword_form_errors = []
 
-    @view_config(route_name='managecredentials', request_method='GET', renderer=template, permission=NO_PERMISSION_REQUIRED)
+    @view_config(route_name='managecredentials', request_method='GET',
+                 renderer=template, permission=NO_PERMISSION_REQUIRED)
     def changepassword_page(self):
         session = self.request.session
         try:
@@ -75,18 +76,17 @@ class ManageCredentialsView(BaseView):
             username=username
         )
 
-    @view_config(route_name='changepassword', request_method='POST', renderer=template, permission=NO_PERMISSION_REQUIRED)
+    @view_config(route_name='changepassword', request_method='POST',
+                 renderer=template, permission=NO_PERMISSION_REQUIRED)
     def handle_changepassword(self):
         """Handle login form post"""
-
-        changepassword_form = self.changepassword_form
         session = self.request.session
         duration = self.request.registry.settings.get('session.cookie_expires')
         account = "huh?"
         username = "what?"
-
         auth = self.get_euca_authenticator()
         changepassword_form = EucaChangePasswordForm(self.request, formdata=self.request.params)
+
         if changepassword_form.validate():
             account = self.request.params.get('account')
             username = self.request.params.get('username')

@@ -4,7 +4,7 @@
  *
  */
 
-angular.module('CreateBucketPage', ['S3SharingPanel', 'EucaConsoleUtils'])
+angular.module('CreateBucketPage', ['EucaConsoleUtils'])
     .controller('CreateBucketPageCtrl', function ($scope, $http, eucaUnescapeJson) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.createBucketForm = $('#create-bucket-form');
@@ -21,13 +21,8 @@ angular.module('CreateBucketPage', ['S3SharingPanel', 'EucaConsoleUtils'])
             }
             $scope.initNameConflictWarningListener();
             $scope.handleUnsavedChanges();
-            $scope.handleUnsavedSharingEntry($scope.createBucketForm);
         };
         $scope.handleUnsavedChanges = function () {
-            // Listen for sharing panel update
-            $scope.$on('s3:sharingPanelAclUpdated', function () {
-                $scope.hasChangesToBeSaved = true;
-            });
             $scope.$watch('bucketName', function (newVal) {
                 if (newVal != '') {
                     $scope.hasChangesToBeSaved = true;
@@ -43,18 +38,6 @@ angular.module('CreateBucketPage', ['S3SharingPanel', 'EucaConsoleUtils'])
                     return $('#warning-message-unsaved-changes').text();
                 }
             };
-        };
-        $scope.handleUnsavedSharingEntry = function (form) {
-            // Display warning when there's an unsaved Sharing Panel entry
-            form.on('submit', function (event) {
-                var accountInputField = form.find('#share_account');
-                if (accountInputField.length && accountInputField.val() != '') {
-                    event.preventDefault();
-                    $scope.isSubmitted = false;
-                    $('#unsaved-sharing-warning-modal').foundation('reveal', 'open');
-                    return false;
-                }
-            });
         };
         $scope.confirmWarning = function () {
             var modal = $('#conflict-warn-modal');

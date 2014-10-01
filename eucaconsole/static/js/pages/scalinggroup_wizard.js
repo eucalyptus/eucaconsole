@@ -23,6 +23,7 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor'])
         $scope.vpcSubnetNames = '';
         $scope.vpcSubnetList = {};
         $scope.vpcSubnetChoices = {};
+        $scope.vpcSubnetZonesMap = {};
         $scope.availZones = '';
         $scope.summarySection = $('.summary');
         $scope.currentStepIndex = 1;
@@ -110,8 +111,9 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor'])
                 $scope.adjustVPCSubnetSelectAbide();
             });
             $scope.$watch('vpcSubnets', function () { 
+                $scope.disableVPCSubnetOptions();
                 $scope.updateSelectedVPCSubnetNames();
-            });
+            }, true);
         };
         $scope.adjustVPCSubnetSelectAbide = function () {
             // If VPC option is not chosen, remove the 'required' attribute
@@ -134,12 +136,37 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor'])
                         subnet['cidr_block'] + ' (' + subnet['id'] + ') | ' + subnet['availability_zone'];
                     foundVPCSubnets = true;
                 }
+                // Create vpc subnet zone map to use later for disabling options
+                $scope.vpcSubnetZonesMap[subnet['id']] = subnet['availability_zone'];
             }); 
             if (!foundVPCSubnets) {
                 // Case of No VPC or no existing subnets, set the default to 'None'
                 $scope.vpcSubnetChoices['None'] = $('#vpc_subnet_empty_option').text();
                 $scope.vpcSubnets.push('None');
             }
+            // Timeout is need for the chosen widget to react after Angular has updated the option list
+            $timeout(function() {
+                $('#vpc_subnet').trigger('chosen:updated');
+            }, 500);
+        };
+        // Disable the vpc subnet options if they are in the same zone as the selected vpc subnets
+        $scope.disableVPCSubnetOptions = function () {
+            $('#vpc_subnet').find('option').each(function() {
+                var vpcSubnetID = $(this).attr('value');
+                var isDisabled = false;
+                angular.forEach($scope.vpcSubnets, function (subnetID) {
+                    if ($scope.vpcSubnetZonesMap[vpcSubnetID] == $scope.vpcSubnetZonesMap[subnetID]) {
+                        if (vpcSubnetID != subnetID) {
+                            isDisabled = true;
+                        }
+                    }
+                }); 
+                if (isDisabled) {
+                    $(this).attr('disabled', 'disabled'); 
+                } else {
+                    $(this).removeAttr('disabled');
+                }
+            });
             // Timeout is need for the chosen widget to react after Angular has updated the option list
             $timeout(function() {
                 $('#vpc_subnet').trigger('chosen:updated');
