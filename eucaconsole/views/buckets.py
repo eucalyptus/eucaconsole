@@ -138,9 +138,14 @@ class BucketsJsonView(BaseView):
     def bucket_objects_count_versioning_json(self):
         with boto_error_handler(self.request):
             bucket = BucketContentsView.get_bucket(self.request, self.s3_conn) if self.s3_conn else []
+            versioning_status = BucketDetailsView.get_versioning_status(bucket)
+            versions = []
+            if versioning_status != "Disabled":
+                versions = bucket.get_all_versions()
         results = dict(
             object_count=len(tuple(bucket.list())),
-            versioning_status=BucketDetailsView.get_versioning_status(bucket),
+            version_count=len(versions),
+            versioning_status=versioning_status
         )
         return dict(results=results)
 
