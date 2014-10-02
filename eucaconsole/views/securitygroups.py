@@ -36,7 +36,7 @@ from pyramid.view import view_config
 from ..forms.securitygroups import SecurityGroupForm, SecurityGroupDeleteForm, SecurityGroupsFiltersForm
 from ..i18n import _
 from ..models import Notification
-from ..views import BaseView, LandingPageView, TaggedItemView, JSONResponse
+from ..views import LandingPageView, TaggedItemView, JSONResponse
 from . import boto_error_handler
 
 
@@ -310,6 +310,9 @@ class SecurityGroupView(TaggedItemView):
             from_port = rule.get('from_port')
             to_port = rule.get('to_port')
             cidr_ip = None
+            group_id = None
+            group_name = None
+            owner_id = None
 
             if from_port is not None and to_port is not None:
                 from_port = int(from_port)
@@ -317,7 +320,6 @@ class SecurityGroupView(TaggedItemView):
                 if to_port < from_port:
                     to_port = from_port
 
-            src_group = None
             grants = rule.get('grants', [])
 
             for grant in grants:
@@ -372,8 +374,9 @@ class SecurityGroupView(TaggedItemView):
         # compare the rules and update the rules
         self.compare_and_update_rules(current_egress_rules, new_egress_rules, traffic_type='egress')
 
-    # Build security group rules dictionary for comparison and update purpose
-    def build_rules_dict(self, rules, traffic_type='ingress'):
+    @staticmethod
+    def build_rules_dict(rules, traffic_type='ingress'):
+        """Build security group rules dictionary for comparison and update purpose"""
         current_rules = []
         for rule in rules:
             grants = rule.grants
@@ -407,13 +410,13 @@ class SecurityGroupView(TaggedItemView):
             current_rules.append(params)
         return current_rules
 
-    # Compare the security group rules dictionaries and update added or removed rules
     def compare_and_update_rules(self, current_rules, new_rules, traffic_type='ingress'):
+        """Compare the security group rules dictionaries and update added or removed rules"""
         self.compare_and_update_removed_rules(current_rules, new_rules, traffic_type)
         self.compare_and_update_added_rules(current_rules, new_rules, traffic_type)
 
-    # Detect the removed rules and make API calls to remove them
     def compare_and_update_removed_rules(self, current_rules, new_rules, traffic_type='ingress'):
+        """Detect the removed rules and make API calls to remove them"""
         # detect removed rules
         removed_rules_dict = self.detect_removed_rules(current_rules, new_rules, traffic_type)
         # convert the removed rules dict to boto params
@@ -424,8 +427,8 @@ class SecurityGroupView(TaggedItemView):
             else:
                 self.conn.revoke_security_group_egress(**rule)
 
-    # Detect the added rules and make API calls to add them
     def compare_and_update_added_rules(self, current_rules, new_rules, traffic_type='ingress'):
+        """Detect the added rules and make API calls to add them"""
         # detect added rules
         added_rules_dict = self.detect_added_rules(current_rules, new_rules, traffic_type)
         # convert the added rules dict to boto params
@@ -436,8 +439,8 @@ class SecurityGroupView(TaggedItemView):
             else:
                 self.conn.authorize_security_group_egress(**rule)
 
-    # Build security group rules params from security group dictionary for boto calls
     def build_rules_params(self, rules_dict, traffic_type='ingress'):
+        """Build security group rules params from security group dictionary for boto calls"""
         rules_params = []
         for rule in rules_dict:
             ip_protocol = rule['ip_protocol']
@@ -492,8 +495,9 @@ class SecurityGroupView(TaggedItemView):
             rules_params.append(auth_args)
         return rules_params
 
-    # Detect removed rules and return the removed rules dictionary
-    def detect_removed_rules(self, current_rules, new_rules, traffic_type='ingress'):
+    @staticmethod
+    def detect_removed_rules(current_rules, new_rules, traffic_type='ingress'):
+        """Detect removed rules and return the removed rules dictionary"""
         removed_rules = []
         # loop through current rules
         for rule in current_rules:
@@ -512,7 +516,7 @@ class SecurityGroupView(TaggedItemView):
                 if c_ip_protocol == n_ip_protocol and c_from_port == n_from_port and c_to_port == n_to_port:
                     # check if the cidr_ip matches
                     if 'cidr_ip' in c_grants[0] and 'cidr_ip' in n_grants[0]:
-                        if  c_grants[0]['cidr_ip'] == n_grants[0]['cidr_ip']:
+                        if c_grants[0]['cidr_ip'] == n_grants[0]['cidr_ip']:
                             is_removed = False
                     elif traffic_type == 'ingress':
                         # check if source group id matches
@@ -528,8 +532,9 @@ class SecurityGroupView(TaggedItemView):
                 removed_rules.append(rule)
         return removed_rules
 
-    # Detect added rules and return the added rules dictonary
-    def detect_added_rules(self, current_rules, new_rules, traffic_type='ingress'):
+    @staticmethod
+    def detect_added_rules(current_rules, new_rules, traffic_type='ingress'):
+        """Detect added rules and return the added rules dictonary"""
         added_rules = []
         # loop through new rules
         for new_rule in new_rules:
@@ -548,7 +553,7 @@ class SecurityGroupView(TaggedItemView):
                 if c_ip_protocol == n_ip_protocol and c_from_port == n_from_port and c_to_port == n_to_port:
                     # check if the cidr_ip matches
                     if 'cidr_ip' in c_grants[0] and 'cidr_ip' in n_grants[0]:
-                        if  c_grants[0]['cidr_ip'] == n_grants[0]['cidr_ip']:
+                        if c_grants[0]['cidr_ip'] == n_grants[0]['cidr_ip']:
                             is_added = False
                     elif traffic_type == 'ingress':
                         # check if source group id matches
@@ -567,7 +572,6 @@ class SecurityGroupView(TaggedItemView):
     def revoke_all_rules(self, security_group=None, traffic_type='ingress'):
         if security_group is None:
             security_group = self.security_group
-        rules = []
         if traffic_type == 'ingress':
             rules = security_group.rules
         else:
