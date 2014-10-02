@@ -80,7 +80,7 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize'])
             $scope.$watch('items', function() {
                 $scope.$emit('itemsLoaded', $scope.items);
             }, true);
-            // When unfilteredItes[] is updated, run it through the filter and build items[]
+            // When unfilteredItems[] is updated, run it through the filter and build items[]
             $scope.$watch('unfilteredItems', function() {
                 $scope.searchFilterItems();
             }, true); 
