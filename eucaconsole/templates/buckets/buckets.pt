@@ -60,6 +60,7 @@
                     <li>
                         <a i18n:translate="" ng-href="{{ item.details_url }}">View details</a>
                     </li>
+                    <!--!
                     <li ng-show="!versioningStatusLoading[item.bucket_name]">
                         <a ng-click="revealVersioningModal(bucketVersioningAction[item.bucket_name], item)"
                            class="update-versioning-action">
@@ -71,6 +72,7 @@
                             </span>
                         </a>
                     </li>
+                    -->
                     <li ng-show="hasCopyItem()">
                         <a i18n:translate="" ng-click="doPaste(item)">Paste object</a>
                     </li>
@@ -113,6 +115,7 @@
                             <li>
                                 <a i18n:translate="" ng-href="{{ item.details_url }}">View details</a>
                             </li>
+                            <!--!
                             <li ng-show="!versioningStatusLoading[item.bucket_name]">
                                 <a ng-click="revealVersioningModal(bucketVersioningAction[item.bucket_name], item)"
                                    class="update-versioning-action">
@@ -124,6 +127,7 @@
                                     </span>
                                 </a>
                             </li>
+                            -->
                             <li ng-show="hasCopyItem()">
                                 <a i18n:translate="" ng-click="doPaste(item)">Paste object</a>
                             </li>
