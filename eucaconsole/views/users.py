@@ -241,7 +241,7 @@ class UserView(BaseView):
         self.no_groups_defined_text = _(u"There are no groups defined")
         self.render_dict = dict(
             user=self.user,
-            user_name=self.user.user_name,
+            user_name=self.user.user_name if self.user else '',
             user_arn=self.user.arn if self.user else '',
             prefix=self.prefix,
             user_create_date=getattr(self.user, 'create_date', None),
@@ -264,11 +264,12 @@ class UserView(BaseView):
             return None
 
     def get_controller_options_json(self):
+        username = self.user.user_name if self.user else ''
         return BaseView.escape_json(json.dumps({
-            'user_name': self.user.user_name,
-            'user_disable_url': self.request.route_path('user_disable', name=self.user.user_name),
+            'user_name': username,
+            'user_disable_url': self.request.route_path('user_disable', name=username),
             'all_users_redirect': self.request.route_path('users'),
-            'user_delete_url': self.request.route_path('user_delete', name=self.user.user_name),
+            'user_delete_url': self.request.route_path('user_delete', name=username),
         }))
 
     @view_config(route_name='user_view', renderer=TEMPLATE)
@@ -382,7 +383,7 @@ class UserView(BaseView):
             parsed = json.loads(policy.policy_document)
             return dict(results=json.dumps(parsed, indent=2))
 
-    @view_config(route_name='user_create', renderer='json', request_method='POST')
+    @view_config(route_name='user_create', renderer='json', request_method='POST', xhr=True)
     def user_create(self):
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
@@ -462,14 +463,12 @@ class UserView(BaseView):
             path = self.request.params.get('path', None)
             self.log_request(
                 _(u"Updating user {0} (new_name={1}, path={2})").format(self.user.user_name, new_name, path))
-            if new_name == self.user.user_name:
-                new_name = None
-            self.conn.get_response(
-                'UpdateUser',
-                params={
-                    'UserName': self.user.user_name, 'NewUserName': new_name,
-                    'Path': path, 'DelegateAccount': as_account}
-            )
+            params={'UserName': self.user.user_name, 'Path': path}
+            if new_name != self.user.user_name:
+                params['NewUserName'] = new_name
+            if as_account != '':
+                params['DelegateAccount'] = as_account
+            self.conn.get_response('UpdateUser', params=params)
             self.user.path = path
             if self.user.user_name != new_name:
                 pass  # TODO: need to force view refresh if name changes
