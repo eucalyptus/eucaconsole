@@ -151,18 +151,18 @@ angular.module('BucketContentsPage', ['LandingPage', 'EucaConsoleUtils'])
         $scope.saveKey = function (bucket_name, key) {
             var id = $('.open').attr('id');  // hack to close action menu
             $('#table-'+id).trigger('click');
-            Modernizr.localstorage && localStorage.setItem('copy-object-buffer', bucket_name + '/' + key);
+            Modernizr.sessionstorage && sessionStorage.setItem('copy-object-buffer', bucket_name + '/' + key);
         };
         $scope.$on('itemsLoaded', function($event, items) {
             $scope.items = items;
         });
         $scope.hasCopyItem = function () {
-            return Modernizr.localstorage && localStorage.getItem('copy-object-buffer');
+            return Modernizr.sessionstorage && sessionStorage.getItem('copy-object-buffer');
         };
         $scope.doPaste = function (bucketName, item, subpath) {
             var id = $('.open').attr('id');  // hack to close action menu
             $('#table-'+id).trigger('click');
-            var path = Modernizr.localstorage && localStorage.getItem('copy-object-buffer');
+            var path = Modernizr.sessionstorage && sessionStorage.getItem('copy-object-buffer');
             var bucket = path.slice(0, path.indexOf('/'));
             var key = path.slice(path.indexOf('/')+1);
             if (subpath === undefined) {
@@ -175,7 +175,7 @@ angular.module('BucketContentsPage', ['LandingPage', 'EucaConsoleUtils'])
               success(function(oData) {
                 var results = oData ? oData.results : [];
                 if (oData.error == undefined) {
-                    Modernizr.localstorage && localStorage.removeItem('copy-object-buffer');
+                    Modernizr.sessionstorage && sessionStorage.removeItem('copy-object-buffer');
                     if (!item) {  // in case where we're pasting in current context,
                         $scope.$broadcast('refresh');
                     }
