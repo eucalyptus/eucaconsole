@@ -181,6 +181,11 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize'])
                 // Store the filterProps input for later use as well
                 $scope.filterKeys = filterProps;
             }
+            if (filterText == '') {
+                // If the search filter is empty, skip the filtering
+                $scope.items = $scope.unfilteredItems;
+                return;
+            }
             // Leverage Array.prototype.filter (ECMAScript 5)
             var filteredItems = $scope.unfilteredItems.filter(function(item) {
                 for (var i=0; i < $scope.filterKeys.length; i++) {  // Can't use $.each or Array.prototype.forEach here
@@ -192,8 +197,8 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize'])
                     }
                 }
             });
-            // Update the items[] for landing page display
-            $scope.items = filterText ? filteredItems : $scope.unfilteredItems;
+            // Update the items[] with the filtered items
+            $scope.items = filteredItems;
         };
         $scope.switchView = function(view){
             $scope.landingPageView = view;
