@@ -139,7 +139,7 @@ class ConnectionManager(object):
         return _aws_connection(region, access_key, secret_key, token, conn_type)
 
     @staticmethod
-    def euca_connection(clchost, port, access_id, secret_key, token, conn_type, validate_certs=False):
+    def euca_connection(clchost, port, access_id, secret_key, token, conn_type, validate_certs=False, cert_file=None):
         """Return Eucalyptus connection object
         Pulls from Beaker cache on subsequent calls to avoid connection overhead
 
@@ -160,6 +160,9 @@ class ConnectionManager(object):
 
         :type validate_certs: bool
         :param validate_certs: indicates to check the ssl cert the server provides
+
+        :type certs_file: string
+        :param certs_file: indicates the location of the certificates file, if otherthan standard
 
         """
         cache_key = 'euca_connection_cache_{conn_type}_{clchost}_{port}'.format(
@@ -210,6 +213,8 @@ class ConnectionManager(object):
 
             setattr(conn, 'APIVersion', api_version)
             conn.https_validate_certificates = validate_certs
+            if certs_file is not None:
+                conn.ca_certificates_file = certs_file
             conn.http_connection_kwargs['timeout'] = 30
             # uncomment to enable boto request logger. Use only for development
             #conn.set_request_hook(RequestLogger())
