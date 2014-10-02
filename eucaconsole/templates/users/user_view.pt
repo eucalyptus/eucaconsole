@@ -148,7 +148,7 @@
                                          policy_url request.route_path('user_policy_json', name=user.user_name, policy='_policy_');
                                          remove_url request.route_path('user_delete_policy', name=user.user_name, policy='_policy_');
                                          update_url request.route_path('user_update_policy', name=user.user_name, policy='_policy_');
-                                         add_url request.route_path('iam_policy_new')+'?type=user&amp;id='+user.user_name">
+                                         add_url request.route_url('iam_policy_new', _query={'type':'user', 'id':user.user_name})">
                             <div class="columns section">
                                 <h6 i18n:translate="">Permissions</h6>
                                 <div>
