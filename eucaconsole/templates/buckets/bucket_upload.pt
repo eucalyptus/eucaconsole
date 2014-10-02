@@ -59,7 +59,7 @@
                             <button type="submit" class="button" id="create-bucket-submit-button" ng-disabled="!hasChangesToBeSaved" ng-click="showConfirm($event)">
                                 <span i18n:translate="">Upload File(s)</span>
                             </button>
-                            <a href="${request.route_path('buckets')}" id="cancel-create-bucket-link"
+                            <a id="cancel-create-bucket-link" onclick="window.close();"
                                class="cancel-link" i18n:translate="">Cancel</a>
                         </div>
                         <div class="small-5 columns">

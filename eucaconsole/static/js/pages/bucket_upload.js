@@ -96,7 +96,7 @@ angular.module('UploadFilePage', ['S3SharingPanel', 'S3MetadataEditor'])
                     if ($scope.progress == $scope.total) {
                         $('#upload-files-modal').foundation('reveal', 'close');
                         $scope.hasChangesToBeSaved = false;
-                        window.history.back()
+                        window.close()
                     }
                     if ($scope.uploading == true) {
                         $scope.uploadFile();
@@ -114,7 +114,7 @@ angular.module('UploadFilePage', ['S3SharingPanel', 'S3MetadataEditor'])
             $scope.uploading = false;
             $scope.progress = 0;
             $scope.hasChangesToBeSaved = false;
-            window.history.back()
+            window.close()
         };
     })
 ;
