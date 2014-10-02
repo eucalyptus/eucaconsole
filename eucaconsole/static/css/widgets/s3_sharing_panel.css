@@ -7,7 +7,9 @@
 #s3-sharing-panel .items .grantentry a.remove i { color: white; }
 #s3-sharing-panel #share_type { list-style-type: none; margin-bottom: 0; }
 #s3-sharing-panel #share_type li { display: inline-block; }
-#s3-sharing-panel #share_account, #s3-sharing-panel #share_permissions, #s3-sharing-panel #canned_acl { width: 50%; }
+#s3-sharing-panel #share_account, #s3-sharing-panel #share_permissions, #s3-sharing-panel #canned_acl { width: 60%; }
 #s3-sharing-panel #canned_acl { margin-left: 1.6rem; }
-#s3-sharing-panel #controls_share_account label { white-space: nowrap; }
 #s3-sharing-panel #manual-acl-wrapper .manual-controls { margin-left: 1.6rem; }
+#s3-sharing-panel #add-s3acl-btn { margin-top: 0.5rem; }
+
+@media screen and (min-width: 1020px) { #controls_share_account label { white-space: nowrap; } }

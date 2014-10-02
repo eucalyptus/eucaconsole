@@ -614,17 +614,20 @@ class BucketDetailsView(BaseView):
         sharing_grants = json.loads(sharing_grants_json)
         sharing_policy = None
         if sharing_grants:
-            grants = []
-            for grant in sharing_grants:
-                grants.append(Grant(
-                    permission=grant.get('permission'),
-                    id=grant.get('id'),
-                    display_name=grant.get('display_name'),
-                    type=grant.get('grant_type'),
-                    uri=grant.get('uri'),
-                ))
             sharing_acl = ACL()
-            sharing_acl.grants = grants
+            for grant in sharing_grants:
+                email_address = grant.get('email_address')
+                permission = grant.get('permission')
+                if email_address:
+                    sharing_acl.add_email_grant(permission, email_address)
+                else:
+                    sharing_acl.add_grant(Grant(
+                        permission=permission,
+                        id=grant.get('id') or None,
+                        display_name=grant.get('display_name') or None,
+                        type=grant.get('grant_type'),
+                        uri=grant.get('uri'),
+                    ))
             sharing_policy = Policy()
             sharing_policy.acl = sharing_acl
             sharing_policy.owner = item_acl.owner if item_acl else bucket_object.get_acl().owner
