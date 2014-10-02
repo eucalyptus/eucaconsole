@@ -446,6 +446,7 @@ angular.module('SecurityGroupRules', [])
                 // Allow All Traffic option to be selectable for VPC
                 $scope.insertAllTrafficRuleOption();
             }
+            $('#ip-protocol-select').prop('selectedIndex', -1);
             $('#ip-protocol-select').trigger('chosen:updated');
         };
         // Remove All Traffic rule, "-1 ()" from the option
