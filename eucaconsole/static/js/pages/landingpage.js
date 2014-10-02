@@ -11,6 +11,7 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize'])
         $scope.items = [];
         $scope.itemsLoading = true;
         $scope.unfilteredItems = [];
+        $scope.filterKeys = [];
         $scope.sortBy = '';
         $scope.landingPageView = "tableview";
         $scope.jsonEndpoint = '';
@@ -75,6 +76,14 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize'])
                // Set landingPageView in localStorage
                Modernizr.localstorage && localStorage.setItem($scope.landingPageViewKey, $scope.landingPageView);
             });
+            // Emit 'itemsLoaded' signal when items[] is updated
+            $scope.$watch('items', function() {
+                $scope.$emit('itemsLoaded', $scope.items);
+            }, true);
+            // When unfilteredItems[] is updated, run it through the filter and build items[]
+            $scope.$watch('unfilteredItems', function() {
+                $scope.searchFilterItems();
+            }, true); 
         };
         $scope.setFocus = function () {
             $('#search-filter').focus();
@@ -142,9 +151,8 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize'])
                 var results = oData ? oData.results : [];
                 var transitionalCount = 0;
                 $scope.itemsLoading = false;
-                $scope.items = results;
                 $scope.unfilteredItems = results;
-                $scope.items.forEach(function (item) {
+                $scope.unfilteredItems.forEach(function (item) {
                     if (!!item['transitional']) {
                         transitionalCount += 1;
                     }
@@ -153,7 +161,6 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize'])
                 if ($scope.transitionalRefresh && transitionalCount > 0) {
                     $timeout(function() { $scope.getItems(); }, 5000);  // Poll every 5 seconds
                 }
-                $scope.$emit('itemsLoaded', $scope.items);
             }).error(function (oData, status) {
                 var errorMsg = oData['message'] || null;
                 if (errorMsg) {
@@ -169,19 +176,29 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize'])
          *  @param {array} filterProps Array of properties to filter items on
          */
         $scope.searchFilterItems = function(filterProps) {
-            $scope.items = $scope.unfilteredItems;  // reset prior to applying filter
             var filterText = ($scope.searchFilter || '').toLowerCase();
+            if (filterProps != '' && filterProps != undefined){
+                // Store the filterProps input for later use as well
+                $scope.filterKeys = filterProps;
+            }
+            if (filterText == '') {
+                // If the search filter is empty, skip the filtering
+                $scope.items = $scope.unfilteredItems;
+                return;
+            }
             // Leverage Array.prototype.filter (ECMAScript 5)
-            var filteredItems = $scope.items.filter(function(item) {
-                for (var i=0; i < filterProps.length; i++) {  // Can't use $.each or Array.prototype.forEach here
-                    var propName = filterProps[i];
+            var filteredItems = $scope.unfilteredItems.filter(function(item) {
+                for (var i=0; i < $scope.filterKeys.length; i++) {  // Can't use $.each or Array.prototype.forEach here
+                    var propName = $scope.filterKeys[i];
                     var itemProp = item.hasOwnProperty(propName) && item[propName];
-                    if (itemProp && typeof itemProp === "string" && itemProp.toLowerCase().indexOf(filterText) !== -1) {
+                    if (itemProp && typeof itemProp === "string" && 
+                        itemProp.toLowerCase().indexOf(filterText) !== -1) {
                         return item;
                     }
                 }
             });
-            $scope.items = filterText ? filteredItems : $scope.unfilteredItems;
+            // Update the items[] with the filtered items
+            $scope.items = filteredItems;
         };
         $scope.switchView = function(view){
             $scope.landingPageView = view;
