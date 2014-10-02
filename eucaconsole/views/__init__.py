@@ -117,6 +117,8 @@ class BaseView(object):
         validate_certs = False
         if self.request.registry.settings:  # do this to pass tests
             validate_certs = asbool(self.request.registry.settings.get('connection.ssl.validation', False))
+            certs_file = self.request.registry.settings.get('connection.ssl.certfile', None)
+            
         if cloud_type == 'aws':
             conn = ConnectionManager.aws_connection(
                 self.region, self.access_key, self.secret_key, self.security_token, conn_type, validate_certs)
@@ -146,7 +148,7 @@ class BaseView(object):
                 port = int(self.request.registry.settings.get('vpc.port', port))
 
             conn = ConnectionManager.euca_connection(
-                host, port, self.access_key, self.secret_key, self.security_token, conn_type, validate_certs)
+                host, port, self.access_key, self.secret_key, self.security_token, conn_type, validate_certs, certs_file)
 
         return conn
 

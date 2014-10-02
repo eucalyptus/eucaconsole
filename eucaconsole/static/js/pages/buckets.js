@@ -10,6 +10,7 @@ angular.module('BucketsPage', ['LandingPage', 'EucaConsoleUtils'])
         $scope.bucketName = '';
         $scope.updateVersioningAction = '';
         $scope.bucketCounts = {};
+        $scope.versionCounts = {};
         $scope.bucketVersioningStatus = {};
         $scope.bucketVersioningAction = {};
         $scope.countsLoading = {};
@@ -24,6 +25,7 @@ angular.module('BucketsPage', ['LandingPage', 'EucaConsoleUtils'])
             var modal = $('#' + action + '-modal');
             $scope.bucketName = bucket['bucket_name'];
             $scope.bucketCount = $scope.bucketCounts[$scope.bucketName];
+            $scope.versionCount = $scope.versionCounts[$scope.bucketName];
             // Set form action based on bucket choice
             var form_action = $('#' + action + '-form').attr('action');
             form_action = form_action.replace('_name_', $scope.bucketName);
@@ -59,6 +61,7 @@ angular.module('BucketsPage', ['LandingPage', 'EucaConsoleUtils'])
                     var results = oData ? oData.results : {},
                         versioningStatus = results['versioning_status'];
                     $scope.bucketCounts[bucketName] = results['object_count'];
+                    $scope.versionCounts[bucketName] = results['version_count'];
                     $scope.bucketVersioningStatus[bucketName] = versioningStatus;
                     $scope.bucketVersioningAction[bucketName] = $scope.getVersioningActionFromStatus(versioningStatus);
                     $scope.countsLoading[bucketName] = false;
