@@ -295,10 +295,6 @@ angular.module('SecurityGroupRules', [])
                 $scope.ipProtocol = 'icmp'
             } else if ($scope.selectedProtocol === 'udp') {
                 $scope.ipProtocol = 'udp'
-            } else if ($scope.selectedProtocol === '-1') {
-                $scope.ipProtocol = '-1'
-                $scope.fromPort = null;
-                $scope.toPort = null;
             }
         };
         // Create an array block that represents a new security group rule submiitted by user
@@ -313,6 +309,14 @@ angular.module('SecurityGroupRules', [])
                     name = name.substring(idx+1);
                 }
                 group_id=$scope.getGroupIdByName(name);
+            }
+            // In case of "ALL Traffic" option
+            // It's too late to adjust in adjustIpProtocol()
+            // since it must be done before checking for dup
+            if ($scope.selectedProtocol === '-1') {
+                $scope.ipProtocol = '-1'
+                $scope.fromPort = null;
+                $scope.toPort = null;
             }
             return {
                 'from_port': $scope.fromPort,
