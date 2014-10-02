@@ -36,6 +36,7 @@ angular.module('SecurityGroupRules', [])
             $('#ip-protocol-select').prop('selectedIndex', -1);
             $('#ip-protocol-select').trigger('chosen:updated');
             $scope.cleanupSelections();
+            $scope.adjustIPProtocolOptions();
         };
         $scope.syncRules = function () {
             $scope.rulesTextarea.val(JSON.stringify($scope.rulesArray));
@@ -137,9 +138,6 @@ angular.module('SecurityGroupRules', [])
                     $scope.checkRulesForDeletedSecurityGroups();
                 }
             }, true);
-            $scope.$watch('ruleType', function(){ 
-                $scope.adjustIPProtocolOptions();
-            });
             $scope.$on('updateVPC', function($event, vpc) {
                 if (vpc === undefined || $scope.securityGroupVPC == vpc) {
                     return;
@@ -158,6 +156,8 @@ angular.module('SecurityGroupRules', [])
                 if ($scope.securityGroupVPC == '') {
                     $scope.selectRuleType('inbound'); 
                 }
+                // For VPC, include the option '-1' for ALL IP Protocols
+                $scope.adjustIPProtocolOptions();
             });
             $(document).on('keyup', '#input-cidr-ip', function () {
                 $scope.$apply(function() {
@@ -437,28 +437,22 @@ angular.module('SecurityGroupRules', [])
             }
         };
         $scope.adjustIPProtocolOptions = function () {
-            $scope.removeDefaultOutboundRuleOption();
-            if ($scope.ruleType == 'outbound') {
-                $scope.insertDefaultOutboundRuleOption();
+            $scope.removeAllTrafficRuleOption();
+            if ($scope.securityGroupVPC != '') {
+                // Allow All Traffic option to be selectable for VPC
+                $scope.insertAllTrafficRuleOption();
             }
             $('#ip-protocol-select').trigger('chosen:updated');
         };
-        // Remove AWS default outbound rule, "-1 () 0.0.0.0" from the option
-        $scope.removeDefaultOutboundRuleOption  = function () {
-            if ($scope.ruleType != 'inbound') {
-                return;
-            }
+        // Remove All Traffic rule, "-1 ()" from the option
+        $scope.removeAllTrafficRuleOption  = function () {
             $('#ip-protocol-select').find("option[value='-1']").remove();
         };
-        // Allow AWS default outbound rule, "-1 () 0.0.0.0", to be selectable
-        $scope.insertDefaultOutboundRuleOption  = function () {
-            if ($scope.ruleType != 'outbound') {
-                return;
-            }
+        // Allow All Traffic, "-1", to be selectable for VPC
+        $scope.insertAllTrafficRuleOption  = function () {
             var key = "-1";
-            var value = "All IP Protocols";
-            $('#ip-protocol-select').append($("<option></option>")
-                .attr("value", key).text(value));  
+            var value = "ALL Traffic";
+            $('#ip-protocol-select').append($("<option></option>").attr("value", key).text(value));  
         };
     })
 ;
