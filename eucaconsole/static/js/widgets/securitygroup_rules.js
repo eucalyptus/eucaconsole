@@ -82,7 +82,7 @@ angular.module('SecurityGroupRules', [])
             if( $scope.hasDuplicatedRule == true ){
                 $scope.isRuleNotComplete = true;
             }
-            if( $scope.selectedProtocol !== 'icmp' ){
+            if( $scope.selectedProtocol !== 'icmp' && $scope.selectedProtocol !== '-1' ){
                 if( $scope.fromPort === '' || $scope.fromPort === undefined ){
                     $scope.isRuleNotComplete = true;
                 }else if( $scope.toPort === '' || $scope.toPort === undefined ){
@@ -137,6 +137,9 @@ angular.module('SecurityGroupRules', [])
                     $scope.checkRulesForDeletedSecurityGroups();
                 }
             }, true);
+            $scope.$watch('ruleType', function(){ 
+                $scope.adjustIPProtocolOptions();
+            });
             $scope.$on('updateVPC', function($event, vpc) {
                 if (vpc === undefined || $scope.securityGroupVPC == vpc) {
                     return;
@@ -292,6 +295,10 @@ angular.module('SecurityGroupRules', [])
                 $scope.ipProtocol = 'icmp'
             } else if ($scope.selectedProtocol === 'udp') {
                 $scope.ipProtocol = 'udp'
+            } else if ($scope.selectedProtocol === '-1') {
+                $scope.ipProtocol = '-1'
+                $scope.fromPort = null;
+                $scope.toPort = null;
             }
         };
         // Create an array block that represents a new security group rule submiitted by user
@@ -428,6 +435,30 @@ angular.module('SecurityGroupRules', [])
                 $scope.inboundButtonClass = 'inactive';
                 $scope.outboundButtonClass = 'active';
             }
+        };
+        $scope.adjustIPProtocolOptions = function () {
+            $scope.removeDefaultOutboundRuleOption();
+            if ($scope.ruleType == 'outbound') {
+                $scope.insertDefaultOutboundRuleOption();
+            }
+            $('#ip-protocol-select').trigger('chosen:updated');
+        };
+        // Remove AWS default outbound rule, "-1 () 0.0.0.0" from the option
+        $scope.removeDefaultOutboundRuleOption  = function () {
+            if ($scope.ruleType != 'inbound') {
+                return;
+            }
+            $('#ip-protocol-select').find("option[value='-1']").remove();
+        };
+        // Allow AWS default outbound rule, "-1 () 0.0.0.0", to be selectable
+        $scope.insertDefaultOutboundRuleOption  = function () {
+            if ($scope.ruleType != 'outbound') {
+                return;
+            }
+            var key = "-1";
+            var value = "All IP Protocols";
+            $('#ip-protocol-select').append($("<option></option>")
+                .attr("value", key).text(value));  
         };
     })
 ;
