@@ -113,8 +113,11 @@
                 </div>
                 <div>
                     <span class="label" title="Key name" i18n:attributes="title" data-tooltip="">KN</span>
-                    <a ng-show="item.key_name" ng-href="/keypairs/{{ item.key_name }}">{{ item.key_name }}</a>
                     <span ng-show="!item.key_name">None</span>
+                    <span ng-show="item.key_name">
+                        <a ng-show="item.exists_key" ng-href="/keypairs/{{ item.key_name }}">{{ item.key_name }}</a>
+                        <span ng-show="!item.exists_key">{{ item.key_name }}</span>
+                    </span>
                 </div>
                 <div>
                     <span class="label" title="Security groups" i18n:attributes="title" data-tooltip="">SG</span>
