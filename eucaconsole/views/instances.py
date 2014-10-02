@@ -114,7 +114,7 @@ class BaseInstanceView(BaseView):
             with boto_error_handler(self.request):
                 vpc_subnet = self.vpc_conn.get_all_subnets(subnet_ids=[subnet_id])
                 if vpc_subnet:
-                    return "{0} ({1})".format(vpc_subnet[0].cidr_block, subnet_id) 
+                    return "{0} ({1})".format(vpc_subnet[0].cidr_block, subnet_id)
         return ''
 
 
@@ -334,7 +334,6 @@ class InstancesJsonView(LandingPageView):
         if not owner_alias and self.cloud_type == 'aws':
             # Set default alias to 'amazon' for AWS
             owner_alias = 'amazon'
-        owners = [owner_alias] if owner_alias else []
         region = self.request.session.get('region')
         for instance in filtered_items:
             is_transitional = instance.state in transitional_states
@@ -398,10 +397,11 @@ class InstancesJsonView(LandingPageView):
             if vpc_id == vpc.id:
                 return vpc
 
-    def get_image_by_id(self, images, id):
+    @staticmethod
+    def get_image_by_id(images, image_id):
         if images:
             for image in images:
-                if image.id == id:
+                if image.id == image_id:
                     return image
         return None
 
@@ -638,7 +638,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
                 ip_addresses = self.conn.get_all_addresses(addresses=[ip_address])
                 elastic_ip = ip_addresses[0] if ip_addresses else None
                 if elastic_ip:
-                    disassociated = elastic_ip.disassociate()
+                    elastic_ip.disassociate()
                 msg = _(u'Successfully disassociated the IP from the instance.')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=self.location)
@@ -665,7 +665,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
         elastic_ip = ip_addresses[0] if ip_addresses else None
         if elastic_ip:
             self.log_request(_(u"Disassociating ip {0} from instance {1}").format(ip_address, self.instance.id))
-            disassociated = elastic_ip.disassociate()
+            elastic_ip.disassociate()
 
     def check_has_elastic_ip(self, ip_address):
         has_elastic_ip = False
@@ -1014,7 +1014,7 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
             rules = SecurityGroupsView.get_rules(security_group.rules)
             if security_group.vpc_id is not None:
                 rules_egress = SecurityGroupsView.get_rules(security_group.rules_egress, rule_type='outbound')
-                rules = rules + rules_egress 
+                rules = rules + rules_egress
             rules_dict[security_group.id] = rules
         return rules_dict
 
@@ -1154,7 +1154,8 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
                     if source_instance_tags:
                         for tagname, tagvalue in source_instance_tags.items():
                             # Don't copy 'Name' tag, and avoid tags that start with 'aws:' and 'euca:'
-                            if all([tagname != 'Name', not tagname.startswith('aws:'), not tagname.startswith('euca:')]):
+                            if all([tagname != 'Name', not tagname.startswith('aws:'),
+                                    not tagname.startswith('euca:')]):
                                 instance.add_tag(tagname, tagvalue)
                 msg = _(u'Successfully sent launch instances request.  It may take a moment to launch instances ')
                 msg += ', '.join(new_instance_ids)
@@ -1223,24 +1224,25 @@ class InstanceCreateImageView(BaseInstanceView, BlockDeviceMappingItemView):
                 if s3_bucket:
                     s3_bucket = self.unescape_braces(s3_bucket)
                 s3_prefix = self.request.params.get('s3_prefix', '')
-                upload_policy = BaseView.generate_default_policy(s3_bucket, s3_prefix)
-                secret = self.request.session['secret_key']
                 with boto_error_handler(self.request, self.location):
                     self.log_request(_(u"Bundling instance {0}").format(instance_id))
-                    iam_conn = self.get_connection(conn_type='iam')
+                    account = self.request.session['account']
                     username = self.request.session['username']
-                    creds = iam_conn.create_access_key(username)
-                    access_key = creds.access_key.access_key_id
-                    secret_key = creds.access_key.secret_access_key
+                    password = self.request.params.get('password')
+                    auth = self.get_euca_authenticator()
+                    creds = auth.authenticate(
+                        account=account, user=username, passwd=password,
+                        timeout=8, duration=86400)  # 24 hours
+                    upload_policy = BaseView.generate_default_policy(s3_bucket, s3_prefix, token=creds.session_token)
                     # we need to make the call ourselves to override boto's auto-signing
                     params = {
                         'InstanceId': instance_id,
                         'Storage.S3.Bucket': s3_bucket,
                         'Storage.S3.Prefix': s3_prefix,
                         'Storage.S3.UploadPolicy': upload_policy,
-                        'Storage.S3.AWSAccessKeyId': access_key,
+                        'Storage.S3.AWSAccessKeyId': creds.access_key,
                         'Storage.S3.UploadPolicySignature': BaseView.gen_policy_signature(
-                            upload_policy, secret_key)
+                            upload_policy, creds.secret_key)
                     }
                     result = self.conn.get_object('BundleInstance', params, BundleInstanceTask, verb='POST')
                     bundle_metadata = {
@@ -1255,7 +1257,6 @@ class InstanceCreateImageView(BaseInstanceView, BlockDeviceMappingItemView):
                         'ramdisk_id': self.instance.ramdisk,
                         'bdm': bdm_json,
                         'tags': tags_json,
-                        'access': access_key,
                         'bundle_id': result.id,
                     }
                     self.ec2_conn.create_tags(instance_id, {'ec_bundling': '%s/%s' % (s3_bucket, result.id)})
@@ -1327,19 +1328,19 @@ class InstanceTypesView(LandingPageView, BaseInstanceView):
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
         # Extract the list of instance type updates
-        update = {} 
+        update = {}
         for param in self.request.params.items():
             match = re.search('update\[(\d+)\]\[(\w+)\]', param[0])
             if match:
                 index = match.group(1)
                 attr = match.group(2)
                 value = param[1]
-                instance_type = {} 
-                if index in update: 
+                instance_type = {}
+                if index in update:
                     instance_type = update[index]
-                instance_type[attr] = value 
+                instance_type[attr] = value
                 update[index] = instance_type
-        # Modify instance type 
+        # Modify instance type
         for item in update.itervalues():
             is_updated = self.modify_instance_type_attribute(
                 item['name'], item['cpu'], item['memory'], item['disk'])
@@ -1351,6 +1352,6 @@ class InstanceTypesView(LandingPageView, BaseInstanceView):
         # Ensure that the attributes are positive integers
         if cpu <= 0 or memory <= 0 or disk <= 0:
             return False
-        params = {'Name': name, 'Cpu': cpu, 'Memory': memory, 'Disk': disk} 
+        params = {'Name': name, 'Cpu': cpu, 'Memory': memory, 'Disk': disk}
         with boto_error_handler(self.request):
             return self.conn.get_status('ModifyInstanceTypeAttribute', params, verb='POST')

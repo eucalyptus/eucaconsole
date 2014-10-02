@@ -27,7 +27,7 @@ angular.module('InstanceCreateImage', ['TagEditor'])
                         });
                     });
                 },
-                create_option_text: 'Create Bucket',
+                create_option_text: 'Create Bucket'
             });
             $scope.$watch('name', function () {
                 $scope.checkRequiredInput();
@@ -47,6 +47,8 @@ angular.module('InstanceCreateImage', ['TagEditor'])
             }
         };
         $scope.submitCreate = function() {
+            var pass = $('#bundle-password').val();
+            $scope.form.find('#password').val(pass);
             $('#instance-shutdown-warn-modal').foundation('reveal', 'close');
             $scope.form.submit();
         };
