@@ -76,13 +76,13 @@ angular.module('BucketsPage', ['LandingPage', 'EucaConsoleUtils'])
             });
         });
         $scope.hasCopyItem = function () {
-            return Modernizr.localstorage && localStorage.getItem('copy-object-buffer');
+            return Modernizr.sessionstorage && sessionStorage.getItem('copy-object-buffer');
         };
         $scope.doPaste = function (bucket) {
             var id = $('.open').attr('id');  // hack to close action menu
             $('#table-'+id).trigger('click');
             var bucketName = bucket['bucket_name'];
-            var path = Modernizr.localstorage && localStorage.getItem('copy-object-buffer');
+            var path = Modernizr.sessionstorage && sessionStorage.getItem('copy-object-buffer');
             var bucket = path.slice(0, path.indexOf('/'));
             var key = path.slice(path.indexOf('/') + 1);
             var dst_key = path.slice(path.lastIndexOf('/') + 1);
@@ -93,7 +93,7 @@ angular.module('BucketsPage', ['LandingPage', 'EucaConsoleUtils'])
               success(function(oData) {
                 var results = oData ? oData.results : [];
                 if (oData.error == undefined) {
-                    Modernizr.localstorage && localStorage.removeItem('copy-object-buffer');
+                    Modernizr.sessionstorage && sessionStorage.removeItem('copy-object-buffer');
                     $scope.$broadcast('refresh');
                 } else {
                     Notify.failure(oData.message);

@@ -21,7 +21,7 @@ angular.module('LoginPage', [])
             ]);
             $scope.showHttpsWarning = window.location.protocol !== 'https:';
             // clear copy buffer for object storage
-            Modernizr.localstorage && localStorage.removeItem('copy-object-buffer');
+            Modernizr.sessionstorage && sessionStorage.removeItem('copy-object-buffer');
         };
         $scope.setFocus = function () {
             var inputs = [];
