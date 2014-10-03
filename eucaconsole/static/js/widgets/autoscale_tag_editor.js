@@ -12,7 +12,7 @@ angular.module('AutoScaleTagEditor', ['ngSanitize'])
             return line.substring(0, num) + "...";
         };
     })
-    .controller('AutoScaleTagEditorCtrl', function ($scope, $sanitize) {
+    .controller('AutoScaleTagEditorCtrl', function ($scope, $sanitize, $timeout) {
         $scope.tagEditor = $('#tag-editor');
         $scope.tagInputs = $scope.tagEditor.find('.taginput');
         $scope.tagsTextarea = $scope.tagEditor.find('textarea#tags');
@@ -54,6 +54,10 @@ angular.module('AutoScaleTagEditor', ['ngSanitize'])
         };
         $scope.addTag = function ($event) {
             $event.preventDefault();
+            $scope.checkRequiredInput();
+            if ($scope.isTagNotComplete) {
+                return;
+            }
             var tagEntry = $($event.currentTarget).closest('.tagentry'),
                 tagKeyField = tagEntry.find('.key'),
                 tagValueField = tagEntry.find('.value'),
@@ -99,18 +103,31 @@ angular.module('AutoScaleTagEditor', ['ngSanitize'])
             }
         };
         $scope.checkRequiredInput = function () {
-            if($scope.newTagKey === '' || $scope.newTagValue === ''){
-               $scope.isTagNotComplete = true;
+            if ($scope.newTagKey === '' || $scope.newTagValue === '') {
+                $scope.isTagNotComplete = true;
+            } else if ($('#autoscale-tag-name-input-div').hasClass('error') ||
+                $('#autoscale-tag-value-input-div').hasClass('error')) {
+                $scope.isTagNotComplete = true;
             } else {
-               $scope.isTagNotComplete = false;
+                $scope.isTagNotComplete = false;
             } 
         }; 
         $scope.setWatch = function () {
             $scope.$watch('newTagKey', function () {
                 $scope.checkRequiredInput();
+                // timeout is needed to react to Foundation's validation check
+                $timeout(function() {
+                    // repeat the check on input condition 
+                    $scope.checkRequiredInput();
+                }, 1000);
             });
             $scope.$watch('newTagValue', function () {
                 $scope.checkRequiredInput();
+                // timeout is needed to react to Foundation's validation check
+                $timeout(function() {
+                    // repeat the check on input condition 
+                    $scope.checkRequiredInput();
+                }, 1000);
             });
         };
     })
