@@ -98,7 +98,7 @@ class ImageBundlingMixin(BlockDeviceMappingItemView):
                 return self.conn.get_all_images(image_ids=[image_id])[0]
         elif tasks[0].state == 'failed':
             # generate error message, need to let user know somehow
-            logging.warn("bundle task failed! " + tasks[0].message)
+            logging.warn("bundle task failed! ")
             # cleanup metadata
             k.delete()
             self.conn.delete_tags(instance.id, ['ec_bundling'])
@@ -292,8 +292,14 @@ class ImagesJsonView(LandingPageView, ImageBundlingMixin):
             if image_id.find('pi-') == 0:
                 instances = self.conn.get_only_instances([image_id[1:]])
                 image = self.handle_instance_being_bundled(instances[0])
-                if image.state == 'available':
-                    url = self.request.route_path('image_view', id=image.id)
+                if image:
+                    if image.state == 'available':
+                        url = self.request.route_path('image_view', id=image.id)
+                else:
+                    msg = _(u'Bundle instance failed for '+instances[0].id)
+                    self.request.session.flash(msg, queue=Notification.ERROR)
+                    url = self.request.route_path('images')
+                    return dict(results=dict(image_status='failed', progress=0, url=url))
             else:
                 image = self.conn.get_image(image_id)
             """Return current image status"""
