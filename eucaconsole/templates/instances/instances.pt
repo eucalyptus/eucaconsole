@@ -113,8 +113,11 @@
                 </div>
                 <div>
                     <span class="label" title="Key name" i18n:attributes="title" data-tooltip="">KN</span>
-                    <a ng-show="item.key_name" ng-href="/keypairs/{{ item.key_name }}">{{ item.key_name }}</a>
                     <span ng-show="!item.key_name">None</span>
+                    <span ng-show="item.key_name">
+                        <a ng-show="item.exists_key" ng-href="/keypairs/{{ item.key_name }}">{{ item.key_name }}</a>
+                        <span ng-show="!item.exists_key">{{ item.key_name }}</span>
+                    </span>
                 </div>
                 <div>
                     <span class="label" title="Security groups" i18n:attributes="title" data-tooltip="">SG</span>
@@ -158,7 +161,13 @@
                     <a ng-href="/ipaddresses/{{ item.ip_address }}" ng-show="item.has_elastic_ip">{{ item.ip_address }}</a>
                     <span ng-show="!item.has_elastic_ip">{{ item.ip_address }}</span>
                 </td>
-                <td class="breakword"><a ng-href="/keypairs/{{ item.key_name }}">{{ item.key_name | ellipsis: 30 }}</a></td>
+                <td class="breakword">
+                    <span ng-show="!item.key_name">None</span>
+                    <span ng-show="item.key_name">
+                        <a ng-show="item.exists_key" ng-href="/keypairs/{{ item.key_name }}">{{ item.key_name | ellipsis: 30 }}</a>
+                        <span ng-show="!item.exists_key">{{ item.key_name | ellipsis: 30 }}</span>
+                    </span>
+                </td>
                 <td class="breakword">
                     <div ng-repeat="security_group in item.security_groups">
                         <a ng-href="/securitygroups/{{ security_group.id }}">{{ security_group.name | ellipsis: 30 }}</a>
