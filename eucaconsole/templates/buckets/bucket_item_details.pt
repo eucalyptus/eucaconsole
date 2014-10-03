@@ -6,7 +6,8 @@
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap"
-         ng-app="BucketItemDetailsPage" ng-controller="BucketItemDetailsPageCtrl" ng-init="initController()">
+         ng-app="BucketItemDetailsPage" ng-controller="BucketItemDetailsPageCtrl"
+         ng-init="initController('${request.route_path('bucket_delete_keys', name=bucket_name)}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('buckets')}">Buckets</a></li>
@@ -40,7 +41,8 @@
                             <a ng-click="saveKey('${bucket_name}', '${bucket_item.name}')" i18n:translate="">Copy object</a>
                         </li>
                         <li>
-                            <a id="delete-bucket-item-action" i18n:translate="">Delete</a>
+                            <a id="delete-bucket-item-action" i18n:translate=""
+                               ng-click="confirmDelete('${item_name}')">Delete</a>
                         </li>
                     </metal:actions>
                 </metal:block>
@@ -93,6 +95,16 @@
             <!--<div class="help-padding">&nbsp;</div>-->
             <metal:block metal:use-macro="layout.global_macros['help_expando']" />
             <div class="help-content" ng-show="isHelpExpanded" ng-cloak=""></div>
+        </div>
+        <div id="delete-object-modal" class="reveal-modal small" data-reveal="">
+            <h3 i18n:translate="">Delete object</h3>
+            <p>
+                <span i18n:translate="">This action cannot be undone. Are you sure you want to delete </span>&nbsp;<b>{{ obj_key }}</b><span>?</span>
+            </p>
+            <a class="button expand" id="delete-object-btn" i18n:translate="" ng-click="deleteObject('${bucket_item.name}')">
+                Yes, Delete Object
+            </a>
+            <a href="#" id="delete_object_close_link" class="close-reveal-modal">&#215;</a>
         </div>
     </div>
 </div>

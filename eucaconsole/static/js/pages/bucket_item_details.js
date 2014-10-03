@@ -12,8 +12,9 @@ angular.module('BucketItemDetailsPage', ['S3SharingPanel', 'S3MetadataEditor'])
         $scope.isSubmitted = false;
         $scope.hasChangesToBeSaved = false;
         $scope.objectName = '';
-        $scope.initController = function () {
+        $scope.initController = function (deleteUrl) {
             $scope.setInitialValues();
+            $scope.deleteUrl = deleteUrl;
             $scope.handleUnsavedChanges();
             $scope.handleUnsavedSharingEntry($scope.bucketItemDetailsForm);
             $scope.handleUnsavedMetadataEntry($scope.bucketItemDetailsForm);
@@ -73,6 +74,31 @@ angular.module('BucketItemDetailsPage', ['S3SharingPanel', 'S3MetadataEditor'])
         $scope.saveKey = function (bucket_name, key) {
             $('.actions-menu').trigger('click');
             Modernizr.sessionstorage && sessionStorage.setItem('copy-object-buffer', bucket_name + '/' + key);
+        };
+        $scope.confirmDelete = function (name) {
+            $('.actions-menu').trigger('click');
+            $scope.obj_key = name;
+            $('#delete-object-modal').foundation('reveal', 'open');
+        };
+        $scope.deleteObject = function (key) {
+            var data = "csrf_token=" + $('#csrf_token').val() + "&keys=" + key;
+            $http({method: 'POST', url: $scope.deleteUrl, data: data,
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
+                success(function (oData) {
+                    if (oData.errors !== undefined) {
+                        console.log('error deleting some keys ' + oData.errors);
+                    }
+                    $('#delete-object-modal').foundation('reveal', 'close');
+                    Notify.success(oData.message);
+                    window.history.back();
+                }).
+                error(function (oData, status) {
+                    var errorMsg = oData['message'] || '';
+                    if (errorMsg && status === 403) {
+                        $('#timed-out-modal').foundation('reveal', 'open');
+                    }
+                    Notify.failure(errorMsg);
+                });
         };
     })
 ;
