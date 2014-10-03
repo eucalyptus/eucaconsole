@@ -64,7 +64,7 @@
                         <div class="small-8 columns value">${vpc_network}</div>
                     </div>
                     <div tal:condition="vpc_network">
-                        ${panel('form_field', field=edit_form['vpc_subnet'], **vpc_subnet_html_attrs)}
+                        ${panel('form_field', field=edit_form['vpc_subnet'], ng_attrs={'model': 'vpcSubnets'}, **vpc_subnet_html_attrs)}
                     </div>
                     <div tal:condition="not vpc_network">
                         <input type="hidden" name="vpc_subnet" value="None" />

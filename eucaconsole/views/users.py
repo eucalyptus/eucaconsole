@@ -40,7 +40,6 @@ from urllib import urlencode
 
 from boto.exception import BotoServerError
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
-from pyramid.settings import asbool
 from pyramid.view import view_config
 
 from ..forms.users import (
@@ -107,11 +106,11 @@ class UsersView(LandingPageView):
         with boto_error_handler(self.request):
             user_name = self.request.matchdict.get('name')
             self.log_request(_(u"Disabling user {0}").format(user_name))
-            result = self.conn.delete_login_profile(user_name=user_name)
+            self.conn.delete_login_profile(user_name=user_name)
             policy = {'Version': '2011-04-01'}
             statements = [{'Effect': 'Deny', 'Action': '*', 'Resource': '*'}]
             policy['Statement'] = statements
-            result = self.conn.put_user_policy(user_name, self.EUCA_DENY_POLICY, json.dumps(policy))
+            self.conn.put_user_policy(user_name, self.EUCA_DENY_POLICY, json.dumps(policy))
             return dict(message=_(u"Successfully disabled user"))
 
     @view_config(route_name='user_enable', request_method='POST', renderer='json')
@@ -122,11 +121,11 @@ class UsersView(LandingPageView):
         with boto_error_handler(self.request):
             user_name = self.request.matchdict.get('name')
             self.log_request(_(u"Enabling user {0}").format(user_name))
-            result = self.conn.delete_user_policy(user_name, self.EUCA_DENY_POLICY)
+            self.conn.delete_user_policy(user_name, self.EUCA_DENY_POLICY)
             random_password = self.request.params.get('random_password')
             if random_password == 'y':
                 password = PasswordGeneration.generate_password()
-                result = self.conn.create_login_profile(user_name, password)
+                self.conn.create_login_profile(user_name, password)
 
                 # assemble file response
                 account = self.request.session['account']
@@ -156,7 +155,6 @@ class UsersJsonView(BaseView):
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
         users = []
-        groups = []
         with boto_error_handler(self.request):
             groups = self.conn.get_all_groups()
             groups = groups.groups
@@ -183,10 +181,10 @@ class UsersJsonView(BaseView):
         user_param = self.request.matchdict.get('name')
         has_password = False
         try:
-            profile = self.conn.get_login_profiles(user_name=user_param)
+            self.conn.get_login_profiles(user_name=user_param)
             # this call returns 404 if no password found
             has_password = True
-        except BotoServerError as err:
+        except BotoServerError:
             pass
         user_enabled = True
         try:
@@ -195,14 +193,14 @@ class UsersJsonView(BaseView):
                 for policy in policies.policy_names:
                     if policy == self.EUCA_DENY_POLICY and has_password is False:
                         user_enabled = False
-        except BotoServerError as err:
+        except BotoServerError:
             pass
         keys = []
-        if user_enabled: # we won't spend time fetching the keys if the user is disabled
+        if user_enabled:  # we won't spend time fetching the keys if the user is disabled
             try:
                 keys = self.conn.get_all_access_keys(user_name=user_param)
                 keys = [key for key in keys.list_access_keys_result.access_key_metadata if key.status == 'Active']
-            except BotoServerError as exc:
+            except BotoServerError:
                 pass
 
         return dict(
@@ -238,11 +236,12 @@ class UserView(BaseView):
         self.change_password_form = ChangePasswordForm(self.request)
         self.generate_form = GeneratePasswordForm(self.request)
         self.delete_form = DeleteUserForm(self.request)
+        self.quotas_form = QuotasForm(self.request, user=self.user, conn=self.conn)
         self.already_member_text = _(u"User already a member of all groups")
         self.no_groups_defined_text = _(u"There are no groups defined")
         self.render_dict = dict(
             user=self.user,
-            user_name=self.user.user_name,
+            user_name=self.user.user_name if self.user else '',
             user_arn=self.user.arn if self.user else '',
             prefix=self.prefix,
             user_create_date=getattr(self.user, 'create_date', None),
@@ -259,17 +258,18 @@ class UserView(BaseView):
         as_account = self.request.params.get('as_account', '')
         user_param = self.request.matchdict.get('name')
         if user_param:
-            user = self.conn.get_response('GetUser', params={'UserName':user_param, 'DelegateAccount':as_account})
+            user = self.conn.get_response('GetUser', params={'UserName': user_param, 'DelegateAccount': as_account})
             return user
         else:
             return None
 
     def get_controller_options_json(self):
+        username = self.user.user_name if self.user else ''
         return BaseView.escape_json(json.dumps({
-            'user_name': self.user.user_name,
-            'user_disable_url': self.request.route_path('user_disable', name=self.user.user_name),
+            'user_name': username,
+            'user_disable_url': self.request.route_path('user_disable', name=username),
             'all_users_redirect': self.request.route_path('users'),
-            'user_delete_url': self.request.route_path('user_delete', name=self.user.user_name),
+            'user_delete_url': self.request.route_path('user_delete', name=username),
         }))
 
     @view_config(route_name='user_view', renderer=TEMPLATE)
@@ -279,17 +279,16 @@ class UserView(BaseView):
         as_account = self.request.params.get('as_account', None)
         has_password = False
         try:
-            profile = self.conn.get_response(
+            self.conn.get_response(
                 'GetLoginProfile', params={'UserName': self.user.user_name, 'DelegateAccount': as_account})
             # this call returns 404 if no password found
             has_password = True
-        except BotoServerError as err:
+        except BotoServerError:
             pass
         group_form = AddToGroupForm(self.request)
         self.render_dict['group_form'] = group_form
         self.user_form = UserForm(self.request, user=self.user)
         self.render_dict['user_form'] = self.user_form
-        self.quotas_form = QuotasForm(self.request, user=self.user, conn=self.conn)
         self.render_dict['quotas_form'] = self.quotas_form
         self.render_dict['as_account'] = as_account
         self.render_dict['has_password'] = 'true' if has_password else 'false'
@@ -384,7 +383,7 @@ class UserView(BaseView):
             parsed = json.loads(policy.policy_document)
             return dict(results=json.dumps(parsed, indent=2))
 
-    @view_config(route_name='user_create', renderer='json', request_method='POST')
+    @view_config(route_name='user_create', renderer='json', request_method='POST', xhr=True)
     def user_create(self):
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
@@ -406,7 +405,7 @@ class UserView(BaseView):
                 users = json.loads(users_json)
                 for (name, email) in users.items():
                     self.log_request(_(u"Creating user {0}").format(name))
-                    user = self.conn.get_response(
+                    self.conn.get_response(
                         'CreateUser', params={'UserName': name, 'Path': path, 'DelegateAccount': as_account})
                     user_data = {'account': account, 'username': name}
                     if random_password == 'y':
@@ -464,14 +463,12 @@ class UserView(BaseView):
             path = self.request.params.get('path', None)
             self.log_request(
                 _(u"Updating user {0} (new_name={1}, path={2})").format(self.user.user_name, new_name, path))
-            if new_name == self.user.user_name:
-                new_name = None
-            result = self.conn.get_response(
-                'UpdateUser',
-                params={
-                    'UserName': self.user.user_name, 'NewUserName': new_name,
-                    'Path': path, 'DelegateAccount': as_account}
-            )
+            params={'UserName': self.user.user_name, 'Path': path}
+            if new_name != self.user.user_name:
+                params['NewUserName'] = new_name
+            if as_account != '':
+                params['DelegateAccount'] = as_account
+            self.conn.get_response('UpdateUser', params=params)
             self.user.path = path
             if self.user.user_name != new_name:
                 pass  # TODO: need to force view refresh if name changes
@@ -700,7 +697,7 @@ class UserView(BaseView):
         as_account = self.request.params.get('as_account', '')
         with boto_error_handler(self.request):
             self.log_request(_(u"Deleting user {0}").format(self.user.user_name))
-            params = {'UserName': self.user.user_name, 'IsRecursive': 'true', 'DelegateAccount':as_account}
+            params = {'UserName': self.user.user_name, 'IsRecursive': 'true', 'DelegateAccount': as_account}
             self.conn.get_response('DeleteUser', params)
             
             location = self.request.route_path('users')

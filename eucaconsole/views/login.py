@@ -47,6 +47,9 @@ from ..views import JSONResponse
 from ..constants import AWS_REGIONS
 
 
+INVALID_SSL_CERT_MSG = _(u"This cloud's SSL server certificate isn't valid. Please contact your cloud administrator.")
+
+
 @forbidden_view_config()
 def redirect_to_login_page(request):
     login_url = request.route_path('login')
@@ -176,7 +179,7 @@ class LoginView(BaseView):
                 # if str(err.reason) == 'timed out':
                 # opened this up since some other errors should be reported as well.
                 if err.reason.find('ssl') > -1:
-                    msg = _(u"This cloud's SSL server certificate isn't valid. Please contact your cloud administrator.")
+                    msg = INVALID_SSL_CERT_MSG
                 else:
                     msg = _(u'No response from host')
                 self.login_form_errors.append(msg)
@@ -217,7 +220,7 @@ class LoginView(BaseView):
                     self.login_form_errors.append(msg)
             except URLError, err:
                 if err.reason.find('ssl') > -1:
-                    msg = _(u"This cloud's SSL server certificate isn't valid. Please contact your cloud administrator.")
+                    msg = INVALID_SSL_CERT_MSG
                 else:
                     msg = _(u'No response from host')
                 self.login_form_errors.append(msg)

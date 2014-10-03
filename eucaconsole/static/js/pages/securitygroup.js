@@ -12,6 +12,8 @@ angular.module('SecurityGroupPage', ['TagEditor', 'SecurityGroupRules'])
         $scope.securityGroupName = undefined;
         $scope.securityGroupDescription = undefined;
         $scope.securityGroupVPC = undefined;
+        $scope.invalidRulesArray = [];
+        $scope.invalidRulesEgressArray = [];
         $scope.pendingModalID = '';
         $scope.initController = function () {
             $scope.setWatch();
@@ -71,6 +73,10 @@ angular.module('SecurityGroupPage', ['TagEditor', 'SecurityGroupRules'])
             $(document).on('click', '#unsaved-changes-warning-modal-leave-link', function () {
                 $scope.openModalById($scope.pendingModalID);
             });
+            // Close button is clicked on the invalid rules warning modal
+            $(document).on('click', '#invalid-rules-warning-close-button', function () {
+                $('#invalid-rules-warning-modal').foundation('reveal', 'close');
+            });
             $scope.$watch('securityGroupName', function () {
                 $scope.checkRequiredInput(); 
             });
@@ -122,14 +128,20 @@ angular.module('SecurityGroupPage', ['TagEditor', 'SecurityGroupRules'])
                 $(this).find('.gialog-submit-button').css('display', 'none');                
                 $(this).find('.dialog-progress-display').css('display', 'block');                
             });
-        };
-        $scope.setFocus = function () {
+            // Listen for the events broadcast
             $scope.$on('tagUpdate', function($event) {
                 $scope.isNotChanged = false;
             });
             $scope.$on('securityGroupUpdate', function($event) {
                 $scope.isNotChanged = false;
             });
+            $scope.$on('invalidRulesWarning', function($event, invalidRules, invalidRulesEgress) {
+                $scope.invalidRulesArray = invalidRules;
+                $scope.invalidRulesEgressArray = invalidRulesEgress;
+                $('#invalid-rules-warning-modal').foundation('reveal', 'open');
+            });
+        };
+        $scope.setFocus = function () {
             $(document).on('ready', function(){
                 var firstLink = $('.actions-menu').find('a');
                 if (firstLink.length > 0) {

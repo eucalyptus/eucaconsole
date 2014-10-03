@@ -71,6 +71,8 @@ class BucketsView(LandingPageView):
         self.sort_keys = [
             dict(key='bucket_name', name=_(u'Bucket name: A to Z')),
             dict(key='-bucket_name', name=_(u'Bucket name: Z to A')),
+            dict(key='creation_date', name=_(u'Creation time: Oldest to Newest')),
+            dict(key='-creation_date', name=_(u'Creation time: Newest to Oldest')),
         ]
         self.render_dict = dict(
             prefix=self.prefix,
@@ -126,7 +128,7 @@ class BucketsJsonView(BaseView):
                 bucket_name = item.name
                 buckets.append(dict(
                     bucket_name=bucket_name,
-                    contents_url=self.request.route_path('bucket_contents', subpath=bucket_name),
+                    contents_url=self.request.route_path('bucket_contents', name=bucket_name, subpath=''),
                     details_url=self.request.route_path('bucket_details', name=bucket_name),
                     creation_date=item.creation_date,
                 ))
@@ -136,9 +138,14 @@ class BucketsJsonView(BaseView):
     def bucket_objects_count_versioning_json(self):
         with boto_error_handler(self.request):
             bucket = BucketContentsView.get_bucket(self.request, self.s3_conn) if self.s3_conn else []
+            versioning_status = BucketDetailsView.get_versioning_status(bucket)
+            versions = []
+            if versioning_status != "Disabled":
+                versions = bucket.get_all_versions()
         results = dict(
             object_count=len(tuple(bucket.list())),
-            versioning_status=BucketDetailsView.get_versioning_status(bucket),
+            version_count=len(versions),
+            versioning_status=versioning_status
         )
         return dict(results=results)
 
@@ -211,7 +218,7 @@ class BucketContentsView(LandingPageView):
         self.bucket_name = self.get_bucket_name(request)
         self.create_folder_form = CreateFolderForm(request, formdata=self.request.params or None)
         self.subpath = request.subpath
-        self.key_prefix = '/'.join(self.subpath[1:]) if len(self.subpath) > 0 else ''
+        self.key_prefix = '/'.join(self.subpath) if len(self.subpath) > 0 else ''
         self.render_dict = dict(
             bucket_name=self.bucket_name,
             create_folder_form=self.create_folder_form,
@@ -225,6 +232,8 @@ class BucketContentsView(LandingPageView):
             dict(key='-name', name=_(u'Name: Z to A')),
             dict(key='-size', name=_(u'Size: Largest to smallest')),
             dict(key='size', name=_(u'Size: Smallest to largest')),
+            dict(key='-last_modified', name=_(u'Modified time: Newest to Oldest')),
+            dict(key='last_modified', name=_(u'Modified time: Oldest to Newest ')),
         ]
         json_route_path = self.request.route_path('bucket_contents', name=self.bucket_name, subpath=self.subpath)
         self.render_dict.update(
@@ -326,7 +335,7 @@ class BucketContentsView(LandingPageView):
         if folder_name and self.create_folder_form.validate():
             folder_name = folder_name.replace('/', '_')
             subpath = self.request.subpath
-            prefix = DELIMITER.join(subpath[1:])
+            prefix = DELIMITER.join(subpath)
             new_folder_key = '{0}/{1}/'.format(prefix, folder_name)
             location = self.request.route_path('bucket_contents', name=self.bucket_name, subpath=subpath)
             with boto_error_handler(self.request):
@@ -343,16 +352,14 @@ class BucketContentsView(LandingPageView):
     def get_controller_options_json(self):
         return BaseView.escape_json(json.dumps({
             'delete_keys_url': self.request.route_path('bucket_delete_keys', name=self.bucket_name),
-            'get_keys_url': self.request.route_path('bucket_keys', subpath=self.request.subpath),
+            'get_keys_url': self.request.route_path('bucket_keys', name=self.bucket_name, subpath=self.request.subpath),
             'key_prefix': self.key_prefix,
             'copy_object_url': self.request.route_path('bucket_put_item', name='_name_', subpath='_subpath_'),
         }))
 
     @staticmethod
     def get_bucket_name(request):
-        subpath = request.matchdict.get('subpath')
-        if len(subpath):
-            return subpath[0]
+        return request.matchdict.get('name')
 
     @staticmethod
     def get_unprefixed_key_name(key_name):
@@ -367,8 +374,7 @@ class BucketContentsView(LandingPageView):
 
     @staticmethod
     def get_bucket(request, s3_conn, bucket_name=None):
-        subpath = request.matchdict.get('subpath')
-        bucket_name = bucket_name or request.matchdict.get('name') or subpath[0]
+        bucket_name = bucket_name or request.matchdict.get('name')
         bucket = s3_conn.lookup(bucket_name, validate=False) if bucket_name else None
         if bucket is None:
             raise HTTPNotFound()
@@ -426,7 +432,7 @@ class BucketContentsJsonView(BaseView):
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
         items = []
-        list_prefix = '{0}/'.format(DELIMITER.join(self.subpath[1:])) if len(self.subpath) > 1 else ''
+        list_prefix = '{0}/'.format(DELIMITER.join(self.subpath)) if self.subpath else ''
         params = dict(delimiter=DELIMITER)
         if list_prefix:
             params.update(dict(prefix=list_prefix))
@@ -453,6 +459,7 @@ class BucketContentsJsonView(BaseView):
                 )
             item.update(dict(
                 name=BucketContentsView.get_unprefixed_key_name(key.name),
+                full_key_name=key.name,
                 absolute_path=self.get_absolute_path(key.name),
                 details_url=self.request.route_path('bucket_item_details', name=self.bucket.name, subpath=key.name),
             ))
@@ -464,7 +471,7 @@ class BucketContentsJsonView(BaseView):
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
         items = []
-        list_prefix = '{0}/'.format(DELIMITER.join(self.subpath[1:])) if len(self.subpath) > 1 else ''
+        list_prefix = '{0}/'.format(DELIMITER.join(self.subpath)) if len(self.subpath) > 1 else ''
         params = dict()
         if list_prefix:
             params.update(dict(prefix=list_prefix))
@@ -476,13 +483,14 @@ class BucketContentsJsonView(BaseView):
 
     def get_absolute_path(self, key_name):
         key_name = urllib.quote(key_name, '')
-        return '/bucketcontents/{0}/{1}'.format(self.bucket_name, key_name)
+        # NOTE: Need to hard-code the path here due to escaped key name
+        return '/buckets/{0}/contents/{1}'.format(self.bucket_name, key_name)
 
     def skip_item(self, key):
         """Skip item if it contains a folder path that doesn't match the current request subpath"""
         # Test if request subpath matches current folder
         if DELIMITER in key.name:
-            joined_subpath = DELIMITER.join(self.subpath[1:])
+            joined_subpath = DELIMITER.join(self.subpath)
             if key.name == '{0}{1}'.format(joined_subpath, DELIMITER):
                 return True
             else:
@@ -517,7 +525,7 @@ class BucketDetailsView(BaseView):
             versioning_status=self.versioning_status,
             update_versioning_action=self.get_versioning_update_action(self.versioning_status),
             logging_status=self.get_logging_status(),
-            bucket_contents_url=self.request.route_path('bucket_contents', subpath=self.bucket.name),
+            bucket_contents_url=self.request.route_path('bucket_contents', name=self.bucket.name, subpath=''),
             bucket_objects_count_url=self.request.route_path(
                 'bucket_objects_count_versioning_json', name=self.bucket.name)
         )
@@ -611,17 +619,20 @@ class BucketDetailsView(BaseView):
         sharing_grants = json.loads(sharing_grants_json)
         sharing_policy = None
         if sharing_grants:
-            grants = []
-            for grant in sharing_grants:
-                grants.append(Grant(
-                    permission=grant.get('permission'),
-                    id=grant.get('id'),
-                    display_name=grant.get('display_name'),
-                    type=grant.get('grant_type'),
-                    uri=grant.get('uri'),
-                ))
             sharing_acl = ACL()
-            sharing_acl.grants = grants
+            for grant in sharing_grants:
+                email_address = grant.get('email_address')
+                permission = grant.get('permission')
+                if email_address:
+                    sharing_acl.add_email_grant(permission, email_address)
+                else:
+                    sharing_acl.add_grant(Grant(
+                        permission=permission,
+                        id=grant.get('id') or None,
+                        display_name=grant.get('display_name') or None,
+                        type=grant.get('grant_type'),
+                        uri=grant.get('uri'),
+                    ))
             sharing_policy = Policy()
             sharing_policy.acl = sharing_acl
             sharing_policy.owner = item_acl.owner if item_acl else bucket_object.get_acl().owner
@@ -791,8 +802,8 @@ class BucketItemDetailsView(BaseView):
             self.bucket_item_name = new_name
 
     def get_cancel_link_url(self):
-        subpath = '{0}/{1}'.format(self.bucket_name, DELIMITER.join(self.request.subpath[:-1]))
-        return self.request.route_path('bucket_contents', subpath=subpath)
+        subpath = DELIMITER.join(self.request.subpath[:-1])
+        return self.request.route_path('bucket_contents', name=self.bucket_name, subpath=subpath)
 
     @staticmethod
     def get_last_modified_time(bucket_object):

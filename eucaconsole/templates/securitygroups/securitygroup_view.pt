@@ -8,6 +8,7 @@
             font-weight: bold;
         }
     </style>
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/securitygroup.css')}" />
 </head>
 
 <div metal:fill-slot="main_content">
@@ -107,6 +108,52 @@
         </div>
         <!--! Modal dialogs reused across landing and detail page -->
         ${panel('securitygroup_dialogs', security_group=security_group, delete_form=delete_form)}
+        <div id="invalid-rules-warning-modal" class="reveal-modal small" data-reveal="">
+            <h3 i18n:translate="">Warning: Invalid rules detected</h3>
+            <p>
+                <span i18n:translate="">
+                    This security group contains the following rules which reference other security groups that no longer exist. 
+                </span>
+            </p>
+            <p>
+                <span i18n:translate="">
+                    You should delete these rulesand then create new ones referencing valid security groups if you still need them.
+                </span>
+            </p>
+            <div>
+                <div class="invalid-rule-type" ng-show="invalidRulesArray.length">
+                    <span class="invalid-rule-type-label" i18n:translate="">Inbound rules:</span> 
+                </div>
+                <div class="invalid-rule" ng-repeat="rule in invalidRulesArray">
+                    {{ rule.ip_protocol.toUpperCase() }}
+                    ({{ rule.from_port }}<span ng-show="rule.to_port != rule.from_port"> - {{ rule.to_port }}</span>)
+                    <span ng-repeat="grant in rule.grants">
+                        <span ng-show="grant.cidr_ip">{{ grant.cidr_ip }}</span>
+                        <span ng-show="grant.owner_id">{{ grant.owner_id }}/</span>
+                        <span ng-show="grant.name">{{ grant.name }}</span>
+                        <span ng-show="grant.name == undefined &amp;&amp; grant.group_id">{{ grant.group_id }}</span>
+                    </span>
+                </div>
+                <div class="invalid-rule-type" ng-show="invalidRulesEgressArray.length">
+                    <span class="invalid-rule-type-label" i18n:translate="">Outbound rules:</span> 
+                </div>
+                <div class="invalid-rule" ng-repeat="rule in invalidRulesEgressArray">
+                    {{ rule.ip_protocol.toUpperCase() }}
+                    ({{ rule.from_port }}<span ng-show="rule.to_port != rule.from_port"> - {{ rule.to_port }}</span>)
+                    <span ng-repeat="grant in rule.grants">
+                        <span ng-show="grant.cidr_ip">{{ grant.cidr_ip }}</span>
+                        <span ng-show="grant.owner_id">{{ grant.owner_id }}/</span>
+                        <span ng-show="grant.name">{{ grant.name }}</span>
+                        <span ng-show="grant.name == undefined &amp;&amp; grant.group_id">{{ grant.group_id }}</span>
+                    </span>
+                </div>
+            </div>
+            <br />
+            <div class="dialog-submit-button">
+                <button id="invalid-rules-warning-close-button" class="button expand" i18n:translate="">OK, Continue to Page</button>
+            </div>
+            <a href="#" class="close-reveal-modal">&#215;</a>
+        </div>
     </div>
 </div>
 

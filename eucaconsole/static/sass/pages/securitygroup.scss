@@ -1,0 +1,18 @@
+/* @fileOverview Snapshot detail page CSS */
+@import "../includes/eucavariables";
+
+
+
+.invalid-rule-type {
+    padding-top: 8px;
+    padding-bottom: 14px;
+}
+
+.invalid-rule-type-label {
+    color: $euca-darkblue;
+}
+
+.invalid-rule {
+    padding-bottom: 8px;
+}
+

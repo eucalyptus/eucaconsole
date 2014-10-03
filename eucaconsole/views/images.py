@@ -442,7 +442,6 @@ class ImageView(TaggedItemView, ImageBundlingMixin):
                 is_public = self.request.params.get('sharing')
                 current_is_public = str(self.image.is_public).lower()
                 if is_public != current_is_public:
-                    lp_params = {}
                     if is_public == "true":
                         lp_params = {'ImageId': self.image.id, 'LaunchPermission.Add.1.Group': 'all'}
                     else:

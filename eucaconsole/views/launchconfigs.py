@@ -30,7 +30,6 @@ Pyramid views for Eucalyptus and AWS launch configurations
 """
 from urllib import quote
 import simplejson as json
-import os
 
 from boto.ec2.autoscale.launchconfig import LaunchConfiguration
 
@@ -46,6 +45,7 @@ from ..i18n import _
 from ..models import Notification
 from ..views import LandingPageView, BaseView, BlockDeviceMappingItemView, JSONResponse
 from ..views.images import ImageView
+from ..views.roles import RoleView
 from ..views.securitygroups import SecurityGroupsView
 from . import boto_error_handler
 from . import guess_mimetype_from_buffer
@@ -92,10 +92,6 @@ class LaunchConfigsView(LandingPageView):
             with boto_error_handler(self.request, location, template):
                 launch_config = self.autoscale_conn.get_all_launch_configurations(names=[name])
                 self.autoscale_conn.delete_launch_configuration(name)
-                arn = launch_config[0].instance_profile_name
-                if arn != None:
-                    profile_name = arn[(arn.index('/')+1):]
-                    self.iam_conn.delete_instance_profile(profile_name)
                 prefix = _(u'Successfully deleted launch configuration.')
                 msg = '{0} {1}'.format(prefix, name)
                 queue = Notification.SUCCESS
@@ -109,14 +105,14 @@ class LaunchConfigsView(LandingPageView):
     @staticmethod
     def get_sort_keys():
         return [
-            dict(key='name', name='Name: A to Z'),
-            dict(key='-name', name='Name: Z to A'),
-            dict(key='created_time', name='Creation time: Oldest to Newest'),
-            dict(key='-created_time', name='Creation time: Newest to Oldest'),
-            dict(key='image_name', name='Image Name: A to Z'),
-            dict(key='-image_name', name='Image Name: Z to A'),
-            dict(key='key_name', name='Key pair: A to Z'),
-            dict(key='-key_name', name='Key pair: Z to A'),
+            dict(key='name', name=_(u'Name: A to Z')),
+            dict(key='-name', name=_(u'Name: Z to A')),
+            dict(key='created_time', name=_(u'Creation time: Oldest to Newest')),
+            dict(key='-created_time', name=_(u'Creation time: Newest to Oldest')),
+            dict(key='image_name', name=_(u'Image Name: A to Z')),
+            dict(key='-image_name', name=_(u'Image Name: Z to A')),
+            dict(key='key_name', name=_(u'Key pair: A to Z')),
+            dict(key='-key_name', name=_(u'Key pair: Z to A')),
         ]
 
 
@@ -224,7 +220,7 @@ class LaunchConfigView(BaseView):
         self.role = None
         if self.launch_config and self.launch_config.instance_profile_name:
             arn = self.launch_config.instance_profile_name
-            profile_name = arn[(arn.index('/')+1):]
+            profile_name = arn[(arn.rindex('/')+1):]
             inst_profile = self.iam_conn.get_instance_profile(profile_name)
             self.role = inst_profile.roles.member.role_name
 
@@ -271,10 +267,6 @@ class LaunchConfigView(BaseView):
             with boto_error_handler(self.request, location, template):
                 self.log_request(_(u"Deleting launch configuration {0}").format(name))
                 self.autoscale_conn.delete_launch_configuration(name)
-                arn = self.launch_config.instance_profile_name
-                if arn is not None:
-                    profile_name = arn[(arn.index('/')+1):]
-                    self.iam_conn.delete_instance_profile(profile_name)
                 prefix = _(u'Successfully deleted launch configuration.')
                 msg = '{0} {1}'.format(prefix, name)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
@@ -418,9 +410,7 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
             with boto_error_handler(self.request, location):
                 instance_profile = None
                 if role != '':  # need to set up instance profile, add role and supply to run_instances
-                    profile_name = 'instance_profile_{0}'.format(os.urandom(16).encode('base64').strip('=\/\n'))
-                    instance_profile = self.iam_conn.create_instance_profile(profile_name)
-                    self.iam_conn.add_role_to_instance_profile(profile_name, role)
+                    instance_profile = RoleView.get_or_create_instance_profile(self.iam_conn, role)
                 self.log_request(_(u"Creating launch configuration {0}").format(name))
                 launch_config = LaunchConfiguration(
                     name=name,
