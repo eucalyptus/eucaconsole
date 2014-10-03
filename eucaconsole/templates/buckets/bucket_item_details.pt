@@ -37,7 +37,7 @@
                             <a href="${item_download_url}" id="download-action" i18n:translate="">Download</a>
                         </li>
                         <li>
-                            <a href="#" id="copy-action" i18n:translate="">Copy</a>
+                            <a ng-click="saveKey('${bucket_name}', '${bucket_item.name}')" i18n:translate="">Copy object</a>
                         </li>
                         <li>
                             <a id="delete-bucket-item-action" i18n:translate="">Delete</a>

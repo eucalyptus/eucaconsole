@@ -70,6 +70,10 @@ angular.module('BucketItemDetailsPage', ['S3SharingPanel', 'S3MetadataEditor'])
                 }
             });
         };
+        $scope.saveKey = function (bucket_name, key) {
+            $('.actions-menu').trigger('click');
+            Modernizr.sessionstorage && sessionStorage.setItem('copy-object-buffer', bucket_name + '/' + key);
+        };
     })
 ;
 
