@@ -165,7 +165,7 @@
                     <span ng-show="!item.key_name">None</span>
                     <span ng-show="item.key_name">
                         <a ng-show="item.exists_key" ng-href="/keypairs/{{ item.key_name }}">{{ item.key_name | ellipsis: 30 }}</a>
-                        <span ng-show="!item.exists_key">{{ item.key_name }}</span>
+                        <span ng-show="!item.exists_key">{{ item.key_name | ellipsis: 30 }}</span>
                     </span>
                 </td>
                 <td class="breakword">
