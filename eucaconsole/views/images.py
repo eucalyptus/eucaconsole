@@ -573,7 +573,7 @@ class ImageView(TaggedItemView, ImageBundlingMixin):
     def get_controller_options_json(self):
         if not self.image:
             return '{}'
-        image_id = self.image.fake_id or self.image.id
+        image_id = self.image.fake_id if hasattr(self.image, 'fake_id') else self.image.id
         return BaseView.escape_json(json.dumps({
             'is_public': self.is_public,
             'image_launch_permissions': self.image_launch_permissions,
