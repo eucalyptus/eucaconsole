@@ -196,7 +196,7 @@
                                      policy_url request.route_path('role_policy_json', name=role.role_name, policy='_policy_');
                                      remove_url request.route_path('role_delete_policy', name=role.role_name, policy='_policy_');
                                      update_url request.route_path('role_update_policy', name=role.role_name, policy='_policy_');
-                                     add_url request.route_url('iam_policy_new', _query={'type':'role', 'id':role.role_name})">
+                                     add_url request.route_path('iam_policy_new', _query={'type':'role', 'id':role.role_name})">
                         <div class="section">
                             <h6 i18n:translate="">Permissions</h6>
                             <div>
