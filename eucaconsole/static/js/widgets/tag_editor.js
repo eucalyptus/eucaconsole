@@ -78,6 +78,10 @@ angular.module('TagEditor', ['ngSanitize'])
         };
         $scope.addTag = function ($event) {
             $event.preventDefault();
+            $scope.checkRequiredInput();
+            if ($scope.isTagNotComplete) {
+                return;
+            }
             var tagEntry = $($event.currentTarget).closest('.tagentry'),
                 tagKeyField = tagEntry.find('.key'),
                 tagValueField = tagEntry.find('.value'),
@@ -119,9 +123,13 @@ angular.module('TagEditor', ['ngSanitize'])
         $scope.checkRequiredInput = function () {
             if($scope.newTagKey === '' || $scope.newTagValue === ''){
                $scope.isTagNotComplete = true;
+            } else if ($('#tag-name-input-div').hasClass('error') ||
+                       $('#tag-value-input-div').hasClass('error')){
+               $scope.isTagNotComplete = true;
             } else {
                $scope.isTagNotComplete = false;
             } 
+
         }; 
         $scope.setWatch = function () {
             $scope.$watch('newTagKey', function () {
