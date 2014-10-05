@@ -45,7 +45,10 @@ from dateutil import tz
 from markupsafe import Markup
 from urllib import urlencode
 from urlparse import urlparse
-import magic
+try:
+    import python_magic as magic
+except:
+    import magic
 
 from boto.connection import AWSAuthConnection
 from boto.ec2.blockdevicemapping import BlockDeviceType, BlockDeviceMapping
