@@ -12,9 +12,10 @@ angular.module('BucketItemDetailsPage', ['S3SharingPanel', 'S3MetadataEditor'])
         $scope.isSubmitted = false;
         $scope.hasChangesToBeSaved = false;
         $scope.objectName = '';
-        $scope.initController = function (deleteUrl) {
+        $scope.initController = function (deleteUrl, key) {
             $scope.setInitialValues();
             $scope.deleteUrl = deleteUrl;
+            $scope.key = key;
             $scope.handleUnsavedChanges();
             $scope.handleUnsavedSharingEntry($scope.bucketItemDetailsForm);
             $scope.handleUnsavedMetadataEntry($scope.bucketItemDetailsForm);
@@ -80,8 +81,8 @@ angular.module('BucketItemDetailsPage', ['S3SharingPanel', 'S3MetadataEditor'])
             $scope.obj_key = name;
             $('#delete-object-modal').foundation('reveal', 'open');
         };
-        $scope.deleteObject = function (key) {
-            var data = "csrf_token=" + $('#csrf_token').val() + "&keys=" + key;
+        $scope.deleteObject = function () {
+            var data = "csrf_token=" + $('#csrf_token').val() + "&keys=" + $scope.key;
             $http({method: 'POST', url: $scope.deleteUrl, data: data,
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
                 success(function (oData) {
