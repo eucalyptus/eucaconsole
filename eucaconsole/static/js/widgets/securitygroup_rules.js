@@ -451,7 +451,7 @@ angular.module('SecurityGroupRules', [])
         // Allow All Traffic, "-1", to be selectable for VPC
         $scope.insertAllTrafficRuleOption  = function () {
             var key = "-1";
-            var value = "ALL Traffic";
+            var value = $('#all-traffic-option-text').text();
             $('#ip-protocol-select').append($("<option></option>").attr("value", key).text(value));  
         };
     })
