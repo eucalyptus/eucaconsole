@@ -19,6 +19,7 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize'])
         $scope.pageResource = '';
         $scope.sortByKey = '';
         $scope.landingPageViewKey = '';
+        $scope.openDropdownID = ''; 
         $scope.limitCount = 100;  // Beyond this number a "show ___ more" button will appear.
         $scope.displayCount = $scope.limitCount;
         $scope.transitionalRefresh = true;
@@ -79,9 +80,11 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize'])
             // Emit 'itemsLoaded' signal when items[] is updated
             $scope.$watch('items', function() {
                 $scope.$emit('itemsLoaded', $scope.items);
+                $scope.clickOpenDropdown();
             }, true);
             // When unfilteredItems[] is updated, run it through the filter and build items[]
             $scope.$watch('unfilteredItems', function() {
+                $scope.detectOpenDropdown();
                 $scope.searchFilterItems();
             }, true); 
         };
@@ -223,5 +226,19 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize'])
             $scope.itemsLoading=true;
             $scope.getItems();
         });
+        $scope.clickOpenDropdown = function () {
+            if ($scope.openDropdownID != '') {
+               $('#' + $scope.openDropdownID).click();
+            }
+        };
+        $scope.detectOpenDropdown = function () {
+            $scope.openDropdownID = ''; 
+            $('.f-dropdown').each(function() {
+                if ($(this).hasClass('open')) {
+                    $scope.openDropdownID = $(this).prev('.dropdown').attr('id'); 
+                }
+            });
+            
+        };
     })
 ;
