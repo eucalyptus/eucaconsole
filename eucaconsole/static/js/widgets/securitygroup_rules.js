@@ -420,6 +420,7 @@ angular.module('SecurityGroupRules', [])
         $scope.addDefaultOutboundRule = function () {
             var storeRuleType = $scope.ruleType; // Save the current ruleType value
             $scope.ruleType = 'outbound';   // Needs to set 'outbound' for the rule comparison
+            $scope.selectedProtocol = "-1"; 
             $scope.ipProtocol = "-1";
             $scope.trafficType == "ip" 
             $scope.cidrIp = "0.0.0.0/0";
