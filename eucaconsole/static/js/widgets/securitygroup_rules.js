@@ -107,7 +107,9 @@ angular.module('SecurityGroupRules', [])
                 // Set the defalt CIDR IP value to be "Open to all addresses"
                 // In case of choosing "All traffic" Protocol
                 if ($scope.selectedProtocol == '-1') {
-                    $scope.cidrIp = "0.0.0.0/0";
+                    $scope.cidrIp = '0.0.0.0/0';
+                } else {
+                    $scope.cidrIp = '';
                 }
             });
             $scope.$watch('fromPort', function(){ 
@@ -304,6 +306,8 @@ angular.module('SecurityGroupRules', [])
                 $scope.ipProtocol = '-1'
                 $scope.fromPort = null;
                 $scope.toPort = null;
+            } else {
+                $scope.ipProtocol = 'tcp'
             }
         };
         // Create an array block that represents a new security group rule submiitted by user
@@ -457,7 +461,7 @@ angular.module('SecurityGroupRules', [])
         $scope.insertAllTrafficRuleOption  = function () {
             var key = "-1";
             var value = $('#all-traffic-option-text').text();
-            $('#ip-protocol-select').append($("<option></option>").attr("value", key).text(value));  
+            $('#ip-protocol-select').prepend($("<option></option>").attr("value", key).text(value));  
         };
     })
 ;
