@@ -55,7 +55,7 @@ class BaseSecureForm(SecureForm):
         super(BaseSecureForm, self).__init__(**kwargs)
 
     def generate_csrf_token(self, csrf_context):
-        return self.request.session.get_csrf_token()
+        return self.request.session.get_csrf_token() if hasattr(self.request, 'session') else ''
 
     def get_errors_list(self):
         """Convenience method to get all form validation errors as a list of message strings"""

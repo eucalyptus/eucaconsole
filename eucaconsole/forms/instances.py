@@ -423,7 +423,7 @@ class InstanceCreateImageForm(BaseSecureForm):
         u'slashes (/), dashes (-) or underscores (_) but not spaces')
     name = wtforms.TextField(
         label=_(u'Name'),
-        validators=[validators.Required(message=name_error_msg)],
+        validators=[validators.InputRequired(message=name_error_msg)],
     )
     desc_error_msg = _(u'Description must be less than 255 characters')
     description = wtforms.TextAreaField(
