@@ -12,8 +12,11 @@ angular.module('BucketDetailsPage', ['S3SharingPanel'])
         $scope.isSubmitted = false;
         $scope.hasChangesToBeSaved = false;
         $scope.objectsCountLoading = true;
+        $scope.hideSharingPropagationWarningKey = 'hide-bucket-sharing-propagation-warning';
+        $scope.hideSharingPropagationWarning = false;
         $scope.initController = function (bucketObjectsCountUrl) {
             $scope.bucketObjectsCountUrl = bucketObjectsCountUrl;
+            $scope.initSharingPropagationWarning();
             $scope.getBucketObjectsCount();
             $scope.handleUnsavedChanges();
             $scope.handleUnsavedSharingEntry($scope.bucketDetailsForm);
@@ -39,6 +42,36 @@ angular.module('BucketDetailsPage', ['S3SharingPanel'])
             var modal = $('#' + action + '-modal');
             modal.foundation('reveal', 'open');
             modal.find('h3').click();  // Workaround for dropdown menu not closing
+        };
+        $scope.initSharingPropagationWarning = function () {
+            // Display warning when ACLs are modified on the bucket details page.
+            var warningModal = $('#changed-sharing-warning-modal'),
+                warningModalConfirmBtn = $('#confirm-changed-sharing-warning-modal-btn');
+            if (warningModal.length) {
+                $scope.displayBucketSharingChangeWarning = true;  // Remember page-level choice
+                $scope.hideSharingPropagationWarning = Modernizr.localstorage &&
+                    localStorage.getItem($scope.hideSharingPropagationWarningKey);
+                $scope.$on('s3:sharingPanelAclUpdated', function () {
+                    if (!$scope.hideSharingPropagationWarning) {
+                        if ($scope.displayBucketSharingChangeWarning) {
+                            warningModal.foundation('reveal', 'open');
+                        }
+                    }
+                });
+                // Prevent warning modal from displaying more than once per page
+                warningModalConfirmBtn.on('click', function () {
+                    // Persist "don't show again" option in localStorage if checked
+                    if ($('#dont-show-again-option').is(':checked')) {
+                        Modernizr.localstorage && localStorage.setItem(
+                            $scope.hideSharingPropagationWarningKey, true
+                        );
+                    }
+                    warningModal.foundation('reveal', 'close');
+                    $scope.$apply(function () {
+                        $scope.displayBucketSharingChangeWarning = false;
+                    });
+                });
+            }
         };
         $scope.handleUnsavedChanges = function () {
             // Listen for sharing panel update
