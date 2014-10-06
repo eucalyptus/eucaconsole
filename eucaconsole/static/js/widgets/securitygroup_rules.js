@@ -104,6 +104,11 @@ angular.module('SecurityGroupRules', [])
         $scope.setWatchers = function () {
             $scope.$watch('selectedProtocol', function(){ 
                 $scope.checkRequiredInput();
+                // Set the defalt CIDR IP value to be "Open to all addresses"
+                // In case of choosing "All traffic" Protocol
+                if ($scope.selectedProtocol == '-1') {
+                    $scope.cidrIp = "0.0.0.0/0";
+                }
             });
             $scope.$watch('fromPort', function(){ 
                 $scope.checkRequiredInput();
