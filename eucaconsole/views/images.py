@@ -291,12 +291,16 @@ class ImagesJsonView(LandingPageView, ImageBundlingMixin):
             url = None
             if image_id.find('pi-') == 0:
                 instances = self.conn.get_only_instances([image_id[1:]])
+                if len(instances) < 1:  # let's return failed since that's true
+                    return dict(
+                        results=dict(image_status='failed', progress=0, url=url)
+                    )
                 image = self.handle_instance_being_bundled(instances[0])
                 if image:
                     if image.state == 'available':
                         url = self.request.route_path('image_view', id=image.id)
                 else:
-                    msg = _(u'Bundle instance failed for '+instances[0].id)
+                    msg = _(u'Bundle instance failed for ')+instances[0].id
                     self.request.session.flash(msg, queue=Notification.ERROR)
                     url = self.request.route_path('images')
                     return dict(results=dict(image_status='failed', progress=0, url=url))
@@ -390,7 +394,10 @@ class ImageView(TaggedItemView, ImageBundlingMixin):
             with boto_error_handler(self.request):
                 if image_param.find('pi-') == 0:
                     instances = self.conn.get_only_instances([image_param[1:]])
-                    images = [self.handle_instance_being_bundled(instances[0], do_not_finish=True)]
+                    if len(instances) < 1:
+                        images = None
+                    else:
+                        images = [self.handle_instance_being_bundled(instances[0], do_not_finish=True)]
                 else:
                     images = self.conn.get_all_images(image_ids=images_param)
         image = images[0] if images else None
