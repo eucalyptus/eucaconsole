@@ -141,9 +141,9 @@
                 <th i18n:translate="">NAME (ID)</th>
                 <th i18n:translate="">STATUS</th>
                 <th i18n:translate="">IMAGE ID</th>
-                <th i18n:translate="">AVAILABILITY ZONE</th>
+                <th i18n:translate="">AVAIL ZONE</th>
                 <th i18n:translate="">VPC NETWORK</th>
-                <th i18n:translate="">PUBLIC ADDRESS</th>
+                <th i18n:translate="">PUBLIC ADDR</th>
                 <th i18n:translate="">KEY NAME</th>
                 <th i18n:translate="">SECURITY GROUP</th>
                 <th i18n:translate="" class="actions">ACTIONS</th>
