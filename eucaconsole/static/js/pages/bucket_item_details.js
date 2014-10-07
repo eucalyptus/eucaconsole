@@ -5,8 +5,8 @@
  */
 
 /* Bucket item details page includes the S3 Sharing Panel and Metadata Editor */
-angular.module('BucketItemDetailsPage', ['S3SharingPanel', 'S3MetadataEditor'])
-    .controller('BucketItemDetailsPageCtrl', function ($scope, $http) {
+angular.module('BucketItemDetailsPage', ['S3SharingPanel', 'S3MetadataEditor', 'EucaConsoleUtils'])
+    .controller('BucketItemDetailsPageCtrl', function ($scope, $http, eucaUnescapeJson) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.bucketItemDetailsForm = $('#bucket-item-details-form');
         $scope.isSubmitted = false;
@@ -15,6 +15,7 @@ angular.module('BucketItemDetailsPage', ['S3SharingPanel', 'S3MetadataEditor'])
         $scope.initController = function (optionsJson, deleteUrl, key) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.deleteUrl = options['delete_keys_url'];
+            $scope.bucketUrl = options['bucket_url'];
             $scope.key = options['key'];
             $scope.setInitialValues();
             $scope.handleUnsavedChanges();
@@ -92,7 +93,7 @@ angular.module('BucketItemDetailsPage', ['S3SharingPanel', 'S3MetadataEditor'])
                     }
                     $('#delete-object-modal').foundation('reveal', 'close');
                     Notify.success(oData.message);
-                    window.history.back();
+                    window.location = $scope.bucketUrl;
                 }).
                 error(function (oData, status) {
                     var errorMsg = oData['message'] || '';

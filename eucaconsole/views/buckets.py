@@ -716,6 +716,7 @@ class BucketItemDetailsView(BaseView):
     def get_controller_options_json(self):
         return BaseView.escape_json(json.dumps({
             'delete_keys_url': self.request.route_path('bucket_delete_keys', name=self.bucket_name),
+            'bucket_url': self.request.route_path('bucket_contents', name=self.bucket_name, subpath=self.request.subpath[:-1]),
             'key': self.bucket_item.name,
         }))
 
