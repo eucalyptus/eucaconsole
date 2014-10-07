@@ -7,7 +7,7 @@
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap"
          ng-app="BucketItemDetailsPage" ng-controller="BucketItemDetailsPageCtrl"
-         ng-init="initController('${request.route_path('bucket_delete_keys', name=bucket_name)}', '${bucket_item.name}')">
+         ng-init="initController('${controller_options_json}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('buckets')}">Buckets</a></li>
@@ -38,7 +38,7 @@
                             <a href="${item_download_url}" id="download-action" i18n:translate="">Download</a>
                         </li>
                         <li>
-                            <a ng-click="saveKey('${bucket_name}', '${bucket_item.name}')" i18n:translate="">Copy object</a>
+                            <a ng-click="saveKey('${bucket_name}', ${bucket_item})" i18n:translate="">Copy object</a>
                         </li>
                         <li>
                             <a id="delete-bucket-item-action" i18n:translate=""

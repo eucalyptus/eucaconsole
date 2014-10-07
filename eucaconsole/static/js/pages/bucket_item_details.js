@@ -12,10 +12,11 @@ angular.module('BucketItemDetailsPage', ['S3SharingPanel', 'S3MetadataEditor'])
         $scope.isSubmitted = false;
         $scope.hasChangesToBeSaved = false;
         $scope.objectName = '';
-        $scope.initController = function (deleteUrl, key) {
+        $scope.initController = function (optionsJson, deleteUrl, key) {
+            var options = JSON.parse(eucaUnescapeJson(optionsJson));
+            $scope.deleteUrl = options['delete_keys_url'];
+            $scope.key = options['key'];
             $scope.setInitialValues();
-            $scope.deleteUrl = deleteUrl;
-            $scope.key = key;
             $scope.handleUnsavedChanges();
             $scope.handleUnsavedSharingEntry($scope.bucketItemDetailsForm);
             $scope.handleUnsavedMetadataEntry($scope.bucketItemDetailsForm);
@@ -72,9 +73,9 @@ angular.module('BucketItemDetailsPage', ['S3SharingPanel', 'S3MetadataEditor'])
                 }
             });
         };
-        $scope.saveKey = function (bucket_name, key) {
+        $scope.saveKey = function (bucket_name, bucket_item) {
             $('.actions-menu').trigger('click');
-            Modernizr.sessionstorage && sessionStorage.setItem('copy-object-buffer', bucket_name + '/' + key);
+            Modernizr.sessionstorage && sessionStorage.setItem('copy-object-buffer', bucket_name + '/' + bucket_item.name);
         };
         $scope.confirmDelete = function (name) {
             $('.actions-menu').trigger('click');
