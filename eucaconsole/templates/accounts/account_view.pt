@@ -91,7 +91,7 @@
                                      policy_url request.route_path('account_policy_json', name=account.account_name, policy='_policy_');
                                      remove_url request.route_path('account_delete_policy', name=account.account_name, policy='_policy_');
                                      update_url request.route_path('account_update_policy', name=account.account_name, policy='_policy_');
-                                     add_url request.route_path('iam_policy_new')+'?type=account&amp;id='+account.account_name">
+                                     add_url request.route_path('iam_policy_new', _query={'type':'account', 'id':account.account_name})">
                         <div class="columns section">
                             <h6 i18n:translate="">Denial policies</h6>
                             <div>

@@ -93,6 +93,7 @@ class BaseTestCase(unittest.TestCase):
     def tearDown(self):
         testing.tearDown()
 
+
 class BaseFormTestCase(unittest.TestCase):
     """Base form class, modified from wtforms-test to better work with CSRF forms.
        See https://github.com/kvesteri/wtforms-test/blob/master/wtforms_test/__init__.py
@@ -106,50 +107,50 @@ class BaseFormTestCase(unittest.TestCase):
     password = None
     short_term.configure(
         memory_cache,
-        expiration_time = 60,
-        arguments = {
-            'url':[memory_cache_url],
-            'binary':True,
-            'min_compress_len':1024,
-            'behaviors':{"tcp_nodelay": True,"ketama":True},
-            'username':username,
-            'password':password
+        expiration_time=60,
+        arguments={
+            'url': [memory_cache_url],
+            'binary': True,
+            'min_compress_len': 1024,
+            'behaviors': {"tcp_nodelay": True,"ketama":True},
+            'username': username,
+            'password': password
         },
     )
     default_term.configure(
         memory_cache,
-        expiration_time = 300,
-        arguments = {
-            'url':[memory_cache_url],
-            'binary':True,
-            'min_compress_len':1024,
-            'behaviors':{"tcp_nodelay": True,"ketama":True},
-            'username':username,
-            'password':password
+        expiration_time=300,
+        arguments= {
+            'url': [memory_cache_url],
+            'binary': True,
+            'min_compress_len': 1024,
+            'behaviors': {"tcp_nodelay": True, "ketama": True},
+            'username': username,
+            'password': password
         },
     )
     long_term.configure(
         memory_cache,
-        expiration_time = 3600,
-        arguments = {
-            'url':[memory_cache_url],
-            'binary':True,
-            'min_compress_len':1024,
-            'behaviors':{"tcp_nodelay": True,"ketama":True},
-            'username':username,
-            'password':password
+        expiration_time=3600,
+        arguments={
+            'url': [memory_cache_url],
+            'binary': True,
+            'min_compress_len': 1024,
+            'behaviors': {"tcp_nodelay": True, "ketama": True},
+            'username': username,
+            'password': password
         },
     )
     extra_long_term.configure(
         memory_cache,
-        expiration_time = 43200,
-        arguments = {
-            'url':[memory_cache_url],
-            'binary':True,
-            'min_compress_len':1024,
-            'behaviors':{"tcp_nodelay": True,"ketama":True},
-            'username':username,
-            'password':password
+        expiration_time=43200,
+        arguments={
+            'url': [memory_cache_url],
+            'binary': True,
+            'min_compress_len': 1024,
+            'behaviors': {"tcp_nodelay": True, "ketama": True},
+            'username': username,
+            'password': password
         },
     )
 

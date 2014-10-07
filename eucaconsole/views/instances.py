@@ -296,6 +296,7 @@ class InstancesJsonView(LandingPageView):
         self.conn = self.get_connection()
         self.vpc_conn = self.get_connection(conn_type='vpc')
         self.vpcs = self.get_all_vpcs()
+        self.keypairs = self.get_all_keypairs()
 
     @view_config(route_name='instances_json', renderer='json', request_method='POST')
     def instances_json(self):
@@ -341,6 +342,7 @@ class InstancesJsonView(LandingPageView):
             if instance.platform is None:
                 instance.platform = _(u"linux")
             has_elastic_ip = instance.ip_address in elastic_ips
+            exists_key = True if self.get_keypair_by_name(instance.key_name) else False
             instances.append(dict(
                 id=instance.id,
                 name=TaggedItemView.get_display_name(instance, escapebraces=False),
@@ -355,6 +357,7 @@ class InstancesJsonView(LandingPageView):
                 root_device=instance.root_device_type,
                 security_groups=security_groups_array,
                 key_name=instance.key_name,
+                exists_key=exists_key,
                 vpc_name=instance.vpc_name,
                 status=instance.state,
                 tags=TaggedItemView.get_tags_display(instance.tags),
@@ -396,6 +399,14 @@ class InstancesJsonView(LandingPageView):
         for vpc in self.vpcs:
             if vpc_id == vpc.id:
                 return vpc
+
+    def get_all_keypairs(self):
+        return self.conn.get_all_key_pairs() if self.conn else []
+
+    def get_keypair_by_name(self, keypair_name):
+        for keypair in self.keypairs:
+            if keypair_name == keypair.name:
+                return keypair
 
     @staticmethod
     def get_image_by_id(images, image_id):

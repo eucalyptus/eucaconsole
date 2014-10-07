@@ -46,8 +46,8 @@
 .tile .footer .dots { position: absolute; width: 16px; height: 11px; top: 8px; right: 8px; }
 
 .gridwrapper .table { border: none; width: 100%; }
-.gridwrapper .table thead tr { background-color: #8cc63e; }
-.gridwrapper .table thead tr th { padding-top: 0.5rem; padding-bottom: 0.5rem; vertical-align: top; text-transform: uppercase; }
+.gridwrapper .table thead tr { background-color: #f5f5f5; }
+.gridwrapper .table thead tr th { padding-top: 0.5rem; padding-bottom: 0.5rem; vertical-align: top; color: #03405f; text-transform: uppercase; }
 .gridwrapper .table thead tr th.actions { text-align: right; }
 .gridwrapper .table tr { border-bottom: 1px solid #ddd; }
 .gridwrapper .table th { white-space: nowrap; }

@@ -68,7 +68,7 @@ angular.module('BucketDetailsPage', ['S3SharingPanel'])
         $scope.handleUnsavedSharingEntry = function (form) {
             // Display warning when there's an unsaved Sharing Panel entry
             form.on('submit', function (event) {
-                var accountInputField = form.find('#share_account');
+                var accountInputField = form.find('#share_account:visible');
                 if (accountInputField.length && accountInputField.val() != '') {
                     event.preventDefault();
                     $scope.isSubmitted = false;
