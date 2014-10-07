@@ -22,6 +22,7 @@ angular.module('BucketDetailsPage', ['S3SharingPanel'])
             $http.get($scope.bucketObjectsCountUrl).success(function(oData) {
                 var results = oData ? oData.results : {};
                 $scope.bucketCount = results['object_count'];
+                $scope.versionCount = results['version_count'];
                 $scope.objectsCountLoading = false;
             }).error(function (oData, status) {
                 var errorMsg = oData['message'] || null;

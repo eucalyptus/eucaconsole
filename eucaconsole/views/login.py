@@ -41,10 +41,13 @@ from pyramid.view import view_config, forbidden_view_config
 
 from ..forms.login import EucaLoginForm, EucaLogoutForm, AWSLoginForm
 from ..i18n import _
-from ..models.auth import AWSAuthenticator, EucaAuthenticator, ConnectionManager
+from ..models.auth import AWSAuthenticator, ConnectionManager
 from ..views import BaseView
 from ..views import JSONResponse
 from ..constants import AWS_REGIONS
+
+
+INVALID_SSL_CERT_MSG = _(u"This cloud's SSL server certificate isn't valid. Please contact your cloud administrator.")
 
 
 @forbidden_view_config()
@@ -114,17 +117,7 @@ class LoginView(BaseView):
 
     def handle_euca_login(self):
         new_passwd = None
-        host = self.request.registry.settings.get('clchost', 'localhost')
-        port = int(self.request.registry.settings.get('clcport', 8773))
-        host = self.request.registry.settings.get('sts.host', host)
-        port = int(self.request.registry.settings.get('sts.port', port))
-        validate_certs = asbool(self.request.registry.settings.get('connection.ssl.validation', False))
-        conn = AWSAuthConnection(None, aws_access_key_id='', aws_secret_access_key='')
-        
-        ca_certs_file = conn.ca_certificates_file
-        conn = None
-        ca_certs_file = self.request.registry.settings.get('connection.ssl.certfile', ca_certs_file)
-        auth = EucaAuthenticator(host, port, validate_certs=validate_certs, ca_certs=ca_certs_file)
+        auth = self.get_euca_authenticator()
         session = self.request.session
 
         if self.euca_login_form.validate():
@@ -183,10 +176,10 @@ class LoginView(BaseView):
                     self.login_form_errors.append(msg)
             except URLError, err:
                 logging.info("url error "+str(vars(err)))
-                #if str(err.reason) == 'timed out':
+                # if str(err.reason) == 'timed out':
                 # opened this up since some other errors should be reported as well.
                 if err.reason.find('ssl') > -1:
-                    msg = _(u"This cloud's SSL server certificate isn't valid. Please contact your cloud administrator.")
+                    msg = INVALID_SSL_CERT_MSG
                 else:
                     msg = _(u'No response from host')
                 self.login_form_errors.append(msg)
@@ -227,7 +220,7 @@ class LoginView(BaseView):
                     self.login_form_errors.append(msg)
             except URLError, err:
                 if err.reason.find('ssl') > -1:
-                    msg = _(u"This cloud's SSL server certificate isn't valid. Please contact your cloud administrator.")
+                    msg = INVALID_SSL_CERT_MSG
                 else:
                     msg = _(u'No response from host')
                 self.login_form_errors.append(msg)
@@ -248,4 +241,3 @@ class LogoutView(BaseView):
             self.request.session.invalidate()
             # self.invalidate_connection_cache()
             return HTTPFound(location=self.login_url)
-

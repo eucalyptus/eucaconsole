@@ -11,17 +11,14 @@
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('buckets')}">Buckets</a></li>
                 <li>
-                    <a href="${request.route_path('bucket_contents', subpath=bucket_name)}"
+                    <a href="${request.route_path('bucket_contents', name=bucket_name, subpath='')}"
                        i18n:translate="">${bucket_name}</a>
                 </li>
-                <div tal:repeat="path_item request.subpath" tal:omit-tag="">
-                    <li tal:define="idx repeat.path_item.index"
-                        class="${'current' if repeat.path_item.end else ''}">
-                        <a tal:condition="repeat.path_item.end" ng-non-bindable="">${path_item}</a>
-                        <a href="${request.route_path('bucket_contents', subpath='/{0}/{1}'.format(bucket_name, '/'.join(request.subpath[:idx+1])))}"
-                           ng-non-bindable="" tal:condition="not repeat.path_item.end">${path_item}</a>
-                    </li>
-                </div>
+                <li tal:repeat="folder request.subpath" class="${'current' if repeat.folder.end else ''}">
+                    <a tal:condition="repeat.folder.end" ng-non-bindable="">${folder}</a>
+                    <a href="${request.route_path('bucket_contents', name=bucket_name, subpath=request.subpath[:repeat.folder.index+1])}"
+                       ng-non-bindable="" tal:condition="not repeat.folder.end">${folder}</a>
+                </li>
             </metal:crumbs>
         </metal:breadcrumbs>
         <!-- Notifications -->

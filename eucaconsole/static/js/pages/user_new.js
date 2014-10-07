@@ -7,6 +7,7 @@
 // New user page includes the User Editor editor
 angular.module('UserNew', ['UserEditor', 'Quotas'])
     .controller('UserNewCtrl', function ($scope, $http) {
+        $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.form = $('#user-new-form');
         $scope.submitEndpoint = '';
         $scope.allUsersRedirect = '';
@@ -27,7 +28,10 @@ angular.module('UserNew', ['UserEditor', 'Quotas'])
             $scope.accountRedirect = accountRedirect;
             $scope.getFileEndpoint = getFileEndpoint;
             $scope.setWatch();
-            $('#as_account').chosen({'width': '200px', 'search_contains': true});
+            var as_acct = $('#as_account')
+            if (as_acct.length > 0) {
+                as_acct.chosen({'width': '200px', 'search_contains': true});
+            }
             $('#user-name-field').focus();
         }
         $scope.setWatch = function () {
@@ -81,7 +85,7 @@ angular.module('UserNew', ['UserEditor', 'Quotas'])
                     // this is clearly a hack. We'd need to bake callbacks into the generateFile
                     // stuff to do this properly.
                     setTimeout(function() {
-                        if (as_account == '') {
+                        if (as_account === undefined) {
                             if (isSingleUser) {
                                 window.location = $scope.singleUserRedirect.replace('_name_', singleUser);
                             } else {
@@ -93,7 +97,7 @@ angular.module('UserNew', ['UserEditor', 'Quotas'])
                     }, 3000);
                 }
                 else {
-                    if (as_account == '') {
+                    if (as_account === undefined) {
                         if (isSingleUser) {
                             window.location = $scope.singleUserRedirect.replace('_name_', singleUser);
                         } else {

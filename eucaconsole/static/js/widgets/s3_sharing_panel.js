@@ -98,21 +98,29 @@ angular.module('S3SharingPanel', [])
                 grantPermVal = grantPermissionField.val(),
                 existingGrantFound = false;
             if (grantAccountVal && grantPermVal) {
-                // Skip if existing grant found
+                var newGrant = {
+                    'permission': grantPermVal,
+                    'grant_type': 'CanonicalUser'
+                };
                 angular.forEach($scope.grantsArray, function (grant) {
-                    if (grant.id == grantAccountVal && grant.permission == grantPermVal) {
+                    var idPermMatches = grant.id == grantAccountVal && grant.permission == grantPermVal;
+                    var emailPermMatches = grant.email_address == grantAccountVal && grant.permission == grantPermVal;
+                    if (idPermMatches || emailPermMatches) {
                         existingGrantFound = true;
                     }
+                    // Detect if entered account is an ID or email
+                    if (grantAccountVal.match('@')) {
+                        newGrant['email_address'] = grantAccountVal;
+                    } else {
+                        newGrant['id'] = grantAccountVal;
+                    }
                 });
+                // Focus on account input if existing grant found (matched by id/permission or email/permission above)
                 if (existingGrantFound) {
                     grantAccountField.focus();
                     return false;
                 }
-                $scope.grantsArray.push({
-                    'id': grantAccountVal,
-                    'permission': grantPermVal,
-                    'grant_type': 'CanonicalUser'
-                });
+                $scope.grantsArray.push(newGrant);
                 $scope.syncGrants();
                 $scope.addAccountBtnDisabled = true;
             } else {

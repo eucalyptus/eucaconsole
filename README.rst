@@ -11,7 +11,13 @@ AWS Services supported
 * EC2
 * Auto Scaling
 * CloudWatch
+* S3
 * IAM
+
+Issue Tracking
+==============
+
+For bug reports, improvement request and general project planning, we use Jira: https://eucalyptus.atlassian.net/
 
 
 Development environment setup

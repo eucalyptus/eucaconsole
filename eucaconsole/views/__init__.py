@@ -47,6 +47,7 @@ from urllib import urlencode
 from urlparse import urlparse
 import magic
 
+from boto.connection import AWSAuthConnection
 from boto.ec2.blockdevicemapping import BlockDeviceType, BlockDeviceMapping
 from boto.exception import BotoServerError
 
@@ -61,6 +62,7 @@ from ..caches import long_term
 from ..caches import invalidate_cache
 from ..constants.images import AWS_IMAGE_OWNER_ALIAS_CHOICES, EUCA_IMAGE_OWNER_ALIAS_CHOICES
 from ..forms.login import EucaLogoutForm
+from ..models.auth import EucaAuthenticator
 from ..i18n import _
 from ..models import Notification
 from ..models.auth import ConnectionManager
@@ -115,6 +117,8 @@ class BaseView(object):
         validate_certs = False
         if self.request.registry.settings:  # do this to pass tests
             validate_certs = asbool(self.request.registry.settings.get('connection.ssl.validation', False))
+            certs_file = self.request.registry.settings.get('connection.ssl.certfile', None)
+            
         if cloud_type == 'aws':
             conn = ConnectionManager.aws_connection(
                 self.region, self.access_key, self.secret_key, self.security_token, conn_type, validate_certs)
@@ -144,7 +148,7 @@ class BaseView(object):
                 port = int(self.request.registry.settings.get('vpc.port', port))
 
             conn = ConnectionManager.euca_connection(
-                host, port, self.access_key, self.secret_key, self.security_token, conn_type, validate_certs)
+                host, port, self.access_key, self.secret_key, self.security_token, conn_type, validate_certs, certs_file)
 
         return conn
 
@@ -243,6 +247,23 @@ class BaseView(object):
         invalidate_cache(long_term, 'images', None, [], [], region, acct)
         invalidate_cache(long_term, 'images', None, [u'self'], [], region, acct)
         invalidate_cache(long_term, 'images', None, [], [u'self'], region, acct)
+
+    def get_euca_authenticator(self):
+        """
+        This method centralizes configuration of the EucaAuthenticator.
+        """
+        host = self.request.registry.settings.get('clchost', 'localhost')
+        port = int(self.request.registry.settings.get('clcport', 8773))
+        host = self.request.registry.settings.get('sts.host', host)
+        port = int(self.request.registry.settings.get('sts.port', port))
+        validate_certs = asbool(self.request.registry.settings.get('connection.ssl.validation', False))
+        conn = AWSAuthConnection(None, aws_access_key_id='', aws_secret_access_key='')
+        
+        ca_certs_file = conn.ca_certificates_file
+        conn = None
+        ca_certs_file = self.request.registry.settings.get('connection.ssl.certfile', ca_certs_file)
+        auth = EucaAuthenticator(host, port, validate_certs=validate_certs, ca_certs=ca_certs_file)
+        return auth
 
     @staticmethod
     def escape_braces(s):
@@ -344,7 +365,7 @@ class BaseView(object):
                       {'bucket': bucket},
                       ['starts-with', '$key', prefix]]
         if token is not None:
-            conditions[0]['x-amz-security-token'] = token
+            conditions.append({'x-amz-security-token': token})
                       
         policy = {'conditions': conditions,
                   'expiration': time.strftime('%Y-%m-%dT%H:%M:%SZ',

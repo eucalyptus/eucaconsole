@@ -77,7 +77,7 @@ angular.module('UploadFilePage', ['S3SharingPanel', 'S3MetadataEditor'])
             $scope.progress = 0;
             $scope.total = $scope.files.length;
             $scope.uploadFile();
-        }
+        };
         $scope.uploadFile = function($event) {
             var file = $scope.files[$scope.progress];
             var fd = new FormData()

@@ -10,6 +10,7 @@ angular.module('BucketsPage', ['LandingPage', 'EucaConsoleUtils'])
         $scope.bucketName = '';
         $scope.updateVersioningAction = '';
         $scope.bucketCounts = {};
+        $scope.versionCounts = {};
         $scope.bucketVersioningStatus = {};
         $scope.bucketVersioningAction = {};
         $scope.countsLoading = {};
@@ -24,6 +25,7 @@ angular.module('BucketsPage', ['LandingPage', 'EucaConsoleUtils'])
             var modal = $('#' + action + '-modal');
             $scope.bucketName = bucket['bucket_name'];
             $scope.bucketCount = $scope.bucketCounts[$scope.bucketName];
+            $scope.versionCount = $scope.versionCounts[$scope.bucketName];
             // Set form action based on bucket choice
             var form_action = $('#' + action + '-form').attr('action');
             form_action = form_action.replace('_name_', $scope.bucketName);
@@ -59,6 +61,7 @@ angular.module('BucketsPage', ['LandingPage', 'EucaConsoleUtils'])
                     var results = oData ? oData.results : {},
                         versioningStatus = results['versioning_status'];
                     $scope.bucketCounts[bucketName] = results['object_count'];
+                    $scope.versionCounts[bucketName] = results['version_count'];
                     $scope.bucketVersioningStatus[bucketName] = versioningStatus;
                     $scope.bucketVersioningAction[bucketName] = $scope.getVersioningActionFromStatus(versioningStatus);
                     $scope.countsLoading[bucketName] = false;
@@ -76,13 +79,13 @@ angular.module('BucketsPage', ['LandingPage', 'EucaConsoleUtils'])
             });
         });
         $scope.hasCopyItem = function () {
-            return Modernizr.localstorage && localStorage.getItem('copy-object-buffer');
+            return Modernizr.sessionstorage && sessionStorage.getItem('copy-object-buffer');
         };
         $scope.doPaste = function (bucket) {
             var id = $('.open').attr('id');  // hack to close action menu
             $('#table-'+id).trigger('click');
             var bucketName = bucket['bucket_name'];
-            var path = Modernizr.localstorage && localStorage.getItem('copy-object-buffer');
+            var path = Modernizr.sessionstorage && sessionStorage.getItem('copy-object-buffer');
             var bucket = path.slice(0, path.indexOf('/'));
             var key = path.slice(path.indexOf('/') + 1);
             var dst_key = path.slice(path.lastIndexOf('/') + 1);
@@ -93,7 +96,7 @@ angular.module('BucketsPage', ['LandingPage', 'EucaConsoleUtils'])
               success(function(oData) {
                 var results = oData ? oData.results : [];
                 if (oData.error == undefined) {
-                    Modernizr.localstorage && localStorage.removeItem('copy-object-buffer');
+                    Modernizr.sessionstorage && sessionStorage.removeItem('copy-object-buffer');
                     $scope.$broadcast('refresh');
                 } else {
                     Notify.failure(oData.message);
