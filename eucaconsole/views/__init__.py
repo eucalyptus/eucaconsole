@@ -47,7 +47,7 @@ from urllib import urlencode
 from urlparse import urlparse
 try:
     import python_magic as magic
-except:
+except ImportError:
     import magic
 
 from boto.connection import AWSAuthConnection
