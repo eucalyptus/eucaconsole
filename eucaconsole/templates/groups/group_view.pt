@@ -10,7 +10,7 @@
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap"
-         ng-app="GroupPage" ng-controller="GroupPageCtrl" ng-init="initController(${group_users}, ${all_users})">
+         ng-app="GroupPage" ng-controller="GroupPageCtrl" ng-init="initController('${group_name}', ${group_users}, ${all_users})">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('groups')}" i18n:translate="">Groups</a></li>
@@ -92,13 +92,15 @@
                         </div>
                     </form>
                 </div>
-                <div tal:condition="group">
+                <div tal:condition="group"
+                    tal:define="html_attrs {'pattern': '^[a-zA-Z0-9\+\=\,\.\@\-]{1,128}$',
+                         'error_msg': 'Group names must be between 1 and 128 characters long, and may contain letters, numbers, \'+\', \'=\', \',\', \'.\'. \'@\' and \'-\''};">
                     <form action="${request.route_path('group_update', name=group.group_name)}" method="post" data-abide="abide">
                         ${structure:group_update_form['csrf_token']}
                         <div class="section">
                             <h6 i18n:translate="">General</h6>
                             <div>
-                                ${panel('form_field', field=group_update_form.group_name, leftcol_width=3, rightcol_width=9)}
+                                ${panel('form_field', field=group_update_form.group_name, leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'groupName'}, **html_attrs)}
                             </div>
                             <div class="row controls-wrapper readonly">
                                 <div class="small-3 columns"><label class="right" i18n:translate="">Creation time</label></div>

@@ -8,7 +8,7 @@ angular.module('GroupPage', [])
     .controller('GroupPageCtrl', function ($scope, $timeout) {
         $scope.groupName = '';
         $scope.isNotValid = true;
-        $scope.initController = function (group_users, all_users) {
+        $scope.initController = function (group_name, group_users, all_users) {
             $scope.setWatch();
         };
         $scope.setWatch = function () {

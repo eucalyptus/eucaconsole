@@ -8,10 +8,12 @@ angular.module('GroupPage', ['PolicyList'])
     .controller('GroupPageCtrl', function ($scope, $timeout) {
         $scope.groupUsers = [];
         $scope.allUsers = [];
+        $scope.groupName = '';
         $scope.isSubmitted = false;
         $scope.isNotChanged = true;
         $scope.pendingModalID = '';
-        $scope.initController = function (group_users, all_users) {
+        $scope.initController = function (group_name, group_users, all_users) {
+            $scope.groupName = group_name;
             $scope.groupUsers = group_users;
             $scope.allUsers = all_users;
             $scope.setWatch();
@@ -68,6 +70,14 @@ angular.module('GroupPage', ['PolicyList'])
             }
         };
         $scope.setWatch = function () {
+            $scope.$watch('groupName' , function () {
+                // timeout is needed to react Foundation's validation error 
+                $timeout(function() {
+                    if ($('#group-name').parent('div').hasClass('error')) {
+                        $scope.isNotChanged = true;
+                    }
+                }, 1000);
+            });
             // Monitor the action menu click
             $(document).on('click', 'a[id$="action"]', function (event) {
                 // Ingore the action if the link has ng-click or href attribute defined

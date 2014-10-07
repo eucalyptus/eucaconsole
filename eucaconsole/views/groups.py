@@ -153,6 +153,7 @@ class GroupView(BaseView):
             group_arn=self.group.arn if self.group else '',
             group_create_date=self.group.create_date if self.group else datetime.now().isoformat(),
             group_route_id=self.group_route_id,
+            group_name=self.group.group_name,
             group_users=self.group_users,
             all_users=self.all_users,
             group_form=self.group_form,
