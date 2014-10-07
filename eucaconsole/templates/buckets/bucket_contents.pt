@@ -79,7 +79,7 @@
                         <a i18n:translate="" ng-href="{{ item.details_url }}">View details</a>
                     </li>
                     <li ng-show="!item.is_folder">
-                        <a i18n:translate="" ng-href="{{ item.details_url }}">Manage permissions</a>
+                        <a i18n:translate="" ng-href="{{ item.details_url }}#sharing">Manage permissions</a>
                     </li>
                     <li ng-show="!item.is_folder">
                         <a i18n:translate="" ng-href="{{ item.download_url }}">Download</a>
@@ -128,7 +128,7 @@
                                 <a i18n:translate="" ng-href="{{ item.details_url }}">View details</a>
                             </li>
                             <li ng-show="!item.is_folder">
-                                <a i18n:translate="" ng-href="{{ item.details_url }}">Manage permissions</a>
+                                <a i18n:translate="" ng-href="{{ item.details_url }}#sharing">Manage permissions</a>
                             </li>
                             <li ng-show="!item.is_folder">
                                 <a i18n:translate="" ng-href="{{ item.download_url }}">Download</a>
