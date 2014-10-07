@@ -98,7 +98,7 @@ class ImageBundlingMixin(BlockDeviceMappingItemView):
                 return self.conn.get_all_images(image_ids=[image_id])[0]
         elif tasks[0].state == 'failed':
             # generate error message, need to let user know somehow
-            logging.warn("bundle task failed! " + tasks[0].message)
+            logging.warn("bundle task failed! ")
             # cleanup metadata
             k.delete()
             self.conn.delete_tags(instance.id, ['ec_bundling'])
@@ -291,9 +291,19 @@ class ImagesJsonView(LandingPageView, ImageBundlingMixin):
             url = None
             if image_id.find('pi-') == 0:
                 instances = self.conn.get_only_instances([image_id[1:]])
+                if len(instances) < 1:  # let's return failed since that's true
+                    return dict(
+                        results=dict(image_status='failed', progress=0, url=url)
+                    )
                 image = self.handle_instance_being_bundled(instances[0])
-                if image.state == 'available':
-                    url = self.request.route_path('image_view', id=image.id)
+                if image:
+                    if image.state == 'available':
+                        url = self.request.route_path('image_view', id=image.id)
+                else:
+                    msg = _(u'Bundle instance failed for ')+instances[0].id
+                    self.request.session.flash(msg, queue=Notification.ERROR)
+                    url = self.request.route_path('images')
+                    return dict(results=dict(image_status='failed', progress=0, url=url))
             else:
                 image = self.conn.get_image(image_id)
             """Return current image status"""
@@ -384,7 +394,10 @@ class ImageView(TaggedItemView, ImageBundlingMixin):
             with boto_error_handler(self.request):
                 if image_param.find('pi-') == 0:
                     instances = self.conn.get_only_instances([image_param[1:]])
-                    images = [self.handle_instance_being_bundled(instances[0], do_not_finish=True)]
+                    if len(instances) < 1:
+                        images = None
+                    else:
+                        images = [self.handle_instance_being_bundled(instances[0], do_not_finish=True)]
                 else:
                     images = self.conn.get_all_images(image_ids=images_param)
         image = images[0] if images else None
@@ -566,7 +579,7 @@ class ImageView(TaggedItemView, ImageBundlingMixin):
     def get_controller_options_json(self):
         if not self.image:
             return '{}'
-        image_id = self.image.fake_id or self.image.id
+        image_id = self.image.fake_id if hasattr(self.image, 'fake_id') else self.image.id
         return BaseView.escape_json(json.dumps({
             'is_public': self.is_public,
             'image_launch_permissions': self.image_launch_permissions,
