@@ -226,7 +226,7 @@
                     </li>
                     <li class="panel" id="health" tal:case="'health'">
                         <div class="tile">
-                            <h5 class="subheader" i18n:translate="">Service Status</h5>
+                            <h5 class="subheader" i18n:translate="">Service status</h5>
                             <i class="icon"><em><span class="dots" ng-show="health.length == 0">&nbsp;</span></em></i>
                             <div class="content">
                                  <div ng-repeat="service in health">
