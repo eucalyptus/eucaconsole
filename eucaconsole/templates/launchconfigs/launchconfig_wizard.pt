@@ -106,7 +106,7 @@
                                 <div class="row">
                                     <div class="small-8 columns right" id="create-keypair-link">
                                         <span class="or" i18n:translate="">Or: </span>
-                                        <a data-reveal-id="create-keypair-modal" i18n:translate="">Create key pair</a>
+                                        <a ng-click="showCreateKeypairModal()" i18n:translate="">Create key pair</a>
                                     </div>
                                 </div>
                             </div>
