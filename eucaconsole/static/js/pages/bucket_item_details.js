@@ -12,7 +12,7 @@ angular.module('BucketItemDetailsPage', ['S3SharingPanel', 'S3MetadataEditor', '
         $scope.isSubmitted = false;
         $scope.hasChangesToBeSaved = false;
         $scope.objectName = '';
-        $scope.initController = function (optionsJson, deleteUrl, key) {
+        $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.deleteUrl = options['delete_keys_url'];
             $scope.bucketUrl = options['bucket_url'];
