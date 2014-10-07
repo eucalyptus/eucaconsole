@@ -23,6 +23,10 @@ angular.module('BucketContentsPage', ['LandingPage', 'EucaConsoleUtils'])
             $scope.getKeysUrl = options['get_keys_url'];
             $scope.prefix = options['key_prefix'];
             $scope.copyObjUrl = options['copy_object_url'];
+            // set upload button target based on media query
+            if (window.matchMedia(Foundation.media_queries['small']).matches === false) {
+                $('#upload-file-btn').attr('target', '_blank');
+            }
         };
         $scope.revealModal = function (action, item) {
             var modal = $('#' + action + '-modal');
