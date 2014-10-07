@@ -43,10 +43,9 @@
                         </li>
                     </metal:actions>
                 </metal:block>
-                <!--! TODO: Move IAM group name error_msg to view and mark for i18n -->
                 <div tal:condition="not group and group_route_id == 'new'"
                     tal:define="html_attrs {'pattern': '^[a-zA-Z0-9\+\=\,\.\@\-]{1,128}$',
-                         'error_msg': 'Group names must be between 1 and 128 characters long, and may contain letters, numbers, \'+\', \'=\', \',\', \'.\'. \'@\' and \'-\''};">
+                         'error_msg': group_name_validation_error_msg};">
                     <form action="${request.route_path('group_create')}" method="post" data-abide="abide">
                         ${structure:group_form['csrf_token']}
                         <div class="section columns">
@@ -94,7 +93,7 @@
                 </div>
                 <div tal:condition="group"
                     tal:define="html_attrs {'pattern': '^[a-zA-Z0-9\+\=\,\.\@\-]{1,128}$',
-                         'error_msg': 'Group names must be between 1 and 128 characters long, and may contain letters, numbers, \'+\', \'=\', \',\', \'.\'. \'@\' and \'-\''};">
+                        'error_msg': group_name_validation_error_msg};">
                     <form action="${request.route_path('group_update', name=group.group_name)}" method="post" data-abide="abide">
                         ${structure:group_update_form['csrf_token']}
                         <div class="section">
