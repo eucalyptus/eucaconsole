@@ -723,7 +723,7 @@ class InstanceStateView(BaseInstanceView):
             user_data = self.conn.get_instance_attribute(self.instance.id, 'userData')
             if 'userData' in user_data.keys():
                 user_data = user_data['userData']
-                unencoded = base64.b64decode(user_data)
+                unencoded = base64.b64decode(user_data) if user_data is not None else ''
                 mime_type = guess_mimetype_from_buffer(unencoded, mime=True)
                 if mime_type.find('text') == 0:
                     user_data = unencoded
