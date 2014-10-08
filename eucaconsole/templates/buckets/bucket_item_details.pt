@@ -77,7 +77,7 @@
                     </div>
                     <hr />
                     ${panel('s3_metadata_editor', bucket_object=bucket_item, metadata_form=metadata_form)}
-                    <hr />
+                    <hr id="sharing" />
                     ${panel('s3_sharing_panel', bucket_object=bucket_item, sharing_form=sharing_form)}
                     <hr />
                     <div>
