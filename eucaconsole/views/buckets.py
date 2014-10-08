@@ -355,6 +355,8 @@ class BucketContentsView(LandingPageView):
             'get_keys_url': self.request.route_path('bucket_keys', name=self.bucket_name, subpath=self.request.subpath),
             'key_prefix': self.key_prefix,
             'copy_object_url': self.request.route_path('bucket_put_item', name='_name_', subpath='_subpath_'),
+            'paste_warn_title': _(u'Warning'),
+            'paste_warn_msg': _(u'You cannot paste an object onto itself'),
         }))
 
     @staticmethod

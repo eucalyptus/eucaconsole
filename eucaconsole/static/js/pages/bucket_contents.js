@@ -18,11 +18,11 @@ angular.module('BucketContentsPage', ['LandingPage', 'EucaConsoleUtils'])
         $scope.index = 0;
         $scope.items = null;
         $scope.initController = function (optionsJson) {
-            var options = JSON.parse(eucaUnescapeJson(optionsJson));
-            $scope.deleteKeysUrl = options['delete_keys_url'];
-            $scope.getKeysUrl = options['get_keys_url'];
-            $scope.prefix = options['key_prefix'];
-            $scope.copyObjUrl = options['copy_object_url'];
+            $scope.options = JSON.parse(eucaUnescapeJson(optionsJson));
+            $scope.deleteKeysUrl = $scope.options['delete_keys_url'];
+            $scope.getKeysUrl = $scope.options['get_keys_url'];
+            $scope.prefix = $scope.options['key_prefix'];
+            $scope.copyObjUrl = $scope.options['copy_object_url'];
         };
         $scope.revealModal = function (action, item) {
             var modal = $('#' + action + '-modal');
@@ -167,6 +167,12 @@ angular.module('BucketContentsPage', ['LandingPage', 'EucaConsoleUtils'])
             var key = path.slice(path.indexOf('/')+1);
             if (subpath === undefined) {
                 subpath = item.details_url.slice(item.details_url.indexOf('itemdetails')+12);
+            }
+            for (var i=0; i<$scope.items.length; i++) {
+                if (key == $scope.items[i].name) {
+                    Inform.informational($scope.options['paste_warn_msg'], $scope.options['paste_warn_title']);
+                    return;
+                }
             }
             var url = $scope.copyObjUrl.replace('_name_', bucketName).replace('_subpath_', subpath);
             var data = "csrf_token="+$('#csrf_token').val()+'&src_bucket='+bucket+'&src_key='+key;
