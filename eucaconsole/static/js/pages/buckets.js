@@ -88,8 +88,7 @@ angular.module('BucketsPage', ['LandingPage', 'EucaConsoleUtils'])
             var path = Modernizr.sessionstorage && sessionStorage.getItem('copy-object-buffer');
             var bucket = path.slice(0, path.indexOf('/'));
             var key = path.slice(path.indexOf('/') + 1);
-            var dst_key = path.slice(path.lastIndexOf('/') + 1);
-            var url = $scope.copyObjUrl.replace('_name_', bucketName).replace('_subpath_', dst_key);
+            var url = $scope.copyObjUrl.replace('_name_', bucketName).replace('_subpath_', '');
             var data = "csrf_token=" + $('#csrf_token').val() + '&src_bucket=' + bucket + '&src_key=' + key;
             $http({method:'POST', url:url, data:data,
                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).

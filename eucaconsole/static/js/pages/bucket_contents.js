@@ -118,7 +118,11 @@ angular.module('BucketContentsPage', ['LandingPage', 'EucaConsoleUtils'])
                     }
                 }).
                 error(function (oData, status) {
-                    Notify.failure("some kind of error");
+                    var errorMsg = oData['message'] || '';
+                    if (errorMsg && status === 403) {
+                        $('#timed-out-modal').foundation('reveal', 'open');
+                    }
+                    Notify.failure(errorMsg);
                 });
         };
         $scope.cancelDeleting = function () {
@@ -145,7 +149,11 @@ angular.module('BucketContentsPage', ['LandingPage', 'EucaConsoleUtils'])
                     $scope.obj_key = '';
                 }).
                 error(function (oData, status) {
-                    Notify.failure("some kind of error");
+                    var errorMsg = oData['message'] || '';
+                    if (errorMsg && status === 403) {
+                        $('#timed-out-modal').foundation('reveal', 'open');
+                    }
+                    Notify.failure(errorMsg);
                 });
         };
         $scope.saveKey = function (bucket_name, key) {
@@ -185,6 +193,9 @@ angular.module('BucketContentsPage', ['LandingPage', 'EucaConsoleUtils'])
               }).
               error(function (oData, status) {
                 var errorMsg = oData['message'] || '';
+                if (errorMsg && status === 403) {
+                    $('#timed-out-modal').foundation('reveal', 'open');
+                }
                 Notify.failure(errorMsg);
               });
         };
