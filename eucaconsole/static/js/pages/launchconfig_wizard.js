@@ -371,6 +371,15 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             $scope.summarySection.find('.step1').removeClass('hide');
             $scope.checkRequiredInput();
         });
+        $scope.showCreateKeypairModal = function() {
+            $scope.showKeyPairMaterial = false;
+            var form = $('#launch-config-form');
+            var invalid_attr = 'data-invalid';
+            form.removeAttr(invalid_attr);
+            $(invalid_attr, form).removeAttr(invalid_attr);
+            $('.error', form).not('small').removeClass('error');
+            $scope.keyPairModal.foundation('reveal', 'open');
+        };
         $scope.downloadKeyPair = function ($event, downloadUrl) {
             $event.preventDefault();
             var form = $($event.target);
