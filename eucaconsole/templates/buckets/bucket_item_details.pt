@@ -6,7 +6,8 @@
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap"
-         ng-app="BucketItemDetailsPage" ng-controller="BucketItemDetailsPageCtrl" ng-init="initController()">
+         ng-app="BucketItemDetailsPage" ng-controller="BucketItemDetailsPageCtrl"
+         ng-init="initController('${controller_options_json}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('buckets')}">Buckets</a></li>
@@ -37,10 +38,11 @@
                             <a href="${item_download_url}" id="download-action" i18n:translate="">Download</a>
                         </li>
                         <li>
-                            <a href="#" id="copy-action" i18n:translate="">Copy</a>
+                            <a ng-click="saveKey('${bucket_name}', '${bucket_item}')" i18n:translate="">Copy object</a>
                         </li>
                         <li>
-                            <a id="delete-bucket-item-action" i18n:translate="">Delete</a>
+                            <a id="delete-bucket-item-action" i18n:translate=""
+                               ng-click="confirmDelete('${item_name}')">Delete</a>
                         </li>
                     </metal:actions>
                 </metal:block>
@@ -94,11 +96,13 @@
             <metal:block metal:use-macro="layout.global_macros['help_expando']" />
             <div class="help-content" ng-show="isHelpExpanded" ng-cloak=""></div>
         </div>
+        ${panel('bucket_delete_dialog')}
     </div>
 </div>
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/eucaconsole_utils.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/bucket_item_details.js')}"></script>
 </div>
 </metal:block>
