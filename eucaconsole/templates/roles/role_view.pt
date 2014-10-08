@@ -46,7 +46,7 @@
                 </metal:block>
                 <div tal:condition="not role and role_route_id == 'new'" i18n:translate=""
                     tal:define="html_attrs {'pattern': '^[a-zA-Z0-9\+\=\,\.\@\-]{1,64}$',
-                         'error_msg': 'Role names must be between 1 and 64 characters long, and may contain letters, numbers, \'+\', \'=\', \',\', \'.\'. \'@\' and \'-\' and cannot contain spaces'};">
+                         'error_msg': 'Role names must be between 1 and 64 characters long, and may contain letters, numbers, \'+\', \'=\', \',\', \'.\'. \'@\' and \'-\', and cannot contain spaces'};">
                     <form action="${request.route_path('role_create')}" method="post" data-abide="abide">
                         ${structure:role_form['csrf_token']}
                         <div class="section columns">
