@@ -220,12 +220,11 @@ angular.module('InstancePage', ['TagEditor', 'EucaConsoleUtils'])
         $scope.getUserData = function () {
             $http.get($scope.instanceUserDataEndpoint).success(function(oData) {
                 var userData = oData ? oData.results : '';
-                if (userData.type.indexOf('text') === 0) {
+                if (userData.type.indexOf('text') === 0 || userData.type === 'empty') {
                     $scope.isFileUserData = false;
                     $("#userdata:not([display='none'])").val(userData.data);
                     $timeout(function() { $scope.inputtype = 'text'; });
-                }
-                else {
+                } else {
                     $scope.isFileUserData = true;
                     $("#userdatatype:not([display='none'])").text(userData.type);
                     $timeout(function() { $scope.inputtype = 'file'; });
