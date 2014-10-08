@@ -68,11 +68,11 @@
                     </div>
                     <div class="row" ng-show="selectedProtocol">
                         <div class="small-3 columns">
-                            <label class="right" ng-show="selectedProtocol !== 'icmp'" i18n:translate="">Port range</label>
+                            <label class="right" ng-show="selectedProtocol !== 'icmp' &amp;&amp; selectedProtocol !== '-1'" i18n:translate="">Port range</label>
                             <label class="right" ng-show="selectedProtocol == 'icmp'" i18n:translate="">Type</label>
                         </div>
                         <div class="small-9 columns">
-                            <div ng-show="selectedProtocol !== 'icmp'">
+                            <div ng-show="selectedProtocol !== 'icmp' &amp;&amp; selectedProtocol !== '-1'">
                                 <input class="port from" name="from_port" ng-model="fromPort" pattern="integer" />&nbsp;-
                                 <input class="port to" name="to_port" ng-model="toPort" pattern="integer" />
                                 <small class="error" i18n:translate="">Valid port range required</small>
@@ -151,6 +151,9 @@
             </span>
         </p>
         <a href="#" class="close-reveal-modal">&#215;</a>
+    </div>
+    <div id="hidden-text-div">
+        <span id="all-traffic-option-text" i18n:translate="">All traffic</span> 
     </div>
     <script src="${request.static_path('eucaconsole:static/js/widgets/securitygroup_rules.js')}"></script>
     <script>setTimeout(function(){ $(document).foundation({abide : { timeout : 2000 } })}, 500);</script>

@@ -36,6 +36,7 @@ angular.module('SecurityGroupRules', [])
             $('#ip-protocol-select').prop('selectedIndex', -1);
             $('#ip-protocol-select').trigger('chosen:updated');
             $scope.cleanupSelections();
+            $scope.adjustIPProtocolOptions();
         };
         $scope.syncRules = function () {
             $scope.rulesTextarea.val(JSON.stringify($scope.rulesArray));
@@ -82,7 +83,7 @@ angular.module('SecurityGroupRules', [])
             if( $scope.hasDuplicatedRule == true ){
                 $scope.isRuleNotComplete = true;
             }
-            if( $scope.selectedProtocol !== 'icmp' ){
+            if( $scope.selectedProtocol !== 'icmp' && $scope.selectedProtocol !== '-1' ){
                 if( $scope.fromPort === '' || $scope.fromPort === undefined ){
                     $scope.isRuleNotComplete = true;
                 }else if( $scope.toPort === '' || $scope.toPort === undefined ){
@@ -103,6 +104,13 @@ angular.module('SecurityGroupRules', [])
         $scope.setWatchers = function () {
             $scope.$watch('selectedProtocol', function(){ 
                 $scope.checkRequiredInput();
+                // Set the defalt CIDR IP value to be "Open to all addresses"
+                // In case of choosing "All traffic" Protocol
+                if ($scope.selectedProtocol == '-1') {
+                    $scope.cidrIp = '0.0.0.0/0';
+                } else {
+                    $scope.cidrIp = '';
+                }
             });
             $scope.$watch('fromPort', function(){ 
                 $scope.checkRequiredInput();
@@ -155,6 +163,8 @@ angular.module('SecurityGroupRules', [])
                 if ($scope.securityGroupVPC == '') {
                     $scope.selectRuleType('inbound'); 
                 }
+                // For VPC, include the option '-1' for ALL IP Protocols
+                $scope.adjustIPProtocolOptions();
             });
             $(document).on('keyup', '#input-cidr-ip', function () {
                 $scope.$apply(function() {
@@ -292,6 +302,12 @@ angular.module('SecurityGroupRules', [])
                 $scope.ipProtocol = 'icmp'
             } else if ($scope.selectedProtocol === 'udp') {
                 $scope.ipProtocol = 'udp'
+            } else if ($scope.selectedProtocol === '-1') {
+                $scope.ipProtocol = '-1'
+                $scope.fromPort = null;
+                $scope.toPort = null;
+            } else {
+                $scope.ipProtocol = 'tcp'
             }
         };
         // Create an array block that represents a new security group rule submiitted by user
@@ -307,6 +323,7 @@ angular.module('SecurityGroupRules', [])
                 }
                 group_id=$scope.getGroupIdByName(name);
             }
+            $scope.adjustIpProtocol();
             return {
                 'from_port': $scope.fromPort,
                 'to_port': $scope.toPort,
@@ -333,8 +350,6 @@ angular.module('SecurityGroupRules', [])
             if (form.find('[data-invalid]').length) {
                 return false;
             }
-
-            $scope.adjustIpProtocol();
             // Add the rule
             if ($scope.ruleType == 'inbound') {
                 $scope.rulesArray.push($scope.createRuleArrayBlock());
@@ -405,6 +420,7 @@ angular.module('SecurityGroupRules', [])
         $scope.addDefaultOutboundRule = function () {
             var storeRuleType = $scope.ruleType; // Save the current ruleType value
             $scope.ruleType = 'outbound';   // Needs to set 'outbound' for the rule comparison
+            $scope.selectedProtocol = "-1"; 
             $scope.ipProtocol = "-1";
             $scope.trafficType == "ip" 
             $scope.cidrIp = "0.0.0.0/0";
@@ -428,6 +444,25 @@ angular.module('SecurityGroupRules', [])
                 $scope.inboundButtonClass = 'inactive';
                 $scope.outboundButtonClass = 'active';
             }
+        };
+        $scope.adjustIPProtocolOptions = function () {
+            $scope.removeAllTrafficRuleOption();
+            if ($scope.securityGroupVPC != '') {
+                // Allow All Traffic option to be selectable for VPC
+                $scope.insertAllTrafficRuleOption();
+            }
+            $('#ip-protocol-select').prop('selectedIndex', -1);
+            $('#ip-protocol-select').trigger('chosen:updated');
+        };
+        // Remove All Traffic rule, "-1 ()" from the option
+        $scope.removeAllTrafficRuleOption  = function () {
+            $('#ip-protocol-select').find("option[value='-1']").remove();
+        };
+        // Allow All Traffic, "-1", to be selectable for VPC
+        $scope.insertAllTrafficRuleOption  = function () {
+            var key = "-1";
+            var value = $('#all-traffic-option-text').text();
+            $('#ip-protocol-select').prepend($("<option></option>").attr("value", key).text(value));  
         };
     })
 ;
