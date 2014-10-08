@@ -664,18 +664,15 @@ form {
         display: inline-block;
         text-align: left;
         position: relative;
-        left: 1.5rem;
+        left: -1rem;
     }
     .helptext-icon.reverse {
         position: relative;
         left: 1.5rem;
     }
-    div.reverse {
-        position: relative;
-        input {
-            position: absolute;
-            right: -2rem;
-            top: 5px;
+    .reverse {
+        .error {
+            white-space: nowrap;
         }
     }
     .checkbox-row {
