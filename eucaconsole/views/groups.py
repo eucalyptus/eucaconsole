@@ -148,7 +148,7 @@ class GroupView(BaseView):
         self.group_form = GroupForm(self.request, group=self.group, formdata=self.request.params or None)
         self.group_update_form = GroupUpdateForm(self.request, group=self.group, formdata=self.request.params or None)
         self.delete_form = DeleteGroupForm(self.request, formdata=self.request.params)
-        self.group_name_validation_error_msg = _(u'Group names must be between 1 and 128 characters long, and may contain letters, numbers, \'+\', \'=\', \',\', \'.\'. \'@\' and \'-\'')
+        self.group_name_validation_error_msg = _(u'Group names must be between 1 and 128 characters long, and may contain letters, numbers, \'+\', \'=\', \',\', \'.\'. \'@\' and \'-\', and cannot contain spaces.')
         group_view_options = {
 
             'group_name': self.group.group_name if self.group else ''

@@ -38,7 +38,7 @@
                      detailpage_action request.route_path('snapshot_register', id=snapshot.id) if snapshot else '';
                      action landingpage_action if landingpage else detailpage_action;
                      html_attrs {'pattern': '^[a-zA-Z0-9\-\_\(\)\.\/]{3,128}$',
-                         'error_msg': 'AMI names must be between 3 and 128 characters long, and may contain letters, numbers, \'(\', \')\', \'.\', \'-\', \'/\' and \'_\', and cannot contain spaces'};
+                         'error_msg': 'AMI names must be between 3 and 128 characters long, and may contain letters, numbers, \'(\', \')\', \'.\', \'-\', \'/\' and \'_\', and cannot contain spaces.'};
                      dot_html_attrs {'checked': 'checked'};">
         <h3 i18n:translate="">Register snapshot as image</h3>
         <p><span i18n:translate="">You can register a snapshot as an image if it was created from a volume containing a root file system. The image can then be used to launch EBS-backed instances.</span></p>
