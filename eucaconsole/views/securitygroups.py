@@ -307,7 +307,7 @@ class SecurityGroupView(TaggedItemView):
         rules = json.loads(rules_json) if rules_json else []
 
         for rule in rules:
-            ip_protocol = rule.get('ip_protocol')
+            ip_protocol = self.get_protocol_by_name(rule.get('ip_protocol'))
             from_port = rule.get('from_port')
             to_port = rule.get('to_port')
             cidr_ip = None
@@ -328,12 +328,6 @@ class SecurityGroupView(TaggedItemView):
                 group_name = grant.get('name')
                 owner_id = grant.get('owner_id')
                 group_id = grant.get('group_id')
-
-            if not self.check_int(ip_protocol):
-                try:
-                    ip_protocol = socket.getprotobyname(ip_protocol)
-                except:
-                    pass
 
             auth_args = dict(group_id=security_group.id, ip_protocol=ip_protocol,
                              from_port=from_port, to_port=to_port, cidr_ip=cidr_ip)
@@ -450,7 +444,7 @@ class SecurityGroupView(TaggedItemView):
         """Build security group rules params from security group dictionary for boto calls"""
         rules_params = []
         for rule in rules_dict:
-            ip_protocol = rule['ip_protocol']
+            ip_protocol = self.get_protocol_by_name(rule['ip_protocol'])
             from_port = rule['from_port']
             to_port = rule['to_port']
             grants = rule['grants']
@@ -484,12 +478,6 @@ class SecurityGroupView(TaggedItemView):
                     group_id = grant['src_security_group_group_id']
                 elif 'src_group_id' in grant:
                     group_id = grant['src_group_id']
-            # for custom protocol, translate it to number
-            if not self.check_int(ip_protocol):
-                try:
-                    ip_protocol = socket.getprotobyname(ip_protocol)
-                except:
-                    pass
             # create the argument dictionary for boto call
             auth_args = dict(group_id=self.security_group.id, ip_protocol=ip_protocol,
                              from_port=from_port, to_port=to_port, cidr_ip=cidr_ip)
@@ -618,6 +606,15 @@ class SecurityGroupView(TaggedItemView):
                     self.conn.revoke_security_group(**params)
                 else:
                     self.conn.revoke_security_group_egress(**params)
+
+    def get_protocol_by_name(self, protocol):
+        ip_protocol = protocol
+        if not self.check_int(ip_protocol):
+            try:
+                ip_protocol = socket.getprotobyname(ip_protocol)
+            except:
+                pass
+        return ip_protocol
 
     def check_int(self, s):
         if s[0] in ('-', '+'):
