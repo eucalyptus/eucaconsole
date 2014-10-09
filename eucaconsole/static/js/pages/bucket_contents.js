@@ -119,7 +119,7 @@ angular.module('BucketContentsPage', ['LandingPage', 'EucaConsoleUtils'])
                 }).
                 error(function (oData, status) {
                     var errorMsg = oData['message'] || '';
-                    if (errorMsg && status === 403) {
+                    if (status === 403 || status === 400) {
                         $('#timed-out-modal').foundation('reveal', 'open');
                     }
                     Notify.failure(errorMsg);
@@ -150,7 +150,7 @@ angular.module('BucketContentsPage', ['LandingPage', 'EucaConsoleUtils'])
                 }).
                 error(function (oData, status) {
                     var errorMsg = oData['message'] || '';
-                    if (errorMsg && status === 403) {
+                    if (status === 403 || status === 400) {
                         $('#timed-out-modal').foundation('reveal', 'open');
                     }
                     Notify.failure(errorMsg);
@@ -193,7 +193,7 @@ angular.module('BucketContentsPage', ['LandingPage', 'EucaConsoleUtils'])
               }).
               error(function (oData, status) {
                 var errorMsg = oData['message'] || '';
-                if (errorMsg && status === 403) {
+                if (status === 403 || status === 400) {
                     $('#timed-out-modal').foundation('reveal', 'open');
                 }
                 Notify.failure(errorMsg);
