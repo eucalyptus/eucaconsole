@@ -149,12 +149,17 @@ class GroupView(BaseView):
         self.group_update_form = GroupUpdateForm(self.request, group=self.group, formdata=self.request.params or None)
         self.delete_form = DeleteGroupForm(self.request, formdata=self.request.params)
         self.group_name_validation_error_msg = _(u'Group names must be between 1 and 128 characters long, and may contain letters, numbers, \'+\', \'=\', \',\', \'.\'. \'@\' and \'-\'')
+        group_view_options = {
+
+            'group_name': self.group.group_name if self.group else ''
+        }
+        self.group_view_options_json = BaseView.escape_json(json.dumps(group_view_options))
         self.render_dict = dict(
             group=self.group,
             group_arn=self.group.arn if self.group else '',
             group_create_date=self.group.create_date if self.group else datetime.now().isoformat(),
             group_route_id=self.group_route_id,
-            group_name=self.group.group_name if self.group else '',
+            group_view_options_json=self.group_view_options_json,
             group_name_validation_error_msg=self.group_name_validation_error_msg,
             group_users=self.group_users,
             all_users=self.all_users,

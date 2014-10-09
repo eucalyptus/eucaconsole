@@ -10,7 +10,7 @@
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap"
-         ng-app="GroupPage" ng-controller="GroupPageCtrl" ng-init="initController('${group_name}', ${group_users}, ${all_users})">
+         ng-app="GroupPage" ng-controller="GroupPageCtrl" ng-init="initController('${group_view_options_json}', ${group_users}, ${all_users})">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('groups')}" i18n:translate="">Groups</a></li>
@@ -188,6 +188,7 @@
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/eucaconsole_utils.js')}"></script>
     <div tal:condition="group">
         <script src="${request.static_path('eucaconsole:static/js/pages/group.js')}"></script>
     </div>

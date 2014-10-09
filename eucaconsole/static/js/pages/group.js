@@ -4,16 +4,17 @@
  *
  */
 
-angular.module('GroupPage', ['PolicyList'])
-    .controller('GroupPageCtrl', function ($scope, $timeout) {
+angular.module('GroupPage', ['PolicyList', 'EucaConsoleUtils'])
+    .controller('GroupPageCtrl', function ($scope, $timeout, eucaUnescapeJson) {
         $scope.groupUsers = [];
         $scope.allUsers = [];
         $scope.groupName = '';
         $scope.isSubmitted = false;
         $scope.isNotChanged = true;
         $scope.pendingModalID = '';
-        $scope.initController = function (group_name, group_users, all_users) {
-            $scope.groupName = group_name;
+        $scope.initController = function (optionsJson, group_users, all_users) {
+            var options = JSON.parse(eucaUnescapeJson(optionsJson));
+            $scope.groupName = options['group_name'];
             $scope.groupUsers = group_users;
             $scope.allUsers = all_users;
             $scope.setWatch();
