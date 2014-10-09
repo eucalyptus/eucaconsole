@@ -28,9 +28,14 @@
 Pyramid views for Dashboard
 
 """
+import simplejson as json
+
 from pyramid.view import view_config
+from boto.exception import BotoServerError
+
 from ..forms import ChoicesManager
 from . import BaseView
+from ..i18n import _
 from . import boto_error_handler
 
 
@@ -46,9 +51,37 @@ class DashboardView(BaseView):
         with boto_error_handler(self.request):
             region = self.request.session.get('region')
             availability_zones = ChoicesManager(self.conn).get_availability_zones(region)
+        tiles = self.request.cookies.get("{0}_dash_order".format(
+            self.request.session['account' if self.request.session['cloud_type'] == 'euca' else 'access_id']))
+        if tiles is not None:
+            tiles = tiles.replace('%2C', ',')
+        else:
+            tiles = u'instances-running,instances-stopped,scaling-groups,elastic-ips,volumes,snapshots,buckets,' \
+                    u'security-groups,key-pairs,accounts,users,groups,roles,health'
         return dict(
-            availability_zones=availability_zones
+            availability_zones=availability_zones,
+            tiles=tiles.split(','),
+            controller_options_json=self.get_controller_options_json(),
         )
+
+    def get_controller_options_json(self):
+        services=[
+            dict(name=_(u'Compute'), status=''),
+            dict(name=_(u'Object Storage'), status=''),
+            dict(name=_(u'Auto Scaling'), status=''),
+            dict(name=_(u'Elastic Load Balancing'), status=''),
+            dict(name=_(u'CloudWatch'), status=''),
+        ]
+        session = self.request.session
+        if session['cloud_type'] == 'euca':
+            services.append(dict(name=_(u'Identity & Access Mgmt'), status=''))
+        return BaseView.escape_json(json.dumps({
+            'json_items_url': self.request.route_path('dashboard_json'),
+            'services': services,
+            'service_status_url': self.request.route_path('service_status_json'),
+            'cloud_type': self.cloud_type,
+            'account_display_name': self.get_account_display_name(),
+        }))
 
 
 class DashboardJsonView(BaseView):
@@ -78,21 +111,30 @@ class DashboardJsonView(BaseView):
             # Volume/snapshot counts
             volumes_count = len(ec2_conn.get_all_volumes(filters=filters))
             snapshots_count = len(ec2_conn.get_all_snapshots(owner='self'))
+            s3_conn = self.get_connection(conn_type="s3")
+            buckets_count = len(s3_conn.get_all_buckets())
 
             # Security groups, key pairs, IP addresses
             securitygroups_count = len(ec2_conn.get_all_security_groups())
             keypairs_count = len(ec2_conn.get_all_key_pairs())
             elasticips_count = len(ec2_conn.get_all_addresses())
 
+            #TODO: catch errors in this block and turn iam health off
             # IAM counts
+            accounts_count = 0
             users_count = 0
             groups_count = 0
+            roles_count = 0
             session = self.request.session
             if session['cloud_type'] == 'euca':
                 if session['username'] == 'admin':
                     iam_conn = self.get_connection(conn_type="iam")
+                    if session['account_access']:
+                        accounts_count = len(iam_conn.get_response(
+                            'ListAccounts', params={}, list_marker='Accounts').accounts)
                     users_count = len(iam_conn.get_all_users().users)
                     groups_count = len(iam_conn.get_all_groups().groups)
+                    roles_count = len(iam_conn.list_roles().roles)
 
             return dict(
                 instance_total=instances_total_count,
@@ -101,9 +143,51 @@ class DashboardJsonView(BaseView):
                 instances_scaling=instances_scaling_count,
                 volumes=volumes_count,
                 snapshots=snapshots_count,
+                buckets=buckets_count,
                 securitygroups=securitygroups_count,
                 keypairs=keypairs_count,
                 eips=elasticips_count,
+                accounts=accounts_count,
                 users=users_count,
                 groups=groups_count,
+                roles=roles_count,
+                health = dict(name=_(u'Compute'), status='up'),  # this determined client-side
             )
+
+    @view_config(route_name='service_status_json', request_method='GET', renderer='json')
+    def service_status_json(self):
+        svc = self.request.params.get('svc')
+        with boto_error_handler(self.request):
+            status = 'up'
+            if svc == _(u'Object Storage'):
+                conn = self.get_connection(conn_type="s3")
+                try:
+                    conn.get_all_buckets()
+                except BotoServerError:
+                    status = 'down'
+            elif svc == _(u'Auto Scaling'):
+                conn = self.get_connection(conn_type="autoscale")
+                try:
+                    conn.get_all_groups(max_records=1)
+                except BotoServerError:
+                    status = 'down'
+            elif svc == _(u'Elastic Load Balancing'):
+                conn = self.get_connection(conn_type="elb")
+                try:
+                    conn.get_all_load_balancers()
+                except BotoServerError:
+                    status = 'down'
+            elif svc == _(u'CloudWatch'):
+                conn = self.get_connection(conn_type="cloudwatch")
+                try:
+                    conn.list_metrics(namespace="AWS/EC2")
+                except BotoServerError:
+                    status = 'down'
+            elif svc == _(u'Identiy & Access Mgmt'):
+                conn = self.get_connection(conn_type="iam")
+                try:
+                    conn.get_all_groups(path_prefix="/notlikely")
+                except BotoServerError:
+                    status = 'down'
+
+            return dict(health=dict(name=svc, status=status))

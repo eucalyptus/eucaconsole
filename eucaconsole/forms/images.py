@@ -29,11 +29,11 @@ Forms for Images
 
 """
 import wtforms
+from wtforms import validators
 from ..constants.images import EUCA_IMAGE_OWNER_ALIAS_CHOICES, AWS_IMAGE_OWNER_ALIAS_CHOICES
 
-from pyramid.i18n import TranslationString as _
-
-from . import BaseSecureForm
+from ..i18n import _
+from . import BaseSecureForm, TextEscapedField
 
 
 class ImageForm(BaseSecureForm):
@@ -41,7 +41,30 @@ class ImageForm(BaseSecureForm):
        Note: no need to add a 'tags' field.  Use the tag_editor panel (in a template) instead
        Only need to initialize as a secure form to generate CSRF token
     """
-    pass
+    desc_error_msg = _(u'Description is required')
+    description = wtforms.TextAreaField(
+        label=_(u'Description'),
+        validators=[
+            validators.Length(max=255, message=_(u'Description must be less than 255 characters'))
+        ],
+    )
+
+    def __init__(self, request, image=None, conn=None, **kwargs):
+        super(ImageForm, self).__init__(request, **kwargs)
+        self.image = image 
+        self.conn = conn
+        self.description.error_msg = self.desc_error_msg
+
+        if image is not None:
+            self.description.data = image.description
+
+
+class DeregisterImageForm(BaseSecureForm):
+    """
+    Deregister image form
+    Note: delete_snapshot option only applies to EBS-backed images
+    """
+    delete_snapshot = wtforms.BooleanField(label=_(u'Delete associated snapshot'))
 
 
 class ImagesFiltersForm(BaseSecureForm):
@@ -50,7 +73,7 @@ class ImagesFiltersForm(BaseSecureForm):
     platform = wtforms.SelectMultipleField(label=_(u'Platform'))
     root_device_type = wtforms.SelectMultipleField(label=_(u'Root device type'))
     architecture = wtforms.SelectMultipleField(label=_(u'Architecture'))
-    tags = wtforms.TextField(label=_(u'Tags'))
+    tags = TextEscapedField(label=_(u'Tags'))
 
     def __init__(self, request, cloud_type='euca', **kwargs):
         super(ImagesFiltersForm, self).__init__(request, **kwargs)

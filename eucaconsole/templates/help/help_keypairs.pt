@@ -9,20 +9,20 @@
 
     <!-- HELP KEYPAIR: CREATE KEYPAIR-->
     <div tal:condition="display == 'create_keypair'">
-        <h5 class="title" i18n:translate="">Create a Key Pair</h5>
-        <p i18n:translate="">
+        <h5 class="title">Create a Key Pair</h5>
+        <p>
             Eucalyptus uses cryptographic key pairs to verify access to instances. Before you can run an instance, you
             must create a key pair. Creating a key pair generates two keys: a public key (saved within Eucalyptus) and a
             corresponding private key (output to the user as a character string). To enable this private key you must
             save it to a file and set appropriate access permissions (using the chmod command), as shown in the example
             below.
         </p>
-        <p i18n:translate="">
+        <p>
             When you create a VM instance, the public key is then injected into the VM. Later, when attempting to login
             to the VM instance using SSH, the public key is checked against your private key to verify access. Note that
             the private key becomes obsolete when the public key is deleted.
         </p>
-        <h5 class="title" i18n:translate="">Create Key Pairs with the Console</h5>
+        <h5 class="title">Create Key Pairs with the Console</h5>
         <ol>
             <li>
                 From the main dashboard screen, click the <strong>Key Pairs</strong> link in the <strong>Network and
@@ -54,9 +54,9 @@
 
     <!-- HELP KEYPAIR: IMPORT KEYPAIR-->
     <div tal:condition="display == 'import_keypair'">
-        <h5 class="title" i18n:translate="">Import a Key Pair</h5>
+        <h5 class="title">Import a Key Pair</h5>
 
-        <p i18n:translate="">
+        <p>
             This dialog box allows you import an existing key pair.
         </p>
         <ol>
@@ -76,10 +76,10 @@
 
     <!-- HELP KEYPAIR: DELETE KEYPAIR-->
     <div tal:condition="display == 'delete_keypair'">
-        <h5 class="title" i18n:translate="">Delete Key Pair</h5>
+        <h5 class="title">Delete Key Pair</h5>
 
-        <p i18n:translate="">This dialog box allows you to confirm or cancel a key pair delete operation.</p>
-        <h5 class="title" i18n:translate="">Verify Key Pair Deletion</h5>
+        <p>This dialog box allows you to confirm or cancel a key pair delete operation.</p>
+        <h5 class="title">Verify Key Pair Deletion</h5>
         <ol>
             <li>
                 To verify that you wish to delete the selected key pair(s), click the <strong>Yes, delete</strong>

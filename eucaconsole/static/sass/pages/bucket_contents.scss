@@ -1,0 +1,63 @@
+/* @fileOverview Buckets contents page CSS */
+@import "../includes/eucavariables";
+
+@import "../includes/landingpage";
+
+.icon {
+    display: inline-block;
+    width: 20px;
+    color: $euca-darkgreen;
+}
+
+#primary-buttons {
+    .button {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+}
+
+#paste-btn {
+    background-color: $euca-green;
+}
+
+.file-list {
+    margin-left: 25px;
+}
+
+.advance-content {
+    margin-left: 25px;
+    margin-top: 10px;
+}
+
+.button.cancel {
+    background-color: darken(red, 20%);
+}
+
+.bucket-progress {
+    border: 1px solid black;
+    position: relative;
+    width: 100%;
+    height: 30px;
+    margin-bottom: 15px;
+    .meter {  // barbershop progress indicator
+        position: absolute;
+        background-color: lighten($euca-darkblue, 20%);
+        background-image: linear-gradient(-45deg, rgba(255, 255, 255, .2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .2) 50%, rgba(255, 255, 255, .2) 75%, transparent 75%, transparent);
+        -webkit-animation: move 2s linear infinite;
+        animation: move 2s linear infinite;
+        padding-left: 3px;
+        height: 28px;
+        margin: 0px;
+    }
+    .status {
+        position: absolute;
+        width: 100%;
+        text-align: center;
+        margin-top: 5px;
+        margin-bottom: 0px;
+        font-size: 1.0rem;
+        font-weight: bold;
+        text-align: center;
+    }
+}
+

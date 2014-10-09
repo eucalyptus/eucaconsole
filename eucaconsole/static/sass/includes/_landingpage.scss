@@ -186,7 +186,6 @@ $dropdown-border-color: $euca-green;
             background-color: #e6e7e8;
             color: #555;
             margin-right: 0.2rem;
-            font-family: Verdana, sans-serif;
             min-width: 22px;
             text-align: center;
             &.ellipsis {
@@ -259,9 +258,6 @@ $dropdown-border-color: $euca-green;
             vertical-align: top;
             &.status {
                 text-transform: capitalize;
-                .label {
-                    color: black;
-                }
             }
             a {
                 color: $euca-darkgreen;

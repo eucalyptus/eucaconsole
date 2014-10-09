@@ -11,7 +11,13 @@ AWS Services supported
 * EC2
 * Auto Scaling
 * CloudWatch
+* S3
 * IAM
+
+Issue Tracking
+==============
+
+For bug reports, improvement request and general project planning, we use Jira: https://eucalyptus.atlassian.net/
 
 
 Development environment setup
@@ -27,15 +33,15 @@ Prior to installing Pyramid and it's dependencies, you may need to install the f
 
 Ubuntu:
 
-    `apt-get install openssl build-essential python-dev swig`
+    `apt-get install openssl build-essential python-dev swig memcached libmemcached6`
 
 Fedora:
 
-    `yum install openssl-devel python-devel swig; yum groupinstall 'Development tools'`
+    `yum install openssl-devel python-devel swig memcached libmemcached; yum groupinstall 'Development tools'`
 
 OS X:
 
-Install homebrew, then run `brew install libevent openssl swig`
+Install homebrew, then run `brew install libevent openssl swig libmagic memcached libmemcached`
 
 
 Pyramid Setup
@@ -54,6 +60,8 @@ Sass/Compass Setup
 The CSS files are pre-processed using Sass, so you'll need to set up a Sass-to-CSS watcher to output CSS.
 
 To set up Compass as the file watcher...
+
+::
 
     sudo gem install compass
     cd eucaconsole/static
@@ -126,6 +134,8 @@ The Pyramid Debug Toolbar can be enabled by adding pyramid_debugtoolbar to the a
 
 You may also find it useful to set the logging level to DEBUG in the console.ini config file...
 
+::
+
     [logger_root]
     # ...
     handlers = logfile, screen_debug
@@ -171,6 +181,9 @@ http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/i18n.html#i18n-cha
 The translations require Babel and lingua, which can be install via `pip install -e .[i18n]`
 
 To generate the translation files, run 'make translations' at the repo root.
+
+To contribute translations, follow the instructions at
+https://github.com/eucalyptus/eucaconsole/wiki/Contributing-Translations
 
 
 Technology Stack

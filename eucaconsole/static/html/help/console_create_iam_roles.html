@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en-us" lang="en-us">
+<head>
+<title>Create IAM Roles</title>
+</head>
+<body id="create_iam_roles_ui_help_context">
+
+
+    <h1 class="title topictitle1">Create IAM Roles</h1>
+
+    
+    <div class="body taskbody"><p class="shortdesc"> Roles are used to temporarily allow users or services to access resources without sharing long-term security credentials.
+    Permissions are applied to roles so they not attached to any IAM user or group, allowing applications or services (like Euca2ools) 
+    to assume a role that allows them to make programmatic requests to Eucalytpus.</p>
+</div>
+
+    <div class="topic task nested1" id="create_roles_ui_help_steps">
+        <h2 class="title topictitle2">Create a role</h2>
+
+        
+        <div class="body taskbody"><p class="shortdesc">Add the details of your new role:</p>
+
+            <ol class="ol steps"><li class="li step stepexpand">
+                    <span class="ph cmd">Type the name of your new role.</span>
+                </li>
+<li class="li step stepexpand">
+                    <span class="ph cmd">Select the role type from the following options:</span>
+                    <div class="itemgroup info">
+                        <div class="note note"><span class="notetitle">Note:</span>  These options apply to all the users associated with this role.</div>
+
+                        <ul class="ul">
+                            <li class="li"><span class="ph uicontrol">EC2 service</span> allows EC2 instances to call other services on your behalf. </li>
+
+                            <li class="li"><span class="ph uicontrol">Cross-account access</span> grants IAM users from another account to access this account.
+                            Hover over the (?) icon for more details about choosing this option.</li>
+
+                        </ul>
+</div>
+                </li>
+</ol>
+
+        </div>
+
+    </div>
+
+    
+    <div class="topic task nested1" id="create_iam_role_ui_advanced">
+        <h2 class="title topictitle2">Advanced</h2>
+
+        
+        <div class="body taskbody"><p class="shortdesc">You can also optionally give the role a path that you define to identify which part of the organization it belongs to.</p>
+
+            <div class="li step p">
+                    <span class="ph cmd">The <span class="ph uicontrol">Advanced</span> section allows you to associate a path for the new role. 
+                        Organize your roles in a way that makes sense to you, but ultimately, a path is not used to define how the role is applied. 
+                        For more information, go to <a class="xref" href="http://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html" target="_blank">IAM Identifiers</a>.</span>
+                </div>
+
+        </div>
+
+    </div>
+
+    <div class="topic task nested1" id="create_iam_role_ui_finish">
+        <h2 class="title topictitle2">Save Your Work</h2>
+
+        
+        <div class="body taskbody"><p class="shortdesc"/>
+
+            <div class="li step p">
+                    <span class="ph cmd">Click the <span class="ph uicontrol">Create Role</span> button to save your work, or
+                        click the <span class="ph uicontrol">Cancel</span> button to cancel the
+                        operation.</span>
+                    <div class="itemgroup stepresult">A subsequent screen appears, allowing you to add access policies for your newly created role. 
+                        Refer to its context help for details on completing that operation.</div>
+                </div>
+
+        </div>
+
+    </div>
+
+
+</body>
+</html>

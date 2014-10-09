@@ -20,7 +20,10 @@ form {
     .cidr-block {
        display: inline-block;
        vertical-align: top;
-       margin-bottom: 1rem;
+       margin-bottom: 0.5rem;
+       .link {
+         margin-bottom: 0.5rem;
+       }
     }
     .cidr-ip {
         display: inline; width: 100%;
@@ -48,6 +51,9 @@ form {
     .add-label {
         margin-bottom: 6px;
     }
+    .tabs-content {
+        margin-top: 0.5rem;
+    }
 }
 
 .duplicated-rule-error{
@@ -55,3 +61,10 @@ form {
     padding: 10px 10px;
 }
 
+div {
+    small.error-msg {
+        color: darkred;
+        font-weight: bold;
+        font-size: 0.75rem;
+    }
+}

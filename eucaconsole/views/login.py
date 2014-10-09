@@ -32,17 +32,22 @@ import base64
 import logging
 from urllib2 import HTTPError, URLError
 from urlparse import urlparse
+from boto.connection import AWSAuthConnection
 
-from pyramid.httpexceptions import HTTPFound, HTTPUseProxy
-from pyramid.i18n import TranslationString as _
+from pyramid.httpexceptions import HTTPFound
 from pyramid.security import NO_PERMISSION_REQUIRED, remember, forget
 from pyramid.settings import asbool
 from pyramid.view import view_config, forbidden_view_config
 
 from ..forms.login import EucaLoginForm, EucaLogoutForm, AWSLoginForm
+from ..i18n import _
 from ..models.auth import AWSAuthenticator, ConnectionManager
 from ..views import BaseView
+from ..views import JSONResponse
 from ..constants import AWS_REGIONS
+
+
+INVALID_SSL_CERT_MSG = _(u"This cloud's SSL server certificate isn't valid. Please contact your cloud administrator.")
 
 
 @forbidden_view_config()
@@ -90,6 +95,11 @@ class LoginView(BaseView):
     @view_config(route_name='login', request_method='GET', renderer=TEMPLATE, permission=NO_PERMISSION_REQUIRED)
     @forbidden_view_config(request_method='GET', renderer=TEMPLATE)
     def login_page(self):
+        if self.request.is_xhr:
+            message = getattr(self.request.exception, 'message', _(u"Session Timed Out"))
+            status = getattr(self.request.exception, 'status', "403 Forbidden")
+            status = int(status[:status.index(' ')]) or 403
+            return JSONResponse(status=status, message=message)
         return self.render_dict
 
     @view_config(route_name='login', request_method='POST', renderer=TEMPLATE, permission=NO_PERMISSION_REQUIRED)
@@ -107,7 +117,7 @@ class LoginView(BaseView):
 
     def handle_euca_login(self):
         new_passwd = None
-        auth = self.get_connection(conn_type='sts', cloud_type='euca')
+        auth = self.get_euca_authenticator()
         session = self.request.session
 
         if self.euca_login_form.validate():
@@ -128,7 +138,32 @@ class LoginView(BaseView):
                 session['access_id'] = creds.access_key
                 session['secret_key'] = creds.secret_key
                 session['region'] = 'euca'
-                session['username_label'] = '{user}@{account}'.format(user=username, account=account)
+                session['username_label'] = user_account
+                # handle checks for IAM perms
+                self.region = self.cloud_type = 'euca'
+                self.access_key = creds.access_key
+                self.secret_key = creds.secret_key
+                self.security_token = creds.session_token
+                iam_conn = self.get_connection(conn_type='iam', cloud_type='euca')
+                session['account_access'] = True if account == 'eucalyptus' else False
+                session['user_access'] = False
+                try:
+                    iam_conn.get_all_users(path_prefix="/notlikely")
+                    session['user_access'] = True
+                except:
+                    pass
+                session['group_access'] = False
+                try:
+                    iam_conn.get_all_groups(path_prefix="/notlikely")
+                    session['group_access'] = True
+                except:
+                    pass
+                session['role_access'] = False
+                try:
+                    iam_conn.list_roles(path_prefix="/notlikely")
+                    session['role_access'] = True
+                except:
+                    pass
                 headers = remember(self.request, user_account)
                 return HTTPFound(location=self.came_from, headers=headers)
             except HTTPError, err:
@@ -141,9 +176,12 @@ class LoginView(BaseView):
                     self.login_form_errors.append(msg)
             except URLError, err:
                 logging.info("url error "+str(vars(err)))
-                #if str(err.reason) == 'timed out':
+                # if str(err.reason) == 'timed out':
                 # opened this up since some other errors should be reported as well.
-                msg = _(u'No response from host')
+                if err.reason.find('ssl') > -1:
+                    msg = INVALID_SSL_CERT_MSG
+                else:
+                    msg = _(u'No response from host')
                 self.login_form_errors.append(msg)
         return self.render_dict
 
@@ -153,8 +191,13 @@ class LoginView(BaseView):
             package = self.request.params.get('package')
             package = base64.decodestring(package)
             aws_region = self.request.params.get('aws-region')
+            validate_certs = asbool(self.request.registry.settings.get('connection.ssl.validation', False))
+            conn = AWSAuthConnection(None, aws_access_key_id='', aws_secret_access_key='')
+            ca_certs_file = conn.ca_certificates_file
+            conn = None
+            ca_certs_file = self.request.registry.settings.get('connection.ssl.certfile', ca_certs_file)
+            auth = AWSAuthenticator(package=package, validate_certs=validate_certs, ca_certs=ca_certs_file)
             try:
-                auth = AWSAuthenticator(package=package)
                 creds = auth.authenticate(timeout=10)
                 default_region = self.request.registry.settings.get('aws.default.region', 'us-east-1')
                 # self.invalidate_connection_cache()
@@ -175,6 +218,12 @@ class LoginView(BaseView):
                 if err.msg == 'Forbidden':
                     msg = _(u'Invalid access key and/or secret key.')
                     self.login_form_errors.append(msg)
+            except URLError, err:
+                if err.reason.find('ssl') > -1:
+                    msg = INVALID_SSL_CERT_MSG
+                else:
+                    msg = _(u'No response from host')
+                self.login_form_errors.append(msg)
         return self.render_dict
 
 
@@ -192,4 +241,3 @@ class LogoutView(BaseView):
             self.request.session.invalidate()
             # self.invalidate_connection_cache()
             return HTTPFound(location=self.login_url)
-

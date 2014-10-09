@@ -6,16 +6,16 @@
 @import "../includes/landingpage";
 
 // Status colors
-$instance-status-color-running: darken($euca-green, 10%);
-$instance-status-color-pending: $euca-grey;
+$instance-status-color-running: $euca-darkblue;
+$instance-status-color-pending: lighten($euca-darkblue, 20%);
 $instance-status-color-stopped: darken(red, 20%);
 $instance-status-color-stopping: lighten(red, 20%);
 $instance-status-color-terminated: $euca-darkgrey;
 $instance-status-color-terminating: lightgrey;
 
-$volume-status-color-attached: $euca-green;
-$volume-status-color-attaching: lighten($euca-green, 10%);
-$volume-status-color-detaching: $euca-grey;
+$volume-status-color-attached: $euca-darkblue;
+$volume-status-color-attaching: lighten($euca-darkblue, 20%);
+$volume-status-color-detaching: lighten($euca-olive, 20%);
 
 
 .row .status.running { background-color: $instance-status-color-running; }
@@ -87,4 +87,12 @@ form .row.controls-wrapper {
 /* Small screen */
 @media screen and (max-width: 480px) {
     select { width: 80%; }
+}
+
+#userdatalabel {
+    right: 0px;
+}
+
+#userdata {
+    margin: 0 0 0;
 }

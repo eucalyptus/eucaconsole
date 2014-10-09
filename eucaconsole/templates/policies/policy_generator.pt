@@ -1,7 +1,7 @@
-<table id="policy-generator" class="table actions-wrapper" xmlns="http://www.w3.org/1999/html">
+<table id="policy-generator" class="table actions-wrapper" xmlns="http://www.w3.org/1999/html" i18n:domain="eucaconsole">
     <thead>
         <tr>
-            <th class="allow" i18n:translate="">Allow</th>
+            <th class="allow" i18n:translate="" tal:condition="resource_type!='account'">Allow</th>
             <th class="deny" i18n:translate="">Deny</th>
             <th class="actions">&nbsp;</th>
         </tr>
@@ -9,7 +9,7 @@
     <tbody>
         <metal:block tal:repeat="actions_ns policy_actions">
             <tr class="namespace ${namespace}" tal:define="namespace actions_ns.name">
-                <td class="allow">
+                <td class="allow" tal:condition="resource_type!='account'">
                     <a ng-click="selectAll($event)">
                         <i class="fi-check tick" data-namespace="${namespace}" data-effect="Allow"
                            data-action="${namespace}:*" data-resource="*"></i>
@@ -27,7 +27,7 @@
                             <a ng-click="${namespace}Expanded = !${namespace}Expanded">
                                 <i class="fi-plus" ng-show="!${namespace}Expanded"></i>
                                 <i class="fi-minus" ng-show="${namespace}Expanded"></i>
-                                &nbsp;<span i18n:translate="" ng-non-bindable="">${actions_ns.label}</span>
+                                &nbsp;<span i18n:translate="">${actions_ns.label}</span>
                             </a>
                         </strong>
                     </div>
@@ -50,7 +50,7 @@
                         </a>
                     </td>
                     <td>
-                        <span class="action-name" ng-non-bindable="">${action}</span>
+                        <span class="action-name">${action}</span>
                         <a class="button tiny round advanced-button">Advanced</a>
                         <div class="advanced hide">
                             <div class="resource-wrapper" tal:condition="namespace_condition">
@@ -124,28 +124,28 @@
                                         <strong class="equal">=</strong>
                                         <input type="text" class="resource ip_address" tal:condition="ipaddress_condition" />
                                         <select class="resource instance chosen" tal:condition="instance_condition">
-                                            <option tal:repeat="choice instance_choices" value="${choice[0]}" ng-non-bindable="">${choice[1]}</option>
+                                            <option tal:repeat="choice instance_choices" value="${choice[0]}">${choice[1]}</option>
                                         </select>
                                         <select class="resource vm_type chosen" tal:condition="instance_condition">
-                                            <option tal:repeat="choice vm_type_choices" value="${choice[0]}" ng-non-bindable="">${choice[1]}</option>
+                                            <option tal:repeat="choice vm_type_choices" value="${choice[0]}">${choice[1]}</option>
                                         </select>
                                         <select class="resource image chosen" tal:condition="image_condition">
-                                            <option tal:repeat="choice image_choices" value="${choice[0]}" ng-non-bindable="">${choice[1]}</option>
+                                            <option tal:repeat="choice image_choices" value="${choice[0]}">${choice[1]}</option>
                                         </select>
                                         <select class="resource security_group chosen" tal:condition="securitygroup_condition">
-                                            <option tal:repeat="choice security_group_choices" value="${choice[0]}" ng-non-bindable="">${choice[1]}</option>
+                                            <option tal:repeat="choice security_group_choices" value="${choice[0]}">${choice[1]}</option>
                                         </select>
                                         <select class="resource availability_zone chosen">
-                                            <option tal:repeat="choice availability_zone_choices" value="${choice[0]}" ng-non-bindable="">${choice[1]}</option>
+                                            <option tal:repeat="choice availability_zone_choices" value="${choice[0]}">${choice[1]}</option>
                                         </select>
                                         <select class="resource key_pair chosen" tal:condition="keypair_condition">
-                                            <option tal:repeat="choice key_pair_choices" value="${choice[0]}" ng-non-bindable="">${choice[1]}</option>
+                                            <option tal:repeat="choice key_pair_choices" value="${choice[0]}">${choice[1]}</option>
                                         </select>
                                         <select class="resource volume chosen" tal:condition="volume_condition">
-                                            <option tal:repeat="choice volume_choices" value="${choice[0]}" ng-non-bindable="">${choice[1]}</option>
+                                            <option tal:repeat="choice volume_choices" value="${choice[0]}">${choice[1]}</option>
                                         </select>
                                         <select class="resource snapshot chosen" tal:condition="snapshot_condition">
-                                            <option tal:repeat="choice snapshot_choices" value="${choice[0]}" ng-non-bindable="">${choice[1]}</option>
+                                            <option tal:repeat="choice snapshot_choices" value="${choice[0]}">${choice[1]}</option>
                                         </select>
                                     </div>
                                 </div>
@@ -333,8 +333,8 @@
                                             <select class="condition-value chosen"
                                                     ng-if="${cond_operator}.indexOf('Like') === -1">
                                                 <metal:block tal:repeat="choice availability_zone_choices">
-                                                    <option value="${choice[0].split('/')[1]}" tal:condition="'zones' not in choice[1]"
-                                                            ng-non-bindable="">${choice[1]}</option>
+                                                    <option value="${choice[0].split('/')[1]}"
+                                                            tal:condition="'zones' not in choice[1]">${choice[1]}</option>
                                                 </metal:block>
                                             </select>
                                             <input type="text" class="condition-value"
@@ -366,8 +366,8 @@
                                             <select class="condition-value chosen"
                                                     ng-if="${cond_operator}.indexOf('Like') === -1">
                                                 <metal:block tal:repeat="choice snapshot_choices">
-                                                    <option value="${choice[0]}" tal:condition="'snapshots' not in choice[1]"
-                                                            ng-non-bindable="">${choice[1]}</option>
+                                                    <option value="${choice[0]}"
+                                                            tal:condition="'snapshots' not in choice[1]">${choice[1]}</option>
                                                 </metal:block>
                                             </select>
                                         </div>
@@ -376,8 +376,8 @@
                                             <select class="condition-value chosen"
                                                     ng-if="${cond_operator}.indexOf('Like') === -1">
                                                 <metal:block tal:repeat="choice volume_choices">
-                                                    <option value="${choice[0]}" tal:condition="'volumes' not in choice[1]"
-                                                            ng-non-bindable="">${choice[1]}</option>
+                                                    <option value="${choice[0]}"
+                                                            tal:condition="'volumes' not in choice[1]">${choice[1]}</option>
                                                 </metal:block>
                                             </select>
                                         </div>

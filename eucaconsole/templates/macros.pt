@@ -5,7 +5,7 @@
 <head>
     <title>Macros</title>
 </head>
-<body>
+<body i18n:domain="eucaconsole">
 
 <h1>Reusable macros</h1>
 
@@ -112,8 +112,8 @@
                 </tbody>
             </table>
             <div ng-if="!itemsLoading">
-                <div data-alert="alert" class="alert-box secondary" ng-if="items.length == 0" ng-cloak="" i18n:translate="">
-                    No items were found
+                <div data-alert="alert" class="alert-box secondary" ng-if="items.length == 0" ng-cloak="">
+                    <span i18n:translate="">No items were found</span>
                     <a href="#" class="close">&times;</a>
                 </div>
             </div>
@@ -217,13 +217,24 @@
 <metal:notifications metal:define-macro="notifications">
     <div id="notifications">
         <div tal:repeat="notification layout.get_notifications()">
-            <div data-alert="alert" class="alert-box ${notification.style}" ng-non-bindable="">
-                ${notification.message}
+            <div data-alert="alert" class="alert-box ${notification.style}">
+                ${layout.escape_braces(notification.message)}
                 <a href="#" class="close">&times;</a>
             </div>
         </div>
     </div>
 </metal:notifications>
+
+
+<!-- Required fields indicator ===== -->
+<metal:requiredfieldslabel metal:define-macro="required_fields_label">
+    <div class="required-fields-indicator">
+        <label class="right">
+            <span class="req">*</span>
+            <span i18n:translate="">Required fields</span>
+        </label>
+    </div>
+</metal:requiredfieldslabel>
 
 
 <!-- Detail page actions menu ===== -->
@@ -346,7 +357,10 @@
                 </tr>
             </tbody>
         </table>
-        <div i18n:translate="">Note: <code>/dev/sda</code> is reserved for root device</div>
+        <div>
+            <span i18n:translate="">Note:</span> <code>/dev/sda</code>
+            <span i18n:translate="">is reserved for root device</span>
+        </div>
     </div>
 </metal:volumedevicehelp>
 

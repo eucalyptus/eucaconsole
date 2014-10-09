@@ -30,14 +30,12 @@ Pyramid views for IAM Policies (permissions)
 """
 import simplejson as json
 
-from pyramid.httpexceptions import HTTPFound
-from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
 from ..constants import policies, permissions, AWS_REGIONS
 from ..forms import ChoicesManager
 from ..forms.policies import IAMPolicyWizardForm
-from ..models import Notification
+from ..i18n import _
 from ..views import BaseView, JSONResponse, TaggedItemView
 from . import boto_error_handler
 
@@ -53,9 +51,9 @@ class IAMPolicyWizardView(BaseView):
         self.iam_conn = self.get_connection(conn_type='iam')
         self.policy_json_endpoint = self.request.route_path('iam_policy_json')
         self.create_form = IAMPolicyWizardForm(request=self.request, formdata=self.request.params or None)
-        self.target_type = self.request.params.get('type', 'user')  # 'user' or 'group'
-        self.target_name = self.request.params.get('id', '')  # user or group name
-        self.target_route = '{0}_view'.format(self.target_type)  # 'user_view' or 'group_view'
+        self.target_type = self.request.params.get('type', 'user')  # 'account', 'user', 'group' or 'role'
+        self.target_name = self.request.params.get('id', '')  # account, user, group or role name
+        self.target_route = '{0}_view'.format(self.target_type)  # target_type = 'account', 'user', 'group' or 'role'
         self.location = self.request.route_path(self.target_route, name=self.target_name)
         with boto_error_handler(request):
             self.choices_manager = ChoicesManager(conn=self.ec2_conn)
@@ -65,7 +63,7 @@ class IAMPolicyWizardView(BaseView):
                 cancel_link_url=self.location,
                 policy_json_endpoint=self.policy_json_endpoint,
                 policy_actions=permissions.POLICY_ACTIONS,
-                controller_options=json.dumps(self.get_controller_options()),
+                controller_options_json=self.get_controller_options_json(),
                 resource_choices=dict(
                     instances=self.get_instance_choices(),
                     images=self.get_image_choices(),
@@ -83,7 +81,7 @@ class IAMPolicyWizardView(BaseView):
         """Displays the Create IAM Policy wizard"""
         return self.render_dict
 
-    @view_config(route_name='iam_policy_create', renderer=TEMPLATE, request_method='POST')
+    @view_config(route_name='iam_policy_create', request_method='POST', renderer='json')
     def iam_policy_create(self):
         """Handles the POST from the Create IAM Policy wizard"""
         # redirect to detail page after submit
@@ -91,39 +89,59 @@ class IAMPolicyWizardView(BaseView):
             policy_name = self.request.params.get('name')
             policy_json = self.request.params.get('policy', '{}')
             with boto_error_handler(self.request, self.location):
-                self.log_request(_(u"Creating policy {0} for {1} {2}").format(policy_name, self.target_type, self.target_name))
-                if self.target_type == 'user':
+                self.log_request(_(u"Creating policy {0} for {1} {2}").format(
+                    policy_name, self.target_type, self.target_name))
+                caller = None
+                result = None
+                if self.target_type == 'account':
+                    result = self.iam_conn.get_response(
+                        'PutAccountPolicy',
+                        params={
+                            'AccountName': self.target_name,
+                            'PolicyName': policy_name,
+                            'PolicyDocument': policy_json
+                        },
+                        verb='POST'
+                    )
+                elif self.target_type == 'user':
                     caller = self.iam_conn.put_user_policy
-                else:
+                elif self.target_type == 'group':
                     caller = self.iam_conn.put_group_policy
-                caller(self.target_name, policy_name, policy_json)
-                prefix = _(u'Successfully created IAM policy')
-                msg = '{0} {1}'.format(prefix, policy_name)
-                self.request.session.flash(msg, queue=Notification.SUCCESS)
-            return HTTPFound(location=self.location)
+                else:
+                    caller = self.iam_conn.put_role_policy
+                if caller and not result:
+                    result = caller(self.target_name, policy_name, policy_json)
+                return dict(message=_(u"Successfully updated user policy"), results=result)
         else:
-            self.request.error_messages = self.create_form.get_errors_list()
-        return self.render_dict
+            error_messages = self.create_form.get_errors_list()
+            return JSONResponse(status=400, message=", ".join(error_messages))
 
     def get_page_title(self):
         prefix = _(u'Add access policy for')
         return '{0} {1} {2}'.format(prefix, self.target_type.capitalize(), self.target_name)
 
-    def get_controller_options(self):
-        return {
+    def get_controller_options_json(self):
+        return BaseView.escape_json(json.dumps({
             'policyJsonEndpoint': self.policy_json_endpoint,
             'cloudType': self.cloud_type,
             'actionsList': self.get_all_actions(),
             'languageCode': self.get_language_code(),
             'awsRegions': AWS_REGIONS,
-            'existingPolicies': json.dumps(self.get_existing_policies()),
-        }
+            'existingPolicies': self.get_existing_policies(),
+            'createPolicyUrl': self.request.route_path('iam_policy_create'),
+        }))
 
     def get_existing_policies(self):
-        if self.target_type == 'user':
+        if self.target_type == 'account':
+            iam_policies = self.iam_conn.get_response(
+                'ListAccountPolicies', params={'AccountName': self.target_name}, list_marker='PolicyNames')
+            return iam_policies.policy_names if iam_policies else []
+        elif self.target_type == 'user':
             fetch_policies = self.iam_conn.get_all_user_policies
-        else:
+        elif self.target_type == 'group':
             fetch_policies = self.iam_conn.get_all_group_policies
+        else:
+            fetch_policies = self.iam_conn.list_role_policies
         iam_policies = fetch_policies(self.target_name)
         return iam_policies.policy_names if iam_policies else []
 

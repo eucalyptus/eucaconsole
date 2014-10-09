@@ -32,11 +32,11 @@ import simplejson as json
 
 from boto.exception import BotoServerError
 from pyramid.httpexceptions import HTTPFound
-from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 from pyramid.response import Response
 
 from ..forms.keypairs import KeyPairForm, KeyPairImportForm, KeyPairDeleteForm
+from ..i18n import _
 from ..models import Notification
 from ..views import BaseView, LandingPageView, JSONResponse
 from . import boto_error_handler
@@ -76,8 +76,10 @@ class KeyPairsJsonView(BaseView):
         super(KeyPairsJsonView, self).__init__(request)
         self.conn = self.get_connection()
 
-    @view_config(route_name='keypairs_json', renderer='json', request_method='GET')
+    @view_config(route_name='keypairs_json', renderer='json', request_method='POST')
     def keypairs_json(self):
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
         keypairs = []
         with boto_error_handler(self.request):
             for keypair in self.get_items():
@@ -109,11 +111,13 @@ class KeyPairView(BaseView):
         self.delete_form = KeyPairDeleteForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
             keypair=self.keypair,
+            keypair_name=self.escape_braces(self.keypair.name) if self.keypair else '',
             keypair_route_id=self.keypair_route_id,
             keypair_form=self.keypair_form,
             keypair_import_form=self.keypair_import_form,
             delete_form=self.delete_form,
             keypair_names=self.get_keypair_names(),
+            controller_options_json=self.get_controller_options_json(),
         )
 
     def get_keypair(self):
@@ -164,13 +168,12 @@ class KeyPairView(BaseView):
                                   new_keypair.material)
                 msg_template = _(u'Successfully created key pair {keypair}')
                 msg = msg_template.format(keypair=name)
-                self.request.session.flash(msg, queue=Notification.SUCCESS)
             if self.request.is_xhr:
-                import logging; logging.info(">>>>>>>>> using create keypair xhr... fix this")
                 keypair_material = new_keypair.material if new_keypair else None
                 resp_body = json.dumps(dict(message=msg, payload=keypair_material))
                 return Response(status=200, body=resp_body, content_type='application/x-pem-file;charset=ISO-8859-1')
             else:
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
                 location = self.request.route_path('keypair_view', id=name)
                 return HTTPFound(location=location)
         if self.request.is_xhr:
@@ -187,15 +190,16 @@ class KeyPairView(BaseView):
             key_material = self.request.params.get('key_material')
             msg = ""
             material = ""
-            location = self.request.route_path('keypair_view', id=name)
-            with boto_error_handler(self.request, location):
-                self.log_request(_(u"Importing keypair ")+name)
+            failure_location = self.request.route_path('keypair_view', id='new2')  # Return to import form if failure
+            success_location = self.request.route_path('keypair_view', id=name)
+            with boto_error_handler(self.request, failure_location):
+                self.log_request(_(u"Importing keypair ") + name)
                 new_keypair = self.conn.import_key_pair(name, key_material)
                 material = new_keypair.material
                 msg_template = _(u'Successfully imported key pair {keypair}')
                 msg = msg_template.format(keypair=name)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
-            return HTTPFound(location=location)
+            return HTTPFound(location=success_location)
 
         return self.render_dict
 
@@ -213,5 +217,10 @@ class KeyPairView(BaseView):
             return HTTPFound(location=location)
 
         return self.render_dict
+
+    def get_controller_options_json(self):
+        return BaseView.escape_json(json.dumps({
+            'route_id': self.keypair_route_id,
+        }))
 
 

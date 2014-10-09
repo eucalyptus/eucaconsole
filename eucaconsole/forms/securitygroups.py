@@ -31,9 +31,8 @@ Forms for Security Groups
 import wtforms
 from wtforms import validators
 
-from pyramid.i18n import TranslationString as _
-
-from . import BaseSecureForm
+from ..i18n import _
+from . import BaseSecureForm, ChoicesManager, TextEscapedField
 
 
 class SecurityGroupForm(BaseSecureForm):
@@ -53,16 +52,25 @@ class SecurityGroupForm(BaseSecureForm):
             validators.Length(max=255, message=_(u'Description must be less than 255 characters'))
         ],
     )
+    vpc_network = wtforms.SelectField(label=_(u'VPC network'))
 
-    def __init__(self, request, security_group=None, **kwargs):
+    def __init__(self, request, vpc_conn=None, security_group=None, **kwargs):
         super(SecurityGroupForm, self).__init__(request, **kwargs)
+        self.vpc_conn = vpc_conn
         self.name.error_msg = self.name_error_msg  # Used for Foundation Abide error message
         self.description.error_msg = self.desc_error_msg  # Used for Foundation Abide error message
+        self.choices_manager = ChoicesManager(conn=vpc_conn)
+        region = request.session.get('region')
+        self.set_vpc_choices()
 
         # Although we don't need to show the name/desc fields on update, we need these here to ensure the form is valid
         if security_group is not None:
             self.name.data = security_group.name
             self.description.data = security_group.description
+            self.vpc_network.data = security_group.vpc_id or ''
+
+    def set_vpc_choices(self):
+        self.vpc_network.choices = self.choices_manager.vpc_networks()
 
 
 class SecurityGroupDeleteForm(BaseSecureForm):
@@ -74,4 +82,14 @@ class SecurityGroupDeleteForm(BaseSecureForm):
 
 class SecurityGroupsFiltersForm(BaseSecureForm):
     """Form class for filters on landing page"""
-    tags = wtforms.TextField(label=_(u'Tags'))
+    vpc_id = wtforms.SelectMultipleField(label=_(u'VPC network'))
+    tags = TextEscapedField(label=_(u'Tags'))
+
+    def __init__(self, request, vpc_conn=None, cloud_type='euca', **kwargs):
+        super(SecurityGroupsFiltersForm, self).__init__(request, **kwargs)
+        self.request = request
+        self.cloud_type = cloud_type
+        self.vpc_choices_manager = ChoicesManager(conn=vpc_conn)
+        self.vpc_id.choices = self.vpc_choices_manager.vpc_networks(add_blank=False)
+        self.vpc_id.choices.append(('None', _(u'No VPC')))
+        self.vpc_id.choices = sorted(self.vpc_id.choices)

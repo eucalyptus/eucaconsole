@@ -2,9 +2,10 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" class="no-js"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
-      xmlns:i18n="http://xml.zope.org/namespaces/i18n">
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      i18n:domain="eucaconsole">
 <head>
-    <title>Eucalyptus Management Console</title>
+    <title i18n:translate="">Eucalyptus Management Console</title>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <link rel="shortcut icon" href="${request.static_path('eucaconsole:static/img/favicon.ico')}" />
@@ -16,8 +17,9 @@
     <metal:block metal:define-slot="head_css" />
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/modernizr/custom.modernizr.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/jquery-2.0.3.min.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular-1.2.9.min.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular-sanitize-1.2.9.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular-1.2.21.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular-sanitize-1.2.21.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/jquery.generateFile.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/notify.js')}"></script>
     <script type="text/javascript">
         $(document).ready(function () {
@@ -49,7 +51,7 @@
                 <ul id="user-dropdown" class="f-dropdown" data-dropdown-content="">
                     <li><a href="${layout.help_url}" target="_blank" i18n:translate="">Help</a></li>
                     <li tal:condition="layout.cloud_type == 'euca'">
-                        <a href="${request.route_path('changepassword')}" i18n:translate="">Change password</a>
+                        <a href="${request.route_path('managecredentials')}" i18n:translate="">Manage credentials</a>
                     </li>
                     <li>
                         <a i18n:translate="" data-reveal-id="about-modal">About your cloud</a>
@@ -65,8 +67,8 @@
                 <ul id="region-dropdown" class="f-dropdown" data-dropdown-content="">
                     <li tal:repeat="region layout.aws_regions" tal:attributes="data-selected (region.name == layout.selected_region)">
                         <a href="${request.route_path('region_select')}?region=${region.name}&amp;returnto=${request.url}"
-                           class="aws-region-option" id="${region.name}" ng-non-bindable="">
-                                ${region.label}
+                           class="aws-region-option" id="${region.name}">
+                               ${region.label}
                         </a>
                     </li>
                 </ul>
@@ -117,7 +119,8 @@
     <div id="about-modal" class="reveal-modal small" data-reveal="">
         <h3 i18n:translate="">About your cloud</h3>
         <p>
-            <span i18n:translate="">Eucalyptus cloud software version: <strong>${layout.version}</strong></span>
+            <span i18n:translate="">Eucalyptus cloud software version:</span>
+            <strong>${layout.version}</strong>
         </p>
         <a class="close-reveal-modal">&#215;</a>
     </div>
@@ -128,6 +131,22 @@
         </p>
         <a class="button medium expand" id="euca-login-button" href="javascript: $('#euca-logout-form').submit();" i18n:translate="">Login</a>
     </div>
+    <div id="unsaved-changes-warning-modal" class="reveal-modal small" data-reveal="">
+        <h3 i18n:translate="">Confirm navigation</h3>
+        <p>
+            <span id="warning-message-unsaved-changes" i18n:translate="">You must click the "Save Changes" button before you leave this page or your changes will be lost.</span>
+        <p>
+        </p>
+            <span id="warning-message-unsaved-changes-question" i18n:translate="">Are you sure you want to leave this page?</span>
+        </p>
+        <div class="dialog-submit-button">
+            <button id="unsaved-changes-warning-modal-stay-button" class="button expand" i18n:translate="">Stay on This Page</button>
+        </div>
+        <div class="dialog-submit-link top-margin center">
+            <a id="unsaved-changes-warning-modal-leave-link" i18n:translate="">Leave This Page</a>
+        </div>
+        <a href="#" class="close-reveal-modal">&#215;</a>
+    </div>
 
     <a class="exit-off-canvas"></a>
 
@@ -135,6 +154,12 @@
 <script type="text/javascript">
     // Initialize all Zurb Foundation components
     $(document).foundation();
+</script>
+<script type="text/javascript">
+    // Prevent cancel link click from displaying unsaved changes warning
+    $(document).on('click', '.cancel-link', function(event) {
+        window.onbeforeunload = null;
+    });
 </script>
 <div metal:define-slot="tail_js"></div>
 </div></div><!--! /end off-canvas wraps -->

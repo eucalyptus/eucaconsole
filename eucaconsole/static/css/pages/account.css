@@ -1,0 +1,19 @@
+/* @fileOverview IAM Account detail view page CSS */
+/* Dropdown elements */
+/* Set the link colors and styles for top-level nav */
+/* ----------------------------------------- Chosen Widget Modification
+----------------------------------------- */
+.chosen-container-multi .chosen-choices li.search-choice { display: none; }
+
+/* ----------------------------------------- IAM Account Icons
+----------------------------------------- */
+.iam-account-icon { color: #333; background-color: #cccccc; margin-right: 3px; }
+.iam-account-icon a { color: white; margin-left: 2px; }
+
+/* ----------------------------------------- Extra Element Padding
+----------------------------------------- */
+.padded-element { padding: 5px 5px; }
+
+.top-bottom-padding { padding-top: 10px; padding-bottom: 15px; }
+
+.content { width: 100%; padding-left: 10px; padding-right: 10px; }

@@ -4,8 +4,9 @@
  *
  */
 
-angular.module('IAMPolicyWizard', [])
-    .controller('IAMPolicyWizardCtrl', function ($scope, $http, $timeout) {
+angular.module('IAMPolicyWizard', ['EucaConsoleUtils'])
+    .controller('IAMPolicyWizardCtrl', function ($scope, $http, $timeout, eucaUnescapeJson) {
+        $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.wizardForm = $('#iam-policy-form');
         $scope.policyGenerator = $('#policy-generator');
         $scope.policyJsonEndpoint = '';
@@ -22,14 +23,19 @@ angular.module('IAMPolicyWizard', [])
         $scope.selectedOperatorType = '';
         $scope.languageCode = 'en';
         $scope.confirmed = false;
+        $scope.isCreating = false;
+        $scope.handEdited = false;
+        $scope.pageLoading = true;
         $scope.nameConflictKey = 'doNotShowPolicyNameConflictWarning';
-        $scope.initController = function (options) {
+        $scope.initController = function (optionsJson) {
+            var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.policyJsonEndpoint = options['policyJsonEndpoint'];
             $scope.cloudType = options['cloudType'];
             $scope.actionsList = options['actionsList'];
             $scope.languageCode = options['languageCode'] || 'en';
             $scope.awsRegions = options['awsRegions'];
-            $scope.existingPolicies = JSON.parse(options['existingPolicies'] || '[]');
+            $scope.existingPolicies = options['existingPolicies'];
+            $scope.saveUrl = options['createPolicyUrl'];
             $scope.initSelectedTab();
             $scope.initChoices();
             $scope.initCodeMirror();
@@ -56,9 +62,11 @@ angular.module('IAMPolicyWizard', [])
         };
         $scope.setupListeners = function () {
             $(document).ready(function() {
+                $scope.pageLoading = false;
                 $scope.initToggleAdvancedListener();
                 $scope.initSelectActionListener();
                 $scope.initNameConflictWarningListener();
+                $scope.initHandEditedWarningListener();
             });
         };
         $scope.initToggleAdvancedListener = function () {
@@ -67,17 +75,23 @@ angular.module('IAMPolicyWizard', [])
             });
         };
         $scope.initNameConflictWarningListener = function () {
-            if (Modernizr.localstorage && localStorage.getItem($scope.nameConflictKey)) {
-                return true;
-            }
             $scope.wizardForm.on('submit', function(evt) {
+                evt.preventDefault();
                 var policyName = $('#name').val();
                 if ($scope.existingPolicies.indexOf(policyName) !== -1) {
-                    if (!$scope.confirmed) evt.preventDefault();
                     if (Modernizr.localstorage && !localStorage.getItem($scope.nameConflictKey)) {
                         $('#conflict-warn-modal').foundation('reveal', 'open');
+                        return;  // to prevent save 3 lines down
                     }
                 }
+                $scope.savePolicy();
+            });
+        };
+        $scope.initHandEditedWarningListener = function () {
+            $scope.codeEditor.on('change', function () {
+                $scope.$apply(function() {
+                    $scope.handEdited = $scope.codeEditor.getValue().trim() != $scope.policyText;
+                });
             });
         };
         $scope.confirmWarning = function () {
@@ -87,7 +101,43 @@ angular.module('IAMPolicyWizard', [])
             }
             $scope.confirmed = true;
             modal.foundation('reveal', 'close');
-            $scope.wizardForm.submit();
+            $scope.savePolicy();
+        };
+        $scope.savePolicy = function() {
+            try {
+                $('#json-error').css('display', 'none');
+                var policy_json = $scope.codeEditor.getValue();
+                //var policy_json = $('#policy').val();
+                JSON.parse(policy_json);
+                // now, save the policy
+                var policy_name = $('#name').val();
+                var type = $('#type').val();
+                var id = $('#id').val();
+                var data = "csrf_token="+$('#csrf_token').val()+
+                           "&type="+type+
+                           "&id="+id+
+                           "&name="+policy_name+
+                           "&policy="+policy_json;
+                $scope.isCreating = true;
+                $http({
+                    method:'POST', url:$scope.saveUrl, data:data,
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}}
+                ).success(function(oData) {
+                    Notify.success(oData.message);
+                    $scope.isCreating = false;
+                    window.location = $('#return-link').attr('href');
+                }).error(function (oData) {
+                    $scope.isCreating = false;
+                    var errorMsg = oData['message'] || '';
+                    if (errorMsg && status === 403) {
+                        $('#timed-out-modal').foundation('reveal', 'open');
+                    }
+                    Notify.failure(errorMsg);
+                });
+            } catch (e) {
+                $('#json-error').text(e);
+                $('#json-error').css('display', 'block');
+            }
         };
         $scope.initSelectActionListener = function () {
             // Handle Allow/Deny selection for a given action
@@ -108,8 +158,11 @@ angular.module('IAMPolicyWizard', [])
             $('.tabs').find('a').on('click', function (evt) {
                 var tabLinkId = $(evt.target).closest('a').attr('id');
                 Modernizr.localstorage && localStorage.setItem($scope.lastSelectedTabKey, tabLinkId);
-                if (tabLinkId === 'custom-policy-tab') {
-                    $scope.setPolicyName('custom');
+                if (tabLinkId === 'custom-policy-tab' && $scope.policyStatements.length) {
+                    // Load selected policy statements if switching back to custom policy tab
+                    $timeout(function() {
+                        $scope.updatePolicy();
+                    }, 100);
                 }
             });
             $('#' + lastSelectedTab).click();
@@ -172,6 +225,13 @@ angular.module('IAMPolicyWizard', [])
                 'custom': 'CustomAccessPolicy'
             };
             $scope.policyName = typeNameMapping[policyType] + '-' + $scope.urlParams['id'] + '-' + $scope.timestamp;
+            if (policyType === 'custom') {
+                // Prevent lingering validation error on policy name field
+                $timeout(function() {
+                    $('#name').trigger('focus');
+                    $('.CodeMirror').find('textarea').focus();
+                }, 200);
+            }
         };
         $scope.handlePolicyFileUpload = function () {
             $('#policy_file').on('change', function(evt) {
@@ -204,6 +264,8 @@ angular.module('IAMPolicyWizard', [])
             $scope.setPolicyName(policyType);
         };
         $scope.updatePolicy = function() {
+            $scope.setPolicyName('custom');
+            $scope.handEdited = false;
             $scope.policyStatements = [];
             // Add namespace (allow/deny all) statements
             $scope.policyGenerator.find('tr.namespace').each(function (idx, elem) {

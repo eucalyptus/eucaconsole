@@ -1,4 +1,4 @@
-<metal:block use-macro="main_template">
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
 <head metal:fill-slot="head_css">
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/users.css')}" />
@@ -16,12 +16,12 @@
          ng-init="initController('users', '${initial_sort_key}', '${json_items_endpoint}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
-                <li class="current"><a href="#" i18n:translate="">IAM users</a></li>
+                <li class="current"><a href="#" i18n:translate="">Users</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
-        <h3 id="pagetitle"><strong i18n:translate="">IAM Users</strong></h3>
+        <h3 id="pagetitle"><strong i18n:translate="">Users</strong></h3>
         <div class="large-2 columns" id="landing-page-filters">
             <!--! Filters go here -->
         </div>
@@ -93,6 +93,7 @@
                 <td>
                     <span class="label radius item status active" ng-show="item.user_enabled == true" i18n:translate="">Active</span>
                     <span class="label radius item status disabled" ng-show="item.user_enabled == false" i18n:translate="">Disabled</span>
+                    <span class="label radius item status undefined" ng-show="item.user_enabled == undefined">&nbsp;</span>
                     <span class="dots" ng-show="item.user_enabled == undefined">&nbsp;</span>
                 </td>
                 <td>

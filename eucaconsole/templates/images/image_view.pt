@@ -1,41 +1,57 @@
-<metal:block use-macro="main_template">
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
+
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/image.css')}" />
+</head>
 
 <div metal:fill-slot="main_content">
-    <div class="row" id="contentwrap" ng-app="ImagePage">
+    <div class="row" id="contentwrap" 
+         ng-app="ImagePage" ng-controller="ImagePageCtrl" ng-init="initController('${controller_options_json}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('images')}" i18n:translate="">Images</a></li>
-                <li class="current"><a href="#" ng-non-bindable="">${image_display_name}</a></li>
+                <li class="current"><a href="#">${image_display_name}</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
         <h3 id="pagetitle">
             <strong i18n:translate="">Details for image:</strong>
-            <em ng-non-bindable="">${image_display_name}</em>
+            <em>${image_display_name}</em>
         </h3>
         <div class="large-7 columns"
             tal:define="image_tags image.tags if image else {};
                         readonly True if image else False;
-                        image_id image.id if image else ''">
+                        image_id image.id if image else '';">
             <div class="panel has-actions">
                 <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="image">
                     <metal:actions metal:fill-slot="actions">
-                        <li>
+                        <li tal:condition="image.root_device_type == 'instance-store'" ng-show="isTransitional(imageState)">
+                            <a id="cancel-image-action" i18n:translate=""
+                               ng-click="cancelCreate($event)">
+                                Cancel image creation
+                            </a>
+                        </li>
+                        <li ng-show="imageState == 'available'">
                             <a href="${request.route_path('instance_create')}?image_id=${image_id}"
                                id="launch-instance-action" i18n:translate="">
                                 Launch instance
                             </a>
                         </li>
-                        <li>
+                        <li ng-show="imageState == 'available'">
                             <a href="${request.route_path('launchconfig_new')}?image_id=${image_id}"
                                id="create-launchconfig-action" i18n:translate="">
                                 Create launch configuration
                             </a>
                         </li>
+                        <li tal:condition="account_id == image.owner_id" ng-show="imageState == 'available'">
+                            <a id="deregister-image-action" i18n:translate="">
+                                Remove from cloud
+                            </a>
+                        </li>
                     </metal:actions>
                 </metal:block>
-                <form action="${request.route_path('image_update', id=image_id)}" method="post" data-abide="abide">
+                <form id="image-detail-form" action="${request.route_path('image_update', id=image_id)}" method="post" data-abide="abide">
                     ${structure:image_form['csrf_token']}
                     <div tal:condition="image">
                         <div class="section">
@@ -45,14 +61,34 @@
                                     <label i18n:translate="" tal:condition="layout.cloud_type == 'euca'">EMI name</label>
                                     <label i18n:translate="" tal:condition="layout.cloud_type == 'aws'">AMI name</label>
                                 </div>
-                                <div class="small-8 columns value" ng-non-bindable="">${image.name if image.name else ''}</div>
+                                <div class="small-8 columns value breakword">${image.name if image.name else ''}</div>
+                            </div>
+                            <div tal:condition="not is_owned_by_user">
+                                <div class="row controls-wrapper readonly">
+                                    <div class="small-4 columns"><label i18n:translate="">Description</label></div>
+                                    <div class="small-8 columns value" ng-non-bindable="">${image_description}</div>
+                                </div>
+                            </div>
+                            <div tal:condition="is_owned_by_user">
+                                ${panel('form_field', field=image_form['description'])}
+                            </div>
+                            <div class="row controls-wrapper readonly">
+                                <div class="small-4 columns"><label i18n:translate="">Status</label></div>
+                                <div class="small-8 columns value" ng-cloak="">
+                                    <div class="progress" ng-show="isTransitional(imageState)"><span
+                                            class="meter" style="width: {{ imageProgress }}">{{ imageProgress }}% ({{ imageState }})</span>
+                                    </div>
+                                    <span ng-show="!isTransitional(imageState)">
+                                        <span class="label radius state {{imageState}}"> {{ imageState }} </span>
+                                    </span>
+                                </div>
                             </div>
                             <div class="row controls-wrapper readonly" tal:condition="image.owner_alias">
                                 <div class="small-4 columns"><label i18n:translate="">Owner alias</label></div>
-                                <div class="small-8 columns value" ng-non-bindable="">${image.owner_alias if image.owner_alias else ''}</div>
+                                <div class="small-8 columns value">${image.owner_alias if image.owner_alias else ''}</div>
                             </div>
                             <div class="row controls-wrapper readonly">
-                                <div class="small-4 columns"><label i18n:translate="">platform</label></div>
+                                <div class="small-4 columns"><label i18n:translate="">Platform</label></div>
                                 <div class="small-8 columns value">${image.platform_name if image.platform_name else ''}</div>
                             </div>
                             <div class="row controls-wrapper readonly">
@@ -64,20 +100,12 @@
                                 <div class="small-8 columns value">${image.root_device_type if image.root_device_type else ''}</div>
                             </div>
                             <div class="row controls-wrapper readonly">
-                                <div class="small-4 columns"><label i18n:translate="">Root device mapping</label></div>
-                                <div class="small-8 columns value">${image.root_device_name if image.root_device_name else ''}</div>
-                            </div>
-                            <div class="row controls-wrapper readonly">
                                 <div class="small-4 columns"><label i18n:translate="">Owner account (ID)</label></div>
                                 <div class="small-8 columns value">${image.owner_id if image.owner_id else ''}</div>
                             </div>
                             <div class="row controls-wrapper readonly">
                                 <div class="small-4 columns"><label i18n:translate="">Manifest path</label></div>
-                                <div class="small-8 columns value breakword" ng-non-bindable="">${image.location if image.location else ''}</div>
-                            </div>
-                            <div class="row controls-wrapper readonly">
-                                <div class="small-4 columns"><label i18n:translate="">Description</label></div>
-                                <div class="small-8 columns value breakword" ng-non-bindable="">${image.description if image.description else ''}</div>
+                                <div class="small-8 columns value breakword">${image.location if image.location else ''}</div>
                             </div>
                         </div>
                         <div class="section" tal:condition="image.kernel_id">
@@ -96,38 +124,86 @@
                                 <div class="small-8 columns value">${image.ramdisk_id if image.ramdisk_id else ''}</div>
                             </div>
                         </div>
-                        <div class="section" tal:condition="image.block_device_names">
-                            <hr />
-                            <h6 i18n:translate="">Block device mappings</h6>
-                            <div id="tableview" class="gridwrapper">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th i18n:translate="">Device mapping</th>
-                                            <th i18n:translate="">Snapshot</th>
-                                            <th i18n:translate="">Size (GB)</th>
-                                            <th i18n:translate="">Delete on termination?</th>
-                                            <th i18n:translate="">Ephemeral name</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr tal:repeat="row image.block_device_names">
-                                            <td ng-non-bindable="">${row.name if row.name else ''}</td>
-                                            <td>${row.value.snapshot_id if row.value.snapshot_id else ''}</td>
-                                            <td>${row.value.size if row.value.size else ''}</td>
-                                            <td>${row.value.delete_on_termination if row.value.delete_on_termination else ''}</td>
-                                            <td ng-non-bindable="">${row.value.ephemeral_name if row.value.ephemeral_name else ''}</td>
-                                        </tr>
-                                    </tbody> 
-                                </table>
+                    </div>
+                    <div class="section">
+                        <hr />
+                        <h6 i18n:translate="">Sharing</h6>
+                        <div tal:condition="not is_owned_by_user">
+                            <div class="row controls-wrapper readonly">
+                                <div class="small-12 columns value" ng-cloak="">
+                                    <span ng-show="isPublic">Public</span>
+                                    <span ng-hide="isPublic">Private</span>
+                                </div>
+                            </div> 
+                        </div>
+                        <div tal:condition="is_owned_by_user" ng-cloak="">
+                            <div class="row controls-wrapper readonly">
+                                <div class="small-12 columns value">
+                                    <div id="sharing-radio-buttons">
+                                         <span class="padded-element"> 
+                                            <input type="radio" name="sharing" value="true" ng-model="isPublic" /> Public
+                                        </span>
+                                        <span class="padded-element"> 
+                                            <input type="radio" class="padded-element" name="sharing" value="false" ng-model="isPublic" /> Private
+                                        </span>
+                                    </div>
+                                    <div class="bottom-padding" ng-show="isPublic">
+                                        <span i18n:translate="">
+                                            Anyone can see this image.
+                                        </span>
+                                    </div>
+                                    <div class="bottom-padding" ng-hide="isPublic">
+                                        <span i18n:translate="">
+                                           Only my account and accounts I share with can see this image.
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row controls-wrapper readonly" ng-hide="isPublic">
+                                <div id="private-account-input-field" class="small-12 columns value" ng-class="errorClass">
+                                    <div class="subsection-label top-bottom-padding" ng-show="launchPermissions.length > 0">
+                                        <span i18n:translate="">
+                                            Share with specific accounts
+                                        </span>
+                                    </div>
+                                    <div id="share_with_accounts_field" class="items">
+                                        <span class="label radius secondary account-id-icon padded-element" ng-repeat="account in launchPermissions">
+                                            <span>
+                                                {{ account }}
+                                            </span>
+                                            <a ng-click="removeAccount(account)"><i class="fi-x"></i></a>
+                                            <input type="hidden" name="launch-permissions-inputbox" ng-value="account" />
+                                        </span>
+                                    </div>
+                                    <div class="subsection-label top-bottom-padding">
+                                        <span ng-show="launchPermissions.length == 0" i18n:translate="">
+                                            Add an account number: 
+                                        </span>
+                                        <span ng-show="launchPermissions.length > 0" i18n:translate="">
+                                            Add another account number: 
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <input type="text" id="add-account-inputbox" ng-model="newAccount" placeholder="enter account number.." />
+                                        <small class="error" id="add-account-inputbox-error" ng-hide="isAccountValid">
+                                            Account ID must be 12 characters long and contain only numbers.
+                                        </small>
+                                    </div>
+                                    <div class="top-padding">
+                                        <span class="button round tiny" id="add-account-btn" ng-click="addAccount()" ng-disabled="isAccountNotTyped">
+                                            <span i18n:translate="">Add Account</span>
+                                        </span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                     <hr />
+                    ${panel('bdmapping_editor', image=image, read_only=True)}
                     ${panel('tag_editor', tags=image_tags)}
                     <hr/>
                     <div>
-                        <button type="submit" class="button" id="save-changes-btn">
+                        <button type="submit" class="button" id="save-changes-btn" ng-disabled="isNotChanged">
                             <span tal:condition="image" i18n:translate="">Save Changes</span>
                         </button>
                         <a href="${request.route_path('images')}"
@@ -140,20 +216,19 @@
             <metal:block metal:use-macro="layout.global_macros['help_expando']" />
             <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                 <!--! Tag editor help content -->
-                <div id="help-html-console_image_detail" ng-include="'${layout.help_path('console_image_detail.html')}'"></div> 
-                <div id="help-html-console_add_edit_tags" ng-include="'${layout.help_path('console_add_edit_tags.html')}'"></div> 
+                <div id="help-html-console_image_detail" ng-include="'${layout.help_path('console_image_detail.html')}'"></div>
+                <div id="help-html-console_add_edit_tags" ng-include="'${layout.help_path('console_add_edit_tags.html')}'"></div>
             </div>
         </div>
+        <!--! Modal dialogs reused across landing and detail page -->
+        ${panel('image_dialogs', image=image, image_name_id=image_name_id, deregister_form=deregister_form, snapshot_images_registered=snapshot_images_registered)}
     </div>
 </div>
 
 <div metal:fill-slot="tail_js">
-    <script>
-        angular.module('ImagePage', ['TagEditor']);
-        $(document).on('ready', function(){
-            $('.actions-menu').find('a').get(0).focus();
-        });
-    </script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/eucaconsole_utils.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/image.js')}"></script>
 </div>
 
 </metal:block>

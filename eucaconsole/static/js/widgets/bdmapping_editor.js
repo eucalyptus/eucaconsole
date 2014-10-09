@@ -4,10 +4,12 @@
  *
  */
 angular.module('BlockDeviceMappingEditor', [])
-    .controller('BlockDeviceMappingEditorCtrl', function ($scope, $timeout) {
+    .controller('BlockDeviceMappingEditorCtrl', function ($scope, $http, $timeout) {
         $scope.bdmTextarea = $('#bdmapping');
-        $scope.bdMapping = {};
+        $scope.bdMapping = undefined;
         $scope.ephemeralCount = 0;
+        $scope.isNotValid = true;
+        $scope.snapshotJsonURL = '';
         $scope.setInitialNewValues = function () {
             $scope.newVolumeType = 'EBS';
             $scope.virtualName = '';
@@ -15,6 +17,39 @@ angular.module('BlockDeviceMappingEditor', [])
             $scope.newMappingPath = '';
             $scope.newSize = '2';
             $scope.newDOT = true;
+            $scope.$watch('newMappingPath', function () {
+                $scope.checkValidInput();
+            });
+            $scope.$watch('newSnapshotID', function () {
+                // populate size from snapshot size
+                if ($scope.newSnapshotID == '') return;
+                var url = $scope.snapshotJsonURL.replace('_id_', $scope.newSnapshotID);
+                var data = "csrf_token="+$('#csrf_token').val();
+                $http({method:'GET', url:url, data:data,
+                       headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
+                  success(function(oData) {
+                    var results = oData ? oData.results : [];
+                    if (oData.error == undefined) {
+                        $scope.newSize = results;
+                    } else {
+                        Notify.failure(oData.message);
+                    }
+                  }).
+                  error(function (oData, status) {
+                    var errorMsg = oData['message'] || '';
+                    Notify.failure(errorMsg);
+                  });
+            });
+            $scope.$watch('newSize', function () {
+                $scope.checkValidInput();
+            });
+        };
+        $scope.checkValidInput = function () {
+            if ($scope.newMappingPath == '' || $scope.newSize == '') {
+                $scope.isNotValid = true;
+            } else {
+                $scope.isNotValid = false;
+            }
         };
         $scope.initChosenSelector = function () {
             $scope.newSnapshotID = '';
@@ -34,7 +69,7 @@ angular.module('BlockDeviceMappingEditor', [])
             }, 250);
         };
         // tempate-ed way to pass bdm in
-        $scope.initBlockDeviceMappingEditor = function (bdmJson) {
+        $scope.initBlockDeviceMappingEditor = function (bdmJson, url) {
             if (bdmJson != '{}') {
                 $scope.bdMapping = JSON.parse(bdmJson);
             } else {
@@ -43,6 +78,7 @@ angular.module('BlockDeviceMappingEditor', [])
             $scope.bdmTextarea.val(bdmJson);
             $scope.setInitialNewValues();
             $scope.initChosenSelector();
+            $scope.snapshotJsonURL = url;
         };
         // live update of bdm json
         $scope.$on('setBDM', function($event, bdm) {
@@ -65,7 +101,7 @@ angular.module('BlockDeviceMappingEditor', [])
                 return false;
             }
             // Size must be entered
-            if (!newSizeEntry.val()) {
+            if (!newSizeEntry.val() || newSizeEntry.val() <= 0) {
                 newSizeEntry.focus();
                 return false;
             }
@@ -73,7 +109,7 @@ angular.module('BlockDeviceMappingEditor', [])
                 $scope.virtualName = "ephemeral" + $scope.ephemeralCount; 
                 $scope.ephemeralCount += 1;
                 $scope.newSnapshotID = '';
-                $scope.newSize = '';
+                $scope.newSize = '2';
                 $scope.newDOT = false;
             }
             var bdMapping = $scope.bdMapping;
@@ -99,13 +135,24 @@ angular.module('BlockDeviceMappingEditor', [])
             if (val.virtual_name && val.virtual_name.indexOf('ephemeral') == 0) return true;
             return false;
         };
-        $scope.updateRootDevice = function ($event, key, is_root) {
+        $scope.updateRootDeviceSize = function ($event, key, is_root) {
             var bdMappingText = $scope.bdmTextarea.val();
             if (bdMappingText && is_root) {
                 var bdMapping = JSON.parse(bdMappingText);
                 var rootDevice = bdMapping[key] || '';
                 if (rootDevice) {
                     bdMapping[key]['size'] = parseInt($($event.target).val(), 10);
+                    $scope.bdmTextarea.val(JSON.stringify(bdMapping));
+                }
+            }
+        };
+        $scope.updateRootDeviceDelete = function ($event, key, is_root) {
+            var bdMappingText = $scope.bdmTextarea.val();
+            if (bdMappingText && is_root) {
+                var bdMapping = JSON.parse(bdMappingText);
+                var rootDevice = bdMapping[key] || '';
+                if (rootDevice) {
+                    bdMapping[key]['delete_on_termination'] = ($($event.target).val().toLowerCase() === 'true');
                     $scope.bdmTextarea.val(JSON.stringify(bdMapping));
                 }
             }

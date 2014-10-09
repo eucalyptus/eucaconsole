@@ -1,4 +1,4 @@
-<metal:block use-macro="main_template">
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
 <head metal:fill-slot="head_css">
 </head>
@@ -8,10 +8,11 @@
             ng-init="initController('${request.route_path('user_create')}',
                                     '${request.route_path('users')}',
                                     '${request.route_path('user_view', name='_name_')}',
+                                    '${request.route_path('account_view', name='_name_')}',
                                     '${request.route_path('file_download')}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
-                <li><a href="${request.route_path('users')}" i18n:translate="">IAM users</a></li>
+                <li><a href="${request.route_path('users')}" i18n:translate="">Users</a></li>
                 <li class="current" i18n:translate="">Create new users</li>
             </metal:crumbs>
         </metal:breadcrumbs>
@@ -25,10 +26,17 @@
                 <form id="user-new-form" ng-submit="submit($event)" data-abide="abide">
                     ${structure:user_form['csrf_token']}
                     <div class="section">
+                        <div class="row columns" tal:condition="layout.account != 'eucalyptus'">
+                            <p><span class="subsection-label" i18n:translate="">Add user(s) to account:</span>&nbsp;${layout.account}</p>
+                        </div>
+                        <div tal:condition="layout.account == 'eucalyptus'">
+                            <span class="subsection-label" i18n:translate="">Add user(s) to account:</span>
+                            &nbsp;&nbsp;
+                            ${structure:user_form['as_account']}
+                        </div>
                         ${panel('user_editor')}
                         <div>${structure:user_form['random_password']}&nbsp;${user_form.random_password.label}</div>
                         <div>${structure:user_form['access_keys']}&nbsp;${user_form.access_keys.label}</div>
-                        <div>${structure:user_form['allow_all']}&nbsp;${user_form.allow_all.label}</div>
                     </div>
                     <hr/>
                     <div class="expando" id="quotas-section">
@@ -40,7 +48,7 @@
                             </a>
                         </h6>
                         <div class="quotas-content" ng-show="quotas_expanded">
-                            ${panel('quotas_panel', quota_form=user_form, quota_err=quota_err)}
+                            ${panel('quotas_panel', quota_form=quotas_form, quota_err=quota_err)}
                         </div>
                     </div>
                     <hr/>
@@ -53,17 +61,27 @@
                             </a>
                         </h6>
                         <div class="advance-content" ng-show="adv_expanded">
-                            ${panel('form_field', field=user_form['path'], **{ 'ng-non-bindable': ''})}
+                            ${panel('form_field', field=user_form['path'], leftcol_width=2, rightcol_width=10)}
                         </div>
                     </div>
                     <hr />
                     <small id="quota-error" ng-cloak="" class="error" i18n:translate="">Quota values must be integers greater than zero.</small>
-                    <div>
-                        <button type="submit" class="button" id="create-user-btn">
-                            <span i18n:translate="">Create Users</span>
-                        </button>
-                        <a href="${request.route_path('users')}"
-                           class="cancel-link" i18n:translate="">Cancel</a>
+                    <div class="section row">
+                        <div class="columns small-6">
+                            <button type="submit" class="button" id="create-user-btn" ng-disabled="isNotValid">
+                                <span i18n:translate="">Create Users</span>
+                            </button>
+                            <a href="${request.route_path('users')}"
+                                class="cancel-link" i18n:translate="">Cancel</a>
+                        </div>
+                        <div class="columns small-6">
+                            <div tal:condition="not user">
+                                <label class="right">
+                                    <span class="req">*</span>
+                                    <span i18n:translate="">Required fields</span>
+                               </label>
+                            </div>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -76,9 +94,20 @@
             </div>
         </div>
     </div>
+    <div id="unsaved-user-warn-modal" class="reveal-modal small" data-reveal="">
+        <p>
+            <span i18n:translate="">
+                You have a user that has not been added to the list. You must click the "Add User" button before you submit this for your user to be included.
+            </span>
+        </p>
+        <a href="#" class="close-reveal-modal">&#215;</a>
+    </div>
 </div>
 
 <div metal:fill-slot="tail_js">
+    <div tal:condition="layout.account == 'eucalyptus'" tal:omit-tag="">
+        <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    </div>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/jquery.generateFile.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/user_new.js')}"></script>
 </div>

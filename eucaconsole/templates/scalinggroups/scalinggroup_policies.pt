@@ -1,39 +1,40 @@
-<metal:block use-macro="main_template">
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
 <head metal:fill-slot="head_css">
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/scalinggroup.css')}" />
 </head>
 
 <div metal:fill-slot="main_content">
-    <div class="row" id="contentwrap" ng-app="ScalingGroupPolicies" ng-controller="ScalingGroupPoliciesCtrl" ng-init="initPage()">
+    <div class="row" id="contentwrap" ng-app="ScalingGroupPolicies" ng-controller="ScalingGroupPoliciesCtrl"
+         ng-init="initPage()">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('scalinggroups')}" i18n:translate="">Scaling groups</a></li>
-                <li class="current"><a ng-non-bindable="">${scaling_group.name}</a></li>
+                <li class="current"><a>${scaling_group_name}</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
         <h3 id="pagetitle">
             <strong i18n:translate="">Details for scaling group:</strong>
-            <em ng-non-bindable="">${scaling_group.name}</em>
+            <em>${scaling_group_name}</em>
         </h3>
         <div class="large-8 columns">
             <dl class="tabs" id="scalinggroup-subnav">
                 <dd><a href="${request.route_path('scalinggroup_view', id=scaling_group.name)}" i18n:translate="">General</a></dd>
-                <dd class="active"><a href="#" i18n:translate="">Policies</a></dd>
+                <dd class="active"><a href="#" i18n:translate="">Scaling Policies</a></dd>
                 <dd><a href="${request.route_path('scalinggroup_instances', id=scaling_group.name)}">Instances</a></dd>
             </dl>
             <div class="panel gridwrapper no-title">
                 <div class="tile add" id="add-policy">
                     <a href="${request.route_path('scalinggroup_policy_new', id=scaling_group.name)}">
                         <div class="plus">+</div>
-                        <div i18n:translate="">Add a policy</div>
+                        <div i18n:translate="">Add a scaling policy</div>
                     </a>
                 </div>
                 <div class="tile item policy" tal:repeat="policy policies">
-                    <div class="header">
-                        <strong><a ng-non-bindable="" class="title">${policy.name}</a></strong>
+                    <div class="header" tal:define="policy_name layout.escape_braces(policy.name)">
+                        <strong><a class="title">${policy_name}</a></strong>
                         <a class="tiny secondary button dropdown right" data-dropdown="item-dropdown_${policy_ids[policy.name]}" ><i class="fi-widget"></i></a>
                         <ul id="item-dropdown_${policy_ids[policy.name]}" class="f-dropdown" data-dropdown-content="" >
                             <li><a i18n:translate="" ng-click="revealDeleteModal('${policy.name}')">Delete policy</a></li>
@@ -43,10 +44,10 @@
                          tal:define="scale_text scale_down_text if policy.scaling_adjustment &lt; 0 else scale_up_text;
                                      scale_type ' instances' if policy.adjustment_type == 'ChangeInCapacity' else '%'">
                         <strong i18n:translate="">Policy:</strong><br/>
-                        <span ng-non-bindable="">${scale_text} ${abs(policy.scaling_adjustment)}${scale_type}</span><br />
+                        <span>${scale_text} ${abs(policy.scaling_adjustment)}${scale_type}</span><br />
                         <br />
                         <strong i18n:translate="">Alarms:</strong><br/>
-                        <span ng-non-bindable="">${', '.join([alarm.name for alarm in getattr(policy, 'alarms', [])])}</span>
+                        <span>${', '.join([layout.escape_braces(alarm.name) for alarm in getattr(policy, 'alarms', [])])}</span>
                     </div>
                 </div>
             </div>

@@ -1,3 +1,5 @@
 include *.txt *.ini *.cfg *.rst
 recursive-include eucaconsole *.ico *.png *.css *.gif *.jpg *.pt *.txt *.js *.html *.xml *.svg *.ttf *.eot *.woff
+recursive-include locale *.pot *.po *.mo
 recursive-include conf *
+recursive-include licenses *

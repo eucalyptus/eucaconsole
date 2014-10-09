@@ -31,15 +31,14 @@ Forms for Key Pairs
 import wtforms
 from wtforms import validators
 
-from pyramid.i18n import TranslationString as _
-
+from ..i18n import _
 from . import BaseSecureForm
 
 
 class KeyPairForm(BaseSecureForm):
     """Key Pair Create form
     """
-    name_error_msg = _(u'Name is required')
+    name_error_msg = _(u'Keypair name must be between 1 and 255 characters long, and must not contain \'/\' and \'\\\'')
     name = wtforms.TextField(
         id=u'key-name',
         label=_(u'Name'),

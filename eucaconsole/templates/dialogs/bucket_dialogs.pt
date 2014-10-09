@@ -1,0 +1,86 @@
+<!--! Modal dialogs for buckets on landing and detail page -->
+<div tal:omit-tag="" i18n:domain="eucaconsole">
+    <div id="update-versioning-modal" class="reveal-modal small" data-reveal="">
+        <h3 i18n:translate="">Update versioning</h3>
+        <p>
+            <span i18n:translate="">Are you sure you want to</span>
+            <span tal:condition="bucket" tal:omit-tag="">
+                <span tal:condition="update_versioning_action == 'enable'" tal:omit-tag="" i18n:translate="">
+                    enable
+                </span>
+                <span tal:condition="update_versioning_action != 'enable'" tal:omit-tag="" i18n:translate="">
+                    suspend
+                </span>
+                <span i18n:translate="">versioning for</span>
+                <b>${bucket_name}</b>?
+            </span>
+            <span tal:condition="not bucket" tal:omit-tag="">
+                <span ng-show="updateVersioningAction == 'enable'" i18n:translate="">enable</span>
+                <span ng-show="updateVersioningAction != 'enable'" i18n:translate="">suspend</span>
+                <span i18n:translate="">versioning for</span>
+                <b>{{ bucketName }}</b>?
+            </span>
+        </p>
+        <form id="update-versioning-form" action="${request.route_path('bucket_update_versioning', name=bucket.name if bucket else '_name_')}"
+              method="post">
+            ${structure:versioning_form['csrf_token']}
+            <div tal:condition="landingpage" tal:omit-tag="">
+                <input type="hidden" name="name" value="{{ bucketName }}"/>
+                <input type="hidden" name="versioning_action" value="{{ updateVersioningAction }}" />
+            </div>
+            <div tal:condition="not landingpage" tal:omit-tag="">
+                <input type="hidden" name="name" value="${bucket_name}" />
+                <input type="hidden" name="versioning_action" value="${update_versioning_action}" />
+            </div>
+            <input type="hidden" name="source" value="${'landingpage' if landingpage else 'detailpage'}" />
+            <div class="dialog-submit-button">
+                <button type="submit" id="update_versioning_submit_button" class="button expand">
+                    <span i18n:translate="">Yes,</span>
+                    <span tal:condition="bucket" tal:omit-tag="">
+                        <span tal:condition="update_versioning_action == 'enable'" tal:omit-tag="" i18n:translate="">
+                            Enable
+                        </span>
+                        <span tal:condition="update_versioning_action != 'enable'" tal:omit-tag="" i18n:translate="">
+                            Suspend
+                        </span>
+                    </span>
+                    <span tal:condition="not bucket" tal:omit-tag="">
+                        <span ng-show="updateVersioningAction == 'enable'" i18n:translate="">Enable</span>
+                        <span ng-show="updateVersioningAction != 'enable'" i18n:translate="">Suspend</span>
+                    </span>
+                    <span i18n:translate="">Versioning</span>
+                </button>
+            </div>
+            <div class="dialog-progress-display hide">
+                <span i18n:translate="">Sending request </span>&nbsp;<em><span class="dots">&nbsp;</span></em>
+            </div>
+        </form>
+        <a href="#" id="update_versioning_close_link" class="close-reveal-modal">&#215;</a>
+    </div>
+    <div id="delete-bucket-modal" class="reveal-modal small" data-reveal="">
+        <h3 i18n:translate="">Delete bucket</h3>
+        <p ng-show="bucketCount == 0 &amp;&amp; versionCount == 0">
+            <span i18n:translate="">Are you sure you want to delete bucket</span>&nbsp;{{ bucketName }}?
+        </p>
+        <p ng-show="bucketCount > 0">
+            <span i18n:translate="">You cannot delete a bucket unless it is empty. Please delete all the files and folders this bucket contains and retry this operation.</span>
+        </p>
+        <p ng-show="versionCount > 0 &amp;&amp; bucketCount == 0">
+            <span i18n:translate="">This bucket appears empty, but there are {{ versionCount }} older versions of objects still present.</span>
+            <br>&nbsp;</br>
+            <span i18n:translate="">The Management Console does not support bucket versioning management in this release. You will need to use whichever tool was used to enable versioning on this bucket to delete all versions of all objects it contains. Then the bucket can be delted.</span>
+        </p>
+        <form id='delete-bucket-form' action="${request.route_path('bucket_delete', name=bucket.name if bucket else '_name_')}" method="post">
+            ${structure:delete_form['csrf_token']}
+            <div class="dialog-submit-button" ng-show="bucketCount == 0 &amp;&amp; versionCount == 0">
+                <button type="submit" id="delete_bucket_submit_button" class="button expand">
+                    <span i18n:translate="">Yes, Delete Bucket</span>
+                </button>
+            </div>
+            <div class="dialog-progress-display hide">
+                <span i18n:translate="">Sending request </span>&nbsp;<em><span class="dots">&nbsp;</span></em>
+            </div>
+        </form>
+        <a href="#" id="delete_bucket_close_link" class="close-reveal-modal">&#215;</a>
+    </div>
+ </div>

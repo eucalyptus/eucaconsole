@@ -1,6 +1,6 @@
 
 <!--! Tag editor -->
-<div id="tag-editor" class="row controls-wrapper" ng-app="TagEditor"
+<div id="tag-editor" class="row controls-wrapper" ng-app="TagEditor" i18n:domain="eucaconsole"
      ng-controller="TagEditorCtrl" ng-init="initTags('${tags_json}', ${str(show_name_tag).lower()})">
     <style type="text/css" tal:condition="not show_name_tag">
         .tagentry.Name { display: none; }
@@ -24,32 +24,42 @@
         <div class="row tagentry controls-wrapper" ng-show="tagsArray.length &lt; 10">
             <div>
                 <div class="small-4 columns">
-                    <input class="taginput key" placeholder="name..." ng-model="newTagKey" pattern="${layout.tag_pattern_key}" />
+                    <input id='tag-name-input' class="taginput key" placeholder="name..." ng-model="newTagKey" pattern="${layout.tag_pattern_key}" />
                     <small class="error" i18n:translate="">Tag may not begin with "aws:" or its length cannot be longer than 128 chars</small>
                 </div>
                 <div class="small-8 columns">
-                    <input class="taginput value" placeholder="value..." pattern="${layout.tag_pattern_value}" />
+                    <input id='tag-value-input' class="taginput value" placeholder="value..." ng-model="newTagValue" pattern="${layout.tag_pattern_value}" />
                     <small class="error" i18n:translate="">Tag may not begin with "aws:" or its length cannot be longer than 256 chars</small>
                 </div>
             </div>
             <div>&nbsp;</div>
             <div>
                 <div class="columns">
-                    <a href="#" ng-click="addTag($event)" class="button round tiny" id="add-tag-btn"
+                    <a href="#" ng-click="addTag($event)" ng-disabled="isTagNotComplete"  
+                       class="button round tiny" id="add-tag-btn"
                        title="Add tag" i18n:translate="">Add Tag</a>
                 </div>
             </div>
         </div>
         <div ng-show="tagsArray.length &gt;= 10">
-            <p i18n:translate="">
+            <p>
                 <span i18n:translate="">You may not add more than ten tags to a resource.</span>
                 <span tal:condition="not show_name_tag" ng-show="visibleTagsCount &lt; tagsArray.length" i18n:translate="">
-                    Note that one of your tags is the "Name" tag, which isn't displayed here.
+                    Note that one of your tags is being used to display the resource name.
                 </span>
             </p>
         </div>
         <!--! Add class="debug" to textarea to view tags data posted by form -->
         <textarea id="tags" name="tags" class="hidden"></textarea>
+    </div>
+    <div id="unsaved-tag-warn-modal" class="reveal-modal small" data-reveal="">
+        <h3></h3>
+        <p>
+            <span i18n:translate="">
+                You must click the "Add Tag" button before you submit this for your tag to be included.
+            </span>
+        </p>
+        <a href="#" class="close-reveal-modal">&#215;</a>
     </div>
     <script src="${request.static_path('eucaconsole:static/js/widgets/tag_editor.js')}"></script>
 </div>

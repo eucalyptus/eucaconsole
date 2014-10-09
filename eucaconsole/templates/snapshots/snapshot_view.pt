@@ -1,4 +1,4 @@
-<metal:block use-macro="main_template">
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
 <head metal:fill-slot="head_css">
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/snapshot.css')}" />
@@ -7,13 +7,11 @@
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap"
          ng-app="SnapshotPage" ng-controller="SnapshotPageCtrl"
-         ng-init="initController('${request.route_path('snapshot_state_json', id=snapshot.id) if snapshot else ''}',
-                 '${snapshot.status if snapshot else ''}', '${snapshot.progress if snapshot else ''}', ${volume_count},
-                 '${request.route_path('snapshot_images_json', id=snapshot.id) if snapshot else ''}')">
+         ng-init="initController('${controller_options_json}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('snapshots')}" i18n:translate="">Snapshots</a></li>
-                <li class="current"><a href="#" ng-non-bindable="">${snapshot_name or 'Create new snapshot'}</a></li>
+                <li class="current"><a href="#">${snapshot_name or 'Create new snapshot'}</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
         <!-- Notifications -->
@@ -21,7 +19,7 @@
         <h3 id="pagetitle">
             <metal:block tal:condition="snapshot">
                 <strong i18n:translate="">Details for snapshot:</strong>
-                <em ng-non-bindable="">${snapshot_name}</em>
+                <em>${snapshot_name}</em>
             </metal:block>
             <metal:block tal:condition="not snapshot">
                 <strong i18n:translate="">Create new snapshot</strong>
@@ -45,7 +43,7 @@
                             </a>
                         </li>
                         <li ng-show="!isUpdating &amp;&amp; snapshotStatus !== 'failed'">
-                            <a data-reveal-id="register-snapshot-modal" i18n:translate="" id="register-image-action">
+                            <a i18n:translate="" id="register-snapshot-action">
                                 Register as image
                             </a>
                         </li>
@@ -56,7 +54,7 @@
                         </li>
                     </metal:actions>
                 </metal:block>
-                <form tal:attributes="action form_action" method="post" data-abide="abide" ng-cloak="">
+                <form tal:attributes="action form_action" id="snapshot-detail-form" method="post" data-abide="abide" ng-cloak="">
                     ${structure:snapshot_form['csrf_token']}
                     <h6 i18n:translate="">Snapshot</h6>
                     <div class="row controls-wrapper readonly" ng-cloak="" tal:condition="snapshot">
@@ -74,12 +72,12 @@
                             </span>
                         </div>
                     </div>
-                    <div tal:define="autofocus_attr {'autofocus': 'autofocus'} if not snapshot else {};" ng-non-bindable="">
+                    <div tal:define="autofocus_attr {'autofocus': 'autofocus'} if not snapshot else {};">
                         ${panel('form_field', field=snapshot_form.name, pattern=layout.tag_pattern_value, **autofocus_attr)}
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="snapshot and snapshot.description">
                         <div class="small-4 columns"><label i18n:translate="">Description</label></div>
-                        <div class="small-8 columns field inline breakword" ng-non-bindable="">${snapshot.description}</div>
+                        <div class="small-8 columns field inline breakword">${snapshot_description}</div>
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="snapshot">
                         <div class="small-4 columns"><label i18n:translate="">Snapshot ID</label></div>
@@ -92,7 +90,7 @@
                     <div class="row controls-wrapper readonly" tal:condition="snapshot">
                         <div class="small-4 columns"><label i18n:translate="">Created from volume</label></div>
                         <div class="small-8 columns value breakword">
-                            <a href="${request.route_path('volume_view', id=snapshot.volume_id)}" ng-non-bindable="">${volume_name}</a>
+                            <a href="${request.route_path('volume_view', id=snapshot.volume_id)}">${volume_name}</a>
                         </div>
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="snapshot">
@@ -102,7 +100,7 @@
                         </div>
                     </div>
                     <div tal:condition="not snapshot" tal:omit-tag="">
-                        ${panel('form_field', field=snapshot_form['volume_id'], **html_attrs)}
+                        ${panel('form_field', field=snapshot_form['volume_id'], ng_attrs={'model': 'volumeID'}, **html_attrs)}
                     </div>
                     <div tal:condition="not snapshot" tal:omit-tag="">
                         ${panel('form_field', field=snapshot_form['description'], **html_attrs)}
@@ -110,14 +108,22 @@
                     <hr />
                     ${panel('tag_editor', tags=snapshot_tags, show_name_tag=False)}
                     <hr  />
+                    <div tal:condition="not snapshot">
+                        <label>
+                            <span class="req">*</span>
+                            <span i18n:translate="">Required fields</span>
+                       </label>
+                    </div>
                     <div ng-show="snapshotStatus == 'deleted'">
                         <span i18n:translate="">Snapshot was successfully deleted.</span>
                         <a href="${request.route_path('snapshots')}" i18n:translate="">Return to snapshots page</a>
                     </div>
                     <div>
-                        <button type="submit" class="button">
-                            <span tal:condition="snapshot" i18n:translate="" ng-show="snapshotStatus !== 'deleted'">Save Changes</span>
-                            <span tal:condition="not snapshot" i18n:translate="">Create snapshot</span>
+                        <button tal:condition="snapshot" type="submit" class="button" id="save_changes_snapshot_submit_button" ng-disabled="isNotChanged">
+                            <span i18n:translate="" ng-show="snapshotStatus !== 'deleted'">Save Changes</span>
+                        </button>
+                        <button tal:condition="not snapshot" type="submit" class="button" id="create_snapshot_submit_button" ng-disabled="isNotValid">
+                            <span i18n:translate="">Create snapshot</span>
                         </button>
                         <a href="${request.route_path('snapshots')}"
                            class="cancel-link" i18n:translate="">Cancel</a>
@@ -152,6 +158,7 @@
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/eucaconsole_utils.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/snapshot.js')}"></script>
 </div>
 </metal:block>

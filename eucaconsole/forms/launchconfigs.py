@@ -31,8 +31,7 @@ Forms for Launch Config
 import wtforms
 from wtforms import validators
 
-from pyramid.i18n import TranslationString as _
-
+from ..i18n import _
 from . import BaseSecureForm, ChoicesManager
 
 
@@ -46,7 +45,7 @@ class LaunchConfigDeleteForm(BaseSecureForm):
 class CreateLaunchConfigForm(BaseSecureForm):
     """Create Launch Configuration form"""
     image_id = wtforms.HiddenField(label=_(u'Image'))
-    name_error_msg = _(u'Name is required')
+    name_error_msg = _(u'Name must be between 1 and 255 characters long, and must not contain \'/\' and \'\\\'')
     name = wtforms.TextField(
         label=_(u'Name'),
         validators=[validators.InputRequired(message=name_error_msg)],
@@ -62,23 +61,28 @@ class CreateLaunchConfigForm(BaseSecureForm):
         validators=[validators.InputRequired(message=keypair_error_msg)],
     )
     securitygroup_error_msg = _(u'Security group is required')
-    securitygroup = wtforms.SelectField(
+    securitygroup = wtforms.SelectMultipleField(
         label=_(u'Security group'),
         validators=[validators.InputRequired(message=securitygroup_error_msg)],
     )
+    associate_public_ip_address = wtforms.SelectField(label=_(u'VPC IP assignment'))
+    associate_public_ip_address_helptext = _(u'This setting only applies \
+        when this launch configuration is used with a scaling group using a VPC network.')
+    role = wtforms.SelectField()
     userdata = wtforms.TextAreaField(label=_(u'User data'))
     userdata_file_helptext = _(u'User data file may not exceed 16 KB')
-    userdata_file = wtforms.FileField(label=_(u''))
+    userdata_file = wtforms.FileField(label='')
     kernel_id = wtforms.SelectField(label=_(u'Kernel ID'))
     ramdisk_id = wtforms.SelectField(label=_(u'RAM disk ID (RAMFS)'))
     monitoring_enabled = wtforms.BooleanField(label=_(u'Enable monitoring'))
     create_sg_from_lc = wtforms.BooleanField(label=_(u'Create scaling group using this launch configuration'))
 
-    def __init__(self, request, image=None, securitygroups=None, conn=None, **kwargs):
+    def __init__(self, request, image=None, securitygroups=None, conn=None, iam_conn=None, **kwargs):
         super(CreateLaunchConfigForm, self).__init__(request, **kwargs)
         self.image = image
         self.securitygroups = securitygroups
         self.conn = conn
+        self.iam_conn = iam_conn
         self.cloud_type = request.session.get('cloud_type', 'euca')
         self.set_error_messages()
         self.monitoring_enabled.data = True
@@ -91,19 +95,26 @@ class CreateLaunchConfigForm(BaseSecureForm):
             self.image_id.data = self.image.id
 
     def set_help_text(self):
+        self.associate_public_ip_address.label_help_text = self.associate_public_ip_address_helptext
         self.userdata_file.help_text = self.userdata_file_helptext
 
     def set_choices(self):
         self.instance_type.choices = self.choices_manager.instance_types(cloud_type=self.cloud_type)
         self.keypair.choices = self.choices_manager.keypairs(add_blank=True, no_keypair_option=True)
         self.securitygroup.choices = self.choices_manager.security_groups(
-            securitygroups=self.securitygroups, add_blank=False)
+            securitygroups=self.securitygroups, use_id=True, add_blank=False)
+        self.role.choices = ChoicesManager(self.iam_conn).roles(add_blank=True)
         self.kernel_id.choices = self.choices_manager.kernels(image=self.image)
         self.ramdisk_id.choices = self.choices_manager.ramdisks(image=self.image)
+        self.associate_public_ip_address.choices = self.get_associate_public_ip_address_choices()
 
-        # Set default choices where applicable, defaulting to first non-blank choice
+        # Set init data for security group
         if len(self.securitygroup.choices) > 1:
-            self.securitygroup.data = 'default'
+            self.securitygroup.data = [value for value, label in self.securitygroup.choices]
+
+    def get_associate_public_ip_address_choices(self):
+        choices = [('None', _(u'Only for instances in default VPC & subnet')), ('true', _(u'For all instances')), ('false', _(u'Never'))]
+        return choices
 
     def set_error_messages(self):
         self.name.error_msg = self.name_error_msg
