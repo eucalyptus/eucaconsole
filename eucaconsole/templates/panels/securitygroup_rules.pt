@@ -66,6 +66,14 @@
                             </select>
                         </div>
                     </div>
+                    <div class="row" ng-show="selectedProtocol === 'custom'">
+                        <div class="small-3 columns">
+                            <label class="right" i18n:translate="">Name or Number</label>
+                        </div>
+                        <div class="small-9 columns">
+                            <input class="" ng-model="customProtocol" />
+                        </div>
+                    </div>
                     <div class="row" ng-show="selectedProtocol">
                         <div class="small-3 columns">
                             <label class="right" ng-show="selectedProtocol !== 'icmp' &amp;&amp; selectedProtocol !== '-1'" i18n:translate="">Port range</label>
@@ -152,8 +160,9 @@
         </p>
         <a href="#" class="close-reveal-modal">&#215;</a>
     </div>
-    <div id="hidden-text-div">
+    <div id="hidden-text-div" class="hide">
         <span id="all-traffic-option-text" i18n:translate="">All traffic</span> 
+        <span id="custom-protocol-option-text" i18n:translate="">Custom protocol</span> 
     </div>
     <script src="${request.static_path('eucaconsole:static/js/widgets/securitygroup_rules.js')}"></script>
     <script>setTimeout(function(){ $(document).foundation({abide : { timeout : 2000 } })}, 500);</script>

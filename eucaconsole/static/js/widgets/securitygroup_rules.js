@@ -447,9 +447,11 @@ angular.module('SecurityGroupRules', [])
         };
         $scope.adjustIPProtocolOptions = function () {
             $scope.removeAllTrafficRuleOption();
+            $scope.removeCustomProtocolRuleOption();
             if ($scope.securityGroupVPC != '') {
-                // Allow All Traffic option to be selectable for VPC
+                // Allow All Traffic and Custom Protocol options to be selectable for VPC
                 $scope.insertAllTrafficRuleOption();
+                $scope.insertCustomProtocolRuleOption(); 
             }
             $('#ip-protocol-select').prop('selectedIndex', -1);
             $('#ip-protocol-select').trigger('chosen:updated');
@@ -458,11 +460,21 @@ angular.module('SecurityGroupRules', [])
         $scope.removeAllTrafficRuleOption  = function () {
             $('#ip-protocol-select').find("option[value='-1']").remove();
         };
+        // Remove Custom Protocol rule, "custom" from the option
+        $scope.removeCustomProtocolRuleOption  = function () {
+            $('#ip-protocol-select').find("option[value='custom']").remove();
+        };
         // Allow All Traffic, "-1", to be selectable for VPC
         $scope.insertAllTrafficRuleOption  = function () {
             var key = "-1";
             var value = $('#all-traffic-option-text').text();
             $('#ip-protocol-select').prepend($("<option></option>").attr("value", key).text(value));  
+        };
+        // Allow Custom protocol, "custom", to be selectable for VPC
+        $scope.insertCustomProtocolRuleOption  = function () {
+            var key = "custom";
+            var value = $('#custom-protocol-option-text').text();
+            $('#ip-protocol-select').append($("<option></option>").attr("value", key).text(value));  
         };
     })
 ;
