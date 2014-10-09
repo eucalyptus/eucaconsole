@@ -50,8 +50,9 @@ angular.module('S3MetadataEditor', ['ngSanitize'])
                         chosen.append_option({value: term, text: term});
                     });
                 },
-                'create_option_text': $scope.metadataKeyOptionText,
-                'no_results_text': $scope.metadataKeyNoResultsText
+                create_with_enter: true,
+                create_option_text: $scope.metadataKeyOptionText,
+                no_results_text: $scope.metadataKeyNoResultsText
             });
             $('#metadata_content_type').chosen({search_contains: true, create_option: function(term){
                     var chosen = this;
