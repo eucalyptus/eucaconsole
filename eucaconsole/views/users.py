@@ -452,11 +452,12 @@ class UserView(BaseView):
                 has_file = 'y'
             return dict(message=_(u"Successfully added users"), results=dict(hasFile=has_file))
  
-    @view_config(route_name='user_update', request_method='POST', renderer='json')
+    @view_config(route_name='user_update', request_method='POST', renderer=TEMPLATE)
     def user_update(self):
         """ calls iam:UpdateUser """
         if not(self.is_csrf_valid()):
-            return JSONResponse(status=400, message="missing CSRF token")
+            self.request.error_messages = ['missing CSRF token']
+            return self.render_dict
         as_account = self.request.params.get('as_account', '')
         with boto_error_handler(self.request):
             new_name = self.request.params.get('user_name', self.user.user_name)
@@ -464,16 +465,17 @@ class UserView(BaseView):
             self.log_request(
                 _(u"Updating user {0} (new_name={1}, path={2})").format(self.user.user_name, new_name, path))
             params={'UserName': self.user.user_name, 'Path': path}
-            if new_name != self.user.user_name:
+            if new_name is not None and new_name != self.user.user_name:
                 params['NewUserName'] = new_name
+            if path is not None and path != self.user.path:
+                params['NewPath'] = path
             if as_account != '':
                 params['DelegateAccount'] = as_account
             self.conn.get_response('UpdateUser', params=params)
-            self.user.path = path
-            if self.user.user_name != new_name:
-                pass  # TODO: need to force view refresh if name changes
-            return dict(message=_(u"Successfully updated user information"),
-                        results=self.user)
+            msg = _(u"Successfully updated user information")
+            self.request.session.flash(msg, queue=Notification.SUCCESS)
+            location = self.request.route_path('user_view', name=new_name if new_name is not None else self.user.user_name)
+            return HTTPFound(location=location)
 
     @view_config(route_name='user_change_password', request_method='POST', renderer='json')
     def user_change_password(self):

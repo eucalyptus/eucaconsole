@@ -198,12 +198,9 @@ angular.module('UserView', ['PolicyList', 'Quotas', 'EucaConsoleUtils'])
             $('#disable-user-modal').foundation('reveal', 'close');
         };
     })
-    .controller('UserUpdateCtrl', function($scope, $http, $timeout) {
-        $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-        $scope.jsonEndpoint = '';
+    .controller('UserUpdateCtrl', function($scope) {
         $scope.isUserInfoNotChanged = true;
-        $scope.initController = function (jsonEndpoint) {
-            $scope.jsonEndpoint = jsonEndpoint;
+        $scope.initController = function () {
             $scope.setWatch();
         };
         $scope.setWatch = function () {
@@ -219,25 +216,6 @@ angular.module('UserView', ['PolicyList', 'Quotas', 'EucaConsoleUtils'])
                 $scope.isUserInfoNotChanged = false;
                 $scope.$apply();
             });
-        };
-        $scope.submit = function($event) {
-            var data = $($event.target).serialize();
-            $http({method:'POST', url:$scope.jsonEndpoint, data:data,
-                   headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
-              success(function(oData) {
-                var results = oData ? oData.results : [];
-                // could put data back into form, but form already contains changes
-                if (oData.error == undefined) {
-                    Notify.success(oData.message);
-                    $scope.isUserInfoNotChanged = true;
-                } else {
-                    Notify.failure(oData.message);
-                }
-              }).
-              error(function (oData, status) {
-                var errorMsg = oData['message'] || '';
-                Notify.failure(errorMsg);
-              });
         };
     })
     .controller('UserPasswordCtrl', function($scope, $http, $timeout) {
