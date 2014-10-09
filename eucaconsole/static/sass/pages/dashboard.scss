@@ -27,6 +27,8 @@ $dashboard-panel-icon-size: 100px;
     }
 }
 
+$tile-row-height: 24px;
+
 .panel {
     background-color: transparent;
     border: none;
@@ -80,6 +82,60 @@ $dashboard-panel-icon-size: 100px;
                 &:hover {
                     text-decoration: none;
                 }
+            }
+        }
+        .dropdown.button.tiny {
+            z-index: 99999;
+            background: none;
+            box-shadow: none;
+            position: absolute;
+            width: 30px; height: $tile-row-height;
+            top: 0; right: 0;
+            color: $euca-green;
+            font-size: 1.1rem;
+            padding: 0 0 0 0;
+            border-top: none;
+            border-right: none;
+            &:hover {
+                color: $euca-green;
+            }
+            &::before {
+                border: none;
+            }
+            .fi-widget {
+                position: relative;
+                top: 4px;
+                background-image: url(../../img/svg/gear.svg);
+                display: inline-block;
+                width: 20px; height: 20px;
+                &::before {
+                    content: " "
+                }
+            }
+        }
+        .f-dropdown {
+            @include dropdown-shadow-mixin;
+            &.open {
+                top: 34px;
+                min-width: 10rem;
+                padding-top: 0;
+            }
+        }
+        &.add {
+            text-align: center;
+            text-transform: uppercase;
+            position: relative;
+            a {
+                display: block;
+                position: absolute;
+                top: 0; bottom: 0; left: 0; right: 0;
+                &:hover {
+                    background-color: lighten($euca-lightgreen, 30%);
+                }
+            }
+            .plus {
+                font-size: 5rem;
+                margin-bottom: 0.5rem;
             }
         }
     }

@@ -40,6 +40,8 @@ from . import boto_error_handler
 
 
 class DashboardView(BaseView):
+    TILE_MASTER_LIST = u'instances-running,instances-stopped,scaling-groups,elastic-ips,volumes,snapshots,buckets,' \
+                       u'security-groups,key-pairs,accounts,users,groups,roles,health'
     def __init__(self, request):
         super(DashboardView, self).__init__(request)
         self.request = request
@@ -56,11 +58,17 @@ class DashboardView(BaseView):
         if tiles is not None:
             tiles = tiles.replace('%2C', ',')
         else:
-            tiles = u'instances-running,instances-stopped,scaling-groups,elastic-ips,volumes,snapshots,buckets,' \
-                    u'security-groups,key-pairs,accounts,users,groups,roles,health'
+            tiles = self.TILE_MASTER_LIST
+
+        tiles_not_shown = [tile for tile in self.TILE_MASTER_LIST.split(',') if tile not in tiles.split(',')]
+        session = self.request.session
+        if session['cloud_type'] == 'aws' or session['account'] != 'eucalyptus':
+            tiles_not_shown.remove('accounts')
+
         return dict(
             availability_zones=availability_zones,
             tiles=tiles.split(','),
+            tiles_not_shown=tiles_not_shown,
             controller_options_json=self.get_controller_options_json(),
         )
 
