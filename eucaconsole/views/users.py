@@ -474,7 +474,9 @@ class UserView(BaseView):
             self.conn.get_response('UpdateUser', params=params)
             msg = _(u"Successfully updated user information")
             self.request.session.flash(msg, queue=Notification.SUCCESS)
-            location = self.request.route_path('user_view', name=new_name if new_name is not None else self.user.user_name)
+            location = self.request.route_path(
+                        'user_view',
+                        name=new_name if new_name is not None else self.user.user_name)
             return HTTPFound(location=location)
 
     @view_config(route_name='user_change_password', request_method='POST', renderer='json')
