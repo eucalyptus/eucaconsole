@@ -286,9 +286,17 @@ class ImageView(TaggedItemView):
         if self.deregister_form.validate():
             with boto_error_handler(self.request):
                 delete_snapshot = False
+                root_dev = None
                 if self.image.root_device_type == 'ebs' and self.request.params.get('delete_snapshot') == 'y':
                     delete_snapshot = True
-                self.conn.deregister_image(self.image.id, delete_snapshot=delete_snapshot)
+                    root_dev = panels.get_root_device_name(self.image)
+                self.conn.deregister_image(self.image.id)
+                if delete_snapshot:
+                    for key in self.image.block_device_mapping:
+                        if root_dev and key == root_dev:
+                            snapshot_id = self.image.block_device_mapping[key].snapshot_id
+                            self.conn.delete_snapshot(snapshot_id)
+                            break
                 ImagesView.invalidate_images_cache()  # clear images cache
                 location = self.request.route_path('images')
                 msg = _(u'Successfully sent request to deregistered image.')
