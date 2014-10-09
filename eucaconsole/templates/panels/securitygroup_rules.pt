@@ -74,7 +74,7 @@
                             <input class="" ng-model="customProtocol" />
                         </div>
                     </div>
-                    <div class="row" ng-show="selectedProtocol">
+                    <div class="row" ng-show="selectedProtocol &amp;&amp; selectedProtocol !== 'custom'">
                         <div class="small-3 columns">
                             <label class="right" ng-show="selectedProtocol !== 'icmp' &amp;&amp; selectedProtocol !== '-1'" i18n:translate="">Port range</label>
                             <label class="right" ng-show="selectedProtocol == 'icmp'" i18n:translate="">Type</label>

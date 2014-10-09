@@ -29,6 +29,7 @@ Pyramid views for Eucalyptus and AWS security groups
 
 """
 import simplejson as json
+import socket
 
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.view import view_config
@@ -328,6 +329,12 @@ class SecurityGroupView(TaggedItemView):
                 owner_id = grant.get('owner_id')
                 group_id = grant.get('group_id')
 
+            if not self.check_int(ip_protocol):
+                try:
+                    ip_protocol = socket.getprotobyname(ip_protocol)
+                except:
+                    pass
+
             auth_args = dict(group_id=security_group.id, ip_protocol=ip_protocol,
                              from_port=from_port, to_port=to_port, cidr_ip=cidr_ip)
 
@@ -477,6 +484,12 @@ class SecurityGroupView(TaggedItemView):
                     group_id = grant['src_security_group_group_id']
                 elif 'src_group_id' in grant:
                     group_id = grant['src_group_id']
+            # for custom protocol, translate it to number
+            if not self.check_int(ip_protocol):
+                try:
+                    ip_protocol = socket.getprotobyname(ip_protocol)
+                except:
+                    pass
             # create the argument dictionary for boto call
             auth_args = dict(group_id=self.security_group.id, ip_protocol=ip_protocol,
                              from_port=from_port, to_port=to_port, cidr_ip=cidr_ip)
@@ -605,3 +618,8 @@ class SecurityGroupView(TaggedItemView):
                     self.conn.revoke_security_group(**params)
                 else:
                     self.conn.revoke_security_group_egress(**params)
+
+    def check_int(self, s):
+        if s[0] in ('-', '+'):
+    	    return s[1:].isdigit()
+        return s.isdigit()

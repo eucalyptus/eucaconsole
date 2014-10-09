@@ -16,6 +16,7 @@ angular.module('SecurityGroupRules', [])
         $scope.securityGroupList = [];
         $scope.securityGroupVPC = '';
         $scope.selectedProtocol = '';
+        $scope.customProtocol = '';
         $scope.isRuleNotComplete = true;
         $scope.inboundButtonClass = 'active';
         $scope.outboundButtonClass = 'inactive';
@@ -27,6 +28,7 @@ angular.module('SecurityGroupRules', [])
             $scope.toPort = '';
             $scope.cidrIp = '';
             $scope.selectedProtocol = '';
+            $scope.customProtocol = '';
             $scope.icmpRange = '-1';  // Default to 'All' if ICMP traffic type
             $scope.groupName = '';
             $scope.ipProtocol = 'tcp';
@@ -304,6 +306,10 @@ angular.module('SecurityGroupRules', [])
                 $scope.ipProtocol = 'udp'
             } else if ($scope.selectedProtocol === '-1') {
                 $scope.ipProtocol = '-1'
+                $scope.fromPort = null;
+                $scope.toPort = null;
+            } else if ($scope.selectedProtocol === 'custom') {
+                $scope.ipProtocol = $scope.customProtocol; 
                 $scope.fromPort = null;
                 $scope.toPort = null;
             } else {
