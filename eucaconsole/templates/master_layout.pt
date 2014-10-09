@@ -147,17 +147,7 @@
         </div>
         <a href="#" class="close-reveal-modal">&#215;</a>
     </div>
-    <div id="inform-modal" class="reveal-modal small" data-reveal="">
-        <h3 id="inform-title"></h3>
-        <p id="inform-message"></p>
-        <a href="#" class="close-reveal-modal">&#215;</a>
-    </div>
-    <div id="confirm-modal" class="reveal-modal small" data-reveal="">
-        <h3 id="confirm-title"></h3>
-        <p id="confirm-message"></p>
-        <a id="confirm-btn" class="button medium expand"></a>
-        <a href="#" class="close-reveal-modal">&#215;</a>
-    </div>
+
     <a class="exit-off-canvas"></a>
 
 <script type="text/javascript" src="${request.static_path('eucaconsole:static/js/thirdparty/foundation/foundation.min.js')}"></script>

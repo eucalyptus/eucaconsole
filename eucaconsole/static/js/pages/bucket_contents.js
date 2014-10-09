@@ -18,11 +18,11 @@ angular.module('BucketContentsPage', ['LandingPage', 'EucaConsoleUtils'])
         $scope.index = 0;
         $scope.items = null;
         $scope.initController = function (optionsJson) {
-            $scope.options = JSON.parse(eucaUnescapeJson(optionsJson));
-            $scope.deleteKeysUrl = $scope.options['delete_keys_url'];
-            $scope.getKeysUrl = $scope.options['get_keys_url'];
-            $scope.prefix = $scope.options['key_prefix'];
-            $scope.copyObjUrl = $scope.options['copy_object_url'];
+            var options = JSON.parse(eucaUnescapeJson(optionsJson));
+            $scope.deleteKeysUrl = options['delete_keys_url'];
+            $scope.getKeysUrl = options['get_keys_url'];
+            $scope.prefix = options['key_prefix'];
+            $scope.copyObjUrl = options['copy_object_url'];
         };
         $scope.revealModal = function (action, item) {
             var modal = $('#' + action + '-modal');
@@ -169,8 +169,12 @@ angular.module('BucketContentsPage', ['LandingPage', 'EucaConsoleUtils'])
                 subpath = item.details_url.slice(item.details_url.indexOf('itemdetails')+12);
             }
             for (var i=0; i<$scope.items.length; i++) {
-                if (key == $scope.items[i].name) {
-                    Inform.informational($scope.options['paste_warn_msg'], $scope.options['paste_warn_title']);
+                this_key = $scope.items[i].name;
+                if (subpath.length > 0) {
+                    this_key = subpath + '/' + this_key;
+                }
+                if (key == this_key) {
+                    $('#copy-on-self-warn-modal').foundation('reveal', 'open');
                     return;
                 }
             }
