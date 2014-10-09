@@ -6,7 +6,7 @@
         <span ng-repeat="grant in rule.grants ${'\| limitTo: 1' if tile_view else ''}">
             <span ng-show="grant.cidr_ip">{{ grant.cidr_ip }}</span>
             <span ng-show="grant.owner_id">{{ grant.owner_id }}/</span>
-            <span ng-show="grant.name">{{ grant.name }}</span>
+            <span ng-show="grant.name" title="{{ grant.name }}">{{ grant.name | ellipsis: 20 }}</span>
             <span ng-show="grant.name == undefined &amp;&amp; grant.group_id">{{ grant.group_id }}</span>
         </span>
         <br ng-show="!$last" />
