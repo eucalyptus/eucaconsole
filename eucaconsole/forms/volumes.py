@@ -32,7 +32,7 @@ import wtforms
 from wtforms import validators
 
 from ..i18n import _
-from . import BaseSecureForm, ChoicesManager, BLANK_CHOICE
+from . import BaseSecureForm, ChoicesManager, TextEscapedField, BLANK_CHOICE
 
 
 class VolumeForm(BaseSecureForm):
@@ -40,10 +40,8 @@ class VolumeForm(BaseSecureForm):
        Note: no need to add a 'tags' field.  Use the tag_editor panel (in a template) instead
     """
     name_error_msg = _(u'Not a valid name')
-    name = wtforms.TextField(label=_(u'Name'))
-    snapshot_id = wtforms.SelectField(
-        label=_(u'Create from snapshot?'),
-    )
+    name = TextEscapedField(label=_(u'Name'))
+    snapshot_id = wtforms.SelectField(label=_(u'Create from snapshot?'))
     size_error_msg = _(u'Volume size is required and must be an integer')
     size = wtforms.TextField(
         label=_(u'Volume size (GB)'),
@@ -165,13 +163,14 @@ class AttachForm(BaseSecureForm):
     def set_instance_choices(self):
         """Populate instance field with instances available to attach volume to"""
         if self.volume:
+            from ..views import BaseView
             choices = [BLANK_CHOICE]
             for instance in self.instances:
                 if instance.state in ["running", "stopped"] and self.volume.zone == instance.placement:
                     name_tag = instance.tags.get('Name')
                     extra = ' ({name})'.format(name=name_tag) if name_tag else ''
-                    vol_name = '{id}{extra}'.format(id=instance.id, extra=extra)
-                    choices.append((instance.id, vol_name))
+                    inst_name = '{id}{extra}'.format(id=instance.id, extra=extra)
+                    choices.append((instance.id, BaseView.escape_braces(inst_name)))
             if len(choices) == 1:
                 prefix = _(u'No available instances in availability zone')
                 msg = '{0} {1}'.format(prefix, self.volume.zone)
@@ -192,7 +191,7 @@ class VolumesFiltersForm(BaseSecureForm):
     """Form class for filters on landing page"""
     zone = wtforms.SelectMultipleField(label=_(u'Availability zones'))
     status = wtforms.SelectMultipleField(label=_(u'Status'))
-    tags = wtforms.TextField(label=_(u'Tags'))
+    tags = TextEscapedField(label=_(u'Tags'))
 
     def __init__(self, request, conn=None, **kwargs):
         super(VolumesFiltersForm, self).__init__(request, **kwargs)

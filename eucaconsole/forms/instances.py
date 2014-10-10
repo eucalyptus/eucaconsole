@@ -32,7 +32,7 @@ import wtforms
 from wtforms import validators
 
 from ..i18n import _
-from . import BaseSecureForm, ChoicesManager
+from . import BaseSecureForm, ChoicesManager, TextEscapedField
 
 
 class InstanceForm(BaseSecureForm):
@@ -41,10 +41,12 @@ class InstanceForm(BaseSecureForm):
        Note: no need to add a 'tags' field.  Use the tag_editor panel (in a template) instead
     """
     name_error_msg = _(u'Not a valid name')
-    name = wtforms.TextField(label=_(u'Name'))
+    name = TextEscapedField(label=_(u'Name'))
     instance_type_error_msg = _(u'Instance type is required')
     instance_type = wtforms.SelectField(label=_(u'Instance type'))
     userdata = wtforms.TextAreaField(label=_(u'User data'))
+    userdata_file_helptext = _(u'User data file may not exceed 16 KB')
+    userdata_file = wtforms.FileField(label='')
     ip_address = wtforms.SelectField(label=_(u'Public IP address'))
     monitored = wtforms.BooleanField(label=_(u'Monitoring enabled'))
     kernel = wtforms.SelectField(label=_(u'Kernel ID'))
@@ -60,6 +62,7 @@ class InstanceForm(BaseSecureForm):
         self.instance_type.error_msg = self.instance_type_error_msg
         self.choices_manager = ChoicesManager(conn=self.conn)
         self.set_choices()
+        self.userdata_file.help_text = self.userdata_file_helptext
 
         if instance is not None:
             self.name.data = instance.tags.get('Name', '')
@@ -98,16 +101,24 @@ class LaunchInstanceForm(BaseSecureForm):
         validators=[validators.InputRequired(message=instance_type_error_msg)],
     )
     zone = wtforms.SelectField(label=_(u'Availability zone'))
+    vpc_network = wtforms.SelectField(label=_(u'VPC network'))
+    vpc_network_helptext = _(u'Launch your instance into one of your Virtual Private Clouds')
+    vpc_subnet = wtforms.SelectField(label=_(u'VPC subnet'))
+    associate_public_ip_address = wtforms.SelectField(label=_(u'Auto-assign public IP'))
+    associate_public_ip_address_helptext = _(u"Give your instance a non-persistent IP address \
+        from the subnet\'s pool so it is accessible from the Internet. \
+        If you want a persistent address, select Disabled and assign an elastic IP after launch.")
     keypair_error_msg = _(u'Key pair is required')
     keypair = wtforms.SelectField(
         label=_(u'Key name'),
         validators=[validators.InputRequired(message=keypair_error_msg)],
     )
     securitygroup_error_msg = _(u'Security group is required')
-    securitygroup = wtforms.SelectField(
+    securitygroup = wtforms.SelectMultipleField(
         label=_(u'Security group'),
         validators=[validators.InputRequired(message=securitygroup_error_msg)],
     )
+    role = wtforms.SelectField()
     userdata = wtforms.TextAreaField(label=_(u'User data'))
     userdata_file_helptext = _(u'User data file may not exceed 16 KB')
     userdata_file = wtforms.FileField(label='')
@@ -116,17 +127,21 @@ class LaunchInstanceForm(BaseSecureForm):
     monitoring_enabled = wtforms.BooleanField(label=_(u'Enable monitoring'))
     private_addressing = wtforms.BooleanField(label=_(u'Use private addressing only'))
 
-    def __init__(self, request, image=None, securitygroups=None, conn=None, **kwargs):
+    def __init__(self, request, image=None, securitygroups=None, conn=None, vpc_conn=None, iam_conn=None, **kwargs):
         super(LaunchInstanceForm, self).__init__(request, **kwargs)
         self.conn = conn
+        self.vpc_conn = vpc_conn
+        self.iam_conn = iam_conn
         self.image = image
         self.securitygroups = securitygroups
         self.cloud_type = request.session.get('cloud_type', 'euca')
         self.set_error_messages()
         self.monitoring_enabled.data = True
         self.choices_manager = ChoicesManager(conn=conn)
+        self.vpc_choices_manager = ChoicesManager(conn=vpc_conn)
         self.set_help_text()
         self.set_choices(request)
+        self.role.data = ''
 
         if image is not None:
             self.image_id.data = self.image.id
@@ -135,23 +150,30 @@ class LaunchInstanceForm(BaseSecureForm):
 
     def set_help_text(self):
         self.number.help_text = self.number_helptext
+        self.vpc_network.label_help_text = self.vpc_network_helptext
+        self.associate_public_ip_address.label_help_text = self.associate_public_ip_address_helptext
         self.userdata_file.help_text = self.userdata_file_helptext
 
     def set_choices(self, request):
         self.instance_type.choices = self.choices_manager.instance_types(cloud_type=self.cloud_type, add_blank=False)
         region = request.session.get('region')
         self.zone.choices = self.get_availability_zone_choices(region)
+        self.vpc_network.choices = self.vpc_choices_manager.vpc_networks()
+        self.vpc_subnet.choices = self.vpc_choices_manager.vpc_subnets()
+        self.associate_public_ip_address.choices = self.get_associate_public_ip_address_choices()
         self.keypair.choices = self.get_keypair_choices()
-        self.securitygroup.choices = self.choices_manager.security_groups(securitygroups=self.securitygroups, add_blank=False)
+        self.securitygroup.choices = self.choices_manager.security_groups(
+            securitygroups=self.securitygroups, use_id=True, add_blank=False)
+        self.role.choices = ChoicesManager(self.iam_conn).roles(add_blank=True)
         self.kernel_id.choices = self.choices_manager.kernels(image=self.image)
         self.ramdisk_id.choices = self.choices_manager.ramdisks(image=self.image)
 
         # Set default choices where applicable, defaulting to first non-blank choice
         if self.cloud_type == 'aws' and len(self.zone.choices) > 1:
             self.zone.data = self.zone.choices[1][0]
-        # Set the defailt option to be "Default" security group
-        if len(self.securitygroup.choices) > 1:
-            self.securitygroup.data = "default"
+        # Set the defailt option to be the first choice
+        if len(self.vpc_subnet.choices) > 1:
+            self.vpc_subnet.data = self.vpc_subnet.choices[0][0]
 
     def set_error_messages(self):
         self.number.error_msg = self.number_error_msg
@@ -166,6 +188,10 @@ class LaunchInstanceForm(BaseSecureForm):
     def get_availability_zone_choices(self, region):
         choices = [('', _(u'No preference'))]
         choices.extend(self.choices_manager.availability_zones(region, add_blank=False))
+        return choices
+
+    def get_associate_public_ip_address_choices(self):
+        choices = [('None', _(u'Enabled (use subnet setting)')), ('true', _(u'Enabled')), ('false', _(u'Disabled'))]
         return choices
 
 
@@ -309,16 +335,20 @@ class InstancesFiltersForm(BaseSecureForm):
     root_device_type = wtforms.SelectMultipleField(label=_(u'Root device type'))
     security_group = wtforms.SelectMultipleField(label=_(u'Security group'))
     scaling_group = wtforms.SelectMultipleField(label=_(u'Scaling group'))
-    tags = wtforms.TextField(label=_(u'Tags'))
+    tags = TextEscapedField(label=_(u'Tags'))
+    roles = wtforms.SelectMultipleField(label=_(u'Roles'))
+    vpc_id = wtforms.SelectMultipleField(label=_(u'VPC network'))
+    subnet_id = wtforms.SelectMultipleField(label=_(u'VPC subnet'))
 
-    def __init__(self, request, ec2_conn=None, autoscale_conn=None, cloud_type='euca', **kwargs):
+    def __init__(self, request, ec2_conn=None, autoscale_conn=None,
+                 iam_conn=None, vpc_conn=None, cloud_type='euca', **kwargs):
         super(InstancesFiltersForm, self).__init__(request, **kwargs)
         self.request = request
-        self.ec2_conn = ec2_conn
-        self.autoscale_conn = autoscale_conn
         self.cloud_type = cloud_type
         self.ec2_choices_manager = ChoicesManager(conn=ec2_conn)
         self.autoscale_choices_manager = ChoicesManager(conn=autoscale_conn)
+        self.iam_choices_manager = ChoicesManager(conn=iam_conn)
+        self.vpc_choices_manager = ChoicesManager(conn=vpc_conn)
         region = request.session.get('region')
         self.availability_zone.choices = self.get_availability_zone_choices(region)
         self.state.choices = self.get_status_choices()
@@ -326,6 +356,14 @@ class InstancesFiltersForm(BaseSecureForm):
         self.root_device_type.choices = self.get_root_device_type_choices()
         self.security_group.choices = self.ec2_choices_manager.security_groups(add_blank=False)
         self.scaling_group.choices = self.autoscale_choices_manager.scaling_groups(add_blank=False)
+        if cloud_type=='aws':
+            del self.roles
+        else:
+            self.roles.choices = self.iam_choices_manager.roles(add_blank=False)
+        self.vpc_id.choices = self.vpc_choices_manager.vpc_networks(add_blank=False)
+        self.vpc_id.choices.append(('None', _(u'No VPC')))
+        self.vpc_id.choices = sorted(self.vpc_id.choices)
+        self.subnet_id.choices = self.vpc_choices_manager.vpc_subnets(add_blank=False)
 
     def get_availability_zone_choices(self, region):
         return self.ec2_choices_manager.availability_zones(region, add_blank=False)
@@ -373,3 +411,47 @@ class DisassociateIpFromInstanceForm(BaseSecureForm):
     """CSRF-protected form to disassociate IP from an instance"""
     pass
 
+
+class InstanceTypeForm(BaseSecureForm):
+    """CSRF-protected form to disassociate IP from an instance"""
+    pass
+
+
+class InstanceCreateImageForm(BaseSecureForm):
+    """CSRF-protected form to create an image from an instance"""
+    name_error_msg = _(
+        u'Name must be 3-128 alphanumeric characters (and may include parens, period (.), '
+        u'slashes (/), dashes (-) or underscores (_) but not spaces')
+    name = wtforms.TextField(
+        label=_(u'Name'),
+        validators=[validators.InputRequired(message=name_error_msg)],
+    )
+    desc_error_msg = _(u'Description must be less than 255 characters')
+    description = wtforms.TextAreaField(
+        label=_(u'Description'),
+        validators=[validators.Length(max=255, message=desc_error_msg)],
+    )
+    no_reboot = wtforms.BooleanField(label=_(u'No reboot'))
+    s3_bucket = wtforms.SelectField(
+        label=_(u'Bucket name'), validators=[validators.InputRequired(message=_(u'You must select a bucket to use.'))])
+    s3_prefix = wtforms.TextField(
+        label=_(u'Prefix'), validators=[validators.InputRequired(message=_(u'You must supply a prefix'))])
+
+    def __init__(self, request, s3_conn=None, **kwargs):
+        super(InstanceCreateImageForm, self).__init__(request, **kwargs)
+        self.s3_conn = s3_conn
+        # Set choices
+        self.choices_manager = ChoicesManager(conn=self.s3_conn)
+        self.s3_bucket.choices = self.choices_manager.buckets()
+        self.s3_prefix.data = _(u'image')
+        # Set error msg
+        self.name.error_msg = self.name_error_msg
+        # Set help text
+        no_reboot_helptext = _(
+            u'When checked, the instance will not be shut down before the image is created. '
+            u'May impact file integrity of the image.')
+        self.no_reboot.help_text = no_reboot_helptext
+        s3_bucket_helptext = _(u'Choose from your existing buckets, or enter a name to create a new bucket')
+        self.s3_bucket.help_text = s3_bucket_helptext
+        s3_prefix_helptext = _(u'The beginning of your image file name')
+        self.s3_prefix.help_text = s3_prefix_helptext

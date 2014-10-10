@@ -1,0 +1,73 @@
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
+
+<head metal:fill-slot="head_css">
+    <style type="text/css">
+        .expando .content { padding-left: 1.5rem; }
+        .required-fields-indicator { margin-top: 0.8rem; margin-right: 2rem; }
+    </style>
+</head>
+
+<div metal:fill-slot="main_content">
+    <div class="row" id="contentwrap" ng-app="CreateBucketPage" ng-controller="CreateBucketPageCtrl"
+         ng-init="initController('${controller_options_json}')">
+        <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+            <metal:crumbs metal:fill-slot="crumbs">
+                <li><a href="${request.route_path('buckets')}" i18n:translate="">Buckets</a></li>
+                <li class="current"><a href="#" i18n:translate="">Create new bucket</a></li>
+            </metal:crumbs>
+        </metal:breadcrumbs>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
+        <h3 id="pagetitle" i18n:translate="">Create new bucket</h3>
+        <div class="large-7 columns">
+            <div class="panel">
+                <form id="create-bucket-form" method="post" data-abide="abide" ng-cloak=""
+                      action="${request.route_path('bucket_create')}">
+                    ${structure:create_form['csrf_token']}
+                    ${panel('form_field', field=create_form.bucket_name, pattern=bucket_name_pattern, leftcol_width=12, rightcol_width=12, inline=False, ng_attrs={'model': 'bucketName'})}
+                    <hr />
+                    <div class="row">
+                        <div class="small-7 columns">
+                            <button type="submit" class="button" id="create-bucket-submit-button"
+                                    ng-disabled="!bucketName">
+                                <span i18n:translate="">Create Bucket</span>
+                            </button>
+                            <a href="${request.route_path('buckets')}" id="cancel-create-bucket-link"
+                               class="cancel-link" i18n:translate="">Cancel</a>
+                        </div>
+                        <div class="small-5 columns">
+                            <metal:block metal:use-macro="layout.global_macros['required_fields_label']" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="large-5 columns">
+            <metal:block metal:use-macro="layout.global_macros['help_expando']" />
+            <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
+                <!-- HELP CONTENT -->
+                <div id="help-html-console_create_bucket"
+                    ng-include="'${layout.help_path('console_create_bucket.html')}'">
+                </div> 
+            </div>
+        </div>
+        <!--! Modal to warn of conflicting bucket name -->
+        <div id="conflict-warn-modal" class="reveal-modal small" data-reveal="">
+            <h3 i18n:translate="">Bucket already exists</h3>
+            <p i18n:translate="">
+                The bucket name you specified already exists, and is owned by you.
+            </p>
+            <a id="name-conflict-warning-button" class="button expand" ng-click="confirmWarning()" i18n:translate="">
+                OK
+            </a>
+            <a class="close-reveal-modal">&#215;</a>
+        </div>
+    </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_path('eucaconsole:static/js/pages/eucaconsole_utils.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/bucket_new.js')}"></script>
+</div>
+</metal:block>
+

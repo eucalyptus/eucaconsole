@@ -37,6 +37,11 @@
                     </span>
                     <span ng-show="!item.instance_id" i18n:translate="">Not associated with any instances</span>
                 </div>
+                <div>
+                    <span class="label" title="Scope" i18n:attributes="title" data-tooltip="">SC</span>
+                    <span ng-show="item.domain == 'vpc'" i18n:translate="">VPC</span>
+                    <span ng-show="item.domain == 'standard'" i18n:translate="">Standard</span>
+                </div>
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
                 <a id="tile-item-dropdown_{{ item.public_ip | escapeHTMLTagID }}" class="tiny secondary button dropdown right" data-dropdown="item-dropdown_{{ item.public_ip |  escapeHTMLTagID }}"><i class="fi-widget"></i></a>
@@ -57,11 +62,16 @@
             </div>
             <metal:block metal:fill-slot="tableview_headers">
                 <th i18n:translate="">Public IP address</th>
+                <th i18n:translate="">Scope</th>
                 <th i18n:translate="">Assigned to instance</th>
                 <th i18n:translate="" class="actions">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
                 <td><a ng-href="${prefix}/{{ item.public_ip }}">{{ item.public_ip }}</a></td>
+                <td>
+                    <span ng-show="item.domain == 'vpc'" i18n:translate="">VPC</span>
+                    <span ng-show="item.domain == 'standard'" i18n:translate="">Standard</span>
+                </td>
                 <td class="breakword"><a ng-href="/instances/{{item.instance_id}}">{{ item.instance_name | ellipsis: 30 }}</a></td>
                 <td>
                     <span class="actions">
@@ -93,8 +103,9 @@
             <p i18n:translate="">How many IP addresses would you like to allocate?</p>
             <form action="${request.route_path('ipaddresses')}" method="post" data-abide="abide"
                  tal:define="html_attrs {'pattern': '^[1-9]\d*$', 'min': '1',
-                         'error_msg': 'Please enter a whole number greater than zero'};">
+                         'error_msg': allocate_ip_dialog_error_message};">
                 ${structure:allocate_form['csrf_token']}
+                ${panel('form_field', field=allocate_form.domain, leftcol_width=6, rightcol_width=6)}
                 ${panel('form_field', field=allocate_form.ipcount, leftcol_width=6, rightcol_width=6, **html_attrs)}
                 <div>
                     <label>
@@ -103,7 +114,7 @@
                     </label>
                 </div>
                 <div class="dialog-submit-button">
-                    <button type="submit" class="button expand" id="allocate-ipaddresses-dialog-btn" ng-disabled="isNotValid"
+                    <button type="submit" class="button expand" id="allocate-ipaddresses-dialog-btn"
                         i18n:translate="">Allocate Addresses From Cloud</button>
                 </div>
                 <div class="dialog-progress-display hide">

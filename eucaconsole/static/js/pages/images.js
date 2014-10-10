@@ -4,13 +4,15 @@
  *
  */
 
-angular.module('ImagesPage', ['LandingPage'])
-    .controller('ImagesCtrl', function ($scope, $http) {
+angular.module('ImagesPage', ['LandingPage', 'EucaConsoleUtils'])
+    .controller('ImagesCtrl', function ($scope, $http, eucaUnescapeJson) {
         $scope.imageID = '';
         $scope.disabledExplanationVisible = false;
         $scope.snapshotImagesRegistered = [];
-        $scope.initSnapshotImages = function (imagesURL) {
-            $scope.imagesURL = imagesURL;
+        $scope.initController = function (optionsJson) {
+            var options = JSON.parse(eucaUnescapeJson(optionsJson));
+            $scope.imagesUrl = options['snapshot_images_json_url'];
+            $scope.imageCancelUrl = options['image_cancel_url'];
         };
         $scope.revealModal = function (action, image) {
             var modal = $('#' + action + '-image-modal');
@@ -20,7 +22,7 @@ angular.module('ImagesPage', ['LandingPage'])
             $scope.imageSnapshotID = image['snapshot_id'];
             $scope.snapshotImagesRegistered = [];
             if (action == "deregister") {
-                $scope.getSnapshotImages($scope.imageSnapshotID, $scope.imagesURL);
+                $scope.getSnapshotImages($scope.imageSnapshotID, $scope.imagesUrl);
             }
             modal.foundation('reveal', 'open');
             var form = $('#deregister-form');
@@ -38,6 +40,25 @@ angular.module('ImagesPage', ['LandingPage'])
                     $('#timed-out-modal').foundation('reveal', 'open');
                 }
             });
+        };
+        $scope.cancelCreate = function ($event, item) {
+            var url = $scope.imageCancelUrl.replace('_id_', item.fake_id);
+            var data = "csrf_token="+$('#csrf_token').val();
+            $http({method:'POST', url:url, data:data,
+                   headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
+              success(function(oData) {
+                var results = oData ? oData.results : [];
+                // could put data back into form, but form already contains changes
+                if (oData.error == undefined) {
+                    Notify.success(oData.message);
+                } else {
+                    Notify.failure(oData.message);
+                }
+              }).
+              error(function (oData, status) {
+                var errorMsg = oData['message'] || '';
+                Notify.failure(errorMsg);
+              });
         };
     })
 ;

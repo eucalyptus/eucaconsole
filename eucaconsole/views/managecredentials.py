@@ -25,32 +25,29 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 """
-Pyramid views for Change password
+Pyramid views for Manage Credentials
 
 """
 import logging
 
 from urllib2 import HTTPError, URLError
 from urlparse import urlparse
-from boto.connection import AWSAuthConnection
 
 from pyramid.httpexceptions import HTTPFound
 from pyramid.security import NO_PERMISSION_REQUIRED, remember
-from pyramid.settings import asbool
 from pyramid.view import view_config
 
 from ..forms.login import EucaChangePasswordForm
 from ..i18n import _
 from ..models import Notification
-from ..models.auth import EucaAuthenticator
 from ..views import BaseView
 
 
-class ChangePasswordView(BaseView):
-    template = '../templates/changepassword.pt'
+class ManageCredentialsView(BaseView):
+    template = '../templates/managecredentials.pt'
 
     def __init__(self, request):
-        super(ChangePasswordView, self).__init__(request)
+        super(ManageCredentialsView, self).__init__(request)
         self.changepassword_form = EucaChangePasswordForm(self.request)
         referrer = urlparse(self.request.url).path
         referrer_root = referrer.split('?')[0]
@@ -60,12 +57,13 @@ class ChangePasswordView(BaseView):
         self.came_from = self.sanitize_url(self.request.params.get('came_from', referrer))
         self.changepassword_form_errors = []
 
-    @view_config(route_name='changepassword', request_method='GET', renderer=template, permission=NO_PERMISSION_REQUIRED)
+    @view_config(route_name='managecredentials', request_method='GET',
+                 renderer=template, permission=NO_PERMISSION_REQUIRED)
     def changepassword_page(self):
         session = self.request.session
         try:
-            account=session['account']
-            username=session['username']
+            account = session['account']
+            username = session['username']
         except KeyError:
             account = self.request.params.get('account')
             username = self.request.params.get('username')
@@ -78,28 +76,17 @@ class ChangePasswordView(BaseView):
             username=username
         )
 
-    @view_config(route_name='changepassword', request_method='POST', renderer=template, permission=NO_PERMISSION_REQUIRED)
+    @view_config(route_name='changepassword', request_method='POST',
+                 renderer=template, permission=NO_PERMISSION_REQUIRED)
     def handle_changepassword(self):
         """Handle login form post"""
-
-        changepassword_form = self.changepassword_form
         session = self.request.session
-        clchost = self.request.registry.settings.get('clchost')
         duration = self.request.registry.settings.get('session.cookie_expires')
-        account="huh?"
-        username="what?"
-
-        host = self.request.registry.settings.get('clchost', 'localhost')
-        port = int(self.request.registry.settings.get('clcport', 8773))
-        host = self.request.registry.settings.get('sts.host', host)
-        port = int(self.request.registry.settings.get('sts.port', port))
-        validate_certs = asbool(self.request.registry.settings.get('connection.ssl.validation', False))
-        conn = AWSAuthConnection(None, aws_access_key_id='', aws_secret_access_key='')
-        ca_certs_file = conn.ca_certificates_file
-        conn = None
-        ca_certs_file = self.request.registry.settings.get('connection.ssl.certfile', ca_certs_file)
-        auth = EucaAuthenticator(host, port, validate_certs=validate_certs, ca_certs=ca_certs_file)
+        account = "huh?"
+        username = "what?"
+        auth = self.get_euca_authenticator()
         changepassword_form = EucaChangePasswordForm(self.request, formdata=self.request.params)
+
         if changepassword_form.validate():
             account = self.request.params.get('account')
             username = self.request.params.get('username')
@@ -112,9 +99,11 @@ class ChangePasswordView(BaseView):
                 try:
                     creds = auth.authenticate(account=account, user=username,
                                 passwd=password, new_passwd=new_password, timeout=8, duration=duration)
-                    #logging.debug("auth creds = "+str(creds.__dict__))
+                    # logging.debug("auth creds = "+str(creds.__dict__))
                     user_account = '{user}@{account}'.format(user=username, account=account)
                     session['cloud_type'] = 'euca'
+                    session['account'] = account
+                    session['username'] = username
                     session['session_token'] = creds.session_token
                     session['access_id'] = creds.access_key
                     session['secret_key'] = creds.secret_key
@@ -134,6 +123,7 @@ class ChangePasswordView(BaseView):
                 except URLError, err:
                     logging.info("url error "+str(vars(err)))
                     if str(err.reason) == 'timed out':
+                        clchost = self.request.registry.settings.get('clchost')
                         self.changepassword_form_errors.append(u'No response from host ' + clchost)
         return dict(
             changepassword_form=changepassword_form,
@@ -143,5 +133,3 @@ class ChangePasswordView(BaseView):
             account=account,
             username=username
         )
-
-

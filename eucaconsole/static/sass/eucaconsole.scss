@@ -121,12 +121,12 @@ body {
     position: relative;
     color: #333;
     min-height: 100%;
-    font-family: Lato, Helvetica, Arial, sans-serif;
+    font-family: $euca-text-font-family;
     overflow-y: scroll;
 }
 
 h1, h2, h3, h4, h5, h6 {
-    font-family: Oswald, Helvetica, Arial, sans-serif;
+    font-family: $euca-header-font-family;
     letter-spacing: 1px;
     color: $euca-darkblue;
 }
@@ -543,7 +543,7 @@ textarea.policy-area {
     p {
         margin-bottom: 0.5rem;
     }
-    ol {
+    ol ul {
         list-style-position: inside;
         li {
             text-indent: -1rem;
@@ -656,14 +656,27 @@ form {
         select, input, .chosen-container {
             text-align: left;
         }
+        &.nowrap {
+            white-space: nowrap;
+        }
     }
     label.reverse {
+        display: inline-block;
         text-align: left;
+        position: relative;
+        left: -1rem;
     }
-    div.reverse {
-        input {
-            float: right;
+    .helptext-icon.reverse {
+        position: relative;
+        left: 1.5rem;
+    }
+    .reverse {
+        .error {
+            white-space: nowrap;
         }
+    }
+    .checkbox-row {
+        margin-left: 1rem;
     }
     .field {
         input {
@@ -688,6 +701,9 @@ form {
             position: relative;
             right: -12px;
         }
+        .value {
+            padding-bottom: 6px;
+        }
     }
     &.inline {
         margin-bottom: 4px;
@@ -700,8 +716,10 @@ form {
 form .controls-wrapper > [class*='small-'] label {
     font-weight: bold;
     padding-top: 0.3rem;
-    position: relative;
-    right: -1rem;
+    &.right {
+        position: relative;
+        right: -1rem;
+    }
 }
 
 [data-abide] .controls-wrapper .error {
@@ -735,7 +753,7 @@ textarea.hidden {
     background-color: $euca-lightgrey;
     color: white;
     text-align: center;
-    padding-top: 3px;
+    padding-top: 1px;
     font-size: 0.825rem;
 }
 
@@ -855,6 +873,12 @@ textarea.hidden {
         &:focus {
             box-shadow: 0 0 3px 3px #7bb0e0;
         }
+    }
+    .top-margin {
+        margin-top: 0.7rem;
+    }
+    .center {
+        text-align: center;
     }
 }
 

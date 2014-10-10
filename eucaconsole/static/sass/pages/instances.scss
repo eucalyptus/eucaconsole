@@ -23,6 +23,7 @@ $instance-status-color-terminating: lightgrey;
 .status.shutting-down { background-color: $instance-status-color-terminating; }
 
 
+$instance-tile-height-adjustment: 24px;
 
 // Table view
 .table {
@@ -33,6 +34,13 @@ $instance-status-color-terminating: lightgrey;
         margin: 0 0 0 0;
     }
 }
+
+// tile view
+.tile {
+    height: $tile-height + $instance-tile-height-adjustment;
+    max-height: $tile-height + $instance-tile-height-adjustment;
+}
+
 
 #terminate-instances-btn {
     margin-left: 1rem;

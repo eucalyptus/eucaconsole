@@ -1,18 +1,21 @@
 <metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
-<head metal:fill-slot="head_css">
+<div metal:fill-slot="head_css">
     <link rel="stylesheet" href="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/codemirror.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/group.css')}" />
-</head>
+    <style type="text/css">
+        input#group-name { width: 50%; }
+    </style>
+</div>
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap"
          ng-app="GroupPage" ng-controller="GroupPageCtrl" ng-init="initController(${group_users}, ${all_users})">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
-                <li><a href="${request.route_path('groups')}" i18n:translate="">IAM groups</a></li>
+                <li><a href="${request.route_path('groups')}" i18n:translate="">Groups</a></li>
                 <li class="current">
-                    <a tal:condition="group" href="#" ng-non-bindable="">${group.group_name}</a>
+                    <a tal:condition="group" href="#">${group.group_name}</a>
                     <a tal:condition="not group and group_route_id == 'new'" i18n:translate="">Create new group</a>
                 </li>
             </metal:crumbs>
@@ -22,7 +25,7 @@
         <h3 id="pagetitle">
             <metal:block tal:condition="group">
                 <strong i18n:translate="">Details for group:</strong>
-                <em ng-non-bindable="">${group.group_name}</em>
+                <em>${group.group_name}</em>
             </metal:block>
             <metal:block tal:condition="not group and group_route_id == 'new'">
                 <strong i18n:translate="">Create new group</strong>
@@ -34,7 +37,7 @@
                 <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="group">
                     <metal:actions metal:fill-slot="actions">
                         <li>
-                            <a id="delete-group-action" data-reveal-id="delete-group-modal" i18n:translate="">
+                            <a id="delete-group-action" i18n:translate="">
                                 Delete group
                             </a>
                         </li>
@@ -43,15 +46,16 @@
                 <!--! TODO: Move IAM group name error_msg to view and mark for i18n -->
                 <div tal:condition="not group and group_route_id == 'new'"
                     tal:define="html_attrs {'pattern': '^[a-zA-Z0-9\+\=\,\.\@\-]{1,128}$',
-                         'error_msg': 'IAM group names must be between 1 and 128 characters long, and may contain letters, numbers, \'+\', \'=\', \',\', \'.\'. \'@\' and \'-\''};">
+                         'error_msg': 'Group names must be between 1 and 128 characters long, and may contain letters, numbers, \'+\', \'=\', \',\', \'.\'. \'@\' and \'-\''};">
                     <form action="${request.route_path('group_create')}" method="post" data-abide="abide">
                         ${structure:group_form['csrf_token']}
                         <div class="section columns">
-                            <div class="row controls-wrapper readonly">
-                                ${panel('form_field', field=group_form.group_name, leftcol_width=1, rightcol_width=11, autofocus='', ng_attrs={'model': 'groupName'}, **html_attrs)}
+                            <div class="row">
+                                <p><span class="subsection-label" i18n:translate="">Add group to account:</span>&nbsp;${layout.account}</p>
                             </div>
+                            ${panel('form_field', field=group_form.group_name, leftcol_width=1, rightcol_width=11, autofocus='', ng_attrs={'model': 'groupName'}, **html_attrs)}
                         </div>
-                        <div>&nbsp;</div>
+                        <hr />
                         <div class="expando" id="advanced-section" ng-cloak="" ng-init="expanded = false">
                             <div class="title">
                                 <a ng-click="expanded = !expanded">
@@ -62,26 +66,28 @@
                             </div>
                             <div>&nbsp;</div>
                             <div class="section columns" ng-show="expanded">
-                                <div class="row controls-wrapper readonly">
-                                    ${panel('form_field', field=group_form.path, leftcol_width=1, rightcol_width=11, **{ 'ng-non-bindable': ''})}
+                                <div class="">
+                                    ${panel('form_field', field=group_form.path, leftcol_width=1, rightcol_width=11)}
                                 </div>
                             </div>
                             <div>&nbsp;</div>
                         </div>
                         <hr />
-                        <div tal:condition="not group">
-                            <label>
-                                <span class="req">*</span>
-                                <span i18n:translate="">Required fields</span>
-                           </label>
-                        </div>
-                        <div class="section">
-                            <div>
+                        <div class="section row">
+                            <div class="columns small-6">
                                 <button type="submit" class="button" id="create-btn" ng-disabled="isNotValid">
                                     <span i18n:translate="">Create Group</span>
                                 </button>
                                 <a href="${request.route_path('groups')}"
                                     class="cancel-link" i18n:translate="">Cancel</a>
+                            </div>
+                            <div class="columns small-6">
+                                <div tal:condition="not group">
+                                    <label class="right">
+                                        <span class="req">*</span>
+                                        <span i18n:translate="">Required fields</span>
+                                   </label>
+                                </div>
                             </div>
                         </div>
                     </form>
@@ -102,10 +108,10 @@
                             </div>
                             <div class="row controls-wrapper readonly">
                                 <div class="small-3 columns"><label class="right" i18n:translate="">ARN</label></div>
-                                <div class="small-9 columns value inline breakword" ng-non-bindable="">${group.arn if group.arn else ''}</div>
+                                <div class="small-9 columns value inline breakword" ng-non-bindable="">${group_arn if group_arn else ''}</div>
                             </div>
                             <div class="top-bottom-padding">
-                                ${panel('form_field', field=group_update_form.path, leftcol_width=3, rightcol_width=9, **{ 'ng-non-bindable': ''})}
+                                ${panel('form_field', field=group_update_form['path'], leftcol_width=3, rightcol_width=9)}
                             </div>
                         </div>
                         <hr />
@@ -146,7 +152,7 @@
                                      policy_url request.route_path('group_policy_json', name=group.group_name, policy='_policy_');
                                      remove_url request.route_path('group_delete_policy', name=group.group_name, policy='_policy_');
                                      update_url request.route_path('group_update_policy', name=group.group_name, policy='_policy_');
-                                     add_url request.route_path('iam_policy_new')+'?type=group&amp;id='+group.group_name">
+                                     add_url request.route_path('iam_policy_new', _query={'type':'group', 'id':group.group_name})">
                         <div class="section">
                             <h6 i18n:translate="">Permissions</h6>
                             <div>

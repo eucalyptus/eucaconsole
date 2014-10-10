@@ -35,7 +35,7 @@ from ..forms.ipaddresses import (
     AllocateIPsForm, AssociateIPForm, DisassociateIPForm, ReleaseIPForm, IPAddressesFiltersForm)
 from ..i18n import _
 from ..models import Notification
-from ..views import LandingPageView, TaggedItemView, BaseView
+from ..views import LandingPageView, TaggedItemView, BaseView, JSONResponse
 from . import boto_error_handler
 
 
@@ -59,6 +59,7 @@ class IPAddressesView(LandingPageView):
             associate_form=self.associate_form,
             disassociate_form=self.disassociate_form,
             release_form=self.release_form,
+            allocate_ip_dialog_error_message=_(u'Please enter a whole number greater than zero'),
         )
 
     @view_config(route_name='ipaddresses', renderer=VIEW_TEMPLATE)
@@ -68,11 +69,12 @@ class IPAddressesView(LandingPageView):
         if self.request.method == 'POST':
             if self.allocate_form.validate():
                 new_ips = []
+                domain = self.request.params.get('domain')
                 ipcount = int(self.request.params.get('ipcount', 0))
                 with boto_error_handler(self.request, self.location):
                     self.log_request(_(u"Allocating {0} ElasticIPs").format(ipcount))
                     for i in xrange(ipcount):
-                        new_ip = self.conn.allocate_address()
+                        new_ip = self.conn.allocate_address(domain=domain)
                         new_ips.append(new_ip.public_ip)
                     prefix = _(u'Successfully allocated IPs')
                     ips = ', '.join(new_ips)
@@ -84,7 +86,7 @@ class IPAddressesView(LandingPageView):
             json_items_endpoint=self.get_json_endpoint('ipaddresses_json'),
             filter_fields=True,
             filters_form=IPAddressesFiltersForm(self.request, conn=self.conn, formdata=self.request.params or None),
-            filter_keys=['public_ip', 'instance_id'],
+            filter_keys=['public_ip', 'instance_id', 'domain'],
             sort_keys=self.get_sort_keys(),
         )
         return self.render_dict
@@ -156,11 +158,13 @@ class IPAddressesJsonView(LandingPageView):
         super(IPAddressesJsonView, self).__init__(request)
         self.conn = self.get_connection()
 
-    @view_config(route_name='ipaddresses_json', renderer='json', request_method='GET')
+    @view_config(route_name='ipaddresses_json', renderer='json', request_method='POST')
     def ipaddresses_json(self):
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
         ipaddresses = []
         with boto_error_handler(self.request):
-            items = self.get_items()
+            items = self.filter_items(self.get_items(), ignore=['assignment'])
             if self.request.params.getall('assignment'):
                 items = self.filter_by_assignment(items)
             instances = self.get_instances(items)
@@ -281,4 +285,3 @@ class IPAddressView(BaseView):
             instances = self.conn.get_only_instances(instance_ids=[self.elastic_ip.instance_id])
             return instances[0] if instances else None
         return None
-

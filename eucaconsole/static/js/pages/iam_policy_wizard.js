@@ -4,8 +4,8 @@
  *
  */
 
-angular.module('IAMPolicyWizard', [])
-    .controller('IAMPolicyWizardCtrl', function ($scope, $http, $timeout) {
+angular.module('IAMPolicyWizard', ['EucaConsoleUtils'])
+    .controller('IAMPolicyWizardCtrl', function ($scope, $http, $timeout, eucaUnescapeJson) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.wizardForm = $('#iam-policy-form');
         $scope.policyGenerator = $('#policy-generator');
@@ -27,14 +27,15 @@ angular.module('IAMPolicyWizard', [])
         $scope.handEdited = false;
         $scope.pageLoading = true;
         $scope.nameConflictKey = 'doNotShowPolicyNameConflictWarning';
-        $scope.initController = function (options, save_url) {
+        $scope.initController = function (optionsJson) {
+            var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.policyJsonEndpoint = options['policyJsonEndpoint'];
             $scope.cloudType = options['cloudType'];
             $scope.actionsList = options['actionsList'];
             $scope.languageCode = options['languageCode'] || 'en';
             $scope.awsRegions = options['awsRegions'];
-            $scope.existingPolicies = JSON.parse(options['existingPolicies'] || '[]');
-            $scope.saveUrl = save_url;
+            $scope.existingPolicies = options['existingPolicies'];
+            $scope.saveUrl = options['createPolicyUrl'];
             $scope.initSelectedTab();
             $scope.initChoices();
             $scope.initCodeMirror();
@@ -157,8 +158,11 @@ angular.module('IAMPolicyWizard', [])
             $('.tabs').find('a').on('click', function (evt) {
                 var tabLinkId = $(evt.target).closest('a').attr('id');
                 Modernizr.localstorage && localStorage.setItem($scope.lastSelectedTabKey, tabLinkId);
-                if (tabLinkId === 'custom-policy-tab') {
-                    $scope.setPolicyName('custom');
+                if (tabLinkId === 'custom-policy-tab' && $scope.policyStatements.length) {
+                    // Load selected policy statements if switching back to custom policy tab
+                    $timeout(function() {
+                        $scope.updatePolicy();
+                    }, 100);
                 }
             });
             $('#' + lastSelectedTab).click();
@@ -221,6 +225,13 @@ angular.module('IAMPolicyWizard', [])
                 'custom': 'CustomAccessPolicy'
             };
             $scope.policyName = typeNameMapping[policyType] + '-' + $scope.urlParams['id'] + '-' + $scope.timestamp;
+            if (policyType === 'custom') {
+                // Prevent lingering validation error on policy name field
+                $timeout(function() {
+                    $('#name').trigger('focus');
+                    $('.CodeMirror').find('textarea').focus();
+                }, 200);
+            }
         };
         $scope.handlePolicyFileUpload = function () {
             $('#policy_file').on('change', function(evt) {
@@ -253,6 +264,7 @@ angular.module('IAMPolicyWizard', [])
             $scope.setPolicyName(policyType);
         };
         $scope.updatePolicy = function() {
+            $scope.setPolicyName('custom');
             $scope.handEdited = false;
             $scope.policyStatements = [];
             // Add namespace (allow/deny all) statements

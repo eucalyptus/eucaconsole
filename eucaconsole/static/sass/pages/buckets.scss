@@ -1,0 +1,16 @@
+/* @fileOverview Buckets landing page CSS */
+@import "../includes/eucavariables";
+
+@import "../includes/landingpage";
+
+
+.gridwrapper {
+    .has-bucket-icon {
+        padding-left: 20px;
+        background: url(../../img/svg/bucket_solo_green.svg) no-repeat;
+    }
+    .tile .header a.has-bucket-icon {
+        padding-left: 20px;
+    }
+}
+

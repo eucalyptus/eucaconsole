@@ -217,13 +217,24 @@
 <metal:notifications metal:define-macro="notifications">
     <div id="notifications">
         <div tal:repeat="notification layout.get_notifications()">
-            <div data-alert="alert" class="alert-box ${notification.style}" ng-non-bindable="">
-                ${notification.message}
+            <div data-alert="alert" class="alert-box ${notification.style}">
+                ${layout.escape_braces(notification.message)}
                 <a href="#" class="close">&times;</a>
             </div>
         </div>
     </div>
 </metal:notifications>
+
+
+<!-- Required fields indicator ===== -->
+<metal:requiredfieldslabel metal:define-macro="required_fields_label">
+    <div class="required-fields-indicator">
+        <label class="right">
+            <span class="req">*</span>
+            <span i18n:translate="">Required fields</span>
+        </label>
+    </div>
+</metal:requiredfieldslabel>
 
 
 <!-- Detail page actions menu ===== -->

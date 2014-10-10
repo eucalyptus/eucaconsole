@@ -25,6 +25,16 @@ angular.module('InstancesPage', ['LandingPage'])
             $scope.initChosenSelectors();
             $('#file').on('change', $scope.getPassword);
         };
+        $scope.createImageClicked = function (running_create, instance_id) {
+            if (running_create) {
+                $scope.instanceID = instance_id;
+                var modal = $('#create-image-denied-modal');
+                modal.foundation('reveal', 'open');
+            }
+            else {
+                window.location = '/instances/' + instance_id + '/createimage';
+            }
+        }
         $scope.revealModal = function (action, instance) {
             var modal = $('#' + action + '-instance-modal'),
                 securityGroups = instance['security_groups'],
@@ -102,7 +112,7 @@ angular.module('InstancesPage', ['LandingPage'])
             $http.get(consoleOutputEndpoint).success(function(oData) {
                 var results = oData ? oData.results : '';
                 if (results) {
-                    $scope.consoleOutput = results;
+                    $scope.consoleOutput = $.base64.decode(results);
                     var modal = $('#console-output-modal');
                     modal.foundation('reveal', 'open');
                 }

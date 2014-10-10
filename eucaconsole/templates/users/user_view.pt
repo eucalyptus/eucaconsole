@@ -3,29 +3,26 @@
 <div metal:fill-slot="head_css">
     <link rel="stylesheet" href="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/codemirror.css')}" />
     <link rel="stylesheet" href="${request.static_path('eucaconsole:static/css/pages/user.css')}" />
-    <link rel="stylesheet" href="${request.static_path('eucaconsole:static/css/pages/changepassword.css')}" />
+    <link rel="stylesheet" href="${request.static_path('eucaconsole:static/css/pages/managecredentials.css')}" />
 </div>
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="UserView" ng-controller="UserViewCtrl"
-            ng-init="initController('${user.user_name}',
-                                    '${request.route_path('user_disable', name=user.user_name)}',
-                                    '${request.route_path('users')}',
-                                    '${request.route_path('user_delete', name=user.user_name)}')">
+            ng-init="initController('${controller_options_json}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
-                <li><a href="${request.route_path('users')}" i18n:translate="">IAM users</a></li>
-                <li class="current"><a href="#" ng-non-bindable="">${user.user_name}</a></li>
+                <li><a href="${request.route_path('users')}" i18n:translate="">Users</a></li>
+                <li class="current"><a href="#">${user_name}</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
         <h3 class="pagetitle">
             <strong i18n:translate="">Details for user:</strong>
-            <em ng-non-bindable="">${user.user_name}</em>
+            <em>${user_name}</em>
         </h3>
         <div class="large-8 columns">
-            <dl class="tabs" data-tab="">
+            <dl class="tabs">
                 <dd class="active"><a href="#general-tab" ng-click="clickTab($event, 'general-tab')" i18n:translate="">General</a></dd>
                 <dd><a href="#security-tab" ng-click="clickTab($event, 'security-tab')" i18n:translate="">Security credentials</a></dd>
                 <dd ng-cloak="" ng-show="userName != 'admin'"><a href="#quotas-tab" ng-click="clickTab($event, 'quotas-tab')" i18n:translate="">Quotas</a></dd>
@@ -35,10 +32,10 @@
                     <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="user">
                         <metal:actions metal:fill-slot="actions">
                             <li>
-                                <a id="disable-user-action" data-reveal-id="disable-user-modal" i18n:translate="">Disable</a>
+                                <a id="disable-user-action" i18n:translate="">Disable</a>
                             </li>
                             <li>
-                                <a id="delete-user-action" data-reveal-id="delete-user-modal" i18n:translate="">
+                                <a id="delete-user-action" i18n:translate="">
                                     Delete user
                                 </a>
                             </li>
@@ -48,11 +45,12 @@
                          ng-init="initController('${request.route_path('user_update', name=user.user_name)}')">
                         <form data-abide="abide" id="user-update-form" ng-submit="submit($event)">
                             ${structure:user_form['csrf_token']}
+                            <input type='hidden' name='as-account' value="${as_account}"/>
                             <div class="columns section">
                                 <h6 i18n:translate="">User</h6>
                                 <div class="row controls-wrapper readonly">
                                     <div class="small-3 columns"><label i18n:translate="">Name</label></div>
-                                    <div class="small-9 columns value">${user.user_name}</div>
+                                    <div class="small-9 columns value">${user_name}</div>
                                 </div>
                                 <!-- ${panel('form_field', field=user_form['email'])} -->
                                 <div class="row controls-wrapper readonly" tal:condition="user_create_date">
@@ -63,14 +61,14 @@
                                 </div>
                                 <div class="row controls-wrapper readonly">
                                     <div class="small-3 columns"><label i18n:translate="">ARN</label></div>
-                                    <div class="small-9 columns value" ng-non-bindable="">${user.arn if user.arn else ''}</div>
+                                    <div class="small-9 columns value" ng-non-bindable="">${user_arn if user_arn else ''}</div>
                                 </div>
-                                ${panel('form_field', field=user_form['path'], leftcol_width=3, rightcol_width=9, **{ 'ng-non-bindable': ''})}
+                                ${panel('form_field', field=user_form['path'], leftcol_width=3, rightcol_width=9)}
                             </div>
                             <div class="row">
                                 <div class="small-3 columns">&nbsp;</div>
                                 <div class="small-9 columns field inline">
-                                    <button type="submit" class="button" id="save-user-btn" ng-disabled="isNotChanged">
+                                    <button type="submit" class="button" id="save-user-btn" ng-disabled="isUserInfoNotChanged">
                                         <span tal:condition="user" i18n:translate="">Save Changes</span>
                                     </button>
                                     <a href="${request.route_path('users')}"
@@ -109,7 +107,7 @@
                                         </div>
                                         <div class="column small-6">
                                             <button type="submit" class="button" id="add-user-to-group-btn"
-                                                    ng-disabled="noAvailableGroups">
+                                                    ng-disabled="noAvailableGroups || isGroupNotSelected">
                                                 <span tal:condition="user" i18n:translate="">Add User to Group</span>
                                             </button>
                                         </div>
@@ -150,7 +148,7 @@
                                          policy_url request.route_path('user_policy_json', name=user.user_name, policy='_policy_');
                                          remove_url request.route_path('user_delete_policy', name=user.user_name, policy='_policy_');
                                          update_url request.route_path('user_update_policy', name=user.user_name, policy='_policy_');
-                                         add_url request.route_path('iam_policy_new')+'?type=user&amp;id='+user.user_name">
+                                         add_url request.route_path('iam_policy_new', _query={'type':'user', 'id':user.user_name})">
                             <div class="columns section">
                                 <h6 i18n:translate="">Permissions</h6>
                                 <div>
@@ -170,10 +168,10 @@
                         </span>
                         <ul id="actions-dropdown2" class="f-dropdown" data-dropdown-content="">
                             <li>
-                                <a id="disable-user-action" data-reveal-id="disable-user-modal" i18n:translate="">Disable</a>
+                                <a id="disable-user-action" i18n:translate="">Disable</a>
                             </li>
                             <li>
-                                <a id="delete-user-action" data-reveal-id="delete-user-modal" i18n:translate="">
+                                <a id="delete-user-action" i18n:translate="">
                                     Delete user
                                 </a>
                             </li>
@@ -207,13 +205,13 @@
                                 <form id="user-change-password-form" ng-submit="submitChange($event)">
                                     <div class="row controls-wrapper controls_new_password">
                                         <div class="small-12 columns field">
-                                            <label for="top-label" class="left" ng-non-bindable="">${user_form.new_password.label.text}<span class="req">*</span></label>
+                                            <label for="top-label" class="left">${user_form.new_password.label.text}<span class="req">*</span></label>
                                             ${structure:user_form.new_password}
                                         </div>
                                     </div>
                                     <div class="row controls-wrapper controls_new_password2">
                                         <div class="small-12 columns field">
-                                            <label for="top-label" class="left" ng-non-bindable="">${user_form.new_password2.label.text}<span class="req">*</span></label>
+                                            <label for="top-label" class="left">${user_form.new_password2.label.text}<span class="req">*</span></label>
                                             ${structure:user_form.new_password2}
                                         </div>
                                     </div>
@@ -225,7 +223,7 @@
                                     </div>
                                     <div class="row">
                                         <div class="columns field inline">
-                                            <button type="submit" class="button" id="save-password-btn">
+                                            <button type="submit" class="button" id="save-password-btn" ng-disabled="isPasswordNotChanged">
                                                 <span tal:condition="user" i18n:translate="">Save Password</span>
                                             </button>
                                             <a href="${request.route_path('users')}"
@@ -349,10 +347,10 @@
                         </span>
                         <ul id="actions-dropdown3" class="f-dropdown" data-dropdown-content="">
                             <li>
-                                <a id="disable-user-action" data-reveal-id="disable-user-modal" i18n:translate="">Disable</a>
+                                <a id="disable-user-action" i18n:translate="">Disable</a>
                             </li>
                             <li>
-                                <a id="delete-user-action" data-reveal-id="delete-user-modal" i18n:translate="">
+                                <a id="delete-user-action" i18n:translate="">
                                     Delete user
                                 </a>
                             </li>
@@ -364,7 +362,7 @@
                             <div class="section">
                                 <h6 i18n:translate="">Quotas</h6>
                                 ${structure:user_form['csrf_token']}
-                                ${panel('quotas_panel', quota_form=user_form, quota_err=quota_err)}
+                                ${panel('quotas_panel', quota_form=quotas_form, quota_err=quota_err)}
                             </div>
                             <hr />
                             <small id="quota-error" ng-cloak="" class="error" i18n:translate="">Quota values must be integers greater than zero.</small>
@@ -398,6 +396,7 @@
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/utils/zxcvbn-async.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/jquery.generateFile.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/eucaconsole_utils.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/user_view.js')}"></script>
 </div>
 

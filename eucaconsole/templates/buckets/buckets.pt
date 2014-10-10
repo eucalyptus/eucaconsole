@@ -1,0 +1,156 @@
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
+
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/buckets.css')}" />
+</head>
+
+<div metal:fill-slot="main_content" ng-app="BucketsPage" ng-controller="BucketsCtrl"
+     ng-init="initController('${controller_options_json}')">
+    <div class="row" id="contentwrap" ng-app="LandingPage" ng-controller="ItemsCtrl"
+         ng-init="initController('buckets', '${initial_sort_key}', '${json_items_endpoint}')">
+        <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+            <metal:crumbs metal:fill-slot="crumbs">
+                <li class="current"><a href="#" i18n:translate="">Buckets</a></li>
+            </metal:crumbs>
+        </metal:breadcrumbs>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
+        <h3 id="pagetitle"><strong i18n:translate="">Buckets</strong></h3>
+        <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
+            <div metal:fill-slot="new_button">
+                <a class="button" id="create-bucket-btn" i18n:translate="" href="${request.route_path('bucket_new')}">
+                    Create Bucket
+                </a>
+            </div>
+            <div metal:fill-slot="tile_header">
+                <a ng-href="{{ item.contents_url }}" class="has-bucket-icon">
+                    {{ item.bucket_name }}
+                </a>
+            </div>
+            <div metal:fill-slot="tile_content" tal:omit-tag="">
+                <div>
+                    <span class="label" title="Object Count" i18n:attributes="title" data-tooltip="">OB</span>
+                    <span>
+                        <span class="dots" ng-show="countsLoading[item.bucket_name]"></span>
+                        <b>{{ bucketCounts[item.bucket_name] }}</b>
+                    </span>
+                </div>
+                <div>
+                    <span class="label" title="Versioning" i18n:attributes="title" data-tooltip="">VE</span>
+                    <span>
+                        <span class="dots" ng-show="versioningStatusLoading[item.bucket_name]"></span>
+                        <b>{{ bucketVersioningStatus[item.bucket_name] }}</b>
+                    </span>
+                </div>
+                <div>
+                    <span class="label" title="Creation Time" i18n:attributes="title" data-tooltip="">CT</span>
+                    <span ng-show="item.creation_date">
+                        <b>{{ item.creation_date | date: '${layout.angular_date_format}' }}</b>
+                    </span>
+                </div>
+            </div>
+            <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
+                <a id="tile-item-dropdown_{{ item.bucket_name | escapeHTMLTagID }}"
+                   class="tiny secondary button dropdown right"
+                   data-dropdown="item-dropdown_{{ item.bucket_name |  escapeHTMLTagID }}"><i class="fi-widget"></i></a>
+                <ul id="item-dropdown_{{ item.bucket_name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
+                    <li>
+                        <a i18n:translate="" ng-href="{{ item.contents_url }}">View contents</a>
+                    </li>
+                    <li>
+                        <a i18n:translate="" ng-href="{{ item.details_url }}">View details</a>
+                    </li>
+                    <!--!
+                    <li ng-show="!versioningStatusLoading[item.bucket_name]">
+                        <a ng-click="revealVersioningModal(bucketVersioningAction[item.bucket_name], item)"
+                           class="update-versioning-action">
+                            <span i18n:translate="" ng-show="bucketVersioningAction[item.bucket_name] == 'enable'">
+                                Enable versioning
+                            </span>
+                            <span i18n:translate="" ng-show="bucketVersioningAction[item.bucket_name] != 'enable'">
+                                Suspend versioning
+                            </span>
+                        </a>
+                    </li>
+                    -->
+                    <li ng-show="hasCopyItem()">
+                        <a i18n:translate="" ng-click="doPaste(item)">Paste object</a>
+                    </li>
+                    <li>
+                        <a i18n:translate="" ng-click="revealModal('delete-bucket', item)">Delete</a>
+                    </li>
+                </ul>
+            </div>
+            <metal:block metal:fill-slot="tableview_headers">
+                <th i18n:translate="">Name</th>
+                <th i18n:translate="">Objects</th>
+                <th i18n:translate="">Versioning</th>
+                <th i18n:translate="">Creation Time</th>
+                <th i18n:translate="" class="actions">Actions</th>
+            </metal:block>
+            <metal:block metal:fill-slot="tableview_columns">
+                <td>
+                    <a ng-href="{{ item.contents_url }}" class="has-bucket-icon">
+                        {{ item.bucket_name }}
+                    </a>
+                </td>
+                <td>
+                    <span class="dots" ng-show="countsLoading[item.bucket_name]"></span>
+                    {{ bucketCounts[item.bucket_name] }}
+                </td>
+                <td>
+                    <span class="dots" ng-show="versioningStatusLoading[item.bucket_name]"></span>
+                    {{ bucketVersioningStatus[item.bucket_name] }}
+                </td>
+                <td>{{ item.creation_date | date: '${layout.angular_date_format}' }}</td>
+                <td>
+                    <span class="actions">
+                        <a id="table-item-dropdown_{{ item.bucket_name | escapeHTMLTagID }}"
+                           class="tiny secondary button dropdown right round"
+                           data-dropdown="item-dropdown_{{ item.bucket_name | escapeHTMLTagID }}"><i class="fi-widget"></i></a>
+                        <ul id="item-dropdown_{{ item.bucket_name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
+                            <li>
+                                <a i18n:translate="" ng-href="{{ item.contents_url }}">View contents</a>
+                            </li>
+                            <li>
+                                <a i18n:translate="" ng-href="{{ item.details_url }}">View details</a>
+                            </li>
+                            <!--!
+                            <li ng-show="!versioningStatusLoading[item.bucket_name]">
+                                <a ng-click="revealVersioningModal(bucketVersioningAction[item.bucket_name], item)"
+                                   class="update-versioning-action">
+                                    <span i18n:translate="" ng-show="bucketVersioningAction[item.bucket_name] == 'enable'">
+                                        Enable versioning
+                                    </span>
+                                    <span i18n:translate="" ng-show="bucketVersioningAction[item.bucket_name] != 'enable'">
+                                        Suspend versioning
+                                    </span>
+                                </a>
+                            </li>
+                            -->
+                            <li ng-show="hasCopyItem()">
+                                <a i18n:translate="" ng-click="doPaste(item)">Paste object</a>
+                            </li>
+                            <li>
+                                <a i18n:translate="" ng-click="revealModal('delete-bucket', item)">Delete</a>
+                            </li>
+                        </ul>
+                    </span>
+                </td>
+            </metal:block>
+        </div>
+        <!--! Modal dialogs reused across landing and detail page -->
+        ${panel('bucket_dialogs', landingpage=True, versioning_form=versioning_form, delete_form=delete_form)}
+    </div>
+</div>
+
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_path('eucaconsole:static/js/pages/custom_filters.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/landingpage.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/eucaconsole_utils.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/buckets.js')}"></script>
+</div>
+
+</metal:block>
+

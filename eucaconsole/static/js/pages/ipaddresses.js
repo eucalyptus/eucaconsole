@@ -23,20 +23,10 @@ angular.module('ElasticIPsPage', ['LandingPage'])
             $scope.setWatch();
         };
         $scope.setWatch = function () {
-            $(document).on('opened', '[data-reveal]', function () {
-                $(document).on('input', '#ipcount', function () {
-                    if( $scope.isNotValid === true ){
-                        $scope.isNotValid = false;
-                        $scope.$apply();
-                    }
-                });
-                // For FireFox Selenium Test, which triggers "change" event when type input on the number inputbox.
-                $(document).on('change', '#ipcount', function () {
-                    if( $scope.isNotValid === true ){
-                        $scope.isNotValid = false;
-                        $scope.$apply();
-                    }
-                });
+            $(document).on('open', '[data-reveal]', function () {
+                // Set the IP Count value to be 1 when re-opened
+                var modal = $(this);
+                modal.find('#ipcount').val('1');
             });
             $(document).on('close', '[data-reveal]', function () {
                 // Turn off the listeners on #ipcount

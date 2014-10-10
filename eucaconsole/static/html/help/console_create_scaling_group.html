@@ -13,9 +13,10 @@
     
     <div class="body taskbody"><p class="shortdesc"> This page allows you to create a scaling group. An Auto Scaling group defines the
         parameters for the Eucalyptus instances that are used for scaling, as well as the minimum,
-        maximum, and (optionally) the desired number of instances to use for Auto Scaling your
-        application. For more information on Auto Scaling, please see <em class="ph i">Using Auto Scaling</em> in
-        the <em class="ph i">Eucalyptus User Guide</em>. </p>
+        maximum, and the desired number of instances to use for Auto Scaling your application. In
+        order to create a scaling group, you must first have a launch configuration created. For
+        more information on Auto Scaling, please see <em class="ph i">Using Auto Scaling</em> in the <em class="ph i">Eucalyptus
+            User Guide</em>. </p>
 </div>
 
     <div class="topic task nested1" id="create_scaling_group_ui_help_steps_general">
@@ -25,15 +26,23 @@
         <div class="body taskbody"><p class="shortdesc">This section is where you specify the basic configuration of your new auto
             scaling group.</p>
 
-            <ol class="ol steps"><li class="li step">
+            <ol class="ol steps"><li class="li step stepexpand">
                     <span class="ph cmd">Type the name of your new auto scaling group in the
                             <span class="ph uicontrol">Name</span> textbox.</span>
                 </li>
-<li class="li step">
+<li class="li step stepexpand">
                     <span class="ph cmd"> Select a launch configuration from the <span class="ph uicontrol">Launch
                             Configuration</span> drop-down list box. A launch configuration
                         defines the properties of the instances that are launched as part of your
                         auto scaling group.</span>
+                </li>
+<li class="li step stepexpand">
+                    <span class="ph cmd"> From the <span class="ph uicontrol">VPC network</span> drop-down list box, select No VPC or specify which of your VPCs you want
+                        to launch instances in this scaling group. </span>
+                    <div class="itemgroup stepresult">If a VPC network is selected, the <span class="ph uicontrol">VPC subnet(s)</span> drop-down list box displays.</div>
+                </li>
+<li class="li step stepexpand">
+                    <span class="ph cmd"> Select a CIDR range from the <span class="ph uicontrol">VPC subnet(s)</span> drop-down list box.</span>
                 </li>
 </ol>
 
@@ -45,19 +54,30 @@
         <h2 class="title topictitle2">Capacity</h2>
 
         
-        <div class="body taskbody"><p class="shortdesc">This section is where you specify the minimum, maximum, and average number of instances for your scaling group.</p>
+        <div class="body taskbody"><p class="shortdesc">Use the capacity values to manually scale your scaling groups.</p>
 
-            <ol class="ol steps"><li class="li step">
-                    <span class="ph cmd">Select the maximum number of instances you want running in your autoscaling
-                        group using the <span class="ph uicontrol">Maximum</span> control.</span>
+            <ol class="ol steps"><li class="li step stepexpand">
+                    <span class="ph cmd">Specify the minimum number of instances you want running in your autoscaling
+                        group using the <span class="ph uicontrol">Min</span> control.</span>
                 </li>
-<li class="li step">
-                    <span class="ph cmd">Specify the minimum number of instances you want running using the
-                        <span class="ph uicontrol">Minimum</span> control. </span>
+<li class="li step stepexpand">
+                    <span class="ph cmd">Specify the desired number of instances you want running using the
+                            <span class="ph uicontrol">Desired</span> control. </span>
                 </li>
-<li class="li step">
-                    <span class="ph cmd">Specify the desired number of instance you want running using the
-                        <span class="ph uicontrol">Desired</span> control. </span>
+<li class="li step stepexpand">
+                    <span class="ph cmd">Specify the maximum number of instances you want running using the
+                        <span class="ph uicontrol">Max</span> control. </span>
+                </li>
+<li class="li step stepexpand">
+                    <span class="ph cmd">A termination policy defines how instances that are no longer needed in the scaling group are terminated. A default termination policy is already pre-selected but 
+                        you can change the policy to a different one, or add more termination policies from the <span class="ph uicontrol">Termination policies</span> text box.
+                      Termination policies are executed in the order they are listed. </span>
+                    <div class="itemgroup info">For information on termination policies, see <a class="xref" href="http://docs.aws.amazon.com/AutoScaling/latest/DeveloperGuide/us-termination-policy.html" target="_blank">
+                        Configure Instance Termination Policy for Your Auto Scaling Group</a></div>
+                </li>
+<li class="li step stepexpand">
+                    <span class="ph cmd">To apply tags, proceed to the next section. Otherwise, click
+                            <span class="ph uicontrol">Next</span> to proceed to the Membership tab.</span>
                 </li>
 </ol>
 
@@ -87,11 +107,14 @@
                         box.</span>
                 </li>
 <li class="li step">
-                    <span class="ph cmd">To add this tag, click the <strong class="ph b">Add Tag</strong> button.</span>
+                    <span class="ph cmd">To add this tag, click the <span class="ph uicontrol">Add Tag</span> button.</span>
                 </li>
 <li class="li step">
-                    <span class="ph cmd">If you wish to delete a tag that you've already entered, click the <strong class="ph b">x</strong>
+                    <span class="ph cmd">If you wish to delete a tag that you've already entered, click the <span class="ph uicontrol">x</span>
                         on the tag icon.</span>
+                </li>
+<li class="li step">
+                    <span class="ph cmd">Click <span class="ph uicontrol">Next</span> to proceed to the Membership tab.</span>
                 </li>
 </ol>
 
@@ -103,29 +126,36 @@
         <h2 class="title topictitle2">Membership</h2>
 
         
-        <div class="body taskbody"><p class="shortdesc">In this section, you can specify availability zones and health checks for the
+        <div class="body taskbody"><p class="shortdesc">In this tab, you can specify availability zones and health checks for the
             instances that run in your auto scaling group. </p>
 
-            <ol class="ol steps"><li class="li step">
-                    <span class="ph cmd">Select the type of health check for your auto scaling group from the
-                            <span class="ph uicontrol">Type</span> drop-down list box. The auto scaling health
-                        check uses EC2 instance status checks to determine the health state of each
-                        instance in your auto scaling group. If your auto scaling group is using a
-                        load balancer, auto scaling will use both EC2 instance status checks and
-                        load balancing instance health checks.</span>
+            <ol class="ol steps"><li class="li step stepexpand">
+                    <span class="ph cmd">If present, select one or more availability zones for your new scaling
+                        group from the <span class="ph uicontrol">Availability zones</span> drop-down list
+                        box.</span>
+                    <div class="itemgroup info"><div class="note note"><span class="notetitle">Note:</span> Availability zones are not applicable if a VPC network is selected.</div>
+</div>
+                    <div class="itemgroup info">You can remove a selected availability zone by clicking on the
+                            <span class="ph uicontrol">x</span> next to the availability zone's name in the
+                            <span class="ph uicontrol">Availability Zones</span> field.</div>
                 </li>
-<li class="li step">
-                    <span class="ph cmd">Type the amount of grace period, in seconds, into the <span class="ph uicontrol">Grace
-                            period</span> text box. This is the amount of time after a new
+<li class="li step stepexpand">
+                    <span class="ph cmd">Select one or more load balancers for you new scaling group from the
+                            <span class="ph uicontrol">Load balancers</span> drop-down list box.</span>
+                    <div class="itemgroup info">You can add another load balancer to the new auto scaling group by
+                        clicking the <strong class="ph b">+</strong> button next to the drop-down list box.</div>
+                    <div class="itemgroup info">The auto scaling health check uses EC2 instance status checks to determine
+                        the health state of each instance in your auto scaling group. If your auto
+                        scaling group is using a load balancer, auto scaling will use both EC2
+                        instance status checks and load balancing instance health checks.</div>
+                </li>
+<li class="li step stepexpand">
+                    
+                    <span class="ph cmd">Type the amount of grace period, in seconds, into the <span class="ph uicontrol">Health
+                            check grace period</span> text box or use the scroll bars to
+                        incrementally adjust the values. This is the amount of time after a new
                         instance is launched in your auto scaling group before health checks start
                         for the instance. </span>
-                </li>
-<li class="li step">
-                    <span class="ph cmd">Select one or more availability zones for your new scaling group from the
-                            <span class="ph uicontrol">Availability zones</span> drop-down list box.</span>
-                     You can remove a selected availability zone by clicking on the
-                            <span class="ph uicontrol">x</span> next to the availability zone's name in the
-                            <span class="ph uicontrol">Availability Zones</span> field.
                 </li>
 </ol>
 
@@ -140,14 +170,23 @@
         
         <div class="body taskbody"><p class="shortdesc"/>
 
-            <div class="li step p">
-                    <span class="ph cmd">Once you're satisfied with the properties you've defined for your scaling
-                        group, click the <span class="ph uicontrol">Create scaling group</span> button to
+            <ol class="ol steps"><li class="li step stepexpand">
+                    <span class="ph cmd">Once you are satisfied with the properties you defined for your scaling
+                        group, click the <span class="ph uicontrol">Create Scaling Group</span> button to
                         create your scaling group.</span>
-                </div>
+                    <div class="itemgroup stepresult">The Next Step dialog box opens prompting you to add scaling policies for this scaling group.</div>
+                </li>
+<li class="li step stepexpand">
+                    <span class="ph cmd">You may choose not to show this message again by checking the <span class="ph uicontrol">Do not show me this again</span> checkbox.</span>
+                </li>
+<li class="li step stepexpand">
+                    <span class="ph cmd">Click <span class="ph uicontrol">add scaling policies</span> to continue. Refer to the help page of the Create scaling policy window to complete the required information. </span>
+                </li>
+</ol>
 
-            <div class="section result">For more information on Auto Scaling, see Eucalyptus User Guide.</div>
+            <div class="section result"/>
 
+            
         </div>
 
     </div>

@@ -10,19 +10,19 @@
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('scalinggroups')}" i18n:translate="">Scaling groups</a></li>
-                <li class="current"><a ng-non-bindable="">${scaling_group.name}</a></li>
+                <li class="current"><a>${scaling_group_name}</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
         <h3 id="pagetitle">
             <strong i18n:translate="">Details for scaling group:</strong>
-            <em ng-non-bindable="">${scaling_group.name}</em>
+            <em>${scaling_group_name}</em>
         </h3>
         <div class="large-8 columns">
             <dl class="tabs" id="scalinggroup-subnav">
                 <dd><a href="${request.route_path('scalinggroup_view', id=scaling_group.name)}" i18n:translate="">General</a></dd>
-                <dd><a href="${request.route_path('scalinggroup_policies', id=scaling_group.name)}" i18n:translate="">Policies</a></dd>
+                <dd><a href="${request.route_path('scalinggroup_policies', id=scaling_group.name)}" i18n:translate="">Scaling Policies</a></dd>
                 <dd class="active"><a href="#">Instances</a></dd>
             </dl>
             <div class="panel gridwrapper no-title">
@@ -106,7 +106,7 @@
             <form action="${request.route_path('scalinggroup_instances_terminate', id=scaling_group.name)}" method="post">
                 ${structure:terminate_form['csrf_token']}
                 <input type="hidden" name="instance_id" value="{{ instanceID }}" />
-                ${panel('form_field', field=terminate_form['decrement_capacity'], leftcol_width=2, rightcol_width=10, reverse='true')}
+                ${panel('form_field', field=terminate_form['decrement_capacity'], leftcol_width=2, rightcol_width=10, reverse=True)}
                 <div>
                     <button type="submit" class="button expand" i18n:translate="" id="mark-unhealthy-dialog-btn">
                         Yes, Terminate

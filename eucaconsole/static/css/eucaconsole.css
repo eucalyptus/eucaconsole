@@ -1,3 +1,4 @@
+@charset "UTF-8";
 /* @fileOverview Koala application-wide Sass CSS styles */
 /* Sass Imports */
 /*! normalize.css v2.1.2 | MIT License | git.io/normalize */
@@ -943,7 +944,7 @@ table { background: white; margin-bottom: 1.25rem; border: solid 1px #dddddd; }
 table thead, table tfoot { background: whitesmoke; font-weight: bold; }
 table thead tr th, table thead tr td, table tfoot tr th, table tfoot tr td { padding: 0.5rem 0.625rem 0.625rem; font-size: 0.875rem; color: #222222; text-align: left; }
 table tr th, table tr td { padding: 0.5625rem 0.625rem; font-size: 0.875rem; color: #222222; }
-table tr.even, table tr.alt, table tr:nth-of-type(even) { background: #ebebec; }
+table tr.even, table tr.alt, table tr:nth-of-type(even) { background: whitesmoke; }
 table thead tr th, table tfoot tr th, table tbody tr td, table tr td, table tfoot tr td { display: table-cell; line-height: 1.125rem; }
 
 .tabs { *zoom: 1; margin-bottom: 0 !important; }
@@ -984,7 +985,7 @@ table thead tr th, table tfoot tr th, table tbody tr td, table tr td, table tfoo
   .tooltip.tip-left, .tooltip.tip-right { float: none !important; }
   .tooltip.tip-left > .nub { border-color: transparent transparent transparent #333333; right: -10px; left: auto; top: 50%; margin-top: -5px; }
   .tooltip.tip-right > .nub { border-color: transparent #333333 transparent transparent; right: auto; left: -10px; top: 50%; margin-top: -5px; } }
-meta.foundation-mq-topbar { font-family: "/only screen and (min-width:40.063em)/"; width: 920px; }
+meta.foundation-mq-topbar { font-family: "/only screen and (min-width:40.063em)/"; width: 1020px; }
 
 /* Wrapped around .top-bar to contain to grid width */
 .contain-to-grid { width: 100%; background: white; }
@@ -1189,7 +1190,7 @@ blockquote, blockquote p { line-height: 1.6; color: #6f6f6f; }
   .print-only { display: block !important; }
   .hide-for-print { display: none !important; }
   .show-for-print { display: inherit !important; } }
-meta.foundation-mq-topbar { font-family: "/only screen and (min-width:40.063em)/"; width: 920px; }
+meta.foundation-mq-topbar { font-family: "/only screen and (min-width:40.063em)/"; width: 1020px; }
 
 .off-canvas-wrap { -webkit-backface-visibility: hidden; position: relative; width: 100%; overflow: hidden; }
 
@@ -1420,7 +1421,7 @@ h1, h2, h3, h4, h5, h6 { font-family: Oswald, Helvetica, Arial, sans-serif; lett
 
 #contentwrap { position: relative; padding-bottom: 3rem; min-height: 30rem; }
 
-@media screen and (min-width: 920px) { #login-panel { margin-bottom: 5rem; }
+@media screen and (min-width: 1020px) { #login-panel { margin-bottom: 5rem; }
   #maincontent { min-height: 480px; } }
 /* ----------------------------------------- Misc
 ----------------------------------------- */
@@ -1491,9 +1492,9 @@ textarea.policy-area { width: 100%; min-height: 30rem; font-family: Courier, "co
 .help-content .p, .help-content .section { line-height: 1.4rem; }
 .help-content .topictitle1 { margin-top: 1rem; }
 .help-content p { margin-bottom: 0.5rem; }
-.help-content ol { list-style-position: inside; }
-.help-content ol li { text-indent: -1rem; margin-left: 1rem; }
-.help-content ol li p { text-indent: 0; margin-bottom: 0.5rem; margin-top: 0.5rem; }
+.help-content ol ul { list-style-position: inside; }
+.help-content ol ul li { text-indent: -1rem; margin-left: 1rem; }
+.help-content ol ul li p { text-indent: 0; margin-bottom: 0.5rem; margin-top: 0.5rem; }
 .help-content i { text-indent: 0; }
 .help-content i.fi-minus-circle { font-size: 1.2rem; }
 .help-content i.fi-minus-circle:hover { color: black; }
@@ -1523,17 +1524,22 @@ form .error .chosen-container .chosen-single { border-color: darkred; background
 .row.controls-wrapper { margin-bottom: 0.5rem; }
 .row.controls-wrapper label { padding-top: 4px; font-weight: bold; text-align: right; line-height: 1rem; }
 .row.controls-wrapper label select, .row.controls-wrapper label input, .row.controls-wrapper label .chosen-container { text-align: left; }
-.row.controls-wrapper label.reverse { text-align: left; }
-.row.controls-wrapper div.reverse input { float: right; }
+.row.controls-wrapper label.nowrap { white-space: nowrap; }
+.row.controls-wrapper label.reverse { display: inline-block; text-align: left; position: relative; left: -1rem; }
+.row.controls-wrapper .helptext-icon.reverse { position: relative; left: 1.5rem; }
+.row.controls-wrapper .reverse .error { white-space: nowrap; }
+.row.controls-wrapper .checkbox-row { margin-left: 1rem; }
 .row.controls-wrapper .field input { display: inline-block; margin-bottom: 0.3rem; }
 .row.controls-wrapper .field select { margin-bottom: 0.3rem; margin-top: 0.3rem; padding-top: 6px; padding-bottom: 6px; }
 .row.controls-wrapper .field textarea { margin-top: 0.3rem; }
 .row.controls-wrapper.readonly { margin-top: 0; margin-bottom: 0; }
 .row.controls-wrapper.readonly label { padding-top: 0; position: relative; right: -12px; }
+.row.controls-wrapper.readonly .value { padding-bottom: 6px; }
 .row.controls-wrapper.inline { margin-bottom: 4px; }
 .row.controls-wrapper.inline label { right: -6px; }
 
-form .controls-wrapper > [class*='small-'] label { font-weight: bold; padding-top: 0.3rem; position: relative; right: -1rem; }
+form .controls-wrapper > [class*='small-'] label { font-weight: bold; padding-top: 0.3rem; }
+form .controls-wrapper > [class*='small-'] label.right { position: relative; right: -1rem; }
 
 [data-abide] .controls-wrapper .error input, [data-abide] .controls-wrapper .error select { border: 1px solid darkred; background-color: #ffe9ec; }
 [data-abide] .controls-wrapper .error small.error { margin-bottom: 6px; background-color: transparent; color: darkred; font-weight: bold; padding-left: 0; font-style: normal; padding-bottom: 4px; }
@@ -1543,7 +1549,7 @@ form .controls-wrapper > [class*='small-'] label { font-weight: bold; padding-to
 textarea.hidden { display: none; }
 textarea.hidden.debug { display: block; }
 
-.helptext-icon { display: inline-block; margin-left: 5px; width: 20px; height: 20px; border-radius: 32px; border: 1px solid #6a737b; background-color: #cccccc; color: white; text-align: center; padding-top: 3px; font-size: 0.825rem; }
+.helptext-icon { display: inline-block; margin-left: 5px; width: 20px; height: 20px; border-radius: 32px; border: 1px solid #6a737b; background-color: #cccccc; color: white; text-align: center; padding-top: 1px; font-size: 0.825rem; }
 
 /* ----------------------------------------- Chosen widget
 ----------------------------------------- */
@@ -1576,12 +1582,14 @@ textarea.hidden.debug { display: block; }
 .reveal-modal form .row.controls-wrapper { margin-bottom: 1rem; }
 .reveal-modal .button.expand { margin-bottom: 0; }
 .reveal-modal .button.expand:focus { box-shadow: 0 0 3px 3px #7bb0e0; }
+.reveal-modal .top-margin { margin-top: 0.7rem; }
+.reveal-modal .center { text-align: center; }
 
 /* ----------------------------------------- Tables
 ----------------------------------------- */
 table.table { border: none; }
-table.table thead tr { background-color: #8cc63e; }
-table.table thead tr th { padding-top: 0.5rem; padding-bottom: 0.5rem; vertical-align: top; text-transform: uppercase; }
+table.table thead tr { background-color: #f5f5f5; }
+table.table thead tr th { padding-top: 0.5rem; padding-bottom: 0.5rem; vertical-align: top; color: #03405f; text-transform: uppercase; }
 table.table thead tr th.actions { text-align: right; }
 table.table tr { border-bottom: 1px solid #ddd; }
 table.table tr td { vertical-align: top; }
@@ -1634,7 +1642,7 @@ footer .copyright { font-size: 0.9em; }
   #logobar #user-dropdown-section .dropdown { position: relative; width: 4rem; margin-right: 1rem; padding-right: 12px; }
   #logobar #user-dropdown-section .dropdown .aws.down-caret { position: absolute; top: 8px; right: 0; } }
 @media screen and (max-width: 640px) { #logo { width: 20px !important; } }
-@media screen and (max-width: 920px) { #logobar { border-bottom: 1px solid black; margin-top: 8px; }
+@media screen and (max-width: 1020px) { #logobar { border-bottom: 1px solid black; margin-top: 8px; }
   #logobar .dropdown { position: relative; top: 4px; }
   #logobar #offcanvas-icon { display: inline-block !important; margin-right: 12px; }
   #logobar #user-dropdown-section { position: relative; left: -10px; }
@@ -1643,9 +1651,9 @@ footer .copyright { font-size: 0.9em; }
 @media screen and (max-width: 65rem) { #pagetitle.landingpage { top: -0.5rem; }
   #landing-page-filters { padding-top: 1rem; margin-bottom: 1rem; } }
 /* Other Small screen tweaks */
-@media screen and (max-width: 920px) { .columns.datagrid { padding-left: 1rem; }
+@media screen and (max-width: 1020px) { .columns.datagrid { padding-left: 1rem; }
   .sub-nav { top: 0; left: 0; margin-top: -28px; margin-left: 4px; margin-bottom: 1.5rem; } }
-@media screen and (min-width: 920px) { span.hide-for-small { display: inline !important; } }
+@media screen and (min-width: 1020px) { span.hide-for-small { display: inline !important; } }
 /* ----------------------------------------- Debug
 ----------------------------------------- */
 #pDebugToolbarHandle { top: 120px !important; }

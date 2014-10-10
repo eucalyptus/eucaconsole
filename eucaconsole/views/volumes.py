@@ -43,7 +43,7 @@ from ..forms.volumes import (
     RegisterSnapshotForm, AttachForm, DetachForm, VolumesFiltersForm)
 from ..i18n import _
 from ..models import Notification
-from ..views import LandingPageView, TaggedItemView, BaseView
+from ..views import LandingPageView, TaggedItemView, BaseView, JSONResponse
 from . import boto_error_handler
 
 
@@ -74,7 +74,8 @@ class VolumesView(LandingPageView, BaseVolumeView):
         self.prefix = '/volumes'
         self.location = self.get_redirect_location('volumes')
         with boto_error_handler(request, self.location):
-            self.instances = self.conn.get_only_instances(filters={'instance-state-name':['running', 'stopped']}) if self.conn else []
+            self.instances = self.conn.get_only_instances(
+                filters={'instance-state-name': ['running', 'stopped']}) if self.conn else []
         self.delete_form = DeleteVolumeForm(self.request, formdata=self.request.params or None)
         self.attach_form = AttachForm(self.request, instances=self.instances, formdata=self.request.params or None)
         self.detach_form = DetachForm(self.request, formdata=self.request.params or None)
@@ -180,8 +181,10 @@ class VolumesJsonView(LandingPageView):
         super(VolumesJsonView, self).__init__(request)
         self.conn = self.get_connection()
 
-    @view_config(route_name='volumes_json', renderer='json', request_method='GET')
+    @view_config(route_name='volumes_json', renderer='json', request_method='POST')
     def volumes_json(self):
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
         volumes = []
         transitional_states = ['attaching', 'detaching', 'creating', 'deleting']
         filters = {}
@@ -205,14 +208,14 @@ class VolumesJsonView(LandingPageView):
                 instance_name = None
                 if volume.attach_data is not None and volume.attach_data.instance_id is not None:
                     instance = [inst for inst in instances if inst.id == volume.attach_data.instance_id][0]
-                    instance_name = TaggedItemView.get_display_name(instance)
+                    instance_name = TaggedItemView.get_display_name(instance, escapebraces=False)
                 volumes.append(dict(
                     create_time=volume.create_time,
                     id=volume.id,
                     instance=volume.attach_data.instance_id,
                     device=volume.attach_data.device,
                     instance_name=instance_name,
-                    name=TaggedItemView.get_display_name(volume),
+                    name=TaggedItemView.get_display_name(volume, escapebraces=False),
                     snapshots=len([snap.id for snap in snapshots if snap.volume_id == volume.id]),
                     size=volume.size,
                     status=status,
@@ -265,6 +268,7 @@ class VolumeView(TaggedItemView, BaseVolumeView):
             delete_form=self.delete_form,
             attach_form=self.attach_form,
             detach_form=self.detach_form,
+            controller_options_json=self.get_controller_options_json(),
         )
 
     @view_config(route_name='volume_view', renderer=VIEW_TEMPLATE, request_method='GET')
@@ -311,7 +315,8 @@ class VolumeView(TaggedItemView, BaseVolumeView):
                 snapshot = self.get_snapshot(snapshot_id)
                 kwargs['snapshot'] = snapshot
             with boto_error_handler(self.request, self.request.route_path('volumes')):
-                self.log_request(_(u"Creating volume (size={0}, zone={1}, snapshot_id={2})").format(size, zone, snapshot_id))
+                self.log_request(_(u"Creating volume (size={0}, zone={1}, snapshot_id={2})").format(
+                    size, zone, snapshot_id))
                 volume = self.conn.create_volume(**kwargs)
                 # Add name tag
                 if name:
@@ -362,7 +367,8 @@ class VolumeView(TaggedItemView, BaseVolumeView):
     def volume_detach(self):
         if self.detach_form.validate():
             with boto_error_handler(self.request, self.location):
-                self.log_request(_(u"Detaching volume {0} from {1}").format(self.volume.id, self.volume.attach_data.instance_id))
+                self.log_request(_(u"Detaching volume {0} from {1}").format(
+                    self.volume.id, self.volume.attach_data.instance_id))
                 self.volume.detach()
                 msg = _(u'Request successfully submitted.  It may take a moment to detach the volume.')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
@@ -386,6 +392,15 @@ class VolumeView(TaggedItemView, BaseVolumeView):
         if self.volume:
             return TaggedItemView.get_display_name(self.volume)
         return None
+
+    def get_controller_options_json(self):
+        if not self.volume:
+            return '{}'
+        return BaseView.escape_json(json.dumps({
+            'volume_status_json_url': self.request.route_path('volume_state_json', id=self.volume.id),
+            'volume_status': self.volume.status,
+            'attach_status': self.volume.attach_data.status,
+        }))
 
 
 class VolumeStateView(BaseVolumeView):
@@ -451,7 +466,7 @@ class VolumeSnapshotsView(BaseVolumeView):
                     'volume_snapshot_delete', id=self.volume.id, snapshot_id=snapshot.id)
                 snapshots.append(dict(
                     id=snapshot.id,
-                    name=TaggedItemView.get_display_name(snapshot),
+                    name=TaggedItemView.get_display_name(snapshot, escapebraces=False),
                     progress=snapshot.progress,
                     transitional=self.is_transitional(snapshot),
                     volume_size=self.volume.size,

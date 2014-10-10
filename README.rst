@@ -11,7 +11,13 @@ AWS Services supported
 * EC2
 * Auto Scaling
 * CloudWatch
+* S3
 * IAM
+
+Issue Tracking
+==============
+
+For bug reports, improvement request and general project planning, we use Jira: https://eucalyptus.atlassian.net/
 
 
 Development environment setup
@@ -27,15 +33,15 @@ Prior to installing Pyramid and it's dependencies, you may need to install the f
 
 Ubuntu:
 
-    `apt-get install openssl build-essential python-dev swig`
+    `apt-get install openssl build-essential python-dev swig memcached libmemcached6`
 
 Fedora:
 
-    `yum install openssl-devel python-devel swig; yum groupinstall 'Development tools'`
+    `yum install openssl-devel python-devel swig memcached libmemcached; yum groupinstall 'Development tools'`
 
 OS X:
 
-Install homebrew, then run `brew install libevent openssl swig`
+Install homebrew, then run `brew install libevent openssl swig libmagic memcached libmemcached`
 
 
 Pyramid Setup

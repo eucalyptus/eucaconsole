@@ -89,11 +89,12 @@
     </div>
 
     <div class="topic task nested1" id="manage_instance_ui_context_menu">
-        <h2 class="title topictitle2">Context menu actions</h2>
+        <h2 class="title topictitle2">Actions</h2>
 
         
-        <div class="body taskbody"><p class="shortdesc">Each entry in the image list has a context menu, accessible in the
-            <span class="ph uicontrol">Actions</span> column. Clicking the action icon brings up a menu of
+        <div class="body taskbody"><p class="shortdesc">If an image is available and not in the process of being created (status
+            "pending"), each entry in the image list has a context menu, accessible in the
+                <span class="ph uicontrol">Actions</span> column. Clicking the action icon brings up a menu of
             actions that you can perform on the selected image.</p>
 
             <div class="section context">The following context menu actions are availabe:</div>
@@ -104,7 +105,8 @@
             <h3 class="title topictitle3">View details</h3>
 
             
-            <div class="body taskbody"><p class="shortdesc"/>
+            <div class="body taskbody"><p class="shortdesc">This option is available whether the image is available or in the process of
+                being created. </p>
 
                 <div class="li step p">
                         <span class="ph cmd">This item will bring up the image detail page.</span>
@@ -119,7 +121,7 @@
             <h3 class="title topictitle3">Launch instance</h3>
 
             
-            <div class="body taskbody"><p class="shortdesc"/>
+            <div class="body taskbody"><p class="shortdesc">This option is only available if the image is available. </p>
 
                 <div class="li step p">
                         <span class="ph cmd">Selecting this menu will display a dialog that allows you to launch an instance using the selected image.</span>
@@ -133,20 +135,42 @@
             <h3 class="title topictitle3">Create launch configuration</h3>
 
             
-            <div class="body taskbody"><p class="shortdesc"/>
+            <div class="body taskbody"><p class="shortdesc">This option is only available if the image is available. </p>
 
                 <div class="li step p">
                         <span class="ph cmd">A launch configuration is used to define the parameters for new
                             images that are launched as part of your auto scaling group.
                             Selecting this menu displays the <span class="ph uicontrol">Create new launch
                                 configuration</span> wizard. </span>
-                         <div class="note note"><span class="notetitle">Note:</span> For more information on Auto Scaling, please see <em class="ph i">Using Auto
+                        <div class="itemgroup info"><div class="note note"><span class="notetitle">Note:</span> For more information on Auto Scaling, please see <em class="ph i">Using Auto
                             Scaling</em> in the <em class="ph i">Eucalyptus User Guide</em>.</div>
-
+</div>
                         
                     </div>
 
             </div>
+
+           
+            </div>
+
+            <div class="topic task nested2" id="manage_images_remove_from_cloud">
+                <h3 class="title topictitle3">Remove from cloud</h3>
+
+                
+                <div class="body taskbody"><p class="shortdesc">The Remove from cloud option is used to clean up images that are no
+                longer needed. Once removed, it will become de-registered but can be re-registered
+                if its snapshot has not been deleted. This option is only available if the image is
+                available. </p>
+
+                    <ol class="ol steps"><li class="li step">
+                            <span class="ph cmd">Selecting this menu displays the <span class="ph uicontrol">Remove image from cloud</span> confirmation window. </span>                            
+                        </li>
+<li class="li step">
+                            <span class="ph cmd">To confirm, click <span class="ph uicontrol">Yes, Remove Image from the Cloud</span>. </span>                            
+                        </li>
+</ol>
+
+                </div>
 
         </div>
 

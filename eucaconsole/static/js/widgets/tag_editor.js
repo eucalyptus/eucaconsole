@@ -12,7 +12,7 @@ angular.module('TagEditor', ['ngSanitize'])
             return line.substring(0, num) + "...";
         };
     })
-    .controller('TagEditorCtrl', function ($scope, $sanitize) {
+    .controller('TagEditorCtrl', function ($scope, $sanitize, $timeout) {
         $scope.tagEditor = $('#tag-editor');
         $scope.tagInputs = $scope.tagEditor.find('.taginput');
         $scope.tagsTextarea = $scope.tagEditor.find('textarea#tags');
@@ -54,6 +54,16 @@ angular.module('TagEditor', ['ngSanitize'])
                     });
                 }
             });
+            $('#tag-name-input').keydown(function(evt) {
+                if (evt.keyCode === 13) {
+                    evt.preventDefault();
+                }
+            });
+            $('#tag-value-input').keydown(function(evt) {
+                if (evt.keyCode === 13) {
+                    evt.preventDefault();
+                }
+            });
             $scope.showNameTag = showNameTag;
             $scope.syncTags();
             $scope.setWatch();
@@ -69,6 +79,10 @@ angular.module('TagEditor', ['ngSanitize'])
         };
         $scope.addTag = function ($event) {
             $event.preventDefault();
+            $scope.checkRequiredInput();
+            if ($scope.isTagNotComplete) {
+                return;
+            }
             var tagEntry = $($event.currentTarget).closest('.tagentry'),
                 tagKeyField = tagEntry.find('.key'),
                 tagValueField = tagEntry.find('.value'),
@@ -108,18 +122,32 @@ angular.module('TagEditor', ['ngSanitize'])
             }
         };
         $scope.checkRequiredInput = function () {
-            if($scope.newTagKey === '' || $scope.newTagValue === ''){
-               $scope.isTagNotComplete = true;
+            if ($scope.newTagKey === '' || $scope.newTagValue === '') {
+                $scope.isTagNotComplete = true;
+            } else if ($('#tag-name-input-div').hasClass('error') ||
+                $('#tag-value-input-div').hasClass('error')) {
+                $scope.isTagNotComplete = true;
             } else {
-               $scope.isTagNotComplete = false;
+                $scope.isTagNotComplete = false;
             } 
+
         }; 
         $scope.setWatch = function () {
             $scope.$watch('newTagKey', function () {
                 $scope.checkRequiredInput();
+                // timeout is needed to react to Foundation's validation check
+                $timeout(function() {
+                    // repeat the check on input condition 
+                    $scope.checkRequiredInput();
+                }, 1000);
             });
             $scope.$watch('newTagValue', function () {
                 $scope.checkRequiredInput();
+                // timeout is needed to react to Foundation's validation check
+                $timeout(function() {
+                    // repeat the check on input condition 
+                    $scope.checkRequiredInput();
+                }, 1000);
             });
         };
     })

@@ -31,31 +31,38 @@
                 </ul>
             </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
-                <div ng-show="item.rules">
-                    <span class="label" title="Rules" i18n:attributes="title" data-tooltip="">RU</span>
-                    ${panel('securitygroup_rules_landingpage', tile_view=True)}
+                <div ng-show="item.vpc_id">
+                    <span class="label" title="VPC Network" i18n:attributes="title" data-tooltip="">VN</span>
+                    {{ item.vpc_name }}
                 </div>
                 <div ng-show="item.description">
                     <span class="label" title="Description" i18n:attributes="title" data-tooltip="">DE</span>
                     {{ item.description }}
                 </div>
-                <div ng-show="item.tags">
-                    <span class="label" title="Tags" i18n:attributes="title" data-tooltip="">TA</span>
-                    {{ item.tags }}
+                <div ng-show="item.rules">
+                    <span class="label" title="Inbound Rules" i18n:attributes="title" data-tooltip="">IR</span>
+                    ${panel('securitygroup_rules_landingpage', tile_view=True)}
+                </div>
+                <div ng-show="item.rules_egress">
+                    <span class="label" title="Outbound Rules" i18n:attributes="title" data-tooltip="">OR</span>
+                    ${panel('securitygroup_rules_egress_landingpage', tile_view=True)}
                 </div>
             </div>
             <metal:block metal:fill-slot="tableview_headers">
-                <th i18n:translate="">Name</th>
-                <th i18n:translate="">Description</th>
-                <th i18n:translate="">Rules</th>
-                <th i18n:translate="">Tags</th>
-                <th i18n:translate="" class="actions">Actions</th>
+                <th i18n:translate="">NAME</th>
+                <th i18n:translate="">VPC NAME (ID)</th>
+                <th i18n:translate="">DESCRIPTION</th>
+                <th i18n:translate="">INBOUND RULES</th>
+                <th i18n:translate="">OUTBOUND RULES</th>
+                <th i18n:translate="" class="actions">ACTIONS</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
                 <td class="breakword"><a ng-href="${prefix}/{{ item.id || item.name | escapeURL }}">{{ item.name | ellipsis: 30 }}</a></td>
+                <td class="breakword"><span ng-show="item.vpc_id">{{ item.vpc_name }}</span></td>
                 <td class="breakword">{{ item.description | ellipsis: 64 }}</td>
                 <td>${panel('securitygroup_rules_landingpage', tile_view=False)}</td>
-                <td class="breakword">{{ item.tags }}</td>
+                <td>${panel('securitygroup_rules_egress_landingpage', tile_view=False)}</td>
+                <td></td>
                 <td>
                     <span class="actions">
                         <a id="table-item-dropdown_{{ item.id }}" class="tiny secondary button dropdown round" data-dropdown="item-dropdown_{{ item.id }}"><i class="fi-widget"></i></a>

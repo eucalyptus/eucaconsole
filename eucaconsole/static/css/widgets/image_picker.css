@@ -9,7 +9,7 @@
 #image-picker .table tbody tr.selected { background-color: #eef7e3; }
 #image-picker .table tbody tr.selected:hover { cursor: inherit; }
 #image-picker .table tbody td { word-break: break-all; }
-#image-picker .table tbody td.desc { width: 100%; }
+#image-picker .table tbody td.desc { width: 100%; text-align: left; }
 #image-picker .table tbody td.btns { width: 5rem; min-width: 5rem; padding-top: 1.5rem; }
 #image-picker .table .icon { padding: 15px; }
 #image-picker .table .icon .image { display: inline-block; width: 50px; height: 50px; background: url(../../img/image-platform-icons.png) no-repeat top left; }

@@ -31,14 +31,15 @@ import wtforms
 from wtforms import validators
 
 from ..i18n import _
-from . import BaseSecureForm, ChoicesManager
+from . import BaseSecureForm, ChoicesManager, TextEscapedField
+
 
 class SnapshotForm(BaseSecureForm):
     """Snapshot form
        Note: no need to add a 'tags' field.  Use the tag_editor panel (in a template) instead
     """
     name_error_msg = _(u'Not a valid name')
-    name = wtforms.TextField(label=_(u'Name'))
+    name = TextEscapedField(label=_(u'Name'))
     volume_error_msg = _(u'Volume is required')
     volume_id = wtforms.SelectField(
         label=_(u'Create from volume'),
@@ -86,7 +87,8 @@ class DeleteSnapshotForm(BaseSecureForm):
 
 class RegisterSnapshotForm(BaseSecureForm):
     """CSRF-protected form to delete a snapshot"""
-    name = wtforms.TextField(label=_(u'Name'),
+    name = wtforms.TextField(
+        label=_(u'Name'),
         validators=[validators.InputRequired(message=_(u'Image name is required'))])
     description = wtforms.TextAreaField(
         label=_(u'Description'),
@@ -101,7 +103,7 @@ class RegisterSnapshotForm(BaseSecureForm):
 class SnapshotsFiltersForm(BaseSecureForm):
     """Form class for filters on landing page"""
     status = wtforms.SelectMultipleField(label=_(u'Status'))
-    tags = wtforms.TextField(label=_(u'Tags'))
+    tags = TextEscapedField(label=_(u'Tags'))
 
     def __init__(self, request, **kwargs):
         super(SnapshotsFiltersForm, self).__init__(request, **kwargs)

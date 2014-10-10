@@ -38,10 +38,11 @@ from pyramid.view import view_config
 from ..forms.snapshots import SnapshotForm, DeleteSnapshotForm, RegisterSnapshotForm, SnapshotsFiltersForm
 from ..i18n import _
 from ..models import Notification
-from ..views import LandingPageView, TaggedItemView, BaseView
+from ..views import LandingPageView, TaggedItemView, BaseView, JSONResponse
 from . import boto_error_handler
 
 import panels
+
 
 class SnapshotsView(LandingPageView):
     VIEW_TEMPLATE = '../templates/snapshots/snapshots.pt'
@@ -91,7 +92,7 @@ class SnapshotsView(LandingPageView):
                         self.log_request(_(u"Deregistering image {0}").format(img.id))
                         img.deregister()
                     # Clear images cache
-                    #ImagesView.invalidate_images_cache()
+                    self.invalidate_images_cache()
                 self.log_request(_(u"Deleting snapshot {0}").format(snapshot_id))
                 snapshot.delete()
                 prefix = _(u'Successfully deleted snapshot')
@@ -152,7 +153,7 @@ class SnapshotsView(LandingPageView):
                 prefix = _(u'Successfully registered snapshot')
                 msg = '{prefix} {id}'.format(prefix=prefix, id=snapshot_id)
                 # Clear images cache
-                #ImagesView.invalidate_images_cache()
+                self.invalidate_images_cache()
                 location = self.request.route_path('image_view', id=image_id)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
@@ -187,8 +188,10 @@ class SnapshotsJsonView(LandingPageView):
         super(SnapshotsJsonView, self).__init__(request)
         self.conn = self.get_connection()
 
-    @view_config(route_name='snapshots_json', renderer='json', request_method='GET')
+    @view_config(route_name='snapshots_json', renderer='json', request_method='POST')
     def snapshots_json(self):
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
         snapshots = []
         filtered_snapshots = self.filter_items(self.get_items())
         volume_ids = list(set([snapshot.volume_id for snapshot in filtered_snapshots]))
@@ -197,11 +200,11 @@ class SnapshotsJsonView(LandingPageView):
             volume = [volume for volume in volumes if volume.id == snapshot.volume_id]
             volume_name = ''
             if volume:
-                volume_name = TaggedItemView.get_display_name(volume[0])
+                volume_name = TaggedItemView.get_display_name(volume[0], escapebraces=False)
             snapshots.append(dict(
                 id=snapshot.id,
                 description=snapshot.description,
-                name=TaggedItemView.get_display_name(snapshot),
+                name=TaggedItemView.get_display_name(snapshot, escapebraces=False),
                 progress=snapshot.progress,
                 transitional=self.is_transitional(snapshot),
                 start_time=snapshot.start_time,
@@ -243,17 +246,19 @@ class SnapshotView(TaggedItemView):
         self.delete_form = DeleteSnapshotForm(self.request, formdata=self.request.params or None)
         self.register_form = RegisterSnapshotForm(self.request, formdata=self.request.params or None)
         self.tagged_obj = self.snapshot
+        self.volume_count = self.get_volume_count()
         with boto_error_handler(request, self.location):
             self.images_registered = self.get_images_registered(self.snapshot.id) if self.snapshot else None
         self.render_dict = dict(
             snapshot=self.snapshot,
+            snapshot_description=self.snapshot.description if self.snapshot else '',
             registered=True if self.images_registered is not None else False,
             snapshot_name=self.snapshot_name,
             volume_name=self.volume_name,
             snapshot_form=self.snapshot_form,
             delete_form=self.delete_form,
             register_form=self.register_form,
-            volume_count=self.get_volume_count()
+            controller_options_json=self.get_controller_options_json(),
         )
 
     def get_volume_count(self):
@@ -335,7 +340,7 @@ class SnapshotView(TaggedItemView):
                         self.log_request(_(u"Deregistering image {0}").format(img.id))
                         img.deregister()
                     # Clear images cache
-                    #ImagesView.invalidate_images_cache()
+                    self.invalidate_images_cache()
                 self.log_request(_(u"Deleting snapshot {0}").format(self.snapshot.id))
                 self.snapshot.delete()
                 prefix = _(u'Successfully deleted snapshot')
@@ -369,7 +374,7 @@ class SnapshotView(TaggedItemView):
                 prefix = _(u'Successfully registered snapshot')
                 msg = '{prefix} {id}'.format(prefix=prefix, id=snapshot_id)
                 # Clear images cache
-                #ImagesView.invalidate_images_cache()
+                self.invalidate_images_cache()
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
         return self.render_dict
@@ -390,6 +395,19 @@ class SnapshotView(TaggedItemView):
         except BotoServerError as err:
             return None
         return volumes_list[0] if volumes_list else None
+
+    def get_controller_options_json(self):
+        options = {
+            'volume_count': self.volume_count,
+        }
+        if self.snapshot:
+            options.update({
+                'snapshot_status_json_url': self.request.route_path('snapshot_state_json', id=self.snapshot.id),
+                'snapshot_status': self.snapshot.status,
+                'snapshot_progress': self.snapshot.progress,
+                'snapshot_images_json_url': self.request.route_path('snapshot_images_json', id=self.snapshot.id),
+            })
+        return BaseView.escape_json(json.dumps(options))
 
 
 class SnapshotStateView(BaseView):

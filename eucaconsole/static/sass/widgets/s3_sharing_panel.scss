@@ -1,0 +1,48 @@
+@charset "UTF-8";
+
+/* @fileOverview S3 Sharing panel widget Sass CSS styles */
+
+@import "../includes/eucavariables";
+
+
+#s3-sharing-panel {
+    .items {
+        margin-bottom: 6px;
+        .grantentry {
+            color: #333;
+            background-color: $euca-extralightgrey;
+            margin-right: 8px;
+            a.remove i  {
+                color: white;
+            }
+        }
+    }
+    #share_type {
+        list-style-type: none;
+        margin-bottom: 0;
+        li {
+            display: inline-block;
+        }
+    }
+    #share_account, #share_permissions, #canned_acl {
+        width: 60%;
+    }
+    #canned_acl {
+        margin-left: 1.6rem;
+    }
+    #manual-acl-wrapper {
+        .manual-controls {
+            margin-left: 1.6rem;
+        }
+    }
+    #add-s3acl-btn {
+        margin-top: 0.5rem;
+    }
+}
+
+@media screen and (min-width: $topbar-breakpoint) {
+    // Prevent share account label wrapping in large screen view
+    #controls_share_account label {
+        white-space: nowrap;
+    }
+}

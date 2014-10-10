@@ -9,7 +9,7 @@
             This snapshot has been registered as an image. Deleting this snapshot will also de-register the image.
         </p>
         <p><span i18n:translate="">Are you sure you want to delete snapshot</span>
-           <span tal:condition="snapshot"><b ng-non-bindable="">${snapshot_name}</b></span>
+           <span tal:condition="snapshot"><b>${snapshot_name}</b></span>
            <span tal:condition="not snapshot"><b>{{ snapshotName }}</b></span>
            <span ng-show="images" i18n:translate="">and de-register image(s)</span>
            <span ng-repeat="image in images"><b>{{ image.name }} ({{ image.id }})</b><span ng-hide="$last">, </span>
@@ -47,8 +47,12 @@
             <input type="hidden" name="snapshot_id" value="{{ snapshotID }}" />
             ${panel('form_field', field=register_form['name'], **html_attrs)}
             ${panel('form_field', field=register_form['description'])}
-            ${panel('form_field', reverse='true', field=register_form['dot'], **dot_html_attrs)}
-            ${panel('form_field', reverse='true', field=register_form['reg_as_windows'])}
+            <div class="row">
+                <div class="large-8 columns right">
+                    ${panel('form_field', reverse=True, field=register_form['dot'], **dot_html_attrs)}
+                    ${panel('form_field', reverse=True, field=register_form['reg_as_windows'])}
+                </div>
+            </div>
             <div>
                 <label>
                     <span class="req">*</span>

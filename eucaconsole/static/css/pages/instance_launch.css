@@ -15,6 +15,9 @@
 .wizard .tabs-content { min-height: 400px; margin: 0 0 0 0; padding: 1rem; background-color: white; }
 .wizard .tabs-content .content { width: 100%; }
 .wizard .tabs-content .content .description { font-weight: bold; color: #03405f; }
+.wizard .tabs-content .content .rule-description-label { color: #03405f; }
+.wizard .fi-alert { color: darkred; }
+.wizard .chosen-container-multi .chosen-choices li.search-field input.default { color: #333; font-size: 14px; font-family: Lato, Helvetica, Arial, sans-serif; margin-left: 3px; }
 
 .summary { background-color: white; position: relative; top: 2px; padding: 8px; padding-bottom: 2rem; margin-bottom: 1rem; }
 .summary label { position: relative; right: -1rem; color: #6a737b; font-weight: bold; margin-bottom: 2px; margin-top: 4px; }
@@ -44,6 +47,11 @@
 #launch-instance-form #controls_userdata_file { position: relative; top: -0.5rem; }
 #launch-instance-form #controls_userdata_file #userdata_file { width: 80%; display: inline-block; }
 #launch-instance-form #create-keypair-link, #launch-instance-form #create-securitygroup-link { position: relative; top: -6px; margin-bottom: 10px; }
+#launch-instance-form .rules-display { margin-left: 0.7rem; }
 #launch-instance-form .rules-title { margin-bottom: 3px; }
 
 #create-keypair-modal #keypair-material { height: 16rem; color: white; background-color: black; font-weight: bold; font-family: Courier, "courier New", monospace, sans-serif; }
+
+#userdatalabel { right: 0px; }
+
+#userdata { margin: 0 0 0; }

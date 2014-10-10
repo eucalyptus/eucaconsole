@@ -5,7 +5,7 @@
 </head>
 
 <div metal:fill-slot="main_content" ng-app="ImagesPage" ng-controller="ImagesCtrl"
-     ng-init="initSnapshotImages('${request.route_path('snapshot_images_json', id='_id_')}')">
+     ng-init="initController('${controller_options_json}')">
     <div class="row" id="contentwrap" ng-app="LandingPage" ng-controller="ItemsCtrl"
          ng-init="initController('images', '${initial_sort_key}', '${json_items_endpoint}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
@@ -34,18 +34,34 @@
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
                 <a class="tiny secondary button dropdown right" data-dropdown="item-dropdown_{{ item.id }}"><i class="fi-widget"></i></a>
                 <ul id="item-dropdown_{{ item.id }}" class="f-dropdown" data-dropdown-content="">
-                    <li><a i18n:translate="" ng-href="${prefix}/{{ item.id }}">View details</a></li>
-                    <li><a i18n:translate="" ng-href="${request.route_path('instance_create')}?image_id={{ item.id }}">Launch instance</a></li>
-                    <li><a ng-href="${request.route_path('launchconfig_new')}?image_id={{ item.id }}"
+                    <li ng-show="!item.fake_id">
+                        <a i18n:translate="" ng-href="${prefix}/{{ item.id }}">View details</a>
+                    </li>
+                    <li ng-show="item.fake_id">
+                        <a i18n:translate="" ng-href="${prefix}/{{ item.fake_id }}">View details</a>
+                    </li>
+                    <li ng-show="item.root_device_type == 'instance-store' &amp;&amp; item.fake_id">
+                        <a id="cancel-image-creation-action" ng-click="cancelCreate($event, item)" i18n:translate="">Cancel image creation</a>
+                    </li>
+                    <li ng-show="!item.transitional &amp;&amp; item.status !== 'failed'">
+                        <a i18n:translate="" ng-href="${request.route_path('instance_create')}?image_id={{ item.id }}">Launch instance</a>
+                    </li>
+                    <li ng-show="!item.transitional &amp;&amp; item.status !== 'failed'">
+                        <a ng-href="${request.route_path('launchconfig_new')}?image_id={{ item.id }}"
                            i18n:translate="">Create launch configuration</a>
                     </li>
-                    <li ng-if="'${account_id}' == item.owner_id">
+                    <li ng-show="!item.transitional" ng-if="'${account_id}' == item.owner_id">
                         <a i18n:translate="" ng-click="revealModal('deregister', item)">Remove from cloud</a>
                     </li>
                 </ul>
             </div>
             <div metal:fill-slot="tile_header">
-                <a ng-href="${prefix}/{{ item.id }}">{{ item.tagged_name || item.id }}</a>
+                <span ng-show="!item.fake_id">
+                    <a ng-href="${prefix}/{{ item.id }}">{{ item.tagged_name || item.id }}</a>
+                </span>
+                <span ng-show="item.fake_id">
+                    <a ng-href="${prefix}/{{ item.fake_id }}">{{ item.id }}</a>
+                </span>
             </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
                 <div>
@@ -55,7 +71,10 @@
                 <div>
                     <span class="label" title="EMI Name" i18n:attributes="title" data-tooltip="" tal:condition="layout.cloud_type == 'euca'">EM</span>
                     <span class="label" title="AMI Name" i18n:attributes="title" data-tooltip="" tal:condition="layout.cloud_type == 'aws'">AM</span>
-                    {{ item.name }}
+                    {{ item.name | limitTo: 64 }}
+                    <span ng-show="item.name.length &gt; 64"
+                          data-tooltip="tooltip" class="label round has-tip ellipsis"
+                          title="{{ sanitizeContent(item.name) }}">...</span>
                 </div>
                 <div ng-show="item.platform_name">
                     <span class="label" title="Platform" i18n:attributes="title" data-tooltip="">PL</span>
@@ -81,9 +100,19 @@
                     {{ item.root_device_type }}
                 </div>
             </div>
-            <div metal:fill-slot="tile_footer"></div>
+            <div metal:fill-slot="tile_footer">
+                <div class="footer status {{ item.state.replace(' ', '').toLowerCase() }}">
+                    <div class="completed" ng-show="!item.transitional">
+                        <span>{{ item.state }}</span>
+                    </div>
+                    <div class="progress" ng-show="item.transitional"><span
+                            class="meter" style="width: {{ item.progress }}">{{ item.progress }}% ({{ item.state }})</span>
+                    </div>
+                </div>
+            </div>
             <metal:block metal:fill-slot="tableview_headers">
                 <th i18n:translate="">Name (ID)</th>
+                <th i18n:translate="">Status</th>
                 <th>${'EMI' if layout.cloud_type == 'euca' else 'AMI'}&nbsp;<span i18n:translate="">Name</span></th>
                 <th i18n:translate="">Description</th>
                 <th i18n:translate="">Arch</th>
@@ -92,7 +121,20 @@
                 <th i18n:translate="">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
-                <td class="id breakword"><a ng-href="${prefix}/{{ item.id }}">{{ item.tagged_name || item.id | ellipsis: 30 }}</a></td>
+                <td class="id breakword" ng-show="!item.fake_id">
+                    <a ng-href="${prefix}/{{ item.id }}">{{ item.tagged_name || item.id | ellipsis: 30 }}</a>
+                </td>
+                <td class="id breakword" ng-show="item.fake_id">
+                    <a ng-href="${prefix}/{{ item.fake_id }}">{{ item.id }}</a>
+                </td>
+                <td class="status">
+                    <div class="progress" ng-show="item.transitional"><span
+                            class="meter" style="width: {{ item.progress }}">{{ item.progress }}%</span><span>({{ item.state }})</span>
+                    </div>
+                    <span ng-show="!item.transitional">
+                        <span class="label radius status {{ item.state }}">{{ item.state }}</span>
+                    </span>
+                </td>
                 <td class="emi-name"><span>{{ item.name | ellipsis: 64 }}</span></td>
                 <td class="description"><span>{{ item.description | ellipsis: 128 }}</span></td>
                 <td><span class="label radius {{ item.architecture }}">{{ item.architecture }}</span></td>
@@ -102,12 +144,23 @@
                     <span class="actions">
                         <a class="tiny secondary button dropdown round" data-dropdown="item-dropdown_{{ item.id }}"><i class="fi-widget"></i></a>
                         <ul id="item-dropdown_{{ item.id }}" class="f-dropdown" data-dropdown-content="">
-                            <li><a i18n:translate="" ng-href="${prefix}/{{ item.id }}">View details</a></li>
-                            <li><a i18n:translate="" ng-href="${request.route_path('instance_create')}?image_id={{ item.id }}">Launch instance</a></li>
-                            <li><a ng-href="${request.route_path('launchconfig_new')}?image_id={{ item.id }}"
+                            <li ng-show="!item.fake_id">
+                                <a i18n:translate="" ng-href="${prefix}/{{ item.id }}">View details</a>
+                            </li>
+                            <li ng-show="item.fake_id">
+                                <a i18n:translate="" ng-href="${prefix}/{{ item.fake_id }}">View details</a>
+                            </li>
+                            <li ng-show="item.root_device_type == 'instance-store' &amp;&amp; item.fake_id">
+                                <a id="cancel-image-creation-action" ng-click="cancelCreate($event, item)" i18n:translate="">Cancel image creation</a>
+                            </li>
+                            <li ng-show="!item.transitional &amp;&amp; item.status !== 'failed'">
+                                <a i18n:translate="" ng-href="${request.route_path('instance_create')}?image_id={{ item.id }}">Launch instance</a>
+                            </li>
+                            <li ng-show="!item.transitional &amp;&amp; item.status !== 'failed'">
+                                <a ng-href="${request.route_path('launchconfig_new')}?image_id={{ item.id }}"
                                    i18n:translate="">Create launch configuration</a>
                             </li>
-                            <li ng-if="'${account_id}' == item.owner_id">
+                            <li ng-show="!item.transitional" ng-if="'${account_id}' == item.owner_id">
                                 <a i18n:translate="" ng-click="revealModal('deregister', item)">Remove from cloud</a>
                             </li>
                         </ul>
@@ -131,6 +184,7 @@
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/custom_filters.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/landingpage.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/eucaconsole_utils.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/images.js')}"></script>
     <script tal:condition="layout.cloud_type == 'aws'">
         // Set "owned by Amazon" as default filter if on AWS

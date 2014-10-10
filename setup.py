@@ -108,6 +108,7 @@ requires = [
     'beaker >= 1.5.4',
     'boto >= 2.27.0',
     'chameleon >= 2.5.3',
+    'dogpile.cache >= 0.5.3',
     'gevent >= 0.13.8',  # Note: gevent 1.0 no longer requires libevent, it bundles libev instead
     # 'greenlet >= 0.3.1',
     'gunicorn >= 18.0',
@@ -120,6 +121,7 @@ requires = [
     'pyramid_chameleon >= 0.1',
     'pyramid_layout <= 0.8',
     'python-dateutil >= 1.4.1',  # Don't use 2.x series unless on Python 3
+    'python-magic >= 0.4.6',
     'simplejson >= 2.0.9',
     'WTForms >= 1.0.2',
 ]
@@ -132,6 +134,7 @@ i18n_extras = [
 dev_extras = [
     'pyramid_debugtoolbar',
     'waitress',
+    'pylibmc',
 ]
 
 message_extractors = {'eucaconsole': [

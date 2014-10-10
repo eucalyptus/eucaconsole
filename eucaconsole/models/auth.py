@@ -36,12 +36,15 @@ import socket
 import urllib2
 import xml
 
-from beaker.cache import cache_region
 from boto import ec2
+from boto import vpc
 from boto.https_connection import CertValidatingHTTPSConnection
 from boto.ec2.connection import EC2Connection
+from boto.s3.connection import S3Connection
+from boto.s3.connection import OrdinaryCallingFormat
 # uncomment to enable boto request logger. Use only for development (see ref in _euca_connection)
 #from boto.requestlog import RequestLogger
+import boto
 import boto.ec2.autoscale
 import boto.ec2.cloudwatch
 import boto.ec2.elb
@@ -83,7 +86,6 @@ class User(object):
         return account_id
                     
 
-
 class ConnectionManager(object):
     """Returns connection objects, pulling from Beaker cache when available"""
     @staticmethod
@@ -101,7 +103,7 @@ class ConnectionManager(object):
         :param secret_key: AWS secret key
 
         :type conn_type: string
-        :param conn_type: Connection type ('ec2', 'autoscale', 'cloudwatch', or 'elb')
+        :param conn_type: Connection type ('ec2', 'autoscale', 'cloudwatch', 'elb', or 's3')
 
         :type validate_certs: bool
         :param validate_certs: indicates to check the ssl cert the server provides
@@ -109,7 +111,6 @@ class ConnectionManager(object):
         """
         cache_key = 'aws_connection_cache_{conn_type}_{region}'.format(conn_type=conn_type, region=region)
 
-        # @cache_region('short_term', cache_key)
         def _aws_connection(_region, _access_key, _secret_key, _token, _conn_type):
             conn = None
             if conn_type == 'ec2':
@@ -121,9 +122,17 @@ class ConnectionManager(object):
             elif conn_type == 'cloudwatch':
                 conn = ec2.cloudwatch.connect_to_region(
                     _region, aws_access_key_id=_access_key, aws_secret_access_key=_secret_key, security_token=_token)
-            if conn_type == 'elb':
+            elif conn_type == 's3':
+                conn = boto.connect_s3(  # Don't specify region when connecting to S3
+                    aws_access_key_id=_access_key, aws_secret_access_key=_secret_key, security_token=_token)
+            elif conn_type == 'elb':
                 conn = ec2.elb.connect_to_region(
                     _region, aws_access_key_id=_access_key, aws_secret_access_key=_secret_key, security_token=_token)
+            elif conn_type == 'vpc':
+                conn = vpc.connect_to_region(
+                    _region, aws_access_key_id=_access_key, aws_secret_access_key=_secret_key, security_token=_token)
+            elif conn_type == 'iam':
+                return None
             conn.https_validate_certificates = validate_certs
             return conn
 
@@ -147,7 +156,7 @@ class ConnectionManager(object):
         :param secret_key: Eucalyptus secret key
 
         :type conn_type: string
-        :param conn_type: Connection type ('ec2', 'autoscale', 'cloudwatch', or 'elb', 'iam')
+        :param conn_type: Connection type ('ec2', 'autoscale', 'cloudwatch', 'elb', 'iam', 'sts', or 's3')
 
         :type validate_certs: bool
         :param validate_certs: indicates to check the ssl cert the server provides
@@ -160,7 +169,6 @@ class ConnectionManager(object):
             conn_type=conn_type, clchost=clchost, port=port
         )
 
-        # @cache_region('short_term', cache_key)
         def _euca_connection(_clchost, _port, _access_id, _secret_key, _token, _conn_type):
             region = RegionInfo(name='eucalyptus', endpoint=_clchost)
             path = '/services/Eucalyptus'
@@ -181,15 +189,23 @@ class ConnectionManager(object):
             elif conn_type == 'iam':
                 path = '/services/Euare'
                 conn_class = boto.iam.IAMConnection
+            elif conn_type == 's3':
+                path = '/services/objectstorage'
+                conn_class = S3Connection
+            elif conn_type == 'vpc':
+                conn_class = boto.vpc.VPCConnection
 
-            if conn_type != 'iam':
-                conn = conn_class(
-                    _access_id, _secret_key, region=region, port=_port, path=path, is_secure=True, security_token=_token
-                )
-            else:
+            # IAM and S3 connections need host instead of region info
+            if conn_type in ['iam', 's3']:
                 conn = conn_class(
                     _access_id, _secret_key, host=_clchost, port=_port, path=path, is_secure=True, security_token=_token
                 )
+            else:
+                conn = conn_class(
+                    _access_id, _secret_key, region=region, port=_port, path=path, is_secure=True, security_token=_token
+                )
+            if conn_type == 's3':
+                conn.calling_format=OrdinaryCallingFormat()
 
             # AutoScaling service needs additional auth info
             if conn_type == 'autoscale':
@@ -277,11 +293,11 @@ class EucaAuthenticator(object):
             return creds
         except SSLError as err:
             if err.message != '':
-                raise urllib2.URLError(err.message)
+                raise urllib2.URLError(str(err))
             else:
                 raise urllib2.URLError(err[1])
         except socket.error as err:
-            raise urllib2.URLError(err.message)
+            raise urllib2.URLError(str(err))
 
 
 class AWSAuthenticator(object):
