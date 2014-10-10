@@ -10,8 +10,8 @@ angular.module('KeypairPage', [])
         $scope.keypairMaterial = '';
         $scope.isNotValid = true;
         $scope.routeID = '';
-        $scope.initController = function (routeID) {
-            $scope.routeID = routeID;
+        $scope.initController = function () {
+            $scope.routeID = $('#hidden-keypair-route-id').text();
             $scope.setWatch();
             $scope.setFocus();
         };
