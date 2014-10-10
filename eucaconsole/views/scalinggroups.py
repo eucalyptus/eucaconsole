@@ -72,7 +72,7 @@ class DeleteScalingGroupMixin(object):
                         else:
                             if not str(instance._state).startswith('terminated') and not str(instance._state).startswith('shutting-down'):
                                 is_all_shutdown = False
-                    time.sleep(3)
+                    time.sleep(5)
                 count += 1
         return
 
@@ -133,7 +133,10 @@ class ScalingGroupsView(LandingPageView, DeleteScalingGroupMixin):
 
     def get_scaling_group_by_name(self, name):
         names = [name]
-        return self.autoscale_conn.get_all_groups(names)[0] if self.autoscale_conn else []
+        scaling_groups = self.autoscale_conn.get_all_groups(names) if self.autoscale_conn else []
+        if scaling_groups:
+            return scaling_groups[0]
+        return [] 
 
     @staticmethod
     def get_sort_keys():
