@@ -33,6 +33,7 @@ See http://docs.pylonsproject.org/projects/pyramid_layout/en/latest/layouts.html
 from operator import itemgetter
 
 import simplejson as json
+from urllib import urlencode
 
 from wtforms.fields import IntegerField
 from wtforms.validators import Length

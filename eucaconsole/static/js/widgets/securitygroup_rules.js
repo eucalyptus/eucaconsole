@@ -32,7 +32,8 @@ angular.module('SecurityGroupRules', [])
             $scope.resetValues();
         };
         $scope.initRules = function (rulesJson) {
-            rulesJson = rulesJson.replace(/__apos__/g, "\'").replace(/__dquote__/g, '\\"').replace(/__bslash__/g, "\\");
+            rulesJson = rulesJson.replace(/__apos__/g, "\'").replace(/__dquote__/g, '\\"').replace(/__bslash__/g, "\\")
+                .replace(/__curlyfront__/g, "{").replace(/__curlyback__/g, "}");
             $scope.rulesArray = JSON.parse(rulesJson);
             $scope.syncRules();
             $scope.setWatchers();
