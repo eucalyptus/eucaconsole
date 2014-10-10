@@ -144,6 +144,7 @@ angular.module('SecurityGroupRules', ['EucaConsoleUtils'])
             });
             $scope.$watch('customProtocol', function(){ 
                 if ($scope.customProtocol != '') {
+                    // error is customProtocol does not exist in the map
                     if ($scope.verifyCustomProtocol() == false) {
                         $scope.customProtocolDivClass = "error";
                     } else {
@@ -361,6 +362,7 @@ angular.module('SecurityGroupRules', ['EucaConsoleUtils'])
                 $scope.toPort = null;
             } else if ($scope.selectedProtocol === 'custom') {
                 if (isNaN($scope.customProtocol)) {
+                    // if customProtocol is not a number, get the protocol number for ipProtocol
                     $scope.ipProtocol = $scope.getCustomProtocolNumber($scope.customProtocol);
                 } else {
                     $scope.ipProtocol = $scope.customProtocol; 
@@ -405,7 +407,9 @@ angular.module('SecurityGroupRules', ['EucaConsoleUtils'])
         $scope.addRule = function ($event) {
             $event.preventDefault();
             $scope.checkRequiredInput();
-            if( $scope.isRuleNotComplete == true || $scope.hasDuplicatedRule == true || $scope.hasInvalidOwner == true ){
+            if ($scope.isRuleNotComplete == true ||
+                $scope.hasDuplicatedRule == true ||
+                $scope.hasInvalidOwner == true) {
                 return false;
             }
             // Trigger form validation to prevent borked rule entry
