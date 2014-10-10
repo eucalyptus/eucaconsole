@@ -18,7 +18,7 @@ angular.module('SecurityGroupRules', ['EucaConsoleUtils'])
         $scope.securityGroupVPC = '';
         $scope.selectedProtocol = '';
         $scope.customProtocol = '';
-        $scope.internetProtocols = [];
+        $scope.internetProtocols = {};
         $scope.isRuleNotComplete = true;
         $scope.inboundButtonClass = 'active';
         $scope.outboundButtonClass = 'inactive';
@@ -62,6 +62,7 @@ angular.module('SecurityGroupRules', ['EucaConsoleUtils'])
             $scope.rulesEgressArray = [];
             $scope.syncRules();
         };
+        // Initialize the Internet Protocols map
         $scope.initInternetProtocols = function () {
             var csrf_token = $('#csrf_token').val();
             var data = "csrf_token=" + csrf_token;
@@ -70,8 +71,13 @@ angular.module('SecurityGroupRules', ['EucaConsoleUtils'])
               success(function(oData) {
                 var results = oData ? oData.results : [];
                 var options = JSON.parse(eucaUnescapeJson(results));
-                $scope.internetProtocols = options['internet_protocols'];
-                console.log($scope.internetProtocols);
+                var pArray = options['internet_protocols'];
+                // Create internet protocols number to name map
+                angular.forEach(pArray, function(protocol) {
+                    $scope.internetProtocols[protocol[0]] = protocol[1];
+                });
+                // Scan the rule arrays and convert the custom protocol numbers to the names
+                $scope.scanForCustomProtocols();
             });
         };
         $scope.getAllSecurityGroups = function (vpc) {
@@ -325,7 +331,11 @@ angular.module('SecurityGroupRules', ['EucaConsoleUtils'])
                 $scope.fromPort = null;
                 $scope.toPort = null;
             } else if ($scope.selectedProtocol === 'custom') {
-                $scope.ipProtocol = $scope.customProtocol; 
+                if (isNaN($scope.customProtocol)) {
+                    $scope.ipProtocol = $scope.getCustomProtocolNumber($scope.customProtocol);
+                } else {
+                    $scope.ipProtocol = $scope.customProtocol; 
+                }
                 $scope.fromPort = null;
                 $scope.toPort = null;
             } else {
@@ -345,12 +355,14 @@ angular.module('SecurityGroupRules', ['EucaConsoleUtils'])
                 }
                 group_id=$scope.getGroupIdByName(name);
             }
+            // Adjust ipProtocol based on selectedProtocol 
             $scope.adjustIpProtocol();
             return {
                 'from_port': $scope.fromPort,
                 'to_port': $scope.toPort,
                 // Warning: Ugly hack to properly set ip_protocol when 'udp' or 'icmp'
                 'ip_protocol': $scope.ipProtocol,
+                'custom_protocol': $scope.getCustomProtocolName($scope.customProtocol),
                 'grants': [{
                     'cidr_ip': $scope.cidrIp ? $scope.trafficType == 'ip' && $scope.cidrIp : null,
                     'group_id': group_id,
@@ -497,6 +509,50 @@ angular.module('SecurityGroupRules', ['EucaConsoleUtils'])
             var key = "custom";
             var value = $('#custom-protocol-option-text').text();
             $('#ip-protocol-select').append($("<option></option>").attr("value", key).text(value));  
+        };
+        // Return the custom protocol number if exists
+        $scope.getCustomProtocolNumber = function (protocol) {
+            var protocolNumber = '';
+            angular.forEach($scope.internetProtocols, function(p, n) {
+                if (p === protocol) {
+                    protocolNumber = n;
+                }
+            });
+            return protocolNumber;
+        };
+        // Return the custom protocol name if 'protocol' is a number 
+        $scope.getCustomProtocolName = function (protocol) {
+            var customProtocolName = protocol;
+            if (!isNaN(protocol)) {
+                customProtocolName = $scope.internetProtocols[protocol];
+            }
+             return customProtocolName;
+        };
+        // Return true if the protocol a custom protocol
+        $scope.isCustomProtocol = function (ipProtocol) {
+            if (!isNaN(ipProtocol) && ipProtocol !== '-1') {
+                return true;
+            }
+            return false;
+        };
+        // Scane the rule arrays and convert the custom protocol numbers to the names
+        $scope.scanForCustomProtocols = function () {
+            angular.forEach($scope.rulesArray, function(rule) {
+                if ($scope.isCustomProtocol(rule.ip_protocol)) {
+                    var customProtocol = $scope.internetProtocols[rule.ip_protocol];
+                    if (customProtocol) { 
+                        rule.custom_protocol = customProtocol;
+                    }
+                }
+            });
+            angular.forEach($scope.rulesEgressArray, function(rule) {
+                if ($scope.isCustomProtocol(rule.ip_protocol)) {
+                    var customProtocol = $scope.internetProtocols[rule.ip_protocol];
+                    if (customProtocol) { 
+                        rule.custom_protocol = customProtocol;
+                    }
+                }
+            });
         };
     })
 ;
