@@ -76,6 +76,9 @@
                     <li ng-show="hasCopyItem()">
                         <a i18n:translate="" ng-click="doPaste(item)">Paste object</a>
                     </li>
+                    <li ng-show="hasCopyFolder()">
+                        <a i18n:translate="" ng-click="doPaste(item)">Paste folder</a>
+                    </li>
                     <li>
                         <a i18n:translate="" ng-click="revealModal('delete-bucket', item)">Delete</a>
                     </li>
@@ -131,6 +134,9 @@
                             <li ng-show="hasCopyItem()">
                                 <a i18n:translate="" ng-click="doPaste(item)">Paste object</a>
                             </li>
+                            <li ng-show="hasCopyFolder()">
+                                <a i18n:translate="" ng-click="doPaste(item)">Paste folder</a>
+                            </li>
                             <li>
                                 <a i18n:translate="" ng-click="revealModal('delete-bucket', item)">Delete</a>
                             </li>
@@ -141,6 +147,30 @@
         </div>
         <!--! Modal dialogs reused across landing and detail page -->
         ${panel('bucket_dialogs', landingpage=True, versioning_form=versioning_form, delete_form=delete_form)}
+        <div id="copy-folder-modal" class="reveal-modal small" data-reveal="">
+            <h3 i18n:translate="">Paste folder</h3>
+            <p>
+                <span i18n:translate="">Pasting a folder and its contents can take some time. Leaving this page while the delete is in progress will cancel the operation.</span>
+            </p>
+            <div ng-show="!copyingAll">
+                <p>
+                    <span i18n:translate="">Are you sure you want to paste</span>&nbsp;{{ total }}&nbsp;<span i18n:translate="">objects?</span>
+                </p>
+                <a class="button expand" id="delete-folder-btn" i18n:translate="" ng-click="copyFolder()">
+                    Yes, Paste Folder and Contents
+                </a>
+            </div>
+            <div ng-show="copyingAll">
+                <div class="bucket-progress">
+                    <span class="meter" style="width: {{ (progress/total)*100 }}%"></span>
+                    <span class="status">Pasted {{ progress }} of {{ total }}</span>
+                </div>
+                <a class="button expand cancel" id="cancel-copy-btn" i18n:translate="" ng-click="cancelCopying()">
+                    Cancel Remaining Pastes
+                </a>
+            </div>
+            <a href="#" id="copy_folder_close_link" class="close-reveal-modal">&#215;</a>
+        </div>
     </div>
 </div>
 

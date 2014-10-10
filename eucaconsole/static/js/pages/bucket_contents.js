@@ -164,7 +164,12 @@ angular.module('BucketContentsPage', ['LandingPage', 'EucaConsoleUtils'])
             $scope.items = items;
         });
         $scope.hasCopyItem = function () {
-            return Modernizr.sessionstorage && sessionStorage.getItem('copy-object-buffer');
+            var buffer = Modernizr.sessionstorage && sessionStorage.getItem('copy-object-buffer');
+            return buffer && (buffer.indexOf('/', buffer.length - 1) === -1);
+        };
+        $scope.hasCopyFolder = function () {
+            var buffer = Modernizr.sessionstorage && sessionStorage.getItem('copy-object-buffer');
+            return buffer && (buffer.indexOf('/', buffer.length - 1) !== -1);
         };
         $scope.doPaste = function (bucketName, item, subpath) {
             var id = $('.open').attr('id');  // hack to close action menu
@@ -187,7 +192,6 @@ angular.module('BucketContentsPage', ['LandingPage', 'EucaConsoleUtils'])
               success(function(oData) {
                 var results = oData ? oData.results : [];
                 if (oData.error == undefined) {
-                    Modernizr.sessionstorage && sessionStorage.removeItem('copy-object-buffer');
                     if (!item) {  // in case where we're pasting in current context,
                         $scope.$broadcast('refresh');
                     }

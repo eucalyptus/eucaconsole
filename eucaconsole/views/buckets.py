@@ -109,6 +109,8 @@ class BucketsView(LandingPageView):
             'bucket_objects_count_url': self.request.route_path('bucket_objects_count_versioning_json', name='_name_'),
             'update_versioning_url': self.request.route_path('bucket_update_versioning', name='_name_'),
             'copy_object_url': self.request.route_path('bucket_put_item', name='_name_', subpath='_subpath_'),
+            'get_keys_generic_url': self.request.route_path('bucket_keys', name='_name_', subpath='_subpath_'),
+            'put_keys_url': self.request.route_path('bucket_put_items', name='_name_', subpath='_subpath_'),
         }))
 
 
@@ -199,7 +201,7 @@ class BucketXHRView(BaseView):
         folder_loc = self.request.params.get('folder_loc')
         with boto_error_handler(self.request):
             self.log_request(_(u"Copying key(s) from {0} to {1} : {2}").format(
-                src_bucket, self.bucket_name, ','.join(keys)))
+                src_bucket, self.bucket_name, keys))
             bucket = self.s3_conn.get_bucket(self.bucket_name, validate=False)
             errors = []
             for k in keys.split(','):
@@ -218,7 +220,7 @@ class BucketXHRView(BaseView):
             else:
                 return dict(message=_(u"Failed to copy all keys."), errors=errors)
 
-    #TODO thinking this method can go away in favor of the other one above.
+    # TODO thinking this method can go away in favor of the other one above.
     @view_config(route_name='bucket_put_item', renderer='json', request_method='POST', xhr=True)
     def bucket_put_item(self):
         if not(self.is_csrf_valid()):
@@ -332,7 +334,7 @@ class BucketContentsView(LandingPageView):
                     # The only way to update the metadata appears to be to copy the object
                     bucket_item.copy(
                         bucket_name, bucket_item.name, metadata=bucket_item.metadata, preserve_acl=True)
-                        
+
             return dict(results=True)
 
     @view_config(route_name='bucket_sign_req', renderer='json', request_method='POST', xhr=True)
@@ -358,7 +360,7 @@ class BucketContentsView(LandingPageView):
             'x-amz-security-token': token,
             'Signature': policy_signature
         }
-              
+
         return dict(results=dict(url=url, fields=fields))
 
     @view_config(route_name='bucket_create_folder', request_method='POST')
@@ -750,7 +752,10 @@ class BucketItemDetailsView(BaseView):
     def get_controller_options_json(self):
         return BaseView.escape_json(json.dumps({
             'delete_keys_url': self.request.route_path('bucket_delete_keys', name=self.bucket_name),
-            'bucket_url': self.request.route_path('bucket_contents', name=self.bucket_name, subpath=self.request.subpath[:-1]),
+            'bucket_url': self.request.route_path(
+                            'bucket_contents',
+                            name=self.bucket_name,
+                            subpath=self.request.subpath[:-1]),
             'key': self.bucket_item.name,
         }))
 
@@ -944,4 +949,3 @@ class CreateBucketView(BaseView):
 
     def get_existing_bucket_names(self):
         return [bucket.name for bucket in self.s3_conn.get_all_buckets()]
-
