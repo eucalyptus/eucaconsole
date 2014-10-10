@@ -63,7 +63,10 @@ class DashboardView(BaseView):
         tiles_not_shown = [tile for tile in self.TILE_MASTER_LIST.split(',') if tile not in tiles.split(',')]
         session = self.request.session
         if session['cloud_type'] == 'aws' or session['account'] != 'eucalyptus':
-            tiles_not_shown.remove('accounts')
+            try:
+                tiles_not_shown.remove('accounts')
+            except ValueError:
+                pass
 
         return dict(
             availability_zones=availability_zones,
