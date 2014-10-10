@@ -76,12 +76,15 @@
                             </select>
                         </div>
                     </div>
-                    <div class="row" ng-show="selectedProtocol === 'custom'">
+                    <div class="row" id="custom-protocol-input-div" ng-show="selectedProtocol === 'custom'" ng-class="customProtocolDivClass">
                         <div class="small-3 columns">
                             <label class="right" i18n:translate="">Name or Number</label>
                         </div>
                         <div class="small-9 columns">
                             <input class="" ng-model="customProtocol" />
+                            <div>
+                                <small class="error" i18n:translate="">Invalid custom protocol</small>
+                            </div>
                         </div>
                     </div>
                     <div class="row" ng-show="selectedProtocol &amp;&amp; selectedProtocol !== 'custom'">
@@ -149,7 +152,7 @@
                 <div class="row" id="add-rule-button-div" ng-show="selectedProtocol">
                     <div class="small-3 columns">&nbsp;</div>
                     <div class="small-9 columns">
-                        <a href="#" id="button-add-rule" class="button round small" i18n:translate="" ng-class="getAddRuleButtonClass()"
+                        <a href="#" id="button-add-rule" class="button round small" i18n:translate="" ng-class="addRuleButtonClass"
                             ng-click="addRule($event)" ng-disabled="isRuleNotComplete">Add Rule</a>
                         <a href="#" id="button-cancel-rule" class="cancel-link" i18n:translate="" 
                             ng-click="cancelRule($event)">Cancel</a>

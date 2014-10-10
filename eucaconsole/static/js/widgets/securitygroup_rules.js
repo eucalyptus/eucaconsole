@@ -18,10 +18,12 @@ angular.module('SecurityGroupRules', ['EucaConsoleUtils'])
         $scope.securityGroupVPC = '';
         $scope.selectedProtocol = '';
         $scope.customProtocol = '';
+        $scope.customProtocolDivClass = "";
         $scope.internetProtocols = {};
         $scope.isRuleNotComplete = true;
         $scope.inboundButtonClass = 'active';
         $scope.outboundButtonClass = 'inactive';
+        $scope.addRuleButtonClass = "";
         $scope.trafficType = '';
         $scope.ruleType = 'inbound';
         $scope.resetValues = function () {
@@ -107,7 +109,11 @@ angular.module('SecurityGroupRules', ['EucaConsoleUtils'])
             if( $scope.hasDuplicatedRule == true ){
                 $scope.isRuleNotComplete = true;
             }
-            if( $scope.selectedProtocol !== 'icmp' && $scope.selectedProtocol !== '-1' ){
+            if ($scope.selectedProtocol === 'custom') {
+                if ($scope.customProtocolDivClass === 'error' || $scope.customProtocol == '') {
+                    $scope.isRuleNotComplete = true;
+                }
+            } else if( $scope.selectedProtocol !== 'icmp' && $scope.selectedProtocol !== '-1' ){
                 if( $scope.fromPort === '' || $scope.fromPort === undefined ){
                     $scope.isRuleNotComplete = true;
                 }else if( $scope.toPort === '' || $scope.toPort === undefined ){
@@ -135,6 +141,24 @@ angular.module('SecurityGroupRules', ['EucaConsoleUtils'])
                 } else {
                     $scope.cidrIp = '';
                 }
+            });
+            $scope.$watch('customProtocol', function(){ 
+                if ($scope.customProtocol != '') {
+                    if ($scope.verifyCustomProtocol() == false) {
+                        $scope.customProtocolDivClass = "error";
+                    } else {
+                        $scope.customProtocolDivClass = "";
+                    }
+                } else {
+                    $scope.customProtocolDivClass = "";
+                }
+                $scope.checkRequiredInput();
+            });
+            $scope.$watch('isRuleNotComplete', function () {
+                $scope.setAddRuleButtonClass(); 
+            });
+            $scope.$watch('customProtocolDivClass', function () {
+                $scope.setAddRuleButtonClass(); 
             });
             $scope.$watch('fromPort', function(){ 
                 $scope.checkRequiredInput();
@@ -169,6 +193,9 @@ angular.module('SecurityGroupRules', ['EucaConsoleUtils'])
                     $scope.checkRulesForDeletedSecurityGroups();
                 }
             }, true);
+            $scope.$watch('hasDuplicatedRule', function () {
+                $scope.setAddRuleButtonClass(); 
+            });
             $scope.$on('updateVPC', function($event, vpc) {
                 if (vpc === undefined || $scope.securityGroupVPC == vpc) {
                     return;
@@ -209,9 +236,11 @@ angular.module('SecurityGroupRules', ['EucaConsoleUtils'])
             });
         };
         // In case of the duplicated rule, add the class 'disabled' to the submit button
-        $scope.getAddRuleButtonClass = function () {
-            if( $scope.hasDuplicatedRule == true ){
-                return 'disabled';
+        $scope.setAddRuleButtonClass = function () {
+            if( $scope.isRuleNotComplete == true || $scope.hasDuplicatedRule == true || $scope.customProtocolDivClass === 'error' ){
+                $scope.addRuleButtonClass = 'disabled';
+            } else {
+                $scope.addRuleButtonClass = '';
             }
         };
         // Run through the existing rules to verify that
@@ -375,7 +404,8 @@ angular.module('SecurityGroupRules', ['EucaConsoleUtils'])
         };
         $scope.addRule = function ($event) {
             $event.preventDefault();
-            if( $scope.hasDuplicatedRule == true || $scope.hasInvalidOwner == true ){
+            $scope.checkRequiredInput();
+            if( $scope.isRuleNotComplete == true || $scope.hasDuplicatedRule == true || $scope.hasInvalidOwner == true ){
                 return false;
             }
             // Trigger form validation to prevent borked rule entry
@@ -534,6 +564,23 @@ angular.module('SecurityGroupRules', ['EucaConsoleUtils'])
                 return true;
             }
             return false;
+        };
+        $scope.verifyCustomProtocol = function () {
+            if (isNaN($scope.customProtocol)) {
+                // if customProtocol is not a number
+                if ($scope.getCustomProtocolNumber($scope.customProtocol) != '') {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                // if customProtocol is a number
+                if ($scope.getCustomProtocolName($scope.customProtocol) != undefined) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
         };
         // Scane the rule arrays and convert the custom protocol numbers to the names
         $scope.scanForCustomProtocols = function () {
