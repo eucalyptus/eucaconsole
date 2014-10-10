@@ -34,6 +34,8 @@ import logging
 
 from beaker.cache import cache_region
 from wtforms.ext.csrf import SecureForm
+from wtforms.widgets import html_params, HTMLString, Select
+from markupsafe import escape
 
 import boto
 from boto.exception import BotoServerError
@@ -42,6 +44,15 @@ from ..constants.instances import AWS_INSTANCE_TYPE_CHOICES
 from ..i18n import _
 
 BLANK_CHOICE = ('', _(u'select...'))
+
+
+class NgNonBindableOptionSelect(Select):
+    @classmethod
+    def render_option(cls, value, label, selected):
+        options = {'value': value}
+        if selected:
+            options['selected'] = u'selected'
+        return HTMLString(u'<option %s ng-non-bindable="">%s</option>' % (html_params(**options), escape(unicode(label))))
 
 
 class BaseSecureForm(SecureForm):
@@ -70,6 +81,8 @@ class ChoicesManager(object):
 
     def __init__(self, conn=None):
         """"Note: conn param could be a connection object of any type, based on the choices required"""
+        from ..views import BaseView
+        self.BaseView = BaseView
         self.conn = conn
 
     #### EC2 connection type choices
@@ -93,10 +106,10 @@ class ChoicesManager(object):
             zones = []
             if self.conn is not None:
                 zones = self.conn.get_all_zones()
-            return zones;
+            return zones
         return _get_zones_cache(self)
 
-    def instances(self, instances=None, state=None):
+    def instances(self, instances=None, state=None, escapebraces=True):
         from ..views import TaggedItemView
         choices = [('', _(u'Select instance...'))]
         instances = instances or []
@@ -105,7 +118,7 @@ class ChoicesManager(object):
             if self.conn:
                 for instance in instances:
                     value = instance.id
-                    label = TaggedItemView.get_display_name(instance)
+                    label = TaggedItemView.get_display_name(instance, escapebraces=escapebraces)
                     if state is None or instance.state == state:
                         choices.append((value, label))
         return choices
@@ -129,7 +142,7 @@ class ChoicesManager(object):
             choices = []
             for vmtype in types:
                 vmtype_str = _(u'{0}: {1} CPUs, {2} memory (MB), {3} disk (GB,root device)').format(
-                    vmtype.name, vmtype.cores, vmtype.memory, vmtype.disk)
+                    self.BaseView.escape_braces(vmtype.name), vmtype.cores, vmtype.memory, vmtype.disk)
                 vmtype_tuple = vmtype.name, vmtype_str if add_description else vmtype.name
                 choices.append(vmtype_tuple)
             return choices
@@ -139,7 +152,7 @@ class ChoicesManager(object):
             else:
                 return [(name, name) for name, description in AWS_INSTANCE_TYPE_CHOICES]
 
-    def volumes(self, volumes=None):
+    def volumes(self, volumes=None, escapebraces=True):
         from ..views import TaggedItemView
         choices = [('', _(u'Select volume...'))]
         volumes = volumes or []
@@ -148,11 +161,24 @@ class ChoicesManager(object):
             if self.conn:
                 for volume in volumes:
                     value = volume.id
-                    label = TaggedItemView.get_display_name(volume)
+                    label = TaggedItemView.get_display_name(volume, escapebraces=escapebraces)
                     choices.append((value, label))
         return choices
 
-    def security_groups(self, securitygroups=None, add_blank=True):
+    def snapshots(self, snapshots=None, escapebraces=True):
+        from ..views import TaggedItemView
+        choices = [('', _(u'None'))]
+        snapshots = snapshots or []
+        if not snapshots and self.conn is not None:
+            snapshots = self.conn.get_all_snapshots()
+            if self.conn:
+                for volume in snapshots:
+                    value = volume.id
+                    label = TaggedItemView.get_display_name(volume, escapebraces=escapebraces)
+                    choices.append((value, label))
+        return choices
+
+    def security_groups(self, securitygroups=None, add_blank=True, escapebraces=True):
         choices = []
         if add_blank:
             choices.append(BLANK_CHOICE)
@@ -160,18 +186,24 @@ class ChoicesManager(object):
         if not security_groups and self.conn is not None:
             security_groups = self.conn.get_all_security_groups()
         for sgroup in security_groups:
-            choices.append((sgroup.name, sgroup.name))
+            sg_name = sgroup.name
+            if escapebraces:
+                sg_name = self.BaseView.escape_braces(sg_name)
+            choices.append((sg_name, sg_name))
         if not security_groups:
             choices.append(('default', 'default'))
         return sorted(set(choices))
 
-    def keypairs(self, keypairs=None, add_blank=True, no_keypair_option=False):
+    def keypairs(self, keypairs=None, add_blank=True, no_keypair_option=False, escapebraces=True):
         choices = []
         keypairs = keypairs or []
         if not keypairs and self.conn is not None:
             keypairs = self.conn.get_all_key_pairs()
         for keypair in keypairs:
-            choices.append((keypair.name, keypair.name))
+            kp_name = keypair.name
+            if escapebraces:
+                kp_name = self.BaseView.escape_braces(kp_name)
+            choices.append((kp_name, kp_name))
         choices = sorted(set(choices))
         # sort actual key pairs prior to prepending blank and appending 'none'
         ret = []
@@ -227,7 +259,7 @@ class ChoicesManager(object):
     #### AutoScale connection type choices
     ##
 
-    def scaling_groups(self, scaling_groups=None, add_blank=True):
+    def scaling_groups(self, scaling_groups=None, add_blank=True, escapebraces=True):
         """Returns a list of scaling group choices"""
         choices = []
         scaling_groups = scaling_groups or []
@@ -237,10 +269,13 @@ class ChoicesManager(object):
         if not scaling_groups and self.conn is not None:
             scaling_groups = self.conn.get_all_groups()
         for scaling_group in scaling_groups:
-            choices.append((scaling_group.name, scaling_group.name))
+            sg_name = scaling_group.name
+            if escapebraces:
+                sg_name = self.BaseView.escape_braces(sg_name)
+            choices.append((sg_name, sg_name))
         return sorted(choices)
 
-    def launch_configs(self, launch_configs=None, add_blank=True):
+    def launch_configs(self, launch_configs=None, add_blank=True, escapebraces=True):
         """Returns a list of lauch configuration choices"""
         choices = []
         launch_configs = launch_configs or []
@@ -250,13 +285,16 @@ class ChoicesManager(object):
         if not launch_configs and self.conn is not None:
             launch_configs = self.conn.get_all_launch_configurations()
         for launch_config in launch_configs:
-            choices.append((launch_config.name, launch_config.name))
+            lc_name = launch_config.name
+            if escapebraces:
+                lc_name = self.BaseView.escape_braces(lc_name)
+            choices.append((lc_name, lc_name))
         return sorted(choices)
 
     #### ELB connection type choices
     ##
 
-    def load_balancers(self, load_balancers=None, add_blank=True):
+    def load_balancers(self, load_balancers=None, add_blank=True, escapebraces=True):
         """Returns a list of load balancer choices.  Will fetch load balancers if not passed"""
         choices = []
         try:
@@ -267,7 +305,10 @@ class ChoicesManager(object):
             if not load_balancers and self.conn is not None:
                 load_balancers = self.get_all_load_balancers()
             for load_balancer in load_balancers:
-                choices.append((load_balancer.name, load_balancer.name))
+                lb_name = load_balancer.name
+                if escapebraces:
+                    lb_name = self.BaseView.escape_braces(lb_name)
+                choices.append((lb_name, lb_name))
         except BotoServerError as ex:
             if ex.reason == "ServiceUnavailable":
                 logging.info("ELB service not available, disabling polling")
@@ -298,7 +339,7 @@ class ChoicesManager(object):
         elif response.status == 200:
             obj = boto.resultset.ResultSet([('member', boto.ec2.elb.loadbalancer.LoadBalancer)])
             h = boto.handler.XmlHandler(obj, self.conn)
-            import xml.sax;
+            import xml.sax
             xml.sax.parseString(body, h)
             return obj
         else:

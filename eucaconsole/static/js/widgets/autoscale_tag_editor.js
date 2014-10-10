@@ -25,7 +25,8 @@ angular.module('AutoScaleTagEditor', ['ngSanitize'])
         };
         $scope.initTags = function(tagsJson) {
             // Parse tags JSON and convert to a list of tags.
-            tagsJson = tagsJson.replace(/__apos__/g, "\'").replace(/__dquote__/g, '\\"').replace(/__bslash__/g, "\\");
+            tagsJson = tagsJson.replace(/__apos__/g, "\'").replace(/__dquote__/g, '\\"').replace(/__bslash__/g, "\\")
+                .replace(/__curlyfront__/g, "{").replace(/__curlyback__/g, "}");
             var tagsArray = JSON.parse(tagsJson);
             tagsArray.forEach(function(tag) {
                 if (!tag['name'].match(/^aws:.*/) && !tag['name'].match(/^euca:.*/)) {
