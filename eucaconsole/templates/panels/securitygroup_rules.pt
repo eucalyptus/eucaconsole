@@ -24,7 +24,7 @@
                             {{ rule.ip_protocol.toUpperCase() }}
                         </span>
                         <span ng-show="rule.custom_protocol">
-                            {{ rule.custom_protocol.toUpperCase() }} {{ rule.ip_protocol.toUpperCase() }}
+                            {{ rule.custom_protocol }}, {{ rule.ip_protocol.toUpperCase() }}
                         </span>
                         ({{ rule.from_port }}<span ng-show="rule.to_port != rule.from_port"> - {{ rule.to_port }}</span>)
                         <span ng-repeat="grant in rule.grants">
@@ -41,7 +41,7 @@
                             {{ rule.ip_protocol.toUpperCase() }}
                         </span>
                         <span ng-show="rule.custom_protocol">
-                            {{ rule.custom_protocol.toUpperCase() }} {{ rule.ip_protocol.toUpperCase() }}
+                            {{ rule.custom_protocol }}, {{ rule.ip_protocol.toUpperCase() }}
                         </span>
                         ({{ rule.from_port }}<span ng-show="rule.to_port != rule.from_port"> - {{ rule.to_port }}</span>)
                         <span ng-repeat="grant in rule.grants">

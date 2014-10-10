@@ -514,7 +514,7 @@ angular.module('SecurityGroupRules', ['EucaConsoleUtils'])
         $scope.getCustomProtocolNumber = function (protocol) {
             var protocolNumber = '';
             angular.forEach($scope.internetProtocols, function(p, n) {
-                if (p === protocol) {
+                if (p.toUpperCase() === protocol.toUpperCase()) {
                     protocolNumber = n;
                 }
             });
