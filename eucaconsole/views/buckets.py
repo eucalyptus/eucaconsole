@@ -174,7 +174,7 @@ class BucketXHRView(BaseView):
             return dict(message=_(u"keys must be specified."), errors=[])
         bucket = self.s3_conn.head_bucket(self.bucket_name)
         errors = []
-        self.log_request(_(u"Deleting keys from {0} : {1}").format(self.bucket_name, keys))
+        self.log_request(_(u"Deleting keys from {0} : {1}").format(self.bucket_name, ','.join(keys)))
         for k in keys.split(','):
             key = bucket.get_key(k, validate=False)
             try:
@@ -183,10 +183,42 @@ class BucketXHRView(BaseView):
                 self.log_request("Couldn't delete "+k+":"+err.message)
                 errors.append(k)
         if len(errors) == 0:
-            return dict(message=_(u"Successfully deleted all keys."))
+            return dict(message=_(u"Successfully deleted key(s)."))
         else:
             return dict(message=_(u"Failed to delete all keys."), errors=errors)
 
+    @view_config(route_name='bucket_put_items', renderer='json', request_method='POST', xhr=True)
+    def bucket_put_items(self):
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
+        keys = self.request.params.get('keys')
+        if not keys:
+            return dict(message=_(u"keys must be specified."), errors=[])
+        subpath = self.request.subpath
+        src_bucket = self.request.params.get('src_bucket')
+        folder_loc = self.request.params.get('folder_loc')
+        with boto_error_handler(self.request):
+            self.log_request(_(u"Copying key(s) from {0} to {1} : {2}").format(
+                src_bucket, self.bucket_name, ','.join(keys)))
+            bucket = self.s3_conn.get_bucket(self.bucket_name, validate=False)
+            errors = []
+            for k in keys.split(','):
+                dest_key = '/'.join(subpath + (k[len(folder_loc):],))
+                try:
+                    bucket.copy_key(
+                        new_key_name=dest_key,
+                        src_bucket_name=src_bucket,
+                        src_key_name=k
+                    )
+                except BotoServerError as err:
+                    self.log_request("Couldn't copy "+k+":"+err.message)
+                    errors.append(k)
+            if len(errors) == 0:
+                return dict(message=_(u"Successfully copied object(s)."))
+            else:
+                return dict(message=_(u"Failed to copy all keys."), errors=errors)
+
+    #TODO thinking this method can go away in favor of the other one above.
     @view_config(route_name='bucket_put_item', renderer='json', request_method='POST', xhr=True)
     def bucket_put_item(self):
         if not(self.is_csrf_valid()):
@@ -355,6 +387,8 @@ class BucketContentsView(LandingPageView):
             'get_keys_url': self.request.route_path('bucket_keys', name=self.bucket_name, subpath=self.request.subpath),
             'key_prefix': self.key_prefix,
             'copy_object_url': self.request.route_path('bucket_put_item', name='_name_', subpath='_subpath_'),
+            'get_keys_generic_url': self.request.route_path('bucket_keys', name='_name_', subpath='_subpath_'),
+            'put_keys_url': self.request.route_path('bucket_put_items', name=self.bucket_name, subpath='_subpath_'),
         }))
 
     @staticmethod
@@ -471,7 +505,7 @@ class BucketContentsJsonView(BaseView):
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
         items = []
-        list_prefix = '{0}/'.format(DELIMITER.join(self.subpath)) if len(self.subpath) > 1 else ''
+        list_prefix = '{0}/'.format(DELIMITER.join(self.subpath)) if len(self.subpath) > 0 else ''
         params = dict()
         if list_prefix:
             params.update(dict(prefix=list_prefix))
