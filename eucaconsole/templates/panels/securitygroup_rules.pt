@@ -1,7 +1,7 @@
 
 <!--! Security group rules editor -->
 <div id="rules-editor" class="row controls-wrapper" ng-app="SecurityGroupRules" i18n:domain="eucaconsole"
-     ng-controller="SecurityGroupRulesCtrl" ng-init="initRules('${rules_json}','${rules_egress_json}',  '${request.route_path('securitygroups_json')}')">
+     ng-controller="SecurityGroupRulesCtrl" ng-init="initRules('${rules_json}','${rules_egress_json}',  '${request.route_path('securitygroups_json')}', '${request.route_path('internet_protocols_json')}')">
     <link rel="stylesheet" href="${request.static_path('eucaconsole:static/css/widgets/securitygroup_rules.css')}"
           type="text/css" charset="utf-8" />
     <div class="columns">
@@ -164,6 +164,7 @@
         <span id="all-traffic-option-text" i18n:translate="">All traffic</span> 
         <span id="custom-protocol-option-text" i18n:translate="">Custom protocol</span> 
     </div>
+    <script src="${request.static_path('eucaconsole:static/js/pages/eucaconsole_utils.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/securitygroup_rules.js')}"></script>
     <script>setTimeout(function(){ $(document).foundation({abide : { timeout : 2000 } })}, 500);</script>
 </div>

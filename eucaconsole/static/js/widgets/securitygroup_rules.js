@@ -4,8 +4,8 @@
  *
  */
 
-angular.module('SecurityGroupRules', [])
-    .controller('SecurityGroupRulesCtrl', function ($scope, $http, $timeout) {
+angular.module('SecurityGroupRules', ['EucaConsoleUtils'])
+    .controller('SecurityGroupRulesCtrl', function ($scope, $http, $timeout, eucaUnescapeJson) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.rulesEditor = $('#rules-editor');
         $scope.rulesTextarea = $scope.rulesEditor.find('textarea#rules');
@@ -13,10 +13,12 @@ angular.module('SecurityGroupRules', [])
         $scope.rulesArray = [];
         $scope.rulesEgressArray = [];
         $scope.jsonEndpoint='';
+        $scope.internetProtocolsJsonEndpoint = '';
         $scope.securityGroupList = [];
         $scope.securityGroupVPC = '';
         $scope.selectedProtocol = '';
         $scope.customProtocol = '';
+        $scope.internetProtocols = [];
         $scope.isRuleNotComplete = true;
         $scope.inboundButtonClass = 'active';
         $scope.outboundButtonClass = 'inactive';
@@ -45,11 +47,13 @@ angular.module('SecurityGroupRules', [])
             $scope.rulesEgressTextarea.val(JSON.stringify($scope.rulesEgressArray));
             $scope.resetValues();
         };
-        $scope.initRules = function (rulesJson, rulesEgressJson, jsonEndpoint) {
+        $scope.initRules = function (rulesJson, rulesEgressJson, jsonEndpoint, internetProtocolsJsonEndpoint) {
             rulesJson = rulesJson.replace(/__apos__/g, "\'").replace(/__dquote__/g, '\\"').replace(/__bslash__/g, "\\");
             $scope.rulesArray = JSON.parse(rulesJson);
             $scope.rulesEgressArray = JSON.parse(rulesEgressJson);
             $scope.jsonEndpoint=jsonEndpoint;
+            $scope.internetProtocolsJsonEndpoint=internetProtocolsJsonEndpoint;
+            $scope.initInternetProtocols();
             $scope.syncRules();
             $scope.setWatchers();
         };
@@ -57,6 +61,18 @@ angular.module('SecurityGroupRules', [])
             $scope.rulesArray = [];
             $scope.rulesEgressArray = [];
             $scope.syncRules();
+        };
+        $scope.initInternetProtocols = function () {
+            var csrf_token = $('#csrf_token').val();
+            var data = "csrf_token=" + csrf_token;
+            $http({method:'POST', url:$scope.internetProtocolsJsonEndpoint, data:data,
+                   headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
+              success(function(oData) {
+                var results = oData ? oData.results : [];
+                var options = JSON.parse(eucaUnescapeJson(results));
+                $scope.internetProtocols = options['internet_protocols'];
+                console.log($scope.internetProtocols);
+            });
         };
         $scope.getAllSecurityGroups = function (vpc) {
             var csrf_token = $('#csrf_token').val();
