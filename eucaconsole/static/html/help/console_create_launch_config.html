@@ -49,20 +49,20 @@
         <div class="body taskbody"><p class="shortdesc">This panel allows you to specify the instance size for new instance in your auto
             scaling group.</p>
 
-            <ol class="ol steps"><li class="li step">
-                    <span class="ph cmd">Type the name of your launch configuration into the
-                            <span class="ph uicontrol">Name</span> text box.</span>
+            <ol class="ol steps"><li class="li step stepexpand">
+                    <span class="ph cmd"> Type the name of your launch configuration in the
+                        <span class="ph uicontrol">Name</span> text box.</span>
                 </li>
-<li class="li step">
-                    <span class="ph cmd"> Select an instance size from the <span class="ph uicontrol">Instance type</span>
-                        drop-down list.. </span>
-                     
+<li class="li step stepexpand">
+                    <span class="ph cmd"> Select an instance size/type from the <span class="ph uicontrol">Instance type</span>
+                        drop-down list.</span>
+                    <div class="itemgroup info">
                         <div class="note note"><span class="notetitle">Note:</span>  Information about the instance size is displayed when you click the
                             instance size link. </div>
 
-                    
+                    </div>
                 </li>
-<li class="li step">
+<li class="li step stepexpand">
                     <span class="ph cmd"> Click the <span class="ph uicontrol">Next</span> button to proceed to the
                             <span class="ph uicontrol">Security</span> panel. </span>
                 </li>
@@ -77,48 +77,63 @@
 
         
 
-        <div class="body taskbody"><p class="shortdesc">This panel allows you to specify the key pair and security group that will be
-            used by the new instances in your auto scaling group NOTE: if you create a key pair or
+        <div class="body taskbody"><p class="shortdesc">This panel allows you to specify the VPC network settings, key pair and a security group that will be
+            used by the new instances in your auto scaling group. NOTE: if you create a key pair or
             security group in this section, they will automatically be selected for use in your new
             instances. </p>
 
-            <ol class="ol steps"><li class="li step">
+            <ol class="ol steps"><li class="li step stepexpand">
+                    <span class="ph cmd"> If the launch configuration is used with a scaling group using a VPC network,
+                        select how the VPC IP assignment is to be applied by selecting an option from the drop-down list box.</span>
+                </li>
+<li class="li step stepexpand">
                     <span class="ph cmd"> Select a key pair using the <span class="ph uicontrol">Key name</span> drop-down list
                         box. </span>
-                     
+                    <div class="itemgroup info">
                         <div class="note note"><span class="notetitle">Note:</span>  You can also create a new key pair by clicking the <span class="ph uicontrol">Create
-                                new key pair</span> link to display the <span class="ph uicontrol">Create new
-                                key pair</span> dialog box. </div>
+                            key pair</span> link. This opens the Create Key Pair dialog box. </div>
 
-                    
+                    </div>
 
                 </li>
-<li class="li step">
+<li class="li step stepexpand">
                     <span class="ph cmd"> Select a security group using the <span class="ph uicontrol">Security group</span>
                         drop-down list box. </span>
-                     
-                        <div class="note note"><span class="notetitle">Note:</span>  You can also create a new security group by clicking the
-                                <span class="ph uicontrol">Create new security group</span> link to display the
-                                <span class="ph uicontrol">Create new security group</span> dialog box. </div>
-
+                    <div class="itemgroup info">
                         <div class="note note"><span class="notetitle">Note:</span>  If you select the default security group, make sure that you've added
                             rules to the default security group so that you can access your
                             instances. </div>
 
-                    
+                        <div class="note note"><span class="notetitle">Note:</span>  You can also create a new security group by clicking the
+                            <span class="ph uicontrol">Create a security group</span> link. This opens the Create Security Group dialog box.</div>
+
+                    </div>
+                    <div class="itemgroup stepresult"> If one of the existing security groups is chosen, the rules associated with
+                        the security group display, along information about the VPC network in which it resides, if any.</div>
                 </li>
-<li class="li step">
-                    <span class="ph cmd"> You can optionally choose to create a new auto scaling group based on this
-                        launch configuration by selecting the <span class="ph uicontrol">Create scaling group using
-                            this launch configuration</span> check box. When this is selected,
+<li class="li step stepexpand">
+                    <span class="ph cmd"> You can optionally specify an IAM role using the <span class="ph uicontrol">Role</span>
+                        drop-down list box.</span>
+                    <div class="itemgroup info">
+                        <div class="note note"><span class="notetitle">Note:</span>  If you select a role, make sure that the correct permissions are
+                            defined for that role so that the appropriate level of access is applied
+                            to your instance. </div>
+
+                    </div>
+                </li>
+<li class="li step stepexpand">
+                    <span class="ph cmd"> The <span class="ph uicontrol">Create scaling group using this launch configuration</span>
+                        checkbox is checked by default, allowing you to create a new auto scaling
+                        group based on this launch configuration. When this is selected,
                         the <span class="ph uicontrol">New Scaling Group</span> dialog will display after
-                        you've clicked the <span class="ph uicontrol">Create launch configuration</span>
+                        you've clicked the <span class="ph uicontrol">Create Launch Configuration</span>
                         button, with the Launch configuration field pre-populated with the name of
                         your new launch configuration. </span>
                 </li>
-<li class="li step">
+<li class="li step stepexpand">
                     <span class="ph cmd"> You can optionally specify advanced options by clicking the
-                            <span class="ph uicontrol">Select advanced options</span> link. </span>
+                        <span class="ph uicontrol">Select advanced options</span> link and refer to the
+                        next section for further details. </span>
                 </li>
 </ol>
 
@@ -151,39 +166,35 @@
                     <span class="ph cmd">You can configure additional storage for your instance in the Storage
                         section:</span>
                     <ol type="a" class="ol substeps" id="create_launch_configuration_ui_advanced_steps__create_launch_config_ui_advanced_storage_steps">
-                        <li class="li substep">
+                        <li class="li substep substepexpand">
                             <span class="ph cmd"> Select a volume type using the <span class="ph uicontrol">Volume</span>
                                 drop-down list box. </span>
                         </li>
 
-                        <li class="li substep">
+                        <li class="li substep substepexpand">
                             <span class="ph cmd">Type the desired mapping for the storage into the
                                 <span class="ph uicontrol">Mapping</span> text box (for example:<samp class="ph codeph">
                                     /dev/sdb</samp>).</span>
                         </li>
 
-                        <li class="li substep">
+                        <li class="li substep substepexpand">
                             <span class="ph cmd">If you want to create the storage from an existing snapshot,
                                 specify it in the <span class="ph uicontrol">Create from snapshot</span>
                                 drop-down list box.</span>
                         </li>
 
-                        <li class="li substep">
+                        <li class="li substep substepexpand">
                             <span class="ph cmd"> Type the size of the attached storage in gigabytes into the
                                 <span class="ph uicontrol">Size (GB) </span>text box. </span>
+                            <div class="itemgroup info">The attached storage will be deleted when the instance is terminated, 
+                                as indicated next to the <span class="ph uicontrol">Delete on termination</span> field.</div>
                         </li>
 
-                        <li class="li substep">
-                            <span class="ph cmd"> Select the <span class="ph uicontrol">Delete on termination</span> check box
-                                if you would like the attached storage to be deleted when the
-                                instance is terminated. </span>
-                        </li>
-
-                        <li class="li substep">
+                        <li class="li substep substepexpand">
                             <span class="ph cmd">Click the <span class="ph uicontrol">Add device</span> button to add this storage.</span>
                         </li>
 
-                        <li class="li substep">
+                        <li class="li substep substepexpand">
                             <span class="ph cmd">You can delete storage you've already added by clicking the minus button on the right side of the storage list item.</span>
                         </li>
 
@@ -196,7 +207,7 @@
                 </li>
 </ol>
 
-            <div class="section result">For more information on Auto Scaling, see Eucalyptus User Guide.</div>
+            <div class="section result">For more information on Auto Scaling, see the <em class="ph i">Eucalyptus User Guide</em>.</div>
 
         </div>
 
