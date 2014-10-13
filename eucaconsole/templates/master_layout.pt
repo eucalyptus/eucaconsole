@@ -135,8 +135,8 @@
         <h3 i18n:translate="">Confirm navigation</h3>
         <p>
             <span id="warning-message-unsaved-changes" i18n:translate="">You must click the "Save Changes" button before you leave this page or your changes will be lost.</span>
-        <p>
         </p>
+        <p>
             <span id="warning-message-unsaved-changes-question" i18n:translate="">Are you sure you want to leave this page?</span>
         </p>
         <div class="dialog-submit-button">
