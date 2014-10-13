@@ -109,6 +109,8 @@ class BucketsView(LandingPageView):
             'bucket_objects_count_url': self.request.route_path('bucket_objects_count_versioning_json', name='_name_'),
             'update_versioning_url': self.request.route_path('bucket_update_versioning', name='_name_'),
             'copy_object_url': self.request.route_path('bucket_put_item', name='_name_', subpath='_subpath_'),
+            'get_keys_generic_url': self.request.route_path('bucket_keys', name='_name_', subpath='_subpath_'),
+            'put_keys_url': self.request.route_path('bucket_put_items', name='_name_', subpath='_subpath_'),
         }))
 
 
@@ -174,7 +176,7 @@ class BucketXHRView(BaseView):
             return dict(message=_(u"keys must be specified."), errors=[])
         bucket = self.s3_conn.head_bucket(self.bucket_name)
         errors = []
-        self.log_request(_(u"Deleting keys from {0} : {1}").format(self.bucket_name, keys))
+        self.log_request("Deleting keys from {0} : {1}".format(self.bucket_name, ','.join(keys)))
         for k in keys.split(','):
             key = bucket.get_key(k, validate=False)
             try:
@@ -183,10 +185,42 @@ class BucketXHRView(BaseView):
                 self.log_request("Couldn't delete "+k+":"+err.message)
                 errors.append(k)
         if len(errors) == 0:
-            return dict(message=_(u"Successfully deleted all keys."))
+            return dict(message=_(u"Successfully deleted key(s)."))
         else:
             return dict(message=_(u"Failed to delete all keys."), errors=errors)
 
+    @view_config(route_name='bucket_put_items', renderer='json', request_method='POST', xhr=True)
+    def bucket_put_items(self):
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
+        keys = self.request.params.get('keys')
+        if not keys:
+            return dict(message=_(u"keys must be specified."), errors=[])
+        subpath = self.request.subpath
+        src_bucket = self.request.params.get('src_bucket')
+        folder_loc = self.request.params.get('folder_loc')
+        with boto_error_handler(self.request):
+            self.log_request("Copying key(s) from {0} to {1} : {2}".format(
+                src_bucket, self.bucket_name + '/' + '/'.join(subpath), keys))
+            bucket = self.s3_conn.get_bucket(self.bucket_name, validate=False)
+            errors = []
+            for k in keys.split(','):
+                dest_key = '/'.join(subpath + (k[len(folder_loc):],))
+                try:
+                    bucket.copy_key(
+                        new_key_name=dest_key,
+                        src_bucket_name=src_bucket,
+                        src_key_name=k
+                    )
+                except BotoServerError as err:
+                    self.log_request("Couldn't copy "+k+":"+err.message)
+                    errors.append(k)
+            if len(errors) == 0:
+                return dict(message=_(u"Successfully copied object(s)."))
+            else:
+                return dict(message=_(u"Failed to copy all keys."), errors=errors)
+
+    # TODO thinking this method can go away in favor of the other one above.
     @view_config(route_name='bucket_put_item', renderer='json', request_method='POST', xhr=True)
     def bucket_put_item(self):
         if not(self.is_csrf_valid()):
@@ -196,7 +230,7 @@ class BucketXHRView(BaseView):
         src_key = self.request.params.get('src_key')
         dest_key = '/'.join(subpath) + '/' + src_key[src_key.rfind('/')+1:]
         with boto_error_handler(self.request):
-            self.log_request(_(u"Copying key from {0}:{1} to {2}:{3}").format(
+            self.log_request("Copying key from {0}:{1} to {2}:{3}".format(
                 src_bucket, src_key, self.bucket_name, dest_key))
             bucket = self.s3_conn.get_bucket(self.bucket_name, validate=False)
             bucket.copy_key(
@@ -300,7 +334,7 @@ class BucketContentsView(LandingPageView):
                     # The only way to update the metadata appears to be to copy the object
                     bucket_item.copy(
                         bucket_name, bucket_item.name, metadata=bucket_item.metadata, preserve_acl=True)
-                        
+
             return dict(results=True)
 
     @view_config(route_name='bucket_sign_req', renderer='json', request_method='POST', xhr=True)
@@ -326,7 +360,7 @@ class BucketContentsView(LandingPageView):
             'x-amz-security-token': token,
             'Signature': policy_signature
         }
-              
+
         return dict(results=dict(url=url, fields=fields))
 
     @view_config(route_name='bucket_create_folder', request_method='POST')
@@ -351,10 +385,13 @@ class BucketContentsView(LandingPageView):
 
     def get_controller_options_json(self):
         return BaseView.escape_json(json.dumps({
+            'bucket_name': self.bucket_name,
             'delete_keys_url': self.request.route_path('bucket_delete_keys', name=self.bucket_name),
             'get_keys_url': self.request.route_path('bucket_keys', name=self.bucket_name, subpath=self.request.subpath),
             'key_prefix': self.key_prefix,
             'copy_object_url': self.request.route_path('bucket_put_item', name='_name_', subpath='_subpath_'),
+            'get_keys_generic_url': self.request.route_path('bucket_keys', name='_name_', subpath='_subpath_'),
+            'put_keys_url': self.request.route_path('bucket_put_items', name=self.bucket_name, subpath='_subpath_'),
         }))
 
     @staticmethod
@@ -471,7 +508,7 @@ class BucketContentsJsonView(BaseView):
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
         items = []
-        list_prefix = '{0}/'.format(DELIMITER.join(self.subpath)) if len(self.subpath) > 1 else ''
+        list_prefix = '{0}/'.format(DELIMITER.join(self.subpath)) if len(self.subpath) > 0 else ''
         params = dict()
         if list_prefix:
             params.update(dict(prefix=list_prefix))
@@ -716,7 +753,10 @@ class BucketItemDetailsView(BaseView):
     def get_controller_options_json(self):
         return BaseView.escape_json(json.dumps({
             'delete_keys_url': self.request.route_path('bucket_delete_keys', name=self.bucket_name),
-            'bucket_url': self.request.route_path('bucket_contents', name=self.bucket_name, subpath=self.request.subpath[:-1]),
+            'bucket_url': self.request.route_path(
+                            'bucket_contents',
+                            name=self.bucket_name,
+                            subpath=self.request.subpath[:-1]),
             'key': self.bucket_item.name,
         }))
 
@@ -910,4 +950,3 @@ class CreateBucketView(BaseView):
 
     def get_existing_bucket_names(self):
         return [bucket.name for bucket in self.s3_conn.get_all_buckets()]
-

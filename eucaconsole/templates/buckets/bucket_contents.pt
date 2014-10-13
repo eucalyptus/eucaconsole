@@ -46,6 +46,10 @@
                     ng-show="hasCopyItem()" ng-click="doPaste('${bucket_name}', null, '${key_prefix}')">
                     Paste Object
                 </a>
+                <a class="button secondary ng-binding" id="paste-btn" i18n:translate="" ng-cloak=""
+                    ng-show="hasCopyFolder()" ng-click="doPaste('${bucket_name}', null, '${key_prefix}')">
+                    Paste Folder
+                </a>
             </div>
             <div metal:fill-slot="tile_header">
                 <a ng-href="{{ item.absolute_path }}" ng-if="item.is_folder">
@@ -87,8 +91,14 @@
                     <li ng-show="!item.is_folder">
                         <a i18n:translate="" ng-click="saveKey('${bucket_name}', item.full_key_name)">Copy object</a>
                     </li>
+                    <li ng-show="item.is_folder">
+                        <a i18n:translate="" ng-click="saveKey('${bucket_name}', item.full_key_name)">Copy folder</a>
+                    </li>
                     <li ng-show="item.is_folder && hasCopyItem()">
                         <a i18n:translate="" ng-click="doPaste('${bucket_name}', item)">Paste object</a>
+                    </li>
+                    <li ng-show="item.is_folder && hasCopyFolder(item)">
+                        <a i18n:translate="" ng-click="doPaste('${bucket_name}', item)">Paste folder</a>
                     </li>
                     <li ng-show="item.is_folder">
                         <a i18n:translate="" ng-click="revealModal('delete-folder', item)">Delete</a>
@@ -136,8 +146,14 @@
                             <li ng-show="!item.is_folder">
                                 <a i18n:translate="" ng-click="saveKey('${bucket_name}', item.full_key_name)">Copy object</a>
                             </li>
+                            <li ng-show="item.is_folder">
+                                <a i18n:translate="" ng-click="saveKey('${bucket_name}', item.full_key_name)">Copy folder</a>
+                            </li>
                             <li ng-show="item.is_folder && hasCopyItem()">
                                 <a i18n:translate="" ng-click="doPaste('${bucket_name}', item)">Paste object</a>
+                            </li>
+                            <li ng-show="item.is_folder && hasCopyFolder(item)">
+                                <a i18n:translate="" ng-click="doPaste('${bucket_name}', item)">Paste folder</a>
                             </li>
                             <li ng-show="item.is_folder">
                                 <a i18n:translate="" ng-click="revealModal('delete-folder', item)">Delete</a>
