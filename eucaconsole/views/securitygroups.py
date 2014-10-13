@@ -29,6 +29,7 @@ Pyramid views for Eucalyptus and AWS security groups
 
 """
 import simplejson as json
+import socket
 
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.view import view_config
@@ -38,6 +39,7 @@ from ..i18n import _
 from ..models import Notification
 from ..views import LandingPageView, TaggedItemView, JSONResponse
 from . import boto_error_handler
+from ..constants.internet_protocols import INTERNET_PROTOCOL_NUMBERS
 
 
 class SecurityGroupsView(LandingPageView):
@@ -168,6 +170,12 @@ class SecurityGroupsJsonView(LandingPageView):
                 return vpc
         return None
 
+    @view_config(route_name='internet_protocols_json', renderer='json', request_method='POST')
+    def internet_protocols_json(self):
+        internet_protocols = json.dumps({ 
+            'internet_protocols': INTERNET_PROTOCOL_NUMBERS,
+        })
+        return dict(results=internet_protocols)
 
 class SecurityGroupView(TaggedItemView):
     """Views for single Security Group"""
@@ -194,6 +202,7 @@ class SecurityGroupView(TaggedItemView):
             delete_form=self.delete_form,
             security_group_names=self.get_security_group_names(),
         )
+
 
     @view_config(route_name='securitygroup_view', renderer=TEMPLATE)
     def securitygroup_view(self):
@@ -306,7 +315,7 @@ class SecurityGroupView(TaggedItemView):
         rules = json.loads(rules_json) if rules_json else []
 
         for rule in rules:
-            ip_protocol = rule.get('ip_protocol')
+            ip_protocol = self.get_protocol_by_name(rule.get('ip_protocol'))
             from_port = rule.get('from_port')
             to_port = rule.get('to_port')
             cidr_ip = None
@@ -443,7 +452,7 @@ class SecurityGroupView(TaggedItemView):
         """Build security group rules params from security group dictionary for boto calls"""
         rules_params = []
         for rule in rules_dict:
-            ip_protocol = rule['ip_protocol']
+            ip_protocol = self.get_protocol_by_name(rule['ip_protocol'])
             from_port = rule['from_port']
             to_port = rule['to_port']
             grants = rule['grants']
@@ -605,3 +614,17 @@ class SecurityGroupView(TaggedItemView):
                     self.conn.revoke_security_group(**params)
                 else:
                     self.conn.revoke_security_group_egress(**params)
+
+    def get_protocol_by_name(self, protocol):
+        ip_protocol = protocol
+        if not self.check_int(ip_protocol):
+            try:
+                ip_protocol = socket.getprotobyname(ip_protocol)
+            except:
+                pass
+        return ip_protocol
+
+    def check_int(self, s):
+        if s[0] in ('-', '+'):
+    	    return s[1:].isdigit()
+        return s.isdigit()
