@@ -1,0 +1,13 @@
+<!--! Modal dialog for deleting bucket contents on landing and detail page -->
+<div tal:omit-tag="" i18n:domain="eucaconsole">
+    <div id="delete-object-modal" class="reveal-modal small" data-reveal="">
+        <h3 i18n:translate="">Delete object</h3>
+        <p>
+            <span i18n:translate="">This action cannot be undone. Are you sure you want to delete </span>&nbsp;<b>{{ obj_key }}</b><span>?</span>
+        </p>
+        <a class="button expand" id="delete-object-btn" i18n:translate="" ng-click="deleteObject()">
+            Yes, Delete Object
+        </a>
+        <a href="#" id="delete_object_close_link" class="close-reveal-modal">&#215;</a>
+    </div>
+</div>

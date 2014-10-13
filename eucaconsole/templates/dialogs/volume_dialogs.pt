@@ -1,5 +1,5 @@
 <!--! Modal dialogs for Volumes landing and detail page -->
-<div tal:omit-tag="">
+<div tal:omit-tag="" i18n:domain="eucaconsole">
     <!--! Attach/Detach/Delete modal dialogs -->
     <div id="attach-volume-modal" class="reveal-modal small" data-reveal=""
          tal:define="landingpage_action request.route_path('volumes_attach') + layout.querystring;
@@ -19,6 +19,12 @@
             </div>
             ${panel('form_field', field=attach_form.instance_id, ng_attrs=ng_attrs, **html_attrs)}
             ${panel('form_field', field=attach_form.device, placeholder='/dev/sdf')}
+            <div>
+                <label>
+                    <span class="req">*</span>
+                    <span i18n:translate="">Required fields</span>
+                </label>
+            </div>
             <div class="dialog-submit-button">
                 <button type="submit" id="attach_volume_submit_button" class="button expand" i18n:translate="">Attach Volume</button>
             </div>
@@ -45,10 +51,10 @@
         </p>
         <p>
             <span i18n:translate="">Are you sure you want to detach volume</span>
-            <span tal:condition="volume"><b ng-non-bindable="">${volume_name}</b></span>
+            <span tal:condition="volume"><b>${volume_name}</b></span>
             <span tal:condition="not volume"><b>{{ volumeID }}</b></span>
             <span i18n:translate="">from instance</span>
-            <strong ng-non-bindable="" tal:condition="not landingpage">${instance_name}</strong>
+            <strong tal:condition="not landingpage">${instance_name}</strong>
             <strong tal:condition="landingpage">{{ instanceName }}</strong>?
         </p>
         <form method="post" id="detach-form" data-abide="" action="${action}">
@@ -72,7 +78,7 @@
                 This operation is not available because you cannot detach the root volume of an EBS-backed instance.
                 If you want to delete this volume, terminate instance
             </span>
-            <strong tal:condition="not landingpage" ng-non-bindable="">${instance_name}</strong>
+            <strong tal:condition="not landingpage">${instance_name}</strong>
             <strong tal:condition="landingpage">{{ instanceName }}</strong>
         </p>
         <a href="#" class="close-reveal-modal">&#215;</a>
@@ -84,7 +90,7 @@
         <h3 i18n:translate="">Delete volume</h3>
         <p><span i18n:translate="">All data on the volumes will be destroyed.</span></p>
         <p><span i18n:translate="">Are you sure you want to delete volume</span>
-           <span tal:condition="volume"><b ng-non-bindable="">${volume_name}</b></span>
+           <span tal:condition="volume"><b>${volume_name}</b></span>
            <span tal:condition="not volume"><b>{{ volumeID }}</b></span> 
            ?</p>
         <form action="${action}" method="post">

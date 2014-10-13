@@ -28,44 +28,69 @@
 Core views
 
 """
+import base64
+import hashlib
+import hmac
 import logging
+import pylibmc
 import simplejson as json
 import textwrap
+import time
+from datetime import datetime, timedelta
+import threading
 
 from cgi import FieldStorage
 from contextlib import contextmanager
 from dateutil import tz
+from markupsafe import Markup
 from urllib import urlencode
 from urlparse import urlparse
+try:
+    import python_magic as magic
+except ImportError:
+    import magic
 
-from beaker.cache import cache_managers
+from boto.connection import AWSAuthConnection
 from boto.ec2.blockdevicemapping import BlockDeviceType, BlockDeviceMapping
 from boto.exception import BotoServerError
 
 from pyramid.httpexceptions import HTTPFound, HTTPException, HTTPUnprocessableEntity
-from pyramid.i18n import TranslationString as _
+from pyramid.i18n import TranslationString
 from pyramid.response import Response
 from pyramid.security import NO_PERMISSION_REQUIRED
+from pyramid.settings import asbool
 from pyramid.view import notfound_view_config, view_config
 
+from ..caches import long_term
+from ..caches import invalidate_cache
 from ..constants.images import AWS_IMAGE_OWNER_ALIAS_CHOICES, EUCA_IMAGE_OWNER_ALIAS_CHOICES
 from ..forms.login import EucaLogoutForm
+from ..models.auth import EucaAuthenticator
+from ..i18n import _
 from ..models import Notification
 from ..models.auth import ConnectionManager
 
 
+def escape_braces(event):
+    """Escape double curly braces in template variables to prevent AngularJS expression injections"""
+    for k, v in event.rendering_val.items():
+        if not k.endswith('_json'):
+            if type(v) in [str, unicode] or isinstance(v, Markup) or isinstance(v, TranslationString):
+                event.rendering_val[k] = BaseView.escape_braces(v)
+
+
 class JSONResponse(Response):
-    def __init__(self, status=200, message=None, **kwargs):
+    def __init__(self, status=200, message=None, id=None, **kwargs):
         super(JSONResponse, self).__init__(**kwargs)
         self.status = status
         self.content_type = 'application/json'
         self.body = json.dumps(
-            dict(message=message)
+            dict(message=message, id=id)
         )
 
 
 # Can use this for 1.5, but the fix below for 1.4 also works in 1.5.
-#class JSONError(HTTPException):
+# class JSONError(HTTPException):
 class JSONError(HTTPUnprocessableEntity):
     def __init__(self, status=400, message=None, **kwargs):
         super(JSONError, self).__init__(**kwargs)
@@ -92,9 +117,14 @@ class BaseView(object):
         if cloud_type is None:
             cloud_type = self.cloud_type
 
+        validate_certs = False
+        if self.request.registry.settings:  # do this to pass tests
+            validate_certs = asbool(self.request.registry.settings.get('connection.ssl.validation', False))
+            certs_file = self.request.registry.settings.get('connection.ssl.certfile', None)
+            
         if cloud_type == 'aws':
             conn = ConnectionManager.aws_connection(
-                self.region, self.access_key, self.secret_key, self.security_token, conn_type)
+                self.region, self.access_key, self.secret_key, self.security_token, conn_type, validate_certs)
         elif cloud_type == 'euca':
             host = self.request.registry.settings.get('clchost', 'localhost')
             port = int(self.request.registry.settings.get('clcport', 8773))
@@ -113,25 +143,140 @@ class BaseView(object):
             elif conn_type == 'iam':
                 host = self.request.registry.settings.get('iam.host', host)
                 port = int(self.request.registry.settings.get('iam.port', port))
-            elif conn_type == 'sts':
-                host = self.request.registry.settings.get('sts.host', host)
-                port = int(self.request.registry.settings.get('sts.port', port))
+            elif conn_type == 's3':
+                host = self.request.registry.settings.get('s3.host', host)
+                port = int(self.request.registry.settings.get('s3.port', port))
+            elif conn_type == 'vpc':
+                host = self.request.registry.settings.get('vpc.host', host)
+                port = int(self.request.registry.settings.get('vpc.port', port))
 
             conn = ConnectionManager.euca_connection(
-                host, port, self.access_key, self.secret_key, self.security_token, conn_type)
+                host, port, self.access_key, self.secret_key, self.security_token, conn_type, validate_certs, certs_file)
 
         return conn
+
+    def get_account_display_name(self):
+        if self.cloud_type == 'euca':
+            return self.request.session.get('account')
+        return self.request.session.get('access_id')  # AWS
 
     def is_csrf_valid(self):
         return self.request.session.get_csrf_token() == self.request.params.get('csrf_token')
 
     def _store_file_(self, filename, mime_type, contents):
+        # disable using memcache for file storage
+        # try:
+        #    default_term.set('file_cache', (filename, mime_type, contents))
+        # except pylibmc.Error as ex:
+        #    logging.warn("memcached misconfigured or not reachable, using session storage")
+        # to re-enable, uncomment lines above and indent 2 lines below
         session = self.request.session
         session['file_cache'] = (filename, mime_type, contents)
 
     def _has_file_(self):
+        # check both cache and session
+        # disable using memcache for file storage
+        # try:
+        #    return not isinstance(default_term.get('file_cache'), NoValue)
+        # except pylibmc.Error as ex:
+        # to re-enable, uncomment lines above and indent 2 lines below
         session = self.request.session
         return 'file_cache' in session
+
+    def get_user_data(self):
+        input_type = self.request.params.get('inputtype')
+        userdata_input = self.request.params.get('userdata')
+        userdata_file_param = self.request.POST.get('userdata_file')
+        userdata_file = userdata_file_param.file.read() if isinstance(userdata_file_param, FieldStorage) else None
+        if input_type == 'file':
+            userdata = userdata_file
+        elif input_type == 'text':
+            userdata = userdata_input
+        else:
+            userdata = userdata_file or userdata_input or None  # Look up file upload first
+        return userdata
+
+    @long_term.cache_on_arguments(namespace='images')
+    def _get_images_cached_(self, _owners, _executors, _ec2_region, acct):
+        """
+        This method is decorated and will cache the image set
+        """
+        return self._get_images_(_owners, _executors, _ec2_region)
+
+    def _get_images_(self, _owners, _executors, _ec2_region):
+        """
+        this method produces a cachable list of images
+        """
+        with boto_error_handler(self.request):
+            logging.info("loading images from server (not cache)")
+            filters = {'image-type': 'machine'}
+            images = self.get_connection().get_all_images(owners=_owners, executable_by=_executors, filters=filters)
+            ret = []
+            for img in images:
+                # trim some un-necessary items we don't need to cache
+                del img.connection
+                del img.region
+                del img.product_codes
+                del img.billing_products
+                # alter things we want to cache, but are un-picklable
+                if img.block_device_mapping:
+                    for bdm in img.block_device_mapping.keys():
+                        mapping_type = img.block_device_mapping[bdm]
+                        del mapping_type.connection
+                ret.append(img)
+            return ret
+
+    def get_images(self, conn, owners, executors, ec2_region):
+        """
+        This method sets the right account value so we cache private images per-acct
+        and handles caching error by fetching the data from the server.
+        """
+        acct = self.request.session.get('account', '')
+        if acct == '':
+            acct = self.request.session.get('access_id', '')
+        if 'amazon' in owners or 'aws-marketplace' in owners:
+            acct = ''
+        try:
+            return self._get_images_cached_(owners, executors, ec2_region, acct)
+        except pylibmc.Error as err:
+            logging.warn('memcached not responding')
+            return self._get_images_(owners, executors, ec2_region)
+
+    def invalidate_images_cache(self):
+        region = self.request.session.get('region')
+        acct = self.request.session.get('account', '')
+        if acct == '':
+            acct = self.request.session.get('access_id', '')
+        invalidate_cache(long_term, 'images', None, [], [], region, acct)
+        invalidate_cache(long_term, 'images', None, [u'self'], [], region, acct)
+        invalidate_cache(long_term, 'images', None, [], [u'self'], region, acct)
+
+    def get_euca_authenticator(self):
+        """
+        This method centralizes configuration of the EucaAuthenticator.
+        """
+        host = self.request.registry.settings.get('clchost', 'localhost')
+        port = int(self.request.registry.settings.get('clcport', 8773))
+        host = self.request.registry.settings.get('sts.host', host)
+        port = int(self.request.registry.settings.get('sts.port', port))
+        validate_certs = asbool(self.request.registry.settings.get('connection.ssl.validation', False))
+        conn = AWSAuthConnection(None, aws_access_key_id='', aws_secret_access_key='')
+        
+        ca_certs_file = conn.ca_certificates_file
+        conn = None
+        ca_certs_file = self.request.registry.settings.get('connection.ssl.certfile', ca_certs_file)
+        auth = EucaAuthenticator(host, port, validate_certs=validate_certs, ca_certs=ca_certs_file)
+        return auth
+
+    @staticmethod
+    def escape_braces(s):
+        if type(s) in [str, unicode] or isinstance(s, Markup) or isinstance(s, TranslationString):
+            return s.replace('{{', '&#123;&#123;').replace('}}', '&#125;&#125;')
+
+    @staticmethod
+    def unescape_braces(s):
+        if type(s) in [str, unicode] or isinstance(s, Markup) or isinstance(s, TranslationString):
+            return s.replace('&#123;&#123;', '{{').replace('&#125;&#125;', '}}')
 
     @staticmethod
     def sanitize_url(url):
@@ -146,14 +291,6 @@ class BaseView(object):
                 return default_path
             url = parsed_url.path
         return url or default_path
-
-    @staticmethod
-    def invalidate_connection_cache():
-        """Empty connection objects cache"""
-        for manager in cache_managers.values():
-            namespace = manager.namespace.namespace
-            if '_aws_connection' in namespace or '_euca_connection' in namespace:
-                manager.clear()
 
     @staticmethod
     def log_message(request, message, level='info'):
@@ -172,6 +309,8 @@ class BaseView(object):
             logging.info(log_message)
         elif level == 'error':
             logging.error(log_message)
+        # Very useful to use this when an error is logged and you need more details
+        # import traceback; traceback.print_exc()
 
     def log_request(self, message):
         self.log_message(self.request, message)
@@ -191,11 +330,11 @@ class BaseView(object):
         BaseView.log_message(request, message, level='error')
         if request.is_xhr:
             raise JSONError(message=message, status=status or 403)
-        if status == 403:
-            notice = _(u'Your session has timed out. This may be due to inactivity, a policy that does not provide login permissions, or an unexpected error. Please log in again, and contact your cloud administrator if the problem persists.')
+        if status == 403 or 'token has expired' in message:  # S3 token expiration responses return a 400 status
+            notice = _(u'Your session has timed out. This may be due to inactivity, '
+                       u'a policy that does not provide login permissions, or an unexpected error. '
+                       u'Please log in again, and contact your cloud administrator if the problem persists.')
             request.session.flash(notice, queue=Notification.WARNING)
-            # Empty Beaker cache to clear connection objects
-            # BaseView.invalidate_connection_cache()
             raise HTTPFound(location=request.route_path('login'))
         request.session.flash(message, queue=Notification.ERROR)
         if location is None:
@@ -219,6 +358,32 @@ class BaseView(object):
         """Convert a timezone-unaware datetime object to tz-aware one and return it as an ISO-8601 formatted string"""
         return dt_obj.replace(tzinfo=tz.gettz(tzone)).isoformat()
 
+    # these methods copied from euca2ools:bundleinstance.py and used with small changes
+    @staticmethod
+    def generate_default_policy(bucket, prefix, token=None):
+        delta = timedelta(hours=24)
+        expire_time = (datetime.utcnow() + delta).replace(microsecond=0)
+
+        conditions = [{'acl': 'ec2-bundle-read'},
+                      {'bucket': bucket},
+                      ['starts-with', '$key', prefix]]
+        if token is not None:
+            conditions.append({'x-amz-security-token': token})
+                      
+        policy = {'conditions': conditions,
+                  'expiration': time.strftime('%Y-%m-%dT%H:%M:%SZ',
+                                              expire_time.timetuple())}
+        policy_json = json.dumps(policy)
+        return base64.b64encode(policy_json)
+
+    @staticmethod
+    def gen_policy_signature(policy, secret_key):
+        # hmac cannot handle unicode
+        secret_key = secret_key.encode('ascii', 'ignore')
+        my_hmac = hmac.new(secret_key, digestmod=hashlib.sha1)
+        my_hmac.update(policy)
+        return base64.b64encode(my_hmac.digest())
+
 
 class TaggedItemView(BaseView):
     """Common view for items that have tags (e.g. security group)"""
@@ -234,10 +399,11 @@ class TaggedItemView(BaseView):
             tags_dict = json.loads(tags_json) if tags_json else {}
             tags = {}
             for key, value in tags_dict.items():
-                key = key.strip()
+                key = self.unescape_braces(key.strip())
                 if not any([key.startswith('aws:'), key.startswith('euca:')]):
-                    tags[key] = value.strip()
-            self.conn.create_tags([self.tagged_obj.id], tags)
+                    tags[key] = self.unescape_braces(value.strip())
+            if tags:
+                self.conn.create_tags([self.tagged_obj.id], tags)
 
     def remove_tags(self):
         if self.conn:
@@ -258,10 +424,11 @@ class TaggedItemView(BaseView):
             if value != self.tagged_obj.tags.get('Name'):
                 self.tagged_obj.remove_tag('Name')
                 if value and not value.startswith('aws:'):
-                    self.tagged_obj.add_tag('Name', value)
+                    tag_value = self.unescape_braces(value)
+                    self.tagged_obj.add_tag('Name', tag_value)
 
     @staticmethod
-    def get_display_name(resource):
+    def get_display_name(resource, escapebraces=True):
         name = ''
         if resource:
             name_tag = resource.tags.get('Name', '')
@@ -269,6 +436,8 @@ class TaggedItemView(BaseView):
                 name_tag if name_tag else resource.id,
                 ' ({0})'.format(resource.id) if name_tag else ''
             )
+        if escapebraces:
+            name = BaseView.escape_braces(name)
         return name
 
     @staticmethod
@@ -329,13 +498,6 @@ class BlockDeviceMappingItemView(BaseView):
             choices.append((value, label))
         return sorted(choices)
 
-    def get_user_data(self):
-        userdata_input = self.request.params.get('userdata')
-        userdata_file_param = self.request.POST.get('userdata_file')
-        userdata_file = userdata_file_param.file.read() if isinstance(userdata_file_param, FieldStorage) else None
-        userdata = userdata_file or userdata_input or None  # Look up file upload first
-        return userdata
-
     @staticmethod
     def get_block_device_map(bdmapping_json=None):
         """Parse block_device_mapping JSON and return a configured BlockDeviceMapping object
@@ -389,6 +551,7 @@ class LandingPageView(BaseView):
 
     def filter_items(self, items, ignore=None, autoscale=False):
         ignore = ignore or []  # Pass list of filters to ignore
+        ignore.append('csrf_token')
         filtered_items = []
         if hasattr(self.request.params, 'dict_of_lists'):
             filter_params = self.request.params.dict_of_lists()
@@ -414,16 +577,19 @@ class LandingPageView(BaseView):
                                 else:
                                     if filterkey_val in filter_value:
                                         matchedkey_count += 1
+                            elif filter_value[0] == 'None':
+                                # Handle the special case where the filter value is None
+                                if filterkey_val is None:
+                                    matchedkey_count += 1
                     else:
                         matchedkey_count += 1  # Handle empty param values
                 if matchedkey_count == len(filter_params):
                     filtered_items.append(item)
         return filtered_items
 
-    @staticmethod
-    def match_tags(item=None, tags=None, autoscale=False):
+    def match_tags(self, item=None, tags=None, autoscale=False):
         for tag in tags:
-            tag = tag.strip()
+            tag = self.unescape_braces(tag.strip())
             if autoscale:  # autoscaling tags are a list of Tag boto.ec2.autoscale.tag.Tag objects
                 if item.tags:
                     for as_tag in item.tags:
@@ -434,9 +600,9 @@ class LandingPageView(BaseView):
                     return True
         return False
 
-    def get_json_endpoint(self, route):
+    def get_json_endpoint(self, route, path=False):
         return '{0}{1}'.format(
-            self.request.route_path(route),
+            self.request.route_path(route) if path is False else route,
             '?{0}'.format(urlencode(self.request.params)) if self.request.params else ''
         )
 
@@ -473,6 +639,19 @@ def boto_error_handler(request, location=None, template="{0}"):
 
 @view_config(route_name='file_download', request_method='POST')
 def file_download(request):
+    # disable using memcache for file storage
+    # try:
+    #    file_value = default_term.get('file_cache')
+    #    if not isinstance(file_value, NoValue):
+    #        (filename, mime_type, contents) = file_value
+    #        default_term.delete('file_cache')
+    #        response = Response(content_type=mime_type)
+    #        response.body = str(contents)
+    #        response.content_disposition = 'attachment; filename="{name}"'.format(name=filename)
+    #        return response
+    # except pylibmc.Error as ex:
+    #    logging.warn('memcached not responding')
+    # try session instead
     session = request.session
     if session.get('file_cache'):
         (filename, mime_type, contents) = session['file_cache']
@@ -482,6 +661,20 @@ def file_download(request):
         response.body = str(contents)
         response.content_disposition = 'attachment; filename="{name}"'.format(name=filename)
         return response
+    # no file found ...
     # this isn't handled on on client anyway, so we can return pretty much anything
     return Response(body='BaseView:file not found', status=500)
 
+_magic_type = magic.Magic(mime=True)
+_magic_type._thread_check = lambda: None
+_magic_desc = magic.Magic(mime=False)
+_magic_desc._thread_check = lambda: None
+_magic_lock = threading.Lock()
+
+
+def guess_mimetype_from_buffer(buffer, mime=False):
+    with _magic_lock:
+        if mime:
+            return _magic_type.from_buffer(buffer)
+        else:
+            return _magic_desc.from_buffer(buffer)

@@ -39,7 +39,7 @@
         padding: 4px 6px;
         &.i386 { background-color: $euca-grey; }
         &.x86_64 { background-color: $euca-notificationblue; }
-        &.ebs { background-color: $euca-darkgreen; text-transform: uppercase; }
+        &.ebs { background-color: $euca-olive; text-transform: uppercase; }
         &.instance-store { background-color: darken($euca-grey, 15%); }
     }
     .emi-name {
@@ -52,4 +52,75 @@
 // Adjustment for Images landing page not having an "Add Image" button.
 .row.sort-search {
     margin-top: 20px;
+}
+
+// Status colors
+$snapshot-status-color-pending: lighten($euca-darkblue, 20%);
+$snapshot-status-color-available: $euca-darkblue;
+$snapshot-status-color-failed: darken(red, 20%);
+
+// Mixin for the "in-progress" dots indicator
+@mixin progress-dots {
+    position: absolute;
+    width: 16px; height: 11px;
+    top: 8px; right: 8px;
+}
+
+
+.status.pending { background-color: $snapshot-status-color-pending; }
+.status.available { background-color: $snapshot-status-color-available; }
+.status.failed { background-color: $snapshot-status-color-failed; }
+
+
+// Table view
+.table {
+    td.status {
+        position: relative;
+        .progress {
+            position: relative;
+            font-size: 0.825rem;
+            margin-bottom: 0;
+            .meter {
+                background-color: lighten($euca-darkblue, 20%);
+                padding-left: 4px;
+                color: black;
+                font-weight: bold;
+            }
+            .dots {
+                @include progress-dots;
+                width: 20px;
+                top: 6px; right: 4px;
+            }
+        }
+    }
+    td.description {
+        word-break: break-all;
+    }
+}
+
+// Progress indicator of images in tile view
+.tile {
+    .footer {
+        .completed {
+            padding: 0 0 0 0;
+        }
+        .progress {
+            text-align: left;
+            position: relative;
+            border: none;
+            .meter {
+                background-color: lighten($euca-darkblue, 20%);
+                color: black;
+                position: relative;
+                top: -2px; left: -2px;
+                padding: 1px 0 1px 8px;
+                display: inline-block;
+                white-space: nowrap;
+                font-weight: bold;
+            }
+            .dots {
+                @include progress-dots;
+            }
+        }
+    }
 }

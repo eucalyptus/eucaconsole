@@ -1,11 +1,15 @@
 <!--! Modal dialogs for Elastic IPs on landing and detail page -->
-<div tal:omit-tag="">
+<div tal:omit-tag="" i18n:domain="eucaconsole">
     <div id="associate-ip-modal" class="reveal-modal small" data-reveal=""
          tal:define="landingpage_action request.route_path('ipaddresses_associate') + layout.querystring;
                      detailpage_action request.route_path('ipaddress_associate', public_ip=eip.public_ip) if eip else '';
                      action landingpage_action if landingpage else detailpage_action;">
         <h3 i18n:translate="">Associate elastic IP address with instance</h3>
-        <p i18n:translate="">Associate <b>${eip.public_ip if eip else '{{ publicIP }}'}</b> with an instance</p>
+        <p>
+            <span i18n:translate="">Associate</span>
+            <b>${eip.public_ip if eip else '{{ publicIP }}'}</b>
+            <span i18n:translate="">with an instance</span>
+        </p>
         <form action="${action}"
               method="post" data-abide="abide">
             ${structure:associate_form['csrf_token']}
@@ -13,6 +17,12 @@
                 <input type="hidden" name="public_ip" value="{{ publicIP }}" />
             </div>
             ${panel('form_field', field=associate_form.instance_id)}
+            <div>
+                <label>
+                    <span class="req">*</span>
+                    <span i18n:translate="">Required fields</span>
+                </label>
+            </div>
             <div class="dialog-submit-button">
                 <button type="submit" id="associate_ip_submit_button" class="button expand" i18n:translate="">Associate Address with Instance</button>
             </div>
@@ -30,9 +40,11 @@
         <h3 i18n:translate="">Disassociate elastic IP address from instance</h3>
         <p i18n:translate="">If you disassociate an elastic IP address from an instance,
             you will no longer be able to connect to that instance using that IP address.</p>
-        <p i18n:translate="">Are you sure you want to disassociate <b>${eip.public_ip if eip else '{{ publicIP }}'}</b>
-            from instance
-            <span tal:condition="eip"><b ng-non-bindable="">${instance_name}</b></span>
+        <p>
+            <span i18n:translate="">Are you sure you want to disassociate</span>
+            <b>${eip.public_ip if eip else '{{ publicIP }}'}</b>
+            <span i18n:translate="">from instance</span>
+            <span tal:condition="eip"><b>${instance_name}</b></span>
             <span tal:condition="not eip"><b>{{ instanceID }}</b></span>
             ?</p>
         <form action="${action}" method="post">
@@ -59,7 +71,11 @@
             If the elastic IP address is currently associated with an instance when you release it to the cloud,
             the instance will get a new IP address as long as you did not
             specify private addressing when you launched the instance.</p>
-        <p i18n:translate="">Are you sure you want to release <b>${eip.public_ip if eip else '{{ publicIP }}'}</b> to the cloud?</p>
+        <p>
+            <span i18n:translate="">Are you sure you want to release</span>
+            <b>${eip.public_ip if eip else '{{ publicIP }}'}</b>
+            <span i18n:translate="">to the cloud?</span>
+        </p>
         <form action="${action}" method="post">
             ${structure:release_form['csrf_token']}
             <div tal:condition="landingpage" tal:omit-tag="">

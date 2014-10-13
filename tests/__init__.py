@@ -63,12 +63,15 @@ See http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/testing.html
 import collections
 import unittest
 
-import beaker
 from pyramid import testing
 from wtforms import Field
 from wtforms.validators import DataRequired, InputRequired, Length, Email, Optional, NumberRange
 
 from eucaconsole.routes import urls
+from eucaconsole.caches import short_term
+from eucaconsole.caches import default_term
+from eucaconsole.caches import long_term
+from eucaconsole.caches import extra_long_term
 
 
 class BaseViewTestCase(unittest.TestCase):
@@ -92,29 +95,64 @@ class BaseTestCase(unittest.TestCase):
 
 
 class BaseFormTestCase(unittest.TestCase):
-    """Base form class, modified from wtforms-txt to better work with CSRF forms.
+    """Base form class, modified from wtforms-test to better work with CSRF forms.
        See https://github.com/kvesteri/wtforms-test/blob/master/wtforms_test/__init__.py
     """
     form_class = None
     request = None
     csrf_enabled = True
-    beaker.cache.CacheManager(cache_regions={
-        'short_term':{
-            'expire':60,
-            'type':'memory',
-            'key_length':'20'
+    memory_cache = 'dogpile.cache.pylibmc'
+    memory_cache_url = '127.0.0.1:11211'
+    username = None
+    password = None
+    short_term.configure(
+        memory_cache,
+        expiration_time=60,
+        arguments={
+            'url': [memory_cache_url],
+            'binary': True,
+            'min_compress_len': 1024,
+            'behaviors': {"tcp_nodelay": True,"ketama":True},
+            'username': username,
+            'password': password
         },
-        'long_term':{
-            'expire':3600,
-            'type':'memory',
-            'key_length':'20'
+    )
+    default_term.configure(
+        memory_cache,
+        expiration_time=300,
+        arguments= {
+            'url': [memory_cache_url],
+            'binary': True,
+            'min_compress_len': 1024,
+            'behaviors': {"tcp_nodelay": True, "ketama": True},
+            'username': username,
+            'password': password
         },
-        'extra_long_term':{
-            'expire':43200,
-            'type':'memory',
-            'key_length':'20'
-        }
-    })
+    )
+    long_term.configure(
+        memory_cache,
+        expiration_time=3600,
+        arguments={
+            'url': [memory_cache_url],
+            'binary': True,
+            'min_compress_len': 1024,
+            'behaviors': {"tcp_nodelay": True, "ketama": True},
+            'username': username,
+            'password': password
+        },
+    )
+    extra_long_term.configure(
+        memory_cache,
+        expiration_time=43200,
+        arguments={
+            'url': [memory_cache_url],
+            'binary': True,
+            'min_compress_len': 1024,
+            'behaviors': {"tcp_nodelay": True, "ketama": True},
+            'username': username,
+            'password': password
+        },
+    )
 
     def setUp(self):
         self.config = testing.setUp()

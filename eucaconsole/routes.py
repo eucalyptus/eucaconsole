@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2013-2014 Eucalyptus Systems, Inc.
 #
 # Redistribution and use of this software in source and binary forms,
@@ -47,10 +46,12 @@ urls = [
     # Dashboard #####
     Route(name='dashboard', pattern='/'),
     Route(name='dashboard_json', pattern='/dashboard/json'),
+    Route(name='service_status_json', pattern='/status/json'),
 
     # Login/logout #####
     Route(name='login', pattern='/login'),
     Route(name='logout', pattern='/logout'),
+    Route(name='managecredentials', pattern='/managecredentials'),
     Route(name='changepassword', pattern='/changepassword'),
 
     # Common #####
@@ -62,7 +63,10 @@ urls = [
     Route(name='images_json', pattern='/images/json'),
     Route(name='image_view', pattern='/images/{id}'),
     Route(name='image_json', pattern='/images/{id}/json'),
+    Route(name='image_state_json', pattern='/images/{id}/state/json'),
     Route(name='image_update', pattern='/images/{id}/update'),
+    Route(name='image_deregister', pattern='/images/{id}/deregister'),
+    Route(name='image_cancel', pattern='/images/{id}/cancel'),
 
     # Instances #####
     # Landing page
@@ -80,6 +84,7 @@ urls = [
     Route(name='instance_launch', pattern='/instances/launch'),
     Route(name='instance_view', pattern='/instances/{id}'),
     Route(name='instance_json', pattern='/instances/{id}/json'),
+    Route(name='instance_userdata_json', pattern='/instances/{id}/userdata'),
     Route(name='instance_more', pattern='/instances/{id}/more'),
     Route(name='instance_more_launch', pattern='/instances/{id}/more/launch'),
     Route(name='instance_update', pattern='/instances/{id}/update'),
@@ -89,7 +94,8 @@ urls = [
     Route(name='instance_stop', pattern='/instances/{id}/stop'),
     Route(name='instance_reboot', pattern='/instances/{id}/reboot'),
     Route(name='instance_terminate', pattern='/instances/{id}/terminate'),
-    Route(name='instance_get_password', pattern='/instances/{id}/getpassword'), # for windows instances
+    Route(name='instance_create_image', pattern='/instances/{id}/createimage'),
+    Route(name='instance_get_password', pattern='/instances/{id}/getpassword'),  # for windows instances
     Route(name='instance_state_json', pattern='/instances/{id}/state/json'),
     Route(name='instance_ip_address_json', pattern='/instances/{id}/ipaddress/json'),
     Route(name='instance_nextdevice_json', pattern='/instances/{id}/nextdevice/json'),
@@ -98,6 +104,11 @@ urls = [
     Route(name='instance_volumes_json', pattern='/instances/{id}/volumes/json'),
     Route(name='instance_volume_attach', pattern='/instances/{id}/volumes/attach'),
     Route(name='instance_volume_detach', pattern='/instances/{id}/volumes/{volume_id}/detach'),
+
+    # Instance Types page
+    Route(name='instance_types', pattern='/instance-types'),
+    Route(name='instance_types_json', pattern='/instance-types/json'),
+    Route(name='instance_types_update', pattern='/instance-types/update'),
 
     # Scaling Groups #####
     # Landing page
@@ -166,10 +177,35 @@ urls = [
     Route(name='snapshot_state_json', pattern='/snapshots/{id}/state/json'),
     Route(name='snapshot_images_json', pattern='/snapshots/{id}/images/json'),
 
+    # Buckets #####
+    # Landing page
+    Route(name='buckets', pattern='/buckets'),
+    Route(name='buckets_json', pattern='/buckets/json'),
+    # Contents/detail pages
+    Route(name='bucket_new', pattern='/buckets/new'),
+    Route(name='bucket_create', pattern='/buckets/create'),
+    Route(name='bucket_details', pattern='/buckets/{name}/details'),
+    Route(name='bucket_objects_count_versioning_json', pattern='/buckets/{name}/objectscount.json'),
+    Route(name='bucket_update', pattern='/buckets/{name}/update'),
+    Route(name='bucket_delete', pattern='/buckets/{name}/delete'),
+    Route(name='bucket_delete_keys', pattern='/buckets/{name}/delete_keys'),
+    Route(name='bucket_update_versioning', pattern='/buckets/{name}/updateversioning'),
+    Route(name='bucket_contents', pattern='/buckets/{name}/contents/*subpath'),
+    Route(name='bucket_keys', pattern='/buckets/{name}/keys/*subpath'),
+    Route(name='bucket_item_details', pattern='/buckets/{name}/itemdetails/*subpath'),
+    Route(name='bucket_item_update', pattern='/buckets/{name}/itemupdate/*subpath'),
+    Route(name='bucket_put_item', pattern='/buckets/{name}/putitem/*subpath'),
+    Route(name='bucket_put_items', pattern='/buckets/{name}/putitems/*subpath'),
+    Route(name='bucket_create_folder', pattern='/buckets/{name}/createfolder/*subpath'),
+    Route(name='bucket_upload', pattern='/buckets/{name}/upload/*subpath'),
+    Route(name='bucket_sign_req', pattern='/buckets/{name}/signreq/*subpath'),
+
+
     # Security Groups #####
     # Landing page
     Route(name='securitygroups', pattern='/securitygroups'),
     Route(name='securitygroups_json', pattern='/securitygroups/json'),
+    Route(name='internet_protocols_json', pattern='/internetprotocols/json'),
     Route(name='securitygroups_delete', pattern='/securitygroups/delete'),
     # Detail page
     Route(name='securitygroup_create', pattern='/securitygroups/create'),
@@ -206,6 +242,21 @@ urls = [
     Route(name='cloudwatch_alarms_json', pattern='/cloudwatch/alarms/json'),
     Route(name='cloudwatch_alarms_create', pattern='/cloudwatch/alarms/create'),
     Route(name='cloudwatch_alarms_delete', pattern='/cloudwatch/alarms/delete'),
+
+    # Accounts #####
+    Route(name='accounts', pattern='/accounts'),
+    Route(name='accounts_json', pattern='/accounts/json'),
+    Route(name='account_new', pattern='/accounts/new'),
+    Route(name='accounts_delete', pattern='/accounts/delete'),
+    Route(name='account_create', pattern='/accounts/create'),
+    Route(name='account_view', pattern='/accounts/{name}'),
+    Route(name='account_summary_json', pattern='/accounts/{name}/summary'),
+    Route(name='account_update', pattern='/accounts/{name}/update'),
+    Route(name='account_delete', pattern='/accounts/{name}/delete'),
+    Route(name='account_policies_json', pattern='/accounts/{name}/policies_json'),
+    Route(name='account_policy_json', pattern='/accounts/{name}/policies/{policy}'),
+    Route(name='account_update_policy', pattern='/accounts/{name}/policy/{policy}/save'),
+    Route(name='account_delete_policy', pattern='/accounts/{name}/policy/{policy}/delete'),
 
     # Users #####
     Route(name='users', pattern='/users'),
@@ -248,6 +299,19 @@ urls = [
     Route(name='group_policy_json', pattern='/groups/{name}/policies/{policy}'),
     Route(name='group_update_policy', pattern='/groups/{name}/policy/{policy}/save'),
     Route(name='group_delete_policy', pattern='/groups/{name}/policy/{policy}/delete'),
+
+    # Roles #####
+    Route(name='roles', pattern='/roles'),
+    Route(name='roles_json', pattern='/roles/json'),
+    Route(name='roles_delete', pattern='/roles/delete'),
+    Route(name='role_create', pattern='/roles/create'),
+    Route(name='role_view', pattern='/roles/{name}'),
+    Route(name='role_delete', pattern='/roles/{name}/delete'),
+    Route(name='role_policies_json', pattern='/roles/{name}/policies_json'),
+    Route(name='role_policy_json', pattern='/roles/{name}/policies/{policy}'),
+    Route(name='role_update_policy', pattern='/roles/{name}/policy/{policy}/save'),
+    Route(name='role_update_trustpolicy', pattern='/roles/{name}/trustpolicy/save'),
+    Route(name='role_delete_policy', pattern='/roles/{name}/policy/{policy}/delete'),
 
     # IAM Policies/Permissions #####
     Route(name='iam_policy_new', pattern='/policies/new'),

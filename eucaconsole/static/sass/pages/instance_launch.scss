@@ -39,6 +39,9 @@
         top: -6px;
         margin-bottom: 10px;
     }
+    .rules-display {
+        margin-left: 0.7rem;
+    }
     .rules-title {
         margin-bottom: 3px;
     }
@@ -53,4 +56,13 @@
         font-family: Courier, "courier New", monospace, sans-serif;
     }
 }
+
+#userdatalabel {
+    right: 0px;
+}
+
+#userdata {
+    margin: 0 0 0;
+}
+
 

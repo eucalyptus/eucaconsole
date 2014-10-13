@@ -33,10 +33,12 @@ from pyramid import testing
 from pyramid.httpexceptions import HTTPNotFound
 
 from eucaconsole.forms import BaseSecureForm
-from eucaconsole.forms.instances import StartInstanceForm, StopInstanceForm, RebootInstanceForm, TerminateInstanceForm
-from eucaconsole.forms.instances import AttachVolumeForm, DetachVolumeForm, LaunchInstanceForm
+from eucaconsole.forms.instances import (
+    StartInstanceForm, StopInstanceForm, RebootInstanceForm, TerminateInstanceForm,
+    AttachVolumeForm, DetachVolumeForm, LaunchInstanceForm, InstanceCreateImageForm
+)
 from eucaconsole.views import TaggedItemView
-from eucaconsole.views.instances import InstancesView, InstancesJsonView, InstanceView
+from eucaconsole.views.instances import InstancesView, InstanceView
 
 from tests import BaseViewTestCase, BaseFormTestCase
 
@@ -159,4 +161,27 @@ class InstanceLaunchFormTestCase(BaseFormTestCase):
         self.assert_required('number')
         self.assert_required('instance_type')
         self.assert_required('securitygroup')
+
+
+class InstanceCreateImageFormTestCase(BaseFormTestCase):
+    form_class = InstanceCreateImageForm
+
+    def setUp(self):
+        self.form = self.form_class(self.request)
+
+    def test_required_fields(self):
+        self.assert_required('name')
+        self.assert_required('s3_bucket')
+        self.assert_required('s3_prefix')
+
+    def test_deprecated_required_validator(self):
+        """Test usage of deprecated validator.Required"""
+        try:
+            from wtforms.validators import Required
+            for name, field in self.form._fields.items():
+                validator = self.get_validator(name, Required)
+                if isinstance(validator, Required):
+                    assert False
+        except ImportError:
+            pass
 

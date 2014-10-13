@@ -18,52 +18,75 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.summarySection = $('.summary');
         $scope.instanceNumber = 1;
         $scope.instanceNames = [];
+        $scope.instanceVPC = '';
+        $scope.instanceVPCName = '';
+        $scope.subnetVPC = 'None';
+        $scope.vpcSubnetList = {};
+        $scope.vpcSubnetChoices = {};
+        $scope.keyPair = '';
         $scope.keyPairChoices = {};
         $scope.newKeyPairName = '';
         $scope.keyPairModal = $('#create-keypair-modal');
         $scope.showKeyPairMaterial = false;
         $scope.isLoadingKeyPair = false;
+        $scope.securityGroups = [];
         $scope.securityGroupsRules = {};
-        $scope.securityGroupsIDMap = {};
-        $scope.selectedGroupRules = [];
+        $scope.securityGroupCollection = {};
+        $scope.selectedGroupRules = {};
         $scope.securityGroupModal = $('#create-securitygroup-modal');
         $scope.securityGroupForm = $('#create-securitygroup-form');
         $scope.securityGroupChoices = {};
+        $scope.isRuleExpanded = {};
         $scope.newSecurityGroupName = '';
         $scope.isLoadingSecurityGroup = false;
+        $scope.role = '';
+        $scope.roleList = [];
         $scope.currentStepIndex = 1;
         $scope.step1Invalid = true;
         $scope.step2Invalid = true;
         $scope.step3Invalid = true;
         $scope.imageJsonURL = '';
+        $scope.isNotValid = true;
+        $scope.existsImage = true;
+        $scope.imageIDErrorClass = '';
+        $scope.imageIDNonexistErrorClass = '';
         $scope.initController = function (securityGroupsRulesJson, keyPairChoices,
-                                securityGroupChoices, securityGroupsIDMapJson,
+                                securityGroupChoices, securityGroupJsonURL, vpcSubnetJson, roles,
                                 imageJsonURL) {
-            securityGroupsRulesJson = securityGroupsRulesJson.replace(/__apos__/g, "\'");
-            securityGroupChoices = securityGroupChoices.replace(/__apos__/g, "\'");
-            securityGroupsIDMapJson = securityGroupsIDMapJson.replace(/__apos__/g, "\'");
-            keyPairChoices = keyPairChoices.replace(/__apos__/g, "\'");
+            securityGroupsRulesJson = securityGroupsRulesJson.replace(/__apos__/g, "\'")
+                .replace(/__dquote__/g, '\\"').replace(/__bslash__/g, "\\");
+            securityGroupChoices = securityGroupChoices.replace(/__apos__/g, "\'")
+                .replace(/__dquote__/g, '\\"').replace(/__bslash__/g, "\\");
+            keyPairChoices = keyPairChoices.replace(/__apos__/g, "\'")
+                .replace(/__dquote__/g, '\\"').replace(/__bslash__/g, "\\");
+            vpcSubnetJson = vpcSubnetJson.replace(/__apos__/g, "\'")
+                .replace(/__dquote__/g, '\\"').replace(/__bslash__/g, "\\");
             $scope.securityGroupsRules = JSON.parse(securityGroupsRulesJson);
             $scope.keyPairChoices = JSON.parse(keyPairChoices);
             $scope.securityGroupChoices = JSON.parse(securityGroupChoices);
-            $scope.securityGroupsIDMap = JSON.parse(securityGroupsIDMapJson);
+            $scope.vpcSubnetList = JSON.parse(vpcSubnetJson);
+            $scope.roleList = JSON.parse(roles);
+            $scope.securityGroupJsonEndpoint = securityGroupJsonURL;
             $scope.imageJsonURL = imageJsonURL;
             $scope.setInitialValues();
             $scope.updateSelectedSecurityGroupRules();
             $scope.preventFormSubmitOnEnter();
+            $scope.initChosenSelectors();
             $scope.watchTags();
             $scope.focusEnterImageID();
             $scope.setWatcher();
         };
+        $scope.initChosenSelectors = function () {
+            $('#securitygroup').chosen({'width': '100%', search_contains: true});
+        }
         $scope.updateSelectedSecurityGroupRules = function () {
-            $scope.selectedGroupRules = $scope.securityGroupsRules[$scope.securityGroup];
-        };
-        $scope.getSecurityGroupIDByName = function (securityGroupName) {
-            return $scope.securityGroupsIDMap[securityGroupName];
+            angular.forEach($scope.securityGroups, function(securityGroupID) {
+                $scope.selectedGroupRules[securityGroupID] = $scope.securityGroupsRules[securityGroupID];
+            });
         };
         $scope.preventFormSubmitOnEnter = function () {
             $(document).ready(function () {
-                $(window).keydown(function(evt) {
+                $('#image-id-input').keydown(function(evt) {
                     if (evt.keyCode === 13) {
                         evt.preventDefault();
                     }
@@ -83,7 +106,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             if (lastSecGroup != null && $scope.securityGroupChoices[lastSecGroup] !== undefined) {
                 $('#securitygroup').val(lastSecGroup);
             }
-            $scope.securityGroup = $('#securitygroup').find(':selected').val();
+            $scope.securityGroups.push($('#securitygroup').find(':selected').val());
             $scope.imageID = $scope.urlParams['image_id'] || '';
             if( $scope.imageID == '' ){
                 $scope.currentStepIndex = 1;
@@ -117,20 +140,100 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 $scope.updateTagsPreview();
             });
         };
+        $scope.checkRequiredInput = function () {
+            if( $scope.currentStepIndex == 1 ){ 
+                if( $scope.isNotValid == false && $scope.imageID.length < 12 ){
+                    // Once invalid ID has been entered, do not enable the button unless the ID length is valid
+                    // This prevents the error to be triggered as user is typing for the first time 
+                    $scope.isNotValid = true;
+                    $scope.imageIDErrorClass = "error";
+                }else if( $scope.imageID === '' || $scope.imageID === undefined || $scope.imageID.length == 0 ){
+                    // Do not enable the button if the input is empty. However, raise no error message
+                    $scope.isNotValid = true;
+                    $scope.imageIDErrorClass = "";
+                }else if( $scope.imageID.length > 12 ){
+                    // If the imageID length is longer then 12, disable the button and raise error message
+                    $scope.isNotValid = true;
+                    $scope.imageIDErrorClass = "error";
+                }else if( $scope.imageID.length >= 4 &&  $scope.imageID.substring(0, 4) != "emi-" && $scope.imageID.substring(0, 4) != "ami-" ){ 
+                    // If the imageID length is longer than 4, and they do not consist of "emi-" or "ami-", disable the button and raise error message
+                    $scope.isNotValid = true;
+                    $scope.imageIDErrorClass = "error";
+                }else if( $scope.imageID.length == 12 ){
+                    // If the above conditions are met and the image ID length is 12, enable the button
+                    $scope.isNotValid = false;
+                    $scope.imageIDErrorClass = "";
+                }
+            }else if( $scope.currentStepIndex == 2 ){
+                if( $scope.instanceNumber === '' || $scope.instanceNumber === undefined ){
+                    $scope.isNotValid = true;
+                }else{
+                    $scope.isNotValid = false;
+                }
+            }else if( $scope.currentStepIndex == 3 ){
+                if ($scope.keyPair === '' || $scope.keyPair === undefined) {
+                    $scope.isNotValid = true;
+                } else if ($scope.securityGroups == undefined || $scope.securityGroups.length == 0) {
+                    $scope.isNotValid = true;
+                } else {
+                    $scope.isNotValid = false;
+                }
+            }
+        };
         $scope.setWatcher = function () {
             $scope.setDialogFocus();
             $scope.$watch('currentStepIndex', function(){
                  $scope.setWizardFocus($scope.currentStepIndex);
             });
             $scope.$watch('imageID', function(newID, oldID){
-                if (newID != oldID) {
+                // Clear the image ID existence check variables
+                $scope.existsImage = true;
+                $scope.imageIDNonexistErrorClass = "";
+                if (newID != oldID && $scope.imageID.length == 12) {
                     $scope.loadImageInfo(newID);
                 }
+                $scope.checkRequiredInput();
+            });
+            $scope.$watch('existsImage', function(newValue, oldValue){
+                if( newValue != oldValue &&  $scope.existsImage == false ){
+                    $scope.isNotValid = true;
+                }
+            });
+            $scope.$watch('instanceNumber', function(){
+                $scope.checkRequiredInput();
+            });
+            $scope.$watch('keyPair', function(){
+                $scope.checkRequiredInput();
+            });
+            $scope.$watch('securityGroups', function () { 
+                $scope.updateSelectedSecurityGroupRules();
+                $scope.checkRequiredInput();
+            }, true);
+            $scope.$watch('securityGroupVPC', function () {
+                $scope.$broadcast('updateVPC', $scope.securityGroupVPC);
+            });
+            $scope.$watch('securityGroupCollection', function () {
+                $scope.updateSecurityGroupChoices();
+            });
+            $scope.$watch('instanceVPC', function () {
+                $scope.getInstanceVPCName($scope.instanceVPC);
+                $scope.getAllSecurityGroups($scope.instanceVPC);
+                $scope.updateVPCSubnetChoices();
+            });
+            $scope.$watch('instanceZone', function () {
+                $scope.updateVPCSubnetChoices();
             });
             $('#number').on('keyup blur', function () {
                 var val = $(this).val();
                 if (val > 10) {
                     $(this).val(10);
+                }
+            });
+            $scope.$watch('inputtype', function() {
+                if ($scope.inputtype == 'text') {
+                    $timeout(function() {
+                        $('#userdata').focus();
+                    });
                 }
             });
         };
@@ -139,7 +242,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                 method: 'GET',
                 url: $scope.imageJsonURL.replace('_id_', id),
-                data: '',
+                data: ''
             }).success(function (oData) {
                 var item = oData.results;
                 $scope.imageName = item.name;
@@ -147,6 +250,11 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 $scope.imageRootDeviceType = item.root_device_type;
                 $scope.summarySection.find('.step1').removeClass('hide');
                 $scope.$broadcast('setBDM', item.block_device_mapping);
+                $scope.existsImage = true;
+                $scope.imageIDNonexistErrorClass = "";
+            }).error(function (oData) {
+                $scope.existsImage = false;
+                $scope.imageIDNonexistErrorClass = "error";
             });
         };
         $scope.focusEnterImageID = function () {
@@ -173,7 +281,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 }else{
                     var inputElement = modal.find('input[type!=hidden]').get(0);
                     var modalButton = modal.find('button').get(0);
-                    if (!!inputElement) {
+                    if (!!inputElement && inputElement.value == '') {
                         inputElement.focus();
                     } else if (!!modalButton) {
                         modalButton.focus();
@@ -202,19 +310,9 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             });
         };
         $scope.setWizardFocus = function (stepIdx) {
-            var modal = $('div').filter("#step" + stepIdx);
-            var inputElement = modal.find('input[type!=hidden]').get(0);
-            var textareaElement = modal.find('textarea[class!=hidden]').get(0);
-            var selectElement = modal.find('select').get(0);
-            var modalButton = modal.find('button').get(0);
-            if (!!textareaElement){
-                textareaElement.focus();
-            } else if (!!inputElement) {
-                inputElement.focus();
-            } else if (!!selectElement) {
-                selectElement.focus();
-            } else if (!!modalButton) {
-                modalButton.focus();
+            var tabElement = $(document).find('#tabStep'+stepIdx).get(0);
+            if (!!tabElement) {
+                tabElement.focus();
             }
         };
         $scope.visitNextStep = function (nextStep, $event) {
@@ -223,9 +321,25 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             var currentStep = nextStep - 1,
                 tabContent = $scope.launchForm.find('#step' + currentStep),
                 invalidFields = tabContent.find('[data-invalid]');
-            if (invalidFields.length > 0) {
+            if (invalidFields.length > 0 || $scope.isNotValid === true) {
                 invalidFields.focus();
                 $event.preventDefault();
+                if( $scope.currentStepIndex > nextStep){
+                    $scope.currentStepIndex = nextStep;
+                    $scope.checkRequiredInput();
+                }
+                return false;
+            }
+            // Handle the unsaved tag issue
+            var existsUnsavedTag = false;
+            $('input.taginput').each(function(){
+                if($(this).val() !== ''){
+                    existsUnsavedTag = true;
+                }
+            });
+            if( existsUnsavedTag ){
+                $event.preventDefault(); 
+                $('#unsaved-tag-warn-modal').foundation('reveal', 'open');
                 return false;
             }
             if (nextStep == 2 && $scope.step1Invalid) { $scope.clearErrors(2); $scope.step1Invalid = false; }
@@ -238,7 +352,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 // since clicking invokes this method again (via ng-click) and
                 // one ng action must complete before another can start
                 var hash = "step"+nextStep;
-                $(".tabs").children("dd").each(function() {
+                $("#wizard-tabs").children("dd").each(function() {
                     var link = $(this).find("a");
                     if (link.length != 0) {
                         var id = link.attr("href").substring(1);
@@ -254,6 +368,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 // Unhide appropriate step in summary
                 $scope.summarySection.find('.step' + nextStep).removeClass('hide');
                 $scope.currentStepIndex = nextStep;
+                $scope.checkRequiredInput();
             },50);
         };
         $scope.clearErrors = function(step) {
@@ -267,6 +382,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             $scope.imagePlatform = item.platform_name;
             $scope.imageRootDeviceType = item.root_device_type;
             $scope.summarySection.find('.step1').removeClass('hide');
+            $scope.checkRequiredInput();
         });
         $scope.buildNumberList = function () {
             // Return a 1-based list of integers of a given size ([1, 2, ... limit])
@@ -302,6 +418,9 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         };
         $scope.handleKeyPairCreate = function ($event, url) {
             $event.preventDefault();
+            if ($scope.newKeyPairName.indexOf('/') !== -1 || $scope.newKeyPairName.indexOf('\\') !== -1) {
+                return; 
+            }
             var formData = $($event.target).serialize();
             $scope.isLoadingKeyPair = true;
             $http({
@@ -316,6 +435,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 // Add new key pair to choices and set it as selected
                 $scope.keyPairChoices[$scope.newKeyPairName] = $scope.newKeyPairName;
                 $scope.keyPair = $scope.newKeyPairName;
+                Notify.success(oData.message);
             }).error(function (oData) {
                 $scope.isLoadingKeyPair = false;
                 if (oData.message) {
@@ -339,16 +459,29 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             }).success(function (oData) {
                 $scope.isLoadingSecurityGroup = false;
                 // Add new security group to choices and set it as selected
-                $scope.securityGroupChoices[$scope.newSecurityGroupName] = $scope.newSecurityGroupName;
-                $scope.securityGroup = $scope.newSecurityGroupName;
-                $scope.selectedGroupRules = JSON.parse($('#rules').val());
-                $scope.securityGroupsRules[$scope.newSecurityGroupName] = $scope.selectedGroupRules;
+                var newSecurityGroupID = '';
+                if (oData.id) {
+                    newSecurityGroupID = oData.id;
+                }
+                $scope.securityGroupChoices[newSecurityGroupID] = $scope.newSecurityGroupName;
+                $scope.securityGroups.push(newSecurityGroupID);
+                var groupRulesObject = JSON.parse($('#rules').val());
+                var groupRulesEgressObject = JSON.parse($('#rules_egress').val());
+                var groupRulesObjectCombined = groupRulesObject.concat(groupRulesEgressObject); 
+                $scope.selectedGroupRules[newSecurityGroupID] = groupRulesObjectCombined; 
+                $scope.securityGroupsRules[newSecurityGroupID] = groupRulesObjectCombined;
                 // Reset values
                 $scope.newSecurityGroupName = '';
                 $scope.newSecurityGroupDesc = '';
                 $('textarea#rules').val('');
+                $('textarea#rules_egress').val('');
+                // Timeout is needed for chosen to react after Angular updates the options
+                $timeout(function(){
+                    $('#securitygroup').trigger('chosen:updated');
+                }, 500);
                 var modal = $scope.securityGroupModal;
                 modal.foundation('reveal', 'close');
+                Notify.success(oData.message);
             }).error(function (oData) {
                 $scope.isLoadingSecurityGroup = false;
                 if (oData.message) {
@@ -356,6 +489,76 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 }
             });
         };
+        $scope.getAllSecurityGroups = function (vpc) {
+            var csrf_token = $('#csrf_token').val();
+            var data = "csrf_token=" + csrf_token + "&vpc_id=" + vpc;
+            $http({
+                method:'POST', url:$scope.securityGroupJsonEndpoint, data:data,
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            }).success(function(oData) {
+                var results = oData ? oData.results : [];
+                $scope.securityGroupCollection = results;
+            }).error(function (oData) {
+                if (oData.message) {
+                    Notify.failure(oData.message);
+                }
+            });
+        };
+        $scope.updateSecurityGroupChoices = function () {
+            $scope.securityGroupChoices = {};
+            if ($.isEmptyObject($scope.securityGroupCollection)) {
+                return;
+            }
+            $scope.securityGroups = [];
+            angular.forEach($scope.securityGroupCollection, function(sGroup){
+                $scope.securityGroupChoices[sGroup['id']] = sGroup['name'];
+            }); 
+            // Timeout is needed for chosen to react after Angular updates the options
+            $timeout(function(){
+                $('#securitygroup').trigger('chosen:updated');
+            }, 500);
+        };
+        $scope.updateVPCSubnetChoices = function () {
+            $scope.vpcSubnetChoices = {};
+            $scope.subnetVPC = '';
+            angular.forEach($scope.vpcSubnetList, function(vpcSubnet){
+                if (vpcSubnet['vpc_id'] === $scope.instanceVPC) {
+                    if ($scope.instanceZone == '') {
+                        $scope.vpcSubnetChoices[vpcSubnet['id']] = 
+                            vpcSubnet['cidr_block'] + ' (' + vpcSubnet['id'] + ') | ' + 
+                            vpcSubnet['availability_zone'];
+                        if ($scope.subnetVPC == '') {
+                            $scope.subnetVPC = vpcSubnet['id'];
+                        }
+                    } else if ($scope.instanceZone != '' && 
+                               vpcSubnet['availability_zone'] === $scope.instanceZone) {
+                        $scope.vpcSubnetChoices[vpcSubnet['id']] = 
+                            vpcSubnet['cidr_block'] + ' (' + vpcSubnet['id'] + ') | ' + 
+                            vpcSubnet['availability_zone'];
+                        if ($scope.subnetVPC == '') {
+                            $scope.subnetVPC = vpcSubnet['id'];
+                        }
+                    } 
+                }
+            }); 
+            if ($scope.subnetVPC == '') {
+                $scope.vpcSubnetChoices['None'] = $('#hidden_vpc_subnet_empty_option').text();
+                $scope.subnetVPC = 'None';
+            }
+        };
+        $scope.getInstanceVPCName = function (vpcID) {
+            if (vpcID == '') {
+                $scope.instanceVPCName = '';
+                return;
+            }
+            var vpcOptions = $('#vpc_network').find('option'); 
+            vpcOptions.each(function() {
+                if (this.value == vpcID) {
+                    $scope.instanceVPCName = this.text;
+                } 
+            });
+        }
     })
 ;
+
 

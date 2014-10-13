@@ -1,4 +1,4 @@
-<metal:block use-macro="main_template">
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
 <head metal:fill-slot="head_css">
     <style type="text/css">
@@ -8,6 +8,7 @@
             font-weight: bold;
         }
     </style>
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/securitygroup.css')}" />
 </head>
 
 <div metal:fill-slot="main_content">
@@ -15,7 +16,7 @@
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('securitygroups')}" i18n:translate="">Security groups</a></li>
-                <li class="current"><a href="#" ng-non-bindable="">${security_group.name if security_group else 'Create security group'}</a></li>
+                <li class="current"><a href="#">${security_group_name if security_group else 'Create security group'}</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
         <!-- Notifications -->
@@ -23,7 +24,7 @@
         <h3 id="pagetitle">
             <metal:block tal:condition="security_group">
                 <strong i18n:translate="">Details for security group:</strong>
-                <em ng-non-bindable="">${security_group.name}</em>
+                <em>${security_group_name}</em>
             </metal:block>
             <metal:block tal:condition="not security_group">
                 <strong i18n:translate="">Create new security group</strong>
@@ -34,45 +35,59 @@
                         if security_group else request.route_path('securitygroup_create')">
             <div class="panel ${'has-actions' if security_group else ''}"
                     tal:define="sgroup_rules security_group.rules if security_group else [];
+                                sgroup_rules_egress security_group.rules_egress if security_group else [];
                                 sgroup_tags security_group.tags if security_group else {};
                                 readonly True if security_group else False;">
                 <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="security_group">
                     <metal:actions metal:fill-slot="actions">
                         <li>
-                            <a data-reveal-id="delete-securitygroup-modal" i18n:translate="" id="delete-securitygroup-action">
+                            <a i18n:translate="" id="delete-securitygroup-action">
                                 Delete security group
                             </a>
                         </li>
                     </metal:actions>
                 </metal:block>
-                <form tal:attributes="action form_action" method="post" data-abide="abide">
+                <form tal:attributes="action form_action" id="security-group-detail-form" method="post" data-abide="abide">
                     ${structure:securitygroup_form['csrf_token']}
                     <h6 i18n:translate="">Security group</h6>
                     <div tal:condition="not security_group" tal:omit-tag="">
-                        ${panel('form_field', field=securitygroup_form['name'], leftcol_width=3, rightcol_width=9, autofocus='')}
+                        ${panel('form_field', field=securitygroup_form['name'], ng_attrs={'model': 'securityGroupName'}, leftcol_width=3, rightcol_width=9, autofocus='')}
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="security_group">
                         <div class="small-3 columns"><label i18n:translate="">Name</label></div>
-                        <div class="small-9 columns field inline breakword" ng-non-bindable="">${security_group.name}</div>
+                        <div class="small-9 columns field inline breakword">${security_group_name}</div>
                     </div>
                     <div tal:condition="not security_group" tal:omit-tag="">
-                        ${panel('form_field', field=securitygroup_form['description'], leftcol_width=3, rightcol_width=9)}
+                        ${panel('form_field', field=securitygroup_form['description'], ng_attrs={'model': 'securityGroupDescription'}, leftcol_width=3, rightcol_width=9)}
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="security_group and security_group.description">
                         <div class="small-3 columns"><label i18n:translate="">Description</label></div>
-                        <div class="small-9 columns field inline" ng-non-bindable="">${security_group.description}</div>
+                        <div class="small-9 columns field inline">${layout.escape_braces(security_group.description)}</div>
+                    </div>
+                    <div tal:condition="not security_group" tal:omit-tag="">
+                        ${panel('form_field', field=securitygroup_form['vpc_network'], ng_attrs={'model': 'securityGroupVPC'}, leftcol_width=3, rightcol_width=9)}
+                    </div>
+                    <div class="row controls-wrapper readonly" tal:condition="security_group">
+                        <div class="small-3 columns"><label i18n:translate="">VPC</label></div>
+                        <div class="small-9 columns field inline" ng-init="securityGroupVPC='${security_group.vpc_id}'">${security_group_vpc}</div>
                     </div>
                     <hr />
-                    ${panel('securitygroup_rules', rules=sgroup_rules, groupnames=security_group_names)}
+                    ${panel('securitygroup_rules', rules=sgroup_rules, rules_egress=sgroup_rules_egress)}
                     <hr />
                     ${panel('tag_editor', tags=sgroup_tags, leftcol_width=3, rightcol_width=9)}
                     <hr />
+                    <div tal:condition="not security_group">
+                        <label>
+                            <span class="req">*</span>
+                            <span i18n:translate="">Required fields</span>
+                       </label>
+                    </div>
                     <div>
-                        <button type="submit" class="button" id="save-securitygroup-btn">
-                            <span tal:condition="security_group" i18n:translate="">Save Changes</span>
-                            <span tal:condition="not security_group" i18n:translate="">
-                                Create Security Group
-                            </span>
+                        <button tal:condition="security_group" type="submit" class="button" id="save-securitygroup-btn" ng-disabled="isNotChanged">
+                            <span i18n:translate="">Save Changes</span>
+                        </button>
+                        <button tal:condition="not security_group" type="submit" class="button" id="create-securitygroup-btn" ng-disabled="isNotValid">
+                            <span i18n:translate="">Create Security Group</span>
                         </button>
                         <a href="${request.route_path('securitygroups')}"
                            class="cancel-link" i18n:translate="">Cancel</a>
@@ -93,6 +108,52 @@
         </div>
         <!--! Modal dialogs reused across landing and detail page -->
         ${panel('securitygroup_dialogs', security_group=security_group, delete_form=delete_form)}
+        <div id="invalid-rules-warning-modal" class="reveal-modal small" data-reveal="">
+            <h3 i18n:translate="">Warning: Invalid rules detected</h3>
+            <p>
+                <span i18n:translate="">
+                    This security group contains the following rules which reference other security groups that no longer exist. 
+                </span>
+            </p>
+            <p>
+                <span i18n:translate="">
+                    You should delete these rulesand then create new ones referencing valid security groups if you still need them.
+                </span>
+            </p>
+            <div>
+                <div class="invalid-rule-type" ng-show="invalidRulesArray.length">
+                    <span class="invalid-rule-type-label" i18n:translate="">Inbound rules:</span> 
+                </div>
+                <div class="invalid-rule" ng-repeat="rule in invalidRulesArray">
+                    {{ rule.ip_protocol.toUpperCase() }}
+                    ({{ rule.from_port }}<span ng-show="rule.to_port != rule.from_port"> - {{ rule.to_port }}</span>)
+                    <span ng-repeat="grant in rule.grants">
+                        <span ng-show="grant.cidr_ip">{{ grant.cidr_ip }}</span>
+                        <span ng-show="grant.owner_id">{{ grant.owner_id }}/</span>
+                        <span ng-show="grant.name">{{ grant.name }}</span>
+                        <span ng-show="grant.name == undefined &amp;&amp; grant.group_id">{{ grant.group_id }}</span>
+                    </span>
+                </div>
+                <div class="invalid-rule-type" ng-show="invalidRulesEgressArray.length">
+                    <span class="invalid-rule-type-label" i18n:translate="">Outbound rules:</span> 
+                </div>
+                <div class="invalid-rule" ng-repeat="rule in invalidRulesEgressArray">
+                    {{ rule.ip_protocol.toUpperCase() }}
+                    ({{ rule.from_port }}<span ng-show="rule.to_port != rule.from_port"> - {{ rule.to_port }}</span>)
+                    <span ng-repeat="grant in rule.grants">
+                        <span ng-show="grant.cidr_ip">{{ grant.cidr_ip }}</span>
+                        <span ng-show="grant.owner_id">{{ grant.owner_id }}/</span>
+                        <span ng-show="grant.name">{{ grant.name }}</span>
+                        <span ng-show="grant.name == undefined &amp;&amp; grant.group_id">{{ grant.group_id }}</span>
+                    </span>
+                </div>
+            </div>
+            <br />
+            <div class="dialog-submit-button">
+                <button id="invalid-rules-warning-close-button" class="button expand" i18n:translate="">OK, Continue to Page</button>
+            </div>
+            <a href="#" class="close-reveal-modal">&#215;</a>
+        </div>
     </div>
 </div>
 

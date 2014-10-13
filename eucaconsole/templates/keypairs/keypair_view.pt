@@ -1,14 +1,15 @@
-<metal:block use-macro="main_template">
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap"
-            tal:define="html_attrs {'disabled': 'disabled'} if keypair else {};"
-            ng-app="KeypairPage" ng-controller="KeypairPageCtrl" ng-init="initController()">
+            tal:define="html_attrs {'disabled': 'disabled'} if keypair else {};
+                        html_attrs_val {'pattern': '^[^\/\\\]{1,255}$'};"
+            ng-app="KeypairPage" ng-controller="KeypairPageCtrl" ng-init="initController('${controller_options_json}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('keypairs')}" i18n:translate="">Key pairs</a></li>
                 <li class="current">
-                    <a tal:condition="keypair" ng-non-bindable="">${keypair.name }</a>
+                    <a tal:condition="keypair">${keypair_name }</a>
                     <a tal:condition="not keypair and keypair_route_id == 'new'" i18n:translate="">Create New Key Pair</a>
                     <a tal:condition="not keypair and keypair_route_id == 'new2'" i18n:translate="">Import Public Key</a>
                 </li>
@@ -19,7 +20,7 @@
         <h3 id="pagetitle">
             <metal:block tal:condition="keypair">
                 <strong i18n:translate="">Details for key pair:</strong>
-                <em ng-non-bindable="">${keypair.name}</em>
+                <em>${keypair_name}</em>
             </metal:block>
             <metal:block tal:condition="not keypair">
                 <strong i18n:translate="" tal:condition="keypair_route_id == 'new'">Create new key pair</strong>
@@ -54,35 +55,41 @@
                     <h6 i18n:translate="">Key pair</h6>
                     <div class="row controls-wrapper readonly">
                         <div class="small-3 columns"><label i18n:translate="">Name</label></div>
-                        <div class="small-9 columns value" ng-non-bindable="">${keypair.name if keypair.name else ''}</div>
+                        <div class="small-9 columns value">${keypair_name if keypair_name else ''}</div>
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="small-3 columns"><label i18n:translate="">Fingerprint</label></div>
                         <div class="small-9 columns value breakword">${keypair.fingerprint if keypair.fingerprint else ''}</div>
                     </div>
                 </div>
-                <div tal:condition="not keypair and keypair_route_id == 'new'" i18n:translate="">
+                <div tal:condition="not keypair and keypair_route_id == 'new'">
                     <p i18n:translate="">You can use this key pair to launch more than one instance.</p>
                     <p i18n:translate="">
                         Save the file in a place you will remember. You will need to enter the path later to connect to your instances.
                     </p>
-                    <form  action="${request.route_path('keypair_create')}" method="post" data-abide="abide">
+                    <form action="${request.route_path('keypair_create')}" method="post" data-abide="abide">
                         ${structure:keypair_form['csrf_token']}
-                        ${panel('form_field', field=keypair_form['name'], leftcol_width=3, rightcol_width=9, autofocus='', **html_attrs)}
+                        ${panel('form_field', field=keypair_form['name'], leftcol_width=3, rightcol_width=9, autofocus='', ng_attrs={'model': 'keypairName'}, **html_attrs_val)}
                         <hr />
+                        <div tal:condition="not keypair">
+                            <label>
+                                <span class="req">*</span>
+                                <span i18n:translate="">Required fields</span>
+                           </label>
+                        </div>
                         <div>
-                            <button type="submit" class="button" i18n:translate="">Create and Download</button>
+                            <button type="submit" class="button" ng-disabled="isNotValid" i18n:translate="">Create and Download</button>
                             <a href="${request.route_path('keypairs')}"
                                class="cancel-link" i18n:translate="">Cancel</a>
                         </div>
                      </form>
                  </div>
-                <div tal:condition="not keypair and keypair_route_id == 'new2'" i18n:translate="">
+                <div tal:condition="not keypair and keypair_route_id == 'new2'">
                     <p i18n:translate="">Importing a public key allows you to use an existing SSH key to access your Eucalyptus instances.</p>
                     <form action="${request.route_path('keypair_import')}" method="post" data-abide="abide">
                         ${structure:keypair_import_form['csrf_token']}
-                        ${panel('form_field', field=keypair_import_form['name'], leftcol_width=3, rightcol_width=9, autofocus='', **html_attrs)}
-                        ${panel('form_field', field=keypair_import_form['key_material'], leftcol_width=3, rightcol_width=9, **html_attrs)}
+                        ${panel('form_field', field=keypair_import_form['name'], leftcol_width=3, rightcol_width=9, autofocus='', ng_attrs={'model': 'keypairName'}, **html_attrs_val)}
+                        ${panel('form_field', field=keypair_import_form['key_material'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'keypairMaterial'}, **html_attrs)}
                         <div class="row">
                             <div class="small-3 columns">&nbsp;</div>
                             <div class="small-9 columns">
@@ -96,7 +103,13 @@
                         </div>
                         <hr/>
                         <div tal:condition="not keypair">
-                            <button type="submit" class="button" i18n:translate="">Import</button>
+                            <label>
+                                <span class="req">*</span>
+                                <span i18n:translate="">Required fields</span>
+                           </label>
+                        </div>
+                        <div tal:condition="not keypair">
+                            <button type="submit" class="button" ng-disabled="isNotValid" i18n:translate="">Import</button>
                             <a href="${request.route_path('keypairs')}"
                                class="cancel-link" i18n:translate="">Cancel</a>
                         </div>
@@ -124,6 +137,7 @@
 </div>
 
 <div metal:fill-slot="tail_js">
+    <script src="${request.static_path('eucaconsole:static/js/pages/eucaconsole_utils.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/keypair.js')}"></script>
 </div>
 

@@ -1,4 +1,4 @@
-<metal:block use-macro="main_template">
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
 <head metal:fill-slot="head_css">
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/instance.css')}" />
@@ -11,14 +11,14 @@
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('instances')}" i18n:translate="">Instances</a></li>
-                <li class="current"><a href="#" ng-non-bindable="">${instance_name}</a></li>
+                <li class="current"><a href="#">${instance_name}</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
         <!--! Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
         <h3 id="pagetitle">
             <strong i18n:translate="">Details for instance:</strong>
-            <em ng-non-bindable="">${instance_name}</em>
+            <em>${instance_name}</em>
         </h3>
         <div class="large-8 columns" tal:define="parse_date import: dateutil.parser.parse">
             <dl class="tabs" id="instance-subnav">
@@ -36,7 +36,7 @@
                 <div class="tile item" ng-repeat="volume in volumes | orderBy: -attach_time" ng-cloak="">
                     <div class="header">
                         <strong><a ng-href="/volumes/{{ volume.id }}">{{ volume.name || volume.id }}</a></strong>
-                        <span class="tiny secondary button dropdown" data-dropdown="item-dropdown_{{ volume.id }}"><i class="fi-widget"></i></span>
+                        <span id="tile-item-dropdown_{{ volume.id }}" class="tiny secondary button dropdown" data-dropdown="item-dropdown_{{ volume.id }}"><i class="fi-widget"></i></span>
                         <ul id="item-dropdown_{{ volume.id }}" class="f-dropdown" data-dropdown-content="">
                             <li ng-show="item.status !== 'terminated' &amp;&amp; !item.transitional">
                                 <a ng-click="detachModal(volume.id, volume.device, '${request.route_path('instance_json', id=instance.id)}', volume.detach_form_action)"
@@ -81,12 +81,26 @@
         <div id="volume-dialogs">
             <div id="attach-volume-modal" class="reveal-modal small" data-reveal="">
                 <h3 i18n:translate="">Attach volume</h3>
-                <p><span i18n:translate="">Attach a volume to instance</span> <strong ng-non-bindable="">${instance_name}</strong></p>
+                <p><span i18n:translate="">Attach a volume to instance</span> <strong>${instance_name}</strong></p>
+                <p tal:condition="no_volumes_in_zone">
+                    <span i18n:translate="">There are no volumes in availability zone</span>
+                    <span>${instance_zone}.</span><br />
+                    <a href="${request.route_path('volume_view', id='new')}?avail_zone=${instance_zone}">
+                        <span i18n:translate="">Create a volume in availability zone</span>
+                        <span>${instance_zone}</span>
+                    </a>
+                </p>
                 <form method="post" action="${request.route_path('instance_volume_attach', id=instance.id)}"
-                      id="attach-form" data-abide="">
+                      id="attach-form" data-abide="" tal:condition="not: no_volumes_in_zone">
                     ${structure:attach_form['csrf_token']}
                     ${panel('form_field', field=attach_form.volume_id)}
                     ${panel('form_field', field=attach_form.device, placeholder='/dev/sdf')}
+                    <div>
+                        <label>
+                            <span class="req">*</span>
+                            <span i18n:translate="">Required fields</span>
+                        </label>
+                    </div>
                     <div class="row">
                         <div>
                             <input type="submit" class="button expand" value="Attach Volume" i18n:attributes="value" />
@@ -95,25 +109,26 @@
                 </form>
                 <a class="close-reveal-modal">&#215;</a>
                 <!--! Volume device help -->
-                <hr />
-                <metal:block metal:use-macro="layout.global_macros['dialog_help_expando']" />
-                <div class="help-content" ng-show="isDialogHelpExpanded" ng-cloak="">
-                    <!--! Volume device help -->
-                    <metal:block metal:use-macro="layout.global_macros['volumedevice_help']" />
-                    <div id="help-html-console_attach_volume" ng-include="'${layout.help_path('console_attach_volume.html')}'"></div> 
+                <div tal:condition="not: no_volumes_in_zone" tal:omit-tag="">
+                    <hr />
+                    <metal:block metal:use-macro="layout.global_macros['dialog_help_expando']" />
+                    <div class="help-content" ng-show="isDialogHelpExpanded" ng-cloak="">
+                        <!--! Volume device help -->
+                        <metal:block metal:use-macro="layout.global_macros['volumedevice_help']" />
+                        <div id="help-html-console_attach_volume" ng-include="'${layout.help_path('console_attach_volume.html')}'"></div>
+                    </div>
                 </div>
             </div>
             <div id="detach-volume-modal" class="reveal-modal small" data-reveal="">
                 <h3 i18n:translate="">Detach volume</h3>
                 <p>
-                  <span i18n:translate="">If you detach a volume, the instance can no longer read or write to it.
-                  </span>
+                    <span i18n:translate="">If you detach a volume, the instance can no longer read or write to it.</span>
                 </p>
                 <p>
-                  <span i18n:translate="">
-                      Are you sure you want to detach volume <b>{{ detachVolumeName }}</b> from instance
-                  </span>
-                  <strong ng-non-bindable="">${instance_name}</strong>?
+                    <span i18n:translate="">Are you sure you want to detach volume</span>
+                    <b>{{ detachVolumeName }}</b>
+                    <span i18n:translate="">from instance</span>
+                    <strong>${instance_name}</strong>?
                 </p>
                 <form method="post" id="detach-form" data-abide="" action="{{ detachFormAction }}">
                     ${structure:detach_form['csrf_token']}
@@ -129,7 +144,11 @@
             <div id="detach-volume-warn-modal" class="reveal-modal small" data-reveal="">
                 <h3 i18n:translate="">Detach volume</h3>
                 <p>
-                    <span i18n:translate="">This operation is not available because you cannot detach the root volume of an EBS-backed instance. If you want to delete this volume, terminate instance <strong ng-non-bindable="">${instance_name}</strong>.</span>
+                    <span i18n:translate="">
+                        This operation is not available because you cannot detach the root volume of an EBS-backed instance.
+                        If you want to delete this volume, terminate instance
+                    </span>
+                    <strong>${instance_name}</strong>.
                 </p>
                 <a href="#" class="close-reveal-modal">&#215;</a>
             </div>

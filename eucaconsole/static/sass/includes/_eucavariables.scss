@@ -33,20 +33,23 @@ $euca-extrasmall-breakpoint: 480px;
 $euca-contentwrap-width: 1040px;
 
 // Colors
-$euca-darkblue: #00415e;
+$euca-darkblue: #03405f;
 $euca-extralightblue: #ecf4f7;
 $euca-notificationblue: #40a8c6;
-$euca-orange: #f18f30;
+$euca-orange: #f3901d;
 
-$euca-green: #8dc943;
+$euca-green: #8cc63e;
 $euca-lightgreen: #8dc640;
 $euca-extralightgreen: #eef7e3;
 $euca-darkgreen: #468400;
 
-$euca-grey: #777777;
+$euca-grey: #6a737b;
 $euca-darkgrey: #444;
 $euca-lightgrey: #ccc;
 $euca-extralightgrey: #e6e7e8;
+
+$euca-turquoise: #009e93;
+$euca-olive: #7a853b;
 
 $aws-orange: #ff9900;
 
@@ -58,6 +61,8 @@ $euca-input-field-height: 2rem;
 
 // Text
 $body-font-family: Verdana, Geneva, Lucida, "Lucida Grande", Helvetica, Arial, sans-serif;
+$euca-text-font-family: Lato, Helvetica, Arial, sans-serif;
+$euca-header-font-family: Oswald, Helvetica, Arial, sans-serif;
 $euca-header-font: "Trebuchet MS", "Droid Sans", "Helvetica Nueue", Helvetica, sans-serif;
 $euca-font-size: 0.8125rem;
 $euca-text-color: #333;
@@ -92,7 +97,7 @@ $f-dropdown-triangle-color: #fff;
 // Navigation bar settings ============
 // Breakpoint handling
 $topbar-transition-speed: 300ms;
-$topbar-breakpoint: 920px !default; // Change to 9999px for always mobile layout
+$topbar-breakpoint: 1020px !default; // Change to 9999px for always mobile layout
 // Colors
 $topbar-bg-color: white;
 $topbar-bg: $topbar-bg-color;
@@ -149,7 +154,7 @@ $button-border-width: 1px;
 $button-border-style: solid;
 
 // Tables
-$table-even-row-bg: #ebebec;
+$table-even-row-bg: #f5f5f5;
 
 // Tabs
 $tabs-navigation-padding: rem-calc(4) !default;
@@ -201,11 +206,12 @@ $tooltip-padding: rem-calc(5);
 @mixin table-styles-mixin {
     border: none;
     thead tr {
-        background-color: $euca-green;
+        background-color: #f5f5f5;
         th {
             padding-top: 0.5rem;
             padding-bottom: 0.5rem;
             vertical-align: top;
+            color: $euca-darkblue;
             text-transform: uppercase;
             &.actions {
                 text-align: right;

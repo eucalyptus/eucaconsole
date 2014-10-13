@@ -2,7 +2,9 @@
 /* Dropdown elements */
 /* Set the link colors and styles for top-level nav */
 .progress { display: inline-block; width: 50%; }
-.progress .meter { padding-left: 6px; padding-top: 4px; font-size: 0.825rem; font-weight: bold; }
+.progress .meter { background-color: #0683c2; padding-left: 6px; padding-top: 4px; font-size: 0.825rem; font-weight: bold; }
 
 .label.status { text-transform: capitalize; }
-.label.status.failed { background-color: #444444; }
+.label.status.failed { background-color: #990000; }
+.label.status.completed { background-color: #03405f; }
+.label.status.pending { background-color: #0683c2; }

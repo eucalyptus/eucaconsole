@@ -5,12 +5,15 @@
 
 #notifications-wrapper { padding-top: 2rem; }
 
+#ssl-warning .fi-alert { color: darkred; }
+#ssl-warning p { line-height: 1.2rem; margin-top: 0.25rem; }
+
 #login-wrapper { position: relative; padding: 10px; }
 #login-wrapper label { font-weight: bold; color: #444444; white-space: nowrap; vertical-align: middle; position: relative; top: 0px; left: 0px; bottom: 10px; }
 #login-wrapper input { background-color: #e6e7e8; }
 #login-wrapper .hide-aws { max-width: 480px; margin: 0 auto; }
 #login-wrapper .tabs-content { padding: 1rem; padding-bottom: 2rem; background-color: white; box-shadow: 3px 3px 5px 0px #cccccc; }
-#login-wrapper .button { display: block; width: 100%; margin-top: 12px; margin-bottom: 12px; background-color: #f18f30; }
+#login-wrapper .button { display: block; width: 100%; margin-top: 12px; margin-bottom: 12px; background-color: #f3901d; }
 #login-wrapper #euca-tab.active, #login-wrapper #aws-tab.active { background-color: white; }
 
 #password, #secret_key { font-family: Arial, Helvetica, sans-serif !important; font-size: 1rem; color: black; }
@@ -20,9 +23,9 @@
 .js #javascript-warning { display: none; }
 
 /* Medium/large screen */
-@media screen and (min-width: 920px) { #login-panel-wrapper { margin-top: 4rem; }
+@media screen and (min-width: 1020px) { #login-panel-wrapper { margin-top: 4rem; }
   #login-panel h6 { padding-left: 1rem; } }
 /* Small screen */
-@media screen and (max-width: 920px) { #login-panel-wrapper { margin-top: 1rem; }
+@media screen and (max-width: 1020px) { #login-panel-wrapper { margin-top: 1rem; }
   #login-panel { border-radius: 0; box-shadow: none; padding: 10px; }
   #login-panel .header { border-radius: 0; box-shadow: none; top: 0; left: 0; right: 0; } }

@@ -27,6 +27,8 @@ $dashboard-panel-icon-size: 100px;
     }
 }
 
+$tile-row-height: 24px;
+
 .panel {
     background-color: transparent;
     border: none;
@@ -50,9 +52,7 @@ $dashboard-panel-icon-size: 100px;
             display: inline-block;
             width: $dashboard-panel-icon-size;
             height: $dashboard-panel-icon-size;
-            border-radius: 100px;
             text-align: center;
-            background: $euca-darkblue;
             color: white;
             font-size: 3rem;
             em {  // Item counts
@@ -84,8 +84,59 @@ $dashboard-panel-icon-size: 100px;
                 }
             }
         }
-        a:hover .icon {
-            background-color: lighten($euca-darkblue, 20%);
+        .dropdown.button.tiny {
+            z-index: 99999;
+            background: none;
+            box-shadow: none;
+            position: absolute;
+            width: 30px; height: $tile-row-height;
+            top: 0; right: 0;
+            color: $euca-green;
+            font-size: 1.1rem;
+            padding: 0 0 0 0;
+            border-top: none;
+            border-right: none;
+            &:hover {
+                color: $euca-green;
+            }
+            &::before {
+                border: none;
+            }
+            .fi-widget {
+                position: relative;
+                top: 4px;
+                background-image: url(../../img/svg/gear.svg);
+                display: inline-block;
+                width: 20px; height: 20px;
+                &::before {
+                    content: " "
+                }
+            }
+        }
+        .f-dropdown {
+            @include dropdown-shadow-mixin;
+            &.open {
+                top: 34px;
+                min-width: 10rem;
+                padding-top: 0;
+            }
+        }
+        &.add {
+            text-align: center;
+            text-transform: uppercase;
+            position: relative;
+            a {
+                display: block;
+                position: absolute;
+                top: 0; bottom: 0; left: 0; right: 0;
+                &:hover {
+                    background-color: lighten($euca-lightgreen, 30%);
+                }
+            }
+            .plus {
+                font-size: 5rem;
+                margin-bottom: 0.5rem;
+            }
         }
     }
 }
@@ -97,10 +148,13 @@ $dashboard-panel-icon-size: 100px;
 #elastic-ips .icon { background-image: url(../../img/svg/icon_elastic_IP.svg); }
 #volumes .icon { background-image: url(../../img/svg/icon_volumes.svg); }
 #snapshots .icon { background-image: url(../../img/svg/icon_snapshot.svg); }
+#buckets .icon { background-image: url(../../img/svg/icon_buckets.svg); }
 #security-groups .icon { background-image: url(../../img/svg/icon_security_groups.svg); }
 #key-pairs .icon { background-image: url(../../img/svg/icon_key-pair.svg); }
+#accounts .icon { background-image: url(../../img/svg/icon_IAM_accounts.svg); }
 #users .icon { background-image: url(../../img/svg/icon_IAM_users.svg); }
 #groups .icon { background-image: url(../../img/svg/IAM_group.svg); }
+#roles .icon { background-image: url(../../img/svg/icon_IAM_roles.svg); }
 
 // --- Media queries
 // --------------------
@@ -110,4 +164,31 @@ $dashboard-panel-icon-size: 100px;
 /* Small screen */
 @media screen and (max-width: 480px) {
 
+}
+
+#service-unknown {
+    margin-top: 13px;
+}
+
+
+#service-up i {
+    color:$euca-darkblue;
+    font-size: 16pt;
+    text-align: left;
+}
+
+#service-down i {
+    color:red;
+    font-size: 16pt;
+    text-align: left;
+}
+
+#status {
+    font-size: 11pt;
+    text-align: left;
+    font-style: normal;
+    font-weight: normal;
+    color: $euca-grey;
+    margin-top: 9px;
+    margin-bottom: 0;
 }

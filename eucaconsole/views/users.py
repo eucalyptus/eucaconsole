@@ -34,19 +34,20 @@ import random
 import string
 import StringIO
 import simplejson as json
-import sys
 
 from urllib2 import HTTPError, URLError
 from urllib import urlencode
 
 from boto.exception import BotoServerError
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
-from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
 from ..forms.users import (
     UserForm, ChangePasswordForm, GeneratePasswordForm, DeleteUserForm, AddToGroupForm, DisableUserForm, EnableUserForm)
+from ..forms.quotas import QuotasForm
+from ..i18n import _
 from ..models import Notification
+from ..models.quotas import Quotas
 from ..views import BaseView, LandingPageView, JSONResponse
 from . import boto_error_handler
 
@@ -105,11 +106,11 @@ class UsersView(LandingPageView):
         with boto_error_handler(self.request):
             user_name = self.request.matchdict.get('name')
             self.log_request(_(u"Disabling user {0}").format(user_name))
-            result = self.conn.delete_login_profile(user_name=user_name)
+            self.conn.delete_login_profile(user_name=user_name)
             policy = {'Version': '2011-04-01'}
             statements = [{'Effect': 'Deny', 'Action': '*', 'Resource': '*'}]
             policy['Statement'] = statements
-            result = self.conn.put_user_policy(user_name, self.EUCA_DENY_POLICY, json.dumps(policy))
+            self.conn.put_user_policy(user_name, self.EUCA_DENY_POLICY, json.dumps(policy))
             return dict(message=_(u"Successfully disabled user"))
 
     @view_config(route_name='user_enable', request_method='POST', renderer='json')
@@ -120,11 +121,11 @@ class UsersView(LandingPageView):
         with boto_error_handler(self.request):
             user_name = self.request.matchdict.get('name')
             self.log_request(_(u"Enabling user {0}").format(user_name))
-            result = self.conn.delete_user_policy(user_name, self.EUCA_DENY_POLICY)
+            self.conn.delete_user_policy(user_name, self.EUCA_DENY_POLICY)
             random_password = self.request.params.get('random_password')
             if random_password == 'y':
                 password = PasswordGeneration.generate_password()
-                result = self.conn.create_login_profile(user_name, password)
+                self.conn.create_login_profile(user_name, password)
 
                 # assemble file response
                 account = self.request.session['account']
@@ -149,10 +150,11 @@ class UsersJsonView(BaseView):
         super(UsersJsonView, self).__init__(request)
         self.conn = self.get_connection(conn_type="iam")
 
-    @view_config(route_name='users_json', renderer='json', request_method='GET')
+    @view_config(route_name='users_json', renderer='json', request_method='POST')
     def users_json(self):
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
         users = []
-        groups = []
         with boto_error_handler(self.request):
             groups = self.conn.get_all_groups()
             groups = groups.groups
@@ -179,10 +181,10 @@ class UsersJsonView(BaseView):
         user_param = self.request.matchdict.get('name')
         has_password = False
         try:
-            profile = self.conn.get_login_profiles(user_name=user_param)
+            self.conn.get_login_profiles(user_name=user_param)
             # this call returns 404 if no password found
             has_password = True
-        except BotoServerError as err:
+        except BotoServerError:
             pass
         user_enabled = True
         try:
@@ -191,14 +193,14 @@ class UsersJsonView(BaseView):
                 for policy in policies.policy_names:
                     if policy == self.EUCA_DENY_POLICY and has_password is False:
                         user_enabled = False
-        except BotoServerError as err:
+        except BotoServerError:
             pass
         keys = []
-        if user_enabled: # we won't spend time fetching the keys if the user is disabled
+        if user_enabled:  # we won't spend time fetching the keys if the user is disabled
             try:
                 keys = self.conn.get_all_access_keys(user_name=user_param)
                 keys = [key for key in keys.list_access_keys_result.access_key_metadata if key.status == 'Active']
-            except BotoServerError as exc:
+            except BotoServerError:
                 pass
 
         return dict(
@@ -219,7 +221,6 @@ class UserView(BaseView):
     """Views for single User"""
     TEMPLATE = '../templates/users/user_view.pt'
     NEW_TEMPLATE = '../templates/users/user_new.pt'
-    EUCA_DEFAULT_POLICY = 'euca-console-quota-policy'
 
     def __init__(self, request):
         super(UserView, self).__init__(request)
@@ -235,10 +236,13 @@ class UserView(BaseView):
         self.change_password_form = ChangePasswordForm(self.request)
         self.generate_form = GeneratePasswordForm(self.request)
         self.delete_form = DeleteUserForm(self.request)
+        self.quotas_form = QuotasForm(self.request, user=self.user, conn=self.conn)
         self.already_member_text = _(u"User already a member of all groups")
         self.no_groups_defined_text = _(u"There are no groups defined")
         self.render_dict = dict(
             user=self.user,
+            user_name=self.user.user_name if self.user else '',
+            user_arn=self.user.arn if self.user else '',
             prefix=self.prefix,
             user_create_date=getattr(self.user, 'create_date', None),
             change_password_form=self.change_password_form,
@@ -247,39 +251,46 @@ class UserView(BaseView):
             disable_form=DisableUserForm(self.request),
             enable_form=EnableUserForm(self.request),
             quota_err=_(u"Requires non-negative integer (or may be empty)"),
+            controller_options_json=self.get_controller_options_json(),
         )
 
     def get_user(self):
+        as_account = self.request.params.get('as_account', '')
         user_param = self.request.matchdict.get('name')
         if user_param:
-            user = self.conn.get_user(user_name=user_param)
+            user = self.conn.get_response('GetUser', params={'UserName': user_param, 'DelegateAccount': as_account})
             return user
         else:
             return None
 
-    def add_quota_limit(self, statements, param, action, condition):
-        val = self.request.params.get(param, None)
-        if val:
-            statements.append({
-                'Effect': 'Limit', 'Action': action, 'Resource': '*',
-                'Condition': {'NumericLessThanEquals': {condition: val}}
-            })
+    def get_controller_options_json(self):
+        username = self.user.user_name if self.user else ''
+        return BaseView.escape_json(json.dumps({
+            'user_name': username,
+            'user_disable_url': self.request.route_path('user_disable', name=username),
+            'all_users_redirect': self.request.route_path('users'),
+            'user_delete_url': self.request.route_path('user_delete', name=username),
+        }))
 
     @view_config(route_name='user_view', renderer=TEMPLATE)
     def user_view(self):
         if self.user is None:
             raise HTTPNotFound
+        as_account = self.request.params.get('as_account', None)
         has_password = False
         try:
-            profile = self.conn.get_login_profiles(user_name=self.user.user_name)
+            self.conn.get_response(
+                'GetLoginProfile', params={'UserName': self.user.user_name, 'DelegateAccount': as_account})
             # this call returns 404 if no password found
             has_password = True
-        except BotoServerError as err:
+        except BotoServerError:
             pass
         group_form = AddToGroupForm(self.request)
         self.render_dict['group_form'] = group_form
-        self.user_form = UserForm(self.request, user=self.user, conn=self.conn)
+        self.user_form = UserForm(self.request, user=self.user)
         self.render_dict['user_form'] = self.user_form
+        self.render_dict['quotas_form'] = self.quotas_form
+        self.render_dict['as_account'] = as_account
         self.render_dict['has_password'] = 'true' if has_password else 'false'
         self.render_dict['already_member_text'] = self.already_member_text
         self.render_dict['no_groups_defined_text'] = self.no_groups_defined_text
@@ -287,22 +298,38 @@ class UserView(BaseView):
  
     @view_config(route_name='user_new', renderer=NEW_TEMPLATE)
     def user_new(self):
-        self.user_form = UserForm(self.request, user=self.user, conn=self.conn)
+        as_account = self.request.params.get('as_account', None)
+        self.render_dict['as_account'] = as_account
+        iam_conn = self.get_connection(conn_type='iam')
+        account = self.request.session['account']
+        self.user_form = UserForm(self.request, user=self.user, iam_conn=iam_conn, account=account)
         self.render_dict['user_form'] = self.user_form
+        self.quotas_form = QuotasForm(self.request, user=self.user, conn=self.conn)
+        self.render_dict['quotas_form'] = self.quotas_form
         return self.render_dict
  
     @view_config(route_name='user_access_keys_json', renderer='json', request_method='GET')
     def user_keys_json(self):
         """Return user access keys list"""
+        as_account = self.request.params.get('as_account', '')
         with boto_error_handler(self.request):
-            keys = self.conn.get_all_access_keys(user_name=self.user.user_name)
+            keys = self.conn.get_response(
+                'ListAccessKeys',
+                params={'UserName': self.user.user_name, 'DelegateAccount': as_account},
+                list_marker='AccessKeyMetadata'
+            )
             return dict(results=sorted(keys.list_access_keys_result.access_key_metadata))
 
     @view_config(route_name='user_groups_json', renderer='json', request_method='GET')
     def user_groups_json(self):
         """Return user groups list"""
+        as_account = self.request.params.get('as_account', '')
         with boto_error_handler(self.request):
-            groups = self.conn.get_groups_for_user(user_name=self.user.user_name)
+            groups = self.conn.get_response(
+                'ListGroupsForUser',
+                params={'UserName': self.user.user_name, 'DelegateAccount': as_account},
+                list_marker='Groups'
+            )
             for g in groups.groups:
                 g['title'] = g.group_name
             return dict(results=groups.groups)
@@ -310,9 +337,14 @@ class UserView(BaseView):
     @view_config(route_name='user_avail_groups_json', renderer='json', request_method='GET')
     def user_avail_groups_json(self):
         """Return groups this user isn't part of"""
+        as_account = self.request.params.get('as_account', '')
         with boto_error_handler(self.request):
             taken_groups = [
-                group.group_name for group in self.conn.get_groups_for_user(user_name=self.user.user_name).groups
+                group.group_name for group in self.conn.get_response(
+                    'ListGroupsForUser',
+                    params={'UserName': self.user.user_name, 'DelegateAccount': as_account},
+                    list_marker='Groups'
+                ).groups
             ]
             all_groups = [group.group_name for group in self.conn.get_all_groups().groups]
             avail_groups = list(set(all_groups) - set(taken_groups))
@@ -326,25 +358,36 @@ class UserView(BaseView):
     @view_config(route_name='user_policies_json', renderer='json', request_method='GET')
     def user_policies_json(self):
         """Return user policies list"""
+        as_account = self.request.params.get('as_account', '')
         if self.user.user_name == 'admin':
             return dict(results=[])
         with boto_error_handler(self.request):
-            policies = self.conn.get_all_user_policies(user_name=self.user.user_name)
+            policies = self.conn.get_response(
+                'ListUserPolicies',
+                params={'UserName': self.user.user_name, 'DelegateAccount': as_account},
+                list_marker='PolicyNames'
+            )
             return dict(results=policies.policy_names)
 
     @view_config(route_name='user_policy_json', renderer='json', request_method='GET')
     def user_policy_json(self):
         """Return user policies list"""
+        as_account = self.request.params.get('as_account', '')
         with boto_error_handler(self.request):
             policy_name = self.request.matchdict.get('policy')
-            policy = self.conn.get_user_policy(user_name=self.user.user_name, policy_name=policy_name)
+            policy = self.conn.get_response(
+                'GetUserPolicy',
+                params={'UserName': self.user.user_name, 'PolicyName': policy_name, 'DelegateAccount': as_account},
+                verb='POST'
+            )
             parsed = json.loads(policy.policy_document)
             return dict(results=json.dumps(parsed, indent=2))
 
-    @view_config(route_name='user_create', renderer='json', request_method='POST')
+    @view_config(route_name='user_create', renderer='json', request_method='POST', xhr=True)
     def user_create(self):
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
+        as_account = self.request.params.get('as_account', '')
         # can't use regular form validation here. We allow empty values and the validation
         # code does not, so we need to roll our own below.
         # get user list
@@ -352,7 +395,6 @@ class UserView(BaseView):
         # now get the rest
         random_password = self.request.params.get('random_password', 'n')
         access_keys = self.request.params.get('access_keys', 'n')
-        allow_all = self.request.params.get('allow_all', 'n')
         path = self.request.params.get('path', '/')
        
         session = self.request.session
@@ -363,77 +405,29 @@ class UserView(BaseView):
                 users = json.loads(users_json)
                 for (name, email) in users.items():
                     self.log_request(_(u"Creating user {0}").format(name))
-                    user = self.conn.create_user(name, path)
+                    self.conn.get_response(
+                        'CreateUser', params={'UserName': name, 'Path': path, 'DelegateAccount': as_account})
                     user_data = {'account': account, 'username': name}
-                    policy = {'Version': '2011-04-01'}
-                    statements = []
                     if random_password == 'y':
                         self.log_request(_(u"Generating password for user {0}").format(name))
                         password = PasswordGeneration.generate_password()
-                        self.conn.create_login_profile(name, password)
+                        self.conn.get_response(
+                            'CreateLoginProfile',
+                            params={'UserName': name, 'Password': password, 'DelegateAccount': as_account}
+                        )
                         user_data['password'] = password
                     if access_keys == 'y':
                         self.log_request(_(u"Creating access keys for user {0}").format(name))
-                        creds = self.conn.create_access_key(name)
+                        creds = self.conn.get_response(
+                            'CreateAccessKey', params={'UserName': name, 'DelegateAccount': as_account})
                         user_data['access_id'] = creds.access_key.access_key_id
                         user_data['secret_key'] = creds.access_key.secret_access_key
                     # store this away for file creation later
                     user_list.append(user_data)
-                    if allow_all == 'y':
-                        statements.append({'Effect': 'Allow', 'Action': '*', 'Resource': '*'})
-                        statements.append({'Effect': 'Deny', 'Action': 'iam:*', 'Resource': '*'})
-                    # now, look at quotas
-                    ## ec2
-                    self.add_quota_limit(
-                        statements, 'ec2_images_max', 'ec2:RegisterImage', 'ec2:quota-imagenumber')
-                    self.add_quota_limit(
-                        statements, 'ec2_instances_max', 'ec2:RunInstances', 'ec2:quota-vminstancenumber')
-                    self.add_quota_limit(
-                        statements, 'ec2_volumes_max', 'ec2:CreateVolume', 'ec2:quota-volumenumber')
-                    self.add_quota_limit(
-                        statements, 'ec2_snapshots_max', 'ec2:CreateSnapshot', 'ec2:quota-snapshotnumber')
-                    self.add_quota_limit(
-                        statements, 'ec2_elastic_ip_max', 'ec2:AllocateAddress', 'ec2:quota-addressnumber')
-                    self.add_quota_limit(
-                        statements, 'ec2_total_size_all_vols', 'ec2:Createvolume', 'ec2:quota-volumetotalsize')
-                    ## s3
-                    self.add_quota_limit(
-                        statements, 's3_buckets_max', 's3:CreateBucket', 's3:quota-bucketnumber')
-                    self.add_quota_limit(
-                        statements, 's3_objects_per__max', 's3:CreateObject', 's3:quota-bucketobjectnumber')
-                    self.add_quota_limit(
-                        statements, 's3_bucket_size', 's3:PutObject', 's3:quota-bucketsize')
-                    self.add_quota_limit(
-                        statements, 's3_total_size_all_buckets', 's3:pubobject', 's3:quota-buckettotalsize')
-                    ## iam
-                    self.add_quota_limit(
-                        statements, 'iam_groups_max', 'iam:CreateGroup', 'iam:quota-groupnumber')
-                    self.add_quota_limit(
-                        statements, 'iam_users_max', 'iam:CreateUser', 'iam:quota-usernumber')
-                    self.add_quota_limit(
-                        statements, 'iam_roles_max', 'iam:CreateRole', 'iam:quota-rolenumber')
-                    self.add_quota_limit(
-                        statements, 'iam_inst_profiles_max',
-                        'iam:CreateInstanceProfile', 'iam:quota-instanceprofilenumber')
-                    ## autoscaling
-                    self.add_quota_limit(
-                        statements, 'autoscale_groups_max', 'autoscaling:createautoscalinggroup',
-                        'autoscaling:quota-autoscalinggroupnumber')
-                    self.add_quota_limit(
-                        statements, 'launch_configs_max', 'autoscaling:createlaunchconfiguration',
-                        'autoscaling:quota-launchconfigurationnumber')
-                    self.add_quota_limit(
-                        statements, 'scaling_policies_max', 'autoscaling:pubscalingpolicy',
-                        'autoscaling:quota-scalingpolicynumber')
-                    ## elb
-                    self.add_quota_limit(
-                        statements, 'elb_load_balancers_max', 'elasticloadbalancing:createloadbalancer',
-                        'elasticloadbalancing:quota-loadbalancernumber')
 
-                    if len(statements) > 0:
-                        self.log_request(_(u"Creating policy for user {0}").format(name))
-                        policy['Statement'] = statements
-                        self.conn.put_user_policy(name, self.EUCA_DEFAULT_POLICY, json.dumps(policy))
+                    quotas = Quotas()
+                    quotas.create_quota_policy(self, user=name, as_account=as_account)
+
             # create file to send instead. Since # users is probably small, do it all in memory
             has_file = 'n'
             if not (access_keys == 'n' and random_password == 'n'):
@@ -458,34 +452,44 @@ class UserView(BaseView):
                 has_file = 'y'
             return dict(message=_(u"Successfully added users"), results=dict(hasFile=has_file))
  
-    @view_config(route_name='user_update', request_method='POST', renderer='json')
+    @view_config(route_name='user_update', request_method='POST', renderer=TEMPLATE)
     def user_update(self):
         """ calls iam:UpdateUser """
         if not(self.is_csrf_valid()):
-            return JSONResponse(status=400, message="missing CSRF token")
+            self.request.error_messages = ['missing CSRF token']
+            return self.render_dict
+        as_account = self.request.params.get('as_account', '')
         with boto_error_handler(self.request):
-            new_name = self.request.params.get('user_name', None)
+            new_name = self.request.params.get('user_name', self.user.user_name)
             path = self.request.params.get('path', None)
-            self.log_request(_(u"Updating user {0} (new_name={1}, path={2})").format(self.user.user_name, new_name, path))
-            if new_name == self.user.user_name:
-                new_name = None
-            result = self.conn.update_user(user_name=self.user.user_name, new_user_name=new_name, new_path=path)
-            self.user.path = path
-            if self.user.user_name != new_name:
-                pass  # TODO: need to force view refresh if name changes
-            return dict(message=_(u"Successfully updated user information"),
-                        results=self.user)
+            self.log_request(
+                _(u"Updating user {0} (new_name={1}, path={2})").format(self.user.user_name, new_name, path))
+            params={'UserName': self.user.user_name, 'Path': path}
+            if new_name is not None and new_name != self.user.user_name:
+                params['NewUserName'] = new_name
+            if path is not None and path != self.user.path:
+                params['NewPath'] = path
+            if as_account != '':
+                params['DelegateAccount'] = as_account
+            self.conn.get_response('UpdateUser', params=params)
+            msg = _(u"Successfully updated user information")
+            self.request.session.flash(msg, queue=Notification.SUCCESS)
+            location = self.request.route_path(
+                        'user_view',
+                        name=new_name if new_name is not None else self.user.user_name)
+            return HTTPFound(location=location)
 
     @view_config(route_name='user_change_password', request_method='POST', renderer='json')
     def user_change_password(self):
         """ calls iam:UpdateLoginProfile """
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
+        as_account = self.request.params.get('as_account', '')
         try:
             password = self.request.params.get('password')
             new_pass = self.request.params.get('new_password')
 
-            auth = self.get_connection(conn_type='sts')
+            auth = self.get_euca_authenticator()
             session = self.request.session
             account = session['account']
             username = session['username']
@@ -494,12 +498,19 @@ class UserView(BaseView):
             self.log_request(_(u"Change password for user {0}").format(self.user.user_name))
             try:
                 # try to fetch login profile.
-                self.conn.get_login_profiles(user_name=self.user.user_name)
+                self.conn.get_response(
+                    'GetLoginProfile', params={'UserName': self.user.user_name, 'DelegateAccount': as_account})
                 # if that worked, update the profile
-                result = self.conn.update_login_profile(user_name=self.user.user_name, password=new_pass)
+                self.conn.get_response(
+                    'UpdateLoginProfile',
+                    params={'UserName': self.user.user_name, 'Password': new_pass, 'DelegateAccount': as_account}
+                )
             except BotoServerError:
                 # if that failed, create the profile
-                result = self.conn.create_login_profile(user_name=self.user.user_name, password=new_pass)
+                self.conn.get_response(
+                    'CreateLoginProfile',
+                    params={'UserName': self.user.user_name, 'Password': new_pass, 'DelegateAccount': as_account}
+                )
             # assemble file response
             account = self.request.session['account']
             string_output = StringIO.StringIO()
@@ -525,17 +536,26 @@ class UserView(BaseView):
         """ calls iam:UpdateLoginProfile """
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
+        as_account = self.request.params.get('as_account', '')
         with boto_error_handler(self.request):
             new_pass = PasswordGeneration.generate_password()
             self.log_request(_(u"Generating password for user {0}").format(self.user.user_name))
             try:
                 # try to fetch login profile.
-                self.conn.get_login_profiles(user_name=self.user.user_name)
+                self.conn.get_response(
+                    'GetLoginProfile',
+                    params={'UserName': self.user.user_name, 'DelegateAccount': as_account})
                 # if that worked, update the profile
-                result = self.conn.update_login_profile(user_name=self.user.user_name, password=new_pass)
+                self.conn.get_response(
+                    'UpdateLoginProfile',
+                    params={'UserName': self.user.user_name, 'Password': new_pass, 'DelegateAccount': as_account}
+                )
             except BotoServerError:
                 # if that failed, create the profile
-                result = self.conn.create_login_profile(user_name=self.user.user_name, password=new_pass)
+                self.conn.get_response(
+                    'CreateLoginProfile',
+                    params={'UserName': self.user.user_name, 'Password': new_pass, 'DelegateAccount': as_account}
+                )
             # assemble file response
             account = self.request.session['account']
             string_output = StringIO.StringIO()
@@ -554,9 +574,11 @@ class UserView(BaseView):
         """ calls iam:DeleteLoginProfile """
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
+        as_account = self.request.params.get('as_account', '')
         with boto_error_handler(self.request):
             self.log_request(_(u"Deleting password for user {0}").format(self.user.user_name))
-            self.conn.delete_login_profile(user_name=self.user.user_name)
+            self.conn.get_response(
+                'DeleteLoginProfile', params={'UserName': self.user.user_name, 'DelegateAccount': as_account})
             return dict(message=_(u"Successfully deleted user password"), results="true")
 
     @view_config(route_name='user_generate_keys', request_method='POST', renderer='json')
@@ -564,9 +586,13 @@ class UserView(BaseView):
         """ calls iam:CreateAccessKey """
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
+        as_account = self.request.params.get('as_account', '')
         with boto_error_handler(self.request):
             self.log_request(_(u"Creating access keys for user {0}").format(self.user.user_name))
-            result = self.conn.create_access_key(user_name=self.user.user_name)
+            result = self.conn.get_response(
+                'CreateAccessKey',
+                params={'UserName': self.user.user_name, 'DelegateAccount': as_account}
+            )
             account = self.request.session['account']
             string_output = StringIO.StringIO()
             csv_w = csv.writer(string_output)
@@ -578,17 +604,26 @@ class UserView(BaseView):
                 "{acct}-{user}-{key}-creds.csv".format(acct=account,
                 user=self.user.user_name, key=result.access_key.access_key_id),
                 'text/csv', string_output.getvalue())
-            return dict(message=_(u"Successfully generated access keys"), results="true")
+            return dict(
+                message=_(u"Successfully generated access keys"),
+                results=dict(
+                    access=result.access_key.access_key_id, secret=result.access_key.secret_access_key
+                )
+            )
 
     @view_config(route_name='user_delete_key', request_method='POST', renderer='json')
     def user_delete_key(self):
         """ calls iam:DeleteAccessKey """
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
+        as_account = self.request.params.get('as_account', '')
         key_id = self.request.matchdict.get('key')
         with boto_error_handler(self.request):
             self.log_request(_(u"Deleting access key {0} for user {1}").format(key_id, self.user.user_name))
-            result = self.conn.delete_access_key(user_name=self.user.user_name, access_key_id=key_id)
+            self.conn.get_response(
+                'DeleteAccessKey',
+                params={'UserName': self.user.user_name, 'AccessKeyId': key_id, 'DelegateAccount': as_account}
+            )
             return dict(message=_(u"Successfully deleted key"))
 
     @view_config(route_name='user_deactivate_key', request_method='POST', renderer='json')
@@ -596,10 +631,17 @@ class UserView(BaseView):
         """ calls iam:UpdateAccessKey """
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
+        as_account = self.request.params.get('as_account', '')
         key_id = self.request.matchdict.get('key')
         with boto_error_handler(self.request):
             self.log_request(_(u"Deactivating access key {0} for user {1}").format(key_id, self.user.user_name))
-            result = self.conn.update_access_key(user_name=self.user.user_name, access_key_id=key_id, status="Inactive")
+            self.conn.get_response(
+                'UpdateAccessKey',
+                params={
+                    'UserName': self.user.user_name, 'AccessKeyId': key_id,
+                    'Statue': 'Inactive', 'DelegateAccount': as_account
+                }
+            )
             return dict(message=_(u"Successfully deactivated key"))
 
     @view_config(route_name='user_activate_key', request_method='POST', renderer='json')
@@ -607,10 +649,17 @@ class UserView(BaseView):
         """ calls iam:UpdateAccessKey """
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
+        as_account = self.request.params.get('as_account', '')
         key_id = self.request.matchdict.get('key')
         with boto_error_handler(self.request):
             self.log_request(_(u"Activating access key {0} for user {1}").format(key_id, self.user.user_name))
-            result = self.conn.update_access_key(user_name=self.user.user_name, access_key_id=key_id, status="Active")
+            self.conn.get_response(
+                'UpdateAccessKey',
+                params={
+                    'UserName': self.user.user_name, 'AccessKeyId': key_id,
+                    'Statue': 'Active', 'DelegateAccount': as_account
+                }
+            )
             return dict(message=_(u"Successfully activated key"))
 
     @view_config(route_name='user_add_to_group', request_method='POST', renderer='json')
@@ -618,24 +667,30 @@ class UserView(BaseView):
         """ calls iam:AddUserToGroup """
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
+        as_account = self.request.params.get('as_account', '')
         group = self.request.matchdict.get('group')
         with boto_error_handler(self.request):
             self.log_request(_(u"Adding user {0} to group {1}").format(self.user.user_name, group))
-            result = self.conn.add_user_to_group(user_name=self.user.user_name, group_name=group)
-            return dict(message=_(u"Successfully added user to group"),
-                        results=result)
+            result = self.conn.get_response(
+                'AddUserToGroup',
+                params={'UserName': self.user.user_name, 'GroupName': group, 'DelegateAccount': as_account}
+            )
+            return dict(message=_(u"Successfully added user to group"), results=result)
 
     @view_config(route_name='user_remove_from_group', request_method='POST', renderer='json')
     def user_remove_from_group(self):
         """ calls iam:RemoveUserToGroup """
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
+        as_account = self.request.params.get('as_account', '')
         group = self.request.matchdict.get('group')
         with boto_error_handler(self.request):
             self.log_request(_(u"Removing user {0} from group {1}").format(self.user.user_name, group))
-            result = self.conn.remove_user_from_group(user_name=self.user.user_name, group_name=group)
-            return dict(message=_(u"Successfully removed user from group"),
-                        results=result)
+            result = self.conn.get_response(
+                'RemoveUserFromGroup',
+                params={'UserName': self.user.user_name, 'GroupName': group, 'DelegateAccount': as_account}
+            )
+            return dict(message=_(u"Successfully removed user from group"), results=result)
 
     @view_config(route_name='user_delete', request_method='POST')
     def user_delete(self):
@@ -643,9 +698,10 @@ class UserView(BaseView):
             return JSONResponse(status=400, message="missing CSRF token")
         if self.user is None:
             raise HTTPNotFound
+        as_account = self.request.params.get('as_account', '')
         with boto_error_handler(self.request):
             self.log_request(_(u"Deleting user {0}").format(self.user.user_name))
-            params = {'UserName': self.user.user_name, 'IsRecursive': 'true'}
+            params = {'UserName': self.user.user_name, 'IsRecursive': 'true', 'DelegateAccount': as_account}
             self.conn.get_response('DeleteUser', params)
             
             location = self.request.route_path('users')
@@ -658,12 +714,19 @@ class UserView(BaseView):
         """ calls iam:PutUserPolicy """
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
+        as_account = self.request.params.get('as_account', '')
         policy = str(self.request.matchdict.get('policy'))
         with boto_error_handler(self.request):
             self.log_request(_(u"Updating policy {0} for user {1}").format(policy, self.user.user_name))
             policy_text = self.request.params.get('policy_text')
-            result = self.conn.put_user_policy(
-                user_name=self.user.user_name, policy_name=policy, policy_json=policy_text)
+            result = self.conn.get_response(
+                'PutUserPolicy',
+                params={
+                    'UserName': self.user.user_name, 'PolicyName': policy,
+                    'PolicyDocument': json.dumps(policy_text), 'DelegateAccount': as_account
+                },
+                verb='POST'
+            )
             return dict(message=_(u"Successfully updated user policy"), results=result)
 
     @view_config(route_name='user_delete_policy', request_method='POST', renderer='json')
@@ -671,10 +734,15 @@ class UserView(BaseView):
         """ calls iam:DeleteUserPolicy """
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
+        as_account = self.request.params.get('as_account', '')
         policy = self.request.matchdict.get('policy')
         with boto_error_handler(self.request):
             self.log_request(_(u"Deleting policy {0} for user {1}").format(policy, self.user.user_name))
-            result = self.conn.delete_user_policy(user_name=self.user.user_name, policy_name=policy)
+            result = self.conn.get_response(
+                'DeleteUserPolicy',
+                params={'UserName': self.user.user_name, 'PolicyName': policy, 'DelegateAccount': as_account},
+                verb='POST'
+            )
             return dict(message=_(u"Successfully deleted user policy"), results=result)
 
     @view_config(route_name='user_update_quotas', request_method='POST', renderer='json')
@@ -684,125 +752,9 @@ class UserView(BaseView):
             return JSONResponse(status=400, message="missing CSRF token")
         if self.user is None:
             raise HTTPNotFound
+        as_account = self.request.params.get('as_account', '')
         with boto_error_handler(self.request):
-            # load all policies for this user
-            policy_list = []
-            policies = self.conn.get_all_user_policies(user_name=self.user.user_name)
-            for policy_name in policies.policy_names:
-                policy_json = self.conn.get_user_policy(
-                    user_name=self.user.user_name, policy_name=policy_name).policy_document
-                policy = json.loads(policy_json)
-                policy_list.append(policy)
-            # for each form item, update proper policy if needed
-            new_stmts = []
-            ## ec2
-            self.update_quota_limit(policy_list, new_stmts,
-                                    'ec2_images_max', 'ec2:RegisterImage', 'ec2:quota-imagenumber')
-            self.update_quota_limit(policy_list, new_stmts,
-                                    'ec2_instances_max', 'ec2:RunInstances', 'ec2:quota-vminstancenumber')
-            self.update_quota_limit(policy_list, new_stmts,
-                                    'ec2_volumes_max', 'ec2:CreateVolume', 'ec2:quota-volumenumber')
-            self.update_quota_limit(policy_list, new_stmts,
-                                    'ec2_snapshots_max', 'ec2:CreateSnapshot', 'ec2:quota-snapshotnumber')
-            self.update_quota_limit(policy_list, new_stmts,
-                                    'ec2_elastic_ip_max', 'ec2:AllocateAddress', 'ec2:quota-addressnumber')
-            self.update_quota_limit(policy_list, new_stmts,
-                                    'ec2_total_size_all_vols', 'ec2:Createvolume', 'ec2:quota-volumetotalsize')
-            ## s3
-            self.update_quota_limit(policy_list, new_stmts,
-                                    's3_buckets_max', 's3:CreateBucket', 's3:quota-bucketnumber')
-            self.update_quota_limit(policy_list, new_stmts,
-                                    's3_objects_per__max', 's3:CreateObject', 's3:quota-bucketobjectnumber')
-            self.update_quota_limit(policy_list, new_stmts,
-                                    's3_bucket_size', 's3:PutObject', 's3:quota-bucketsize')
-            self.update_quota_limit(policy_list, new_stmts,
-                                    's3_total_size_all_buckets', 's3:pubobject', 's3:quota-buckettotalsize')
-            ## iam
-            self.update_quota_limit(policy_list, new_stmts,
-                                    'iam_groups_max', 'iam:CreateGroup', 'iam:quota-groupnumber')
-            self.update_quota_limit(policy_list, new_stmts,
-                                    'iam_users_max', 'iam:CreateUser', 'iam:quota-usernumber')
-            self.update_quota_limit(policy_list, new_stmts,
-                                    'iam_roles_max', 'iam:CreateRole', 'iam:quota-rolenumber')
-            self.update_quota_limit(policy_list, new_stmts,
-                                    'iam_inst_profiles_max', 'iam:CreateInstanceProfile',
-                                    'iam:quota-instanceprofilenumber')
-            ## autoscaling
-            self.update_quota_limit(policy_list, new_stmts,
-                                    'autoscale_groups_max', 'autoscaling:createautoscalinggroup',
-                                    'autoscaling:quota-autoscalinggroupnumber')
-            self.update_quota_limit(policy_list, new_stmts,
-                                    'launch_configs_max', 'autoscaling:createlaunchconfiguration',
-                                    'autoscaling:quota-launchconfigurationnumber')
-            self.update_quota_limit(policy_list, new_stmts,
-                                    'scaling_policies_max', 'autoscaling:pubscalingpolicy',
-                                    'autoscaling:quota-scalingpolicynumber')
-            ## elb
-            self.update_quota_limit(policy_list, new_stmts,
-                                    'elb_load_balancers_max', 'elasticloadbalancing:createloadbalancer',
-                                    'elasticloadbalancing:quota-loadbalancernumber')
-
-            # save policies that were modified
-            for i in range(0, len(policy_list)):
-                if 'dirty' in policy_list[i].keys():
-                    del policy_list[i]['dirty']
-                    self.log_request(_(u"Updating policy {0} for user {1}").format(
-                        policies.policy_names[i], self.user.user_name))
-                    self.conn.put_user_policy(
-                        self.user.user_name, policies.policy_names[i], json.dumps(policy_list[i]))
-            if len(new_stmts) > 0:
-                # do we already have the euca default policy?
-                if self.EUCA_DEFAULT_POLICY in policies.policy_names:
-                    # add the new statments in
-                    self.log_request(_(u"Updating policy {0} for user {1}").format(
-                        self.EUCA_DEFAULT_POLICY, self.user.user_name))
-                    default_policy = policy_list[policies.policy_names.index(self.EUCA_DEFAULT_POLICY)]
-                    default_policy['Statement'].extend(new_stmts)
-                    self.conn.put_user_policy(self.user.user_name, self.EUCA_DEFAULT_POLICY, json.dumps(default_policy))
-                else:
-                    # create the default policy
-                    self.log_request(_(u"Creating policy {0} for user {1}").format(
-                        self.EUCA_DEFAULT_POLICY, self.user.user_name))
-                    new_policy = {'Version': '2011-04-01', 'Statement': new_stmts}
-                    self.conn.put_user_policy(self.user.user_name, self.EUCA_DEFAULT_POLICY, json.dumps(new_policy))
+            quotas = Quotas()
+            quotas.update_quotas(self, user=self.user.user_name, as_account=as_account)
             return dict(message=_(u"Successfully updated user policy"))
-
-    def update_quota_limit(self, policy_list, new_stmts, param, action, condition):
-        new_limit = self.request.params.get(param, '')
-        lowest_val = sys.maxint
-        lowest_policy = None
-        lowest_policy_val = None
-        lowest_stmt = None
-        # scan policies to see if there's a matching condition
-        for policy in policy_list:
-            for s in policy['Statement']:
-                try:    # skip statements without conditions
-                    s['Condition']
-                except KeyError:
-                    continue
-                for cond in s['Condition'].keys():
-                    if cond == "NumericLessThanEquals": 
-                        for policy_val in s['Condition'][cond].keys():
-                            limit = s['Condition'][cond][policy_val]
-                            # convert value to int, but if no value, set limit high
-                            limit = int(limit) if limit else sys.maxint
-                            if policy_val == condition:
-                                # need to see if this was the policy with the lowest value.
-                                if limit < lowest_val:
-                                    lowest_val = limit
-                                    lowest_policy = policy
-                                    lowest_policy_val = policy_val
-                                    lowest_stmt = s
-        if lowest_val == sys.maxint: # was there a statement? If not, we should add one
-            if new_limit != '':
-                new_stmts.append({
-                    'Effect': 'Limit', 'Action': action, 'Resource': '*',
-                    'Condition': {'NumericLessThanEquals': {condition: new_limit}}
-                })
-        else:
-            if new_limit == '': # need to remove the value
-                del lowest_stmt['Condition']['NumericLessThanEquals'][lowest_policy_val]
-            else:  # need to change the value
-                lowest_stmt['Condition']['NumericLessThanEquals'][lowest_policy_val] = new_limit
-            lowest_policy['dirty'] = True
 

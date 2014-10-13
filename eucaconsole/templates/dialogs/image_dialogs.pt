@@ -1,0 +1,57 @@
+<!--! Modal dialogs for Images on landing and detail page -->
+<div tal:omit-tag="" i18n:domain="eucaconsole">
+    <div id="deregister-image-modal" class="reveal-modal small" data-reveal=""
+         tal:define="landingpage_action request.route_path('image_deregister', id='_id_');
+                     detailpage_action request.route_path('image_deregister', id=image.id) if image else '';
+                     action landingpage_action if landingpage else detailpage_action;">
+        <h3 i18n:translate="">Remove image from cloud</h3>
+        <p i18n:translate="">
+            You will no longer be able to launch instances or create launch configurations
+            from this image once it is removed from the cloud (de-registered).
+            The image itself will not be deleted and can be re-registered later if the associated snapshot is not deleted.
+        </p>
+        <p>
+            <span i18n:translate="">Are you sure you want to remove image</span>
+            <strong tal:condition="not landingpage">${image_name_id}</strong>
+            <strong tal:condition="landingpage">{{ imageNameID }}</strong>
+            <span i18n:translate="">from the cloud?</span>
+        </p>
+        <form action="${action}" method="post" data-abide="" id="deregister-form"
+              tal:define="html_attrs {'disabled': 'disabled'} if not landingpage and snapshot_images_registered > 1 else {}">
+            ${structure:deregister_form['csrf_token']}
+            <input type="hidden" name="image_id" value="{{ imageID }}" />
+            <div>
+                <span tal:condition="not landingpage and image.root_device_type == 'ebs'">
+                    &nbsp;${structure:deregister_form.delete_snapshot(**html_attrs)}
+                    ${structure:deregister_form.delete_snapshot.label}
+                </span>
+                <span tal:condition="landingpage" ng-if="imageRootDeviceType == 'ebs'">
+                    &nbsp;
+                    ${structure:deregister_form.delete_snapshot(**{'ng-disabled': 'snapshotImagesRegistered.length > 1'})}
+                    ${structure:deregister_form.delete_snapshot.label}
+                </span>
+                <a tal:condition="(snapshot_images_registered > 1) or landingpage"
+                   ng-click="disabledExplanationVisible = !disabledExplanationVisible"
+                   ng-show="${'snapshotImagesRegistered.length > 1' if landingpage else 'true'}">
+                    Why is this disabled?
+                </a>
+                <div ng-show="disabledExplanationVisible">
+                    <span i18n:translate="">
+                        The snapshot for this image cannot be deleted when there are other images registered from the snapshot
+                    </span>
+                    <br /><br />
+                </div>
+            </div>
+            <div class="dialog-submit-button">
+                <button type="submit" id="deregister-image-button" class="button expand" i18n:translate="">
+                    Yes, Remove Image from the Cloud
+                </button>
+            </div>
+            <div class="dialog-progress-display hide">
+                <span i18n:translate="">Sending request </span>&nbsp;<em><span class="dots">&nbsp;</span></em>
+            </div>
+        </form>
+        <a href="#" id="deregister-image-dialog-close" class="close-reveal-modal">&#215;</a>
+    </div>
+</div>
+

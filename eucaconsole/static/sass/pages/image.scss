@@ -1,0 +1,67 @@
+/* @fileOverview IMage detail view page CSS */
+@import "../includes/eucavariables";
+
+// Image state choices are: available, pending, waiting-for-shutdown, cancellng, failed, bundling, storing, registering
+
+// State colors
+$image-state-color-available: $euca-darkblue;
+$image-state-color-cancelling: $euca-lightgrey;
+$image-state-color-failed: darkred;
+$image-state-color-pending: lighten($euca-darkblue, 20%);
+$image-state-color-waiting-for-shutdown: lighten($euca-darkblue, 20%);
+$image-state-color-bundling: lighten($euca-darkblue, 20%);
+$image-state-color-storing: lighten($euca-darkblue, 20%);
+$image-state-color-registering: lighten($euca-darkblue, 20%);
+
+// Image states
+.state { background-color: transparent; text-transform: capitalize; }
+.state.available { background-color: $image-state-color-available; }
+.state.cancelling { background-color: $image-state-color-cancelling; }
+.state.faied { background-color: $image-state-color-failed; }
+.state.pending { background-color: $image-state-color-pending; }
+.state.waiting-for-shutdown { background-color: $image-state-color-waiting-for-shutdown; }
+.state.bundling { background-color: $image-state-color-bundling; }
+.state.storing { background-color: $image-state-color-storing; }
+.state.registering { background-color: $image-state-color-registering; }
+
+/* -----------------------------------------
+   Account ID Icon 
+----------------------------------------- */
+.items {
+    margin-bottom: 6px;
+    .account-id-icon {
+        color: #333;
+        background-color: $euca-extralightgrey;
+        margin-right: 8px;
+        a {
+            color: white;
+        }
+    }
+}
+
+.progress {
+    text-align: left;
+    position: relative;
+    border: none;
+    .meter {
+        background-color: lighten($euca-darkblue, 20%);
+        color: black;
+        position: relative;
+        top: -2px; left: -2px;
+        padding: 1px 0 1px 8px;
+        display: inline-block;
+        white-space: nowrap;
+        font-weight: bold;
+    }
+}
+
+/* -----------------------------------------
+   Extra Element Padding
+----------------------------------------- */
+.padded-element { padding: 5px 5px; }
+.top-padding { padding-top: 20px; }
+.bottom-padding { padding-bottom: 5px; }
+.top-bottom-padding { padding-top: 10px; padding-bottom: 5px; }
+
+
+

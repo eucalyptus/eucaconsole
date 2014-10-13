@@ -12,12 +12,15 @@ angular.module('TagEditor', ['ngSanitize'])
             return line.substring(0, num) + "...";
         };
     })
-    .controller('TagEditorCtrl', function ($scope, $sanitize) {
+    .controller('TagEditorCtrl', function ($scope, $sanitize, $timeout) {
         $scope.tagEditor = $('#tag-editor');
         $scope.tagInputs = $scope.tagEditor.find('.taginput');
         $scope.tagsTextarea = $scope.tagEditor.find('textarea#tags');
         $scope.tagsArray = [];
+        $scope.newTagKey = '';
+        $scope.newTagValue = '';
         $scope.showNameTag = true;
+        $scope.isTagNotComplete = true;
         $scope.visibleTagsCount = 0;
         $scope.syncTags = function () {
             var tagsObj = {};
@@ -50,8 +53,19 @@ angular.module('TagEditor', ['ngSanitize'])
                     });
                 }
             });
+            $('#tag-name-input').keydown(function(evt) {
+                if (evt.keyCode === 13) {
+                    evt.preventDefault();
+                }
+            });
+            $('#tag-value-input').keydown(function(evt) {
+                if (evt.keyCode === 13) {
+                    evt.preventDefault();
+                }
+            });
             $scope.showNameTag = showNameTag;
             $scope.syncTags();
+            $scope.setWatch();
         };
         $scope.getSafeTitle = function (tag) {
             return $sanitize(tag.name + ' = ' + tag.value);
@@ -60,9 +74,14 @@ angular.module('TagEditor', ['ngSanitize'])
             $event.preventDefault();
             $scope.tagsArray.splice(index, 1);
             $scope.syncTags();
+            $scope.$emit('tagUpdate');
         };
         $scope.addTag = function ($event) {
             $event.preventDefault();
+            $scope.checkRequiredInput();
+            if ($scope.isTagNotComplete) {
+                return;
+            }
             var tagEntry = $($event.currentTarget).closest('.tagentry'),
                 tagKeyField = tagEntry.find('.key'),
                 tagValueField = tagEntry.find('.value'),
@@ -93,10 +112,42 @@ angular.module('TagEditor', ['ngSanitize'])
                     $scope.syncTags();
                     tagKeyField.val('').focus();
                     tagValueField.val('');
+                    $scope.$emit('tagUpdate');
+                    $scope.newTagKey = '';
+                    $scope.newTagValue = '';
                 }
             } else {
                 tagKeyField.val() ? tagValueField.focus() : tagKeyField.focus();
             }
+        };
+        $scope.checkRequiredInput = function () {
+            if ($scope.newTagKey === '' || $scope.newTagValue === '') {
+                $scope.isTagNotComplete = true;
+            } else if ($('#tag-name-input-div').hasClass('error') ||
+                $('#tag-value-input-div').hasClass('error')) {
+                $scope.isTagNotComplete = true;
+            } else {
+                $scope.isTagNotComplete = false;
+            } 
+
+        }; 
+        $scope.setWatch = function () {
+            $scope.$watch('newTagKey', function () {
+                $scope.checkRequiredInput();
+                // timeout is needed to react to Foundation's validation check
+                $timeout(function() {
+                    // repeat the check on input condition 
+                    $scope.checkRequiredInput();
+                }, 1000);
+            });
+            $scope.$watch('newTagValue', function () {
+                $scope.checkRequiredInput();
+                // timeout is needed to react to Foundation's validation check
+                $timeout(function() {
+                    // repeat the check on input condition 
+                    $scope.checkRequiredInput();
+                }, 1000);
+            });
         };
     })
 ;

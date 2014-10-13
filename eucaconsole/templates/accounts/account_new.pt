@@ -1,0 +1,103 @@
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
+
+<div metal:fill-slot="head_css" tal:omit-tag="">
+    <link rel="stylesheet" href="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/codemirror.css')}" />
+    <link rel="stylesheet" href="${request.static_path('eucaconsole:static/css/pages/account.css')}" />
+    <style type="text/css">
+        input#account-name { width: 50%; }
+    </style>
+</div>
+
+<div metal:fill-slot="main_content">
+    <div class="row" id="contentwrap"
+         ng-app="AccountPage" ng-controller="AccountPageCtrl" ng-init="initController(
+                                    '${request.route_path('account_create')}',
+                                    '${request.route_path('account_view', name='_name_')}',
+                                    '${request.route_path('file_download')}')">
+        <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+            <metal:crumbs metal:fill-slot="crumbs">
+                <li><a href="${request.route_path('accounts')}" i18n:translate="">Accounts</a></li>
+                <li class="current">
+                    <a i18n:translate="">Create new account</a>
+                </li>
+            </metal:crumbs>
+        </metal:breadcrumbs>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
+        <h3 id="pagetitle">
+            <metal:block>
+                <strong i18n:translate="">Create new account</strong>
+            </metal:block>
+        </h3>
+        <div class="large-7 columns">
+            <div class="panel">
+                <!--! TODO: Move account name error_msg to view and mark for i18n -->
+                <div tal:define="html_attrs {'pattern': '^[a-zA-Z0-9\+\=\,\.\@\-]{1,128}$',
+                         'error_msg': 'Account names must be between 1 and 128 characters long, and may contain letters, numbers, \'+\', \'=\', \',\', \'.\'. \'@\' and \'-\', and cannot contain spaces.'};">
+                    <form id="account-new-form" ng-submit="submit($event)" data-abide="abide">
+                        ${structure:account_form['csrf_token']}
+                        <div class="section columns">
+                            <div class="">
+                                ${panel('form_field', field=account_form.account_name, leftcol_width=1, rightcol_width=11, autofocus='', ng_attrs={'model': 'accountName'}, **html_attrs)}
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="section">
+                            ${panel('user_editor')}
+                        </div>
+                        <hr/>
+                        <div class="expando" id="quotas-section">
+                            <h6 class="title">
+                                <a ng-click="toggleQuotasContent()">
+                                    <i class="fi-plus" ng-show="!quotas_expanded"></i>
+                                    <i class="fi-minus" ng-show="quotas_expanded"></i>
+                                    &nbsp;<span i18n:translate="">Quotas</span>
+                                </a>
+                            </h6>
+                            <div class="quotas-content" ng-show="quotas_expanded">
+                                ${panel('quotas_panel', quota_form=quotas_form, quota_err=quota_err, in_user=False)}
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="section row">
+                            <div class="columns small-6">
+                                <button type="submit" class="button" id="create-btn" ng-disabled="isNotValid">
+                                    <span i18n:translate="">Create Account</span>
+                                </button>
+                                <a href="${request.route_path('accounts')}"
+                                    class="cancel-link" i18n:translate="">Cancel</a>
+                            </div>
+                            <div class="columns small-6">
+                                <div>
+                                    <label class="right">
+                                        <span class="req">*</span>
+                                        <span i18n:translate="">Required fields</span>
+                                   </label>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="large-5 columns">
+            <metal:block metal:use-macro="layout.global_macros['help_expando']" />
+            <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
+                <!--! Help goes here -->
+                <div id="help-html-console_create_iam_account"
+                    ng-include="'${layout.help_path('console_create_iam_accounts.html')}'">
+                </div> 
+            </div>
+        </div>
+        <!--! Modal dialogs reused across landing and detail page -->
+        ${panel('account_dialogs', account=account, delete_form=delete_form)}
+    </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/jquery.generateFile.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/account_new.js')}"></script>
+</div>
+
+</metal:block>
+

@@ -30,7 +30,7 @@ Constants for Images
 """
 from collections import namedtuple
 
-from pyramid.i18n import TranslationString as _
+from ..i18n import _
 
 
 PlatformChoice = namedtuple('Choice', ['key', 'pattern', 'name'])
