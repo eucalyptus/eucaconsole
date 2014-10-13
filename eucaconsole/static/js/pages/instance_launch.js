@@ -97,6 +97,10 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             $('#number').val($scope.instanceNumber);
             $scope.instanceType = 'm1.small';
             $scope.instanceZone = $('#zone').find(':selected').val();
+            var lastVPC = Modernizr.localstorage && localStorage.getItem('lastvpc_inst');
+            if (lastVPC != null && $('#vpc_network option[value=' + lastVPC +']').length > 0) {
+                $scope.instanceVPC = lastVPC;
+            }
             var lastKeyPair = Modernizr.localstorage && localStorage.getItem('lastkeypair_inst');
             if (lastKeyPair != null && $scope.keyPairChoices[lastKeyPair] !== undefined) {
                 $('#keypair').val(lastKeyPair);
@@ -118,6 +122,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         };
         $scope.saveOptions = function() {
             if (Modernizr.localstorage) {
+                localStorage.setItem('lastvpc_inst', $scope.instanceVPC);
                 localStorage.setItem('lastkeypair_inst', $('#keypair').find(':selected').val());
                 localStorage.setItem('lastsecgroup_inst', $('#securitygroup').find(':selected').val());
             }
