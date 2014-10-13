@@ -41,17 +41,14 @@
                             </li>
                         </metal:actions>
                     </metal:block>
-                    <div ng-controller="UserUpdateCtrl"
-                         ng-init="initController('${request.route_path('user_update', name=user.user_name)}')">
-                        <form data-abide="abide" id="user-update-form" ng-submit="submit($event)">
+                    <div ng-controller="UserUpdateCtrl" ng-init="initController()">
+                        <form data-abide="abide" id="user-update-form" method="POST"
+                                action="${request.route_path('user_update', name=user.user_name)}">
                             ${structure:user_form['csrf_token']}
                             <input type='hidden' name='as-account' value="${as_account}"/>
                             <div class="columns section">
                                 <h6 i18n:translate="">User</h6>
-                                <div class="row controls-wrapper readonly">
-                                    <div class="small-3 columns"><label i18n:translate="">Name</label></div>
-                                    <div class="small-9 columns value">${user_name}</div>
-                                </div>
+                                ${panel('form_field', field=user_form['user_name'], leftcol_width=3, rightcol_width=9)}
                                 <!-- ${panel('form_field', field=user_form['email'])} -->
                                 <div class="row controls-wrapper readonly" tal:condition="user_create_date">
                                     <div class="small-3 columns"><label class="right" i18n:translate="">Creation time</label></div>

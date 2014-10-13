@@ -125,7 +125,11 @@ angular.module('BucketContentsPage', ['LandingPage', 'EucaConsoleUtils'])
                     }
                 }).
                 error(function (oData, status) {
-                    Notify.failure("some kind of error");
+                    var errorMsg = oData['message'] || '';
+                    if (status === 403 || status === 400) {
+                        $('#timed-out-modal').foundation('reveal', 'open');
+                    }
+                    Notify.failure(errorMsg);
                 });
         };
         $scope.cancelDeleting = function () {
@@ -152,7 +156,11 @@ angular.module('BucketContentsPage', ['LandingPage', 'EucaConsoleUtils'])
                     $scope.obj_key = '';
                 }).
                 error(function (oData, status) {
-                    Notify.failure("some kind of error");
+                    var errorMsg = oData['message'] || '';
+                    if (status === 403 || status === 400) {
+                        $('#timed-out-modal').foundation('reveal', 'open');
+                    }
+                    Notify.failure(errorMsg);
                 });
         };
         $scope.saveKey = function (bucket_name, key) {
@@ -185,6 +193,16 @@ angular.module('BucketContentsPage', ['LandingPage', 'EucaConsoleUtils'])
             if (subpath === undefined) {
                 subpath = item.details_url.slice(item.details_url.indexOf('itemdetails')+12);
             }
+            for (var i=0; i<$scope.items.length; i++) {
+                this_key = $scope.items[i].name;
+                if (subpath.length > 0) {
+                    this_key = subpath + '/' + this_key;
+                }
+                if (key == this_key) {
+                    $('#copy-on-self-warn-modal').foundation('reveal', 'open');
+                    return;
+                }
+            }
             var url = $scope.copyObjUrl.replace('_name_', bucketName).replace('_subpath_', subpath);
             var data = "csrf_token="+$('#csrf_token').val()+'&src_bucket='+bucket+'&src_key='+key;
             $http({method:'POST', url:url, data:data,
@@ -201,6 +219,9 @@ angular.module('BucketContentsPage', ['LandingPage', 'EucaConsoleUtils'])
               }).
               error(function (oData, status) {
                 var errorMsg = oData['message'] || '';
+                if (status === 403 || status === 400) {
+                    $('#timed-out-modal').foundation('reveal', 'open');
+                }
                 Notify.failure(errorMsg);
               });
         };

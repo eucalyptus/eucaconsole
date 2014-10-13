@@ -239,6 +239,13 @@
             </div>
             <a href="#" id="copy_folder_close_link" class="close-reveal-modal">&#215;</a>
         </div>
+        <div id="copy-on-self-warn-modal" class="reveal-modal small" data-reveal="">
+            <h3 i18n:translate="">Warning</h3>
+            <p>
+                <span i18n:translate="">You cannot paste an object into the same path where it already resides.</span>
+            </p>
+            <a href="#" id="delete_folder_close_link" class="close-reveal-modal">&#215;</a>
+        </div>
         <!--! Create folder modal dialog -->
         ${panel('create_folder_dialog', bucket_name=bucket_name, create_folder_form=create_folder_form)}
         ${panel('bucket_delete_dialog')}
