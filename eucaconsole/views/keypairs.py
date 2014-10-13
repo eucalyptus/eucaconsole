@@ -136,13 +136,18 @@ class KeyPairView(BaseView):
 
     @view_config(route_name='keypair_view', renderer=TEMPLATE)
     def keypair_view(self):
-        session = self.request.session
+        name = self.request.matchdict.get('id')
         new_keypair_created = False
+        created_msg = ''
         # Check if the session contains the new keypair material information
         if self._has_file_():
             new_keypair_created = True
+            created_msg = _(u'Successfully created key pair {keypair}'.format(keypair=name))
 
-        self.render_dict['keypair_created'] = new_keypair_created
+        self.render_dict.update(dict(
+            keypair_created=new_keypair_created,
+            keypair_created_msg=created_msg,
+        ))
         return self.render_dict
 
     def get_keypair_names(self):
@@ -156,8 +161,6 @@ class KeyPairView(BaseView):
     def keypair_create(self):
         if self.keypair_form.validate():
             name = self.request.params.get('name')
-            session = self.request.session
-            new_keypair = None
             location = self.request.route_path('keypair_view', id=name)
             with boto_error_handler(self.request, location):
                 self.log_request(_(u"Creating keypair ")+name)
@@ -173,7 +176,6 @@ class KeyPairView(BaseView):
                 resp_body = json.dumps(dict(message=msg, payload=keypair_material))
                 return Response(status=200, body=resp_body, content_type='application/x-pem-file;charset=ISO-8859-1')
             else:
-                self.request.session.flash(msg, queue=Notification.SUCCESS)
                 location = self.request.route_path('keypair_view', id=name)
                 return HTTPFound(location=location)
         if self.request.is_xhr:
@@ -188,14 +190,11 @@ class KeyPairView(BaseView):
         if self.keypair_form.validate():
             name = self.request.params.get('name')
             key_material = self.request.params.get('key_material')
-            msg = ""
-            material = ""
             failure_location = self.request.route_path('keypair_view', id='new2')  # Return to import form if failure
             success_location = self.request.route_path('keypair_view', id=name)
             with boto_error_handler(self.request, failure_location):
                 self.log_request(_(u"Importing keypair ") + name)
-                new_keypair = self.conn.import_key_pair(name, key_material)
-                material = new_keypair.material
+                self.conn.import_key_pair(name, key_material)
                 msg_template = _(u'Successfully imported key pair {keypair}')
                 msg = msg_template.format(keypair=name)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)

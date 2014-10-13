@@ -5,10 +5,11 @@
                      detailpage_action request.route_path('keypair_delete', id=keypair.name) if keypair else '';
                      action landingpage_action if landingpage else detailpage_action;">
         <h3 i18n:translate="">Delete key</h3>
-        <p><span i18n:translate="">Are you sure you want to delete key</span>
-            <span tal:condition="keypair"><b>${keypair_name}</b></span>
-            <span tal:condition="not keypair"><b>{{ keypairName }}</b></span>
-            ?</p>
+        <p>
+            <span i18n:translate="">Are you sure you want to delete key</span>
+            <span tal:condition="keypair"><b class="breakword">${keypair_name}</b>?</span>
+            <span tal:condition="not keypair"><b class="breakword">{{ keypairName }}</b>?</span>
+        </p>
         <form action="${action}" method="post">
             ${structure:delete_form['csrf_token']}
             <div tal:condition="landingpage" tal:omit-tag="">

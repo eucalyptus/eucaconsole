@@ -20,7 +20,7 @@
         <h3 id="pagetitle">
             <metal:block tal:condition="keypair">
                 <strong i18n:translate="">Details for key pair:</strong>
-                <em>${keypair_name}</em>
+                <em class="breakword">${keypair_name}</em>
             </metal:block>
             <metal:block tal:condition="not keypair">
                 <strong i18n:translate="" tal:condition="keypair_route_id == 'new'">Create new key pair</strong>
@@ -55,7 +55,7 @@
                     <h6 i18n:translate="">Key pair</h6>
                     <div class="row controls-wrapper readonly">
                         <div class="small-3 columns"><label i18n:translate="">Name</label></div>
-                        <div class="small-9 columns value">${keypair_name if keypair_name else ''}</div>
+                        <div class="small-9 columns value breakword">${keypair_name if keypair_name else ''}</div>
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="small-3 columns"><label i18n:translate="">Fingerprint</label></div>
@@ -139,6 +139,9 @@
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/pages/eucaconsole_utils.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/keypair.js')}"></script>
+    <script tal:condition="keypair and keypair_created">
+        Notify.success('${keypair_created_msg}');
+    </script>
 </div>
 
 </metal:block>
