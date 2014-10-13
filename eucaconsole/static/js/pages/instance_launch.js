@@ -39,6 +39,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.isRuleExpanded = {};
         $scope.newSecurityGroupName = '';
         $scope.isLoadingSecurityGroup = false;
+        $scope.isSecurityGroupsInitialValuesSet = false;
         $scope.role = '';
         $scope.roleList = [];
         $scope.currentStepIndex = 1;
@@ -106,15 +107,6 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 $('#keypair').val(lastKeyPair);
             }
             $scope.keyPair = $('#keypair').find(':selected').val();
-            var lastSecGroup = Modernizr.localstorage && localStorage.getItem('lastsecgroup_inst');
-            if (lastSecGroup != null) {
-                var lastSecGroupArray = lastSecGroup.split(",");
-                angular.forEach(lastSecGroupArray, function (sgroup) {
-                    if ($scope.securityGroupChoices[sgroup] !== undefined) {
-                        $scope.securityGroups.push(sgroup);
-                    }
-                });
-            }
             $scope.imageID = $scope.urlParams['image_id'] || '';
             if( $scope.imageID == '' ){
                 $scope.currentStepIndex = 1;
@@ -122,6 +114,21 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 $scope.currentStepIndex = 2;
                 $scope.step1Invalid = false;
                 $scope.loadImageInfo($scope.imageID);
+            }
+        };
+        $scope.restoreSecurityGroupsInitialValues = function () {
+            if ($scope.isSecurityGroupsInitialValuesSet == true) {
+                return;
+            }
+            var lastSecGroup = Modernizr.localstorage && localStorage.getItem('lastsecgroup_inst');
+            if (lastSecGroup != null) {
+                var lastSecGroupArray = lastSecGroup.split(",");
+                angular.forEach(lastSecGroupArray, function (sgroup) {
+                    if ($scope.securityGroupChoices[sgroup] !== undefined) {
+                        $scope.securityGroups.push(sgroup);
+                        $scope.isSecurityGroupsInitialValuesSet = true;
+                    }
+                });
             }
         };
         $scope.saveOptions = function() {
@@ -522,6 +529,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             angular.forEach($scope.securityGroupCollection, function(sGroup){
                 $scope.securityGroupChoices[sGroup['id']] = sGroup['name'];
             }); 
+            $scope.restoreSecurityGroupsInitialValues(); 
             // Timeout is needed for chosen to react after Angular updates the options
             $timeout(function(){
                 $('#securitygroup').trigger('chosen:updated');
