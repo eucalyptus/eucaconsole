@@ -4,8 +4,8 @@
  *
  */
 
-angular.module('SecurityGroupRules', ['EucaConsoleUtils'])
-    .controller('SecurityGroupRulesCtrl', function ($scope, $http, $timeout, eucaUnescapeJson) {
+angular.module('SecurityGroupRules', [])
+    .controller('SecurityGroupRulesCtrl', function ($scope, $http, $timeout) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.rulesEditor = $('#rules-editor');
         $scope.rulesTextarea = $scope.rulesEditor.find('textarea#rules');
@@ -72,7 +72,7 @@ angular.module('SecurityGroupRules', ['EucaConsoleUtils'])
                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
               success(function(oData) {
                 var results = oData ? oData.results : [];
-                var options = JSON.parse(eucaUnescapeJson(results));
+                var options = JSON.parse(results);
                 var pArray = options['internet_protocols'];
                 // Create internet protocols number to name map
                 angular.forEach(pArray, function(protocol) {

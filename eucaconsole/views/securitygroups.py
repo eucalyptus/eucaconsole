@@ -37,7 +37,7 @@ from pyramid.view import view_config
 from ..forms.securitygroups import SecurityGroupForm, SecurityGroupDeleteForm, SecurityGroupsFiltersForm
 from ..i18n import _
 from ..models import Notification
-from ..views import BaseView, LandingPageView, TaggedItemView, JSONResponse
+from ..views import LandingPageView, TaggedItemView, JSONResponse
 from . import boto_error_handler
 from ..constants.internet_protocols import INTERNET_PROTOCOL_NUMBERS
 
@@ -172,9 +172,9 @@ class SecurityGroupsJsonView(LandingPageView):
 
     @view_config(route_name='internet_protocols_json', renderer='json', request_method='POST')
     def internet_protocols_json(self):
-        internet_protocols = BaseView.escape_json(json.dumps({ 
+        internet_protocols = json.dumps({ 
             'internet_protocols': INTERNET_PROTOCOL_NUMBERS,
-        }))
+        })
         return dict(results=internet_protocols)
 
 class SecurityGroupView(TaggedItemView):
