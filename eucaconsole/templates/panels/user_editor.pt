@@ -26,7 +26,7 @@
                 <input class="userinput name" placeholder="name..." id="user-name-field"
                        ng-model="newUserName" ng-keypress="keyListener($event)" pattern="^[a-zA-Z0-9\+\=\,\.\@\-]{1,64}$" />
                 <small id="user-list-error" class="error" i18n:translate="">
-                    Must have at least one user, and the names of users must be alphanumeric, including the following common characters: plus (+), equal (=), comma (,), period (.), at (@), and dash (-).
+                    Must have at least one user, and the names of users must be alphanumeric, including the following common characters: plus (+), equal (=), comma (,), period (.), at (@), and dash (-), and cannot contain spaces.
                 </small>
             </div>
             <div>&nbsp;</div>
