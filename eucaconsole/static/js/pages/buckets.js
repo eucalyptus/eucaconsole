@@ -92,8 +92,14 @@ angular.module('BucketsPage', ['LandingPage', 'EucaConsoleUtils'])
             var buffer = Modernizr.sessionstorage && sessionStorage.getItem('copy-object-buffer');
             return buffer && (buffer.indexOf('/', buffer.length - 1) === -1);
         };
-        $scope.hasCopyFolder = function () {
+        $scope.hasCopyFolder = function (item) {
             var buffer = Modernizr.sessionstorage && sessionStorage.getItem('copy-object-buffer');
+            src_bucket = buffer.slice(0, buffer.indexOf('/'));
+            src_path = buffer.slice(buffer.indexOf('/')+1);
+            // detect copy on self
+            if (item && src_bucket == item.bucket_name) {
+                return false;
+            }
             return buffer && (buffer.indexOf('/', buffer.length - 1) !== -1);
         };
         $scope.doPaste = function (bucket) {
@@ -142,6 +148,7 @@ angular.module('BucketsPage', ['LandingPage', 'EucaConsoleUtils'])
                     $scope.all_items = oData.results;
                     $scope.index = 0;
                     $('#copy-folder-modal').foundation('reveal', 'open');
+                    $scope.copyFolder();
                 }).
                 error(function (oData, status) {
                     Notify.failure(oData.message);

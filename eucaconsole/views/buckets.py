@@ -176,7 +176,7 @@ class BucketXHRView(BaseView):
             return dict(message=_(u"keys must be specified."), errors=[])
         bucket = self.s3_conn.head_bucket(self.bucket_name)
         errors = []
-        self.log_request(_(u"Deleting keys from {0} : {1}").format(self.bucket_name, ','.join(keys)))
+        self.log_request("Deleting keys from {0} : {1}".format(self.bucket_name, ','.join(keys)))
         for k in keys.split(','):
             key = bucket.get_key(k, validate=False)
             try:
@@ -200,13 +200,12 @@ class BucketXHRView(BaseView):
         src_bucket = self.request.params.get('src_bucket')
         folder_loc = self.request.params.get('folder_loc')
         with boto_error_handler(self.request):
-            self.log_request(_(u"Copying key(s) from {0} to {1} : {2}").format(
+            self.log_request("Copying key(s) from {0} to {1} : {2}".format(
                 src_bucket, self.bucket_name + '/' + '/'.join(subpath), keys))
             bucket = self.s3_conn.get_bucket(self.bucket_name, validate=False)
             errors = []
             for k in keys.split(','):
                 dest_key = '/'.join(subpath + (k[len(folder_loc):],))
-                import logging; logging.info("dest key = "+dest_key);
                 try:
                     bucket.copy_key(
                         new_key_name=dest_key,
@@ -231,7 +230,7 @@ class BucketXHRView(BaseView):
         src_key = self.request.params.get('src_key')
         dest_key = '/'.join(subpath) + '/' + src_key[src_key.rfind('/')+1:]
         with boto_error_handler(self.request):
-            self.log_request(_(u"Copying key from {0}:{1} to {2}:{3}").format(
+            self.log_request("Copying key from {0}:{1} to {2}:{3}".format(
                 src_bucket, src_key, self.bucket_name, dest_key))
             bucket = self.s3_conn.get_bucket(self.bucket_name, validate=False)
             bucket.copy_key(
@@ -386,6 +385,7 @@ class BucketContentsView(LandingPageView):
 
     def get_controller_options_json(self):
         return BaseView.escape_json(json.dumps({
+            'bucket_name': self.bucket_name,
             'delete_keys_url': self.request.route_path('bucket_delete_keys', name=self.bucket_name),
             'get_keys_url': self.request.route_path('bucket_keys', name=self.bucket_name, subpath=self.request.subpath),
             'key_prefix': self.key_prefix,

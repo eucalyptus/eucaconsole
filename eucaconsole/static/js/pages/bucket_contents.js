@@ -21,6 +21,7 @@ angular.module('BucketContentsPage', ['LandingPage', 'EucaConsoleUtils'])
         $scope.op_prefix = '';
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
+            $scope.bucketName = options['bucket_name'];
             $scope.deleteKeysUrl = options['delete_keys_url'];
             $scope.getKeysUrl = options['get_keys_url'];
             $scope.prefix = options['key_prefix'];
@@ -176,8 +177,18 @@ angular.module('BucketContentsPage', ['LandingPage', 'EucaConsoleUtils'])
             var buffer = Modernizr.sessionstorage && sessionStorage.getItem('copy-object-buffer');
             return buffer && (buffer.indexOf('/', buffer.length - 1) === -1);
         };
-        $scope.hasCopyFolder = function () {
+        $scope.hasCopyFolder = function (item) {
             var buffer = Modernizr.sessionstorage && sessionStorage.getItem('copy-object-buffer');
+            if (buffer === undefined) {
+                return false;
+            }
+            src_bucket = buffer.slice(0, buffer.indexOf('/'));
+            src_key = buffer.slice(buffer.indexOf('/')+1);
+            src_path = src_key.slice(0, src_key.slice(0, src_key.length-1).lastIndexOf('/')+1);
+            // detect copy on self
+            if (item && src_bucket == $scope.bucketName && src_path == item.full_key_name) {
+                return false;
+            }
             return buffer && (buffer.indexOf('/', buffer.length - 1) !== -1);
         };
         $scope.doPaste = function (bucketName, item, subpath) {
@@ -248,6 +259,7 @@ angular.module('BucketContentsPage', ['LandingPage', 'EucaConsoleUtils'])
                     $scope.all_items = oData.results;
                     $scope.index = 0;
                     $('#copy-folder-modal').foundation('reveal', 'open');
+                    $scope.copyFolder();
                 }).
                 error(function (oData, status) {
                     Notify.failure(oData.message);

@@ -83,4 +83,17 @@
         </form>
         <a href="#" id="delete_bucket_close_link" class="close-reveal-modal">&#215;</a>
     </div>
+    <div id="copy-folder-modal" class="reveal-modal small" data-reveal="">
+        <h3 i18n:translate="">Paste folder</h3>
+        <p i18n:translate="">Pasting a folder and its contents can take some time. Leaving this page while the paste is in progress will cancel the operation.
+        </p>
+        <div class="bucket-progress">
+            <span class="meter" style="width: {{ (progress/total)*100 }}%"></span>
+            <span class="status">Pasted {{ progress }} of {{ total }}</span>
+        </div>
+        <a class="button expand cancel" id="cancel-copy-btn" i18n:translate="" ng-click="cancelCopying()">
+            Cancel Remaining Pastes
+        </a>
+        <a href="#" id="copy_folder_close_link" class="close-reveal-modal">&#215;</a>
+    </div>
  </div>
