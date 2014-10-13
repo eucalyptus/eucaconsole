@@ -123,6 +123,21 @@ angular.module('InstancesPage', ['LandingPage'])
                 }
             });
         };
+        $scope.getCreateLaunchConfigPath = function (item) {
+            var securityGroupsList = '';
+            angular.forEach(item.security_groups, function (sgroup, index) {
+                securityGroupsList += sgroup.id;
+                if (index < item.security_groups.length - 1) {
+                    securityGroupsList += ",";
+                }
+            });
+            var launchConfigPath =  "/launchconfigs/new?image_id=" + item.image_id +
+                "&amp;instance_type=" + item.instance_type +
+                "&amp;keypair=" + item.key_name +
+                "&amp;security_group=" + securityGroupsList +
+                "&amp;preset=true";
+            return launchConfigPath;
+        };
     })
 ;
 

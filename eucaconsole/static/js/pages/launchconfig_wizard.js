@@ -126,14 +126,10 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             $scope.keyPair = $('#keypair').find(':selected').val();
             $scope.imageID = $scope.urlParams['image_id'] || '';
             $scope.keyPairSelected = $scope.urlParams['keypair'] || '';
-            $scope.securityGroupSelected = $scope.urlParams['security_group'] || '';
             if( $scope.instanceTypeSelected != '' )
                 $scope.instanceType = $scope.instanceTypeSelected;
             if( $scope.keyPairSelected != '' )
                 $scope.keyPair = $scope.keyPairSelected;
-            if( $scope.securityGroupSelected != '' ){
-                $scope.securityGroups.push($scope.securityGroupSelected);
-            }
             if( $scope.imageID == '' ){
                 $scope.currentStepIndex = 1;
             }else{
@@ -144,9 +140,12 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             $scope.isCreateSGChecked = $('#create_sg_from_lc').is(':checked');
         };
         $scope.restoreSecurityGroupsInitialValues = function () {
-            var lastSecGroup = Modernizr.localstorage && localStorage.getItem('lastsecgroup_lc');
-            if (lastSecGroup != null) {
-                var lastSecGroupArray = lastSecGroup.split(",");
+            $scope.securityGroupSelected = $scope.urlParams['security_group'] || '';
+            if( $scope.securityGroupSelected == '' ){
+                $scope.securityGroupSelected = Modernizr.localstorage && localStorage.getItem('lastsecgroup_lc');
+            }
+            if ($scope.securityGroupSelected != '' && $scope.securityGroupSelected != null) {
+                var lastSecGroupArray = $scope.securityGroupSelected.split(",");
                 angular.forEach(lastSecGroupArray, function (sgroup) {
                     if ($scope.securityGroupChoices[sgroup] !== undefined) {
                         $scope.securityGroups.push(sgroup);
