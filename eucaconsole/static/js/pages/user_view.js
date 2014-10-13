@@ -192,8 +192,7 @@ angular.module('UserView', ['PolicyList', 'Quotas', 'EucaConsoleUtils'])
                 }
               }).
               error(function (oData, status) {
-                var errorMsg = oData['message'] || '';
-                Notify.failure(errorMsg);
+                handleError(oData, status);
               });
             $('#disable-user-modal').foundation('reveal', 'close');
         };
@@ -314,10 +313,7 @@ angular.module('UserView', ['PolicyList', 'Quotas', 'EucaConsoleUtils'])
                 });
                 $scope.isPasswordNotChanged = true;
             }).error(function (oData, status) {
-                var errorMsg = oData['message'] || '';
-                if (errorMsg && status === 403) {
-                    $('#timed-out-modal').foundation('reveal', 'open');
-                }
+                handleError(oData, status);
                 $('#wrong-password').css('display', 'block');
             });
         };
@@ -339,11 +335,7 @@ angular.module('UserView', ['PolicyList', 'Quotas', 'EucaConsoleUtils'])
                     script: $scope.getFileEndpoint
                 });
             }).error(function (oData, status) {
-                var errorMsg = oData['message'] || '';
-                if (errorMsg && status === 403) {
-                    $('#timed-out-modal').foundation('reveal', 'open');
-                }
-                Notify.failure(errorMsg);
+                handleError(oData, status);
             });
             $('#change-password-modal').foundation('reveal', 'close');
         };
@@ -359,11 +351,7 @@ angular.module('UserView', ['PolicyList', 'Quotas', 'EucaConsoleUtils'])
                 $scope.has_password = false;
                 Notify.success(oData.message);
             }).error(function (oData, status) {
-                var errorMsg = oData['message'] || '';
-                if (errorMsg && status === 403) {
-                    $('#timed-out-modal').foundation('reveal', 'open');
-                }
-                Notify.failure(errorMsg);
+                handleError(oData, status);
             });
             $('#delete-password-modal').foundation('reveal', 'close');
         };
@@ -389,10 +377,7 @@ angular.module('UserView', ['PolicyList', 'Quotas', 'EucaConsoleUtils'])
                 $scope.itemsLoading = false;
                 $scope.items = results;
             }).error(function (oData, status) {
-                var errorMsg = oData['message'] || '';
-                if (errorMsg && status === 403) {
-                    $('#timed-out-modal').foundation('reveal', 'open');
-                }
+                handleError(oData, status);
             });
         };
         $scope.generateKeys = function ($event) {
@@ -414,11 +399,7 @@ angular.module('UserView', ['PolicyList', 'Quotas', 'EucaConsoleUtils'])
                     script: $scope.getFileEndpoint
                 });
             }).error(function (oData, status) {
-                var errorMsg = oData['message'] || '';
-                if (errorMsg && status === 403) {
-                    $('#timed-out-modal').foundation('reveal', 'open');
-                }
-                Notify.failure(errorMsg);
+                handleError(oData, status);
             });
         };
         $scope.makeAjaxCall = function (url, item) {
@@ -536,10 +517,7 @@ angular.module('UserView', ['PolicyList', 'Quotas', 'EucaConsoleUtils'])
                     $scope.loadPolicies(results[i].group_name, i);
                 }
             }).error(function (oData, status) {
-                var errorMsg = oData['message'] || '';
-                if (errorMsg && status === 403) {
-                    $('#timed-out-modal').foundation('reveal', 'open');
-                }
+                handleError(oData, status);
             });
         };
         $scope.loadPolicies = function (groupName, index) {
@@ -548,10 +526,7 @@ angular.module('UserView', ['PolicyList', 'Quotas', 'EucaConsoleUtils'])
                 var results = oData ? oData.results : [];
                 $scope.items[index].policies = results;
             }).error(function (oData, status) {
-                var errorMsg = oData['message'] || '';
-                if (errorMsg && status === 403) {
-                    $('#timed-out-modal').foundation('reveal', 'open');
-                }
+                handleError(oData, status);
             });
         };
         $scope.getAvailableGroups = function () {
@@ -563,10 +538,7 @@ angular.module('UserView', ['PolicyList', 'Quotas', 'EucaConsoleUtils'])
                 $scope.noAvailableGroups = $scope.alreadyMemberOfAllGroups || $scope.noGroupsDefined;
                 $scope.groupName = '';
             }).error(function (oData, status) {
-                var errorMsg = oData['message'] || '';
-                if (errorMsg && status === 403) {
-                    $('#timed-out-modal').foundation('reveal', 'open');
-                }
+                handleError(oData, status);
             });
         };
         $scope.addUserToGroup = function ($event) {
@@ -616,10 +588,7 @@ angular.module('UserView', ['PolicyList', 'Quotas', 'EucaConsoleUtils'])
                 var results = oData ? oData.results : [];
                 $scope.policyJson = results;
             }).error(function (oData, status) {
-                var errorMsg = oData['message'] || '';
-                if (errorMsg && status === 403) {
-                    $('#timed-out-modal').foundation('reveal', 'open');
-                }
+                handleError(oData, status);
             });
             $('#policy-view-modal').foundation('reveal', 'open');
         };
