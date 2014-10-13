@@ -107,7 +107,10 @@ angular.module('Dashboard', ['EucaConsoleUtils'])
         };
         $scope.removeTile = function(tile) {
             var order = $('#sortable').sortable('toArray');
-            order.splice(order.indexOf('add-tile'), 1);
+            var add_idx = order.indexOf('add-tile');
+            if (add_idx > -1) {
+                order.splice(add_idx, 1);
+            }
             order.splice(order.indexOf(tile), 1);
             $.cookie($scope.accountName + "_dash_order", order, {expires: 180});
             window.location.reload();

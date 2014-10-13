@@ -62,7 +62,7 @@
                     <li class="panel" id="scaling-groups" tal:case="'scaling-groups'">
                         <div class="tile" id="in-scaling-group">
                             <h5 class="subheader">
-                                <span i18n:translate=""> Instances in scaling groups</span>
+                                <span i18n:translate="">Instances in scaling groups</span>
                             </h5>
                             <metal:block metal:use-macro="layout.global_macros['dashaction']" />
                             <div class="content">
@@ -266,7 +266,7 @@
                     </span>
                 </span>
             </span>
-            <li class="panel" id="add-tile">
+            <li class="panel" id="add-tile" tal:condition="len(tiles_not_shown) > 0">
                <div class="tile add">
                     <div class="content">
                         <a href="#" data-reveal-id="add-tile-modal">
@@ -281,7 +281,7 @@
             <h3 i18n:translate="">Add a tile</h3>
             <label i18n:translate="" for="new-tile">Select tile</label>
             <select id="new-tile">
-                <option tal:repeat="tile tiles_not_shown">${tile}</option>
+                <option tal:repeat="tile tiles_not_shown" value="${tile}">${tile_names[tile]}</option>
             </select>
             <span>&nbsp;</span>
             <a class="button expand" id="add-tile-btn" i18n:translate="">

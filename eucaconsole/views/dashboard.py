@@ -42,6 +42,23 @@ from . import boto_error_handler
 class DashboardView(BaseView):
     TILE_MASTER_LIST = u'instances-running,instances-stopped,scaling-groups,elastic-ips,volumes,snapshots,buckets,' \
                        u'security-groups,key-pairs,accounts,users,groups,roles,health'
+    TILE_DISPLAY_NAMES = {
+        'instances-running': 'Running instances',
+        'instances-stopped': 'Stopped instances',
+        'scaling-groups': 'Instances in scaling groups',
+        'elastic-ips': 'Elastic IPs',
+        'volumes': 'Volumes',
+        'snapshots': 'Snapshots',
+        'buckets': 'Buckets (S3)',
+        'security-groups': 'Security groups',
+        'key-pairs': 'Key pairs',
+        'accounts': 'Accounts',
+        'users': 'Users',
+        'groups': 'Groups',
+        'roles': 'Roles',
+        'health': 'Service status'
+    }
+
     def __init__(self, request):
         super(DashboardView, self).__init__(request)
         self.request = request
@@ -62,16 +79,35 @@ class DashboardView(BaseView):
 
         tiles_not_shown = [tile for tile in self.TILE_MASTER_LIST.split(',') if tile not in tiles.split(',')]
         session = self.request.session
-        if session['cloud_type'] == 'aws' or session['account'] != 'eucalyptus':
+        if session['cloud_type'] == 'aws':
+            try:
+                tiles_not_shown.remove('users')
+            except ValueError:
+                pass
+            try:
+                tiles_not_shown.remove('groups')
+            except ValueError:
+                pass
+            try:
+                tiles_not_shown.remove('roles')
+            except ValueError:
+                pass
             try:
                 tiles_not_shown.remove('accounts')
             except ValueError:
                 pass
+        else:
+            if session['account'] != 'eucalyptus':
+                try:
+                    tiles_not_shown.remove('accounts')
+                except ValueError:
+                    pass
 
         return dict(
             availability_zones=availability_zones,
             tiles=tiles.split(','),
             tiles_not_shown=tiles_not_shown,
+            tile_names=self.TILE_DISPLAY_NAMES,
             controller_options_json=self.get_controller_options_json(),
         )
 
