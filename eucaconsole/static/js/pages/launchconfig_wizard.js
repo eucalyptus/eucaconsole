@@ -108,6 +108,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                 } 
                 $scope.securityGroupChoices[sGroup['id']] = securityGroupName;
             }); 
+            $scope.restoreSecurityGroupsInitialValues(); 
             // Timeout is needed for chosen to react after Angular updates the options
             $timeout(function(){
                 $('#securitygroup').trigger('chosen:updated');
@@ -123,11 +124,6 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                 $('#keypair').val(lastKeyPair);
             }
             $scope.keyPair = $('#keypair').find(':selected').val();
-            var lastSecGroup = Modernizr.localstorage && localStorage.getItem('lastsecgroup_lc');
-            if (lastSecGroup != null && $scope.securityGroupChoices[lastSecGroup] !== undefined) {
-                $('#securitygroup').val(lastSecGroup);
-            }
-            $scope.securityGroups.push($('#securitygroup').find(':selected').val() || 'default');
             $scope.imageID = $scope.urlParams['image_id'] || '';
             $scope.keyPairSelected = $scope.urlParams['keypair'] || '';
             $scope.securityGroupSelected = $scope.urlParams['security_group'] || '';
@@ -147,10 +143,21 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             }
             $scope.isCreateSGChecked = $('#create_sg_from_lc').is(':checked');
         };
+        $scope.restoreSecurityGroupsInitialValues = function () {
+            var lastSecGroup = Modernizr.localstorage && localStorage.getItem('lastsecgroup_lc');
+            if (lastSecGroup != null) {
+                var lastSecGroupArray = lastSecGroup.split(",");
+                angular.forEach(lastSecGroupArray, function (sgroup) {
+                    if ($scope.securityGroupChoices[sgroup] !== undefined) {
+                        $scope.securityGroups.push(sgroup);
+                    }
+                });
+            }
+        };
         $scope.saveOptions = function() {
             if (Modernizr.localstorage) {
                 localStorage.setItem('lastkeypair_lc', $('#keypair').find(':selected').val());
-                localStorage.setItem('lastsecgroup_lc', $('#securitygroup').find(':selected').val());
+                localStorage.setItem('lastsecgroup_lc', $scope.securityGroups);
             }
         };
         $scope.checkRequiredInput = function () {
