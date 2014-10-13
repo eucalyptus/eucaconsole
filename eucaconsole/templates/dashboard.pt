@@ -266,7 +266,7 @@
                     </span>
                 </span>
             </span>
-            <li class="panel" id="add-tile" tal:condition="len(tiles_not_shown) > 0">
+            <li class="panel" id="add-tile" tal:condition="len(tiles_not_shown) &gt; 0">
                <div class="tile add">
                     <div class="content">
                         <a href="#" data-reveal-id="add-tile-modal">
