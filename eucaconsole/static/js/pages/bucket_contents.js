@@ -18,6 +18,7 @@ angular.module('BucketContentsPage', ['LandingPage', 'EucaConsoleUtils'])
         $scope.chunkSize = 10;  // set this based on how many keys we want to delete at once
         $scope.index = 0;
         $scope.items = null;
+        $scope.op_prefix = '';
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.deleteKeysUrl = options['delete_keys_url'];
@@ -185,6 +186,12 @@ angular.module('BucketContentsPage', ['LandingPage', 'EucaConsoleUtils'])
             var path = Modernizr.sessionstorage && sessionStorage.getItem('copy-object-buffer');
             if (path.indexOf('/', path.length - 1) !== -1) {
                 // this is a folder, so send it off to the folder handling code
+                if (item === null) {
+                    $scope.op_prefix = $scope.prefix;
+                }
+                else {
+                    $scope.op_prefix = item.full_key_name;
+                }
                 $scope.startFolderCopy(path);
                 return;
             }
@@ -260,7 +267,7 @@ angular.module('BucketContentsPage', ['LandingPage', 'EucaConsoleUtils'])
             var escapedChunk = chunk.map(function (key_name) {
                 return encodeURIComponent(key_name);
             });
-            var url = $scope.putKeysUrl.replace('_subpath_', $scope.prefix);
+            var url = $scope.putKeysUrl.replace('_subpath_', $scope.op_prefix);
             var data = "csrf_token=" + $('#csrf_token').val() +
                        "&src_bucket=" + $scope.src_bucket +
                        "&folder_loc=" + $scope.folder +

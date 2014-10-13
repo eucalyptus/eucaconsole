@@ -201,11 +201,12 @@ class BucketXHRView(BaseView):
         folder_loc = self.request.params.get('folder_loc')
         with boto_error_handler(self.request):
             self.log_request(_(u"Copying key(s) from {0} to {1} : {2}").format(
-                src_bucket, self.bucket_name, keys))
+                src_bucket, self.bucket_name + '/' + '/'.join(subpath), keys))
             bucket = self.s3_conn.get_bucket(self.bucket_name, validate=False)
             errors = []
             for k in keys.split(','):
                 dest_key = '/'.join(subpath + (k[len(folder_loc):],))
+                import logging; logging.info("dest key = "+dest_key);
                 try:
                     bucket.copy_key(
                         new_key_name=dest_key,
