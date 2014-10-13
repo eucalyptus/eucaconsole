@@ -419,8 +419,8 @@ class InstanceTypeForm(BaseSecureForm):
 class InstanceCreateImageForm(BaseSecureForm):
     """CSRF-protected form to create an image from an instance"""
     name_error_msg = _(
-        u'Name must be between 3 and 128 characters long, and may contain letters, numbers, '
-        u'\'(\', \')\', \'.\', \'-\', \'/\' and \'_\', and cannot contain spaces.')
+        u"Name must be between 3 and 128 characters long, and may contain letters, numbers, "
+        u"\'(\', \')\', \'.\', \'-\', \'/\' and \'_\', and cannot contain spaces.")
     name = wtforms.TextField(
         label=_(u'Name'),
         validators=[validators.InputRequired(message=name_error_msg)],
