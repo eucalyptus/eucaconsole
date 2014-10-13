@@ -12,11 +12,11 @@ angular.module('GroupPage', ['PolicyList', 'EucaConsoleUtils'])
         $scope.isSubmitted = false;
         $scope.isNotChanged = true;
         $scope.pendingModalID = '';
-        $scope.initController = function (optionsJson, group_users, all_users) {
+        $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.groupName = options['group_name'];
-            $scope.groupUsers = group_users;
-            $scope.allUsers = all_users;
+            $scope.groupUsers = options['group_users'];
+            $scope.allUsers = options['all_users'];
             $scope.setWatch();
             $scope.setFocus();
             $timeout(function(){ $scope.activateChosen(); }, 100);
