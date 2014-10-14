@@ -5,7 +5,7 @@
  */
 
 angular.module('SnapshotPage', ['TagEditor', 'EucaConsoleUtils'])
-    .controller('SnapshotPageCtrl', function ($scope, $http, $timeout, eucaUnescapeJson, handleError) {
+    .controller('SnapshotPageCtrl', function ($scope, $http, $timeout, eucaUnescapeJson, eucaHandleError) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.snapshotStatusEndpoint = '';
         $scope.transitionalStates = ['pending', 'deleting'];
@@ -71,7 +71,7 @@ angular.module('SnapshotPage', ['TagEditor', 'EucaConsoleUtils'])
                     }
                 }
             }).error(function (oData, status) {
-                handleError(oData, status);
+                eucaHandleError(oData, status);
             });
         };
         // True if there exists an unsaved key or value in the tag editor field
@@ -215,7 +215,7 @@ angular.module('SnapshotPage', ['TagEditor', 'EucaConsoleUtils'])
                     $scope.images = results;
                 }
             }).error(function (oData, status) {
-                handleError(oData, status);
+                eucaHandleError(oData, status);
             });
         };
     })

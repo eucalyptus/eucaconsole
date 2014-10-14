@@ -15,7 +15,7 @@ angular.module('EucaConsoleUtils', [])
         return jsonString.replace(/__apos__/g, "\'").replace(/__dquote__/g, '\\"').replace(/__bslash__/g, "\\");
     };
 })
-.service('handleError', function() {
+.service('eucaHandleError', function() {
     /**
      * Provide generic error handling in the browser for XHR calls. 
      */
@@ -30,7 +30,7 @@ angular.module('EucaConsoleUtils', [])
         Notify.failure(errorMsg);
     };
 })
-.service('handleErrorS3', function() {
+.service('eucaHandleErrorS3', function() {
     /**
      * Provide generic error handling in the browser for XHR calls to Object Storage. 
      */

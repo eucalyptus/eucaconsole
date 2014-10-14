@@ -6,7 +6,7 @@
 
 // Launch Config Wizard includes the Image Picker, BDM editor, and security group rules editor
 angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor', 'SecurityGroupRules', 'EucaConsoleUtils'])
-    .controller('LaunchConfigWizardCtrl', function ($scope, $http, $timeout, handleError) {
+    .controller('LaunchConfigWizardCtrl', function ($scope, $http, $timeout, eucaHandleError) {
         $scope.launchForm = $('#launch-config-form');
         $scope.imageID = '';
         $scope.imageName = '';
@@ -89,7 +89,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                 var results = oData ? oData.results : [];
                 $scope.securityGroupCollection = results;
             }).error(function (oData) {
-                handleError(oData, status);
+                eucaHandleError(oData, status);
             });
         };
         $scope.updateSecurityGroup = function () {
@@ -414,7 +414,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                 Notify.success(oData.message);
             }).error(function (oData) {
                 $scope.isLoadingKeyPair = false;
-                handleError(oData, status);
+                eucaHandleError(oData, status);
             });
         };
         $scope.handleSecurityGroupCreate = function ($event, url) {
@@ -462,7 +462,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                 Notify.success(oData.message);
             }).error(function (oData) {
                 $scope.isLoadingSecurityGroup = false;
-                handleError(oData, status);
+                eucaHandleError(oData, status);
             });
         };
     })

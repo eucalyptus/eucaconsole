@@ -18,7 +18,7 @@ angular.module('InstanceTypesPage', ['EucaConsoleUtils'])
             }
         }
     })
-    .controller('InstanceTypesCtrl', function ($scope, $http, $timeout, handleError) {
+    .controller('InstanceTypesCtrl', function ($scope, $http, $timeout, eucaHandleError) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.items = [];
         $scope.cpuList = [];
@@ -183,7 +183,7 @@ angular.module('InstanceTypesPage', ['EucaConsoleUtils'])
                 $scope.items = results;
                 $scope.$emit('itemsLoaded', $scope.items);
             }).error(function (oData, status) {
-                handleError(oData, status);
+                eucaHandleError(oData, status);
             });
         };
         $scope.getCPUList = function () {
@@ -311,7 +311,7 @@ angular.module('InstanceTypesPage', ['EucaConsoleUtils'])
                         Notify.success(oData.message);
                         $scope.submitCompleted();
                     }).error(function (oData, status) {
-                        handleError(oData, status);
+                        eucaHandleError(oData, status);
                     });
             } 
         };

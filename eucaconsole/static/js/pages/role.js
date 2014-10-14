@@ -5,7 +5,7 @@
  */
 
 angular.module('RolePage', ['PolicyList', 'EucaConsoleUtils'])
-    .controller('RolePageCtrl', function ($scope, $http, $timeout, handleError) {
+    .controller('RolePageCtrl', function ($scope, $http, $timeout, eucaHandleError) {
         $scope.allUsers = [];
         $scope.trustPolicy = '';
         $scope.trustedEntity = '';
@@ -54,7 +54,7 @@ angular.module('RolePage', ['PolicyList', 'EucaConsoleUtils'])
                     $scope.trustedEntity = oData.trusted_entity;
                     Notify.success(oData.message);
                 }).error(function (oData, status) {
-                    handleError(oData, status);
+                    eucaHandleError(oData, status);
                 });
             } catch (e) {
                 $('#trust-json-error').text(e);

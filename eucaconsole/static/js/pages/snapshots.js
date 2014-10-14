@@ -5,7 +5,7 @@
  */
 
 angular.module('SnapshotsPage', ['LandingPage', 'EucaConsoleUtils'])
-    .controller('SnapshotsCtrl', function ($scope, $http, handleError) {
+    .controller('SnapshotsCtrl', function ($scope, $http, eucaHandleError) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.snapshotID = '';
         $scope.snapshotName = '';
@@ -32,7 +32,7 @@ angular.module('SnapshotsPage', ['LandingPage', 'EucaConsoleUtils'])
                     $scope.images = results;
                 }
             }).error(function (oData, status) {
-                handleError(oData, status);
+                eucaHandleError(oData, status);
             });
         };
     })

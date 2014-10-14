@@ -5,7 +5,7 @@
  */
 
 angular.module('Dashboard', ['EucaConsoleUtils'])
-    .controller('DashboardCtrl', function ($scope, $http, eucaUnescapeJson, handleError) {
+    .controller('DashboardCtrl', function ($scope, $http, eucaUnescapeJson) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.jsonEndpoint = '';
         $scope.statusEndpoint = '';

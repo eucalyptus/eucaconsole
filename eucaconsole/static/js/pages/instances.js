@@ -5,7 +5,7 @@
  */
 
 angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils'])
-    .controller('InstancesCtrl', function ($scope, $http, handleError) {
+    .controller('InstancesCtrl', function ($scope, $http, eucaHandleError) {
         $scope.instanceID = '';
         $scope.fileName = '';
         $scope.batchTerminateModal = $('#batch-terminate-modal');
@@ -117,7 +117,7 @@ angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils'])
                     modal.foundation('reveal', 'open');
                 }
             }).error(function (oData, status) {
-                handleError(oData, status);
+                eucaHandleError(oData, status);
             });
         };
     })

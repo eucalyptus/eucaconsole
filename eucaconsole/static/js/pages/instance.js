@@ -5,7 +5,7 @@
  */
 
 angular.module('InstancePage', ['TagEditor', 'EucaConsoleUtils'])
-    .controller('InstancePageCtrl', function ($scope, $http, $timeout, eucaUnescapeJson, handleError) {
+    .controller('InstancePageCtrl', function ($scope, $http, $timeout, eucaUnescapeJson, eucaHandleError) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.instanceStateEndpoint = '';
         $scope.instanceUserDataEndpoint = '';
@@ -69,7 +69,7 @@ angular.module('InstancePage', ['TagEditor', 'EucaConsoleUtils'])
                     modal.foundation('reveal', 'open');
                 }
             }).error(function (oData, status) {
-                handleError(oData, status);
+                eucaHandleError(oData, status);
             });
         };
         $scope.setFocus = function () {

@@ -5,7 +5,7 @@
  */
 
 angular.module('UsersPage', ['LandingPage', 'EucaConsoleUtils'])
-    .controller('UsersCtrl', function ($scope, $http, handleError) {
+    .controller('UsersCtrl', function ($scope, $http, eucaHandleError) {
         $scope.userName = '';
         $scope.groupName = '';
         $scope.user_view_url = '';
@@ -53,7 +53,7 @@ angular.module('UsersPage', ['LandingPage', 'EucaConsoleUtils'])
                 }
               }).
               error(function (oData, status) {
-                handleError(oData, status);
+                eucaHandleError(oData, status);
               });
             $('#disable-user-modal').foundation('reveal', 'close');
         };
@@ -87,7 +87,7 @@ angular.module('UsersPage', ['LandingPage', 'EucaConsoleUtils'])
                         script: $scope.getFileEndpoint
                     });
                 }).error(function (oData, status) {
-                    handleError(oData, status);
+                    eucaHandleError(oData, status);
                 });
             } else { // deal with normal REST call
                 var data = "csrf_token="+csrf_token;

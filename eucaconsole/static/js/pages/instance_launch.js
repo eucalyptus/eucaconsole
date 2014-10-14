@@ -6,7 +6,7 @@
 
 // Launch Instance page includes the Tag Editor, the Image Picker, BDM editor, and security group rules editor
 angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'ImagePicker', 'SecurityGroupRules', 'EucaConsoleUtils'])
-    .controller('LaunchInstanceCtrl', function ($scope, $http, $timeout, handleError) {
+    .controller('LaunchInstanceCtrl', function ($scope, $http, $timeout, eucaHandleError) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.launchForm = $('#launch-instance-form');
         $scope.tagsObject = {};
@@ -438,7 +438,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 Notify.success(oData.message);
             }).error(function (oData) {
                 $scope.isLoadingKeyPair = false;
-                handleError(oData, status);
+                eucaHandleError(oData, status);
             });
         };
         $scope.handleSecurityGroupCreate = function ($event, url) {
@@ -482,7 +482,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 Notify.success(oData.message);
             }).error(function (oData) {
                 $scope.isLoadingSecurityGroup = false;
-                handleError(oData, status);
+                eucaHandleError(oData, status);
             });
         };
         $scope.getAllSecurityGroups = function (vpc) {
@@ -495,7 +495,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 var results = oData ? oData.results : [];
                 $scope.securityGroupCollection = results;
             }).error(function (oData) {
-                handleError(oData, status);
+                eucaHandleError(oData, status);
             });
         };
         $scope.updateSecurityGroupChoices = function () {

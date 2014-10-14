@@ -5,7 +5,7 @@
  */
 
 angular.module('BucketContentsPage', ['LandingPage', 'EucaConsoleUtils'])
-    .controller('BucketContentsCtrl', function ($scope, $http, eucaUnescapeJson) {
+    .controller('BucketContentsCtrl', function ($scope, $http, eucaUnescapeJson, eucaHandleErrorS3) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.bucketName = '';
         $scope.prefix = '';
@@ -127,11 +127,7 @@ angular.module('BucketContentsPage', ['LandingPage', 'EucaConsoleUtils'])
                     }
                 }).
                 error(function (oData, status) {
-                    var errorMsg = oData['message'] || '';
-                    if (status === 403 || status === 400) {
-                        $('#timed-out-modal').foundation('reveal', 'open');
-                    }
-                    Notify.failure(errorMsg);
+                    eucaHandleErrorS3(oData, status);
                 });
         };
         $scope.cancelDeleting = function () {
@@ -158,11 +154,7 @@ angular.module('BucketContentsPage', ['LandingPage', 'EucaConsoleUtils'])
                     $scope.obj_key = '';
                 }).
                 error(function (oData, status) {
-                    var errorMsg = oData['message'] || '';
-                    if (status === 403 || status === 400) {
-                        $('#timed-out-modal').foundation('reveal', 'open');
-                    }
-                    Notify.failure(errorMsg);
+                    eucaHandleErrorS3(oData, status);
                 });
         };
         $scope.saveKey = function (bucket_name, key) {
@@ -236,11 +228,7 @@ angular.module('BucketContentsPage', ['LandingPage', 'EucaConsoleUtils'])
                 }
               }).
               error(function (oData, status) {
-                var errorMsg = oData['message'] || '';
-                if (status === 403 || status === 400) {
-                    $('#timed-out-modal').foundation('reveal', 'open');
-                }
-                Notify.failure(errorMsg);
+                eucaHandleErrorS3(oData, status);
               });
         };
         $scope.startFolderCopy = function (path) {

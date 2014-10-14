@@ -6,7 +6,7 @@
 
 
 angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'EucaConsoleUtils'])
-    .controller('ItemsCtrl', function ($scope, $http, $timeout, $sanitize, handleError) {
+    .controller('ItemsCtrl', function ($scope, $http, $timeout, $sanitize, eucaHandleError) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.items = [];
         $scope.itemsLoading = true;
@@ -165,7 +165,7 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'EucaConsoleUtils'
                     $timeout(function() { $scope.getItems(); }, 5000);  // Poll every 5 seconds
                 }
             }).error(function (oData, status) {
-                handleErrorS3(oData, status);
+                eucaHandleErrorS3(oData, status);
             });
         };
         /*  Filter items client side based on search criteria.

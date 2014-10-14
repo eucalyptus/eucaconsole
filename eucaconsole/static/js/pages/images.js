@@ -5,7 +5,7 @@
  */
 
 angular.module('ImagesPage', ['LandingPage', 'EucaConsoleUtils'])
-    .controller('ImagesCtrl', function ($scope, $http, eucaUnescapeJson, handleError) {
+    .controller('ImagesCtrl', function ($scope, $http, eucaUnescapeJson, eucaHandleError) {
         $scope.imageID = '';
         $scope.disabledExplanationVisible = false;
         $scope.snapshotImagesRegistered = [];
@@ -35,7 +35,7 @@ angular.module('ImagesPage', ['LandingPage', 'EucaConsoleUtils'])
                 $scope.snapshotImagesRegistered = oData ? oData.results : [];
                 $(document).foundation('tooltip');
             }).error(function (oData, status) {
-                handleError(oData, status);
+                eucaHandleError(oData, status);
             });
         };
         $scope.cancelCreate = function ($event, item) {
@@ -53,7 +53,7 @@ angular.module('ImagesPage', ['LandingPage', 'EucaConsoleUtils'])
                 }
               }).
               error(function (oData, status) {
-                handleError(oData, status);
+                eucaHandleError(oData, status);
               });
         };
     })
