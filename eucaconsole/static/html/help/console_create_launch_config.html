@@ -131,9 +131,6 @@
                         your new launch configuration. </span>
                 </li>
 <li class="li step stepexpand">
-                    <span class="ph cmd"> </span><br/>
-                </li>
-<li class="li step stepexpand">
                     <span class="ph cmd"> You can optionally specify advanced options by clicking the
                         <span class="ph uicontrol">Select advanced options</span> link and refer to the
                         next section for further details. </span>
@@ -169,39 +166,35 @@
                     <span class="ph cmd">You can configure additional storage for your instance in the Storage
                         section:</span>
                     <ol type="a" class="ol substeps" id="create_launch_configuration_ui_advanced_steps__create_launch_config_ui_advanced_storage_steps">
-                        <li class="li substep">
+                        <li class="li substep substepexpand">
                             <span class="ph cmd"> Select a volume type using the <span class="ph uicontrol">Volume</span>
                                 drop-down list box. </span>
                         </li>
 
-                        <li class="li substep">
+                        <li class="li substep substepexpand">
                             <span class="ph cmd">Type the desired mapping for the storage into the
                                 <span class="ph uicontrol">Mapping</span> text box (for example:<samp class="ph codeph">
                                     /dev/sdb</samp>).</span>
                         </li>
 
-                        <li class="li substep">
+                        <li class="li substep substepexpand">
                             <span class="ph cmd">If you want to create the storage from an existing snapshot,
                                 specify it in the <span class="ph uicontrol">Create from snapshot</span>
                                 drop-down list box.</span>
                         </li>
 
-                        <li class="li substep">
+                        <li class="li substep substepexpand">
                             <span class="ph cmd"> Type the size of the attached storage in gigabytes into the
                                 <span class="ph uicontrol">Size (GB) </span>text box. </span>
+                            <div class="itemgroup info">The attached storage will be deleted when the instance is terminated, 
+                                as indicated next to the <span class="ph uicontrol">Delete on termination</span> field.</div>
                         </li>
 
-                        <li class="li substep">
-                            <span class="ph cmd"> Select the <span class="ph uicontrol">Delete on termination</span> check box
-                                if you would like the attached storage to be deleted when the
-                                instance is terminated. </span>
-                        </li>
-
-                        <li class="li substep">
+                        <li class="li substep substepexpand">
                             <span class="ph cmd">Click the <span class="ph uicontrol">Add device</span> button to add this storage.</span>
                         </li>
 
-                        <li class="li substep">
+                        <li class="li substep substepexpand">
                             <span class="ph cmd">You can delete storage you've already added by clicking the minus button on the right side of the storage list item.</span>
                         </li>
 
