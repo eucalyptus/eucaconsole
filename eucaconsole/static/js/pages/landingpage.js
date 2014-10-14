@@ -5,7 +5,7 @@
  */
 
 
-angular.module('LandingPage', ['CustomFilters', 'ngSanitize'])
+angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch'])
     .controller('ItemsCtrl', function ($scope, $http, $timeout, $sanitize) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.items = [];
@@ -240,5 +240,14 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize'])
             });
             
         };
+        $scope.$on('searchUpdated', function($event, query) {
+            window.location.search = query;
+        });
+        $scope.$on('textSearch', function($event, text, filter_keys) {
+            $scope.searchFilter = text;
+            $timeout(function() {
+                $scope.searchFilterItems(filter_keys);
+            });
+        });
     })
 ;

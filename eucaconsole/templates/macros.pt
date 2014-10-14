@@ -19,15 +19,11 @@
 <metal:datagrid_macro metal:define-macro="landing_page_datagrid">
     <div class="large-${'10' if filter_fields else '12'} columns datagrid" id="landing-page-items">
         <div class="row" id="buttons-row">
-            <div class="small-9 columns" id="primary-buttons">
+            <div class="small-12 columns" id="primary-buttons">
                 <metal:block metal:define-slot="new_button" />
             </div>
-            <div class="small-3 columns displayicons" ng-cloak="">
-                <a id="gridview-button" class="gridview" title="Grid view" ng-click="switchView('gridview')"><i class="fi-thumbnails"></i></a>
-                <a id="tableview-button" class="tableview" title="Table view" ng-click="switchView('tableview')"><i class="fi-list-thumbnails"></i></a>
-                <label i18n:translate="" class="hide-for-medium-down">View:</label>
-            </div>
         </div>
+        ${panel('magic_search', search_facets=search_facets, filter_keys=filter_keys)}
         <div class="row sort-search" ng-cloak="cloak">
             <div class="small-4 columns" id="results-count" ng-cloak="cloak" metal:define-slot="results_count">
                 <a class="label radius" ng-show="!itemsLoading" ng-cloak="" id="refresh-btn"
@@ -53,12 +49,10 @@
                     </ul>
                 </metal:block>
             </div>
-            <div class="small-4 columns search-filter">
-                <form metal:define-slot="search_controls" id="search-filter-form">
-                    <input type="search" ng-model="searchFilter" id="search-filter"
-                           ng-keyup="searchFilterItems(${filter_keys})" />
-                    <i class="fi-magnifying-glass go"></i>
-                </form>
+            <div class="small-4 columns displayicons" ng-cloak="">
+                <a id="gridview-button" class="gridview" title="Grid view" ng-click="switchView('gridview')"><i class="fi-thumbnails"></i></a>
+                <a id="tableview-button" class="tableview" title="Table view" ng-click="switchView('tableview')"><i class="fi-list-thumbnails"></i></a>
+                <label i18n:translate="" class="hide-for-medium-down">View:</label>
             </div>
         </div>
         <div ng-show="itemsLoading"><span class="dots"></span></div>

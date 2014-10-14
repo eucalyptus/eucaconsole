@@ -1,0 +1,24 @@
+<!--! Magic Searchbar -->
+<div id="magic-search" class="row" ng-app="MagicSearch" i18n:domain="eucaconsole"
+     ng-controller="MagicSearchCtrl" ng-init="initSearch('${facets_json}', ${filter_keys})">
+    <link rel="stylesheet" href="${request.static_path('eucaconsole:static/css/widgets/magic_search.css')}"
+          type="text/css" charset="utf-8" />
+     <div class="small-12 columns">
+        <div class="items">
+            <span class="label radius secondary facetentry"
+                  ng-repeat="facet in currentSearch" ng-cloak="cloak">
+                <span title="{{ facet.label }}">
+                    {{ facet.label | ellipsis: 30 }}
+                </span>
+                <a href="#" class="remove" ng-click="removeFacet($index, $event)"
+                   title="Remove facet"><i class="fi-x"></i></a>
+            </span>
+            <br/>
+            <select id="search-text" name="search-text" ng-model="searchFacet">
+                <option ng-repeat="facet in facetsObj" value='{{ facet.name }}'>{{ facet.label }}</option>
+            </select>
+            <!--i class="fi-magnifying-glass go"></i-->
+        </div>
+    </div>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/magic_search.js')}"></script>
+</div>

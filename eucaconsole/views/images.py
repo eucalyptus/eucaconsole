@@ -155,17 +155,29 @@ class ImagesView(LandingPageView):
         self.account_id = User.get_account_id(ec2_conn=self.conn, request=self.request)
         self.filter_keys = self.get_filter_keys()
         self.sort_keys = self.get_sort_keys()
+        search_facets = self.filters_form.facets;
+        facet_list = []
+        for facet in search_facets:
+            name = facet['name']
+            label = facet['label']
+            options = facet['options']
+            for op in options:
+                facet_list.append({
+                        'name':"{0}={1}".format(name, op[0]),
+                        'label':"{0}={1}".format(label, op[1])
+                    })
         self.render_dict = dict(
             filter_keys=self.filter_keys,
             sort_keys=self.sort_keys,
             prefix=self.prefix,
             initial_sort_key=self.initial_sort_key,
             json_items_endpoint=self.json_items_endpoint,
-            filter_fields=True,
+            filter_fields=False,
             filters_form=self.filters_form,
             deregister_form=self.deregister_form,
             account_id=self.account_id,
             controller_options_json=self.get_controller_options_json(),
+            search_facets=BaseView.escape_json(json.dumps(facet_list)),
         )
 
     @view_config(route_name='images', renderer=TEMPLATE)

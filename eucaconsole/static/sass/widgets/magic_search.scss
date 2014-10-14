@@ -1,0 +1,14 @@
+// Import common Foundation variables
+@import "../includes/eucavariables";
+
+.items {
+    margin-bottom: 6px;
+    .facetentry {
+        color: #333;
+        background-color: $euca-lightgrey;
+        margin-right: 8px;
+        a {
+            color: white;
+        }
+    }
+}

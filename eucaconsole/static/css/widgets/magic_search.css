@@ -1,0 +1,5 @@
+/* Dropdown elements */
+/* Set the link colors and styles for top-level nav */
+.items { margin-bottom: 6px; }
+.items .facetentry { color: #333; background-color: #cccccc; margin-right: 8px; }
+.items .facetentry a { color: white; }

@@ -85,6 +85,12 @@ class ImagesFiltersForm(BaseSecureForm):
         self.architecture.choices = self.get_architecture_choices()
         if cloud_type == 'aws' and not self.request.params.get('owner_alias'):
             self.owner_alias.data = 'amazon'  # Default to Amazon AMIs on AWS
+        self.facets = [
+            {'name':'owner_alias', 'label':self.owner_alias.label.text, 'options':self.get_owner_choices()},
+            {'name':'platform', 'label':self.platform.label.text, 'options':self.get_platform_choices()},
+            {'name':'architecture', 'label':self.architecture.label.text, 'options':self.get_architecture_choices()},
+            {'name':'root_device_type', 'label':self.root_device_type.label.text, 'options':self.get_root_device_type_choices()}
+        ]
 
     def get_owner_choices(self):
         owner_choices = EUCA_IMAGE_OWNER_ALIAS_CHOICES

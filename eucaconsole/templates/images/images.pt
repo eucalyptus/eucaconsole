@@ -23,10 +23,7 @@
                 <a href="#" class="close">&times;</a>
             </div>
         </div>
-        <div class="large-2 columns" id="landing-page-filters">
-            <h3 id="pagetitle" class="landingpage" i18n:translate="">Images</h3>
-            ${panel('landingpage_filters', filters_form=filters_form)}
-        </div>
+        <h3 id="pagetitle"><strong i18n:translate="">Images</strong></h3>
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
                 &nbsp;
