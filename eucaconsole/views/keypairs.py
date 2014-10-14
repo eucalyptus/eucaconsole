@@ -109,15 +109,23 @@ class KeyPairView(BaseView):
         self.keypair_import_form = KeyPairImportForm(
             self.request, keypair=self.keypair, formdata=self.request.params or None)
         self.delete_form = KeyPairDeleteForm(self.request, formdata=self.request.params or None)
+        self.new_keypair_created = True if self._has_file_() else False  # Detect if session has new keypair material
+        self.created_msg = _(u'Successfully created key pair {keypair}'.format(keypair=self.keypair_route_id))
+        controller_options_json = BaseView.escape_json(json.dumps({
+            'route_id': self.keypair_route_id,
+            'keypair_created': self.new_keypair_created,
+            'keypair_created_msg': self.created_msg,
+        }))
         self.render_dict = dict(
             keypair=self.keypair,
             keypair_name=self.escape_braces(self.keypair.name) if self.keypair else '',
             keypair_route_id=self.keypair_route_id,
             keypair_form=self.keypair_form,
             keypair_import_form=self.keypair_import_form,
+            keypair_created=self.new_keypair_created,
             delete_form=self.delete_form,
             keypair_names=self.get_keypair_names(),
-            controller_options_json=self.get_controller_options_json(),
+            controller_options_json=controller_options_json,
         )
 
     def get_keypair(self):
@@ -136,18 +144,6 @@ class KeyPairView(BaseView):
 
     @view_config(route_name='keypair_view', renderer=TEMPLATE)
     def keypair_view(self):
-        name = self.request.matchdict.get('id')
-        new_keypair_created = False
-        created_msg = ''
-        # Check if the session contains the new keypair material information
-        if self._has_file_():
-            new_keypair_created = True
-            created_msg = _(u'Successfully created key pair {keypair}'.format(keypair=name))
-
-        self.render_dict.update(dict(
-            keypair_created=new_keypair_created,
-            keypair_created_msg=created_msg,
-        ))
         return self.render_dict
 
     def get_keypair_names(self):
@@ -216,10 +212,5 @@ class KeyPairView(BaseView):
             return HTTPFound(location=location)
 
         return self.render_dict
-
-    def get_controller_options_json(self):
-        return BaseView.escape_json(json.dumps({
-            'route_id': self.keypair_route_id,
-        }))
 
 

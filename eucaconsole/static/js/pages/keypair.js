@@ -13,6 +13,9 @@ angular.module('KeypairPage', ['EucaConsoleUtils'])
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.routeID = options['route_id'];
+            if (options['keypair_created']) {
+                Notify.success(options['keypair_created_msg']); // Display success notice if new key pair was created
+            }
             $scope.setWatch();
             $scope.setFocus();
         };
