@@ -225,6 +225,13 @@
     </div>
 </metal:notifications>
 
+<!-- action menu for dash tiles ===== -->
+<metal:dashaction metal:define-macro="dashaction">
+    <span id="tile-item-dropdown_${tile}" class="tiny secondary button dropdown" data-dropdown="item-dropdown_${tile}"><i class="fi-widget"></i></span>
+    <ul id="item-dropdown_${tile}" class="f-dropdown" data-dropdown-content="">
+        <li> <a ng-click="removeTile('${tile}')" i18n:translate="">Remove</a> </li>
+    </ul>
+</metal:dashaction>
 
 <!-- Required fields indicator ===== -->
 <metal:requiredfieldslabel metal:define-macro="required_fields_label">

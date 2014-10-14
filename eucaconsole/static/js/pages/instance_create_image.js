@@ -27,6 +27,7 @@ angular.module('InstanceCreateImage', ['TagEditor'])
                         });
                     });
                 },
+                create_with_enter: true,
                 create_option_text: 'Create Bucket'
             });
             $scope.$watch('name', function () {

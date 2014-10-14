@@ -76,6 +76,9 @@
                     <li ng-show="hasCopyItem()">
                         <a i18n:translate="" ng-click="doPaste(item)">Paste object</a>
                     </li>
+                    <li ng-show="hasCopyFolder(item)">
+                        <a i18n:translate="" ng-click="doPaste(item)">Paste folder</a>
+                    </li>
                     <li>
                         <a i18n:translate="" ng-click="revealModal('delete-bucket', item)">Delete</a>
                     </li>
@@ -130,6 +133,9 @@
                             -->
                             <li ng-show="hasCopyItem()">
                                 <a i18n:translate="" ng-click="doPaste(item)">Paste object</a>
+                            </li>
+                            <li ng-show="hasCopyFolder(item)">
+                                <a i18n:translate="" ng-click="doPaste(item)">Paste folder</a>
                             </li>
                             <li>
                                 <a i18n:translate="" ng-click="revealModal('delete-bucket', item)">Delete</a>

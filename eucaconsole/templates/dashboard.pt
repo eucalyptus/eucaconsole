@@ -32,6 +32,7 @@
                     <li class="panel" id="instances-running" tal:case="'instances-running'">
                         <div class="tile" id="running">
                             <h5 class="subheader" i18n:translate="">Running instances</h5>
+                            <metal:block metal:use-macro="layout.global_macros['dashaction']" />
                             <div class="content">
                                 <a href="${request.route_path('instances')}?state=running">
                                     <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
@@ -47,6 +48,7 @@
                     <li class="panel" id="instances-stopped" tal:case="'instances-stopped'">
                         <div class="tile">
                             <h5 class="subheader" i18n:translate="">Stopped instances</h5>
+                            <metal:block metal:use-macro="layout.global_macros['dashaction']" />
                             <div class="content">
                                 <a href="${request.route_path('instances')}?state=stopped">
                                     <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
@@ -60,8 +62,9 @@
                     <li class="panel" id="scaling-groups" tal:case="'scaling-groups'">
                         <div class="tile" id="in-scaling-group">
                             <h5 class="subheader">
-                                <span i18n:translate=""> Instances in scaling groups</span>
+                                <span i18n:translate="">Instances in scaling groups</span>
                             </h5>
+                            <metal:block metal:use-macro="layout.global_macros['dashaction']" />
                             <div class="content">
                                 <a href="${request.route_path('scalinggroups')}">
                                     <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
@@ -77,6 +80,7 @@
                     <li class="panel" id="elastic-ips" tal:case="'elastic-ips'">
                         <div class="tile">
                             <h5 class="subheader" i18n:translate="">Elastic IPs</h5>
+                            <metal:block metal:use-macro="layout.global_macros['dashaction']" />
                             <div class="content">
                                 <a href="${request.route_path('ipaddresses')}">
                                     <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
@@ -92,6 +96,7 @@
                     <li class="panel" id="volumes" tal:case="'volumes'">
                         <div class="tile">
                             <h5 class="subheader" i18n:translate="">Volumes</h5>
+                            <metal:block metal:use-macro="layout.global_macros['dashaction']" />
                             <div class="content">
                                 <a href="${request.route_path('volumes')}">
                                     <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
@@ -107,6 +112,7 @@
                     <li class="panel" id="snapshots" tal:case="'snapshots'">
                         <div class="tile">
                             <h5 class="subheader" i18n:translate="">Snapshots</h5>
+                            <metal:block metal:use-macro="layout.global_macros['dashaction']" />
                             <div class="content">
                                 <a href="${request.route_path('snapshots')}">
                                     <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
@@ -122,6 +128,7 @@
                     <li class="panel" id="buckets" tal:case="'buckets'">
                         <div class="tile">
                             <h5 class="subheader" i18n:translate="">Buckets (S3)</h5>
+                            <metal:block metal:use-macro="layout.global_macros['dashaction']" />
                             <div class="content">
                                 <a href="${request.route_path('buckets')}">
                                     <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
@@ -137,6 +144,7 @@
                     <li class="panel" id="security-groups" tal:case="'security-groups'">
                         <div class="tile">
                             <h5 class="subheader" i18n:translate="">Security groups</h5>
+                            <metal:block metal:use-macro="layout.global_macros['dashaction']" />
                             <div class="content">
                                 <a href="${request.route_path('securitygroups')}">
                                     <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
@@ -152,6 +160,7 @@
                     <li class="panel" id="key-pairs" tal:case="'key-pairs'">
                         <div class="tile">
                             <h5 class="subheader" i18n:translate="">Key pairs</h5>
+                            <metal:block metal:use-macro="layout.global_macros['dashaction']" />
                             <div class="content">
                                 <a href="${request.route_path('keypairs')}">
                                     <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
@@ -167,6 +176,7 @@
                     <li class="panel" id="accounts" tal:condition="layout.account_access" tal:case="'accounts'">
                         <div class="tile">
                             <h5 class="subheader" i18n:translate="">Accounts</h5>
+                            <metal:block metal:use-macro="layout.global_macros['dashaction']" />
                             <div class="content">
                                 <a href="${request.route_path('accounts')}">
                                     <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
@@ -182,6 +192,7 @@
                     <li class="panel" id="users" tal:condition="layout.user_access" tal:case="'users'">
                         <div class="tile">
                             <h5 class="subheader" i18n:translate="">Users</h5>
+                            <metal:block metal:use-macro="layout.global_macros['dashaction']" />
                             <div class="content">
                                 <a href="${request.route_path('users')}">
                                     <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
@@ -197,6 +208,7 @@
                     <li class="panel" id="groups" tal:condition="layout.group_access" tal:case="'groups'">
                         <div class="tile">
                             <h5 class="subheader" i18n:translate="">Groups</h5>
+                            <metal:block metal:use-macro="layout.global_macros['dashaction']" />
                             <div class="content">
                                 <a href="${request.route_path('groups')}">
                                     <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
@@ -212,6 +224,7 @@
                     <li class="panel" id="roles" tal:condition="layout.role_access" tal:case="'roles'">
                         <div class="tile">
                             <h5 class="subheader" i18n:translate="">Roles</h5>
+                            <metal:block metal:use-macro="layout.global_macros['dashaction']" />
                             <div class="content">
                                 <a href="${request.route_path('roles')}">
                                     <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
@@ -227,6 +240,7 @@
                     <li class="panel" id="health" tal:case="'health'">
                         <div class="tile">
                             <h5 class="subheader" i18n:translate="">Service status</h5>
+                            <metal:block metal:use-macro="layout.global_macros['dashaction']" />
                             <i class="icon"><em><span class="dots" ng-show="health.length == 0">&nbsp;</span></em></i>
                             <div class="content">
                                  <div ng-repeat="service in health">
@@ -252,13 +266,36 @@
                     </span>
                 </span>
             </span>
+            <li class="panel" id="add-tile" tal:condition="len(tiles_not_shown) &gt; 0">
+               <div class="tile add">
+                    <div class="content">
+                        <a href="#" data-reveal-id="add-tile-modal">
+                            <div class="plus">+</div>
+                            <div i18n:translate="">Add a tile</div>
+                        </a>
+                    </div>
+                </div>
+            </li>
         </ul>
+        <div id="add-tile-modal" class="reveal-modal small" data-reveal="">
+            <h3 i18n:translate="">Add a tile</h3>
+            <label i18n:translate="" for="new-tile">Select tile</label>
+            <select id="new-tile">
+                <option tal:repeat="tile tiles_not_shown" value="${tile}">${tile_names[tile]}</option>
+            </select>
+            <span>&nbsp;</span>
+            <a class="button expand" id="add-tile-btn" i18n:translate="">
+                Add Tile
+            </a>
+            <a href="#" id="add_tile_close_link" class="close-reveal-modal">&#215;</a>
+        </div>
     </div>
 </div>
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/jquery-1.11.0-ui.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/jquery.cookie.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/eucaconsole_utils.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/dashboard.js')}"></script>
 </div>

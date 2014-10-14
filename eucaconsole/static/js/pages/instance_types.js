@@ -139,6 +139,7 @@ angular.module('InstanceTypesPage', [])
                 width: '80%', search_contains: true, 
                 persistent_create_option: true,
                 no_results_text: $scope.chosenNoResultsText, 
+                create_with_enter: true,
                 create_option_text: $scope.chosenCreateOptionText,
                 create_option: createOptionCallback
             });

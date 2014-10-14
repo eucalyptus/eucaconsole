@@ -1,7 +1,7 @@
 
 <!--! Security group rules editor -->
 <div id="rules-editor" class="row controls-wrapper" ng-app="SecurityGroupRules" i18n:domain="eucaconsole"
-     ng-controller="SecurityGroupRulesCtrl" ng-init="initRules('${rules_json}','${rules_egress_json}',  '${request.route_path('securitygroups_json')}')">
+     ng-controller="SecurityGroupRulesCtrl" ng-init="initRules('${rules_json}','${rules_egress_json}',  '${request.route_path('securitygroups_json')}', '${request.route_path('internet_protocols_json')}')">
     <link rel="stylesheet" href="${request.static_path('eucaconsole:static/css/widgets/securitygroup_rules.css')}"
           type="text/css" charset="utf-8" />
     <div class="columns">
@@ -20,24 +20,34 @@
             <div class="columns field" ng-cloak="cloak">
                 <div class="items">
                     <span class="label radius secondary rulesentry" ng-repeat="rule in rulesArray" ng-show="ruleType=='inbound'">
-                        {{ rule.ip_protocol.toUpperCase() }}
+                        <span ng-show="!rule.custom_protocol">
+                            {{ rule.ip_protocol.toUpperCase() }}
+                        </span>
+                        <span ng-show="rule.custom_protocol">
+                            {{ rule.custom_protocol }}, {{ rule.ip_protocol.toUpperCase() }}
+                        </span>
                         ({{ rule.from_port }}<span ng-show="rule.to_port != rule.from_port"> - {{ rule.to_port }}</span>)
                         <span ng-repeat="grant in rule.grants">
                             <span ng-show="grant.cidr_ip">{{ grant.cidr_ip }}</span>
                             <span ng-show="grant.owner_id">{{ grant.owner_id }}/</span>
-                            <span ng-show="grant.name">{{ grant.name }}</span>
+                            <span ng-show="grant.name" title="{{ grant.name }}">{{ grant.name | ellipsis: 50 }}</span>
                             <span ng-show="grant.name == undefined &amp;&amp; grant.group_id">{{ grant.group_id }}</span>
                         </span>
                         <a class="remove" ng-click="removeRule($index, $event)"
                             title="Remove rule"><i class="fi-x"></i></a>
                     </span>
                     <span class="label radius secondary rulesentry" ng-repeat="rule in rulesEgressArray" ng-show="ruleType=='outbound'">
-                        {{ rule.ip_protocol.toUpperCase() }}
+                        <span ng-show="!rule.custom_protocol">
+                            {{ rule.ip_protocol.toUpperCase() }}
+                        </span>
+                        <span ng-show="rule.custom_protocol">
+                            {{ rule.custom_protocol }}, {{ rule.ip_protocol.toUpperCase() }}
+                        </span>
                         ({{ rule.from_port }}<span ng-show="rule.to_port != rule.from_port"> - {{ rule.to_port }}</span>)
                         <span ng-repeat="grant in rule.grants">
                             <span ng-show="grant.cidr_ip">{{ grant.cidr_ip }}</span>
                             <span ng-show="grant.owner_id">{{ grant.owner_id }}/</span>
-                            <span ng-show="grant.name">{{ grant.name }}</span>
+                            <span ng-show="grant.name" title="{{ grant.name }}">{{ grant.name | ellipsis: 50 }}</span>
                             <span ng-show="grant.name == undefined &amp;&amp; grant.group_id">{{ grant.group_id }}</span>
                         </span>
                         <a class="remove" ng-click="removeRule($index, $event)"
@@ -66,7 +76,18 @@
                             </select>
                         </div>
                     </div>
-                    <div class="row" ng-show="selectedProtocol">
+                    <div class="row" id="custom-protocol-input-div" ng-show="selectedProtocol === 'custom'" ng-class="customProtocolDivClass">
+                        <div class="small-3 columns">
+                            <label class="right" i18n:translate="">Name or Number</label>
+                        </div>
+                        <div class="small-9 columns">
+                            <input class="" ng-model="customProtocol" />
+                            <div>
+                                <small class="error" i18n:translate="">Invalid custom protocol</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" ng-show="selectedProtocol &amp;&amp; selectedProtocol !== 'custom'">
                         <div class="small-3 columns">
                             <label class="right" ng-show="selectedProtocol !== 'icmp' &amp;&amp; selectedProtocol !== '-1'" i18n:translate="">Port range</label>
                             <label class="right" ng-show="selectedProtocol == 'icmp'" i18n:translate="">Type</label>
@@ -131,7 +152,7 @@
                 <div class="row" id="add-rule-button-div" ng-show="selectedProtocol">
                     <div class="small-3 columns">&nbsp;</div>
                     <div class="small-9 columns">
-                        <a href="#" id="button-add-rule" class="button round small" i18n:translate="" ng-class="getAddRuleButtonClass()"
+                        <a href="#" id="button-add-rule" class="button round small" i18n:translate="" ng-class="addRuleButtonClass"
                             ng-click="addRule($event)" ng-disabled="isRuleNotComplete">Add Rule</a>
                         <a href="#" id="button-cancel-rule" class="cancel-link" i18n:translate="" 
                             ng-click="cancelRule($event)">Cancel</a>
@@ -152,9 +173,11 @@
         </p>
         <a href="#" class="close-reveal-modal">&#215;</a>
     </div>
-    <div id="hidden-text-div">
+    <div id="hidden-text-div" class="hide">
         <span id="all-traffic-option-text" i18n:translate="">All traffic</span> 
+        <span id="custom-protocol-option-text" i18n:translate="">Custom protocol</span> 
     </div>
+    <script src="${request.static_path('eucaconsole:static/js/pages/custom_filters.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/securitygroup_rules.js')}"></script>
     <script>setTimeout(function(){ $(document).foundation({abide : { timeout : 2000 } })}, 500);</script>
 </div>

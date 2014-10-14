@@ -32,10 +32,15 @@ angular.module('Dashboard', ['EucaConsoleUtils'])
             $scope.getServiceStatus();
             $('#sortable').sortable({
                 stop: function(event, ui) {
-                    $.cookie($scope.accountName + "_dash_order", $('#sortable').sortable('toArray'), {expires: 180});
+                    // TODO: remove 'add-tile' from list first
+                    var order = $('#sortable').sortable('toArray');
+                    order.splice(order.indexOf('add-tile'), 1);
+                    $.cookie($scope.accountName + "_dash_order", order, {expires: 180});
                 }
             });
             $('#sortable').disableSelection();
+            $('#new-tile').chosen({'width': '100%', search_contains: true});
+            $('#add-tile-btn').on('click', $scope.addTile);
         };
         $scope.setFocus = function() {
             $('#zone-selector').find('a').get(0).focus();
@@ -92,6 +97,23 @@ angular.module('Dashboard', ['EucaConsoleUtils'])
                 localStorage.removeItem($scope.storedZoneKey);
                 $scope.selectedZone = '';
             }
+        };
+        $scope.addTile = function() {
+            var tile = $('#new-tile').val();
+            var order = $('#sortable').sortable('toArray');
+            order.push(tile);
+            $.cookie($scope.accountName + "_dash_order", order, {expires: 180});
+            window.location.reload();
+        };
+        $scope.removeTile = function(tile) {
+            var order = $('#sortable').sortable('toArray');
+            var add_idx = order.indexOf('add-tile');
+            if (add_idx > -1) {
+                order.splice(add_idx, 1);
+            }
+            order.splice(order.indexOf(tile), 1);
+            $.cookie($scope.accountName + "_dash_order", order, {expires: 180});
+            window.location.reload();
         };
     })
 ;

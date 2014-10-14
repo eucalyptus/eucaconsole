@@ -420,8 +420,8 @@ class InstanceTypeForm(BaseSecureForm):
 class InstanceCreateImageForm(BaseSecureForm):
     """CSRF-protected form to create an image from an instance"""
     name_error_msg = _(
-        u'Name must be 3-128 alphanumeric characters (and may include parens, period (.), '
-        u'slashes (/), dashes (-) or underscores (_) but not spaces')
+        u"Name must be between 3 and 128 characters long, and may contain letters, numbers, "
+        u"'(', ')', '.', '-', '/' and '_', and cannot contain spaces.")
     name = wtforms.TextField(
         label=_(u'Name'),
         validators=[validators.InputRequired(message=name_error_msg)],
@@ -450,8 +450,8 @@ class InstanceCreateImageForm(BaseSecureForm):
         no_reboot_helptext = _(
             u'When checked, the instance will not be shut down before the image is created. '
             u'May impact file integrity of the image.')
-        self.no_reboot.help_text = no_reboot_helptext
+        self.no_reboot.label_help_text = no_reboot_helptext
         s3_bucket_helptext = _(u'Choose from your existing buckets, or enter a name to create a new bucket')
-        self.s3_bucket.help_text = s3_bucket_helptext
+        self.s3_bucket.label_help_text = s3_bucket_helptext
         s3_prefix_helptext = _(u'The beginning of your image file name')
-        self.s3_prefix.help_text = s3_prefix_helptext
+        self.s3_prefix.label_help_text = s3_prefix_helptext
