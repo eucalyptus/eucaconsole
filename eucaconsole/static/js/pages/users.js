@@ -4,8 +4,8 @@
  *
  */
 
-angular.module('UsersPage', ['LandingPage'])
-    .controller('UsersCtrl', function ($scope, $http) {
+angular.module('UsersPage', ['LandingPage', 'EucaConsoleUtils'])
+    .controller('UsersCtrl', function ($scope, $http, handleError) {
         $scope.userName = '';
         $scope.groupName = '';
         $scope.user_view_url = '';
@@ -53,8 +53,7 @@ angular.module('UsersPage', ['LandingPage'])
                 }
               }).
               error(function (oData, status) {
-                var errorMsg = oData['message'] || '';
-                Notify.failure(errorMsg);
+                handleError(oData, status);
               });
             $('#disable-user-modal').foundation('reveal', 'close');
         };
@@ -88,11 +87,7 @@ angular.module('UsersPage', ['LandingPage'])
                         script: $scope.getFileEndpoint
                     });
                 }).error(function (oData, status) {
-                    var errorMsg = oData['message'] || '';
-                    if (errorMsg && status === 403) {
-                        $('#timed-out-modal').foundation('reveal', 'open');
-                    }
-                    Notify.failure(errorMsg);
+                    handleError(oData, status);
                 });
             } else { // deal with normal REST call
                 var data = "csrf_token="+csrf_token;
@@ -134,7 +129,7 @@ angular.module('UsersPage', ['LandingPage'])
                         }
                     }
                 }).error(function (oData, status) {
-                    var errorMsg = oData['message'] || null;
+                    // ignore
                 });
             }
         });

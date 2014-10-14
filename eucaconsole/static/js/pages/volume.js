@@ -5,7 +5,7 @@
  */
 
 angular.module('VolumePage', ['TagEditor', 'EucaConsoleUtils'])
-    .controller('VolumePageCtrl', function ($scope, $http, $timeout, eucaUnescapeJson) {
+    .controller('VolumePageCtrl', function ($scope, $http, $timeout, eucaUnescapeJson, handleError) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.volumeStatusEndpoint = '';
         $scope.transitionalStates = ['creating', 'deleting', 'attaching', 'detaching'];
@@ -51,10 +51,7 @@ angular.module('VolumePage', ['TagEditor', 'EucaConsoleUtils'])
                     $scope.volumeSize = results;
                 }
             }).error(function (oData, status) {
-                var errorMsg = oData['message'] || null;
-                if (errorMsg && status === 403) {
-                    $('#timed-out-modal').foundation('reveal', 'open');
-                }
+                handleError(oData, status);
             });
         };
         $scope.initChosenSelectors = function () {

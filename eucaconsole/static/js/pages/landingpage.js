@@ -5,8 +5,8 @@
  */
 
 
-angular.module('LandingPage', ['CustomFilters', 'ngSanitize'])
-    .controller('ItemsCtrl', function ($scope, $http, $timeout, $sanitize) {
+angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'EucaConsoleUtils'])
+    .controller('ItemsCtrl', function ($scope, $http, $timeout, $sanitize, handleError) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.items = [];
         $scope.itemsLoading = true;
@@ -165,14 +165,7 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize'])
                     $timeout(function() { $scope.getItems(); }, 5000);  // Poll every 5 seconds
                 }
             }).error(function (oData, status) {
-                var errorMsg = oData['message'] || null;
-                if (errorMsg) {
-                    if (status === 403 || status === 400) {  // S3 token expiration responses return a 400
-                        $('#timed-out-modal').foundation('reveal', 'open');
-                    } else {
-                        Notify.failure(errorMsg);
-                    }
-                }
+                handleErrorS3(oData, status);
             });
         };
         /*  Filter items client side based on search criteria.

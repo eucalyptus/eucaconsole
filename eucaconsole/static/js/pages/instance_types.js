@@ -4,7 +4,7 @@
  *
  */
 
-angular.module('InstanceTypesPage', [])
+angular.module('InstanceTypesPage', ['EucaConsoleUtils'])
     .directive('onFinishRender', function ($timeout) {
         return {
             restrict: 'A',
@@ -18,7 +18,7 @@ angular.module('InstanceTypesPage', [])
             }
         }
     })
-    .controller('InstanceTypesCtrl', function ($scope, $http, $timeout) {
+    .controller('InstanceTypesCtrl', function ($scope, $http, $timeout, handleError) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.items = [];
         $scope.cpuList = [];
@@ -183,14 +183,7 @@ angular.module('InstanceTypesPage', [])
                 $scope.items = results;
                 $scope.$emit('itemsLoaded', $scope.items);
             }).error(function (oData, status) {
-                var errorMsg = oData['message'] || null;
-                if (errorMsg) {
-                    if (status === 403 || status === 400) {  // S3 token expiration responses return a 400
-                        $('#timed-out-modal').foundation('reveal', 'open');
-                    } else {
-                        Notify.failure(errorMsg);
-                    }
-                }
+                handleError(oData, status);
             });
         };
         $scope.getCPUList = function () {
@@ -318,11 +311,7 @@ angular.module('InstanceTypesPage', [])
                         Notify.success(oData.message);
                         $scope.submitCompleted();
                     }).error(function (oData, status) {
-                        var errorMsg = oData['message'] || '';
-                        if (errorMsg && status === 403) {
-                            $('#timed-out-modal').foundation('reveal', 'open');
-                        }
-                        Notify.failure(errorMsg);
+                        handleError(oData, status);
                     });
             } 
         };

@@ -5,7 +5,7 @@
  */
 
 angular.module('IAMPolicyWizard', ['EucaConsoleUtils'])
-    .controller('IAMPolicyWizardCtrl', function ($scope, $http, $timeout, eucaUnescapeJson) {
+    .controller('IAMPolicyWizardCtrl', function ($scope, $http, $timeout, eucaUnescapeJson, handleError) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.wizardForm = $('#iam-policy-form');
         $scope.policyGenerator = $('#policy-generator');
@@ -128,11 +128,7 @@ angular.module('IAMPolicyWizard', ['EucaConsoleUtils'])
                     window.location = $('#return-link').attr('href');
                 }).error(function (oData) {
                     $scope.isCreating = false;
-                    var errorMsg = oData['message'] || '';
-                    if (errorMsg && status === 403) {
-                        $('#timed-out-modal').foundation('reveal', 'open');
-                    }
-                    Notify.failure(errorMsg);
+                    handleError(oData, status);
                 });
             } catch (e) {
                 $('#json-error').text(e);

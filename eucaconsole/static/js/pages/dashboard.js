@@ -5,7 +5,7 @@
  */
 
 angular.module('Dashboard', ['EucaConsoleUtils'])
-    .controller('DashboardCtrl', function ($scope, $http, eucaUnescapeJson) {
+    .controller('DashboardCtrl', function ($scope, $http, eucaUnescapeJson, handleError) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.jsonEndpoint = '';
         $scope.statusEndpoint = '';
@@ -60,6 +60,7 @@ angular.module('Dashboard', ['EucaConsoleUtils'])
                 if (errorMsg && status === 403) {
                     $('#timed-out-modal').foundation('reveal', 'open');
                 }
+                
             });
         };
         $scope.getServiceStatus = function() {
@@ -74,6 +75,7 @@ angular.module('Dashboard', ['EucaConsoleUtils'])
                     if (errorMsg && status === 403) {
                         $('#timed-out-modal').foundation('reveal', 'open');
                     }
+                    
                 });
             })
         };
