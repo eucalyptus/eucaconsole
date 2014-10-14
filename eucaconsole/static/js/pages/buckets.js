@@ -94,6 +94,9 @@ angular.module('BucketsPage', ['LandingPage', 'EucaConsoleUtils'])
         };
         $scope.hasCopyFolder = function (item) {
             var buffer = Modernizr.sessionstorage && sessionStorage.getItem('copy-object-buffer');
+            if (buffer === null) {
+                return false;
+            }
             src_bucket = buffer.slice(0, buffer.indexOf('/'));
             src_path = buffer.slice(buffer.indexOf('/')+1);
             // detect copy on self

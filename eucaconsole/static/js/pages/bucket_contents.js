@@ -179,7 +179,7 @@ angular.module('BucketContentsPage', ['LandingPage', 'EucaConsoleUtils'])
         };
         $scope.hasCopyFolder = function (item) {
             var buffer = Modernizr.sessionstorage && sessionStorage.getItem('copy-object-buffer');
-            if (buffer === undefined) {
+            if (buffer === null) {
                 return false;
             }
             src_bucket = buffer.slice(0, buffer.indexOf('/'));
