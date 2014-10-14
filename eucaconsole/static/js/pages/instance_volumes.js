@@ -5,7 +5,7 @@
  */
 
 angular.module('InstanceVolumes', ['EucaConsoleUtils'])
-    .controller('InstanceVolumesCtrl', function ($scope, $http, $timeout, handleError) {
+    .controller('InstanceVolumesCtrl', function ($scope, $http, $timeout, eucaHandleError) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         // Volume states are: "attached", "attaching", "detaching"
         // 'detached' state doesn't apply here since it won't be attached to the instance
@@ -66,7 +66,7 @@ angular.module('InstanceVolumes', ['EucaConsoleUtils'])
                     $timeout(function() {$scope.getInstanceVolumes()}, 4000);  // Poll every 4 seconds
                 }
             }).error(function (oData, status) {
-                handleError(oData, status);
+                eucaHandleError(oData, status);
             });
         };
         $scope.revealDetachModal = function (action, name) {
