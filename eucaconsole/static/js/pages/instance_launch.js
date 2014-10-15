@@ -5,8 +5,8 @@
  */
 
 // Launch Instance page includes the Tag Editor, the Image Picker, BDM editor, and security group rules editor
-angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'ImagePicker', 'SecurityGroupRules'])
-    .controller('LaunchInstanceCtrl', function ($scope, $http, $timeout) {
+angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'ImagePicker', 'SecurityGroupRules', 'EucaConsoleUtils'])
+    .controller('LaunchInstanceCtrl', function ($scope, $http, $timeout, eucaHandleError) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.launchForm = $('#launch-instance-form');
         $scope.tagsObject = {};
@@ -438,9 +438,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 Notify.success(oData.message);
             }).error(function (oData) {
                 $scope.isLoadingKeyPair = false;
-                if (oData.message) {
-                    Notify.failure(oData.message);
-                }
+                eucaHandleError(oData, status);
             });
         };
         $scope.handleSecurityGroupCreate = function ($event, url) {
@@ -484,9 +482,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 Notify.success(oData.message);
             }).error(function (oData) {
                 $scope.isLoadingSecurityGroup = false;
-                if (oData.message) {
-                    Notify.failure(oData.message);
-                }
+                eucaHandleError(oData, status);
             });
         };
         $scope.getAllSecurityGroups = function (vpc) {
@@ -499,9 +495,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 var results = oData ? oData.results : [];
                 $scope.securityGroupCollection = results;
             }).error(function (oData) {
-                if (oData.message) {
-                    Notify.failure(oData.message);
-                }
+                eucaHandleError(oData, status);
             });
         };
         $scope.updateSecurityGroupChoices = function () {

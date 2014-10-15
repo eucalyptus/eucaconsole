@@ -296,7 +296,6 @@
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/jquery-1.11.0-ui.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/jquery.cookie.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/pages/eucaconsole_utils.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/dashboard.js')}"></script>
 </div>
 
