@@ -12,8 +12,7 @@ angular.module('EucaConsoleUtils', [])
      * @return {string} unescaped JSON string
      */
     return function(jsonString) {
-        return jsonString.replace(/__apos__/g, "\'").replace(/__dquote__/g, '\\"').replace(/__bslash__/g, "\\")
-            .replace(/__curlyfront__/g, "{").replace(/__curlyback__/g, "}");
+        return jsonString.replace(/__apos__/g, "\'").replace(/__dquote__/g, '\\"').replace(/__bslash__/g, "\\");
     };
 })
 .service('eucaHandleError', function() {

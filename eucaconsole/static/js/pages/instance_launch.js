@@ -54,17 +54,13 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                                 securityGroupChoices, securityGroupJsonURL, vpcSubnetJson, roles,
                                 imageJsonURL) {
             securityGroupsRulesJson = securityGroupsRulesJson.replace(/__apos__/g, "\'")
-                .replace(/__dquote__/g, '\\"').replace(/__bslash__/g, "\\")
-                .replace(/__curlyfront__/g, "{").replace(/__curlyback__/g, "}");
+                .replace(/__dquote__/g, '\\"').replace(/__bslash__/g, "\\");
             securityGroupChoices = securityGroupChoices.replace(/__apos__/g, "\'")
-                .replace(/__dquote__/g, '\\"').replace(/__bslash__/g, "\\")
-                .replace(/__curlyfront__/g, "{").replace(/__curlyback__/g, "}");
+                .replace(/__dquote__/g, '\\"').replace(/__bslash__/g, "\\");
             keyPairChoices = keyPairChoices.replace(/__apos__/g, "\'")
-                .replace(/__dquote__/g, '\\"').replace(/__bslash__/g, "\\")
-                .replace(/__curlyfront__/g, "{").replace(/__curlyback__/g, "}");
+                .replace(/__dquote__/g, '\\"').replace(/__bslash__/g, "\\");
             vpcSubnetJson = vpcSubnetJson.replace(/__apos__/g, "\'")
-                .replace(/__dquote__/g, '\\"').replace(/__bslash__/g, "\\")
-                .replace(/__curlyfront__/g, "{").replace(/__curlyback__/g, "}");
+                .replace(/__dquote__/g, '\\"').replace(/__bslash__/g, "\\");
             $scope.securityGroupsRules = JSON.parse(securityGroupsRulesJson);
             $scope.keyPairChoices = JSON.parse(keyPairChoices);
             $scope.securityGroupChoices = JSON.parse(securityGroupChoices);

@@ -43,8 +43,7 @@ angular.module('TagEditor', ['ngSanitize'])
         };
         $scope.initTags = function(tagsJson, showNameTag) {
             // Parse tags JSON and convert to a list of tags.
-            tagsJson = tagsJson.replace(/__apos__/g, "\'").replace(/__dquote__/g, '\\"')
-                .replace(/__bslash__/g, "\\").replace(/__curlyfront__/g, "{").replace(/__curlyback__/g, "}");
+            tagsJson = tagsJson.replace(/__apos__/g, "\'").replace(/__dquote__/g, '\\"').replace(/__bslash__/g, "\\");
             var tagsObj = JSON.parse(tagsJson);
             Object.keys(tagsObj).forEach(function(key) {
                 if (!key.match(/^aws:.*/) && !key.match(/^euca:.*/)) {

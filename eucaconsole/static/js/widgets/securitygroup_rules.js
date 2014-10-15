@@ -50,8 +50,7 @@ angular.module('SecurityGroupRules', [])
             $scope.resetValues();
         };
         $scope.initRules = function (rulesJson, rulesEgressJson, jsonEndpoint, internetProtocolsJsonEndpoint) {
-            rulesJson = rulesJson.replace(/__apos__/g, "\'").replace(/__dquote__/g, '\\"').replace(/__bslash__/g, "\\")
-                        .replace(/__curlyfront__/g, "{").replace(/__curlyback__/g, "}");
+            rulesJson = rulesJson.replace(/__apos__/g, "\'").replace(/__dquote__/g, '\\"').replace(/__bslash__/g, "\\");
             $scope.rulesArray = JSON.parse(rulesJson);
             $scope.rulesEgressArray = JSON.parse(rulesEgressJson);
             $scope.jsonEndpoint = jsonEndpoint;
