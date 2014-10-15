@@ -4,8 +4,8 @@
  *
  */
 
-angular.module('InstancesPage', ['LandingPage'])
-    .controller('InstancesCtrl', function ($scope, $http) {
+angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils'])
+    .controller('InstancesCtrl', function ($scope, $http, eucaHandleError) {
         $scope.instanceID = '';
         $scope.fileName = '';
         $scope.batchTerminateModal = $('#batch-terminate-modal');
@@ -117,10 +117,7 @@ angular.module('InstancesPage', ['LandingPage'])
                     modal.foundation('reveal', 'open');
                 }
             }).error(function (oData, status) {
-                var errorMsg = oData['message'] || null;
-                if (errorMsg && status === 403) {
-                    $('#timed-out-modal').foundation('reveal', 'open');
-                }
+                eucaHandleError(oData, status);
             });
         };
     })

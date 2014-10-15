@@ -60,6 +60,7 @@ angular.module('Dashboard', ['EucaConsoleUtils'])
                 if (errorMsg && status === 403) {
                     $('#timed-out-modal').foundation('reveal', 'open');
                 }
+                
             });
         };
         $scope.getServiceStatus = function() {
@@ -74,6 +75,7 @@ angular.module('Dashboard', ['EucaConsoleUtils'])
                     if (errorMsg && status === 403) {
                         $('#timed-out-modal').foundation('reveal', 'open');
                     }
+                    
                 });
             })
         };
