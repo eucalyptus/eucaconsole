@@ -127,7 +127,7 @@ class SecurityGroupPanelsTestCase(BaseViewTestCase):
     def test_tag_editor_panel(self):
         tageditor = tag_editor(None, self.request, tags=[])
         self.assertEqual(tageditor.get('tags'), {})
-        self.assertEqual(tageditor.get('tags_json'), '__curlyfront____curlyback__')
+        self.assertEqual(tageditor.get('tags_json'), '{}')
 
     def test_rules_editor_panel(self):
         Rule = namedtuple('Rule', ['ip_protocol', 'from_port', 'to_port', 'grants'])
