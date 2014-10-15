@@ -1,0 +1,37 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>Jasmine Spec Runner v2.0.3</title>
+
+  <link rel="shortcut icon" type="image/png" href="${request.static_path('eucaconsole:static/js/jasmine/lib/jasmine-2.0.3/jasmine_favicon.png')}">
+  <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/js/jasmine/lib/jasmine-2.0.3/jasmine.css')}">
+
+  <script type="text/javascript" src="${request.static_path('eucaconsole:static/js/jasmine/lib/jasmine-2.0.3/jasmine.js')}"></script>
+  <script type="text/javascript" src="${request.static_path('eucaconsole:static/js/jasmine/lib/jasmine-2.0.3/jasmine-html.js')}"></script>
+  <script type="text/javascript" src="${request.static_path('eucaconsole:static/js/jasmine/lib/jasmine-2.0.3/boot.js')}"></script>
+
+  <!-- include source files here... -->
+  <script src="${request.static_path('eucaconsole:static/js/thirdparty/modernizr/custom.modernizr.js')}"></script>
+  <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/jquery-2.0.3.min.js')}"></script>
+  <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular-1.2.26.min.js')}"></script>
+  <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular-sanitize-1.2.26.min.js')}"></script>
+  <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular-mocks-1.2.26.js')}"></script>
+  <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/jquery.generateFile.js')}"></script>
+  <script src="${request.static_path('eucaconsole:static/js/widgets/notify.js')}"></script>
+  <script src="${request.static_path('eucaconsole:static/js/pages/eucaconsole_utils.js')}"></script>
+
+  <script src="${request.static_path('eucaconsole:static/js/pages/custom_filters.js')}"></script>
+  <script src="${request.static_path('eucaconsole:static/js/widgets/securitygroup_rules.js')}"></script>
+  <script src="${request.static_path('eucaconsole:static/js/pages/keypair.js')}"></script>
+
+  <!-- include spec files here... -->
+  <script type="text/javascript" src="${request.static_path('eucaconsole:static/js/jasmine/spec/SpecHelper.js')}"></script>
+  <script type="text/javascript" src="${request.static_path('eucaconsole:static/js/jasmine/spec/spec_security_group_rules.js')}"></script>
+  <script type="text/javascript" src="${request.static_path('eucaconsole:static/js/jasmine/spec/spec_keypair.js')}"></script>
+
+</head>
+
+<body>
+</body>
+</html>
