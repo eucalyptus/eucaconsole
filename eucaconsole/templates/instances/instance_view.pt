@@ -40,7 +40,7 @@
                         </li>
                         <li>
                             <a i18n:translate="" id="create-launchconfig-action"
-                               href="/launchconfigs/new?image_id=${instance.image_id}&amp;instance_type=${instance.instance_type}&amp;keypair=${instance.key_name}&amp;security_group=${instance_security_group}&amp;preset=true">
+                               href="/launchconfigs/new?image_id=${instance.image_id}&amp;instance_type=${instance.instance_type}&amp;keypair=${instance.key_name}&amp;security_group=${instance_security_groups}&amp;preset=true">
                                 Create launch configuration
                             </a>
                         </li>

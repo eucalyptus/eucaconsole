@@ -4,7 +4,7 @@
  *
  */
 
-angular.module('SecurityGroupRules', [])
+angular.module('SecurityGroupRules', ['CustomFilters'])
     .controller('SecurityGroupRulesCtrl', function ($scope, $http, $timeout) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.rulesEditor = $('#rules-editor');
