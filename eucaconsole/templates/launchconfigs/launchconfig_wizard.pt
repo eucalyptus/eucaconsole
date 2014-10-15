@@ -202,7 +202,7 @@
                                 ${structure:create_form.monitoring_enabled.label}
                             </div>
                             <hr/>
-                            ${panel('bdmapping_editor', image=image, snapshot_choices=snapshot_choices)}
+                            ${panel('bdmapping_editor', image=image, snapshot_choices=snapshot_choices, hide_dot=True)}
                             <div class="row">
                                 <div class="small-4 columns">&nbsp;</div>
                                 <div class="small-8 columns field inline">

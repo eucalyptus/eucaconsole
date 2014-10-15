@@ -20,7 +20,7 @@
                         <span i18n:translate="">Size</span>
                         <span i18n:translate="" class="hide-for-small">(GB)</span>
                     </th>
-                    <th class="delete-on-terminate">
+                    <th class="delete-on-terminate" tal:condition="not hide_dot">
                         <span i18n:translate="" class="hide-for-small">Delete on Terminate</span>
                         <span class="show-for-small"
                               title="Delete on terminate" i18n:attributes="title"><i class="fi-trash"></i></span>
@@ -45,13 +45,13 @@
                         </span>
                     </td>
                     <td tal:condition="read_only">{{ val.size }}</td>
-                    <td tal:condition="not read_only">
+                    <td tal:condition="not read_only and not hide_dot">
                         <span ng-if="!isEphemeral(val)">
                             <input ng-show="showDOTflag(val)" type="checkbox" ng-checked="val.delete_on_termination === true"
                                    ng-click="updateRootDeviceDelete($event, key, val.is_root)"/>
                         </span>
                     </td>
-                    <td tal:condition="read_only">
+                    <td tal:condition="read_only and not hide_dot">
                         <span ng-if="!isEphemeral(val)"> {{ val.delete_on_termination }} </span>
                     </td>
                     <td tal:condition="not read_only">
@@ -94,10 +94,11 @@
                 <label class="left" i18n:translate="">Size</label>
                 <input class="number" id="new-size" ng-model="newSize" />
             </div>
-            <div class="medium-3 columns" ng-show="newVolumeType !== 'ephemeral'">
+            <div class="medium-3 columns" ng-show="newVolumeType !== 'ephemeral'" tal:condition="not hide_dot">
                 <label class="left" i18n:translate="">Delete on terminate</label>
                 <input style="margin-top:35px;margin-left:-70px;" type="checkbox" name="delete_on_termination" checked="checked" ng-model="newDOT" />
             </div>
+            <div class="medium-3 columns" tal:condition="hide_dot">&nbsp;</div>
         </div>
         <div tal:condition="not read_only">
             <a class="button round tiny" ng-click="addDevice()" i18n:translate="" ng-disabled="isNotValid">
