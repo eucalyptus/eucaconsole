@@ -34,9 +34,10 @@ import logging
 import pylibmc
 import sys
 
-from beaker.cache import cache_region
 from wtforms import StringField
 from wtforms.ext.csrf import SecureForm
+from wtforms.widgets import html_params, HTMLString, Select
+from markupsafe import escape
 
 import boto
 from boto.exception import BotoServerError
@@ -47,6 +48,16 @@ from ..i18n import _
 
 
 BLANK_CHOICE = ('', _(u'Select...'))
+
+
+class NgNonBindableOptionSelect(Select):
+    @classmethod
+    def render_option(cls, value, label, selected, **kwargs):
+        options = {'value': value}
+        if selected:
+            options['selected'] = u'selected'
+        return HTMLString(u'<option %s ng-non-bindable="">%s</option>' % (
+            html_params(**options), escape(unicode(label))))
 
 
 class BaseSecureForm(SecureForm):
@@ -175,6 +186,19 @@ class ChoicesManager(object):
             volumes = self.conn.get_all_volumes()
             if self.conn:
                 for volume in volumes:
+                    value = volume.id
+                    label = TaggedItemView.get_display_name(volume, escapebraces=escapebraces)
+                    choices.append((value, label))
+        return choices
+
+    def snapshots(self, snapshots=None, escapebraces=True):
+        from ..views import TaggedItemView
+        choices = [('', _(u'None'))]
+        snapshots = snapshots or []
+        if not snapshots and self.conn is not None:
+            snapshots = self.conn.get_all_snapshots()
+            if self.conn:
+                for volume in snapshots:
                     value = volume.id
                     label = TaggedItemView.get_display_name(volume, escapebraces=escapebraces)
                     choices.append((value, label))
@@ -324,11 +348,9 @@ class ChoicesManager(object):
     def get_all_load_balancers(self, load_balancer_names=None):
         params = {}
         if load_balancer_names:
-            self.build_list_params(params, load_balancer_names,
-                                   'LoadBalancerNames.member.%d')
-        http_request = self.conn.build_base_http_request('GET', '/', None,
-                                                         params, {}, '',
-                                                         self.conn.server_name())
+            self.conn.build_list_params(params, load_balancer_names, 'LoadBalancerNames.member.%d')
+        http_request = self.conn.build_base_http_request(
+            'GET', '/', None, params, {}, '', self.conn.server_name())
         http_request.params['Action'] = 'DescribeLoadBalancers'
         http_request.params['Version'] = self.conn.APIVersion
         response = self.conn._mexe(http_request, override_num_retries=2)

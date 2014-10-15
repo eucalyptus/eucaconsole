@@ -31,20 +31,9 @@ Forms for Scaling Group
 import wtforms
 
 from wtforms import validators
-from wtforms.widgets import html_params, HTMLString, Select
-from markupsafe import escape
 
 from ..i18n import _
-from . import BaseSecureForm, ChoicesManager, TextEscapedField
-
-
-class NgNonBindableOptionSelect(Select):
-    @classmethod
-    def render_option(cls, value, label, selected):
-        options = {'value': value}
-        if selected:
-            options['selected'] = u'selected'
-        return HTMLString(u'<option %s ng-non-bindable="">%s</option>' % (html_params(**options), escape(unicode(label))))
+from . import BaseSecureForm, ChoicesManager, TextEscapedField, NgNonBindableOptionSelect
 
 
 class BaseScalingGroupForm(BaseSecureForm):

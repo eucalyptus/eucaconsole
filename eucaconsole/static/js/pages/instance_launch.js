@@ -78,7 +78,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         };
         $scope.initChosenSelectors = function () {
             $('#securitygroup').chosen({'width': '100%', search_contains: true});
-        }
+        };
         $scope.updateSelectedSecurityGroupRules = function () {
             angular.forEach($scope.securityGroups, function(securityGroupID) {
                 $scope.selectedGroupRules[securityGroupID] = $scope.securityGroupsRules[securityGroupID];
