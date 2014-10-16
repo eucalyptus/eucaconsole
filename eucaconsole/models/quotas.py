@@ -241,7 +241,7 @@ class Quotas(object):
                     'Condition': {'NumericLessThanEquals': {condition: new_limit}}
                 })
         else:
-            if new_limit == '': # need to remove the value
+            if new_limit == '' or new_limit == '0': # need to remove the value
                 del lowest_stmt['Condition']['NumericLessThanEquals'][lowest_policy_val]
             else:  # need to change the value
                 lowest_stmt['Condition']['NumericLessThanEquals'][lowest_policy_val] = new_limit
