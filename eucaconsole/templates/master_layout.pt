@@ -21,6 +21,7 @@
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular-sanitize-1.2.21.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/jquery.generateFile.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/notify.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/eucaconsole_utils.js')}"></script>
     <script type="text/javascript">
         $(document).ready(function () {
             var notification = $('#notifications');

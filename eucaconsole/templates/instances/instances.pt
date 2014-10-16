@@ -39,7 +39,7 @@
                     </li>
                     <li>
                         <a i18n:translate="" id="create-launchconfig-action-gridview-{{item.id}}"
-                            ng-href="/launchconfigs/new?image_id={{item.image_id}}&amp;instance_type={{item.instance_type}}&amp;keypair={{item.key_name}}&amp;security_group={{item.security_groups[0].name}}&amp;preset=true">
+                            ng-href="{{ getCreateLaunchConfigPath(item) }}">
                             Create launch configuration
                         </a>
                     </li>
@@ -188,7 +188,7 @@
                             </li>
                             <li>
                                 <a i18n:translate="" id="create-launchconfig-action-tileview-{{item.id}}"
-                                    ng-href="/launchconfigs/new?image_id={{item.image_id}}&amp;instance_type={{item.instance_type}}&amp;keypair={{item.key_name}}&amp;security_group={{item.security_groups[0].name}}&amp;preset=true">
+                                    ng-href="{{ getCreateLaunchConfigPath(item) }}">
                                     Create launch configuration
                                 </a>
                             </li>

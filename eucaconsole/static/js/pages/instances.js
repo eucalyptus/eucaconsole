@@ -4,8 +4,8 @@
  *
  */
 
-angular.module('InstancesPage', ['LandingPage'])
-    .controller('InstancesCtrl', function ($scope, $http) {
+angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils'])
+    .controller('InstancesCtrl', function ($scope, $http, eucaHandleError) {
         $scope.instanceID = '';
         $scope.fileName = '';
         $scope.batchTerminateModal = $('#batch-terminate-modal');
@@ -117,11 +117,23 @@ angular.module('InstancesPage', ['LandingPage'])
                     modal.foundation('reveal', 'open');
                 }
             }).error(function (oData, status) {
-                var errorMsg = oData['message'] || null;
-                if (errorMsg && status === 403) {
-                    $('#timed-out-modal').foundation('reveal', 'open');
+                eucaHandleError(oData, status);
+            });
+        };
+        $scope.getCreateLaunchConfigPath = function (item) {
+            var securityGroupsList = '';
+            angular.forEach(item.security_groups, function (sgroup, index) {
+                securityGroupsList += sgroup.id;
+                if (index < item.security_groups.length - 1) {
+                    securityGroupsList += ",";
                 }
             });
+            var launchConfigPath =  "/launchconfigs/new?image_id=" + item.image_id +
+                "&amp;instance_type=" + item.instance_type +
+                "&amp;keypair=" + item.key_name +
+                "&amp;security_group=" + securityGroupsList +
+                "&amp;preset=true";
+            return launchConfigPath;
         };
     })
 ;

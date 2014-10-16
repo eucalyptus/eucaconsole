@@ -129,8 +129,12 @@
                             <div tal:condition="preset" ng-cloak="true">
                                 <div class="row">
                                     <div class="small-4 columns"><label class="right">Security group&nbsp;</label></div>
-                                    <div class="small-8 columns field inline">{{ securityGroupSelected }}</div>
-                                    <input type="hidden" name="securitygroup" value="{{ securityGroupSelected }}" />
+                                    <div class="small-8 columns field inline" ng-repeat="sgroup in securityGroups">
+                                        {{ securityGroupChoices[sgroup] }}
+                                    </div>
+                                </div>
+                                <div ng-repeat="sGroup in securityGroups" class="hide">
+                                    <input type="hidden" name="securitygroup" value="{{ sGroup }}" />
                                 </div>
                             </div>
                             ${panel('securitygroup_rules_preview', leftcol_width=4, rightcol_width=8)}

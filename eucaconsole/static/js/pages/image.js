@@ -5,7 +5,7 @@
  */
 
 angular.module('ImagePage', ['BlockDeviceMappingEditor', 'TagEditor', 'EucaConsoleUtils'])
-    .controller('ImagePageCtrl', function ($scope, $http, $timeout, eucaUnescapeJson) {
+    .controller('ImagePageCtrl', function ($scope, $http, $timeout, eucaUnescapeJson, eucaHandleError) {
         $scope.imageState = '';
         $scope.imageProgess = 0;
         $scope.imageStatusEndpoint = '';
@@ -227,8 +227,7 @@ angular.module('ImagePage', ['BlockDeviceMappingEditor', 'TagEditor', 'EucaConso
                 }
               }).
               error(function (oData, status) {
-                var errorMsg = oData['message'] || '';
-                Notify.failure(errorMsg);
+                eucaHandleError(oData, status);
               });
         };
     })

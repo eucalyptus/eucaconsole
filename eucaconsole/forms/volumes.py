@@ -87,15 +87,7 @@ class VolumeForm(BaseSecureForm):
             self.zone.data = self.zones[0].name
 
     def set_volume_snapshot_choices(self):
-        choices = [('', _(u'None'))]
-        for snapshot in self.snapshots:
-            value = snapshot.id
-            name = snapshot.tags.get('Name', None)
-            if name is not None:
-                label = '{name} ({id})'.format(name=name, id=value)
-            else:
-                label = str(value)
-            choices.append((value, label))
+        choices = self.choices_manager.snapshots()
         # Need to insert current choice since the source snapshot may have been removed after this volume was created
         if self.volume and self.volume.snapshot_id:
             snap_id = self.volume.snapshot_id

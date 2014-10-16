@@ -4,7 +4,7 @@
  *
  */
 
-angular.module('SecurityGroupRules', [])
+angular.module('SecurityGroupRules', ['CustomFilters'])
     .controller('SecurityGroupRulesCtrl', function ($scope, $http, $timeout) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.rulesEditor = $('#rules-editor');
@@ -53,8 +53,8 @@ angular.module('SecurityGroupRules', [])
             rulesJson = rulesJson.replace(/__apos__/g, "\'").replace(/__dquote__/g, '\\"').replace(/__bslash__/g, "\\");
             $scope.rulesArray = JSON.parse(rulesJson);
             $scope.rulesEgressArray = JSON.parse(rulesEgressJson);
-            $scope.jsonEndpoint=jsonEndpoint;
-            $scope.internetProtocolsJsonEndpoint=internetProtocolsJsonEndpoint;
+            $scope.jsonEndpoint = jsonEndpoint;
+            $scope.internetProtocolsJsonEndpoint = internetProtocolsJsonEndpoint;
             $scope.initInternetProtocols();
             $scope.syncRules();
             $scope.setWatchers();
@@ -462,7 +462,7 @@ angular.module('SecurityGroupRules', [])
                         });
                     });
                 },
-                create_option_text: 'Add Group',
+                create_option_text: 'Add Group'
             });
             $('#groupname-select').prop('selectedIndex', -1);
             $('#groupname-select').trigger('chosen:updated');
@@ -490,7 +490,7 @@ angular.module('SecurityGroupRules', [])
             $scope.ruleType = 'outbound';   // Needs to set 'outbound' for the rule comparison
             $scope.selectedProtocol = "-1"; 
             $scope.ipProtocol = "-1";
-            $scope.trafficType == "ip" 
+            $scope.trafficType = "ip";
             $scope.cidrIp = "0.0.0.0/0";
             $scope.fromPort = null;
             $scope.toPort = null;

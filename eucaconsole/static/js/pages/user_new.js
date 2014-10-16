@@ -5,8 +5,8 @@
  */
 
 // New user page includes the User Editor editor
-angular.module('UserNew', ['UserEditor', 'Quotas'])
-    .controller('UserNewCtrl', function ($scope, $http) {
+angular.module('UserNew', ['UserEditor', 'Quotas', 'EucaConsoleUtils'])
+    .controller('UserNewCtrl', function ($scope, $http, eucaHandleError) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.form = $('#user-new-form');
         $scope.submitEndpoint = '';
@@ -108,11 +108,7 @@ angular.module('UserNew', ['UserEditor', 'Quotas'])
                     }
                 }
             }).error(function (oData, status) {
-                var errorMsg = oData['message'] || '';
-                if (errorMsg && status === 403) {
-                    $('#timed-out-modal').foundation('reveal', 'open');
-                }
-                Notify.failure(errorMsg);
+                eucaHandleError(oData, status);
             });
         };
     })

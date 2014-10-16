@@ -5,8 +5,8 @@
  */
 
 // Launch Instance page includes the Tag Editor, the Image Picker, BDM editor, and security group rules editor
-angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'ImagePicker', 'SecurityGroupRules'])
-    .controller('LaunchInstanceCtrl', function ($scope, $http, $timeout) {
+angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'ImagePicker', 'SecurityGroupRules', 'EucaConsoleUtils'])
+    .controller('LaunchInstanceCtrl', function ($scope, $http, $timeout, eucaHandleError) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.launchForm = $('#launch-instance-form');
         $scope.tagsObject = {};
@@ -39,6 +39,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.isRuleExpanded = {};
         $scope.newSecurityGroupName = '';
         $scope.isLoadingSecurityGroup = false;
+        $scope.isSecurityGroupsInitialValuesSet = false;
         $scope.role = '';
         $scope.roleList = [];
         $scope.currentStepIndex = 1;
@@ -78,7 +79,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         };
         $scope.initChosenSelectors = function () {
             $('#securitygroup').chosen({'width': '100%', search_contains: true});
-        }
+        };
         $scope.updateSelectedSecurityGroupRules = function () {
             angular.forEach($scope.securityGroups, function(securityGroupID) {
                 $scope.selectedGroupRules[securityGroupID] = $scope.securityGroupsRules[securityGroupID];
@@ -97,16 +98,15 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             $('#number').val($scope.instanceNumber);
             $scope.instanceType = 'm1.small';
             $scope.instanceZone = $('#zone').find(':selected').val();
+            var lastVPC = Modernizr.localstorage && localStorage.getItem('lastvpc_inst');
+            if (lastVPC != null && $('#vpc_network option[value=' + lastVPC +']').length > 0) {
+                $scope.instanceVPC = lastVPC;
+            }
             var lastKeyPair = Modernizr.localstorage && localStorage.getItem('lastkeypair_inst');
             if (lastKeyPair != null && $scope.keyPairChoices[lastKeyPair] !== undefined) {
                 $('#keypair').val(lastKeyPair);
             }
             $scope.keyPair = $('#keypair').find(':selected').val();
-            var lastSecGroup = Modernizr.localstorage && localStorage.getItem('lastsecgroup_inst');
-            if (lastSecGroup != null && $scope.securityGroupChoices[lastSecGroup] !== undefined) {
-                $('#securitygroup').val(lastSecGroup);
-            }
-            $scope.securityGroups.push($('#securitygroup').find(':selected').val());
             $scope.imageID = $scope.urlParams['image_id'] || '';
             if( $scope.imageID == '' ){
                 $scope.currentStepIndex = 1;
@@ -116,10 +116,26 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 $scope.loadImageInfo($scope.imageID);
             }
         };
+        $scope.restoreSecurityGroupsInitialValues = function () {
+            if ($scope.isSecurityGroupsInitialValuesSet == true) {
+                return;
+            }
+            var lastSecGroup = Modernizr.localstorage && localStorage.getItem('lastsecgroup_inst');
+            if (lastSecGroup != null) {
+                var lastSecGroupArray = lastSecGroup.split(",");
+                angular.forEach(lastSecGroupArray, function (sgroup) {
+                    if ($scope.securityGroupChoices[sgroup] !== undefined) {
+                        $scope.securityGroups.push(sgroup);
+                        $scope.isSecurityGroupsInitialValuesSet = true;
+                    }
+                });
+            }
+        };
         $scope.saveOptions = function() {
             if (Modernizr.localstorage) {
+                localStorage.setItem('lastvpc_inst', $scope.instanceVPC);
                 localStorage.setItem('lastkeypair_inst', $('#keypair').find(':selected').val());
-                localStorage.setItem('lastsecgroup_inst', $('#securitygroup').find(':selected').val());
+                localStorage.setItem('lastsecgroup_inst', $scope.securityGroups);
             }
         };
         $scope.updateTagsPreview = function () {
@@ -438,9 +454,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 Notify.success(oData.message);
             }).error(function (oData) {
                 $scope.isLoadingKeyPair = false;
-                if (oData.message) {
-                    Notify.failure(oData.message);
-                }
+                eucaHandleError(oData, status);
             });
         };
         $scope.handleSecurityGroupCreate = function ($event, url) {
@@ -484,9 +498,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 Notify.success(oData.message);
             }).error(function (oData) {
                 $scope.isLoadingSecurityGroup = false;
-                if (oData.message) {
-                    Notify.failure(oData.message);
-                }
+                eucaHandleError(oData, status);
             });
         };
         $scope.getAllSecurityGroups = function (vpc) {
@@ -499,9 +511,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 var results = oData ? oData.results : [];
                 $scope.securityGroupCollection = results;
             }).error(function (oData) {
-                if (oData.message) {
-                    Notify.failure(oData.message);
-                }
+                eucaHandleError(oData, status);
             });
         };
         $scope.updateSecurityGroupChoices = function () {
@@ -513,6 +523,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             angular.forEach($scope.securityGroupCollection, function(sGroup){
                 $scope.securityGroupChoices[sGroup['id']] = sGroup['name'];
             }); 
+            $scope.restoreSecurityGroupsInitialValues(); 
             // Timeout is needed for chosen to react after Angular updates the options
             $timeout(function(){
                 $('#securitygroup').trigger('chosen:updated');

@@ -498,7 +498,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
         self.render_dict = dict(
             instance=self.instance,
             instance_name=self.instance_name,
-            instance_security_group=self.get_security_group(),
+            instance_security_groups=self.get_security_group_list_string(),
             image=self.image,
             scaling_group=self.scaling_group,
             instance_form=self.instance_form,
@@ -660,11 +660,14 @@ class InstanceView(TaggedItemView, BaseInstanceView):
             return self.instance.tags.get('aws:autoscaling:groupName')
         return None
 
-    def get_security_group(self):
+    def get_security_group_list_string(self):
+        security_group_list = [] 
         if self.instance:
             instance_groups = self.instance.groups
-            return instance_groups[0].name if instance_groups else 'default'
-        return ''
+            if instance_groups:
+                for sgroup in instance_groups:
+                    security_group_list.append(sgroup.id) 
+        return ','.join(security_group_list) 
 
     def get_redirect_location(self):
         if self.instance:
@@ -929,11 +932,10 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
             tags_json = self.request.params.get('tags')
             image_id = self.image.id
             num_instances = int(self.request.params.get('number', 1))
-            key_name = self.request.params.get('keypair')
-            if key_name and key_name == 'none':
-                key_name = None  # Handle "None (advanced)" option
+            key_name = self.unescape_braces(self.request.params.get('keypair', ''))
             if key_name:
-                key_name = self.unescape_braces(key_name)
+                # Handle "None (advanced)" option if key_name is 'none'
+                key_name = None if key_name == 'none' else self.unescape_braces(key_name)
             securitygroup_ids = self.request.params.getall('securitygroup')
             instance_type = self.request.params.get('instance_type', 'm1.small')
             availability_zone = self.request.params.get('zone') or None

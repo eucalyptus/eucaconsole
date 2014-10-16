@@ -5,8 +5,8 @@
  */
 
 /* Bucket details page includes the S3 Sharing Panel */
-angular.module('BucketDetailsPage', ['S3SharingPanel'])
-    .controller('BucketDetailsPageCtrl', function ($scope, $http) {
+angular.module('BucketDetailsPage', ['S3SharingPanel', 'EucaConsoleUtils'])
+    .controller('BucketDetailsPageCtrl', function ($scope, $http, eucaHandleErrorS3) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.bucketDetailsForm = $('#bucket-details-form');
         $scope.isSubmitted = false;
@@ -28,14 +28,7 @@ angular.module('BucketDetailsPage', ['S3SharingPanel'])
                 $scope.versionCount = results['version_count'];
                 $scope.objectsCountLoading = false;
             }).error(function (oData, status) {
-                var errorMsg = oData['message'] || null;
-                if (errorMsg) {
-                    if (status === 403 || status === 400) {
-                        $('#timed-out-modal').foundation('reveal', 'open');
-                    } else {
-                        Notify.failure(errorMsg);
-                    }
-                }
+                eucaHandleErrorS3(oData, status);
             });
         };
         $scope.revealModal = function (action) {

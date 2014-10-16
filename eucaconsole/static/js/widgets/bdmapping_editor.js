@@ -3,8 +3,8 @@
  * @requires AngularJS
  *
  */
-angular.module('BlockDeviceMappingEditor', [])
-    .controller('BlockDeviceMappingEditorCtrl', function ($scope, $http, $timeout) {
+angular.module('BlockDeviceMappingEditor', ['EucaConsoleUtils'])
+    .controller('BlockDeviceMappingEditorCtrl', function ($scope, $http, $timeout, eucaUnescapeJson) {
         $scope.bdmTextarea = $('#bdmapping');
         $scope.bdMapping = undefined;
         $scope.ephemeralCount = 0;
