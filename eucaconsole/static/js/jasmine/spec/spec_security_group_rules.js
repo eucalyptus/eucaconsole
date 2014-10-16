@@ -86,4 +86,45 @@ describe("SecurityGroupRules", function() {
             expect(scope.syncRules).toHaveBeenCalled();
         });
     });
+
+    describe("Function resetValues() Test", function() {
+
+        beforeEach(function() {
+            jasmine.getFixtures().fixturesPath = "/templates/panels";
+            loadFixtures("securitygroup_rules.pt");
+        });
+
+        it("Should call cleanupSelections() after resetting values", function() {
+            spyOn(scope, 'cleanupSelections');
+            scope.resetValues();
+            expect(scope.cleanupSelections).toHaveBeenCalled();
+        });
+
+        it("Should call adjustIPProtocolOptions() after resetting values", function() {
+            spyOn(scope, 'adjustIPProtocolOptions');
+            scope.resetValues();
+            expect(scope.adjustIPProtocolOptions).toHaveBeenCalled();
+        });
+
+        it("Should set #ip-protocol-select's 'selectedIndex' value to -1 after resetting values", function() {
+            scope.resetValues();
+            expect($('#ip-protocol-select').prop('selectedIndex')).toEqual(-1);
+        });
+    });
+
+    describe("Template Label Test", function() {
+
+        beforeEach(function() {
+            jasmine.getFixtures().fixturesPath = "/templates/panels";
+            loadFixtures("securitygroup_rules.pt");
+        });
+
+        it("Should #inbound-rules-tab link be labeled 'Inbound'", function() {
+            expect($('#inbound-rules-tab').text()).toEqual('Inbound');
+        });
+
+        it("Should #outbound-rules-tab link be labeled 'Outbound'", function() {
+            expect($('#outbound-rules-tab').text()).toEqual('Outbound');
+        });
+    });
 });

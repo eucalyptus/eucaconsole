@@ -14,7 +14,6 @@ tutorial.db
 build/
 dist/
 bin/
-lib/
 include/
 .idea/
 distribute-*.tar.gz

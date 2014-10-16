@@ -20,6 +20,9 @@
   <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/jquery.generateFile.js')}"></script>
   <script src="${request.static_path('eucaconsole:static/js/widgets/notify.js')}"></script>
   <script src="${request.static_path('eucaconsole:static/js/pages/eucaconsole_utils.js')}"></script>
+  <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+
+  <script type="text/javascript" src="${request.static_path('eucaconsole:static/js/jasmine/lib/jasmine-jquery-2.0.5/jasmine-jquery.js')}"></script>
 
   <script src="${request.static_path('eucaconsole:static/js/pages/custom_filters.js')}"></script>
   <script src="${request.static_path('eucaconsole:static/js/widgets/securitygroup_rules.js')}"></script>
