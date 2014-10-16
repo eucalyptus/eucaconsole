@@ -243,21 +243,15 @@
                             <metal:block metal:use-macro="layout.global_macros['dashaction']" />
                             <i class="icon"><em><span class="dots" ng-show="health.length == 0">&nbsp;</span></em></i>
                             <div class="content">
-                                 <div ng-repeat="service in health">
-                                    <div class="row controls-wrapper readonly">
-                                        <div class="small-9 columns">
-                                            <label id="status">{{ service.name }}</label>
-                                        </div>
-                                        <div class="small-3 columns right" id="service-unknown" ng-show="service.status==''">
-                                            <span class="dots">&nbsp;</span>
-                                        </div>
-                                        <div class="small-3 columns right" id="service-up" ng-show="service.status=='up'">
-                                            <i class="fi-check tick" title="Service is up" i18n:translate="title" data-tooltip=""></i>
-                                        </div>
-                                        <div class="small-3 columns right" id="service-down" ng-show="service.status=='down'">
-                                            <i class="fi-x tick" title="Service is not responding" i18n:translate="title" data-tooltip=""></i>
-                                        </div>
-                                    </div>
+                                 <div ng-repeat="service in health" class="statusrow">
+                                     <span class="status">{{ service.name }}</span>
+                                     <span class="right">
+                                         <span class="dots" ng-show="service.status == ''">&nbsp;</span>
+                                         <i class="fi-check tick service-up" title="Service is up"
+                                            i18n:translate="title" data-tooltip="" ng-show="service.status == 'up'"></i>
+                                         <i class="fi-x tick service-down" title="Service is not responding"
+                                            i18n:translate="title" data-tooltip="" ng-show="service.status=='down'"></i>
+                                     </span>
                                 </div>
                             </div>
                         </div>
