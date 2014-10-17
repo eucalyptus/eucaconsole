@@ -1,6 +1,10 @@
 <!--! Create alarm dialog -->
 <div id="create-alarm-wrapper" ng-app="CreateAlarm" ng-controller="CreateAlarmCtrl" i18n:domain="eucaconsole"
-     ng-init="initController('${metric_unit_mapping}')">
+     ng-init="initController('${controller_options_json}')">
+    <style type="text/css">
+        #alarm-conflict-alert { position: relative; top: -12px; }
+        #alarm-conflict-alert i { color: darkred; }
+    </style>
     <div id="create-alarm-modal" class="reveal-modal ${modal_size}" data-reveal="">
         <h3 i18n:translate="">Create alarm</h3>
         <p i18n:translate="">&nbsp;</p>
@@ -9,7 +13,15 @@
             ${structure:alarm_form['csrf_token']}
             <input type="hidden" name="redirect_location" value="${redirect_location}" />
             <input type="hidden" name="namespace" value="{{ namespace }}" />
-            ${panel('form_field', field=alarm_form['name'], leftcol_width=2, rightcol_width=10)}
+            ${panel('form_field', field=alarm_form['name'], leftcol_width=2, rightcol_width=10, ng_attrs=dict(model='alarmName'))}
+            <div class="row" ng-if="existingAlarmConflict">
+                <div class="small-10 columns right" id="alarm-conflict-alert">
+                    <i class="fi-alert"></i>
+                    <span i18n:translate="">
+                        The alarm name you have entered conflicts with an existing alarm.
+                    </span>
+                </div>
+            </div>
             ${panel('form_field', field=alarm_form['description'], leftcol_width=2, rightcol_width=10)}
             <hr />
             <div class="row controls-wrapper">
@@ -134,7 +146,8 @@
                 </label>
             </div>
             <div class="row">
-                <button type="submit" class="button expand" i18n:translate="" id="create-alarm-btn" ng-show="!isCreatingAlarm">
+                <button type="submit" class="button expand" i18n:translate="" id="create-alarm-btn"
+                        ng-show="!isCreatingAlarm" ng-disabled="existingAlarmConflict">
                     Create Alarm
                 </button>
                 <div ng-show="isCreatingAlarm">
