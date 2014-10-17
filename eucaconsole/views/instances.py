@@ -365,7 +365,7 @@ class InstancesJsonView(LandingPageView):
                 running_create=True if instance.tags.get('ec_bundling') else False,
             ))
         image_ids = [i['image_id'] for i in instances]
-        images = self.conn.get_all_images(filters={'image-id':image_ids})
+        images = self.conn.get_all_images(filters={'image-id': image_ids})
         for instance in instances:
             image = self.get_image_by_id(images, instance['image_id'])
             image_name = None
@@ -374,7 +374,7 @@ class InstancesJsonView(LandingPageView):
                     image.name if image.name else image.id,
                     ' ({0})'.format(image.id) if image.name else ''
                 )
-            instance['image_name']=image_name
+            instance['image_name'] = image_name
         return dict(results=instances)
 
     def get_items(self, filters=None):
@@ -484,6 +484,8 @@ class InstanceView(TaggedItemView, BaseInstanceView):
         self.tagged_obj = self.instance
         self.location = self.get_redirect_location()
         self.instance_name = TaggedItemView.get_display_name(self.instance)
+        self.security_groups_array = sorted({'name': group.name, 'id': group.id} for group in self.instance.groups)
+        self.instance_keypair = self.instance.key_name if self.instance else ''
         self.has_elastic_ip = self.check_has_elastic_ip(self.instance.ip_address) if self.instance else False
         self.role = None
         if self.instance and self.instance.instance_profile:
@@ -499,6 +501,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
             instance=self.instance,
             instance_name=self.instance_name,
             instance_security_groups=self.get_security_group_list_string(),
+            instance_keypair=self.instance_keypair,
             image=self.image,
             scaling_group=self.scaling_group,
             instance_form=self.instance_form,
@@ -703,6 +706,8 @@ class InstanceView(TaggedItemView, BaseInstanceView):
             'instance_ip_address': self.instance.ip_address,
             'instance_public_dns': self.instance.public_dns_name,
             'instance_platform': self.instance.platform,
+            'instance_security_groups': self.security_groups_array,
+            'instance_keypair': self.instance_keypair,
             'has_elastic_ip': self.has_elastic_ip,
         }))
 

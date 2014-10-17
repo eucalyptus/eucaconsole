@@ -34,6 +34,8 @@ angular.module('InstancePage', ['TagEditor', 'EucaConsoleUtils'])
             $scope.instancePublicIP = options['instance_ip_address'];
             $scope.publicDNS = options['instance_public_dns'];
             $scope.platform = options['instance_platform'];
+            $scope.securityGroups = options['instance_security_groups'];
+            $scope.keyName = options['instance_keypair'];
             $scope.hasElasticIP = options['has_elastic_ip'];
             $scope.getInstanceState();
             $scope.getUserData();
