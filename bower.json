@@ -1,0 +1,11 @@
+{
+  "name": "eucaconsole",
+  "version": "0.0.1",
+  "dependencies": {
+    "jquery": "2.0.3",
+    "angular": "1.2.26",
+    "jasmine": "2.0.3",
+    "jasmine-jquery": "2.0.5"
+  }
+}
+
