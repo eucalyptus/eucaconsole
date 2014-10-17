@@ -8,10 +8,11 @@ describe("SecurityGroupRules", function() {
 
     beforeEach(angular.mock.module('SecurityGroupRules'));
 
-    var scope, ctrl;
+    var scope, httpBackend, ctrl;
     // inject the $controller and $rootScope services
     // in the beforeEach block
-    beforeEach(angular.mock.inject(function($controller, $rootScope) {
+    beforeEach(angular.mock.inject(function($rootScope, $httpBackend, $controller) {
+        httpBackend = $httpBackend;
         // Create a new scope that's a child of the $rootScope
         scope = $rootScope.$new();
         // Create the controller
@@ -125,6 +126,78 @@ describe("SecurityGroupRules", function() {
 
         it("Should #outbound-rules-tab link be labeled 'Outbound'", function() {
             expect($('#outbound-rules-tab').text()).toEqual('Outbound');
+        });
+    });
+
+    describe("Function initInternetProtocol() Test", function() {
+
+        beforeEach(function() {
+            jasmine.getFixtures().fixturesPath = "/templates/panels";
+            loadFixtures("securitygroup_rules.pt");
+        });
+
+        beforeEach(function() {
+            setFixtures('<input id="csrf_token" name="csrf_token" type="hidden" value="2a06f17d6872143ed806a695caa5e5701a127ade">');
+            scope.internetProtocolsJsonEndpoint  = "internet_protocols_json";
+            httpBackend.expect('POST', scope.internetProtocolsJsonEndpoint, 'csrf_token=2a06f17d6872143ed806a695caa5e5701a127ade')
+                .respond(200, {
+                    "success": true,
+                    "results": angular.toJson({"internet_protocols": [[0, "HOPOPT"], [1, "ICMP"], [2, "IGMP"]]}) 
+                });
+        });
+
+        afterEach(function() {
+            httpBackend.verifyNoOutstandingExpectation();
+            httpBackend.verifyNoOutstandingRequest();
+        });
+
+        it("Should have internetProtocols[] initialized after initInternetProtocols() is successful", function() {
+            scope.initInternetProtocols();
+            httpBackend.flush();
+            expect(scope.internetProtocols[0]).toEqual('HOPOPT');
+            expect(scope.internetProtocols[1]).toEqual('ICMP');
+            expect(scope.internetProtocols[2]).toEqual('IGMP');
+        });
+
+        it("Should call scanForCustomProtocol() after initInternetProtocols() is successful", function() {
+            spyOn(scope, 'scanForCustomProtocols');
+            scope.initInternetProtocols();
+            httpBackend.flush();
+            expect(scope.scanForCustomProtocols).toHaveBeenCalled();
+        });
+    });
+
+    describe("Function getAllSecurityGroups() Test", function() {
+
+        var vpc = 'vpc-12345678';
+
+        beforeEach(function() {
+            jasmine.getFixtures().fixturesPath = "/templates/panels";
+            loadFixtures("securitygroup_rules.pt");
+        });
+
+        beforeEach(function() {
+            setFixtures('<input id="csrf_token" name="csrf_token" type="hidden" value="2a06f17d6872143ed806a695caa5e5701a127ade">');
+            scope.jsonEndpoint  = "securitygroup_json";
+            var data = 'csrf_token=2a06f17d6872143ed806a695caa5e5701a127ade&vpc_id=' + vpc
+            httpBackend.expect('POST', scope.jsonEndpoint, data)
+                .respond(200, {
+                    "success": true,
+                    "results": ["SSH", "HTTP", "HTTPS"]
+                });
+        });
+
+        afterEach(function() {
+            httpBackend.verifyNoOutstandingExpectation();
+            httpBackend.verifyNoOutstandingRequest();
+        });
+
+        it("Should have securityGroupList[] initialized after getAllSecurityGroups() is successful", function() {
+            scope.getAllSecurityGroups(vpc);
+            httpBackend.flush();
+            expect(scope.securityGroupList[0]).toEqual('SSH');
+            expect(scope.securityGroupList[1]).toEqual('HTTP');
+            expect(scope.securityGroupList[2]).toEqual('HTTPS');
         });
     });
 });
