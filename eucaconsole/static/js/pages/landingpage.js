@@ -77,11 +77,6 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'EucaConsoleUtils'
                // Set landingPageView in localStorage
                Modernizr.localstorage && localStorage.setItem($scope.landingPageViewKey, $scope.landingPageView);
             });
-            // Emit 'itemsLoaded' signal when items[] is updated
-            $scope.$watch('items', function() {
-                $scope.$emit('itemsLoaded', $scope.items);
-                $scope.clickOpenDropdown();
-            }, true);
             // When unfilteredItems[] is updated, run it through the filter and build items[]
             $scope.$watch('unfilteredItems', function() {
                 $scope.detectOpenDropdown();
@@ -164,6 +159,12 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'EucaConsoleUtils'
                 if ($scope.transitionalRefresh && transitionalCount > 0) {
                     $timeout(function() { $scope.getItems(); }, 5000);  // Poll every 5 seconds
                 }
+                // Emit 'itemsLoaded' signal when items[] is updated
+                $timeout(function() {
+                    $scope.$emit('itemsLoaded', $scope.items);
+                    // and re-open any action menus
+                    $scope.clickOpenDropdown();
+                });
             }).error(function (oData, status) {
                 eucaHandleErrorS3(oData, status);
             });
