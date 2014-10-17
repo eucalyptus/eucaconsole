@@ -85,9 +85,10 @@ class IAMPolicyWizardView(BaseView):
             self.request.session.flash(msg, queue=Notification.ERROR)
             return HTTPFound(location=self.request.route_path('dashboard'))
         with boto_error_handler(self.request):
-            return self.render_dict.update(dict(
+            self.render_dict.update(dict(
                 controller_options_json=self.get_controller_options_json(),
             ))
+            return self.render_dict
 
     @view_config(route_name='iam_policy_create', request_method='POST', renderer='json')
     def iam_policy_create(self):
