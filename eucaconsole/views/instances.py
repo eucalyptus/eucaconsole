@@ -484,7 +484,8 @@ class InstanceView(TaggedItemView, BaseInstanceView):
         self.tagged_obj = self.instance
         self.location = self.get_redirect_location()
         self.instance_name = TaggedItemView.get_display_name(self.instance)
-        self.security_groups_array = sorted({'name': group.name, 'id': group.id} for group in self.instance.groups)
+        self.security_groups_array = sorted(
+            {'name': group.name, 'id': group.id} for group in self.instance.groups) if self.instance else []
         self.instance_keypair = self.instance.key_name if self.instance else ''
         self.has_elastic_ip = self.check_has_elastic_ip(self.instance.ip_address) if self.instance else False
         self.role = None
