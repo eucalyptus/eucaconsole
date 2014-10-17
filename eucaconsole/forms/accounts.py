@@ -42,7 +42,7 @@ class AccountForm(BaseSecureForm):
     account_name = TextEscapedField(
         id=u'account-name',
         label=_(u'Name'),
-        validators=[validators.InputRequired(message=account_name_error_msg), validators.Length(min=1, max=255)],
+        validators=[validators.InputRequired(message=account_name_error_msg)],
     )
 
     def __init__(self, request, account=None, **kwargs):

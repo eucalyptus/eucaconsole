@@ -5,8 +5,9 @@
  */
 
 // New user page includes the User Editor editor
-angular.module('AccountPage', ['UserEditor', 'Quotas'])
-    .controller('AccountPageCtrl', function ($scope, $http, $timeout) {
+angular.module('AccountPage', ['UserEditor', 'Quotas', 'EucaConsoleUtils'])
+    .controller('AccountPageCtrl', function ($scope, $http, $timeout, eucaHandleError) {
+        $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.submitEndpoint = '';
         $scope.accountRedirect = '';
         $scope.accountName = '';
@@ -51,7 +52,10 @@ angular.module('AccountPage', ['UserEditor', 'Quotas'])
                         window.location = $scope.accountRedirect.replace('_name_', $scope.accountName);
                     }, 3000);
                 }
-            });
+              }).
+              error(function(oData, status) {
+                eucaHandleError(oData, status);
+              });
         };
         $scope.setWatch = function () {
             $scope.$watch('accountName' , function () {
