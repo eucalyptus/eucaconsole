@@ -46,6 +46,7 @@
 #launch-config-form #controls_userdata_file { position: relative; top: -0.5rem; }
 #launch-config-form #controls_userdata_file #userdata_file { width: 80%; display: inline-block; }
 #launch-config-form #create-keypair-link, #launch-config-form #create-securitygroup-link { position: relative; top: -6px; margin-bottom: 10px; }
+#launch-config-form #create-securitygroup-link { top: -2px; }
 #launch-config-form .rules-display { margin-left: 0.7rem; }
 #launch-config-form .rules-title { margin-bottom: 3px; }
 
