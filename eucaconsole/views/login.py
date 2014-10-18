@@ -30,6 +30,7 @@ Pyramid views for Login/Logout
 """
 import base64
 import logging
+import simplejson as json
 from urllib2 import HTTPError, URLError
 from urlparse import urlparse
 from boto.connection import AWSAuthConnection
@@ -100,6 +101,13 @@ class LoginView(BaseView):
             status = getattr(self.request.exception, 'status', "403 Forbidden")
             status = int(status[:status.index(' ')]) or 403
             return JSONResponse(status=status, message=message)
+        else:
+            self.render_dict.update(dict(
+                json_options=BaseView.escape_json(json.dumps(dict(
+                    account=self.request.params.get('account', default=''),
+                    username=self.request.params.get('username', default=''),
+                )))
+            ))
         return self.render_dict
 
     @view_config(route_name='login', request_method='POST', renderer=TEMPLATE, permission=NO_PERMISSION_REQUIRED)
