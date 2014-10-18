@@ -168,6 +168,14 @@
                 </p>
                 <a class="close-reveal-modal">&#215;</a>
             </div>
+            <div id="browser-filereader-warn-modal" class="reveal-modal small" data-reveal="">
+                <h3 i18n:translate="">Browser doesn't support the File API</h3>
+                <p i18n:translate="">
+                    The browser you are using lacks support for the File API
+                    and features that involve uploading files won't work.
+                </p>
+                <a class="close-reveal-modal">&#215;</a>
+            </div>
         </div>
     </div>
     <div class="clearfix">&nbsp;</div>

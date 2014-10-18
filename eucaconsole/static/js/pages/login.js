@@ -17,6 +17,12 @@ angular.module('LoginPage', [])
                     nope: function () {
                         $('#browser-svg-warn-modal').foundation('reveal', 'open');
                     }
+                },
+                {
+                    test: Modernizr.filereader,
+                    nope: function () {
+                        $('#browser-filereader-warn-modal').foundation('reveal', 'open');
+                    }
                 }
             ]);
             $scope.showHttpsWarning = window.location.protocol !== 'https:';
