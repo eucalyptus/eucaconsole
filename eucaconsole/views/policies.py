@@ -30,12 +30,14 @@ Pyramid views for IAM Policies (permissions)
 """
 import simplejson as json
 
+from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config
 
 from ..constants import policies, permissions, AWS_REGIONS
 from ..forms import ChoicesManager
 from ..forms.policies import IAMPolicyWizardForm
 from ..i18n import _
+from ..models import Notification
 from ..views import BaseView, JSONResponse, TaggedItemView
 from . import boto_error_handler
 
@@ -63,7 +65,6 @@ class IAMPolicyWizardView(BaseView):
                 cancel_link_url=self.location,
                 policy_json_endpoint=self.policy_json_endpoint,
                 policy_actions=permissions.POLICY_ACTIONS,
-                controller_options_json=self.get_controller_options_json(),
                 resource_choices=dict(
                     instances=self.get_instance_choices(),
                     images=self.get_image_choices(),
@@ -79,7 +80,15 @@ class IAMPolicyWizardView(BaseView):
     @view_config(route_name='iam_policy_new', renderer=TEMPLATE, request_method='GET')
     def iam_policy_new(self):
         """Displays the Create IAM Policy wizard"""
-        return self.render_dict
+        if self.target_name == '':
+            msg = _(u'Policy resource id not defined. Try adding policy again.')
+            self.request.session.flash(msg, queue=Notification.ERROR)
+            return HTTPFound(location=self.request.route_path('dashboard'))
+        with boto_error_handler(self.request):
+            self.render_dict.update(dict(
+                controller_options_json=self.get_controller_options_json(),
+            ))
+            return self.render_dict
 
     @view_config(route_name='iam_policy_create', request_method='POST', renderer='json')
     def iam_policy_create(self):

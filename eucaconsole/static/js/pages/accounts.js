@@ -25,9 +25,9 @@ angular.module('AccountsPage', ['LandingPage'])
             window.location = $scope.accountViewUrl.replace('_name_', account['account_name'])+fragment;
         };
         $scope.$on('itemsLoaded', function($event, items) {
-            for (var i=0; i < items.length; i++) {
-                var url = $scope.accountSummaryUrl.replace('_name_', items[i].account_name);
-                var theItems = items;
+            var theItems = items;
+            angular.forEach(items, function(item, key) {
+                var url = $scope.accountSummaryUrl.replace('_name_', item.account_name);
                 $http.get(url).success(function(oData) {
                     var results = oData ? oData.results : [];
                     // search item list for this account
@@ -43,7 +43,7 @@ angular.module('AccountsPage', ['LandingPage'])
                 }).error(function (oData, status) {
                     var errorMsg = oData['message'] || null;
                 });
-            }
+            });
         });
     })
 ;

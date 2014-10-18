@@ -72,7 +72,9 @@
                 <td><a ng-click="linkAccount(item, '#policy-list')">{{ item.policy_count }}</a></td>
                 <td>
                   <span class="actions">
-                    <a id="table-item-dropdown_{{ item.account_name | escapeHTMLTagID }}" class="tiny secondary button dropdown round" data-dropdown="item-dropdown_{{ item.account_name | escapeHTMLTagID }}"><i class="fi-widget"></i></a>
+                    <a id="table-item-dropdown_{{ item.account_name | escapeHTMLTagID }}"
+                       class="tiny secondary button dropdown right round"
+                       data-dropdown="item-dropdown_{{ item.account_name | escapeHTMLTagID }}"><i class="fi-widget"></i></a>
                     <ul id="item-dropdown_{{ item.account_name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
                         <li><a i18n:translate="" ng-href="${prefix}/{{ item.account_name }}">View details</a></li>
                         <li>
