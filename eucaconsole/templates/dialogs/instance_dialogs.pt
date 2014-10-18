@@ -82,7 +82,8 @@
             <div ng-show="rootDevice == 'ebs'">
                 <p>
                     <span i18n:translate="">
-                        Terminating an EBS-backed instance may also delete the root volume if the volume is set up to do so. Data on that volume will be lost. To keep the volume, you may stop the instance instead.
+                        Terminating an EBS-backed instance may also delete the root volume if the volume is set up to do so.
+                        Data on that volume will be lost. To keep the volume, you may stop the instance instead.
                     </span>
                 </p>
             </div>
@@ -123,10 +124,26 @@
                 <em tal:condition="landingpage">{{ instanceName }}</em>
             </h3>
             <div ng-show="!(platform == 'windows')">
-                <p i18n:translate=""> To connect to your instance, be sure security group "{{ groupName }}" has TCP port 22 open to inbound traffic and then perform the following steps (these instructions do not apply if you did not select a key pair when you launched this instance):</p>
+                <p>
+                    <span i18n:translate="">To connect to your instance, be sure</span>
+                    <span ng-if="securityGroups.length == 1" i18n:translate="">security group</span>
+                    <span ng-if="securityGroups.length &gt; 1" i18n:translate="">at least one of the security groups</span>
+                    <strong ng-repeat="secgroup in securityGroups">
+                        {{ secgroup.name }}<span ng-if="!$last">, </span>
+                    </strong>
+                    <span i18n:translate="">
+                        has TCP port 22 open to inbound traffic and then perform the following steps
+                        (these instructions do not apply if you did not select a key pair when you launched this instance):
+                    </span>
+                </p>
                 <ol>
                     <li i18n:translate="">Open an SSH terminal window.</li>
-                    <li i18n:translate="">Change your directory to the one where you stored your key file "{{ keyName }}.pem"</li>
+                    <li>
+                        <span i18n:translate="">
+                            Change your directory to the one where you stored your key file
+                        </span>
+                        <strong>{{ keyName }}.pem</strong>
+                    </li>
                     <li>
                         <span i18n:translate="">Run the following command to set the correct permissions for your key file:</span><br/>
                         <strong>chmod 400 {{ keyName }}.pem</strong>
@@ -138,9 +155,22 @@
                 </ol>
             </div>
             <div ng-show="platform == 'windows'">
-                <p i18n:translate=""> To connect to your instance, be sure security group "{{ groupName }}" has TCP port 3389 open to inbound traffic and then perform the following steps (these instructions do not apply if you did not select a key pair when you launched this instance):</p>
+                <p>
+                    <span i18n:translate="">To connect to your instance, be sure</span>
+                    <span ng-if="securityGroups.length == 1" i18n:translate="">security group</span>
+                    <span ng-if="securityGroups.length &gt; 1" i18n:translate="">at least one of the security groups</span>
+                    <strong ng-repeat="secgroup in securityGroups">
+                        {{ secgroup.name }}<span ng-if="!$last">, </span>
+                    </strong>
+                    <span i18n:translate="">
+                        has TCP port 3389 open to inbound traffic and then perform the following steps
+                        (these instructions do not apply if you did not select a key pair when you launched this instance):
+                    </span>
+                </p>
                 <ol>
-                    <li><a ng-click="promptFile('${request.route_path('instance_get_password', id='_id_')}')" i18n:translate="">Browse to your key file "{{ keyName }}.pem" in your local file system and use it to retrieve your instance password. </a></li>
+                    <li><a ng-click="promptFile('${request.route_path('instance_get_password', id='_id_')}')" i18n:translate="">
+                        Browse to your key file "{{ keyName }}.pem" in your local file system and use it to retrieve your instance password.
+                    </a></li>
                     <li i18n:translate="">Open a remote desktop client. </li>
                     <li i18n:translate="">Use the following for your username and password: </li>
                 </ol>

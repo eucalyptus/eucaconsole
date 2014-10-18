@@ -34,7 +34,7 @@ angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils'])
             else {
                 window.location = '/instances/' + instance_id + '/createimage';
             }
-        }
+        };
         $scope.revealModal = function (action, instance) {
             var modal = $('#' + action + '-instance-modal'),
                 securityGroups = instance['security_groups'],
@@ -46,6 +46,7 @@ angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils'])
             $scope.instanceName = instance['name'];
             $scope.rootDevice = instance['root_device'];
             $scope.groupName = securityGroupName;
+            $scope.securityGroups = securityGroups;
             $scope.keyName = instance['key_name'];
             $scope.publicDNS = instance['public_dns_name'];
             $scope.platform = instance['platform'];
