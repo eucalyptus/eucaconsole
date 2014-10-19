@@ -1,5 +1,9 @@
 /* Dropdown elements */
 /* Set the link colors and styles for top-level nav */
-.items { margin-bottom: 6px; }
-.items .facetentry { color: #333; background-color: #cccccc; margin-right: 8px; }
-.items .facetentry a { color: white; }
+.search-bar { border: 1px solid black; background-color: white; padding: 4px; height: 2.0rem; }
+.search-bar i.fi-magnifying-glass { padding: 3px; margin-right: 3px; vertical-align: middle; position: relative; float: left; }
+.search-bar .items { margin-bottom: 6px; position: relative; float: left; }
+.search-bar .items .facetentry { color: #333; background-color: #cccccc; margin-right: 8px; }
+.search-bar .items .facetentry a { color: white; }
+.search-bar #search-input { border: 0px; width: 200px; height: 1.5rem; position: relative; float: left; padding: 3px; margin: 0px; }
+.search-bar i.cancel { padding: 3px; vertical-align: middle; position: relative; float: right; }

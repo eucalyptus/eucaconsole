@@ -100,24 +100,24 @@ class ImagesFiltersForm(BaseSecureForm):
 
     def get_platform_choices(self):
         if self.cloud_type == 'euca':
-            return (
-                ('linux', 'Linux'),
-                ('windows', 'Windows'),
-            )
+            return [
+                {'key':'linux', 'label':'Linux'},
+                {'key':'windows', 'label':'Windows'},
+            ]
         else:
-            return ('windows', 'Windows'),
+            return [{'key':'windows', 'label':'Windows'}]
 
     @staticmethod
     def get_root_device_type_choices():
-        return (
-            ('ebs', 'EBS'),
-            ('instance-store', 'Instance-store'),
-        )
+        return [
+            {'key':'ebs', 'label':'EBS'},
+            {'key':'instance-store', 'label':'Instance-store'},
+        ]
 
     @staticmethod
     def get_architecture_choices():
-        return (
-            ('x86_64', '64-bit'),
-            ('i386', '32-bit'),
-        )
+        return [
+            {'key':'x86_64', 'label':'64-bit'},
+            {'key':'i386', 'label':'32-bit'},
+        ]
 

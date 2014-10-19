@@ -1,14 +1,44 @@
 // Import common Foundation variables
 @import "../includes/eucavariables";
 
-.items {
-    margin-bottom: 6px;
-    .facetentry {
-        color: #333;
-        background-color: $euca-lightgrey;
-        margin-right: 8px;
-        a {
-            color: white;
+.search-bar {
+    border: 1px solid black;
+    background-color: white;
+    padding: 4px;
+    height: 2.0rem;
+    i.fi-magnifying-glass {
+        padding: 3px;
+        margin-right: 3px;
+        vertical-align: middle;
+        position: relative;
+        float: left;
+    }
+    .items {
+        margin-bottom: 6px;
+        position: relative;
+        float: left;
+        .facetentry {
+            color: #333;
+            background-color: $euca-lightgrey;
+            margin-right: 8px;
+            a {
+                color: white;
+            }
         }
+    }
+    #search-input {
+        border: 0px;
+        width: 200px;
+        height: 1.5rem;
+        position: relative;
+        float: left;
+        padding: 3px;
+        margin: 0px;
+    }
+    i.cancel {
+        padding: 3px;
+        vertical-align: middle;
+        position: relative;
+        float: right;
     }
 }

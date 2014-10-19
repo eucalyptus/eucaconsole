@@ -4,20 +4,27 @@
     <link rel="stylesheet" href="${request.static_path('eucaconsole:static/css/widgets/magic_search.css')}"
           type="text/css" charset="utf-8" />
      <div class="small-12 columns">
-        <div class="items">
-            <span class="label radius secondary facetentry"
-                  ng-repeat="facet in currentSearch" ng-cloak="cloak">
-                <span title="{{ facet.label }}">
-                    {{ facet.label | ellipsis: 30 }}
+        <div class="search-bar">
+            <i class="fi-magnifying-glass go"></i>
+            <div class="items">
+                <span class="label radius secondary facetentry"
+                      ng-repeat="facet in currentSearch" ng-cloak="cloak">
+                    <span>
+                        {{ facet.label[0] }}:<b>{{ facet.label[1] }}</b>
+                    </span>
+                    <a class="remove" ng-click="removeFacet($index, $event)"
+                       title="Remove facet" i18n:translate="title"><i class="fi-x"></i></a>
                 </span>
-                <a href="#" class="remove" ng-click="removeFacet($index, $event)"
-                   title="Remove facet"><i class="fi-x"></i></a>
-            </span>
-            <br/>
-            <select id="search-text" name="search-text" ng-model="searchFacet">
-                <option ng-repeat="facet in facetsObj" value='{{ facet.name }}'>{{ facet.label }}</option>
-            </select>
-            <!--i class="fi-magnifying-glass go"></i-->
+            </div>
+            <input id="search-input" type="text" data-dropdown="facet-drop"></input>
+            <ul id="facet-drop" class="f-dropdown" data-dropdown-content="">
+                <li ng-repeat="facet in facetsObj" ng-show="!facetSelected">
+                    <a ng-click="facetClicked($index, $event, facet.name)">{{ facet.label }}</a>
+                </li>
+                <li ng-repeat="option in facetOptions" ng-show="facetSelected">
+                    <a ng-click="optionClicked($index, $event, option.key)">{{ option.label }}</a>
+            </ul>
+            <a ng-click="clearSearch()" title="Clear search" i18n:translate="title"><i class="fi-x cancel"></i></a>
         </div>
     </div>
     <script src="${request.static_path('eucaconsole:static/js/widgets/magic_search.js')}"></script>
