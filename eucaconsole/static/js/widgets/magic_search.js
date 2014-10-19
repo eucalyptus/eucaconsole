@@ -94,12 +94,14 @@ angular.module('MagicSearch', [])
             else {
                 $scope.facetSelected = undefined;
                 $scope.facetOptions = undefined;
+                $('#search-input').val('');
             }
             // facet re-enabled by reload
         };
         $scope.clearSearch = function() {
             if ($scope.currentSearch.length > 0) {
                 $scope.currentSearch = [];
+                $('#search-input').val('');
                 $scope.$emit('searchUpdated', '');
             }
         };
