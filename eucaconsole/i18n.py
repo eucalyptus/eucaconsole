@@ -34,7 +34,7 @@ from pyramid.i18n import TranslationStringFactory
 
 _ = TranslationStringFactory('eucaconsole')
 
-LOCALES = ('en', 'de', 'el, ''es', 'fr', 'it', 'ru', 'zh_HANS', 'zh_HANT')
+LOCALES = ('en', 'de', 'el', 'es', 'fr', 'it', 'ru', 'zh_HANS', 'zh_HANT')
 
 
 @subscriber(NewRequest)
