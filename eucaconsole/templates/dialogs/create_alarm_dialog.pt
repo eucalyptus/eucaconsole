@@ -2,8 +2,7 @@
 <div id="create-alarm-wrapper" ng-app="CreateAlarm" ng-controller="CreateAlarmCtrl" i18n:domain="eucaconsole"
      ng-init="initController('${controller_options_json}')">
     <style type="text/css">
-        #alarm-conflict-alert { position: relative; top: -12px; }
-        #alarm-conflict-alert i { color: darkred; }
+        #alarm-conflict-alert { position: relative; top: -12px; color: darkred; }
     </style>
     <div id="create-alarm-modal" class="reveal-modal ${modal_size}" data-reveal="">
         <h3 i18n:translate="">Create alarm</h3>
