@@ -76,6 +76,9 @@
             <metal:block metal:use-macro="layout.global_macros['help_expando']" />
             <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                 <!--! pull in help content here-->
+                <div id="help-html-console_object_file_upload"
+                    ng-include="'${layout.help_path('console_object_file_upload.html')}'">
+                </div> 
             </div>
         </div>
         <div id="upload-files-modal" class="reveal-modal small" data-reveal="">
