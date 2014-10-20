@@ -171,8 +171,8 @@
             <div id="browser-filereader-warn-modal" class="reveal-modal small" data-reveal="">
                 <h3 i18n:translate="">Browser doesn't support the File API</h3>
                 <p i18n:translate="">
-                    The browser you are using lacks support for the File API
-                    and features that involve uploading files won't work.
+                    The browser you are using lacks support for accessing files from your local filesystem
+                    and you will not be able to use features in this application that require this.
                 </p>
                 <a class="close-reveal-modal">&#215;</a>
             </div>
