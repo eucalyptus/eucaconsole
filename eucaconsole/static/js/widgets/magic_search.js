@@ -22,44 +22,67 @@ angular.module('MagicSearch', [])
                 facetParts = facet.split('=');
                 angular.forEach($scope.facetsObj, function(value, idx) {
                     if (value.name == facetParts[0]) {
-                        angular.forEach(value.options, function(option, idx) {
-                            if (option.key == facetParts[1]) {
-                                $scope.currentSearch.push({'name':facet, 'label':[value.label, option.label]});
-                                var facet_name = value.name[0];
-                                angular.forEach($scope.facetsObj.slice(), function(facet, idx) {
-                                    if (facet.name[0] == facet_name) {
-                                        $scope.facetsObj.splice($scope.facetsObj.indexOf(facet), 1);
-                                    }
-                                });
-                            }
-                        });
+                        if (value.name == 'tags') {
+                            $scope.currentSearch.push({'name':facet, 'label':[value.label, facetParts[1]]});
+                            $scope.deleteFacetSelection(facetParts[0]);
+                        }
+                        else {
+                            angular.forEach(value.options, function(option, idx) {
+                                if (option.key == facetParts[1]) {
+                                    $scope.currentSearch.push({'name':facet, 'label':[value.label, option.label]});
+                                    $scope.deleteFacetSelection(facetParts[0]);
+                                }
+                            });
+                        }
                     }
                 });
+            });
+        };
+        // removes a facet from the menu
+        $scope.deleteFacetSelection = function(facet_name) {
+            angular.forEach($scope.facetsObj.slice(), function(facet, idx) {
+                if (facet.name == facet_name) {
+                    $scope.facetsObj.splice($scope.facetsObj.indexOf(facet), 1);
+                }
             });
         };
         $('#search-input').on('keypress', function(event) {
             if (event.which == 13) {
                 var search_val = $('#search-input').val();
-                for (var i=0; i<$scope.currentSearch.length; i++) {
-                    if ($scope.currentSearch[i]['name'].indexOf('text') == 0) {
-                        $scope.currentSearch.splice(i, 1);
-                    }
+                if ($scope.facetSelected == 'tags') {
+                    var curr = $scope.currentSearch[$scope.currentSearch.length-1];
+                    curr.name = curr.name + '=' + search_val;
+                    curr.label[1] = search_val;
+                    $scope.facetSelected = undefined;
+                    $scope.emitQuery();
                 }
-                $scope.currentSearch.push({'name':'text='+search_val, 'label':['text', search_val]});
-                $scope.$apply();
-                $('#search-input').trigger('click');
-                $('#search-input').val('');
-                $scope.$emit('textSearch', search_val, $scope.filter_keys);
+                else {
+                    for (var i=0; i<$scope.currentSearch.length; i++) {
+                        if ($scope.currentSearch[i]['name'].indexOf('text') == 0) {
+                            $scope.currentSearch.splice(i, 1);
+                        }
+                    }
+                    $scope.currentSearch.push({'name':'text='+search_val, 'label':['text', search_val]});
+                    $scope.$apply();
+                    $('#search-input').trigger('click');
+                    $('#search-input').val('');
+                    $scope.$emit('textSearch', search_val, $scope.filter_keys);
+                }
             }
         });
         $scope.facetClicked = function($index, $event, name) {
             $('#search-input').trigger('click');
             $scope.facetSelected = name;
-            $scope.facetOptions = $scope.facetsObj[$index].options;
             $scope.currentSearch.push({'name':name, 'label':[$scope.facetsObj[$index].label, '']});
-            $timeout(function() {
-                $('#search-input').trigger('click');
-            });
+            if (name != 'tags') {
+                $scope.facetOptions = $scope.facetsObj[$index].options;
+                $timeout(function() {
+                    $('#search-input').trigger('click');
+                });
+            }
+            else {
+                $('#search-input').focus();
+            }
         };
         $scope.optionClicked = function($index, $event, name) {
             $('#search-input').trigger('click');

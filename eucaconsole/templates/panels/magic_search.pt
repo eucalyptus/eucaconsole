@@ -16,7 +16,7 @@
                        title="Remove facet" i18n:translate="title"><i class="fi-x"></i></a>
                 </span>
             </div>
-            <input id="search-input" type="text" data-dropdown="facet-drop"></input>
+            <input id="search-input" type="text" data-dropdown="facet-drop" placeholder="Select facets for filter, or enter text to search" i18n:translate="placeholder"></input>
             <ul id="facet-drop" class="f-dropdown" data-dropdown-content="">
                 <li ng-repeat="facet in facetsObj" ng-show="!facetSelected">
                     <a ng-click="facetClicked($index, $event, facet.name)">{{ facet.label }}</a>
