@@ -18,7 +18,7 @@
                 <div class="small-10 columns right" id="alarm-conflict-alert">
                     <i class="fi-alert"></i>
                     <span i18n:translate="">
-                        The alarm name you have entered conflicts with an existing alarm.
+                        The alarm name you have entered conflicts with an existing alarm. Please use a different name.
                     </span>
                 </div>
             </div>
