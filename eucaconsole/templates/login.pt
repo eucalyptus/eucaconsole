@@ -27,7 +27,7 @@
     </div>
 
     <div class="row large-6 medium-10 columns large-centered medium-centered" id="login-wrapper"
-         ng-app="LoginPage" ng-controller="LoginPageCtrl" ng-init="initController('${json_options}')">
+         ng-app="LoginPage" ng-controller="LoginPageCtrl" ng-init="initController('${controller_options_json}')">
         <div id="javascript-warning">
             <p i18n:translate=""> Warning! JavaScript is not enabled on your browser.
             To use the Eucalyptus Management Console, please enable JavaScript in your browser's settings.

@@ -76,6 +76,10 @@ class LoginView(BaseView):
         self.secure_session = asbool(self.request.registry.settings.get('session.secure', False))
         self.https_proxy = self.request.environ.get('HTTP_X_FORWARDED_PROTO') == 'https'
         self.https_scheme = self.request.scheme == 'https'
+        options_json=BaseView.escape_json(json.dumps(dict(
+            account=request.params.get('account', default=''),
+            username=request.params.get('username', default=''),
+        )))
         self.render_dict = dict(
             https_required=self.show_https_warning(),
             euca_login_form=self.euca_login_form,
@@ -84,6 +88,7 @@ class LoginView(BaseView):
             aws_enabled=self.aws_enabled,
             duration=self.duration,
             came_from=self.came_from,
+            controller_options_json=options_json,
         )
 
     def show_https_warning(self):
@@ -101,13 +106,6 @@ class LoginView(BaseView):
             status = getattr(self.request.exception, 'status', "403 Forbidden")
             status = int(status[:status.index(' ')]) or 403
             return JSONResponse(status=status, message=message)
-        else:
-            self.render_dict.update(dict(
-                json_options=BaseView.escape_json(json.dumps(dict(
-                    account=self.request.params.get('account', default=''),
-                    username=self.request.params.get('username', default=''),
-                )))
-            ))
         return self.render_dict
 
     @view_config(route_name='login', request_method='POST', renderer=TEMPLATE, permission=NO_PERMISSION_REQUIRED)
