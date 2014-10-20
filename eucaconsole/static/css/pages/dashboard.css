@@ -54,11 +54,9 @@
 
 #roles .icon { background-image: url(../../img/svg/icon_IAM_roles.svg); }
 
-/* Small screen */
 #service-unknown { margin-top: 13px; }
 
-#service-up i { color: #03405f; font-size: 16pt; text-align: left; }
-
-#service-down i { color: red; font-size: 16pt; text-align: left; }
-
-#status { font-size: 11pt; text-align: left; font-style: normal; font-weight: normal; color: #6a737b; margin-top: 9px; margin-bottom: 0; }
+#health .statusrow { font-size: 11pt; text-align: left; color: #6a737b; margin-top: 10px; line-height: 1.4rem; }
+#health .statusrow .status { position: relative; left: 8px; }
+#health .statusrow i.service-up { color: #03405f; font-size: 16pt; text-align: left; }
+#health .statusrow i.service-down { color: red; font-size: 16pt; text-align: left; }
