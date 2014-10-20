@@ -118,11 +118,18 @@
         </form>
     </footer>
     <div id="about-modal" class="reveal-modal small" data-reveal="">
-        <h3 i18n:translate="">About your cloud</h3>
+        <a data-reveal-id="the-team"><h3 i18n:translate="">About your cloud</h3></a>
         <p>
             <span i18n:translate="">Eucalyptus cloud software version:</span>
             <strong>${layout.version}</strong>
         </p>
+        <a class="close-reveal-modal">&#215;</a>
+    </div>
+    <div id="the-team" class="reveal-modal medium" data-reveal="">
+        <h3 i18n:translate="">About the Team</h3>
+        <div class="help-content">
+            <div ng-include="'${layout.help_path('about-the-team.html')}'"></div> 
+        </div>
         <a class="close-reveal-modal">&#215;</a>
     </div>
     <div id="timed-out-modal" class="reveal-modal small" data-reveal="">
