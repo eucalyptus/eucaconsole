@@ -268,6 +268,23 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 $scope.$broadcast('setBDM', item.block_device_mapping);
                 $scope.existsImage = true;
                 $scope.imageIDNonexistErrorClass = "";
+                // adjust vmtypes menu
+                var rootSize = item.block_device_mapping['/dev/sda']['size'];
+                var selectedOne = false;
+                angular.forEach($('#instance_type option'), function(value, idx) {
+                    var text = value.text;
+                    var size = text.split(',')[2].trim();
+                    size = size.substring(0, size.indexOf(' '));
+                    if (size < rootSize) {  // disable entries that won't fit
+                        value.disabled = true;
+                    }
+                    else {
+                        if (!selectedOne) {  // select first one that fits
+                            value.selected = true;
+                            selectedOne = true;
+                        }
+                    }
+                });
             }).error(function (oData) {
                 $scope.existsImage = false;
                 $scope.imageIDNonexistErrorClass = "error";
