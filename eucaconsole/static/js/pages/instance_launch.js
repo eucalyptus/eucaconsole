@@ -268,23 +268,31 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 $scope.$broadcast('setBDM', item.block_device_mapping);
                 $scope.existsImage = true;
                 $scope.imageIDNonexistErrorClass = "";
-                // adjust vmtypes menu
-                var rootSize = item.block_device_mapping['/dev/sda']['size'];
-                var selectedOne = false;
-                angular.forEach($('#instance_type option'), function(value, idx) {
-                    var text = value.text;
-                    var size = text.split(',')[2].trim();
-                    size = size.substring(0, size.indexOf(' '));
-                    if (size < rootSize) {  // disable entries that won't fit
-                        value.disabled = true;
-                    }
-                    else {
-                        if (!selectedOne) {  // select first one that fits
-                            value.selected = true;
-                            selectedOne = true;
+                if (item.root_device_type == 'ebs') {
+                    // adjust vmtypes menu
+                    var rootSize = item.block_device_mapping[item.root_device_name]['size'];
+                    var selectedOne = false;
+                    angular.forEach($('#instance_type option'), function(value, idx) {
+                        var text = value.text;
+                        var size = text.split(',')[2].trim();
+                        size = size.substring(0, size.indexOf(' '));
+                        if (size < rootSize) {  // disable entries that won't fit
+                            value.disabled = true;
                         }
-                    }
-                });
+                        else {
+                            value.disabled = false;
+                            if (!selectedOne) {  // select first one that fits
+                                value.selected = true;
+                                selectedOne = true;
+                            }
+                        }
+                    });
+                }
+                else {
+                    angular.forEach($('#instance_type option'), function(value, idx) {
+                        value.disabled = false;
+                    });
+                }
             }).error(function (oData) {
                 $scope.existsImage = false;
                 $scope.imageIDNonexistErrorClass = "error";
