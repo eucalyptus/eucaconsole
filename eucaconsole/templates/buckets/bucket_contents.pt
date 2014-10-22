@@ -94,10 +94,10 @@
                     <li ng-show="item.is_folder">
                         <a i18n:translate="" ng-click="saveKey('${bucket_name}', item.full_key_name)">Copy folder</a>
                     </li>
-                    <li ng-show="item.is_folder && hasCopyItem">
+                    <li ng-show="item.is_folder &amp;&amp; hasCopyItem">
                         <a i18n:translate="" ng-click="doPaste('${bucket_name}', item)">Paste object</a>
                     </li>
-                    <li ng-show="item.is_folder && folderCanCopyFolder(item)">
+                    <li ng-show="item.is_folder &amp;&amp; folderCanCopyFolder(item)">
                         <a i18n:translate="" ng-click="doPaste('${bucket_name}', item)">Paste folder</a>
                     </li>
                     <li ng-show="item.is_folder">
@@ -149,10 +149,10 @@
                             <li ng-show="item.is_folder">
                                 <a i18n:translate="" ng-click="saveKey('${bucket_name}', item.full_key_name)">Copy folder</a>
                             </li>
-                            <li ng-show="item.is_folder && hasCopyItem">
+                            <li ng-show="item.is_folder &amp;&amp; hasCopyItem">
                                 <a i18n:translate="" ng-click="doPaste('${bucket_name}', item)">Paste object</a>
                             </li>
-                            <li ng-show="item.is_folder && folderCanCopyFolder(item)">
+                            <li ng-show="item.is_folder &amp;&amp; folderCanCopyFolder(item)">
                                 <a i18n:translate="" ng-click="doPaste('${bucket_name}', item)">Paste folder</a>
                             </li>
                             <li ng-show="item.is_folder">
