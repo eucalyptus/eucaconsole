@@ -38,7 +38,7 @@
                       method="POST" accept-charset="utf-8" enctype="multipart/form-data">
                     ${structure:upload_form['csrf_token']}
                     <h6 class='subheading-label' i18n:translate=''>Select file(s)</h6>
-                    <input type="file" id="files" data-file="files" multiple="" name='files'>
+                    <input type="file" id="files" data-file="files" multiple="" name='files' />
                     <p class="file-list" ng-show="files.length > 1">
                         <span ng-repeat="file in files">{{ file.name }}<br/></span>
                     </p>
