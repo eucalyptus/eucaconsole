@@ -70,19 +70,19 @@ class PermissionCheckMixin(object):
         try:
             iam_conn.get_all_users(path_prefix="/notlikely")
             session['user_access'] = True
-        except BotoServerException:
+        except BotoServerError:
             pass
         session['group_access'] = False
         try:
             iam_conn.get_all_groups(path_prefix="/notlikely")
             session['group_access'] = True
-        except BotoServerException:
+        except BotoServerError:
             pass
         session['role_access'] = False
         try:
             iam_conn.list_roles(path_prefix="/notlikely")
             session['role_access'] = True
-        except BotoServerException:
+        except BotoServerError:
             pass
 
 class LoginView(BaseView, PermissionCheckMixin):
