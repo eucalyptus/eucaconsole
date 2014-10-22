@@ -33,6 +33,7 @@ import logging
 from urllib2 import HTTPError, URLError
 from urlparse import urlparse
 from boto.connection import AWSAuthConnection
+from boto.exception import BotoServerError
 
 from pyramid.httpexceptions import HTTPFound
 from pyramid.security import NO_PERMISSION_REQUIRED, remember, forget
@@ -69,19 +70,19 @@ class PermissionCheckMixin(object):
         try:
             iam_conn.get_all_users(path_prefix="/notlikely")
             session['user_access'] = True
-        except:
+        except BotoServerException:
             pass
         session['group_access'] = False
         try:
             iam_conn.get_all_groups(path_prefix="/notlikely")
             session['group_access'] = True
-        except:
+        except BotoServerException:
             pass
         session['role_access'] = False
         try:
             iam_conn.list_roles(path_prefix="/notlikely")
             session['role_access'] = True
-        except:
+        except BotoServerException:
             pass
 
 class LoginView(BaseView, PermissionCheckMixin):
