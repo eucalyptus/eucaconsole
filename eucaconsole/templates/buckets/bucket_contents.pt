@@ -223,6 +223,7 @@
             <a href="#" id="delete_folder_close_link" class="close-reveal-modal">&#215;</a>
         </div>
         <!--! Create folder modal dialog -->
+        ${panel('bucket_dialogs', landingpage=True, versioning_form=versioning_form, delete_form=delete_form)}
         ${panel('create_folder_dialog', bucket_name=bucket_name, create_folder_form=create_folder_form)}
         ${panel('bucket_delete_dialog')}
     </div>
