@@ -21,6 +21,16 @@ describe("SecurityGroupRules", function() {
         });
     }));
 
+    beforeEach(function() {
+        //jasmine.getFixtures().fixturesPath = "/templates/panels";
+        //loadFixtures("securitygroup_rules.pt");
+        var template = window.__html__['templates/panels/securitygroup_rules.pt'];
+        // remove <script src> and <link> tags to avoid phantomJS error
+        template = template.replace(/script src/g, "script ignore_src"); 
+        template = template.replace(/\<link/g, "\<ignore_link"); 
+        setFixtures(template);
+    });
+
     describe("Initial Values Test", function() {
 
         it("Initial value of isRuleNotComplete is true", function() {
@@ -90,10 +100,6 @@ describe("SecurityGroupRules", function() {
 
     describe("Function resetValues() Test", function() {
 
-        beforeEach(function() {
-            jasmine.getFixtures().fixturesPath = "/templates/panels";
-            loadFixtures("securitygroup_rules.pt");
-        });
 
         it("Should call cleanupSelections() after resetting values", function() {
             spyOn(scope, 'cleanupSelections');
@@ -115,11 +121,6 @@ describe("SecurityGroupRules", function() {
 
     describe("Template Label Test", function() {
 
-        beforeEach(function() {
-            jasmine.getFixtures().fixturesPath = "/templates/panels";
-            loadFixtures("securitygroup_rules.pt");
-        });
-
         it("Should #inbound-rules-tab link be labeled 'Inbound'", function() {
             expect($('#inbound-rules-tab').text()).toEqual('Inbound');
         });
@@ -130,11 +131,6 @@ describe("SecurityGroupRules", function() {
     });
 
     describe("Function initInternetProtocol() Test", function() {
-
-        beforeEach(function() {
-            jasmine.getFixtures().fixturesPath = "/templates/panels";
-            loadFixtures("securitygroup_rules.pt");
-        });
 
         beforeEach(function() {
             setFixtures('<input id="csrf_token" name="csrf_token" type="hidden" value="2a06f17d6872143ed806a695caa5e5701a127ade">');
@@ -172,11 +168,6 @@ describe("SecurityGroupRules", function() {
         var vpc = 'vpc-12345678';
 
         beforeEach(function() {
-            jasmine.getFixtures().fixturesPath = "/templates/panels";
-            loadFixtures("securitygroup_rules.pt");
-        });
-
-        beforeEach(function() {
             setFixtures('<input id="csrf_token" name="csrf_token" type="hidden" value="2a06f17d6872143ed806a695caa5e5701a127ade">');
             scope.jsonEndpoint  = "securitygroup_json";
             var data = 'csrf_token=2a06f17d6872143ed806a695caa5e5701a127ade&vpc_id=' + vpc
@@ -202,11 +193,6 @@ describe("SecurityGroupRules", function() {
     });
 
     describe("Function createRuleArrayBlock() Test", function() {
-
-        beforeEach(function() {
-            jasmine.getFixtures().fixturesPath = "/templates/panels";
-            loadFixtures("securitygroup_rules.pt");
-        });
 
         it("Should call getGroupIdByName() if trafficType is 'securitygroup' and has groupName", function() {
             spyOn(scope, 'getGroupIdByName');

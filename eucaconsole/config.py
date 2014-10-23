@@ -77,10 +77,6 @@ def get_configurator(settings, enable_auth=True):
     config.add_subscriber(escape_braces, BeforeRender)
     cache_duration = int(settings.get('static.cache.duration', 43200))
     config.add_static_view(name='static/' + __version__, path='static', cache_max_age=cache_duration)
-
-    # NOTE: need for jasmine unit-test. It needs to be disabled in production
-    config.add_static_view(name='templates/', path='templates', cache_max_age=cache_duration)
-
     config.add_layout('eucaconsole.layout.MasterLayout',
                       'eucaconsole.layout:templates/master_layout.pt')
     locale_dir = os.path.join(os.getcwd(), 'locale')
