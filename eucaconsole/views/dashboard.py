@@ -38,10 +38,7 @@ from . import BaseView
 from ..i18n import _
 from . import boto_error_handler
 
-TILE_MASTER_LIST = u'instances-running,instances-stopped,scaling-groups,elastic-ips,volumes,snapshots,buckets,' \
-                   u'security-groups,key-pairs,accounts,users,groups,roles,health'
-
-TILE_DISPLAY_NAMES = {
+TILE_MASTER_LIST = {
     'instances-running': 'Running instances',
     'instances-stopped': 'Stopped instances',
     'scaling-groups': 'Instances in scaling groups',
@@ -77,10 +74,10 @@ class DashboardView(BaseView):
         if tiles is not None:
             tiles = tiles.replace('%2C', ',')
         else:
-            tiles = TILE_MASTER_LIST
+            tiles = ','.join(TILE_MASTER_LIST.keys())
 
-        tiles_not_shown = [tile for tile in TILE_MASTER_LIST.split(',') if tile not in tiles.split(',')]
-        tiles_default = TILE_MASTER_LIST.split(',')
+        tiles_not_shown = [tile for tile in TILE_MASTER_LIST.keys() if tile not in tiles.split(',')]
+        tiles_default = TILE_MASTER_LIST.keys()
         session = self.request.session
         if session['cloud_type'] == 'aws':
             try:
@@ -117,7 +114,7 @@ class DashboardView(BaseView):
             availability_zones=availability_zones,
             tiles=tiles.split(','),
             tiles_not_shown=tiles_not_shown,
-            tile_names=TILE_DISPLAY_NAMES,
+            tile_names=TILE_MASTER_LIST,
             tiles_are_default=tiles_are_default,
             controller_options_json=self.get_controller_options_json(),
         )
@@ -160,7 +157,7 @@ class DashboardJsonView(BaseView):
         tiles = self.request.cookies.get("{0}_dash_order".format(
             self.request.session['account' if self.request.session['cloud_type'] == 'euca' else 'access_id']))
         if tiles is None:
-            tiles = TILE_MASTER_LIST
+            tiles = ','.join(TILE_MASTER_LIST.keys())
         with boto_error_handler(self.request):
             if ('instances-running' or 'instances-stopped' or 'scaling-groups') in tiles:
                 for instance in ec2_conn.get_only_instances(filters=filters):
