@@ -10,6 +10,7 @@ angular.module('BlockDeviceMappingEditor', ['EucaConsoleUtils'])
         $scope.ephemeralCount = 0;
         $scope.isNotValid = true;
         $scope.snapshotJsonURL = '';
+        $scope.disableDOT = false;
         $scope.setInitialNewValues = function () {
             $scope.newVolumeType = 'EBS';
             $scope.virtualName = '';
@@ -69,13 +70,14 @@ angular.module('BlockDeviceMappingEditor', ['EucaConsoleUtils'])
             }, 250);
         };
         // tempate-ed way to pass bdm in
-        $scope.initBlockDeviceMappingEditor = function (bdmJson, url) {
+        $scope.initBlockDeviceMappingEditor = function (bdmJson, url, disableDOT) {
             if (bdmJson != '{}') {
                 $scope.bdMapping = JSON.parse(bdmJson);
             } else {
                 $scope.bdMapping = undefined;
             }
             $scope.bdmTextarea.val(bdmJson);
+            $scope.disableDOT = disableDOT;
             $scope.setInitialNewValues();
             $scope.initChosenSelector();
             $scope.snapshotJsonURL = url;
