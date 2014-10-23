@@ -5,6 +5,7 @@
 #maincontent #pagetitle { margin-bottom: 0.5rem; margin-left: 0; margin-top: 1rem; }
 #maincontent #pagetitle h3 { font-weight: bold; margin-top: 0; display: inline-block; }
 #maincontent #pagetitle #zone-selector { display: inline-block; margin-left: 1rem; }
+#maincontent #pagetitle #reset-dash { margin-top: 1.25rem; font-size: 0.825rem; display: inline-block; float: right; }
 
 .panel { background-color: transparent; border: none; margin-bottom: 0; box-sizing: border-box; position: relative; font-size: 0.825rem; }
 .panel .tile { background-color: white; position: relative; height: 240px; padding: 4px 8px; }
