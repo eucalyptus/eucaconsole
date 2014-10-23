@@ -21,8 +21,8 @@ angular.module('EucaConsoleUtils', [])
      */
     return function(data, status) {
         var errorMsg = data['message'] || '';
-        if (status === 403) {
-            if (errorMsg.indexOf('Not authorized') == -1) {
+        if (status === 403 || status === 400) {
+            if (errorMsg.indexOf('Not authorized') == -1 || errorMsg.indexOf('Request has expired') == 1) {
                 $('#timed-out-modal').foundation('reveal', 'open');
             }
             // else, fallthrough and display message
