@@ -49,6 +49,7 @@ angular.module('MagicSearch', [])
         $('#search-input').on('keypress', function(event) {
             if (event.which == 13) {
                 var search_val = $('#search-input').val();
+                // if tag search, treat as regular facet
                 if ($scope.facetSelected == 'tags') {
                     var curr = $scope.currentSearch[$scope.currentSearch.length-1];
                     curr.name = curr.name + '=' + search_val;
@@ -56,6 +57,7 @@ angular.module('MagicSearch', [])
                     $scope.facetSelected = undefined;
                     $scope.emitQuery();
                 }
+                // if text search treat as search
                 else {
                     for (var i=0; i<$scope.currentSearch.length; i++) {
                         if ($scope.currentSearch[i]['name'].indexOf('text') == 0) {
@@ -70,6 +72,7 @@ angular.module('MagicSearch', [])
                 }
             }
         });
+        // when facet clicked, add 1st part of facet and set up options
         $scope.facetClicked = function($index, $event, name) {
             $('#search-input').trigger('click');
             $scope.facetSelected = name;
@@ -84,6 +87,7 @@ angular.module('MagicSearch', [])
                 $('#search-input').focus();
             }
         };
+        // when option clicked, complete facet and send event
         $scope.optionClicked = function($index, $event, name) {
             $('#search-input').trigger('click');
             var curr = $scope.currentSearch[$scope.currentSearch.length-1];
@@ -93,6 +97,7 @@ angular.module('MagicSearch', [])
             $scope.facetOptions = undefined;
             $scope.emitQuery();
         };
+        // send event with new query string
         $scope.emitQuery = function(removed) {
             var query = '';
             for (var i=0; i<$scope.currentSearch.length; i++) {
@@ -108,6 +113,7 @@ angular.module('MagicSearch', [])
                 $scope.$emit('searchUpdated', query);
             }
         };
+        // remove facet and either update filter or search
         $scope.removeFacet = function($index, $event) {
             var removed = $scope.currentSearch[$index].name;
             $scope.currentSearch.splice($index, 1);
@@ -121,6 +127,7 @@ angular.module('MagicSearch', [])
             }
             // facet re-enabled by reload
         };
+        // clear entire searchbar
         $scope.clearSearch = function() {
             if ($scope.currentSearch.length > 0) {
                 $scope.currentSearch = [];
