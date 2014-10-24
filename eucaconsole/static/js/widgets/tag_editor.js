@@ -58,14 +58,14 @@ angular.module('TagEditor', ['ngSanitize'])
                     evt.preventDefault();
                 }
             });
-            $('#tag-value-input').keydown(function(evt) {
-                if (evt.keyCode === 13) {
-                    evt.preventDefault();
-                }
-            });
             $scope.showNameTag = showNameTag;
             $scope.syncTags();
             $scope.setWatch();
+        };
+        $scope.keyListener = function ($event) {
+            if ($event.keyCode == 13) {
+                $scope.addTag($event)
+            }
         };
         $scope.getSafeTitle = function (tag) {
             return $sanitize(tag.name + ' = ' + tag.value);
