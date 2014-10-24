@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>verify-ec2-volume-size-quota</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">verify-ec2-volume-size-quota</td></tr>
+</thead><tbody>
+<tr>
+	<td>setSpeed</td>
+	<td>500</td>
+	<td></td>
+</tr>
+<tr>
+	<td>setTimeout</td>
+	<td>120000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>open</td>
+	<td>/</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=resource-menu-dashboard</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=resource-menu-autoscaling</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=resource-menuitem-scalinggroups</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>items found</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=sg1</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Policies</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeXpathCount</td>
+	<td>//div[contains(@class, 'tile item policy')]</td>
+	<td>divcount1</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${divcount1}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=div.plus</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=name</td>
+	<td>sp1</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Create alarm</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>xpath=(//input[@id='name'])[2]</td>
+	<td>alarm1</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>id=metric</td>
+	<td>label=AWS/EC2 - CPUUtilization</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=option[value=&quot;CPUUtilization&quot;]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>id=dimension</td>
+	<td>label=Scaling group</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=threshold</td>
+	<td>90</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=create-alarm-btn</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextNotPresent</td>
+	<td>Creating alarm</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=create-policy-btn</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=div.plus</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=name</td>
+	<td>sp2</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>name=alarm</td>
+	<td>label=alarm1</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=create-policy-btn</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Request would exceed quota for type: Policies</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeXpathCount</td>
+	<td>//div[contains(@class, 'tile item policy')]</td>
+	<td>divcount2</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${divcount2}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertEval</td>
+	<td>${divcount1} + 1 == ${divcount2}</td>
+	<td>true</td>
+</tr>
+</tbody></table>
+</body>
+</html>
