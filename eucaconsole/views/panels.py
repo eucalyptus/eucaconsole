@@ -209,7 +209,7 @@ def securitygroup_rules(context, request, rules=None, rules_egress=None, leftcol
     rules_sorted = sorted(rules_list, key=itemgetter('from_port'))
     rules_egress_sorted = sorted(rules_egress_list, key=itemgetter('from_port'))
     icmp_choices_sorted = sorted(RULE_ICMP_CHOICES, key=lambda tup: tup[1])
-    remote_addr=request.environ.get('HTTP_X_FORWARDED_FOR', getattr(request, 'remote_addr', ''))
+    remote_addr=BaseView.get_remote_addr(request)
 
     return dict(
         rules=rules_sorted,
@@ -218,8 +218,7 @@ def securitygroup_rules(context, request, rules=None, rules_egress=None, leftcol
         rules_egress_json=BaseView.escape_json(json.dumps(rules_egress_list)),
         protocol_choices=RULE_PROTOCOL_CHOICES,
         icmp_choices=icmp_choices_sorted,
-        #remote_addr=remote_addr,
-        remote_addr=getattr(request, 'remote_addr', ''),
+        remote_addr=remote_addr,
         leftcol_width=leftcol_width,
         rightcol_width=rightcol_width,
     )

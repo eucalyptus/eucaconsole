@@ -293,6 +293,10 @@ class BaseView(object):
         return url or default_path
 
     @staticmethod
+    def get_remote_addr(request):
+        return request.environ.get('HTTP_X_FORWARDED_FOR', getattr(request, 'remote_addr', ''))
+
+    @staticmethod
     def log_message(request, message, level='info'):
         prefix = ''
         cloud_type = request.session.get('cloud_type', 'euca')

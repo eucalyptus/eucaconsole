@@ -128,9 +128,8 @@ class LoginView(BaseView):
                 creds = auth.authenticate(
                     account=account, user=username, passwd=password,
                     new_passwd=new_passwd, timeout=8, duration=self.duration)
-                remote_addr=self.request.environ.get('HTTP_X_FORWARDED_FOR', getattr(self.request, 'remote_addr', ''))
                 logging.info("Authenticated Eucalyptus user: {acct}/{user} from {ip}" \
-                        .format(acct=account, user=username, ip=remote_addr))
+                        .format(acct=account, user=username, ip=BaseView.get_remote_addr(self.request)))
                 user_account = '{user}@{account}'.format(user=username, account=account)
                 # self.invalidate_connection_cache()
                 session.invalidate()  # Refresh session
@@ -202,8 +201,7 @@ class LoginView(BaseView):
             auth = AWSAuthenticator(package=package, validate_certs=validate_certs, ca_certs=ca_certs_file)
             try:
                 creds = auth.authenticate(timeout=10)
-                remote_addr=self.request.environ.get('HTTP_X_FORWARDED_FOR', getattr(self.request, 'remote_addr', ''))
-                logging.info("Authenticated AWS user from {ip}".format(ip=remote_addr))
+                logging.info("Authenticated AWS user from {ip}".format(ip=BaseView.get_remote_addr(self.request)))
                 default_region = self.request.registry.settings.get('aws.default.region', 'us-east-1')
                 # self.invalidate_connection_cache()
                 session.invalidate()  # Refresh session
