@@ -208,7 +208,6 @@ angular.module('BucketsPage', ['LandingPage', 'EucaConsoleUtils'])
                             $('#copy-folder-modal').foundation('reveal', 'close');
                             $scope.copyingAll = false;
                             $scope.folder = '';
-                            Notify.success(oData.message);
                             $scope.$broadcast('refresh');
                         }
                         else {
