@@ -129,7 +129,7 @@
 
 <metal:block metal:fill-slot="offcanvas_right">
     <div id="help-content-div" class="help-content">
-        ${panel('help_scalinggroups', 'scalinggroup_landing_page' )}
+        <div id="help-html-console_scalinggroups" ng-include="'${layout.help_path('console_scaling_groups.html')}'"></div> 
     </div>
 </metal:block>
 

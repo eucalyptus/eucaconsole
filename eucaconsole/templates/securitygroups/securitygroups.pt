@@ -81,7 +81,7 @@
 
 <metal:block metal:fill-slot="offcanvas_right">
     <div id="help-content-div" class="help-content">
-        ${panel('help_securitygroups', 'securitygroup_landing_page' )}
+        <div id="help-html-console_securitygroups" ng-include="'${layout.help_path('console_securitygroups.html')}'"></div> 
     </div>
 </metal:block>
 
