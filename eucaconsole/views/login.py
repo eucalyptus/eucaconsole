@@ -30,6 +30,7 @@ Pyramid views for Login/Logout
 """
 import base64
 import logging
+import simplejson as json
 from urllib2 import HTTPError, URLError
 from urlparse import urlparse
 from boto.connection import AWSAuthConnection
@@ -104,6 +105,10 @@ class LoginView(BaseView, PermissionCheckMixin):
         self.secure_session = asbool(self.request.registry.settings.get('session.secure', False))
         self.https_proxy = self.request.environ.get('HTTP_X_FORWARDED_PROTO') == 'https'
         self.https_scheme = self.request.scheme == 'https'
+        options_json=BaseView.escape_json(json.dumps(dict(
+            account=request.params.get('account', default=''),
+            username=request.params.get('username', default=''),
+        )))
         self.render_dict = dict(
             https_required=self.show_https_warning(),
             euca_login_form=self.euca_login_form,
@@ -112,6 +117,7 @@ class LoginView(BaseView, PermissionCheckMixin):
             aws_enabled=self.aws_enabled,
             duration=self.duration,
             came_from=self.came_from,
+            controller_options_json=options_json,
         )
 
     def show_https_warning(self):

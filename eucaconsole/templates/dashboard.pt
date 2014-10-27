@@ -25,6 +25,9 @@
                     </li>
                 </ul>
             </div>
+            <div id="reset-dash" tal:condition="not tiles_are_default">
+                <a ng-click="resetTiles()" i18n:translate="">Reset tile display</a>
+            </div>
         </div>
         <ul id="sortable" class="small-block-grid-2 medium-block-grid-3 large-block-grid-4">
             <span tal:repeat="tile tiles" tal:omit-tag="">
