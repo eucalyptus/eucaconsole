@@ -314,7 +314,6 @@ class InstancesJsonView(LandingPageView):
         if instance_type_param:
             filters.update({'instance-type': instance_type_param})
         keypair_param = self.request.params.getall('keypair')
-        print keypair_param
         if keypair_param:
             filters.update({'key-name': [self.unescape_braces(kp) for kp in keypair_param]})
         security_group_param = self.request.params.getall('security_group')
