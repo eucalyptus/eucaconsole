@@ -4,33 +4,33 @@
 <html xml:lang="en-us" lang="en-us">
 <head>
     <title>About the Team</title>
-    <link rel="stylesheet" href="${request.static_path('eucaconsole:static/css/eucaconsole.css')}"
+    <link rel="stylesheet" href="../../css/eucaconsole.css"
           type="text/css" media="screen" charset="utf-8" />
+    <script src="../../js/thirdparty/jquery/jquery-2.0.3.min.js"></script>
     <style type="text/css">
         body {
-            background:#ffffff;
-            color:#111111;
             text-align:center;
-            font-family: sans-serif;
         }
-        #mainarea {
-            font-size:28px;
-        }
-        #credits {
-            display:block;
+        #close_link {
+            font-size: 2em;
+            color: #aaaaaa;
+            position: absolute;
+            right: 10px;
+            top: 1px;
         }
     </style>
 </head>
 <body>
     <div id="mainarea">
-        <p> Thank you, from the Eucalyptus team!  </p>
+        <h2> Thank you, from the Eucalyptus team!  </h2>
+        <a id="close_link" class="close-reveal-modal" onclick="window.close()">&#215;</a>
         <img src="../../img/Eucalyptus-All.png" style="width:100%;"/>
     </div>
     <div id="credits">
-    <div class="columns">
         <div class="row">
-            <div class="large-6 column">
-                <p>ENGINEERING</p>
+            <div class="large-6 columns">
+                <h4>ENGINEERING</h4>
+                <p>
                   Leslie Biasi<br/>
                   Scott Butler<br/>
                   Casey Cassler<br/>
@@ -56,38 +56,46 @@
                   Brian Thomason<br/>
                   Thanhnguyet Vo<br/>
                   Nathan Xu<br/>
-                  Dmitrii Zagorodnov<br/>
+                  Dmitrii Zagorodnov
+                </p>
             </div>
-            <div class="large-6 column">
-                <p>EXECUTIVE OFFICES/FINANCE/ADMINISTRATION</p>
+            <div class="large-6 columns">
+                <h4>EXECUTIVE OFFICES/FINANCE/ADMINISTRATION</h4>
+                <p>
                   Linda Alvarez<br/>
                   Marten Mickos (CEO)<br/>
                   Tracy J. Nelson<br/>
-                  Ning Wang (CFO)<br/>
-                <p>MARKETING/PRODUCT MANAGEMENT</p>
+                  Ning Wang (CFO)
+                </p>
+                <h4>MARKETING/PRODUCT MANAGEMENT</h4>
+                <p>
                   Eric Choi<br/>
                   Colby Dyess<br/>
                   Shashi Mysore<br/>
-                  Paul Weiss<br/>
-                <p>SALES</p>
+                  Paul Weiss
+                </p>
+                <h4>SALES</h4>
+                <p>
                   Mike Harnish<br/>
                   Lee Rich<br/>
                   Pavan Yara<br/>
-                  Tim Zeller<br/>
-                <p>TECHNICAL SERVICES/IT/SUPPORT</p>
+                  Tim Zeller
+                </p>
+                <h4>TECHNICAL SERVICES/IT/SUPPORT</h4>
+                <p>
                   Kristina Hadges<br/>
                   Imran Hossain Shaon<br/>
                   Deependra Shekhawat<br/>
                   Harold Spencer Jr.<br/>
-                  Lester Wade<br/>
+                  Lester Wade
+                </p>
             </div>
         </div>
     </div>
-    </div>
-<script type="text/javascript" src="${request.static_path('eucaconsole:static/js/thirdparty/foundation/foundation.min.js')}"></script>
-<script type="text/javascript">
+    <script type="text/javascript" src="../../js/thirdparty/foundation/foundation.min.js"></script>
+    <script type="text/javascript">
     // Initialize all Zurb Foundation components
     $(document).foundation();
-</script>
+    </script>
 </body>
 </html>
