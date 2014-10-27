@@ -74,7 +74,7 @@
             <metal:block metal:fill-slot="tableview_headers">
                 <th i18n:translate="">Name</th>
                 <th i18n:translate="">Launch config</th>
-                <th i18n:translate="">Instances</th>
+                <th i18n:translate="" class="count">Instances</th>
                 <th i18n:translate="">Avail zones</th>
                 <th i18n:translate="">Capacity</th>
                 <th i18n:translate="">Status</th>
@@ -83,7 +83,7 @@
             <metal:block metal:fill-slot="tableview_columns">
                 <td class="breakword"><a ng-href="${prefix}/{{ item.name | escapeURL }}">{{ item.name | ellipsis: 30 }}</a></td>
                 <td class="breakword"><a ng-href="/launchconfigs/{{ item.launch_config | escapeURL }}">{{ item.launch_config | ellipsis: 30 }}</a></td>
-                <td>
+                <td class="count">
                     <a ng-href="${prefix}/{{ item.name | escapeURL }}/instances">
                         &nbsp;{{ item.current_instances_count }}&nbsp;
                     </a>
