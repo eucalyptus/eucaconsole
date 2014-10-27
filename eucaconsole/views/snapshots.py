@@ -199,8 +199,11 @@ class SnapshotsJsonView(LandingPageView):
         for snapshot in filtered_snapshots:
             volume = [volume for volume in volumes if volume.id == snapshot.volume_id]
             volume_name = ''
+            exists_volume = True 
             if volume:
                 volume_name = TaggedItemView.get_display_name(volume[0], escapebraces=False)
+            else:
+                exists_volume = False
             snapshots.append(dict(
                 id=snapshot.id,
                 description=snapshot.description,
@@ -213,6 +216,7 @@ class SnapshotsJsonView(LandingPageView):
                 volume_id=snapshot.volume_id,
                 volume_name=volume_name,
                 volume_size=snapshot.volume_size,
+                exists_volume=exists_volume,
             ))
         return dict(results=snapshots)
 

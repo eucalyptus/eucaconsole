@@ -47,9 +47,14 @@
                     <span class="label" title="Size" i18n:attributes="title" data-tooltip="">GB</span>
                     {{ item.volume_size }} GB
                 </div>
-                <div>
+                <div ng-cloak="">
                     <span class="label" title="Volume ID" i18n:attributes="title" data-tooltip="">VO</span>
-                    <a ng-href="/volumes/{{ item.volume_id }}">{{ item.volume_name || item.volume_id }}</a>
+                    <span ng-show="{{ item.exists_volume }}">
+                        <a ng-href="/volumes/{{ item.volume_id }}">{{ item.volume_name || item.volume_id }}</a>
+                    </span>
+                    <span ng-show="{{ !item.exists_volume }}">
+                        {{ item.volume_name || item.volume_id }}
+                    </span>
                 </div>
                 <div>
                     <span class="label" title="Snapshot ID" i18n:attributes="title" data-tooltip="">ID</span>
@@ -101,9 +106,16 @@
                     </span>
                 </td>
                 <td class="size">{{ item.volume_size }}&nbsp;GB</td>
-                <td class="volumeid breakword">
-                    <a ng-href="/volumes/{{ item.volume_id }}">
+                <td class="volumeid breakword" ng-cloak="">
+                    <span ng-show="{{ item.exists_volume }}">
+                        <a ng-href="/volumes/{{ item.volume_id }}">
+                            {{ item.volume_name || item.volume_id | ellipsis: 30 }}
+                        </a>
+                    </span>
+                    <span ng-show="{{ !item.exists_volume }}">
                         {{ item.volume_name || item.volume_id | ellipsis: 30 }}
+                    </span>
+                    <a ng-href="/volumes/{{ item.volume_id }}">
                     </a>
                 </td>
                 <td class="description breakword">{{ item.description | ellipsis: 64 }}</td>
