@@ -13,18 +13,10 @@
         position: relative;
         float: left;
     }
-    .items {
-        margin-bottom: 6px;
+    @include item-list;
+    .item-list {
         position: relative;
         float: left;
-        .facetentry {
-            color: #333;
-            background-color: $euca-lightgrey;
-            margin-right: 8px;
-            a {
-                color: white;
-            }
-        }
     }
     #search-input {
         border: 0px;

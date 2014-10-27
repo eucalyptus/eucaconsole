@@ -6,8 +6,8 @@
      <div class="small-12 columns">
         <div class="search-bar">
             <i class="fi-magnifying-glass go"></i>
-            <div class="items">
-                <span class="label radius secondary facetentry"
+            <div class="item-list">
+                <span class="label radius secondary item"
                       ng-repeat="facet in currentSearch" ng-cloak="cloak">
                     <span>
                         {{ facet.label[0] }}:<b>{{ facet.label[1] }}</b>
