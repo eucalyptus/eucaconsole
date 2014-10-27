@@ -1,7 +1,7 @@
 <!--! Block Device Mapping editor -->
 <div id="bdmapping-editor" class="row controls-wrapper" ng-app="BlockDeviceMappingEditor" i18n:domain="eucaconsole"
      ng-controller="BlockDeviceMappingEditorCtrl"
-     ng-init="initBlockDeviceMappingEditor('${bdm_json}', '${request.route_path('snapshot_size_json', id='_id_')}')">
+     ng-init="initBlockDeviceMappingEditor('${bdm_json}', '${request.route_path('snapshot_size_json', id='_id_')}', '${disable_dot}')">
     <style type="text/css">
         th { text-align:center; }
         td { text-align:center; }
@@ -48,7 +48,8 @@
                     <td tal:condition="not read_only">
                         <span ng-if="!isEphemeral(val)">
                             <input ng-show="showDOTflag(val)" type="checkbox" ng-checked="val.delete_on_termination === true"
-                                   ng-click="updateRootDeviceDelete($event, key, val.is_root)"/>
+                                   ng-click="updateRootDeviceDelete($event, key, val.is_root)"
+                                   ng-disabled="disableDOT"/>
                         </span>
                     </td>
                     <td tal:condition="read_only">
@@ -96,7 +97,8 @@
             </div>
             <div class="medium-3 columns" ng-show="newVolumeType !== 'ephemeral'">
                 <label class="left" i18n:translate="">Delete on terminate</label>
-                <input style="margin-top:35px;margin-left:-70px;" type="checkbox" name="delete_on_termination" checked="checked" ng-model="newDOT" />
+                <input style="margin-top:35px;margin-left:-70px;" type="checkbox" name="delete_on_termination"
+                    checked="checked" ng-model="newDOT" ng-disabled="disableDOT"/>
             </div>
         </div>
         <div tal:condition="not read_only">

@@ -25,7 +25,7 @@
         </div>
         ${panel('magic_search', search_facets=search_facets, filter_keys=filter_keys)}
         <div class="row sort-search" ng-cloak="cloak">
-            <div class="small-4 columns" id="results-count" ng-cloak="cloak" metal:define-slot="results_count">
+            <div class="small-3 columns" id="results-count" ng-cloak="cloak" metal:define-slot="results_count">
                 <a class="label radius" ng-show="!itemsLoading" ng-cloak="" id="refresh-btn"
                    ng-click="itemsLoading=true; getItems()"></a>
                 &nbsp;
@@ -35,7 +35,7 @@
                     <em ng-if="items.length > displayCount">&nbsp;(<span i18n:translate="">Displaying</span> {{ displayCount }})</em>
                 </span>
             </div>
-            <div class="small-4 columns" id="sorting-controls" ng-show="!itemsLoading">
+            <div class="small-5 columns" id="sorting-controls" ng-show="!itemsLoading">
                 <metal:block metal:define-slot="sorting_controls">
                     <strong>Sort by</strong>
                     <a href="#" data-dropdown="sorting-dropdown">

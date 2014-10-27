@@ -223,6 +223,7 @@ h1, h2, h3, h4, h5, h6 {
         font-size: 1rem;
     }
     .dropdown {
+        z-index: 999999;
         box-shadow: 0px 0px 1px 1px lighten($euca-orange, 10%);
         li {
             a {
@@ -487,20 +488,10 @@ textarea.policy-area {
     small {
         font-size: 0.825rem;
     }
-    .items {
-        margin-bottom: 6px;
-        .tagentry {
-            color: #333;
-            background-color: $euca-extralightgrey;
-            margin-right: 8px;
-            a {
-                color: white;
-            }
-            .propagates {
-                color: #777;
-                font-size: 0.7em;
-            }
-        }
+    @include item-list;
+    .propagates {
+        color: #777;
+        font-size: 0.7em;
     }
     .add-label {
         margin-bottom: 6px;

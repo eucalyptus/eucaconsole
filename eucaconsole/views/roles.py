@@ -31,7 +31,7 @@ from datetime import datetime
 from dateutil import parser
 import os
 import simplejson as json
-from urllib import urlencode
+from urllib import urlencode, quote
 
 from boto.exception import BotoServerError
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
@@ -256,7 +256,7 @@ class RoleView(BaseView):
                 msg_template = _(u'Successfully created role {role}')
                 msg = msg_template.format(role=new_role_name)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
-            location = self.request.route_path('iam_policy_new') + '?type=role&id=' + new_role_name
+            location = self.request.route_path('iam_policy_new') + '?type=role&id=' + quote(new_role_name)
             return HTTPFound(location=location)
 
         return self.render_dict
