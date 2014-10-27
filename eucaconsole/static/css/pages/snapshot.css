@@ -1,6 +1,8 @@
 /* @fileOverview Snapshot detail page CSS */
 /* Dropdown elements */
 /* Set the link colors and styles for top-level nav */
+/* ----------------------------------------- Item list
+----------------------------------------- */
 .progress { display: inline-block; width: 50%; }
 .progress .meter { background-color: #0683c2; padding-left: 6px; padding-top: 4px; font-size: 0.825rem; font-weight: bold; }
 

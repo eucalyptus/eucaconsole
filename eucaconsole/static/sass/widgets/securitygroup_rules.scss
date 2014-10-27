@@ -37,17 +37,7 @@ form {
 }
 
 #rules-editor {
-    .items {
-        margin-bottom: 6px;
-        .rulesentry {
-            color: #333;
-            background-color: $euca-lightgrey;
-            margin-right: 8px;
-            a {
-                color: white;
-            }
-        }
-    }
+    @include item-list;
     .add-label {
         margin-bottom: 6px;
     }

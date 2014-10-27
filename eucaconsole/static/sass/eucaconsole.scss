@@ -488,15 +488,9 @@ textarea.policy-area {
     small {
         font-size: 0.825rem;
     }
-    .items {
-        margin-bottom: 6px;
-        .tagentry {
-            color: #333;
-            background-color: $euca-extralightgrey;
-            margin-right: 8px;
-            a {
-                color: white;
-            }
+    @include item-list;
+    .item-list {
+        .item {
             .propagates {
                 color: #777;
                 font-size: 0.7em;
