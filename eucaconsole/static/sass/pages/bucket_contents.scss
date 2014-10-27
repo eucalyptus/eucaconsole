@@ -33,6 +33,18 @@
     background-color: darken(red, 20%);
 }
 
+#pagetitle {
+    position: relative;
+    float:left;
+}
+
+#bucket-details {
+    margin-left: 1rem;
+    margin-top: .75rem;
+    position: relative;
+    float:left;
+}
+
 .bucket-progress {
     border: 1px solid black;
     position: relative;
