@@ -313,6 +313,10 @@ class InstancesJsonView(LandingPageView):
         instance_type_param = self.request.params.getall('instance_type')
         if instance_type_param:
             filters.update({'instance-type': instance_type_param})
+        keypair_param = self.request.params.getall('keypair')
+        print keypair_param
+        if keypair_param:
+            filters.update({'key-name': [self.unescape_braces(kp) for kp in keypair_param]})
         security_group_param = self.request.params.getall('security_group')
         if security_group_param:
             filters.update({'group-name': [self.unescape_braces(sg) for sg in security_group_param]})
@@ -322,7 +326,7 @@ class InstancesJsonView(LandingPageView):
         # Don't filter by these request params in Python, as they're included in the "filters" params sent to the CLC
         # Note: the choices are from attributes in InstancesFiltersForm
         ignore_params = [
-            'availability_zone', 'instance_type', 'state', 'security_group',
+            'availability_zone', 'instance_type', 'state', 'keypair', 'security_group',
             'scaling_group', 'root_device_type', 'roles']
         filtered_items = self.filter_items(self.get_items(filters=filters), ignore=ignore_params)
         if self.request.params.get('scaling_group'):
