@@ -237,10 +237,14 @@ class SnapshotView(TaggedItemView):
         with boto_error_handler(request, self.location):
             self.snapshot = self.get_snapshot()
         self.snapshot_name = self.get_snapshot_name()
-        self.volume_name = TaggedItemView.get_display_name(
-            self.get_volume(self.snapshot.volume_id)) if self.snapshot is not None else ''
+        self.volume = self.get_volume(self.snapshot.volume_id) if self.snapshot is not None else None 
+        self.volume_name = TaggedItemView.get_display_name(self.volume) if self.volume is not None else ''
         if self.volume_name == '':
             self.volume_name = self.snapshot.volume_id if self.snapshot else ''
+        if self.volume == None:
+            self.exists_volume = False;
+        else:
+            self.exists_volume = True;
         self.snapshot_form = SnapshotForm(
             self.request, snapshot=self.snapshot, conn=self.conn, formdata=self.request.params or None)
         self.delete_form = DeleteSnapshotForm(self.request, formdata=self.request.params or None)
@@ -255,6 +259,7 @@ class SnapshotView(TaggedItemView):
             registered=True if self.images_registered is not None else False,
             snapshot_name=self.snapshot_name,
             volume_name=self.volume_name,
+            exists_volume=self.exists_volume,
             snapshot_form=self.snapshot_form,
             delete_form=self.delete_form,
             register_form=self.register_form,
