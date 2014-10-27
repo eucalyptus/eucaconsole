@@ -3,8 +3,8 @@
  * @requires AngularJS and jQuery
  *
  */
-angular.module('CreateAlarm', [])
-    .controller('CreateAlarmCtrl', function ($rootScope, $scope, $http, $timeout) {
+angular.module('CreateAlarm', ['EucaConsoleUtils'])
+    .controller('CreateAlarmCtrl', function ($rootScope, $scope, $http, $timeout, eucaUnescapeJson) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.alarmDialog = $('#create-alarm-modal');
         $scope.createAlarmForm = $('#create-alarm-form');
@@ -16,14 +16,30 @@ angular.module('CreateAlarm', [])
         $scope.unitLabel = '';
         $scope.metricUnitMapping = {};
         $scope.isCreatingAlarm = false;
+        $scope.existingAlarms = [];
+        $scope.alarmName = '';
+        $scope.existingAlarmConflict = false;
         $scope.setInitialValues = function () {
             $scope.metricField.val($scope.metricField.find('option[selected]').val());
             $scope.metricField.trigger('change');
         };
-        $scope.initController = function (metricUnitMapping) {
-            $scope.metricUnitMapping = JSON.parse(metricUnitMapping);
+        $scope.initController = function (optionsJson) {
+            var options = JSON.parse(eucaUnescapeJson(optionsJson));
+            $scope.metricUnitMapping = options['metric_unit_mapping'];
+            $scope.existingAlarms = options['existing_alarms'];
             $scope.alarmDialog.on('opened', function () {
                 $scope.setInitialValues();
+            });
+            $scope.addListeners();
+        };
+        $scope.addListeners = function () {
+            // Display notice if entered alarm name conflicts with existing alarm
+            var alarmNameField = $scope.createAlarmForm.find('#name');
+            alarmNameField.on('keyup blur', function () {
+                var nameVal = $(this).val();
+                $scope.$apply(function () {
+                    $scope.existingAlarmConflict = ($scope.existingAlarms.indexOf(nameVal) > -1);
+                });
             });
         };
         $scope.updateMetricNamespace = function () {
@@ -36,7 +52,7 @@ angular.module('CreateAlarm', [])
         };
         $scope.setUnitChoice = function () {
             var unitChoice = $scope.metricUnitMapping[$scope.metric];
-            $scope.unitLabel = unitChoice.toLowerCase();
+            $scope.unitLabel = unitChoice && unitChoice.toLowerCase();
             if ($scope.unitLabel == 'none' || $scope.unitLabel == 'count') {
                 $scope.unitLabel = '';
             }

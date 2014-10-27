@@ -223,3 +223,20 @@ $tooltip-padding: rem-calc(5);
     }
 }
 
+/* -----------------------------------------
+   Item list
+----------------------------------------- */
+@mixin item-list {
+    .item-list {
+        margin-bottom: 6px;
+        .item {
+            color: #333;
+            background-color: $euca-extralightgrey;
+            margin-right: 8px;
+            a {
+                color: white;
+            }
+        }
+    }
+}
+

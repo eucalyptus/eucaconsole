@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="http://10.111.101.112:8888/" />
+<title>create-s-group-from-lp-with-RDP-SSH-cTCP-to-default-1-tag</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">create-s-group-from-lp-with-RDP-SSH-cTCP-to-default-1-tag</td></tr>
+</thead><tbody>
+<tr>
+	<td>setSpeed</td>
+	<td>500</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>Requires following tag data: ${tag_key}, ${tag_value}.</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertVisible</td>
+	<td>id=resource-menu-netsec</td>
+	<td></td>
+</tr>
+<tr>
+	<td>setTimeout</td>
+	<td>120000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=resource-menu-netsec</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForVisible</td>
+	<td>id=resource-menuitem-securitygroups</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=resource-menuitem-securitygroups</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForVisible</td>
+	<td>id=create-securitygroup-btn</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=create-securitygroup-btn</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=name</td>
+	<td>${s_group_name}</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=description</td>
+	<td>${s_group_description} from Landing Page</td>
+</tr>
+<tr>
+	<td>clickAt</td>
+	<td>css=a.chosen-single &gt; span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=a.chosen-single &gt; span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>name=ip_protocol</td>
+	<td>value=3389</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=sgroup-use-my-ip</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=button-add-rule</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAt</td>
+	<td>css=a.chosen-single &gt; span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=a.chosen-single &gt; span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>name=ip_protocol</td>
+	<td>value=22</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=from_port</td>
+	<td>22</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=to_port</td>
+	<td>22</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=sgroup-use-my-ip</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=button-add-rule</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAt</td>
+	<td>css=a.chosen-single &gt; span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=a.chosen-single &gt; span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>name=ip_protocol</td>
+	<td>value=tcp</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=from_port</td>
+	<td>22</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=to_port</td>
+	<td>29</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=div.securitygroupname &gt; input[name=&quot;traffictype&quot;]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAt</td>
+	<td>css=#groupname_select_chosen &gt; a.chosen-single.chosen-default &gt; div &gt; b</td>
+	<td></td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>id=groupname-select</td>
+	<td>value=default</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=button-add-rule</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>//div[@id='tag-editor']/div[2]/div[3]/div/div/input</td>
+	<td>${tag_key}</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>css=input.taginput.value</td>
+	<td>${tag_value}</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=add-tag-btn</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=create-securitygroup-btn</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForVisible</td>
+	<td>id=notifications</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>id=notifications</td>
+	<td>breadcrumbs</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${breadcrumbs}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForVisible</td>
+	<td>link=Security groups</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Security groups</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForVisible</td>
+	<td>link=${s_group_name}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeAttribute</td>
+	<td>//td/a[text()=&quot;${s_group_name}&quot;]@href</td>
+	<td>store</td>
+</tr>
+<tr>
+	<td>storeEval</td>
+	<td>storedVars['store'].slice(16,27);</td>
+	<td>s_group_id</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${s_group_id}</td>
+	<td></td>
+</tr>
+</tbody></table>
+</body>
+</html>

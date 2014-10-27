@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="https://10.111.5.59/" />
+<title>create-launch-config-with-create-a-s-g-checked-no-policy</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">create-launch-config-with-create-a-s-g-checked-no-policy</td></tr>
+</thead><tbody>
+<tr>
+	<td>setSpeed</td>
+	<td>500</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertVisible</td>
+	<td>id=resource-menu-dashboard</td>
+	<td></td>
+</tr>
+<tr>
+	<td>setTimeout</td>
+	<td>120000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=resource-menu-dashboard</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeEval</td>
+	<td>(Math.random().toString(36)+&quot;000000000&quot;).slice(2,7);</td>
+	<td>str</td>
+</tr>
+<tr>
+	<td>storeEval</td>
+	<td>'${str}'</td>
+	<td>str_1</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${str_1}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>Will create basic launch config&nbsp;&nbsp;&quot;Launch Configuration ${str}&quot; and save it as lc_1. Will create &quot;Auto Scaling Group ${str}&quot;&nbsp;&nbsp;and save it as asg_1 with no policies that will launch 1 instance named ${asg_1}.</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForVisible</td>
+	<td>id=resource-menu-autoscaling</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=resource-menu-autoscaling</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForVisible</td>
+	<td>id=resource-menuitem-launchconfigs</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=resource-menuitem-launchconfigs</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForVisible</td>
+	<td>id=create-launchconfig-btn</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=create-launchconfig-btn</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForVisible</td>
+	<td>css=strong.image-title.ng-binding</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=strong.image-title.ng-binding</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=visit-step-2</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeEval</td>
+	<td>'Launch Configuration ${str}'</td>
+	<td>lc_1</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${lc_1}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=name</td>
+	<td>Launch Configuration ${str}</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>id=instance_type</td>
+	<td>label=t1.micro: 1 CPUs, 256 memory (MB), 5 disk (GB,root device)</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=#visit-step-3 &gt; span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForVisible</td>
+	<td>id=keypair</td>
+	<td></td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>id=keypair</td>
+	<td>label=None (advanced option)</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>id=securitygroup</td>
+	<td>label=default</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=create-launchconfig-btn-step3</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>id=notifications</td>
+	<td>breadcrumbs</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${breadcrumbs}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=min_size</td>
+	<td>0</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=desired_capacity</td>
+	<td>1</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=max_size</td>
+	<td>2</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=name</td>
+	<td>Auto Scaling Group ${str}</td>
+</tr>
+<tr>
+	<td>storeEval</td>
+	<td>'Auto Scaling Group ${str}'</td>
+	<td>asg_1</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${asg_1}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=propagate-checkbox</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>//div[@id='tag-editor']/div[2]/div[3]/div/div[2]/input</td>
+	<td>Name</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>css=input.taginput.value</td>
+	<td>Instance from Auto Scaling group ${str}</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=add-tag-btn</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>//div[@id='tag-editor']/div[2]/div[3]/div/div[2]/input</td>
+	<td>group</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>css=input.taginput.value</td>
+	<td>Auto Scaling Group dv5nz</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=add-tag-btn</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=#visit-step-2 &gt; span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=create-scalinggroup-btn</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>id=notifications</td>
+	<td>breadcrumbs</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${breadcrumbs}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=#nextstep-scalinggroup-modal &gt; a.close-reveal-modal</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=resource-menu-dashboard</td>
+	<td></td>
+</tr>
+
+</tbody></table>
+</body>
+</html>
