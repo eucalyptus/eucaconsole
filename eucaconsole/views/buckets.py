@@ -255,6 +255,8 @@ class BucketContentsView(LandingPageView):
         self.key_prefix = '/'.join(self.subpath) if len(self.subpath) > 0 else ''
         self.render_dict = dict(
             bucket_name=self.bucket_name,
+            versioning_form=BucketUpdateVersioningForm(request, formdata=self.request.params or None),
+            delete_form=BucketDeleteForm(request),
             create_folder_form=self.create_folder_form,
         )
 
