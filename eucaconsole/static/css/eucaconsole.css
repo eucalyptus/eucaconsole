@@ -1477,7 +1477,7 @@ textarea.policy-area { width: 100%; min-height: 30rem; font-family: Courier, "co
 #tag-editor .item-list { margin-bottom: 6px; }
 #tag-editor .item-list .item { color: #333; background-color: #e6e7e8; margin-right: 8px; }
 #tag-editor .item-list .item a { color: white; }
-#tag-editor .item-list .item .propagates { color: #777; font-size: 0.7em; }
+#tag-editor .propagates { color: #777; font-size: 0.7em; }
 #tag-editor .add-label { margin-bottom: 6px; color: #03405f; }
 #tag-editor #add-tag-btn { margin-bottom: 0; }
 

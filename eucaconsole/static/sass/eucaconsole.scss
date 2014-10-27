@@ -489,13 +489,9 @@ textarea.policy-area {
         font-size: 0.825rem;
     }
     @include item-list;
-    .item-list {
-        .item {
-            .propagates {
-                color: #777;
-                font-size: 0.7em;
-            }
-        }
+    .propagates {
+        color: #777;
+        font-size: 0.7em;
     }
     .add-label {
         margin-bottom: 6px;
