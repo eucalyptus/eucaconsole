@@ -150,7 +150,7 @@ class InstancesView(LandingPageView, BaseInstanceView):
     def instances_landing(self):
         filter_keys = [
             'id', 'name', 'image_id', 'instance_type', 'ip_address', 'key_name', 'placement',
-            'root_device', 'security_groups_string', 'state', 'tags', 'roles', 'vpc_id', 'subnet_id']
+            'root_device', 'security_groups', 'state', 'tags', 'roles', 'vpc_id', 'subnet_id']
         # filter_keys are passed to client-side filtering in search box
         self.filter_keys = filter_keys
         # sort_keys are passed to sorting drop-down
