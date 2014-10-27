@@ -27,7 +27,7 @@
     </div>
 
     <div class="row large-6 medium-10 columns large-centered medium-centered" id="login-wrapper"
-         ng-app="LoginPage" ng-controller="LoginPageCtrl" ng-init="initController()">
+         ng-app="LoginPage" ng-controller="LoginPageCtrl" ng-init="initController('${controller_options_json}')">
         <div id="javascript-warning">
             <p i18n:translate=""> Warning! JavaScript is not enabled on your browser.
             To use the Eucalyptus Management Console, please enable JavaScript in your browser's settings.
@@ -165,6 +165,14 @@
                 <p i18n:translate="">
                     The browser you are using lacks support for SVG images
                     and many graphics this application uses won't display properly.
+                </p>
+                <a class="close-reveal-modal">&#215;</a>
+            </div>
+            <div id="browser-filereader-warn-modal" class="reveal-modal small" data-reveal="">
+                <h3 i18n:translate="">Browser doesn't support the FileReader Interface</h3>
+                <p i18n:translate="">
+                    The browser you are using lacks support for reading files from your local filesystem
+                    and you will not be able to use features in this application that require this.
                 </p>
                 <a class="close-reveal-modal">&#215;</a>
             </div>
