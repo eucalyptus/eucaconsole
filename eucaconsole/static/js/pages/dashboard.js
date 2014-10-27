@@ -34,7 +34,10 @@ angular.module('Dashboard', ['EucaConsoleUtils'])
                 stop: function(event, ui) {
                     // TODO: remove 'add-tile' from list first
                     var order = $('#sortable').sortable('toArray');
-                    order.splice(order.indexOf('add-tile'), 1);
+                    var add_idx = order.indexOf('add-tile');
+                    if (add_idx > -1) {
+                        order.splice(add_idx, 1);
+                    }
                     $.cookie($scope.accountName + "_dash_order", order, {expires: 180});
                 }
             });
@@ -103,6 +106,10 @@ angular.module('Dashboard', ['EucaConsoleUtils'])
         $scope.addTile = function() {
             var tile = $('#new-tile').val();
             var order = $('#sortable').sortable('toArray');
+            var add_idx = order.indexOf('add-tile');
+            if (add_idx > -1) {
+                order.splice(add_idx, 1);
+            }
             order.push(tile);
             $.cookie($scope.accountName + "_dash_order", order, {expires: 180});
             window.location.reload();
@@ -115,6 +122,10 @@ angular.module('Dashboard', ['EucaConsoleUtils'])
             }
             order.splice(order.indexOf(tile), 1);
             $.cookie($scope.accountName + "_dash_order", order, {expires: 180});
+            window.location.reload();
+        };
+        $scope.resetTiles = function() {
+            $.removeCookie($scope.accountName + "_dash_order");
             window.location.reload();
         };
     })
