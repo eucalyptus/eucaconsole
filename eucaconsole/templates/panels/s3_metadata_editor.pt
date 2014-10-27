@@ -33,11 +33,14 @@
             <div ng-show="newMetadataKey == 'Content-Type'">
                 ${panel('form_field', field=metadata_form['metadata_content_type'], leftcol_width=2, rightcol_width=10, ng_attrs={'model': 'newMetadataContentType'})}
             </div>
-            <div>&nbsp;</div>
-            <a href="#" ng-click="addMetadata($event)" class="button round tiny" id="add-metadata-btn"
-               ng-disabled="addMetadataBtnDisabled" title="Add metadata pair" i18n:translate="">
-                Add Metadata Pair
-            </a>
+            <div class="row">
+                <div class="small-10 columns right">
+                    <a href="#" ng-click="addMetadata($event)" class="button round tiny" id="add-metadata-btn"
+                       ng-disabled="addMetadataBtnDisabled" title="Add metadata pair" i18n:translate="">
+                        Add Metadata Pair
+                    </a>
+                </div>
+            </div>
         </div>
         <textarea id="metadata" name="metadata" class="hidden"></textarea>
         <textarea id="metadata-keys-to-delete" name="metadata_keys_to_delete" class="hidden"></textarea>
