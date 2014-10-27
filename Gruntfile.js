@@ -57,12 +57,22 @@ module.exports = function(grunt) {
                 'eucaconsole/static/js/pages/*.js',
                 'eucaconsole/static/js/widgets/*.js',
                 'eucaconsole/static/js/jasmine/spec/*.js']
+      },
+      karma: {
+          unit: {
+              configFile: 'karma.conf.js'
+          },
+          continuous: {
+              configFile: 'karma.conf.js',
+              singleRun: true,
+          }
       }
   });
 
   // Load the plugins
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-bowercopy');
+  grunt.loadNpmTasks('grunt-karma');
 
   // Default task(s).
   grunt.registerTask('default', ['jshint']);
