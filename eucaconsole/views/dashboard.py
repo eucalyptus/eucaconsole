@@ -78,36 +78,45 @@ class DashboardView(BaseView):
             tiles = self.TILE_MASTER_LIST
 
         tiles_not_shown = [tile for tile in self.TILE_MASTER_LIST.split(',') if tile not in tiles.split(',')]
+        tiles_default = self.TILE_MASTER_LIST.split(',')
         session = self.request.session
         if session['cloud_type'] == 'aws':
             try:
                 tiles_not_shown.remove('users')
+                tiles_default.remove('users')
             except ValueError:
                 pass
             try:
                 tiles_not_shown.remove('groups')
+                tiles_default.remove('groups')
             except ValueError:
                 pass
             try:
                 tiles_not_shown.remove('roles')
+                tiles_default.remove('roles')
             except ValueError:
                 pass
             try:
                 tiles_not_shown.remove('accounts')
+                tiles_default.remove('accounts')
             except ValueError:
                 pass
         else:
             if session['account'] != 'eucalyptus':
                 try:
                     tiles_not_shown.remove('accounts')
+                    tiles_default.remove('accounts')
                 except ValueError:
                     pass
+
+        tiles_are_default = (tiles == ','.join(tiles_default))
 
         return dict(
             availability_zones=availability_zones,
             tiles=tiles.split(','),
             tiles_not_shown=tiles_not_shown,
             tile_names=self.TILE_DISPLAY_NAMES,
+            tiles_are_default=tiles_are_default,
             controller_options_json=self.get_controller_options_json(),
         )
 
