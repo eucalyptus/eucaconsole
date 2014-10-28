@@ -25,9 +25,6 @@
         </div>
         <h3 id="pagetitle"><strong i18n:translate="">Images</strong></h3>
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
-            <div metal:fill-slot="new_button">
-                &nbsp;
-            </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
                 <a class="tiny secondary button dropdown right" data-dropdown="item-dropdown_{{ item.id }}"><i class="fi-widget"></i></a>
                 <ul id="item-dropdown_{{ item.id }}" class="f-dropdown" data-dropdown-content="">

@@ -4,6 +4,7 @@
 .search-bar {
     border: 1px solid black;
     background-color: white;
+    margin-bottom: 0.25rem;
     padding: 4px;
     height: 2.0rem;
     @include item-list;

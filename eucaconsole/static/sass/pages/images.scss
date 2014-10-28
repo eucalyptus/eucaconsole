@@ -49,11 +49,6 @@
      }
 }
 
-// Adjustment for Images landing page not having an "Add Image" button.
-.row.sort-search {
-    margin-top: 20px;
-}
-
 // Status colors
 $snapshot-status-color-pending: lighten($euca-darkblue, 20%);
 $snapshot-status-color-available: $euca-darkblue;
