@@ -284,6 +284,7 @@ class ImagesJsonView(LandingPageView, ImageBundlingMixin):
                 platform_name=ImageView.get_platform_name(platform),
                 platform_key=ImageView.get_platform_key(platform),  # Used in image picker widget
                 root_device_type=image.root_device_type,
+                root_device_name=image.root_device_name,
             )))
 
     @view_config(route_name='image_state_json', renderer='json', request_method='POST')
