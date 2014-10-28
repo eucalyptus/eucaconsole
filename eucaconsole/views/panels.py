@@ -183,9 +183,11 @@ def securitygroup_rules(context, request, rules=None, rules_egress=None, leftcol
     rules = rules or []
     rules_list = []
     for rule in rules:
-        grants = [
-            dict(name=g.name, owner_id=g.owner_id, group_id=g.group_id, cidr_ip=g.cidr_ip) for g in rule.grants
-        ]
+        grants = []
+        for g in rule.grants:
+            grants.append(
+                dict(name=BaseView.escape_braces(g.name), owner_id=g.owner_id, group_id=g.group_id, cidr_ip=g.cidr_ip)
+            )
         rules_list.append(dict(
             ip_protocol=rule.ip_protocol,
             from_port=rule.from_port,
@@ -209,16 +211,17 @@ def securitygroup_rules(context, request, rules=None, rules_egress=None, leftcol
     rules_sorted = sorted(rules_list, key=itemgetter('from_port'))
     rules_egress_sorted = sorted(rules_egress_list, key=itemgetter('from_port'))
     icmp_choices_sorted = sorted(RULE_ICMP_CHOICES, key=lambda tup: tup[1])
-    remote_addr=request.environ.get('HTTP_X_FORWARDED_FOR', getattr(request, 'remote_addr', ''))
+    controller_options_json = BaseView.escape_json(json.dumps({
+        'rules_array': rules_sorted,
+        'rules_egress_array': rules_egress_sorted,
+        'json_endpoint': request.route_path('securitygroups_json'),
+        'protocols_json_endpoint': request.route_path('internet_protocols_json'),
+    }))
 
     return dict(
-        rules=rules_sorted,
-        rules_json=BaseView.escape_json(json.dumps(rules_list)),
-        rules_egress=rules_egress_sorted,
-        rules_egress_json=BaseView.escape_json(json.dumps(rules_egress_list)),
         protocol_choices=RULE_PROTOCOL_CHOICES,
         icmp_choices=icmp_choices_sorted,
-        #remote_addr=remote_addr,
+        controller_options_json=controller_options_json,
         remote_addr=getattr(request, 'remote_addr', ''),
         leftcol_width=leftcol_width,
         rightcol_width=rightcol_width,

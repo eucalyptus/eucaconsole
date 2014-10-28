@@ -4,8 +4,8 @@
  *
  */
 
-angular.module('SecurityGroupRules', ['CustomFilters'])
-    .controller('SecurityGroupRulesCtrl', function ($scope, $http, $timeout) {
+angular.module('SecurityGroupRules', ['CustomFilters', 'EucaConsoleUtils'])
+    .controller('SecurityGroupRulesCtrl', function ($scope, $http, $timeout, eucaUnescapeJson) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.rulesEditor = $('#rules-editor');
         $scope.rulesTextarea = $scope.rulesEditor.find('textarea#rules');
@@ -49,12 +49,12 @@ angular.module('SecurityGroupRules', ['CustomFilters'])
             $scope.rulesEgressTextarea.val(JSON.stringify($scope.rulesEgressArray));
             $scope.resetValues();
         };
-        $scope.initRules = function (rulesJson, rulesEgressJson, jsonEndpoint, internetProtocolsJsonEndpoint) {
-            rulesJson = rulesJson.replace(/__apos__/g, "\'").replace(/__dquote__/g, '\\"').replace(/__bslash__/g, "\\");
-            $scope.rulesArray = JSON.parse(rulesJson);
-            $scope.rulesEgressArray = JSON.parse(rulesEgressJson);
-            $scope.jsonEndpoint = jsonEndpoint;
-            $scope.internetProtocolsJsonEndpoint = internetProtocolsJsonEndpoint;
+        $scope.initRules = function (optionsJson) {
+            var options = JSON.parse(eucaUnescapeJson(optionsJson));
+            $scope.rulesArray = options['rules_array'];
+            $scope.rulesEgressArray = options['rules_egress_array'];
+            $scope.jsonEndpoint = options['json_endpoint'];
+            $scope.internetProtocolsJsonEndpoint = options['protocols_json_endpoint'];
             $scope.initInternetProtocols();
             $scope.syncRules();
             $scope.setWatchers();
