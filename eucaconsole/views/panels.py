@@ -132,13 +132,15 @@ def tag_editor(context, request, tags=None, leftcol_width=4, rightcol_width=8, s
         Usage example (in Chameleon template): ${panel('tag_editor', tags=security_group.tags)}
     """
     tags = tags or {}
-    tags_json = BaseView.escape_json(json.dumps(tags))
+    controller_options_json = BaseView.escape_json(json.dumps({
+        'tags': tags,
+        'show_name_tag': show_name_tag,
+    }))
     return dict(
-        tags=tags,
-        tags_json=tags_json,
+        controller_options_json=controller_options_json,
+        show_name_tag=show_name_tag,
         leftcol_width=leftcol_width,
         rightcol_width=rightcol_width,
-        show_name_tag=show_name_tag,
     )
 
 

@@ -29,15 +29,12 @@ Image tests
 See http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/testing.html
 
 """
-import simplejson as json
-
 from pyramid import testing
 from pyramid.httpexceptions import HTTPNotFound
 
 from eucaconsole.forms.images import ImageForm
 from eucaconsole.views import TaggedItemView
 from eucaconsole.views.images import ImagesView, ImageView
-from eucaconsole.views.panels import image_picker
 
 from tests import BaseViewTestCase, BaseFormTestCase
 
@@ -81,14 +78,4 @@ class ImageFormTestCase(BaseFormTestCase):
     def test_secure_form(self):
         self.has_field('csrf_token')
 
-
-class ImagePickerTests(BaseViewTestCase):
-    request = testing.DummyRequest()
-    request.session = dict(cloud_type='euca')
-
-    def test_image_picker_panel(self):
-        panel = image_picker(None, self.request)
-        controller_options = json.loads(panel.get('controller_options_json'))
-        self.assertEqual(controller_options.get('images_json_endpoint'), self.request.route_path('images_json'))
-        self.assertEqual(controller_options.get('cloud_type'), 'euca')
 
