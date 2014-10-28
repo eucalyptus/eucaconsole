@@ -25,7 +25,7 @@
         </div>
         ${panel('magic_search', search_facets=search_facets, filter_keys=filter_keys)}
         <div class="row sort-search" ng-cloak="cloak">
-            <div class="small-3 columns" id="results-count" ng-cloak="cloak" metal:define-slot="results_count">
+            <div class="small-5 columns" id="results-count" ng-cloak="cloak" metal:define-slot="results_count">
                 <a class="label radius" ng-show="!itemsLoading" ng-cloak="" id="refresh-btn"
                    ng-click="itemsLoading=true; getItems()"></a>
                 &nbsp;
@@ -49,7 +49,7 @@
                     </ul>
                 </metal:block>
             </div>
-            <div class="small-4 columns displayicons" ng-cloak="">
+            <div class="small-2 columns displayicons" ng-cloak="">
                 <a id="gridview-button" class="gridview" title="Grid view" ng-click="switchView('gridview')"><i class="fi-thumbnails"></i></a>
                 <a id="tableview-button" class="tableview" title="Table view" ng-click="switchView('tableview')"><i class="fi-list-thumbnails"></i></a>
                 <label i18n:translate="" class="hide-for-medium-down">View:</label>
