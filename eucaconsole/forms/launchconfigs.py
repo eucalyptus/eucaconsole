@@ -137,5 +137,5 @@ class LaunchConfigsFiltersForm(BaseSecureForm):
         self.instance_type.choices = self.ec2_choices_manager.instance_types(
             add_blank=False, cloud_type=self.cloud_type, add_description=False)
         self.key_name.choices = self.ec2_choices_manager.keypairs(add_blank=False)
-        self.security_groups.choices = self.ec2_choices_manager.security_groups(add_blank=False)
+        self.security_groups.choices = self.ec2_choices_manager.security_groups(use_id=True, add_blank=False)
 
