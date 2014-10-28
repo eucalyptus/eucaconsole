@@ -23,6 +23,8 @@ angular.module('BucketsPage', ['LandingPage', 'EucaConsoleUtils'])
         $scope.chunkSize = 10;  // set this based on how many keys we want to delete at once
         $scope.index = 0;
         $scope.items = null;
+        $scope.hasCopyItem = false;
+        $scope.hasCopyFolder = false;
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.bucketObjectsCountUrl = options['bucket_objects_count_url'];
@@ -30,6 +32,7 @@ angular.module('BucketsPage', ['LandingPage', 'EucaConsoleUtils'])
             $scope.copyObjUrl = options['copy_object_url'];
             $scope.getKeysGenericUrl = options['get_keys_generic_url'];
             $scope.putKeysUrl = options['put_keys_url'];
+            $scope.updatePasteValues();
         };
         $scope.revealModal = function (action, bucket) {
             var modal = $('#' + action + '-modal');
@@ -88,22 +91,34 @@ angular.module('BucketsPage', ['LandingPage', 'EucaConsoleUtils'])
                 });
             });
         });
-        $scope.hasCopyItem = function () {
-            var buffer = Modernizr.sessionstorage && sessionStorage.getItem('copy-object-buffer');
-            return buffer && (buffer.indexOf('/', buffer.length - 1) === -1);
+        $scope.updatePasteValues = function() {
+            $scope.pasteBuffer = Modernizr.sessionstorage && sessionStorage.getItem('copy-object-buffer');
+            $scope.hasCopyItem = false;
+            $scope.hasCopyFolder = false;
+            if ($scope.pasteBuffer !== null) {
+                $scope.pasteBucket = $scope.pasteBuffer.slice(0, $scope.pasteBuffer.indexOf('/'));
+                $scope.pasteKey = $scope.pasteBuffer.slice($scope.pasteBuffer.indexOf('/')+1);
+                $scope.pastePath = $scope.pasteKey.slice(0, $scope.pasteKey.slice(0, $scope.pasteKey.length-1).lastIndexOf('/')+1);
+                // initially, set based on key ending
+                if ($scope.pasteBuffer.indexOf('/', $scope.pasteBuffer.length - 1) !== -1) {
+                    $scope.hasCopyFolder = true;
+                }
+                else {
+                    $scope.hasCopyItem = true;
+                }
+            }
         };
-        $scope.hasCopyFolder = function (item) {
-            var buffer = Modernizr.sessionstorage && sessionStorage.getItem('copy-object-buffer');
-            if (buffer === null) {
+        $scope.bucketCanCopyItem = function (item) {
+            if (item && $scope.pasteBucket == item.bucket_name && $scope.pastePath == '') {
                 return false;
             }
-            src_bucket = buffer.slice(0, buffer.indexOf('/'));
-            src_path = buffer.slice(buffer.indexOf('/')+1);
-            // detect copy on self
-            if (item && src_bucket == item.bucket_name) {
+            return $scope.hasCopyItem;
+        };
+        $scope.bucketCanCopyFolder = function (item) {
+            if (item && $scope.pasteBucket == item.bucket_name && $scope.pastePath == '') {
                 return false;
             }
-            return buffer && (buffer.indexOf('/', buffer.length - 1) !== -1);
+            return $scope.hasCopyFolder;
         };
         $scope.doPaste = function (bucket) {
             var id = $('.open').attr('id');  // hack to close action menu
@@ -193,7 +208,6 @@ angular.module('BucketsPage', ['LandingPage', 'EucaConsoleUtils'])
                             $('#copy-folder-modal').foundation('reveal', 'close');
                             $scope.copyingAll = false;
                             $scope.folder = '';
-                            Notify.success(oData.message);
                             $scope.$broadcast('refresh');
                         }
                         else {

@@ -47,8 +47,53 @@
 	<td></td>
 </tr>
 <tr>
+	<td>storeText</td>
+	<td>css=span.euca.username-label</td>
+	<td>login_label</td>
+</tr>
+<tr>
+	<td>store</td>
+	<td>eucalyptus</td>
+	<td>eucalyptus</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${login_label}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeEval</td>
+	<td>storedVars['eucalyptus']</td>
+	<td>eucalyptus</td>
+</tr>
+<tr>
+	<td>storeEval</td>
+	<td>storedVars['login_label']</td>
+	<td>${login_label}</td>
+</tr>
+<tr>
+	<td>storeEval</td>
+	<td>storedVars['login_label'].split(&quot;@&quot;,2);</td>
+	<td>account</td>
+</tr>
+<tr>
+	<td>storeEval</td>
+	<td>storedVars['account'][1]</td>
+	<td>account-name</td>
+</tr>
+<tr>
+	<td>gotoIf</td>
+	<td>storedVars['account-name']!==storedVars['eucalyptus']</td>
+	<td>LABEL</td>
+</tr>
+<tr>
 	<td>clickAndWait</td>
 	<td>id=resource-menuitem-instances</td>
+	<td></td>
+</tr>
+<tr>
+	<td>label</td>
+	<td>LABEL</td>
 	<td></td>
 </tr>
 <tr>
