@@ -31,6 +31,8 @@ See http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/testing.html
 """
 from collections import namedtuple
 
+import simplejson as json
+
 from pyramid import testing
 
 from eucaconsole.forms.securitygroups import SecurityGroupForm, SecurityGroupDeleteForm
@@ -143,7 +145,8 @@ class SecurityGroupPanelsTestCase(BaseViewTestCase):
             'ip_protocol': 'tcp',
             'from_port': 80
         }]
-        self.assertEqual(ruleseditor.get('rules'), rules_output)
+        controller_options = json.loads(ruleseditor.get('controller_options_json'))
+        self.assertEqual(controller_options.get('rules_array'), rules_output)
         self.assertTrue(ruleseditor.get('icmp_choices') is not None)
 
 
