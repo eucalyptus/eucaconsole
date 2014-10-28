@@ -34,15 +34,11 @@
 }
 
 #pagetitle {
-    position: relative;
-    float:left;
+    display: inline-block;
 }
 
 #bucket-details {
-    margin-left: 1rem;
-    margin-top: .75rem;
-    position: relative;
-    float:left;
+    margin-left: 0.5rem;
 }
 
 .bucket-progress {
@@ -69,7 +65,6 @@
         margin-bottom: 0px;
         font-size: 1.0rem;
         font-weight: bold;
-        text-align: center;
     }
 }
 
