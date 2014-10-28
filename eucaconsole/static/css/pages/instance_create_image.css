@@ -1,6 +1,8 @@
 /* @fileOverview single Create Image page CSS */
 /* Dropdown elements */
 /* Set the link colors and styles for top-level nav */
+/* ----------------------------------------- Item list
+----------------------------------------- */
 #s3_bucket, #s3_prefix { width: 70%; }
 
 .code { background: #e6e6e6; padding-left: 8px; margin: 10px; }

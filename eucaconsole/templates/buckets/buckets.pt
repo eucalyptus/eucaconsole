@@ -73,10 +73,10 @@
                         </a>
                     </li>
                     -->
-                    <li ng-show="hasCopyItem()">
+                    <li ng-show="bucketCanCopyItem(item)">
                         <a i18n:translate="" ng-click="doPaste(item)">Paste object</a>
                     </li>
-                    <li ng-show="hasCopyFolder(item)">
+                    <li ng-show="bucketCanCopyFolder(item)">
                         <a i18n:translate="" ng-click="doPaste(item)">Paste folder</a>
                     </li>
                     <li>
@@ -131,10 +131,10 @@
                                 </a>
                             </li>
                             -->
-                            <li ng-show="hasCopyItem()">
+                            <li ng-show="bucketCanCopyItem(item)">
                                 <a i18n:translate="" ng-click="doPaste(item)">Paste object</a>
                             </li>
-                            <li ng-show="hasCopyFolder(item)">
+                            <li ng-show="bucketCanCopyFolder(item)">
                                 <a i18n:translate="" ng-click="doPaste(item)">Paste folder</a>
                             </li>
                             <li>

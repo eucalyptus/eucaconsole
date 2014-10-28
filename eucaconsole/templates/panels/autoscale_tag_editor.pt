@@ -4,8 +4,8 @@
      ng-controller="AutoScaleTagEditorCtrl" ng-init="initTags('${tags_json}')">
     <div class="columns"><h6 i18n:translate="">Tags</h6></div>
     <div class="columns field">
-        <div class="items">
-            <span class="label radius secondary tagentry" ng-repeat="tag in tagsArray" ng-cloak="cloak">
+        <div class="item-list">
+            <span class="label radius secondary item" ng-repeat="tag in tagsArray" ng-cloak="cloak">
                 <span title="{{ getSafeTitle(tag) }}"><!--! XSS Heads up!  Don't enable Foundation tooltips here -->
                     {{ tag.name | ellipsis: 20 }} <em>=</em> {{ tag.value | ellipsis: 40 }}
                 </span>
