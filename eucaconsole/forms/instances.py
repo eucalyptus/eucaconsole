@@ -355,7 +355,8 @@ class InstancesFiltersForm(BaseSecureForm):
         self.state.choices = self.get_status_choices()
         self.instance_type.choices = self.get_instance_type_choices()
         self.root_device_type.choices = self.get_root_device_type_choices()
-        self.key_name.choices = self.ec2_choices_manager.keypairs(add_blank=False, no_keypair_option=True)
+        self.key_name.choices = self.ec2_choices_manager.keypairs(
+            add_blank=False, no_keypair_filter_option=True)
         self.security_group.choices = self.ec2_choices_manager.security_groups(add_blank=False)
         self.scaling_group.choices = self.autoscale_choices_manager.scaling_groups(add_blank=False)
         if cloud_type=='aws':
