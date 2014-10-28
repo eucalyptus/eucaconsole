@@ -30,7 +30,7 @@ angular.module('Dashboard', ['EucaConsoleUtils'])
             $scope.storeAWSRegion();
             $scope.health = options['services'];
             var tiles = $.cookie($scope.accountName + "_dash_order");
-            if (tiles.indexOf('health') > -1) {
+            if (tiles == undefined || tiles.indexOf('health') > -1) {
                 $scope.getServiceStatus();
             }
             $('#sortable').sortable({
