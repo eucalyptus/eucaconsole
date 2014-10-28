@@ -18,19 +18,22 @@ angular.module('MagicSearch', [])
                 initialFacets = initialFacets.slice(1);
             }
             initialFacets = initialFacets.split('&');
+            if (initialFacets.length > 1 || initialFacets[0].length > 0) {
+                $('#search-input').removeAttr('placeholder');
+            }
             angular.forEach(initialFacets, function(facet, idx) {
-                facetParts = facet.split('=');
+                var facetParts = facet.split('=');
                 angular.forEach($scope.facetsObj, function(value, idx) {
                     if (value.name == facetParts[0]) {
                         if (value.name == 'tags') {
                             $scope.currentSearch.push({'name':facet, 'label':[value.label, facetParts[1]]});
-                            $scope.deleteFacetSelection(facetParts[0]);
+                            // allow tags to stay since we can have multiples
                         }
                         else {
                             angular.forEach(value.options, function(option, idx) {
                                 if (option.key == facetParts[1]) {
                                     $scope.currentSearch.push({'name':facet, 'label':[value.label, option.label]});
-                                    $scope.deleteFacetSelection(facetParts[0]);
+                                    $scope.deleteFacetSelection(facetParts);
                                 }
                             });
                         }
@@ -39,10 +42,18 @@ angular.module('MagicSearch', [])
             });
         };
         // removes a facet from the menu
-        $scope.deleteFacetSelection = function(facet_name) {
+        $scope.deleteFacetSelection = function(facet_parts) {
             angular.forEach($scope.facetsObj.slice(), function(facet, idx) {
-                if (facet.name == facet_name) {
-                    $scope.facetsObj.splice($scope.facetsObj.indexOf(facet), 1);
+                if (facet.name == facet_parts[0]) {
+                    for (var i=0; i<facet.options.length; i++) {
+                        var option = facet.options[i];
+                        if (option.key == facet_parts[1]) {
+                            $scope.facetsObj[idx].options.splice($scope.facetsObj[idx].options.indexOf(option), 1);
+                        }
+                    }
+                    if (facet.options.length == 0) {
+                        $scope.facetsObj.splice($scope.facetsObj.indexOf(facet), 1);
+                    }
                 }
             });
         };
@@ -99,6 +110,7 @@ angular.module('MagicSearch', [])
         };
         // send event with new query string
         $scope.emitQuery = function(removed) {
+            $('#search-input').removeAttr('placeholder');
             var query = '';
             for (var i=0; i<$scope.currentSearch.length; i++) {
                 if ($scope.currentSearch[i]['name'].indexOf('text') != 0) {

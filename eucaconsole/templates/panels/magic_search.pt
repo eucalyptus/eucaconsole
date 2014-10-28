@@ -5,7 +5,6 @@
           type="text/css" charset="utf-8" />
      <div class="small-12 columns">
         <div class="search-bar">
-            <i class="fi-magnifying-glass go"></i>
             <div class="item-list">
                 <span class="label radius secondary item"
                       ng-repeat="facet in currentSearch" ng-cloak="cloak">
@@ -24,7 +23,8 @@
                 <li ng-repeat="option in facetOptions" ng-show="facetSelected">
                     <a ng-click="optionClicked($index, $event, option.key)">{{ option.label }}</a>
             </ul>
-            <a ng-click="clearSearch()" title="Clear search" i18n:translate="title"><i class="fi-x cancel"></i></a>
+            <a ng-click="clearSearch()" ng-show="currentSearch.length > 0" title="Clear search" i18n:translate="title"><i class="fi-x cancel"></i></a>
+            <i class="fi-magnifying-glass go"></i>
         </div>
     </div>
     <script src="${request.static_path('eucaconsole:static/js/widgets/magic_search.js')}"></script>

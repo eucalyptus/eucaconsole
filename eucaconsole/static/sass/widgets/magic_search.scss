@@ -6,13 +6,6 @@
     background-color: white;
     padding: 4px;
     height: 2.0rem;
-    i.fi-magnifying-glass {
-        padding: 3px;
-        margin-right: 3px;
-        vertical-align: middle;
-        position: relative;
-        float: left;
-    }
     @include item-list;
     .item-list {
         position: relative;
@@ -28,9 +21,22 @@
         margin: 0px;
     }
     i.cancel {
+        margin-right: 1.25rem;
         padding: 3px;
+        color: $euca-darkgrey;
+        &:hover {
+            color: darkred;
+        }
         vertical-align: middle;
         position: relative;
         float: right;
+    }
+    i.fi-magnifying-glass {
+        right: 1.0rem;
+        padding: 3px;
+        margin-right: 3px;
+        color: $euca-darkgrey;
+        vertical-align: middle;
+        position: absolute;
     }
 }
