@@ -1,6 +1,9 @@
+@charset "UTF-8";
 /* @fileOverview Image picker widget Sass CSS styles */
 /* Dropdown elements */
 /* Set the link colors and styles for top-level nav */
+/* ----------------------------------------- Item list
+----------------------------------------- */
 #image-picker .search-filter { position: relative; }
 #image-picker .search-filter .search-icon { position: absolute; top: 10px; right: 10px; }
 #image-picker .table { width: 100% !important; border: 1px solid #cccccc; }
