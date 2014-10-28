@@ -352,7 +352,6 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
         self.keypair_form = KeyPairForm(self.request, formdata=self.request.params or None)
         self.securitygroup_form = SecurityGroupForm(self.request, self.vpc_conn, formdata=self.request.params or None)
         self.generate_file_form = GenerateFileForm(self.request, formdata=self.request.params or None)
-        self.images_json_endpoint = self.request.route_path('images_json')
         self.owner_choices = self.get_owner_choices()
         controller_options_json = BaseView.escape_json(json.dumps({
             'securitygroups_rules': self.get_securitygroups_rules(),
@@ -369,7 +368,6 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
             keypair_form=self.keypair_form,
             securitygroup_form=self.securitygroup_form,
             generate_file_form=self.generate_file_form,
-            images_json_endpoint=self.images_json_endpoint,
             owner_choices=self.owner_choices,
             snapshot_choices=self.get_snapshot_choices(),
             preset='',

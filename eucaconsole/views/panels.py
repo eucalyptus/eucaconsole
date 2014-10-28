@@ -284,18 +284,22 @@ def get_root_device_name(img):
 
 
 @panel_config('image_picker', renderer='../templates/panels/image_picker.pt')
-def image_picker(context, request, image=None, images_json_endpoint=None, filters_form=None,
+def image_picker(context, request, image=None, filters_form=None,
                  maxheight='800px', owner_choices=None, prefix_route='instance_create'):
     """ Reusable Image picker widget (e.g. for Launch Instance page, step 1).
         Usage example (in Chameleon template): ${panel('image_picker')}
     """
+    controller_options_json = BaseView.escape_json(json.dumps({
+        'cloud_type': request.session.get('cloud_type'),
+        'images_json_endpoint': request.route_path('images_json')
+    }))
     return dict(
         image=image,
         filters_form=filters_form,
-        images_json_endpoint=images_json_endpoint,
         maxheight=maxheight,
         owner_choices=owner_choices,
         prefix_route=prefix_route,
+        controller_options_json=controller_options_json,
     )
 
 
