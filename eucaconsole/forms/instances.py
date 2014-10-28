@@ -364,31 +364,57 @@ class InstancesFiltersForm(BaseSecureForm):
         self.vpc_id.choices.append(('None', _(u'No VPC')))
         self.vpc_id.choices = sorted(self.vpc_id.choices)
         self.subnet_id.choices = self.vpc_choices_manager.vpc_subnets(add_blank=False)
+        self.facets = [
+            {'name':'state', 'label':self.state.label.text, 'options':self.get_status_choices()},
+            {'name':'availability_zone', 'label':self.availability_zone.label.text, 'options':self.get_availability_zone_choices(region)},
+            {'name':'instance_type', 'label':self.instance_type.label.text,
+                'options':self.get_instance_type_choices()},
+            {'name':'root_device_type', 'label':self.root_device_type.label.text,
+                'options':self.get_root_device_type_choices()},
+            {'name':'security_group', 'label':self.security_group.label.text,
+                'options':self.getOptionsFromChoices(self.ec2_choices_manager.security_groups(add_blank=False))},
+            {'name':'scaling_group', 'label':self.scaling_group.label.text,
+                'options':self.getOptionsFromChoices(self.autoscale_choices_manager.scaling_groups(add_blank=False))},
+            {'name':'subnet_id', 'label':self.subnet_id.label.text,
+                'options':self.getOptionsFromChoices(self.vpc_choices_manager.vpc_subnets(add_blank=False))},
+            {'name':'tags', 'label':self.tags.label.text, 'options':[]},
+        ]
+        vpc_choices = self.vpc_choices_manager.vpc_networks(add_blank=False)
+        vpc_choices.append(('None', _(u'No VPC')))
+        self.facets.append(
+            {'name':'vpc_id', 'label':self.vpc_id.label.text,
+                'options': self.getOptionsFromChoices(vpc_choices)},
+        )
+        if cloud_type=='euca':
+            self.facets.append(
+                {'name':'roles', 'label':self.roles.label.text,
+                    'options':self.getOptionsFromChoices(self.iam_choices_manager.roles(add_blank=False))},
+            )
 
     def get_availability_zone_choices(self, region):
-        return self.ec2_choices_manager.availability_zones(region, add_blank=False)
+        return self.getOptionsFromChoices(self.ec2_choices_manager.availability_zones(region, add_blank=False))
 
     def get_instance_type_choices(self):
-        return self.ec2_choices_manager.instance_types(
-            cloud_type=self.cloud_type, add_blank=False, add_description=False)
+        return self.getOptionsFromChoices(self.ec2_choices_manager.instance_types(
+            cloud_type=self.cloud_type, add_blank=False, add_description=False))
 
     @staticmethod
     def get_status_choices():
-        return (
-            ('running', 'Running'),
-            ('pending', 'Pending'),
-            ('stopping', 'Stopping'),
-            ('stopped', 'Stopped'),
-            ('shutting-down', 'Terminating'),
-            ('terminated', 'Terminated'),
-        )
+        return [
+            {'key':'running', 'label':'Running'},
+            {'key':'pending', 'label':'Pending'},
+            {'key':'stopping', 'label':'Stopping'},
+            {'key':'stopped', 'label':'Stopped'},
+            {'key':'shutting-down', 'label':'Terminating'},
+            {'key':'terminated', 'label':'Terminated'},
+        ]
 
     @staticmethod
     def get_root_device_type_choices():
-        return (
-            ('ebs', 'EBS'),
-            ('instance-store', 'Instance-store')
-        )
+        return [
+            {'key':'ebs', 'label':'EBS'},
+            {'key':'instance-store', 'label':'Instance-store'}
+        ]
 
 
 class AssociateIpToInstanceForm(BaseSecureForm):

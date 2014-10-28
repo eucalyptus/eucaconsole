@@ -170,9 +170,11 @@ class InstancesView(LandingPageView, BaseInstanceView):
             self.request, ec2_conn=self.conn, autoscale_conn=autoscale_conn,
             iam_conn=iam_conn, vpc_conn=vpc_conn,
             cloud_type=self.cloud_type, formdata=self.request.params or None)
+        search_facets = filters_form.facets
         self.render_dict.update(dict(
-            filter_fields=True,
+            filter_fields=False,
             filter_keys=self.filter_keys,
+            search_facets=BaseView.escape_json(json.dumps(search_facets)),
             sort_keys=self.sort_keys,
             json_items_endpoint=self.json_items_endpoint,
             filters_form=filters_form,

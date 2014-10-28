@@ -155,7 +155,7 @@ class ImagesView(LandingPageView):
         self.account_id = User.get_account_id(ec2_conn=self.conn, request=self.request)
         self.filter_keys = self.get_filter_keys()
         self.sort_keys = self.get_sort_keys()
-        search_facets = self.filters_form.facets;
+        search_facets = self.filters_form.facets
         self.render_dict = dict(
             filter_keys=self.filter_keys,
             sort_keys=self.sort_keys,

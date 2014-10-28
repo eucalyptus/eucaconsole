@@ -78,6 +78,9 @@ class BaseSecureForm(SecureForm):
             error_messages.append(msg)
         return error_messages
 
+    def getOptionsFromChoices(self, choices):
+        return [{'key':choice[0], 'label':choice[1]} for choice in choices]
+
 
 class TextEscapedField(StringField):
     def _value(self):

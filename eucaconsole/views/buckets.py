@@ -84,6 +84,7 @@ class BucketsView(LandingPageView):
             filter_fields=False,
             filter_keys=['bucket_name'],
             controller_options_json=self.get_controller_options_json(),
+            search_facets=BaseView.escape_json(json.dumps([])),
         )
 
     @view_config(route_name='buckets', renderer=VIEW_TEMPLATE)
@@ -281,6 +282,7 @@ class BucketContentsView(LandingPageView):
             sort_keys=self.sort_keys,
             filter_fields=False,
             filter_keys=['name'],
+            search_facets=BaseView.escape_json(json.dumps([])),
             controller_options_json=self.get_controller_options_json(),
         )
         return self.render_dict

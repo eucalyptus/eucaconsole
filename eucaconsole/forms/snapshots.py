@@ -109,11 +109,15 @@ class SnapshotsFiltersForm(BaseSecureForm):
         super(SnapshotsFiltersForm, self).__init__(request, **kwargs)
         self.request = request
         self.status.choices = self.get_status_choices()
+        self.facets = [
+            {'name':'status', 'label':self.status.label.text, 'options':self.get_status_choices()},
+            {'name':'tags', 'label':self.tags.label.text, 'options':[]},
+        ]
 
     @staticmethod
     def get_status_choices():
-        return (
-            ('pending', 'In progress'),
-            ('completed', 'Completed'),
-        )
+        return [
+            {'key':'pending', 'label':'In progress'},
+            {'key':'completed', 'label':'Completed'},
+        ]
 
