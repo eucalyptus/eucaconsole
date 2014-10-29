@@ -38,22 +38,22 @@ from . import BaseView
 from ..i18n import _
 from . import boto_error_handler
 
-TILE_MASTER_LIST = {
-    'instances-running': 'Running instances',
-    'instances-stopped': 'Stopped instances',
-    'scaling-groups': 'Instances in scaling groups',
-    'elastic-ips': 'Elastic IPs',
-    'volumes': 'Volumes',
-    'snapshots': 'Snapshots',
-    'buckets': 'Buckets (S3)',
-    'security-groups': 'Security groups',
-    'key-pairs': 'Key pairs',
-    'accounts': 'Accounts',
-    'users': 'Users',
-    'groups': 'Groups',
-    'roles': 'Roles',
-    'health': 'Service status'
-}
+TILE_MASTER_LIST = [
+    ('instances-running', 'Running instances'),
+    ('instances-stopped', 'Stopped instances'),
+    ('scaling-groups', 'Instances in scaling groups'),
+    ('elastic-ips', 'Elastic IPs'),
+    ('volumes', 'Volumes'),
+    ('snapshots', 'Snapshots'),
+    ('buckets', 'Buckets (S3)'),
+    ('security-groups', 'Security groups'),
+    ('key-pairs', 'Key pairs'),
+    ('accounts', 'Accounts'),
+    ('users', 'Users'),
+    ('groups', 'Groups'),
+    ('roles', 'Roles'),
+    ('health', 'Service status')
+]
 
 
 class DashboardView(BaseView):
@@ -74,10 +74,10 @@ class DashboardView(BaseView):
         if tiles is not None:
             tiles = tiles.replace('%2C', ',')
         else:
-            tiles = ','.join(TILE_MASTER_LIST.keys())
+            tiles = ','.join([tile for (tile, label) in TILE_MASTER_LIST])
 
-        tiles_not_shown = [tile for tile in TILE_MASTER_LIST.keys() if tile not in tiles.split(',')]
-        tiles_default = TILE_MASTER_LIST.keys()
+        tiles_not_shown = [tile for (tile, label) in TILE_MASTER_LIST if tile not in tiles.split(',')]
+        tiles_default = [tile for (tile, label) in TILE_MASTER_LIST]
         session = self.request.session
         if session['cloud_type'] == 'aws':
             try:
@@ -113,8 +113,7 @@ class DashboardView(BaseView):
         return dict(
             availability_zones=availability_zones,
             tiles=tiles.split(','),
-            tiles_not_shown=tiles_not_shown,
-            tile_names=TILE_MASTER_LIST,
+            tiles_not_shown=[(tile, label) for (tile, label) in TILE_MASTER_LIST if tile in tiles_not_shown],
             tiles_are_default=tiles_are_default,
             controller_options_json=self.get_controller_options_json(),
         )
@@ -157,7 +156,7 @@ class DashboardJsonView(BaseView):
         tiles = self.request.cookies.get("{0}_dash_order".format(
             self.request.session['account' if self.request.session['cloud_type'] == 'euca' else 'access_id']))
         if tiles is None:
-            tiles = ','.join(TILE_MASTER_LIST.keys())
+            tiles = ','.join([tile for (tile, label) in TILE_MASTER_LIST])
         with boto_error_handler(self.request):
             if ('instances-running' or 'instances-stopped' or 'scaling-groups') in tiles:
                 for instance in ec2_conn.get_only_instances(filters=filters):
