@@ -217,7 +217,7 @@ angular.module('UserView', ['PolicyList', 'Quotas', 'EucaConsoleUtils'])
             });
         };
     })
-    .controller('UserPasswordCtrl', function($scope, $http, $timeout) {
+    .controller('UserPasswordCtrl', function($scope, $http, $timeout, eucaHandleError) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.jsonRandomEndpoint = '';
         $scope.jsonDeleteEndpoint = '';
@@ -356,7 +356,7 @@ angular.module('UserView', ['PolicyList', 'Quotas', 'EucaConsoleUtils'])
             $('#delete-password-modal').foundation('reveal', 'close');
         };
     })
-    .controller('UserAccessKeysCtrl', function($scope, $http, $timeout) {
+    .controller('UserAccessKeysCtrl', function($scope, $http, $timeout, eucaHandleError) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.jsonEndpoint = '';
         $scope.jsonItemsEndpoint = '';
@@ -467,7 +467,7 @@ angular.module('UserView', ['PolicyList', 'Quotas', 'EucaConsoleUtils'])
             link: linker
         }
     })
-    .controller('UserGroupsCtrl', function($scope, $http, $timeout) {
+    .controller('UserGroupsCtrl', function($scope, $http, $timeout, eucaHandleError) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.addEndpoint = '';
         $scope.removeEndpoint = '';
@@ -593,7 +593,7 @@ angular.module('UserView', ['PolicyList', 'Quotas', 'EucaConsoleUtils'])
             $('#policy-view-modal').foundation('reveal', 'open');
         };
     })
-    .controller('UserQuotasCtrl', function($scope, $http) {
+    .controller('UserQuotasCtrl', function($scope, $http, eucaHandleError) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.jsonEndpoint = '';
         $scope.isQuotaNotChanged = true;

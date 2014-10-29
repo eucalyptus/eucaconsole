@@ -639,7 +639,7 @@ class UserView(BaseView):
                 'UpdateAccessKey',
                 params={
                     'UserName': self.user.user_name, 'AccessKeyId': key_id,
-                    'Statue': 'Inactive', 'DelegateAccount': as_account
+                    'Status': 'Inactive', 'DelegateAccount': as_account
                 }
             )
             return dict(message=_(u"Successfully deactivated key"))
@@ -657,7 +657,7 @@ class UserView(BaseView):
                 'UpdateAccessKey',
                 params={
                     'UserName': self.user.user_name, 'AccessKeyId': key_id,
-                    'Statue': 'Active', 'DelegateAccount': as_account
+                    'Status': 'Active', 'DelegateAccount': as_account
                 }
             )
             return dict(message=_(u"Successfully activated key"))
