@@ -49,10 +49,10 @@
                 </div>
                 <div ng-cloak="">
                     <span class="label" title="Volume ID" i18n:attributes="title" data-tooltip="">VO</span>
-                    <span ng-show="{{ item.exists_volume }}">
+                    <span ng-show="item.exists_volume">
                         <a ng-href="/volumes/{{ item.volume_id }}">{{ item.volume_name || item.volume_id }}</a>
                     </span>
-                    <span ng-show="{{ !item.exists_volume }}">
+                    <span ng-show="!item.exists_volume">
                         {{ item.volume_name || item.volume_id }}
                     </span>
                 </div>
@@ -107,12 +107,12 @@
                 </td>
                 <td class="size">{{ item.volume_size }}&nbsp;GB</td>
                 <td class="volumeid breakword" ng-cloak="">
-                    <span ng-show="{{ item.exists_volume }}">
+                    <span ng-show="item.exists_volume">
                         <a ng-href="/volumes/{{ item.volume_id }}">
                             {{ item.volume_name || item.volume_id | ellipsis: 30 }}
                         </a>
                     </span>
-                    <span ng-show="{{ !item.exists_volume }}">
+                    <span ng-show="!item.exists_volume">
                         {{ item.volume_name || item.volume_id | ellipsis: 30 }}
                     </span>
                     <a ng-href="/volumes/{{ item.volume_id }}">
