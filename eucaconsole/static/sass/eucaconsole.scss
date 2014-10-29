@@ -855,6 +855,9 @@ textarea.hidden {
     z-index: 9999995;
     h3 {
         font-weight: bold;
+        &#about-cloud:hover {
+            color: $euca-green;
+        }
     }
     form .row.controls-wrapper {
         margin-bottom: 1rem;

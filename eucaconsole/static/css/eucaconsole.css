@@ -1581,6 +1581,7 @@ textarea.hidden.debug { display: block; }
 
 .reveal-modal { z-index: 9999995; }
 .reveal-modal h3 { font-weight: bold; }
+.reveal-modal h3#about-cloud:hover { color: #8cc63e; }
 .reveal-modal form .row.controls-wrapper { margin-bottom: 1rem; }
 .reveal-modal .button.expand { margin-bottom: 0; }
 .reveal-modal .button.expand:focus { box-shadow: 0 0 3px 3px #7bb0e0; }
