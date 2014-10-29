@@ -62,7 +62,6 @@
                 <td class="breakword">{{ item.description | ellipsis: 64 }}</td>
                 <td>${panel('securitygroup_rules_landingpage', tile_view=False)}</td>
                 <td>${panel('securitygroup_rules_egress_landingpage', tile_view=False)}</td>
-                <td></td>
                 <td>
                     <span class="actions">
                         <a id="table-item-dropdown_{{ item.id }}" class="tiny secondary button dropdown round" data-dropdown="item-dropdown_{{ item.id }}"><i class="fi-widget"></i></a>

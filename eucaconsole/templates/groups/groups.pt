@@ -50,15 +50,15 @@
             </div>
             <metal:block metal:fill-slot="tableview_headers">
                 <th i18n:translate="">Group name</th>
-                <th i18n:translate="">Users</th>
-                <th i18n:translate="">Permissions</th>
+                <th i18n:translate="" class="count">Users</th>
+                <th i18n:translate="" class="count">Permissions</th>
                 <th i18n:translate="">Creation Time</th>
                 <th class="actions" i18n:translate="">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
                 <td class="id breakword"><a ng-href="${prefix}/{{ item.group_name }}">{{ item.group_name | ellipsis: 30 }}</a></td>
-                <td><a ng-click="linkGroup(item, '#group-users')">{{ item.user_count }}</a></td>
-                <td><a ng-click="linkGroup(item, '#policy-list')">{{ item.policy_count }}</a></td>
+                <td class="count"><a ng-click="linkGroup(item, '#group-users')">{{ item.user_count }}</a></td>
+                <td class="count"><a ng-click="linkGroup(item, '#policy-list')">{{ item.policy_count }}</a></td>
                 <td> {{ item.create_date | date:'${layout.angular_date_format}' }} </td>
                 <td>
                   <span class="actions">

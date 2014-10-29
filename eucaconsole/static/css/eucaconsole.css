@@ -1592,9 +1592,11 @@ textarea.hidden.debug { display: block; }
 ----------------------------------------- */
 table.table { border: none; }
 table.table thead tr { background-color: #f5f5f5; }
-table.table thead tr th { padding-top: 0.5rem; padding-bottom: 0.5rem; vertical-align: top; color: #444444; text-transform: uppercase; }
+table.table thead tr th { padding-top: 0.5rem; padding-bottom: 0.5rem; padding-left: 6px; padding-right: 6px; vertical-align: top; color: #444444; text-transform: uppercase; }
 table.table thead tr th.actions { text-align: right; }
+table.table thead tr th.count { text-align: center; }
 table.table tr { border-bottom: 1px solid #ddd; }
+table.table tr td.count { text-align: center; }
 table.table tr td { vertical-align: top; }
 
 /* ----------------------------------------- Footer
