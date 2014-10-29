@@ -63,7 +63,7 @@
             </tbody>
         </table>
         <div class="row">
-            <div class="columns subheader" ng-cloak="">
+            <div class="columns subheader" ng-cloak="" tal:condition="not read_only">
                 <span class="subsection-label" ng-show="bdMapping" i18n:translate="">Add another device</span>
                 <span class="subsection-label" ng-show="bdMapping == undefined" i18n:translate="">Add a device</span>
                 :
