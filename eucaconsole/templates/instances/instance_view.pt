@@ -168,14 +168,14 @@
                     <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Key name</label></div>
                         <div class="small-8 columns value">
-                            <a href="/keypairs/${instance_keypair}">${instance_keypair}</a>
+                            <a href="${request.route_path('keypair_view', id=instance_keypair)}">${instance_keypair}</a>
                         </div>
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Security group(s)</label></div>
                         <div class="small-8 columns value">
                             <div tal:repeat="group instance.groups" ng-non-bindable="">
-                                <a href="/securitygroups/${group.id}">${group.name}</a>
+                                <a href="${request.route_path('securitygroup_view', id=group.id)}">${group.name}</a>
                             </div>
                         </div>
                     </div>
@@ -188,7 +188,7 @@
                     <div class="row controls-wrapper readonly" tal:condition="role">
                         <div class="small-4 columns"><label i18n:translate="">Role</label></div>
                         <div class="small-8 columns value">
-                            <a href="/roles/${role}" ng-non-bindable="">${role}</a>
+                            <a href="${request.route_path('role_view', name=role)}" ng-non-bindable="">${role}</a>
                         </div>
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="scaling_group">
@@ -204,12 +204,6 @@
                     <div class="row controls-wrapper readonly" tal:condition="instance.reservation_id">
                         <div class="small-4 columns"><label i18n:translate="">Reservation ID</label></div>
                         <div class="small-8 columns value">${instance.reservation_id}</div>
-                    </div>
-                    <div class="row controls-wrapper readonly" tal:condition="role">
-                        <div class="small-4 columns"><label i18n:translate="">Role</label></div>
-                        <div class="small-8 columns value">
-                            <a href="/roles/${role}">${role}</a>
-                        </div>
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="instance.client_token">
                         <div class="small-4 columns"><label i18n:translate="">Client token</label></div>
