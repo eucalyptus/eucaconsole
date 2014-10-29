@@ -173,8 +173,14 @@ def autoscale_tag_editor(context, request, tags=None, leftcol_width=2, rightcol_
             value=tag.value,
             propagate_at_launch=tag.propagate_at_launch,
         ))
-    tags_json = BaseView.escape_json(json.dumps(tags_list))
-    return dict(tags=tags, tags_json=tags_json, leftcol_width=leftcol_width, rightcol_width=rightcol_width)
+    controller_options_json = BaseView.escape_json(json.dumps({
+        'tags_list': tags_list,
+    }))
+    return dict(
+        controller_options_json=controller_options_json,
+        leftcol_width=leftcol_width,
+        rightcol_width=rightcol_width,
+    )
 
 
 @panel_config('securitygroup_rules', renderer='../templates/panels/securitygroup_rules.pt')

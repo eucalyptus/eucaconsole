@@ -36,7 +36,7 @@ from pyramid import testing
 
 from eucaconsole.forms.securitygroups import SecurityGroupForm
 from eucaconsole.views.panels import (
-    form_field_row, image_picker, securitygroup_rules, tag_editor
+    form_field_row, image_picker, securitygroup_rules, tag_editor, autoscale_tag_editor,
 )
 
 from tests import BaseViewTestCase
@@ -62,6 +62,18 @@ class TagEditorTests(BaseViewTestCase):
         controller_options = json.loads(panel.get('controller_options_json'))
         self.assertEqual(controller_options.get('tags'), tags)
         self.assertFalse(controller_options.get('show_name_tag'))
+
+    def test_autoscale_tag_editor_panel(self):
+        Tag = namedtuple('Tag', ['key', 'value', 'propagate_at_launch'])
+        tags = [
+            Tag(key='foo', value='bar', propagate_at_launch=True),
+        ]
+        tags_output = [
+            dict(name='foo', value='bar', propagate_at_launch=True),
+        ]
+        panel = autoscale_tag_editor(None, self.request, tags=tags)
+        controller_options = json.loads(panel.get('controller_options_json'))
+        self.assertEqual(controller_options.get('tags_list'), tags_output)
 
 
 class SecurityGroupPanelsTestCase(BaseViewTestCase):
