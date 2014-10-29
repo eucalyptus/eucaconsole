@@ -32,7 +32,9 @@
                     <span class="label" title="Object Count" i18n:attributes="title" data-tooltip="">OB</span>
                     <span>
                         <span class="dots" ng-show="countsLoading[item.bucket_name]"></span>
-                        <b>{{ bucketCounts[item.bucket_name] }}</b>
+                        <a ng-href="{{ item.contents_url }}">
+                            <b>{{ bucketCounts[item.bucket_name] }}</b>
+                        </a>
                     </span>
                 </div>
                 <div>
@@ -99,7 +101,9 @@
                 </td>
                 <td>
                     <span class="dots" ng-show="countsLoading[item.bucket_name]"></span>
-                    {{ bucketCounts[item.bucket_name] }}
+                    <a ng-href="{{ item.contents_url }}">
+                        {{ bucketCounts[item.bucket_name] }}
+                    </a>
                 </td>
                 <td>
                     <span class="dots" ng-show="versioningStatusLoading[item.bucket_name]"></span>
