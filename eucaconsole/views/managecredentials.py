@@ -41,9 +41,10 @@ from ..forms.login import EucaChangePasswordForm
 from ..i18n import _
 from ..models import Notification
 from ..views import BaseView
+from .login import PermissionCheckMixin
 
 
-class ManageCredentialsView(BaseView):
+class ManageCredentialsView(BaseView, PermissionCheckMixin):
     template = '../templates/managecredentials.pt'
 
     def __init__(self, request):
@@ -111,6 +112,7 @@ class ManageCredentialsView(BaseView):
                     session['username'] = username
                     session['region'] = 'euca'
                     session['username_label'] = user_account
+                    self.check_iam_perms(session, creds);
                     headers = remember(self.request, user_account)
                     msg = _(u'Successfully changed password.')
                     self.request.session.flash(msg, queue=Notification.SUCCESS)

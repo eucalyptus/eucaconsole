@@ -30,9 +30,11 @@ Pyramid views for Login/Logout
 """
 import base64
 import logging
+import simplejson as json
 from urllib2 import HTTPError, URLError
 from urlparse import urlparse
 from boto.connection import AWSAuthConnection
+from boto.exception import BotoServerError
 
 from pyramid.httpexceptions import HTTPFound
 from pyramid.security import NO_PERMISSION_REQUIRED, remember, forget
@@ -55,8 +57,36 @@ def redirect_to_login_page(request):
     login_url = request.route_path('login')
     return HTTPFound(login_url)
 
+class PermissionCheckMixin(object):
+    def check_iam_perms(self, session, creds):
+        # the values below needed by get_connection()
+        self.region = self.cloud_type = 'euca'
+        self.access_key = creds.access_key
+        self.secret_key = creds.secret_key
+        self.security_token = creds.session_token
+        iam_conn = self.get_connection(conn_type='iam', cloud_type='euca')
+        account = session['account']
+        session['account_access'] = True if account == 'eucalyptus' else False
+        session['user_access'] = False
+        try:
+            iam_conn.get_all_users(path_prefix="/notlikely")
+            session['user_access'] = True
+        except BotoServerError:
+            pass
+        session['group_access'] = False
+        try:
+            iam_conn.get_all_groups(path_prefix="/notlikely")
+            session['group_access'] = True
+        except BotoServerError:
+            pass
+        session['role_access'] = False
+        try:
+            iam_conn.list_roles(path_prefix="/notlikely")
+            session['role_access'] = True
+        except BotoServerError:
+            pass
 
-class LoginView(BaseView):
+class LoginView(BaseView, PermissionCheckMixin):
     TEMPLATE = '../templates/login.pt'
 
     def __init__(self, request):
@@ -75,6 +105,10 @@ class LoginView(BaseView):
         self.secure_session = asbool(self.request.registry.settings.get('session.secure', False))
         self.https_proxy = self.request.environ.get('HTTP_X_FORWARDED_PROTO') == 'https'
         self.https_scheme = self.request.scheme == 'https'
+        options_json=BaseView.escape_json(json.dumps(dict(
+            account=request.params.get('account', default=''),
+            username=request.params.get('username', default=''),
+        )))
         self.render_dict = dict(
             https_required=self.show_https_warning(),
             euca_login_form=self.euca_login_form,
@@ -83,6 +117,7 @@ class LoginView(BaseView):
             aws_enabled=self.aws_enabled,
             duration=self.duration,
             came_from=self.came_from,
+            controller_options_json=options_json,
         )
 
     def show_https_warning(self):
@@ -142,36 +177,13 @@ class LoginView(BaseView):
                 session['region'] = 'euca'
                 session['username_label'] = user_account
                 # handle checks for IAM perms
-                self.region = self.cloud_type = 'euca'
-                self.access_key = creds.access_key
-                self.secret_key = creds.secret_key
-                self.security_token = creds.session_token
-                iam_conn = self.get_connection(conn_type='iam', cloud_type='euca')
-                session['account_access'] = True if account == 'eucalyptus' else False
-                session['user_access'] = False
-                try:
-                    iam_conn.get_all_users(path_prefix="/notlikely")
-                    session['user_access'] = True
-                except:
-                    pass
-                session['group_access'] = False
-                try:
-                    iam_conn.get_all_groups(path_prefix="/notlikely")
-                    session['group_access'] = True
-                except:
-                    pass
-                session['role_access'] = False
-                try:
-                    iam_conn.list_roles(path_prefix="/notlikely")
-                    session['role_access'] = True
-                except:
-                    pass
+                self.check_iam_perms(session, creds);
                 headers = remember(self.request, user_account)
                 return HTTPFound(location=self.came_from, headers=headers)
             except HTTPError, err:
                 logging.info("http error "+str(vars(err)))
                 if err.code == 403:  # password expired
-                    changepwd_url = self.request.route_path('changepassword')
+                    changepwd_url = self.request.route_path('managecredentials')
                     return HTTPFound(changepwd_url+("?expired=true&account=%s&username=%s" % (account, username)))
                 elif err.msg == u'Unauthorized':
                     msg = _(u'Invalid user/account name and/or password.')

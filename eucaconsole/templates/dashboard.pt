@@ -278,7 +278,7 @@
             <h3 i18n:translate="">Add a tile</h3>
             <label i18n:translate="" for="new-tile">Select tile</label>
             <select id="new-tile">
-                <option tal:repeat="tile tiles_not_shown" value="${tile}">${tile_names[tile]}</option>
+                <option tal:repeat="tile tiles_not_shown" value="${tile[0]}">${tile[1]}</option>
             </select>
             <span>&nbsp;</span>
             <a class="button expand" id="add-tile-btn" i18n:translate="">

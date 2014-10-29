@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="https://10.111.5.170/" />
+<title>verify-ec2-snapshot-quota</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">verify-ec2-snapshot-quota</td></tr>
+</thead><tbody>
+<tr>
+	<td>setSpeed</td>
+	<td>500</td>
+	<td></td>
+</tr>
+<tr>
+	<td>setTimeout</td>
+	<td>120000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>open</td>
+	<td>/</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=resource-menu-dashboard</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=resource-menu-storage</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=resource-menuitem-snapshots</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>items found</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeXpathCount</td>
+	<td>//table[1]/tbody/tr</td>
+	<td>tcount1</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${tcount1}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=create-snapshot-btn</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=name</td>
+	<td>snapshot-1</td>
+</tr>
+<tr>
+	<td>doubleClickAt</td>
+	<td>css=a.chosen-single</td>
+	<td></td>
+</tr>
+<tr>
+	<td>doubleClickAt</td>
+	<td>//div[@id='volume_id_chosen']/div/ul/li[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=create_snapshot_submit_button</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>completed</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=resource-menu-storage</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=resource-menuitem-snapshots</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=create-snapshot-btn</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=name</td>
+	<td>snapshot-2</td>
+</tr>
+<tr>
+	<td>doubleClickAt</td>
+	<td>css=a.chosen-single</td>
+	<td></td>
+</tr>
+<tr>
+	<td>doubleClickAt</td>
+	<td>//div[@id='volume_id_chosen']/div/ul/li[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=create_snapshot_submit_button</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>Quota exceeded while trying to create: snapshot by user:</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>items found</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeXpathCount</td>
+	<td>//table[1]/tbody/tr</td>
+	<td>tcount2</td>
+</tr>
+<tr>
+	<td>assertEval</td>
+	<td>${tcount1}+1==${tcount2}</td>
+	<td>true</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=i.fi-widget</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Delete snapshot</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=delete_snapshot_submit_button</td>
+	<td></td>
+</tr>
+</tbody></table>
+</body>
+</html>

@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="https://10.111.5.53/" />
+<title>verify-volume-status-is-detached-on-lp</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">verify-volume-status-is-detached-on-lp</td></tr>
+</thead><tbody>
+<tr>
+	<td>setSpeed</td>
+	<td>500</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertVisible</td>
+	<td>id=resource-menu-dashboard</td>
+	<td></td>
+</tr>
+<tr>
+	<td>setTimeout</td>
+	<td>250000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=resource-menu-dashboard</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForVisible</td>
+	<td>css=#volumes &gt; div.tile &gt; div.content &gt; a &gt; i.icon</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=#volumes &gt; div.tile &gt; div.content &gt; a &gt; i.icon</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForVisible</td>
+	<td>id=refresh-btn</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForVisible</td>
+	<td>link=${volume_name} (${volume_id})</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeEval</td>
+	<td>1</td>
+	<td>k</td>
+</tr>
+<tr>
+	<td>waitForVisible</td>
+	<td>//td/a[@href=&quot;/volumes/${volume_id}&quot;]/../../td[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>//td/a[@href=&quot;/volumes/${volume_id}&quot;]/../../td[2]</td>
+	<td>status</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>javascript{storedVars['status']=${status}};</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${status}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeEval</td>
+	<td>storedVars['available']=&quot;available&quot;;</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${available}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeEval</td>
+	<td>storedVars['status']==storedVars['available']</td>
+	<td>is_available</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${is_available}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>javascript{storedVars['is_available']=${is_available}};</td>
+	<td></td>
+</tr>
+<tr>
+	<td>while</td>
+	<td>${k}&lt;20&amp;&amp;!${is_available}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>30000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>//td/a[@href=&quot;/volumes/${volume_id}&quot;]/../../td[2]</td>
+	<td>status</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${status}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeEval</td>
+	<td>storedVars['status']==storedVars['available']</td>
+	<td>is_available</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${is_available}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeEval</td>
+	<td>${k}+1</td>
+	<td>k</td>
+</tr>
+<tr>
+	<td>endWhile</td>
+	<td></td>
+	<td></td>
+</tr>
+</tbody></table>
+</body>
+</html>

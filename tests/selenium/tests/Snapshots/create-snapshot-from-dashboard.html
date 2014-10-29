@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="https://10.111.5.53/" />
+<title>create-snapshot-from-dashboard</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">create-snapshot-from-dashboard</td></tr>
+</thead><tbody>
+<tr>
+	<td>setSpeed</td>
+	<td>500</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertVisible</td>
+	<td>id=resource-menu-dashboard</td>
+	<td></td>
+</tr>
+<tr>
+	<td>setTimeout</td>
+	<td>120000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=resource-menu-dashboard</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForVisible</td>
+	<td>link=Create snapshot</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Create snapshot</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForVisible</td>
+	<td>id=name</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=name</td>
+	<td>${snapshot_name}</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${snapshot_name}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAt</td>
+	<td>//div/div[@id=&quot;volume_id_chosen&quot;]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>name=volume_id</td>
+	<td>value=${volume_id}</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${volume_id}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAt</td>
+	<td>css=b</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>//div[@id='tag-editor']/div[2]/div[3]/div/div/input</td>
+	<td>${tag_key}</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>//div[@id='tag-editor']/div[2]/div[3]/div/div[2]/input</td>
+	<td>${tag_value}</td>
+</tr>
+<tr>
+	<td>waitForVisible</td>
+	<td>id=add-tag-btn</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=add-tag-btn</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForVisible</td>
+	<td>id=create_snapshot_submit_button</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=create_snapshot_submit_button</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>id=notifications</td>
+	<td>breadcrumbs</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${breadcrumbs}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForVisible</td>
+	<td>css=a:contains(&quot;${snapshot_name}&quot;)</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>css=a:contains(&quot;${snapshot_name}&quot;)</td>
+	<td>snapshot_name_id</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${snapshot_name_id}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeEval</td>
+	<td>storedVars['snapshot_name_id'].slice(15,28);</td>
+	<td>snapshot_id</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${snapshot_id}</td>
+	<td></td>
+</tr>
+</tbody></table>
+</body>
+</html>

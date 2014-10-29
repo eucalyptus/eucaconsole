@@ -88,7 +88,7 @@
 
 <metal:block metal:fill-slot="offcanvas_right">
     <div id="help-content-div" class="help-content">
-        ${panel('help_launchconfigs', 'launchconfig_landing_page' )}
+        <div id="help-html-console_launchconfigs" ng-include="'${layout.help_path('console_launchconfigs.html')}'"></div> 
     </div>
 </metal:block>
 

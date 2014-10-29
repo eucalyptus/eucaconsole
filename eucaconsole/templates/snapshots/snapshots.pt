@@ -138,7 +138,7 @@
 
 <metal:block metal:fill-slot="offcanvas_right">
     <div id="help-content-div" class="help-content">
-        ${panel('help_snapshots', 'snapshot_landing_page' )}
+        <div id="help-html-console_snapshots" ng-include="'${layout.help_path('console_snapshots.html')}'"></div> 
     </div>
 </metal:block>
 
