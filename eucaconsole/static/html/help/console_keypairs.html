@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en-us" lang="en-us">
+<head>
+<title>Keypairs</title>
+</head>
+<body id="keypairs_help_context">
+    <div>
+        <h5 class="title">Create a Key Pair</h5>
+        <p>
+            Eucalyptus uses cryptographic key pairs to verify access to instances. Before you can run an instance, you
+            must create a key pair. Creating a key pair generates two keys: a public key (saved within Eucalyptus) and a
+            corresponding private key (output to the user as a character string). To enable this private key you must
+            save it to a file and set appropriate access permissions (using the chmod command), as shown in the example
+            below.
+        </p>
+        <p>
+            When you create a VM instance, the public key is then injected into the VM. Later, when attempting to login
+            to the VM instance using SSH, the public key is checked against your private key to verify access. Note that
+            the private key becomes obsolete when the public key is deleted.
+        </p>
+        <h5 class="title">Create Key Pairs with the Console</h5>
+        <ol>
+            <li>
+                From the main dashboard screen, click the <strong>Key Pairs</strong> link in the <strong>Network and
+                Security</strong> section, or select the Network and Security submenu from the Manage Resources
+                navigation menu. The <strong>Manage Keypairs</strong> screen will appear.
+            </li>
+            <li>
+                On the <strong>Manage Key Pairs</strong> screen, click the <strong>Create new key pair</strong> link.
+                The <strong>Create New Key Pair</strong> dialog will appear.
+            </li>
+            <li>
+                Type a name for the new key pair into the <strong>Name</strong> text box.
+            </li>
+            <li>
+                Click the <strong>Create and Download</strong> button. The private half of the key pair is saved to the
+                default download location for your browser.
+                <br/>
+                Note: Keep your private key file in a safe place. If you lose it, you will be unable to access instances
+                created with the key pair.
+            </li>
+            <li>
+                Change file permissions to enable access to the private key file in the local directory. For example, on
+                a Linux or Mac OS X system:
+                <br/>
+                <code>chmod 0600 &lt;keypair_name&gt;.private</code>
+            </li>
+        </ol>
+    </div>
+</body>
+</html>

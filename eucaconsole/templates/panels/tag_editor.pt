@@ -7,8 +7,8 @@
     </style>
     <div class="columns"><h6 i18n:translate="">Tags</h6></div>
     <div class="columns field" ng-cloak="">
-        <div class="items">
-            <span class="label radius secondary tagentry {{ tag.name === 'Name' ? 'Name' : '' }}"
+        <div class="item-list">
+            <span class="label radius secondary item {{ tag.name === 'Name' ? 'Name' : '' }}"
                   ng-repeat="tag in tagsArray" ng-cloak="cloak">
                 <span title="{{ getSafeTitle(tag) }}"><!--! XSS Heads up!  Don't enable Foundation tooltips here -->
                     {{ tag.name | ellipsis: 20 }} <em>=</em> {{ tag.value | ellipsis: 40 }}
@@ -28,7 +28,7 @@
                     <small class="error" i18n:translate="">Tag may not begin with "aws:" or its length cannot be longer than 128 chars</small>
                 </div>
                 <div id="tag-value-input-div" class="small-8 columns">
-                    <input id='tag-value-input' class="taginput value" placeholder="value..." ng-model="newTagValue" pattern="${layout.tag_pattern_value}" />
+                    <input id='tag-value-input' class="taginput value" placeholder="value..." ng-model="newTagValue" pattern="${layout.tag_pattern_value}" ng-keypress="keyListener($event)" />
                     <small class="error" i18n:translate="">Tag may not begin with "aws:" or its length cannot be longer than 256 chars</small>
                 </div>
             </div>

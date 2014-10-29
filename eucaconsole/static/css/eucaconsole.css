@@ -126,6 +126,8 @@ table { border-collapse: collapse; border-spacing: 0; }
 
 /* Dropdown elements */
 /* Set the link colors and styles for top-level nav */
+/* ----------------------------------------- Item list
+----------------------------------------- */
 meta.foundation-mq-small { font-family: "/only screen and (max-width: 40em)/"; width: 0em; }
 
 meta.foundation-mq-medium { font-family: "/only screen and (min-width:40.063em) and (max-width:64em)/"; width: 40.063em; }
@@ -1399,7 +1401,7 @@ h1, h2, h3, h4, h5, h6 { font-family: Oswald, Helvetica, Arial, sans-serif; lett
 #navbar .top-bar-section ul li > a { font-family: Oswald, Helvetica, Arial, sans-serif; font-size: 1.2rem; }
 #navbar a { text-transform: uppercase; font-size: 0.9rem; }
 #navbar .top-bar-section ul.dropdown li > a { font-family: Lato, Helvetica, Arial, sans-serif; font-size: 1rem; }
-#navbar .dropdown { box-shadow: 0px 0px 1px 1px #f6a84d; }
+#navbar .dropdown { z-index: 999999; box-shadow: 0px 0px 1px 1px #f6a84d; }
 #navbar .dropdown li a { text-transform: none; }
 #navbar .dropdown li a:hover { background-color: #eee; }
 
@@ -1472,10 +1474,10 @@ textarea.policy-area { width: 100%; min-height: 30rem; font-family: Courier, "co
 /* ----------------------------------------- Tag editor
 ----------------------------------------- */
 #tag-editor small { font-size: 0.825rem; }
-#tag-editor .items { margin-bottom: 6px; }
-#tag-editor .items .tagentry { color: #333; background-color: #e6e7e8; margin-right: 8px; }
-#tag-editor .items .tagentry a { color: white; }
-#tag-editor .items .tagentry .propagates { color: #777; font-size: 0.7em; }
+#tag-editor .item-list { margin-bottom: 6px; }
+#tag-editor .item-list .item { color: #333; background-color: #e6e7e8; margin-right: 8px; }
+#tag-editor .item-list .item a { color: white; }
+#tag-editor .propagates { color: #777; font-size: 0.7em; }
 #tag-editor .add-label { margin-bottom: 6px; color: #03405f; }
 #tag-editor #add-tag-btn { margin-bottom: 0; }
 

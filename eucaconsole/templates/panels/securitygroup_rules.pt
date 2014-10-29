@@ -18,8 +18,8 @@
         </dl>
         <div class="tabs-content">
             <div class="columns field" ng-cloak="cloak">
-                <div class="items">
-                    <span class="label radius secondary rulesentry" ng-repeat="rule in rulesArray" ng-show="ruleType=='inbound'">
+                <div class="item-list">
+                    <span class="label radius secondary item" ng-repeat="rule in rulesArray" ng-show="ruleType=='inbound'">
                         <span ng-show="!rule.custom_protocol">
                             {{ rule.ip_protocol.toUpperCase() }}
                         </span>
