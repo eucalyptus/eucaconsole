@@ -1,7 +1,7 @@
 
 <!--! Tag editor for Scaling Groups -->
 <div id="tag-editor" class="row controls-wrapper autoscale" ng-app="AutoScaleTagEditor" i18n:domain="eucaconsole"
-     ng-controller="AutoScaleTagEditorCtrl" ng-init="initTags('${tags_json}')">
+     ng-controller="AutoScaleTagEditorCtrl" ng-init="initTags('${controller_options_json}')">
     <div class="columns"><h6 i18n:translate="">Tags</h6></div>
     <div class="columns field">
         <div class="item-list">
