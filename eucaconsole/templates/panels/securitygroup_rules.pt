@@ -36,7 +36,7 @@
                         <a class="remove" ng-click="removeRule($index, $event)"
                             title="Remove rule"><i class="fi-x"></i></a>
                     </span>
-                    <span class="label radius secondary rulesentry" ng-repeat="rule in rulesEgressArray" ng-show="ruleType=='outbound'">
+                    <span class="label radius secondary item" ng-repeat="rule in rulesEgressArray" ng-show="ruleType=='outbound'">
                         <span ng-show="!rule.custom_protocol">
                             {{ rule.ip_protocol.toUpperCase() }}
                         </span>
