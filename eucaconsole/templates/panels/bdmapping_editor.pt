@@ -1,7 +1,6 @@
 <!--! Block Device Mapping editor -->
 <div id="bdmapping-editor" class="row controls-wrapper" ng-app="BlockDeviceMappingEditor" i18n:domain="eucaconsole"
-     ng-controller="BlockDeviceMappingEditorCtrl"
-     ng-init="initBlockDeviceMappingEditor('${bdm_json}', '${request.route_path('snapshot_size_json', id='_id_')}', '${disable_dot}')">
+     ng-controller="BlockDeviceMappingEditorCtrl" ng-init="initBlockDeviceMappingEditor('${controller_options_json}')">
     <style type="text/css">
         th { text-align:center; }
         td { text-align:center; }

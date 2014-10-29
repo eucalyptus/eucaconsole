@@ -247,7 +247,8 @@ def securitygroup_rules_preview(context, request, leftcol_width=3, rightcol_widt
 
 
 @panel_config('bdmapping_editor', renderer='../templates/panels/bdmapping_editor.pt')
-def bdmapping_editor(context, request, image=None, launch_config=None, snapshot_choices=None, read_only=False, disable_dot=False):
+def bdmapping_editor(context, request, image=None, launch_config=None, snapshot_choices=None,
+                     read_only=False, disable_dot=False):
     """ Block device mapping editor (e.g. for Launch Instance page).
         Usage example (in Chameleon template): ${panel('bdmapping_editor', image=image, snapshot_choices=choices)}
     """
@@ -257,7 +258,7 @@ def bdmapping_editor(context, request, image=None, launch_config=None, snapshot_
         bdm_object = image.block_device_mapping
         for key, device in bdm_object.items():
             bdm_dict[key] = dict(
-                is_root = True if get_root_device_name(image)==key else False,
+                is_root=True if get_root_device_name(image) == key else False,
                 virtual_name=device.ephemeral_name,
                 snapshot_id=device.snapshot_id,
                 size=device.size,
@@ -276,11 +277,15 @@ def bdmapping_editor(context, request, image=None, launch_config=None, snapshot_
                 size=getattr(ebs, 'volume_size', None),
                 delete_on_termination=True,
             )
-    bdm_json = BaseView.escape_json(json.dumps(bdm_dict))
+    controller_options_json = BaseView.escape_json(json.dumps({
+        'bd_mapping': bdm_dict,
+        'disable_dot': disable_dot,
+        'snapshot_size_json_endpoint': request.route_path('snapshot_size_json', id='_id_'),
+    }))
     return dict(
         image=image,
         snapshot_choices=snapshot_choices,
-        bdm_json=bdm_json,
+        controller_options_json=controller_options_json,
         read_only=read_only,
         disable_dot=disable_dot,
     )

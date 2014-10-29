@@ -30,13 +30,14 @@ See http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/testing.html
 """
 from collections import namedtuple
 
+
 import simplejson as json
 
 from pyramid import testing
 
 from eucaconsole.forms.securitygroups import SecurityGroupForm
 from eucaconsole.views.panels import (
-    form_field_row, image_picker, securitygroup_rules, tag_editor, autoscale_tag_editor,
+    form_field_row, image_picker, securitygroup_rules, tag_editor, autoscale_tag_editor, bdmapping_editor
 )
 
 from tests import BaseViewTestCase
@@ -47,6 +48,7 @@ class ImagePickerTests(BaseViewTestCase):
     request.session = dict(cloud_type='euca')
 
     def test_image_picker_panel(self):
+        """Test the image picker panel"""
         panel = image_picker(None, self.request)
         controller_options = json.loads(panel.get('controller_options_json'))
         self.assertEqual(controller_options.get('images_json_endpoint'), self.request.route_path('images_json'))
@@ -57,6 +59,7 @@ class TagEditorTests(BaseViewTestCase):
     request = testing.DummyRequest()
 
     def test_tag_editor_panel(self):
+        """Test the standard tag editor panel"""
         tags = {'tag1key': 'tag1val', 'tag2key': 'tag2val'}
         panel = tag_editor(None, self.request, tags=tags, show_name_tag=False)
         controller_options = json.loads(panel.get('controller_options_json'))
@@ -64,6 +67,7 @@ class TagEditorTests(BaseViewTestCase):
         self.assertFalse(controller_options.get('show_name_tag'))
 
     def test_autoscale_tag_editor_panel(self):
+        """Test the autoscaling tag editor panel"""
         Tag = namedtuple('Tag', ['key', 'value', 'propagate_at_launch'])
         tags = [
             Tag(key='foo', value='bar', propagate_at_launch=True),
@@ -93,6 +97,7 @@ class SecurityGroupPanelsTestCase(BaseViewTestCase):
         self.assertTrue(self.form.description.data is None)
 
     def test_rules_editor_panel(self):
+        """Test the security group rules editor panel"""
         Rule = namedtuple('Rule', ['ip_protocol', 'from_port', 'to_port', 'grants'])
         Grant = namedtuple('Grant', ['name', 'owner_id', 'group_id', 'cidr_ip'])
         rules = [
@@ -109,3 +114,22 @@ class SecurityGroupPanelsTestCase(BaseViewTestCase):
         controller_options = json.loads(ruleseditor.get('controller_options_json'))
         self.assertEqual(controller_options.get('rules_array'), rules_output)
         self.assertTrue(ruleseditor.get('icmp_choices') is not None)
+
+
+class BlockDeviceMappingEditorTests(BaseViewTestCase):
+    request = testing.DummyRequest()
+    Image = namedtuple('Image', ['block_device_mapping', 'root_device_name'])
+    Device = namedtuple('Device', ['ephemeral_name', 'snapshot_id', 'size', 'delete_on_termination'])
+
+    def test_bdm_editor_panel(self):
+        """Test the block device mapping panel"""
+        bdm_device = self.Device(snapshot_id='123456', size=1, delete_on_termination=True, ephemeral_name='foo')
+        bdm = {'/dev/sda': bdm_device}
+        image = self.Image(block_device_mapping=bdm, root_device_name='/dev/sda')
+        panel = bdmapping_editor(None, self.request, image=image)
+        controller_options = json.loads(panel.get('controller_options_json'))
+        bdm_device = controller_options.get('bd_mapping').get('/dev/sda')
+        self.assertEqual(bdm_device.get('snapshot_id'), '123456')
+        self.assertEqual(bdm_device.get('size'), 1)
+        self.assertTrue(bdm_device.get('delete_on_termination'))
+
