@@ -88,7 +88,7 @@
             </div>
             <metal:block metal:fill-slot="tableview_headers">
                 <th i18n:translate="">Name</th>
-                <th i18n:translate="">Objects</th>
+                <th i18n:translate="" class="count">Objects</th>
                 <th i18n:translate="">Versioning</th>
                 <th i18n:translate="">Creation Time</th>
                 <th i18n:translate="" class="actions">Actions</th>
@@ -99,9 +99,9 @@
                         {{ item.bucket_name }}
                     </a>
                 </td>
-                <td>
+                <td class="count">
                     <span class="dots" ng-show="countsLoading[item.bucket_name]"></span>
-                    <a ng-href="{{ item.contents_url }}">
+                    <a ng-show="!countsLoading[item.bucket_name]" ng-href="{{ item.contents_url }}">
                         {{ bucketCounts[item.bucket_name] }}
                     </a>
                 </td>
