@@ -1,14 +1,12 @@
-<div tal:omit-tag="">
-
-    <!-- HELP KEYPAIRS: KEYPAIR LANDING PAGE -->
-    <div tal:condition="display == 'keypair_landing_page'">
-        <h3 i18n:translate="">Help</h3>
-
-        <p></p>
-    </div>
-
-    <!-- HELP KEYPAIR: CREATE KEYPAIR-->
-    <div tal:condition="display == 'create_keypair'">
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en-us" lang="en-us">
+<head>
+<title>Keypairs</title>
+</head>
+<body id="keypairs_help_context">
+    <div>
         <h5 class="title">Create a Key Pair</h5>
         <p>
             Eucalyptus uses cryptographic key pairs to verify access to instances. Before you can run an instance, you
@@ -51,43 +49,5 @@
             </li>
         </ol>
     </div>
-
-    <!-- HELP KEYPAIR: IMPORT KEYPAIR-->
-    <div tal:condition="display == 'import_keypair'">
-        <h5 class="title">Import a Key Pair</h5>
-
-        <p>
-            This dialog box allows you import an existing key pair.
-        </p>
-        <ol>
-            <li>
-                Enter a name for the key pair in the <strong>Name</strong> text box.
-            </li>
-            <li>
-                Paste the contents of your SSH key into the <strong>SSH key contents</strong> text box, or click on the
-                <strong>Browse to file</strong> lin
-                k to read the contents of an existing SSH key file.
-            </li>
-            <li>
-                Click the <strong>Import</strong> button.
-            </li>
-        </ol>
-    </div>
-
-    <!-- HELP KEYPAIR: DELETE KEYPAIR-->
-    <div tal:condition="display == 'delete_keypair'">
-        <h5 class="title">Delete Key Pair</h5>
-
-        <p>This dialog box allows you to confirm or cancel a key pair delete operation.</p>
-        <h5 class="title">Verify Key Pair Deletion</h5>
-        <ol>
-            <li>
-                To verify that you wish to delete the selected key pair(s), click the <strong>Yes, delete</strong>
-                button.
-            </li>
-            <li>
-                To cancel the delete operation, click the <strong>Cancel</strong> button.
-            </li>
-        </ol>
-    </div>
-</div>
+</body>
+</html>

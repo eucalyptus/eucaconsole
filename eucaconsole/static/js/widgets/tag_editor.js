@@ -66,6 +66,11 @@ angular.module('TagEditor', ['ngSanitize', 'EucaConsoleUtils'])
             $scope.syncTags();
             $scope.setWatch();
         };
+        $scope.keyListener = function ($event) {
+            if ($event.keyCode == 13) {
+                $scope.addTag($event)
+            }
+        };
         $scope.getSafeTitle = function (tag) {
             return $sanitize(tag.name + ' = ' + tag.value);
         };
