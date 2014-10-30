@@ -171,8 +171,12 @@ class DashboardJsonView(BaseView):
             # Volume/snapshot counts
             volumes_count = len(ec2_conn.get_all_volumes(filters=filters)) if 'volumes' in tiles else 0
             snapshots_count = len(ec2_conn.get_all_snapshots(owner='self')) if 'snapshots' in tiles else 0
-            s3_conn = self.get_connection(conn_type="s3")
-            buckets_count = len(s3_conn.get_all_buckets()) if 'buckets' in tiles else 0
+            buckets_count = 0
+            try:
+                s3_conn = self.get_connection(conn_type="s3")
+                buckets_count = len(s3_conn.get_all_buckets()) if 'buckets' in tiles else 0
+            except BotoServerError:
+                pass
 
             # Security groups, key pairs, IP addresses
             securitygroups_count = len(ec2_conn.get_all_security_groups()) if 'security-groups' in tiles else 0
@@ -187,13 +191,15 @@ class DashboardJsonView(BaseView):
             roles_count = 0
             session = self.request.session
             if session['cloud_type'] == 'euca':
-                if session['username'] == 'admin':
-                    iam_conn = self.get_connection(conn_type="iam")
-                    if session['account_access']:
-                        accounts_count = len(iam_conn.get_response(
-                            'ListAccounts', params={}, list_marker='Accounts').accounts)
+                iam_conn = self.get_connection(conn_type="iam")
+                if session['account_access']:
+                    accounts_count = len(iam_conn.get_response(
+                        'ListAccounts', params={}, list_marker='Accounts').accounts)
+                if session['user_access']:
                     users_count = len(iam_conn.get_all_users().users) if 'users' in tiles else 0
+                if session['group_access']:
                     groups_count = len(iam_conn.get_all_groups().groups) if 'groups' in tiles else 0
+                if session['role_access']:
                     roles_count = len(iam_conn.list_roles().roles) if 'roles' in tiles else 0
 
             return dict(
@@ -224,7 +230,7 @@ class DashboardJsonView(BaseView):
                 try:
                     conn.get_all_buckets()
                 except BotoServerError as err:
-                    if err.code == 'UnauthorizedOperation':
+                    if err.message.find('Insufficient permissions') > -1:
                         status = 'denied'
                     else:
                         status = 'down'
