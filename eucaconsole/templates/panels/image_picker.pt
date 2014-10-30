@@ -2,7 +2,7 @@
     <!--! Image Picker widget (Used in Launch Instance wizard) -->
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/image_picker.css')}" />
     <div id="image-picker" ng-app="ImagePicker" tal:define="launchconfig_wizard 'launchconfig' in request.url"
-         ng-controller="ImagePickerCtrl" ng-init="initImagePicker('${images_json_endpoint}', '${layout.cloud_type}')">
+         ng-controller="ImagePickerCtrl" ng-init="initImagePicker('${controller_options_json}')">
         <!--! Image picker widget -->
         <div class="row">
             <div class="large-3 columns" ng-cloak="">

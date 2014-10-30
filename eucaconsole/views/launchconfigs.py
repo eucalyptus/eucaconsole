@@ -354,12 +354,15 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
         self.keypair_form = KeyPairForm(self.request, formdata=self.request.params or None)
         self.securitygroup_form = SecurityGroupForm(self.request, self.vpc_conn, formdata=self.request.params or None)
         self.generate_file_form = GenerateFileForm(self.request, formdata=self.request.params or None)
-        self.securitygroups_rules_json = BaseView.escape_json(json.dumps(self.get_securitygroups_rules()))
-        self.images_json_endpoint = self.request.route_path('images_json')
         self.owner_choices = self.get_owner_choices()
-        self.keypair_choices_json = BaseView.escape_json(json.dumps(dict(self.create_form.keypair.choices)))
-        self.securitygroup_choices_json = BaseView.escape_json(json.dumps(dict(self.create_form.securitygroup.choices)))
-        self.role_choices_json = BaseView.escape_json(json.dumps(dict(self.create_form.role.choices)))
+        controller_options_json = BaseView.escape_json(json.dumps({
+            'securitygroups_rules': self.get_securitygroups_rules(),
+            'securitygroups_choices': dict(self.create_form.securitygroup.choices),
+            'keypair_choices': dict(self.create_form.keypair.choices),
+            'role_choices': dict(self.create_form.role.choices),
+            'securitygroups_json_endpoint': self.request.route_path('securitygroups_json'),
+            'image_json_endpoint': self.request.route_path('image_json', id='_id_'),
+        }))
         self.render_dict = dict(
             image=self.image,
             create_form=self.create_form,
@@ -367,15 +370,11 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
             keypair_form=self.keypair_form,
             securitygroup_form=self.securitygroup_form,
             generate_file_form=self.generate_file_form,
-            images_json_endpoint=self.images_json_endpoint,
             owner_choices=self.owner_choices,
             snapshot_choices=self.get_snapshot_choices(),
-            securitygroups_rules_json=self.securitygroups_rules_json,
-            keypair_choices_json=self.keypair_choices_json,
-            securitygroup_choices_json=self.securitygroup_choices_json,
-            role_choices_json=self.role_choices_json,
             preset='',
             security_group_placeholder_text=_(u'Select...'),
+            controller_options_json=controller_options_json,
         )
 
     @view_config(route_name='launchconfig_new', renderer=TEMPLATE, request_method='GET')

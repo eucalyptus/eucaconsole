@@ -3,7 +3,7 @@
  * @requires AngularJS
  *
  */
-angular.module('TagEditor', ['ngSanitize'])
+angular.module('TagEditor', ['ngSanitize', 'EucaConsoleUtils'])
     .filter('ellipsis', function () {
         return function (line, num) {
             if( line.length <= num ){
@@ -12,7 +12,7 @@ angular.module('TagEditor', ['ngSanitize'])
             return line.substring(0, num) + "...";
         };
     })
-    .controller('TagEditorCtrl', function ($scope, $sanitize, $timeout) {
+    .controller('TagEditorCtrl', function ($scope, $sanitize, $timeout, eucaUnescapeJson) {
         $scope.tagEditor = $('#tag-editor');
         $scope.tagInputs = $scope.tagEditor.find('.taginput');
         $scope.tagsTextarea = $scope.tagEditor.find('textarea#tags');
@@ -41,10 +41,9 @@ angular.module('TagEditor', ['ngSanitize'])
                 }).length;
             }
         };
-        $scope.initTags = function(tagsJson, showNameTag) {
-            // Parse tags JSON and convert to a list of tags.
-            tagsJson = tagsJson.replace(/__apos__/g, "\'").replace(/__dquote__/g, '\\"').replace(/__bslash__/g, "\\");
-            var tagsObj = JSON.parse(tagsJson);
+        $scope.initTags = function(optionsJson) {
+            var options = JSON.parse(eucaUnescapeJson(optionsJson));
+            var tagsObj = options['tags'];
             Object.keys(tagsObj).forEach(function(key) {
                 if (!key.match(/^aws:.*/) && !key.match(/^euca:.*/)) {
                     $scope.tagsArray.push({
@@ -58,7 +57,12 @@ angular.module('TagEditor', ['ngSanitize'])
                     evt.preventDefault();
                 }
             });
-            $scope.showNameTag = showNameTag;
+            $('#tag-value-input').keydown(function(evt) {
+                if (evt.keyCode === 13) {
+                    evt.preventDefault();
+                }
+            });
+            $scope.showNameTag = options['show_name_tag'];
             $scope.syncTags();
             $scope.setWatch();
         };

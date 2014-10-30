@@ -1,7 +1,6 @@
 <!--! Block Device Mapping editor -->
 <div id="bdmapping-editor" class="row controls-wrapper" ng-app="BlockDeviceMappingEditor" i18n:domain="eucaconsole"
-     ng-controller="BlockDeviceMappingEditorCtrl"
-     ng-init="initBlockDeviceMappingEditor('${bdm_json}', '${request.route_path('snapshot_size_json', id='_id_')}', '${disable_dot}')">
+     ng-controller="BlockDeviceMappingEditorCtrl" ng-init="initBlockDeviceMappingEditor('${controller_options_json}')">
     <style type="text/css">
         th { text-align:center; }
         td { text-align:center; }
@@ -62,8 +61,8 @@
                 </tr>
             </tbody>
         </table>
-        <div class="row">
-            <div class="columns subheader" ng-cloak="" tal:condition="not read_only">
+        <div class="row" tal:condition="not read_only">
+            <div class="columns subheader" ng-cloak="">
                 <span class="subsection-label" ng-show="bdMapping" i18n:translate="">Add another device</span>
                 <span class="subsection-label" ng-show="bdMapping == undefined" i18n:translate="">Add a device</span>
                 :
