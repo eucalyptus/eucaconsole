@@ -561,7 +561,6 @@ class InstanceView(TaggedItemView, BaseInstanceView):
                 if self.request.params.get('start_later'):
                     self.log_request(_(u"Starting instance {0}").format(self.instance.id))
                     self.instance.start()
-
                 msg = _(u'Successfully modified instance')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
                 return HTTPFound(location=self.location)
