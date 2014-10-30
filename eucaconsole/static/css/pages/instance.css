@@ -116,7 +116,7 @@
 
 .row .status.terminated { background-color: #444444; }
 
-.row .status.terminating { background-color: lightgrey; }
+.row .status.shutting-down { background-color: lightgrey; }
 
 select { width: 50%; }
 
