@@ -6,7 +6,7 @@
 
 // Launch Config Wizard includes the Image Picker, BDM editor, and security group rules editor
 angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor', 'SecurityGroupRules', 'EucaConsoleUtils'])
-    .controller('LaunchConfigWizardCtrl', function ($scope, $http, $timeout, eucaHandleError) {
+    .controller('LaunchConfigWizardCtrl', function ($scope, $http, $timeout, eucaHandleError, eucaUnescapeJson) {
         $scope.launchForm = $('#launch-config-form');
         $scope.imageID = '';
         $scope.imageName = '';
@@ -48,21 +48,14 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
         $scope.existsImage = true;
         $scope.imageIDErrorClass = '';
         $scope.imageIDNonexistErrorClass = '';
-        $scope.initController = function (securityGroupsRulesJson, keyPairChoices,
-                                securityGroupChoices, securityGroupJsonURL, roles,
-                                imageJsonURL) {
-            securityGroupsRulesJson = securityGroupsRulesJson.replace(/__apos__/g, "\'")
-                .replace(/__dquote__/g, '\\"').replace(/__bslash__/g, "\\");
-            securityGroupChoices = securityGroupChoices.replace(/__apos__/g, "\'")
-                .replace(/__dquote__/g, '\\"').replace(/__bslash__/g, "\\");
-            keyPairChoices = keyPairChoices.replace(/__apos__/g, "\'")
-                .replace(/__dquote__/g, '\\"').replace(/__bslash__/g, "\\");
-            $scope.securityGroupsRules = JSON.parse(securityGroupsRulesJson);
-            $scope.keyPairChoices = JSON.parse(keyPairChoices);
-            $scope.securityGroupChoices = JSON.parse(securityGroupChoices);
-            $scope.roleList = JSON.parse(roles);
-            $scope.imageJsonURL = imageJsonURL;
-            $scope.securityGroupJsonEndpoint = securityGroupJsonURL;
+        $scope.initController = function (optionsJson) {
+            var options = JSON.parse(eucaUnescapeJson(optionsJson));
+            $scope.securityGroupsRules = options['securitygroups_rules'];
+            $scope.keyPairChoices = options['keypair_choices'];
+            $scope.securityGroupChoices = options['securitygroups_choices'];
+            $scope.roleList = options['role_choices'];
+            $scope.securityGroupJsonEndpoint = options['securitygroups_json_endpoint'];
+            $scope.imageJsonURL = options['image_json_endpoint'];
             $scope.getAllSecurityGroups(); 
             $scope.setInitialValues();
             $scope.preventFormSubmitOnEnter();

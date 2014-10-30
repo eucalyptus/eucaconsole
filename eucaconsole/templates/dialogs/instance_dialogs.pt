@@ -250,7 +250,7 @@
                     <span i18n:translate=""> 
                         Are you sure you want to dissassociate 
                     </span>
-                    <span tal:condition="instance"><b>${instance.ip_address}</b></span>
+                    <span tal:condition="instance"><b>{{ instancePublicIP }}</b></span>
                     <span tal:condition="not instance"><b>{{ ipAddress }}</b></span> 
                     <span i18n:translate=""> 
                     from instance
@@ -265,7 +265,7 @@
                     <input type="hidden" name="ip_address" value="{{ ipAddress }}" />
                 </div>
                 <div tal:condition="not landingpage" tal:omit-tag="">
-                    <input type="hidden" name="ip_address" value="${instance.ip_address}" />
+                    <input type="hidden" name="ip_address" value="{{ instancePublicIP }}" />
                 </div>
                 <div class="dialog-submit-button">
                     <button type="submit" id="disassociate_ip_to_instance_submit_button" class="button expand" i18n:translate="">Yes, Disassociate Address from Instance</button>
