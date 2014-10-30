@@ -225,12 +225,13 @@ def securitygroup_rules(context, request, rules=None, rules_egress=None, leftcol
         'json_endpoint': request.route_path('securitygroups_json'),
         'protocols_json_endpoint': request.route_path('internet_protocols_json'),
     }))
+    remote_addr=BaseView.get_remote_addr(request)
 
     return dict(
         protocol_choices=RULE_PROTOCOL_CHOICES,
         icmp_choices=icmp_choices_sorted,
         controller_options_json=controller_options_json,
-        remote_addr=getattr(request, 'remote_addr', ''),
+        remote_addr=remote_addr,
         leftcol_width=leftcol_width,
         rightcol_width=rightcol_width,
     )
