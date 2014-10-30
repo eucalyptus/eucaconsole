@@ -182,7 +182,7 @@
                                 ${structure:launch_form.monitoring_enabled(**{'ng-model': 'monitoringEnabled'})}
                                 ${launch_form['monitoring_enabled'].label}
                             </div>
-                            <div class="small-8 columns right">
+                            <div class="small-8 columns right" tal:condition="layout.cloud_type == 'euca'">
                                 ${structure:launch_form.private_addressing(**{'ng-model': 'privateAddressing'})}
                                 ${launch_form['private_addressing'].label}
                             </div>
