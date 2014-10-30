@@ -816,7 +816,6 @@ class InstanceVolumesView(BaseInstanceView):
             instance_name=self.instance_name,
             attach_form=self.attach_form,
             detach_form=self.detach_form,
-            #no_volumes_in_zone=len(self.attach_form.volume_id.choices) <= 1,
             instance_zone=self.instance.placement,
         )
 
@@ -834,7 +833,6 @@ class InstanceVolumesView(BaseInstanceView):
         transitional_states = ['creating', 'deleting', 'attaching', 'detaching']
         with boto_error_handler(self.request, self.location):
             self.volumes = self.conn.get_all_volumes()
-        #for volume in self.get_attached_volumes():
         for volume in self.volumes:
             status = volume.status
             attach_status = volume.attach_data.status
