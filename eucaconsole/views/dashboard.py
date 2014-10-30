@@ -223,31 +223,46 @@ class DashboardJsonView(BaseView):
                 conn = self.get_connection(conn_type="s3")
                 try:
                     conn.get_all_buckets()
-                except BotoServerError:
-                    status = 'down'
+                except BotoServerError as err:
+                    if err.code == 'UnauthorizedOperation':
+                        status = 'denied'
+                    else:
+                        status = 'down'
             elif svc == _(u'Auto Scaling'):
                 conn = self.get_connection(conn_type="autoscale")
                 try:
                     conn.get_all_groups(max_records=1)
-                except BotoServerError:
-                    status = 'down'
+                except BotoServerError as err:
+                    if err.code == 'UnauthorizedOperation':
+                        status = 'denied'
+                    else:
+                        status = 'down'
             elif svc == _(u'Elastic Load Balancing'):
                 conn = self.get_connection(conn_type="elb")
                 try:
                     conn.get_all_load_balancers()
-                except BotoServerError:
-                    status = 'down'
+                except BotoServerError as err:
+                    if err.code == 'UnauthorizedOperation':
+                        status = 'denied'
+                    else:
+                        status = 'down'
             elif svc == _(u'CloudWatch'):
                 conn = self.get_connection(conn_type="cloudwatch")
                 try:
                     conn.list_metrics(namespace="AWS/EC2")
-                except BotoServerError:
-                    status = 'down'
+                except BotoServerError as err:
+                    if err.code == 'UnauthorizedOperation':
+                        status = 'denied'
+                    else:
+                        status = 'down'
             elif svc == _(u'Identiy & Access Mgmt'):
                 conn = self.get_connection(conn_type="iam")
                 try:
                     conn.get_all_groups(path_prefix="/notlikely")
-                except BotoServerError:
-                    status = 'down'
+                except BotoServerError as err:
+                    if err.code == 'UnauthorizedOperation':
+                        status = 'denied'
+                    else:
+                        status = 'down'
 
             return dict(health=dict(name=svc, status=status))
