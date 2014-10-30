@@ -154,11 +154,14 @@ angular.module('IAMPolicyWizard', ['EucaConsoleUtils'])
             $('.tabs').find('a').on('click', function (evt) {
                 var tabLinkId = $(evt.target).closest('a').attr('id');
                 Modernizr.localstorage && localStorage.setItem($scope.lastSelectedTabKey, tabLinkId);
-                if (tabLinkId === 'custom-policy-tab' && $scope.policyStatements.length) {
-                    // Load selected policy statements if switching back to custom policy tab
-                    $timeout(function() {
-                        $scope.updatePolicy();
-                    }, 100);
+                if (tabLinkId === 'custom-policy-tab') {
+                    $scope.setPolicyName('custom');
+                    if ($scope.policyStatements.length) {
+                        // Load selected policy statements if switching back to custom policy tab
+                        $timeout(function () {
+                            $scope.updatePolicy();
+                        }, 100);
+                    }
                 }
             });
             $('#' + lastSelectedTab).click();
@@ -221,13 +224,11 @@ angular.module('IAMPolicyWizard', ['EucaConsoleUtils'])
                 'custom': 'CustomAccessPolicy'
             };
             $scope.policyName = typeNameMapping[policyType] + '-' + $scope.urlParams['id'] + '-' + $scope.timestamp;
-            if (policyType === 'custom') {
-                // Prevent lingering validation error on policy name field
-                $timeout(function() {
-                    $('#name').trigger('focus');
-                    $('.CodeMirror').find('textarea').focus();
-                }, 200);
-            }
+            // Prevent lingering validation error on policy name field
+            $timeout(function() {
+                $('#name').trigger('focus');
+                $('.CodeMirror').find('textarea').focus();
+            }, 100);
         };
         $scope.handlePolicyFileUpload = function () {
             $('#policy_file').on('change', function(evt) {
