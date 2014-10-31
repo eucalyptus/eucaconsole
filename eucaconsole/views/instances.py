@@ -1217,6 +1217,18 @@ class InstanceCreateImageView(BaseInstanceView, BlockDeviceMappingItemView):
 
     @view_config(route_name='instance_create_image', renderer=TEMPLATE, request_method='GET')
     def instance_create_image_view(self):
+        lacks_keys = False
+        if self.instance.root_device_type != 'ebs' and self.request.session['user_access']:
+            iam_conn = self.get_connection(conn_type='iam')
+            try:
+                keys = iam_conn.get_all_access_keys(self.request.session['username'])
+                if keys and len(keys.list_access_keys_result.access_key_metadata) == 0:
+                    lacks_keys = True
+            except BotoServerError:
+                pass
+        self.render_dict.update(dict(
+            lacks_keys=lacks_keys,
+        ))
         return self.render_dict
 
     @view_config(route_name='instance_create_image', renderer=TEMPLATE, request_method='POST')
