@@ -73,7 +73,7 @@
             <b>{{ publicIP }}</b>
             <span i18n:translate="">to the cloud?</span>
         </p>
-        <form action="${request.route_path('ipaddresses_release')}" method="post">
+        <form action="${request.route_path('ipaddresses_release') + layout.querystring}" method="post">
             ${structure:release_form['csrf_token']}
             <input type="hidden" name="public_ip" value="{{ publicIP }}" />
             <input type="hidden" name="allocation_id" value="{{ allocationID }}" />
