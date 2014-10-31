@@ -63,6 +63,16 @@ angular.module('ScalingGroupPolicy', ['CreateAlarm'])
                     modalButton.focus();
                 }
             });
+            $(document).on('close', '[data-reveal]', function () {
+                var modal = $(this);
+                modal.find('input[type="text"]').val('');
+                modal.find('textarea').val('');
+                modal.find('div.error').removeClass('error');
+                modal.find('select').find('option').removeAttr("selected");
+                modal.find('#threshold').val('');
+                modal.find('#evaluation_periods').val(1);
+                modal.find('#period').val(5);
+            });
             $(document).on('closed', '[data-reveal]', function () {
                 $('input#name').focus();
             });
