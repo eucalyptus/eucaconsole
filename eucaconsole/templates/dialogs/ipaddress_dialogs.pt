@@ -61,8 +61,7 @@
         </form>
         <a href="#" id="disassociate_ip_close_link" class="close-reveal-modal">&#215;</a>
     </div>
-    <div id="release-ip-modal" class="reveal-modal small" data-reveal=""
-         tal:define="action request.route_path('ipaddresses_release') + layout.querystring">
+    <div id="release-ip-modal" class="reveal-modal small" data-reveal="">
         <h3 i18n:translate="">Release IP address to cloud</h3>
         <p i18n:translate="">If you release an elastic IP address to the cloud, you can no longer associate
             that IP address with any of your instances.
@@ -74,7 +73,7 @@
             <b>{{ publicIP }}</b>
             <span i18n:translate="">to the cloud?</span>
         </p>
-        <form action="${action}" method="post">
+        <form action="${request.route_path('ipaddresses_release')}" method="post">
             ${structure:release_form['csrf_token']}
             <input type="hidden" name="public_ip" value="{{ publicIP }}" />
             <input type="hidden" name="allocation_id" value="{{ allocationID }}" />
