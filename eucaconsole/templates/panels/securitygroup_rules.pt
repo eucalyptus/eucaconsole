@@ -94,8 +94,8 @@
                         </div>
                         <div class="small-9 columns">
                             <div ng-show="selectedProtocol !== 'icmp' &amp;&amp; selectedProtocol !== '-1'">
-                                <input class="port from" name="from_port" ng-model="fromPort" pattern="integer" />&nbsp;-
-                                <input class="port to" name="to_port" ng-model="toPort" pattern="integer" />
+                                <input class="port from" name="from_port" ng-model="fromPort" pattern="${layout.port_range_pattern}" />&nbsp;-
+                                <input class="port to" name="to_port" ng-model="toPort" pattern="${layout.port_range_pattern}" />
                                 <small class="error" i18n:translate="">Valid port range required</small>
                             </div>
                             <div ng-show="selectedProtocol == 'icmp'">
