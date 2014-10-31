@@ -5,7 +5,7 @@
  */
 
 angular.module('InstanceVolumes', ['EucaConsoleUtils'])
-    .controller('InstanceVolumesCtrl', function ($scope, $http, $timeout, eucaHandleError) {
+    .controller('InstanceVolumesCtrl', function ($scope, $http, $timeout, eucaUnescapeJson, eucaHandleError) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         // Volume states are: "attached", "attaching", "detaching"
         // 'detached' state doesn't apply here since it won't be attached to the instance
@@ -19,9 +19,10 @@ angular.module('InstanceVolumes', ['EucaConsoleUtils'])
         $scope.initialLoading = true;
         $scope.detachFormAction = '';
         $scope.isDialogHelpExpanded = false;
-        $scope.initController = function (instanceId, jsonEndpoint) {
-            $scope.instanceId = instanceId;
-            $scope.jsonEndpoint = jsonEndpoint;
+        $scope.initController = function (optionsJson) {
+            var options = JSON.parse(eucaUnescapeJson(optionsJson));
+            $scope.instanceId = options['instance_id'];
+            $scope.jsonEndpoint = options['instance_volumes_json_url'];
             $scope.initChosenSelector();
             $scope.getInstanceVolumes();
             $scope.setWatch();

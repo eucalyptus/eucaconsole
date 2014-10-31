@@ -817,7 +817,16 @@ class InstanceVolumesView(BaseInstanceView):
             attach_form=self.attach_form,
             detach_form=self.detach_form,
             instance_zone=self.instance.placement,
+            controller_options_json=self.get_controller_options_json(),
         )
+
+    def get_controller_options_json(self):
+        if not self.instance:
+            return ''
+        return BaseView.escape_json(json.dumps({
+            'instance_id': self.instance.id,
+            'instance_volumes_json_url': self.request.route_path('instance_volumes_json', id=self.instance.id),
+        }))
 
     @view_config(route_name='instance_volumes', renderer=VIEW_TEMPLATE, request_method='GET')
     def instance_volumes(self):
