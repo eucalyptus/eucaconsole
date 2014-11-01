@@ -39,7 +39,7 @@
                         </a>
                     </dd>
                     <dd>
-                        <a id="custom-policy-tab" href="#step2">
+                        <a id="custom-policy-tab" href="#step2" ng-click="selectPolicy('custom')">
                             <b i18n:translate="">Create a custom policy</b>
                         </a>
                     </dd>

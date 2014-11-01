@@ -32,7 +32,9 @@
                     <span class="label" title="Object Count" i18n:attributes="title" data-tooltip="">OB</span>
                     <span>
                         <span class="dots" ng-show="countsLoading[item.bucket_name]"></span>
-                        <b>{{ bucketCounts[item.bucket_name] }}</b>
+                        <a ng-href="{{ item.contents_url }}">
+                            <b>{{ bucketCounts[item.bucket_name] }}</b>
+                        </a>
                     </span>
                 </div>
                 <div>
@@ -86,7 +88,7 @@
             </div>
             <metal:block metal:fill-slot="tableview_headers">
                 <th i18n:translate="">Name</th>
-                <th i18n:translate="">Objects</th>
+                <th i18n:translate="" class="count">Objects</th>
                 <th i18n:translate="">Versioning</th>
                 <th i18n:translate="">Creation Time</th>
                 <th i18n:translate="" class="actions">Actions</th>
@@ -97,9 +99,11 @@
                         {{ item.bucket_name }}
                     </a>
                 </td>
-                <td>
+                <td class="count">
                     <span class="dots" ng-show="countsLoading[item.bucket_name]"></span>
-                    {{ bucketCounts[item.bucket_name] }}
+                    <a ng-show="!countsLoading[item.bucket_name]" ng-href="{{ item.contents_url }}">
+                        {{ bucketCounts[item.bucket_name] }}
+                    </a>
                 </td>
                 <td>
                     <span class="dots" ng-show="versioningStatusLoading[item.bucket_name]"></span>

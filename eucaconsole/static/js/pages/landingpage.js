@@ -191,6 +191,17 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch', 'Eu
                     if (itemProp && typeof itemProp === "string" && 
                         itemProp.toLowerCase().indexOf(filterText) !== -1) {
                         return item;
+                    } else if (itemProp && typeof itemProp === "object") {
+                        // In case of mutiple values, create a flat string and perform search
+                        var flatString = '';
+                        angular.forEach(itemProp, function(x) {
+                            if (x.hasOwnProperty('name')) {
+                                flatString += x.name + ' ';
+                            }
+                        });
+                        if (flatString.toLowerCase().indexOf(filterText) !== -1) {
+                            return item;
+                        }
                     }
                 }
             });

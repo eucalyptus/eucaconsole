@@ -245,7 +245,7 @@
 
 <metal:block metal:fill-slot="offcanvas_right">
     <div id="help-content-div" class="help-content">
-        ${panel('help_instances', 'instance_landing_page' )}
+        <div id="help-html-console_instances" ng-include="'${layout.help_path('console_instances.html')}'"></div> 
     </div>
 </metal:block>
 

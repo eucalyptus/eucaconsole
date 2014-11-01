@@ -150,7 +150,7 @@ class InstancesView(LandingPageView, BaseInstanceView):
     def instances_landing(self):
         filter_keys = [
             'id', 'name', 'image_id', 'instance_type', 'ip_address', 'key_name', 'placement',
-            'root_device', 'security_groups_string', 'state', 'tags', 'roles', 'vpc_id', 'subnet_id']
+            'root_device', 'security_groups', 'state', 'tags', 'roles', 'vpc_id', 'subnet_id']
         # filter_keys are passed to client-side filtering in search box
         self.filter_keys = filter_keys
         # sort_keys are passed to sorting drop-down
@@ -315,6 +315,9 @@ class InstancesJsonView(LandingPageView):
         instance_type_param = self.request.params.getall('instance_type')
         if instance_type_param:
             filters.update({'instance-type': instance_type_param})
+        keypair_param = self.request.params.getall('keypair')
+        if keypair_param:
+            filters.update({'key-name': [self.unescape_braces(kp) for kp in keypair_param]})
         security_group_param = self.request.params.getall('security_group')
         if security_group_param:
             filters.update({'group-name': [self.unescape_braces(sg) for sg in security_group_param]})
@@ -324,7 +327,7 @@ class InstancesJsonView(LandingPageView):
         # Don't filter by these request params in Python, as they're included in the "filters" params sent to the CLC
         # Note: the choices are from attributes in InstancesFiltersForm
         ignore_params = [
-            'availability_zone', 'instance_type', 'state', 'security_group',
+            'availability_zone', 'instance_type', 'state', 'keypair', 'security_group',
             'scaling_group', 'root_device_type', 'roles']
         filtered_items = self.filter_items(self.get_items(filters=filters), ignore=ignore_params)
         if self.request.params.get('scaling_group'):
@@ -903,13 +906,16 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
         self.keypair_form = KeyPairForm(self.request, formdata=self.request.params or None)
         self.securitygroup_form = SecurityGroupForm(self.request, self.vpc_conn, formdata=self.request.params or None)
         self.generate_file_form = GenerateFileForm(self.request, formdata=self.request.params or None)
-        self.securitygroups_rules_json = BaseView.escape_json(json.dumps(self.get_securitygroups_rules()))
-        self.images_json_endpoint = self.request.route_path('images_json')
         self.owner_choices = self.get_owner_choices()
-        self.vpc_subnet_choices_json = BaseView.escape_json(json.dumps(self.get_vpc_subnets_json()))
-        self.keypair_choices_json = BaseView.escape_json(json.dumps(dict(self.launch_form.keypair.choices)))
-        self.securitygroup_choices_json = BaseView.escape_json(json.dumps(dict(self.launch_form.securitygroup.choices)))
-        self.role_choices_json = BaseView.escape_json(json.dumps(dict(self.launch_form.role.choices)))
+        controller_options_json = BaseView.escape_json(json.dumps({
+            'securitygroups_rules': self.get_securitygroups_rules(),
+            'securitygroups_choices': dict(self.launch_form.securitygroup.choices),
+            'keypair_choices': dict(self.launch_form.keypair.choices),
+            'role_choices': dict(self.launch_form.role.choices),
+            'vpc_subnet_choices': self.get_vpc_subnets(),
+            'securitygroups_json_endpoint': self.request.route_path('securitygroups_json'),
+            'image_json_endpoint': self.request.route_path('image_json', id='_id_'),
+        }))
         self.render_dict = dict(
             image=self.image,
             launch_form=self.launch_form,
@@ -917,15 +923,10 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
             keypair_form=self.keypair_form,
             securitygroup_form=self.securitygroup_form,
             generate_file_form=self.generate_file_form,
-            images_json_endpoint=self.images_json_endpoint,
             owner_choices=self.owner_choices,
             snapshot_choices=self.get_snapshot_choices(),
-            securitygroups_rules_json=self.securitygroups_rules_json,
-            keypair_choices_json=self.keypair_choices_json,
-            securitygroup_choices_json=self.securitygroup_choices_json,
-            vpc_subnet_choices_json=self.vpc_subnet_choices_json,
-            role_choices_json=self.role_choices_json,
             security_group_placeholder_text=_(u'Select...'),
+            controller_options_json=controller_options_json,
         )
 
     @view_config(route_name='instance_create', renderer=TEMPLATE, request_method='GET')
@@ -1045,7 +1046,7 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
                 return security_group.id
         return None
 
-    def get_vpc_subnets_json(self):
+    def get_vpc_subnets(self):
         subnets = []
         if self.vpc_conn:
             with boto_error_handler(self.request, self.location):

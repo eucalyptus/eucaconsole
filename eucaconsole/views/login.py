@@ -57,6 +57,7 @@ def redirect_to_login_page(request):
     login_url = request.route_path('login')
     return HTTPFound(login_url)
 
+
 class PermissionCheckMixin(object):
     def check_iam_perms(self, session, creds):
         # the values below needed by get_connection()
@@ -86,6 +87,7 @@ class PermissionCheckMixin(object):
         except BotoServerError:
             pass
 
+
 class LoginView(BaseView, PermissionCheckMixin):
     TEMPLATE = '../templates/login.pt'
 
@@ -105,7 +107,7 @@ class LoginView(BaseView, PermissionCheckMixin):
         self.secure_session = asbool(self.request.registry.settings.get('session.secure', False))
         self.https_proxy = self.request.environ.get('HTTP_X_FORWARDED_PROTO') == 'https'
         self.https_scheme = self.request.scheme == 'https'
-        options_json=BaseView.escape_json(json.dumps(dict(
+        options_json = BaseView.escape_json(json.dumps(dict(
             account=request.params.get('account', default=''),
             username=request.params.get('username', default=''),
         )))
@@ -163,6 +165,8 @@ class LoginView(BaseView, PermissionCheckMixin):
                 creds = auth.authenticate(
                     account=account, user=username, passwd=password,
                     new_passwd=new_passwd, timeout=8, duration=self.duration)
+                logging.info("Authenticated Eucalyptus user: {acct}/{user} from {ip}".format(
+                    acct=account, user=username, ip=BaseView.get_remote_addr(self.request)))
                 user_account = '{user}@{account}'.format(user=username, account=account)
                 # self.invalidate_connection_cache()
                 session.invalidate()  # Refresh session
@@ -175,7 +179,7 @@ class LoginView(BaseView, PermissionCheckMixin):
                 session['region'] = 'euca'
                 session['username_label'] = user_account
                 # handle checks for IAM perms
-                self.check_iam_perms(session, creds);
+                self.check_iam_perms(session, creds)
                 headers = remember(self.request, user_account)
                 return HTTPFound(location=self.came_from, headers=headers)
             except HTTPError, err:
@@ -211,6 +215,7 @@ class LoginView(BaseView, PermissionCheckMixin):
             auth = AWSAuthenticator(package=package, validate_certs=validate_certs, ca_certs=ca_certs_file)
             try:
                 creds = auth.authenticate(timeout=10)
+                logging.info("Authenticated AWS user from {ip}".format(ip=BaseView.get_remote_addr(self.request)))
                 default_region = self.request.registry.settings.get('aws.default.region', 'us-east-1')
                 # self.invalidate_connection_cache()
                 session.invalidate()  # Refresh session

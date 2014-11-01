@@ -90,7 +90,12 @@
                     <div class="row controls-wrapper readonly" tal:condition="snapshot">
                         <div class="small-4 columns"><label i18n:translate="">Created from volume</label></div>
                         <div class="small-8 columns value breakword">
-                            <a href="${request.route_path('volume_view', id=snapshot.volume_id)}">${volume_name}</a>
+                            <span tal:condition="exists_volume">
+                                <a href="${request.route_path('volume_view', id=snapshot.volume_id)}">${volume_name}</a>
+                            </span>
+                            <span tal:condition="not exists_volume">
+                                ${volume_name}
+                            </span>
                         </div>
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="snapshot">

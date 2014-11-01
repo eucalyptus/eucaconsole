@@ -78,3 +78,4 @@ class ImageFormTestCase(BaseFormTestCase):
     def test_secure_form(self):
         self.has_field('csrf_token')
 
+

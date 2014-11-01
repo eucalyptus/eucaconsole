@@ -132,13 +132,15 @@ def tag_editor(context, request, tags=None, leftcol_width=4, rightcol_width=8, s
         Usage example (in Chameleon template): ${panel('tag_editor', tags=security_group.tags)}
     """
     tags = tags or {}
-    tags_json = BaseView.escape_json(json.dumps(tags))
+    controller_options_json = BaseView.escape_json(json.dumps({
+        'tags': tags,
+        'show_name_tag': show_name_tag,
+    }))
     return dict(
-        tags=tags,
-        tags_json=tags_json,
+        controller_options_json=controller_options_json,
+        show_name_tag=show_name_tag,
         leftcol_width=leftcol_width,
         rightcol_width=rightcol_width,
-        show_name_tag=show_name_tag,
     )
 
 @panel_config('magic_search', renderer='../templates/panels/magic_search.pt')
@@ -181,8 +183,14 @@ def autoscale_tag_editor(context, request, tags=None, leftcol_width=2, rightcol_
             value=tag.value,
             propagate_at_launch=tag.propagate_at_launch,
         ))
-    tags_json = BaseView.escape_json(json.dumps(tags_list))
-    return dict(tags=tags, tags_json=tags_json, leftcol_width=leftcol_width, rightcol_width=rightcol_width)
+    controller_options_json = BaseView.escape_json(json.dumps({
+        'tags_list': tags_list,
+    }))
+    return dict(
+        controller_options_json=controller_options_json,
+        leftcol_width=leftcol_width,
+        rightcol_width=rightcol_width,
+    )
 
 
 @panel_config('securitygroup_rules', renderer='../templates/panels/securitygroup_rules.pt')
@@ -193,9 +201,11 @@ def securitygroup_rules(context, request, rules=None, rules_egress=None, leftcol
     rules = rules or []
     rules_list = []
     for rule in rules:
-        grants = [
-            dict(name=g.name, owner_id=g.owner_id, group_id=g.group_id, cidr_ip=g.cidr_ip) for g in rule.grants
-        ]
+        grants = []
+        for g in rule.grants:
+            grants.append(
+                dict(name=BaseView.escape_braces(g.name), owner_id=g.owner_id, group_id=g.group_id, cidr_ip=g.cidr_ip)
+            )
         rules_list.append(dict(
             ip_protocol=rule.ip_protocol,
             from_port=rule.from_port,
@@ -219,17 +229,19 @@ def securitygroup_rules(context, request, rules=None, rules_egress=None, leftcol
     rules_sorted = sorted(rules_list, key=itemgetter('from_port'))
     rules_egress_sorted = sorted(rules_egress_list, key=itemgetter('from_port'))
     icmp_choices_sorted = sorted(RULE_ICMP_CHOICES, key=lambda tup: tup[1])
-    remote_addr=request.environ.get('HTTP_X_FORWARDED_FOR', getattr(request, 'remote_addr', ''))
+    controller_options_json = BaseView.escape_json(json.dumps({
+        'rules_array': rules_sorted,
+        'rules_egress_array': rules_egress_sorted,
+        'json_endpoint': request.route_path('securitygroups_json'),
+        'protocols_json_endpoint': request.route_path('internet_protocols_json'),
+    }))
+    remote_addr=BaseView.get_remote_addr(request)
 
     return dict(
-        rules=rules_sorted,
-        rules_json=BaseView.escape_json(json.dumps(rules_list)),
-        rules_egress=rules_egress_sorted,
-        rules_egress_json=BaseView.escape_json(json.dumps(rules_egress_list)),
         protocol_choices=RULE_PROTOCOL_CHOICES,
         icmp_choices=icmp_choices_sorted,
-        #remote_addr=remote_addr,
-        remote_addr=getattr(request, 'remote_addr', ''),
+        controller_options_json=controller_options_json,
+        remote_addr=remote_addr,
         leftcol_width=leftcol_width,
         rightcol_width=rightcol_width,
     )
@@ -246,7 +258,8 @@ def securitygroup_rules_preview(context, request, leftcol_width=3, rightcol_widt
 
 
 @panel_config('bdmapping_editor', renderer='../templates/panels/bdmapping_editor.pt')
-def bdmapping_editor(context, request, image=None, launch_config=None, snapshot_choices=None, read_only=False, disable_dot=False):
+def bdmapping_editor(context, request, image=None, launch_config=None, snapshot_choices=None,
+                     read_only=False, disable_dot=False):
     """ Block device mapping editor (e.g. for Launch Instance page).
         Usage example (in Chameleon template): ${panel('bdmapping_editor', image=image, snapshot_choices=choices)}
     """
@@ -256,7 +269,7 @@ def bdmapping_editor(context, request, image=None, launch_config=None, snapshot_
         bdm_object = image.block_device_mapping
         for key, device in bdm_object.items():
             bdm_dict[key] = dict(
-                is_root = True if get_root_device_name(image)==key else False,
+                is_root=True if get_root_device_name(image) == key else False,
                 virtual_name=device.ephemeral_name,
                 snapshot_id=device.snapshot_id,
                 size=device.size,
@@ -275,11 +288,15 @@ def bdmapping_editor(context, request, image=None, launch_config=None, snapshot_
                 size=getattr(ebs, 'volume_size', None),
                 delete_on_termination=True,
             )
-    bdm_json = BaseView.escape_json(json.dumps(bdm_dict))
+    controller_options_json = BaseView.escape_json(json.dumps({
+        'bd_mapping': bdm_dict,
+        'disable_dot': disable_dot,
+        'snapshot_size_json_endpoint': request.route_path('snapshot_size_json', id='_id_'),
+    }))
     return dict(
         image=image,
         snapshot_choices=snapshot_choices,
-        bdm_json=bdm_json,
+        controller_options_json=controller_options_json,
         read_only=read_only,
         disable_dot=disable_dot,
     )
@@ -291,18 +308,22 @@ def get_root_device_name(img):
 
 
 @panel_config('image_picker', renderer='../templates/panels/image_picker.pt')
-def image_picker(context, request, image=None, images_json_endpoint=None, filters_form=None,
+def image_picker(context, request, image=None, filters_form=None,
                  maxheight='800px', owner_choices=None, prefix_route='instance_create'):
     """ Reusable Image picker widget (e.g. for Launch Instance page, step 1).
         Usage example (in Chameleon template): ${panel('image_picker')}
     """
+    controller_options_json = BaseView.escape_json(json.dumps({
+        'cloud_type': request.session.get('cloud_type'),
+        'images_json_endpoint': request.route_path('images_json')
+    }))
     return dict(
         image=image,
         filters_form=filters_form,
-        images_json_endpoint=images_json_endpoint,
         maxheight=maxheight,
         owner_choices=owner_choices,
         prefix_route=prefix_route,
+        controller_options_json=controller_options_json,
     )
 
 

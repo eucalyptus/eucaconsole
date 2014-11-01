@@ -167,13 +167,15 @@
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Key name</label></div>
-                        <div class="small-8 columns value">${instance_keypair}</div>
+                        <div class="small-8 columns value">
+                            <a href="${request.route_path('keypair_view', id=instance_keypair)}">${instance_keypair}</a>
+                        </div>
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Security group(s)</label></div>
                         <div class="small-8 columns value">
                             <div tal:repeat="group instance.groups" ng-non-bindable="">
-                                <a href="/securitygroups/${group.id}">${group.name}</a>
+                                <a href="${request.route_path('securitygroup_view', id=group.id)}">${group.name}</a>
                             </div>
                         </div>
                     </div>
@@ -186,7 +188,7 @@
                     <div class="row controls-wrapper readonly" tal:condition="role">
                         <div class="small-4 columns"><label i18n:translate="">Role</label></div>
                         <div class="small-8 columns value">
-                            <a href="/roles/${role}" ng-non-bindable="">${role}</a>
+                            <a href="${request.route_path('role_view', name=role)}" ng-non-bindable="">${role}</a>
                         </div>
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="scaling_group">
@@ -202,12 +204,6 @@
                     <div class="row controls-wrapper readonly" tal:condition="instance.reservation_id">
                         <div class="small-4 columns"><label i18n:translate="">Reservation ID</label></div>
                         <div class="small-8 columns value">${instance.reservation_id}</div>
-                    </div>
-                    <div class="row controls-wrapper readonly" tal:condition="role">
-                        <div class="small-4 columns"><label i18n:translate="">Role</label></div>
-                        <div class="small-8 columns value">
-                            <a href="/roles/${role}">${role}</a>
-                        </div>
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="instance.client_token">
                         <div class="small-4 columns"><label i18n:translate="">Client token</label></div>
@@ -270,14 +266,14 @@
                     <div tal:condition="image and image.root_device_type == 'ebs'" tal:omit-tag="">
                         <div class="row controls-wrapper readonly" ng-if="instanceState != 'stopped'">
                             <div class="small-4 columns"><label i18n:translate="">Kernel ID</label></div>
-                            <div tal:condition="image" class="small-8 columns value">${image.kernel_id}</div>
+                            <div tal:condition="instance" class="small-8 columns value">${instance.kernel}</div>
                         </div>
                         <div ng-if="instanceState == 'stopped'">
                             ${panel('form_field', field=instance_form.kernel)}
                         </div>
                         <div class="row controls-wrapper readonly" ng-if="instanceState != 'stopped'">
                             <div class="small-4 columns"><label i18n:translate="">RAM disk ID (ramfs)</label></div>
-                            <div tal:condition="image" class="small-8 columns value">${image.ramdisk_id}</div>
+                            <div tal:condition="instance" class="small-8 columns value">${instance.ramdisk}</div>
                         </div>
                         <div ng-if="instanceState == 'stopped'">
                             ${panel('form_field', field=instance_form.ramdisk)}

@@ -69,18 +69,18 @@ angular.module('BlockDeviceMappingEditor', ['EucaConsoleUtils'])
                 } 
             }, 250);
         };
-        // tempate-ed way to pass bdm in
-        $scope.initBlockDeviceMappingEditor = function (bdmJson, url, disableDOT) {
-            if (bdmJson != '{}') {
-                $scope.bdMapping = JSON.parse(bdmJson);
-            } else {
+        // template-ed way to pass bdm in
+        $scope.initBlockDeviceMappingEditor = function (optionsJson) {
+            var options = JSON.parse(eucaUnescapeJson(optionsJson));
+            $scope.bdMapping = options['bd_mapping'];
+            $scope.bdmTextarea.val(JSON.stringify($scope.bdMapping));
+            $scope.disableDOT = options['disable_dot'];
+            $scope.snapshotJsonURL = options['snapshot_size_json_endpoint'];
+            if ($.isEmptyObject($scope.bdMapping)) {
                 $scope.bdMapping = undefined;
             }
-            $scope.bdmTextarea.val(bdmJson);
-            $scope.disableDOT = disableDOT;
             $scope.setInitialNewValues();
             $scope.initChosenSelector();
-            $scope.snapshotJsonURL = url;
         };
         // live update of bdm json
         $scope.$on('setBDM', function($event, bdm) {
@@ -134,8 +134,7 @@ angular.module('BlockDeviceMappingEditor', ['EucaConsoleUtils'])
             $scope.bdmTextarea.val(JSON.stringify(bdMapping));
         };
         $scope.isEphemeral = function(val) {
-            if (val.virtual_name && val.virtual_name.indexOf('ephemeral') == 0) return true;
-            return false;
+            return !!(val.virtual_name && val.virtual_name.indexOf('ephemeral') == 0);
         };
         $scope.updateRootDeviceSize = function ($event, key, is_root) {
             var bdMappingText = $scope.bdmTextarea.val();

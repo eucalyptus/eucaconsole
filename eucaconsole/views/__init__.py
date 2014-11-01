@@ -293,17 +293,21 @@ class BaseView(object):
         return url or default_path
 
     @staticmethod
+    def get_remote_addr(request):
+        return request.environ.get('HTTP_X_FORWARDED_FOR', getattr(request, 'remote_addr', ''))
+
+    @staticmethod
     def log_message(request, message, level='info'):
         prefix = ''
         cloud_type = request.session.get('cloud_type', 'euca')
         if cloud_type == 'euca':
             account = request.session.get('account', '')
             username = request.session.get('username', '')
-            prefix = '{0}/{1}'.format(account, username)
+            prefix = '{0}/{1}@{2}'.format(account, username, BaseView.get_remote_addr(request))
         elif cloud_type == 'aws':
             account = request.session.get('username_label', '')
             region = request.session.get('region')
-            prefix = '{0}/{1}'.format(account, region)
+            prefix = '{0}/{1}@{2}'.format(account, region, BaseView.get_remote_addr(request))
         log_message = "{prefix} [{id}]: {msg}".format(prefix=prefix, id=request.id, msg=message)
         if level == 'info':
             logging.info(log_message)
