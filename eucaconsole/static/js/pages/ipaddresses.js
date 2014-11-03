@@ -8,6 +8,7 @@
 angular.module('ElasticIPsPage', ['LandingPage'])
     .controller('ElasticIPsCtrl', function ($scope) {
         $scope.publicIP = '';
+        $scope.allocationID = '';
         $scope.instanceID = '';
         $scope.isNotValid = true;
         $scope.urlParams = $.url().param();
@@ -41,6 +42,7 @@ angular.module('ElasticIPsPage', ['LandingPage'])
             var modal = $('#' + action + '-ip-modal');
             $scope.instanceID = eip['instance_name'] || '';
             $scope.publicIP = eip['public_ip'];
+            $scope.allocationID = eip['allocation_id'];
             modal.foundation('reveal', 'open');
         };
     });

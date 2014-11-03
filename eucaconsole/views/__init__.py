@@ -112,10 +112,19 @@ class BaseView(object):
         self.security_token = request.session.get('session_token')
         self.euca_logout_form = EucaLogoutForm(self.request)
 
-    def get_connection(self, conn_type='ec2', cloud_type=None):
+    def get_connection(self, conn_type='ec2', cloud_type=None, region=None, access_key=None, secret_key=None, security_token=None):
         conn = None
         if cloud_type is None:
             cloud_type = self.cloud_type
+
+        if region is None:
+            region = self.region
+        if access_key is None:
+            access_key = self.access_key
+        if secret_key is None:
+            secret_key = self.secret_key
+        if security_token is None:
+            security_token = self.security_token
 
         validate_certs = False
         if self.request.registry.settings:  # do this to pass tests
@@ -124,7 +133,7 @@ class BaseView(object):
             
         if cloud_type == 'aws':
             conn = ConnectionManager.aws_connection(
-                self.region, self.access_key, self.secret_key, self.security_token, conn_type, validate_certs)
+                region, access_key, secret_key, security_token, conn_type, validate_certs)
         elif cloud_type == 'euca':
             host = self.request.registry.settings.get('clchost', 'localhost')
             port = int(self.request.registry.settings.get('clcport', 8773))
@@ -151,7 +160,7 @@ class BaseView(object):
                 port = int(self.request.registry.settings.get('vpc.port', port))
 
             conn = ConnectionManager.euca_connection(
-                host, port, self.access_key, self.secret_key, self.security_token, conn_type, validate_certs, certs_file)
+                host, port, access_key, secret_key, security_token, conn_type, validate_certs, certs_file)
 
         return conn
 

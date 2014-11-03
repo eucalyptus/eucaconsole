@@ -723,7 +723,7 @@ class UserView(BaseView):
                 'PutUserPolicy',
                 params={
                     'UserName': self.user.user_name, 'PolicyName': policy,
-                    'PolicyDocument': json.dumps(policy_text), 'DelegateAccount': as_account
+                    'PolicyDocument': policy_text, 'DelegateAccount': as_account
                 },
                 verb='POST'
             )

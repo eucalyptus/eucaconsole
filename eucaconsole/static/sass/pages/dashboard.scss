@@ -181,12 +181,17 @@ $tile-row-height: 24px;
             left: 8px;
         }
         i.service-up {
-            color:$euca-darkblue;
+            color: $euca-darkblue;
             font-size: 16pt;
             text-align: left;
         }
         i.service-down {
-            color:red;
+            color: red;
+            font-size: 16pt;
+            text-align: left;
+        }
+        i.service-denied {
+            color: $euca-darkgrey;
             font-size: 16pt;
             text-align: left;
         }
