@@ -7,7 +7,7 @@
 </head>
 
 <div metal:fill-slot="main_content">
-    <div class="row" id="contentwrap" ng-app="ElasticIPPage" ng-controller="ElasticIPPageCtrl" ng-init="initController()"> 
+    <div class="row" id="contentwrap" ng-app="ElasticIPPage" ng-controller="ElasticIPPageCtrl" ng-init="initController('${eip.public_ip}', '${eip.allocation_id}')"> 
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('ipaddresses')}" i18n:translate="">Elastic IP addresses</a></li>
