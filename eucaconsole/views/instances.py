@@ -109,6 +109,22 @@ class BaseInstanceView(BaseView):
                 pass
         return None
 
+    def get_security_groups(self):
+        if self.conn:
+            with boto_error_handler(self.request, self.location):
+                return self.conn.get_all_security_groups()
+        return []
+
+    def get_securitygroups_rules(self, securitygroups):
+        rules_dict = {}
+        for security_group in securitygroups:
+            rules = SecurityGroupsView.get_rules(security_group.rules)
+            if security_group.vpc_id is not None:
+                rules_egress = SecurityGroupsView.get_rules(security_group.rules_egress, rule_type='outbound')
+                rules = rules + rules_egress
+            rules_dict[security_group.id] = rules
+        return rules_dict
+
     def get_vpc_subnet_display(self, subnet_id):
         if self.vpc_conn and subnet_id:
             with boto_error_handler(self.request):
@@ -494,6 +510,9 @@ class InstanceView(TaggedItemView, BaseInstanceView):
         self.instance_name = TaggedItemView.get_display_name(self.instance)
         self.security_groups_array = sorted(
             {'name': group.name, 'id': group.id} for group in self.instance.groups) if self.instance else []
+        self.security_group_list = self.get_security_group_list()
+        self.security_group_list_string = ','.join(
+            [sgroup['id'] for sgroup in self.security_group_list]) if self.security_group_list else ''
         self.instance_keypair = self.instance.key_name if self.instance else ''
         self.has_elastic_ip = self.check_has_elastic_ip(self.instance.ip_address) if self.instance else False
         self.role = None
@@ -509,8 +528,9 @@ class InstanceView(TaggedItemView, BaseInstanceView):
         self.render_dict = dict(
             instance=self.instance,
             instance_name=self.instance_name,
-            instance_security_groups=self.get_security_group_list_string(),
+            instance_security_groups=self.security_group_list_string,
             instance_keypair=self.instance_keypair,
+            security_group_list=self.security_group_list,
             image=self.image,
             scaling_group=self.scaling_group,
             instance_form=self.instance_form,
@@ -672,14 +692,21 @@ class InstanceView(TaggedItemView, BaseInstanceView):
             return self.instance.tags.get('aws:autoscaling:groupName')
         return None
 
-    def get_security_group_list_string(self):
-        security_group_list = [] 
+    def get_security_group_list(self):
+        security_group_list = []
+        rules_dict = self.get_securitygroups_rules(self.get_security_groups())
         if self.instance:
             instance_groups = self.instance.groups
             if instance_groups:
                 for sgroup in instance_groups:
-                    security_group_list.append(sgroup.id) 
-        return ','.join(security_group_list) 
+                    rules = rules_dict[sgroup.id]
+                    sgroup_dict = {}
+                    sgroup_dict['id'] = sgroup.id
+                    sgroup_dict['name'] = sgroup.name
+                    sgroup_dict['rules'] = rules 
+                    sgroup_dict['rule_count'] = len(rules) 
+                    security_group_list.append(sgroup_dict)
+        return security_group_list 
 
     def get_redirect_location(self):
         if self.instance:
@@ -890,7 +917,7 @@ class InstanceVolumesView(BaseInstanceView):
         return sorted(volumes, key=attrgetter('attach_data.attach_time'), reverse=True) if volumes else []
 
 
-class InstanceLaunchView(BlockDeviceMappingItemView):
+class InstanceLaunchView(BaseInstanceView, BlockDeviceMappingItemView):
     TEMPLATE = '../templates/instances/instance_launch.pt'
 
     def __init__(self, request):
@@ -913,7 +940,7 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
         self.generate_file_form = GenerateFileForm(self.request, formdata=self.request.params or None)
         self.owner_choices = self.get_owner_choices()
         controller_options_json = BaseView.escape_json(json.dumps({
-            'securitygroups_rules': self.get_securitygroups_rules(),
+            'securitygroups_rules': self.get_securitygroups_rules(self.securitygroups),
             'securitygroups_choices': dict(self.launch_form.securitygroup.choices),
             'keypair_choices': dict(self.launch_form.keypair.choices),
             'role_choices': dict(self.launch_form.role.choices),
@@ -1029,22 +1056,6 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
         else:
             self.request.error_messages = self.launch_form.get_errors_list()
         return self.render_dict
-
-    def get_security_groups(self):
-        if self.conn:
-            with boto_error_handler(self.request, self.location):
-                return self.conn.get_all_security_groups()
-        return []
-
-    def get_securitygroups_rules(self):
-        rules_dict = {}
-        for security_group in self.securitygroups:
-            rules = SecurityGroupsView.get_rules(security_group.rules)
-            if security_group.vpc_id is not None:
-                rules_egress = SecurityGroupsView.get_rules(security_group.rules_egress, rule_type='outbound')
-                rules = rules + rules_egress
-            rules_dict[security_group.id] = rules
-        return rules_dict
 
     def get_securitygroup_id(self, name, vpc_network=None):
         for security_group in self.securitygroups:
