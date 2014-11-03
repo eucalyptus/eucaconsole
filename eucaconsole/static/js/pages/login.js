@@ -49,14 +49,17 @@ angular.module('LoginPage', ['EucaConsoleUtils'])
             // pre-fill if cookies are present
             var last_login = $.cookie('login-form');
             var account = $.cookie('account');
+            var username = $.cookie('username');
             if (url_account !== '') {
                 account = url_account;
                 if (url_username !== '') {
+                    username = url_username;
                     $('#username').val(url_username);
                 }
                 last_login = 'euca';
             }
             if (account !== undefined) $('#account').val(account);
+            if (username !== undefined) $('#username').val(username);
 
             if (last_login == 'aws') {  // select that tab
                 // all this mimics what happens in the tab code itself... no other way I found worked.
@@ -75,6 +78,7 @@ angular.module('LoginPage', ['EucaConsoleUtils'])
             // set up listener to capture and save values if remember checked
             $('#euca-login-form').on('submit', function () {
                 $.cookie('account', $('#account').val(), {expires: 180});
+                $.cookie('username', $('#username').val(), {expires: 180});
                 $.cookie('login-form', 'eucalyptus', {expires: 180});
             });
             $('#aws-login-form').on('submit', function (evt) {
