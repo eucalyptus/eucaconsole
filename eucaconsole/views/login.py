@@ -60,12 +60,9 @@ def redirect_to_login_page(request):
 
 class PermissionCheckMixin(object):
     def check_iam_perms(self, session, creds):
-        # the values below needed by get_connection()
-        self.region = self.cloud_type = 'euca'
-        self.access_key = creds.access_key
-        self.secret_key = creds.secret_key
-        self.security_token = creds.session_token
-        iam_conn = self.get_connection(conn_type='iam', cloud_type='euca')
+        iam_conn = self.get_connection(
+            conn_type='iam', cloud_type='euca', region='euca',
+            access_key=creds.access_key, secret_key=creds.secret_key, security_token=creds.session_token)
         account = session['account']
         session['account_access'] = True if account == 'eucalyptus' else False
         session['user_access'] = False
