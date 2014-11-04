@@ -7,7 +7,7 @@
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap"
          tal:define="isEBS instance.root_device_type == 'ebs'"
-         ng-app="InstanceCreateImage" ng-controller="InstanceCreateImageCtrl" ng-init="initController()">
+         ng-app="InstanceCreateImage" ng-controller="InstanceCreateImageCtrl" ng-init="initController('${lacks_keys}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('instances')}" i18n:translate="">Instances</a></li>
@@ -55,7 +55,7 @@
                             <div tal:condition="isEBS">
                                 ${structure:create_image_form['no_reboot']}&nbsp;${create_image_form.no_reboot.label}
                                 <span class="helptext-icon" data-tooltip=""
-                                    title="${create_image_form.no_reboot.help_text}">?</span>
+                                    title="${create_image_form.no_reboot.label_help_text}">?</span>
                             </div>
                             ${panel('bdmapping_editor', image=image, snapshot_choices=snapshot_choices)}
                         </div>
@@ -125,6 +125,15 @@
             <div class="dialog-submit-button">
                 <a id="instance-shutdown-warn-ok" class="button expand" i18n:translate="" ng-click="submitCreate()">I Understand, Let's Do This!</a>
             </div>
+            <a href="#" class="close-reveal-modal">&#215;</a>
+        </div>
+        <div id="no-keys-warn-modal" class="reveal-modal small" data-reveal="">
+            <h3 i18n:translate="">Warning</h3>
+            <p>
+                <span i18n:translate="">Creating an image from an Instance Store instance requires your account has access keys.</span><br/>
+                <span i18n:translate="">You can create keys with</span>&nbsp;
+                <a href="${request.route_path('managecredentials')}#create-keys-panel" i18n:translate="">Manage Credentials</a>
+            </p>
             <a href="#" class="close-reveal-modal">&#215;</a>
         </div>
     </div>

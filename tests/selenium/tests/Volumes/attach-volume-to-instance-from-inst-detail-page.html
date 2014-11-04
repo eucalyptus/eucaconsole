@@ -82,23 +82,28 @@
 	<td></td>
 </tr>
 <tr>
-	<td>type</td>
-	<td>css=input[type=&quot;text&quot;]</td>
-	<td>${volume_id} (${volume_name})</td>
+	<td>click</td>
+	<td>//div[@id=&quot;volume_id_chosen&quot;]</td>
+	<td></td>
 </tr>
 <tr>
-	<td>typeKeys</td>
+	<td>waitForVisible</td>
+	<td>css=input[type=&quot;text&quot;]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>sendKeys</td>
 	<td>css=input[type=&quot;text&quot;]</td>
 	<td>${volume_id} (${volume_name})</td>
 </tr>
 <tr>
 	<td>waitForVisible</td>
-	<td>css=li.active-result.highlighted &gt; em</td>
+	<td>//div[@id='volume_id_chosen']/div/ul/li/em</td>
 	<td></td>
 </tr>
 <tr>
 	<td>clickAt</td>
-	<td>css=li.active-result.highlighted &gt; em</td>
+	<td>//div[@id='volume_id_chosen']/div/ul/li/em</td>
 	<td></td>
 </tr>
 <tr>

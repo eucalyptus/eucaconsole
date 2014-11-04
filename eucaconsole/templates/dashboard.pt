@@ -254,6 +254,8 @@
                                             i18n:translate="title" data-tooltip="" ng-show="service.status == 'up'"></i>
                                          <i class="fi-x tick service-down" title="Service is not responding"
                                             i18n:translate="title" data-tooltip="" ng-show="service.status=='down'"></i>
+                                         <i class="fi-prohibited tick service-denied" title="Access to this service denied"
+                                            i18n:translate="title" data-tooltip="" ng-show="service.status=='denied'"></i>
                                      </span>
                                 </div>
                             </div>

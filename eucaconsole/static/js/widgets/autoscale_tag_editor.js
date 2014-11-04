@@ -3,7 +3,7 @@
  * @requires AngularJS
  *
  */
-angular.module('AutoScaleTagEditor', ['ngSanitize'])
+angular.module('AutoScaleTagEditor', ['ngSanitize', 'EucaConsoleUtils'])
     .filter('ellipsis', function () {
         return function (line, num) {
             if (line.length <= num) {
@@ -12,7 +12,7 @@ angular.module('AutoScaleTagEditor', ['ngSanitize'])
             return line.substring(0, num) + "...";
         };
     })
-    .controller('AutoScaleTagEditorCtrl', function ($scope, $sanitize, $timeout) {
+    .controller('AutoScaleTagEditorCtrl', function ($scope, $sanitize, $timeout, eucaUnescapeJson) {
         $scope.tagEditor = $('#tag-editor');
         $scope.tagInputs = $scope.tagEditor.find('.taginput');
         $scope.tagsTextarea = $scope.tagEditor.find('textarea#tags');
@@ -23,10 +23,10 @@ angular.module('AutoScaleTagEditor', ['ngSanitize'])
         $scope.syncTags = function () {
             $scope.tagsTextarea.val(JSON.stringify($scope.tagsArray));
         };
-        $scope.initTags = function(tagsJson) {
+        $scope.initTags = function(optionsJson) {
+            var options = JSON.parse(eucaUnescapeJson(optionsJson));
             // Parse tags JSON and convert to a list of tags.
-            tagsJson = tagsJson.replace(/__apos__/g, "\'").replace(/__dquote__/g, '\\"').replace(/__bslash__/g, "\\");
-            var tagsArray = JSON.parse(tagsJson);
+            var tagsArray = options['tags_list'];
             tagsArray.forEach(function(tag) {
                 if (!tag['name'].match(/^aws:.*/) && !tag['name'].match(/^euca:.*/)) {
                     $scope.tagsArray.push({

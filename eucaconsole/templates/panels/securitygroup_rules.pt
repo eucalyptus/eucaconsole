@@ -1,7 +1,7 @@
 
 <!--! Security group rules editor -->
 <div id="rules-editor" class="row controls-wrapper" ng-app="SecurityGroupRules" i18n:domain="eucaconsole"
-     ng-controller="SecurityGroupRulesCtrl" ng-init="initRules('${rules_json}','${rules_egress_json}',  '${request.route_path('securitygroups_json')}', '${request.route_path('internet_protocols_json')}')">
+     ng-controller="SecurityGroupRulesCtrl" ng-init="initRules('${controller_options_json}')">
     <link rel="stylesheet" href="${request.static_path('eucaconsole:static/css/widgets/securitygroup_rules.css')}"
           type="text/css" charset="utf-8" />
     <div class="columns">
@@ -36,7 +36,7 @@
                         <a class="remove" ng-click="removeRule($index, $event)"
                             title="Remove rule"><i class="fi-x"></i></a>
                     </span>
-                    <span class="label radius secondary rulesentry" ng-repeat="rule in rulesEgressArray" ng-show="ruleType=='outbound'">
+                    <span class="label radius secondary item" ng-repeat="rule in rulesEgressArray" ng-show="ruleType=='outbound'">
                         <span ng-show="!rule.custom_protocol">
                             {{ rule.ip_protocol.toUpperCase() }}
                         </span>

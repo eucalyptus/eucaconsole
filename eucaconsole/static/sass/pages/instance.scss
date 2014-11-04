@@ -23,7 +23,7 @@ $volume-status-color-detaching: lighten($euca-olive, 20%);
 .row .status.stopped { background-color: $instance-status-color-stopped; }
 .row .status.stopping { background-color: $instance-status-color-stopping; }
 .row .status.terminated { background-color: $instance-status-color-terminated; }
-.row .status.terminating { background-color: $instance-status-color-terminating; }
+.row .status.shutting-down { background-color: $instance-status-color-terminating; }
 
 
 // Forms

@@ -3,8 +3,8 @@
  * @requires AngularJS
  *
  */
-angular.module('ImagePicker', [])
-    .controller('ImagePickerCtrl', function ($rootScope, $scope, $http) {
+angular.module('ImagePicker', ['EucaConsoleUtils'])
+    .controller('ImagePickerCtrl', function ($rootScope, $scope, $http, eucaUnescapeJson) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.items = [];
         $scope.batchSize = 100;  // Show 100 items max w/o "show more" enabler
@@ -20,12 +20,13 @@ angular.module('ImagePicker', [])
         $scope.selectedImageParam = $scope.urlParams['image_id'] || '';
         // Properties for search input filter
         $scope.filterProps = [
-            'architecture', 'description', 'id', 'name', 'tagged_name', 'platform_name', 'root_devite_type'
+            'architecture', 'description', 'id', 'name', 'tagged_name', 'platform_name', 'root_device_type'
         ];
-        $scope.initImagePicker = function (jsonEndpointPrefix, cloudType) {
-            $scope.jsonEndpointPrefix = jsonEndpointPrefix + "?state=available";
+        $scope.initImagePicker = function (optionsJson) {
+            var options = JSON.parse(eucaUnescapeJson(optionsJson));
+            $scope.jsonEndpointPrefix = options['images_json_endpoint'] + "?state=available";
             $scope.jsonEndpoint = $scope.jsonEndpointPrefix;
-            $scope.cloudType = cloudType;
+            $scope.cloudType = options['cloud_type'];
             $scope.initChosenSelectors();
             $scope.initFilters();
             $scope.getItems();
