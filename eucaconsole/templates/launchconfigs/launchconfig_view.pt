@@ -1,5 +1,9 @@
 <metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/launchconfig.css')}" />
+</head>
+
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="LaunchConfigPage" ng-controller="LaunchConfigPageCtrl"
          ng-init="initController('${controller_options_json}')">
