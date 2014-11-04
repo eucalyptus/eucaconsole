@@ -69,13 +69,11 @@
                 <td class="breakword"><a ng-href="/images/{{ item.image_id }}">{{ item.image_name || item.image_id | ellipsis: 30 }}</a></td>
                 <td class="breakword"><a ng-href="/keypairs/{{ item.key_name }}">{{ item.key_name | ellipsis: 30 }}</a></td>
                 <td class="breakword">
-                    <a ng-repeat="sgroup in item.security_groups"
-                       ng-href="/securitygroups/{{ sgroup.id | escapeURL }}">
+                    <div ng-repeat="sgroup in item.security_groups">
                         <i class="fi-alert" ng-show="sgroup.rules_count == 0" data-tooltip="" i18n:attributes="title"
                             title="Warning: No rules defined for security group. Instance may be unreachable."></i>
-                        {{ sgroup.name }}
-                        <span ng-show="!$last">, </span>
-                    </a>
+                        <a ng-href="/securitygroups/{{ sgroup.id | escapeURL }}">{{ sgroup.name | ellipsis: 30 }}</a>
+                    </div>
                 </td>
                 <td>{{ item.created_time | date:'${layout.angular_date_format}' }}</td>
                 <td>
