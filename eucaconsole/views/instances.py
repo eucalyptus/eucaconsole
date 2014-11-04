@@ -316,6 +316,7 @@ class InstancesJsonView(LandingPageView):
         self.vpc_conn = self.get_connection(conn_type='vpc')
         self.vpcs = self.get_all_vpcs()
         self.keypairs = self.get_all_keypairs()
+        self.security_groups = self.get_all_security_groups()
 
     @view_config(route_name='instances_json', renderer='json', request_method='POST')
     def instances_json(self):
@@ -360,7 +361,11 @@ class InstancesJsonView(LandingPageView):
         region = self.request.session.get('region')
         for instance in filtered_items:
             is_transitional = instance.state in transitional_states
-            security_groups_array = sorted({'name': group.name, 'id': group.id} for group in instance.groups)
+            security_groups_array = sorted({
+                'name': group.name,
+                'id': group.id,
+                'rules_count': self.get_security_group_rules_count_by_id(group.id)
+                } for group in instance.groups)
             if instance.platform is None:
                 instance.platform = _(u"linux")
             has_elastic_ip = instance.ip_address in elastic_ips
@@ -429,6 +434,20 @@ class InstancesJsonView(LandingPageView):
         for keypair in self.keypairs:
             if keypair_name == keypair.name:
                 return keypair
+
+    def get_all_security_groups(self):
+        return self.conn.get_all_security_groups() if self.conn else []
+
+    def get_security_group_by_id(self, id):
+        for sgroup in self.security_groups:
+            if sgroup.id == id:
+                return sgroup 
+
+    def get_security_group_rules_count_by_id(self, id):
+        sgroup = self.get_security_group_by_id(id)
+        if sgroup:
+            return len(sgroup.rules)
+        return -1 
 
     @staticmethod
     def get_image_by_id(images, image_id):
