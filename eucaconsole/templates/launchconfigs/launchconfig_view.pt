@@ -54,7 +54,7 @@
                         <div class="small-9 columns value">
                             <div tal:repeat="security_group security_groups">
                                 <i tal:condition="not security_group.rule_count" class="fi-alert" data-tooltip="" i18n:attributes="title"
-                                    title="Warning: No rules defined for security group"></i>
+                                    title="Warning: No rules defined for security group. Instance may be unreachable."></i>
                                 <a href="${request.route_path('securitygroup_view', id=security_group.id)}">
                                     ${layout.escape_braces(security_group.name)}
                                 </a>

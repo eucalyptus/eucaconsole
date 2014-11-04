@@ -176,7 +176,7 @@
                         <div class="small-8 columns value">
                             <div tal:repeat="group security_group_list" ng-non-bindable="">
                                 <i tal:condition="not group.rule_count" class="fi-alert" data-tooltip="" i18n:attributes="title"
-                                    title="Warning: No rules defined for security group"></i>
+                                    title="Warning: No rules defined for security group. Instance may be unreachable."></i>
                                 <a href="${request.route_path('securitygroup_view', id=group.id)}">${group.name}</a>
                             </div>
                         </div>
