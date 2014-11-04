@@ -289,7 +289,6 @@ class EucaAuthenticator(object):
             creds = Credentials()
             h = BotoXmlHandler(creds, None)
             xml.sax.parseString(body, h)
-            logging.info("Authenticated Eucalyptus user: " + account + "/" + user)
             return creds
         except SSLError as err:
             if err.message != '':
@@ -338,7 +337,6 @@ class AWSAuthenticator(object):
             creds = Credentials()
             h = BotoXmlHandler(creds, None)
             xml.sax.parseString(body, h)
-            logging.info("Authenticated AWS user")
             return creds
         except SSLError as err:
             if err.message != '':

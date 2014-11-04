@@ -1,9 +1,10 @@
 
 <!--! Tag editor -->
 <div id="tag-editor" class="row controls-wrapper" ng-app="TagEditor" i18n:domain="eucaconsole"
-     ng-controller="TagEditorCtrl" ng-init="initTags('${tags_json}', ${str(show_name_tag).lower()})">
+     ng-controller="TagEditorCtrl" ng-init="initTags('${controller_options_json}')">
     <style type="text/css" tal:condition="not show_name_tag">
-        .tagentry.Name { display: none; }
+        /* Hide name tag based on option passed to tag editor panel */
+        .item-list .item.Name { display: none; }
     </style>
     <div class="columns"><h6 i18n:translate="">Tags</h6></div>
     <div class="columns field" ng-cloak="">
@@ -28,7 +29,7 @@
                     <small class="error" i18n:translate="">Tag may not begin with "aws:" or its length cannot be longer than 128 chars</small>
                 </div>
                 <div id="tag-value-input-div" class="small-8 columns">
-                    <input id='tag-value-input' class="taginput value" placeholder="value..." ng-model="newTagValue" pattern="${layout.tag_pattern_value}" />
+                    <input id='tag-value-input' class="taginput value" placeholder="value..." ng-model="newTagValue" pattern="${layout.tag_pattern_value}" ng-keypress="keyListener($event)" />
                     <small class="error" i18n:translate="">Tag may not begin with "aws:" or its length cannot be longer than 256 chars</small>
                 </div>
             </div>

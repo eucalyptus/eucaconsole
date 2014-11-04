@@ -125,7 +125,6 @@ class InstancesView(LandingPageView, BaseInstanceView):
         self.prefix = '/instances'
         self.json_items_endpoint = self.get_json_endpoint('instances_json')
         self.location = self.get_redirect_location('instances')
-        self.iam_conn = self.get_connection(conn_type="iam")
         self.start_form = StartInstanceForm(self.request, formdata=self.request.params or None)
         self.stop_form = StopInstanceForm(self.request, formdata=self.request.params or None)
         self.reboot_form = RebootInstanceForm(self.request, formdata=self.request.params or None)
@@ -150,7 +149,7 @@ class InstancesView(LandingPageView, BaseInstanceView):
     def instances_landing(self):
         filter_keys = [
             'id', 'name', 'image_id', 'instance_type', 'ip_address', 'key_name', 'placement',
-            'root_device', 'security_groups_string', 'state', 'tags', 'roles', 'vpc_id', 'subnet_id']
+            'root_device', 'security_groups', 'state', 'tags', 'roles', 'vpc_id', 'subnet_id']
         # filter_keys are passed to client-side filtering in search box
         self.filter_keys = filter_keys
         # sort_keys are passed to sorting drop-down
@@ -164,12 +163,16 @@ class InstancesView(LandingPageView, BaseInstanceView):
             dict(key='key_name', name=_(u'Key pair')),
         ]
         autoscale_conn = self.get_connection(conn_type='autoscale')
-        iam_conn = self.get_connection(conn_type='iam')
+        iam_conn = None
+        if self.request.session['role_access']:
+            iam_conn = self.get_connection(conn_type='iam')
         vpc_conn = self.get_connection(conn_type='vpc')
         filters_form = InstancesFiltersForm(
             self.request, ec2_conn=self.conn, autoscale_conn=autoscale_conn,
             iam_conn=iam_conn, vpc_conn=vpc_conn,
             cloud_type=self.cloud_type, formdata=self.request.params or None)
+        if self.request.session['role_access']:
+            del filters_form.roles
         self.render_dict.update(dict(
             filter_fields=True,
             filter_keys=self.filter_keys,
@@ -313,6 +316,9 @@ class InstancesJsonView(LandingPageView):
         instance_type_param = self.request.params.getall('instance_type')
         if instance_type_param:
             filters.update({'instance-type': instance_type_param})
+        keypair_param = self.request.params.getall('keypair')
+        if keypair_param:
+            filters.update({'key-name': [self.unescape_braces(kp) for kp in keypair_param]})
         security_group_param = self.request.params.getall('security_group')
         if security_group_param:
             filters.update({'group-name': [self.unescape_braces(sg) for sg in security_group_param]})
@@ -322,7 +328,7 @@ class InstancesJsonView(LandingPageView):
         # Don't filter by these request params in Python, as they're included in the "filters" params sent to the CLC
         # Note: the choices are from attributes in InstancesFiltersForm
         ignore_params = [
-            'availability_zone', 'instance_type', 'state', 'security_group',
+            'availability_zone', 'instance_type', 'state', 'keypair', 'security_group',
             'scaling_group', 'root_device_type', 'roles']
         filtered_items = self.filter_items(self.get_items(filters=filters), ignore=ignore_params)
         if self.request.params.get('scaling_group'):
@@ -468,7 +474,9 @@ class InstanceView(TaggedItemView, BaseInstanceView):
         super(InstanceView, self).__init__(request)
         self.request = request
         self.conn = self.get_connection()
-        self.iam_conn = self.get_connection(conn_type="iam")
+        self.iam_conn = None
+        if request.session['role_access']:
+            self.iam_conn = self.get_connection(conn_type="iam")
         self.instance = self.get_instance()
         self.image = self.get_image(self.instance)
         self.scaling_group = self.get_scaling_group()
@@ -489,7 +497,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
         self.instance_keypair = self.instance.key_name if self.instance else ''
         self.has_elastic_ip = self.check_has_elastic_ip(self.instance.ip_address) if self.instance else False
         self.role = None
-        if self.instance and self.instance.instance_profile:
+        if request.session['role_access'] and self.instance and self.instance.instance_profile:
             arn = self.instance.instance_profile['arn']
             profile_name = arn[(arn.rindex('/')+1):]
             inst_profile = self.iam_conn.get_instance_profile(profile_name)
@@ -891,7 +899,9 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
         self.image = self.get_image()
         self.location = self.request.route_path('instances')
         self.securitygroups = self.get_security_groups()
-        self.iam_conn = self.get_connection(conn_type="iam")
+        self.iam_conn = None
+        if request.session['role_access']:
+            self.iam_conn = self.get_connection(conn_type="iam")
         self.vpc_conn = self.get_connection(conn_type='vpc')
         self.launch_form = LaunchInstanceForm(
             self.request, image=self.image, securitygroups=self.securitygroups,
@@ -901,13 +911,16 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
         self.keypair_form = KeyPairForm(self.request, formdata=self.request.params or None)
         self.securitygroup_form = SecurityGroupForm(self.request, self.vpc_conn, formdata=self.request.params or None)
         self.generate_file_form = GenerateFileForm(self.request, formdata=self.request.params or None)
-        self.securitygroups_rules_json = BaseView.escape_json(json.dumps(self.get_securitygroups_rules()))
-        self.images_json_endpoint = self.request.route_path('images_json')
         self.owner_choices = self.get_owner_choices()
-        self.vpc_subnet_choices_json = BaseView.escape_json(json.dumps(self.get_vpc_subnets_json()))
-        self.keypair_choices_json = BaseView.escape_json(json.dumps(dict(self.launch_form.keypair.choices)))
-        self.securitygroup_choices_json = BaseView.escape_json(json.dumps(dict(self.launch_form.securitygroup.choices)))
-        self.role_choices_json = BaseView.escape_json(json.dumps(dict(self.launch_form.role.choices)))
+        controller_options_json = BaseView.escape_json(json.dumps({
+            'securitygroups_rules': self.get_securitygroups_rules(),
+            'securitygroups_choices': dict(self.launch_form.securitygroup.choices),
+            'keypair_choices': dict(self.launch_form.keypair.choices),
+            'role_choices': dict(self.launch_form.role.choices),
+            'vpc_subnet_choices': self.get_vpc_subnets(),
+            'securitygroups_json_endpoint': self.request.route_path('securitygroups_json'),
+            'image_json_endpoint': self.request.route_path('image_json', id='_id_'),
+        }))
         self.render_dict = dict(
             image=self.image,
             launch_form=self.launch_form,
@@ -915,15 +928,10 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
             keypair_form=self.keypair_form,
             securitygroup_form=self.securitygroup_form,
             generate_file_form=self.generate_file_form,
-            images_json_endpoint=self.images_json_endpoint,
             owner_choices=self.owner_choices,
             snapshot_choices=self.get_snapshot_choices(),
-            securitygroups_rules_json=self.securitygroups_rules_json,
-            keypair_choices_json=self.keypair_choices_json,
-            securitygroup_choices_json=self.securitygroup_choices_json,
-            vpc_subnet_choices_json=self.vpc_subnet_choices_json,
-            role_choices_json=self.role_choices_json,
             security_group_placeholder_text=_(u'Select...'),
+            controller_options_json=controller_options_json,
         )
 
     @view_config(route_name='instance_create', renderer=TEMPLATE, request_method='GET')
@@ -963,7 +971,8 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
             new_instance_ids = []
             with boto_error_handler(self.request, self.location):
                 instance_profile = None
-                if role != '':  # need to set up instance profile, add role and supply to run_instances
+                if self.request.session['role_access'] and role != '':
+                    # need to set up instance profile, add role and supply to run_instances
                     instance_profile = RoleView.get_or_create_instance_profile(self.iam_conn, role)
                 self.log_request(_(u"Running instance(s) (num={0}, image={1}, type={2})").format(
                     num_instances, image_id, instance_type))
@@ -1043,7 +1052,7 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
                 return security_group.id
         return None
 
-    def get_vpc_subnets_json(self):
+    def get_vpc_subnets(self):
         subnets = []
         if self.vpc_conn:
             with boto_error_handler(self.request, self.location):
@@ -1066,7 +1075,9 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
     def __init__(self, request):
         super(InstanceLaunchMoreView, self).__init__(request)
         self.request = request
-        self.iam_conn = self.get_connection(conn_type="iam")
+        self.iam_conn = None
+        if request.session['role_access']:
+            self.iam_conn = self.get_connection(conn_type="iam")
         self.instance = self.get_instance()
         self.instance_name = TaggedItemView.get_display_name(self.instance)
         self.image = self.get_image(instance=self.instance)  # From BaseInstanceView
@@ -1079,7 +1090,7 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
         if self.instance.interfaces:
             if self.instance.interfaces[0] and hasattr(self.instance.interfaces[0], 'association'):
                 self.associate_public_ip_address = 'Enabled'
-        if self.instance.instance_profile:
+        if request.session['role_access'] and self.instance.instance_profile:
             arn = self.instance.instance_profile['arn']
             profile_name = arn[(arn.rindex('/')+1):]
             inst_profile = self.iam_conn.get_instance_profile(profile_name)
@@ -1216,6 +1227,18 @@ class InstanceCreateImageView(BaseInstanceView, BlockDeviceMappingItemView):
 
     @view_config(route_name='instance_create_image', renderer=TEMPLATE, request_method='GET')
     def instance_create_image_view(self):
+        lacks_keys = False
+        if self.instance.root_device_type != 'ebs' and self.request.session['user_access']:
+            iam_conn = self.get_connection(conn_type='iam')
+            try:
+                keys = iam_conn.get_all_access_keys(self.request.session['username'])
+                if keys and len(keys.list_access_keys_result.access_key_metadata) == 0:
+                    lacks_keys = True
+            except BotoServerError:
+                pass
+        self.render_dict.update(dict(
+            lacks_keys=lacks_keys,
+        ))
         return self.render_dict
 
     @view_config(route_name='instance_create_image', renderer=TEMPLATE, request_method='POST')

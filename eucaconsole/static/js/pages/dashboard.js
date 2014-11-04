@@ -29,7 +29,10 @@ angular.module('Dashboard', ['EucaConsoleUtils'])
             $scope.getItemCounts();
             $scope.storeAWSRegion();
             $scope.health = options['services'];
-            $scope.getServiceStatus();
+            var tiles = $.cookie($scope.accountName + "_dash_order");
+            if (tiles == undefined || tiles.indexOf('health') > -1) {
+                $scope.getServiceStatus();
+            }
             $('#sortable').sortable({
                 stop: function(event, ui) {
                     // TODO: remove 'add-tile' from list first

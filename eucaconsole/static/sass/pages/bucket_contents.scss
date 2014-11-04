@@ -33,6 +33,14 @@
     background-color: darken(red, 20%);
 }
 
+#pagetitle {
+    display: inline-block;
+}
+
+#bucket-details {
+    margin-left: 0.5rem;
+}
+
 .bucket-progress {
     border: 1px solid black;
     position: relative;
@@ -57,7 +65,6 @@
         margin-bottom: 0px;
         font-size: 1.0rem;
         font-weight: bold;
-        text-align: center;
     }
 }
 
