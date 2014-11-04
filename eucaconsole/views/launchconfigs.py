@@ -136,7 +136,11 @@ class LaunchConfigsJsonView(LandingPageView):
             scalinggroup_launchconfig_names = self.get_scalinggroups_launchconfig_names()
             for launchconfig in self.filter_items(self.items):
                 security_groups = self.get_security_groups(launchconfig.security_groups)
-                security_groups_array = sorted({'name': group.name, 'id': group.id} for group in security_groups)
+                security_groups_array = sorted({
+                    'name': group.name,
+                    'id': group.id,
+                    'rules_count': self.get_security_group_rules_count_by_id(group.id)
+                    } for group in security_groups)
                 image_id = launchconfig.image_id
                 name = launchconfig.name
                 launchconfigs_array.append(dict(
@@ -201,6 +205,14 @@ class LaunchConfigsJsonView(LandingPageView):
                     return sgroup
         return ''
 
+    def get_security_group_rules_count_by_id(self, id):
+        if id.startswith('sg-'):
+            security_group = self.get_security_group_by_id(id)
+        else:
+            security_group = self.get_security_group_by_name(id)
+        if security_group:
+            return len(security_group.rules)
+        return -1 
 
 class LaunchConfigView(BaseView):
     """Views for single LaunchConfig"""
@@ -480,4 +492,3 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
                 rules = rules + rules_egress 
             rules_dict[security_group.id] = rules
         return rules_dict
-
