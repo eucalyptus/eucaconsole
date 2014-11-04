@@ -82,28 +82,13 @@
 	<td></td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>//div[@id=&quot;volume_id_chosen&quot;]</td>
-	<td></td>
-</tr>
-<tr>
 	<td>waitForVisible</td>
-	<td>css=input[type=&quot;text&quot;]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>sendKeys</td>
-	<td>css=input[type=&quot;text&quot;]</td>
-	<td>${volume_id} (${volume_name})</td>
-</tr>
-<tr>
-	<td>waitForVisible</td>
-	<td>//div[@id='volume_id_chosen']/div/ul/li/em</td>
+	<td>//div[@id='volume_id_chosen']/div/ul/li[text()[contains(.,'${volume_id} (${volume_name})')]]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>clickAt</td>
-	<td>//div[@id='volume_id_chosen']/div/ul/li/em</td>
+	<td>//div[@id='volume_id_chosen']/div/ul/li[text()[contains(.,'${volume_id} (${volume_name})')]]</td>
 	<td></td>
 </tr>
 <tr>
