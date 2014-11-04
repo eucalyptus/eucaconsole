@@ -164,14 +164,14 @@ class InstancesView(LandingPageView, BaseInstanceView):
         ]
         autoscale_conn = self.get_connection(conn_type='autoscale')
         iam_conn = None
-        if self.request.session['role_access']:
+        if BaseView.has_role_access(self.request):
             iam_conn = self.get_connection(conn_type='iam')
         vpc_conn = self.get_connection(conn_type='vpc')
         filters_form = InstancesFiltersForm(
             self.request, ec2_conn=self.conn, autoscale_conn=autoscale_conn,
             iam_conn=iam_conn, vpc_conn=vpc_conn,
             cloud_type=self.cloud_type, formdata=self.request.params or None)
-        if self.request.session['role_access']:
+        if BaseView.has_role_access(self.request):
             del filters_form.roles
         self.render_dict.update(dict(
             filter_fields=True,
@@ -472,7 +472,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
         self.request = request
         self.conn = self.get_connection()
         self.iam_conn = None
-        if request.session['role_access']:
+        if BaseView.has_role_access(request):
             self.iam_conn = self.get_connection(conn_type="iam")
         self.instance = self.get_instance()
         self.image = self.get_image(self.instance)
@@ -494,7 +494,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
         self.instance_keypair = self.instance.key_name if self.instance else ''
         self.has_elastic_ip = self.check_has_elastic_ip(self.instance.ip_address) if self.instance else False
         self.role = None
-        if request.session['role_access'] and self.instance and self.instance.instance_profile:
+        if BaseView.has_role_access(request) and self.instance and self.instance.instance_profile:
             arn = self.instance.instance_profile['arn']
             profile_name = arn[(arn.rindex('/')+1):]
             inst_profile = self.iam_conn.get_instance_profile(profile_name)
@@ -897,7 +897,7 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
         self.location = self.request.route_path('instances')
         self.securitygroups = self.get_security_groups()
         self.iam_conn = None
-        if request.session['role_access']:
+        if BaseView.has_role_access(request):
             self.iam_conn = self.get_connection(conn_type="iam")
         self.vpc_conn = self.get_connection(conn_type='vpc')
         self.launch_form = LaunchInstanceForm(
@@ -968,7 +968,7 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
             new_instance_ids = []
             with boto_error_handler(self.request, self.location):
                 instance_profile = None
-                if self.request.session['role_access'] and role != '':
+                if BaseView.has_role_access(self.request) and role != '':
                     # need to set up instance profile, add role and supply to run_instances
                     instance_profile = RoleView.get_or_create_instance_profile(self.iam_conn, role)
                 self.log_request(_(u"Running instance(s) (num={0}, image={1}, type={2})").format(
@@ -1073,7 +1073,7 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
         super(InstanceLaunchMoreView, self).__init__(request)
         self.request = request
         self.iam_conn = None
-        if request.session['role_access']:
+        if BaseView.has_role_access(request):
             self.iam_conn = self.get_connection(conn_type="iam")
         self.instance = self.get_instance()
         self.instance_name = TaggedItemView.get_display_name(self.instance)
@@ -1087,7 +1087,7 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
         if self.instance.interfaces:
             if self.instance.interfaces[0] and hasattr(self.instance.interfaces[0], 'association'):
                 self.associate_public_ip_address = 'Enabled'
-        if request.session['role_access'] and self.instance.instance_profile:
+        if BaseView.has_role_access(request) and self.instance.instance_profile:
             arn = self.instance.instance_profile['arn']
             profile_name = arn[(arn.rindex('/')+1):]
             inst_profile = self.iam_conn.get_instance_profile(profile_name)
