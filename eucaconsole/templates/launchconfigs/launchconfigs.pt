@@ -43,13 +43,7 @@
                 </div>
                 <div ng-show="item.security_groups">
                     <span class="label" title="Security groups" i18n:attributes="title" data-tooltip="">SG</span>
-                    <a ng-repeat="sgroup in item.security_groups"
-                       ng-href="/securitygroups/{{ sgroup.id }}">
-                        <i class="fi-alert" ng-show="sgroup.rules_count == 0" data-tooltip="" i18n:attributes="title"
-                            title="Warning: No rules defined for security group. Instance may be unreachable."></i>
-                        {{ sgroup.name }}
-                        <span ng-show="!$last">, </span>
-                    </a>
+                    {{ item.security_groups.length }}
                 </div>
                 <div ng-show="item.created_time">
                     <span class="label" title="Creation time" i18n:attributes="title" data-tooltip="">CT</span>
