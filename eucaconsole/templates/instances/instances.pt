@@ -172,6 +172,8 @@
                 </td>
                 <td class="breakword">
                     <div ng-repeat="security_group in item.security_groups">
+                        <i class="fi-alert" ng-show="security_group.rules_count == 0" data-tooltip="" i18n:attributes="title"
+                            title="Warning: No rules defined for security group"></i>
                         <a ng-href="/securitygroups/{{ security_group.id }}">{{ security_group.name | ellipsis: 30 }}</a>
                     </div>
                 </td>
