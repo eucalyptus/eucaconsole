@@ -397,6 +397,10 @@ class BaseView(object):
         my_hmac.update(policy)
         return base64.b64encode(my_hmac.digest())
 
+    @staticmethod
+    def has_role_access(request):
+        return request.session['cloud_type'] == 'euca' and request.session['role_access']
+
 
 class TaggedItemView(BaseView):
     """Common view for items that have tags (e.g. security group)"""
@@ -590,8 +594,8 @@ class LandingPageView(BaseView):
                                 else:
                                     if filterkey_val in filter_value:
                                         matchedkey_count += 1
-                            elif filter_value[0] == 'None':
-                                # Handle the special case where the filter value is None
+                            elif 'none' in filter_value or 'None' in filter_value:
+                                # Handle the special case where 'filterkey_val' value is None
                                 if filterkey_val is None:
                                     matchedkey_count += 1
                     else:

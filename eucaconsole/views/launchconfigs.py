@@ -381,7 +381,7 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
         with boto_error_handler(request):
             self.securitygroups = self.get_security_groups()
         self.iam_conn = None
-        if request.session['role_access']:
+        if BaseView.has_role_access(request):
             self.iam_conn = self.get_connection(conn_type="iam")
         self.vpc_conn = self.get_connection(conn_type='vpc')
         self.create_form = CreateLaunchConfigForm(

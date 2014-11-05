@@ -223,7 +223,8 @@ class ChoicesManager(object):
             choices.append(('default', 'default'))
         return sorted(set(choices))
 
-    def keypairs(self, keypairs=None, add_blank=True, no_keypair_option=False, escapebraces=True):
+    def keypairs(self, keypairs=None, add_blank=True,
+                 no_keypair_option=False, no_keypair_filter_option=False, escapebraces=True):
         choices = []
         keypairs = keypairs or []
         if not keypairs and self.conn is not None:
@@ -241,6 +242,8 @@ class ChoicesManager(object):
         ret.extend(choices)
         if no_keypair_option:
             ret.append(('none', _(u'None (advanced option)')))
+        elif no_keypair_filter_option:
+            ret.append(('none', _(u'None')))
         return ret
 
     def elastic_ips(self, instance=None, ipaddresses=None, add_blank=True):

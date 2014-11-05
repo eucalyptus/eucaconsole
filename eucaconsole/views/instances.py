@@ -180,14 +180,14 @@ class InstancesView(LandingPageView, BaseInstanceView):
         ]
         autoscale_conn = self.get_connection(conn_type='autoscale')
         iam_conn = None
-        if self.request.session['role_access']:
+        if BaseView.has_role_access(self.request):
             iam_conn = self.get_connection(conn_type='iam')
         vpc_conn = self.get_connection(conn_type='vpc')
         filters_form = InstancesFiltersForm(
             self.request, ec2_conn=self.conn, autoscale_conn=autoscale_conn,
             iam_conn=iam_conn, vpc_conn=vpc_conn,
             cloud_type=self.cloud_type, formdata=self.request.params or None)
-        if self.request.session['role_access']:
+        if BaseView.has_role_access(self.request):
             del filters_form.roles
         self.render_dict.update(dict(
             filter_fields=True,
@@ -333,9 +333,6 @@ class InstancesJsonView(LandingPageView):
         instance_type_param = self.request.params.getall('instance_type')
         if instance_type_param:
             filters.update({'instance-type': instance_type_param})
-        keypair_param = self.request.params.getall('keypair')
-        if keypair_param:
-            filters.update({'key-name': [self.unescape_braces(kp) for kp in keypair_param]})
         security_group_param = self.request.params.getall('security_group')
         if security_group_param:
             filters.update({'group-name': [self.unescape_braces(sg) for sg in security_group_param]})
@@ -345,7 +342,7 @@ class InstancesJsonView(LandingPageView):
         # Don't filter by these request params in Python, as they're included in the "filters" params sent to the CLC
         # Note: the choices are from attributes in InstancesFiltersForm
         ignore_params = [
-            'availability_zone', 'instance_type', 'state', 'keypair', 'security_group',
+            'availability_zone', 'instance_type', 'state', 'security_group',
             'scaling_group', 'root_device_type', 'roles']
         filtered_items = self.filter_items(self.get_items(filters=filters), ignore=ignore_params)
         if self.request.params.get('scaling_group'):
@@ -510,7 +507,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
         self.request = request
         self.conn = self.get_connection()
         self.iam_conn = None
-        if request.session['role_access']:
+        if BaseView.has_role_access(request):
             self.iam_conn = self.get_connection(conn_type="iam")
         self.instance = self.get_instance()
         self.image = self.get_image(self.instance)
@@ -535,7 +532,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
         self.instance_keypair = self.instance.key_name if self.instance else ''
         self.has_elastic_ip = self.check_has_elastic_ip(self.instance.ip_address) if self.instance else False
         self.role = None
-        if request.session['role_access'] and self.instance and self.instance.instance_profile:
+        if BaseView.has_role_access(request) and self.instance and self.instance.instance_profile:
             arn = self.instance.instance_profile['arn']
             profile_name = arn[(arn.rindex('/')+1):]
             inst_profile = self.iam_conn.get_instance_profile(profile_name)
@@ -946,7 +943,7 @@ class InstanceLaunchView(BaseInstanceView, BlockDeviceMappingItemView):
         self.location = self.request.route_path('instances')
         self.securitygroups = self.get_security_groups()
         self.iam_conn = None
-        if request.session['role_access']:
+        if BaseView.has_role_access(request):
             self.iam_conn = self.get_connection(conn_type="iam")
         self.vpc_conn = self.get_connection(conn_type='vpc')
         self.launch_form = LaunchInstanceForm(
@@ -1017,7 +1014,7 @@ class InstanceLaunchView(BaseInstanceView, BlockDeviceMappingItemView):
             new_instance_ids = []
             with boto_error_handler(self.request, self.location):
                 instance_profile = None
-                if self.request.session['role_access'] and role != '':
+                if BaseView.has_role_access(self.request) and role != '':
                     # need to set up instance profile, add role and supply to run_instances
                     instance_profile = RoleView.get_or_create_instance_profile(self.iam_conn, role)
                 self.log_request(_(u"Running instance(s) (num={0}, image={1}, type={2})").format(
@@ -1106,7 +1103,7 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
         super(InstanceLaunchMoreView, self).__init__(request)
         self.request = request
         self.iam_conn = None
-        if request.session['role_access']:
+        if BaseView.has_role_access(request):
             self.iam_conn = self.get_connection(conn_type="iam")
         self.instance = self.get_instance()
         self.instance_name = TaggedItemView.get_display_name(self.instance)
@@ -1120,7 +1117,7 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
         if self.instance.interfaces:
             if self.instance.interfaces[0] and hasattr(self.instance.interfaces[0], 'association'):
                 self.associate_public_ip_address = 'Enabled'
-        if request.session['role_access'] and self.instance.instance_profile:
+        if BaseView.has_role_access(request) and self.instance.instance_profile:
             arn = self.instance.instance_profile['arn']
             profile_name = arn[(arn.rindex('/')+1):]
             inst_profile = self.iam_conn.get_instance_profile(profile_name)
