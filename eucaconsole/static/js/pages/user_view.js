@@ -156,6 +156,8 @@ angular.module('UserView', ['PolicyList', 'Quotas', 'EucaConsoleUtils'])
         $scope.setFocus = function () {
             $(document).on('ready', function(){
                 $('.tabs').find('a').get(0).focus();
+                // Prevent change password confirmation input from being disabled on IE
+                $('#password').removeAttr('maxlength');
             });
             $(document).on('opened', '[data-reveal]', function () {
                 var modal = $(this);
