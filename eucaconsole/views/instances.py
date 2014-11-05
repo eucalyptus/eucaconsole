@@ -818,9 +818,17 @@ class InstanceVolumesView(BaseInstanceView):
             instance_name=self.instance_name,
             attach_form=self.attach_form,
             detach_form=self.detach_form,
-            no_volumes_in_zone=len(self.attach_form.volume_id.choices) <= 1,
             instance_zone=self.instance.placement,
+            controller_options_json=self.get_controller_options_json(),
         )
+
+    def get_controller_options_json(self):
+        if not self.instance:
+            return ''
+        return BaseView.escape_json(json.dumps({
+            'instance_id': self.instance.id,
+            'instance_volumes_json_url': self.request.route_path('instance_volumes_json', id=self.instance.id),
+        }))
 
     @view_config(route_name='instance_volumes', renderer=VIEW_TEMPLATE, request_method='GET')
     def instance_volumes(self):
@@ -834,7 +842,9 @@ class InstanceVolumesView(BaseInstanceView):
     def instance_volumes_json(self):
         volumes = []
         transitional_states = ['creating', 'deleting', 'attaching', 'detaching']
-        for volume in self.get_attached_volumes():
+        with boto_error_handler(self.request, self.location):
+            self.volumes = self.conn.get_all_volumes()
+        for volume in self.volumes:
             status = volume.status
             attach_status = volume.attach_data.status
             is_transitional = status in transitional_states or attach_status in transitional_states
@@ -846,6 +856,7 @@ class InstanceVolumesView(BaseInstanceView):
                 size=volume.size,
                 device=volume.attach_data.device,
                 attach_time=volume.attach_data.attach_time,
+                attach_instance_id=volume.attach_data.instance_id,
                 status=status,
                 attach_status=volume.attach_data.status,
                 detach_form_action=detach_form_action,
