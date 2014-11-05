@@ -7,7 +7,7 @@
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="InstanceVolumes"
          ng-controller="InstanceVolumesCtrl"
-         ng-init="initController('${request.route_path('instance_volumes_json', id=instance.id)}')">
+         ng-init="initController('${controller_options_json}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('instances')}" i18n:translate="">Instances</a></li>
@@ -82,7 +82,7 @@
             <div id="attach-volume-modal" class="reveal-modal small" data-reveal="">
                 <h3 i18n:translate="">Attach volume</h3>
                 <p><span i18n:translate="">Attach a volume to instance</span> <strong>${instance_name}</strong></p>
-                <p tal:condition="no_volumes_in_zone">
+                <p ng-show='availableVolumeCount == 0'>
                     <span i18n:translate="">There are no volumes in availability zone</span>
                     <span>${instance_zone}.</span><br />
                     <a href="${request.route_path('volume_view', id='new')}?avail_zone=${instance_zone}">
@@ -91,9 +91,9 @@
                     </a>
                 </p>
                 <form method="post" action="${request.route_path('instance_volume_attach', id=instance.id)}"
-                      id="attach-form" data-abide="" tal:condition="not: no_volumes_in_zone">
+                      id="attach-form" data-abide="" ng-show='availableVolumeCount &gt; 0'>
                     ${structure:attach_form['csrf_token']}
-                    ${panel('form_field', field=attach_form.volume_id)}
+                    ${panel('form_field', field=attach_form['volume_id'], ng_attrs={'model': 'attachVolumeId', 'options': 'k as v for (k, v) in availableVolumes'})}
                     ${panel('form_field', field=attach_form.device, placeholder='/dev/sdf')}
                     <div>
                         <label>
@@ -109,7 +109,7 @@
                 </form>
                 <a class="close-reveal-modal">&#215;</a>
                 <!--! Volume device help -->
-                <div tal:condition="not: no_volumes_in_zone" tal:omit-tag="">
+                <div ng-show='availableVolumeCount &gt; 0' tal:omit-tag="">
                     <hr />
                     <metal:block metal:use-macro="layout.global_macros['dialog_help_expando']" />
                     <div class="help-content" ng-show="isDialogHelpExpanded" ng-cloak="">

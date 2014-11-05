@@ -307,8 +307,6 @@ class AttachVolumeForm(BaseSecureForm):
                 extra = ' ({name})'.format(name=name_tag) if name_tag else ''
                 vol_name = '{id}{extra}'.format(id=volume.id, extra=extra)
                 choices.append((volume.id, BaseView.escape_braces(vol_name)))
-        if len(choices) == 1:
-            choices = [('', _(u'No available volumes in this availability zone'))]
         self.volume_id.choices = choices
 
     def suggest_next_device_name(self):
