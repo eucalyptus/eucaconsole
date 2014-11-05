@@ -53,6 +53,7 @@ class InstancesViewTests(BaseViewTestCase):
 
     def test_instances_landing_page(self):
         request = testing.DummyRequest()
+        request.session['cloud_type'] = 'none'
         request.session['role_access'] = True
         view = InstancesView(request).instances_landing()
         self.assertTrue('/instances/json' in view.get('json_items_endpoint'))
@@ -64,6 +65,7 @@ class InstanceViewTests(BaseViewTestCase):
     def test_is_tagged_view(self):
         """Instance view should inherit from TaggedItemView"""
         request = testing.DummyRequest()
+        request.session['cloud_type'] = 'none'
         request.session['role_access'] = True
         view = InstanceView(request)
         self.assertTrue(isinstance(view, TaggedItemView))
@@ -71,6 +73,7 @@ class InstanceViewTests(BaseViewTestCase):
     def test_missing_instance_view(self):
         """Instance view should return 404 for missing instance"""
         request = testing.DummyRequest()
+        request.session['cloud_type'] = 'none'
         request.session['role_access'] = True
         view = InstanceView(request).instance_view
         self.assertRaises(HTTPNotFound, view)
@@ -78,6 +81,7 @@ class InstanceViewTests(BaseViewTestCase):
     def test_instance_update_view(self):
         """Instance update should contain the instance form"""
         request = testing.DummyRequest(post=True)
+        request.session['cloud_type'] = 'none'
         request.session['role_access'] = True
         view = InstanceView(request).instance_update()
         self.assertTrue(view.get('instance_form') is not None)
