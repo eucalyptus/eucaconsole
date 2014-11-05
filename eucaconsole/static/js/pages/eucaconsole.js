@@ -5,10 +5,10 @@
 
 
 (function($) {
-    $(document).ready(function () {
+    // Initialize all Zurb Foundation components
+    $(document).foundation();
 
-        // Initialize all Zurb Foundation components
-        $(document).foundation();
+    $(document).ready(function () {
 
         // Notifications display
         var notification = $('#notifications');
