@@ -37,7 +37,7 @@ angular.module('KeypairPage', ['EucaConsoleUtils'])
                         $scope.keypairMaterial = evt.target.result;
                         $scope.$apply();
                     }
-                }
+                };
                 reader.readAsText(file);
             });
             $scope.$watch('keypairName', function () {
@@ -57,6 +57,8 @@ angular.module('KeypairPage', ['EucaConsoleUtils'])
                 if( firstLink.length > 0 ){
                     firstLink.get(0).focus();
                 }
+                // Prevent import key pair textarea from being disabled on IE
+                $('#key-import-contents').removeAttr('maxlength');
             });
             $(document).on('opened', '[data-reveal]', function () {
                 var modal = $(this);
