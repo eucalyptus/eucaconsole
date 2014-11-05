@@ -22,6 +22,7 @@ angular.module('TagEditor', ['ngSanitize', 'EucaConsoleUtils'])
         $scope.showNameTag = true;
         $scope.isTagNotComplete = true;
         $scope.visibleTagsCount = 0;
+        $scope.tagCount = 0;
         $scope.syncTags = function () {
             var tagsObj = {};
             $scope.tagsArray.forEach(function(tag) {
@@ -40,6 +41,21 @@ angular.module('TagEditor', ['ngSanitize', 'EucaConsoleUtils'])
                     if (item.name !== 'Name') { return item; }
                 }).length;
             }
+        };
+        $scope.updateTagCount = function () {
+            $scope.tagCount = $scope.tagsArray.length;
+            if ($scope.isNameTagIncluded() == false && $('#name').val().length > 0) {
+                $scope.tagCount += 1;
+            }
+        };
+        $scope.isNameTagIncluded = function () {
+            var isIncluded = false;
+            angular.forEach($scope.tagsArray, function(x) {
+                if (x.name == 'Name') {
+                    isIncluded = true;
+                }
+            });
+            return isIncluded;
         };
         $scope.initTags = function(optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
@@ -151,6 +167,14 @@ angular.module('TagEditor', ['ngSanitize', 'EucaConsoleUtils'])
                     // repeat the check on input condition 
                     $scope.checkRequiredInput();
                 }, 1000);
+            });
+            $scope.$watch('tagsArray', function () {
+                $scope.updateTagCount();
+                $scope.updateVisibleTagsCount();
+            }, true);
+            $(document).on('keyup', '#name', function (event) {
+                $scope.updateTagCount();
+                $scope.updateVisibleTagsCount();
             });
         };
     })
