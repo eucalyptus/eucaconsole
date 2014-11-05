@@ -3,73 +3,60 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>create-ec2-quotas</title>
+<link rel="selenium.base" href="https://10.111.5.7/" />
+<title>verify-as-policies-deleted</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">create-ec2-quotas</td></tr>
+<tr><td rowspan="1" colspan="3">verify-as-policies-deleted</td></tr>
 </thead><tbody>
 <tr>
-	<td>store</td>
-	<td>1</td>
-	<td>lb_max</td>
-</tr>
-<tr>
-	<td>selectWindow</td>
-	<td>null</td>
+	<td>click</td>
+	<td>id=resource-menu-autoscaling</td>
 	<td></td>
 </tr>
 <tr>
 	<td>clickAndWait</td>
-	<td>id=resource-menu-dashboard</td>
+	<td>id=resource-menuitem-scalinggroups</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementNotPresent</td>
+	<td>link=sg1-${str}</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>id=resource-menu-iam</td>
+	<td>id=resource-menu-autoscaling</td>
 	<td></td>
 </tr>
 <tr>
 	<td>clickAndWait</td>
-	<td>id=resource-menuitem-users</td>
+	<td>id=resource-menuitem-launchconfigs</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementNotPresent</td>
+	<td>link=lc1-${str}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=resource-menu-netsec</td>
 	<td></td>
 </tr>
 <tr>
 	<td>clickAndWait</td>
-	<td>link=${user}</td>
+	<td>id=resource-menuitem-securitygroups</td>
 	<td></td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>link=Quotas</td>
+	<td>verifyElementNotPresent</td>
+	<td>link=sg${str}</td>
 	<td></td>
 </tr>
-<tr>
-	<td>click</td>
-	<td>link=Elastic load balancing</td>
-	<td></td>
-</tr>
-<tr>
-	<td>sendKeys</td>
-	<td>id=elb_load_balancers_max</td>
-	<td>${lb_max}</td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>id=save-quotas-btn</td>
-	<td></td>
-</tr>
-<tr>
-	<td>storeText</td>
-	<td>id=notifications</td>
-	<td>breadcrumbs</td>
-</tr>
-<tr>
-	<td>echo</td>
-	<td>${breadcrumbs}</td>
-	<td></td>
-</tr>
+
 </tbody></table>
 </body>
 </html>

@@ -68,12 +68,12 @@
 <tr>
 	<td>type</td>
 	<td>id=name</td>
-	<td>sg1</td>
+	<td>sg1-${str}</td>
 </tr>
 <tr>
 	<td>select</td>
 	<td>id=launch_config</td>
-	<td>label=lc1</td>
+	<td>label=lc1-${str}</td>
 </tr>
 <tr>
 	<td>click</td>
@@ -103,12 +103,12 @@
 <tr>
 	<td>type</td>
 	<td>id=name</td>
-	<td>sg2</td>
+	<td>sg2-${str}</td>
 </tr>
 <tr>
 	<td>select</td>
 	<td>id=launch_config</td>
-	<td>label=lc1</td>
+	<td>label=lc1-${str}</td>
 </tr>
 <tr>
 	<td>click</td>
@@ -118,6 +118,16 @@
 <tr>
 	<td>clickAndWait</td>
 	<td>id=create-scalinggroup-btn</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>id=notifications</td>
+	<td>breadcrumbs</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${breadcrumbs}</td>
 	<td></td>
 </tr>
 <tr>
