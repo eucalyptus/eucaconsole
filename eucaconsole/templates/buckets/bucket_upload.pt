@@ -82,7 +82,7 @@
             </div>
         </div>
         <div id="upload-files-modal" class="reveal-modal small" data-reveal="">
-            <h3 i18n:translate="">Confirm file upload</h3>
+            <h3 i18n:translate="">File upload in progress</h3>
             <div ng-show="uploading">
                 <p>
                     <span i18n:translate="">Uploading files can take some time. Leaving this page while the upload is in progress will cancel the operation.</span>
