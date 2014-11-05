@@ -68,7 +68,7 @@ REQUIRED_CONFIG = {
     'cache.memory': 'dogpile.cache.pylibmc'
 }
 
-def get_configurator(settings, enable_auth=True):
+def check_config(settings):
     # check for required config first
     for key in REQUIRED_CONFIG.keys():
         value = REQUIRED_CONFIG[key]
@@ -88,6 +88,9 @@ def get_configurator(settings, enable_auth=True):
             logging.error(" Please correct this and restart eucaconsole.")
             logging.error("*****************************************************************")
             sys.exit(1)
+
+def get_configurator(settings, enable_auth=True):
+    check_config(settings);
     connection_debug = asbool(settings.get('connection.debug'))
     boto.set_stream_logger('boto', level=(logging.DEBUG if connection_debug else logging.CRITICAL))
     ensure_session_keys(settings)
