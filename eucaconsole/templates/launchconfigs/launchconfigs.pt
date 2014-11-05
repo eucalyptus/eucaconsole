@@ -47,7 +47,7 @@
                         <i class="fi-alert" ng-show="security_group.rules_count == 0" data-tooltip="" i18n:attributes="title"
                             title="Warning: No rules defined for security group. Instance may be unreachable."></i>
                     </span>
-                    <a ng-href="${prefix}/{{ item.id }}">{{ item.security_groups.length }}</a>
+                    <a ng-href="${prefix}/{{ item.name | escapeURL }}">{{ item.security_groups.length }}</a>
                 </div>
                 <div ng-show="item.created_time">
                     <span class="label" title="Creation time" i18n:attributes="title" data-tooltip="">CT</span>
