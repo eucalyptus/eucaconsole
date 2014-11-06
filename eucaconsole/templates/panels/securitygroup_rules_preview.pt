@@ -64,7 +64,7 @@
                         <i class="fi-alert" data-tooltip="" i18n:attributes="title"
                            title="Warning: No rules defined for security group"></i>
                         <span i18n:translate="">Rules for </span>
-                        {{ securityGroupChoices[groupID] }}
+                        {{ securityGroupChoices[groupID] | ellipsis: 30 }}
                     </span>
                 </div>
             </div>
@@ -76,7 +76,7 @@
                         <span i18n:translate="">
                             Your instance(s) will not be accessible until you add ingress rules to security group
                         </span>
-                        {{ securityGroupChoices[groupID] }}
+                        <span>{{ securityGroupChoices[groupID] }}</span>
                         <span i18n:translate="">(for example, open port 22 for SSH access to Linux instances).</span>
                     </p>
                     <p i18n:translate="">
