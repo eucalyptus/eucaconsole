@@ -44,7 +44,10 @@ angular.module('TagEditor', ['ngSanitize', 'EucaConsoleUtils'])
         };
         $scope.updateTagCount = function () {
             $scope.tagCount = $scope.tagsArray.length;
-            if ($scope.isNameTagIncluded() == false && $('#name').val().length > 0) {
+            // Assume one more tag if a name is specified in the create resource form, except security group case
+            if ($scope.isNameTagIncluded() == false &&
+                $('#name').length && $('#name').val().length > 0 &&
+                $('#security-group-detail-form').length == 0) {
                 $scope.tagCount += 1;
             }
         };
