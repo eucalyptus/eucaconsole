@@ -47,9 +47,13 @@ angular.module('KeypairPage', ['EucaConsoleUtils'])
                 $scope.checkRequiredInput();
             });
             $(document).on('submit', '[data-reveal] form', function () {
-                $(this).find('.dialog-submit-button').css('display', 'none');                
-                $(this).find('.dialog-progress-display').css('display', 'block');                
+                $(this).find('.dialog-submit-button').css('display', 'none');
+                $(this).find('.dialog-progress-display').css('display', 'block');
             });
+             // download the keypair material 1 second after.
+            setTimeout(function(){
+                $("#download-keypair-form").submit();
+            }, 1000);
         };
         $scope.setFocus = function () {
             $(document).on('ready', function(){
