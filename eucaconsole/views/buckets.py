@@ -99,7 +99,7 @@ class BucketsView(LandingPageView):
             with boto_error_handler(self.request):
                 bucket = s3_conn.head_bucket(bucket_name)
                 bucket.delete()
-                msg = '{0} {1}'.format(_(u'Successfully deteted bucket'), bucket_name)
+                msg = '{0} {1}'.format(_(u'Successfully deleted bucket'), bucket_name)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=self.request.route_path('buckets'))
         return self.render_dict

@@ -1,11 +1,11 @@
-<div tal:omit-tag="">
-    <!-- HELP SECURITY GROUPSS: SECURITY GROUP LANDING PAGE -->
-    <div tal:condition="display == 'securitygroup_landing_page'">
-        <h3 i18n:translate="">Help</h3>
-
-        <p></p>
-    </div>
-
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en-us" lang="en-us">
+<head>
+<title>Security Groups</title>
+</head>
+<body id="security_groups_help_context">
     <!-- HELP SECURITY GROUP: CREATE SECURITY GROUP-->
     <div tal:condition="display == 'create_securitygroup'">
         <h5 class="title">Managing Security Group Rules</h5>
@@ -44,12 +44,5 @@
         </div>
     </div>
 
-    <!-- HELP SECURITY GROUP: DELETE SECURITY GROUP-->
-    <div tal:condition="display == 'delete_securitygroup'">
-        <h6>Delete Security Group Rules</h6>
-
-        <div>
-            Click the <strong><i class="fi-minus-circle"></i></strong> next to the existing rule you want to delete.
-        </div>
-    </div>
-</div>
+</body>
+</html>

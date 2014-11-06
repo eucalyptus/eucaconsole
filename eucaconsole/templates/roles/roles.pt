@@ -49,15 +49,15 @@
             </div>
             <metal:block metal:fill-slot="tableview_headers">
                 <th i18n:translate="">Name</th>
-                <th i18n:translate="">Permissions</th>
-                <th i18n:translate="">Instances</th>
+                <th i18n:translate="" class="count">Permissions</th>
+                <th i18n:translate="" class="count">Instances</th>
                 <th i18n:translate="">Creation Time</th>
                 <th class="actions" i18n:translate="">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
                 <td class="id breakword"><a ng-href="${prefix}/{{ item.role_name }}">{{ item.role_name | ellipsis: 30 }}</a></td>
-                <td><a ng-click="linkRole(item, '#policy-list')">{{ item.policy_count }}</a></td>
-                <td><a ng-click="linkRole(item, '#')">{{ item.instance_count }}</a></td>
+                <td class="count"><a ng-click="linkRole(item, '#policy-list')">{{ item.policy_count }}</a></td>
+                <td class="count"><a ng-click="linkRole(item, '#')">{{ item.instance_count }}</a></td>
                 <td> {{ item.create_date | date:'${layout.angular_date_format}' }} </td>
                 <td>
                   <span class="actions">

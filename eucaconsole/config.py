@@ -89,6 +89,9 @@ def get_configurator(settings, enable_auth=True):
         config.add_route(route.name, route.pattern)
     setup_tweens(config)
     config.scan()
+    if not boto.config.has_section('Boto'):
+        boto.config.add_section('Boto')
+    boto.config.set('Boto', 'num_retries', settings.get('connection.retries', '2'))
 
     memory_cache = settings.get('cache.memory')
     memory_cache_url = settings.get('cache.memory.url')

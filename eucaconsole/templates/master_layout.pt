@@ -17,8 +17,8 @@
     <metal:block metal:define-slot="head_css" />
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/modernizr/custom.modernizr.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/jquery-2.0.3.min.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular-1.2.21.min.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular-sanitize-1.2.21.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular-1.2.26.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular-sanitize-1.2.26.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/jquery.generateFile.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/notify.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/eucaconsole_utils.js')}"></script>
@@ -118,7 +118,7 @@
         </form>
     </footer>
     <div id="about-modal" class="reveal-modal small" data-reveal="">
-        <h3 i18n:translate="">About your cloud</h3>
+        <a href="${layout.help_path('about-the-team.html')}" target="_blank"><h3 id="about-cloud" i18n:translate="">About your cloud</h3></a>
         <p>
             <span i18n:translate="">Eucalyptus cloud software version:</span>
             <strong>${layout.version}</strong>

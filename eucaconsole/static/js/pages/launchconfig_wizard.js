@@ -6,7 +6,7 @@
 
 // Launch Config Wizard includes the Image Picker, BDM editor, and security group rules editor
 angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor', 'SecurityGroupRules', 'EucaConsoleUtils'])
-    .controller('LaunchConfigWizardCtrl', function ($scope, $http, $timeout, eucaHandleError) {
+    .controller('LaunchConfigWizardCtrl', function ($scope, $http, $timeout, eucaHandleError, eucaUnescapeJson) {
         $scope.launchForm = $('#launch-config-form');
         $scope.imageID = '';
         $scope.imageName = '';
@@ -48,21 +48,14 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
         $scope.existsImage = true;
         $scope.imageIDErrorClass = '';
         $scope.imageIDNonexistErrorClass = '';
-        $scope.initController = function (securityGroupsRulesJson, keyPairChoices,
-                                securityGroupChoices, securityGroupJsonURL, roles,
-                                imageJsonURL) {
-            securityGroupsRulesJson = securityGroupsRulesJson.replace(/__apos__/g, "\'")
-                .replace(/__dquote__/g, '\\"').replace(/__bslash__/g, "\\");
-            securityGroupChoices = securityGroupChoices.replace(/__apos__/g, "\'")
-                .replace(/__dquote__/g, '\\"').replace(/__bslash__/g, "\\");
-            keyPairChoices = keyPairChoices.replace(/__apos__/g, "\'")
-                .replace(/__dquote__/g, '\\"').replace(/__bslash__/g, "\\");
-            $scope.securityGroupsRules = JSON.parse(securityGroupsRulesJson);
-            $scope.keyPairChoices = JSON.parse(keyPairChoices);
-            $scope.securityGroupChoices = JSON.parse(securityGroupChoices);
-            $scope.roleList = JSON.parse(roles);
-            $scope.imageJsonURL = imageJsonURL;
-            $scope.securityGroupJsonEndpoint = securityGroupJsonURL;
+        $scope.initController = function (optionsJson) {
+            var options = JSON.parse(eucaUnescapeJson(optionsJson));
+            $scope.securityGroupsRules = options['securitygroups_rules'];
+            $scope.keyPairChoices = options['keypair_choices'];
+            $scope.securityGroupChoices = options['securitygroups_choices'];
+            $scope.roleList = options['role_choices'];
+            $scope.securityGroupJsonEndpoint = options['securitygroups_json_endpoint'];
+            $scope.imageJsonURL = options['image_json_endpoint'];
             $scope.getAllSecurityGroups(); 
             $scope.setInitialValues();
             $scope.preventFormSubmitOnEnter();
@@ -288,6 +281,31 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                 $scope.$broadcast('setBDM', item.block_device_mapping);
                 $scope.existsImage = true;
                 $scope.imageIDNonexistErrorClass = "";
+                if (item.root_device_type == 'ebs') {
+                    // adjust vmtypes menu
+                    var rootSize = item.block_device_mapping[item.root_device_name]['size'];
+                    var selectedOne = false;
+                    angular.forEach($('#instance_type option'), function(value, idx) {
+                        var text = value.text;
+                        var size = text.split(',')[2].trim();
+                        size = size.substring(0, size.indexOf(' '));
+                        if (size < rootSize) {  // disable entries that won't fit
+                            value.disabled = true;
+                        }
+                        else {
+                            value.disabled = false;
+                            if (!selectedOne) {  // select first one that fits
+                                value.selected = true;
+                                selectedOne = true;
+                            }
+                        }
+                    });
+                }
+                else {
+                    angular.forEach($('#instance_type option'), function(value, idx) {
+                        value.disabled = false;
+                    });
+                }
             }).error(function (oData) {
                 $scope.existsImage = false;
                 $scope.imageIDNonexistErrorClass = "error";
