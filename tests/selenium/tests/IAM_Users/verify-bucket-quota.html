@@ -3,67 +3,57 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link rel="selenium.base" href="http://10.111.5.170:8888/" />
-<title>create-group_1</title>
+<link rel="selenium.base" href="https://10.111.5.7/" />
+<title>verify-bucket-quota</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">create-group_1</td></tr>
+<tr><td rowspan="1" colspan="3">verify-bucket-quota</td></tr>
 </thead><tbody>
 <tr>
-	<td>setSpeed</td>
-	<td>500</td>
-	<td></td>
-</tr>
-<tr>
-	<td>setTimeout</td>
-	<td>120000</td>
-	<td></td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>id=resource-menu-dashboard</td>
-	<td></td>
-</tr>
-<tr>
 	<td>click</td>
-	<td>id=resource-menu-iam</td>
+	<td>id=resource-menu-storage</td>
 	<td></td>
 </tr>
 <tr>
 	<td>clickAndWait</td>
-	<td>id=resource-menuitem-groups</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForVisible</td>
-	<td>id=add-group-btn</td>
-	<td></td>
-</tr>
-<tr>
-	<td>assertVisible</td>
-	<td>id=add-group-btn</td>
+	<td>id=resource-menuitem-buckets</td>
 	<td></td>
 </tr>
 <tr>
 	<td>clickAndWait</td>
-	<td>id=add-group-btn</td>
+	<td>id=create-bucket-btn</td>
 	<td></td>
 </tr>
 <tr>
 	<td>type</td>
-	<td>id=group-name</td>
-	<td>group-${str}</td>
-</tr>
-<tr>
-	<td>store</td>
-	<td>group-${str}</td>
-	<td>group_1</td>
+	<td>id=bucket_name</td>
+	<td>test-bucket-${str}</td>
 </tr>
 <tr>
 	<td>clickAndWait</td>
-	<td>id=create-btn</td>
+	<td>id=create-bucket-submit-button</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Buckets</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=create-bucket-btn</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=bucket_name</td>
+	<td>test2-bucket-${str}</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=create-bucket-submit-button</td>
 	<td></td>
 </tr>
 <tr>
@@ -76,6 +66,17 @@
 	<td>${breadcrumbs}</td>
 	<td></td>
 </tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>link=Log in to Eucalyptus</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertElementPresent</td>
+	<td>link=Log in to Eucalyptus</td>
+	<td></td>
+</tr>
+
 </tbody></table>
 </body>
 </html>

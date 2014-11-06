@@ -22,11 +22,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>open</td>
-	<td>/</td>
-	<td></td>
-</tr>
-<tr>
 	<td>clickAndWait</td>
 	<td>id=resource-menu-dashboard</td>
 	<td></td>
@@ -87,6 +82,76 @@
 	<td></td>
 </tr>
 <tr>
+	<td>storeText</td>
+	<td>id=notifications</td>
+	<td>breadcrumbs</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${breadcrumbs}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>Quota exceeded while trying to create: address by user:</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>Quota exceeded while trying to create: address by user:</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>items found</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=i.fi-widget</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Release to cloud</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=release_ip_submit_button</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=allocate-ipaddresses-btn</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=ipcount</td>
+	<td>2</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=allocate-ipaddresses-dialog-btn</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>id=notifications</td>
+	<td>breadcrumbs</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${breadcrumbs}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>Quota exceeded while trying to create: address by user:</td>
+	<td></td>
+</tr>
+<tr>
 	<td>assertTextPresent</td>
 	<td>Quota exceeded while trying to create: address by user:</td>
 	<td></td>
@@ -105,6 +170,11 @@
 	<td>assertEval</td>
 	<td>${tcount1}+1==${tcount2}</td>
 	<td>true</td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>items found</td>
+	<td></td>
 </tr>
 <tr>
 	<td>click</td>
