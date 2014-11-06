@@ -32,6 +32,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
         $scope.securityGroupModal = $('#create-securitygroup-modal');
         $scope.securityGroupForm = $('#create-securitygroup-form');
         $scope.securityGroupChoices = {};
+        $scope.securityGroupChoicesFullName = {};
         $scope.isRuleExpanded = {};
         $scope.newSecurityGroupName = '';
         $scope.securityGroupSelected = '';
@@ -95,8 +96,10 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
         };
         $scope.updateSecurityGroupChoices = function () {
             $scope.securityGroups = [];
+            $scope.securityGroupChoicesFullName = {};
             angular.forEach($scope.securityGroupCollection, function(sGroup){
                 var securityGroupName = sGroup['name'];
+                $scope.securityGroupChoicesFullName[sGroup['id']] = securityGroupName;
                 if (sGroup['name'].length > 30) {
                     securityGroupName = sGroup['name'].substr(0, 30) + "...";
                 }
@@ -468,6 +471,10 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                     newSecurityGroupID = oData.id;
                 }
                 var newlyCreatedSecurityGroupName = $scope.newSecurityGroupName;
+                $scope.securityGroupChoicesFullName[newSecurityGroupID] = newlyCreatedSecurityGroupName;
+                if (newlyCreatedSecurityGroupName.length > 45) {
+                    newlyCreatedSecurityGroupName = newlyCreatedSecurityGroupName.substr(0, 45) + "...";
+                }
                 if ($scope.securityGroupVPC) {
                     newlyCreatedSecurityGroupName = newlyCreatedSecurityGroupName + " (" + $scope.securityGroupVPC + ")";
                 }
