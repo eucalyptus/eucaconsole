@@ -320,7 +320,7 @@ class BucketContentsView(LandingPageView):
             for upload_file in files:
                 bucket_item = bucket.new_key("/".join(subpath))
                 bucket_item.set_metadata('Content-Type', upload_file.type)
-                headers = {'Content-Type': upload_file.type, 'x-amz-acl': 'public-read'}
+                headers = {'Content-Type': upload_file.type}
                 bucket_item.set_contents_from_file(fp=upload_file.file, headers=headers, replace=True)
                 BucketDetailsView.update_acl(self.request, bucket_object=bucket_item)
                 metadata_param = self.request.params.get('metadata') or '{}'
@@ -617,7 +617,7 @@ class BucketDetailsView(BaseView):
             return dict(
                 enabled=logging_enabled,
                 logs_prefix=logging_prefix,
-                logs_url=self.request.route_path('bucket_contents', subpath=logging_subpath)
+                logs_url=self.request.route_path('bucket_contents', name=self.bucket.name, subpath=logging_subpath)
             )
 
     @staticmethod
