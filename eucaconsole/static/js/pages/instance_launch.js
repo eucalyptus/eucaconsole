@@ -537,7 +537,11 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             }
             $scope.securityGroups = [];
             angular.forEach($scope.securityGroupCollection, function(sGroup){
-                $scope.securityGroupChoices[sGroup['id']] = sGroup['name'];
+                var securityGroupName = sGroup['name'];
+                if (sGroup['name'].length > 45) {
+                    securityGroupName = sGroup['name'].substr(0, 45) + "...";
+                }
+                $scope.securityGroupChoices[sGroup['id']] = securityGroupName;
             }); 
             $scope.restoreSecurityGroupsInitialValues(); 
             // Timeout is needed for chosen to react after Angular updates the options

@@ -97,6 +97,9 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             $scope.securityGroups = [];
             angular.forEach($scope.securityGroupCollection, function(sGroup){
                 var securityGroupName = sGroup['name'];
+                if (sGroup['name'].length > 30) {
+                    securityGroupName = sGroup['name'].substr(0, 30) + "...";
+                }
                 if (sGroup['vpc_id'] !== null) {
                     securityGroupName = securityGroupName + " (" + sGroup['vpc_id'] + ")";
                 } 
