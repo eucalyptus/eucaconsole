@@ -68,11 +68,9 @@ angular.module('UploadFilePage', ['S3SharingPanel', 'S3MetadataEditor'])
                 }
             });
         };
-        $scope.showConfirm = function($event) {
+        $scope.startUpload = function($event) {
             $event.preventDefault();
             $('#upload-files-modal').foundation('reveal', 'open');
-        }
-        $scope.startUpload = function($event) {
             $scope.uploading = true;
             $scope.progress = 0;
             $scope.total = $scope.files.length;
