@@ -318,6 +318,10 @@ class BucketContentsView(LandingPageView):
         with boto_error_handler(self.request):
             bucket = self.s3_conn.get_bucket(bucket_name)
             for upload_file in files:
+                upload_file.file.seek(0, 2)  # seek to end
+                if upload_file.file.tell() > 5000000000:
+                    return JSONResponse(status=400, message=_(u"File too large :")+upload_file.filename)
+                upload_file.file.seek(0, 0)  # seek to start
                 bucket_item = bucket.new_key("/".join(subpath))
                 bucket_item.set_metadata('Content-Type', upload_file.type)
                 headers = {'Content-Type': upload_file.type, 'x-amz-acl': 'public-read'}

@@ -42,6 +42,7 @@
                     <p class="file-list" ng-show="files.length > 1">
                         <span ng-repeat="file in files">{{ file.name }}<br/></span>
                     </p>
+                    <small id="size-error" class="error" i18n:translate="">1 or more files you've selected is above the 5GB limit.</small>
                     <hr/>
                     <div class="expando" id="advance-section">
                         <h6 class="title" >
@@ -59,7 +60,7 @@
                     <hr/>
                     <div class="row">
                         <div class="small-7 columns">
-                            <button type="submit" class="button" id="create-bucket-submit-button" ng-disabled="!hasChangesToBeSaved" ng-click="showConfirm($event)">
+                            <button type="submit" class="button" id="create-bucket-submit-button" ng-disabled="!hasChangesToBeSaved || isNotValid" ng-click="showConfirm($event)">
                                 <span i18n:translate="">Upload File(s)</span>
                             </button>
                             <a id="cancel-create-bucket-link" ng-click="cancel()"
