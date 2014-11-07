@@ -33,6 +33,7 @@ from operator import attrgetter
 import simplejson as json
 from M2Crypto import RSA
 import re
+from urllib2 import HTTPError, URLError
 
 from boto.exception import BotoServerError
 from boto.s3.key import Key
@@ -1269,9 +1270,20 @@ class InstanceCreateImageView(BaseInstanceView, BlockDeviceMappingItemView):
                     username = self.request.session['username']
                     password = self.request.params.get('password')
                     auth = self.get_euca_authenticator()
-                    creds = auth.authenticate(
-                        account=account, user=username, passwd=password,
-                        timeout=8, duration=86400)  # 24 hours
+                    msg = None
+                    try:
+                        creds = auth.authenticate(
+                            account=account, user=username, passwd=password,
+                            timeout=8, duration=86400)  # 24 hours
+                    except HTTPError, err:          # catch error in authentication
+                        if err.msg == 'Unauthorized':
+                            msg = _(u"The password you entered is incorrect.")
+                    except URLError, err:           # catch error in authentication
+                        msg = err.msg
+                    if msg is not None:
+                        self.request.session.flash(msg, queue=Notification.SUCCESS)
+                        return HTTPFound(location=self.request.route_path('instance_create_image', id=instance_id))
+
                     upload_policy = BaseView.generate_default_policy(s3_bucket, s3_prefix, token=creds.session_token)
                     # we need to make the call ourselves to override boto's auto-signing
                     params = {
