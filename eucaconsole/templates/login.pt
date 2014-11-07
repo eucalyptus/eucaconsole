@@ -57,7 +57,7 @@
                 </dl>
                 <div class="tabs-content">
                     <div class="content active large-10 medium-10 columns large-centered medium-centered" id="eucalyptus">
-                        <form class="custom" id="euca-login-form" method="post" name="euca_login_form"
+                        <form class="custom" id="euca-login-form" method="post" name="euca_login_form" ng-submit="isLoggingIn=true"
                               action="${request.route_path('login')}?login_type=Eucalyptus">
                             <input type="hidden" name="came_from" value="${came_from}" />
                             <div class="row controls-wrapper controls_${field.name}" tal:repeat="field euca_login_form">
@@ -82,11 +82,11 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row" ng-model="isLoggingIn" ng-init="isLoggingIn=false">
+                            <div class="row">
                                 <div class="small-12 columns">
-                                    <input type="submit" class="submit button"
-                                           id="euca-login-button" value="Log in to Eucalyptus"
-                                           ng-click="isLoggingIn=true" i18n:attributes="value" />
+                                    <button type="submit" class="submit button" id="euca-login-button" i18n:translate="">
+                                        Log in to Eucalyptus
+                                    </button>
                                 </div>
                                 <div class="small-12 columns" ng-show="isLoggingIn">
                                     <span i18n:translate="">Logging in</span>&nbsp;<em><span class="dots">&nbsp;</span></em>
@@ -102,7 +102,7 @@
                     </div>
                     <div class="content large-10 medium-10 columns large-centered medium-centered"
                          tal:condition="layout.aws_enabled" id="aws">
-                        <form class="custom" id="aws-login-form" method="post" name="aws_login_form"
+                        <form class="custom" id="aws-login-form" method="post" name="aws_login_form" ng-submit="isLoggingIn=true"
                               action="${request.route_path('login')}?login_type=AWS">
                             <input type="hidden" name="came_from" value="${came_from}" />
                             <input type="hidden" id="duration" name="duration" value="${duration}" />
@@ -128,11 +128,11 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row" ng-model="isLoggingIn" ng-init="isLoggingIn=false">
+                            <div class="row">
                                 <div class="small-12 columns">
-                                    <input type="submit" class="submit button"
-                                           id="aws-login-button" value="Log in to AWS"
-                                           ng-click="isLoggingIn=true" i18n:attributes="value" />
+                                    <button type="submit" class="submit button" id="aws-login-button" i18n:translate="">
+                                        Log in to AWS
+                                    </button>
                                 </div>
                                 <div class="small-12 columns" ng-show="isLoggingIn" ng-cloak="">
                                     <span i18n:translate="">Logging in</span>&nbsp;<em><span class="dots">&nbsp;</span></em>
