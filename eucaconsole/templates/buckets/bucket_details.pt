@@ -31,13 +31,13 @@
                         </li>
                         <li>
                             <a id="create-folder-action" i18n:translate="" data-reveal-id="create-folder-modal">
-                                Create New Folder
+                                Create folder
                             </a>
                         </li>
                         <li>
                             <a id="upload-file-action" i18n:translate=""
                                href="${request.route_path('bucket_upload', name=bucket_name, subpath='')}">
-                                Upload File(s)
+                                Upload file(s)
                             </a>
                         </li>
                         <!--!
