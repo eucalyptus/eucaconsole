@@ -1281,7 +1281,7 @@ class InstanceCreateImageView(BaseInstanceView, BlockDeviceMappingItemView):
                     except URLError, err:           # catch error in authentication
                         msg = err.msg
                     if msg is not None:
-                        self.request.session.flash(msg, queue=Notification.SUCCESS)
+                        self.request.session.flash(msg, queue=Notification.ERROR)
                         return HTTPFound(location=self.request.route_path('instance_create_image', id=instance_id))
 
                     upload_policy = BaseView.generate_default_policy(s3_bucket, s3_prefix, token=creds.session_token)
