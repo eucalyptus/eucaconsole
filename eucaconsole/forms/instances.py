@@ -435,6 +435,7 @@ class InstanceCreateImageForm(BaseSecureForm):
     no_reboot = wtforms.BooleanField(label=_(u'No reboot'))
     s3_bucket = wtforms.SelectField(
         label=_(u'Bucket name'), validators=[validators.InputRequired(message=_(u'You must select a bucket to use.'))])
+    s3_bucket_error_msg = _('Name is required and may contain lowercase letters, numbers, hyphens, and/or dots.')
     s3_prefix = wtforms.TextField(
         label=_(u'Prefix'), validators=[validators.InputRequired(message=_(u'You must supply a prefix'))])
 
@@ -444,6 +445,7 @@ class InstanceCreateImageForm(BaseSecureForm):
         # Set choices
         self.choices_manager = ChoicesManager(conn=self.s3_conn)
         self.s3_bucket.choices = self.choices_manager.buckets()
+        self.s3_bucket.error_msg = self.s3_bucket_error_msg
         self.s3_prefix.data = _(u'image')
         # Set error msg
         self.name.error_msg = self.name_error_msg

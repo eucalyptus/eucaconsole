@@ -12,6 +12,7 @@ angular.module('InstanceCreateImage', ['TagEditor'])
         $scope.name = '';
         $scope.s3_bucket = '';
         $scope.s3_prefix = 'image';
+        $scope.s3BucketError = false;
         $scope.isNotValid = true;
         $scope.toggleContent = function () {
             $scope.expanded = !$scope.expanded;
@@ -30,22 +31,41 @@ angular.module('InstanceCreateImage', ['TagEditor'])
                 create_with_enter: true,
                 create_option_text: 'Create Bucket'
             });
+            $scope.setWatch();
+        };
+        $scope.checkRequiredInput = function () {
+            $scope.isNotValid = false;
+            if ($scope.name == '' || $scope.s3_bucket == '' || $scope.s3_prefix == '' ) {
+                $scope.isNotValid = true;
+            } else if ($scope.s3BucketError) {
+                $scope.isNotValid = true;
+            }
+        };
+        $scope.validateS3BucketName = function () {
+            var re = /^[a-z0-9-\.]+$/;
+            if ($scope.s3_bucket == '' || $scope.s3_bucket.match(re)) {
+                $scope.s3BucketError = false;
+            } else { 
+                $scope.s3BucketError = true;
+            }
+        };
+        $scope.setWatch = function () {
             $scope.$watch('name', function () {
                 $scope.checkRequiredInput();
             });
             $scope.$watch('s3_bucket', function () {
+                $scope.validateS3BucketName();
                 $scope.checkRequiredInput();
             });
             $scope.$watch('s3_prefix', function () {
                 $scope.checkRequiredInput();
             });
-        };
-        $scope.checkRequiredInput = function () {
-            if ($scope.name == '' || $scope.s3_bucket == '' || $scope.s3_prefix == '' ) {
-                $scope.isNotValid = true;
-            } else {
-                $scope.isNotValid = false;
-            }
+            $scope.$watch('s3BucketError', function () {
+                $('div#controls_s3_bucket').removeClass('error');
+                if ($scope.s3BucketError) {
+                    $('div#controls_s3_bucket').addClass('error');
+                }
+            });
         };
         $scope.submitCreate = function() {
             var pass = $('#bundle-password').val();
