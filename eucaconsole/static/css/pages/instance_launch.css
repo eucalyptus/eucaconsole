@@ -39,6 +39,8 @@
 #bdmapping-editor #new-blockdevice-entry label { text-align: left; }
 #bdmapping-editor input.number { width: 2rem; }
 
+.rules-display .rules-title { word-break: break-all; }
+
 /* ----------------------------------------- Media Queries
 ----------------------------------------- */
 /* Extra small screen (< 481px) */
