@@ -212,7 +212,7 @@ class LaunchConfigsJsonView(LandingPageView):
             security_group = self.get_security_group_by_name(id)
         if security_group:
             return len(security_group.rules)
-        return -1 
+        return None 
 
 class LaunchConfigView(BaseView):
     """Views for single LaunchConfig"""
