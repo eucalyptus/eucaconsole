@@ -13,6 +13,7 @@ angular.module('InstanceCreateImage', ['TagEditor'])
         $scope.s3_bucket = '';
         $scope.s3_prefix = 'image';
         $scope.s3BucketError = false;
+        $scope.s3PrefixError = false;
         $scope.isNotValid = true;
         $scope.toggleContent = function () {
             $scope.expanded = !$scope.expanded;
@@ -37,11 +38,11 @@ angular.module('InstanceCreateImage', ['TagEditor'])
             $scope.isNotValid = false;
             if ($scope.name == '' || $scope.s3_bucket == '' || $scope.s3_prefix == '' ) {
                 $scope.isNotValid = true;
-            } else if ($scope.s3BucketError) {
+            } else if ($scope.s3BucketError || $scope.s3PrefixError) {
                 $scope.isNotValid = true;
             }
         };
-        $scope.validateS3BucketName = function () {
+        $scope.validateS3BucketInput = function () {
             var re = /^[a-z0-9-\.]+$/;
             if ($scope.s3_bucket == '' || $scope.s3_bucket.match(re)) {
                 $scope.s3BucketError = false;
@@ -49,21 +50,36 @@ angular.module('InstanceCreateImage', ['TagEditor'])
                 $scope.s3BucketError = true;
             }
         };
+        $scope.validateS3PrefixInput = function () {
+            var re = /^[a-z0-9-\.]+$/;
+            if ($scope.s3_prefix == '' || $scope.s3_prefix.match(re)) {
+                $scope.s3PrefixError = false;
+            } else { 
+                $scope.s3PrefixError = true;
+            }
+        };
         $scope.setWatch = function () {
             $scope.$watch('name', function () {
                 $scope.checkRequiredInput();
             });
             $scope.$watch('s3_bucket', function () {
-                $scope.validateS3BucketName();
+                $scope.validateS3BucketInput();
                 $scope.checkRequiredInput();
             });
             $scope.$watch('s3_prefix', function () {
+                $scope.validateS3PrefixInput();
                 $scope.checkRequiredInput();
             });
             $scope.$watch('s3BucketError', function () {
                 $('div#controls_s3_bucket').removeClass('error');
                 if ($scope.s3BucketError) {
                     $('div#controls_s3_bucket').addClass('error');
+                }
+            });
+            $scope.$watch('s3PrefixError', function () {
+                $('div#controls_s3_prefix').removeClass('error');
+                if ($scope.s3PrefixError) {
+                    $('div#controls_s3_prefix').addClass('error');
                 }
             });
         };
