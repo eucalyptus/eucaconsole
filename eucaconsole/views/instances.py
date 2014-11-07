@@ -444,7 +444,7 @@ class InstancesJsonView(LandingPageView):
         sgroup = self.get_security_group_by_id(id)
         if sgroup:
             return len(sgroup.rules)
-        return -1 
+        return None 
 
     @staticmethod
     def get_image_by_id(images, image_id):
