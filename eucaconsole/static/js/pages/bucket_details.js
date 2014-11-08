@@ -20,6 +20,10 @@ angular.module('BucketDetailsPage', ['S3SharingPanel', 'EucaConsoleUtils'])
             $scope.getBucketObjectsCount();
             $scope.handleUnsavedChanges();
             $scope.handleUnsavedSharingEntry($scope.bucketDetailsForm);
+            // set upload button target based on media query
+            if (window.matchMedia(Foundation.media_queries['small']).matches === false) {
+                $('#upload-file-action').attr('target', '_blank');
+            }
         };
         $scope.getBucketObjectsCount = function () {
             $http.get($scope.bucketObjectsCountUrl).success(function(oData) {
