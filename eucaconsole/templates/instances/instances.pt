@@ -119,8 +119,10 @@
                 <div>
                     <span class="label" title="Security groups" i18n:attributes="title" data-tooltip="">SG</span>
                     <span ng-repeat="security_group in item.security_groups">
-                        <a ng-href="/securitygroups/{{ security_group.id }}">{{ security_group.name }}</a><span ng-show="!$last">, </span>
+                        <i class="fi-alert" ng-show="security_group.rules_count == 0" data-tooltip="" i18n:attributes="title"
+                            title="Warning: No rules defined for security group. Instance may be unreachable."></i>
                     </span>
+                    <a ng-href="${prefix}/{{ item.id }}">{{ item.security_groups.length }}</a>
                 </div>
                 <div>
                     <span class="label" title="VPC network" i18n:attributes="title" data-tooltip="">VN</span>
@@ -167,6 +169,8 @@
                 </td>
                 <td class="breakword">
                     <div ng-repeat="security_group in item.security_groups">
+                        <i class="fi-alert" ng-show="security_group.rules_count == 0" data-tooltip="" i18n:attributes="title"
+                            title="Warning: No rules defined for security group. Instance may be unreachable."></i>
                         <a ng-href="/securitygroups/{{ security_group.id }}">{{ security_group.name | ellipsis: 30 }}</a>
                     </div>
                 </td>

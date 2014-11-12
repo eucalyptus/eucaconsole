@@ -21,16 +21,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>open</td>
-	<td>/</td>
-	<td></td>
-</tr>
-<tr>
-	<td>selectWindow</td>
-	<td>null</td>
-	<td></td>
-</tr>
-<tr>
 	<td>clickAndWait</td>
 	<td>id=resource-menu-dashboard</td>
 	<td></td>
@@ -73,6 +63,21 @@
 <tr>
 	<td>clickAndWait</td>
 	<td>id=create_volume_submit_button</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>id=notifications</td>
+	<td>breadcrumbs</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${breadcrumbs}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>Quota exceeded while trying to create: volume by user:</td>
 	<td></td>
 </tr>
 <tr>

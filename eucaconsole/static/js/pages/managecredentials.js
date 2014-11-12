@@ -72,8 +72,11 @@ angular.module('ManageCredentialsView', [])
                 csrf_token: csrf_token,
                 filename: 'not-used', // let the server set this
                 content: 'none',
-                script: url,
+                script: url
             });
         };
+        $scope.cancelManageCredentialsUpdate = function () {
+            window.history.back();
+        }
     })
 ; 

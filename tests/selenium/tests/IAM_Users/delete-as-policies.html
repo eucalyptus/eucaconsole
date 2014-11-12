@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="https://10.111.5.7/" />
+<title>delete-as-policies</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">delete-as-policies</td></tr>
+</thead><tbody>
+<tr>
+	<td>click</td>
+	<td>id=resource-menu-autoscaling</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=resource-menuitem-scalinggroups</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>link=sg1-${str}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=sg1-${str}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=span.button.dropdown</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=delete-scalinggroup-action</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=#delete-scalinggroup-modal &gt; h3</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=delete_scalinggroup_submit_button</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>id=notifications</td>
+	<td>breadcrumbs</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${breadcrumbs}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=resource-menu-autoscaling</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=resource-menuitem-launchconfigs</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>link=lc1-${str}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=lc1-${str}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=span.button.dropdown</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=delete-launchconfig-action</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=delete_launchconfig_submit_button</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>id=notifications</td>
+	<td>breadcrumbs</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${breadcrumbs}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=resource-menu-netsec</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=resource-menuitem-securitygroups</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>link=sg${str}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=sg${str}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=span.button.dropdown</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=delete-securitygroup-action</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=#delete-securitygroup-modal &gt; h3</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=delete_securitygroup_submit_button</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>id=notifications</td>
+	<td>breadcrumbs</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${breadcrumbs}</td>
+	<td></td>
+</tr>
+</tbody></table>
+</body>
+</html>

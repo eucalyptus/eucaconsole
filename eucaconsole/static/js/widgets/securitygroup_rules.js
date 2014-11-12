@@ -235,6 +235,10 @@ angular.module('SecurityGroupRules', ['CustomFilters', 'EucaConsoleUtils'])
                     $scope.syncRules();
                 });
             });
+            // Modify Foundation Abide validation timeout
+            setTimeout(function() {
+                $(document).foundation({abide : { timeout : 2000 } })
+            }, 500);
         };
         // In case of the duplicated rule, add the class 'disabled' to the submit button
         $scope.setAddRuleButtonClass = function () {

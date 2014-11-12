@@ -16,7 +16,7 @@ angular.module('InstanceCreateImage', ['TagEditor'])
         $scope.toggleContent = function () {
             $scope.expanded = !$scope.expanded;
         };
-        $scope.initController = function (lacks_keys) {
+        $scope.initController = function () {
             $('#s3_bucket').chosen({search_contains: true, create_option: function(term){
                     var chosen = this;
                     var bucket_name = term;
@@ -39,9 +39,6 @@ angular.module('InstanceCreateImage', ['TagEditor'])
             $scope.$watch('s3_prefix', function () {
                 $scope.checkRequiredInput();
             });
-            if (lacks_keys == 'True') {
-                $('#no-keys-warn-modal').foundation('reveal', 'open');
-            }
         };
         $scope.checkRequiredInput = function () {
             if ($scope.name == '' || $scope.s3_bucket == '' || $scope.s3_prefix == '' ) {

@@ -82,23 +82,13 @@
 	<td></td>
 </tr>
 <tr>
-	<td>type</td>
-	<td>css=input[type=&quot;text&quot;]</td>
-	<td>${volume_id} (${volume_name})</td>
-</tr>
-<tr>
-	<td>typeKeys</td>
-	<td>css=input[type=&quot;text&quot;]</td>
-	<td>${volume_id} (${volume_name})</td>
-</tr>
-<tr>
 	<td>waitForVisible</td>
-	<td>css=li.active-result.highlighted &gt; em</td>
+	<td>//div[@id='volume_id_chosen']/div/ul/li[text()[contains(.,'${volume_name} (${volume_id})')]]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>clickAt</td>
-	<td>css=li.active-result.highlighted &gt; em</td>
+	<td>//div[@id='volume_id_chosen']/div/ul/li[text()[contains(.,'${volume_name} (${volume_id})')]]</td>
 	<td></td>
 </tr>
 <tr>

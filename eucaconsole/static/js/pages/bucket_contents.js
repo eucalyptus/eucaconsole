@@ -35,6 +35,7 @@ angular.module('BucketContentsPage', ['LandingPage', 'EucaConsoleUtils'])
                 $('#upload-file-btn').attr('target', '_blank');
             }
             $scope.updatePasteValues();
+            $scope.addListeners();
         };
         $scope.revealModal = function (action, item) {
             var modal = $('#' + action + '-modal');
@@ -328,6 +329,14 @@ angular.module('BucketContentsPage', ['LandingPage', 'EucaConsoleUtils'])
             $scope.copyingAll = false;
             $scope.$broadcast('refresh');
         };
+        $scope.addListeners = function () {
+            // Receive postMessage from file upload window, refreshing list when file upload completes
+            window.addEventListener('message', function (event) {
+                if (event.data == 's3:fileUploaded') {
+                    $scope.$broadcast('refresh');
+                }
+            }, false);
+        }
     })
 ;
 

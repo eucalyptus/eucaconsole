@@ -32,7 +32,6 @@
                 <span ng-show="!itemsLoading" class="items-found">
                     <strong>{{ items.length }}</strong>
                     <span class="hide-for-small">items</span> found
-                    <em ng-if="items.length > displayCount">&nbsp;(<span i18n:translate="">Displaying</span> {{ displayCount }})</em>
                 </span>
             </div>
             <div class="small-5 columns" id="sorting-controls" ng-show="!itemsLoading">

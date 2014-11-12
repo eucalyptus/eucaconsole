@@ -33,6 +33,7 @@ from operator import attrgetter
 import simplejson as json
 from M2Crypto import RSA
 import re
+from urllib2 import HTTPError, URLError
 
 from boto.exception import BotoServerError
 from boto.s3.key import Key
@@ -109,6 +110,22 @@ class BaseInstanceView(BaseView):
                 pass
         return None
 
+    def get_security_groups(self):
+        if self.conn:
+            with boto_error_handler(self.request, self.location):
+                return self.conn.get_all_security_groups()
+        return []
+
+    def get_securitygroups_rules(self, securitygroups):
+        rules_dict = {}
+        for security_group in securitygroups:
+            rules = SecurityGroupsView.get_rules(security_group.rules)
+            if security_group.vpc_id is not None:
+                rules_egress = SecurityGroupsView.get_rules(security_group.rules_egress, rule_type='outbound')
+                rules = rules + rules_egress
+            rules_dict[security_group.id] = rules
+        return rules_dict
+
     def get_vpc_subnet_display(self, subnet_id):
         if self.vpc_conn and subnet_id:
             with boto_error_handler(self.request):
@@ -164,7 +181,7 @@ class InstancesView(LandingPageView, BaseInstanceView):
         ]
         autoscale_conn = self.get_connection(conn_type='autoscale')
         iam_conn = None
-        if self.request.session['role_access']:
+        if BaseView.has_role_access(self.request):
             iam_conn = self.get_connection(conn_type='iam')
         vpc_conn = self.get_connection(conn_type='vpc')
         filters_form = InstancesFiltersForm(
@@ -172,7 +189,7 @@ class InstancesView(LandingPageView, BaseInstanceView):
             iam_conn=iam_conn, vpc_conn=vpc_conn,
             cloud_type=self.cloud_type, formdata=self.request.params or None)
         search_facets = filters_form.facets
-        if self.request.session['role_access']:
+        if BaseView.has_role_access(self.request):
             del filters_form.roles
         self.render_dict.update(dict(
             filter_fields=False,
@@ -302,6 +319,7 @@ class InstancesJsonView(LandingPageView):
         self.vpc_conn = self.get_connection(conn_type='vpc')
         self.vpcs = self.get_all_vpcs()
         self.keypairs = self.get_all_keypairs()
+        self.security_groups = self.get_all_security_groups()
 
     @view_config(route_name='instances_json', renderer='json', request_method='POST')
     def instances_json(self):
@@ -318,9 +336,6 @@ class InstancesJsonView(LandingPageView):
         instance_type_param = self.request.params.getall('instance_type')
         if instance_type_param:
             filters.update({'instance-type': instance_type_param})
-        keypair_param = self.request.params.getall('keypair')
-        if keypair_param:
-            filters.update({'key-name': [self.unescape_braces(kp) for kp in keypair_param]})
         security_group_param = self.request.params.getall('security_group')
         if security_group_param:
             filters.update({'group-name': [self.unescape_braces(sg) for sg in security_group_param]})
@@ -330,7 +345,7 @@ class InstancesJsonView(LandingPageView):
         # Don't filter by these request params in Python, as they're included in the "filters" params sent to the CLC
         # Note: the choices are from attributes in InstancesFiltersForm
         ignore_params = [
-            'availability_zone', 'instance_type', 'state', 'keypair', 'security_group',
+            'availability_zone', 'instance_type', 'state', 'security_group',
             'scaling_group', 'root_device_type', 'roles']
         filtered_items = self.filter_items(self.get_items(filters=filters), ignore=ignore_params)
         if self.request.params.get('scaling_group'):
@@ -346,7 +361,11 @@ class InstancesJsonView(LandingPageView):
         region = self.request.session.get('region')
         for instance in filtered_items:
             is_transitional = instance.state in transitional_states
-            security_groups_array = sorted({'name': group.name, 'id': group.id} for group in instance.groups)
+            security_groups_array = sorted({
+                'name': group.name,
+                'id': group.id,
+                'rules_count': self.get_security_group_rules_count_by_id(group.id)
+                } for group in instance.groups)
             if instance.platform is None:
                 instance.platform = _(u"linux")
             has_elastic_ip = instance.ip_address in elastic_ips
@@ -416,6 +435,20 @@ class InstancesJsonView(LandingPageView):
             if keypair_name == keypair.name:
                 return keypair
 
+    def get_all_security_groups(self):
+        return self.conn.get_all_security_groups() if self.conn else []
+
+    def get_security_group_by_id(self, id):
+        for sgroup in self.security_groups:
+            if sgroup.id == id:
+                return sgroup 
+
+    def get_security_group_rules_count_by_id(self, id):
+        sgroup = self.get_security_group_by_id(id)
+        if sgroup:
+            return len(sgroup.rules)
+        return None 
+
     @staticmethod
     def get_image_by_id(images, image_id):
         if images:
@@ -477,7 +510,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
         self.request = request
         self.conn = self.get_connection()
         self.iam_conn = None
-        if request.session['role_access']:
+        if BaseView.has_role_access(request):
             self.iam_conn = self.get_connection(conn_type="iam")
         self.instance = self.get_instance()
         self.image = self.get_image(self.instance)
@@ -496,10 +529,13 @@ class InstanceView(TaggedItemView, BaseInstanceView):
         self.instance_name = TaggedItemView.get_display_name(self.instance)
         self.security_groups_array = sorted(
             {'name': group.name, 'id': group.id} for group in self.instance.groups) if self.instance else []
+        self.security_group_list = self.get_security_group_list()
+        self.security_group_list_string = ','.join(
+            [sgroup['id'] for sgroup in self.security_group_list]) if self.security_group_list else ''
         self.instance_keypair = self.instance.key_name if self.instance else ''
         self.has_elastic_ip = self.check_has_elastic_ip(self.instance.ip_address) if self.instance else False
         self.role = None
-        if request.session['role_access'] and self.instance and self.instance.instance_profile:
+        if BaseView.has_role_access(request) and self.instance and self.instance.instance_profile:
             arn = self.instance.instance_profile['arn']
             profile_name = arn[(arn.rindex('/')+1):]
             inst_profile = self.iam_conn.get_instance_profile(profile_name)
@@ -511,8 +547,9 @@ class InstanceView(TaggedItemView, BaseInstanceView):
         self.render_dict = dict(
             instance=self.instance,
             instance_name=self.instance_name,
-            instance_security_groups=self.get_security_group_list_string(),
+            instance_security_groups=self.security_group_list_string,
             instance_keypair=self.instance_keypair,
+            security_group_list=self.security_group_list,
             image=self.image,
             scaling_group=self.scaling_group,
             instance_form=self.instance_form,
@@ -674,14 +711,21 @@ class InstanceView(TaggedItemView, BaseInstanceView):
             return self.instance.tags.get('aws:autoscaling:groupName')
         return None
 
-    def get_security_group_list_string(self):
-        security_group_list = [] 
+    def get_security_group_list(self):
+        security_group_list = []
+        rules_dict = self.get_securitygroups_rules(self.get_security_groups())
         if self.instance:
             instance_groups = self.instance.groups
             if instance_groups:
                 for sgroup in instance_groups:
-                    security_group_list.append(sgroup.id) 
-        return ','.join(security_group_list) 
+                    rules = rules_dict[sgroup.id]
+                    sgroup_dict = {}
+                    sgroup_dict['id'] = sgroup.id
+                    sgroup_dict['name'] = sgroup.name
+                    sgroup_dict['rules'] = rules 
+                    sgroup_dict['rule_count'] = len(rules) 
+                    security_group_list.append(sgroup_dict)
+        return security_group_list 
 
     def get_redirect_location(self):
         if self.instance:
@@ -823,9 +867,17 @@ class InstanceVolumesView(BaseInstanceView):
             instance_name=self.instance_name,
             attach_form=self.attach_form,
             detach_form=self.detach_form,
-            no_volumes_in_zone=len(self.attach_form.volume_id.choices) <= 1,
             instance_zone=self.instance.placement,
+            controller_options_json=self.get_controller_options_json(),
         )
+
+    def get_controller_options_json(self):
+        if not self.instance:
+            return ''
+        return BaseView.escape_json(json.dumps({
+            'instance_id': self.instance.id,
+            'instance_volumes_json_url': self.request.route_path('instance_volumes_json', id=self.instance.id),
+        }))
 
     @view_config(route_name='instance_volumes', renderer=VIEW_TEMPLATE, request_method='GET')
     def instance_volumes(self):
@@ -839,7 +891,9 @@ class InstanceVolumesView(BaseInstanceView):
     def instance_volumes_json(self):
         volumes = []
         transitional_states = ['creating', 'deleting', 'attaching', 'detaching']
-        for volume in self.get_attached_volumes():
+        with boto_error_handler(self.request, self.location):
+            self.volumes = self.conn.get_all_volumes()
+        for volume in self.volumes:
             status = volume.status
             attach_status = volume.attach_data.status
             is_transitional = status in transitional_states or attach_status in transitional_states
@@ -851,6 +905,7 @@ class InstanceVolumesView(BaseInstanceView):
                 size=volume.size,
                 device=volume.attach_data.device,
                 attach_time=volume.attach_data.attach_time,
+                attach_instance_id=volume.attach_data.instance_id,
                 status=status,
                 attach_status=volume.attach_data.status,
                 detach_form_action=detach_form_action,
@@ -892,7 +947,7 @@ class InstanceVolumesView(BaseInstanceView):
         return sorted(volumes, key=attrgetter('attach_data.attach_time'), reverse=True) if volumes else []
 
 
-class InstanceLaunchView(BlockDeviceMappingItemView):
+class InstanceLaunchView(BaseInstanceView, BlockDeviceMappingItemView):
     TEMPLATE = '../templates/instances/instance_launch.pt'
 
     def __init__(self, request):
@@ -902,7 +957,7 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
         self.location = self.request.route_path('instances')
         self.securitygroups = self.get_security_groups()
         self.iam_conn = None
-        if request.session['role_access']:
+        if BaseView.has_role_access(request):
             self.iam_conn = self.get_connection(conn_type="iam")
         self.vpc_conn = self.get_connection(conn_type='vpc')
         self.launch_form = LaunchInstanceForm(
@@ -915,7 +970,7 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
         self.generate_file_form = GenerateFileForm(self.request, formdata=self.request.params or None)
         self.owner_choices = self.get_owner_choices()
         controller_options_json = BaseView.escape_json(json.dumps({
-            'securitygroups_rules': self.get_securitygroups_rules(),
+            'securitygroups_rules': self.get_securitygroups_rules(self.securitygroups),
             'securitygroups_choices': dict(self.launch_form.securitygroup.choices),
             'keypair_choices': dict(self.launch_form.keypair.choices),
             'role_choices': dict(self.launch_form.role.choices),
@@ -973,7 +1028,7 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
             new_instance_ids = []
             with boto_error_handler(self.request, self.location):
                 instance_profile = None
-                if self.request.session['role_access'] and role != '':
+                if BaseView.has_role_access(self.request) and role != '':
                     # need to set up instance profile, add role and supply to run_instances
                     instance_profile = RoleView.get_or_create_instance_profile(self.iam_conn, role)
                 self.log_request(_(u"Running instance(s) (num={0}, image={1}, type={2})").format(
@@ -1032,22 +1087,6 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
             self.request.error_messages = self.launch_form.get_errors_list()
         return self.render_dict
 
-    def get_security_groups(self):
-        if self.conn:
-            with boto_error_handler(self.request, self.location):
-                return self.conn.get_all_security_groups()
-        return []
-
-    def get_securitygroups_rules(self):
-        rules_dict = {}
-        for security_group in self.securitygroups:
-            rules = SecurityGroupsView.get_rules(security_group.rules)
-            if security_group.vpc_id is not None:
-                rules_egress = SecurityGroupsView.get_rules(security_group.rules_egress, rule_type='outbound')
-                rules = rules + rules_egress
-            rules_dict[security_group.id] = rules
-        return rules_dict
-
     def get_securitygroup_id(self, name, vpc_network=None):
         for security_group in self.securitygroups:
             if security_group.vpc_id == vpc_network and security_group.name == name:
@@ -1078,7 +1117,7 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
         super(InstanceLaunchMoreView, self).__init__(request)
         self.request = request
         self.iam_conn = None
-        if request.session['role_access']:
+        if BaseView.has_role_access(request):
             self.iam_conn = self.get_connection(conn_type="iam")
         self.instance = self.get_instance()
         self.instance_name = TaggedItemView.get_display_name(self.instance)
@@ -1092,7 +1131,7 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
         if self.instance.interfaces:
             if self.instance.interfaces[0] and hasattr(self.instance.interfaces[0], 'association'):
                 self.associate_public_ip_address = 'Enabled'
-        if request.session['role_access'] and self.instance.instance_profile:
+        if BaseView.has_role_access(request) and self.instance.instance_profile:
             arn = self.instance.instance_profile['arn']
             profile_name = arn[(arn.rindex('/')+1):]
             inst_profile = self.iam_conn.get_instance_profile(profile_name)
@@ -1229,18 +1268,6 @@ class InstanceCreateImageView(BaseInstanceView, BlockDeviceMappingItemView):
 
     @view_config(route_name='instance_create_image', renderer=TEMPLATE, request_method='GET')
     def instance_create_image_view(self):
-        lacks_keys = False
-        if self.instance.root_device_type != 'ebs' and self.request.session['user_access']:
-            iam_conn = self.get_connection(conn_type='iam')
-            try:
-                keys = iam_conn.get_all_access_keys(self.request.session['username'])
-                if keys and len(keys.list_access_keys_result.access_key_metadata) == 0:
-                    lacks_keys = True
-            except BotoServerError:
-                pass
-        self.render_dict.update(dict(
-            lacks_keys=lacks_keys,
-        ))
         return self.render_dict
 
     @view_config(route_name='instance_create_image', renderer=TEMPLATE, request_method='POST')
@@ -1274,9 +1301,20 @@ class InstanceCreateImageView(BaseInstanceView, BlockDeviceMappingItemView):
                     username = self.request.session['username']
                     password = self.request.params.get('password')
                     auth = self.get_euca_authenticator()
-                    creds = auth.authenticate(
-                        account=account, user=username, passwd=password,
-                        timeout=8, duration=86400)  # 24 hours
+                    msg = None
+                    try:
+                        creds = auth.authenticate(
+                            account=account, user=username, passwd=password,
+                            timeout=8, duration=86400)  # 24 hours
+                    except HTTPError, err:          # catch error in authentication
+                        if err.msg == 'Unauthorized':
+                            msg = _(u"The password you entered is incorrect.")
+                    except URLError, err:           # catch error in authentication
+                        msg = err.msg
+                    if msg is not None:
+                        self.request.session.flash(msg, queue=Notification.ERROR)
+                        return HTTPFound(location=self.request.route_path('instance_create_image', id=instance_id))
+
                     upload_policy = BaseView.generate_default_policy(s3_bucket, s3_prefix, token=creds.session_token)
                     # we need to make the call ourselves to override boto's auto-signing
                     params = {

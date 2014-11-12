@@ -29,6 +29,17 @@
                         <li>
                             <a id="view-contents-action" i18n:translate="" href="${bucket_contents_url}">View contents</a>
                         </li>
+                        <li>
+                            <a id="create-folder-action" i18n:translate="" data-reveal-id="create-folder-modal">
+                                Create folder
+                            </a>
+                        </li>
+                        <li>
+                            <a id="upload-file-action" i18n:translate=""
+                               href="${request.route_path('bucket_upload', name=bucket_name, subpath='')}">
+                                Upload file(s)
+                            </a>
+                        </li>
                         <!--!
                         <li tal:condition="update_versioning_action == 'enable'">
                             <a ng-click="revealModal('update-versioning')"
@@ -110,6 +121,7 @@
         </div>
         <!--! Modal dialogs reused across landing and detail page -->
         ${panel('bucket_dialogs', landingpage=False, bucket=bucket, versioning_form=versioning_form, delete_form=delete_form)}
+        ${panel('create_folder_dialog', bucket_name=bucket_name, create_folder_form=create_folder_form)}
         <!--! Sharing propagation warning dialog -->
         <div id="changed-sharing-warning-modal" class="reveal-modal small" data-reveal="">
             <h3 i18n:translate="">Changing sharing settings</h3>
