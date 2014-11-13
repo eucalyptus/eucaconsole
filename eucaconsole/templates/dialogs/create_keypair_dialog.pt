@@ -2,9 +2,8 @@
 <div tal:omit-tag="" i18n:domain="eucaconsole">
     <div id="create-keypair-modal" class="reveal-modal medium" data-reveal="" ng-cloak="">
         <h3 i18n:translate="">Create key pair</h3>
-        <p i18n:translate="">You can use this key pair to connect to the launched instances.</p>
         <p i18n:translate="">
-            Save the key pair the file in a place you will remember.
+            Save the downloaded private key file in a place you will remember.
             You will need to enter the path later to connect to your instances.
         </p>
         <form method="post" data-abide="abide" id="create-keypair-form"
@@ -15,7 +14,7 @@
             <hr />
             <button type="submit" class="button expand" id="create-keypair-btn"
                     i18n:translate="" ng-disabled="isLoadingKeyPair">
-                Create key pair
+                Create Key Pair
             </button>
         </form>
         <a href="#" id="create_keypair_close_link" class="close-reveal-modal">&#215;</a>
