@@ -3,8 +3,8 @@
  * @requires AngularJS
  *
  */
-angular.module('S3SharingPanel', [])
-    .controller('S3SharingPanelCtrl', function ($scope) {
+angular.module('S3SharingPanel', ['EucaConsoleUtils'])
+    .controller('S3SharingPanelCtrl', function ($scope, eucaUnescapeJson) {
         $scope.s3AclTextarea = $('#s3-sharing-acl');
         $scope.sharingAccountList = [];
         $scope.isNotValid = true;
@@ -13,10 +13,13 @@ angular.module('S3SharingPanel', [])
         $scope.aclType = 'manual';
         $scope.addAccountBtnDisabled = true;
         $scope.displayBucketSharingChangeWarning = false;
-        $scope.initS3SharingPanel = function (grants_json) {
+        $scope.initS3SharingPanel = function (optionsJson) {
+            var options = JSON.parse(eucaUnescapeJson(optionsJson));
+            var grantsList = options['grants'];
+            var grantsJson = JSON.stringify(grantsList);
+            $scope.grantsArray = grantsList;
+            $scope.s3AclTextarea.val(grantsJson);
             $scope.setInitialValues();
-            $scope.initGrants(grants_json);
-            $scope.grantsArray = JSON.parse(grants_json);
             $scope.addListeners();
         };
         $scope.setInitialValues = function () {
@@ -49,12 +52,6 @@ angular.module('S3SharingPanel', [])
                 });
             });
         };
-        $scope.initGrants = function(grantsJson) {
-            $scope.s3AclTextarea.val(grantsJson);
-            // Parse grants JSON and convert to a list of grants.
-            grantsJson = grantsJson.replace(/__apos__/g, "\'").replace(/__dquote__/g, '\\"').replace(/__bslash__/g, "\\");
-            $scope.grantsArray = JSON.parse(grantsJson);
-        };
         $scope.syncGrants = function() {
             $scope.s3AclTextarea.val(JSON.stringify($scope.grantsArray));
             $scope.$emit('s3:sharingPanelAclUpdated');
@@ -69,7 +66,7 @@ angular.module('S3SharingPanel', [])
         };
         $scope.addGrant = function ($event) {
             $event.preventDefault();
-            var grantEntry = $($event.currentTarget).closest('#sharing-private'),
+            var grantEntry = $($event.currentTarget).closest('#sharing-acls'),
                 grantAccountField = grantEntry.find('#share_account'),
                 grantPermissionField = grantEntry.find('#share_permissions'),
                 grantAccountVal = grantAccountField.val(),

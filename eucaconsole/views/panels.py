@@ -354,7 +354,8 @@ def securitygroup_rules_landingpage(context, request, tile_view=False):
     )
 
 
-@panel_config('securitygroup_rules_egress_landingpage', renderer='../templates/panels/securitygroup_rules_egress_landingpage.pt')
+@panel_config('securitygroup_rules_egress_landingpage',
+              renderer='../templates/panels/securitygroup_rules_egress_landingpage.pt')
 def securitygroup_rules_egress_landingpage(context, request, tile_view=False):
     return dict(
         tile_view=tile_view,
@@ -373,12 +374,15 @@ def s3_sharing_panel(context, request, bucket_object=None, sharing_form=None, sh
                 grant_type=grant.type,
                 uri=grant.uri,
             ))
+    controller_options_json = BaseView.escape_json(json.dumps({
+        'grants': grants_list,
+    }))
     return dict(
         bucket_object=bucket_object,
         object_type=get_object_type(bucket_object),
         sharing_form=sharing_form,
         show_caution=show_caution,
-        grants_json=json.dumps(grants_list),
+        controller_options_json=controller_options_json,
     )
 
 

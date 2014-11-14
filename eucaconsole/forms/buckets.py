@@ -31,7 +31,6 @@ Forms for S3 buckets and objects
 import wtforms
 
 from boto.s3.key import Key
-from boto.s3.bucket import Bucket
 from wtforms import validators
 
 from . import BaseSecureForm, BLANK_CHOICE
@@ -88,16 +87,15 @@ class BucketUploadForm(BaseSecureForm):
 
 class SharingPanelForm(BaseSecureForm):
     """S3 Sharing Panel form for buckets/objects"""
-    SHARE_TYPE_CHOICES = (('public', _(u'Public')), ('private', _(u'Private')))
-    share_type = wtforms.RadioField(choices=SHARE_TYPE_CHOICES)
     share_account_error_msg = _(
         u'Account ID may contain alpha-numeric characters and is a 12-digit account ID or the 64-digit canonical ID.')
     share_account_helptext = _(
-        u"Enter an account ID or a user's email address. If you enter an email address, sharing will be extended to all users in their account."
+        u"Enter an account ID or a user's email address. If you enter an email address, "
+        u"sharing will be extended to all users in their account."
     )
-    share_account = TextEscapedField(label=_(u'Account'))
+    share_account = TextEscapedField(label=_(u'Grantee'))
     share_permissions = wtforms.SelectField(label=_(u'Permissions'))
-    canned_acl = wtforms.SelectField()
+    propagate_acls = wtforms.BooleanField(label=_(u'Propagate grantee permissions to objects in this bucket'))
 
     def __init__(self, request, bucket_object=None, sharing_acl=None, **kwargs):
         super(SharingPanelForm, self).__init__(request, **kwargs)
@@ -108,39 +106,13 @@ class SharingPanelForm(BaseSecureForm):
         self.share_account.error_msg = self.share_account_error_msg
         # Set choices
         self.share_permissions.choices = self.get_permission_choices()
-        self.canned_acl.choices = self.get_canned_acl_choices()
         # Set help text
         self.share_account.help_text = self.share_account_helptext
-
-        if bucket_object is not None:
-            self.share_type.data = self.get_share_type()
-
-        if bucket_object is None:
-            self.share_type.data = 'private'
-
-    def get_share_type(self):
-        if 'AllUsers = READ' in str(self.sharing_acl):
-            return 'public'
-        return 'private'
-
-    def get_canned_acl_choices(self):
-        choices = [
-            ('private', _('Private')),
-            ('public-read', _('Public read')),
-            ('public-read-write', _('Public read-write')),
-            ('authenticated-read', _('Authenticated read')),
-        ]
-        if self.bucket_object is not None and not isinstance(self.bucket_object, Bucket):
-            choices.extend([
-                ('bucket-owner-read', _('Bucket owner read')),
-                ('bucket-owner-full-control', _('Bucket owner full control')),
-            ])
-        return choices
 
     def get_permission_choices(self):
         choices = (
             ('FULL_CONTROL', _('Full Control')),
-            ('READ', _('Read-only') if self.is_object else _('List objects')),
+            ('READ', _('Read-only') if self.is_object else _('View/Download objects')),
             ('WRITE', _('Create/delete objects')) if not self.is_object else None,  # Hide for object details
             ('READ_ACP', _('Read sharing permissions')),
             ('WRITE_ACP', _('Write sharing permissions')),
