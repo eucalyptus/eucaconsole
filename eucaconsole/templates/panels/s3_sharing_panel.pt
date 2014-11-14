@@ -3,7 +3,9 @@
      ng-controller="S3SharingPanelCtrl" ng-init="initS3SharingPanel('${controller_options_json}')">
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/s3_sharing_panel.css')}" />
     <h6 i18n:translate="" class="sharing-label">Sharing</h6>
-    ${panel('form_field', field=sharing_form.propagate_acls, reverse=True)}
+    <div tal:condition="object_type == 'bucket'">
+        ${panel('form_field', field=sharing_form.propagate_acls, ng_attrs=dict(model='propagateAcls'), reverse=True)}
+    </div>
     <div tal:condition="show_caution" tal:omit-tag="">
         <p i18n:translate="">
             The sharing options for the selected object(s) have been automatically set to match their bucket.
