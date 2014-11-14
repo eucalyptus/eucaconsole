@@ -624,34 +624,17 @@ class BucketDetailsView(BaseView):
     @staticmethod
     def update_acl(request, bucket_object=None):
         is_bucket = isinstance(bucket_object, Bucket)
-        share_type = request.params.get('share_type')
-        acl_type = request.params.get('acl_type')
-        canned_acl = request.params.get('canned_acl')
-        bucket_keys = []
-        if is_bucket:
-            bucket_keys = bucket_object.get_all_keys()
-        if share_type == 'public':
-            params = {}
-            if is_bucket:
-                params = dict(recursive=True)
-            bucket_object.make_public(**params)
-        elif share_type == 'private' and acl_type:
-            if acl_type == 'canned':
-                bucket_object.set_canned_acl(canned_acl)
-                if is_bucket:
-                    # Set canned ACL recursively
-                    for key in bucket_keys:
-                        key.set_canned_acl(canned_acl)
-            else:
-                # Save manually entered ACLs
-                sharing_acl = BucketDetailsView.get_sharing_acl(
-                    request, bucket_object=bucket_object, item_acl=bucket_object.get_acl())
-                if sharing_acl:
-                    bucket_object.set_acl(sharing_acl)
-                    if is_bucket:
-                        # Set manual ACL recursively
-                        for key in bucket_keys:
-                            key.set_acl(sharing_acl)
+        propagate_acls = request.params.get('propagate_acls') == 'y'
+        # Save manually entered ACLs
+        sharing_acl = BucketDetailsView.get_sharing_acl(
+            request, bucket_object=bucket_object, item_acl=bucket_object.get_acl())
+        if sharing_acl:
+            bucket_object.set_acl(sharing_acl)
+            if is_bucket and propagate_acls:
+                bucket_keys = bucket_object.get_all_keys()
+                # Set manual ACL recursively
+                for key in bucket_keys:
+                    key.set_acl(sharing_acl)
 
     @staticmethod
     def get_sharing_acl(request, bucket_object=None, item_acl=None):
