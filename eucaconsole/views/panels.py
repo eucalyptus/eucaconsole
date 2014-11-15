@@ -374,14 +374,21 @@ def s3_sharing_panel(context, request, bucket_object=None, sharing_form=None, sh
                 grant_type=grant.type,
                 uri=grant.uri,
             ))
+    grantee_choices = [
+        ('http://acs.amazonaws.com/groups/global/AllUsers', _(u'all users')),
+        ('http://acs.amazonaws.com/groups/global/AuthenticatedUsers', _(u'authenticated users')),
+    ]
     controller_options_json = BaseView.escape_json(json.dumps({
         'grants': grants_list,
+        'create_option_text': _(u'Press enter to select')
     }))
     return dict(
         bucket_object=bucket_object,
         object_type=get_object_type(bucket_object),
         sharing_form=sharing_form,
         show_caution=show_caution,
+        grantee_choices=grantee_choices,
+        account_placeholder_text=_(u'Select or type to enter account/user'),
         controller_options_json=controller_options_json,
     )
 

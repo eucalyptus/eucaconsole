@@ -41,7 +41,11 @@
                         </label>
                     </div>
                     <div class="small-9 columns">
-                        ${structure: sharing_form.share_account(**{'ng-model': 'shareAccount'})}
+                        <!--! NOTE: We've hard-coded the share_account HTML to allow a custom chosen input -->
+                        <select id="share_account" name="share_account">
+                            <option value="">${account_placeholder_text}</option>
+                            <option tal:repeat="choice grantee_choices" value="${choice[0]}">${choice[1]}</option>
+                        </select>
                         <small class="error">${sharing_form.share_account_error_msg}</small>
                     </div>
                 </div>
