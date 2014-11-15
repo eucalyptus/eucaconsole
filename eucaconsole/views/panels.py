@@ -35,6 +35,7 @@ from operator import itemgetter
 import simplejson as json
 
 from boto.s3.bucket import Bucket
+from boto.s3.key import Key
 
 from wtforms.fields import IntegerField, BooleanField
 from wtforms.validators import Length
@@ -378,6 +379,11 @@ def s3_sharing_panel(context, request, bucket_object=None, sharing_form=None, sh
         ('http://acs.amazonaws.com/groups/global/AllUsers', _(u'all users')),
         ('http://acs.amazonaws.com/groups/global/AuthenticatedUsers', _(u'authenticated users')),
     ]
+    if isinstance(bucket_object, Key):
+        bucket_owner_id = bucket_object.bucket.get_acl().owner.id
+        grantee_choices.append(
+            (bucket_owner_id, _('bucket owner'))
+        )
     controller_options_json = BaseView.escape_json(json.dumps({
         'grants': grants_list,
         'create_option_text': _(u'Press enter to select')
