@@ -401,6 +401,7 @@ class BucketContentsView(LandingPageView):
 
     @staticmethod
     def get_unprefixed_key_name(key_name):
+        """Returns key name without the prefix (i.e. without the folder path)"""
         if DELIMITER not in key_name:
             return key_name
         if DELIMITER in key_name:
@@ -544,7 +545,7 @@ class BucketDetailsView(BaseView):
         super(BucketDetailsView, self).__init__(request)
         self.s3_conn = self.get_connection(conn_type='s3')
         with boto_error_handler(request):
-            self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
+            self.bucket = BucketContentsView.get_bucket(request, self.s3_conn) if self.s3_conn else None
             self.bucket_acl = self.bucket.get_acl() if self.bucket else None
         self.details_form = BucketDetailsForm(request, formdata=self.request.params or None)
         self.sharing_form = SharingPanelForm(
@@ -552,23 +553,26 @@ class BucketDetailsView(BaseView):
         self.versioning_form = BucketUpdateVersioningForm(request, formdata=self.request.params or None)
         self.create_folder_form = CreateFolderForm(request, formdata=self.request.params or None)
         self.versioning_status = self.get_versioning_status(self.bucket)
-        self.render_dict = dict(
-            details_form=self.details_form,
-            sharing_form=self.sharing_form,
-            versioning_form=self.versioning_form,
-            create_folder_form=self.create_folder_form,
-            delete_form=BucketDeleteForm(request),
-            bucket=self.bucket,
-            bucket_creation_date=self.get_bucket_creation_date(self.s3_conn, self.bucket.name),
-            bucket_name=self.bucket.name,
-            owner=self.get_bucket_owner_name(self.bucket_acl),
-            versioning_status=self.versioning_status,
-            update_versioning_action=self.get_versioning_update_action(self.versioning_status),
-            logging_status=self.get_logging_status(),
-            bucket_contents_url=self.request.route_path('bucket_contents', name=self.bucket.name, subpath=''),
-            bucket_objects_count_url=self.request.route_path(
-                'bucket_objects_count_versioning_json', name=self.bucket.name)
-        )
+        if self.bucket is None:
+            self.render_dict = dict()
+        else:
+            self.render_dict = dict(
+                details_form=self.details_form,
+                sharing_form=self.sharing_form,
+                versioning_form=self.versioning_form,
+                create_folder_form=self.create_folder_form,
+                delete_form=BucketDeleteForm(request),
+                bucket=self.bucket,
+                bucket_creation_date=self.get_bucket_creation_date(self.s3_conn, self.bucket.name),
+                bucket_name=self.bucket.name,
+                owner=self.get_bucket_owner_name(self.bucket_acl),
+                versioning_status=self.versioning_status,
+                update_versioning_action=self.get_versioning_update_action(self.versioning_status),
+                logging_status=self.get_logging_status(),
+                bucket_contents_url=self.request.route_path('bucket_contents', name=self.bucket.name, subpath=''),
+                bucket_objects_count_url=self.request.route_path(
+                    'bucket_objects_count_versioning_json', name=self.bucket.name)
+            )
 
     @view_config(route_name='bucket_details', renderer=VIEW_TEMPLATE)
     def bucket_details(self):
@@ -740,9 +744,9 @@ class BucketItemDetailsView(BaseView):
         return BaseView.escape_json(json.dumps({
             'delete_keys_url': self.request.route_path('bucket_delete_keys', name=self.bucket_name),
             'bucket_url': self.request.route_path(
-                            'bucket_contents',
-                            name=self.bucket_name,
-                            subpath=self.request.subpath[:-1]),
+                'bucket_contents',
+                name=self.bucket_name,
+                subpath=self.request.subpath[:-1]),
             'key': self.bucket_item.name,
         }))
 
