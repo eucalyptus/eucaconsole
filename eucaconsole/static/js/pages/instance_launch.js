@@ -35,6 +35,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.securityGroupModal = $('#create-securitygroup-modal');
         $scope.securityGroupForm = $('#create-securitygroup-form');
         $scope.securityGroupChoices = {};
+        $scope.securityGroupChoicesFullName = {};
         $scope.isRuleExpanded = {};
         $scope.newSecurityGroupName = '';
         $scope.isLoadingSecurityGroup = false;
@@ -488,7 +489,12 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 if (oData.id) {
                     newSecurityGroupID = oData.id;
                 }
-                $scope.securityGroupChoices[newSecurityGroupID] = $scope.newSecurityGroupName;
+                var securityGroupName = $scope.newSecurityGroupName;
+                $scope.securityGroupChoicesFullName[newSecurityGroupID] = securityGroupName;
+                if (securityGroupName.length > 45) {
+                    securityGroupName = securityGroupName.substr(0, 45) + "...";
+                }
+                $scope.securityGroupChoices[newSecurityGroupID] = securityGroupName;
                 $scope.securityGroups.push(newSecurityGroupID);
                 var groupRulesObject = JSON.parse($('#rules').val());
                 var groupRulesEgressObject = JSON.parse($('#rules_egress').val());
@@ -527,12 +533,18 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         };
         $scope.updateSecurityGroupChoices = function () {
             $scope.securityGroupChoices = {};
+            $scope.securityGroupChoicesFullName = {};
             if ($.isEmptyObject($scope.securityGroupCollection)) {
                 return;
             }
             $scope.securityGroups = [];
             angular.forEach($scope.securityGroupCollection, function(sGroup){
-                $scope.securityGroupChoices[sGroup['id']] = sGroup['name'];
+                var securityGroupName = sGroup['name'];
+                $scope.securityGroupChoicesFullName[sGroup['id']] = securityGroupName;
+                if (sGroup['name'].length > 45) {
+                    securityGroupName = sGroup['name'].substr(0, 45) + "...";
+                }
+                $scope.securityGroupChoices[sGroup['id']] = securityGroupName;
             }); 
             $scope.restoreSecurityGroupsInitialValues(); 
             // Timeout is needed for chosen to react after Angular updates the options

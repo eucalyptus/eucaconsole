@@ -595,7 +595,7 @@ angular.module('UserView', ['PolicyList', 'Quotas', 'EucaConsoleUtils'])
             $('#policy-view-modal').foundation('reveal', 'open');
         };
     })
-    .controller('UserQuotasCtrl', function($scope, $http, eucaHandleError) {
+    .controller('UserQuotasCtrl', function($scope, $http, $rootScope) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.jsonEndpoint = '';
         $scope.isQuotaNotChanged = true;
@@ -630,6 +630,7 @@ angular.module('UserView', ['PolicyList', 'Quotas', 'EucaConsoleUtils'])
               success(function(oData) {
                 var results = oData ? oData.results : [];
                 Notify.success(oData.message);
+                $rootScope.getPolicies();  // HACK: force access policies list to refresh on quota save
                 $scope.isQuotaNotChanged = true;
               }).
               error(function (oData, status) {
