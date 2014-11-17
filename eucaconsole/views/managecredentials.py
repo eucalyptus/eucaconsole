@@ -69,6 +69,8 @@ class ManageCredentialsView(BaseView, PermissionCheckMixin):
         except KeyError:
             account = self.request.params.get('account')
             username = self.request.params.get('username')
+        if account is None:  # session expired, redirect
+            raise HTTPFound(location=self.request.route_path('login'))
         account_id = User.get_account_id(ec2_conn=self.get_connection(), request=self.request)
         return dict(
             changepassword_form=self.changepassword_form,
