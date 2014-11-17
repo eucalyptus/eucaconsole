@@ -42,7 +42,7 @@
                     <p class="file-list" ng-show="files.length > 1">
                         <span ng-repeat="file in files">{{ file.name }}<br/></span>
                     </p>
-                    <small id="size-error" class="error" i18n:translate="">1 or more files you've selected is above the 5GB limit.</small>
+                    <small id="size-error" class="error" i18n:translate="">You cannot upload files larger than 5GB.</small>
                     <hr/>
                     <div class="expando" id="advance-section">
                         <h6 class="title" >
