@@ -10,6 +10,7 @@
 <thead>
 <tr><td rowspan="1" colspan="3">verify-ec2-volume-size-quota</td></tr>
 </thead><tbody>
+<!--
 <tr>
 	<td>setSpeed</td>
 	<td>500</td>
@@ -47,12 +48,12 @@
 </tr>
 <tr>
 	<td>clickAndWait</td>
-	<td>link=sg1</td>
+	<td>link=sg1-${str}</td>
 	<td></td>
 </tr>
 <tr>
 	<td>clickAndWait</td>
-	<td>link=Policies</td>
+	<td>link=Scaling Policies</td>
 	<td></td>
 </tr>
 <tr>
@@ -73,7 +74,7 @@
 <tr>
 	<td>type</td>
 	<td>id=name</td>
-	<td>sp1</td>
+	<td>sp1-${str}</td>
 </tr>
 <tr>
 	<td>click</td>
@@ -128,7 +129,7 @@
 <tr>
 	<td>type</td>
 	<td>id=name</td>
-	<td>sp2</td>
+	<td>sp2-${str}</td>
 </tr>
 <tr>
 	<td>select</td>
@@ -141,7 +142,22 @@
 	<td></td>
 </tr>
 <tr>
+	<td>storeText</td>
+	<td>id=notifications</td>
+	<td>breadcrumbs</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${breadcrumbs}</td>
+	<td></td>
+</tr>
+<tr>
 	<td>verifyTextPresent</td>
+	<td>Request would exceed quota for type: Policies</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
 	<td>Request would exceed quota for type: Policies</td>
 	<td></td>
 </tr>
@@ -160,6 +176,7 @@
 	<td>${divcount1} + 1 == ${divcount2}</td>
 	<td>true</td>
 </tr>
+-->
 </tbody></table>
 </body>
 </html>

@@ -189,6 +189,13 @@ $wizard-tab-padding: 8px 1rem;
     }
 }
 
+// Security group rules preview, used in Launch Instance and Launch Config wizards
+.rules-display {
+    .rules-title {
+        word-break: break-all;
+    }
+}
+
 
 /* -----------------------------------------
    Media Queries

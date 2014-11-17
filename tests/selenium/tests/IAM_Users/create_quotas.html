@@ -32,7 +32,7 @@
 </tr>
 <tr>
 	<td>clickAndWait</td>
-	<td>link=${user_1}</td>
+	<td>link=${user}</td>
 	<td></td>
 </tr>
 <tr>
@@ -108,6 +108,16 @@
 <tr>
 	<td>click</td>
 	<td>id=save-quotas-btn</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>id=notifications</td>
+	<td>breadcrumbs</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${breadcrumbs}</td>
 	<td></td>
 </tr>
 </tbody></table>

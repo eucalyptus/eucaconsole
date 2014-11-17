@@ -37,7 +37,7 @@ angular.module('KeypairPage', ['EucaConsoleUtils'])
                         $scope.keypairMaterial = evt.target.result;
                         $scope.$apply();
                     }
-                }
+                };
                 reader.readAsText(file);
             });
             $scope.$watch('keypairName', function () {
@@ -47,9 +47,13 @@ angular.module('KeypairPage', ['EucaConsoleUtils'])
                 $scope.checkRequiredInput();
             });
             $(document).on('submit', '[data-reveal] form', function () {
-                $(this).find('.dialog-submit-button').css('display', 'none');                
-                $(this).find('.dialog-progress-display').css('display', 'block');                
+                $(this).find('.dialog-submit-button').css('display', 'none');
+                $(this).find('.dialog-progress-display').css('display', 'block');
             });
+             // download the keypair material 1 second after.
+            setTimeout(function(){
+                $("#download-keypair-form").submit();
+            }, 1000);
         };
         $scope.setFocus = function () {
             $(document).on('ready', function(){
@@ -57,6 +61,8 @@ angular.module('KeypairPage', ['EucaConsoleUtils'])
                 if( firstLink.length > 0 ){
                     firstLink.get(0).focus();
                 }
+                // Prevent import key pair textarea from being disabled on IE
+                $('#key-import-contents').removeAttr('maxlength');
             });
             $(document).on('opened', '[data-reveal]', function () {
                 var modal = $(this);

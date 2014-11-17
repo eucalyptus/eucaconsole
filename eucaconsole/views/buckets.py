@@ -111,6 +111,7 @@ class BucketsView(LandingPageView):
             'copy_object_url': self.request.route_path('bucket_put_item', name='_name_', subpath='_subpath_'),
             'get_keys_generic_url': self.request.route_path('bucket_keys', name='_name_', subpath='_subpath_'),
             'put_keys_url': self.request.route_path('bucket_put_items', name='_name_', subpath='_subpath_'),
+            'upload_url': self.request.route_path('bucket_upload', name='_name_', subpath=''),
         }))
 
 
@@ -291,11 +292,9 @@ class BucketContentsView(LandingPageView):
             bucket = BucketContentsView.get_bucket(self.request, self.s3_conn)
             if not hasattr(bucket, 'metadata'):
                 bucket.metadata = {}
-            bucket_acl = bucket.get_acl() if bucket else None
             acl_obj = Key(bucket, '')
-            acl_obj.set_acl(bucket_acl)
             sharing_form = SharingPanelForm(
-                self.request, bucket_object=acl_obj, sharing_acl=bucket_acl, formdata=self.request.params or None)
+                self.request, bucket_object=acl_obj, sharing_acl=None, formdata=self.request.params or None)
             metadata_form = MetadataForm(self.request, formdata=self.request.params or None)
             self.render_dict.update(
                 bucket=bucket,
@@ -320,7 +319,7 @@ class BucketContentsView(LandingPageView):
             for upload_file in files:
                 bucket_item = bucket.new_key("/".join(subpath))
                 bucket_item.set_metadata('Content-Type', upload_file.type)
-                headers = {'Content-Type': upload_file.type, 'x-amz-acl': 'public-read'}
+                headers = {'Content-Type': upload_file.type}
                 bucket_item.set_contents_from_file(fp=upload_file.file, headers=headers, replace=True)
                 BucketDetailsView.update_acl(self.request, bucket_object=bucket_item)
                 metadata_param = self.request.params.get('metadata') or '{}'
@@ -551,11 +550,13 @@ class BucketDetailsView(BaseView):
         self.sharing_form = SharingPanelForm(
             request, bucket_object=self.bucket, sharing_acl=self.bucket_acl, formdata=self.request.params or None)
         self.versioning_form = BucketUpdateVersioningForm(request, formdata=self.request.params or None)
+        self.create_folder_form = CreateFolderForm(request, formdata=self.request.params or None)
         self.versioning_status = self.get_versioning_status(self.bucket)
         self.render_dict = dict(
             details_form=self.details_form,
             sharing_form=self.sharing_form,
             versioning_form=self.versioning_form,
+            create_folder_form=self.create_folder_form,
             delete_form=BucketDeleteForm(request),
             bucket=self.bucket,
             bucket_creation_date=self.get_bucket_creation_date(self.s3_conn, self.bucket.name),
@@ -617,7 +618,7 @@ class BucketDetailsView(BaseView):
             return dict(
                 enabled=logging_enabled,
                 logs_prefix=logging_prefix,
-                logs_url=self.request.route_path('bucket_contents', subpath=logging_subpath)
+                logs_url=self.request.route_path('bucket_contents', name=self.bucket.name, subpath=logging_subpath)
             )
 
     @staticmethod

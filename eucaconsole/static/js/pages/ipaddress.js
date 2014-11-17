@@ -6,7 +6,11 @@
 
 angular.module('ElasticIPPage', [])
     .controller('ElasticIPPageCtrl', function ($scope) {
-        $scope.initController = function () {
+        $scope.publicIP = '';
+        $scope.allocationID = '';
+        $scope.initController = function (publicIP, allocationID) {
+            $scope.publicIP = publicIP,
+            $scope.allocationID = allocationID;
             $scope.activateWidget();
             $scope.setWatch();
             $scope.setFocus();
