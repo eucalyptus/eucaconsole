@@ -30,6 +30,7 @@ angular.module('BucketContentsPage', ['LandingPage', 'EucaConsoleUtils'])
             $scope.copyObjUrl = options['copy_object_url'];
             $scope.getKeysGenericUrl = options['get_keys_generic_url'];
             $scope.putKeysUrl = options['put_keys_url'];
+            $scope.makeObjectPublicUrl = options['make_object_public_url'];
             // set upload button target based on media query
             if (window.matchMedia(Foundation.media_queries['small']).matches === false) {
                 $('#upload-file-btn').attr('target', '_blank');
@@ -154,6 +155,22 @@ angular.module('BucketContentsPage', ['LandingPage', 'EucaConsoleUtils'])
                         }
                     }
                     $('#delete-object-modal').foundation('reveal', 'close');
+                    Notify.success(oData.message);
+                    $scope.obj_key = '';
+                }).
+                error(function (oData, status) {
+                    eucaHandleErrorS3(oData, status);
+                });
+        };
+        $scope.makeObjectPublic = function () {
+            var data = "csrf_token=" + $('#csrf_token').val() + "&key=" + $scope.prefix + '/' + $scope.obj_key;
+            $http({method: 'POST', url: $scope.makeObjectPublicUrl, data: data,
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
+                success(function (oData) {
+                    if (oData.errors !== undefined) {
+                        console.log('Error making object public ' + oData.errors);
+                    }
+                    $('#make-object-public-modal').foundation('reveal', 'close');
                     Notify.success(oData.message);
                     $scope.obj_key = '';
                 }).

@@ -241,6 +241,31 @@ class BucketXHRView(BaseView):
             )
             return dict(message=_(u"Successfully copied object."))
 
+    @view_config(route_name='bucket_item_make_public', renderer='json', request_method='POST', xhr=True)
+    def bucket_item_make_public(self):
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
+        key_name = self.request.params.get('key')
+        detailpage = self.request.params.get('detailpage')
+        if not key_name:
+            return dict(message=_(u"Key must be specified."), errors=[])
+        bucket = self.s3_conn.head_bucket(self.bucket_name)
+        key = bucket.get_key(key_name, validate=False)
+        self.log_request("Making object {0} public".format(key_name))
+        try:
+            key.make_public()
+            prefix = _(u"Successfully made object {0} public.")
+            msg = prefix.format(key_name)
+            if detailpage:
+                # Need to send notification via session on detail page to allow ACLs to properly refresh
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
+            return dict(message=msg)
+        except BotoServerError as err:
+            prefix = _(u"Failed to make object {0} public: {1}")
+            message = prefix.format(key_name, err.message)
+            self.log_request(message)
+            return dict(message=message)
+
 
 class BucketContentsView(LandingPageView):
     """Views for actions on single bucket"""
@@ -393,6 +418,8 @@ class BucketContentsView(LandingPageView):
             'copy_object_url': self.request.route_path('bucket_put_item', name='_name_', subpath='_subpath_'),
             'get_keys_generic_url': self.request.route_path('bucket_keys', name='_name_', subpath='_subpath_'),
             'put_keys_url': self.request.route_path('bucket_put_items', name=self.bucket_name, subpath='_subpath_'),
+            'make_object_public_url': self.request.route_path(
+                'bucket_item_make_public', name=self.bucket_name, subpath='_subpath_'),
         }))
 
     @staticmethod
@@ -744,10 +771,11 @@ class BucketItemDetailsView(BaseView):
         return BaseView.escape_json(json.dumps({
             'delete_keys_url': self.request.route_path('bucket_delete_keys', name=self.bucket_name),
             'bucket_url': self.request.route_path(
-                'bucket_contents',
-                name=self.bucket_name,
-                subpath=self.request.subpath[:-1]),
-            'key': self.bucket_item.name,
+                'bucket_contents', name=self.bucket_name, subpath=self.request.subpath[:-1]),
+            'make_object_public_url': self.request.route_path(
+                'bucket_item_make_public', name=self.bucket_name, subpath='_subpath_'),
+            'bucket_item_key': self.bucket_item_name,
+            'unprefixed_key': BucketContentsView.get_unprefixed_key_name(self.bucket_item.name)
         }))
 
     @view_config(route_name='bucket_item_details', renderer=VIEW_TEMPLATE)
