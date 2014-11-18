@@ -60,7 +60,7 @@
                     <hr/>
                     <div class="row">
                         <div class="small-7 columns">
-                            <button type="submit" class="button" id="create-bucket-submit-button" ng-disabled="!hasChangesToBeSaved || isNotValid" ng-click="showConfirm($event)">
+                            <button type="submit" class="button" id="create-bucket-submit-button" ng-disabled="!hasChangesToBeSaved || isNotValid" ng-click="startUpload($event)">
                                 <span i18n:translate="">Upload File(s)</span>
                             </button>
                             <a id="cancel-create-bucket-link" ng-click="cancel()"
@@ -83,17 +83,7 @@
             </div>
         </div>
         <div id="upload-files-modal" class="reveal-modal small" data-reveal="">
-            <h3 i18n:translate="">Confirm file upload</h3>
-            <div ng-show="!uploading">
-                <p>
-                    <span i18n:translate="">File transfer over the web can negatively affect performance and bandwidth for ALL console users (not just you) while the transfer is in progress. Performance for all console operations may get extremely slow or stop completely.</span>
-                    <br>&nbsp;</br>
-                    <span i18n:translate="">You can optimize this by uploading files when you know fewer people will be using the console concurrently.</span>
-                </p>
-                <a class="button expand" id="upload-files-btn" i18n:translate="" ng-click="startUpload()">
-                    OK, Let's Do This Now!
-                </a>
-            </div>
+            <h3 i18n:translate="">File upload in progress</h3>
             <div ng-show="uploading">
                 <p>
                     <span i18n:translate="">Uploading files can take some time. Leaving this page while the upload is in progress will cancel the operation.</span>

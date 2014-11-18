@@ -8,6 +8,7 @@
 angular.module('LoginPage', ['EucaConsoleUtils'])
     .controller('LoginPageCtrl', function ($scope, $timeout, eucaUnescapeJson) {
         $scope.showHttpsWarning = false;
+        $scope.isLoggingIn = false;
         $scope.initController = function (json_options) {
             var options = JSON.parse(eucaUnescapeJson(json_options));
             $scope.prefillForms(options['account'], options['username']);

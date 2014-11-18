@@ -192,6 +192,10 @@ $dropdown-border-color: $euca-green;
                 margin-left: 0;
             }
         }
+        // Alert icon for missing security group rules
+        .fi-alert {
+            color: darkred;
+        }
     }
     .link {
         color: $euca-green;
@@ -296,6 +300,10 @@ $dropdown-border-color: $euca-green;
             font-size: 1.2rem;
             top: 0;
         }
+    }
+    // Alert icon for missing security group rules
+    .fi-alert {
+        color: darkred;
     }
 }
 

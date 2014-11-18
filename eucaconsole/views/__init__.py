@@ -397,6 +397,10 @@ class BaseView(object):
         my_hmac.update(policy)
         return base64.b64encode(my_hmac.digest())
 
+    @staticmethod
+    def has_role_access(request):
+        return request.session['cloud_type'] == 'euca' and request.session['role_access']
+
 
 class TaggedItemView(BaseView):
     """Common view for items that have tags (e.g. security group)"""

@@ -77,11 +77,9 @@ angular.module('UploadFilePage', ['S3SharingPanel', 'S3MetadataEditor'])
                 }
             });
         };
-        $scope.showConfirm = function($event) {
+        $scope.startUpload = function($event) {
             $event.preventDefault();
             $('#upload-files-modal').foundation('reveal', 'open');
-        }
-        $scope.startUpload = function($event) {
             $scope.uploading = true;
             $scope.progress = 0;
             $scope.total = $scope.files.length;
@@ -89,7 +87,7 @@ angular.module('UploadFilePage', ['S3SharingPanel', 'S3MetadataEditor'])
         };
         $scope.uploadFile = function($event) {
             var file = $scope.files[$scope.progress];
-            var fd = new FormData()
+            var fd = new FormData();
             // fill from actual form
             angular.forEach($('form').serializeArray(), function(value, key) {
                 this.append(value.name, value.value);
@@ -99,14 +97,16 @@ angular.module('UploadFilePage', ['S3SharingPanel', 'S3MetadataEditor'])
             var url = $scope.uploadUrl + '/' + file.name;
             $http.post(url, fd, {
                     headers: {'Content-Type': undefined},
-                    transformRequest: angular.identity,
+                    transformRequest: angular.identity
                   }).
                 success(function(oData) {
                     $scope.progress = $scope.progress + 1;
                     if ($scope.progress == $scope.total) {
+                        var parentWindow = window.opener;
                         $('#upload-files-modal').foundation('reveal', 'close');
                         $scope.hasChangesToBeSaved = false;
-                        $scope.cancel()
+                        parentWindow.postMessage('s3:fileUploaded', '*');
+                        $scope.cancel();
                     }
                     if ($scope.uploading == true) {
                         $scope.uploadFile();

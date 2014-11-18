@@ -3,6 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="https://10.111.5.7/" />
 <title>verify-ec2-instance-quota</title>
 </head>
 <body>
@@ -56,24 +57,24 @@
 	<td></td>
 </tr>
 <tr>
-	<td>selectWindow</td>
-	<td>null</td>
-	<td></td>
-</tr>
-<tr>
 	<td>clickAndWait</td>
 	<td>id=create-launchconfig-btn</td>
 	<td></td>
 </tr>
 <tr>
+	<td>pause</td>
+	<td>1000</td>
+	<td></td>
+</tr>
+<tr>
 	<td>click</td>
-	<td>xpath=(//a[contains(text(),'Select')])[2]</td>
+	<td>xpath=(//a[contains(text(),'Select')])[1]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>type</td>
 	<td>id=name</td>
-	<td>lc1</td>
+	<td>lc1-${str}</td>
 </tr>
 <tr>
 	<td>click</td>
@@ -84,6 +85,36 @@
 	<td>select</td>
 	<td>id=keypair</td>
 	<td>label=None (advanced option)</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Create security group</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>id=create-securitygroup-btn</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>xpath=(//input[@id='name'])[2]</td>
+	<td>sg${str}</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=description</td>
+	<td>test-${str}</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=create-securitygroup-btn</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>id=create-launchconfig-btn-step3</td>
+	<td></td>
 </tr>
 <tr>
 	<td>click</td>
@@ -101,14 +132,19 @@
 	<td></td>
 </tr>
 <tr>
+	<td>pause</td>
+	<td>1000</td>
+	<td></td>
+</tr>
+<tr>
 	<td>click</td>
-	<td>xpath=(//a[contains(text(),'Select')])[2]</td>
+	<td>xpath=(//a[contains(text(),'Select')])[1]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>type</td>
 	<td>id=name</td>
-	<td>lc2</td>
+	<td>lc2-${str}</td>
 </tr>
 <tr>
 	<td>click</td>
@@ -126,7 +162,22 @@
 	<td></td>
 </tr>
 <tr>
+	<td>storeText</td>
+	<td>id=notifications</td>
+	<td>breadcrumbs</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${breadcrumbs}</td>
+	<td></td>
+</tr>
+<tr>
 	<td>verifyTextPresent</td>
+	<td>Request would exceed quota for type: launchconfiguration</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
 	<td>Request would exceed quota for type: launchconfiguration</td>
 	<td></td>
 </tr>

@@ -168,7 +168,7 @@ class IPAddressesJsonView(LandingPageView):
             return JSONResponse(status=400, message="missing CSRF token")
         ipaddresses = []
         with boto_error_handler(self.request):
-            items = self.filter_items(self.get_items(), ignore=['assignment'])
+            items = self.filter_items(self.get_items(), ignore=['assignment', 'allocate'])
             if self.request.params.getall('assignment'):
                 items = self.filter_by_assignment(items)
             instances = self.get_instances(items)

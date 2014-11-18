@@ -32,6 +32,7 @@ angular.module('BucketsPage', ['LandingPage', 'EucaConsoleUtils'])
             $scope.copyObjUrl = options['copy_object_url'];
             $scope.getKeysGenericUrl = options['get_keys_generic_url'];
             $scope.putKeysUrl = options['put_keys_url'];
+            $scope.uploadUrl = options['upload_url'];
             $scope.updatePasteValues();
         };
         $scope.revealModal = function (action, bucket) {
