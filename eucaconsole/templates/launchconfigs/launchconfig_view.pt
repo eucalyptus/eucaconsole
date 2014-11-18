@@ -1,5 +1,9 @@
 <metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/launchconfig.css')}" />
+</head>
+
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="LaunchConfigPage" ng-controller="LaunchConfigPageCtrl"
          ng-init="initController('${controller_options_json}')">
@@ -49,6 +53,8 @@
                         <div class="small-3 columns"><label i18n:translate="">Security group(s)</label></div>
                         <div class="small-9 columns value">
                             <div tal:repeat="security_group security_groups">
+                                <i tal:condition="not security_group.rule_count" class="fi-alert" data-tooltip="" i18n:attributes="title"
+                                    title="Warning: No rules defined for security group. Instance may be unreachable."></i>
                                 <a href="${request.route_path('securitygroup_view', id=security_group.id)}">
                                     ${layout.escape_braces(security_group.name)}
                                 </a>

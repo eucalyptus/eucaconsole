@@ -81,14 +81,14 @@
 	<td></td>
 </tr>
 <tr>
-	<td>selectWindow</td>
-	<td>null</td>
-	<td></td>
-</tr>
-<tr>
 	<td>select</td>
 	<td>id=instance_type</td>
 	<td>label=m1.medium: 1 CPUs, 512 memory (MB), 10 disk (GB,root device)</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=#visit-step-3 &gt; span</td>
+	<td></td>
 </tr>
 <tr>
 	<td>select</td>
@@ -96,7 +96,27 @@
 	<td>label=None (advanced option)</td>
 </tr>
 <tr>
-	<td>assertValue</td>
+	<td>click</td>
+	<td>link=Create security group</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=name</td>
+	<td>sg1-${str}</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=description</td>
+	<td>test group sg1-${str}</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=create-securitygroup-btn</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
 	<td>id=launch-instance-btn-step3</td>
 	<td></td>
 </tr>
@@ -163,6 +183,21 @@
 <tr>
 	<td>clickAndWait</td>
 	<td>id=launch-instance-btn-step3</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>id=notifications</td>
+	<td>breadcrumbs</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${breadcrumbs}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>Quota exceeded while trying to create: instance by user:</td>
 	<td></td>
 </tr>
 <tr>
@@ -271,6 +306,21 @@
 	<td></td>
 </tr>
 <tr>
+	<td>storeText</td>
+	<td>id=notifications</td>
+	<td>breadcrumbs</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${breadcrumbs}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>Quota exceeded while trying to create: instance by user:</td>
+	<td></td>
+</tr>
+<tr>
 	<td>assertTextPresent</td>
 	<td>Quota exceeded while trying to create: instance by user:</td>
 	<td></td>
@@ -289,6 +339,46 @@
 	<td>assertEval</td>
 	<td>${tcount1}==${tcount2}</td>
 	<td>true</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=resource-menu-netsec</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=resource-menuitem-securitygroups</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>1000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=sg1-${str}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=span.button.dropdown</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=delete-securitygroup-action</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=#delete-securitygroup-modal &gt; h3</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=delete_securitygroup_submit_button</td>
+	<td></td>
 </tr>
 </tbody></table>
 </body>

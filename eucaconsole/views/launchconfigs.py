@@ -136,7 +136,11 @@ class LaunchConfigsJsonView(LandingPageView):
             scalinggroup_launchconfig_names = self.get_scalinggroups_launchconfig_names()
             for launchconfig in self.filter_items(self.items):
                 security_groups = self.get_security_groups(launchconfig.security_groups)
-                security_groups_array = sorted({'name': group.name, 'id': group.id} for group in security_groups)
+                security_groups_array = sorted({
+                    'name': group.name,
+                    'id': group.id,
+                    'rules_count': self.get_security_group_rules_count_by_id(group.id)
+                    } for group in security_groups)
                 image_id = launchconfig.image_id
                 name = launchconfig.name
                 launchconfigs_array.append(dict(
@@ -201,6 +205,14 @@ class LaunchConfigsJsonView(LandingPageView):
                     return sgroup
         return ''
 
+    def get_security_group_rules_count_by_id(self, id):
+        if id.startswith('sg-'):
+            security_group = self.get_security_group_by_id(id)
+        else:
+            security_group = self.get_security_group_by_name(id)
+        if security_group:
+            return len(security_group.rules)
+        return None 
 
 class LaunchConfigView(BaseView):
     """Views for single LaunchConfig"""
@@ -214,7 +226,7 @@ class LaunchConfigView(BaseView):
         with boto_error_handler(request):
             self.launch_config = self.get_launch_config()
             self.image = self.get_image()
-            self.security_groups = self.get_security_groups()
+            self.security_groups = self.get_security_group_list()
             self.in_use = self.is_in_use()
         self.delete_form = LaunchConfigDeleteForm(self.request, formdata=self.request.params or None)
         self.role = None
@@ -303,6 +315,32 @@ class LaunchConfigView(BaseView):
                     security_groups = self.ec2_conn.get_all_security_groups(filters={'group-name': groupids})
             return security_groups
         return []
+
+    def get_securitygroups_rules(self, securitygroups):
+        rules_dict = {}
+        for security_group in securitygroups:
+            rules = SecurityGroupsView.get_rules(security_group.rules)
+            if security_group.vpc_id is not None:
+                rules_egress = SecurityGroupsView.get_rules(security_group.rules_egress, rule_type='outbound')
+                rules = rules + rules_egress
+            rules_dict[security_group.id] = rules
+        return rules_dict
+
+    def get_security_group_list(self):
+        security_groups = []
+        security_group_list = []
+        security_groups = self.get_security_groups()
+        if security_groups:
+            rules_dict = self.get_securitygroups_rules(security_groups)
+            for sgroup in security_groups:
+                rules = rules_dict[sgroup.id]
+                sgroup_dict = {}
+                sgroup_dict['id'] = sgroup.id
+                sgroup_dict['name'] = sgroup.name
+                sgroup_dict['rules'] = rules 
+                sgroup_dict['rule_count'] = len(rules) 
+                security_group_list.append(sgroup_dict)
+        return security_group_list 
 
     def is_in_use(self):
         """Returns whether or not the launch config is in use (i.e. in any scaling group).
@@ -454,4 +492,3 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
                 rules = rules + rules_egress 
             rules_dict[security_group.id] = rules
         return rules_dict
-
