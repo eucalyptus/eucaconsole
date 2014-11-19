@@ -19,7 +19,9 @@ angular.module('TagEditor', ['ngSanitize', 'EucaConsoleUtils'])
         $scope.tagsArray = [];
         $scope.newTagKey = '';
         $scope.newTagValue = '';
+        $scope.tagKeyClass = '';
         $scope.showNameTag = true;
+        $scope.existsTagKey = false;
         $scope.isTagNotComplete = true;
         $scope.visibleTagsCount = 0;
         $scope.tagCount = 0;
@@ -161,7 +163,9 @@ angular.module('TagEditor', ['ngSanitize', 'EucaConsoleUtils'])
             }
         };
         $scope.checkRequiredInput = function () {
-            if ($scope.newTagKey === '' || $scope.newTagValue === '') {
+            if ($scope.checkDuplicatedTagKey()) {
+                $scope.isTagNotComplete = true;
+            } else if ($scope.newTagKey === '' || $scope.newTagValue === '') {
                 $scope.isTagNotComplete = true;
             } else if ($('#tag-name-input-div').hasClass('error') ||
                 $('#tag-value-input-div').hasClass('error')) {
@@ -169,8 +173,19 @@ angular.module('TagEditor', ['ngSanitize', 'EucaConsoleUtils'])
             } else {
                 $scope.isTagNotComplete = false;
             } 
-
         }; 
+        // Check for the duplicated key and set the tagKeyClass to be 'error' if detected
+        $scope.checkDuplicatedTagKey = function () {
+            $scope.tagKeyClass = '';
+            $scope.existsTagKey = false;
+            angular.forEach($scope.tagsArray, function(tag) {
+                if (tag.name == $scope.newTagKey) {
+                    $scope.existsTagKey = true;
+                    $scope.tagKeyClass = 'error';
+                }
+            }); 
+            return $scope.existsTagKey;
+        };
         $scope.setWatch = function () {
             $scope.$watch('newTagKey', function () {
                 $scope.checkRequiredInput();
