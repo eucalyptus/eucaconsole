@@ -44,11 +44,28 @@ angular.module('TagEditor', ['ngSanitize', 'EucaConsoleUtils'])
         };
         $scope.updateTagCount = function () {
             $scope.tagCount = $scope.tagsArray.length;
-            // Assume one more tag if a name is specified in the create resource form, except security group case
-            if ($scope.isNameTagIncluded() == false &&
-                $('#name').length && $('#name').val().length > 0 &&
-                $('#security-group-detail-form').length == 0) {
-                $scope.tagCount += 1;
+            // Add +1 to the tag count if a name is entered on the form 
+            if ($scope.isNameTagIncluded() == false) { 
+                if ($('#security-group-detail-form').length > 0) {
+                    // security groups have their own name attributes, thus skip
+                    return;
+                } else if ($('#launch-instance-form').length > 0) {
+                    // Sepcial case: instance launch wizard page can have mutiple name fields
+                    var isNameEntered = false;
+                    $('input.name').each(function() {
+                        if ($(this).val().length > 0) {
+                            isNameEntered = true;
+                        } 
+                    }); 
+                    if (isNameEntered) {
+                        $scope.tagCount += 1;
+                    }
+                } else {
+                    // check if the name field has a value entered
+                    if ($('#name').length && $('#name').val().length > 0) {
+                        $scope.tagCount += 1;
+                    }
+                }
             }
         };
         $scope.isNameTagIncluded = function () {
@@ -171,14 +188,27 @@ angular.module('TagEditor', ['ngSanitize', 'EucaConsoleUtils'])
                     $scope.checkRequiredInput();
                 }, 1000);
             });
+            $scope.setTagCountWatch();
+        };
+        $scope.setTagCountWatch = function () {
+            // When the tagsArray get updated, check the tag count
             $scope.$watch('tagsArray', function () {
                 $scope.updateTagCount();
                 $scope.updateVisibleTagsCount();
             }, true);
-            $(document).on('keyup', '#name', function (event) {
-                $scope.updateTagCount();
-                $scope.updateVisibleTagsCount();
-            });
+            // When user enters name field, check the tag count
+            if ($('#launch-instance-form').length != 0) {
+                // Special case for the launch instance wizard where mutiple name fields exist
+                $(document).on('keyup', 'input.name', function (event) {
+                    $scope.updateTagCount();
+                    $scope.updateVisibleTagsCount();
+                });
+            } else {
+                $(document).on('keyup', '#name', function (event) {
+                    $scope.updateTagCount();
+                    $scope.updateVisibleTagsCount();
+                });
+            }
         };
     })
 ;
