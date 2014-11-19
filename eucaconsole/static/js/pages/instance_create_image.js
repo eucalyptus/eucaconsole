@@ -36,6 +36,8 @@ angular.module('InstanceCreateImage', ['TagEditor'])
         };
         $scope.checkRequiredInput = function () {
             $scope.isNotValid = false;
+            $scope.validateS3BucketInput();
+            $scope.validateS3PrefixInput();
             if ($scope.name == '' || $scope.s3_bucket == '' || $scope.s3_prefix == '' ) {
                 $scope.isNotValid = true;
             } else if ($scope.s3BucketError || $scope.s3PrefixError) {
@@ -51,11 +53,16 @@ angular.module('InstanceCreateImage', ['TagEditor'])
             }
         };
         $scope.validateS3PrefixInput = function () {
-            var re = /^[a-z0-9-\.]+$/;
-            if ($scope.s3_prefix == '' || $scope.s3_prefix.match(re)) {
-                $scope.s3PrefixError = false;
-            } else { 
+            if ($('div#controls_s3_prefix .field').hasClass('error')) {
                 $scope.s3PrefixError = true;
+            } else { 
+                $scope.s3PrefixError = false;
+            }
+        };
+        $scope.adjustS3BucketClass = function() {
+            $('div#controls_s3_bucket .field').removeClass('error');
+            if ($scope.s3BucketError) {
+                $('div#controls_s3_bucket .field').addClass('error');
             }
         };
         $scope.setWatch = function () {
@@ -63,25 +70,26 @@ angular.module('InstanceCreateImage', ['TagEditor'])
                 $scope.checkRequiredInput();
             });
             $scope.$watch('s3_bucket', function () {
-                $scope.validateS3BucketInput();
-                $scope.checkRequiredInput();
-            });
-            $scope.$watch('s3_prefix', function () {
-                $scope.validateS3PrefixInput();
                 $scope.checkRequiredInput();
             });
             $scope.$watch('s3BucketError', function () {
-                $('div#controls_s3_bucket').removeClass('error');
-                if ($scope.s3BucketError) {
-                    $('div#controls_s3_bucket').addClass('error');
-                }
+                $scope.adjustS3BucketClass(); 
             });
-            $scope.$watch('s3PrefixError', function () {
-                $('div#controls_s3_prefix').removeClass('error');
-                if ($scope.s3PrefixError) {
-                    $('div#controls_s3_prefix').addClass('error');
-                }
+            $(document).on('keyup', '#s3_prefix', function (event) {
+                $scope.checkRequiredInput();
+                $scope.$apply();
+                // timeout is needed to react to Foundation's validation check
+                $timeout(function() {
+                    $scope.checkRequiredInput();
+                    $scope.$apply();
+                }, 1000);
             });
+        };
+        $scope.submitCreateImage = function() {
+            $scope.checkRequiredInput();
+            if (!$scope.isNotValid) { 
+                $('#instance-shutdown-warn-modal').foundation('reveal', 'open');
+            }
         };
         $scope.submitCreate = function() {
             var pass = $('#bundle-password').val();
