@@ -419,6 +419,12 @@ angular.module('SecurityGroupRules', ['CustomFilters', 'EucaConsoleUtils'])
             // Trigger form validation to prevent borked rule entry
             var form = $($event.currentTarget).closest('form');
             form.trigger('validate');
+            // clear validation errors on hidden fields
+            // TODO: retest without this code when foundation is upgraded beyond 5.0.3
+            $('.error.ng-hide').removeClass('error')
+            if ($scope.ipProtocol == 'icmp') {
+                $('.port').removeAttr('data-invalid')
+            }
             if (form.find('[data-invalid]').length) {
                 return false;
             }
