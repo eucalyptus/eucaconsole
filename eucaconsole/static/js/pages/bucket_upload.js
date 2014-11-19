@@ -22,6 +22,7 @@ angular.module('UploadFilePage', ['S3SharingPanel', 'S3MetadataEditor'])
         $scope.createBucketForm = $('#create-bucket-form');
         $scope.isSubmitted = false;
         $scope.hasChangesToBeSaved = false;
+        $scope.isNotValid = true;
         $scope.files = [];
         $scope.uploading = false;
         $scope.progress = 0;
@@ -41,10 +42,18 @@ angular.module('UploadFilePage', ['S3SharingPanel', 'S3MetadataEditor'])
                 $scope.hasChangesToBeSaved = true;
             });
             $scope.$watch('files', function (newVals) {
+                $('#size-error').css('display', 'none');
+                $scope.isNotValid = false;
                 if (newVals.length > 0) {
                     $scope.hasChangesToBeSaved = true;
+                    angular.forEach($scope.files, function(value, idx) {
+                        if (value.size > 5000000000) {
+                            $('#size-error').css('display', 'block');
+                            $scope.isNotValid = true;
+                        }
+                    });
                 }
-            });
+            }, true);
             // Turn "isSubmitted" flag to true when a form (except the logout form) is submitted
             $('form[id!="euca-logout-form"]').on('submit', function () {
                 $scope.isSubmitted = true;
