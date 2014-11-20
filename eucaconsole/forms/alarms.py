@@ -142,7 +142,7 @@ class CloudWatchAlarmCreateForm(BaseSecureForm):
         self.metric.choices = self.get_metric_choices()
         self.unit.choices = self.get_unit_choices()
         self.availability_zone.choices = self.ec2_choices_manager.availability_zones(region)
-        self.instance_id.choices = self.ec2_choices_manager.instances()
+        self.instance_id.choices = self.ec2_choices_manager.instances(states=["pending", "running", "stopping", "stopped"])
         self.instance_type.choices = self.get_instance_type_choices()
         self.load_balancer_name.choices = self.elb_choices_manager.load_balancers()
         self.scaling_group_name.choices = self.autoscale_choices_manager.scaling_groups()

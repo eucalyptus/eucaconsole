@@ -128,7 +128,7 @@ class ChoicesManager(object):
         except pylibmc.Error as err:
             return _get_zones_(self, region)
 
-    def instances(self, instances=None, state=None, escapebraces=True):
+    def instances(self, instances=None, states=None, escapebraces=True):
         from ..views import TaggedItemView
         choices = [('', _(u'Select instance...'))]
         instances = instances or []
@@ -138,8 +138,13 @@ class ChoicesManager(object):
                 for instance in instances:
                     value = instance.id
                     label = TaggedItemView.get_display_name(instance, escapebraces=escapebraces)
-                    if state is None or instance.state == state:
+                    if states is None:
                         choices.append((value, label))
+                    else:
+                        for state in states:
+                            if instance.state == state:
+                                choices.append((value, label))
+     
         return choices
 
     def instance_types(self, cloud_type='euca', add_blank=True, add_description=True):
