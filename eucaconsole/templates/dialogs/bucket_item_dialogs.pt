@@ -13,7 +13,7 @@
     </div>
     <!--! Modal dialog for making bucket item public on landing and detail page -->
     <div id="make-object-public-modal" class="reveal-modal small" data-reveal="">
-        <h3 i18n:translate=""></h3>
+        <h3 i18n:translate="">Make object public</h3>
         <p i18n:translate="">
             Making an object public adds a permission for any user to view and download this object,
             as long as they have the object's URL.  These users are not required to be authenticated with the cloud.

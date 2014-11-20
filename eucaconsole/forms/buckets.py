@@ -94,7 +94,7 @@ class SharingPanelForm(BaseSecureForm):
         u"sharing will be extended to all users in their account."
     )
     share_account = TextEscapedField(label=_(u'Grantee'))
-    share_permissions = wtforms.SelectField(label=_(u'Permissions'))
+    share_permissions = wtforms.SelectField(label=_(u'Permission'))
     propagate_acls = wtforms.BooleanField(label=_(u'Propagate grantee permissions to objects in this bucket'))
 
     def __init__(self, request, bucket_object=None, sharing_acl=None, **kwargs):
