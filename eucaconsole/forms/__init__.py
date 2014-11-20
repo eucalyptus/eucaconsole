@@ -39,7 +39,6 @@ from wtforms.ext.csrf import SecureForm
 from wtforms.widgets import html_params, HTMLString, Select
 from markupsafe import escape
 
-import boto
 from boto.exception import BotoServerError
 
 from ..caches import extra_long_term
@@ -141,9 +140,8 @@ class ChoicesManager(object):
                     if states is None:
                         choices.append((value, label))
                     else:
-                        for state in states:
-                            if instance.state == state:
-                                choices.append((value, label))
+                        if instance.state in states:
+                            choices.append((value, label))
      
         return choices
 
