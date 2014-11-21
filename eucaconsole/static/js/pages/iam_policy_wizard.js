@@ -17,7 +17,7 @@ angular.module('IAMPolicyWizard', ['EucaConsoleUtils'])
         $scope.policyAPIVersion = "2012-10-17";
         $scope.cloudType = 'euca';
         $scope.lastSelectedTabKey = 'policyWizard-selectedTab';
-        $scope.actionsList = [];
+        $scope.actionsList = [];  // List of *all* actions; builds allow/deny statements in one fell swoop
         $scope.urlParams = $.url().param();
         $scope.timestamp = (new Date()).toISOString().replace(/[-:TZ\.]/g, '');
         $scope.selectedOperatorType = '';
@@ -27,6 +27,12 @@ angular.module('IAMPolicyWizard', ['EucaConsoleUtils'])
         $scope.handEdited = false;
         $scope.pageLoading = true;
         $scope.nameConflictKey = 'doNotShowPolicyNameConflictWarning';
+        $scope.policyGenExpanded = true;
+        $scope.fileUploadExpanded = false;
+        $scope.actions = {};  // Container for actions by namespace
+        $scope.actionResources = {};
+        $scope.actionConditions = {};
+        $scope.actionParsedConditions = {};
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.policyJsonEndpoint = options['policyJsonEndpoint'];
@@ -36,6 +42,8 @@ angular.module('IAMPolicyWizard', ['EucaConsoleUtils'])
             $scope.awsRegions = options['awsRegions'];
             $scope.existingPolicies = options['existingPolicies'];
             $scope.saveUrl = options['createPolicyUrl'];
+            $scope.policyActions = options['policyActions'];
+            $scope.initActionContainers();
             $scope.initSelectedTab();
             $scope.initChoices();
             $scope.initCodeMirror();
@@ -46,6 +54,16 @@ angular.module('IAMPolicyWizard', ['EucaConsoleUtils'])
                 $scope.addResourceTypeListener();
                 $scope.initDateTimePickers();
             }
+        };
+        $scope.initActionContainers = function () {
+            $scope.policyActions.forEach(function (actionNS) {
+                $scope.actions[actionNS.name] = actionNS.actions;
+                actionNS.actions.forEach(function(action) {
+                    $scope.actionResources[action] = [];
+                    $scope.actionConditions[action] = {};
+                    $scope.actionParsedConditions[action] = [];
+                });
+            })
         };
         $scope.initChoices = function () {
             $scope.imageTypeChoices = ['emi', 'eki', 'eri'];
@@ -279,8 +297,8 @@ angular.module('IAMPolicyWizard', ['EucaConsoleUtils'])
             $scope.actionsList.forEach(function (action) {
                 var actionRow = $scope.policyGenerator.find('.action.' + action),
                     selectedMark = actionRow.find('.tick.selected'),
-                    addedResources = $scope[action + 'Resources'],
-                    addedConditions = $scope[action + 'Conditions'],
+                    addedResources = $scope.actionResources[action],
+                    addedConditions = $scope.actionConditions[action],
                     statement, resource;
                 resource = addedResources.length > 0 ? addedResources : selectedMark.attr('data-resource');
                 statement = {
@@ -318,7 +336,7 @@ angular.module('IAMPolicyWizard', ['EucaConsoleUtils'])
                 actionRow = resourceBtn.closest('tr'),
                 selectedTick = actionRow.find('i.selected'),
                 allowDenyCount = selectedTick.length,
-                actionResources = $scope[action + 'Resources'],
+                actionResources = $scope.actionResources[action],
                 visibleResource = null,
                 resourceVal = null;
             $event.preventDefault();
@@ -346,7 +364,7 @@ angular.module('IAMPolicyWizard', ['EucaConsoleUtils'])
         };
         $scope.removeResource = function (action, index, $event) {
             $event.preventDefault();
-            $scope[action + 'Resources'].splice(index, 1);
+            $scope.actionResources[action].splice(index, 1);
             $scope.updatePolicy();
         };
         $scope.addCondition = function (action, $event) {
@@ -354,7 +372,7 @@ angular.module('IAMPolicyWizard', ['EucaConsoleUtils'])
                 actionRow = conditionBtn.closest('tr'),
                 selectedTick = actionRow.find('i.selected'),
                 allowDenyCount = selectedTick.length,
-                actionConditions = $scope[action + 'Conditions'],
+                actionConditions = $scope.actionConditions[action],
                 conditionKey, conditionOperator, conditionValueField, conditionValue;
             $event.preventDefault();
             conditionKey = actionRow.find('.condition-keys').val();
@@ -384,7 +402,7 @@ angular.module('IAMPolicyWizard', ['EucaConsoleUtils'])
         };
         $scope.removeCondition = function (action, operator, key, $event) {
             $event.preventDefault();
-            var actionConditions = $scope[action + 'Conditions'];
+            var actionConditions = $scope.actionConditions[action];
             if (actionConditions[operator] && actionConditions[operator].hasOwnProperty(key)) {
                 delete actionConditions[operator][key];
             }
@@ -396,19 +414,16 @@ angular.module('IAMPolicyWizard', ['EucaConsoleUtils'])
         };
         $scope.updateParsedConditions = function (action, conditionsObj) {
             // Flatten conditions object into an array of conditions with unique key/operator values
-            $scope[action + 'ParsedConditions'] = [];
+            $scope.actionParsedConditions[action] = [];
             Object.keys(conditionsObj).forEach(function (operator) {
                 Object.keys(conditionsObj[operator]).forEach(function (conditionKey) {
-                    $scope[action + 'ParsedConditions'].push({
+                    $scope.actionParsedConditions[action].push({
                         'operator': operator,
                         'key': conditionKey,
                         'value': conditionsObj[operator][conditionKey]
                     });
                 });
             });
-        };
-        $scope.hasConditions = function (obj) {
-            return Object.keys(obj).length > 0;
         };
         $scope.getConditionType = function (conditionKey) {
             /* Given a condition key, return a condition type (e.g. 'DATE' for Date Conditions)
