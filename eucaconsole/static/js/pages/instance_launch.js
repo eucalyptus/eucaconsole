@@ -27,7 +27,6 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.keyPairChoices = {};
         $scope.newKeyPairName = '';
         $scope.keyPairModal = $('#create-keypair-modal');
-        $scope.showKeyPairMaterial = false;
         $scope.isLoadingKeyPair = false;
         $scope.securityGroups = [];
         $scope.securityGroupsRules = {};
@@ -427,7 +426,6 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             return result;
         };
         $scope.showCreateKeypairModal = function() {
-            $scope.showKeyPairMaterial = false;
             var form = $('#launch-instance-form');
             var invalid_attr = 'data-invalid';
             form.removeAttr(invalid_attr);
@@ -435,40 +433,37 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             $('.error', form).not('small').removeClass('error');
             $scope.keyPairModal.foundation('reveal', 'open');
         };
-        $scope.downloadKeyPair = function ($event, downloadUrl) {
+        $scope.handleKeyPairCreate = function ($event, createUrl, downloadUrl) {
             $event.preventDefault();
             var form = $($event.target);
-            $.generateFile({
-                csrf_token: form.find('input[name="csrf_token"]').val(),
-                filename: $scope.newKeyPairName + '.pem',
-                content: form.find('textarea[name="content"]').val(),
-                script: downloadUrl
-            });
-            $scope.showKeyPairMaterial = false;
-            var modal = $scope.keyPairModal;
-            modal.foundation('reveal', 'close');
-            $scope.newKeyPairName = '';
-        };
-        $scope.handleKeyPairCreate = function ($event, url) {
-            $event.preventDefault();
             if ($scope.newKeyPairName.indexOf('/') !== -1 || $scope.newKeyPairName.indexOf('\\') !== -1) {
-                return; 
+                return;
             }
-            var formData = $($event.target).serialize();
+            var formData = form.serialize();
             $scope.isLoadingKeyPair = true;
             $http({
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                 method: 'POST',
-                url: url,
+                url: createUrl,
                 data: formData
             }).success(function (oData) {
-                $scope.showKeyPairMaterial = true;
                 $scope.isLoadingKeyPair = false;
-                $('#keypair-material').val(oData['payload']);
+                var keypairMaterial = oData['payload'];
                 // Add new key pair to choices and set it as selected
                 $scope.keyPairChoices[$scope.newKeyPairName] = $scope.newKeyPairName;
                 $scope.keyPair = $scope.newKeyPairName;
                 Notify.success(oData.message);
+                // Download key pair file
+                $.generateFile({
+                    csrf_token: form.find('input[name="csrf_token"]').val(),
+                    filename: $scope.newKeyPairName + '.pem',
+                    content: keypairMaterial,
+                    script: downloadUrl
+                });
+                // Close create key pair modal
+                var modal = $scope.keyPairModal;
+                modal.foundation('reveal', 'close');
+                $scope.newKeyPairName = '';
             }).error(function (oData) {
                 $scope.isLoadingKeyPair = false;
                 eucaHandleError(oData, status);

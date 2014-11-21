@@ -82,9 +82,44 @@
 	<td></td>
 </tr>
 <tr>
+	<td>storeElementPresent</td>
+	<td>//td/a[@href=&quot;/volumes/${volume_id}&quot;]/../../td[2]/span</td>
+	<td>is_text</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${is_text}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>gotoIf</td>
+	<td>storedVars['is_text'] == false</td>
+	<td>NO_STATUS</td>
+</tr>
+<tr>
 	<td>storeText</td>
 	<td>//td/a[@href=&quot;/volumes/${volume_id}&quot;]/../../td[2]/span</td>
 	<td>status</td>
+</tr>
+<tr>
+	<td>label</td>
+	<td>NO_STATUS</td>
+	<td></td>
+</tr>
+<tr>
+	<td>gotoIf</td>
+	<td>storedVars['is_text'] == true</td>
+	<td>YES_STATUS</td>
+</tr>
+<tr>
+	<td>storeEval</td>
+	<td>storedVars['status']=&quot;none&quot;;</td>
+	<td></td>
+</tr>
+<tr>
+	<td>label</td>
+	<td>YES_STATUS</td>
+	<td></td>
 </tr>
 <tr>
 	<td>echo</td>
@@ -132,9 +167,29 @@
 	<td></td>
 </tr>
 <tr>
+	<td>storeElementPresent</td>
+	<td>//td/a[@href=&quot;/volumes/${volume_id}&quot;]/../../td[2]/span</td>
+	<td>is_text</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${is_text}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>gotoIf</td>
+	<td>storedVars['is_text'] == false</td>
+	<td>NO_STATUS</td>
+</tr>
+<tr>
 	<td>storeText</td>
 	<td>//td/a[@href=&quot;/volumes/${volume_id}&quot;]/../../td[2]/span</td>
 	<td>status</td>
+</tr>
+<tr>
+	<td>label</td>
+	<td>NO_STATUS</td>
+	<td></td>
 </tr>
 <tr>
 	<td>echo</td>

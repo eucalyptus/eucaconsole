@@ -38,7 +38,7 @@
                             </span>
                         </p>
                         ${panel('form_field', field=create_image_form['s3_bucket'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 's3_bucket'})}
-                        ${panel('form_field', field=create_image_form['s3_prefix'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 's3_prefix'})}
+                        ${panel('form_field', field=create_image_form['s3_prefix'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 's3_prefix'}, pattern='^[a-z0-9\-\.]+$')}
                     </div>
                     <hr/>
                     ${panel('tag_editor', leftcol_width=3, rightcol_width=9)}
@@ -63,9 +63,9 @@
                     <hr/>
                     <div class="row">
                         <div class="columns small-6">
-                            <button type="submit" class="button" id="save-changes-btn" i18n:translate="" data-reveal-id="instance-shutdown-warn-modal" ng-disabled="isNotValid">
+                            <a class="button" id="save-changes-btn" i18n:translate="" ng-disabled="isNotValid" ng-click="submitCreateImage()">
                                 Create Image
-                            </button>
+                            </a>
                             <a href="${request.route_path('instance_view', id=instance.id)}" id="cancel-link"
                                class="cancel-link" i18n:translate="">Cancel</a>
                         </div>
