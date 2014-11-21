@@ -91,6 +91,9 @@
                         <a i18n:translate="" ng-href="{{ item.download_url }}">Download</a>
                     </li>
                     <li ng-show="!item.is_folder">
+                        <a i18n:translate="" ng-click="revealModal('make-object-public', item)">Make public</a>
+                    </li>
+                    <li ng-show="!item.is_folder">
                         <a i18n:translate="" ng-click="saveKey('${bucket_name}', item.full_key_name)">Copy object</a>
                     </li>
                     <li ng-show="item.is_folder">
@@ -144,6 +147,9 @@
                             </li>
                             <li ng-show="!item.is_folder">
                                 <a i18n:translate="" ng-href="{{ item.download_url }}">Download</a>
+                            </li>
+                            <li ng-show="!item.is_folder">
+                                <a i18n:translate="" ng-click="revealModal('make-object-public', item)">Make public</a>
                             </li>
                             <li ng-show="!item.is_folder">
                                 <a i18n:translate="" ng-click="saveKey('${bucket_name}', item.full_key_name)">Copy object</a>
@@ -227,7 +233,7 @@
         <!--! Create folder modal dialog -->
         ${panel('bucket_dialogs', landingpage=True, versioning_form=versioning_form, delete_form=delete_form)}
         ${panel('create_folder_dialog', bucket_name=bucket_name, create_folder_form=create_folder_form)}
-        ${panel('bucket_delete_dialog')}
+        ${panel('bucket_item_dialogs')}
     </div>
 </div>
 

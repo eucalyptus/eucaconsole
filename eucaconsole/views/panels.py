@@ -35,6 +35,7 @@ from operator import itemgetter
 import simplejson as json
 
 from boto.s3.bucket import Bucket
+from boto.s3.key import Key
 
 from wtforms.fields import IntegerField, BooleanField
 from wtforms.validators import Length
@@ -354,7 +355,8 @@ def securitygroup_rules_landingpage(context, request, tile_view=False):
     )
 
 
-@panel_config('securitygroup_rules_egress_landingpage', renderer='../templates/panels/securitygroup_rules_egress_landingpage.pt')
+@panel_config('securitygroup_rules_egress_landingpage',
+              renderer='../templates/panels/securitygroup_rules_egress_landingpage.pt')
 def securitygroup_rules_egress_landingpage(context, request, tile_view=False):
     return dict(
         tile_view=tile_view,
@@ -373,12 +375,27 @@ def s3_sharing_panel(context, request, bucket_object=None, sharing_form=None, sh
                 grant_type=grant.type,
                 uri=grant.uri,
             ))
+    grantee_choices = [
+        ('http://acs.amazonaws.com/groups/global/AllUsers', _(u'all users')),
+        ('http://acs.amazonaws.com/groups/global/AuthenticatedUsers', _(u'authenticated users')),
+    ]
+    if isinstance(bucket_object, Key):
+        bucket_owner_id = bucket_object.bucket.get_acl().owner.id
+        grantee_choices.append(
+            (bucket_owner_id, _('bucket owner'))
+        )
+    controller_options_json = BaseView.escape_json(json.dumps({
+        'grants': grants_list,
+        'create_option_text': _(u'Press enter to select')
+    }))
     return dict(
         bucket_object=bucket_object,
         object_type=get_object_type(bucket_object),
         sharing_form=sharing_form,
         show_caution=show_caution,
-        grants_json=json.dumps(grants_list),
+        grantee_choices=grantee_choices,
+        account_placeholder_text=_(u'Select or type to enter account/user'),
+        controller_options_json=controller_options_json,
     )
 
 

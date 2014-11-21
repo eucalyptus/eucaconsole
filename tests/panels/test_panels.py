@@ -37,7 +37,8 @@ from pyramid import testing
 
 from eucaconsole.forms.securitygroups import SecurityGroupForm
 from eucaconsole.views.panels import (
-    form_field_row, image_picker, securitygroup_rules, tag_editor, autoscale_tag_editor, bdmapping_editor
+    form_field_row, image_picker, securitygroup_rules, tag_editor, autoscale_tag_editor, bdmapping_editor,
+    s3_sharing_panel
 )
 
 from tests import BaseViewTestCase
@@ -133,3 +134,11 @@ class BlockDeviceMappingEditorTests(BaseViewTestCase):
         self.assertEqual(bdm_device.get('size'), 1)
         self.assertTrue(bdm_device.get('delete_on_termination'))
 
+
+class S3SharingPanelTests(BaseViewTestCase):
+    request = testing.DummyRequest()
+
+    def test_sharing_panel_for_create_bucket(self):
+        panel = s3_sharing_panel(None, self.request, bucket_object=None)
+        controller_options = json.loads(panel.get('controller_options_json'))
+        self.assertEqual(controller_options.get('grants'), [])

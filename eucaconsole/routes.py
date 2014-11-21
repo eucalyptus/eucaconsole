@@ -194,6 +194,7 @@ urls = [
     Route(name='bucket_keys', pattern='/buckets/{name}/keys/*subpath'),
     Route(name='bucket_item_details', pattern='/buckets/{name}/itemdetails/*subpath'),
     Route(name='bucket_item_update', pattern='/buckets/{name}/itemupdate/*subpath'),
+    Route(name='bucket_item_make_public', pattern='/buckets/{name}/makepublic/*subpath'),
     Route(name='bucket_put_item', pattern='/buckets/{name}/putitem/*subpath'),
     Route(name='bucket_put_items', pattern='/buckets/{name}/putitems/*subpath'),
     Route(name='bucket_create_folder', pattern='/buckets/{name}/createfolder/*subpath'),

@@ -41,6 +41,9 @@
                             <a ng-click="saveKey('${bucket_name}', '${bucket_item}')" i18n:translate="">Copy object</a>
                         </li>
                         <li>
+                            <a ng-click="confirmMakePublic()" i18n:translate="">Make public</a>
+                        </li>
+                        <li>
                             <a id="delete-bucket-item-action" i18n:translate=""
                                ng-click="confirmDelete('${item_name}')">Delete</a>
                         </li>
@@ -101,7 +104,7 @@
                 </div> 
             </div>
         </div>
-        ${panel('bucket_delete_dialog')}
+        ${panel('bucket_item_dialogs')}
     </div>
 </div>
 

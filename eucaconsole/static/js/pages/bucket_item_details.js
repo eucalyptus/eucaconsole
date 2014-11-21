@@ -6,7 +6,7 @@
 
 /* Bucket item details page includes the S3 Sharing Panel and Metadata Editor */
 angular.module('BucketItemDetailsPage', ['S3SharingPanel', 'S3MetadataEditor', 'EucaConsoleUtils'])
-    .controller('BucketItemDetailsPageCtrl', function ($scope, $http, eucaUnescapeJson) {
+    .controller('BucketItemDetailsPageCtrl', function ($scope, $http, eucaUnescapeJson, eucaHandleErrorS3) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.bucketItemDetailsForm = $('#bucket-item-details-form');
         $scope.isSubmitted = false;
@@ -16,7 +16,9 @@ angular.module('BucketItemDetailsPage', ['S3SharingPanel', 'S3MetadataEditor', '
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.deleteUrl = options['delete_keys_url'];
             $scope.bucketUrl = options['bucket_url'];
-            $scope.key = options['key'];
+            $scope.bucketItemKey = options['bucket_item_key'];
+            $scope.unprefixedKey = options['unprefixed_key'];
+            $scope.makeObjectPublicUrl = options['make_object_public_url'];
             $scope.setInitialValues();
             $scope.handleUnsavedChanges();
             $scope.handleUnsavedSharingEntry($scope.bucketItemDetailsForm);
@@ -101,6 +103,28 @@ angular.module('BucketItemDetailsPage', ['S3SharingPanel', 'S3MetadataEditor', '
                         $('#timed-out-modal').foundation('reveal', 'open');
                     }
                     Notify.failure(errorMsg);
+                });
+        };
+        $scope.confirmMakePublic = function () {
+            $('.actions-menu').trigger('click');
+            $scope.obj_key = $scope.unprefixedKey;
+            $('#make-object-public-modal').foundation('reveal', 'open');
+        };
+        $scope.makeObjectPublic = function () {
+            var data = "csrf_token=" + $('#csrf_token').val() + "&key=" + $scope.bucketItemKey + "&detailpage=1";
+            $http({method: 'POST', url: $scope.makeObjectPublicUrl, data: data,
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
+                success(function (oData) {
+                    if (oData.errors !== undefined) {
+                        console.log('Error making object public ' + oData.errors);
+                    }
+                    $('#make-object-public-modal').foundation('reveal', 'close');
+                    // NOTE: We're forcing a reload here to refresh the ACLs in the sharing panel
+                    // The view will send the success notice via the session, displaying the notice after page reload
+                    window.location.reload();
+                }).
+                error(function (oData, status) {
+                    eucaHandleErrorS3(oData, status);
                 });
         };
     })
