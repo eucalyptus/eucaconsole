@@ -329,10 +329,9 @@
                                     <div tal:condition="layout.cloud_type == 'aws'" tal:omit-tag="">
                                         <input type="text" class="condition-value" />
                                     </div>
-                                    <div tal:condition="layout.cloud_type == 'euca'" tal:omit-tag=""
-                                         ng-init="conditionType=getConditionType(${cond_key})">
+                                    <div tal:condition="layout.cloud_type == 'euca'" tal:omit-tag="">
                                         <!--! Boolean/Null conditions -->
-                                        <div ng-if="${cond_key} &amp;&amp; conditionType == 'BOOL' || ${cond_operator} === 'Null'">
+                                        <div ng-if="${cond_operator} &amp;&amp; selectedOperatorType == 'BOOL'">
                                             <input type="checkbox" class="condition-value" />
                                             <span i18n:translate="">True</span>
                                         </div>
@@ -428,8 +427,9 @@
                                         </div>
                                         <!--! Input field for Arn*Like -->
                                         <input type="text" class="condition-value arnlike"
-                                               ng-if="${cond_operator} &amp;&amp; selectedOperatorType == 'ARN'"
-                                                      &amp;&amp; ${cond_operator}.indexOf('Like') !== -1" />
+                                               ng-if="${cond_operator} &amp;&amp; selectedOperatorType == 'ARN'
+                                                      &amp;&amp; (${cond_operator}.indexOf('Like') !== -1
+                                                      || ${cond_key}.indexOf('SourceArn') !== -1)" />
                                         <!--! Input field for Numeric inputs -->
                                         <input type="number" class="condition-value numeric"
                                                ng-if="${cond_operator} &amp;&amp; selectedOperatorType == 'NUMERIC'" />
