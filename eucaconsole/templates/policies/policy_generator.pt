@@ -329,9 +329,10 @@
                                     <div tal:condition="layout.cloud_type == 'aws'" tal:omit-tag="">
                                         <input type="text" class="condition-value" />
                                     </div>
-                                    <div tal:condition="layout.cloud_type == 'euca'" tal:omit-tag="">
+                                    <div tal:condition="layout.cloud_type == 'euca'" tal:omit-tag=""
+                                         ng-init="conditionType=getConditionType(${cond_key})">
                                         <!--! Boolean/Null conditions -->
-                                        <div ng-if="${cond_key} &amp;&amp; getConditionType(${cond_key}) == 'BOOL' || ${cond_operator} === 'Null'">
+                                        <div ng-if="${cond_key} &amp;&amp; conditionType == 'BOOL' || ${cond_operator} === 'Null'">
                                             <input type="checkbox" class="condition-value" />
                                             <span i18n:translate="">True</span>
                                         </div>
@@ -431,17 +432,17 @@
                                                       &amp;&amp; ${cond_operator}.indexOf('Like') !== -1" />
                                         <!--! Input field for Numeric inputs -->
                                         <input type="number" class="condition-value numeric"
-                                               ng-if="${cond_operator} &amp;&amp; getConditionType(${cond_key}) == 'NUMERIC'" />
+                                               ng-if="${cond_operator} &amp;&amp; conditionType == 'NUMERIC'" />
                                         <!--! Input field for User* and String* -->
                                         <input type="text" class="condition-value userstringlike"
                                                ng-if="${cond_operator} &amp;&amp; ${cond_key}.toLowerCase().indexOf('user') !== -1
-                                               &amp;&amp; getConditionType(${cond_key}) == 'STRING'" />
+                                               &amp;&amp; conditionType == 'STRING'" />
                                         <!--! Input field for date/time operators -->
                                         <input type="text" class="condition-value datetimepicker"
-                                               ng-show="${cond_operator} &amp;&amp; getConditionType(${cond_key}) == 'DATE'" />
+                                               ng-show="${cond_operator} &amp;&amp; conditionType == 'DATE'" />
                                         <!--! Input field for IP operations -->
                                         <input type="text" class="condition-value"
-                                               ng-show="${cond_operator} &amp;&amp; getConditionType(${cond_key}) == 'IP'" />
+                                               ng-show="${cond_operator} &amp;&amp; conditionType == 'IP'" />
                                         <!--! Input field for s3 non-select string values -->
                                         <input type="text" class="condition-value"
                                                ng-show="${cond_operator} &amp;&amp; ${cond_key}.indexOf('s3:') !== -1
