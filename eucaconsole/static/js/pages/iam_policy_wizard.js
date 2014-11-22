@@ -215,12 +215,12 @@ angular.module('IAMPolicyWizard', ['EucaConsoleUtils'])
             $timeout(function () {
                 $scope.policyGenerator.find('select.chosen').chosen({'width': '44%', 'search_contains': true});
                 $scope.limitResourceChoices();
-            }, 100);
+            }, 500);
         };
         $scope.initDateTimePickers = function () {
             $(document).ready(function () {
-                $scope.policyGenerator.find('.datetimepicker').datetimepicker({
-                    'format': 'Y-m-d H:i:s', 'lang': $scope.languageCode
+                $scope.policyGenerator.find('.datetimepicker').fdatepicker({
+                    'format': 'yyyy-mm-dd'
                 });
             });
         };
@@ -246,7 +246,7 @@ angular.module('IAMPolicyWizard', ['EucaConsoleUtils'])
             $timeout(function() {
                 $('#name').trigger('focus');
                 $('.CodeMirror').find('textarea').focus();
-            }, 100);
+            }, 10);
         };
         $scope.handlePolicyFileUpload = function () {
             $('#policy_file').on('change', function(evt) {

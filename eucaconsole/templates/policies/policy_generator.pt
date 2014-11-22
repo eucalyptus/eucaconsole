@@ -428,21 +428,21 @@
                                         </div>
                                         <!--! Input field for Arn*Like -->
                                         <input type="text" class="condition-value arnlike"
-                                               ng-if="${cond_operator} &amp;&amp; ${cond_operator}.indexOf('Arn') !== -1
+                                               ng-if="${cond_operator} &amp;&amp; selectedOperatorType == 'ARN'"
                                                       &amp;&amp; ${cond_operator}.indexOf('Like') !== -1" />
                                         <!--! Input field for Numeric inputs -->
                                         <input type="number" class="condition-value numeric"
-                                               ng-if="${cond_operator} &amp;&amp; conditionType == 'NUMERIC'" />
+                                               ng-if="${cond_operator} &amp;&amp; selectedOperatorType == 'NUMERIC'" />
                                         <!--! Input field for User* and String* -->
                                         <input type="text" class="condition-value userstringlike"
                                                ng-if="${cond_operator} &amp;&amp; ${cond_key}.toLowerCase().indexOf('user') !== -1
-                                               &amp;&amp; conditionType == 'STRING'" />
+                                               &amp;&amp; selectedOperatorType == 'STRING'" />
                                         <!--! Input field for date/time operators -->
                                         <input type="text" class="condition-value datetimepicker"
-                                               ng-show="${cond_operator} &amp;&amp; conditionType == 'DATE'" />
+                                               ng-show="${cond_operator} &amp;&amp; selectedOperatorType == 'DATE'" />
                                         <!--! Input field for IP operations -->
                                         <input type="text" class="condition-value"
-                                               ng-show="${cond_operator} &amp;&amp; conditionType == 'IP'" />
+                                               ng-show="${cond_operator} &amp;&amp; selectedOperatorType == 'IP'" />
                                         <!--! Input field for s3 non-select string values -->
                                         <input type="text" class="condition-value"
                                                ng-show="${cond_operator} &amp;&amp; ${cond_key}.indexOf('s3:') !== -1
