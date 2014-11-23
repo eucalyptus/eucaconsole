@@ -5,7 +5,7 @@
  */
 
 angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils'])
-    .controller('InstancesCtrl', function ($scope, $http, $timeout, eucaHandleError) {
+    .controller('InstancesCtrl', function ($scope, $http, eucaHandleError) {
         $scope.instanceID = '';
         $scope.fileName = '';
         $scope.batchTerminateModal = $('#batch-terminate-modal');
