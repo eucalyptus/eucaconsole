@@ -206,6 +206,7 @@ urls = [
     # Landing page
     Route(name='securitygroups', pattern='/securitygroups'),
     Route(name='securitygroups_json', pattern='/securitygroups/json'),
+    Route(name='securitygroups_rules_json', pattern='/securitygroupsrules/json'),
     Route(name='internet_protocols_json', pattern='/internetprotocols/json'),
     Route(name='securitygroups_delete', pattern='/securitygroups/delete'),
     # Detail page

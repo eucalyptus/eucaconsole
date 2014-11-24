@@ -393,8 +393,9 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
         self.securitygroup_form = SecurityGroupForm(self.request, self.vpc_conn, formdata=self.request.params or None)
         self.generate_file_form = GenerateFileForm(self.request, formdata=self.request.params or None)
         self.owner_choices = self.get_owner_choices()
+        #'securitygroups_rules': self.get_securitygroups_rules(),
         controller_options_json = BaseView.escape_json(json.dumps({
-            'securitygroups_rules': self.get_securitygroups_rules(),
+            'securitygroups_rules_json_endpoint': self.request.route_path('securitygroups_rules_json'),
             'securitygroups_choices': dict(self.create_form.securitygroup.choices),
             'keypair_choices': dict(self.create_form.keypair.choices),
             'role_choices': dict(self.create_form.role.choices),
