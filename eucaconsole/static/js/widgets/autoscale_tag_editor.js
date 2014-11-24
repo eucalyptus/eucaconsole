@@ -20,8 +20,12 @@ angular.module('AutoScaleTagEditor', ['ngSanitize', 'EucaConsoleUtils'])
         $scope.newTagKey = '';
         $scope.newTagValue = '';
         $scope.isTagNotComplete = true;
+        $scope.tagCount = 0;
         $scope.syncTags = function () {
             $scope.tagsTextarea.val(JSON.stringify($scope.tagsArray));
+        };
+        $scope.updateTagCount = function () {
+            $scope.tagCount = $scope.tagsArray.length;
         };
         $scope.initTags = function(optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
@@ -129,6 +133,9 @@ angular.module('AutoScaleTagEditor', ['ngSanitize', 'EucaConsoleUtils'])
                     $scope.checkRequiredInput();
                 }, 1000);
             });
+            $scope.$watch('tagsArray', function () {
+                $scope.updateTagCount();
+            }, true);
         };
     })
 ;

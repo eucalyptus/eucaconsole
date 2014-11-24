@@ -76,7 +76,7 @@
                     <li ng-show="item.status == 'running'">
                         <a i18n:translate="" ng-click="revealModal('reboot', item)">Reboot</a>
                     </li>
-                    <li ng-show="item.status !== 'terminated' &amp;&amp; !item.transitional">
+                    <li ng-show="item.status !== 'terminated' &amp;&amp; item.status !== 'shutting-down'">
                         <a i18n:translate="" ng-click="revealModal('terminate', item)">Terminate</a>
                     </li>
                     <li ng-show="item.status == 'terminated'" tal:condition="layout.cloud_type == 'euca'">
@@ -229,7 +229,7 @@
                             <li ng-show="item.status == 'running'">
                                 <a i18n:translate="" ng-click="revealModal('reboot', item)">Reboot</a>
                             </li>
-                            <li ng-show="item.status !== 'terminated' &amp;&amp; !item.transitional">
+                            <li ng-show="item.status !== 'terminated' &amp;&amp; item.status !== 'shutting-down'">
                                 <a i18n:translate="" ng-click="revealModal('terminate', item)">Terminate</a>
                             </li>
                             <li ng-show="item.status == 'terminated'" tal:condition="layout.cloud_type == 'euca'">
