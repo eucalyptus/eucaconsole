@@ -18,7 +18,7 @@
             <span i18n:translate="" ng-show="tagsArray.length">Add another tag</span><span
                   ng-show="tagsArray.length == 0" i18n:translate="">Add a tag</span>:
         </div>
-        <div class="row tagentry controls-wrapper">
+        <div class="row tagentry controls-wrapper" ng-show="tagCount &lt; 10">
             <div>
                 <div class="small-3 columns">
                     <input id="propagate-checkbox" class="taginput propagate" type="checkbox" ng-model="newTagPropagate" />
@@ -43,6 +43,11 @@
                        title="Add tag" i18n:translate="">Add Tag</a>
                 </div>
             </div>
+        </div>
+        <div ng-show="tagCount &gt;= 10">
+            <p>
+                <span i18n:translate="">You may not add more than ten tags to a resource.</span>
+            </p>
         </div>
         <!--! Add class="debug" to textarea to view tags data posted by form -->
         <textarea id="tags" name="tags" class="hidden"></textarea>
