@@ -27,15 +27,6 @@ angular.module('AutoScaleTagEditor', ['ngSanitize', 'EucaConsoleUtils'])
         $scope.updateTagCount = function () {
             $scope.tagCount = $scope.tagsArray.length;
         };
-        $scope.isNameTagIncluded = function () {
-            var isIncluded = false;
-            angular.forEach($scope.tagsArray, function(x) {
-                if (x.name == 'Name') {
-                    isIncluded = true;
-                }
-            });
-            return isIncluded;
-        };
         $scope.initTags = function(optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
             // Parse tags JSON and convert to a list of tags.
