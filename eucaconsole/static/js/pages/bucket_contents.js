@@ -124,6 +124,7 @@ angular.module('BucketContentsPage', ['LandingPage', 'EucaConsoleUtils'])
                             }
                             else {
                                 $('#delete-all-modal').foundation('reveal', 'close');
+                                $scope.$broadcast('refresh');
                             }
                         }
                         else {
