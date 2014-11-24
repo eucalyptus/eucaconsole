@@ -64,7 +64,6 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             $scope.imageJsonURL = options['image_json_endpoint'];
             $scope.setInitialValues();
             $scope.getAllSecurityGroupsRules();
-            $scope.updateSelectedSecurityGroupRules();
             $scope.preventFormSubmitOnEnter();
             $scope.initChosenSelectors();
             $scope.watchTags();
