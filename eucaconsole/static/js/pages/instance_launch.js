@@ -31,6 +31,8 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.securityGroups = [];
         $scope.securityGroupsRules = {};
         $scope.securityGroupCollection = {};
+        $scope.securityGroupJsonEndpoint = '';
+        $scope.securityGroupsRulesJsonEndpoint = '';
         $scope.selectedGroupRules = {};
         $scope.securityGroupModal = $('#create-securitygroup-modal');
         $scope.securityGroupForm = $('#create-securitygroup-form');
@@ -53,14 +55,15 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.imageIDNonexistErrorClass = '';
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
-            $scope.securityGroupsRules = options['securitygroups_rules'];
             $scope.keyPairChoices = options['keypair_choices'];
             $scope.securityGroupChoices = options['securitygroups_choices'];
             $scope.vpcSubnetList = options['vpc_subnet_choices'];
             $scope.roleList = options['role_choices'];
             $scope.securityGroupJsonEndpoint = options['securitygroups_json_endpoint'];
+            $scope.securityGroupsRulesJsonEndpoint = options['securitygroups_rules_json_endpoint'];
             $scope.imageJsonURL = options['image_json_endpoint'];
             $scope.setInitialValues();
+            $scope.getAllSecurityGroupsRules();
             $scope.updateSelectedSecurityGroupRules();
             $scope.preventFormSubmitOnEnter();
             $scope.initChosenSelectors();
@@ -527,6 +530,20 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             }).success(function(oData) {
                 var results = oData ? oData.results : [];
                 $scope.securityGroupCollection = results;
+            }).error(function (oData) {
+                eucaHandleError(oData, status);
+            });
+        };
+        $scope.getAllSecurityGroupsRules = function () {
+            var csrf_token = $('#csrf_token').val();
+            var data = "csrf_token=" + csrf_token
+            $http({
+                method:'POST', url:$scope.securityGroupsRulesJsonEndpoint, data:data,
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            }).success(function(oData) {
+                var results = oData ? oData.results : [];
+                $scope.securityGroupsRules = results;
+                $scope.updateSelectedSecurityGroupRules();
             }).error(function (oData) {
                 eucaHandleError(oData, status);
             });

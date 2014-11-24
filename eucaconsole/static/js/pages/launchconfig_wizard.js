@@ -51,12 +51,11 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
         $scope.imageIDNonexistErrorClass = '';
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
-            //$scope.securityGroupsRules = options['securitygroups_rules'];
-            $scope.securityGroupsRulesJsonEndpoint = options['securitygroups_rules_json_endpoint'];
             $scope.keyPairChoices = options['keypair_choices'];
             $scope.securityGroupChoices = options['securitygroups_choices'];
             $scope.roleList = options['role_choices'];
             $scope.securityGroupJsonEndpoint = options['securitygroups_json_endpoint'];
+            $scope.securityGroupsRulesJsonEndpoint = options['securitygroups_rules_json_endpoint'];
             $scope.imageJsonURL = options['image_json_endpoint'];
             $scope.getAllSecurityGroups(); 
             $scope.getAllSecurityGroupsRules();
