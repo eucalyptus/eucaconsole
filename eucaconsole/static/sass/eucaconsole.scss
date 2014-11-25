@@ -502,6 +502,26 @@ textarea.policy-area {
     }
 }
 
+/* -----------------------------------------
+   Block device mapping (BDM) editor
+----------------------------------------- */
+
+#bdmapping-editor {
+    th {
+        padding-left: 9px;
+    }
+    .storage-label {
+        text-align: left;
+    }
+    #new-blockdevice-entry {
+        label {
+            text-align: left;
+        }
+    }
+    input.number {
+        width: 2rem;
+    }
+}
 
 
 /* -----------------------------------------
