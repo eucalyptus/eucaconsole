@@ -695,7 +695,3 @@ def guess_mimetype_from_buffer(buffer, mime=False):
             return _magic_type.from_buffer(buffer)
         else:
             return _magic_desc.from_buffer(buffer)
-
-@view_config(route_name='jasmine_unittest', renderer='../templates/jasmine/SpecRunner.pt')
-def jasmine_unittest(request):
-    return dict()
