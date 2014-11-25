@@ -19,6 +19,8 @@ angular.module('BucketContentsPage', ['LandingPage', 'EucaConsoleUtils'])
         $scope.index = 0;
         $scope.items = null;
         $scope.op_prefix = '';
+        $scope.hasCopyItem = false;
+        $scope.hasCopyFolder = false;
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.bucketName = options['bucket_name'];
@@ -28,10 +30,13 @@ angular.module('BucketContentsPage', ['LandingPage', 'EucaConsoleUtils'])
             $scope.copyObjUrl = options['copy_object_url'];
             $scope.getKeysGenericUrl = options['get_keys_generic_url'];
             $scope.putKeysUrl = options['put_keys_url'];
+            $scope.makeObjectPublicUrl = options['make_object_public_url'];
             // set upload button target based on media query
             if (window.matchMedia(Foundation.media_queries['small']).matches === false) {
                 $('#upload-file-btn').attr('target', '_blank');
             }
+            $scope.updatePasteValues();
+            $scope.addListeners();
         };
         $scope.revealModal = function (action, item) {
             var modal = $('#' + action + '-modal');
@@ -119,6 +124,7 @@ angular.module('BucketContentsPage', ['LandingPage', 'EucaConsoleUtils'])
                             }
                             else {
                                 $('#delete-all-modal').foundation('reveal', 'close');
+                                $scope.$broadcast('refresh');
                             }
                         }
                         else {
@@ -157,32 +163,66 @@ angular.module('BucketContentsPage', ['LandingPage', 'EucaConsoleUtils'])
                     eucaHandleErrorS3(oData, status);
                 });
         };
+        $scope.makeObjectPublic = function () {
+            var data = "csrf_token=" + $('#csrf_token').val() + "&key=" + $scope.prefix + '/' + $scope.obj_key;
+            $http({method: 'POST', url: $scope.makeObjectPublicUrl, data: data,
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
+                success(function (oData) {
+                    if (oData.errors !== undefined) {
+                        console.log('Error making object public ' + oData.errors);
+                    }
+                    $('#make-object-public-modal').foundation('reveal', 'close');
+                    Notify.success(oData.message);
+                    $scope.obj_key = '';
+                }).
+                error(function (oData, status) {
+                    eucaHandleErrorS3(oData, status);
+                });
+        };
+        $scope.updatePasteValues = function() {
+            $scope.pasteBuffer = Modernizr.sessionstorage && sessionStorage.getItem('copy-object-buffer');
+            $scope.hasCopyItem = false;
+            $scope.hasCopyFolder = false;
+            if ($scope.pasteBuffer !== null) {
+                $scope.pasteBucket = $scope.pasteBuffer.slice(0, $scope.pasteBuffer.indexOf('/'));
+                $scope.pasteKey = $scope.pasteBuffer.slice($scope.pasteBuffer.indexOf('/')+1);
+                $scope.pastePath = $scope.pasteKey.slice(0, $scope.pasteKey.slice(0, $scope.pasteKey.length-1).lastIndexOf('/')+1);
+                var prefix = $scope.prefix;
+                if (prefix.length > 0) {
+                    prefix = prefix + '/';
+                }
+                // initially, set based on key ending
+                if ($scope.pasteBuffer.indexOf('/', $scope.pasteBuffer.length - 1) !== -1) {
+                    $scope.hasCopyFolder = true;
+                    // detect copy on self
+                    if ($scope.pasteBucket == $scope.bucketName && $scope.pastePath == prefix) {
+                        $scope.hasCopyFolder = false;
+                    }
+                }
+                else {
+                    $scope.hasCopyItem = true;
+                    // detect copy on self
+                    if ($scope.pasteBucket == $scope.bucketName && $scope.pastePath == prefix) {
+                        $scope.hasCopyItem = false;
+                    }
+                }
+            }
+        };
+        $scope.folderCanCopyFolder = function (item) {
+            if (item && $scope.pasteBucket == $scope.bucketName && $scope.pastePath == item.full_key_name) {
+                return false;
+            }
+            return $scope.hasCopyFolder;
+        };
         $scope.saveKey = function (bucket_name, key) {
             var id = $('.open').attr('id');  // hack to close action menu
             $('#table-'+id).trigger('click');
             Modernizr.sessionstorage && sessionStorage.setItem('copy-object-buffer', bucket_name + '/' + key);
+            $scope.updatePasteValues();
         };
         $scope.$on('itemsLoaded', function($event, items) {
             $scope.items = items;
         });
-        $scope.hasCopyItem = function () {
-            var buffer = Modernizr.sessionstorage && sessionStorage.getItem('copy-object-buffer');
-            return buffer && (buffer.indexOf('/', buffer.length - 1) === -1);
-        };
-        $scope.hasCopyFolder = function (item) {
-            var buffer = Modernizr.sessionstorage && sessionStorage.getItem('copy-object-buffer');
-            if (buffer === null) {
-                return false;
-            }
-            src_bucket = buffer.slice(0, buffer.indexOf('/'));
-            src_key = buffer.slice(buffer.indexOf('/')+1);
-            src_path = src_key.slice(0, src_key.slice(0, src_key.length-1).lastIndexOf('/')+1);
-            // detect copy on self
-            if (item && src_bucket == $scope.bucketName && src_path == item.full_key_name) {
-                return false;
-            }
-            return buffer && (buffer.indexOf('/', buffer.length - 1) !== -1);
-        };
         $scope.doPaste = function (bucketName, item, subpath) {
             var id = $('.open').attr('id');  // hack to close action menu
             $('#table-'+id).trigger('click');
@@ -289,7 +329,6 @@ angular.module('BucketContentsPage', ['LandingPage', 'EucaConsoleUtils'])
                             $('#copy-folder-modal').foundation('reveal', 'close');
                             $scope.copyingAll = false;
                             $scope.folder = '';
-                            Notify.success(oData.message);
                             $scope.$broadcast('refresh');
                         }
                         else {
@@ -308,6 +347,14 @@ angular.module('BucketContentsPage', ['LandingPage', 'EucaConsoleUtils'])
             $scope.copyingAll = false;
             $scope.$broadcast('refresh');
         };
+        $scope.addListeners = function () {
+            // Receive postMessage from file upload window, refreshing list when file upload completes
+            window.addEventListener('message', function (event) {
+                if (event.data == 's3:fileUploaded') {
+                    $scope.$broadcast('refresh');
+                }
+            }, false);
+        }
     })
 ;
 

@@ -63,6 +63,9 @@ angular.module('ScalingGroupPolicy', ['CreateAlarm'])
                     modalButton.focus();
                 }
             });
+            $(document).on('close', '[data-reveal]', function () {
+                document.getElementById('create-alarm-form').reset();
+            });
             $(document).on('closed', '[data-reveal]', function () {
                 $('input#name').focus();
             });

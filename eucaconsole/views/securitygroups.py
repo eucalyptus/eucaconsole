@@ -91,8 +91,7 @@ class SecurityGroupsView(LandingPageView):
                 self.log_request(_(u"Deleting security group {0}").format(name))
                 security_group.delete()
                 prefix = _(u'Successfully deleted security group')
-                template = '{0} {1}'.format(prefix, name)
-                msg = template.format(group=name)
+                msg = '{0} {1}'.format(prefix, name)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
         else:
@@ -177,6 +176,7 @@ class SecurityGroupsJsonView(LandingPageView):
         })
         return dict(results=internet_protocols)
 
+
 class SecurityGroupView(TaggedItemView):
     """Views for single Security Group"""
     TEMPLATE = '../templates/securitygroups/securitygroup_view.pt'
@@ -202,7 +202,6 @@ class SecurityGroupView(TaggedItemView):
             delete_form=self.delete_form,
             security_group_names=self.get_security_group_names(),
         )
-
 
     @view_config(route_name='securitygroup_view', renderer=TEMPLATE)
     def securitygroup_view(self):
@@ -232,7 +231,7 @@ class SecurityGroupView(TaggedItemView):
             with boto_error_handler(self.request, self.request.route_path('securitygroups')):
                 self.log_request(_(u"Creating security group {0}").format(name))
                 temp_new_security_group = self.conn.create_security_group(name, description, vpc_id=vpc_network)
-                # Need to retreive security group to obtain complete VPC data
+                # Need to retrieve security group to obtain complete VPC data
                 new_security_group = self.get_security_group(temp_new_security_group.id)
                 self.add_rules(security_group=new_security_group)
                 self.revoke_all_rules(security_group=new_security_group, traffic_type='egress')
@@ -241,7 +240,8 @@ class SecurityGroupView(TaggedItemView):
                     tags = json.loads(tags_json)
                     for tagname, tagvalue in tags.items():
                         new_security_group.add_tag(tagname, tagvalue)
-                msg = _(u'Successfully created security group')
+                prefix = _(u'Successfully created security group')
+                msg = '{0} {1}'.format(prefix, name)
                 location = self.request.route_path('securitygroup_view', id=new_security_group.id)
                 if self.request.is_xhr:
                     return JSONResponse(status=200, message=msg, id=new_security_group.id)
@@ -624,7 +624,8 @@ class SecurityGroupView(TaggedItemView):
                 pass
         return ip_protocol
 
-    def check_int(self, s):
+    @staticmethod
+    def check_int(s):
         if s[0] in ('-', '+'):
-    	    return s[1:].isdigit()
+            return s[1:].isdigit()
         return s.isdigit()

@@ -1,7 +1,11 @@
 /* Dropdown elements */
 /* Set the link colors and styles for top-level nav */
+/* ----------------------------------------- Item list
+----------------------------------------- */
 /* Dropdown elements */
 /* Set the link colors and styles for top-level nav */
+/* ----------------------------------------- Item list
+----------------------------------------- */
 /* @section Wizard styles */
 .wizard { position: relative; background-color: transparent; }
 .wizard.has-title { position: relative; padding-top: 42px; }
@@ -34,6 +38,8 @@
 #bdmapping-editor .table td { line-height: 1rem; padding: 4px 8px; vertical-align: middle; }
 #bdmapping-editor #new-blockdevice-entry label { text-align: left; }
 #bdmapping-editor input.number { width: 2rem; }
+
+.rules-display .rules-title { word-break: break-all; }
 
 /* ----------------------------------------- Media Queries
 ----------------------------------------- */

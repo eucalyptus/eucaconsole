@@ -1,3 +1,4 @@
+@charset "UTF-8";
 /* @fileOverview Koala application-wide Sass CSS styles */
 /* Sass Imports */
 /*! normalize.css v2.1.2 | MIT License | git.io/normalize */
@@ -125,6 +126,8 @@ table { border-collapse: collapse; border-spacing: 0; }
 
 /* Dropdown elements */
 /* Set the link colors and styles for top-level nav */
+/* ----------------------------------------- Item list
+----------------------------------------- */
 meta.foundation-mq-small { font-family: "/only screen and (max-width: 40em)/"; width: 0em; }
 
 meta.foundation-mq-medium { font-family: "/only screen and (min-width:40.063em) and (max-width:64em)/"; width: 40.063em; }
@@ -1398,7 +1401,7 @@ h1, h2, h3, h4, h5, h6 { font-family: Oswald, Helvetica, Arial, sans-serif; lett
 #navbar .top-bar-section ul li > a { font-family: Oswald, Helvetica, Arial, sans-serif; font-size: 1.2rem; }
 #navbar a { text-transform: uppercase; font-size: 0.9rem; }
 #navbar .top-bar-section ul.dropdown li > a { font-family: Lato, Helvetica, Arial, sans-serif; font-size: 1rem; }
-#navbar .dropdown { box-shadow: 0px 0px 1px 1px #f6a84d; }
+#navbar .dropdown { z-index: 999999; box-shadow: 0px 0px 1px 1px #f6a84d; }
 #navbar .dropdown li a { text-transform: none; }
 #navbar .dropdown li a:hover { background-color: #eee; }
 
@@ -1471,10 +1474,10 @@ textarea.policy-area { width: 100%; min-height: 30rem; font-family: Courier, "co
 /* ----------------------------------------- Tag editor
 ----------------------------------------- */
 #tag-editor small { font-size: 0.825rem; }
-#tag-editor .items { margin-bottom: 6px; }
-#tag-editor .items .tagentry { color: #333; background-color: #e6e7e8; margin-right: 8px; }
-#tag-editor .items .tagentry a { color: white; }
-#tag-editor .items .tagentry .propagates { color: #777; font-size: 0.7em; }
+#tag-editor .item-list { margin-bottom: 6px; }
+#tag-editor .item-list .item { color: #333; background-color: #e6e7e8; margin-right: 8px; }
+#tag-editor .item-list .item a { color: white; }
+#tag-editor .propagates { color: #777; font-size: 0.7em; }
 #tag-editor .add-label { margin-bottom: 6px; color: #03405f; }
 #tag-editor #add-tag-btn { margin-bottom: 0; }
 
@@ -1578,6 +1581,7 @@ textarea.hidden.debug { display: block; }
 
 .reveal-modal { z-index: 9999995; }
 .reveal-modal h3 { font-weight: bold; }
+.reveal-modal h3#about-cloud:hover { color: #8cc63e; }
 .reveal-modal form .row.controls-wrapper { margin-bottom: 1rem; }
 .reveal-modal .button.expand { margin-bottom: 0; }
 .reveal-modal .button.expand:focus { box-shadow: 0 0 3px 3px #7bb0e0; }
@@ -1588,9 +1592,11 @@ textarea.hidden.debug { display: block; }
 ----------------------------------------- */
 table.table { border: none; }
 table.table thead tr { background-color: #f5f5f5; }
-table.table thead tr th { padding-top: 0.5rem; padding-bottom: 0.5rem; vertical-align: top; color: #444444; text-transform: uppercase; }
+table.table thead tr th { padding-top: 0.5rem; padding-bottom: 0.5rem; padding-left: 6px; padding-right: 6px; vertical-align: top; color: #444444; text-transform: uppercase; }
 table.table thead tr th.actions { text-align: right; }
+table.table thead tr th.count { text-align: center; }
 table.table tr { border-bottom: 1px solid #ddd; }
+table.table tr td.count { text-align: center; }
 table.table tr td { vertical-align: top; }
 
 /* ----------------------------------------- Footer

@@ -127,9 +127,13 @@ class IPAddressesView(LandingPageView):
     def ipaddresses_release(self):
         if self.release_form.validate():
             public_ip = self.request.params.get('public_ip')
+            allocation_id = self.request.params.get('allocation_id')
             with boto_error_handler(self.request, self.location):
                 self.log_request(_(u"Releasing ElasticIP {0}").format(public_ip))
-                self.conn.release_address(public_ip)
+                if allocation_id == '':
+                    self.conn.release_address(public_ip=public_ip)
+                else:
+                    self.conn.release_address(allocation_id=allocation_id)
                 template = _(u'Successfully released {ip} to the cloud')
                 msg = template.format(ip=public_ip)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
@@ -164,13 +168,14 @@ class IPAddressesJsonView(LandingPageView):
             return JSONResponse(status=400, message="missing CSRF token")
         ipaddresses = []
         with boto_error_handler(self.request):
-            items = self.filter_items(self.get_items(), ignore=['assignment'])
+            items = self.filter_items(self.get_items(), ignore=['assignment', 'allocate'])
             if self.request.params.getall('assignment'):
                 items = self.filter_by_assignment(items)
             instances = self.get_instances(items)
             for address in items:
                 ipaddresses.append(dict(
                     public_ip=address.public_ip,
+                    allocation_id=address.allocation_id,
                     instance_id=address.instance_id,
                     instance_name=TaggedItemView.get_display_name(
                         instances[address.instance_id]) if address.instance_id else address.instance_id,

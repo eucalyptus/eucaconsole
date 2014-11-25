@@ -112,10 +112,19 @@ class BaseView(object):
         self.security_token = request.session.get('session_token')
         self.euca_logout_form = EucaLogoutForm(self.request)
 
-    def get_connection(self, conn_type='ec2', cloud_type=None):
+    def get_connection(self, conn_type='ec2', cloud_type=None, region=None, access_key=None, secret_key=None, security_token=None):
         conn = None
         if cloud_type is None:
             cloud_type = self.cloud_type
+
+        if region is None:
+            region = self.region
+        if access_key is None:
+            access_key = self.access_key
+        if secret_key is None:
+            secret_key = self.secret_key
+        if security_token is None:
+            security_token = self.security_token
 
         validate_certs = False
         if self.request.registry.settings:  # do this to pass tests
@@ -124,7 +133,7 @@ class BaseView(object):
             
         if cloud_type == 'aws':
             conn = ConnectionManager.aws_connection(
-                self.region, self.access_key, self.secret_key, self.security_token, conn_type, validate_certs)
+                region, access_key, secret_key, security_token, conn_type, validate_certs)
         elif cloud_type == 'euca':
             host = self.request.registry.settings.get('clchost', 'localhost')
             port = int(self.request.registry.settings.get('clcport', 8773))
@@ -151,7 +160,7 @@ class BaseView(object):
                 port = int(self.request.registry.settings.get('vpc.port', port))
 
             conn = ConnectionManager.euca_connection(
-                host, port, self.access_key, self.secret_key, self.security_token, conn_type, validate_certs, certs_file)
+                host, port, access_key, secret_key, security_token, conn_type, validate_certs, certs_file)
 
         return conn
 
@@ -293,17 +302,21 @@ class BaseView(object):
         return url or default_path
 
     @staticmethod
+    def get_remote_addr(request):
+        return request.environ.get('HTTP_X_FORWARDED_FOR', getattr(request, 'remote_addr', ''))
+
+    @staticmethod
     def log_message(request, message, level='info'):
         prefix = ''
         cloud_type = request.session.get('cloud_type', 'euca')
         if cloud_type == 'euca':
             account = request.session.get('account', '')
             username = request.session.get('username', '')
-            prefix = '{0}/{1}'.format(account, username)
+            prefix = '{0}/{1}@{2}'.format(account, username, BaseView.get_remote_addr(request))
         elif cloud_type == 'aws':
             account = request.session.get('username_label', '')
             region = request.session.get('region')
-            prefix = '{0}/{1}'.format(account, region)
+            prefix = '{0}/{1}@{2}'.format(account, region, BaseView.get_remote_addr(request))
         log_message = "{prefix} [{id}]: {msg}".format(prefix=prefix, id=request.id, msg=message)
         if level == 'info':
             logging.info(log_message)
@@ -383,6 +396,10 @@ class BaseView(object):
         my_hmac = hmac.new(secret_key, digestmod=hashlib.sha1)
         my_hmac.update(policy)
         return base64.b64encode(my_hmac.digest())
+
+    @staticmethod
+    def has_role_access(request):
+        return request.session['cloud_type'] == 'euca' and request.session['role_access']
 
 
 class TaggedItemView(BaseView):
@@ -577,8 +594,8 @@ class LandingPageView(BaseView):
                                 else:
                                     if filterkey_val in filter_value:
                                         matchedkey_count += 1
-                            elif filter_value[0] == 'None':
-                                # Handle the special case where the filter value is None
+                            elif 'none' in filter_value or 'None' in filter_value:
+                                # Handle the special case where 'filterkey_val' value is None
                                 if filterkey_val is None:
                                     matchedkey_count += 1
                     else:

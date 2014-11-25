@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>verify-ec2-volume-size-quota</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">verify-ec2-volume-size-quota</td></tr>
+</thead><tbody>
+<tr>
+	<td>setSpeed</td>
+	<td>500</td>
+	<td></td>
+</tr>
+<tr>
+	<td>setTimeout</td>
+	<td>120000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=resource-menu-dashboard</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=resource-menu-storage</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=resource-menuitem-volumes</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>items found</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeXpathCount</td>
+	<td>//table[1]/tbody/tr</td>
+	<td>tcount1</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=create-volume-btn</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=name</td>
+	<td>ui-volume-1</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=size</td>
+	<td>2</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=create_volume_submit_button</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>id=notifications</td>
+	<td>breadcrumbs</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${breadcrumbs}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>Quota exceeded while trying to create: volume by user:</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>Quota exceeded while trying to create: volume by user:</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeXpathCount</td>
+	<td>//table[1]/tbody/tr</td>
+	<td>tcount2</td>
+</tr>
+<tr>
+	<td>assertEval</td>
+	<td>${tcount1}==${tcount2}</td>
+	<td>true</td>
+</tr>
+</tbody></table>
+</body>
+</html>

@@ -5,17 +5,25 @@
  *
  */
 
-angular.module('LoginPage', [])
-    .controller('LoginPageCtrl', function ($scope) {
+angular.module('LoginPage', ['EucaConsoleUtils'])
+    .controller('LoginPageCtrl', function ($scope, $timeout, eucaUnescapeJson) {
         $scope.showHttpsWarning = false;
-        $scope.initController = function () {
-            $scope.prefillForms();
+        $scope.isLoggingIn = false;
+        $scope.initController = function (json_options) {
+            var options = JSON.parse(eucaUnescapeJson(json_options));
+            $scope.prefillForms(options['account'], options['username']);
             $scope.addListeners();
             Modernizr.load([
                 {
                     test: Modernizr.svg,
                     nope: function () {
                         $('#browser-svg-warn-modal').foundation('reveal', 'open');
+                    }
+                },
+                {
+                    test: Modernizr.filereader,
+                    nope: function () {
+                        $('#browser-filereader-warn-modal').foundation('reveal', 'open');
                     }
                 }
             ]);
@@ -38,12 +46,22 @@ angular.module('LoginPage', [])
                 if (inputs.length > 0) inputs[0].focus();
             }
         };
-        $scope.prefillForms = function () {
+        $scope.prefillForms = function (url_account, url_username) {
             // pre-fill if cookies are present
-            var account = $.cookie('account');
-            if (account !== undefined) $('#account').val(account);
-
             var last_login = $.cookie('login-form');
+            var account = $.cookie('account');
+            var username = $.cookie('username');
+            if (url_account !== '') {
+                account = url_account;
+                if (url_username !== '') {
+                    username = url_username;
+                    $('#username').val(url_username);
+                }
+                last_login = 'euca';
+            }
+            if (account !== undefined) $('#account').val(account);
+            if (username !== undefined) $('#username').val(username);
+
             if (last_login == 'aws') {  // select that tab
                 // all this mimics what happens in the tab code itself... no other way I found worked.
                 var tab = $('#aws-tab');
@@ -61,6 +79,7 @@ angular.module('LoginPage', [])
             // set up listener to capture and save values if remember checked
             $('#euca-login-form').on('submit', function () {
                 $.cookie('account', $('#account').val(), {expires: 180});
+                $.cookie('username', $('#username').val(), {expires: 180});
                 $.cookie('login-form', 'eucalyptus', {expires: 180});
             });
             $('#aws-login-form').on('submit', function (evt) {

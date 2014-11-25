@@ -1,8 +1,12 @@
 /* @fileOverview IAM Groups landing page CSS */
 /* Dropdown elements */
 /* Set the link colors and styles for top-level nav */
+/* ----------------------------------------- Item list
+----------------------------------------- */
 /* Dropdown elements */
 /* Set the link colors and styles for top-level nav */
+/* ----------------------------------------- Item list
+----------------------------------------- */
 /* @section Landing pages styles */
 .columns.datagrid { padding-left: 0; padding-right: 1rem; padding-bottom: 2rem; }
 
@@ -39,6 +43,7 @@
 .tile .content div { margin-bottom: 2px; margin-left: 28px; word-break: break-all; }
 .tile .content .label { padding: 1px 3px; margin-left: -28px; background-color: #e6e7e8; color: #555; margin-right: 0.2rem; min-width: 22px; text-align: center; }
 .tile .content .label.ellipsis { margin-left: 0; }
+.tile .content .fi-alert { color: darkred; }
 .tile .link { color: #8cc63e; text-transform: uppercase; padding: 1px 3px; margin-bottom: 2px; font-size: 0.9em; }
 .tile .footer { position: absolute; bottom: 0; left: 0; right: 0; padding: 5px; color: white; background-color: #6a737b; text-align: center; line-height: 1.4rem; text-transform: capitalize; }
 .tile .footer.has-progress { padding: 0 0 0 0; text-align: left; }
@@ -49,9 +54,11 @@
 
 .gridwrapper .table { border: none; width: 100%; }
 .gridwrapper .table thead tr { background-color: #f5f5f5; }
-.gridwrapper .table thead tr th { padding-top: 0.5rem; padding-bottom: 0.5rem; vertical-align: top; color: #444444; text-transform: uppercase; }
+.gridwrapper .table thead tr th { padding-top: 0.5rem; padding-bottom: 0.5rem; padding-left: 6px; padding-right: 6px; vertical-align: top; color: #444444; text-transform: uppercase; }
 .gridwrapper .table thead tr th.actions { text-align: right; }
+.gridwrapper .table thead tr th.count { text-align: center; }
 .gridwrapper .table tr { border-bottom: 1px solid #ddd; }
+.gridwrapper .table tr td.count { text-align: center; }
 .gridwrapper .table th { white-space: nowrap; }
 .gridwrapper .table tr { position: relative; width: 100%; }
 .gridwrapper .table tr td { position: relative; padding: 8px 4px 8px 6px; vertical-align: top; }
@@ -65,6 +72,7 @@
 .gridwrapper .table tr td .f-dropdown a:hover { text-decoration: none; }
 .gridwrapper .table .dropdown.button.tiny { z-index: 0; top: 8px; right: 20px; padding-left: 10px; padding-right: 24px; }
 .gridwrapper .table .dropdown.button.tiny i { font-size: 1.2rem; top: 0; }
+.gridwrapper .table .fi-alert { color: darkred; }
 
 .sort-search { font-size: 0.9rem; }
 .sort-search form { margin-bottom: 0; position: relative; }

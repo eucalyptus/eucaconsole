@@ -6,7 +6,7 @@
 
 
 angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'EucaConsoleUtils'])
-    .controller('ItemsCtrl', function ($scope, $http, $timeout, $sanitize, eucaHandleError) {
+    .controller('ItemsCtrl', function ($scope, $http, $timeout, $sanitize, eucaHandleErrorS3) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.items = [];
         $scope.itemsLoading = true;
@@ -77,11 +77,6 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'EucaConsoleUtils'
                // Set landingPageView in localStorage
                Modernizr.localstorage && localStorage.setItem($scope.landingPageViewKey, $scope.landingPageView);
             });
-            // Emit 'itemsLoaded' signal when items[] is updated
-            $scope.$watch('items', function() {
-                $scope.$emit('itemsLoaded', $scope.items);
-                $scope.clickOpenDropdown();
-            }, true);
             // When unfilteredItems[] is updated, run it through the filter and build items[]
             $scope.$watch('unfilteredItems', function() {
                 $scope.detectOpenDropdown();
@@ -164,6 +159,12 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'EucaConsoleUtils'
                 if ($scope.transitionalRefresh && transitionalCount > 0) {
                     $timeout(function() { $scope.getItems(); }, 5000);  // Poll every 5 seconds
                 }
+                // Emit 'itemsLoaded' signal when items[] is updated
+                $timeout(function() {
+                    $scope.$emit('itemsLoaded', $scope.items);
+                    // and re-open any action menus
+                    $scope.clickOpenDropdown();
+                });
             }).error(function (oData, status) {
                 eucaHandleErrorS3(oData, status);
             });
@@ -190,6 +191,17 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'EucaConsoleUtils'
                     if (itemProp && typeof itemProp === "string" && 
                         itemProp.toLowerCase().indexOf(filterText) !== -1) {
                         return item;
+                    } else if (itemProp && typeof itemProp === "object") {
+                        // In case of mutiple values, create a flat string and perform search
+                        var flatString = '';
+                        angular.forEach(itemProp, function(x) {
+                            if (x.hasOwnProperty('name')) {
+                                flatString += x.name + ' ';
+                            }
+                        });
+                        if (flatString.toLowerCase().indexOf(filterText) !== -1) {
+                            return item;
+                        }
                     }
                 }
             });

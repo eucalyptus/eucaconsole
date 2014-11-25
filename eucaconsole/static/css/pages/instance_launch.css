@@ -1,7 +1,11 @@
 /* Dropdown elements */
 /* Set the link colors and styles for top-level nav */
+/* ----------------------------------------- Item list
+----------------------------------------- */
 /* Dropdown elements */
 /* Set the link colors and styles for top-level nav */
+/* ----------------------------------------- Item list
+----------------------------------------- */
 /* @section Wizard styles */
 .wizard { position: relative; background-color: transparent; }
 .wizard.has-title { position: relative; padding-top: 42px; }
@@ -35,6 +39,8 @@
 #bdmapping-editor #new-blockdevice-entry label { text-align: left; }
 #bdmapping-editor input.number { width: 2rem; }
 
+.rules-display .rules-title { word-break: break-all; }
+
 /* ----------------------------------------- Media Queries
 ----------------------------------------- */
 /* Extra small screen (< 481px) */
@@ -47,6 +53,7 @@
 #launch-instance-form #controls_userdata_file { position: relative; top: -0.5rem; }
 #launch-instance-form #controls_userdata_file #userdata_file { width: 80%; display: inline-block; }
 #launch-instance-form #create-keypair-link, #launch-instance-form #create-securitygroup-link { position: relative; top: -6px; margin-bottom: 10px; }
+#launch-instance-form #create-securitygroup-link { top: -2px; }
 #launch-instance-form .rules-display { margin-left: 0.7rem; }
 #launch-instance-form .rules-title { margin-bottom: 3px; }
 

@@ -40,10 +40,12 @@ from pyramid.view import view_config
 from ..forms.login import EucaChangePasswordForm
 from ..i18n import _
 from ..models import Notification
+from ..models.auth import User
 from ..views import BaseView
+from .login import PermissionCheckMixin
 
 
-class ManageCredentialsView(BaseView):
+class ManageCredentialsView(BaseView, PermissionCheckMixin):
     template = '../templates/managecredentials.pt'
 
     def __init__(self, request):
@@ -59,7 +61,7 @@ class ManageCredentialsView(BaseView):
 
     @view_config(route_name='managecredentials', request_method='GET',
                  renderer=template, permission=NO_PERMISSION_REQUIRED)
-    def changepassword_page(self):
+    def manage_credentials(self):
         session = self.request.session
         try:
             account = session['account']
@@ -67,13 +69,17 @@ class ManageCredentialsView(BaseView):
         except KeyError:
             account = self.request.params.get('account')
             username = self.request.params.get('username')
+        if account is None:  # session expired, redirect
+            raise HTTPFound(location=self.request.route_path('login'))
+        account_id = User.get_account_id(ec2_conn=self.get_connection(), request=self.request)
         return dict(
             changepassword_form=self.changepassword_form,
             changepassword_form_errors=self.changepassword_form_errors,
             password_expired=True if self.request.params.get('expired') == 'true' else False,
             came_from=self.came_from,
             account=account,
-            username=username
+            username=username,
+            account_id=account_id
         )
 
     @view_config(route_name='changepassword', request_method='POST',
@@ -111,6 +117,7 @@ class ManageCredentialsView(BaseView):
                     session['username'] = username
                     session['region'] = 'euca'
                     session['username_label'] = user_account
+                    self.check_iam_perms(session, creds);
                     headers = remember(self.request, user_account)
                     msg = _(u'Successfully changed password.')
                     self.request.session.flash(msg, queue=Notification.SUCCESS)

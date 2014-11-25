@@ -6,9 +6,7 @@
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="LaunchInstance" ng-controller="LaunchInstanceCtrl"
-         ng-init="initController('${securitygroups_rules_json}', '${keypair_choices_json}',
-                                '${securitygroup_choices_json}', '${request.route_path('securitygroups_json')}', '${vpc_subnet_choices_json}',
-                                '${role_choices_json}', '${request.route_path('image_json', id='_id_')}')">
+         ng-init="initController('${controller_options_json}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('instances')}" i18n:translate="">Instances</a></li>
@@ -57,7 +55,7 @@
                     <div class="tabs-content">
                         <!--! Step 1: Image tab content -->
                         <div class="content ${'active' if not image else ''}" id="step1">
-                            ${panel('image_picker', image=image, filters_form=filters_form, images_json_endpoint=images_json_endpoint)}
+                            ${panel('image_picker', image=image, filters_form=filters_form)}
                         </div>
                         <!--! Step 2: Type tab content -->
                         <div class="content ${'active' if image else ''}" id="step2">
@@ -81,7 +79,7 @@
                             ${panel('form_field', field=launch_form['instance_type'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'instanceType'})}
                             ${panel('form_field', field=launch_form['zone'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'instanceZone'})}
                             <hr />
-                            ${panel('tag_editor', leftcol_width=3, rightcol_width=9)}
+                            ${panel('tag_editor', show_name_tag=False, leftcol_width=3, rightcol_width=9)}
                             <hr />
                             <div>
                                 <label>
@@ -184,7 +182,7 @@
                                 ${structure:launch_form.monitoring_enabled(**{'ng-model': 'monitoringEnabled'})}
                                 ${launch_form['monitoring_enabled'].label}
                             </div>
-                            <div class="small-8 columns right">
+                            <div class="small-8 columns right" tal:condition="layout.cloud_type == 'euca'">
                                 ${structure:launch_form.private_addressing(**{'ng-model': 'privateAddressing'})}
                                 ${launch_form['private_addressing'].label}
                             </div>
@@ -311,7 +309,6 @@
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/utils/purl.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/jquery.generateFile.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/instance_launch.js')}"></script>
 </div>
 

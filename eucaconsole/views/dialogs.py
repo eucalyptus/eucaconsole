@@ -29,6 +29,8 @@ Panels for modal dialogs reused across the landing page and detail page for a gi
 See http://docs.pylonsproject.org/projects/pyramid_layout/en/latest/layouts.html#using-panels
 
 """
+import simplejson as json
+
 from pyramid_layout.panel import panel_config
 
 from ..views import BaseView
@@ -139,15 +141,21 @@ def create_securitygroup_dialog(context, request, securitygroup_form=None):
 
 
 @panel_config('create_alarm_dialog', renderer='../templates/dialogs/create_alarm_dialog.pt')
-def create_alarm_dialog(context, request, alarm_form=None, redirect_location=None,
+def create_alarm_dialog(context, request, alarm_form=None, alarm_choices=None, redirect_location=None,
                         modal_size='medium', metric_unit_mapping=None):
     """Create alarm dialog page."""
     redirect_location = redirect_location or request.route_path('cloudwatch_alarms')
+    alarm_choices = json.loads(alarm_choices or '{}')
+    existing_alarms = [key for key, val in alarm_choices.items() if key]
+    controller_options_json = BaseView.escape_json(json.dumps({
+        'metric_unit_mapping': metric_unit_mapping,
+        'existing_alarms': existing_alarms,
+    }))
     return dict(
         alarm_form=alarm_form,
         redirect_location=redirect_location,
         modal_size=modal_size,
-        metric_unit_mapping=metric_unit_mapping,
+        controller_options_json=controller_options_json,
     )
 
 
@@ -237,10 +245,6 @@ def image_dialogs(context, request, image=None, image_name_id='', landingpage=Fa
     )
 
 
-@panel_config('bucket_delete_dialog', renderer='../templates/dialogs/bucket_delete_dialog.pt')
-def bucket_delete_dialog(context, request):
-    return dict()
-
 @panel_config('bucket_dialogs', renderer='../templates/dialogs/bucket_dialogs.pt')
 def bucket_dialogs(context, request, bucket=None, landingpage=False, versioning_form=None, delete_form=None):
     """ Modal dialogs for Bucket landing and detail page."""
@@ -258,6 +262,11 @@ def bucket_dialogs(context, request, bucket=None, landingpage=False, versioning_
         delete_form=delete_form,
         update_versioning_action=update_versioning_action,
     )
+
+
+@panel_config('bucket_item_dialogs', renderer='../templates/dialogs/bucket_item_dialogs.pt')
+def bucket_item_dialogs(context, request):
+    return dict()
 
 
 @panel_config('create_folder_dialog', renderer='../templates/dialogs/create_folder_dialog.pt')

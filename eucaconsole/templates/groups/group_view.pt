@@ -127,12 +127,12 @@
                                 </div>
                             </div> 
                             <div class="row controls-wrapper readonly">
-                                <div class="column fields top-bottom-padding">
-                                    <div id="users_select_field">
-                                        <span ng-repeat="user in groupUsers">
-                                            <span class="label radius secondary iam-user-icon padded-element">
-                                                {{ user }}<a ng-click="removeUser(user)"><i class="fi-x"></i></a>
-                                            </span>
+                                <div id="users-in-group" class="column fields top-bottom-padding">
+                                    <div class="item-list">
+                                        <span class="label radius secondar item" ng-repeat="user in groupUsers">
+                                            <span> {{ user }} </span>
+                                            <a class="remove" title="Remove user from group" i18n:translate="title"
+                                               ng-click="removeUser(user)"><i class="fi-x"></i></a>
                                         </span>
                                     </div>
                                 </div>

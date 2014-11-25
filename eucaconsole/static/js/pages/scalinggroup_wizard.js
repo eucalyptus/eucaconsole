@@ -36,6 +36,7 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor'])
         };
         $scope.setInitialValues = function () {
             $scope.availZones = $('#availability_zones').val();
+            $('#launch_config').val('').trigger('chosen:updated');  // Clear launch config value on page refresh
         };
         $scope.checkLaunchConfigParam = function () {
             if( $('#hidden_launch_config_input').length > 0 ){

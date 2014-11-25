@@ -35,7 +35,7 @@
                     <li ng-show="item.status === 'available'">
                         <a i18n:translate="" ng-click="revealModal('attach', item)">Attach to instance</a>
                     </li>
-                    <li ng-show="item.status === 'in-use'">
+                    <li ng-show="item.status === 'in-use' &amp;&amp item.attach_status !== 'detaching'">
                         <a ng-click="detachModal(item, '${request.route_path('instance_json', id='_id_')}')"
                                id="detach-volume-action" i18n:translate="">Detach from instance</a>
                     </li>
@@ -106,7 +106,9 @@
                         {{ item.instance_name || item.instance | ellipsis: 30 }}
                     </a>
                 </td>
-                <td><a ng-href="${prefix}/{{ item.id }}/snapshots">{{ item.snapshots }} snapshot<span ng-show="item.snapshots != 1">s</span></a></td>
+                <td class="count">
+                    <a ng-href="${prefix}/{{ item.id }}/snapshots">{{ item.snapshots }}</a>
+                </td>
                 <td>{{ item.zone }}</td>
                 <td class="tags breakword">{{ item.tags | ellipsis: 60 }}</td>
                 <td>{{ item.create_time | date:'${layout.angular_date_format}' }}</td>
@@ -123,7 +125,7 @@
                             <li ng-show="item.status === 'available'">
                                 <a i18n:translate="" ng-click="revealModal('attach', item)">Attach to instance</a>
                             </li>
-                            <li ng-show="item.status === 'in-use'">
+                            <li ng-show="item.status === 'in-use' &amp;&amp item.attach_status !== 'detaching'">
                                 <a ng-click="detachModal(item, '${request.route_path('instance_json', id='_id_')}')"
                                    id="detach-volume-action" i18n:translate="">Detach from instance</a>
                             </li>
@@ -142,7 +144,7 @@
 
 <metal:block metal:fill-slot="offcanvas_right">
     <div id="help-content-div" class="help-content">
-        ${panel('help_volumes', 'volume_landing_page' )}
+        <div id="help-html-console_volumes" ng-include="'${layout.help_path('console_volumes.html')}'"></div> 
     </div>
 </metal:block>
 

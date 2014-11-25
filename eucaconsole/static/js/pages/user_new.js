@@ -85,7 +85,7 @@ angular.module('UserNew', ['UserEditor', 'Quotas', 'EucaConsoleUtils'])
                     // this is clearly a hack. We'd need to bake callbacks into the generateFile
                     // stuff to do this properly.
                     setTimeout(function() {
-                        if (as_account === undefined) {
+                        if (as_account === undefined || as_account == '') {
                             if (isSingleUser) {
                                 window.location = $scope.singleUserRedirect.replace('_name_', singleUser);
                             } else {
@@ -97,7 +97,7 @@ angular.module('UserNew', ['UserEditor', 'Quotas', 'EucaConsoleUtils'])
                     }, 3000);
                 }
                 else {
-                    if (as_account === undefined) {
+                    if (as_account === undefined || as_account == '') {
                         if (isSingleUser) {
                             window.location = $scope.singleUserRedirect.replace('_name_', singleUser);
                         } else {

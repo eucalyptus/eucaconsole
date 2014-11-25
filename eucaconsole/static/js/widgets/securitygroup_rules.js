@@ -4,8 +4,8 @@
  *
  */
 
-angular.module('SecurityGroupRules', ['CustomFilters'])
-    .controller('SecurityGroupRulesCtrl', function ($scope, $http, $timeout) {
+angular.module('SecurityGroupRules', ['CustomFilters', 'EucaConsoleUtils'])
+    .controller('SecurityGroupRulesCtrl', function ($scope, $http, $timeout, eucaUnescapeJson) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.rulesEditor = $('#rules-editor');
         $scope.rulesTextarea = $scope.rulesEditor.find('textarea#rules');
@@ -49,12 +49,12 @@ angular.module('SecurityGroupRules', ['CustomFilters'])
             $scope.rulesEgressTextarea.val(JSON.stringify($scope.rulesEgressArray));
             $scope.resetValues();
         };
-        $scope.initRules = function (rulesJson, rulesEgressJson, jsonEndpoint, internetProtocolsJsonEndpoint) {
-            rulesJson = rulesJson.replace(/__apos__/g, "\'").replace(/__dquote__/g, '\\"').replace(/__bslash__/g, "\\");
-            $scope.rulesArray = JSON.parse(rulesJson);
-            $scope.rulesEgressArray = JSON.parse(rulesEgressJson);
-            $scope.jsonEndpoint = jsonEndpoint;
-            $scope.internetProtocolsJsonEndpoint = internetProtocolsJsonEndpoint;
+        $scope.initRules = function (optionsJson) {
+            var options = JSON.parse(eucaUnescapeJson(optionsJson));
+            $scope.rulesArray = options['rules_array'];
+            $scope.rulesEgressArray = options['rules_egress_array'];
+            $scope.jsonEndpoint = options['json_endpoint'];
+            $scope.internetProtocolsJsonEndpoint = options['protocols_json_endpoint'];
             $scope.initInternetProtocols();
             $scope.syncRules();
             $scope.setWatchers();
@@ -235,6 +235,10 @@ angular.module('SecurityGroupRules', ['CustomFilters'])
                     $scope.syncRules();
                 });
             });
+            // Modify Foundation Abide validation timeout
+            setTimeout(function() {
+                $(document).foundation({abide : { timeout : 2000 } })
+            }, 500);
         };
         // In case of the duplicated rule, add the class 'disabled' to the submit button
         $scope.setAddRuleButtonClass = function () {
@@ -415,6 +419,12 @@ angular.module('SecurityGroupRules', ['CustomFilters'])
             // Trigger form validation to prevent borked rule entry
             var form = $($event.currentTarget).closest('form');
             form.trigger('validate');
+            // clear validation errors on hidden fields
+            // TODO: retest without this code when foundation is upgraded beyond 5.0.3
+            $('.error.ng-hide').removeClass('error')
+            if ($scope.ipProtocol == 'icmp') {
+                $('.port').removeAttr('data-invalid')
+            }
             if (form.find('[data-invalid]').length) {
                 return false;
             }

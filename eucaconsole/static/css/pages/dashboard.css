@@ -1,10 +1,13 @@
 /* @fileOverview Dashboard CSS */
 /* Dropdown elements */
 /* Set the link colors and styles for top-level nav */
+/* ----------------------------------------- Item list
+----------------------------------------- */
 #maincontent { padding-top: 1rem; background: #eef7e3; }
 #maincontent #pagetitle { margin-bottom: 0.5rem; margin-left: 0; margin-top: 1rem; }
 #maincontent #pagetitle h3 { font-weight: bold; margin-top: 0; display: inline-block; }
 #maincontent #pagetitle #zone-selector { display: inline-block; margin-left: 1rem; }
+#maincontent #pagetitle #reset-dash { margin-top: 1.25rem; font-size: 0.825rem; display: inline-block; float: right; }
 
 .panel { background-color: transparent; border: none; margin-bottom: 0; box-sizing: border-box; position: relative; font-size: 0.825rem; }
 .panel .tile { background-color: white; position: relative; height: 240px; padding: 4px 8px; }
@@ -54,11 +57,10 @@
 
 #roles .icon { background-image: url(../../img/svg/icon_IAM_roles.svg); }
 
-/* Small screen */
 #service-unknown { margin-top: 13px; }
 
-#service-up i { color: #03405f; font-size: 16pt; text-align: left; }
-
-#service-down i { color: red; font-size: 16pt; text-align: left; }
-
-#status { font-size: 11pt; text-align: left; font-style: normal; font-weight: normal; color: #6a737b; margin-top: 9px; margin-bottom: 0; }
+#health .statusrow { font-size: 11pt; text-align: left; color: #6a737b; margin-top: 10px; line-height: 1.4rem; }
+#health .statusrow .status { position: relative; left: 8px; }
+#health .statusrow i.service-up { color: #03405f; font-size: 16pt; text-align: left; }
+#health .statusrow i.service-down { color: red; font-size: 16pt; text-align: left; }
+#health .statusrow i.service-denied { color: #444444; font-size: 16pt; text-align: left; }

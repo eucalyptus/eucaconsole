@@ -32,12 +32,6 @@
            <form id="download-keypair-form" action="${request.route_path('file_download')}" method="post">
                ${structure:keypair_form['csrf_token']}
            </form>
-           <script language="Javascript">
-               function trigger(){ 
-                  setTimeout(function(){ $("#download-keypair-form").submit(); }, 1000); // download the keypair material 1 second after.
-               }
-               trigger();
-           </script>
         </div>
 
         <div class="large-7 columns">

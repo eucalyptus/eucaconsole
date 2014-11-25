@@ -39,7 +39,6 @@ from wtforms.ext.csrf import SecureForm
 from wtforms.widgets import html_params, HTMLString, Select
 from markupsafe import escape
 
-import boto
 from boto.exception import BotoServerError
 
 from ..caches import extra_long_term
@@ -128,7 +127,7 @@ class ChoicesManager(object):
         except pylibmc.Error as err:
             return _get_zones_(self, region)
 
-    def instances(self, instances=None, state=None, escapebraces=True):
+    def instances(self, instances=None, states=None, escapebraces=True):
         from ..views import TaggedItemView
         choices = [('', _(u'Select instance...'))]
         instances = instances or []
@@ -138,8 +137,12 @@ class ChoicesManager(object):
                 for instance in instances:
                     value = instance.id
                     label = TaggedItemView.get_display_name(instance, escapebraces=escapebraces)
-                    if state is None or instance.state == state:
+                    if states is None:
                         choices.append((value, label))
+                    else:
+                        if instance.state in states:
+                            choices.append((value, label))
+     
         return choices
 
     def instance_types(self, cloud_type='euca', add_blank=True, add_description=True):
@@ -223,7 +226,8 @@ class ChoicesManager(object):
             choices.append(('default', 'default'))
         return sorted(set(choices))
 
-    def keypairs(self, keypairs=None, add_blank=True, no_keypair_option=False, escapebraces=True):
+    def keypairs(self, keypairs=None, add_blank=True,
+                 no_keypair_option=False, no_keypair_filter_option=False, escapebraces=True):
         choices = []
         keypairs = keypairs or []
         if not keypairs and self.conn is not None:
@@ -241,6 +245,8 @@ class ChoicesManager(object):
         ret.extend(choices)
         if no_keypair_option:
             ret.append(('none', _(u'None (advanced option)')))
+        elif no_keypair_filter_option:
+            ret.append(('none', _(u'None')))
         return ret
 
     def elastic_ips(self, instance=None, ipaddresses=None, add_blank=True):
@@ -330,7 +336,7 @@ class ChoicesManager(object):
                 choices.append(BLANK_CHOICE)
             # Note: self.conn is an ELBConnection
             if not load_balancers and self.conn is not None:
-                load_balancers = self.get_all_load_balancers()
+                load_balancers = self.conn.get_all_load_balancers()
             for load_balancer in load_balancers:
                 lb_name = load_balancer.name
                 if escapebraces:
@@ -342,33 +348,6 @@ class ChoicesManager(object):
             else:
                 raise ex
         return sorted(choices)
-
-    # Special version of this to handle case where back end doesn't have ELB configured
-
-    def get_all_load_balancers(self, load_balancer_names=None):
-        params = {}
-        if load_balancer_names:
-            self.conn.build_list_params(params, load_balancer_names, 'LoadBalancerNames.member.%d')
-        http_request = self.conn.build_base_http_request(
-            'GET', '/', None, params, {}, '', self.conn.server_name())
-        http_request.params['Action'] = 'DescribeLoadBalancers'
-        http_request.params['Version'] = self.conn.APIVersion
-        response = self.conn._mexe(http_request, override_num_retries=2)
-        body = response.read()
-        boto.log.debug(body)
-        if not body:
-            boto.log.error('Null body %s' % body)
-            raise self.conn.ResponseError(response.status, response.reason, body)
-        elif response.status == 200:
-            obj = boto.resultset.ResultSet([('member', boto.ec2.elb.loadbalancer.LoadBalancer)])
-            h = boto.handler.XmlHandler(obj, self.conn)
-            import xml.sax
-            xml.sax.parseString(body, h)
-            return obj
-        else:
-            boto.log.error('%s %s' % (response.status, response.reason))
-            boto.log.error('%s' % body)
-            raise self.conn.ResponseError(response.status, response.reason, body)
 
     # IAM options
 

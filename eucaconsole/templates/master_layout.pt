@@ -3,12 +3,14 @@
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      i18n:domain="eucaconsole">
+      i18n:domain="eucaconsole" ng-csp="">
 <head>
     <title i18n:translate="">Eucalyptus Management Console</title>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <link rel="shortcut icon" href="${request.static_path('eucaconsole:static/img/favicon.ico')}" />
+    <link rel="stylesheet" href="${request.static_path('eucaconsole:static/css/thirdparty/angular-csp.css')}"
+          type="text/css" media="screen" charset="utf-8" />
     <link rel="stylesheet" href="${request.static_path('eucaconsole:static/fonts/foundation/foundation-icons.css')}"
           type="text/css" media="screen" charset="utf-8" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/thirdparty/chosen.min.css')}" />
@@ -16,23 +18,12 @@
           type="text/css" media="screen" charset="utf-8" />
     <metal:block metal:define-slot="head_css" />
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/modernizr/custom.modernizr.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/jquery-2.0.3.min.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular-1.2.21.min.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular-sanitize-1.2.21.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/jquery.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular-sanitize.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/jquery.generateFile.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/notify.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/eucaconsole_utils.js')}"></script>
-    <script type="text/javascript">
-        $(document).ready(function () {
-            var notification = $('#notifications');
-            if (notification.find('.alert').length == 0) {
-                // remove success notifications after 5 seconds
-                setTimeout(function(){
-                    Notify.clear();
-                }, 5000);
-            }
-        });
-    </script>
     <metal:block metal:define-slot="head_js" />
 </head>
 
@@ -57,7 +48,7 @@
                     <li>
                         <a i18n:translate="" data-reveal-id="about-modal">About your cloud</a>
                     </li>
-                    <li><a href="#" id="logout" onclick="$('#euca-logout-form').submit();" i18n:translate="">Log out</a></li>
+                    <li><a href="#" id="logout" i18n:translate="">Log out</a></li>
                 </ul>
             </section>
             <section tal:condition="request.user.is_authenticated() and layout.cloud_type == 'aws'">
@@ -118,7 +109,7 @@
         </form>
     </footer>
     <div id="about-modal" class="reveal-modal small" data-reveal="">
-        <h3 i18n:translate="">About your cloud</h3>
+        <a href="${layout.help_path('about-the-team.html')}" target="_blank"><h3 id="about-cloud" i18n:translate="">About your cloud</h3></a>
         <p>
             <span i18n:translate="">Eucalyptus cloud software version:</span>
             <strong>${layout.version}</strong>
@@ -130,7 +121,7 @@
         <p>
             <span i18n:translate="">Your session has timed out. This may be due to inactivity, a policy that does not provide login permissions, or an unexpected error. Please log in again, and contact your cloud administrator if the problem persists.</span>
         </p>
-        <a class="button medium expand" id="euca-login-button" href="javascript: $('#euca-logout-form').submit();" i18n:translate="">Login</a>
+        <a class="button medium expand" id="euca-login-button" i18n:translate="">Login</a>
     </div>
     <div id="unsaved-changes-warning-modal" class="reveal-modal small" data-reveal="">
         <h3 i18n:translate="">Confirm navigation</h3>
@@ -152,16 +143,7 @@
     <a class="exit-off-canvas"></a>
 
 <script type="text/javascript" src="${request.static_path('eucaconsole:static/js/thirdparty/foundation/foundation.min.js')}"></script>
-<script type="text/javascript">
-    // Initialize all Zurb Foundation components
-    $(document).foundation();
-</script>
-<script type="text/javascript">
-    // Prevent cancel link click from displaying unsaved changes warning
-    $(document).on('click', '.cancel-link', function(event) {
-        window.onbeforeunload = null;
-    });
-</script>
+<script type="text/javascript" src="${request.static_path('eucaconsole:static/js/pages/eucaconsole.js')}"></script>
 <div metal:define-slot="tail_js"></div>
 </div></div><!--! /end off-canvas wraps -->
 </body>

@@ -76,7 +76,7 @@
                     <li ng-show="item.status == 'running'">
                         <a i18n:translate="" ng-click="revealModal('reboot', item)">Reboot</a>
                     </li>
-                    <li ng-show="item.status !== 'terminated' &amp;&amp; !item.transitional">
+                    <li ng-show="item.status !== 'terminated' &amp;&amp; item.status !== 'shutting-down'">
                         <a i18n:translate="" ng-click="revealModal('terminate', item)">Terminate</a>
                     </li>
                     <li ng-show="item.status == 'terminated'" tal:condition="layout.cloud_type == 'euca'">
@@ -122,8 +122,10 @@
                 <div>
                     <span class="label" title="Security groups" i18n:attributes="title" data-tooltip="">SG</span>
                     <span ng-repeat="security_group in item.security_groups">
-                        <a ng-href="/securitygroups/{{ security_group.id }}">{{ security_group.name }}</a><span ng-show="!$last">, </span>
+                        <i class="fi-alert" ng-show="security_group.rules_count == 0" data-tooltip="" i18n:attributes="title"
+                            title="Warning: No rules defined for security group. Instance may be unreachable."></i>
                     </span>
+                    <a ng-href="${prefix}/{{ item.id }}">{{ item.security_groups.length }}</a>
                 </div>
                 <div>
                     <span class="label" title="VPC network" i18n:attributes="title" data-tooltip="">VN</span>
@@ -170,6 +172,8 @@
                 </td>
                 <td class="breakword">
                     <div ng-repeat="security_group in item.security_groups">
+                        <i class="fi-alert" ng-show="security_group.rules_count == 0" data-tooltip="" i18n:attributes="title"
+                            title="Warning: No rules defined for security group. Instance may be unreachable."></i>
                         <a ng-href="/securitygroups/{{ security_group.id }}">{{ security_group.name | ellipsis: 30 }}</a>
                     </div>
                 </td>
@@ -225,7 +229,7 @@
                             <li ng-show="item.status == 'running'">
                                 <a i18n:translate="" ng-click="revealModal('reboot', item)">Reboot</a>
                             </li>
-                            <li ng-show="item.status !== 'terminated' &amp;&amp; !item.transitional">
+                            <li ng-show="item.status !== 'terminated' &amp;&amp; item.status !== 'shutting-down'">
                                 <a i18n:translate="" ng-click="revealModal('terminate', item)">Terminate</a>
                             </li>
                             <li ng-show="item.status == 'terminated'" tal:condition="layout.cloud_type == 'euca'">
@@ -248,7 +252,7 @@
 
 <metal:block metal:fill-slot="offcanvas_right">
     <div id="help-content-div" class="help-content">
-        ${panel('help_instances', 'instance_landing_page' )}
+        <div id="help-html-console_instances" ng-include="'${layout.help_path('console_instances.html')}'"></div> 
     </div>
 </metal:block>
 

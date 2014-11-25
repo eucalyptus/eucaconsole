@@ -34,7 +34,7 @@ angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils'])
             else {
                 window.location = '/instances/' + instance_id + '/createimage';
             }
-        }
+        };
         $scope.revealModal = function (action, instance) {
             var modal = $('#' + action + '-instance-modal'),
                 securityGroups = instance['security_groups'],
@@ -46,6 +46,7 @@ angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils'])
             $scope.instanceName = instance['name'];
             $scope.rootDevice = instance['root_device'];
             $scope.groupName = securityGroupName;
+            $scope.securityGroups = securityGroups;
             $scope.keyName = instance['key_name'];
             $scope.publicDNS = instance['public_dns_name'];
             $scope.platform = instance['platform'];
@@ -109,12 +110,12 @@ angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils'])
             $(document).trigger('click');
             $scope.instanceName = instance['name'];
             var consoleOutputEndpoint = "/instances/" + instance['id'] + "/consoleoutput/json";
+            $scope.consoleOutput = '';
             $http.get(consoleOutputEndpoint).success(function(oData) {
                 var results = oData ? oData.results : '';
                 if (results) {
                     $scope.consoleOutput = $.base64.decode(results);
-                    var modal = $('#console-output-modal');
-                    modal.foundation('reveal', 'open');
+                    $('#console-output-modal').foundation('reveal', 'open');
                 }
             }).error(function (oData, status) {
                 eucaHandleError(oData, status);

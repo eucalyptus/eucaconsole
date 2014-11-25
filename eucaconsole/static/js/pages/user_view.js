@@ -156,6 +156,8 @@ angular.module('UserView', ['PolicyList', 'Quotas', 'EucaConsoleUtils'])
         $scope.setFocus = function () {
             $(document).on('ready', function(){
                 $('.tabs').find('a').get(0).focus();
+                // Prevent change password confirmation input from being disabled on IE
+                $('#password').removeAttr('maxlength');
             });
             $(document).on('opened', '[data-reveal]', function () {
                 var modal = $(this);
@@ -217,7 +219,7 @@ angular.module('UserView', ['PolicyList', 'Quotas', 'EucaConsoleUtils'])
             });
         };
     })
-    .controller('UserPasswordCtrl', function($scope, $http, $timeout) {
+    .controller('UserPasswordCtrl', function($scope, $http, $timeout, eucaHandleError) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.jsonRandomEndpoint = '';
         $scope.jsonDeleteEndpoint = '';
@@ -356,7 +358,7 @@ angular.module('UserView', ['PolicyList', 'Quotas', 'EucaConsoleUtils'])
             $('#delete-password-modal').foundation('reveal', 'close');
         };
     })
-    .controller('UserAccessKeysCtrl', function($scope, $http, $timeout) {
+    .controller('UserAccessKeysCtrl', function($scope, $http, $timeout, eucaHandleError) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.jsonEndpoint = '';
         $scope.jsonItemsEndpoint = '';
@@ -467,7 +469,7 @@ angular.module('UserView', ['PolicyList', 'Quotas', 'EucaConsoleUtils'])
             link: linker
         }
     })
-    .controller('UserGroupsCtrl', function($scope, $http, $timeout) {
+    .controller('UserGroupsCtrl', function($scope, $http, $timeout, eucaHandleError) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.addEndpoint = '';
         $scope.removeEndpoint = '';
@@ -593,7 +595,7 @@ angular.module('UserView', ['PolicyList', 'Quotas', 'EucaConsoleUtils'])
             $('#policy-view-modal').foundation('reveal', 'open');
         };
     })
-    .controller('UserQuotasCtrl', function($scope, $http) {
+    .controller('UserQuotasCtrl', function($scope, $http, $rootScope) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.jsonEndpoint = '';
         $scope.isQuotaNotChanged = true;
@@ -628,6 +630,7 @@ angular.module('UserView', ['PolicyList', 'Quotas', 'EucaConsoleUtils'])
               success(function(oData) {
                 var results = oData ? oData.results : [];
                 Notify.success(oData.message);
+                $rootScope.getPolicies();  // HACK: force access policies list to refresh on quota save
                 $scope.isQuotaNotChanged = true;
               }).
               error(function (oData, status) {

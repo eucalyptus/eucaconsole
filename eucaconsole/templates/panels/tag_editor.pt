@@ -1,14 +1,15 @@
 
 <!--! Tag editor -->
 <div id="tag-editor" class="row controls-wrapper" ng-app="TagEditor" i18n:domain="eucaconsole"
-     ng-controller="TagEditorCtrl" ng-init="initTags('${tags_json}', ${str(show_name_tag).lower()})">
+     ng-controller="TagEditorCtrl" ng-init="initTags('${controller_options_json}')">
     <style type="text/css" tal:condition="not show_name_tag">
-        .tagentry.Name { display: none; }
+        /* Hide name tag based on option passed to tag editor panel */
+        .item-list .item.Name { display: none; }
     </style>
     <div class="columns"><h6 i18n:translate="">Tags</h6></div>
     <div class="columns field" ng-cloak="">
-        <div class="items">
-            <span class="label radius secondary tagentry {{ tag.name === 'Name' ? 'Name' : '' }}"
+        <div class="item-list">
+            <span class="label radius secondary item {{ tag.name === 'Name' ? 'Name' : '' }}"
                   ng-repeat="tag in tagsArray" ng-cloak="cloak">
                 <span title="{{ getSafeTitle(tag) }}"><!--! XSS Heads up!  Don't enable Foundation tooltips here -->
                     {{ tag.name | ellipsis: 20 }} <em>=</em> {{ tag.value | ellipsis: 40 }}
@@ -18,18 +19,25 @@
             </span>
         </div>
         <div class="add-label">
-            <span i18n:translate="" ng-show="visibleTagsCount">Add another tag</span><span
-                  ng-show="visibleTagsCount == 0" i18n:translate="">Add a tag</span>:
+            <span i18n:translate="" ng-show="visibleTagsCount">Add another tag</span>
+            <span ng-show="visibleTagsCount == 0" i18n:translate="">Add a tag</span>:
         </div>
-        <div class="row tagentry controls-wrapper" ng-show="tagsArray.length &lt; 10">
+        <div class="row tagentry controls-wrapper" ng-class="tagKeyClass" ng-show="tagCount &lt; 10">
             <div>
                 <div id="tag-name-input-div" class="small-4 columns">
                     <input id='tag-name-input' class="taginput key" placeholder="name..." ng-model="newTagKey" pattern="${layout.tag_pattern_key}" />
-                    <small class="error" i18n:translate="">Tag may not begin with "aws:" or its length cannot be longer than 128 chars</small>
+                    <div ng-show="!existsTagKey">
+                        <small class="error" i18n:translate="">Tag may not begin with "aws:" or its length cannot be longer than 128 chars</small>
+                    </div>
+                    <div ng-show="existsTagKey">
+                        <small class="error" i18n:translate="">Key already in use, please use another key.</small>
+                    </div>
                 </div>
                 <div id="tag-value-input-div" class="small-8 columns">
-                    <input id='tag-value-input' class="taginput value" placeholder="value..." ng-model="newTagValue" pattern="${layout.tag_pattern_value}" />
-                    <small class="error" i18n:translate="">Tag may not begin with "aws:" or its length cannot be longer than 256 chars</small>
+                    <input id='tag-value-input' class="taginput value" placeholder="value..." ng-model="newTagValue" pattern="${layout.tag_pattern_value}" ng-keypress="keyListener($event)" />
+                    <div ng-show="!existsTagKey">
+                        <small class="error" i18n:translate="">Tag may not begin with "aws:" or its length cannot be longer than 256 chars</small>
+                    </div>
                 </div>
             </div>
             <div>&nbsp;</div>
@@ -41,10 +49,10 @@
                 </div>
             </div>
         </div>
-        <div ng-show="tagsArray.length &gt;= 10">
+        <div ng-show="tagCount &gt;= 10">
             <p>
                 <span i18n:translate="">You may not add more than ten tags to a resource.</span>
-                <span tal:condition="not show_name_tag" ng-show="visibleTagsCount &lt; tagsArray.length" i18n:translate="">
+                <span tal:condition="not show_name_tag" ng-show="visibleTagsCount &lt; tagCount" i18n:translate="">
                     Note that one of your tags is being used to display the resource name.
                 </span>
             </p>

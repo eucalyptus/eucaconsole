@@ -29,6 +29,17 @@
                         <li>
                             <a id="view-contents-action" i18n:translate="" href="${bucket_contents_url}">View contents</a>
                         </li>
+                        <li>
+                            <a id="create-folder-action" i18n:translate="" data-reveal-id="create-folder-modal">
+                                Create folder
+                            </a>
+                        </li>
+                        <li>
+                            <a id="upload-file-action" i18n:translate=""
+                               href="${request.route_path('bucket_upload', name=bucket_name, subpath='')}">
+                                Upload file(s)
+                            </a>
+                        </li>
                         <!--!
                         <li tal:condition="update_versioning_action == 'enable'">
                             <a ng-click="revealModal('update-versioning')"
@@ -110,24 +121,7 @@
         </div>
         <!--! Modal dialogs reused across landing and detail page -->
         ${panel('bucket_dialogs', landingpage=False, bucket=bucket, versioning_form=versioning_form, delete_form=delete_form)}
-        <!--! Sharing propagation warning dialog -->
-        <div id="changed-sharing-warning-modal" class="reveal-modal small" data-reveal="">
-            <h3 i18n:translate="">Changing sharing settings</h3>
-            <p i18n:translate="">
-                Sharing settings on this bucket will be propagated to all objects this bucket contains.
-            </p>
-            <p>
-                <span i18n:translate="">Are you sure you want to adjust sharing settings on</span>
-                <strong>${bucket_name}</strong>?
-            </p>
-            <div class="dialog-option">
-                <input type="checkbox" id="dont-show-again-option" />
-                <label for="dont-show-again-option" i18n:translate="">Do not show me this again</label>
-            </div>
-            <a id="confirm-changed-sharing-warning-modal-btn"
-               class="button expand" i18n:translate="">Yes, Let's Do This</a>
-            <a href="#" class="close-reveal-modal">&#215;</a>
-        </div>
+        ${panel('create_folder_dialog', bucket_name=bucket_name, create_folder_form=create_folder_form)}
     </div>
 </div>
 

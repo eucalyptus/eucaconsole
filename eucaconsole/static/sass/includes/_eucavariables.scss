@@ -208,18 +208,44 @@ $tooltip-padding: rem-calc(5);
     thead tr {
         background-color: #f5f5f5;
         th {
+            // Note: Do not use shorthand padding rules here since we need to override Foundation styles
             padding-top: 0.5rem;
             padding-bottom: 0.5rem;
+            padding-left: 6px;
+            padding-right: 6px;
             vertical-align: top;
             color: $euca-darkgrey;
             text-transform: uppercase;
             &.actions {
                 text-align: right;
             }
+            &.count {
+                text-align: center;
+            }
         }
     }
     tr {
         border-bottom: 1px solid #ddd;
+        td.count {
+            text-align: center;
+        }
+    }
+}
+
+/* -----------------------------------------
+   Item list
+----------------------------------------- */
+@mixin item-list {
+    .item-list {
+        margin-bottom: 6px;
+        .item {
+            color: #333;
+            background-color: $euca-extralightgrey;
+            margin-right: 8px;
+            a {
+                color: white;
+            }
+        }
     }
 }
 

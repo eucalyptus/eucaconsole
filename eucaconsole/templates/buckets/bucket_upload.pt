@@ -38,10 +38,11 @@
                       method="POST" accept-charset="utf-8" enctype="multipart/form-data">
                     ${structure:upload_form['csrf_token']}
                     <h6 class='subheading-label' i18n:translate=''>Select file(s)</h6>
-                    <input type="file" id="files" data-file="files" multiple="" name='files'>
+                    <input type="file" id="files" data-file="files" multiple="" name='files' />
                     <p class="file-list" ng-show="files.length > 1">
                         <span ng-repeat="file in files">{{ file.name }}<br/></span>
                     </p>
+                    <small id="size-error" class="error" i18n:translate="">You cannot upload files larger than 5GB.</small>
                     <hr/>
                     <div class="expando" id="advance-section">
                         <h6 class="title" >
@@ -59,7 +60,7 @@
                     <hr/>
                     <div class="row">
                         <div class="small-7 columns">
-                            <button type="submit" class="button" id="create-bucket-submit-button" ng-disabled="!hasChangesToBeSaved" ng-click="showConfirm($event)">
+                            <button type="submit" class="button" id="create-bucket-submit-button" ng-disabled="!hasChangesToBeSaved || isNotValid" ng-click="startUpload($event)">
                                 <span i18n:translate="">Upload File(s)</span>
                             </button>
                             <a id="cancel-create-bucket-link" ng-click="cancel()"
@@ -76,20 +77,13 @@
             <metal:block metal:use-macro="layout.global_macros['help_expando']" />
             <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                 <!--! pull in help content here-->
+                <div id="help-html-console_object_file_upload"
+                    ng-include="'${layout.help_path('console_object_file_upload.html')}'">
+                </div> 
             </div>
         </div>
         <div id="upload-files-modal" class="reveal-modal small" data-reveal="">
-            <h3 i18n:translate="">Confirm file upload</h3>
-            <div ng-show="!uploading">
-                <p>
-                    <span i18n:translate="">File transfer over the web can negatively affect performance and bandwidth for ALL console users (not just you) while the transfer is in progress. Performance for all console operations may get extremely slow or stop completely.</span>
-                    <br>&nbsp;</br>
-                    <span i18n:translate="">You can optimize this by uploading files when you know fewer people will be using the console concurrently.</span>
-                </p>
-                <a class="button expand" id="upload-files-btn" i18n:translate="" ng-click="startUpload()">
-                    OK, Let's Do This Now!
-                </a>
-            </div>
+            <h3 i18n:translate="">File upload in progress</h3>
             <div ng-show="uploading">
                 <p>
                     <span i18n:translate="">Uploading files can take some time. Leaving this page while the upload is in progress will cancel the operation.</span>

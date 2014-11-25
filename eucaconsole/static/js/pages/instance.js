@@ -34,6 +34,8 @@ angular.module('InstancePage', ['TagEditor', 'EucaConsoleUtils'])
             $scope.instancePublicIP = options['instance_ip_address'];
             $scope.publicDNS = options['instance_public_dns'];
             $scope.platform = options['instance_platform'];
+            $scope.securityGroups = options['instance_security_groups'];
+            $scope.keyName = options['instance_keypair'];
             $scope.hasElasticIP = options['has_elastic_ip'];
             $scope.getInstanceState();
             $scope.getUserData();
@@ -61,12 +63,12 @@ angular.module('InstancePage', ['TagEditor', 'EucaConsoleUtils'])
         }
         $scope.revealConsoleOutputModal = function() {
             $('.actions-menu').trigger('click');
+            $scope.consoleOutput = '';
             $http.get($scope.consoleOutputEndpoint).success(function(oData) {
                 var results = oData ? oData.results : '';
                 if (results) {
                     $scope.consoleOutput = $.base64.decode(results);
-                    var modal = $('#console-output-modal');
-                    modal.foundation('reveal', 'open');
+                    $('#console-output-modal').foundation('reveal', 'open');
                 }
             }).error(function (oData, status) {
                 eucaHandleError(oData, status);

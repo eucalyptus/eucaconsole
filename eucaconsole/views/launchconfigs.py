@@ -136,7 +136,11 @@ class LaunchConfigsJsonView(LandingPageView):
             scalinggroup_launchconfig_names = self.get_scalinggroups_launchconfig_names()
             for launchconfig in self.filter_items(self.items):
                 security_groups = self.get_security_groups(launchconfig.security_groups)
-                security_groups_array = sorted({'name': group.name, 'id': group.id} for group in security_groups)
+                security_groups_array = sorted({
+                    'name': group.name,
+                    'id': group.id,
+                    'rules_count': self.get_security_group_rules_count_by_id(group.id)
+                    } for group in security_groups)
                 image_id = launchconfig.image_id
                 name = launchconfig.name
                 launchconfigs_array.append(dict(
@@ -201,6 +205,14 @@ class LaunchConfigsJsonView(LandingPageView):
                     return sgroup
         return ''
 
+    def get_security_group_rules_count_by_id(self, id):
+        if id.startswith('sg-'):
+            security_group = self.get_security_group_by_id(id)
+        else:
+            security_group = self.get_security_group_by_name(id)
+        if security_group:
+            return len(security_group.rules)
+        return None 
 
 class LaunchConfigView(BaseView):
     """Views for single LaunchConfig"""
@@ -214,7 +226,7 @@ class LaunchConfigView(BaseView):
         with boto_error_handler(request):
             self.launch_config = self.get_launch_config()
             self.image = self.get_image()
-            self.security_groups = self.get_security_groups()
+            self.security_groups = self.get_security_group_list()
             self.in_use = self.is_in_use()
         self.delete_form = LaunchConfigDeleteForm(self.request, formdata=self.request.params or None)
         self.role = None
@@ -304,6 +316,32 @@ class LaunchConfigView(BaseView):
             return security_groups
         return []
 
+    def get_securitygroups_rules(self, securitygroups):
+        rules_dict = {}
+        for security_group in securitygroups:
+            rules = SecurityGroupsView.get_rules(security_group.rules)
+            if security_group.vpc_id is not None:
+                rules_egress = SecurityGroupsView.get_rules(security_group.rules_egress, rule_type='outbound')
+                rules = rules + rules_egress
+            rules_dict[security_group.id] = rules
+        return rules_dict
+
+    def get_security_group_list(self):
+        security_groups = []
+        security_group_list = []
+        security_groups = self.get_security_groups()
+        if security_groups:
+            rules_dict = self.get_securitygroups_rules(security_groups)
+            for sgroup in security_groups:
+                rules = rules_dict[sgroup.id]
+                sgroup_dict = {}
+                sgroup_dict['id'] = sgroup.id
+                sgroup_dict['name'] = sgroup.name
+                sgroup_dict['rules'] = rules 
+                sgroup_dict['rule_count'] = len(rules) 
+                security_group_list.append(sgroup_dict)
+        return security_group_list 
+
     def is_in_use(self):
         """Returns whether or not the launch config is in use (i.e. in any scaling group).
         :rtype: Boolean
@@ -342,7 +380,9 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
         self.image = self.get_image()
         with boto_error_handler(request):
             self.securitygroups = self.get_security_groups()
-        self.iam_conn = self.get_connection(conn_type="iam")
+        self.iam_conn = None
+        if BaseView.has_role_access(request):
+            self.iam_conn = self.get_connection(conn_type="iam")
         self.vpc_conn = self.get_connection(conn_type='vpc')
         self.create_form = CreateLaunchConfigForm(
             self.request, image=self.image, conn=self.conn, iam_conn=self.iam_conn,
@@ -352,12 +392,15 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
         self.keypair_form = KeyPairForm(self.request, formdata=self.request.params or None)
         self.securitygroup_form = SecurityGroupForm(self.request, self.vpc_conn, formdata=self.request.params or None)
         self.generate_file_form = GenerateFileForm(self.request, formdata=self.request.params or None)
-        self.securitygroups_rules_json = BaseView.escape_json(json.dumps(self.get_securitygroups_rules()))
-        self.images_json_endpoint = self.request.route_path('images_json')
         self.owner_choices = self.get_owner_choices()
-        self.keypair_choices_json = BaseView.escape_json(json.dumps(dict(self.create_form.keypair.choices)))
-        self.securitygroup_choices_json = BaseView.escape_json(json.dumps(dict(self.create_form.securitygroup.choices)))
-        self.role_choices_json = BaseView.escape_json(json.dumps(dict(self.create_form.role.choices)))
+        controller_options_json = BaseView.escape_json(json.dumps({
+            'securitygroups_rules': self.get_securitygroups_rules(),
+            'securitygroups_choices': dict(self.create_form.securitygroup.choices),
+            'keypair_choices': dict(self.create_form.keypair.choices),
+            'role_choices': dict(self.create_form.role.choices),
+            'securitygroups_json_endpoint': self.request.route_path('securitygroups_json'),
+            'image_json_endpoint': self.request.route_path('image_json', id='_id_'),
+        }))
         self.render_dict = dict(
             image=self.image,
             create_form=self.create_form,
@@ -365,15 +408,11 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
             keypair_form=self.keypair_form,
             securitygroup_form=self.securitygroup_form,
             generate_file_form=self.generate_file_form,
-            images_json_endpoint=self.images_json_endpoint,
             owner_choices=self.owner_choices,
             snapshot_choices=self.get_snapshot_choices(),
-            securitygroups_rules_json=self.securitygroups_rules_json,
-            keypair_choices_json=self.keypair_choices_json,
-            securitygroup_choices_json=self.securitygroup_choices_json,
-            role_choices_json=self.role_choices_json,
             preset='',
             security_group_placeholder_text=_(u'Select...'),
+            controller_options_json=controller_options_json,
         )
 
     @view_config(route_name='launchconfig_new', renderer=TEMPLATE, request_method='GET')
@@ -453,4 +492,3 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
                 rules = rules + rules_egress 
             rules_dict[security_group.id] = rules
         return rules_dict
-

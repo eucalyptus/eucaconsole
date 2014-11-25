@@ -307,8 +307,6 @@ class AttachVolumeForm(BaseSecureForm):
                 extra = ' ({name})'.format(name=name_tag) if name_tag else ''
                 vol_name = '{id}{extra}'.format(id=volume.id, extra=extra)
                 choices.append((volume.id, BaseView.escape_braces(vol_name)))
-        if len(choices) == 1:
-            choices = [('', _(u'No available volumes in this availability zone'))]
         self.volume_id.choices = choices
 
     def suggest_next_device_name(self):
@@ -333,6 +331,7 @@ class InstancesFiltersForm(BaseSecureForm):
     availability_zone = wtforms.SelectMultipleField(label=_(u'Availability zone'))
     instance_type = wtforms.SelectMultipleField(label=_(u'Instance type'))
     root_device_type = wtforms.SelectMultipleField(label=_(u'Root device type'))
+    key_name = wtforms.SelectMultipleField(label=_(u'Key pair'))
     security_group = wtforms.SelectMultipleField(label=_(u'Security group'))
     scaling_group = wtforms.SelectMultipleField(label=_(u'Scaling group'))
     tags = TextEscapedField(label=_(u'Tags'))
@@ -354,6 +353,8 @@ class InstancesFiltersForm(BaseSecureForm):
         self.state.choices = self.get_status_choices()
         self.instance_type.choices = self.get_instance_type_choices()
         self.root_device_type.choices = self.get_root_device_type_choices()
+        self.key_name.choices = self.ec2_choices_manager.keypairs(
+            add_blank=False, no_keypair_filter_option=True)
         self.security_group.choices = self.ec2_choices_manager.security_groups(add_blank=False)
         self.scaling_group.choices = self.autoscale_choices_manager.scaling_groups(add_blank=False)
         if cloud_type=='aws':
@@ -434,8 +435,10 @@ class InstanceCreateImageForm(BaseSecureForm):
     no_reboot = wtforms.BooleanField(label=_(u'No reboot'))
     s3_bucket = wtforms.SelectField(
         label=_(u'Bucket name'), validators=[validators.InputRequired(message=_(u'You must select a bucket to use.'))])
+    s3_bucket_error_msg = _('Bucket name is required and may contain lowercase letters, numbers, hyphens, and/or dots.')
     s3_prefix = wtforms.TextField(
         label=_(u'Prefix'), validators=[validators.InputRequired(message=_(u'You must supply a prefix'))])
+    s3_prefix_error_msg = _('Prefix is required and may contain lowercase letters, numbers, hyphens, and/or dots.')
 
     def __init__(self, request, s3_conn=None, **kwargs):
         super(InstanceCreateImageForm, self).__init__(request, **kwargs)
@@ -443,7 +446,9 @@ class InstanceCreateImageForm(BaseSecureForm):
         # Set choices
         self.choices_manager = ChoicesManager(conn=self.s3_conn)
         self.s3_bucket.choices = self.choices_manager.buckets()
+        self.s3_bucket.error_msg = self.s3_bucket_error_msg
         self.s3_prefix.data = _(u'image')
+        self.s3_prefix.error_msg = self.s3_prefix_error_msg
         # Set error msg
         self.name.error_msg = self.name_error_msg
         # Set help text

@@ -3,7 +3,7 @@
  * @requires AngularJS
  *
  */
-angular.module('TagEditor', ['ngSanitize'])
+angular.module('TagEditor', ['ngSanitize', 'EucaConsoleUtils'])
     .filter('ellipsis', function () {
         return function (line, num) {
             if( line.length <= num ){
@@ -12,16 +12,19 @@ angular.module('TagEditor', ['ngSanitize'])
             return line.substring(0, num) + "...";
         };
     })
-    .controller('TagEditorCtrl', function ($scope, $sanitize, $timeout) {
+    .controller('TagEditorCtrl', function ($scope, $sanitize, $timeout, eucaUnescapeJson) {
         $scope.tagEditor = $('#tag-editor');
         $scope.tagInputs = $scope.tagEditor.find('.taginput');
         $scope.tagsTextarea = $scope.tagEditor.find('textarea#tags');
         $scope.tagsArray = [];
         $scope.newTagKey = '';
         $scope.newTagValue = '';
+        $scope.tagKeyClass = '';
         $scope.showNameTag = true;
+        $scope.existsTagKey = false;
         $scope.isTagNotComplete = true;
         $scope.visibleTagsCount = 0;
+        $scope.tagCount = 0;
         $scope.syncTags = function () {
             var tagsObj = {};
             $scope.tagsArray.forEach(function(tag) {
@@ -41,10 +44,44 @@ angular.module('TagEditor', ['ngSanitize'])
                 }).length;
             }
         };
-        $scope.initTags = function(tagsJson, showNameTag) {
-            // Parse tags JSON and convert to a list of tags.
-            tagsJson = tagsJson.replace(/__apos__/g, "\'").replace(/__dquote__/g, '\\"').replace(/__bslash__/g, "\\");
-            var tagsObj = JSON.parse(tagsJson);
+        $scope.updateTagCount = function () {
+            $scope.tagCount = $scope.tagsArray.length;
+            // Add +1 to the tag count if a name is entered on the form 
+            if ($scope.isNameTagIncluded() == false) { 
+                if ($('#security-group-detail-form').length > 0) {
+                    // security groups have their own name attributes, thus skip
+                    return;
+                } else if ($('#launch-instance-form').length > 0) {
+                    // Sepcial case: instance launch wizard page can have mutiple name fields
+                    var isNameEntered = false;
+                    $('input.name').each(function() {
+                        if ($(this).val().length > 0) {
+                            isNameEntered = true;
+                        } 
+                    }); 
+                    if (isNameEntered) {
+                        $scope.tagCount += 1;
+                    }
+                } else {
+                    // check if the name field has a value entered
+                    if ($('#name').length && $('#name').val().length > 0) {
+                        $scope.tagCount += 1;
+                    }
+                }
+            }
+        };
+        $scope.isNameTagIncluded = function () {
+            var isIncluded = false;
+            angular.forEach($scope.tagsArray, function(x) {
+                if (x.name == 'Name') {
+                    isIncluded = true;
+                }
+            });
+            return isIncluded;
+        };
+        $scope.initTags = function(optionsJson) {
+            var options = JSON.parse(eucaUnescapeJson(optionsJson));
+            var tagsObj = options['tags'];
             Object.keys(tagsObj).forEach(function(key) {
                 if (!key.match(/^aws:.*/) && !key.match(/^euca:.*/)) {
                     $scope.tagsArray.push({
@@ -63,9 +100,14 @@ angular.module('TagEditor', ['ngSanitize'])
                     evt.preventDefault();
                 }
             });
-            $scope.showNameTag = showNameTag;
+            $scope.showNameTag = options['show_name_tag'];
             $scope.syncTags();
             $scope.setWatch();
+        };
+        $scope.keyListener = function ($event) {
+            if ($event.keyCode == 13) {
+                $scope.addTag($event)
+            }
         };
         $scope.getSafeTitle = function (tag) {
             return $sanitize(tag.name + ' = ' + tag.value);
@@ -121,7 +163,9 @@ angular.module('TagEditor', ['ngSanitize'])
             }
         };
         $scope.checkRequiredInput = function () {
-            if ($scope.newTagKey === '' || $scope.newTagValue === '') {
+            if ($scope.checkDuplicatedTagKey()) {
+                $scope.isTagNotComplete = true;
+            } else if ($scope.newTagKey === '' || $scope.newTagValue === '') {
                 $scope.isTagNotComplete = true;
             } else if ($('#tag-name-input-div').hasClass('error') ||
                 $('#tag-value-input-div').hasClass('error')) {
@@ -129,8 +173,19 @@ angular.module('TagEditor', ['ngSanitize'])
             } else {
                 $scope.isTagNotComplete = false;
             } 
-
         }; 
+        // Check for the duplicated key and set the tagKeyClass to be 'error' if detected
+        $scope.checkDuplicatedTagKey = function () {
+            $scope.tagKeyClass = '';
+            $scope.existsTagKey = false;
+            angular.forEach($scope.tagsArray, function(tag) {
+                if (tag.name == $scope.newTagKey) {
+                    $scope.existsTagKey = true;
+                    $scope.tagKeyClass = 'error';
+                }
+            }); 
+            return $scope.existsTagKey;
+        };
         $scope.setWatch = function () {
             $scope.$watch('newTagKey', function () {
                 $scope.checkRequiredInput();
@@ -148,6 +203,27 @@ angular.module('TagEditor', ['ngSanitize'])
                     $scope.checkRequiredInput();
                 }, 1000);
             });
+            $scope.setTagCountWatch();
+        };
+        $scope.setTagCountWatch = function () {
+            // When the tagsArray get updated, check the tag count
+            $scope.$watch('tagsArray', function () {
+                $scope.updateTagCount();
+                $scope.updateVisibleTagsCount();
+            }, true);
+            // When user enters name field, check the tag count
+            if ($('#launch-instance-form').length != 0) {
+                // Special case for the launch instance wizard where mutiple name fields exist
+                $(document).on('keyup', 'input.name', function (event) {
+                    $scope.updateTagCount();
+                    $scope.updateVisibleTagsCount();
+                });
+            } else {
+                $(document).on('keyup', '#name', function (event) {
+                    $scope.updateTagCount();
+                    $scope.updateVisibleTagsCount();
+                });
+            }
         };
     })
 ;

@@ -6,7 +6,7 @@
 
 // Launch Config Wizard includes the Image Picker, BDM editor, and security group rules editor
 angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor', 'SecurityGroupRules', 'EucaConsoleUtils'])
-    .controller('LaunchConfigWizardCtrl', function ($scope, $http, $timeout, eucaHandleError) {
+    .controller('LaunchConfigWizardCtrl', function ($scope, $http, $timeout, eucaHandleError, eucaUnescapeJson) {
         $scope.launchForm = $('#launch-config-form');
         $scope.imageID = '';
         $scope.imageName = '';
@@ -26,12 +26,12 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
         $scope.newKeyPairName = '';
         $scope.keyPairSelected = '';
         $scope.keyPairModal = $('#create-keypair-modal');
-        $scope.showKeyPairMaterial = false;
         $scope.isLoadingKeyPair = false;
         $scope.selectedGroupRules = {};
         $scope.securityGroupModal = $('#create-securitygroup-modal');
         $scope.securityGroupForm = $('#create-securitygroup-form');
         $scope.securityGroupChoices = {};
+        $scope.securityGroupChoicesFullName = {};
         $scope.isRuleExpanded = {};
         $scope.newSecurityGroupName = '';
         $scope.securityGroupSelected = '';
@@ -48,21 +48,14 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
         $scope.existsImage = true;
         $scope.imageIDErrorClass = '';
         $scope.imageIDNonexistErrorClass = '';
-        $scope.initController = function (securityGroupsRulesJson, keyPairChoices,
-                                securityGroupChoices, securityGroupJsonURL, roles,
-                                imageJsonURL) {
-            securityGroupsRulesJson = securityGroupsRulesJson.replace(/__apos__/g, "\'")
-                .replace(/__dquote__/g, '\\"').replace(/__bslash__/g, "\\");
-            securityGroupChoices = securityGroupChoices.replace(/__apos__/g, "\'")
-                .replace(/__dquote__/g, '\\"').replace(/__bslash__/g, "\\");
-            keyPairChoices = keyPairChoices.replace(/__apos__/g, "\'")
-                .replace(/__dquote__/g, '\\"').replace(/__bslash__/g, "\\");
-            $scope.securityGroupsRules = JSON.parse(securityGroupsRulesJson);
-            $scope.keyPairChoices = JSON.parse(keyPairChoices);
-            $scope.securityGroupChoices = JSON.parse(securityGroupChoices);
-            $scope.roleList = JSON.parse(roles);
-            $scope.imageJsonURL = imageJsonURL;
-            $scope.securityGroupJsonEndpoint = securityGroupJsonURL;
+        $scope.initController = function (optionsJson) {
+            var options = JSON.parse(eucaUnescapeJson(optionsJson));
+            $scope.securityGroupsRules = options['securitygroups_rules'];
+            $scope.keyPairChoices = options['keypair_choices'];
+            $scope.securityGroupChoices = options['securitygroups_choices'];
+            $scope.roleList = options['role_choices'];
+            $scope.securityGroupJsonEndpoint = options['securitygroups_json_endpoint'];
+            $scope.imageJsonURL = options['image_json_endpoint'];
             $scope.getAllSecurityGroups(); 
             $scope.setInitialValues();
             $scope.preventFormSubmitOnEnter();
@@ -102,8 +95,13 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
         };
         $scope.updateSecurityGroupChoices = function () {
             $scope.securityGroups = [];
+            $scope.securityGroupChoicesFullName = {};
             angular.forEach($scope.securityGroupCollection, function(sGroup){
                 var securityGroupName = sGroup['name'];
+                $scope.securityGroupChoicesFullName[sGroup['id']] = securityGroupName;
+                if (sGroup['name'].length > 30) {
+                    securityGroupName = sGroup['name'].substr(0, 30) + "...";
+                }
                 if (sGroup['vpc_id'] !== null) {
                     securityGroupName = securityGroupName + " (" + sGroup['vpc_id'] + ")";
                 } 
@@ -288,6 +286,31 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                 $scope.$broadcast('setBDM', item.block_device_mapping);
                 $scope.existsImage = true;
                 $scope.imageIDNonexistErrorClass = "";
+                if (item.root_device_type == 'ebs') {
+                    // adjust vmtypes menu
+                    var rootSize = item.block_device_mapping[item.root_device_name]['size'];
+                    var selectedOne = false;
+                    angular.forEach($('#instance_type option'), function(value, idx) {
+                        var text = value.text;
+                        var size = text.split(',')[2].trim();
+                        size = size.substring(0, size.indexOf(' '));
+                        if (size < rootSize) {  // disable entries that won't fit
+                            value.disabled = true;
+                        }
+                        else {
+                            value.disabled = false;
+                            if (!selectedOne) {  // select first one that fits
+                                value.selected = true;
+                                selectedOne = true;
+                            }
+                        }
+                    });
+                }
+                else {
+                    angular.forEach($('#instance_type option'), function(value, idx) {
+                        value.disabled = false;
+                    });
+                }
             }).error(function (oData) {
                 $scope.existsImage = false;
                 $scope.imageIDNonexistErrorClass = "error";
@@ -379,7 +402,6 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             $scope.checkRequiredInput();
         });
         $scope.showCreateKeypairModal = function() {
-            $scope.showKeyPairMaterial = false;
             var form = $('#launch-config-form');
             var invalid_attr = 'data-invalid';
             form.removeAttr(invalid_attr);
@@ -387,40 +409,37 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             $('.error', form).not('small').removeClass('error');
             $scope.keyPairModal.foundation('reveal', 'open');
         };
-        $scope.downloadKeyPair = function ($event, downloadUrl) {
+        $scope.handleKeyPairCreate = function ($event, createUrl, downloadUrl) {
             $event.preventDefault();
-            var form = $($event.target);
-            $.generateFile({
-                csrf_token: form.find('input[name="csrf_token"]').val(),
-                filename: $scope.newKeyPairName + '.pem',
-                content: form.find('textarea[name="content"]').val(),
-                script: downloadUrl
-            });
-            $scope.showKeyPairMaterial = false;
-            var modal = $scope.keyPairModal;
-            modal.foundation('reveal', 'close');
-            $scope.newKeyPairName = '';
-        };
-        $scope.handleKeyPairCreate = function ($event, url) {
-            $event.preventDefault();
+            var form = $(event.target);
             if ($scope.newKeyPairName.indexOf('/') !== -1 || $scope.newKeyPairName.indexOf('\\') !== -1) {
-                return; 
+                return;
             }
-            var formData = $($event.target).serialize();
+            var formData = form.serialize();
             $scope.isLoadingKeyPair = true;
             $http({
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                 method: 'POST',
-                url: url,
+                url: createUrl,
                 data: formData
             }).success(function (oData) {
-                $scope.showKeyPairMaterial = true;
                 $scope.isLoadingKeyPair = false;
-                $('#keypair-material').val(oData['payload']);
+                var keypairMaterial = oData['payload'];
                 // Add new key pair to choices and set it as selected
                 $scope.keyPairChoices[$scope.newKeyPairName] = $scope.newKeyPairName;
                 $scope.keyPair = $scope.newKeyPairName;
                 Notify.success(oData.message);
+                // Download key pair file
+                $.generateFile({
+                    csrf_token: form.find('input[name="csrf_token"]').val(),
+                    filename: $scope.newKeyPairName + '.pem',
+                    content: keypairMaterial,
+                    script: downloadUrl
+                });
+                // Close create key pair modal
+                var modal = $scope.keyPairModal;
+                modal.foundation('reveal', 'close');
+                $scope.newKeyPairName = '';
             }).error(function (oData) {
                 $scope.isLoadingKeyPair = false;
                 eucaHandleError(oData, status);
@@ -447,6 +466,10 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                     newSecurityGroupID = oData.id;
                 }
                 var newlyCreatedSecurityGroupName = $scope.newSecurityGroupName;
+                $scope.securityGroupChoicesFullName[newSecurityGroupID] = newlyCreatedSecurityGroupName;
+                if (newlyCreatedSecurityGroupName.length > 30) {
+                    newlyCreatedSecurityGroupName = newlyCreatedSecurityGroupName.substr(0, 30) + "...";
+                }
                 if ($scope.securityGroupVPC) {
                     newlyCreatedSecurityGroupName = newlyCreatedSecurityGroupName + " (" + $scope.securityGroupVPC + ")";
                 }

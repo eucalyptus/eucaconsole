@@ -24,6 +24,12 @@ $dashboard-panel-icon-size: 100px;
             display: inline-block;
             margin-left: 1rem;
         }
+        #reset-dash {
+            margin-top: 1.25rem;
+            font-size: 0.825rem;
+            display: inline-block;
+            float: right;
+        }
     }
 }
 
@@ -156,39 +162,38 @@ $tile-row-height: 24px;
 #groups .icon { background-image: url(../../img/svg/IAM_group.svg); }
 #roles .icon { background-image: url(../../img/svg/icon_IAM_roles.svg); }
 
-// --- Media queries
-// --------------------
-//
-
-
-/* Small screen */
-@media screen and (max-width: 480px) {
-
-}
 
 #service-unknown {
     margin-top: 13px;
 }
 
 
-#service-up i {
-    color:$euca-darkblue;
-    font-size: 16pt;
-    text-align: left;
-}
-
-#service-down i {
-    color:red;
-    font-size: 16pt;
-    text-align: left;
-}
-
-#status {
-    font-size: 11pt;
-    text-align: left;
-    font-style: normal;
-    font-weight: normal;
-    color: $euca-grey;
-    margin-top: 9px;
-    margin-bottom: 0;
+// Health status tile
+#health {
+    .statusrow {
+        font-size: 11pt;
+        text-align: left;
+        color: $euca-grey;
+        margin-top: 10px;
+        line-height: 1.4rem;
+        .status {
+            position: relative;
+            left: 8px;
+        }
+        i.service-up {
+            color: $euca-darkblue;
+            font-size: 16pt;
+            text-align: left;
+        }
+        i.service-down {
+            color: red;
+            font-size: 16pt;
+            text-align: left;
+        }
+        i.service-denied {
+            color: $euca-darkgrey;
+            font-size: 16pt;
+            text-align: left;
+        }
+    }
 }
