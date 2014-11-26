@@ -38,7 +38,7 @@
                             <b i18n:translate="">Select a template</b>
                         </a>
                     </dd>
-                    <dd>
+                    <dd tal:attributes="class active|type=='account'">
                         <a id="custom-policy-tab" href="#step2" ng-click="selectPolicy('custom')">
                             <b i18n:translate="">Create a custom policy</b>
                         </a>
@@ -78,7 +78,7 @@
                         </div>
                     </div>
                     <!--! Tab 2: Create a custom policy -->
-                    <div class="content" id="step2">
+                    <div class="content" id="step2" tal:attributes="class 'content active'|type=='account'">
                         <div class="choice">
                             <div class="expando" ng-init="policyGenExpanded = true" ng-cloak="">
                                 <strong class="title" >

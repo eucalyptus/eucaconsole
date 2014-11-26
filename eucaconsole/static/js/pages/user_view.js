@@ -238,8 +238,16 @@ angular.module('UserView', ['PolicyList', 'Quotas', 'EucaConsoleUtils'])
             // add password strength meter to first new password field
             newPasswordForm.after("<hr id='password-strength'/><span id='password-word'></span>");
             $('#password-strength').attr('class', "password_none");
-            newPasswordForm.on('keypress', function () {
+            newPasswordForm.on('keypress', function (evt) {
                 var val = $(this).val();
+                var key = evt.keyCode || evt.charCode;
+                if (key == 8 || key == 46) {
+                    val = val.substring(0, val.length-1);
+                } else {
+                    if (key != 13 && key != 9) {
+                        val = val + evt.key;
+                    }
+                }
                 var score = zxcvbn(val).score;
                 $('#password-strength').attr('class', "password_" + score);
                 $('#password-word').attr('class', "password_" + score);
