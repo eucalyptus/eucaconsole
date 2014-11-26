@@ -94,11 +94,12 @@ class ScalingGroupsView(LandingPageView, DeleteScalingGroupMixin):
             ec2_conn=self.ec2_conn, autoscale_conn=self.autoscale_conn, vpc_conn=self.vpc_conn)
         self.filter_keys = [
             'availability_zones', 'launch_config', 'name', 'placement_group', 'vpc_zone_identifier']
+        search_facets = self.filters_form.facets
         # sort_keys are passed to sorting drop-down
         self.render_dict = dict(
-            filter_fields=True,
-            filters_form=self.filters_form,
+            filter_fields=False,
             filter_keys=self.filter_keys,
+            search_facets=BaseView.escape_json(json.dumps(search_facets)),
             sort_keys=self.get_sort_keys(),
             prefix=self.prefix,
             initial_sort_key=self.initial_sort_key,
