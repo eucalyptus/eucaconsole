@@ -7,7 +7,7 @@
 .search-bar .item-list .item { color: #333; background-color: #e6e7e8; margin-right: 8px; }
 .search-bar .item-list .item a { color: white; }
 .search-bar .item-list { position: relative; float: left; }
-.search-bar #search-input { border: 0px; width: 300px; height: 1.5rem; position: relative; float: left; padding: 3px; margin: 0px; }
+.search-bar #search-input { border: 0px; width: 300px; height: 1.5rem; position: relative; float: left; padding: 3px; margin: 0px; background-color: white; }
 .search-bar i.cancel { margin-right: 1.25rem; padding: 3px; color: #444444; vertical-align: middle; position: relative; float: right; }
 .search-bar i.cancel:hover { color: darkred; }
 .search-bar i.fi-magnifying-glass { right: 1.0rem; padding: 3px; margin-right: 3px; color: #444444; vertical-align: middle; position: absolute; }
