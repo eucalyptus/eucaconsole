@@ -1,52 +1,34 @@
 <!--! S3 bucket/object sharing panel -->
 <div id="s3-sharing-panel" ng-app="S3SharingPanel" i18n:domain="eucaconsole" ng-form="sharingPanelForm"
-     ng-controller="S3SharingPanelCtrl" ng-init="initS3SharingPanel('${grants_json}')">
+     ng-controller="S3SharingPanelCtrl" ng-init="initS3SharingPanel('${controller_options_json}')">
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/s3_sharing_panel.css')}" />
     <h6 i18n:translate="" class="sharing-label">Sharing</h6>
+    <div tal:condition="object_type == 'bucket'">
+        ${panel('form_field', field=sharing_form.propagate_acls, ng_attrs=dict(model='propagateAcls'), reverse=True)}
+    </div>
     <div tal:condition="show_caution" tal:omit-tag="">
-        <p i18n:translate="">The sharing options for the selected object(s) have been automatically set to match their bucket. Only adjust these options if you want them to change.</p>
-    </div>
-    <div>
-        ${structure:sharing_form.share_type()}
-    </div>
-    <div id="sharing-public" ng-show="shareType == 'public'" ng-cloak="">
-        <p>
-            <span i18n:translate="">Anyone can access this</span>
-            <span i18n:translate="" tal:condition="object_type in ['bucket', '']">bucket and its contents.</span>
-            <span i18n:translate="" tal:condition="object_type == 'object'">object.</span>
+        <p i18n:translate="">
+            The sharing options for the selected object(s) have been automatically set to match their bucket.
+            Only adjust these options if you want them to change.
         </p>
     </div>
-    <div id="sharing-private" ng-show="shareType == 'private'" ng-cloak="">
-        <p>
-            <span i18n:translate="">Only my account and accounts that I share with can access this</span>
-            <span i18n:translate="" tal:condition="object_type in ['bucket', '']">bucket and its contents.</span>
-            <span i18n:translate="" tal:condition="object_type == 'object'">object.</span>
-        </p>
-        <h6 i18n:translate="" class="sharing-label">Share with others</h6>
-        <div id="canned-acl-wrapper">
-            <input type="radio" name="acl_type" value="canned" id="acl-type-canned" ng-model="aclType" />
-            <label for="acl-type-canned" i18n:translate="">Use canned ACL</label>
-            <div ng-show="aclType == 'canned'">
-                ${structure: sharing_form.canned_acl}
-            </div>
+    <div id="sharing-acls">
+        <div class="items">
+            <span class="label radius secondary grantentry" ng-repeat="grant in grantsArray" ng-cloak="cloak">
+                {{ grant.display_name || grant.id || grant.email_address || grant.uri.split('/').pop() }}: {{ grant.permission }}
+                <a href="#" class="remove" ng-click="removeGrant($index, $event)"
+                   title="Remove permission"><i class="fi-x"></i></a>
+            </span>
         </div>
+        <h6 i18n:translate="" class="sharing-label">Add a grantee:</h6>
         <div id="manual-acl-wrapper">
-            <input type="radio" name="acl_type" value="manual" id="acl-type-manual" ng-model="aclType" />
-            <label for="acl-type-manual" i18n:translate="">Manually define sharing</label>
             <div ng-show="aclType == 'manual'" class="manual-controls">
-                <div class="items">
-                    <span class="label radius secondary grantentry" ng-repeat="grant in grantsArray" ng-cloak="cloak">
-                        {{ grant.display_name || grant.id || grant.email_address || grant.uri.split('/').pop() }}: {{ grant.permission }}
-                        <a href="#" class="remove" ng-click="removeGrant($index, $event)"
-                           title="Remove permission"><i class="fi-x"></i></a>
-                    </span>
-                </div>
                 <div class="subheader" ng-cloak="">
                     <span class="subsection-label" ng-show="grantsArray.length == 0" i18n:translate="">
-                        Add an account
+                        Add a grantee
                     </span>
                     <span class="subsection-label" ng-show="grantsArray.length" i18n:translate="">
-                        Add another account
+                        Add another grantee
                     </span>
                     :
                 </div>
@@ -59,7 +41,11 @@
                         </label>
                     </div>
                     <div class="small-9 columns">
-                        ${structure: sharing_form.share_account(**{'ng-model': 'shareAccount'})}
+                        <!--! NOTE: We've hard-coded the share_account HTML to allow a custom chosen input -->
+                        <select id="share_account" name="share_account">
+                            <option value="">${account_placeholder_text}</option>
+                            <option tal:repeat="choice grantee_choices" value="${choice[0]}">${choice[1]}</option>
+                        </select>
                         <small class="error">${sharing_form.share_account_error_msg}</small>
                     </div>
                 </div>
@@ -68,7 +54,7 @@
                     <div class="small-9 columns right">
                         <a class="button round tiny" ng-click="addGrant($event)" id="add-s3acl-btn"
                            ng-disabled="addAccountBtnDisabled" i18n:translate="">
-                            Add Account
+                            Add Grantee
                         </a>
                     </div>
                 </div>

@@ -157,6 +157,22 @@ class SecurityGroupsJsonView(LandingPageView):
                 ))
         return dict(results=securitygroups)
 
+    @view_config(route_name='securitygroups_rules_json', renderer='json', request_method='POST')
+    def get_securitygroups_rules(self):
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
+        securitygroups = []
+        if self.conn:
+            securitygroups = self.conn.get_all_security_groups()
+        rules_dict = {}
+        for security_group in securitygroups:
+            rules = SecurityGroupsView.get_rules(security_group.rules)
+            if security_group.vpc_id is not None:
+                rules_egress = SecurityGroupsView.get_rules(security_group.rules_egress, rule_type='outbound')
+                rules = rules + rules_egress 
+            rules_dict[security_group.id] = rules
+        return dict(results=rules_dict)
+
     def get_items(self):
         return self.conn.get_all_security_groups() if self.conn else []
 

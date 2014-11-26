@@ -242,6 +242,31 @@ class BucketXHRView(BaseView):
             )
             return dict(message=_(u"Successfully copied object."))
 
+    @view_config(route_name='bucket_item_make_public', renderer='json', request_method='POST', xhr=True)
+    def bucket_item_make_public(self):
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
+        key_name = self.request.params.get('key')
+        detailpage = self.request.params.get('detailpage')
+        if not key_name:
+            return dict(message=_(u"Key must be specified."), errors=[])
+        bucket = self.s3_conn.head_bucket(self.bucket_name)
+        key = bucket.get_key(key_name, validate=False)
+        self.log_request("Making object {0} public".format(key_name))
+        try:
+            key.make_public()
+            prefix = _(u"Successfully made object {0} public.")
+            msg = prefix.format(key_name)
+            if detailpage:
+                # Need to send notification via session on detail page to allow ACLs to properly refresh
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
+            return dict(message=msg)
+        except BotoServerError as err:
+            prefix = _(u"Failed to make object {0} public: {1}")
+            message = prefix.format(key_name, err.message)
+            self.log_request(message)
+            return dict(message=message)
+
 
 class BucketContentsView(LandingPageView):
     """Views for actions on single bucket"""
@@ -294,11 +319,9 @@ class BucketContentsView(LandingPageView):
             bucket = BucketContentsView.get_bucket(self.request, self.s3_conn)
             if not hasattr(bucket, 'metadata'):
                 bucket.metadata = {}
-            bucket_acl = bucket.get_acl() if bucket else None
             acl_obj = Key(bucket, '')
-            acl_obj.set_acl(bucket_acl)
             sharing_form = SharingPanelForm(
-                self.request, bucket_object=acl_obj, sharing_acl=bucket_acl, formdata=self.request.params or None)
+                self.request, bucket_object=acl_obj, sharing_acl=None, formdata=self.request.params or None)
             metadata_form = MetadataForm(self.request, formdata=self.request.params or None)
             self.render_dict.update(
                 bucket=bucket,
@@ -321,6 +344,10 @@ class BucketContentsView(LandingPageView):
         with boto_error_handler(self.request):
             bucket = self.s3_conn.get_bucket(bucket_name)
             for upload_file in files:
+                upload_file.file.seek(0, 2)  # seek to end
+                if upload_file.file.tell() > 5000000000:
+                    return JSONResponse(status=400, message=_(u"File too large :")+upload_file.filename)
+                upload_file.file.seek(0, 0)  # seek to start
                 bucket_item = bucket.new_key("/".join(subpath))
                 bucket_item.set_metadata('Content-Type', upload_file.type)
                 headers = {'Content-Type': upload_file.type}
@@ -397,6 +424,8 @@ class BucketContentsView(LandingPageView):
             'copy_object_url': self.request.route_path('bucket_put_item', name='_name_', subpath='_subpath_'),
             'get_keys_generic_url': self.request.route_path('bucket_keys', name='_name_', subpath='_subpath_'),
             'put_keys_url': self.request.route_path('bucket_put_items', name=self.bucket_name, subpath='_subpath_'),
+            'make_object_public_url': self.request.route_path(
+                'bucket_item_make_public', name=self.bucket_name, subpath='_subpath_'),
         }))
 
     @staticmethod
@@ -405,6 +434,7 @@ class BucketContentsView(LandingPageView):
 
     @staticmethod
     def get_unprefixed_key_name(key_name):
+        """Returns key name without the prefix (i.e. without the folder path)"""
         if DELIMITER not in key_name:
             return key_name
         if DELIMITER in key_name:
@@ -548,7 +578,7 @@ class BucketDetailsView(BaseView):
         super(BucketDetailsView, self).__init__(request)
         self.s3_conn = self.get_connection(conn_type='s3')
         with boto_error_handler(request):
-            self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
+            self.bucket = BucketContentsView.get_bucket(request, self.s3_conn) if self.s3_conn else None
             self.bucket_acl = self.bucket.get_acl() if self.bucket else None
         self.details_form = BucketDetailsForm(request, formdata=self.request.params or None)
         self.sharing_form = SharingPanelForm(
@@ -556,23 +586,26 @@ class BucketDetailsView(BaseView):
         self.versioning_form = BucketUpdateVersioningForm(request, formdata=self.request.params or None)
         self.create_folder_form = CreateFolderForm(request, formdata=self.request.params or None)
         self.versioning_status = self.get_versioning_status(self.bucket)
-        self.render_dict = dict(
-            details_form=self.details_form,
-            sharing_form=self.sharing_form,
-            versioning_form=self.versioning_form,
-            create_folder_form=self.create_folder_form,
-            delete_form=BucketDeleteForm(request),
-            bucket=self.bucket,
-            bucket_creation_date=self.get_bucket_creation_date(self.s3_conn, self.bucket.name),
-            bucket_name=self.bucket.name,
-            owner=self.get_bucket_owner_name(self.bucket_acl),
-            versioning_status=self.versioning_status,
-            update_versioning_action=self.get_versioning_update_action(self.versioning_status),
-            logging_status=self.get_logging_status(),
-            bucket_contents_url=self.request.route_path('bucket_contents', name=self.bucket.name, subpath=''),
-            bucket_objects_count_url=self.request.route_path(
-                'bucket_objects_count_versioning_json', name=self.bucket.name)
-        )
+        if self.bucket is None:
+            self.render_dict = dict()
+        else:
+            self.render_dict = dict(
+                details_form=self.details_form,
+                sharing_form=self.sharing_form,
+                versioning_form=self.versioning_form,
+                create_folder_form=self.create_folder_form,
+                delete_form=BucketDeleteForm(request),
+                bucket=self.bucket,
+                bucket_creation_date=self.get_bucket_creation_date(self.s3_conn, self.bucket.name),
+                bucket_name=self.bucket.name,
+                owner=self.get_bucket_owner_name(self.bucket_acl),
+                versioning_status=self.versioning_status,
+                update_versioning_action=self.get_versioning_update_action(self.versioning_status),
+                logging_status=self.get_logging_status(),
+                bucket_contents_url=self.request.route_path('bucket_contents', name=self.bucket.name, subpath=''),
+                bucket_objects_count_url=self.request.route_path(
+                    'bucket_objects_count_versioning_json', name=self.bucket.name)
+            )
 
     @view_config(route_name='bucket_details', renderer=VIEW_TEMPLATE)
     def bucket_details(self):
@@ -628,34 +661,17 @@ class BucketDetailsView(BaseView):
     @staticmethod
     def update_acl(request, bucket_object=None):
         is_bucket = isinstance(bucket_object, Bucket)
-        share_type = request.params.get('share_type')
-        acl_type = request.params.get('acl_type')
-        canned_acl = request.params.get('canned_acl')
-        bucket_keys = []
-        if is_bucket:
-            bucket_keys = bucket_object.get_all_keys()
-        if share_type == 'public':
-            params = {}
-            if is_bucket:
-                params = dict(recursive=True)
-            bucket_object.make_public(**params)
-        elif share_type == 'private' and acl_type:
-            if acl_type == 'canned':
-                bucket_object.set_canned_acl(canned_acl)
-                if is_bucket:
-                    # Set canned ACL recursively
-                    for key in bucket_keys:
-                        key.set_canned_acl(canned_acl)
-            else:
-                # Save manually entered ACLs
-                sharing_acl = BucketDetailsView.get_sharing_acl(
-                    request, bucket_object=bucket_object, item_acl=bucket_object.get_acl())
-                if sharing_acl:
-                    bucket_object.set_acl(sharing_acl)
-                    if is_bucket:
-                        # Set manual ACL recursively
-                        for key in bucket_keys:
-                            key.set_acl(sharing_acl)
+        propagate_acls = request.params.get('propagate_acls') == 'y'
+        # Save manually entered ACLs
+        sharing_acl = BucketDetailsView.get_sharing_acl(
+            request, bucket_object=bucket_object, item_acl=bucket_object.get_acl())
+        if sharing_acl:
+            bucket_object.set_acl(sharing_acl)
+            if is_bucket and propagate_acls:
+                bucket_keys = bucket_object.get_all_keys()
+                # Set manual ACL recursively
+                for key in bucket_keys:
+                    key.set_acl(sharing_acl)
 
     @staticmethod
     def get_sharing_acl(request, bucket_object=None, item_acl=None):
@@ -761,10 +777,11 @@ class BucketItemDetailsView(BaseView):
         return BaseView.escape_json(json.dumps({
             'delete_keys_url': self.request.route_path('bucket_delete_keys', name=self.bucket_name),
             'bucket_url': self.request.route_path(
-                            'bucket_contents',
-                            name=self.bucket_name,
-                            subpath=self.request.subpath[:-1]),
-            'key': self.bucket_item.name,
+                'bucket_contents', name=self.bucket_name, subpath=self.request.subpath[:-1]),
+            'make_object_public_url': self.request.route_path(
+                'bucket_item_make_public', name=self.bucket_name, subpath='_subpath_'),
+            'bucket_item_key': self.bucket_item_name,
+            'unprefixed_key': BucketContentsView.get_unprefixed_key_name(self.bucket_item.name)
         }))
 
     @view_config(route_name='bucket_item_details', renderer=VIEW_TEMPLATE)

@@ -19,6 +19,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
         $scope.instanceTypeSelected = '';
         $scope.securityGroups = [];
         $scope.securityGroupJsonEndpoint = '';
+        $scope.securityGroupsRulesJsonEndpoint = '';
         $scope.securityGroupCollection = {};
         $scope.securityGroupsRules = {};
         $scope.keyPairChoices = {};
@@ -26,7 +27,6 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
         $scope.newKeyPairName = '';
         $scope.keyPairSelected = '';
         $scope.keyPairModal = $('#create-keypair-modal');
-        $scope.showKeyPairMaterial = false;
         $scope.isLoadingKeyPair = false;
         $scope.selectedGroupRules = {};
         $scope.securityGroupModal = $('#create-securitygroup-modal');
@@ -51,13 +51,14 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
         $scope.imageIDNonexistErrorClass = '';
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
-            $scope.securityGroupsRules = options['securitygroups_rules'];
             $scope.keyPairChoices = options['keypair_choices'];
             $scope.securityGroupChoices = options['securitygroups_choices'];
             $scope.roleList = options['role_choices'];
             $scope.securityGroupJsonEndpoint = options['securitygroups_json_endpoint'];
+            $scope.securityGroupsRulesJsonEndpoint = options['securitygroups_rules_json_endpoint'];
             $scope.imageJsonURL = options['image_json_endpoint'];
             $scope.getAllSecurityGroups(); 
+            $scope.getAllSecurityGroupsRules();
             $scope.setInitialValues();
             $scope.preventFormSubmitOnEnter();
             $scope.initChosenSelectors();
@@ -85,6 +86,20 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             }).success(function(oData) {
                 var results = oData ? oData.results : [];
                 $scope.securityGroupCollection = results;
+            }).error(function (oData) {
+                eucaHandleError(oData, status);
+            });
+        };
+        $scope.getAllSecurityGroupsRules = function () {
+            var csrf_token = $('#csrf_token').val();
+            var data = "csrf_token=" + csrf_token
+            $http({
+                method:'POST', url:$scope.securityGroupsRulesJsonEndpoint, data:data,
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            }).success(function(oData) {
+                var results = oData ? oData.results : [];
+                $scope.securityGroupsRules = results;
+                $scope.updateSecurityGroup();
             }).error(function (oData) {
                 eucaHandleError(oData, status);
             });
@@ -403,7 +418,6 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             $scope.checkRequiredInput();
         });
         $scope.showCreateKeypairModal = function() {
-            $scope.showKeyPairMaterial = false;
             var form = $('#launch-config-form');
             var invalid_attr = 'data-invalid';
             form.removeAttr(invalid_attr);
@@ -411,40 +425,37 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             $('.error', form).not('small').removeClass('error');
             $scope.keyPairModal.foundation('reveal', 'open');
         };
-        $scope.downloadKeyPair = function ($event, downloadUrl) {
+        $scope.handleKeyPairCreate = function ($event, createUrl, downloadUrl) {
             $event.preventDefault();
-            var form = $($event.target);
-            $.generateFile({
-                csrf_token: form.find('input[name="csrf_token"]').val(),
-                filename: $scope.newKeyPairName + '.pem',
-                content: form.find('textarea[name="content"]').val(),
-                script: downloadUrl
-            });
-            $scope.showKeyPairMaterial = false;
-            var modal = $scope.keyPairModal;
-            modal.foundation('reveal', 'close');
-            $scope.newKeyPairName = '';
-        };
-        $scope.handleKeyPairCreate = function ($event, url) {
-            $event.preventDefault();
+            var form = $(event.target);
             if ($scope.newKeyPairName.indexOf('/') !== -1 || $scope.newKeyPairName.indexOf('\\') !== -1) {
-                return; 
+                return;
             }
-            var formData = $($event.target).serialize();
+            var formData = form.serialize();
             $scope.isLoadingKeyPair = true;
             $http({
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                 method: 'POST',
-                url: url,
+                url: createUrl,
                 data: formData
             }).success(function (oData) {
-                $scope.showKeyPairMaterial = true;
                 $scope.isLoadingKeyPair = false;
-                $('#keypair-material').val(oData['payload']);
+                var keypairMaterial = oData['payload'];
                 // Add new key pair to choices and set it as selected
                 $scope.keyPairChoices[$scope.newKeyPairName] = $scope.newKeyPairName;
                 $scope.keyPair = $scope.newKeyPairName;
                 Notify.success(oData.message);
+                // Download key pair file
+                $.generateFile({
+                    csrf_token: form.find('input[name="csrf_token"]').val(),
+                    filename: $scope.newKeyPairName + '.pem',
+                    content: keypairMaterial,
+                    script: downloadUrl
+                });
+                // Close create key pair modal
+                var modal = $scope.keyPairModal;
+                modal.foundation('reveal', 'close');
+                $scope.newKeyPairName = '';
             }).error(function (oData) {
                 $scope.isLoadingKeyPair = false;
                 eucaHandleError(oData, status);

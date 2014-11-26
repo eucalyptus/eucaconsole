@@ -1481,6 +1481,13 @@ textarea.policy-area { width: 100%; min-height: 30rem; font-family: Courier, "co
 #tag-editor .add-label { margin-bottom: 6px; color: #03405f; }
 #tag-editor #add-tag-btn { margin-bottom: 0; }
 
+/* ----------------------------------------- Block device mapping (BDM) editor
+----------------------------------------- */
+#bdmapping-editor th { padding-left: 9px; }
+#bdmapping-editor .storage-label { text-align: left; }
+#bdmapping-editor #new-blockdevice-entry label { text-align: left; }
+#bdmapping-editor input.number { width: 2rem; }
+
 /* ----------------------------------------- Help content
 ----------------------------------------- */
 .right-off-canvas-menu { background-color: white; padding: 10px; }

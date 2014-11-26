@@ -110,12 +110,12 @@ angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils'])
             $(document).trigger('click');
             $scope.instanceName = instance['name'];
             var consoleOutputEndpoint = "/instances/" + instance['id'] + "/consoleoutput/json";
+            $scope.consoleOutput = '';
             $http.get(consoleOutputEndpoint).success(function(oData) {
                 var results = oData ? oData.results : '';
                 if (results) {
                     $scope.consoleOutput = $.base64.decode(results);
-                    var modal = $('#console-output-modal');
-                    modal.foundation('reveal', 'open');
+                    $('#console-output-modal').foundation('reveal', 'open');
                 }
             }).error(function (oData, status) {
                 eucaHandleError(oData, status);
