@@ -318,9 +318,11 @@ def image_picker(context, request, image=None, filters_form=None,
         'cloud_type': request.session.get('cloud_type'),
         'images_json_endpoint': request.route_path('images_json')
     }))
+    search_facets = filters_form.facets
     return dict(
         image=image,
-        filters_form=filters_form,
+        search_facets=BaseView.escape_json(json.dumps(search_facets)),
+        filter_keys = [],  # defined within image picker javascript
         maxheight=maxheight,
         owner_choices=owner_choices,
         prefix_route=prefix_route,

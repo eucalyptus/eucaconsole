@@ -5,19 +5,13 @@
          ng-controller="ImagePickerCtrl" ng-init="initImagePicker('${controller_options_json}')">
         <!--! Image picker widget -->
         <div class="row">
-            <div class="large-3 columns" ng-cloak="">
-                ${panel('landingpage_filters', filters_form=filters_form)}
-            </div>
-            <div class="large-9 columns">
+            <div class="large-12 columns">
                 <label>
                     <span i18n:translate="">Select a machine image for your</span>
                     <span i18n:translate="" tal:condition="not launchconfig_wizard">virtual machine instance</span>
                     <span i18n:translate="" tal:condition="launchconfig_wizard">launch configuration</span>
                 </label>
-                <div class="search-filter">
-                    <input type="search" ng-model="searchFilter" id="search-filter" ng-keyup="searchImages()" />
-                    <i class="fi-magnifying-glass search-icon"></i>
-                </div>
+                ${panel('magic_search', search_facets=search_facets, filter_keys=filter_keys)}
                 <table class="table" ng-cloak="">
                     <tbody style="max-height: ${maxheight}">
                     <tr ng-show="itemsLoading">
