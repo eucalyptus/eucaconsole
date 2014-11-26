@@ -78,6 +78,8 @@ class BaseSecureForm(SecureForm):
         return error_messages
 
     def getOptionsFromChoices(self, choices):
+        if choices is None:
+            return []
         return [{'key':choice[0], 'label':choice[1]} for choice in choices]
 
 

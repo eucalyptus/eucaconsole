@@ -318,7 +318,7 @@ def image_picker(context, request, image=None, filters_form=None,
         'cloud_type': request.session.get('cloud_type'),
         'images_json_endpoint': request.route_path('images_json')
     }))
-    search_facets = filters_form.facets
+    search_facets = filters_form.facets if filters_form is not None else []
     return dict(
         image=image,
         search_facets=BaseView.escape_json(json.dumps(search_facets)),
