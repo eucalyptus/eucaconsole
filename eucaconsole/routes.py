@@ -141,6 +141,17 @@ urls = [
     Route(name='launchconfig_delete', pattern='/launchconfigs/{id}/delete'),
     Route(name='launchconfig_view', pattern='/launchconfigs/{id}'),
 
+    # ELBs #####
+    # Landing page
+    Route(name='elbs', pattern='/elbs'),
+    Route(name='elbs_json', pattern='/elbs/json'),
+    Route(name='elbs_delete', pattern='/elbs/delete'),
+    # Detail page
+    Route(name='elb_new', pattern='/elbs/new'),
+    Route(name='elb_create', pattern='/elbs/create'),
+    Route(name='elb_delete', pattern='/elbs/{id}/delete'),
+    Route(name='elb_view', pattern='/elbs/{id}'),
+
     # Volumes #####
     # Landing page
     Route(name='volumes', pattern='/volumes'),

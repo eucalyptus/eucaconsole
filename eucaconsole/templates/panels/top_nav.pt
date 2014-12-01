@@ -24,6 +24,9 @@
             <li class="divider" tal:condition="not off_canvas"></li>
             <li><a id="resource-menuitem-launchconfigs" i18n:translate=""
                    href="${request.route_path('launchconfigs')}">Launch Configurations</a></li>
+            <li class="divider" tal:condition="not off_canvas"></li>
+            <li><a id="resource-menuitem-elb" i18n:translate=""
+                   href="${request.route_path('elbs')}">Elastic Load Balancers</a></li>
         </ul>
     </li>
     <li class="has-dropdown">
