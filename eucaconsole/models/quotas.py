@@ -64,11 +64,11 @@ class Quotas(object):
         self.add_quota_limit(
             view, statements, 's3_buckets_max', 's3:CreateBucket', 's3:quota-bucketnumber')
         self.add_quota_limit(
-            view, statements, 's3_objects_per_max', 's3:CreateObject', 's3:quota-bucketobjectnumber')
+            view, statements, 's3_objects_per_max', 's3:PutObject', 's3:quota-bucketobjectnumber')
         self.add_quota_limit(
             view, statements, 's3_bucket_size', 's3:PutObject', 's3:quota-bucketsize')
         self.add_quota_limit(
-            view, statements, 's3_total_size_all_buckets', 's3:pubobject', 's3:quota-buckettotalsize')
+            view, statements, 's3_total_size_all_buckets', 's3:PutObject', 's3:quota-buckettotalsize')
         ## iam
         self.add_quota_limit(
             view, statements, 'iam_groups_max', 'iam:CreateGroup', 'iam:quota-groupnumber')
@@ -87,7 +87,7 @@ class Quotas(object):
             view, statements, 'launch_configs_max', 'autoscaling:createlaunchconfiguration',
             'autoscaling:quota-launchconfigurationnumber')
         self.add_quota_limit(
-            view, statements, 'scaling_policies_max', 'autoscaling:pubscalingpolicy',
+            view, statements, 'scaling_policies_max', 'autoscaling:putscalingpolicy',
             'autoscaling:quota-scalingpolicynumber')
         ## elb
         self.add_quota_limit(
@@ -146,11 +146,11 @@ class Quotas(object):
             self._update_quota_limit_(view, policy_list, new_stmts,
                                     's3_buckets_max', 's3:CreateBucket', 's3:quota-bucketnumber')
             self._update_quota_limit_(view, policy_list, new_stmts,
-                                    's3_objects_per_max', 's3:CreateObject', 's3:quota-bucketobjectnumber')
+                                    's3_objects_per_max', 's3:PutObject', 's3:quota-bucketobjectnumber')
             self._update_quota_limit_(view, policy_list, new_stmts,
                                     's3_bucket_size', 's3:PutObject', 's3:quota-bucketsize')
             self._update_quota_limit_(view, policy_list, new_stmts,
-                                    's3_total_size_all_buckets', 's3:pubobject', 's3:quota-buckettotalsize')
+                                    's3_total_size_all_buckets', 's3:PutObject', 's3:quota-buckettotalsize')
             ## iam
             self._update_quota_limit_(view, policy_list, new_stmts,
                                     'iam_groups_max', 'iam:CreateGroup', 'iam:quota-groupnumber')
@@ -169,7 +169,7 @@ class Quotas(object):
                                     'launch_configs_max', 'autoscaling:createlaunchconfiguration',
                                     'autoscaling:quota-launchconfigurationnumber')
             self._update_quota_limit_(view, policy_list, new_stmts,
-                                    'scaling_policies_max', 'autoscaling:pubscalingpolicy',
+                                    'scaling_policies_max', 'autoscaling:putscalingpolicy',
                                     'autoscaling:quota-scalingpolicynumber')
             ## elb
             self._update_quota_limit_(view, policy_list, new_stmts,
