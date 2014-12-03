@@ -146,7 +146,8 @@ class ChoicesManager(object):
      
         return choices
 
-    def invalidate_instance_types(self):
+    @staticmethod
+    def invalidate_instance_types():
         invalidate_cache(extra_long_term, 'instance_types')
 
     def instance_types(self, cloud_type='euca', add_blank=True, add_description=True):

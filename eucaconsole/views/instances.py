@@ -1435,5 +1435,5 @@ class InstanceTypesView(LandingPageView, BaseInstanceView):
         params = {'Name': name, 'Cpu': cpu, 'Memory': memory, 'Disk': disk}
         with boto_error_handler(self.request):
             status = self.conn.get_status('ModifyInstanceTypeAttribute', params, verb='POST')
-            ChoicesManager().invalidate_instance_types()
+            ChoicesManager.invalidate_instance_types()
             return status
