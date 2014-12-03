@@ -100,7 +100,6 @@ describe("SecurityGroupRules", function() {
 
     describe("Function resetValues() Test", function() {
 
-
         it("Should call cleanupSelections() after resetting values", function() {
             spyOn(scope, 'cleanupSelections');
             scope.resetValues();
