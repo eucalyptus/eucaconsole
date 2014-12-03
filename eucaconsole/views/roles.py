@@ -86,8 +86,9 @@ class RolesView(LandingPageView):
         if role and self.delete_form.validate():
             with boto_error_handler(self.request, location):
                 self.log_request(_(u"Deleting role {0}").format(role.role_name))
-                params = {'RoleName': role.role_name, 'IsRecursive': 'true'}
-                self.conn.get_response('DeleteRole', params)
+                profile = RoleView.get_or_create_instance_profile(self.conn, role.role_name)
+                self.conn.delete_instance_profile(profile.instance_profile_name)
+                self.conn.delete_role(role.role_name)
                 msg = _(u'Successfully deleted role')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
         else:
@@ -270,8 +271,9 @@ class RoleView(BaseView):
             raise HTTPNotFound()
         with boto_error_handler(self.request, location):
             self.log_request(_(u"Deleting role {0}").format(self.role.role_name))
-            params = {'RoleName': self.role.role_name, 'IsRecursive': 'true'}
-            self.conn.get_response('DeleteRole', params)
+            profile = RoleView.get_or_create_instance_profile(self.conn, self.role.role_name)
+            self.conn.delete_instance_profile(profile.instance_profile_name)
+            self.conn.delete_role(self.role.role_name)
             msg = _(u'Successfully deleted role')
             self.request.session.flash(msg, queue=Notification.SUCCESS)
         return HTTPFound(location=location)
