@@ -49,7 +49,7 @@ from ..forms.instances import (
     RebootInstanceForm, StartInstanceForm, StopInstanceForm, TerminateInstanceForm, InstanceCreateImageForm,
     BatchTerminateInstancesForm, InstancesFiltersForm, InstanceTypeForm,
     AssociateIpToInstanceForm, DisassociateIpFromInstanceForm)
-from ..forms import GenerateFileForm
+from ..forms import ChoicesManager, GenerateFileForm
 from ..forms.keypairs import KeyPairForm
 from ..forms.securitygroups import SecurityGroupForm
 from ..i18n import _
@@ -1434,4 +1434,6 @@ class InstanceTypesView(LandingPageView, BaseInstanceView):
             return False
         params = {'Name': name, 'Cpu': cpu, 'Memory': memory, 'Disk': disk}
         with boto_error_handler(self.request):
-            return self.conn.get_status('ModifyInstanceTypeAttribute', params, verb='POST')
+            status = self.conn.get_status('ModifyInstanceTypeAttribute', params, verb='POST')
+            ChoicesManager().invalidate_instance_types()
+            return status
