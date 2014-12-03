@@ -417,7 +417,7 @@ class ChoicesManager(object):
         vpc_subnet_list = vpc_subnets or []
         if not vpc_subnet_list and self.conn is not None:
             if vpc_id:
-                vpc_subnet_list = self.conn.get_all_subnets(filters={'vpcId': [vpc_id]})
+                vpc_subnet_list = self.conn.get_all_subnets(filters={'vpc-id': [vpc_id]})
             else:
                 vpc_subnet_list = self.conn.get_all_subnets()
         for vpc in vpc_subnet_list:
