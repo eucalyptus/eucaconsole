@@ -946,7 +946,7 @@ class CreateBucketView(BaseView):
             bucket_name = self.request.params.get('bucket_name').lower()
             enable_versioning = self.request.params.get('enable_versioning') == 'y'
             location = self.request.route_path('bucket_details', name=bucket_name)
-            with boto_error_handler(self.request):
+            with boto_error_handler(self.request, self.request.route_path('buckets')):
                 try:
                     new_bucket = self.s3_conn.create_bucket(bucket_name)
                     BucketDetailsView.update_acl(self.request, bucket_object=new_bucket)
