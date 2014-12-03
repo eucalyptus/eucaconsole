@@ -34,6 +34,9 @@ angular.module('Dashboard', ['EucaConsoleUtils'])
                 $scope.getServiceStatus();
             }
             $('#sortable').sortable({
+                start: function (event, ui) {
+                    ui.item.css({'z-index': '999999999'});
+                },
                 stop: function(event, ui) {
                     // TODO: remove 'add-tile' from list first
                     var order = $('#sortable').sortable('toArray');
