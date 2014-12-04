@@ -28,6 +28,8 @@
 Pyramid views for Eucalyptus and AWS Elastic IP Addresses
 
 """
+import simplejson as json
+
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config
 
@@ -81,12 +83,15 @@ class IPAddressesView(LandingPageView):
                     msg = u'{prefix} {ips}'.format(prefix=prefix, ips=ips)
                     self.request.session.flash(msg, queue=Notification.SUCCESS)
                 return HTTPFound(location=self.location)
+        filters_form=IPAddressesFiltersForm(self.request, conn=self.conn, formdata=self.request.params or None)
+        search_facets = filters_form.facets
         self.render_dict.update(
             initial_sort_key='public_ip',
             json_items_endpoint=self.get_json_endpoint('ipaddresses_json'),
-            filter_fields=True,
-            filters_form=IPAddressesFiltersForm(self.request, conn=self.conn, formdata=self.request.params or None),
+            filter_fields=False,
+            filters_form=filters_form,
             filter_keys=['public_ip', 'instance_id', 'domain'],
+            search_facets=BaseView.escape_json(json.dumps(search_facets)),
             sort_keys=self.get_sort_keys(),
         )
         return self.render_dict
