@@ -85,10 +85,10 @@ class MasterLayout(object):
             '(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])(\/\d+)$'
         )
         self.port_range_pattern = '^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$'
-        
         self.querystring = self.get_query_string()
         self.help_html_dir = 'eucaconsole:static/html/help/'
         self.escape_braces = BaseView.escape_braces
+        self.file_uploads_enabled = asbool(self.request.registry.settings.get('file.uploads.enabled', True))
 
     def get_notifications(self):
         """Get notifications, categorized by message type ('info', 'success', 'warning', or 'error')
