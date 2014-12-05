@@ -18,9 +18,9 @@
           type="text/css" media="screen" charset="utf-8" />
     <metal:block metal:define-slot="head_css" />
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/modernizr/custom.modernizr.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/jquery-2.0.3.min.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular-1.2.26.min.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular-sanitize-1.2.26.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/jquery.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular-sanitize.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/jquery.generateFile.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/notify.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/eucaconsole_utils.js')}"></script>

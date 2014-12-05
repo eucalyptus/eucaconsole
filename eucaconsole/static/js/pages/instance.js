@@ -63,12 +63,12 @@ angular.module('InstancePage', ['TagEditor', 'EucaConsoleUtils'])
         }
         $scope.revealConsoleOutputModal = function() {
             $('.actions-menu').trigger('click');
+            $scope.consoleOutput = '';
             $http.get($scope.consoleOutputEndpoint).success(function(oData) {
                 var results = oData ? oData.results : '';
                 if (results) {
                     $scope.consoleOutput = $.base64.decode(results);
-                    var modal = $('#console-output-modal');
-                    modal.foundation('reveal', 'open');
+                    $('#console-output-modal').foundation('reveal', 'open');
                 }
             }).error(function (oData, status) {
                 eucaHandleError(oData, status);

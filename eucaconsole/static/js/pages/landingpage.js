@@ -6,7 +6,7 @@
 
 
 angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'EucaConsoleUtils'])
-    .controller('ItemsCtrl', function ($scope, $http, $timeout, $sanitize, eucaHandleError) {
+    .controller('ItemsCtrl', function ($scope, $http, $timeout, $sanitize, eucaHandleErrorS3) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.items = [];
         $scope.itemsLoading = true;

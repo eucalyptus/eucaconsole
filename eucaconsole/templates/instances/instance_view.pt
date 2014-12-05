@@ -151,7 +151,14 @@
                     </div>
                     <div class="row controls-wrapper readonly" ng-show="instancePublicIP != null">
                         <div class="small-4 columns"><label i18n:translate="">Public IP address</label></div>
-                        <div class="small-8 columns value" ng-cloak="">{{ instancePublicIP }}</div>
+                        <div class="small-8 columns value" ng-cloak="">
+                            <span ng-show="hasElasticIP">
+                                <a ng-href="/ipaddresses/{{ instancePublicIP }}">{{ instancePublicIP }}</a>
+                            </span>
+                            <span ng-show="!hasElasticIP">
+                                {{ instancePublicIP }}
+                            </span>
+                        </div>
                     </div>
                     <div class="row controls-wrapper readonly" ng-show="PublicDNS != ''">
                         <div class="small-4 columns"><label i18n:translate="">Public hostname</label></div>

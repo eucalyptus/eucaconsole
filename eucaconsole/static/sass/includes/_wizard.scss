@@ -161,38 +161,13 @@ $wizard-tab-padding: 8px 1rem;
     }
 }
 
-// Block device mapping editor styles, used in Launch Instance and Launch Config wizards
-#bdmapping-editor {
-    .storage-label {
-        text-align: left;
-    }
-    .table {
-        width: 100%;
-        th {
-            font-size: 0.825rem;
-            background-color: $euca-green;
-            text-transform: uppercase;
-        }
-        td {
-            line-height: 1rem;
-            padding: 4px 8px;
-            vertical-align: middle;
-        }
-    }
-    #new-blockdevice-entry {
-        label {
-            text-align: left;
-        }
-    }
-    input.number {
-        width: 2rem;
-    }
-}
-
 // Security group rules preview, used in Launch Instance and Launch Config wizards
 .rules-display {
     .rules-title {
         word-break: break-all;
+        .normal-word-break {
+            word-break: normal;
+        }
     }
 }
 

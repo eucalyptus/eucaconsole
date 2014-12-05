@@ -19,6 +19,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
         $scope.instanceTypeSelected = '';
         $scope.securityGroups = [];
         $scope.securityGroupJsonEndpoint = '';
+        $scope.securityGroupsRulesJsonEndpoint = '';
         $scope.securityGroupCollection = {};
         $scope.securityGroupsRules = {};
         $scope.keyPairChoices = {};
@@ -50,13 +51,14 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
         $scope.imageIDNonexistErrorClass = '';
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
-            $scope.securityGroupsRules = options['securitygroups_rules'];
             $scope.keyPairChoices = options['keypair_choices'];
             $scope.securityGroupChoices = options['securitygroups_choices'];
             $scope.roleList = options['role_choices'];
             $scope.securityGroupJsonEndpoint = options['securitygroups_json_endpoint'];
+            $scope.securityGroupsRulesJsonEndpoint = options['securitygroups_rules_json_endpoint'];
             $scope.imageJsonURL = options['image_json_endpoint'];
             $scope.getAllSecurityGroups(); 
+            $scope.getAllSecurityGroupsRules();
             $scope.setInitialValues();
             $scope.preventFormSubmitOnEnter();
             $scope.initChosenSelectors();
@@ -84,6 +86,20 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             }).success(function(oData) {
                 var results = oData ? oData.results : [];
                 $scope.securityGroupCollection = results;
+            }).error(function (oData) {
+                eucaHandleError(oData, status);
+            });
+        };
+        $scope.getAllSecurityGroupsRules = function () {
+            var csrf_token = $('#csrf_token').val();
+            var data = "csrf_token=" + csrf_token
+            $http({
+                method:'POST', url:$scope.securityGroupsRulesJsonEndpoint, data:data,
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            }).success(function(oData) {
+                var results = oData ? oData.results : [];
+                $scope.securityGroupsRules = results;
+                $scope.updateSecurityGroup();
             }).error(function (oData) {
                 eucaHandleError(oData, status);
             });

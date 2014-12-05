@@ -28,3 +28,5 @@ venv/
 *.scssc
 console.ini
 session-keys.ini
+bower_components/
+node_modules/

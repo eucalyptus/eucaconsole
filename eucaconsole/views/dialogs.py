@@ -245,10 +245,6 @@ def image_dialogs(context, request, image=None, image_name_id='', landingpage=Fa
     )
 
 
-@panel_config('bucket_delete_dialog', renderer='../templates/dialogs/bucket_delete_dialog.pt')
-def bucket_delete_dialog(context, request):
-    return dict()
-
 @panel_config('bucket_dialogs', renderer='../templates/dialogs/bucket_dialogs.pt')
 def bucket_dialogs(context, request, bucket=None, landingpage=False, versioning_form=None, delete_form=None):
     """ Modal dialogs for Bucket landing and detail page."""
@@ -266,6 +262,11 @@ def bucket_dialogs(context, request, bucket=None, landingpage=False, versioning_
         delete_form=delete_form,
         update_versioning_action=update_versioning_action,
     )
+
+
+@panel_config('bucket_item_dialogs', renderer='../templates/dialogs/bucket_item_dialogs.pt')
+def bucket_item_dialogs(context, request):
+    return dict()
 
 
 @panel_config('create_folder_dialog', renderer='../templates/dialogs/create_folder_dialog.pt')

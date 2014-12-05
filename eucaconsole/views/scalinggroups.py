@@ -359,7 +359,7 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
                 if vpc_subnet:
                     this_subnet = vpc_subnet[0]
                     if this_subnet and this_subnet.vpc_id:
-                        this_vpc = self.vpc_conn.get_all_vpcs(vpc_ids=this_subnet.vpc_id)
+                        this_vpc = self.vpc_conn.get_all_vpcs(vpc_ids=[this_subnet.vpc_id])
                         if this_vpc:
                             return this_vpc[0]
         return None
