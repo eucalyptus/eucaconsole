@@ -42,6 +42,7 @@ from markupsafe import escape
 from boto.exception import BotoServerError
 
 from ..caches import extra_long_term
+from ..caches import invalidate_cache
 from ..constants.instances import AWS_INSTANCE_TYPE_CHOICES
 from ..i18n import _
 
@@ -144,6 +145,10 @@ class ChoicesManager(object):
                             choices.append((value, label))
      
         return choices
+
+    @staticmethod
+    def invalidate_instance_types():
+        invalidate_cache(extra_long_term, 'instance_types')
 
     def instance_types(self, cloud_type='euca', add_blank=True, add_description=True):
         """Get instance type (e.g. m1.small) choices
