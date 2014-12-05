@@ -180,6 +180,9 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor'])
                     var vpcNetworkNameArray = $(this).text().split(' ');
                     vpcNetworkNameArray.pop();
                     $scope.vpcNetworkName = vpcNetworkNameArray.join(' ');
+                    if ($scope.vpcNetworkName == '') {
+                        $scope.vpcNetworkName = $scope.vpcNetwork;
+                    }
                 } 
             });
         };
