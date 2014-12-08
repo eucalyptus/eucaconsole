@@ -20,7 +20,7 @@ angular.module('ManageCredentialsView', [])
                     val = val.substring(0, val.length-1);
                 } else {
                     if (key != 13 && key != 9) {
-                        val = val + evt.key;
+                        val = val + String.fromCharCode(key);
                     }
                 }
                 var score = zxcvbn(val).score;
