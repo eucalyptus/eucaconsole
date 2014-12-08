@@ -150,6 +150,7 @@ class InstancesView(LandingPageView, BaseInstanceView):
         self.associate_ip_form = AssociateIpToInstanceForm(
             self.request, conn=self.conn, formdata=self.request.params or None)
         self.disassociate_ip_form = DisassociateIpFromInstanceForm(self.request, formdata=self.request.params or None)
+        self.is_vpc_supported = BaseView.is_vpc_supported(request)
         self.render_dict = dict(
             prefix=self.prefix,
             initial_sort_key=self.initial_sort_key,

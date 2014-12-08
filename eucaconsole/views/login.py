@@ -175,6 +175,7 @@ class LoginView(BaseView, PermissionCheckMixin):
                 session['secret_key'] = creds.secret_key
                 session['region'] = 'euca'
                 session['username_label'] = user_account
+                session['supported_platforms'] = self.get_supported_platforms()
                 # handle checks for IAM perms
                 self.check_iam_perms(session, creds)
                 headers = remember(self.request, user_account)
@@ -223,6 +224,7 @@ class LoginView(BaseView, PermissionCheckMixin):
                 last_visited_aws_region = [reg for reg in AWS_REGIONS if reg.get('name') == aws_region]
                 session['region'] = aws_region if last_visited_aws_region else default_region
                 session['username_label'] = '{user}...@AWS'.format(user=creds.access_key[:8])
+                session['supported_platforms'] = self.get_supported_platforms()
                 # Save EC2 Connection object in cache
                 ConnectionManager.aws_connection(
                     default_region, creds.access_key, creds.secret_key, creds.session_token, 'ec2')
