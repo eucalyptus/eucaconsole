@@ -567,6 +567,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
             role=self.role,
             running_create=self.running_create,
             controller_options_json=self.get_controller_options_json(),
+            is_vpc_supported=self.is_vpc_supported,
         )
 
     @view_config(route_name='instance_view', renderer=VIEW_TEMPLATE, request_method='GET')
