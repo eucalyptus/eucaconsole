@@ -277,12 +277,12 @@ class BaseView(object):
         auth = EucaAuthenticator(host, port, validate_certs=validate_certs, ca_certs=ca_certs_file)
         return auth
 
-    def get_supported_platforms(self):
+    def get_account_attributes(self, attribute_names=['supported-platforms']):
         self.__init__(self.request)
         conn = self.get_connection()
         if conn:
             with boto_error_handler(self.request):
-                attributes = conn.describe_account_attributes(attribute_names=['supported-platforms'])
+                attributes = conn.describe_account_attributes(attribute_names=attribute_names)
                 return attributes[0].attribute_values
 
     @staticmethod
