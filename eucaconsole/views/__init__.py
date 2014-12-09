@@ -283,7 +283,6 @@ class BaseView(object):
         if conn:
             with boto_error_handler(self.request):
                 attributes = conn.describe_account_attributes(attribute_names=['supported-platforms'])
-                print attributes[0].attribute_values
                 return attributes[0].attribute_values
 
     @staticmethod

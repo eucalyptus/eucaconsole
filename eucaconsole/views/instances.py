@@ -69,6 +69,7 @@ class BaseInstanceView(BaseView):
         super(BaseInstanceView, self).__init__(request)
         self.conn = self.get_connection()
         self.vpc_conn = self.get_connection(conn_type='vpc')
+        self.is_vpc_supported = BaseView.is_vpc_supported(request)
 
     def get_instance(self, instance_id=None):
         instance_id = instance_id or self.request.matchdict.get('id')
@@ -150,7 +151,6 @@ class InstancesView(LandingPageView, BaseInstanceView):
         self.associate_ip_form = AssociateIpToInstanceForm(
             self.request, conn=self.conn, formdata=self.request.params or None)
         self.disassociate_ip_form = DisassociateIpFromInstanceForm(self.request, formdata=self.request.params or None)
-        self.is_vpc_supported = BaseView.is_vpc_supported(request)
         self.render_dict = dict(
             prefix=self.prefix,
             initial_sort_key=self.initial_sort_key,
@@ -161,6 +161,7 @@ class InstancesView(LandingPageView, BaseInstanceView):
             batch_terminate_form=self.batch_terminate_form,
             associate_ip_form=self.associate_ip_form,
             disassociate_ip_form=self.disassociate_ip_form,
+            is_vpc_supported=self.is_vpc_supported,
         )
 
     @view_config(route_name='instances', renderer='../templates/instances/instances.pt')
@@ -988,6 +989,7 @@ class InstanceLaunchView(BaseInstanceView, BlockDeviceMappingItemView):
             snapshot_choices=self.get_snapshot_choices(),
             security_group_placeholder_text=_(u'Select...'),
             controller_options_json=controller_options_json,
+            is_vpc_supported=self.is_vpc_supported,
         )
 
     @view_config(route_name='instance_create', renderer=TEMPLATE, request_method='GET')
