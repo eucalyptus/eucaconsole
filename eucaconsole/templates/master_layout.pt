@@ -58,7 +58,7 @@
                 </a>
                 <ul id="region-dropdown" class="f-dropdown" data-dropdown-content="">
                     <li tal:repeat="region layout.aws_regions" tal:attributes="data-selected (region.name == layout.selected_region)">
-                        <a href="${request.route_path('region_select')}?region=${region.name}&amp;returnto=${request.url}"
+                        <a href="${request.route_path('region_select')}?region=${region.name}&amp;returnto=${request.path}"
                            class="aws-region-option" id="${region.name}">
                                ${region.label}
                         </a>
