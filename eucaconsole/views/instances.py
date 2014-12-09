@@ -192,6 +192,9 @@ class InstancesView(LandingPageView, BaseInstanceView):
             cloud_type=self.cloud_type, formdata=self.request.params or None)
         if BaseView.has_role_access(self.request):
             del filters_form.roles
+        if not self.is_vpc_supported:
+            del filters_form.vpc_id
+            del filters_form.subnet_id
         self.render_dict.update(dict(
             filter_fields=True,
             filter_keys=self.filter_keys,

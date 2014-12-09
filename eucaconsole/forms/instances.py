@@ -342,7 +342,8 @@ class InstancesFiltersForm(BaseSecureForm):
     subnet_id = wtforms.SelectMultipleField(label=_(u'VPC subnet'))
 
     def __init__(self, request, ec2_conn=None, autoscale_conn=None,
-                 iam_conn=None, vpc_conn=None, cloud_type='euca', **kwargs):
+                 iam_conn=None, vpc_conn=None,
+                 cloud_type='euca', **kwargs):
         super(InstancesFiltersForm, self).__init__(request, **kwargs)
         self.request = request
         self.cloud_type = cloud_type
