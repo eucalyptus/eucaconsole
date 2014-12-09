@@ -184,20 +184,6 @@ angular.module('IAMPolicyWizard', ['EucaConsoleUtils'])
             });
             $('#' + lastSelectedTab).click();
         };
-        $scope.limitResourceChoices = function () {
-            // Only display the resource field inputs for the relevant actions
-            var resourceValueInputs = $scope.policyGenerator.find('.chosen');
-            resourceValueInputs.addClass('hide');
-            resourceValueInputs.next('.chosen-container').addClass('hide');
-            resourceValueInputs.each(function(idx, item) {
-                var elem = $(item),
-                    resourceType = elem.closest('.resource-wrapper').find('.resource-type').val();
-                if (elem.hasClass(resourceType)) {
-                    elem.removeClass('hide');
-                    elem.next('.chosen-container').removeClass('hide');
-                }
-            });
-        };
         $scope.addResourceTypeListener = function () {
             // Show/hide resource choices based on resource type selection
             $scope.policyGenerator.on('change', 'select.resource-type', function(evt) {
@@ -213,9 +199,20 @@ angular.module('IAMPolicyWizard', ['EucaConsoleUtils'])
         };
         $scope.initChosenSelectors = function () {
             $timeout(function () {
-                $scope.policyGenerator.find('select.chosen').chosen({'width': '44%', 'search_contains': true});
-                $scope.limitResourceChoices();
-            }, 500);
+                var resourceValueInputs = $scope.policyGenerator.find('.chosen');
+                resourceValueInputs.chosen({'width': '44%', 'search_contains': true});
+                // Only display the resource field inputs for the relevant actions
+                resourceValueInputs.addClass('hide');
+                resourceValueInputs.next('.chosen-container').addClass('hide');
+                resourceValueInputs.each(function(idx, item) {
+                    var elem = $(item),
+                        resourceType = elem.closest('.resource-wrapper').find('.resource-type').val();
+                    if (elem.hasClass(resourceType)) {
+                        elem.removeClass('hide');
+                        elem.next('.chosen-container').removeClass('hide');
+                    }
+                });
+            }, 100);
         };
         $scope.initDateTimePickers = function () {
             $(document).ready(function () {
