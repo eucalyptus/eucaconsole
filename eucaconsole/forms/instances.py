@@ -135,6 +135,7 @@ class LaunchInstanceForm(BaseSecureForm):
         self.image = image
         self.securitygroups = securitygroups
         self.cloud_type = request.session.get('cloud_type', 'euca')
+        self.is_vpc_supported = 'VPC' in request.session.get('supported_platforms')
         self.set_error_messages()
         self.monitoring_enabled.data = True
         self.choices_manager = ChoicesManager(conn=conn)
@@ -158,7 +159,10 @@ class LaunchInstanceForm(BaseSecureForm):
         self.instance_type.choices = self.choices_manager.instance_types(cloud_type=self.cloud_type, add_blank=False)
         region = request.session.get('region')
         self.zone.choices = self.get_availability_zone_choices(region)
-        self.vpc_network.choices = self.vpc_choices_manager.vpc_networks()
+        if self.cloud_type == 'euca' and self.is_vpc_supported:
+            self.vpc_network.choices = self.vpc_choices_manager.vpc_networks(add_blank=False)
+        else:
+            self.vpc_network.choices = self.vpc_choices_manager.vpc_networks()
         self.vpc_subnet.choices = self.vpc_choices_manager.vpc_subnets()
         self.associate_public_ip_address.choices = self.get_associate_public_ip_address_choices()
         self.keypair.choices = self.get_keypair_choices()
