@@ -31,11 +31,11 @@
            tal:condition="len(request.subpath) == 0" i18n:translate="">View details</a>
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
-                <a class="button" id="upload-file-btn" i18n:translate=""
+                <a class="button" id="upload-file-btn" i18n:translate="" tal:condition="layout.file_uploads_enabled"
                    href="${request.route_path('bucket_upload', name=bucket_name, subpath=request.subpath)}">
                     Upload File(s)
                 </a>
-                &nbsp;&nbsp;
+                <span tal:condition="layout.file_uploads_enabled">&nbsp;&nbsp;</span>
                 <a class="button" id="create-folder-btn" i18n:translate="" data-reveal-id="create-folder-modal">
                     Create New Folder
                 </a>

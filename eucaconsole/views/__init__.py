@@ -112,7 +112,8 @@ class BaseView(object):
         self.security_token = request.session.get('session_token')
         self.euca_logout_form = EucaLogoutForm(self.request)
 
-    def get_connection(self, conn_type='ec2', cloud_type=None, region=None, access_key=None, secret_key=None, security_token=None):
+    def get_connection(self, conn_type='ec2', cloud_type=None, region=None, access_key=None,
+                       secret_key=None, security_token=None):
         conn = None
         if cloud_type is None:
             cloud_type = self.cloud_type
