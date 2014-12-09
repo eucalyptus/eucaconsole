@@ -100,10 +100,15 @@
                         <!--! Step 3: Security tab content -->
                         <div class="content" id="step3"
                             tal:define="security_group_attrs {'data-placeholder': security_group_placeholder_text};">
-                            <p class="description" i18n:translate="">Specify VPC settings, key pair and security group.</p>
+                            <div tal:condition="is_vpc_supported">
+                                <p class="description" i18n:translate="">Specify VPC settings, key pair and security group.</p>
+                            </div>
+                            <div tal:condition="not is_vpc_supported">
+                                <p class="description" i18n:translate="">Specify key pair and security group.</p>
+                            </div>
                             <div tal:condition="is_vpc_supported">
                                 ${panel('form_field', field=launch_form['vpc_network'], ng_attrs={'model': 'instanceVPC'}, leftcol_width=4, rightcol_width=8)}
-                                <div ng-show="instanceVPC != ''">
+                                <div ng-show="instanceVPC != 'None'">
                                     ${panel('form_field', field=launch_form['vpc_subnet'], leftcol_width=4, rightcol_width=8, ng_attrs={'model': 'subnetVPC', 'options': 'k as v for (k, v) in vpcSubnetChoices'})}
                                     <span id="hidden_vpc_subnet_empty_option" class="hide" i18n:translate="">No subnets found</span>
                                     ${panel('form_field', field=launch_form['associate_public_ip_address'], leftcol_width=4, rightcol_width=8)}
