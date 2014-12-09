@@ -127,7 +127,7 @@
                     </span>
                     <a ng-href="${prefix}/{{ item.id }}">{{ item.security_groups.length }}</a>
                 </div>
-                <div>
+                <div tal:condition="is_vpc_supported">
                     <span class="label" title="VPC network" i18n:attributes="title" data-tooltip="">VN</span>
                     {{ item.vpc_name }}
                 </div>
@@ -144,7 +144,7 @@
                 <th i18n:translate="">STATUS</th>
                 <th i18n:translate="">IMAGE ID</th>
                 <th i18n:translate="">AVAIL ZONE</th>
-                <th i18n:translate="">VPC NETWORK</th>
+                <th tal:condition="is_vpc_supported" i18n:translate="">VPC NETWORK</th>
                 <th i18n:translate="">PUBLIC ADDR</th>
                 <th i18n:translate="">KEY NAME</th>
                 <th i18n:translate="">SECURITY GROUP</th>
@@ -158,7 +158,7 @@
                 </td>
                 <td><a ng-href="/images/{{ item.image_id }}">{{ item.image_id }}</a></td>
                 <td>{{ item.placement }}</td>
-                <td>{{ item.vpc_name }}</td>
+                <td tal:condition="is_vpc_supported">{{ item.vpc_name }}</td>
                 <td>
                     <a ng-href="/ipaddresses/{{ item.ip_address }}" ng-show="item.has_elastic_ip">{{ item.ip_address }}</a>
                     <span ng-show="!item.has_elastic_ip">{{ item.ip_address }}</span>
