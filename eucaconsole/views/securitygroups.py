@@ -37,7 +37,7 @@ from pyramid.view import view_config
 from ..forms.securitygroups import SecurityGroupForm, SecurityGroupDeleteForm, SecurityGroupsFiltersForm
 from ..i18n import _
 from ..models import Notification
-from ..views import LandingPageView, TaggedItemView, JSONResponse
+from ..views import BaseView, LandingPageView, TaggedItemView, JSONResponse
 from . import boto_error_handler
 from ..constants.internet_protocols import INTERNET_PROTOCOL_NUMBERS
 
@@ -210,6 +210,9 @@ class SecurityGroupView(TaggedItemView):
             self.request, self.vpc_conn, security_group=self.security_group, formdata=self.request.params or None)
         self.delete_form = SecurityGroupDeleteForm(self.request, formdata=self.request.params or None)
         self.tagged_obj = self.security_group
+        controller_options_json = BaseView.escape_json(json.dumps({
+            'default_vpc_network': self.get_default_vpc_network(),
+        }))
         self.render_dict = dict(
             security_group=self.security_group,
             security_group_name=self.escape_braces(self.security_group.name) if self.security_group else '',
@@ -217,7 +220,24 @@ class SecurityGroupView(TaggedItemView):
             securitygroup_form=self.securitygroup_form,
             delete_form=self.delete_form,
             security_group_names=self.get_security_group_names(),
+            controller_options_json=controller_options_json,
         )
+
+    def get_default_vpc_network(self):
+        default_vpc = self.request.session.get('default_vpc')
+        if self.is_vpc_supported:
+            if 'none' in default_vpc:
+                if self.cloud_type == 'aws':
+                    return 'None'
+                # for euca, return the first vpc on the list
+                if self.vpc_conn:
+                    with boto_error_handler(self.request, self.location):
+                        vpc_networks = self.vpc_conn.get_all_vpcs()
+                        if vpc_networks:
+                            return vpc_networks[0].id
+            else:
+                return default_vpc[0]
+        return 'None'
 
     @view_config(route_name='securitygroup_view', renderer=TEMPLATE)
     def securitygroup_view(self):

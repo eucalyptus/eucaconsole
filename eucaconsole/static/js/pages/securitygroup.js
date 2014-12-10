@@ -4,8 +4,8 @@
  *
  */
 
-angular.module('SecurityGroupPage', ['TagEditor', 'SecurityGroupRules'])
-    .controller('SecurityGroupPageCtrl', function ($scope) {
+angular.module('SecurityGroupPage', ['TagEditor', 'SecurityGroupRules','EucaConsoleUtils'])
+    .controller('SecurityGroupPageCtrl', function ($scope, eucaUnescapeJson) {
         $scope.isNotValid = true;
         $scope.isNotChanged = true;
         $scope.isSubmitted = false;
@@ -15,7 +15,9 @@ angular.module('SecurityGroupPage', ['TagEditor', 'SecurityGroupRules'])
         $scope.invalidRulesArray = [];
         $scope.invalidRulesEgressArray = [];
         $scope.pendingModalID = '';
-        $scope.initController = function () {
+        $scope.initController = function (optionsJson) {
+            var options = JSON.parse(eucaUnescapeJson(optionsJson));
+            $scope.securityGroupVPC = options['default_vpc_network'];
             $scope.setWatch();
             $scope.setFocus();
         };
