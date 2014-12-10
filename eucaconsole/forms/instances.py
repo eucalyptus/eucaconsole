@@ -371,7 +371,8 @@ class InstancesFiltersForm(BaseSecureForm):
         else:
             self.roles.choices = self.iam_choices_manager.roles(add_blank=False)
         self.vpc_id.choices = self.vpc_choices_manager.vpc_networks(add_blank=False)
-        self.vpc_id.choices.append(('None', _(u'No VPC')))
+        if cloud_type=='aws':
+            self.vpc_id.choices.append(('None', _(u'No VPC')))
         self.vpc_id.choices = sorted(self.vpc_id.choices)
         self.subnet_id.choices = self.vpc_choices_manager.vpc_subnets(add_blank=False)
 
