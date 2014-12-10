@@ -624,20 +624,42 @@ class ScalingGroupWizardView(BaseScalingGroupView):
     def __init__(self, request):
         super(ScalingGroupWizardView, self).__init__(request)
         self.request = request
-        with boto_error_handler(request):
+        with boto_error_handler(self.request):
             self.create_form = ScalingGroupCreateForm(
                 self.request, autoscale_conn=self.autoscale_conn, ec2_conn=self.ec2_conn,
                 vpc_conn=self.vpc_conn, elb_conn=self.elb_conn, formdata=self.request.params or None)
-            self.vpc_subnet_choices_json = BaseView.escape_json(json.dumps(self.get_vpc_subnets_list()))
+            self.vpc_subnet_choices_json = self.get_vpc_subnets_list()
         self.render_dict = dict(
             create_form=self.create_form,
-            launchconfigs_count=len(self.create_form.launch_config.choices) - 1,  # Ignore blank choice
-            vpc_subnet_choices_json=self.vpc_subnet_choices_json,
             launch_config_param=escape(self.request.params.get('launch_config', '')),
             avail_zones_placeholder_text=_(u'Select availability zones...'),
             elb_placeholder_text=_(u'Select load balancers...'),
+            controller_options_json=self.get_controller_options_json(),
             is_vpc_supported=self.is_vpc_supported,
         )
+
+    def get_controller_options_json(self):
+        return BaseView.escape_json(json.dumps({
+            'launchconfigs_count': len(self.create_form.launch_config.choices) - 1,  # Ignore blank choice
+            'vpc_subnet_choices_json': self.vpc_subnet_choices_json,
+            'default_vpc_network': self.get_default_vpc_network(),
+        }))
+
+    def get_default_vpc_network(self):
+        default_vpc = self.request.session.get('default_vpc')
+        if self.is_vpc_supported:
+            if 'none' in default_vpc:
+                if self.cloud_type == 'aws':
+                    return 'None'
+                # for euca, return the first vpc on the list
+                if self.vpc_conn:
+                    with boto_error_handler(self.request, self.location):
+                        vpc_networks = self.vpc_conn.get_all_vpcs()
+                        if vpc_networks:
+                            return vpc_networks[0].id
+            else:
+                return default_vpc[0]
+        return 'None'
 
     @view_config(route_name='scalinggroup_new', renderer=TEMPLATE, request_method='GET')
     def scalinggroup_new(self):
@@ -656,6 +678,8 @@ class ScalingGroupWizardView(BaseScalingGroupView):
                 self.log_request(_(u"Creating scaling group {0}").format(scaling_group_name))
                 launch_config_name = self.unescape_braces(self.request.params.get('launch_config'))
                 vpc_network = self.request.params.get('vpc_network') or None
+                if vpc_network == 'None':
+                    vpc_network = None
                 vpc_subnets = self.request.params.getall('vpc_subnet')
                 scaling_group = ''
                 params = dict(

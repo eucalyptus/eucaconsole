@@ -122,11 +122,16 @@ class BaseScalingGroupForm(BaseSecureForm):
         self.ec2_choices_manager = ChoicesManager(conn=ec2_conn)
         self.vpc_choices_manager = ChoicesManager(conn=vpc_conn)
         self.elb_choices_manager = ChoicesManager(conn=elb_conn) if elb_conn else None
+        region = request.session.get('region')
+        cloud_type = request.session.get('cloud_type', 'euca')
+        is_vpc_supported = 'VPC' in request.session.get('supported_platforms')
         self.launch_config.choices = self.get_launch_config_choices()
-        self.vpc_network.choices = self.vpc_choices_manager.vpc_networks()
+        if cloud_type == 'euca' and is_vpc_supported:
+            self.vpc_network.choices = self.vpc_choices_manager.vpc_networks(add_blank=False)
+        else:
+            self.vpc_network.choices = self.vpc_choices_manager.vpc_networks()
         self.vpc_subnet.choices = self.get_vpc_subnet_choices()
         self.health_check_type.choices = self.get_healthcheck_type_choices()
-        region = request.session.get('region')
         self.availability_zones.choices = self.get_availability_zone_choices(region)
         self.load_balancers.choices = self.get_load_balancer_choices()
 

@@ -6,7 +6,7 @@
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="ScalingGroupWizard" ng-controller="ScalingGroupWizardCtrl"
-         ng-init="initController(${launchconfigs_count}, '${vpc_subnet_choices_json}')">
+         ng-init="initController('${controller_options_json}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('scalinggroups')}" i18n:translate="">Scaling groups</a></li>
@@ -55,7 +55,7 @@
                             </div>
                             <div tal:condition="is_vpc_supported">
                                 ${panel('form_field', field=create_form['vpc_network'], ng_attrs={'model': 'vpcNetwork'}, leftcol_width=4, rightcol_width=8)}
-                                <div ng-show="vpcNetwork != ''">
+                                <div ng-show="vpcNetwork != '' &amp;&amp; vpcNetwork != 'None'">
                                     ${panel('form_field', field=create_form['vpc_subnet'], leftcol_width=4, rightcol_width=8, ng_attrs={'model': 'vpcSubnets', 'options': 'k as v for (k, v) in vpcSubnetChoices'}, **vpc_subnet_html_attrs)}
                                     <span id="vpc_subnet_empty_option" class="hide" i18n:translate="">No subnets found</span>
                                 </div>
@@ -96,7 +96,7 @@
                                             load_balancers_html_attrs {'data-placeholder': elb_placeholder_text}">
                             ${panel('form_field', field=create_form['health_check_type'], ng_attrs={'model': 'healthCheckType'})}
                             ${panel('form_field', field=create_form['health_check_period'], ng_attrs={'model': 'healthCheckPeriod'}, step=30)}
-                            <div ng-show="vpcNetwork == ''">
+                            <div ng-show="vpcNetwork == '' || vpcNetwork == 'None'">
                                 ${panel('form_field', field=create_form['availability_zones'], ng_attrs={'model': 'availZones'}, **avail_zones_attrs)}
                             </div>
                             ${panel('form_field', field=create_form['load_balancers'], **load_balancers_html_attrs)}
