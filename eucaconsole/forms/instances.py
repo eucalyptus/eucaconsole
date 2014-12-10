@@ -136,6 +136,8 @@ class LaunchInstanceForm(BaseSecureForm):
         self.securitygroups = securitygroups
         self.cloud_type = request.session.get('cloud_type', 'euca')
         self.is_vpc_supported = 'VPC' in request.session.get('supported_platforms')
+        #self.is_vpc_supported = True
+        #TEMP
         self.set_error_messages()
         self.monitoring_enabled.data = True
         self.choices_manager = ChoicesManager(conn=conn)

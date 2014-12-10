@@ -978,6 +978,7 @@ class InstanceLaunchView(BaseInstanceView, BlockDeviceMappingItemView):
             'keypair_choices': dict(self.launch_form.keypair.choices),
             'role_choices': dict(self.launch_form.role.choices),
             'vpc_subnet_choices': self.get_vpc_subnets(),
+            'default_vpc_network': self.get_default_vpc_network(),
             'securitygroups_json_endpoint': self.request.route_path('securitygroups_json'),
             'securitygroups_rules_json_endpoint': self.request.route_path('securitygroups_rules_json'),
             'image_json_endpoint': self.request.route_path('image_json', id='_id_'),
@@ -1114,6 +1115,22 @@ class InstanceLaunchView(BaseInstanceView, BlockDeviceMappingItemView):
                         cidr_block=vpc_subnet.cidr_block,
                     ))
         return subnets
+
+    def get_default_vpc_network(self):
+        default_vpc = self.request.session.get('default_vpc')
+        if self.is_vpc_supported:
+            if 'none' in default_vpc:
+                if self.cloud_type == 'aws':
+                    return 'None'
+                # for euca, return the first vpc on the list
+                if self.vpc_conn:
+                    with boto_error_handler(self.request, self.location):
+                        vpc_networks = self.vpc_conn.get_all_vpcs()
+                        if vpc_networks:
+                            return vpc_networks[0].id
+            else:
+                return default_vpc[0]
+        return 'None'
 
 
 class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):

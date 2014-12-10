@@ -283,11 +283,15 @@ class BaseView(object):
         if conn:
             with boto_error_handler(self.request):
                 attributes = conn.describe_account_attributes(attribute_names=attribute_names)
+                print attributes[0].attribute_values
+                #TEMP
                 return attributes[0].attribute_values
 
     @staticmethod
     def is_vpc_supported(request):
         return 'VPC' in request.session.get('supported_platforms')
+        #return True
+        #TEMP
 
     @staticmethod
     def escape_braces(s):

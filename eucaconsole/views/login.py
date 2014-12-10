@@ -177,6 +177,9 @@ class LoginView(BaseView, PermissionCheckMixin):
                 session['username_label'] = user_account
                 session['supported_platforms'] = self.get_account_attributes(['supported-platforms'])
                 session['default_vpc'] = self.get_account_attributes(['default-vpc'])
+                #session['default_vpc'] = [u'vpc-b3f1a851']
+                #TEMP
+
                 # handle checks for IAM perms
                 self.check_iam_perms(session, creds)
                 headers = remember(self.request, user_account)

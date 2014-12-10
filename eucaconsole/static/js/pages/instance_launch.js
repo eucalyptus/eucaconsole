@@ -59,6 +59,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             $scope.securityGroupChoices = options['securitygroups_choices'];
             $scope.vpcSubnetList = options['vpc_subnet_choices'];
             $scope.roleList = options['role_choices'];
+            $scope.instanceVPC = options['default_vpc_network'];
             $scope.securityGroupJsonEndpoint = options['securitygroups_json_endpoint'];
             $scope.securityGroupsRulesJsonEndpoint = options['securitygroups_rules_json_endpoint'];
             $scope.imageJsonURL = options['image_json_endpoint'];
