@@ -12,7 +12,7 @@
             <dd ng-class="inboundButtonClass">
                 <a id="inbound-rules-tab" ng-click="selectRuleType('inbound')" i18n:translate="">Inbound</a>
             </dd>
-            <dd ng-class="outboundButtonClass" ng-show="securityGroupVPC != ''">
+            <dd ng-class="outboundButtonClass" ng-show="securityGroupVPC != '' &amp;&amp securityGroupVPC != 'None'">
                 <a id="outbound-rules-tab" ng-click="selectRuleType('outbound')" i18n:translate="">Outbound</a>
             </dd>
         </dl>

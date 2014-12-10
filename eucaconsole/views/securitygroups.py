@@ -55,10 +55,14 @@ class SecurityGroupsView(LandingPageView):
         self.delete_form = SecurityGroupDeleteForm(self.request, formdata=self.request.params or None)
         self.filters_form = SecurityGroupsFiltersForm(
             self.request, vpc_conn=self.vpc_conn, formdata=self.request.params or None)
+        self.is_vpc_supported = BaseView.is_vpc_supported(request)
+        if not self.is_vpc_supported:
+            del self.filters_form.vpc_id
         self.render_dict = dict(
             prefix=self.prefix,
             delete_form=self.delete_form,
             filters_form=self.filters_form,
+            is_vpc_supported=self.is_vpc_supported,
         )
 
     @view_config(route_name='securitygroups', renderer=TEMPLATE)
@@ -210,6 +214,7 @@ class SecurityGroupView(TaggedItemView):
             self.request, self.vpc_conn, security_group=self.security_group, formdata=self.request.params or None)
         self.delete_form = SecurityGroupDeleteForm(self.request, formdata=self.request.params or None)
         self.tagged_obj = self.security_group
+        self.is_vpc_supported = BaseView.is_vpc_supported(request)
         controller_options_json = BaseView.escape_json(json.dumps({
             'default_vpc_network': self.get_default_vpc_network(),
         }))
@@ -221,6 +226,7 @@ class SecurityGroupView(TaggedItemView):
             delete_form=self.delete_form,
             security_group_names=self.get_security_group_names(),
             controller_options_json=controller_options_json,
+            is_vpc_supported=self.is_vpc_supported,
         )
 
     def get_default_vpc_network(self):
