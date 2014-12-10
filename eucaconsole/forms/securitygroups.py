@@ -59,8 +59,10 @@ class SecurityGroupForm(BaseSecureForm):
         self.vpc_conn = vpc_conn
         self.name.error_msg = self.name_error_msg  # Used for Foundation Abide error message
         self.description.error_msg = self.desc_error_msg  # Used for Foundation Abide error message
-        self.choices_manager = ChoicesManager(conn=vpc_conn)
+        self.vpc_choices_manager = ChoicesManager(conn=vpc_conn)
         region = request.session.get('region')
+        self.cloud_type = request.session.get('cloud_type', 'euca')
+        self.is_vpc_supported = 'VPC' in request.session.get('supported_platforms')
         self.set_vpc_choices()
 
         # Although we don't need to show the name/desc fields on update, we need these here to ensure the form is valid
@@ -70,7 +72,10 @@ class SecurityGroupForm(BaseSecureForm):
             self.vpc_network.data = security_group.vpc_id or ''
 
     def set_vpc_choices(self):
-        self.vpc_network.choices = self.choices_manager.vpc_networks()
+        if self.cloud_type == 'euca' and self.is_vpc_supported:
+            self.vpc_network.choices = self.vpc_choices_manager.vpc_networks(add_blank=False)
+        else:
+            self.vpc_network.choices = self.vpc_choices_manager.vpc_networks()
 
 
 class SecurityGroupDeleteForm(BaseSecureForm):
