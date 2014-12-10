@@ -53,10 +53,12 @@
                             <div tal:condition="not launch_config_param">
                                 ${panel('form_field', field=create_form['launch_config'], ng_attrs={'model': 'launchConfig'})}
                             </div>
-                            ${panel('form_field', field=create_form['vpc_network'], ng_attrs={'model': 'vpcNetwork'}, leftcol_width=4, rightcol_width=8)}
-                            <div ng-show="vpcNetwork != ''">
-                                ${panel('form_field', field=create_form['vpc_subnet'], leftcol_width=4, rightcol_width=8, ng_attrs={'model': 'vpcSubnets', 'options': 'k as v for (k, v) in vpcSubnetChoices'}, **vpc_subnet_html_attrs)}
-                                <span id="vpc_subnet_empty_option" class="hide" i18n:translate="">No subnets found</span>
+                            <div tal:condition="is_vpc_supported">
+                                ${panel('form_field', field=create_form['vpc_network'], ng_attrs={'model': 'vpcNetwork'}, leftcol_width=4, rightcol_width=8)}
+                                <div ng-show="vpcNetwork != ''">
+                                    ${panel('form_field', field=create_form['vpc_subnet'], leftcol_width=4, rightcol_width=8, ng_attrs={'model': 'vpcSubnets', 'options': 'k as v for (k, v) in vpcSubnetChoices'}, **vpc_subnet_html_attrs)}
+                                    <span id="vpc_subnet_empty_option" class="hide" i18n:translate="">No subnets found</span>
+                                </div>
                             </div>
                             <hr />
                             <div class="row controls-wrapper" id="capacity-section">
@@ -137,11 +139,11 @@
                             <span tal:condition="launch_config_param" ng-non-bindable="">${launch_config_param}</span>
                         </div>
                     </div>
-                    <div class="row" ng-show="vpcNetwork != ''">
+                    <div tal:condition="is_vpc_supported" class="row" ng-show="vpcNetwork != ''">
                         <label i18n:translate="">VPC network:</label>
                         <div class="columns value">{{ vpcNetworkName }}</div>
                     </div>
-                    <div class="row" ng-show="vpcSubnetNames.length">
+                    <div tal:condition="is_vpc_supported" class="row" ng-show="vpcSubnetNames.length">
                         <label i18n:translate="">VPC subnet:</label>
                         <div class="columns value">
                             <div ng-repeat="vpcSubnetName in vpcSubnetNames">{{ vpcSubnetName }}</div>

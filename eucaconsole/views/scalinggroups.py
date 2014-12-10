@@ -95,6 +95,9 @@ class ScalingGroupsView(LandingPageView, DeleteScalingGroupMixin):
         self.filter_keys = [
             'availability_zones', 'launch_config', 'name', 'placement_group', 'vpc_zone_identifier']
         # sort_keys are passed to sorting drop-down
+        self.is_vpc_supported = BaseView.is_vpc_supported(request)
+        if not self.is_vpc_supported:
+            del self.filters_form.vpc_zone_identifier
         self.render_dict = dict(
             filter_fields=True,
             filters_form=self.filters_form,
@@ -221,6 +224,7 @@ class BaseScalingGroupView(BaseView):
         self.elb_conn = self.get_connection(conn_type='elb')
         self.vpc_conn = self.get_connection(conn_type='vpc')
         self.ec2_conn = self.get_connection()
+        self.is_vpc_supported = BaseView.is_vpc_supported(request)
 
     def get_scaling_group(self):
         scalinggroup_param = self.request.matchdict.get('id')  # id = scaling_group.name
@@ -279,7 +283,8 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
             delete_form=self.delete_form,
             avail_zone_placeholder_text=_(u'Select one or more availability zones...'),
             termination_policies_placeholder_text=_(u'Select one or more termination policies...'),
-            controller_options_json=self.get_controller_options_json()
+            controller_options_json=self.get_controller_options_json(),
+            is_vpc_supported=self.is_vpc_supported,
         )
 
     @view_config(route_name='scalinggroup_view', renderer=TEMPLATE)
@@ -631,6 +636,7 @@ class ScalingGroupWizardView(BaseScalingGroupView):
             launch_config_param=escape(self.request.params.get('launch_config', '')),
             avail_zones_placeholder_text=_(u'Select availability zones...'),
             elb_placeholder_text=_(u'Select load balancers...'),
+            is_vpc_supported=self.is_vpc_supported,
         )
 
     @view_config(route_name='scalinggroup_new', renderer=TEMPLATE, request_method='GET')
@@ -641,6 +647,9 @@ class ScalingGroupWizardView(BaseScalingGroupView):
     @view_config(route_name='scalinggroup_create', renderer=TEMPLATE, request_method='POST')
     def scalinggroup_create(self):
         """Handles the POST from the Create Scaling Group wizard"""
+        if not self.is_vpc_supported:
+            del self.create_form.vpc_network
+            del self.create_form.vpc_subnet
         if self.create_form.validate():
             with boto_error_handler(self.request, self.request.route_path('scalinggroups')):
                 scaling_group_name = self.request.params.get('name')
