@@ -25,6 +25,18 @@ angular.module('InstanceCreateImage', ['TagEditor', 'BlockDeviceMappingEditor'])
                 }
             });
         };
+        $scope.checkRequiredInput = function () {
+            $scope.isNotValid = false;
+            if ($scope.name == '') {
+                $scope.isNotValid = true;
+            }
+        };
+        $scope.submitCreateImage = function() {
+            $scope.checkRequiredInput();
+            if (!$scope.isNotValid) { 
+                $('#instance-shutdown-warn-modal').foundation('reveal', 'open');
+            }
+        };
         $scope.submitCreate = function() {
             $('#instance-shutdown-warn-modal').foundation('reveal', 'close');
             $scope.form.submit();
