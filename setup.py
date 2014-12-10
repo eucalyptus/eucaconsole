@@ -109,7 +109,7 @@ requires = [
     'boto >= 2.27.0',
     'chameleon >= 2.5.3',
     'dogpile.cache >= 0.5.3',
-    'gevent >= 0.13.8',  # Note: gevent 1.0 no longer requires libevent, it bundles libev instead
+    #'gevent >= 0.13.8',  # Note: gevent 1.0 no longer requires libevent, it bundles libev instead, taking this out since we need gevent1 for pkg install
     # 'greenlet >= 0.3.1',
     'gunicorn >= 18.0',
     'M2Crypto >= 0.20.2',
@@ -133,6 +133,7 @@ i18n_extras = [
 
 dev_extras = [
     'pyramid_debugtoolbar',
+    'gevent',
     'waitress',
     'pylibmc',
 ]
