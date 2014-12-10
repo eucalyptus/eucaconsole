@@ -112,7 +112,18 @@
                  tal:define="html_attrs {'pattern': '^[1-9]\d*$', 'min': '1',
                          'error_msg': allocate_ip_dialog_error_message};">
                 ${structure:allocate_form['csrf_token']}
-                ${panel('form_field', field=allocate_form.domain, leftcol_width=6, rightcol_width=6)}
+                <div tal:condition="cloud_type == 'aws'">
+                    ${panel('form_field', field=allocate_form.domain, leftcol_width=6, rightcol_width=6)}
+                </div>
+                <div tal:condition="cloud_type == 'euca'">
+                    <div class="row controls-wrapper readonly" id="controls_domain">
+                        <div class="small-6 columns">
+                            <label class="right" i18n:translate="">Scope&nbsp;</label>
+                        </div>
+                        <div tal:condition="not is_vpc_supported" class="small-6 columns value" i18n:translate="">Standard</div>
+                        <div tal:condition="is_vpc_supported" class="small-6 columns value" i18n:translate="">VPC</div>
+                    </div>
+                </div>
                 ${panel('form_field', field=allocate_form.ipcount, leftcol_width=6, rightcol_width=6, **html_attrs)}
                 <div>
                     <label>
