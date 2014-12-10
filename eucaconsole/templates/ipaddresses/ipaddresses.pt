@@ -37,10 +37,14 @@
                     </span>
                     <span ng-show="!item.instance_id" i18n:translate="">Not associated with any instances</span>
                 </div>
-                <div>
+                <div tal:condition="is_vpc_supported">
                     <span class="label" title="Scope" i18n:attributes="title" data-tooltip="">SC</span>
                     <span ng-show="item.domain == 'vpc'" i18n:translate="">VPC</span>
                     <span ng-show="item.domain == 'standard'" i18n:translate="">Standard</span>
+                </div>
+                <div tal:condition="not is_vpc_supported">
+                    <span class="label" title="Scope" i18n:attributes="title" data-tooltip="">SC</span>
+                    <span i18n:translate="">Standard</span>
                 </div>
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
@@ -68,9 +72,12 @@
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
                 <td><a ng-href="${prefix}/{{ item.public_ip }}">{{ item.public_ip }}</a></td>
-                <td>
+                <td tal:condition="is_vpc_supported">
                     <span ng-show="item.domain == 'vpc'" i18n:translate="">VPC</span>
                     <span ng-show="item.domain == 'standard'" i18n:translate="">Standard</span>
+                </td>
+                <td tal:condition="not is_vpc_supported">
+                    <span i18n:translate="">Standard</span>
                 </td>
                 <td class="breakword"><a ng-href="/instances/{{item.instance_id}}">{{ item.instance_name | ellipsis: 30 }}</a></td>
                 <td>

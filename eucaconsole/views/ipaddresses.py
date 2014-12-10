@@ -53,6 +53,7 @@ class IPAddressesView(LandingPageView):
         self.disassociate_form = DisassociateIPForm(self.request, formdata=self.request.params or None)
         self.release_form = ReleaseIPForm(self.request, formdata=self.request.params or None)
         self.location = self.get_redirect_location('ipaddresses')
+        self.is_vpc_supported = BaseView.is_vpc_supported(request)
         self.render_dict = dict(
             prefix=self.prefix,
             allocate_form=self.allocate_form,
@@ -60,6 +61,7 @@ class IPAddressesView(LandingPageView):
             disassociate_form=self.disassociate_form,
             release_form=self.release_form,
             allocate_ip_dialog_error_message=_(u'Please enter a whole number greater than zero'),
+            is_vpc_supported=self.is_vpc_supported,
         )
 
     @view_config(route_name='ipaddresses', renderer=VIEW_TEMPLATE)
@@ -81,11 +83,14 @@ class IPAddressesView(LandingPageView):
                     msg = u'{prefix} {ips}'.format(prefix=prefix, ips=ips)
                     self.request.session.flash(msg, queue=Notification.SUCCESS)
                 return HTTPFound(location=self.location)
+        self.filters_form=IPAddressesFiltersForm(self.request, conn=self.conn, formdata=self.request.params or None)
+        if not self.is_vpc_supported:
+            del self.filters_form.domain
         self.render_dict.update(
             initial_sort_key='public_ip',
             json_items_endpoint=self.get_json_endpoint('ipaddresses_json'),
             filter_fields=True,
-            filters_form=IPAddressesFiltersForm(self.request, conn=self.conn, formdata=self.request.params or None),
+            filters_form=self.filters_form,
             filter_keys=['public_ip', 'instance_id', 'domain'],
             sort_keys=self.get_sort_keys(),
         )
