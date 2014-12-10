@@ -283,7 +283,7 @@ class BaseView(object):
         if conn:
             with boto_error_handler(self.request):
                 attributes = conn.describe_account_attributes(attribute_names=attribute_names)
-                print attributes[0].attribute_values
+                #print attributes[0].attribute_values
                 #TEMP
                 return attributes[0].attribute_values
 

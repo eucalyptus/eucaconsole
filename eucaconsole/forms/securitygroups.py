@@ -96,6 +96,6 @@ class SecurityGroupsFiltersForm(BaseSecureForm):
         self.cloud_type = cloud_type
         self.vpc_choices_manager = ChoicesManager(conn=vpc_conn)
         self.vpc_id.choices = self.vpc_choices_manager.vpc_networks(add_blank=False)
-        if cloud_type=='aws':
+        if self.cloud_type == 'aws':
             self.vpc_id.choices.append(('None', _(u'No VPC')))
         self.vpc_id.choices = sorted(self.vpc_id.choices)
