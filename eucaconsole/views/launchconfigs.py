@@ -249,6 +249,7 @@ class LaunchConfigView(BaseView):
             self.launch_config.userdata_istext = True if mime_type.find('text') >= 0 else False
         else:
             self.launch_config.userdata_type = ''
+        self.is_vpc_supported = BaseView.is_vpc_supported(request)
         self.render_dict = dict(
             launch_config=self.launch_config,
             launch_config_name=self.escape_braces(self.launch_config.name) if self.launch_config else '',
@@ -263,6 +264,7 @@ class LaunchConfigView(BaseView):
             delete_form=self.delete_form,
             role=self.role,
             controller_options_json=self.get_controller_options_json(),
+            is_vpc_supported=self.is_vpc_supported,
         )
 
     @view_config(route_name='launchconfig_view', renderer=TEMPLATE)
@@ -401,6 +403,7 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
             'securitygroups_rules_json_endpoint': self.request.route_path('securitygroups_rules_json'),
             'image_json_endpoint': self.request.route_path('image_json', id='_id_'),
         }))
+        self.is_vpc_supported = BaseView.is_vpc_supported(request)
         self.render_dict = dict(
             image=self.image,
             create_form=self.create_form,
@@ -413,6 +416,7 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
             preset='',
             security_group_placeholder_text=_(u'Select...'),
             controller_options_json=controller_options_json,
+            is_vpc_supported=self.is_vpc_supported,
         )
 
     @view_config(route_name='launchconfig_new', renderer=TEMPLATE, request_method='GET')
