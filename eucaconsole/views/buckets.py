@@ -40,7 +40,8 @@ from boto.s3.key import Key
 from boto.s3.prefix import Prefix
 from boto.exception import BotoServerError
 
-from pyramid.httpexceptions import HTTPNotFound, HTTPFound
+from pyramid.httpexceptions import HTTPNotFound, HTTPFound, HTTPBadRequest
+from pyramid.settings import asbool
 from pyramid.view import view_config
 
 from ..forms.buckets import (
@@ -280,6 +281,7 @@ class BucketContentsView(LandingPageView):
         self.create_folder_form = CreateFolderForm(request, formdata=self.request.params or None)
         self.subpath = request.subpath
         self.key_prefix = '/'.join(self.subpath) if len(self.subpath) > 0 else ''
+        self.file_uploads_enabled = asbool(self.request.registry.settings.get('file.uploads.enabled', True))
         self.render_dict = dict(
             bucket_name=self.bucket_name,
             versioning_form=BucketUpdateVersioningForm(request, formdata=self.request.params or None),
@@ -315,6 +317,8 @@ class BucketContentsView(LandingPageView):
 
     @view_config(route_name='bucket_upload', renderer='../templates/buckets/bucket_upload.pt', request_method='GET')
     def bucket_upload(self):
+        if not self.file_uploads_enabled:
+            raise HTTPNotFound()  # Return 404 if file uploads are disabled
         with boto_error_handler(self.request):
             bucket = BucketContentsView.get_bucket(self.request, self.s3_conn)
             if not hasattr(bucket, 'metadata'):
@@ -335,9 +339,10 @@ class BucketContentsView(LandingPageView):
 
     @view_config(route_name='bucket_upload', renderer='json', request_method='POST', xhr=True)
     def bucket_upload_post(self):
+        if not self.file_uploads_enabled:
+            raise HTTPBadRequest()  # Return 400 if file uploads are disabled
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
-
         bucket_name = self.request.matchdict.get('name')
         subpath = self.request.matchdict.get('subpath')
         files = self.request.POST.getall('files')
@@ -948,7 +953,7 @@ class CreateBucketView(BaseView):
             bucket_name = self.request.params.get('bucket_name').lower()
             enable_versioning = self.request.params.get('enable_versioning') == 'y'
             location = self.request.route_path('bucket_details', name=bucket_name)
-            with boto_error_handler(self.request):
+            with boto_error_handler(self.request, self.request.route_path('buckets')):
                 try:
                     new_bucket = self.s3_conn.create_bucket(bucket_name)
                     BucketDetailsView.update_acl(self.request, bucket_object=new_bucket)

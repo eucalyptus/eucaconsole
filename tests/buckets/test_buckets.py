@@ -29,7 +29,9 @@ Tests for S3 buckets, objects, and related forms
 """
 from boto.s3.bucket import Bucket
 from boto.s3.key import Key
+
 from pyramid import testing
+from pyramid.httpexceptions import HTTPNotFound, HTTPBadRequest
 
 from eucaconsole.forms.buckets import SharingPanelForm
 from eucaconsole.views.buckets import BucketContentsView, BucketDetailsView
@@ -54,6 +56,24 @@ class BucketContentsViewTestCase(BaseViewTestCase):
         self.assertEqual(view.get_icon_class('/foo/bar/baz.txt'), 'fi-page')  # Test text file
         self.assertEqual(view.get_icon_class('/foo/bar/baz.zip'), 'fi-archive')  # Test zip file
         self.assertEqual(view.get_icon_class('/foo/bar/baz.unknown'), '')  # Test unknown
+
+    def test_upload_page_returns_404_when_file_uploads_config_is_disabled(self):
+        """File upload page should return a 404 when file.uploads.enabled is False"""
+        request = testing.DummyRequest()
+        request.registry.settings = {
+            'file.uploads.enabled': 'false'
+        }
+        view = BucketContentsView(request).bucket_upload
+        self.assertRaises(HTTPNotFound, view)
+
+    def test_upload_post_returns_400_when_file_uploads_config_is_disabled(self):
+        """File upload post handler should return a 400 when file.uploads.enabled is False"""
+        request = testing.DummyRequest()
+        request.registry.settings = {
+            'file.uploads.enabled': 'false'
+        }
+        view = BucketContentsView(request).bucket_upload_post
+        self.assertRaises(HTTPBadRequest, view)
 
 
 class BucketDetailsViewTestCase(BaseViewTestCase):

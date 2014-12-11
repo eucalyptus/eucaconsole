@@ -165,6 +165,9 @@ $wizard-tab-padding: 8px 1rem;
 .rules-display {
     .rules-title {
         word-break: break-all;
+        .normal-word-break {
+            word-break: normal;
+        }
     }
 }
 
