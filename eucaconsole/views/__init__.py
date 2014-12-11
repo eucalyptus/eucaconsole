@@ -290,10 +290,7 @@ class BaseView(object):
 
     @staticmethod
     def is_vpc_supported(request):
-        platforms = request.session.get('supported_platforms')
-        if platforms:
-            return 'VPC' in platforms
-        return False
+        return 'VPC' in request.session.get('supported_platforms', [])
         #return True
         #TEMP
 
