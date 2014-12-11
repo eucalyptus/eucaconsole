@@ -135,7 +135,8 @@ class LaunchInstanceForm(BaseSecureForm):
         self.image = image
         self.securitygroups = securitygroups
         self.cloud_type = request.session.get('cloud_type', 'euca')
-        self.is_vpc_supported = 'VPC' in request.session.get('supported_platforms')
+        from ..views import BaseView
+        self.is_vpc_supported = BaseView.is_vpc_supported(request)
         #self.is_vpc_supported = True
         #TEMP
         self.set_error_messages()

@@ -62,7 +62,8 @@ class SecurityGroupForm(BaseSecureForm):
         self.vpc_choices_manager = ChoicesManager(conn=vpc_conn)
         region = request.session.get('region')
         self.cloud_type = request.session.get('cloud_type', 'euca')
-        self.is_vpc_supported = 'VPC' in request.session.get('supported_platforms')
+        from ..views import BaseView
+        self.is_vpc_supported = BaseView.is_vpc_supported(request)
         self.set_vpc_choices()
 
         # Although we don't need to show the name/desc fields on update, we need these here to ensure the form is valid

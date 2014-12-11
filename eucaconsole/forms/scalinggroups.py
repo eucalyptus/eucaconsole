@@ -124,7 +124,8 @@ class BaseScalingGroupForm(BaseSecureForm):
         self.elb_choices_manager = ChoicesManager(conn=elb_conn) if elb_conn else None
         region = request.session.get('region')
         cloud_type = request.session.get('cloud_type', 'euca')
-        is_vpc_supported = 'VPC' in request.session.get('supported_platforms')
+        from ..views import BaseView
+        self.is_vpc_supported = BaseView.is_vpc_supported(request)
         self.launch_config.choices = self.get_launch_config_choices()
         if cloud_type == 'euca' and is_vpc_supported:
             self.vpc_network.choices = self.vpc_choices_manager.vpc_networks(add_blank=False)
