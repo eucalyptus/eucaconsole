@@ -220,7 +220,7 @@ class SecurityGroupView(TaggedItemView):
             'default_vpc_network': self.get_default_vpc_network(),
         }))
         if not self.is_vpc_supported:
-            del self.securitygroup_form.vpc_network
+            del self.securitygroup_form.securitygroup_vpc_network
         self.render_dict = dict(
             security_group=self.security_group,
             security_group_name=self.escape_braces(self.security_group.name) if self.security_group else '',
@@ -271,7 +271,7 @@ class SecurityGroupView(TaggedItemView):
         if self.securitygroup_form.validate():
             name = self.request.params.get('name')
             description = self.request.params.get('description')
-            vpc_network = self.request.params.get('vpc_network') or None
+            vpc_network = self.request.params.get('securitygroup_vpc_network') or None
             if vpc_network == 'None':
                 vpc_network = None
             tags_json = self.request.params.get('tags')
@@ -305,8 +305,8 @@ class SecurityGroupView(TaggedItemView):
 
     @view_config(route_name='securitygroup_update', request_method='POST', renderer=TEMPLATE)
     def securitygroup_update(self):
-        if self.request.params.get('vpc_network') is None: 
-            del self.securitygroup_form.vpc_network
+        if self.request.params.get('securitygroup_vpc_network') is None: 
+            del self.securitygroup_form.securitygroup_vpc_network
         if self.securitygroup_form.validate():
             # Update tags and rules
             location = self.request.route_path('securitygroup_view', id=self.security_group.id)

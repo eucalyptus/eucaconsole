@@ -15,7 +15,7 @@ angular.module('SecurityGroupRules', ['CustomFilters', 'EucaConsoleUtils'])
         $scope.jsonEndpoint='';
         $scope.internetProtocolsJsonEndpoint = '';
         $scope.securityGroupList = [];
-        $scope.securityGroupVPC = '';
+        $scope.securityGroupVPC = 'None';
         $scope.selectedProtocol = '';
         $scope.customProtocol = '';
         $scope.customProtocolDivClass = "";
@@ -55,6 +55,7 @@ angular.module('SecurityGroupRules', ['CustomFilters', 'EucaConsoleUtils'])
             $scope.rulesEgressArray = options['rules_egress_array'];
             $scope.jsonEndpoint = options['json_endpoint'];
             $scope.internetProtocolsJsonEndpoint = options['protocols_json_endpoint'];
+            $scope.securityGroupVPC = options['default_vpc_network'];
             $scope.initInternetProtocols();
             $scope.syncRules();
             $scope.setWatchers();
@@ -203,16 +204,16 @@ angular.module('SecurityGroupRules', ['CustomFilters', 'EucaConsoleUtils'])
                 }
                 $scope.securityGroupVPC = vpc;
                 // In 'Create new security group' mode,
-                if ($('select#vpc_network').length > 0) {
+                if ($('select#securitygroup_vpc_network').length > 0) {
                     // Clear previously selected rules when VPC is changed
                     $scope.clearRules();
                     // Add the default outbound rule for VPC security group
-                    if ($scope.securityGroupVPC != '') {
+                    if ($scope.securityGroupVPC != 'None') {
                         $scope.addDefaultOutboundRule();
                     } 
                 }
                 // When NoVPC is selected, which the tab to 'inbound'
-                if ($scope.securityGroupVPC == '') {
+                if ($scope.securityGroupVPC == 'None') {
                     $scope.selectRuleType('inbound'); 
                 }
                 // For VPC, include the option '-1' for ALL IP Protocols
@@ -526,7 +527,7 @@ angular.module('SecurityGroupRules', ['CustomFilters', 'EucaConsoleUtils'])
         $scope.adjustIPProtocolOptions = function () {
             $scope.removeAllTrafficRuleOption();
             $scope.removeCustomProtocolRuleOption();
-            if ($scope.securityGroupVPC != '') {
+            if ($scope.securityGroupVPC != 'None') {
                 // Allow All Traffic and Custom Protocol options to be selectable for VPC
                 $scope.insertAllTrafficRuleOption();
                 $scope.insertCustomProtocolRuleOption(); 

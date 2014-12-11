@@ -52,7 +52,7 @@ class SecurityGroupForm(BaseSecureForm):
             validators.Length(max=255, message=_(u'Description must be less than 255 characters'))
         ],
     )
-    vpc_network = wtforms.SelectField(label=_(u'VPC network'))
+    securitygroup_vpc_network = wtforms.SelectField(label=_(u'VPC network'))
 
     def __init__(self, request, vpc_conn=None, security_group=None, **kwargs):
         super(SecurityGroupForm, self).__init__(request, **kwargs)
@@ -69,13 +69,13 @@ class SecurityGroupForm(BaseSecureForm):
         if security_group is not None:
             self.name.data = security_group.name
             self.description.data = security_group.description
-            self.vpc_network.data = security_group.vpc_id or ''
+            self.securitygroup_vpc_network.data = security_group.vpc_id or ''
 
     def set_vpc_choices(self):
         if self.cloud_type == 'euca' and self.is_vpc_supported:
-            self.vpc_network.choices = self.vpc_choices_manager.vpc_networks(add_blank=False)
+            self.securitygroup_vpc_network.choices = self.vpc_choices_manager.vpc_networks(add_blank=False)
         else:
-            self.vpc_network.choices = self.vpc_choices_manager.vpc_networks()
+            self.securitygroup_vpc_network.choices = self.vpc_choices_manager.vpc_networks()
 
 
 class SecurityGroupDeleteForm(BaseSecureForm):

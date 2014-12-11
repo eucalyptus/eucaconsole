@@ -350,6 +350,10 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                         modalButton.focus();
                     }
                }
+                // Handle the angular and foundation conflict when setting the select options after the dialog opens
+                if( $('#securitygroup_vpc_network').children('option').first().html() == '' ){
+                    $('#securitygroup_vpc_network').children('option').first().remove();
+                }
             });
         };
         $scope.setWizardFocus = function (stepIdx) {

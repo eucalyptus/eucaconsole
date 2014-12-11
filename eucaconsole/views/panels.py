@@ -220,11 +220,15 @@ def securitygroup_rules(context, request, rules=None, rules_egress=None, leftcol
     rules_sorted = sorted(rules_list, key=itemgetter('from_port'))
     rules_egress_sorted = sorted(rules_egress_list, key=itemgetter('from_port'))
     icmp_choices_sorted = sorted(RULE_ICMP_CHOICES, key=lambda tup: tup[1])
+    default_vpc_network = request.session.get('default_vpc', 'None')
+    if default_vpc_network[0] == 'none':
+        default_vpc_network[0] = 'None'
     controller_options_json = BaseView.escape_json(json.dumps({
         'rules_array': rules_sorted,
         'rules_egress_array': rules_egress_sorted,
         'json_endpoint': request.route_path('securitygroups_json'),
         'protocols_json_endpoint': request.route_path('internet_protocols_json'),
+        'default_vpc_network': default_vpc_network,
     }))
     remote_addr=BaseView.get_remote_addr(request)
 

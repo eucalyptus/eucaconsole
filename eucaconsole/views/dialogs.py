@@ -135,8 +135,10 @@ def securitygroup_dialogs(context, request, security_group=None, landingpage=Fal
 @panel_config('create_securitygroup_dialog', renderer='../templates/dialogs/create_securitygroup_dialog.pt')
 def create_securitygroup_dialog(context, request, securitygroup_form=None):
     """ Modal dialog for creating a security group."""
+    is_vpc_supported = BaseView.is_vpc_supported(request)
     return dict(
         securitygroup_form=securitygroup_form,
+        is_vpc_supported=is_vpc_supported,
     )
 
 
