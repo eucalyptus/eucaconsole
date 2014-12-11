@@ -277,8 +277,9 @@ class BaseView(object):
         auth = EucaAuthenticator(host, port, validate_certs=validate_certs, ca_certs=ca_certs_file)
         return auth
 
-    def get_account_attributes(self, attribute_names=['supported-platforms']):
+    def get_account_attributes(self, attribute_names=None):
         self.__init__(self.request)
+        attribute_names = attribute_names or ['supported-platforms']
         conn = self.get_connection()
         if conn:
             with boto_error_handler(self.request):
@@ -289,7 +290,10 @@ class BaseView(object):
 
     @staticmethod
     def is_vpc_supported(request):
-        return 'VPC' in request.session.get('supported_platforms')
+        platforms = request.session.get('supported_platforms')
+        if platforms:
+            return 'VPC' in platforms
+        return False
         #return True
         #TEMP
 
