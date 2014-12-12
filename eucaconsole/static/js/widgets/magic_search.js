@@ -40,6 +40,7 @@ angular.module('MagicSearch', [])
                     }
                 });
             });
+            $scope.filteredObj = $scope.facetsObj;
         };
         // removes a facet from the menu
         $scope.deleteFacetSelection = function(facet_parts) {
@@ -58,8 +59,20 @@ angular.module('MagicSearch', [])
             });
         };
         $('#search-input').on('keypress', function(event) {
+            var search_val = $('#search-input').val();
+            var key = event.keyCode || event.charCode;
+            if (key == 8 || key == 46) {
+                search_val = search_val.substring(0, search_val.length-1);
+            } else {
+                if (key != 13 && key != 9) {
+                    search_val = search_val + String.fromCharCode(key);
+                }
+            }
+            if (search_val == '') {
+                $scope.filteredObj = $scope.facetsObj;
+                return;
+            }
             if (event.which == 13) {
-                var search_val = $('#search-input').val();
                 // if tag search, treat as regular facet
                 if ($scope.facetSelected == 'tags') {
                     var curr = $scope.currentSearch[$scope.currentSearch.length-1];
@@ -81,7 +94,40 @@ angular.module('MagicSearch', [])
                     $('#search-input').val('');
                     $scope.$emit('textSearch', search_val, $scope.filter_keys);
                 }
+                $scope.filteredObj = $scope.facetsObj;
             }
+            else {
+                // try filtering facets.. if no facets match, do text search
+                filtered = [];
+                for (var i=0; i<$scope.filteredObj.length; i++) {
+                    if ($scope.filteredObj[i].label.indexOf(search_val) > -1) {
+                        filtered.push($scope.filteredObj[i]);
+                    }
+                }
+                if (filtered.length > 0) {
+                    $timeout(function() {
+                        $scope.filteredObj = filtered;
+                    }, 0.1);
+                }
+                else {
+                    $scope.$emit('textSearch', search_val, $scope.filter_keys);
+                }
+            }
+        });
+        // enable text entry when mouse clicked anywhere in search box
+        $('#search-main-area').on("click", function(event) {
+            console.log("clicked in main area");
+            if ($(event.target).is("#search-input")) {
+                return;
+            }
+            var searchbox = $('#search-input')
+            searchbox.trigger("focus");
+            //var pos = searchbox.offset();
+            //event = $.Event('click');
+            //event.clientX = pos.left;
+            //event.clientY = pos.top;
+            //$('#facet-drop').trigger(event);
+            //return false;
         });
         // when facet clicked, add 1st part of facet and set up options
         $scope.facetClicked = function($index, $event, name) {

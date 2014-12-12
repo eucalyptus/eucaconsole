@@ -2,43 +2,60 @@
 @import "../includes/eucavariables";
 
 .search-bar {
+    position: relative;
     border: 1px solid black;
     background-color: white;
     margin-bottom: 0.25rem;
     padding: 4px;
-    height: 2.0rem;
+    height: auto;
+    min-height: 2.0rem;
+    i.fi-filter {
+        position: absolute;
+        //float: left;
+        padding: 3px;
+        margin-left: 3px;
+        color: $euca-darkgrey;
+        vertical-align: middle;
+    }
+    #search-main-area {
+        position: relative;
+        top: .10rem;
+        width: auto;
+        min-height: 1.5rem;
+        margin-left: 2rem;
+        margin-right: 2rem;
+        height: auto;
+        cursor: text;
+    }
     @include item-list;
     .item-list {
-        position: relative;
+        position: static;
         float: left;
+    }
+    #search-entry {
+        position: static;
+        float: left;
+        height: 1.5rem;
     }
     #search-input {
         border: 0px;
-        width: 300px;
+        box-shadow: none;
+        width: 100%;
         height: 1.5rem;
-        position: relative;
+        position: static;
         float: left;
         padding: 3px;
-        margin: 0px;
+        margin: 0;
         background-color: white;
     }
     i.cancel {
-        margin-right: 1.25rem;
-        padding: 3px;
         color: $euca-darkgrey;
         &:hover {
             color: darkred;
         }
         vertical-align: middle;
-        position: relative;
-        float: right;
-    }
-    i.fi-magnifying-glass {
-        right: 1.0rem;
-        padding: 3px;
-        margin-right: 3px;
-        color: $euca-darkgrey;
-        vertical-align: middle;
         position: absolute;
+        top: 0.5rem;
+        right: 0.75rem;
     }
 }
