@@ -12,20 +12,27 @@ from datetime import datetime
 from functools import partial
 import time
 
+import gunicorn
 try:
     import gevent1
+    from gevent1.pool import Pool
+    from gevent1.server import StreamServer
+    from gevent1.socket import wait_write
+    from gevent1 import pywsgi
+    VERSION = "gevent1/%s gunicorn/%s" % (gevent1.__version__, gunicorn.__version__)
 except ImportError:
-    raise RuntimeError("You need gevent1 installed to use this worker.")
-from gevent1.pool import Pool
-from gevent1.server import StreamServer
-from gevent1.socket import wait_write
-from gevent1 import pywsgi
+    try:
+        import gevent
+        from gevent.pool import Pool
+        from gevent.server import StreamServer
+        from gevent.socket import wait_write
+        from gevent import pywsgi
+        VERSION = "gevent/%s gunicorn/%s" % (gevent.__version__, gunicorn.__version__)
+    except ImportError:
+        raise RuntimeError("You need gevent1 installed to use this worker.")
 
-import gunicorn
 from gunicorn.workers.async import AsyncWorker
 from gunicorn.http.wsgi import sendfile as o_sendfile
-
-VERSION = "gevent1/%s gunicorn/%s" % (gevent1.__version__, gunicorn.__version__)
 
 def _gevent_sendfile(fdout, fdin, offset, nbytes):
     while True:
