@@ -4,23 +4,29 @@
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="selenium.base" href="http://10.111.5.153:8888/" />
-<title>set-bucket-name-to-bucket1</title>
+<title>set-folder-helper-name-to-folder-helper-and-5randomchars</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">set-bucket-name-to-bucket1</td></tr>
+<tr><td rowspan="1" colspan="3">set-folder-helper-name-to-folder-helper-and-5randomchars</td></tr>
 </thead><tbody>
 <tr>
+	<td>storeEval</td>
+	<td>(Math.random().toString(36)+&quot;000000000&quot;).slice(2,7);</td>
+	<td>str</td>
+</tr>
+<tr>
 	<td>store</td>
-	<td>${bucket1_name}</td>
-	<td>bucket_name</td>
+	<td>folder-helper-${str}</td>
+	<td>folder_helper_name</td>
 </tr>
 <tr>
 	<td>echo</td>
-	<td>${bucket_name}</td>
+	<td>${folder_helper_name}</td>
 	<td></td>
 </tr>
+
 </tbody></table>
 </body>
 </html>
