@@ -127,7 +127,7 @@ class BaseScalingGroupForm(BaseSecureForm):
         from ..views import BaseView
         self.is_vpc_supported = BaseView.is_vpc_supported(request)
         self.launch_config.choices = self.get_launch_config_choices()
-        if cloud_type == 'euca' and is_vpc_supported:
+        if cloud_type == 'euca' and self.is_vpc_supported:
             self.vpc_network.choices = self.vpc_choices_manager.vpc_networks(add_blank=False)
         else:
             self.vpc_network.choices = self.vpc_choices_manager.vpc_networks()
