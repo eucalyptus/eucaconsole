@@ -4,12 +4,12 @@
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="selenium.base" href="http://10.111.5.153:8888/" />
-<title>delete-bucket-from-detail-page</title>
+<title>create-folder-from-folder-content-page</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">delete-bucket-from-detail-page</td></tr>
+<tr><td rowspan="1" colspan="3">create-folder-from-folder-content-page</td></tr>
 </thead><tbody>
 <tr>
 	<td>setSpeed</td>
@@ -32,50 +32,61 @@
 	<td></td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>id=resource-menu-storage</td>
+	<td>waitForVisible</td>
+	<td>//span[@id=&quot;tile-item-dropdown_buckets&quot;]/../div/a/i</td>
 	<td></td>
 </tr>
 <tr>
 	<td>clickAndWait</td>
-	<td>id=resource-menuitem-buckets</td>
+	<td>//span[@id=&quot;tile-item-dropdown_buckets&quot;]/../div/a/i</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForVisible</td>
+	<td>//a[@id=&quot;table-item-dropdown_${bucket_name}&quot;]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//a[@href=&quot;/buckets/${bucket_name}/contents/&quot;]</td>
+	<td>//a[@id=&quot;table-item-dropdown_${bucket_name}&quot;]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForVisible</td>
+	<td>//ul[@id=&quot;item-dropdown_${bucket_name}&quot;]/li[1]/a</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>id=delete-all-btn</td>
+	<td>//ul[@id=&quot;item-dropdown_${bucket_name}&quot;]/li[1]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForVisible</td>
+	<td>id=create-folder-btn</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>link=Yes, Delete Everything</td>
+	<td>id=create-folder-btn</td>
 	<td></td>
+</tr>
+<tr>
+	<td>waitForVisible</td>
+	<td>id=folder_name</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=folder_name</td>
+	<td>${folder_helper_name}</td>
 </tr>
 <tr>
 	<td>clickAndWait</td>
-	<td>id=bucket-details</td>
+	<td>id=create-folder-submit-btn</td>
 	<td></td>
 </tr>
-<tr>
-	<td>click</td>
-	<td>link=Actions</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>id=delete-bucket-action</td>
-	<td></td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>id=delete_bucket_submit_button</td>
-	<td></td>
-</tr>
+
 </tbody></table>
 </body>
 </html>
