@@ -326,8 +326,9 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                     }
                 }
                 // Handle the angular and foundation conflict when setting the select options after the dialog opens
-                if( $('#securitygroup_vpc_network').children('option').first().html() == '' ){
+                if( $('#securitygroup_vpc_network').children('option').first().text() == '' ){
                     $('#securitygroup_vpc_network').children('option').first().remove();
+                    $('#securitygroup_vpc_network option[value="' + $scope.securityGroupVPC + '"]').prop('selected', true);
                 }
             });
             $(document).on('submit', '[data-reveal] form', function () {

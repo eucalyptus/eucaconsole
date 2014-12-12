@@ -395,6 +395,7 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
         self.securitygroup_form = SecurityGroupForm(self.request, self.vpc_conn, formdata=self.request.params or None)
         self.generate_file_form = GenerateFileForm(self.request, formdata=self.request.params or None)
         self.owner_choices = self.get_owner_choices()
+
         controller_options_json = BaseView.escape_json(json.dumps({
             'securitygroups_choices': dict(self.create_form.securitygroup.choices),
             'keypair_choices': dict(self.create_form.keypair.choices),
@@ -402,6 +403,7 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
             'securitygroups_json_endpoint': self.request.route_path('securitygroups_json'),
             'securitygroups_rules_json_endpoint': self.request.route_path('securitygroups_rules_json'),
             'image_json_endpoint': self.request.route_path('image_json', id='_id_'),
+            'default_vpc_network': self.get_default_vpc_network(),
         }))
         self.is_vpc_supported = BaseView.is_vpc_supported(request)
         self.render_dict = dict(
@@ -496,3 +498,19 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
                 rules = rules + rules_egress 
             rules_dict[security_group.id] = rules
         return rules_dict
+
+    def get_default_vpc_network(self):
+        default_vpc = self.request.session.get('default_vpc', [])
+        if self.is_vpc_supported:
+            if 'none' in default_vpc or 'None' in default_vpc:
+                if self.cloud_type == 'aws':
+                    return 'None'
+                # for euca, return the first vpc on the list
+                if self.vpc_conn:
+                    with boto_error_handler(self.request):
+                        vpc_networks = self.vpc_conn.get_all_vpcs()
+                        if vpc_networks:
+                            return vpc_networks[0].id
+            else:
+                return default_vpc[0]
+        return 'None'

@@ -1117,14 +1117,14 @@ class InstanceLaunchView(BaseInstanceView, BlockDeviceMappingItemView):
         return subnets
 
     def get_default_vpc_network(self):
-        default_vpc = self.request.session.get('default_vpc')
+        default_vpc = self.request.session.get('default_vpc', [])
         if self.is_vpc_supported:
-            if 'none' in default_vpc:
+            if 'none' in default_vpc or 'None' in default_vpc:
                 if self.cloud_type == 'aws':
                     return 'None'
                 # for euca, return the first vpc on the list
                 if self.vpc_conn:
-                    with boto_error_handler(self.request, self.location):
+                    with boto_error_handler(self.request):
                         vpc_networks = self.vpc_conn.get_all_vpcs()
                         if vpc_networks:
                             return vpc_networks[0].id

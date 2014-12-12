@@ -55,7 +55,6 @@ angular.module('SecurityGroupRules', ['CustomFilters', 'EucaConsoleUtils'])
             $scope.rulesEgressArray = options['rules_egress_array'];
             $scope.jsonEndpoint = options['json_endpoint'];
             $scope.internetProtocolsJsonEndpoint = options['protocols_json_endpoint'];
-            $scope.securityGroupVPC = options['default_vpc_network'];
             $scope.initInternetProtocols();
             $scope.syncRules();
             $scope.setWatchers();
