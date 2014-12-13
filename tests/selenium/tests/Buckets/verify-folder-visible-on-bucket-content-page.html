@@ -4,12 +4,12 @@
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="selenium.base" href="http://10.111.5.153:8888/" />
-<title>verify-folder-inot-present-on-bucket-content-page</title>
+<title>verify-folder-visible-on-bucket-content-page</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">verify-folder-inot-present-on-bucket-content-page</td></tr>
+<tr><td rowspan="1" colspan="3">verify-folder-visible-on-bucket-content-page</td></tr>
 </thead><tbody>
 <tr>
 	<td>setSpeed</td>
@@ -43,17 +43,17 @@
 </tr>
 <tr>
 	<td>waitForVisible</td>
-	<td>//a[@id='table-item-dropdown_${bucket_name}']/i</td>
+	<td>//td/a[@href=&quot;/buckets/${bucket_name}/contents/&quot;]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//a[@id='table-item-dropdown_${bucket_name}']/i</td>
+	<td>//td/a[@href=&quot;/buckets/${bucket_name}/contents/&quot;]</td>
 	<td></td>
 </tr>
 <tr>
-	<td>verifyElementNotPresent</td>
-	<td>//ul[@id='item-dropdown_${bucket_name}']/li/a</td>
+	<td>waitForVisible</td>
+	<td>link=${folder_name}</td>
 	<td></td>
 </tr>
 </tbody></table>
