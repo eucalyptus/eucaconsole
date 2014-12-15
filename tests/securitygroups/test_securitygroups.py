@@ -32,9 +32,10 @@ See http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/testing.html
 from pyramid import testing
 
 from eucaconsole.forms.securitygroups import SecurityGroupForm, SecurityGroupDeleteForm
+from eucaconsole.i18n import _
 from eucaconsole.views import TaggedItemView
 from eucaconsole.views.panels import form_field_row
-from eucaconsole.views.securitygroups import SecurityGroupsView, SecurityGroupView
+from eucaconsole.views.securitygroups import SecurityGroupsView, SecurityGroupView, SecurityGroupsFiltersForm
 
 from tests import BaseViewTestCase, BaseFormTestCase
 
@@ -114,3 +115,43 @@ class DeleteFormTestCase(BaseFormTestCase):
     def test_secure_form(self):
         self.has_field('csrf_token')
 
+
+class SecurityGroupFormTestCaseWithVPCEnabledOnEucalpytus(BaseFormTestCase):
+    form_class = SecurityGroupForm
+    request = testing.DummyRequest()
+    request.session.update({
+        'cloud_type': 'euca',
+        'supported_platforms': ['VPC'],
+    })
+
+    def setUp(self):
+        self.form = self.form_class(self.request)
+
+    def test_security_group_form_vpc_network_choices_with_vpc_enabled_on_eucalyptus(self):
+        self.assertFalse(('None', _(u'No VPC')) in self.form.securitygroup_vpc_network.choices)
+
+
+class SecurityGroupFormTestCaseWithVPCDisabledOnEucalpytus(BaseFormTestCase):
+    form_class = SecurityGroupForm
+    request = testing.DummyRequest()
+    request.session.update({
+        'cloud_type': 'euca',
+        'supported_platforms': [],
+    })
+
+    def setUp(self):
+        self.form = self.form_class(self.request)
+
+    def test_security_group_form_vpc_network_choices_with_vpc_disabled_on_eucalyptus(self):
+        self.assertTrue(('None', _(u'No VPC')) in self.form.securitygroup_vpc_network.choices)
+
+
+class SecurityGroupsFiltersFormTestCaseOnAWS(BaseFormTestCase):
+    form_class = SecurityGroupsFiltersForm
+    request = testing.DummyRequest()
+
+    def setUp(self):
+        self.form = self.form_class(self.request, cloud_type='aws')
+
+    def test_security_groups_filters_form_vpc_id_choices_on_aws(self):
+        self.assertTrue(('None', _(u'No VPC')) in self.form.vpc_id.choices)
