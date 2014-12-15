@@ -64,17 +64,25 @@ angular.module('MagicSearch', [])
             if (key == 8 || key == 46) {
                 search_val = search_val.substring(0, search_val.length-1);
             } else {
-                if (key != 13 && key != 9) {
+                if (key != 13 && key != 9 && key != 27) {
                     search_val = search_val + String.fromCharCode(key);
                 }
+            }
+            if (key == 27) {  // esc, so cancel
+                $timeout(function() {
+                    $('#search-input').trigger('click');
+                });
+                $('#search-input').val('');
+                $scope.facetSelected = undefined;
+                $scope.facetOptions = undefined;
             }
             if (search_val == '') {
                 $scope.filteredObj = $scope.facetsObj;
                 return;
             }
-            if (event.which == 13) {
+            if (key == 13) {  // enter, so accept value
                 // if tag search, treat as regular facet
-                if ($scope.facetSelected == 'tags') {
+                if ($scope.facetSelected && $scope.facetSelected.name == 'tags') {
                     var curr = $scope.currentSearch[$scope.currentSearch.length-1];
                     curr.name = curr.name + '=' + search_val;
                     curr.label[1] = search_val;
@@ -98,10 +106,14 @@ angular.module('MagicSearch', [])
             }
             else {
                 // try filtering facets.. if no facets match, do text search
+                $scope.filteredObj = $scope.facetsObj;
                 filtered = [];
                 for (var i=0; i<$scope.filteredObj.length; i++) {
-                    if ($scope.filteredObj[i].label.toLowerCase().indexOf(search_val) > -1) {
-                        filtered.push($scope.filteredObj[i]);
+                    var facet = $scope.filteredObj[i];
+                    var idx = facet.label.toLowerCase().indexOf(search_val);
+                    if (idx > -1) {
+                        var label = [facet.label.substring(0, idx), facet.label.substring(idx, idx + search_val.length), facet.label.substring(idx + search_val.length)];
+                        filtered.push({'name':facet.name, 'label':label, 'options':facet.options});
                     }
                 }
                 if (filtered.length > 0) {
@@ -132,10 +144,11 @@ angular.module('MagicSearch', [])
         // when facet clicked, add 1st part of facet and set up options
         $scope.facetClicked = function($index, $event, name) {
             $('#search-input').trigger('click');
-            $scope.facetSelected = name;
-            $scope.currentSearch.push({'name':name, 'label':[$scope.facetsObj[$index].label, '']});
+            var facet = $scope.facetsObj[$index];
+            $scope.facetSelected = {'name':facet.name, 'label':[facet.label, '']};
+            //$scope.currentSearch.push({'name':name, 'label':[$scope.facetsObj[$index].label, '']});
             if (name != 'tags') {
-                $scope.facetOptions = $scope.facetsObj[$index].options;
+                $scope.facetOptions = facet.options;
                 $timeout(function() {
                     $('#search-input').trigger('click');
                 });
@@ -147,9 +160,10 @@ angular.module('MagicSearch', [])
         // when option clicked, complete facet and send event
         $scope.optionClicked = function($index, $event, name) {
             $('#search-input').trigger('click');
-            var curr = $scope.currentSearch[$scope.currentSearch.length-1];
+            var curr = $scope.facetSelected;
             curr.name = curr.name + '=' + name;
             curr.label[1] = $scope.facetOptions[$index].label;
+            $scope.currentSearch.push(curr); //{'name':name, 'label':[$scope.facetsObj[$index].label, '']});
             $scope.facetSelected = undefined;
             $scope.facetOptions = undefined;
             $scope.emitQuery();
@@ -193,5 +207,8 @@ angular.module('MagicSearch', [])
                 $scope.$emit('searchUpdated', '');
             }
         };
+        $scope.isMatchLabel = function(label) {
+            return Array.isArray(label);
+        }
     })
 ;

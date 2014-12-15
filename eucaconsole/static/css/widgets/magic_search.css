@@ -9,7 +9,9 @@
 .search-bar .item-list .item { color: #333; background-color: #e6e7e8; margin-right: 8px; }
 .search-bar .item-list .item a { color: white; }
 .search-bar .item-list { position: static; float: left; }
+.search-bar #search-selected { position: static; float: left; background-color: white; color: #444444; }
 .search-bar #search-entry { position: static; float: left; height: 1.5rem; }
 .search-bar #search-input { border: 0px; box-shadow: none; width: 100%; height: 1.5rem; position: static; float: left; padding: 3px; margin: 0; background-color: white; }
+.search-bar .match { color: #8cc63e; }
 .search-bar i.cancel { color: #444444; vertical-align: middle; position: absolute; top: 0.5rem; right: 0.75rem; }
 .search-bar i.cancel:hover { color: darkred; }

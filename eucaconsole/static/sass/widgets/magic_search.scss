@@ -32,6 +32,12 @@
         position: static;
         float: left;
     }
+    #search-selected {
+        position: static;
+        float: left;
+        background-color: white;
+        color: $euca-darkgrey;
+    }
     #search-entry {
         position: static;
         float: left;
@@ -47,6 +53,9 @@
         padding: 3px;
         margin: 0;
         background-color: white;
+    }
+    .match {
+        color: $euca-green;
     }
     i.cancel {
         color: $euca-darkgrey;
