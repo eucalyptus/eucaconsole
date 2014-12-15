@@ -100,7 +100,7 @@ angular.module('MagicSearch', [])
                 // try filtering facets.. if no facets match, do text search
                 filtered = [];
                 for (var i=0; i<$scope.filteredObj.length; i++) {
-                    if ($scope.filteredObj[i].label.indexOf(search_val) > -1) {
+                    if ($scope.filteredObj[i].label.toLowerCase().indexOf(search_val) > -1) {
                         filtered.push($scope.filteredObj[i]);
                     }
                 }
