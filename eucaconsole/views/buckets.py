@@ -639,7 +639,8 @@ class BucketDetailsView(BaseView):
                 location = self.request.route_path('buckets')
             with boto_error_handler(self.request, location):
                 versioning_param = self.request.params.get('versioning_action')
-                self.log_request("Modifying bucket {0} versioning status {1}".format(self.bucket_name, versioning_param))
+                self.log_request("Modifying bucket {0} versioning status {1}".format(
+                    self.bucket.name, versioning_param))
                 versioning_bool = True if versioning_param == 'enable' else False
                 self.bucket.configure_versioning(versioning_bool)
                 msg = '{0} {1}'.format(_(u'Successfully modified versioning status for bucket'), self.bucket.name)
