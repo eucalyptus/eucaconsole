@@ -98,6 +98,7 @@ class BucketsView(LandingPageView):
             bucket_name = self.request.matchdict.get('name')
             s3_conn = self.get_connection(conn_type='s3')
             with boto_error_handler(self.request):
+                self.log_request("Deleting bucket {0}".format(bucket_name))
                 bucket = s3_conn.head_bucket(bucket_name)
                 bucket.delete()
                 msg = '{0} {1}'.format(_(u'Successfully deleted bucket'), bucket_name)
@@ -178,7 +179,7 @@ class BucketXHRView(BaseView):
             return dict(message=_(u"keys must be specified."), errors=[])
         bucket = self.s3_conn.head_bucket(self.bucket_name)
         errors = []
-        self.log_request("Deleting keys from {0} : {1}".format(self.bucket_name, ','.join(keys)))
+        self.log_request("Deleting keys from {0} : {1}".format(self.bucket_name, keys))
         for k in keys.split(','):
             key = bucket.get_key(k, validate=False)
             try:
@@ -352,6 +353,7 @@ class BucketContentsView(LandingPageView):
                     return JSONResponse(status=400, message=_(u"File too large :")+upload_file.filename)
                 upload_file.file.seek(0, 0)  # seek to start
                 bucket_item = bucket.new_key("/".join(subpath))
+                self.log_request("Uploading file {0} to bucket {1}".format(bucket_item.key, bucket_name))
                 bucket_item.set_metadata('Content-Type', upload_file.type)
                 headers = {'Content-Type': upload_file.type}
                 bucket_item.set_contents_from_file(fp=upload_file.file, headers=headers, replace=True)
@@ -408,6 +410,7 @@ class BucketContentsView(LandingPageView):
             new_folder_key = '{0}/{1}/'.format(prefix, folder_name)
             location = self.request.route_path('bucket_contents', name=self.bucket_name, subpath=subpath)
             with boto_error_handler(self.request):
+                self.log_request("Creating folder {0} in bucket {1}".format(new_folder_key, self.bucket_name,))
                 bucket = self.get_bucket(self.request, self.s3_conn, bucket_name=self.bucket_name)
                 new_folder = bucket.new_key(new_folder_key)
                 new_folder.set_contents_from_string('')
@@ -619,6 +622,7 @@ class BucketDetailsView(BaseView):
         if self.bucket and self.details_form.validate():
             location = self.request.route_path('bucket_details', name=self.bucket.name)
             with boto_error_handler(self.request, location):
+                self.log_request("Modifying bucket {0} acl".format(self.bucket.name))
                 self.update_acl(self.request, bucket_object=self.bucket)
                 msg = '{0} {1}'.format(_(u'Successfully modified bucket'), self.bucket.name)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
@@ -635,6 +639,8 @@ class BucketDetailsView(BaseView):
                 location = self.request.route_path('buckets')
             with boto_error_handler(self.request, location):
                 versioning_param = self.request.params.get('versioning_action')
+                self.log_request("Modifying bucket {0} versioning status {1}".format(
+                    self.bucket.name, versioning_param))
                 versioning_bool = True if versioning_param == 'enable' else False
                 self.bucket.configure_versioning(versioning_bool)
                 msg = '{0} {1}'.format(_(u'Successfully modified versioning status for bucket'), self.bucket.name)
@@ -805,6 +811,7 @@ class BucketItemDetailsView(BaseView):
                 ) if self.name_updated else self.request.subpath
             )
             with boto_error_handler(self.request, location):
+                self.log_request("Modifying item {0} in bucket {1}".format(self.bucket_item.name, self.bucket.name))
                 # Update name
                 self.update_name()
                 # Update ACL
@@ -952,6 +959,7 @@ class CreateBucketView(BaseView):
             enable_versioning = self.request.params.get('enable_versioning') == 'y'
             location = self.request.route_path('bucket_details', name=bucket_name)
             with boto_error_handler(self.request, self.request.route_path('buckets')):
+                self.log_request("Creating bucket {0}".format(bucket_name))
                 try:
                     new_bucket = self.s3_conn.create_bucket(bucket_name)
                     BucketDetailsView.update_acl(self.request, bucket_object=new_bucket)
