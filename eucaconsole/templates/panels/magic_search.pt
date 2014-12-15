@@ -27,8 +27,9 @@
                             <a ng-click="facetClicked($index, $event, facet.name)" ng-show="!isMatchLabel(facet.label)">{{ facet.label }}</a>
                             <a ng-click="facetClicked($index, $event, facet.name)" ng-show="isMatchLabel(facet.label)">{{ facet.label[0] }}<span class="match">{{ facet.label[1] }}</span>{{ facet.label[2] }}</a>
                         </li>
-                        <li ng-repeat="option in facetOptions" ng-show="facetSelected">
-                            <a ng-click="optionClicked($index, $event, option.key)">{{ option.label }}</a>
+                        <li ng-repeat="option in filteredOptions" ng-show="facetSelected">
+                            <a ng-click="optionClicked($index, $event, option.key)" ng-show="!isMatchLabel(option.label)">{{ option.label }}</a>
+                            <a ng-click="optionClicked($index, $event, option.key)" ng-show="isMatchLabel(option.label)">{{ option.label[0] }}<span class="match">{{ option.label[1] }}</span>{{ option.label[2] }}</a>
                     </ul>
                 </div>
             </div>

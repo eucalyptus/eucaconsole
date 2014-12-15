@@ -58,15 +58,26 @@ angular.module('MagicSearch', [])
                 }
             });
         };
-        $('#search-input').on('keypress', function(event) {
+        $('#search-input').on('keypress', function($event) {
             var search_val = $('#search-input').val();
-            var key = event.keyCode || event.charCode;
+            var key = $event.keyCode || $event.charCode;
             if (key == 8 || key == 46) {
                 search_val = search_val.substring(0, search_val.length-1);
             } else {
                 if (key != 13 && key != 9 && key != 27) {
                     search_val = search_val + String.fromCharCode(key);
                 }
+            }
+            if (key == 9) {  // tab, so select facet if narrowed down to 1
+                $event.preventDefault();
+                if ($scope.facetSelected == undefined) {
+                    $scope.facetClicked(0, '', $scope.filteredObj[0].name);
+                }
+                else {
+                    $scope.optionClicked(0, '', $scope.filteredOptions[0].key);
+                }
+                $('#search-input').val('');
+                return;
             }
             if (key == 27) {  // esc, so cancel
                 $timeout(function() {
@@ -75,6 +86,7 @@ angular.module('MagicSearch', [])
                 $('#search-input').val('');
                 $scope.facetSelected = undefined;
                 $scope.facetOptions = undefined;
+                return;
             }
             if (search_val == '') {
                 $scope.filteredObj = $scope.facetsObj;
@@ -105,31 +117,53 @@ angular.module('MagicSearch', [])
                 $scope.filteredObj = $scope.facetsObj;
             }
             else {
-                // try filtering facets.. if no facets match, do text search
-                $scope.filteredObj = $scope.facetsObj;
-                filtered = [];
-                for (var i=0; i<$scope.filteredObj.length; i++) {
-                    var facet = $scope.filteredObj[i];
-                    var idx = facet.label.toLowerCase().indexOf(search_val);
-                    if (idx > -1) {
-                        var label = [facet.label.substring(0, idx), facet.label.substring(idx, idx + search_val.length), facet.label.substring(idx + search_val.length)];
-                        filtered.push({'name':facet.name, 'label':label, 'options':facet.options});
+                // try filtering facets/options.. if no facets match, do text search
+                if ($scope.facetSelected == undefined) {
+                    $scope.filteredObj = $scope.facetsObj;
+                    filtered = [];
+                    for (var i=0; i<$scope.filteredObj.length; i++) {
+                        var facet = $scope.filteredObj[i];
+                        var idx = facet.label.toLowerCase().indexOf(search_val);
+                        if (idx > -1) {
+                            var label = [facet.label.substring(0, idx), facet.label.substring(idx, idx + search_val.length), facet.label.substring(idx + search_val.length)];
+                            filtered.push({'name':facet.name, 'label':label, 'options':facet.options});
+                        }
+                    }
+                    if (filtered.length > 0) {
+                        $timeout(function() {
+                            $scope.filteredObj = filtered;
+                        }, 0.1);
+                    }
+                    else {
+                        $scope.$emit('textSearch', search_val, $scope.filter_keys);
                     }
                 }
-                if (filtered.length > 0) {
-                    $timeout(function() {
-                        $scope.filteredObj = filtered;
-                    }, 0.1);
-                }
-                else {
-                    $scope.$emit('textSearch', search_val, $scope.filter_keys);
+                else {  // assume option search
+                    $scope.filteredOptions = $scope.facetOptions;
+                    filtered = [];
+                    for (var i=0; i<$scope.filteredOptions.length; i++) {
+                        var option = $scope.filteredOptions[i];
+                        var idx = option.label.toLowerCase().indexOf(search_val);
+                        if (idx > -1) {
+                            var label = [option.label.substring(0, idx), option.label.substring(idx, idx + search_val.length), option.label.substring(idx + search_val.length)];
+                            filtered.push({'key':option.key, 'label':label});
+                        }
+                    }
+                    if (filtered.length > 0) {
+                        $timeout(function() {
+                            $scope.filteredOptions = filtered;
+                        }, 0.1);
+                    }
+                    else {
+                        $scope.$emit('textSearch', search_val, $scope.filter_keys);
+                    }
                 }
             }
         });
         // enable text entry when mouse clicked anywhere in search box
-        $('#search-main-area').on("click", function(event) {
+        $('#search-main-area').on("click", function($event) {
             console.log("clicked in main area");
-            if ($(event.target).is("#search-input")) {
+            if ($($event.target).is("#search-input")) {
                 return;
             }
             var searchbox = $('#search-input')
@@ -144,18 +178,19 @@ angular.module('MagicSearch', [])
         // when facet clicked, add 1st part of facet and set up options
         $scope.facetClicked = function($index, $event, name) {
             $('#search-input').trigger('click');
-            var facet = $scope.facetsObj[$index];
-            $scope.facetSelected = {'name':facet.name, 'label':[facet.label, '']};
-            //$scope.currentSearch.push({'name':name, 'label':[$scope.facetsObj[$index].label, '']});
+            var facet = $scope.filteredObj[$index];
+            var label = facet.label;
+            if (Array.isArray(label)) {
+                label = label.join('');
+            }
+            $scope.facetSelected = {'name':facet.name, 'label':[label, '']};
             if (name != 'tags') {
-                $scope.facetOptions = facet.options;
+                $scope.filteredOptions = $scope.facetOptions = facet.options;
                 $timeout(function() {
                     $('#search-input').trigger('click');
                 });
             }
-            else {
-                $('#search-input').focus();
-            }
+            $('#search-input').focus();
         };
         // when option clicked, complete facet and send event
         $scope.optionClicked = function($index, $event, name) {
