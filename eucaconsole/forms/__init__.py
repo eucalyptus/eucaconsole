@@ -406,7 +406,7 @@ class ChoicesManager(object):
         from ..views import TaggedItemView
         choices = []
         if add_blank:
-            choices = [('', _(u'No VPC'))]
+            choices = [('None', _(u'No VPC'))]
         vpc_network_list = vpc_networks or []
         if not vpc_network_list and self.conn is not None:
             vpc_network_list = self.conn.get_all_vpcs()

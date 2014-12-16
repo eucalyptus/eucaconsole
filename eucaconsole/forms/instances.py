@@ -135,6 +135,8 @@ class LaunchInstanceForm(BaseSecureForm):
         self.image = image
         self.securitygroups = securitygroups
         self.cloud_type = request.session.get('cloud_type', 'euca')
+        from ..views import BaseView
+        self.is_vpc_supported = BaseView.is_vpc_supported(request)
         self.set_error_messages()
         self.monitoring_enabled.data = True
         self.choices_manager = ChoicesManager(conn=conn)
@@ -158,7 +160,10 @@ class LaunchInstanceForm(BaseSecureForm):
         self.instance_type.choices = self.choices_manager.instance_types(cloud_type=self.cloud_type, add_blank=False)
         region = request.session.get('region')
         self.zone.choices = self.get_availability_zone_choices(region)
-        self.vpc_network.choices = self.vpc_choices_manager.vpc_networks()
+        if self.cloud_type == 'euca' and self.is_vpc_supported:
+            self.vpc_network.choices = self.vpc_choices_manager.vpc_networks(add_blank=False)
+        else:
+            self.vpc_network.choices = self.vpc_choices_manager.vpc_networks()
         self.vpc_subnet.choices = self.vpc_choices_manager.vpc_subnets()
         self.associate_public_ip_address.choices = self.get_associate_public_ip_address_choices()
         self.keypair.choices = self.get_keypair_choices()
@@ -174,6 +179,8 @@ class LaunchInstanceForm(BaseSecureForm):
         # Set the defailt option to be the first choice
         if len(self.vpc_subnet.choices) > 1:
             self.vpc_subnet.data = self.vpc_subnet.choices[0][0]
+        if len(self.vpc_network.choices) > 1:
+            self.vpc_network.data = self.vpc_network.choices[0][0]
 
     def set_error_messages(self):
         self.number.error_msg = self.number_error_msg
@@ -340,7 +347,8 @@ class InstancesFiltersForm(BaseSecureForm):
     subnet_id = wtforms.SelectMultipleField(label=_(u'VPC subnet'))
 
     def __init__(self, request, ec2_conn=None, autoscale_conn=None,
-                 iam_conn=None, vpc_conn=None, cloud_type='euca', **kwargs):
+                 iam_conn=None, vpc_conn=None,
+                 cloud_type='euca', **kwargs):
         super(InstancesFiltersForm, self).__init__(request, **kwargs)
         self.request = request
         self.cloud_type = cloud_type
@@ -357,12 +365,13 @@ class InstancesFiltersForm(BaseSecureForm):
             add_blank=False, no_keypair_filter_option=True)
         self.security_group.choices = self.ec2_choices_manager.security_groups(add_blank=False)
         self.scaling_group.choices = self.autoscale_choices_manager.scaling_groups(add_blank=False)
-        if cloud_type=='aws':
+        if cloud_type == 'aws':
             del self.roles
         else:
             self.roles.choices = self.iam_choices_manager.roles(add_blank=False)
         self.vpc_id.choices = self.vpc_choices_manager.vpc_networks(add_blank=False)
-        self.vpc_id.choices.append(('None', _(u'No VPC')))
+        if cloud_type == 'aws':
+            self.vpc_id.choices.append(('None', _(u'No VPC')))
         self.vpc_id.choices = sorted(self.vpc_id.choices)
         self.subnet_id.choices = self.vpc_choices_manager.vpc_subnets(add_blank=False)
 

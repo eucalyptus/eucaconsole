@@ -98,7 +98,9 @@
                             <p class="description" i18n:translate="">
                                 Please specify your network and security settings.
                             </p>
-                            ${panel('form_field', field=create_form['associate_public_ip_address'], leftcol_width=4, rightcol_width=8)}
+                            <div tal:condition="is_vpc_supported">
+                                ${panel('form_field', field=create_form['associate_public_ip_address'], leftcol_width=4, rightcol_width=8)}
+                            </div>
                             <div tal:condition="not preset">
                                 ${panel('form_field', field=create_form['keypair'], leftcol_width=4, rightcol_width=8, ng_attrs={'model': 'keyPair', 'options': 'k as v for (k, v) in keyPairChoices'})}
                                 <div class="row">

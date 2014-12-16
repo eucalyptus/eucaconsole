@@ -35,6 +35,7 @@ from eucaconsole.forms.scalinggroups import (
     BaseScalingGroupForm, ScalingGroupCreateForm, ScalingGroupEditForm, ScalingGroupDeleteForm,
     ScalingGroupPolicyCreateForm, ScalingGroupPolicyDeleteForm,
     ScalingGroupInstancesMarkUnhealthyForm, ScalingGroupInstancesTerminateForm)
+from eucaconsole.i18n import _
 from eucaconsole.views.panels import form_field_row
 from eucaconsole.views.scalinggroups import ScalingGroupsView, BaseScalingGroupView, ScalingGroupView
 
@@ -228,3 +229,32 @@ class ScalingGroupInstancesTerminateFormTestCase(BaseFormTestCase):
     def test_secure_form(self):
         self.has_field('csrf_token')
 
+
+class BaseScalingGroupFormTestCaseWithVPCEnabledOnEucalpytus(BaseFormTestCase):
+    form_class = BaseScalingGroupForm
+    request = testing.DummyRequest()
+    request.session.update({
+        'cloud_type': 'euca',
+        'supported_platforms': ['VPC'],
+    })
+
+    def setUp(self):
+        self.form = self.form_class(self.request)
+
+    def test_scaling_group_form_vpc_network_choices_with_vpc_enabled_on_eucalyptus(self):
+        self.assertFalse(('None', _(u'No VPC')) in self.form.vpc_network.choices)
+
+
+class BaseScalingGroupFormTestCaseWithVPCDisabledOnEucalpytus(BaseFormTestCase):
+    form_class = BaseScalingGroupForm
+    request = testing.DummyRequest()
+    request.session.update({
+        'cloud_type': 'euca',
+        'supported_platforms': [],
+    })
+
+    def setUp(self):
+        self.form = self.form_class(self.request)
+
+    def test_scaling_group_form_vpc_network_choices_with_vpc_disabled_on_eucalyptus(self):
+        self.assertTrue(('None', _(u'No VPC')) in self.form.vpc_network.choices)

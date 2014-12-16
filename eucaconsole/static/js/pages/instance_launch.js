@@ -18,7 +18,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.summarySection = $('.summary');
         $scope.instanceNumber = 1;
         $scope.instanceNames = [];
-        $scope.instanceVPC = '';
+        $scope.instanceVPC = 'None';
         $scope.instanceVPCName = '';
         $scope.subnetVPC = 'None';
         $scope.vpcSubnetList = {};
@@ -31,6 +31,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.securityGroups = [];
         $scope.securityGroupsRules = {};
         $scope.securityGroupCollection = {};
+        $scope.securityGroupVPC = 'None';
         $scope.securityGroupJsonEndpoint = '';
         $scope.securityGroupsRulesJsonEndpoint = '';
         $scope.selectedGroupRules = {};
@@ -59,6 +60,8 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             $scope.securityGroupChoices = options['securitygroups_choices'];
             $scope.vpcSubnetList = options['vpc_subnet_choices'];
             $scope.roleList = options['role_choices'];
+            $scope.instanceVPC = options['default_vpc_network'];
+            $scope.securityGroupVPC = options['default_vpc_network'];
             $scope.securityGroupJsonEndpoint = options['securitygroups_json_endpoint'];
             $scope.securityGroupsRulesJsonEndpoint = options['securitygroups_rules_json_endpoint'];
             $scope.imageJsonURL = options['image_json_endpoint'];
@@ -94,6 +97,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             var lastVPC = Modernizr.localstorage && localStorage.getItem('lastvpc_inst');
             if (lastVPC != null && $('#vpc_network option[value=' + lastVPC +']').length > 0) {
                 $scope.instanceVPC = lastVPC;
+                $scope.securityGroupVPC = lastVPC;
             }
             var lastKeyPair = Modernizr.localstorage && localStorage.getItem('lastkeypair_inst');
             if (lastKeyPair != null && $scope.keyPairChoices[lastKeyPair] !== undefined) {
@@ -320,7 +324,12 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                     } else if (!!modalButton) {
                         modalButton.focus();
                     }
-               }
+                }
+                // Handle the angular and foundation conflict when setting the select options after the dialog opens
+                if( $('#securitygroup_vpc_network').children('option').first().text() == '' ){
+                    $('#securitygroup_vpc_network').children('option').first().remove();
+                    $('#securitygroup_vpc_network option[value="' + $scope.securityGroupVPC + '"]').prop('selected', true);
+                }
             });
             $(document).on('submit', '[data-reveal] form', function () {
                 // When a dialog is submitted, display the progress button status

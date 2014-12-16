@@ -5,8 +5,8 @@
  */
 
 // Scaling Group wizard includes the AutoScale Tag Editor
-angular.module('ScalingGroupWizard', ['AutoScaleTagEditor'])
-    .controller('ScalingGroupWizardCtrl', function ($scope, $timeout) {
+angular.module('ScalingGroupWizard', ['AutoScaleTagEditor','EucaConsoleUtils'])
+    .controller('ScalingGroupWizardCtrl', function ($scope, $timeout, eucaUnescapeJson) {
         $scope.form = $('#scalinggroup-wizard-form');
         $scope.scalingGroupName = '';
         $scope.launchConfig = '';
@@ -43,15 +43,16 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor'])
                 $scope.launchConfig = $('#hidden_launch_config_input').val();
             }
         };
-        $scope.initController = function (launchConfigCount, vpcSubnetJson) {
-            vpcSubnetJson = vpcSubnetJson.replace(/__apos__/g, "\'").replace(/__dquote__/g, '\\"').replace(/__bslash__/g, "\\");
-            $scope.vpcSubnetList = JSON.parse(vpcSubnetJson);
+        $scope.initController = function (optionsJson) {
+            var options = JSON.parse(eucaUnescapeJson(optionsJson));
+            $scope.vpcSubnetList = options['vpc_subnet_choices_json'];
+            $scope.vpcNetwork = options['default_vpc_network'];
             $scope.initChosenSelectors();
             $scope.setInitialValues();
             $scope.checkLaunchConfigParam();
             $scope.setWatcher();
             $(document).ready(function () {
-                $scope.displayLaunchConfigWarning(launchConfigCount);
+                $scope.displayLaunchConfigWarning(options['launchconfigs_count']);
             });
             // Timeout is needed for the chosen widget to initialize
             $timeout(function () {
@@ -119,7 +120,7 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor'])
         $scope.adjustVPCSubnetSelectAbide = function () {
             // If VPC option is not chosen, remove the 'required' attribute
             // from the VPC subnet select field and set the value to be 'None'
-            if ($scope.vpcNetwork == '') {
+            if ($scope.vpcNetwork == 'None') {
                 $('#vpc_subnet').removeAttr('required');
                 $('#vpc_subnet').find('option').first().attr("selected",true);
             } else {
