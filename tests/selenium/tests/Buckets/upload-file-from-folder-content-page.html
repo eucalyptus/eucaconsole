@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="http://10.111.5.153:8888/" />
+<title>upload-file-from-folder-content-page</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">upload-file-from-folder-content-page</td></tr>
+</thead><tbody>
+<tr>
+	<td>setSpeed</td>
+	<td>500</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertVisible</td>
+	<td>id=resource-menu-dashboard</td>
+	<td></td>
+</tr>
+<tr>
+	<td>setTimeout</td>
+	<td>120000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=resource-menu-dashboard</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeEval</td>
+	<td>window.document.domain</td>
+	<td>host</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${host}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//span[@id=&quot;tile-item-dropdown_buckets&quot;]/../div/a/i</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForVisible</td>
+	<td>//td/a[@href=&quot;/buckets/${bucket_name}/contents/&quot;]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//td/a[@href=&quot;/buckets/${bucket_name}/contents/&quot;]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForVisible</td>
+	<td>//tr/td/a[@href=&quot;/buckets/${bucket_name}/contents/${folder_name}%2F&quot;]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//tr/td/a[@href=&quot;/buckets/${bucket_name}/contents/${folder_name}%2F&quot;]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=upload-file-btn</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForPopUp</td>
+	<td></td>
+	<td></td>
+</tr>
+<tr>
+	<td>selectPopUp</td>
+	<td></td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForVisible</td>
+	<td>id=upload-file-form</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=files</td>
+	<td>${file}</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//div[@id='advance-section']/h6/a/i</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAt</td>
+	<td>id=share_account_chosen</td>
+	<td></td>
+</tr>
+<tr>
+	<td>sendKeys</td>
+	<td>//input[@type=&quot;text&quot;]</td>
+	<td>all users</td>
+</tr>
+<tr>
+	<td>clickAt</td>
+	<td>css=li.active-result.highlighted</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=add-s3acl-btn</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=create-bucket-submit-button</td>
+	<td></td>
+</tr>
+</tbody></table>
+</body>
+</html>

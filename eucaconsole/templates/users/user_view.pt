@@ -203,7 +203,7 @@
                                     <div class="row controls-wrapper controls_new_password">
                                         <div class="small-12 columns field">
                                             <label for="top-label" class="left">${user_form.new_password.label.text}<span class="req">*</span></label>
-                                            ${structure:user_form.new_password}
+                                            ${structure:user_form.new_password(autocomplete="off")}
                                         </div>
                                     </div>
                                     <div class="row controls-wrapper controls_new_password2">
