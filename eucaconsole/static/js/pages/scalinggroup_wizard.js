@@ -16,7 +16,6 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor'])
         $scope.desiredCapacity = 1;
         $scope.maxSize = 1;
         $scope.urlParams = $.url().param();
-        $scope.launchConfig = '';
         $scope.vpcNetwork = '';
         $scope.vpcNetworkName = '';
         $scope.vpcSubnets = [];

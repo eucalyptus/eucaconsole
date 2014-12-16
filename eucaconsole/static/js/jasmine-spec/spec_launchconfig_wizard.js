@@ -1,5 +1,5 @@
 /**
- * @fileOverview Jasmine Unittest for Instance Launch JS 
+ * @fileOverview Jasmine Unittest for Launchconfig Wizard JS 
  * @requires Jasmine, AngularJS mock
  *
  */

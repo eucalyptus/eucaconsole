@@ -29,18 +29,21 @@ module.exports = function(config) {
       'static/js/thirdparty/jasmine/jasmine-jquery.js',
       'static/js/pages/custom_filters.js',
       'static/js/widgets/tag_editor.js',
+      'static/js/widgets/autoscale_tag_editor.js',
       'static/js/widgets/bdmapping_editor.js',
       'static/js/widgets/image_picker.js',
       'static/js/widgets/securitygroup_rules.js',
       'static/js/pages/keypair.js',
       'static/js/pages/instance_launch.js',
       'static/js/pages/launchconfig_wizard.js',
+      'static/js/pages/scalinggroup_wizard.js',
       'static/js/jasmine-spec/SpecHelper.js',
       'static/js/jasmine-spec/spec_security_group_rules.js',
       'static/js/jasmine-spec/spec_keypair.js',
       'static/js/jasmine-spec/spec_tag_editor.js',
       'static/js/jasmine-spec/spec_instance_launch.js',
-      'static/js/jasmine-spec/spec_launchconfig_wizard.js'
+      'static/js/jasmine-spec/spec_launchconfig_wizard.js',
+      'static/js/jasmine-spec/spec_scalinggroup_wizard.js'
     ],
 
 
