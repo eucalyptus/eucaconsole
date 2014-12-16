@@ -41,6 +41,7 @@ module.exports = function(config) {
       'static/js/jasmine-spec/spec_security_group_rules.js',
       'static/js/jasmine-spec/spec_keypair.js',
       'static/js/jasmine-spec/spec_tag_editor.js',
+      'static/js/jasmine-spec/spec_autoscale_tag_editor.js',
       'static/js/jasmine-spec/spec_instance_launch.js',
       'static/js/jasmine-spec/spec_launchconfig_wizard.js',
       'static/js/jasmine-spec/spec_scalinggroup_wizard.js'
