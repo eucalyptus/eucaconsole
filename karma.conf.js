@@ -36,6 +36,7 @@ module.exports = function(config) {
       'static/js/widgets/policy_list.js',
       'static/js/widgets/quotas.js',
       'static/js/widgets/s3_metadata_editor.js',
+      'static/js/widgets/s3_sharing_panel.js',
       'static/js/widgets/securitygroup_rules.js',
       'static/js/pages/keypair.js',
       'static/js/pages/instance_launch.js',
@@ -51,6 +52,7 @@ module.exports = function(config) {
       'static/js/jasmine-spec/spec_policy_list.js',
       'static/js/jasmine-spec/spec_quotas.js',
       'static/js/jasmine-spec/spec_s3_metadata_editor.js',
+      'static/js/jasmine-spec/spec_s3_sharing_panel.js',
       'static/js/jasmine-spec/spec_instance_launch.js',
       'static/js/jasmine-spec/spec_launchconfig_wizard.js',
       'static/js/jasmine-spec/spec_scalinggroup_wizard.js'
