@@ -142,6 +142,7 @@ angular.module('MagicSearch', [])
                     }
                     else {
                         $scope.$emit('textSearch', search_val, $scope.filter_keys);
+                        $(document).foundation('dropdown', 'closeall');
                     }
                 }
                 else {  // assume option search
@@ -162,6 +163,7 @@ angular.module('MagicSearch', [])
                     }
                     else {
                         $scope.$emit('textSearch', search_val, $scope.filter_keys);
+                        $(document).foundation('dropdown', 'closeall');
                     }
                 }
             }
@@ -172,7 +174,7 @@ angular.module('MagicSearch', [])
         });
         // when facet clicked, add 1st part of facet and set up options
         $scope.facetClicked = function($index, $event, name) {
-            $('#search-input').trigger('click');
+            $(document).foundation('dropdown', 'closeall');
             var facet = $scope.filteredObj[$index];
             var label = facet.label;
             if (Array.isArray(label)) {
@@ -189,7 +191,7 @@ angular.module('MagicSearch', [])
         };
         // when option clicked, complete facet and send event
         $scope.optionClicked = function($index, $event, name) {
-            $('#search-input').trigger('click');
+            $(document).foundation('dropdown', 'closeall');
             var curr = $scope.facetSelected;
             curr.name = curr.name + '=' + name;
             curr.label[1] = $scope.facetOptions[$index].label;
