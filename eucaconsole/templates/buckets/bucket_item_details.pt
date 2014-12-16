@@ -38,7 +38,7 @@
                             <a href="${item_download_url}" id="download-action" i18n:translate="">Download</a>
                         </li>
                         <li>
-                            <a ng-click="saveKey('${bucket_name}', '${bucket_item}')" i18n:translate="">Copy object</a>
+                            <a ng-click="saveKey('${bucket_name}', '${key_name}')" i18n:translate="">Copy object</a>
                         </li>
                         <li>
                             <a ng-click="confirmMakePublic()" i18n:translate="">Make public</a>

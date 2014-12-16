@@ -35,8 +35,10 @@ from pyramid.httpexceptions import HTTPNotFound
 from eucaconsole.forms import BaseSecureForm
 from eucaconsole.forms.instances import (
     StartInstanceForm, StopInstanceForm, RebootInstanceForm, TerminateInstanceForm,
-    AttachVolumeForm, DetachVolumeForm, LaunchInstanceForm, InstanceCreateImageForm
+    AttachVolumeForm, DetachVolumeForm, LaunchInstanceForm, InstanceCreateImageForm,
+    InstancesFiltersForm
 )
+from eucaconsole.i18n import _
 from eucaconsole.views import TaggedItemView
 from eucaconsole.views.instances import InstancesView, InstanceView
 
@@ -193,3 +195,43 @@ class InstanceCreateImageFormTestCase(BaseFormTestCase):
         except ImportError:
             pass
 
+
+class InstanceLaunchFormTestCaseWithVPCEnabledOnEucalpytus(BaseFormTestCase):
+    form_class = LaunchInstanceForm
+    request = testing.DummyRequest()
+    request.session.update({
+        'cloud_type': 'euca',
+        'supported_platforms': ['VPC'],
+    })
+
+    def setUp(self):
+        self.form = self.form_class(self.request)
+
+    def test_launch_instance_form_vpc_network_choices_with_vpc_enabled_on_eucalyptus(self):
+        self.assertFalse(('None', _(u'No VPC')) in self.form.vpc_network.choices)
+
+
+class InstanceLaunchFormTestCaseWithVPCDisabledOnEucalpytus(BaseFormTestCase):
+    form_class = LaunchInstanceForm
+    request = testing.DummyRequest()
+    request.session.update({
+        'cloud_type': 'euca',
+        'supported_platforms': [],
+    })
+
+    def setUp(self):
+        self.form = self.form_class(self.request)
+
+    def test_launch_instance_form_vpc_network_choices_with_vpc_disabled_on_eucalyptus(self):
+        self.assertTrue(('None', _(u'No VPC')) in self.form.vpc_network.choices)
+
+
+class InstancesFiltersFormTestCaseOnAWS(BaseFormTestCase):
+    form_class = InstancesFiltersForm
+    request = testing.DummyRequest()
+
+    def setUp(self):
+        self.form = self.form_class(self.request, cloud_type='aws')
+
+    def test_instances_filters_form_vpc_id_choices_on_aws(self):
+        self.assertTrue(('None', _(u'No VPC')) in self.form.vpc_id.choices)

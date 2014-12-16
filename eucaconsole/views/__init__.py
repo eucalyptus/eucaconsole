@@ -278,6 +278,19 @@ class BaseView(object):
         auth = EucaAuthenticator(host, port, validate_certs=validate_certs, ca_certs=ca_certs_file)
         return auth
 
+    def get_account_attributes(self, attribute_names=None):
+        self.__init__(self.request)
+        attribute_names = attribute_names or ['supported-platforms']
+        conn = self.get_connection()
+        if conn:
+            with boto_error_handler(self.request):
+                attributes = conn.describe_account_attributes(attribute_names=attribute_names)
+                return attributes[0].attribute_values
+
+    @staticmethod
+    def is_vpc_supported(request):
+        return 'VPC' in request.session.get('supported_platforms', [])
+
     @staticmethod
     def escape_braces(s):
         if type(s) in [str, unicode] or isinstance(s, Markup) or isinstance(s, TranslationString):

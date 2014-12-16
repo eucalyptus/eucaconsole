@@ -78,7 +78,7 @@ angular.module('BucketItemDetailsPage', ['S3SharingPanel', 'S3MetadataEditor', '
         };
         $scope.saveKey = function (bucket_name, bucket_item) {
             $('.actions-menu').trigger('click');
-            Modernizr.sessionstorage && sessionStorage.setItem('copy-object-buffer', bucket_name + '/' + bucket_item.name);
+            Modernizr.sessionstorage && sessionStorage.setItem('copy-object-buffer', bucket_name + '/' + bucket_item);
         };
         $scope.confirmDelete = function (name) {
             $('.actions-menu').trigger('click');

@@ -69,6 +69,7 @@ class BaseInstanceView(BaseView):
         super(BaseInstanceView, self).__init__(request)
         self.conn = self.get_connection()
         self.vpc_conn = self.get_connection(conn_type='vpc')
+        self.is_vpc_supported = BaseView.is_vpc_supported(request)
 
     def get_instance(self, instance_id=None):
         instance_id = instance_id or self.request.matchdict.get('id')
@@ -160,6 +161,7 @@ class InstancesView(LandingPageView, BaseInstanceView):
             batch_terminate_form=self.batch_terminate_form,
             associate_ip_form=self.associate_ip_form,
             disassociate_ip_form=self.disassociate_ip_form,
+            is_vpc_supported=self.is_vpc_supported,
         )
 
     @view_config(route_name='instances', renderer='../templates/instances/instances.pt')
@@ -190,6 +192,9 @@ class InstancesView(LandingPageView, BaseInstanceView):
             cloud_type=self.cloud_type, formdata=self.request.params or None)
         if BaseView.has_role_access(self.request):
             del filters_form.roles
+        if not self.is_vpc_supported:
+            del filters_form.vpc_id
+            del filters_form.subnet_id
         self.render_dict.update(dict(
             filter_fields=True,
             filter_keys=self.filter_keys,
@@ -562,6 +567,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
             role=self.role,
             running_create=self.running_create,
             controller_options_json=self.get_controller_options_json(),
+            is_vpc_supported=self.is_vpc_supported,
         )
 
     @view_config(route_name='instance_view', renderer=VIEW_TEMPLATE, request_method='GET')
@@ -972,6 +978,7 @@ class InstanceLaunchView(BaseInstanceView, BlockDeviceMappingItemView):
             'keypair_choices': dict(self.launch_form.keypair.choices),
             'role_choices': dict(self.launch_form.role.choices),
             'vpc_subnet_choices': self.get_vpc_subnets(),
+            'default_vpc_network': self.get_default_vpc_network(),
             'securitygroups_json_endpoint': self.request.route_path('securitygroups_json'),
             'securitygroups_rules_json_endpoint': self.request.route_path('securitygroups_rules_json'),
             'image_json_endpoint': self.request.route_path('image_json', id='_id_'),
@@ -987,6 +994,7 @@ class InstanceLaunchView(BaseInstanceView, BlockDeviceMappingItemView):
             snapshot_choices=self.get_snapshot_choices(),
             security_group_placeholder_text=_(u'Select...'),
             controller_options_json=controller_options_json,
+            is_vpc_supported=self.is_vpc_supported,
         )
 
     @view_config(route_name='instance_create', renderer=TEMPLATE, request_method='GET')
@@ -1009,6 +1017,8 @@ class InstanceLaunchView(BaseInstanceView, BlockDeviceMappingItemView):
             instance_type = self.request.params.get('instance_type', 'm1.small')
             availability_zone = self.request.params.get('zone') or None
             vpc_network = self.request.params.get('vpc_network') or None
+            if vpc_network == 'None':
+                vpc_network = None
             vpc_subnet = self.request.params.get('vpc_subnet') or None
             associate_public_ip_address = self.request.params.get('associate_public_ip_address')
             if associate_public_ip_address == 'true':
@@ -1105,6 +1115,22 @@ class InstanceLaunchView(BaseInstanceView, BlockDeviceMappingItemView):
                         cidr_block=vpc_subnet.cidr_block,
                     ))
         return subnets
+
+    def get_default_vpc_network(self):
+        default_vpc = self.request.session.get('default_vpc', [])
+        if self.is_vpc_supported:
+            if 'none' in default_vpc or 'None' in default_vpc:
+                if self.cloud_type == 'aws':
+                    return 'None'
+                # for euca, return the first vpc on the list
+                if self.vpc_conn:
+                    with boto_error_handler(self.request):
+                        vpc_networks = self.vpc_conn.get_all_vpcs()
+                        if vpc_networks:
+                            return vpc_networks[0].id
+            else:
+                return default_vpc[0]
+        return 'None'
 
 
 class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
