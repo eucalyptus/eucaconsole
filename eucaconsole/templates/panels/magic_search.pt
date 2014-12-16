@@ -17,7 +17,7 @@
                            title="Remove facet" i18n:translate="title"><i class="fi-x"></i></a>
                     </span>
                 </div>
-                <span id="search-selected" class="label" ng-show="facetSelected">
+                <span id="search-selected" class="label" ng-cloak="" ng-show="facetSelected">
                     {{ facetSelected.label[0] }}:
                 </span>
                 <div id="search-entry">

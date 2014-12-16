@@ -71,9 +71,11 @@ angular.module('MagicSearch', [])
             if (key == 9) {  // tab, so select facet if narrowed down to 1
                 $event.preventDefault();
                 if ($scope.facetSelected == undefined) {
+                    if ($scope.filteredObj.length != 1) return;
                     $scope.facetClicked(0, '', $scope.filteredObj[0].name);
                 }
                 else {
+                    if ($scope.filteredOptions.length != 1) return;
                     $scope.optionClicked(0, '', $scope.filteredOptions[0].key);
                 }
                 $('#search-input').val('');
@@ -86,6 +88,7 @@ angular.module('MagicSearch', [])
                 $('#search-input').val('');
                 $scope.facetSelected = undefined;
                 $scope.facetOptions = undefined;
+                $scope.filteredOptions = $scope.facetOptions;
                 return;
             }
             if (search_val == '') {
