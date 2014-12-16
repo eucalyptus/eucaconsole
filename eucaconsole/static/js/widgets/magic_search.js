@@ -78,16 +78,19 @@ angular.module('MagicSearch', [])
                     if ($scope.filteredOptions.length != 1) return;
                     $scope.optionClicked(0, '', $scope.filteredOptions[0].key);
                 }
-                $('#search-input').val('');
+                $timeout(function() {
+                    $('#search-input').val('');
+                });
                 return;
             }
-            if (key == 27) {  // esc, so cancel
+            if (key == 27) {  // esc, so cancel and reset everthing
                 $timeout(function() {
                     $('#search-input').trigger('click');
+                    $('#search-input').val('');
                 });
-                $('#search-input').val('');
                 $scope.facetSelected = undefined;
                 $scope.facetOptions = undefined;
+                $scope.filteredObj = $scope.facetsObj;
                 $scope.filteredOptions = $scope.facetOptions;
                 return;
             }
@@ -165,18 +168,7 @@ angular.module('MagicSearch', [])
         });
         // enable text entry when mouse clicked anywhere in search box
         $('#search-main-area').on("click", function($event) {
-            console.log("clicked in main area");
-            if ($($event.target).is("#search-input")) {
-                return;
-            }
-            var searchbox = $('#search-input')
-            searchbox.trigger("focus");
-            //var pos = searchbox.offset();
-            //event = $.Event('click');
-            //event.clientX = pos.left;
-            //event.clientY = pos.top;
-            //$('#facet-drop').trigger(event);
-            //return false;
+            $('#search-input').trigger("focus");
         });
         // when facet clicked, add 1st part of facet and set up options
         $scope.facetClicked = function($index, $event, name) {
