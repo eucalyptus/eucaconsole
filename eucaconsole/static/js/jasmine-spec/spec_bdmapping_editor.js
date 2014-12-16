@@ -1,5 +1,5 @@
 /**
- * @fileOverview Jasmine Unittest for Launchconfig Wizard JS 
+ * @fileOverview Jasmine Unittest for Block Device Mapping Editor JS 
  * @requires Jasmine, AngularJS mock
  *
  */

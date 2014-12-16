@@ -43,6 +43,7 @@ module.exports = function(config) {
       'static/js/jasmine-spec/spec_autoscale_tag_editor.js',
       'static/js/jasmine-spec/spec_tag_editor.js',
       'static/js/jasmine-spec/spec_bdmapping_editor.js',
+      'static/js/jasmine-spec/spec_image_picker.js',
       'static/js/jasmine-spec/spec_instance_launch.js',
       'static/js/jasmine-spec/spec_launchconfig_wizard.js',
       'static/js/jasmine-spec/spec_scalinggroup_wizard.js'
