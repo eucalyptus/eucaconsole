@@ -10,12 +10,11 @@
     height: auto;
     min-height: 2.0rem;
     i.fi-filter {
-        position: absolute;
-        //float: left;
-        padding: 3px;
-        margin-left: 3px;
         color: $euca-darkgrey;
         vertical-align: middle;
+        position: absolute;
+        top: 0.5rem;
+        left: 0.75rem;
     }
     #search-main-area {
         position: relative;
@@ -55,7 +54,7 @@
         background-color: white;
     }
     .match {
-        color: $euca-green;
+        font-weight: bold;
     }
     i.cancel {
         color: $euca-darkgrey;

@@ -58,7 +58,7 @@ angular.module('MagicSearch', [])
                 }
             });
         };
-        $('#search-input').on('keypress', function($event) {
+        $('#search-input').on('keydown', function($event) {
             var search_val = $('#search-input').val();
             var key = $event.keyCode || $event.charCode;
             if (key == 8 || key == 46) {
@@ -77,6 +77,10 @@ angular.module('MagicSearch', [])
                 else {
                     if ($scope.filteredOptions.length != 1) return;
                     $scope.optionClicked(0, '', $scope.filteredOptions[0].key);
+                    $scope.facetSelected = undefined;
+                    $scope.filteredObj = $scope.facetsObj;
+                    $scope.facetOptions = undefined;
+                    $scope.filteredOptions = $scope.facetOptions;
                 }
                 $timeout(function() {
                     $('#search-input').val('');
@@ -187,6 +191,9 @@ angular.module('MagicSearch', [])
                     $('#search-input').trigger('click');
                 });
             }
+            $timeout(function() {
+                $('#search-input').val('');
+            });
             $('#search-input').focus();
         };
         // when option clicked, complete facet and send event
@@ -199,6 +206,9 @@ angular.module('MagicSearch', [])
             $scope.facetSelected = undefined;
             $scope.facetOptions = undefined;
             $scope.emitQuery();
+            $timeout(function() {
+                $('#search-input').trigger('click');
+            });
         };
         // send event with new query string
         $scope.emitQuery = function(removed) {

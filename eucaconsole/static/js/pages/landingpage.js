@@ -259,14 +259,19 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch'])
             if (url.indexOf("?") > -1) {
                 url = url.split("?")[0];
             }
-            url = url + "?" + query;
+            if (query.length > 0) {
+                url = url + "?" + query;
+            }
             window.history.pushState(query, "", url);
             // update json endpont and refresh table
             url = $scope.jsonEndpoint;
             if (url.indexOf("?") > -1) {
                 url = url.split("?")[0];
             }
-            $scope.jsonEndpoint = url + "?" + query;
+            if (query.length > 0) {
+                url = url + "?" + query;
+            }
+            $scope.jsonEndpoint = url;
             $scope.itemsLoading=true;
             $scope.getItems();
         });
