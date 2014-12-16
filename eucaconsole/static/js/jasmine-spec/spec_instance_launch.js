@@ -34,8 +34,8 @@ describe("LaunchInstance", function() {
             expect(scope.isNotValid).toBeTruthy();
         });
 
-        it("Initial value of instanceVPC is empty", function() {
-            expect(scope.instanceVPC).toEqual('');
+        it("Initial value of instanceVPC is None", function() {
+            expect(scope.instanceVPC).toEqual('None');
         });
 
         it("Initial value of keyPair is empty", function() {
