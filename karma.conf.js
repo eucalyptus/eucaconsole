@@ -34,11 +34,13 @@ module.exports = function(config) {
       'static/js/widgets/securitygroup_rules.js',
       'static/js/pages/keypair.js',
       'static/js/pages/instance_launch.js',
+      'static/js/pages/launchconfig_wizard.js',
       'static/js/jasmine-spec/SpecHelper.js',
       'static/js/jasmine-spec/spec_security_group_rules.js',
       'static/js/jasmine-spec/spec_keypair.js',
       'static/js/jasmine-spec/spec_tag_editor.js',
-      'static/js/jasmine-spec/spec_instance_launch.js'
+      'static/js/jasmine-spec/spec_instance_launch.js',
+      'static/js/jasmine-spec/spec_launchconfig_wizard.js'
     ],
 
 
