@@ -1,5 +1,5 @@
 /**
- * @fileOverview Jasmine Unittest for Sharing Panel JS 
+ * @fileOverview Jasmine Unittest for S3 Sharing Panel JS 
  * @requires Jasmine, AngularJS mock
  *
  */
