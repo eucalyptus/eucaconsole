@@ -43,7 +43,7 @@ from boto.ec2.connection import EC2Connection
 from boto.s3.connection import S3Connection
 from boto.s3.connection import OrdinaryCallingFormat
 # uncomment to enable boto request logger. Use only for development (see ref in _euca_connection)
-from boto.requestlog import RequestLogger
+#from boto.requestlog import RequestLogger
 import boto
 import boto.ec2.autoscale
 import boto.ec2.cloudwatch
@@ -217,7 +217,7 @@ class ConnectionManager(object):
                 conn.ca_certificates_file = certs_file
             conn.http_connection_kwargs['timeout'] = 30
             # uncomment to enable boto request logger. Use only for development
-            conn.set_request_hook(RequestLogger())
+            #conn.set_request_hook(RequestLogger())
             return conn
 
         return _euca_connection(clchost, port, access_id, secret_key, token, conn_type)
