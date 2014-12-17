@@ -16,6 +16,7 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       'templates/panels/*.pt',
+      'templates/images/*.pt',
       'templates/ipaddresses/*.pt',
       'static/js/thirdparty/modernizr/custom.modernizr.js',
       'static/js/thirdparty/jquery/jquery.min.js',
@@ -41,6 +42,7 @@ module.exports = function(config) {
       'static/js/widgets/tag_editor.js',
       'static/js/widgets/user_editor.js',
       'static/js/pages/keypair.js',
+      'static/js/pages/image.js',
       'static/js/pages/instance_launch.js',
       'static/js/pages/ipaddress.js',
       'static/js/pages/launchconfig_wizard.js',
@@ -56,6 +58,7 @@ module.exports = function(config) {
       'static/js/jasmine-spec/spec_security_group_rules.js',
       'static/js/jasmine-spec/spec_tag_editor.js',
       'static/js/jasmine-spec/spec_user_editor.js',
+      'static/js/jasmine-spec/spec_image.js',
       'static/js/jasmine-spec/spec_instance_launch.js',
       'static/js/jasmine-spec/spec_ipaddress.js',
       'static/js/jasmine-spec/spec_keypair.js',
