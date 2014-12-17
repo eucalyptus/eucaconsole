@@ -58,6 +58,7 @@ module.exports = function(config) {
       'static/js/pages/scalinggroup_wizard.js',
       'static/js/pages/snapshot.js',
       'static/js/pages/volume.js',
+      'static/js/pages/volume_snapshots.js',
       'static/js/jasmine-spec/SpecHelper.js',
       'static/js/jasmine-spec/spec_autoscale_tag_editor.js',
       'static/js/jasmine-spec/spec_bdmapping_editor.js',
@@ -79,7 +80,8 @@ module.exports = function(config) {
       'static/js/jasmine-spec/spec_scalinggroup.js',
       'static/js/jasmine-spec/spec_scalinggroup_wizard.js',
       'static/js/jasmine-spec/spec_snapshot.js',
-      'static/js/jasmine-spec/spec_volume.js'
+      'static/js/jasmine-spec/spec_volume.js',
+      'static/js/jasmine-spec/spec_volume_snapshots.js'
     ],
 
 
