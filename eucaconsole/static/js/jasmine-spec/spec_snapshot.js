@@ -30,8 +30,8 @@ describe("SnapshotPage", function() {
 
     describe("Initial Values Test", function() {
 
-        it("Initial value of transitionalStates[0] is creating", function() {
-            expect(scope.transitionalStates[0]).toEqual('creating');
+        it("Initial value of transitionalStates[0] is pending", function() {
+            expect(scope.transitionalStates[0]).toEqual('pending');
         });
 
         it("Initial value of transitionalStates[1] is deleting", function() {
@@ -66,8 +66,8 @@ describe("SnapshotPage", function() {
             expect(scope.volumeID).toEqual('');
         });
 
-        it("Initial value of imageURL is empty", function() {
-            expect(scope.imageURL).toEqual('');
+        it("Initial value of imagesURL is empty", function() {
+            expect(scope.imagesURL).toEqual('');
         });
 
         it("Initial value of images is undefined", function() {
@@ -83,7 +83,7 @@ describe("SnapshotPage", function() {
 
         it("Should call getSnapshotState() when initController() is called and snapshotStatusEndpoint is set", function() {
             spyOn(scope, 'getSnapshotState');
-            scope.initController('{"snapshotStatusEndpoint": "/snapshots/sn-12345678/status/json"}');
+            scope.initController('{"snapshot_status_json_url": "/snapshots/sn-12345678/status/json"}');
             expect(scope.getSnapshotState).toHaveBeenCalled();
         });
     });
