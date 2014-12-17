@@ -16,14 +16,15 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       'templates/panels/*.pt',
-      'templates/roles/role_view.pt',
       'templates/groups/*.pt',
       'templates/images/*.pt',
       'templates/instances/*.pt',
       'templates/ipaddresses/*.pt',
       'templates/launchconfigs/*.pt',
+      'templates/roles/*.pt',
       'templates/scalinggroups/*.pt',
       'templates/snapshots/*.pt',
+      'templates/users/*.pt',
       'templates/volumes/*.pt',
       'static/js/thirdparty/modernizr/custom.modernizr.js',
       'static/js/thirdparty/jquery/jquery.min.js',
@@ -61,6 +62,7 @@ module.exports = function(config) {
       'static/js/pages/scalinggroup.js',
       'static/js/pages/scalinggroup_wizard.js',
       'static/js/pages/snapshot.js',
+      'static/js/pages/user_new.js',
       'static/js/pages/volume.js',
       'static/js/pages/volume_snapshots.js',
       'static/js/jasmine-spec/SpecHelper.js',
@@ -86,6 +88,7 @@ module.exports = function(config) {
       'static/js/jasmine-spec/spec_scalinggroup.js',
       'static/js/jasmine-spec/spec_scalinggroup_wizard.js',
       'static/js/jasmine-spec/spec_snapshot.js',
+      'static/js/jasmine-spec/spec_user_new.js',
       'static/js/jasmine-spec/spec_volume.js',
       'static/js/jasmine-spec/spec_volume_snapshots.js'
     ],
