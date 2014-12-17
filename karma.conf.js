@@ -19,6 +19,7 @@ module.exports = function(config) {
       'templates/images/*.pt',
       'templates/instances/*.pt',
       'templates/ipaddresses/*.pt',
+      'templates/snapshots/*.pt',
       'templates/volumes/*.pt',
       'static/js/thirdparty/modernizr/custom.modernizr.js',
       'static/js/thirdparty/jquery/jquery.min.js',
@@ -50,6 +51,7 @@ module.exports = function(config) {
       'static/js/pages/ipaddress.js',
       'static/js/pages/launchconfig_wizard.js',
       'static/js/pages/scalinggroup_wizard.js',
+      'static/js/pages/snapshot.js',
       'static/js/pages/volume.js',
       'static/js/jasmine-spec/SpecHelper.js',
       'static/js/jasmine-spec/spec_autoscale_tag_editor.js',
@@ -69,6 +71,7 @@ module.exports = function(config) {
       'static/js/jasmine-spec/spec_keypair.js',
       'static/js/jasmine-spec/spec_launchconfig_wizard.js',
       'static/js/jasmine-spec/spec_scalinggroup_wizard.js',
+      'static/js/jasmine-spec/spec_snapshot.js',
       'static/js/jasmine-spec/spec_volume.js'
     ],
 
