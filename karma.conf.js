@@ -16,6 +16,7 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       'templates/panels/*.pt',
+      'templates/roles/role_view.pt',
       'templates/groups/*.pt',
       'templates/images/*.pt',
       'templates/instances/*.pt',
@@ -56,6 +57,7 @@ module.exports = function(config) {
       'static/js/pages/keypair.js',
       'static/js/pages/launchconfig.js',
       'static/js/pages/launchconfig_wizard.js',
+      'static/js/pages/role.js',
       'static/js/pages/scalinggroup.js',
       'static/js/pages/scalinggroup_wizard.js',
       'static/js/pages/snapshot.js',
@@ -80,6 +82,7 @@ module.exports = function(config) {
       'static/js/jasmine-spec/spec_keypair.js',
       'static/js/jasmine-spec/spec_launchconfig.js',
       'static/js/jasmine-spec/spec_launchconfig_wizard.js',
+      'static/js/jasmine-spec/spec_role.js',
       'static/js/jasmine-spec/spec_scalinggroup.js',
       'static/js/jasmine-spec/spec_scalinggroup_wizard.js',
       'static/js/jasmine-spec/spec_snapshot.js',

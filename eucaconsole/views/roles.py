@@ -160,6 +160,7 @@ class RoleView(BaseView):
         self.role_form = RoleForm(self.request, role=self.role, formdata=self.request.params or None)
         self.delete_form = DeleteRoleForm(self.request, formdata=self.request.params)
         create_date = parser.parse(self.role.create_date) if self.role else datetime.now()
+        self.role_name_validation_error_msg = _(u"Role names must be between 1 and 64 characters long, and may contain letters, numbers, '+', '=', ',', '.'. '@' and '-', and cannot contain spaces.")
         self.render_dict = dict(
             role=self.role,
             role_arn=self.role.arn if self.role else '',
@@ -169,6 +170,7 @@ class RoleView(BaseView):
             all_users=self.all_users,
             role_form=self.role_form,
             delete_form=self.delete_form,
+            role_name_validation_error_msg=self.role_name_validation_error_msg,
         )
 
     def get_role(self):
