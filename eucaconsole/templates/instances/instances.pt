@@ -90,7 +90,7 @@
                     {{ item.id }}
                 </div>
                 <div>
-                    <span class="label" title="Root device" i18n:attributes="title" data-tooltip="">IM</span>
+                    <span class="label" title="Image" i18n:attributes="title" data-tooltip="">IM</span>
                     <a ng-href="/images/{{ item.image_id }}">
                         {{ item.image_name | limitTo: 64 || item.image_id }}
                         <span ng-show="item.image_name &amp;&amp; item.image_name.length &gt; 64"
