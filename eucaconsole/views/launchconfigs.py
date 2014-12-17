@@ -441,9 +441,9 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
                 key_name = None if key_name == 'none' else self.unescape_braces(key_name)
             security_groups = self.request.params.getall('securitygroup')
             instance_type = self.request.params.get('instance_type', 'm1.small')
-            associate_public_ip_address = self.request.params.get('associate_public_ip_address')
+            associate_public_ip_address = self.request.params.get('associate_public_ip_address') or None
             # associate_public_ip_address's value can be None, True, or False 
-            if associate_public_ip_address != 'None':
+            if self.is_vpc_supported and associate_public_ip_address != 'None':
                 associate_public_ip_address = True if associate_public_ip_address == 'true' else False
             kernel_id = self.request.params.get('kernel_id') or None
             ramdisk_id = self.request.params.get('ramdisk_id') or None
