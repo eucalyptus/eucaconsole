@@ -54,7 +54,11 @@ angular.module('PolicyList', [])
                 Notify.failure(errorMsg);
             });
         };
-        $rootScope.getPolicies = $scope.getPolicies;
+        $rootScope.getPolicies = function() {
+            $scope.itemsLoading = true;
+            $scope.policyArray = [];
+            $scope.getPolicies();
+        };
         $scope.removePolicy = function (index, $event) {
             $event.preventDefault();
             $scope.policyIndex = index;

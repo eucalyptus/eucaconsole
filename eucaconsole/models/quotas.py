@@ -27,6 +27,7 @@
 from ..i18n import _
 import simplejson as json
 import sys
+from urllib import unquote
 
 """
 Quota handling code
@@ -119,13 +120,13 @@ class Quotas(object):
                     policy_json = view.conn.get_response(
                         'GetUserPolicy',
                         params={'UserName':user, 'PolicyName':policy_name, 'DelegateAccount':as_account}, verb='POST').policy_document
-                    policy = json.loads(policy_json)
+                    policy = json.loads(unquote(policy_json))
                     policy_list.append(policy)
                 if account is not None:
                     policy_json = view.conn.get_response(
                         'GetAccountPolicy',
                         params={'AccountName':account, 'PolicyName':policy_name, 'DelegateAccount':as_account}, verb='POST').policy_document
-                    policy = json.loads(policy_json)
+                    policy = json.loads(unquote(policy_json))
                     policy_list.append(policy)
             # for each form item, update proper policy if needed
             new_stmts = []

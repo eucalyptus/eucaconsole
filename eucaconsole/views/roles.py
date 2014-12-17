@@ -31,7 +31,7 @@ from datetime import datetime
 from dateutil import parser
 import os
 import simplejson as json
-from urllib import urlencode, quote
+from urllib import urlencode, quote, unquote
 
 from boto.exception import BotoServerError
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
@@ -214,7 +214,7 @@ class RoleView(BaseView):
         self.render_dict['assume_role_policy_document'] = ''
         if self.role is not None:
             # first, prettify the trust doc
-            parsed = json.loads(self.role.assume_role_policy_document)
+            parsed = json.loads(unquote(self.role.assume_role_policy_document))
             self.role.assume_role_policy_document=json.dumps(parsed, indent=2)
             # and pull out the trusted acct id
             self.render_dict['trusted_entity'] = self._get_trusted_entity_(parsed)
@@ -291,7 +291,7 @@ class RoleView(BaseView):
         with boto_error_handler(self.request):
             policy_name = self.request.matchdict.get('policy')
             policy = self.conn.get_role_policy(role_name=self.role.role_name, policy_name=policy_name)
-            parsed = json.loads(policy.policy_document)
+            parsed = json.loads(unquote(policy.policy_document))
             return dict(results=json.dumps(parsed, indent=2))
 
     @view_config(route_name='role_update_policy', request_method='POST', renderer='json')
