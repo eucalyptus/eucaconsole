@@ -274,6 +274,7 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
             self.request, scaling_group=self.scaling_group, autoscale_conn=self.autoscale_conn, ec2_conn=self.ec2_conn,
             vpc_conn=self.vpc_conn, elb_conn=self.elb_conn, formdata=self.request.params or None)
         self.delete_form = ScalingGroupDeleteForm(self.request, formdata=self.request.params or None)
+        self.is_vpc_supported = BaseView.is_vpc_supported(request)
         self.render_dict = dict(
             scaling_group=self.scaling_group,
             scaling_group_name=self.escape_braces(self.scaling_group.name) if self.scaling_group else '',
@@ -293,6 +294,9 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
 
     @view_config(route_name='scalinggroup_update', request_method='POST', renderer=TEMPLATE)
     def scalinggroup_update(self):
+        if not self.is_vpc_supported:
+            del self.edit_form.vpc_network
+            del self.edit_form.vpc_subnet
         if self.edit_form.validate():
             location = self.request.route_path('scalinggroup_view', id=self.scaling_group.name)
             with boto_error_handler(self.request, location):
