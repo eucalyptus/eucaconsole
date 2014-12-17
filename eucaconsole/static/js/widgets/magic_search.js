@@ -6,7 +6,6 @@
 angular.module('MagicSearch', [])
     .controller('MagicSearchCtrl', function ($scope, $timeout) {
         $scope.currentSearch = [];
-        $scope.searchFacet = '';
         $scope.initSearch = function(facetsJson, filter_keys) {
             $scope.filter_keys = filter_keys;
             // Parse facets JSON and convert to a list of facets.
@@ -65,8 +64,15 @@ angular.module('MagicSearch', [])
                 search_val = search_val.substring(0, search_val.length-1);
             } else {
                 if (key != 13 && key != 9 && key != 27) {
-                    search_val = search_val + String.fromCharCode(key);
+                    search_val = search_val + String.fromCharCode(key).toLowerCase();
                 }
+            }
+            if (search_val == ' ') {  // space and field is empty, show menu
+                $scope.showMenu();
+                $timeout(function() {
+                    $('#search-input').val('');
+                });
+                return;
             }
             if (key == 9) {  // tab, so select facet if narrowed down to 1
                 $event.preventDefault();
@@ -77,10 +83,7 @@ angular.module('MagicSearch', [])
                 else {
                     if ($scope.filteredOptions.length != 1) return;
                     $scope.optionClicked(0, '', $scope.filteredOptions[0].key);
-                    $scope.facetSelected = undefined;
-                    $scope.filteredObj = $scope.facetsObj;
-                    $scope.facetOptions = undefined;
-                    $scope.filteredOptions = $scope.facetOptions;
+                    $scope.resetState();
                 }
                 $timeout(function() {
                     $('#search-input').val('');
@@ -89,13 +92,10 @@ angular.module('MagicSearch', [])
             }
             if (key == 27) {  // esc, so cancel and reset everthing
                 $timeout(function() {
-                    $('#search-input').trigger('click');
+                    $(document).foundation('dropdown', 'closeall');
                     $('#search-input').val('');
                 });
-                $scope.facetSelected = undefined;
-                $scope.facetOptions = undefined;
-                $scope.filteredObj = $scope.facetsObj;
-                $scope.filteredOptions = $scope.facetOptions;
+                $scope.resetState();
                 return;
             }
             if (search_val == '') {
@@ -120,7 +120,7 @@ angular.module('MagicSearch', [])
                     }
                     $scope.currentSearch.push({'name':'text='+search_val, 'label':['text', search_val]});
                     $scope.$apply();
-                    $('#search-input').trigger('click');
+                    $(document).foundation('dropdown', 'closeall');
                     $('#search-input').val('');
                     $scope.$emit('textSearch', search_val, $scope.filter_keys);
                 }
@@ -129,6 +129,7 @@ angular.module('MagicSearch', [])
             else {
                 // try filtering facets/options.. if no facets match, do text search
                 if ($scope.facetSelected == undefined) {
+                    console.log("filtering facets : "+search_val + " len : "+ search_val.length);
                     $scope.filteredObj = $scope.facetsObj;
                     filtered = [];
                     for (var i=0; i<$scope.filteredObj.length; i++) {
@@ -140,6 +141,7 @@ angular.module('MagicSearch', [])
                         }
                     }
                     if (filtered.length > 0) {
+                        $scope.showMenu();
                         $timeout(function() {
                             $scope.filteredObj = filtered;
                         }, 0.1);
@@ -161,6 +163,7 @@ angular.module('MagicSearch', [])
                         }
                     }
                     if (filtered.length > 0) {
+                        $scope.showMenu();
                         $timeout(function() {
                             $scope.filteredOptions = filtered;
                         }, 0.1);
@@ -175,6 +178,7 @@ angular.module('MagicSearch', [])
         // enable text entry when mouse clicked anywhere in search box
         $('#search-main-area').on("click", function($event) {
             $('#search-input').trigger("focus");
+            $scope.showMenu();
         });
         // when facet clicked, add 1st part of facet and set up options
         $scope.facetClicked = function($index, $event, name) {
@@ -187,9 +191,7 @@ angular.module('MagicSearch', [])
             $scope.facetSelected = {'name':facet.name, 'label':[label, '']};
             if (name != 'tags') {
                 $scope.filteredOptions = $scope.facetOptions = facet.options;
-                $timeout(function() {
-                    $('#search-input').trigger('click');
-                });
+                $scope.showMenu();
             }
             $timeout(function() {
                 $('#search-input').val('');
@@ -203,12 +205,9 @@ angular.module('MagicSearch', [])
             curr.name = curr.name + '=' + name;
             curr.label[1] = $scope.facetOptions[$index].label;
             $scope.currentSearch.push(curr); //{'name':name, 'label':[$scope.facetsObj[$index].label, '']});
-            $scope.facetSelected = undefined;
-            $scope.facetOptions = undefined;
+            $scope.resetState();
             $scope.emitQuery();
-            $timeout(function() {
-                $('#search-input').trigger('click');
-            });
+            $scope.showMenu();
         };
         // send event with new query string
         $scope.emitQuery = function(removed) {
@@ -235,8 +234,7 @@ angular.module('MagicSearch', [])
                 $scope.emitQuery(removed);
             }
             else {
-                $scope.facetSelected = undefined;
-                $scope.facetOptions = undefined;
+                $scope.resetState();
                 $('#search-input').val('');
             }
             // facet re-enabled by reload
@@ -251,6 +249,19 @@ angular.module('MagicSearch', [])
         };
         $scope.isMatchLabel = function(label) {
             return Array.isArray(label);
-        }
+        };
+        $scope.showMenu = function() {
+            $timeout(function() {
+                if ($('#facet-drop').hasClass('open') == false) {
+                    $('#search-input').trigger('click');
+                }
+            });
+        };
+        $scope.resetState = function() {
+            $scope.facetSelected = undefined;
+            $scope.filteredObj = $scope.facetsObj;
+            $scope.facetOptions = undefined;
+            $scope.filteredOptions = $scope.facetOptions;
+        };
     })
 ;

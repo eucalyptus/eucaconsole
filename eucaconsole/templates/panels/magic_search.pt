@@ -21,7 +21,7 @@
                     {{ facetSelected.label[0] }}:
                 </span>
                 <div id="search-entry">
-                    <input id="search-input" type="text" data-dropdown="facet-drop" placeholder="Select facets for filter, or enter text to search" i18n:translate="placeholder"></input>
+                    <input id="search-input" type="text" data-dropdown="facet-drop" placeholder="Select facets for filter, or enter text to search" i18n:translate="placeholder" autocomplete="off"></input>
                     <ul id="facet-drop" class="f-dropdown" data-dropdown-content="">
                         <li ng-repeat="facet in filteredObj" ng-show="!facetSelected">
                             <a ng-click="facetClicked($index, $event, facet.name)" ng-show="!isMatchLabel(facet.label)">{{ facet.label }}</a>
