@@ -86,7 +86,7 @@ angular.module('BucketItemDetailsPage', ['S3SharingPanel', 'S3MetadataEditor', '
             $('#delete-object-modal').foundation('reveal', 'open');
         };
         $scope.deleteObject = function () {
-            var data = "csrf_token=" + $('#csrf_token').val() + "&keys=" + $scope.key;
+            var data = "csrf_token=" + $('#csrf_token').val() + "&keys=" + $scope.bucketItemKey +  "&detailpage=1";
             $http({method: 'POST', url: $scope.deleteUrl, data: data,
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
                 success(function (oData) {
@@ -94,7 +94,6 @@ angular.module('BucketItemDetailsPage', ['S3SharingPanel', 'S3MetadataEditor', '
                         console.log('error deleting some keys ' + oData.errors);
                     }
                     $('#delete-object-modal').foundation('reveal', 'close');
-                    Notify.success(oData.message);
                     window.location = $scope.bucketUrl;
                 }).
                 error(function (oData, status) {

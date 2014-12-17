@@ -175,11 +175,13 @@ class BucketXHRView(BaseView):
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
         keys = self.request.params.get('keys')
+        detailpage = self.request.params.get('detailpage')
         if not keys:
             return dict(message=_(u"keys must be specified."), errors=[])
         bucket = self.s3_conn.head_bucket(self.bucket_name)
         errors = []
-        self.log_request("Deleting keys from {0} : {1}".format(self.bucket_name, keys))
+        deleted_keys = ', '.join(keys) if isinstance(keys, list) else keys
+        self.log_request("Deleting keys from {0} : {1}".format(self.bucket_name, deleted_keys))
         for k in keys.split(','):
             key = bucket.get_key(k, validate=False)
             try:
@@ -188,7 +190,11 @@ class BucketXHRView(BaseView):
                 self.log_request("Couldn't delete "+k+":"+err.message)
                 errors.append(k)
         if len(errors) == 0:
-            return dict(message=_(u"Successfully deleted key(s)."))
+            success_msg = _(u"Successfully deleted key(s).")
+            if detailpage:
+                # Send notification via session on detail page since post-delete URL updates via window.location
+                self.request.session.flash(success_msg, queue=Notification.SUCCESS)
+            return dict(message=success_msg)
         else:
             return dict(message=_(u"Failed to delete all keys."), errors=errors)
 

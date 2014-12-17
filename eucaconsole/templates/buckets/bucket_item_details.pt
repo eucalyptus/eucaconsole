@@ -44,7 +44,7 @@
                             <a ng-click="confirmMakePublic()" i18n:translate="">Make public</a>
                         </li>
                         <li>
-                            <a id="delete-bucket-item-action" i18n:translate=""
+                            <a id="delete-object-action" i18n:translate=""
                                ng-click="confirmDelete('${item_name}')">Delete</a>
                         </li>
                     </metal:actions>
