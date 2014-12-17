@@ -294,7 +294,7 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
 
     @view_config(route_name='scalinggroup_update', request_method='POST', renderer=TEMPLATE)
     def scalinggroup_update(self):
-        if not self.is_vpc_supported:
+        if not self.is_vpc_supported or self.request.params.get('vpc_network') is None:
             del self.edit_form.vpc_network
             del self.edit_form.vpc_subnet
         if self.edit_form.validate():
