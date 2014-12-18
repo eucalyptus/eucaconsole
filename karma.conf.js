@@ -17,6 +17,7 @@ module.exports = function(config) {
     files: [
       'templates/panels/*.pt',
       'templates/accounts/*.pt',
+      'templates/buckets/*.pt',
       'templates/groups/*.pt',
       'templates/images/*.pt',
       'templates/instances/*.pt',
@@ -52,6 +53,7 @@ module.exports = function(config) {
       'static/js/widgets/tag_editor.js',
       'static/js/widgets/user_editor.js',
       'static/js/pages/account.js',
+      'static/js/pages/bucket_new.js',
       'static/js/pages/group.js',
       'static/js/pages/image.js',
       'static/js/pages/instance.js',
@@ -80,6 +82,7 @@ module.exports = function(config) {
       'static/js/jasmine-spec/spec_tag_editor.js',
       'static/js/jasmine-spec/spec_user_editor.js',
       'static/js/jasmine-spec/spec_account.js',
+      'static/js/jasmine-spec/spec_bucket_new.js',
       'static/js/jasmine-spec/spec_group.js',
       'static/js/jasmine-spec/spec_image.js',
       'static/js/jasmine-spec/spec_instance.js',
