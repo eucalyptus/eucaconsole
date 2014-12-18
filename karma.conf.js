@@ -16,6 +16,7 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       'templates/panels/*.pt',
+      'templates/accounts/*.pt',
       'templates/groups/*.pt',
       'templates/images/*.pt',
       'templates/instances/*.pt',
@@ -50,6 +51,7 @@ module.exports = function(config) {
       'static/js/widgets/securitygroup_rules.js',
       'static/js/widgets/tag_editor.js',
       'static/js/widgets/user_editor.js',
+      'static/js/pages/account.js',
       'static/js/pages/group.js',
       'static/js/pages/image.js',
       'static/js/pages/instance.js',
@@ -77,6 +79,7 @@ module.exports = function(config) {
       'static/js/jasmine-spec/spec_security_group_rules.js',
       'static/js/jasmine-spec/spec_tag_editor.js',
       'static/js/jasmine-spec/spec_user_editor.js',
+      'static/js/jasmine-spec/spec_account.js',
       'static/js/jasmine-spec/spec_group.js',
       'static/js/jasmine-spec/spec_image.js',
       'static/js/jasmine-spec/spec_instance.js',

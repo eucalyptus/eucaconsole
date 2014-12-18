@@ -158,6 +158,7 @@ class AccountView(BaseView):
         self.account_update_form = AccountUpdateForm(self.request, account=self.account, formdata=self.request.params or None)
         self.delete_form = DeleteAccountForm(self.request, formdata=self.request.params)
         self.quotas_form = QuotasForm(self.request, account=self.account, conn=self.conn)
+        self.account_name_validation_error_msg = _(u"Account names must be between 3 and 63 characters long, and may contain lower case letters, numbers, \'.\'. \'@\' and \'-\', and cannot contain spaces.")
         self.render_dict = dict(
             account=self.account,
             account_route_id=self.account_route_id,
@@ -166,6 +167,7 @@ class AccountView(BaseView):
             delete_form=self.delete_form,
             quota_err=_(u"Requires non-negative integer (or may be empty)"),
             quotas_form=self.quotas_form,
+            account_name_validation_error_msg=self.account_name_validation_error_msg,
         )
 
     def get_account(self):
