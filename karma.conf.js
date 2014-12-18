@@ -18,7 +18,7 @@ module.exports = function(config) {
       'templates/panels/*.pt',
       'templates/accounts/*.pt',
       'templates/buckets/*.pt',
-      'templates/dialogs/create_alarm_dialog.pt',
+      'templates/dialogs/*.pt',
       'templates/dashboard.pt',
       'templates/groups/*.pt',
       'templates/images/*.pt',
