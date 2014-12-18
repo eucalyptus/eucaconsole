@@ -31,7 +31,7 @@ Pyramid views for Eucalyptus and AWS Accounts
 import csv
 import simplejson as json
 import StringIO
-from urllib import urlencode
+from urllib import urlencode, unquote
 
 from boto.exception import BotoServerError
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
@@ -303,7 +303,7 @@ class AccountView(BaseView):
         with boto_error_handler(self.request):
             policy_name = self.request.matchdict.get('policy')
             policy = self.conn.get_response('GetAccountPolicy', params={'AccountName':self.account.account_name, 'PolicyName':policy_name}, verb='POST')
-            parsed = json.loads(policy.policy_document)
+            parsed = json.loads(unquote(policy.policy_document))
             return dict(results=json.dumps(parsed, indent=2))
 
     @view_config(route_name='account_update_policy', request_method='POST', renderer='json')
