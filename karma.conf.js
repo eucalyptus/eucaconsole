@@ -63,6 +63,7 @@ module.exports = function(config) {
       'static/js/pages/scalinggroup_wizard.js',
       'static/js/pages/snapshot.js',
       'static/js/pages/user_new.js',
+      'static/js/pages/user_view.js',
       'static/js/pages/volume.js',
       'static/js/pages/volume_snapshots.js',
       'static/js/jasmine-spec/SpecHelper.js',
@@ -89,6 +90,8 @@ module.exports = function(config) {
       'static/js/jasmine-spec/spec_scalinggroup_wizard.js',
       'static/js/jasmine-spec/spec_snapshot.js',
       'static/js/jasmine-spec/spec_user_new.js',
+      'static/js/jasmine-spec/spec_user_view.js',
+      'static/js/jasmine-spec/spec_user_view_update.js',
       'static/js/jasmine-spec/spec_volume.js',
       'static/js/jasmine-spec/spec_volume_snapshots.js'
     ],
