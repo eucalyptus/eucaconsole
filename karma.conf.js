@@ -93,6 +93,7 @@ module.exports = function(config) {
       'static/js/jasmine-spec/spec_user_view.js',
       'static/js/jasmine-spec/spec_user_view_update.js',
       'static/js/jasmine-spec/spec_user_view_password.js',
+      'static/js/jasmine-spec/spec_user_view_accesskeys.js',
       'static/js/jasmine-spec/spec_volume.js',
       'static/js/jasmine-spec/spec_volume_snapshots.js'
     ],
