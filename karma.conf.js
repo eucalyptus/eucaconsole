@@ -15,6 +15,7 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
+      'templates/*.pt',
       'templates/panels/*.pt',
       'templates/accounts/*.pt',
       'templates/buckets/*.pt',
@@ -37,6 +38,8 @@ module.exports = function(config) {
       'static/js/thirdparty/angular/angular-sanitize.min.js',
       'static/js/thirdparty/angular/angular-mocks.js',
       'static/js/thirdparty/jquery/jquery.generateFile.js',
+      'static/js/thirdparty/jquery/jquery.base64.js',
+      'static/js/thirdparty/jquery/jquery.cookie.js',
       'static/js/thirdparty/foundation/foundation.js',
       'static/js/thirdparty/foundation-datepicker/foundation-datepicker.js',
       'static/js/widgets/notify.js',
@@ -45,6 +48,8 @@ module.exports = function(config) {
       'static/js/thirdparty/jquery/jquery.cookie.js',
       'static/js/thirdparty/jquery/chosen.jquery.min.js',
       'static/js/thirdparty/utils/purl.js',
+      'static/js/thirdparty/utils/hmac-sha256.js',
+      'static/js/thirdparty/utils/enc-base64.js',
       'static/js/thirdparty/codemirror/codemirror.js',
       'static/js/thirdparty/codemirror/javascript.js',
       'static/js/thirdparty/codemirror/active-line.js',
@@ -80,6 +85,7 @@ module.exports = function(config) {
       'static/js/pages/instance_types.js',
       'static/js/pages/instance_volumes.js',
       'static/js/pages/ipaddress.js',
+      'static/js/pages/login.js',
       'static/js/pages/keypair.js',
       'static/js/pages/launchconfig.js',
       'static/js/pages/launchconfig_wizard.js',
@@ -121,6 +127,7 @@ module.exports = function(config) {
       'static/js/jasmine-spec/spec_instance_types.js',
       'static/js/jasmine-spec/spec_instance_volumes.js',
       'static/js/jasmine-spec/spec_ipaddress.js',
+      'static/js/jasmine-spec/spec_login.js',
       'static/js/jasmine-spec/spec_keypair.js',
       'static/js/jasmine-spec/spec_launchconfig.js',
       'static/js/jasmine-spec/spec_launchconfig_wizard.js',
