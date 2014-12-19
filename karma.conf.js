@@ -116,6 +116,7 @@ module.exports = function(config) {
       'static/js/pages/user_new.js',
       'static/js/pages/user_view.js',
       'static/js/pages/volume.js',
+      'static/js/pages/volumes.js',
       'static/js/pages/volume_snapshots.js',
       'static/js/jasmine-spec/SpecHelper.js',
       'static/js/jasmine-spec/spec_autoscale_tag_editor.js',
@@ -181,6 +182,7 @@ module.exports = function(config) {
       'static/js/jasmine-spec/spec_user_view_groups.js',
       'static/js/jasmine-spec/spec_user_view_quotas.js',
       'static/js/jasmine-spec/spec_volume.js',
+      'static/js/jasmine-spec/spec_volumes.js',
       'static/js/jasmine-spec/spec_volume_snapshots.js'
     ],
 
