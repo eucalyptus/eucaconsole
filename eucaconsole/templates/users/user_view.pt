@@ -117,8 +117,8 @@
                                 </div>
                                 <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
                                     <a class="tiny secondary button dropdown right"
-                                       data-dropdown="item-dropdown_{{ item.group_name }}"><i class="fi-widget"></i></a>
-                                    <ul id="item-dropdown_{{ item.group_name }}" class="f-dropdown" data-dropdown-content="">
+                                       data-dropdown="item-dropdown-group-{{ $index }}"><i class="fi-widget"></i></a>
+                                    <ul id="item-dropdown-group-{{ $index }}" class="f-dropdown" data-dropdown-content="">
                                         <li>
                                             <a i18n:translate="" ng-click="removeUserFromGroup(item)">Remove user</a>
                                         </li>
