@@ -4,12 +4,12 @@
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="selenium.base" href="https://10.111.5.7/" />
-<title>add_access_policy</title>
+<title>delete-account</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">add_access_policy</td></tr>
+<tr><td rowspan="1" colspan="3">delete-account</td></tr>
 </thead><tbody>
 <tr>
 	<td>setSpeed</td>
@@ -42,23 +42,23 @@
 	<td></td>
 </tr>
 <tr>
-	<td>clickAndWait</td>
+	<td>assertElementPresent</td>
 	<td>link=ui-test-acct-${str}</td>
 	<td></td>
 </tr>
 <tr>
-	<td>clickAndWait</td>
-	<td>id=add-policy-btn</td>
+	<td>click</td>
+	<td>css=#table-item-dropdown_ui-test-acct-${str} &gt; i.fi-widget</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>css=i.fi-x.tick</td>
+	<td>xpath=(//a[contains(text(),'Delete')])[6]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>clickAndWait</td>
-	<td>id=create-iam-policy-btn</td>
+	<td>id=delete_account_submit_button</td>
 	<td></td>
 </tr>
 <tr>
@@ -72,15 +72,16 @@
 	<td></td>
 </tr>
 <tr>
-	<td>verifyTextPresent</td>
-	<td>CustomAccessPolicy-ui-test-acct-${str}</td>
+	<td>verifyElementNotPresent</td>
+	<td>link=ui-test-acct-${str}</td>
 	<td></td>
 </tr>
 <tr>
-	<td>assertTextPresent</td>
-	<td>CustomAccessPolicy-ui-test-acct-${str}</td>
+	<td>assertElementNotPresent</td>
+	<td>link=ui-test-acct-${str}</td>
 	<td></td>
 </tr>
+
 </tbody></table>
 </body>
 </html>
