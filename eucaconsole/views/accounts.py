@@ -276,7 +276,7 @@ class AccountView(BaseView):
             raise HTTPNotFound()
         with boto_error_handler(self.request, location):
             self.log_request(_(u"Deleting account {0}").format(self.account.account_name))
-            params = {'AccountName': self.account.account_name, 'IsRecursive': 'true'}
+            params = {'AccountName': self.account.account_name, 'Recursive': 'true'}
             self.conn.get_response('DeleteAccount', params)
             msg = _(u'Successfully deleted account')
             self.request.session.flash(msg, queue=Notification.SUCCESS)
