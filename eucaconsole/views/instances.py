@@ -819,7 +819,7 @@ class InstanceStateView(BaseInstanceView):
     @view_config(route_name='instance_nextdevice_json', renderer='json', request_method='GET')
     def instance_nextdevice_json(self):
         """Return current instance state"""
-        return dict(results=self.suggest_next_device_name(self.instance))
+        return dict(results=AttachVolumeForm.suggest_next_device_name(self.request, self.instance))
 
     @view_config(route_name='instance_console_output_json', renderer='json', request_method='GET')
     def instance_console_output_json(self):
@@ -827,17 +827,6 @@ class InstanceStateView(BaseInstanceView):
         with boto_error_handler(self.request):
             output = self.conn.get_console_output(instance_id=self.instance.id)
         return dict(results=base64.b64encode(output.output))
-
-    # TODO: also in forms/instances.py, let's consolidate
-    def suggest_next_device_name(self, instance):
-        mappings = instance.block_device_mapping
-        for i in range(0, 10):   # Test names with char 'f' to 'p'
-            dev_name = '/dev/sd'+str(unichr(102+i))
-            try:
-                mappings[dev_name]
-            except KeyError:
-                return dev_name
-        return 'error'
 
     def check_has_elastic_ip(self, ip_address):
         has_elastic_ip = False

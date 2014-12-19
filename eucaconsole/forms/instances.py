@@ -302,7 +302,7 @@ class AttachVolumeForm(BaseSecureForm):
         self.device.error_msg = self.device_error_msg
         self.set_volume_choices()
         if self.instance is not None:
-            self.device.data = self.suggest_next_device_name()
+            self.device.data = AttachVolumeForm.suggest_next_device_name(request, instance)
 
     def set_volume_choices(self):
         """Populate volume field with volumes available to attach"""
@@ -316,10 +316,18 @@ class AttachVolumeForm(BaseSecureForm):
                 choices.append((volume.id, BaseView.escape_braces(vol_name)))
         self.volume_id.choices = choices
 
-    def suggest_next_device_name(self):
-        mappings = self.instance.block_device_mapping
+    @staticmethod
+    def suggest_next_device_name(request, instance):
+        cloud_type = request.session.get('cloud_type')
+        if cloud_type == 'euca':
+            dev_root = '/dev/vd'
+            start_char = 99
+        else:
+            dev_root = '/dev/sd'
+            start_char = 102
+        mappings = instance.block_device_mapping
         for i in range(0, 10):   # Test names with char 'f' to 'p'
-            dev_name = '/dev/sd'+str(unichr(102+i))
+            dev_name = dev_root+str(unichr(start_char+i))
             try:
                 mappings[dev_name]
             except KeyError:
