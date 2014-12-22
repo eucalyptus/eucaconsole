@@ -236,7 +236,7 @@ class Quotas(object):
                                     lowest_policy_val = policy_val
                                     lowest_stmt = s
         if lowest_val == sys.maxint: # was there a statement? If not, we should add one
-            if new_limit != '':
+            if new_limit != '' and new_limit != '0':
                 new_stmts.append({
                     'Effect': 'Limit', 'Action': action, 'Resource': '*',
                     'Condition': {'NumericLessThanEquals': {condition: new_limit}}
