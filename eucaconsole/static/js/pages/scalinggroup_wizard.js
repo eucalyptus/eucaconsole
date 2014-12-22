@@ -25,12 +25,13 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor','EucaConsoleUtils'])
         $scope.vpcSubnetChoices = {};
         $scope.vpcSubnetZonesMap = {};
         $scope.availZones = '';
+        $scope.loadBalancers = '';
         $scope.summarySection = $('.summary');
         $scope.currentStepIndex = 1;
         $scope.isNotValid = true;
         $scope.initChosenSelectors = function () {
             $('#launch_config').chosen({'width': '80%', search_contains: true});
-            $('#load_balancers').chosen({'width': '80%', search_contains: true});
+            $('#load_balancers').chosen({'width': '100%', search_contains: true});
             $('#availability_zones').chosen({'width': '100%', search_contains: true});
             $('#vpc_subnet').chosen({'width': '100%', search_contains: true});
         };
@@ -267,6 +268,11 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor','EucaConsoleUtils'])
             // Unhide step 2 of summary
             if (nextStep === 2) {
                 $scope.summarySection.find('.step2').removeClass('hide');
+                $timeout(function() {
+                    // Workaround for the broken placeholer message issue
+                    // Wait until the rendering of the new tab page is complete
+                    $('#load_balancers').trigger("chosen:updated");
+                });
             }
         };
         $scope.handleSizeChange = function () {
