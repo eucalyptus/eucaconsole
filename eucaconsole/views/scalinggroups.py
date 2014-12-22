@@ -638,6 +638,7 @@ class ScalingGroupWizardView(BaseScalingGroupView):
             launch_config_param=escape(self.request.params.get('launch_config', '')),
             avail_zones_placeholder_text=_(u'Select availability zones...'),
             elb_placeholder_text=_(u'Select load balancers...'),
+            vpc_subnet_placeholder_text=_(u'Select VPC subnets...'),
             controller_options_json=self.get_controller_options_json(),
             is_vpc_supported=self.is_vpc_supported,
         )

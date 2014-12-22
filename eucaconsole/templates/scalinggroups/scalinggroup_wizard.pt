@@ -39,7 +39,7 @@
                         <!--! Step 1: General tab content -->
                         <div class="content active" id="step1"
                             tal:define="html_attrs_val {'pattern': '^[^\/\\\]{1,255}$'};
-                                        vpc_subnet_html_attrs {'data-placeholder': ' '};">
+                                        vpc_subnet_html_attrs {'data-placeholder': vpc_subnet_placeholder_text};">
                             ${panel('form_field', field=create_form['name'], ng_attrs={'model': 'scalingGroupName'}, **html_attrs_val)}
                             <div tal:condition="launch_config_param">
                                 <input type="hidden" id="hidden_launch_config_input" name="launch_config" value="${launch_config_param}" />
@@ -99,7 +99,7 @@
                             <div ng-show="vpcNetwork == '' || vpcNetwork == 'None'">
                                 ${panel('form_field', field=create_form['availability_zones'], ng_attrs={'model': 'availZones'}, **avail_zones_attrs)}
                             </div>
-                            ${panel('form_field', field=create_form['load_balancers'], **load_balancers_html_attrs)}
+                            ${panel('form_field', field=create_form['load_balancers'], ng_attrs={'model': 'loadBalancers'}, **load_balancers_html_attrs)}
                             <div>&nbsp;</div>
                             <hr />
                             <div>
