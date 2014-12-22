@@ -74,6 +74,11 @@ from eucaconsole.caches import long_term
 from eucaconsole.caches import extra_long_term
 
 
+class Mock(object):
+    def __init__(self, **kwargs):
+        self.__dict__.update(kwargs)
+
+
 class BaseViewTestCase(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
