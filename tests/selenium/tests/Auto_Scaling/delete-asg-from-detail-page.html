@@ -3,17 +3,17 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link rel="selenium.base" href="http://10.111.101.112:8888/" />
-<title>create-key-pair-from-landing-page</title>
+<link rel="selenium.base" href="https://10.111.5.59/" />
+<title>delete-asg-from-detail-page</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">create-key-pair-from-landing-page</td></tr>
+<tr><td rowspan="1" colspan="3">delete-asg-from-detail-page</td></tr>
 </thead><tbody>
 <tr>
 	<td>setSpeed</td>
-	<td>1000</td>
+	<td>500</td>
 	<td></td>
 </tr>
 <tr>
@@ -33,57 +33,42 @@
 </tr>
 <tr>
 	<td>waitForVisible</td>
-	<td>id=resource-menu-netsec</td>
+	<td>id=resource-menu-autoscaling</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>id=resource-menu-netsec</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForVisible</td>
-	<td>id=resource-menuitem-keypairs</td>
+	<td>id=resource-menu-autoscaling</td>
 	<td></td>
 </tr>
 <tr>
 	<td>clickAndWait</td>
-	<td>id=resource-menuitem-keypairs</td>
+	<td>id=resource-menuitem-scalinggroups</td>
 	<td></td>
 </tr>
 <tr>
-	<td>waitForVisible</td>
-	<td>id=create-keypair-btn</td>
+	<td>click</td>
+	<td>link=${asg_name}</td>
 	<td></td>
 </tr>
 <tr>
-	<td>assertVisible</td>
-	<td>id=create-keypair-btn</td>
+	<td>click</td>
+	<td>css=#nextstep-scalinggroup-modal &gt; a.close-reveal-modal</td>
 	<td></td>
 </tr>
 <tr>
-	<td>clickAndWait</td>
-	<td>id=create-keypair-btn</td>
+	<td>click</td>
+	<td>link=Actions</td>
 	<td></td>
 </tr>
 <tr>
-	<td>waitForVisible</td>
-	<td>id=key-name</td>
+	<td>click</td>
+	<td>id=delete-scalinggroup-action</td>
 	<td></td>
 </tr>
 <tr>
-	<td>type</td>
-	<td>id=key-name</td>
-	<td>${keypair_name}</td>
-</tr>
-<tr>
-	<td>waitForVisible</td>
-	<td>css=button.button</td>
-	<td></td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>css=button.button</td>
+	<td>click</td>
+	<td>id=delete_scalinggroup_submit_button</td>
 	<td></td>
 </tr>
 <tr>
@@ -101,6 +86,7 @@
 	<td>${breadcrumbs}</td>
 	<td></td>
 </tr>
+
 </tbody></table>
 </body>
 </html>
