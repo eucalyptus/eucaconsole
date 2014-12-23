@@ -492,7 +492,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                 if (newlyCreatedSecurityGroupName.length > 30) {
                     newlyCreatedSecurityGroupName = newlyCreatedSecurityGroupName.substr(0, 30) + "...";
                 }
-                if ($scope.securityGroupVPC, $scope.securityGroupVPC != 'None') {
+                if ($scope.securityGroupVPC && $scope.securityGroupVPC != 'None') {
                     newlyCreatedSecurityGroupName = newlyCreatedSecurityGroupName + " (" + $scope.securityGroupVPC + ")";
                 }
                 $scope.securityGroupChoices[newSecurityGroupID] = newlyCreatedSecurityGroupName;
