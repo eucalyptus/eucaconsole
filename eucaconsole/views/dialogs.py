@@ -30,6 +30,7 @@ See http://docs.pylonsproject.org/projects/pyramid_layout/en/latest/layouts.html
 
 """
 import simplejson as json
+from ..i18n import _
 
 from pyramid_layout.panel import panel_config
 
@@ -54,6 +55,7 @@ def ipaddress_dialogs(context, request, eip=None, landingpage=False,
 def snapshot_dialogs(context, request, snapshot=None, snapshot_name=None, landingpage=False, volume_id=None,
                      delete_form=None, register_form=None):
     """Modal dialogs for Snapshot landing and detail page."""
+    snapshot_image_name_validation_error_msg = _(u"AMI names must be between 3 and 128 characters long, and may contain letters, numbers, \'(\', \')\', \'.\', \'-\', \'/\' and \'_\', and cannot contain spaces.")
     return dict(
         snapshot=snapshot,
         snapshot_name=snapshot_name,
@@ -61,6 +63,7 @@ def snapshot_dialogs(context, request, snapshot=None, snapshot_name=None, landin
         volume_id=volume_id,
         delete_form=delete_form,
         register_form=register_form,
+        snapshot_image_name_validation_error_msg=snapshot_image_name_validation_error_msg,
     )
 
 

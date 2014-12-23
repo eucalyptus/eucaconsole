@@ -106,11 +106,13 @@ angular.module('IAMPolicyWizard', ['EucaConsoleUtils'])
             });
         };
         $scope.initHandEditedWarningListener = function () {
-            $scope.codeEditor.on('change', function () {
-                $scope.$apply(function() {
-                    $scope.handEdited = $scope.codeEditor.getValue().trim() != $scope.policyText;
+            if ($scope.codeEditor != null){
+                $scope.codeEditor.on('change', function () {
+                    $scope.$apply(function() {
+                        $scope.handEdited = $scope.codeEditor.getValue().trim() != $scope.policyText;
+                    });
                 });
-            });
+            }
         };
         $scope.confirmWarning = function () {
             var modal = $('#conflict-warn-modal');
@@ -223,12 +225,14 @@ angular.module('IAMPolicyWizard', ['EucaConsoleUtils'])
         };
         $scope.initCodeMirror = function () {
             $(document).ready(function () {
-                $scope.codeEditor = CodeMirror.fromTextArea($scope.policyTextarea, {
-                    mode: "javascript",
-                    lineWrapping: true,
-                    styleActiveLine: true,
-                    lineNumbers: true
-                });
+                if ($scope.policyTextarea != null) {
+                    $scope.codeEditor = CodeMirror.fromTextArea($scope.policyTextarea, {
+                        mode: "javascript",
+                        lineWrapping: true,
+                        styleActiveLine: true,
+                        lineNumbers: true
+                    });
+                }
             });
         };
         $scope.setPolicyName = function (policyType) {

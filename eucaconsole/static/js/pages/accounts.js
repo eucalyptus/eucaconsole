@@ -1,5 +1,5 @@
 /**
- * @fileOverview IAM Account Detail Page JS
+ * @fileOverview IAM Account Landing Page JS
  * @requires AngularJS
  *
  */
