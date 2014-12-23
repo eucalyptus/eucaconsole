@@ -4,12 +4,12 @@
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="selenium.base" href="https://10.111.5.7/" />
-<title>add-quota-policy</title>
+<title>add_empty_account</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">add-quota-policy</td></tr>
+<tr><td rowspan="1" colspan="3">add_empty_account</td></tr>
 </thead><tbody>
 <tr>
 	<td>setSpeed</td>
@@ -37,43 +37,48 @@
 	<td></td>
 </tr>
 <tr>
-	<td>waitForElementPresent</td>
-	<td>link=ui-test-acct-${str}</td>
-	<td></td>
-</tr>
-<tr>
 	<td>clickAndWait</td>
-	<td>link=ui-test-acct-${str}</td>
+	<td>id=add-account-btn</td>
 	<td></td>
 </tr>
 <tr>
-	<td>waitForElementPresent</td>
-	<td>link=Quotas</td>
-	<td></td>
+	<td>storeEval</td>
+	<td>(Math.random().toString(36)+&quot;000000000&quot;).slice(2,7);</td>
+	<td>str</td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>link=Quotas</td>
-	<td></td>
-</tr>
-<tr>
-	<td>selectWindow</td>
-	<td>null</td>
-	<td></td>
+	<td>type</td>
+	<td>id=account-name</td>
+	<td>ui-test-acct-${str}</td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>css=i.fi-plus</td>
+	<td>id=account-name</td>
 	<td></td>
 </tr>
 <tr>
 	<td>type</td>
-	<td>id=ec2_images_max</td>
-	<td>1</td>
+	<td>id=user-name-field</td>
+	<td>user-${str}</td>
 </tr>
 <tr>
-	<td>clickAndWait</td>
-	<td>id=save-quotas-btn</td>
+	<td>click</td>
+	<td>id=add-user-btn</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>User: user-${str}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>user-${str}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=create-btn</td>
 	<td></td>
 </tr>
 <tr>
@@ -87,13 +92,28 @@
 	<td></td>
 </tr>
 <tr>
-	<td>verifyTextPresent</td>
-	<td>euca-console-quota-policy</td>
+	<td>waitForElementPresent</td>
+	<td>id=add-policy-btn</td>
 	<td></td>
 </tr>
 <tr>
 	<td>assertTextPresent</td>
-	<td>euca-console-quota-policy</td>
+	<td>ui-test-acct-${str}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=resource-menu-iam</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=resource-menuitem-users</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>link=ui-test-acct-${str}</td>
 	<td></td>
 </tr>
 </tbody></table>

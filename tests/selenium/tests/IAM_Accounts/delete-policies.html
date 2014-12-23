@@ -4,12 +4,12 @@
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="selenium.base" href="https://10.111.5.7/" />
-<title>add-quota-policy</title>
+<title>delete_policies</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">add-quota-policy</td></tr>
+<tr><td rowspan="1" colspan="3">delete_policies</td></tr>
 </thead><tbody>
 <tr>
 	<td>setSpeed</td>
@@ -47,33 +47,13 @@
 	<td></td>
 </tr>
 <tr>
-	<td>waitForElementPresent</td>
-	<td>link=Quotas</td>
+	<td>click</td>
+	<td>//div[@id='policy-list']/div/div[4]/div/a/i</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>link=Quotas</td>
-	<td></td>
-</tr>
-<tr>
-	<td>selectWindow</td>
-	<td>null</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>css=i.fi-plus</td>
-	<td></td>
-</tr>
-<tr>
-	<td>type</td>
-	<td>id=ec2_images_max</td>
-	<td>1</td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>id=save-quotas-btn</td>
+	<td>css=input.button.expand</td>
 	<td></td>
 </tr>
 <tr>
@@ -87,15 +67,51 @@
 	<td></td>
 </tr>
 <tr>
-	<td>verifyTextPresent</td>
+	<td>click</td>
+	<td>css=i.fi-minus-circle</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=input.button.expand</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>id=notifications</td>
+	<td>breadcrumbs</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${breadcrumbs}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>refreshAndWait</td>
+	<td></td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextNotPresent</td>
+	<td>CustomAccessPolicy-ui-test-acct-${str}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextNotPresent</td>
 	<td>euca-console-quota-policy</td>
 	<td></td>
 </tr>
 <tr>
-	<td>assertTextPresent</td>
+	<td>assertTextNotPresent</td>
+	<td>CustomAccessPolicy-ui-test-acct-${str}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextNotPresent</td>
 	<td>euca-console-quota-policy</td>
 	<td></td>
 </tr>
+
 </tbody></table>
 </body>
 </html>
