@@ -35,12 +35,14 @@ from pyramid.httpexceptions import HTTPNotFound
 from eucaconsole.forms import BaseSecureForm
 from eucaconsole.forms.instances import (
     StartInstanceForm, StopInstanceForm, RebootInstanceForm, TerminateInstanceForm,
-    AttachVolumeForm, DetachVolumeForm, LaunchInstanceForm, InstanceCreateImageForm
+    AttachVolumeForm, DetachVolumeForm, LaunchInstanceForm, InstanceCreateImageForm,
+    InstancesFiltersForm
 )
+from eucaconsole.i18n import _
 from eucaconsole.views import TaggedItemView
 from eucaconsole.views.instances import InstancesView, InstanceView
 
-from tests import BaseViewTestCase, BaseFormTestCase
+from tests import BaseViewTestCase, BaseFormTestCase, Mock
 
 
 class InstancesViewTests(BaseViewTestCase):
@@ -142,6 +144,48 @@ class InstanceAttachVolumeFormTestCase(BaseFormTestCase):
         self.assert_required('device')
 
 
+class AttachVolumeDeviceEucalyptusTestCase(BaseFormTestCase):
+    form_class = AttachVolumeForm
+    request = testing.DummyRequest()
+    request.session['cloud_type'] = 'euca'
+
+    def setUp(self):
+        self.form = self.form_class(self.request)
+
+    def test_initial_attach_device_on_eucalyptus(self):
+        instance = Mock()
+        instance.block_device_mapping = {}
+        device = self.form_class.suggest_next_device_name(self.request, instance)
+        self.assertEqual(device, '/dev/vdc')
+
+    def test_next_attach_device_on_eucalyptus(self):
+        instance = Mock()
+        instance.block_device_mapping = {'/dev/vdc': 'foo'}
+        device = self.form_class.suggest_next_device_name(self.request, instance)
+        self.assertEqual(device, '/dev/vdd')
+
+
+class AttachVolumeDeviceAWSTestCase(BaseFormTestCase):
+    form_class = AttachVolumeForm
+    request = testing.DummyRequest()
+    request.session['cloud_type'] = 'aws'
+
+    def setUp(self):
+        self.form = self.form_class(self.request)
+
+    def test_initial_attach_device_on_aws(self):
+        instance = Mock()
+        instance.block_device_mapping = {}
+        device = self.form_class.suggest_next_device_name(self.request, instance)
+        self.assertEqual(device, '/dev/sdf')
+
+    def test_next_attach_device_on_aws(self):
+        instance = Mock()
+        instance.block_device_mapping = {'/dev/sdf': 'foo'}
+        device = self.form_class.suggest_next_device_name(self.request, instance)
+        self.assertEqual(device, '/dev/sdg')
+
+
 class InstanceDetachVolumeFormTestCase(BaseFormTestCase):
     """Detach Volume form on instance page"""
     form_class = DetachVolumeForm
@@ -193,3 +237,43 @@ class InstanceCreateImageFormTestCase(BaseFormTestCase):
         except ImportError:
             pass
 
+
+class InstanceLaunchFormTestCaseWithVPCEnabledOnEucalpytus(BaseFormTestCase):
+    form_class = LaunchInstanceForm
+    request = testing.DummyRequest()
+    request.session.update({
+        'cloud_type': 'euca',
+        'supported_platforms': ['VPC'],
+    })
+
+    def setUp(self):
+        self.form = self.form_class(self.request)
+
+    def test_launch_instance_form_vpc_network_choices_with_vpc_enabled_on_eucalyptus(self):
+        self.assertFalse(('None', _(u'No VPC')) in self.form.vpc_network.choices)
+
+
+class InstanceLaunchFormTestCaseWithVPCDisabledOnEucalpytus(BaseFormTestCase):
+    form_class = LaunchInstanceForm
+    request = testing.DummyRequest()
+    request.session.update({
+        'cloud_type': 'euca',
+        'supported_platforms': [],
+    })
+
+    def setUp(self):
+        self.form = self.form_class(self.request)
+
+    def test_launch_instance_form_vpc_network_choices_with_vpc_disabled_on_eucalyptus(self):
+        self.assertTrue(('None', _(u'No VPC')) in self.form.vpc_network.choices)
+
+
+class InstancesFiltersFormTestCaseOnAWS(BaseFormTestCase):
+    form_class = InstancesFiltersForm
+    request = testing.DummyRequest()
+
+    def setUp(self):
+        self.form = self.form_class(self.request, cloud_type='aws')
+
+    def test_instances_filters_form_vpc_id_choices_on_aws(self):
+        self.assertTrue(('None', _(u'No VPC')) in self.form.vpc_id.choices)

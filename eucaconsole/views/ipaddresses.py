@@ -55,6 +55,7 @@ class IPAddressesView(LandingPageView):
         self.disassociate_form = DisassociateIPForm(self.request, formdata=self.request.params or None)
         self.release_form = ReleaseIPForm(self.request, formdata=self.request.params or None)
         self.location = self.get_redirect_location('ipaddresses')
+        self.is_vpc_supported = BaseView.is_vpc_supported(request)
         self.render_dict = dict(
             prefix=self.prefix,
             allocate_form=self.allocate_form,
@@ -62,6 +63,8 @@ class IPAddressesView(LandingPageView):
             disassociate_form=self.disassociate_form,
             release_form=self.release_form,
             allocate_ip_dialog_error_message=_(u'Please enter a whole number greater than zero'),
+            is_vpc_supported=self.is_vpc_supported,
+            cloud_type=self.cloud_type,
         )
 
     @view_config(route_name='ipaddresses', renderer=VIEW_TEMPLATE)
@@ -69,9 +72,11 @@ class IPAddressesView(LandingPageView):
         # sort_keys are passed to sorting drop-down
         # Handle Allocate IP addresses form
         if self.request.method == 'POST':
+            if self.cloud_type == 'euca':
+                del self.allocate_form.domain 
             if self.allocate_form.validate():
                 new_ips = []
-                domain = self.request.params.get('domain')
+                domain = self.request.params.get('domain') or None
                 ipcount = int(self.request.params.get('ipcount', 0))
                 with boto_error_handler(self.request, self.location):
                     self.log_request(_(u"Allocating {0} ElasticIPs").format(ipcount))
@@ -84,6 +89,8 @@ class IPAddressesView(LandingPageView):
                     self.request.session.flash(msg, queue=Notification.SUCCESS)
                 return HTTPFound(location=self.location)
         filters_form=IPAddressesFiltersForm(self.request, conn=self.conn, formdata=self.request.params or None)
+        if self.cloud_type == 'euca':
+            del filters_form.domain
         search_facets = filters_form.facets
         self.render_dict.update(
             initial_sort_key='public_ip',

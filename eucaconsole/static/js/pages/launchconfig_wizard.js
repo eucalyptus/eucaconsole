@@ -57,6 +57,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             $scope.securityGroupJsonEndpoint = options['securitygroups_json_endpoint'];
             $scope.securityGroupsRulesJsonEndpoint = options['securitygroups_rules_json_endpoint'];
             $scope.imageJsonURL = options['image_json_endpoint'];
+            $scope.securityGroupVPC = options['default_vpc_network'];
             $scope.getAllSecurityGroups(); 
             $scope.getAllSecurityGroupsRules();
             $scope.setInitialValues();
@@ -350,6 +351,11 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                         modalButton.focus();
                     }
                }
+                // Handle the angular and foundation conflict when setting the select options after the dialog opens
+                if( $('#securitygroup_vpc_network').children('option').first().text() == '' ){
+                    $('#securitygroup_vpc_network').children('option').first().remove();
+                    $('#securitygroup_vpc_network option[value="' + $scope.securityGroupVPC + '"]').prop('selected', true);
+                }
             });
         };
         $scope.setWizardFocus = function (stepIdx) {

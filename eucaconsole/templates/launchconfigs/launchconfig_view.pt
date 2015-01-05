@@ -61,7 +61,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row controls-wrapper readonly">
+                    <div tal:condition="is_vpc_supported" class="row controls-wrapper readonly">
                         <div class="small-3 columns"><label i18n:translate="">VPC IP Assignment</label></div>
                         <div class="small-9 columns value">${launch_config_vpc_ip_assignment}</div>
                     </div>

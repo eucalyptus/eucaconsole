@@ -5,8 +5,8 @@
  */
 
 // Scaling Group wizard includes the AutoScale Tag Editor
-angular.module('ScalingGroupWizard', ['AutoScaleTagEditor'])
-    .controller('ScalingGroupWizardCtrl', function ($scope, $timeout) {
+angular.module('ScalingGroupWizard', ['AutoScaleTagEditor','EucaConsoleUtils'])
+    .controller('ScalingGroupWizardCtrl', function ($scope, $timeout, eucaUnescapeJson) {
         $scope.form = $('#scalinggroup-wizard-form');
         $scope.scalingGroupName = '';
         $scope.launchConfig = '';
@@ -16,7 +16,6 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor'])
         $scope.desiredCapacity = 1;
         $scope.maxSize = 1;
         $scope.urlParams = $.url().param();
-        $scope.launchConfig = '';
         $scope.vpcNetwork = '';
         $scope.vpcNetworkName = '';
         $scope.vpcSubnets = [];
@@ -25,12 +24,13 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor'])
         $scope.vpcSubnetChoices = {};
         $scope.vpcSubnetZonesMap = {};
         $scope.availZones = '';
+        $scope.loadBalancers = '';
         $scope.summarySection = $('.summary');
         $scope.currentStepIndex = 1;
         $scope.isNotValid = true;
         $scope.initChosenSelectors = function () {
             $('#launch_config').chosen({'width': '80%', search_contains: true});
-            $('#load_balancers').chosen({'width': '80%', search_contains: true});
+            $('#load_balancers').chosen({'width': '100%', search_contains: true});
             $('#availability_zones').chosen({'width': '100%', search_contains: true});
             $('#vpc_subnet').chosen({'width': '100%', search_contains: true});
         };
@@ -43,15 +43,16 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor'])
                 $scope.launchConfig = $('#hidden_launch_config_input').val();
             }
         };
-        $scope.initController = function (launchConfigCount, vpcSubnetJson) {
-            vpcSubnetJson = vpcSubnetJson.replace(/__apos__/g, "\'").replace(/__dquote__/g, '\\"').replace(/__bslash__/g, "\\");
-            $scope.vpcSubnetList = JSON.parse(vpcSubnetJson);
+        $scope.initController = function (optionsJson) {
+            var options = JSON.parse(eucaUnescapeJson(optionsJson));
+            $scope.vpcSubnetList = options['vpc_subnet_choices_json'];
+            $scope.vpcNetwork = options['default_vpc_network'];
             $scope.initChosenSelectors();
             $scope.setInitialValues();
             $scope.checkLaunchConfigParam();
             $scope.setWatcher();
             $(document).ready(function () {
-                $scope.displayLaunchConfigWarning(launchConfigCount);
+                $scope.displayLaunchConfigWarning(options['launchconfigs_count']);
             });
             // Timeout is needed for the chosen widget to initialize
             $timeout(function () {
@@ -119,7 +120,7 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor'])
         $scope.adjustVPCSubnetSelectAbide = function () {
             // If VPC option is not chosen, remove the 'required' attribute
             // from the VPC subnet select field and set the value to be 'None'
-            if ($scope.vpcNetwork == '') {
+            if ($scope.vpcNetwork == 'None') {
                 $('#vpc_subnet').removeAttr('required');
                 $('#vpc_subnet').find('option').first().attr("selected",true);
             } else {
@@ -266,6 +267,11 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor'])
             // Unhide step 2 of summary
             if (nextStep === 2) {
                 $scope.summarySection.find('.step2').removeClass('hide');
+                $timeout(function() {
+                    // Workaround for the broken placeholer message issue
+                    // Wait until the rendering of the new tab page is complete
+                    $('#load_balancers').trigger("chosen:updated");
+                });
             }
         };
         $scope.handleSizeChange = function () {

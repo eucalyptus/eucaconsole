@@ -37,7 +37,7 @@ from pyramid.view import view_config
 from ..forms.securitygroups import SecurityGroupForm, SecurityGroupDeleteForm, SecurityGroupsFiltersForm
 from ..i18n import _
 from ..models import Notification
-from ..views import LandingPageView, TaggedItemView, BaseView, JSONResponse
+from ..views import BaseView, LandingPageView, TaggedItemView, JSONResponse
 from . import boto_error_handler
 from ..constants.internet_protocols import INTERNET_PROTOCOL_NUMBERS
 
@@ -54,11 +54,16 @@ class SecurityGroupsView(LandingPageView):
         self.json_items_endpoint = self.get_json_endpoint('securitygroups_json')
         self.delete_form = SecurityGroupDeleteForm(self.request, formdata=self.request.params or None)
         self.filters_form = SecurityGroupsFiltersForm(
-            self.request, vpc_conn=self.vpc_conn, formdata=self.request.params or None)
+            self.request, vpc_conn=self.vpc_conn, cloud_type=self.cloud_type,
+            formdata=self.request.params or None)
+        self.is_vpc_supported = BaseView.is_vpc_supported(request)
+        if not self.is_vpc_supported:
+            del self.filters_form.vpc_id
         self.render_dict = dict(
             prefix=self.prefix,
             delete_form=self.delete_form,
             filters_form=self.filters_form,
+            is_vpc_supported=self.is_vpc_supported,
         )
 
     @view_config(route_name='securitygroups', renderer=TEMPLATE)
@@ -212,6 +217,12 @@ class SecurityGroupView(TaggedItemView):
             self.request, self.vpc_conn, security_group=self.security_group, formdata=self.request.params or None)
         self.delete_form = SecurityGroupDeleteForm(self.request, formdata=self.request.params or None)
         self.tagged_obj = self.security_group
+        self.is_vpc_supported = BaseView.is_vpc_supported(request)
+        controller_options_json = BaseView.escape_json(json.dumps({
+            'default_vpc_network': self.get_default_vpc_network(),
+        }))
+        if not self.is_vpc_supported:
+            del self.securitygroup_form.securitygroup_vpc_network
         self.render_dict = dict(
             security_group=self.security_group,
             security_group_name=self.escape_braces(self.security_group.name) if self.security_group else '',
@@ -219,7 +230,25 @@ class SecurityGroupView(TaggedItemView):
             securitygroup_form=self.securitygroup_form,
             delete_form=self.delete_form,
             security_group_names=self.get_security_group_names(),
+            controller_options_json=controller_options_json,
+            is_vpc_supported=self.is_vpc_supported,
         )
+
+    def get_default_vpc_network(self):
+        default_vpc = self.request.session.get('default_vpc', [])
+        if self.is_vpc_supported:
+            if 'none' in default_vpc or 'None' in default_vpc:
+                if self.cloud_type == 'aws':
+                    return 'None'
+                # for euca, return the first vpc on the list
+                if self.vpc_conn:
+                    with boto_error_handler(self.request):
+                        vpc_networks = self.vpc_conn.get_all_vpcs()
+                        if vpc_networks:
+                            return vpc_networks[0].id
+            else:
+                return default_vpc[0]
+        return 'None'
 
     @view_config(route_name='securitygroup_view', renderer=TEMPLATE)
     def securitygroup_view(self):
@@ -244,7 +273,9 @@ class SecurityGroupView(TaggedItemView):
         if self.securitygroup_form.validate():
             name = self.request.params.get('name')
             description = self.request.params.get('description')
-            vpc_network = self.request.params.get('vpc_network')
+            vpc_network = self.request.params.get('securitygroup_vpc_network') or None
+            if vpc_network == 'None':
+                vpc_network = None
             tags_json = self.request.params.get('tags')
             with boto_error_handler(self.request, self.request.route_path('securitygroups')):
                 self.log_request(_(u"Creating security group {0}").format(name))
@@ -252,8 +283,9 @@ class SecurityGroupView(TaggedItemView):
                 # Need to retrieve security group to obtain complete VPC data
                 new_security_group = self.get_security_group(temp_new_security_group.id)
                 self.add_rules(security_group=new_security_group)
-                self.revoke_all_rules(security_group=new_security_group, traffic_type='egress')
-                self.add_rules(security_group=new_security_group, traffic_type='egress')
+                if vpc_network is not None:
+                    self.revoke_all_rules(security_group=new_security_group, traffic_type='egress')
+                    self.add_rules(security_group=new_security_group, traffic_type='egress')
                 if tags_json:
                     tags = json.loads(tags_json)
                     for tagname, tagvalue in tags.items():
@@ -275,6 +307,8 @@ class SecurityGroupView(TaggedItemView):
 
     @view_config(route_name='securitygroup_update', request_method='POST', renderer=TEMPLATE)
     def securitygroup_update(self):
+        if self.request.params.get('securitygroup_vpc_network') is None: 
+            del self.securitygroup_form.securitygroup_vpc_network
         if self.securitygroup_form.validate():
             # Update tags and rules
             location = self.request.route_path('securitygroup_view', id=self.security_group.id)

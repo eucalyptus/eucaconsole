@@ -3,13 +3,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link rel="selenium.base" href="https://10.111.5.59/" />
-<title>verify-instance-was-launched-in-asg_1</title>
+<link rel="selenium.base" href="http://10.111.5.153:8888/" />
+<title>verify-folder-visible-on-bucket-content-page</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">verify-instance-was-launched-in-asg_1</td></tr>
+<tr><td rowspan="1" colspan="3">verify-folder-visible-on-bucket-content-page</td></tr>
 </thead><tbody>
 <tr>
 	<td>setSpeed</td>
@@ -32,41 +32,30 @@
 	<td></td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>id=resource-menu-autoscaling</td>
+	<td>waitForVisible</td>
+	<td>//span[@id=&quot;tile-item-dropdown_buckets&quot;]/../div/a/i</td>
 	<td></td>
 </tr>
 <tr>
 	<td>clickAndWait</td>
-	<td>id=resource-menuitem-scalinggroups</td>
+	<td>//span[@id=&quot;tile-item-dropdown_buckets&quot;]/../div/a/i</td>
 	<td></td>
 </tr>
 <tr>
-	<td>echo</td>
-	<td>Verifying 1 running instance in ${asg_1} shows up on landing page</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForText</td>
-	<td>//a[@href=&quot;/scalinggroups/Auto%20Scaling%20Group%20${str_1}/instances&quot;]</td>
-	<td>1</td>
-</tr>
-<tr>
-	<td>clickAt</td>
-	<td>css=#table-item-dropdown_Auto_20Scaling_20Group_20${str_1}&gt; i.fi-widget</td>
+	<td>waitForVisible</td>
+	<td>//td/a[@href=&quot;/buckets/${bucket_name}/contents/&quot;]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//ul[@id='item-dropdown_Auto_20Scaling_20Group_20${str_1}']/li[2]/a </td>
+	<td>//td/a[@href=&quot;/buckets/${bucket_name}/contents/&quot;]</td>
 	<td></td>
 </tr>
 <tr>
-	<td>waitForElementPresent</td>
-	<td>link=${lc_1}</td>
+	<td>waitForVisible</td>
+	<td>link=${folder_name}</td>
 	<td></td>
 </tr>
-
 </tbody></table>
 </body>
 </html>

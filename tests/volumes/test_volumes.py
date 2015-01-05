@@ -36,7 +36,7 @@ from eucaconsole.forms import BaseSecureForm
 from eucaconsole.forms.volumes import (
     VolumeForm, DeleteVolumeForm, CreateSnapshotForm, DeleteSnapshotForm, AttachForm, DetachForm)
 from eucaconsole.views import TaggedItemView
-from eucaconsole.views.volumes import VolumesView, VolumesJsonView, VolumeView
+from eucaconsole.views.volumes import VolumesView, VolumeView
 
 from tests import BaseViewTestCase, BaseFormTestCase
 

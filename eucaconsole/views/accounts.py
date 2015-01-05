@@ -31,7 +31,7 @@ Pyramid views for Eucalyptus and AWS Accounts
 import csv
 import simplejson as json
 import StringIO
-from urllib import urlencode
+from urllib import urlencode, unquote
 
 from boto.exception import BotoServerError
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
@@ -159,6 +159,7 @@ class AccountView(BaseView):
         self.account_update_form = AccountUpdateForm(self.request, account=self.account, formdata=self.request.params or None)
         self.delete_form = DeleteAccountForm(self.request, formdata=self.request.params)
         self.quotas_form = QuotasForm(self.request, account=self.account, conn=self.conn)
+        self.account_name_validation_error_msg = _(u"Account names must be between 3 and 63 characters long, and may contain lower case letters, numbers, \'.\'. \'@\' and \'-\', and cannot contain spaces.")
         self.render_dict = dict(
             account=self.account,
             account_route_id=self.account_route_id,
@@ -167,6 +168,7 @@ class AccountView(BaseView):
             delete_form=self.delete_form,
             quota_err=_(u"Requires non-negative integer (or may be empty)"),
             quotas_form=self.quotas_form,
+            account_name_validation_error_msg=self.account_name_validation_error_msg,
         )
 
     def get_account(self):
@@ -277,7 +279,7 @@ class AccountView(BaseView):
             raise HTTPNotFound()
         with boto_error_handler(self.request, location):
             self.log_request(_(u"Deleting account {0}").format(self.account.account_name))
-            params = {'AccountName': self.account.account_name, 'IsRecursive': 'true'}
+            params = {'AccountName': self.account.account_name, 'Recursive': 'true'}
             self.conn.get_response('DeleteAccount', params)
             msg = _(u'Successfully deleted account')
             self.request.session.flash(msg, queue=Notification.SUCCESS)
@@ -304,7 +306,7 @@ class AccountView(BaseView):
         with boto_error_handler(self.request):
             policy_name = self.request.matchdict.get('policy')
             policy = self.conn.get_response('GetAccountPolicy', params={'AccountName':self.account.account_name, 'PolicyName':policy_name}, verb='POST')
-            parsed = json.loads(policy.policy_document)
+            parsed = json.loads(unquote(policy.policy_document))
             return dict(results=json.dumps(parsed, indent=2))
 
     @view_config(route_name='account_update_policy', request_method='POST', renderer='json')

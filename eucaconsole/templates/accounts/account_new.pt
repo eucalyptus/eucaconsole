@@ -33,7 +33,7 @@
             <div class="panel">
                 <!--! TODO: Move account name error_msg to view and mark for i18n -->
                 <div tal:define="html_attrs {'pattern': '^[a-z0-9]{1}[a-z0-9\.\@\-]{1,61}[a-z0-9]{1}$',
-                         'error_msg': 'Account names must be between 3 and 63 characters long, and may contain lower case letters, numbers, \'.\'. \'@\' and \'-\', and cannot contain spaces.'};">
+                         'error_msg': account_name_validation_error_msg};">
                     <form id="account-new-form" ng-submit="submit($event)" data-abide="abide">
                         ${structure:account_form['csrf_token']}
                         <div class="section columns">
