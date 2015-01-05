@@ -50,11 +50,12 @@ class ELBsFiltersForm(BaseSecureForm):
     security_groups = wtforms.SelectMultipleField(label=_(u'Security group'))
 
     def __init__(self, request, cloud_type='euca', ec2_conn=None, **kwargs):
-        super(LaunchConfigsFiltersForm, self).__init__(request, **kwargs)
+        super(ELBsFiltersForm, self).__init__(request, **kwargs)
         self.request = request
         self.cloud_type = cloud_type
         self.ec2_conn = ec2_conn
         self.ec2_choices_manager = ChoicesManager(conn=ec2_conn)
+        region = request.session.get('region')
         self.availability_zones.choices = self.ec2_choices_manager.availability_zones(region, add_blank=False)
         self.instance_type.choices = self.ec2_choices_manager.instance_types(
             add_blank=False, cloud_type=self.cloud_type, add_description=False)

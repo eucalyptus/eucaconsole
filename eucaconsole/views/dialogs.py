@@ -206,6 +206,17 @@ def scalinggroup_dialogs(context, request, scaling_group=None, landingpage=False
         delete_form=delete_form,
     )
 
+@panel_config('elb_dialogs', renderer='../templates/dialogs/elb_dialogs.pt')
+def elb_dialogs(context, request, elb=None, in_use=False, landingpage=False, delete_form=None):
+    """ Modal dialogs for load balancers landing and detail page."""
+    return dict(
+        elb=elb,
+        elb_name=BaseView.escape_braces(elb.name) if elb else '',
+        in_use=in_use,
+        landingpage=landingpage,
+        delete_form=delete_form,
+    )
+
 
 @panel_config('account_dialogs', renderer='../templates/dialogs/account_dialogs.pt')
 def account_dialogs(context, request, account=None, landingpage=False, delete_form=None):
