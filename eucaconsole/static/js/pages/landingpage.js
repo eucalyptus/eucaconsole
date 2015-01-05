@@ -254,7 +254,26 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch'])
             
         };
         $scope.$on('searchUpdated', function($event, query) {
-            window.location.search = query;
+            // update url
+            var url = window.location.href;
+            if (url.indexOf("?") > -1) {
+                url = url.split("?")[0];
+            }
+            if (query.length > 0) {
+                url = url + "?" + query;
+            }
+            window.history.pushState(query, "", url);
+            // update json endpont and refresh table
+            url = $scope.jsonEndpoint;
+            if (url.indexOf("?") > -1) {
+                url = url.split("?")[0];
+            }
+            if (query.length > 0) {
+                url = url + "?" + query;
+            }
+            $scope.jsonEndpoint = url;
+            $scope.itemsLoading=true;
+            $scope.getItems();
         });
         $scope.$on('textSearch', function($event, text, filter_keys) {
             $scope.searchFilter = text;

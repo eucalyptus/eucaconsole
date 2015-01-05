@@ -100,3 +100,7 @@ class SecurityGroupsFiltersForm(BaseSecureForm):
         if self.cloud_type == 'aws':
             self.vpc_id.choices.append(('None', _(u'No VPC')))
         self.vpc_id.choices = sorted(self.vpc_id.choices)
+        self.facets = [
+            {'name':'vpc_id', 'label':self.vpc_id.label.text, 'options': self.getOptionsFromChoices(self.vpc_id.choices)},
+            {'name':'tags', 'label':self.tags.label.text, 'options':[]},
+        ]
