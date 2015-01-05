@@ -13,6 +13,18 @@ angular.module('ImagesPage', ['LandingPage', 'EucaConsoleUtils'])
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.imagesUrl = options['snapshot_images_json_url'];
             $scope.imageCancelUrl = options['image_cancel_url'];
+            $scope.cloudType = options['cloud_type'];
+            if ($scope.cloudType == 'aws') {
+                $scope.setInitialOwner();
+            }
+        };
+        $scope.setInitialOwner = function () {
+            // Set "owned by Amazon" as default filter if on AWS
+            $(document).ready(function () {
+                if (document.URL.indexOf('owner_alias') === -1) {
+                    $('select[name="owner_alias"]').find('option[value="amazon"]').prop('selected', true);
+                }
+            });
         };
         $scope.revealModal = function (action, image) {
             var modal = $('#' + action + '-image-modal');

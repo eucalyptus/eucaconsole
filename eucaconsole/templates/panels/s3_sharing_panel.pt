@@ -12,35 +12,34 @@
             Only adjust these options if you want them to change.
         </p>
     </div>
-    <div id="sharing-acls">
+    <div id="sharing-acls" ng-cloak="">
         <div class="items">
-            <span class="label radius secondary grantentry" ng-repeat="grant in grantsArray" ng-cloak="cloak">
+            <span class="label radius secondary grantentry" ng-repeat="grant in grantsArray">
                 {{ grant.display_name || grant.id || grant.email_address || grant.uri.split('/').pop() }}: {{ grant.permission }}
                 <a href="#" class="remove" ng-click="removeGrant($index, $event)"
                    title="Remove permission"><i class="fi-x"></i></a>
             </span>
         </div>
-        <h6 i18n:translate="" class="sharing-label">Add a grantee:</h6>
+        <div class="subheader">
+            <span class="subsection-label" ng-show="grantsArray.length == 0" i18n:translate="">
+                Add a grantee
+            </span>
+            <span class="subsection-label" ng-show="grantsArray.length" i18n:translate="">
+                Add another grantee
+            </span>
+            :
+        </div>
         <div id="manual-acl-wrapper">
             <div ng-show="aclType == 'manual'" class="manual-controls">
-                <div class="subheader" ng-cloak="">
-                    <span class="subsection-label" ng-show="grantsArray.length == 0" i18n:translate="">
-                        Add a grantee
-                    </span>
-                    <span class="subsection-label" ng-show="grantsArray.length" i18n:translate="">
-                        Add another grantee
-                    </span>
-                    :
-                </div>
                 <div class="row controls-wrapper" id="controls_share_account">
-                    <div class="small-3 columns">
+                    <div class="small-2 columns">
                         <label class="right">
                             ${sharing_form.share_account.label.text}&nbsp;<span class="req">*</span>
                             <span class="helptext-icon" data-tooltip=""
                                   title="${sharing_form.share_account.help_text}">?</span>
                         </label>
                     </div>
-                    <div class="small-9 columns">
+                    <div class="small-10 columns">
                         <!--! NOTE: We've hard-coded the share_account HTML to allow a custom chosen input -->
                         <select id="share_account" name="share_account">
                             <option value="">${account_placeholder_text}</option>
@@ -49,9 +48,9 @@
                         <small class="error">${sharing_form.share_account_error_msg}</small>
                     </div>
                 </div>
-                ${panel('form_field', field=sharing_form.share_permissions, leftcol_width=3, rightcol_width=9)}
+                ${panel('form_field', field=sharing_form.share_permissions, leftcol_width=2, rightcol_width=10)}
                 <div class="row controls-wrapper">
-                    <div class="small-9 columns right">
+                    <div class="small-10 columns right">
                         <a class="button round tiny" ng-click="addGrant($event)" id="add-s3acl-btn"
                            ng-disabled="addAccountBtnDisabled" i18n:translate="">
                             Add Grantee

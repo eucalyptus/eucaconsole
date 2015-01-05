@@ -29,6 +29,7 @@ Form for Quotas
 
 """
 import simplejson as json
+from urllib import unquote
 
 from boto.exception import BotoServerError
 
@@ -92,7 +93,7 @@ class QuotasForm(BaseSecureForm):
                 pass
 
     def scan_policy(self, policy_json):
-        policy = json.loads(policy_json)
+        policy = json.loads(unquote(policy_json))
         for s in policy['Statement']:
             try:    # skip statements without conditions
                 s['Condition']

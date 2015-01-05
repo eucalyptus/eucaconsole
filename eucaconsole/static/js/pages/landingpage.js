@@ -5,8 +5,8 @@
  */
 
 
-angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch', 'EucaConsoleUtils'])
-    .controller('ItemsCtrl', function ($scope, $http, $timeout, $sanitize, eucaHandleErrorS3) {
+angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch'])
+    .controller('ItemsCtrl', function ($scope, $http, $timeout, $sanitize) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.items = [];
         $scope.itemsLoading = true;
@@ -166,7 +166,15 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch', 'Eu
                     $scope.clickOpenDropdown();
                 });
             }).error(function (oData, status) {
-                eucaHandleErrorS3(oData, status);
+                var errorMsg = oData['message'] || null;
+                if (errorMsg) {
+                    if (status === 403 || status === 400) {  // S3 token expiration responses return a 400
+                        $('#timed-out-modal').foundation('reveal', 'open');
+                    } else {
+                        Notify.failure(errorMsg);
+                    }
+                }
+                
             });
         };
         /*  Filter items client side based on search criteria.

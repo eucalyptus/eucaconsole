@@ -30,7 +30,7 @@ Pyramid views for Eucalyptus and AWS Groups
 """
 from datetime import datetime
 import simplejson as json
-from urllib import urlencode
+from urllib import urlencode, unquote
 
 from boto.exception import BotoServerError
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
@@ -351,7 +351,7 @@ class GroupView(BaseView):
         with boto_error_handler(self.request):
             policy_name = self.request.matchdict.get('policy')
             policy = self.conn.get_group_policy(group_name=self.group.group_name, policy_name=policy_name)
-            parsed = json.loads(policy.policy_document)
+            parsed = json.loads(unquote(policy.policy_document))
             return dict(results=json.dumps(parsed, indent=2))
 
     @view_config(route_name='group_update_policy', request_method='POST', renderer='json')

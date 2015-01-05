@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="https://10.111.5.59/" />
+<title>verify-instance-data-displays-on-detail-page</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">verify-instance-data-displays-on-detail-page</td></tr>
+</thead><tbody>
+<tr>
+	<td>setSpeed</td>
+	<td>500</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertVisible</td>
+	<td>id=resource-menu-dashboard</td>
+	<td></td>
+</tr>
+<tr>
+	<td>setTimeout</td>
+	<td>120000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=resource-menu-dashboard</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=resource-menu-instances</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForVisible</td>
+	<td>//a[@href=&quot;/instances/${instance_id}&quot;]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//a[@href=&quot;/instances/${instance_id}&quot;]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForText</td>
+	<td>//form[@id=&quot;instance-form&quot;]/div[1]/div/span</td>
+	<td>running</td>
+</tr>
+<tr>
+	<td>verifyAttribute</td>
+	<td>//input[@id=&quot;name&quot;]@value</td>
+	<td>${instance_name}</td>
+</tr>
+<tr>
+	<td>assertText</td>
+	<td>//form[@id=&quot;instance-form&quot;]/div[7]/div[2]</td>
+	<td>${instance_id}</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>Verifying keypair ${keypair_name}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>store</td>
+	<td>None (advanced option)</td>
+	<td>none</td>
+</tr>
+<tr>
+	<td>gotoIf</td>
+	<td>storedVars['keypair_name']!==storedVars['none']</td>
+	<td>KEY</td>
+</tr>
+<tr>
+	<td>assertText</td>
+	<td>//form[@id=&quot;instance-form&quot;]/div[13]/div[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>gotoIf</td>
+	<td>storedVars['keypair_name']==storedVars['none']</td>
+	<td>NOKEY</td>
+</tr>
+<tr>
+	<td>label</td>
+	<td>KEY</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertText</td>
+	<td>//form[@id=&quot;instance-form&quot;]/div[13]/div[2]</td>
+	<td>${keypair_name}</td>
+</tr>
+<tr>
+	<td>label</td>
+	<td>NOKEY</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>Verifying security group ${s_group_name}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertText</td>
+	<td>//form[@id=&quot;instance-form&quot;]/div[14]/div/div/a</td>
+	<td>${s_group_name}</td>
+</tr>
+</tbody></table>
+</body>
+</html>

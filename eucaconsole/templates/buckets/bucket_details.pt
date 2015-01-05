@@ -34,7 +34,7 @@
                                 Create folder
                             </a>
                         </li>
-                        <li>
+                        <li tal:condition="layout.file_uploads_enabled">
                             <a id="upload-file-action" i18n:translate=""
                                href="${request.route_path('bucket_upload', name=bucket_name, subpath='')}">
                                 Upload file(s)

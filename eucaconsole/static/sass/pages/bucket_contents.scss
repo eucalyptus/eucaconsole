@@ -51,6 +51,7 @@
         position: absolute;
         background-color: lighten($euca-darkblue, 20%);
         background-image: linear-gradient(-45deg, rgba(255, 255, 255, .2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .2) 50%, rgba(255, 255, 255, .2) 75%, transparent 75%, transparent);
+        background-size: 50px 50px;
         -webkit-animation: move 2s linear infinite;
         animation: move 2s linear infinite;
         padding-left: 3px;

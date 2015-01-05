@@ -8,7 +8,9 @@
             ${structure:securitygroup_form['csrf_token']}
             ${panel('form_field', field=securitygroup_form['name'], ng_attrs={'model': 'newSecurityGroupName'}, leftcol_width=3, rightcol_width=9)}
             ${panel('form_field', field=securitygroup_form['description'], ng_attrs={'model': 'newSecurityGroupDesc'}, leftcol_width=3, rightcol_width=9)}
-            ${panel('form_field', field=securitygroup_form['vpc_network'], ng_attrs={'model': 'securityGroupVPC'}, leftcol_width=3, rightcol_width=9)}
+            <div tal:condition="is_vpc_supported">
+                ${panel('form_field', field=securitygroup_form['securitygroup_vpc_network'], ng_attrs={'model': 'securityGroupVPC'}, leftcol_width=3, rightcol_width=9)}
+            </div>
             <hr />
             ${panel('securitygroup_rules')}
             <hr />

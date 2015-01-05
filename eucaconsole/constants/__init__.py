@@ -55,6 +55,11 @@ AWS_REGIONS = (
         endpoints=dict(ec2='ec2.eu-west-1.amazonaws.com')
     ),
     dict(
+        name='eu-central-1',
+        label='EU (Frankfurt)',
+        endpoints=dict(ec2='ec2.eu-central-1.amazonaws.com')
+    ),
+    dict(
         name='ap-southeast-1',
         label='Asia Pacific (Singapore)',
         endpoints=dict(ec2='ec2.ap-southeast-1.amazonaws.com')

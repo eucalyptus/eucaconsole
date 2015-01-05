@@ -33,6 +33,7 @@
 .summary #tag-preview { word-break: break-all; }
 
 .rules-display .rules-title { word-break: break-all; }
+.rules-display .rules-title .normal-word-break { word-break: normal; }
 
 /* ----------------------------------------- Media Queries
 ----------------------------------------- */

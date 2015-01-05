@@ -138,6 +138,7 @@ class IAMPolicyWizardView(BaseView):
             'awsRegions': AWS_REGIONS,
             'existingPolicies': self.get_existing_policies(),
             'createPolicyUrl': self.request.route_path('iam_policy_create'),
+            'policyActions': permissions.POLICY_ACTIONS,
         }))
 
     def get_existing_policies(self):

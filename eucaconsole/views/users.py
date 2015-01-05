@@ -36,7 +36,7 @@ import StringIO
 import simplejson as json
 
 from urllib2 import HTTPError, URLError
-from urllib import urlencode
+from urllib import urlencode, unquote
 
 from boto.exception import BotoServerError
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
@@ -381,7 +381,7 @@ class UserView(BaseView):
                 params={'UserName': self.user.user_name, 'PolicyName': policy_name, 'DelegateAccount': as_account},
                 verb='POST'
             )
-            parsed = json.loads(policy.policy_document)
+            parsed = json.loads(unquote(policy.policy_document))
             return dict(results=json.dumps(parsed, indent=2))
 
     @view_config(route_name='user_create', renderer='json', request_method='POST', xhr=True)
