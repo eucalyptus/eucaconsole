@@ -122,7 +122,8 @@ class IPAddressesView(LandingPageView):
             public_ip = self.request.params.get('public_ip')
             with boto_error_handler(self.request, self.location):
                 self.log_request(_(u"Disassociating ElasticIP {0}").format(public_ip))
-                self.conn.disassociate_address(public_ip)
+                elastic_ip = self.get_elastic_ip(public_ip)
+                elastic_ip.disassociate()
                 template = _(u'Successfully disassociated IP {ip} from instance')
                 msg = template.format(ip=public_ip)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
