@@ -34,7 +34,7 @@
                                 Disassociate from instance
                             </a>
                         </li>
-                        <li>
+                        <li tal:condition="not eip.instance_id">
                             <a id="release-ip-action" data-reveal-id="release-ip-modal"
                                i18n:translate="">Release IP address to cloud
                             </a>
@@ -42,7 +42,7 @@
                     </metal:actions>
                 </metal:block>
                 <div>
-                    <div class="row controls-wrapper readonly">
+                    <div class="row controls-wrapper readonly" ng-cloak="">
                         <div class="small-4 columns"><label i18n:translate="">Scope</label></div>
                         <div class="small-8 columns value" ng-show="'${eip.domain}' == 'vpc'" i18n:translate="">VPC</div>
                         <div class="small-8 columns value" ng-show="'${eip.domain}' == 'standard'" i18n:translate="">Standard</div>
