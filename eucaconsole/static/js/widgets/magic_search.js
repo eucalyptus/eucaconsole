@@ -245,6 +245,7 @@ angular.module('MagicSearch', [])
                 $scope.currentSearch = [];
                 $('#search-input').val('');
                 $scope.$emit('searchUpdated', '');
+                $scope.$emit('textSearch', '', $scope.filter_keys);
             }
         };
         $scope.isMatchLabel = function(label) {
