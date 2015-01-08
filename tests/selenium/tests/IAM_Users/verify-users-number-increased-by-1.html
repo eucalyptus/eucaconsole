@@ -32,27 +32,27 @@
 </tr>
 <tr>
 	<td>waitForVisible</td>
-	<td>id=accounts-count</td>
+	<td>id=users-count</td>
 	<td></td>
 </tr>
 <tr>
 	<td>storeEval</td>
-	<td>${iam_accounts}+1;</td>
-	<td>iam_accounts_new</td>
+	<td>${iam_users}+1;</td>
+	<td>iam_users_new</td>
 </tr>
 <tr>
 	<td>echo</td>
-	<td>${iam_accounts_new}</td>
+	<td>${iam_users_new}</td>
 	<td></td>
 </tr>
 <tr>
 	<td>waitForVisible</td>
-	<td>id=accounts-count</td>
+	<td>id=users-count</td>
 	<td></td>
 </tr>
 <tr>
 	<td>storeText</td>
-	<td>id=accounts-count</td>
+	<td>id=users-count</td>
 	<td>count</td>
 </tr>
 <tr>
@@ -62,7 +62,7 @@
 </tr>
 <tr>
 	<td>while</td>
-	<td>${count}&lt;${iam_accounts_new} &amp;&amp; ${k}&lt;5</td>
+	<td>${count}&lt;${iam_users_new} &amp;&amp; ${k}&lt;5</td>
 	<td></td>
 </tr>
 <tr>
@@ -77,12 +77,12 @@
 </tr>
 <tr>
 	<td>waitForVisible</td>
-	<td>id=accounts-count</td>
+	<td>id=users-count</td>
 	<td></td>
 </tr>
 <tr>
 	<td>storeText</td>
-	<td>id=accounts-count</td>
+	<td>id=users-count</td>
 	<td>count</td>
 </tr>
 <tr>
@@ -97,22 +97,22 @@
 </tr>
 <tr>
 	<td>waitForVisible</td>
-	<td>id=accounts-count</td>
+	<td>id=users-count</td>
 	<td></td>
 </tr>
 <tr>
 	<td>verifyText</td>
-	<td>id=accounts-count</td>
-	<td>${iam_accounts_new}</td>
+	<td>id=users-count</td>
+	<td>${iam_users_new}</td>
 </tr>
 <tr>
 	<td>storeEval</td>
-	<td>${iam_accounts_new}</td>
-	<td>iam_accounts</td>
+	<td>${iam_users_new}</td>
+	<td>iam_users</td>
 </tr>
 <tr>
 	<td>echo</td>
-	<td>${iam_accounts}</td>
+	<td>${iam_users}</td>
 	<td></td>
 </tr>
 </tbody></table>

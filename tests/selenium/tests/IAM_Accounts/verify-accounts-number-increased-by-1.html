@@ -1,21 +1,120 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-  <meta content="text/html; charset=UTF-8" http-equiv="content-type" />
-  <title>Test Suite</title>
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>verify-s.group-number-increased-by-1</title>
 </head>
 <body>
-<table id="suiteTable" cellpadding="1" cellspacing="1" border="1" class="selenium"><tbody>
-<tr><td><b>Test Suite</b></td></tr>
-<tr><td><a href="../koala_login.html">koala_login</a></td></tr>
-<tr><td><a href="../IAM_Users/get_dashboard_counts.html">get_dashboard_counts</a></td></tr>
-<tr><td><a href="add-empty-account-with-user.html">add_account_with_user</a></td></tr>
-<tr><td><a href="../IAM_Users/verify-users-number-increased-by-1.html">verify-accounts-number-increased-by-1</a></td></tr>
-<tr><td><a href="add-access-policy-to-account.html">add_access_policy</a></td></tr>
-<tr><td><a href="add-quota-policy.html">add-quota-policy</a></td></tr>
-<tr><td><a href="delete-policies.html">delete_policies</a></td></tr>
-<tr><td><a href="delete-account.html">delete-account</a></td></tr>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">verify-s.group-number-2</td></tr>
+</thead><tbody>
+<tr>
+	<td>setSpeed</td>
+	<td>500</td>
+	<td></td>
+</tr>
+<tr>
+	<td>setTimeout</td>
+	<td>120000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertVisible</td>
+	<td>id=resource-menu-dashboard</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=resource-menu-dashboard</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForVisible</td>
+	<td>id=accounts-count</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeEval</td>
+	<td>${iam_accounts}+1;</td>
+	<td>iam_accounts_new</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${iam_accounts_new}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForVisible</td>
+	<td>id=accounts-count</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>id=accounts-count</td>
+	<td>count</td>
+</tr>
+<tr>
+	<td>storeEval</td>
+	<td>1</td>
+	<td>k</td>
+</tr>
+<tr>
+	<td>while</td>
+	<td>${count}&lt;${iam_accounts_new} &amp;&amp; ${k}&lt;5</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>10000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>refreshAndWait</td>
+	<td></td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForVisible</td>
+	<td>id=accounts-count</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>id=accounts-count</td>
+	<td>count</td>
+</tr>
+<tr>
+	<td>storeEval</td>
+	<td>${k}+1</td>
+	<td>k</td>
+</tr>
+<tr>
+	<td>endWhile</td>
+	<td></td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForVisible</td>
+	<td>id=accounts-count</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>id=accounts-count</td>
+	<td>${iam_accounts_new}</td>
+</tr>
+<tr>
+	<td>storeEval</td>
+	<td>${iam_accounts_new}</td>
+	<td>iam_accounts</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${iam_accounts}</td>
+	<td></td>
+</tr>
 </tbody></table>
 </body>
 </html>
