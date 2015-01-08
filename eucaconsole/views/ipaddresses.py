@@ -187,7 +187,7 @@ class IPAddressesJsonView(LandingPageView):
                     allocation_id=address.allocation_id,
                     instance_id=address.instance_id,
                     instance_name=TaggedItemView.get_display_name(
-                        instances[address.instance_id]) if address.instance_id else address.instance_id,
+                        instances[address.instance_id]) if address.instance_id in instances else address.instance_id,
                     domain=address.domain,
                 ))
             return dict(results=ipaddresses)
