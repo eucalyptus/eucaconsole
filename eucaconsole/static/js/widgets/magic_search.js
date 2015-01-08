@@ -177,7 +177,7 @@ angular.module('MagicSearch', [])
             }
         });
         // enable text entry when mouse clicked anywhere in search box
-        $('#search-main-area').on("click", function($event) {
+        $('.search-bar').on("click", function($event) {
             $('#search-input').trigger("focus");
             $scope.showMenu();
         });
