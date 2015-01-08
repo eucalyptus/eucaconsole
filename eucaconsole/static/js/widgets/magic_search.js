@@ -12,7 +12,7 @@ angular.module('MagicSearch', [])
             facetsJson = facetsJson.replace(/__apos__/g, "\'").replace(/__dquote__/g, '\\"').replace(/__bslash__/g, "\\");
             $scope.facetsObj = JSON.parse(facetsJson);
             // set facets selected and remove them from facetsObj
-            var initialFacets = window.location.search
+            var initialFacets = window.location.search;
             if (initialFacets.indexOf('?') == 0) {
                 initialFacets = initialFacets.slice(1);
             }
@@ -59,6 +59,7 @@ angular.module('MagicSearch', [])
         };
         $('#search-input').on('keydown', function($event) {
             var search_val = $('#search-input').val();
+            var i, idx, label;
             var key = $event.keyCode || $event.charCode;
             if (key == 8 || key == 46) {
                 search_val = search_val.substring(0, search_val.length-1);
@@ -113,7 +114,7 @@ angular.module('MagicSearch', [])
                 }
                 // if text search treat as search
                 else {
-                    for (var i=0; i<$scope.currentSearch.length; i++) {
+                    for (i=0; i<$scope.currentSearch.length; i++) {
                         if ($scope.currentSearch[i]['name'].indexOf('text') == 0) {
                             $scope.currentSearch.splice(i, 1);
                         }
@@ -131,12 +132,12 @@ angular.module('MagicSearch', [])
                 if ($scope.facetSelected == undefined) {
                     console.log("filtering facets : "+search_val + " len : "+ search_val.length);
                     $scope.filteredObj = $scope.facetsObj;
-                    filtered = [];
-                    for (var i=0; i<$scope.filteredObj.length; i++) {
+                    var filtered = [];
+                    for (i=0; i<$scope.filteredObj.length; i++) {
                         var facet = $scope.filteredObj[i];
-                        var idx = facet.label.toLowerCase().indexOf(search_val);
+                        idx = facet.label.toLowerCase().indexOf(search_val);
                         if (idx > -1) {
-                            var label = [facet.label.substring(0, idx), facet.label.substring(idx, idx + search_val.length), facet.label.substring(idx + search_val.length)];
+                            label = [facet.label.substring(0, idx), facet.label.substring(idx, idx + search_val.length), facet.label.substring(idx + search_val.length)];
                             filtered.push({'name':facet.name, 'label':label, 'options':facet.options});
                         }
                     }
@@ -154,11 +155,11 @@ angular.module('MagicSearch', [])
                 else {  // assume option search
                     $scope.filteredOptions = $scope.facetOptions;
                     filtered = [];
-                    for (var i=0; i<$scope.filteredOptions.length; i++) {
+                    for (i=0; i<$scope.filteredOptions.length; i++) {
                         var option = $scope.filteredOptions[i];
-                        var idx = option.label.toLowerCase().indexOf(search_val);
+                        idx = option.label.toLowerCase().indexOf(search_val);
                         if (idx > -1) {
-                            var label = [option.label.substring(0, idx), option.label.substring(idx, idx + search_val.length), option.label.substring(idx + search_val.length)];
+                            label = [option.label.substring(0, idx), option.label.substring(idx, idx + search_val.length), option.label.substring(idx + search_val.length)];
                             filtered.push({'key':option.key, 'label':label});
                         }
                     }
@@ -204,7 +205,7 @@ angular.module('MagicSearch', [])
             var curr = $scope.facetSelected;
             curr.name = curr.name + '=' + name;
             curr.label[1] = $scope.facetOptions[$index].label;
-            $scope.currentSearch.push(curr); //{'name':name, 'label':[$scope.facetsObj[$index].label, '']});
+            $scope.currentSearch.push(curr);
             $scope.resetState();
             $scope.emitQuery();
             $scope.showMenu();
