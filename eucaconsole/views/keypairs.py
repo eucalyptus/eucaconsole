@@ -104,7 +104,7 @@ class KeyPairView(BaseView):
         super(KeyPairView, self).__init__(request)
         self.conn = self.get_connection()
         self.keypair = self.get_keypair()
-        self.keypair_route_id = self.request.matchdict.get('id')
+        self.keypair_route_id = '/'.join(self.request.subpath)
         self.keypair_form = KeyPairForm(self.request, keypair=self.keypair, formdata=self.request.params or None)
         self.keypair_import_form = KeyPairImportForm(
             self.request, keypair=self.keypair, formdata=self.request.params or None)
@@ -129,7 +129,7 @@ class KeyPairView(BaseView):
         )
 
     def get_keypair(self):
-        keypair_param = self.request.matchdict.get('id')
+        keypair_param = '/'.join(self.request.subpath)
         if keypair_param == "new" or keypair_param == "new2":
             return None
         keypairs_param = [keypair_param]
@@ -157,7 +157,7 @@ class KeyPairView(BaseView):
     def keypair_create(self):
         if self.keypair_form.validate():
             name = self.request.params.get('name')
-            location = self.request.route_path('keypair_view', id=name)
+            location = self.request.route_path('keypair_view', subpath=name)
             with boto_error_handler(self.request, location):
                 self.log_request(_(u"Creating keypair ")+name)
                 new_keypair = self.conn.create_key_pair(name)
@@ -172,7 +172,7 @@ class KeyPairView(BaseView):
                 resp_body = json.dumps(dict(message=msg, payload=keypair_material))
                 return Response(status=200, body=resp_body, content_type='application/x-pem-file;charset=ISO-8859-1')
             else:
-                location = self.request.route_path('keypair_view', id=name)
+                location = self.request.route_path('keypair_view', subpath=name)
                 return HTTPFound(location=location)
         if self.request.is_xhr:
             form_errors = ', '.join(self.keypair_form.get_errors_list())
@@ -186,8 +186,8 @@ class KeyPairView(BaseView):
         if self.keypair_form.validate():
             name = self.request.params.get('name')
             key_material = self.request.params.get('key_material')
-            failure_location = self.request.route_path('keypair_view', id='new2')  # Return to import form if failure
-            success_location = self.request.route_path('keypair_view', id=name)
+            failure_location = self.request.route_path('keypair_view', subpath='new2')  # Return to import form if failure
+            success_location = self.request.route_path('keypair_view', subpath=name)
             with boto_error_handler(self.request, failure_location):
                 self.log_request(_(u"Importing keypair ") + name)
                 self.conn.import_key_pair(name, key_material)
