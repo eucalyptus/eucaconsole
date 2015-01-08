@@ -127,6 +127,10 @@ class BaseInstanceView(BaseView):
             rules_dict[security_group.id] = rules
         return rules_dict
 
+    def get_ip_address(self, ip_address):
+        ip_addresses = self.conn.get_all_addresses(addresses=[ip_address]) if self.conn else []
+        return ip_addresses[0] if ip_addresses else []
+
     def get_vpc_subnet_display(self, subnet_id):
         if self.vpc_conn and subnet_id:
             with boto_error_handler(self.request):
@@ -296,7 +300,11 @@ class InstancesView(LandingPageView, BaseInstanceView):
             with boto_error_handler(self.request, self.location):
                 new_ip = self.request.params.get('ip_address')
                 self.log_request(_(u"Associating IP {0} with instances {1}").format(new_ip, instance_id))
-                self.conn.associate_address(instance_id, new_ip)
+                address=self.get_ip_address(new_ip)
+                if address and address.allocation_id:
+                    self.conn.associate_address(instance_id, new_ip, allocation_id=address.allocation_id)
+                else:
+                    self.conn.associate_address(instance_id, new_ip)
                 msg = _(u'Successfully associated the IP to the instance.')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=self.location)
@@ -308,12 +316,15 @@ class InstancesView(LandingPageView, BaseInstanceView):
             with boto_error_handler(self.request, self.location):
                 ip_address = self.request.params.get('ip_address')
                 self.log_request(_(u"Disassociating IP {0}").format(ip_address))
-                self.conn.disassociate_address(ip_address)
+                address=self.get_ip_address(ip_address)
+                if address and address.association_id:
+                    self.conn.disassociate_address(ip_address, association_id=address.association_id)
+                else:
+                    self.conn.disassociate_address(ip_address)
                 msg = _(u'Successfully disassociated the IP from the instance.')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=self.location)
         return self.render_dict
-
 
 class InstancesJsonView(LandingPageView):
     def __init__(self, request):
@@ -690,7 +701,11 @@ class InstanceView(TaggedItemView, BaseInstanceView):
         if self.instance and self.associate_ip_form.validate():
             with boto_error_handler(self.request, self.location):
                 new_ip = self.request.params.get('ip_address')
-                self.instance.use_ip(new_ip)
+                address=self.get_ip_address(new_ip)
+                if address and address.allocation_id:
+                    self.conn.associate_address(self.instance.id, new_ip, allocation_id=address.allocation_id)
+                else:
+                    self.conn.associate_address(self.instance.id, new_ip)
                 msg = _(u'Successfully associated the IP to the instance.')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=self.location)
@@ -703,8 +718,10 @@ class InstanceView(TaggedItemView, BaseInstanceView):
                 ip_address = self.request.params.get('ip_address')
                 ip_addresses = self.conn.get_all_addresses(addresses=[ip_address])
                 elastic_ip = ip_addresses[0] if ip_addresses else None
-                if elastic_ip:
-                    elastic_ip.disassociate()
+                if elastic_ip and elastic_ip.association_id:
+                    self.conn.disassociate_address(elastic_ip.public_ip, association_id=elastic_ip.association_id)
+                else:
+                    self.conn.disassociate_address(elastic_ip.public_ip)
                 msg = _(u'Successfully disassociated the IP from the instance.')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=self.location)
