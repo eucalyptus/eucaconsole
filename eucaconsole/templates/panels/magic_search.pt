@@ -5,7 +5,7 @@
           type="text/css" charset="utf-8" />
     <div class="search-bar">
         <i class="fi-filter go"></i>
-        <div id="search-main-area" class="chosen-container chosen-container-multi">
+        <div id="search-main-area">
             <span class="item-list">
                 <span class="label radius secondary item"
                       ng-repeat="facet in currentSearch" ng-cloak="cloak">
