@@ -1186,6 +1186,8 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
             monitoring_enabled = self.request.params.get('monitoring_enabled') == 'y'
             private_addressing = self.request.params.get('private_addressing') == 'y'
             addressing_type = 'private' if private_addressing else 'public'
+            if self.cloud_type == 'aws':  # AWS only supports public, so enforce that here
+                addressing_type = 'public'
             bdmapping_json = self.request.params.get('block_device_mapping')
             block_device_map = self.get_block_device_map(bdmapping_json)
             new_instance_ids = []
