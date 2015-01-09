@@ -194,7 +194,7 @@ class InstancesView(LandingPageView, BaseInstanceView):
             self.request, ec2_conn=self.conn, autoscale_conn=autoscale_conn,
             iam_conn=iam_conn, vpc_conn=vpc_conn,
             cloud_type=self.cloud_type, formdata=self.request.params or None)
-        if BaseView.has_role_access(self.request):
+        if not BaseView.has_role_access(self.request):
             del filters_form.roles
         if not self.is_vpc_supported:
             del filters_form.vpc_id
