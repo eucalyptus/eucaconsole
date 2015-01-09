@@ -260,6 +260,17 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                 // When a dialog opens, reset the progress button status
                 $(this).find('.dialog-submit-button').css('display', 'block');                
                 $(this).find('.dialog-progress-display').css('display', 'none');                
+                // Broadcast initModal signal to trigger the modal initialization
+                $scope.$broadcast('initModal');
+            });
+            $(document).on('opened', '[data-reveal]', function () {
+                // Handle the angular and foundation conflict when setting the select options after the dialog opens
+                if( $('#securitygroup_vpc_network').children('option').first().text() == '' ){
+                    $('#securitygroup_vpc_network').children('option').first().remove();
+                }
+                // Reset the field of securitygroup_vpc_network dropdown to the proper value when reopened
+                $('#securitygroup_vpc_network option[value="' + $scope.securityGroupVPC + '"]').prop('selected', true);
+                $('#securitygroup_vpc_network').trigger('chosen:updated');
             });
             $(document).on('submit', '[data-reveal] form', function () {
                 // When a dialog is submitted, display the progress button status
