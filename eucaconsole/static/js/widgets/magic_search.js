@@ -58,6 +58,9 @@ angular.module('MagicSearch', [])
             });
         };
         $('#search-input').on('keydown', function($event) {
+            if (key.metaKey == true) {
+                return;
+            }
             var search_val = $('#search-input').val();
             var i, idx, label;
             var key = $event.keyCode || $event.charCode;
