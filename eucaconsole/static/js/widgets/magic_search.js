@@ -246,6 +246,7 @@ angular.module('MagicSearch', [])
         $scope.clearSearch = function() {
             if ($scope.currentSearch.length > 0) {
                 $scope.currentSearch = [];
+                $scope.facetSelected = undefined;
                 $('#search-input').val('');
                 $scope.$emit('searchUpdated', '');
                 $scope.$emit('textSearch', '', $scope.filter_keys);
