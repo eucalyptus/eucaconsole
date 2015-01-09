@@ -225,6 +225,8 @@ angular.module('MagicSearch', [])
             }
             else {
                 $scope.$emit('searchUpdated', query);
+                var newFacet = $scope.currentSearch[$scope.currentSearch.length-1]['name'];
+                $scope.deleteFacetSelection(newFacet.split('='));
             }
         };
         // remove facet and either update filter or search
