@@ -41,6 +41,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>pause</td>
+	<td>2000</td>
+	<td></td>
+</tr>
+<tr>
 	<td>storeXpathCount</td>
 	<td>//table[1]/tbody/tr</td>
 	<td>tcount1</td>
@@ -211,9 +216,19 @@
 	<td></td>
 </tr>
 <tr>
+	<td>pause</td>
+	<td>2000</td>
+	<td></td>
+</tr>
+<tr>
 	<td>storeXpathCount</td>
 	<td>//table[1]/tbody/tr</td>
 	<td>tcount2</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${tcount2}</td>
+	<td></td>
 </tr>
 <tr>
 	<td>assertEval</td>
@@ -378,6 +393,11 @@
 <tr>
 	<td>clickAndWait</td>
 	<td>id=delete_securitygroup_submit_button</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${tcount1}</td>
 	<td></td>
 </tr>
 </tbody></table>
