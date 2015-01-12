@@ -232,6 +232,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 $scope.getInstanceVPCName($scope.instanceVPC);
                 $scope.getAllSecurityGroups($scope.instanceVPC);
                 $scope.updateVPCSubnetChoices();
+                $scope.updateSecurityGroupVPC();
             });
             $scope.$watch('instanceZone', function () {
                 $scope.updateVPCSubnetChoices();
@@ -608,6 +609,9 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 $scope.vpcSubnetChoices['None'] = $('#hidden_vpc_subnet_empty_option').text();
                 $scope.subnetVPC = 'None';
             }
+        };
+        $scope.updateSecurityGroupVPC = function () {
+            $scope.securityGroupVPC = $scope.instanceVPC;
         };
         $scope.getInstanceVPCName = function (vpcID) {
             if (vpcID == '') {
