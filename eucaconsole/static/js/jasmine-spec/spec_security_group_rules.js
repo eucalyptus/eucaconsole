@@ -48,6 +48,10 @@ describe("SecurityGroupRules", function() {
         it("Initial value of ruleType is 'inbound'", function() {
             expect(scope.ruleType).toEqual('inbound');
         });
+
+        it("Initial value of securityGroupVPC is 'None'", function() {
+            expect(scope.securityGroupVPC).toEqual('None');
+        });
     });
 
     describe("Function addRuleButtonClass() Test", function() {
@@ -231,4 +235,62 @@ describe("SecurityGroupRules", function() {
             });
         });
     });
+
+    describe("Function updateVPC Test", function() {
+
+        beforeEach(function() {
+            setFixtures('<select id="securitygroup_vpc_network"></select>');
+        });
+
+        it("Should update securityGroupVPC when updateVPC is called", function() {
+            scope.setWatchers();
+            scope.$broadcast('updateVPC', 'sg-12345678');
+            expect(scope.securityGroupVPC).toEqual('sg-12345678');
+        });
+
+        it("Shouldn't update securityGroupVPC when updateVPC is called and vpc value is undefined", function() {
+            scope.setWatchers();
+            scope.$broadcast('updateVPC', undefined);
+            expect(scope.securityGroupVPC).toEqual('None');
+        });
+
+        it("Should return immediately when updateVPC is called and vpc value is not changed", function() {
+            spyOn(scope, 'adjustIPProtocolOptions');
+            scope.securityGroupVPC = 'sg-12345678';
+            scope.setWatchers();
+            scope.$broadcast('updateVPC', 'sg-12345678');
+            expect(scope.adjustIPProtocolOptions).not.toHaveBeenCalled();
+        });
+
+        it("Should call selectRuleType when updateVPC is called and vpc value is 'None'", function() {
+            spyOn(scope, 'selectRuleType');
+            scope.securityGroupVPC = 'sg-12345678';
+            scope.setWatchers();
+            scope.$broadcast('updateVPC', 'None');
+            expect(scope.selectRuleType).toHaveBeenCalled();
+        });
+
+        it("Should call clearRules when updateVPC is called", function() {
+            spyOn(scope, 'clearRules');
+            scope.setWatchers();
+            scope.$broadcast('updateVPC', 'sg-12345678');
+            expect(scope.clearRules).toHaveBeenCalled();
+        });
+
+        it("Should call addDefaultOutboundRule when updateVPC is called and vpc is not 'None'", function() {
+            spyOn(scope, 'addDefaultOutboundRule');
+            scope.setWatchers();
+            scope.$broadcast('updateVPC', 'sg-12345678');
+            expect(scope.addDefaultOutboundRule).toHaveBeenCalled();
+        });
+
+        it("Shouldn't call addDefaultOutboundRule when updateVPC is called and vpc is 'None'", function() {
+            spyOn(scope, 'addDefaultOutboundRule');
+            scope.securityGroupVPC = 'sg-12345678';
+            scope.setWatchers();
+            scope.$broadcast('updateVPC', 'None');
+            expect(scope.addDefaultOutboundRule).not.toHaveBeenCalled();
+        });
+    });
+
 });
