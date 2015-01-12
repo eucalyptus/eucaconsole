@@ -135,6 +135,8 @@ class LaunchInstanceForm(BaseSecureForm):
         self.image = image
         self.securitygroups = securitygroups
         self.cloud_type = request.session.get('cloud_type', 'euca')
+        from ..views import BaseView
+        self.is_vpc_supported = BaseView.is_vpc_supported(request)
         self.set_error_messages()
         self.monitoring_enabled.data = True
         self.choices_manager = ChoicesManager(conn=conn)
@@ -158,7 +160,10 @@ class LaunchInstanceForm(BaseSecureForm):
         self.instance_type.choices = self.choices_manager.instance_types(cloud_type=self.cloud_type, add_blank=False)
         region = request.session.get('region')
         self.zone.choices = self.get_availability_zone_choices(region)
-        self.vpc_network.choices = self.vpc_choices_manager.vpc_networks()
+        if self.cloud_type == 'euca' and self.is_vpc_supported:
+            self.vpc_network.choices = self.vpc_choices_manager.vpc_networks(add_blank=False)
+        else:
+            self.vpc_network.choices = self.vpc_choices_manager.vpc_networks()
         self.vpc_subnet.choices = self.vpc_choices_manager.vpc_subnets()
         self.associate_public_ip_address.choices = self.get_associate_public_ip_address_choices()
         self.keypair.choices = self.get_keypair_choices()
@@ -174,6 +179,8 @@ class LaunchInstanceForm(BaseSecureForm):
         # Set the defailt option to be the first choice
         if len(self.vpc_subnet.choices) > 1:
             self.vpc_subnet.data = self.vpc_subnet.choices[0][0]
+        if len(self.vpc_network.choices) > 1:
+            self.vpc_network.data = self.vpc_network.choices[0][0]
 
     def set_error_messages(self):
         self.number.error_msg = self.number_error_msg
@@ -295,7 +302,7 @@ class AttachVolumeForm(BaseSecureForm):
         self.device.error_msg = self.device_error_msg
         self.set_volume_choices()
         if self.instance is not None:
-            self.device.data = self.suggest_next_device_name()
+            self.device.data = AttachVolumeForm.suggest_next_device_name(request, instance)
 
     def set_volume_choices(self):
         """Populate volume field with volumes available to attach"""
@@ -307,14 +314,20 @@ class AttachVolumeForm(BaseSecureForm):
                 extra = ' ({name})'.format(name=name_tag) if name_tag else ''
                 vol_name = '{id}{extra}'.format(id=volume.id, extra=extra)
                 choices.append((volume.id, BaseView.escape_braces(vol_name)))
-        if len(choices) == 1:
-            choices = [('', _(u'No available volumes in this availability zone'))]
         self.volume_id.choices = choices
 
-    def suggest_next_device_name(self):
-        mappings = self.instance.block_device_mapping
+    @staticmethod
+    def suggest_next_device_name(request, instance):
+        cloud_type = request.session.get('cloud_type')
+        if cloud_type == 'euca':
+            dev_root = '/dev/vd'
+            start_char = 99
+        else:
+            dev_root = '/dev/sd'
+            start_char = 102
+        mappings = instance.block_device_mapping
         for i in range(0, 10):   # Test names with char 'f' to 'p'
-            dev_name = '/dev/sd'+str(unichr(102+i))
+            dev_name = dev_root+str(unichr(start_char+i))
             try:
                 mappings[dev_name]
             except KeyError:
@@ -342,7 +355,8 @@ class InstancesFiltersForm(BaseSecureForm):
     subnet_id = wtforms.SelectMultipleField(label=_(u'VPC subnet'))
 
     def __init__(self, request, ec2_conn=None, autoscale_conn=None,
-                 iam_conn=None, vpc_conn=None, cloud_type='euca', **kwargs):
+                 iam_conn=None, vpc_conn=None,
+                 cloud_type='euca', **kwargs):
         super(InstancesFiltersForm, self).__init__(request, **kwargs)
         self.request = request
         self.cloud_type = cloud_type
@@ -359,12 +373,13 @@ class InstancesFiltersForm(BaseSecureForm):
             add_blank=False, no_keypair_filter_option=True)
         self.security_group.choices = self.ec2_choices_manager.security_groups(add_blank=False)
         self.scaling_group.choices = self.autoscale_choices_manager.scaling_groups(add_blank=False)
-        if cloud_type=='aws':
+        if cloud_type == 'aws':
             del self.roles
         else:
             self.roles.choices = self.iam_choices_manager.roles(add_blank=False)
         self.vpc_id.choices = self.vpc_choices_manager.vpc_networks(add_blank=False)
-        self.vpc_id.choices.append(('None', _(u'No VPC')))
+        if cloud_type == 'aws':
+            self.vpc_id.choices.append(('None', _(u'No VPC')))
         self.vpc_id.choices = sorted(self.vpc_id.choices)
         self.subnet_id.choices = self.vpc_choices_manager.vpc_subnets(add_blank=False)
 
@@ -437,8 +452,10 @@ class InstanceCreateImageForm(BaseSecureForm):
     no_reboot = wtforms.BooleanField(label=_(u'No reboot'))
     s3_bucket = wtforms.SelectField(
         label=_(u'Bucket name'), validators=[validators.InputRequired(message=_(u'You must select a bucket to use.'))])
+    s3_bucket_error_msg = _('Bucket name is required and may contain lowercase letters, numbers, hyphens, and/or dots.')
     s3_prefix = wtforms.TextField(
         label=_(u'Prefix'), validators=[validators.InputRequired(message=_(u'You must supply a prefix'))])
+    s3_prefix_error_msg = _('Prefix is required and may contain lowercase letters, numbers, hyphens, and/or dots.')
 
     def __init__(self, request, s3_conn=None, **kwargs):
         super(InstanceCreateImageForm, self).__init__(request, **kwargs)
@@ -446,7 +463,9 @@ class InstanceCreateImageForm(BaseSecureForm):
         # Set choices
         self.choices_manager = ChoicesManager(conn=self.s3_conn)
         self.s3_bucket.choices = self.choices_manager.buckets()
+        self.s3_bucket.error_msg = self.s3_bucket_error_msg
         self.s3_prefix.data = _(u'image')
+        self.s3_prefix.error_msg = self.s3_prefix_error_msg
         # Set error msg
         self.name.error_msg = self.name_error_msg
         # Set help text

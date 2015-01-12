@@ -1,5 +1,5 @@
 /**
- * @fileOverview Snapshots landing page JS
+ * @fileOverview Security groups landing page JS
  * @requires AngularJS, jQuery
  *
  */

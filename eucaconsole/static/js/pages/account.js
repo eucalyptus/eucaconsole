@@ -7,6 +7,7 @@
 angular.module('AccountPage', ['PolicyList', 'Quotas'])
     .controller('AccountPageCtrl', function ($scope, $timeout) {
         $scope.isNotChanged = true;
+        $scope.currentTab = 'general-tab';  // default to 1st tab
         $scope.initController = function () {
             $scope.setWatch();
             $scope.setFocus();

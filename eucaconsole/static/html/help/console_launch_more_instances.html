@@ -12,7 +12,7 @@
 
     
     <div class="body taskbody"><p class="shortdesc"> This page allows you create one or more new instances that have the same
-        characteristics as an instance you've already created.</p>
+        characteristics as an instance already created.</p>
 </div>
 
     <div class="topic task nested1" id="launch_instances_ui_image_steps">
@@ -24,8 +24,7 @@
 
             <ol class="ol steps"><li class="li step">
 
-                    <span class="ph cmd"> Enter the number of instances you'd like to launch into the
-                            <span class="ph uicontrol">Instances</span> text box. </span>
+                    <span class="ph cmd"> Enter the number of instances to launch into the provided text box. </span>
                 </li>
 <li class="li step">
                     <span class="ph cmd">You can optionally type the name(s) of your new instances in the
@@ -46,24 +45,57 @@
     </div>
 
 
-    
-
 
     <div class="topic task nested1" id="launch_instances_ui_advanced_steps">
         <h2 class="title topictitle2">Specify Advanced Options</h2>
 
         
         <div class="body taskbody"><p class="shortdesc">This panel allows you to specify advanced options for your new instance(s). You
-            can add user data, override the kernal and RAM disk IDs, specify private networking, and
+            can add user data, override the kernel and RAM disk IDs, specify private networking, and
             add additional storage.</p>
 
             <ol class="ol steps"><li class="li step">
-                    <span class="ph cmd"> Specify custom user data by typing it into the <span class="ph uicontrol">User
-                            data</span> text box or by attaching a file by clicking the
-                            <span class="ph uicontrol">Browse...</span> button.</span>
+                    <span class="ph cmd"> To specify custom user data using a manual entry:</span>
+                    <ol type="a" class="ol substeps">
+                        <li class="li substep">
+                            <span class="ph cmd">Select <span class="ph uicontrol">Enter text</span> from the <span class="ph uicontrol">User data</span> options.</span>
+                        </li>
+
+                        <li class="li substep">
+                            <span class="ph cmd">Enter the user data into the provided text box.</span>
+                        </li>
+
+                    </ol>
+
                 </li>
 <li class="li step">
-                    <span class="ph cmd"> You can override the kernel ID in the selected image with the
+                    <span class="ph cmd"> To specify user data with a file:</span>
+                    <ol type="a" class="ol substeps">
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd">Select <span class="ph uicontrol">Upload file</span> to attach a user data file.</span>
+                        </li>
+
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd">Click the <span class="ph uicontrol">Choose File</span> button.</span>
+                            <div class="itemgroup stepresult">A window opens prompting you to select a file from your local file system. </div>
+                        </li>
+
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd">Navigate to the location of the file you want to upload. </span>
+                        </li>
+
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd">Select the file to upload and click <span class="ph uicontrol">Open</span> from the file chooser window.</span>
+                            <div class="itemgroup stepresult">The name of the selected file displays next to the <span class="ph uicontrol">Choose File</span> button.
+                            </div>
+                        </li>
+
+                    </ol>
+
+                   
+                </li>
+<li class="li step">
+                    <span class="ph cmd">You can override the kernel ID in the selected image with the
                             <span class="ph uicontrol">Kernel ID</span> drop-down list box. </span>
                 </li>
 <li class="li step">
@@ -76,58 +108,73 @@
                         instance(s).</span>
                 </li>
 <li class="li step">
-                    <span class="ph cmd"> Click the <span class="ph uicontrol">Use private addressing only</span> check box to
+                    <span class="ph cmd">Click the <span class="ph uicontrol">Use private addressing only</span> check box to
                         specify that your new instance should use private addressing only. Private
                         addresses cannot connect directly to the Internet and must go through a NAT
                         (Network Address Translation) device or an elastic IP address mapped to the
                         instance. </span>
                 </li>
 <li class="li step">
-                    <span class="ph cmd">You can configure additional storage for your instance in the Storage
-                        section:</span>
+                    <span class="ph cmd">For EBS-backed instances, you can configure the root volume or additional
+                        storage for your instance in the Storage section:</span>
                     <ol type="a" class="ol substeps" id="launch_instances_ui_advanced_steps__launch_instances_ui_advanced_storage_steps">
-                        <li class="li substep">
-                            <span class="ph cmd"> Select a volume type using the <span class="ph uicontrol">Volume</span>
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd"> Change the size of the root volume by entering the size of the attached 
+                                storage in gigabytes into the <span class="ph uicontrol">Size (GB)</span> text box.</span>
+                        </li>
+
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd">Select the <span class="ph uicontrol">Delete on terminate</span> check box if
+                                you want the attached storage deleted when the instance is
+                                terminated.</span>
+                        </li>
+
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd"> You can configure additional storage for your instance by
+                                selecting a volume type from the <span class="ph uicontrol">Volume</span>
                                 drop-down list box. </span>
                         </li>
 
-                        <li class="li substep">
+                        <li class="li substep substepexpand">
                             <span class="ph cmd">Type the desired mapping for the storage into the
                                     <span class="ph uicontrol">Mapping</span> text box (for example:<samp class="ph codeph">
                                     /dev/sdb</samp>).</span>
                         </li>
 
-                        <li class="li substep">
+                        <li class="li substep substepexpand">
                             <span class="ph cmd">If you want to create the storage from an existing snapshot,
                                 specify it in the <span class="ph uicontrol">Create from snapshot</span>
                                 drop-down list box.</span>
                         </li>
 
-                        <li class="li substep">
+                        <li class="li substep substepexpand">
                             <span class="ph cmd"> Type the size of the attached storage in gigabytes into the
                                     <span class="ph uicontrol">Size (GB) </span>text box. </span>
                         </li>
 
-                        <li class="li substep">
-                            <span class="ph cmd"> Select the <span class="ph uicontrol">Delete on termination</span> check box
-                                if you would like the attached storage to be deleted when the
-                                instance is terminated. </span>
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd"> Select the <span class="ph uicontrol">Delete on terminate</span> check box if
+                                you would like the attached storage to be deleted when the instance
+                                is terminated. </span>
                         </li>
 
-                        <li class="li substep">
-                            <span class="ph cmd">Click the <span class="ph uicontrol">Add device</span> button to add this storage.</span>
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd">Click the <span class="ph uicontrol">Add Device</span> button to add this
+                                storage.</span>
+                            <div class="itemgroup stepresult">Added storage displays as a row in the table under the
+                                Storage area. </div>
                         </li>
 
-                        <li class="li substep">
-                            <span class="ph cmd">You can delete storage you've already added by clicking the minus button on the right side of the storage list item.</span>
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd">You can delete existing storage by clicking the minus button on the
+                                right side of the storage list item.</span>
                         </li>
 
                     </ol>
 
                 </li>
 <li class="li step">
-                    <span class="ph cmd"> Click the <span class="ph uicontrol">Launch Instance</span> button to launch your new
-                        instance(s). </span>
+                    <span class="ph cmd"> Click the <span class="ph uicontrol">Launch Instance</span> button to launch your new instance(s). </span>
                 </li>
 </ol>
 

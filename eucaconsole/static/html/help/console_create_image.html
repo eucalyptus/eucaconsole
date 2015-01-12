@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en-us" lang="en-us">
+<head>
+<title>Create an Image</title>
+</head>
+<body id="create_image_ui_help_context">
+
+
+    <h1 class="title topictitle1">Create an Image</h1>
+
+    
+    <div class="body taskbody"><p class="shortdesc"> This page allows you to create an image. All instances are made from images. For
+        more information on images, see <em class="ph i">Image Overview</em> in the <em class="ph i">Eucalyptus Image Management
+            Guide</em>. </p>
+</div>
+
+    <div class="topic task nested1" id="create_image_ui_help_steps_machine">
+        <h2 class="title topictitle2">Machine</h2>
+
+        
+        <div class="body taskbody"><p class="shortdesc">Specify basic information about your image in this section.</p>
+
+            <ol class="ol steps"><li class="li step">
+                    <span class="ph cmd"> Type the name of your new image in the <span class="ph uicontrol">Name</span> text
+                        box. Refer to the rules for naming that appears below the text box.</span>
+                </li>
+<li class="li step">
+                    <span class="ph cmd"> A reference to the image it was created from is pre-populated in the <span class="ph uicontrol">Description</span>.
+                        text box for your convenience. However, you can change the description by typing in a different description
+                        for the image.</span>
+                </li>
+</ol>
+
+        </div>
+
+    </div>
+
+    <div class="topic task nested1" id="create_image_ui_help_steps_storage">
+        <h2 class="title topictitle2">Storage</h2>
+
+        
+        <div class="body taskbody"><p class="shortdesc">This section appears here for images associated with non-EBS backed instances and
+            allows you to specify where to store your image. For images associated with EBS-backed
+            instances, refer to the Advanced options for configuring storage
+            information.</p>
+
+            <ol class="ol steps"><li class="li step">
+                    <span class="ph cmd"> Specify a bucket to store your image by selecting one from the
+                            <span class="ph uicontrol">Bucket name</span> drop-down list box or entering a name
+                        to create a new bucket.</span>
+                </li>
+<li class="li step">
+                    <span class="ph cmd"> A prefix of <samp class="ph codeph">image</samp> is already assigned for the filename
+                        prefix of your image but you can change it by typing in a different prefix
+                        in the <span class="ph uicontrol">Prefix</span> text box. </span>
+                </li>
+<li class="li step">
+                    <span class="ph cmd"> Refer to the next section to add tags. Refer to the Advanced options for
+                        configuring additional settings. Otherwise, click the <span class="ph uicontrol">Create
+                            Image</span> button to create your image.</span>
+                </li>
+</ol>
+
+        </div>
+
+    </div>
+
+        <div class="topic task nested1" id="tags">
+    <h2 class="title topictitle2">Add tags </h2>
+
+    
+    <div class="body taskbody"><p class="shortdesc"> To help you manage your cloud's instances, images, and other Eucalyptus resources,
+        you can optionally assign your own metadata to resources in the form of tags. You can
+        use tags to create user-friendly names, make resource searching easier, and improve
+        coordination between multiple users. You can optionally add tags by performing the following
+        steps:</p>
+</div>
+
+    <div class="topic task nested2" id="d15e15">
+        <h3 class="title topictitle3"/>
+
+        
+        <div class="body taskbody"><p class="shortdesc"/>
+
+            <div class="section context">To add new tags:</div>
+
+            <ol class="ol steps"><li class="li step stepexpand">
+                    <span class="ph cmd">Type the key name for your tag into the <span class="ph uicontrol">name...</span> text
+                        box.</span>
+                    <div class="itemgroup info"><div class="note note"><span class="notetitle">Note:</span> Tags cannot start with "<samp class="ph codeph">euca:</samp>" or "<samp class="ph codeph">aws:</samp>".</div>
+</div>
+                </li>
+<li class="li step stepexpand">
+                    <span class="ph cmd">Type the value for your tag into the <span class="ph uicontrol">value...</span> text
+                        box.</span>
+                </li>
+<li class="li step stepexpand">
+                    <span class="ph cmd">Click the <span class="ph uicontrol">Add Tag</span> button.</span>
+                </li>
+<li class="li step stepexpand">
+                    <span class="ph cmd">If you wish to add additional tags, repeat the preceding steps.</span>
+                </li>
+</ol>
+
+        </div>
+
+    </div>
+
+    
+    <div class="topic task nested2" id="d15e77">
+        <h3 class="title topictitle3"/>
+
+        
+        <div class="body taskbody"><p class="shortdesc"/>
+
+            <div class="section context">To delete one or more tags:</div>
+
+            <div class="li step p">
+                    <span class="ph cmd">Move your mouse over the tag you wish to delete and click the
+                            <span class="ph uicontrol">X</span> button.</span>
+                </div>
+
+        </div>
+
+    </div>
+
+    
+</div>
+
+            
+    <div class="topic task nested1" id="create_image_ui_advanced_steps">
+        <h2 class="title topictitle2">Specify Advanced Options</h2>
+
+        
+        <div class="body taskbody"><p class="shortdesc">This panel is only available for images associated with EBS-backed instances.
+            These advanced options allow you to add user data, override the kernel and RAM disk IDs,
+            specify private networking, and add additional storage for your new image.</p>
+
+           <ol class="ol steps"><li class="li step stepexpand">
+                   <span class="ph cmd"> Check the <span class="ph uicontrol">No reboot</span> check box to keep the 
+                       instance from shutting down before the image is created.</span>
+                   <div class="itemgroup info"> Not allowing the instance to shut down before the image is created 
+                       can impact the file integrity of the image.</div>
+               </li>
+<li class="li step stepexpand">
+                    <span class="ph cmd">For EBS-backed instances, you can configure the root volume or additional
+                        storage for your instance in the Storage section:</span>
+                    <ol type="a" class="ol substeps" id="create_image_ui_advanced_steps__create_image_ui_advanced_storage_steps">
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd"> Change the size of the root volume by entering the size of the
+                                attached storage in gigabytes into the <span class="ph uicontrol">Size
+                                    (GB)</span> text box.</span>
+                        </li>
+
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd">Select the <span class="ph uicontrol">Delete on terminate</span> check box if
+                                you want the attached storage deleted when the instance is
+                                terminated.</span>
+                        </li>
+
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd"> You can configure additional storage for your instance by
+                                selecting a volume type from the <span class="ph uicontrol">Volume</span>
+                                drop-down list box. </span>
+                        </li>
+
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd">Type the desired mapping for the storage into the
+                                    <span class="ph uicontrol">Mapping</span> text box (for example:<samp class="ph codeph">
+                                    /dev/sdb</samp>).</span>
+                        </li>
+
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd">If you want to create the storage from an existing snapshot,
+                                specify it in the <span class="ph uicontrol">Create from snapshot</span>
+                                drop-down list box.</span>
+                        </li>
+
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd"> Type the size of the attached storage in gigabytes into the
+                                    <span class="ph uicontrol">Size (GB) </span>text box. </span>
+                        </li>
+
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd"> Select the <span class="ph uicontrol">Delete on terminate</span> check box if
+                                you would like the attached storage to be deleted when the instance
+                                is terminated. </span>
+                        </li>
+
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd">Click the <span class="ph uicontrol">Add Device</span> button to add this
+                                storage.</span>
+                            <div class="itemgroup stepresult">Added storage displays as a row in the table under the
+                                Storage area. </div>
+                        </li>
+
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd">You can delete existing storage by clicking the minus button on the
+                                right side of the storage list item.</span>
+                        </li>
+
+                    </ol>
+
+                </li>
+<li class="li step stepexpand">
+                    <span class="ph cmd"> Click the <span class="ph uicontrol">Create Image</span> button to create your new
+                        image. </span>
+                </li>
+</ol>
+
+            
+        </div>
+
+    </div>
+
+    <div class="topic task nested1" id="create_image_ui_help_steps_complete">
+        <h2 class="title topictitle2">Creation confirmation</h2>
+
+        
+        <div class="body taskbody"><p class="shortdesc">A Warning page opens with information about image creation process. For images associated with non-EBS backed instances, a prompt for
+            your password is required to proceed. EBS-backed instances do not require a password.</p>
+
+            <ol class="ol steps"><li class="li step stepexpand">
+                    <span class="ph cmd"> Enter your password in the <span class="ph uicontrol">Your password</span> text box
+                        and be sure have completed all the steps outlined on the page before
+                        preoceeding. </span>
+                </li>
+<li class="li step stepexpand">
+                    <span class="ph cmd"> To proceed, click the <span class="ph uicontrol">I Understand, Let's Do This!</span>
+                        button. Otherwise, click outside the page or click the
+                            <span class="ph uicontrol">X</span> control from the top corner of the page to
+                        exit.</span>
+                    <div class="itemgroup stepresult"> If you proceeded to create the image, another page opens, stating
+                        that the image is successfully created but it will take a few minutes, then
+                        the Image Detail window opens, showing the newly-created image with a status
+                        of <samp class="ph codeph">pending</samp>.</div>
+                </li>
+<li class="li step stepexpand">
+                    <span class="ph cmd"> Refer to the Help in the Image Detail page for instructions associated
+                        with that page.</span>
+                </li>
+</ol>
+
+        </div>
+
+    </div>
+
+
+</body>
+</html>

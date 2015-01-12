@@ -15,7 +15,7 @@ angular.module('SecurityGroupRules', ['CustomFilters', 'EucaConsoleUtils'])
         $scope.jsonEndpoint='';
         $scope.internetProtocolsJsonEndpoint = '';
         $scope.securityGroupList = [];
-        $scope.securityGroupVPC = '';
+        $scope.securityGroupVPC = 'None';
         $scope.selectedProtocol = '';
         $scope.customProtocol = '';
         $scope.customProtocolDivClass = "";
@@ -197,22 +197,25 @@ angular.module('SecurityGroupRules', ['CustomFilters', 'EucaConsoleUtils'])
             $scope.$watch('hasDuplicatedRule', function () {
                 $scope.setAddRuleButtonClass(); 
             });
+            $scope.$on('initModal', function($event) {
+                $scope.getAllSecurityGroups($scope.securityGroupVPC);
+            });
             $scope.$on('updateVPC', function($event, vpc) {
                 if (vpc === undefined || $scope.securityGroupVPC == vpc) {
                     return;
                 }
                 $scope.securityGroupVPC = vpc;
                 // In 'Create new security group' mode,
-                if ($('select#vpc_network').length > 0) {
+                if ($('select#securitygroup_vpc_network').length > 0) {
                     // Clear previously selected rules when VPC is changed
                     $scope.clearRules();
                     // Add the default outbound rule for VPC security group
-                    if ($scope.securityGroupVPC != '') {
+                    if ($scope.securityGroupVPC != 'None') {
                         $scope.addDefaultOutboundRule();
                     } 
                 }
                 // When NoVPC is selected, which the tab to 'inbound'
-                if ($scope.securityGroupVPC == '') {
+                if ($scope.securityGroupVPC == 'None') {
                     $scope.selectRuleType('inbound'); 
                 }
                 // For VPC, include the option '-1' for ALL IP Protocols
@@ -235,6 +238,10 @@ angular.module('SecurityGroupRules', ['CustomFilters', 'EucaConsoleUtils'])
                     $scope.syncRules();
                 });
             });
+            // Modify Foundation Abide validation timeout
+            setTimeout(function() {
+                $(document).foundation({abide : { timeout : 2000 } })
+            }, 500);
         };
         // In case of the duplicated rule, add the class 'disabled' to the submit button
         $scope.setAddRuleButtonClass = function () {
@@ -415,6 +422,12 @@ angular.module('SecurityGroupRules', ['CustomFilters', 'EucaConsoleUtils'])
             // Trigger form validation to prevent borked rule entry
             var form = $($event.currentTarget).closest('form');
             form.trigger('validate');
+            // clear validation errors on hidden fields
+            // TODO: retest without this code when foundation is upgraded beyond 5.0.3
+            $('.error.ng-hide').removeClass('error')
+            if ($scope.ipProtocol == 'icmp') {
+                $('.port').removeAttr('data-invalid')
+            }
             if (form.find('[data-invalid]').length) {
                 return false;
             }
@@ -516,7 +529,7 @@ angular.module('SecurityGroupRules', ['CustomFilters', 'EucaConsoleUtils'])
         $scope.adjustIPProtocolOptions = function () {
             $scope.removeAllTrafficRuleOption();
             $scope.removeCustomProtocolRuleOption();
-            if ($scope.securityGroupVPC != '') {
+            if ($scope.securityGroupVPC != 'None') {
                 // Allow All Traffic and Custom Protocol options to be selectable for VPC
                 $scope.insertAllTrafficRuleOption();
                 $scope.insertCustomProtocolRuleOption(); 

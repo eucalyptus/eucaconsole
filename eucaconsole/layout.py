@@ -60,7 +60,7 @@ class MasterLayout(object):
         self.support_url = request.registry.settings.get('support.url') or "http://support.eucalyptus.com"
         self.aws_enabled = asbool(request.registry.settings.get('aws.enabled'))
         self.aws_regions = AWS_REGIONS
-        self.default_region = request.registry.settings.get('aws.default.region')
+        self.default_region = request.registry.settings.get('aws.default.region', 'us-east-1')
         self.browser_password_save = 'true' if asbool(request.registry.settings.get('browser.password.save')) else 'false'
         self.cloud_type = request.session.get('cloud_type')
         self.selected_region = self.request.session.get('region', self.default_region)
@@ -84,9 +84,11 @@ class MasterLayout(object):
             '^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\.){3}',
             '(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])(\/\d+)$'
         )
+        self.port_range_pattern = '^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$'
         self.querystring = self.get_query_string()
         self.help_html_dir = 'eucaconsole:static/html/help/'
         self.escape_braces = BaseView.escape_braces
+        self.file_uploads_enabled = asbool(self.request.registry.settings.get('file.uploads.enabled', True))
 
     def get_notifications(self):
         """Get notifications, categorized by message type ('info', 'success', 'warning', or 'error')

@@ -111,15 +111,7 @@
             <metal:block metal:use-macro="layout.global_macros['help_expando']" />
             <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                 <!--! HELP CONTENT HERE -->
-                <div id="help-html-console_instance_types" ng-include="'${layout.help_path('console_instance_types.html')}'"></div> 
-            </div>
-            <div id="hidden-text-div" class="hide">
-                <span id="chosen-create-option-text" i18n:translate="">
-                    Add value 
-                </span>
-                <span id="chosen-no-results-text" i18n:translate="">
-                    Click below to add the new value
-                </span>
+                <div id="help-html-console_instance_types" ng-include="'${layout.help_path('console_config_instance_types.html')}'"></div> 
             </div>
         </div>
     </div>

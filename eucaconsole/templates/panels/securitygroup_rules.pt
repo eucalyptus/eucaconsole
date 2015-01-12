@@ -12,7 +12,7 @@
             <dd ng-class="inboundButtonClass">
                 <a id="inbound-rules-tab" ng-click="selectRuleType('inbound')" i18n:translate="">Inbound</a>
             </dd>
-            <dd ng-class="outboundButtonClass" ng-show="securityGroupVPC != ''">
+            <dd ng-class="outboundButtonClass" ng-show="securityGroupVPC != '' &amp;&amp; securityGroupVPC != 'None'">
                 <a id="outbound-rules-tab" ng-click="selectRuleType('outbound')" i18n:translate="">Outbound</a>
             </dd>
         </dl>
@@ -94,9 +94,9 @@
                         </div>
                         <div class="small-9 columns">
                             <div ng-show="selectedProtocol !== 'icmp' &amp;&amp; selectedProtocol !== '-1'">
-                                <input class="port from" name="from_port" ng-model="fromPort" pattern="integer" />&nbsp;-
-                                <input class="port to" name="to_port" ng-model="toPort" pattern="integer" />
-                                <small class="error" i18n:translate="">Valid port range required</small>
+                                <input class="port from" name="from_port" ng-model="fromPort" pattern="${layout.port_range_pattern}" />&nbsp;-
+                                <input class="port to" name="to_port" ng-model="toPort" pattern="${layout.port_range_pattern}" />
+                                <small class="error" i18n:translate="">Port range value must be whole numbers between 1-65535</small>
                             </div>
                             <div ng-show="selectedProtocol == 'icmp'">
                                 <select name="icmp_range" ng-model="icmpRange" data-placeholder="select...">
@@ -179,5 +179,4 @@
     </div>
     <script src="${request.static_path('eucaconsole:static/js/pages/custom_filters.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/securitygroup_rules.js')}"></script>
-    <script>setTimeout(function(){ $(document).foundation({abide : { timeout : 2000 } })}, 500);</script>
 </div>

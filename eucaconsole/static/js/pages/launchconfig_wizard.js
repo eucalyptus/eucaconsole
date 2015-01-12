@@ -19,6 +19,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
         $scope.instanceTypeSelected = '';
         $scope.securityGroups = [];
         $scope.securityGroupJsonEndpoint = '';
+        $scope.securityGroupsRulesJsonEndpoint = '';
         $scope.securityGroupCollection = {};
         $scope.securityGroupsRules = {};
         $scope.keyPairChoices = {};
@@ -26,12 +27,12 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
         $scope.newKeyPairName = '';
         $scope.keyPairSelected = '';
         $scope.keyPairModal = $('#create-keypair-modal');
-        $scope.showKeyPairMaterial = false;
         $scope.isLoadingKeyPair = false;
         $scope.selectedGroupRules = {};
         $scope.securityGroupModal = $('#create-securitygroup-modal');
         $scope.securityGroupForm = $('#create-securitygroup-form');
         $scope.securityGroupChoices = {};
+        $scope.securityGroupChoicesFullName = {};
         $scope.isRuleExpanded = {};
         $scope.newSecurityGroupName = '';
         $scope.securityGroupSelected = '';
@@ -50,13 +51,15 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
         $scope.imageIDNonexistErrorClass = '';
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
-            $scope.securityGroupsRules = options['securitygroups_rules'];
             $scope.keyPairChoices = options['keypair_choices'];
             $scope.securityGroupChoices = options['securitygroups_choices'];
             $scope.roleList = options['role_choices'];
             $scope.securityGroupJsonEndpoint = options['securitygroups_json_endpoint'];
+            $scope.securityGroupsRulesJsonEndpoint = options['securitygroups_rules_json_endpoint'];
             $scope.imageJsonURL = options['image_json_endpoint'];
+            $scope.securityGroupVPC = options['default_vpc_network'];
             $scope.getAllSecurityGroups(); 
+            $scope.getAllSecurityGroupsRules();
             $scope.setInitialValues();
             $scope.preventFormSubmitOnEnter();
             $scope.initChosenSelectors();
@@ -88,6 +91,20 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                 eucaHandleError(oData, status);
             });
         };
+        $scope.getAllSecurityGroupsRules = function () {
+            var csrf_token = $('#csrf_token').val();
+            var data = "csrf_token=" + csrf_token
+            $http({
+                method:'POST', url:$scope.securityGroupsRulesJsonEndpoint, data:data,
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            }).success(function(oData) {
+                var results = oData ? oData.results : [];
+                $scope.securityGroupsRules = results;
+                $scope.updateSecurityGroup();
+            }).error(function (oData) {
+                eucaHandleError(oData, status);
+            });
+        };
         $scope.updateSecurityGroup = function () {
             angular.forEach($scope.securityGroups, function(securityGroupID) {
                 $scope.selectedGroupRules[securityGroupID] = $scope.securityGroupsRules[securityGroupID];
@@ -95,8 +112,13 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
         };
         $scope.updateSecurityGroupChoices = function () {
             $scope.securityGroups = [];
+            $scope.securityGroupChoicesFullName = {};
             angular.forEach($scope.securityGroupCollection, function(sGroup){
                 var securityGroupName = sGroup['name'];
+                $scope.securityGroupChoicesFullName[sGroup['id']] = securityGroupName;
+                if (sGroup['name'].length > 30) {
+                    securityGroupName = sGroup['name'].substr(0, 30) + "...";
+                }
                 if (sGroup['vpc_id'] !== null) {
                     securityGroupName = securityGroupName + " (" + sGroup['vpc_id'] + ")";
                 } 
@@ -238,6 +260,17 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                 // When a dialog opens, reset the progress button status
                 $(this).find('.dialog-submit-button').css('display', 'block');                
                 $(this).find('.dialog-progress-display').css('display', 'none');                
+                // Broadcast initModal signal to trigger the modal initialization
+                $scope.$broadcast('initModal');
+            });
+            $(document).on('opened', '[data-reveal]', function () {
+                // Handle the angular and foundation conflict when setting the select options after the dialog opens
+                if( $('#securitygroup_vpc_network').children('option').first().text() == '' ){
+                    $('#securitygroup_vpc_network').children('option').first().remove();
+                }
+                // Reset the field of securitygroup_vpc_network dropdown to the proper value when reopened
+                $('#securitygroup_vpc_network option[value="' + $scope.securityGroupVPC + '"]').prop('selected', true);
+                $('#securitygroup_vpc_network').trigger('chosen:updated');
             });
             $(document).on('submit', '[data-reveal] form', function () {
                 // When a dialog is submitted, display the progress button status
@@ -329,6 +362,11 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                         modalButton.focus();
                     }
                }
+                // Handle the angular and foundation conflict when setting the select options after the dialog opens
+                if( $('#securitygroup_vpc_network').children('option').first().text() == '' ){
+                    $('#securitygroup_vpc_network').children('option').first().remove();
+                    $('#securitygroup_vpc_network option[value="' + $scope.securityGroupVPC + '"]').prop('selected', true);
+                }
             });
         };
         $scope.setWizardFocus = function (stepIdx) {
@@ -397,7 +435,6 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             $scope.checkRequiredInput();
         });
         $scope.showCreateKeypairModal = function() {
-            $scope.showKeyPairMaterial = false;
             var form = $('#launch-config-form');
             var invalid_attr = 'data-invalid';
             form.removeAttr(invalid_attr);
@@ -405,40 +442,37 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             $('.error', form).not('small').removeClass('error');
             $scope.keyPairModal.foundation('reveal', 'open');
         };
-        $scope.downloadKeyPair = function ($event, downloadUrl) {
+        $scope.handleKeyPairCreate = function ($event, createUrl, downloadUrl) {
             $event.preventDefault();
             var form = $($event.target);
-            $.generateFile({
-                csrf_token: form.find('input[name="csrf_token"]').val(),
-                filename: $scope.newKeyPairName + '.pem',
-                content: form.find('textarea[name="content"]').val(),
-                script: downloadUrl
-            });
-            $scope.showKeyPairMaterial = false;
-            var modal = $scope.keyPairModal;
-            modal.foundation('reveal', 'close');
-            $scope.newKeyPairName = '';
-        };
-        $scope.handleKeyPairCreate = function ($event, url) {
-            $event.preventDefault();
             if ($scope.newKeyPairName.indexOf('/') !== -1 || $scope.newKeyPairName.indexOf('\\') !== -1) {
-                return; 
+                return;
             }
-            var formData = $($event.target).serialize();
+            var formData = form.serialize();
             $scope.isLoadingKeyPair = true;
             $http({
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                 method: 'POST',
-                url: url,
+                url: createUrl,
                 data: formData
             }).success(function (oData) {
-                $scope.showKeyPairMaterial = true;
                 $scope.isLoadingKeyPair = false;
-                $('#keypair-material').val(oData['payload']);
+                var keypairMaterial = oData['payload'];
                 // Add new key pair to choices and set it as selected
                 $scope.keyPairChoices[$scope.newKeyPairName] = $scope.newKeyPairName;
                 $scope.keyPair = $scope.newKeyPairName;
                 Notify.success(oData.message);
+                // Download key pair file
+                $.generateFile({
+                    csrf_token: form.find('input[name="csrf_token"]').val(),
+                    filename: $scope.newKeyPairName + '.pem',
+                    content: keypairMaterial,
+                    script: downloadUrl
+                });
+                // Close create key pair modal
+                var modal = $scope.keyPairModal;
+                modal.foundation('reveal', 'close');
+                $scope.newKeyPairName = '';
             }).error(function (oData) {
                 $scope.isLoadingKeyPair = false;
                 eucaHandleError(oData, status);
@@ -465,7 +499,11 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                     newSecurityGroupID = oData.id;
                 }
                 var newlyCreatedSecurityGroupName = $scope.newSecurityGroupName;
-                if ($scope.securityGroupVPC) {
+                $scope.securityGroupChoicesFullName[newSecurityGroupID] = newlyCreatedSecurityGroupName;
+                if (newlyCreatedSecurityGroupName.length > 30) {
+                    newlyCreatedSecurityGroupName = newlyCreatedSecurityGroupName.substr(0, 30) + "...";
+                }
+                if ($scope.securityGroupVPC && $scope.securityGroupVPC != 'None') {
                     newlyCreatedSecurityGroupName = newlyCreatedSecurityGroupName + " (" + $scope.securityGroupVPC + ")";
                 }
                 $scope.securityGroupChoices[newSecurityGroupID] = newlyCreatedSecurityGroupName;

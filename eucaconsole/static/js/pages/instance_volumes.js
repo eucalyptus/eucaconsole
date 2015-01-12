@@ -5,20 +5,27 @@
  */
 
 angular.module('InstanceVolumes', ['EucaConsoleUtils'])
-    .controller('InstanceVolumesCtrl', function ($scope, $http, $timeout, eucaHandleError) {
+    .controller('InstanceVolumesCtrl', function ($scope, $http, $timeout, eucaUnescapeJson, eucaHandleError) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         // Volume states are: "attached", "attaching", "detaching"
         // 'detached' state doesn't apply here since it won't be attached to the instance
         $scope.loading = false;
         $scope.volumes = [];
+        $scope.allVolumes = [];
+        $scope.availableVolumes = {};
+        $scope.availableVolumeCount = 0;
+        $scope.instanceId = '';
         $scope.jsonEndpoint = '';
         $scope.initialLoading = true;
         $scope.detachFormAction = '';
         $scope.isDialogHelpExpanded = false;
-        $scope.initController = function (jsonEndpoint) {
-            $scope.jsonEndpoint = jsonEndpoint;
+        $scope.initController = function (optionsJson) {
+            var options = JSON.parse(eucaUnescapeJson(optionsJson));
+            $scope.instanceId = options['instance_id'];
+            $scope.jsonEndpoint = options['instance_volumes_json_url'];
             $scope.initChosenSelector();
             $scope.getInstanceVolumes();
+            $scope.setWatch();
             $scope.setFocus();
             $scope.setDropdownMenusListener();
         };
@@ -29,6 +36,14 @@ angular.module('InstanceVolumes', ['EucaConsoleUtils'])
                 });
             });
         };
+        $scope.setWatch = function () {
+            $scope.$watch('availableVolumes', function() {
+                // Timeout is needed to ensure angular update is complete
+                $timeout(function() { 
+                    $('#volume_id').trigger('chosen:updated');
+                });
+            }, true); 
+        }
         $scope.setFocus = function () {
             $(document).on('opened', '[data-reveal]', function () {
                 var modal = $(this);
@@ -53,10 +68,19 @@ angular.module('InstanceVolumes', ['EucaConsoleUtils'])
         $scope.getInstanceVolumes = function () {
             $http.get($scope.jsonEndpoint).success(function(oData) {
                 var transitionalCount = 0;
-                $scope.volumes = oData ? oData.results : [];
+                $scope.volumes = [];
+                $scope.availableVolumes = {};
+                $scope.availableVolumeCount = 0;
+                $scope.allVolumes = oData ? oData.results : [];
                 $scope.initialLoading = false;
                 // Detect if any volume states are transitional
-                $scope.volumes.forEach(function(volume) {
+                $scope.allVolumes.forEach(function(volume) {
+                    if (volume['attach_instance_id'] == $scope.instanceId) {
+                        $scope.volumes.push(volume);
+                    } else if (volume['status'] == 'available') {
+                        $scope.availableVolumes[volume['id']] = volume['name'];
+                        $scope.availableVolumeCount += 1;
+                    }
                     if (volume['transitional']) {
                         transitionalCount += 1;
                     }

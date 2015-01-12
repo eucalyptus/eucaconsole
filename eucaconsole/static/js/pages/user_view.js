@@ -156,6 +156,8 @@ angular.module('UserView', ['PolicyList', 'Quotas', 'EucaConsoleUtils'])
         $scope.setFocus = function () {
             $(document).on('ready', function(){
                 $('.tabs').find('a').get(0).focus();
+                // Prevent change password confirmation input from being disabled on IE
+                $('#password').removeAttr('maxlength');
             });
             $(document).on('opened', '[data-reveal]', function () {
                 var modal = $(this);
@@ -236,8 +238,16 @@ angular.module('UserView', ['PolicyList', 'Quotas', 'EucaConsoleUtils'])
             // add password strength meter to first new password field
             newPasswordForm.after("<hr id='password-strength'/><span id='password-word'></span>");
             $('#password-strength').attr('class', "password_none");
-            newPasswordForm.on('keypress', function () {
+            newPasswordForm.on('keypress', function (evt) {
                 var val = $(this).val();
+                var key = evt.keyCode || evt.charCode;
+                if (key == 8 || key == 46) {
+                    val = val.substring(0, val.length-1);
+                } else {
+                    if (key != 13 && key != 9) {
+                        val = val + String.fromCharCode(key);
+                    }
+                }
                 var score = zxcvbn(val).score;
                 $('#password-strength').attr('class', "password_" + score);
                 $('#password-word').attr('class', "password_" + score);
@@ -593,7 +603,7 @@ angular.module('UserView', ['PolicyList', 'Quotas', 'EucaConsoleUtils'])
             $('#policy-view-modal').foundation('reveal', 'open');
         };
     })
-    .controller('UserQuotasCtrl', function($scope, $http, eucaHandleError) {
+    .controller('UserQuotasCtrl', function($scope, $http, $rootScope) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.jsonEndpoint = '';
         $scope.isQuotaNotChanged = true;
@@ -628,6 +638,7 @@ angular.module('UserView', ['PolicyList', 'Quotas', 'EucaConsoleUtils'])
               success(function(oData) {
                 var results = oData ? oData.results : [];
                 Notify.success(oData.message);
+                $rootScope.getPolicies();  // HACK: force access policies list to refresh on quota save
                 $scope.isQuotaNotChanged = true;
               }).
               error(function (oData, status) {

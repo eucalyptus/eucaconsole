@@ -53,6 +53,7 @@ class IPAddressesView(LandingPageView):
         self.disassociate_form = DisassociateIPForm(self.request, formdata=self.request.params or None)
         self.release_form = ReleaseIPForm(self.request, formdata=self.request.params or None)
         self.location = self.get_redirect_location('ipaddresses')
+        self.is_vpc_supported = BaseView.is_vpc_supported(request)
         self.render_dict = dict(
             prefix=self.prefix,
             allocate_form=self.allocate_form,
@@ -60,6 +61,8 @@ class IPAddressesView(LandingPageView):
             disassociate_form=self.disassociate_form,
             release_form=self.release_form,
             allocate_ip_dialog_error_message=_(u'Please enter a whole number greater than zero'),
+            is_vpc_supported=self.is_vpc_supported,
+            cloud_type=self.cloud_type,
         )
 
     @view_config(route_name='ipaddresses', renderer=VIEW_TEMPLATE)
@@ -67,9 +70,11 @@ class IPAddressesView(LandingPageView):
         # sort_keys are passed to sorting drop-down
         # Handle Allocate IP addresses form
         if self.request.method == 'POST':
+            if self.cloud_type == 'euca':
+                del self.allocate_form.domain 
             if self.allocate_form.validate():
                 new_ips = []
-                domain = self.request.params.get('domain')
+                domain = self.request.params.get('domain') or None
                 ipcount = int(self.request.params.get('ipcount', 0))
                 with boto_error_handler(self.request, self.location):
                     self.log_request(_(u"Allocating {0} ElasticIPs").format(ipcount))
@@ -81,11 +86,14 @@ class IPAddressesView(LandingPageView):
                     msg = u'{prefix} {ips}'.format(prefix=prefix, ips=ips)
                     self.request.session.flash(msg, queue=Notification.SUCCESS)
                 return HTTPFound(location=self.location)
+        self.filters_form=IPAddressesFiltersForm(self.request, conn=self.conn, formdata=self.request.params or None)
+        if self.cloud_type == 'euca':
+            del self.filters_form.domain
         self.render_dict.update(
             initial_sort_key='public_ip',
             json_items_endpoint=self.get_json_endpoint('ipaddresses_json'),
             filter_fields=True,
-            filters_form=IPAddressesFiltersForm(self.request, conn=self.conn, formdata=self.request.params or None),
+            filters_form=self.filters_form,
             filter_keys=['public_ip', 'instance_id', 'domain'],
             sort_keys=self.get_sort_keys(),
         )
@@ -114,7 +122,8 @@ class IPAddressesView(LandingPageView):
             public_ip = self.request.params.get('public_ip')
             with boto_error_handler(self.request, self.location):
                 self.log_request(_(u"Disassociating ElasticIP {0}").format(public_ip))
-                self.conn.disassociate_address(public_ip)
+                elastic_ip = self.get_elastic_ip(public_ip)
+                elastic_ip.disassociate()
                 template = _(u'Successfully disassociated IP {ip} from instance')
                 msg = template.format(ip=public_ip)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
@@ -168,7 +177,7 @@ class IPAddressesJsonView(LandingPageView):
             return JSONResponse(status=400, message="missing CSRF token")
         ipaddresses = []
         with boto_error_handler(self.request):
-            items = self.filter_items(self.get_items(), ignore=['assignment'])
+            items = self.filter_items(self.get_items(), ignore=['assignment', 'allocate'])
             if self.request.params.getall('assignment'):
                 items = self.filter_by_assignment(items)
             instances = self.get_instances(items)
@@ -178,7 +187,7 @@ class IPAddressesJsonView(LandingPageView):
                     allocation_id=address.allocation_id,
                     instance_id=address.instance_id,
                     instance_name=TaggedItemView.get_display_name(
-                        instances[address.instance_id]) if address.instance_id else address.instance_id,
+                        instances[address.instance_id]) if address.instance_id in instances else address.instance_id,
                     domain=address.domain,
                 ))
             return dict(results=ipaddresses)

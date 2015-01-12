@@ -136,7 +136,11 @@ class LaunchConfigsJsonView(LandingPageView):
             scalinggroup_launchconfig_names = self.get_scalinggroups_launchconfig_names()
             for launchconfig in self.filter_items(self.items):
                 security_groups = self.get_security_groups(launchconfig.security_groups)
-                security_groups_array = sorted({'name': group.name, 'id': group.id} for group in security_groups)
+                security_groups_array = sorted({
+                    'name': group.name,
+                    'id': group.id,
+                    'rules_count': self.get_security_group_rules_count_by_id(group.id)
+                    } for group in security_groups)
                 image_id = launchconfig.image_id
                 name = launchconfig.name
                 launchconfigs_array.append(dict(
@@ -201,6 +205,14 @@ class LaunchConfigsJsonView(LandingPageView):
                     return sgroup
         return ''
 
+    def get_security_group_rules_count_by_id(self, id):
+        if id.startswith('sg-'):
+            security_group = self.get_security_group_by_id(id)
+        else:
+            security_group = self.get_security_group_by_name(id)
+        if security_group:
+            return len(security_group.rules)
+        return None 
 
 class LaunchConfigView(BaseView):
     """Views for single LaunchConfig"""
@@ -214,7 +226,7 @@ class LaunchConfigView(BaseView):
         with boto_error_handler(request):
             self.launch_config = self.get_launch_config()
             self.image = self.get_image()
-            self.security_groups = self.get_security_groups()
+            self.security_groups = self.get_security_group_list()
             self.in_use = self.is_in_use()
         self.delete_form = LaunchConfigDeleteForm(self.request, formdata=self.request.params or None)
         self.role = None
@@ -237,6 +249,7 @@ class LaunchConfigView(BaseView):
             self.launch_config.userdata_istext = True if mime_type.find('text') >= 0 else False
         else:
             self.launch_config.userdata_type = ''
+        self.is_vpc_supported = BaseView.is_vpc_supported(request)
         self.render_dict = dict(
             launch_config=self.launch_config,
             launch_config_name=self.escape_braces(self.launch_config.name) if self.launch_config else '',
@@ -251,6 +264,7 @@ class LaunchConfigView(BaseView):
             delete_form=self.delete_form,
             role=self.role,
             controller_options_json=self.get_controller_options_json(),
+            is_vpc_supported=self.is_vpc_supported,
         )
 
     @view_config(route_name='launchconfig_view', renderer=TEMPLATE)
@@ -304,6 +318,32 @@ class LaunchConfigView(BaseView):
             return security_groups
         return []
 
+    def get_securitygroups_rules(self, securitygroups):
+        rules_dict = {}
+        for security_group in securitygroups:
+            rules = SecurityGroupsView.get_rules(security_group.rules)
+            if security_group.vpc_id is not None:
+                rules_egress = SecurityGroupsView.get_rules(security_group.rules_egress, rule_type='outbound')
+                rules = rules + rules_egress
+            rules_dict[security_group.id] = rules
+        return rules_dict
+
+    def get_security_group_list(self):
+        security_groups = []
+        security_group_list = []
+        security_groups = self.get_security_groups()
+        if security_groups:
+            rules_dict = self.get_securitygroups_rules(security_groups)
+            for sgroup in security_groups:
+                rules = rules_dict[sgroup.id]
+                sgroup_dict = {}
+                sgroup_dict['id'] = sgroup.id
+                sgroup_dict['name'] = sgroup.name
+                sgroup_dict['rules'] = rules 
+                sgroup_dict['rule_count'] = len(rules) 
+                security_group_list.append(sgroup_dict)
+        return security_group_list 
+
     def is_in_use(self):
         """Returns whether or not the launch config is in use (i.e. in any scaling group).
         :rtype: Boolean
@@ -343,7 +383,7 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
         with boto_error_handler(request):
             self.securitygroups = self.get_security_groups()
         self.iam_conn = None
-        if request.session['role_access']:
+        if BaseView.has_role_access(request):
             self.iam_conn = self.get_connection(conn_type="iam")
         self.vpc_conn = self.get_connection(conn_type='vpc')
         self.create_form = CreateLaunchConfigForm(
@@ -355,14 +395,17 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
         self.securitygroup_form = SecurityGroupForm(self.request, self.vpc_conn, formdata=self.request.params or None)
         self.generate_file_form = GenerateFileForm(self.request, formdata=self.request.params or None)
         self.owner_choices = self.get_owner_choices()
+
         controller_options_json = BaseView.escape_json(json.dumps({
-            'securitygroups_rules': self.get_securitygroups_rules(),
             'securitygroups_choices': dict(self.create_form.securitygroup.choices),
             'keypair_choices': dict(self.create_form.keypair.choices),
             'role_choices': dict(self.create_form.role.choices),
             'securitygroups_json_endpoint': self.request.route_path('securitygroups_json'),
+            'securitygroups_rules_json_endpoint': self.request.route_path('securitygroups_rules_json'),
             'image_json_endpoint': self.request.route_path('image_json', id='_id_'),
+            'default_vpc_network': self.get_default_vpc_network(),
         }))
+        self.is_vpc_supported = BaseView.is_vpc_supported(request)
         self.render_dict = dict(
             image=self.image,
             create_form=self.create_form,
@@ -375,6 +418,7 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
             preset='',
             security_group_placeholder_text=_(u'Select...'),
             controller_options_json=controller_options_json,
+            is_vpc_supported=self.is_vpc_supported,
         )
 
     @view_config(route_name='launchconfig_new', renderer=TEMPLATE, request_method='GET')
@@ -397,9 +441,10 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
                 key_name = None if key_name == 'none' else self.unescape_braces(key_name)
             security_groups = self.request.params.getall('securitygroup')
             instance_type = self.request.params.get('instance_type', 'm1.small')
-            associate_public_ip_address = self.request.params.get('associate_public_ip_address')
-            # associate_public_ip_address's value can be None, True, or False 
-            if associate_public_ip_address != 'None':
+            associate_public_ip_address = self.request.params.get('associate_public_ip_address') or None
+            # associate_public_ip_address's value can be 'None', True, or False for VPC systems
+            # in case of no VPC system, the value os assciate_public_ip_address should be kept None
+            if self.is_vpc_supported and associate_public_ip_address != 'None':
                 associate_public_ip_address = True if associate_public_ip_address == 'true' else False
             kernel_id = self.request.params.get('kernel_id') or None
             ramdisk_id = self.request.params.get('ramdisk_id') or None
@@ -455,3 +500,18 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
             rules_dict[security_group.id] = rules
         return rules_dict
 
+    def get_default_vpc_network(self):
+        default_vpc = self.request.session.get('default_vpc', [])
+        if self.is_vpc_supported:
+            if 'none' in default_vpc or 'None' in default_vpc:
+                if self.cloud_type == 'aws':
+                    return 'None'
+                # for euca, return the first vpc on the list
+                if self.vpc_conn:
+                    with boto_error_handler(self.request):
+                        vpc_networks = self.vpc_conn.get_all_vpcs()
+                        if vpc_networks:
+                            return vpc_networks[0].id
+            else:
+                return default_vpc[0]
+        return 'None'

@@ -178,6 +178,7 @@ class ImagesView(LandingPageView):
         return BaseView.escape_json(json.dumps({
             'snapshot_images_json_url': self.request.route_path('snapshot_images_json', id='_id_'),
             'image_cancel_url': self.request.route_path('image_cancel', id='_id_'),
+            'cloud_type': self.cloud_type,
         }))
 
     @staticmethod

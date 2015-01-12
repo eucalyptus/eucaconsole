@@ -18,9 +18,11 @@ angular.module('ElasticIPsPage', ['LandingPage'])
         $scope.initController = function () {
             $scope.initChosenSelectors();
             // Open allocate IP modal based on query string arg
-            if ($scope.urlParams['allocate']) {
-                $('#allocate-ip-modal').foundation('reveal', 'open');
-            }
+            $(document).ready(function () {
+                if ($scope.urlParams['allocate']) {
+                    $('#allocate-ip-modal').foundation('reveal', 'open');
+                }
+            });
             $scope.setWatch();
         };
         $scope.setWatch = function () {

@@ -117,8 +117,8 @@
                                 </div>
                                 <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
                                     <a class="tiny secondary button dropdown right"
-                                       data-dropdown="item-dropdown_{{ item.group_name }}"><i class="fi-widget"></i></a>
-                                    <ul id="item-dropdown_{{ item.group_name }}" class="f-dropdown" data-dropdown-content="">
+                                       data-dropdown="item-dropdown-group-{{ $index }}"><i class="fi-widget"></i></a>
+                                    <ul id="item-dropdown-group-{{ $index }}" class="f-dropdown" data-dropdown-content="">
                                         <li>
                                             <a i18n:translate="" ng-click="removeUserFromGroup(item)">Remove user</a>
                                         </li>
@@ -203,7 +203,7 @@
                                     <div class="row controls-wrapper controls_new_password">
                                         <div class="small-12 columns field">
                                             <label for="top-label" class="left">${user_form.new_password.label.text}<span class="req">*</span></label>
-                                            ${structure:user_form.new_password}
+                                            ${structure:user_form.new_password(autocomplete="off")}
                                         </div>
                                     </div>
                                     <div class="row controls-wrapper controls_new_password2">
@@ -392,7 +392,6 @@
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/utils/zxcvbn-async.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/jquery.generateFile.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/user_view.js')}"></script>
 </div>
 

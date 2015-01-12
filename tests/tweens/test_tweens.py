@@ -88,6 +88,15 @@ class TestCTHeaders(unittest.TestCase):
             self.assertTrue(name in res.headers)
             self.assertTrue(res.headers[name] == value)
 
+    def test_csp_header(self):
+        """Determine if CSP headers are properly set"""
+        from eucaconsole.tweens import CTHeadersTweenFactory as CTFactory
+        headers = CTFactory.header_map['text/html']
+        self.assertTrue('CONTENT-SECURITY-POLICY' in headers.keys())
+        self.assertTrue('X-CONTENT-SECURITY-POLICY' in headers.keys())  # IE requires header prefix
+        self.assertEquals(headers.get('CONTENT-SECURITY-POLICY'), "script-src 'self'")
+        self.assertEquals(headers.get('X-CONTENT-SECURITY-POLICY'), "script-src 'self'")
+
 
 class TestHTTPSTween(unittest.TestCase):
     def test_it(self):

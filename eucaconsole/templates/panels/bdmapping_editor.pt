@@ -1,12 +1,6 @@
 <!--! Block Device Mapping editor -->
 <div id="bdmapping-editor" class="row controls-wrapper" ng-app="BlockDeviceMappingEditor" i18n:domain="eucaconsole"
      ng-controller="BlockDeviceMappingEditorCtrl" ng-init="initBlockDeviceMappingEditor('${controller_options_json}')">
-    <style type="text/css">
-        th { text-align:center; }
-        td { text-align:center; }
-        .expando i { color:black; }
-        .expando i:hover { color:darkred; }
-    </style>
     <div class="columns" ng-show="bdMapping">
         <h6 i18n:translate="" class="storage-label">Storage</h6>
         <table class="table">
@@ -27,7 +21,7 @@
                     <th tal:condition="not read_only">&nbsp;</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody ng-cloak="">
                 <tr ng-repeat="(key, val) in bdMapping">
                     <td>
                         <span ng-show="val.is_root">Root</span>
@@ -43,8 +37,8 @@
                             <small class="error" i18n:translate="">Size is required</small>
                         </span>
                     </td>
-                    <td tal:condition="read_only">{{ val.size }}</td>
-                    <td tal:condition="not read_only">
+                    <td tal:condition="read_only" class="count">{{ val.size }}</td>
+                    <td tal:condition="not read_only" class="count">
                         <span ng-if="!isEphemeral(val)">
                             <input ng-show="showDOTflag(val)" type="checkbox" ng-checked="val.delete_on_termination === true"
                                    ng-click="updateRootDeviceDelete($event, key, val.is_root)"

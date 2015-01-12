@@ -4,7 +4,7 @@
 /* Set the link colors and styles for top-level nav */
 /* ----------------------------------------- Item list
 ----------------------------------------- */
-#s3-sharing-panel .items { margin-bottom: 6px; }
+#s3-sharing-panel .items { margin: 0.7rem 0 0.5rem 0; }
 #s3-sharing-panel .items .grantentry { color: #333; background-color: #e6e7e8; margin-right: 8px; }
 #s3-sharing-panel .items .grantentry a.remove i { color: white; }
 #s3-sharing-panel #share_type { list-style-type: none; margin-bottom: 0; margin-left: 1px; }

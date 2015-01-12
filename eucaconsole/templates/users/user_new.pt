@@ -108,7 +108,6 @@
     <div tal:condition="layout.account == 'eucalyptus'" tal:omit-tag="">
         <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
     </div>
-    <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/jquery.generateFile.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/user_new.js')}"></script>
 </div>
 

@@ -39,10 +39,10 @@ from wtforms.ext.csrf import SecureForm
 from wtforms.widgets import html_params, HTMLString, Select
 from markupsafe import escape
 
-import boto
 from boto.exception import BotoServerError
 
 from ..caches import extra_long_term
+from ..caches import invalidate_cache
 from ..constants.instances import AWS_INSTANCE_TYPE_CHOICES
 from ..i18n import _
 
@@ -128,7 +128,7 @@ class ChoicesManager(object):
         except pylibmc.Error as err:
             return _get_zones_(self, region)
 
-    def instances(self, instances=None, state=None, escapebraces=True):
+    def instances(self, instances=None, states=None, escapebraces=True):
         from ..views import TaggedItemView
         choices = [('', _(u'Select instance...'))]
         instances = instances or []
@@ -138,9 +138,17 @@ class ChoicesManager(object):
                 for instance in instances:
                     value = instance.id
                     label = TaggedItemView.get_display_name(instance, escapebraces=escapebraces)
-                    if state is None or instance.state == state:
+                    if states is None:
                         choices.append((value, label))
+                    else:
+                        if instance.state in states:
+                            choices.append((value, label))
+     
         return choices
+
+    @staticmethod
+    def invalidate_instance_types():
+        invalidate_cache(extra_long_term, 'instance_types')
 
     def instance_types(self, cloud_type='euca', add_blank=True, add_description=True):
         """Get instance type (e.g. m1.small) choices
@@ -398,7 +406,7 @@ class ChoicesManager(object):
         from ..views import TaggedItemView
         choices = []
         if add_blank:
-            choices = [('', _(u'No VPC'))]
+            choices = [('None', _(u'No VPC'))]
         vpc_network_list = vpc_networks or []
         if not vpc_network_list and self.conn is not None:
             vpc_network_list = self.conn.get_all_vpcs()
@@ -414,7 +422,7 @@ class ChoicesManager(object):
         vpc_subnet_list = vpc_subnets or []
         if not vpc_subnet_list and self.conn is not None:
             if vpc_id:
-                vpc_subnet_list = self.conn.get_all_subnets(filters={'vpcId': [vpc_id]})
+                vpc_subnet_list = self.conn.get_all_subnets(filters={'vpc-id': [vpc_id]})
             else:
                 vpc_subnet_list = self.conn.get_all_subnets()
         for vpc in vpc_subnet_list:

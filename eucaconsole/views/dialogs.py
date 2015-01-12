@@ -30,6 +30,7 @@ See http://docs.pylonsproject.org/projects/pyramid_layout/en/latest/layouts.html
 
 """
 import simplejson as json
+from ..i18n import _
 
 from pyramid_layout.panel import panel_config
 
@@ -54,6 +55,7 @@ def ipaddress_dialogs(context, request, eip=None, landingpage=False,
 def snapshot_dialogs(context, request, snapshot=None, snapshot_name=None, landingpage=False, volume_id=None,
                      delete_form=None, register_form=None):
     """Modal dialogs for Snapshot landing and detail page."""
+    snapshot_image_name_validation_error_msg = _(u"AMI names must be between 3 and 128 characters long, and may contain letters, numbers, \'(\', \')\', \'.\', \'-\', \'/\' and \'_\', and cannot contain spaces.")
     return dict(
         snapshot=snapshot,
         snapshot_name=snapshot_name,
@@ -61,6 +63,7 @@ def snapshot_dialogs(context, request, snapshot=None, snapshot_name=None, landin
         volume_id=volume_id,
         delete_form=delete_form,
         register_form=register_form,
+        snapshot_image_name_validation_error_msg=snapshot_image_name_validation_error_msg,
     )
 
 
@@ -135,8 +138,10 @@ def securitygroup_dialogs(context, request, security_group=None, landingpage=Fal
 @panel_config('create_securitygroup_dialog', renderer='../templates/dialogs/create_securitygroup_dialog.pt')
 def create_securitygroup_dialog(context, request, securitygroup_form=None):
     """ Modal dialog for creating a security group."""
+    is_vpc_supported = BaseView.is_vpc_supported(request)
     return dict(
         securitygroup_form=securitygroup_form,
+        is_vpc_supported=is_vpc_supported,
     )
 
 
@@ -245,10 +250,6 @@ def image_dialogs(context, request, image=None, image_name_id='', landingpage=Fa
     )
 
 
-@panel_config('bucket_delete_dialog', renderer='../templates/dialogs/bucket_delete_dialog.pt')
-def bucket_delete_dialog(context, request):
-    return dict()
-
 @panel_config('bucket_dialogs', renderer='../templates/dialogs/bucket_dialogs.pt')
 def bucket_dialogs(context, request, bucket=None, landingpage=False, versioning_form=None, delete_form=None):
     """ Modal dialogs for Bucket landing and detail page."""
@@ -266,6 +267,11 @@ def bucket_dialogs(context, request, bucket=None, landingpage=False, versioning_
         delete_form=delete_form,
         update_versioning_action=update_versioning_action,
     )
+
+
+@panel_config('bucket_item_dialogs', renderer='../templates/dialogs/bucket_item_dialogs.pt')
+def bucket_item_dialogs(context, request):
+    return dict()
 
 
 @panel_config('create_folder_dialog', renderer='../templates/dialogs/create_folder_dialog.pt')

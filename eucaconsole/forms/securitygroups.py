@@ -52,25 +52,31 @@ class SecurityGroupForm(BaseSecureForm):
             validators.Length(max=255, message=_(u'Description must be less than 255 characters'))
         ],
     )
-    vpc_network = wtforms.SelectField(label=_(u'VPC network'))
+    securitygroup_vpc_network = wtforms.SelectField(label=_(u'VPC network'))
 
     def __init__(self, request, vpc_conn=None, security_group=None, **kwargs):
         super(SecurityGroupForm, self).__init__(request, **kwargs)
         self.vpc_conn = vpc_conn
         self.name.error_msg = self.name_error_msg  # Used for Foundation Abide error message
         self.description.error_msg = self.desc_error_msg  # Used for Foundation Abide error message
-        self.choices_manager = ChoicesManager(conn=vpc_conn)
+        self.vpc_choices_manager = ChoicesManager(conn=vpc_conn)
         region = request.session.get('region')
+        self.cloud_type = request.session.get('cloud_type', 'euca')
+        from ..views import BaseView
+        self.is_vpc_supported = BaseView.is_vpc_supported(request)
         self.set_vpc_choices()
 
         # Although we don't need to show the name/desc fields on update, we need these here to ensure the form is valid
         if security_group is not None:
             self.name.data = security_group.name
             self.description.data = security_group.description
-            self.vpc_network.data = security_group.vpc_id or ''
+            self.securitygroup_vpc_network.data = security_group.vpc_id or ''
 
     def set_vpc_choices(self):
-        self.vpc_network.choices = self.choices_manager.vpc_networks()
+        if self.cloud_type == 'euca' and self.is_vpc_supported:
+            self.securitygroup_vpc_network.choices = self.vpc_choices_manager.vpc_networks(add_blank=False)
+        else:
+            self.securitygroup_vpc_network.choices = self.vpc_choices_manager.vpc_networks()
 
 
 class SecurityGroupDeleteForm(BaseSecureForm):
@@ -91,5 +97,6 @@ class SecurityGroupsFiltersForm(BaseSecureForm):
         self.cloud_type = cloud_type
         self.vpc_choices_manager = ChoicesManager(conn=vpc_conn)
         self.vpc_id.choices = self.vpc_choices_manager.vpc_networks(add_blank=False)
-        self.vpc_id.choices.append(('None', _(u'No VPC')))
+        if self.cloud_type == 'aws':
+            self.vpc_id.choices.append(('None', _(u'No VPC')))
         self.vpc_id.choices = sorted(self.vpc_id.choices)
