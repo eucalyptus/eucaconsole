@@ -16,13 +16,18 @@
 	<td>lb_max</td>
 </tr>
 <tr>
-	<td>selectWindow</td>
-	<td>null</td>
+	<td>assertVisible</td>
+	<td>id=resource-menu-dashboard</td>
 	<td></td>
 </tr>
 <tr>
 	<td>clickAndWait</td>
 	<td>id=resource-menu-dashboard</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertElementPresent</td>
+	<td>id=resource-menu-iam</td>
 	<td></td>
 </tr>
 <tr>
@@ -33,6 +38,16 @@
 <tr>
 	<td>clickAndWait</td>
 	<td>id=resource-menuitem-users</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>link=${user}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertElementPresent</td>
+	<td>link=${user}</td>
 	<td></td>
 </tr>
 <tr>
