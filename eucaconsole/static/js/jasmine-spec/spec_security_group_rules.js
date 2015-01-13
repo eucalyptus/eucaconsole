@@ -236,6 +236,28 @@ describe("SecurityGroupRules", function() {
         });
     });
 
+    describe("Watch securityGroupVPC Test", function() {
+
+        it("Should call getAllSecurityGroupVPC when securityGroupVPC is updated", function() {
+            spyOn(scope, 'getAllSecurityGroups');
+            scope.setWatchers();
+            scope.securityGroupVPC = "vpc-12345678";
+            scope.$apply();
+            expect(scope.getAllSecurityGroups).toHaveBeenCalledWith('vpc-12345678');
+        });
+    });
+
+    describe("Function initModal Test", function() {
+
+        it("Should call getAllSecurityGroupVPC when initModal is called", function() {
+            spyOn(scope, 'getAllSecurityGroups');
+            scope.setWatchers();
+            scope.securityGroupVPC = "vpc-12345678";
+            scope.$broadcast('initModal');
+            expect(scope.getAllSecurityGroups).toHaveBeenCalledWith('vpc-12345678');
+        });
+    });
+
     describe("Function updateVPC Test", function() {
 
         beforeEach(function() {
@@ -244,8 +266,8 @@ describe("SecurityGroupRules", function() {
 
         it("Should update securityGroupVPC when updateVPC is called", function() {
             scope.setWatchers();
-            scope.$broadcast('updateVPC', 'sg-12345678');
-            expect(scope.securityGroupVPC).toEqual('sg-12345678');
+            scope.$broadcast('updateVPC', 'vpc-12345678');
+            expect(scope.securityGroupVPC).toEqual('vpc-12345678');
         });
 
         it("Shouldn't update securityGroupVPC when updateVPC is called and vpc value is undefined", function() {
@@ -256,15 +278,15 @@ describe("SecurityGroupRules", function() {
 
         it("Should return immediately when updateVPC is called and vpc value is not changed", function() {
             spyOn(scope, 'adjustIPProtocolOptions');
-            scope.securityGroupVPC = 'sg-12345678';
+            scope.securityGroupVPC = 'vpc-12345678';
             scope.setWatchers();
-            scope.$broadcast('updateVPC', 'sg-12345678');
+            scope.$broadcast('updateVPC', 'vpc-12345678');
             expect(scope.adjustIPProtocolOptions).not.toHaveBeenCalled();
         });
 
         it("Should call selectRuleType when updateVPC is called and vpc value is 'None'", function() {
             spyOn(scope, 'selectRuleType');
-            scope.securityGroupVPC = 'sg-12345678';
+            scope.securityGroupVPC = 'vpc-12345678';
             scope.setWatchers();
             scope.$broadcast('updateVPC', 'None');
             expect(scope.selectRuleType).toHaveBeenCalled();
@@ -273,20 +295,20 @@ describe("SecurityGroupRules", function() {
         it("Should call clearRules when updateVPC is called", function() {
             spyOn(scope, 'clearRules');
             scope.setWatchers();
-            scope.$broadcast('updateVPC', 'sg-12345678');
+            scope.$broadcast('updateVPC', 'vpc-12345678');
             expect(scope.clearRules).toHaveBeenCalled();
         });
 
         it("Should call addDefaultOutboundRule when updateVPC is called and vpc is not 'None'", function() {
             spyOn(scope, 'addDefaultOutboundRule');
             scope.setWatchers();
-            scope.$broadcast('updateVPC', 'sg-12345678');
+            scope.$broadcast('updateVPC', 'vpc-12345678');
             expect(scope.addDefaultOutboundRule).toHaveBeenCalled();
         });
 
         it("Shouldn't call addDefaultOutboundRule when updateVPC is called and vpc is 'None'", function() {
             spyOn(scope, 'addDefaultOutboundRule');
-            scope.securityGroupVPC = 'sg-12345678';
+            scope.securityGroupVPC = 'vpc-12345678';
             scope.setWatchers();
             scope.$broadcast('updateVPC', 'None');
             expect(scope.addDefaultOutboundRule).not.toHaveBeenCalled();
