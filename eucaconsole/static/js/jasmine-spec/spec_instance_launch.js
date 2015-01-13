@@ -8,10 +8,11 @@ describe("LaunchInstance", function() {
 
     beforeEach(angular.mock.module('LaunchInstance'));
 
-    var scope, ctrl;
+    var scope, ctrl, httpBackend;
     // inject the $controller and $rootScope services
     // in the beforeEach block
-    beforeEach(angular.mock.inject(function($controller, $rootScope) {
+    beforeEach(angular.mock.inject(function($controller, $rootScope, $httpBackend) {
+        httpBackend = $httpBackend;
         // Create a new scope that's a child of the $rootScope
         scope = $rootScope.$new();
         // Create the controller
@@ -40,6 +41,14 @@ describe("LaunchInstance", function() {
 
         it("Initial value of keyPair is empty", function() {
             expect(scope.keyPair).toEqual('');
+        });
+
+        it("Initial value of securityGroupVPC is None", function() {
+            expect(scope.securityGroupVPC).toEqual('None');
+        });
+
+        it("Initial value of subnetVPC is None", function() {
+            expect(scope.subnetVPC).toEqual('None');
         });
     });
 
@@ -111,6 +120,66 @@ describe("LaunchInstance", function() {
             scope.securityGroups = []; 
             scope.checkRequiredInput(); 
             expect(scope.isNotValid).toBeTruthy();
+        });
+    });
+
+    describe("Watch securityGroupVPC Test", function() {
+
+        var vpc = 'vpc-12345678';
+
+        beforeEach(function() {
+            setFixtures('<input id="csrf_token" name="csrf_token" type="hidden" value="2a06f17d6872143ed806a695caa5e5701a127ade">');
+            scope.jsonEndpoint  = "securitygroup_json";
+            var data = 'csrf_token=2a06f17d6872143ed806a695caa5e5701a127ade&vpc_id=' + vpc 
+            httpBackend.expect('POST', scope.jsonEndpoint, data)
+                .respond(200, {
+                    "success": true,
+                    "results": ["SSH", "HTTP", "HTTPS"]
+                });
+        });
+
+        it("Should broadcast updateVPC when securityGroupVPC is updated", function() {
+            spyOn(scope, '$broadcast');
+            scope.securityGroupJsonEndpoint = "securitygroup_json";
+            scope.instanceVPC = vpc;
+            scope.setWatcher();
+            scope.securityGroupVPC = vpc;
+            scope.$apply();
+            expect(scope.$broadcast).toHaveBeenCalledWith('updateVPC', scope.securityGroupVPC);
+        });
+    });
+
+    describe("Watch instanceVPC Test", function() {
+
+        var vpc = 'vpc-12345678';
+
+        beforeEach(function() {
+            setFixtures('<input id="csrf_token" name="csrf_token" type="hidden" value="2a06f17d6872143ed806a695caa5e5701a127ade">');
+            scope.jsonEndpoint  = "securitygroup_json";
+            var data = 'csrf_token=2a06f17d6872143ed806a695caa5e5701a127ade&vpc_id=' + vpc 
+            httpBackend.expect('POST', scope.jsonEndpoint, data)
+                .respond(200, {
+                    "success": true,
+                    "results": ["SSH", "HTTP", "HTTPS"]
+                });
+        });
+
+        it("Should call updateSecurityGroupVPC when instanceVPC is updated", function() {
+            spyOn(scope, 'updateSecurityGroupVPC');
+            scope.securityGroupJsonEndpoint = "securitygroup_json";
+            scope.setWatcher();
+            scope.instanceVPC = vpc;
+            scope.$apply();
+            expect(scope.updateSecurityGroupVPC).toHaveBeenCalled();
+        });
+    });
+
+    describe("Function updateSecurityGroupVPC Test", function() {
+
+        it("Should match securityGroupVPC to instanceVPC when updateSecurityGroupVPC is called", function() {
+            scope.instanceVPC = 'vpc-12345678';
+            scope.updateSecurityGroupVPC();
+            expect(scope.securityGroupVPC).toEqual('vpc-12345678');
         });
     });
 });
