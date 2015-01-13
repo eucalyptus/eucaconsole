@@ -3,6 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="https://10.111.5.7/" />
 <title>koala_login</title>
 </head>
 <body>
@@ -26,6 +27,21 @@
 	<td></td>
 </tr>
 <tr>
+	<td>waitForVisible</td>
+	<td>//dd[@id='euca-tab']/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertVisible</td>
+	<td>//dd[@id='euca-tab']/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//dd[@id='euca-tab']/a</td>
+	<td></td>
+</tr>
+<tr>
 	<td>assertVisible</td>
 	<td>id=account</td>
 	<td></td>
@@ -33,7 +49,7 @@
 <tr>
 	<td>type</td>
 	<td>id=account</td>
-	<td>ui-test-acct-00</td>
+	<td>eucalyptus</td>
 </tr>
 <tr>
 	<td>waitForVisible</td>
