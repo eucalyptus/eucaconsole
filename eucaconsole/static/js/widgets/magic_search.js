@@ -58,7 +58,7 @@ angular.module('MagicSearch', [])
             });
         };
         $('#search-input').on('keydown', function($event) {
-            if (key.metaKey == true) {
+            if ($event.metaKey == true) {
                 return;
             }
             var search_val = $('#search-input').val();
@@ -151,6 +151,9 @@ angular.module('MagicSearch', [])
                         }, 0.1);
                     }
                     else {
+                        if (search_val == 'itsmagic') {
+                            $('#itsmagic').foundation('reveal', 'open');
+                        }
                         $scope.$emit('textSearch', search_val, $scope.filter_keys);
                         $(document).foundation('dropdown', 'closeall');
                     }
