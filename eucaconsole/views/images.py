@@ -439,7 +439,7 @@ class ImageView(TaggedItemView, ImageBundlingMixin):
 
             if self.image and self.is_owned_by_user is True:
                 # Update the Image Description
-                description = self.request.params.get('description', '')
+                description = BaseView.unescape_braces(self.request.params.get('description', ''))
                 if self.image.description != description:
                     if self.cloud_type == 'aws' and description == '':
                         description = "-"
