@@ -109,11 +109,13 @@ angular.module('MagicSearch', [])
             if (key == 13) {  // enter, so accept value
                 // if tag search, treat as regular facet
                 if ($scope.facetSelected && $scope.facetSelected.name == 'tags') {
-                    var curr = $scope.currentSearch[$scope.currentSearch.length-1];
+                    var curr = $scope.facetSelected;
                     curr.name = curr.name + '=' + search_val;
                     curr.label[1] = search_val;
-                    $scope.facetSelected = undefined;
+                    $scope.currentSearch.push(curr);
+                    $scope.resetState();
                     $scope.emitQuery();
+                    $scope.showMenu();
                 }
                 // if text search treat as search
                 else {
@@ -160,6 +162,9 @@ angular.module('MagicSearch', [])
                 }
                 else {  // assume option search
                     $scope.filteredOptions = $scope.facetOptions;
+                    if ($scope.facetOptions == undefined) { // no options, assume free text like w/ tags
+                        return;
+                    }
                     filtered = [];
                     for (i=0; i<$scope.filteredOptions.length; i++) {
                         var option = $scope.filteredOptions[i];
@@ -174,10 +179,6 @@ angular.module('MagicSearch', [])
                         $timeout(function() {
                             $scope.filteredOptions = filtered;
                         }, 0.1);
-                    }
-                    else {
-                        $scope.$emit('textSearch', search_val, $scope.filter_keys);
-                        $(document).foundation('dropdown', 'closeall');
                     }
                 }
             }
@@ -232,7 +233,9 @@ angular.module('MagicSearch', [])
             else {
                 $scope.$emit('searchUpdated', query);
                 var newFacet = $scope.currentSearch[$scope.currentSearch.length-1]['name'];
-                $scope.deleteFacetSelection(newFacet.split('='));
+                if (newFacet.indexOf('tags=') != 0) {
+                    $scope.deleteFacetSelection(newFacet.split('='));
+                }
             }
         };
         // remove facet and either update filter or search
@@ -269,6 +272,7 @@ angular.module('MagicSearch', [])
             });
         };
         $scope.resetState = function() {
+            $('#search-input').val('');
             $scope.facetSelected = undefined;
             $scope.filteredObj = $scope.facetsObj;
             $scope.facetOptions = undefined;
