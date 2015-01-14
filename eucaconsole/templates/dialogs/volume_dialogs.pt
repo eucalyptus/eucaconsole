@@ -19,7 +19,7 @@
                 <input type="hidden" name="volume_id" value="{{ volumeID }}" />
             </div>
             ${panel('form_field', field=attach_form.instance_id, ng_attrs=ng_attrs, **html_attrs)}
-            ${panel('form_field', field=attach_form.device, placeholder='/dev/sdf')}
+            ${panel('form_field', field=attach_form.device)}
             <div>
                 <label>
                     <span class="req">*</span>

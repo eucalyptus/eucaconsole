@@ -354,6 +354,10 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
         else:
             self.scaling_group.availability_zones = ''
         self.scaling_group.termination_policies = self.request.params.getall('termination_policies')
+        # on AWS, the option 'Default' must appear at the end of the list
+        if 'Default' in self.scaling_group.termination_policies:
+            self.scaling_group.termination_policies.remove('Default')
+            self.scaling_group.termination_policies.append('Default')
         self.scaling_group.max_size = self.request.params.get('max_size', 1)
         self.scaling_group.min_size = self.request.params.get('min_size', 0)
         self.scaling_group.health_check_type = self.request.params.get('health_check_type')

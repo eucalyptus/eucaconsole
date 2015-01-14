@@ -3,12 +3,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>iam-create-user-with-no-attributes</title>
+<link rel="selenium.base" href="https://10.111.5.7/" />
+<title>add_empty_account</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">iam-create-user-with-no-attributes</td></tr>
+<tr><td rowspan="1" colspan="3">add_empty_account</td></tr>
 </thead><tbody>
 <tr>
 	<td>setSpeed</td>
@@ -21,8 +22,8 @@
 	<td></td>
 </tr>
 <tr>
-	<td>clickAndWait</td>
-	<td>id=resource-menu-dashboard</td>
+	<td>open</td>
+	<td>/</td>
 	<td></td>
 </tr>
 <tr>
@@ -36,13 +37,8 @@
 	<td></td>
 </tr>
 <tr>
-	<td>assertVisible</td>
-	<td>id=add-user-btn</td>
-	<td></td>
-</tr>
-<tr>
 	<td>clickAndWait</td>
-	<td>id=add-user-btn</td>
+	<td>id=add-account-btn</td>
 	<td></td>
 </tr>
 <tr>
@@ -51,8 +47,13 @@
 	<td>str</td>
 </tr>
 <tr>
+	<td>type</td>
+	<td>id=account-name</td>
+	<td>ui-test-acct-${str}</td>
+</tr>
+<tr>
 	<td>click</td>
-	<td>id=user-name-field</td>
+	<td>id=account-name</td>
 	<td></td>
 </tr>
 <tr>
@@ -61,58 +62,23 @@
 	<td>user-${str}</td>
 </tr>
 <tr>
-	<td>typeKeys</td>
-	<td>id=user-name-field</td>
-	<td>user-${str}</td>
-</tr>
-<tr>
-	<td>store</td>
-	<td>user-${str}</td>
-	<td>user_1</td>
-</tr>
-<tr>
 	<td>click</td>
 	<td>id=add-user-btn</td>
 	<td></td>
 </tr>
 <tr>
-	<td>clickAndWait</td>
-	<td>id=create-user-btn</td>
+	<td>waitForTextPresent</td>
+	<td>User: user-${str}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>user-${str}</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>link=Security credentials</td>
-	<td></td>
-</tr>
-<tr>
-	<td>sendKeys</td>
-	<td>id=new_password</td>
-	<td>foobar</td>
-</tr>
-<tr>
-	<td>sendKeys</td>
-	<td>id=new_password2</td>
-	<td>foobar</td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>id=save-password-btn</td>
-	<td></td>
-</tr>
-<tr>
-	<td>runScript</td>
-	<td>document.getElementById(&quot;password&quot;).value = &quot;mypassword0&quot;</td>
-	<td></td>
-</tr>
-<tr>
-	<td>sendKeys</td>
-	<td>id=password</td>
-	<td>mypassword0</td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>css=#change-form &gt; div.row &gt; div &gt; input.button.expand</td>
+	<td>id=create-btn</td>
 	<td></td>
 </tr>
 <tr>
@@ -126,8 +92,28 @@
 	<td></td>
 </tr>
 <tr>
-	<td>echo</td>
-	<td>${user_1}</td>
+	<td>waitForElementPresent</td>
+	<td>id=add-policy-btn</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>ui-test-acct-${str}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=resource-menu-iam</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=resource-menuitem-users</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>link=ui-test-acct-${str}</td>
 	<td></td>
 </tr>
 </tbody></table>

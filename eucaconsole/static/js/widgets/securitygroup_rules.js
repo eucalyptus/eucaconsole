@@ -197,6 +197,9 @@ angular.module('SecurityGroupRules', ['CustomFilters', 'EucaConsoleUtils'])
             $scope.$watch('hasDuplicatedRule', function () {
                 $scope.setAddRuleButtonClass(); 
             });
+            $scope.$on('initModal', function($event) {
+                $scope.getAllSecurityGroups($scope.securityGroupVPC);
+            });
             $scope.$on('updateVPC', function($event, vpc) {
                 if (vpc === undefined || $scope.securityGroupVPC == vpc) {
                     return;
