@@ -48,6 +48,13 @@ module.exports = function(grunt) {
                 'jasmine-jquery.js': 'jasmine-jquery/lib/jasmine-jquery.js'
               }
           },
+          font_awesome: {
+              files: {
+                'eucaconsole/static/fonts/font-awesome': 'components-font-awesome/fonts/*',
+                'eucaconsole/static/css/thirdparty': 'components-font-awesome/css/*.css',
+                'eucaconsole/static/sass/font-awesome':'components-font-awesome/scss/*.scss'
+              }
+          }
       },
       jshint: {
           options: {
