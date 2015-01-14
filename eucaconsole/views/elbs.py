@@ -83,8 +83,7 @@ class ELBsView(LandingPageView):
             prefix = _(u'Unable to delete elb')
             template = '{0} {1} - {2}'.format(prefix, name, '{0}')
             with boto_error_handler(self.request, location, template):
-                elb = self.elb_conn.get_all_load_balancers(names=[name])
-                self.elb_conn.delete_load_balancers(name)
+                self.elb_conn.delete_load_balancer(name)
                 prefix = _(u'Successfully deleted elb.')
                 msg = '{0} {1}'.format(prefix, name)
                 queue = Notification.SUCCESS
