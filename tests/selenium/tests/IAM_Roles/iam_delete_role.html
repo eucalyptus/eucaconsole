@@ -3,12 +3,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>iam_create_user_password</title>
+<link rel="selenium.base" href="https://10.111.5.7/" />
+<title>iam_delete_role</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">iam_create_user_password</td></tr>
+<tr><td rowspan="1" colspan="3">iam_delete_role</td></tr>
 </thead><tbody>
 <tr>
 	<td>setSpeed</td>
@@ -21,8 +22,8 @@
 	<td></td>
 </tr>
 <tr>
-	<td>clickAndWait</td>
-	<td>id=resource-menu-dashboard</td>
+	<td>open</td>
+	<td>/</td>
 	<td></td>
 </tr>
 <tr>
@@ -32,52 +33,27 @@
 </tr>
 <tr>
 	<td>clickAndWait</td>
-	<td>id=resource-menuitem-users</td>
+	<td>id=resource-menuitem-roles</td>
 	<td></td>
 </tr>
 <tr>
-	<td>waitForVisible</td>
-	<td>link=${user}</td>
-	<td></td>
-</tr>
-<tr>
-	<td>assertVisible</td>
-	<td>link=${user}</td>
+	<td>waitForElementPresent</td>
+	<td>link=ui-test-role-${str}</td>
 	<td></td>
 </tr>
 <tr>
 	<td>clickAndWait</td>
-	<td>link=${user}</td>
+	<td>link=ui-test-role-${str}</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>link=Security credentials</td>
+	<td>css=i.fi-minus-circle</td>
 	<td></td>
 </tr>
 <tr>
-	<td>sendKeys</td>
-	<td>id=new_password</td>
-	<td>foobar</td>
-</tr>
-<tr>
-	<td>sendKeys</td>
-	<td>id=new_password2</td>
-	<td>foobar</td>
-</tr>
-<tr>
 	<td>click</td>
-	<td>id=save-password-btn</td>
-	<td></td>
-</tr>
-<tr>
-	<td>sendKeys</td>
-	<td>id=password</td>
-	<td>mypassword0</td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>css=#change-form &gt; div.row &gt; div &gt; input.button.expand</td>
+	<td>css=input.button.expand</td>
 	<td></td>
 </tr>
 <tr>
@@ -90,6 +66,42 @@
 	<td>${breadcrumbs}</td>
 	<td></td>
 </tr>
+<tr>
+	<td>click</td>
+	<td>css=span.button.dropdown</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=delete-role-action</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=#delete-form &gt; div.dialog-submit-button &gt; button.button.expand</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>id=notifications</td>
+	<td>breadcrumbs</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${breadcrumbs}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementNotPresent</td>
+	<td>link=ui-test-role-${str}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertElementNotPresent</td>
+	<td>link=ui-test-role-${str}</td>
+	<td></td>
+</tr>
+
 </tbody></table>
 </body>
 </html>

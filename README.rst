@@ -19,13 +19,18 @@ Issue Tracking
 
 For bug reports, improvement request and general project planning, we use Jira: https://eucalyptus.atlassian.net/
 
+To obtain the latest development source code for the eucalyptus management console, visit
+https://github.com/eucalyptus/eucaconsole.  Pull requests are welcome and appreciated.  By submitting code to the
+eucalyptus management console, you agree that code will be licensed under the 2-clause BSD license.  A copy of
+this license is included in the COPYING file that accompanies the source code.
+
 
 Development environment setup
 =============================
 
 Prerequisites
 -------------
-Prior to installing Pyramid and it's dependencies, you may need to install the following libraries...
+Prior to installing Pyramid and its dependencies, you may need to install the following libraries...
 
 * libevent-dev (required by gevent)
 * openssl (required by M2Crypto)

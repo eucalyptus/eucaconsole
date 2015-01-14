@@ -94,7 +94,7 @@
                       id="attach-form" data-abide="" ng-show='availableVolumeCount &gt; 0'>
                     ${structure:attach_form['csrf_token']}
                     ${panel('form_field', field=attach_form['volume_id'], ng_attrs={'model': 'attachVolumeId', 'options': 'k as v for (k, v) in availableVolumes'})}
-                    ${panel('form_field', field=attach_form.device, placeholder='/dev/sdf')}
+                    ${panel('form_field', field=attach_form.device)}
                     <div>
                         <label>
                             <span class="req">*</span>
