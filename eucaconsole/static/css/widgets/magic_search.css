@@ -12,7 +12,7 @@
 .search-bar .item-list { margin-bottom: 2px; }
 .search-bar #search-selected { background-color: white; color: #444; }
 .search-bar #search-entry { display: inline-block; height: 1.5rem; }
-.search-bar #search-input { width: 10px; border: 0; box-shadow: none; height: 1.5rem; padding: 3px; background-color: white; }
+.search-bar #search-input { width: 220px; border: 0; box-shadow: none; height: 1.5rem; padding: 3px; background-color: white; }
 .search-bar #search-input.has-items { margin-top: 6px; }
 .search-bar .match { font-weight: bold; }
 .search-bar i.cancel { color: #444; position: absolute; top: 0.5rem; right: 0.65rem; }
