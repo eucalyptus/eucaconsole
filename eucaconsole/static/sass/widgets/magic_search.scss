@@ -5,53 +5,46 @@
     position: relative;
     border: 1px solid black;
     background-color: white;
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.5rem;
     padding: 4px;
     height: auto;
-    min-height: 2.0rem;
     i.fi-filter {
         color: $euca-darkgrey;
-        vertical-align: middle;
         position: absolute;
         top: 0.5rem;
         left: 0.65rem;
+        &.has-items {
+            margin-top: 6px;
+        }
     }
     #search-main-area {
         position: relative;
-        top: .10rem;
-        width: auto;
-        min-height: 1.5rem;
         margin-left: 1.65rem;
         margin-right: 1.65rem;
-        height: auto;
         cursor: text;
     }
     @include item-list;
     .item-list {
-        position: static;
-        float: left;
+        margin-bottom: 2px;
     }
     #search-selected {
-        position: static;
-        float: left;
         background-color: white;
         color: $euca-darkgrey;
     }
     #search-entry {
-        position: static;
-        float: left;
+        display: inline-block;
         height: 1.5rem;
     }
     #search-input {
-        border: 0px;
+        width: 10px;
+        border: 0;
         box-shadow: none;
-        width: 100%;
         height: 1.5rem;
-        position: static;
-        float: left;
         padding: 3px;
-        margin: 0;
         background-color: white;
+        &.has-items {
+            margin-top: 6px;
+        }
     }
     .match {
         font-weight: bold;
@@ -61,7 +54,6 @@
         &:hover {
             color: darkred;
         }
-        vertical-align: middle;
         position: absolute;
         top: 0.5rem;
         right: 0.65rem;
