@@ -67,6 +67,7 @@ module.exports = function(config) {
       'static/js/widgets/securitygroup_rules.js',
       'static/js/widgets/tag_editor.js',
       'static/js/widgets/user_editor.js',
+      'static/js/widgets/magic_search.js',
       'static/js/pages/landingpage.js',
       'static/js/pages/account.js',
       'static/js/pages/accounts.js',
