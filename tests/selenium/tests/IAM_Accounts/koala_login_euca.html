@@ -3,12 +3,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>verify-monitor-access-policy-to-user_1</title>
+<link rel="selenium.base" href="https://10.111.5.7/" />
+<title>koala_login</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">verify-monitor-access-policy-to-user_1</td></tr>
+<tr><td rowspan="1" colspan="3">koala_login</td></tr>
 </thead><tbody>
 <tr>
 	<td>setSpeed</td>
@@ -21,54 +22,64 @@
 	<td></td>
 </tr>
 <tr>
-	<td>assertVisible</td>
-	<td>id=resource-menu-dashboard</td>
+	<td>open</td>
+	<td>/</td>
 	<td></td>
 </tr>
 <tr>
-	<td>clickAndWait</td>
-	<td>id=resource-menu-dashboard</td>
+	<td>waitForVisible</td>
+	<td>//dd[@id='euca-tab']/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertVisible</td>
+	<td>//dd[@id='euca-tab']/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//dd[@id='euca-tab']/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertVisible</td>
+	<td>id=account</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=account</td>
+	<td>eucalyptus</td>
+</tr>
+<tr>
+	<td>waitForVisible</td>
+	<td>id=username</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=username</td>
+	<td>admin</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=password</td>
+	<td>mypassword0</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=euca-login-button</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForVisible</td>
+	<td>link=Launch Instance</td>
 	<td></td>
 </tr>
 <tr>
 	<td>assertText</td>
 	<td>link=Launch Instance</td>
 	<td>Launch Instance</td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>id=resource-menu-iam</td>
-	<td></td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>id=resource-menuitem-users</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForVisible</td>
-	<td>link=${user}</td>
-	<td></td>
-</tr>
-<tr>
-	<td>assertVisible</td>
-	<td>link=${user}</td>
-	<td></td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>link=${user}</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForTextPresent</td>
-	<td>PowerUserAccessPolicy-${user}</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyTextPresent</td>
-	<td>PowerUserAccessPolicy-${user}</td>
-	<td></td>
 </tr>
 </tbody></table>
 </body>

@@ -11,6 +11,16 @@
 <tr><td rowspan="1" colspan="3">create-ec2-quotas</td></tr>
 </thead><tbody>
 <tr>
+	<td>setSpeed</td>
+	<td>500</td>
+	<td></td>
+</tr>
+<tr>
+	<td>setTimeout</td>
+	<td>120000</td>
+	<td></td>
+</tr>
+<tr>
 	<td>store</td>
 	<td>1</td>
 	<td>s3_buckets</td>
@@ -31,13 +41,23 @@
 	<td>s3_total_size</td>
 </tr>
 <tr>
-	<td>selectWindow</td>
-	<td>null</td>
+	<td>assertElementPresent</td>
+	<td>id=resource-menu-dashboard</td>
 	<td></td>
 </tr>
 <tr>
 	<td>clickAndWait</td>
 	<td>id=resource-menu-dashboard</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertText</td>
+	<td>link=Launch Instance</td>
+	<td>Launch Instance</td>
+</tr>
+<tr>
+	<td>assertElementPresent</td>
+	<td>id=resource-menu-iam</td>
 	<td></td>
 </tr>
 <tr>
