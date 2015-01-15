@@ -68,6 +68,7 @@ angular.module('MagicSearch', [])
                 search_val = search_val.substring(0, search_val.length-1);
             } else {
                 if (key != 13 && key != 9 && key != 27) {
+                    //console.log("searchval = "+search_val+" key = "+key);
                     search_val = search_val + String.fromCharCode(key).toLowerCase();
                 }
             }
@@ -96,14 +97,16 @@ angular.module('MagicSearch', [])
             }
             if (key == 27) {  // esc, so cancel and reset everthing
                 $timeout(function() {
-                    $(document).foundation('dropdown', 'closeall');
+                    $scope.hideMenu();
                     $('#search-input').val('');
                 });
                 $scope.resetState();
+                $scope.$emit('textSearch', '', $scope.filter_keys);
                 return;
             }
             if (search_val == '') {
                 $scope.filteredObj = $scope.facetsObj;
+                $scope.$emit('textSearch', '', $scope.filter_keys);
                 return;
             }
             if (key == 13) {  // enter, so accept value
@@ -126,7 +129,7 @@ angular.module('MagicSearch', [])
                     }
                     $scope.currentSearch.push({'name':'text='+search_val, 'label':['text', search_val]});
                     $scope.$apply();
-                    $(document).foundation('dropdown', 'closeall');
+                    $scope.hideMenu();
                     $('#search-input').val('');
                     $scope.$emit('textSearch', search_val, $scope.filter_keys);
                 }
@@ -135,7 +138,7 @@ angular.module('MagicSearch', [])
             else {
                 // try filtering facets/options.. if no facets match, do text search
                 if ($scope.facetSelected == undefined) {
-                    console.log("filtering facets : "+search_val + " len : "+ search_val.length);
+                    //console.log("filtering facets : "+search_val + " len : "+ search_val.length);
                     $scope.filteredObj = $scope.facetsObj;
                     var filtered = [];
                     for (i=0; i<$scope.filteredObj.length; i++) {
@@ -157,7 +160,7 @@ angular.module('MagicSearch', [])
                             $('#itsmagic').foundation('reveal', 'open');
                         }
                         $scope.$emit('textSearch', search_val, $scope.filter_keys);
-                        $(document).foundation('dropdown', 'closeall');
+                        $scope.hideMenu();
                     }
                 }
                 else {  // assume option search
@@ -190,7 +193,7 @@ angular.module('MagicSearch', [])
         });
         // when facet clicked, add 1st part of facet and set up options
         $scope.facetClicked = function($index, $event, name) {
-            $(document).foundation('dropdown', 'closeall');
+            $scope.hideMenu();
             var facet = $scope.filteredObj[$index];
             var label = facet.label;
             if (Array.isArray(label)) {
@@ -204,11 +207,12 @@ angular.module('MagicSearch', [])
             $timeout(function() {
                 $('#search-input').val('');
             });
+            $('#search-input').removeAttr('placeholder');
             $('#search-input').focus();
         };
         // when option clicked, complete facet and send event
         $scope.optionClicked = function($index, $event, name) {
-            $(document).foundation('dropdown', 'closeall');
+            $scope.hideMenu();
             var curr = $scope.facetSelected;
             curr.name = curr.name + '=' + name;
             curr.label[1] = $scope.facetOptions[$index].label;
@@ -219,7 +223,6 @@ angular.module('MagicSearch', [])
         };
         // send event with new query string
         $scope.emitQuery = function(removed) {
-            $('#search-input').removeAttr('placeholder');
             var query = '';
             for (var i=0; i<$scope.currentSearch.length; i++) {
                 if ($scope.currentSearch[i]['name'].indexOf('text') != 0) {
@@ -264,6 +267,15 @@ angular.module('MagicSearch', [])
         $scope.isMatchLabel = function(label) {
             return Array.isArray(label);
         };
+        $scope.resetState = function() {
+            $('#search-input').val('');
+            $scope.facetSelected = undefined;
+            $scope.filteredObj = $scope.facetsObj;
+            $scope.facetOptions = undefined;
+            $scope.filteredOptions = $scope.facetOptions;
+        };
+        // showMenu and hideMenu depend on foundation's dropdown. They need
+        // to be modified to work with another dropdown implemenation (i.e. bootstrap)
         $scope.showMenu = function() {
             $timeout(function() {
                 if ($('#facet-drop').hasClass('open') == false) {
@@ -271,12 +283,8 @@ angular.module('MagicSearch', [])
                 }
             });
         };
-        $scope.resetState = function() {
-            $('#search-input').val('');
-            $scope.facetSelected = undefined;
-            $scope.filteredObj = $scope.facetsObj;
-            $scope.facetOptions = undefined;
-            $scope.filteredOptions = $scope.facetOptions;
+        $scope.hideMenu = function() {
+            $(document).foundation('dropdown', 'closeall');
         };
     })
 ;
