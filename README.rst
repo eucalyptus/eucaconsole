@@ -253,7 +253,7 @@ Grunt Commands
 * Karma(Single run):
 ::
 
-    grunt karma:continuous
+    grunt karma:ci
 
 
 Bower - JavaScript Package Manager
@@ -369,5 +369,5 @@ Run Karma (Single Run)
 ----------------------
 ::
 
-    grunt karma:continuous
+    grunt karma:ci
 

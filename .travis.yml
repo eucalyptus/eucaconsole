@@ -13,6 +13,6 @@ install:
 # command to run tests, e.g. python setup.py test
 script:
     - python setup.py test
-    - grunt karma:continuous
+    - grunt karma:ci
 after_script: python setup.py extract_messages
 
