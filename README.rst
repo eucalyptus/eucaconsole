@@ -371,3 +371,5 @@ Run Karma (Single Run)
 
     grunt karma:ci
 
+See the wiki page https://github.com/eucalyptus/eucaconsole/wiki/JavaScript-UnitTest-Submit-Guideline for more details.
+
