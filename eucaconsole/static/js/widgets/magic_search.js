@@ -57,18 +57,14 @@ angular.module('MagicSearch', [])
                 }
             });
         };
-        $('#search-input').on('keydown', function($event) {
-            if ($event.metaKey == true) {
-                return;
-            }
+        $('#search-input').on('keypress', function($event) {
             var search_val = $('#search-input').val();
             var i, idx, label;
-            var key = $event.keyCode || $event.charCode;
+            var key = $event.which || $event.keyCode || $event.charCode;
             if (key == 8 || key == 46) {
                 search_val = search_val.substring(0, search_val.length-1);
             } else {
                 if (key != 13 && key != 9 && key != 27) {
-                    //console.log("searchval = "+search_val+" key = "+key);
                     search_val = search_val + String.fromCharCode(key).toLowerCase();
                 }
             }
@@ -138,7 +134,6 @@ angular.module('MagicSearch', [])
             else {
                 // try filtering facets/options.. if no facets match, do text search
                 if ($scope.facetSelected == undefined) {
-                    //console.log("filtering facets : "+search_val + " len : "+ search_val.length);
                     $scope.filteredObj = $scope.facetsObj;
                     var filtered = [];
                     for (i=0; i<$scope.filteredObj.length; i++) {
