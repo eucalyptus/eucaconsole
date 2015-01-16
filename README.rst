@@ -216,19 +216,44 @@ Grunt - JavaScript Task Manager
 Grunt Setup
 -----------
 * At home directory `./eucaconsole`
-* Install npm if missing: `yum install -y npm`
-* Run `npm install` to install npm packages listed in the file `package.json`
+* Install npm if missing: 
+::
+
+    yum install -y npm
+
+* Run 
+::
+
+    npm install
+
+to install npm packages listed in the file `package.json`
 
 Grunt Task File
 ------------------------
-`Gruntfile.js`
+::
+
+    Gruntfile.js
 
 Grunt Commands
 --------------
-* Default: `grunt`
-* Bowercopy: `grunt bowercopy`
-* Karma: `grunt karma`
-* Karma(Single run): `grunt karma:continuous`
+* Default:
+::
+
+    grunt
+    
+* Bowercopy:
+::
+
+    grunt bowercopy
+* Karma:
+::
+
+    grunt karma
+    
+* Karma(Single run):
+::
+
+    grunt karma:ci
 
 
 Bower - JavaScript Package Manager
@@ -241,27 +266,32 @@ Bower Setup
 Bower Configuration File
 ------------------------
 * List the versions of the JS packages
-`bower.json`
+::
+
+    bower.json
 
 * ex.
-...
-  "dependencies": {
-    "angular": "1.2.26",
-    "angular-sanitize": "1.2.26",
-    "angular-mocks": "1.2.26",
-    "jquery": "2.0.3",
-    "jasmine": "2.0.3",
-    "jasmine-jquery": "2.0.5"
-  }
-...
+::
+
+    "dependencies": {
+        "angular": "1.2.26",
+        "angular-sanitize": "1.2.26",
+        "angular-mocks": "1.2.26",
+        "jquery": "2.0.3",
+        "jasmine": "2.0.3",
+        "jasmine-jquery": "2.0.5"
+      }
 
 Bowercopy Configuration File
 ----------------------------
 * List the destination for the files to be copied after running bower
-`Gruntfile.js`
+::
+
+    Gruntfile.js
 
 * ex.
-...
+::
+
       bowercopy: {
           angular: {
               options: {
@@ -273,12 +303,14 @@ Bowercopy Configuration File
                 'angular-mocks.js': 'angular-mocks/angular-mocks.js'
               }
           },
-...
+
 
 Run Bowercopy
 -------------
 * Runs bower to download the JS packages and move the files in place
-`grunt bowercopy`
+::
+
+    grunt bowercopy
 
 
 Jasmine & Karma - JavaScript Unittest & test runner
@@ -291,10 +323,13 @@ Jasmine & Karma Setup
 
 Karma Configuration File
 ------------------------
-`karma.conf.js`
+::
+
+    karma.conf.js
 
 * ex.
-...
+::
+
     files: [
       'templates/panels/*.pt',
       'static/js/thirdparty/modernizr/custom.modernizr.js',
@@ -316,17 +351,25 @@ Karma Configuration File
       'static/js/jasmine-spec/spec_keypair.js',
       'static/js/jasmine-spec/spec_tag_editor.js'
     ],
-...
+
 
 Jasmine Spec File Location
 --------------------------
-`./eucaconsole/static/js/jasmine-spec/`
+::
+
+    ./eucaconsole/static/js/jasmine-spec/
 
 Run Karma
 ---------
-`grunt karma`
+::
+
+    grunt karma
 
 Run Karma (Single Run)
 ----------------------
-`grunt karma:continuous`
+::
+
+    grunt karma:ci
+
+See the wiki page https://github.com/eucalyptus/eucaconsole/wiki/JavaScript-UnitTest-Submit-Guideline for more details.
 

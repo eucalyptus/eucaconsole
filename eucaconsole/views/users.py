@@ -226,8 +226,11 @@ class UserView(BaseView):
     def __init__(self, request):
         super(UserView, self).__init__(request)
         self.conn = self.get_connection(conn_type="iam")
-        with boto_error_handler(request, request.current_route_url()):
+        self.user = None
+        try:
             self.user = self.get_user()
+        except BotoServerError:
+            pass
         if self.user is None:
             self.location = self.request.route_path('users')
         else:
@@ -588,22 +591,23 @@ class UserView(BaseView):
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
         as_account = self.request.params.get('as_account', '')
+        user_name = self.request.matchdict.get('name')
         with boto_error_handler(self.request):
-            self.log_request(_(u"Creating access keys for user {0}").format(self.user.user_name))
+            self.log_request(_(u"Creating access keys for user {0}").format(user_name))
             result = self.conn.get_response(
                 'CreateAccessKey',
-                params={'UserName': self.user.user_name, 'DelegateAccount': as_account}
+                params={'UserName': user_name, 'DelegateAccount': as_account}
             )
             account = self.request.session['account']
             string_output = StringIO.StringIO()
             csv_w = csv.writer(string_output)
             header = [_(u'Account'), _(u'User Name'), _(u'Access Key'), _(u'Secret Key')]
             csv_w.writerow(header)
-            row = [account, self.user.user_name, result.access_key.access_key_id, result.access_key.secret_access_key]
+            row = [account, user_name, result.access_key.access_key_id, result.access_key.secret_access_key]
             csv_w.writerow(row)
             self._store_file_(
                 "{acct}-{user}-{key}-creds.csv".format(acct=account,
-                user=self.user.user_name, key=result.access_key.access_key_id),
+                user=user_name, key=result.access_key.access_key_id),
                 'text/csv', string_output.getvalue())
             return dict(
                 message=_(u"Successfully generated access keys"),

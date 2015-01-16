@@ -166,6 +166,9 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch'])
                     $scope.clickOpenDropdown();
                 });
             }).error(function (oData, status) {
+                if (oData == undefined && status == 0) {  // likely interrupted request
+                    return;
+                }
                 var errorMsg = oData['message'] || null;
                 if (errorMsg) {
                     if (status === 403 || status === 400) {  // S3 token expiration responses return a 400

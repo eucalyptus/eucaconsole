@@ -3,12 +3,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>koala_login</title>
+<title>get_dashboard_counts</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">koala_login</td></tr>
+<tr><td rowspan="1" colspan="3">get_dashboard_counts</td></tr>
 </thead><tbody>
 <tr>
 	<td>setSpeed</td>
@@ -21,49 +21,34 @@
 	<td></td>
 </tr>
 <tr>
-	<td>open</td>
-	<td>/</td>
-	<td></td>
-</tr>
-<tr>
-	<td>assertVisible</td>
-	<td>id=account</td>
-	<td></td>
-</tr>
-<tr>
-	<td>type</td>
-	<td>id=account</td>
-	<td>ui-test-acct-00</td>
-</tr>
-<tr>
-	<td>waitForVisible</td>
-	<td>id=username</td>
-	<td></td>
-</tr>
-<tr>
-	<td>type</td>
-	<td>id=username</td>
-	<td>admin</td>
-</tr>
-<tr>
-	<td>type</td>
-	<td>id=password</td>
-	<td>mypassword0</td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>id=euca-login-button</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForVisible</td>
-	<td>link=Launch Instance</td>
-	<td></td>
-</tr>
-<tr>
 	<td>assertText</td>
 	<td>link=Launch Instance</td>
 	<td>Launch Instance</td>
+</tr>
+<tr>
+	<td>waitForVisible</td>
+	<td>link=Launch Instance</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=resource-menu-dashboard</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForVisible</td>
+	<td>id=accounts-count</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>id=accounts-count</td>
+	<td>iam_accounts</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${iam_accounts}</td>
+	<td></td>
 </tr>
 </tbody></table>
 </body>
