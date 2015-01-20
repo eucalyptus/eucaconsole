@@ -473,9 +473,9 @@ class TaggedItemView(BaseView):
         name = ''
         if resource:
             name_tag = resource.tags.get('Name', '')
-            name = '{0}{1}'.format(
+            name = u"{0}{1}".format(
                 name_tag if name_tag else resource.id,
-                ' ({0})'.format(resource.id) if name_tag else ''
+                u" ({0})".format(resource.id) if name_tag else ''
             )
         if escapebraces:
             name = BaseView.escape_braces(name)
