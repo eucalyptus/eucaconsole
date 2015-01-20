@@ -33,6 +33,7 @@ from wtforms import validators
 from ..constants.images import EUCA_IMAGE_OWNER_ALIAS_CHOICES, AWS_IMAGE_OWNER_ALIAS_CHOICES
 
 from ..i18n import _
+from ..views import BaseView
 from . import BaseSecureForm, TextEscapedField
 
 
@@ -56,7 +57,7 @@ class ImageForm(BaseSecureForm):
         self.description.error_msg = self.desc_error_msg
 
         if image is not None:
-            self.description.data = image.description
+            self.description.data = BaseView.escape_braces(image.description)
 
 
 class DeregisterImageForm(BaseSecureForm):
