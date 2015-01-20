@@ -59,7 +59,6 @@ class EucaChangePasswordTestCase(BaseTestCase):
     new_password = 'newpass'
     duration = 3600
 
-
     def test_euca_authentication_failure(self):
         kwargs = dict(account=self.account, user=self.username, passwd=self.current_password,
                       new_passwd=self.new_password, duration=self.duration)

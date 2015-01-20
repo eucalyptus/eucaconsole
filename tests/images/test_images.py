@@ -36,7 +36,7 @@ from eucaconsole.forms.images import ImageForm
 from eucaconsole.views import TaggedItemView
 from eucaconsole.views.images import ImagesView, ImageView
 
-from tests import BaseViewTestCase, BaseFormTestCase
+from tests import BaseViewTestCase, BaseFormTestCase, Mock
 
 
 class ImagesViewTests(BaseViewTestCase):
@@ -78,4 +78,15 @@ class ImageFormTestCase(BaseFormTestCase):
     def test_secure_form(self):
         self.has_field('csrf_token')
 
+
+class ImageFormDescriptionTestCase(BaseFormTestCase):
+    form_class = ImageForm
+    request = testing.DummyRequest()
+    image = Mock()
+    image.description = '{{ 1 + 2 }}'
+    form = form_class(request, image=image)
+
+    def test_angular_expression_escaping_on_image_update_form(self):
+        self.assertNotEqual(self.form.description.data, '{{ 1 + 2 }}')
+        self.assertEqual(self.form.description.data, '&#123;&#123; 1 + 2 &#125;&#125;')
 
