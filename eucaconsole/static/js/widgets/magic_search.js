@@ -182,9 +182,11 @@ angular.module('MagicSearch', [])
             }
         });
         // enable text entry when mouse clicked anywhere in search box
-        $('.search-bar').on("click", function($event) {
+        $('#search-main-area').on("click", function($event) {
             $('#search-input').trigger("focus");
-            $scope.showMenu();
+            if ($scope.facetSelected === undefined) {
+                $scope.showMenu();
+            }
         });
         // when facet clicked, add 1st part of facet and set up options
         $scope.facetClicked = function($index, $event, name) {
