@@ -56,7 +56,7 @@ module.exports = function(grunt) {
           all: ['Gruntfile.js',
                 'eucaconsole/static/js/pages/*.js',
                 'eucaconsole/static/js/widgets/*.js',
-                'eucaconsole/static/js/jasmine/spec/*.js']
+                'eucaconsole/static/js/jasmine-spec/*.js']
       },
       karma: {
           unit: {
@@ -66,11 +66,21 @@ module.exports = function(grunt) {
               configFile: 'karma.conf.js',
               singleRun: true,
           }
+      },
+      watch: {
+          scripts: {
+              files: ['eucaconsole/static/js/**/*.js'],
+              tasks: ['karma:ci', 'jshint'],
+              options: {
+                  spawn: false,
+              },
+          },
       }
   });
 
   // Load the plugins
   grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-bowercopy');
   grunt.loadNpmTasks('grunt-karma');
 
