@@ -902,7 +902,8 @@ class InstanceVolumesView(BaseInstanceView):
         volumes = []
         transitional_states = ['creating', 'deleting', 'attaching', 'detaching']
         with boto_error_handler(self.request, self.location):
-            self.volumes = self.conn.get_all_volumes()
+            filters = {'availability-zone': self.instance.placement}
+            self.volumes = self.conn.get_all_volumes(filters=filters)
         for volume in self.volumes:
             status = volume.status
             attach_status = volume.attach_data.status
