@@ -95,7 +95,7 @@ module.exports = function(grunt) {
           }
       },
       uglify: {
-          my_target: {
+          minify: {
               options: {
                   mangle: false,
                   compress: {
@@ -136,5 +136,9 @@ module.exports = function(grunt) {
 
   // Default task(s).
   grunt.registerTask('default', ['watch']);
+  grunt.registerTask('runtest', ['karma:ci', 'jshint']);
+  grunt.registerTask('min', ['uglify', 'replace:min']);
+  grunt.registerTask('nomin', ['replace:nomin', 'clean:min']);
+  grunt.registerTask('commitcheck', ['runtest', 'nomin']);
 
 };
