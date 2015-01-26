@@ -70,6 +70,30 @@ module.exports = function(grunt) {
       clean: {
           min: ["eucaconsole/static/js/minified"]
       },
+      replace: {
+          min: {
+              src: ['eucaconsole/templates/*.pt', 'eucaconsole/templates/**/*.pt'],
+              overwrite: true,                 
+              replacements: [{
+                  from: /static\/js\/pages\/(.+)\.js/g,
+                  to: 'static/js/minified/pages/$1.min.js'
+              }, {
+                  from: /static\/js\/widgets\/(.+)\.js/g,
+                  to: 'static/js/minified/widgets/$1.min.js' 
+              }]             
+          },
+          nomin: {
+              src: ['eucaconsole/templates/*.pt', 'eucaconsole/templates/**/*.pt'],
+              overwrite: true,                 
+              replacements: [{
+                  from: /static\/js\/minified\/pages\/(.+)\.min\.js/g,
+                  to: 'static/js/pages/$1.js' 
+              }, {
+                  from: /static\/js\/minified\/widgets\/(.+)\.min\.js/g,
+                  to: 'static/js/widgets/$1.js' 
+              }]
+          }
+      },
       uglify: {
           my_target: {
               options: {
@@ -108,6 +132,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-bowercopy');
   grunt.loadNpmTasks('grunt-karma');
+  grunt.loadNpmTasks('grunt-text-replace');
 
   // Default task(s).
   grunt.registerTask('default', ['watch']);
