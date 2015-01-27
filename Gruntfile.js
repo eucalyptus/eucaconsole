@@ -90,9 +90,26 @@ module.exports = function(grunt) {
               }
           }
       },
+      htmlmin: { 
+          production: {
+              options: {
+                  removeComments: true,
+                  collapseWhitespace: true,
+                  conservativeCollapse: true
+              },
+              files: [{
+                  expand: true,
+                  cwd: 'production/eucaconsole/templates',
+                  src: '**/*.pt',
+                  dest: 'production/eucaconsole/templates'
+              }]
+          }
+      },
       replace: {
           min: {
-              src: ['production/eucaconsole/templates/*.pt', 'production/eucaconsole/templates/**/*.pt'],
+              expand: true,
+              cwd: 'production/eucaconsole/templates',
+              src: '**/*.pt',
               overwrite: true,                 
               replacements: [{
                   from: /static\/js\/pages\/(.+)\.js/g,
@@ -103,7 +120,9 @@ module.exports = function(grunt) {
               }]             
           },
           nomin: {
-              src: ['production/eucaconsole/templates/*.pt', 'production/eucaconsole/templates/**/*.pt'],
+              expand: true,
+              cwd: 'production/eucaconsole/templates',
+              src: '**/*.pt',
               overwrite: true,                 
               replacements: [{
                   from: /static\/js\/minified\/pages\/(.+)\.min\.js/g,
@@ -149,6 +168,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-contrib-htmlmin');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-bowercopy');
@@ -158,7 +178,7 @@ module.exports = function(grunt) {
   // Default task(s).
   grunt.registerTask('default', ['watch']);
   grunt.registerTask('runtest', ['karma:ci', 'jshint']);
-  grunt.registerTask('commitcheck', ['runtest', 'nomin']);
-  grunt.registerTask('production', ['copy:production', 'clean:unittest', 'uglify', 'replace:min']);
+  grunt.registerTask('commitcheck', ['runtest', 'clean']);
+  grunt.registerTask('production', ['copy:production', 'clean:unittest', 'uglify', 'replace:min', 'htmlmin']);
 
 };
