@@ -1,6 +1,7 @@
 <div tal:omit-tag="" i18n:domain="eucaconsole">
     <!--! Image Picker widget (Used in Launch Instance wizard) -->
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/image_picker.css')}" />
+    <link rel="stylesheet" type-"text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.css')}"/>
     <div id="image-picker" ng-app="ImagePicker" tal:define="launchconfig_wizard 'launchconfig' in request.url"
          ng-controller="ImagePickerCtrl" ng-init="initImagePicker('${controller_options_json}')">
         <!--! Image picker widget -->
@@ -11,7 +12,11 @@
                     <span i18n:translate="" tal:condition="not launchconfig_wizard">virtual machine instance</span>
                     <span i18n:translate="" tal:condition="launchconfig_wizard">launch configuration</span>
                 </label>
-                ${panel('magic_search', search_facets=search_facets, filter_keys=filter_keys)}
+                <div ng-app="MagicSearch">
+                    <magic-search template="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.html')}"
+                        strings="{'remove':'Remove facet', 'cancel':'Clear search', 'prompt':'Select facets for filter, or enter text to search'}"
+                        facets="${search_facets}" filter-keys="${filter_keys}"></magic-search>
+                </div>
                 <table class="table" ng-cloak="">
                     <tbody style="max-height: ${maxheight}">
                     <tr ng-show="itemsLoading">
@@ -81,6 +86,7 @@
                 </div>
             </div>
         </div>
+        <script src="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.js')}"></script>
         <script src="${request.static_path('eucaconsole:static/js/widgets/image_picker.js')}"></script>
     </div>
 </div>

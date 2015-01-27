@@ -17,13 +17,19 @@
 
 <!-- Landing page datagrid macro ===== -->
 <metal:datagrid_macro metal:define-macro="landing_page_datagrid">
+    <link rel="stylesheet" type-"text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.css')}"/>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.js')}"></script>
     <div class="large-${'10' if filter_fields else '12'} columns datagrid" id="landing-page-items">
         <div class="row" id="buttons-row">
             <div class="small-12 columns" id="primary-buttons">
                 <metal:block metal:define-slot="new_button" />
             </div>
         </div>
-        ${panel('magic_search', search_facets=search_facets, filter_keys=filter_keys)}
+        <div ng-app="MagicSearch">
+            <magic-search template="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.html')}"
+                strings="{'remove':'Remove facet', 'cancel':'Clear search', 'prompt':'Select facets for filter, or enter text to search'}"
+                facets="${search_facets}" filter-keys="${filter_keys}"></magic-search>
+        </div>
         <div class="row sort-search" ng-cloak="cloak">
             <div class="small-5 columns" id="results-count" ng-cloak="cloak" metal:define-slot="results_count">
                 <a class="label radius" ng-show="!itemsLoading" ng-cloak="" id="refresh-btn"
