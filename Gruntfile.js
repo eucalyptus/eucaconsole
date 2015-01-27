@@ -68,13 +68,13 @@ module.exports = function(grunt) {
           }
       },
       clean: {
-          min: ["eucaconsole/static/js/minified"],
           production: ["production"]
       },
       copy: {
           production: {
               files: [{ 
-                  src: 'eucaconsole/*',
+                  expand: true,
+                  src: ['eucaconsole/**'],
                   dest: 'production/',
               }, {
                   src: 'launcher.sh',
@@ -91,7 +91,7 @@ module.exports = function(grunt) {
       },
       replace: {
           min: {
-              src: ['eucaconsole/templates/*.pt', 'eucaconsole/templates/**/*.pt'],
+              src: ['production/eucaconsole/templates/*.pt', 'production/eucaconsole/templates/**/*.pt'],
               overwrite: true,                 
               replacements: [{
                   from: /static\/js\/pages\/(.+)\.js/g,
@@ -102,7 +102,7 @@ module.exports = function(grunt) {
               }]             
           },
           nomin: {
-              src: ['eucaconsole/templates/*.pt', 'eucaconsole/templates/**/*.pt'],
+              src: ['production/eucaconsole/templates/*.pt', 'production/eucaconsole/templates/**/*.pt'],
               overwrite: true,                 
               replacements: [{
                   from: /static\/js\/minified\/pages\/(.+)\.min\.js/g,
@@ -124,9 +124,9 @@ module.exports = function(grunt) {
               files: [
                   {
                       expand: true,     // Enable dynamic expansion.
-                      cwd: 'eucaconsole/static/js/',      // Src matches are relative to this path.
+                      cwd: 'production/eucaconsole/static/js/',      // Src matches are relative to this path.
                       src: ['pages/*.js', 'widgets/*.js'], // Actual pattern(s) to match.
-                      dest: 'eucaconsole/static/js/minified/',   // Destination path prefix.
+                      dest: 'production/eucaconsole/static/js/minified/',   // Destination path prefix.
                       ext: '.min.js',   // Dest filepaths will have this extension.
                       extDot: 'first'   // Extensions in filenames begin after the first dot
                   },
@@ -157,8 +157,7 @@ module.exports = function(grunt) {
   // Default task(s).
   grunt.registerTask('default', ['watch']);
   grunt.registerTask('runtest', ['karma:ci', 'jshint']);
-  grunt.registerTask('min', ['uglify', 'replace:min']);
-  grunt.registerTask('nomin', ['replace:nomin', 'clean:min']);
   grunt.registerTask('commitcheck', ['runtest', 'nomin']);
+  grunt.registerTask('production', ['copy:production', 'uglify', 'replace:min']);
 
 };
