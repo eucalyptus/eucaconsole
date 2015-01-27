@@ -89,6 +89,9 @@ class MasterLayout(object):
         self.help_html_dir = 'eucaconsole:static/html/help/'
         self.escape_braces = BaseView.escape_braces
         self.file_uploads_enabled = asbool(self.request.registry.settings.get('file.uploads.enabled', True))
+        self.ms_remove = _(u'Remove facet') 
+        self.ms_cancel = _(u'Clear search') 
+        self.ms_prompt = _(u'Select facets for filter, or enter text to search') 
 
     def get_notifications(self):
         """Get notifications, categorized by message type ('info', 'success', 'warning', or 'error')
