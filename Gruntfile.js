@@ -68,23 +68,31 @@ module.exports = function(grunt) {
           }
       },
       clean: {
-          unittest: ["production/eucaconsole/static/js/jasmine-spec"],
-          production: ["production"]
+          backup: ["eucaconsole.backup"],
+          minified: ["eucaconsole/static/js/minified"]
       },
       copy: {
-          production: {
+          restore: {
+              files: [{ 
+                  expand: true,
+                  cwd: 'eucaconsole.backup/eucaconsole/',
+                  src: ['**/*'],
+                  dest: 'eucaconsole',
+              }],
+              options: {
+                  force: true,
+                  mode: true,
+                  timestamp: true
+              }
+          },
+          backup: {
               files: [{ 
                   expand: true,
                   src: ['eucaconsole/**'],
-                  dest: 'production/',
-              }, {
-                  src: 'launcher.sh',
-                  dest: 'production/launcher.sh',
-              }, {
-                  src: 'console.ini',
-                  dest: 'production/console.ini',
+                  dest: 'eucaconsole.backup/',
               }],
               options: {
+                  force: false,
                   mode: true,
                   timestamp: true
               }
@@ -99,16 +107,16 @@ module.exports = function(grunt) {
               },
               files: [{
                   expand: true,
-                  cwd: 'production/eucaconsole/templates',
+                  cwd: 'eucaconsole/templates',
                   src: '**/*.pt',
-                  dest: 'production/eucaconsole/templates'
+                  dest: 'eucaconsole/templates'
               }]
           }
       },
       replace: {
           min: {
               expand: true,
-              src: 'production/eucaconsole/templates/**/*.pt',
+              src: 'eucaconsole/templates/**/*.pt',
               overwrite: true,
               replacements: [{
                   from: /static\/js\/pages\/(.+)\.js/g,
@@ -120,7 +128,7 @@ module.exports = function(grunt) {
           },
           nomin: {
               expand: true,
-              src: 'production/eucaconsole/templates/**/*.pt',
+              src: 'eucaconsole/templates/**/*.pt',
               overwrite: true,
               replacements: [{
                   from: /static\/js\/minified\/pages\/(.+)\.min\.js/g,
@@ -142,9 +150,9 @@ module.exports = function(grunt) {
               files: [
                   {
                       expand: true,     // Enable dynamic expansion.
-                      cwd: 'production/eucaconsole/static/js/',      // Src matches are relative to this path.
+                      cwd: 'eucaconsole/static/js/',      // Src matches are relative to this path.
                       src: ['pages/*.js', 'widgets/*.js'], // Actual pattern(s) to match.
-                      dest: 'production/eucaconsole/static/js/minified/',   // Destination path prefix.
+                      dest: 'eucaconsole/static/js/minified/',   // Destination path prefix.
                       ext: '.min.js',   // Dest filepaths will have this extension.
                       extDot: 'first'   // Extensions in filenames begin after the first dot
                   },
@@ -176,7 +184,8 @@ module.exports = function(grunt) {
   // Default task(s).
   grunt.registerTask('default', ['watch']);
   grunt.registerTask('runtest', ['karma:ci', 'jshint']);
-  grunt.registerTask('commitcheck', ['runtest', 'clean']);
-  grunt.registerTask('production', ['copy:production', 'clean:unittest', 'uglify', 'replace:min', 'htmlmin']);
+  grunt.registerTask('commitcheck', ['runtest']);
+  grunt.registerTask('production', ['copy:backup', 'uglify', 'replace:min', 'htmlmin']);
+  grunt.registerTask('restore', ['copy:restore', 'clean']);
 
 };
