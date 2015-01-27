@@ -904,7 +904,8 @@ class InstanceVolumesView(BaseInstanceView):
         volumes = []
         transitional_states = ['creating', 'deleting', 'attaching', 'detaching']
         with boto_error_handler(self.request, self.location):
-            self.volumes = self.conn.get_all_volumes()
+            filters = {'availability-zone': self.instance.placement}
+            self.volumes = self.conn.get_all_volumes(filters=filters)
         for volume in self.volumes:
             status = volume.status
             attach_status = volume.attach_data.status
@@ -1038,6 +1039,8 @@ class InstanceLaunchView(BaseInstanceView, BlockDeviceMappingItemView):
             monitoring_enabled = self.request.params.get('monitoring_enabled') == 'y'
             private_addressing = self.request.params.get('private_addressing') == 'y'
             addressing_type = 'private' if private_addressing else 'public'
+            if vpc_network is not None and self.cloud_type == 'euca':
+                addressing_type = None  # Don't pass addressing scheme if on Euca VPC
             bdmapping_json = self.request.params.get('block_device_mapping')
             block_device_map = self.get_block_device_map(bdmapping_json)
             role = self.request.params.get('role')
@@ -1205,6 +1208,8 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
             monitoring_enabled = self.request.params.get('monitoring_enabled') == 'y'
             private_addressing = self.request.params.get('private_addressing') == 'y'
             addressing_type = 'private' if private_addressing else 'public'
+            if vpc_network is not None and self.cloud_type == 'euca':
+                addressing_type = None  # Don't pass addressing scheme if on Euca VPC
             if self.cloud_type == 'aws':  # AWS only supports public, so enforce that here
                 addressing_type = 'public'
             bdmapping_json = self.request.params.get('block_device_mapping')
