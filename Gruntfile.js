@@ -68,7 +68,26 @@ module.exports = function(grunt) {
           }
       },
       clean: {
-          min: ["eucaconsole/static/js/minified"]
+          min: ["eucaconsole/static/js/minified"],
+          production: ["production"]
+      },
+      copy: {
+          production: {
+              files: [{ 
+                  src: 'eucaconsole/*',
+                  dest: 'production/',
+              }, {
+                  src: 'launcher.sh',
+                  dest: 'production/launcher.sh',
+              }, {
+                  src: 'console.ini',
+                  dest: 'production/console.ini',
+              }],
+              options: {
+                  mode: true,
+                  timestamp: true
+              }
+          }
       },
       replace: {
           min: {
@@ -127,6 +146,7 @@ module.exports = function(grunt) {
 
   // Load the plugins
   grunt.loadNpmTasks('grunt-contrib-clean');
+  grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-watch');

@@ -31,3 +31,4 @@ session-keys.ini
 bower_components/
 node_modules/
 eucaconsole/static/js/minified/
+production/
