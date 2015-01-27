@@ -144,17 +144,6 @@ def tag_editor(context, request, tags=None, leftcol_width=4, rightcol_width=8, s
         rightcol_width=rightcol_width,
     )
 
-@panel_config('magic_search', renderer='../templates/panels/magic_search.pt')
-def magic_search(context, request, search_facets=None, filter_keys=[]):
-    """ Magic search panel.
-        Usage example (in Chameleon template): ${panel('magic_search', search_facets=search_facets)}
-    """
-    search_facets = search_facets or {}
-    return dict(
-        facets_json=search_facets,
-        filter_keys=filter_keys,
-    )
-
 @panel_config('user_editor', renderer='../templates/panels/user_editor.pt')
 def user_editor(context, request, leftcol_width=4, rightcol_width=8):
     """ User editor panel.
