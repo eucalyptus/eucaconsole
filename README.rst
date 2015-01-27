@@ -227,6 +227,10 @@ Grunt Setup
     npm install
 
 to install npm packages listed in the file `package.json`
+::
+    npm install -g grunt-cli
+
+to allow grunt cli to run
 
 Grunt Task File
 ------------------------
