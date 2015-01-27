@@ -108,9 +108,8 @@ module.exports = function(grunt) {
       replace: {
           min: {
               expand: true,
-              cwd: 'production/eucaconsole/templates',
-              src: '**/*.pt',
-              overwrite: true,                 
+              src: 'production/eucaconsole/templates/**/*.pt',
+              overwrite: true,
               replacements: [{
                   from: /static\/js\/pages\/(.+)\.js/g,
                   to: 'static/js/minified/pages/$1.min.js'
@@ -121,9 +120,8 @@ module.exports = function(grunt) {
           },
           nomin: {
               expand: true,
-              cwd: 'production/eucaconsole/templates',
-              src: '**/*.pt',
-              overwrite: true,                 
+              src: 'production/eucaconsole/templates/**/*.pt',
+              overwrite: true,
               replacements: [{
                   from: /static\/js\/minified\/pages\/(.+)\.min\.js/g,
                   to: 'static/js/pages/$1.js' 
