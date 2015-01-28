@@ -1,6 +1,0 @@
-
-<!-- HELP GROUPS-->
-<div tal:condition="display == 'group_landing_page'">
-    <h3 i18n:translate="">Help</h3>
-    <p></p>
-</div>

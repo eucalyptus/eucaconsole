@@ -4,8 +4,8 @@
  *
  */
 
-angular.module('VolumeSnapshots', ['TagEditor'])
-    .controller('VolumeSnapshotsCtrl', function ($scope, $http, $timeout) {
+angular.module('VolumeSnapshots', ['TagEditor', 'EucaConsoleUtils'])
+    .controller('VolumeSnapshotsCtrl', function ($scope, $http, $timeout, eucaHandleError) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.loading = false;
         $scope.snapshots = [];
@@ -75,10 +75,7 @@ angular.module('VolumeSnapshots', ['TagEditor'])
                     $timeout(function() { $scope.getVolumeSnapshots(); }, 4000);  // Poll every 4 seconds
                 }
             }).error(function (oData, status) {
-                var errorMsg = oData['message'] || null;
-                if (errorMsg && status === 403) {
-                    $('#timed-out-modal').foundation('reveal', 'open');
-                }
+                eucaHandleError(oData, status);
             });
         };
         $scope.getSnapshotImages = function (snapshot, url) {
@@ -89,10 +86,7 @@ angular.module('VolumeSnapshots', ['TagEditor'])
                     $scope.images = results;
                 }
             }).error(function (oData, status) {
-                var errorMsg = oData['message'] || null;
-                if (errorMsg && status === 403) {
-                    $('#timed-out-modal').foundation('reveal', 'open');
-                }
+                eucaHandleError(oData, status);
             });
         };
     })

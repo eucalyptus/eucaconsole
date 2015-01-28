@@ -1,0 +1,23 @@
+<!--! Modal dialog for creating a folder in a bucket -->
+<div tal:omit-tag="" i18n:domain="eucaconsole">
+    <div id="create-folder-modal" class="reveal-modal small" data-reveal="">
+        <h3 i18n:translate="">Create new folder</h3>
+        <form action="${request.route_path('bucket_create_folder', name=bucket_name, subpath=request.subpath)}"
+              method="post" data-abide="">
+            ${structure:create_folder_form['csrf_token']}
+            ${panel('form_field', field=create_folder_form.folder_name, leftcol_width=1, rightcol_width=11, pattern=folder_name_pattern)}
+            <div class="right">
+                <metal:block metal:use-macro="layout.global_macros['required_fields_label']" />
+            </div>
+            <div class="dialog-submit-button">
+                <button type="submit" id="create-folder-submit-btn" class="button expand" i18n:translate="">
+                    Create Folder
+                </button>
+            </div>
+            <div class="dialog-progress-display hide">
+                <span i18n:translate="">Sending request </span>&nbsp;<em><span class="dots">&nbsp;</span></em>
+            </div>
+        </form>
+        <a href="#" id="create-folder-modal-close" class="close-reveal-modal">&#215;</a>
+    </div>
+ </div>

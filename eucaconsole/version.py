@@ -27,7 +27,7 @@ import os.path
 import subprocess
 
 
-__version__ = '4.0.0'
+__version__ = 'devel'
 
 
 if '__file__' in globals():
@@ -40,7 +40,7 @@ if '__file__' in globals():
         git.wait()
         git.stderr.read()
         if git.returncode == 0:
-            __version__ = git.stdout.read().strip()
+            __version__ = git.stdout.read().strip().lstrip('v')
             if type(__version__).__name__ == 'bytes':
                 __version__ = __version__.decode()
     except:

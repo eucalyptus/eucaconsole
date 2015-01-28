@@ -1,6 +1,6 @@
 
 <!--! User editor -->
-<div id="user-editor" class="row controls-wrapper" ng-app="UserEditor"
+<div id="user-editor" class="row controls-wrapper" ng-app="UserEditor" i18n:domain="eucaconsole"
      ng-controller="UserEditorCtrl" ng-init="initUsers()">
     <div class="small-12 columns field">
         <div class="row userentry existing inline controls-wrapper"
@@ -17,15 +17,16 @@
         <div class="row">
             <div class="columns subheader" ng-cloak="">
                 <span class="subsection-label" ng-show="usersArray.length" i18n:translate="">Add another user</span>
-                <span class="subsection-label" ng-show="usersArray.length == 0" i18n:translate="">Add a user</span>:
+                <span class="subsection-label" ng-show="usersArray.length == 0" i18n:translate="">Add a user</span>
+                <span class="req">*</span>:
             </div>
         </div>
         <div class="row userentry controls-wrapper">
             <div id="user-name-field-div" class="field columns">
                 <input class="userinput name" placeholder="name..." id="user-name-field"
-                       ng-model="newUserName" ng-keypress="keyListener($event)" ng-keyup="validateUsername($event)" pattern="^[a-zA-Z0-9\+\=\,\.\@\-]{1,64}$" />
+                       ng-model="newUserName" ng-keypress="keyListener($event)" pattern="^[a-zA-Z0-9\+\=\,\.\@\-]{1,64}$" />
                 <small id="user-list-error" class="error" i18n:translate="">
-                    Must have at least one user, and the names of users must be alphanumeric, including the following common characters: plus (+), equal (=), comma (,), period (.), at (@), and dash (-).
+                    Must have at least one user, and the names of users must be alphanumeric, including the following common characters: plus (+), equal (=), comma (,), period (.), at (@), and dash (-), and cannot contain spaces.
                 </small>
             </div>
             <div>&nbsp;</div>

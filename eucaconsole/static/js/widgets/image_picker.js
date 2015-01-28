@@ -3,8 +3,8 @@
  * @requires AngularJS
  *
  */
-angular.module('ImagePicker', [])
-    .controller('ImagePickerCtrl', function ($scope, $http) {
+angular.module('ImagePicker', ['EucaConsoleUtils'])
+    .controller('ImagePickerCtrl', function ($rootScope, $scope, $http, eucaUnescapeJson) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.items = [];
         $scope.batchSize = 100;  // Show 100 items max w/o "show more" enabler
@@ -15,16 +15,18 @@ angular.module('ImagePicker', [])
         $scope.cloudType = 'euca';
         $scope.filtersForm = $('#filters');
         $scope.imagePicker = $('#image-picker');
+        $rootScope.imageID = '';
         $scope.urlParams = $.url().param();
         $scope.selectedImageParam = $scope.urlParams['image_id'] || '';
         // Properties for search input filter
         $scope.filterProps = [
-            'architecture', 'description', 'id', 'name', 'tagged_name', 'platform_name', 'root_devite_type'
+            'architecture', 'description', 'id', 'name', 'tagged_name', 'platform_name', 'root_device_type'
         ];
-        $scope.initImagePicker = function (jsonEndpointPrefix, cloudType) {
-            $scope.jsonEndpointPrefix = jsonEndpointPrefix;
-            $scope.jsonEndpoint = jsonEndpointPrefix;
-            $scope.cloudType = cloudType;
+        $scope.initImagePicker = function (optionsJson) {
+            var options = JSON.parse(eucaUnescapeJson(optionsJson));
+            $scope.jsonEndpointPrefix = options['images_json_endpoint'] + "?state=available";
+            $scope.jsonEndpoint = $scope.jsonEndpointPrefix;
+            $scope.cloudType = options['cloud_type'];
             $scope.initChosenSelectors();
             $scope.initFilters();
             $scope.getItems();
@@ -46,7 +48,7 @@ angular.module('ImagePicker', [])
                 var architecture, ownerAlias, platform, rootDeviceType, tags;
                 var params = {};
                 platform = form.find('#platform').val();
-                if ($scope.cloudType === 'euca') {
+                if ($scope.cloudType === 'euca' && platform) {
                     params['platform'] = platform;
                 } else if ($scope.cloudType === 'aws' && platform) {
                     params['platform'] = platform;
@@ -59,7 +61,7 @@ angular.module('ImagePicker', [])
                 if (rootDeviceType) { params['root_device_type'] = rootDeviceType; }
                 if (architecture) { params['architecture'] = architecture; }
                 if (tags) { params['tags'] = tags; }
-                $scope.jsonEndpoint = decodeURIComponent($scope.jsonEndpointPrefix + "?" + $.param(params, true));
+                $scope.jsonEndpoint = decodeURIComponent($scope.jsonEndpointPrefix + "&" + $.param(params, true));
                 $scope.getItems();
             });
             clearLink.on('click', function (evt) {
@@ -72,7 +74,11 @@ angular.module('ImagePicker', [])
         $scope.getItems = function () {
             $scope.searchFilter = '';
             $scope.itemsLoading = true;
-            $http.get($scope.jsonEndpoint).success(function(oData) {
+            var csrf_token = $('#csrf_token').val();
+            var data = "csrf_token="+csrf_token;
+            $http({method:'POST', url:$scope.jsonEndpoint, data:data,
+                   headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
+              success(function(oData) {
                 var results = oData ? oData.results : [];
                 $scope.itemsLoading = false;
                 $scope.items = results;

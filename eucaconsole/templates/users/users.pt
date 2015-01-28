@@ -1,4 +1,4 @@
-<metal:block use-macro="main_template">
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
 <head metal:fill-slot="head_css">
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/users.css')}" />
@@ -16,12 +16,12 @@
          ng-init="initController('users', '${initial_sort_key}', '${json_items_endpoint}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
-                <li class="current"><a href="#" i18n:translate="">IAM users</a></li>
+                <li class="current"><a href="#" i18n:translate="">Users</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
-        <h3 id="pagetitle"><strong i18n:translate="">IAM Users</strong></h3>
+        <h3 id="pagetitle"><strong i18n:translate="">Users</strong></h3>
         <div class="large-2 columns" id="landing-page-filters">
             <!--! Filters go here -->
         </div>
@@ -79,9 +79,9 @@
             <metal:block metal:fill-slot="tableview_headers">
                 <th i18n:translate="">User name</th>
                 <th i18n:translate="">Status</th>
-                <th i18n:translate="">Groups</th>
-                <th i18n:translate="">Password</th>
-                <th i18n:translate="">Access Keys</th>
+                <th i18n:translate="" class="count">Groups</th>
+                <th i18n:translate="" class="count">Password</th>
+                <th i18n:translate="" class="count">Access Keys</th>
                 <th i18n:translate="">Creation Time</th>
                 <th class="actions" i18n:translate="">Actions</th>
             </metal:block>
@@ -93,17 +93,18 @@
                 <td>
                     <span class="label radius item status active" ng-show="item.user_enabled == true" i18n:translate="">Active</span>
                     <span class="label radius item status disabled" ng-show="item.user_enabled == false" i18n:translate="">Disabled</span>
+                    <span class="label radius item status undefined" ng-show="item.user_enabled == undefined">&nbsp;</span>
                     <span class="dots" ng-show="item.user_enabled == undefined">&nbsp;</span>
                 </td>
-                <td>
+                <td class="count">
                     <a ng-click="linkUser(item, '?tab=group-section')" ng-show="item.user_enabled">{{ item.num_groups }}</a>
                 </td>
-                <td>
+                <td class="count">
                     <span ng-show="item.has_password &amp;&amp; item.user_enabled">
                         <a ng-click="linkUser(item, '?tab=security-tab')"><i class="fi-check"></i></a>
                     </span>
                 </td>
-                <td>
+                <td class="count">
                     <span ng-show="item.num_keys &amp;&amp; item.user_enabled">
                         <a ng-click="linkUser(item, '?tab=security-tab')">{{ item.num_keys }} <span i18n:translate="">active</span></a>
                     </span>
@@ -144,12 +145,11 @@
 </div>
 <metal:block metal:fill-slot="offcanvas_right">
     <div id="help-content-div" class="help-content">
-        ${panel('help_users', 'user_landing_page' )}
+        <div id="help-html-console_users" ng-include="'${layout.help_path('console_users.html')}'"></div> 
     </div>
 </metal:block>
 
 <div metal:fill-slot="tail_js">
-    <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/jquery.generateFile.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/custom_filters.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/landingpage.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/users.js')}"></script>

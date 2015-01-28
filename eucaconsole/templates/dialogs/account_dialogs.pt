@@ -1,0 +1,33 @@
+<!--! Modal dialogs for IAM accounts on landing and detail page -->
+<div tal:omit-tag="" i18n:domain="eucaconsole">
+    <div id="delete-account-modal" class="reveal-modal small" data-reveal=""
+         tal:define="landingpage_action request.route_path('accounts_delete');
+                     detailpage_action request.route_path('account_delete', name=account.account_name) if account else '';
+                     action landingpage_action if landingpage else detailpage_action;">
+        <h3 i18n:translate="">Delete account</h3>
+        <p>
+            <span i18n:translate="">Deleting an account DOES NOT delete that account's cloud resources, for example instances or volumes. We recommend you delete all resources in an account before deleting the account.</span>
+        </p>
+        <p>
+            <span i18n:translate="">Deleting an account does delete all users in the account and their associated credentials.</span>
+        </p>
+        <p>
+            <span>Are you sure you want to delete account </span>
+            <span tal:condition="account"><strong>${account.account_name}</strong>?</span>
+            <span tal:condition="not account"><strong>{{ accountName }}</strong>?</span>
+        </p>
+        <form method="post" id="delete-form" action="${action}">
+            ${structure:delete_form['csrf_token']}
+            <div tal:condition="landingpage" tal:omit-tag="">
+                <input type="hidden" name="name" value="{{ accountName }}"/>
+            </div>
+            <div class="dialog-submit-button">
+                <button type="submit" id="delete_account_submit_button" class="button expand" i18n:translate="">Yes, Delete Account</button>
+            </div>
+            <div class="dialog-progress-display hide">
+                <span i18n:translate="">Sending request </span>&nbsp;<em><span class="dots">&nbsp;</span></em>
+            </div>
+        </form>
+        <a href="" id="delete_account_close_link" class="close-reveal-modal">&#215;</a>
+    </div>
+ </div>

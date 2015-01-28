@@ -4,8 +4,8 @@
  *
  */
 
-angular.module('ScalingGroupInstances', [])
-    .controller('ScalingGroupInstancesCtrl', function ($scope, $http, $timeout) {
+angular.module('ScalingGroupInstances', ['EucaConsoleUtils'])
+    .controller('ScalingGroupInstancesCtrl', function ($scope, $http, $timeout, eucaHandleError) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.loading = false;
         $scope.items = [];
@@ -33,10 +33,7 @@ angular.module('ScalingGroupInstances', [])
                     $timeout(function() { $scope.getItems(); }, 5000);  // Poll every 5 seconds
                 }
             }).error(function (oData, status) {
-                var errorMsg = oData['message'] || null;
-                if (errorMsg && status === 403) {
-                    $('#timed-out-modal').foundation('reveal', 'open');
-                }
+                eucaHandleError(oData, status);
             });
         };
         $scope.revealModal = function (action, item) {

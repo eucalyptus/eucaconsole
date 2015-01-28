@@ -20,7 +20,10 @@ form {
     .cidr-block {
        display: inline-block;
        vertical-align: top;
-       margin-bottom: 1rem;
+       margin-bottom: 0.5rem;
+       .link {
+         margin-bottom: 0.5rem;
+       }
     }
     .cidr-ip {
         display: inline; width: 100%;
@@ -34,19 +37,12 @@ form {
 }
 
 #rules-editor {
-    .items {
-        margin-bottom: 6px;
-        .rulesentry {
-            color: #333;
-            background-color: $euca-lightgrey;
-            margin-right: 8px;
-            a {
-                color: white;
-            }
-        }
-    }
+    @include item-list;
     .add-label {
         margin-bottom: 6px;
+    }
+    .tabs-content {
+        margin-top: 0.5rem;
     }
 }
 
@@ -55,3 +51,10 @@ form {
     padding: 10px 10px;
 }
 
+div {
+    small.error-msg {
+        color: darkred;
+        font-weight: bold;
+        font-size: 0.75rem;
+    }
+}

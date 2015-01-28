@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en-us" lang="en-us">
+<head>
+<title>Object Details</title>
+</head>
+<body id="object_detail_ui_context">
+
+
+    <h1 class="title topictitle1">Object Details</h1>
+
+    
+    <div class="body taskbody"><p class="shortdesc"> This page allows you to perform a variety of operations associated with objects within buckets.</p>
+</div>
+
+    <div class="topic task nested1" id="object_detail_ui_object">
+        <h2 class="title topictitle2">Object summary</h2>
+
+        <p class="shortdesc">The Object section provides a summary of the object, including its identifiers and a link to view it.
+            The object <span class="ph uicontrol">Name</span> is the only editable field but its extension cannot be changed. </p>
+
+        
+    </div>
+
+    <div class="topic task nested1" id="object_detail_ui_context_menu">
+        <h2 class="title topictitle2">Actions menu</h2>
+
+        
+        <div class="body taskbody"><p class="shortdesc">Clicking the <span class="ph uicontrol">Actions</span> menu displays the options to download, copy, or delete the object.</p>
+</div>
+
+        <div class="topic task nested2" id="object_detail_general_download">
+            <h3 class="title topictitle3">Download object</h3>
+
+            <div class="body taskbody">
+                <div class="section context">The <span class="ph uicontrol">Download</span> option allows you to download the object to a specified location on your local file system. 
+                    A copy of the file remains on S3 until it is deleted from S3 itself.</div>
+
+            </div>
+
+        </div>
+
+        <div class="topic task nested2" id="object_detail_general_copy">
+            <h3 class="title topictitle3">Copy object</h3>
+
+            <div class="body taskbody">
+                <div class="section context">The <span class="ph uicontrol">Copy</span> option allows you to copy an object along with all of its attributes from one bucket to another.</div>
+
+                <div class="section result">Copying an object to the same bucket is not allowed.</div>
+
+                
+            </div>
+
+        </div>
+
+        <div class="topic task nested2" id="object_detail_general_make_public">
+            <h3 class="title topictitle3">Make object public</h3>
+
+            <div class="body taskbody">
+                <div class="section context">The <span class="ph uicontrol">Make public</span> option allows anyone who has the URL to access and download the object, even if they are not authenticated users.</div>
+
+            </div>
+
+        </div>
+
+        <div class="topic task nested2" id="object_detail_general_delete">
+            <h3 class="title topictitle3">Delete an object</h3>
+
+            <div class="body taskbody">
+                <div class="section context">The <span class="ph uicontrol">Delete</span> option allows you to delete the object.</div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="topic task nested1" id="object_detail_ui_edit_metadata">
+        <h2 class="title topictitle2">Edit object metadata</h2>
+
+        <div class="body taskbody">
+            <div class="section context">Each object has a set of attributes. These attributes identify the object by
+                its key and contain metadata about its size, creation and modified dates, encoding
+                type, encryption, and other pieces of information that allow S3 to process it.
+                Metadata can be system-defined or user-defined. <p class="p">For more information about object
+                    metadata, go to <a class="xref" href="http://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html" target="_blank">
+                        Object Key and Metadata</a>.</p>
+<p class="p">To edit object metadata, you can
+                    delete existing metadata or add a metadata pair:</p>
+</div>
+
+           <ol class="ol steps"><li class="li step">
+                    <span class="ph cmd">To add a metadata pair:</span>
+                    <ol type="a" class="ol substeps">
+                        <li class="li substep">
+                            <span class="ph cmd">Select a key from the <span class="ph uicontrol">Key</span> drop-down list box
+                                or define your own key by typing it in the <span class="ph uicontrol">Key</span> 
+                                search field and click <span class="ph uicontrol">Add metadata</span> from the list box.</span>
+                        </li>
+
+                        <li class="li substep">
+                            <span class="ph cmd">Select a value for the selected key from the <span class="ph uicontrol">Value</span> drop-down list box.</span>
+                        </li>
+
+                        <li class="li substep">
+                            <span class="ph cmd">Click <span class="ph uicontrol">Add Metadata Pair</span> to acknowledge
+                                the message and continue.</span>
+                        </li>
+
+                    </ol>
+
+                </li>
+<li class="li step">
+                    <span class="ph cmd">To remove an existing metadata pair, click the <span class="ph uicontrol">x</span> 
+                        next to the pair listed under the Metadata heading.</span>
+                </li>
+</ol>
+
+        </div>
+
+    </div>
+
+<div class="topic task nested1" id="object_detail_ui_edit_sharing">
+    <h2 class="title topictitle2">Edit the sharing settings</h2>
+
+    <div class="body taskbody">
+        <div class="section context">The sharing settings grant specific account(s) certain levels of acccess to your
+                object.</div>
+
+        <ol class="ol steps"><li class="li step">
+                <span class="ph cmd">To edit the sharing settings, select from the following:</span>
+                <ol type="a" class="ol substeps">
+                    <li class="li substep substepexpand">
+                        <span class="ph cmd">Select the type of user from the <span class="ph uicontrol">Grantee</span> drop-down text list 
+                            to grant access to your object.</span>
+                        <div class="itemgroup info">Newly-created objects have a default sharing setting of owner full control.</div>
+                    </li>
+
+                    <li class="li substep substepexpand">
+                        <span class="ph cmd">Select the level of access from the <span class="ph uicontrol">Permission</span> drop-down list box to apply to the
+                            specified users you granted access to your object.</span>
+                        <div class="itemgroup info">If you enter a user's email address, sharing will be extended to all users in their account.</div>
+                    </li>
+
+                    <li class="li substep substepexpand">
+                        <span class="ph cmd">Click the <span class="ph uicontrol">Add Grantee</span> button to add the grantee-permission pair.</span>
+                        <div class="itemgroup info">If a user is already granted, the header shows "Add another grantee". </div>
+                    </li>
+
+                </ol>
+
+            </li>
+<li class="li step">
+                <span class="ph cmd">When done, click the <span class="ph uicontrol">Save Changes</span> button to save
+                    your work, or click <span class="ph uicontrol">Cancel</span> to abandon your
+                    changes.</span>
+            </li>
+</ol>
+
+    </div>
+
+</div>
+
+
+</body>
+</html>

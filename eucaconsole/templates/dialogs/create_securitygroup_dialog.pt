@@ -1,28 +1,36 @@
 <!--! Create Security Group modal dialog (used in Launch Instance and Create Launch Configuration wizards -->
-<div tal:omit-tag="">
+<div tal:omit-tag="" i18n:domain="eucaconsole">
     <div id="create-securitygroup-modal" class="reveal-modal medium" data-reveal="" ng-cloak="">
         <h3 i18n:translate="">Create security group</h3>
-        <p i18n:translate=""></p>
+        <p></p>
         <form method="post" data-abide="abide" id="create-securitygroup-form"
               ng-submit="handleSecurityGroupCreate($event, '${request.route_path('securitygroup_create')}')">
             ${structure:securitygroup_form['csrf_token']}
             ${panel('form_field', field=securitygroup_form['name'], ng_attrs={'model': 'newSecurityGroupName'}, leftcol_width=3, rightcol_width=9)}
             ${panel('form_field', field=securitygroup_form['description'], ng_attrs={'model': 'newSecurityGroupDesc'}, leftcol_width=3, rightcol_width=9)}
+            <div tal:condition="is_vpc_supported" ng-cloak="">
+                <div ng-show="instanceVPC == undefined">
+                    ${panel('form_field', field=securitygroup_form['securitygroup_vpc_network'], ng_attrs={'model': 'securityGroupVPC'}, leftcol_width=3, rightcol_width=9)}
+                </div>
+                <div ng-show="instanceVPC != undefined">
+                    <div class="row controls-wrapper readonly">
+                        <div class="small-3 columns"><label i18n:translate="">VPC Network</label></div>
+                        <div class="small-9 columns value">{{ instanceVPCName }}</div>
+                    </div>
+                </div>
+            </div>
             <hr />
-            ${panel('securitygroup_rules', groupnames=security_group_names)}
+            ${panel('securitygroup_rules')}
             <hr />
             <div class="row">
-                <div class="small-3 columns">&nbsp;</div>
-                <div class="small-9 columns field inline">
                     <div class="dialog-submit-button">
-                        <button type="submit" class="button" id="create-securitygroup-btn" i18n:translate="" >
+                        <button type="submit" class="button expand" id="create-securitygroup-btn" i18n:translate="" >
                             Create Security Group 
                         </button>
                     </div>
                     <div class="dialog-progress-display hide">
                         <span i18n:translate="">Sending request </span>&nbsp;<em><span class="dots">&nbsp;</span></em>
                     </div>
-                </div>
             </div>
         </form>
         <a href="#" id="create_securitygroup_close_link" class="close-reveal-modal">&#215;</a>

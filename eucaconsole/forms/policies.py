@@ -31,9 +31,8 @@ Forms for IAM policies
 import wtforms
 from wtforms import validators
 
-from pyramid.i18n import TranslationString as _
-
 from ..forms import BaseSecureForm
+from ..i18n import _
 
 
 class IAMPolicyWizardForm(BaseSecureForm):

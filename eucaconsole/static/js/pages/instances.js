@@ -4,8 +4,8 @@
  *
  */
 
-angular.module('InstancesPage', ['LandingPage'])
-    .controller('InstancesCtrl', function ($scope, $http) {
+angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils'])
+    .controller('InstancesCtrl', function ($scope, $http, eucaHandleError) {
         $scope.instanceID = '';
         $scope.fileName = '';
         $scope.batchTerminateModal = $('#batch-terminate-modal');
@@ -25,6 +25,16 @@ angular.module('InstancesPage', ['LandingPage'])
             $scope.initChosenSelectors();
             $('#file').on('change', $scope.getPassword);
         };
+        $scope.createImageClicked = function (running_create, instance_id) {
+            if (running_create) {
+                $scope.instanceID = instance_id;
+                var modal = $('#create-image-denied-modal');
+                modal.foundation('reveal', 'open');
+            }
+            else {
+                window.location = '/instances/' + instance_id + '/createimage';
+            }
+        };
         $scope.revealModal = function (action, instance) {
             var modal = $('#' + action + '-instance-modal'),
                 securityGroups = instance['security_groups'],
@@ -36,6 +46,7 @@ angular.module('InstancesPage', ['LandingPage'])
             $scope.instanceName = instance['name'];
             $scope.rootDevice = instance['root_device'];
             $scope.groupName = securityGroupName;
+            $scope.securityGroups = securityGroups;
             $scope.keyName = instance['key_name'];
             $scope.publicDNS = instance['public_dns_name'];
             $scope.platform = instance['platform'];
@@ -99,19 +110,31 @@ angular.module('InstancesPage', ['LandingPage'])
             $(document).trigger('click');
             $scope.instanceName = instance['name'];
             var consoleOutputEndpoint = "/instances/" + instance['id'] + "/consoleoutput/json";
+            $scope.consoleOutput = '';
             $http.get(consoleOutputEndpoint).success(function(oData) {
                 var results = oData ? oData.results : '';
                 if (results) {
-                    $scope.consoleOutput = results;
-                    var modal = $('#console-output-modal');
-                    modal.foundation('reveal', 'open');
+                    $scope.consoleOutput = $.base64.decode(results);
+                    $('#console-output-modal').foundation('reveal', 'open');
                 }
             }).error(function (oData, status) {
-                var errorMsg = oData['message'] || null;
-                if (errorMsg && status === 403) {
-                    $('#timed-out-modal').foundation('reveal', 'open');
+                eucaHandleError(oData, status);
+            });
+        };
+        $scope.getCreateLaunchConfigPath = function (item) {
+            var securityGroupsList = '';
+            angular.forEach(item.security_groups, function (sgroup, index) {
+                securityGroupsList += sgroup.id;
+                if (index < item.security_groups.length - 1) {
+                    securityGroupsList += ",";
                 }
             });
+            var launchConfigPath =  "/launchconfigs/new?image_id=" + item.image_id +
+                "&amp;instance_type=" + item.instance_type +
+                "&amp;keypair=" + item.key_name +
+                "&amp;security_group=" + securityGroupsList +
+                "&amp;preset=true";
+            return launchConfigPath;
         };
     })
 ;

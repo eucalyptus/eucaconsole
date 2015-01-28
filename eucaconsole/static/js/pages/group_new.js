@@ -6,7 +6,19 @@
 
 angular.module('GroupPage', [])
     .controller('GroupPageCtrl', function ($scope, $timeout) {
-        $scope.initController = function (group_users, all_users) {
+        $scope.groupName = '';
+        $scope.isNotValid = true;
+        $scope.initController = function (group_name, group_users, all_users) {
+            $scope.setWatch();
+        };
+        $scope.setWatch = function () {
+            $scope.$watch('groupName' , function () {
+                if( $scope.groupName === '' || $scope.groupName === undefined ){
+                    $scope.isNotValid = true;
+                }else{
+                    $scope.isNotValid = false;
+                }
+            });
         };
     })
 ;

@@ -1,7 +1,7 @@
-<table id="policy-generator" class="table actions-wrapper" xmlns="http://www.w3.org/1999/html">
+<table id="policy-generator" class="table actions-wrapper" xmlns="http://www.w3.org/1999/html" i18n:domain="eucaconsole">
     <thead>
         <tr>
-            <th class="allow" i18n:translate="">Allow</th>
+            <th class="allow" i18n:translate="" tal:condition="resource_type!='account'">Allow</th>
             <th class="deny" i18n:translate="">Deny</th>
             <th class="actions">&nbsp;</th>
         </tr>
@@ -9,7 +9,7 @@
     <tbody>
         <metal:block tal:repeat="actions_ns policy_actions">
             <tr class="namespace ${namespace}" tal:define="namespace actions_ns.name">
-                <td class="allow">
+                <td class="allow" tal:condition="resource_type!='account'">
                     <a ng-click="selectAll($event)">
                         <i class="fi-check tick" data-namespace="${namespace}" data-effect="Allow"
                            data-action="${namespace}:*" data-resource="*"></i>
@@ -27,14 +27,13 @@
                             <a ng-click="${namespace}Expanded = !${namespace}Expanded">
                                 <i class="fi-plus" ng-show="!${namespace}Expanded"></i>
                                 <i class="fi-minus" ng-show="${namespace}Expanded"></i>
-                                &nbsp;<span i18n:translate="" ng-non-bindable="">${actions_ns.label}</span>
+                                &nbsp;<span i18n:translate="">${actions_ns.label}</span>
                             </a>
                         </strong>
                     </div>
                 </td>
             </tr>
             <tr class="action ${namespace} ${action}" tal:define="namespace actions_ns.name"
-                ng-init="${action}Resources = []; ${action}Conditions = {}; ${action}ParsedConditions = [];"
                 tal:repeat="action actions_ns.actions" ng-show="${namespace}Expanded">
                 <div tal:define="namespace_condition namespace not in ['elasticloadbalancing', 'autoscaling']">
                     <td class="allow">
@@ -50,7 +49,7 @@
                         </a>
                     </td>
                     <td>
-                        <span class="action-name" ng-non-bindable="">${action}</span>
+                        <span class="action-name">${action}</span>
                         <a class="button tiny round advanced-button">Advanced</a>
                         <div class="advanced hide">
                             <div class="resource-wrapper" tal:condition="namespace_condition">
@@ -67,7 +66,7 @@
                                                  keypair_condition 'KeyPair' in action;
                                                  ipaddress_condition 'Address' in action;">
                                     <div class="added-resources" ng-cloak="">
-                                        <div class="resentry" ng-repeat="resource in ${action}Resources track by $index">
+                                        <div class="resentry" ng-repeat="resource in actionResources['${action}'] track by $index">
                                             <a class="circle remove" ng-click="removeResource('${action}', $index, $event)"
                                                title="Remove resource">
                                                 <i class="fi-minus-circle"></i>
@@ -76,20 +75,20 @@
                                         </div>
                                     </div>
                                     <div tal:condition="namespace != 'ec2'" tal:omit-tag="">
-                                        <label i18n:translate="" ng-show="${action}Resources.length === 0">
+                                        <label i18n:translate="" ng-show="actionResources['${action}'].length === 0">
                                             Set a specific resource (ARN):
                                         </label>
-                                        <label i18n:translate="" ng-show="${action}Resources.length > 0">
+                                        <label i18n:translate="" ng-show="actionResources['${action}'].length != 0">
                                             Set another resource (ARN):
                                         </label>
                                         <input type="text" placeholder="All resources" i18n:attributes="placeholder"
                                                class="resource arn" value="arn:aws:${namespace}:::" />
                                     </div>
                                     <div tal:condition="namespace == 'ec2'" tal:omit-tag="">
-                                        <label i18n:translate="" ng-show="${action}Resources.length === 0">
+                                        <label i18n:translate="" ng-show="actionResources['${action}'].length === 0">
                                             Set a specific resource:
                                         </label>
-                                        <label i18n:translate="" ng-show="${action}Resources.length > 0">
+                                        <label i18n:translate="" ng-show="actionResources['${action}'].length != 0">
                                             Set another resource:
                                         </label>
                                         <select class="resource-type">
@@ -124,28 +123,36 @@
                                         <strong class="equal">=</strong>
                                         <input type="text" class="resource ip_address" tal:condition="ipaddress_condition" />
                                         <select class="resource instance chosen" tal:condition="instance_condition">
-                                            <option tal:repeat="choice instance_choices" value="${choice[0]}" ng-non-bindable="">${choice[1]}</option>
+                                            <option tal:repeat="choice instance_choices"
+                                                    value="${choice[0]}" ng-non-bindable="">${choice[1]}</option>
                                         </select>
                                         <select class="resource vm_type chosen" tal:condition="instance_condition">
-                                            <option tal:repeat="choice vm_type_choices" value="${choice[0]}" ng-non-bindable="">${choice[1]}</option>
+                                            <option tal:repeat="choice vm_type_choices"
+                                                    value="${choice[0]}" ng-non-bindable="">${choice[1]}</option>
                                         </select>
                                         <select class="resource image chosen" tal:condition="image_condition">
-                                            <option tal:repeat="choice image_choices" value="${choice[0]}" ng-non-bindable="">${choice[1]}</option>
+                                            <option tal:repeat="choice image_choices"
+                                                    value="${choice[0]}" ng-non-bindable="">${choice[1]}</option>
                                         </select>
                                         <select class="resource security_group chosen" tal:condition="securitygroup_condition">
-                                            <option tal:repeat="choice security_group_choices" value="${choice[0]}" ng-non-bindable="">${choice[1]}</option>
+                                            <option tal:repeat="choice security_group_choices"
+                                                    value="${choice[0]}" ng-non-bindable="">${choice[1]}</option>
                                         </select>
                                         <select class="resource availability_zone chosen">
-                                            <option tal:repeat="choice availability_zone_choices" value="${choice[0]}" ng-non-bindable="">${choice[1]}</option>
+                                            <option tal:repeat="choice availability_zone_choices"
+                                                    value="${choice[0]}" ng-non-bindable="">${choice[1]}</option>
                                         </select>
                                         <select class="resource key_pair chosen" tal:condition="keypair_condition">
-                                            <option tal:repeat="choice key_pair_choices" value="${choice[0]}" ng-non-bindable="">${choice[1]}</option>
+                                            <option tal:repeat="choice key_pair_choices"
+                                                    value="${choice[0]}" ng-non-bindable="">${choice[1]}</option>
                                         </select>
                                         <select class="resource volume chosen" tal:condition="volume_condition">
-                                            <option tal:repeat="choice volume_choices" value="${choice[0]}" ng-non-bindable="">${choice[1]}</option>
+                                            <option tal:repeat="choice volume_choices"
+                                                    value="${choice[0]}" ng-non-bindable="">${choice[1]}</option>
                                         </select>
                                         <select class="resource snapshot chosen" tal:condition="snapshot_condition">
-                                            <option tal:repeat="choice snapshot_choices" value="${choice[0]}" ng-non-bindable="">${choice[1]}</option>
+                                            <option tal:repeat="choice snapshot_choices"
+                                                    value="${choice[0]}" ng-non-bindable="">${choice[1]}</option>
                                         </select>
                                     </div>
                                 </div>
@@ -159,7 +166,7 @@
                                 <h6 class="title" i18n:translate="">Conditions (optional)</h6>
                                 <div class="content">
                                     <div class="added-conditions" ng-cloak="">
-                                        <div class="condentry" ng-repeat="condition in ${action}ParsedConditions">
+                                        <div class="condentry" ng-repeat="condition in actionParsedConditions['${action}']">
                                             <a class="circle remove"
                                                ng-click="removeCondition('${action}', condition.operator, condition.key, $event)"
                                                title="Remove condition">
@@ -168,10 +175,10 @@
                                             {{ condition.key }}: {{ condition.operator }}: {{ condition['value'] }}
                                         </div>
                                     </div>
-                                    <label i18n:translate="" ng-show="!hasConditions(${action}Conditions)">
+                                    <label i18n:translate="" ng-show="actionConditions['${action}'].length == 0">
                                         Add a condition:
                                     </label>
-                                    <label i18n:translate="" ng-show="hasConditions(${action}Conditions)">
+                                    <label i18n:translate="" ng-show="actionConditions['${action}'].length != 0">
                                         Add another condition:
                                     </label>
                                     <div class="row">
@@ -324,7 +331,7 @@
                                     </div>
                                     <div tal:condition="layout.cloud_type == 'euca'" tal:omit-tag="">
                                         <!--! Boolean/Null conditions -->
-                                        <div ng-if="${cond_key} &amp;&amp; getConditionType(${cond_key}) == 'BOOL' || ${cond_operator} === 'Null'">
+                                        <div ng-if="${cond_operator} &amp;&amp; selectedOperatorType == 'BOOL'">
                                             <input type="checkbox" class="condition-value" />
                                             <span i18n:translate="">True</span>
                                         </div>
@@ -333,8 +340,8 @@
                                             <select class="condition-value chosen"
                                                     ng-if="${cond_operator}.indexOf('Like') === -1">
                                                 <metal:block tal:repeat="choice availability_zone_choices">
-                                                    <option value="${choice[0].split('/')[1]}" tal:condition="'zones' not in choice[1]"
-                                                            ng-non-bindable="">${choice[1]}</option>
+                                                    <option value="${choice[0].split('/')[1]}" ng-non-bindable=""
+                                                            tal:condition="'zones' not in choice[1]">${choice[1]}</option>
                                                 </metal:block>
                                             </select>
                                             <input type="text" class="condition-value"
@@ -354,7 +361,7 @@
                                             <select class="condition-value chosen"
                                                     ng-if="${cond_operator}.indexOf('Like') === -1">
                                                 <metal:block tal:repeat="choice vm_type_choices">
-                                                    <option value="${choice[0].split('/')[1]}"
+                                                    <option value="${choice[0].split('/')[1]}" ng-non-bindable=""
                                                             tal:condition="'All' not in choice[1]">${choice[1]}</option>
                                                 </metal:block>
                                             </select>
@@ -366,8 +373,8 @@
                                             <select class="condition-value chosen"
                                                     ng-if="${cond_operator}.indexOf('Like') === -1">
                                                 <metal:block tal:repeat="choice snapshot_choices">
-                                                    <option value="${choice[0]}" tal:condition="'snapshots' not in choice[1]"
-                                                            ng-non-bindable="">${choice[1]}</option>
+                                                    <option value="${choice[0]}" ng-non-bindable=""
+                                                            tal:condition="'snapshots' not in choice[1]">${choice[1]}</option>
                                                 </metal:block>
                                             </select>
                                         </div>
@@ -376,8 +383,8 @@
                                             <select class="condition-value chosen"
                                                     ng-if="${cond_operator}.indexOf('Like') === -1">
                                                 <metal:block tal:repeat="choice volume_choices">
-                                                    <option value="${choice[0]}" tal:condition="'volumes' not in choice[1]"
-                                                            ng-non-bindable="">${choice[1]}</option>
+                                                    <option value="${choice[0]}" ng-non-bindable=""
+                                                            tal:condition="'volumes' not in choice[1]">${choice[1]}</option>
                                                 </metal:block>
                                             </select>
                                         </div>
@@ -420,21 +427,22 @@
                                         </div>
                                         <!--! Input field for Arn*Like -->
                                         <input type="text" class="condition-value arnlike"
-                                               ng-if="${cond_operator} &amp;&amp; ${cond_operator}.indexOf('Arn') !== -1
-                                                      &amp;&amp; ${cond_operator}.indexOf('Like') !== -1" />
+                                               ng-if="${cond_operator} &amp;&amp; selectedOperatorType == 'ARN'
+                                                      &amp;&amp; (${cond_operator}.indexOf('Like') !== -1
+                                                      || ${cond_key}.indexOf('SourceArn') !== -1)" />
                                         <!--! Input field for Numeric inputs -->
                                         <input type="number" class="condition-value numeric"
-                                               ng-if="${cond_operator} &amp;&amp; getConditionType(${cond_key}) == 'NUMERIC'" />
+                                               ng-if="${cond_operator} &amp;&amp; selectedOperatorType == 'NUMERIC'" />
                                         <!--! Input field for User* and String* -->
                                         <input type="text" class="condition-value userstringlike"
                                                ng-if="${cond_operator} &amp;&amp; ${cond_key}.toLowerCase().indexOf('user') !== -1
-                                               &amp;&amp; getConditionType(${cond_key}) == 'STRING'" />
+                                               &amp;&amp; selectedOperatorType == 'STRING'" />
                                         <!--! Input field for date/time operators -->
                                         <input type="text" class="condition-value datetimepicker"
-                                               ng-show="${cond_operator} &amp;&amp; getConditionType(${cond_key}) == 'DATE'" />
+                                               ng-show="${cond_operator} &amp;&amp; selectedOperatorType == 'DATE'" />
                                         <!--! Input field for IP operations -->
                                         <input type="text" class="condition-value"
-                                               ng-show="${cond_operator} &amp;&amp; getConditionType(${cond_key}) == 'IP'" />
+                                               ng-show="${cond_operator} &amp;&amp; selectedOperatorType == 'IP'" />
                                         <!--! Input field for s3 non-select string values -->
                                         <input type="text" class="condition-value"
                                                ng-show="${cond_operator} &amp;&amp; ${cond_key}.indexOf('s3:') !== -1

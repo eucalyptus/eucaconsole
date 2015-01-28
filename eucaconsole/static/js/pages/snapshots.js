@@ -4,8 +4,8 @@
  *
  */
 
-angular.module('SnapshotsPage', ['LandingPage'])
-    .controller('SnapshotsCtrl', function ($scope, $http) {
+angular.module('SnapshotsPage', ['LandingPage', 'EucaConsoleUtils'])
+    .controller('SnapshotsCtrl', function ($scope, $http, eucaHandleError) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.snapshotID = '';
         $scope.snapshotName = '';
@@ -32,10 +32,7 @@ angular.module('SnapshotsPage', ['LandingPage'])
                     $scope.images = results;
                 }
             }).error(function (oData, status) {
-                var errorMsg = oData['message'] || null;
-                if (errorMsg && status === 403) {
-                    $('#timed-out-modal').foundation('reveal', 'open');
-                }
+                eucaHandleError(oData, status);
             });
         };
     })

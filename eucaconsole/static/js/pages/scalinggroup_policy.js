@@ -11,13 +11,45 @@ angular.module('ScalingGroupPolicy', ['CreateAlarm'])
         $scope.policyForm = $('#add-policy-form');
         $rootScope.alarmChoices = {};
         $rootScope.alarm = '';
+        $scope.policyName = '';
+        $scope.adjustmentAmount = 1;
+        $scope.coolDown = 300;
+        $scope.isNotValid = true;
         $scope.initController = function (alarmChoices) {
             $rootScope.alarmChoices = alarmChoices;
+            $scope.setWatch();
             $scope.setFocus();
         };
         $scope.revealAlarmModal = function () {
             var modal = $scope.alarmModal;
             modal.foundation('reveal', 'open');
+        };
+        $scope.checkRequiredInput = function () { 
+            $scope.isNotValid = false;
+            if( $scope.policyName === '' || $scope.policyName === undefined ){
+                $scope.isNotValid = true;
+            }else if( $scope.adjustmentAmount === '' || $scope.adjustmentAmount === undefined ){
+                $scope.isNotValid = true;
+            }else if( $scope.coolDown === '' || $scope.coolDown === undefined ){
+                $scope.isNotValid = true;
+            }else if( $rootScope.alarm === '' || $rootScope.alarm === undefined || 
+                $rootScope.alarm === null || $rootScope.alarm === '""' ){
+                $scope.isNotValid = true;
+            }
+        };
+        $scope.setWatch = function () {
+            $scope.$watch('policyName', function () {
+                $scope.checkRequiredInput();
+            });
+            $scope.$watch('adjustmentAmount', function () {
+                $scope.checkRequiredInput();
+            });
+            $scope.$watch('coolDown', function () {
+                $scope.checkRequiredInput();
+            });
+            $scope.$watch('alarm', function () {
+                $scope.checkRequiredInput();
+            });
         };
         $scope.setFocus = function () {
             $scope.policyForm.find('input#name').focus();
@@ -30,6 +62,9 @@ angular.module('ScalingGroupPolicy', ['CreateAlarm'])
                 } else if (!!modalButton) {
                     modalButton.focus();
                 }
+            });
+            $(document).on('close', '[data-reveal]', function () {
+                document.getElementById('create-alarm-form').reset();
             });
             $(document).on('closed', '[data-reveal]', function () {
                 $('input#name').focus();

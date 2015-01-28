@@ -20,45 +20,88 @@
 
         
         <div class="body taskbody"><p class="shortdesc">You can optionally create one or more rules for the security
-            group. A rule grants a specified range of IP addresses inbound
-            access to your instances for a protocol or custom port range. Rules
+            group. A rule grants a specified range of IP addresses access to and 
+            from your instances for a protocol or custom port range. Rules
             for many of the most popular protocols are pre-defined and available
             for selection in the drop-down list box, or you can define your own
             rule. </p>
 
 
-            <ol class="ol steps"><li class="li step">
-                    <span class="ph cmd">Select a protocol for the rule from the
-                            <span class="ph uicontrol">Protocol</span> drop-down list box.
-                    </span>
+            <ol class="ol steps"><li class="li step stepexpand">
+                    <span class="ph cmd">Select Inbound to add the rules for inbound access or select Outbound to
+                        add the rules for outbound access. </span>
+                    <div class="itemgroup info">
+                        <div class="note note"><span class="notetitle">Note:</span> The Outbound option is not available if <em class="ph i">No VPC</em> was selected for VPC
+                            network.</div>
+
+                        <div class="note important"><span class="importanttitle">Important:</span> You should specify at least one rule for your
+                            security group.</div>
+
+                    </div>
                 </li>
-<li class="li step">
-                    <span class="ph cmd">Enter a port range for the rule in the <span class="ph uicontrol">Port
-                            range</span> text box. </span>
-                </li>
-<li class="li step">
+<li class="li step stepexpand">
+                    <span class="ph cmd">Select a protocol for the rule from the <span class="ph uicontrol">Protocol</span> drop-down
+                        list box, or select a custom protocol. If a custom protocol is selected:</span>
+                    <ol type="a" class="ol substeps">
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd">for TCP or UDP, enter a port range for the rule in the <span class="ph uicontrol">Port range</span> text box.</span>
+                        </li>
 
-                    <span class="ph cmd">Select the type of inbound traffic for the rule using
-                        the radio buttons: </span>
-                     
-                        <p class="p">To grant access to an IP address or range of IP
-                            addresses, select the <span class="ph uicontrol">IP
-                                Address</span> radio button and enter a
-                            CIDR range in the text box.</p>
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd">for ICMP, associate an ICMP type by selecting it from the drop-down list box.</span>
+                        </li>
 
-                        <div class="note note"><span class="notetitle">Note:</span> For more information on CIDR notation, please see
-                            the <a class="xref" href="http://en.wikipedia.org/wiki/CIDR_notation" target="_blank">CIDR notation
-                                Wikipedia article</a>.</div>
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd">Identify the type of traffic to allow by selecting one of the following options:</span>
+                            <div class="itemgroup info">
+                                <ul class="ul">
+                                    <li class="li">To grant access to an IP address or range of
+                                        IP addresses, select the <span class="ph uicontrol">IP
+                                            Address</span> radio button and
+                                        enter a CIDR range in the text box.</li>
 
-                        <p class="p">To grant access to another security group, select the <span class="ph uicontrol">Security
-                                group</span> radio button and enter the name of the security
-                            group in the text box.</p>
+                                </ul>
+
+                                
+                                <div class="note note"><span class="notetitle">Note:</span> For more information on CIDR notation,
+                                    please see the <a class="xref" href="http://en.wikipedia.org/wiki/CIDR_notation" target="_blank">CIDR
+                                        notation Wikipedia article</a>.</div>
+
+                                <ul class="ul">
+                                    <li class="li">To grant access to all IP addresses, click <span class="ph uicontrol">Open to all addresses</span>.
+                                        This sets the value to 0.0.0.0/0</li>
+
+                                    <li class="li">To grant access to only your computer, click <span class="ph uicontrol">Use my IP address</span>.</li>
+
+                                </ul>
+
+                                <ul class="ul">
+                                    <li class="li">To grant access to a security group,
+                                        select the <span class="ph uicontrol">Security
+                                            group</span> radio button and select a group from the drop-down list box or enter
+                                        the name of the security group in the text box.</li>
+
+                                </ul>
+
+                                <div class="note note"><span class="notetitle">Note:</span>  To specify a security group in another
+                                    account, use the format <kbd class="ph userinput">accountid/groupname</kbd>.
+                                </div>
+
+                            </div>
+                        </li>
+
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd">Click the <span class="ph uicontrol">Add Rule</span> button when done.</span>
+                            <div class="itemgroup stepresult">The newly added rule displays above the rule form.</div>
+                        </li>
 
                         
-                    
+                    </ol>
+
                 </li>
-<li class="li step">
-                    <span class="ph cmd">Click the <span class="ph uicontrol">Add Rule</span> button.</span>
+<li class="li step stepexpand">
+                    <span class="ph cmd">Repeat as needed to add more rules.</span>
+                    <div class="itemgroup stepresult">A list of added rules display above the rule form to indicate they have been successfully added.</div>
                 </li>
 </ol>
 
@@ -94,7 +137,7 @@
         steps:</p>
 </div>
 
-    <div class="topic task nested2" id="d13e13">
+    <div class="topic task nested2" id="d15e15">
         <h3 class="title topictitle3"/>
 
         
@@ -102,20 +145,20 @@
 
             <div class="section context">To add new tags:</div>
 
-            <ol class="ol steps"><li class="li step">
+            <ol class="ol steps"><li class="li step stepexpand">
                     <span class="ph cmd">Type the key name for your tag into the <span class="ph uicontrol">name...</span> text
                         box.</span>
-                     <div class="note note"><span class="notetitle">Note:</span> Tags cannot start with "<samp class="ph codeph">euca:</samp>" or "<samp class="ph codeph">aws:</samp>".</div>
-
+                    <div class="itemgroup info"><div class="note note"><span class="notetitle">Note:</span> Tags cannot start with "<samp class="ph codeph">euca:</samp>" or "<samp class="ph codeph">aws:</samp>".</div>
+</div>
                 </li>
-<li class="li step">
+<li class="li step stepexpand">
                     <span class="ph cmd">Type the value for your tag into the <span class="ph uicontrol">value...</span> text
                         box.</span>
                 </li>
-<li class="li step">
+<li class="li step stepexpand">
                     <span class="ph cmd">Click the <span class="ph uicontrol">Add Tag</span> button.</span>
                 </li>
-<li class="li step">
+<li class="li step stepexpand">
                     <span class="ph cmd">If you wish to add additional tags, repeat the preceding steps.</span>
                 </li>
 </ol>
@@ -125,7 +168,7 @@
     </div>
 
     
-    <div class="topic task nested2" id="d13e72">
+    <div class="topic task nested2" id="d15e77">
         <h3 class="title topictitle3"/>
 
         
@@ -167,7 +210,7 @@
         <div class="body taskbody"><p class="shortdesc">Clicking the <span class="ph uicontrol">Actions</span> button brings up a menu of actions
             that you can perform on the selected security group.</p>
 
-            <div class="section context">The following context menu actions are availabe:</div>
+            <div class="section context">The following context menu actions are available:</div>
 
         </div>
 

@@ -4,11 +4,27 @@
  *
  */
 
-angular.module('KeypairPage', [])
-    .controller('KeypairPageCtrl', function ($scope) {
-        $scope.initController = function () {
+angular.module('KeypairPage', ['EucaConsoleUtils'])
+    .controller('KeypairPageCtrl', function ($scope, eucaUnescapeJson) {
+        $scope.keypairName = '';
+        $scope.keypairMaterial = '';
+        $scope.isNotValid = true;
+        $scope.routeID = '';
+        $scope.initController = function (optionsJson) {
+            var options = JSON.parse(eucaUnescapeJson(optionsJson));
+            $scope.routeID = options['route_id'];
+            if (options['keypair_created']) {
+                Notify.success(options['keypair_created_msg']); // Display success notice if new key pair was created
+            }
             $scope.setWatch();
             $scope.setFocus();
+        };
+        $scope.checkRequiredInput = function () {
+            $scope.isNotValid = $scope.keypairName === '' || $scope.keypairName === undefined;
+            // Extra check for Import Keypair case
+            if ($scope.routeID === 'new2') {
+                $scope.isNotValid = $scope.keypairMaterial === '' || $scope.keypairMaterial === undefined;
+            }
         };
         $scope.setWatch = function () {
             // JAVASCRIPT SNIPPET TAKEN FROM 3.4.1 TO ADD A LISTENER TO THE FILE UPLOAD INPUTBOX
@@ -18,18 +34,35 @@ angular.module('KeypairPage', [])
                 reader.onloadend = function(evt) {
                     if (evt.target.readyState == FileReader.DONE) {
                         $('#key-import-contents').val(evt.target.result).trigger('keyup');
+                        $scope.keypairMaterial = evt.target.result;
+                        $scope.$apply();
                     }
-                }
+                };
                 reader.readAsText(file);
             });
-            $(document).on('submit', '[data-reveal] form', function () {
-                $(this).find('.dialog-submit-button').css('display', 'none');                
-                $(this).find('.dialog-progress-display').css('display', 'block');                
+            $scope.$watch('keypairName', function () {
+                $scope.checkRequiredInput();
             });
+            $scope.$watch('keypairMaterial', function () {
+                $scope.checkRequiredInput();
+            });
+            $(document).on('submit', '[data-reveal] form', function () {
+                $(this).find('.dialog-submit-button').css('display', 'none');
+                $(this).find('.dialog-progress-display').css('display', 'block');
+            });
+             // download the keypair material 1 second after.
+            setTimeout(function(){
+                $("#download-keypair-form").submit();
+            }, 1000);
         };
         $scope.setFocus = function () {
             $(document).on('ready', function(){
-                $('.actions-menu').find('a').get(0).focus();
+                var firstLink = $('.actions-menu').find('a');
+                if( firstLink.length > 0 ){
+                    firstLink.get(0).focus();
+                }
+                // Prevent import key pair textarea from being disabled on IE
+                $('#key-import-contents').removeAttr('maxlength');
             });
             $(document).on('opened', '[data-reveal]', function () {
                 var modal = $(this);

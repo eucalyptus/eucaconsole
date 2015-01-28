@@ -1,0 +1,13 @@
+{
+  "name": "eucaconsole",
+  "version": "4.1.0",
+  "dependencies": {
+    "angular": "1.2.26",
+    "angular-sanitize": "1.2.26",
+    "angular-mocks": "1.2.26",
+    "jquery": "2.0.3",
+    "jasmine": "2.0.3",
+    "jasmine-jquery": "2.0.5"
+  }
+}
+

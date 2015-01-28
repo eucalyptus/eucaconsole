@@ -1,0 +1,13 @@
+/* @fileOverview single Create Image page CSS */
+
+@import "../includes/eucavariables";
+
+
+// Forms
+#s3_bucket, #s3_prefix { width: 70%; }
+
+.code {
+    background: lighten(gray, 40%);
+    padding-left: 8px;
+    margin: 10px;
+}

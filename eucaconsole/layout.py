@@ -32,15 +32,15 @@ See http://docs.pylonsproject.org/projects/pyramid_layout/en/latest/layouts.html
 from collections import namedtuple
 from urllib import urlencode
 
-from beaker.cache import cache_region
 from pyramid.decorator import reify
-from pyramid.i18n import TranslationString as _
 from pyramid.renderers import get_renderer
 from pyramid.settings import asbool
 
 from .constants import AWS_REGIONS
 from .forms.login import EucaLogoutForm
+from .i18n import _
 from .models import Notification
+from .views import BaseView
 
 try:
     from version import __version__
@@ -60,14 +60,19 @@ class MasterLayout(object):
         self.support_url = request.registry.settings.get('support.url') or "http://support.eucalyptus.com"
         self.aws_enabled = asbool(request.registry.settings.get('aws.enabled'))
         self.aws_regions = AWS_REGIONS
-        self.default_region = request.registry.settings.get('aws.default.region')
+        self.default_region = request.registry.settings.get('aws.default.region', 'us-east-1')
         self.browser_password_save = 'true' if asbool(request.registry.settings.get('browser.password.save')) else 'false'
         self.cloud_type = request.session.get('cloud_type')
         self.selected_region = self.request.session.get('region', self.default_region)
         self.selected_region_label = self.get_selected_region_label(self.selected_region)
         self.username = self.request.session.get('username')
         self.account = self.request.session.get('account')
+        self.access_id = self.request.session.get('access_id')
         self.username_label = self.request.session.get('username_label')
+        self.account_access = request.session.get('account_access') if self.cloud_type == 'euca' else False
+        self.user_access = request.session.get('user_access') if self.cloud_type == 'euca' else False
+        self.group_access = request.session.get('group_access') if self.cloud_type == 'euca' else False
+        self.role_access = request.session.get('role_access') if self.cloud_type == 'euca' else False
         self.euca_logout_form = EucaLogoutForm(request=self.request)
         self.date_format = _(u'%I:%M:%S %p %b %d %Y')
         self.angular_date_format = _(u'hh:mm:ss a MMM d yyyy')
@@ -79,8 +84,11 @@ class MasterLayout(object):
             '^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\.){3}',
             '(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])(\/\d+)$'
         )
+        self.port_range_pattern = '^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$'
         self.querystring = self.get_query_string()
         self.help_html_dir = 'eucaconsole:static/html/help/'
+        self.escape_braces = BaseView.escape_braces
+        self.file_uploads_enabled = asbool(self.request.registry.settings.get('file.uploads.enabled', True))
 
     def get_notifications(self):
         """Get notifications, categorized by message type ('info', 'success', 'warning', or 'error')
@@ -108,13 +116,12 @@ class MasterLayout(object):
         return ''
 
     def help_path(self, help_html):
-        path = self.help_html_dir + help_html;
-        return self.request.static_path(path);
+        path = self.help_html_dir + help_html
+        return self.request.static_path(path)
 
     @staticmethod
-    @cache_region('extra_long_term', 'selected_region_label')
     def get_selected_region_label(region_name):
-        """Get the label from the selected region, pulling from Beaker cache"""
+        """Get the label from the selected region"""
         regions = [reg for reg in AWS_REGIONS if reg.get('name') == region_name]
         if regions:
             return regions[0].get('label')

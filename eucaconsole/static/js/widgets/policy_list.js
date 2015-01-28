@@ -4,7 +4,7 @@
  *
  */
 angular.module('PolicyList', [])
-    .controller('PolicyListCtrl', function ($scope, $http) {
+    .controller('PolicyListCtrl', function ($scope, $http, $rootScope) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.policyList = $('#policy-list');
         $scope.itemsLoading = true;
@@ -18,7 +18,6 @@ angular.module('PolicyList', [])
         $scope.policyName = '';
         $scope.policyJson = '';
         $scope.codeEditor = null;
-        $scope.editPolicyArea = null;
         $scope.editPolicyModal = $('#policy-edit-modal');
         $scope.syncPolicies = function () {
             var policyObj = {};
@@ -54,6 +53,11 @@ angular.module('PolicyList', [])
                 $scope.itemsLoading = false;
                 Notify.failure(errorMsg);
             });
+        };
+        $rootScope.getPolicies = function() {
+            $scope.itemsLoading = true;
+            $scope.policyArray = [];
+            $scope.getPolicies();
         };
         $scope.removePolicy = function (index, $event) {
             $event.preventDefault();

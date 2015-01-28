@@ -186,12 +186,15 @@ $dropdown-border-color: $euca-green;
             background-color: #e6e7e8;
             color: #555;
             margin-right: 0.2rem;
-            font-family: Verdana, sans-serif;
             min-width: 22px;
             text-align: center;
             &.ellipsis {
                 margin-left: 0;
             }
+        }
+        // Alert icon for missing security group rules
+        .fi-alert {
+            color: darkred;
         }
     }
     .link {
@@ -259,9 +262,6 @@ $dropdown-border-color: $euca-green;
             vertical-align: top;
             &.status {
                 text-transform: capitalize;
-                .label {
-                    color: black;
-                }
             }
             a {
                 color: $euca-darkgreen;
@@ -300,6 +300,10 @@ $dropdown-border-color: $euca-green;
             font-size: 1.2rem;
             top: 0;
         }
+    }
+    // Alert icon for missing security group rules
+    .fi-alert {
+        color: darkred;
     }
 }
 

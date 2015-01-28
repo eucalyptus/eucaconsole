@@ -4,8 +4,9 @@
  *
  */
 
-angular.module('IAMPolicyWizard', [])
-    .controller('IAMPolicyWizardCtrl', function ($scope, $http, $timeout) {
+angular.module('IAMPolicyWizard', ['EucaConsoleUtils'])
+    .controller('IAMPolicyWizardCtrl', function ($scope, $http, $timeout, eucaUnescapeJson, eucaHandleError) {
+        $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.wizardForm = $('#iam-policy-form');
         $scope.policyGenerator = $('#policy-generator');
         $scope.policyJsonEndpoint = '';
@@ -16,20 +17,33 @@ angular.module('IAMPolicyWizard', [])
         $scope.policyAPIVersion = "2012-10-17";
         $scope.cloudType = 'euca';
         $scope.lastSelectedTabKey = 'policyWizard-selectedTab';
-        $scope.actionsList = [];
+        $scope.actionsList = [];  // List of *all* actions; builds allow/deny statements in one fell swoop
         $scope.urlParams = $.url().param();
         $scope.timestamp = (new Date()).toISOString().replace(/[-:TZ\.]/g, '');
         $scope.selectedOperatorType = '';
         $scope.languageCode = 'en';
         $scope.confirmed = false;
+        $scope.isCreating = false;
+        $scope.handEdited = false;
+        $scope.pageLoading = true;
         $scope.nameConflictKey = 'doNotShowPolicyNameConflictWarning';
-        $scope.initController = function (options) {
+        $scope.policyGenExpanded = true;
+        $scope.fileUploadExpanded = false;
+        $scope.actions = {};  // Container for actions by namespace
+        $scope.actionResources = {};
+        $scope.actionConditions = {};
+        $scope.actionParsedConditions = {};
+        $scope.initController = function (optionsJson) {
+            var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.policyJsonEndpoint = options['policyJsonEndpoint'];
             $scope.cloudType = options['cloudType'];
             $scope.actionsList = options['actionsList'];
             $scope.languageCode = options['languageCode'] || 'en';
             $scope.awsRegions = options['awsRegions'];
-            $scope.existingPolicies = JSON.parse(options['existingPolicies'] || '[]');
+            $scope.existingPolicies = options['existingPolicies'];
+            $scope.saveUrl = options['createPolicyUrl'];
+            $scope.policyActions = options['policyActions'];
+            $scope.initActionContainers();
             $scope.initSelectedTab();
             $scope.initChoices();
             $scope.initCodeMirror();
@@ -40,6 +54,16 @@ angular.module('IAMPolicyWizard', [])
                 $scope.addResourceTypeListener();
                 $scope.initDateTimePickers();
             }
+        };
+        $scope.initActionContainers = function () {
+            $scope.policyActions.forEach(function (actionNS) {
+                $scope.actions[actionNS.name] = actionNS.actions;
+                actionNS.actions.forEach(function(action) {
+                    $scope.actionResources[action] = [];
+                    $scope.actionConditions[action] = {};
+                    $scope.actionParsedConditions[action] = [];
+                });
+            })
         };
         $scope.initChoices = function () {
             $scope.imageTypeChoices = ['emi', 'eki', 'eri'];
@@ -56,9 +80,11 @@ angular.module('IAMPolicyWizard', [])
         };
         $scope.setupListeners = function () {
             $(document).ready(function() {
+                $scope.pageLoading = false;
                 $scope.initToggleAdvancedListener();
                 $scope.initSelectActionListener();
                 $scope.initNameConflictWarningListener();
+                $scope.initHandEditedWarningListener();
             });
         };
         $scope.initToggleAdvancedListener = function () {
@@ -67,18 +93,26 @@ angular.module('IAMPolicyWizard', [])
             });
         };
         $scope.initNameConflictWarningListener = function () {
-            if (Modernizr.localstorage && localStorage.getItem($scope.nameConflictKey)) {
-                return true;
-            }
             $scope.wizardForm.on('submit', function(evt) {
+                evt.preventDefault();
                 var policyName = $('#name').val();
                 if ($scope.existingPolicies.indexOf(policyName) !== -1) {
-                    if (!$scope.confirmed) evt.preventDefault();
                     if (Modernizr.localstorage && !localStorage.getItem($scope.nameConflictKey)) {
                         $('#conflict-warn-modal').foundation('reveal', 'open');
+                        return;  // to prevent save 3 lines down
                     }
                 }
+                $scope.savePolicy();
             });
+        };
+        $scope.initHandEditedWarningListener = function () {
+            if ($scope.codeEditor != null){
+                $scope.codeEditor.on('change', function () {
+                    $scope.$apply(function() {
+                        $scope.handEdited = $scope.codeEditor.getValue().trim() != $scope.policyText;
+                    });
+                });
+            }
         };
         $scope.confirmWarning = function () {
             var modal = $('#conflict-warn-modal');
@@ -87,7 +121,39 @@ angular.module('IAMPolicyWizard', [])
             }
             $scope.confirmed = true;
             modal.foundation('reveal', 'close');
-            $scope.wizardForm.submit();
+            $scope.savePolicy();
+        };
+        $scope.savePolicy = function() {
+            try {
+                $('#json-error').css('display', 'none');
+                var policy_json = $scope.codeEditor.getValue();
+                //var policy_json = $('#policy').val();
+                JSON.parse(policy_json);
+                // now, save the policy
+                var policy_name = $('#name').val();
+                var type = $('#type').val();
+                var id = $('#id').val();
+                var data = "csrf_token="+$('#csrf_token').val()+
+                           "&type="+type+
+                           "&id="+id+
+                           "&name="+policy_name+
+                           "&policy="+policy_json;
+                $scope.isCreating = true;
+                $http({
+                    method:'POST', url:$scope.saveUrl, data:data,
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}}
+                ).success(function(oData) {
+                    Notify.success(oData.message);
+                    $scope.isCreating = false;
+                    window.location = $('#return-link').attr('href');
+                }).error(function (oData) {
+                    $scope.isCreating = false;
+                    eucaHandleError(oData, status);
+                });
+            } catch (e) {
+                $('#json-error').text(e);
+                $('#json-error').css('display', 'block');
+            }
         };
         $scope.initSelectActionListener = function () {
             // Handle Allow/Deny selection for a given action
@@ -110,23 +176,15 @@ angular.module('IAMPolicyWizard', [])
                 Modernizr.localstorage && localStorage.setItem($scope.lastSelectedTabKey, tabLinkId);
                 if (tabLinkId === 'custom-policy-tab') {
                     $scope.setPolicyName('custom');
+                    if ($scope.policyStatements.length) {
+                        // Load selected policy statements if switching back to custom policy tab
+                        $timeout(function () {
+                            $scope.updatePolicy();
+                        }, 100);
+                    }
                 }
             });
             $('#' + lastSelectedTab).click();
-        };
-        $scope.limitResourceChoices = function () {
-            // Only display the resource field inputs for the relevant actions
-            var resourceValueInputs = $scope.policyGenerator.find('.chosen');
-            resourceValueInputs.addClass('hide');
-            resourceValueInputs.next('.chosen-container').addClass('hide');
-            resourceValueInputs.each(function(idx, item) {
-                var elem = $(item),
-                    resourceType = elem.closest('.resource-wrapper').find('.resource-type').val();
-                if (elem.hasClass(resourceType)) {
-                    elem.removeClass('hide');
-                    elem.next('.chosen-container').removeClass('hide');
-                }
-            });
         };
         $scope.addResourceTypeListener = function () {
             // Show/hide resource choices based on resource type selection
@@ -143,25 +201,38 @@ angular.module('IAMPolicyWizard', [])
         };
         $scope.initChosenSelectors = function () {
             $timeout(function () {
-                $scope.policyGenerator.find('select.chosen').chosen({'width': '44%', 'search_contains': true});
-                $scope.limitResourceChoices();
+                var resourceValueInputs = $scope.policyGenerator.find('.chosen');
+                resourceValueInputs.chosen({'width': '44%', 'search_contains': true});
+                // Only display the resource field inputs for the relevant actions
+                resourceValueInputs.addClass('hide');
+                resourceValueInputs.next('.chosen-container').addClass('hide');
+                resourceValueInputs.each(function(idx, item) {
+                    var elem = $(item),
+                        resourceType = elem.closest('.resource-wrapper').find('.resource-type').val();
+                    if (elem.hasClass(resourceType)) {
+                        elem.removeClass('hide');
+                        elem.next('.chosen-container').removeClass('hide');
+                    }
+                });
             }, 100);
         };
         $scope.initDateTimePickers = function () {
             $(document).ready(function () {
-                $scope.policyGenerator.find('.datetimepicker').datetimepicker({
-                    'format': 'Y-m-d H:i:s', 'lang': $scope.languageCode
+                $scope.policyGenerator.find('.datetimepicker').fdatepicker({
+                    'format': 'yyyy-mm-dd'
                 });
             });
         };
         $scope.initCodeMirror = function () {
             $(document).ready(function () {
-                $scope.codeEditor = CodeMirror.fromTextArea($scope.policyTextarea, {
-                    mode: "javascript",
-                    lineWrapping: true,
-                    styleActiveLine: true,
-                    lineNumbers: true
-                });
+                if ($scope.policyTextarea != null) {
+                    $scope.codeEditor = CodeMirror.fromTextArea($scope.policyTextarea, {
+                        mode: "javascript",
+                        lineWrapping: true,
+                        styleActiveLine: true,
+                        lineNumbers: true
+                    });
+                }
             });
         };
         $scope.setPolicyName = function (policyType) {
@@ -172,6 +243,11 @@ angular.module('IAMPolicyWizard', [])
                 'custom': 'CustomAccessPolicy'
             };
             $scope.policyName = typeNameMapping[policyType] + '-' + $scope.urlParams['id'] + '-' + $scope.timestamp;
+            // Prevent lingering validation error on policy name field
+            $timeout(function() {
+                $('#name').trigger('focus');
+                $('.CodeMirror').find('textarea').focus();
+            }, 10);
         };
         $scope.handlePolicyFileUpload = function () {
             $('#policy_file').on('change', function(evt) {
@@ -204,6 +280,8 @@ angular.module('IAMPolicyWizard', [])
             $scope.setPolicyName(policyType);
         };
         $scope.updatePolicy = function() {
+            $scope.setPolicyName('custom');
+            $scope.handEdited = false;
             $scope.policyStatements = [];
             // Add namespace (allow/deny all) statements
             $scope.policyGenerator.find('tr.namespace').each(function (idx, elem) {
@@ -220,8 +298,8 @@ angular.module('IAMPolicyWizard', [])
             $scope.actionsList.forEach(function (action) {
                 var actionRow = $scope.policyGenerator.find('.action.' + action),
                     selectedMark = actionRow.find('.tick.selected'),
-                    addedResources = $scope[action + 'Resources'],
-                    addedConditions = $scope[action + 'Conditions'],
+                    addedResources = $scope.actionResources[action],
+                    addedConditions = $scope.actionConditions[action],
                     statement, resource;
                 resource = addedResources.length > 0 ? addedResources : selectedMark.attr('data-resource');
                 statement = {
@@ -259,7 +337,7 @@ angular.module('IAMPolicyWizard', [])
                 actionRow = resourceBtn.closest('tr'),
                 selectedTick = actionRow.find('i.selected'),
                 allowDenyCount = selectedTick.length,
-                actionResources = $scope[action + 'Resources'],
+                actionResources = $scope.actionResources[action],
                 visibleResource = null,
                 resourceVal = null;
             $event.preventDefault();
@@ -287,7 +365,7 @@ angular.module('IAMPolicyWizard', [])
         };
         $scope.removeResource = function (action, index, $event) {
             $event.preventDefault();
-            $scope[action + 'Resources'].splice(index, 1);
+            $scope.actionResources[action].splice(index, 1);
             $scope.updatePolicy();
         };
         $scope.addCondition = function (action, $event) {
@@ -295,7 +373,7 @@ angular.module('IAMPolicyWizard', [])
                 actionRow = conditionBtn.closest('tr'),
                 selectedTick = actionRow.find('i.selected'),
                 allowDenyCount = selectedTick.length,
-                actionConditions = $scope[action + 'Conditions'],
+                actionConditions = $scope.actionConditions[action],
                 conditionKey, conditionOperator, conditionValueField, conditionValue;
             $event.preventDefault();
             conditionKey = actionRow.find('.condition-keys').val();
@@ -325,7 +403,7 @@ angular.module('IAMPolicyWizard', [])
         };
         $scope.removeCondition = function (action, operator, key, $event) {
             $event.preventDefault();
-            var actionConditions = $scope[action + 'Conditions'];
+            var actionConditions = $scope.actionConditions[action];
             if (actionConditions[operator] && actionConditions[operator].hasOwnProperty(key)) {
                 delete actionConditions[operator][key];
             }
@@ -337,19 +415,16 @@ angular.module('IAMPolicyWizard', [])
         };
         $scope.updateParsedConditions = function (action, conditionsObj) {
             // Flatten conditions object into an array of conditions with unique key/operator values
-            $scope[action + 'ParsedConditions'] = [];
+            $scope.actionParsedConditions[action] = [];
             Object.keys(conditionsObj).forEach(function (operator) {
                 Object.keys(conditionsObj[operator]).forEach(function (conditionKey) {
-                    $scope[action + 'ParsedConditions'].push({
+                    $scope.actionParsedConditions[action].push({
                         'operator': operator,
                         'key': conditionKey,
                         'value': conditionsObj[operator][conditionKey]
                     });
                 });
             });
-        };
-        $scope.hasConditions = function (obj) {
-            return Object.keys(obj).length > 0;
         };
         $scope.getConditionType = function (conditionKey) {
             /* Given a condition key, return a condition type (e.g. 'DATE' for Date Conditions)

@@ -3,7 +3,7 @@
  * @requires AngularJS
  *
  */
-angular.module('AutoScaleTagEditor', ['ngSanitize'])
+angular.module('AutoScaleTagEditor', ['ngSanitize', 'EucaConsoleUtils'])
     .filter('ellipsis', function () {
         return function (line, num) {
             if (line.length <= num) {
@@ -12,18 +12,25 @@ angular.module('AutoScaleTagEditor', ['ngSanitize'])
             return line.substring(0, num) + "...";
         };
     })
-    .controller('AutoScaleTagEditorCtrl', function ($scope, $sanitize) {
+    .controller('AutoScaleTagEditorCtrl', function ($scope, $sanitize, $timeout, eucaUnescapeJson) {
         $scope.tagEditor = $('#tag-editor');
         $scope.tagInputs = $scope.tagEditor.find('.taginput');
         $scope.tagsTextarea = $scope.tagEditor.find('textarea#tags');
         $scope.tagsArray = [];
+        $scope.newTagKey = '';
+        $scope.newTagValue = '';
+        $scope.isTagNotComplete = true;
+        $scope.tagCount = 0;
         $scope.syncTags = function () {
             $scope.tagsTextarea.val(JSON.stringify($scope.tagsArray));
         };
-        $scope.initTags = function(tagsJson) {
+        $scope.updateTagCount = function () {
+            $scope.tagCount = $scope.tagsArray.length;
+        };
+        $scope.initTags = function(optionsJson) {
+            var options = JSON.parse(eucaUnescapeJson(optionsJson));
             // Parse tags JSON and convert to a list of tags.
-            tagsJson = tagsJson.replace(/__apos__/g, "\'").replace(/__dquote__/g, '\\"').replace(/__bslash__/g, "\\");
-            var tagsArray = JSON.parse(tagsJson);
+            var tagsArray = options['tags_list'];
             tagsArray.forEach(function(tag) {
                 if (!tag['name'].match(/^aws:.*/) && !tag['name'].match(/^euca:.*/)) {
                     $scope.tagsArray.push({
@@ -34,6 +41,7 @@ angular.module('AutoScaleTagEditor', ['ngSanitize'])
                 }
             });
             $scope.syncTags();
+            $scope.setWatch();
         };
         $scope.getSafeTitle = function (tag) {
             return $sanitize(tag.name + ' = ' + tag.value);
@@ -42,6 +50,7 @@ angular.module('AutoScaleTagEditor', ['ngSanitize'])
             $event.preventDefault();
             $scope.tagsArray.splice(index, 1);
             $scope.syncTags();
+            $scope.$emit('tagUpdate');
         };
         $scope.togglePropagateCheckbox = function () {
             var checkbox = $('#propagate-checkbox');
@@ -49,6 +58,10 @@ angular.module('AutoScaleTagEditor', ['ngSanitize'])
         };
         $scope.addTag = function ($event) {
             $event.preventDefault();
+            $scope.checkRequiredInput();
+            if ($scope.isTagNotComplete) {
+                return;
+            }
             var tagEntry = $($event.currentTarget).closest('.tagentry'),
                 tagKeyField = tagEntry.find('.key'),
                 tagValueField = tagEntry.find('.value'),
@@ -85,10 +98,44 @@ angular.module('AutoScaleTagEditor', ['ngSanitize'])
                     tagKeyField.val('').focus();
                     tagValueField.val('');
                     tagPropagateField.prop('checked', false);
+                    $scope.$emit('tagUpdate');
+                    $scope.newTagKey = '';
+                    $scope.newTagValue = '';
                 }
             } else {
                 tagKeyField.val() ? tagValueField.focus() : tagKeyField.focus();
             }
+        };
+        $scope.checkRequiredInput = function () {
+            if ($scope.newTagKey === '' || $scope.newTagValue === '') {
+                $scope.isTagNotComplete = true;
+            } else if ($('#autoscale-tag-name-input-div').hasClass('error') ||
+                $('#autoscale-tag-value-input-div').hasClass('error')) {
+                $scope.isTagNotComplete = true;
+            } else {
+                $scope.isTagNotComplete = false;
+            } 
+        }; 
+        $scope.setWatch = function () {
+            $scope.$watch('newTagKey', function () {
+                $scope.checkRequiredInput();
+                // timeout is needed to react to Foundation's validation check
+                $timeout(function() {
+                    // repeat the check on input condition 
+                    $scope.checkRequiredInput();
+                }, 1000);
+            });
+            $scope.$watch('newTagValue', function () {
+                $scope.checkRequiredInput();
+                // timeout is needed to react to Foundation's validation check
+                $timeout(function() {
+                    // repeat the check on input condition 
+                    $scope.checkRequiredInput();
+                }, 1000);
+            });
+            $scope.$watch('tagsArray', function () {
+                $scope.updateTagCount();
+            }, true);
         };
     })
 ;

@@ -28,7 +28,7 @@
 Constants for IAM Policy permissions (actions)
 
 """
-from pyramid.i18n import TranslationString as _
+from ..i18n import _
 
 
 # Policy Generator Actions for EC2

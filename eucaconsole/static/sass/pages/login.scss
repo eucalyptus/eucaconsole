@@ -9,6 +9,14 @@
     padding-top: 2rem;
 }
 
+#ssl-warning {
+    .fi-alert { color: darkred; }
+    p {
+        line-height: 1.2rem;
+        margin-top: 0.25rem;
+    }
+}
+
 #login-wrapper {
     position: relative;
     padding: 10px;
@@ -22,6 +30,7 @@
     }
     input {
         background-color: $euca-extralightgrey;
+        height: 2.25rem;
     }
     .hide-aws {
         max-width: 480px;

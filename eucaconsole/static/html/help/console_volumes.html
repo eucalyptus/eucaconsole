@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en-us" lang="en-us">
+<head>
+<title>Volumes</title>
+</head>
+<body id="volumes_help_context">
+
+    <div>
+        <h5 class="title">Create a Volume</h5>
+        <p> Eucalyptus offers persistent storage that you can attach to a
+            running instance. These elastic block storage (EBS) volumes persist
+            autonomously from the running life of an instance. After you attach a
+            block volume to an instance, you can use it like any other physical hard
+            drive.
+        </p>
+        <p>Add the details of your new volume:</p>
+        <ol>
+            <li>Type the name of your volume in the <strong>Name</strong> textbox.</li>
+            <li>If you would like to create a volume from an existing snapshot, select the snapshot from the
+                <strong>Create from snapshot?</strong> drop-down listbox.
+            </li>
+            <li>Enter the size of the volume in gigabytes in the <strong>Volume Size (GB)</strong> text box.
+                <p><strong>Note:</strong>
+                    If you're creating a volume from a snapshot, you
+                    can't enter a volume size that's smaller than the
+                    original snapshot you've selected.
+                </p>
+            </li>
+            <li>Select an availability zone from the <strong>Availability Zone</strong> drop-down list box.
+                <p><strong>Note:</strong>
+                    You can only attach a volume to an instance in the same availability zone.
+                </p>
+            </li>
+        </ol>
+    </div>
+
+</body>
+</html>

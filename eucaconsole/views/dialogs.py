@@ -29,7 +29,13 @@ Panels for modal dialogs reused across the landing page and detail page for a gi
 See http://docs.pylonsproject.org/projects/pyramid_layout/en/latest/layouts.html#using-panels
 
 """
+import simplejson as json
+from ..i18n import _
+
 from pyramid_layout.panel import panel_config
+
+from ..views import BaseView
+from ..views.buckets import BucketDetailsView, FOLDER_NAME_PATTERN
 
 
 @panel_config('ipaddress_dialogs', renderer='../templates/dialogs/ipaddress_dialogs.pt')
@@ -49,6 +55,7 @@ def ipaddress_dialogs(context, request, eip=None, landingpage=False,
 def snapshot_dialogs(context, request, snapshot=None, snapshot_name=None, landingpage=False, volume_id=None,
                      delete_form=None, register_form=None):
     """Modal dialogs for Snapshot landing and detail page."""
+    snapshot_image_name_validation_error_msg = _(u"AMI names must be between 3 and 128 characters long, and may contain letters, numbers, \'(\', \')\', \'.\', \'-\', \'/\' and \'_\', and cannot contain spaces.")
     return dict(
         snapshot=snapshot,
         snapshot_name=snapshot_name,
@@ -56,6 +63,7 @@ def snapshot_dialogs(context, request, snapshot=None, snapshot_name=None, landin
         volume_id=volume_id,
         delete_form=delete_form,
         register_form=register_form,
+        snapshot_image_name_validation_error_msg=snapshot_image_name_validation_error_msg,
     )
 
 
@@ -121,30 +129,38 @@ def securitygroup_dialogs(context, request, security_group=None, landingpage=Fal
     """Modal dialogs for Security group landing and detail page."""
     return dict(
         security_group=security_group,
+        security_group_name=BaseView.escape_braces(security_group.name) if security_group else '',
         landingpage=landingpage,
         delete_form=delete_form,
     )
 
 
 @panel_config('create_securitygroup_dialog', renderer='../templates/dialogs/create_securitygroup_dialog.pt')
-def create_securitygroup_dialog(context, request, securitygroup_form=None, security_group_names=None):
+def create_securitygroup_dialog(context, request, securitygroup_form=None):
     """ Modal dialog for creating a security group."""
+    is_vpc_supported = BaseView.is_vpc_supported(request)
     return dict(
         securitygroup_form=securitygroup_form,
-        security_group_names=security_group_names,
+        is_vpc_supported=is_vpc_supported,
     )
 
 
 @panel_config('create_alarm_dialog', renderer='../templates/dialogs/create_alarm_dialog.pt')
-def create_alarm_dialog(context, request, alarm_form=None, redirect_location=None,
+def create_alarm_dialog(context, request, alarm_form=None, alarm_choices=None, redirect_location=None,
                         modal_size='medium', metric_unit_mapping=None):
     """Create alarm dialog page."""
     redirect_location = redirect_location or request.route_path('cloudwatch_alarms')
+    alarm_choices = json.loads(alarm_choices or '{}')
+    existing_alarms = [key for key, val in alarm_choices.items() if key]
+    controller_options_json = BaseView.escape_json(json.dumps({
+        'metric_unit_mapping': metric_unit_mapping,
+        'existing_alarms': existing_alarms,
+    }))
     return dict(
         alarm_form=alarm_form,
         redirect_location=redirect_location,
         modal_size=modal_size,
-        metric_unit_mapping=metric_unit_mapping,
+        controller_options_json=controller_options_json,
     )
 
 
@@ -153,6 +169,7 @@ def keypair_dialogs(context, request, keypair=None, landingpage=False, delete_fo
     """ Modal dialogs for Keypair landing and detail page."""
     return dict(
         keypair=keypair,
+        keypair_name=BaseView.escape_braces(keypair.name) if keypair else '',
         landingpage=landingpage,
         delete_form=delete_form,
     )
@@ -172,6 +189,7 @@ def launchconfig_dialogs(context, request, launch_config=None, in_use=False, lan
     """ Modal dialogs for Launch configurations landing and detail page."""
     return dict(
         launch_config=launch_config,
+        launch_config_name=BaseView.escape_braces(launch_config.name) if launch_config else '',
         in_use=in_use,
         landingpage=landingpage,
         delete_form=delete_form,
@@ -183,6 +201,17 @@ def scalinggroup_dialogs(context, request, scaling_group=None, landingpage=False
     """Modal dialogs for Scaling group landing and detail page."""
     return dict(
         scaling_group=scaling_group,
+        scaling_group_name=BaseView.escape_braces(scaling_group.name) if scaling_group else '',
+        landingpage=landingpage,
+        delete_form=delete_form,
+    )
+
+
+@panel_config('account_dialogs', renderer='../templates/dialogs/account_dialogs.pt')
+def account_dialogs(context, request, account=None, landingpage=False, delete_form=None):
+    """ Modal dialogs for Account landing and detail page."""
+    return dict(
+        account=account,
         landingpage=landingpage,
         delete_form=delete_form,
     )
@@ -195,5 +224,62 @@ def group_dialogs(context, request, group=None, landingpage=False, delete_form=N
         group=group,
         landingpage=landingpage,
         delete_form=delete_form,
+    )
+
+
+@panel_config('role_dialogs', renderer='../templates/dialogs/role_dialogs.pt')
+def role_dialogs(context, request, role=None, landingpage=False, delete_form=None):
+    """ Modal dialogs for Role landing and detail page."""
+    return dict(
+        role=role,
+        landingpage=landingpage,
+        delete_form=delete_form,
+    )
+
+
+@panel_config('image_dialogs', renderer='../templates/dialogs/image_dialogs.pt')
+def image_dialogs(context, request, image=None, image_name_id='', landingpage=False,
+                  deregister_form=None, snapshot_images_registered=0):
+    """ Modal dialogs for Image landing and detail page."""
+    return dict(
+        image=image,
+        image_name_id=image_name_id,
+        landingpage=landingpage,
+        deregister_form=deregister_form,
+        snapshot_images_registered=snapshot_images_registered,
+    )
+
+
+@panel_config('bucket_dialogs', renderer='../templates/dialogs/bucket_dialogs.pt')
+def bucket_dialogs(context, request, bucket=None, landingpage=False, versioning_form=None, delete_form=None):
+    """ Modal dialogs for Bucket landing and detail page."""
+    versioning_status = bucket.get_versioning_status() if bucket else None
+    update_versioning_action = 'enable'  # Buckets that have never enabled versioning return an empty status
+    if versioning_status:
+        versioning_status = versioning_status.get('Versioning', 'Disabled')
+        update_versioning_action = BucketDetailsView.get_versioning_update_action(versioning_status)
+    return dict(
+        bucket=bucket,
+        bucket_name=bucket.name if bucket else '',
+        versioning_status=versioning_status,
+        landingpage=landingpage,
+        versioning_form=versioning_form,
+        delete_form=delete_form,
+        update_versioning_action=update_versioning_action,
+    )
+
+
+@panel_config('bucket_item_dialogs', renderer='../templates/dialogs/bucket_item_dialogs.pt')
+def bucket_item_dialogs(context, request):
+    return dict()
+
+
+@panel_config('create_folder_dialog', renderer='../templates/dialogs/create_folder_dialog.pt')
+def create_folder_dialog(context, request, bucket_name=None, create_folder_form=None):
+    """ Modal dialog creating a folder in a bucket."""
+    return dict(
+        bucket_name=bucket_name,
+        create_folder_form=create_folder_form,
+        folder_name_pattern=FOLDER_NAME_PATTERN,
     )
 

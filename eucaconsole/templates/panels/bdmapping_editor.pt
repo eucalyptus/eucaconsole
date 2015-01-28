@@ -1,8 +1,7 @@
 <!--! Block Device Mapping editor -->
-<div id="bdmapping-editor" class="row controls-wrapper" ng-app="BlockDeviceMappingEditor"
-     ng-controller="BlockDeviceMappingEditorCtrl" ng-init="initBlockDeviceMappingEditor('${bdm_json}')">
+<div id="bdmapping-editor" class="row controls-wrapper" ng-app="BlockDeviceMappingEditor" i18n:domain="eucaconsole"
+     ng-controller="BlockDeviceMappingEditorCtrl" ng-init="initBlockDeviceMappingEditor('${controller_options_json}')">
     <div class="columns" ng-show="bdMapping">
-        <hr />
         <h6 i18n:translate="" class="storage-label">Storage</h6>
         <table class="table">
             <thead>
@@ -16,13 +15,13 @@
                     </th>
                     <th class="delete-on-terminate">
                         <span i18n:translate="" class="hide-for-small">Delete on Terminate</span>
-                        <span i18n:translate="" class="show-for-small"
+                        <span class="show-for-small"
                               title="Delete on terminate" i18n:attributes="title"><i class="fi-trash"></i></span>
                     </th>
                     <th tal:condition="not read_only">&nbsp;</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody ng-cloak="">
                 <tr ng-repeat="(key, val) in bdMapping">
                     <td>
                         <span ng-show="val.is_root">Root</span>
@@ -33,15 +32,17 @@
                     <td>{{ val.snapshot_id }}</td>
                     <td tal:condition="not read_only">
                         <span ng-if="!isEphemeral(val)">
-                            <input class="number" value="{{ val.size }}" required="required" pattern="integer"
-                                   ng-keyup="updateRootDevice($event, key, val.is_root)" ng-show="val.volume_type !== 'ephemeral'" />
+                            <input class="number" value="{{ val.size }}" size="4" required="required" pattern="integer"
+                                   ng-keyup="updateRootDeviceSize($event, key, val.is_root)" ng-show="val.volume_type !== 'ephemeral'" />
                             <small class="error" i18n:translate="">Size is required</small>
                         </span>
                     </td>
-                    <td tal:condition="read_only">{{ val.size }}</td>
-                    <td tal:condition="not read_only">
+                    <td tal:condition="read_only" class="count">{{ val.size }}</td>
+                    <td tal:condition="not read_only" class="count">
                         <span ng-if="!isEphemeral(val)">
-                            <input ng-show="showDOTflag(val)" type="checkbox" ng-checked="val.delete_on_termination === true"/>
+                            <input ng-show="showDOTflag(val)" type="checkbox" ng-checked="val.delete_on_termination === true"
+                                   ng-click="updateRootDeviceDelete($event, key, val.is_root)"
+                                   ng-disabled="disableDOT"/>
                         </span>
                     </td>
                     <td tal:condition="read_only">
@@ -54,9 +55,16 @@
                 </tr>
             </tbody>
         </table>
+        <div class="row" tal:condition="not read_only">
+            <div class="columns subheader" ng-cloak="">
+                <span class="subsection-label" ng-show="bdMapping" i18n:translate="">Add another device</span>
+                <span class="subsection-label" ng-show="bdMapping == undefined" i18n:translate="">Add a device</span>
+                :
+            </div>
+        </div>
         <div class="row" id="new-blockdevice-entry" tal:condition="not read_only">
             <div class="medium-2 columns">
-                <label i18n:translate="">Volume:</label>
+                <label class="left" i18n:translate="">Volume</label>
                 <select name="volume_type" ng-model="newVolumeType">
                     <option value="EBS">EBS</option>
                     <!--! There can be only one ephemeral device in Eucalyptus -->
@@ -67,30 +75,30 @@
                 </select>
             </div>
             <div class="medium-2 columns">
-                <label i18n:translate="">Mapping:</label>
+                <label class="left" i18n:translate="">Mapping</label>
                 <input type="text" name="path" id="new-mapping-path" ng-model="newMappingPath" />
             </div>
             <div class="medium-4 columns" ng-show="newVolumeType !== 'ephemeral'">
-                <label i18n:translate="">Create from snapshot:</label>
+                <label class="left" i18n:translate="">Create from snapshot</label>
                 <select name="snapshot_id" ng-model="newSnapshotID">
-                    <option tal:repeat="choice snapshot_choices" value="${choice[0]}" ng-non-bindable="">${choice[1]}</option>
+                    <option tal:repeat="choice snapshot_choices" value="${choice[0]}">${choice[1]}</option>
                 </select>
             </div>
             <div class="medium-1 columns" ng-show="newVolumeType !== 'ephemeral'">
-                <label i18n:translate="">Size:</label>
+                <label class="left" i18n:translate="">Size</label>
                 <input class="number" id="new-size" ng-model="newSize" />
             </div>
             <div class="medium-3 columns" ng-show="newVolumeType !== 'ephemeral'">
-                <label i18n:translate="">Delete on terminate:</label>
-                <input type="checkbox" name="delete_on_termination"  checked="checked" ng-model="newDOT" />
+                <label class="left" i18n:translate="">Delete on terminate</label>
+                <input style="margin-top:35px;margin-left:-70px;" type="checkbox" name="delete_on_termination"
+                    checked="checked" ng-model="newDOT" ng-disabled="disableDOT"/>
             </div>
         </div>
         <div tal:condition="not read_only">
-            <a class="button round tiny" ng-click="addDevice()" i18n:translate="">
-                Add device
+            <a class="button round tiny" ng-click="addDevice()" i18n:translate="" ng-disabled="isNotValid">
+                Add Device
             </a>
         </div>
-        <hr />
         <textarea id="bdmapping" name="block_device_mapping" class="hidden"></textarea>
     </div>
     <script src="${request.static_path('eucaconsole:static/js/widgets/bdmapping_editor.js')}"></script>

@@ -34,7 +34,7 @@ from pyramid.httpexceptions import HTTPNotFound
 
 from eucaconsole.forms import BaseSecureForm
 from eucaconsole.forms.snapshots import SnapshotForm, DeleteSnapshotForm
-from eucaconsole.views import TaggedItemView
+from eucaconsole.views import TaggedItemView, JSONResponse
 from eucaconsole.views.snapshots import SnapshotsView, SnapshotView, SnapshotsJsonView
 
 from tests import BaseViewTestCase, BaseFormTestCase
@@ -54,9 +54,10 @@ class SnapshotsViewTests(BaseViewTestCase):
         self.assertTrue('/snapshots/json' in view.get('json_items_endpoint'))
 
     def test_snapshots_landing_page_json(self):
-        request = testing.DummyRequest()
+        request = testing.DummyRequest(post=True)
         view = SnapshotsJsonView(request).snapshots_json()
-        self.assertEqual(view.get('results'), [])
+        self.assertEqual(view.__class__, JSONResponse)
+        
 
 
 class SnapshotViewTests(BaseViewTestCase):

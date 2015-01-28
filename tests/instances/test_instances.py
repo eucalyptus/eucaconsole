@@ -33,12 +33,16 @@ from pyramid import testing
 from pyramid.httpexceptions import HTTPNotFound
 
 from eucaconsole.forms import BaseSecureForm
-from eucaconsole.forms.instances import StartInstanceForm, StopInstanceForm, RebootInstanceForm, TerminateInstanceForm
-from eucaconsole.forms.instances import AttachVolumeForm, DetachVolumeForm, LaunchInstanceForm
+from eucaconsole.forms.instances import (
+    StartInstanceForm, StopInstanceForm, RebootInstanceForm, TerminateInstanceForm,
+    AttachVolumeForm, DetachVolumeForm, LaunchInstanceForm, InstanceCreateImageForm,
+    InstancesFiltersForm
+)
+from eucaconsole.i18n import _
 from eucaconsole.views import TaggedItemView
-from eucaconsole.views.instances import InstancesView, InstancesJsonView, InstanceView
+from eucaconsole.views.instances import InstancesView, InstanceView
 
-from tests import BaseViewTestCase, BaseFormTestCase
+from tests import BaseViewTestCase, BaseFormTestCase, Mock
 
 
 class InstancesViewTests(BaseViewTestCase):
@@ -51,6 +55,8 @@ class InstancesViewTests(BaseViewTestCase):
 
     def test_instances_landing_page(self):
         request = testing.DummyRequest()
+        request.session['cloud_type'] = 'none'
+        request.session['role_access'] = True
         view = InstancesView(request).instances_landing()
         self.assertTrue('/instances/json' in view.get('json_items_endpoint'))
 
@@ -61,18 +67,24 @@ class InstanceViewTests(BaseViewTestCase):
     def test_is_tagged_view(self):
         """Instance view should inherit from TaggedItemView"""
         request = testing.DummyRequest()
+        request.session['cloud_type'] = 'none'
+        request.session['role_access'] = True
         view = InstanceView(request)
         self.assertTrue(isinstance(view, TaggedItemView))
 
     def test_missing_instance_view(self):
         """Instance view should return 404 for missing instance"""
         request = testing.DummyRequest()
+        request.session['cloud_type'] = 'none'
+        request.session['role_access'] = True
         view = InstanceView(request).instance_view
         self.assertRaises(HTTPNotFound, view)
 
     def test_instance_update_view(self):
         """Instance update should contain the instance form"""
         request = testing.DummyRequest(post=True)
+        request.session['cloud_type'] = 'none'
+        request.session['role_access'] = True
         view = InstanceView(request).instance_update()
         self.assertTrue(view.get('instance_form') is not None)
 
@@ -132,6 +144,48 @@ class InstanceAttachVolumeFormTestCase(BaseFormTestCase):
         self.assert_required('device')
 
 
+class AttachVolumeDeviceEucalyptusTestCase(BaseFormTestCase):
+    form_class = AttachVolumeForm
+    request = testing.DummyRequest()
+    request.session['cloud_type'] = 'euca'
+
+    def setUp(self):
+        self.form = self.form_class(self.request)
+
+    def test_initial_attach_device_on_eucalyptus(self):
+        instance = Mock()
+        instance.block_device_mapping = {}
+        device = self.form_class.suggest_next_device_name(self.request, instance)
+        self.assertEqual(device, '/dev/vdc')
+
+    def test_next_attach_device_on_eucalyptus(self):
+        instance = Mock()
+        instance.block_device_mapping = {'/dev/vdc': 'foo'}
+        device = self.form_class.suggest_next_device_name(self.request, instance)
+        self.assertEqual(device, '/dev/vdd')
+
+
+class AttachVolumeDeviceAWSTestCase(BaseFormTestCase):
+    form_class = AttachVolumeForm
+    request = testing.DummyRequest()
+    request.session['cloud_type'] = 'aws'
+
+    def setUp(self):
+        self.form = self.form_class(self.request)
+
+    def test_initial_attach_device_on_aws(self):
+        instance = Mock()
+        instance.block_device_mapping = {}
+        device = self.form_class.suggest_next_device_name(self.request, instance)
+        self.assertEqual(device, '/dev/sdf')
+
+    def test_next_attach_device_on_aws(self):
+        instance = Mock()
+        instance.block_device_mapping = {'/dev/sdf': 'foo'}
+        device = self.form_class.suggest_next_device_name(self.request, instance)
+        self.assertEqual(device, '/dev/sdg')
+
+
 class InstanceDetachVolumeFormTestCase(BaseFormTestCase):
     """Detach Volume form on instance page"""
     form_class = DetachVolumeForm
@@ -160,3 +214,66 @@ class InstanceLaunchFormTestCase(BaseFormTestCase):
         self.assert_required('instance_type')
         self.assert_required('securitygroup')
 
+
+class InstanceCreateImageFormTestCase(BaseFormTestCase):
+    form_class = InstanceCreateImageForm
+
+    def setUp(self):
+        self.form = self.form_class(self.request)
+
+    def test_required_fields(self):
+        self.assert_required('name')
+        self.assert_required('s3_bucket')
+        self.assert_required('s3_prefix')
+
+    def test_deprecated_required_validator(self):
+        """Test usage of deprecated validator.Required"""
+        try:
+            from wtforms.validators import Required
+            for name, field in self.form._fields.items():
+                validator = self.get_validator(name, Required)
+                if isinstance(validator, Required):
+                    assert False
+        except ImportError:
+            pass
+
+
+class InstanceLaunchFormTestCaseWithVPCEnabledOnEucalpytus(BaseFormTestCase):
+    form_class = LaunchInstanceForm
+    request = testing.DummyRequest()
+    request.session.update({
+        'cloud_type': 'euca',
+        'supported_platforms': ['VPC'],
+    })
+
+    def setUp(self):
+        self.form = self.form_class(self.request)
+
+    def test_launch_instance_form_vpc_network_choices_with_vpc_enabled_on_eucalyptus(self):
+        self.assertFalse(('None', _(u'No VPC')) in self.form.vpc_network.choices)
+
+
+class InstanceLaunchFormTestCaseWithVPCDisabledOnEucalpytus(BaseFormTestCase):
+    form_class = LaunchInstanceForm
+    request = testing.DummyRequest()
+    request.session.update({
+        'cloud_type': 'euca',
+        'supported_platforms': [],
+    })
+
+    def setUp(self):
+        self.form = self.form_class(self.request)
+
+    def test_launch_instance_form_vpc_network_choices_with_vpc_disabled_on_eucalyptus(self):
+        self.assertTrue(('None', _(u'No VPC')) in self.form.vpc_network.choices)
+
+
+class InstancesFiltersFormTestCaseOnAWS(BaseFormTestCase):
+    form_class = InstancesFiltersForm
+    request = testing.DummyRequest()
+
+    def setUp(self):
+        self.form = self.form_class(self.request, cloud_type='aws')
+
+    def test_instances_filters_form_vpc_id_choices_on_aws(self):
+        self.assertTrue(('None', _(u'No VPC')) in self.form.vpc_id.choices)

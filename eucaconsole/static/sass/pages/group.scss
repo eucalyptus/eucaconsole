@@ -10,14 +10,8 @@
 /* -----------------------------------------
    IAM User Icons
 ----------------------------------------- */
-.iam-user-icon {
-    color: #333;
-    background-color: #cccccc;
-    margin-right: 3px;
-    a {
-        color: white;
-        margin-left: 2px;
-    }
+#users-in-group {
+    @include item-list;
 }
 
 /* -----------------------------------------

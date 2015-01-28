@@ -11,7 +11,18 @@ AWS Services supported
 * EC2
 * Auto Scaling
 * CloudWatch
+* S3
 * IAM
+
+Issue Tracking
+==============
+
+For bug reports, improvement request and general project planning, we use Jira: https://eucalyptus.atlassian.net/
+
+To obtain the latest development source code for the eucalyptus management console, visit
+https://github.com/eucalyptus/eucaconsole.  Pull requests are welcome and appreciated.  By submitting code to the
+eucalyptus management console, you agree that code will be licensed under the 2-clause BSD license.  A copy of
+this license is included in the COPYING file that accompanies the source code.
 
 
 Development environment setup
@@ -19,7 +30,7 @@ Development environment setup
 
 Prerequisites
 -------------
-Prior to installing Pyramid and it's dependencies, you may need to install the following libraries...
+Prior to installing Pyramid and its dependencies, you may need to install the following libraries...
 
 * libevent-dev (required by gevent)
 * openssl (required by M2Crypto)
@@ -27,15 +38,15 @@ Prior to installing Pyramid and it's dependencies, you may need to install the f
 
 Ubuntu:
 
-    `apt-get install openssl build-essential python-dev swig`
+    `apt-get install openssl build-essential python-dev swig memcached libmemcached6`
 
 Fedora:
 
-    `yum install openssl-devel python-devel swig; yum groupinstall 'Development tools'`
+    `yum install openssl-devel python-devel swig memcached libmemcached; yum groupinstall 'Development tools'`
 
 OS X:
 
-Install homebrew, then run `brew install libevent openssl swig`
+Install homebrew, then run `brew install libevent openssl swig libmagic memcached libmemcached`
 
 
 Pyramid Setup
@@ -54,6 +65,8 @@ Sass/Compass Setup
 The CSS files are pre-processed using Sass, so you'll need to set up a Sass-to-CSS watcher to output CSS.
 
 To set up Compass as the file watcher...
+
+::
 
     sudo gem install compass
     cd eucaconsole/static
@@ -126,6 +139,8 @@ The Pyramid Debug Toolbar can be enabled by adding pyramid_debugtoolbar to the a
 
 You may also find it useful to set the logging level to DEBUG in the console.ini config file...
 
+::
+
     [logger_root]
     # ...
     handlers = logfile, screen_debug
@@ -172,6 +187,9 @@ The translations require Babel and lingua, which can be install via `pip install
 
 To generate the translation files, run 'make translations' at the repo root.
 
+To contribute translations, follow the instructions at
+https://github.com/eucalyptus/eucaconsole/wiki/Contributing-Translations
+
 
 Technology Stack
 ================
@@ -191,4 +209,171 @@ Secondary Components
 * Waitress or gunicorn (WSGI server)
 * WTForms (server-side forms and validation)
 
+
+Grunt - JavaScript Task Manager
+===============================
+
+Grunt Setup
+-----------
+* At home directory `./eucaconsole`
+* Install npm if missing: 
+::
+
+    yum install -y npm
+
+* Run 
+::
+
+    npm install
+
+to install npm packages listed in the file `package.json`
+::
+    npm install -g grunt-cli
+
+to allow grunt cli to run
+
+Grunt Task File
+------------------------
+::
+
+    Gruntfile.js
+
+Grunt Commands
+--------------
+* Default:
+::
+
+    grunt
+    
+* Bowercopy:
+::
+
+    grunt bowercopy
+* Karma:
+::
+
+    grunt karma
+    
+* Karma(Single run):
+::
+
+    grunt karma:ci
+
+
+Bower - JavaScript Package Manager
+==================================
+
+Bower Setup
+-----------
+* See Grunt Setup above
+
+Bower Configuration File
+------------------------
+* List the versions of the JS packages
+::
+
+    bower.json
+
+* ex.
+::
+
+    "dependencies": {
+        "angular": "1.2.26",
+        "angular-sanitize": "1.2.26",
+        "angular-mocks": "1.2.26",
+        "jquery": "2.0.3",
+        "jasmine": "2.0.3",
+        "jasmine-jquery": "2.0.5"
+      }
+
+Bowercopy Configuration File
+----------------------------
+* List the destination for the files to be copied after running bower
+::
+
+    Gruntfile.js
+
+* ex.
+::
+
+      bowercopy: {
+          angular: {
+              options: {
+                  destPrefix: 'eucaconsole/static/js/thirdparty/angular'
+              },
+              files: {
+                'angular.min.js': 'angular/angular.min.js',
+                'angular-sanitize.min.js': 'angular-sanitize/angular-sanitize.min.js',
+                'angular-mocks.js': 'angular-mocks/angular-mocks.js'
+              }
+          },
+
+
+Run Bowercopy
+-------------
+* Runs bower to download the JS packages and move the files in place
+::
+
+    grunt bowercopy
+
+
+Jasmine & Karma - JavaScript Unittest & test runner
+===================================================
+
+Jasmine & Karma Setup
+---------------------
+* See Grunt Setup above
+
+
+Karma Configuration File
+------------------------
+::
+
+    karma.conf.js
+
+* ex.
+::
+
+    files: [
+      'templates/panels/*.pt',
+      'static/js/thirdparty/modernizr/custom.modernizr.js',
+      'static/js/thirdparty/jquery/jquery.min.js',
+      'static/js/thirdparty/angular/angular.min.js',
+      'static/js/thirdparty/angular/angular-sanitize.min.js',
+      'static/js/thirdparty/angular/angular-mocks.js',
+      'static/js/thirdparty/jquery/jquery.generateFile.js',
+      'static/js/widgets/notify.js',
+      'static/js/pages/eucaconsole_utils.js',
+      'static/js/thirdparty/jquery/chosen.jquery.min.js',
+      'static/js/thirdparty/jasmine/jasmine-jquery.js',
+      'static/js/pages/custom_filters.js',
+      'static/js/widgets/tag_editor.js',
+      'static/js/widgets/securitygroup_rules.js',
+      'static/js/pages/keypair.js',
+      'static/js/jasmine-spec/SpecHelper.js',
+      'static/js/jasmine-spec/spec_security_group_rules.js',
+      'static/js/jasmine-spec/spec_keypair.js',
+      'static/js/jasmine-spec/spec_tag_editor.js'
+    ],
+
+
+Jasmine Spec File Location
+--------------------------
+::
+
+    ./eucaconsole/static/js/jasmine-spec/
+
+Run Karma
+---------
+::
+
+    grunt karma
+
+Run Karma (Single Run)
+----------------------
+::
+
+    grunt karma:ci
+
+See the wiki page https://github.com/eucalyptus/eucaconsole/wiki/JavaScript-UnitTest-Submit-Guideline for more details.
 

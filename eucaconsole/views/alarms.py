@@ -33,11 +33,11 @@ import simplejson as json
 from boto.ec2.cloudwatch import MetricAlarm
 
 from pyramid.httpexceptions import HTTPFound
-from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
 from ..constants.cloudwatch import METRIC_DIMENSION_NAMES, METRIC_DIMENSION_INPUTS
 from ..forms.alarms import CloudWatchAlarmCreateForm, CloudWatchAlarmDeleteForm
+from ..i18n import _
 from ..models import Notification
 from ..views import LandingPageView, BaseView, JSONResponse
 from . import boto_error_handler
@@ -150,7 +150,7 @@ class CloudWatchAlarmsView(LandingPageView):
 
 class CloudWatchAlarmsJsonView(BaseView):
     """JSON response for CloudWatch Alarms landing page et. al."""
-    @view_config(route_name='cloudwatch_alarms_json', renderer='json', request_method='GET')
+    @view_config(route_name='cloudwatch_alarms_json', renderer='json', request_method='POST')
     def cloudwatch_alarms_json(self):
         with boto_error_handler(self.request):
             items = self.get_items()

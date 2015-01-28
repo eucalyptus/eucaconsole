@@ -55,6 +55,11 @@ AWS_REGIONS = (
         endpoints=dict(ec2='ec2.eu-west-1.amazonaws.com')
     ),
     dict(
+        name='eu-central-1',
+        label='EU (Frankfurt)',
+        endpoints=dict(ec2='ec2.eu-central-1.amazonaws.com')
+    ),
+    dict(
         name='ap-southeast-1',
         label='Asia Pacific (Singapore)',
         endpoints=dict(ec2='ec2.ap-southeast-1.amazonaws.com')
@@ -79,7 +84,7 @@ AWS_REGIONS = (
 
 # List of all landing page route names (used to limit redirect handling for AWS region selection)
 LANDINGPAGE_ROUTE_NAMES = [
-    'groups', 'images', 'instances', 'ipaddresses', 'keypairs', 'launchconfigs',
+    'buckets', 'groups', 'images', 'instances', 'ipaddresses', 'keypairs', 'launchconfigs',
     'scalinggroups', 'securitygroups', 'snapshots', 'users', 'volumes',
 ]
 

@@ -1,0 +1,73 @@
+<!--! S3 bucket/object sharing panel -->
+<div id="s3-sharing-panel" ng-app="S3SharingPanel" i18n:domain="eucaconsole" ng-form="sharingPanelForm"
+     ng-controller="S3SharingPanelCtrl" ng-init="initS3SharingPanel('${controller_options_json}')">
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/s3_sharing_panel.css')}" />
+    <h6 i18n:translate="" class="sharing-label">Sharing</h6>
+    <div tal:condition="object_type == 'bucket'">
+        ${panel('form_field', field=sharing_form.propagate_acls, ng_attrs=dict(model='propagateAcls'), reverse=True)}
+    </div>
+    <div tal:condition="show_caution" tal:omit-tag="">
+        <p i18n:translate="">
+            The sharing options for the selected object(s) have been automatically set to match their bucket.
+            Only adjust these options if you want them to change.
+        </p>
+    </div>
+    <div id="sharing-acls" ng-cloak="">
+        <div class="items">
+            <span class="label radius secondary grantentry" ng-repeat="grant in grantsArray">
+                {{ grant.display_name || grant.id || grant.email_address || grant.uri.split('/').pop() }}: {{ grant.permission }}
+                <a href="#" class="remove" ng-click="removeGrant($index, $event)"
+                   title="Remove permission"><i class="fi-x"></i></a>
+            </span>
+        </div>
+        <div class="subheader">
+            <span class="subsection-label" ng-show="grantsArray.length == 0" i18n:translate="">
+                Add a grantee
+            </span>
+            <span class="subsection-label" ng-show="grantsArray.length" i18n:translate="">
+                Add another grantee
+            </span>
+            :
+        </div>
+        <div id="manual-acl-wrapper">
+            <div ng-show="aclType == 'manual'" class="manual-controls">
+                <div class="row controls-wrapper" id="controls_share_account">
+                    <div class="small-2 columns">
+                        <label class="right">
+                            ${sharing_form.share_account.label.text}&nbsp;<span class="req">*</span>
+                            <span class="helptext-icon" data-tooltip=""
+                                  title="${sharing_form.share_account.help_text}">?</span>
+                        </label>
+                    </div>
+                    <div class="small-10 columns">
+                        <!--! NOTE: We've hard-coded the share_account HTML to allow a custom chosen input -->
+                        <select id="share_account" name="share_account">
+                            <option value="">${account_placeholder_text}</option>
+                            <option tal:repeat="choice grantee_choices" value="${choice[0]}">${choice[1]}</option>
+                        </select>
+                        <small class="error">${sharing_form.share_account_error_msg}</small>
+                    </div>
+                </div>
+                ${panel('form_field', field=sharing_form.share_permissions, leftcol_width=2, rightcol_width=10)}
+                <div class="row controls-wrapper">
+                    <div class="small-10 columns right">
+                        <a class="button round tiny" ng-click="addGrant($event)" id="add-s3acl-btn"
+                           ng-disabled="addAccountBtnDisabled" i18n:translate="">
+                            Add Grantee
+                        </a>
+                    </div>
+                </div>
+                <textarea id="s3-sharing-acl" name="s3_sharing_acl" class="hidden"></textarea>
+            </div>
+        </div>
+    </div>
+    <div id="unsaved-sharing-warning-modal" class="reveal-modal small" data-reveal="">
+        <h3 i18n:translate="">Warning: Unsaved Sharing Entry</h3>
+        <p i18n:translate="">
+            You must click the "Add Account" button in the Sharing section
+            before you submit this for your entry to be included.
+        </p>
+        <a href="#" class="close-reveal-modal">&#215;</a>
+    </div>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/s3_sharing_panel.js')}"></script>
+</div>

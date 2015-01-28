@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en-us" lang="en-us">
+<head>
+<title>Upload file</title>
+</head>
+<body id="bucket_upload_file_ui_context">
+
+
+    <h1 class="title topictitle1">Upload file</h1>
+
+    <p class="shortdesc"> This page allows you to upload a file from your local file system to a folder in one
+        of your buckets and specify sharing attributes and metadata for it.</p>
+
+            <div class="topic task nested1" id="bucket_select_file_ui">
+                <h2 class="title topictitle2">Select file(s)</h2>
+
+                <div class="body taskbody">
+                    <ol class="ol steps"><li class="li step stepexpand">
+                            <span class="ph cmd">Click the <span class="ph uicontrol">Choose Files</span> button.</span>
+                            <div class="itemgroup stepresult">A window opens prompting you to select a file from your local file system. </div>
+                        </li>
+<li class="li step stepexpand">
+                                <span class="ph cmd">Navigate to the location of the file you want to upload.</span>
+                            </li>
+<li class="li step stepexpand">
+                                <span class="ph cmd">Select the file to upload or to select multiple files, hold down the <span class="ph uicontrol">[Ctrl]</span> key while selecting files.</span>
+                                <div class="itemgroup info">The file size limit is 5 TB.</div>
+                            </li>
+<li class="li step stepexpand">
+                                <span class="ph cmd">Click <span class="ph uicontrol">Open</span> from the file chooser window.</span>
+                                <div class="itemgroup stepresult">The selected file(s) display under the <span class="ph uicontrol">Choose Files</span> button. 
+                                    To remove selected file(s) or add more, start over by repeating all the above steps.</div>
+                            </li>
+<li class="li step stepexpand">
+                            <span class="ph cmd"> You can optionally specify advanced options by clicking the
+                                <span class="ph uicontrol">Advanced</span> link and refer to the
+                                next section for further details. </span>
+                        </li>
+</ol>
+
+                </div>
+
+            </div>
+
+                <div class="topic task nested1" id="bucket_upload_file_ui_advanced">
+                    <h2 class="title topictitle2">Specify Advanced Options</h2>
+
+                    <p class="shortdesc">You can optionally specify sharing parameters or apply metadata to
+            the object. </p>
+
+                 
+    <div class="topic task nested2" id="object_detail_ui_edit_sharing">
+        <h3 class="title topictitle3">Edit the sharing settings</h3>
+
+        <div class="body taskbody">
+            <div class="section context">The sharing options for the selected object(s) have been automatically set to
+                    match their bucket. Adjust these options if necessary.</div>
+
+            <ol class="ol steps"><li class="li step">
+                    <span class="ph cmd">To edit the sharing settings, select from the following:</span>
+                    <ol type="a" class="ol substeps">
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd">Select <span class="ph uicontrol">Public</span> to allow everyone access to your
+                                object.</span>
+                            <div class="itemgroup info"><div class="note important"><span class="importanttitle">Important:</span> Making an object (or file) public means anyone who has the URL 
+                                can access the object, even if they are not authenticated users.</div>
+</div>
+                        </li>
+
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd">Select <span class="ph uicontrol">Private</span> to allow only those
+                                specified to access your object.</span>
+                            <div class="itemgroup stepresult">The Share with others section displays only if <span class="ph uicontrol">Private</span> 
+                                was chosen as the Sharing option for this object.</div>
+                        </li>
+
+                    </ol>
+
+                </li>
+<li class="li step">
+                    <span class="ph cmd">Specify access control parameters by performing the following:</span>
+                    <ol type="a" class="ol substeps">
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd">Select <span class="ph uicontrol">Use canned ACL</span> to use a
+                                pre-defined Access Control List established by your
+                                organization. </span>
+                            
+                            <div class="itemgroup info">
+                                <div class="note note"><span class="notetitle">Note:</span> For more information about ACL, go to <a class="xref" href="http://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html" target="_blank"> 
+                                    Access Control List (ACL) Overview.</a></div>
+
+                            </div>
+                        </li>
+
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd">To change to another pre-defined ACL, select an ACL from the <span class="ph uicontrol">Use canned ACL</span> drop-down list box.</span>
+                        </li>
+
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd">Select <span class="ph uicontrol">Manually define sharing</span> to grant only specific accounts certain 
+                                levels of access to your object.</span>
+                            <div class="itemgroup info">
+                                <div class="note note"><span class="notetitle">Note:</span> In order to manually define sharing with other accounts, specify that account with an account ID 
+                                    or an email address associated with a user in the account. To obtain an account ID, coordinate with the owners
+                                    or administrators of those accounts. Otherwise, specifying an email address of a user in the account will 
+                                    effectively grant access to everyone in that account.</div>
+
+                                <div class="note note"><span class="notetitle">Note:</span> You can remove an existing account and permission pair by clicking on the
+                                    <span class="ph uicontrol">x</span> next to the pair listed under the
+                                    <span class="ph uicontrol">Manually define sharing</span> option.</div>
+
+                            </div>
+                        </li>
+
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd">Enter the 12-digit account ID or email address of a user in the account in the <span class="ph uicontrol">Account</span> field. </span>
+                        </li>
+
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd">Select the appropriate level of access for the account by
+                                selecting it from the <span class="ph uicontrol">Permissions</span>
+                                drop-down list box.</span>
+                        </li>
+
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd">Click the <span class="ph uicontrol">Add Account</span> or <span class="ph uicontrol">Add another account</span> button
+                                (if one or more accounts were already present) to add it
+                                to the list of accounts with which your object is shared.</span>
+                        </li>
+
+                    </ol>
+
+                </li>
+</ol>
+
+        </div>
+
+    </div>
+
+        <div class="topic task nested2" id="object_detail_ui_edit_metadata">
+            <h3 class="title topictitle3">Edit object metadata</h3>
+
+            <div class="body taskbody">
+                <div class="section context">Each object has a set of attributes. These attributes identify the object by
+                    its key and contain metadata about its size, creation and modified dates, encoding
+                    type, encryption, and other pieces of information that allow S3 to process it.
+                    Metadata can be system-defined or user-defined. <p class="p">For more information about object
+                        metadata, go to <a class="xref" href="http://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html" target="_blank">
+                            Object Key and Metadata</a>.</p>
+<p class="p">To edit object metadata, you can
+                                delete existing metadata or add a metadata pair:</p>
+</div>
+
+                <ol class="ol steps"><li class="li step">
+                        <span class="ph cmd">To add a metadata pair:</span>
+                        <ol type="a" class="ol substeps">
+                            <li class="li substep">
+                                <span class="ph cmd">Select a key from the <span class="ph uicontrol">Key</span> drop-down list box
+                                    or define your own key by typing it in the <span class="ph uicontrol">Key</span> 
+                                    search field and click <span class="ph uicontrol">Add metadata</span> from the list box.</span>
+                            </li>
+
+                            <li class="li substep">
+                                <span class="ph cmd">Select a value for the selected key from the <span class="ph uicontrol">Value</span> drop-down list box.</span>
+                            </li>
+
+                            <li class="li substep">
+                                <span class="ph cmd">Click <span class="ph uicontrol">Add Metadata Pair</span> to acknowledge
+                                    the message and continue.</span>
+                            </li>
+
+                        </ol>
+
+                    </li>
+<li class="li step">
+                        <span class="ph cmd">To remove an existing metadata pair, click the <span class="ph uicontrol">x</span> 
+                            next to the pair listed under the Metadata heading.</span>
+                    </li>
+</ol>
+
+            </div>
+
+        </div>
+
+                </div>
+
+            <div class="topic task nested1" id="upload_file_ui_finish">
+                <h2 class="title topictitle2">Begin the Upload</h2>
+
+                
+                <div class="body taskbody"><p class="shortdesc"/>
+
+                    <ol class="ol steps"><li class="li step stepexpand">
+                        <span class="ph cmd">When done, click the <span class="ph uicontrol">Upload File(s)</span> button to upload the select file(s), 
+                            or click <span class="ph uicontrol">Cancel</span> to abandon the operation.</span>
+                        <div class="itemgroup stepresult">A confirmation dialog box opens if you proceed to upload.</div>
+                    </li>
+<li class="li step stepexpand">
+                        <span class="ph cmd">Click <span class="ph uicontrol">OK, Let's Do This Now!</span> to confirm and begin uploading the file(s).</span>
+                        <div class="itemgroup stepresult">A new window opens, displaying the status of the upload with a
+                        progress indicator.</div>
+                    </li>
+<li class="li step stepexpand">
+                        <span class="ph cmd">Stay on the page to complete the upload process.</span>
+                    </li>
+<li class="li step stepexpand">
+                        <span class="ph cmd">Otherwise, click <span class="ph uicontrol">Cancel Upload</span> or navigate away from this page to cancel the uploading process.</span>
+                        <div class="itemgroup stepresult">Any files that do not upload completely during the cancel operation are cleaned up automatically. 
+                            Those that have already uploaded remain in the bucket.</div>
+                    </li>
+</ol>
+
+            </div>
+
+        </div>
+
+
+</body>
+</html>

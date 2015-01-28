@@ -34,12 +34,30 @@ from operator import itemgetter
 
 import simplejson as json
 
-from wtforms.fields import IntegerField
+from boto.s3.bucket import Bucket
+from boto.s3.key import Key
+
+from wtforms.fields import IntegerField, BooleanField
 from wtforms.validators import Length
 from pyramid_layout.panel import panel_config
 
 from ..constants.securitygroups import RULE_PROTOCOL_CHOICES, RULE_ICMP_CHOICES
+from ..i18n import _
 from ..views import BaseView
+from ..views.buckets import DELIMITER, BucketItemDetailsView
+
+
+def get_object_type(bucket_object):
+    """
+    Detect object type
+    :return: object type (one of 'bucket', 'folder', 'object')
+    """
+    if bucket_object is None:
+        return ''
+    object_type = 'bucket' if isinstance(bucket_object, Bucket) else 'object'
+    if object_type == 'object' and bucket_object.size == 0 and DELIMITER in bucket_object.name:
+        object_type = 'folder'
+    return object_type
 
 
 @panel_config('top_nav', renderer='../templates/panels/top_nav.pt')
@@ -60,15 +78,15 @@ def landingpage_filters(context, request, filters_form=None):
 
 @panel_config('form_field', renderer='../templates/panels/form_field_row.pt')
 def form_field_row(context, request, field=None, reverse=False, leftcol_width=4, rightcol_width=8,
-                   inline='', ng_attrs=None, **kwargs):
+                   inline=True, ng_attrs=None, **kwargs):
     """ Widget for a singe form field row.
         The left/right column widths are Zurb Foundation grid units.
             e.g. leftcol_width=3 would set column for labels with a wrapper of <div class="small-3 columns">...</div>
         Pass any HTML attributes to this widget as keyword arguments.
-            e.g. ${panel('form_field', field=the_field, readonly='readonly')}
+            e.g. ${panel('form_field', field=the_field)}
     """
     html_attrs = {}
-    error_msg = kwargs.get('error_msg') or getattr(field, 'error_msg', None) 
+    error_msg = kwargs.get('error_msg') or getattr(field, 'error_msg', None)
 
     # Add required="required" HTML attribute to form field if any "required" validators
     if field.flags.required:
@@ -87,6 +105,10 @@ def form_field_row(context, request, field=None, reverse=False, leftcol_width=4,
         html_attrs['type'] = 'number'  # Use input type="number" for IntegerField inputs
         html_attrs['min'] = kwargs.get('min', 0)
 
+    checkbox = False
+    if isinstance(field, BooleanField):
+        checkbox = True
+
     # Add any passed kwargs to field's HTML attributes
     for key, value in kwargs.items():
         html_attrs[key] = value
@@ -100,7 +122,7 @@ def form_field_row(context, request, field=None, reverse=False, leftcol_width=4,
             html_attrs['ng-{0}'.format(ngkey)] = ngvalue
 
     return dict(
-        field=field, error_msg=error_msg, html_attrs=html_attrs, inline=inline, 
+        field=field, error_msg=error_msg, html_attrs=html_attrs, inline=inline, checkbox=checkbox,
         leftcol_width=leftcol_width, rightcol_width=rightcol_width, reverse=reverse
     )
 
@@ -111,13 +133,15 @@ def tag_editor(context, request, tags=None, leftcol_width=4, rightcol_width=8, s
         Usage example (in Chameleon template): ${panel('tag_editor', tags=security_group.tags)}
     """
     tags = tags or {}
-    tags_json = BaseView.escape_json(json.dumps(tags))
+    controller_options_json = BaseView.escape_json(json.dumps({
+        'tags': tags,
+        'show_name_tag': show_name_tag,
+    }))
     return dict(
-        tags=tags,
-        tags_json=tags_json,
+        controller_options_json=controller_options_json,
+        show_name_tag=show_name_tag,
         leftcol_width=leftcol_width,
         rightcol_width=rightcol_width,
-        show_name_tag=show_name_tag,
     )
 
 
@@ -150,23 +174,42 @@ def autoscale_tag_editor(context, request, tags=None, leftcol_width=2, rightcol_
             value=tag.value,
             propagate_at_launch=tag.propagate_at_launch,
         ))
-    tags_json = BaseView.escape_json(json.dumps(tags_list))
-    return dict(tags=tags, tags_json=tags_json, leftcol_width=leftcol_width, rightcol_width=rightcol_width)
+    controller_options_json = BaseView.escape_json(json.dumps({
+        'tags_list': tags_list,
+    }))
+    return dict(
+        controller_options_json=controller_options_json,
+        leftcol_width=leftcol_width,
+        rightcol_width=rightcol_width,
+    )
 
 
 @panel_config('securitygroup_rules', renderer='../templates/panels/securitygroup_rules.pt')
-def securitygroup_rules(context, request, rules=None, groupnames=None, leftcol_width=3, rightcol_width=9):
+def securitygroup_rules(context, request, rules=None, rules_egress=None, leftcol_width=3, rightcol_width=9):
     """ Security group rules panel.
         Usage example (in Chameleon template): ${panel('securitygroup_rules', rules=security_group.rules)}
     """
-    groupnames = groupnames or []
     rules = rules or []
     rules_list = []
     for rule in rules:
+        grants = []
+        for g in rule.grants:
+            grants.append(
+                dict(name=BaseView.escape_braces(g.name), owner_id=g.owner_id, group_id=g.group_id, cidr_ip=g.cidr_ip)
+            )
+        rules_list.append(dict(
+            ip_protocol=rule.ip_protocol,
+            from_port=rule.from_port,
+            to_port=rule.to_port,
+            grants=grants,
+        ))
+    rules_egress = rules_egress or []
+    rules_egress_list = []
+    for rule in rules_egress:
         grants = [
             dict(name=g.name, owner_id=g.owner_id, group_id=g.group_id, cidr_ip=g.cidr_ip) for g in rule.grants
         ]
-        rules_list.append(dict(
+        rules_egress_list.append(dict(
             ip_protocol=rule.ip_protocol,
             from_port=rule.from_port,
             to_port=rule.to_port,
@@ -175,15 +218,21 @@ def securitygroup_rules(context, request, rules=None, groupnames=None, leftcol_w
 
     # Sort rules and choices
     rules_sorted = sorted(rules_list, key=itemgetter('from_port'))
+    rules_egress_sorted = sorted(rules_egress_list, key=itemgetter('from_port'))
     icmp_choices_sorted = sorted(RULE_ICMP_CHOICES, key=lambda tup: tup[1])
+    controller_options_json = BaseView.escape_json(json.dumps({
+        'rules_array': rules_sorted,
+        'rules_egress_array': rules_egress_sorted,
+        'json_endpoint': request.route_path('securitygroups_json'),
+        'protocols_json_endpoint': request.route_path('internet_protocols_json'),
+    }))
+    remote_addr=BaseView.get_remote_addr(request)
 
     return dict(
-        rules=rules_sorted,
-        groupnames=groupnames,
-        rules_json=BaseView.escape_json(json.dumps(rules_list)),
         protocol_choices=RULE_PROTOCOL_CHOICES,
         icmp_choices=icmp_choices_sorted,
-        remote_addr=getattr(request, 'remote_addr', ''),
+        controller_options_json=controller_options_json,
+        remote_addr=remote_addr,
         leftcol_width=leftcol_width,
         rightcol_width=rightcol_width,
     )
@@ -200,7 +249,8 @@ def securitygroup_rules_preview(context, request, leftcol_width=3, rightcol_widt
 
 
 @panel_config('bdmapping_editor', renderer='../templates/panels/bdmapping_editor.pt')
-def bdmapping_editor(context, request, image=None, launch_config=None, snapshot_choices=None, read_only=False):
+def bdmapping_editor(context, request, image=None, launch_config=None, snapshot_choices=None,
+                     read_only=False, disable_dot=False):
     """ Block device mapping editor (e.g. for Launch Instance page).
         Usage example (in Chameleon template): ${panel('bdmapping_editor', image=image, snapshot_choices=choices)}
     """
@@ -210,7 +260,7 @@ def bdmapping_editor(context, request, image=None, launch_config=None, snapshot_
         bdm_object = image.block_device_mapping
         for key, device in bdm_object.items():
             bdm_dict[key] = dict(
-                is_root = True if get_root_device_name(image)==key else False,
+                is_root=True if get_root_device_name(image) == key else False,
                 virtual_name=device.ephemeral_name,
                 snapshot_id=device.snapshot_id,
                 size=device.size,
@@ -223,14 +273,24 @@ def bdmapping_editor(context, request, image=None, launch_config=None, snapshot_
                 continue
             ebs = bdm.ebs
             bdm_dict[bdm.device_name] = dict(
-                is_root = False,  # because we can't redefine root in a launch config
+                is_root=False,  # because we can't redefine root in a launch config
                 virtual_name=bdm.virtual_name,
                 snapshot_id=getattr(ebs, 'snapshot_id', None),
                 size=getattr(ebs, 'volume_size', None),
                 delete_on_termination=True,
             )
-    bdm_json = json.dumps(bdm_dict)
-    return dict(image=image, snapshot_choices=snapshot_choices, bdm_json=bdm_json, read_only=read_only)
+    controller_options_json = BaseView.escape_json(json.dumps({
+        'bd_mapping': bdm_dict,
+        'disable_dot': disable_dot,
+        'snapshot_size_json_endpoint': request.route_path('snapshot_size_json', id='_id_'),
+    }))
+    return dict(
+        image=image,
+        snapshot_choices=snapshot_choices,
+        controller_options_json=controller_options_json,
+        read_only=read_only,
+        disable_dot=disable_dot,
+    )
 
 
 def get_root_device_name(img):
@@ -239,28 +299,33 @@ def get_root_device_name(img):
 
 
 @panel_config('image_picker', renderer='../templates/panels/image_picker.pt')
-def image_picker(context, request, image=None, images_json_endpoint=None, filters_form=None,
+def image_picker(context, request, image=None, filters_form=None,
                  maxheight='800px', owner_choices=None, prefix_route='instance_create'):
     """ Reusable Image picker widget (e.g. for Launch Instance page, step 1).
         Usage example (in Chameleon template): ${panel('image_picker')}
     """
+    controller_options_json = BaseView.escape_json(json.dumps({
+        'cloud_type': request.session.get('cloud_type'),
+        'images_json_endpoint': request.route_path('images_json')
+    }))
     return dict(
         image=image,
         filters_form=filters_form,
-        images_json_endpoint=images_json_endpoint,
         maxheight=maxheight,
         owner_choices=owner_choices,
         prefix_route=prefix_route,
+        controller_options_json=controller_options_json,
     )
 
 
 @panel_config('policy_generator', renderer='../templates/policies/policy_generator.pt')
-def policy_generator(context, request, policy_actions=None, create_form=None, resource_choices=None):
+def policy_generator(context, request, policy_actions=None, create_form=None, resource_choices=None, resource_type=''):
     """IAM Policy generator"""
     policy_actions = policy_actions or {}
     resource_choices = resource_choices or {}
     return dict(
         policy_actions=policy_actions,
+        resource_type=resource_type,
         create_form=create_form,
         instance_choices=resource_choices.get('instances'),
         image_choices=resource_choices.get('images'),
@@ -274,11 +339,12 @@ def policy_generator(context, request, policy_actions=None, create_form=None, re
 
 
 @panel_config('quotas_panel', renderer='../templates/users/quotas.pt')
-def quotas_panel(context, request, quota_form=None, quota_err=None):
+def quotas_panel(context, request, quota_form=None, quota_err=None, in_user=True):
     """quota form for 2 different user pages."""
     return dict(
         quota_form=quota_form,
         quota_err=quota_err,
+        in_user=in_user,
     )
 
 
@@ -287,3 +353,61 @@ def securitygroup_rules_landingpage(context, request, tile_view=False):
     return dict(
         tile_view=tile_view,
     )
+
+
+@panel_config('securitygroup_rules_egress_landingpage',
+              renderer='../templates/panels/securitygroup_rules_egress_landingpage.pt')
+def securitygroup_rules_egress_landingpage(context, request, tile_view=False):
+    return dict(
+        tile_view=tile_view,
+    )
+
+
+@panel_config('s3_sharing_panel', renderer='../templates/panels/s3_sharing_panel.pt')
+def s3_sharing_panel(context, request, bucket_object=None, sharing_form=None, show_caution=False):
+    grants_list = []
+    if bucket_object is not None:
+        for grant in bucket_object.get_acl().acl.grants:
+            grants_list.append(dict(
+                id=grant.id,
+                display_name=grant.display_name,
+                permission=grant.permission,
+                grant_type=grant.type,
+                uri=grant.uri,
+            ))
+    grantee_choices = [
+        ('http://acs.amazonaws.com/groups/global/AllUsers', _(u'all users')),
+        ('http://acs.amazonaws.com/groups/global/AuthenticatedUsers', _(u'authenticated users')),
+    ]
+    if isinstance(bucket_object, Key):
+        bucket_owner_id = bucket_object.bucket.get_acl().owner.id
+        grantee_choices.append(
+            (bucket_owner_id, _('bucket owner'))
+        )
+    controller_options_json = BaseView.escape_json(json.dumps({
+        'grants': grants_list,
+        'create_option_text': _(u'Press enter to select')
+    }))
+    return dict(
+        bucket_object=bucket_object,
+        object_type=get_object_type(bucket_object),
+        sharing_form=sharing_form,
+        show_caution=show_caution,
+        grantee_choices=grantee_choices,
+        account_placeholder_text=_(u'Select or type to enter account/user'),
+        controller_options_json=controller_options_json,
+    )
+
+
+@panel_config('s3_metadata_editor', renderer='../templates/panels/s3_metadata_editor.pt')
+def s3_metadata_editor(context, request, bucket_object=None, metadata_form=None):
+    """ S3 object metadata editor panel"""
+    metadata = BucketItemDetailsView.get_extended_metadata(bucket_object)
+    metadata_json = BaseView.escape_json(json.dumps(metadata))
+    return dict(
+        metadata_json=metadata_json,
+        metadata_form=metadata_form,
+        metadata_key_create_option_text=_(u'Add Metadata'),
+        metadata_key_no_results_text=_(u'Click below to add the new key'),
+    )
+

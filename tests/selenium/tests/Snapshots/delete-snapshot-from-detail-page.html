@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="http://10.111.101.112:8888/" />
+<title>delete-snapshot-from-detail-page</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">delete-snapshot-from-detail-page</td></tr>
+</thead><tbody>
+<tr>
+	<td>setSpeed</td>
+	<td>500</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertVisible</td>
+	<td>id=resource-menu-dashboard</td>
+	<td></td>
+</tr>
+<tr>
+	<td>setTimeout</td>
+	<td>200000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=resource-menu-dashboard</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForVisible</td>
+	<td>css=#snapshots &gt; div.tile &gt; div.content &gt; a &gt; i.icon</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=#snapshots &gt; div.tile &gt; div.content &gt; a &gt; i.icon</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForVisible</td>
+	<td>id=refresh-btn</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertVisible</td>
+	<td>link=${snapshot_name} (${snapshot_id})</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForVisible</td>
+	<td>//span/a[@id=&quot;table-item-dropdown_${snapshot_id}&quot;]/i</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//span/a[@id=&quot;table-item-dropdown_${snapshot_id}&quot;]/i</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAt</td>
+	<td>//ul[@id=&quot;item-dropdown_${snapshot_id}&quot;]/li[1]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForVisible</td>
+	<td>css=span.button.dropdown</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=span.button.dropdown</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=delete-snapshot-action</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=#delete-snapshot-modal &gt; h3</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertText</td>
+	<td>css=b</td>
+	<td>${snapshot_name} (${snapshot_id})</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=delete_snapshot_submit_button</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>id=notifications</td>
+	<td>breadcrumbs</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${breadcrumbs}</td>
+	<td></td>
+</tr>
+</tbody></table>
+</body>
+</html>

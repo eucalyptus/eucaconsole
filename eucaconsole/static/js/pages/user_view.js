@@ -6,8 +6,8 @@
 
 
 // user view page includes the User Editor editor
-angular.module('UserView', ['PolicyList'])
-    .controller('UserViewCtrl', function ($scope, $http) {
+angular.module('UserView', ['PolicyList', 'Quotas', 'EucaConsoleUtils'])
+    .controller('UserViewCtrl', function ($scope, $http, eucaUnescapeJson, eucaHandleError) {
         $scope.disable_url = '';
         $scope.allUsersRedirect = '';
         $scope.form = $('#user-update-form');
@@ -17,6 +17,10 @@ angular.module('UserView', ['PolicyList'])
         $scope.elb_expanded = false;
         $scope.iam_expanded = false;
         $scope.currentTab = 'general-tab';
+        $scope.isSubmitted = false;
+        $scope.isNotChanged = true;
+        $scope.pendingModalID = '';
+        $scope.unsavedChangesWarningModalLeaveCallback = null;
         $scope.toggleEC2Content = function () {
             $scope.ec2_expanded = !$scope.ec2_expanded;
         };
@@ -32,37 +36,114 @@ angular.module('UserView', ['PolicyList'])
         $scope.toggleIAMContent = function () {
             $scope.iam_expanded = !$scope.iam_expanded;
         };
-        $scope.clickTab = function ($event, tab){
-           $scope.currentTab = tab; 
-           $event.preventDefault();
+        $scope.toggleTab = function (tab) {
+            $(".tabs").children("dd").each(function() {
+                var id = $(this).find("a").attr("href").substring(1);
+                var $container = $("#" + id);
+                $(this).removeClass("active");
+                $container.removeClass("active");
+                if (id == tab || $container.find("#" + tab).length) {
+                    $(this).addClass("active");
+                    $container.addClass("active");
+                    $scope.currentTab = id; // Update the currentTab value for the help display
+                    $scope.$broadcast('updatedTab', $scope.currentTab);
+                }
+             });
         };
-        $scope.initController = function(user_name, disable_url, allRedirect, delete_url) {
-            $scope.userName = user_name;
-            $scope.disable_url = disable_url;
-            $scope.allUsersRedirect = allRedirect;
-            $('#delete-user-form').attr('action', delete_url);
+        $scope.clickTab = function ($event, tab){
+            $event.preventDefault();
+            // If there exists unsaved changes, open the wanring modal instead
+            if ($scope.isNotChanged === false) {
+                $scope.openModalById('unsaved-changes-warning-modal');
+                $scope.unsavedChangesWarningModalLeaveCallback = function() {
+                    $scope.isNotChanged = true;
+                    $scope.toggleTab(tab);
+                    $('#unsaved-changes-warning-modal').foundation('reveal', 'close');
+                };
+                return;
+            } 
+            $scope.toggleTab(tab);
+        };
+        $scope.initController = function(optionsJson) {
+            var options = JSON.parse(eucaUnescapeJson(optionsJson));
+            $scope.userName = options['user_name'];
+            $scope.disable_url = options['user_disable_url'];
+            $scope.allUsersRedirect = options['all_users_redirect'];
+            $('#delete-user-form').attr('action', options['user_delete_url']);
             $scope.setFocus();
+            $scope.setWatch();
             $scope.setDropdownMenusListener();
             $scope.adjustTab();
         };
         $scope.adjustTab = function() {
-            var idx = document.URL.indexOf("?");
-            if (idx != -1) {
-                var hash = document.URL.substring(idx + 5); // Count the index for '?tab=', thus + 5
-                if (hash == '') return;
-                $(".tabs").children("dd").each(function() {
-                    var id = $(this).find("a").attr("href").substring(1);
-                    var $container = $("#" + id);
-                    $(this).removeClass("active");
-                    $container.removeClass("active");
-                    if (id == hash || $container.find("#" + hash).length) {
-                        $(this).addClass("active");
-                        $container.addClass("active");
-                        $scope.currentTab = id;    // Update the currentTab value for the help display
-                    }
-                });
+            var hash = $scope.currentTab;
+            var matches = document.URL.match(/tab=([\w|-]+)/);
+            if (matches != null && matches.length > 0) {
+                if(matches[1] == 'general-tab' || matches[1] == 'security-tab' || matches[1] == 'quotas-tab'){
+                    hash = matches[1];
+                }
+            }
+            $scope.toggleTab(hash);
+        };
+        $scope.openModalById = function (modalID) {
+            var modal = $('#' + modalID);
+            modal.foundation('reveal', 'open');
+            modal.find('h3').click();  // Workaround for dropdown menu not closing
+            // Clear the pending modal ID if opened
+            if ($scope.pendingModalID === modalID) {
+                $scope.pendingModalID = '';
             }
         };
+        $scope.setWatch = function() {
+            // Monitor the action menu click
+            $(document).on('click', 'a[id$="action"]', function (event) {
+                // Ingore the action if the link has ng-click or href attribute defined
+                if (this.getAttribute('ng-click')) {
+                    return;
+                } else if (this.getAttribute('href') && this.getAttribute('href') !== '#') {
+                    return;
+                }
+                // the ID of the action link needs to match the modal name
+                var modalID = this.getAttribute('id').replace("-action", "-modal");
+                // If there exists unsaved changes, open the wanring modal instead
+                if ($scope.isNotChanged === false) {
+                    $scope.pendingModalID = modalID;
+                    $scope.openModalById('unsaved-changes-warning-modal');
+                    $scope.unsavedChangesWarningModalLeaveCallback = function() {
+                        $scope.openModalById($scope.pendingModalID);
+                    };
+                    return;
+                } 
+                $scope.openModalById(modalID);
+            });
+            // Leave button is clicked on the warning unsaved changes modal
+            $(document).on('click', '#unsaved-changes-warning-modal-stay-button', function () {
+                $('#unsaved-changes-warning-modal').foundation('reveal', 'close');
+            });
+            // Stay button is clicked on the warning unsaved changes modal
+            $(document).on('click', '#unsaved-changes-warning-modal-leave-link', function () {
+                $scope.unsavedChangesWarningModalLeaveCallback();
+            });
+            // Turn "isSubmiited" flag to true when a submit button is clicked on the page
+            $('form[id!="euca-logout-form"]').on('submit', function () {
+                $scope.isSubmitted = true;
+            });
+            // Conditions to check before navigate away
+            window.onbeforeunload = function(event) {
+                if ($scope.isSubmitted === true) {
+                   // The action is "submit". OK to proceed
+                   return;
+                }else if ($scope.isNotChanged === false) {
+                    // Warn the user about the unsaved changes
+                    return $('#warning-message-unsaved-changes').text();
+                }
+                return;
+            };
+            // Do not perfom the unsaved changes check if the cancel link is clicked
+            $(document).on('click', '.cancel-link', function(event) {
+                window.onbeforeunload = null;
+            });
+        }; 
         $scope.setDropdownMenusListener = function () {
             var modals = $('[data-reveal]');
             modals.on('open', function () {
@@ -75,6 +156,8 @@ angular.module('UserView', ['PolicyList'])
         $scope.setFocus = function () {
             $(document).on('ready', function(){
                 $('.tabs').find('a').get(0).focus();
+                // Prevent change password confirmation input from being disabled on IE
+                $('#password').removeAttr('maxlength');
             });
             $(document).on('opened', '[data-reveal]', function () {
                 var modal = $(this);
@@ -111,38 +194,32 @@ angular.module('UserView', ['PolicyList'])
                 }
               }).
               error(function (oData, status) {
-                var errorMsg = oData['message'] || '';
-                Notify.failure(errorMsg);
+                eucaHandleError(oData, status);
               });
             $('#disable-user-modal').foundation('reveal', 'close');
         };
     })
-    .controller('UserUpdateCtrl', function($scope, $http, $timeout) {
-        $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-        $scope.jsonEndpoint = '';
-        $scope.initController = function (jsonEndpoint) {
-            $scope.jsonEndpoint = jsonEndpoint;
+    .controller('UserUpdateCtrl', function($scope) {
+        $scope.isUserInfoNotChanged = true;
+        $scope.initController = function () {
+            $scope.setWatch();
         };
-        $scope.submit = function($event) {
-            var data = $($event.target).serialize();
-            $http({method:'POST', url:$scope.jsonEndpoint, data:data,
-                   headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
-              success(function(oData) {
-                var results = oData ? oData.results : [];
-                // could put data back into form, but form already contains changes
-                if (oData.error == undefined) {
-                    Notify.success(oData.message);
-                } else {
-                    Notify.failure(oData.message);
+        $scope.setWatch = function () {
+            $scope.$watch('isUserInfoNotChanged', function() {
+                $scope.$parent.isNotChanged = $scope.isUserInfoNotChanged;
+            });
+            $scope.$on('updatedTab', function(event, tab) {
+                if (tab === 'general-tab'){
+                    $scope.$parent.isNotChanged = $scope.isUserInfoNotChanged;
                 }
-              }).
-              error(function (oData, status) {
-                var errorMsg = oData['message'] || '';
-                Notify.failure(errorMsg);
-              });
+            }); 
+            $(document).on('input', '#user-update-form input[type="text"]', function () {
+                $scope.isUserInfoNotChanged = false;
+                $scope.$apply();
+            });
         };
     })
-    .controller('UserPasswordCtrl', function($scope, $http, $timeout) {
+    .controller('UserPasswordCtrl', function($scope, $http, $timeout, eucaHandleError) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.jsonRandomEndpoint = '';
         $scope.jsonDeleteEndpoint = '';
@@ -150,6 +227,7 @@ angular.module('UserView', ['PolicyList'])
         $scope.getFileEndpoint = '';
         $scope.data = '';
         $scope.has_password = false;
+        $scope.isPasswordNotChanged = true;
         $scope.initController = function (jsonRandomEndpoint, jsonDeleteEndpoint, jsonChangeEndpoint, getFileEndpoint, has_password) {
             $scope.jsonRandomEndpoint = jsonRandomEndpoint;
             $scope.jsonDeleteEndpoint = jsonDeleteEndpoint;
@@ -160,8 +238,16 @@ angular.module('UserView', ['PolicyList'])
             // add password strength meter to first new password field
             newPasswordForm.after("<hr id='password-strength'/><span id='password-word'></span>");
             $('#password-strength').attr('class', "password_none");
-            newPasswordForm.on('keypress', function () {
+            newPasswordForm.on('keypress', function (evt) {
                 var val = $(this).val();
+                var key = evt.keyCode || evt.charCode;
+                if (key == 8 || key == 46) {
+                    val = val.substring(0, val.length-1);
+                } else {
+                    if (key != 13 && key != 9) {
+                        val = val + String.fromCharCode(key);
+                    }
+                }
                 var score = zxcvbn(val).score;
                 $('#password-strength').attr('class', "password_" + score);
                 $('#password-word').attr('class', "password_" + score);
@@ -173,6 +259,22 @@ angular.module('UserView', ['PolicyList'])
             });
             $("#change-password-modal").on('show', function () {
                 $('#password').focus(); // doesn't seem to work.
+            });
+            $('#wrong-password').css('display', 'none');
+            $scope.setWatch();
+        };
+        $scope.setWatch = function() { 
+            $scope.$watch('isPasswordNotChanged', function() {
+                $scope.$parent.isNotChanged = $scope.isPasswordNotChanged;
+            });
+            $scope.$on('updatedTab', function(event, tab) {
+                if (tab === 'security-tab'){
+                    $scope.$parent.isNotChanged = $scope.isPasswordNotChanged;
+                }
+            }); 
+            $(document).on('input', '#user-change-password-form input[type="password"]', function () {
+                $scope.isPasswordNotChanged = false;
+                $scope.$apply();
             });
         };
         // Handles first step in submit.. validation and dialog
@@ -196,6 +298,7 @@ angular.module('UserView', ['PolicyList'])
         };
         // handles server call for changing the password
         $scope.changePassword = function($event) {
+            $event.preventDefault();
             var form = $($event.target);
             var csrf_token = form.find('input[name="csrf_token"]').val();
             $('#wrong-password').css('display', 'none');
@@ -218,11 +321,9 @@ angular.module('UserView', ['PolicyList'])
                     content: 'none',
                     script: $scope.getFileEndpoint
                 });
+                $scope.isPasswordNotChanged = true;
             }).error(function (oData, status) {
-                var errorMsg = oData['message'] || '';
-                if (errorMsg && status === 403) {
-                    $('#timed-out-modal').foundation('reveal', 'open');
-                }
+                eucaHandleError(oData, status);
                 $('#wrong-password').css('display', 'block');
             });
         };
@@ -244,11 +345,7 @@ angular.module('UserView', ['PolicyList'])
                     script: $scope.getFileEndpoint
                 });
             }).error(function (oData, status) {
-                var errorMsg = oData['message'] || '';
-                if (errorMsg && status === 403) {
-                    $('#timed-out-modal').foundation('reveal', 'open');
-                }
-                Notify.failure(errorMsg);
+                eucaHandleError(oData, status);
             });
             $('#change-password-modal').foundation('reveal', 'close');
         };
@@ -264,16 +361,12 @@ angular.module('UserView', ['PolicyList'])
                 $scope.has_password = false;
                 Notify.success(oData.message);
             }).error(function (oData, status) {
-                var errorMsg = oData['message'] || '';
-                if (errorMsg && status === 403) {
-                    $('#timed-out-modal').foundation('reveal', 'open');
-                }
-                Notify.failure(errorMsg);
+                eucaHandleError(oData, status);
             });
             $('#delete-password-modal').foundation('reveal', 'close');
         };
     })
-    .controller('UserAccessKeysCtrl', function($scope, $http, $timeout) {
+    .controller('UserAccessKeysCtrl', function($scope, $http, $timeout, eucaHandleError) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.jsonEndpoint = '';
         $scope.jsonItemsEndpoint = '';
@@ -294,10 +387,7 @@ angular.module('UserView', ['PolicyList'])
                 $scope.itemsLoading = false;
                 $scope.items = results;
             }).error(function (oData, status) {
-                var errorMsg = oData['message'] || '';
-                if (errorMsg && status === 403) {
-                    $('#timed-out-modal').foundation('reveal', 'open');
-                }
+                eucaHandleError(oData, status);
             });
         };
         $scope.generateKeys = function ($event) {
@@ -319,11 +409,7 @@ angular.module('UserView', ['PolicyList'])
                     script: $scope.getFileEndpoint
                 });
             }).error(function (oData, status) {
-                var errorMsg = oData['message'] || '';
-                if (errorMsg && status === 403) {
-                    $('#timed-out-modal').foundation('reveal', 'open');
-                }
-                Notify.failure(errorMsg);
+                eucaHandleError(oData, status);
             });
         };
         $scope.makeAjaxCall = function (url, item) {
@@ -391,7 +477,7 @@ angular.module('UserView', ['PolicyList'])
             link: linker
         }
     })
-    .controller('UserGroupsCtrl', function($scope, $http, $timeout) {
+    .controller('UserGroupsCtrl', function($scope, $http, $timeout, eucaHandleError) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.addEndpoint = '';
         $scope.removeEndpoint = '';
@@ -399,6 +485,8 @@ angular.module('UserView', ['PolicyList'])
         $scope.jsonGroupsEndpoint = '';
         $scope.jsonGroupPoliciesEndpoint = '';
         $scope.jsonGroupPolicyEndpoint = '';
+        $scope.groupName = '';
+        $scope.isGroupNotSelected = true;
         $scope.groupNames = [];
         $scope.items = [];
         $scope.itemsLoading = true;
@@ -419,6 +507,16 @@ angular.module('UserView', ['PolicyList'])
             $scope.noGroupsDefinedText = noGroupsDefinedText;
             $scope.getItems(jsonItemsEndpoint);
             $scope.getAvailableGroups();
+            $scope.setWatcher();
+        };
+        $scope.setWatcher = function () {
+            $scope.$watch('groupName', function () {
+                if ($scope.groupName === '') {
+                    $scope.isGroupNotSelected = true;
+                } else {
+                    $scope.isGroupNotSelected = false;
+                }
+            });
         };
         $scope.getItems = function (jsonItemsEndpoint) {
             $http.get(jsonItemsEndpoint).success(function(oData) {
@@ -429,10 +527,7 @@ angular.module('UserView', ['PolicyList'])
                     $scope.loadPolicies(results[i].group_name, i);
                 }
             }).error(function (oData, status) {
-                var errorMsg = oData['message'] || '';
-                if (errorMsg && status === 403) {
-                    $('#timed-out-modal').foundation('reveal', 'open');
-                }
+                eucaHandleError(oData, status);
             });
         };
         $scope.loadPolicies = function (groupName, index) {
@@ -441,10 +536,7 @@ angular.module('UserView', ['PolicyList'])
                 var results = oData ? oData.results : [];
                 $scope.items[index].policies = results;
             }).error(function (oData, status) {
-                var errorMsg = oData['message'] || '';
-                if (errorMsg && status === 403) {
-                    $('#timed-out-modal').foundation('reveal', 'open');
-                }
+                eucaHandleError(oData, status);
             });
         };
         $scope.getAvailableGroups = function () {
@@ -456,10 +548,7 @@ angular.module('UserView', ['PolicyList'])
                 $scope.noAvailableGroups = $scope.alreadyMemberOfAllGroups || $scope.noGroupsDefined;
                 $scope.groupName = '';
             }).error(function (oData, status) {
-                var errorMsg = oData['message'] || '';
-                if (errorMsg && status === 403) {
-                    $('#timed-out-modal').foundation('reveal', 'open');
-                }
+                eucaHandleError(oData, status);
             });
         };
         $scope.addUserToGroup = function ($event) {
@@ -509,19 +598,32 @@ angular.module('UserView', ['PolicyList'])
                 var results = oData ? oData.results : [];
                 $scope.policyJson = results;
             }).error(function (oData, status) {
-                var errorMsg = oData['message'] || '';
-                if (errorMsg && status === 403) {
-                    $('#timed-out-modal').foundation('reveal', 'open');
-                }
+                eucaHandleError(oData, status);
             });
             $('#policy-view-modal').foundation('reveal', 'open');
         };
     })
-    .controller('UserQuotasCtrl', function($scope, $http) {
+    .controller('UserQuotasCtrl', function($scope, $http, $rootScope) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.jsonEndpoint = '';
+        $scope.isQuotaNotChanged = true;
         $scope.initController = function (jsonEndpoint) {
             $scope.jsonEndpoint = jsonEndpoint;
+            $scope.setWatch();
+        };
+        $scope.setWatch = function () {
+            $scope.$watch('isQuotaNotChanged', function() {
+                $scope.$parent.isNotChanged = $scope.isQuotaNotChanged;
+            });
+            $scope.$on('updatedTab', function(event, tab) {
+                if (tab === 'quotas-tab'){
+                    $scope.$parent.isNotChanged = $scope.isQuotaNotChanged;
+                }
+            }); 
+            $(document).on('input', '#quotas-panel input[type="text"]', function () {
+                $scope.isQuotaNotChanged = false;
+                $scope.$apply();
+            });
         };
         $scope.submit = function($event) {
             $('#quota-error').css('display', 'none');
@@ -536,6 +638,8 @@ angular.module('UserView', ['PolicyList'])
               success(function(oData) {
                 var results = oData ? oData.results : [];
                 Notify.success(oData.message);
+                $rootScope.getPolicies();  // HACK: force access policies list to refresh on quota save
+                $scope.isQuotaNotChanged = true;
               }).
               error(function (oData, status) {
                 var errorMsg = oData['message'] || '';
