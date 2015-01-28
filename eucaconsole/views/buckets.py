@@ -59,6 +59,11 @@ BUCKET_ITEM_URL_EXPIRES = 300  # Link to item expires in ___ seconds (after page
 BUCKET_NAME_PATTERN = '^[a-z0-9-\.]+$'
 FOLDER_NAME_PATTERN = '^[^\/]+$'
 
+class BucketMixin(object):
+
+    def real_path(self, request):
+        path = request.environ['PATH_INFO']
+        return path[path.index(request.subpath[0]):] if len(request.subpath) > 0 else ''
 
 class BucketsView(LandingPageView):
     """Views for Buckets landing page"""
@@ -275,7 +280,7 @@ class BucketXHRView(BaseView):
             return dict(message=message)
 
 
-class BucketContentsView(LandingPageView):
+class BucketContentsView(LandingPageView, BucketMixin):
     """Views for actions on single bucket"""
     VIEW_TEMPLATE = '../templates/buckets/bucket_contents.pt'
 
@@ -286,7 +291,7 @@ class BucketContentsView(LandingPageView):
         self.bucket_name = self.get_bucket_name(request)
         self.create_folder_form = CreateFolderForm(request, formdata=self.request.params or None)
         self.subpath = request.subpath
-        self.key_prefix = '/'.join(self.subpath) if len(self.subpath) > 0 else ''
+        self.key_prefix = self.real_path(request)
         self.file_uploads_enabled = asbool(self.request.registry.settings.get('file.uploads.enabled', True))
         self.render_dict = dict(
             bucket_name=self.bucket_name,
@@ -310,7 +315,7 @@ class BucketContentsView(LandingPageView):
         self.render_dict.update(
             prefix=self.prefix,
             key_prefix=self.key_prefix,
-            display_path='/'.join(self.subpath),
+            display_path=self.key_prefix,
             initial_sort_key='name',
             json_items_endpoint=self.get_json_endpoint(json_route_path, path=True),
             sort_keys=self.sort_keys,
@@ -349,7 +354,6 @@ class BucketContentsView(LandingPageView):
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
         bucket_name = self.request.matchdict.get('name')
-        subpath = self.request.matchdict.get('subpath')
         files = self.request.POST.getall('files')
         with boto_error_handler(self.request):
             bucket = self.s3_conn.get_bucket(bucket_name)
@@ -358,7 +362,7 @@ class BucketContentsView(LandingPageView):
                 if upload_file.file.tell() > 5000000000:
                     return JSONResponse(status=400, message=_(u"File too large :")+upload_file.filename)
                 upload_file.file.seek(0, 0)  # seek to start
-                bucket_item = bucket.new_key("/".join(subpath))
+                bucket_item = bucket.new_key(self.real_path(self.request))
                 self.log_request("Uploading file {0} to bucket {1}".format(bucket_item.key, bucket_name))
                 bucket_item.set_metadata('Content-Type', upload_file.type)
                 headers = {'Content-Type': upload_file.type}
@@ -412,7 +416,7 @@ class BucketContentsView(LandingPageView):
         if folder_name and self.create_folder_form.validate():
             folder_name = folder_name.replace('/', '_')
             subpath = self.request.subpath
-            prefix = DELIMITER.join(subpath)
+            prefix = self.real_path(self.request)
             new_folder_key = '{0}/{1}/'.format(prefix, folder_name)
             location = self.request.route_path('bucket_contents', name=self.bucket_name, subpath=subpath)
             with boto_error_handler(self.request):
