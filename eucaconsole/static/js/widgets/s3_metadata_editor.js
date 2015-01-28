@@ -107,7 +107,11 @@ angular.module('S3MetadataEditor', ['ngSanitize'])
                     $scope.newMetadataValue = '';
                 }
             } else {
-                metadataKeyField.val() ? metadataValueField.focus() : metadataKeyField.focus();
+                if (metadataKeyField.val()) {
+                    metadataValueField.focus();
+                } else {
+                    metadataKeyField.focus();
+                }
             }
             $scope.$emit('s3:objectMetadataUpdated');
         };
