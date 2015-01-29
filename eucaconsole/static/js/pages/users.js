@@ -116,23 +116,26 @@ angular.module('UsersPage', ['LandingPage', 'EucaConsoleUtils'])
         $scope.$on('itemsLoaded', function($event, items) {
             for (var i=0; i < items.length; i++) {
                 var url = $scope.user_summary_url.replace('_name_', items[i].user_name);
-                var theItems = items;
-                $http.get(url).success(function(oData) {
-                    var results = oData ? oData.results : [];
-                    // search item list for this user
-                    for (var k=0; k<theItems.length; k++) {
-                        if (theItems[k].user_name == results.user_name) {
-                            // add these values to the item record so that angular will see them
-                            theItems[k].has_password = results.has_password;
-                            theItems[k].num_keys = results.num_keys;
-                            theItems[k].user_enabled = results.user_enabled;
-                            break;
-                        }
-                    }
-                }).error(function (oData, status) {
-                    // ignore
-                });
+                $scope.addUserSummaryData(items, url);
             }
         });
+        $scope.addUserSummaryData = function(items, url) {
+            var theItems = items;
+            $http.get(url).success(function(oData) {
+                var results = oData ? oData.results : [];
+                // search item list for this user
+                for (var k=0; k<theItems.length; k++) {
+                    if (theItems[k].user_name == results.user_name) {
+                        // add these values to the item record so that angular will see them
+                        theItems[k].has_password = results.has_password;
+                        theItems[k].num_keys = results.num_keys;
+                        theItems[k].user_enabled = results.user_enabled;
+                        break;
+                    }
+                }
+            }).error(function (oData, status) {
+                // ignore
+            });
+        };
     })
 ;
