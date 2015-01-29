@@ -207,12 +207,7 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize'])
                         return item;
                     } else if (itemProp && typeof itemProp === "object") {
                         // In case of mutiple values, create a flat string and perform search
-                        var flatString = '';
-                        angular.forEach(itemProp, function(x) {
-                            if (x.hasOwnProperty('name')) {
-                                flatString += x.name + ' ';
-                            }
-                        });
+                        var flatString = $scope.getItemNamesInFlatString(itemProp);
                         if (flatString.toLowerCase().indexOf(filterText) !== -1) {
                             return item;
                         }
@@ -221,6 +216,15 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize'])
             });
             // Update the items[] with the filtered items
             $scope.items = filteredItems;
+        };
+        $scope.getItemNamesInFlatString = function(items) {
+            var flatString = '';
+            angular.forEach(items, function(x) {
+                if (x.hasOwnProperty('name')) {
+                    flatString += x.name + ' ';
+                }
+            });
+            return flatString;
         };
         $scope.switchView = function(view){
             $scope.landingPageView = view;
