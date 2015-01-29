@@ -11,9 +11,9 @@ angular.module('ImagesPage', ['LandingPage', 'EucaConsoleUtils'])
         $scope.snapshotImagesRegistered = [];
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
-            $scope.imagesUrl = options['snapshot_images_json_url'];
-            $scope.imageCancelUrl = options['image_cancel_url'];
-            $scope.cloudType = options['cloud_type'];
+            $scope.imagesUrl = options.snapshot_images_json_url;
+            $scope.imageCancelUrl = options.image_cancel_url;
+            $scope.cloudType = options.cloud_type;
             if ($scope.cloudType == 'aws') {
                 $scope.setInitialOwner();
             }
@@ -28,17 +28,17 @@ angular.module('ImagesPage', ['LandingPage', 'EucaConsoleUtils'])
         };
         $scope.revealModal = function (action, image) {
             var modal = $('#' + action + '-image-modal');
-            $scope.imageID = image['id'];
-            $scope.imageNameID = image['name_id'];
-            $scope.imageRootDeviceType = image['root_device_type'];
-            $scope.imageSnapshotID = image['snapshot_id'];
+            $scope.imageID = image.id;
+            $scope.imageNameID = image.name_id;
+            $scope.imageRootDeviceType = image.root_device_type;
+            $scope.imageSnapshotID = image.snapshot_id;
             $scope.snapshotImagesRegistered = [];
             if (action == "deregister") {
                 $scope.getSnapshotImages($scope.imageSnapshotID, $scope.imagesUrl);
             }
             modal.foundation('reveal', 'open');
             var form = $('#deregister-form');
-            var formAction = form.attr('action').replace("_id_", image['id']);
+            var formAction = form.attr('action').replace("_id_", image.id);
             form.attr('action', formAction);
         };
         $scope.getSnapshotImages = function (snapshot_id, url) {
@@ -58,7 +58,7 @@ angular.module('ImagesPage', ['LandingPage', 'EucaConsoleUtils'])
               success(function(oData) {
                 var results = oData ? oData.results : [];
                 // could put data back into form, but form already contains changes
-                if (oData.error == undefined) {
+                if (oData.error === undefined) {
                     Notify.success(oData.message);
                 } else {
                     Notify.failure(oData.message);

@@ -40,7 +40,7 @@ angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils'])
                 securityGroups = instance.security_groups,
                 securityGroupName = 'default';
             if (securityGroups && securityGroups.length) {
-                securityGroupName = securityGroups[0].name || instance['security_groups'][0].id;
+                securityGroupName = securityGroups[0].name || instance.security_groups[0].id;
             }
             $scope.instanceID = instance.id;
             $scope.instanceName = instance.name;
