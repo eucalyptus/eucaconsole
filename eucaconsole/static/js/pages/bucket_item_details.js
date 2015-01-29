@@ -14,11 +14,11 @@ angular.module('BucketItemDetailsPage', ['S3SharingPanel', 'S3MetadataEditor', '
         $scope.objectName = '';
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
-            $scope.deleteUrl = options['delete_keys_url'];
-            $scope.bucketUrl = options['bucket_url'];
-            $scope.bucketItemKey = options['bucket_item_key'];
-            $scope.unprefixedKey = options['unprefixed_key'];
-            $scope.makeObjectPublicUrl = options['make_object_public_url'];
+            $scope.deleteUrl = options.delete_keys_url;
+            $scope.bucketUrl = options.bucket_url;
+            $scope.bucketItemKey = options.bucket_item_key;
+            $scope.unprefixedKey = options.unprefixed_key;
+            $scope.makeObjectPublicUrl = options.make_object_public_url;
             $scope.setInitialValues();
             $scope.handleUnsavedChanges();
             $scope.handleUnsavedSharingEntry($scope.bucketItemDetailsForm);
@@ -56,7 +56,7 @@ angular.module('BucketItemDetailsPage', ['S3SharingPanel', 'S3MetadataEditor', '
             // Display warning when there's an unsaved Sharing Panel entry
             form.on('submit', function (event) {
                 var accountInputField = form.find('#share_account:visible');
-                if (accountInputField.length && accountInputField.val() != '') {
+                if (accountInputField.length && accountInputField.val() !== '') {
                     event.preventDefault();
                     $scope.isSubmitted = false;
                     $('#unsaved-sharing-warning-modal').foundation('reveal', 'open');
@@ -68,7 +68,7 @@ angular.module('BucketItemDetailsPage', ['S3SharingPanel', 'S3MetadataEditor', '
             // Display warning when there's an unsaved Metadata Pair entry
             form.on('submit', function (event) {
                 var metadataKeyInputField = form.find('#metadata_key');
-                if (metadataKeyInputField.length && metadataKeyInputField.val() != '') {
+                if (metadataKeyInputField.length && metadataKeyInputField.val() !== '') {
                     event.preventDefault();
                     $scope.isSubmitted = false;
                     $('#unsaved-metadata-warning-modal').foundation('reveal', 'open');
@@ -78,7 +78,9 @@ angular.module('BucketItemDetailsPage', ['S3SharingPanel', 'S3MetadataEditor', '
         };
         $scope.saveKey = function (bucket_name, bucket_item) {
             $('.actions-menu').trigger('click');
-            Modernizr.sessionstorage && sessionStorage.setItem('copy-object-buffer', bucket_name + '/' + bucket_item);
+            if (Modernizr.sessionstorage) {
+                sessionStorage.setItem('copy-object-buffer', bucket_name + '/' + bucket_item);
+            }
         };
         $scope.confirmDelete = function (name) {
             $('.actions-menu').trigger('click');
@@ -97,7 +99,7 @@ angular.module('BucketItemDetailsPage', ['S3SharingPanel', 'S3MetadataEditor', '
                     window.location = $scope.bucketUrl;
                 }).
                 error(function (oData, status) {
-                    var errorMsg = oData['message'] || '';
+                    var errorMsg = oData.message || '';
                     if (errorMsg && status === 403) {
                         $('#timed-out-modal').foundation('reveal', 'open');
                     }
