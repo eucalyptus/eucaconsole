@@ -29,6 +29,7 @@ Pyramid views for Eucalyptus Object Store and AWS S3 Buckets
 
 """
 from datetime import datetime
+import logging
 import mimetypes
 import simplejson as json
 import urllib
@@ -317,7 +318,7 @@ class BucketContentsView(LandingPageView, BucketMixin):
             key_prefix=self.key_prefix,
             display_path=self.key_prefix,
             initial_sort_key='name',
-            json_items_endpoint=self.get_json_endpoint(json_route_path, path=True),
+            json_items_endpoint="{0}?{1}".format(json_route_path, self.key_prefix),
             sort_keys=self.sort_keys,
             filter_fields=False,
             filter_keys=['name'],
@@ -506,27 +507,28 @@ class BucketContentsView(LandingPageView, BucketMixin):
         return icon_mapping.get(mime_type, 'fi-page')
 
 
-class BucketContentsJsonView(BaseView):
+class BucketContentsJsonView(BaseView, BucketMixin):
     def __init__(self, request):
         super(BucketContentsJsonView, self).__init__(request)
         with boto_error_handler(request):
             self.s3_conn = self.get_connection(conn_type='s3')
             self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
         self.bucket_name = self.bucket.name
-        self.subpath = request.subpath
 
     @view_config(route_name='bucket_contents', renderer='json', request_method='POST', xhr=True)
     def bucket_contents_json(self):
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
         items = []
-        list_prefix = '{0}/'.format(DELIMITER.join(self.subpath)) if self.subpath else ''
+        list_prefix = self.real_path(self.request)
         params = dict(delimiter=DELIMITER)
         if list_prefix:
             params.update(dict(prefix=list_prefix))
         bucket_items = self.bucket.list(**params)
+        logging.info("items params : "+str(params))
 
         for key in bucket_items:
+            logging.info("key : "+key.name)
             if self.skip_item(key):
                 continue
             if isinstance(key, Prefix):  # Is folder
@@ -559,7 +561,7 @@ class BucketContentsJsonView(BaseView):
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
         items = []
-        list_prefix = '{0}/'.format(DELIMITER.join(self.subpath)) if len(self.subpath) > 0 else ''
+        list_prefix = self.real_path(self.request)
         params = dict()
         if list_prefix:
             params.update(dict(prefix=list_prefix))
@@ -578,7 +580,7 @@ class BucketContentsJsonView(BaseView):
         """Skip item if it contains a folder path that doesn't match the current request subpath"""
         # Test if request subpath matches current folder
         if DELIMITER in key.name:
-            joined_subpath = DELIMITER.join(self.subpath)
+            joined_subpath = self.real_path(self.request)
             if key.name == '{0}{1}'.format(joined_subpath, DELIMITER):
                 return True
             else:
