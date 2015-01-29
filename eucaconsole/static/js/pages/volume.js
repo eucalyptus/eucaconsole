@@ -26,9 +26,9 @@ angular.module('VolumePage', ['TagEditor', 'EucaConsoleUtils'])
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.initChosenSelectors();
             $scope.initAvailZoneChoice();
-            $scope.volumeStatusEndpoint = options['volume_status_json_url'];
-            $scope.volumeStatus = options['volume_status'] ? options['volume_status'].replace('-', ' ') : '';
-            $scope.volumeAttachStatus = options['attach_status'];
+            $scope.volumeStatusEndpoint = options.volume_status_json_url;
+            $scope.volumeStatus = options.volume_status ? options.volume_status.replace('-', ' ') : '';
+            $scope.volumeAttachStatus = options.attach_status;
             if ($scope.volumeStatusEndpoint) {
                 $scope.getVolumeState();
             }
@@ -39,7 +39,7 @@ angular.module('VolumePage', ['TagEditor', 'EucaConsoleUtils'])
             return $scope.transitionalStates.indexOf(state) !== -1;
         };
         $scope.populateVolumeSize = function () {
-           if ($scope.snapshotId == '') {
+           if ($scope.snapshotId === '') {
                 $scope.snapshotSize = 1;
                 $scope.volumeSize = 1;
                 return;
@@ -56,10 +56,10 @@ angular.module('VolumePage', ['TagEditor', 'EucaConsoleUtils'])
         };
         $scope.initChosenSelectors = function () {
             var snapshotField = $('#snapshot_id');
-            if ($scope.urlParams['from_snapshot']) {  // Pre-populate snapshot if passed in query string arg
+            if ($scope.urlParams.from_snapshot) {  // Pre-populate snapshot if passed in query string arg
                 $scope.fromSnapshot = true;
-                snapshotField.val($scope.urlParams['from_snapshot']);
-                $scope.snapshotId = $scope.urlParams['from_snapshot'];
+                snapshotField.val($scope.urlParams.from_snapshot);
+                $scope.snapshotId = $scope.urlParams.from_snapshot;
                 $scope.populateVolumeSize();
             }
             snapshotField.chosen({'width': '75%', 'search_contains': true});
@@ -69,7 +69,7 @@ angular.module('VolumePage', ['TagEditor', 'EucaConsoleUtils'])
             });
         };
         $scope.initAvailZoneChoice = function () {
-            var availZoneParam = $scope.urlParams['avail_zone'];
+            var availZoneParam = $scope.urlParams.avail_zone;
             if (availZoneParam) {
                 $('#zone').val(availZoneParam);
             }
@@ -78,15 +78,15 @@ angular.module('VolumePage', ['TagEditor', 'EucaConsoleUtils'])
             $http.get($scope.volumeStatusEndpoint).success(function(oData) {
                 var results = oData ? oData.results : '';
                 if (results) {
-                    $scope.volumeStatus = results['volume_status'];
-                    $scope.volumeAttachStatus = results['attach_status'];
-                    $scope.device_name = results['attach_device'];
-                    $scope.attach_time = results['attach_time'];
-                    $scope.attach_instance = results['attach_instance'];
+                    $scope.volumeStatus = results.volume_status;
+                    $scope.volumeAttachStatus = results.attach_status;
+                    $scope.device_name = results.attach_device;
+                    $scope.attach_time = results.attach_time;
+                    $scope.attach_instance = results.attach_instance;
                     // Poll to obtain desired end state if current state is transitional
                     if ($scope.isTransitional($scope.volumeStatus) || $scope.isTransitional($scope.volumeAttachStatus)) {
                         $scope.isUpdating = true;
-                        $timeout(function() {$scope.getVolumeState()}, 4000);  // Poll every 4 seconds
+                        $timeout(function() {$scope.getVolumeState();}, 4000);  // Poll every 4 seconds
                     } else {
                         $scope.isUpdating = false;
                     }
