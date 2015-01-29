@@ -37,24 +37,24 @@ angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils'])
         };
         $scope.revealModal = function (action, instance) {
             var modal = $('#' + action + '-instance-modal'),
-                securityGroups = instance['security_groups'],
+                securityGroups = instance.security_groups,
                 securityGroupName = 'default';
             if (securityGroups && securityGroups.length) {
-                securityGroupName = securityGroups[0].name || instance['security_groups'][0]['id'];
+                securityGroupName = securityGroups[0].name || instance['security_groups'][0].id;
             }
-            $scope.instanceID = instance['id'];
-            $scope.instanceName = instance['name'];
-            $scope.rootDevice = instance['root_device'];
+            $scope.instanceID = instance.id;
+            $scope.instanceName = instance.name;
+            $scope.rootDevice = instance.root_device;
             $scope.groupName = securityGroupName;
             $scope.securityGroups = securityGroups;
-            $scope.keyName = instance['key_name'];
-            $scope.publicDNS = instance['public_dns_name'];
-            $scope.platform = instance['platform'];
-            $scope.ipAddress = instance['ip_address'];
+            $scope.keyName = instance.key_name;
+            $scope.publicDNS = instance.public_dns_name;
+            $scope.platform = instance.platform;
+            $scope.ipAddress = instance.ip_address;
             modal.foundation('reveal', 'open');
         };
         $scope.removeFromView = function(instance, url) {
-            var url = url.replace("_id_", instance.id);
+            url = url.replace("_id_", instance.id);
             var data = "csrf_token=" + $('#csrf_token').val() + "&instance_id=" + instance.id;
             $http({method:'POST', url:url, data:data,
                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
@@ -67,7 +67,7 @@ angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils'])
                 if (status == 403) {
                     $('#timed-out-modal').foundation('reveal', 'open');
                 }
-                var errorMsg = oData['message'] || '';
+                var errorMsg = oData.message || '';
                 Notify.failure(errorMsg);
               });
         };
@@ -99,17 +99,17 @@ angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils'])
                         if (status == 403) {
                             $('#timed-out-modal').foundation('reveal', 'open');
                         }
-                        var errorMsg = oData['message'] || '';
+                        var errorMsg = oData.message || '';
                         Notify.failure(errorMsg);
                       });
                 }
-            }
+            };
             reader.readAsText(file);
         };
         $scope.revealConsoleOutputModal = function(instance) {
             $(document).trigger('click');
-            $scope.instanceName = instance['name'];
-            var consoleOutputEndpoint = "/instances/" + instance['id'] + "/consoleoutput/json";
+            $scope.instanceName = instance.name;
+            var consoleOutputEndpoint = "/instances/" + instance.id + "/consoleoutput/json";
             $scope.consoleOutput = '';
             $http.get(consoleOutputEndpoint).success(function(oData) {
                 var results = oData ? oData.results : '';
