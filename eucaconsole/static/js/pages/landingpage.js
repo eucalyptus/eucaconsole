@@ -37,9 +37,11 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize'])
             $scope.storeAWSRegion();
         };
         $scope.initChosenFilters = function () {
-            !!$(document).chosen && $('#filters').find('select').chosen({
-                'width': '100%', 'search_contains': true, 'placeholder_text_multiple': 'select...'
-            });
+            if ($(document).chosen) {
+                $('#filters').find('select').chosen({
+                    'width': '100%', 'search_contains': true, 'placeholder_text_multiple': 'select...'
+                });
+            }
         };
         $scope.initLocalStorageKeys = function (pageResource){
             $scope.pageResource = pageResource;
@@ -61,7 +63,9 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize'])
                     sortingDropdown.removeAttr('style');
                 }
                 // Set sortBy in sessionStorage
-                Modernizr.sessionstorage && sessionStorage.setItem($scope.sortByKey, $scope.sortBy);
+                if (Modernizr.sessionstorage) {
+                    sessionStorage.setItem($scope.sortByKey, $scope.sortBy);
+                }
             });
             // Landing page display preference (table/tile view) watcher
             $scope.$watch('landingPageView', function () {
@@ -75,7 +79,9 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize'])
                    gridviewBtn.removeClass("selected");
                }
                // Set landingPageView in localStorage
-               Modernizr.localstorage && localStorage.setItem($scope.landingPageViewKey, $scope.landingPageView);
+               if (Modernizr.localstorage) {
+                   localStorage.setItem($scope.landingPageViewKey, $scope.landingPageView);
+               }
             });
             // When unfilteredItems[] is updated, run it through the filter and build items[]
             $scope.$watch('unfilteredItems', function() {
@@ -112,7 +118,7 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize'])
                 modal.find('textarea').val('');
                 modal.find('div.error').removeClass('error');
                 var chosenSelect = modal.find('select');
-                if (chosenSelect.length > 0 && chosenSelect.attr('multiple') == undefined) {
+                if (chosenSelect.length > 0 && chosenSelect.attr('multiple') === undefined) {
                     chosenSelect.prop('selectedIndex', 0);
                     chosenSelect.trigger("chosen:updated");
                 }
@@ -151,7 +157,7 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize'])
                 $scope.itemsLoading = false;
                 $scope.unfilteredItems = results;
                 $scope.unfilteredItems.forEach(function (item) {
-                    if (!!item['transitional']) {
+                    if (!!item.transitional) {
                         transitionalCount += 1;
                     }
                 });
@@ -166,7 +172,7 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize'])
                     $scope.clickOpenDropdown();
                 });
             }).error(function (oData, status) {
-                var errorMsg = oData['message'] || null;
+                var errorMsg = oData.message || null;
                 if (errorMsg) {
                     if (status === 403 || status === 400) {  // S3 token expiration responses return a 400
                         $('#timed-out-modal').foundation('reveal', 'open');
@@ -182,11 +188,11 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize'])
          */
         $scope.searchFilterItems = function(filterProps) {
             var filterText = ($scope.searchFilter || '').toLowerCase();
-            if (filterProps != '' && filterProps != undefined){
+            if (filterProps !== '' && filterProps !== undefined){
                 // Store the filterProps input for later use as well
                 $scope.filterKeys = filterProps;
             }
-            if (filterText == '') {
+            if (filterText === '') {
                 // If the search filter is empty, skip the filtering
                 $scope.items = $scope.unfilteredItems;
                 return;
@@ -240,7 +246,7 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize'])
             $scope.getItems();
         });
         $scope.clickOpenDropdown = function () {
-            if ($scope.openDropdownID != '') {
+            if ($scope.openDropdownID !== '') {
                $('#' + $scope.openDropdownID).click();
             }
         };
