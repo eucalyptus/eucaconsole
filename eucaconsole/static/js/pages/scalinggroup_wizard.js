@@ -45,14 +45,14 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor','EucaConsoleUtils'])
         };
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
-            $scope.vpcSubnetList = options['vpc_subnet_choices_json'];
-            $scope.vpcNetwork = options['default_vpc_network'];
+            $scope.vpcSubnetList = options.vpc_subnet_choices_json;
+            $scope.vpcNetwork = options.default_vpc_network;
             $scope.initChosenSelectors();
             $scope.setInitialValues();
             $scope.checkLaunchConfigParam();
             $scope.setWatcher();
             $(document).ready(function () {
-                $scope.displayLaunchConfigWarning(options['launchconfigs_count']);
+                $scope.displayLaunchConfigWarning(options.launchconfigs_count);
             });
             // Timeout is needed for the chosen widget to initialize
             $timeout(function () {
@@ -133,17 +133,17 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor','EucaConsoleUtils'])
             $scope.vpcSubnetChoices = {};
             $scope.vpcSubnets = [];
             angular.forEach($scope.vpcSubnetList, function (subnet) {
-                if (subnet['vpc_id'] === $scope.vpcNetwork) {
-                    $scope.vpcSubnetChoices[subnet['id']] = 
-                        subnet['cidr_block'] + ' (' + subnet['id'] + ') | ' + subnet['availability_zone'];
+                if (subnet.vpc_id === $scope.vpcNetwork) {
+                    $scope.vpcSubnetChoices[subnet.id] = 
+                        subnet.cidr_block + ' (' + subnet.id + ') | ' + subnet.availability_zone;
                     foundVPCSubnets = true;
                 }
                 // Create vpc subnet zone map to use later for disabling options
-                $scope.vpcSubnetZonesMap[subnet['id']] = subnet['availability_zone'];
+                $scope.vpcSubnetZonesMap[subnet.id] = subnet.availability_zone;
             }); 
             if (!foundVPCSubnets) {
                 // Case of No VPC or no existing subnets, set the default to 'None'
-                $scope.vpcSubnetChoices['None'] = $('#vpc_subnet_empty_option').text();
+                $scope.vpcSubnetChoices.None = $('#vpc_subnet_empty_option').text();
                 $scope.vpcSubnets.push('None');
             }
             // Timeout is need for the chosen widget to react after Angular has updated the option list
@@ -181,7 +181,7 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor','EucaConsoleUtils'])
                     var vpcNetworkNameArray = $(this).text().split(' ');
                     vpcNetworkNameArray.pop();
                     $scope.vpcNetworkName = vpcNetworkNameArray.join(' ');
-                    if ($scope.vpcNetworkName == '') {
+                    if ($scope.vpcNetworkName === '') {
                         $scope.vpcNetworkName = $scope.vpcNetwork;
                     }
                 } 
@@ -192,8 +192,8 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor','EucaConsoleUtils'])
             $scope.vpcSubnetNames = [];
             angular.forEach($scope.vpcSubnets, function (subnetID) {
                 angular.forEach($scope.vpcSubnetList, function (subnet) {
-                    if (subnetID === subnet['id']) {
-                       $scope.vpcSubnetNames.push(subnet['cidr_block']);
+                    if (subnetID === subnet.id) {
+                       $scope.vpcSubnetNames.push(subnet.cidr_block);
                     }
                 });
             });
@@ -250,7 +250,7 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor','EucaConsoleUtils'])
                 var hash = "step"+nextStep;
                 $(".tabs").children("dd").each(function() {
                     var link = $(this).find("a");
-                    if (link.length != 0) {
+                    if (link.length !== 0) {
                         var id = link.attr("href").substring(1);
                         var $container = $("#" + id);
                         $(this).removeClass("active");
