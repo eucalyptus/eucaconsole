@@ -11,7 +11,7 @@ angular.module('LoginPage', ['EucaConsoleUtils'])
         $scope.isLoggingIn = false;
         $scope.initController = function (json_options) {
             var options = JSON.parse(eucaUnescapeJson(json_options));
-            $scope.prefillForms(options['account'], options['username']);
+            $scope.prefillForms(options.account, options.username);
             $scope.addListeners();
             Modernizr.load([
                 {
@@ -29,7 +29,9 @@ angular.module('LoginPage', ['EucaConsoleUtils'])
             ]);
             $scope.showHttpsWarning = window.location.protocol !== 'https:';
             // clear copy buffer for object storage
-            Modernizr.sessionstorage && sessionStorage.removeItem('copy-object-buffer');
+            if (Modernizr.sessionstorage) {
+                sessionStorage.removeItem('copy-object-buffer');
+            }
         };
         $scope.setFocus = function () {
             var inputs = [];
