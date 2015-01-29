@@ -16,8 +16,8 @@ angular.module('SnapshotsPage', ['LandingPage', 'EucaConsoleUtils'])
         };
         $scope.revealModal = function (action, snapshot) {
             var modal = $('#' + action + '-snapshot-modal');
-            $scope.snapshotID = snapshot['id'];
-            $scope.snapshotName = snapshot['name'];
+            $scope.snapshotID = snapshot.id;
+            $scope.snapshotName = snapshot.name;
             if (action == "delete") {
                 $scope.images = undefined;
                 $scope.getSnapshotImages(snapshot, $scope.imagesURL);
