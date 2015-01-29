@@ -172,7 +172,7 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize'])
                     $scope.clickOpenDropdown();
                 });
             }).error(function (oData, status) {
-                if (oData == undefined && status == 0) {  // likely interrupted request
+                if (oData === undefined && status === 0) {  // likely interrupted request
                     return;
                 }
                 var errorMsg = oData.message || null;
