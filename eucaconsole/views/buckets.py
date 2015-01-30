@@ -63,8 +63,26 @@ FOLDER_NAME_PATTERN = '^[^\/]+$'
 class BucketMixin(object):
 
     def real_path(self, request):
-        path = request.environ['PATH_INFO']
-        return path[path.index(request.subpath[0]):] if len(request.subpath) > 0 else ''
+        if len(request.subpath) == 0:
+            return ''
+        path = ''
+        #if 'webob._parsed_query_vars' in request.environ:
+        #    path = request.environ['webob._parsed_query_vars'][1]
+        if path == '':
+            path = request.environ['PATH_INFO']
+            path = path[path.index(request.subpath[0]):] if len(request.subpath) > 0 else ''
+        return path
+
+    def fix_subpath(self):
+        path = self.real_path(self.request)
+        if path == '':
+            subpath = []
+        else:
+            if path.endswith('/'): # and not path.endswith('//'):
+                path = path[:-1]
+            subpath = path.split('/')
+        logging.info("subpath = "+str(tuple(subpath)))
+        self.request.subpath = tuple(subpath)
 
 class BucketsView(LandingPageView):
     """Views for Buckets landing page"""
@@ -164,7 +182,7 @@ class BucketsJsonView(BaseView):
         return self.s3_conn.get_all_buckets() if self.s3_conn else []
 
 
-class BucketXHRView(BaseView):
+class BucketXHRView(BaseView, BucketMixin):
     """
     A view for bucket related XHR calls that carrys very little overhead
     """
@@ -172,6 +190,7 @@ class BucketXHRView(BaseView):
         super(BucketXHRView, self).__init__(request)
         self.s3_conn = self.get_connection(conn_type='s3')
         self.bucket_name = request.matchdict.get('name')
+        self.fix_subpath()
 
     @view_config(route_name='bucket_delete_keys', renderer='json', request_method='POST', xhr=True)
     def bucket_delete_keys(self):
@@ -288,11 +307,12 @@ class BucketContentsView(LandingPageView, BucketMixin):
     def __init__(self, request):
         super(BucketContentsView, self).__init__(request)
         self.s3_conn = self.get_connection(conn_type='s3')
+        self.fix_subpath()
         self.prefix = '/buckets'
         self.bucket_name = self.get_bucket_name(request)
         self.create_folder_form = CreateFolderForm(request, formdata=self.request.params or None)
         self.subpath = request.subpath
-        self.key_prefix = self.real_path(request)
+        self.key_prefix = '/'.join(self.subpath) if len(self.subpath) > 0 else ''
         self.file_uploads_enabled = asbool(self.request.registry.settings.get('file.uploads.enabled', True))
         self.render_dict = dict(
             bucket_name=self.bucket_name,
@@ -313,6 +333,8 @@ class BucketContentsView(LandingPageView, BucketMixin):
             dict(key='last_modified', name=_(u'Modified time: Oldest to Newest ')),
         ]
         json_route_path = self.request.route_path('bucket_contents', name=self.bucket_name, subpath=self.subpath)
+        if len(self.subpath) > 0 and self.subpath[-1] == '':
+            json_route_path = json_route_path + '/'
         self.render_dict.update(
             prefix=self.prefix,
             key_prefix=self.key_prefix,
@@ -363,7 +385,7 @@ class BucketContentsView(LandingPageView, BucketMixin):
                 if upload_file.file.tell() > 5000000000:
                     return JSONResponse(status=400, message=_(u"File too large :")+upload_file.filename)
                 upload_file.file.seek(0, 0)  # seek to start
-                bucket_item = bucket.new_key(self.real_path(self.request))
+                bucket_item = bucket.new_key("/".join(subpath))
                 self.log_request("Uploading file {0} to bucket {1}".format(bucket_item.key, bucket_name))
                 bucket_item.set_metadata('Content-Type', upload_file.type)
                 headers = {'Content-Type': upload_file.type}
@@ -417,7 +439,7 @@ class BucketContentsView(LandingPageView, BucketMixin):
         if folder_name and self.create_folder_form.validate():
             folder_name = folder_name.replace('/', '_')
             subpath = self.request.subpath
-            prefix = self.real_path(self.request)
+            prefix = DELIMITER.join(subpath)
             new_folder_key = '{0}/{1}/'.format(prefix, folder_name)
             location = self.request.route_path('bucket_contents', name=self.bucket_name, subpath=subpath)
             with boto_error_handler(self.request):
@@ -514,13 +536,15 @@ class BucketContentsJsonView(BaseView, BucketMixin):
             self.s3_conn = self.get_connection(conn_type='s3')
             self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
         self.bucket_name = self.bucket.name
+        self.fix_subpath()
+        self.subpath = request.subpath
 
     @view_config(route_name='bucket_contents', renderer='json', request_method='POST', xhr=True)
     def bucket_contents_json(self):
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
         items = []
-        list_prefix = self.real_path(self.request)
+        list_prefix = '{0}/'.format(DELIMITER.join(self.subpath)) if self.subpath else ''
         params = dict(delimiter=DELIMITER)
         if list_prefix:
             params.update(dict(prefix=list_prefix))
@@ -561,7 +585,7 @@ class BucketContentsJsonView(BaseView, BucketMixin):
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
         items = []
-        list_prefix = self.real_path(self.request)
+        list_prefix = '{0}/'.format(DELIMITER.join(self.subpath)) if len(self.subpath) > 0 else ''
         params = dict()
         if list_prefix:
             params.update(dict(prefix=list_prefix))
@@ -580,7 +604,7 @@ class BucketContentsJsonView(BaseView, BucketMixin):
         """Skip item if it contains a folder path that doesn't match the current request subpath"""
         # Test if request subpath matches current folder
         if DELIMITER in key.name:
-            joined_subpath = self.real_path(self.request)
+            joined_subpath = DELIMITER.join(self.subpath)
             if key.name == '{0}{1}'.format(joined_subpath, DELIMITER):
                 return True
             else:
@@ -588,13 +612,14 @@ class BucketContentsJsonView(BaseView, BucketMixin):
         return False
 
 
-class BucketDetailsView(BaseView):
+class BucketDetailsView(BaseView, BucketMixin):
     """Views for Bucket details"""
     VIEW_TEMPLATE = '../templates/buckets/bucket_details.pt'
 
     def __init__(self, request):
         super(BucketDetailsView, self).__init__(request)
         self.s3_conn = self.get_connection(conn_type='s3')
+        self.fix_subpath()
         with boto_error_handler(request):
             self.bucket = BucketContentsView.get_bucket(request, self.s3_conn) if self.s3_conn else None
             self.bucket_acl = self.bucket.get_acl() if self.bucket else None
@@ -751,13 +776,14 @@ class BucketDetailsView(BaseView):
             return 'enable' if versioning_status in ['Disabled', 'Suspended'] else 'disable'
 
 
-class BucketItemDetailsView(BaseView):
+class BucketItemDetailsView(BaseView, BucketMixin):
     """Views for Bucket item (folder/object) details"""
     VIEW_TEMPLATE = '../templates/buckets/bucket_item_details.pt'
 
     def __init__(self, request):
         super(BucketItemDetailsView, self).__init__(request)
         self.s3_conn = self.get_connection(conn_type='s3')
+        self.fix_subpath()
         with boto_error_handler(request):
             self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
             self.bucket_name = self.bucket.name
