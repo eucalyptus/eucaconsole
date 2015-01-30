@@ -29,7 +29,6 @@ Pyramid views for Eucalyptus Object Store and AWS S3 Buckets
 
 """
 from datetime import datetime
-import logging
 import mimetypes
 import simplejson as json
 import urllib
@@ -65,12 +64,8 @@ class BucketMixin(object):
     def real_path(self, request):
         if len(request.subpath) == 0:
             return ''
-        path = ''
-        #if 'webob._parsed_query_vars' in request.environ:
-        #    path = request.environ['webob._parsed_query_vars'][1]
-        if path == '':
-            path = request.environ['PATH_INFO']
-            path = path[path.index(request.subpath[0]):] if len(request.subpath) > 0 else ''
+        path = request.environ['PATH_INFO']
+        path = path[path.index(request.subpath[0]):] if len(request.subpath) > 0 else ''
         return path
 
     def fix_subpath(self):
@@ -81,7 +76,6 @@ class BucketMixin(object):
             if path.endswith('/'): # and not path.endswith('//'):
                 path = path[:-1]
             subpath = path.split('/')
-        logging.info("subpath = "+str(tuple(subpath)))
         self.request.subpath = tuple(subpath)
 
 class BucketsView(LandingPageView):
@@ -549,10 +543,8 @@ class BucketContentsJsonView(BaseView, BucketMixin):
         if list_prefix:
             params.update(dict(prefix=list_prefix))
         bucket_items = self.bucket.list(**params)
-        logging.info("items params : "+str(params))
 
         for key in bucket_items:
-            logging.info("key : "+key.name)
             if self.skip_item(key):
                 continue
             if isinstance(key, Prefix):  # Is folder
