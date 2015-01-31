@@ -161,8 +161,8 @@
                                 </a>
                             </div><!--! /end resource-wrapper -->
                             <div class="conditions-wrapper"
-                                 tal:define="cond_key '{0}ConditionKey'.format(action);
-                                             cond_operator '{0}ConditionOperator'.format(action)">
+                                 tal:define="cond_key u'{0}ConditionKey'.format(action);
+                                             cond_operator u'{0}ConditionOperator'.format(action)">
                                 <h6 class="title" i18n:translate="">Conditions (optional)</h6>
                                 <div class="content">
                                     <div class="added-conditions" ng-cloak="">

@@ -326,12 +326,12 @@ class BaseView(object):
         if cloud_type == 'euca':
             account = request.session.get('account', '')
             username = request.session.get('username', '')
-            prefix = '{0}/{1}@{2}'.format(account, username, BaseView.get_remote_addr(request))
+            prefix = u'{0}/{1}@{2}'.format(account, username, BaseView.get_remote_addr(request))
         elif cloud_type == 'aws':
             account = request.session.get('username_label', '')
             region = request.session.get('region')
-            prefix = '{0}/{1}@{2}'.format(account, region, BaseView.get_remote_addr(request))
-        log_message = "{prefix} [{id}]: {msg}".format(prefix=prefix, id=request.id, msg=message)
+            prefix = u'{0}/{1}@{2}'.format(account, region, BaseView.get_remote_addr(request))
+        log_message = u"{prefix} [{id}]: {msg}".format(prefix=prefix, id=request.id, msg=message)
         if level == 'info':
             logging.info(log_message)
         elif level == 'error':
@@ -343,7 +343,7 @@ class BaseView(object):
         self.log_message(self.request, message)
 
     @staticmethod
-    def handle_error(err=None, request=None, location=None, template="{0}"):
+    def handle_error(err=None, request=None, location=None, template=u"{0}"):
         status = getattr(err, 'status', None) or err.args[0] if err.args else ""
         message = template.format(err.reason)
         if err.error_message is not None:
@@ -356,9 +356,8 @@ class BaseView(object):
             # this logic found in volumes.js
         BaseView.log_message(request, message, level='error')
         perms_notice = _(u'You do not have the required permissions to perform this '
-                   u'operation. Please retry the operation, and contact your cloud '
-                   u'administrator to request an updated access policy if the problem '
-                   u'persists.')
+                         u'operation. Please retry the operation, and contact your cloud '
+                         u'administrator to request an updated access policy if the problem persists.')
         if request.is_xhr:
             if 'Access Denied' in message:
                 message = perms_notice
@@ -488,7 +487,7 @@ class TaggedItemView(BaseView):
         tags_array = []
         for key, val in tags.items():
             if not any([key.startswith('aws:'), key.startswith('euca:')]):
-                template = '{0}={1}'
+                template = u'{0}={1}'
                 if skip_name and key == 'Name':
                     continue
                 else:
@@ -531,9 +530,9 @@ class BlockDeviceMappingItemView(BaseView):
         for snapshot in self.conn.get_all_snapshots(owner='self'):
             value = snapshot.id
             snapshot_name = snapshot.tags.get('Name')
-            label = '{id}{name} ({size} GB)'.format(
+            label = u'{id}{name} ({size} GB)'.format(
                 id=snapshot.id,
-                name=' - {0}'.format(snapshot_name) if snapshot_name else '',
+                name=u' - {0}'.format(snapshot_name) if snapshot_name else '',
                 size=snapshot.volume_size
             )
             choices.append((value, label))
@@ -642,15 +641,15 @@ class LandingPageView(BaseView):
         return False
 
     def get_json_endpoint(self, route, path=False):
-        return '{0}{1}'.format(
+        return u'{0}{1}'.format(
             self.request.route_path(route) if path is False else route,
-            '?{0}'.format(urlencode(self.request.params)) if self.request.params else ''
+            u'?{0}'.format(urlencode(self.request.params)) if self.request.params else ''
         )
 
     def get_redirect_location(self, route):
-        location = '{0}'.format(self.request.route_path(route))
+        location = u'{0}'.format(self.request.route_path(route))
         if self.request.GET:
-            location = '{0}?{1}'.format(location, urlencode(self.request.GET))
+            location = u'{0}?{1}'.format(location, urlencode(self.request.GET))
         return location
 
 
@@ -680,19 +679,6 @@ def boto_error_handler(request, location=None, template="{0}"):
 
 @view_config(route_name='file_download', request_method='POST')
 def file_download(request):
-    # disable using memcache for file storage
-    # try:
-    #    file_value = default_term.get('file_cache')
-    #    if not isinstance(file_value, NoValue):
-    #        (filename, mime_type, contents) = file_value
-    #        default_term.delete('file_cache')
-    #        response = Response(content_type=mime_type)
-    #        response.body = str(contents)
-    #        response.content_disposition = 'attachment; filename="{name}"'.format(name=filename)
-    #        return response
-    # except pylibmc.Error as ex:
-    #    logging.warn('memcached not responding')
-    # try session instead
     session = request.session
     if session.get('file_cache'):
         (filename, mime_type, contents) = session['file_cache']

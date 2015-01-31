@@ -69,7 +69,7 @@ class DashboardView(BaseView):
         with boto_error_handler(self.request):
             region = self.request.session.get('region')
             availability_zones = ChoicesManager(self.conn).get_availability_zones(region)
-        tiles = self.request.cookies.get("{0}_dash_order".format(
+        tiles = self.request.cookies.get(u"{0}_dash_order".format(
             self.request.session['account' if self.request.session['cloud_type'] == 'euca' else 'access_id']))
         if tiles is not None:
             tiles = tiles.replace('%2C', ',')
@@ -153,7 +153,7 @@ class DashboardJsonView(BaseView):
         instances_total_count = instances_running_count = instances_stopped_count = instances_scaling_count = 0
 
         # Get list of tiles so we can fetch only data for tiles the user is showing
-        tiles = self.request.cookies.get("{0}_dash_order".format(
+        tiles = self.request.cookies.get(u"{0}_dash_order".format(
             self.request.session['account' if self.request.session['cloud_type'] == 'euca' else 'access_id']))
         if tiles is None:
             tiles = ','.join([tile for (tile, label) in TILE_MASTER_LIST])

@@ -159,7 +159,7 @@ class KeyPairView(BaseView):
             name = self.request.params.get('name')
             location = self.request.route_path('keypair_view', id=name)
             with boto_error_handler(self.request, location):
-                self.log_request(_(u"Creating keypair ")+name)
+                self.log_request(_(u"Creating keypair ") + name)
                 new_keypair = self.conn.create_key_pair(name)
                 # Store the new keypair material information in the session
                 self._store_file_(new_keypair.name+".pem",
@@ -207,7 +207,7 @@ class KeyPairView(BaseView):
                 self.log_request(_(u"Deleting keypair ")+name)
                 self.conn.delete_key_pair(name)
                 prefix = _(u'Successfully deleted keypair')
-                msg = '{0} {1}'.format(prefix, name)
+                msg = u'{0} {1}'.format(prefix, name)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
 

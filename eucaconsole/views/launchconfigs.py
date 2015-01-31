@@ -88,12 +88,12 @@ class LaunchConfigsView(LandingPageView):
             name = self.request.params.get('name')
             location = self.request.route_path('launchconfigs')
             prefix = _(u'Unable to delete launch configuration')
-            template = '{0} {1} - {2}'.format(prefix, name, '{0}')
+            template = u'{0} {1} - {2}'.format(prefix, name, '{0}')
             with boto_error_handler(self.request, location, template):
                 launch_config = self.autoscale_conn.get_all_launch_configurations(names=[name])
                 self.autoscale_conn.delete_launch_configuration(name)
                 prefix = _(u'Successfully deleted launch configuration.')
-                msg = '{0} {1}'.format(prefix, name)
+                msg = u'{0} {1}'.format(prefix, name)
                 queue = Notification.SUCCESS
                 notification_msg = msg
                 self.request.session.flash(notification_msg, queue=queue)
@@ -277,12 +277,12 @@ class LaunchConfigView(BaseView):
             name = self.request.params.get('name')
             location = self.request.route_path('launchconfigs')
             prefix = _(u'Unable to delete launch configuration')
-            template = '{0} {1} - {2}'.format(prefix, self.launch_config.name, '{0}')
+            template = u'{0} {1} - {2}'.format(prefix, self.launch_config.name, '{0}')
             with boto_error_handler(self.request, location, template):
                 self.log_request(_(u"Deleting launch configuration {0}").format(name))
                 self.autoscale_conn.delete_launch_configuration(name)
                 prefix = _(u'Successfully deleted launch configuration.')
-                msg = '{0} {1}'.format(prefix, name)
+                msg = u'{0} {1}'.format(prefix, name)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
         else:
@@ -479,7 +479,7 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
 
             if self.request.params.get('create_sg_from_lc') == 'y':
                 escaped_name = quote(name)
-                location = self.request.route_path('scalinggroup_new')+("?launch_config={0}".format(escaped_name))
+                location = self.request.route_path('scalinggroup_new')+(u"?launch_config={0}".format(escaped_name))
             return HTTPFound(location=location)
         else:
             self.request.error_messages = self.create_form.get_errors_list()
