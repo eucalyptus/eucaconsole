@@ -353,10 +353,12 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
         else:
             self.scaling_group.availability_zones = ''
         self.scaling_group.termination_policies = self.request.params.getall('termination_policies')
+        print "edit: " , self.scaling_group.termination_policies
         # on AWS, the option 'Default' must appear at the end of the list
         if 'Default' in self.scaling_group.termination_policies:
             self.scaling_group.termination_policies.remove('Default')
             self.scaling_group.termination_policies.append('Default')
+        print "edit mod: " , self.scaling_group.termination_policies
         self.scaling_group.max_size = self.request.params.get('max_size', 1)
         self.scaling_group.min_size = self.request.params.get('min_size', 0)
         self.scaling_group.health_check_type = self.request.params.get('health_check_type')
@@ -380,9 +382,11 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
     def get_controller_options_json(self):
         if self.scaling_group is None:
             return '{}'
+        print "json: " , self.scaling_group.termination_policies
         return BaseView.escape_json(json.dumps({
             'scaling_group_name': self.scaling_group.name,
             'policies_count': len(self.policies),
+            'termination_policies': self.scaling_group.termination_policies,
         }))
 
 

@@ -10,6 +10,8 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor', 'EucaConsoleUtils'])
         $scope.minSize = 1;
         $scope.desiredCapacity = 1;
         $scope.maxSize = 1;
+        $scope.terminationPolicies = [];
+        $scope.terminationPoliciesOrder = [];
         $scope.vpcSubnets = [];
         $scope.vpcSubnetZonesMap = {};
         $scope.isNotChanged = true;
@@ -33,6 +35,8 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor', 'EucaConsoleUtils'])
             $scope.minSize = parseInt($('#min_size').val(), 10);
             $scope.desiredCapacity = parseInt($('#desired_capacity').val(), 10);
             $scope.maxSize = parseInt($('#max_size').val(), 10);
+            // the initial rearrangement must be made for setWatch() is called
+            $scope.rearrangeTerminationPoliciesOptions($scope.terminationPoliciesOrder);
             $scope.createVPCSubnetZonesMap();
             $scope.setInitialVPCSubnets();
         };
@@ -41,6 +45,9 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor', 'EucaConsoleUtils'])
             // scalingGroupName, policiesCount
             $scope.scalingGroupName = options['scaling_group_name'];
             $scope.policiesCount = options['policies_count'];
+            $scope.terminationPolicies = options.termination_policies;
+            $scope.terminationPoliciesOrder = $scope.terminationPolicies;
+            console.log($scope.terminationPoliciesOrder);
             $scope.setInitialValues();
             $scope.initChosenSelectors();
             $scope.setWatch();
@@ -78,6 +85,23 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor', 'EucaConsoleUtils'])
             }
         };
         $scope.setWatch = function () {
+            $scope.$watch('terminationPolicies', function () { 
+                $timeout(function (){
+                    console.log("Detected select");
+                    console.log($scope.terminationPolicies);
+                    var orderArray = $.map($('#termination_policies_chosen .search-choice'), function(choice){
+                        return $(choice).find('a.search-choice-close').first().data('optionArrayIndex');
+                    });
+                    console.log(orderArray);
+                    var options = $('#termination_policies').find('option');
+                    $scope.terminationPoliciesOrder = $.map(orderArray, function(index) {
+                        return $(options[index]).val();     
+                    });
+                    console.log($scope.terminationPoliciesOrder);
+                    $scope.rearrangeTerminationPoliciesOptions($scope.terminationPoliciesOrder);
+                    $('#termination_policies').trigger('chosen:updated');
+                });
+            }, true);
             $scope.$watch('vpcSubnets', function () { 
                 $scope.disableVPCSubnetOptions();
             }, true);
@@ -189,6 +213,24 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor', 'EucaConsoleUtils'])
                 });
             }
         };
+        // Reorder the termination policies selection options
+        $scope.rearrangeTerminationPoliciesOptions = function(policies) {
+            var select = $('#termination_policies');
+            var options = select.find('option');
+            var newOptions = $.map(policies, function(policy) {
+                var mapped = '';
+                angular.forEach(options, function(option) {
+                    if ($(option).val() === policy) {
+                        mapped = option;
+                    } 
+                });
+                return mapped;
+            });
+            // appending duplicated elements into select will sort the items in order
+            select.append(newOptions); 
+            $('#termination_policies').val($scope.terminationPoliciesOrder);
+            console.log("Select updated");
+        },
         // Disable the vpc subnet options if they are in the same zone as the selected vpc subnets
         $scope.disableVPCSubnetOptions = function () {
             $('#vpc_subnet').find('option').each(function() {
