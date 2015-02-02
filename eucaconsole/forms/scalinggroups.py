@@ -287,7 +287,6 @@ class ScalingGroupEditForm(BaseScalingGroupForm):
 
         if scaling_group is not None:
             self.default_cooldown.data = scaling_group.default_cooldown
-            print "form: " , scaling_group.termination_policies
             #self.termination_policies.data = scaling_group.termination_policies
             # Need to set the proper launch config since the launch config choices may have braces escaped
             from ..views import BaseView

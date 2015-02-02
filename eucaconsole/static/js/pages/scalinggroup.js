@@ -47,7 +47,6 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor', 'EucaConsoleUtils'])
             $scope.policiesCount = options['policies_count'];
             $scope.terminationPolicies = options.termination_policies;
             $scope.terminationPoliciesOrder = $scope.terminationPolicies;
-            console.log($scope.terminationPoliciesOrder);
             $scope.setInitialValues();
             $scope.initChosenSelectors();
             $scope.setWatch();
@@ -87,17 +86,14 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor', 'EucaConsoleUtils'])
         $scope.setWatch = function () {
             $scope.$watch('terminationPolicies', function () { 
                 $timeout(function (){
-                    console.log("Detected select");
-                    console.log($scope.terminationPolicies);
+                    // the operation below needs to be another watch call for terminationPoliciesOrder
                     var orderArray = $.map($('#termination_policies_chosen .search-choice'), function(choice){
                         return $(choice).find('a.search-choice-close').first().data('optionArrayIndex');
                     });
-                    console.log(orderArray);
                     var options = $('#termination_policies').find('option');
                     $scope.terminationPoliciesOrder = $.map(orderArray, function(index) {
                         return $(options[index]).val();     
                     });
-                    console.log($scope.terminationPoliciesOrder);
                     $scope.rearrangeTerminationPoliciesOptions($scope.terminationPoliciesOrder);
                     $('#termination_policies').trigger('chosen:updated');
                 });
@@ -229,7 +225,6 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor', 'EucaConsoleUtils'])
             // appending duplicated elements into select will sort the items in order
             select.append(newOptions); 
             $('#termination_policies').val($scope.terminationPoliciesOrder);
-            console.log("Select updated");
         },
         // Disable the vpc subnet options if they are in the same zone as the selected vpc subnets
         $scope.disableVPCSubnetOptions = function () {
