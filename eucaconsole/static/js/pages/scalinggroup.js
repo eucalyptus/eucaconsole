@@ -85,17 +85,9 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor', 'EucaConsoleUtils'])
         };
         $scope.setWatch = function () {
             $scope.$watch('terminationPolicies', function () { 
+                // timeout is needed to ensure the chosen widget to complete its update
                 $timeout(function (){
-                    // the operation below needs to be another watch call for terminationPoliciesOrder
-                    var orderArray = $.map($('#termination_policies_chosen .search-choice'), function(choice){
-                        return $(choice).find('a.search-choice-close').first().data('optionArrayIndex');
-                    });
-                    var options = $('#termination_policies').find('option');
-                    $scope.terminationPoliciesOrder = $.map(orderArray, function(index) {
-                        return $(options[index]).val();     
-                    });
-                    $scope.rearrangeTerminationPoliciesOptions($scope.terminationPoliciesOrder);
-                    $('#termination_policies').trigger('chosen:updated');
+                    $scope.updateTerminationPoliciesOrder(); 
                 });
             }, true);
             $scope.$watch('vpcSubnets', function () { 
@@ -213,6 +205,7 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor', 'EucaConsoleUtils'])
         $scope.rearrangeTerminationPoliciesOptions = function(policies) {
             var select = $('#termination_policies');
             var options = select.find('option');
+            // create an array of option elements that maps the order of input array 'policies' 
             var newOptions = $.map(policies, function(policy) {
                 var mapped = '';
                 angular.forEach(options, function(option) {
@@ -224,8 +217,24 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor', 'EucaConsoleUtils'])
             });
             // appending duplicated elements into select will sort the items in order
             select.append(newOptions); 
-            $('#termination_policies').val($scope.terminationPoliciesOrder);
-        },
+            // After rearrange the orde of the options, set the values on the select element
+            select.val($scope.terminationPoliciesOrder);
+        };
+        // Update the termination policies options order
+        $scope.updateTerminationPoliciesOrder = function() {
+            // Retreive the order of the listed temination policies from the chosen widget
+            var orderArray = $.map($('#termination_policies_chosen .search-choice'), function(choice){
+                return $(choice).find('a.search-choice-close').first().data('optionArrayIndex');
+            });
+            // Using the index order array above to construct the actual termination policy array in order
+            var options = $('#termination_policies').find('option');
+            $scope.terminationPoliciesOrder = $.map(orderArray, function(index) {
+                return $(options[index]).val();     
+            });
+            // Using the termination policies array to re-arrange the options in the select element
+            $scope.rearrangeTerminationPoliciesOptions($scope.terminationPoliciesOrder);
+            $('#termination_policies').trigger('chosen:updated');
+        };
         // Disable the vpc subnet options if they are in the same zone as the selected vpc subnets
         $scope.disableVPCSubnetOptions = function () {
             $('#vpc_subnet').find('option').each(function() {
