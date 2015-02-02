@@ -205,6 +205,9 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor', 'EucaConsoleUtils'])
         $scope.rearrangeTerminationPoliciesOptions = function(policies) {
             var select = $('#termination_policies');
             var options = select.find('option');
+            if (options.length === 0 ) {
+                return;
+            }
             // create an array of option elements that maps the order of input array 'policies' 
             var newOptions = $.map(policies, function(policy) {
                 var mapped = '';
