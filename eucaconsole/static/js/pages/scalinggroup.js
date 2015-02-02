@@ -220,8 +220,8 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor', 'EucaConsoleUtils'])
             });
             // appending duplicated elements into select will sort the items in order
             select.append(newOptions); 
-            // After rearrange the orde of the options, set the values on the select element
-            select.val($scope.terminationPoliciesOrder);
+            // after rearrange the order of the options, set the values on the select element
+            select.val(policies);
         };
         // Update the termination policies options order
         $scope.updateTerminationPoliciesOrder = function() {
