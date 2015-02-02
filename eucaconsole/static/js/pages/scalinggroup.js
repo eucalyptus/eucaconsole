@@ -43,7 +43,6 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor', 'EucaConsoleUtils'])
         };
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
-            // scalingGroupName, policiesCount
             $scope.scalingGroupName = options.scaling_group_name;
             $scope.policiesCount = options.policies_count;
             $scope.terminationPoliciesOrder = options.termination_policies;

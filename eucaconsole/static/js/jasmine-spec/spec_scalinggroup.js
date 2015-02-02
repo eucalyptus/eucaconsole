@@ -70,6 +70,12 @@ describe("ScalingGroupPage", function() {
             scope.initController('{"policies_count": 3}');
             expect(scope.policiesCount).toEqual(3);
         });
+
+        it("Should set terminationPoliciesOrder when initController() is called and termination_policies JSON is passed", function() {
+            scope.policiesCount = 0;
+            scope.initController('{"termination_policies": ["NewestInstance", "ClosestToNextInstanceHour"]}');
+            expect(scope.terminationPoliciesOrder[1]).toEqual('ClosestToNextInstanceHour');
+        });
     });
 
     describe("Function setInitialValues Test", function() {
@@ -81,19 +87,6 @@ describe("ScalingGroupPage", function() {
         it("Should call rearrangeTerminationPoliciesOptions when setInitialValues is called", function() {
             spyOn(scope, 'rearrangeTerminationPoliciesOptions');
             scope.setInitialValues();
-            expect(scope.rearrangeTerminationPoliciesOptions).toHaveBeenCalled();
-        });
-    });
-
-    describe("Function updateTerminationPoliciesOrder Test", function() {
-
-        beforeEach(function() {
-            setFixtures('<select id="termination_policies"><option></option></select>');
-        });
-
-        it("Should call rearrangeTerminationPoliciesOptions when updateTerminationPoliciesOrder is called", function() {
-            spyOn(scope, 'rearrangeTerminationPoliciesOptions');
-            scope.updateTerminationPoliciesOrder();
             expect(scope.rearrangeTerminationPoliciesOptions).toHaveBeenCalled();
         });
     });
@@ -124,7 +117,7 @@ describe("ScalingGroupPage", function() {
             setFixtures('<select id="termination_policies"><option></option></select>');
         });
 
-        it("Should call updateTerminationPoliciesOrder when terminationPolicies is updated", function() {
+        it("Should call updateTerminationPoliciesOrder when terminationPoliciesUpdate is updated", function() {
             spyOn(scope, 'updateTerminationPoliciesOrder');
             scope.setWatch();
             scope.terminationPolicies = ['NewestInstance', 'ClosestToNextInstanceHour'];
@@ -133,7 +126,7 @@ describe("ScalingGroupPage", function() {
             expect(scope.updateTerminationPoliciesOrder).toHaveBeenCalled();
         });
 
-        it("Should call rearrangeTerminationPoliciesOptions when terminationPolicies is updated", function() {
+        it("Should call rearrangeTerminationPoliciesOptions when terminationPoliciesUpdate is updated", function() {
             spyOn(scope, 'rearrangeTerminationPoliciesOptions');
             scope.setWatch();
             scope.terminationPolicies = ['NewestInstance', 'ClosestToNextInstanceHour'];
