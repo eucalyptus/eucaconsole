@@ -30,6 +30,7 @@ Pyramid views for Eucalyptus and AWS security groups
 """
 import simplejson as json
 import socket
+import unicodedata
 
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.view import view_config
@@ -270,6 +271,7 @@ class SecurityGroupView(TaggedItemView):
     def securitygroup_create(self):
         if self.securitygroup_form.validate():
             name = self.request.params.get('name')
+            name = unicodedata.normalize('NFKD', name).encode('ascii', 'ignore')
             description = self.request.params.get('description')
             vpc_network = self.request.params.get('securitygroup_vpc_network') or None
             if vpc_network == 'None':
