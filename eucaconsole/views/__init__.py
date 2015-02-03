@@ -429,6 +429,18 @@ class BaseView(object):
     def normalize_unicode(unicode_string, normalize_type='NFKD', output_type='ascii', replace_type='ignore'):
         return unicodedata.normalize(normalize_type, unicode_string).encode(output_type, replace_type)
 
+    @staticmethod
+    def encode_unicode_dict(unicode_dict):
+        encoded_dict = {}
+        for k, v in unicode_dict.iteritems():
+            if isinstance(v, unicode):
+                v = v.encode('utf-8')
+            elif isinstance(v, str):
+                # Must be encoded in UTF-8
+                v.decode('utf-8')
+            encoded_dict[k] = v
+        return encoded_dict
+
 
 class TaggedItemView(BaseView):
     """Common view for items that have tags (e.g. security group)"""
@@ -646,15 +658,17 @@ class LandingPageView(BaseView):
         return False
 
     def get_json_endpoint(self, route, path=False):
+        encoded_params = self.encode_unicode_dict(self.request.params)
         return u'{0}{1}'.format(
             self.request.route_path(route) if path is False else route,
-            u'?{0}'.format(urlencode(self.request.params)) if self.request.params else ''
+            u'?{0}'.format(urlencode(encoded_params)) if self.request.params else ''
         )
 
     def get_redirect_location(self, route):
         location = u'{0}'.format(self.request.route_path(route))
+        encoded_get_params = self.encode_unicode_dict(self.request.GET)
         if self.request.GET:
-            location = u'{0}?{1}'.format(location, urlencode(self.request.GET))
+            location = u'{0}?{1}'.format(location, urlencode(encoded_get_params))
         return location
 
 

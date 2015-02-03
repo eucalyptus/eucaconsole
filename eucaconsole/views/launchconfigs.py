@@ -28,8 +28,8 @@
 Pyramid views for Eucalyptus and AWS launch configurations
 
 """
-from urllib import quote
 import simplejson as json
+from urllib import quote, urlencode
 
 from boto.ec2.autoscale.launchconfig import LaunchConfiguration
 
@@ -88,9 +88,8 @@ class LaunchConfigsView(LandingPageView):
             name = self.request.params.get('name')
             location = self.request.route_path('launchconfigs')
             prefix = _(u'Unable to delete launch configuration')
-            template = u'{0} {1} - {2}'.format(prefix, name, '{0}')
+            template = u'{0} {1} - {2}'.format(prefix, name, u'{0}')
             with boto_error_handler(self.request, location, template):
-                launch_config = self.autoscale_conn.get_all_launch_configurations(names=[name])
                 self.autoscale_conn.delete_launch_configuration(name)
                 prefix = _(u'Successfully deleted launch configuration.')
                 msg = u'{0} {1}'.format(prefix, name)
@@ -213,6 +212,7 @@ class LaunchConfigsJsonView(LandingPageView):
         if security_group:
             return len(security_group.rules)
         return None 
+
 
 class LaunchConfigView(BaseView):
     """Views for single LaunchConfig"""
@@ -478,8 +478,10 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
                 self.request.session.flash(msg, queue=queue)
 
             if self.request.params.get('create_sg_from_lc') == 'y':
-                escaped_name = quote(name)
-                location = self.request.route_path('scalinggroup_new')+(u"?launch_config={0}".format(escaped_name))
+                location = u'{0}?{1}'.format(
+                    self.request.route_path('scalinggroup_new'),
+                    urlencode(self.encode_unicode_dict({'launch_config': name}))
+                )
             return HTTPFound(location=location)
         else:
             self.request.error_messages = self.create_form.get_errors_list()

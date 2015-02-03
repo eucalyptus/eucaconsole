@@ -113,7 +113,7 @@ class MasterLayout(object):
 
     def get_query_string(self):
         if self.request.GET:
-            return u'?{0}'.format(urlencode(self.request.GET))
+            return u'?{0}'.format(urlencode(BaseView.encode_unicode_dict(self.request.GET)))
         return ''
 
     def help_path(self, help_html):
