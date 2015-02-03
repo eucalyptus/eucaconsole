@@ -107,6 +107,11 @@ angular.module('BlockDeviceMappingEditor', ['EucaConsoleUtils'])
                 newSizeEntry.focus();
                 return false;
             }
+            var bdMapping = $scope.bdMapping;
+            if (newMappingEntry.val() in bdMapping) {
+                newMappingEntry.focus();
+                return false;
+            }
             if ($scope.newVolumeType === 'ephemeral') {
                 $scope.virtualName = "ephemeral" + $scope.ephemeralCount; 
                 $scope.ephemeralCount += 1;
@@ -114,7 +119,6 @@ angular.module('BlockDeviceMappingEditor', ['EucaConsoleUtils'])
                 $scope.newSize = '2';
                 $scope.newDOT = false;
             }
-            var bdMapping = $scope.bdMapping;
             bdMapping[$scope.newMappingPath] = {
                 'virtual_name' : $scope.virtualName,
                 'volume_type': 'None',
