@@ -29,6 +29,7 @@ Pyramid views for Eucalyptus and AWS key pairs
 
 """
 import simplejson as json
+import unicodedata
 
 from boto.exception import BotoServerError
 from pyramid.httpexceptions import HTTPFound
@@ -157,6 +158,8 @@ class KeyPairView(BaseView):
     def keypair_create(self):
         if self.keypair_form.validate():
             name = self.request.params.get('name')
+            # WORKAROUND: Boto seems to barf on names with non-ascii chars in conn.create_key_pair(name)
+            name = unicodedata.normalize('NFKD', name).encode('ascii', 'ignore')
             location = self.request.route_path('keypair_view', id=name)
             with boto_error_handler(self.request, location):
                 self.log_request(_(u"Creating keypair ") + name)
