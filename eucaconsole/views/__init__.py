@@ -38,6 +38,7 @@ import textwrap
 import time
 from datetime import datetime, timedelta
 import threading
+import unicodedata
 
 from cgi import FieldStorage
 from contextlib import contextmanager
@@ -423,6 +424,10 @@ class BaseView(object):
     @staticmethod
     def has_role_access(request):
         return request.session['cloud_type'] == 'euca' and request.session['role_access']
+
+    @staticmethod
+    def normalize_unicode(unicode_string, normalize_type='NFKD', output_type='ascii', replace_type='ignore'):
+        return unicodedata.normalize(normalize_type, unicode_string).encode(output_type, replace_type)
 
 
 class TaggedItemView(BaseView):

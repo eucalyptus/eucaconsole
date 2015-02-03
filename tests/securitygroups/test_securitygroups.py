@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2013-2014 Eucalyptus Systems, Inc.
 #
 # Redistribution and use of this software in source and binary forms,
@@ -155,3 +156,11 @@ class SecurityGroupsFiltersFormTestCaseOnAWS(BaseFormTestCase):
 
     def test_security_groups_filters_form_vpc_id_choices_on_aws(self):
         self.assertTrue(('None', _(u'No VPC')) in self.form.vpc_id.choices)
+
+
+class SecurityGroupUnicodeTestCase(BaseViewTestCase):
+    request = testing.DummyRequest()
+    view = SecurityGroupView(request)
+
+    def test_normalize_unicode_security_group_name(self):
+        self.assertEqual(self.view.normalize_unicode(u'secgroup-ÅÅÅ'), 'secgroup-AAA')
