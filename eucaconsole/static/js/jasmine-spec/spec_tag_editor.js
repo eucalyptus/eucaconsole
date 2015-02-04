@@ -186,4 +186,65 @@ describe("TagEditor", function() {
             expect(scope.visibleTagsCount).toBe(4);
         });
     });
+
+    describe("Function updateTagCount() Test", function() {
+
+        it("Should update tagCount to the length of tagsArray", function() {
+            scope.tagCount = 0; 
+            scope.tagsArray = [{name: '1', value: '1'},
+                               {name: '2', value: '2'},
+                               {name: 'Name', value: 'myName'}];
+            scope.updateTagCount(); 
+            expect(scope.tagCount).toBe(3);
+        });
+
+        it("Should update tagCount to the length of tagsArray + 1 if the name input field is included in the page's form", function() {
+            scope.tagCount = 0; 
+            scope.tagsArray = [{name: '1', value: '1'},
+                               {name: '2', value: '2'},
+                               {name: '3', value: '3'}];
+            setFixtures('<input id="name" value="myName"</input>');
+            scope.updateTagCount(); 
+            expect(scope.tagCount).toBe(4);
+        });
+
+        it("Should not update tagCount to the length of tagsArray + 1 if the name input field is not included in the page's form", function() {
+            scope.tagCount = 0; 
+            scope.tagsArray = [{name: '1', value: '1'},
+                               {name: '2', value: '2'},
+                               {name: '3', value: '3'}];
+            scope.updateTagCount(); 
+            expect(scope.tagCount).toBe(3);
+        });
+
+        it("Should not update tagCount to the length of tagsArray + 1 on the security group detail page", function() {
+            scope.tagCount = 0; 
+            scope.tagsArray = [{name: '1', value: '1'},
+                               {name: '2', value: '2'},
+                               {name: '3', value: '3'}];
+            setFixtures('<form id="security-group-detail-form"><input id="name" value="myName"></input></form>');
+            scope.updateTagCount(); 
+            expect(scope.tagCount).toBe(3);
+        });
+
+        it("Should update tagCount to the length of tagsArray + 1 on the launch instance wizard if a name is entered", function() {
+            scope.tagCount = 0; 
+            scope.tagsArray = [{name: '1', value: '1'},
+                               {name: '2', value: '2'},
+                               {name: '3', value: '3'}];
+            setFixtures('<form id="launch-instance-form"><input class="name" value="myName"></input></form>');
+            scope.updateTagCount(); 
+            expect(scope.tagCount).toBe(4);
+        });
+
+        it("Should not update tagCount to the length of tagsArray + 1 on the launch instance wizard if no name is entered", function() {
+            scope.tagCount = 0; 
+            scope.tagsArray = [{name: '1', value: '1'},
+                               {name: '2', value: '2'},
+                               {name: '3', value: '3'}];
+            setFixtures('<form id="launch-instance-form"></form>');
+            scope.updateTagCount(); 
+            expect(scope.tagCount).toBe(3);
+        });
+    });
 });
