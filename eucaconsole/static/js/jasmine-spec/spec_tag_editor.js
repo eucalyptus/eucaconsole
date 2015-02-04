@@ -325,4 +325,28 @@ describe("TagEditor", function() {
             expect(scope.tagsArray[1].value).toBe("c");
         });
     });
+
+    describe("Function removeTag Test", function() {
+
+        beforeEach(function() {
+            setFixtures('<div id="tag-editor"><div><textarea id="tags" name="tags"></textarea></div></div>');
+            scope.initTags('{"show_name_tag": true, "tags": {"1":"a","2":"b","3":"c"}}');
+        });
+
+        it("Should remove tagArray item when removeTag is called with index", function() {
+            expect(scope.tagsArray.length).toBe(3);
+            expect(scope.tagsArray[2].name).toBe("3");
+            expect(scope.tagsArray[2].value).toBe("c");
+            scope.removeTag(1, {"preventDefault": function(){}});
+            expect(scope.tagsArray.length).toBe(2);
+            expect(scope.tagsArray[1].name).toBe("3");
+            expect(scope.tagsArray[1].value).toBe("c");
+        });
+
+        it("Should emit tagUpdate when removeTag is called", function() {
+            spyOn(scope, '$emit');
+            scope.removeTag(1, {"preventDefault": function(){}});
+            expect(scope.$emit).toHaveBeenCalledWith('tagUpdate');
+        });
+    });
 });
