@@ -257,19 +257,72 @@ describe("TagEditor", function() {
 
         it("Should call updateVisibleTagsCount when syncTags is called", function() {
             spyOn(scope, 'updateVisibleTagsCount');
-            scope.tagsArray = [{name: '1', value: '1'},
-                               {name: '2', value: '2'},
-                               {name: '3', value: '3'}];
+            scope.tagsArray = [{name: '1', value: 'a'},
+                               {name: '2', value: 'b'},
+                               {name: '3', value: 'c'}];
             scope.syncTags(); 
             expect(scope.updateVisibleTagsCount).toHaveBeenCalled();
         });
 
         it("Should update textarea#tags with the string of tagsArray values when syncTags is called", function() {
-            scope.tagsArray = [{name: '1', value: '1'},
-                               {name: '2', value: '2'},
-                               {name: '3', value: '3'}];
+            scope.tagsArray = [{name: '1', value: 'a'},
+                               {name: '2', value: 'b'},
+                               {name: '3', value: 'c'}];
             scope.syncTags(); 
-            expect(scope.tagsTextarea.val()).toBe('{"1":"1","2":"2","3":"3"}');
+            expect(scope.tagsTextarea.val()).toBe('{"1":"a","2":"b","3":"c"}');
+        });
+    });
+
+    describe("Function syncTags Test", function() {
+
+        beforeEach(function() {
+            setFixtures('<div id="tag-editor"><div><textarea id="tags" name="tags"></textarea></div></div>');
+        });
+
+        it("Should call syncTags when initTags is called", function() {
+            spyOn(scope, 'syncTags');
+            scope.initTags('{"show_name_tag": true, "tags": {}}');
+            expect(scope.syncTags).toHaveBeenCalled();
+        });
+
+        it("Should call setWatch when initTags is called", function() {
+            spyOn(scope, 'setWatch');
+            scope.initTags('{"show_name_tag": true, "tags": {}}');
+            expect(scope.setWatch).toHaveBeenCalled();
+        });
+
+        it("Should update showNameTag when initTags is called with show_name_tag option", function() {
+            scope.showNameTag = false;
+            scope.initTags('{"show_name_tag": true, "tags": {}}');
+            expect(scope.showNameTag).toBeTruthy();
+        });
+
+        it("Should update tagArray when initTags is called with tags option", function() {
+            scope.initTags('{"show_name_tag": true, "tags": {"1":"a","2":"b","3":"c"}}');
+            expect(scope.tagsArray[0].name).toBe("1");
+            expect(scope.tagsArray[0].value).toBe("a");
+            expect(scope.tagsArray[1].name).toBe("2");
+            expect(scope.tagsArray[1].value).toBe("b");
+            expect(scope.tagsArray[2].name).toBe("3");
+            expect(scope.tagsArray[2].value).toBe("c");
+        });
+
+        it("Should not update tagArray items when initTags is called with tags option whose item key starts with aws:", function() {
+            scope.initTags('{"show_name_tag": true, "tags": {"1":"a","aws:":"b","3":"c"}}');
+            expect(scope.tagsArray.length).toBe(2);
+            expect(scope.tagsArray[0].name).toBe("1");
+            expect(scope.tagsArray[0].value).toBe("a");
+            expect(scope.tagsArray[1].name).toBe("3");
+            expect(scope.tagsArray[1].value).toBe("c");
+        });
+
+        it("Should not update tagArray items when initTags is called with tags option whose item key starts with euca:", function() {
+            scope.initTags('{"show_name_tag": true, "tags": {"euca:":"a","2":"b","3":"c"}}');
+            expect(scope.tagsArray.length).toBe(2);
+            expect(scope.tagsArray[0].name).toBe("2");
+            expect(scope.tagsArray[0].value).toBe("b");
+            expect(scope.tagsArray[1].name).toBe("3");
+            expect(scope.tagsArray[1].value).toBe("c");
         });
     });
 });
