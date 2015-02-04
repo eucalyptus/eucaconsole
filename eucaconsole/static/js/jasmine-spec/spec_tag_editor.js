@@ -103,34 +103,52 @@ describe("TagEditor", function() {
     describe("Function checkDuplicatedTagKey() Test", function() {
 
         beforeEach(function() {
-            scope.newTagKey = 'myDupKey';
             scope.tagsArray = [{name: '1', value: '1'},
                                {name: '2', value: '2'},
                                {name: 'myDupKey', value: '3'}];
         });
 
         it("The value of existsTagKey is true when newTagKey already exists", function() {
+            scope.newTagKey = 'myDupKey';
             scope.checkDuplicatedTagKey(); 
             expect(scope.existsTagKey).toBeTruthy();
         });
 
         it("The value of tagKeyClass is 'error' when newTagKey already exists", function() {
+            scope.newTagKey = 'myDupKey';
             scope.checkDuplicatedTagKey(); 
             expect(scope.tagKeyClass).toBe('error');
+        });
+
+        it("The value of existsTagKey is false when there is no dup key", function() {
+            scope.newTagKey = 'myKey';
+            scope.checkDuplicatedTagKey(); 
+            expect(scope.existsTagKey).not.toBeTruthy();
+        });
+
+        it("The value of tagKeyClass is empty when there is no dup key", function() {
+            scope.newTagKey = 'myKey';
+            scope.checkDuplicatedTagKey(); 
+            expect(scope.tagKeyClass).toBe('');
         });
     });
 
     describe("Function isNameTagIncluded() Test", function() {
 
-        beforeEach(function() {
+        it("Should return true when tagsArray contains an item whose name is 'Name'", function() {
             scope.tagsArray = [{name: '1', value: '1'},
                                {name: '2', value: '2'},
                                {name: 'Name', value: '3'}];
-        });
-
-        it("Should return true when tagsArray contains an item whose name is 'Name'", function() {
             var returnValue = scope.isNameTagIncluded(); 
             expect(returnValue).toBeTruthy();
+        });
+
+        it("Should return false when tagsArray does not contain an item whose name is 'Name'", function() {
+            scope.tagsArray = [{name: '1', value: '1'},
+                               {name: '2', value: '2'},
+                               {name: '3', value: '3'}];
+            var returnValue = scope.isNameTagIncluded(); 
+            expect(returnValue).not.toBeTruthy();
         });
     });
 
