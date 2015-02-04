@@ -43,12 +43,14 @@ describe("TagEditor", function() {
 
         it("Should invalid input when newTagKey is empty", function() {
             scope.newTagKey = '';
+            scope.isTagNotComplete = false;
             scope.checkRequiredInput(); 
             expect(scope.isTagNotComplete).toBeTruthy();
         });
 
         it("Should invalid input when newTagValue is empty", function() {
             scope.newTagValue = '';
+            scope.isTagNotComplete = false;
             scope.checkRequiredInput(); 
             expect(scope.isTagNotComplete).toBeTruthy();
         });
@@ -61,11 +63,40 @@ describe("TagEditor", function() {
 
         it("Should invalid input when newTagKey already exists", function() {
             scope.newTagKey = 'myDupKey';
+            scope.isTagNotComplete = false;
             scope.tagsArray = [{name: '1', value: '1'},
                                {name: '2', value: '2'},
                                {name: 'myDupKey', value: '3'}];
             scope.checkRequiredInput(); 
             expect(scope.isTagNotComplete).toBeTruthy();
+        });
+
+        it("Should invalid input when tag-name-input-div element contains error class", function() {
+            scope.newTagKey = 'myKey';
+            scope.newTagValue = 'myValue';
+            scope.isTagNotComplete = false;
+            setFixtures('<div id="tag-name-input-div" class="error"></div>');
+            scope.checkRequiredInput(); 
+            expect(scope.isTagNotComplete).toBeTruthy();
+        });
+
+        it("Should invalid input when tag-value-input-div element contains error class", function() {
+            scope.newTagKey = 'myKey';
+            scope.newTagValue = 'myValue';
+            scope.isTagNotComplete = false;
+            setFixtures('<div id="tag-value-input-div" class="error"></div>');
+            scope.checkRequiredInput(); 
+            expect(scope.isTagNotComplete).toBeTruthy();
+        });
+
+        it("Should validate input when there is no dup key or value and no error class", function() {
+            scope.newTagKey = 'myKey';
+            scope.newTagValue = 'myValue';
+            scope.tagsArray = [{name: '1', value: '1'}];
+            scope.isTagNotComplete = true;
+            setFixtures('<div id="tag-name-input-div"></div><div id="tag-value-input-div"></div>');
+            scope.checkRequiredInput(); 
+            expect(scope.isTagNotComplete).not.toBeTruthy();
         });
     });
 
