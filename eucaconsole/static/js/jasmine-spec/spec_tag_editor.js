@@ -247,4 +247,29 @@ describe("TagEditor", function() {
             expect(scope.tagCount).toBe(3);
         });
     });
+
+    describe("Function syncTags Test", function() {
+
+        beforeEach(function() {
+            setFixtures('<div id="tag-editor"><div><textarea id="tags" name="tags"></textarea></div></div>');
+            scope.initTags('{"show_name_tag": true, "tags": {}}');
+        });
+
+        it("Should call updateVisibleTagsCount when syncTags is called", function() {
+            spyOn(scope, 'updateVisibleTagsCount');
+            scope.tagsArray = [{name: '1', value: '1'},
+                               {name: '2', value: '2'},
+                               {name: '3', value: '3'}];
+            scope.syncTags(); 
+            expect(scope.updateVisibleTagsCount).toHaveBeenCalled();
+        });
+
+        it("Should update textarea#tags with the string of tagsArray values when syncTags is called", function() {
+            scope.tagsArray = [{name: '1', value: '1'},
+                               {name: '2', value: '2'},
+                               {name: '3', value: '3'}];
+            scope.syncTags(); 
+            expect(scope.tagsTextarea.val()).toBe('{"1":"1","2":"2","3":"3"}');
+        });
+    });
 });
