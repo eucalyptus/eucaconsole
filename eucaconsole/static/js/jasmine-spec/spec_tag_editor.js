@@ -428,4 +428,87 @@ describe("TagEditor", function() {
             expect(scope.tagsArray[3]).toBe(undefined);
         });
     });
+
+    describe("Function keyListener Test", function() {
+
+        beforeEach(function() {
+            scope.initTags('{"show_name_tag": true, "tags": {"1":"a","2":"b","3":"c"}}');
+        });
+
+        it("Should call addTag when keyListener is called with 'keyCode' value of 13 ", function() {
+            spyOn(scope, 'addTag');
+            scope.keyListener({"preventDefault": function(){}, "keyCode": 13});
+            expect(scope.addTag).toHaveBeenCalled();
+        });
+
+        it("Should not call addTag when keyListener is called without 'keyCode' value of 13 ", function() {
+            spyOn(scope, 'addTag');
+            scope.keyListener({"preventDefault": function(){}, "keyCode": 12});
+            expect(scope.addTag).not.toHaveBeenCalled();
+        });
+    });
+
+    describe("Function getSafeTitle Test", function() {
+
+        it("Should return a sanitized string consist of tag name + '=' + tag value when getSafeTitle is called", function() {
+            var returnValue = scope.getSafeTitle({"name": "tagname&", "value": "tagvalue"});
+            expect(returnValue).toBe("tagname&amp; = tagvalue");
+        });
+    });
+
+    describe("Function setWatch Test", function() {
+
+        beforeEach(function() {
+            scope.initTags('{"show_name_tag": true, "tags": {"1":"a","2":"b","3":"c"}}');
+        });
+
+        it("Should call setTagCountWatch() when setWatch is updated", function() {
+            spyOn(scope, 'setTagCountWatch');
+            scope.setWatch(); 
+            expect(scope.setTagCountWatch).toHaveBeenCalled();
+        });
+
+        it("Should call checkRequiredInput() when newTagKey is updated", function() {
+            spyOn(scope, 'checkRequiredInput');
+            scope.setWatch(); 
+            scope.newTagKey = "newKey";
+            scope.$apply();
+            expect(scope.checkRequiredInput).toHaveBeenCalled();
+        });
+
+        it("Should call checkRequiredInput() when newTagValue is updated", function() {
+            spyOn(scope, 'checkRequiredInput');
+            scope.setWatch(); 
+            scope.newTagValue = "newValue";
+            scope.$apply();
+            expect(scope.checkRequiredInput).toHaveBeenCalled();
+        });
+    });
+
+    describe("Function setTagCountWatch Test", function() {
+
+        beforeEach(function() {
+            scope.initTags('{"show_name_tag": true, "tags": {"1":"a","2":"b","3":"c"}}');
+        });
+
+        it("Should call updateTagCount() when tagsArray is updated", function() {
+            spyOn(scope, 'updateTagCount');
+            scope.setTagCountWatch(); 
+            scope.tagsArray = [{name: '1', value: 'a'},
+                               {name: '2', value: 'b'},
+                               {name: '3', value: 'c'}];
+            scope.$apply();
+            expect(scope.updateTagCount).toHaveBeenCalled();
+        });
+
+        it("Should call updateVisibleTagsCount() when tagsArray is updated", function() {
+            spyOn(scope, 'updateVisibleTagsCount');
+            scope.setTagCountWatch(); 
+            scope.tagsArray = [{name: '1', value: 'a'},
+                               {name: '2', value: 'b'},
+                               {name: '3', value: 'c'}];
+            scope.$apply();
+            expect(scope.updateVisibleTagsCount).toHaveBeenCalled();
+        });
+    });
 });
