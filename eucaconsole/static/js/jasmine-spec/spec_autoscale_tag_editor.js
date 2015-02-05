@@ -70,7 +70,7 @@ describe("AutoScaleTagEditor", function() {
 
         it("Should update tagCount to the length of tagsArray", function() {
             scope.tagCount = 0; 
-            scope.tagsArray = [{name: '1', value: 'a'},
+            scope.tagsArray = [{name: '1', value: 'a', propagate_at_launch: true},
                                {name: '2', value: 'b'},
                                {name: 'Name', value: 'myName'}];
             scope.updateTagCount(); 
@@ -235,6 +235,25 @@ describe("AutoScaleTagEditor", function() {
         it("Should return a sanitized string consist of tag name + '=' + tag value when getSafeTitle is called", function() {
             var returnValue = scope.getSafeTitle({"name": "tagname&", "value": "tagvalue"});
             expect(returnValue).toBe("tagname&amp; = tagvalue");
+        });
+    });
+
+    describe("Function togglePropagateCheckbox Test", function() {
+
+        it("Should return false when the value of propagate-checkbox true and togglePropagateCheckbox is called", function() {
+            var checkbox = $('#propagate-checkbox');
+            checkbox.prop('checked', true);
+            scope.togglePropagateCheckbox();
+            var returnValue = checkbox.prop('checked');
+            expect(returnValue).not.toBeTruthy();
+        });
+
+        it("Should return true when the value of propagate-checkbox false and togglePropagateCheckbox is called", function() {
+            var checkbox = $('#propagate-checkbox');
+            checkbox.prop('checked', false);
+            scope.togglePropagateCheckbox();
+            var returnValue = checkbox.prop('checked');
+            expect(returnValue).toBeTruthy();
         });
     });
 
