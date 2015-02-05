@@ -44,6 +44,18 @@ describe("TagEditor", function() {
         it("Initial value of tagKeyClass is empty", function() {
             expect(scope.tagKeyClass).toEqual('');
         });
+
+        it("Initial value of tagEditor is undefined", function() {
+            expect(scope.tagEditor).toEqual(undefined);
+        });
+
+        it("Initial value of tagInputs is undefined", function() {
+            expect(scope.tagInputs).toEqual(undefined);
+        });
+
+        it("Initial value of tagsTextarea is undefined", function() {
+            expect(scope.tagsTextarea).toEqual(undefined);
+        });
     });
 
     describe("Function checkRequiredInput() Test", function() {
@@ -101,7 +113,6 @@ describe("TagEditor", function() {
             scope.newTagValue = 'myValue';
             scope.tagsArray = [{name: '1', value: 'a'}];
             scope.isTagNotComplete = true;
-            setFixtures('<div id="tag-name-input-div"></div><div id="tag-value-input-div"></div>');
             scope.checkRequiredInput(); 
             expect(scope.isTagNotComplete).not.toBeTruthy();
         });
@@ -326,6 +337,21 @@ describe("TagEditor", function() {
             expect(scope.tagsArray[0].value).toBe("b");
             expect(scope.tagsArray[1].name).toBe("3");
             expect(scope.tagsArray[1].value).toBe("c");
+        });
+
+        it("Should initialize tagEditor when initTags is called", function() {
+            scope.initTags('{"show_name_tag": true, "tags": {}}');
+            expect(scope.tagEditor.length).not.toBe(0);
+        });
+
+        it("Should initialize tagInputs when initTags is called", function() {
+            scope.initTags('{"show_name_tag": true, "tags": {}}');
+            expect(scope.tagInputs.length).not.toBe(0);
+        });
+
+        it("Should initialize tagsTextarea when initTags is called", function() {
+            scope.initTags('{"show_name_tag": true, "tags": {}}');
+            expect(scope.tagsTextarea.length).not.toBe(0);
         });
     });
 

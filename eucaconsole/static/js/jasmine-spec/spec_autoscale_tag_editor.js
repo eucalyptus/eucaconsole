@@ -40,9 +40,25 @@ describe("AutoScaleTagEditor", function() {
         it("Initial value of newTagValue is empty", function() {
             expect(scope.newTagValue).toEqual('');
         });
+
+        it("Initial value of tagEditor is undefined", function() {
+            expect(scope.tagEditor).toEqual(undefined);
+        });
+
+        it("Initial value of tagInputs is undefined", function() {
+            expect(scope.tagInputs).toEqual(undefined);
+        });
+
+        it("Initial value of tagsTextarea is undefined", function() {
+            expect(scope.tagsTextarea).toEqual(undefined);
+        });
     });
 
     describe("Function checkRequiredInput() Test", function() {
+
+        beforeEach(function() {
+            scope.isTagNotComplete = false;
+        });
 
         it("Should invalid input when newTagKey is empty", function() {
             scope.newTagKey = '';
@@ -56,13 +72,27 @@ describe("AutoScaleTagEditor", function() {
             expect(scope.isTagNotComplete).toBeTruthy();
         });
 
-        it("Should invalid input when newTagKey already exists", function() {
-            scope.newTagKey = 'myDupKey';
-            scope.tagsArray = [{name: '1', value: '1'},
-                               {name: '2', value: '2'},
-                               {name: 'myDupKey', value: '3'}];
+        it("Should invalid input when autoscale-tag-name-input-div element contains error class", function() {
+            scope.newTagKey = 'myKey';
+            scope.newTagValue = 'myValue';
+            setFixtures('<div id="autoscale-tag-name-input-div" class="error"></div>');
             scope.checkRequiredInput(); 
             expect(scope.isTagNotComplete).toBeTruthy();
+        });
+
+        it("Should invalid input when autoscale-tag-value-input-div element contains error class", function() {
+            scope.newTagKey = 'myKey';
+            scope.newTagValue = 'myValue';
+            setFixtures('<div id="autoscale-tag-value-input-div" class="error"></div>');
+            scope.checkRequiredInput(); 
+            expect(scope.isTagNotComplete).toBeTruthy();
+        });
+
+        it("Should valid input when newTagKey and newTagValue are specified and input elements contain no error class", function() {
+            scope.newTagKey = 'myKey';
+            scope.newTagValue = 'myValue';
+            scope.checkRequiredInput(); 
+            expect(scope.isTagNotComplete).not.toBeTruthy();
         });
     });
 
@@ -137,6 +167,21 @@ describe("AutoScaleTagEditor", function() {
             expect(scope.tagsArray[0].value).toBe("b");
             expect(scope.tagsArray[1].name).toBe("3");
             expect(scope.tagsArray[1].value).toBe("c");
+        });
+
+        it("Should initialize tagEditor when initTags is called", function() {
+            scope.initTags('{"tags_list": []}');
+            expect(scope.tagEditor.length).not.toBe(0);
+        });
+
+        it("Should initialize tagInputs when initTags is called", function() {
+            scope.initTags('{"tags_list": []}');
+            expect(scope.tagInputs.length).not.toBe(0);
+        });
+
+        it("Should initialize tagsTextarea when initTags is called", function() {
+            scope.initTags('{"tags_list": []}');
+            expect(scope.tagsTextarea.length).not.toBe(0);
         });
     });
 
