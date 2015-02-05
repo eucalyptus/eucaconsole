@@ -20,6 +20,13 @@ describe("TagEditor", function() {
         });
     }));
 
+    beforeEach(function() {
+        var template = window.__html__['templates/panels/tag_editor.pt'];
+        template = template.replace(/script src/g, "script ignore_src"); 
+        template = template.replace(/\<link/g, "\<ignore_link"); 
+        setFixtures(template);
+    });
+
     describe("Initial Values Test", function() {
 
         it("Initial value of existsTagKey is false", function() {
@@ -64,9 +71,9 @@ describe("TagEditor", function() {
         it("Should invalid input when newTagKey already exists", function() {
             scope.newTagKey = 'myDupKey';
             scope.isTagNotComplete = false;
-            scope.tagsArray = [{name: '1', value: '1'},
-                               {name: '2', value: '2'},
-                               {name: 'myDupKey', value: '3'}];
+            scope.tagsArray = [{name: '1', value: 'a'},
+                               {name: '2', value: 'b'},
+                               {name: 'myDupKey', value: 'c'}];
             scope.checkRequiredInput(); 
             expect(scope.isTagNotComplete).toBeTruthy();
         });
@@ -92,7 +99,7 @@ describe("TagEditor", function() {
         it("Should validate input when there is no dup key or value and no error class", function() {
             scope.newTagKey = 'myKey';
             scope.newTagValue = 'myValue';
-            scope.tagsArray = [{name: '1', value: '1'}];
+            scope.tagsArray = [{name: '1', value: 'a'}];
             scope.isTagNotComplete = true;
             setFixtures('<div id="tag-name-input-div"></div><div id="tag-value-input-div"></div>');
             scope.checkRequiredInput(); 
@@ -103,9 +110,9 @@ describe("TagEditor", function() {
     describe("Function checkDuplicatedTagKey() Test", function() {
 
         beforeEach(function() {
-            scope.tagsArray = [{name: '1', value: '1'},
-                               {name: '2', value: '2'},
-                               {name: 'myDupKey', value: '3'}];
+            scope.tagsArray = [{name: '1', value: 'a'},
+                               {name: '2', value: 'b'},
+                               {name: 'myDupKey', value: 'c'}];
         });
 
         it("The value of existsTagKey is true when newTagKey already exists", function() {
@@ -136,17 +143,17 @@ describe("TagEditor", function() {
     describe("Function isNameTagIncluded() Test", function() {
 
         it("Should return true when tagsArray contains an item whose name is 'Name'", function() {
-            scope.tagsArray = [{name: '1', value: '1'},
-                               {name: '2', value: '2'},
-                               {name: 'Name', value: '3'}];
+            scope.tagsArray = [{name: '1', value: 'a'},
+                               {name: '2', value: 'b'},
+                               {name: 'Name', value: 'c'}];
             var returnValue = scope.isNameTagIncluded(); 
             expect(returnValue).toBeTruthy();
         });
 
         it("Should return false when tagsArray does not contain an item whose name is 'Name'", function() {
-            scope.tagsArray = [{name: '1', value: '1'},
-                               {name: '2', value: '2'},
-                               {name: '3', value: '3'}];
+            scope.tagsArray = [{name: '1', value: 'a'},
+                               {name: '2', value: 'b'},
+                               {name: '3', value: 'c'}];
             var returnValue = scope.isNameTagIncluded(); 
             expect(returnValue).not.toBeTruthy();
         });
@@ -155,9 +162,9 @@ describe("TagEditor", function() {
     describe("Function updateVisibleTagsCount() Test", function() {
 
         beforeEach(function() {
-            scope.tagsArray = [{name: '1', value: '1'},
-                               {name: '2', value: '2'},
-                               {name: '3', value: '3'}];
+            scope.tagsArray = [{name: '1', value: 'a'},
+                               {name: '2', value: 'b'},
+                               {name: '3', value: 'c'}];
         });
 
         it("Should update visiableTagsCount to the length of tagsArray if showNameTag is true", function() {
@@ -174,14 +181,14 @@ describe("TagEditor", function() {
 
         it("Should update visiableTagsCount to the length of tagsArray while excluding an item whose name is 'Name' if showNameTag is false", function() {
             scope.showNameTag = false;
-            scope.tagsArray.push({name: 'Name', value: '4'});
+            scope.tagsArray.push({name: 'Name', value: 'd'});
             scope.updateVisibleTagsCount(); 
             expect(scope.visibleTagsCount).toBe(3);
         });
 
         it("Should update visiableTagsCount to the length of tagsArray while including an item whose name is 'Name' if showNameTag is true", function() {
             scope.showNameTag = true;
-            scope.tagsArray.push({name: 'Name', value: '4'});
+            scope.tagsArray.push({name: 'Name', value: 'd'});
             scope.updateVisibleTagsCount(); 
             expect(scope.visibleTagsCount).toBe(4);
         });
@@ -191,8 +198,8 @@ describe("TagEditor", function() {
 
         it("Should update tagCount to the length of tagsArray", function() {
             scope.tagCount = 0; 
-            scope.tagsArray = [{name: '1', value: '1'},
-                               {name: '2', value: '2'},
+            scope.tagsArray = [{name: '1', value: 'a'},
+                               {name: '2', value: 'b'},
                                {name: 'Name', value: 'myName'}];
             scope.updateTagCount(); 
             expect(scope.tagCount).toBe(3);
@@ -200,9 +207,9 @@ describe("TagEditor", function() {
 
         it("Should update tagCount to the length of tagsArray + 1 if the name input field is included in the page's form", function() {
             scope.tagCount = 0; 
-            scope.tagsArray = [{name: '1', value: '1'},
-                               {name: '2', value: '2'},
-                               {name: '3', value: '3'}];
+            scope.tagsArray = [{name: '1', value: 'a'},
+                               {name: '2', value: 'b'},
+                               {name: '3', value: 'c'}];
             setFixtures('<input id="name" value="myName"</input>');
             scope.updateTagCount(); 
             expect(scope.tagCount).toBe(4);
@@ -210,18 +217,18 @@ describe("TagEditor", function() {
 
         it("Should not update tagCount to the length of tagsArray + 1 if the name input field is not included in the page's form", function() {
             scope.tagCount = 0; 
-            scope.tagsArray = [{name: '1', value: '1'},
-                               {name: '2', value: '2'},
-                               {name: '3', value: '3'}];
+            scope.tagsArray = [{name: '1', value: 'a'},
+                               {name: '2', value: 'b'},
+                               {name: '3', value: 'c'}];
             scope.updateTagCount(); 
             expect(scope.tagCount).toBe(3);
         });
 
         it("Should not update tagCount to the length of tagsArray + 1 on the security group detail page", function() {
             scope.tagCount = 0; 
-            scope.tagsArray = [{name: '1', value: '1'},
-                               {name: '2', value: '2'},
-                               {name: '3', value: '3'}];
+            scope.tagsArray = [{name: '1', value: 'a'},
+                               {name: '2', value: 'b'},
+                               {name: '3', value: 'c'}];
             setFixtures('<form id="security-group-detail-form"><input id="name" value="myName"></input></form>');
             scope.updateTagCount(); 
             expect(scope.tagCount).toBe(3);
@@ -229,9 +236,9 @@ describe("TagEditor", function() {
 
         it("Should update tagCount to the length of tagsArray + 1 on the launch instance wizard if a name is entered", function() {
             scope.tagCount = 0; 
-            scope.tagsArray = [{name: '1', value: '1'},
-                               {name: '2', value: '2'},
-                               {name: '3', value: '3'}];
+            scope.tagsArray = [{name: '1', value: 'a'},
+                               {name: '2', value: 'b'},
+                               {name: '3', value: 'c'}];
             setFixtures('<form id="launch-instance-form"><input class="name" value="myName"></input></form>');
             scope.updateTagCount(); 
             expect(scope.tagCount).toBe(4);
@@ -239,9 +246,9 @@ describe("TagEditor", function() {
 
         it("Should not update tagCount to the length of tagsArray + 1 on the launch instance wizard if no name is entered", function() {
             scope.tagCount = 0; 
-            scope.tagsArray = [{name: '1', value: '1'},
-                               {name: '2', value: '2'},
-                               {name: '3', value: '3'}];
+            scope.tagsArray = [{name: '1', value: 'a'},
+                               {name: '2', value: 'b'},
+                               {name: '3', value: 'c'}];
             setFixtures('<form id="launch-instance-form"></form>');
             scope.updateTagCount(); 
             expect(scope.tagCount).toBe(3);
@@ -251,60 +258,56 @@ describe("TagEditor", function() {
     describe("Function syncTags Test", function() {
 
         beforeEach(function() {
-            setFixtures('<div id="tag-editor"><div><textarea id="tags" name="tags"></textarea></div></div>');
-            scope.initTags('{"show_name_tag": true, "tags": {}}');
+            scope.initTags('{"show_name_tag": true, "tags": {"1":"a","2":"b","3":"c"}}');
         });
 
         it("Should call updateVisibleTagsCount when syncTags is called", function() {
             spyOn(scope, 'updateVisibleTagsCount');
-            scope.tagsArray = [{name: '1', value: 'a'},
-                               {name: '2', value: 'b'},
-                               {name: '3', value: 'c'}];
             scope.syncTags(); 
             expect(scope.updateVisibleTagsCount).toHaveBeenCalled();
         });
 
         it("Should update textarea#tags with the string of tagsArray values when syncTags is called", function() {
-            scope.tagsArray = [{name: '1', value: 'a'},
-                               {name: '2', value: 'b'},
-                               {name: '3', value: 'c'}];
             scope.syncTags(); 
             expect(scope.tagsTextarea.val()).toBe('{"1":"a","2":"b","3":"c"}');
         });
     });
 
-    describe("Function syncTags Test", function() {
-
-        beforeEach(function() {
-            setFixtures('<div id="tag-editor"><div><textarea id="tags" name="tags"></textarea></div></div>');
-        });
+    describe("Function initTags Test", function() {
 
         it("Should call syncTags when initTags is called", function() {
             spyOn(scope, 'syncTags');
-            scope.initTags('{"show_name_tag": true, "tags": {}}');
+            scope.initTags('{"show_name_tag": true, "tags": {"1":"a","2":"b","3":"c"}}');
             expect(scope.syncTags).toHaveBeenCalled();
         });
 
         it("Should call setWatch when initTags is called", function() {
             spyOn(scope, 'setWatch');
-            scope.initTags('{"show_name_tag": true, "tags": {}}');
+            scope.initTags('{"show_name_tag": true, "tags": {"1":"a","2":"b","3":"c"}}');
             expect(scope.setWatch).toHaveBeenCalled();
         });
 
         it("Should update showNameTag when initTags is called with show_name_tag option", function() {
             scope.showNameTag = false;
-            scope.initTags('{"show_name_tag": true, "tags": {}}');
+            scope.initTags('{"show_name_tag": true, "tags": {"1":"a","2":"b","3":"c"}}');
             expect(scope.showNameTag).toBeTruthy();
         });
 
         it("Should update tagArray when initTags is called with tags option", function() {
             scope.initTags('{"show_name_tag": true, "tags": {"1":"a","2":"b","3":"c"}}');
+            expect(scope.tagsArray.length).toBe(3);
             expect(scope.tagsArray[0].name).toBe("1");
             expect(scope.tagsArray[0].value).toBe("a");
             expect(scope.tagsArray[1].name).toBe("2");
             expect(scope.tagsArray[1].value).toBe("b");
             expect(scope.tagsArray[2].name).toBe("3");
             expect(scope.tagsArray[2].value).toBe("c");
+        });
+
+        it("Should not update tagArray when initTags is called with empty tags option", function() {
+            scope.initTags('{"show_name_tag": true, "tags": {}}');
+            expect(scope.tagsArray.length).toBe(0);
+            expect(scope.tagsArray[0]).toBe(undefined);
         });
 
         it("Should not update tagArray items when initTags is called with tags option whose item key starts with aws:", function() {
@@ -329,7 +332,6 @@ describe("TagEditor", function() {
     describe("Function removeTag Test", function() {
 
         beforeEach(function() {
-            setFixtures('<div id="tag-editor"><div><textarea id="tags" name="tags"></textarea></div></div>');
             scope.initTags('{"show_name_tag": true, "tags": {"1":"a","2":"b","3":"c"}}');
         });
 
@@ -353,10 +355,6 @@ describe("TagEditor", function() {
     describe("Function addTag Test", function() {
 
         beforeEach(function() {
-            var template = window.__html__['templates/panels/tag_editor.pt'];
-            template = template.replace(/script src/g, "script ignore_src"); 
-            template = template.replace(/\<link/g, "\<ignore_link"); 
-            setFixtures(template);
             scope.initTags('{"show_name_tag": true, "tags": {"1":"a","2":"b","3":"c"}}');
         });
 
