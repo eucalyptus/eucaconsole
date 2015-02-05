@@ -349,4 +349,85 @@ describe("TagEditor", function() {
             expect(scope.$emit).toHaveBeenCalledWith('tagUpdate');
         });
     });
+
+    describe("Function addTag Test", function() {
+
+        beforeEach(function() {
+            var template = window.__html__['templates/panels/tag_editor.pt'];
+            template = template.replace(/script src/g, "script ignore_src"); 
+            template = template.replace(/\<link/g, "\<ignore_link"); 
+            setFixtures(template);
+            scope.initTags('{"show_name_tag": true, "tags": {"1":"a","2":"b","3":"c"}}');
+        });
+
+        it("Should call checkRequiredInput when addTag is called", function() {
+            spyOn(scope, 'checkRequiredInput');
+            scope.addTag({"preventDefault": function(){}});
+            expect(scope.checkRequiredInput).toHaveBeenCalled();
+        });
+
+        it("Should update tagArray when addTag is called and a new tag is added", function() {
+            scope.newTagKey = "newKey";
+            scope.newTagValue = "newValue";
+            $('#tag-name-input').val(scope.newTagKey);
+            $('#tag-value-input').val(scope.newTagValue);
+            scope.addTag({"currentTarget": "#add-tag-btn", "preventDefault": function(){}});
+            expect(scope.tagsArray.length).toBe(4);
+            expect(scope.tagsArray[3].name).toBe("newKey");
+            expect(scope.tagsArray[3].value).toBe("newValue");
+            expect(scope.tagsArray[3].fresh).toBeTruthy();
+        });
+
+        it("Should emit tagUpdate when addTag is called and a new tag is added", function() {
+            spyOn(scope, '$emit');
+            scope.newTagKey = "newKey";
+            scope.newTagValue = "newValue";
+            $('#tag-name-input').val(scope.newTagKey);
+            $('#tag-value-input').val(scope.newTagValue);
+            scope.addTag({"currentTarget": "#add-tag-btn", "preventDefault": function(){}});
+            expect(scope.$emit).toHaveBeenCalledWith('tagUpdate');
+        });
+
+        it("Should call syncTags when addTag is called and a new tag is added", function() {
+            spyOn(scope, 'syncTags');
+            scope.newTagKey = "newKey";
+            scope.newTagValue = "newValue";
+            $('#tag-name-input').val(scope.newTagKey);
+            $('#tag-value-input').val(scope.newTagValue);
+            scope.addTag({"currentTarget": "#add-tag-btn", "preventDefault": function(){}});
+            expect(scope.syncTags).toHaveBeenCalled();
+        });
+
+        it("Should clear the new tag input fields when addTag is called and a new tag is added", function() {
+            scope.newTagKey = "newKey";
+            scope.newTagValue = "newValue";
+            $('#tag-name-input').val(scope.newTagKey);
+            $('#tag-value-input').val(scope.newTagValue);
+            scope.addTag({"currentTarget": "#add-tag-btn", "preventDefault": function(){}});
+            expect(scope.newTagKey).toBe('');
+            expect(scope.newTagValue).toBe('');
+            expect($('#tag-name-input').val()).toBe("");
+            expect($('#tag-value-input').val()).toBe("");
+        });
+
+        it("Should not update tagsArray when addTag is called and a new tag key contains 'aws:'", function() {
+            scope.newTagKey = "aws:newKey";
+            scope.newTagValue = "newValue";
+            $('#tag-name-input').val(scope.newTagKey);
+            $('#tag-value-input').val(scope.newTagValue);
+            scope.addTag({"currentTarget": "#add-tag-btn", "preventDefault": function(){}});
+            expect(scope.tagsArray.length).toBe(3);
+            expect(scope.tagsArray[3]).toBe(undefined);
+        });
+
+        it("Should not update tagsArray when addTag is called and a new tag key already exists", function() {
+            scope.newTagKey = "3";
+            scope.newTagValue = "newValue";
+            $('#tag-name-input').val(scope.newTagKey);
+            $('#tag-value-input').val(scope.newTagValue);
+            scope.addTag({"currentTarget": "#add-tag-btn", "preventDefault": function(){}});
+            expect(scope.tagsArray.length).toBe(3);
+            expect(scope.tagsArray[3]).toBe(undefined);
+        });
+    });
 });
