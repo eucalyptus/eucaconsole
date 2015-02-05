@@ -203,7 +203,7 @@ class VolumesFiltersForm(BaseSecureForm):
         self.facets = [
             {'name':'zone', 'label':self.zone.label.text, 'options':self.get_availability_zone_choices(region)},
             {'name':'status', 'label':self.status.label.text, 'options':self.get_status_choices()},
-            {'name':'tags', 'label':self.tags.label.text, 'options':[]},
+            {'name':'tags', 'label':self.tags.label.text},
         ]
 
     def get_availability_zone_choices(self, region):

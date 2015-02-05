@@ -102,5 +102,5 @@ class SecurityGroupsFiltersForm(BaseSecureForm):
         self.vpc_id.choices = sorted(self.vpc_id.choices)
         self.facets = [
             {'name':'vpc_id', 'label':self.vpc_id.label.text, 'options': self.getOptionsFromChoices(self.vpc_id.choices)},
-            {'name':'tags', 'label':self.tags.label.text, 'options':[]},
+            {'name':'tags', 'label':self.tags.label.text},
         ]
