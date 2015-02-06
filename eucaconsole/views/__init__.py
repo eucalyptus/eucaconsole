@@ -360,7 +360,7 @@ class BaseView(object):
                    u'administrator to request an updated access policy if the problem '
                    u'persists.')
         if request.is_xhr:
-            if 'Access Denied' in message:
+            if 'AccessDenied' == err.code:
                 message = perms_notice
             raise JSONError(message=message, status=status or 403)
         if status == 403 or 'token has expired' in message:  # S3 token expiration responses return a 400 status
