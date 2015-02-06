@@ -60,6 +60,26 @@ BUCKET_NAME_PATTERN = '^[a-z0-9-\.]+$'
 FOLDER_NAME_PATTERN = '^[^\/]+$'
 
 
+class BucketMixin(object):
+
+    @staticmethod
+    def real_path(request):
+        if len(request.subpath) == 0:
+            return ''
+        path = request.environ['PATH_INFO']
+        path = path[path.index(request.subpath[0]):] if len(request.subpath) > 0 else ''
+        return path
+
+    def get_subpath(self):
+        path = BucketMixin.real_path(self.request)
+        subpath = []
+        if path != '':
+            if path.endswith('/'): # and not path.endswith('//'):
+                path = path[:-1]
+            subpath = path.split('/')
+        return tuple(subpath)
+
+
 class BucketsView(LandingPageView):
     """Views for Buckets landing page"""
     VIEW_TEMPLATE = '../templates/buckets/buckets.pt'
@@ -158,7 +178,7 @@ class BucketsJsonView(BaseView):
         return self.s3_conn.get_all_buckets() if self.s3_conn else []
 
 
-class BucketXHRView(BaseView):
+class BucketXHRView(BaseView, BucketMixin):
     """
     A view for bucket related XHR calls that carrys very little overhead
     """
@@ -166,6 +186,7 @@ class BucketXHRView(BaseView):
         super(BucketXHRView, self).__init__(request)
         self.s3_conn = self.get_connection(conn_type='s3')
         self.bucket_name = request.matchdict.get('name')
+        request.subpath = self.get_subpath()
 
     @view_config(route_name='bucket_delete_keys', renderer='json', request_method='POST', xhr=True)
     def bucket_delete_keys(self):
@@ -275,13 +296,14 @@ class BucketXHRView(BaseView):
             return dict(message=message)
 
 
-class BucketContentsView(LandingPageView):
+class BucketContentsView(LandingPageView, BucketMixin):
     """Views for actions on single bucket"""
     VIEW_TEMPLATE = '../templates/buckets/bucket_contents.pt'
 
     def __init__(self, request):
         super(BucketContentsView, self).__init__(request)
         self.s3_conn = self.get_connection(conn_type='s3')
+        request.subpath = self.get_subpath()
         self.prefix = '/buckets'
         self.bucket_name = self.get_bucket_name(request)
         self.create_folder_form = CreateFolderForm(request, formdata=self.request.params or None)
@@ -307,12 +329,14 @@ class BucketContentsView(LandingPageView):
             dict(key='last_modified', name=_(u'Modified time: Oldest to Newest ')),
         ]
         json_route_path = self.request.route_path('bucket_contents', name=self.bucket_name, subpath=self.subpath)
+        if len(self.subpath) > 0 and self.subpath[-1] == '':
+            json_route_path = json_route_path + '/'
         self.render_dict.update(
             prefix=self.prefix,
             key_prefix=self.key_prefix,
-            display_path='/'.join(self.subpath),
+            display_path=self.key_prefix,
             initial_sort_key='name',
-            json_items_endpoint=self.get_json_endpoint(json_route_path, path=True),
+            json_items_endpoint="{0}?{1}".format(json_route_path, self.key_prefix),
             sort_keys=self.sort_keys,
             filter_fields=False,
             filter_keys=['name'],
@@ -349,7 +373,6 @@ class BucketContentsView(LandingPageView):
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
         bucket_name = self.request.matchdict.get('name')
-        subpath = self.request.matchdict.get('subpath')
         files = self.request.POST.getall('files')
         with boto_error_handler(self.request):
             bucket = self.s3_conn.get_bucket(bucket_name)
@@ -358,7 +381,7 @@ class BucketContentsView(LandingPageView):
                 if upload_file.file.tell() > 5000000000:
                     return JSONResponse(status=400, message=_(u"File too large :")+upload_file.filename)
                 upload_file.file.seek(0, 0)  # seek to start
-                bucket_item = bucket.new_key("/".join(subpath))
+                bucket_item = bucket.new_key("/".join(self.request.subpath))
                 self.log_request("Uploading file {0} to bucket {1}".format(bucket_item.key, bucket_name))
                 bucket_item.set_metadata('Content-Type', upload_file.type)
                 headers = {'Content-Type': upload_file.type}
@@ -502,13 +525,14 @@ class BucketContentsView(LandingPageView):
         return icon_mapping.get(mime_type, 'fi-page')
 
 
-class BucketContentsJsonView(BaseView):
+class BucketContentsJsonView(BaseView, BucketMixin):
     def __init__(self, request):
         super(BucketContentsJsonView, self).__init__(request)
         with boto_error_handler(request):
             self.s3_conn = self.get_connection(conn_type='s3')
             self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
         self.bucket_name = self.bucket.name
+        request.subpath = self.get_subpath()
         self.subpath = request.subpath
 
     @view_config(route_name='bucket_contents', renderer='json', request_method='POST', xhr=True)
@@ -582,13 +606,14 @@ class BucketContentsJsonView(BaseView):
         return False
 
 
-class BucketDetailsView(BaseView):
+class BucketDetailsView(BaseView, BucketMixin):
     """Views for Bucket details"""
     VIEW_TEMPLATE = '../templates/buckets/bucket_details.pt'
 
     def __init__(self, request):
         super(BucketDetailsView, self).__init__(request)
         self.s3_conn = self.get_connection(conn_type='s3')
+        request.subpath = self.get_subpath()
         with boto_error_handler(request):
             self.bucket = BucketContentsView.get_bucket(request, self.s3_conn) if self.s3_conn else None
             self.bucket_acl = self.bucket.get_acl() if self.bucket else None
@@ -745,13 +770,14 @@ class BucketDetailsView(BaseView):
             return 'enable' if versioning_status in ['Disabled', 'Suspended'] else 'disable'
 
 
-class BucketItemDetailsView(BaseView):
+class BucketItemDetailsView(BaseView, BucketMixin):
     """Views for Bucket item (folder/object) details"""
     VIEW_TEMPLATE = '../templates/buckets/bucket_item_details.pt'
 
     def __init__(self, request):
         super(BucketItemDetailsView, self).__init__(request)
         self.s3_conn = self.get_connection(conn_type='s3')
+        request.subpath = self.get_subpath()
         with boto_error_handler(request):
             self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
             self.bucket_name = self.bucket.name

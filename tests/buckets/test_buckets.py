@@ -34,10 +34,21 @@ from pyramid import testing
 from pyramid.httpexceptions import HTTPNotFound, HTTPBadRequest
 
 from eucaconsole.forms.buckets import SharingPanelForm
-from eucaconsole.views.buckets import BucketContentsView, BucketDetailsView
+from eucaconsole.views.buckets import BucketContentsView, BucketDetailsView, BucketXHRView
 
 from tests import BaseFormTestCase, BaseViewTestCase
 
+
+class BucketMixinTestCase(BaseViewTestCase):
+
+    def test_subpath_fixes(self):
+        request = testing.DummyRequest()
+        request.environ = {}
+        request.environ['PATH_INFO'] = "some/path//with/extra/slash"
+        request.subpath = ('some', 'path', 'with', 'extra', 'slash')
+        view = BucketXHRView(request)
+        new_subpath = view.get_subpath()
+        self.assertEqual(request.environ['PATH_INFO'], "/".join(new_subpath))
 
 class BucketContentsViewTestCase(BaseViewTestCase):
 
