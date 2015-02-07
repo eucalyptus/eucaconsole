@@ -33,6 +33,18 @@ describe("SecurityGroupRules", function() {
 
     describe("Initial Values Test", function() {
 
+        it("Initial value of rulesEditor is undefined", function() {
+            expect(scope.rulesEditor).toEqual(undefined);
+        });
+
+        it("Initial value of rulesTextarea is undefined", function() {
+            expect(scope.rulesTextarea).toEqual(undefined);
+        });
+
+        it("Initial value of rulesEgressTextarea is undefined", function() {
+            expect(scope.rulesEgressTextarea).toEqual(undefined);
+        });
+
         it("Initial value of isRuleNotComplete is true", function() {
             expect(scope.isRuleNotComplete).toBeTruthy();
         });
@@ -191,6 +203,30 @@ describe("SecurityGroupRules", function() {
             expect(scope.adjustIPProtocolOptions).toHaveBeenCalled();
         });
     });
+
+    describe("Function syncRules() Test", function() {
+
+        beforeEach(function() {
+            scope.initRules('{"rules_array": [{"to_port":"3389","grants":[{"owner_id":null,"group_id":null,"cidr_ip":"10.5.1.66/32","name":null}],"ip_protocol":"tcp","from_port":"3389"}],"rules_egress_array": [{"to_port":"22","grants":[{"owner_id":null,"group_id":null,"cidr_ip":"0.0.0.0/0","name":null}],"ip_protocol":"tcp","from_port":"22"}],"json_endpoint": "localhost/json", "protocols_json_endpoint": "localhost/api"}');
+        });
+
+        it("Should set rulesTextarea  when syncRules is called", function() {
+            scope.syncRules();
+            expect(scope.rulesTextarea.val()).toBe('[{"to_port":"3389","grants":[{"owner_id":null,"group_id":null,"cidr_ip":"10.5.1.66/32","name":null}],"ip_protocol":"tcp","from_port":"3389"}]');
+        });
+
+        it("Should set rulesEgressTextarea  when syncRules is called", function() {
+            scope.syncRules();
+            expect(scope.rulesEgressTextarea.val()).toBe('[{"to_port":"22","grants":[{"owner_id":null,"group_id":null,"cidr_ip":"0.0.0.0/0","name":null}],"ip_protocol":"tcp","from_port":"22"}]');
+        });
+
+        it("Should call resetValues() when syncRules is called", function() {
+            spyOn(scope, 'resetValues');
+            scope.syncRules();
+            expect(scope.resetValues).toHaveBeenCalled();
+        });
+    });
+
 
     describe("Template Label Test", function() {
 
