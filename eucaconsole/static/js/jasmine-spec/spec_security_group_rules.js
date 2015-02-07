@@ -98,23 +98,29 @@ describe("SecurityGroupRules", function() {
     describe("Function clearRules() Test", function() {
 
         beforeEach(function() {
-            scope.initRules('{"rules_array": [],"rules_egress_array": [],"json_endpoint": "localhost/json", "protocols_json_endpoint": "localhost/api"}');
+            scope.initRules('{"rules_array": [{"to_port":"3389","grants":[{"owner_id":null,"group_id":null,"cidr_ip":"10.5.1.66/32","name":null}],"ip_protocol":"tcp","from_port":"3389"}],"rules_egress_array": [{"to_port":"22","grants":[{"owner_id":null,"group_id":null,"cidr_ip":"0.0.0.0/0","name":null}],"ip_protocol":"tcp","from_port":"22"}],"json_endpoint": "localhost/json", "protocols_json_endpoint": "localhost/api"}');
         });
 
-        it("Should re-use resetValue() when clearing rules", function() {
+        it("Should clear rulesArrays when clearRules is called", function() {
+            scope.clearRules();
+            expect(scope.rulesArray).toBeEmptyArray();
+        });
+
+        it("Should clear rulesEgressArrays when clearRules is called", function() {
+            scope.clearRules();
+            expect(scope.rulesEgressArray).toBeEmptyArray();
+        });
+
+        it("Should call syncRules when clearRules is called", function() {
+            spyOn(scope, 'syncRules');
+            scope.clearRules();
+            expect(scope.syncRules).toHaveBeenCalled();
+        });
+
+        it("Should use resetValue() when clearRules is called", function() {
             spyOn(scope, 'resetValues');
             scope.clearRules();
             expect(scope.resetValues).toHaveBeenCalled();
-        });
-
-        it("Should empty rules arrays and re-use syncRules() when clearing rules", function() {
-            spyOn(scope, 'syncRules');
-            scope.rulesArray = [1,2,3];
-            scope.rulesEgressArray = [1,2,3];
-            scope.clearRules();
-            expect(scope.rulesArray).toBeEmptyArray();
-            expect(scope.rulesEgressArray).toBeEmptyArray();
-            expect(scope.syncRules).toHaveBeenCalled();
         });
     });
 
@@ -368,7 +374,7 @@ describe("SecurityGroupRules", function() {
 
         beforeEach(function() {
             setFixtures('<select id="securitygroup_vpc_network"></select>');
-            scope.initRules('{"rules_array": [],"rules_egress_array": [],"json_endpoint": "localhost/json", "protocols_json_endpoint": "localhost/api"}');
+            scope.initRules('{"rules_array": [{"to_port":"3389","grants":[{"owner_id":null,"group_id":null,"cidr_ip":"10.5.1.66/32","name":null}],"ip_protocol":"tcp","from_port":"3389"}],"rules_egress_array": [{"to_port":"22","grants":[{"owner_id":null,"group_id":null,"cidr_ip":"0.0.0.0/0","name":null}],"ip_protocol":"tcp","from_port":"22"}],"json_endpoint": "localhost/json", "protocols_json_endpoint": "localhost/api"}');
         });
 
         it("Should update securityGroupVPC when updateVPC is called", function() {
