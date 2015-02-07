@@ -104,6 +104,77 @@ describe("SecurityGroupRules", function() {
 
     describe("Function resetValues() Test", function() {
 
+        it("Should set trafficType to 'ip' when resetValue is called", function() {
+            scope.trafficType = '';
+            scope.resetValues();
+            expect(scope.trafficType).toEqual('ip');
+        });
+
+        it("Should set fromPort to '' when resetValue is called", function() {
+            scope.fromPort = '8888';
+            scope.resetValues();
+            expect(scope.fromPort).toEqual('');
+        });
+
+        it("Should set toPort to '' when resetValue is called", function() {
+            scope.toPort = '8888';
+            scope.resetValues();
+            expect(scope.toPort).toEqual('');
+        });
+
+        it("Should set cidrIp to '' when resetValue is called", function() {
+            scope.cidrIp = '1.1.1.1/0';
+            scope.resetValues();
+            expect(scope.cidrIp).toEqual('');
+        });
+
+        it("Should set selectedProtocol to '' when resetValue is called", function() {
+            scope.selectedProtocol = 'SSH';
+            scope.resetValues();
+            expect(scope.selectedProtocol).toEqual('');
+        });
+
+        it("Should set customProtocol to '' when resetValue is called", function() {
+            scope.customProtocol = 'SSH';
+            scope.resetValues();
+            expect(scope.customProtocol).toEqual('');
+        });
+
+        it("Should set icmpRange to '-1' when resetValue is called", function() {
+            scope.icmpRange = '100';
+            scope.resetValues();
+            expect(scope.icmpRange).toEqual('-1');
+        });
+
+        it("Should set groupName to '' when resetValue is called", function() {
+            scope.groupName = 'groupname';
+            scope.resetValues();
+            expect(scope.groupName).toEqual('');
+        });
+
+        it("Should set ipProtocol to '' when resetValue is called", function() {
+            scope.ipProtocol = 'udp';
+            scope.resetValues();
+            expect(scope.ipProtocol).toEqual('tcp');
+        });
+
+        it("Should set hasDuplicatedRule to false when resetValue is called", function() {
+            scope.hasDuplicatedRule = true;
+            scope.resetValues();
+            expect(scope.hasDuplicatedRule).not.toBeTruthy();
+        });
+
+        it("Should set hasInvalidOwner to false when resetValue is called", function() {
+            scope.hasInvalidOwner = true;
+            scope.resetValues();
+            expect(scope.hasInvalidOwner).not.toBeTruthy();
+        });
+
+        it("Should set #ip-protocol-select's 'selectedIndex' value to -1 after resetting values", function() {
+            scope.resetValues();
+            expect($('#ip-protocol-select').prop('selectedIndex')).toEqual(-1);
+        });
+
         it("Should call cleanupSelections() after resetting values", function() {
             spyOn(scope, 'cleanupSelections');
             scope.resetValues();
@@ -114,11 +185,6 @@ describe("SecurityGroupRules", function() {
             spyOn(scope, 'adjustIPProtocolOptions');
             scope.resetValues();
             expect(scope.adjustIPProtocolOptions).toHaveBeenCalled();
-        });
-
-        it("Should set #ip-protocol-select's 'selectedIndex' value to -1 after resetting values", function() {
-            scope.resetValues();
-            expect($('#ip-protocol-select').prop('selectedIndex')).toEqual(-1);
         });
     });
 
