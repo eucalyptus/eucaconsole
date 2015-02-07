@@ -85,6 +85,10 @@ describe("SecurityGroupRules", function() {
 
     describe("Function clearRules() Test", function() {
 
+        beforeEach(function() {
+            scope.initRules('{"rules_array": [],"rules_egress_array": [],"json_endpoint": "localhost/json", "protocols_json_endpoint": "localhost/api"}');
+        });
+
         it("Should re-use resetValue() when clearing rules", function() {
             spyOn(scope, 'resetValues');
             scope.clearRules();
@@ -328,6 +332,7 @@ describe("SecurityGroupRules", function() {
 
         beforeEach(function() {
             setFixtures('<select id="securitygroup_vpc_network"></select>');
+            scope.initRules('{"rules_array": [],"rules_egress_array": [],"json_endpoint": "localhost/json", "protocols_json_endpoint": "localhost/api"}');
         });
 
         it("Should update securityGroupVPC when updateVPC is called", function() {
