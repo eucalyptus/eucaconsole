@@ -348,3 +348,26 @@ Selenium.prototype.doSendKeys = function(locator, value) {
     bot.action.type(element, value);
   }
 };
+
+
+
+Selenium.prototype.doStoreTextIfPresent = function(locator, value) {
+  /**
+  * <p>Stores text if it is persent.</p>
+  *
+  *
+  */
+
+  
+  var notification = this.browserbot.findElement(locator);
+
+  
+  if (notification.textContent != "") {
+
+  storedVars[value] = notification.textContent;
+  }
+  else
+  {
+  storedVars[value] = "No text found!";
+  }
+  }
