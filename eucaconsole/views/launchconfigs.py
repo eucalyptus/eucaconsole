@@ -435,6 +435,7 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
             location = self.request.route_path('launchconfigs')
             image_id = self.image.id
             name = self.request.params.get('name')
+            name = self.normalize_unicode(name)  # Normalize non-ascii chars
             key_name = self.unescape_braces(self.request.params.get('keypair', ''))
             if key_name:
                 # Handle "None (advanced)" option if key_name is 'none'

@@ -684,6 +684,7 @@ class ScalingGroupWizardView(BaseScalingGroupView):
         if self.create_form.validate():
             with boto_error_handler(self.request, self.request.route_path('scalinggroups')):
                 scaling_group_name = self.request.params.get('name')
+                scaling_group_name = self.normalize_unicode(scaling_group_name)  # Normalize non-ascii chars
                 self.log_request(_(u"Creating scaling group {0}").format(scaling_group_name))
                 launch_config_name = self.unescape_braces(self.request.params.get('launch_config'))
                 vpc_network = self.request.params.get('vpc_network') or None
