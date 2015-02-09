@@ -784,35 +784,6 @@ describe("SecurityGroupRules", function() {
         });
     });
 
-    describe("Function addRuleButtonClass() Test", function() {
-
-        it("Should disable the addRule button when the rule edit is in progress", function() {
-            scope.isRuleNotComplete = true;
-            scope.setAddRuleButtonClass(); 
-            expect(scope.addRuleButtonClass).toEqual('disabled');
-        });
-
-        it("Should disable the addRule button when there exist duplicated rules", function() {
-            scope.hasDuplicatedRule = true;
-            scope.setAddRuleButtonClass(); 
-            expect(scope.addRuleButtonClass).toEqual('disabled');
-        });
-
-        it("Should disable the addRule button  when the customProtocol contains error", function() {
-            scope.customProtocolDivClass = 'error';
-            scope.setAddRuleButtonClass(); 
-            expect(scope.addRuleButtonClass).toEqual('disabled');
-        });
-
-        it("Should enable the addRule button when all conditions are met", function() {
-            scope.isRuleNotComplete = false;
-            scope.hasDuplicatedRule == false; 
-            scope.customProtocolDivClass = '';
-            scope.setAddRuleButtonClass(); 
-            expect(scope.addRuleButtonClass).toEqual('');
-        });
-    });
-
     describe("Function clearRules() Test", function() {
 
         beforeEach(function() {
@@ -1077,7 +1048,7 @@ describe("SecurityGroupRules", function() {
         });
     });
 
-    describe("Function initModal Test", function() {
+    describe("Event initModal Test", function() {
 
         it("Should call getAllSecurityGroupVPC when initModal is called", function() {
             spyOn(scope, 'getAllSecurityGroups');
@@ -1088,7 +1059,7 @@ describe("SecurityGroupRules", function() {
         });
     });
 
-    describe("Function updateVPC Test", function() {
+    describe("Event updateVPC Test", function() {
 
         beforeEach(function() {
             setFixtures('<select id="securitygroup_vpc_network"></select>');
@@ -1103,6 +1074,7 @@ describe("SecurityGroupRules", function() {
 
         it("Shouldn't update securityGroupVPC when updateVPC is called and vpc value is undefined", function() {
             scope.setWatchers();
+            scope.securityGroupVPC = 'None';
             scope.$broadcast('updateVPC', undefined);
             expect(scope.securityGroupVPC).toEqual('None');
         });
@@ -1146,4 +1118,71 @@ describe("SecurityGroupRules", function() {
         });
     });
 
+    describe("Function setAddRuleButtonClass() Test", function() {
+
+        it("Should disable the addRule button when the rule edit is in progress", function() {
+            scope.isRuleNotComplete = true;
+            scope.setAddRuleButtonClass(); 
+            expect(scope.addRuleButtonClass).toEqual('disabled');
+        });
+
+        it("Should disable the addRule button when there exist duplicated rules", function() {
+            scope.hasDuplicatedRule = true;
+            scope.setAddRuleButtonClass(); 
+            expect(scope.addRuleButtonClass).toEqual('disabled');
+        });
+
+        it("Should disable the addRule button  when the customProtocol contains error", function() {
+            scope.customProtocolDivClass = 'error';
+            scope.setAddRuleButtonClass(); 
+            expect(scope.addRuleButtonClass).toEqual('disabled');
+        });
+
+        it("Should enable the addRule button when all conditions are met", function() {
+            scope.isRuleNotComplete = false;
+            scope.hasDuplicatedRule == false; 
+            scope.customProtocolDivClass = '';
+            scope.setAddRuleButtonClass(); 
+            expect(scope.addRuleButtonClass).toEqual('');
+        });
+    });
+
+    describe("Function removeRule Test", function() {
+
+        beforeEach(function() {
+            scope.initRules('{"rules_array": [{"to_port":"3389","grants":[{"owner_id":null,"group_id":null,"cidr_ip":"10.5.1.66/32","name":null}],"ip_protocol":"tcp","from_port":"3389"}, {"to_port":"4000","grants":[{"owner_id":null,"group_id":null,"cidr_ip":"10.5.1.66/32","name":null}],"ip_protocol":"tcp","from_port":"4000"}],"rules_egress_array": [{"to_port":"22","grants":[{"owner_id":null,"group_id":null,"cidr_ip":"0.0.0.0/0","name":null}],"ip_protocol":"tcp","from_port":"22"}],"json_endpoint": "localhost/json", "protocols_json_endpoint": "localhost/api"}');
+        });
+
+        it("Should call syncRules when removeRule is called", function() {
+            spyOn(scope, 'syncRules');
+            scope.removeRule(1, {"preventDefault": function(){}}); 
+            expect(scope.syncRules).toHaveBeenCalled();
+        });
+
+        it("Should emit securityGroupUpdate when removeRule is called", function() {
+            spyOn(scope, '$emit');
+            scope.removeRule(1, {"preventDefault": function(){}});
+            expect(scope.$emit).toHaveBeenCalledWith('securityGroupUpdate');
+        });
+
+        it("Should remove the item in rulesArray when removeRule is called with index", function() {
+            scope.ruleType = 'inbound';
+            expect(scope.rulesArray.length).toEqual(2);
+            expect(scope.rulesArray[0].to_port).toEqual("3389");
+            expect(scope.rulesArray[1].to_port).toEqual("4000");
+            scope.removeRule(1, {"preventDefault": function(){}}); 
+            expect(scope.rulesArray.length).toEqual(1);
+            expect(scope.rulesArray[0].to_port).toEqual("3389");
+            expect(scope.rulesArray[1]).toEqual(undefined);
+        });
+
+        it("Should remove the item in rulesEgressArray when removeRule is called with index", function() {
+            scope.ruleType = 'outbound';
+            expect(scope.rulesEgressArray.length).toEqual(1);
+            expect(scope.rulesEgressArray[0].to_port).toEqual("22");
+            scope.removeRule(0, {"preventDefault": function(){}}); 
+            expect(scope.rulesEgressArray.length).toEqual(0);
+            expect(scope.rulesEgressArray[1]).toEqual(undefined);
+        });
+    });
 });
