@@ -11,7 +11,7 @@ describe("SecurityGroupRules", function() {
     var scope, httpBackend, ctrl;
     // inject the $controller and $rootScope services
     // in the beforeEach block
-    beforeEach(angular.mock.inject(function($rootScope, $httpBackend, $controller, $timeout) {
+    beforeEach(angular.mock.inject(function($controller, $rootScope, $timeout, $httpBackend) {
         httpBackend = $httpBackend;
         // Create a new scope that's a child of the $rootScope
         scope = $rootScope.$new();
@@ -343,6 +343,445 @@ describe("SecurityGroupRules", function() {
             scope.checkRequiredInput();
             expect(scope.isRuleNotComplete).not.toBeTruthy();
         }); 
+    });
+
+    describe("Function setWatchers() Test", function() {
+
+        var vpc = 'vpc-12345678';
+
+        beforeEach(function() {
+            setFixtures('<input id="csrf_token" name="csrf_token" type="hidden" value="2a06f17d6872143ed806a695caa5e5701a127ade">');
+            scope.jsonEndpoint  = "securitygroup_json";
+            scope.securityGroupVPC = vpc; 
+            var data = 'csrf_token=2a06f17d6872143ed806a695caa5e5701a127ade&vpc_id=' + vpc;
+            httpBackend.expect('POST', scope.jsonEndpoint, data)
+                .respond(200, {
+                    "success": true,
+                    "results": ["SSH", "HTTP", "HTTPS"]
+                });
+            scope.internetProtocols = ["HOPOPT", "ICMP", "IGMP"];
+        });
+
+        it("Should call checkRequiredInput when selectedProtocol is updated", function() {
+            spyOn(scope, 'checkRequiredInput');
+            scope.setWatchers();
+            scope.selectedProtocol = "icmp";
+            scope.$apply();
+            expect(scope.checkRequiredInput).toHaveBeenCalled();
+        });
+
+        it("Should set cidrIp to empty when selectedProtocol is updated and selectedProtocl is not '-1'", function() {
+            scope.setWatchers();
+            scope.selectedProtocol = "icmp";
+            scope.$apply();
+            expect(scope.cidrIp).toEqual('');
+        });
+
+        it("Should set cidrIp to '0.0.0.0/0' when selectedProtocol is updated and selectedProtocl is '-1'", function() {
+            scope.setWatchers();
+            scope.selectedProtocol = "-1";
+            scope.$apply();
+            expect(scope.cidrIp).toEqual('0.0.0.0/0');
+        });
+
+        it("Should call checkRequiredInput when customProtocol is updated", function() {
+            spyOn(scope, 'checkRequiredInput');
+            scope.setWatchers();
+            scope.customProtocol = 12;
+            scope.$apply();
+            expect(scope.checkRequiredInput).toHaveBeenCalled();
+        });
+
+        it("Should set customProtocolDivClass to empty when customProtocol is cleared", function() {
+            scope.customProtocol = 'ICMP';
+            scope.setWatchers();
+            scope.customProtocolDivClass = 'error';
+            scope.customProtocol = '';
+            scope.$apply();
+            expect(scope.customProtocolDivClass).toEqual('');
+        });
+
+        it("Should set customProtocolDivClass to empty when customProtocol is updated and validated", function() {
+            scope.setWatchers();
+            scope.customProtocolDivClass = 'error';
+            scope.customProtocol = 1;
+            scope.$apply();
+            expect(scope.customProtocolDivClass).toEqual('');
+        });
+
+        it("Should set customProtocolDivClass to 'error' when customProtocol is updated, but invalid", function() {
+            scope.setWatchers();
+            scope.customProtocolDivClass = '';
+            scope.customProtocol = 'InvalidProtocol';
+            scope.$apply();
+            expect(scope.customProtocolDivClass).toEqual('error');
+        });
+
+        it("Should call setAddRuleButtonClass when isRuleNotComplete is updated", function() {
+            spyOn(scope, 'setAddRuleButtonClass');
+            scope.setWatchers();
+            scope.isRuleNotComplete = true;
+            scope.$apply();
+            expect(scope.setAddRuleButtonClass).toHaveBeenCalled();
+        });
+
+        it("Should call setAddRuleButtonClass when customProtocolDivClass is updated", function() {
+            spyOn(scope, 'setAddRuleButtonClass');
+            scope.setWatchers();
+            scope.customProtocolDivClass = 'error';
+            scope.$apply();
+            expect(scope.setAddRuleButtonClass).toHaveBeenCalled();
+        });
+
+        it("Should call checkRequiredInput when fromPort is updated", function() {
+            spyOn(scope, 'checkRequiredInput');
+            scope.setWatchers();
+            scope.fromPort = 88;
+            scope.$apply();
+            expect(scope.checkRequiredInput).toHaveBeenCalled();
+        });
+
+        it("Should call checkRequiredInput when toPort is updated", function() {
+            spyOn(scope, 'checkRequiredInput');
+            scope.setWatchers();
+            scope.toPort = 88;
+            scope.$apply();
+            expect(scope.checkRequiredInput).toHaveBeenCalled();
+        });
+
+        it("Should call checkRequiredInput when icmpRange is updated", function() {
+            spyOn(scope, 'checkRequiredInput');
+            scope.setWatchers();
+            scope.icmpRange = 88;
+            scope.$apply();
+            expect(scope.checkRequiredInput).toHaveBeenCalled();
+        });
+
+        it("Should call checkRequiredInput when cidrIp is updated", function() {
+            spyOn(scope, 'checkRequiredInput');
+            scope.setWatchers();
+            scope.cidrIp = '0.0.0.0/0';
+            scope.$apply();
+            expect(scope.checkRequiredInput).toHaveBeenCalled();
+        });
+
+        it("Should call checkForDuplicatedRules when cidrIp is updated", function() {
+            spyOn(scope, 'checkForDuplicatedRules');
+            scope.setWatchers();
+            scope.cidrIp = '0.0.0.0/0';
+            scope.$apply();
+            expect(scope.checkForDuplicatedRules).toHaveBeenCalled();
+        });
+
+        it("Should call checkRequiredInput when groupName is updated", function() {
+            spyOn(scope, 'checkRequiredInput');
+            scope.setWatchers();
+            scope.groupName = null;
+            scope.$apply();
+            expect(scope.checkRequiredInput).toHaveBeenCalled();
+        });
+
+        it("Should call checkForDuplicatedRules when groupName is updated", function() {
+            spyOn(scope, 'checkForDuplicatedRules');
+            scope.setWatchers();
+            scope.groupName = null;
+            scope.$apply();
+            expect(scope.checkForDuplicatedRules).toHaveBeenCalled();
+        });
+
+        it("Should set hasInvalidOwner to false when groupName is updated", function() {
+            scope.setWatchers();
+            scope.groupName = null;
+            scope.$apply();
+            expect(scope.hasInvalidOwner).not.toBeTruthy();
+        });
+
+        it("Should set trafficType to 'securitygroup' when groupName is updated", function() {
+            scope.setWatchers();
+            scope.groupName = null;
+            scope.$apply();
+            expect(scope.trafficType).toEqual('securitygroup');
+        });
+
+        it("Should not set trafficType to 'securitygroup' when groupName is clearned", function() {
+            scope.setWatchers();
+            scope.trafficType = 'ip';
+            scope.groupName = '';
+            scope.$apply();
+            expect(scope.trafficType).not.toEqual('securitygroup');
+        });
+
+        it("Should call checkRequiredInput when trafficType is updated", function() {
+            spyOn(scope, 'checkRequiredInput');
+            scope.setWatchers();
+            scope.trafficType = 'ip';
+            scope.$apply();
+            expect(scope.checkRequiredInput).toHaveBeenCalled();
+        });
+
+        it("Should call checkForDuplicatedRules when trafficType is updated", function() {
+            spyOn(scope, 'checkForDuplicatedRules');
+            scope.setWatchers();
+            scope.trafficType = 'ip';
+            scope.$apply();
+            expect(scope.checkForDuplicatedRules).toHaveBeenCalled();
+        });
+
+        it("Should call getAllSecurityGroups when securityGroupVPC is updated", function() {
+            spyOn(scope, 'getAllSecurityGroups');
+            scope.setWatchers();
+            scope.securityGroupVPC = vpc;
+            scope.$apply();
+            expect(scope.getAllSecurityGroups).toHaveBeenCalledWith(scope.securityGroupVPC);
+        });
+
+        it("Should call checkRulesForDeletedSecurityGroups when securityGroupList is updated", function() {
+            spyOn(scope, 'checkRulesForDeletedSecurityGroups');
+            scope.setWatchers();
+            scope.securityGroupList.push("newSecurityGroup");
+            scope.$apply();
+            expect(scope.checkRulesForDeletedSecurityGroups).toHaveBeenCalled();
+        });
+
+        it("Should not call checkRulesForDeletedSecurityGroups when securityGroupList is cleared", function() {
+            spyOn(scope, 'checkRulesForDeletedSecurityGroups');
+            scope.setWatchers();
+            scope.securityGroupList = [];
+            scope.$apply();
+            expect(scope.checkRulesForDeletedSecurityGroups).not.toHaveBeenCalled();
+        });
+
+        it("Should call setAddRuleButtonClass when hasDuplicatedRule is updated", function() {
+            spyOn(scope, 'setAddRuleButtonClass');
+            scope.setWatchers();
+            scope.hasDuplicatedRule = true;
+            scope.$apply();
+            expect(scope.setAddRuleButtonClass).toHaveBeenCalled();
+        });
+
+        it("Should call getAllSecurityGroups when initModal is triggered", function() {
+            spyOn(scope, 'getAllSecurityGroups');
+            scope.setWatchers();
+            scope.$broadcast('initModal');
+            scope.$apply();
+            expect(scope.getAllSecurityGroups).toHaveBeenCalledWith(scope.securityGroupVPC);
+        });
+
+        it("Should call adjustIPProtocolOptions when updateVPC is triggered", function() {
+            spyOn(scope, 'adjustIPProtocolOptions');
+            scope.setWatchers();
+            httpBackend.flush();
+            httpBackend.verifyNoOutstandingExpectation();
+            httpBackend.verifyNoOutstandingRequest();
+            scope.jsonEndpoint = "localhost/vpc";
+            var newVPC = 'vpc-11111111';
+            var data = 'csrf_token=2a06f17d6872143ed806a695caa5e5701a127ade&vpc_id=' + newVPC; 
+            httpBackend.expect('POST', scope.jsonEndpoint, data)
+                .respond(200, {
+                    "success": true,
+                    "results": ["SSH", "HTTP", "HTTPS"]
+                });
+            scope.$broadcast('updateVPC', newVPC);
+            scope.$apply();
+            expect(scope.adjustIPProtocolOptions).toHaveBeenCalled();
+        });
+
+        it("Should not call adjustIPProtocolOptions if vpc is undefined when updateVPC is triggered", function() {
+            spyOn(scope, 'adjustIPProtocolOptions');
+            scope.setWatchers();
+            httpBackend.flush();
+            httpBackend.verifyNoOutstandingExpectation();
+            httpBackend.verifyNoOutstandingRequest();
+            scope.jsonEndpoint = "localhost/vpc";
+            var newVPC = undefined;
+            var data = 'csrf_token=2a06f17d6872143ed806a695caa5e5701a127ade&vpc_id=' + newVPC; 
+            httpBackend.expect('POST', scope.jsonEndpoint, data)
+                .respond(200, {
+                    "success": true,
+                    "results": ["SSH", "HTTP", "HTTPS"]
+                });
+            scope.$broadcast('updateVPC', newVPC);
+            scope.$apply();
+            expect(scope.adjustIPProtocolOptions).not.toHaveBeenCalled();
+        });
+
+        it("Should not call adjustIPProtocolOptions if vpc is the same as previous when updateVPC is triggered", function() {
+            spyOn(scope, 'adjustIPProtocolOptions');
+            scope.setWatchers();
+            httpBackend.flush();
+            httpBackend.verifyNoOutstandingExpectation();
+            httpBackend.verifyNoOutstandingRequest();
+            scope.jsonEndpoint = "localhost/vpc";
+            var newVPC = vpc;
+            var data = 'csrf_token=2a06f17d6872143ed806a695caa5e5701a127ade&vpc_id=' + newVPC; 
+            httpBackend.expect('POST', scope.jsonEndpoint, data)
+                .respond(200, {
+                    "success": true,
+                    "results": ["SSH", "HTTP", "HTTPS"]
+                });
+            scope.$broadcast('updateVPC', newVPC);
+            scope.$apply();
+            expect(scope.adjustIPProtocolOptions).not.toHaveBeenCalled();
+        });
+
+        it("Should update securityGroupVPC when updateVPC is triggered", function() {
+            scope.setWatchers();
+            httpBackend.flush();
+            httpBackend.verifyNoOutstandingExpectation();
+            httpBackend.verifyNoOutstandingRequest();
+            scope.jsonEndpoint = "localhost/vpc";
+            var newVPC = 'vpc-11111111';
+            var data = 'csrf_token=2a06f17d6872143ed806a695caa5e5701a127ade&vpc_id=' + newVPC; 
+            httpBackend.expect('POST', scope.jsonEndpoint, data)
+                .respond(200, {
+                    "success": true,
+                    "results": ["SSH", "HTTP", "HTTPS"]
+                });
+            scope.$broadcast('updateVPC', newVPC);
+            scope.$apply();
+            expect(scope.securityGroupVPC).toEqual(newVPC);
+        });
+
+        it("Should not call selectRuleType if vpc is not None when updateVPC is triggered", function() {
+            spyOn(scope, 'selectRuleType');
+            scope.setWatchers();
+            httpBackend.flush();
+            httpBackend.verifyNoOutstandingExpectation();
+            httpBackend.verifyNoOutstandingRequest();
+            scope.jsonEndpoint = "localhost/vpc";
+            var newVPC = vpc;
+            var data = 'csrf_token=2a06f17d6872143ed806a695caa5e5701a127ade&vpc_id=' + newVPC; 
+            httpBackend.expect('POST', scope.jsonEndpoint, data)
+                .respond(200, {
+                    "success": true,
+                    "results": ["SSH", "HTTP", "HTTPS"]
+                });
+            scope.$broadcast('updateVPC', newVPC);
+            scope.$apply();
+            expect(scope.selectRuleType).not.toHaveBeenCalled();
+        });
+
+        it("Should call selectRuleType if vpc is None when updateVPC is triggered", function() {
+            spyOn(scope, 'selectRuleType');
+            scope.setWatchers();
+            httpBackend.flush();
+            httpBackend.verifyNoOutstandingExpectation();
+            httpBackend.verifyNoOutstandingRequest();
+            scope.jsonEndpoint = "localhost/vpc";
+            var newVPC = 'None';
+            var data = 'csrf_token=2a06f17d6872143ed806a695caa5e5701a127ade&vpc_id=' + newVPC; 
+            httpBackend.expect('POST', scope.jsonEndpoint, data)
+                .respond(200, {
+                    "success": true,
+                    "results": ["SSH", "HTTP", "HTTPS"]
+                });
+            scope.$broadcast('updateVPC', newVPC);
+            scope.$apply();
+            expect(scope.selectRuleType).toHaveBeenCalled();
+        });
+
+        it("Should call clearRules if securitygroup_vpc_network select element exists when updateVPC is triggered", function() {
+            spyOn(scope, 'clearRules');
+            scope.setWatchers();
+            httpBackend.flush();
+            httpBackend.verifyNoOutstandingExpectation();
+            httpBackend.verifyNoOutstandingRequest();
+            setFixtures('<select id="securitygroup_vpc_network"></select>');
+            scope.initRules('{"rules_array": [{"to_port":"3389","grants":[{"owner_id":null,"group_id":null,"cidr_ip":"10.5.1.66/32","name":null}],"ip_protocol":"tcp","from_port":"3389"}],"rules_egress_array": [{"to_port":"22","grants":[{"owner_id":null,"group_id":null,"cidr_ip":"0.0.0.0/0","name":null}],"ip_protocol":"tcp","from_port":"22"}],"json_endpoint": "localhost/vpc", "protocols_json_endpoint": "localhost/ipprotocol"}');
+            var jsonEndpoint = "localhost/vpc";
+            var newVPC = 'vpc-11111111';
+            var data = 'csrf_token=2a06f17d6872143ed806a695caa5e5701a127ade&vpc_id=' + newVPC; 
+            httpBackend.expect('POST', jsonEndpoint, data)
+                .respond(200, {
+                    "success": true,
+                    "results": ["SSH", "HTTP", "HTTPS"]
+                });
+            var internetProtocolsJsonEndpoint  = "localhost/ipprotocol";
+            httpBackend.expect('POST', internetProtocolsJsonEndpoint, 'csrf_token=2a06f17d6872143ed806a695caa5e5701a127ade')
+                .respond(200, {
+                    "success": true,
+                    "results": angular.toJson({"internet_protocols": [[0, "HOPOPT"], [1, "ICMP"], [2, "IGMP"]]}) 
+                });
+            scope.$broadcast('updateVPC', newVPC);
+            expect(scope.clearRules).toHaveBeenCalled();
+        });
+
+        it("Should not call clearRules if securitygroup_vpc_network select element does not exist when updateVPC is triggered", function() {
+            spyOn(scope, 'clearRules');
+            scope.setWatchers();
+            httpBackend.flush();
+            httpBackend.verifyNoOutstandingExpectation();
+            httpBackend.verifyNoOutstandingRequest();
+            scope.initRules('{"rules_array": [{"to_port":"3389","grants":[{"owner_id":null,"group_id":null,"cidr_ip":"10.5.1.66/32","name":null}],"ip_protocol":"tcp","from_port":"3389"}],"rules_egress_array": [{"to_port":"22","grants":[{"owner_id":null,"group_id":null,"cidr_ip":"0.0.0.0/0","name":null}],"ip_protocol":"tcp","from_port":"22"}],"json_endpoint": "localhost/vpc", "protocols_json_endpoint": "localhost/ipprotocol"}');
+            var jsonEndpoint = "localhost/vpc";
+            var newVPC = 'vpc-11111111';
+            var data = 'csrf_token=2a06f17d6872143ed806a695caa5e5701a127ade&vpc_id=' + newVPC; 
+            httpBackend.expect('POST', jsonEndpoint, data)
+                .respond(200, {
+                    "success": true,
+                    "results": ["SSH", "HTTP", "HTTPS"]
+                });
+            var internetProtocolsJsonEndpoint  = "localhost/ipprotocol";
+            httpBackend.expect('POST', internetProtocolsJsonEndpoint, 'csrf_token=2a06f17d6872143ed806a695caa5e5701a127ade')
+                .respond(200, {
+                    "success": true,
+                    "results": angular.toJson({"internet_protocols": [[0, "HOPOPT"], [1, "ICMP"], [2, "IGMP"]]}) 
+                });
+            scope.$broadcast('updateVPC', newVPC);
+            expect(scope.clearRules).not.toHaveBeenCalled();
+        });
+
+        it("Should call addDefaultOutboundRule if securitygroup_vpc_network select element exists and securityGroupVPC is not None when updateVPC is triggered", function() {
+            spyOn(scope, 'addDefaultOutboundRule');
+            scope.setWatchers();
+            httpBackend.flush();
+            httpBackend.verifyNoOutstandingExpectation();
+            httpBackend.verifyNoOutstandingRequest();
+            setFixtures('<select id="securitygroup_vpc_network"></select>');
+            scope.initRules('{"rules_array": [{"to_port":"3389","grants":[{"owner_id":null,"group_id":null,"cidr_ip":"10.5.1.66/32","name":null}],"ip_protocol":"tcp","from_port":"3389"}],"rules_egress_array": [{"to_port":"22","grants":[{"owner_id":null,"group_id":null,"cidr_ip":"0.0.0.0/0","name":null}],"ip_protocol":"tcp","from_port":"22"}],"json_endpoint": "localhost/vpc", "protocols_json_endpoint": "localhost/ipprotocol"}');
+            var jsonEndpoint = "localhost/vpc";
+            var newVPC = 'vpc-11111111';
+            var data = 'csrf_token=2a06f17d6872143ed806a695caa5e5701a127ade&vpc_id=' + newVPC; 
+            httpBackend.expect('POST', jsonEndpoint, data)
+                .respond(200, {
+                    "success": true,
+                    "results": ["SSH", "HTTP", "HTTPS"]
+                });
+            var internetProtocolsJsonEndpoint  = "localhost/ipprotocol";
+            httpBackend.expect('POST', internetProtocolsJsonEndpoint, 'csrf_token=2a06f17d6872143ed806a695caa5e5701a127ade')
+                .respond(200, {
+                    "success": true,
+                    "results": angular.toJson({"internet_protocols": [[0, "HOPOPT"], [1, "ICMP"], [2, "IGMP"]]}) 
+                });
+            scope.$broadcast('updateVPC', newVPC);
+            expect(scope.addDefaultOutboundRule).toHaveBeenCalled();
+        });
+
+        it("Should not call addDefaultOutboundRule if securitygroup_vpc_network select element exists and securityGroupVPC is None when updateVPC is triggered", function() {
+            spyOn(scope, 'addDefaultOutboundRule');
+            scope.setWatchers();
+            httpBackend.flush();
+            httpBackend.verifyNoOutstandingExpectation();
+            httpBackend.verifyNoOutstandingRequest();
+            setFixtures('<select id="securitygroup_vpc_network"></select>');
+            scope.initRules('{"rules_array": [{"to_port":"3389","grants":[{"owner_id":null,"group_id":null,"cidr_ip":"10.5.1.66/32","name":null}],"ip_protocol":"tcp","from_port":"3389"}],"rules_egress_array": [{"to_port":"22","grants":[{"owner_id":null,"group_id":null,"cidr_ip":"0.0.0.0/0","name":null}],"ip_protocol":"tcp","from_port":"22"}],"json_endpoint": "localhost/vpc", "protocols_json_endpoint": "localhost/ipprotocol"}');
+            var jsonEndpoint = "localhost/vpc";
+            var newVPC = 'None';
+            var data = 'csrf_token=2a06f17d6872143ed806a695caa5e5701a127ade&vpc_id=' + newVPC; 
+            httpBackend.expect('POST', jsonEndpoint, data)
+                .respond(200, {
+                    "success": true,
+                    "results": ["SSH", "HTTP", "HTTPS"]
+                });
+            var internetProtocolsJsonEndpoint  = "localhost/ipprotocol";
+            httpBackend.expect('POST', internetProtocolsJsonEndpoint, 'csrf_token=2a06f17d6872143ed806a695caa5e5701a127ade')
+                .respond(200, {
+                    "success": true,
+                    "results": angular.toJson({"internet_protocols": [[0, "HOPOPT"], [1, "ICMP"], [2, "IGMP"]]}) 
+                });
+            scope.$broadcast('updateVPC', newVPC);
+            expect(scope.addDefaultOutboundRule).not.toHaveBeenCalled();
+        });
     });
 
     describe("Function addRuleButtonClass() Test", function() {
