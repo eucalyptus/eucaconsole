@@ -9,7 +9,7 @@ angular.module('AlarmsPage', ['LandingPage'])
         $scope.alarmID = '';
         $scope.revealModal = function (action, item) {
             var modal = $('#' + action + '-alarm-modal');
-            $scope.alarmID = item['id'];
+            $scope.alarmID = item.id;
             modal.foundation('reveal', 'open');
         };
     })

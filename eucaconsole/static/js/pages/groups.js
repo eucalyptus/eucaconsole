@@ -13,14 +13,14 @@ angular.module('GroupsPage', ['LandingPage'])
         };
         $scope.revealModal = function (action, group) {
             var modal = $('#' + action + '-group-modal');
-            $scope.groupName = group['group_name'];
+            $scope.groupName = group.group_name;
             modal.foundation('reveal', 'open');
             var form = $('#delete-form');
-            var action = form.attr('action').replace("_name_", group['group_name']);
+            action = form.attr('action').replace("_name_", group.group_name);
             form.attr('action', action);
         };
         $scope.linkGroup = function (group, fragment) {
-            window.location = $scope.groupViewUrl.replace('_name_', group['group_name'])+fragment;
+            window.location = $scope.groupViewUrl.replace('_name_', group.group_name)+fragment;
         };
     })
 ;

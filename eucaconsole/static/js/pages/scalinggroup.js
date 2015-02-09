@@ -20,8 +20,8 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor', 'EucaConsoleUtils'])
             // Remove the option if it has no vpc subnet ID associated
             var selectVPCSubnetObject = $('#vpc_subnet option');
             if (selectVPCSubnetObject.length > 0) {
-                if (selectVPCSubnetObject.first().attr('value') == ''
-                    || selectVPCSubnetObject.first().attr('value') == 'None') {
+                if (selectVPCSubnetObject.first().attr('value') === '' ||
+                    selectVPCSubnetObject.first().attr('value') == 'None') {
                     selectVPCSubnetObject.first().remove();
                 } 
             }
@@ -39,8 +39,8 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor', 'EucaConsoleUtils'])
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
             // scalingGroupName, policiesCount
-            $scope.scalingGroupName = options['scaling_group_name'];
-            $scope.policiesCount = options['policies_count'];
+            $scope.scalingGroupName = options.scaling_group_name;
+            $scope.policiesCount = options.policies_count;
             $scope.setInitialValues();
             $scope.initChosenSelectors();
             $scope.setWatch();
@@ -184,7 +184,9 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor', 'EucaConsoleUtils'])
                 modal.foundation('reveal', 'open');
                 modal.on('click', '.close-reveal-modal', function(){
                     if (modal.find('input#check-do-not-show-me-again').is(':checked')) {
-                        Modernizr.localstorage && localStorage.setItem(thisKey, "true");
+                        if (Modernizr.localstorage) {
+                            localStorage.setItem(thisKey, "true");
+                        }
                     }
                 });
             }
@@ -217,7 +219,7 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor', 'EucaConsoleUtils'])
             $scope.vpcSubnetZonesMap = {};
             $('#vpc_subnet').find('option').each(function() {
                 var vpcSubnetID = $(this).attr('value');
-                if (vpcSubnetID != null) {
+                if (vpcSubnetID !== null) {
                     var vpcSubnetString = $(this).text();
                     var splitArray = vpcSubnetString.split(' ');
                     $scope.vpcSubnetZonesMap[vpcSubnetID] = splitArray[splitArray.length-1];

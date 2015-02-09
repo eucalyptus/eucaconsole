@@ -16,7 +16,7 @@ angular.module('InstanceTypesPage', ['EucaConsoleUtils'])
                     });
                 }
             }
-        }
+        };
     })
     .controller('InstanceTypesCtrl', function ($scope, $http, $timeout, eucaHandleError) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
@@ -77,7 +77,7 @@ angular.module('InstanceTypesPage', ['EucaConsoleUtils'])
                             });
                         }
                         $scope.$apply();
-                    })
+                    });
             });
             angular.forEach($scope.items, function(item){
                 $scope.initChosen('#select-memory-'+item.name.replace(".", "\\."),
@@ -104,7 +104,7 @@ angular.module('InstanceTypesPage', ['EucaConsoleUtils'])
                             });
                         }
                         $scope.$apply();
-                    })
+                    });
             });
             angular.forEach($scope.items, function(item){
                 $scope.initChosen('#select-disk-' + item.name.replace(".", "\\."),
@@ -131,7 +131,7 @@ angular.module('InstanceTypesPage', ['EucaConsoleUtils'])
                             });
                         }
                         $scope.$apply();
-                    })
+                    });
             });
         };
         $scope.initChosen = function(selector, createOptionCallback){
@@ -280,15 +280,15 @@ angular.module('InstanceTypesPage', ['EucaConsoleUtils'])
                 var memory = $scope.memorySelected[name];
                 var disk = $scope.diskSelected[name];
                 // Handle the cases where the input was typed rather than selected
-                if (cpu == undefined) {
+                if (cpu === undefined) {
                     selector = '#select_cpu_' + name.replace(".", "_") + '_chosen';
                     cpu = $(selector).find('.chosen-single').text();
                 }
-                if (memory == undefined) {
+                if (memory === undefined) {
                     selector = '#select_memory_' + name.replace(".", "_") + '_chosen';
                     memory = $(selector).find('.chosen-single').text();
                 }
-                if (disk == undefined) {
+                if (disk === undefined) {
                     selector = '#select_disk_' + name.replace(".", "_") + '_chosen';
                     disk = $(selector).find('.chosen-single').text();
                 }
@@ -331,6 +331,6 @@ angular.module('InstanceTypesPage', ['EucaConsoleUtils'])
         };
         $scope.convertGBtoMB = function (gb) {
             return Number(gb) * 1024;
-        }
+        };
     })
 ;

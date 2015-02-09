@@ -10,8 +10,8 @@ angular.module('SecurityGroupsPage', ['LandingPage'])
         $scope.securitygroupID = '';
         $scope.revealModal = function (action, securitygroup) {
             var modal = $('#' + action + '-securitygroup-modal');
-            $scope.securitygroupID = securitygroup['id'];
-            $scope.securitygroupName = securitygroup['name'];
+            $scope.securitygroupID = securitygroup.id;
+            $scope.securitygroupName = securitygroup.name;
             modal.foundation('reveal', 'open');
         };
     })

@@ -17,11 +17,11 @@ angular.module('VolumesPage', ['LandingPage'])
         };
         $scope.revealModal = function (action, volume) {
             var modal = $('#' + action + '-volume-modal'),
-                volumeZone = volume['zone'];
-            $scope.volumeID = volume['id'];
-            $scope.volumeName = volume['name'];
+                volumeZone = volume.zone;
+            $scope.volumeID = volume.id;
+            $scope.volumeName = volume.name;
             if (action === 'detach') {
-                $scope.instanceName = volume['instance_name'];
+                $scope.instanceName = volume.instance_name;
             }
             if (action === 'attach') {
                 // Set instance choices for attach to instance widget
@@ -31,7 +31,7 @@ angular.module('VolumesPage', ['LandingPage'])
                         instanceSelect = modal.find('#instance_id');
                     if (!!instancesByZone) {
                         instancesByZone.forEach(function (instance) {
-                            $scope.instanceChoices[instance['id']] = instance['name'];
+                            $scope.instanceChoices[instance.id] = instance.name;
                         });
                     } else {
                         $scope.instanceChoices[''] = 'No available instances in availability zone ' + volumeZone;
@@ -45,7 +45,7 @@ angular.module('VolumesPage', ['LandingPage'])
             modal.foundation('reveal', 'open');
         };
         $scope.detachModal = function (item, url) {
-            $scope.volumeID = item['id'];
+            $scope.volumeID = item.id;
             $scope.instanceName = item.instance_name;
             url = url.replace('_id_', item.instance);
             $http.get(url).success(function(oData) {

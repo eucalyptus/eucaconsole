@@ -28,12 +28,12 @@ angular.module('UserNew', ['UserEditor', 'Quotas', 'EucaConsoleUtils'])
             $scope.accountRedirect = accountRedirect;
             $scope.getFileEndpoint = getFileEndpoint;
             $scope.setWatch();
-            var as_acct = $('#as_account')
+            var as_acct = $('#as_account');
             if (as_acct.length > 0) {
                 as_acct.chosen({'width': '200px', 'search_contains': true});
             }
             $('#user-name-field').focus();
-        }
+        };
         $scope.setWatch = function () {
             $scope.$on('userAdded', function () {
                 $scope.isNotValid = false;
@@ -52,8 +52,8 @@ angular.module('UserNew', ['UserEditor', 'Quotas', 'EucaConsoleUtils'])
             var form = $($event.target);
             $('#user-list-error').css('display', 'none');
             $('#quota-error').css('display', 'none');
-            var users = JSON.parse(form.find('textarea[name="users"]').val())
-            var singleUser = Object.keys(users)[0]
+            var users = JSON.parse(form.find('textarea[name="users"]').val());
+            var singleUser = Object.keys(users)[0];
             if (singleUser === undefined) {
                 $('#user-list-error').css('display', 'block');
                 return;
@@ -85,7 +85,7 @@ angular.module('UserNew', ['UserEditor', 'Quotas', 'EucaConsoleUtils'])
                     // this is clearly a hack. We'd need to bake callbacks into the generateFile
                     // stuff to do this properly.
                     setTimeout(function() {
-                        if (as_account === undefined || as_account == '') {
+                        if (as_account === undefined || as_account === '') {
                             if (isSingleUser) {
                                 window.location = $scope.singleUserRedirect.replace('_name_', singleUser);
                             } else {
@@ -97,7 +97,7 @@ angular.module('UserNew', ['UserEditor', 'Quotas', 'EucaConsoleUtils'])
                     }, 3000);
                 }
                 else {
-                    if (as_account === undefined || as_account == '') {
+                    if (as_account === undefined || as_account === '') {
                         if (isSingleUser) {
                             window.location = $scope.singleUserRedirect.replace('_name_', singleUser);
                         } else {

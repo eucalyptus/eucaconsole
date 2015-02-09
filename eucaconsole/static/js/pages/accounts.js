@@ -15,14 +15,14 @@ angular.module('AccountsPage', ['LandingPage'])
         };
         $scope.revealModal = function (action, account) {
             var modal = $('#' + action + '-account-modal');
-            $scope.accountName = account['account_name'];
+            $scope.accountName = account.account_name;
             modal.foundation('reveal', 'open');
             var form = $('#delete-form');
-            var action = form.attr('action').replace("_name_", account['account_name']);
+            action = form.attr('action').replace("_name_", account.account_name);
             form.attr('action', action);
         };
         $scope.linkAccount = function (account, fragment) {
-            window.location = $scope.accountViewUrl.replace('_name_', account['account_name'])+fragment;
+            window.location = $scope.accountViewUrl.replace('_name_', account.account_name)+fragment;
         };
         $scope.$on('itemsLoaded', function($event, items) {
             var theItems = items;
@@ -41,7 +41,7 @@ angular.module('AccountsPage', ['LandingPage'])
                         }
                     }
                 }).error(function (oData, status) {
-                    var errorMsg = oData['message'] || null;
+                    var errorMsg = oData.message || null;
                 });
             });
         });

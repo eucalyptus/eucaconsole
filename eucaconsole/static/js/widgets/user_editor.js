@@ -31,13 +31,13 @@ angular.module('UserEditor', [])
             $event.preventDefault();
             $scope.usersArray.splice(index, 1);
             $scope.syncUsers();
-            if( $scope.usersArray.length == 0 ){
+            if( $scope.usersArray.length === 0 ){
                 $scope.$emit('emptyUsersArray');
             }
         };
         $scope.keyListener = function ($event) {
             if ($event.keyCode == 13) {
-                $scope.addUser($event)
+                $scope.addUser($event);
             }
         };
         $scope.validateUsername = function ($event) {
@@ -46,7 +46,7 @@ angular.module('UserEditor', [])
            }else {
                $scope.isDisabled = true;
            }
-        }
+        };
         $scope.addUser = function ($event) {
             $event.preventDefault();
             $scope.validateUsername();
