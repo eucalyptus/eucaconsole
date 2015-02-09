@@ -44,7 +44,7 @@
                     <div class="row controls-wrapper readonly">
                         <div class="small-3 columns"><label i18n:translate="">Key pair</label></div>
                         <div class="small-9 columns value">
-                            <a href="${request.route_path('keypair_view', id=launch_config.key_name)}">
+                            <a href="${request.route_path('keypair_view', subpath=launch_config.key_name)}">
                                 ${launch_config_key_name}
                             </a>
                         </div>
