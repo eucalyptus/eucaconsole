@@ -1185,4 +1185,85 @@ describe("SecurityGroupRules", function() {
             expect(scope.rulesEgressArray[1]).toEqual(undefined);
         });
     });
+
+    describe("Function adjustIpProtocol Test", function() {
+
+        beforeEach(function() {
+            scope.initRules('{"rules_array": [{"to_port":"3389","grants":[{"owner_id":null,"group_id":null,"cidr_ip":"10.5.1.66/32","name":null}],"ip_protocol":"tcp","from_port":"3389"}, {"to_port":"4000","grants":[{"owner_id":null,"group_id":null,"cidr_ip":"10.5.1.66/32","name":null}],"ip_protocol":"tcp","from_port":"4000"}],"rules_egress_array": [{"to_port":"22","grants":[{"owner_id":null,"group_id":null,"cidr_ip":"0.0.0.0/0","name":null}],"ip_protocol":"tcp","from_port":"22"}],"json_endpoint": "localhost/json", "protocols_json_endpoint": "localhost/api"}');
+        });
+
+        it("Should update fromPort and toPort if selectedProtocol is 'icmp' when adjustIpProtocol is called", function() {
+            scope.selectedProtocol = 'icmp';
+            scope.icmpRange = '22';
+            scope.adjustIpProtocol();
+            expect(scope.fromPort).toEqual('22');
+            expect(scope.toPort).toEqual('22');
+        });
+
+        it("Should update ipProtocol to 'icmp' if selectedProtocol is 'icmp' when adjustIpProtocol is called", function() {
+            scope.selectedProtocol = 'icmp';
+            scope.icmpRange = '22';
+            scope.adjustIpProtocol();
+            expect(scope.ipProtocol).toEqual('icmp');
+        });
+
+        it("Should update ipProtocol to 'udp' if selectedProtocol is 'udp' when adjustIpProtocol is called", function() {
+            scope.selectedProtocol = 'udp';
+            scope.adjustIpProtocol();
+            expect(scope.ipProtocol).toEqual('udp');
+        });
+
+        it("Should update ipProtocol to '-1' if selectedProtocol is '-1' when adjustIpProtocol is called", function() {
+            scope.selectedProtocol = '-1';
+            scope.adjustIpProtocol();
+            expect(scope.ipProtocol).toEqual('-1');
+        });
+
+        it("Should update fromPort and toPort to null if selectedProtocol is '-1' when adjustIpProtocol is called", function() {
+            scope.selectedProtocol = '-1';
+            scope.adjustIpProtocol();
+            expect(scope.fromPort).toEqual(null);
+            expect(scope.toPort).toEqual(null);
+        });
+
+        it("Should update fromPort and toPort to null if selectedProtocol is 'custom' when adjustIpProtocol is called", function() {
+            scope.selectedProtocol = 'custom';
+            scope.adjustIpProtocol();
+            expect(scope.fromPort).toEqual(null);
+            expect(scope.toPort).toEqual(null);
+        });
+
+        it("Should update ipProtocol to customProtocol if selectedProtocol is 'custom' and customProtocol is a number when adjustIpProtocol is called", function() {
+            scope.selectedProtocol = 'custom';
+            scope.customProtocol = 10;
+            scope.ipProtocol = 'icmp';
+            scope.adjustIpProtocol();
+            expect(scope.ipProtocol).toEqual(10);
+        });
+
+        it("Should call getCustomProtocolNumber if selectedProtocol is 'custom' and customProtocol is not a number when adjustIpProtocol is called", function() {
+            spyOn(scope, 'getCustomProtocolNumber');
+            scope.selectedProtocol = 'custom';
+            scope.customProtocol = 'IGMP';
+            scope.ipProtocol = 'icmp';
+            scope.internetProtocols = ["HOPOPT", "ICMP", "IGMP"];
+            scope.adjustIpProtocol();
+            expect(scope.getCustomProtocolNumber).toHaveBeenCalledWith(scope.customProtocol);
+        });
+
+        it("Should update ipProtocol to translated custom protocol number if selectedProtocol is 'custom' and customProtocol is not a number when adjustIpProtocol is called", function() {
+            scope.selectedProtocol = 'custom';
+            scope.customProtocol = 'IGMP';
+            scope.ipProtocol = 'icmp';
+            scope.internetProtocols = ["HOPOPT", "ICMP", "IGMP"];
+            scope.adjustIpProtocol();
+            expect(scope.ipProtocol).toEqual(2);
+        });
+
+        it("Should update ipProtocol to 'tcp' if selectedProtocol is not ['icmp', 'udp', '-1', 'custom'] when adjustIpProtocol is called", function() {
+            scope.selectedProtocol = 'unknown';
+            scope.adjustIpProtocol();
+            expect(scope.ipProtocol).toEqual('tcp');
+        });
+    });
 });
