@@ -11,10 +11,11 @@ describe("SecurityGroupRules", function() {
     var scope, httpBackend, ctrl;
     // inject the $controller and $rootScope services
     // in the beforeEach block
-    beforeEach(angular.mock.inject(function($rootScope, $httpBackend, $controller) {
+    beforeEach(angular.mock.inject(function($rootScope, $httpBackend, $controller, $timeout) {
         httpBackend = $httpBackend;
         // Create a new scope that's a child of the $rootScope
         scope = $rootScope.$new();
+        scope.timeout = $timeout;
         // Create the controller
         ctrl = $controller('SecurityGroupRulesCtrl', {
             $scope: scope
@@ -120,6 +121,25 @@ describe("SecurityGroupRules", function() {
             scope.initRules('{"rules_array": [{"to_port":"3389","grants":[{"owner_id":null,"group_id":null,"cidr_ip":"10.5.1.66/32","name":null}],"ip_protocol":"tcp","from_port":"3389"}],"rules_egress_array": [{"to_port":"22","grants":[{"owner_id":null,"group_id":null,"cidr_ip":"0.0.0.0/0","name":null}],"ip_protocol":"tcp","from_port":"22"}],"json_endpoint": "localhost/json", "protocols_json_endpoint": "localhost/api"}');
             expect(scope.setWatchers).toHaveBeenCalled();
         });
+    });
+
+    describe("Function cleanupSelections() Test", function() {
+
+        it("Should remove the first option from ip-protocol-select element if the option is empty", function() {
+            setFixtures('<select id="ip-protocol-select"><option></option><option value="1">1</option></select>');
+            expect($('#ip-protocol-select').children('option').first().html()).toEqual('')
+            scope.cleanupSelections();
+            scope.timeout.flush();
+            expect($('#ip-protocol-select').children('option').first().html()).not.toEqual('')
+        });  
+
+        it("Should remove the first option from groupname-select element if the option is empty", function() {
+            setFixtures('<select id="groupname-select"><option></option><option value="1">1</option></select>');
+            expect($('#groupname-select').children('option').first().html()).toEqual('')
+            scope.cleanupSelections();
+            scope.timeout.flush();
+            expect($('#groupname-select').children('option').first().html()).not.toEqual('')
+        });  
     });
 
     describe("Function addRuleButtonClass() Test", function() {
