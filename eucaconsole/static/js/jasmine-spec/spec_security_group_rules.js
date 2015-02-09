@@ -142,6 +142,209 @@ describe("SecurityGroupRules", function() {
         });  
     });
 
+    describe("Function checkRequiredInput() Test", function() {
+
+        it("Should set isRuleNotComplete to true if hasDuplicatedRule is true when checkRequiredInput is called", function() {
+            scope.hasDuplicatedRule = true;
+            scope.checkRequiredInput();
+            expect(scope.isRuleNotComplete).toBeTruthy();
+        }); 
+
+        it("Should set isRuleNotComplete to true if selectedProtocol is 'custom' and customProtocol empty when checkRequiredInput is called", function() {
+            scope.hasDuplicatedRule = false;
+            scope.selectedProtocol = 'custom';
+            scope.customProtocol = '';
+            scope.checkRequiredInput();
+            expect(scope.isRuleNotComplete).toBeTruthy();
+        }); 
+
+        it("Should set isRuleNotComplete to true if selectedProtocol is 'custom' and customProtocolDivClass contains 'error' when checkRequiredInput is called", function() {
+            scope.hasDuplicatedRule = false;
+            scope.selectedProtocol = 'custom';
+            scope.customProtocolDivClass = 'error';
+            scope.checkRequiredInput();
+            expect(scope.isRuleNotComplete).toBeTruthy();
+        }); 
+
+        it("Should set isRuleNotComplete to true if selectedProtocol is not ['custom', 'icmp', '-1'] and fromPort is empty when checkRequiredInput is called", function() {
+            scope.hasDuplicatedRule = false;
+            scope.selectedProtocol = 'tcp';
+            scope.fromPort = '';
+            scope.checkRequiredInput();
+            expect(scope.isRuleNotComplete).toBeTruthy();
+        }); 
+
+        it("Should set isRuleNotComplete to true if selectedProtocol is not ['custom', 'icmp', '-1'] and fromPort is undefined when checkRequiredInput is called", function() {
+            scope.hasDuplicatedRule = false;
+            scope.selectedProtocol = 'tcp';
+            scope.fromPort = undefined;
+            scope.checkRequiredInput();
+            expect(scope.isRuleNotComplete).toBeTruthy();
+        }); 
+
+        it("Should set isRuleNotComplete to true if selectedProtocol is not ['custom', 'icmp', '-1'] and toPort is empty when checkRequiredInput is called", function() {
+            scope.hasDuplicatedRule = false;
+            scope.selectedProtocol = 'tcp';
+            scope.fromPort = '22';
+            scope.toPort = '';
+            scope.checkRequiredInput();
+            expect(scope.isRuleNotComplete).toBeTruthy();
+        }); 
+
+        it("Should set isRuleNotComplete to true if selectedProtocol is not ['custom', 'icmp', '-1'] and toPort is undefined when checkRequiredInput is called", function() {
+            scope.hasDuplicatedRule = false;
+            scope.selectedProtocol = 'tcp';
+            scope.fromPort = '22';
+            scope.toPort = undefined;
+            scope.checkRequiredInput();
+            expect(scope.isRuleNotComplete).toBeTruthy();
+        }); 
+
+        it("Should not set isRuleNotComplete to true if selectedProtocol is 'icmp' and fromPort is empty when checkRequiredInput is called", function() {
+            scope.hasDuplicatedRule = false;
+            scope.selectedProtocol = 'icmp';
+            scope.fromPort = '';
+            scope.trafficType = '';
+            scope.checkRequiredInput();
+            expect(scope.isRuleNotComplete).not.toBeTruthy();
+        }); 
+
+        it("Should not set isRuleNotComplete to true if selectedProtocol is 'icmp' and fromPort is undefined when checkRequiredInput is called", function() {
+            scope.hasDuplicatedRule = false;
+            scope.selectedProtocol = 'icmp';
+            scope.fromPort = undefined;
+            scope.trafficType = '';
+            scope.checkRequiredInput();
+            expect(scope.isRuleNotComplete).not.toBeTruthy();
+        }); 
+
+        it("Should not set isRuleNotComplete to true if selectedProtocol is 'icmp' and toPort is empty when checkRequiredInput is called", function() {
+            scope.hasDuplicatedRule = false;
+            scope.selectedProtocol = 'icmp';
+            scope.toPort = '';
+            scope.trafficType = '';
+            scope.checkRequiredInput();
+            expect(scope.isRuleNotComplete).not.toBeTruthy();
+        }); 
+
+        it("Should not set isRuleNotComplete to true if selectedProtocol is 'icmp' and toPort is undefined when checkRequiredInput is called", function() {
+            scope.hasDuplicatedRule = false;
+            scope.selectedProtocol = 'icmp';
+            scope.toPort = undefined;
+            scope.trafficType = '';
+            scope.checkRequiredInput();
+            expect(scope.isRuleNotComplete).not.toBeTruthy();
+        }); 
+
+        it("Should not set isRuleNotComplete to true if selectedProtocol is '-1' and fromPort is empty when checkRequiredInput is called", function() {
+            scope.hasDuplicatedRule = false;
+            scope.selectedProtocol = '-1';
+            scope.fromPort = '';
+            scope.trafficType = '';
+            scope.checkRequiredInput();
+            expect(scope.isRuleNotComplete).not.toBeTruthy();
+        }); 
+
+        it("Should not set isRuleNotComplete to true if selectedProtocol is '-1' and fromPort is undefined when checkRequiredInput is called", function() {
+            scope.hasDuplicatedRule = false;
+            scope.selectedProtocol = '-1';
+            scope.fromPort = undefined;
+            scope.trafficType = '';
+            scope.checkRequiredInput();
+            expect(scope.isRuleNotComplete).not.toBeTruthy();
+        }); 
+
+        it("Should not set isRuleNotComplete to true if selectedProtocol is '-1' and toPort is empty when checkRequiredInput is called", function() {
+            scope.hasDuplicatedRule = false;
+            scope.selectedProtocol = '-1';
+            scope.toPort = '';
+            scope.trafficType = '';
+            scope.checkRequiredInput();
+            expect(scope.isRuleNotComplete).not.toBeTruthy();
+        }); 
+
+        it("Should not set isRuleNotComplete to true if selectedProtocol is '-1' and toPort is undefined when checkRequiredInput is called", function() {
+            scope.hasDuplicatedRule = false;
+            scope.selectedProtocol = '-1';
+            scope.toPort = undefined;
+            scope.trafficType = '';
+            scope.checkRequiredInput();
+            expect(scope.isRuleNotComplete).not.toBeTruthy();
+        }); 
+
+        it("Should set isRuleNotComplete to true if trafficType is 'ip' and cidrIp is empty when checkRequiredInput is called", function() {
+            scope.hasDuplicatedRule = false;
+            scope.selectedProtocol = '-1';
+            scope.trafficType = 'ip';
+            scope.cidrIp = '';
+            scope.checkRequiredInput();
+            expect(scope.isRuleNotComplete).toBeTruthy();
+        }); 
+
+        it("Should set isRuleNotComplete to true if trafficType is 'ip' and cidrIp is undefined when checkRequiredInput is called", function() {
+            scope.hasDuplicatedRule = false;
+            scope.selectedProtocol = '-1';
+            scope.trafficType = 'ip';
+            scope.cidrIp = undefined;
+            scope.checkRequiredInput();
+            expect(scope.isRuleNotComplete).toBeTruthy();
+        }); 
+
+        it("Should set isRuleNotComplete to true if trafficType is 'securitygroup' and groupName is empty when checkRequiredInput is called", function() {
+            scope.hasDuplicatedRule = false;
+            scope.selectedProtocol = '-1';
+            scope.trafficType = 'securitygroup';
+            scope.groupName = '';
+            scope.checkRequiredInput();
+            expect(scope.isRuleNotComplete).toBeTruthy();
+        }); 
+
+        it("Should set isRuleNotComplete to true if trafficType is 'securitygroup' and groupName is undefined when checkRequiredInput is called", function() {
+            scope.hasDuplicatedRule = false;
+            scope.selectedProtocol = '-1';
+            scope.trafficType = 'securitygroup';
+            scope.groupName = undefined;
+            scope.checkRequiredInput();
+            expect(scope.isRuleNotComplete).toBeTruthy();
+        }); 
+
+        it("Should not set isRuleNotComplete to true if trafficType is not ['ip', 'securitygroup'] and cidrIp is empty when checkRequiredInput is called", function() {
+            scope.hasDuplicatedRule = false;
+            scope.selectedProtocol = '-1';
+            scope.trafficType = '';
+            scope.cidrIp = '';
+            scope.checkRequiredInput();
+            expect(scope.isRuleNotComplete).not.toBeTruthy();
+        }); 
+
+        it("Should not set isRuleNotComplete to true if trafficType is not ['ip', 'securitygroup'] and cidrIp is undefined when checkRequiredInput is called", function() {
+            scope.hasDuplicatedRule = false;
+            scope.selectedProtocol = '-1';
+            scope.trafficType = '';
+            scope.cidrIp = undefined;
+            scope.checkRequiredInput();
+            expect(scope.isRuleNotComplete).not.toBeTruthy();
+        }); 
+
+        it("Should not set isRuleNotComplete to true if trafficType is not ['ip', 'securitygroup'] and groupName is empty when checkRequiredInput is called", function() {
+            scope.hasDuplicatedRule = false;
+            scope.selectedProtocol = '-1';
+            scope.trafficType = '';
+            scope.groupName = '';
+            scope.checkRequiredInput();
+            expect(scope.isRuleNotComplete).not.toBeTruthy();
+        }); 
+
+        it("Should not set isRuleNotComplete to true if trafficType is not ['ip', 'securitygroup'] and groupName is undefined when checkRequiredInput is called", function() {
+            scope.hasDuplicatedRule = false;
+            scope.selectedProtocol = '-1';
+            scope.trafficType = '';
+            scope.groupName = undefined;
+            scope.checkRequiredInput();
+            expect(scope.isRuleNotComplete).not.toBeTruthy();
+        }); 
+    });
+
     describe("Function addRuleButtonClass() Test", function() {
 
         it("Should disable the addRule button when the rule edit is in progress", function() {
