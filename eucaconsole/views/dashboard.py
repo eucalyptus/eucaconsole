@@ -161,7 +161,7 @@ class DashboardJsonView(BaseView):
             if ('instances-running' or 'instances-stopped' or 'scaling-groups') in tiles:
                 for instance in ec2_conn.get_only_instances(filters=filters):
                     instances_total_count += 1
-                    if instance.tags.get('aws:autoscaling:groupName'):
+                    if instance.tags.get('aws:autoscaling:groupName') and instance.state == u'running':
                         instances_scaling_count += 1
                     if instance.state == u'running':
                         instances_running_count += 1

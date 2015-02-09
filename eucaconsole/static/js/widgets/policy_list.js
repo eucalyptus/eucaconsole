@@ -51,7 +51,9 @@ angular.module('PolicyList', [])
             ).error(function (oData, status) {
                 var errorMsg = oData['message'] || '';
                 $scope.itemsLoading = false;
-                Notify.failure(errorMsg);
+                if (errorMsg !== undefined) {
+                    Notify.failure(errorMsg);
+                }
             });
         };
         $rootScope.getPolicies = function() {

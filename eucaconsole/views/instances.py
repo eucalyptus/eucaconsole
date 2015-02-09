@@ -1177,6 +1177,7 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
             launch_more_form=self.launch_more_form,
             snapshot_choices=self.get_snapshot_choices(),
             vpc_subnet_display=self.get_vpc_subnet_display(self.instance.subnet_id) if self.instance else None,
+            is_vpc_supported=self.is_vpc_supported,
             role=self.role,
         )
 
