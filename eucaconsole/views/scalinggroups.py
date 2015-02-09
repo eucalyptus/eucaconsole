@@ -690,7 +690,6 @@ class ScalingGroupWizardView(BaseScalingGroupView):
                 if vpc_network == 'None':
                     vpc_network = None
                 vpc_subnets = self.request.params.getall('vpc_subnet')
-                scaling_group = ''
                 params = dict(
                     name=scaling_group_name,
                     launch_config=launch_config_name,

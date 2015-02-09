@@ -157,7 +157,7 @@ class KeyPairView(BaseView):
     def keypair_create(self):
         if self.keypair_form.validate():
             name = self.request.params.get('name')
-            # WORKAROUND: Boto seems to barf on names with non-ascii chars in conn.create_key_pair(name)
+            # NOTE: Normalize non-ascii chars, which aren't allowed in key pairs
             name = self.normalize_unicode(name)
             location = self.request.route_path('keypair_view', id=name)
             with boto_error_handler(self.request, location):
@@ -187,6 +187,8 @@ class KeyPairView(BaseView):
     def keypair_import(self):
         if self.keypair_form.validate():
             name = self.request.params.get('name')
+            # NOTE: Normalize non-ascii chars, which aren't allowed in key pairs
+            name = self.normalize_unicode(name)
             key_material = self.request.params.get('key_material')
             failure_location = self.request.route_path('keypair_view', id='new2')  # Return to import form if failure
             success_location = self.request.route_path('keypair_view', id=name)
