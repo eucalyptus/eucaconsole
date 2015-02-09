@@ -64,10 +64,14 @@ class SnapshotsView(LandingPageView):
     @view_config(route_name='snapshots', renderer=VIEW_TEMPLATE)
     def snapshots_landing(self):
         filter_keys = ['id', 'name', 'volume_size', 'start_time', 'tags', 'volume_id', 'volume_name', 'status']
+        filters_form=SnapshotsFiltersForm(self.request, formdata=self.request.params or None)
+        search_facets = filters_form.facets
+
         self.render_dict.update(dict(
             filter_keys=filter_keys,
-            filter_fields=True,
-            filters_form=SnapshotsFiltersForm(self.request, formdata=self.request.params or None),
+            filter_fields=False,
+            filters_form=filters_form,
+            search_facets=BaseView.escape_json(json.dumps(search_facets)),
             sort_keys=self.get_sort_keys(),
             initial_sort_key=self.initial_sort_key,
             json_items_endpoint=self.get_json_endpoint('snapshots_json'),

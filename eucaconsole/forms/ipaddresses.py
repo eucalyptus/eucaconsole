@@ -87,17 +87,21 @@ class IPAddressesFiltersForm(BaseSecureForm):
         self.request = request
         self.assignment.choices = self.get_assignment_choices()
         self.domain.choices = self.get_domain_choices()
+        self.facets = [
+            {'name':'assignment', 'label':self.assignment.label.text, 'options':self.get_assignment_choices()},
+            {'name':'domain', 'label':self.domain.label.text, 'options':self.get_domain_choices()},
+        ]
 
     @staticmethod
     def get_assignment_choices():
-        return (
-            ('assigned', 'Assigned'),
-            ('', 'Unassigned'),
-        )
+        return [
+            {'key':'assigned', 'label':'Assigned'},
+            {'key':'', 'label':'Unassigned'},
+        ]
 
     @staticmethod
     def get_domain_choices():
-        return (
-            ('standard', 'Standard'),
-            ('vpc', 'VPC'),
-        )
+        return [
+            {'key':'standard', 'label':'Standard'},
+            {'key':'vpc', 'label':'VPC'},
+        ]

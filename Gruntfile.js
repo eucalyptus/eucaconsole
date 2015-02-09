@@ -54,6 +54,13 @@ module.exports = function(grunt) {
                 'eucaconsole/static/css/thirdparty': 'components-font-awesome/css/*.css',
                 'eucaconsole/static/sass/font-awesome':'components-font-awesome/scss/*.scss'
               }
+          },
+          angular_magic_search: {
+              options: {
+              },
+              files: {
+                'eucaconsole/static/js/thirdparty/magic-search': 'angular-magic-search/magic_search.*'
+              }
           }
       },
       jshint: {

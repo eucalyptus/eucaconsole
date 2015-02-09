@@ -3,8 +3,8 @@
  * @requires AngularJS
  *
  */
-angular.module('ImagePicker', ['EucaConsoleUtils'])
-    .controller('ImagePickerCtrl', function ($rootScope, $scope, $http, eucaUnescapeJson) {
+angular.module('ImagePicker', ['EucaConsoleUtils', 'MagicSearch'])
+    .controller('ImagePickerCtrl', function ($rootScope, $scope, $http, $timeout, eucaUnescapeJson) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.items = [];
         $scope.batchSize = 100;  // Show 100 items max w/o "show more" enabler
@@ -104,5 +104,15 @@ angular.module('ImagePicker', ['EucaConsoleUtils'])
             $scope.selectedImageParam = item.id;
             $scope.$emit('imageSelected', item);
         };
+        $scope.$on('searchUpdated', function($event, query) {
+            $scope.jsonEndpoint = decodeURIComponent($scope.jsonEndpointPrefix + "&" + query);
+            $scope.getItems();
+        });
+        $scope.$on('textSearch', function($event, text, filter_keys) {
+            $scope.searchFilter = text;
+            $timeout(function() {
+                $scope.searchImages();
+            });
+        });
     })
 ;

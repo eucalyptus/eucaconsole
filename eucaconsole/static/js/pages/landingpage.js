@@ -5,7 +5,7 @@
  */
 
 
-angular.module('LandingPage', ['CustomFilters', 'ngSanitize'])
+angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch'])
     .controller('ItemsCtrl', function ($scope, $http, $timeout, $sanitize) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.items = [];
@@ -259,5 +259,33 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize'])
             });
             
         };
+        $scope.$on('searchUpdated', function($event, query) {
+            // update url
+            var url = window.location.href;
+            if (url.indexOf("?") > -1) {
+                url = url.split("?")[0];
+            }
+            if (query.length > 0) {
+                url = url + "?" + query;
+            }
+            window.history.pushState(query, "", url);
+            // update json endpont and refresh table
+            url = $scope.jsonEndpoint;
+            if (url.indexOf("?") > -1) {
+                url = url.split("?")[0];
+            }
+            if (query.length > 0) {
+                url = url + "?" + query;
+            }
+            $scope.jsonEndpoint = url;
+            $scope.itemsLoading=true;
+            $scope.getItems();
+        });
+        $scope.$on('textSearch', function($event, text, filter_keys) {
+            $scope.searchFilter = text;
+            $timeout(function() {
+                $scope.searchFilterItems(filter_keys);
+            });
+        });
     })
 ;

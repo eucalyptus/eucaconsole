@@ -8,7 +8,8 @@
     "components-font-awesome": "4.2.0",
     "jquery": "2.0.3",
     "jasmine": "2.0.3",
-    "jasmine-jquery": "2.0.5"
+    "jasmine-jquery": "2.0.5",
+    "angular-magic-search": "~0.1.0"
   }
 }
 
