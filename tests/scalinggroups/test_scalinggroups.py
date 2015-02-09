@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2013-2014 Eucalyptus Systems, Inc.
 #
 # Redistribution and use of this software in source and binary forms,
@@ -30,6 +31,7 @@ See http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/testing.html
 
 """
 from pyramid import testing
+from webob.multidict import MultiDict
 
 from eucaconsole.forms.scalinggroups import (
     BaseScalingGroupForm, ScalingGroupCreateForm, ScalingGroupEditForm, ScalingGroupDeleteForm,
@@ -258,3 +260,12 @@ class BaseScalingGroupFormTestCaseWithVPCDisabledOnEucalpytus(BaseFormTestCase):
 
     def test_scaling_group_form_vpc_network_choices_with_vpc_disabled_on_eucalyptus(self):
         self.assertTrue(('None', _(u'No VPC')) in self.form.vpc_network.choices)
+
+
+class ScalingGroupUnicodeTestCase(BaseViewTestCase):
+    request = testing.DummyRequest()
+    request.params = MultiDict(name=u'scalinggroup-ÅÅÅ')
+    view = ScalingGroupView(request)
+
+    def test_normalize_unicode_scaling_group_name(self):
+        self.assertEqual(self.view.normalize_unicode(self.request.params.get('name')), u'scalinggroup-AAA')
