@@ -1312,4 +1312,107 @@ describe("SecurityGroupRules", function() {
             expect(scope.ipProtocol).toEqual('tcp');
         });
     });
+
+    describe("Function addRule Test", function() {
+
+        beforeEach(function() {
+            scope.initRules('{"rules_array": [{"to_port":"3389","grants":[{"owner_id":null,"group_id":null,"cidr_ip":"10.5.1.66/32","name":null}],"ip_protocol":"tcp","from_port":"3389"}],"rules_egress_array": [{"to_port":"22","grants":[{"owner_id":null,"group_id":null,"cidr_ip":"0.0.0.0/0","name":null}],"ip_protocol":"tcp","from_port":"22"}],"json_endpoint": "localhost/json", "protocols_json_endpoint": "localhost/api"}');
+        });
+
+        it("Should call checkRequiredInput when addRule is called", function() {
+            spyOn(scope, 'checkRequiredInput');
+            scope.addRule({"preventDefault": function(){}}); 
+            expect(scope.checkRequiredInput).toHaveBeenCalled();
+        });
+
+        it("Should return false if isRuleNotComplete is false when addRule is called", function() {
+            scope.isRuleNotComplete  = false;
+            var output = scope.addRule({"preventDefault": function(){}}); 
+            expect(output).not.toBeTruthy();
+        });
+
+        it("Should return false if hasDuplicatedRule is false when addRule is called", function() {
+            scope.isRuleNotComplete  = true;
+            scope.hasDuplicatedRule = false;
+            var output = scope.addRule({"preventDefault": function(){}}); 
+            expect(output).not.toBeTruthy();
+        });
+
+        it("Should return false if hasInvalidOwner is false when addRule is called", function() {
+            scope.isRuleNotComplete  = true;
+            scope.hasDuplicatedRule = true;
+            scope.hasInvalidOwner = false;
+            var output = scope.addRule({"preventDefault": function(){}}); 
+            expect(output).not.toBeTruthy();
+        });
+
+        it("Should update rulesArray if ruleType is 'inbound' when addRule is called", function() {
+            scope.isRuleNotComplete  = false;
+            scope.hasDuplicatedRule = false;
+            scope.hasInvalidOwner = false;
+            scope.hasDuplicatedRule = false;
+            scope.selectedProtocol = '-1';
+            scope.trafficType = '';
+            scope.cidrIp = '';
+            scope.ruleType = 'inbound';
+            expect(scope.rulesArray.length).toEqual(1);
+            scope.addRule({"preventDefault": function(){}}); 
+            expect(scope.rulesArray.length).toEqual(2);
+        });
+
+        it("Should update rulesEgressArray if ruleType is 'outbound' when addRule is called", function() {
+            scope.isRuleNotComplete  = false;
+            scope.hasDuplicatedRule = false;
+            scope.hasInvalidOwner = false;
+            scope.hasDuplicatedRule = false;
+            scope.selectedProtocol = '-1';
+            scope.trafficType = '';
+            scope.cidrIp = '';
+            scope.ruleType = 'outbound';
+            expect(scope.rulesEgressArray.length).toEqual(1);
+            scope.addRule({"preventDefault": function(){}}); 
+            expect(scope.rulesEgressArray.length).toEqual(2);
+        });
+
+        it("Should call syncRules when addRule is executed cleanly", function() {
+            spyOn(scope, 'syncRules');
+            scope.isRuleNotComplete  = false;
+            scope.hasDuplicatedRule = false;
+            scope.hasInvalidOwner = false;
+            scope.hasDuplicatedRule = false;
+            scope.selectedProtocol = '-1';
+            scope.trafficType = '';
+            scope.cidrIp = '';
+            scope.addRule({"preventDefault": function(){}}); 
+            expect(scope.syncRules).toHaveBeenCalled();
+        });
+
+        it("Should emit securityGroupUpdate when addRule is executed cleanly", function() {
+            spyOn(scope, '$emit');
+            scope.isRuleNotComplete  = false;
+            scope.hasDuplicatedRule = false;
+            scope.hasInvalidOwner = false;
+            scope.hasDuplicatedRule = false;
+            scope.selectedProtocol = '-1';
+            scope.trafficType = '';
+            scope.cidrIp = '';
+            scope.addRule({"preventDefault": function(){}}); 
+            expect(scope.$emit).toHaveBeenCalledWith('securityGroupUpdate');
+        });
+    });
+
+    describe("Function selectRuleType Test", function() {
+
+        it("Should update inboundButtonClass to 'active' and outboundButtonClass to 'inactive' when selectRuleType is called with 'inbound'", function() {
+            scope.selectRuleType('inbound');
+            expect(scope.inboundButtonClass).toEqual('active');
+            expect(scope.outboundButtonClass).toEqual('inactive');
+        });
+
+        it("Should update inboundButtonClass to 'inactive' and outboundButtonClass to 'active' when selectRuleType is called with 'outbound'", function() {
+            scope.selectRuleType('outbound');
+            expect(scope.inboundButtonClass).toEqual('inactive');
+            expect(scope.outboundButtonClass).toEqual('active');
+        });
+    });
 });
