@@ -38,7 +38,7 @@ from operator import attrgetter
 from boto.ec2.autoscale import AutoScalingGroup, ScalingPolicy
 from boto.ec2.autoscale.tag import Tag
 
-from pyramid.httpexceptions import HTTPFound
+from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.view import view_config
 
 from ..constants.cloudwatch import METRIC_TYPES
@@ -290,10 +290,14 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
 
     @view_config(route_name='scalinggroup_view', renderer=TEMPLATE)
     def scalinggroup_view(self):
+        if self.scaling_group is None:
+            raise HTTPNotFound()
         return self.render_dict
 
     @view_config(route_name='scalinggroup_update', request_method='POST', renderer=TEMPLATE)
     def scalinggroup_update(self):
+        if self.scaling_group is None:
+            raise HTTPNotFound()
         if not self.is_vpc_supported or self.request.params.get('vpc_network') is None:
             del self.edit_form.vpc_network
             del self.edit_form.vpc_subnet
@@ -313,6 +317,8 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
 
     @view_config(route_name='scalinggroup_delete', request_method='POST', renderer=TEMPLATE)
     def scalinggroup_delete(self):
+        if self.scaling_group is None:
+            raise HTTPNotFound()
         if self.delete_form.validate():
             location = self.request.route_path('scalinggroups')
             name = self.unescape_braces(self.request.params.get('name'))
