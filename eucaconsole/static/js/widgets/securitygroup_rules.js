@@ -385,7 +385,7 @@ angular.module('SecurityGroupRules', ['CustomFilters', 'EucaConsoleUtils'])
         };
         // Create an array block that represents a new security group rule submiitted by user
         $scope.createRuleArrayBlock = function () {
-            var name = $scope.groupName ? $scope.trafficType == 'securitygroup' && $scope.groupName : null;
+            var name = $scope.trafficType == 'securitygroup' && $scope.groupName ? $scope.groupName : null;
             var owner_id = null;
             var group_id = null;
             if (name !== null) {
@@ -405,7 +405,7 @@ angular.module('SecurityGroupRules', ['CustomFilters', 'EucaConsoleUtils'])
                 'ip_protocol': $scope.ipProtocol,
                 'custom_protocol': $scope.getCustomProtocolName($scope.customProtocol),
                 'grants': [{
-                    'cidr_ip': $scope.cidrIp ? $scope.trafficType == 'ip' && $scope.cidrIp : null,
+                    'cidr_ip': $scope.trafficType == 'ip' && $scope.cidrIp ? $scope.cidrIp : null,
                     'group_id': group_id,
                     'name': name,
                     'owner_id': owner_id

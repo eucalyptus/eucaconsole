@@ -1034,7 +1034,7 @@ describe("SecurityGroupRules", function() {
             expect(scope.getCustomProtocolName).toHaveBeenCalledWith(scope.customProtocol);
         });
 
-        it("Should match the output values when createRuleArrayBlock() is returned", function() {
+        it("Should return the matching cidr_ip value if trafficType is 'ip' when createRuleArrayBlock() is returned", function() {
             scope.fromPort = 22;
             scope.toPort = 22;
             scope.ipProtocol = 'tcp';
@@ -1058,7 +1058,7 @@ describe("SecurityGroupRules", function() {
             });
         });
 
-        it("Should match the output values when createRuleArrayBlock() is returned", function() {
+        it("Should return cidr_ip value to be null if trafficType is not 'ip' when createRuleArrayBlock() is returned", function() {
             scope.fromPort = 22;
             scope.toPort = 22;
             scope.ipProtocol = 'tcp';
@@ -1072,7 +1072,7 @@ describe("SecurityGroupRules", function() {
                 'ip_protocol': 'tcp',
                 'custom_protocol': undefined,
                 'grants': [{
-                    'cidr_ip': false,
+                    'cidr_ip': null,
                     'group_id': null,
                     'name': null,
                     'owner_id': null 
