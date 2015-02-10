@@ -59,7 +59,7 @@
                         </div>
                         <!--! Step 2: Type tab content -->
                         <div class="content ${'active' if image else ''}" id="step2"
-                            tal:define="html_attrs_val {'pattern': '^[^\/\\\]{1,255}$'};">
+                            tal:define="html_attrs_val {'pattern': layout.ascii_without_slashes_pattern};">
                             <p class="description" i18n:translate="">
                                 Please specify the launch configuration name and the instance size/type.
                             </p>

@@ -48,6 +48,8 @@ from ..i18n import _
 
 
 BLANK_CHOICE = ('', _(u'Select...'))
+ASCII_WITHOUT_SLASHES_NOTICE = _(
+    u'Name is required and must be between 1 and 255 ASCII characters long and may not contain slashes')
 
 
 class NgNonBindableOptionSelect(Select):
