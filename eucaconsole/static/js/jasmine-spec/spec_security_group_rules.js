@@ -998,18 +998,40 @@ describe("SecurityGroupRules", function() {
 
     describe("Function createRuleArrayBlock() Test", function() {
 
-        it("Should call getGroupIdByName() if trafficType is 'securitygroup' and has groupName", function() {
+        it("Should call getGroupIdByName() if trafficType is 'securitygroup' and groupName is defined", function() {
             spyOn(scope, 'getGroupIdByName');
-            scope.groupName = "12345678/my group";
             scope.trafficType = 'securitygroup';
+            scope.groupName = "12345678/my group";
             scope.createRuleArrayBlock();
             expect(scope.getGroupIdByName).toHaveBeenCalled();
+        });
+
+        it("Should not call getGroupIdByName() if trafficType is 'securitygroup' and groupName is null", function() {
+            spyOn(scope, 'getGroupIdByName');
+            scope.trafficType = 'securitygroup';
+            scope.groupName = null;
+            scope.createRuleArrayBlock();
+            expect(scope.getGroupIdByName).not.toHaveBeenCalled();
+        });
+
+        it("Should not call getGroupIdByName() if trafficType is not 'securitygroup'", function() {
+            spyOn(scope, 'getGroupIdByName');
+            scope.trafficType = 'ip';
+            scope.groupName = null;
+            scope.createRuleArrayBlock();
+            expect(scope.getGroupIdByName).not.toHaveBeenCalled();
         });
 
         it("Should call adjustIpProtocol() when createRuleArrayBlock() is called", function() {
             spyOn(scope, 'adjustIpProtocol');
             scope.createRuleArrayBlock();
             expect(scope.adjustIpProtocol).toHaveBeenCalled();
+        });
+
+        it("Should call getCustomProtocolName() when createRuleArrayBlock() is called", function() {
+            spyOn(scope, 'getCustomProtocolName');
+            scope.createRuleArrayBlock();
+            expect(scope.getCustomProtocolName).toHaveBeenCalledWith(scope.customProtocol);
         });
 
         it("Should match the output values when createRuleArrayBlock() is returned", function() {
@@ -1027,6 +1049,30 @@ describe("SecurityGroupRules", function() {
                 'custom_protocol': undefined,
                 'grants': [{
                     'cidr_ip': '0.0.0.0/0',
+                    'group_id': null,
+                    'name': null,
+                    'owner_id': null 
+                }],
+                'rule_type': 'inbound',
+                'fresh': 'new'
+            });
+        });
+
+        it("Should match the output values when createRuleArrayBlock() is returned", function() {
+            scope.fromPort = 22;
+            scope.toPort = 22;
+            scope.ipProtocol = 'tcp';
+            scope.trafficType = 'securitygroup';
+            scope.cidrIp = '0.0.0.0/0'; 
+            scope.ruleType = 'inbound';
+            var output = scope.createRuleArrayBlock();
+            expect(output).toEqual({
+                'from_port': 22,
+                'to_port': 22,
+                'ip_protocol': 'tcp',
+                'custom_protocol': undefined,
+                'grants': [{
+                    'cidr_ip': false,
                     'group_id': null,
                     'name': null,
                     'owner_id': null 
