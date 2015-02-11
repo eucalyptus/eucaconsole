@@ -1526,6 +1526,41 @@ describe("SecurityGroupRules", function() {
         });
     });
 
+    describe("Function getGroupIdByName Test", function() {
+
+        beforeEach(function() {
+            scope.securityGroupList = [{"name": "group1", "id": "sg-00000000"}, {"name": "group2", "id": "sg-12345678"}];
+        });
+
+        it("Should return the matching id  when getGroupIdByName is called with group name", function() {
+            var id = scope.getGroupIdByName('group2'); 
+            expect(id).toEqual('sg-12345678');
+        });
+
+        it("Should return null when getGroupIdByName is called with the group name that has no match", function() {
+            var id = scope.getGroupIdByName('group3'); 
+            expect(id).toEqual(null);
+        });
+    });
+
+    describe("Function openToAllAddresses Test", function() {
+
+        it("Should set cidrIp to '0.0.0.0/0' when openToAllAddresses is called", function() {
+            scope.cidrIp = '';
+            scope.openToAllAddresses(); 
+            expect(scope.cidrIp).toEqual('0.0.0.0/0');
+        });
+    });
+
+    describe("Function useMyIP Test", function() {
+
+        it("Should set cidrIp to <ip>/32 when useMyIP is called with <ip> input", function() {
+            scope.cidrIp = '';
+            scope.useMyIP('172.68.1.1'); 
+            expect(scope.cidrIp).toEqual('172.68.1.1/32');
+        });
+    });
+
     describe("Function selectRuleType Test", function() {
 
         it("Should update inboundButtonClass to 'active' and outboundButtonClass to 'inactive' when selectRuleType is called with 'inbound'", function() {
