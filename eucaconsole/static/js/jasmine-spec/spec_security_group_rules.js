@@ -1567,13 +1567,13 @@ describe("SecurityGroupRules", function() {
             scope.initRules('{"rules_array": [{"to_port":"3389","grants":[{"owner_id":null,"group_id":null,"cidr_ip":"10.5.1.66/32","name":null}],"ip_protocol":"tcp","from_port":"3389"}],"rules_egress_array": [{"to_port":"22","grants":[{"owner_id":null,"group_id":null,"cidr_ip":"0.0.0.0/0","name":null}],"ip_protocol":"tcp","from_port":"22"}],"json_endpoint": "localhost/json", "protocols_json_endpoint": "localhost/api"}');
         });
 
-        it("Should preserve ruleType value after addDefaultOutboundRule is called", function() {
+        it("Should preserve ruleType value to 'inbound' after addDefaultOutboundRule is called", function() {
             scope.ruleType = 'inbound';
             scope.addDefaultOutboundRule(); 
             expect(scope.ruleType).toEqual('inbound');
         });
 
-        it("Should preserve ruleType value after addDefaultOutboundRule is called", function() {
+        it("Should preserve ruleType value to 'outbound' after addDefaultOutboundRule is called", function() {
             scope.ruleType = 'outbound';
             scope.addDefaultOutboundRule(); 
             expect(scope.ruleType).toEqual('outbound');
@@ -1585,17 +1585,41 @@ describe("SecurityGroupRules", function() {
             expect(scope.checkForDuplicatedRules).toHaveBeenCalled();
         });
 
-        it("Should call resetValues  when addDefaultOutboundRule is called", function() {
+        it("Should call resetValues when addDefaultOutboundRule is called", function() {
             spyOn(scope, 'resetValues');
             scope.addDefaultOutboundRule(); 
             expect(scope.resetValues).toHaveBeenCalled();
         });
 
-        it("Should call syncRules if hasDuplicatedRule is false when addDefaultOutboundRule is called", function() {
+        it("Should call syncRules when addDefaultOutboundRule is called", function() {
             spyOn(scope, 'syncRules');
-            scope.hasDuplicatedRule = false;
             scope.addDefaultOutboundRule(); 
             expect(scope.syncRules).toHaveBeenCalled();
+        });
+
+        it("Should update rulesEgressArray if the default rule doesn't exist when addDefaultOutboundRule is called", function() {
+            expect(scope.rulesEgressArray.length).toEqual(1);
+            scope.addDefaultOutboundRule(); 
+            expect(scope.rulesEgressArray.length).toEqual(2);
+        });
+
+        it("Should not update rulesEgressArray if the default rule already exists when addDefaultOutboundRule is called", function() {
+            scope.rulesEgressArray.push({
+                'from_port': null,
+                'to_port': null,
+                'ip_protocol': '-1',
+                'custom_protocol': undefined,
+                'grants': [{
+                    'cidr_ip': '0.0.0.0/0',
+                    'group_id': null,
+                    'name': null,
+                    'owner_id': null 
+                }],
+                'rule_type': 'outbound'
+            });
+            expect(scope.rulesEgressArray.length).toEqual(2);
+            scope.addDefaultOutboundRule(); 
+            expect(scope.rulesEgressArray.length).toEqual(2);
         });
     });
 
@@ -1611,6 +1635,54 @@ describe("SecurityGroupRules", function() {
             scope.selectRuleType('outbound');
             expect(scope.inboundButtonClass).toEqual('inactive');
             expect(scope.outboundButtonClass).toEqual('active');
+        });
+    });
+
+    describe("Function adjustIPProtocolOptions Test", function() {
+
+        it("Should call removeAllTrafficRuleOption when adjustIPProtocolOptions is called", function() {
+            spyOn(scope, 'removeAllTrafficRuleOption');
+            scope.adjustIPProtocolOptions(); 
+            expect(scope.removeAllTrafficRuleOption).toHaveBeenCalled();
+        });
+
+        it("Should call removeCustomProtocolRuleOption when adjustIPProtocolOptions is called", function() {
+            spyOn(scope, 'removeCustomProtocolRuleOption');
+            scope.adjustIPProtocolOptions(); 
+            expect(scope.removeCustomProtocolRuleOption).toHaveBeenCalled();
+        });
+
+        it("Should call insertAllTrafficRuleOption if securityGroupVPC is not None when adjustIPProtocolOptions is called", function() {
+            spyOn(scope, 'insertAllTrafficRuleOption');
+            scope.securityGroupVPC = '';
+            scope.adjustIPProtocolOptions(); 
+            expect(scope.insertAllTrafficRuleOption).toHaveBeenCalled();
+        });
+
+        it("Should call insertCustomProtocolRuleOption if securityGroupVPC is not None when adjustIPProtocolOptions is called", function() {
+            spyOn(scope, 'insertCustomProtocolRuleOption');
+            scope.securityGroupVPC = '';
+            scope.adjustIPProtocolOptions(); 
+            expect(scope.insertCustomProtocolRuleOption).toHaveBeenCalled();
+        });
+
+        it("Should not call insertAllTrafficRuleOption if securityGroupVPC is None when adjustIPProtocolOptions is called", function() {
+            spyOn(scope, 'insertAllTrafficRuleOption');
+            scope.securityGroupVPC = 'None';
+            scope.adjustIPProtocolOptions(); 
+            expect(scope.insertAllTrafficRuleOption).not.toHaveBeenCalled();
+        });
+
+        it("Should call insertCustomProtocolRuleOption if securityGroupVPC is None when adjustIPProtocolOptions is called", function() {
+            spyOn(scope, 'insertCustomProtocolRuleOption');
+            scope.securityGroupVPC = 'None';
+            scope.adjustIPProtocolOptions(); 
+            expect(scope.insertCustomProtocolRuleOption).not.toHaveBeenCalled();
+        });
+
+        it("Should set ip-protocol-select's selectedIndex to -1 when adjustIPProtocolOptions is called", function() {
+            scope.adjustIPProtocolOptions(); 
+            expect($('#ip-protocol-select').prop('selectedIndex')).toEqual(-1);
         });
     });
 });
