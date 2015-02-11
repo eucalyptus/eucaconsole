@@ -1680,9 +1680,47 @@ describe("SecurityGroupRules", function() {
             expect(scope.insertCustomProtocolRuleOption).not.toHaveBeenCalled();
         });
 
-        it("Should set ip-protocol-select's selectedIndex to -1 when adjustIPProtocolOptions is called", function() {
+        it("Should set ip-protocol-select element's selectedIndex to -1 when adjustIPProtocolOptions is called", function() {
             scope.adjustIPProtocolOptions(); 
             expect($('#ip-protocol-select').prop('selectedIndex')).toEqual(-1);
+        });
+    });
+
+    describe("Function removeAllTrafficRuleOption Test", function() {
+
+        it("Should remove ip-protocol-select element's option if the value is -1 when removeAllTrafficRuleOption is called", function() {
+            setFixtures('<select id="ip-protocol-select"><option></option><option value="-1">-1</option></select>');
+            scope.removeAllTrafficRuleOption(); 
+            expect($('#ip-protocol-select').find("option[value='-1']").length).toEqual(0);
+        });
+    });
+
+    describe("Function removeCustomProtocolRuleOption Test", function() {
+
+        it("Should remove ip-protocol-select element's option if the value is 'custom' when removeAllTrafficRuleOption is called", function() {
+            setFixtures('<select id="ip-protocol-select"><option></option><option value="custom">custom</option></select>');
+            scope.removeCustomProtocolRuleOption(); 
+            expect($('#ip-protocol-select').find("option[value='custom']").length).toEqual(0);
+        });
+    });
+
+    describe("Function insertAllTrafficRuleOption Test", function() {
+
+        it("Should add the all-traffic rule option to ip-protocol-select element when insertAllTrafficRuleOption is called", function() {
+            setFixtures('<select id="ip-protocol-select"><option></option></select><div id="all-traffic-option-text">all traffic</div>');
+            expect($('#ip-protocol-select').find("option[value='-1']").length).toEqual(0);
+            scope.insertAllTrafficRuleOption(); 
+            expect($('#ip-protocol-select').find("option[value='-1']").length).toEqual(1);
+        });
+    });
+
+    describe("Function insertCustomProtocolRuleOption Test", function() {
+
+        it("Should add the custom protocol rule option to ip-protocol-select element when insertCustomProtocolRuleOption is called", function() {
+            setFixtures('<select id="ip-protocol-select"><option></option></select><div id="custom-protocol-option-text">custom protocol</div>');
+            expect($('#ip-protocol-select').find("option[value='custom']").length).toEqual(0);
+            scope.insertCustomProtocolRuleOption(); 
+            expect($('#ip-protocol-select').find("option[value='custom']").length).toEqual(1);
         });
     });
 });
