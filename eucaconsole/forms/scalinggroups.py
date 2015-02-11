@@ -33,7 +33,7 @@ import wtforms
 from wtforms import validators
 
 from ..i18n import _
-from . import BaseSecureForm, ChoicesManager, TextEscapedField, NgNonBindableOptionSelect, ASCII_WITHOUT_SLASHES_NOTICE
+from . import BaseSecureForm, ChoicesManager, TextEscapedField, NgNonBindableOptionSelect
 
 
 class BaseScalingGroupForm(BaseSecureForm):
@@ -226,7 +226,7 @@ class BaseScalingGroupForm(BaseSecureForm):
 
 class ScalingGroupCreateForm(BaseScalingGroupForm):
     """Create Scaling Group form"""
-    name_error_msg = ASCII_WITHOUT_SLASHES_NOTICE
+    name_error_msg = _(u'Name must be between 1 and 255 characters long, and must not contain \'/\' and \'\\\'')
     name = wtforms.TextField(
         label=_(u'Name'),
         validators=[

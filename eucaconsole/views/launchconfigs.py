@@ -257,7 +257,7 @@ class LaunchConfigView(BaseView):
             launch_config_vpc_ip_assignment=self.get_vpc_ip_assignment_display(
                 self.launch_config.associate_public_ip_address) if self.launch_config else '',
             lc_created_time=self.dt_isoformat(self.launch_config.created_time),
-            escaped_launch_config_name=quote(self.launch_config.name),
+            escaped_launch_config_name=quote(self.launch_config.name.encode('utf-8')),
             in_use=self.in_use,
             image=self.image,
             security_groups=self.security_groups,
@@ -435,7 +435,6 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
             location = self.request.route_path('launchconfigs')
             image_id = self.image.id
             name = self.request.params.get('name')
-            name = self.normalize_unicode(name)  # Normalize non-ascii chars
             key_name = self.unescape_braces(self.request.params.get('keypair', ''))
             if key_name:
                 # Handle "None (advanced)" option if key_name is 'none'

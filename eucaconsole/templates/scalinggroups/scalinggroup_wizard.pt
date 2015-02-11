@@ -38,7 +38,7 @@
                     <div class="tabs-content">
                         <!--! Step 1: General tab content -->
                         <div class="content active" id="step1"
-                            tal:define="html_attrs_val {'pattern': layout.ascii_without_slashes_pattern};
+                            tal:define="html_attrs_val {'pattern': '^[^\/\\\]{1,255}$'};
                                         vpc_subnet_html_attrs {'data-placeholder': vpc_subnet_placeholder_text};">
                             ${panel('form_field', field=create_form['name'], ng_attrs={'model': 'scalingGroupName'}, **html_attrs_val)}
                             <div tal:condition="launch_config_param">

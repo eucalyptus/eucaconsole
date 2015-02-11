@@ -140,10 +140,3 @@ class DeleteFormTestCase(BaseFormTestCase):
     def test_secure_form(self):
         self.has_field('csrf_token')
 
-
-class KeyPairUnicodeTestCase(BaseViewTestCase):
-    request = testing.DummyRequest()
-    view = KeyPairView(request)
-
-    def test_normalize_unicode_key_pair_name(self):
-        self.assertEqual(self.view.normalize_unicode(u'keypair-ÅÅÅ'), 'keypair-AAA')

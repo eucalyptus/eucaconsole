@@ -270,8 +270,6 @@ class SecurityGroupView(TaggedItemView):
     def securitygroup_create(self):
         if self.securitygroup_form.validate():
             name = self.request.params.get('name')
-            # NOTE: Normalize non-ascii chars, which aren't allowed in security groups
-            name = self.normalize_unicode(name)
             description = self.request.params.get('description')
             vpc_network = self.request.params.get('securitygroup_vpc_network') or None
             if vpc_network == 'None':

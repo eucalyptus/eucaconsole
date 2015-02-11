@@ -261,11 +261,3 @@ class BaseScalingGroupFormTestCaseWithVPCDisabledOnEucalpytus(BaseFormTestCase):
     def test_scaling_group_form_vpc_network_choices_with_vpc_disabled_on_eucalyptus(self):
         self.assertTrue(('None', _(u'No VPC')) in self.form.vpc_network.choices)
 
-
-class ScalingGroupUnicodeTestCase(BaseViewTestCase):
-    request = testing.DummyRequest()
-    request.params = MultiDict(name=u'scalinggroup-ÅÅÅ')
-    view = ScalingGroupView(request)
-
-    def test_normalize_unicode_scaling_group_name(self):
-        self.assertEqual(self.view.normalize_unicode(self.request.params.get('name')), u'scalinggroup-AAA')
