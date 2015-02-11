@@ -1479,6 +1479,53 @@ describe("SecurityGroupRules", function() {
         });
     });
 
+    describe("Function cancelRule Test", function() {
+
+        it("Should call preventDefault when cancelRule is called", function() {
+            var event ={"preventDefault": function(){}};
+            spyOn(event, 'preventDefault');
+            scope.cancelRule(event); 
+            expect(event.preventDefault).toHaveBeenCalled();
+        });
+
+        it("Should call resetValues when cancelRule is called", function() {
+            spyOn(scope, 'resetValues');
+            scope.cancelRule({"preventDefault": function(){}}); 
+            expect(scope.resetValues).toHaveBeenCalled();
+        });
+    });
+
+    describe("Function setPorts Test", function() {
+
+        it("Should update fromPort and toPort when setPorts is called with integer value", function() {
+            scope.fromPort = '';
+            scope.toPort = '';
+            scope.setPorts(22); 
+            expect(scope.fromPort).toEqual(22);
+            expect(scope.toPort).toEqual(22);
+        });
+
+        it("Should update fromPort and toPort to '' when setPorts is called with non-integer value", function() {
+            scope.fromPort = 22;
+            scope.toPort = 22;
+            scope.setPorts('myString'); 
+            expect(scope.fromPort).toEqual('');
+            expect(scope.toPort).toEqual('');
+        });
+
+        it("Should set groupname-select to selectedIndex to -1  when setPorts is called", function() {
+            scope.setPorts(22); 
+            var index = $('#groupname-select').prop('selectedIndex');
+            expect(index).toEqual(-1);
+        });
+
+        it("Should call cleanupSelections when setPorts is called", function() {
+            spyOn(scope, 'cleanupSelections');
+            scope.setPorts(22); 
+            expect(scope.cleanupSelections).toHaveBeenCalled();
+        });
+    });
+
     describe("Function selectRuleType Test", function() {
 
         it("Should update inboundButtonClass to 'active' and outboundButtonClass to 'inactive' when selectRuleType is called with 'inbound'", function() {
