@@ -1723,4 +1723,106 @@ describe("SecurityGroupRules", function() {
             expect($('#ip-protocol-select').find("option[value='custom']").length).toEqual(1);
         });
     });
+
+    describe("Function getCustomProtocolNumber Test", function() {
+
+        it("Should return the matching protocol number when getCustomProtocolNumber is called", function() {
+            scope.internetProtocols = ["HOPOPT", "ICMP", "IGMP"];
+            var output = scope.getCustomProtocolNumber('igmp'); 
+            expect(output).toEqual(2);
+        });
+
+        it("Should return '' if no matching protocol is found when getCustomProtocolNumber is called", function() {
+            scope.internetProtocols = ["HOPOPT", "ICMP", "IGMP"];
+            var output = scope.getCustomProtocolNumber('noProtocol'); 
+            expect(output).toEqual('');
+        });
+    });
+
+    describe("Function getCustomProtocolName Test", function() {
+
+        it("Should return the matching protocol name when getCustomProtocolName is called", function() {
+            scope.internetProtocols = ["HOPOPT", "ICMP", "IGMP"];
+            var output = scope.getCustomProtocolName(2); 
+            expect(output).toEqual('IGMP');
+        });
+
+        it("Should return the same, input protocol number if input is not a number when getCustomProtocolName is called", function() {
+            scope.internetProtocols = ["HOPOPT", "ICMP", "IGMP"];
+            var output = scope.getCustomProtocolName('notNumber'); 
+            expect(output).toEqual('notNumber');
+        });
+    });
+
+    describe("Function isCustomProtocol Test", function() {
+
+        it("Should return true if the input is a number when isCustomProtocol is called", function() {
+            var output = scope.isCustomProtocol(2); 
+            expect(output).toBeTruthy();
+        });
+
+        it("Should return false if the input is '-1' when isCustomProtocol is called", function() {
+            var output = scope.isCustomProtocol('-1'); 
+            expect(output).not.toBeTruthy();
+        });
+
+        it("Should return false if the input is not a number when isCustomProtocol is called", function() {
+            var output = scope.isCustomProtocol('igmp'); 
+            expect(output).not.toBeTruthy();
+        });
+    });
+
+    describe("Function verifyCustomProtocol Test", function() {
+
+        it("Should return true if customProtocol is not a number and found in internetProtocols list when verifyCustomProtocol is called", function() {
+            scope.internetProtocols = ["HOPOPT", "ICMP", "IGMP"];
+            scope.customProtocol = 'igmp';
+            var output = scope.verifyCustomProtocol(); 
+            expect(output).toBeTruthy();
+        });
+
+        it("Should return false if customProtocol is not a number and not found in internetProtocols list when verifyCustomProtocol is called", function() {
+            scope.internetProtocols = ["HOPOPT", "ICMP", "IGMP"];
+            scope.customProtocol = 'notProtocol';
+            var output = scope.verifyCustomProtocol(); 
+            expect(output).not.toBeTruthy();
+        });
+
+        it("Should return true if customProtocol is a number and found in internetProtocols list when verifyCustomProtocol is called", function() {
+            scope.internetProtocols = ["HOPOPT", "ICMP", "IGMP"];
+            scope.customProtocol = 2;
+            var output = scope.verifyCustomProtocol(); 
+            expect(output).toBeTruthy();
+        });
+
+        it("Should return false if customProtocol is a number and not found in internetProtocols list when verifyCustomProtocol is called", function() {
+            scope.internetProtocols = ["HOPOPT", "ICMP", "IGMP"];
+            scope.customProtocol = 3;
+            var output = scope.verifyCustomProtocol(); 
+            expect(output).not.toBeTruthy();
+        });
+    });
+
+    describe("Function scanForCustomProtocols Test", function() {
+
+        beforeEach(function() {
+            scope.initRules('{"rules_array": [{"to_port":"3389","grants":[{"owner_id":null,"group_id":null,"cidr_ip":"10.5.1.66/32","name":null}],"ip_protocol":"tcp","from_port":"3389"}, {"to_port":"3389","grants":[{"owner_id":null,"group_id":null,"cidr_ip":"10.5.1.66/32","name":null}],"ip_protocol": 2,"from_port":"3389"}],"rules_egress_array": [{"to_port":"22","grants":[{"owner_id":null,"group_id":null,"cidr_ip":"0.0.0.0/0","name":null}],"ip_protocol":"tcp","from_port":"22"}, {"to_port":"22","grants":[{"owner_id":null,"group_id":null,"cidr_ip":"0.0.0.0/0","name":null}],"ip_protocol": 1,"from_port":"22"}],"json_endpoint": "localhost/json", "protocols_json_endpoint": "localhost/api"}');
+        });
+
+        it("Should convert the custom protocol's number to name for rulesArray when scanForCustomProtocols is called", function() {
+            scope.internetProtocols = ["HOPOPT", "ICMP", "IGMP"];
+            expect(scope.rulesArray[1].ip_protocol).toEqual(2);
+            expect(scope.rulesArray[1].custom_protocol).toEqual(undefined);
+            scope.scanForCustomProtocols();
+            expect(scope.rulesArray[1].custom_protocol).toEqual('IGMP');
+        });
+
+        it("Should convert the custom protocol's number to name for rulesEgressArray when scanForCustomProtocols is called", function() {
+            scope.internetProtocols = ["HOPOPT", "ICMP", "IGMP"];
+            expect(scope.rulesEgressArray[1].ip_protocol).toEqual(1);
+            expect(scope.rulesEgressArray[1].custom_protocol).toEqual(undefined);
+            scope.scanForCustomProtocols();
+            expect(scope.rulesEgressArray[1].custom_protocol).toEqual('ICMP');
+        });
+    });
 });
