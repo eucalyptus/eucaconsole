@@ -1561,6 +1561,44 @@ describe("SecurityGroupRules", function() {
         });
     });
 
+    describe("Function addDefaultOutboundRule Test", function() {
+
+        beforeEach(function() {
+            scope.initRules('{"rules_array": [{"to_port":"3389","grants":[{"owner_id":null,"group_id":null,"cidr_ip":"10.5.1.66/32","name":null}],"ip_protocol":"tcp","from_port":"3389"}],"rules_egress_array": [{"to_port":"22","grants":[{"owner_id":null,"group_id":null,"cidr_ip":"0.0.0.0/0","name":null}],"ip_protocol":"tcp","from_port":"22"}],"json_endpoint": "localhost/json", "protocols_json_endpoint": "localhost/api"}');
+        });
+
+        it("Should preserve ruleType value after addDefaultOutboundRule is called", function() {
+            scope.ruleType = 'inbound';
+            scope.addDefaultOutboundRule(); 
+            expect(scope.ruleType).toEqual('inbound');
+        });
+
+        it("Should preserve ruleType value after addDefaultOutboundRule is called", function() {
+            scope.ruleType = 'outbound';
+            scope.addDefaultOutboundRule(); 
+            expect(scope.ruleType).toEqual('outbound');
+        });
+
+        it("Should call checkForDuplicatedRules when addDefaultOutboundRule is called", function() {
+            spyOn(scope, 'checkForDuplicatedRules');
+            scope.addDefaultOutboundRule(); 
+            expect(scope.checkForDuplicatedRules).toHaveBeenCalled();
+        });
+
+        it("Should call resetValues  when addDefaultOutboundRule is called", function() {
+            spyOn(scope, 'resetValues');
+            scope.addDefaultOutboundRule(); 
+            expect(scope.resetValues).toHaveBeenCalled();
+        });
+
+        it("Should call syncRules if hasDuplicatedRule is false when addDefaultOutboundRule is called", function() {
+            spyOn(scope, 'syncRules');
+            scope.hasDuplicatedRule = false;
+            scope.addDefaultOutboundRule(); 
+            expect(scope.syncRules).toHaveBeenCalled();
+        });
+    });
+
     describe("Function selectRuleType Test", function() {
 
         it("Should update inboundButtonClass to 'active' and outboundButtonClass to 'inactive' when selectRuleType is called with 'inbound'", function() {
