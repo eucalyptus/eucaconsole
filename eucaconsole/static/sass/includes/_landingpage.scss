@@ -333,6 +333,7 @@ $dropdown-border-color: $euca-green;
 // tableview/gridview icon switcher
 .displayicons {
     font-size: 2rem;
+    padding-left: 0rem;
     a {
         float: right;
         border-bottom: none;
@@ -357,7 +358,7 @@ $dropdown-border-color: $euca-green;
     }
     i {
         display: inline-block;
-        padding: 2px 8px;
+        padding: 2px 7px;
     }
 }
 
@@ -395,9 +396,9 @@ $dropdown-border-color: $euca-green;
 }
 
 #results-count {
-    padding-top: 1rem;
+    padding-top: 0.25rem;
     .items-found {
-        position: relative;
+        //position: relative;
         top: -6px;
     }
     em {
