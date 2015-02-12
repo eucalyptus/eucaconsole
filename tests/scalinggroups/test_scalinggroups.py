@@ -31,7 +31,7 @@ See http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/testing.html
 
 """
 from pyramid import testing
-from webob.multidict import MultiDict
+from pyramid.httpexceptions import HTTPNotFound
 
 from eucaconsole.forms.scalinggroups import (
     BaseScalingGroupForm, ScalingGroupCreateForm, ScalingGroupEditForm, ScalingGroupDeleteForm,
@@ -67,12 +67,9 @@ class ScalingGroupViewTests(BaseViewTestCase):
         view = ScalingGroupView(request)
         self.assertTrue(isinstance(view, BaseScalingGroupView))
 
-    def test_item_view(self):
+    def test_missing_scaling_group_returns_404(self):
         request = testing.DummyRequest()
-        itemview = ScalingGroupView(request).scalinggroup_view()
-        self.assertEqual(itemview.get('scailing_group'), None)
-        self.assertTrue(itemview.get('edit_form') is not None)
-        self.assertTrue(itemview.get('delete_form') is not None)
+        self.assertRaises(HTTPNotFound, ScalingGroupView(request).scalinggroup_view)
 
 
 class BaseScalingGroupFormTestCase(BaseFormTestCase):
