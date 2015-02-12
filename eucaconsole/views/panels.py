@@ -119,7 +119,7 @@ def form_field_row(context, request, field=None, reverse=False, leftcol_width=4,
     # e.g. ${panel('form_field', field=volume_form['snapshot_id'], ng_attrs={'model': 'snapshot_id'}, **html_attrs)}
     if ng_attrs:
         for ngkey, ngvalue in ng_attrs.items():
-            html_attrs['ng-{0}'.format(ngkey)] = ngvalue
+            html_attrs[u'ng-{0}'.format(ngkey)] = ngvalue
 
     return dict(
         field=field, error_msg=error_msg, html_attrs=html_attrs, inline=inline, checkbox=checkbox,
