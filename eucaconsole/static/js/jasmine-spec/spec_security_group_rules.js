@@ -1271,10 +1271,87 @@ describe("SecurityGroupRules", function() {
         });
     });
 
+    describe("Function compareRules Test", function() {
+
+        it("Should return true if trafficType is 'ip' and the rules are the same when compareRules is called", function() {
+            var block1 = {"from_port":"3389","to_port":"3389","grants":[{"owner_id":null,"group_id":null,"cidr_ip":"10.5.1.66/32","name":null}],"ip_protocol":"tcp"};
+            scope.trafficType = 'ip';
+            var output = scope.compareRules(block1, block1);
+            expect(output).toBeTruthy();
+        });
+
+        it("Should return false if the rules have different 'from_port' when compareRules is called", function() {
+            var block1 = {"from_port":"3389","to_port":"3389","grants":[{"owner_id":null,"group_id":null,"cidr_ip":"10.5.1.66/32","name":null}],"ip_protocol":"tcp"};
+            var block2 = {"from_port":"4000","to_port":"3389","grants":[{"owner_id":null,"group_id":null,"cidr_ip":"10.5.1.66/32","name":null}],"ip_protocol":"tcp"};
+            var output = scope.compareRules(block1, block2);
+            expect(output).not.toBeTruthy();
+        });
+
+        it("Should return false if the rules have different 'to_port' when compareRules is called", function() {
+            var block1 = {"from_port":"3389","to_port":"3389","grants":[{"owner_id":null,"group_id":null,"cidr_ip":"10.5.1.66/32","name":null}],"ip_protocol":"tcp"};
+            var block2 = {"from_port":"3389","to_port":"4000","grants":[{"owner_id":null,"group_id":null,"cidr_ip":"10.5.1.66/32","name":null}],"ip_protocol":"tcp"};
+            var output = scope.compareRules(block1, block2);
+            expect(output).not.toBeTruthy();
+        });
+
+        it("Should return false if the rules have different 'ip_protocol' when compareRules is called", function() {
+            var block1 = {"from_port":"3389","to_port":"3389","grants":[{"owner_id":null,"group_id":null,"cidr_ip":"10.5.1.66/32","name":null}],"ip_protocol":"tcp"};
+            var block2 = {"from_port":"3389","to_port":"3389","grants":[{"owner_id":null,"group_id":null,"cidr_ip":"10.5.1.66/32","name":null}],"ip_protocol":"udp"};
+            var output = scope.compareRules(block1, block2);
+            expect(output).not.toBeTruthy();
+        });
+
+        it("Should return false if trafficType is 'ip' and the first rule has 'cidr_ip' value of null when compareRules is called", function() {
+            var block1 = {"from_port":"3389","to_port":"3389","grants":[{"owner_id":null,"group_id":null,"cidr_ip":null,"name":null}],"ip_protocol":"tcp"};
+            var block2 = {"from_port":"3389","to_port":"3389","grants":[{"owner_id":null,"group_id":null,"cidr_ip":null,"name":null}],"ip_protocol":"tcp"};
+            scope.trafficType = 'ip';
+            var output = scope.compareRules(block1, block2);
+            expect(output).not.toBeTruthy();
+        });
+
+        it("Should return false if trafficType is 'ip' and the rules have different 'cidr_ip' values when compareRules is called", function() {
+            var block1 = {"from_port":"3389","to_port":"3389","grants":[{"owner_id":null,"group_id":null,"cidr_ip":"10.1.1.1./32","name":null}],"ip_protocol":"tcp"};
+            var block2 = {"from_port":"3389","to_port":"3389","grants":[{"owner_id":null,"group_id":null,"cidr_ip":"10.5.1.66/32","name":null}],"ip_protocol":"tcp"};
+            scope.trafficType = 'ip';
+            var output = scope.compareRules(block1, block2);
+            expect(output).not.toBeTruthy();
+        });
+
+        it("Should return true if trafficType is not 'ip' and the rules are the same when compareRules is called", function() {
+            var block1 = {"from_port":"3389","to_port":"3389","grants":[{"owner_id":"1234","group_id":"sg-12345678","cidr_ip":null,"name": "myGroup"}],"ip_protocol":"tcp"};
+            scope.trafficType = 'securitygroup';
+            var output = scope.compareRules(block1, block1);
+            expect(output).toBeTruthy();
+        });
+
+        it("Should return false if trafficType is not 'ip' and the first rules has null group name when compareRules is called", function() {
+            var block1 = {"from_port":"3389","to_port":"3389","grants":[{"owner_id":"1234","group_id":"sg-12345678","cidr_ip":null,"name": null}],"ip_protocol":"tcp"};
+            var block2 = {"from_port":"3389","to_port":"3389","grants":[{"owner_id":"1234","group_id":"sg-12345678","cidr_ip":null,"name": null}],"ip_protocol":"tcp"};
+            scope.trafficType = 'securitygroup';
+            var output = scope.compareRules(block1, block2);
+            expect(output).not.toBeTruthy();
+        });
+
+        it("Should return false if trafficType is not 'ip' and the rules have different group names when compareRules is called", function() {
+            var block1 = {"from_port":"3389","to_port":"3389","grants":[{"owner_id":"1234","group_id":"sg-12345678","cidr_ip":null,"name": "myGroup1"}],"ip_protocol":"tcp"};
+            var block2 = {"from_port":"3389","to_port":"3389","grants":[{"owner_id":"1234","group_id":"sg-12345678","cidr_ip":null,"name": "myGroup2"}],"ip_protocol":"tcp"};
+            scope.trafficType = 'securitygroup';
+            var output = scope.compareRules(block1, block2);
+            expect(output).not.toBeTruthy();
+        });
+    });
+
     describe("Function removeRule Test", function() {
 
         beforeEach(function() {
             scope.initRules('{"rules_array": [{"to_port":"3389","grants":[{"owner_id":null,"group_id":null,"cidr_ip":"10.5.1.66/32","name":null}],"ip_protocol":"tcp","from_port":"3389"}, {"to_port":"4000","grants":[{"owner_id":null,"group_id":null,"cidr_ip":"10.5.1.66/32","name":null}],"ip_protocol":"tcp","from_port":"4000"}],"rules_egress_array": [{"to_port":"22","grants":[{"owner_id":null,"group_id":null,"cidr_ip":"0.0.0.0/0","name":null}],"ip_protocol":"tcp","from_port":"22"}],"json_endpoint": "localhost/json", "protocols_json_endpoint": "localhost/api"}');
+        });
+
+        it("Should call preventDefault when removeRule is called", function() {
+            var event ={"preventDefault": function(){}};
+            spyOn(event, 'preventDefault');
+            scope.removeRule(1, event); 
+            expect(event.preventDefault).toHaveBeenCalled();
         });
 
         it("Should call syncRules when removeRule is called", function() {
