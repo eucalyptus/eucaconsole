@@ -1264,10 +1264,80 @@ describe("SecurityGroupRules", function() {
 
         it("Should enable the addRule button when all conditions are met", function() {
             scope.isRuleNotComplete = false;
-            scope.hasDuplicatedRule == false; 
+            scope.hasDuplicatedRule = false; 
             scope.customProtocolDivClass = '';
             scope.setAddRuleButtonClass(); 
             expect(scope.addRuleButtonClass).toEqual('');
+        });
+    });
+
+    describe("Function checkForDuplicatedRules Test", function() {
+
+        beforeEach(function() {
+            scope.initRules('{"rules_array": [{"to_port":"3389","grants":[{"owner_id":null,"group_id":null,"cidr_ip":"10.5.1.66/32","name":null}],"ip_protocol":"tcp","from_port":"3389"}, {"to_port":"4000","grants":[{"owner_id":null,"group_id":null,"cidr_ip":"10.5.1.66/32","name":null}],"ip_protocol":"tcp","from_port":"4000"}],"rules_egress_array": [{"to_port":"22","grants":[{"owner_id":"1234","group_id":"sg-12345678","cidr_ip":"0.0.0.0/0","name":"group2"}],"ip_protocol":"tcp","from_port":"22"}],"json_endpoint": "localhost/json", "protocols_json_endpoint": "localhost/api"}');
+        });
+
+        it("Should call createRuleArrayBlock when checkForDuplicatedRules is called", function() {
+            spyOn(scope, 'createRuleArrayBlock').and.callThrough();
+            scope.fromPort = 3389;
+            scope.toPort = 3389;
+            scope.ipProtocol = 'tcp';
+            scope.trafficType = 'ip';
+            scope.cidrIp = '10.5.1.66/32'; 
+            scope.ruleType = 'inbound';
+            scope.groupName = "null";
+            scope.checkForDuplicatedRules();
+            expect(scope.createRuleArrayBlock).toHaveBeenCalled();
+        });
+
+        it("Should set hasDuplicatedRule to be true if the new rule already exists when checkForDuplicatedRules is called", function() { 
+            scope.fromPort = 3389;
+            scope.toPort = 3389;
+            scope.ipProtocol = 'tcp';
+            scope.trafficType = 'ip';
+            scope.cidrIp = '10.5.1.66/32'; 
+            scope.ruleType = 'inbound';
+            scope.groupName = "null";
+            scope.checkForDuplicatedRules();
+            expect(scope.hasDuplicatedRule).toBeTruthy();
+        });
+
+        it("Should set hasDuplicatedRule to be false if the new rule does not already exist when checkForDuplicatedRules is called", function() { 
+            scope.fromPort = 4000;
+            scope.toPort = 3389;
+            scope.ipProtocol = 'tcp';
+            scope.trafficType = 'ip';
+            scope.cidrIp = '10.5.1.66/32'; 
+            scope.ruleType = 'inbound';
+            scope.groupName = "null";
+            scope.checkForDuplicatedRules();
+            expect(scope.hasDuplicatedRule).not.toBeTruthy();
+        });
+
+        it("Should set hasDuplicatedRule to be true if the new egress rule already exists when checkForDuplicatedRules is called", function() { 
+            scope.fromPort = 22;
+            scope.toPort = 22;
+            scope.ipProtocol = 'tcp';
+            scope.trafficType = 'securitygroup';
+            scope.cidrIp = '0.0.0.0/0'; 
+            scope.ruleType = 'outbound';
+            scope.groupName = "group2";
+            scope.securityGroupList = [{"name": "group1", "id": "sg-00000000"}, {"name": "group2", "id": "sg-12345678"}];
+            scope.checkForDuplicatedRules();
+            expect(scope.hasDuplicatedRule).toBeTruthy();
+        });
+
+        it("Should set hasDuplicatedRule to be false if the new egress rule does not already exists when checkForDuplicatedRules is called", function() { 
+            scope.fromPort = 22;
+            scope.toPort = 22;
+            scope.ipProtocol = 'tcp';
+            scope.trafficType = 'securitygroup';
+            scope.cidrIp = '0.0.0.0/0'; 
+            scope.ruleType = 'outbound';
+            scope.groupName = "group1";
+            scope.securityGroupList = [{"name": "group1", "id": "sg-00000000"}, {"name": "group2", "id": "sg-12345678"}];
+            scope.checkForDuplicatedRules();
+            expect(scope.hasDuplicatedRule).not.toBeTruthy();
         });
     });
 
@@ -1686,6 +1756,12 @@ describe("SecurityGroupRules", function() {
             spyOn(scope, 'syncRules');
             scope.addDefaultOutboundRule(); 
             expect(scope.syncRules).toHaveBeenCalled();
+        });
+
+        it("Should call createRuleArrayBlock if the default rule doesn't exist when addDefaultOutboundRule is called", function() {
+            spyOn(scope, 'createRuleArrayBlock').and.callThrough();
+            scope.addDefaultOutboundRule(); 
+            expect(scope.createRuleArrayBlock).toHaveBeenCalled();
         });
 
         it("Should update rulesEgressArray if the default rule doesn't exist when addDefaultOutboundRule is called", function() {
