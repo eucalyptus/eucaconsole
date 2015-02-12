@@ -1271,6 +1271,19 @@ describe("SecurityGroupRules", function() {
         });
     });
 
+    describe("Function checkRulesForDeletedSecurityGroups Test", function() {
+
+        beforeEach(function() {
+            scope.initRules('{"rules_array": [{"to_port":"3389","grants":[{"owner_id":null,"group_id":null,"cidr_ip":"10.5.1.66/32","name":null}],"ip_protocol":"tcp","from_port":"3389"}, {"to_port":"4000","grants":[{"owner_id":null,"group_id":null,"cidr_ip":"10.5.1.66/32","name":null}],"ip_protocol":"tcp","from_port":"4000"}],"rules_egress_array": [{"to_port":"22","grants":[{"owner_id":"1234","group_id":"sg-12345678","cidr_ip":"0.0.0.0/0","name":"group2"}],"ip_protocol":"tcp","from_port":"22"}],"json_endpoint": "localhost/json", "protocols_json_endpoint": "localhost/api"}');
+        });
+
+        it("Should emit 'invalidRulesWarning' with the invalid rules array when checkRulesForDeletedSecurityGroups is called", function() {
+            spyOn(scope, '$emit');
+            scope.checkRulesForDeletedSecurityGroups(); 
+            expect(scope.$emit).toHaveBeenCalledWith('invalidRulesWarning',[  ], [ { to_port : '22', grants : [ { owner_id : '1234', group_id : 'sg-12345678', cidr_ip : '0.0.0.0/0', name : 'group2' } ], ip_protocol : 'tcp', from_port : '22' } ]);
+        });
+    });
+
     describe("Function checkForDuplicatedRules Test", function() {
 
         beforeEach(function() {
