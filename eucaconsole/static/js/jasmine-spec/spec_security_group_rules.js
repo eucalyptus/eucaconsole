@@ -27,7 +27,7 @@ describe("SecurityGroupRules", function() {
         var template = window.__html__['templates/panels/securitygroup_rules.pt'];
         // remove <script src> and <link> tags to avoid phantomJS error
         template = template.replace(/script src/g, "script ignore_src"); 
-        template = template.replace(/\<link/g, "\<ignore_link"); 
+        template = template.replace(/<link/g, "<ignore_link"); 
         setFixtures(template);
     });
 
@@ -76,7 +76,7 @@ describe("SecurityGroupRules", function() {
 
         it("Should enable the addRule button when all conditions are met", function() {
             scope.isRuleNotComplete = false;
-            scope.hasDuplicatedRule == false; 
+            scope.hasDuplicatedRule = false; 
             scope.customProtocolDivClass = '';
             scope.setAddRuleButtonClass(); 
             expect(scope.addRuleButtonClass).toEqual('');
@@ -173,7 +173,7 @@ describe("SecurityGroupRules", function() {
         beforeEach(function() {
             setFixtures('<input id="csrf_token" name="csrf_token" type="hidden" value="2a06f17d6872143ed806a695caa5e5701a127ade">');
             scope.jsonEndpoint  = "securitygroup_json";
-            var data = 'csrf_token=2a06f17d6872143ed806a695caa5e5701a127ade&vpc_id=' + vpc
+            var data = 'csrf_token=2a06f17d6872143ed806a695caa5e5701a127ade&vpc_id=' + vpc;
             httpBackend.expect('POST', scope.jsonEndpoint, data)
                 .respond(200, {
                     "success": true,

@@ -76,7 +76,7 @@ describe("LaunchInstance", function() {
 
         it("Should invalid input when imageID is more 12 chars", function() {
             scope.currentStepIndex = 1;
-            scope.imageID = "emi-1234567890" 
+            scope.imageID = "emi-1234567890"; 
             scope.imageIDErrorClass = '';
             scope.checkRequiredInput(); 
             expect(scope.isNotValid).toBeTruthy();
@@ -130,7 +130,7 @@ describe("LaunchInstance", function() {
         beforeEach(function() {
             setFixtures('<input id="csrf_token" name="csrf_token" type="hidden" value="2a06f17d6872143ed806a695caa5e5701a127ade">');
             scope.jsonEndpoint  = "securitygroup_json";
-            var data = 'csrf_token=2a06f17d6872143ed806a695caa5e5701a127ade&vpc_id=' + vpc 
+            var data = 'csrf_token=2a06f17d6872143ed806a695caa5e5701a127ade&vpc_id=' + vpc; 
             httpBackend.expect('POST', scope.jsonEndpoint, data)
                 .respond(200, {
                     "success": true,
@@ -160,7 +160,7 @@ describe("LaunchInstance", function() {
         beforeEach(function() {
             setFixtures('<input id="csrf_token" name="csrf_token" type="hidden" value="2a06f17d6872143ed806a695caa5e5701a127ade">');
             scope.jsonEndpoint  = "securitygroup_json";
-            var data = 'csrf_token=2a06f17d6872143ed806a695caa5e5701a127ade&vpc_id=' + vpc 
+            var data = 'csrf_token=2a06f17d6872143ed806a695caa5e5701a127ade&vpc_id=' + vpc; 
             httpBackend.expect('POST', scope.jsonEndpoint, data)
                 .respond(200, {
                     "success": true,
@@ -186,7 +186,7 @@ describe("LaunchInstance", function() {
         beforeEach(function() {
             setFixtures('<input id="csrf_token" name="csrf_token" type="hidden" value="2a06f17d6872143ed806a695caa5e5701a127ade">');
             scope.jsonEndpoint  = "securitygroup_json";
-            var data = 'csrf_token=2a06f17d6872143ed806a695caa5e5701a127ade&vpc_id=' + vpc 
+            var data = 'csrf_token=2a06f17d6872143ed806a695caa5e5701a127ade&vpc_id=' + vpc; 
             httpBackend.expect('POST', scope.jsonEndpoint, data)
                 .respond(200, {
                     "success": true,
@@ -243,10 +243,7 @@ describe("LaunchInstance", function() {
     describe("Function getInstanceVPCName Test", function() {
 
         beforeEach(function() {
-            setFixtures('<select id="vpc_network">\
-                <option value="vpc-12345678">VPC-01</option>\
-                <option value="vpc-12345679">VPC-02</option>\
-                </select>');
+            setFixtures('<select id="vpc_network"><option value="vpc-12345678">VPC-01</option><option value="vpc-12345679">VPC-02</option></select>');
         });
 
         it("Should update instanceVPCName when getInstanceVPCName is called", function() {
