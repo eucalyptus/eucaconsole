@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2013-2014 Eucalyptus Systems, Inc.
 #
 # Redistribution and use of this software in source and binary forms,
@@ -39,9 +40,6 @@ from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.events import BeforeRender
 from pyramid.settings import asbool
 
-from dogpile.cache import make_region
-from dogpile.cache.util import sha1_mangle_key
-
 from .i18n import custom_locale_negotiator
 from .models import SiteRootFactory
 from .models.auth import groupfinder, User
@@ -62,11 +60,12 @@ except ImportError:
     __version__ = 'DEVELOPMENT'
 
 REQUIRED_CONFIG = {
-    #'use': 'egg:eucaconsole',  # can't test for this since container strips it
+    # 'use': 'egg:eucaconsole',  # can't test for this since container strips it
     'pyramid.includes': ['pyramid_beaker', 'pyramid_chameleon', 'pyramid_layout'],
     'session.type': 'cookie',
     'cache.memory': 'dogpile.cache.pylibmc'
 }
+
 
 def check_config(settings):
     # check for required config first
@@ -84,10 +83,11 @@ def check_config(settings):
             if is_list:
                 value = '\n'.join(value)
             logging.error("*****************************************************************")
-            logging.error(" Required configuration value {0} = {1} not found in console.ini".format(key, value))
+            logging.error(u" Required configuration value {0} = {1} not found in console.ini".format(key, value))
             logging.error(" Please correct this and restart eucaconsole.")
             logging.error("*****************************************************************")
             sys.exit(1)
+
 
 def get_configurator(settings, enable_auth=True):
     check_config(settings);
@@ -128,53 +128,54 @@ def get_configurator(settings, enable_auth=True):
     password = settings.get('cache.password', None)
     short_term.configure(
         memory_cache,
-        expiration_time = int(settings.get('cache.short_term.expire')),
-        arguments = {
-            'url':[memory_cache_url],
-            'binary':True,
-            'min_compress_len':1024,
-            'behaviors':{"tcp_nodelay": True,"ketama":True},
-            'username':username,
-            'password':password
+        expiration_time=int(settings.get('cache.short_term.expire')),
+        arguments={
+            'url': [memory_cache_url],
+            'binary': True,
+            'min_compress_len': 1024,
+            'behaviors': {"tcp_nodelay": True, "ketama": True},
+            'username': username,
+            'password': password
         },
     )
     default_term.configure(
         memory_cache,
-        expiration_time = int(settings.get('cache.default_term.expire')),
-        arguments = {
-            'url':[memory_cache_url],
-            'binary':True,
-            'min_compress_len':1024,
-            'behaviors':{"tcp_nodelay": True,"ketama":True},
-            'username':username,
-            'password':password
+        expiration_time=int(settings.get('cache.default_term.expire')),
+        arguments={
+            'url': [memory_cache_url],
+            'binary': True,
+            'min_compress_len': 1024,
+            'behaviors': {"tcp_nodelay": True, "ketama": True},
+            'username': username,
+            'password': password
         },
     )
     long_term.configure(
         memory_cache,
-        expiration_time = int(settings.get('cache.long_term.expire')),
-        arguments = {
-            'url':[memory_cache_url],
-            'binary':True,
-            'min_compress_len':1024,
-            'behaviors':{"tcp_nodelay": True,"ketama":True},
-            'username':username,
-            'password':password
+        expiration_time=int(settings.get('cache.long_term.expire')),
+        arguments={
+            'url': [memory_cache_url],
+            'binary': True,
+            'min_compress_len': 1024,
+            'behaviors': {"tcp_nodelay": True, "ketama": True},
+            'username': username,
+            'password': password
         },
     )
     extra_long_term.configure(
         memory_cache,
-        expiration_time = int(settings.get('cache.extra_long_term.expire')),
-        arguments = {
-            'url':[memory_cache_url],
-            'binary':True,
-            'min_compress_len':1024,
-            'behaviors':{"tcp_nodelay": True,"ketama":True},
-            'username':username,
-            'password':password
+        expiration_time=int(settings.get('cache.extra_long_term.expire')),
+        arguments={
+            'url': [memory_cache_url],
+            'binary': True,
+            'min_compress_len': 1024,
+            'behaviors': {"tcp_nodelay": True, "ketama": True},
+            'username': username,
+            'password': password
         },
     )
     return config
+
 
 def main(global_config, **settings):
     """

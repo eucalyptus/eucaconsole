@@ -618,7 +618,7 @@ class ImageView(TaggedItemView, ImageBundlingMixin):
         name_tag = image.tags.get('Name')
         if name_tag is None and not image.name:
             return image.id
-        return '{0} ({1})'.format(name_tag or image.name, image.id)
+        return u'{0} ({1})'.format(name_tag or image.name, image.id)
 
     def get_display_name(self, escapebraces=True):
         if self.image:

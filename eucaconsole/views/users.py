@@ -77,7 +77,7 @@ class UsersView(LandingPageView):
     def users_landing(self):
         json_items_endpoint = self.request.route_path('users_json')
         if self.request.GET:
-            json_items_endpoint += '?{params}'.format(params=urlencode(self.request.GET))
+            json_items_endpoint += u'?{params}'.format(params=urlencode(self.request.GET))
         # filter_keys are passed to client-side filtering in search box
         self.filter_keys = ['user_name', 'user_id', 'arn', 'path']
         # sort_keys are passed to sorting drop-down
@@ -135,7 +135,7 @@ class UsersView(LandingPageView):
                 csv_w.writerow(header)
                 row = [account, user_name, password]
                 csv_w.writerow(row)
-                self._store_file_("{acct}-{user}-login.csv".format(acct=account, user=user_name),
+                self._store_file_(u"{acct}-{user}-login.csv".format(acct=account, user=user_name),
                                   'text/csv', string_output.getvalue())
                 return dict(message=_(u"Successfully added users"), results="true")
             else:
@@ -451,7 +451,7 @@ class UserView(BaseView):
                         row.append(user['access_id'])
                         row.append(user['secret_key'])
                     csv_w.writerow(row)
-                self._store_file_("{acct}-users.csv".format(acct=account), 'text/csv', string_output.getvalue())
+                self._store_file_(u"{acct}-users.csv".format(acct=account), 'text/csv', string_output.getvalue())
                 has_file = 'y'
             return dict(message=_(u"Successfully added users"), results=dict(hasFile=has_file))
  
@@ -522,7 +522,7 @@ class UserView(BaseView):
             csv_w.writerow(header)
             row = [account, self.user.user_name, new_pass]
             csv_w.writerow(row)
-            self._store_file_("{acct}-{user}-login.csv".format(
+            self._store_file_(u"{acct}-{user}-login.csv".format(
                 acct=account, user=self.user.user_name), 'text/csv', string_output.getvalue())
             return dict(message=_(u"Successfully set user password"), results="true")
         except BotoServerError as err:  # catch error in password change
@@ -568,7 +568,7 @@ class UserView(BaseView):
             row = [account, self.user.user_name, new_pass]
             csv_w.writerow(row)
             self._store_file_(
-                "{acct}-{user}-login.csv".format(acct=account, user=self.user.user_name),
+                u"{acct}-{user}-login.csv".format(acct=account, user=self.user.user_name),
                 'text/csv', string_output.getvalue())
             return dict(message=_(u"Successfully generated user password"), results="true")
 
@@ -605,8 +605,8 @@ class UserView(BaseView):
             row = [account, user_name, result.access_key.access_key_id, result.access_key.secret_access_key]
             csv_w.writerow(row)
             self._store_file_(
-                "{acct}-{user}-{key}-creds.csv".format(acct=account,
-                user=user_name, key=result.access_key.access_key_id),
+                u"{acct}-{user}-{key}-creds.csv".format(
+                    acct=account, user=user_name, key=result.access_key.access_key_id),
                 'text/csv', string_output.getvalue())
             return dict(
                 message=_(u"Successfully generated access keys"),

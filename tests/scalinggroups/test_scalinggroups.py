@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2013-2014 Eucalyptus Systems, Inc.
 #
 # Redistribution and use of this software in source and binary forms,
@@ -256,3 +257,4 @@ class BaseScalingGroupFormTestCaseWithVPCDisabledOnEucalpytus(BaseFormTestCase):
 
     def test_scaling_group_form_vpc_network_choices_with_vpc_disabled_on_eucalyptus(self):
         self.assertTrue(('None', _(u'No VPC')) in self.form.vpc_network.choices)
+
