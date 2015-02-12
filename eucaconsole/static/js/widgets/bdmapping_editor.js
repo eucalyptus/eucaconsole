@@ -95,16 +95,25 @@ angular.module('BlockDeviceMappingEditor', ['EucaConsoleUtils'])
         });
         $scope.addDevice = function () {
             // Validation checks
+            $(".error").css('display', 'none');
             var newMappingEntry = $('#new-mapping-path'),
                 newSizeEntry = $('#new-size');
             // Be sure a mapping path is entered
             if (!newMappingEntry.val()) {
                 newMappingEntry.focus();
+                $("#bdm-dev-reqd").css('display', 'block');
                 return false;
             }
             // Size must be entered
             if (!newSizeEntry.val() || newSizeEntry.val() <= 0) {
                 newSizeEntry.focus();
+                $("#bdm-size-reqd").css('display', 'block');
+                return false;
+            }
+            var bdMapping = $scope.bdMapping;
+            if (newMappingEntry.val() in bdMapping) {
+                newMappingEntry.focus();
+                $("#bdm-dev-same").css('display', 'block');
                 return false;
             }
             if ($scope.newVolumeType === 'ephemeral') {
@@ -114,7 +123,6 @@ angular.module('BlockDeviceMappingEditor', ['EucaConsoleUtils'])
                 $scope.newSize = '2';
                 $scope.newDOT = false;
             }
-            var bdMapping = $scope.bdMapping;
             bdMapping[$scope.newMappingPath] = {
                 'virtual_name' : $scope.virtualName,
                 'volume_type': 'None',
