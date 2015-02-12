@@ -10,6 +10,7 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch'])
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.items = [];
         $scope.itemsLoading = true;
+        $scope.runningSmartRefresh = false;
         $scope.unfilteredItems = [];
         $scope.filterKeys = [];
         $scope.sortBy = '';
@@ -146,7 +147,7 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch'])
                     'aws-region', $('#region-dropdown').children('li[data-selected="True"]').children('a').attr('id'));
             }
         };
-        $scope.getItems = function () {
+        $scope.getItems = function (okToRefresh) {
             var csrf_token = $('#csrf_token').val();
             var data = "csrf_token="+csrf_token;
             $http({method:'POST', url:$scope.jsonEndpoint, data:data,
@@ -163,7 +164,13 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch'])
                 });
                 // Auto-refresh items if any are in a transitional state
                 if ($scope.transitionalRefresh && transitionalCount > 0) {
-                    $timeout(function() { $scope.getItems(); }, 5000);  // Poll every 5 seconds
+                    if (!$scope.runningSmartRefresh || okToRefresh !== undefined) {
+                        $scope.runningSmartRefresh = true;
+                        $timeout(function() { $scope.getItems(true); }, 5000);  // Poll every 5 seconds
+                    }
+                }
+                else {
+                    $scope.runningSmartRefresh = false;
                 }
                 // Emit 'itemsLoaded' signal when items[] is updated
                 $timeout(function() {
