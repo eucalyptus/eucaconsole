@@ -1397,6 +1397,13 @@ describe("SecurityGroupRules", function() {
             scope.initRules('{"rules_array": [{"to_port":"3389","grants":[{"owner_id":null,"group_id":null,"cidr_ip":"10.5.1.66/32","name":null}],"ip_protocol":"tcp","from_port":"3389"}],"rules_egress_array": [{"to_port":"22","grants":[{"owner_id":null,"group_id":null,"cidr_ip":"0.0.0.0/0","name":null}],"ip_protocol":"tcp","from_port":"22"}],"json_endpoint": "localhost/json", "protocols_json_endpoint": "localhost/api"}');
         });
 
+        it("Should call preventDefault when addRule is called", function() {
+            var event ={"preventDefault": function(){}};
+            spyOn(event, 'preventDefault');
+            scope.addRule(event); 
+            expect(event.preventDefault).toHaveBeenCalled();
+        });
+
         it("Should call checkRequiredInput when addRule is called", function() {
             spyOn(scope, 'checkRequiredInput');
             scope.addRule({"preventDefault": function(){}}); 
@@ -1476,6 +1483,13 @@ describe("SecurityGroupRules", function() {
             scope.cidrIp = '';
             scope.addRule({"preventDefault": function(){}}); 
             expect(scope.$emit).toHaveBeenCalledWith('securityGroupUpdate');
+        });
+
+        it("Should remove 'error' class from 'ng-hide' class element when addRule is called", function() {
+
+            setFixtures('<div class="error ng-hide"></div>');
+            scope.addRule({"preventDefault": function(){}}); 
+            expect($('.ng-hide').hasClass()).not.toBeTruthy(); 
         });
     });
 
