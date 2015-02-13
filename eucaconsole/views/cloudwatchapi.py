@@ -51,17 +51,19 @@ class CloudWatchAPIView(BaseView):
         statistic = self.request.params.get('statistic', 'Average')
         idtype = self.request.params.get('idtype', 'InstanceId')
         ids = self.request.params.get('ids')
+        unit = self.request.params.get('unit')
         return dict(
-            results=self.get_stats(period, duration, metric, namespace, statistic, idtype, ids)
+            results=self.get_stats(period, duration, metric, namespace, statistic, idtype, ids, unit)
         )
 
     def get_stats(self, period=60, duration=600, metric='CPUUtilization', namespace='AWS/EC2',
-                  statistic='Average', idtype='InstanceId', ids=None):
+                  statistic='Average', idtype='InstanceId', ids=None, unit=None):
         """
         Wrapper for time-series data for statistics of a given metric for one or more resources
         Notes:
          - Duration is the stats to display for the last _____ seconds
          - Pass ids as a comma-separated list (w/o spaces)
+         - See the Boto docs on get_metric_statistics for more details on parameters
         """
         ids = ids.split(',') if ids else []
         if not ids:
@@ -70,7 +72,7 @@ class CloudWatchAPIView(BaseView):
         start_time = now - datetime.timedelta(seconds=duration)
         end_time = now
         statistics = [statistic]
-        self.cw_conn.get_metric_statistics(
+        return self.cw_conn.get_metric_statistics(
             period, start_time, end_time, metric, namespace, statistics,
-            dimensions={idtype: ids}
+            dimensions={idtype: ids}, unit=unit
         )
