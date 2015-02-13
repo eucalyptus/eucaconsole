@@ -29,10 +29,11 @@ Pyramid views for Eucalyptus and AWS instances
 
 """
 import base64
-from operator import attrgetter
-import simplejson as json
-from M2Crypto import RSA
 import re
+import simplejson as json
+
+from M2Crypto import RSA
+from operator import attrgetter
 from urllib2 import HTTPError, URLError
 
 from boto.exception import BotoServerError
@@ -327,6 +328,7 @@ class InstancesView(LandingPageView, BaseInstanceView):
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=self.location)
         return self.render_dict
+
 
 class InstancesJsonView(LandingPageView):
     def __init__(self, request):
@@ -958,6 +960,29 @@ class InstanceVolumesView(BaseInstanceView):
         volumes = [vol for vol in self.volumes if vol.attach_data.instance_id == self.instance.id]
         # Sort by most recently attached first
         return sorted(volumes, key=attrgetter('attach_data.attach_time'), reverse=True) if volumes else []
+
+
+class InstanceMonitoringView(BaseInstanceView):
+    VIEW_TEMPLATE = '../templates/instances/instance_monitoring.pt'
+
+    def __init__(self, request):
+        super(InstanceMonitoringView, self).__init__(request)
+        self.request = request
+        self.cw_conn = self.get_connection(conn_type='cloudwatch')
+        self.location = self.request.route_path('instance_monitoring', id=self.request.matchdict.get('id'))
+        self.instance = self.get_instance()
+        self.instance_name = TaggedItemView.get_display_name(self.instance)
+        self.render_dict = dict(
+            instance=self.instance,
+            instance_name=self.instance_name,
+        )
+
+    @view_config(route_name='instance_monitoring', renderer=VIEW_TEMPLATE, request_method='GET')
+    def instance_monitoring(self):
+        if self.instance is None:
+            raise HTTPNotFound()
+        render_dict = self.render_dict
+        return render_dict
 
 
 class InstanceLaunchView(BaseInstanceView, BlockDeviceMappingItemView):

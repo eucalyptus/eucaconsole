@@ -25,6 +25,10 @@
                 <dd ng-show="instanceState != 'terminated' &amp;&amp; instanceState != 'shutting-down'" ng-cloak="true">
                     <a href="${request.route_path('instance_volumes', id=instance.id)}" i18n:translate="">Volumes</a>
                 </dd>
+                <dd ng-show="instanceState != 'terminated' &amp;&amp; instanceState != 'shutting-down'" ng-cloak="true"
+                    tal:condition="instance.monitoring_state == 'enabled'">
+                    <a href="${request.route_path('instance_monitoring', id=instance.id)}" i18n:translate="">Monitoring</a>
+                </dd>
             </dl>
             <div class="panel has-actions">
                 <metal:block metal:use-macro="layout.global_macros['actions_menu']">
