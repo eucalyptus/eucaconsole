@@ -52,9 +52,15 @@ class CloudWatchAPIView(BaseView):
         idtype = self.request.params.get('idtype', 'InstanceId')
         ids = self.request.params.get('ids')
         unit = self.request.params.get('unit')
-        return dict(
-            results=self.get_stats(period, duration, metric, namespace, statistic, idtype, ids, unit)
-        )
+        stats = self.get_stats(period, duration, metric, namespace, statistic, idtype, ids, unit)
+        json_stats = []
+        for stat in stats:
+            json_stats.append(dict(
+                timestamp=stat.get('Timestamp').isoformat(),
+                statistic=stat.get(statistic),
+                unit=unit
+            ))
+        return dict(results=json_stats)
 
     def get_stats(self, period=60, duration=600, metric='CPUUtilization', namespace='AWS/EC2',
                   statistic='Average', idtype='InstanceId', ids=None, unit=None):
@@ -63,14 +69,13 @@ class CloudWatchAPIView(BaseView):
         Notes:
          - Duration is the stats to display for the last _____ seconds
          - Pass ids as a comma-separated list (w/o spaces)
-         - See the Boto docs on get_metric_statistics for more details on parameters
+         - See the Boto docs on cw_conn.get_metric_statistics() for more details on parameters
         """
         ids = ids.split(',') if ids else []
         if not ids:
             raise HTTPBadRequest()
-        now = datetime.datetime.now()
-        start_time = now - datetime.timedelta(seconds=duration)
-        end_time = now
+        end_time = datetime.datetime.utcnow()
+        start_time = end_time - datetime.timedelta(seconds=duration)
         statistics = [statistic]
         return self.cw_conn.get_metric_statistics(
             period, start_time, end_time, metric, namespace, statistics,
