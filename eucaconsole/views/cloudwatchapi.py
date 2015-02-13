@@ -44,13 +44,26 @@ class CloudWatchAPIView(BaseView):
 
     @view_config(route_name='cloudwatch_api', renderer='json')
     def cloudwatch_api(self):
+        """
+        REST API endpoint for fetching time-series cloudwatch data
+
+        Examples...
+        Fetch CPUUtilization percentage for instance 'i-foobar' for the past hour:
+          /cloudwatch/api?ids=i-foobar&duration=3600&unit=Percent
+
+        """
+        ids = self.request.params.get('ids')
+        if not ids:
+            raise HTTPBadRequest()
+        ids = ids.split(',')  # Allow ids to be passed as a comma-separated list
         period = int(self.request.params.get('period', 60))
+        if period % 60 != 0:
+            raise HTTPBadRequest()  # Period (granularity) must be a multiple of 60 seconds
         duration = int(self.request.params.get('duration', 600))
         metric = self.request.params.get('metric', 'CPUUtilization')
-        namespace = self.request.params.get('namespace', 'AWS/EC2')
+        namespace = u'AWS/{0}'.format(self.request.params.get('namespace', 'EC2'))
         statistic = self.request.params.get('statistic', 'Average')
         idtype = self.request.params.get('idtype', 'InstanceId')
-        ids = self.request.params.get('ids')
         unit = self.request.params.get('unit')
         stats = self.get_stats(period, duration, metric, namespace, statistic, idtype, ids, unit)
         json_stats = []
@@ -58,22 +71,40 @@ class CloudWatchAPIView(BaseView):
             json_stats.append(dict(
                 timestamp=stat.get('Timestamp').isoformat(),
                 statistic=stat.get(statistic),
-                unit=unit
             ))
-        return dict(results=json_stats)
+        return dict(unit=unit, results=json_stats)
 
     def get_stats(self, period=60, duration=600, metric='CPUUtilization', namespace='AWS/EC2',
                   statistic='Average', idtype='InstanceId', ids=None, unit=None):
         """
         Wrapper for time-series data for statistics of a given metric for one or more resources
-        Notes:
-         - Duration is the stats to display for the last _____ seconds
-         - Pass ids as a comma-separated list (w/o spaces)
-         - See the Boto docs on cw_conn.get_metric_statistics() for more details on parameters
+
+        :type period: integer
+        :param period: The granularity, in seconds, of the returned datapoints; must be a multiple of 60
+
+        :type duration: integer
+        :param duration:  Length, in seconds, spanning the returned datapoints.
+        Example: duration=3600 returns the last hour's data
+
+        :type metric: str
+        :param metric: Metric name, see eucaconsole.constants.cloudwatch.METRIC_TYPES
+
+        :type namespace: str
+        :param namespace: Either 'AWS/EC2', 'AWS/EBS', or 'AWS/AutoScaling'
+
+        :type statistic: str
+        :param statistic: Valid values: Average | Sum | SampleCount | Maximum | Minimum
+
+        :type idtype: str
+        :param idtype: Dimension key (e.g. 'InstanceId', 'ImageId')
+
+        :type ids: list
+        :param ids: List of resource ids
+
+        :type unit: str
+        :param unit: Valid values are Seconds, Kilobytes, Percent, Count, Kilobytes/Second, Count/Second, et. al.
+
         """
-        ids = ids.split(',') if ids else []
-        if not ids:
-            raise HTTPBadRequest()
         end_time = datetime.datetime.utcnow()
         start_time = end_time - datetime.timedelta(seconds=duration)
         statistics = [statistic]
