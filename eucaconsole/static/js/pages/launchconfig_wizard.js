@@ -106,7 +106,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             });
         };
         $scope.updateSecurityGroup = function () {
-            if ($scope.securityGroups == undefined) {
+            if ($scope.securityGroups === undefined) {
                 $scope.securityGroups = [];
             }
             angular.forEach($scope.securityGroups, function(securityGroupID) {
