@@ -35,6 +35,7 @@
 // Note: foundation/settings imports includes/eucavariables
 @import "foundation/settings";
 
+@import "font-awesome/font-awesome";
 
 // Behold, here are all the Foundation 5 components.
 @import
@@ -354,6 +355,17 @@ $breadcrumb-border-color: darken($breadcrumb-background-color, 20%);
 hr {
     border: 1px solid $euca-grey;
     border-width: 1px 0 0;
+}
+
+.busy {
+    @extend .fa;
+    @extend .fa-spinner;
+    @extend .fa-spin;
+}
+
+.busy-lg {
+    @extend .busy;
+    @extend .fa-3x;
 }
 
 .dots {
