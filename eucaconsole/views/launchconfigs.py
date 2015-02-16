@@ -66,10 +66,11 @@ class LaunchConfigsView(LandingPageView):
         self.delete_form = LaunchConfigDeleteForm(self.request, formdata=self.request.params or None)
         self.filters_form = LaunchConfigsFiltersForm(
             self.request, cloud_type=self.cloud_type, ec2_conn=self.ec2_conn, formdata=self.request.params or None)
+        search_facets = self.filters_form.facets
         self.render_dict = dict(
-            filter_fields=True,
-            filters_form=self.filters_form,
+            filter_fields=False,
             filter_keys=self.filter_keys,
+            search_facets=BaseView.escape_json(json.dumps(search_facets)),
             sort_keys=self.sort_keys,
             prefix=self.prefix,
             initial_sort_key=self.initial_sort_key,

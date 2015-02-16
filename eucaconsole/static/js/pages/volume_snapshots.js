@@ -31,8 +31,8 @@ angular.module('VolumeSnapshots', ['TagEditor', 'EucaConsoleUtils'])
         $scope.revealDeleteModal = function (volume_id, snapshot) {
             var modal = $('#delete-snapshot-modal');
             $scope.volumeID = volume_id;
-            $scope.snapshotID = snapshot['id'];
-            $scope.snapshotName = snapshot['name'];
+            $scope.snapshotID = snapshot.id;
+            $scope.snapshotName = snapshot.name;
             $scope.images = undefined;
             $scope.getSnapshotImages(snapshot, $scope.imagesURL);
             modal.foundation('reveal', 'open');
@@ -79,8 +79,8 @@ angular.module('VolumeSnapshots', ['TagEditor', 'EucaConsoleUtils'])
             });
         };
         $scope.getSnapshotImages = function (snapshot, url) {
-            var url = url.replace('_id_', snapshot.id)
-            $http.get(url).success(function(oData) {
+            var urlReplaced = url.replace('_id_', snapshot.id);
+            $http.get(urlReplaced).success(function(oData) {
                 var results = oData ? oData.results : '';
                 if (results && results.length > 0) {
                     $scope.images = results;

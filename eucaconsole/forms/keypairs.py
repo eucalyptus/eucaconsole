@@ -38,7 +38,7 @@ from . import BaseSecureForm, ASCII_WITHOUT_SLASHES_NOTICE
 class KeyPairForm(BaseSecureForm):
     """Key Pair Create form
     """
-    name_error_msg = ASCII_WITHOUT_SLASHES_NOTICE
+    name_error_msg = _(u'Keypair name must be between 1 and 255 ASCII characters long')
     name = wtforms.TextField(
         id=u'key-name',
         label=_(u'Name'),

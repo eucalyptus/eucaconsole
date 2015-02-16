@@ -67,7 +67,7 @@ describe("LaunchConfigWizard", function() {
 
         it("Should invalid input when imageID is more 12 chars", function() {
             scope.currentStepIndex = 1;
-            scope.imageID = "emi-1234567890" 
+            scope.imageID = "emi-1234567890";
             scope.imageIDErrorClass = '';
             scope.checkRequiredInput(); 
             expect(scope.isNotValid).toBeTruthy();

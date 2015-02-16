@@ -76,9 +76,11 @@ class SecurityGroupsView(LandingPageView):
             dict(key='-name', name=_(u'Name: Z to A')),
             dict(key='description', name=_(u'Description')),
         ]
+        search_facets = self.filters_form.facets
         self.render_dict.update(dict(
-            filter_fields=True,
+            filter_fields=False,
             filter_keys=self.filter_keys,
+            search_facets=BaseView.escape_json(json.dumps(search_facets)),
             sort_keys=self.sort_keys,
             initial_sort_key=self.initial_sort_key,
             json_items_endpoint=self.json_items_endpoint,

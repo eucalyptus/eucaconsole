@@ -26,26 +26,26 @@ angular.module('UsersPage', ['LandingPage', 'EucaConsoleUtils'])
         };
         $scope.revealDelete = function (user) {
             var modal = $('#delete-user-modal');
-            $scope.userName = user['user_name'];
+            $scope.userName = user.user_name;
             modal.foundation('reveal', 'open');
-            $('#delete-user-form').attr('action', $scope.delete_url.replace('_name_', user['user_name']));
+            $('#delete-user-form').attr('action', $scope.delete_url.replace('_name_', user.user_name));
         };
         $scope.revealModalXHR = function (action, user) {
             var modal = $('#' + action + '-user-modal');
-            $scope.userName = user['user_name'];
-            $scope.user = user
+            $scope.userName = user.user_name;
+            $scope.user = user;
             modal.foundation('reveal', 'open');
         };
         $scope.disableUser = function ($event) {
             $event.preventDefault();
-            var url = $scope.disable_url.replace('_name_', $scope.user['user_name']);
+            var url = $scope.disable_url.replace('_name_', $scope.user.user_name);
             var data = "csrf_token="+$('#csrf_token').val();
             $http({method:'POST', url:url, data:data,
                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
               success(function(oData) {
                 var results = oData ? oData.results : [];
                 // could put data back into form, but form already contains changes
-                if (oData.error == undefined) {
+                if (oData.error === undefined) {
                     Notify.success(oData.message);
                     $scope.updateUser();
                 } else {
@@ -58,7 +58,7 @@ angular.module('UsersPage', ['LandingPage', 'EucaConsoleUtils'])
             $('#disable-user-modal').foundation('reveal', 'close');
         };
         $scope.updateUser = function () {
-            var url = $scope.user_summary_url.replace('_name_', $scope.user['user_name']);
+            var url = $scope.user_summary_url.replace('_name_', $scope.user.user_name);
             $http.get(url).success(function(oData) {
                 var results = oData ? oData.results : [];
                 // add these values to the item record so that angular will see them
@@ -70,10 +70,11 @@ angular.module('UsersPage', ['LandingPage', 'EucaConsoleUtils'])
         $scope.enableUser = function ($event) {
             $event.preventDefault();
             var generate = $event.target.random_password.checked;
-            var url = $scope.enable_url.replace('_name_', $scope.user['user_name']);
+            var url = $scope.enable_url.replace('_name_', $scope.user.user_name);
             var csrf_token = $('#csrf_token').val();
-            if (generate == true) { // handle file return
-                var data = "random_password=y&csrf_token="+csrf_token;
+            var data = '';
+            if (generate === true) { // handle file return
+                data = "random_password=y&csrf_token="+csrf_token;
                 $http({method:'POST', url:url, data:data,
                        headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
                   success(function(oData) {
@@ -90,12 +91,12 @@ angular.module('UsersPage', ['LandingPage', 'EucaConsoleUtils'])
                     eucaHandleError(oData, status);
                 });
             } else { // deal with normal REST call
-                var data = "csrf_token="+csrf_token;
+                data = "csrf_token="+csrf_token;
                 $http({method:'POST', url:url, data:data,
                        headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
                   success(function(oData) {
                     var results = oData ? oData.results : [];
-                    if (oData.error == undefined) {
+                    if (oData.error === undefined) {
                         Notify.success(oData.message);
                         $scope.updateUser();
                     } else {
@@ -103,35 +104,38 @@ angular.module('UsersPage', ['LandingPage', 'EucaConsoleUtils'])
                     }
                   }).
                   error(function (oData, status) {
-                    var errorMsg = oData['message'] || '';
+                    var errorMsg = oData.message || '';
                     Notify.failure(errorMsg);
                   });
             }
             $('#enable-user-modal').foundation('reveal', 'close');
         };
         $scope.linkUser = function (user, fragment) {
-            window.location = $scope.user_view_url.replace('_name_', user['user_name'])+fragment;
+            window.location = $scope.user_view_url.replace('_name_', user.user_name)+fragment;
         };
         $scope.$on('itemsLoaded', function($event, items) {
             for (var i=0; i < items.length; i++) {
                 var url = $scope.user_summary_url.replace('_name_', items[i].user_name);
-                var theItems = items;
-                $http.get(url).success(function(oData) {
-                    var results = oData ? oData.results : [];
-                    // search item list for this user
-                    for (var k=0; k<theItems.length; k++) {
-                        if (theItems[k].user_name == results.user_name) {
-                            // add these values to the item record so that angular will see them
-                            theItems[k].has_password = results.has_password;
-                            theItems[k].num_keys = results.num_keys;
-                            theItems[k].user_enabled = results.user_enabled;
-                            break;
-                        }
-                    }
-                }).error(function (oData, status) {
-                    // ignore
-                });
+                $scope.addUserSummaryData(items, url);
             }
         });
+        $scope.addUserSummaryData = function(items, url) {
+            var theItems = items;
+            $http.get(url).success(function(oData) {
+                var results = oData ? oData.results : [];
+                // search item list for this user
+                for (var k=0; k<theItems.length; k++) {
+                    if (theItems[k].user_name == results.user_name) {
+                        // add these values to the item record so that angular will see them
+                        theItems[k].has_password = results.has_password;
+                        theItems[k].num_keys = results.num_keys;
+                        theItems[k].user_enabled = results.user_enabled;
+                        break;
+                    }
+                }
+            }).error(function (oData, status) {
+                // ignore
+            });
+        };
     })
 ;

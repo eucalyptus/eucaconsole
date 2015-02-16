@@ -21,8 +21,8 @@ angular.module('InstanceVolumes', ['EucaConsoleUtils'])
         $scope.isDialogHelpExpanded = false;
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
-            $scope.instanceId = options['instance_id'];
-            $scope.jsonEndpoint = options['instance_volumes_json_url'];
+            $scope.instanceId = options.instance_id;
+            $scope.jsonEndpoint = options.instance_volumes_json_url;
             $scope.initChosenSelector();
             $scope.getInstanceVolumes();
             $scope.setWatch();
@@ -43,7 +43,7 @@ angular.module('InstanceVolumes', ['EucaConsoleUtils'])
                     $('#volume_id').trigger('chosen:updated');
                 });
             }, true); 
-        }
+        };
         $scope.setFocus = function () {
             $(document).on('opened', '[data-reveal]', function () {
                 var modal = $(this);
@@ -63,7 +63,7 @@ angular.module('InstanceVolumes', ['EucaConsoleUtils'])
             });
             modals.on('close', function () {
                 $('.gridwrapper').find('.f-dropdown').filter('.open').css('display', 'block');
-            })
+            });
         };
         $scope.getInstanceVolumes = function () {
             $http.get($scope.jsonEndpoint).success(function(oData) {
@@ -75,19 +75,19 @@ angular.module('InstanceVolumes', ['EucaConsoleUtils'])
                 $scope.initialLoading = false;
                 // Detect if any volume states are transitional
                 $scope.allVolumes.forEach(function(volume) {
-                    if (volume['attach_instance_id'] == $scope.instanceId) {
+                    if (volume.attach_instance_id == $scope.instanceId) {
                         $scope.volumes.push(volume);
-                    } else if (volume['status'] == 'available') {
-                        $scope.availableVolumes[volume['id']] = volume['name'];
+                    } else if (volume.status == 'available') {
+                        $scope.availableVolumes[volume.id] = volume.name;
                         $scope.availableVolumeCount += 1;
                     }
-                    if (volume['transitional']) {
+                    if (volume.transitional) {
                         transitionalCount += 1;
                     }
                 });
                 // Auto-refresh volumes if any of them are transitional
                 if (transitionalCount > 0) {
-                    $timeout(function() {$scope.getInstanceVolumes()}, 4000);  // Poll every 4 seconds
+                    $timeout(function() {$scope.getInstanceVolumes();}, 4000);  // Poll every 4 seconds
                 }
             }).error(function (oData, status) {
                 eucaHandleError(oData, status);

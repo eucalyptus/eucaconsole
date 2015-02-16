@@ -56,6 +56,7 @@ module.exports = function(config) {
       'static/js/thirdparty/codemirror/javascript.js',
       'static/js/thirdparty/codemirror/active-line.js',
       'static/js/thirdparty/jasmine/jasmine-jquery.js',
+      'static/js/thirdparty/magic-search/magic_search.js',
       'static/js/pages/custom_filters.js',
       'static/js/widgets/autoscale_tag_editor.js',
       'static/js/widgets/bdmapping_editor.js',

@@ -223,7 +223,7 @@ urls = [
     Route(name='keypair_create', pattern='/keypairs/create'),
     Route(name='keypair_import', pattern='/keypairs/import'),
     Route(name='keypair_delete', pattern='/keypairs/delete'),
-    Route(name='keypair_view', pattern='/keypairs/{id}'),
+    Route(name='keypair_view', pattern='/keypairs/*subpath'),
 
     # IP Addresses #####
     # Landing page

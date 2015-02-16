@@ -12,7 +12,7 @@
 
         // Notifications display
         var notification = $('#notifications');
-        if (notification.find('.alert').length == 0) {
+        if (notification.find('.alert').length === 0) {
             // remove success notifications after 5 seconds
             setTimeout(function(){
                 Notify.clear();

@@ -14,10 +14,7 @@
         </metal:breadcrumbs>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
-        <div class="large-2 columns" id="landing-page-filters">
-            <h3 id="pagetitle" class="landingpage" i18n:translate="">Launch Configurations</h3>
-            ${panel('landingpage_filters', filters_form=filters_form)}
-        </div>
+        <h3 id="pagetitle"><strong i18n:translate="">Launch configuration</strong></h3>
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
                 <a class="button" i18n:translate="" id="create-launchconfig-btn"

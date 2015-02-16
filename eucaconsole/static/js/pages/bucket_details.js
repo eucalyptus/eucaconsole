@@ -18,15 +18,15 @@ angular.module('BucketDetailsPage', ['S3SharingPanel', 'EucaConsoleUtils'])
             $scope.handleUnsavedChanges();
             $scope.handleUnsavedSharingEntry($scope.bucketDetailsForm);
             // set upload button target based on media query
-            if (window.matchMedia(Foundation.media_queries['small']).matches === false) {
+            if (window.matchMedia(Foundation.media_queries.small).matches === false) {
                 $('#upload-file-action').attr('target', '_blank');
             }
         };
         $scope.getBucketObjectsCount = function () {
             $http.get($scope.bucketObjectsCountUrl).success(function(oData) {
                 var results = oData ? oData.results : {};
-                $scope.bucketCount = results['object_count'];
-                $scope.versionCount = results['version_count'];
+                $scope.bucketCount = results.object_count;
+                $scope.versionCount = results.version_count;
                 $scope.objectsCountLoading = false;
             }).error(function (oData, status) {
                 eucaHandleErrorS3(oData, status);
@@ -72,7 +72,7 @@ angular.module('BucketDetailsPage', ['S3SharingPanel', 'EucaConsoleUtils'])
             // Display warning when there's an unsaved Sharing Panel entry
             form.on('submit', function (event) {
                 var accountInputField = form.find('#share_account:visible');
-                if (accountInputField.length && accountInputField.val() != '') {
+                if (accountInputField.length && accountInputField.val() !== '') {
                     event.preventDefault();
                     $scope.isSubmitted = false;
                     $('#unsaved-sharing-warning-modal').foundation('reveal', 'open');

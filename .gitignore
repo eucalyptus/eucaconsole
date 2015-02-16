@@ -30,3 +30,5 @@ console.ini
 session-keys.ini
 bower_components/
 node_modules/
+eucaconsole.backup/
+eucaconsole/static/js/minified/

@@ -27,7 +27,7 @@ angular.module('Quotas', [])
             $scope.iam_expanded = !$scope.iam_expanded;
         };
         $scope.initController = function() {
-        }
+        };
     })
 ;
 

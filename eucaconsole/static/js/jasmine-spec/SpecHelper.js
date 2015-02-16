@@ -4,8 +4,8 @@ beforeEach(function () {
       return {
         compare: function (actual) {
           return {
-            pass: actual.length === 0 
-          }
+            pass: actual.length === 0
+          };
         }
       };
     }

@@ -14,5 +14,6 @@ install:
 script:
     - python setup.py test
     - grunt karma:ci
+    - grunt jshint 
 after_script: python setup.py extract_messages
 

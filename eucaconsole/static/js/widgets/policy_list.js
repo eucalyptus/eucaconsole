@@ -49,7 +49,7 @@ angular.module('PolicyList', [])
                 $scope.syncPolicies();
               }
             ).error(function (oData, status) {
-                var errorMsg = oData['message'] || '';
+                var errorMsg = oData.message || '';
                 $scope.itemsLoading = false;
                 if (errorMsg !== undefined) {
                     Notify.failure(errorMsg);
@@ -87,7 +87,7 @@ angular.module('PolicyList', [])
                 $scope.syncPolicies();
                 Notify.success(oData.message);
             }).error(function (oData) {
-                var errorMsg = oData['message'] || '';
+                var errorMsg = oData.message || '';
                 Notify.failure(errorMsg);
             });
             $('#delete-modal').foundation('reveal', 'close');
@@ -112,7 +112,7 @@ angular.module('PolicyList', [])
                 $scope.codeEditor.setValue(results);
                 $scope.codeEditor.focus();
             }).error(function (oData, status) {
-                var errorMsg = oData['message'] || '';
+                var errorMsg = oData.message || '';
                 if (errorMsg && status === 403) {
                     $('#timed-out-modal').foundation('reveal', 'open');
                 }
@@ -135,7 +135,7 @@ angular.module('PolicyList', [])
                 ).success(function(oData) {
                     Notify.success(oData.message);
                 }).error(function (oData) {
-                    var errorMsg = oData['message'] || '';
+                    var errorMsg = oData.message || '';
                     Notify.failure(errorMsg);
                 });
             } catch (e) {
