@@ -100,7 +100,7 @@ class SnapshotsView(LandingPageView):
                 self.log_request(_(u"Deleting snapshot {0}").format(snapshot_id))
                 snapshot.delete()
                 prefix = _(u'Successfully deleted snapshot')
-                msg = '{prefix} {name}'.format(prefix=prefix, name=snapshot_name)
+                msg = u'{prefix} {name}'.format(prefix=prefix, name=snapshot_name)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
         else:
@@ -155,7 +155,7 @@ class SnapshotsView(LandingPageView):
                     block_device_map=bdm
                 )
                 prefix = _(u'Successfully registered snapshot')
-                msg = '{prefix} {id}'.format(prefix=prefix, id=snapshot_id)
+                msg = u'{prefix} {id}'.format(prefix=prefix, id=snapshot_id)
                 # Clear images cache
                 self.invalidate_images_cache()
                 location = self.request.route_path('image_view', id=image_id)
@@ -357,7 +357,7 @@ class SnapshotView(TaggedItemView):
                 self.log_request(_(u"Deleting snapshot {0}").format(self.snapshot.id))
                 self.snapshot.delete()
                 prefix = _(u'Successfully deleted snapshot')
-                msg = '{prefix} {name}'.format(prefix=prefix, name=snapshot_name)
+                msg = u'{prefix} {name}'.format(prefix=prefix, name=snapshot_name)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             location = self.request.route_path('snapshots')
             return HTTPFound(location=location)
@@ -385,7 +385,7 @@ class SnapshotView(TaggedItemView):
                     kernel_id=('windows' if reg_as_windows else None),
                     block_device_map=bdm)
                 prefix = _(u'Successfully registered snapshot')
-                msg = '{prefix} {id}'.format(prefix=prefix, id=snapshot_id)
+                msg = u'{prefix} {id}'.format(prefix=prefix, id=snapshot_id)
                 # Clear images cache
                 self.invalidate_images_cache()
                 self.request.session.flash(msg, queue=Notification.SUCCESS)

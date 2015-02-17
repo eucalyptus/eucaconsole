@@ -162,9 +162,9 @@ class LoginView(BaseView, PermissionCheckMixin):
                 creds = auth.authenticate(
                     account=account, user=username, passwd=password,
                     new_passwd=new_passwd, timeout=8, duration=self.duration)
-                logging.info("Authenticated Eucalyptus user: {acct}/{user} from {ip}".format(
+                logging.info(u"Authenticated Eucalyptus user: {acct}/{user} from {ip}".format(
                     acct=account, user=username, ip=BaseView.get_remote_addr(self.request)))
-                user_account = '{user}@{account}'.format(user=username, account=account)
+                user_account = u'{user}@{account}'.format(user=username, account=account)
                 # self.invalidate_connection_cache()
                 session.invalidate()  # Refresh session
                 session['cloud_type'] = 'euca'
@@ -215,7 +215,7 @@ class LoginView(BaseView, PermissionCheckMixin):
             auth = AWSAuthenticator(package=package, validate_certs=validate_certs, ca_certs=ca_certs_file)
             try:
                 creds = auth.authenticate(timeout=10)
-                logging.info("Authenticated AWS user from {ip}".format(ip=BaseView.get_remote_addr(self.request)))
+                logging.info(u"Authenticated AWS user from {ip}".format(ip=BaseView.get_remote_addr(self.request)))
                 default_region = self.request.registry.settings.get('aws.default.region', 'us-east-1')
                 # self.invalidate_connection_cache()
                 session.invalidate()  # Refresh session
@@ -225,7 +225,7 @@ class LoginView(BaseView, PermissionCheckMixin):
                 session['secret_key'] = creds.secret_key
                 last_visited_aws_region = [reg for reg in AWS_REGIONS if reg.get('name') == aws_region]
                 session['region'] = aws_region if last_visited_aws_region else default_region
-                session['username_label'] = '{user}...@AWS'.format(user=creds.access_key[:8])
+                session['username_label'] = u'{user}...@AWS'.format(user=creds.access_key[:8])
                 session['supported_platforms'] = self.get_account_attributes(['supported-platforms'])
                 session['default_vpc'] = self.get_account_attributes(['default-vpc'])
                 # Save EC2 Connection object in cache

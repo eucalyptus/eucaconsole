@@ -58,8 +58,7 @@ class RolesView(LandingPageView):
     def roles_landing(self):
         json_items_endpoint = self.request.route_path('roles_json')
         if self.request.GET:
-            json_items_endpoint += '?{params}'.format(params=urlencode(self.request.GET))
-        user_choices = []  # sorted(set(item.user_name for item in conn.get_all_users().users))
+            json_items_endpoint += u'?{params}'.format(params=urlencode(self.request.GET))
         # filter_keys are passed to client-side filtering in search box
         self.filter_keys = ['path', 'role_name', 'role_id', 'arn']
         # sort_keys are passed to sorting drop-down
@@ -100,13 +99,14 @@ class RolesView(LandingPageView):
 
 class RolesJsonView(BaseView):
     """Roles returned as JSON"""
+
     def __init__(self, request):
         super(RolesJsonView, self).__init__(request)
         self.conn = self.get_connection(conn_type="iam")
 
     @view_config(route_name='roles_json', renderer='json', request_method='POST')
     def roles_json(self):
-        if not(self.is_csrf_valid()):
+        if not (self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
         # TODO: take filters into account??
         with boto_error_handler(self.request):
@@ -122,8 +122,10 @@ class RolesJsonView(BaseView):
                     pass
                 instances = []
                 try:
-                    profile_arns = [profile.arn for profile in profiles if profile.roles.member.role_name == role.role_name]
-                    instances = self.get_connection().get_only_instances(filters={'iam-instance-profile.arn':profile_arns})
+                    profile_arns = [profile.arn for profile in profiles if
+                                    profile.roles.member.role_name == role.role_name]
+                    instances = self.get_connection().get_only_instances(
+                        filters={'iam-instance-profile.arn': profile_arns})
                 except BotoServerError as exc:
                     pass
                 """
@@ -161,7 +163,8 @@ class RoleView(BaseView):
         self.role_form = RoleForm(self.request, role=self.role, formdata=self.request.params or None)
         self.delete_form = DeleteRoleForm(self.request, formdata=self.request.params)
         create_date = parser.parse(self.role.create_date) if self.role else datetime.now()
-        self.role_name_validation_error_msg = _(u"Role names must be between 1 and 64 characters long, and may contain letters, numbers, '+', '=', ',', '.'. '@' and '-', and cannot contain spaces.")
+        self.role_name_validation_error_msg = _(
+            u"Role names must be between 1 and 64 characters long, and may contain letters, numbers, '+', '=', ',', '.'. '@' and '-', and cannot contain spaces.")
         self.render_dict = dict(
             role=self.role,
             role_arn=self.role.arn if self.role else '',
@@ -197,13 +200,14 @@ class RoleView(BaseView):
             users = [u.user_name.encode('ascii', 'ignore') for u in self.conn.get_all_users().users]
         return users
 
-    def _get_trusted_entity_(self, parsed_policy):
+    @staticmethod
+    def _get_trusted_entity_(parsed_policy):
         principal = parsed_policy['Statement'][0]['Principal']
         if 'AWS' in principal.keys():
             arn = principal['AWS']
             if isinstance(arn, list):
                 arn = arn[0]
-            return _(u'Account ') + arn[arn.rindex('::')+2:arn.rindex(':')]
+            return _(u'Account ') + arn[arn.rindex('::') + 2:arn.rindex(':')]
         elif 'Service' in principal.keys():
             svc = principal['Service']
             if isinstance(svc, list):
@@ -218,7 +222,7 @@ class RoleView(BaseView):
         if self.role is not None:
             # first, prettify the trust doc
             parsed = json.loads(unquote(self.role.assume_role_policy_document))
-            self.role.assume_role_policy_document=json.dumps(parsed, indent=2)
+            self.role.assume_role_policy_document = json.dumps(parsed, indent=2)
             # and pull out the trusted acct id
             self.render_dict['trusted_entity'] = self._get_trusted_entity_(parsed)
             self.render_dict['assume_role_policy_document'] = self.role.assume_role_policy_document
@@ -226,18 +230,21 @@ class RoleView(BaseView):
                 instances = []
                 profiles = self.conn.list_instance_profiles()
                 profiles = profiles.list_instance_profiles_response.list_instance_profiles_result.instance_profiles
-                profile_arns = [profile.arn for profile in profiles if profile.roles.member.role_name == self.role.role_name]
-                instances = self.get_connection().get_only_instances(filters={'iam-instance-profile.arn':profile_arns})
+                profile_arns = [profile.arn for profile in profiles if
+                                profile.roles.member.role_name == self.role.role_name]
+                instances = self.get_connection().get_only_instances(filters={'iam-instance-profile.arn': profile_arns})
                 for instance in instances:
-                    instance.name=TaggedItemView.get_display_name(instance)
+                    instance.name = TaggedItemView.get_display_name(instance)
                 self.render_dict['instances'] = instances
         return self.render_dict
- 
+
     @view_config(route_name='role_create', request_method='POST', renderer=TEMPLATE)
     def role_create(self):
         if self.role_form.validate():
-            new_role_name = self.request.params.get('role_name') 
+            new_role_name = self.request.params.get('role_name')
             role_type = self.request.params.get('roletype')
+            acct_id = ''
+            external_id = ''
             if role_type == 'xacct':
                 acct_id = self.request.params.get('accountid')
                 external_id = self.request.params.get('externalid')
@@ -247,12 +254,13 @@ class RoleView(BaseView):
                 self.log_request(_(u"Creating role {0}").format(new_role_name))
                 if role_type == 'xacct':
                     policy = {'Version': '2012-10-17'}
-                    statement = {'Effect': 'Allow', 'Action': 'sts:AssumeRole'}
-                    statement['Principal'] = {'AWS': "arn:aws:iam::%s:root" % (acct_id)}
+                    statement = {'Effect': 'Allow', 'Action': 'sts:AssumeRole',
+                                 'Principal': {'AWS': "arn:aws:iam::%s:root" % acct_id}}
                     if len(external_id) > 0:
                         statement['Condition'] = {'StringEquals': {'sts:ExternalId': external_id}}
                     policy['Statement'] = [statement]
-                    self.conn.create_role(role_name=new_role_name, path=new_path, assume_role_policy_document=json.dumps(policy))
+                    self.conn.create_role(role_name=new_role_name, path=new_path,
+                                          assume_role_policy_document=json.dumps(policy))
                 else:
                     self.conn.create_role(role_name=new_role_name, path=new_path)
                 # now add instance profile
@@ -283,14 +291,14 @@ class RoleView(BaseView):
 
     @view_config(route_name='role_policies_json', renderer='json', request_method='GET')
     def role_policies_json(self):
-        " ""Return role policies list" ""
+        """Return role policies list"""
         with boto_error_handler(self.request):
             policies = self.conn.list_role_policies(role_name=self.role.role_name)
             return dict(results=policies.policy_names)
 
     @view_config(route_name='role_policy_json', renderer='json', request_method='GET')
     def role_policy_json(self):
-        " ""Return role policies list" ""
+        """Return role policies list"""
         with boto_error_handler(self.request):
             policy_name = self.request.matchdict.get('policy')
             policy = self.conn.get_role_policy(role_name=self.role.role_name, policy_name=policy_name)
@@ -299,7 +307,7 @@ class RoleView(BaseView):
 
     @view_config(route_name='role_update_policy', request_method='POST', renderer='json')
     def role_update_policy(self):
-        if not(self.is_csrf_valid()):
+        if not self.is_csrf_valid():
             return JSONResponse(status=400, message="missing CSRF token")
         # calls iam:PutRolePolicy
         policy = self.request.matchdict.get('policy')
@@ -312,7 +320,7 @@ class RoleView(BaseView):
 
     @view_config(route_name='role_update_trustpolicy', request_method='POST', renderer='json')
     def role_update_trustpolicy(self):
-        if not(self.is_csrf_valid()):
+        if not self.is_csrf_valid():
             return JSONResponse(status=400, message="missing CSRF token")
         # calls iam:UpdateAssumeRolePolicy
         with boto_error_handler(self.request):
@@ -321,7 +329,8 @@ class RoleView(BaseView):
             result = self.conn.update_assume_role_policy(
                 role_name=self.role.role_name, policy_document=policy_text)
             parsed = json.loads(policy_text)
-            return dict(message=_(u"Successfully updated trust role policy"), results=result, trusted_entity=self._get_trusted_entity_(parsed))
+            return dict(message=_(u"Successfully updated trust role policy"), results=result,
+                        trusted_entity=self._get_trusted_entity_(parsed))
 
     @view_config(route_name='role_delete_policy', request_method='POST', renderer='json')
     def role_delete_policy(self):
@@ -340,11 +349,11 @@ class RoleView(BaseView):
         Returns an instance profile either by looking up one that goes with the passes role, or
         by creating a new one an adding the role to it.
         """
-        profiles = iam_conn.list_instance_profiles(path_prefix='/'+role_name)
+        profiles = iam_conn.list_instance_profiles(path_prefix='/' + role_name)
         profiles = profiles.list_instance_profiles_response.list_instance_profiles_result.instance_profiles
         instance_profile = profiles[0] if len(profiles) > 0 else None
         if instance_profile is None:
-            profile_name = 'instance_profile_{0}'.format(os.urandom(16).encode('base64').rstrip('=\n'))
+            profile_name = u'instance_profile_{0}'.format(os.urandom(16).encode('base64').rstrip('=\n'))
             profile_name = "".join(profile_name.split('/'))
             instance_profile = iam_conn.create_instance_profile(profile_name, path='/' + role_name)
             iam_conn.add_role_to_instance_profile(profile_name, role_name)

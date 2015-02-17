@@ -32,7 +32,7 @@ import wtforms
 from wtforms import validators
 
 from ..i18n import _
-from . import BaseSecureForm
+from . import BaseSecureForm, ASCII_WITHOUT_SLASHES_NOTICE
 
 
 class KeyPairForm(BaseSecureForm):

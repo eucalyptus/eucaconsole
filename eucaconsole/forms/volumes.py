@@ -168,12 +168,12 @@ class AttachForm(BaseSecureForm):
             for instance in self.instances:
                 if instance.state in ["running", "stopped"] and self.volume.zone == instance.placement:
                     name_tag = instance.tags.get('Name')
-                    extra = ' ({name})'.format(name=name_tag) if name_tag else ''
-                    inst_name = '{id}{extra}'.format(id=instance.id, extra=extra)
+                    extra = u' ({name})'.format(name=name_tag) if name_tag else ''
+                    inst_name = u'{id}{extra}'.format(id=instance.id, extra=extra)
                     choices.append((instance.id, BaseView.escape_braces(inst_name)))
             if len(choices) == 1:
                 prefix = _(u'No available instances in availability zone')
-                msg = '{0} {1}'.format(prefix, self.volume.zone)
+                msg = u'{0} {1}'.format(prefix, self.volume.zone)
                 choices = [('', msg)]
             self.instance_id.choices = choices
         else:
