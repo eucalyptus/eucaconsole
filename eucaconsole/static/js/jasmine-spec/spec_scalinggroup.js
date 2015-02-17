@@ -94,11 +94,7 @@ describe("ScalingGroupPage", function() {
     describe("Function rearrangeTerminationPoliciesOptions Test", function() {
 
         beforeEach(function() {
-            setFixtures('<select id="termination_policies">\
-                <option value="option1">1</option>\
-                <option value="option2">2</option>\
-                <option value="option3">3</option>\
-                </select>');
+            setFixtures('<select id="termination_policies"><option value="option1">1</option><option value="option2">2</option><option value="option3">3</option></select>');
         });
 
         it("Should update the order of options when rearrangeTerminationPoliciesOptions is called", function() {
