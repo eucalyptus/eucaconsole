@@ -20,17 +20,17 @@ angular.module('Dashboard', ['EucaConsoleUtils'])
         };
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
-            $scope.jsonEndpoint = options['json_items_url'];
-            $scope.statusEndpoint = options['service_status_url'];
-            $scope.storedZoneKey = 'dashboard_availability_zone_' + options['cloud_type'];
-            $scope.accountName = options['account_display_name'];
+            $scope.jsonEndpoint = options.json_items_url;
+            $scope.statusEndpoint = options.service_status_url;
+            $scope.storedZoneKey = 'dashboard_availability_zone_' + options.cloud_type;
+            $scope.accountName = options.account_display_name;
             $scope.setInitialZone();
             $scope.setFocus();
             $scope.getItemCounts();
             $scope.storeAWSRegion();
-            $scope.health = options['services'];
+            $scope.health = options.services;
             var tiles = $.cookie($scope.accountName + "_dash_order");
-            if (tiles == undefined || tiles.indexOf('health') > -1) {
+            if (tiles === undefined || tiles.indexOf('health') > -1) {
                 $scope.getServiceStatus();
             }
             $('#sortable').sortable({
@@ -65,7 +65,7 @@ angular.module('Dashboard', ['EucaConsoleUtils'])
                 $scope.totals = results;
                 $scope.setServiceStatus(results.health.name, results.health.status);
             }).error(function (oData, status) {
-                var errorMsg = oData['message'] || null;
+                var errorMsg = oData.message || null;
                 if (errorMsg && status === 403) {
                     $('#timed-out-modal').foundation('reveal', 'open');
                 }
@@ -74,19 +74,19 @@ angular.module('Dashboard', ['EucaConsoleUtils'])
         };
         $scope.getServiceStatus = function() {
             angular.forEach($scope.health, function(value, key) {
-                if (key == 0) return;  // skip first, it's compute and that's fetch elsewhere
+                if (key === 0) return;  // skip first, it's compute and that's fetch elsewhere
                 var url = $scope.statusEndpoint+"?svc="+value.name.replace('&', '%26');
                 $http.get(url).success(function(oData) {
                     var results = oData ? oData : {};
                     $scope.setServiceStatus(results.health.name, results.health.status);
                 }).error(function (oData, status) {
-                    var errorMsg = oData['message'] || null;
+                    var errorMsg = oData.message || null;
                     if (errorMsg && status === 403) {
                         $('#timed-out-modal').foundation('reveal', 'open');
                     }
                     
                 });
-            })
+            });
         };
         $scope.setServiceStatus = function(name, status) {
             angular.forEach($scope.health, function(value, key) {
@@ -94,11 +94,13 @@ angular.module('Dashboard', ['EucaConsoleUtils'])
                     value.status = status;
                 }
             });
-        }
+        };
         $scope.setZone = function (zone) {
             $scope.itemsLoading = true;
             $scope.selectedZone = zone;
-            Modernizr.localstorage && localStorage.setItem($scope.storedZoneKey, zone);
+            if (Modernizr.localstorage) {
+                localStorage.setItem($scope.storedZoneKey, zone);
+            }
             $scope.zoneDropdown.removeClass('open').removeAttr('style');
             $scope.getItemCounts();
         };

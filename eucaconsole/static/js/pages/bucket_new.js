@@ -14,9 +14,9 @@ angular.module('CreateBucketPage', ['EucaConsoleUtils'])
         $scope.existingBuckets = [];
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
-            $scope.bucketName = options['bucket_name'];
-            $scope.existingBuckets = options['existing_bucket_names'];
-            if (options['share_type'] == 'private') {
+            $scope.bucketName = options.bucket_name;
+            $scope.existingBuckets = options.existing_bucket_names;
+            if (options.share_type == 'private') {
                 $('#share_type').find('input[value="private"]').click();
             }
             $scope.initNameConflictWarningListener();
@@ -24,7 +24,7 @@ angular.module('CreateBucketPage', ['EucaConsoleUtils'])
         };
         $scope.handleUnsavedChanges = function () {
             $scope.$watch('bucketName', function (newVal) {
-                if (newVal != '') {
+                if (newVal !== '') {
                     $scope.hasChangesToBeSaved = true;
                 }
             });

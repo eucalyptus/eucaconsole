@@ -27,7 +27,7 @@ angular.module('InstanceCreateImage', ['TagEditor', 'BlockDeviceMappingEditor'])
         };
         $scope.checkRequiredInput = function () {
             $scope.isNotValid = false;
-            if ($scope.name == '') {
+            if ($scope.name === '') {
                 $scope.isNotValid = true;
             }
         };

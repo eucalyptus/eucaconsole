@@ -16,10 +16,10 @@ angular.module('S3SharingPanel', ['EucaConsoleUtils'])
         $scope.displayBucketSharingChangeWarning = false;
         $scope.initS3SharingPanel = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
-            var grantsList = options['grants'];
+            var grantsList = options.grants;
             var grantsJson = JSON.stringify(grantsList);
             $scope.grantsArray = grantsList;
-            $scope.createOptionText = options['create_option_text'];
+            $scope.createOptionText = options.create_option_text;
             $scope.s3AclTextarea.val(grantsJson);
             $scope.setInitialValues();
             $scope.initChosenSelectors();
@@ -28,7 +28,7 @@ angular.module('S3SharingPanel', ['EucaConsoleUtils'])
         $scope.setInitialValues = function () {
             $(document).ready(function () {
                 $scope.$apply(function () {
-                    $scope.shareType = $('input[name="share_type"]:checked').val()
+                    $scope.shareType = $('input[name="share_type"]:checked').val();
                 });
             });
         };
@@ -64,7 +64,7 @@ angular.module('S3SharingPanel', ['EucaConsoleUtils'])
                 $('#share_account').on('change', function () {
                     var that = $(this);
                     $scope.$apply(function () {
-                        $scope.addAccountBtnDisabled = that.val() == '';
+                        $scope.addAccountBtnDisabled = that.val() === '';
                     });
                 });
             });
@@ -102,13 +102,13 @@ angular.module('S3SharingPanel', ['EucaConsoleUtils'])
                     }
                     // Detect if entered account is an ID or email
                     if (grantAccountVal.match('@')) {
-                        newGrant['email_address'] = grantAccountVal;
+                        newGrant.email_address = grantAccountVal;
                     } else if (grantAccountVal.match('http:')) {
                         // Canned groups are handled via URIs
-                        newGrant['uri'] = grantAccountVal;
-                        newGrant['grant_type'] = 'Group';
+                        newGrant.uri = grantAccountVal;
+                        newGrant.grant_type = 'Group';
                     } else {
-                        newGrant['id'] = grantAccountVal;
+                        newGrant.id = grantAccountVal;
                     }
                 });
                 // Focus on account input if existing grant found (matched by id/permission or email/permission above)
@@ -120,7 +120,11 @@ angular.module('S3SharingPanel', ['EucaConsoleUtils'])
                 $scope.syncGrants();
                 $scope.addAccountBtnDisabled = true;
             } else {
-                grantAccountField.val() ? grantPermissionField.focus() : grantAccountField.focus();
+                if (grantAccountField.val()) {
+                    grantPermissionField.focus();
+                } else {
+                    grantAccountField.focus();
+                }
             }
         };
     })

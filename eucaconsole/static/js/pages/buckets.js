@@ -27,17 +27,17 @@ angular.module('BucketsPage', ['LandingPage', 'EucaConsoleUtils'])
         $scope.hasCopyFolder = false;
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
-            $scope.bucketObjectsCountUrl = options['bucket_objects_count_url'];
-            $scope.updateVersioningFormUrl = options['update_versioning_url'];
-            $scope.copyObjUrl = options['copy_object_url'];
-            $scope.getKeysGenericUrl = options['get_keys_generic_url'];
-            $scope.putKeysUrl = options['put_keys_url'];
-            $scope.uploadUrl = options['upload_url'];
+            $scope.bucketObjectsCountUrl = options.bucket_objects_count_url;
+            $scope.updateVersioningFormUrl = options.update_versioning_url;
+            $scope.copyObjUrl = options.copy_object_url;
+            $scope.getKeysGenericUrl = options.get_keys_generic_url;
+            $scope.putKeysUrl = options.put_keys_url;
+            $scope.uploadUrl = options.upload_url;
             $scope.updatePasteValues();
         };
         $scope.revealModal = function (action, bucket) {
             var modal = $('#' + action + '-modal');
-            $scope.bucketName = bucket['bucket_name'];
+            $scope.bucketName = bucket.bucket_name;
             $scope.bucketCount = $scope.bucketCounts[$scope.bucketName];
             $scope.versionCount = $scope.versionCounts[$scope.bucketName];
             // Set form action based on bucket choice
@@ -52,7 +52,7 @@ angular.module('BucketsPage', ['LandingPage', 'EucaConsoleUtils'])
             var versioningForm = $('#update-versioning-form');
             var form_action = versioningForm.attr('action');
             $scope.updateVersioningAction = versioningAction;
-            $scope.bucketName = bucket['bucket_name'];
+            $scope.bucketName = bucket.bucket_name;
             $scope.bucketCount = $scope.bucketCounts[$scope.bucketName];
             // Set form action based on bucket choice
             form_action = form_action.replace('_name_', $scope.bucketName);
@@ -67,21 +67,21 @@ angular.module('BucketsPage', ['LandingPage', 'EucaConsoleUtils'])
         };
         $scope.$on('itemsLoaded', function($event, items) {
             angular.forEach(items, function(item, key) {
-                var bucketName = item['bucket_name'];
+                var bucketName = item.bucket_name;
                 var objectsCountUrl = $scope.bucketObjectsCountUrl.replace('_name_', bucketName);
                 $scope.countsLoading[bucketName] = true;
                 $scope.versioningStatusLoading[bucketName] = true;
                 $http.get(objectsCountUrl).success(function(oData) {
                     var results = oData ? oData.results : {},
-                        versioningStatus = results['versioning_status'];
-                    $scope.bucketCounts[bucketName] = results['object_count'];
-                    $scope.versionCounts[bucketName] = results['version_count'];
+                        versioningStatus = results.versioning_status;
+                    $scope.bucketCounts[bucketName] = results.object_count;
+                    $scope.versionCounts[bucketName] = results.version_count;
                     $scope.bucketVersioningStatus[bucketName] = versioningStatus;
                     $scope.bucketVersioningAction[bucketName] = $scope.getVersioningActionFromStatus(versioningStatus);
                     $scope.countsLoading[bucketName] = false;
                     $scope.versioningStatusLoading[bucketName] = false;
                 }).error(function (oData, status) {
-                    var errorMsg = oData['message'] || null;
+                    var errorMsg = oData.message || null;
                     if (errorMsg) {
                         if (status === 403 || status === 400) {
                             $('#timed-out-modal').foundation('reveal', 'open');
@@ -110,13 +110,13 @@ angular.module('BucketsPage', ['LandingPage', 'EucaConsoleUtils'])
             }
         };
         $scope.bucketCanCopyItem = function (item) {
-            if (item && $scope.pasteBucket == item.bucket_name && $scope.pastePath == '') {
+            if (item && $scope.pasteBucket == item.bucket_name && $scope.pastePath === '') {
                 return false;
             }
             return $scope.hasCopyItem;
         };
         $scope.bucketCanCopyFolder = function (item) {
-            if (item && $scope.pasteBucket == item.bucket_name && $scope.pastePath == '') {
+            if (item && $scope.pasteBucket == item.bucket_name && $scope.pastePath === '') {
                 return false;
             }
             return $scope.hasCopyFolder;
@@ -124,14 +124,14 @@ angular.module('BucketsPage', ['LandingPage', 'EucaConsoleUtils'])
         $scope.doPaste = function (bucket) {
             var id = $('.open').attr('id');  // hack to close action menu
             $('#table-'+id).trigger('click');
-            $scope.bucketName = bucket['bucket_name'];
+            $scope.bucketName = bucket.bucket_name;
             var path = Modernizr.sessionstorage && sessionStorage.getItem('copy-object-buffer');
             if (path.indexOf('/', path.length - 1) !== -1) {
                 // this is a folder, so send it off to the folder handling code
                 $scope.startFolderCopy(path);
                 return;
             }
-            var bucket = path.slice(0, path.indexOf('/'));
+            bucket = path.slice(0, path.indexOf('/'));
             var key = path.slice(path.indexOf('/') + 1);
             var dst_key = path.slice(path.lastIndexOf('/') + 1);
             var url = $scope.copyObjUrl.replace('_name_', $scope.bucketName).replace('_subpath_', '');
@@ -140,14 +140,14 @@ angular.module('BucketsPage', ['LandingPage', 'EucaConsoleUtils'])
                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
               success(function(oData) {
                 var results = oData ? oData.results : [];
-                if (oData.error == undefined) {
+                if (oData.error === undefined) {
                     $scope.$broadcast('refresh');
                 } else {
                     Notify.failure(oData.message);
                 }
               }).
               error(function (oData, status) {
-                var errorMsg = oData['message'] || '';
+                var errorMsg = oData.message || '';
                 Notify.failure(errorMsg);
               });
         };
@@ -202,7 +202,7 @@ angular.module('BucketsPage', ['LandingPage', 'EucaConsoleUtils'])
                     if ($scope.progress > $scope.total) {
                         $scope.progress = $scope.total;
                     }
-                    if ($scope.copyingAll == true) {
+                    if ($scope.copyingAll === true) {
                         var chunks = $scope.total / $scope.chunkSize;
                         $scope.index = $scope.index + 1;
                         if ($scope.index >= chunks) {

@@ -24,7 +24,7 @@ describe("CreateAlarm", function() {
         var template = window.__html__['templates/dialogs/create_alarm_dialog.pt'];
         // remove <script src> and <link> tags to avoid phantomJS error
         template = template.replace(/script src/g, "script ignore_src"); 
-        template = template.replace(/\<link/g, "\<ignore_link"); 
+        template = template.replace(/<link/g, "<ignore_link"); 
         setFixtures(template);
     });
 

@@ -27,7 +27,7 @@ describe("SecurityGroupRules", function() {
         var template = window.__html__['templates/panels/securitygroup_rules.pt'];
         // remove <script src> and <link> tags to avoid phantomJS error
         template = template.replace(/script src/g, "script ignore_src"); 
-        template = template.replace(/\<link/g, "\<ignore_link"); 
+        template = template.replace(/<link/g, "<ignore_link"); 
         setFixtures(template);
     });
 
@@ -76,7 +76,7 @@ describe("SecurityGroupRules", function() {
 
         it("Should enable the addRule button when all conditions are met", function() {
             scope.isRuleNotComplete = false;
-            scope.hasDuplicatedRule == false; 
+            scope.hasDuplicatedRule = false; 
             scope.customProtocolDivClass = '';
             scope.setAddRuleButtonClass(); 
             expect(scope.addRuleButtonClass).toEqual('');
@@ -173,7 +173,7 @@ describe("SecurityGroupRules", function() {
         beforeEach(function() {
             setFixtures('<input id="csrf_token" name="csrf_token" type="hidden" value="2a06f17d6872143ed806a695caa5e5701a127ade">');
             scope.jsonEndpoint  = "securitygroup_json";
-            var data = 'csrf_token=2a06f17d6872143ed806a695caa5e5701a127ade&vpc_id=' + vpc
+            var data = 'csrf_token=2a06f17d6872143ed806a695caa5e5701a127ade&vpc_id=' + vpc;
             httpBackend.expect('POST', scope.jsonEndpoint, data)
                 .respond(200, {
                     "success": true,
@@ -315,4 +315,132 @@ describe("SecurityGroupRules", function() {
         });
     });
 
+    describe("Function createRuleArrayBlock() Test", function() {
+
+        it("Should return the matching group_id value when createRuleArrayBlock() is returned", function() {
+            scope.fromPort = 22;
+            scope.toPort = 22;
+            scope.ipProtocol = 'tcp';
+            scope.trafficType = 'securitygroup';
+            scope.cidrIp = '0.0.0.0/0'; 
+            scope.ruleType = 'inbound';
+            scope.groupName = "1234/group2";
+            scope.securityGroupList = [{"name": "group1", "id": "sg-00000000"}, {"name": "group2", "id": "sg-12345678"}];
+            var output = scope.createRuleArrayBlock();
+            expect(output).toEqual({
+                'from_port': 22,
+                'to_port': 22,
+                'ip_protocol': 'tcp',
+                'custom_protocol': undefined,
+                'grants': [{
+                    'cidr_ip': null,
+                    'group_id': 'sg-12345678',
+                    'name': 'group2',
+                    'owner_id': '1234' 
+                }],
+                'rule_type': 'inbound',
+                'fresh': 'new'
+            });
+        });
+
+        it("Should return owner_id to be null if groupName does not contain '/' when createRuleArrayBlock() is returned", function() {
+            scope.fromPort = 22;
+            scope.toPort = 22;
+            scope.ipProtocol = 'tcp';
+            scope.trafficType = 'securitygroup';
+            scope.cidrIp = '0.0.0.0/0'; 
+            scope.ruleType = 'inbound';
+            scope.groupName = "group1";
+            scope.securityGroupList = [{"name": "group1", "id": "sg-00000000"}, {"name": "group2", "id": "sg-12345678"}];
+            var output = scope.createRuleArrayBlock();
+            expect(output).toEqual({
+                'from_port': 22,
+                'to_port': 22,
+                'ip_protocol': 'tcp',
+                'custom_protocol': undefined,
+                'grants': [{
+                    'cidr_ip': null,
+                    'group_id': 'sg-00000000',
+                    'name': 'group1',
+                    'owner_id': null 
+                }],
+                'rule_type': 'inbound',
+                'fresh': 'new'
+            });
+        });
+
+        it("Should return group_id to be null if trafficType is not 'securitygroup' when createRuleArrayBlock() is returned", function() {
+            scope.fromPort = 22;
+            scope.toPort = 22;
+            scope.ipProtocol = 'tcp';
+            scope.trafficType = 'ip';
+            scope.cidrIp = '0.0.0.0/0'; 
+            scope.ruleType = 'inbound';
+            scope.groupName = "group1";
+            scope.securityGroupList = [{"name": "group1", "id": "sg-00000000"}, {"name": "group2", "id": "sg-12345678"}];
+            var output = scope.createRuleArrayBlock();
+            expect(output).toEqual({
+                'from_port': 22,
+                'to_port': 22,
+                'ip_protocol': 'tcp',
+                'custom_protocol': undefined,
+                'grants': [{
+                    'cidr_ip': '0.0.0.0/0',
+                    'group_id': null,
+                    'name': null,
+                    'owner_id': null 
+                }],
+                'rule_type': 'inbound',
+                'fresh': 'new'
+            });
+        });
+
+        it("Should return the matching cidr_ip value if trafficType is 'ip' when createRuleArrayBlock() is returned", function() {
+            scope.fromPort = 22;
+            scope.toPort = 22;
+            scope.ipProtocol = 'tcp';
+            scope.trafficType = 'ip';
+            scope.cidrIp = '0.0.0.0/0'; 
+            scope.ruleType = 'inbound';
+            var output = scope.createRuleArrayBlock();
+            expect(output).toEqual({
+                'from_port': 22,
+                'to_port': 22,
+                'ip_protocol': 'tcp',
+                'custom_protocol': undefined,
+                'grants': [{
+                    'cidr_ip': '0.0.0.0/0',
+                    'group_id': null,
+                    'name': null,
+                    'owner_id': null 
+                }],
+                'rule_type': 'inbound',
+                'fresh': 'new'
+            });
+        });
+
+        it("Should return cidr_ip value to be null if trafficType is not 'ip' when createRuleArrayBlock() is returned", function() {
+            scope.fromPort = 22;
+            scope.toPort = 22;
+            scope.ipProtocol = 'tcp';
+            scope.trafficType = 'securitygroup';
+            scope.cidrIp = '0.0.0.0/0'; 
+            scope.ruleType = 'inbound';
+            var output = scope.createRuleArrayBlock();
+            expect(output).toEqual({
+                'from_port': 22,
+                'to_port': 22,
+                'ip_protocol': 'tcp',
+                'custom_protocol': undefined,
+                'grants': [{
+                    'cidr_ip': null,
+                    'group_id': null,
+                    'name': null,
+                    'owner_id': null 
+                }],
+                'rule_type': 'inbound',
+                'fresh': 'new'
+            });
+        });
+    });
 });

@@ -38,7 +38,7 @@ angular.module('InstanceCreateImage', ['TagEditor'])
             $scope.isNotValid = false;
             $scope.validateS3BucketInput();
             $scope.validateS3PrefixInput();
-            if ($scope.name == '' || $scope.s3_bucket == '' || $scope.s3_prefix == '' ) {
+            if ($scope.name === '' || $scope.s3_bucket === '' || $scope.s3_prefix === '' ) {
                 $scope.isNotValid = true;
             } else if ($scope.s3BucketError || $scope.s3PrefixError) {
                 $scope.isNotValid = true;
@@ -46,7 +46,7 @@ angular.module('InstanceCreateImage', ['TagEditor'])
         };
         $scope.validateS3BucketInput = function () {
             var re = /^[a-z0-9-\.]+$/;
-            if ($scope.s3_bucket == '' || $scope.s3_bucket.match(re)) {
+            if ($scope.s3_bucket === '' || $scope.s3_bucket.match(re)) {
                 $scope.s3BucketError = false;
             } else { 
                 $scope.s3BucketError = true;

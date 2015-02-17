@@ -9,7 +9,7 @@ angular.module('ElasticIPPage', [])
         $scope.publicIP = '';
         $scope.allocationID = '';
         $scope.initController = function (publicIP, allocationID) {
-            $scope.publicIP = publicIP,
+            $scope.publicIP = publicIP;
             $scope.allocationID = allocationID;
             $scope.activateWidget();
             $scope.setWatch();

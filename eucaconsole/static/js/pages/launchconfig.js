@@ -8,8 +8,8 @@ angular.module('LaunchConfigPage', ['BlockDeviceMappingEditor', 'EucaConsoleUtil
     .controller('LaunchConfigPageCtrl', function ($scope, eucaUnescapeJson) {
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
-            $scope.launchConfigInUse = options['in_use'];
-            $scope.hasImage = options['has_image'];
+            $scope.launchConfigInUse = options.in_use;
+            $scope.hasImage = options.has_image;
             $scope.setWatch();
             $scope.setFocus();
             if (!$scope.hasImage) {

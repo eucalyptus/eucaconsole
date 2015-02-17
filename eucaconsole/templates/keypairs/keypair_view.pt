@@ -3,7 +3,7 @@
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap"
             tal:define="html_attrs {'disabled': 'disabled'} if keypair else {};
-                        html_attrs_val {'pattern': '^[^\/\\\]{1,255}$'};"
+                        html_attrs_val {'pattern': '^[\x20-\x7F]{1,255}$'};"
             ng-app="KeypairPage" ng-controller="KeypairPageCtrl" ng-init="initController('${controller_options_json}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">

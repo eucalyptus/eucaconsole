@@ -19,7 +19,7 @@ angular.module('ElasticIPsPage', ['LandingPage'])
             $scope.initChosenSelectors();
             // Open allocate IP modal based on query string arg
             $(document).ready(function () {
-                if ($scope.urlParams['allocate']) {
+                if ($scope.urlParams.allocate) {
                     $('#allocate-ip-modal').foundation('reveal', 'open');
                 }
             });
@@ -42,9 +42,9 @@ angular.module('ElasticIPsPage', ['LandingPage'])
         };
         $scope.revealModal = function (action, eip) {
             var modal = $('#' + action + '-ip-modal');
-            $scope.instanceID = eip['instance_name'] || '';
-            $scope.publicIP = eip['public_ip'];
-            $scope.allocationID = eip['allocation_id'];
+            $scope.instanceID = eip.instance_name || '';
+            $scope.publicIP = eip.public_ip;
+            $scope.allocationID = eip.allocation_id;
             modal.foundation('reveal', 'open');
         };
     });

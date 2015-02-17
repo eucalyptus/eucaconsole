@@ -32,13 +32,13 @@ import wtforms
 from wtforms import validators
 
 from ..i18n import _
-from . import BaseSecureForm
+from . import BaseSecureForm, ASCII_WITHOUT_SLASHES_NOTICE
 
 
 class KeyPairForm(BaseSecureForm):
     """Key Pair Create form
     """
-    name_error_msg = _(u'Keypair name must be between 1 and 255 characters long, and must not contain \'/\' and \'\\\'')
+    name_error_msg = _(u'Keypair name must be between 1 and 255 ASCII characters long')
     name = wtforms.TextField(
         id=u'key-name',
         label=_(u'Name'),
