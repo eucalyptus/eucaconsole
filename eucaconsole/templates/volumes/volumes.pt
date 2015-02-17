@@ -75,7 +75,7 @@
                 <div ng-show="item.status || item.attach_status"
                      class="footer status {{ item.attach_status || item.status }}">
                     {{ item.attach_status || item.status }}
-                    <span class="dots" ng-show="item.transitional">&nbsp;</span>
+                    <span class="busy" ng-show="item.transitional">&nbsp;</span>
                 </div>
             </metal:block>
             <metal:block metal:fill-slot="tableview_headers">
@@ -95,7 +95,7 @@
                     <span class="label radius item status {{ item.attach_status || item.status }}">
                         {{ item.attach_status || item.status }}
                     </span>
-                    <span class="dots" ng-show="item.transitional">&nbsp;</span>
+                    <span class="busy" ng-show="item.transitional">&nbsp;</span>
                 </td>
                 <td>{{ item.size }}&nbsp;GB</td>
                 <td class="breakword">

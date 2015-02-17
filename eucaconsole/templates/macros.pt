@@ -60,7 +60,7 @@
                 <label i18n:translate="" class="hide-for-medium-down">View:</label>
             </div>
         </div>
-        <div ng-show="itemsLoading"><i class="fa fa-spinner fa-spin fa-3x" ></i></div>
+        <div class="loading" ng-show="itemsLoading"><i class="busy" ></i></div>
         <div id="gridview" class="gridwrapper" ng-if="landingPageView == 'gridview' &amp;&amp; !itemsLoading" ng-cloak="">
             <div ng-show="!itemsLoading">
                 <div data-alert="alert" class="alert-box secondary" ng-show="items.length == 0" ng-cloak="1">
@@ -131,7 +131,7 @@
 <!-- Plain datagrid macro (no search or filtering) ===== -->
 <metal:plaindatagrid_macro metal:define-macro="plain_datagrid">
     <div class="large-12 columns datagrid" id="datagrid-items">
-        <div ng-show="itemsLoading"><span class="dots"></span></div>
+        <div ng-show="itemsLoading"><span class="busy"></span></div>
         <div id="gridview" class="gridwrapper" ng-show="!itemsLoading">
         <!--
             <div ng-show="!itemsLoading">
@@ -174,7 +174,7 @@
 
 <metal:plaintableview_macro metal:define-macro="plain_tableview">
     <div class="datagrid" id="datagrid-items">
-        <div ng-show="itemsLoading"><span class="dots"></span></div>
+        <div ng-show="itemsLoading"><span class="busy"></span></div>
         <div id="tableview" class="gridwrapper" ng-show="!itemsLoading">
             <!-- Begin table view -->
             <table class="table" ng-show="!itemsLoading" ng-cloak="true">

@@ -135,14 +135,14 @@ table { border-collapse: collapse; border-spacing: 0; }
 /* FONT PATH -------------------------- */
 @font-face { font-family: 'FontAwesome'; src: url("../fonts/fontawesome-webfont.eot?v=4.2.0"); src: url("../fonts/fontawesome-webfont.eot?#iefix&v=4.2.0") format("embedded-opentype"), url("../fonts/fontawesome-webfont.woff?v=4.2.0") format("woff"), url("../fonts/fontawesome-webfont.ttf?v=4.2.0") format("truetype"), url("../fonts/fontawesome-webfont.svg?v=4.2.0#fontawesomeregular") format("svg"); font-weight: normal; font-style: normal; }
 
-.fa, .busy, .busy-lg { display: inline-block; font: normal normal normal 14px/1 FontAwesome; font-size: inherit; text-rendering: auto; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+.fa, .busy { display: inline-block; font: normal normal normal 14px/1 FontAwesome; font-size: inherit; text-rendering: auto; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
 
 /* makes the font 33% larger relative to the icon container */
 .fa-lg { font-size: 1.33333em; line-height: 0.75em; vertical-align: -15%; }
 
 .fa-2x { font-size: 2em; }
 
-.fa-3x, .busy-lg { font-size: 3em; }
+.fa-3x, .loading .busy { font-size: 3em; }
 
 .fa-4x { font-size: 4em; }
 
@@ -162,10 +162,10 @@ table { border-collapse: collapse; border-spacing: 0; }
 
 .pull-left { float: left; }
 
-.fa.pull-left, .pull-left.busy, .pull-left.busy-lg { margin-right: .3em; }
-.fa.pull-right, .pull-right.busy, .pull-right.busy-lg { margin-left: .3em; }
+.fa.pull-left, .pull-left.busy { margin-right: .3em; }
+.fa.pull-right, .pull-right.busy { margin-left: .3em; }
 
-.fa-spin, .busy, .busy-lg { -webkit-animation: fa-spin 2s infinite linear; animation: fa-spin 2s infinite linear; }
+.fa-spin, .busy { -webkit-animation: fa-spin 2s infinite linear; animation: fa-spin 2s infinite linear; }
 
 @-webkit-keyframes fa-spin { 0% { -webkit-transform: rotate(0deg); transform: rotate(0deg); }
   100% { -webkit-transform: rotate(359deg); transform: rotate(359deg); } }
@@ -682,7 +682,7 @@ table { border-collapse: collapse; border-spacing: 0; }
 
 .fa-quote-right:before { content: "\f10e"; }
 
-.fa-spinner:before, .busy:before, .busy-lg:before { content: "\f110"; }
+.fa-spinner:before, .busy:before { content: "\f110"; }
 
 .fa-circle:before { content: "\f111"; }
 
@@ -2460,8 +2460,6 @@ h1, h2, h3, h4, h5, h6 { font-family: Oswald, Helvetica, Arial, sans-serif; lett
 .subsection-label { color: #03405f; margin-bottom: 6px; }
 
 hr { border: 1px solid #6a737b; border-width: 1px 0 0; }
-
-.dots { display: inline-block; width: 16px; height: 11px; background-image: url(../img/ajax-loader.gif); }
 
 a.has-tip { border-bottom: none !important; }
 

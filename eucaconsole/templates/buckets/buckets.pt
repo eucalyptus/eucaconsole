@@ -31,7 +31,7 @@
                 <div>
                     <span class="label" title="Object Count" i18n:attributes="title" data-tooltip="">OB</span>
                     <span>
-                        <i ng-show="countsLoading[item.bucket_name]" class="fa fa-spinner fa-spin fa-1x" ></i>
+                        <i ng-show="countsLoading[item.bucket_name]" class="busy" ></i>
                         <a ng-href="{{ item.contents_url }}">
                             <b>{{ bucketCounts[item.bucket_name] }}</b>
                         </a>
@@ -40,7 +40,7 @@
                 <div>
                     <span class="label" title="Versioning" i18n:attributes="title" data-tooltip="">VE</span>
                     <span>
-                        <i ng-show="versioningStatusLoading[item.bucket_name]" class="fa fa-spinner fa-spin fa-1x" ></i>
+                        <i ng-show="versioningStatusLoading[item.bucket_name]" class="busy" ></i>
                         <b>{{ bucketVersioningStatus[item.bucket_name] }}</b>
                     </span>
                 </div>
@@ -100,13 +100,13 @@
                     </a>
                 </td>
                 <td class="count">
-                    <i ng-show="countsLoading[item.bucket_name]" class="fa fa-spinner fa-spin fa-1x" ></i>
+                    <i ng-show="countsLoading[item.bucket_name]" class="busy" ></i>
                     <a ng-show="!countsLoading[item.bucket_name]" ng-href="{{ item.contents_url }}">
                         {{ bucketCounts[item.bucket_name] }}
                     </a>
                 </td>
                 <td>
-                    <i ng-show="versioningStatusLoading[item.bucket_name]" class="fa fa-spinner fa-spin fa-1x" ></i>
+                    <i ng-show="versioningStatusLoading[item.bucket_name]" class="busy" ></i>
                     {{ bucketVersioningStatus[item.bucket_name] }}
                 </td>
                 <td>{{ item.creation_date | date: '${layout.angular_date_format}' }}</td>
