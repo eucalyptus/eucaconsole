@@ -119,7 +119,7 @@ def form_field_row(context, request, field=None, reverse=False, leftcol_width=4,
     # e.g. ${panel('form_field', field=volume_form['snapshot_id'], ng_attrs={'model': 'snapshot_id'}, **html_attrs)}
     if ng_attrs:
         for ngkey, ngvalue in ng_attrs.items():
-            html_attrs['ng-{0}'.format(ngkey)] = ngvalue
+            html_attrs[u'ng-{0}'.format(ngkey)] = ngvalue
 
     return dict(
         field=field, error_msg=error_msg, html_attrs=html_attrs, inline=inline, checkbox=checkbox,
@@ -143,7 +143,6 @@ def tag_editor(context, request, tags=None, leftcol_width=4, rightcol_width=8, s
         leftcol_width=leftcol_width,
         rightcol_width=rightcol_width,
     )
-
 
 @panel_config('user_editor', renderer='../templates/panels/user_editor.pt')
 def user_editor(context, request, leftcol_width=4, rightcol_width=8):
@@ -308,9 +307,11 @@ def image_picker(context, request, image=None, filters_form=None,
         'cloud_type': request.session.get('cloud_type'),
         'images_json_endpoint': request.route_path('images_json')
     }))
+    search_facets = filters_form.facets if filters_form is not None else []
     return dict(
         image=image,
-        filters_form=filters_form,
+        search_facets=BaseView.escape_json(json.dumps(search_facets)),
+        filter_keys = [],  # defined within image picker javascript
         maxheight=maxheight,
         owner_choices=owner_choices,
         prefix_route=prefix_route,

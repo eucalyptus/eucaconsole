@@ -168,12 +168,12 @@ class AttachForm(BaseSecureForm):
             for instance in self.instances:
                 if instance.state in ["running", "stopped"] and self.volume.zone == instance.placement:
                     name_tag = instance.tags.get('Name')
-                    extra = ' ({name})'.format(name=name_tag) if name_tag else ''
-                    inst_name = '{id}{extra}'.format(id=instance.id, extra=extra)
+                    extra = u' ({name})'.format(name=name_tag) if name_tag else ''
+                    inst_name = u'{id}{extra}'.format(id=instance.id, extra=extra)
                     choices.append((instance.id, BaseView.escape_braces(inst_name)))
             if len(choices) == 1:
                 prefix = _(u'No available instances in availability zone')
-                msg = '{0} {1}'.format(prefix, self.volume.zone)
+                msg = u'{0} {1}'.format(prefix, self.volume.zone)
                 choices = [('', msg)]
             self.instance_id.choices = choices
         else:
@@ -200,13 +200,18 @@ class VolumesFiltersForm(BaseSecureForm):
         region = request.session.get('region')
         self.zone.choices = self.get_availability_zone_choices(region)
         self.status.choices = self.get_status_choices()
+        self.facets = [
+            {'name':'zone', 'label':self.zone.label.text, 'options':self.get_availability_zone_choices(region)},
+            {'name':'status', 'label':self.status.label.text, 'options':self.get_status_choices()},
+            {'name':'tags', 'label':self.tags.label.text},
+        ]
 
     def get_availability_zone_choices(self, region):
-        return self.choices_manager.availability_zones(region, add_blank=False)
+        return self.getOptionsFromChoices(self.choices_manager.availability_zones(region, add_blank=False))
 
     @staticmethod
     def get_status_choices():
-        return (
-            ('available', 'Available'),
-            ('in-use', 'In use'),
-        )
+        return [
+            {'key':'available', 'label':'Available'},
+            {'key':'in-use', 'label':'In use'},
+        ]

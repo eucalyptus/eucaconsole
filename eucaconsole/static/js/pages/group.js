@@ -14,9 +14,9 @@ angular.module('GroupPage', ['PolicyList', 'EucaConsoleUtils'])
         $scope.pendingModalID = '';
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
-            $scope.groupName = options['group_name'];
-            $scope.groupUsers = options['group_users'];
-            $scope.allUsers = options['all_users'];
+            $scope.groupName = options.group_name;
+            $scope.groupUsers = options.group_users;
+            $scope.allUsers = options.all_users;
             $scope.setWatch();
             $scope.setFocus();
             $timeout(function(){ $scope.activateChosen(); }, 100);
@@ -38,7 +38,7 @@ angular.module('GroupPage', ['PolicyList', 'EucaConsoleUtils'])
                 userAdded = true;
             }
             $scope.groupUsers = newUsers;
-            if( userAdded == true ){
+            if( userAdded === true ){
                 $scope.isNotChanged = false;
                 $scope.$apply();
             }
@@ -54,7 +54,7 @@ angular.module('GroupPage', ['PolicyList', 'EucaConsoleUtils'])
             });
         };
         $scope.isSelected = function (user) {
-            for (i in $scope.groupUsers){
+            for (var i in $scope.groupUsers){
                 if( user == $scope.groupUsers[i] ){
                    return true;
                 }

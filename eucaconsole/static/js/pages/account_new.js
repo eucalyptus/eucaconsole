@@ -30,7 +30,6 @@ angular.module('AccountPage', ['UserEditor', 'Quotas', 'EucaConsoleUtils'])
                 $('#quota-error').css('display', 'block');
                 return false;
             }
-            var form = $($event.target);
             var csrf_token = form.find('input[name="csrf_token"]').val();
             var data = $($event.target).serialize();
             //$scope.accountName = form.find('input[name="account-name"]').val();

@@ -64,10 +64,14 @@ class SnapshotsView(LandingPageView):
     @view_config(route_name='snapshots', renderer=VIEW_TEMPLATE)
     def snapshots_landing(self):
         filter_keys = ['id', 'name', 'volume_size', 'start_time', 'tags', 'volume_id', 'volume_name', 'status']
+        filters_form=SnapshotsFiltersForm(self.request, formdata=self.request.params or None)
+        search_facets = filters_form.facets
+
         self.render_dict.update(dict(
             filter_keys=filter_keys,
-            filter_fields=True,
-            filters_form=SnapshotsFiltersForm(self.request, formdata=self.request.params or None),
+            filter_fields=False,
+            filters_form=filters_form,
+            search_facets=BaseView.escape_json(json.dumps(search_facets)),
             sort_keys=self.get_sort_keys(),
             initial_sort_key=self.initial_sort_key,
             json_items_endpoint=self.get_json_endpoint('snapshots_json'),
@@ -96,7 +100,7 @@ class SnapshotsView(LandingPageView):
                 self.log_request(_(u"Deleting snapshot {0}").format(snapshot_id))
                 snapshot.delete()
                 prefix = _(u'Successfully deleted snapshot')
-                msg = '{prefix} {name}'.format(prefix=prefix, name=snapshot_name)
+                msg = u'{prefix} {name}'.format(prefix=prefix, name=snapshot_name)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
         else:
@@ -151,7 +155,7 @@ class SnapshotsView(LandingPageView):
                     block_device_map=bdm
                 )
                 prefix = _(u'Successfully registered snapshot')
-                msg = '{prefix} {id}'.format(prefix=prefix, id=snapshot_id)
+                msg = u'{prefix} {id}'.format(prefix=prefix, id=snapshot_id)
                 # Clear images cache
                 self.invalidate_images_cache()
                 location = self.request.route_path('image_view', id=image_id)
@@ -353,7 +357,7 @@ class SnapshotView(TaggedItemView):
                 self.log_request(_(u"Deleting snapshot {0}").format(self.snapshot.id))
                 self.snapshot.delete()
                 prefix = _(u'Successfully deleted snapshot')
-                msg = '{prefix} {name}'.format(prefix=prefix, name=snapshot_name)
+                msg = u'{prefix} {name}'.format(prefix=prefix, name=snapshot_name)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             location = self.request.route_path('snapshots')
             return HTTPFound(location=location)
@@ -381,7 +385,7 @@ class SnapshotView(TaggedItemView):
                     kernel_id=('windows' if reg_as_windows else None),
                     block_device_map=bdm)
                 prefix = _(u'Successfully registered snapshot')
-                msg = '{prefix} {id}'.format(prefix=prefix, id=snapshot_id)
+                msg = u'{prefix} {id}'.format(prefix=prefix, id=snapshot_id)
                 # Clear images cache
                 self.invalidate_images_cache()
                 self.request.session.flash(msg, queue=Notification.SUCCESS)

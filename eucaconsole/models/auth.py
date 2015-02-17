@@ -109,7 +109,6 @@ class ConnectionManager(object):
         :param validate_certs: indicates to check the ssl cert the server provides
 
         """
-        cache_key = 'aws_connection_cache_{conn_type}_{region}'.format(conn_type=conn_type, region=region)
 
         def _aws_connection(_region, _access_key, _secret_key, _token, _conn_type):
             conn = None
@@ -264,14 +263,14 @@ class EucaAuthenticator(object):
             conn = httplib.HTTPSConnection(self.host, self.port, timeout=timeout)
 
         if new_passwd:
-            auth_string = "{user}@{account};{pw}@{new_pw}".format(
+            auth_string = u"{user}@{account};{pw}@{new_pw}".format(
                 user=base64.b64encode(user),
                 account=base64.b64encode(account),
                 pw=base64.b64encode(passwd),
                 new_pw=new_passwd
             )
         else:
-            auth_string = "{user}@{account}:{pw}".format(
+            auth_string = u"{user}@{account}:{pw}".format(
                 user=base64.b64encode(user),
                 account=base64.b64encode(account),
                 pw=passwd

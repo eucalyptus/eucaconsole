@@ -17,7 +17,7 @@ angular.module('SecurityGroupPage', ['TagEditor', 'SecurityGroupRules','EucaCons
         $scope.pendingModalID = '';
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
-            $scope.securityGroupVPC = options['default_vpc_network'];
+            $scope.securityGroupVPC = options.default_vpc_network;
             $scope.setWatch();
             $scope.setFocus();
         };

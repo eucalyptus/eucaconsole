@@ -94,10 +94,17 @@
                     checked="checked" ng-model="newDOT" ng-disabled="disableDOT"/>
             </div>
         </div>
-        <div tal:condition="not read_only">
-            <a class="button round tiny" ng-click="addDevice()" i18n:translate="" ng-disabled="isNotValid">
-                Add Device
-            </a>
+        <div tal:condition="not read_only" class="row">
+            <div class="medium-2 columns">
+                <a class="button round tiny" ng-click="addDevice()" i18n:translate="" ng-disabled="isNotValid">
+                    Add Device
+                </a>
+            </div>
+            <div class="medium-10 columns">
+                <small id="bdm-dev-reqd" class="error" i18n:translate="">Device is required</small>
+                <small id="bdm-dev-same" class="error" i18n:translate="">Device cannot be same as existing mapping</small>
+                <small id="bdm-size-reqd" class="error" i18n:translate="">Size is required</small>
+            </div>
         </div>
         <textarea id="bdmapping" name="block_device_mapping" class="hidden"></textarea>
     </div>

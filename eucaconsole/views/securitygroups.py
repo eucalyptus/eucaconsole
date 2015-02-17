@@ -76,9 +76,11 @@ class SecurityGroupsView(LandingPageView):
             dict(key='-name', name=_(u'Name: Z to A')),
             dict(key='description', name=_(u'Description')),
         ]
+        search_facets = self.filters_form.facets
         self.render_dict.update(dict(
-            filter_fields=True,
+            filter_fields=False,
             filter_keys=self.filter_keys,
+            search_facets=BaseView.escape_json(json.dumps(search_facets)),
             sort_keys=self.sort_keys,
             initial_sort_key=self.initial_sort_key,
             json_items_endpoint=self.json_items_endpoint,
@@ -96,7 +98,7 @@ class SecurityGroupsView(LandingPageView):
                 self.log_request(_(u"Deleting security group {0}").format(name))
                 security_group.delete()
                 prefix = _(u'Successfully deleted security group')
-                msg = '{0} {1}'.format(prefix, name)
+                msg = u'{0} {1}'.format(prefix, name)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
         else:
@@ -261,7 +263,7 @@ class SecurityGroupView(TaggedItemView):
                 self.log_request(_(u"Deleting security group {0}").format(name))
                 self.security_group.delete()
                 prefix = _(u'Successfully deleted security group')
-                msg = '{0} {1}'.format(prefix, name)
+                msg = u'{0} {1}'.format(prefix, name)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
         return self.render_dict
@@ -289,7 +291,7 @@ class SecurityGroupView(TaggedItemView):
                     for tagname, tagvalue in tags.items():
                         new_security_group.add_tag(tagname, tagvalue)
                 prefix = _(u'Successfully created security group')
-                msg = '{0} {1}'.format(prefix, name)
+                msg = u'{0} {1}'.format(prefix, name)
                 location = self.request.route_path('securitygroup_view', id=new_security_group.id)
                 if self.request.is_xhr:
                     return JSONResponse(status=200, message=msg, id=new_security_group.id)

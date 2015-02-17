@@ -25,8 +25,8 @@ angular.module('CreateAlarm', ['EucaConsoleUtils'])
         };
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
-            $scope.metricUnitMapping = options['metric_unit_mapping'];
-            $scope.existingAlarms = options['existing_alarms'];
+            $scope.metricUnitMapping = options.metric_unit_mapping;
+            $scope.existingAlarms = options.existing_alarms;
             $scope.alarmDialog.on('opened', function () {
                 $scope.setInitialValues();
             });
@@ -73,7 +73,7 @@ angular.module('CreateAlarm', ['EucaConsoleUtils'])
                 data: formData
             }).success(function (oData) {
                 // Add new alarm to choices and set it as selected
-                var newAlarm = oData['new_alarm'];
+                var newAlarm = oData.new_alarm;
                 $rootScope.alarmChoices[newAlarm] = newAlarm;
                 $rootScope.alarm = newAlarm;
                 $scope.isCreatingAlarm = false;

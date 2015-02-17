@@ -23,16 +23,16 @@ angular.module('BucketContentsPage', ['LandingPage', 'EucaConsoleUtils'])
         $scope.hasCopyFolder = false;
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
-            $scope.bucketName = options['bucket_name'];
-            $scope.deleteKeysUrl = options['delete_keys_url'];
-            $scope.getKeysUrl = options['get_keys_url'];
-            $scope.prefix = options['key_prefix'];
-            $scope.copyObjUrl = options['copy_object_url'];
-            $scope.getKeysGenericUrl = options['get_keys_generic_url'];
-            $scope.putKeysUrl = options['put_keys_url'];
-            $scope.makeObjectPublicUrl = options['make_object_public_url'];
+            $scope.bucketName = options.bucket_name;
+            $scope.deleteKeysUrl = options.delete_keys_url;
+            $scope.getKeysUrl = options.get_keys_url;
+            $scope.prefix = options.key_prefix;
+            $scope.copyObjUrl = options.copy_object_url;
+            $scope.getKeysGenericUrl = options.get_keys_generic_url;
+            $scope.putKeysUrl = options.put_keys_url;
+            $scope.makeObjectPublicUrl = options.make_object_public_url;
             // set upload button target based on media query
-            if (window.matchMedia(Foundation.media_queries['small']).matches === false) {
+            if (window.matchMedia(Foundation.media_queries.small).matches === false) {
                 $('#upload-file-btn').attr('target', '_blank');
             }
             $scope.updatePasteValues();
@@ -90,7 +90,7 @@ angular.module('BucketContentsPage', ['LandingPage', 'EucaConsoleUtils'])
                     if ($scope.progress > $scope.total) {
                         $scope.progress = $scope.total;
                     }
-                    if ($scope.folder == '') {
+                    if ($scope.folder === '') {
                         for (var i = 0; i < chunk.length; i++) { // remove deleted items from table
                             for (var j = 0; j < $scope.items.length; j++) {
                                 var name = chunk[i].split('/').pop();
@@ -103,21 +103,21 @@ angular.module('BucketContentsPage', ['LandingPage', 'EucaConsoleUtils'])
                             }
                         }
                     }
-                    if ($scope.deletingAll == true) {
+                    if ($scope.deletingAll === true) {
                         var chunks = $scope.total / $scope.chunkSize;
                         $scope.index = $scope.index + 1;
                         if ($scope.index >= chunks) {
                             $scope.deletingAll = false;
                             Notify.success(oData.message);
-                            if ($scope.folder != '') {
+                            if ($scope.folder !== '') {
                                 $('#delete-folder-modal').foundation('reveal', 'close');
-                                for (var j = 0; j < $scope.items.length; j++) {
-                                    var name = $scope.folder;
-                                    if (name.indexOf('_$folder$') > -1) {
-                                        name = name.slice(0, name.length - 9);
+                                for (var k = 0; k < $scope.items.length; k++) {
+                                    var folderName = $scope.folder;
+                                    if (folderName.indexOf('_$folder$') > -1) {
+                                        folderName = folderName.slice(0, folderName.length - 9);
                                     }
-                                    if (name == $scope.items[j].name) {
-                                        $scope.items.splice(j, 1);
+                                    if (folderName == $scope.items[k].name) {
+                                        $scope.items.splice(k, 1);
                                     }
                                 }
                                 $scope.folder = '';
@@ -217,7 +217,9 @@ angular.module('BucketContentsPage', ['LandingPage', 'EucaConsoleUtils'])
         $scope.saveKey = function (bucket_name, key) {
             var id = $('.open').attr('id');  // hack to close action menu
             $('#table-'+id).trigger('click');
-            Modernizr.sessionstorage && sessionStorage.setItem('copy-object-buffer', bucket_name + '/' + key);
+            if (Modernizr.sessionstorage) {
+                sessionStorage.setItem('copy-object-buffer', bucket_name + '/' + key);
+            }
             $scope.updatePasteValues();
         };
         $scope.$on('itemsLoaded', function($event, items) {
@@ -259,7 +261,7 @@ angular.module('BucketContentsPage', ['LandingPage', 'EucaConsoleUtils'])
                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
               success(function(oData) {
                 var results = oData ? oData.results : [];
-                if (oData.error == undefined) {
+                if (oData.error === undefined) {
                     if (!item) {  // in case where we're pasting in current context,
                         $scope.$broadcast('refresh');
                     }
@@ -322,7 +324,7 @@ angular.module('BucketContentsPage', ['LandingPage', 'EucaConsoleUtils'])
                     if ($scope.progress > $scope.total) {
                         $scope.progress = $scope.total;
                     }
-                    if ($scope.copyingAll == true) {
+                    if ($scope.copyingAll === true) {
                         var chunks = $scope.total / $scope.chunkSize;
                         $scope.index = $scope.index + 1;
                         if ($scope.index >= chunks) {
@@ -354,7 +356,7 @@ angular.module('BucketContentsPage', ['LandingPage', 'EucaConsoleUtils'])
                     $scope.$broadcast('refresh');
                 }
             }, false);
-        }
+        };
     })
 ;
 

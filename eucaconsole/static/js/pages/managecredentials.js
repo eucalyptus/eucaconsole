@@ -28,7 +28,7 @@ angular.module('ManageCredentialsView', [])
                 $('#password-strength').attr('class', "password_" + score);
                 $('#password-word').attr('class', "password_" + score);
                 var word = '';
-                if (score == 0) word = 'weak';
+                if (score === 0) word = 'weak';
                 if (score == 1 || score == 2) word = 'medium';
                 if (score == 3 || score == 4) word = 'strong';
                 $('#password-word').text(word);
@@ -62,7 +62,7 @@ angular.module('ManageCredentialsView', [])
                 $scope.access_key = results.access;
                 $scope.secret_key = results.secret;
             }).error(function (oData, status) {
-                var errorMsg = oData['message'] || '';
+                var errorMsg = oData.message || '';
                 if (errorMsg == 'Session Timed Out' && status === 403) {
                     $('#timed-out-modal').foundation('reveal', 'open');
                 }
@@ -86,6 +86,6 @@ angular.module('ManageCredentialsView', [])
         };
         $scope.cancelManageCredentialsUpdate = function () {
             window.history.back();
-        }
+        };
     })
 ; 

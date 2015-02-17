@@ -23,7 +23,7 @@ describe("TagEditor", function() {
     beforeEach(function() {
         var template = window.__html__['templates/panels/tag_editor.pt'];
         template = template.replace(/script src/g, "script ignore_src"); 
-        template = template.replace(/\<link/g, "\<ignore_link"); 
+        template = template.replace(/<link/g, "<ignore_link"); 
         setFixtures(template);
     });
 

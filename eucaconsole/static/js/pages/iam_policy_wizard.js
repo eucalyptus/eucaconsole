@@ -35,14 +35,14 @@ angular.module('IAMPolicyWizard', ['EucaConsoleUtils'])
         $scope.actionParsedConditions = {};
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
-            $scope.policyJsonEndpoint = options['policyJsonEndpoint'];
-            $scope.cloudType = options['cloudType'];
-            $scope.actionsList = options['actionsList'];
-            $scope.languageCode = options['languageCode'] || 'en';
-            $scope.awsRegions = options['awsRegions'];
-            $scope.existingPolicies = options['existingPolicies'];
-            $scope.saveUrl = options['createPolicyUrl'];
-            $scope.policyActions = options['policyActions'];
+            $scope.policyJsonEndpoint = options.policyJsonEndpoint;
+            $scope.cloudType = options.cloudType;
+            $scope.actionsList = options.actionsList;
+            $scope.languageCode = options.languageCode || 'en';
+            $scope.awsRegions = options.awsRegions;
+            $scope.existingPolicies = options.existingPolicies;
+            $scope.saveUrl = options.createPolicyUrl;
+            $scope.policyActions = options.policyActions;
             $scope.initActionContainers();
             $scope.initSelectedTab();
             $scope.initChoices();
@@ -63,7 +63,7 @@ angular.module('IAMPolicyWizard', ['EucaConsoleUtils'])
                     $scope.actionConditions[action] = {};
                     $scope.actionParsedConditions[action] = [];
                 });
-            })
+            });
         };
         $scope.initChoices = function () {
             $scope.imageTypeChoices = ['emi', 'eki', 'eri'];
@@ -106,7 +106,7 @@ angular.module('IAMPolicyWizard', ['EucaConsoleUtils'])
             });
         };
         $scope.initHandEditedWarningListener = function () {
-            if ($scope.codeEditor != null){
+            if ($scope.codeEditor !== null){
                 $scope.codeEditor.on('change', function () {
                     $scope.$apply(function() {
                         $scope.handEdited = $scope.codeEditor.getValue().trim() != $scope.policyText;
@@ -173,7 +173,9 @@ angular.module('IAMPolicyWizard', ['EucaConsoleUtils'])
             var lastSelectedTab = Modernizr.localstorage && localStorage.getItem($scope.lastSelectedTabKey) || 'select-template-tab';
             $('.tabs').find('a').on('click', function (evt) {
                 var tabLinkId = $(evt.target).closest('a').attr('id');
-                Modernizr.localstorage && localStorage.setItem($scope.lastSelectedTabKey, tabLinkId);
+                if (Modernizr.localstorage) {
+                    localStorage.setItem($scope.lastSelectedTabKey, tabLinkId);
+                }
                 if (tabLinkId === 'custom-policy-tab') {
                     $scope.setPolicyName('custom');
                     if ($scope.policyStatements.length) {
@@ -225,7 +227,7 @@ angular.module('IAMPolicyWizard', ['EucaConsoleUtils'])
         };
         $scope.initCodeMirror = function () {
             $(document).ready(function () {
-                if ($scope.policyTextarea != null) {
+                if ($scope.policyTextarea !== null) {
                     $scope.codeEditor = CodeMirror.fromTextArea($scope.policyTextarea, {
                         mode: "javascript",
                         lineWrapping: true,
@@ -242,7 +244,7 @@ angular.module('IAMPolicyWizard', ['EucaConsoleUtils'])
                 'monitor_access': 'ReadOnlyAccessPolicy',
                 'custom': 'CustomAccessPolicy'
             };
-            $scope.policyName = typeNameMapping[policyType] + '-' + $scope.urlParams['id'] + '-' + $scope.timestamp;
+            $scope.policyName = typeNameMapping[policyType] + '-' + $scope.urlParams.id + '-' + $scope.timestamp;
             // Prevent lingering validation error on policy name field
             $timeout(function() {
                 $('#name').trigger('focus');
@@ -267,7 +269,7 @@ angular.module('IAMPolicyWizard', ['EucaConsoleUtils'])
             // Fetch hard-coded canned policies
             var jsonUrl = $scope.policyJsonEndpoint + "?type=" + policyType;
             $http.get(jsonUrl).success(function(oData) {
-                var results = oData ? oData['policy'] : '',
+                var results = oData ? oData.policy : '',
                     formattedResults = '';
                 if (results) {
                     formattedResults = JSON.stringify(results, null, 2);
@@ -308,7 +310,7 @@ angular.module('IAMPolicyWizard', ['EucaConsoleUtils'])
                     "Effect": selectedMark.attr('data-effect')
                 };
                 if (Object.keys(addedConditions).length > 0) {
-                    statement["Conditions"] = addedConditions;
+                    statement.Conditions = addedConditions;
                 }
                 if (selectedMark.length > 0) {
                     $scope.policyStatements.push(statement);
@@ -471,7 +473,7 @@ angular.module('IAMPolicyWizard', ['EucaConsoleUtils'])
             $timeout(function () {
                 $scope.selectedOperatorType = $scope.getConditionType($scope[conditionKey]);
             }, 50);
-        }
+        };
     })
 ;
 

@@ -24,7 +24,7 @@ angular.module('ScalingGroupInstances', ['EucaConsoleUtils'])
                 $scope.items = oData ? oData.results : [];
                 $scope.initialLoading = false;
                 $scope.items.forEach(function (item) {
-                    if (item['transitional']) {
+                    if (item.transitional) {
                         transitionalCount += 1;
                     }
                 });
@@ -38,7 +38,7 @@ angular.module('ScalingGroupInstances', ['EucaConsoleUtils'])
         };
         $scope.revealModal = function (action, item) {
             var modal = $('#' + action + '-instance-modal');
-            $scope.instanceID = item['id'];
+            $scope.instanceID = item.id;
             modal.foundation('reveal', 'open');
         };
         $scope.setFocus = function () {

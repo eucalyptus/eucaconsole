@@ -136,7 +136,7 @@ class BaseInstanceView(BaseView):
             with boto_error_handler(self.request):
                 vpc_subnet = self.vpc_conn.get_all_subnets(subnet_ids=[subnet_id])
                 if vpc_subnet:
-                    return "{0} ({1})".format(vpc_subnet[0].cidr_block, subnet_id)
+                    return u"{0} ({1})".format(vpc_subnet[0].cidr_block, subnet_id)
         return ''
 
 
@@ -194,14 +194,16 @@ class InstancesView(LandingPageView, BaseInstanceView):
             self.request, ec2_conn=self.conn, autoscale_conn=autoscale_conn,
             iam_conn=iam_conn, vpc_conn=vpc_conn,
             cloud_type=self.cloud_type, formdata=self.request.params or None)
+        search_facets = filters_form.facets
         if not BaseView.has_role_access(self.request):
             del filters_form.roles
         if not self.is_vpc_supported:
             del filters_form.vpc_id
             del filters_form.subnet_id
         self.render_dict.update(dict(
-            filter_fields=True,
+            filter_fields=False,
             filter_keys=self.filter_keys,
+            search_facets=BaseView.escape_json(json.dumps(search_facets)),
             sort_keys=self.sort_keys,
             json_items_endpoint=self.json_items_endpoint,
             filters_form=filters_form,
@@ -286,7 +288,7 @@ class InstancesView(LandingPageView, BaseInstanceView):
                 self.log_request(_(u"Terminating instances {0}").format(str(instance_ids)))
                 self.conn.terminate_instances(instance_ids=instance_ids)
                 prefix = _(u'Successfully sent request to terminate the following instances:')
-                msg = '{0} {1}'.format(prefix, ', '.join(instance_ids))
+                msg = u'{0} {1}'.format(prefix, ', '.join(instance_ids))
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
         else:
             msg = _(u'Unable to terminate instances')
@@ -411,9 +413,9 @@ class InstancesJsonView(LandingPageView):
             image = self.get_image_by_id(images, instance['image_id'])
             image_name = None
             if image:
-                image_name = '{0}{1}'.format(
+                image_name = u'{0}{1}'.format(
                     image.name if image.name else image.id,
-                    ' ({0})'.format(image.id) if image.name else ''
+                    u' ({0})'.format(image.id) if image.name else ''
                 )
             instance['image_name'] = image_name
         return dict(results=instances)
@@ -1087,7 +1089,7 @@ class InstanceLaunchView(BaseInstanceView, BlockDeviceMappingItemView):
                 for idx, instance in enumerate(reservation.instances):
                     # Add tags for newly launched instance(s)
                     # Try adding name tag (from collection of name input fields)
-                    input_field_name = 'name_{0}'.format(idx)
+                    input_field_name = u'name_{0}'.format(idx)
                     name = self.request.params.get(input_field_name, '').strip()
                     new_instance_ids.append(name or instance.id)
                     if name:
@@ -1177,6 +1179,7 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
             launch_more_form=self.launch_more_form,
             snapshot_choices=self.get_snapshot_choices(),
             vpc_subnet_display=self.get_vpc_subnet_display(self.instance.subnet_id) if self.instance else None,
+            is_vpc_supported=self.is_vpc_supported,
             role=self.role,
         )
 
@@ -1254,7 +1257,7 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
                 for idx, instance in enumerate(reservation.instances):
                     # Add tags for newly launched instance(s)
                     # Try adding name tag (from collection of name input fields)
-                    input_field_name = 'name_{0}'.format(idx)
+                    input_field_name = u'name_{0}'.format(idx)
                     name = self.request.params.get(input_field_name, '').strip()
                     new_instance_ids.append(name or instance.id)
                     if name:

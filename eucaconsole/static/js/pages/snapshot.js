@@ -24,7 +24,7 @@ angular.module('SnapshotPage', ['TagEditor', 'EucaConsoleUtils'])
         };
         $scope.inProgress = function (progress) {
             progress = parseInt(progress.replace('%', ''), 10);
-            return progress < 100
+            return progress < 100;
         };
         $scope.initChosenSelector = function () {
             $(document).ready(function() {
@@ -34,13 +34,13 @@ angular.module('SnapshotPage', ['TagEditor', 'EucaConsoleUtils'])
         };
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
-            $scope.volumeCount = options['volume_count'];
+            $scope.volumeCount = options.volume_count;
             $scope.displayVolumeWarning($scope.volumeCount);
             $scope.initChosenSelector();
-            $scope.snapshotStatusEndpoint = options['snapshot_status_json_url'];
-            $scope.snapshotStatus = options['snapshot_status'];
-            $scope.snapshotProgress = options['snapshot_status'];
-            $scope.imagesURL = options['snapshot_images_json_url'];
+            $scope.snapshotStatusEndpoint = options.snapshot_status_json_url;
+            $scope.snapshotStatus = options.snapshot_status;
+            $scope.snapshotProgress = options.snapshot_status;
+            $scope.imagesURL = options.snapshot_images_json_url;
             if ($scope.snapshotStatusEndpoint) {
                 $scope.getSnapshotState();
             }
@@ -56,8 +56,8 @@ angular.module('SnapshotPage', ['TagEditor', 'EucaConsoleUtils'])
             $http.get($scope.snapshotStatusEndpoint).success(function(oData) {
                 var results = oData ? oData.results : '';
                 if (results) {
-                    $scope.snapshotStatus = results['status'];
-                    $scope.snapshotProgress = results['progress'];
+                    $scope.snapshotStatus = results.status;
+                    $scope.snapshotProgress = results.progress;
                     if ($scope.snapshotStatus == 'failed') {
                         $scope.isUpdating = false;
                         return true;
@@ -65,7 +65,7 @@ angular.module('SnapshotPage', ['TagEditor', 'EucaConsoleUtils'])
                     // Poll to obtain desired end state if current state is transitional or snapshot is in progress
                     if ($scope.isTransitional($scope.snapshotStatus) || $scope.inProgress($scope.snapshotProgress)) {
                         $scope.isUpdating = true;
-                        $timeout(function() {$scope.getSnapshotState()}, 5000);  // Poll every 5 seconds
+                        $timeout(function() {$scope.getSnapshotState();}, 5000);  // Poll every 5 seconds
                     } else {
                         $scope.isUpdating = false;
                     }

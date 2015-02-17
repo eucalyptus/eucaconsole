@@ -155,17 +155,19 @@ class ImagesView(LandingPageView):
         self.account_id = User.get_account_id(ec2_conn=self.conn, request=self.request)
         self.filter_keys = self.get_filter_keys()
         self.sort_keys = self.get_sort_keys()
+        search_facets = self.filters_form.facets
         self.render_dict = dict(
             filter_keys=self.filter_keys,
             sort_keys=self.sort_keys,
             prefix=self.prefix,
             initial_sort_key=self.initial_sort_key,
             json_items_endpoint=self.json_items_endpoint,
-            filter_fields=True,
+            filter_fields=False,
             filters_form=self.filters_form,
             deregister_form=self.deregister_form,
             account_id=self.account_id,
             controller_options_json=self.get_controller_options_json(),
+            search_facets=BaseView.escape_json(json.dumps(search_facets)),
         )
 
     @view_config(route_name='images', renderer=TEMPLATE)
@@ -618,7 +620,7 @@ class ImageView(TaggedItemView, ImageBundlingMixin):
         name_tag = image.tags.get('Name')
         if name_tag is None and not image.name:
             return image.id
-        return '{0} ({1})'.format(name_tag or image.name, image.id)
+        return u'{0} ({1})'.format(name_tag or image.name, image.id)
 
     def get_display_name(self, escapebraces=True):
         if self.image:

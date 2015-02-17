@@ -66,8 +66,8 @@ class BucketItemDetailsForm(BaseSecureForm):
         no_slashes_pattern = '[^\/]+'
         if '.' in self.unprefixed_name:
             suffix = self.unprefixed_name.split('.')[-1]
-            return '^{0}\.{1}$'.format(no_slashes_pattern, suffix)
-        return '^{0}$'.format(no_slashes_pattern)
+            return u'^{0}\.{1}$'.format(no_slashes_pattern, suffix)
+        return u'^{0}$'.format(no_slashes_pattern)
 
 
 class BucketUpdateVersioningForm(BaseSecureForm):

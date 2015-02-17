@@ -28,7 +28,7 @@ describe("SecurityGroupRules", function() {
         var template = window.__html__['templates/panels/securitygroup_rules.pt'];
         // remove <script src> and <link> tags to avoid phantomJS error
         template = template.replace(/script src/g, "script ignore_src"); 
-        template = template.replace(/\<link/g, "\<ignore_link"); 
+        template = template.replace(/<link/g, "<ignore_link"); 
         setFixtures(template);
     });
 
@@ -127,18 +127,18 @@ describe("SecurityGroupRules", function() {
 
         it("Should remove the first option from ip-protocol-select element if the option is empty", function() {
             setFixtures('<select id="ip-protocol-select"><option></option><option value="1">1</option></select>');
-            expect($('#ip-protocol-select').children('option').first().html()).toEqual('')
+            expect($('#ip-protocol-select').children('option').first().html()).toEqual('');
             scope.cleanupSelections();
             scope.timeout.flush();
-            expect($('#ip-protocol-select').children('option').first().html()).not.toEqual('')
+            expect($('#ip-protocol-select').children('option').first().html()).not.toEqual('');
         });  
 
         it("Should remove the first option from groupname-select element if the option is empty", function() {
             setFixtures('<select id="groupname-select"><option></option><option value="1">1</option></select>');
-            expect($('#groupname-select').children('option').first().html()).toEqual('')
+            expect($('#groupname-select').children('option').first().html()).toEqual('');
             scope.cleanupSelections();
             scope.timeout.flush();
-            expect($('#groupname-select').children('option').first().html()).not.toEqual('')
+            expect($('#groupname-select').children('option').first().html()).not.toEqual('');
         });  
     });
 
@@ -593,7 +593,8 @@ describe("SecurityGroupRules", function() {
             httpBackend.verifyNoOutstandingExpectation();
             httpBackend.verifyNoOutstandingRequest();
             scope.jsonEndpoint = "localhost/vpc";
-            var newVPC = undefined;
+            var newVPC = '';
+            newVPC = undefined;
             var data = 'csrf_token=2a06f17d6872143ed806a695caa5e5701a127ade&vpc_id=' + newVPC; 
             httpBackend.expect('POST', scope.jsonEndpoint, data)
                 .respond(200, {
@@ -974,7 +975,7 @@ describe("SecurityGroupRules", function() {
         beforeEach(function() {
             setFixtures('<input id="csrf_token" name="csrf_token" type="hidden" value="2a06f17d6872143ed806a695caa5e5701a127ade">');
             scope.jsonEndpoint  = "securitygroup_json";
-            var data = 'csrf_token=2a06f17d6872143ed806a695caa5e5701a127ade&vpc_id=' + vpc
+            var data = 'csrf_token=2a06f17d6872143ed806a695caa5e5701a127ade&vpc_id=' + vpc;
             httpBackend.expect('POST', scope.jsonEndpoint, data)
                 .respond(200, {
                     "success": true,
