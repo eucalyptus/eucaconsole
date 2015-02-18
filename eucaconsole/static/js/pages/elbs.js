@@ -10,7 +10,7 @@ angular.module('ELBsPage', ['LandingPage'])
         $scope.elbName = '';
         $scope.elbInUse = false;
         $scope.revealModal = function (action, elb) {
-            $scope.elbName = elb['name'];
+            $scope.elbName = elb.name;
             var modal = $('#' + action + '-elb-modal');
             modal.foundation('reveal', 'open');
         };
