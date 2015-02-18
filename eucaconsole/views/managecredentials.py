@@ -103,10 +103,11 @@ class ManageCredentialsView(BaseView, PermissionCheckMixin):
                 self.changepassword_form_errors.append(u'New passwords must match.')
             else:
                 try:
-                    creds = auth.authenticate(account=account, user=username,
-                                passwd=password, new_passwd=new_password, timeout=8, duration=duration)
+                    creds = auth.authenticate(
+                        account=account, user=username,
+                        passwd=password, new_passwd=new_password, timeout=8, duration=duration)
                     # logging.debug("auth creds = "+str(creds.__dict__))
-                    user_account = '{user}@{account}'.format(user=username, account=account)
+                    user_account = u'{user}@{account}'.format(user=username, account=account)
                     session['cloud_type'] = 'euca'
                     session['account'] = account
                     session['username'] = username

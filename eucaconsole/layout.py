@@ -61,7 +61,8 @@ class MasterLayout(object):
         self.aws_enabled = asbool(request.registry.settings.get('aws.enabled'))
         self.aws_regions = AWS_REGIONS
         self.default_region = request.registry.settings.get('aws.default.region', 'us-east-1')
-        self.browser_password_save = 'true' if asbool(request.registry.settings.get('browser.password.save')) else 'false'
+        self.browser_password_save = 'true' if asbool(
+            request.registry.settings.get('browser.password.save')) else 'false'
         self.cloud_type = request.session.get('cloud_type')
         self.selected_region = self.request.session.get('region', self.default_region)
         self.selected_region_label = self.get_selected_region_label(self.selected_region)
@@ -80,10 +81,11 @@ class MasterLayout(object):
         self.tag_pattern_value = '^(?!aws:).{0,256}$'
         self.integer_gt_zero_pattern = '^[1-9]\d*$'
         self.non_negative_pattern = '^[0-9]\d*$'
-        self.cidr_pattern = '{0}{1}'.format(
+        self.cidr_pattern = u'{0}{1}'.format(
             '^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\.){3}',
             '(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])(\/\d+)$'
         )
+        self.ascii_without_slashes_pattern = r'^((?![\x2F\x5c])[\x20-\x7F]){1,255}$'
         self.port_range_pattern = '^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$'
         self.querystring = self.get_query_string()
         self.help_html_dir = 'eucaconsole:static/html/help/'
@@ -115,7 +117,7 @@ class MasterLayout(object):
 
     def get_query_string(self):
         if self.request.GET:
-            return '?{0}'.format(urlencode(self.request.GET))
+            return u'?{0}'.format(urlencode(BaseView.encode_unicode_dict(self.request.GET)))
         return ''
 
     def help_path(self, help_html):

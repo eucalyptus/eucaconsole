@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2013-2014 Eucalyptus Systems, Inc.
 #
 # Redistribution and use of this software in source and binary forms,

@@ -108,7 +108,7 @@ class CloudWatchAlarmsView(LandingPageView):
                 )
                 self.cloudwatch_conn.put_metric_alarm(alarm)
                 prefix = _(u'Successfully created alarm')
-                msg = '{0} {1}'.format(prefix, alarm.name)
+                msg = u'{0} {1}'.format(prefix, alarm.name)
             if self.request.is_xhr:
                 resp = JSONResponse()
                 resp.body = json.dumps(dict(new_alarm=name))
@@ -132,7 +132,7 @@ class CloudWatchAlarmsView(LandingPageView):
                 self.log_request(_(u"Deleting alarm {0}").format(alarm_name))
                 self.cloudwatch_conn.delete_alarm(alarm_name)
                 prefix = _(u'Successfully deleted alarm')
-                msg = '{0} {1}'.format(prefix, alarm_name)
+                msg = u'{0} {1}'.format(prefix, alarm_name)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
         else:

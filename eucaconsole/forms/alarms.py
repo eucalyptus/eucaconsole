@@ -171,7 +171,7 @@ class CloudWatchAlarmCreateForm(BaseSecureForm):
         choices = [BLANK_CHOICE]
         for metric in METRIC_TYPES:
             value = metric.get('name')
-            label = '{0} - {1}'.format(metric.get('namespace'), metric.get('name'))
+            label = u'{0} - {1}'.format(metric.get('namespace'), metric.get('name'))
             choices.append((value, label))
         return sorted(set(choices), key=itemgetter(1))
 

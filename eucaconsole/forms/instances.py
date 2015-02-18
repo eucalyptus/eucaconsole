@@ -311,8 +311,8 @@ class AttachVolumeForm(BaseSecureForm):
         for volume in self.volumes:
             if self.instance and volume.zone == self.instance.placement and volume.attach_data.status is None:
                 name_tag = volume.tags.get('Name')
-                extra = ' ({name})'.format(name=name_tag) if name_tag else ''
-                vol_name = '{id}{extra}'.format(id=volume.id, extra=extra)
+                extra = u' ({name})'.format(name=name_tag) if name_tag else ''
+                vol_name = u'{id}{extra}'.format(id=volume.id, extra=extra)
                 choices.append((volume.id, BaseView.escape_braces(vol_name)))
         self.volume_id.choices = choices
 
