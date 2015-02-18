@@ -44,7 +44,7 @@ def stack_dialogs(context, request, stack=None, landingpage=False,
     """Modal dialogs for Stacks landing and detail page."""
     return dict(
         stack=stack,
-        stack_name=stack.stack_name,
+        stack_name=stack.stack_name if stack is not None else '',
         landingpage=landingpage,
         delete_form=delete_form,
     )

@@ -44,6 +44,13 @@
                         {{ '${stack_creation_time}' | date: '${layout.angular_date_format}' }}
                     </div>
                 </div>
+                <div class="row controls-wrapper readonly">
+                    <div class="small-3 columns"><label i18n:translate="">Status</label></div>
+                    <div class="small-9 columns value" ng-cloak="">
+                        <span class="label radius status ${status}">${status}</span>
+                        <span class="dots" ng-show="item.transitional">&nbsp;</span>
+                    </div>
+                </div>
                 <hr/>
             </div>
         </div>

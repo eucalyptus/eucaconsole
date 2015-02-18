@@ -115,14 +115,19 @@ class StacksJsonView(LandingPageView):
     def stacks_json(self):
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
+        transitional_states = ['pending', 'stopping', 'shutting-down']
         with boto_error_handler(self.request):
             stacks_array = []
             for stack in self.filter_items(self.items):
+                is_transitional = stack.stack_status in transitional_states
                 name = stack.stack_name
+                status = stack.stack_status
                 stacks_array.append(dict(
                     creation_time=self.dt_isoformat(stack.creation_time),
+                    status = status.lower().replace('_', '-'),
                     description=stack.description,
                     name=name,
+                    transitional=is_transitional,
                 ))
             return dict(results=stacks_array)
 
@@ -144,6 +149,7 @@ class StackView(BaseView):
             stack_name=self.escape_braces(self.stack.stack_name) if self.stack else '',
             stack_id=self.stack.stack_id if self.stack else '',
             stack_creation_time=self.dt_isoformat(self.stack.creation_time),
+            status=self.stack.stack_status.lower().replace('_', '-'),
             escaped_stack_name=quote(self.stack.stack_name),
             delete_form=self.delete_form,
             in_use=False,
