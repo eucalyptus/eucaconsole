@@ -34,7 +34,7 @@ import time
 from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.view import view_config
 
-from ..views import BaseView
+from ..views import BaseView, boto_error_handler
 
 
 class CloudWatchAPIView(BaseView):
@@ -66,7 +66,8 @@ class CloudWatchAPIView(BaseView):
         statistic = self.request.params.get('statistic', 'Average')
         idtype = self.request.params.get('idtype', 'InstanceId')
         unit = self.request.params.get('unit')
-        stats = self.get_stats(period, duration, metric, namespace, statistic, idtype, ids, unit)
+        with boto_error_handler(self.request):
+            stats = self.get_stats(period, duration, metric, namespace, statistic, idtype, ids, unit)
         json_stats = []
         # Mapping of unit to multiplier for stats
         multiplier_map = {

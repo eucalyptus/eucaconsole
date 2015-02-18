@@ -43,8 +43,12 @@ angular.module('InstanceMonitoring', ['EucaConsoleUtils'])
                         // TODO: Convert UTC timestamp to local time
                         return d3.time.format('%m/%d %H:%M %p')(new Date(d));
                     });
+                    if (unit === 'Percent') {
+                        chart.forceY([0, 100]);  // Set proper y-axis range for percentage units
+                    }
                     chart.yAxis.axisLabel(unit).tickFormat(d3.format('.02f'));
                     d3.select('#' + chartElemId).datum(results).call(chart);
+                    nv.utils.windowResize(chart.update);
                 }).error(function (oData, status) {
                     eucaHandleError(oData, status);
                 });
