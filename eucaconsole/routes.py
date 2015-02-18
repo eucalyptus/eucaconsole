@@ -319,6 +319,14 @@ urls = [
     Route(name='iam_policy_new', pattern='/policies/new'),
     Route(name='iam_policy_create', pattern='/policies/create'),
     Route(name='iam_policy_json', pattern='/policies/canned/json'),
+
+    # Stacks #####
+    # Landing page
+    Route(name='stacks', pattern='/stacks'),
+    Route(name='stacks_json', pattern='/stacks/json'),
+    Route(name='stacks_delete', pattern='/stacks/delete'),
+    # Detail page
+    Route(name='stack_new', pattern='/stacks/new'),
 ]
 
 

@@ -42,6 +42,7 @@ TILE_MASTER_LIST = [
     ('instances-running', 'Running instances'),
     ('instances-stopped', 'Stopped instances'),
     ('scaling-groups', 'Instances in scaling groups'),
+    ('stacks', 'Stacks'),
     ('elastic-ips', 'Elastic IPs'),
     ('volumes', 'Volumes'),
     ('snapshots', 'Snapshots'),
