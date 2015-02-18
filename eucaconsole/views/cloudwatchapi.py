@@ -29,6 +29,7 @@ CloudWatch REST API
 
 """
 import datetime
+import time
 
 from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.view import view_config
@@ -67,10 +68,15 @@ class CloudWatchAPIView(BaseView):
         unit = self.request.params.get('unit')
         stats = self.get_stats(period, duration, metric, namespace, statistic, idtype, ids, unit)
         json_stats = []
+        # Mapping of unit to multiplier for stats
+        multiplier_map = {
+            'Percent': 100  # API returns 80% CPU as 0.8
+        }
+        multiplier = multiplier_map.get(unit) or 1
         for stat in stats:
             json_stats.append(dict(
-                x=stat.get('Timestamp').isoformat(),
-                y=stat.get(statistic),
+                x=time.mktime(stat.get('Timestamp').utctimetuple()) * 1000,  # Milliseconds since Unix epoch
+                y=stat.get(statistic) * multiplier,
             ))
         return dict(
             unit=unit,

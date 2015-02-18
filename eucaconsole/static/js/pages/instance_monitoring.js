@@ -33,25 +33,23 @@ angular.module('InstanceMonitoring', ['EucaConsoleUtils'])
                 $http.get(endpointUrl).success(function(oData) {
                     var results = oData ? oData.results : '';
                     var chart = nv.models.lineChart()
-                        .margin({left: 100})  //Adjust chart margins to give the x-axis some breathing room.
+                        .margin({left: 80})  //Adjust chart margins to give the x-axis some breathing room.
                         .useInteractiveGuideline(true)
                         .showYAxis(true)
                         .showXAxis(true)
                     ;
                     chart.xScale(d3.time.scale());
-                    chart.xAxis = {
-                        axisLabel: 'Date',
-                        tickFormat: function(d){
-                            return  d3.time.format('%Y-%m-%dT%H:%M:%S')(new Date(d))
-                        }
-                    };
-                    chart.yAxis.axisLabel(metric).tickFormat(d3.format('.02f'));
+                    chart.xAxis.tickFormat(function(d) {
+                        // TODO: Convert UTC timestamp to local time
+                        return d3.time.format('%m/%d %H:%M %p')(new Date(d));
+                    });
+                    chart.yAxis.axisLabel(unit).tickFormat(d3.format('.02f'));
                     d3.select('#' + chartElemId).datum(results).call(chart);
                 }).error(function (oData, status) {
                     eucaHandleError(oData, status);
                 });
             });
-        }
+        };
     })
 ;
 

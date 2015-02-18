@@ -1,11 +1,8 @@
-<metal:block use-macro="main_template" i18n:domain="eucaconsole">
+<metal:block use-macro="main_template" i18n:domain="eucaconsole" xmlns="http://www.w3.org/1999/html">
 
 <head metal:fill-slot="head_css">
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/instance.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/nvd3/nv.d3.min.css')}" />
-    <style type="text/css">
-        svg { width: 100%; height: 300px; }
-    </style>
 </head>
 
 <div metal:fill-slot="main_content">
@@ -31,8 +28,11 @@
                 <dd class="active"><a i18n:translate="">Monitoring</a></dd>
             </dl>
             <div class="panel no-title">
-                <svg id="cwchart-cpu" class="cwchart" data-ids="${instance.id}" data-metric="CPUUtilization"
-                     data-duration="3600" data-unit="Percent"></svg>
+                <div class="chart-wrapper">
+                    <h6 i18n:translate="">CPU Utilization</h6>
+                    <svg id="cwchart-cpu" class="cwchart" data-ids="${instance.id}" data-metric="CPUUtilization"
+                         data-duration="3600" data-unit="Percent"></svg>
+                </div>
             </div>
         </div>
         <div class="large-4 columns">
