@@ -61,6 +61,27 @@ module.exports = function(grunt) {
               files: {
                 'eucaconsole/static/js/thirdparty/magic-search': 'angular-magic-search/magic_search.*'
               }
+          },
+          d3: {
+              options: {
+                  destPrefix: 'eucaconsole/static/js/thirdparty/d3'
+              },
+              files: {
+                  'd3.js': 'd3/d3.js',
+                  'd3.min.js': 'd3/d3.min.js',
+                  'LICENSE.txt': 'd3/LICENSE'
+              }
+          },
+          nvd3: {
+              options: {
+                  destPrefix: 'eucaconsole/static/js/thirdparty/nvd3'
+              },
+              files: {
+                  'nv.d3.js': 'nvd3/build/nv.d3.js',
+                  'nv.d3.min.js': 'nvd3/build/nv.d3.min.js',
+                  'nv.d3.css': 'nvd3/build/nv.d3.css',
+                  'nv.d3.min.css': 'nvd3/build/nv.d3.min.css'
+              }
           }
       },
       jshint: {
@@ -78,7 +99,7 @@ module.exports = function(grunt) {
           },
           ci: {
               configFile: 'karma.conf.js',
-              singleRun: true,
+              singleRun: true
           }
       },
       clean: {
@@ -91,7 +112,7 @@ module.exports = function(grunt) {
                   expand: true,
                   cwd: 'eucaconsole.backup/eucaconsole/',
                   src: ['**/*'],
-                  dest: 'eucaconsole',
+                  dest: 'eucaconsole'
               }],
               options: {
                   force: true,
@@ -103,7 +124,7 @@ module.exports = function(grunt) {
               files: [{ 
                   expand: true,
                   src: ['eucaconsole/**'],
-                  dest: 'eucaconsole.backup/',
+                  dest: 'eucaconsole.backup/'
               }],
               options: {
                   force: false,
@@ -178,9 +199,9 @@ module.exports = function(grunt) {
               files: ['eucaconsole/static/js/**/*.js'],
               tasks: ['karma:ci', 'jshint'],
               options: {
-                  spawn: false,
-              },
-          },
+                  spawn: false
+              }
+          }
       }
   });
 

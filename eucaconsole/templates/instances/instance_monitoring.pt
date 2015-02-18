@@ -2,12 +2,16 @@
 
 <head metal:fill-slot="head_css">
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/instance.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/nvd3/nv.d3.min.css')}" />
+    <style type="text/css">
+        svg { width: 100%; height: 300px; }
+    </style>
 </head>
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="InstanceMonitoring"
          ng-controller="InstanceMonitoringCtrl"
-         ng-init="initController()">
+         ng-init="initController('${controller_options_json}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('instances')}" i18n:translate="">Instances</a></li>
@@ -27,7 +31,8 @@
                 <dd class="active"><a i18n:translate="">Monitoring</a></dd>
             </dl>
             <div class="panel no-title">
-                <!--! Charts here -->
+                <svg id="cwchart-cpu" class="cwchart" data-ids="${instance.id}" data-metric="CPUUtilization"
+                     data-duration="3600" data-unit="Percent"></svg>
             </div>
         </div>
         <div class="large-4 columns">
@@ -42,6 +47,8 @@
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/d3/d3.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/nvd3/nv.d3.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/instance_monitoring.js')}"></script>
 </div>
 

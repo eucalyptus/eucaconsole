@@ -69,10 +69,16 @@ class CloudWatchAPIView(BaseView):
         json_stats = []
         for stat in stats:
             json_stats.append(dict(
-                timestamp=stat.get('Timestamp').isoformat(),
-                statistic=stat.get(statistic),
+                x=stat.get('Timestamp').isoformat(),
+                y=stat.get(statistic),
             ))
-        return dict(unit=unit, results=json_stats)
+        return dict(
+            unit=unit,
+            results=[{
+                'key': metric,
+                'values': json_stats
+            }]
+        )
 
     def get_stats(self, period=60, duration=600, metric='CPUUtilization', namespace='AWS/EC2',
                   statistic='Average', idtype='InstanceId', ids=None, unit=None):

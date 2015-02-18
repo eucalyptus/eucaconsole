@@ -9,7 +9,9 @@
     "jquery": "2.0.3",
     "jasmine": "2.0.3",
     "jasmine-jquery": "2.0.5",
-    "angular-magic-search": "~0.1.0"
+    "angular-magic-search": "~0.1.0",
+    "d3": "3.3.13",
+    "nvd3": "1.7.1"
   }
 }
 
