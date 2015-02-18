@@ -1,0 +1,69 @@
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
+
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/stack.css')}" />
+</head>
+
+<div metal:fill-slot="main_content">
+    <div class="row" id="contentwrap" ng-app="StackPage" ng-controller="StackPageCtrl"
+         ng-init="initController('${controller_options_json}')">
+        <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+            <metal:crumbs metal:fill-slot="crumbs">
+                <li><a href="${request.route_path('stacks')}" i18n:translate="">Stack</a></li>
+                <li class="current"><a href="#">${stack_name}</a></li>
+            </metal:crumbs>
+        </metal:breadcrumbs>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
+        <h3 id="pagetitle">
+            <strong i18n:translate="">Details for stack:</strong>
+            <em>${stack_name}</em>
+        </h3>
+        <div class="large-7 columns">
+            <div class="panel has-actions">
+                <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="stack">
+                    <metal:actions metal:fill-slot="actions">
+                        <li>
+                            <a id="delete-stack-action" data-reveal-id="delete-stack-modal"
+                               i18n:translate="">Delete stack</a>
+                        </li>
+                    </metal:actions>
+                </metal:block>
+                <h6 i18n:translate="">Stack</h6>
+                <div class="row controls-wrapper readonly">
+                    <div class="small-3 columns"><label i18n:translate="">Name</label></div>
+                    <div class="small-9 columns value">${stack.stack_name}</div>
+                </div>
+                <div class="row controls-wrapper readonly">
+                    <div class="small-3 columns"><label i18n:translate="">ID</label></div>
+                    <div class="small-9 columns value">${stack.stack_id}</div>
+                </div>
+                <div class="row controls-wrapper readonly">
+                    <div class="small-3 columns"><label i18n:translate="">Creation time</label></div>
+                    <div class="small-9 columns value" ng-cloak="">
+                        {{ '${stack_creation_time}' | date: '${layout.angular_date_format}' }}
+                    </div>
+                </div>
+                <hr/>
+            </div>
+        </div>
+        <div class="large-5 columns">
+            <metal:block metal:use-macro="layout.global_macros['help_expando']" />
+            <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
+                <!--! Help goes here -->
+                <div id="help-html-console_edit_launch_config"
+                    ng-include="'${layout.help_path('console_edit_launch_config.html')}'">
+                </div> 
+            </div>
+        </div>
+        <!--! Modal dialogs -->
+        ${panel('stack_dialogs', stack=stack, delete_form=delete_form)}
+    </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_path('eucaconsole:static/js/pages/stack.js')}"></script>
+</div>
+
+</metal:block>
+

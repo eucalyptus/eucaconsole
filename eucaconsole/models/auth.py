@@ -46,7 +46,7 @@ from boto.s3.connection import OrdinaryCallingFormat
 #from boto.requestlog import RequestLogger
 import boto
 import boto.ec2.autoscale
-import boto.ec2.cloudformation
+import boto.cloudformation
 import boto.ec2.cloudwatch
 import boto.ec2.elb
 import boto.iam
@@ -188,7 +188,7 @@ class ConnectionManager(object):
                 conn_class = boto.ec2.cloudwatch.CloudWatchConnection
             elif conn_type == 'cloudformation':
                 path = '/services/CloudFormation'
-                conn_class = boto.ec2.cloudformation.CloudFormationConnection
+                conn_class = boto.cloudformation.CloudFormationConnection
             elif conn_type == 'elb':
                 path = '/services/LoadBalancing'
                 conn_class = boto.ec2.elb.ELBConnection

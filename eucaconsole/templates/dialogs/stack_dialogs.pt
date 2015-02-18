@@ -1,0 +1,32 @@
+<!--! Modal dialogs for cloudformations on landing and detail page -->
+<div tal:omit-tag="" i18n:domain="eucaconsole">
+    <div id="delete-stack-modal" class="reveal-modal small" data-reveal=""
+         tal:define="landingpage_action request.route_path('stacks_delete') + layout.querystring;
+                     detailpage_action request.route_path('stack_delete', name=stack.stack_name) if stack else '';
+                     action landingpage_action if landingpage else detailpage_action;">
+        <h3 i18n:translate="">Delete stack</h3>
+        <p>
+            <span i18n:translate="">Are you sure you want to delete the stack</span>
+            <span tal:condition="stack" class="breakword"><b>${stack_name}</b></span>
+            <span tal:condition="not stack" class="breakword"><b>{{ stackName }}</b></span>
+            ?
+        </p>
+        <form action="${action}" method="post">
+            ${structure:delete_form['csrf_token']}
+            <div tal:condition="landingpage" tal:omit-tag="">
+                <input type="hidden" name="name" value="{{ stackName }}" />
+            </div>
+            <div tal:condition="not landingpage" tal:omit-tag="">
+                <input type="hidden" name="name" value="${stack_name}" />
+            </div>
+            <div class="dialog-submit-button">
+                <button type="submit" id="delete_stack_submit_button" class="button expand" i18n:translate="">Yes, Delete</button>
+            </div>
+            <div class="dialog-progress-display hide">
+                <span i18n:translate="">Sending request </span>&nbsp;<em><span class="dots">&nbsp;</span></em>
+            </div>
+        </form>
+        <a href="#" id="delete_stack_close_link" class="close-reveal-modal">&#215;</a>
+    </div>
+</div>
+
