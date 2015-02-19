@@ -52,7 +52,7 @@
                 <td class="breakword"><a ng-href="${prefix}/{{ item.id || item.name | escapeURL }}">{{ item.name | ellipsis: 30 }}</a></td>
                 <td class="status">
                     <span class="label radius status {{ item.status }}">{{ item.status }}</span>
-                    <span class="dots" ng-show="item.transitional">&nbsp;</span>
+                    <span class="busy" ng-show="item.transitional">&nbsp;</span>
                 </td>
                 <td class="breakword">{{ item.description }}</td>
                 <td>{{ item.creation_time | date:'${layout.angular_date_format}' }}</td>
