@@ -171,11 +171,11 @@ $tile-row-height: 24px;
 // Health status tile
 #health {
     .statusrow {
-        font-size: 11pt;
+        font-size: 10pt;
         text-align: left;
         color: $euca-grey;
         margin-top: 10px;
-        line-height: 1.4rem;
+        line-height: 1.2rem;
         .status {
             position: relative;
             left: 8px;

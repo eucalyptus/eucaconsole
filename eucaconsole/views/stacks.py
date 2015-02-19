@@ -188,7 +188,41 @@ class StackView(BaseView):
 
     def get_controller_options_json(self):
         return BaseView.escape_json(json.dumps({
-            'stack_name': self.stack.stack_name
+            'stack_name': self.stack.stack_name,
+            'stack_status_json_url': self.request.route_path('stack_state_json', name=self.stack.stack_name),
         }))
 
+
+class StackStateView(BaseView):
+    def __init__(self, request):
+        super(StackStateView, self).__init__(request)
+        self.request = request
+        self.cloudformation_conn = self.get_connection(conn_type='cloudformation')
+        stack_param = self.request.matchdict.get('name')
+        with boto_error_handler(request):
+            stacks = self.cloudformation_conn.describe_stacks(stack_param)
+            self.stack = stacks[0] if stacks else None
+            self.resources = self.cloudformation_conn.list_stack_resources(stack_param)
+
+    @view_config(route_name='stack_state_json', renderer='json', request_method='GET')
+    def stack_state_json(self):
+        """Return current stack status"""
+        stack_status = self.stack.stack_status if self.stack else 'delete_complete'
+        stack_outputs = self.stack.outputs if self.stack else None
+        outputs = [];
+        for output in stack_outputs:
+            outputs.append({'key':output.key, 'value':output.value})
+        resources = []
+        for resource in self.resources:
+            resources.append({
+                'type':resource.resource_type,
+                'logical_id':resource.logical_resource_id,
+                'physical_id':resource.physical_resource_id,
+                'status':resource.resource_status,
+                'updated_timestamp':resource.LastUpdatedTimestamp})
+        return dict(
+            results=dict(stack_status=stack_status.lower().replace('_', '-'),
+                         outputs=outputs,
+                         resources=resources)
+        )
 
