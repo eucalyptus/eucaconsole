@@ -6,9 +6,7 @@
 </head>
 
 <div metal:fill-slot="main_content">
-    <div class="row" id="contentwrap" ng-app="InstanceMonitoring"
-         ng-controller="InstanceMonitoringCtrl"
-         ng-init="initController('${controller_options_json}')">
+    <div class="row" id="contentwrap">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('instances')}" i18n:translate="">Instances</a></li>
@@ -27,11 +25,11 @@
                 <dd><a href="${request.route_path('instance_volumes', id=instance.id)}" i18n:translate="">Volumes</a></dd>
                 <dd class="active"><a i18n:translate="">Monitoring</a></dd>
             </dl>
-            <div class="panel no-title">
+            <div class="panel no-title" ng-app="CloudWatchCharts">
                 <div class="chart-wrapper">
                     <h6 i18n:translate="">CPU Utilization</h6>
-                    <svg id="cwchart-cpu" class="cwchart" data-ids="${instance.id}" data-metric="CPUUtilization"
-                         data-duration="3600" data-unit="Percent"></svg>
+                    <svg cloudwatch-chart="" id="cwchart-cpu" class="cwchart" ids="${instance.id}"
+                         metric="CPUUtilization" duration="3600" unit="Percent" statistic="Average"></svg>
                 </div>
             </div>
         </div>
@@ -49,7 +47,7 @@
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/d3/d3.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/nvd3/nv.d3.min.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/pages/instance_monitoring.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/cloudwatch_charts.js')}"></script>
 </div>
 
 </metal:block>

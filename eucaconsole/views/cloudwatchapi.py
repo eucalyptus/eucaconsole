@@ -60,11 +60,11 @@ class CloudWatchAPIView(BaseView):
         period = int(self.request.params.get('period', 60))
         if period % 60 != 0:
             raise HTTPBadRequest()  # Period (granularity) must be a multiple of 60 seconds
-        duration = int(self.request.params.get('duration', 600))
-        metric = self.request.params.get('metric', 'CPUUtilization')
+        duration = int(self.request.params.get('duration', 3600))
+        metric = self.request.params.get('metric') or 'CPUUtilization'
         namespace = u'AWS/{0}'.format(self.request.params.get('namespace', 'EC2'))
-        statistic = self.request.params.get('statistic', 'Average')
-        idtype = self.request.params.get('idtype', 'InstanceId')
+        statistic = self.request.params.get('statistic') or 'Average'
+        idtype = self.request.params.get('idtype') or 'InstanceId'
         unit = self.request.params.get('unit')
         with boto_error_handler(self.request):
             stats = self.get_stats(period, duration, metric, namespace, statistic, idtype, ids, unit)
