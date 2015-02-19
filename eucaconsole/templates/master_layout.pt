@@ -70,18 +70,6 @@
         </nav>
     </div>
 
-    <!-- Top nav bar -->
-    <div id="navbar" tal:condition="request.user.is_authenticated()">
-        <nav class="row top-bar" data-topbar="" data-options="is_hover:false">
-            <ul class="title-area">
-                <li class="name"></li>
-                <li class="toggle-topbar menu-icon"><a href="#"><span></span></a></li>
-            </ul>
-            <section class="top-bar-section">
-                ${panel('top_nav')}
-            </section>
-        </nav>
-    </div>
     <!-- Off Canvas Menu: Left -->
     <div class="left-off-canvas-menu">
         ${panel('top_nav', off_canvas=True)}

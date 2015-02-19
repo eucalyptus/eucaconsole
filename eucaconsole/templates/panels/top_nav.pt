@@ -17,6 +17,13 @@
         </ul>
     </li>
     <li class="has-dropdown">
+        <a id="resource-menu-instances" i18n:translate="">CloudFormation</a>
+        <ul class="dropdown">
+            <li><a id="resource-menuitem-instances" i18n:translate=""
+                   href="${request.route_path('stacks')}">Stacks</a></li>
+        </ul>
+    </li>
+    <li class="has-dropdown">
         <a id="resource-menu-autoscaling" i18n:translate="">Auto Scaling</a>
         <ul class="dropdown">
             <li><a id="resource-menuitem-scalinggroups" i18n:translate=""
