@@ -99,7 +99,7 @@
                         <div class="small-4 columns"><label i18n:translate="" id="instance-status-label">Status</label></div>
                         <div class="small-8 columns value" ng-cloak="">
                             <span class="label radius status {{ instanceState }}">{{instanceState}}</span>
-                            <span class="dots" ng-show="isUpdating">&nbsp;</span>
+                            <span class="busy" ng-show="isUpdating">&nbsp;</span>
                         </div>
                     </div>
                     <div>

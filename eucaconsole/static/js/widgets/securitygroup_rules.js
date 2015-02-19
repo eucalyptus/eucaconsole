@@ -7,9 +7,9 @@
 angular.module('SecurityGroupRules', ['CustomFilters', 'EucaConsoleUtils'])
     .controller('SecurityGroupRulesCtrl', function ($scope, $http, $timeout, eucaUnescapeJson) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-        $scope.rulesEditor = $('#rules-editor');
-        $scope.rulesTextarea = $scope.rulesEditor.find('textarea#rules');
-        $scope.rulesEgressTextarea = $scope.rulesEditor.find('textarea#rules_egress');
+        $scope.rulesEditor = undefined;
+        $scope.rulesTextarea = undefined;
+        $scope.rulesEgressTextarea = undefined;
         $scope.rulesArray = [];
         $scope.rulesEgressArray = [];
         $scope.jsonEndpoint='';
@@ -55,6 +55,9 @@ angular.module('SecurityGroupRules', ['CustomFilters', 'EucaConsoleUtils'])
             $scope.rulesEgressArray = options.rules_egress_array;
             $scope.jsonEndpoint = options.json_endpoint;
             $scope.internetProtocolsJsonEndpoint = options.protocols_json_endpoint;
+            $scope.rulesEditor = $('#rules-editor');
+            $scope.rulesTextarea = $scope.rulesEditor.find('textarea#rules');
+            $scope.rulesEgressTextarea = $scope.rulesEditor.find('textarea#rules_egress');
             $scope.initInternetProtocols();
             $scope.syncRules();
             $scope.setWatchers();

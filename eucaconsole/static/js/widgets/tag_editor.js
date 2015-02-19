@@ -13,9 +13,9 @@ angular.module('TagEditor', ['ngSanitize', 'EucaConsoleUtils'])
         };
     })
     .controller('TagEditorCtrl', function ($scope, $sanitize, $timeout, eucaUnescapeJson) {
-        $scope.tagEditor = $('#tag-editor');
-        $scope.tagInputs = $scope.tagEditor.find('.taginput');
-        $scope.tagsTextarea = $scope.tagEditor.find('textarea#tags');
+        $scope.tagEditor = undefined;
+        $scope.tagInputs = undefined;
+        $scope.tagsTextarea = undefined;
         $scope.tagsArray = [];
         $scope.newTagKey = '';
         $scope.newTagValue = '';
@@ -90,6 +90,9 @@ angular.module('TagEditor', ['ngSanitize', 'EucaConsoleUtils'])
                     });
                 }
             });
+            $scope.tagEditor = $('#tag-editor');
+            $scope.tagInputs = $scope.tagEditor.find('.taginput');
+            $scope.tagsTextarea = $scope.tagEditor.find('textarea#tags');
             $('#tag-name-input').keydown(function(evt) {
                 if (evt.keyCode === 13) {
                     evt.preventDefault();
