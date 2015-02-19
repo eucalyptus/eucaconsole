@@ -80,11 +80,11 @@ class StacksView(LandingPageView):
             name = self.request.params.get('name')
             location = self.request.route_path('stacks')
             prefix = _(u'Unable to delete stack')
-            template = '{0} {1} - {2}'.format(prefix, name, '{0}')
+            template = u'{0} {1} - {2}'.format(prefix, name, '{0}')
             with boto_error_handler(self.request, location, template):
                 self.cloudformation_conn.delete_stack(name)
                 prefix = _(u'Successfully deleted stack.')
-                msg = '{0} {1}'.format(prefix, name)
+                msg = u'{0} {1}'.format(prefix, name)
                 queue = Notification.SUCCESS
                 notification_msg = msg
                 self.request.session.flash(notification_msg, queue=queue)
@@ -166,12 +166,13 @@ class StackView(BaseView):
             name = self.request.params.get('name')
             location = self.request.route_path('stacks')
             prefix = _(u'Unable to delete stack')
-            template = '{0} {1} - {2}'.format(prefix, self.stack.stack_name, '{0}')
+            template = u'{0} {1} - {2}'.format(prefix, self.stack.stack_name, '{0}')
             with boto_error_handler(self.request, location, template):
-                self.log_request(_(u"Deleting stack {0}").format(name))
+                msg = _(u"Deleting stack")
+                self.log_request(u"{0} {1}").format(msg, name))
                 self.cloudformation_conn.delete_stack(name)
                 prefix = _(u'Successfully deleted stack.')
-                msg = '{0} {1}'.format(prefix, name)
+                msg = u'{0} {1}'.format(prefix, name)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
         else:
