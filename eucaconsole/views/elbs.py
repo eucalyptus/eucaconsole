@@ -81,11 +81,11 @@ class ELBsView(LandingPageView):
             name = self.request.params.get('name')
             location = self.request.route_path('elbs')
             prefix = _(u'Unable to delete elb')
-            template = '{0} {1} - {2}'.format(prefix, name, '{0}')
+            template = u'{0} {1} - {2}'.format(prefix, name, '{0}')
             with boto_error_handler(self.request, location, template):
                 self.elb_conn.delete_load_balancer(name)
                 prefix = _(u'Successfully deleted elb.')
-                msg = '{0} {1}'.format(prefix, name)
+                msg = u'{0} {1}'.format(prefix, name)
                 queue = Notification.SUCCESS
                 notification_msg = msg
                 self.request.session.flash(notification_msg, queue=queue)
@@ -222,12 +222,13 @@ class ELBView(BaseView):
             name = self.request.params.get('name')
             location = self.request.route_path('elbs')
             prefix = _(u'Unable to delete elb')
-            template = '{0} {1} - {2}'.format(prefix, self.elb.name, '{0}')
+            template = u'{0} {1} - {2}'.format(prefix, self.elb.name, '{0}')
             with boto_error_handler(self.request, location, template):
-                self.log_request(_(u"Deleting elb {0}").format(name))
+                msg = _(u"Deleting elb")
+                self.log_request(u"{0} {1}".format(msg, name))
                 self.elb_conn.delete_load_balancer(name)
                 prefix = _(u'Successfully deleted elb.')
-                msg = '{0} {1}'.format(prefix, name)
+                msg = u'{0} {1}'.format(prefix, name)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
         else:
