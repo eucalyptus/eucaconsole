@@ -169,7 +169,7 @@ class StackView(BaseView):
             template = u'{0} {1} - {2}'.format(prefix, self.stack.stack_name, '{0}')
             with boto_error_handler(self.request, location, template):
                 msg = _(u"Deleting stack")
-                self.log_request(u"{0} {1}").format(msg, name))
+                self.log_request(u"{0} {1}".format(msg, name))
                 self.cloudformation_conn.delete_stack(name)
                 prefix = _(u'Successfully deleted stack.')
                 msg = u'{0} {1}'.format(prefix, name)
