@@ -1,21 +1,3 @@
 /* @fileOverview Cloud Formations landing page CSS */
 @import "../includes/landingpage";
 
-// Status colors
-$stack-status-color-create-in-progress: lighten($euca-darkblue, 20%);
-$stack-status-color-create-complete: $euca-darkblue;
-$stack-status-color-create-failed: darkred;
-$stack-status-color-rollback-in-progress: lighten(darkred, 20%);
-$stack-status-color-rollback-complete: darkred;
-$stack-status-color-delete-complete: darken($euca-grey, 10%);
-
-// Stack status
-.status.create-in-progress { background-color: $stack-status-color-create-in-progress; }
-.status.create-complete { background-color: $stack-status-color-create-complete; }
-.status.create-failed { background-color: $stack-status-color-create-failed; }
-.status.rollback-in-progress { background-color: $stack-status-color-rollback-in-progress; }
-.status.rollback-complete { background-color: $stack-status-color-rollback-complete; }
-.status.delete-complete { background-color: $stack-status-color-delete-complete; }
-.status.delete-in-progress {}
-.status.delete-failed {}
-.status.rollback-failed {}

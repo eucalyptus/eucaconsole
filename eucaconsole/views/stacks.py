@@ -82,7 +82,7 @@ class StacksView(LandingPageView):
             prefix = _(u'Unable to delete stack')
             template = '{0} {1} - {2}'.format(prefix, name, '{0}')
             with boto_error_handler(self.request, location, template):
-                self.cloudformation_conn.delete_load_balancer(name)
+                self.cloudformation_conn.delete_stack(name)
                 prefix = _(u'Successfully deleted stack.')
                 msg = '{0} {1}'.format(prefix, name)
                 queue = Notification.SUCCESS
@@ -115,7 +115,7 @@ class StacksJsonView(LandingPageView):
     def stacks_json(self):
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
-        transitional_states = ['pending', 'stopping', 'shutting-down']
+        transitional_states = ['CREATE_IN_PROGRESS', 'ROLLBACK_IN_PROGRESS', 'DELETE_IN_PROGRESS']
         with boto_error_handler(self.request):
             stacks_array = []
             for stack in self.filter_items(self.items):

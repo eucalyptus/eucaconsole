@@ -112,6 +112,12 @@
 
 .status.rollback-in-progress { background-color: #f10000; }
 
-.status.rollback-complete { background-color: darkred; }
+.status.rollback-complete { background-color: #03405f; }
 
-.status.delete-complete { background-color: #525960; }
+.status.rollback-failed { background-color: darkred; }
+
+.status.delete-in-progress { background-color: #525960; }
+
+.status.delete-complete { background-color: #03405f; }
+
+.status.delete-failed { background-color: darkred; }

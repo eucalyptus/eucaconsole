@@ -104,14 +104,3 @@
 @media screen and (max-width: 1024px) { #filters { margin-top: 1rem; } }
 /* Small screen */
 @media screen and (max-width: 1020px) { .columns.datagrid { padding-left: 1rem; } }
-.status.create-in-progress { background-color: #0683c2; }
-
-.status.create-complete { background-color: #03405f; }
-
-.status.create-failed { background-color: darkred; }
-
-.status.rollback-in-progress { background-color: #f10000; }
-
-.status.rollback-complete { background-color: darkred; }
-
-.status.delete-complete { background-color: #525960; }
