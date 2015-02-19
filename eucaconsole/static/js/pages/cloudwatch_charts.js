@@ -18,7 +18,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
             'ids': '@ids',
             'metric': '@metric',
             'duration': '@duration',
-            'sunit': '@unit',
+            'unit': '@unit',
             'statistic': '@statistic'
         },
         controller: function ($scope, $http, eucaHandleError) {
