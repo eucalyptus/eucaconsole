@@ -22,7 +22,7 @@
                     <tr ng-show="itemsLoading">
                         <td colspan="2">
                             <div ng-show="itemsLoading">
-                                <span i18n:translate="">Loading...</span>&nbsp;&nbsp;<span class="dots"></span>
+                                <span i18n:translate="">Loading...</span>&nbsp;&nbsp;<span class="busy"></span>
                             </div>
                         </td>
                     </tr>

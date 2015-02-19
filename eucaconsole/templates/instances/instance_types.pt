@@ -20,7 +20,7 @@
             <div class="panel">
                 <p class="note" i18n:translate="">To change the configuration of an instance type, select from the available options.
                     You can enter any value you would like if you do not see it listed.</p>
-                <div ng-show="itemsLoading"><span class="dots"></span></div>
+                <div ng-show="itemsLoading"><span class="busy"></span></div>
                 <div id="tableview" class="gridwrapper" ng-cloak="">
                     <!-- Begin table view -->
                     <table class="table" ng-show="!itemsLoading" ng-cloak="true">

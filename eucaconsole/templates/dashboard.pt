@@ -38,7 +38,7 @@
                             <metal:block metal:use-macro="layout.global_macros['dashaction']" />
                             <div class="content">
                                 <a href="${request.route_path('instances')}?state=running">
-                                    <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
+                                    <i class="icon"><em><i ng-show="itemsLoading" class="busy" ></i>
                                         <span ng-show="!itemsLoading" id="running-instances-count" ng-cloak="">{{ totals.instances_running }}</span></em>
                                     </i>
                                 </a>
@@ -54,7 +54,7 @@
                             <metal:block metal:use-macro="layout.global_macros['dashaction']" />
                             <div class="content">
                                 <a href="${request.route_path('instances')}?state=stopped">
-                                    <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
+                                    <i class="icon"><em><i ng-show="itemsLoading" class="busy" ></i>
                                         <span ng-show="!itemsLoading" id="stopped-instances-count" ng-cloak="">{{ totals.instances_stopped }}</span></em>
                                     </i>
                                 </a>
@@ -70,7 +70,7 @@
                             <metal:block metal:use-macro="layout.global_macros['dashaction']" />
                             <div class="content">
                                 <a href="${request.route_path('scalinggroups')}">
-                                    <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
+                                    <i class="icon"><em><i ng-show="itemsLoading" class="busy" ></i>
                                         <span ng-show="!itemsLoading" id="scalinggroup-instances-count" ng-cloak="">{{ totals.instances_scaling }}</span></em>
                                     </i>
                                 </a>
@@ -86,7 +86,7 @@
                             <metal:block metal:use-macro="layout.global_macros['dashaction']" />
                             <div class="content">
                                 <a href="${request.route_path('ipaddresses')}">
-                                    <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
+                                    <i class="icon"><em><i ng-show="itemsLoading" class="busy" ></i>
                                         <span ng-show="!itemsLoading" id="ipaddresses-count" ng-cloak="">{{ totals.eips }}</span></em>
                                     </i>
                                 </a>
@@ -102,7 +102,7 @@
                             <metal:block metal:use-macro="layout.global_macros['dashaction']" />
                             <div class="content">
                                 <a href="${request.route_path('volumes')}">
-                                    <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
+                                    <i class="icon"><em><i ng-show="itemsLoading" class="busy" ></i>
                                         <span ng-show="!itemsLoading" id="volumes-count" ng-cloak="">{{ totals.volumes }}</span></em>
                                     </i>
                                 </a>
@@ -118,7 +118,7 @@
                             <metal:block metal:use-macro="layout.global_macros['dashaction']" />
                             <div class="content">
                                 <a href="${request.route_path('snapshots')}">
-                                    <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
+                                    <i class="icon"><em><i ng-show="itemsLoading" class="busy" ></i>
                                         <span ng-show="!itemsLoading" id="snapshots-count" ng-cloak="">{{ totals.snapshots }}</span></em>
                                     </i>
                                 </a>
@@ -134,7 +134,7 @@
                             <metal:block metal:use-macro="layout.global_macros['dashaction']" />
                             <div class="content">
                                 <a href="${request.route_path('buckets')}">
-                                    <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
+                                    <i class="icon"><em><i ng-show="itemsLoading" class="busy" ></i>
                                         <span ng-show="!itemsLoading" id="buckets-count" ng-cloak="">{{ totals.buckets }}</span></em>
                                     </i>
                                 </a>
@@ -150,7 +150,7 @@
                             <metal:block metal:use-macro="layout.global_macros['dashaction']" />
                             <div class="content">
                                 <a href="${request.route_path('securitygroups')}">
-                                    <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
+                                    <i class="icon"><em><i ng-show="itemsLoading" class="busy" ></i>
                                         <span ng-show="!itemsLoading" id="securitygroups-count" ng-cloak="">{{ totals.securitygroups }}</span></em>
                                     </i>
                                 </a>
@@ -166,7 +166,7 @@
                             <metal:block metal:use-macro="layout.global_macros['dashaction']" />
                             <div class="content">
                                 <a href="${request.route_path('keypairs')}">
-                                    <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
+                                    <i class="icon"><em><i ng-show="itemsLoading" class="busy" ></i>
                                         <span ng-show="!itemsLoading" id="keypairs-count" ng-cloak="">{{ totals.keypairs }}</span></em>
                                     </i>
                                 </a>
@@ -182,7 +182,7 @@
                             <metal:block metal:use-macro="layout.global_macros['dashaction']" />
                             <div class="content">
                                 <a href="${request.route_path('accounts')}">
-                                    <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
+                                    <i class="icon"><em><i ng-show="itemsLoading" class="busy" ></i>
                                         <span ng-show="!itemsLoading" id="accounts-count" ng-cloak="">{{ totals.accounts }}</span></em>
                                     </i>
                                 </a>
@@ -198,7 +198,7 @@
                             <metal:block metal:use-macro="layout.global_macros['dashaction']" />
                             <div class="content">
                                 <a href="${request.route_path('users')}">
-                                    <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
+                                    <i class="icon"><em><i ng-show="itemsLoading" class="busy" ></i>
                                         <span ng-show="!itemsLoading" id="users-count" ng-cloak="">{{ totals.users }}</span></em>
                                     </i>
                                 </a>
@@ -214,7 +214,7 @@
                             <metal:block metal:use-macro="layout.global_macros['dashaction']" />
                             <div class="content">
                                 <a href="${request.route_path('groups')}">
-                                    <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
+                                    <i class="icon"><em><i ng-show="itemsLoading" class="busy" ></i>
                                         <span ng-show="!itemsLoading" id="groups-count" ng-cloak="">{{ totals.groups }}</span></em>
                                     </i>
                                 </a>
@@ -230,7 +230,7 @@
                             <metal:block metal:use-macro="layout.global_macros['dashaction']" />
                             <div class="content">
                                 <a href="${request.route_path('roles')}">
-                                    <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
+                                    <i class="icon"><em><i ng-show="itemsLoading" class="busy" ></i>
                                         <span ng-show="!itemsLoading" id="roles-count" ng-cloak="">{{ totals.roles }}</span></em>
                                     </i>
                                 </a>
@@ -244,12 +244,12 @@
                         <div class="tile">
                             <h5 class="subheader" i18n:translate="">Service status</h5>
                             <metal:block metal:use-macro="layout.global_macros['dashaction']" />
-                            <i class="icon"><em><span class="dots" ng-show="health.length == 0">&nbsp;</span></em></i>
+                            <i ng-show="health.length == 0" class="busy" ></i>
                             <div class="content">
                                  <div ng-repeat="service in health" class="statusrow">
                                      <span class="status">{{ service.name }}</span>
                                      <span class="right">
-                                         <span class="dots" ng-show="service.status == ''">&nbsp;</span>
+                                         <i ng-show="service.status == ''" class="busy" ></i>
                                          <i class="fi-check tick service-up" title="Service is up"
                                             i18n:translate="title" data-tooltip="" ng-show="service.status == 'up'"></i>
                                          <i class="fi-x tick service-down" title="Service is not responding"
