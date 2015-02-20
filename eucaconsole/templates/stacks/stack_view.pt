@@ -179,7 +179,7 @@
                             <div ng-show="eventsLoading"><span class="busy"></span></div>
                             <div id="tableview" class="gridwrapper" ng-show="!eventsLoading">
                                 <!-- Begin table view -->
-                                <table class="table" ng-show="!eventsLoading" ng-cloak="true">
+                                <table class="table" ng-show="!eventsLoading" ng-cloak="true" id="event-table">
                                     <thead><tr>
                                         <th i18n:translate="">TIMESTAMP</th>
                                         <th i18n:translate="">STATUS</th>

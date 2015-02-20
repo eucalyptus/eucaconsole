@@ -7,3 +7,8 @@
     padding-right: 10px;
 }
 
+#event-table {
+    display: block;
+    max-height: 30rem;
+    overflow-y: scroll;
+}
