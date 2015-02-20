@@ -124,7 +124,7 @@ class StacksJsonView(LandingPageView):
                 status = stack.stack_status
                 stacks_array.append(dict(
                     creation_time=self.dt_isoformat(stack.creation_time),
-                    status = status.lower().replace('_', '-'),
+                    status=status.lower().replace('_', '-'),
                     description=stack.description,
                     name=name,
                     transitional=is_transitional,
@@ -133,6 +133,7 @@ class StacksJsonView(LandingPageView):
 
     def get_items(self):
         return self.cloudformation_conn.describe_stacks() if self.cloudformation_conn else []
+
 
 class StackView(BaseView):
     """Views for single stack"""

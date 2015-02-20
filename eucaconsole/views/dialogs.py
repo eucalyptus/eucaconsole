@@ -39,8 +39,7 @@ from ..views.buckets import BucketDetailsView, FOLDER_NAME_PATTERN
 
 
 @panel_config('stack_dialogs', renderer='../templates/dialogs/stack_dialogs.pt')
-def stack_dialogs(context, request, stack=None, landingpage=False,
-                      delete_form=None):
+def stack_dialogs(context, request, stack=None, landingpage=False, delete_form=None):
     """Modal dialogs for Stacks landing and detail page."""
     return dict(
         stack=stack,
@@ -48,6 +47,7 @@ def stack_dialogs(context, request, stack=None, landingpage=False,
         landingpage=landingpage,
         delete_form=delete_form,
     )
+
 
 @panel_config('ipaddress_dialogs', renderer='../templates/dialogs/ipaddress_dialogs.pt')
 def ipaddress_dialogs(context, request, eip=None, landingpage=False,
