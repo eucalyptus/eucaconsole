@@ -31,9 +31,6 @@ Pyramid views for Eucalyptus and AWS CloudFormation stacks
 from urllib import quote
 import simplejson as json
 
-import boto
-from boto.cloudformation.stack import Stack
-
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config
 
@@ -144,6 +141,20 @@ class StackView(BaseView):
         with boto_error_handler(request):
             self.stack = self.get_stack()
         self.delete_form = StacksDeleteForm(self.request, formdata=self.request.params or None)
+        search_facets = [
+            {'name':'status', 'label':_(u"Status"), 'options': [
+                {'key':'create-complete', 'label':_("Create Complete")},
+                {'key':'create-in-progress', 'label':_("Create In Progresss")},
+                {'key':'create-failed', 'label':_("Create Failed")},
+                {'key':'delete-complete', 'label':_("Delete Complete")},
+                {'key':'delete-in-progress', 'label':_("Delete In Progresss")},
+                {'key':'delete-failed', 'label':_("Delete Failed")},
+                {'key':'rollback-complete', 'label':_("Rollback Complete")},
+                {'key':'rollback-in-progress', 'label':_("Rollback In Progresss")},
+                {'key':'rollback-failed', 'label':_("Rollback Failed")}
+            ]},
+            {'name':'phys-id', 'label':_(u"Physical ID")}
+        ];
         self.render_dict = dict(
             stack=self.stack,
             stack_name=self.escape_braces(self.stack.stack_name) if self.stack else '',
@@ -153,6 +164,8 @@ class StackView(BaseView):
             escaped_stack_name=quote(self.stack.stack_name),
             delete_form=self.delete_form,
             in_use=False,
+            search_facets=BaseView.escape_json(json.dumps(search_facets)),
+            filter_keys=[],
             controller_options_json=self.get_controller_options_json(),
         )
 
@@ -190,6 +203,8 @@ class StackView(BaseView):
         return BaseView.escape_json(json.dumps({
             'stack_name': self.stack.stack_name,
             'stack_status_json_url': self.request.route_path('stack_state_json', name=self.stack.stack_name),
+            'stack_template_url': self.request.route_path('stack_template', name=self.stack.stack_name),
+            'stack_events_url': self.request.route_path('stack_events', name=self.stack.stack_name),
         }))
 
 
@@ -198,31 +213,64 @@ class StackStateView(BaseView):
         super(StackStateView, self).__init__(request)
         self.request = request
         self.cloudformation_conn = self.get_connection(conn_type='cloudformation')
-        stack_param = self.request.matchdict.get('name')
-        with boto_error_handler(request):
-            stacks = self.cloudformation_conn.describe_stacks(stack_param)
-            self.stack = stacks[0] if stacks else None
-            self.resources = self.cloudformation_conn.list_stack_resources(stack_param)
+        self.stack_name = self.request.matchdict.get('name')
 
     @view_config(route_name='stack_state_json', renderer='json', request_method='GET')
     def stack_state_json(self):
         """Return current stack status"""
-        stack_status = self.stack.stack_status if self.stack else 'delete_complete'
-        stack_outputs = self.stack.outputs if self.stack else None
-        outputs = [];
-        for output in stack_outputs:
-            outputs.append({'key':output.key, 'value':output.value})
-        resources = []
-        for resource in self.resources:
-            resources.append({
-                'type':resource.resource_type,
-                'logical_id':resource.logical_resource_id,
-                'physical_id':resource.physical_resource_id,
-                'status':resource.resource_status,
-                'updated_timestamp':resource.LastUpdatedTimestamp})
-        return dict(
-            results=dict(stack_status=stack_status.lower().replace('_', '-'),
-                         outputs=outputs,
-                         resources=resources)
-        )
+        with boto_error_handler(self.request):
+            stacks = self.cloudformation_conn.describe_stacks(self.stack_name)
+            stack = stacks[0] if stacks else None
+            stack_resources = self.cloudformation_conn.list_stack_resources(self.stack_name)
+            stack_status = stack.stack_status if stack else 'delete_complete'
+            stack_outputs = stack.outputs if stack else None
+            outputs = [];
+            for output in stack_outputs:
+                outputs.append({'key':output.key, 'value':output.value})
+            resources = []
+            for resource in stack_resources:
+                resources.append({
+                    'type':resource.resource_type,
+                    'logical_id':resource.logical_resource_id,
+                    'physical_id':resource.physical_resource_id,
+                    'status':resource.resource_status,
+                    'updated_timestamp':resource.LastUpdatedTimestamp})
+            return dict(
+                results=dict(stack_status=stack_status.lower().replace('_', '-'),
+                             outputs=outputs,
+                             resources=resources)
+            )
+
+    @view_config(route_name='stack_template', renderer='json', request_method='GET')
+    def stack_template(self):
+        """Return stack template"""
+        with boto_error_handler(self.request):
+            template = self.cloudformation_conn.get_template(self.stack_name)
+            parsed = json.loads(template['GetTemplateResponse']['GetTemplateResult']['TemplateBody'])
+            params = []
+            for name in parsed['Parameters'].keys():
+                param = parsed['Parameters'][name]
+                params.append({'name':name, 'description':param['Description'], 'type':param['Type']})
+            return dict(
+                results=dict(description=parsed['Description'],
+                             parameters=params)
+            )
+
+    @view_config(route_name='stack_events', renderer='json', request_method='GET')
+    def stack_events(self):
+        """Return stack events"""
+        with boto_error_handler(self.request):
+            stack_events = self.cloudformation_conn.describe_stack_events(self.stack_name)
+            events = []
+            for event in stack_events:
+                events.append({
+                    'timestamp':event.timestamp.strftime('%Y-%m-%dT%H:%M:%SZ'),
+                    'status':event.resource_status,
+                    'status_reason':event.resource_status_reason,
+                    'type':event.resource_type,
+                    'logical_id':event.logical_resource_id,
+                    'physical_id':event.physical_resource_id})
+            return dict(
+                results=dict(events=events)
+            )
 

@@ -3,6 +3,7 @@
 <head metal:fill-slot="head_css">
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/stacks.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/stack.css')}" />
+    <link rel="stylesheet" type-"text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.css')}"/>
 </head>
 
 <div metal:fill-slot="main_content">
@@ -126,10 +127,32 @@
                     </div>
                     <div class="columns section">
                         <h6 i18n:translate="">Template</h6>
+                        <div class="row controls-wrapper readonly">
+                            <div class="small-3 columns"><label i18n:translate="">Description</label></div>
+                            <div class="small-9 columns value">${stack.description}</div>
+                        </div>
                     </div>
                     <hr/>
                     <div class="columns section">
                         <h6 i18n:translate="">Parameters</h6>
+                        <div class="datagrid" id="datagrid-items">
+                            <div id="tableview" class="gridwrapper">
+                                <!-- Begin table view -->
+                                <table class="table">
+                                    <thead><tr>
+                                        <th i18n:translate="">NAME</th>
+                                        <th i18n:translate="">DESCRIPTION</th>
+                                    </tr></thead>
+                                    <tbody>
+                                        <tr tal:repeat="item stack.parameters" ng-cloak="true">
+                                            <td>${item.key}</td>
+                                            <td>${item.value}</td>
+                                        </tr>
+                                        <tr></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="content panel has-actions" id="events-tab">
@@ -147,6 +170,34 @@
                     </div>
                     <div class="columns section">
                         <h6 i18n:translate="">Events</h6>
+                        <div ng-app="MagicSearch">
+                            <magic-search template="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.html')}"
+                                strings="{'remove':'Remove facet', 'cancel':'Clear search', 'prompt':'Select facets for filter, or enter text to search'}"
+                                facets="${search_facets}" filter-keys="${filter_keys}"></magic-search>
+                        </div>
+                        <div class="datagrid" id="datagrid-items">
+                            <div ng-show="eventsLoading"><span class="busy"></span></div>
+                            <div id="tableview" class="gridwrapper" ng-show="!eventsLoading">
+                                <!-- Begin table view -->
+                                <table class="table" ng-show="!eventsLoading" ng-cloak="true">
+                                    <thead><tr>
+                                        <th i18n:translate="">TIMESTAMP</th>
+                                        <th i18n:translate="">STATUS</th>
+                                        <th i18n:translate="">TYPE (LOGICAL ID)</th>
+                                        <th i18n:translate="">PHYSICAL ID</th>
+                                    </tr></thead>
+                                    <tbody>
+                                        <tr ng-repeat="item in events | orderBy: sortBy:sortReverse" ng-cloak="true">
+                                            <td>{{ item.timestamp | date:'${layout.angular_date_format}' }}</td>
+                                            <td>{{ item.status }}</td>
+                                            <td>{{ item.type }} ({{ item.logical_id }})</td>
+                                            <td>{{ item.physical_id }}</td>
+                                        </tr>
+                                        <tr ng-show="!eventsLoading"></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -166,6 +217,7 @@
 </div>
 
 <div metal:fill-slot="tail_js">
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/stack.js')}"></script>
 </div>
 
