@@ -31,8 +31,7 @@ Pyramid views for Eucalyptus and AWS elbs
 from urllib import quote
 import simplejson as json
 
-import boto
-from boto.ec2.elb.loadbalancer import LoadBalancer
+import boto.utils
 
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config
