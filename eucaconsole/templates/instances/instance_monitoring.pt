@@ -19,25 +19,41 @@
             <strong i18n:translate="">Details for instance:</strong>
             <em>${instance_name}</em>
         </h3>
-        <div class="large-8 columns">
+        <div class="large-12 columns">
             <dl class="tabs" id="instance-subnav">
                 <dd><a href="${request.route_path('instance_view', id=instance.id)}" i18n:translate="">General</a></dd>
                 <dd><a href="${request.route_path('instance_volumes', id=instance.id)}" i18n:translate="">Volumes</a></dd>
                 <dd class="active"><a i18n:translate="">Monitoring</a></dd>
             </dl>
             <div class="panel no-title" ng-app="CloudWatchCharts">
-                <div class="chart-wrapper">
-                    <h6 i18n:translate="">CPU Utilization</h6>
-                    <svg cloudwatch-chart="" id="cwchart-cpu" class="cwchart" ids="${instance.id}"
-                         metric="CPUUtilization" duration="3600" unit="Percent" statistic="Average"></svg>
+                <p i18n:translate="">
+                    Displaying statistics for the past hour.  Note that all timestamps are in UTC.
+                </p>
+                <div class="row">
+                    <div class="medium-6 columns">
+                        <div class="chart-wrapper">
+                            <h6 i18n:translate="">CPU Utilization</h6>
+                            <svg cloudwatch-chart="" id="cwchart-cpu" class="cwchart" ids="${instance.id}" idtype="InstanceId"
+                                 metric="CPUUtilization" duration="3600" unit="Percent" statistic="Average"></svg>
+                        </div>
+                    </div>
+                    <div class="medium-6 columns">
+                        <div class="chart-wrapper">
+                            <h6 i18n:translate="">Network In</h6>
+                            <svg cloudwatch-chart="" id="cwchart-networkin" class="cwchart" ids="${instance.image_id}"
+                                 idtype="ImageId" metric="NetworkIn" duration="3600" unit="Bytes"></svg>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-        <div class="large-4 columns">
-            <div class="help-padding">&nbsp;</div>
-            <metal:block metal:use-macro="layout.global_macros['help_expando']" />
-            <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
-                <!--! HELP CONTENT HERE -->
+                <div class="row">
+                    <div class="medium-6 columns">
+                        <div class="chart-wrapper">
+                            <h6 i18n:translate="">Network Out</h6>
+                            <svg cloudwatch-chart="" id="cwchart-networkout" class="cwchart" ids="${instance.image_id}"
+                                 idtype="ImageId" metric="NetworkOut" duration="3600" unit="Bytes"></svg>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

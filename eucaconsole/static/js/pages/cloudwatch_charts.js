@@ -16,6 +16,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
         scope: {
             'elemId': '@id',
             'ids': '@ids',
+            'idtype': '@idtype',
             'metric': '@metric',
             'duration': '@duration',
             'unit': '@unit',
@@ -26,6 +27,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
             $scope.initChart = function() {
                 var params = {
                     'ids': $scope.ids,
+                    'idtype': $scope.idtype,
                     'metric': $scope.metric,
                     'duration': $scope.duration,
                     'unit': $scope.unit,
@@ -47,6 +49,9 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
                     });
                     if ($scope.unit === 'Percent') {
                         chart.forceY([0, 100]);  // Set proper y-axis range for percentage units
+                    }
+                    if ($scope.metric === 'NetworkOut') {
+                        chart.forceY([0, 1000]);
                     }
                     chart.yAxis.axisLabel($scope.unit).tickFormat(d3.format('.02f'));
                     d3.select('#' + $scope.elemId).datum(results).call(chart);

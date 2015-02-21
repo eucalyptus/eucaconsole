@@ -49,8 +49,8 @@ class CloudWatchAPIView(BaseView):
         REST API endpoint for fetching time-series cloudwatch data
 
         Examples...
-        Fetch CPUUtilization percentage for instance 'i-foobar' for the past hour:
-          /cloudwatch/api?ids=i-foobar&duration=3600&unit=Percent
+        Fetch average CPU utilization percentage for instance 'i-foo' for the past hour
+        /cloudwatch/api?ids=i-foo&idtype=InstanceId&metric=CPUUtilization&duration=3600&unit=Percent&statistic=Average
 
         """
         ids = self.request.params.get('ids')
@@ -69,15 +69,10 @@ class CloudWatchAPIView(BaseView):
         with boto_error_handler(self.request):
             stats = self.get_stats(period, duration, metric, namespace, statistic, idtype, ids, unit)
         json_stats = []
-        # Mapping of unit to multiplier for stats
-        multiplier_map = {
-            'Percent': 100  # API returns 80% CPU as 0.8
-        }
-        multiplier = multiplier_map.get(unit) or 1
         for stat in stats:
             json_stats.append(dict(
                 x=time.mktime(stat.get('Timestamp').utctimetuple()) * 1000,  # Milliseconds since Unix epoch
-                y=stat.get(statistic) * multiplier,
+                y=stat.get(statistic),
             ))
         return dict(
             unit=unit,

@@ -975,7 +975,6 @@ class InstanceMonitoringView(BaseInstanceView):
         self.render_dict = dict(
             instance=self.instance,
             instance_name=self.instance_name,
-            controller_options_json=self.get_controller_options_json(),
         )
 
     @view_config(route_name='instance_monitoring', renderer=VIEW_TEMPLATE, request_method='GET')
@@ -984,14 +983,6 @@ class InstanceMonitoringView(BaseInstanceView):
             raise HTTPNotFound()
         render_dict = self.render_dict
         return render_dict
-
-    def get_controller_options_json(self):
-        if not self.instance:
-            return ''
-        return BaseView.escape_json(json.dumps({
-            'instance_id': self.instance.id,
-            'cloudwatch_api_url': self.request.route_path('cloudwatch_api'),
-        }))
 
 
 class InstanceLaunchView(BaseInstanceView, BlockDeviceMappingItemView):
