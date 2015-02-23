@@ -251,4 +251,13 @@ describe("LaunchInstance", function() {
             expect(scope.instanceVPCName).toEqual('VPC-01');
         });
     });
+
+    describe("Function updateSelectedSecurityGroupRules Test", function() {
+
+        it("Should set securityGroups to [] if it is undefined when updateSelectedSecurityGroupRules is called", function() {
+            scope.securityGroups = undefined;
+            scope.updateSelectedSecurityGroupRules();
+            expect(scope.securityGroups).toEqual([]);
+        });
+    });
 });

@@ -233,7 +233,10 @@ class LaunchConfigView(BaseView):
         self.role = None
         if self.launch_config and self.launch_config.instance_profile_name:
             arn = self.launch_config.instance_profile_name
-            profile_name = arn[(arn.rindex('/')+1):]
+            try:
+                profile_name = arn[(arn.rindex('/')+1):]
+            except ValueError:
+                profile_name = arn
             inst_profile = self.iam_conn.get_instance_profile(profile_name)
             self.role = inst_profile.roles.member.role_name
 
