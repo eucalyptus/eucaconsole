@@ -7,7 +7,8 @@
 angular.module('ELBWizard', ['EucaConsoleUtils'])
     .controller('ELBWizardCtrl', function ($scope, $http, $timeout, eucaHandleError, eucaUnescapeJson) {
         $scope.elbName = '';
-        $scope.urlParams = $.url().param();
+        $scope.urlParams = undefined;
+        $scope.summarySection = undefined;
         $scope.currentStepIndex = 1;
         $scope.step1Invalid = true;
         $scope.step2Invalid = true;
@@ -20,8 +21,12 @@ angular.module('ELBWizard', ['EucaConsoleUtils'])
             $scope.setFocus();
         };
         $scope.setInitialValues = function () {
+            $scope.urlParams = $.url().param();
+            $scope.summarySection = $('.summary');
+            $scope.currentStepIndex = 1;
         };
         $scope.checkRequiredInput = function () {
+            $scope.isNotValid = false;
         };
         $scope.setWatcher = function (){
             $scope.$watch('currentStepIndex', function(){
@@ -89,12 +94,13 @@ angular.module('ELBWizard', ['EucaConsoleUtils'])
         };
         $scope.visitNextStep = function (nextStep, $event) {
             // Trigger form validation before proceeding to next step
-            $scope.launchForm.trigger('validate');
-            var currentStep = nextStep - 1,
-                tabContent = $scope.launchForm.find('#step' + currentStep),
-                invalidFields = tabContent.find('[data-invalid]');
-            if (invalidFields.length || $scope.isNotValid === true) {
-                invalidFields.focus();
+            //$scope.launchForm.trigger('validate');
+            var currentStep = nextStep - 1;
+            //var tabContent = $scope.launchForm.find('#step' + currentStep);
+            //var invalidFields = tabContent.find('[data-invalid]');
+            //if (invalidFields.length || $scope.isNotValid === true) {
+            //    invalidFields.focus();
+            if ($scope.isNotValid === true) {
                 $event.preventDefault();
                 // Handle the case where the tab was clicked to visit the previous step
                 if( $scope.currentStepIndex > nextStep){
