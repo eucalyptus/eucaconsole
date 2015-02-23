@@ -1,0 +1,107 @@
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
+
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/stack_wizard.css')}" />
+</head>
+
+<div metal:fill-slot="main_content">
+    <div class="row" id="contentwrap" ng-app="StackWizard" ng-controller="StackWizardCtrl"
+         ng-init="initController('${controller_options_json}')">
+        <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+            <metal:crumbs metal:fill-slot="crumbs">
+                <li><a href="${request.route_path('stacks')}" i18n:translate="">Stacks</a></li>
+                <li class="current"><a href="#" i18n:translate="">Create stack</a></li>
+            </metal:crumbs>
+        </metal:breadcrumbs>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
+        <h3 id="pagetitle">
+            <strong i18n:translate="">Create new stack</strong>
+        </h3>
+        <div class="large-8 columns">
+            <div class="wizard no-title">
+                <form action="${request.route_path('stack_create')}" id="stack-wizard-form"
+                      method="post" data-abide="abide">
+                    ${structure:create_form['csrf_token']}
+                    <dl class="tabs" data-tab="">
+                        <dd class="active">
+                            <a id="tabStep1" href="#step1" ng-click="visitNextStep(1, $event)">
+                                <span class="cir">1</span> <b>General</b>
+                            </a>
+                        </dd>
+                        <dd>
+                            <a id="tabStep2" href="#step2" ng-click="visitNextStep(2, $event)">
+                                <span class="cir">2</span> <b>Parameters</b>
+                            </a>
+                        </dd>
+                    </dl>
+                    <div class="tabs-content">
+                        <!--! Step 1: General tab content -->
+                        <div class="content active" id="step1"
+                            tal:define="html_attrs_val {'pattern': '^[^\/\\\]{1,255}$'};">
+                            <h6 i18n:translate="">General</h6>
+                            ${panel('form_field', field=create_form['name'], ng_attrs={'model': 'stackName'}, **html_attrs_val)}
+                            <hr/>
+                            <h6 i18n:translate="">Template</h6>
+                            <hr/>
+                            ${panel('tag_editor', tags=[])}
+                        </div>
+                        <!--! Step 2: Parameters tab content -->
+                        <div class="content" id="step2">
+                            <h6 i18n:translate="">Parameters</h6>
+                        </div>
+                    </div>
+                    <div class="clearfix">&nbsp;</div>
+                </form>
+            </div>
+        </div>
+        <div class="large-4 columns" ng-cloak="">
+            <div class="help-padding">&nbsp;</div>
+            <div class="summary" ng-cloak="">
+                <h5 i18n:translate="" class="title">Summary</h5>
+                <div class="section step1">
+                    <div class="row">
+                        <label i18n:translate="">Name:</label>
+                        <div class="columns value">{{ stackName }}</div>
+                    </div>
+                    <div class="row" ng-show="templateURL">
+                        <label i18n:translate="">Template URL:</label>
+                        <div class="columns value">{{ templateURL }}</div>
+                    </div>
+                </div>
+                <div class="section" ng-show="tagsObject">
+                    <div class="row">
+                        <label i18n:translate="">Tags:</label>
+                        <div class="columns value" id="tag-preview">
+                            <div ng-repeat="(name, value) in tagsObject">{{ name }}={{ value }}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section step2 hide">
+                    <div class="row">
+                        <label i18n:translate="">Parameters:</label>
+                        <div class="columns value" id="parameter-preview">
+                            <div ng-repeat="(name, value) in parametersObject">{{ name }}={{ value }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="">
+                <metal:block metal:use-macro="layout.global_macros['help_expando']" />
+                <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
+                    <!-- HELP CONTENT -->
+                    <div id="help-html-console_create_stack" ng-include="'${layout.help_path('console_create_stack.html')}'"></div> 
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/utils/purl.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/stack_wizard.js')}"></script>
+</div>
+
+</metal:block>
+

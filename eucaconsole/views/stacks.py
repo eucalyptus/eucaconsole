@@ -35,7 +35,7 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config
 
 from ..i18n import _
-from ..forms.stacks import StacksDeleteForm, StacksFiltersForm
+from ..forms.stacks import StacksDeleteForm, StacksFiltersForm, StacksCreateForm
 from ..models import Notification
 from ..views import LandingPageView, BaseView, JSONResponse
 from . import boto_error_handler
@@ -273,4 +273,27 @@ class StackStateView(BaseView):
             return dict(
                 results=dict(events=events)
             )
+
+class StackWizardView(BaseView):
+    """View for Create Stack wizard"""
+    TEMPLATE = '../templates/stack/stack_wizard.pt'
+
+    def __init__(self, request):
+        super(StackWizardView, self).__init__(request)
+        self.request = request
+        self.create_form = StacksCreateForm(request)
+        self.render_dict = dict(
+            create_form=self.create_form,
+            controller_options_json=self.get_controller_options_json(),  # TODO: delete if not needed
+        )
+
+    def get_controller_options_json(self):
+        return BaseView.escape_json(json.dumps({
+            '': '',
+        }))
+
+    @view_config(route_name='stack_new', renderer=TEMPLATE, request_method='GET')
+    def stack_new(self):
+        """Displays the Stack wizard"""
+        return self.render_dict
 
