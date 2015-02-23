@@ -28,9 +28,6 @@
 Forms for Cloud Formations 
 
 """
-import wtforms
-from wtforms import validators
-
 from ..i18n import _
 from . import BaseSecureForm, TextEscapedField
 
@@ -68,6 +65,6 @@ class StacksFiltersForm(BaseSecureForm):
     def __init__(self, request, cloud_type='euca', **kwargs):
         super(StacksFiltersForm, self).__init__(request, **kwargs)
         self.facets = [
-            {'name':'tags', 'label':self.tags.label.text}
+            {'name': 'tags', 'label': self.tags.label.text}
         ]
 

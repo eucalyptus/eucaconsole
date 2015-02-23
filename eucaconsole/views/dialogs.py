@@ -39,8 +39,7 @@ from ..views.buckets import BucketDetailsView, FOLDER_NAME_PATTERN
 
 
 @panel_config('stack_dialogs', renderer='../templates/dialogs/stack_dialogs.pt')
-def stack_dialogs(context, request, stack=None, landingpage=False,
-                      delete_form=None):
+def stack_dialogs(context, request, stack=None, landingpage=False, delete_form=None):
     """Modal dialogs for Stacks landing and detail page."""
     return dict(
         stack=stack,
@@ -48,6 +47,7 @@ def stack_dialogs(context, request, stack=None, landingpage=False,
         landingpage=landingpage,
         delete_form=delete_form,
     )
+
 
 @panel_config('ipaddress_dialogs', renderer='../templates/dialogs/ipaddress_dialogs.pt')
 def ipaddress_dialogs(context, request, eip=None, landingpage=False,
@@ -213,6 +213,17 @@ def scalinggroup_dialogs(context, request, scaling_group=None, landingpage=False
     return dict(
         scaling_group=scaling_group,
         scaling_group_name=BaseView.escape_braces(scaling_group.name) if scaling_group else '',
+        landingpage=landingpage,
+        delete_form=delete_form,
+    )
+
+@panel_config('elb_dialogs', renderer='../templates/dialogs/elb_dialogs.pt')
+def elb_dialogs(context, request, elb=None, in_use=False, landingpage=False, delete_form=None):
+    """ Modal dialogs for load balancers landing and detail page."""
+    return dict(
+        elb=elb,
+        elb_name=BaseView.escape_braces(elb.name) if elb else '',
+        in_use=in_use,
         landingpage=landingpage,
         delete_form=delete_form,
     )

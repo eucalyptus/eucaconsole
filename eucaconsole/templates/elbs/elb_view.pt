@@ -1,0 +1,71 @@
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
+
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/elb.css')}" />
+</head>
+
+<div metal:fill-slot="main_content">
+    <div class="row" id="contentwrap" ng-app="ELBPage" ng-controller="ELBPageCtrl"
+         ng-init="initController('${controller_options_json}')">
+        <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+            <metal:crumbs metal:fill-slot="crumbs">
+                <li><a href="${request.route_path('elbs')}" i18n:translate="">Load balancer</a></li>
+                <li class="current"><a href="#">${elb_name}</a></li>
+            </metal:crumbs>
+        </metal:breadcrumbs>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
+        <h3 id="pagetitle">
+            <strong i18n:translate="">Details for Load balancer:</strong>
+            <em>${elb_name}</em>
+        </h3>
+        <div class="large-7 columns">
+            <div class="panel has-actions">
+                <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="elb">
+                    <metal:actions metal:fill-slot="actions">
+                        <li>
+                            <a id="delete-elb-action" data-reveal-id="delete-elb-modal"
+                               i18n:translate="">Delete load balancer</a>
+                        </li>
+                    </metal:actions>
+                </metal:block>
+                <form>
+                    <h6 i18n:translate="">Load balancer</h6>
+                    <div class="row controls-wrapper readonly">
+                        <div class="small-3 columns"><label i18n:translate="">DNS name</label></div>
+                        <div class="small-9 columns value">${elb.dns_name}</div>
+                    </div>
+                    <div class="row controls-wrapper readonly">
+                        <div class="small-3 columns"><label i18n:translate="">In use?</label></div>
+                        <div class="small-9 columns value">${'yes' if in_use else 'no'}</div>
+                    </div>
+                    <div class="row controls-wrapper readonly">
+                        <div class="small-3 columns"><label i18n:translate="">Creation time</label></div>
+                        <div class="small-9 columns value" ng-cloak="">
+                            {{ '${elb_created_time}' | date: '${layout.angular_date_format}' }}
+                        </div>
+                    </div>
+                </form>
+                <div>&nbsp;</div>
+            </div>
+        </div>
+        <div class="large-5 columns">
+            <metal:block metal:use-macro="layout.global_macros['help_expando']" />
+            <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
+                <!--! Help goes here -->
+                <div id="help-html-console_edit_launch_config"
+                    ng-include="'${layout.help_path('console_edit_launch_config.html')}'">
+                </div> 
+            </div>
+        </div>
+        <!--! Modal dialogs -->
+        ${panel('elb_dialogs', elb=elb, in_use=in_use, delete_form=delete_form)}
+    </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_path('eucaconsole:static/js/pages/elb.js')}"></script>
+</div>
+
+</metal:block>
+
