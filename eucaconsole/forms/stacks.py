@@ -35,6 +35,23 @@ from ..i18n import _
 from . import BaseSecureForm, TextEscapedField
 
 
+class StacksCreateForm(BaseSecureForm):
+    """Stacks creation form.
+       Only need to initialize as a secure form to generate CSRF token
+    """
+    name_error_msg = 
+        _(u'Name is required and may contain lowercase letters, numbers, and/or hyphens')
+    name = wtforms.TextField(
+        label=_(u'Name'),
+        validators=[
+            validators.DataRequired(message=name_error_msg),
+            validators.InputRequired(message=name_error_msg)
+        ],
+    )
+
+    def __init__(self, request, cloud_type='euca', **kwargs):
+        super(StacksCreateForm, self).__init__(request, **kwargs)
+
 class StacksDeleteForm(BaseSecureForm):
     """Stacks deletion form.
        Only need to initialize as a secure form to generate CSRF token
