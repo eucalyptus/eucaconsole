@@ -31,9 +31,6 @@ Pyramid views for Eucalyptus and AWS CloudFormation stacks
 from urllib import quote
 import simplejson as json
 
-import boto
-from boto.cloudformation.stack import Stack
-
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config
 
@@ -151,7 +148,6 @@ class StackView(BaseView):
             stack_id=self.stack.stack_id if self.stack else '',
             stack_creation_time=self.dt_isoformat(self.stack.creation_time),
             status=self.stack.stack_status.lower().replace('_', '-'),
-            escaped_stack_name=quote(self.stack.stack_name),
             delete_form=self.delete_form,
             in_use=False,
             controller_options_json=self.get_controller_options_json(),
@@ -191,5 +187,3 @@ class StackView(BaseView):
         return BaseView.escape_json(json.dumps({
             'stack_name': self.stack.stack_name
         }))
-
-
