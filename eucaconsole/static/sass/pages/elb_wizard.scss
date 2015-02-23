@@ -1,0 +1,17 @@
+// Import common Foundation variables
+@import "../includes/eucavariables";
+
+// Import common wizard styles
+@import "../includes/wizard";
+
+
+/* @section Elasitc Load Balancer Wizard styles */
+
+#elb-form {
+    input.name {
+        width: 100px;
+        margin-right: 8px;
+        margin-bottom: 4px;
+        padding: 4px;
+    }
+}

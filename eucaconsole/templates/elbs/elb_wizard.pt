@@ -1,0 +1,110 @@
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
+
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/elb_wizard.css')}" />
+</head>
+
+<div metal:fill-slot="main_content">
+    <div class="row" id="contentwrap" ng-app="ELBWizard" ng-controller="ELBWizardCtrl"
+         ng-init="initController('${controller_options_json}')">
+        <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+            <metal:crumbs metal:fill-slot="crumbs">
+                <li><a href="${request.route_path('elbs')}" i18n:translate="">ELBs</a></li>
+                <li class="current"><a href="#" i18n:translate="">Create ELB</a></li>
+            </metal:crumbs>
+        </metal:breadcrumbs>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
+        <h3 id="pagetitle">
+            <strong i18n:translate="">Create new elastic load balancer</strong>
+        </h3>
+        <div class="large-8 columns">
+            <div class="wizard no-title">
+                <form action="${request.route_path('elb_create')}" id="launch-config-form"
+                      method="post" data-abide="abide" enctype="multipart/form-data">
+                    <dl id="wizard-tabs" class="tabs" data-tab="">
+                        <dd class="">
+                            <a id="tabStep1" ng-click="visitNextStep(1, $event)" href="#step1">
+                                <span class="cir">1</span> <b>General</b>
+                            </a>
+                        </dd>
+                        <dd ng-class="{disabled: step1Invalid}">
+                            <a id="tabStep2" ng-click="visitNextStep(2, $event)"
+                               href="#step2" ng-cloak="" ng-if="!step1Invalid">
+                                <span class="cir">2</span> <b>Network</b>
+                            </a>
+                            <span class="cir" ng-cloak="" ng-if="step1Invalid">2</span>
+                            <b ng-cloak="" ng-if="step1Invalid">Network</b>
+                        </dd>
+                        <dd ng-class="{disabled: step2Invalid}">
+                            <a id="tabStep3" ng-click="visitNextStep(3, $event)"
+                               href="#step3" ng-cloak="" ng-if="!step2Invalid">
+                                <span class="cir">3</span> <b>Instances</b>
+                            </a>
+                            <span class="cir" ng-cloak="" ng-if="step2Invalid">3</span>
+                            <b ng-cloak="" ng-if="step2Invalid">Instances</b>
+                        </dd>
+                        <dd ng-class="{disabled: step3Invalid}">
+                            <a id="tabStep4" ng-click="visitNextStep(4, $event)"
+                               href="#step4" ng-cloak="" ng-if="!step3Invalid">
+                                <span class="cir">4</span> <b>Health Check</b>
+                            </a>
+                            <span class="cir" ng-cloak="" ng-if="step3Invalid">4</span>
+                            <b ng-cloak="" ng-if="step3Invalid">Health Check</b>
+                        </dd>
+                    </dl>
+                    <div class="tabs-content">
+                        <!--! Step 1: Image tab content -->
+                        <div class="content" id="step1">
+                        </div>
+                        <!--! Step 2: Type tab content -->
+                        <div class="content" id="step2">
+                        </div>
+                        <!--! Step 3: Security tab content -->
+                        <div class="content" id="step3"> 
+                        </div>
+                        <!--! Step 4: Advanced tab content -->
+                        <div class="content" id="step4">
+                        </div>
+                    </div>
+                    <div class="clearfix">&nbsp;</div>
+                </form>
+            </div>
+        </div>
+        <div class="large-4 columns">
+            <div class="help-padding">&nbsp;</div>
+            <div class="summary">
+                <h5 i18n:translate="" class="title">Summary</h5>
+                <div class="section step1 hide">
+                    <div class="row">
+                        <div class="small-4 columns"><label i18n:translate="" class="right">Name:</label></div>
+                        <div class="small-8 columns value">{{ elbName }}</div>
+                    </div>
+                </div>
+                <div class="section step2 hide">
+                </div>
+                <div class="section step3 hide">
+                </div>
+                <div class="section step4 hide">
+                </div>
+            </div>
+            <div>
+                <metal:block metal:use-macro="layout.global_macros['help_expando']" />
+                <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
+                    <!-- HELP CONTENT -->
+                    <div id="help-html-console_create_elb" ng-include="'${layout.help_path('console_create_elb.html')}'"></div> 
+                </div>
+            </div>
+        </div>
+        <!--! Modal dialogs -->
+    </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/utils/purl.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/elb_wizard.js')}"></script>
+</div>
+
+</metal:block>
+

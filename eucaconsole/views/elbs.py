@@ -246,3 +246,21 @@ class ELBView(BaseView):
         }))
 
 
+class CreateELBView(BaseView):
+    """Create ELB wizard"""
+    TEMPLATE = '../templates/elbs/elb_wizard.pt'
+
+    def __init__(self, request):
+        super(CreateELBView, self).__init__(request)
+        self.ec2_conn = self.get_connection()
+        self.render_dict = dict(
+            controller_options_json=self.get_controller_options_json(),
+        )
+
+    @view_config(route_name='elb_new', renderer=TEMPLATE)
+    def elb_view(self):
+        return self.render_dict
+
+    def get_controller_options_json(self):
+        return BaseView.escape_json(json.dumps({
+        }))
