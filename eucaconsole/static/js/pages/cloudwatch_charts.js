@@ -34,8 +34,11 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
                     'statistic': $scope.statistic,
                     'tzoffset': (new Date()).getTimezoneOffset()
                 };
-                var endpointUrl = cloudwatchApiUrl + '?' + $.param(params);
-                $http.get(endpointUrl).success(function(oData) {
+                $http({
+                    'url': cloudwatchApiUrl,
+                    'method': 'GET',
+                    'params': params
+                }).success(function(oData) {
                     var results = oData ? oData.results : '';
                     var unit = oData.unit || $scope.unit;
                     var chart = nv.models.lineChart()
