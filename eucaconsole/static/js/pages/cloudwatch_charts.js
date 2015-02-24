@@ -36,6 +36,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
                 var endpointUrl = cloudwatchApiUrl + '?' + $.param(params);
                 $http.get(endpointUrl).success(function(oData) {
                     var results = oData ? oData.results : '';
+                    var unit = oData.unit || $scope.unit;
                     var chart = nv.models.lineChart()
                         .margin({left: 80})
                         .useInteractiveGuideline(true)
@@ -51,9 +52,9 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
                         chart.forceY([0, 100]);  // Set proper y-axis range for percentage units
                     }
                     if ($scope.metric === 'NetworkOut') {
-                        chart.forceY([0, 1000]);
+                        chart.forceY([0, 1000]);  // Prevent display of negative values on chart
                     }
-                    chart.yAxis.axisLabel($scope.unit).tickFormat(d3.format('.02f'));
+                    chart.yAxis.axisLabel(unit).tickFormat(d3.format('.02f'));
                     d3.select('#' + $scope.elemId).datum(results).call(chart);
                     nv.utils.windowResize(chart.update);
                 }).error(function (oData, status) {

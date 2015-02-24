@@ -28,6 +28,8 @@
 CloudWatch REST API
 
 """
+from __future__ import division
+
 import datetime
 import time
 
@@ -38,6 +40,8 @@ from ..views import BaseView, boto_error_handler
 
 
 class CloudWatchAPIView(BaseView):
+    """CloudWatch Charts API"""
+
     def __init__(self, request):
         super(CloudWatchAPIView, self).__init__(request)
         self.request = request
@@ -69,17 +73,19 @@ class CloudWatchAPIView(BaseView):
         with boto_error_handler(self.request):
             stats = self.get_stats(period, duration, metric, namespace, statistic, idtype, ids, unit)
         json_stats = []
+        divider = 1
+        if unit == 'Bytes':  # Convert Bytes to Kilobytes
+            divider = 1000
+            unit = 'Kilobytes'
         for stat in stats:
-            json_stats.append(dict(
-                x=time.mktime(stat.get('Timestamp').utctimetuple()) * 1000,  # Milliseconds since Unix epoch
-                y=stat.get(statistic),
-            ))
+            amount = stat.get(statistic)
+            if divider > 1:
+                amount /= divider
+            timestamp = time.mktime(stat.get('Timestamp').utctimetuple()) * 1000,  # Milliseconds since Unix epoch\
+            json_stats.append(dict(x=timestamp, y=amount))
         return dict(
             unit=unit,
-            results=[{
-                'key': metric,
-                'values': json_stats
-            }]
+            results=[dict(key=metric, values=json_stats)],
         )
 
     def get_stats(self, period=60, duration=600, metric='CPUUtilization', namespace='AWS/EC2',
@@ -113,6 +119,7 @@ class CloudWatchAPIView(BaseView):
         :param unit: Valid values are Seconds, Kilobytes, Percent, Count, Kilobytes/Second, Count/Second, et. al.
 
         """
+        # TODO: Accept start/end time params, falling back to duration if missing
         end_time = datetime.datetime.utcnow()
         start_time = end_time - datetime.timedelta(seconds=duration)
         statistics = [statistic]
