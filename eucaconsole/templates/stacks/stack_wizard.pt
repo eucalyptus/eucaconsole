@@ -38,17 +38,76 @@
                     <div class="tabs-content">
                         <!--! Step 1: General tab content -->
                         <div class="content active" id="step1"
-                            tal:define="html_attrs_val {'pattern': '^[^\/\\\]{1,255}$'};">
+                            tal:define="html_attrs_val {'pattern': '^[^\/\\\]{1,255}$', 'ng-model': 'stackName'};">
                             <h6 i18n:translate="">General</h6>
-                            ${panel('form_field', field=create_form['name'], ng_attrs={'model': 'stackName'}, **html_attrs_val)}
+                            <div class="row controls-name">
+                                <div class="small-12 columns subheader">
+                                    <span class="subsection-label" i18n:translate="">Name</span>
+                                    <span class="req">*</span>:
+                                </div>
+                            </div>
+                            <div class="row userentry controls-wrapper">
+                                <div id="user-name-field-div" class="field columns">
+                                    <div ng-non-bindable=""><!--! Note: Don't remove non-bindable attr here -->
+                                        ${structure:create_form['name'](autocomplete="off", **html_attrs_val)}
+                                    </div>
+                                </div>
+                            </div>
                             <hr/>
                             <h6 i18n:translate="">Template</h6>
+                            <div class="row">
+                                <div class="small-12 columns value">
+                                    <input type="radio" id="inputtype" name="inputtype" value="sample" ng-model="inputtype">
+                                        <label id='userdatalabel' i18n:translate="">Use sample template</label>
+                                    </input>
+                                    <select id="userdata" name="userdata" ng-show="inputtype=='sample'">
+                                        <option value="euca-console-template">Eucalyptus Console Template</option>
+                                    </select>
+                                    <br/>
+                                    <input type="radio" id="inputtype" name="inputtype" value="file" ng-model="inputtype">
+                                        <label id='userdatalabel' i18n:translate="">Upload template</label>
+                                    </input>
+                                    <input id="userdata_file" type="file" ng-model="userDataFile" ng-disabled="isNotStopped" name="userdata_file" disabled="disabled" ng-show="inputtype=='file'"></input><span id="userdatatype"></span>
+                                    <br/>
+                                    <input type="radio" id="inputtype" name="inputtype" value="url" ng-model="inputtype">
+                                        <label id='userdatalabel' i18n:translate="">Use template from URL</label>
+                                    </input>
+                                    <input type="text" ng-show="inputtype='url'"/>
+                                    
+                                </div>
+                            </div>
                             <hr/>
                             ${panel('tag_editor', tags=[])}
+                            <hr/>
+                            <div>
+                                <label>
+                                    <span class="req">*</span>
+                                    <span i18n:translate="">Required fields</span>
+                                </label>
+                            </div>
+                            <div class="row">
+                                <div class="small-3 columns">&nbsp;</div>
+                                <div class="small-9 columns field inline">
+                                    <a id="visit-step-2" class="button small round" ng-click="visitNextStep(2, $event)" ng-disabled="isNotValid">
+                                        <span i18n:translate="">Next</span>
+                                        <a class="cancel-link" href="${request.route_path('instances')}">Cancel</a>
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                         <!--! Step 2: Parameters tab content -->
                         <div class="content" id="step2">
                             <h6 i18n:translate="">Parameters</h6>
+                            <div class="row">
+                                <div class="small-4 columns">&nbsp;</div>
+                                <div class="small-8 columns field inline">
+                                    <button type="submit" class="button" ng-click="saveOptions()" id="stack-wizard-btn-step2" ng-disabled="isNotValid">
+                                        <span i18n:translate="">Create stack</span>
+                                    </button>
+                                    <a href="${request.route_path('stacks')}"
+                                       class="cancel-link" i18n:translate="">Cancel</a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="clearfix">&nbsp;</div>

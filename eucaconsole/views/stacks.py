@@ -276,7 +276,7 @@ class StackStateView(BaseView):
 
 class StackWizardView(BaseView):
     """View for Create Stack wizard"""
-    TEMPLATE = '../templates/stack/stack_wizard.pt'
+    TEMPLATE = '../templates/stacks/stack_wizard.pt'
 
     def __init__(self, request):
         super(StackWizardView, self).__init__(request)
