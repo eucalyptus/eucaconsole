@@ -27,7 +27,7 @@
             </dl>
             <div class="panel no-title" ng-app="CloudWatchCharts">
                 <p i18n:translate="">
-                    Displaying statistics for the past hour.  Note that all timestamps are in UTC.
+                    Displaying statistics for the past hour.
                 </p>
                 <div class="row">
                     <div class="medium-6 columns">

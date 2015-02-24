@@ -69,6 +69,7 @@ class CloudWatchAPIView(BaseView):
         namespace = u'AWS/{0}'.format(self.request.params.get('namespace', 'EC2'))
         statistic = self.request.params.get('statistic') or 'Average'
         idtype = self.request.params.get('idtype') or 'InstanceId'
+        tz_offset = int(self.request.params.get('tzoffset', 0))
         unit = self.request.params.get('unit')
         with boto_error_handler(self.request):
             stats = self.get_stats(period, duration, metric, namespace, statistic, idtype, ids, unit)
@@ -79,9 +80,12 @@ class CloudWatchAPIView(BaseView):
             unit = 'Kilobytes'
         for stat in stats:
             amount = stat.get(statistic)
-            if divider > 1:
+            if divider != 1:
                 amount /= divider
-            timestamp = time.mktime(stat.get('Timestamp').utctimetuple()) * 1000,  # Milliseconds since Unix epoch\
+            dt_object = stat.get('Timestamp')
+            if tz_offset:  # Convert to local time based on client offset
+                dt_object = dt_object - datetime.timedelta(minutes=tz_offset)
+            timestamp = time.mktime(dt_object.timetuple()) * 1000,  # Milliseconds since Unix epoch
             json_stats.append(dict(x=timestamp, y=amount))
         return dict(
             unit=unit,

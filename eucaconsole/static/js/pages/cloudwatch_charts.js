@@ -31,7 +31,8 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
                     'metric': $scope.metric,
                     'duration': $scope.duration,
                     'unit': $scope.unit,
-                    'statistic': $scope.statistic
+                    'statistic': $scope.statistic,
+                    'tzoffset': (new Date()).getTimezoneOffset()
                 };
                 var endpointUrl = cloudwatchApiUrl + '?' + $.param(params);
                 $http.get(endpointUrl).success(function(oData) {
@@ -45,8 +46,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
                     ;
                     chart.xScale(d3.time.scale());
                     chart.xAxis.tickFormat(function(d) {
-                        // TODO: Convert UTC timestamp to local time
-                        return d3.time.format('%m/%d %H:%M %p')(new Date(d));
+                        return d3.time.format('%m/%d %H:%M')(new Date(d));
                     });
                     if ($scope.unit === 'Percent') {
                         chart.forceY([0, 100]);  // Set proper y-axis range for percentage units
