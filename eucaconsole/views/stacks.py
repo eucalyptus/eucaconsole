@@ -236,9 +236,11 @@ class StackStateView(BaseView):
                     'status': resource.resource_status,
                     'updated_timestamp': resource.LastUpdatedTimestamp})
             return dict(
-                results=dict(stack_status=stack_status.lower().replace('_', '-'),
-                             outputs=outputs,
-                             resources=resources)
+                results=dict(
+                    stack_status=stack_status.lower().replace('_', '-'),
+                    outputs=outputs,
+                    resources=resources
+                )
             )
 
     @view_config(route_name='stack_template', renderer='json', request_method='GET')
