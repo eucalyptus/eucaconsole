@@ -28,7 +28,6 @@
 Pyramid views for Eucalyptus and AWS CloudFormation stacks
 
 """
-from urllib import quote
 import simplejson as json
 
 from pyramid.httpexceptions import HTTPFound
@@ -143,22 +142,23 @@ class StackView(BaseView):
             self.stack = self.get_stack()
         self.delete_form = StacksDeleteForm(self.request, formdata=self.request.params or None)
         search_facets = [
-            {'name':'status', 'label':_(u"Status"), 'options': [
-                {'key':'create-complete', 'label':_("Create Complete")},
-                {'key':'create-in-progress', 'label':_("Create In Progresss")},
-                {'key':'create-failed', 'label':_("Create Failed")},
-                {'key':'delete-complete', 'label':_("Delete Complete")},
-                {'key':'delete-in-progress', 'label':_("Delete In Progresss")},
-                {'key':'delete-failed', 'label':_("Delete Failed")},
-                {'key':'rollback-complete', 'label':_("Rollback Complete")},
-                {'key':'rollback-in-progress', 'label':_("Rollback In Progresss")},
-                {'key':'rollback-failed', 'label':_("Rollback Failed")}
+            {'name': 'status', 'label': _(u"Status"), 'options': [
+                {'key': 'create-complete', 'label': _("Create Complete")},
+                {'key': 'create-in-progress', 'label': _("Create In Progresss")},
+                {'key': 'create-failed', 'label': _("Create Failed")},
+                {'key': 'delete-complete', 'label': _("Delete Complete")},
+                {'key': 'delete-in-progress', 'label': _("Delete In Progresss")},
+                {'key': 'delete-failed', 'label': _("Delete Failed")},
+                {'key': 'rollback-complete', 'label': _("Rollback Complete")},
+                {'key': 'rollback-in-progress', 'label': _("Rollback In Progresss")},
+                {'key': 'rollback-failed', 'label': _("Rollback Failed")}
             ]},
-            {'name':'phys-id', 'label':_(u"Physical ID")}
-        ];
+            {'name': 'phys-id', 'label': _(u"Physical ID")}
+        ]
         self.render_dict = dict(
             stack=self.stack,
             stack_name=self.escape_braces(self.stack.stack_name) if self.stack else '',
+            stack_description=self.escape_braces(self.stack.stack_description) if self.stack else '',
             stack_id=self.stack.stack_id if self.stack else '',
             stack_creation_time=self.dt_isoformat(self.stack.creation_time),
             status=self.stack.stack_status.lower().replace('_', '-'),
@@ -172,7 +172,7 @@ class StackView(BaseView):
     @view_config(route_name='stack_view', renderer=TEMPLATE)
     def stack_view(self):
         return self.render_dict
- 
+
     @view_config(route_name='stack_delete', request_method='POST', renderer=TEMPLATE)
     def stack_delete(self):
         if self.delete_form.validate():
@@ -224,21 +224,23 @@ class StackStateView(BaseView):
             stack_resources = self.cloudformation_conn.list_stack_resources(self.stack_name)
             stack_status = stack.stack_status if stack else 'delete_complete'
             stack_outputs = stack.outputs if stack else None
-            outputs = [];
+            outputs = []
             for output in stack_outputs:
-                outputs.append({'key':output.key, 'value':output.value})
+                outputs.append({'key': output.key, 'value': output.value})
             resources = []
             for resource in stack_resources:
                 resources.append({
-                    'type':resource.resource_type,
-                    'logical_id':resource.logical_resource_id,
-                    'physical_id':resource.physical_resource_id,
-                    'status':resource.resource_status,
-                    'updated_timestamp':resource.LastUpdatedTimestamp})
+                    'type': resource.resource_type,
+                    'logical_id': resource.logical_resource_id,
+                    'physical_id': resource.physical_resource_id,
+                    'status': resource.resource_status,
+                    'updated_timestamp': resource.LastUpdatedTimestamp})
             return dict(
-                results=dict(stack_status=stack_status.lower().replace('_', '-'),
-                             outputs=outputs,
-                             resources=resources)
+                results=dict(
+                    stack_status=stack_status.lower().replace('_', '-'),
+                    outputs=outputs,
+                    resources=resources
+                )
             )
 
     @view_config(route_name='stack_template', renderer='json', request_method='GET')
@@ -250,7 +252,7 @@ class StackStateView(BaseView):
             params = []
             for name in parsed['Parameters'].keys():
                 param = parsed['Parameters'][name]
-                params.append({'name':name, 'description':param['Description'], 'type':param['Type']})
+                params.append({'name': name, 'description': param['Description'], 'type': param['Type']})
             return dict(
                 results=dict(description=parsed['Description'],
                              parameters=params)
@@ -264,12 +266,12 @@ class StackStateView(BaseView):
             events = []
             for event in stack_events:
                 events.append({
-                    'timestamp':event.timestamp.strftime('%Y-%m-%dT%H:%M:%SZ'),
-                    'status':event.resource_status,
-                    'status_reason':event.resource_status_reason,
-                    'type':event.resource_type,
-                    'logical_id':event.logical_resource_id,
-                    'physical_id':event.physical_resource_id})
+                    'timestamp': event.timestamp.strftime('%Y-%m-%dT%H:%M:%SZ'),
+                    'status': event.resource_status,
+                    'status_reason': event.resource_status_reason,
+                    'type': event.resource_type,
+                    'logical_id': event.logical_resource_id,
+                    'physical_id': event.physical_resource_id})
             return dict(
                 results=dict(events=events)
             )
