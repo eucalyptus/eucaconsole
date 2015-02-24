@@ -220,19 +220,31 @@
         </div>
         <div class="large-4 columns">
             <div class="help-padding">&nbsp;</div>
-            <div class="summary">
+            <div class="summary" ng-cloak="">
                 <h5 i18n:translate="" class="title">Summary</h5>
-                <div class="section step1 hide">
+                <div class="section" ng-show="summaryDisplays[0]">
                     <div class="row">
                         <div class="small-4 columns"><label i18n:translate="" class="right">Name:</label></div>
                         <div class="small-8 columns value">{{ elbName }}</div>
                     </div>
                 </div>
-                <div class="section step2 hide">
+                <div class="section" ng-show="summaryDisplays[1]">
+                    <div class="row">
+                        <div class="small-4 columns"><label i18n:translate="" class="right">VPC Network:</label></div>
+                        <div class="small-8 columns value"></div>
+                    </div>
                 </div>
-                <div class="section step3 hide">
+                <div class="section" ng-show="summaryDisplays[2]">
+                    <div class="row">
+                        <div class="small-4 columns"><label i18n:translate="" class="right">Availablity Zones:</label></div>
+                        <div class="small-8 columns value"></div>
+                    </div>
                 </div>
-                <div class="section step4 hide">
+                <div class="section" ng-show="summaryDisplays[3]">
+                    <div class="row">
+                        <div class="small-4 columns"><label i18n:translate="" class="right">Protocol:</label></div>
+                        <div class="small-8 columns value"></div>
+                    </div>
                 </div>
             </div>
             <div>

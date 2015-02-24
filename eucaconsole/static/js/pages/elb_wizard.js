@@ -9,11 +9,12 @@ angular.module('ELBWizard', ['EucaConsoleUtils'])
         $scope.elbName = '';
         $scope.elbForm = undefined;
         $scope.urlParams = undefined;
-        $scope.summarySection = undefined;
+        $scope.totalSteps = 4;
         $scope.currentStepIndex = 1;
         $scope.isNotValid = true;
         $scope.invalidSteps = [];
         $scope.stepClasses = [];
+        $scope.summaryDisplays = [];
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.setInitialValues();
@@ -23,16 +24,23 @@ angular.module('ELBWizard', ['EucaConsoleUtils'])
         $scope.setInitialValues = function () {
             $scope.elbForm = $('#elb-form');
             $scope.urlParams = $.url().param();
-            $scope.summarySection = $('.summary');
+            $scope.totalSteps = 4;
             $scope.currentStepIndex = 1;
             $scope.isNotValid = true;
-            $scope.invalidSteps[0] = true;
-            $scope.invalidSteps[1] = true;
-            $scope.invalidSteps[2] = true;
+            $scope.invalidSteps = Array.apply(undefined, Array($scope.totalSteps));
+            angular.forEach($scope.invalidSteps, function(a, index){
+                $scope.invalidSteps[index] = true;
+            });
+            $scope.stepClasss = Array.apply(undefined, Array($scope.totalSteps));
+            angular.forEach($scope.stepClasses, function(a, index){
+                $scope.stepClasses[index] = '';
+            });
             $scope.stepClasses[$scope.currentStepIndex - 1] = 'active';
-        };
-        $scope.checkRequiredInput = function () {
-            $scope.isNotValid = false;
+            $scope.summaryDisplays = Array.apply(undefined, Array($scope.totalSteps));
+            angular.forEach($scope.summaryDisplays, function(a, index){
+                $scope.summaryDisplays[index] = false;
+            });
+            $scope.summaryDisplays[$scope.currentStepIndex - 1] = true;
         };
         $scope.setWatcher = function (){
             $scope.$watch('currentStepIndex', function(){
@@ -98,9 +106,15 @@ angular.module('ELBWizard', ['EucaConsoleUtils'])
                 tabElement.focus();
             }
         };
+        $scope.checkRequiredInput = function () {
+            $scope.isNotValid = false;
+        };
         // return true if exists invalid input fields on 'step' page
         // also set the focus on the invalid field
-        $scope.isInvalidFields = function(step) {
+        $scope.existInvalidFields = function(step) {
+            if ($scope.elbForm === undefined) {
+                return true;
+            }
             $scope.elbForm.trigger('validate');
             var tabContent = $scope.elbForm.find('#step' + step);
             var invalidFields = tabContent.find('[data-invalid]');
@@ -117,7 +131,7 @@ angular.module('ELBWizard', ['EucaConsoleUtils'])
             var invalidStepsIndex = currentStep - 1;
 
             // Check for form validation before proceeding to next step
-            if ($scope.isInvalidFields(currentStep) || $scope.isNotValid === true) {
+            if ($scope.existInvalidFields(currentStep) || $scope.isNotValid === true) {
                 // Handle the case where the tab was clicked to visit the previous step
                 if ($scope.currentStepIndex > nextStep) {
                     $scope.currentStepIndex = nextStep;
@@ -152,7 +166,7 @@ angular.module('ELBWizard', ['EucaConsoleUtils'])
         };
         // Display appropriate step in summary
         $scope.showSummarySecton = function(step) {
-            $scope.summarySection.find('.step' + step).removeClass('hide');
+            $scope.summaryDisplays[step - 1] = true;
         };
         $scope.clearErrors = function(step) {
             $('#step'+step).find('div.error').each(function(idx, val) {
