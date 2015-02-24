@@ -126,6 +126,7 @@ class DashboardView(BaseView):
             dict(name=_(u'Auto Scaling'), status=''),
             dict(name=_(u'Elastic Load Balancing'), status=''),
             dict(name=_(u'CloudWatch'), status=''),
+            dict(name=_(u'CloudFormations'), status=''),
         ]
         session = self.request.session
         if session['cloud_type'] == 'euca':
@@ -203,11 +204,19 @@ class DashboardJsonView(BaseView):
                 if session['role_access']:
                     roles_count = len(iam_conn.list_roles().roles) if 'roles' in tiles else 0
 
+            stacks_count = 0
+            try:
+                cf_conn = self.get_connection(conn_type="cloudformation")
+                stacks_count = len(cf_conn.list_stacks(stack_status_filters=['CREATE_COMPLETE'])) if 'stacks' in tiles else 0
+            except BotoServerError:
+                pass
+
             return dict(
                 instance_total=instances_total_count,
                 instances_running=instances_running_count,
                 instances_stopped=instances_stopped_count,
                 instances_scaling=instances_scaling_count,
+                stacks=stacks_count,
                 volumes=volumes_count,
                 snapshots=snapshots_count,
                 buckets=buckets_count,
@@ -266,6 +275,16 @@ class DashboardJsonView(BaseView):
                 conn = self.get_connection(conn_type="iam")
                 try:
                     conn.get_all_groups(path_prefix="/notlikely")
+                except BotoServerError as err:
+                    if err.code == 'UnauthorizedOperation':
+                        status = 'denied'
+                    else:
+                        status = 'down'
+            elif svc == _(u'CloudFoundations'):
+                conn = self.get_connection(conn_type="cloudfoundation")
+                try:
+                    # we don't support update, and it's transient, so not likely to return data
+                    conn.list_stacks(stack_status_filters=['UPDATE_IN_PROGRESS'])
                 except BotoServerError as err:
                     if err.code == 'UnauthorizedOperation':
                         status = 'denied'

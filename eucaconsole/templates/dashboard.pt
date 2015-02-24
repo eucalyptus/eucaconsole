@@ -88,7 +88,7 @@
                             <metal:block metal:use-macro="layout.global_macros['dashaction']" />
                             <div class="content">
                                 <a href="${request.route_path('stacks')}">
-                                    <i class="icon"><em><i ng-show="itemsLoading" class="dots" ></i>
+                                    <i class="icon"><em><i ng-show="itemsLoading" class="busy" ></i>
                                         <span ng-show="!itemsLoading" id="stacks-count" ng-cloak="">{{ totals.stacks}}</span></em>
                                     </i>
                                 </a>
