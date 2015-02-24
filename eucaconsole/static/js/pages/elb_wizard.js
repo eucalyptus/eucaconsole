@@ -7,13 +7,13 @@
 angular.module('ELBWizard', ['EucaConsoleUtils'])
     .controller('ELBWizardCtrl', function ($scope, $http, $timeout, eucaHandleError, eucaUnescapeJson) {
         $scope.elbName = '';
+        $scope.elbForm = undefined;
         $scope.urlParams = undefined;
         $scope.summarySection = undefined;
         $scope.currentStepIndex = 1;
-        $scope.step1Invalid = true;
-        $scope.step2Invalid = true;
-        $scope.step3Invalid = true;
         $scope.isNotValid = true;
+        $scope.invalidSteps = [];
+        $scope.stepClasses = [];
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.setInitialValues();
@@ -21,9 +21,15 @@ angular.module('ELBWizard', ['EucaConsoleUtils'])
             $scope.setFocus();
         };
         $scope.setInitialValues = function () {
+            $scope.elbForm = $('#elb-form');
             $scope.urlParams = $.url().param();
             $scope.summarySection = $('.summary');
             $scope.currentStepIndex = 1;
+            $scope.isNotValid = true;
+            $scope.invalidSteps[0] = true;
+            $scope.invalidSteps[1] = true;
+            $scope.invalidSteps[2] = true;
+            $scope.stepClasses[$scope.currentStepIndex - 1] = 'active';
         };
         $scope.checkRequiredInput = function () {
             $scope.isNotValid = false;
@@ -92,51 +98,61 @@ angular.module('ELBWizard', ['EucaConsoleUtils'])
                 tabElement.focus();
             }
         };
+        // return true if exists invalid input fields on 'step' page
+        // also set the focus on the invalid field
+        $scope.isInvalidFields = function(step) {
+            $scope.elbForm.trigger('validate');
+            var tabContent = $scope.elbForm.find('#step' + step);
+            var invalidFields = tabContent.find('[data-invalid]');
+            invalidFields.focus();
+            if (invalidFields.length) {
+                return true;
+            } else {
+                return false;
+            }
+        };
         $scope.visitNextStep = function (nextStep, $event) {
-            // Trigger form validation before proceeding to next step
-            //$scope.launchForm.trigger('validate');
+            $event.preventDefault();
             var currentStep = nextStep - 1;
-            //var tabContent = $scope.launchForm.find('#step' + currentStep);
-            //var invalidFields = tabContent.find('[data-invalid]');
-            //if (invalidFields.length || $scope.isNotValid === true) {
-            //    invalidFields.focus();
-            if ($scope.isNotValid === true) {
-                $event.preventDefault();
+            var invalidStepsIndex = currentStep - 1;
+
+            // Check for form validation before proceeding to next step
+            if ($scope.isInvalidFields(currentStep) || $scope.isNotValid === true) {
                 // Handle the case where the tab was clicked to visit the previous step
                 if ($scope.currentStepIndex > nextStep) {
                     $scope.currentStepIndex = nextStep;
-                    $scope.checkRequiredInput();
                 }
-                return false;
-            }
-            if (nextStep == 2 && $scope.step1Invalid) { $scope.clearErrors(2); $scope.step1Invalid = false; }
-            if (nextStep == 3 && $scope.step2Invalid) { $scope.clearErrors(3); $scope.step2Invalid = false; }
-            if (nextStep == 4 && $scope.step3Invalid) { $scope.clearErrors(4); $scope.step3Invalid = false; }
-
-            // since above lines affects DOM, need to let that take affect first
-            $timeout(function() {
-            // If all is well, click the relevant tab to go to next step
-            // since clicking invokes this method again (via ng-click) and
-            // one ng action must complete before another can start
-                var hash = "step"+nextStep;
-                $("#wizard-tabs").children("dd").each(function() {
-                    var link = $(this).find("a");
-                    if (link.length !== 0) {
-                        var id = link.attr("href").substring(1);
-                        var $container = $("#" + id);
-                        $(this).removeClass("active");
-                        $container.removeClass("active");
-                        if (id == hash || $container.find("#" + hash).length) {
-                            $(this).addClass("active");
-                            $container.addClass("active");
-                        }
-                    }
-                });
-                // Unhide appropriate step in summary
-                $scope.summarySection.find('.step' + nextStep).removeClass('hide');
-                $scope.currentStepIndex = nextStep;
+                // Perform input field check on the currentStepIndex page 
                 $scope.checkRequiredInput();
-            },50);
+            } else { // OK to switch
+                // since the operations above affects DOM, need to wait for Angular to handle the DOM update
+                $timeout(function() {
+                    // clear the invalidSteps flag
+                    if ($scope.invalidSteps[invalidStepsIndex]) {
+                        $scope.clearErrors(nextStep);
+                        $scope.invalidSteps[invalidStepsIndex] = false;
+                    }
+                    $scope.updateStep(nextStep);
+                   // Perform input field check on the currentStepIndex page 
+                    $scope.checkRequiredInput();
+                });
+            }
+        };
+        $scope.updateStep = function(step) {
+            // clear all step classes
+            angular.forEach($scope.stepClasses, function(a, index){
+                $scope.stepClasses[index] = '';
+            });
+            // Activate the target step class
+            $scope.stepClasses[step - 1] = 'active';
+            // Display the summary section 
+            $scope.showSummarySecton(step); 
+            // Update the current step index
+            $scope.currentStepIndex = step;
+        };
+        // Display appropriate step in summary
+        $scope.showSummarySecton = function(step) {
+            $scope.summarySection.find('.step' + step).removeClass('hide');
         };
         $scope.clearErrors = function(step) {
             $('#step'+step).find('div.error').each(function(idx, val) {

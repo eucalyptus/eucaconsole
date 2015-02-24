@@ -22,40 +22,50 @@
             <div class="wizard no-title">
                 <form action="${request.route_path('elb_create')}" id="elb-form"
                       method="post" data-abide="abide" enctype="multipart/form-data">
-                    <dl id="wizard-tabs" class="tabs" data-tab="">
+                    <dl id="wizard-tabs" class="tabs" data-tab="" ng-cloak="">
                         <dd class="">
                             <a id="tabStep1" ng-click="visitNextStep(1, $event)" href="#step1">
-                                <span class="cir">1</span> <b>General</b>
+                                <span class="cir">1</span>
+                                <b>General</b>
                             </a>
                         </dd>
-                        <dd ng-class="{disabled: step1Invalid}">
+                        <dd ng-class="{disabled: invalidSteps[0]}">
                             <a id="tabStep2" ng-click="visitNextStep(2, $event)"
-                               href="#step2" ng-cloak="" ng-if="!step1Invalid">
-                                <span class="cir">2</span> <b>Network</b>
+                               href="#step2" ng-hide="invalidSteps[0]">
+                                <span class="cir">2</span>
+                                <b>Network</b>
                             </a>
-                            <span class="cir" ng-cloak="" ng-if="step1Invalid">2</span>
-                            <b ng-cloak="" ng-if="step1Invalid">Network</b>
+                            <span ng-show="invalidSteps[0]">
+                                <span class="cir">2</span>
+                                <b>Network</b>
+                            </span>
                         </dd>
-                        <dd ng-class="{disabled: step2Invalid}">
+                        <dd ng-class="{disabled: invalidSteps[1]}">
                             <a id="tabStep3" ng-click="visitNextStep(3, $event)"
-                               href="#step3" ng-cloak="" ng-if="!step2Invalid">
-                                <span class="cir">3</span> <b>Instances</b>
+                               href="#step3" ng-hide="invalidSteps[1]">
+                                <span class="cir">3</span>
+                                <b>Instances</b>
                             </a>
-                            <span class="cir" ng-cloak="" ng-if="step2Invalid">3</span>
-                            <b ng-cloak="" ng-if="step2Invalid">Instances</b>
+                            <span ng-show="invalidSteps[1]">
+                                <span class="cir">3</span>
+                                <b>Instances</b>
+                            </span>
                         </dd>
-                        <dd ng-class="{disabled: step3Invalid}">
+                        <dd ng-class="{disabled: invalidSteps[2]}">
                             <a id="tabStep4" ng-click="visitNextStep(4, $event)"
-                               href="#step4" ng-cloak="" ng-if="!step3Invalid">
-                                <span class="cir">4</span> <b>Health Check</b>
+                               href="#step4" ng-hide="invalidSteps[2]">
+                                <span class="cir">4</span>
+                                <b>Health Check</b>
                             </a>
-                            <span class="cir" ng-cloak="" ng-if="step3Invalid">4</span>
-                            <b ng-cloak="" ng-if="step3Invalid">Health Check</b>
+                            <span ng-show="invalidSteps[2]">
+                                <span class="cir">4</span>
+                                <b>Health Check</b>
+                            </span>
                         </dd>
                     </dl>
                     <div class="tabs-content">
                         <!--! Step 1: General tab content -->
-                        <div class="content active" id="step1">
+                        <div class="content" ng-class="stepClasses[0]" id="step1">
                             <div ng-cloak="true">
                                 <label>General</label>
                                 <div class="row controls-wrapper readonly">
@@ -114,7 +124,7 @@
                             </div>
                         </div>
                         <!--! Step 2: Network tab content -->
-                        <div class="content" id="step2">
+                        <div class="content" ng-class="stepClasses[1]" id="step2">
                             <div ng-cloak="true">
                                 <label>Network</label>
                                 <div class="row controls-wrapper readonly">
@@ -141,7 +151,7 @@
                             </div>
                         </div>
                         <!--! Step 3: Instances tab content -->
-                        <div class="content" id="step3"> 
+                        <div class="content" ng-class="stepClasses[2]" id="step3"> 
                             <div ng-cloak="true">
                                 <div class="row controls-wrapper readonly">
                                     <div class="small-3 columns"><label class="right">Add availability zones&nbsp;</label></div>
@@ -167,7 +177,7 @@
                             </div>
                         </div>
                         <!--! Step 4: Health Check tab content -->
-                        <div class="content" id="step4">
+                        <div class="content" ng-class="stepClasses[3]" id="step4">
                             <div ng-cloak="true">
                                 <span i18n:translate="">Your load balancer will monitor the health of its instances based on the following health check.</span>
                                 <span i18n:translate="">Instances that fail the health check will be removed from the load balancer.</span>
