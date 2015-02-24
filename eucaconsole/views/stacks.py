@@ -157,8 +157,8 @@ class StackView(BaseView):
         ]
         self.render_dict = dict(
             stack=self.stack,
-            stack_name=self.escape_braces(self.stack.stack_name) if self.stack else '',
-            stack_description=self.escape_braces(self.stack.stack_description) if self.stack else '',
+            stack_name=self.stack.stack_name if self.stack else '',
+            stack_description=self.stack.description if self.stack else '',
             stack_id=self.stack.stack_id if self.stack else '',
             stack_creation_time=self.dt_isoformat(self.stack.creation_time),
             status=self.stack.stack_status.lower().replace('_', '-'),
