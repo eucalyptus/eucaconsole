@@ -57,22 +57,22 @@
                             <h6 i18n:translate="">Template</h6>
                             <div class="row">
                                 <div class="small-12 columns value">
-                                    <input type="radio" id="inputtype" name="inputtype" value="sample" ng-model="inputtype">
-                                        <label id='userdatalabel' i18n:translate="">Use sample template</label>
+                                    <input type="radio" id="inputtype" name="inputtype" value="sample" ng-model="inputType">
+                                        <label i18n:translate="">Use sample template</label>
                                     </input>
-                                    <select id="userdata" name="userdata" ng-show="inputtype=='sample'">
+                                    <select id="sample-template" name="sample-template" ng-show="inputType=='sample'">
                                         <option value="euca-console-template">Eucalyptus Console Template</option>
                                     </select>
                                     <br/>
-                                    <input type="radio" id="inputtype" name="inputtype" value="file" ng-model="inputtype">
-                                        <label id='userdatalabel' i18n:translate="">Upload template</label>
+                                    <input type="radio" id="inputtype" name="inputtype" value="file" ng-model="inputType">
+                                        <label i18n:translate="">Upload template</label>
                                     </input>
-                                    <input id="userdata_file" type="file" ng-model="userDataFile" ng-disabled="isNotStopped" name="userdata_file" disabled="disabled" ng-show="inputtype=='file'"></input><span id="userdatatype"></span>
+                                    <input id="template_file" type="file" ng-model="templateFile" ng-disabled="isNotStopped" name="template_file" disabled="disabled" ng-show="inputType=='file'"></input>
                                     <br/>
-                                    <input type="radio" id="inputtype" name="inputtype" value="url" ng-model="inputtype">
-                                        <label id='userdatalabel' i18n:translate="">Use template from URL</label>
+                                    <input type="radio" id="inputtype" name="inputtype" value="url" ng-model="inputType">
+                                        <label i18n:translate="">Use template from URL</label>
                                     </input>
-                                    <input type="text" ng-show="inputtype='url'"/>
+                                    <input type="text" name="template-url" ng-show="inputType='url'"/>
                                     
                                 </div>
                             </div>
@@ -128,7 +128,7 @@
                         <div class="columns value">{{ templateURL }}</div>
                     </div>
                 </div>
-                <div class="section" ng-show="tagsObject">
+                <div class="section" ng-show="tagsObject.length > 0">
                     <div class="row">
                         <label i18n:translate="">Tags:</label>
                         <div class="columns value" id="tag-preview">
@@ -149,7 +149,9 @@
                 <metal:block metal:use-macro="layout.global_macros['help_expando']" />
                 <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                     <!-- HELP CONTENT -->
+                    <!--
                     <div id="help-html-console_create_stack" ng-include="'${layout.help_path('console_create_stack.html')}'"></div> 
+                    -->
                 </div>
             </div>
         </div>
@@ -158,7 +160,6 @@
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/thirdparty/utils/purl.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/stack_wizard.js')}"></script>
 </div>
 

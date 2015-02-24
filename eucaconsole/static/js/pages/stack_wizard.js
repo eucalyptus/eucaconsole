@@ -8,7 +8,6 @@
 angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils'])
     .controller('StackWizardCtrl', function ($scope, $http, $timeout, eucaHandleError, eucaUnescapeJson) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-        $scope.stackForm = $('#stack-wizard-form');
         $scope.tagsObject = {};
         $scope.summarySection = $('.summary');
         $scope.currentStepIndex = 1;
@@ -24,7 +23,7 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils'])
             $scope.setWatcher();
         };
         $scope.initChosenSelectors = function () {
-            //$('#securitygroup').chosen({'width': '100%', search_contains: true});
+            $('sample-template').chosen({'width': '100%', search_contains: true});
         };
         $scope.setInitialValues = function () {
         };
@@ -59,6 +58,20 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils'])
         $scope.setWatcher = function () {
             $scope.$watch('currentStepIndex', function(){
                  $scope.setWizardFocus($scope.currentStepIndex);
+            });
+            $scope.$watch('inputtype', function() {
+                if ($scope.inputType == 'text') {
+                    $timeout(function() {
+                        $('#sample-template').focus();
+                    });
+                }
+                else {
+                    if ($scope.inputType == 'url') {
+                        $timeout(function() {
+                            $('#template-url').focus();
+                        });
+                    }
+                }
             });
         };
         $scope.setWizardFocus = function (stepIdx) {
