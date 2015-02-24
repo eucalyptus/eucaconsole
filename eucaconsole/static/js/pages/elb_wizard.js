@@ -103,7 +103,7 @@ angular.module('ELBWizard', ['EucaConsoleUtils'])
             if ($scope.isNotValid === true) {
                 $event.preventDefault();
                 // Handle the case where the tab was clicked to visit the previous step
-                if( $scope.currentStepIndex > nextStep){
+                if ($scope.currentStepIndex > nextStep) {
                     $scope.currentStepIndex = nextStep;
                     $scope.checkRequiredInput();
                 }
@@ -117,7 +117,7 @@ angular.module('ELBWizard', ['EucaConsoleUtils'])
             $timeout(function() {
             // If all is well, click the relevant tab to go to next step
             // since clicking invokes this method again (via ng-click) and
-            // one ng action must complete before another can star
+            // one ng action must complete before another can start
                 var hash = "step"+nextStep;
                 $("#wizard-tabs").children("dd").each(function() {
                     var link = $(this).find("a");
@@ -142,6 +142,8 @@ angular.module('ELBWizard', ['EucaConsoleUtils'])
             $('#step'+step).find('div.error').each(function(idx, val) {
                 $(val).removeClass('error');
             });
+        };
+        $scope.createELB = function() {
         };
     })
 ;
