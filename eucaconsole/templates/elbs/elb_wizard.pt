@@ -4,7 +4,7 @@
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/elb_wizard.css')}" />
 </head>
 
-<div metal:fill-slot="main_content" ng-app="Wizard" ng-controller="WizardCtrl" ng-init="initController('${controller_options_json}')">
+<div metal:fill-slot="main_content" ng-app="Wizard" ng-controller="WizardCtrl" ng-init="initController('elb', 4)">
     <div class="row" id="contentwrap" ng-controller="ELBWizardCtrl" ng-init="initController('${controller_options_json}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">

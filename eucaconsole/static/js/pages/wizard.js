@@ -8,22 +8,23 @@ var wizardApp = angular.module('Wizard', ['EucaConsoleUtils'])
     .controller('WizardCtrl', function ($scope, $http, $timeout, eucaHandleError, eucaUnescapeJson) {
         $scope.elbForm = undefined;
         $scope.urlParams = undefined;
-        $scope.totalSteps = 4;
+        $scope.resourceName  = '';
+        $scope.totalSteps = 0;
         $scope.currentStepIndex = 1;
         $scope.isNotValid = true;
         $scope.invalidSteps = [];
         $scope.stepClasses = [];
         $scope.summaryDisplays = [];
-        $scope.initController = function (optionsJson) {
-            var options = JSON.parse(eucaUnescapeJson(optionsJson));
-            $scope.setInitialValues();
+        $scope.initController = function (resourceName, totalSteps) {
+            $scope.setInitialValues(resourceName, totalSteps);
             $scope.setWatcher();
             $scope.setFocus();
         };
-        $scope.setInitialValues = function () {
-            $scope.elbForm = $('#elb-form');
+        $scope.setInitialValues = function (resourceName, totalSteps) {
+            $scope.resourceName = resourceName;
+            $scope.totalSteps = totalSteps;
+            $scope.elbForm = $('#' + $scope.resourceName + '-form');
             $scope.urlParams = $.url().param();
-            $scope.totalSteps = 4;
             $scope.currentStepIndex = 1;
             $scope.isNotValid = true;
             $scope.invalidSteps = Array.apply(undefined, Array($scope.totalSteps));

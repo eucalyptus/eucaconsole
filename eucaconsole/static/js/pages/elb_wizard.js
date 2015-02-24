@@ -5,9 +5,9 @@
  */
 
 wizardApp.controller('ELBWizardCtrl', function ($scope, $http, $timeout, eucaHandleError, eucaUnescapeJson) {
-        $scope.elbName = '';
         $scope.elbForm = undefined;
         $scope.urlParams = undefined;
+        $scope.elbName = '';
         $scope.isNotValid = true;
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
