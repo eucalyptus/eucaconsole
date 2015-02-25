@@ -344,5 +344,3 @@ urls = [
     Route(name='stack_template', pattern='/stacks/{name}/template'),
     Route(name='stack_events', pattern='/stacks/{name}/events'),
 ]
-
-

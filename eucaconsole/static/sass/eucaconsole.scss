@@ -1057,7 +1057,7 @@ footer {
 }
 
 // Nav bar adjustments
-@media screen and (max-width: $topbar-breakpoint) {
+@media screen {
     #logobar {
         border-bottom: 1px solid black;
         margin-top: 8px;
