@@ -11,7 +11,7 @@ var wizardApp = angular.module('Wizard', ['EucaConsoleUtils'])
         $scope.resourceName  = '';
         $scope.totalSteps = 0;
         $scope.currentStepIndex = 1;
-        $scope.isNotValid = true;
+        $scope.isValidationError = true;
         $scope.invalidSteps = [];
         $scope.stepClasses = [];
         $scope.summaryDisplays = [];
@@ -26,7 +26,7 @@ var wizardApp = angular.module('Wizard', ['EucaConsoleUtils'])
             $scope.elbForm = $('#' + $scope.resourceName + '-form');
             $scope.urlParams = $.url().param();
             $scope.currentStepIndex = 1;
-            $scope.isNotValid = true;
+            $scope.isValidationError = true;
             $scope.invalidSteps = Array.apply(undefined, Array($scope.totalSteps));
             angular.forEach($scope.invalidSteps, function(a, index){
                 $scope.invalidSteps[index] = true;
@@ -44,10 +44,16 @@ var wizardApp = angular.module('Wizard', ['EucaConsoleUtils'])
         };
         $scope.setWatcher = function (){
             $scope.$watch('currentStepIndex', function(){
-                 if( $scope.currentStepIndex != 1 ){
-                     $scope.setWizardFocus($scope.currentStepIndex);
-                 }
-                $scope.checkRequiredInput();
+                if( $scope.currentStepIndex != 1 ){
+                    $scope.setWizardFocus($scope.currentStepIndex);
+                }
+                $scope.$broadcast('currentStepIndexUpdate', $scope.currentStepIndex);
+            });
+            $scope.$on('eventProcessVisitNextStep', function($event, nextStep) {
+                $scope.processVisitNextStep(nextStep);
+            });
+            $scope.$on('updateValidationErrorStatus', function($event, flag) {
+                $scope.isValidationError = flag;
             });
             $(document).on('open', '[data-reveal]', function () {
                 // When a dialog opens, reset the progress button status
@@ -103,9 +109,6 @@ var wizardApp = angular.module('Wizard', ['EucaConsoleUtils'])
                 tabElement.focus();
             }
         };
-        $scope.checkRequiredInput = function () {
-            $scope.isNotValid = false;
-        };
         // return true if exists invalid input fields on 'step' page
         // also set the focus on the invalid field
         $scope.existInvalidFields = function(step) {
@@ -122,21 +125,25 @@ var wizardApp = angular.module('Wizard', ['EucaConsoleUtils'])
                 return false;
             }
         };
-        $scope.visitNextStep = function (nextStep, $event) {
+        $scope.visitNextStep = function($event, nextStep) {
             $event.preventDefault();
+            $scope.$broadcast('eventClickVisitNextStep', nextStep);
+        };
+        $scope.processVisitNextStep = function(nextStep) {
             var currentStep = nextStep - 1;
             var invalidStepsIndex = currentStep - 1;
 
             // Check for form validation before proceeding to next step
-            if ($scope.existInvalidFields(currentStep) || $scope.isNotValid === true) {
+            if ($scope.existInvalidFields(currentStep) || $scope.isValidationError === true) {
                 // Handle the case where the tab was clicked to visit the previous step
                 if ($scope.currentStepIndex > nextStep) {
                     $scope.currentStepIndex = nextStep;
                 }
-                // Perform input field check on the currentStepIndex page 
-                $scope.checkRequiredInput();
+                // Broadcast signal to trigger input field check on the currentStepIndex page 
+                $scope.$broadcast('currentStepIndexUpdate', $scope.currentStepIndex);
             } else { // OK to switch
-                // since the operations above affects DOM, need to wait for Angular to handle the DOM update
+                // Since the operations above affects DOM,
+                // need to wait after Foundation's update for Angular to process 
                 $timeout(function() {
                     // clear the invalidSteps flag
                     if ($scope.invalidSteps[invalidStepsIndex]) {
@@ -144,13 +151,27 @@ var wizardApp = angular.module('Wizard', ['EucaConsoleUtils'])
                         $scope.invalidSteps[invalidStepsIndex] = false;
                     }
                     $scope.updateStep(nextStep);
-                   // Perform input field check on the currentStepIndex page 
-                    $scope.checkRequiredInput();
+                    // Broadcast signal to trigger input field check on the currentStepIndex page 
+                    $scope.$broadcast('currentStepIndexUpdate', $scope.currentStepIndex);
                 });
             }
         };
         $scope.updateStep = function(step) {
-            // clear all step classes
+            // Adjust the tab classes to match Foundation's display 
+            $("#wizard-tabs").children("dd").each(function() {
+                // Clear 'active' class from all tabs
+                $(this).removeClass("active");
+                // Set 'active' class on the current tab
+                var hash = "step" + step;
+                var link = $(this).find("a");
+                if (link.length > 0) {
+                    var id = link.attr("href").substring(1);
+                    if (id == hash) {
+                        $(this).addClass("active");
+                    }
+                }
+            });
+            // Clear all step classes
             angular.forEach($scope.stepClasses, function(a, index){
                 $scope.stepClasses[index] = '';
             });

@@ -21,13 +21,18 @@ wizardApp.controller('ELBWizardCtrl', function ($scope, $http, $timeout, eucaHan
         };
         $scope.setWatcher = function (){
             $scope.$watch('elbName', function(){
-                $scope.checkRequiredInput();
+                $scope.checkRequiredInput(1);
+            });
+            $scope.$on('eventClickVisitNextStep', function($event, nextStep) {
+                $scope.checkRequiredInput(nextStep);
+                $scope.$emit('eventProcessVisitNextStep', nextStep);
             });
         };
         $scope.setFocus = function () {
         };
-        $scope.checkRequiredInput = function () {
+        $scope.checkRequiredInput = function (step) {
             $scope.isNotValid = false;
+            $scope.$emit('updateValidationErrorStatus', $scope.isNotValid);
         };
         $scope.createELB = function() {
         };
