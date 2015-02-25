@@ -114,4 +114,13 @@ describe("LaunchConfigWizard", function() {
             expect(scope.isNotValid).toBeTruthy();
         });
     });
+
+    describe("Function updateSecurityGroup Test", function() {
+
+        it("Should set securityGroups to [] if it is undefined when updateSecurityGroup is called", function() {
+            scope.securityGroups = undefined;
+            scope.updateSecurityGroup();
+            expect(scope.securityGroups).toEqual([]);
+        });
+    });
 });

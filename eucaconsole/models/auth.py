@@ -30,7 +30,6 @@ Authentication and Authorization models
 """
 import base64
 import httplib
-import logging
 from ssl import SSLError
 import socket
 import urllib2
@@ -43,9 +42,10 @@ from boto.ec2.connection import EC2Connection
 from boto.s3.connection import S3Connection
 from boto.s3.connection import OrdinaryCallingFormat
 # uncomment to enable boto request logger. Use only for development (see ref in _euca_connection)
-#from boto.requestlog import RequestLogger
+# from boto.requestlog import RequestLogger
 import boto
 import boto.ec2.autoscale
+import boto.cloudformation
 import boto.ec2.cloudwatch
 import boto.ec2.elb
 import boto.iam
@@ -103,7 +103,7 @@ class ConnectionManager(object):
         :param secret_key: AWS secret key
 
         :type conn_type: string
-        :param conn_type: Connection type ('ec2', 'autoscale', 'cloudwatch', 'elb', or 's3')
+        :param conn_type: Connection type ('ec2', 'autoscale', 'cloudwatch', 'cloudformation', 'elb', or 's3')
 
         :type validate_certs: bool
         :param validate_certs: indicates to check the ssl cert the server provides
@@ -120,6 +120,9 @@ class ConnectionManager(object):
                     _region, aws_access_key_id=_access_key, aws_secret_access_key=_secret_key, security_token=_token)
             elif conn_type == 'cloudwatch':
                 conn = ec2.cloudwatch.connect_to_region(
+                    _region, aws_access_key_id=_access_key, aws_secret_access_key=_secret_key, security_token=_token)
+            elif conn_type == 'cloudformation':
+                conn = boto.cloudformation.connect_to_region(
                     _region, aws_access_key_id=_access_key, aws_secret_access_key=_secret_key, security_token=_token)
             elif conn_type == 's3':
                 conn = boto.connect_s3(  # Don't specify region when connecting to S3
@@ -155,7 +158,7 @@ class ConnectionManager(object):
         :param secret_key: Eucalyptus secret key
 
         :type conn_type: string
-        :param conn_type: Connection type ('ec2', 'autoscale', 'cloudwatch', 'elb', 'iam', 'sts', or 's3')
+        :param conn_type: Connection type ('ec2', 'autoscale', 'cloudwatch', 'cloudformation', 'elb', 'iam', 'sts', or 's3')
 
         :type validate_certs: bool
         :param validate_certs: indicates to check the ssl cert the server provides
@@ -164,10 +167,6 @@ class ConnectionManager(object):
         :param certs_file: indicates the location of the certificates file, if otherthan standard
 
         """
-        cache_key = 'euca_connection_cache_{conn_type}_{clchost}_{port}'.format(
-            conn_type=conn_type, clchost=clchost, port=port
-        )
-
         def _euca_connection(_clchost, _port, _access_id, _secret_key, _token, _conn_type):
             region = RegionInfo(name='eucalyptus', endpoint=_clchost)
             path = '/services/Eucalyptus'
@@ -182,6 +181,9 @@ class ConnectionManager(object):
             elif conn_type == 'cloudwatch':
                 path = '/services/CloudWatch'
                 conn_class = boto.ec2.cloudwatch.CloudWatchConnection
+            elif conn_type == 'cloudformation':
+                path = '/services/CloudFormation'
+                conn_class = boto.cloudformation.CloudFormationConnection
             elif conn_type == 'elb':
                 path = '/services/LoadBalancing'
                 conn_class = boto.ec2.elb.ELBConnection
@@ -216,7 +218,7 @@ class ConnectionManager(object):
                 conn.ca_certificates_file = certs_file
             conn.http_connection_kwargs['timeout'] = 30
             # uncomment to enable boto request logger. Use only for development
-            #conn.set_request_hook(RequestLogger())
+            # conn.set_request_hook(RequestLogger())
             return conn
 
         return _euca_connection(clchost, port, access_id, secret_key, token, conn_type)
@@ -256,9 +258,7 @@ class EucaAuthenticator(object):
             dur=duration,
         )
         if self.validate_certs:
-            conn = CertValidatingHTTPSConnection(
-                        self.host, self.port, timeout=timeout,
-                        **self.kwargs)
+            conn = CertValidatingHTTPSConnection(self.host, self.port, timeout=timeout, **self.kwargs)
         else:
             conn = httplib.HTTPSConnection(self.host, self.port, timeout=timeout)
 
@@ -318,9 +318,7 @@ class AWSAuthenticator(object):
         """ Make authentication request to AWS STS service
             Timeout defaults to 20 seconds"""
         if self.validate_certs:
-            conn = CertValidatingHTTPSConnection(
-                        self.host, self.port, timeout=timeout,
-                        **self.kwargs)
+            conn = CertValidatingHTTPSConnection(self.host, self.port, timeout=timeout, **self.kwargs)
         else:
             conn = httplib.HTTPSConnection(self.host, self.port, timeout=timeout)
 

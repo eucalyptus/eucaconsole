@@ -80,6 +80,24 @@
                             </div>
                         </div>
                     </li>
+                    <li class="panel" id="stacks" tal:case="'stacks'">
+                        <div class="tile">
+                            <h5 class="subheader">
+                                <span i18n:translate="">Stacks</span>
+                            </h5>
+                            <metal:block metal:use-macro="layout.global_macros['dashaction']" />
+                            <div class="content">
+                                <a href="${request.route_path('stacks')}">
+                                    <i class="icon"><em><i ng-show="itemsLoading" class="busy" ></i>
+                                        <span ng-show="!itemsLoading" id="stacks-count" ng-cloak="">{{ totals.stacks}}</span></em>
+                                    </i>
+                                </a>
+                            </div>
+                            <div class="footer">
+                                <a href="${request.route_path('stack_new')}" i18n:translate="">Create stack</a>
+                            </div>
+                        </div>
+                    </li>
                     <li class="panel" id="elastic-ips" tal:case="'elastic-ips'">
                         <div class="tile">
                             <h5 class="subheader" i18n:translate="">Elastic IPs</h5>
