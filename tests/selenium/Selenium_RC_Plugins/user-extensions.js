@@ -358,6 +358,10 @@ Selenium.prototype.doStoreTextIfPresent = function(locator, value) {
   *
   */
 
+  var elementExists = this.browserbot.findElement(locator);
+
+  if (elementExists)
+  {
   
   var notification = this.browserbot.findElement(locator);
 
@@ -369,5 +373,10 @@ Selenium.prototype.doStoreTextIfPresent = function(locator, value) {
   else
   {
   storedVars[value] = "No text found!";
+  }
+  }
+  else
+  {
+  storedVars[value] = "Element locator not found!";
   }
   }
