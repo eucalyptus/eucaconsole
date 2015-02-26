@@ -70,7 +70,7 @@ module.exports = function(grunt) {
           all: ['Gruntfile.js',
                 'eucaconsole/static/js/pages/*.js',
                 'eucaconsole/static/js/widgets/*.js',
-                'eucaconsole/static/js/jasmine/spec/*.js']
+                'eucaconsole/static/js/jasmine-spec/*.js']
       },
       karma: {
           unit: {
@@ -80,15 +80,126 @@ module.exports = function(grunt) {
               configFile: 'karma.conf.js',
               singleRun: true,
           }
+      },
+      clean: {
+          backup: ["eucaconsole.backup"],
+          minified: ["eucaconsole/static/js/minified"]
+      },
+      copy: {
+          restore: {
+              files: [{ 
+                  expand: true,
+                  cwd: 'eucaconsole.backup/eucaconsole/',
+                  src: ['**/*'],
+                  dest: 'eucaconsole',
+              }],
+              options: {
+                  force: true,
+                  mode: true,
+                  timestamp: true
+              }
+          },
+          backup: {
+              files: [{ 
+                  expand: true,
+                  src: ['eucaconsole/**'],
+                  dest: 'eucaconsole.backup/',
+              }],
+              options: {
+                  force: false,
+                  mode: true,
+                  timestamp: true
+              }
+          }
+      },
+      htmlmin: { 
+          production: {
+              options: {
+                  removeComments: true,
+                  collapseWhitespace: true,
+                  conservativeCollapse: true
+              },
+              files: [{
+                  expand: true,
+                  cwd: 'eucaconsole/templates',
+                  src: '**/*.pt',
+                  dest: 'eucaconsole/templates'
+              }]
+          }
+      },
+      replace: {
+          min: {
+              expand: true,
+              src: 'eucaconsole/templates/**/*.pt',
+              overwrite: true,
+              replacements: [{
+                  from: /static\/js\/pages\/(.+)\.js/g,
+                  to: 'static/js/minified/pages/$1.min.js'
+              }, {
+                  from: /static\/js\/widgets\/(.+)\.js/g,
+                  to: 'static/js/minified/widgets/$1.min.js' 
+              }]             
+          },
+          nomin: {
+              expand: true,
+              src: 'eucaconsole/templates/**/*.pt',
+              overwrite: true,
+              replacements: [{
+                  from: /static\/js\/minified\/pages\/(.+)\.min\.js/g,
+                  to: 'static/js/pages/$1.js' 
+              }, {
+                  from: /static\/js\/minified\/widgets\/(.+)\.min\.js/g,
+                  to: 'static/js/widgets/$1.js' 
+              }]
+          }
+      },
+      uglify: {
+          minify: {
+              options: {
+                  mangle: false,
+                  compress: {
+                      drop_console: true
+                  }
+              },
+              files: [
+                  {
+                      expand: true,     // Enable dynamic expansion.
+                      cwd: 'eucaconsole/static/js/',      // Src matches are relative to this path.
+                      src: ['pages/*.js', 'widgets/*.js'], // Actual pattern(s) to match.
+                      dest: 'eucaconsole/static/js/minified/',   // Destination path prefix.
+                      ext: '.min.js',   // Dest filepaths will have this extension.
+                      extDot: 'first'   // Extensions in filenames begin after the first dot
+                  },
+              ]
+          }
+      },
+      watch: {
+          scripts: {
+              files: ['eucaconsole/static/js/**/*.js'],
+              tasks: ['karma:ci', 'jshint'],
+              options: {
+                  spawn: false,
+              },
+          },
       }
   });
 
   // Load the plugins
+  grunt.loadNpmTasks('grunt-contrib-clean');
+  grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-contrib-htmlmin');
+  grunt.loadNpmTasks('grunt-contrib-uglify');
+  grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-bowercopy');
   grunt.loadNpmTasks('grunt-karma');
+  grunt.loadNpmTasks('grunt-text-replace');
 
   // Default task(s).
-  grunt.registerTask('default', ['jshint']);
+  grunt.registerTask('default', ['watch']);
+  grunt.registerTask('runtest', ['karma:ci', 'jshint']);
+  grunt.registerTask('commitcheck', ['runtest']);
+  grunt.registerTask('production', ['copy:backup', 'uglify', 'replace:min', 'htmlmin']);
+  grunt.registerTask('restore', ['copy:restore', 'clean']);
 
 };

@@ -48,6 +48,8 @@ from ..i18n import _
 
 
 BLANK_CHOICE = ('', _(u'Select...'))
+ASCII_WITHOUT_SLASHES_NOTICE = _(
+    u'Name is required and must be between 1 and 255 ASCII characters long and may not contain slashes')
 
 
 class NgNonBindableOptionSelect(Select):
@@ -74,7 +76,7 @@ class BaseSecureForm(SecureForm):
         error_messages = []
         for field, errors in self.errors.items():
             field_errors = BaseView.escape_braces(', '.join(errors))
-            msg = '{0}: {1}'.format(field, field_errors)
+            msg = u'{0}: {1}'.format(field, field_errors)
             error_messages.append(msg)
         return error_messages
 
@@ -433,7 +435,7 @@ class ChoicesManager(object):
         for vpc in vpc_subnet_list:
             if show_zone:
                 # Format the VPC subnet display string for select options
-                subnet_string = '{0} ({1}) | {2}'.format(vpc.cidr_block, vpc.id, vpc.availability_zone)
+                subnet_string = u'{0} ({1}) | {2}'.format(vpc.cidr_block, vpc.id, vpc.availability_zone)
                 choices.append((vpc.id, subnet_string))
             else:
                 choices.append((vpc.id, vpc.cidr_block))

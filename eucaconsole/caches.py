@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2014 Eucalyptus Systems, Inc.
 #
 # Redistribution and use of this software in source and binary forms,
@@ -26,8 +27,8 @@
 
 import inspect
 import pylibmc
-from hashlib import sha1
 from dogpile.cache import make_region
+
 
 def euca_key_generator(namespace, fn):
     if fn is None:
@@ -35,6 +36,7 @@ def euca_key_generator(namespace, fn):
     else:
         args = inspect.getargspec(fn)
         has_self = args[0] and args[0][0] in ('self', 'cls')
+
     def generate_key(*arg):
         # generate a key:
         # "namespace_arg1_arg2_arg3..."
@@ -44,10 +46,11 @@ def euca_key_generator(namespace, fn):
 
         # return cache key
         # apply sha1 to obfuscate key contents
-        #return sha1(key).hexdigest()
+        # return sha1(key).hexdigest()
         return key
 
     return generate_key
+
 
 def invalidate_cache(cache, namespace, *arg):
     key = euca_key_generator(namespace, None)(*arg)

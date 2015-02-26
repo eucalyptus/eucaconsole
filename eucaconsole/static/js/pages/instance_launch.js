@@ -77,6 +77,9 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             $('#securitygroup').chosen({'width': '100%', search_contains: true});
         };
         $scope.updateSelectedSecurityGroupRules = function () {
+            if ($scope.securityGroups === undefined) {
+                $scope.securityGroups = [];
+            }
             angular.forEach($scope.securityGroups, function(securityGroupID) {
                 $scope.selectedGroupRules[securityGroupID] = $scope.securityGroupsRules[securityGroupID];
             });
@@ -530,6 +533,10 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 modal.foundation('reveal', 'close');
                 Notify.success(oData.message);
             }).error(function (oData) {
+                // this is a hack to fix GUI-1563. The whole progress display should be done
+                // with angular ng-show/ng-hide and a scope variable
+                $('.dialog-progress-display').css('display', 'none');                
+                $('.dialog-submit-button').css('display', 'block');                
                 $scope.isLoadingSecurityGroup = false;
                 eucaHandleError(oData, status);
             });

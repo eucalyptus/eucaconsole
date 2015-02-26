@@ -32,14 +32,14 @@ import wtforms
 from wtforms import validators
 
 from ..i18n import _
-from . import BaseSecureForm, ChoicesManager, TextEscapedField
+from . import BaseSecureForm, ChoicesManager, TextEscapedField, ASCII_WITHOUT_SLASHES_NOTICE
 
 
 class SecurityGroupForm(BaseSecureForm):
     """Security Group form
        Note: no need to add a 'tags' field.  Use the tag_editor panel (in a template) instead
     """
-    name_error_msg = _(u'Name is required')
+    name_error_msg = ASCII_WITHOUT_SLASHES_NOTICE
     name = wtforms.TextField(
         label=_(u'Name'),
         validators=[validators.DataRequired(message=name_error_msg)],

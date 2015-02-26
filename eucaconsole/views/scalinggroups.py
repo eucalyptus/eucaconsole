@@ -38,7 +38,7 @@ from operator import attrgetter
 from boto.ec2.autoscale import AutoScalingGroup, ScalingPolicy
 from boto.ec2.autoscale.tag import Tag
 
-from pyramid.httpexceptions import HTTPFound
+from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.view import view_config
 
 from ..constants.cloudwatch import METRIC_TYPES
@@ -128,7 +128,7 @@ class ScalingGroupsView(LandingPageView, DeleteScalingGroupMixin):
                 self.wait_for_instances_to_shutdown(scaling_group)
                 conn.delete_auto_scaling_group(name)
                 prefix = _(u'Successfully deleted scaling group')
-                msg = '{0} {1}'.format(prefix, name)
+                msg = u'{0} {1}'.format(prefix, name)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
         else:
@@ -291,10 +291,14 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
 
     @view_config(route_name='scalinggroup_view', renderer=TEMPLATE)
     def scalinggroup_view(self):
+        if self.scaling_group is None:
+            raise HTTPNotFound()
         return self.render_dict
 
     @view_config(route_name='scalinggroup_update', request_method='POST', renderer=TEMPLATE)
     def scalinggroup_update(self):
+        if self.scaling_group is None:
+            raise HTTPNotFound()
         if not self.is_vpc_supported or self.request.params.get('vpc_network') is None:
             del self.edit_form.vpc_network
             del self.edit_form.vpc_subnet
@@ -305,7 +309,7 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
                 self.update_tags()
                 self.update_properties()
                 prefix = _(u'Successfully updated scaling group')
-                msg = '{0} {1}'.format(prefix, self.scaling_group.name)
+                msg = u'{0} {1}'.format(prefix, self.scaling_group.name)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
         else:
@@ -314,6 +318,8 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
 
     @view_config(route_name='scalinggroup_delete', request_method='POST', renderer=TEMPLATE)
     def scalinggroup_delete(self):
+        if self.scaling_group is None:
+            raise HTTPNotFound()
         if self.delete_form.validate():
             location = self.request.route_path('scalinggroups')
             name = self.unescape_braces(self.request.params.get('name'))
@@ -325,7 +331,7 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
                 self.log_request(_(u"Deleting scaling group {0}").format(name))
                 self.autoscale_conn.delete_auto_scaling_group(name)
                 prefix = _(u'Successfully deleted scaling group')
-                msg = '{0} {1}'.format(prefix, name)
+                msg = u'{0} {1}'.format(prefix, name)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
         else:
@@ -384,6 +390,7 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
         return BaseView.escape_json(json.dumps({
             'scaling_group_name': self.scaling_group.name,
             'policies_count': len(self.policies),
+            'termination_policies': self.scaling_group.termination_policies,
         }))
 
 
@@ -422,7 +429,7 @@ class ScalingGroupInstancesView(BaseScalingGroupView):
                 self.autoscale_conn.set_instance_health(
                     instance_id, 'Unhealthy', should_respect_grace_period=respect_grace_period)
                 prefix = _(u'Successfully marked the following instance as unhealthy:')
-                msg = '{0} {1}'.format(prefix, instance_id)
+                msg = u'{0} {1}'.format(prefix, instance_id)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
         else:
@@ -440,7 +447,7 @@ class ScalingGroupInstancesView(BaseScalingGroupView):
                     self.scaling_group.name, instance_id))
                 self.autoscale_conn.terminate_instance(instance_id, decrement_capacity=decrement_capacity)
                 prefix = _(u'Successfully sent terminate request for instance')
-                msg = '{0} {1}'.format(prefix, instance_id)
+                msg = u'{0} {1}'.format(prefix, instance_id)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
         else:
@@ -540,7 +547,7 @@ class ScalingGroupPoliciesView(BaseScalingGroupView):
                     self.scaling_group.name, policy_name))
                 self.autoscale_conn.delete_policy(policy_name, autoscale_group=self.scaling_group.name)
                 prefix = _(u'Successfully deleted scaling group policy')
-                msg = '{0} {1}'.format(prefix, policy_name)
+                msg = u'{0} {1}'.format(prefix, policy_name)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
         else:
@@ -611,7 +618,7 @@ class ScalingGroupPolicyView(BaseScalingGroupView):
                     alarm.alarm_actions.append(created_scaling_policy.policy_arn)
                 alarm.update()
                 prefix = _(u'Successfully created scaling group policy')
-                msg = '{0} {1}'.format(prefix, scaling_policy.name)
+                msg = u'{0} {1}'.format(prefix, scaling_policy.name)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
         else:
@@ -691,7 +698,6 @@ class ScalingGroupWizardView(BaseScalingGroupView):
                 if vpc_network == 'None':
                     vpc_network = None
                 vpc_subnets = self.request.params.getall('vpc_subnet')
-                scaling_group = ''
                 params = dict(
                     name=scaling_group_name,
                     launch_config=launch_config_name,
@@ -718,7 +724,7 @@ class ScalingGroupWizardView(BaseScalingGroupView):
 
                 self.autoscale_conn.create_auto_scaling_group(scaling_group)
                 msg = _(u'Successfully created scaling group')
-                msg += ' {0}'.format(scaling_group.name)
+                msg += u' {0}'.format(scaling_group.name)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
                 location = self.request.route_path('scalinggroup_view', id=scaling_group.name)
                 return HTTPFound(location=location)

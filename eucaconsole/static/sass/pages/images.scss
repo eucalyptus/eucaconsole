@@ -54,13 +54,6 @@ $snapshot-status-color-pending: lighten($euca-darkblue, 20%);
 $snapshot-status-color-available: $euca-darkblue;
 $snapshot-status-color-failed: darken(red, 20%);
 
-// Mixin for the "in-progress" dots indicator
-@mixin progress-dots {
-    position: absolute;
-    width: 16px; height: 11px;
-    top: 8px; right: 8px;
-}
-
 
 .status.pending { background-color: $snapshot-status-color-pending; }
 .status.available { background-color: $snapshot-status-color-available; }
@@ -80,11 +73,6 @@ $snapshot-status-color-failed: darken(red, 20%);
                 padding-left: 4px;
                 color: black;
                 font-weight: bold;
-            }
-            .dots {
-                @include progress-dots;
-                width: 20px;
-                top: 6px; right: 4px;
             }
         }
     }
@@ -112,9 +100,6 @@ $snapshot-status-color-failed: darken(red, 20%);
                 display: inline-block;
                 white-space: nowrap;
                 font-weight: bold;
-            }
-            .dots {
-                @include progress-dots;
             }
         }
     }
