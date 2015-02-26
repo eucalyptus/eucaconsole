@@ -266,4 +266,10 @@ class CreateELBView(BaseView):
 
     def get_controller_options_json(self):
         return BaseView.escape_json(json.dumps({
+            'protocol_list': (
+                { 'name': 'HTTP', 'port': '80' },
+                { 'name': 'HTTPS', 'port': '443' },
+                { 'name': 'SSL', 'port': '443' },
+                { 'name': 'TCP', 'port': 'tcp' },
+            )
         }))
