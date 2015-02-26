@@ -21,6 +21,7 @@
             <div class="wizard no-title">
                 <form action="${request.route_path('elb_create')}" id="elb-form"
                       method="post" data-abide="abide" enctype="multipart/form-data">
+                    ${structure:create_form['csrf_token']}
                     <dl id="wizard-tabs" class="tabs" data-tab="" ng-cloak="">
                         <dd class="">
                             <a id="tabStep1" ng-click="visitNextStep($event, 1)" href="#step1">
@@ -64,13 +65,11 @@
                     </dl>
                     <div class="tabs-content">
                         <!--! Step 1: General tab content -->
-                        <div class="content" ng-class="stepClasses[0]" id="step1">
+                        <div class="content" ng-class="stepClasses[0]" id="step1"
+                            tal:define="html_attrs_val {'pattern': '^[a-zA-Z0-9\-]{1,255}$'};">
                             <div ng-cloak="true">
                                 <label>General</label>
-                                <div class="row controls-wrapper readonly">
-                                    <div class="small-3 columns"><label class="right">Name&nbsp;</label></div>
-                                    <div class="small-9 columns field inline"><input type="text" /></div>
-                                </div>
+                                ${panel('form_field', field=create_form['name'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'elbName'}, **html_attrs_val)}
                             </div>
                             <div ng-cloak="true">
                                 <label>Listeners</label>

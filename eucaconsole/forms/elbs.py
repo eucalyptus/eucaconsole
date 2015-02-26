@@ -69,3 +69,30 @@ class ELBsFiltersForm(BaseSecureForm):
             {'name':'security_group', 'label':self.security_groups.label.text,
                 'options':self.getOptionsFromChoices(self.security_groups.choices)},
         ]
+
+
+class CreateELBForm(BaseSecureForm):
+    """Create Elastic Load Balancer form"""
+    name_error_msg = _(u'Name must be between 1 and 255 characters long, and must not contain space')
+    name = wtforms.TextField(
+        label=_(u'Name'),
+        validators=[validators.InputRequired(message=name_error_msg)],
+    )
+
+    def __init__(self, request, conn=None, **kwargs):
+        super(CreateELBForm, self).__init__(request, **kwargs)
+        self.conn = conn
+        self.cloud_type = request.session.get('cloud_type', 'euca')
+        self.set_error_messages()
+        self.choices_manager = ChoicesManager(conn=conn)
+        self.set_help_text()
+        self.set_choices()
+
+    def set_help_text(self):
+        return
+
+    def set_choices(self):
+        return
+
+    def set_error_messages(self):
+        self.name.error_msg = self.name_error_msg
