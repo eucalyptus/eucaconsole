@@ -42,17 +42,21 @@ class StacksCreateForm(BaseSecureForm):
     name_error_msg = _(u'Name is required and may contain lowercase letters, numbers, and/or hyphens and not longer than 255 characters')
     name = wtforms.TextField(
         label=_(u'Name'),
-        validators=[
-            validators.DataRequired(message=name_error_msg),
-            validators.InputRequired(message=name_error_msg)
-        ],
+        validators=[validators.InputRequired(message=name_error_msg)],
     )
+    sample_template = wtforms.SelectField(label='')
     template_file_helptext = _(u'Template file may not exceed 16 KB')
     template_file = wtforms.FileField(label='')
 
-    def __init__(self, request, cloud_type='euca', **kwargs):
+    def __init__(self, request, s3_bucket, cloud_type='euca', **kwargs):
         super(StacksCreateForm, self).__init__(request, **kwargs)
+        self.name.error_msg = self.name_error_msg
         self.template_file.help_text = self.template_file_helptext
+        bucket_items = s3_bucket.list()
+        templates = []
+        for key in bucket_items:
+            templates.append((key.name, key.name))
+        self.sample_template.choices = templates
 
 class StacksDeleteForm(BaseSecureForm):
     """Stacks deletion form.

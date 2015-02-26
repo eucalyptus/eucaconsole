@@ -23,7 +23,7 @@
                 <form action="${request.route_path('stack_create')}" id="stack-wizard-form"
                       method="post" data-abide="abide">
                     ${structure:create_form['csrf_token']}
-                    <dl class="tabs" data-tab="">
+                    <dl id="wizard-tabs" class="tabs" data-tab="">
                         <dd class="active">
                             <a id="tabStep1" href="#step1" ng-click="visitNextStep(1, $event)">
                                 <span class="cir">1</span> <b>General</b>
@@ -38,7 +38,7 @@
                     <div class="tabs-content">
                         <!--! Step 1: General tab content -->
                         <div class="content active" id="step1"
-                            tal:define="html_attrs_val {'pattern': '^[^\/\\\]{1,255}$', 'ng-model': 'stackName'};">
+                            tal:define="html_attrs_val {'pattern': '^[^\/\\\]{1,255}$'};">
                             <h6 i18n:translate="">General</h6>
                             <div class="row controls-name">
                                 <div class="small-12 columns subheader">
@@ -50,6 +50,7 @@
                                 <div id="user-name-field-div" class="field columns">
                                     <div ng-non-bindable=""><!--! Note: Don't remove non-bindable attr here -->
                                         ${structure:create_form['name'](autocomplete="off", **html_attrs_val)}
+                                        <small class="error" ng-hide=''>${create_form['name'].error_msg}</small>
                                     </div>
                                 </div>
                             </div>
@@ -57,23 +58,23 @@
                             <h6 i18n:translate="">Template</h6>
                             <div class="row">
                                 <div class="small-12 columns value">
-                                    <input type="radio" id="inputtype" name="inputtype" value="sample" ng-model="inputType">
+                                    <input type="radio" id="inputtype" name="inputtype" value="sample" ng-model="inputtype">
                                         <label i18n:translate="">Use sample template</label>
                                     </input>
-                                    <select id="sample-template" name="sample-template" ng-show="inputType=='sample'">
-                                        <option value="euca-console-template">Eucalyptus Console Template</option>
+                                    <select id="sample-template" name="sample-template" ng-model="templateSample" ng-show="inputtype=='sample'">
+                                        <option value="" i18n:translate="">Select a template</option>
+                                        <option tal:repeat="name create_form['sample_template'].choices">${name[0]}</option>
                                     </select>
                                     <br/>
-                                    <input type="radio" id="inputtype" name="inputtype" value="file" ng-model="inputType">
+                                    <input type="radio" id="inputtype" name="inputtype" value="file" ng-model="inputtype">
                                         <label i18n:translate="">Upload template</label>
                                     </input>
-                                    <input id="template_file" type="file" ng-model="templateFile" ng-disabled="isNotStopped" name="template_file" disabled="disabled" ng-show="inputType=='file'"></input>
+                                    <input id="template-file" type="file" ng-model="templateFile" ng-disabled="isNotStopped" name="template-file" ng-show="inputtype=='file'"></input>
                                     <br/>
-                                    <input type="radio" id="inputtype" name="inputtype" value="url" ng-model="inputType">
+                                    <input type="radio" id="inputtype" name="inputtype" value="url" ng-model="inputtype">
                                         <label i18n:translate="">Use template from URL</label>
                                     </input>
-                                    <input type="text" name="template-url" ng-show="inputType='url'"/>
-                                    
+                                    <input type="text" id="template-url" name="template-url" ng-model="templateUrl" ng-show="inputtype=='url'"/>
                                 </div>
                             </div>
                             <hr/>
@@ -90,7 +91,7 @@
                                 <div class="small-9 columns field inline">
                                     <a id="visit-step-2" class="button small round" ng-click="visitNextStep(2, $event)" ng-disabled="isNotValid">
                                         <span i18n:translate="">Next</span>
-                                        <a class="cancel-link" href="${request.route_path('instances')}">Cancel</a>
+                                        <a class="cancel-link" href="${request.route_path('stacks')}">Cancel</a>
                                     </a>
                                 </div>
                             </div>
@@ -98,10 +99,30 @@
                         <!--! Step 2: Parameters tab content -->
                         <div class="content" id="step2">
                             <h6 i18n:translate="">Parameters</h6>
+                            <div class="loading" ng-hide="parameters"><i class="busy" ></i></div>
+                            <div class="row controls-wrapper" ng-repeat="item in parameters" ng-cloak="true">
+                                <div class="small-3 columns subheading">
+                                    <label class="right">{{ item.name }}
+                                        <span class="helptext-icon" data-tooltip=""
+                                            title="{{ item.description }}">?</span>
+                                    </label>
+                                </div>
+                                <div class="small-9 columns field">
+                                    <input type="text" name="{{ item.name }}" id="{{ item.name }}"
+                                        value='{{ item.default }}' ng-hide="item.options"
+                                        min='{{ item.min }}' max='{{ item.max }}' pattern='{{ item.regex }}'>
+                                    </input>
+                                    <small class='error' ng-hide="">{{ item.constraint }}</small>
+                                    <select type="text" name="{{ item.name }}" id="{{ item.name }}" value='{{ item.default }}' ng-show="item.options">
+                                        <option ng-repeat="option in item.options" value="{{ option[0] }}">{{ option[1] }}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <hr/>
                             <div class="row">
                                 <div class="small-4 columns">&nbsp;</div>
                                 <div class="small-8 columns field inline">
-                                    <button type="submit" class="button" ng-click="saveOptions()" id="stack-wizard-btn-step2" ng-disabled="isNotValid">
+                                    <button type="submit" class="button" id="stack-wizard-btn-step2" ng-disabled="isNotValid">
                                         <span i18n:translate="">Create stack</span>
                                     </button>
                                     <a href="${request.route_path('stacks')}"
@@ -126,6 +147,10 @@
                     <div class="row" ng-show="templateURL">
                         <label i18n:translate="">Template URL:</label>
                         <div class="columns value">{{ templateURL }}</div>
+                    </div>
+                    <div class="row" ng-show="description">
+                        <label i18n:translate="">Description:</label>
+                        <div class="columns value">{{ description }}</div>
                     </div>
                 </div>
                 <div class="section" ng-show="tagsObject.length > 0">

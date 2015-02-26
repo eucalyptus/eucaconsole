@@ -28,10 +28,14 @@
 Pyramid views for Eucalyptus and AWS CloudFormation stacks
 
 """
+import logging
 import simplejson as json
+import urllib2
 
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config
+
+from boto.s3.connection import S3Connection, OrdinaryCallingFormat
 
 from ..i18n import _
 from ..forms.stacks import StacksDeleteForm, StacksFiltersForm, StacksCreateForm
@@ -157,8 +161,8 @@ class StackView(BaseView):
         ]
         self.render_dict = dict(
             stack=self.stack,
-            stack_name=self.escape_braces(self.stack.stack_name) if self.stack else '',
-            stack_description=self.escape_braces(self.stack.description) if self.stack else '',
+            stack_name=self.stack.stack_name if self.stack else '',
+            stack_description=self.stack.description if self.stack else '',
             stack_id=self.stack.stack_id if self.stack else '',
             stack_creation_time=self.dt_isoformat(self.stack.creation_time),
             status=self.stack.stack_status.lower().replace('_', '-'),
@@ -284,15 +288,24 @@ class StackWizardView(BaseView):
     def __init__(self, request):
         super(StackWizardView, self).__init__(request)
         self.request = request
-        self.create_form = StacksCreateForm(request)
+        self.create_form = None
+        with boto_error_handler(self.request):
+            s3_bucket = self.get_template_samples_bucket()
+            self.create_form = StacksCreateForm(request, s3_bucket)
         self.render_dict = dict(
             create_form=self.create_form,
-            controller_options_json=self.get_controller_options_json(),  # TODO: delete if not needed
+            controller_options_json=self.get_controller_options_json(),
         )
+
+    def get_template_samples_bucket(self):
+        bucket_url = self.request.registry.settings.get('cloudformation.samples.bucket.url')
+        # TODO: parse url into values needed to set up connection
+        s3_conn = S3Connection(host='10.111.5.150', port=8773, path='/services/objectstorage', anon=True, calling_format=OrdinaryCallingFormat())
+        return s3_conn.get_bucket('sample-templates')
 
     def get_controller_options_json(self):
         return BaseView.escape_json(json.dumps({
-            '': '',
+            'stack_template_url': self.request.route_path('stack_template_parse'),
         }))
 
     @view_config(route_name='stack_new', renderer=TEMPLATE, request_method='GET')
@@ -300,3 +313,119 @@ class StackWizardView(BaseView):
         """Displays the Stack wizard"""
         return self.render_dict
 
+    @view_config(route_name='stack_template_parse', renderer='json', request_method='POST')
+    def stack_template_parse(self):
+        """
+        Fetches then parsed template to return information needed by wizard,
+        namely description and parameters.
+        """
+        (template_url, parsed) = self.parse_template()
+        params = []
+        for name in parsed['Parameters'].keys():
+            param = parsed['Parameters'][name]
+            param_vals = {
+                'name': name,
+                'description': param['Description'],
+                'type': param['Type']
+            }
+            if 'Default' in param:
+                param_vals['default'] = param['Default']
+            if 'MinLength' in param:
+                param_vals['min'] = param['MinLength']
+            if 'MaxLength' in param:
+                param_vals['max'] = param['MaxLength']
+            if 'AllowedPattern' in param:
+                param_vals['regex'] = param['AllowedPattern']
+            if 'ConstraintDescription' in param:
+                param_vals['constraint'] = param['ConstraintDescription']
+            if 'AllowedValues' in param:
+                param_vals['options'] = [(val, val) for val in param['AllowedValues']]
+            # guess at more options
+            if 'key' in name.lower():
+                param_vals['options'] = self.getKeyOptions()  # fetch keypair names
+            if 'image' in name.lower():
+                param_vals['options'] = self.getImageOptions()  # fetch image ids
+            if 'cert' in name.lower():
+                param_vals['options'] = self.getCertOptions()  # fetch server cert names
+            params.append(param_vals)
+        return dict(
+            results=dict(description=parsed['Description'],
+                         parameters=params)
+        )
+
+    def getKeyOptions(self):
+        conn = self.get_connection()
+        keys = conn.get_all_key_pairs()
+        ret = []
+        for key in keys:
+            ret.append((key.name, key.name))
+        return ret
+
+    def getImageOptions(self):
+        conn = self.get_connection()
+        region = self.request.session.get('region')
+        images = self.get_images(conn, [], [], region)
+        ret = []
+        for image in images:
+            ret.append((image.id, image.name))
+        return ret
+
+    def getCertOptions(self):
+        conn = self.get_connection(conn_type="iam")
+        certs = conn.list_server_certs()
+        ret = []
+        for cert in certs['list_server_certificates_response']['list_server_certificates_result']['server_certificate_metadata_list']:
+            ret.append((cert.arn, cert.server_certificate_name))
+        return ret
+
+    @view_config(route_name='stack_create', renderer=TEMPLATE, request_method='POST')
+    def stack_create(self):
+        if True: #self.create_form.validate():
+            stack_name = self.request.params.get('name')
+            location = self.request.route_path('stacks')
+            (template_url, parsed) = self.parse_template()
+            params = []
+            for name in parsed['Parameters'].keys():
+                val = self.request.params.get(name)
+                if val:
+                    params.append((name, val))
+            tags_json = self.request.params.get('tags')
+            tags = None
+            if tags_json:
+                tags = json.loads(tags_json)
+            with boto_error_handler(self.request, location):
+                cloudformation_conn = self.get_connection(conn_type='cloudformation')
+                cloudformation_conn.create_stack(
+                    stack_name, template_url=template_url,
+                    parameters=params, tags=tags
+                )
+                msg = _(u'Successfully sent create stack request. '
+                        u'It may take a moment to create the stack.')
+                queue = Notification.SUCCESS
+                self.request.session.flash(msg, queue=queue)
+                location = self.request.route_path('stack_view', name=stack_name)
+                return HTTPFound(location=location)
+        else:
+            self.request.error_messages = self.create_form.get_errors_list()
+        return self.render_dict
+
+    def parse_template(self):
+        template_name = self.request.params.get('sample-template')
+        template_url = self.request.params.get('template-url')
+        if template_name:  # process from sample templates
+            bucket_url = self.request.registry.settings.get('cloudformation.samples.bucket.url')
+            template_url = bucket_url + template_name
+        elif template_url:  # fetch from URL
+            pass
+        files = self.request.POST.getall('template-file')
+        template_body = ''
+        #if len(files) > 0:  # read from file
+            # TODO: debug this
+            #file = files[0]
+            #template_body = files[0].file.read()
+        #else:  # read from url
+        #    logging.info("reading template from :"+template_url)
+        #    template_body = urllib2.urlopen(template_url).read()
+        template_body = urllib2.urlopen(template_url).read()
+        parsed = json.loads(template_body)
+        return (template_url, parsed)

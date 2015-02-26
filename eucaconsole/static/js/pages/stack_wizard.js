@@ -8,6 +8,9 @@
 angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils'])
     .controller('StackWizardCtrl', function ($scope, $http, $timeout, eucaHandleError, eucaUnescapeJson) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+        $scope.stackForm = $('#stack-wizard-form');
+        $scope.stackName = '';
+        $scope.stackTemplateEndpoint = '';
         $scope.tagsObject = {};
         $scope.summarySection = $('.summary');
         $scope.currentStepIndex = 1;
@@ -17,15 +20,35 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils'])
         $scope.isNotValid = true;
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
+            $scope.stackTemplateEndpoint = options.stack_template_url;
             $scope.setInitialValues();
             $scope.initChosenSelectors();
             $scope.watchTags();
             $scope.setWatcher();
+            $scope.setFocus();
         };
+        $scope.setFocus = function () {
+            $timeout(function() {
+                $("#name").focus();
+            }, 50);
+        };
+        $("#name").on('change', function() {
+            $timeout(function() {
+                $scope.stackName = $("#name").val();
+                $scope.checkRequiredInput();
+            });
+        });
+        $("#sample-template").on('change', function() {
+        });
+        $("#template-file").on('change', function() {
+        });
+        $("#template-url").on('change', function() {
+        });
         $scope.initChosenSelectors = function () {
             $('sample-template').chosen({'width': '100%', search_contains: true});
         };
         $scope.setInitialValues = function () {
+            $scope.inputtype = 'sample';
         };
         $scope.updateTagsPreview = function () {
             // Need timeout to give the tags time to capture in hidden textarea
@@ -47,26 +70,64 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils'])
         };
         $scope.checkRequiredInput = function () {
             if ($scope.currentStepIndex == 1) { 
-                if ($scope.isNotValid === false && $scope.stackName.length < 256) {
+                $scope.isNotValid = true;
+                switch ($scope.inputtype) {
+                    case 'sample':
+                        var val = $scope.templateSample;
+                        if (val !== undefined || val == '') {
+                            $scope.isNotValid = false;
+                        }
+                        break;
+                    case 'file':
+                        var val = $scope.templateFile;
+                        if (val !== undefined || val == '') {
+                            $scope.isNotValid = false;
+                        }
+                        break;
+                    case 'url':
+                        var val = $scope.templateUrl;
+                        if (val !== undefined || val == '') {
+                            $scope.isNotValid = false;
+                        }
+                        break;
+                    default:
+                        $scope.isNotValid = true;
+                }
+                if ($scope.stackName.length > 255) {
                     // Once invalid name has been entered, do not enable the button unless the name length is valid
                     $scope.isNotValid = true;
+                }
+                if ($scope.isNotValid === false) {
+                    $scope.getStackTemplateInfo();
                 }
             } else if ($scope.currentStepIndex == 2) {
                 $scope.isNotValid = false;
             }
         };
         $scope.setWatcher = function () {
+            $scope.$watch('inputtype', function(){
+                $scope.checkRequiredInput();
+            });
+            $scope.$watch('templateSample', function(){
+                $scope.checkRequiredInput();
+            });
+            $scope.$watch('templateFile', function(){
+                $scope.checkRequiredInput();
+            });
+            $scope.$watch('templateUrl', function(){
+                $scope.checkRequiredInput();
+            });
             $scope.$watch('currentStepIndex', function(){
                  $scope.setWizardFocus($scope.currentStepIndex);
             });
             $scope.$watch('inputtype', function() {
-                if ($scope.inputType == 'text') {
+                if ($scope.inputtype == 'text') {
                     $timeout(function() {
                         $('#sample-template').focus();
                     });
                 }
                 else {
-                    if ($scope.inputType == 'url') {
+                    if ($scope.inputtype == 'url') {
                         $timeout(function() {
                             $('#template-url').focus();
                         });
@@ -82,9 +143,9 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils'])
         };
         $scope.visitNextStep = function (nextStep, $event) {
             // Trigger form validation before proceeding to next step
-            $scope.launchForm.trigger('validate');
+            $scope.stackForm.trigger('validate');
             var currentStep = nextStep - 1,
-                tabContent = $scope.launchForm.find('#step' + currentStep),
+                tabContent = $scope.stackForm.find('#step' + currentStep),
                 invalidFields = tabContent.find('[data-invalid]');
             if (invalidFields.length > 0 || $scope.isNotValid === true) {
                 invalidFields.focus();
@@ -138,6 +199,22 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils'])
             $('#step'+step).find('div.error').each(function(idx, val) {
                 $(val).removeClass('error');
             });
+        };
+        $scope.getStackTemplateInfo = function () {
+            var data = $scope.stackForm.serialize();
+            $http({method:'POST', url:$scope.stackTemplateEndpoint, data:data,
+                   headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
+              success(function(oData) {
+                  var results = oData ? oData.results : '';
+                  if (results) {
+                      $scope.description = results.description;
+                      $scope.parameters = results.parameters;
+                  }
+              }).
+              error(function (oData, status) {
+                  var errorMsg = oData.message || '';
+                  Notify.failure(errorMsg);
+              });
         };
     })
 ;

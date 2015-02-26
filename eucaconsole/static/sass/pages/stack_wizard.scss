@@ -1,0 +1,35 @@
+// Import common Foundation variables
+@import "../includes/eucavariables";
+
+// Import common wizard styles
+@import "../includes/wizard";
+
+
+/* @section Stack Wizard page styles */
+
+#stack-wizard-form {
+    input.name {
+        width: 100px;
+        margin-right: 8px;
+        margin-bottom: 4px;
+        padding: 4px;
+    }
+    #controls_userdata_file {
+        position: relative;
+        top: -0.5rem;
+        #userdata_file {
+            width: 80%;
+            display: inline-block;
+        }
+    }
+}
+
+#userdatalabel {
+    right: 0px;
+}
+
+#userdata {
+    margin: 0 0 0;
+}
+
+
