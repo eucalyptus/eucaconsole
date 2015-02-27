@@ -4,7 +4,7 @@
  *
  */
 
-eucaConsoleUtils.directive('elbListenerEditor', function($compile) {
+eucaConsoleUtils.directive('elbListenerEditor', function() {
         return {
             restrict: 'E',
             scope: {
