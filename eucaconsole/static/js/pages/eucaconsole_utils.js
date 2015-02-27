@@ -4,7 +4,7 @@
  *
  */
 
-angular.module('EucaConsoleUtils', [])
+var eucaConsoleUtils = angular.module('EucaConsoleUtils', [])
 .service('eucaUnescapeJson', function() {
     /**
      * Unescape JSON escaped server-side via BaseView.escape_json() custom method
