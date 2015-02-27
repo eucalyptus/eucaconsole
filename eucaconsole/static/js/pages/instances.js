@@ -44,6 +44,7 @@ angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils'])
             }
             $scope.instanceID = instance['id'];
             $scope.instanceName = instance['name'];
+            $scope.instancePublicIP = instance['ip_address'];
             $scope.rootDevice = instance['root_device'];
             $scope.groupName = securityGroupName;
             $scope.securityGroups = securityGroups;
