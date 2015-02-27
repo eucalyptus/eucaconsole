@@ -99,10 +99,8 @@
                         <div class="content" ng-class="stepClasses[1]" id="step2">
                             <div ng-cloak="true">
                                 <label>Network</label>
-                                <div class="row controls-wrapper readonly">
-                                    <div class="small-3 columns"><label class="right">VPC Network&nbsp;</label></div>
-                                    <div class="small-9 columns field inline"><input type="text" /></div>
-                                </div>
+                                ${panel('form_field', field=create_form['vpc_network'], ng_attrs={'model': 'vpcNetwork'}, leftcol_width=4, rightcol_width=8)}
+                                ${panel('form_field', field=create_form['vpc_subnet'], leftcol_width=4, rightcol_width=8, ng_attrs={'model': 'vpcSubnet', 'options': 'k as v for (k, v) in vpcSubnetChoices'})}
                             </div>
                             <hr />
                             <div>

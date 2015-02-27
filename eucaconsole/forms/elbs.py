@@ -78,21 +78,37 @@ class CreateELBForm(BaseSecureForm):
         label=_(u'Name'),
         validators=[validators.InputRequired(message=name_error_msg)],
     )
+    vpc_network = wtforms.SelectField(label=_(u'VPC network'))
+    vpc_network_helptext = _(u'Launch your instance into one of your Virtual Private Clouds')
+    vpc_subnet = wtforms.SelectField(label=_(u'VPC subnet'))
 
-    def __init__(self, request, conn=None, **kwargs):
+    def __init__(self, request, conn=None, vpc_conn=None, **kwargs):
         super(CreateELBForm, self).__init__(request, **kwargs)
         self.conn = conn
+        self.vpc_conn = vpc_conn
         self.cloud_type = request.session.get('cloud_type', 'euca')
+        from ..views import BaseView
+        self.is_vpc_supported = BaseView.is_vpc_supported(request)
         self.set_error_messages()
         self.choices_manager = ChoicesManager(conn=conn)
+        self.vpc_choices_manager = ChoicesManager(conn=vpc_conn)
         self.set_help_text()
-        self.set_choices()
+        self.set_choices(request)
 
     def set_help_text(self):
-        return
+        self.vpc_network.label_help_text = self.vpc_network_helptext
 
-    def set_choices(self):
-        return
+    def set_choices(self, request):
+        if self.cloud_type == 'euca' and self.is_vpc_supported:
+            self.vpc_network.choices = self.vpc_choices_manager.vpc_networks(add_blank=False)
+        else:
+            self.vpc_network.choices = self.vpc_choices_manager.vpc_networks()
+        self.vpc_subnet.choices = self.vpc_choices_manager.vpc_subnets()
+        # Set the defailt option to be the first choice
+        if len(self.vpc_subnet.choices) > 1:
+            self.vpc_subnet.data = self.vpc_subnet.choices[0][0]
+        if len(self.vpc_network.choices) > 1:
+            self.vpc_network.data = self.vpc_network.choices[0][0]
 
     def set_error_messages(self):
         self.name.error_msg = self.name_error_msg

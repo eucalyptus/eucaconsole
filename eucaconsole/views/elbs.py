@@ -253,8 +253,9 @@ class CreateELBView(BaseView):
     def __init__(self, request):
         super(CreateELBView, self).__init__(request)
         self.ec2_conn = self.get_connection()
+        self.vpc_conn = self.get_connection(conn_type='vpc')
         self.create_form = CreateELBForm(
-            self.request, conn=self.ec2_conn, formdata=self.request.params or None)
+            self.request, conn=self.ec2_conn, vpc_conn=self.vpc_conn, formdata=self.request.params or None)
         self.render_dict = dict(
             create_form=self.create_form,
             controller_options_json=self.get_controller_options_json(),

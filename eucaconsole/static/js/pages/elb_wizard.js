@@ -9,6 +9,9 @@ wizardApp.controller('ELBWizardCtrl', function ($scope, $http, $timeout, eucaHan
         $scope.urlParams = undefined;
         $scope.isNotValid = true;
         $scope.elbName = '';
+        $scope.vpcNetwork = '';
+        $scope.vpcSubnet = '';
+        $scope.vpcSubnetChoices = [];
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.setInitialValues(options);
