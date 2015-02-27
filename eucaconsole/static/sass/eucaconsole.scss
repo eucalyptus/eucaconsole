@@ -967,6 +967,12 @@ footer {
     }
 }
 
+.tabs-content > .content {
+    &.large-centered, &.medium-centered {
+        float: none;
+    }
+}
+
 
 /* -----------------------------------------
    Progress bars

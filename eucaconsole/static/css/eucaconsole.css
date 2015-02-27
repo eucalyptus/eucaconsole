@@ -2603,6 +2603,8 @@ footer .copyright { font-size: 0.9em; }
 .tabs dd a { color: #03405f; box-shadow: inset 6px 0px 4px 0px rgba(50, 50, 50, 0.2); padding: 10px 32px 6px 24px; font-weight: bold; }
 .tabs dd.active a { box-shadow: none; }
 
+.tabs-content > .content.large-centered, .tabs-content > .content.medium-centered { float: none; }
+
 /* ----------------------------------------- Progress bars
 ----------------------------------------- */
 @-webkit-keyframes move { 0% { background-position: 0 0; }
