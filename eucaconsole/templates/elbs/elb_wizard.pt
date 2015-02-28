@@ -125,10 +125,8 @@
                         <!--! Step 3: Instances tab content -->
                         <div class="content" ng-class="stepClasses[2]" id="step3"> 
                             <div ng-cloak="true">
-                                <div class="row controls-wrapper readonly">
-                                    <div class="small-3 columns"><label class="right">Add availability zones&nbsp;</label></div>
-                                    <div class="small-9 columns field inline"><input type="text" /></div>
-                                </div>
+                                <label>Add availability zones</label>
+                                ${panel('form_field', field=create_form['zone'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'availabilityZones'})}
                             </div>
                             <hr />
                             <div>

@@ -80,8 +80,9 @@ class CreateELBForm(BaseSecureForm):
     )
     vpc_network = wtforms.SelectField(label=_(u'VPC network'))
     vpc_network_helptext = _(u'Launch your instance into one of your Virtual Private Clouds')
-    vpc_subnet = wtforms.SelectField(label=_(u'VPC subnet'))
-    securitygroup = wtforms.SelectMultipleField(label=_(u'Security group'))
+    vpc_subnet = wtforms.SelectField(label=_(u'VPC subnets'))
+    securitygroup = wtforms.SelectMultipleField(label=_(u'Security groups'))
+    zone = wtforms.SelectMultipleField(label=_(u'Availability zones'))
 
     def __init__(self, request, conn=None, vpc_conn=None, **kwargs):
         super(CreateELBForm, self).__init__(request, **kwargs)
@@ -107,6 +108,12 @@ class CreateELBForm(BaseSecureForm):
         self.vpc_subnet.choices = self.vpc_choices_manager.vpc_subnets()
         self.securitygroup.choices = self.choices_manager.security_groups(
             securitygroups=None, use_id=True, add_blank=False)
+        region = request.session.get('region')
+        self.zone.choices = self.get_availability_zone_choices(region)
+
+        # Set default choices where applicable, defaulting to first non-blank choice
+        if self.cloud_type == 'aws' and len(self.zone.choices) > 1:
+            self.zone.data = self.zone.choices[1][0]
         # Set the defailt option to be the first choice
         if len(self.vpc_subnet.choices) > 1:
             self.vpc_subnet.data = self.vpc_subnet.choices[0][0]
@@ -115,3 +122,6 @@ class CreateELBForm(BaseSecureForm):
 
     def set_error_messages(self):
         self.name.error_msg = self.name_error_msg
+
+    def get_availability_zone_choices(self, region):
+        return self.choices_manager.availability_zones(region, add_blank=False)

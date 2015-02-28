@@ -16,6 +16,7 @@ wizardApp.controller('ELBWizardCtrl', function ($scope, $http, $timeout, eucaHan
         $scope.securityGroups = [];
         $scope.securityGroupChoices = [];
         $scope.securityGroupCollection = []; 
+        $scope.availabilityZones = [];
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.setInitialValues(options);
@@ -31,6 +32,7 @@ wizardApp.controller('ELBWizardCtrl', function ($scope, $http, $timeout, eucaHan
         };
         $scope.initChosenSelectors = function () {
             $('#securitygroup').chosen({'width': '100%', search_contains: true});
+            $('#zone').chosen({'width': '100%', search_contains: true});
         };
         $scope.setWatcher = function (){
             // Handle the next step tab click event
