@@ -32,7 +32,7 @@ import wtforms
 from wtforms import validators
 
 from ..i18n import _
-from . import BaseSecureForm, ChoicesManager
+from . import BaseSecureForm, ChoicesManager, TextEscapedField
 
 
 class ELBDeleteForm(BaseSecureForm):
@@ -90,6 +90,12 @@ class CreateELBForm(BaseSecureForm):
             validators.InputRequired(message=ping_port_error_msg),
             validators.NumberRange(min=1, max=65535),
         ],
+    )
+    ping_path_error_msg = ''
+    ping_path = TextEscapedField(
+        id=u'ping-path',
+        label=_(u'Path'),
+        default="/index.html",
     )
     def __init__(self, request, conn=None, vpc_conn=None, **kwargs):
         super(CreateELBForm, self).__init__(request, **kwargs)

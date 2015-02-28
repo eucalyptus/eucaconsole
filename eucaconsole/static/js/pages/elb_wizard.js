@@ -17,6 +17,8 @@ wizardApp.controller('ELBWizardCtrl', function ($scope, $http, $timeout, eucaHan
         $scope.securityGroupChoices = [];
         $scope.securityGroupCollection = []; 
         $scope.availabilityZones = [];
+        $scope.protocolList = []; 
+        $scope.pingProtocol = '';
         $scope.pingPort = '';
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
@@ -29,6 +31,12 @@ wizardApp.controller('ELBWizardCtrl', function ($scope, $http, $timeout, eucaHan
             $scope.urlParams = $.url().param();
             $scope.isNotValid = true;
             $scope.securityGroupJsonEndpoint = options.securitygroups_json_endpoint;
+            if (options.hasOwnProperty('protocol_list')) {
+                $scope.protocolList = options.protocol_list;
+                if ($scope.protocolList instanceof Array && $scope.protocolList.length > 0) {
+		    $scope.pingProtocol = $scope.protocolList[0].name;
+                }
+            }
             $scope.initChosenSelectors(); 
         };
         $scope.initChosenSelectors = function () {
