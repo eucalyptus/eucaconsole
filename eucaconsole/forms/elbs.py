@@ -83,7 +83,14 @@ class CreateELBForm(BaseSecureForm):
     vpc_subnet = wtforms.SelectField(label=_(u'VPC subnets'))
     securitygroup = wtforms.SelectMultipleField(label=_(u'Security groups'))
     zone = wtforms.SelectMultipleField(label=_(u'Availability zones'))
-
+    ping_port_error_msg = _(u'Port range value must be whole numbers between 1-65535')
+    ping_port = wtforms.IntegerField(
+        label=_(u'Port'),
+        validators=[
+            validators.InputRequired(message=ping_port_error_msg),
+            validators.NumberRange(min=1, max=65535),
+        ],
+    )
     def __init__(self, request, conn=None, vpc_conn=None, **kwargs):
         super(CreateELBForm, self).__init__(request, **kwargs)
         self.conn = conn

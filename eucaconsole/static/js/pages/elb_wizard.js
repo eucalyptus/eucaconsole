@@ -17,6 +17,7 @@ wizardApp.controller('ELBWizardCtrl', function ($scope, $http, $timeout, eucaHan
         $scope.securityGroupChoices = [];
         $scope.securityGroupCollection = []; 
         $scope.availabilityZones = [];
+        $scope.pingPort = '';
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.setInitialValues(options);
