@@ -81,6 +81,7 @@ class CreateELBForm(BaseSecureForm):
     vpc_network = wtforms.SelectField(label=_(u'VPC network'))
     vpc_network_helptext = _(u'Launch your instance into one of your Virtual Private Clouds')
     vpc_subnet = wtforms.SelectField(label=_(u'VPC subnet'))
+    securitygroup = wtforms.SelectMultipleField(label=_(u'Security group'))
 
     def __init__(self, request, conn=None, vpc_conn=None, **kwargs):
         super(CreateELBForm, self).__init__(request, **kwargs)
@@ -104,6 +105,8 @@ class CreateELBForm(BaseSecureForm):
         else:
             self.vpc_network.choices = self.vpc_choices_manager.vpc_networks()
         self.vpc_subnet.choices = self.vpc_choices_manager.vpc_subnets()
+        self.securitygroup.choices = self.choices_manager.security_groups(
+            securitygroups=None, use_id=True, add_blank=False)
         # Set the defailt option to be the first choice
         if len(self.vpc_subnet.choices) > 1:
             self.vpc_subnet.data = self.vpc_subnet.choices[0][0]

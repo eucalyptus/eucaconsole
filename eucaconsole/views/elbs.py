@@ -258,6 +258,7 @@ class CreateELBView(BaseView):
             self.request, conn=self.ec2_conn, vpc_conn=self.vpc_conn, formdata=self.request.params or None)
         self.render_dict = dict(
             create_form=self.create_form,
+            security_group_placeholder_text=_(u'Select...'),
             controller_options_json=self.get_controller_options_json(),
         )
 
@@ -273,5 +274,6 @@ class CreateELBView(BaseView):
                 { 'name': 'SSL', 'port': '443' },
                 { 'name': 'TCP', 'port': 'tcp' },
             ),
-            'port_range_pattern':'^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$'
+            'port_range_pattern':'^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$',
+            'securitygroups_json_endpoint': self.request.route_path('securitygroups_json')
         }))

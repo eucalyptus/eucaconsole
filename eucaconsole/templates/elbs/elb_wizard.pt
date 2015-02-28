@@ -96,11 +96,13 @@
                             </div>
                         </div>
                         <!--! Step 2: Network tab content -->
-                        <div class="content" ng-class="stepClasses[1]" id="step2">
+                        <div class="content" ng-class="stepClasses[1]" id="step2"
+                            tal:define="security_group_attrs {'data-placeholder': security_group_placeholder_text};">
                             <div ng-cloak="true">
                                 <label>Network</label>
                                 ${panel('form_field', field=create_form['vpc_network'], ng_attrs={'model': 'vpcNetwork'}, leftcol_width=4, rightcol_width=8)}
                                 ${panel('form_field', field=create_form['vpc_subnet'], leftcol_width=4, rightcol_width=8, ng_attrs={'model': 'vpcSubnet', 'options': 'k as v for (k, v) in vpcSubnetChoices'})}
+                                ${panel('form_field', field=create_form['securitygroup'], leftcol_width=4, rightcol_width=8, ng_attrs={'model': 'securityGroups', 'options': 'k as v for (k, v) in securityGroupChoices'}, **security_group_attrs)}
                             </div>
                             <hr />
                             <div>
