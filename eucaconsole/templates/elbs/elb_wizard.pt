@@ -182,6 +182,15 @@
                                     ${panel('form_field', field=create_form['time_between_pings'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'timeBetweenPings'})}
                                 </div>
                             </div>
+                            <div ng-cloak="true">
+                                <label>Instance thresholds</label>
+                                <div class="">
+                                    ${panel('form_field', field=create_form['failures_until_unhealthy'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'failuresUntilUnhealthy'})}
+                                </div>
+                                <div class="">
+                                    ${panel('form_field', field=create_form['passes_until_unhealthy'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'passesUntilUnhealthy'})}
+                                </div>
+                            </div>
                             <hr/>
                             <div>
                                 <label>

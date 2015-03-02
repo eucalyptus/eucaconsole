@@ -105,6 +105,8 @@ class CreateELBForm(BaseSecureForm):
         ],
     )
     time_between_pings = wtforms.SelectField(label=_(u'Time between pings'))
+    failures_until_unhealthy = wtforms.SelectField(label=_(u'Failures until unhealthy'))
+    passes_until_unhealthy = wtforms.SelectField(label=_(u'Passes until unhealthy'))
 
     def __init__(self, request, conn=None, vpc_conn=None, **kwargs):
         super(CreateELBForm, self).__init__(request, **kwargs)
@@ -133,6 +135,8 @@ class CreateELBForm(BaseSecureForm):
         region = request.session.get('region')
         self.zone.choices = self.get_availability_zone_choices(region)
         self.time_between_pings.choices = self.get_time_between_pings_choices()
+        self.failures_until_unhealthy.choices = self.get_failures_until_unhealthy_choices()
+        self.passes_until_unhealthy.choices = self.get_passes_until_unhealthy_choices()
 
         # Set default choices where applicable, defaulting to first non-blank choice
         if self.cloud_type == 'aws' and len(self.zone.choices) > 1:
@@ -154,4 +158,32 @@ class CreateELBForm(BaseSecureForm):
             ('30', '30 seconds'),
             ('60', '1 minute'),
             ('300', '5 minutes')
+        ]
+
+    def get_failures_until_unhealthy_choices(self):
+        return [
+            ('1', '1'),
+            ('2', '2'),
+            ('3', '3'),
+            ('4', '4'),
+            ('5', '5'),
+            ('6', '6'),
+            ('7', '7'),
+            ('8', '8'),
+            ('9', '9'),
+            ('10', '10'),
+        ]
+
+    def get_passes_until_unhealthy_choices(self):
+        return [
+            ('1', '1'),
+            ('2', '2'),
+            ('3', '3'),
+            ('4', '4'),
+            ('5', '5'),
+            ('6', '6'),
+            ('7', '7'),
+            ('8', '8'),
+            ('9', '9'),
+            ('10', '10'),
         ]
