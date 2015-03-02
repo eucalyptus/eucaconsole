@@ -28,7 +28,7 @@ angular.module('StackPage', ['MagicSearch', 'EucaConsoleUtils'])
             $scope.setFocus();
         };
         $scope.isTransitional = function (state) {
-            return $scope.transitionalStates.indexOf(state) !== -1;
+            return $scope.transitionalStates.indexOf(state) === -1;
         };
         $scope.toggleTab = function (tab) {
             $(".tabs").children("dd").each(function() {

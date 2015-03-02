@@ -31,7 +31,7 @@
                 <div class="content active panel has-actions" id="general-tab">
                     <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="stack">
                         <metal:actions metal:fill-slot="actions">
-                            <li>
+                            <li ng-show="stackStatus !== 'delete-complete' &amp;&amp; !isTransitional()">
                                 <a id="delete-stack-action" data-reveal-id="delete-stack-modal"
                                    i18n:translate="">Delete stack</a>
                             </li>
@@ -57,7 +57,7 @@
                             <div class="small-3 columns"><label i18n:translate="">Status</label></div>
                             <div class="small-9 columns value" ng-cloak="">
                                 <span class="label radius status ${status}">{{ stackStatus }}</span>
-                                <span class="busy" ng-show="item.transitional">&nbsp;</span>
+                                <span class="busy" ng-show="isTransitional()">&nbsp;</span>
                             </div>
                         </div>
                     </div>
