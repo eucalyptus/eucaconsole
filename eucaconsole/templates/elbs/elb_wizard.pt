@@ -173,22 +173,34 @@
                                     ${panel('form_field', field=create_form['ping_path'], leftcol_width=3, rightcol_width=9)}
                                 </div>
                             </div>
-                            <div ng-cloak="true">
-                                <label>Timing settings</label>
-                                <div class="">
-                                    ${panel('form_field', field=create_form['response_timeout'], leftcol_width=3, rightcol_width=9, min=1, ng_attrs={'model': 'responseTimeout'}, pattern=layout.integer_gt_zero_pattern)}
+                            <div class="expando" id="advanced-section" ng-cloak="" ng-init="expanded = false">
+                                <div class="title">
+                                    <a ng-click="expanded = !expanded">
+                                        <i class="fi-plus" ng-show="!expanded"></i>
+                                        <i class="fi-minus" ng-show="expanded"></i>
+                                        &nbsp;<span i18n:translate="">Advanced</span>
+                                    </a>
                                 </div>
-                                <div class="">
-                                    ${panel('form_field', field=create_form['time_between_pings'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'timeBetweenPings'})}
-                                </div>
-                            </div>
-                            <div ng-cloak="true">
-                                <label>Instance thresholds</label>
-                                <div class="">
-                                    ${panel('form_field', field=create_form['failures_until_unhealthy'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'failuresUntilUnhealthy'})}
-                                </div>
-                                <div class="">
-                                    ${panel('form_field', field=create_form['passes_until_unhealthy'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'passesUntilUnhealthy'})}
+                                <div>&nbsp;</div>
+                                <div class="section columns" ng-show="expanded">
+                                    <div ng-cloak="true">
+                                        <label>Timing settings</label>
+                                        <div class="">
+                                            ${panel('form_field', field=create_form['response_timeout'], leftcol_width=3, rightcol_width=9, min=1, ng_attrs={'model': 'responseTimeout'}, pattern=layout.integer_gt_zero_pattern)}
+                                        </div>
+                                        <div class="">
+                                            ${panel('form_field', field=create_form['time_between_pings'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'timeBetweenPings'})}
+                                        </div>
+                                    </div>
+                                    <div ng-cloak="true">
+                                        <label>Instance thresholds</label>
+                                        <div class="">
+                                            ${panel('form_field', field=create_form['failures_until_unhealthy'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'failuresUntilUnhealthy'})}
+                                        </div>
+                                        <div class="">
+                                            ${panel('form_field', field=create_form['passes_until_unhealthy'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'passesUntilUnhealthy'})}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <hr/>
