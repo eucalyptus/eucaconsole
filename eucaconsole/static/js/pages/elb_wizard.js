@@ -52,6 +52,11 @@ wizardApp.controller('ELBWizardCtrl', function ($scope, $http, $timeout, eucaHan
                 $scope.checkRequiredInput(nextStep);
                 // Signal the parent wizard controller about the completion of the next step click event
                 $scope.$emit('eventProcessVisitNextStep', nextStep);
+                $timeout(function() {
+                    // Workaround for the broken placeholer message issue
+                    // Wait until the rendering of the new tab page is complete
+                    $('#zone').trigger("chosen:updated");
+                });
             });
             $scope.$watch('elbName', function(){
                $scope.checkRequiredInput(1);
