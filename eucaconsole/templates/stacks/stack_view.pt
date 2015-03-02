@@ -73,7 +73,7 @@
                                         <th i18n:translate="">VALUE</th>
                                     </tr></thead>
                                     <tbody>
-                                        <tr tal:repeat="(key, value) stack.tags.items()" ng-cloak="true">
+                                        <tr tal:repeat="(key, value) stack.tags.items() if stack.tags else []" ng-cloak="true">
                                             <td>${key}</td>
                                             <td>${value}</td>
                                         </tr>
