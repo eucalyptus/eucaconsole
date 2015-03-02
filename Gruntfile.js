@@ -24,7 +24,7 @@ module.exports = function(grunt) {
                   destPrefix: 'eucaconsole/static/js/thirdparty/jquery'
               },
               files: {
-                'jquery.min.js': 'jquery/jquery.min.js'
+                'jquery.min.js': 'jquery/dist/jquery.min.js'
               }
           },
           jasmine: {

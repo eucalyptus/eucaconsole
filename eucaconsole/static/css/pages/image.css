@@ -7,7 +7,7 @@
 
 .state.available { background-color: #03405f; }
 
-.state.cancelling { background-color: #cccccc; }
+.state.cancelling { background-color: #ccc; }
 
 .state.faied { background-color: darkred; }
 
