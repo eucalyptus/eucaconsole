@@ -83,6 +83,7 @@ class CreateELBForm(BaseSecureForm):
     vpc_subnet = wtforms.SelectField(label=_(u'VPC subnets'))
     securitygroup = wtforms.SelectMultipleField(label=_(u'Security groups'))
     zone = wtforms.SelectMultipleField(label=_(u'Availability zones'))
+    ping_protocol = wtforms.SelectField(label=_(u'Protocol'))
     ping_port_error_msg = _(u'Port range value must be whole numbers between 1-65535')
     ping_port = wtforms.IntegerField(
         label=_(u'Port'),
@@ -134,6 +135,7 @@ class CreateELBForm(BaseSecureForm):
             securitygroups=None, use_id=True, add_blank=False)
         region = request.session.get('region')
         self.zone.choices = self.get_availability_zone_choices(region)
+        self.ping_protocol.choices = self.get_ping_protocol_choices()
         self.time_between_pings.choices = self.get_time_between_pings_choices()
         self.failures_until_unhealthy.choices = self.get_failures_until_unhealthy_choices()
         self.passes_until_unhealthy.choices = self.get_passes_until_unhealthy_choices()
@@ -152,6 +154,14 @@ class CreateELBForm(BaseSecureForm):
 
     def get_availability_zone_choices(self, region):
         return self.choices_manager.availability_zones(region, add_blank=False)
+
+    def get_ping_protocol_choices(self):
+        return [
+            ('HTTP', 'HTTP'),
+            ('HTTPS', 'HTTPS'),
+            ('SSL', 'SSL'),
+            ('TCP', 'TCP')
+        ]
 
     def get_time_between_pings_choices(self):
         return [

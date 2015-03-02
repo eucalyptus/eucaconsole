@@ -154,18 +154,9 @@
                             </div>
                             <div ng-cloak="true">
                                 <label>Ping settings</label>
-	                        <div class="row">
-	                            <div class="small-3 columns">
-		                        <label class="right protocol" i18n:translate="">Protocol</label>
-	                            </div>
-	                            <div class="small-9 columns">
-		                        <select id="ping-protocol-select" name="ping_protocol" class="ip-protocol"
-		                            ng-model="pingProtocol" data-placeholder="select..." >
-		                            <option ng-repeat="protocol in protocolList" 
-			                        value="{{ protocol.name }}">{{ protocol.name }}</option>
-		                        </select>
-	                            </div>
-	                        </div>
+                                <div class="">
+                                    ${panel('form_field', field=create_form['ping_protocol'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'pingProtocol'})}
+                                </div>
                                 <div class="">
                                     ${panel('form_field', field=create_form['ping_port'], leftcol_width=3, rightcol_width=9, min=1, max=65535, maxlength=5, ng_attrs={'model': 'pingPort'}, pattern=layout.integer_gt_zero_pattern)}
                                 </div>
