@@ -128,6 +128,12 @@
                                 <label>Add availability zones</label>
                                 ${panel('form_field', field=create_form['zone'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'availabilityZones'})}
                             </div>
+                            <div>
+                                <instance-selector
+                                    template="${request.static_path('eucaconsole:static/html/directives/instance_selector.html')}"
+                                    options='${controller_options_json}'>
+                                </instance-selector>
+                            </div>
                             <hr />
                             <div>
                                 <label>
@@ -264,6 +270,7 @@
     <script src="${request.static_path('eucaconsole:static/js/pages/wizard.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/elb_wizard.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/elb_listener_editor.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/instance_selector.js')}"></script>
 </div>
 
 </metal:block>
