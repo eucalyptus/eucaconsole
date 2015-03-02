@@ -20,6 +20,7 @@ wizardApp.controller('ELBWizardCtrl', function ($scope, $http, $timeout, eucaHan
         $scope.protocolList = []; 
         $scope.pingProtocol = '';
         $scope.pingPort = '';
+        $scope.responseTimeout = '';
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.setInitialValues(options);

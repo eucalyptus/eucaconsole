@@ -151,6 +151,8 @@
                             <div ng-cloak="true">
                                 <span i18n:translate="">Your load balancer will monitor the health of its instances based on the following health check.</span>
                                 <span i18n:translate="">Instances that fail the health check will be removed from the load balancer.</span>
+                            </div>
+                            <div ng-cloak="true">
                                 <label>Ping settings</label>
 	                        <div class="row">
 	                            <div class="small-3 columns">
@@ -169,6 +171,15 @@
                                 </div>
                                 <div class="">
                                     ${panel('form_field', field=create_form['ping_path'], leftcol_width=3, rightcol_width=9)}
+                                </div>
+                            </div>
+                            <div ng-cloak="true">
+                                <label>Timing settings</label>
+                                <div class="">
+                                    ${panel('form_field', field=create_form['response_timeout'], leftcol_width=3, rightcol_width=9, min=1, ng_attrs={'model': 'responseTimeout'}, pattern=layout.integer_gt_zero_pattern)}
+                                </div>
+                                <div class="">
+                                    ${panel('form_field', field=create_form['time_between_pings'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'timeBetweenPings'})}
                                 </div>
                             </div>
                             <hr/>

@@ -97,6 +97,15 @@ class CreateELBForm(BaseSecureForm):
         label=_(u'Path'),
         default="/index.html",
     )
+    response_timeout_error_msg = _(u'Response timeout is required')
+    response_timeout = wtforms.IntegerField(
+        label=_(u'Response timeout (secs)'),
+        validators=[
+            validators.InputRequired(message=response_timeout_error_msg),
+        ],
+    )
+    time_between_pings = wtforms.SelectField(label=_(u'Time between pings'))
+
     def __init__(self, request, conn=None, vpc_conn=None, **kwargs):
         super(CreateELBForm, self).__init__(request, **kwargs)
         self.conn = conn
@@ -123,6 +132,7 @@ class CreateELBForm(BaseSecureForm):
             securitygroups=None, use_id=True, add_blank=False)
         region = request.session.get('region')
         self.zone.choices = self.get_availability_zone_choices(region)
+        self.time_between_pings.choices = self.get_time_between_pings_choices()
 
         # Set default choices where applicable, defaulting to first non-blank choice
         if self.cloud_type == 'aws' and len(self.zone.choices) > 1:
@@ -138,3 +148,10 @@ class CreateELBForm(BaseSecureForm):
 
     def get_availability_zone_choices(self, region):
         return self.choices_manager.availability_zones(region, add_blank=False)
+
+    def get_time_between_pings_choices(self):
+        return [
+            ('30', '30 seconds'),
+            ('60', '1 minute'),
+            ('300', '5 minutes')
+        ]
