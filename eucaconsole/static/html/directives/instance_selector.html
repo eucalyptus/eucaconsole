@@ -1,7 +1,15 @@
 <div id="instance_selector">
     <div ng-cloak="true">
 	<label>Add instances</label>
-	<span class="">
-	</span>
+        <div class="">
+            <input type="text" />
+        </div>
+        <div class="" ng-repeat="instance in instanceList">
+            <input type="checkbox" />
+            <span class="">{{ instance.name }}</span>
+            <span class="">{{ instance.tags }}</span>
+            <span class="">{{ instance.placement }}</span>
+            <span class="">{{ instance.status }}</span>
+	</div>
     </div>
 </div>
