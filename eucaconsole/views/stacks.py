@@ -308,9 +308,15 @@ class StackWizardView(BaseView):
         )
 
     def get_template_samples_bucket(self):
-        bucket_url = self.request.registry.settings.get('cloudformation.samples.bucket.url')
         # TODO: this likely to change to use tags based on the way conversation is going.
-        s3_conn = S3Connection(host='10.111.5.150', port=8773, path='/services/objectstorage', anon=True, calling_format=OrdinaryCallingFormat())
+        # bucket_url = self.request.registry.settings.get('cloudformation.samples.bucket.url')
+        s3_conn = S3Connection(
+            host='10.111.5.150',
+            port=8773,
+            path='/services/objectstorage',
+            anon=True,
+            calling_format=OrdinaryCallingFormat()
+        )
         return s3_conn.get_bucket('sample-templates')
 
     def get_controller_options_json(self):
@@ -383,14 +389,16 @@ class StackWizardView(BaseView):
     def getCertOptions(self):
         conn = self.get_connection(conn_type="iam")
         certs = conn.list_server_certs()
+        certs = certs['list_server_certificates_response'][
+            'list_server_certificates_result']['server_certificate_metadata_list']
         ret = []
-        for cert in certs['list_server_certificates_response']['list_server_certificates_result']['server_certificate_metadata_list']:
+        for cert in certs:
             ret.append((cert.arn, cert.server_certificate_name))
         return ret
 
     @view_config(route_name='stack_create', renderer=TEMPLATE, request_method='POST')
     def stack_create(self):
-        if True: #self.create_form.validate():
+        if True:  # self.create_form.validate():
             stack_name = self.request.params.get('name')
             location = self.request.route_path('stacks')
             (template_url, template_body, parsed) = self.parse_template()
@@ -430,7 +438,6 @@ class StackWizardView(BaseView):
         files = self.request.POST.getall('template-file')
         template_body = ''
         if len(files) > 0:  # read from file
-            file = files[0]
             # TODO: body limit is 51,200 in the API, check that!
             template_body = files[0].file.read()
             template_url = None
