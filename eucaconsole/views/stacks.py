@@ -319,7 +319,7 @@ class StackWizardView(BaseView):
         Fetches then parsed template to return information needed by wizard,
         namely description and parameters.
         """
-        (template_url, parsed) = self.parse_template()
+        (template_url, template_body, parsed) = self.parse_template()
         params = []
         for name in parsed['Parameters'].keys():
             param = parsed['Parameters'][name]
@@ -383,7 +383,7 @@ class StackWizardView(BaseView):
         if True: #self.create_form.validate():
             stack_name = self.request.params.get('name')
             location = self.request.route_path('stacks')
-            (template_url, parsed) = self.parse_template()
+            (template_url, template_body, parsed) = self.parse_template()
             params = []
             for name in parsed['Parameters'].keys():
                 val = self.request.params.get(name)
@@ -396,7 +396,7 @@ class StackWizardView(BaseView):
             with boto_error_handler(self.request, location):
                 cloudformation_conn = self.get_connection(conn_type='cloudformation')
                 cloudformation_conn.create_stack(
-                    stack_name, template_url=template_url,
+                    stack_name, template_url=template_url, template_body=template_body,
                     parameters=params, tags=tags
                 )
                 msg = _(u'Successfully sent create stack request. '
@@ -419,13 +419,15 @@ class StackWizardView(BaseView):
             pass
         files = self.request.POST.getall('template-file')
         template_body = ''
-        #if len(files) > 0:  # read from file
+        if len(files) > 0:  # read from file
             # TODO: debug this
-            #file = files[0]
-            #template_body = files[0].file.read()
-        #else:  # read from url
-        #    logging.info("reading template from :"+template_url)
-        #    template_body = urllib2.urlopen(template_url).read()
-        template_body = urllib2.urlopen(template_url).read()
+            file = files[0]
+            template_body = files[0].file.read()
+            template_url = None
+        else:  # read from url
+            logging.info("reading template from :"+template_url)
+            template_body = urllib2.urlopen(template_url).read()
         parsed = json.loads(template_body)
-        return (template_url, parsed)
+        if template_url:
+            template_body = None
+        return (template_url, template_body, parsed)

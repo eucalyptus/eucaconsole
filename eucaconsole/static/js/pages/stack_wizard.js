@@ -6,12 +6,25 @@
 
 // Launch Instance page includes the Tag Editor, the Image Picker, BDM editor, and security group rules editor
 angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils'])
+    .directive('file', function(){
+        return {
+            restrict: 'A',
+            link: function($scope, el, attrs){
+                el.bind('change', function(event){
+                    $scope.templateFiles = event.target.files;
+                    $scope.$apply();
+                    $scope.checkRequiredInput();
+                });
+            }
+        };
+    })
     .controller('StackWizardCtrl', function ($scope, $http, $timeout, eucaHandleError, eucaUnescapeJson) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.stackForm = $('#stack-wizard-form');
         $scope.stackName = '';
         $scope.stackTemplateEndpoint = '';
         $scope.tagsObject = {};
+        $scope.templateFiles = [];
         $scope.summarySection = $('.summary');
         $scope.currentStepIndex = 1;
         $scope.step1Invalid = true;
@@ -38,11 +51,8 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils'])
                 $scope.checkRequiredInput();
             });
         });
-        $("#sample-template").on('change', function() {
-        });
-        $("#template-file").on('change', function() {
-        });
-        $("#template-url").on('change', function() {
+        $('#template-file').on('change', function(evt) {
+        //    $scope.templateFile = $("#template-file").val();
         });
         $scope.initChosenSelectors = function () {
             $('sample-template').chosen({'width': '100%', search_contains: true});
@@ -79,8 +89,8 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils'])
                         }
                         break;
                     case 'file':
-                        var val = $scope.templateFile;
-                        if (val !== undefined || val == '') {
+                        var val = $scope.templateFiles;
+                        if (val !== undefined || val == []) {
                             $scope.isNotValid = false;
                         }
                         break;
@@ -109,9 +119,6 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils'])
                 $scope.checkRequiredInput();
             });
             $scope.$watch('templateSample', function(){
-                $scope.checkRequiredInput();
-            });
-            $scope.$watch('templateFile', function(){
                 $scope.checkRequiredInput();
             });
             $scope.$watch('templateUrl', function(){
@@ -159,11 +166,11 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils'])
             // Handle the unsaved tag issue
             var existsUnsavedTag = false;
             $('input.taginput').each(function(){
-                if($(this).val() !== ''){
+                if ($(this).val() !== '') {
                     existsUnsavedTag = true;
                 }
             });
-            if( existsUnsavedTag ){
+            if (existsUnsavedTag) {
                 $event.preventDefault(); 
                 $('#unsaved-tag-warn-modal').foundation('reveal', 'open');
                 return false;
@@ -201,9 +208,21 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils'])
             });
         };
         $scope.getStackTemplateInfo = function () {
-            var data = $scope.stackForm.serialize();
-            $http({method:'POST', url:$scope.stackTemplateEndpoint, data:data,
-                   headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
+            var file = $scope.templateFiles[0];
+            var fd = new FormData();
+            // fill from actual form
+            angular.forEach($('form').serializeArray(), function(value, key) {
+                this.append(value.name, value.value);
+            }, fd);
+            // Add file: consider batching up lots of small files
+            fd.append('template-file', file);
+            if ($scope.inputtype == 'file') {
+                // add file related stuff in here
+            }
+            $http.post($scope.stackTemplateEndpoint, fd, {
+                    headers: {'Content-Type': undefined},
+                    transformRequest: angular.identity
+                  }).
               success(function(oData) {
                   var results = oData ? oData.results : '';
                   if (results) {
