@@ -83,7 +83,13 @@ class CreateELBForm(BaseSecureForm):
     vpc_subnet = wtforms.SelectField(label=_(u'VPC subnets'))
     securitygroup = wtforms.SelectMultipleField(label=_(u'Security groups'))
     zone = wtforms.SelectMultipleField(label=_(u'Availability zones'))
-    ping_protocol = wtforms.SelectField(label=_(u'Protocol'))
+    ping_protocol_error_msg = _(u'Ping protocol is required')
+    ping_protocol = wtforms.SelectField(
+        label=_(u'Protocol'),
+        validators=[
+            validators.InputRequired(message=ping_protocol_error_msg),
+        ],
+    )
     ping_port_error_msg = _(u'Port range value must be whole numbers between 1-65535')
     ping_port = wtforms.IntegerField(
         label=_(u'Port'),
@@ -92,11 +98,14 @@ class CreateELBForm(BaseSecureForm):
             validators.NumberRange(min=1, max=65535),
         ],
     )
-    ping_path_error_msg = ''
+    ping_path_error_msg = _(u'Ping path is required')
     ping_path = TextEscapedField(
         id=u'ping-path',
         label=_(u'Path'),
         default="/index.html",
+        validators=[
+            validators.InputRequired(message=ping_path_error_msg),
+        ],
     )
     response_timeout_error_msg = _(u'Response timeout is required')
     response_timeout = wtforms.IntegerField(
@@ -105,9 +114,27 @@ class CreateELBForm(BaseSecureForm):
             validators.InputRequired(message=response_timeout_error_msg),
         ],
     )
-    time_between_pings = wtforms.SelectField(label=_(u'Time between pings'))
-    failures_until_unhealthy = wtforms.SelectField(label=_(u'Failures until unhealthy'))
-    passes_until_unhealthy = wtforms.SelectField(label=_(u'Passes until unhealthy'))
+    time_between_pings_error_msg = _(u'Time between pings is required')
+    time_between_pings = wtforms.SelectField(
+        label=_(u'Time between pings'),
+        validators=[
+            validators.InputRequired(message=time_between_pings_error_msg),
+        ],
+    )
+    failures_until_unhealthy_error_msg = _(u'Failures until unhealthy is required')
+    failures_until_unhealthy = wtforms.SelectField(
+        label=_(u'Failures until unhealthy'),
+        validators=[
+            validators.InputRequired(message=failures_until_unhealthy_error_msg),
+        ],
+    )
+    passes_until_unhealthy_error_msg = _(u'Passes until unhealthy is required')
+    passes_until_unhealthy = wtforms.SelectField(
+        label=_(u'Passes until unhealthy'),
+        validators=[
+            validators.InputRequired(message=passes_until_unhealthy_error_msg),
+        ],
+    )
 
     def __init__(self, request, conn=None, vpc_conn=None, **kwargs):
         super(CreateELBForm, self).__init__(request, **kwargs)
