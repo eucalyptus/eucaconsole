@@ -51,9 +51,6 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils'])
                 $scope.checkRequiredInput();
             });
         });
-        $('#template-file').on('change', function(evt) {
-        //    $scope.templateFile = $("#template-file").val();
-        });
         $scope.initChosenSelectors = function () {
             $('sample-template').chosen({'width': '100%', search_contains: true});
         };
@@ -209,16 +206,15 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils'])
             });
         };
         $scope.getStackTemplateInfo = function () {
-            var file = $scope.templateFiles[0];
             var fd = new FormData();
             // fill from actual form
             angular.forEach($('form').serializeArray(), function(value, key) {
                 this.append(value.name, value.value);
             }, fd);
             // Add file: consider batching up lots of small files
-            fd.append('template-file', file);
             if ($scope.inputtype == 'file') {
-                // add file related stuff in here
+                var file = $scope.templateFiles[0];
+                fd.append('template-file', file);
             }
             $http.post($scope.stackTemplateEndpoint, fd, {
                     headers: {'Content-Type': undefined},
