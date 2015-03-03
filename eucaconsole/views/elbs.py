@@ -37,8 +37,7 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config
 
 from ..i18n import _
-from ..forms.elbs import ELBDeleteForm, ELBsFiltersForm, CreateELBForm
-from ..forms.instances import InstancesFiltersForm 
+from ..forms.elbs import ELBDeleteForm, ELBsFiltersForm, CreateELBForm, ELBInstancesFiltersForm 
 from ..models import Notification
 from ..views import LandingPageView, BaseView, JSONResponse
 from . import boto_error_handler
@@ -259,7 +258,7 @@ class CreateELBView(BaseView):
         self.create_form = CreateELBForm(
             self.request, conn=self.ec2_conn, vpc_conn=self.vpc_conn, formdata=self.request.params or None)
         filter_keys = ['id', 'name', 'placement', 'state', 'tags']
-        filters_form = InstancesFiltersForm(
+        filters_form = ELBInstancesFiltersForm(
             self.request, ec2_conn=self.ec2_conn, autoscale_conn=self.autoscale_conn,
             iam_conn=None, vpc_conn=self.vpc_conn,
             cloud_type=self.cloud_type, formdata=self.request.params or None)

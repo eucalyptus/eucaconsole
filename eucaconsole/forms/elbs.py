@@ -230,3 +230,58 @@ class CreateELBForm(BaseSecureForm):
             ('9', '9'),
             ('10', '10'),
         ]
+
+
+class ELBInstancesFiltersForm(BaseSecureForm):
+    """Form class for filters on create ELB wizard"""
+    state = wtforms.SelectMultipleField(label=_(u'Status'))
+    availability_zone = wtforms.SelectMultipleField(label=_(u'Availability zone'))
+    tags = TextEscapedField(label=_(u'Tags'))
+    vpc_id = wtforms.SelectMultipleField(label=_(u'VPC network'))
+    subnet_id = wtforms.SelectMultipleField(label=_(u'VPC subnet'))
+
+    def __init__(self, request, ec2_conn=None, autoscale_conn=None,
+                 iam_conn=None, vpc_conn=None,
+                 cloud_type='euca', **kwargs):
+        super(ELBInstancesFiltersForm, self).__init__(request, **kwargs)
+        self.request = request
+        self.cloud_type = cloud_type
+        self.ec2_choices_manager = ChoicesManager(conn=ec2_conn)
+        self.autoscale_choices_manager = ChoicesManager(conn=autoscale_conn)
+        self.iam_choices_manager = ChoicesManager(conn=iam_conn)
+        self.vpc_choices_manager = ChoicesManager(conn=vpc_conn)
+        region = request.session.get('region')
+        self.availability_zone.choices = self.get_availability_zone_choices(region)
+        self.state.choices = self.get_status_choices()
+        self.vpc_id.choices = self.vpc_choices_manager.vpc_networks(add_blank=False)
+        if cloud_type == 'aws':
+            self.vpc_id.choices.append(('None', _(u'No VPC')))
+        self.vpc_id.choices = sorted(self.vpc_id.choices)
+        self.subnet_id.choices = self.vpc_choices_manager.vpc_subnets(add_blank=False)
+        self.facets = [
+            {'name':'state', 'label':self.state.label.text, 'options':self.get_status_choices()},
+            {'name':'availability_zone', 'label':self.availability_zone.label.text, 'options':self.get_availability_zone_choices(region)},
+            {'name':'subnet_id', 'label':self.subnet_id.label.text,
+                'options':self.getOptionsFromChoices(self.vpc_choices_manager.vpc_subnets(add_blank=False))},
+            {'name':'tags', 'label':self.tags.label.text},
+        ]
+        vpc_choices = self.vpc_choices_manager.vpc_networks(add_blank=False)
+        vpc_choices.append(('None', _(u'No VPC')))
+        self.facets.append(
+            {'name':'vpc_id', 'label':self.vpc_id.label.text,
+                'options': self.getOptionsFromChoices(vpc_choices)},
+        )
+
+    def get_availability_zone_choices(self, region):
+        return self.getOptionsFromChoices(self.ec2_choices_manager.availability_zones(region, add_blank=False))
+
+    @staticmethod
+    def get_status_choices():
+        return [
+            {'key':'running', 'label':'Running'},
+            {'key':'pending', 'label':'Pending'},
+            {'key':'stopping', 'label':'Stopping'},
+            {'key':'stopped', 'label':'Stopped'},
+            {'key':'shutting-down', 'label':'Terminating'},
+            {'key':'terminated', 'label':'Terminated'},
+        ]
