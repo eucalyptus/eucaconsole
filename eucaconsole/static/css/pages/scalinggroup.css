@@ -117,9 +117,11 @@ input[type="number"] { width: 3rem; }
 
 #launch_config, #health_check_type { max-width: 10rem; }
 
-#controls_min_size, #controls_desired_capacity, #controls_max_size { display: inline-block; margin-left: 1rem; }
+#capacity-section .controls-wrapper.inline { display: inline-block; }
+#capacity-section .controls-wrapper.inline label { right: 0; }
 
-#controls_max_size { margin-left: -1rem; }
+#controls_desired_capacity { padding-left: 1.8rem; }
+#controls_desired_capacity label { margin-left: -1rem; }
 
 [data-abide] #capacity-section .error small.error { position: absolute; width: 15rem; left: 8px; bottom: -1.5rem; }
 
