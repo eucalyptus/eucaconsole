@@ -78,17 +78,32 @@ class CreateELBForm(BaseSecureForm):
         label=_(u'Name'),
         validators=[validators.InputRequired(message=name_error_msg)],
     )
-    vpc_network = wtforms.SelectField(label=_(u'VPC network'))
+    vpc_network_error_msg = _(u'VPC network is required')
     vpc_network_helptext = _(u'Launch your instance into one of your Virtual Private Clouds')
-    vpc_subnet = wtforms.SelectField(label=_(u'VPC subnets'))
-    securitygroup = wtforms.SelectMultipleField(label=_(u'Security groups'))
-    zone = wtforms.SelectMultipleField(label=_(u'Availability zones'))
+    vpc_network = wtforms.SelectField(
+        label=_(u'VPC network'),
+        validators=[validators.InputRequired(message=vpc_network_error_msg)],
+    )
+    vpc_subnet_error_msg = _(u'VPC subnet is required')
+    vpc_subnet_helptext = _(u'VPC subnet')
+    vpc_subnet = wtforms.SelectField(
+        label=_(u'VPC subnets'),
+        validators=[validators.InputRequired(message=vpc_subnet_error_msg)],
+    )
+    securitygroup_error_msg = _(u'Security group is required')
+    securitygroup = wtforms.SelectMultipleField(
+        label=_(u'Security groups'),
+        validators=[validators.InputRequired(message=securitygroup_error_msg)],
+    )
+    zone_error_msg = _(u'Availability zone is required')
+    zone = wtforms.SelectMultipleField(
+        label=_(u'Availability zones'),
+        validators=[validators.InputRequired(message=zone_error_msg)],
+    )
     ping_protocol_error_msg = _(u'Ping protocol is required')
     ping_protocol = wtforms.SelectField(
         label=_(u'Protocol'),
-        validators=[
-            validators.InputRequired(message=ping_protocol_error_msg),
-        ],
+        validators=[validators.InputRequired(message=ping_protocol_error_msg)],
     )
     ping_port_error_msg = _(u'Port range value must be whole numbers between 1-65535')
     ping_port = wtforms.IntegerField(
@@ -103,37 +118,27 @@ class CreateELBForm(BaseSecureForm):
         id=u'ping-path',
         label=_(u'Path'),
         default="/index.html",
-        validators=[
-            validators.InputRequired(message=ping_path_error_msg),
-        ],
+        validators=[validators.InputRequired(message=ping_path_error_msg)],
     )
     response_timeout_error_msg = _(u'Response timeout is required')
     response_timeout = wtforms.IntegerField(
         label=_(u'Response timeout (secs)'),
-        validators=[
-            validators.InputRequired(message=response_timeout_error_msg),
-        ],
+        validators=[validators.InputRequired(message=response_timeout_error_msg)],
     )
     time_between_pings_error_msg = _(u'Time between pings is required')
     time_between_pings = wtforms.SelectField(
         label=_(u'Time between pings'),
-        validators=[
-            validators.InputRequired(message=time_between_pings_error_msg),
-        ],
+        validators=[validators.InputRequired(message=time_between_pings_error_msg)],
     )
     failures_until_unhealthy_error_msg = _(u'Failures until unhealthy is required')
     failures_until_unhealthy = wtforms.SelectField(
         label=_(u'Failures until unhealthy'),
-        validators=[
-            validators.InputRequired(message=failures_until_unhealthy_error_msg),
-        ],
+        validators=[validators.InputRequired(message=failures_until_unhealthy_error_msg)],
     )
     passes_until_unhealthy_error_msg = _(u'Passes until unhealthy is required')
     passes_until_unhealthy = wtforms.SelectField(
         label=_(u'Passes until unhealthy'),
-        validators=[
-            validators.InputRequired(message=passes_until_unhealthy_error_msg),
-        ],
+        validators=[validators.InputRequired(message=passes_until_unhealthy_error_msg)],
     )
 
     def __init__(self, request, conn=None, vpc_conn=None, **kwargs):
@@ -151,6 +156,7 @@ class CreateELBForm(BaseSecureForm):
 
     def set_help_text(self):
         self.vpc_network.label_help_text = self.vpc_network_helptext
+        self.vpc_subnet.label_help_text = self.vpc_subnet_helptext
 
     def set_choices(self, request):
         if self.cloud_type == 'euca' and self.is_vpc_supported:
