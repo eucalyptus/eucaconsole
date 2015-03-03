@@ -4,10 +4,11 @@
             <thead>
                 <tr>
                     <th><input type="checkbox" name="instances" value="_all" /></th>
-                    <th i18n:translate="">Name (ID)</th>
-                    <th i18n:translate="">Tags</th>
-                    <th i18n:translate="">Avail Zone</th>
-                    <th i18n:translate="">Status</th>
+                    <th i18n:translate="">NAME (ID)</th>
+                    <th i18n:translate="">TAGS</th>
+                    <th i18n:translate="">AVAILABILTY ZONE</th>
+                    <th i18n:translate="">VPC SUBNET</th>
+                    <th i18n:translate="">STATUS</th>
                 </tr>
             </thead>
             <tbody>
@@ -16,6 +17,7 @@
                     <td><span class="">{{ instance.name }}</span></td>
                     <td><span class="">{{ instance.tags }}</span></td>
                     <td><span class="">{{ instance.placement }}</span></td>
+                    <td><span class="">{{ instance.vpc_name }}</span></td>
                     <td><span class="">{{ instance.status }}</span></td>
                 </tr>  
             </tbody>
