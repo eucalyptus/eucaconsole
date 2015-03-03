@@ -33,7 +33,7 @@
 
 // This includes all of the foundation global elements that are needed to work with any of the other files.
 // Note: foundation/settings imports includes/eucavariables
-@import "foundation/settings";
+@import "includes/eucavariables";
 
 @import "font-awesome/font-awesome";
 
@@ -964,6 +964,12 @@ footer {
         &.active a {
             box-shadow: none;
         }
+    }
+}
+
+.tabs-content > .content {
+    &.large-centered, &.medium-centered {
+        float: none;
     }
 }
 
