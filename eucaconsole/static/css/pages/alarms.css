@@ -19,9 +19,9 @@
 
 #primary-buttons .button { padding: 8px 3rem; }
 
-.gridwrapper .dropdown.button.tiny { z-index: 99999; background: none; box-shadow: none; position: absolute; width: 30px; height: 24px; top: 0; right: 0; color: #8cc63e; font-size: 1.1rem; padding: 0 0 0 0; border-top: none; border-right: none; }
+.gridwrapper .dropdown.button.tiny { z-index: 99999; background: none; box-shadow: none; position: absolute; width: 30px; height: 24px; top: 0; right: 0; color: #8cc63e; font-size: 1.1rem; padding: 0 0 0 0; border: none; }
 .gridwrapper .dropdown.button.tiny:hover { color: #8cc63e; }
-.gridwrapper .dropdown.button.tiny::before { border: none; }
+.gridwrapper .dropdown.button.tiny::before, .gridwrapper .dropdown.button.tiny::after { border: none; }
 .gridwrapper .dropdown.button.tiny .fi-widget { position: relative; top: 4px; background-image: url(../../img/svg/gear.svg); display: inline-block; width: 20px; height: 20px; }
 .gridwrapper .dropdown.button.tiny .fi-widget::before { content: " "; }
 .gridwrapper .f-dropdown { border-color: #8dc640; box-shadow: 2px 2px 5px #6a737b; }
