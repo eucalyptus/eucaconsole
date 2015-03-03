@@ -22,6 +22,7 @@ wizardApp.controller('ELBWizardCtrl', function ($scope, $http, $timeout, eucaHan
         $scope.pingProtocol = '';
         $scope.pingPort = '';
         $scope.responseTimeout = '';
+        $scope.timeBetweenPings = '';
         $scope.failuresUntilUnhealthy = '';
         $scope.passesUntilUnhealthy = '';
         $scope.initController = function (optionsJson) {
@@ -48,6 +49,12 @@ wizardApp.controller('ELBWizardCtrl', function ($scope, $http, $timeout, eucaHan
                 $scope.vpcSubnetList = options.vpc_subnet_choices;
                 $scope.updateVPCSubnetChoices();
             }
+            $scope.pingProtocol = 'HTTP';
+            $scope.pingPort = 80;
+            $scope.responseTimeout = 5;
+            $scope.timeBetweenPings = 30;
+            $scope.failuresUntilUnhealthy = 2;
+            $scope.passesUntilUnhealthy = 10;
             $scope.initChosenSelectors(); 
         };
         $scope.initChosenSelectors = function () {
