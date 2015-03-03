@@ -285,6 +285,39 @@ class CreateELBView(BaseView):
                 { 'name': 'TCP', 'port': 'tcp' },
             ),
             'port_range_pattern':'^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$',
+            'default_vpc_network': self.get_default_vpc_network(),
+            'vpc_subnet_choices': self.get_vpc_subnets(),
             'securitygroups_json_endpoint': self.request.route_path('securitygroups_json'),
             'instances_json_endpoint': self.request.route_path('instances_json')
         }))
+
+    def get_default_vpc_network(self):
+        default_vpc = self.request.session.get('default_vpc', [])
+        if self.is_vpc_supported:
+            if 'none' in default_vpc or 'None' in default_vpc:
+                if self.cloud_type == 'aws':
+                    return 'None'
+                # for euca, return the first vpc on the list
+                if self.vpc_conn:
+                    with boto_error_handler(self.request):
+                        vpc_networks = self.vpc_conn.get_all_vpcs()
+                        if vpc_networks:
+                            return vpc_networks[0].id
+            else:
+                return default_vpc[0]
+        return 'None'
+
+    def get_vpc_subnets(self):
+        subnets = []
+        if self.vpc_conn:
+            with boto_error_handler(self.request):
+                vpc_subnets = self.vpc_conn.get_all_subnets()
+                for vpc_subnet in vpc_subnets:
+                    subnets.append(dict(
+                        id=vpc_subnet.id,
+                        vpc_id=vpc_subnet.vpc_id,
+                        availability_zone=vpc_subnet.availability_zone,
+                        state=vpc_subnet.state,
+                        cidr_block=vpc_subnet.cidr_block,
+                    ))
+        return subnets

@@ -13,6 +13,7 @@ wizardApp.controller('ELBWizardCtrl', function ($scope, $http, $timeout, eucaHan
         $scope.vpcNetwork = '';
         $scope.vpcSubnet = '';
         $scope.vpcSubnetChoices = [];
+        $scope.vpcSubnetList = [];
         $scope.securityGroups = [];
         $scope.securityGroupChoices = [];
         $scope.securityGroupCollection = []; 
@@ -40,6 +41,13 @@ wizardApp.controller('ELBWizardCtrl', function ($scope, $http, $timeout, eucaHan
 		    $scope.pingProtocol = $scope.protocolList[0].name;
                 }
             }
+            if (options.hasOwnProperty('default_vpc_network')) {
+                $scope.vpcNetwork = options.default_vpc_network;
+            }
+            if (options.hasOwnProperty('vpc_subnet_choices')) {
+                $scope.vpcSubnetList = options.vpc_subnet_choices;
+                $scope.updateVPCSubnetChoices();
+            }
             $scope.initChosenSelectors(); 
         };
         $scope.initChosenSelectors = function () {
@@ -63,6 +71,7 @@ wizardApp.controller('ELBWizardCtrl', function ($scope, $http, $timeout, eucaHan
             });
             $scope.$watch('vpcNetwork', function () {
                 $scope.getAllSecurityGroups($scope.vpcNetwork);
+                $scope.updateVPCSubnetChoices();
             });
             $scope.$watch('securityGroupCollection', function () {
                 $scope.updateSecurityGroupChoices();
@@ -110,6 +119,24 @@ wizardApp.controller('ELBWizardCtrl', function ($scope, $http, $timeout, eucaHan
             $timeout(function(){
                 $('#securitygroup').trigger('chosen:updated');
             }, 500);
+        };
+        $scope.updateVPCSubnetChoices = function () {
+            $scope.vpcSubnetChoices = {};
+            $scope.vpcSubnet = '';
+            angular.forEach($scope.vpcSubnetList, function(subnet){
+                if (subnet.vpc_id === $scope.vpcNetwork) {
+                    $scope.vpcSubnetChoices[subnet.id] = 
+                        subnet.cidr_block + ' (' + subnet.id + ') | ' + 
+                        subnet.availability_zone;
+                    if ($scope.vpcSubnet === '') {
+                        $scope.vpcSubnet = subnet.id;
+                    }
+                }
+            }); 
+            if ($scope.vpcSubnet === '') {
+                $scope.vpcSubnetChoices.None = $('#hidden_vpc_subnet_empty_option').text();
+                $scope.vpcSubnet = 'None';
+            }
         };
         $scope.createELB = function () {
         };

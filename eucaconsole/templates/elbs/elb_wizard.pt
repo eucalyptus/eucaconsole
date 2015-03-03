@@ -103,6 +103,7 @@
                                 <label>Network</label>
                                 ${panel('form_field', field=create_form['vpc_network'], ng_attrs={'model': 'vpcNetwork'}, leftcol_width=4, rightcol_width=8)}
                                 ${panel('form_field', field=create_form['vpc_subnet'], leftcol_width=4, rightcol_width=8, ng_attrs={'model': 'vpcSubnet', 'options': 'k as v for (k, v) in vpcSubnetChoices'})}
+                                 <span id="hidden_vpc_subnet_empty_option" class="hide" i18n:translate="">No subnets found</span>
                                 ${panel('form_field', field=create_form['securitygroup'], leftcol_width=4, rightcol_width=8, ng_attrs={'model': 'securityGroups', 'options': 'k as v for (k, v) in securityGroupChoices'}, **security_group_attrs)}
                             </div>
                             <hr />
