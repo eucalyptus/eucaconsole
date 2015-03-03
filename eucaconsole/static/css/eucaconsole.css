@@ -2865,10 +2865,10 @@ footer .copyright { font-size: 0.9em; }
 
 /* ----------------------------------------- Buttons
 ----------------------------------------- */
-.button { background-color: #f3901d; }
-.button.secondary { background-color: #6a737b; color: white; }
-.button.disabled, .button[disabled] { background-color: #6a737b; }
-.button.disabled:hover, .button[disabled]:hover { background-color: #6a737b; }
+.button { background-color: #f3901d; border-color: #f3901d; }
+.button.secondary { background-color: #6a737b; border-color: #6a737b; color: white; }
+.button.disabled, .button[disabled] { background-color: #6a737b; border-color: #6a737b; }
+.button.disabled:hover, .button[disabled]:hover { background-color: #6a737b; border-color: #6a737b; }
 .button:hover { background-color: #d2760b; }
 .button:focus { background-color: #f3901d; }
 
