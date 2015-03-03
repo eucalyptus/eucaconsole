@@ -122,7 +122,12 @@
                                     <tbody>
                                         <tr ng-repeat="item in resources | orderBy: sortBy:sortReverse" ng-cloak="true">
                                             <td>{{ item.type }} ({{ item.logical_id }})</td>
-                                            <td>{{ item.physical_id }}</td>
+                                            <td ng-hide="item.url">
+                                                {{ item.physical_id }}
+                                            </td>
+                                            <td ng-show="item.url">
+                                                <a href="{{ item.url }}">{{ item.physical_id }}<a>
+                                            </td>
                                             <td>{{ item.status }}</td>
                                             <td>{{ item.updated_timestamp | date:'${layout.angular_date_format}' }}</td>
                                         </tr>

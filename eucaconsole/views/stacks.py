@@ -233,11 +233,21 @@ class StackStateView(BaseView):
                 outputs.append({'key': output.key, 'value': output.value})
             resources = []
             for resource in stack_resources:
+                url = None
+                if resource.resource_type == "AWS::ElasticLoadBalancing::LoadBalancer":
+                    url = self.request.route_path('elb_view', id=resource.physical_resource_id)
+                elif resource.resource_type == "AWS::EC2::SecurityGroup":
+                    url = self.request.route_path('securitygroup_view', id=resource.physical_resource_id)
+                elif resource.resource_type == "AWS::AutoScaling::AutoScalingGroup":
+                    url = self.request.route_path('scalinggroup_view', id=resource.physical_resource_id)
+                elif resource.resource_type == "AWS::AutoScaling::LaunchConfiguration":
+                    url = self.request.route_path('launchconfig_view', id=resource.physical_resource_id)
                 resources.append({
                     'type': resource.resource_type,
                     'logical_id': resource.logical_resource_id,
                     'physical_id': resource.physical_resource_id,
                     'status': resource.resource_status,
+                    'url': url,
                     'updated_timestamp': resource.LastUpdatedTimestamp})
             return dict(
                 results=dict(

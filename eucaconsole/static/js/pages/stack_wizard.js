@@ -80,24 +80,24 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils'])
         };
         $scope.checkRequiredInput = function () {
             if ($scope.currentStepIndex == 1) { 
-                $scope.isNotValid = true;
+                $scope.isNotValid = false;
                 switch ($scope.inputtype) {
                     case 'sample':
                         var val = $scope.templateSample;
-                        if (val !== undefined || val == '') {
-                            $scope.isNotValid = false;
+                        if (val === undefined || val == '') {
+                            $scope.isNotValid = true;
                         }
                         break;
                     case 'file':
                         var val = $scope.templateFiles;
-                        if (val !== undefined || val == []) {
-                            $scope.isNotValid = false;
+                        if (val === undefined || val.length == 0) {
+                            $scope.isNotValid = true;
                         }
                         break;
                     case 'url':
                         var val = $scope.templateUrl;
-                        if (val !== undefined || val == '') {
-                            $scope.isNotValid = false;
+                        if (val === undefined || val == '') {
+                            $scope.isNotValid = true;
                         }
                         break;
                     default:
