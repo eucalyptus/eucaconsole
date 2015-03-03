@@ -309,7 +309,7 @@ class StackWizardView(BaseView):
 
     def get_template_samples_bucket(self):
         bucket_url = self.request.registry.settings.get('cloudformation.samples.bucket.url')
-        # TODO: parse url into values needed to set up connection
+        # TODO: this likely to change to use tags based on the way conversation is going.
         s3_conn = S3Connection(host='10.111.5.150', port=8773, path='/services/objectstorage', anon=True, calling_format=OrdinaryCallingFormat())
         return s3_conn.get_bucket('sample-templates')
 
