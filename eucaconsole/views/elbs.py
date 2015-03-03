@@ -38,6 +38,7 @@ from pyramid.view import view_config
 
 from ..i18n import _
 from ..forms.elbs import ELBDeleteForm, ELBsFiltersForm, CreateELBForm
+from ..forms.instances import InstancesFiltersForm 
 from ..models import Notification
 from ..views import LandingPageView, BaseView, JSONResponse
 from . import boto_error_handler
@@ -253,12 +254,21 @@ class CreateELBView(BaseView):
     def __init__(self, request):
         super(CreateELBView, self).__init__(request)
         self.ec2_conn = self.get_connection()
+        self.autoscale_conn = self.get_connection(conn_type='autoscale')
         self.vpc_conn = self.get_connection(conn_type='vpc')
         self.create_form = CreateELBForm(
             self.request, conn=self.ec2_conn, vpc_conn=self.vpc_conn, formdata=self.request.params or None)
+        filter_keys = ['id', 'name', 'placement', 'state', 'tags']
+        filters_form = InstancesFiltersForm(
+            self.request, ec2_conn=self.ec2_conn, autoscale_conn=self.autoscale_conn,
+            iam_conn=None, vpc_conn=self.vpc_conn,
+            cloud_type=self.cloud_type, formdata=self.request.params or None)
+        search_facets = filters_form.facets
         self.render_dict = dict(
             create_form=self.create_form,
             security_group_placeholder_text=_(u'Select...'),
+            filter_keys=filter_keys,
+            search_facets=BaseView.escape_json(json.dumps(search_facets)),
             controller_options_json=self.get_controller_options_json(),
         )
 

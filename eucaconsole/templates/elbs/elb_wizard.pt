@@ -2,6 +2,7 @@
 
 <head metal:fill-slot="head_css">
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/elb_wizard.css')}" />
+    <link rel="stylesheet" type-"text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.css')}"/>
 </head>
 
 <div metal:fill-slot="main_content" ng-app="Wizard" ng-controller="WizardCtrl" ng-init="initController('elb', 4)">
@@ -128,11 +129,19 @@
                                 <label>Add availability zones</label>
                                 ${panel('form_field', field=create_form['zone'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'availabilityZones'})}
                             </div>
-                            <div>
-                                <instance-selector
-                                    template="${request.static_path('eucaconsole:static/html/directives/instance_selector.html')}"
-                                    options='${controller_options_json}'>
-                                </instance-selector>
+                            <div ng-cloak="true">
+	                        <label>Add instances</label>
+                                <div ng-app="MagicSearch">
+                                    <magic-search template="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.html')}"
+
+                                        strings="{'remove':'${layout.searchtext_remove}', 'cancel':'${layout.searchtext_cancel}', 'prompt':'${layout.searchtext_prompt}'}" facets="${search_facets}" filter-keys="${filter_keys}"></magic-search>
+                                </div>
+                                <div>
+                                     <instance-selector
+                                         template="${request.static_path('eucaconsole:static/html/directives/instance_selector.html')}"
+                                         options='${controller_options_json}'>
+                                     </instance-selector>
+                                </div>
                             </div>
                             <hr />
                             <div>
@@ -270,6 +279,7 @@
     <script src="${request.static_path('eucaconsole:static/js/pages/wizard.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/elb_wizard.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/elb_listener_editor.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/instance_selector.js')}"></script>
 </div>
 
