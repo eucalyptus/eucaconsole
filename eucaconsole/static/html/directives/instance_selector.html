@@ -4,12 +4,25 @@
         <div class="">
             <input type="text" />
         </div>
-        <div class="" ng-repeat="instance in instanceList">
-            <input type="checkbox" />
-            <span class="">{{ instance.name }}</span>
-            <span class="">{{ instance.tags }}</span>
-            <span class="">{{ instance.placement }}</span>
-            <span class="">{{ instance.status }}</span>
+        <table class="table" ng-cloak="true">
+            <thead>
+                <tr>
+                    <th><input type="checkbox" name="instances" value="_all" /></th>
+                    <th i18n:translate="">Name (ID)</th>
+                    <th i18n:translate="">Tags</th>
+                    <th i18n:translate="">Avail Zone</th>
+                    <th i18n:translate="">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-cloak="true" ng-repeat="instance in instanceList">
+                    <td><input type="checkbox" name="instances" value="{{ instance.id }}" /></td>
+                    <td><span class="">{{ instance.name }}</span></td>
+                    <td><span class="">{{ instance.tags }}</span></td>
+                    <td><span class="">{{ instance.placement }}</span></td>
+                    <td><span class="">{{ instance.status }}</span></td>
+                </tr>  
+            </tbody>
 	</div>
     </div>
 </div>
