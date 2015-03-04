@@ -31,7 +31,7 @@ angular.module('InstanceVolumes', ['EucaConsoleUtils'])
         };
         $scope.initChosenSelector = function () {
             $(document).ready(function() {
-                $('#attach-volume-modal').on('open', function() {
+                $('#attach-volume-modal').on('open.fndtn.reveal', function() {
                     $('#volume_id').chosen({'width': '100%', search_contains: true});
                 });
             });
@@ -45,7 +45,7 @@ angular.module('InstanceVolumes', ['EucaConsoleUtils'])
             }, true); 
         };
         $scope.setFocus = function () {
-            $(document).on('opened', '[data-reveal]', function () {
+            $(document).on('opened.fndtn.reveal', '[data-reveal]', function () {
                 var modal = $(this);
                 var inputElement = modal.find('input[type!=hidden]').get(0);
                 var modalButton = modal.find('button').get(0);
@@ -58,10 +58,10 @@ angular.module('InstanceVolumes', ['EucaConsoleUtils'])
         };
         $scope.setDropdownMenusListener = function () {
             var modals = $('[data-reveal]');
-            modals.on('open', function () {
+            modals.on('open.fndtn.reveal', function () {
                 $('.gridwrapper').find('.f-dropdown').filter('.open').css('display', 'none');
             });
-            modals.on('close', function () {
+            modals.on('close.fndtn.reveal', function () {
                 $('.gridwrapper').find('.f-dropdown').filter('.open').css('display', 'block');
             });
         };
