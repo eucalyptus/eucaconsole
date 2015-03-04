@@ -236,12 +236,30 @@ class StackStateView(BaseView):
                 url = None
                 if resource.resource_type == "AWS::ElasticLoadBalancing::LoadBalancer":
                     url = self.request.route_path('elb_view', id=resource.physical_resource_id)
-                elif resource.resource_type == "AWS::EC2::SecurityGroup":
-                    url = self.request.route_path('securitygroup_view', id=resource.physical_resource_id)
-                elif resource.resource_type == "AWS::AutoScaling::AutoScalingGroup":
-                    url = self.request.route_path('scalinggroup_view', id=resource.physical_resource_id)
-                elif resource.resource_type == "AWS::AutoScaling::LaunchConfiguration":
-                    url = self.request.route_path('launchconfig_view', id=resource.physical_resource_id)
+                elif "AWS::EC2::" in resource.resource_type:
+                    if "SecurityGroup" in resource.resource_type:
+                        url = self.request.route_path('securitygroup_view', id=resource.physical_resource_id)
+                    elif "EIP" in resource.resource_type:
+                        url = self.request.route_path('ipaddress_view', id=resource.physical_resource_id)
+                    elif "Instance" in resource.resource_type:
+                        url = self.request.route_path('instance_view', id=resource.physical_resource_id)
+                    elif "Volume" in resource.resource_type:
+                        url = self.request.route_path('volume_view', id=resource.physical_resource_id)
+                elif "AWS::AutoScaling::" in resource.resource_type:
+                    if "LaunchConfiguration" in resource.resource_type:
+                        url = self.request.route_path('launchconfig_view', id=resource.physical_resource_id)
+                    if "ScalingGroup" in resource.resource_type:
+                        url = self.request.route_path('scalinggroup_view', id=resource.physical_resource_id)
+                elif "AWS::IAM::" in resource.resource_type:
+                    if "Group" in resource.resource_type:
+                        url = self.request.route_path('group_view', id=resource.physical_resource_id)
+                    elif "Role" in resource.resource_type:
+                        url = self.request.route_path('role_view', id=resource.physical_resource_id)
+                    elif "User" in resource.resource_type:
+                        url = self.request.route_path('user_view', id=resource.physical_resource_id)
+                elif "AWS::S3::" in resource.resource_type:
+                    if "Bucket" in resource.resource_type:
+                        url = self.request.route_path('bucket_contents', id=resource.physical_resource_id)
                 resources.append({
                     'type': resource.resource_type,
                     'logical_id': resource.logical_resource_id,
