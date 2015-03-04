@@ -64,7 +64,7 @@ angular.module('VolumePage', ['TagEditor', 'EucaConsoleUtils'])
             }
             snapshotField.chosen({'width': '75%', 'search_contains': true});
             // Instance choices in "Attach to instance" modal dialog
-            $('#attach-volume-modal').on('open', function() {
+            $('#attach-volume-modal').on('open.fndtn.reveal', function() {
                 $('#instance_id').chosen({'width': '75%', search_contains: true});
             });
         };
