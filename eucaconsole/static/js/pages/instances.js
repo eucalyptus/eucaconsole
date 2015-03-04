@@ -11,12 +11,12 @@ angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils'])
         $scope.batchTerminateModal = $('#batch-terminate-modal');
         $scope.associateIPModal = $('#associate-ip-to-instance-modal');
         $scope.initChosenSelectors = function () {
-            $scope.batchTerminateModal.on('open', function () {
+            $scope.batchTerminateModal.on('open.fndtn.reveal', function () {
                 var instanceIdsSelect = $scope.batchTerminateModal.find('select');
                 instanceIdsSelect.chosen({'width': '100%', 'search_contains': true});
                 instanceIdsSelect.trigger('chosen:updated');
             });
-            $scope.associateIPModal.on('open', function () {
+            $scope.associateIPModal.on('open.fndtn.reveal', function () {
                 $('#ip_address').chosen({'width': '80%'});
                 $('#ip_address').trigger('chosen:updated');
             });
