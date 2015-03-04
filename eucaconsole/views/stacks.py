@@ -379,8 +379,14 @@ class StackWizardView(BaseView):
                 param_vals['options'] = self.getKeyOptions()  # fetch keypair names
             if 'image' in name.lower():
                 param_vals['options'] = self.getImageOptions()  # fetch image ids
+            if 'kernel' in name.lower():
+                param_vals['options'] = self.getImageOptions(type='kernel')  # fetch kernel ids
+            if 'ramdisk' in name.lower():
+                param_vals['options'] = self.getImageOptions(type='ramdisk')  # fetch ramdisk ids
             if 'cert' in name.lower():
                 param_vals['options'] = self.getCertOptions()  # fetch server cert names
+            if 'instance' in name.lower() and 'profile' in name.lower():
+                param_vals['options'] = self.getInstanceProfileOptions()
             params.append(param_vals)
         return dict(
             results=dict(description=parsed['Description'],
@@ -395,10 +401,16 @@ class StackWizardView(BaseView):
             ret.append((key.name, key.name))
         return ret
 
-    def getImageOptions(self):
+    def getImageOptions(self, type='machine'):
         conn = self.get_connection()
         region = self.request.session.get('region')
-        images = self.get_images(conn, [], [], region)
+        images = []
+        if type == 'machine':
+            images = self.get_images(conn, [], [], region)
+        elif type == 'kernel':
+            images = conn.get_all_kernels()
+        elif type == 'ramdisk':
+            images = conn.get_all_ramdisks()
         ret = []
         for image in images:
             ret.append((image.id, image.name))
@@ -412,6 +424,16 @@ class StackWizardView(BaseView):
         ret = []
         for cert in certs:
             ret.append((cert.arn, cert.server_certificate_name))
+        return ret
+
+    def getInstanceProfileOptions(self):
+        conn = self.get_connection(conn_type="iam")
+        profiles = conn.list_instance_profiles()
+        profiles = certs['list_instance_profiles_response'][
+            'list_instance_profiles_result']['instance_profile_metadata_list']
+        ret = []
+        for profile in profiles:
+            ret.append((profile.arn, profile.instance_profile_name))
         return ret
 
     @view_config(route_name='stack_create', renderer=TEMPLATE, request_method='POST')

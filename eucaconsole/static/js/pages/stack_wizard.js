@@ -62,11 +62,12 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils'])
             $timeout(function() {
                 var tagsTextarea = $('textarea#tags'),
                     tagsJson = tagsTextarea.val(),
-                    removeButtons = $('.circle.remove');
+                    removeButtons = $('.item .remove');
                 removeButtons.on('click', function () {
                     $scope.updateTagsPreview();
                 });
                 $scope.tagsObject = JSON.parse(tagsJson);
+                $scope.tagsLength = Object.keys($scope.tagsObject).length;
             }, 300);
         };
         $scope.watchTags = function () {

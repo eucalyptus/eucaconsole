@@ -42,8 +42,9 @@
                             <h6 i18n:translate="">General</h6>
                             <div class="row controls-name">
                                 <div class="small-12 columns subheader">
-                                    <span class="subsection-label" i18n:translate="">Name</span>
-                                    <span class="req">*</span>:
+                                    <label i18n:translate="">Name
+                                        <span class="req">*</span>
+                                    </label>
                                 </div>
                             </div>
                             <div class="row userentry controls-wrapper">
@@ -123,7 +124,7 @@
                                 <div class="small-4 columns">&nbsp;</div>
                                 <div class="small-8 columns field inline">
                                     <button type="submit" class="button" id="stack-wizard-btn-step2" ng-disabled="isNotValid">
-                                        <span i18n:translate="">Create stack</span>
+                                        <span i18n:translate="">Create Stack</span>
                                     </button>
                                     <a href="${request.route_path('stacks')}"
                                        class="cancel-link" i18n:translate="">Cancel</a>
@@ -153,7 +154,7 @@
                         <div class="columns value">{{ description }}</div>
                     </div>
                 </div>
-                <div class="section" ng-show="tagsObject.length > 0">
+                <div class="section" ng-show="tagsLength > 0">
                     <div class="row">
                         <label i18n:translate="">Tags:</label>
                         <div class="columns value" id="tag-preview">
