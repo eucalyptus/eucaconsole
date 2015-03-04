@@ -306,14 +306,14 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             }
         };
         $scope.setDialogFocus = function () {
-            $(document).on('open', '[data-reveal]', function () {
+            $(document).on('open.fndtn.reveal', '[data-reveal]', function () {
                 // When a dialog opens, reset the progress button status
                 $(this).find('.dialog-submit-button').css('display', 'block');                
                 $(this).find('.dialog-progress-display').css('display', 'none');                
                 // Broadcast initModal signal to trigger the modal initialization
                 $scope.$broadcast('initModal');
             });
-            $(document).on('opened', '[data-reveal]', function () {
+            $(document).on('opened.fndtn.reveal', '[data-reveal]', function () {
                 var modal = $(this);
                 modal.find('div.error').removeClass('error');
                 var modalID = $(this).attr('id');
@@ -344,7 +344,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 $(this).find('.dialog-submit-button').css('display', 'none');                
                 $(this).find('.dialog-progress-display').css('display', 'block');                
             });
-            $(document).on('close', '[data-reveal]', function () {
+            $(document).on('close.fndtn.reveal', '[data-reveal]', function () {
                 var modal = $(this);
                 modal.find('input[type="text"]').val('');
                 modal.find('input:checked').attr('checked', false);
@@ -356,7 +356,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                     chosenSelect.chosen();
                 }
             });
-            $(document).on('closed', '[data-reveal]', function () {
+            $(document).on('closed.fndtn.reveal', '[data-reveal]', function () {
                 $scope.setWizardFocus($scope.currentStepIndex);
             });
         };
