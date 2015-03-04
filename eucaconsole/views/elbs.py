@@ -253,6 +253,7 @@ class CreateELBView(BaseView):
     def __init__(self, request):
         super(CreateELBView, self).__init__(request)
         self.ec2_conn = self.get_connection()
+        self.elb_conn = self.get_connection(conn_type='elb')
         self.autoscale_conn = self.get_connection(conn_type='autoscale')
         self.vpc_conn = self.get_connection(conn_type='vpc')
         self.create_form = CreateELBForm(
@@ -327,6 +328,7 @@ class CreateELBView(BaseView):
         if self.create_form.validate():
             name = self.request.params.get('name')
             elb_listener = self.request.params.get('elb_listener')
+            listeners_args = self.get_listeners_args()
             vpc_network = self.request.params.get('vpc_network') or None
             if vpc_network == 'None':
                 vpc_network = None
@@ -343,6 +345,7 @@ class CreateELBView(BaseView):
             passes_until_unhealthy = self.request.params.get('passes_until_unhealthy')
             print name
             print elb_listener
+            print listeners_args
             print vpc_network
             print vpc_subnet
             print securitygroup
@@ -351,6 +354,14 @@ class CreateELBView(BaseView):
             print ping_path
             with boto_error_handler(self.request, self.request.route_path('elbs')):
                 self.log_request(_(u"Creating elastic load balancer {0}").format(name))
+                if vpc_subnet is None:
+                    params = dict(complex_listeners=listeners_args)  
+                    self.elb_conn.create_load_balancer(name, zone, **params)
+                else:
+                    params = dict(subnets=vpc_subnet,
+                              security_groups=securitygroup,
+                              complex_listeners=listeners_args)  
+                    self.elb_conn.create_load_balancer(name, None, **params)
                 prefix = _(u'Successfully created elastic load balancer')
                 msg = u'{0} {1}'.format(prefix, name)
                 location = self.request.route_path('elbs')
@@ -359,3 +370,18 @@ class CreateELBView(BaseView):
         else:
             self.request.error_messages = self.create_form.get_errors_list()
             return self.render_dict
+
+    def get_listeners_args(self):
+        listeners_json = self.request.params.get('elb_listener')
+        listeners = json.loads(listeners_json) if listeners_json else []
+        listeners_args = []
+
+        for listener in listeners:
+            from_protocol = listener.get('fromProtocol')
+            from_port = listener.get('fromPort')
+            to_protocol = listener.get('toProtocol')
+            to_port = listener.get('toPort')
+            listeners_args.append((from_port, to_port, from_protocol, to_protocol))
+
+        return listeners_args
+
