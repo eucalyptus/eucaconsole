@@ -23,6 +23,7 @@ eucaConsoleUtils.directive('elbListenerEditor', function() {
                 $scope.fromPort = '';
                 $scope.toPort = '';
                 $scope.portRangePattern = '';
+                $scope.elbListenerTextarea = undefined;
 		$scope.initEditor = function () {
 		    var options = JSON.parse(eucaUnescapeJson($scope.option_json));
 		    $scope.setInitialValues(options);
@@ -30,6 +31,9 @@ eucaConsoleUtils.directive('elbListenerEditor', function() {
 		    $scope.setFocus();
 		};
 		$scope.setInitialValues = function (options) {
+                    if ($('#elb-listener').length > 0) {
+                        $scope.elbListenerTextarea = $('#elb-listener');
+                    }
                     if (options.hasOwnProperty('protocol_list')) {
 		        $scope.protocolList = options.protocol_list;
                         if ($scope.protocolList instanceof Array && $scope.protocolList.length > 0) {
@@ -126,6 +130,7 @@ eucaConsoleUtils.directive('elbListenerEditor', function() {
 		    $scope.$emit('listenerArrayUpdate');
 		};
 		$scope.syncListeners = function () {
+                    $scope.elbListenerTextarea.val(JSON.stringify($scope.listenerArray));
 		    $scope.resetValues();
 		};
 		// Return the matching port given the protocol name

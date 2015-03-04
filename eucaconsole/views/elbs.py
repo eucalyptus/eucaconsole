@@ -326,6 +326,7 @@ class CreateELBView(BaseView):
     def elb_create(self):
         if self.create_form.validate():
             name = self.request.params.get('name')
+            elb_listener = self.request.params.get('elb_listener')
             vpc_network = self.request.params.get('vpc_network') or None
             if vpc_network == 'None':
                 vpc_network = None
@@ -341,8 +342,11 @@ class CreateELBView(BaseView):
             failures_until_unhealthy = self.request.params.get('failures_until_unhealthy')
             passes_until_unhealthy = self.request.params.get('passes_until_unhealthy')
             print name
+            print elb_listener
             print vpc_network
             print vpc_subnet
+            print securitygroup
+            print zone
             print instances
             print ping_path
             with boto_error_handler(self.request, self.request.route_path('elbs')):
