@@ -2655,7 +2655,7 @@ h1, h2, h3, h4, h5, h6 { font-family: Oswald, Helvetica, Arial, sans-serif; lett
 #navbar .top-bar-section ul li > a { font-family: Oswald, Helvetica, Arial, sans-serif; font-size: 1.2rem; padding-left: 14px; padding-right: 14px; }
 #navbar a { text-transform: uppercase; font-size: 0.9rem; }
 #navbar .top-bar-section ul.dropdown li > a { font-family: Lato, Helvetica, Arial, sans-serif; font-size: 1rem; }
-#navbar .dropdown { z-index: 999999; box-shadow: 0px 0px 1px 1px #f6a84d; }
+#navbar .dropdown { z-index: 999999; box-shadow: 0 0 1px 1px #f6a84d; }
 #navbar .dropdown li a { text-transform: none; }
 #navbar .dropdown li a:hover { background-color: #eee; }
 
@@ -2834,7 +2834,7 @@ textarea.hidden.debug { display: block; }
 .panel.has-actions .actions-menu { position: absolute; top: 10px; right: 10px; }
 .panel.has-actions .actions-menu .button.dropdown { padding: 12px 38px 12px 22px; }
 .panel.has-actions .actions-menu .button.dropdown a { color: white; }
-.panel.has-actions .actions-menu .f-dropdown { box-shadow: 0px 0px 1px 1px #f6a84d; min-width: 12rem; width: auto; }
+.panel.has-actions .actions-menu .f-dropdown { box-shadow: 0 0 1px 1px #f6a84d; min-width: 12rem; width: auto; }
 
 .reveal-modal-bg { z-index: 9999990; }
 
@@ -2875,7 +2875,7 @@ footer .copyright { font-size: 0.9em; }
 /* ----------------------------------------- Tabs
 ----------------------------------------- */
 .tabs dd:first-child a { box-shadow: none; }
-.tabs dd a { color: #03405f; box-shadow: inset 6px 0px 4px 0px rgba(50, 50, 50, 0.2); padding: 10px 32px 6px 24px; font-weight: bold; }
+.tabs dd a { color: #03405f; box-shadow: inset 6px 0 4px 0 rgba(50, 50, 50, 0.2); padding: 10px 32px 6px 24px; font-weight: bold; }
 .tabs dd.active a { box-shadow: none; }
 
 .tabs-content > .content.large-centered, .tabs-content > .content.medium-centered { float: none; }
