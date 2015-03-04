@@ -10,7 +10,6 @@ angular.module('ScalingGroupPolicies', [])
         $scope.deleteModal = $('#delete-policy-modal');
         $scope.initPage = function () {
             $scope.setFocus();
-            $scope.setDropdownMenusListener();
         };
         $scope.revealDeleteModal = function (policyName) {
             var modal = $scope.deleteModal;
@@ -27,15 +26,6 @@ angular.module('ScalingGroupPolicies', [])
                 } else if (!!modalButton) {
                     modalButton.focus();
                 }
-            });
-        };
-        $scope.setDropdownMenusListener = function () {
-            var modals = $('[data-reveal]');
-            modals.on('open', function () {
-                $('.gridwrapper').find('.f-dropdown').filter('.open').css('display', 'none');
-            });
-            modals.on('close', function () {
-                $('.gridwrapper').find('.f-dropdown').filter('.open').css('display', 'block');
             });
         };
     })

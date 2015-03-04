@@ -21,7 +21,6 @@ angular.module('VolumeSnapshots', ['TagEditor', 'EucaConsoleUtils'])
             $scope.imagesURL = imagesURL;
             $scope.getVolumeSnapshots();
             $scope.setFocus();
-            $scope.setDropdownMenusListener();
         };
         $scope.revealRegisterSnapshotModal = function (snapshot_id) {
             var modal = $('#register-snapshot-modal');
@@ -47,15 +46,6 @@ angular.module('VolumeSnapshots', ['TagEditor', 'EucaConsoleUtils'])
                 } else if (!!modalButton) {
                     modalButton.focus();
                 }
-            });
-        };
-        $scope.setDropdownMenusListener = function () {
-            var modals = $('[data-reveal]');
-            modals.on('open', function () {
-                $('.gridwrapper').find('.f-dropdown').filter('.open').css('display', 'none');
-            });
-            modals.on('close', function () {
-                $('.gridwrapper').find('.f-dropdown').filter('.open').css('display', 'block');
             });
         };
         $scope.getVolumeSnapshots = function () {

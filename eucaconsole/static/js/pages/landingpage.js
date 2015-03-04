@@ -33,7 +33,6 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch'])
             $scope.getItems();
             $scope.setWatch();
             $scope.setFocus();
-            $scope.setDropdownMenusListener();
             $scope.enableInfiniteScroll();
             $scope.storeAWSRegion();
         };
@@ -130,15 +129,6 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch'])
             $(document).on('submit', '[data-reveal] form', function () {
                 $(this).find('.dialog-submit-button').css('display', 'none');                
                 $(this).find('.dialog-progress-display').css('display', 'block');                
-            });
-        };
-        $scope.setDropdownMenusListener = function () {
-            var modals = $('[data-reveal]');
-            modals.on('open', function () {
-                $('.gridwrapper').find('.f-dropdown').filter('.open').css('display', 'none');
-            });
-            modals.on('close', function () {
-                $('.gridwrapper').find('.f-dropdown').filter('.open').css('display', 'block');
             });
         };
         $scope.storeAWSRegion = function () {

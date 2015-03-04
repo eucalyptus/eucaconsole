@@ -27,7 +27,6 @@ angular.module('InstanceVolumes', ['EucaConsoleUtils'])
             $scope.getInstanceVolumes();
             $scope.setWatch();
             $scope.setFocus();
-            $scope.setDropdownMenusListener();
         };
         $scope.initChosenSelector = function () {
             $(document).ready(function() {
@@ -54,15 +53,6 @@ angular.module('InstanceVolumes', ['EucaConsoleUtils'])
                 } else if (!!modalButton) {
                     modalButton.focus();
                 }
-            });
-        };
-        $scope.setDropdownMenusListener = function () {
-            var modals = $('[data-reveal]');
-            modals.on('open.fndtn.reveal', function () {
-                $('.gridwrapper').find('.f-dropdown').filter('.open').css('display', 'none');
-            });
-            modals.on('close.fndtn.reveal', function () {
-                $('.gridwrapper').find('.f-dropdown').filter('.open').css('display', 'block');
             });
         };
         $scope.getInstanceVolumes = function () {
