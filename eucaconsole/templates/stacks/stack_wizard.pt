@@ -60,7 +60,10 @@
                             <div class="row">
                                 <div class="small-12 columns value">
                                     <input type="radio" id="inputtype" name="inputtype" value="sample" ng-model="inputtype">
-                                        <label i18n:translate="">Use sample template</label>
+                                        <label i18n:translate="">Use sample template
+                                            <span class="helptext-icon" data-tooltip="" i18n:translate=""
+                                                title="Placeholder">?</span>
+                                        </label>
                                     </input>
                                     <select id="sample-template" name="sample-template" ng-model="templateSample" ng-show="inputtype=='sample'">
                                         <option value="" i18n:translate="">Select a template</option>
@@ -68,12 +71,18 @@
                                     </select>
                                     <br/>
                                     <input type="radio" id="inputtype" name="inputtype" value="file" ng-model="inputtype">
-                                        <label i18n:translate="">Upload template</label>
+                                        <label i18n:translate="">Upload template
+                                            <span class="helptext-icon" data-tooltip="" i18n:translate=""
+                                                title="Placeholder">?</span>
+                                        </label>
                                     </input>
                                     <input id="template-file" type="file" data-file="template-files" ng-disabled="isNotStopped" name="template-file" ng-show="inputtype=='file'"></input>
                                     <br/>
                                     <input type="radio" id="inputtype" name="inputtype" value="url" ng-model="inputtype">
-                                        <label i18n:translate="">Use template from URL</label>
+                                        <label i18n:translate="">Use template from URL
+                                            <span class="helptext-icon" data-tooltip="" i18n:translate=""
+                                                title="Placeholder">?</span>
+                                        </label>
                                     </input>
                                     <input type="text" id="template-url" name="template-url" ng-model="templateUrl" ng-show="inputtype=='url'"/>
                                 </div>

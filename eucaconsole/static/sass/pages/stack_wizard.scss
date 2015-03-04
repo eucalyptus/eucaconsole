@@ -24,6 +24,23 @@
     }
 }
 
+$template-indent: 1.5rem;
+
+#sample-template {
+    margin-left: $template-indent;
+    width: 90%;
+}
+
+#template-file {
+    margin-left: $template-indent;
+    width: 90%;
+}
+
+#template-url {
+    margin-left: $template-indent;
+    width: 90%;
+}
+
 #userdatalabel {
     right: 0px;
 }
