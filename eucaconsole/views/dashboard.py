@@ -126,7 +126,7 @@ class DashboardView(BaseView):
             dict(name=_(u'Auto Scaling'), status=''),
             dict(name=_(u'Elastic Load Balancing'), status=''),
             dict(name=_(u'CloudWatch'), status=''),
-            dict(name=_(u'CloudFormations'), status=''),
+            dict(name=_(u'CloudFormation'), status=''),
         ]
         session = self.request.session
         if session['cloud_type'] == 'euca':
