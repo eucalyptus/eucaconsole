@@ -321,3 +321,37 @@ class CreateELBView(BaseView):
                         cidr_block=vpc_subnet.cidr_block,
                     ))
         return subnets
+
+    @view_config(route_name='elb_create', request_method='POST', renderer=TEMPLATE)
+    def elb_create(self):
+        if self.create_form.validate():
+            name = self.request.params.get('name')
+            vpc_network = self.request.params.get('vpc_network') or None
+            if vpc_network == 'None':
+                vpc_network = None
+            vpc_subnet = self.request.params.get('vpc_subnet') or None
+            securitygroup = self.request.params.get('securitygroup') or None
+            zone = self.request.params.get('zone') or None
+            instances = self.request.params.get('instances') or None
+            ping_protocol = self.request.params.get('ping_protocol')
+            ping_port = self.request.params.get('ping_port')
+            ping_path = self.request.params.get('ping_path')
+            response_time = self.request.params.get('response_time')
+            time_between_pings = self.request.params.get('time_between_pings')
+            failures_until_unhealthy = self.request.params.get('failures_until_unhealthy')
+            passes_until_unhealthy = self.request.params.get('passes_until_unhealthy')
+            print name
+            print vpc_network
+            print vpc_subnet
+            print instances
+            print ping_path
+            with boto_error_handler(self.request, self.request.route_path('elbs')):
+                self.log_request(_(u"Creating elastic load balancer {0}").format(name))
+                prefix = _(u'Successfully created elastic load balancer')
+                msg = u'{0} {1}'.format(prefix, name)
+                location = self.request.route_path('elbs')
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
+                return HTTPFound(location=location)
+        else:
+            self.request.error_messages = self.create_form.get_errors_list()
+            return self.render_dict

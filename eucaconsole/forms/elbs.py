@@ -175,7 +175,7 @@ class CreateELBForm(BaseSecureForm):
 
         # Set default choices where applicable, defaulting to first non-blank choice
         if self.cloud_type == 'aws' and len(self.zone.choices) > 1:
-            self.zone.data = self.zone.choices[1][0]
+            self.zone.data = self.zone.choices[0]
         # Set the defailt option to be the first choice
         if len(self.vpc_subnet.choices) > 1:
             self.vpc_subnet.data = self.vpc_subnet.choices[0][0]
