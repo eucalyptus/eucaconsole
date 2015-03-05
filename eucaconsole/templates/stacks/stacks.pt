@@ -31,10 +31,6 @@
             </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
                 <div>
-                    <span class="label" title="Status" i18n:attributes="title" data-tooltip="">ST</span>
-                    {{ item.status }}
-                </div>
-                <div>
                     <span class="label" title="Creation time" i18n:attributes="title" data-tooltip="">CT</span>
                     {{ item.creation_time | date:'${layout.angular_date_format}' }}
                 </div>
@@ -53,7 +49,7 @@
             <metal:block metal:fill-slot="tableview_columns">
                 <td class="breakword"><a ng-href="${prefix}/{{ item.id || item.name | escapeURL }}">{{ item.name | ellipsis: 30 }}</a></td>
                 <td class="status">
-                    <span class="label radius status {{ item.status }}">{{ item.status }}</span>
+                    <span class="label radius status {{ item.status }}">{{ item.status.replace('-', ' ') }}</span>
                     <span class="busy" ng-show="item.transitional">&nbsp;</span>
                 </td>
                 <td class="breakword">{{ item.description }}</td>
