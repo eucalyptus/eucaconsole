@@ -206,7 +206,7 @@ angular.module('VolumePage', ['TagEditor', 'EucaConsoleUtils'])
                     $('input[type="text"]').get(0).focus();
                 }
             });
-            $(document).on('opened', '[data-reveal]', function () {
+            $(document).on('opened.fndtn.reveal', '[data-reveal]', function () {
                 var modal = $(this);
                 var modalID = $(this).attr('id');
                 if (modalID.match(/terminate/) || modalID.match(/delete/) || modalID.match(/release/)) {

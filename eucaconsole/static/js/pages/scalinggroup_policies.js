@@ -17,7 +17,7 @@ angular.module('ScalingGroupPolicies', [])
             modal.foundation('reveal', 'open');
         };
         $scope.setFocus = function () {
-            $(document).on('opened', '[data-reveal]', function () {
+            $(document).on('opened.fndtn.reveal', '[data-reveal]', function () {
                 var modal = $(this);
                 var inputElement = modal.find('input[type!=hidden]').get(0);
                 var modalButton = modal.find('button').get(0);

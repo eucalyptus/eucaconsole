@@ -91,7 +91,7 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch'])
         };
         $scope.setFocus = function () {
             $('#search-filter').focus();
-            $(document).on('opened', '[data-reveal]', function () {
+            $(document).on('opened.fndtn.reveal', '[data-reveal]', function () {
                 var modal = $(this);
                 var modalID = $(this).attr('id');
                 if( modalID.match(/terminate/)  || modalID.match(/delete/) || 

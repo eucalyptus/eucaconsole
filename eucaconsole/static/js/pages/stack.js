@@ -68,7 +68,7 @@ angular.module('StackPage', ['MagicSearch', 'EucaConsoleUtils'])
             $(document).on('ready', function(){
                 $('.actions-menu').find('a').get(0).focus();
             });
-            $(document).on('opened', '[data-reveal]', function () {
+            $(document).on('opened.fndtn.reveal', '[data-reveal]', function () {
                 var modal = $(this);
                 var modalID = $(this).attr('id');
                 if (modalID.match(/delete/)) {

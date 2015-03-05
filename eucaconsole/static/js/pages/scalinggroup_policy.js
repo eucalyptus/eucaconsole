@@ -53,7 +53,7 @@ angular.module('ScalingGroupPolicy', ['CreateAlarm'])
         };
         $scope.setFocus = function () {
             $scope.policyForm.find('input#name').focus();
-            $(document).on('opened', '[data-reveal]', function () {
+            $(document).on('opened.fndtn.reveal', '[data-reveal]', function () {
                 var modal = $(this);
                 var inputElement = modal.find('input[type!=hidden]').get(0);
                 var modalButton = modal.find('button').get(0);

@@ -149,7 +149,7 @@ angular.module('UserView', ['PolicyList', 'Quotas', 'EucaConsoleUtils'])
                 // Prevent change password confirmation input from being disabled on IE
                 $('#password').removeAttr('maxlength');
             });
-            $(document).on('opened', '[data-reveal]', function () {
+            $(document).on('opened.fndtn.reveal', '[data-reveal]', function () {
                 var modal = $(this);
                 var modalID = $(this).attr('id');
                 if( modalID.match(/terminate/)  || modalID.match(/delete/) || modalID.match(/release/) ){
