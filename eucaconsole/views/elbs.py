@@ -337,13 +337,6 @@ class CreateELBView(BaseView):
             securitygroup = self.request.params.getall('securitygroup') or None
             zone = self.request.params.getall('zone') or None
             instances = self.request.params.getall('instances') or None
-            ping_protocol = self.request.params.get('ping_protocol')
-            ping_port = self.request.params.get('ping_port')
-            ping_path = self.request.params.get('ping_path')
-            response_timeout = self.request.params.get('response_timeout')
-            time_between_pings = self.request.params.get('time_between_pings')
-            failures_until_unhealthy = self.request.params.get('failures_until_unhealthy')
-            passes_until_unhealthy = self.request.params.get('passes_until_unhealthy')
             print name
             print elb_listener
             print listeners_args
@@ -352,11 +345,6 @@ class CreateELBView(BaseView):
             print securitygroup
             print zone
             print instances
-            print ping_path
-            print response_timeout
-            print time_between_pings
-            print failures_until_unhealthy
-            print passes_until_unhealthy
             with boto_error_handler(self.request, self.request.route_path('elbs')):
                 self.log_request(_(u"Creating elastic load balancer {0}").format(name))
                 if vpc_subnet is None:
@@ -367,16 +355,7 @@ class CreateELBView(BaseView):
                               security_groups=securitygroup,
                               complex_listeners=listeners_args)  
                     self.elb_conn.create_load_balancer(name, None, **params)
-                ping_target = u"{0}:{1}{2}".format(ping_protocol, ping_port, ping_path)
-                print ping_target
-                hc = HealthCheck(
-                    timeout=response_timeout,
-                    interval=time_between_pings,
-                    healthy_threshold=passes_until_unhealthy,
-                    unhealthy_threshold=failures_until_unhealthy,
-                    target=ping_target 
-                )
-                self.elb_conn.configure_health_check(name, hc)
+                self.handle_configure_health_check(name)
                 self.elb_conn.register_instances(name, instances)
                 prefix = _(u'Successfully created elastic load balancer')
                 msg = u'{0} {1}'.format(prefix, name)
@@ -401,3 +380,23 @@ class CreateELBView(BaseView):
 
         return listeners_args
 
+    def handle_configure_health_check(self, name):
+            ping_protocol = self.request.params.get('ping_protocol')
+            ping_port = self.request.params.get('ping_port')
+            ping_path = self.request.params.get('ping_path')
+            response_timeout = self.request.params.get('response_timeout')
+            time_between_pings = self.request.params.get('time_between_pings')
+            failures_until_unhealthy = self.request.params.get('failures_until_unhealthy')
+            passes_until_unhealthy = self.request.params.get('passes_until_unhealthy')
+            ping_target = u"{0}:{1}".format(ping_protocol, ping_port)
+            if ping_protocol == 'HTTP' or ping_protocol == 'HTTPS':
+                ping_target = u"{0}{1}".format(ping_target, ping_path)
+            print ping_target
+            hc = HealthCheck(
+                timeout=response_timeout,
+                interval=time_between_pings,
+                healthy_threshold=passes_until_unhealthy,
+                unhealthy_threshold=failures_until_unhealthy,
+                target=ping_target 
+            )
+            self.elb_conn.configure_health_check(name, hc)
