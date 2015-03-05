@@ -21,7 +21,7 @@
             <strong i18n:translate="">Details for stack:</strong>
             <em>${stack_name}</em>
         </h3>
-        <div class="large-8 columns">
+        <div class="large-9 columns">
             <dl class="tabs">
                 <dd class="active"><a href="#general-tab" ng-click="clickTab($event, 'general-tab')" i18n:translate="">General</a></dd>
                 <dd><a href="#template-tab" ng-click="clickTab($event, 'template-tab')" i18n:translate="">Template</a></dd>
@@ -40,23 +40,23 @@
                     <div class="columns section">
                         <h6 i18n:translate="">Stack</h6>
                         <div class="row controls-wrapper readonly">
-                            <div class="small-3 columns"><label i18n:translate="">Name</label></div>
-                            <div class="small-9 columns value">${stack_name}</div>
+                            <div class="small-2 columns"><label i18n:translate="">Name</label></div>
+                            <div class="small-10 columns value">${stack_name}</div>
                         </div>
                         <div class="row controls-wrapper readonly">
-                            <div class="small-3 columns"><label i18n:translate="">ID</label></div>
-                            <div class="small-9 columns value">${stack.stack_id}</div>
+                            <div class="small-2 columns"><label i18n:translate="">ID</label></div>
+                            <div class="small-10 columns value">${stack.stack_id}</div>
                         </div>
                         <div class="row controls-wrapper readonly">
-                            <div class="small-3 columns"><label i18n:translate="">Creation time</label></div>
-                            <div class="small-9 columns value" ng-cloak="">
+                            <div class="small-2 columns"><label i18n:translate="">Creation time</label></div>
+                            <div class="small-10 columns value" ng-cloak="">
                                 {{ '${stack_creation_time}' | date: '${layout.angular_date_format}' }}
                             </div>
                         </div>
                         <div class="row controls-wrapper readonly">
-                            <div class="small-3 columns"><label i18n:translate="">Status</label></div>
-                            <div class="small-9 columns value" ng-cloak="">
-                                <span class="label radius status ${status}">{{ stackStatus }}</span>
+                            <div class="small-2 columns"><label i18n:translate="">Status</label></div>
+                            <div class="small-10 columns value" ng-cloak="">
+                                <span class="label radius status ${status}">{{ stackStatus.replace('-', ' ') }}</span>
                                 <span class="busy" ng-show="isTransitional()">&nbsp;</span>
                             </div>
                         </div>
@@ -128,7 +128,7 @@
                                             <td ng-show="item.url">
                                                 <a href="{{ item.url }}">{{ item.physical_id }}<a>
                                             </td>
-                                            <td>{{ item.status }}</td>
+                                            <td><span class="label radius status {{ item.status }}">{{ item.status.replace('-', ' ') }}</span></td>
                                             <td>{{ item.updated_timestamp | date:'${layout.angular_date_format}' }}</td>
                                         </tr>
                                         <tr ng-show="!itemsLoading"></tr>
@@ -154,8 +154,8 @@
                     <div class="columns section">
                         <h6 i18n:translate="">Template</h6>
                         <div class="row controls-wrapper readonly">
-                            <div class="small-3 columns"><label i18n:translate="">Description</label></div>
-                            <div class="small-9 columns value">${stack_description}</div>
+                            <div class="small-2 columns"><label i18n:translate="">Description</label></div>
+                            <div class="small-10 columns value">${stack_description}</div>
                         </div>
                     </div>
                     <hr/>
@@ -205,7 +205,7 @@
                             <div ng-show="eventsLoading"><span class="busy"></span></div>
                             <div id="tableview" class="gridwrapper" ng-show="!eventsLoading">
                                 <!-- Begin table view -->
-                                <table class="table" ng-show="!eventsLoading" ng-cloak="true" id="event-table">
+                                <table class="table" ng-show="!eventsLoading" ng-cloak="true">
                                     <thead><tr>
                                         <th i18n:translate="">TIMESTAMP</th>
                                         <th i18n:translate="">STATUS</th>
@@ -215,9 +215,14 @@
                                     <tbody>
                                         <tr ng-repeat="item in events | orderBy: sortBy:sortReverse" ng-cloak="true">
                                             <td>{{ item.timestamp | date:'${layout.angular_date_format}' }}</td>
-                                            <td>{{ item.status }}</td>
+                                            <td><span class="label radius status {{ item.status }}">{{ item.status.replace('-', ' ') }}</span></td>
                                             <td>{{ item.type }} ({{ item.logical_id }})</td>
-                                            <td>{{ item.physical_id }}</td>
+                                            <td ng-hide="item.url">
+                                                {{ item.physical_id }}
+                                            </td>
+                                            <td ng-show="item.url">
+                                                <a href="{{ item.url }}">{{ item.physical_id }}<a>
+                                            </td>
                                         </tr>
                                         <tr ng-show="!eventsLoading"></tr>
                                     </tbody>
@@ -228,7 +233,7 @@
                 </div>
             </div>
         </div>
-        <div class="large-4 columns">
+        <div class="large-3 columns">
             <metal:block metal:use-macro="layout.global_macros['help_expando']" />
             <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                 <!--! Help goes here -->

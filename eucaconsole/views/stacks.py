@@ -234,39 +234,12 @@ class StackStateView(BaseView):
                 outputs.append({'key': output.key, 'value': output.value})
             resources = []
             for resource in stack_resources:
-                url = None
-                if resource.resource_type == "AWS::ElasticLoadBalancing::LoadBalancer":
-                    url = self.request.route_path('elb_view', id=resource.physical_resource_id)
-                elif "AWS::EC2::" in resource.resource_type:
-                    if "SecurityGroup" in resource.resource_type:
-                        url = self.request.route_path('securitygroup_view', id=resource.physical_resource_id)
-                    elif "EIP" in resource.resource_type:
-                        url = self.request.route_path('ipaddress_view', id=resource.physical_resource_id)
-                    elif "Instance" in resource.resource_type:
-                        url = self.request.route_path('instance_view', id=resource.physical_resource_id)
-                    elif "Volume" in resource.resource_type:
-                        url = self.request.route_path('volume_view', id=resource.physical_resource_id)
-                elif "AWS::AutoScaling::" in resource.resource_type:
-                    if "LaunchConfiguration" in resource.resource_type:
-                        url = self.request.route_path('launchconfig_view', id=resource.physical_resource_id)
-                    if "ScalingGroup" in resource.resource_type:
-                        url = self.request.route_path('scalinggroup_view', id=resource.physical_resource_id)
-                elif "AWS::IAM::" in resource.resource_type:
-                    if "Group" in resource.resource_type:
-                        url = self.request.route_path('group_view', id=resource.physical_resource_id)
-                    elif "Role" in resource.resource_type:
-                        url = self.request.route_path('role_view', id=resource.physical_resource_id)
-                    elif "User" in resource.resource_type:
-                        url = self.request.route_path('user_view', id=resource.physical_resource_id)
-                elif "AWS::S3::" in resource.resource_type:
-                    if "Bucket" in resource.resource_type:
-                        url = self.request.route_path('bucket_contents', id=resource.physical_resource_id)
                 resources.append({
                     'type': resource.resource_type,
                     'logical_id': resource.logical_resource_id,
                     'physical_id': resource.physical_resource_id,
-                    'status': resource.resource_status,
-                    'url': url,
+                    'status': resource.resource_status.lower().replace('_', '-'),
+                    'url': self.get_url_for_resource(resource.resource_type, resource.physical_resource_id),
                     'updated_timestamp': resource.LastUpdatedTimestamp})
             return dict(
                 results=dict(
@@ -300,14 +273,46 @@ class StackStateView(BaseView):
             for event in stack_events:
                 events.append({
                     'timestamp': event.timestamp.strftime('%Y-%m-%dT%H:%M:%SZ'),
-                    'status': event.resource_status,
+                    'status': event.resource_status.lower().replace('_', '-'),
                     'status_reason': event.resource_status_reason,
                     'type': event.resource_type,
                     'logical_id': event.logical_resource_id,
-                    'physical_id': event.physical_resource_id})
+                    'physical_id': event.physical_resource_id,
+                    'url': self.get_url_for_resource(event.resource_type, event.physical_resource_id)
+                })
             return dict(
                 results=dict(events=events)
             )
+
+    def get_url_for_resource(self, type, resource_id):
+        url = None
+        if type == "AWS::ElasticLoadBalancing::LoadBalancer":
+            url = self.request.route_path('elb_view', id=resource_id)
+        elif "AWS::EC2::" in type:
+            if "SecurityGroup" in type:
+                url = self.request.route_path('securitygroup_view', id=resource_id)
+            elif "EIP" in type:
+                url = self.request.route_path('ipaddress_view', id=resource_id)
+            elif "Instance" in type:
+                url = self.request.route_path('instance_view', id=resource_id)
+            elif "Volume" in type:
+                url = self.request.route_path('volume_view', id=resource_id)
+        elif "AWS::AutoScaling::" in type:
+            if "LaunchConfiguration" in type:
+                url = self.request.route_path('launchconfig_view', id=resource_id)
+            if "ScalingGroup" in type:
+                url = self.request.route_path('scalinggroup_view', id=resource_id)
+        elif "AWS::IAM::" in type:
+            if "Group" in type:
+                url = self.request.route_path('group_view', id=resource_id)
+            elif "Role" in type:
+                url = self.request.route_path('role_view', id=resource_id)
+            elif "User" in type:
+                url = self.request.route_path('user_view', id=resource_id)
+        elif "AWS::S3::" in type:
+            if "Bucket" in type:
+                url = self.request.route_path('bucket_contents', id=resource_id)
+        return url
 
 
 class StackWizardView(BaseView):
