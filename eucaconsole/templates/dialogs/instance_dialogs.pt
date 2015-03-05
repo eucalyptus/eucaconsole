@@ -150,7 +150,7 @@
                     </li>
                     <li>
                         <span i18n:translate="">Connect to your instance via its public IP address by running the following command:</span><br/>
-                        <strong>ssh -i {{ keyName }}.pem root@{{ publicDNS }}</strong>
+                        <strong>ssh -i {{ keyName }}.pem root@{{ instancePublicIP }}</strong>
                     </li>
                 </ol>
             </div>
