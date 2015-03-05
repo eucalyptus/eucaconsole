@@ -226,12 +226,26 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils'])
                   if (results) {
                       $scope.description = results.description;
                       $scope.parameters = results.parameters;
+                      $timeout(function () {
+                          $scope.updateParamSummary();
+                      }, 100);
                   }
               }).
               error(function (oData, status) {
                   var errorMsg = oData.message || '';
                   Notify.failure(errorMsg);
               });
+        };
+        $scope.updateParamSummary = function() {
+            $scope.parametersObject = [];
+            angular.forEach($scope.parameters, function(param, idx) {
+                if (param.options === undefined) {
+                    $scope.parametersObject.push({'name':param.name, 'value':$('input#'+param.name).val()});
+                }
+                else {
+                    $scope.parametersObject.push({'name':param.name, 'value':$('select#'+param.name).val()});
+                }
+            });
         };
     })
 ;

@@ -44,6 +44,10 @@
 #stack-wizard-form #controls_userdata_file { position: relative; top: -0.5rem; }
 #stack-wizard-form #controls_userdata_file #userdata_file { width: 80%; display: inline-block; }
 
+.button { margin: 0; }
+
+.parameter { line-height: 1.5rem; }
+
 #sample-template { margin-left: 1.5rem; width: 90%; }
 
 #template-file { margin-left: 1.5rem; width: 90%; }

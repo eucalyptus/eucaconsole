@@ -38,6 +38,7 @@ from pyramid.view import view_config
 from boto.s3.connection import S3Connection, OrdinaryCallingFormat
 
 from ..i18n import _
+from ..forms import ChoicesManager
 from ..forms.stacks import StacksDeleteForm, StacksFiltersForm, StacksCreateForm
 from ..models import Notification
 from ..views import LandingPageView, BaseView, JSONResponse
@@ -387,12 +388,17 @@ class StackWizardView(BaseView):
                 param_vals['options'] = self.getCertOptions()  # fetch server cert names
             if 'instance' in name.lower() and 'profile' in name.lower():
                 param_vals['options'] = self.getInstanceProfileOptions()
+            if ('vmtype' in name.lower() or 'instancetype' in name.lower()) and 'options' not in param_vals.keys():
+                param_vals['options'] = self.getVmTypeOptions()
             params.append(param_vals)
         return dict(
-            results=dict(description=parsed['Description'],
-                         parameters=params)
+            results=dict(
+                description=parsed['Description'],
+                parameters=params
+            )
         )
 
+#                parameters=BaseView.escape_json(json.dumps(params))
     def getKeyOptions(self):
         conn = self.get_connection()
         keys = conn.get_all_key_pairs()
@@ -435,6 +441,11 @@ class StackWizardView(BaseView):
         for profile in profiles:
             ret.append((profile.arn, profile.instance_profile_name))
         return ret
+
+    def getVmTypeOptions(self):
+        conn = self.get_connection()
+        vmtypes = ChoicesManager(conn).instance_types(self.cloud_type)
+        return vmtypes
 
     @view_config(route_name='stack_create', renderer=TEMPLATE, request_method='POST')
     def stack_create(self):

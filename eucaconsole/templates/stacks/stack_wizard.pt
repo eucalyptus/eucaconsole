@@ -141,7 +141,6 @@
                             </div>
                         </div>
                     </div>
-                    <div class="clearfix">&nbsp;</div>
                 </form>
             </div>
         </div>
@@ -175,7 +174,7 @@
                     <div class="row">
                         <label i18n:translate="">Parameters:</label>
                         <div class="columns value" id="parameter-preview">
-                            <div ng-repeat="(name, value) in parametersObject">{{ name }}={{ value }}</div>
+                            <div class="parameter" ng-repeat="param in parametersObject">{{ param.name }}={{ param.value }}</div>
                         </div>
                     </div>
                 </div>
