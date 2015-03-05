@@ -28,8 +28,12 @@
     margin: 0;
 }
 
-.parameter {
-    line-height: 1.5rem;
+.columns.value {
+    padding-left: 1rem;
+}
+
+.keyvalsummary {
+    line-height: 1.375rem;
 }
 
 $template-indent: 1.5rem;

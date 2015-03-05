@@ -46,7 +46,9 @@
 
 .button { margin: 0; }
 
-.parameter { line-height: 1.5rem; }
+.columns.value { padding-left: 1rem; }
+
+.keyvalsummary { line-height: 1.375rem; }
 
 #sample-template { margin-left: 1.5rem; width: 90%; }
 

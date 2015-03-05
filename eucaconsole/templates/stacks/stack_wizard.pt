@@ -150,31 +150,31 @@
                 <h5 i18n:translate="" class="title">Summary</h5>
                 <div class="section step1">
                     <div class="row">
-                        <label i18n:translate="">Name:</label>
+                        <label i18n:translate="">Name</label>
                         <div class="columns value">{{ stackName }}</div>
                     </div>
-                    <div class="row" ng-show="templateURL">
-                        <label i18n:translate="">Template URL:</label>
-                        <div class="columns value">{{ templateURL }}</div>
+                    <div class="row" ng-show="templateIdent">
+                        <label i18n:translate="">Template</label>
+                        <div class="columns value">{{ templateIdent }}</div>
                     </div>
                     <div class="row" ng-show="description">
-                        <label i18n:translate="">Description:</label>
+                        <label i18n:translate="">Description</label>
                         <div class="columns value">{{ description }}</div>
                     </div>
                 </div>
                 <div class="section" ng-show="tagsLength > 0">
                     <div class="row">
-                        <label i18n:translate="">Tags:</label>
+                        <label i18n:translate="">Tags</label>
                         <div class="columns value" id="tag-preview">
-                            <div ng-repeat="(name, value) in tagsObject">{{ name }}={{ value }}</div>
+                            <div class="keyvalsummary" ng-repeat="(name, value) in tagsObject">{{ name }}={{ value }}</div>
                         </div>
                     </div>
                 </div>
                 <div class="section step2 hide">
                     <div class="row">
-                        <label i18n:translate="">Parameters:</label>
+                        <label i18n:translate="">Parameters</label>
                         <div class="columns value" id="parameter-preview">
-                            <div class="parameter" ng-repeat="param in parametersObject">{{ param.name }}={{ param.value }}</div>
+                            <div class="keyvalsummary" ng-repeat="param in parametersObject">{{ param.name }} = {{ param.value }}</div>
                         </div>
                     </div>
                 </div>

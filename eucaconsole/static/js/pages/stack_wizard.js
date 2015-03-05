@@ -12,6 +12,7 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils'])
             link: function($scope, el, attrs){
                 el.bind('change', function(event){
                     $scope.templateFiles = event.target.files;
+                    $scope.templateIdent = event.target.files[0].name;
                     $scope.$apply();
                     $scope.checkRequiredInput();
                 });
@@ -49,6 +50,12 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils'])
             $timeout(function() {
                 $scope.stackName = $("#name").val();
                 $scope.checkRequiredInput();
+            });
+        });
+        $('#template-url').on('change', function(){
+            $timeout(function() {
+                $scope.checkRequiredInput();
+                $scope.templateIdent = $scope.templateUrl;
             });
         });
         $scope.initChosenSelectors = function () {
@@ -119,9 +126,7 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils'])
             });
             $scope.$watch('templateSample', function(){
                 $scope.checkRequiredInput();
-            });
-            $scope.$watch('templateUrl', function(){
-                $scope.checkRequiredInput();
+                $scope.templateIdent = $scope.templateSample;
             });
             $scope.$watch('currentStepIndex', function(){
                  $scope.setWizardFocus($scope.currentStepIndex);

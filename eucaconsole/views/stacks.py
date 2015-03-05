@@ -488,7 +488,7 @@ class StackWizardView(BaseView):
             pass
         files = self.request.POST.getall('template-file')
         template_body = ''
-        if len(files) > 0 and len(files[0]) > 0:  # read from file
+        if len(files) > 0 and len(str(files[0])) > 0:  # read from file
             # TODO: body limit is 51,200 in the API, check that!
             template_body = files[0].file.read()
             template_url = None
