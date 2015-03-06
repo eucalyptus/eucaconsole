@@ -254,12 +254,13 @@ class CreateELBView(BaseView):
     def __init__(self, request):
         super(CreateELBView, self).__init__(request)
         self.ec2_conn = self.get_connection()
+        self.iam_conn = self.get_connection(conn_type='iam')
         self.elb_conn = self.get_connection(conn_type='elb')
         self.autoscale_conn = self.get_connection(conn_type='autoscale')
         self.vpc_conn = self.get_connection(conn_type='vpc')
         self.create_form = CreateELBForm(
             self.request, conn=self.ec2_conn, vpc_conn=self.vpc_conn, formdata=self.request.params or None)
-        self.certificate_form = CertificateForm(self.request, elb_conn=self.elb_conn, formdata=self.request.params or None)
+        self.certificate_form = CertificateForm(self.request, conn=self.ec2_conn, iam_conn=self.iam_conn, elb_conn=self.elb_conn, formdata=self.request.params or None)
         filter_keys = ['id', 'name', 'placement', 'state', 'tags']
         filters_form = ELBInstancesFiltersForm(
             self.request, ec2_conn=self.ec2_conn, autoscale_conn=self.autoscale_conn,

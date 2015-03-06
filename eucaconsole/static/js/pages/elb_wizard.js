@@ -25,6 +25,7 @@ wizardApp.controller('ELBWizardCtrl', function ($scope, $http, $timeout, eucaHan
         $scope.timeBetweenPings = '';
         $scope.failuresUntilUnhealthy = '';
         $scope.passesUntilUnhealthy = '';
+        $scope.radioButton = "";
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.setInitialValues(options);
@@ -55,6 +56,7 @@ wizardApp.controller('ELBWizardCtrl', function ($scope, $http, $timeout, eucaHan
             $scope.timeBetweenPings = 30;
             $scope.failuresUntilUnhealthy = 2;
             $scope.passesUntilUnhealthy = 10;
+            $scope.radioButton = "existing";
             $scope.initChosenSelectors(); 
         };
         $scope.initChosenSelectors = function () {

@@ -288,12 +288,43 @@ class ELBInstancesFiltersForm(BaseSecureForm):
 
 class CertificateForm(BaseSecureForm):
     """Create SSL Certificate form"""
-    name_error_msg = _(u'Name must be between 1 and 255 characters long, and must not contain space')
-    name = wtforms.TextField(
-        label=_(u'Name'),
-        validators=[validators.InputRequired(message=name_error_msg)],
+    certificate_name_error_msg = _(u'Name must be between 1 and 255 characters long, and must not contain space')
+    certificate_name = wtforms.TextField(
+        label=_(u'Certificate name'),
+        validators=[validators.InputRequired(message=certificate_name_error_msg)],
+    )
+    private_key_error_msg = _(u'Private key is required')
+    private_key = wtforms.TextAreaField(
+        label=_(u'Private key'),
+        validators=[validators.InputRequired(message=private_key_error_msg)],
+    )
+    public_key_certificate_error_msg = _(u'Public key certificate is required')
+    public_key_certificate = wtforms.TextAreaField(
+        label=_(u'Public key certificate'),
+        validators=[validators.InputRequired(message=public_key_certificate_error_msg)],
+    )
+    certificate_chain_error_msg = _(u'Certificate chain is required')
+    certificate_chain = wtforms.TextAreaField(
+        label=_(u'Certificate chain'),
+        validators=[validators.InputRequired(message=certificate_chain_error_msg)],
+    )
+    certificates_error_msg = _(u'Certificate is required')
+    certificates = wtforms.SelectField(
+        label=_(u'Certificate name'),
+        validators=[validators.InputRequired(message=certificates_error_msg)],
     )
 
-    def __init__(self, request, elb_conn=None, **kwargs):
+    def __init__(self, request, conn=None, iam_conn=None, elb_conn=None, **kwargs):
         super(CertificateForm, self).__init__(request, **kwargs)
+        self.conn = conn
+        self.iam_conn = iam_conn
         self.elb_conn = elb_conn
+        self.certificates.choices = self.get_all_server_certs(iam_conn=self.iam_conn)
+
+    def get_all_server_certs(self,  iam_conn=None, add_blank=True):
+        choices = [] 
+        certificates = []
+        if iam_conn is not None:
+            certificates = self.iam_conn.get_all_server_certs()
+        print certificates
+        return sorted(set(choices))

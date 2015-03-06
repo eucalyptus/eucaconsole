@@ -2,11 +2,26 @@
 <div tal:omit-tag="" i18n:domain="eucaconsole">
     <div id="select-certificate-modal" class="reveal-modal medium" data-reveal="" ng-cloak="">
         <h3 i18n:translate="">Select certificate</h3>
-        <p></p>
+        <p>SSL certificates are required for secure(HTTPS or SSL) listeners. Choose or upload a pem-encoded certificate below.</p>
         <form method="post" data-abide="abide" id="select-certificate-form"
               ng-submit="handleCertificateCreate($event, '${request.route_path('certificate_create')}')">
             ${structure:certificate_form['csrf_token']}
-            ${panel('form_field', field=certificate_form['name'], ng_attrs={'model': 'certificateName'}, leftcol_width=3, rightcol_width=9)}
+            <div>
+                <input type="radio" value="existing" ng-model="radioButton" \>
+                <span>Choose an existing SSL certificate</span>
+            <div ng-show="radioButton === 'existing'">
+                ${panel('form_field', field=certificate_form['certificates'], leftcol_width=3, rightcol_width=9)}
+            </div>
+            <div>
+                <input type="radio" value="new" ng-model="radioButton" \>
+                <span>Upload a new SSL certificate</span>
+            </div>
+            <div ng-show="radioButton === 'new'">
+                ${panel('form_field', field=certificate_form['certificate_name'], ng_attrs={'model': 'certificateName'}, leftcol_width=3, rightcol_width=9)}
+                ${panel('form_field', field=certificate_form['private_key'], ng_attrs={'model': 'privateKey'}, leftcol_width=3, rightcol_width=9)}
+                ${panel('form_field', field=certificate_form['public_key_certificate'], ng_attrs={'model': 'publicKeyCertificate'}, leftcol_width=3, rightcol_width=9)}
+                ${panel('form_field', field=certificate_form['certificate_chain'], ng_attrs={'model': 'certificateChain'}, leftcol_width=3, rightcol_width=9)}
+            </div>
             <hr />
             <div class="row">
                 <div class="dialog-submit-button">
