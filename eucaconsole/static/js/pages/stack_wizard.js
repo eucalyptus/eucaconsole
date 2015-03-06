@@ -118,6 +118,9 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils'])
                 }
             } else if ($scope.currentStepIndex == 2) {
                 $scope.isNotValid = false;
+                if ($scope.parametersObject === undefined) {
+                    $scope.isNotValid = true;
+                }
             }
         };
         $scope.setWatcher = function () {
@@ -225,21 +228,22 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils'])
             $http.post($scope.stackTemplateEndpoint, fd, {
                     headers: {'Content-Type': undefined},
                     transformRequest: angular.identity
-                  }).
-              success(function(oData) {
-                  var results = oData ? oData.results : '';
-                  if (results) {
-                      $scope.description = results.description;
-                      $scope.parameters = results.parameters;
-                      $timeout(function () {
-                          $scope.updateParamSummary();
-                      }, 100);
-                  }
-              }).
-              error(function (oData, status) {
-                  var errorMsg = oData.message || '';
-                  Notify.failure(errorMsg);
-              });
+            }).
+            success(function(oData) {
+                var results = oData ? oData.results : '';
+                if (results) {
+                    $scope.description = results.description;
+                    $scope.parameters = results.parameters;
+                    $timeout(function () {
+                        $scope.updateParamSummary();
+                        $scope.checkRequiredInput();
+                    }, 100);
+                }
+            }).
+            error(function (oData, status) {
+                var errorMsg = oData.message || '';
+                Notify.failure(errorMsg);
+            });
         };
         $scope.updateParamSummary = function() {
             $scope.parametersObject = [];

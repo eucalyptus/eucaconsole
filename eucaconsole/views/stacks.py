@@ -41,6 +41,7 @@ from ..i18n import _
 from ..forms import ChoicesManager
 from ..forms.stacks import StacksDeleteForm, StacksFiltersForm, StacksCreateForm
 from ..models import Notification
+from ..models.auth import User
 from ..views import LandingPageView, BaseView, JSONResponse
 from . import boto_error_handler
 
@@ -359,7 +360,7 @@ class StackWizardView(BaseView):
         Fetches then parsed template to return information needed by wizard,
         namely description and parameters.
         """
-        (template_url, template_body, parsed) = self.parse_template()
+        (template_url, parsed) = self.parse_store_template()
         params = []
         for name in parsed['Parameters'].keys():
             param = parsed['Parameters'][name]
@@ -428,23 +429,25 @@ class StackWizardView(BaseView):
         return ret
 
     def getCertOptions(self):
-        conn = self.get_connection(conn_type="iam")
-        certs = conn.list_server_certs()
-        certs = certs['list_server_certificates_response'][
-            'list_server_certificates_result']['server_certificate_metadata_list']
         ret = []
-        for cert in certs:
-            ret.append((cert.arn, cert.server_certificate_name))
+        if self.cloud_type == 'euca':
+            conn = self.get_connection(conn_type="iam")
+            certs = conn.list_server_certs()
+            certs = certs['list_server_certificates_response'][
+                'list_server_certificates_result']['server_certificate_metadata_list']
+            for cert in certs:
+                ret.append((cert.arn, cert.server_certificate_name))
         return ret
 
     def getInstanceProfileOptions(self):
-        conn = self.get_connection(conn_type="iam")
-        profiles = conn.list_instance_profiles()
-        profiles = certs['list_instance_profiles_response'][
-            'list_instance_profiles_result']['instance_profile_metadata_list']
         ret = []
-        for profile in profiles:
-            ret.append((profile.arn, profile.instance_profile_name))
+        if self.cloud_type == 'euca':
+            conn = self.get_connection(conn_type="iam")
+            profiles = conn.list_instance_profiles()
+            profiles = profiles['list_instance_profiles_response'][
+                'list_instance_profiles_result']['instance_profiles']
+            for profile in profiles:
+                ret.append((profile.arn, profile.instance_profile_name))
         return ret
 
     def getVmTypeOptions(self):
@@ -457,7 +460,7 @@ class StackWizardView(BaseView):
         if True:  # self.create_form.validate():
             stack_name = self.request.params.get('name')
             location = self.request.route_path('stacks')
-            (template_url, template_body, parsed) = self.parse_template()
+            (template_url, parsed) = self.parse_store_template()
             params = []
             for name in parsed['Parameters'].keys():
                 val = self.request.params.get(name)
@@ -469,8 +472,9 @@ class StackWizardView(BaseView):
                 tags = json.loads(tags_json)
             with boto_error_handler(self.request, location):
                 cloudformation_conn = self.get_connection(conn_type='cloudformation')
+                self.log_request(u"Creating stack:{0}".format(stack_name))
                 cloudformation_conn.create_stack(
-                    stack_name, template_url=template_url, template_body=template_body,
+                    stack_name, template_url=template_url,
                     parameters=params, tags=tags
                 )
                 msg = _(u'Successfully sent create stack request. '
@@ -483,7 +487,7 @@ class StackWizardView(BaseView):
             self.request.error_messages = self.create_form.get_errors_list()
         return self.render_dict
 
-    def parse_template(self):
+    def parse_store_template(self):
         template_name = self.request.params.get('sample-template')
         template_url = self.request.params.get('template-url')
         if template_name:  # process from sample templates
@@ -500,7 +504,18 @@ class StackWizardView(BaseView):
         else:  # read from url
             logging.info("reading template from :"+template_url)
             template_body = urllib2.urlopen(template_url).read()
+
+        # now that we have it, store in S3
+        s3_conn = self.get_connection(conn_type="s3")
+        account_id = User.get_account_id(ec2_conn=self.get_connection(), request=self.request)
+        region = self.request.session.get('region')
+        bucket = s3_conn.create_bucket("cf-template-{acct}-{region}".format(acct=account_id, region=region))
+        name = template_name or template_url[template_url.rindex('/')+1:]
+        key = bucket.get_key(name)
+        if key is None:
+            key = bucket.new_key(name)
+        key.set_contents_from_string(template_body)
+        template_url = key.generate_url(300)  # 5 minute URL, more than enough time, right?
+
         parsed = json.loads(template_body)
-        if template_url:
-            template_body = None
-        return (template_url, template_body, parsed)
+        return (template_url, parsed)
