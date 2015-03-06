@@ -337,6 +337,8 @@ class CreateELBView(BaseView):
             if vpc_network == 'None':
                 vpc_network = None
             vpc_subnet = self.request.params.get('vpc_subnet') or None
+            if vpc_subnet == 'None':
+                vpc_subnet = None
             securitygroup = self.request.params.getall('securitygroup') or None
             zone = self.request.params.getall('zone') or None
             instances = self.request.params.getall('instances') or None
