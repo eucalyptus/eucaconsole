@@ -146,6 +146,9 @@ eucaConsoleUtils.directive('elbListenerEditor', function() {
 		    }); 
 		    return port;
 		};
+                $scope.openCertificateModal = function () {
+                    $scope.$emit('eventOpenSelectCertificateModal');
+                };
                 $scope.initEditor();
             }
         };

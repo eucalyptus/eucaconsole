@@ -1,0 +1,25 @@
+<!--! Select certificate modal dialog -->
+<div tal:omit-tag="" i18n:domain="eucaconsole">
+    <div id="select-certificate-modal" class="reveal-modal medium" data-reveal="" ng-cloak="">
+        <h3 i18n:translate="">Select certificate</h3>
+        <p></p>
+        <form method="post" data-abide="abide" id="select-certificate-form"
+              ng-submit="handleCertificateCreate($event, '${request.route_path('certificate_create')}')">
+            ${structure:certificate_form['csrf_token']}
+            ${panel('form_field', field=certificate_form['name'], ng_attrs={'model': 'certificateName'}, leftcol_width=3, rightcol_width=9)}
+            <hr />
+            <div class="row">
+                <div class="dialog-submit-button">
+                    <button type="submit" class="button expand" id="create-securitygroup-btn" i18n:translate="" >
+                        Use This Certificate
+                    </button>
+                </div>
+                <div class="dialog-progress-display hide">
+                    <span i18n:translate="">Sending request </span>&nbsp;<em><span class="busy">&nbsp;</span></em>
+                </div>
+            </div>
+        </form>
+        <a href="#" id="select-certificate-close-link" class="close-reveal-modal">&#215;</a>
+    </div>
+</div>
+

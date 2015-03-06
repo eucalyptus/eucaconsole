@@ -285,3 +285,15 @@ class ELBInstancesFiltersForm(BaseSecureForm):
             {'key':'shutting-down', 'label':'Terminating'},
             {'key':'terminated', 'label':'Terminated'},
         ]
+
+class CertificateForm(BaseSecureForm):
+    """Create SSL Certificate form"""
+    name_error_msg = _(u'Name must be between 1 and 255 characters long, and must not contain space')
+    name = wtforms.TextField(
+        label=_(u'Name'),
+        validators=[validators.InputRequired(message=name_error_msg)],
+    )
+
+    def __init__(self, request, elb_conn=None, **kwargs):
+        super(CertificateForm, self).__init__(request, **kwargs)
+        self.elb_conn = elb_conn

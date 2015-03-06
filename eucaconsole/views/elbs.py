@@ -38,7 +38,7 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config
 
 from ..i18n import _
-from ..forms.elbs import ELBDeleteForm, ELBsFiltersForm, CreateELBForm, ELBInstancesFiltersForm 
+from ..forms.elbs import ELBDeleteForm, ELBsFiltersForm, CreateELBForm, ELBInstancesFiltersForm, CertificateForm 
 from ..models import Notification
 from ..views import LandingPageView, BaseView, JSONResponse
 from . import boto_error_handler
@@ -259,6 +259,7 @@ class CreateELBView(BaseView):
         self.vpc_conn = self.get_connection(conn_type='vpc')
         self.create_form = CreateELBForm(
             self.request, conn=self.ec2_conn, vpc_conn=self.vpc_conn, formdata=self.request.params or None)
+        self.certificate_form = CertificateForm(self.request, elb_conn=self.elb_conn, formdata=self.request.params or None)
         filter_keys = ['id', 'name', 'placement', 'state', 'tags']
         filters_form = ELBInstancesFiltersForm(
             self.request, ec2_conn=self.ec2_conn, autoscale_conn=self.autoscale_conn,
@@ -267,6 +268,7 @@ class CreateELBView(BaseView):
         search_facets = filters_form.facets
         self.render_dict = dict(
             create_form=self.create_form,
+            certificate_form=self.certificate_form,
             security_group_placeholder_text=_(u'Select...'),
             filter_keys=filter_keys,
             search_facets=BaseView.escape_json(json.dumps(search_facets)),
@@ -400,3 +402,9 @@ class CreateELBView(BaseView):
                 target=ping_target 
             )
             self.elb_conn.configure_health_check(name, hc)
+
+    @view_config(route_name='certificate_create', request_method='POST', renderer=TEMPLATE)
+    def certificate_create(self):
+        if self.certificate_form.validate():
+            return
+        return

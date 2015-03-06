@@ -73,6 +73,9 @@ wizardApp.controller('ELBWizardCtrl', function ($scope, $http, $timeout, eucaHan
                     $('#zone').trigger("chosen:updated");
                 });
             });
+            $scope.$on('eventOpenSelectCertificateModal', function() {
+                $scope.openSelectCertificateModal();
+            });
             $scope.$watch('elbName', function(){
                $scope.checkRequiredInput(1);
             });
@@ -143,6 +146,19 @@ wizardApp.controller('ELBWizardCtrl', function ($scope, $http, $timeout, eucaHan
             if ($scope.vpcSubnet === '') {
                 $scope.vpcSubnetChoices.None = $('#hidden_vpc_subnet_empty_option').text();
                 $scope.vpcSubnet = 'None';
+            }
+        };
+        $scope.openSelectCertificateModal = function () {
+            var modal = $('#select-certificate-modal');
+            if (modal.length > 0) {
+                modal.foundation('reveal', 'open');
+            }
+        };
+        $scope.handleCertificateCreate = function ($event, url) {
+            $event.preventDefault();
+            var modal = $('#select-certificate-modal');
+            if (modal.length > 0) {
+                modal.foundation('reveal', 'close');
             }
         };
         $scope.createELB = function () {
