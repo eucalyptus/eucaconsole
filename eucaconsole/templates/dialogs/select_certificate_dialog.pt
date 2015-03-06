@@ -7,13 +7,13 @@
               ng-submit="handleCertificateCreate($event, '${request.route_path('certificate_create')}')">
             ${structure:certificate_form['csrf_token']}
             <div>
-                <input type="radio" value="existing" ng-model="radioButton" \>
+                <input type="radio" name="certificate_type_radio" value="existing" ng-model="radioButton" \>
                 <span>Choose an existing SSL certificate</span>
             <div ng-show="radioButton === 'existing'">
                 ${panel('form_field', field=certificate_form['certificates'], leftcol_width=3, rightcol_width=9)}
             </div>
             <div>
-                <input type="radio" value="new" ng-model="radioButton" \>
+                <input type="radio" name="certificate_type_radio" value="new" ng-model="radioButton" \>
                 <span>Upload a new SSL certificate</span>
             </div>
             <div ng-show="radioButton === 'new'">

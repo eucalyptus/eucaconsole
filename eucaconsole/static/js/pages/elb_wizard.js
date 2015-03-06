@@ -158,6 +158,22 @@ wizardApp.controller('ELBWizardCtrl', function ($scope, $http, $timeout, eucaHan
         };
         $scope.handleCertificateCreate = function ($event, url) {
             $event.preventDefault();
+            var formData = $($event.target).serialize();
+            $scope.certificateForm = $('#select-certificate-form');
+            $scope.certificateForm.trigger('validate');
+            if ($scope.certificateForm.find('[data-invalid]').length) {
+                return false;
+            }
+            $http({
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                method: 'POST',
+                url: url,
+                data: formData
+            }).success(function (oData) {
+                Notify.success(oData.message);
+            }).error(function (oData) {
+                eucaHandleError(oData, status);
+            });
             var modal = $('#select-certificate-modal');
             if (modal.length > 0) {
                 modal.foundation('reveal', 'close');

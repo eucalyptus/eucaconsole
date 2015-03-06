@@ -306,10 +306,8 @@ class CertificateForm(BaseSecureForm):
     certificate_chain = wtforms.TextAreaField(
         label=_(u'Certificate chain'),
     )
-    certificates_error_msg = _(u'Certificate is required')
     certificates = wtforms.SelectField(
         label=_(u'Certificate name'),
-        validators=[validators.InputRequired(message=certificates_error_msg)],
     )
 
     def __init__(self, request, conn=None, iam_conn=None, elb_conn=None, **kwargs):
@@ -318,10 +316,18 @@ class CertificateForm(BaseSecureForm):
         self.iam_conn = iam_conn
         self.elb_conn = elb_conn
         self.certificates.choices = self.get_all_server_certs(iam_conn=self.iam_conn)
+        if len(self.certificates.choices) > 1:
+            self.certificates.data = self.certificates.choices[0][0]
 
     def get_all_server_certs(self,  iam_conn=None, add_blank=True):
         choices = [] 
-        certificates = []
+        certificates = {}
         if iam_conn is not None:
             certificates = self.iam_conn.get_all_server_certs()
+            for cert in certificates.list_server_certificates_result.server_certificate_metadata_list:
+                print cert.server_certificate_name
+                print cert.server_certificate_id
+                choices.append((cert.server_certificate_id, cert.server_certificate_name))
+        if len(choices) == 0:
+            choices.append(('None', _(u'No certs')))
         return sorted(set(choices))

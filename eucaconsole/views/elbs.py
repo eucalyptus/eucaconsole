@@ -409,5 +409,23 @@ class CreateELBView(BaseView):
     @view_config(route_name='certificate_create', request_method='POST', renderer=TEMPLATE)
     def certificate_create(self):
         if self.certificate_form.validate():
-            return
-        return
+            radio = self.request.params.get('certificate_type_radio')
+            certificate_name = self.request.params.get('certificate_name')
+            private_key = self.request.params.get('private_key')
+            public_key_certificate = self.request.params.get('public_key_certificate')
+            certificate_chain = self.request.params.get('certificate_chain')
+            certificates = self.request.params.get('certificates')
+            print radio
+            print certificate_name
+            print private_key 
+            print public_key_certificate 
+            print certificate_chain
+            print certificates
+            with boto_error_handler(self.request):
+                self.iam_conn.upload_server_cert(certificate_name, public_key_certificate, private_key, cert_chain=None, path=None)
+                prefix = _(u'Successfully uploaded server certificate')
+                msg = u'{0} {1}'.format(prefix, certificate_name)
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
+        else:
+            self.request.error_messages = self.certificate_form.get_errors_list()
+        return self.render_dict
