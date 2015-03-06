@@ -303,10 +303,8 @@ class CertificateForm(BaseSecureForm):
         label=_(u'Public key certificate'),
         validators=[validators.InputRequired(message=public_key_certificate_error_msg)],
     )
-    certificate_chain_error_msg = _(u'Certificate chain is required')
     certificate_chain = wtforms.TextAreaField(
         label=_(u'Certificate chain'),
-        validators=[validators.InputRequired(message=certificate_chain_error_msg)],
     )
     certificates_error_msg = _(u'Certificate is required')
     certificates = wtforms.SelectField(
@@ -326,5 +324,4 @@ class CertificateForm(BaseSecureForm):
         certificates = []
         if iam_conn is not None:
             certificates = self.iam_conn.get_all_server_certs()
-        print certificates
         return sorted(set(choices))
