@@ -164,11 +164,13 @@ wizardApp.controller('ELBWizardCtrl', function ($scope, $http, $timeout, eucaHan
             var modal = $('#select-certificate-modal');
             if (modal.length > 0) {
                 modal.foundation('reveal', 'open');
+                $scope.certificateRadioButton = 'existing';
+                $("#certificate-type-radio-existing").prop('checked', true);
+                $("#certificates").val($scope.certificateARN);
             }
         };
         $scope.handleCertificateCreate = function ($event, url) {
             $event.preventDefault();
-            console.log($scope.certificateRadioButton);
             if ($scope.certificateRadioButton === 'new') {
                 $scope.createNewCertificate($event, url);
             }
