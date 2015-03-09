@@ -6,7 +6,7 @@
 		{{ listener.fromProtocol.toUpperCase() }} ({{ listener.fromPort }}) - 
 		{{ listener.toProtocol.toUpperCase() }} ({{ listener.toPort }})
 	    </span>
-            <span ng-show="listener.fromProtocol.toUpperCase() === 'HTTPS'">
+            <span ng-show="listener.fromProtocol.toUpperCase() === 'HTTPS' || listener.toProtocol.toUpperCase() === 'HTTPS'">
 	        <a ng-click="openCertificateModal()"
 		    title="Change certficate">change certificate</a>
             </span>
