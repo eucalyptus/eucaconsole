@@ -7,16 +7,16 @@
               ng-submit="handleCertificateCreate($event, '${request.route_path('certificate_create')}')">
             ${structure:certificate_form['csrf_token']}
             <div>
-                <input type="radio" name="certificate_type_radio" value="existing" ng-model="radioButton" \>
+                <input type="radio" name="certificate_type_radio" value="existing" ng-model="certificateRadioButton" \>
                 <span>Choose an existing SSL certificate</span>
-            <div ng-show="radioButton === 'existing'">
+            <div ng-if="certificateRadioButton === 'existing'">
                 ${panel('form_field', field=certificate_form['certificates'], leftcol_width=3, rightcol_width=9)}
             </div>
             <div>
-                <input type="radio" name="certificate_type_radio" value="new" ng-model="radioButton" \>
+                <input type="radio" name="certificate_type_radio" value="new" ng-model="certificateRadioButton" \>
                 <span>Upload a new SSL certificate</span>
             </div>
-            <div ng-show="radioButton === 'new'">
+            <div ng-if="certificateRadioButton === 'new'">
                 ${panel('form_field', field=certificate_form['certificate_name'], ng_attrs={'model': 'certificateName'}, leftcol_width=3, rightcol_width=9)}
                 ${panel('form_field', field=certificate_form['private_key'], ng_attrs={'model': 'privateKey'}, leftcol_width=3, rightcol_width=9)}
                 ${panel('form_field', field=certificate_form['public_key_certificate'], ng_attrs={'model': 'publicKeyCertificate'}, leftcol_width=3, rightcol_width=9)}
