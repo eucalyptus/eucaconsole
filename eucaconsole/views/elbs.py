@@ -332,6 +332,7 @@ class CreateELBView(BaseView):
         if self.create_form.validate():
             name = self.request.params.get('name')
             elb_listener = self.request.params.get('elb_listener')
+            certificate_arn = self.request.params.get('certificate_arn') or None
             listeners_args = self.get_listeners_args()
             vpc_network = self.request.params.get('vpc_network') or None
             if vpc_network == 'None':
@@ -344,12 +345,13 @@ class CreateELBView(BaseView):
             instances = self.request.params.getall('instances') or None
             print name
             print elb_listener
+            print certificate_arn 
             print listeners_args
             print vpc_network
             print vpc_subnet
             print securitygroup
             print zone
-            print instances
+	    print instances
             with boto_error_handler(self.request, self.request.route_path('elbs')):
                 self.log_request(_(u"Creating elastic load balancer {0}").format(name))
                 if vpc_subnet is None:
@@ -373,6 +375,7 @@ class CreateELBView(BaseView):
 
     def get_listeners_args(self):
         listeners_json = self.request.params.get('elb_listener')
+        certificate_arn = self.request.params.get('certificate_arn') or None
         listeners = json.loads(listeners_json) if listeners_json else []
         listeners_args = []
 
@@ -381,7 +384,10 @@ class CreateELBView(BaseView):
             from_port = listener.get('fromPort')
             to_protocol = listener.get('toProtocol')
             to_port = listener.get('toPort')
-            listeners_args.append((from_port, to_port, from_protocol, to_protocol))
+            if from_protocol == 'HTTPS' or to_protocol == 'HTTPS':
+                listeners_args.append((from_port, to_port, from_protocol, to_protocol, certificate_arn))
+            else:
+                listeners_args.append((from_port, to_port, from_protocol, to_protocol))
 
         return listeners_args
 
@@ -422,10 +428,12 @@ class CreateELBView(BaseView):
             print certificate_chain
             print certificates
             with boto_error_handler(self.request):
-                self.iam_conn.upload_server_cert(certificate_name, public_key_certificate, private_key, cert_chain=None, path=None)
+                certificate_result = self.iam_conn.upload_server_cert(certificate_name, public_key_certificate, private_key, cert_chain=None, path=None)
                 prefix = _(u'Successfully uploaded server certificate')
                 msg = u'{0} {1}'.format(prefix, certificate_name)
-                self.request.session.flash(msg, queue=Notification.SUCCESS)
+                print certificate_result
+                certificate_arn = certificate_result.upload_server_certificate_result.server_certificate_metadata.arn
+                return JSONResponse(status=200, message=msg, id=certificate_arn)
         else:
-            self.request.error_messages = self.certificate_form.get_errors_list()
-        return self.render_dict
+            form_errors = ', '.join(self.certificate_form.get_errors_list())
+            return JSONResponse(status=400, message=form_errors)  # Validation failure = bad request

@@ -25,7 +25,8 @@ wizardApp.controller('ELBWizardCtrl', function ($scope, $http, $timeout, eucaHan
         $scope.timeBetweenPings = '';
         $scope.failuresUntilUnhealthy = '';
         $scope.passesUntilUnhealthy = '';
-        $scope.certificateRadioButton = "";
+        $scope.certificateRadioButton = '';
+        $scope.certificateARN = '';
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.setInitialValues(options);
@@ -57,6 +58,9 @@ wizardApp.controller('ELBWizardCtrl', function ($scope, $http, $timeout, eucaHan
             $scope.failuresUntilUnhealthy = 2;
             $scope.passesUntilUnhealthy = 10;
             $scope.certificateRadioButton = "existing";
+            if ($('#certificates').children('option').length > 0) {
+                $scope.certificateARN = $('#certificates').children('option').first().val();
+            }
             $scope.initChosenSelectors(); 
         };
         $scope.initChosenSelectors = function () {
@@ -87,6 +91,12 @@ wizardApp.controller('ELBWizardCtrl', function ($scope, $http, $timeout, eucaHan
             });
             $scope.$watch('securityGroupCollection', function () {
                 $scope.updateSecurityGroupChoices();
+            });
+            $scope.$watch('certificateARN', function(){
+                console.log($scope.certificateARN);
+                if ($('#hidden_certificate_arn_input').length > 0) {
+                    $('#hidden_certificate_arn_input').val($scope.certificateARN);
+                }
             });
         };
         $scope.setFocus = function () {
@@ -158,6 +168,16 @@ wizardApp.controller('ELBWizardCtrl', function ($scope, $http, $timeout, eucaHan
         };
         $scope.handleCertificateCreate = function ($event, url) {
             $event.preventDefault();
+            console.log($scope.certificateRadioButton);
+            if ($scope.certificateRadioButton === 'new') {
+                $scope.createNewCertificate($event, url);
+            }
+            var modal = $('#select-certificate-modal');
+            if (modal.length > 0) {
+                modal.foundation('reveal', 'close');
+            }
+        };
+        $scope.createNewCertificate = function ($event, url) {
             var formData = $($event.target).serialize();
             $scope.certificateForm = $('#select-certificate-form');
             $scope.certificateForm.trigger('validate');
@@ -171,13 +191,12 @@ wizardApp.controller('ELBWizardCtrl', function ($scope, $http, $timeout, eucaHan
                 data: formData
             }).success(function (oData) {
                 Notify.success(oData.message);
+                if (oData.id) {
+                    $scope.certificateARN = oData.id;
+                }
             }).error(function (oData) {
                 eucaHandleError(oData, status);
             });
-            var modal = $('#select-certificate-modal');
-            if (modal.length > 0) {
-                modal.foundation('reveal', 'close');
-            }
         };
         $scope.createELB = function () {
         };

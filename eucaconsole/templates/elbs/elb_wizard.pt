@@ -77,6 +77,9 @@
                                     template="${request.static_path('eucaconsole:static/html/directives/elb_listener_editor.html')}"
                                     options='${controller_options_json}'>
                                 </elb-listener-editor>
+                                 <span id="hidden_certificate_arn_input_span" class="hide" i18n:translate="">
+                                     <input type='hidden' id="hidden_certificate_arn_input" name='certificate_arn'/> 
+                                 </span>
                             </div>
                             <hr />
                             <div>

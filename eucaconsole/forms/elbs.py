@@ -325,9 +325,10 @@ class CertificateForm(BaseSecureForm):
         if iam_conn is not None:
             certificates = self.iam_conn.get_all_server_certs()
             for cert in certificates.list_server_certificates_result.server_certificate_metadata_list:
+                print cert
                 print cert.server_certificate_name
-                print cert.server_certificate_id
-                choices.append((cert.server_certificate_id, cert.server_certificate_name))
+                print cert.arn
+                choices.append((cert.arn, cert.server_certificate_name))
         if len(choices) == 0:
             choices.append(('None', _(u'No certs')))
         return sorted(set(choices))
