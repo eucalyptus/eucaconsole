@@ -384,7 +384,7 @@ class CreateELBView(BaseView):
             from_port = listener.get('fromPort')
             to_protocol = listener.get('toProtocol')
             to_port = listener.get('toPort')
-            if from_protocol == 'HTTPS' or to_protocol == 'HTTPS':
+            if from_protocol == 'HTTPS' or from_protocol == 'SSL':
                 listeners_args.append((from_port, to_port, from_protocol, to_protocol, certificate_arn))
             else:
                 listeners_args.append((from_port, to_port, from_protocol, to_protocol))
@@ -402,7 +402,6 @@ class CreateELBView(BaseView):
             ping_target = u"{0}:{1}".format(ping_protocol, ping_port)
             if ping_protocol == 'HTTP' or ping_protocol == 'HTTPS':
                 ping_target = u"{0}{1}".format(ping_target, ping_path)
-            print ping_target
             hc = HealthCheck(
                 timeout=response_timeout,
                 interval=time_between_pings,
