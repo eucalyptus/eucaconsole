@@ -86,7 +86,7 @@ class CreateELBForm(BaseSecureForm):
     )
     vpc_subnet_error_msg = _(u'VPC subnet is required')
     vpc_subnet_helptext = _(u'VPC subnet')
-    vpc_subnet = wtforms.SelectField(
+    vpc_subnet = wtforms.SelectMultipleField(
         label=_(u'VPC subnets'),
         validators=[validators.InputRequired(message=vpc_subnet_error_msg)],
     )
