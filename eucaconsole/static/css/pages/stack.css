@@ -13,7 +13,7 @@
 
 #breadcrumbs .icon-block { display: none; }
 
-#primary-buttons .button { padding: 8px 3rem; margin-bottom: 0.5rem; }
+#primary-buttons .button { padding: 8px 3rem; }
 
 .gridwrapper .dropdown.button.tiny { z-index: 99999; background: none; box-shadow: none; position: absolute; width: 30px; height: 24px; top: 0; right: 0; color: #8cc63e; font-size: 1.1rem; padding: 0 0 0 0; border-top: none; border-right: none; }
 .gridwrapper .dropdown.button.tiny:hover { color: #8cc63e; }
