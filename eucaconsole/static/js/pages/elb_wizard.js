@@ -27,6 +27,7 @@ wizardApp.controller('ELBWizardCtrl', function ($scope, $http, $timeout, eucaHan
         $scope.passesUntilUnhealthy = '';
         $scope.certificateRadioButton = '';
         $scope.certificateARN = '';
+        $scope.certificateName = '';
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.setInitialValues(options);
@@ -186,6 +187,7 @@ wizardApp.controller('ELBWizardCtrl', function ($scope, $http, $timeout, eucaHan
             if ($scope.certificateForm.find('[data-invalid]').length) {
                 return false;
             }
+            var newCertificateName = $scope.certificateForm.find('#certificate_name').val();
             $http({
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                 method: 'POST',
@@ -194,7 +196,12 @@ wizardApp.controller('ELBWizardCtrl', function ($scope, $http, $timeout, eucaHan
             }).success(function (oData) {
                 Notify.success(oData.message);
                 if (oData.id) {
-                    $scope.certificateARN = oData.id;
+                    var newARN = oData.id;
+                    $('#certificates').append($("<option></option>")
+                        .attr("value", newARN)
+                        .text(newCertificateName));
+                    $scope.certificateARN = newARN;
+                    $scope.certificateName = newCertificateName;
                 }
             }).error(function (oData) {
                 eucaHandleError(oData, status);
