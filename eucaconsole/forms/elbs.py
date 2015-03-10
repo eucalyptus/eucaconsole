@@ -98,6 +98,7 @@ class CreateELBForm(BaseSecureForm):
         label=_(u'Availability zones'),
         validators=[validators.InputRequired(message=zone_error_msg)],
     )
+    cross_zone_enabled = wtforms.BooleanField(label=_(u'Enable cross-zone load balancing'))
     ping_protocol_error_msg = _(u'Ping protocol is required')
     ping_protocol = wtforms.SelectField(
         label=_(u'Protocol'),
@@ -171,6 +172,7 @@ class CreateELBForm(BaseSecureForm):
         self.failures_until_unhealthy.choices = self.get_failures_until_unhealthy_choices()
         self.passes_until_unhealthy.choices = self.get_passes_until_unhealthy_choices()
 
+        self.cross_zone_enabled.data = False 
         # Set default choices where applicable, defaulting to first non-blank choice
         if self.cloud_type == 'aws' and len(self.zone.choices) > 1:
             self.zone.data = self.zone.choices[0]

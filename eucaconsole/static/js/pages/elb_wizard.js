@@ -18,6 +18,7 @@ wizardApp.controller('ELBWizardCtrl', function ($scope, $http, $timeout, eucaHan
         $scope.securityGroupChoices = [];
         $scope.securityGroupCollection = []; 
         $scope.availabilityZones = [];
+        $scope.crossZoneEnabled = false;
         $scope.protocolList = []; 
         $scope.pingProtocol = '';
         $scope.pingPort = '';
@@ -52,6 +53,7 @@ wizardApp.controller('ELBWizardCtrl', function ($scope, $http, $timeout, eucaHan
                 $scope.vpcSubnetList = options.vpc_subnet_choices;
                 $scope.updateVPCSubnetChoices();
             }
+            $scope.crossZoneEnabled = false;
             $scope.pingProtocol = 'HTTP';
             $scope.pingPort = 80;
             $scope.responseTimeout = 5;

@@ -351,6 +351,7 @@ class CreateELBView(BaseView):
                 vpc_subnet = None
             securitygroup = self.request.params.getall('securitygroup') or None
             zone = self.request.params.getall('zone') or None
+            cross_zone_enabled = self.request.params.get('cross_zone_enabled') or False 
             instances = self.request.params.getall('instances') or None
             print name
             print elb_listener
@@ -360,6 +361,7 @@ class CreateELBView(BaseView):
             print vpc_subnet
             print securitygroup
             print zone
+            print cross_zone_enabled
 	    print instances
             with boto_error_handler(self.request, self.request.route_path('elbs')):
                 self.log_request(_(u"Creating elastic load balancer {0}").format(name))
