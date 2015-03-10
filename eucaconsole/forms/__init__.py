@@ -84,7 +84,7 @@ class BaseSecureForm(SecureForm):
     def getOptionsFromChoices(self, choices):
         if choices is None:
             return []
-        return [{'key':choice[0], 'label':choice[1]} for choice in choices]
+        return [{'key': choice[0], 'label':choice[1]} for choice in choices]
 
 
 class TextEscapedField(StringField):
@@ -133,7 +133,7 @@ class ChoicesManager(object):
             return zones
         try:
             return _get_zones_cache_(self, region)
-        except pylibmc.Error as err:
+        except pylibmc.Error:
             return _get_zones_(self, region)
 
     def instances(self, instances=None, states=None, escapebraces=True):
@@ -151,7 +151,7 @@ class ChoicesManager(object):
                     else:
                         if instance.state in states:
                             choices.append((value, label))
-     
+
         return choices
 
     @staticmethod
@@ -179,7 +179,7 @@ class ChoicesManager(object):
                 return types
             try:
                 types.extend(_get_instance_types_cache_(self))
-            except pylibmc.Error as err:
+            except pylibmc.Error:
                 types.extend(_get_instance_types_(self))
             choices = []
             for vmtype in types:

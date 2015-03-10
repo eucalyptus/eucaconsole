@@ -25,7 +25,7 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 """
-Forms for Cloud Formations 
+Forms for Cloud Formations
 
 """
 import wtforms
@@ -39,7 +39,8 @@ class StacksCreateForm(BaseSecureForm):
     """Stacks creation form.
        Only need to initialize as a secure form to generate CSRF token
     """
-    name_error_msg = _(u'Name is required and may contain lowercase letters, numbers, and/or hyphens and not longer than 255 characters')
+    name_error_msg = _(u"""Name is required and may contain lowercase letters,
+        numbers, and/or hyphens and not longer than 255 characters""")
     name = wtforms.TextField(
         label=_(u'Name'),
         validators=[validators.InputRequired(message=name_error_msg)],
@@ -54,6 +55,7 @@ class StacksCreateForm(BaseSecureForm):
         self.template_file.help_text = self.template_file_helptext
         mgr = CFSampleTemplateManager(s3_bucket)
         self.sample_template.choices = mgr.get_template_options()
+
 
 class StacksDeleteForm(BaseSecureForm):
     """Stacks deletion form.
