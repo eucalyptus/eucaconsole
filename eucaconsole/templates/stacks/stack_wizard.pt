@@ -67,7 +67,10 @@
                                     </input>
                                     <select id="sample-template" name="sample-template" ng-model="templateSample" ng-show="inputtype=='sample'">
                                         <option value="" i18n:translate="">Select a template</option>
-                                        <option tal:repeat="name create_form['sample_template'].choices">${name[0]}</option>
+                                        <optgroup tal:repeat="group create_form['sample_template'].choices" label="${group[0]}">
+                                            <option tal:repeat="name group[1]">${name[0]}</option>
+                                        </optgroup>
+                                        <optgroup>
                                     </select>
                                     <br/>
                                     <input type="radio" id="inputtype" name="inputtype" value="file" ng-model="inputtype">

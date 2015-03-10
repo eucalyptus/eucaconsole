@@ -30,6 +30,7 @@ Pyramid views for Eucalyptus and AWS CloudFormation stacks
 """
 import logging
 import simplejson as json
+import os
 import urllib2
 
 from pyramid.httpexceptions import HTTPFound
@@ -38,7 +39,8 @@ from pyramid.view import view_config
 from boto.s3.connection import S3Connection, OrdinaryCallingFormat
 
 from ..i18n import _
-from ..forms import ChoicesManager
+from ..forms import ChoicesManager, CFSampleTemplateManager
+
 from ..forms.stacks import StacksDeleteForm, StacksFiltersForm, StacksCreateForm
 from ..models import Notification
 from ..models.auth import User
@@ -333,16 +335,11 @@ class StackWizardView(BaseView):
         )
 
     def get_template_samples_bucket(self):
-        # TODO: this likely to change to use tags based on the way conversation is going.
-        # bucket_url = self.request.registry.settings.get('cloudformation.samples.bucket.url')
-        s3_conn = S3Connection(
-            host='10.111.5.150',
-            port=8773,
-            path='/services/objectstorage',
-            anon=True,
-            calling_format=OrdinaryCallingFormat()
-        )
-        return s3_conn.get_bucket('sample-templates')
+        sample_bucket = self.request.registry.settings.get('cloudformation.samples.bucket')
+        if sample_bucket is None:
+            return None
+        s3_conn = self.get_connection(conn_type="s3")
+        return s3_conn.get_bucket(sample_bucket)
 
     def get_controller_options_json(self):
         return BaseView.escape_json(json.dumps({
@@ -366,7 +363,7 @@ class StackWizardView(BaseView):
             param = parsed['Parameters'][name]
             param_vals = {
                 'name': name,
-                'description': param['Description'],
+                'description': param['Description'] if 'Description' in param else '',
                 'type': param['Type']
             }
             if 'Default' in param:
@@ -399,7 +396,7 @@ class StackWizardView(BaseView):
             params.append(param_vals)
         return dict(
             results=dict(
-                description=parsed['Description'],
+                description=parsed['Description'] if 'Description' in parsed else '',
                 parameters=params
             )
         )
@@ -490,30 +487,34 @@ class StackWizardView(BaseView):
     def parse_store_template(self):
         template_name = self.request.params.get('sample-template')
         template_url = self.request.params.get('template-url')
-        if template_name:  # process from sample templates
-            bucket_url = self.request.registry.settings.get('cloudformation.samples.bucket.url')
-            template_url = bucket_url + template_name
-        elif template_url:  # fetch from URL
-            pass
         files = self.request.POST.getall('template-file')
         template_body = ''
         if len(files) > 0 and len(str(files[0])) > 0:  # read from file
             # TODO: body limit is 51,200 in the API, check that!
             template_body = files[0].file.read()
-            template_url = None
-        else:  # read from url
+            template_name = files[0].name
+        elif template_url:  # read from url
             logging.info("reading template from :"+template_url)
             template_body = urllib2.urlopen(template_url).read()
+            template_name = template_url[template_url.rindex('/')+1:]
+        else:
+            s3_bucket = self.get_template_samples_bucket()
+            mgr = CFSampleTemplateManager(s3_bucket)
+            templates = mgr.get_template_list()
+            for dir, files in templates:
+                if template_name in [name for (name, file) in files]:
+                    f = [file for (name, file) in files if name==template_name]
+                    fd = open(os.path.join(dir, f[0]), 'r')
+                    template_body = fd.read()
 
         # now that we have it, store in S3
         s3_conn = self.get_connection(conn_type="s3")
         account_id = User.get_account_id(ec2_conn=self.get_connection(), request=self.request)
         region = self.request.session.get('region')
         bucket = s3_conn.create_bucket("cf-template-{acct}-{region}".format(acct=account_id, region=region))
-        name = template_name or template_url[template_url.rindex('/')+1:]
-        key = bucket.get_key(name)
+        key = bucket.get_key(template_name)
         if key is None:
-            key = bucket.new_key(name)
+            key = bucket.new_key(template_name)
         key.set_contents_from_string(template_body)
         template_url = key.generate_url(300)  # 5 minute URL, more than enough time, right?
 

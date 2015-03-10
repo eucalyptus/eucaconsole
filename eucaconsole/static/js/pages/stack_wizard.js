@@ -36,7 +36,7 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils'])
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.stackTemplateEndpoint = options.stack_template_url;
             $scope.setInitialValues();
-            $scope.initChosenSelectors();
+            //$('#sample-template').chosen({'width': '100%', search_contains: true});
             $scope.watchTags();
             $scope.setWatcher();
             $scope.setFocus();
@@ -58,9 +58,6 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils'])
                 $scope.templateIdent = $scope.templateUrl;
             });
         });
-        $scope.initChosenSelectors = function () {
-            $('sample-template').chosen({'width': '100%', search_contains: true});
-        };
         $scope.setInitialValues = function () {
             $scope.inputtype = 'sample';
         };
@@ -236,7 +233,6 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils'])
                     $scope.parameters = results.parameters;
                     $timeout(function () {
                         $scope.updateParamSummary();
-                        $scope.checkRequiredInput();
                     }, 100);
                 }
             }).

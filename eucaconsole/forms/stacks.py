@@ -32,7 +32,7 @@ import wtforms
 from wtforms import validators
 
 from ..i18n import _
-from . import BaseSecureForm, TextEscapedField
+from . import BaseSecureForm, TextEscapedField, CFSampleTemplateManager
 
 
 class StacksCreateForm(BaseSecureForm):
@@ -52,11 +52,8 @@ class StacksCreateForm(BaseSecureForm):
         super(StacksCreateForm, self).__init__(request, **kwargs)
         self.name.error_msg = self.name_error_msg
         self.template_file.help_text = self.template_file_helptext
-        bucket_items = s3_bucket.list()
-        templates = []
-        for key in bucket_items:
-            templates.append((key.name, key.name))
-        self.sample_template.choices = templates
+        mgr = CFSampleTemplateManager(s3_bucket)
+        self.sample_template.choices = mgr.get_template_options()
 
 class StacksDeleteForm(BaseSecureForm):
     """Stacks deletion form.

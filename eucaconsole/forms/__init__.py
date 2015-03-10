@@ -33,6 +33,7 @@ IMPORTANT: All forms needing CSRF protection should inherit from BaseSecureForm
 import logging
 import pylibmc
 import sys
+import os
 
 from wtforms import StringField
 from wtforms.ext.csrf import SecureForm
@@ -440,3 +441,40 @@ class ChoicesManager(object):
             else:
                 choices.append((vpc.id, vpc.cidr_block))
         return sorted(set(choices))
+
+
+class CFSampleTemplateManager(object):
+
+    def __init__(self, s3_bucket):
+        self.s3_bucket = s3_bucket
+
+    def get_template_options(self):
+        templates = [(category, files) for (dir, category, files) in self._get_templates_()]
+        return templates
+
+    def get_template_list(self):
+        templates = [(dir, files) for (dir, category, files) in self._get_templates_()]
+        return templates
+
+    def _get_templates_(self):
+        templates = []
+        self.template_dir = os.path.join(os.getcwd(), 'cf-templates')
+        # TODO: this next path really should be within the package, so perhaps relative path is OK?
+        if not os.path.exists(self.template_dir) and os.path.exists('/usr/share/cf-templates'):
+            self.template_dir = '/usr/share/cf-templates'
+        euca_templates = []
+        for dirName, subdirList, filelist in os.walk(self.template_dir):
+            for file in filelist:
+                name = file[:file.index('.')]
+                euca_templates.append((name, file))
+            if len(euca_templates) > 0:
+                templates.append((dirName, dirName[dirName.rindex('/')+1:], euca_templates))
+        if self.s3_bucket is not None:
+            admin_templates = []
+            bucket_items = self.s3_bucket.list()
+            for key in bucket_items:
+                admin_templates.append((key.name, key.name))
+            if len(admin_templates) > 0:
+                templates.append((_(u'Local'), admin_templates))
+        return templates
+
