@@ -84,19 +84,15 @@ class CreateELBForm(BaseSecureForm):
         label=_(u'VPC network'),
         validators=[validators.InputRequired(message=vpc_network_error_msg)],
     )
-    vpc_subnet_error_msg = _(u'VPC subnet is required')
     vpc_subnet_helptext = _(u'VPC subnet')
     vpc_subnet = wtforms.SelectMultipleField(
         label=_(u'VPC subnets'),
-        validators=[validators.InputRequired(message=vpc_subnet_error_msg)],
     )
     securitygroup = wtforms.SelectMultipleField(
         label=_(u'Security groups'),
     )
-    zone_error_msg = _(u'Availability zone is required')
     zone = wtforms.SelectMultipleField(
         label=_(u'Availability zones'),
-        validators=[validators.InputRequired(message=zone_error_msg)],
     )
     cross_zone_enabled = wtforms.BooleanField(label=_(u'Enable cross-zone load balancing'))
     ping_protocol_error_msg = _(u'Ping protocol is required')
@@ -177,8 +173,6 @@ class CreateELBForm(BaseSecureForm):
         if self.cloud_type == 'aws' and len(self.zone.choices) > 1:
             self.zone.data = self.zone.choices[0]
         # Set the defailt option to be the first choice
-        if len(self.vpc_subnet.choices) > 1:
-            self.vpc_subnet.data = self.vpc_subnet.choices[0][0]
         if len(self.vpc_network.choices) > 1:
             self.vpc_network.data = self.vpc_network.choices[0][0]
 
