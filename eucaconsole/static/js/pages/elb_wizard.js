@@ -79,6 +79,7 @@ wizardApp.controller('ELBWizardCtrl', function ($scope, $http, $timeout, eucaHan
                     // Workaround for the broken placeholer message issue
                     // Wait until the rendering of the new tab page is complete
                     $('#zone').trigger("chosen:updated");
+                    $('#vpc_subnet').trigger('chosen:updated');
                 });
             });
             $scope.$on('eventOpenSelectCertificateModal', function() {
@@ -161,6 +162,10 @@ wizardApp.controller('ELBWizardCtrl', function ($scope, $http, $timeout, eucaHan
                 $scope.vpcSubnetChoices.None = $('#hidden_vpc_subnet_empty_option').text();
                 $scope.vpcSubnet = 'None';
             }
+            // Timeout is needed for chosen to react after Angular updates the options
+            $timeout(function(){
+                $('#vpc_subnet').trigger('chosen:updated');
+            }, 500);
         };
         $scope.openSelectCertificateModal = function () {
             var modal = $('#select-certificate-modal');
