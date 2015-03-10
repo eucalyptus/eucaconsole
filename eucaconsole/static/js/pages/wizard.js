@@ -69,7 +69,7 @@ var wizardApp = angular.module('Wizard', ['EucaConsoleUtils', 'MagicSearch'])
                 $(this).find('.dialog-submit-button').css('display', 'none');                
                 $(this).find('.dialog-progress-display').css('display', 'block');                
             });
-            $(document).on('close', '[data-reveal]', function () {
+            $(document).on('closed', '[data-reveal]', function () {
                 var modal = $(this);
                 modal.find('input[type="text"]').val('');
                 modal.find('input[type="number"]').val('');
