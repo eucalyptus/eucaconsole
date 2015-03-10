@@ -258,6 +258,7 @@ class CreateELBView(BaseView):
         self.elb_conn = self.get_connection(conn_type='elb')
         self.autoscale_conn = self.get_connection(conn_type='autoscale')
         self.vpc_conn = self.get_connection(conn_type='vpc')
+        self.is_vpc_supported = BaseView.is_vpc_supported(request)
         self.create_form = CreateELBForm(
             self.request, conn=self.ec2_conn, vpc_conn=self.vpc_conn, formdata=self.request.params or None)
         self.certificate_form = CertificateForm(self.request, conn=self.ec2_conn, iam_conn=self.iam_conn, elb_conn=self.elb_conn, formdata=self.request.params or None)
@@ -271,6 +272,7 @@ class CreateELBView(BaseView):
             create_form=self.create_form,
             certificate_form=self.certificate_form,
             security_group_placeholder_text=_(u'Select...'),
+            is_vpc_supported=self.is_vpc_supported,
             filter_keys=filter_keys,
             search_facets=BaseView.escape_json(json.dumps(search_facets)),
             controller_options_json=self.get_controller_options_json(),
@@ -291,10 +293,17 @@ class CreateELBView(BaseView):
         }))
 
     def get_protocol_list(self):
-        return ({ 'name': 'HTTP', 'port': '80' },
-                { 'name': 'HTTPS', 'port': '443' },
-                { 'name': 'SSL', 'port': '443' },
-                { 'name': 'TCP', 'port': 'tcp' })
+        protocol_list = ()
+        if self.cloud_type == 'aws':
+            protocol_list = ({ 'name': 'HTTP', 'port': '80' },
+                             { 'name': 'TCP', 'port': 'tcp' })
+        else:
+            protocol_list = ({ 'name': 'HTTP', 'port': '80' },
+                             { 'name': 'HTTPS', 'port': '443' },
+                             { 'name': 'SSL', 'port': '443' },
+                             { 'name': 'TCP', 'port': 'tcp' })
+        return protocol_list
+
 
     def get_default_vpc_network(self):
         default_vpc = self.request.session.get('default_vpc', [])
