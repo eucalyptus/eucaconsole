@@ -503,9 +503,14 @@ class StackWizardView(BaseView):
             templates = mgr.get_template_list()
             for dir, files in templates:
                 if template_name in [name for (name, file) in files]:
-                    f = [file for (name, file) in files if name==template_name]
-                    fd = open(os.path.join(dir, f[0]), 'r')
-                    template_body = fd.read()
+                    if dir == 's3':
+                        key = [key for (name, key) in files if name==template_name]
+                        s3_key = s3_bucket.get_key(key[0])
+                        template_body = s3_key.get_contents_as_string()
+                    else:
+                        f = [file for (name, file) in files if name==template_name]
+                        fd = open(os.path.join(dir, f[0]), 'r')
+                        template_body = fd.read()
 
         # now that we have it, store in S3
         s3_conn = self.get_connection(conn_type="s3")

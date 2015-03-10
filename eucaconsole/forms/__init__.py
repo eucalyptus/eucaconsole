@@ -473,8 +473,9 @@ class CFSampleTemplateManager(object):
             admin_templates = []
             bucket_items = self.s3_bucket.list()
             for key in bucket_items:
-                admin_templates.append((key.name, key.name))
+                name = key.name[:key.name.index('.')]
+                admin_templates.append((name, key.name))
             if len(admin_templates) > 0:
-                templates.append((_(u'Local'), admin_templates))
+                templates.append(('s3', _(u'Local'), admin_templates))
         return templates
 
