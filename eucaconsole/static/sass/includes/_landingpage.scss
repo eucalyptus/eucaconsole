@@ -70,6 +70,7 @@ $dropdown-border-color: $euca-green;
 #primary-buttons {
     .button {
         padding: 8px 3rem;
+        margin-bottom: 0.5rem;
     }
 }
 
@@ -384,7 +385,8 @@ $dropdown-border-color: $euca-green;
 }
 
 #sorting-controls {
-    padding-top: 22px;
+    padding-top: 10px;
+    text-align: right;
     .f-dropdown {
         @include dropdown-shadow-mixin;
     }
@@ -393,8 +395,7 @@ $dropdown-border-color: $euca-green;
 #results-count {
     padding-top: 0.25rem;
     .items-found {
-        //position: relative;
-        top: -6px;
+        vertical-align: 40%;
     }
     em {
         color: #555;

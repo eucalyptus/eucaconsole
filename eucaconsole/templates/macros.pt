@@ -27,7 +27,7 @@
             <div class="small-4 columns" id="sorting-controls" ng-show="!itemsLoading">
                 <metal:block metal:define-slot="sorting_controls">
                     <strong>Sort by</strong>
-                    <a href="#" data-dropdown="sorting-dropdown">
+                    <a href="#" data-dropdown="sorting-dropdown" ng-cloak="">
                         <span tal:repeat="sort sort_keys" ng-show="sortBy == '${sort.key}'">${sort.name}</span>
                         <span class="down-caret"></span>
                     </a>

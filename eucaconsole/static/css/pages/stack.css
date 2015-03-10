@@ -13,7 +13,7 @@
 
 #breadcrumbs .icon-block { display: none; }
 
-#primary-buttons .button { padding: 8px 3rem; }
+#primary-buttons .button { padding: 8px 3rem; margin-bottom: 0.5rem; }
 
 .gridwrapper .dropdown.button.tiny { z-index: 99999; background: none; box-shadow: none; position: absolute; width: 30px; height: 24px; top: 0; right: 0; color: #8cc63e; font-size: 1.1rem; padding: 0 0 0 0; border-top: none; border-right: none; }
 .gridwrapper .dropdown.button.tiny:hover { color: #8cc63e; }
@@ -89,11 +89,11 @@
 #filters form input { height: 1.8rem; margin-bottom: 0; font-size: 0.8rem; }
 #filters form button { box-shadow: none; }
 
-#sorting-controls { padding-top: 22px; }
+#sorting-controls { padding-top: 10px; text-align: right; }
 #sorting-controls .f-dropdown { border-color: #8dc640; box-shadow: 2px 2px 5px #6a737b; }
 
 #results-count { padding-top: 0.25rem; }
-#results-count .items-found { top: -6px; }
+#results-count .items-found { vertical-align: 40%; }
 #results-count em { color: #555; font-style: normal; }
 
 #refresh-btn { background-image: url(../../img/svg/icon_reload.svg); background-color: transparent; width: 24px; height: 24px; }
