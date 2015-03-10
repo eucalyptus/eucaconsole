@@ -36,8 +36,6 @@ import urllib2
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config
 
-from boto.s3.connection import S3Connection, OrdinaryCallingFormat
-
 from ..i18n import _
 from ..forms import ChoicesManager, CFSampleTemplateManager
 
@@ -287,33 +285,33 @@ class StackStateView(BaseView):
                 results=dict(events=events)
             )
 
-    def get_url_for_resource(self, type, resource_id):
+    def get_url_for_resource(self, res_type, resource_id):
         url = None
-        if type == "AWS::ElasticLoadBalancing::LoadBalancer":
+        if res_type == "AWS::ElasticLoadBalancing::LoadBalancer":
             url = self.request.route_path('elb_view', id=resource_id)
-        elif "AWS::EC2::" in type:
-            if "SecurityGroup" in type:
+        elif "AWS::EC2::" in res_type:
+            if "SecurityGroup" in res_type:
                 url = self.request.route_path('securitygroup_view', id=resource_id)
-            elif "EIP" in type:
+            elif "EIP" in res_type:
                 url = self.request.route_path('ipaddress_view', id=resource_id)
-            elif "Instance" in type:
+            elif "Instance" in res_type:
                 url = self.request.route_path('instance_view', id=resource_id)
-            elif "Volume" in type:
+            elif "Volume" in res_type:
                 url = self.request.route_path('volume_view', id=resource_id)
-        elif "AWS::AutoScaling::" in type:
-            if "LaunchConfiguration" in type:
+        elif "AWS::AutoScaling::" in res_type:
+            if "LaunchConfiguration" in res_type:
                 url = self.request.route_path('launchconfig_view', id=resource_id)
-            if "ScalingGroup" in type:
+            if "ScalingGroup" in res_type:
                 url = self.request.route_path('scalinggroup_view', id=resource_id)
-        elif "AWS::IAM::" in type:
-            if "Group" in type:
+        elif "AWS::IAM::" in res_type:
+            if "Group" in res_type:
                 url = self.request.route_path('group_view', id=resource_id)
-            elif "Role" in type:
+            elif "Role" in res_type:
                 url = self.request.route_path('role_view', id=resource_id)
-            elif "User" in type:
+            elif "User" in res_type:
                 url = self.request.route_path('user_view', id=resource_id)
-        elif "AWS::S3::" in type:
-            if "Bucket" in type:
+        elif "AWS::S3::" in res_type:
+            if "Bucket" in res_type:
                 url = self.request.route_path('bucket_contents', id=resource_id)
         return url
 
@@ -380,19 +378,19 @@ class StackWizardView(BaseView):
                 param_vals['options'] = [(val, val) for val in param['AllowedValues']]
             # guess at more options
             if 'key' in name.lower():
-                param_vals['options'] = self.getKeyOptions()  # fetch keypair names
+                param_vals['options'] = self.get_key_options()  # fetch keypair names
             if 'image' in name.lower():
-                param_vals['options'] = self.getImageOptions()  # fetch image ids
+                param_vals['options'] = self.get_image_options()  # fetch image ids
             if 'kernel' in name.lower():
-                param_vals['options'] = self.getImageOptions(type='kernel')  # fetch kernel ids
+                param_vals['options'] = self.get_image_options(type='kernel')  # fetch kernel ids
             if 'ramdisk' in name.lower():
-                param_vals['options'] = self.getImageOptions(type='ramdisk')  # fetch ramdisk ids
+                param_vals['options'] = self.get_image_options(type='ramdisk')  # fetch ramdisk ids
             if 'cert' in name.lower():
-                param_vals['options'] = self.getCertOptions()  # fetch server cert names
+                param_vals['options'] = self.get_cert_options()  # fetch server cert names
             if 'instance' in name.lower() and 'profile' in name.lower():
-                param_vals['options'] = self.getInstanceProfileOptions()
+                param_vals['options'] = self.get_instance_profile_options()
             if ('vmtype' in name.lower() or 'instancetype' in name.lower()) and 'options' not in param_vals.keys():
-                param_vals['options'] = self.getVmTypeOptions()
+                param_vals['options'] = self.get_vmtype_options()
             params.append(param_vals)
         return dict(
             results=dict(
@@ -402,7 +400,7 @@ class StackWizardView(BaseView):
         )
 
 #                parameters=BaseView.escape_json(json.dumps(params))
-    def getKeyOptions(self):
+    def get_key_options(self):
         conn = self.get_connection()
         keys = conn.get_all_key_pairs()
         ret = []
@@ -410,22 +408,22 @@ class StackWizardView(BaseView):
             ret.append((key.name, key.name))
         return ret
 
-    def getImageOptions(self, type='machine'):
+    def get_image_options(self, img_type='machine'):
         conn = self.get_connection()
         region = self.request.session.get('region')
         images = []
-        if type == 'machine':
+        if img_type == 'machine':
             images = self.get_images(conn, [], [], region)
-        elif type == 'kernel':
+        elif img_type == 'kernel':
             images = conn.get_all_kernels()
-        elif type == 'ramdisk':
+        elif img_type == 'ramdisk':
             images = conn.get_all_ramdisks()
         ret = []
         for image in images:
             ret.append((image.id, image.name))
         return ret
 
-    def getCertOptions(self):
+    def get_cert_options(self):
         ret = []
         if self.cloud_type == 'euca':
             conn = self.get_connection(conn_type="iam")
@@ -436,7 +434,7 @@ class StackWizardView(BaseView):
                 ret.append((cert.arn, cert.server_certificate_name))
         return ret
 
-    def getInstanceProfileOptions(self):
+    def get_instance_profile_options(self):
         ret = []
         if self.cloud_type == 'euca':
             conn = self.get_connection(conn_type="iam")
@@ -447,7 +445,7 @@ class StackWizardView(BaseView):
                 ret.append((profile.arn, profile.instance_profile_name))
         return ret
 
-    def getVmTypeOptions(self):
+    def get_vmtype_options(self):
         conn = self.get_connection()
         vmtypes = ChoicesManager(conn).instance_types(self.cloud_type)
         return vmtypes
@@ -501,15 +499,15 @@ class StackWizardView(BaseView):
             s3_bucket = self.get_template_samples_bucket()
             mgr = CFSampleTemplateManager(s3_bucket)
             templates = mgr.get_template_list()
-            for dir, files in templates:
-                if template_name in [name for (name, file) in files]:
-                    if dir == 's3':
+            for directory, files in templates:
+                if template_name in [name for (name, f) in files]:
+                    if directory == 's3':
                         key = [key for (name, key) in files if name==template_name]
                         s3_key = s3_bucket.get_key(key[0])
                         template_body = s3_key.get_contents_as_string()
                     else:
-                        f = [file for (name, file) in files if name==template_name]
-                        fd = open(os.path.join(dir, f[0]), 'r')
+                        f = [f for (name, f) in files if name==template_name]
+                        fd = open(os.path.join(directory, f[0]), 'r')
                         template_body = fd.read()
 
         # now that we have it, store in S3

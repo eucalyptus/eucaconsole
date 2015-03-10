@@ -449,11 +449,11 @@ class CFSampleTemplateManager(object):
         self.s3_bucket = s3_bucket
 
     def get_template_options(self):
-        templates = [(category, files) for (dir, category, files) in self._get_templates_()]
+        templates = [(category, files) for (directory, category, files) in self._get_templates_()]
         return templates
 
     def get_template_list(self):
-        templates = [(dir, files) for (dir, category, files) in self._get_templates_()]
+        templates = [(directory, files) for (directory, category, files) in self._get_templates_()]
         return templates
 
     def _get_templates_(self):
