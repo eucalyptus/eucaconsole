@@ -36,8 +36,8 @@
         <nav id="logobar" class="row" metal:define-slot="logobar">
             <a class="left-off-canvas-toggle" id="offcanvas-icon"
                tal:condition="request.user.is_authenticated()">
-               <i class="fi-list" style="text-align:middle;"></i>
-               <span i18n:translate="" style="display:block;">Menu</span>
+               <i class="fi-list"></i>
+               <span class="menu-label" i18n:translate="">Menu</span>
             </a>
             <a id="logo" href="${layout.home_url}" title="${layout.site_title}"></a>
             <section tal:condition="request.user.is_authenticated()" id="user-dropdown-section">

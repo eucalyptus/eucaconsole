@@ -387,6 +387,7 @@ $dropdown-border-color: $euca-green;
 #sorting-controls {
     padding-top: 10px;
     text-align: right;
+    font-size: 14px;
     .f-dropdown {
         @include dropdown-shadow-mixin;
     }
@@ -394,6 +395,7 @@ $dropdown-border-color: $euca-green;
 
 #results-count {
     padding-top: 0.25rem;
+    text-align: right;
     .items-found {
         vertical-align: 40%;
     }

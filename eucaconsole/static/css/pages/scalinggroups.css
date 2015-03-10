@@ -93,10 +93,10 @@
 #filters form input { height: 1.8rem; margin-bottom: 0; font-size: 0.8rem; }
 #filters form button { box-shadow: none; }
 
-#sorting-controls { padding-top: 10px; text-align: right; }
+#sorting-controls { padding-top: 10px; text-align: right; font-size: 14px; }
 #sorting-controls .f-dropdown { border-color: #8dc640; box-shadow: 2px 2px 5px #6a737b; }
 
-#results-count { padding-top: 0.25rem; }
+#results-count { padding-top: 0.25rem; text-align: right; }
 #results-count .items-found { vertical-align: 40%; }
 #results-count em { color: #555; font-style: normal; }
 
