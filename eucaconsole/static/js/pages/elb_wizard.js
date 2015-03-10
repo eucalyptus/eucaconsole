@@ -61,8 +61,11 @@ wizardApp.controller('ELBWizardCtrl', function ($scope, $http, $timeout, eucaHan
             $scope.failuresUntilUnhealthy = 2;
             $scope.passesUntilUnhealthy = 10;
             $scope.certificateRadioButton = "existing";
+            // timeout is needed to wait for the elb listener directive to be initialized
             if ($('#certificates').children('option').length > 0) {
+                $scope.certificateName = $('#certificates').children('option').first().text();
                 $scope.certificateARN = $('#certificates').children('option').first().val();
+                console.log("init " + $scope.certificateName);
             }
             $scope.initChosenSelectors(); 
         };
@@ -98,10 +101,20 @@ wizardApp.controller('ELBWizardCtrl', function ($scope, $http, $timeout, eucaHan
                 $scope.updateSecurityGroupChoices();
             });
             $scope.$watch('certificateARN', function(){
-                console.log($scope.certificateARN);
+                console.log("ARN update " + $scope.certificateARN);
+                // Find the certficate name when selected on the select certificate dialog
+                if ($('#certificates option:selected').length > 0) {
+                    $scope.certificateName = $('#certificates option:selected').text();
+                }
+                // Assign the certificate ARN value as hidden input
                 if ($('#hidden_certificate_arn_input').length > 0) {
                     $('#hidden_certificate_arn_input').val($scope.certificateARN);
                 }
+            });
+            $scope.$watch('certificateName', function(){
+                // Broadcast the certificate name change to the elb listener directive
+                $scope.$broadcast('eventUpdateCertificateName', $scope.certificateName);
+                console.log("broadcast " + $scope.certificateName);
             });
         };
         $scope.setFocus = function () {

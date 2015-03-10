@@ -8,7 +8,7 @@
 	    </span>
             <span ng-show="listener.fromProtocol.toUpperCase() === 'HTTPS' || listener.fromProtocol.toUpperCase() === 'SSL'">
 	        <a ng-click="openCertificateModal()"
-		    title="Change certficate">change certificate</a>
+		    title="Change certficate">{{ serverCertificateName }}</a>
             </span>
 	    <a class="remove" ng-click="removeListener($event, $index)"
 		title="Remove rule"><i class="fi-x"></i></a>

@@ -23,6 +23,7 @@ eucaConsoleUtils.directive('elbListenerEditor', function() {
                 $scope.fromPort = '';
                 $scope.toPort = '';
                 $scope.portRangePattern = '';
+                $scope.serverCertificateName = '';
                 $scope.elbListenerTextarea = undefined;
 		$scope.initEditor = function () {
 		    var options = JSON.parse(eucaUnescapeJson($scope.option_json));
@@ -43,6 +44,10 @@ eucaConsoleUtils.directive('elbListenerEditor', function() {
                     }
                     if (options.hasOwnProperty('port_range_pattern')) {
                         $scope.portRangePattern = options.port_range_pattern;
+                    }
+                    // If serverCertificateName is empty, set it to the selected option name of the #certificates select list
+                    if ($scope.serverCertificateName === '' && $('#certificates option:selected').length > 0) {
+                        $scope.serverCertificateName = $('#certificates option:selected').text();
                     }
 		};
 		$scope.setWatcher = function () {
@@ -65,6 +70,10 @@ eucaConsoleUtils.directive('elbListenerEditor', function() {
 		    });
 		    $scope.$watch('hasDuplicatedListener', function () {
 			$scope.setAddListenerButtonClass(); 
+		    });
+		    $scope.$on('eventUpdateCertificateName', function ($event, name) {
+                        console.log("on " + name);
+                        $scope.serverCertificateName = name;
 		    });
 		};
 		$scope.setFocus = function () {

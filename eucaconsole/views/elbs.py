@@ -351,7 +351,7 @@ class CreateELBView(BaseView):
                 vpc_subnet = None
             securitygroup = self.request.params.getall('securitygroup') or None
             zone = self.request.params.getall('zone') or None
-            cross_zone_enabled = self.request.params.get('cross_zone_enabled') or False 
+            cross_zone_enabled = self.request.params.get('cross_zone_enabled') or False
             instances = self.request.params.getall('instances') or None
             print name
             print elb_listener
