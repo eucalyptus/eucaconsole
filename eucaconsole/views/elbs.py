@@ -296,12 +296,12 @@ class CreateELBView(BaseView):
         protocol_list = ()
         if self.cloud_type == 'aws':
             protocol_list = ({ 'name': 'HTTP', 'port': '80' },
-                             { 'name': 'TCP', 'port': 'tcp' })
+                             { 'name': 'TCP', 'port': '80' })
         else:
             protocol_list = ({ 'name': 'HTTP', 'port': '80' },
                              { 'name': 'HTTPS', 'port': '443' },
                              { 'name': 'SSL', 'port': '443' },
-                             { 'name': 'TCP', 'port': 'tcp' })
+                             { 'name': 'TCP', 'port': '80' })
         return protocol_list
 
 

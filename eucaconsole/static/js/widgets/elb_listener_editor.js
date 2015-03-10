@@ -136,9 +136,6 @@ eucaConsoleUtils.directive('elbListenerEditor', function() {
 		// Return the matching port given the protocol name
 		$scope.getPortFromProtocolList = function (name) {
 		    var port = '';
-		    if (name.toLowerCase() === 'tcp') {
-			return '';
-		    }
 		    angular.forEach($scope.protocolList, function(protocol) {
 			if (protocol.name === name) {
 			    port = protocol.port;
