@@ -17,6 +17,7 @@ eucaConsoleUtils.directive('instanceSelector', function() {
                 $scope.instanceList = [];
                 $scope.instanceCount = 0;
                 $scope.instancesJsonEndpoint = '';
+                $scope.isVPCSupported = false;
 		$scope.initSelector = function () {
 		    var options = JSON.parse(eucaUnescapeJson($scope.option_json));
 		    $scope.setInitialValues(options);
@@ -26,15 +27,15 @@ eucaConsoleUtils.directive('instanceSelector', function() {
                         $scope.getInstanceList();
                     }
 		};
-		$scope.setInitialValues = function (options) {
+                $scope.setInitialValues = function (options) {
+                    if (options.hasOwnProperty('is_vpc_supported')) {
+                        $scope.isVPCSupported = options.is_vpc_supported;
+                    }
                     if (options.hasOwnProperty('instances_json_endpoint')) {
                         $scope.instancesJsonEndpoint = options.instances_json_endpoint;
                     }
                     if (options.hasOwnProperty('instance_list')) {
 		        $scope.instanceList = options.instance_list;
-                        if ($scope.instanceList instanceof Array && $scope.instanceList.length > 0) {
-                            return;
-                        }
                     }
 		};
 		$scope.setWatcher = function () {

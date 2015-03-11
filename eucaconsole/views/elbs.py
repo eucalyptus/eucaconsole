@@ -286,6 +286,7 @@ class CreateELBView(BaseView):
         return BaseView.escape_json(json.dumps({
             'protocol_list': self.get_protocol_list(),
             'port_range_pattern':'^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$',
+            'is_vpc_supported': self.is_vpc_supported,
             'default_vpc_network': self.get_default_vpc_network(),
             'vpc_subnet_choices': self.get_vpc_subnets(),
             'securitygroups_json_endpoint': self.request.route_path('securitygroups_json'),

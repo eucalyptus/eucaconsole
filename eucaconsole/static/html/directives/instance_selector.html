@@ -7,7 +7,7 @@
                     <th i18n:translate="">NAME (ID)</th>
                     <th i18n:translate="">TAGS</th>
                     <th i18n:translate="">AVAILABILTY ZONE</th>
-                    <th i18n:translate="">VPC SUBNET</th>
+                    <th ng-if="isVPCSupported == true" i18n:translate="">VPC SUBNET</th>
                     <th i18n:translate="">STATUS</th>
                 </tr>
             </thead>
@@ -17,9 +17,9 @@
                     <td><span class="">{{ instance.name }}</span></td>
                     <td><span class="">{{ instance.tags }}</span></td>
                     <td><span class="">{{ instance.placement }}</span></td>
-                    <td><span class="">{{ instance.vpc_subnet_display }} | {{ instance.vpc_name }}</span></td>
+                    <td ng-if="isVPCSupported == true"><span class="" ng-show="instance.vpc_name != ''">{{ instance.vpc_subnet_display }} | {{ instance.vpc_name }}</span></td>
                     <td><span class="">{{ instance.status }}</span></td>
-                </tr>  
+                </tr> 
             </tbody>
 	</div>
     </div>
