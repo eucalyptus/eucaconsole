@@ -71,6 +71,9 @@ eucaConsoleUtils.directive('elbListenerEditor', function() {
 		    $scope.$watch('hasDuplicatedListener', function () {
 			$scope.setAddListenerButtonClass(); 
 		    });
+                    $scope.$watch('listenerArray', function () {
+                        $scope.$emit('eventUpdateListenerArray', $scope.listenerArray);
+                    }, true);
 		    $scope.$on('eventUpdateCertificateName', function ($event, name) {
                         console.log("on " + name);
                         $scope.serverCertificateName = name;

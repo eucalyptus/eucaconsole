@@ -10,6 +10,7 @@ wizardApp.controller('ELBWizardCtrl', function ($scope, $http, $timeout, eucaHan
         $scope.isNotValid = true;
         $scope.securityGroupJsonEndpoint = '';
         $scope.elbName = '';
+        $scope.listenerArray = [];
         $scope.vpcNetwork = '';
         $scope.vpcSubnets = [];
         $scope.vpcSubnetChoices = [];
@@ -55,6 +56,7 @@ wizardApp.controller('ELBWizardCtrl', function ($scope, $http, $timeout, eucaHan
                 $scope.vpcSubnetList = options.vpc_subnet_choices;
                 $scope.updateVPCSubnetChoices();
             }
+            $scope.listenerArray = [];
             $scope.instanceList = [];
             $scope.crossZoneEnabled = false;
             $scope.pingProtocol = 'HTTP';
@@ -89,6 +91,9 @@ wizardApp.controller('ELBWizardCtrl', function ($scope, $http, $timeout, eucaHan
                     $('#zone').trigger("chosen:updated");
                     $('#vpc_subnet').trigger('chosen:updated');
                 });
+            });
+            $scope.$on('eventUpdateListenerArray', function ($event, listenerArray) {
+                $scope.listenerArray = listenerArray;
             });
             $scope.$on('eventOpenSelectCertificateModal', function () {
                 $scope.openSelectCertificateModal();

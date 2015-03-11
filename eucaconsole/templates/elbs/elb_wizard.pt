@@ -254,6 +254,17 @@
                         <div class="small-4 columns"><label i18n:translate="" class="right">Name:</label></div>
                         <div class="small-8 columns value">{{ elbName }}</div>
                     </div>
+                    <div class="row">
+                        <div class="small-4 columns"><label i18n:translate="" class="right">Listeners:</label></div>
+                        <div class="small-8 columns value">
+	                    <div class="" ng-repeat="listener in listenerArray">
+	                        <span>
+		                    {{ listener.fromProtocol.toUpperCase() }} ({{ listener.fromPort }}) - 
+		                    {{ listener.toProtocol.toUpperCase() }} ({{ listener.toPort }})
+	                        </span>
+	                    </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="section" ng-show="summaryDisplays[1]">
                     <div class="row">
