@@ -106,7 +106,7 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils'])
                     default:
                         $scope.isNotValid = true;
                 }
-                if ($scope.stackName.length > 255) {
+                if ($scope.stackName.length > 255 || $scope.stackName.length === 0) {
                     // Once invalid name has been entered, do not enable the button unless the name length is valid
                     $scope.isNotValid = true;
                 }
@@ -237,8 +237,7 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils'])
                 }
             }).
             error(function (oData, status) {
-                var errorMsg = oData.message || '';
-                Notify.failure(errorMsg);
+                eucaHandleError(oData, status);
             });
         };
         $scope.updateParamSummary = function() {
