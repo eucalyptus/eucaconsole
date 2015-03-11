@@ -16,7 +16,6 @@ eucaConsoleUtils.directive('instanceSelector', function() {
             controller: function ($scope, $http, $timeout, eucaHandleError, eucaUnescapeJson) {
                 $scope.allInstanceList = [];
                 $scope.instanceList = [];
-                $scope.instanceCount = 0;
                 $scope.instancesJsonEndpoint = '';
                 $scope.isVPCSupported = false;
                 $scope.vpcSubnets = [];
@@ -31,6 +30,11 @@ eucaConsoleUtils.directive('instanceSelector', function() {
                     }
 		};
                 $scope.setInitialValues = function (options) {
+                    $scope.allInstanceList = [];
+                    $scope.instanceList = [];
+                    $scope.vpcSubnets = [];
+                    $scope.availabilityZones = [];
+                    $scope.isVPCSupported = false;
                     if (options.hasOwnProperty('is_vpc_supported')) {
                         $scope.isVPCSupported = options.is_vpc_supported;
                     }
@@ -43,16 +47,17 @@ eucaConsoleUtils.directive('instanceSelector', function() {
 		};
 		$scope.setWatcher = function () {
 		    $scope.$watch('allInstanceList', function(){
-                       console.log($scope.allInstanceList); 
-		    }, true);
-		    $scope.$watch('instanceList', function(){
-                       console.log($scope.instanceList); 
+                        $scope.updateInstanceList();
 		    }, true);
                     $scope.$on('eventUpdateAvailabilityZones', function ($event, availabilityZones) {
-                        console.log("availabilityZones: " + availabilityZones);
+                        $scope.vpcSubnets = [];
+                        $scope.availabilityZones = availabilityZones;
+                        $scope.updateInstanceList();
                     });
                     $scope.$on('eventUpdateVPCSubnets', function ($event, vpcSubnets) {
-                        console.log("vpcSubnets: " + vpcSubnets);
+                        $scope.availabilityZones = [];
+                        $scope.vpcSubnets = vpcSubnets;
+                        $scope.updateInstanceList();
                     });
 		};
 		$scope.setFocus = function () {
@@ -68,6 +73,24 @@ eucaConsoleUtils.directive('instanceSelector', function() {
                         $scope.allInstanceList = results;
                     }).error(function (oData) {
                         eucaHandleError(oData, status);
+                    });
+                };
+                $scope.updateInstanceList = function () {
+                    $scope.instanceList = [];
+                    angular.forEach($scope.allInstanceList, function (instance) {
+                        if ($scope.vpcSubnets.length > 0) {
+                            angular.forEach($scope.vpcSubnets, function (vpcSubnet) {
+                                if (instance.subnet_id === vpcSubnet) {
+                                    $scope.instanceList.push(instance);
+                                }
+                            });
+                        } else if ($scope.availabilityZones.length > 0) {
+                            angular.forEach($scope.availabilityZones, function (zone) {
+                                if (instance.placement === zone) {
+                                    $scope.instanceList.push(instance);
+                                }
+                            });
+                        }
                     });
                 };
                 $scope.initSelector();

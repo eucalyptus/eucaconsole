@@ -65,7 +65,6 @@ wizardApp.controller('ELBWizardCtrl', function ($scope, $http, $timeout, eucaHan
             if ($('#certificates').children('option').length > 0) {
                 $scope.certificateName = $('#certificates').children('option').first().text();
                 $scope.certificateARN = $('#certificates').children('option').first().val();
-                console.log("init " + $scope.certificateName);
             }
             $scope.initChosenSelectors(); 
         };
@@ -94,22 +93,22 @@ wizardApp.controller('ELBWizardCtrl', function ($scope, $http, $timeout, eucaHan
                $scope.checkRequiredInput(1);
             });
             $scope.$watch('vpcNetwork', function () {
+		$scope.availabilityZones = [];
+                $scope.vpcSubnets = [];
+                $scope.securityGroups = [];
                 $scope.getAllSecurityGroups($scope.vpcNetwork);
                 $scope.updateVPCSubnetChoices();
             });
             $scope.$watch('availabilityZones', function () {
-                console.log($scope.availabilityZones);
                 $scope.$broadcast('eventUpdateAvailabilityZones', $scope.availabilityZones);
             });
             $scope.$watch('vpcSubnets', function () {
-                console.log($scope.vpcSubnets);
                 $scope.$broadcast('eventUpdateVPCSubnets', $scope.vpcSubnets);
             });
             $scope.$watch('securityGroupCollection', function () {
                 $scope.updateSecurityGroupChoices();
             });
             $scope.$watch('certificateARN', function(){
-                console.log("ARN update " + $scope.certificateARN);
                 // Find the certficate name when selected on the select certificate dialog
                 if ($('#certificates option:selected').length > 0) {
                     $scope.certificateName = $('#certificates option:selected').text();
@@ -122,7 +121,6 @@ wizardApp.controller('ELBWizardCtrl', function ($scope, $http, $timeout, eucaHan
             $scope.$watch('certificateName', function(){
                 // Broadcast the certificate name change to the elb listener directive
                 $scope.$broadcast('eventUpdateCertificateName', $scope.certificateName);
-                console.log("broadcast " + $scope.certificateName);
             });
         };
         $scope.setFocus = function () {
