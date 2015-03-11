@@ -360,7 +360,7 @@ hr {
 .busy {
     @extend .fa;
     @extend .fa-spinner;
-    @extend .fa-spin;
+    @extend .fa-pulse;
     .loading & {
         @extend .fa-3x;
     }
