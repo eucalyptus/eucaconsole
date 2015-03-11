@@ -3,8 +3,7 @@
  * @requires AngularJS
  *
  */
-
-eucaConsoleUtils.directive('elbListenerEditor', function() {
+angular.module('EucaConsoleUtils').directive('elbListenerEditor', function() {
         return {
             restrict: 'E',
             scope: {

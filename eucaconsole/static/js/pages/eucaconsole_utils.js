@@ -4,7 +4,7 @@
  *
  */
 
-var eucaConsoleUtils = angular.module('EucaConsoleUtils', [])
+angular.module('EucaConsoleUtils', [])
 .service('eucaUnescapeJson', function() {
     /**
      * Unescape JSON escaped server-side via BaseView.escape_json() custom method
@@ -45,3 +45,5 @@ var eucaConsoleUtils = angular.module('EucaConsoleUtils', [])
         Notify.failure(errorMsg);
     };
 });
+
+angular.module('EucaConsoleUtils');

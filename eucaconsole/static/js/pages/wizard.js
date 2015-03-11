@@ -4,7 +4,7 @@
  *
  */
 
-var wizardApp = angular.module('Wizard', ['EucaConsoleUtils', 'MagicSearch'])
+angular.module('Wizard', ['EucaConsoleUtils', 'MagicSearch'])
     .controller('WizardCtrl', function ($scope, $http, $timeout, eucaHandleError, eucaUnescapeJson) {
         $scope.elbForm = undefined;
         $scope.urlParams = undefined;
@@ -193,4 +193,4 @@ var wizardApp = angular.module('Wizard', ['EucaConsoleUtils', 'MagicSearch'])
         };
     })
 ;
-
+angular.module('Wizard');

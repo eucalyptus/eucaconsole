@@ -4,7 +4,7 @@
  *
  */
 
-eucaConsoleUtils.directive('instanceSelector', function() {
+angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
         return {
             restrict: 'E',
             scope: {
