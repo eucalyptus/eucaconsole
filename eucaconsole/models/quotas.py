@@ -97,35 +97,47 @@ class Quotas(object):
 
         if len(statements) > 0:
             policy['Statement'] = statements
+            params = {
+                'PolicyName': self.EUCA_DEFAULT_POLICY,
+                'PolicyDocument': json.dumps(policy)
+            }
+            if as_account is not None:
+                params['DelegateAccount'] = as_account
             if user is not None:
                 view.log_request(_(u"Creating policy for user {0}").format(user))
-                view.conn.get_response('PutUserPolicy', params={'UserName':user, 'PolicyName':self.EUCA_DEFAULT_POLICY, 'PolicyDocument':json.dumps(policy), 'DelegateAccount':as_account})
+                params['UserName'] = user
+                view.conn.get_response('PutUserPolicy', params=params)
             if account is not None:
                 view.log_request(_(u"Creating policy for account {0}").format(account))
-                view.conn.get_response('PutAccountPolicy', params={'AccountName':account, 'PolicyName':self.EUCA_DEFAULT_POLICY, 'PolicyDocument':json.dumps(policy), 'DelegateAccount':as_account})
+                params['AccountName'] = account
+                view.conn.get_response('PutAccountPolicy', params=params)
 
     def update_quotas(self, view, user=None, account=None, as_account=''):
             # load all policies for this user
             policy_list = []
             if user is not None:
-                policies = view.conn.get_response(
-                        'ListUserPolicies',
-                        params={'UserName':user, 'DelegateAccount':as_account}, list_marker='PolicyNames')
+                params = {'UserName': user}
+                if as_account is not None:
+                    params['DelegateAccount'] = as_account
+                policies = view.conn.get_response('ListUserPolicies', params=params, list_marker='PolicyNames')
             if account is not None:
-                policies = view.conn.get_response(
-                        'ListAccountPolicies',
-                        params={'AccountName':account, 'DelegateAccount':as_account}, list_marker='PolicyNames')
+                params = {'AccountName': account}
+                if as_account is not None:
+                    params['DelegateAccount'] = as_account
+                policies = view.conn.get_response( 'ListAccountPolicies', params=params, list_marker='PolicyNames')
             for policy_name in policies.policy_names:
                 if user is not None:
-                    policy_json = view.conn.get_response(
-                        'GetUserPolicy',
-                        params={'UserName':user, 'PolicyName':policy_name, 'DelegateAccount':as_account}, verb='POST').policy_document
+                    params = {'UserName': user, 'PolicyName': policy_name}
+                    if as_account is not None:
+                        params['DelegateAccount'] = as_account
+                    policy_json = view.conn.get_response('GetUserPolicy', params=params, verb='POST').policy_document
                     policy = json.loads(unquote(policy_json))
                     policy_list.append(policy)
                 if account is not None:
-                    policy_json = view.conn.get_response(
-                        'GetAccountPolicy',
-                        params={'AccountName':account, 'PolicyName':policy_name, 'DelegateAccount':as_account}, verb='POST').policy_document
+                    params = {'AccountName': account, 'PolicyName':policy_name}
+                    if as_account is not None:
+                        params['DelegateAccount'] = as_account
+                    policy_json = view.conn.get_response('GetAccountPolicy', params=params, verb='POST').policy_document
                     policy = json.loads(unquote(policy_json))
                     policy_list.append(policy)
             # for each form item, update proper policy if needed
@@ -181,33 +193,59 @@ class Quotas(object):
             for i in range(0, len(policy_list)):
                 if 'dirty' in policy_list[i].keys():
                     del policy_list[i]['dirty']
+                    params = {
+                        'PolicyName': policies.policy_names[i],
+                        'PolicyDocument': json.dumps(policy_list[i])
+                    }
+                    if as_account is not None:
+                        params['DelegateAccount'] = as_account
                     if user is not None:
                         view.log_request(_(u"Updating policy {0} for user {1}").format(policies.policy_names[i], user))
-                        view.conn.get_response('PutUserPolicy', params={'UserName':user, 'PolicyName':policies.policy_names[i], 'PolicyDocument':json.dumps(policy_list[i]), 'DelegateAccount':as_account}, verb='POST')
+                        params['UserName'] = user
+                        view.conn.get_response('PutUserPolicy', params=params, verb='POST')
                     if account is not None:
                         view.log_request(_(u"Updating policy {0} for account {1}").format(policies.policy_names[i], account))
-                        view.conn.get_response('PutAccountPolicy', params={'AccountName':account, 'PolicyName':policies.policy_names[i], 'PolicyDocument':json.dumps(policy_list[i]), 'DelegateAccount':as_account}, verb='POST')
+                        params['AccountName'] = account
+                        view.conn.get_response('PutAccountPolicy', params=params, verb='POST')
             if len(new_stmts) > 0:
                 # do we already have the euca default policy?
                 if self.EUCA_DEFAULT_POLICY in policies.policy_names:
                     # add the new statments in
                     default_policy = policy_list[policies.policy_names.index(self.EUCA_DEFAULT_POLICY)]
                     default_policy['Statement'].extend(new_stmts)
+                    params = {
+                        'PolicyName': self.EUCA_DEFAULT_POLICY,
+                        'PolicyDocument': json.dumps(default_policy)
+                    }
+                    if as_account is not None:
+                        params['DelegateAccount'] = as_account
                     if user is not None:
                         view.log_request(_(u"Updating policy {0} for user {1}").format(self.EUCA_DEFAULT_POLICY, user))
-                        view.conn.get_response('PutUserPolicy', params={'UserName':user, 'PolicyName':self.EUCA_DEFAULT_POLICY, 'PolicyDocument':json.dumps(default_policy), 'DelegateAccount':as_account}, verb='POST')
+                        params['UserName'] = user
+                        view.conn.get_response('PutUserPolicy', params=params, verb='POST')
                     if account is not None:
                         view.log_request(_(u"Updating policy {0} for account {1}").format(self.EUCA_DEFAULT_POLICY, account))
-                        view.conn.get_response('PutAccountPolicy', params={'AccountName':account, 'PolicyName':self.EUCA_DEFAULT_POLICY, 'PolicyDocument':json.dumps(default_policy), 'DelegateAccount':as_account}, verb='POST')
+                        params['AccountName'] = account
+                        view.conn.get_response('PutAccountPolicy', params=params, verb='POST')
+
                 else:
                     # create the default policy
                     new_policy = {'Version': '2011-04-01', 'Statement': new_stmts}
+                    params = {
+                        'UserName': user,
+                        'PolicyName': self.EUCA_DEFAULT_POLICY,
+                        'PolicyDocument': json.dumps(new_policy)
+                    }
+                    if as_account is not None:
+                        params['DelegateAccount'] = as_account
                     if user is not None:
                         view.log_request(_(u"Creating policy {0} for user {1}").format(self.EUCA_DEFAULT_POLICY, user))
-                        view.conn.get_response('PutUserPolicy', params={'UserName':user, 'PolicyName':self.EUCA_DEFAULT_POLICY, 'PolicyDocument':json.dumps(new_policy), 'DelegateAccount':as_account}, verb='POST')
+                        params['UserName'] = user
+                        view.conn.get_response('PutUserPolicy', params=params, verb='POST')
                     if account is not None:
                         view.log_request(_(u"Creating policy {0} for account {1}").format(self.EUCA_DEFAULT_POLICY, account))
-                        view.conn.get_response('PutAccountPolicy', params={'AccountName':account, 'PolicyName':self.EUCA_DEFAULT_POLICY, 'PolicyDocument':json.dumps(new_policy), 'DelegateAccount':as_account}, verb='POST')
+                        params['AccountName'] = account
+                        view.conn.get_response('PutAccountPolicy', params=params, verb='POST')
 
     def _update_quota_limit_(self, view, policy_list, new_stmts, param, action, condition):
         new_limit = view.request.params.get(param, '')
