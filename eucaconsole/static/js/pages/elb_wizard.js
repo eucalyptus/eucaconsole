@@ -11,7 +11,7 @@ wizardApp.controller('ELBWizardCtrl', function ($scope, $http, $timeout, eucaHan
         $scope.securityGroupJsonEndpoint = '';
         $scope.elbName = '';
         $scope.vpcNetwork = '';
-        $scope.vpcSubnet = '';
+        $scope.vpcSubnets = [];
         $scope.vpcSubnetChoices = [];
         $scope.vpcSubnetList = [];
         $scope.securityGroups = [];
@@ -97,6 +97,9 @@ wizardApp.controller('ELBWizardCtrl', function ($scope, $http, $timeout, eucaHan
                 $scope.getAllSecurityGroups($scope.vpcNetwork);
                 $scope.updateVPCSubnetChoices();
             });
+            $scope.$watch('vpcSubnets', function () {
+                console.log($scope.vpcSubnets);
+            });
             $scope.$watch('securityGroupCollection', function () {
                 $scope.updateSecurityGroupChoices();
             });
@@ -162,20 +165,17 @@ wizardApp.controller('ELBWizardCtrl', function ($scope, $http, $timeout, eucaHan
         };
         $scope.updateVPCSubnetChoices = function () {
             $scope.vpcSubnetChoices = {};
-            $scope.vpcSubnet = '';
+            $scope.vpcSubnets = [];
             angular.forEach($scope.vpcSubnetList, function(subnet){
                 if (subnet.vpc_id === $scope.vpcNetwork) {
                     $scope.vpcSubnetChoices[subnet.id] = 
                         subnet.cidr_block + ' (' + subnet.id + ') | ' + 
                         subnet.availability_zone;
-                    if ($scope.vpcSubnet === '') {
-                        $scope.vpcSubnet = subnet.id;
-                    }
                 }
-            }); 
-            if ($scope.vpcSubnet === '') {
+            });
+            if ($scope.vpcSubnetChoices.length === 0) {
                 $scope.vpcSubnetChoices.None = $('#hidden_vpc_subnet_empty_option').text();
-                $scope.vpcSubnet = 'None';
+                $scope.vpcSubnets.push('None');
             }
             // Timeout is needed for chosen to react after Angular updates the options
             $timeout(function(){
