@@ -56,7 +56,7 @@
                         <div class="row controls-wrapper readonly">
                             <div class="small-2 columns"><label i18n:translate="">Status</label></div>
                             <div class="small-10 columns value" ng-cloak="">
-                                <span class="label radius status ${status}">{{ stackStatus.replace('-', ' ') }}</span>
+                                <span class="label radius status ${status}">{{ stackStatus.replace('-', ' ').replace('-', ' ') }}</span>
                                 <span class="busy" ng-show="isTransitional()">&nbsp;</span>
                             </div>
                         </div>
@@ -75,7 +75,7 @@
                                     <tbody>
                                         <tr tal:repeat="(key, value) stack.tags.items() if stack.tags else []" ng-cloak="true">
                                             <td ng-non-bindable="">${key}</td>
-                                            <td>${value}</td>
+                                            <td ng-non-bindable="">${value}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -128,7 +128,7 @@
                                             <td ng-show="item.url">
                                                 <a href="{{ item.url }}">{{ item.physical_id }}<a>
                                             </td>
-                                            <td><span class="label radius status {{ item.status }}">{{ item.status.replace('-', ' ') }}</span></td>
+                                            <td><span class="label radius status {{ item.status }}">{{ item.status.replace('-', ' ').replace('-', ' ') }}</span></td>
                                             <td>{{ item.updated_timestamp | date:'${layout.angular_date_format}' }}</td>
                                         </tr>
                                         <tr ng-show="!itemsLoading"></tr>
@@ -215,7 +215,7 @@
                                     <tbody>
                                         <tr ng-repeat="item in events | orderBy: sortBy:sortReverse" ng-cloak="true">
                                             <td>{{ item.timestamp | date:'${layout.angular_date_format}' }}</td>
-                                            <td><span class="label radius status {{ item.status }}">{{ item.status.replace('-', ' ') }}</span></td>
+                                            <td><span class="label radius status {{ item.status }}">{{ item.status.replace('-', ' ').replace('-', ' ') }}</span></td>
                                             <td>{{ item.type }} ({{ item.logical_id }})</td>
                                             <td ng-hide="item.url">
                                                 {{ item.physical_id }}

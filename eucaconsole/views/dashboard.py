@@ -41,8 +41,8 @@ from . import boto_error_handler
 TILE_MASTER_LIST = [
     ('instances-running', 'Running instances'),
     ('instances-stopped', 'Stopped instances'),
-    ('scaling-groups', 'Instances in scaling groups'),
     ('stacks', 'Stacks'),
+    ('scaling-groups', 'Instances in scaling groups'),
     ('elastic-ips', 'Elastic IPs'),
     ('volumes', 'Volumes'),
     ('snapshots', 'Snapshots'),

@@ -126,7 +126,7 @@ class StacksJsonView(LandingPageView):
                 status = stack.stack_status
                 stacks_array.append(dict(
                     creation_time=self.dt_isoformat(stack.creation_time),
-                    status=status.lower().replace('_', '-'),
+                    status=status.lower().capitalize().replace('_', '-'),
                     description=stack.description,
                     name=name,
                     transitional=is_transitional,
@@ -167,7 +167,7 @@ class StackView(BaseView):
             stack_description=self.stack.description if self.stack else '',
             stack_id=self.stack.stack_id if self.stack else '',
             stack_creation_time=self.dt_isoformat(self.stack.creation_time),
-            status=self.stack.stack_status.lower().replace('_', '-'),
+            status=self.stack.stack_status.lower().capitalize().replace('_', '-'),
             delete_form=self.delete_form,
             in_use=False,
             search_facets=BaseView.escape_json(json.dumps(search_facets)),
@@ -239,12 +239,12 @@ class StackStateView(BaseView):
                     'type': resource.resource_type,
                     'logical_id': resource.logical_resource_id,
                     'physical_id': resource.physical_resource_id,
-                    'status': resource.resource_status.lower().replace('_', '-'),
+                    'status': resource.resource_status.lower().capitalize().replace('_', '-'),
                     'url': self.get_url_for_resource(resource.resource_type, resource.physical_resource_id),
                     'updated_timestamp': resource.LastUpdatedTimestamp})
             return dict(
                 results=dict(
-                    stack_status=stack_status.lower().replace('_', '-'),
+                    stack_status=stack_status.lower().capitalize().replace('_', '-'),
                     outputs=outputs,
                     resources=resources
                 )
@@ -274,7 +274,7 @@ class StackStateView(BaseView):
             for event in stack_events:
                 events.append({
                     'timestamp': event.timestamp.strftime('%Y-%m-%dT%H:%M:%SZ'),
-                    'status': event.resource_status.lower().replace('_', '-'),
+                    'status': event.resource_status.lower().capitalize().replace('_', '-'),
                     'status_reason': event.resource_status_reason,
                     'type': event.resource_type,
                     'logical_id': event.logical_resource_id,
@@ -382,9 +382,9 @@ class StackWizardView(BaseView):
             if 'image' in name.lower():
                 param_vals['options'] = self.get_image_options()  # fetch image ids
             if 'kernel' in name.lower():
-                param_vals['options'] = self.get_image_options(type='kernel')  # fetch kernel ids
+                param_vals['options'] = self.get_image_options(img_type='kernel')  # fetch kernel ids
             if 'ramdisk' in name.lower():
-                param_vals['options'] = self.get_image_options(type='ramdisk')  # fetch ramdisk ids
+                param_vals['options'] = self.get_image_options(img_type='ramdisk')  # fetch ramdisk ids
             if 'cert' in name.lower():
                 param_vals['options'] = self.get_cert_options()  # fetch server cert names
             if 'instance' in name.lower() and 'profile' in name.lower():
