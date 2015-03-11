@@ -54,16 +54,32 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                     $scope.$watch('selectedInstanceList', function () {
                         $scope.$emit('eventUpdateSelectedInstanceList', $scope.selectedInstanceList);
 		    }, true);
-                    $(document).on('click', 'input[type=checkbox]', function () {
+                    $('#instance_selector').on('click', 'input:checkbox', function () {
                         var instanceID = $(this).val();
-                        if ($(this).prop("checked") === true){
-                            $scope.selectedInstanceList.push(instanceID);
+                        if (instanceID === '_all') {
+                            // Clicked all checkbox
+                            if ($(this).prop("checked") === true){
+                                $scope.selectedInstanceList = [];
+                                angular.forEach($scope.instanceList, function(instance) {
+                                    $scope.selectedInstanceList.push(instance.id);
+                                });
+                                $('#instance_selector input:checkbox').not(this).prop('checked', true);
+                            } else {
+                                $scope.selectedInstanceList = [];
+                                $('#instance_selector input:checkbox').not(this).prop('checked', false);
+                            }
                         } else {
-                            angular.forEach($scope.selectedInstanceList, function(instance, $index) {
-                                if (instance === instanceID) {
-                                    $scope.selectedInstanceList.splice($index, 1);
-                                } 
-                            });
+                            // Click instance checkbox
+                            $('#instance-all-checkbox').prop('checked', false);
+                            if ($(this).prop("checked") === true){
+                                $scope.selectedInstanceList.push(instanceID);
+                            } else {
+                                angular.forEach($scope.selectedInstanceList, function(instance, $index) {
+                                    if (instance === instanceID) {
+                                        $scope.selectedInstanceList.splice($index, 1);
+                                    } 
+                                });
+                            }
                         }
                         $scope.$apply();
                     });
