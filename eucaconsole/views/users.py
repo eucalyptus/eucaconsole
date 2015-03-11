@@ -304,7 +304,7 @@ class UserView(BaseView):
         self.render_dict['already_member_text'] = self.already_member_text
         self.render_dict['no_groups_defined_text'] = self.no_groups_defined_text
         return self.render_dict
- 
+
     @view_config(route_name='user_new', renderer=NEW_TEMPLATE)
     def user_new(self):
         as_account = self.request.params.get('as_account', None)
@@ -316,7 +316,7 @@ class UserView(BaseView):
         self.quotas_form = QuotasForm(self.request, user=self.user, conn=self.conn)
         self.render_dict['quotas_form'] = self.quotas_form
         return self.render_dict
- 
+
     @view_config(route_name='user_access_keys_json', renderer='json', request_method='GET')
     def user_keys_json(self):
         """Return user access keys list"""
@@ -412,7 +412,7 @@ class UserView(BaseView):
         random_password = self.request.params.get('random_password', 'n')
         access_keys = self.request.params.get('access_keys', 'n')
         path = self.request.params.get('path', '/')
-       
+
         session = self.request.session
         account = session['account']
         with boto_error_handler(self.request):
@@ -474,7 +474,7 @@ class UserView(BaseView):
                 self._store_file_(u"{acct}-users.csv".format(acct=account), 'text/csv', string_output.getvalue())
                 has_file = 'y'
             return dict(message=_(u"Successfully added users"), results=dict(hasFile=has_file))
- 
+
     @view_config(route_name='user_update', request_method='POST', renderer=TEMPLATE)
     def user_update(self):
         """ calls iam:UpdateUser """
@@ -487,7 +487,7 @@ class UserView(BaseView):
             path = self.request.params.get('path', None)
             self.log_request(
                 _(u"Updating user {0} (new_name={1}, path={2})").format(self.user.user_name, new_name, path))
-            params={'UserName': self.user.user_name, 'Path': path}
+            params = {'UserName': self.user.user_name, 'Path': path}
             if new_name is not None and new_name != self.user.user_name:
                 params['NewUserName'] = new_name
             if path is not None and path != self.user.path:
@@ -498,8 +498,8 @@ class UserView(BaseView):
             msg = _(u"Successfully updated user information")
             self.request.session.flash(msg, queue=Notification.SUCCESS)
             location = self.request.route_path(
-                        'user_view',
-                        name=new_name if new_name is not None else self.user.user_name)
+                'user_view',
+                name=new_name if new_name is not None else self.user.user_name)
             return HTTPFound(location=location)
 
     @view_config(route_name='user_change_password', request_method='POST', renderer='json')
@@ -517,7 +517,7 @@ class UserView(BaseView):
             account = session['account']
             username = session['username']
             # 900 is minimum duration for session creds
-            creds = auth.authenticate(account=account, user=username, passwd=password, timeout=8, duration=900)
+            auth.authenticate(account=account, user=username, passwd=password, timeout=8, duration=900)
             self.log_request(_(u"Change password for user {0}").format(self.user.user_name))
             try:
                 # try to fetch login profile.
@@ -658,7 +658,7 @@ class UserView(BaseView):
             return JSONResponse(status=400, message="missing CSRF token")
         as_account = self.request.params.get('as_account', None)
         key_id = self.request.matchdict.get('key')
-        params={'UserName': self.user.user_name, 'AccessKeyId': key_id, 'Status': 'Inactive'}
+        params = {'UserName': self.user.user_name, 'AccessKeyId': key_id, 'Status': 'Inactive'}
         if as_account is not None:
             params['DelegateAccount'] = as_account
         with boto_error_handler(self.request):
@@ -724,7 +724,7 @@ class UserView(BaseView):
             if as_account is not None:
                 params['DelegateAccount'] = as_account
             self.conn.get_response('DeleteUser', params)
-            
+
             location = self.request.route_path('users')
             msg = _(u'Successfully deleted user')
             self.request.session.flash(msg, queue=Notification.SUCCESS)
