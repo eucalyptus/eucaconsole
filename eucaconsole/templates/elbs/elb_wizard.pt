@@ -189,7 +189,7 @@
                                     ${panel('form_field', field=create_form['ping_port'], leftcol_width=3, rightcol_width=9, min=1, max=65535, maxlength=5, ng_attrs={'model': 'pingPort'}, pattern=layout.integer_gt_zero_pattern)}
                                 </div>
                                 <div class="" ng-show="pingProtocol === 'HTTP' || pingProtocol === 'HTTPS'">
-                                    ${panel('form_field', field=create_form['ping_path'], leftcol_width=3, rightcol_width=9)}
+                                    ${panel('form_field', field=create_form['ping_path'], ng_attrs={'model': 'pingPath'}, leftcol_width=3, rightcol_width=9)}
                                 </div>
                             </div>
                             <div class="expando" id="advanced-section" ng-cloak="" ng-init="expanded = false">
@@ -280,11 +280,25 @@
                             <div ng-repeat="vpcSubnet in vpcSubnets">{{ vpcSubnet }}</div>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="small-4 columns"><label i18n:translate="" class="right">Instances:</label></div>
+                        <div class="small-8 columns value">
+                            <div ng-repeat="instance in instanceList">{{ instance }}</div>
+                        </div>
+                    </div>
                 </div>
                 <div class="section" ng-show="summaryDisplays[3]">
                     <div class="row">
                         <div class="small-4 columns"><label i18n:translate="" class="right">Protocol:</label></div>
                         <div class="small-8 columns value">{{ pingProtocol }}</div>
+                    </div>
+                    <div class="row">
+                        <div class="small-4 columns"><label i18n:translate="" class="right">Port:</label></div>
+                        <div class="small-8 columns value">{{ pingPort }}</div>
+                    </div>
+                    <div class="row" ng-show="pingProtocol === 'HTTP' || pingProtocol === 'HTTPS'">
+                        <div class="small-4 columns"><label i18n:translate="" class="right">Path:</label></div>
+                        <div class="small-8 columns value">{{ pingPath }}</div>
                     </div>
                 </div>
             </div>

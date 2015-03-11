@@ -16,6 +16,7 @@ eucaConsoleUtils.directive('instanceSelector', function() {
             controller: function ($scope, $http, $timeout, eucaHandleError, eucaUnescapeJson) {
                 $scope.allInstanceList = [];
                 $scope.instanceList = [];
+                $scope.selectedInstanceList = [];
                 $scope.instancesJsonEndpoint = '';
                 $scope.isVPCSupported = false;
                 $scope.vpcSubnets = [];
@@ -32,6 +33,7 @@ eucaConsoleUtils.directive('instanceSelector', function() {
                 $scope.setInitialValues = function (options) {
                     $scope.allInstanceList = [];
                     $scope.instanceList = [];
+                    $scope.selectedInstanceList = [];
                     $scope.vpcSubnets = [];
                     $scope.availabilityZones = [];
                     $scope.isVPCSupported = false;
@@ -46,9 +48,25 @@ eucaConsoleUtils.directive('instanceSelector', function() {
                     }
 		};
 		$scope.setWatcher = function () {
-		    $scope.$watch('allInstanceList', function(){
+		    $scope.$watch('allInstanceList', function () {
                         $scope.updateInstanceList();
 		    }, true);
+                    $scope.$watch('selectedInstanceList', function () {
+                        $scope.$emit('eventUpdateSelectedInstanceList', $scope.selectedInstanceList);
+		    }, true);
+                    $(document).on('click', 'input[type=checkbox]', function () {
+                        var instanceID = $(this).val();
+                        if ($(this).prop("checked") === true){
+                            $scope.selectedInstanceList.push(instanceID);
+                        } else {
+                            angular.forEach($scope.selectedInstanceList, function(instance, $index) {
+                                if (instance === instanceID) {
+                                    $scope.selectedInstanceList.splice($index, 1);
+                                } 
+                            });
+                        }
+                        $scope.$apply();
+                    });
                     $scope.$on('eventUpdateAvailabilityZones', function ($event, availabilityZones) {
                         $scope.vpcSubnets = [];
                         $scope.availabilityZones = availabilityZones;

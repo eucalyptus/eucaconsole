@@ -18,10 +18,12 @@ wizardApp.controller('ELBWizardCtrl', function ($scope, $http, $timeout, eucaHan
         $scope.securityGroupChoices = [];
         $scope.securityGroupCollection = []; 
         $scope.availabilityZones = [];
+        $scope.instanceList = [];
         $scope.crossZoneEnabled = false;
         $scope.protocolList = []; 
         $scope.pingProtocol = '';
         $scope.pingPort = '';
+        $scope.pingPath = '';
         $scope.responseTimeout = '';
         $scope.timeBetweenPings = '';
         $scope.failuresUntilUnhealthy = '';
@@ -53,9 +55,11 @@ wizardApp.controller('ELBWizardCtrl', function ($scope, $http, $timeout, eucaHan
                 $scope.vpcSubnetList = options.vpc_subnet_choices;
                 $scope.updateVPCSubnetChoices();
             }
+            $scope.instanceList = [];
             $scope.crossZoneEnabled = false;
             $scope.pingProtocol = 'HTTP';
             $scope.pingPort = 80;
+            $scope.pingPath = '/index.html';
             $scope.responseTimeout = 5;
             $scope.timeBetweenPings = 30;
             $scope.failuresUntilUnhealthy = 2;
@@ -86,10 +90,13 @@ wizardApp.controller('ELBWizardCtrl', function ($scope, $http, $timeout, eucaHan
                     $('#vpc_subnet').trigger('chosen:updated');
                 });
             });
-            $scope.$on('eventOpenSelectCertificateModal', function() {
+            $scope.$on('eventOpenSelectCertificateModal', function () {
                 $scope.openSelectCertificateModal();
             });
-            $scope.$watch('elbName', function(){
+            $scope.$on('eventUpdateSelectedInstanceList', function ($event, instanceList) {
+                $scope.instanceList = instanceList;
+            });
+            $scope.$watch('elbName', function (){
                $scope.checkRequiredInput(1);
             });
             $scope.$watch('vpcNetwork', function () {
