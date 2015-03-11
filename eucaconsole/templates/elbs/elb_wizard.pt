@@ -188,7 +188,7 @@
                                 <div class="">
                                     ${panel('form_field', field=create_form['ping_port'], leftcol_width=3, rightcol_width=9, min=1, max=65535, maxlength=5, ng_attrs={'model': 'pingPort'}, pattern=layout.integer_gt_zero_pattern)}
                                 </div>
-                                <div class="">
+                                <div class="" ng-show="pingProtocol === 'HTTP' || pingProtocol === 'HTTPS'">
                                     ${panel('form_field', field=create_form['ping_path'], leftcol_width=3, rightcol_width=9)}
                                 </div>
                             </div>
