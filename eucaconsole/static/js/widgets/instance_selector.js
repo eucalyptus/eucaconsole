@@ -14,17 +14,20 @@ eucaConsoleUtils.directive('instanceSelector', function() {
                 return elem.template;
             },
             controller: function ($scope, $http, $timeout, eucaHandleError, eucaUnescapeJson) {
+                $scope.allInstanceList = [];
                 $scope.instanceList = [];
                 $scope.instanceCount = 0;
                 $scope.instancesJsonEndpoint = '';
                 $scope.isVPCSupported = false;
+                $scope.vpcSubnets = [];
+                $scope.availabilityZones = [];
 		$scope.initSelector = function () {
 		    var options = JSON.parse(eucaUnescapeJson($scope.option_json));
 		    $scope.setInitialValues(options);
 		    $scope.setWatcher();
 		    $scope.setFocus();
                     if ($scope.instancesJsonEndpoint !== '') {
-                        $scope.getInstanceList();
+                        $scope.getAllInstanceList();
                     }
 		};
                 $scope.setInitialValues = function (options) {
@@ -34,18 +37,27 @@ eucaConsoleUtils.directive('instanceSelector', function() {
                     if (options.hasOwnProperty('instances_json_endpoint')) {
                         $scope.instancesJsonEndpoint = options.instances_json_endpoint;
                     }
-                    if (options.hasOwnProperty('instance_list')) {
-		        $scope.instanceList = options.instance_list;
+                    if (options.hasOwnProperty('all_instance_list')) {
+		        $scope.allInstanceList = options.allInstance_list;
                     }
 		};
 		$scope.setWatcher = function () {
+		    $scope.$watch('allInstanceList', function(){
+                       console.log($scope.allInstanceList); 
+		    }, true);
 		    $scope.$watch('instanceList', function(){
                        console.log($scope.instanceList); 
 		    }, true);
+                    $scope.$on('eventUpdateAvailabilityZones', function ($event, availabilityZones) {
+                        console.log("availabilityZones: " + availabilityZones);
+                    });
+                    $scope.$on('eventUpdateVPCSubnets', function ($event, vpcSubnets) {
+                        console.log("vpcSubnets: " + vpcSubnets);
+                    });
 		};
 		$scope.setFocus = function () {
                 };
-                $scope.getInstanceList = function () {
+                $scope.getAllInstanceList = function () {
                     var csrf_token = $('#csrf_token').val();
                     var data = "csrf_token=" + csrf_token;
                     $http({
@@ -53,7 +65,7 @@ eucaConsoleUtils.directive('instanceSelector', function() {
                         headers: {'Content-Type': 'application/x-www-form-urlencoded'}
                     }).success(function(oData) {
                         var results = oData ? oData.results : [];
-                        $scope.instanceList = results;
+                        $scope.allInstanceList = results;
                     }).error(function (oData) {
                         eucaHandleError(oData, status);
                     });

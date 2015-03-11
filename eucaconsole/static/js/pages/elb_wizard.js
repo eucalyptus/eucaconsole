@@ -97,8 +97,13 @@ wizardApp.controller('ELBWizardCtrl', function ($scope, $http, $timeout, eucaHan
                 $scope.getAllSecurityGroups($scope.vpcNetwork);
                 $scope.updateVPCSubnetChoices();
             });
+            $scope.$watch('availabilityZones', function () {
+                console.log($scope.availabilityZones);
+                $scope.$broadcast('eventUpdateAvailabilityZones', $scope.availabilityZones);
+            });
             $scope.$watch('vpcSubnets', function () {
                 console.log($scope.vpcSubnets);
+                $scope.$broadcast('eventUpdateVPCSubnets', $scope.vpcSubnets);
             });
             $scope.$watch('securityGroupCollection', function () {
                 $scope.updateSecurityGroupChoices();

@@ -131,7 +131,7 @@
                         <div class="content" ng-class="stepClasses[2]" id="step3"> 
                             <div ng-cloak="true" ng-show="vpcNetwork === 'None'">
                                 <label>Add availability zones</label>
-                                ${panel('form_field', field=create_form['zone'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'availablityZones'})}
+                                ${panel('form_field', field=create_form['zone'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'availabilityZones'})}
                             </div>
                             <div ng-cloak="true" ng-show="vpcNetwork === 'None'">
                                 ${structure:create_form.cross_zone_enabled(**{'ng-model': 'crossZoneEnabled'})}
@@ -269,8 +269,10 @@
                 </div>
                 <div class="section" ng-show="summaryDisplays[2]">
                     <div class="row" ng-show="vpcNetwork === 'None'">
-                        <div class="small-4 columns"><label i18n:translate="" class="right">Availablity Zones:</label></div>
-                        <div class="small-8 columns value">{{ availablityZones }}</div>
+                        <div class="small-4 columns"><label i18n:translate="" class="right">Availability Zones:</label></div>
+                        <div class="small-8 columns value">
+                            <div ng-repeat="zone in availabilityZones">{{ zone }}</div>
+                        </div>
                     </div>
                     <div class="row" ng-show="vpcNetwork !== 'None'">
                         <div class="small-4 columns"><label i18n:translate="" class="right">VPC Subnets:</label></div>
