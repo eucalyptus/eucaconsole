@@ -28,6 +28,8 @@
 Forms for Volumes
 
 """
+import re
+
 import wtforms
 from wtforms import validators
 
@@ -136,7 +138,7 @@ class RegisterSnapshotForm(BaseSecureForm):
 
 class AttachForm(BaseSecureForm):
     """CSRF-protected form to attach a volume to a selected instance
-       Note: This is for attaching a volume to a choice of instances on the volume detail page
+       Note: This is for attaching a volume to a choice of instances on the volume landing or detail page
              The form to attach a volume to an instance at the instance page is at forms.instances.AttachVolumeForm
     """
     instance_error_msg = _(u'Instance is required')
@@ -159,6 +161,7 @@ class AttachForm(BaseSecureForm):
         self.instance_id.error_msg = self.instance_error_msg
         self.device.error_msg = self.device_error_msg
         self.set_instance_choices()
+        self.clean_instance_id()
 
     def set_instance_choices(self):
         """Populate instance field with instances available to attach volume to"""
@@ -178,8 +181,15 @@ class AttachForm(BaseSecureForm):
             self.instance_id.choices = choices
         else:
             # We need to set all instances as choices for the landing page to avoid failed validation of instance field
-            # The landing page JS restricts the choices based on the selected volume's availability zone
+            # The volumes landing page JS restricts the choices based on the selected volume's availability zone
             self.instance_id.choices = [(instance.id, instance.id) for instance in self.instances]
+
+    def clean_instance_id(self):
+        """The instance id my include a garbled '? string:' prefix from a problematic Angular and Chosen interaction"""
+        if self.request.POST and 'instance_id' in self.request.POST:
+            instance_id = self.request.POST.get('instance_id', '')
+            cleaned_instance_id = re.sub(r'\? string:(i-\w+) \?', r'\1', instance_id)
+            self.request.POST['instance_id'] = cleaned_instance_id
 
 
 class DetachForm(BaseSecureForm):
