@@ -16,23 +16,24 @@ angular.module('Wizard', ['EucaConsoleUtils', 'MagicSearch'])
         $scope.invalidSteps = [];
         $scope.stepClasses = [];
         $scope.summaryDisplays = [];
-        $scope.initController = function (resourceName, totalSteps) {
-            $scope.setInitialValues(resourceName, totalSteps);
+        $scope.initController = function (optionsJson) {
+            var options = JSON.parse(eucaUnescapeJson(optionsJson));
+            $scope.setInitialValues(options);
             $scope.setWatcher();
             $scope.setFocus();
         };
-        $scope.setInitialValues = function (resourceName, totalSteps) {
-            $scope.resourceName = resourceName;
-            $scope.totalSteps = totalSteps;
+        $scope.setInitialValues = function (options) {
+            if (options.hasOwnProperty('resource_name')) {
+                $scope.resourceName = options.resource_name;
+            }
+            if (options.hasOwnProperty('wizard_tab_list')) {
+                $scope.tabList = options.wizard_tab_list;
+            }
+            $scope.totalSteps = $scope.tabList.length;
             $scope.elbForm = $('#' + $scope.resourceName + '-form');
             $scope.urlParams = $.url().param();
             $scope.currentStepIndex = 0;
             $scope.isValidationError = true;
-            // TEMP static
-            $scope.tabList = [ { title: 'General', render: true, displayID: 1 }, 
-                               { title: 'Network', render: false, displayID: null },
-                               { title: 'Instances', render: true, displayID: 2 },
-                               { title: 'Health Check', render: true, displayID: 3 } ];
             $scope.invalidSteps = Array.apply(undefined, Array($scope.totalSteps));
             angular.forEach($scope.invalidSteps, function(a, index){
                 $scope.invalidSteps[index] = true;

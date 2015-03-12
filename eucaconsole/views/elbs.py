@@ -284,6 +284,8 @@ class CreateELBView(BaseView):
 
     def get_controller_options_json(self):
         return BaseView.escape_json(json.dumps({
+            'resource_name': 'elb',
+            'wizard_tab_list': self.get_wizard_tab_list(),
             'protocol_list': self.get_protocol_list(),
             'port_range_pattern':'^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$',
             'is_vpc_supported': self.is_vpc_supported,
@@ -292,6 +294,20 @@ class CreateELBView(BaseView):
             'securitygroups_json_endpoint': self.request.route_path('securitygroups_json'),
             'instances_json_endpoint': self.request.route_path('instances_json')
         }))
+
+    def get_wizard_tab_list(self):
+        tab_list = ()
+        if self.cloud_type == 'aws' or self.is_vpc_supported:
+            tab_list = ({ 'title': 'General', 'render': True, 'display_id': 1 }, 
+                        { 'title': 'Network', 'render': True, 'display_id': 2 },
+                        { 'title': 'Instances', 'render': True, 'display_id': 3 },
+                        { 'title': 'Health Check', 'render': True, 'display_id': 4 }) 
+        else:
+            tab_list = ({ 'title': 'General', 'render': True, 'display_id': 1 }, 
+                        { 'title': 'Network', 'render': False, 'display_id': '' },
+                        { 'title': 'Instances', 'render': True, 'display_id': 2 },
+                        { 'title': 'Health Check', 'render': True, 'display_id': 3 }) 
+        return tab_list
 
     def get_protocol_list(self):
         protocol_list = ()

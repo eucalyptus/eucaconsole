@@ -5,7 +5,7 @@
     <link rel="stylesheet" type-"text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.css')}"/>
 </head>
 
-<div metal:fill-slot="main_content" ng-app="Wizard" ng-controller="WizardCtrl" ng-init="initController('elb', 4)">
+<div metal:fill-slot="main_content" ng-app="Wizard" ng-controller="WizardCtrl" ng-init="initController('${controller_options_json}')">
     <div class="row" id="contentwrap" ng-controller="ELBWizardCtrl" ng-init="initController('${controller_options_json}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
@@ -27,11 +27,11 @@
                         <dd ng-repeat="tab in tabList" ng-class="{disabled: invalidSteps[$index]}" ng-show="tab.render">
                             <a id="{{ 'tabStep' + ($index+1) }}" ng-click="visitStep($event, $index)"
                                href="{{ '#step' + ($index+1) }}" ng-hide="invalidSteps[$index]">
-                                <span class="cir">{{ tab.displayID }}</span>
+                                <span class="cir">{{ tab.display_id }}</span>
                                 <b>{{ tab.title }}</b>
                             </a>
                             <span ng-show="invalidSteps[$index]">
-                                <span class="cir">{{ tab.displayID }}</span>
+                                <span class="cir">{{ tab.display_id }}</span>
                                 <b>{{ tab.title }}</b>
                             </span>
                         </dd>
