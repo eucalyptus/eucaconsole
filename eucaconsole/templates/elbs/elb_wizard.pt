@@ -24,43 +24,15 @@
                       method="post" data-abide="abide" enctype="multipart/form-data">
                     ${structure:create_form['csrf_token']}
                     <dl id="wizard-tabs" class="tabs" data-tab="" ng-cloak="">
-                        <dd class="">
-                            <a id="tabStep1" ng-click="visitNextStep($event, 1)" href="#step1">
-                                <span class="cir">1</span>
-                                <b>General</b>
+                        <dd ng-repeat="tab in tabList" ng-class="{disabled: invalidSteps[$index]}" ng-show="tab.render">
+                            <a id="{{ 'tabStep' + ($index+1) }}" ng-click="visitStep($event, $index)"
+                               href="{{ '#step' + ($index+1) }}" ng-hide="invalidSteps[$index]">
+                                <span class="cir">{{ tab.displayID }}</span>
+                                <b>{{ tab.title }}</b>
                             </a>
-                        </dd>
-                        <dd ng-class="{disabled: invalidSteps[0]}">
-                            <a id="tabStep2" ng-click="visitNextStep($event, 2)"
-                               href="#step2" ng-hide="invalidSteps[0]">
-                                <span class="cir">2</span>
-                                <b>Network</b>
-                            </a>
-                            <span ng-show="invalidSteps[0]">
-                                <span class="cir">2</span>
-                                <b>Network</b>
-                            </span>
-                        </dd>
-                        <dd ng-class="{disabled: invalidSteps[1]}">
-                            <a id="tabStep3" ng-click="visitNextStep($event, 3)"
-                               href="#step3" ng-hide="invalidSteps[1]">
-                                <span class="cir">3</span>
-                                <b>Instances</b>
-                            </a>
-                            <span ng-show="invalidSteps[1]">
-                                <span class="cir">3</span>
-                                <b>Instances</b>
-                            </span>
-                        </dd>
-                        <dd ng-class="{disabled: invalidSteps[2]}">
-                            <a id="tabStep4" ng-click="visitNextStep($event, 4)"
-                               href="#step4" ng-hide="invalidSteps[2]">
-                                <span class="cir">4</span>
-                                <b>Health Check</b>
-                            </a>
-                            <span ng-show="invalidSteps[2]">
-                                <span class="cir">4</span>
-                                <b>Health Check</b>
+                            <span ng-show="invalidSteps[$index]">
+                                <span class="cir">{{ tab.displayID }}</span>
+                                <b>{{ tab.title }}</b>
                             </span>
                         </dd>
                     </dl>
@@ -91,7 +63,7 @@
                             <div class="row">
                                 <div class="small-3 columns">&nbsp;</div>
                                 <div class="small-9 columns field inline">
-                                    <a id="visit-step-2" class="button small round" ng-click="visitNextStep($event, 2)" ng-disabled="isValidationError">
+                                    <a id="visit-next-step-from-step1" class="button small round" ng-click="visitStep($event, currentStepIndex+1)" ng-disabled="isValidationError">
                                         <span i18n:translate="">Next</span>
                                     </a>
                                     <a href="${request.route_path('elbs')}"
@@ -119,7 +91,7 @@
                             <div class="row">
                                 <div class="small-3 columns">&nbsp;</div>
                                 <div class="small-9 columns field inline">
-                                    <a id="visit-step-3" class="button small round" ng-click="visitNextStep($event, 3)" ng-disabled="isValidationError">
+                                    <a id="visit-next-step-from-step2" class="button small round" ng-click="visitStep($event, currentStepIndex+1)" ng-disabled="isValidationError">
                                         <span i18n:translate="">Next</span>
                                     </a>
                                     <a href="${request.route_path('elbs')}"
@@ -166,7 +138,7 @@
                             <div class="row">
                                 <div class="small-3 columns">&nbsp;</div>
                                 <div class="small-9 columns field inline">
-                                    <a id="visit-step-4" class="button small round" ng-click="visitNextStep($event, 4)" ng-disabled="isValidationError">
+                                    <a id="visit-next-step-from-step4" class="button small round" ng-click="visitStep($event, currentStepIndex+1)" ng-disabled="isValidationError">
                                         <span i18n:translate="">Next</span>
                                     </a>
                                     <a href="${request.route_path('elbs')}"

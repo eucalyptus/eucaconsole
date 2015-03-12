@@ -10,8 +10,9 @@ angular.module('Wizard', ['EucaConsoleUtils', 'MagicSearch'])
         $scope.urlParams = undefined;
         $scope.resourceName  = '';
         $scope.totalSteps = 0;
-        $scope.currentStepIndex = 1;
+        $scope.currentStepIndex = 0;
         $scope.isValidationError = true;
+        $scope.tabList = [];
         $scope.invalidSteps = [];
         $scope.stepClasses = [];
         $scope.summaryDisplays = [];
@@ -25,28 +26,35 @@ angular.module('Wizard', ['EucaConsoleUtils', 'MagicSearch'])
             $scope.totalSteps = totalSteps;
             $scope.elbForm = $('#' + $scope.resourceName + '-form');
             $scope.urlParams = $.url().param();
-            $scope.currentStepIndex = 1;
+            $scope.currentStepIndex = 0;
             $scope.isValidationError = true;
+            // TEMP static
+            $scope.tabList = [ { title: 'General', render: true, displayID: 1 }, 
+                               { title: 'Network', render: false, displayID: null },
+                               { title: 'Instances', render: true, displayID: 2 },
+                               { title: 'Health Check', render: true, displayID: 3 } ];
             $scope.invalidSteps = Array.apply(undefined, Array($scope.totalSteps));
             angular.forEach($scope.invalidSteps, function(a, index){
                 $scope.invalidSteps[index] = true;
             });
+            $scope.invalidSteps[0] = false;
             $scope.stepClasss = Array.apply(undefined, Array($scope.totalSteps));
             angular.forEach($scope.stepClasses, function(a, index){
                 $scope.stepClasses[index] = '';
             });
-            $scope.stepClasses[$scope.currentStepIndex - 1] = 'active';
+            $scope.stepClasses[$scope.currentStepIndex] = 'active';
             $scope.summaryDisplays = Array.apply(undefined, Array($scope.totalSteps));
             angular.forEach($scope.summaryDisplays, function(a, index){
                 $scope.summaryDisplays[index] = false;
             });
-            $scope.summaryDisplays[$scope.currentStepIndex - 1] = true;
+            $scope.summaryDisplays[$scope.currentStepIndex] = true;
         };
         $scope.setWatcher = function (){
             $scope.$watch('currentStepIndex', function(){
-                if( $scope.currentStepIndex != 1 ){
+                if( $scope.currentStepIndex !== 0 ){
                     $scope.setWizardFocus($scope.currentStepIndex);
                 }
+                console.log("updated currentStepIndex: " + $scope.currentStepIndex);
                 $scope.$broadcast('currentStepIndexUpdate', $scope.currentStepIndex);
             });
             $scope.$on('eventProcessVisitNextStep', function($event, nextStep) {
@@ -104,7 +112,7 @@ angular.module('Wizard', ['EucaConsoleUtils', 'MagicSearch'])
             });
         };
         $scope.setWizardFocus = function (stepIdx) {
-            var tabElement = $(document).find('#tabStep'+stepIdx).get(0);
+            var tabElement = $(document).find('#tabStep'+(stepIdx+1)).get(0);
             if (!!tabElement) {
                 tabElement.focus();
             }
@@ -125,20 +133,23 @@ angular.module('Wizard', ['EucaConsoleUtils', 'MagicSearch'])
                 return false;
             }
         };
-        $scope.visitNextStep = function($event, nextStep) {
+        $scope.visitStep = function($event, step) {
             $event.preventDefault();
+            console.log(step);
+            var nextStep = step;
+            // In case of non-rendered step, jump forward
+            if ($scope.tabList[step].render === false) {
+                nextStep = step + 1;
+            }
+            console.log("nextStep: " + nextStep);
             $scope.$broadcast('eventClickVisitNextStep', nextStep);
         };
         $scope.processVisitNextStep = function(nextStep) {
-            var currentStep = nextStep - 1;
-            var invalidStepsIndex = currentStep - 1;
-
             // Check for form validation before proceeding to next step
-            if ($scope.existInvalidFields(currentStep) || $scope.isValidationError === true) {
-                // Handle the case where the tab was clicked to visit the previous step
-                if ($scope.currentStepIndex > nextStep) {
-                    $scope.currentStepIndex = nextStep;
-                }
+            if ($scope.existInvalidFields($scope.currentStepIndex) || $scope.isValidationError === true) {
+                // NOT OK TO CHANGE TO NEXT STEP
+                // NOTE: Need to handle the case where the tab was clicked to visit the previous step
+                //
                 // Broadcast signal to trigger input field check on the currentStepIndex page 
                 $scope.$broadcast('currentStepIndexUpdate', $scope.currentStepIndex);
             } else { // OK to switch
@@ -146,9 +157,9 @@ angular.module('Wizard', ['EucaConsoleUtils', 'MagicSearch'])
                 // need to wait after Foundation's update for Angular to process 
                 $timeout(function() {
                     // clear the invalidSteps flag
-                    if ($scope.invalidSteps[invalidStepsIndex]) {
+                    if ($scope.invalidSteps[nextStep]) {
                         $scope.clearErrors(nextStep);
-                        $scope.invalidSteps[invalidStepsIndex] = false;
+                        $scope.invalidSteps[nextStep] = false;
                     }
                     $scope.updateStep(nextStep);
                     // Broadcast signal to trigger input field check on the currentStepIndex page 
@@ -157,12 +168,14 @@ angular.module('Wizard', ['EucaConsoleUtils', 'MagicSearch'])
             }
         };
         $scope.updateStep = function(step) {
+            console.log('updateStep: ' + step);
             // Adjust the tab classes to match Foundation's display 
             $("#wizard-tabs").children("dd").each(function() {
                 // Clear 'active' class from all tabs
                 $(this).removeClass("active");
                 // Set 'active' class on the current tab
-                var hash = "step" + step;
+                var hash = "step" + (step+1) ;
+                console.log(hash);
                 var link = $(this).find("a");
                 if (link.length > 0) {
                     var id = link.attr("href").substring(1);
@@ -176,7 +189,7 @@ angular.module('Wizard', ['EucaConsoleUtils', 'MagicSearch'])
                 $scope.stepClasses[index] = '';
             });
             // Activate the target step class
-            $scope.stepClasses[step - 1] = 'active';
+            $scope.stepClasses[step] = 'active';
             // Display the summary section 
             $scope.showSummarySecton(step); 
             // Update the current step index
@@ -184,7 +197,7 @@ angular.module('Wizard', ['EucaConsoleUtils', 'MagicSearch'])
         };
         // Display appropriate step in summary
         $scope.showSummarySecton = function(step) {
-            $scope.summaryDisplays[step - 1] = true;
+            $scope.summaryDisplays[step] = true;
         };
         $scope.clearErrors = function(step) {
             $('#step'+step).find('div.error').each(function(idx, val) {
