@@ -28,7 +28,7 @@
 .summary .value { word-break: break-all; }
 .summary .row { margin-bottom: 5px; }
 .summary .title { font-weight: bold; border-bottom: 1px solid #03405f; margin-top: 7px; margin-bottom: 0.25rem; }
-.summary .section { padding: 0.5rem 0; border-bottom: 1px solid #cccccc; }
+.summary .section { padding: 0.5rem 0; border-bottom: 1px solid #ccc; }
 .summary .section:last-child { border-bottom: none; }
 .summary #tag-preview { word-break: break-all; }
 
@@ -56,6 +56,6 @@
 
 #template-url { margin-left: 1.5rem; width: 90%; }
 
-#userdatalabel { right: 0px; }
+#userdatalabel { right: 0; }
 
 #userdata { margin: 0 0 0; }

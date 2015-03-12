@@ -463,12 +463,12 @@ class CFSampleTemplateManager(object):
         if not os.path.exists(self.template_dir) and os.path.exists('/usr/share/cf-templates'):
             self.template_dir = '/usr/share/cf-templates'
         euca_templates = []
-        for dirName, subdirList, filelist in os.walk(self.template_dir):
-            for file in filelist:
-                name = file[:file.index('.')]
-                euca_templates.append((name, file))
+        for dir_name, subdir_list, filelist in os.walk(self.template_dir):
+            for file_item in filelist:
+                name = file_item[:file_item.index('.')]
+                euca_templates.append((name, file_item))
             if len(euca_templates) > 0:
-                templates.append((dirName, dirName[dirName.rindex('/')+1:], euca_templates))
+                templates.append((dir_name, dir_name[dir_name.rindex('/')+1:], euca_templates))
         if self.s3_bucket is not None:
             admin_templates = []
             bucket_items = self.s3_bucket.list()

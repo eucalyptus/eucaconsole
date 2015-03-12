@@ -49,7 +49,7 @@ class StacksCreateForm(BaseSecureForm):
     template_file_helptext = _(u'Template file may not exceed 16 KB')
     template_file = wtforms.FileField(label='')
 
-    def __init__(self, request, s3_bucket, cloud_type='euca', **kwargs):
+    def __init__(self, request, s3_bucket, **kwargs):
         super(StacksCreateForm, self).__init__(request, **kwargs)
         self.name.error_msg = self.name_error_msg
         self.template_file.help_text = self.template_file_helptext
@@ -68,9 +68,8 @@ class StacksFiltersForm(BaseSecureForm):
     """Form class for filters on landing page"""
     tags = TextEscapedField(label=_(u'Tags'))
 
-    def __init__(self, request, cloud_type='euca', **kwargs):
+    def __init__(self, request, **kwargs):
         super(StacksFiltersForm, self).__init__(request, **kwargs)
         self.facets = [
             {'name': 'tags', 'label': self.tags.label.text}
         ]
-

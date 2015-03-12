@@ -522,4 +522,4 @@ class StackWizardView(BaseView):
         template_url = key.generate_url(300)  # 5 minute URL, more than enough time, right?
 
         parsed = json.loads(template_body)
-        return (template_url, parsed)
+        return template_url, parsed
