@@ -55,7 +55,6 @@ angular.module('Wizard', ['EucaConsoleUtils', 'MagicSearch'])
                 if( $scope.currentStepIndex !== 0 ){
                     $scope.setWizardFocus($scope.currentStepIndex);
                 }
-                console.log("updated currentStepIndex: " + $scope.currentStepIndex);
                 $scope.$broadcast('currentStepIndexUpdate', $scope.currentStepIndex);
             });
             $scope.$on('eventProcessVisitNextStep', function($event, nextStep) {
@@ -136,13 +135,11 @@ angular.module('Wizard', ['EucaConsoleUtils', 'MagicSearch'])
         };
         $scope.visitStep = function($event, step) {
             $event.preventDefault();
-            console.log(step);
             var nextStep = step;
             // In case of non-rendered step, jump forward
             if ($scope.tabList[step].render === false) {
                 nextStep = step + 1;
             }
-            console.log("nextStep: " + nextStep);
             $scope.$broadcast('eventClickVisitNextStep', nextStep);
         };
         $scope.processVisitNextStep = function(nextStep) {
@@ -169,14 +166,12 @@ angular.module('Wizard', ['EucaConsoleUtils', 'MagicSearch'])
             }
         };
         $scope.updateStep = function(step) {
-            console.log('updateStep: ' + step);
             // Adjust the tab classes to match Foundation's display 
             $("#wizard-tabs").children("dd").each(function() {
                 // Clear 'active' class from all tabs
                 $(this).removeClass("active");
                 // Set 'active' class on the current tab
                 var hash = "step" + (step+1) ;
-                console.log(hash);
                 var link = $(this).find("a");
                 if (link.length > 0) {
                     var id = link.attr("href").substring(1);
