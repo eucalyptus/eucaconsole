@@ -260,6 +260,10 @@
                             <div ng-repeat="zone in availabilityZones">{{ zone }}</div>
                         </div>
                     </div>
+                    <div class="row" ng-show="crossZoneEnabled === true">
+                        <div class="small-4 columns"><label i18n:translate="" class="right">Cross Zone Load Balancing:</label></div>
+                        <div class="small-8 columns value">{{ crossZoneEnabled }}</div>
+                    </div>
                     <div class="row" ng-show="vpcNetwork !== 'None'">
                         <div class="small-4 columns"><label i18n:translate="" class="right">VPC Subnets:</label></div>
                         <div class="small-8 columns value">
