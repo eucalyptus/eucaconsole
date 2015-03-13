@@ -1,22 +1,23 @@
 <div id="elb-listener-editor">
     <div ng-cloak="true">
 	<label>Listeners</label>
-	<span class="label radius secondary item" ng-repeat="listener in listenerArray">
-	    <span>
-		{{ listener.fromProtocol.toUpperCase() }} ({{ listener.fromPort }}) - 
-		{{ listener.toProtocol.toUpperCase() }} ({{ listener.toPort }})
+        <div>
+	    <span class="label radius secondary item" ng-repeat="listener in listenerArray">
+	        <span>
+		    {{ listener.fromProtocol.toUpperCase() }} ({{ listener.fromPort }}) - 
+		    {{ listener.toProtocol.toUpperCase() }} ({{ listener.toPort }})
+	        </span>
+                <span ng-show="listener.fromProtocol.toUpperCase() === 'HTTPS' || listener.fromProtocol.toUpperCase() === 'SSL'">
+	            <a ng-click="openCertificateModal()" title="Change certficate">{{ serverCertificateName }}</a>
+                </span>
+	        <a class="remove" ng-click="removeListener($event, $index)" title="Remove rule"><i class="fi-x"></i></a>
 	    </span>
-            <span ng-show="listener.fromProtocol.toUpperCase() === 'HTTPS' || listener.fromProtocol.toUpperCase() === 'SSL'">
-	        <a ng-click="openCertificateModal()"
-		    title="Change certficate">{{ serverCertificateName }}</a>
-            </span>
-	    <a class="remove" ng-click="removeListener($event, $index)"
-		title="Remove rule"><i class="fi-x"></i></a>
-	</span>
+        </div>
+        <div>&nbsp;</div>
 	<label>Add a listener</label>
 	<div class="row controls-wrapper">
 	    <div class="small-1 columns"></div>
-	    <div class="small-11 columns"><label class="left">Load balancer side</label></div>
+	    <div class="small-11 columns"><label class="left">Client side</label></div>
 	</div>
 	<div class="row">
 	    <div class="small-3 columns">
