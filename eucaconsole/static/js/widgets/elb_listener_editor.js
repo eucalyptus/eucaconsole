@@ -24,6 +24,7 @@ angular.module('EucaConsoleUtils').directive('elbListenerEditor', function() {
                 $scope.portRangePattern = '';
                 $scope.serverCertificateName = '';
                 $scope.elbListenerTextarea = undefined;
+                $scope.addListenerButtonClass = 'disabled';
 		$scope.initEditor = function () {
 		    var options = JSON.parse(eucaUnescapeJson($scope.option_json));
 		    $scope.setInitialValues(options);
@@ -52,17 +53,17 @@ angular.module('EucaConsoleUtils').directive('elbListenerEditor', function() {
 		$scope.setWatcher = function () {
 		    $scope.$watch('fromProtocol', function(){
 			$scope.fromPort = $scope.getPortFromProtocolList($scope.fromProtocol);
-			$scope.checkForDuplicatedListeners();
+                        $scope.checkAddListenerButtonCondition(); 
 		    });
 		    $scope.$watch('toProtocol', function(){
 			$scope.toPort = $scope.getPortFromProtocolList($scope.toProtocol);
-			$scope.checkForDuplicatedListeners();
+                        $scope.checkAddListenerButtonCondition(); 
 		    });
 		    $scope.$watch('fromPort', function(){
-			$scope.checkForDuplicatedListeners();
+                        $scope.checkAddListenerButtonCondition(); 
 		    });
 		    $scope.$watch('toPort', function(){
-			$scope.checkForDuplicatedListeners();
+                        $scope.checkAddListenerButtonCondition(); 
 		    });
 		    $scope.$watch('isListenerNotComplete', function () {
 			$scope.setAddListenerButtonClass(); 
@@ -125,7 +126,7 @@ angular.module('EucaConsoleUtils').directive('elbListenerEditor', function() {
 		};
 		$scope.addListener = function ($event) {
 		    $event.preventDefault();
-		    $scope.checkForDuplicatedListeners(); 
+                    $scope.checkAddListenerButtonCondition(); 
 		    if ($scope.isListenerNotComplete === true || $scope.hasDuplicatedListener === true) {
 			return false;
 		    }
@@ -143,7 +144,11 @@ angular.module('EucaConsoleUtils').directive('elbListenerEditor', function() {
 		$scope.syncListeners = function () {
                     $scope.elbListenerTextarea.val(JSON.stringify($scope.listenerArray));
 		    $scope.resetValues();
+                    $scope.checkAddListenerButtonCondition(); 
 		};
+                $scope.checkAddListenerButtonCondition = function () {
+		    $scope.checkForDuplicatedListeners(); 
+                };
 		// Return the matching port given the protocol name
 		$scope.getPortFromProtocolList = function (name) {
 		    var port = '';
