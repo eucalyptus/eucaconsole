@@ -124,8 +124,10 @@ class DeleteSnapshotForm(BaseSecureForm):
 
 class RegisterSnapshotForm(BaseSecureForm):
     """CSRF-protected form to delete a snapshot"""
-    name = wtforms.TextField(label=_(u'Name'),
-        validators=[validators.InputRequired(message=_(u'Image name is required'))])
+    name = wtforms.TextField(
+        label=_(u'Name'),
+        validators=[validators.InputRequired(message=_(u'Image name is required'))]
+    )
     description = wtforms.TextAreaField(
         label=_(u'Description'),
         validators=[
