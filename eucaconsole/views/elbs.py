@@ -385,6 +385,7 @@ class CreateELBView(BaseView):
                 if vpc_subnet is None:
                     params = dict(complex_listeners=listeners_args)  
                     self.elb_conn.create_load_balancer(name, zone, **params)
+                    self.elb_conn.enable_availability_zones(name, zone)
                 else:
                     params = dict(subnets=vpc_subnet,
                               security_groups=securitygroup,
