@@ -230,10 +230,13 @@
                         <div class="small-4 columns"><label i18n:translate="" class="right">Listeners:</label></div>
                         <div class="small-8 columns value">
 	                    <div class="" ng-repeat="listener in listenerArray">
-	                        <span>
+	                        <div>
 		                    {{ listener.fromProtocol.toUpperCase() }} ({{ listener.fromPort }}) - 
 		                    {{ listener.toProtocol.toUpperCase() }} ({{ listener.toPort }})
-	                        </span>
+	                        </div>
+                                <div ng-show="listener.fromProtocol.toUpperCase() === 'HTTPS' || listener.fromProtocol.toUpperCase() === 'SSL'">
+                                    {{ certificateName }}
+	                        </div>
 	                    </div>
                         </div>
                     </div>
