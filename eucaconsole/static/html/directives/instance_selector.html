@@ -20,6 +20,14 @@
                     <td ng-if="isVPCSupported == true"><span class="" ng-show="instance.vpc_name != ''">{{ instance.vpc_subnet_display }} | {{ instance.vpc_name }}</span></td>
                     <td><span class="">{{ instance.status }}</span></td>
                 </tr> 
+                <tr ng-cloak="true" ng-show="instanceList.length === 0">
+                    <td></td>
+                    <td><span class="">No matching instances</span></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
             </tbody>
 	</div>
     </div>
