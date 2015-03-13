@@ -126,10 +126,10 @@ class VolumesView(LandingPageView, BaseVolumeView):
         instance_id = self.request.params.get('instance_id')
         device = self.request.params.get('device')
         validation_conditions = [
-            self.attach_form.validate_csrf_token(self.attach_form.csrf_token),
+            self.is_csrf_valid(),
             instance_id in dict(self.attach_form.instance_id.choices)
         ]
-        if validation_conditions:
+        if all(validation_conditions):
             with boto_error_handler(self.request, self.location):
                 self.log_request(_(u"Attaching volume {0} to {1} as {2}").format(volume_id, instance_id, device))
                 self.conn.attach_volume(volume_id, instance_id, device)
