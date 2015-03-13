@@ -393,6 +393,8 @@ class CreateELBView(BaseView):
                     self.elb_conn.create_load_balancer(name, None, **params)
                 self.handle_configure_health_check(name)
                 self.elb_conn.register_instances(name, instances)
+                if cross_zone_enabled == 'y':
+                    self.elb_conn.modify_lb_attribute(name, 'crossZoneLoadBalancing', True)
                 prefix = _(u'Successfully created elastic load balancer')
                 msg = u'{0} {1}'.format(prefix, name)
                 location = self.request.route_path('elbs')
