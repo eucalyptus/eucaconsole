@@ -273,6 +273,8 @@ class CreateELBView(BaseView):
             certificate_form=self.certificate_form,
             security_group_placeholder_text=_(u'Select...'),
             is_vpc_supported=self.is_vpc_supported,
+            avail_zones_placeholder_text=_(u'Select availability zones'),
+            vpc_subnets_placeholder_text=_(u'Select VPC subnets'),
             filter_keys=filter_keys,
             search_facets=BaseView.escape_json(json.dumps(search_facets)),
             controller_options_json=self.get_controller_options_json(),

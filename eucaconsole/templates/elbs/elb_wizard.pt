@@ -100,10 +100,12 @@
                             </div>
                         </div>
                         <!--! Step 3: Instances tab content -->
-                        <div class="content" ng-class="stepClasses[2]" id="step3"> 
+                        <div class="content" ng-class="stepClasses[2]" id="step3"
+                            tal:define="avail_zones_attrs {'data-placeholder': avail_zones_placeholder_text};
+                                        vpc_subnets_attrs {'data-placeholder': vpc_subnets_placeholder_text};">
                             <div ng-cloak="true" ng-show="vpcNetwork === 'None'">
                                 <label>Add availability zones</label>
-                                ${panel('form_field', field=create_form['zone'], leftcol_width=0, rightcol_width=12, ng_attrs={'model': 'availabilityZones'})}
+                                ${panel('form_field', field=create_form['zone'], leftcol_width=0, rightcol_width=12, ng_attrs={'model': 'availabilityZones'}, **avail_zones_attrs)}
                             </div>
                             <div ng-cloak="true" ng-show="vpcNetwork === 'None'">
                                 ${structure:create_form.cross_zone_enabled(**{'ng-model': 'crossZoneEnabled'})}
@@ -111,7 +113,7 @@
                             </div>
                             <div ng-cloak="true" ng-show="vpcNetwork !== 'None'">
                                 <label>Add VPC subnets</label>
-                                ${panel('form_field', field=create_form['vpc_subnet'], leftcol_width=0, rightcol_width=12, ng_attrs={'model': 'vpcSubnets', 'options': 'k as v for (k, v) in vpcSubnetChoices'})}
+                                ${panel('form_field', field=create_form['vpc_subnet'], leftcol_width=0, rightcol_width=12, ng_attrs={'model': 'vpcSubnets', 'options': 'k as v for (k, v) in vpcSubnetChoices'}, **vpc_subnets_attrs)}
                                  <span id="hidden_vpc_subnet_empty_option" class="hide" i18n:translate="">No subnets found</span>
                             </div>
                             <div ng-cloak="true">
