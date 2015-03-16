@@ -62,6 +62,7 @@ angular.module('EucaConsoleUtils').directive('elbListenerEditor', function() {
 		    $scope.$watch('fromProtocol', function(){
 			$scope.fromPort = $scope.getPortFromProtocolList($scope.fromProtocol);
                         $scope.checkAddListenerButtonCondition(); 
+                        $scope.adjustToProtocolList();
 		    });
 		    $scope.$watch('toProtocol', function(){
 			$scope.toPort = $scope.getPortFromProtocolList($scope.toProtocol);
@@ -70,7 +71,6 @@ angular.module('EucaConsoleUtils').directive('elbListenerEditor', function() {
 		    $scope.$watch('fromPort', function(){
                         $scope.checkAddListenerButtonCondition(); 
                         $scope.validateFromProtocol(); 
-                        $scope.adjustToProtocolList();
 		    });
 		    $scope.$watch('toPort', function(){
                         $scope.checkAddListenerButtonCondition(); 
