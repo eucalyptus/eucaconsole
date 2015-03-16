@@ -35,11 +35,12 @@ angular.module('EucaConsoleUtils').directive('elbListenerEditor', function() {
                     if ($('#elb-listener').length > 0) {
                         $scope.elbListenerTextarea = $('#elb-listener');
                     }
+                    $scope.protocolList.push({'name': 'Select...', 'value': 'None', 'port': ''});
                     if (options.hasOwnProperty('protocol_list')) {
-		        $scope.protocolList = options.protocol_list;
+		        $scope.protocolList = $scope.protocolList.concat(options.protocol_list);
                         if ($scope.protocolList instanceof Array && $scope.protocolList.length > 0) {
-		            $scope.fromProtocol = $scope.protocolList[0].name;
-		            $scope.toProtocol = $scope.protocolList[0].name;
+		            $scope.fromProtocol = $scope.protocolList[0].value;
+		            $scope.toProtocol = $scope.protocolList[0].value;
                         }
                     }
                     if (options.hasOwnProperty('port_range_pattern')) {

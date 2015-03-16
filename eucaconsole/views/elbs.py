@@ -314,13 +314,13 @@ class CreateELBView(BaseView):
     def get_protocol_list(self):
         protocol_list = ()
         if self.cloud_type == 'aws':
-            protocol_list = ({ 'name': 'HTTP', 'port': '80' },
-                             { 'name': 'TCP', 'port': '80' })
+            protocol_list = ({ 'name': 'HTTP', 'value': 'HTTP', 'port': '80' },
+                             { 'name': 'TCP', 'value': 'TCP', 'port': '80' })
         else:
-            protocol_list = ({ 'name': 'HTTP', 'port': '80' },
-                             { 'name': 'HTTPS', 'port': '443' },
-                             { 'name': 'SSL', 'port': '443' },
-                             { 'name': 'TCP', 'port': '80' })
+            protocol_list = ({ 'name': 'HTTP', 'value': 'HTTP', 'port': '80' },
+                             { 'name': 'HTTPS', 'value': 'HTTPS', 'port': '443' },
+                             { 'name': 'SSL', 'value': 'SSL', 'port': '443' },
+                             { 'name': 'TCP', 'value': 'TCP', 'port': '80' })
         return protocol_list
 
 
