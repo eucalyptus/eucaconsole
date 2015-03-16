@@ -14,7 +14,14 @@
 	    </span>
         </div>
         <div>&nbsp;</div>
-	<label>Add a listener</label>
+        <div>
+            <div ng-show="listenerArray.length === 0">
+	        <label i18n:translate="">Add a listener</label>
+            </div>
+            <div ng-show="listenerArray.length > 0">
+	        <label i18n:translate="">Add another listener</label>
+            </div>
+        </div>
         <div>
 	    <div class="row controls-wrapper">
 	        <div class="small-1 columns"></div>
