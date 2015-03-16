@@ -1,0 +1,196 @@
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
+
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/stack_wizard.css')}" />
+</head>
+
+<div metal:fill-slot="main_content">
+    <div class="row" id="contentwrap" ng-app="StackWizard" ng-controller="StackWizardCtrl"
+         ng-init="initController('${controller_options_json}')">
+        <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+            <metal:crumbs metal:fill-slot="crumbs">
+                <li><a href="${request.route_path('stacks')}" i18n:translate="">Stacks</a></li>
+                <li class="current"><a href="#" i18n:translate="">Create stack</a></li>
+            </metal:crumbs>
+        </metal:breadcrumbs>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
+        <h3 id="pagetitle">
+            <strong i18n:translate="">Create new stack</strong>
+        </h3>
+        <div class="large-8 columns">
+            <div class="wizard no-title">
+                <form action="${request.route_path('stack_create')}" id="stack-wizard-form"
+                      method="post" data-abide="abide" enctype="multipart/form-data">
+                    ${structure:create_form['csrf_token']}
+                    <dl id="wizard-tabs" class="tabs" data-tab="">
+                        <dd class="active">
+                            <a id="tabStep1" href="#step1" ng-click="visitNextStep(1, $event)">
+                                <span class="cir">1</span> <b>General</b>
+                            </a>
+                        </dd>
+                        <dd>
+                            <a id="tabStep2" href="#step2" ng-click="visitNextStep(2, $event)">
+                                <span class="cir">2</span> <b>Parameters</b>
+                            </a>
+                        </dd>
+                    </dl>
+                    <div class="tabs-content">
+                        <!--! Step 1: General tab content -->
+                        <div class="content active" id="step1"
+                            tal:define="html_attrs_val {'pattern': '^[^\/\\\]{1,255}$'};">
+                            <h6 i18n:translate="">General</h6>
+                            <div class="row controls-wrapper">
+                                <div class="small-12 columns field">
+                                    <div class="controls-wrapper">
+                                        <label class="left">
+                                            <span i18n:translate="">Name</span>
+                                            <span class="req">*</span>
+                                        </label>
+                                    </div>
+                                    <div ng-non-bindable=""><!--! Note: Don't remove non-bindable attr here -->
+                                        ${structure:create_form['name'](autocomplete="off", **html_attrs_val)}
+                                        <small class="error" ng-hide=''>${create_form['name'].error_msg}</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr/>
+                            <h6 i18n:translate="">Template</h6>
+                            <div class="row">
+                                <div class="small-12 columns value">
+                                    <input type="radio" id="inputtype" name="inputtype" value="sample" ng-model="inputtype">
+                                        <label i18n:translate="">Use sample template</label>
+                                    </input>
+                                    <div id="sample-template-div" ng-show="inputtype=='sample'">
+                                        <select chosen="" width="80%" id="sample-template" name="sample-template" ng-model="templateSample">
+                                            <option value="" i18n:translate="">Select a template</option>
+                                            <optgroup tal:repeat="group create_form['sample_template'].choices" label="${group[0]}">
+                                                <option tal:repeat="name group[1]">${name[0]}</option>
+                                            </optgroup>
+                                            <optgroup>
+                                        </select>
+                                    </div>
+                                    <input type="radio" id="inputtype" name="inputtype" value="file" ng-model="inputtype">
+                                        <label i18n:translate="">Upload template</label>
+                                    </input>
+                                    <input id="template-file" type="file" data-file="template-files" ng-disabled="isNotStopped" name="template-file" ng-show="inputtype=='file'"></input>
+                                    <br/>
+                                    <input type="radio" id="inputtype" name="inputtype" value="url" ng-model="inputtype">
+                                        <label i18n:translate="">Use template from URL</label>
+                                    </input>
+                                    <input type="text" id="template-url" name="template-url" ng-model="templateUrl" ng-show="inputtype=='url'"/>
+                                </div>
+                            </div>
+                            <hr/>
+                            ${panel('tag_editor', tags=[])}
+                            <hr/>
+                            <div>
+                                <label>
+                                    <span class="req">*</span>
+                                    <span i18n:translate="">Required fields</span>
+                                </label>
+                            </div>
+                            <div class="row">
+                                <div class="small-3 columns">&nbsp;</div>
+                                <div class="small-9 columns field inline">
+                                    <a id="visit-step-2" class="button small round" ng-click="visitNextStep(2, $event)" ng-disabled="isNotValid">
+                                        <span i18n:translate="">Next</span>
+                                        <a class="cancel-link" href="${request.route_path('stacks')}">Cancel</a>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <!--! Step 2: Parameters tab content -->
+                        <div class="content" id="step2">
+                            <h6 i18n:translate="">Parameters</h6>
+                            <div class="loading" ng-hide="parameters"><i class="busy" ></i></div>
+                            <div class="row controls-wrapper" ng-repeat="item in parameters" ng-cloak="true">
+                                <div class="small-3 columns subheading">
+                                    <label class="right">{{ item.name }}
+                                        <span class="helptext-icon" data-tooltip=""
+                                            title="{{ item.description }}">?</span>
+                                    </label>
+                                </div>
+                                <div class="small-9 columns field">
+                                    <input type="text" name="{{ item.name }}" id="{{ item.name }}"
+                                        value='{{ item.default }}' ng-hide="item.options"
+                                        min='{{ item.min }}' max='{{ item.max }}' pattern='{{ item.regex }}'>
+                                    </input>
+                                    <small class='error' ng-hide="">{{ item.constraint }}</small>
+                                    <select type="text" name="{{ item.name }}" id="{{ item.name }}" value='{{ item.default }}' ng-show="item.options">
+                                        <option ng-repeat="option in item.options" value="{{ option[0] }}">{{ option[1] }}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <hr/>
+                            <div class="row">
+                                <div class="small-4 columns">&nbsp;</div>
+                                <div class="small-8 columns field inline">
+                                    <button type="submit" class="button" id="stack-wizard-btn-step2" ng-disabled="isNotValid">
+                                        <span i18n:translate="">Create Stack</span>
+                                    </button>
+                                    <a href="${request.route_path('stacks')}"
+                                       class="cancel-link" i18n:translate="">Cancel</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="large-4 columns" ng-cloak="">
+            <div class="help-padding">&nbsp;</div>
+            <div class="summary" ng-cloak="">
+                <h5 i18n:translate="" class="title">Summary</h5>
+                <div class="section step1">
+                    <div class="row" ng-show="stackName">
+                        <label i18n:translate="">Name</label>
+                        <div class="columns value">{{ stackName }}</div>
+                    </div>
+                    <div class="row" ng-show="templateIdent">
+                        <label i18n:translate="">Template</label>
+                        <div class="columns value">{{ templateIdent }}</div>
+                    </div>
+                    <div class="row" ng-show="description">
+                        <label i18n:translate="">Description</label>
+                        <div class="columns value">{{ description }}</div>
+                    </div>
+                </div>
+                <div class="section" ng-show="tagsLength > 0">
+                    <div class="row">
+                        <label i18n:translate="">Tags</label>
+                        <div class="columns value" id="tag-preview">
+                            <div class="keyvalsummary" ng-repeat="(name, value) in tagsObject">{{ name }}={{ value }}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section step2 hide">
+                    <div class="row">
+                        <label i18n:translate="">Parameters</label>
+                        <div class="columns value" id="parameter-preview">
+                            <div class="keyvalsummary" ng-repeat="param in parametersObject">{{ param.name }} = {{ param.value }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="">
+                <metal:block metal:use-macro="layout.global_macros['help_expando']" />
+                <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
+                    <!-- HELP CONTENT -->
+                    <!--
+                    <div id="help-html-console_create_stack" ng-include="'${layout.help_path('console_create_stack.html')}'"></div> 
+                    -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/chosen.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/stack_wizard.js')}"></script>
+</div>
+
+</metal:block>
+

@@ -24,14 +24,12 @@
                 <a id="tile-item-dropdown_{{ item.name | escapeHTMLTagID }}" class="tiny secondary button dropdown right" data-dropdown="item-dropdown_{{ item.name | escapeHTMLTagID }}"><i class="fi-widget"></i></a>
                 <ul id="item-dropdown_{{ item.name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
                     <li><a i18n:translate="" ng-href="${prefix}/{{ item.name | escapeURL }}">View details</a></li>
-                    <li><a i18n:translate="" ng-click="revealModal('delete', item)">Delete stack</a></li>
+                    <li ng-show="item.status !== 'delete-complete' &amp;&amp; !item.transitional">
+                        <a i18n:translate="" ng-click="revealModal('delete', item)">Delete stack</a>
+                    </li>
                 </ul>
             </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
-                <div>
-                    <span class="label" title="Status" i18n:attributes="title" data-tooltip="">ST</span>
-                    {{ item.status }}
-                </div>
                 <div>
                     <span class="label" title="Creation time" i18n:attributes="title" data-tooltip="">CT</span>
                     {{ item.creation_time | date:'${layout.angular_date_format}' }}
@@ -51,7 +49,7 @@
             <metal:block metal:fill-slot="tableview_columns">
                 <td class="breakword"><a ng-href="${prefix}/{{ item.id || item.name | escapeURL }}">{{ item.name | ellipsis: 30 }}</a></td>
                 <td class="status">
-                    <span class="label radius status {{ item.status }}">{{ item.status }}</span>
+                    <span class="label radius status {{ item.status }}">{{ item.status.replace('-', ' ').replace('-', ' ') }}</span>
                     <span class="busy" ng-show="item.transitional">&nbsp;</span>
                 </td>
                 <td class="breakword">{{ item.description }}</td>
@@ -61,7 +59,9 @@
                         <a id="table-item-dropdown_{{ item.name | escapeHTMLTagID }}" class="tiny secondary button dropdown right round" data-dropdown="item-dropdown_{{ item.name | escapeHTMLTagID }}"><i class="fi-widget"></i></a>
                         <ul id="item-dropdown_{{ item.name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
                             <li><a i18n:translate="" ng-href="${prefix}/{{ item.name | escapeURL }}">View details</a></li>
-                            <li><a i18n:translate="" ng-click="revealModal('delete', item)">Delete stack</a></li>
+                            <li ng-show="item.status !== 'delete-complete' &amp;&amp; !item.transitional">
+                                <a i18n:translate="" ng-click="revealModal('delete', item)">Delete stack</a>
+                            </li>
                         </ul>
                     </span>
                 </td>

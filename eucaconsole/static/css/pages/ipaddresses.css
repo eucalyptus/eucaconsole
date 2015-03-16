@@ -57,7 +57,6 @@
 .gridwrapper .table th { white-space: nowrap; }
 .gridwrapper .table tr { position: relative; width: 100%; }
 .gridwrapper .table tr td { position: relative; padding: 8px 4px 8px 6px; vertical-align: top; }
-.gridwrapper .table tr td.status { text-transform: capitalize; }
 .gridwrapper .table tr td a { color: #468400; }
 .gridwrapper .table tr td a:hover { text-decoration: underline; }
 .gridwrapper .table tr td.id { max-width: 120px; }

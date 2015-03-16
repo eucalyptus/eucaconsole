@@ -27,6 +27,7 @@
 
 import inspect
 import pylibmc
+from hashlib import sha256
 from dogpile.cache import make_region
 
 
@@ -45,9 +46,8 @@ def euca_key_generator(namespace, fn):
         key = namespace + "|" + "_".join(map(str, arg))
 
         # return cache key
-        # apply sha1 to obfuscate key contents
-        # return sha1(key).hexdigest()
-        return key
+        # apply sha256 to obfuscate key contents
+        return sha256(key).hexdigest()
 
     return generate_key
 

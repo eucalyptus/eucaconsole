@@ -13,12 +13,12 @@ $stack-status-color-delete-complete: $euca-darkblue;
 $stack-status-color-delete-failed: darkred;
 
 // Stack status
-.status.create-in-progress { background-color: $stack-status-color-create-in-progress; }
-.status.create-complete { background-color: $stack-status-color-create-complete; }
-.status.create-failed { background-color: $stack-status-color-create-failed; }
-.status.rollback-in-progress { background-color: $stack-status-color-rollback-in-progress; }
-.status.rollback-complete { background-color: $stack-status-color-rollback-complete; }
-.status.rollback-failed { background-color: $stack-status-color-rollback-failed; }
-.status.delete-in-progress { background-color: $stack-status-color-delete-in-progress; }
-.status.delete-complete { background-color: $stack-status-color-delete-complete; }
-.status.delete-failed { background-color: $stack-status-color-delete-failed; }
+.status.Create-in-progress { background-color: $stack-status-color-create-in-progress; }
+.status.Create-complete { background-color: $stack-status-color-create-complete; }
+.status.Create-failed { background-color: $stack-status-color-create-failed; }
+.status.Rollback-in-progress { background-color: $stack-status-color-rollback-in-progress; }
+.status.Rollback-complete { background-color: $stack-status-color-rollback-complete; }
+.status.Rollback-failed { background-color: $stack-status-color-rollback-failed; }
+.status.Delete-in-progress { background-color: $stack-status-color-delete-in-progress; }
+.status.Delete-complete { background-color: $stack-status-color-delete-complete; }
+.status.Delete-failed { background-color: $stack-status-color-delete-failed; }
