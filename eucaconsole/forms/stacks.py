@@ -25,11 +25,36 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 """
-Forms for Cloud Formations 
+Forms for Cloud Formations
 
 """
+import wtforms
+from wtforms import validators
+
 from ..i18n import _
-from . import BaseSecureForm, TextEscapedField
+from . import BaseSecureForm, TextEscapedField, CFSampleTemplateManager
+
+
+class StacksCreateForm(BaseSecureForm):
+    """Stacks creation form.
+       Only need to initialize as a secure form to generate CSRF token
+    """
+    name_error_msg = _(u"""Name is required and may contain lowercase letters,
+        numbers, and/or hyphens and not longer than 255 characters""")
+    name = wtforms.TextField(
+        label=_(u'Name'),
+        validators=[validators.InputRequired(message=name_error_msg)],
+    )
+    sample_template = wtforms.SelectField(label='')
+    template_file_helptext = _(u'Template file may not exceed 16 KB')
+    template_file = wtforms.FileField(label='')
+
+    def __init__(self, request, s3_bucket, **kwargs):
+        super(StacksCreateForm, self).__init__(request, **kwargs)
+        self.name.error_msg = self.name_error_msg
+        self.template_file.help_text = self.template_file_helptext
+        mgr = CFSampleTemplateManager(s3_bucket)
+        self.sample_template.choices = mgr.get_template_options()
 
 
 class StacksDeleteForm(BaseSecureForm):
@@ -43,9 +68,8 @@ class StacksFiltersForm(BaseSecureForm):
     """Form class for filters on landing page"""
     tags = TextEscapedField(label=_(u'Tags'))
 
-    def __init__(self, request, cloud_type='euca', **kwargs):
+    def __init__(self, request, **kwargs):
         super(StacksFiltersForm, self).__init__(request, **kwargs)
         self.facets = [
             {'name': 'tags', 'label': self.tags.label.text}
         ]
-

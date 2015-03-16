@@ -41,8 +41,8 @@ from . import boto_error_handler
 TILE_MASTER_LIST = [
     ('instances-running', 'Running instances'),
     ('instances-stopped', 'Stopped instances'),
-    ('scaling-groups', 'Instances in scaling groups'),
     ('stacks', 'Stacks'),
+    ('scaling-groups', 'Instances in scaling groups'),
     ('elastic-ips', 'Elastic IPs'),
     ('volumes', 'Volumes'),
     ('snapshots', 'Snapshots'),
@@ -66,7 +66,6 @@ class DashboardView(BaseView):
 
     @view_config(route_name='dashboard', request_method='GET', renderer='../templates/dashboard.pt')
     def dashboard_home(self):
-        availability_zones = []
         with boto_error_handler(self.request):
             region = self.request.session.get('region')
             availability_zones = ChoicesManager(self.conn).get_availability_zones(region)
@@ -120,13 +119,13 @@ class DashboardView(BaseView):
         )
 
     def get_controller_options_json(self):
-        services=[
+        services = [
             dict(name=_(u'Compute'), status=''),
             dict(name=_(u'Object Storage'), status=''),
             dict(name=_(u'Auto Scaling'), status=''),
             dict(name=_(u'Elastic Load Balancing'), status=''),
             dict(name=_(u'CloudWatch'), status=''),
-            dict(name=_(u'CloudFormations'), status=''),
+            dict(name=_(u'CloudFormation'), status=''),
         ]
         session = self.request.session
         if session['cloud_type'] == 'euca':
@@ -185,7 +184,7 @@ class DashboardJsonView(BaseView):
             keypairs_count = len(ec2_conn.get_all_key_pairs()) if 'key-pairs' in tiles else 0
             elasticips_count = len(ec2_conn.get_all_addresses()) if 'elastic-ips' in tiles else 0
 
-            #TODO: catch errors in this block and turn iam health off
+            # TODO: catch errors in this block and turn iam health off
             # IAM counts
             accounts_count = 0
             users_count = 0
@@ -207,7 +206,8 @@ class DashboardJsonView(BaseView):
             stacks_count = 0
             try:
                 cf_conn = self.get_connection(conn_type="cloudformation")
-                stacks_count = len(cf_conn.list_stacks(stack_status_filters=['CREATE_COMPLETE'])) if 'stacks' in tiles else 0
+                stacks_count = len(
+                    cf_conn.list_stacks(stack_status_filters=['CREATE_COMPLETE'])) if 'stacks' in tiles else 0
             except BotoServerError:
                 pass
 
@@ -227,7 +227,7 @@ class DashboardJsonView(BaseView):
                 users=users_count,
                 groups=groups_count,
                 roles=roles_count,
-                health = dict(name=_(u'Compute'), status='up'),  # this determined client-side
+                health=dict(name=_(u'Compute'), status='up'),  # this determined client-side
             )
 
     @view_config(route_name='service_status_json', request_method='GET', renderer='json')
