@@ -13,7 +13,7 @@ angular.module('EucaConsoleUtils').directive('elbListenerEditor', function() {
                 return elem.template;
             },
             controller: function ($scope, $timeout, eucaHandleError, eucaUnescapeJson) {
-		$scope.isListenerNotComplete = false;
+		$scope.isListenerNotComplete = true;
 		$scope.hasDuplicatedListener = false;
                 $scope.listenerArray = []; 
                 $scope.protocolList = []; 
@@ -85,7 +85,6 @@ angular.module('EucaConsoleUtils').directive('elbListenerEditor', function() {
                         $scope.$emit('eventUpdateListenerArray', $scope.listenerArray);
                     }, true);
 		    $scope.$on('eventUpdateCertificateName', function ($event, name) {
-                        console.log("on " + name);
                         $scope.serverCertificateName = name;
 		    });
 		};
@@ -100,8 +99,9 @@ angular.module('EucaConsoleUtils').directive('elbListenerEditor', function() {
 		    }
 		};
 		$scope.resetValues = function () {
-		    $scope.fromProtocol = $scope.protocolList[0].name;
-		    $scope.toProtocol = $scope.protocolList[0].name;
+		    $scope.fromProtocol = $scope.protocolList[0].value;
+		    $scope.toProtocol = $scope.protocolList[0].value;
+                    $scope.isFromProtocolValid = false;
 		};
 		$scope.checkForDuplicatedListeners = function () {
 		    $scope.hasDuplicatedListener = false;
@@ -142,7 +142,7 @@ angular.module('EucaConsoleUtils').directive('elbListenerEditor', function() {
 		    }
 		    // Add the listener 
 		    $scope.listenerArray.push($scope.createListenerArrayBlock());
-		    $scope.syncListeners();
+                    $scope.syncListeners();
 		    $scope.$emit('listenerArrayUpdate');
 		};
 		$scope.removeListener = function ($event, index) {
@@ -157,7 +157,15 @@ angular.module('EucaConsoleUtils').directive('elbListenerEditor', function() {
                     $scope.checkAddListenerButtonCondition(); 
 		};
                 $scope.checkAddListenerButtonCondition = function () {
-		    $scope.checkForDuplicatedListeners(); 
+                    $scope.isListenerNotComplete = true;
+                    if ($scope.fromProtocol === 'None' || $scope.toProtocol === 'None') {
+                        return false;
+                    } else if ($scope.fromPort === '' || $scope.toPort === '') {
+                        return false;
+                    } else { 
+                        $scope.isListenerNotComplete = false;
+		        $scope.checkForDuplicatedListeners(); 
+                    }
                 };
 		// Return the matching port given the protocol name
 		$scope.getPortFromProtocolList = function (name) {
