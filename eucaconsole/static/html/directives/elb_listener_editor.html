@@ -81,6 +81,20 @@
 	    </div>
 	</div>
         <div>&nbsp;</div>
+        <div>
+            <div ng-show="hasDuplicatedListener === true">
+	        <div class="row">
+	            <div class="small-3 columns">
+		        <label class="right" i18n:translate=""></label>
+	            </div>
+	            <div class="small-9 columns">
+		        <div class="error">
+                            <small class="error" i18n:translate="">You may not have duplicate load balancer ports defined.</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 	<div class="row" id="add-listener-button-div">
 	    <div class="small-3 columns">&nbsp;</div>
 	    <div class="small-9 columns">
