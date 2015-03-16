@@ -151,8 +151,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             }, 300);
         };
         $scope.watchTags = function () {
-            var addTagButton = $('#add-tag-btn');
-            addTagButton.on('click', function () {
+            $scope.$on('tagUpdate', function () {
                 $scope.updateTagsPreview();
             });
         };

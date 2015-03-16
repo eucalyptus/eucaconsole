@@ -27,8 +27,8 @@ angular.module('StackPage', ['MagicSearch', 'EucaConsoleUtils'])
             //$scope.setWatch();
             $scope.setFocus();
         };
-        $scope.isTransitional = function (state) {
-            return $scope.transitionalStates.indexOf(state) !== -1;
+        $scope.isTransitional = function () {
+            return $scope.transitionalStates.indexOf($scope.stackStatus) !== -1;
         };
         $scope.toggleTab = function (tab) {
             $(".tabs").children("dd").each(function() {
@@ -97,7 +97,7 @@ angular.module('StackPage', ['MagicSearch', 'EucaConsoleUtils'])
                     $scope.outputs = results.outputs;
                     $scope.resources = results.resources;
                     // Poll to obtain desired end state if current state is transitional
-                    if ($scope.isTransitional($scope.stackStatus)) {
+                    if ($scope.isTransitional()) {
                         $scope.isUpdating = true;
                         $timeout(function() {$scope.getStackState();}, 4000);  // Poll every 4 seconds
                     } else {

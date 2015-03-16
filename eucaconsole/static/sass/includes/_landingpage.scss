@@ -254,9 +254,6 @@ $dropdown-border-color: $euca-green;
             position: relative;
             padding: 8px 4px 8px 6px;
             vertical-align: top;
-            &.status {
-                text-transform: capitalize;
-            }
             a {
                 color: $euca-darkgreen;
                 &:hover {

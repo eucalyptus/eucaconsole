@@ -24,8 +24,8 @@
 .wizard .chosen-container-multi .chosen-choices li.search-field input.default { color: #333; font-size: 14px; font-family: Lato, Helvetica, Arial, sans-serif; margin-left: 3px; }
 
 .summary { background-color: white; position: relative; top: 2px; padding: 8px; padding-bottom: 2rem; margin-bottom: 1rem; }
-.summary label { position: relative; right: -1rem; color: #6a737b; font-weight: bold; margin-top: 4px; }
-.summary .value { word-break: break-all; line-height: 1rem; }
+.summary label { position: relative; right: -1rem; color: #6a737b; font-weight: bold; margin-bottom: 2px; margin-top: 4px; }
+.summary .value { word-break: break-all; }
 .summary .row { margin-bottom: 5px; }
 .summary .title { font-weight: bold; border-bottom: 1px solid #03405f; margin-top: 7px; margin-bottom: 0.25rem; }
 .summary .section { padding: 0.5rem 0; border-bottom: 1px solid #ccc; }
@@ -39,19 +39,23 @@
 ----------------------------------------- */
 /* Extra small screen (< 481px) */
 @media screen and (max-width: 560px) { dl.tabs a b { display: none; } }
-/* @section Launch Config Wizard styles */
-#launch-config-form input.name { width: 100px; margin-right: 8px; margin-bottom: 4px; padding: 4px; }
-#launch-config-form #instance_type option { font-size: 0.825rem; }
-#launch-config-form #image-id-input { width: 10rem; display: inline; }
-#launch-config-form #controls_userdata_file { position: relative; top: -0.5rem; }
-#launch-config-form #controls_userdata_file #userdata_file { width: 80%; display: inline-block; }
-#launch-config-form #create-keypair-link, #launch-config-form #create-securitygroup-link { position: relative; top: -6px; margin-bottom: 10px; }
-#launch-config-form #create-securitygroup-link { top: -2px; }
-#launch-config-form .rules-display { margin-left: 0.7rem; }
-#launch-config-form .rules-title { margin-bottom: 3px; }
+/* @section Stack Wizard page styles */
+#stack-wizard-form input.name { width: 100px; margin-right: 8px; margin-bottom: 4px; padding: 4px; }
+#stack-wizard-form #controls_userdata_file { position: relative; top: -0.5rem; }
+#stack-wizard-form #controls_userdata_file #userdata_file { width: 80%; display: inline-block; }
 
-#create-keypair-modal #keypair-material { height: 16rem; color: white; background-color: black; font-weight: bold; font-family: Courier, "courier New", monospace, sans-serif; }
+.button { margin: 0; }
 
-#userdatalabel { right: 0px; }
+.columns.value { padding-left: 1rem; }
+
+.keyvalsummary { line-height: 1.375rem; }
+
+#sample-template { margin-left: 1.5rem; width: 90%; }
+
+#template-file { margin-left: 1.5rem; width: 90%; }
+
+#template-url { margin-left: 1.5rem; width: 90%; }
+
+#userdatalabel { right: 0; }
 
 #userdata { margin: 0 0 0; }

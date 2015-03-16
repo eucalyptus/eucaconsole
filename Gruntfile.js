@@ -67,6 +67,13 @@ module.exports = function(grunt) {
               files: {
                 'eucaconsole/static/js/thirdparty/magic-search': 'angular-magic-search/magic_search.*'
               }
+          },
+          angular_chosen: {
+              options: {
+              },
+              files: {
+                'eucaconsole/static/js/thirdparty/angular': 'angular-chosen-localytics/chosen.*'
+              }
           }
       },
       jshint: {

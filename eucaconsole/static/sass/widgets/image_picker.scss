@@ -5,6 +5,11 @@
 @import "../includes/eucavariables";
 
 #image-picker {
+    #search-input {
+        // Adjustments for magic search bar
+        line-height: 1.5rem;
+        background-color: transparent;
+    }
     .search-filter {
         position: relative;
         .search-icon {
