@@ -23,6 +23,7 @@ angular.module('EucaConsoleUtils').directive('elbListenerEditor', function() {
                 $scope.fromPort = '';
                 $scope.toPort = '';
                 $scope.portRangePattern = '';
+                $scope.isFromProtocolValid = false;
                 $scope.serverCertificateName = '';
                 $scope.elbListenerTextarea = undefined;
                 $scope.addListenerButtonClass = 'disabled';
@@ -36,6 +37,8 @@ angular.module('EucaConsoleUtils').directive('elbListenerEditor', function() {
                     if ($('#elb-listener').length > 0) {
                         $scope.elbListenerTextarea = $('#elb-listener');
                     }
+                    $scope.protocolList = []; 
+                    $scope.toProtocolList = []; 
                     $scope.protocolList.push({'name': 'Select...', 'value': 'None', 'port': ''});
                     $scope.fromProtocol = $scope.protocolList[0].value;
 		    $scope.toProtocol = $scope.protocolList[0].value;
@@ -49,6 +52,7 @@ angular.module('EucaConsoleUtils').directive('elbListenerEditor', function() {
                     if (options.hasOwnProperty('port_range_pattern')) {
                         $scope.portRangePattern = options.port_range_pattern;
                     }
+                    $scope.isFromProtocolValid = false;
                     // If serverCertificateName is empty, set it to the selected option name of the #certificates select list
                     if ($scope.serverCertificateName === '' && $('#certificates option:selected').length > 0) {
                         $scope.serverCertificateName = $('#certificates option:selected').text();
@@ -65,6 +69,7 @@ angular.module('EucaConsoleUtils').directive('elbListenerEditor', function() {
 		    });
 		    $scope.$watch('fromPort', function(){
                         $scope.checkAddListenerButtonCondition(); 
+                        $scope.validateFromProtocol(); 
                         $scope.adjustToProtocolList();
 		    });
 		    $scope.$watch('toPort', function(){
@@ -164,6 +169,11 @@ angular.module('EucaConsoleUtils').directive('elbListenerEditor', function() {
 		    }); 
 		    return port;
 		};
+                $scope.validateFromProtocol = function () {
+                    if ($scope.fromPort !== '') {
+                        $scope.isFromProtocolValid = true;
+                    }
+                }; 
                 $scope.adjustToProtocolList = function () {
                     $scope.toProtocolList = [];
                     $scope.toProtocolList.push({'name': 'Select...', 'value': 'None', 'port': ''});

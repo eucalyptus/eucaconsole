@@ -319,8 +319,8 @@ class CreateELBView(BaseView):
         else:
             protocol_list = ({ 'name': 'HTTP', 'value': 'HTTP', 'port': '80' },
                              { 'name': 'HTTPS', 'value': 'HTTPS', 'port': '443' },
-                             { 'name': 'SSL', 'value': 'SSL', 'port': '443' },
-                             { 'name': 'TCP', 'value': 'TCP', 'port': '80' })
+                             { 'name': 'TCP', 'value': 'TCP', 'port': '80' },
+                             { 'name': 'SSL', 'value': 'SSL', 'port': '443' })
         return protocol_list
 
 
