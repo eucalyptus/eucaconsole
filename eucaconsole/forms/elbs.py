@@ -84,7 +84,6 @@ class CreateELBForm(BaseSecureForm):
         label=_(u'VPC network'),
         validators=[validators.InputRequired(message=vpc_network_error_msg)],
     )
-    vpc_subnet_helptext = _(u'VPC subnet')
     vpc_subnet = wtforms.SelectMultipleField(
         label=_(u'VPC subnets'),
     )
@@ -94,6 +93,7 @@ class CreateELBForm(BaseSecureForm):
     zone = wtforms.SelectMultipleField(
         label=_(u'Availability zones'),
     )
+    cross_zone_enabled_help_text = _(u'Distribute traffic evenly across all instances in all availability zones')
     cross_zone_enabled = wtforms.BooleanField(label=_(u'Enable cross-zone load balancing'))
     ping_protocol_error_msg = _(u'Ping protocol is required')
     ping_protocol = wtforms.SelectField(
@@ -151,7 +151,7 @@ class CreateELBForm(BaseSecureForm):
 
     def set_help_text(self):
         self.vpc_network.label_help_text = self.vpc_network_helptext
-        self.vpc_subnet.label_help_text = self.vpc_subnet_helptext
+        self.cross_zone_enabled.label_help_text = self.cross_zone_enabled_help_text 
 
     def set_choices(self, request):
         if self.cloud_type == 'euca' and self.is_vpc_supported:
