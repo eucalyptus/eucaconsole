@@ -153,8 +153,6 @@ angular.module('EucaConsoleUtils').directive('elbListenerEditor', function() {
                     $timeout(function () {
 		        if ($scope.isListenerNotComplete === true || $scope.hasDuplicatedListener === true) {
 			    return false;
-		        } else if ($scope.classFromPortDiv === 'error' || $scope.classToPortDiv === 'error') {
-			    return false;
                         }
 		        // Add the listener 
 		        $scope.listenerArray.push($scope.createListenerArrayBlock());
