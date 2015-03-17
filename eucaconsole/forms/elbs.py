@@ -152,6 +152,9 @@ class CreateELBForm(BaseSecureForm):
     def set_help_text(self):
         self.vpc_network.label_help_text = self.vpc_network_helptext
         self.cross_zone_enabled.label_help_text = self.cross_zone_enabled_help_text 
+        self.add_availability_zones_help_text = _(u'Enable this load balancer to route traffic to instances in the selected zones')
+        self.add_vpc_subnets_help_text = _(u'Enable this load balancer to route traffic to instances in the selected subnets')
+        self.add_instances_help_text = _(u'Balance traffic between the selected instances')
 
     def set_choices(self, request):
         if self.cloud_type == 'euca' and self.is_vpc_supported:
