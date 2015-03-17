@@ -100,12 +100,11 @@ $tile-row-height: 24px;
             color: $euca-green;
             font-size: 1.1rem;
             padding: 0 0 0 0;
-            border-top: none;
-            border-right: none;
+            border: none;
             &:hover {
                 color: $euca-green;
             }
-            &::before {
+            &::before, &::after {
                 border: none;
             }
             .fi-widget {

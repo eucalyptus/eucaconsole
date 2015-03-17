@@ -24,11 +24,11 @@
 .wizard .chosen-container-multi .chosen-choices li.search-field input.default { color: #333; font-size: 14px; font-family: Lato, Helvetica, Arial, sans-serif; margin-left: 3px; }
 
 .summary { background-color: white; position: relative; top: 2px; padding: 8px; padding-bottom: 2rem; margin-bottom: 1rem; }
-.summary label { position: relative; right: -1rem; color: #6a737b; font-weight: bold; margin-bottom: 2px; margin-top: 4px; }
-.summary .value { word-break: break-all; }
+.summary label { position: relative; right: -1rem; color: #6a737b; font-weight: bold; margin-top: 4px; }
+.summary .value { word-break: break-all; line-height: 1rem; }
 .summary .row { margin-bottom: 5px; }
 .summary .title { font-weight: bold; border-bottom: 1px solid #03405f; margin-top: 7px; margin-bottom: 0.25rem; }
-.summary .section { padding: 0.5rem 0; border-bottom: 1px solid #cccccc; }
+.summary .section { padding: 0.5rem 0; border-bottom: 1px solid #ccc; }
 .summary .section:last-child { border-bottom: none; }
 .summary #tag-preview { word-break: break-all; }
 

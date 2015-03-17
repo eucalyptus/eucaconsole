@@ -72,7 +72,6 @@ angular.module('UserView', ['PolicyList', 'Quotas', 'EucaConsoleUtils'])
             $('#delete-user-form').attr('action', options.user_delete_url);
             $scope.setFocus();
             $scope.setWatch();
-            $scope.setDropdownMenusListener();
             $scope.adjustTab();
         };
         $scope.adjustTab = function() {
@@ -143,15 +142,6 @@ angular.module('UserView', ['PolicyList', 'Quotas', 'EucaConsoleUtils'])
             $(document).on('click', '.cancel-link', function(event) {
                 window.onbeforeunload = null;
             });
-        }; 
-        $scope.setDropdownMenusListener = function () {
-            var modals = $('[data-reveal]');
-            modals.on('open', function () {
-                $('.gridwrapper').find('.f-dropdown').filter('.open').css('display', 'none');
-            });
-            modals.on('close', function () {
-                $('.gridwrapper').find('.f-dropdown').filter('.open').css('display', 'block');
-            });
         };
         $scope.setFocus = function () {
             $(document).on('ready', function(){
@@ -159,7 +149,7 @@ angular.module('UserView', ['PolicyList', 'Quotas', 'EucaConsoleUtils'])
                 // Prevent change password confirmation input from being disabled on IE
                 $('#password').removeAttr('maxlength');
             });
-            $(document).on('opened', '[data-reveal]', function () {
+            $(document).on('opened.fndtn.reveal', '[data-reveal]', function () {
                 var modal = $(this);
                 var modalID = $(this).attr('id');
                 if( modalID.match(/terminate/)  || modalID.match(/delete/) || modalID.match(/release/) ){

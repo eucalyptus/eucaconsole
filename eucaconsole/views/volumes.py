@@ -91,7 +91,7 @@ class VolumesView(LandingPageView, BaseVolumeView):
             'attach_status', 'create_time', 'id', 'instance', 'name', 'instance_name',
             'size', 'snapshot_id', 'status', 'tags', 'zone'
         ]
-        filters_form=VolumesFiltersForm(self.request, conn=self.conn, formdata=self.request.params or None)
+        filters_form = VolumesFiltersForm(self.request, conn=self.conn, formdata=self.request.params or None)
         search_facets = filters_form.facets
         # filter_keys are passed to client-side filtering in search box
         self.render_dict.update(dict(
@@ -104,7 +104,7 @@ class VolumesView(LandingPageView, BaseVolumeView):
             attach_form=self.attach_form,
             detach_form=self.detach_form,
             delete_form=self.delete_form,
-            instances_by_zone=json.dumps(self.get_instances_by_zone(self.instances)),
+            instances_by_zone=BaseView.escape_json(json.dumps(self.get_instances_by_zone(self.instances))),
         ))
         return self.render_dict
 

@@ -27,7 +27,7 @@ angular.module('CreateAlarm', ['EucaConsoleUtils'])
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.metricUnitMapping = options.metric_unit_mapping;
             $scope.existingAlarms = options.existing_alarms;
-            $scope.alarmDialog.on('opened', function () {
+            $scope.alarmDialog.on('opened.fndtn.reveal', function () {
                 $scope.setInitialValues();
             });
             $scope.addListeners();
