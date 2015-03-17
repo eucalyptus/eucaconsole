@@ -39,21 +39,21 @@
                     </metal:block>
                     <div class="columns section">
                         <h6 i18n:translate="">Stack</h6>
-                        <div class="row controls-wrapper readonly">
+                        <div class="row readonly">
                             <div class="small-2 columns"><label i18n:translate="">Name</label></div>
                             <div class="small-10 columns value">${stack_name}</div>
                         </div>
-                        <div class="row controls-wrapper readonly">
+                        <div class="row readonly">
                             <div class="small-2 columns"><label i18n:translate="">ID</label></div>
                             <div class="small-10 columns value">${stack.stack_id}</div>
                         </div>
-                        <div class="row controls-wrapper readonly">
+                        <div class="row readonly">
                             <div class="small-2 columns"><label i18n:translate="">Creation time</label></div>
                             <div class="small-10 columns value" ng-cloak="">
                                 {{ '${stack_creation_time}' | date: '${layout.angular_date_format}' }}
                             </div>
                         </div>
-                        <div class="row controls-wrapper readonly">
+                        <div class="row readonly">
                             <div class="small-2 columns"><label i18n:translate="">Status</label></div>
                             <div class="small-10 columns value" ng-cloak="">
                                 <span class="label radius status ${status}">{{ stackStatus.replace('-', ' ').replace('-', ' ') }}</span>
@@ -153,7 +153,7 @@
                     </div>
                     <div class="columns section">
                         <h6 i18n:translate="">Template</h6>
-                        <div class="row controls-wrapper readonly">
+                        <div class="row readonly">
                             <div class="small-2 columns"><label i18n:translate="">Description</label></div>
                             <div class="small-10 columns value">${stack_description}</div>
                         </div>
@@ -206,7 +206,7 @@
                             <div id="tableview" class="gridwrapper" ng-show="!eventsLoading">
                                 <!-- Begin table view -->
                                 <table class="table" ng-show="!eventsLoading" ng-cloak="true">
-                                    <thead><tr>
+                                    <thead class="header"><tr>
                                         <th i18n:translate="">TIMESTAMP</th>
                                         <th i18n:translate="">STATUS</th>
                                         <th i18n:translate="">TYPE (LOGICAL ID)</th>
