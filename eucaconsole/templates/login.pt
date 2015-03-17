@@ -89,7 +89,7 @@
                                     </button>
                                 </div>
                                 <div class="small-12 columns" ng-show="isLoggingIn">
-                                    <span i18n:translate="">Logging in</span>&nbsp;<em><span class="busy">&nbsp;</span></em>
+                                    <span i18n:translate="">Logging in</span>&nbsp;<i class="busy"></i>
                                 </div>
                             </div>
                             <div>&nbsp;</div>
@@ -135,7 +135,7 @@
                                     </button>
                                 </div>
                                 <div class="small-12 columns" ng-show="isLoggingIn" ng-cloak="">
-                                    <span i18n:translate="">Logging in</span>&nbsp;<em><span class="busy">&nbsp;</span></em>
+                                    <span i18n:translate="">Logging in</span>&nbsp;<i class="busy"></i>
                                 </div>
                             </div>
                             <div>&nbsp;</div>
