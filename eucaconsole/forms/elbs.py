@@ -79,7 +79,6 @@ class CreateELBForm(BaseSecureForm):
         validators=[validators.InputRequired(message=name_error_msg)],
     )
     vpc_network_error_msg = _(u'VPC network is required')
-    vpc_network_helptext = _(u'Launch your instance into one of your Virtual Private Clouds')
     vpc_network = wtforms.SelectField(
         label=_(u'VPC network'),
         validators=[validators.InputRequired(message=vpc_network_error_msg)],
@@ -150,7 +149,6 @@ class CreateELBForm(BaseSecureForm):
         self.set_choices(request)
 
     def set_help_text(self):
-        self.vpc_network.label_help_text = self.vpc_network_helptext
         self.cross_zone_enabled.label_help_text = self.cross_zone_enabled_help_text 
         self.add_availability_zones_help_text = _(u'Enable this load balancer to route traffic to instances in the selected zones')
         self.add_vpc_subnets_help_text = _(u'Enable this load balancer to route traffic to instances in the selected subnets')
