@@ -128,6 +128,7 @@ angular.module('Wizard', ['EucaConsoleUtils', 'MagicSearch'])
             var invalidFields = tabContent.find('[data-invalid]');
             invalidFields.focus();
             if (invalidFields.length > 0 || $('#step'+ (step+1)).find('div.error').length > 0) {
+                $scope.isValidationError = true;
                 return true;
             } else {
                 return false;
