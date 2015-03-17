@@ -71,14 +71,22 @@ angular.module('EucaConsoleUtils').directive('elbListenerEditor', function() {
                         $scope.checkAddListenerButtonCondition(); 
 		    });
 		    $scope.$watch('fromPort', function(){
-                        $scope.checkFromPortInputCondition(); 
                         $scope.checkAddListenerButtonCondition(); 
                         $scope.validateFromProtocol(); 
 		    });
 		    $scope.$watch('toPort', function(){
-                        $scope.checkToPortInputCondition(); 
                         $scope.checkAddListenerButtonCondition(); 
 		    });
+                    $scope.$watch('classToPortDiv', function () {
+                        if ($scope.classToPortDiv === 'error'){
+                            $scope.isListenerNotComplete = true;
+                        }
+                    });
+                    $scope.$watch('classFromPortDiv', function () {
+                        if ($scope.classFromPortDiv === 'error'){
+                            $scope.isListenerNotComplete = true;
+                        }
+                    });
 		    $scope.$watch('isListenerNotComplete', function () {
 			$scope.setAddListenerButtonClass(); 
 		    });
@@ -141,13 +149,18 @@ angular.module('EucaConsoleUtils').directive('elbListenerEditor', function() {
 		$scope.addListener = function ($event) {
 		    $event.preventDefault();
                     $scope.checkAddListenerButtonCondition(); 
-		    if ($scope.isListenerNotComplete === true || $scope.hasDuplicatedListener === true) {
-			return false;
-		    }
-		    // Add the listener 
-		    $scope.listenerArray.push($scope.createListenerArrayBlock());
-                    $scope.syncListeners();
-		    $scope.$emit('listenerArrayUpdate');
+                    // timeout is needed for all DOM updates and validations to be complete
+                    $timeout(function () {
+		        if ($scope.isListenerNotComplete === true || $scope.hasDuplicatedListener === true) {
+			    return false;
+		        } else if ($scope.classFromPortDiv === 'error' || $scope.classToPortDiv === 'error') {
+			    return false;
+                        }
+		        // Add the listener 
+		        $scope.listenerArray.push($scope.createListenerArrayBlock());
+                        $scope.syncListeners();
+		        $scope.$emit('listenerArrayUpdate');
+                    });
 		};
 		$scope.removeListener = function ($event, index) {
 		    $event.preventDefault();
@@ -168,6 +181,8 @@ angular.module('EucaConsoleUtils').directive('elbListenerEditor', function() {
                         return false;
                     } else { 
                         $scope.isListenerNotComplete = false;
+                        $scope.checkFromPortInputCondition(); 
+                        $scope.checkToPortInputCondition(); 
 		        $scope.checkForDuplicatedListeners(); 
                     }
                 };
