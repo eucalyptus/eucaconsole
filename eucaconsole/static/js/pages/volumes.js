@@ -4,8 +4,8 @@
  *
  */
 
-angular.module('VolumesPage', ['LandingPage'])
-    .controller('VolumesCtrl', function ($scope, $http, $timeout) {
+angular.module('VolumesPage', ['LandingPage', 'EucaConsoleUtils'])
+    .controller('VolumesCtrl', function ($scope, $http, $timeout, eucaUnescapeJson) {
         $scope.volumeID = '';
         $scope.volumeName = '';
         $scope.volumeZone = '';
@@ -13,7 +13,7 @@ angular.module('VolumesPage', ['LandingPage'])
         $scope.instancesByZone = '';
         $scope.instanceChoices = {};
         $scope.initPage = function (instancesByZone) {
-            $scope.instancesByZone = instancesByZone;
+            $scope.instancesByZone = JSON.parse(eucaUnescapeJson(instancesByZone));
         };
         $scope.revealModal = function (action, volume) {
             var modal = $('#' + action + '-volume-modal'),
@@ -25,7 +25,7 @@ angular.module('VolumesPage', ['LandingPage'])
             }
             if (action === 'attach') {
                 // Set instance choices for attach to instance widget
-                modal.on('open', function() {
+                modal.on('open.fndtn.reveal', function() {
                     $scope.instanceChoices = {};
                     var instancesByZone = $scope.instancesByZone[volumeZone],
                         instanceSelect = modal.find('#instance_id');

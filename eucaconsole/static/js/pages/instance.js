@@ -45,7 +45,7 @@ angular.module('InstancePage', ['TagEditor', 'EucaConsoleUtils'])
             $('#file').on('change', $scope.getPassword);
         };
         $scope.activateWidget = function () {
-            $('#associate-ip-to-instance-modal').on('open', function(){
+            $('#associate-ip-to-instance-modal').on('open.fndtn.reveal', function(){
                 var thisSelect = $(this).find('#ip_address');
                 thisSelect.chosen({'width': '80%', 'search_contains': true});
             });
@@ -78,7 +78,7 @@ angular.module('InstancePage', ['TagEditor', 'EucaConsoleUtils'])
             $(document).on('ready', function(){
                 $('.tabs').find('a').get(0).focus();
             });
-            $(document).on('opened', '[data-reveal]', function () {
+            $(document).on('opened.fndtn.reveal', '[data-reveal]', function () {
                 var modal = $(this);
                 var modalID = $(this).attr('id');
                 if (modalID.match(/terminate/) || modalID.match(/delete/) || 

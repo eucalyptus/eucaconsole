@@ -54,8 +54,8 @@ describe("VolumesPage", function() {
     describe("Function initPage() Test", function() {
 
         it("Should set instanceByZone when initPage() is called", function() {
-            scope.initPage('zone');
-            expect(scope.instancesByZone).toEqual('zone');
+            scope.initPage('{"zone": "zone"}');
+            expect(scope.instancesByZone.zone).toEqual('zone');
         });
     });
 

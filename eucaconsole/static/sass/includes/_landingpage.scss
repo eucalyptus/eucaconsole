@@ -85,12 +85,11 @@ $dropdown-border-color: $euca-green;
         color: $euca-green;
         font-size: 1.1rem;
         padding: 0 0 0 0;
-        border-top: none;
-        border-right: none;
+        border: none;
         &:hover {
             color: $euca-green;
         }
-        &::before {
+        &::before, &::after {
             border: none;
         }
         .fi-widget {
@@ -143,7 +142,7 @@ $dropdown-border-color: $euca-green;
         }
         .plus {
             font-size: 5rem;
-            margin-bottom: 0.5rem;
+            margin-bottom: -1rem;
         }
     }
     .header {

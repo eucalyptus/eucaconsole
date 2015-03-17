@@ -76,6 +76,17 @@ Once you have installed compass, there's a handy shortcut to enable the watcher.
 
     make watch
 
+Note that as of Foundation 5.5, Sass 3.4 and Compass 1.0 or later are required.  Older versions will not work.
+To install the proper versions of Sass and Compass, run the following commands at the root of this repo...
+
+::
+
+    sudo gem install bundler
+    bundle install
+
+
+See http://bundler.io/bundle_install.html for more info about Bundler and using a Gemfile
+
 
 Running the management console
 ==============================

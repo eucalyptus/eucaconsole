@@ -234,7 +234,7 @@ angular.module('SecurityGroupRules', ['CustomFilters', 'EucaConsoleUtils'])
                     $scope.trafficType = 'ip';
                 });
             });
-            $(document).on('closed', '#create-securitygroup-modal', function () {
+            $(document).on('closed.fndtn.reveal', '#create-securitygroup-modal', function () {
                 $scope.$apply(function(){
                     $scope.rulesArray = [];  // Empty out the rules when the dialog is closed 
                     $scope.rulesEgressArray = [];  // Empty out the rules when the dialog is closed 

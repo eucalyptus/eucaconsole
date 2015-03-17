@@ -100,7 +100,7 @@ angular.module('PolicyList', [])
             $event.preventDefault();
             $scope.clearCodeEditor();
             $scope.editPolicyModal.foundation('reveal', 'open');
-            $scope.editPolicyModal.on('close', function() {
+            $scope.editPolicyModal.on('close.fndtn.reveal', function() {
                 $scope.clearCodeEditor();
             });
             $scope.policyJson = ''; // clear any previous policy
