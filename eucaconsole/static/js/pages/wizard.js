@@ -124,10 +124,10 @@ angular.module('Wizard', ['EucaConsoleUtils', 'MagicSearch'])
                 return true;
             }
             $scope.elbForm.trigger('validate');
-            var tabContent = $scope.elbForm.find('#step' + (step+1));
+            var tabContent = $scope.elbForm.find('#step' + step);
             var invalidFields = tabContent.find('[data-invalid]');
             invalidFields.focus();
-            if (invalidFields.length > 0 || $('#step'+ (step+1)).find('div.error').length > 0) {
+            if (invalidFields.length > 0 || $('#step' + step).find('div.error').length > 0) {
                 $scope.isValidationError = true;
                 return true;
             } else {
@@ -145,7 +145,8 @@ angular.module('Wizard', ['EucaConsoleUtils', 'MagicSearch'])
         };
         $scope.processVisitNextStep = function(nextStep) {
             // Check for form validation before proceeding to next step
-            if ($scope.existInvalidFields($scope.currentStepIndex) || $scope.isValidationError === true) {
+            var currentStepID = $scope.currentStepIndex + 1;
+            if ($scope.existInvalidFields(currentStepID) || $scope.isValidationError === true) {
                 // NOT OK TO CHANGE TO NEXT STEP
                 // NOTE: Need to handle the case where the tab was clicked to visit the previous step
                 //
