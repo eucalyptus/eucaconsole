@@ -1,34 +1,85 @@
-/* @fileOverview Login page CSS */
-/* Dropdown elements */
-/* Set the link colors and styles for top-level nav */
-/* ----------------------------------------- Item list
------------------------------------------ */
-#logobar-wrapper { border-bottom: 1px solid black; }
+/*
+Syntax error: Invalid CSS after "...ules: $modules ": expected "}", was "!global;"
+        on line 13 of /Users/dkavanagh/eucalyptus/eucaconsole/eucaconsole/static/sass/pages/../includes/../foundation/_functions.scss
+        from line 58 of /Users/dkavanagh/eucalyptus/eucaconsole/eucaconsole/static/sass/pages/../includes/../foundation/_settings.scss
+        from line 28 of /Users/dkavanagh/eucalyptus/eucaconsole/eucaconsole/static/sass/pages/../includes/_eucavariables.scss
+        from line 2 of /Users/dkavanagh/eucalyptus/eucaconsole/eucaconsole/static/sass/pages/login.scss
 
-#notifications-wrapper { padding-top: 2rem; }
-
-#ssl-warning .fi-alert { color: darkred; }
-#ssl-warning p { line-height: 1.2rem; margin-top: 0.25rem; }
-
-#login-wrapper { position: relative; padding: 10px; }
-#login-wrapper label { font-weight: bold; color: #444; white-space: nowrap; vertical-align: middle; position: relative; top: 0; left: 0; bottom: 10px; }
-#login-wrapper input { background-color: #e6e7e8; height: 2.25rem; }
-#login-wrapper .hide-aws { max-width: 480px; margin: 0 auto; }
-#login-wrapper .tabs-content { padding: 1rem; padding-bottom: 2rem; background-color: white; box-shadow: 3px 3px 5px 0 #ccc; }
-#login-wrapper .tabs-content .content { width: 85%; margin: 0 auto; }
-#login-wrapper .button { display: block; width: 100%; margin-top: 12px; margin-bottom: 12px; background-color: #f3901d; }
-#login-wrapper #euca-tab.active, #login-wrapper #aws-tab.active { background-color: white; }
-
-#password, #secret_key { font-family: Arial, Helvetica, sans-serif !important; font-size: 1rem; color: black; }
-
-.no-js #javascript-warning { display: block; }
-
-.js #javascript-warning { display: none; }
-
-/* Medium/large screen */
-@media screen and (min-width: 1020px) { #login-panel-wrapper { margin-top: 4rem; }
-  #login-panel h6 { padding-left: 1rem; } }
-/* Small screen */
-@media screen and (max-width: 1020px) { #login-panel-wrapper { margin-top: 1rem; }
-  #login-panel { border-radius: 0; box-shadow: none; padding: 10px; }
-  #login-panel .header { border-radius: 0; box-shadow: none; top: 0; left: 0; right: 0; } }
+Backtrace:
+/Users/dkavanagh/eucalyptus/eucaconsole/eucaconsole/static/sass/pages/../includes/../foundation/_functions.scss:13
+/Users/dkavanagh/eucalyptus/eucaconsole/eucaconsole/static/sass/pages/../includes/../foundation/_settings.scss:58
+/Users/dkavanagh/eucalyptus/eucaconsole/eucaconsole/static/sass/pages/../includes/_eucavariables.scss:28
+/Users/dkavanagh/eucalyptus/eucaconsole/eucaconsole/static/sass/pages/login.scss:2
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/scss/parser.rb:1148:in `expected'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/scss/parser.rb:1084:in `expected'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/scss/parser.rb:1079:in `tok!'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/scss/parser.rb:535:in `block'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/scss/parser.rb:186:in `mixin_directive'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/scss/parser.rb:174:in `send'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/scss/parser.rb:174:in `special_directive'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/scss/parser.rb:146:in `directive'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/scss/parser.rb:552:in `block_child'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/scss/parser.rb:545:in `block_contents'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/scss/parser.rb:82:in `stylesheet'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/scss/parser.rb:27:in `parse'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/engine.rb:342:in `_to_tree'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/engine.rb:274:in `to_tree'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/tree/visitors/perform.rb:225:in `visit_import'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/tree/visitors/base.rb:37:in `send'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/tree/visitors/base.rb:37:in `visit'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/tree/visitors/perform.rb:100:in `visit'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/tree/visitors/perform.rb:227:in `visit_import'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/tree/visitors/perform.rb:227:in `map'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/tree/visitors/perform.rb:227:in `visit_import'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/tree/visitors/base.rb:37:in `send'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/tree/visitors/base.rb:37:in `visit'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/tree/visitors/perform.rb:100:in `visit'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/tree/visitors/perform.rb:227:in `visit_import'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/tree/visitors/perform.rb:227:in `map'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/tree/visitors/perform.rb:227:in `visit_import'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/tree/visitors/base.rb:37:in `send'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/tree/visitors/base.rb:37:in `visit'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/tree/visitors/perform.rb:100:in `visit'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/tree/visitors/base.rb:53:in `visit_children'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/tree/visitors/base.rb:53:in `map'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/tree/visitors/base.rb:53:in `visit_children'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/tree/visitors/perform.rb:109:in `visit_children'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/tree/visitors/perform.rb:121:in `with_environment'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/tree/visitors/perform.rb:108:in `visit_children'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/tree/visitors/base.rb:37:in `visit'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/tree/visitors/perform.rb:128:in `visit_root'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/tree/visitors/base.rb:37:in `send'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/tree/visitors/base.rb:37:in `visit'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/tree/visitors/perform.rb:100:in `visit'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/tree/visitors/perform.rb:7:in `send'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/tree/visitors/perform.rb:7:in `visit'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/tree/root_node.rb:20:in `render'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/engine.rb:315:in `_render'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/engine.rb:262:in `render'
+/Library/Ruby/Gems/1.8/gems/compass-0.12.2/lib/compass/compiler.rb:140:in `compile'
+/Library/Ruby/Gems/1.8/gems/compass-0.12.2/lib/compass/compiler.rb:126:in `timed'
+/Library/Ruby/Gems/1.8/gems/compass-0.12.2/lib/compass/compiler.rb:139:in `compile'
+/Library/Ruby/Gems/1.8/gems/compass-0.12.2/lib/compass/logger.rb:45:in `red'
+/Library/Ruby/Gems/1.8/gems/compass-0.12.2/lib/compass/compiler.rb:138:in `compile'
+/Library/Ruby/Gems/1.8/gems/compass-0.12.2/lib/compass/compiler.rb:118:in `compile_if_required'
+/Library/Ruby/Gems/1.8/gems/compass-0.12.2/lib/compass/compiler.rb:103:in `run'
+/Library/Ruby/Gems/1.8/gems/compass-0.12.2/lib/compass/compiler.rb:101:in `each'
+/Library/Ruby/Gems/1.8/gems/compass-0.12.2/lib/compass/compiler.rb:101:in `run'
+/Library/Ruby/Gems/1.8/gems/compass-0.12.2/lib/compass/compiler.rb:126:in `timed'
+/Library/Ruby/Gems/1.8/gems/compass-0.12.2/lib/compass/compiler.rb:100:in `run'
+/Library/Ruby/Gems/1.8/gems/compass-0.12.2/lib/compass/commands/watch_project.rb:147:in `recompile'
+/Library/Ruby/Gems/1.8/gems/compass-0.12.2/lib/compass/commands/watch_project.rb:68:in `perform'
+/Library/Ruby/Gems/1.8/gems/compass-0.12.2/lib/compass/commands/base.rb:18:in `execute'
+/Library/Ruby/Gems/1.8/gems/compass-0.12.2/lib/compass/commands/project_base.rb:19:in `execute'
+/Library/Ruby/Gems/1.8/gems/compass-0.12.2/lib/compass/exec/sub_command_ui.rb:43:in `perform!'
+/Library/Ruby/Gems/1.8/gems/compass-0.12.2/lib/compass/exec/sub_command_ui.rb:15:in `run!'
+/Library/Ruby/Gems/1.8/gems/compass-0.12.2/bin/compass:30
+/Library/Ruby/Gems/1.8/gems/compass-0.12.2/bin/compass:44:in `call'
+/Library/Ruby/Gems/1.8/gems/compass-0.12.2/bin/compass:44
+/usr/bin/compass:19:in `load'
+/usr/bin/compass:19
+*/
+body:before {
+  white-space: pre;
+  font-family: monospace;
+  content: "Syntax error: Invalid CSS after \"...ules: $modules \": expected \"}\", was \"!global;\"\A         on line 13 of /Users/dkavanagh/eucalyptus/eucaconsole/eucaconsole/static/sass/pages/../includes/../foundation/_functions.scss\A         from line 58 of /Users/dkavanagh/eucalyptus/eucaconsole/eucaconsole/static/sass/pages/../includes/../foundation/_settings.scss\A         from line 28 of /Users/dkavanagh/eucalyptus/eucaconsole/eucaconsole/static/sass/pages/../includes/_eucavariables.scss\A         from line 2 of /Users/dkavanagh/eucalyptus/eucaconsole/eucaconsole/static/sass/pages/login.scss"; }

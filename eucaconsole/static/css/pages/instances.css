@@ -1,128 +1,85 @@
-/* @fileOverview Instances landing page CSS */
-/* Dropdown elements */
-/* Set the link colors and styles for top-level nav */
-/* ----------------------------------------- Item list
------------------------------------------ */
-/* Dropdown elements */
-/* Set the link colors and styles for top-level nav */
-/* ----------------------------------------- Item list
------------------------------------------ */
-/* @section Landing pages styles */
-.columns.datagrid { padding-left: 0; padding-right: 1rem; padding-bottom: 2rem; }
+/*
+Syntax error: Invalid CSS after "...ules: $modules ": expected "}", was "!global;"
+        on line 13 of /Users/dkavanagh/eucalyptus/eucaconsole/eucaconsole/static/sass/pages/../includes/../foundation/_functions.scss
+        from line 58 of /Users/dkavanagh/eucalyptus/eucaconsole/eucaconsole/static/sass/pages/../includes/../foundation/_settings.scss
+        from line 28 of /Users/dkavanagh/eucalyptus/eucaconsole/eucaconsole/static/sass/pages/../includes/_eucavariables.scss
+        from line 2 of /Users/dkavanagh/eucalyptus/eucaconsole/eucaconsole/static/sass/pages/instances.scss
 
-.large-12.columns.datagrid { padding-left: 1rem; }
-
-.clear-link { color: #6a737b; }
-.clear-link:hover { color: #8cc63e; }
-
-#breadcrumbs .icon-block { display: none; }
-
-#primary-buttons .button { padding: 8px 3rem; }
-
-.gridwrapper .dropdown.button.tiny { z-index: 99999; background: none; box-shadow: none; position: absolute; width: 30px; height: 24px; top: 0; right: 0; color: #8cc63e; font-size: 1.1rem; padding: 0 0 0 0; border: none; }
-.gridwrapper .dropdown.button.tiny:hover { color: #8cc63e; }
-.gridwrapper .dropdown.button.tiny::before, .gridwrapper .dropdown.button.tiny::after { border: none; }
-.gridwrapper .dropdown.button.tiny .fi-widget { position: relative; top: 4px; background-image: url(../../img/svg/gear.svg); display: inline-block; width: 20px; height: 20px; }
-.gridwrapper .dropdown.button.tiny .fi-widget::before { content: " "; }
-.gridwrapper .f-dropdown { border-color: #8dc640; box-shadow: 2px 2px 5px #6a737b; }
-.gridwrapper .f-dropdown.open { top: 34px; min-width: 10rem; padding-top: 0; }
-
-.tile { font-size: 0.8125rem; position: relative; display: inline-block; vertical-align: top; width: 202px; height: 220px; max-height: 220px; background-color: white; margin-right: 10px; margin-bottom: 10px; padding-bottom: 24px; word-wrap: break-word; }
-.tile.add { text-align: center; text-transform: uppercase; position: relative; }
-.tile.add a { display: block; position: absolute; top: 0; bottom: 0; left: 0; right: 0; }
-.tile.add a:hover { background-color: #d3e9b6; }
-.tile.add .plus { font-size: 5rem; margin-bottom: -1rem; }
-.tile .header { position: relative; height: 24px; }
-.tile .header a { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; display: block; padding: 6px 30px 4px 10px; color: #03405f; font-weight: bold; }
-.tile .header a:hover { color: #8cc63e; }
-.tile .header strong { font-weight: normal; }
-.tile .header .f-dropdown a { color: #444; font-weight: normal; overflow: visible; white-space: normal; text-overflow: inherit; }
-.tile .content { padding: 8px; font-size: 0.9em; }
-.tile .content a { color: #468400; }
-.tile .content a:hover { text-decoration: underline; }
-.tile .content div { margin-bottom: 2px; margin-left: 28px; word-break: break-all; }
-.tile .content .label { padding: 1px 3px; margin-left: -28px; background-color: #e6e7e8; color: #555; margin-right: 0.2rem; min-width: 22px; text-align: center; }
-.tile .content .label.ellipsis { margin-left: 0; }
-.tile .content .fi-alert { color: darkred; }
-.tile .link { color: #8cc63e; text-transform: uppercase; padding: 1px 3px; margin-bottom: 2px; font-size: 0.9em; }
-.tile .footer { position: absolute; bottom: 0; left: 0; right: 0; padding: 5px; color: white; background-color: #6a737b; text-align: center; line-height: 1.4rem; text-transform: capitalize; }
-.tile .footer.has-progress { padding: 0 0 0 0; text-align: left; }
-.tile .footer .completed { padding: 4px 0 4px 10px; text-align: center; }
-.tile .footer .progress { position: relative; margin: 0 0 0 0; height: 24px; border: none; }
-.tile .footer .progress .meter { position: relative; top: -2px; left: -2px; padding: 4px 0 4px 8px; height: 24px; display: inline-block; white-space: nowrap; font-weight: bold; text-align: center; }
-
-.gridwrapper .table { border: none; width: 100%; }
-.gridwrapper .table thead tr { background-color: #f5f5f5; }
-.gridwrapper .table thead tr th { padding-top: 0.5rem; padding-bottom: 0.5rem; padding-left: 6px; padding-right: 6px; vertical-align: top; color: #444; text-transform: uppercase; }
-.gridwrapper .table thead tr th.actions { text-align: right; }
-.gridwrapper .table thead tr th.count { text-align: center; }
-.gridwrapper .table tr { border-bottom: 1px solid #ddd; }
-.gridwrapper .table tr td.count { text-align: center; }
-.gridwrapper .table th { white-space: nowrap; }
-.gridwrapper .table tr { position: relative; width: 100%; }
-.gridwrapper .table tr td { position: relative; padding: 8px 4px 8px 6px; vertical-align: top; }
-.gridwrapper .table tr td a { color: #468400; }
-.gridwrapper .table tr td a:hover { text-decoration: underline; }
-.gridwrapper .table tr td.id { max-width: 120px; }
-.gridwrapper .table tr td span.actions { position: relative; float: right; top: -10px; }
-.gridwrapper .table tr td.tags { max-width: 20rem; word-break: break-all; }
-.gridwrapper .table tr td .f-dropdown a { color: #444; }
-.gridwrapper .table tr td .f-dropdown a:hover { text-decoration: none; }
-.gridwrapper .table .dropdown.button.tiny { z-index: 0; top: 8px; right: 20px; padding-left: 10px; padding-right: 24px; }
-.gridwrapper .table .dropdown.button.tiny i { font-size: 1.2rem; top: 0; }
-.gridwrapper .table .fi-alert { color: darkred; }
-
-.sort-search { font-size: 0.9rem; }
-.sort-search form { margin-bottom: 0; position: relative; }
-.sort-search form input { background-color: transparent; border-color: #6a737b; }
-.sort-search .go { font-size: 1.2rem; position: absolute; top: 8px; right: 10px; color: #999; }
-
-.match-condition { font-size: 0.8125rem; margin-bottom: 4px; }
-
-.displayicons { font-size: 2rem; }
-.displayicons a { float: right; border-bottom: none; color: #8cc63e; }
-.displayicons a:hover { border-bottom: none; color: #8cc63e; }
-.displayicons label { float: right; line-height: 2.5rem; margin-right: 5px; }
-.displayicons .selected { background-color: white; color: black; }
-.displayicons .selected:hover { color: black; cursor: default; }
-.displayicons i { display: inline-block; padding: 2px 8px; }
-
-#filters { position: relative; background-color: white; padding: 8px; margin-top: 108px; font-size: 0.8rem; }
-#filters form label { font-weight: bold; position: relative; top: 2px; margin-top: 0.5rem; font-size: 0.8rem; }
-#filters form input { height: 1.8rem; margin-bottom: 0; font-size: 0.8rem; }
-#filters form button { box-shadow: none; }
-
-#sorting-controls { padding-top: 22px; }
-#sorting-controls .f-dropdown { border-color: #8dc640; box-shadow: 2px 2px 5px #6a737b; }
-
-#results-count { padding-top: 1rem; }
-#results-count .items-found { position: relative; top: -6px; }
-#results-count em { color: #555; font-style: normal; }
-
-#refresh-btn { background-image: url(../../img/svg/icon_reload.svg); background-color: transparent; width: 24px; height: 24px; }
-
-/* ----------------------------------------- Media Queries
------------------------------------------ */
-@media screen and (max-width: 1024px) { #filters { margin-top: 1rem; } }
-/* Small screen */
-@media screen and (max-width: 1020px) { .columns.datagrid { padding-left: 1rem; } }
-.status.running { background-color: #03405f; }
-
-.status.pending { background-color: #0683c2; }
-
-.status.stopped { background-color: #990000; }
-
-.status.stopping { background-color: #ff6666; }
-
-.status.terminated { background-color: #444; }
-
-.status.shutting-down { background-color: lightgrey; }
-
-.table th, .table td { padding: 4px 7px; }
-.table .label { margin: 0 0 0 0; }
-
-.tile { height: 244px; max-height: 244px; }
-
-#terminate-instances-btn { margin-left: 1rem; border: none; }
-
-.connect-center { text-align: center; }
+Backtrace:
+/Users/dkavanagh/eucalyptus/eucaconsole/eucaconsole/static/sass/pages/../includes/../foundation/_functions.scss:13
+/Users/dkavanagh/eucalyptus/eucaconsole/eucaconsole/static/sass/pages/../includes/../foundation/_settings.scss:58
+/Users/dkavanagh/eucalyptus/eucaconsole/eucaconsole/static/sass/pages/../includes/_eucavariables.scss:28
+/Users/dkavanagh/eucalyptus/eucaconsole/eucaconsole/static/sass/pages/instances.scss:2
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/scss/parser.rb:1148:in `expected'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/scss/parser.rb:1084:in `expected'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/scss/parser.rb:1079:in `tok!'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/scss/parser.rb:535:in `block'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/scss/parser.rb:186:in `mixin_directive'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/scss/parser.rb:174:in `send'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/scss/parser.rb:174:in `special_directive'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/scss/parser.rb:146:in `directive'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/scss/parser.rb:552:in `block_child'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/scss/parser.rb:545:in `block_contents'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/scss/parser.rb:82:in `stylesheet'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/scss/parser.rb:27:in `parse'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/engine.rb:342:in `_to_tree'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/engine.rb:274:in `to_tree'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/tree/visitors/perform.rb:225:in `visit_import'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/tree/visitors/base.rb:37:in `send'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/tree/visitors/base.rb:37:in `visit'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/tree/visitors/perform.rb:100:in `visit'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/tree/visitors/perform.rb:227:in `visit_import'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/tree/visitors/perform.rb:227:in `map'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/tree/visitors/perform.rb:227:in `visit_import'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/tree/visitors/base.rb:37:in `send'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/tree/visitors/base.rb:37:in `visit'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/tree/visitors/perform.rb:100:in `visit'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/tree/visitors/perform.rb:227:in `visit_import'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/tree/visitors/perform.rb:227:in `map'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/tree/visitors/perform.rb:227:in `visit_import'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/tree/visitors/base.rb:37:in `send'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/tree/visitors/base.rb:37:in `visit'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/tree/visitors/perform.rb:100:in `visit'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/tree/visitors/base.rb:53:in `visit_children'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/tree/visitors/base.rb:53:in `map'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/tree/visitors/base.rb:53:in `visit_children'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/tree/visitors/perform.rb:109:in `visit_children'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/tree/visitors/perform.rb:121:in `with_environment'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/tree/visitors/perform.rb:108:in `visit_children'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/tree/visitors/base.rb:37:in `visit'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/tree/visitors/perform.rb:128:in `visit_root'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/tree/visitors/base.rb:37:in `send'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/tree/visitors/base.rb:37:in `visit'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/tree/visitors/perform.rb:100:in `visit'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/tree/visitors/perform.rb:7:in `send'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/tree/visitors/perform.rb:7:in `visit'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/tree/root_node.rb:20:in `render'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/engine.rb:315:in `_render'
+/Library/Ruby/Gems/1.8/gems/sass-3.2.12/lib/sass/../sass/engine.rb:262:in `render'
+/Library/Ruby/Gems/1.8/gems/compass-0.12.2/lib/compass/compiler.rb:140:in `compile'
+/Library/Ruby/Gems/1.8/gems/compass-0.12.2/lib/compass/compiler.rb:126:in `timed'
+/Library/Ruby/Gems/1.8/gems/compass-0.12.2/lib/compass/compiler.rb:139:in `compile'
+/Library/Ruby/Gems/1.8/gems/compass-0.12.2/lib/compass/logger.rb:45:in `red'
+/Library/Ruby/Gems/1.8/gems/compass-0.12.2/lib/compass/compiler.rb:138:in `compile'
+/Library/Ruby/Gems/1.8/gems/compass-0.12.2/lib/compass/compiler.rb:118:in `compile_if_required'
+/Library/Ruby/Gems/1.8/gems/compass-0.12.2/lib/compass/compiler.rb:103:in `run'
+/Library/Ruby/Gems/1.8/gems/compass-0.12.2/lib/compass/compiler.rb:101:in `each'
+/Library/Ruby/Gems/1.8/gems/compass-0.12.2/lib/compass/compiler.rb:101:in `run'
+/Library/Ruby/Gems/1.8/gems/compass-0.12.2/lib/compass/compiler.rb:126:in `timed'
+/Library/Ruby/Gems/1.8/gems/compass-0.12.2/lib/compass/compiler.rb:100:in `run'
+/Library/Ruby/Gems/1.8/gems/compass-0.12.2/lib/compass/commands/watch_project.rb:147:in `recompile'
+/Library/Ruby/Gems/1.8/gems/compass-0.12.2/lib/compass/commands/watch_project.rb:68:in `perform'
+/Library/Ruby/Gems/1.8/gems/compass-0.12.2/lib/compass/commands/base.rb:18:in `execute'
+/Library/Ruby/Gems/1.8/gems/compass-0.12.2/lib/compass/commands/project_base.rb:19:in `execute'
+/Library/Ruby/Gems/1.8/gems/compass-0.12.2/lib/compass/exec/sub_command_ui.rb:43:in `perform!'
+/Library/Ruby/Gems/1.8/gems/compass-0.12.2/lib/compass/exec/sub_command_ui.rb:15:in `run!'
+/Library/Ruby/Gems/1.8/gems/compass-0.12.2/bin/compass:30
+/Library/Ruby/Gems/1.8/gems/compass-0.12.2/bin/compass:44:in `call'
+/Library/Ruby/Gems/1.8/gems/compass-0.12.2/bin/compass:44
+/usr/bin/compass:19:in `load'
+/usr/bin/compass:19
+*/
+body:before {
+  white-space: pre;
+  font-family: monospace;
+  content: "Syntax error: Invalid CSS after \"...ules: $modules \": expected \"}\", was \"!global;\"\A         on line 13 of /Users/dkavanagh/eucalyptus/eucaconsole/eucaconsole/static/sass/pages/../includes/../foundation/_functions.scss\A         from line 58 of /Users/dkavanagh/eucalyptus/eucaconsole/eucaconsole/static/sass/pages/../includes/../foundation/_settings.scss\A         from line 28 of /Users/dkavanagh/eucalyptus/eucaconsole/eucaconsole/static/sass/pages/../includes/_eucavariables.scss\A         from line 2 of /Users/dkavanagh/eucalyptus/eucaconsole/eucaconsole/static/sass/pages/instances.scss"; }
