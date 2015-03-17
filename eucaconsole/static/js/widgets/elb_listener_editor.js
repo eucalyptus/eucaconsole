@@ -26,6 +26,7 @@ angular.module('EucaConsoleUtils').directive('elbListenerEditor', function() {
                 $scope.isFromProtocolValid = false;
                 $scope.classFromPortDiv = '';
                 $scope.classToPortDiv = '';
+                $scope.classDuplicatedListenerDiv = '';
                 $scope.elbListenerTextarea = undefined;
                 $scope.serverCertificateName = '';
                 $scope.addListenerButtonClass = 'disabled';
@@ -92,6 +93,13 @@ angular.module('EucaConsoleUtils').directive('elbListenerEditor', function() {
 		    });
 		    $scope.$watch('hasDuplicatedListener', function () {
 			$scope.setAddListenerButtonClass(); 
+                        $scope.classDuplicatedListenerDiv = '';
+                        // timeout is needed for the DOM update to complete
+                        $timeout(function () {
+                            if ($scope.hasDuplicatedListener === true) {
+                                $scope.classDuplicatedListenerDiv = 'error';
+                            }
+                        });
 		    });
                     $scope.$watch('listenerArray', function () {
                         $scope.$emit('eventUpdateListenerArray', $scope.listenerArray);

@@ -124,10 +124,10 @@ angular.module('Wizard', ['EucaConsoleUtils', 'MagicSearch'])
                 return true;
             }
             $scope.elbForm.trigger('validate');
-            var tabContent = $scope.elbForm.find('#step' + step);
+            var tabContent = $scope.elbForm.find('#step' + (step+1));
             var invalidFields = tabContent.find('[data-invalid]');
             invalidFields.focus();
-            if (invalidFields.length > 0) {
+            if (invalidFields.length > 0 || $('#step'+ (step+1)).find('div.error').length > 0) {
                 return true;
             } else {
                 return false;
