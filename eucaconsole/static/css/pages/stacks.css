@@ -57,7 +57,6 @@
 .gridwrapper .table th { white-space: nowrap; }
 .gridwrapper .table tr { position: relative; width: 100%; }
 .gridwrapper .table tr td { position: relative; padding: 8px 4px 8px 6px; vertical-align: top; }
-.gridwrapper .table tr td.status { text-transform: capitalize; }
 .gridwrapper .table tr td a { color: #468400; }
 .gridwrapper .table tr td a:hover { text-decoration: underline; }
 .gridwrapper .table tr td.id { max-width: 120px; }
@@ -103,20 +102,20 @@
 @media screen and (max-width: 1024px) { #filters { margin-top: 1rem; } }
 /* Small screen */
 @media screen and (max-width: 1020px) { .columns.datagrid { padding-left: 1rem; } }
-.status.create-in-progress { background-color: #0683c2; }
+.status.Create-in-progress { background-color: #0683c2; }
 
-.status.create-complete { background-color: #03405f; }
+.status.Create-complete { background-color: #03405f; }
 
-.status.create-failed { background-color: darkred; }
+.status.Create-failed { background-color: darkred; }
 
-.status.rollback-in-progress { background-color: #f10000; }
+.status.Rollback-in-progress { background-color: #f10000; }
 
-.status.rollback-complete { background-color: #03405f; }
+.status.Rollback-complete { background-color: #03405f; }
 
-.status.rollback-failed { background-color: darkred; }
+.status.Rollback-failed { background-color: darkred; }
 
-.status.delete-in-progress { background-color: #525960; }
+.status.Delete-in-progress { background-color: #525960; }
 
-.status.delete-complete { background-color: #03405f; }
+.status.Delete-complete { background-color: #03405f; }
 
-.status.delete-failed { background-color: darkred; }
+.status.Delete-failed { background-color: darkred; }

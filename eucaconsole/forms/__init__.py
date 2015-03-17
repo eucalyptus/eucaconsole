@@ -33,6 +33,7 @@ IMPORTANT: All forms needing CSRF protection should inherit from BaseSecureForm
 import logging
 import pylibmc
 import sys
+import os
 
 from wtforms import StringField
 from wtforms.ext.csrf import SecureForm
@@ -83,7 +84,7 @@ class BaseSecureForm(SecureForm):
     def getOptionsFromChoices(self, choices):
         if choices is None:
             return []
-        return [{'key':choice[0], 'label':choice[1]} for choice in choices]
+        return [{'key': choice[0], 'label':choice[1]} for choice in choices]
 
 
 class TextEscapedField(StringField):
@@ -132,7 +133,7 @@ class ChoicesManager(object):
             return zones
         try:
             return _get_zones_cache_(self, region)
-        except pylibmc.Error as err:
+        except pylibmc.Error:
             return _get_zones_(self, region)
 
     def instances(self, instances=None, states=None, escapebraces=True):
@@ -150,7 +151,7 @@ class ChoicesManager(object):
                     else:
                         if instance.state in states:
                             choices.append((value, label))
-     
+
         return choices
 
     @staticmethod
@@ -178,7 +179,7 @@ class ChoicesManager(object):
                 return types
             try:
                 types.extend(_get_instance_types_cache_(self))
-            except pylibmc.Error as err:
+            except pylibmc.Error:
                 types.extend(_get_instance_types_(self))
             choices = []
             for vmtype in types:
@@ -440,3 +441,41 @@ class ChoicesManager(object):
             else:
                 choices.append((vpc.id, vpc.cidr_block))
         return sorted(set(choices))
+
+
+class CFSampleTemplateManager(object):
+
+    def __init__(self, s3_bucket):
+        self.s3_bucket = s3_bucket
+
+    def get_template_options(self):
+        templates = [(category, files) for (directory, category, files) in self._get_templates_()]
+        return templates
+
+    def get_template_list(self):
+        templates = [(directory, files) for (directory, category, files) in self._get_templates_()]
+        return templates
+
+    def _get_templates_(self):
+        templates = []
+        self.template_dir = os.path.join(os.getcwd(), 'cf-templates')
+        # TODO: this next path really should be within the package, so perhaps relative path is OK?
+        if not os.path.exists(self.template_dir) and os.path.exists('/usr/share/cf-templates'):
+            self.template_dir = '/usr/share/cf-templates'
+        euca_templates = []
+        for dir_name, subdir_list, filelist in os.walk(self.template_dir):
+            for file_item in filelist:
+                name = file_item[:file_item.index('.')]
+                euca_templates.append((name, file_item))
+            if len(euca_templates) > 0:
+                templates.append((dir_name, dir_name[dir_name.rindex('/')+1:], euca_templates))
+        if self.s3_bucket is not None:
+            admin_templates = []
+            bucket_items = self.s3_bucket.list()
+            for key in bucket_items:
+                name = key.name[:key.name.index('.')]
+                admin_templates.append((name, key.name))
+            if len(admin_templates) > 0:
+                templates.append(('s3', _(u'Local'), admin_templates))
+        return templates
+
