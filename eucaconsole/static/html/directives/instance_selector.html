@@ -6,7 +6,7 @@
                     <th><input type="checkbox" id="instance-all-checkbox" value="_all" /></th>
                     <th i18n:translate="">NAME (ID)</th>
                     <th i18n:translate="">TAGS</th>
-                    <th i18n:translate="">AVAILABILTY ZONE</th>
+                    <th i18n:translate="">AVAILABILITY ZONE</th>
                     <th ng-if="isVPCSupported == true" i18n:translate="">VPC SUBNET</th>
                     <th i18n:translate="">STATUS</th>
                 </tr>
@@ -14,7 +14,7 @@
             <tbody>
                 <tr ng-cloak="true" ng-repeat="instance in instanceList">
                     <td><input type="checkbox" name="instances" value="{{ instance.id }}" /></td>
-                    <td><span class="">{{ instance.name }}</span></td>
+                    <td><span class="id breakword">{{ instance.name }}</span></td>
                     <td><span class="">{{ instance.tags }}</span></td>
                     <td><span class="">{{ instance.placement }}</span></td>
                     <td ng-if="isVPCSupported == true">
