@@ -212,6 +212,10 @@ class VolumesFiltersForm(BaseSecureForm):
     @staticmethod
     def get_status_choices():
         return [
+            {'key':'creating', 'label':'Creating'},
             {'key':'available', 'label':'Available'},
             {'key':'in-use', 'label':'In use'},
+            {'key':'deleting', 'label':'Deleting'},
+            {'key':'deleted', 'label':'Deleted'},
+            {'key':'error', 'label':'Error'},
         ]

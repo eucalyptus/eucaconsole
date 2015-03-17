@@ -24,7 +24,7 @@
             <div class="small-7 columns" id="primary-buttons">
                 <metal:block metal:define-slot="new_button" />
             </div>
-            <div class="small-4 columns" id="sorting-controls" ng-show="!itemsLoading">
+            <div class="small-3 columns" id="sorting-controls" ng-show="!itemsLoading">
                 <metal:block metal:define-slot="sorting_controls">
                     <strong>Sort by</strong>
                     <a href="#" data-dropdown="sorting-dropdown" ng-cloak="">
@@ -38,7 +38,7 @@
                     </ul>
                 </metal:block>
             </div>
-            <div class="small-1 columns displayicons" ng-cloak="">
+            <div class="small-2 columns displayicons" ng-cloak="">
                 <a id="gridview-button" class="gridview" title="Grid view" ng-click="switchView('gridview')"><i class="fi-thumbnails"></i></a>
                 <a id="tableview-button" class="tableview" title="Table view" ng-click="switchView('tableview')"><i class="fi-list-thumbnails"></i></a>
             </div>
@@ -56,8 +56,7 @@
                    ng-click="itemsLoading=true; getItems()"></a>
                 &nbsp;
                 <span ng-show="!itemsLoading" class="items-found">
-                    <strong>{{ items.length }}</strong>
-                    <span class="hide-for-small">items</span> found
+                    <strong>{{ items.length }}</strong> found
                 </span>
             </div>
         </div>
