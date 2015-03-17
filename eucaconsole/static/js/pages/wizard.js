@@ -63,6 +63,10 @@ angular.module('Wizard', ['EucaConsoleUtils', 'MagicSearch'])
             $scope.$on('updateValidationErrorStatus', function($event, flag) {
                 $scope.isValidationError = flag;
             });
+            $scope.$on('requestValidationCheck', function($event) {
+                var currentStepID = $scope.currentStepIndex + 1;
+                $scope.existInvalidFields(currentStepID);
+            });
             $(document).on('open', '[data-reveal]', function () {
                 // When a dialog opens, reset the progress button status
                 $(this).find('.dialog-submit-button').css('display', 'block');                
@@ -129,10 +133,10 @@ angular.module('Wizard', ['EucaConsoleUtils', 'MagicSearch'])
             invalidFields.focus();
             if (invalidFields.length > 0 || $('#step' + step).find('div.error').length > 0) {
                 $scope.isValidationError = true;
-                return true;
             } else {
-                return false;
+                $scope.isValidationError = false;
             }
+            return $scope.isValidationError;
         };
         $scope.visitStep = function($event, step) {
             $event.preventDefault();

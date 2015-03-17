@@ -180,16 +180,21 @@ angular.module('EucaConsoleUtils').directive('elbListenerEditor', function() {
                     $scope.checkAddListenerButtonCondition(); 
 		};
                 $scope.checkAddListenerButtonCondition = function () {
-                    $scope.isListenerNotComplete = true;
                     if ($scope.fromProtocol === 'None' || $scope.toProtocol === 'None') {
-                        return false;
+                        $scope.isListenerNotComplete = true;
                     } else if ($scope.fromPort === '' || $scope.toPort === '') {
-                        return false;
+                        $scope.isListenerNotComplete = true;
                     } else { 
                         $scope.isListenerNotComplete = false;
+                    }
+                    if ($scope.isListenerNotComplete === false) {
                         $scope.checkFromPortInputCondition(); 
                         $scope.checkToPortInputCondition(); 
 		        $scope.checkForDuplicatedListeners(); 
+                        // timeout is needed for all DOM updates and validations to be complete
+                        $timeout(function () {
+                            $scope.$emit('requestValidationCheck');
+                        });
                     }
                 };
 		// Return the matching port given the protocol name
