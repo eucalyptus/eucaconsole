@@ -16,7 +16,6 @@ angular.module('ScalingGroupInstances', ['EucaConsoleUtils'])
             $scope.jsonEndpoint = jsonEndpoint;
             $scope.getItems();
             $scope.setFocus();
-            $scope.setDropdownMenusListener();
         };
         $scope.getItems = function () {
             $http.get($scope.jsonEndpoint).success(function(oData) {
@@ -42,7 +41,7 @@ angular.module('ScalingGroupInstances', ['EucaConsoleUtils'])
             modal.foundation('reveal', 'open');
         };
         $scope.setFocus = function () {
-            $(document).on('opened', '[data-reveal]', function () {
+            $(document).on('opened.fndtn.reveal', '[data-reveal]', function () {
                 var modal = $(this);
                 var inputElement = modal.find('input[type!=hidden]').get(0);
                 var modalButton = modal.find('button').get(0);
@@ -51,15 +50,6 @@ angular.module('ScalingGroupInstances', ['EucaConsoleUtils'])
                 } else if (!!modalButton) {
                     modalButton.focus();
                 }
-            });
-        };
-        $scope.setDropdownMenusListener = function () {
-            var modals = $('[data-reveal]');
-            modals.on('open', function () {
-                $('.gridwrapper').find('.f-dropdown').filter('.open').css('display', 'none');
-            });
-            modals.on('close', function () {
-                $('.gridwrapper').find('.f-dropdown').filter('.open').css('display', 'block');
             });
         };
     })

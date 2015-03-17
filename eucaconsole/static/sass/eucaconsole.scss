@@ -227,7 +227,7 @@ h1, h2, h3, h4, h5, h6 {
     }
     .dropdown {
         z-index: 999999;
-        box-shadow: 0px 0px 1px 1px lighten($euca-orange, 10%);
+        box-shadow: 0 0 1px 1px lighten($euca-orange, 10%);
         li {
             a {
                 text-transform: none;
@@ -865,7 +865,7 @@ textarea.hidden {
                 }
             }
             .f-dropdown {
-                box-shadow: 0px 0px 1px 1px lighten($euca-orange, 10%);
+                box-shadow: 0 0 1px 1px lighten($euca-orange, 10%);
                 min-width: 12rem;
                 width: auto;
             }
@@ -929,14 +929,18 @@ footer {
 ----------------------------------------- */
 .button {
     background-color: $euca-orange;
+    border-color: $euca-orange;
     &.secondary {
         background-color: $euca-grey;
+        border-color: $euca-grey;
         color: white;
     }
     &.disabled, &[disabled] {
         background-color: $euca-grey;
+        border-color: $euca-grey;
         &:hover {
             background-color: $euca-grey;
+            border-color: $euca-grey;
         }
     }
     &:hover {
@@ -957,7 +961,7 @@ footer {
         }
         a {
             color: $euca-darkblue;
-            box-shadow: inset 6px 0px 4px 0px rgba(50, 50, 50, 0.2);
+            box-shadow: inset 6px 0 4px 0 rgba(50, 50, 50, 0.2);
             padding: 10px 32px 6px 24px;
             font-weight: bold;
         }

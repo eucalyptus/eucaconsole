@@ -64,7 +64,7 @@ angular.module('VolumePage', ['TagEditor', 'EucaConsoleUtils'])
             }
             snapshotField.chosen({'width': '75%', 'search_contains': true});
             // Instance choices in "Attach to instance" modal dialog
-            $('#attach-volume-modal').on('open', function() {
+            $('#attach-volume-modal').on('open.fndtn.reveal', function() {
                 $('#instance_id').chosen({'width': '75%', search_contains: true});
             });
         };
@@ -206,7 +206,7 @@ angular.module('VolumePage', ['TagEditor', 'EucaConsoleUtils'])
                     $('input[type="text"]').get(0).focus();
                 }
             });
-            $(document).on('opened', '[data-reveal]', function () {
+            $(document).on('opened.fndtn.reveal', '[data-reveal]', function () {
                 var modal = $(this);
                 var modalID = $(this).attr('id');
                 if (modalID.match(/terminate/) || modalID.match(/delete/) || modalID.match(/release/)) {

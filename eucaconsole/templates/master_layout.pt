@@ -30,7 +30,7 @@
 </head>
 
 <body>
-<div class="off-canvas-wrap">
+<div class="off-canvas-wrap" data-offcanvas="">
 <div id="canvaswrap" class="inner-wrap">
     <div id="logobar-wrapper">
         <nav id="logobar" class="row" metal:define-slot="logobar">

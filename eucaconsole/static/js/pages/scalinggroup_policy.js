@@ -53,7 +53,7 @@ angular.module('ScalingGroupPolicy', ['CreateAlarm'])
         };
         $scope.setFocus = function () {
             $scope.policyForm.find('input#name').focus();
-            $(document).on('opened', '[data-reveal]', function () {
+            $(document).on('opened.fndtn.reveal', '[data-reveal]', function () {
                 var modal = $(this);
                 var inputElement = modal.find('input[type!=hidden]').get(0);
                 var modalButton = modal.find('button').get(0);
@@ -63,10 +63,10 @@ angular.module('ScalingGroupPolicy', ['CreateAlarm'])
                     modalButton.focus();
                 }
             });
-            $(document).on('close', '[data-reveal]', function () {
+            $(document).on('close.fndtn.reveal', '[data-reveal]', function () {
                 document.getElementById('create-alarm-form').reset();
             });
-            $(document).on('closed', '[data-reveal]', function () {
+            $(document).on('closed.fndtn.reveal', '[data-reveal]', function () {
                 $('input#name').focus();
             });
         };

@@ -26,7 +26,7 @@
         white-space: nowrap;
         vertical-align: middle;
         position: relative;
-        top: 0px; left: 0px; bottom: 10px;
+        top: 0; left: 0; bottom: 10px;
     }
     input {
         background-color: $euca-extralightgrey;
@@ -40,7 +40,11 @@
         padding: 1rem;
         padding-bottom: 2rem;
         background-color: white;
-        box-shadow: 3px 3px 5px 0px $euca-lightgrey;
+        box-shadow: 3px 3px 5px 0 $euca-lightgrey;
+        .content {
+            width: 85%;
+            margin: 0 auto;
+        }
     }
     .button {
         display: block;

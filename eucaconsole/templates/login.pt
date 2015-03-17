@@ -56,7 +56,7 @@
                     </dd>
                 </dl>
                 <div class="tabs-content">
-                    <div class="content active large-10 medium-10 columns large-centered medium-centered" id="eucalyptus">
+                    <div class="content active" id="eucalyptus">
                         <form class="custom" id="euca-login-form" method="post" name="euca_login_form" ng-submit="isLoggingIn=true"
                               action="${request.route_path('login')}?login_type=Eucalyptus">
                             <input type="hidden" name="came_from" value="${came_from}" />
@@ -100,7 +100,7 @@
                             </div>
                         </form>
                     </div>
-                    <div class="content large-10 medium-10 columns large-centered medium-centered"
+                    <div class="content"
                          tal:condition="layout.aws_enabled" id="aws">
                         <form class="custom" id="aws-login-form" method="post" name="aws_login_form" ng-submit="isLoggingIn=true"
                               action="${request.route_path('login')}?login_type=AWS">
