@@ -27,7 +27,7 @@
 	        <div class="small-1 columns"></div>
 	        <div class="small-11 columns"><label class="left">Client side</label></div>
 	    </div>
-	    <div class="row">
+	    <div class="row controls-wrapper">
 	        <div class="small-3 columns">
 		    <label class="right protocol" i18n:translate="">Protocol</label>
 	        </div>
@@ -39,13 +39,13 @@
 		    </select>
 	        </div>
 	    </div>
-	    <div class="row">
+	    <div class="row controls-wrapper">
 	        <div class="small-3 columns">
 		    <label class="right" i18n:translate="">Port</label>
 	        </div>
-	        <div class="small-9 columns">
-		    <div>
-		        <input class="port from" name="from_port" ng-model="fromPort" pattern="{{ portRangePattern }}" />
+	        <div class="small-9 columns field">
+		    <div ng-class="classFromPortDiv">
+		        <input class="port from" id="from-port-input" name="from_port" ng-model="fromPort" pattern="{{ portRangePattern }}" />
 		        <small class="error" i18n:translate="">Port range value must be whole numbers between 1-65535</small>
 		    </div>
 	        </div>
@@ -72,9 +72,9 @@
 	        <div class="small-3 columns">
 		    <label class="right" i18n:translate="">Port</label>
 	        </div>
-	        <div class="small-9 columns">
-		    <div>
-		        <input class="port to" name="to_port" ng-model="toPort" pattern="{{ portRangePattern }}" />
+	        <div class="small-9 columns field">
+		    <div ng-class="classToPortDiv">
+		        <input class="port to" id="to-port-input" name="to_port" ng-model="toPort" pattern="{{ portRangePattern }}" />
 		        <small class="error" i18n:translate="">Port range value must be whole numbers between 1-65535</small>
 		    </div>
 	        </div>

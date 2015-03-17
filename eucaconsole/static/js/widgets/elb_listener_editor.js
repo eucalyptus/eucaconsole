@@ -24,8 +24,10 @@ angular.module('EucaConsoleUtils').directive('elbListenerEditor', function() {
                 $scope.toPort = '';
                 $scope.portRangePattern = '';
                 $scope.isFromProtocolValid = false;
-                $scope.serverCertificateName = '';
+                $scope.classFromPortDiv = '';
+                $scope.classToPortDiv = '';
                 $scope.elbListenerTextarea = undefined;
+                $scope.serverCertificateName = '';
                 $scope.addListenerButtonClass = 'disabled';
 		$scope.initEditor = function () {
 		    var options = JSON.parse(eucaUnescapeJson($scope.option_json));
@@ -69,10 +71,12 @@ angular.module('EucaConsoleUtils').directive('elbListenerEditor', function() {
                         $scope.checkAddListenerButtonCondition(); 
 		    });
 		    $scope.$watch('fromPort', function(){
+                        $scope.checkFromPortInputCondition(); 
                         $scope.checkAddListenerButtonCondition(); 
                         $scope.validateFromProtocol(); 
 		    });
 		    $scope.$watch('toPort', function(){
+                        $scope.checkToPortInputCondition(); 
                         $scope.checkAddListenerButtonCondition(); 
 		    });
 		    $scope.$watch('isListenerNotComplete', function () {
@@ -201,6 +205,24 @@ angular.module('EucaConsoleUtils').directive('elbListenerEditor', function() {
                         });
                     }
                 };
+                $scope.checkFromPortInputCondition = function () {
+                    $scope.classFromPortDiv = "";
+                    // timeout is needed for the update of the input element DOM to be completed
+                    $timeout(function () {
+                        if ($('#from-port-input').hasClass('ng-invalid-pattern')) {
+                            $scope.classFromPortDiv = "error";
+                        }
+                    });
+                }; 
+                $scope.checkToPortInputCondition = function () {
+                    $scope.classToPortDiv = "";
+                    // timeout is needed for the update of the input element DOM to be completed
+                    $timeout(function () {
+                        if ($('#to-port-input').hasClass('ng-invalid-pattern')) {
+                            $scope.classToPortDiv = "error";
+                        }
+                    });
+                }; 
                 $scope.openCertificateModal = function () {
                     $scope.$emit('eventOpenSelectCertificateModal');
                 };
