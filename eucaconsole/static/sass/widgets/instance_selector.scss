@@ -1,0 +1,24 @@
+/* @fileOverview Instance Selector CSS */
+
+// Import common Foundation variables
+@import "../includes/eucavariables";
+
+
+// Status colors
+$instance-status-color-running: $euca-darkblue;
+$instance-status-color-pending: lighten($euca-darkblue, 20%);
+$instance-status-color-stopped: darken(red, 20%);
+$instance-status-color-stopping: lighten(red, 20%);
+$instance-status-color-terminated: $euca-darkgrey;
+$instance-status-color-terminating: lightgrey;
+
+
+
+// Tile/table view
+.status.running { background-color: $instance-status-color-running; }
+.status.pending { background-color: $instance-status-color-pending; }
+.status.stopped { background-color: $instance-status-color-stopped; }
+.status.stopping { background-color: $instance-status-color-stopping; }
+.status.terminated { background-color: $instance-status-color-terminated; }
+.status.shutting-down { background-color: $instance-status-color-terminating; }
+
