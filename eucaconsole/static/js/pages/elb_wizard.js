@@ -102,7 +102,7 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
                 $scope.instanceList = instanceList;
             });
             $scope.$watch('elbName', function (){
-               $scope.checkRequiredInput(1);
+                $scope.checkRequiredInput(1);
             });
             $scope.$watch('vpcNetwork', function () {
 		$scope.availabilityZones = [];
@@ -110,16 +110,21 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
                 $scope.securityGroups = [];
                 $scope.getAllSecurityGroups($scope.vpcNetwork);
                 $scope.updateVPCSubnetChoices();
-            });
-            $scope.$watch('availabilityZones', function () {
-                $scope.$broadcast('eventUpdateAvailabilityZones', $scope.availabilityZones);
-            });
-            $scope.$watch('vpcSubnets', function () {
-                $scope.$broadcast('eventUpdateVPCSubnets', $scope.vpcSubnets);
-            });
+            }, true);
             $scope.$watch('securityGroupCollection', function () {
                 $scope.updateSecurityGroupChoices();
-            });
+            }, true);
+            $scope.$watch('availabilityZones', function () {
+                $scope.checkRequiredInput(3);
+                $scope.$broadcast('eventUpdateAvailabilityZones', $scope.availabilityZones);
+            }, true);
+            $scope.$watch('vpcSubnets', function () {
+                $scope.checkRequiredInput(3);
+                $scope.$broadcast('eventUpdateVPCSubnets', $scope.vpcSubnets);
+            }, true);
+            $scope.$watch('instanceList', function () {
+                $scope.checkRequiredInput(3);
+            }, true);
             $scope.$watch('certificateARN', function(){
                 // Find the certficate name when selected on the select certificate dialog
                 if ($('#certificates option:selected').length > 0) {
@@ -148,6 +153,14 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
                         $scope.isNotValid = true;
                     }
                 }
+            } else if (step === 2) {
+            } else if (step === 3) {
+                if ($scope.availabilityZones.length === 0 && $scope.vpcSubnets.length === 0) {
+                    $scope.isNotValid = true;
+                } else if ($scope.instanceList.length === 0){
+                    $scope.isNotValid = true;
+                }
+            } else if (step === 4) {
             }
             // Signal the parent wizard controller about the update of the validation error status
             $scope.$emit('updateValidationErrorStatus', $scope.isNotValid);

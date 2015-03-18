@@ -168,6 +168,7 @@ angular.module('Wizard', ['EucaConsoleUtils', 'MagicSearch'])
                     $scope.updateStep(nextStep);
                     // Broadcast signal to trigger input field check on the currentStepIndex page 
                     $scope.$broadcast('currentStepIndexUpdate', $scope.currentStepIndex);
+                    $scope.isValidationError = true;
                 });
             }
         };
