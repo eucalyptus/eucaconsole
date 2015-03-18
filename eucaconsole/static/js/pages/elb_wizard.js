@@ -92,6 +92,9 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
                     $('#vpc_subnet').trigger('chosen:updated');
                 });
             });
+            $scope.$on('currentStepIndexUpdate', function($event, thisStepIndex) {
+                $scope.checkRequiredInput(thisStepIndex+1);
+            });
             $scope.$on('eventUpdateListenerArray', function ($event, listenerArray) {
                 $scope.listenerArray = listenerArray;
             });
@@ -105,7 +108,7 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
                 $scope.checkRequiredInput(1);
             });
             $scope.$watch('vpcNetwork', function () {
-		$scope.availabilityZones = [];
+                $scope.availabilityZones = [];
                 $scope.vpcSubnets = [];
                 $scope.securityGroups = [];
                 $scope.getAllSecurityGroups($scope.vpcNetwork);
@@ -125,6 +128,12 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
             $scope.$watch('instanceList', function () {
                 $scope.checkRequiredInput(3);
             }, true);
+            $scope.$watch('pingPort', function (){
+                $scope.checkRequiredInput(4);
+            });
+            $scope.$watch('responseTimeout', function (){
+                $scope.checkRequiredInput(4);
+            });
             $scope.$watch('certificateARN', function(){
                 // Find the certficate name when selected on the select certificate dialog
                 if ($('#certificates option:selected').length > 0) {
@@ -161,6 +170,14 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
                     $scope.isNotValid = true;
                 }
             } else if (step === 4) {
+                // elb name check is needed for the final tab validation
+                if ($scope.elbName === '' || $scope.elbName === undefined) {
+                    $scope.isNotValid = true;
+                } else if ($scope.pingPort <= 0 || $scope.pingPort === undefined) {
+                    $scope.isNotValid = true;
+                } else if ($scope.responseTimeout <= 0 || $scope.responseTimeout === undefined) {
+                    $scope.isNotValid = true;
+                } 
             }
             // Signal the parent wizard controller about the update of the validation error status
             $scope.$emit('updateValidationErrorStatus', $scope.isNotValid);
