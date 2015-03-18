@@ -158,8 +158,7 @@ class StackView(BaseView):
                 {'key': 'rollback-complete', 'label': _("Rollback Complete")},
                 {'key': 'rollback-in-progress', 'label': _("Rollback In Progresss")},
                 {'key': 'rollback-failed', 'label': _("Rollback Failed")}
-            ]},
-            {'name': 'phys-id', 'label': _(u"Physical ID")}
+            ]}
         ]
         self.render_dict = dict(
             stack=self.stack,
