@@ -185,6 +185,10 @@ angular.module('EucaConsoleUtils').directive('elbListenerEditor', function() {
                     $scope.elbListenerTextarea.val(JSON.stringify($scope.listenerArray));
 		    $scope.resetValues();
                     $scope.checkAddListenerButtonCondition(); 
+                    // timeout is needed for all DOM updates and validations to complete
+                    $timeout(function () {
+                        $scope.$emit('requestValidationCheck');
+                    });
 		};
                 $scope.checkAddListenerButtonCondition = function () {
                     if ($scope.fromProtocol === 'None' || $scope.toProtocol === 'None') {
@@ -198,10 +202,6 @@ angular.module('EucaConsoleUtils').directive('elbListenerEditor', function() {
                         $scope.checkFromPortInputCondition(); 
                         $scope.checkToPortInputCondition(); 
 		        $scope.checkForDuplicatedListeners(); 
-                        // timeout is needed for all DOM updates and validations to be complete
-                        $timeout(function () {
-                            $scope.$emit('requestValidationCheck');
-                        });
                     }
                 };
 		// Return the matching port given the protocol name

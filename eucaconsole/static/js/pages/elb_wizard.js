@@ -141,7 +141,7 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
             $scope.isNotValid = false;
             if (step === 1) {
                 var elbListenerTextArea = $('#elb-listener');
-                if ($scope.elbName === '') {
+                if ($scope.elbName === '' || $scope.elbName === undefined) {
                     $scope.isNotValid = true;
                 } else if (elbListenerTextArea.length > 0) {
                     if (elbListenerTextArea.val() === '' || elbListenerTextArea.val() === '[]') {
