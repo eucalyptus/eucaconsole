@@ -32,6 +32,7 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils'])
         $scope.step2Invalid = true;
         $scope.imageJsonURL = '';
         $scope.isNotValid = true;
+        $scope.loading = false;
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.stackTemplateEndpoint = options.stack_template_url;
@@ -222,6 +223,7 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils'])
                 var file = $scope.templateFiles[0];
                 fd.append('template-file', file);
             }
+            $scope.loading = true;
             $http.post($scope.stackTemplateEndpoint, fd, {
                     headers: {'Content-Type': undefined},
                     transformRequest: angular.identity
@@ -229,6 +231,7 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils'])
             success(function(oData) {
                 var results = oData ? oData.results : '';
                 if (results) {
+                    $scope.loading = false;
                     $scope.description = results.description;
                     $scope.parameters = results.parameters;
                     $timeout(function () {

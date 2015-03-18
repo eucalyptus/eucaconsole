@@ -108,7 +108,7 @@
                                 <div class="small-3 columns subheading">
                                     <label class="right">{{ item.name }}
                                         <span class="helptext-icon" data-tooltip=""
-                                            title="{{ item.description }}">?</span>
+                                            ng-attr-title='{{ item.description }}'>?</span>
                                     </label>
                                 </div>
                                 <div class="small-9 columns field">
@@ -117,7 +117,7 @@
                                         min='{{ item.min }}' max='{{ item.max }}' pattern='{{ item.regex }}'>
                                     </input>
                                     <small class='error' ng-hide="">{{ item.constraint }}</small>
-                                    <select type="text" name="{{ item.name }}" id="{{ item.name }}" value='{{ item.default }}' ng-show="item.options">
+                                    <select chosen="" type="text" name="{{ item.name }}" id="{{ item.name }}" value='{{ item.default }}' ng-show="item.options">
                                         <option ng-repeat="option in item.options" value="{{ option[0] }}">{{ option[1] }}</option>
                                     </select>
                                 </div>
@@ -151,6 +151,7 @@
                         <label i18n:translate="">Template</label>
                         <div class="columns value">{{ templateIdent }}</div>
                     </div>
+                    <div ng-show="loading"><i class="busy" ></i></div>
                     <div class="row" ng-show="description">
                         <label i18n:translate="">Description</label>
                         <div class="columns value">{{ description }}</div>
@@ -168,7 +169,7 @@
                     <div class="row">
                         <label i18n:translate="">Parameters</label>
                         <div class="columns value" id="parameter-preview">
-                            <div class="keyvalsummary" ng-repeat="param in parametersObject">{{ param.name }} = {{ param.value }}</div>
+                            <div class="keyvalsummary" ng-repeat="param in parametersObject"><label>{{ param.name }} = </label><span>{{ param.value }}</span></div>
                         </div>
                     </div>
                 </div>

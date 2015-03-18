@@ -124,6 +124,7 @@ angular.module('StackPage', ['MagicSearch', 'EucaConsoleUtils'])
                 if (results) {
                     $scope.unfilteredEvents = results.events;
                     $scope.searchEvents();
+                    $('#events-table').stickyTableHeaders();
                 }
             });
         };

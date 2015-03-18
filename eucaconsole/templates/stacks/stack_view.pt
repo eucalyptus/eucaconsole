@@ -198,14 +198,14 @@
                         <h6 i18n:translate="">Events</h6>
                         <div ng-app="MagicSearch">
                             <magic-search template="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.html')}"
-                                strings="{'remove':'Remove facet', 'cancel':'Clear search', 'prompt':'Select facets for filter, or enter text to search'}"
+                                strings="{'remove':'${layout.searchtext_remove}', 'cancel':'${layout.searchtext_cancel}', 'prompt':'${layout.searchtext_prompt}', 'text':'${layout.searchtext_text_facet}'}"
                                 facets="${search_facets}" filter-keys="${filter_keys}"></magic-search>
                         </div>
                         <div class="datagrid" id="datagrid-items">
                             <div ng-show="eventsLoading"><span class="busy"></span></div>
                             <div id="tableview" class="gridwrapper" ng-show="!eventsLoading">
                                 <!-- Begin table view -->
-                                <table class="table" ng-show="!eventsLoading" ng-cloak="true">
+                                <table id="events-table" class="table" ng-show="!eventsLoading" ng-cloak="true">
                                     <thead class="header"><tr>
                                         <th i18n:translate="">TIMESTAMP</th>
                                         <th i18n:translate="">STATUS</th>
@@ -251,6 +251,7 @@
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/jquery.stickytableheaders.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/stack.js')}"></script>
 </div>
 
