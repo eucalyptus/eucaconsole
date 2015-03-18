@@ -27,6 +27,7 @@ angular.module('EucaConsoleUtils').directive('elbListenerEditor', function() {
                 $scope.classFromPortDiv = '';
                 $scope.classToPortDiv = '';
                 $scope.classDuplicatedListenerDiv = '';
+                $scope.classNoListenerWarningDiv = '';
                 $scope.elbListenerTextarea = undefined;
                 $scope.serverCertificateName = '';
                 $scope.addListenerButtonClass = 'disabled';
@@ -102,6 +103,9 @@ angular.module('EucaConsoleUtils').directive('elbListenerEditor', function() {
                         });
 		    });
                     $scope.$watch('listenerArray', function () {
+                        if ($scope.listenerArray.length > 0) {
+                            $scope.classNoListenerWarningDiv = '';
+                        }
                         $scope.$emit('eventUpdateListenerArray', $scope.listenerArray);
                     }, true);
 		    $scope.$on('eventUpdateCertificateName', function ($event, name) {
@@ -173,6 +177,9 @@ angular.module('EucaConsoleUtils').directive('elbListenerEditor', function() {
 		    $scope.listenerArray.splice(index, 1);
 		    $scope.syncListeners();
 		    $scope.$emit('listenerArrayUpdate');
+                    if ($scope.listenerArray.length === 0) {
+                        $scope.classNoListenerWarningDiv = 'error';
+                    }
 		};
 		$scope.syncListeners = function () {
                     $scope.elbListenerTextarea.val(JSON.stringify($scope.listenerArray));

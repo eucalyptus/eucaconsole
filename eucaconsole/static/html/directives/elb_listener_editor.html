@@ -13,6 +13,15 @@
 	        <a class="remove" ng-click="removeListener($event, $index)" title="Remove rule"><i class="fi-x"></i></a>
 	    </span>
         </div>
+        <div>
+	    <div class="row controls-wrapper">
+	        <div class="small-12 columns field">
+                    <div ng-class="classNoListenerWarningDiv">
+                        <small class="error" i18n:translate="">You must define at least one listener.</small>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div>&nbsp;</div>
         <div>
             <div ng-show="listenerArray.length === 0">
