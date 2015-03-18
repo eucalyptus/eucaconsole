@@ -81,8 +81,8 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
         };
         $scope.setWatcher = function (){
             // Handle the next step tab click event
-            $scope.$on('eventClickVisitNextStep', function($event, nextStep) {
-                $scope.checkRequiredInput(nextStep);
+            $scope.$on('eventClickVisitNextStep', function($event, thisStep, nextStep) {
+                $scope.checkRequiredInput(thisStep);
                 // Signal the parent wizard controller about the completion of the next step click event
                 $scope.$emit('eventProcessVisitNextStep', nextStep);
                 $timeout(function() {
@@ -140,8 +140,13 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
         $scope.checkRequiredInput = function (step) {
             $scope.isNotValid = false;
             if (step === 1) {
+                var elbListenerTextArea = $('#elb-listener');
                 if ($scope.elbName === '') {
                     $scope.isNotValid = true;
+                } else if (elbListenerTextArea.length > 0) {
+                    if (elbListenerTextArea.val() === '' || elbListenerTextArea.val() === '[]') {
+                        $scope.isNotValid = true;
+                    }
                 }
             }
             // Signal the parent wizard controller about the update of the validation error status

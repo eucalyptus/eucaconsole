@@ -145,12 +145,12 @@ angular.module('Wizard', ['EucaConsoleUtils', 'MagicSearch'])
             if ($scope.tabList[step].render === false) {
                 nextStep = step + 1;
             }
-            $scope.$broadcast('eventClickVisitNextStep', nextStep);
+            $scope.$broadcast('eventClickVisitNextStep', $scope.currentStepIndex+1, nextStep);
         };
         $scope.processVisitNextStep = function(nextStep) {
             // Check for form validation before proceeding to next step
             var currentStepID = $scope.currentStepIndex + 1;
-            if ($scope.existInvalidFields(currentStepID) || $scope.isValidationError === true) {
+            if ($scope.isValidationError === true || $scope.existInvalidFields(currentStepID)) {
                 // NOT OK TO CHANGE TO NEXT STEP
                 // NOTE: Need to handle the case where the tab was clicked to visit the previous step
                 //
