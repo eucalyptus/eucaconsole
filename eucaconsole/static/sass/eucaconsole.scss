@@ -181,9 +181,19 @@ h1, h2, h3, h4, h5, h6 {
             width: auto !important;
         }
     }
+    .fi-list {
+        margin-left: 8px;
+        position: relative;
+        top: -10px;
+    }
+    .menu-label {
+        display: block;
+        position: relative;
+        top: -25px;
+    }
     #logo {
         display: inline-block;
-        width: 199px; height: 22px;
+        width: 199px; height: 55px;
         background: url(../img/eucalogo-199x22.png) no-repeat;
     }
     #selected-region {
@@ -1070,7 +1080,7 @@ footer {
 // Nav bar adjustments
 @media screen {
     #logobar {
-        border-bottom: 1px solid black;
+        //border-bottom: 1px solid black;
         margin-top: 8px;
         .dropdown {
             position: relative;
