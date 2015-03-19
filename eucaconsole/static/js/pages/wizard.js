@@ -150,7 +150,14 @@ angular.module('Wizard', ['EucaConsoleUtils', 'MagicSearch'])
         $scope.processVisitNextStep = function(nextStep) {
             // Check for form validation before proceeding to next step
             var currentStepID = $scope.currentStepIndex + 1;
-            if ($scope.isValidationError === true || $scope.existInvalidFields(currentStepID)) {
+            if (nextStep < $scope.currentStepIndex) {
+                // Case of clicking the tab direct to go backward step
+                // No validation check is needed when stepping back
+                $timeout(function() {
+                    $scope.updateStep(nextStep);
+                    $scope.$broadcast('currentStepIndexUpdate', $scope.currentStepIndex);
+                });
+            } else if ($scope.isValidationError === true || $scope.existInvalidFields(currentStepID)) {
                 // NOT OK TO CHANGE TO NEXT STEP
                 // NOTE: Need to handle the case where the tab was clicked to visit the previous step
                 //
