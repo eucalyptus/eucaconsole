@@ -21,6 +21,8 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                 $scope.isVPCSupported = false;
                 $scope.vpcSubnets = [];
                 $scope.availabilityZones = [];
+                $scope.searchFilter = '';
+                $scope.filterKeys = [];
 		$scope.initSelector = function () {
 		    var options = JSON.parse(eucaUnescapeJson($scope.option_json));
 		    $scope.setInitialValues(options);
@@ -54,6 +56,17 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                     $scope.$watch('selectedInstanceList', function () {
                         $scope.$emit('eventUpdateSelectedInstanceList', $scope.selectedInstanceList);
 		    }, true);
+                    $scope.$on('eventQuerySearch', function ($event, query) {
+                        console.log("query qearch: " + query);
+                    });
+                    $scope.$on('eventTextSearch', function ($event, text, filterKeys) {
+                        console.log("text search: " + text);
+                        console.log("filter keys: " + filterKeys);
+                        $scope.searchFilter = text;
+                        $timeout(function () {
+                            $scope.searchFilterItems(filterKeys);
+                        });
+                    });
                     $('#instance_selector').on('click', 'input:checkbox', function () {
                         var instanceID = $(this).val();
                         if (instanceID === '_all') {
@@ -126,6 +139,40 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                             });
                         }
                     });
+                };
+                /*  Filter items client side based on search criteria.
+                 *  @param {array} filterProps Array of properties to filter items on
+                 */
+                $scope.searchFilterItems = function(filterProps) {
+                    var filterText = ($scope.searchFilter || '').toLowerCase();
+                    if (filterProps !== '' && filterProps !== undefined){
+                        // Store the filterProps input for later use as well
+                        $scope.filterKeys = filterProps;
+                    }
+                    if (filterText === '') {
+                        // If the search filter is empty, skip the filtering
+                        $scope.instanceList = $scope.allInstanceList;
+                        return;
+                    }
+                    // Leverage Array.prototype.filter (ECMAScript 5)
+                    var filteredItems = $scope.allInstanceList.filter(function(item) {
+                        for (var i=0; i < $scope.filterKeys.length; i++) {  // Can't use $.each or Array.prototype.forEach here
+                            var propName = $scope.filterKeys[i];
+                            var itemProp = item.hasOwnProperty(propName) && item[propName];
+                            if (itemProp && typeof itemProp === "string" && 
+                                itemProp.toLowerCase().indexOf(filterText) !== -1) {
+                                    return item;
+                            } else if (itemProp && typeof itemProp === "object") {
+                                // In case of mutiple values, create a flat string and perform search
+                                var flatString = $scope.getItemNamesInFlatString(itemProp);
+                                if (flatString.toLowerCase().indexOf(filterText) !== -1) {
+                                    return item;
+                                }
+                            }
+                        }
+                    });
+                    // Update the items[] with the filtered items
+                    $scope.instanceList = filteredItems;
                 };
                 $scope.initSelector();
             }

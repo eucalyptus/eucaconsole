@@ -152,6 +152,14 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
                 // Broadcast the certificate name change to the elb listener directive
                 $scope.$broadcast('eventUpdateCertificateName', $scope.certificateName);
             });
+            $scope.$on('searchUpdated', function ($event, query) {
+                // Relay the query search update signal
+                $scope.$broadcast('eventQuerySearch', query);
+            });
+            $scope.$on('textSearch', function ($event, searchVal, filterKeys) {
+                // Relay the text search update signal
+                $scope.$broadcast('eventTextSearch', searchVal, filterKeys);
+            });
         };
         $scope.setFocus = function () {
         };
