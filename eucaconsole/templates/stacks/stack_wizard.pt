@@ -70,6 +70,7 @@
                                             <optgroup>
                                         </select>
                                     </div>
+                                    <br ng-hide="inputtype=='sample'"/>
                                     <input type="radio" id="inputtype" name="inputtype" value="file" ng-model="inputtype">
                                         <label i18n:translate="">Upload template</label>
                                     </input>
@@ -114,10 +115,13 @@
                                 <div class="small-9 columns field">
                                     <input type="text" name="{{ item.name }}" id="{{ item.name }}"
                                         value='{{ item.default }}' ng-hide="item.options"
-                                        min='{{ item.min }}' max='{{ item.max }}' pattern='{{ item.regex }}'>
+                                        min='{{ item.min }}' max='{{ item.max }}' pattern='{{ item.regex }}'
+                                        ng-model="paramModels[item.name]" ng-change="checkRequiredInput()">
                                     </input>
                                     <small class='error' ng-hide="">{{ item.constraint }}</small>
-                                    <select chosen="" type="text" name="{{ item.name }}" id="{{ item.name }}" value='{{ item.default }}' ng-show="item.options">
+                                    <select chosen="" type="text" name="{{ item.name }}" id="{{ item.name }}" 
+                                        value='{{ item.default }}' ng-show="item.options"
+                                        ng-model="paramModels[item.name]" ng-change="checkRequiredInput()">
                                         <option ng-repeat="option in item.options" value="{{ option[0] }}">{{ option[1] }}</option>
                                     </select>
                                 </div>
@@ -169,7 +173,10 @@
                     <div class="row">
                         <label i18n:translate="">Parameters</label>
                         <div class="columns value" id="parameter-preview">
-                            <div class="keyvalsummary" ng-repeat="param in parametersObject"><label>{{ param.name }} = </label><span>{{ param.value }}</span></div>
+                            <div class="keyvalsummary" ng-repeat="param in parameters">
+                                <span class='param-name'>{{ param.name }}&nbsp;</span>
+                                <span class='param-value'>{{ paramModels[param.name] }}</span>
+                            </div>
                         </div>
                     </div>
                 </div>

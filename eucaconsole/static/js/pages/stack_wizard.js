@@ -15,6 +15,9 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils'])
                     $scope.templateIdent = event.target.files[0].name;
                     $scope.$apply();
                     $scope.checkRequiredInput();
+                    if ($scope.templateIdent !== undefined) {
+                        $scope.getStackTemplateInfo();
+                    }
                 });
             }
         };
@@ -33,6 +36,7 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils'])
         $scope.imageJsonURL = '';
         $scope.isNotValid = true;
         $scope.loading = false;
+        $scope.paramModels = [];
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.stackTemplateEndpoint = options.stack_template_url;
@@ -57,6 +61,9 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils'])
             $timeout(function() {
                 $scope.checkRequiredInput();
                 $scope.templateIdent = $scope.templateUrl;
+                if ($scope.templateIdent !== undefined) {
+                    $scope.getStackTemplateInfo();
+                }
             });
         });
         $scope.setInitialValues = function () {
@@ -111,14 +118,14 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils'])
                     // Once invalid name has been entered, do not enable the button unless the name length is valid
                     $scope.isNotValid = true;
                 }
-                if ($scope.isNotValid === false) {
-                    $scope.getStackTemplateInfo();
-                }
             } else if ($scope.currentStepIndex == 2) {
                 $scope.isNotValid = false;
-                if ($scope.parametersObject === undefined) {
-                    $scope.isNotValid = true;
-                }
+                angular.forEach($scope.parameters, function(param, idx) {
+                    var val = $scope.paramModels[param.name];
+                    if (val === undefined) {
+                        $scope.isNotValid = true;
+                    }
+                });
             }
         };
         $scope.setWatcher = function () {
@@ -128,6 +135,9 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils'])
             $scope.$watch('templateSample', function(){
                 $scope.checkRequiredInput();
                 $scope.templateIdent = $scope.templateSample;
+                if ($scope.templateIdent !== undefined) {
+                    $scope.getStackTemplateInfo();
+                }
             });
             $scope.$watch('currentStepIndex', function(){
                  $scope.setWizardFocus($scope.currentStepIndex);
@@ -234,24 +244,14 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils'])
                     $scope.loading = false;
                     $scope.description = results.description;
                     $scope.parameters = results.parameters;
-                    $timeout(function () {
-                        $scope.updateParamSummary();
-                    }, 100);
+                    angular.forEach($scope.parameters, function(param, idx) {
+                        $scope.paramModels[param.name] = param.default;
+                    });
+                    $scope.checkRequiredInput();
                 }
             }).
             error(function (oData, status) {
                 eucaHandleError(oData, status);
-            });
-        };
-        $scope.updateParamSummary = function() {
-            $scope.parametersObject = [];
-            angular.forEach($scope.parameters, function(param, idx) {
-                if (param.options === undefined) {
-                    $scope.parametersObject.push({'name':param.name, 'value':$('input#'+param.name).val()});
-                }
-                else {
-                    $scope.parametersObject.push({'name':param.name, 'value':$('select#'+param.name).val()});
-                }
             });
         };
     })

@@ -48,7 +48,9 @@
 
 .columns.value { padding-left: 1rem; }
 
-.keyvalsummary { line-height: 1.375rem; }
+.keyvalsummary { display: flex; justify-content: flex-start; line-height: 1.375rem; }
+
+.param-name { color: #6a737b; }
 
 #sample-template { margin-left: 1.5rem; width: 90%; }
 
