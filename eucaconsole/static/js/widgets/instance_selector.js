@@ -61,7 +61,6 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                         $scope.$emit('eventUpdateSelectedInstanceList', $scope.selectedInstanceList);
 		    }, true);
                     $scope.$on('eventQuerySearch', function ($event, query) {
-                        console.log("query qearch: " + query);
                         $scope.searchQueryURL = '';
                         if (query.length > 0) {
                            $scope.searchQueryURL = query;
@@ -69,8 +68,6 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                         $scope.getAllInstanceList();
                     });
                     $scope.$on('eventTextSearch', function ($event, text, filterKeys) {
-                        console.log("text search: " + text);
-                        console.log("filter keys: " + filterKeys);
                         $scope.searchFilter = text;
                         $timeout(function () {
                             $scope.searchFilterItems(filterKeys);
