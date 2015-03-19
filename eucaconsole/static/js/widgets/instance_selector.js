@@ -21,6 +21,7 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                 $scope.isVPCSupported = false;
                 $scope.vpcSubnets = [];
                 $scope.availabilityZones = [];
+                $scope.searchQueryURL = '';
                 $scope.searchFilter = '';
                 $scope.filterKeys = [];
 		$scope.initSelector = function () {
@@ -39,6 +40,9 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                     $scope.vpcSubnets = [];
                     $scope.availabilityZones = [];
                     $scope.isVPCSupported = false;
+                    $scope.searchQueryURL = '';
+                    $scope.searchFilter = '';
+                    $scope.filterKeys = [];
                     if (options.hasOwnProperty('is_vpc_supported')) {
                         $scope.isVPCSupported = options.is_vpc_supported;
                     }
@@ -58,6 +62,11 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
 		    }, true);
                     $scope.$on('eventQuerySearch', function ($event, query) {
                         console.log("query qearch: " + query);
+                        $scope.searchQueryURL = '';
+                        if (query.length > 0) {
+                           $scope.searchQueryURL = query;
+                        }
+                        $scope.getAllInstanceList();
                     });
                     $scope.$on('eventTextSearch', function ($event, text, filterKeys) {
                         console.log("text search: " + text);
@@ -112,6 +121,9 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                 $scope.getAllInstanceList = function () {
                     var csrf_token = $('#csrf_token').val();
                     var data = "csrf_token=" + csrf_token;
+                    if ($scope.searchQueryURL !== '') {
+                        data = data + "&" + $scope.searchQueryURL;
+                    };
                     $http({
                         method:'POST', url:$scope.instancesJsonEndpoint, data:data,
                         headers: {'Content-Type': 'application/x-www-form-urlencoded'}
