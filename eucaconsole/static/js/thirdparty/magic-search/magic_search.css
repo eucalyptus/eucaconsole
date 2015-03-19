@@ -19,7 +19,7 @@
 }
 /* line 37, ../src/magic_search.scss */
 .search-bar i.fi-filter {
-  color: #444444;
+  color: #444;
   position: absolute;
   top: 0.5rem;
   left: 0.65rem;
@@ -52,7 +52,7 @@
 /* line 53, ../src/magic_search.scss */
 .search-bar .search-selected {
   background-color: white;
-  color: #444444;
+  color: #444;
 }
 /* line 57, ../src/magic_search.scss */
 .search-bar .search-entry {
@@ -61,7 +61,7 @@
 }
 /* line 61, ../src/magic_search.scss */
 .search-bar .search-input {
-  width: 220px;
+  width: 280px;
   border: 0;
   box-shadow: none;
   height: 1.5rem;
@@ -78,7 +78,7 @@
 }
 /* line 75, ../src/magic_search.scss */
 .search-bar i.cancel {
-  color: #444444;
+  color: #444;
   position: absolute;
   top: 0.5rem;
   right: 0.65rem;
