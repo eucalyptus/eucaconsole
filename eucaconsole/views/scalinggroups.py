@@ -241,7 +241,7 @@ class BaseScalingGroupView(BaseView):
 
     def get_policies(self, scaling_group):
         policies = []
-        if self.autoscale_conn:
+        if self.autoscale_conn and scaling_group:
             policies = self.autoscale_conn.get_all_policies(as_group=scaling_group.name)
         return sorted(policies)
 
@@ -372,7 +372,7 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
 
     def get_vpc(self, scaling_group):
         with boto_error_handler(self.request):
-            if self.vpc_conn and scaling_group.vpc_zone_identifier:
+            if self.vpc_conn and scaling_group and scaling_group.vpc_zone_identifier:
                 vpc_subnets = scaling_group.vpc_zone_identifier.split(',')
                 vpc_subnet = self.vpc_conn.get_all_subnets(subnet_ids=vpc_subnets[0])
                 if vpc_subnet:
