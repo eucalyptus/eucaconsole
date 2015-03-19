@@ -113,6 +113,10 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
                 $scope.securityGroups = [];
                 $scope.getAllSecurityGroups($scope.vpcNetwork);
                 $scope.updateVPCSubnetChoices();
+                $scope.checkRequiredInput(2);
+            }, true);
+            $scope.$watch('securityGroups', function () {
+                $scope.checkRequiredInput(2);
             }, true);
             $scope.$watch('securityGroupCollection', function () {
                 $scope.updateSecurityGroupChoices();
@@ -163,6 +167,11 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
                     }
                 }
             } else if (step === 2) {
+                if ($scope.vpcNetwork !== 'None') {
+                    if ($scope.securityGroups.length === 0) {
+                        $scope.isNotValid = true;
+                    } 
+                }
             } else if (step === 3) {
                 if ($scope.availabilityZones.length === 0 && $scope.vpcSubnets.length === 0) {
                     $scope.isNotValid = true;
