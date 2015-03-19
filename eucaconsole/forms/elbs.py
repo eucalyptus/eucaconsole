@@ -241,31 +241,59 @@ class ELBInstancesFiltersForm(BaseSecureForm):
         super(ELBInstancesFiltersForm, self).__init__(request, **kwargs)
         self.request = request
         self.cloud_type = cloud_type
+        from ..views import BaseView
+        self.is_vpc_supported = BaseView.is_vpc_supported(request)
         self.ec2_choices_manager = ChoicesManager(conn=ec2_conn)
         self.autoscale_choices_manager = ChoicesManager(conn=autoscale_conn)
         self.iam_choices_manager = ChoicesManager(conn=iam_conn)
         self.vpc_choices_manager = ChoicesManager(conn=vpc_conn)
-        region = request.session.get('region')
-        self.availability_zone.choices = self.get_availability_zone_choices(region)
+        self.region = request.session.get('region')
+        self.availability_zone.choices = self.get_availability_zone_choices(self.region)
         self.state.choices = self.get_status_choices()
         self.vpc_id.choices = self.vpc_choices_manager.vpc_networks(add_blank=False)
-        if cloud_type == 'aws':
+        if self.cloud_type == 'aws':
             self.vpc_id.choices.append(('None', _(u'No VPC')))
         self.vpc_id.choices = sorted(self.vpc_id.choices)
         self.subnet_id.choices = self.vpc_choices_manager.vpc_subnets(add_blank=False)
-        self.facets = [
-            {'name':'state', 'label':self.state.label.text, 'options':self.get_status_choices()},
-            {'name':'availability_zone', 'label':self.availability_zone.label.text, 'options':self.get_availability_zone_choices(region)},
-            {'name':'subnet_id', 'label':self.subnet_id.label.text,
-                'options':self.getOptionsFromChoices(self.vpc_choices_manager.vpc_subnets(add_blank=False))},
-            {'name':'tags', 'label':self.tags.label.text},
-        ]
-        vpc_choices = self.vpc_choices_manager.vpc_networks(add_blank=False)
-        vpc_choices.append(('None', _(u'No VPC')))
-        self.facets.append(
-            {'name':'vpc_id', 'label':self.vpc_id.label.text,
-                'options': self.getOptionsFromChoices(vpc_choices)},
-        )
+        self.facets = []
+        self.set_search_facets()
+
+    def set_search_facets(self):
+        if self.cloud_type == 'aws':
+            self.facets = [
+                {'name':'state', 'label':self.state.label.text, 'options':self.get_status_choices()},
+                {'name':'availability_zone', 'label':self.availability_zone.label.text,
+                    'options':self.get_availability_zone_choices(self.region)},
+                {'name':'subnet_id', 'label':self.subnet_id.label.text,
+                    'options':self.getOptionsFromChoices(self.vpc_choices_manager.vpc_subnets(add_blank=False))},
+                {'name':'tags', 'label':self.tags.label.text},
+            ]
+            vpc_choices = self.vpc_choices_manager.vpc_networks(add_blank=False)
+            vpc_choices.append(('None', _(u'No VPC')))
+            self.facets.append(
+                {'name':'vpc_id', 'label':self.vpc_id.label.text,
+                    'options': self.getOptionsFromChoices(vpc_choices)},
+            )
+        else:
+            self.facets = [
+                {'name':'state', 'label':self.state.label.text, 'options':self.get_status_choices()},
+                {'name':'tags', 'label':self.tags.label.text},
+            ]
+            if self.is_vpc_supported:
+                self.facets.append(
+                    {'name':'subnet_id', 'label':self.subnet_id.label.text,
+                        'options':self.getOptionsFromChoices(self.vpc_choices_manager.vpc_subnets(add_blank=False))},
+                )
+                vpc_choices = self.vpc_choices_manager.vpc_networks(add_blank=False)
+                self.facets.append(
+                    {'name':'vpc_id', 'label':self.vpc_id.label.text,
+                       'options': self.getOptionsFromChoices(vpc_choices)},
+                )
+            else:
+                self.facets.append(
+                    {'name':'availability_zone', 'label':self.availability_zone.label.text,
+                       'options':self.get_availability_zone_choices(self.region)},
+                )
 
     def get_availability_zone_choices(self, region):
         return self.getOptionsFromChoices(self.ec2_choices_manager.availability_zones(region, add_blank=False))

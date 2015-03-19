@@ -262,7 +262,7 @@ class CreateELBView(BaseView):
         self.create_form = CreateELBForm(
             self.request, conn=self.ec2_conn, vpc_conn=self.vpc_conn, formdata=self.request.params or None)
         self.certificate_form = CertificateForm(self.request, conn=self.ec2_conn, iam_conn=self.iam_conn, elb_conn=self.elb_conn, formdata=self.request.params or None)
-        filter_keys = ['id', 'name', 'placement', 'state', 'tags']
+        filter_keys = ['id', 'name', 'placement', 'state', 'tags', 'vpc_subnet_display', 'vpc_name']
         filters_form = ELBInstancesFiltersForm(
             self.request, ec2_conn=self.ec2_conn, autoscale_conn=self.autoscale_conn,
             iam_conn=None, vpc_conn=self.vpc_conn,
