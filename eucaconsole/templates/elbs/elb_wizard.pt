@@ -288,7 +288,7 @@
                     <div class="row" ng-show="vpcNetwork !== 'None'">
                         <div class="small-4 columns"><label i18n:translate="" class="right">VPC Subnets:</label></div>
                         <div class="small-8 columns value">
-                            <div ng-repeat="vpcSubnet in vpcSubnets">{{ vpcSubnet }}</div>
+                            <div ng-repeat="vpcSubnetName in vpcSubnetNames">{{ vpcSubnetName }}</div>
                         </div>
                     </div>
                     <div class="row">

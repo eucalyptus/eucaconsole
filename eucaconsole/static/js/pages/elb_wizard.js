@@ -14,6 +14,7 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
         $scope.vpcNetwork = '';
         $scope.vpcNetworkName = '';
         $scope.vpcSubnets = [];
+        $scope.vpcSubnetNames = [];
         $scope.vpcSubnetChoices = [];
         $scope.vpcSubnetList = [];
         $scope.securityGroups = [];
@@ -130,6 +131,7 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
                 $scope.$broadcast('eventUpdateAvailabilityZones', $scope.availabilityZones);
             }, true);
             $scope.$watch('vpcSubnets', function () {
+                $scope.updateVPCSubnetNames();
                 $scope.checkRequiredInput(3);
                 $scope.$broadcast('eventUpdateVPCSubnets', $scope.vpcSubnets);
             }, true);
@@ -268,6 +270,13 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
             angular.forEach($scope.securityGroups, function (sGroup) {
                 $scope.securityGroupNames.push($scope.securityGroupChoices[sGroup]);
             });
+        };
+        $scope.updateVPCSubnetNames = function () {
+            $scope.vpcSubnetNames = [];
+            angular.forEach($scope.vpcSubnets, function (vpcSubnet) {
+                $scope.vpcSubnetNames.push($scope.vpcSubnetChoices[vpcSubnet]);
+            });
+
         };
         $scope.openSelectCertificateModal = function () {
             var modal = $('#select-certificate-modal');
