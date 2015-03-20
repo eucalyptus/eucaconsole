@@ -265,7 +265,7 @@
                 <div class="section" ng-show="summaryDisplays[1]">
                     <div class="row">
                         <div class="small-4 columns"><label i18n:translate="" class="right">VPC Network:</label></div>
-                        <div class="small-8 columns value">{{ vpcNetwork }}</div>
+                        <div class="small-8 columns value">{{ vpcNetworkName }}</div>
                     </div>
                     <div class="row" ng-show="vpcNetwork !== 'None'">
                         <div class="small-4 columns"><label i18n:translate="" class="right">Security Groups:</label></div>
