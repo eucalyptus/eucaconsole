@@ -276,7 +276,6 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
             angular.forEach($scope.vpcSubnets, function (vpcSubnet) {
                 $scope.vpcSubnetNames.push($scope.vpcSubnetChoices[vpcSubnet]);
             });
-
         };
         $scope.openSelectCertificateModal = function () {
             var modal = $('#select-certificate-modal');

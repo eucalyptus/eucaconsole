@@ -143,7 +143,7 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                             });
                         } else if ($scope.availabilityZones.length > 0) {
                             angular.forEach($scope.availabilityZones, function (zone) {
-                                if (instance.placement === zone) {
+                                if (instance.placement === zone && instance.subnet_id === null) {
                                     $scope.instanceList.push(instance);
                                 }
                             });
