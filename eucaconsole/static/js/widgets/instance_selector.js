@@ -75,12 +75,13 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                     });
                     $('#instance_selector').on('click', 'input:checkbox', function () {
                         var instanceID = $(this).val();
+                        var instanceName = $('#instance-name-' + instanceID).text();
                         if (instanceID === '_all') {
                             // Clicked all checkbox
                             if ($(this).prop("checked") === true){
                                 $scope.selectedInstanceList = [];
                                 angular.forEach($scope.instanceList, function(instance) {
-                                    $scope.selectedInstanceList.push(instance.id);
+                                    $scope.selectedInstanceList.push(instance.name);
                                 });
                                 $('#instance_selector input:checkbox').not(this).prop('checked', true);
                             } else {
@@ -91,10 +92,10 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                             // Click instance checkbox
                             $('#instance-all-checkbox').prop('checked', false);
                             if ($(this).prop("checked") === true){
-                                $scope.selectedInstanceList.push(instanceID);
+                                $scope.selectedInstanceList.push(instanceName);
                             } else {
                                 angular.forEach($scope.selectedInstanceList, function(instance, $index) {
-                                    if (instance === instanceID) {
+                                    if (instance === instanceID || instance === instanceName) {
                                         $scope.selectedInstanceList.splice($index, 1);
                                     } 
                                 });
