@@ -17,6 +17,7 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
         $scope.vpcSubnetChoices = [];
         $scope.vpcSubnetList = [];
         $scope.securityGroups = [];
+        $scope.securityGroupNames = [];
         $scope.securityGroupChoices = [];
         $scope.securityGroupCollection = []; 
         $scope.availabilityZones = [];
@@ -118,6 +119,7 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
                 $scope.checkRequiredInput(2);
             }, true);
             $scope.$watch('securityGroups', function () {
+                $scope.updateSecurityGroupNames();
                 $scope.checkRequiredInput(2);
             }, true);
             $scope.$watch('securityGroupCollection', function () {
@@ -260,6 +262,12 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
                     }
                 });
             }
+        };
+        $scope.updateSecurityGroupNames = function () {
+            $scope.securityGroupNames = [];
+            angular.forEach($scope.securityGroups, function (sGroup) {
+                $scope.securityGroupNames.push($scope.securityGroupChoices[sGroup]);
+            });
         };
         $scope.openSelectCertificateModal = function () {
             var modal = $('#select-certificate-modal');
