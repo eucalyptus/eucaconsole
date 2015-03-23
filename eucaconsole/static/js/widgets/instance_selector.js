@@ -121,7 +121,7 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                     var data = "csrf_token=" + csrf_token;
                     if ($scope.searchQueryURL !== '') {
                         data = data + "&" + $scope.searchQueryURL;
-                    };
+                    }
                     $http({
                         method:'POST', url:$scope.instancesJsonEndpoint, data:data,
                         headers: {'Content-Type': 'application/x-www-form-urlencoded'}
