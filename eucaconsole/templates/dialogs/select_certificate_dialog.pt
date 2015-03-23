@@ -4,13 +4,13 @@
         <h3 i18n:translate="">Select certificate</h3>
         <div ng-show="includesBackendCertificate">
             <dl id="wizard-tabs" class="tabs" data-tab="" ng-cloak="">
-                <dd class="active">
-                    <a ng-click="visitCertificateTab($event, 'SSL')">
+                <dd id="select-certificate-modal-tab-ssl" class="active">
+                    <a ng-click="selectCertificateTab($event, 'SSL')">
                         <span class="cir">SSL</span>
                     </a>
                 </dd>
-                <dd>
-                    <a ng-click="visitCertificateTab($event, 'BACKEND')">
+                <dd id="select-certificate-modal-tab-backend">
+                    <a ng-click="selectCertificateTab($event, 'BACKEND')">
                         <span class="cir">Backend</span>
                     </a>
                 </dd>

@@ -108,9 +108,12 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
                 $scope.listenerArray = listenerArray;
             });
             $scope.$on('eventOpenSelectCertificateModal', function ($event, fromProtocol, toProtocol) {
-                $scope.includesBackendCertificate = false;
                 if (toProtocol === 'HTTPS' || toProtocol === 'SSL') {
                     $scope.includesBackendCertificate = true;
+                } else {
+                    $scope.includesBackendCertificate = false;
+                    // Set the tab display to 'SSL' if the backend certificate section is hidden
+                    $scope.certificateTab = 'SSL';
                 }
                 $scope.openSelectCertificateModal();
             });
@@ -153,6 +156,9 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
             });
             $scope.$watch('responseTimeout', function (){
                 $scope.checkRequiredInput(4);
+            });
+            $scope.$watch('certificateTab', function () {
+                $scope.adjustSelectCertificateModalTabDisplay();
             });
             $scope.$watch('certificateARN', function(){
                 // Find the certficate name when selected on the select certificate dialog
@@ -296,8 +302,19 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
                 $("#certificates").val($scope.certificateARN);
             }
         };
-        $scope.visitCertificateTab = function ($event, tab) {
+        $scope.selectCertificateTab = function ($event, tab) {
             $scope.certificateTab = tab;
+        };
+        $scope.adjustSelectCertificateModalTabDisplay = function () {
+            var sslTab = $('#select-certificate-modal-tab-ssl');
+            var backendTab = $('#select-certificate-modal-tab-backend');
+            sslTab.removeClass('active');
+            backendTab.removeClass('active');
+            if ($scope.certificateTab === 'SSL') {
+                sslTab.addClass('active');
+            } else {
+                backendTab.addClass('active');
+            }
         };
         $scope.removeBackendCertificate = function ($event, index) {
             $event.preventDefault();
