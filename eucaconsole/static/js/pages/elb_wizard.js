@@ -38,6 +38,9 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
         $scope.certificateName = '';
         $scope.includesBackendCertificate = false;
         $scope.backendCertificateArray = [];
+        $scope.backendCertificateName = '';
+        $scope.backendCertificateBody = '';
+        $scope.backendCertificateTextarea = '';
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.setInitialValues(options);
@@ -75,7 +78,10 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
             $scope.includesBackendCertificate = false;
             $scope.certificateTab = 'SSL';
             $scope.certificateRadioButton = "existing";
-            $scope.backendCertificateArray = [ {name: 'backendCert-001'} ];
+            $scope.backendCertificateArray = [];
+            if ($('#backend-certificates').length > 0) {
+                $scope.backendCertificateTextarea = $('#backend-certificates');
+            }
             // timeout is needed to wait for the elb listener directive to be initialized
             if ($('#certificates').children('option').length > 0) {
                 $scope.certificateName = $('#certificates').children('option').first().text();
@@ -315,6 +321,31 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
             } else {
                 backendTab.addClass('active');
             }
+        };
+        $scope.createBackendCertificateArrayBlock = function () {
+            var block = {
+                'name': $scope.backendCertificateName,
+                'certificateBody': $scope.backendCertificateBody
+            };
+            return block;
+        };
+        $scope.addBackendCertificate = function ($event) {
+	    $event.preventDefault();
+            // timeout is needed for all DOM updates and validations to be complete
+            $timeout(function () {
+                // Add the backend certificate 
+                $scope.backendCertificateArray.push($scope.createBackendCertificateArrayBlock());
+                $scope.syncBackendCertificates();
+		$scope.$emit('backendCertificateArrayUpdate');
+            });
+        };
+        $scope.syncBackendCertificates = function () {
+            $scope.backendCertificateTextarea.val(JSON.stringify($scope.backendCertificateArray));
+            $scope.resetBackendCertificateValues();
+        };
+        $scope.resetBackendCertificateValues = function () {
+            $scope.backendCertificateName = '';
+            $scope.backendCertificateBody = '';
         };
         $scope.removeBackendCertificate = function ($event, index) {
             $event.preventDefault();

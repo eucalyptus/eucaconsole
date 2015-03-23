@@ -33,6 +33,16 @@
                     <label>Add a certificate</label>
                     ${panel('form_field', field=backend_certificate_form['backend_certificate_name'], ng_attrs={'model': 'backendCertificateName'}, leftcol_width=3, rightcol_width=9)}
                     ${panel('form_field', field=backend_certificate_form['backend_certificate_body'], ng_attrs={'model': 'backendCertificateBody'}, leftcol_width=3, rightcol_width=9)}
+	            <div class="row inline controls-wrapper" id="add-backend-certificate-button-div">
+	                <div class="small-3 columns">&nbsp;</div>
+	                <div class="small-9 columns field">
+		            <span id="button-add-backend-certificate" class="button round small" i18n:translate=""
+		                ng-click="addBackendCertificate($event)">Add Certificate</span>
+	            </div>
+                    <div>
+                        <textarea id="backend-certificates" name="backend_certificates" class="hidden" style="height: 8rem;"></textarea>
+                    </div>
+	        </div>
                 </div>
             </form>
             <a href="#" id="select-certificate-close-link" class="close-reveal-modal">&#215;</a>
