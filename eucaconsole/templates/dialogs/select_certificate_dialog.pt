@@ -4,7 +4,7 @@
         <h3 i18n:translate="">Select certificate</h3>
         <div>
             <dl id="wizard-tabs" class="tabs" data-tab="" ng-cloak="">
-                <dd>
+                <dd class="active">
                     <a ng-click="visitCertificateTab($event, 'SSL')">
                         <span class="cir">SSL</span>
                     </a>
