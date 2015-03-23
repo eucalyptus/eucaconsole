@@ -32,6 +32,7 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
         $scope.timeBetweenPings = '';
         $scope.failuresUntilUnhealthy = '';
         $scope.passesUntilUnhealthy = '';
+        $scope.includesBackendCertificate = false;
         $scope.certificateTab = 'SSL';
         $scope.certificateRadioButton = '';
         $scope.certificateARN = '';
@@ -70,6 +71,7 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
             $scope.timeBetweenPings = 30;
             $scope.failuresUntilUnhealthy = 2;
             $scope.passesUntilUnhealthy = 10;
+            $scope.includesBackendCertificate = false;
             $scope.certificateTab = 'SSL';
             $scope.certificateRadioButton = "existing";
             // timeout is needed to wait for the elb listener directive to be initialized
@@ -103,7 +105,11 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
             $scope.$on('eventUpdateListenerArray', function ($event, listenerArray) {
                 $scope.listenerArray = listenerArray;
             });
-            $scope.$on('eventOpenSelectCertificateModal', function () {
+            $scope.$on('eventOpenSelectCertificateModal', function ($event, fromProtocol, toProtocol) {
+                $scope.includesBackendCertificate = false;
+                if (toProtocol === 'HTTPS' || toProtocol === 'SSL') {
+                    $scope.includesBackendCertificate = true;
+                }
                 $scope.openSelectCertificateModal();
             });
             $scope.$on('eventUpdateSelectedInstanceList', function ($event, instanceList) {

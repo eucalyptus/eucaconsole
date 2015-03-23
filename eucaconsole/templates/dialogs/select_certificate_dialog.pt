@@ -2,7 +2,7 @@
 <div tal:omit-tag="" i18n:domain="eucaconsole">
     <div id="select-certificate-modal" class="reveal-modal medium" data-reveal="" ng-cloak="">
         <h3 i18n:translate="">Select certificate</h3>
-        <div>
+        <div ng-show="includesBackendCertificate">
             <dl id="wizard-tabs" class="tabs" data-tab="" ng-cloak="">
                 <dd class="active">
                     <a ng-click="visitCertificateTab($event, 'SSL')">
