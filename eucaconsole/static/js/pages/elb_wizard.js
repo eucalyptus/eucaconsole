@@ -32,11 +32,12 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
         $scope.timeBetweenPings = '';
         $scope.failuresUntilUnhealthy = '';
         $scope.passesUntilUnhealthy = '';
-        $scope.includesBackendCertificate = false;
         $scope.certificateTab = 'SSL';
         $scope.certificateRadioButton = '';
         $scope.certificateARN = '';
         $scope.certificateName = '';
+        $scope.includesBackendCertificate = false;
+        $scope.backendCertificateArray = [];
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.setInitialValues(options);
@@ -74,6 +75,7 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
             $scope.includesBackendCertificate = false;
             $scope.certificateTab = 'SSL';
             $scope.certificateRadioButton = "existing";
+            $scope.backendCertificateArray = [ {name: 'backendCert-001'} ];
             // timeout is needed to wait for the elb listener directive to be initialized
             if ($('#certificates').children('option').length > 0) {
                 $scope.certificateName = $('#certificates').children('option').first().text();
@@ -296,6 +298,10 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
         };
         $scope.visitCertificateTab = function ($event, tab) {
             $scope.certificateTab = tab;
+        };
+        $scope.removeBackendCertificate = function ($event, index) {
+            $event.preventDefault();
+            $scope.backendCertificateArray.splice(index, 1);
         };
         $scope.handleCertificateCreate = function ($event, url) {
             $event.preventDefault();

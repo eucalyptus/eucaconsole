@@ -19,7 +19,13 @@
         <div ng-show="certificateTab === 'BACKEND'">
             <p>Including back-end certificates ensures that your instances accept only encrypted communication from trusted sources. Back-end certificates are optional.</p>
             <div>
-                <span>Back-end certificates</span>
+                <label>Back-end certificates</label>
+                <div>
+	            <span class="label radius secondary item" ng-repeat="cert in backendCertificateArray">
+	                <span>{{ cert.name }}</span>
+	                <a class="remove" ng-click="removeBackendCertificate($event, $index)" title="Remove rule"><i class="fi-x"></i></a>
+	            </span>
+                </div>
             </div>
             <div>
                 <span>Add a certificate</span>
