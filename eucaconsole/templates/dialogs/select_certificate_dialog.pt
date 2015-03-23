@@ -18,18 +18,23 @@
         </div>
         <div ng-show="certificateTab === 'BACKEND'">
             <p>Including back-end certificates ensures that your instances accept only encrypted communication from trusted sources. Back-end certificates are optional.</p>
-            <div>
-                <label>Back-end certificates</label>
+            <form method="post" data-abide="abide" id="backend-certificate-form">
+                 ${structure:certificate_form['csrf_token']}
                 <div>
-	            <span class="label radius secondary item" ng-repeat="cert in backendCertificateArray">
-	                <span>{{ cert.name }}</span>
-	                <a class="remove" ng-click="removeBackendCertificate($event, $index)" title="Remove rule"><i class="fi-x"></i></a>
-	            </span>
+                    <label>Back-end certificates</label>
+                    <div>
+	                <span class="label radius secondary item" ng-repeat="cert in backendCertificateArray">
+	                    <span>{{ cert.name }}</span>
+	                    <a class="remove" ng-click="removeBackendCertificate($event, $index)" title="Remove rule"><i class="fi-x"></i></a>
+	                </span>
+                    </div>
                 </div>
-            </div>
-            <div>
-                <span>Add a certificate</span>
-            </div>
+                <div>
+                    <label>Add a certificate</label>
+                    ${panel('form_field', field=backend_certificate_form['backend_certificate_name'], ng_attrs={'model': 'backendCertificateName'}, leftcol_width=3, rightcol_width=9)}
+                    ${panel('form_field', field=backend_certificate_form['backend_certificate_body'], ng_attrs={'model': 'backendCertificateBody'}, leftcol_width=3, rightcol_width=9)}
+                </div>
+            </form>
             <a href="#" id="select-certificate-close-link" class="close-reveal-modal">&#215;</a>
         </div>
         <div ng-show="certificateTab === 'SSL'">

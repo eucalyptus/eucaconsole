@@ -322,7 +322,7 @@
             </div>
         </div>
         <!--! Modal dialogs -->
-        ${panel('select_certificate_dialog', certificate_form=certificate_form)}
+        ${panel('select_certificate_dialog', certificate_form=certificate_form, backend_certificate_form=backend_certificate_form)}
     </div>
 </div>
 
