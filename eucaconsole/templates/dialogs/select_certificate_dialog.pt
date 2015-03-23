@@ -2,39 +2,65 @@
 <div tal:omit-tag="" i18n:domain="eucaconsole">
     <div id="select-certificate-modal" class="reveal-modal medium" data-reveal="" ng-cloak="">
         <h3 i18n:translate="">Select certificate</h3>
-        <p>SSL certificates are required for secure(HTTPS or SSL) listeners. Choose or upload a pem-encoded certificate below.</p>
-        <form method="post" data-abide="abide" id="select-certificate-form"
-              ng-submit="handleCertificateCreate($event, '${request.route_path('certificate_create')}')">
-            ${structure:certificate_form['csrf_token']}
+        <div>
+            <dl id="wizard-tabs" class="tabs" data-tab="" ng-cloak="">
+                <dd>
+                    <a ng-click="visitCertificateTab($event, 'SSL')">
+                        <span class="cir">SSL</span>
+                    </a>
+                </dd>
+                <dd>
+                    <a ng-click="visitCertificateTab($event, 'BACKEND')">
+                        <span class="cir">Backend</span>
+                    </a>
+                </dd>
+            </dl>
+        </div>
+        <div ng-show="certificateTab === 'BACKEND'">
+            <p>Including back-end certificates ensures that your instances accept only encrypted communication from trusted sources. Back-end certificates are optional.</p>
             <div>
-                <input type="radio" id="certificate-type-radio-existing" name="certificate_type_radio" value="existing" ng-model="certificateRadioButton" \>
-                <span>Choose an existing SSL certificate</span>
-            <div ng-show="certificateRadioButton === 'existing'">
-                ${panel('form_field', field=certificate_form['certificates'], ng_attrs={'model': 'certificateARN'}, leftcol_width=3, rightcol_width=9)}
+                <span>Back-end certificates</span>
             </div>
             <div>
-                <input type="radio" id="certificate-type-radio-new" name="certificate_type_radio" value="new" ng-model="certificateRadioButton" \>
-                <span>Upload a new SSL certificate</span>
+                <span>Add a certificate</span>
             </div>
-            <div ng-if="certificateRadioButton === 'new'">
-                ${panel('form_field', field=certificate_form['certificate_name'], ng_attrs={'model': 'certificateName'}, leftcol_width=3, rightcol_width=9)}
-                ${panel('form_field', field=certificate_form['private_key'], ng_attrs={'model': 'privateKey'}, leftcol_width=3, rightcol_width=9)}
-                ${panel('form_field', field=certificate_form['public_key_certificate'], ng_attrs={'model': 'publicKeyCertificate'}, leftcol_width=3, rightcol_width=9)}
-                ${panel('form_field', field=certificate_form['certificate_chain'], ng_attrs={'model': 'certificateChain'}, leftcol_width=3, rightcol_width=9)}
-            </div>
-            <hr />
-            <div class="row">
-                <div class="dialog-submit-button">
-                    <button type="submit" class="button expand" id="create-securitygroup-btn" i18n:translate="" >
-                        Use This Certificate
-                    </button>
+            <a href="#" id="select-certificate-close-link" class="close-reveal-modal">&#215;</a>
+        </div>
+        <div ng-show="certificateTab === 'SSL'">
+            <p>SSL certificates are required for secure(HTTPS or SSL) listeners. Choose or upload a pem-encoded certificate below.</p>
+            <form method="post" data-abide="abide" id="select-certificate-form"
+                 ng-submit="handleCertificateCreate($event, '${request.route_path('certificate_create')}')">
+                 ${structure:certificate_form['csrf_token']}
+                <div>
+                    <input type="radio" id="certificate-type-radio-existing" name="certificate_type_radio" value="existing" ng-model="certificateRadioButton" \>
+                    <span>Choose an existing SSL certificate</span>
+                <div ng-show="certificateRadioButton === 'existing'">
+                    ${panel('form_field', field=certificate_form['certificates'], ng_attrs={'model': 'certificateARN'}, leftcol_width=3, rightcol_width=9)}
                 </div>
-                <div class="dialog-progress-display hide">
-                    <span i18n:translate="">Sending request </span>&nbsp;<em><span class="busy">&nbsp;</span></em>
+                <div>
+                    <input type="radio" id="certificate-type-radio-new" name="certificate_type_radio" value="new" ng-model="certificateRadioButton" \>
+                    <span>Upload a new SSL certificate</span>
                 </div>
-            </div>
-        </form>
-        <a href="#" id="select-certificate-close-link" class="close-reveal-modal">&#215;</a>
+                <div ng-if="certificateRadioButton === 'new'">
+                    ${panel('form_field', field=certificate_form['certificate_name'], ng_attrs={'model': 'certificateName'}, leftcol_width=3, rightcol_width=9)}
+                    ${panel('form_field', field=certificate_form['private_key'], ng_attrs={'model': 'privateKey'}, leftcol_width=3, rightcol_width=9)}
+                    ${panel('form_field', field=certificate_form['public_key_certificate'], ng_attrs={'model': 'publicKeyCertificate'}, leftcol_width=3, rightcol_width=9)}
+                    ${panel('form_field', field=certificate_form['certificate_chain'], ng_attrs={'model': 'certificateChain'}, leftcol_width=3, rightcol_width=9)}
+                </div>
+                <hr />
+                <div class="row">
+                    <div class="dialog-submit-button">
+                        <button type="submit" class="button expand" id="create-securitygroup-btn" i18n:translate="" >
+                            Use This Certificate
+                        </button>
+                    </div>
+                    <div class="dialog-progress-display hide">
+                        <span i18n:translate="">Sending request </span>&nbsp;<em><span class="busy">&nbsp;</span></em>
+                    </div>
+                </div>
+            </form>
+            <a href="#" id="select-certificate-close-link" class="close-reveal-modal">&#215;</a>
+        </div>
     </div>
 </div>
 

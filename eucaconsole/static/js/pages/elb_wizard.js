@@ -32,6 +32,7 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
         $scope.timeBetweenPings = '';
         $scope.failuresUntilUnhealthy = '';
         $scope.passesUntilUnhealthy = '';
+        $scope.certificateTab = 'SSL';
         $scope.certificateRadioButton = '';
         $scope.certificateARN = '';
         $scope.certificateName = '';
@@ -69,6 +70,7 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
             $scope.timeBetweenPings = 30;
             $scope.failuresUntilUnhealthy = 2;
             $scope.passesUntilUnhealthy = 10;
+            $scope.certificateTab = 'SSL';
             $scope.certificateRadioButton = "existing";
             // timeout is needed to wait for the elb listener directive to be initialized
             if ($('#certificates').children('option').length > 0) {
@@ -285,6 +287,9 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
                 $("#certificate-type-radio-existing").prop('checked', true);
                 $("#certificates").val($scope.certificateARN);
             }
+        };
+        $scope.visitCertificateTab = function ($event, tab) {
+            $scope.certificateTab = tab;
         };
         $scope.handleCertificateCreate = function ($event, url) {
             $event.preventDefault();
