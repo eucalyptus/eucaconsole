@@ -455,19 +455,24 @@ class CreateELBView(BaseView):
             public_key_certificate = self.request.params.get('public_key_certificate')
             certificate_chain = self.request.params.get('certificate_chain')
             certificates = self.request.params.get('certificates')
-            print radio
-            print certificate_name
-            print private_key 
-            print public_key_certificate 
-            print certificate_chain
-            print certificates
             with boto_error_handler(self.request):
                 certificate_result = self.iam_conn.upload_server_cert(certificate_name, public_key_certificate, private_key, cert_chain=None, path=None)
                 prefix = _(u'Successfully uploaded server certificate')
                 msg = u'{0} {1}'.format(prefix, certificate_name)
-                print certificate_result
                 certificate_arn = certificate_result.upload_server_certificate_result.server_certificate_metadata.arn
                 return JSONResponse(status=200, message=msg, id=certificate_arn)
         else:
             form_errors = ', '.join(self.certificate_form.get_errors_list())
+            return JSONResponse(status=400, message=form_errors)  # Validation failure = bad request
+
+    @view_config(route_name='backend_certificate_create', request_method='POST', renderer=TEMPLATE)
+    def backend_certificate_create(self):
+        if self.backend_certificate_form.validate():
+            backend_certificates = self.request.params.get('backend_certificates')
+            print backend_certificates
+            prefix = _(u'Successfully uploaded backend certificate')
+            msg = u'{0} {1}'.format(prefix, backend_certificates)
+            return JSONResponse(status=200, message=msg, id='')
+        else:
+            form_errors = ', '.join(self.backend_certificate_form.get_errors_list())
             return JSONResponse(status=400, message=form_errors)  # Validation failure = bad request

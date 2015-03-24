@@ -423,10 +423,13 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
             }
             return false;
         };
-        $scope.handleCertificateCreate = function ($event, url) {
+        $scope.handleCertificateCreate = function ($event, newCertURL, backendCertURL) {
             $event.preventDefault();
             if ($scope.certificateRadioButton === 'new') {
-                $scope.createNewCertificate($event, url);
+                $scope.createNewCertificate($event, newCertURL);
+            }
+            if ($scope.backendCertificateArray.length > 0) {
+                $scope.createBackendCertificate(backendCertURL);
             }
             var modal = $('#select-certificate-modal');
             if (modal.length > 0) {
@@ -456,6 +459,20 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
                     $scope.certificateARN = newARN;
                     $scope.certificateName = newCertificateName;
                 }
+            }).error(function (oData) {
+                eucaHandleError(oData, status);
+            });
+        };
+        $scope.createBackendCertificate = function (url) {
+            var formData = $('#backend-certificate-form').serialize();
+            console.log(formData);
+            $http({
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                method: 'POST',
+                url: url,
+                data: formData
+            }).success(function (oData) {
+                Notify.success(oData.message);
             }).error(function (oData) {
                 eucaHandleError(oData, status);
             });
