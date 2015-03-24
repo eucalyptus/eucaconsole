@@ -401,7 +401,7 @@ class CreateELBView(BaseView):
                 self.elb_conn.register_instances(name, instances)
                 if cross_zone_enabled == 'y':
                     self.elb_conn.modify_lb_attribute(name, 'crossZoneLoadBalancing', True)
-                if backend_certificates is not None:
+                if backend_certificates is not None and backend_certificates != '[]':
                     self.handle_backend_certificate_create()
                 prefix = _(u'Successfully created elastic load balancer')
                 msg = u'{0} {1}'.format(prefix, name)
