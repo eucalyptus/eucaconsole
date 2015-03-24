@@ -374,6 +374,7 @@ class CreateELBView(BaseView):
             zone = self.request.params.getall('zone') or None
             cross_zone_enabled = self.request.params.get('cross_zone_enabled') or False
             instances = self.request.params.getall('instances') or None
+            backend_certificates = self.request.params.get('backend_certificates') or None
             print name
             print elb_listener
             print certificate_arn 
@@ -384,6 +385,7 @@ class CreateELBView(BaseView):
             print zone
             print cross_zone_enabled
 	    print instances
+            print backend_certificates
             with boto_error_handler(self.request, self.request.route_path('elbs')):
                 self.log_request(_(u"Creating elastic load balancer {0}").format(name))
                 if vpc_subnet is None:
@@ -399,6 +401,8 @@ class CreateELBView(BaseView):
                 self.elb_conn.register_instances(name, instances)
                 if cross_zone_enabled == 'y':
                     self.elb_conn.modify_lb_attribute(name, 'crossZoneLoadBalancing', True)
+                if backend_certificates is not None:
+                    self.handle_backend_certificate_create()
                 prefix = _(u'Successfully created elastic load balancer')
                 msg = u'{0} {1}'.format(prefix, name)
                 location = self.request.route_path('elbs')
@@ -465,18 +469,7 @@ class CreateELBView(BaseView):
             form_errors = ', '.join(self.certificate_form.get_errors_list())
             return JSONResponse(status=400, message=form_errors)  # Validation failure = bad request
 
-    @view_config(route_name='backend_certificate_create', request_method='POST', renderer=TEMPLATE)
-    def backend_certificate_create(self):
-        if self.backend_certificate_form.validate():
-            backend_certificates_args = self.get_backend_certificates_args()
-            prefix = _(u'Successfully uploaded backend certificate')
-            msg = u'{0} {1}'.format(prefix, backend_certificates_args)
-            return JSONResponse(status=200, message=msg, id='')
-        else:
-            form_errors = ', '.join(self.backend_certificate_form.get_errors_list())
-            return JSONResponse(status=400, message=form_errors)  # Validation failure = bad request
-
-    def get_backend_certificates_args(self):
+    def handle_backend_certificate_create(self):
         backend_certificates_json = self.request.params.get('backend_certificates')
         backend_certificates = json.loads(backend_certificates_json) if backend_certificates_json else []
         backend_certificates_args = []

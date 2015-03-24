@@ -50,9 +50,12 @@
                                     template="${request.static_path('eucaconsole:static/html/directives/elb_listener_editor.html')}"
                                     options='${controller_options_json}'>
                                 </elb-listener-editor>
-                                 <span id="hidden_certificate_arn_input_span" class="hide" i18n:translate="">
+                                 <div id="hidden_certificate_arn_input_div" class="hide">
                                      <input type='hidden' id="hidden_certificate_arn_input" name='certificate_arn'/> 
-                                 </span>
+                                 </div>
+                                 <div id="hidden_backend_certificates_input_div">
+                                     <textarea id="hidden_backend_certificates" name="backend_certificates" class="hidden" style="height: 8rem;"></textarea>
+                                 </div>
                             </div>
                             <hr />
                             <div>

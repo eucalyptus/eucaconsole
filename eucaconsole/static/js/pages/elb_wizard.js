@@ -83,8 +83,8 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
             $scope.certificateTab = 'SSL';
             $scope.certificateRadioButton = "existing";
             $scope.backendCertificateArray = [];
-            if ($('#backend-certificates').length > 0) {
-                $scope.backendCertificateTextarea = $('#backend-certificates');
+            if ($('#hidden_backend_certificates').length > 0) {
+                $scope.backendCertificateTextarea = $('#hidden_backend_certificates');
             }
             $scope.isBackendCertificateNotComplete = true;
             $scope.hasDuplicatedBackendCertificate = false;
@@ -423,18 +423,14 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
             }
             return false;
         };
-        $scope.handleCertificateCreate = function ($event, newCertURL, backendCertURL) {
+        $scope.handleCertificateCreate = function ($event, newCertURL) {
             $event.preventDefault();
             if ($scope.certificateRadioButton === 'new') {
                 $scope.createNewCertificate($event, newCertURL);
             }
-            if ($scope.backendCertificateArray.length > 0) {
-                $scope.createBackendCertificate(backendCertURL);
-            }
             var modal = $('#select-certificate-modal');
             if (modal.length > 0) {
                 modal.foundation('reveal', 'close');
-                $scope.backendCertificateArray = [];
             }
         };
         $scope.createNewCertificate = function ($event, url) {
@@ -460,19 +456,6 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
                     $scope.certificateARN = newARN;
                     $scope.certificateName = newCertificateName;
                 }
-            }).error(function (oData) {
-                eucaHandleError(oData, status);
-            });
-        };
-        $scope.createBackendCertificate = function (url) {
-            var formData = $('#backend-certificate-form').serialize();
-            $http({
-                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                method: 'POST',
-                url: url,
-                data: formData
-            }).success(function (oData) {
-                Notify.success(oData.message);
             }).error(function (oData) {
                 eucaHandleError(oData, status);
             });

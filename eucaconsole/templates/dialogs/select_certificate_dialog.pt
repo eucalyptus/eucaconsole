@@ -53,9 +53,6 @@
 		                    ng-click="addBackendCertificate($event)">Add Certificate</span>
 	                </div>
                     </div>
-                    <div>
-                        <textarea id="backend-certificates" name="backend_certificates" class="hidden" style="height: 8rem;"></textarea>
-                    </div>
 	        </div>
                 </div>
             </form>
@@ -64,7 +61,7 @@
         <div ng-show="certificateTab === 'SSL'">
             <p>SSL certificates are required for secure(HTTPS or SSL) listeners. Choose or upload a pem-encoded certificate below.</p>
             <form method="post" data-abide="abide" id="select-certificate-form"
-                 ng-submit="handleCertificateCreate($event, '${request.route_path('certificate_create')}', '${request.route_path('backend_certificate_create')}')">
+                 ng-submit="handleCertificateCreate($event, '${request.route_path('certificate_create')}')">
                  ${structure:certificate_form['csrf_token']}
                 <div>
                     <input type="radio" id="certificate-type-radio-existing" name="certificate_type_radio" value="existing" ng-model="certificateRadioButton" \>

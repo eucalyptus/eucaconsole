@@ -153,7 +153,6 @@ urls = [
     Route(name='elb_view', pattern='/elbs/{id}'),
     # Certificate modal 
     Route(name='certificate_create', pattern='/certificate/create'),
-    Route(name='backend_certificate_create', pattern='/backend_certificate/create'),
 
     # Volumes #####
     # Landing page
