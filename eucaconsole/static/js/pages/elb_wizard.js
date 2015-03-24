@@ -43,6 +43,7 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
         $scope.backendCertificateTextarea = '';
         $scope.isBackendCertificateNotComplete = true;
         $scope.hasDuplicatedBackendCertificate = false;
+        $scope.duplicatedBackendCertificateDivClass = '';
         $scope.addBackendCertificateButtonClass = 'disabled';
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
@@ -87,6 +88,7 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
             }
             $scope.isBackendCertificateNotComplete = true;
             $scope.hasDuplicatedBackendCertificate = false;
+            $scope.duplicatedBackendCertificateDivClass = '';
             $scope.addBackendCertificateButtonClass = 'disabled';
             // timeout is needed to wait for the elb listener directive to be initialized
             if ($('#certificates').children('option').length > 0) {
@@ -197,6 +199,13 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
             });
             $scope.$watch('hasDuplicatedBackendCertificate', function () {
                 $scope.setAddBackendCertificateButtonClass();
+                $scope.duplicatedBackendCertificateDivClass = '';
+                // timeout is needed for the DOM update to complete
+                $timeout(function () {
+                    if ($scope.hasDuplicatedBackendCertificate === true) {
+                        $scope.duplicatedBackendCertificateDivClass = 'error';
+                    }
+                });
             });
             $scope.$on('searchUpdated', function ($event, query) {
                 // Relay the query search update signal
@@ -390,9 +399,7 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
             } else {
                 $scope.isBackendCertificateNotComplete = false;
             }
-            if ($scope.isBackendCertificateNotComplete === false) {
-                $scope.checkForDuplicatedBackendCertificate(); 
-            }
+            $scope.checkForDuplicatedBackendCertificate(); 
         };
         $scope.checkForDuplicatedBackendCertificate = function () {
             $scope.hasDuplicatedBackendCertificate = false;
