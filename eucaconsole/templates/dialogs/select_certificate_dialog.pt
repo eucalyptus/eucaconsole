@@ -19,7 +19,7 @@
         <div ng-show="certificateTab === 'BACKEND'">
             <p>Including back-end certificates ensures that your instances accept only encrypted communication from trusted sources. Back-end certificates are optional.</p>
             <form method="post" data-abide="abide" id="backend-certificate-form">
-                 ${structure:certificate_form['csrf_token']}
+                 ${structure:backend_certificate_form['csrf_token']}
                 <div>
                     <label>Back-end certificates</label>
                     <div>
@@ -29,25 +29,32 @@
 	                </span>
                     </div>
                 </div>
+                <div>&nbsp;</div>
                 <div>
-                    <label>Add a certificate</label>
-                    ${panel('form_field', field=backend_certificate_form['backend_certificate_name'], ng_attrs={'model': 'backendCertificateName'}, leftcol_width=3, rightcol_width=9)}
-                    ${panel('form_field', field=backend_certificate_form['backend_certificate_body'], ng_attrs={'model': 'backendCertificateBody'}, leftcol_width=3, rightcol_width=9)}
-	            <div class="row inline controls-wrapper">
-	                <div class="small-3 columns">&nbsp;</div>
-	                <div class="small-9 columns field">
-                            <div ng-class="duplicatedBackendCertificateDivClass">
-                                <small class="error" i18n:translate="">You may not have duplicate backend certificates.</small>
+                    <label>Add a certificate:</label>
+                    <div>
+                        ${panel('form_field', field=backend_certificate_form['backend_certificate_name'], ng_attrs={'model': 'backendCertificateName'}, leftcol_width=3, rightcol_width=9)}
+                        ${panel('form_field', field=backend_certificate_form['backend_certificate_body'], ng_attrs={'model': 'backendCertificateBody'}, leftcol_width=3, rightcol_width=9)}
+                    </div>
+                    <div>
+	                <div class="row inline controls-wrapper" id="add-backend-certificate-button-div">
+	                    <div class="small-3 columns">&nbsp;</div>
+	                    <div class="small-9 columns field">
+		                <span id="button-add-backend-certificate" class="button round small" i18n:translate=""
+                                    ng-class="addBackendCertificateButtonClass"
+		                    ng-click="addBackendCertificate($event)">Add Certificate</span>
+	                </div>
+                    </div>
+                    <div>
+	                <div class="row inline controls-wrapper">
+	                    <div class="small-3 columns">&nbsp;</div>
+	                    <div class="small-9 columns field">
+                                <div ng-class="duplicatedBackendCertificateDivClass">
+                                    <small class="error" i18n:translate="">You may not have duplicate backend certificates.</small>
+                                </div>
                             </div>
                         </div>
                     </div>
-	            <div class="row inline controls-wrapper" id="add-backend-certificate-button-div">
-	                <div class="small-3 columns">&nbsp;</div>
-	                <div class="small-9 columns field">
-		            <span id="button-add-backend-certificate" class="button round small" i18n:translate=""
-                                ng-class="addBackendCertificateButtonClass"
-		                ng-click="addBackendCertificate($event)">Add Certificate</span>
-	            </div>
                     <div>
                         <textarea id="backend-certificates" name="backend_certificates" class="hidden" style="height: 8rem;"></textarea>
                     </div>
