@@ -468,11 +468,22 @@ class CreateELBView(BaseView):
     @view_config(route_name='backend_certificate_create', request_method='POST', renderer=TEMPLATE)
     def backend_certificate_create(self):
         if self.backend_certificate_form.validate():
-            backend_certificates = self.request.params.get('backend_certificates')
-            print backend_certificates
+            backend_certificates_args = self.get_backend_certificates_args()
             prefix = _(u'Successfully uploaded backend certificate')
-            msg = u'{0} {1}'.format(prefix, backend_certificates)
+            msg = u'{0} {1}'.format(prefix, backend_certificates_args)
             return JSONResponse(status=200, message=msg, id='')
         else:
             form_errors = ', '.join(self.backend_certificate_form.get_errors_list())
             return JSONResponse(status=400, message=form_errors)  # Validation failure = bad request
+
+    def get_backend_certificates_args(self):
+        backend_certificates_json = self.request.params.get('backend_certificates')
+        backend_certificates = json.loads(backend_certificates_json) if backend_certificates_json else []
+        backend_certificates_args = []
+
+        for cert in backend_certificates:
+            name = cert.get('name')
+            body = cert.get('certificateBody')
+            backend_certificates_args.append((name, body))
+
+        return backend_certificates_args
