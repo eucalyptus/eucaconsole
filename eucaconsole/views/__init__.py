@@ -428,6 +428,11 @@ class BaseView(object):
     def encode_unicode_dict(unicode_dict):
         encoded_dict = {}
         for k, v in unicode_dict.iteritems():
+            if isinstance(k, unicode):
+                k = k.encode('utf-8')
+            elif isinstance(k, str):
+                # Must be encoded in UTF-8
+                k.decode('utf-8')
             if isinstance(v, unicode):
                 v = v.encode('utf-8')
             elif isinstance(v, str):
