@@ -32,6 +32,7 @@ import wtforms
 from wtforms import validators
 
 from ..i18n import _
+from ..views import BaseView
 from . import BaseSecureForm, ChoicesManager, TextEscapedField, ASCII_WITHOUT_SLASHES_NOTICE
 
 
@@ -105,7 +106,8 @@ class SecurityGroupsFiltersForm(BaseSecureForm):
         if self.cloud_type == 'aws':
             self.vpc_id.choices.append(('None', _(u'No VPC')))
         self.vpc_id.choices = sorted(self.vpc_id.choices)
-        self.facets = [
-            {'name':'vpc_id', 'label':self.vpc_id.label.text, 'options': self.getOptionsFromChoices(self.vpc_id.choices)},
-            {'name':'tags', 'label':self.tags.label.text},
-        ]
+        self.facets = []
+        if BaseView.is_vpc_supported(request):
+            self.facets.append(
+                {'name':'vpc_id', 'label':self.vpc_id.label.text, 'options': self.getOptionsFromChoices(self.vpc_id.choices)}
+            )

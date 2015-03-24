@@ -91,7 +91,6 @@ class ImagesFiltersForm(BaseSecureForm):
             {'name':'platform', 'label':self.platform.label.text, 'options':self.get_platform_choices()},
             {'name':'architecture', 'label':self.architecture.label.text, 'options':self.get_architecture_choices()},
             {'name':'root_device_type', 'label':self.root_device_type.label.text, 'options':self.get_root_device_type_choices()},
-            {'name':'tags', 'label':self.tags.label.text},
         ]
 
     def get_owner_choices(self):

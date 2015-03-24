@@ -32,6 +32,7 @@ import wtforms
 from wtforms import validators
 
 from ..i18n import _
+from ..views import BaseView
 from . import BaseSecureForm, ChoicesManager, TextEscapedField
 
 
@@ -135,7 +136,6 @@ class LaunchInstanceForm(BaseSecureForm):
         self.image = image
         self.securitygroups = securitygroups
         self.cloud_type = request.session.get('cloud_type', 'euca')
-        from ..views import BaseView
         self.is_vpc_supported = BaseView.is_vpc_supported(request)
         self.set_error_messages()
         self.monitoring_enabled.data = True
@@ -393,20 +393,22 @@ class InstancesFiltersForm(BaseSecureForm):
                 'options':self.getOptionsFromChoices(self.ec2_choices_manager.security_groups(add_blank=False))},
             {'name':'scaling_group', 'label':self.scaling_group.label.text,
                 'options':self.getOptionsFromChoices(self.autoscale_choices_manager.scaling_groups(add_blank=False))},
-            {'name':'subnet_id', 'label':self.subnet_id.label.text,
-                'options':self.getOptionsFromChoices(self.vpc_choices_manager.vpc_subnets(add_blank=False))},
-            {'name':'tags', 'label':self.tags.label.text},
         ]
-        vpc_choices = self.vpc_choices_manager.vpc_networks(add_blank=False)
-        vpc_choices.append(('None', _(u'No VPC')))
-        self.facets.append(
-            {'name':'vpc_id', 'label':self.vpc_id.label.text,
-                'options': self.getOptionsFromChoices(vpc_choices)},
-        )
         if cloud_type=='euca':
             self.facets.append(
                 {'name':'roles', 'label':self.roles.label.text,
                     'options':self.getOptionsFromChoices(self.iam_choices_manager.roles(add_blank=False))},
+            )
+        if BaseView.is_vpc_supported(request):
+            self.facets.append(
+                {'name':'subnet_id', 'label':self.subnet_id.label.text,
+                'options':self.getOptionsFromChoices(self.vpc_choices_manager.vpc_subnets(add_blank=False))}
+            )
+            vpc_choices = self.vpc_choices_manager.vpc_networks(add_blank=False)
+            vpc_choices.append(('None', _(u'No VPC')))
+            self.facets.append(
+                {'name':'vpc_id', 'label':self.vpc_id.label.text,
+                    'options': self.getOptionsFromChoices(vpc_choices)},
             )
 
     def get_availability_zone_choices(self, region):

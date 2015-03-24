@@ -33,6 +33,7 @@ import wtforms
 from wtforms import validators
 
 from ..i18n import _
+from ..views import BaseView
 from . import BaseSecureForm, ChoicesManager, TextEscapedField, NgNonBindableOptionSelect
 
 
@@ -124,7 +125,6 @@ class BaseScalingGroupForm(BaseSecureForm):
         self.elb_choices_manager = ChoicesManager(conn=elb_conn) if elb_conn else None
         region = request.session.get('region')
         cloud_type = request.session.get('cloud_type', 'euca')
-        from ..views import BaseView
         self.is_vpc_supported = BaseView.is_vpc_supported(request)
         self.launch_config.choices = self.get_launch_config_choices()
         if cloud_type == 'euca' and self.is_vpc_supported:
@@ -442,7 +442,9 @@ class ScalingGroupsFiltersForm(BaseSecureForm):
                 'options':self.getOptionsFromChoices(self.launch_config_name.choices)},
             {'name':'availability_zone', 'label':self.availability_zones.label.text,
                 'options':self.getOptionsFromChoices(self.availability_zones.choices)},
-            {'name':'vpc_zone', 'label':self.vpc_zone_identifier.label.text,
-                'options':self.getOptionsFromChoices(self.vpc_zone_identifier.choices)},
-            {'name':'tags', 'label':self.tags.label.text, 'options':[]},
         ]
+        if BaseView.is_vpc_supported(request):
+            self.facets.append(
+                {'name':'vpc_zone', 'label':self.vpc_zone_identifier.label.text,
+                    'options':self.getOptionsFromChoices(self.vpc_zone_identifier.choices)}
+            )

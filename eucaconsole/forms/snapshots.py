@@ -111,7 +111,6 @@ class SnapshotsFiltersForm(BaseSecureForm):
         self.status.choices = self.get_status_choices()
         self.facets = [
             {'name':'status', 'label':self.status.label.text, 'options':self.get_status_choices()},
-            {'name':'tags', 'label':self.tags.label.text},
         ]
 
     @staticmethod
