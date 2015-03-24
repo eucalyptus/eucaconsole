@@ -434,6 +434,7 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
             var modal = $('#select-certificate-modal');
             if (modal.length > 0) {
                 modal.foundation('reveal', 'close');
+                $scope.backendCertificateArray = [];
             }
         };
         $scope.createNewCertificate = function ($event, url) {
@@ -465,7 +466,6 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
         };
         $scope.createBackendCertificate = function (url) {
             var formData = $('#backend-certificate-form').serialize();
-            console.log(formData);
             $http({
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                 method: 'POST',
