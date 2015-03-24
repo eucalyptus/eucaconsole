@@ -694,6 +694,8 @@ form {
         left: -1rem;
     }
     .helptext-icon.reverse {
+        @extend .fa;
+        @extend .fa-question-circle;
         position: relative;
         left: 1.5rem;
     }
@@ -772,16 +774,14 @@ textarea.hidden {
 
 // Help text icon for inline help on form fields
 .helptext-icon {
-    display: inline-block;
+    @extend .fa;
+    @extend .fa-question-circle;
+    @extend .fa-2x;
     margin-left: 5px;
     width: 20px; height: 20px;
-    border-radius: 32px;
-    border: 1px solid $euca-grey;
-    background-color: $euca-lightgrey;
-    color: white;
+    //color: white;
     text-align: center;
-    padding-top: 1px;
-    font-size: 0.825rem;
+    //padding-top: 1px;
 }
 
 

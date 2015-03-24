@@ -27,6 +27,7 @@
 
 @import "../includes/eucavariables";
 
+@import "font-awesome/font-awesome";
 
 /* @section Landing pages styles */
 
@@ -92,15 +93,12 @@ $dropdown-border-color: $euca-green;
         &::before, &::after {
             border: none;
         }
-        .fi-widget {
+        .grid-action {
             position: relative;
             top: 4px;
-            background-image: url(../../img/svg/gear.svg);
-            display: inline-block;
-            width: 20px; height: 20px;
-            &::before {
-                content: " "
-            }
+            //color: $euca-grey;
+            @extend .fa;
+            @extend .fa-ellipsis-v;
         }
     }
     .f-dropdown {

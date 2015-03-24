@@ -180,7 +180,11 @@
                             </p>
                             <div class="row controls-wrapper readonly">
                                 <div class="small-4 columns">
-                                    <label i18n:translate="">User data<span class="helptext-icon" title="User data file may not exceed 16 KB" data-tooltip="">?</span></label>
+                                    <label i18n:translate="">User data
+                                        <span title="User data file may not exceed 16 KB" data-tooltip="">
+                                            <i class="helptext-icon"></i>
+                                        </span>
+                                    </label>
                                 </div>
                                 <div class="small-8 columns value">
                                     <input type="radio" id="inputtype" name="inputtype" value="text" ng-model="inputtype">

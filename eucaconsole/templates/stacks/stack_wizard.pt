@@ -107,8 +107,9 @@
                             <div class="row controls-wrapper" ng-repeat="item in parameters" ng-cloak="true">
                                 <div class="small-3 columns subheading">
                                     <label class="right">{{ item.name }}
-                                        <span class="helptext-icon" data-tooltip=""
-                                            title="{{ item.description }}">?</span>
+                                        <span data-tooltip="" title="{{ item.description }}">
+                                            <i class="helptext-icon"></i>
+                                        </span>
                                     </label>
                                 </div>
                                 <div class="small-9 columns field">

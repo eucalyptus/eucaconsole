@@ -35,7 +35,7 @@
                 <div class="tile item policy" tal:repeat="policy policies">
                     <div class="header" tal:define="policy_name layout.escape_braces(policy.name)">
                         <strong><a class="title">${policy_name}</a></strong>
-                        <a class="tiny secondary button dropdown right" data-dropdown="item-dropdown_${policy_ids[policy.name]}" ><i class="fi-widget"></i></a>
+                        <a class="tiny secondary button dropdown right" data-dropdown="item-dropdown_${policy_ids[policy.name]}" ><i class="grid-action"></i></a>
                         <ul id="item-dropdown_${policy_ids[policy.name]}" class="f-dropdown" data-dropdown-content="" >
                             <li><a i18n:translate="" ng-click="revealDeleteModal('${policy.name}')">Delete policy</a></li>
                         </ul>

@@ -79,7 +79,7 @@
                     </strong>
                     <metal:block metal:define-slot="tile_dropdown_button">
                         <a href="#" class="tiny secondary button dropdown right"
-                              data-dropdown="item-dropdown_{{ $index }}"><i class="fi-widget"></i></a>
+                              data-dropdown="item-dropdown_{{ $index }}"><i class="grid-action"></i></a>
                         <ul id="item-dropdown_{{ $index }}" class="f-dropdown">
                             <metal:block metal:define-slot="tile-dropdown-items">
                                 <li><a href="#">This is a link</a></li>
@@ -151,7 +151,7 @@
                     </strong>
                     <metal:block metal:define-slot="tile_dropdown_button">
                         <a href="#" class="tiny secondary button dropdown right"
-                              data-dropdown="item-dropdown_{{ $index }}"><i class="fi-widget"></i></a>
+                              data-dropdown="item-dropdown_{{ $index }}"><i class="grid-action"></i></a>
                         <ul id="item-dropdown_{{ $index }}" class="f-dropdown">
                             <metal:block metal:define-slot="tile-dropdown-items">
                                 <li><a href="#">This is a link</a></li>
@@ -226,7 +226,7 @@
 
 <!-- action menu for dash tiles ===== -->
 <metal:dashaction metal:define-macro="dashaction">
-    <span id="tile-item-dropdown_${tile}" class="tiny secondary button dropdown" data-dropdown="item-dropdown_${tile}"><i class="fi-widget"></i></span>
+    <span id="tile-item-dropdown_${tile}" class="tiny secondary button dropdown" data-dropdown="item-dropdown_${tile}"><i class="tile-action"></i></span>
     <ul id="item-dropdown_${tile}" class="f-dropdown" data-dropdown-content="">
         <li> <a ng-click="removeTile('${tile}')" i18n:translate="">Remove</a> </li>
     </ul>
