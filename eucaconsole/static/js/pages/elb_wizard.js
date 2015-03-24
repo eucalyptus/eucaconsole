@@ -350,6 +350,7 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
         $scope.removeBackendCertificate = function ($event, index) {
             $event.preventDefault();
             $scope.backendCertificateArray.splice(index, 1);
+            $scope.syncBackendCertificates();
         };
         $scope.handleCertificateCreate = function ($event, url) {
             $event.preventDefault();
