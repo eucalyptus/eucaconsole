@@ -131,13 +131,8 @@ class CreateS3FolderTestCase(BaseTestCase):
         valid_pattern = FOLDER_NAME_PATTERN
         matches = (
             (u'folder123', True),
-            (u'folder_123', True),
-            (u'folder-123', True),
-            (u'folder*123', True),
-            (u'folder 123', True),
-            (u'folder+123', False),
-            (u'folder&123', False),
-            (u'folderÅ', False),
+            (u'folderÅ', True),
+            (u'folder/123', False),
         )
         for pattern, valid in matches:
             self.assertEqual(bool(re.match(valid_pattern, pattern)), valid)
