@@ -194,6 +194,10 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
             $scope.$watch('backendCertificateBody', function () {
                 $scope.checkAddBackendCertificateButtonCondition(); 
             });
+            $scope.$watch('backendCertificateArray', function () {
+                $scope.syncBackendCertificates();
+                $scope.checkAddBackendCertificateButtonCondition(); 
+            }, true);
             $scope.$watch('isBackendCertificateNotComplete', function () {
                 $scope.setAddBackendCertificateButtonClass();
             });
@@ -366,14 +370,14 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
                 }
                 // Add the backend certificate 
                 $scope.backendCertificateArray.push($scope.createBackendCertificateArrayBlock());
-                $scope.syncBackendCertificates();
 		$scope.$emit('backendCertificateArrayUpdate');
+                $scope.resetBackendCertificateValues();
             });
         };
         $scope.syncBackendCertificates = function () {
-            $scope.backendCertificateTextarea.val(JSON.stringify($scope.backendCertificateArray));
-            $scope.resetBackendCertificateValues();
-            $scope.checkAddBackendCertificateButtonCondition(); 
+            if ($scope.backendCertificateTextarea.length > 0) {
+                $scope.backendCertificateTextarea.val(JSON.stringify($scope.backendCertificateArray));
+            }
         };
         $scope.resetBackendCertificateValues = function () {
             $scope.backendCertificateName = '';
@@ -382,7 +386,6 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
         $scope.removeBackendCertificate = function ($event, index) {
             $event.preventDefault();
             $scope.backendCertificateArray.splice(index, 1);
-            $scope.syncBackendCertificates();
         };
         $scope.setAddBackendCertificateButtonClass = function () {
             if( $scope.isBackendCertificateNotComplete === true || $scope.hasDuplicatedBackendCertificate === true){
