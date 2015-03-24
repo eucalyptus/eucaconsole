@@ -427,24 +427,24 @@ class CreateELBView(BaseView):
         return listeners_args
 
     def handle_configure_health_check(self, name):
-            ping_protocol = self.request.params.get('ping_protocol')
-            ping_port = self.request.params.get('ping_port')
-            ping_path = self.request.params.get('ping_path')
-            response_timeout = self.request.params.get('response_timeout')
-            time_between_pings = self.request.params.get('time_between_pings')
-            failures_until_unhealthy = self.request.params.get('failures_until_unhealthy')
-            passes_until_unhealthy = self.request.params.get('passes_until_unhealthy')
-            ping_target = u"{0}:{1}".format(ping_protocol, ping_port)
-            if ping_protocol == 'HTTP' or ping_protocol == 'HTTPS':
-                ping_target = u"{0}{1}".format(ping_target, ping_path)
-            hc = HealthCheck(
-                timeout=response_timeout,
-                interval=time_between_pings,
-                healthy_threshold=passes_until_unhealthy,
-                unhealthy_threshold=failures_until_unhealthy,
-                target=ping_target 
-            )
-            self.elb_conn.configure_health_check(name, hc)
+        ping_protocol = self.request.params.get('ping_protocol')
+        ping_port = self.request.params.get('ping_port')
+        ping_path = self.request.params.get('ping_path')
+        response_timeout = self.request.params.get('response_timeout')
+        time_between_pings = self.request.params.get('time_between_pings')
+        failures_until_unhealthy = self.request.params.get('failures_until_unhealthy')
+        passes_until_unhealthy = self.request.params.get('passes_until_unhealthy')
+        ping_target = u"{0}:{1}".format(ping_protocol, ping_port)
+        if ping_protocol == 'HTTP' or ping_protocol == 'HTTPS':
+            ping_target = u"{0}{1}".format(ping_target, ping_path)
+        hc = HealthCheck(
+            timeout=response_timeout,
+            interval=time_between_pings,
+            healthy_threshold=passes_until_unhealthy,
+            unhealthy_threshold=failures_until_unhealthy,
+            target=ping_target 
+        )
+        self.elb_conn.configure_health_check(name, hc)
 
     @view_config(route_name='certificate_create', request_method='POST', renderer=TEMPLATE)
     def certificate_create(self):
