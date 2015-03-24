@@ -430,7 +430,8 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.handleKeyPairCreate = function ($event, createUrl, downloadUrl) {
             $event.preventDefault();
             var form = $($event.target);
-            if ($scope.newKeyPairName.indexOf('/') !== -1 || $scope.newKeyPairName.indexOf('\\') !== -1) {
+            if (form.find('[name="name"]').attr('data-invalid') !== undefined) {
+                // prevent invalid (non-ASCII) chars and slashes in key pair name
                 return;
             }
             var formData = form.serialize();
