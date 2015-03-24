@@ -37,6 +37,7 @@
 	                <div class="small-3 columns">&nbsp;</div>
 	                <div class="small-9 columns field">
 		            <span id="button-add-backend-certificate" class="button round small" i18n:translate=""
+                                ng-class="addBackendCertificateButtonClass"
 		                ng-click="addBackendCertificate($event)">Add Certificate</span>
 	            </div>
                     <div>

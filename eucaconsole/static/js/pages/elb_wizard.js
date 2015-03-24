@@ -41,6 +41,9 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
         $scope.backendCertificateName = '';
         $scope.backendCertificateBody = '';
         $scope.backendCertificateTextarea = '';
+        $scope.isBackendCertificateNotComplete = true;
+        $scope.hasDuplicatedBackendCertificate = false;
+        $scope.addBackendCertificateButtonClass = 'disabled';
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.setInitialValues(options);
@@ -82,6 +85,9 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
             if ($('#backend-certificates').length > 0) {
                 $scope.backendCertificateTextarea = $('#backend-certificates');
             }
+            $scope.isBackendCertificateNotComplete = true;
+            $scope.hasDuplicatedBackendCertificate = false;
+            $scope.addBackendCertificateButtonClass = 'disabled';
             // timeout is needed to wait for the elb listener directive to be initialized
             if ($('#certificates').children('option').length > 0) {
                 $scope.certificateName = $('#certificates').children('option').first().text();
@@ -179,6 +185,18 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
             $scope.$watch('certificateName', function(){
                 // Broadcast the certificate name change to the elb listener directive
                 $scope.$broadcast('eventUpdateCertificateName', $scope.certificateName);
+            });
+            $scope.$watch('backendCertificateName', function () {
+                $scope.checkAddBackendCertificateButtonCondition(); 
+            });
+            $scope.$watch('backendCertificateBody', function () {
+                $scope.checkAddBackendCertificateButtonCondition(); 
+            });
+            $scope.$watch('isBackendCertificateNotComplete', function () {
+                $scope.setAddBackendCertificateButtonClass();
+            });
+            $scope.$watch('hasDuplicatedBackendCertificate', function () {
+                $scope.setAddBackendCertificateButtonClass();
             });
             $scope.$on('searchUpdated', function ($event, query) {
                 // Relay the query search update signal
@@ -331,8 +349,12 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
         };
         $scope.addBackendCertificate = function ($event) {
 	    $event.preventDefault();
+            $scope.checkAddBackendCertificateButtonCondition(); 
             // timeout is needed for all DOM updates and validations to be complete
             $timeout(function () {
+                if( $scope.isBackendCertificateNotComplete === true || $scope.hasDuplicatedBackendCertificate === true){
+                    return false;
+                }
                 // Add the backend certificate 
                 $scope.backendCertificateArray.push($scope.createBackendCertificateArrayBlock());
                 $scope.syncBackendCertificates();
@@ -342,6 +364,7 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
         $scope.syncBackendCertificates = function () {
             $scope.backendCertificateTextarea.val(JSON.stringify($scope.backendCertificateArray));
             $scope.resetBackendCertificateValues();
+            $scope.checkAddBackendCertificateButtonCondition(); 
         };
         $scope.resetBackendCertificateValues = function () {
             $scope.backendCertificateName = '';
@@ -351,6 +374,44 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
             $event.preventDefault();
             $scope.backendCertificateArray.splice(index, 1);
             $scope.syncBackendCertificates();
+        };
+        $scope.setAddBackendCertificateButtonClass = function () {
+            if( $scope.isBackendCertificateNotComplete === true || $scope.hasDuplicatedBackendCertificate === true){
+                $scope.addBackendCertificateButtonClass = 'disabled';
+            } else {
+                $scope.addBackendCertificateButtonClass = '';
+            }
+        };
+        $scope.checkAddBackendCertificateButtonCondition = function () {
+            if ($scope.backendCertificateName === '' || $scope.backendCertificateName === undefined) {
+                $scope.isBackendCertificateNotComplete = true;
+            } else if ($scope.backendCertificateBody === '' || $scope.backendCertificateBody === undefined) {
+                $scope.isBackendCertificateNotComplete = true;
+            } else {
+                $scope.isBackendCertificateNotComplete = false;
+            }
+            if ($scope.isBackendCertificateNotComplete === false) {
+                $scope.checkForDuplicatedBackendCertificate(); 
+            }
+        };
+        $scope.checkForDuplicatedBackendCertificate = function () {
+            $scope.hasDuplicatedBackendCertificate = false;
+            // Create a new array block based on the current user input on the panel
+            var newBlock = $scope.createBackendCertificateArrayBlock();
+            for( var i=0; i < $scope.backendCertificateArray.length; i++){
+                // Compare the new array block with the existing ones
+                if ($scope.compareBackendCertificates(newBlock, $scope.backendCertificateArray[i])) {
+                    $scope.hasDuplicatedBackendCertificate = true;
+                    return;
+                }
+            }
+            return;
+        };
+        $scope.compareBackendCertificates = function (block1, block2) {
+            if (block1.name == block2.name) {
+                return true;
+            }
+            return false;
         };
         $scope.handleCertificateCreate = function ($event, url) {
             $event.preventDefault();
