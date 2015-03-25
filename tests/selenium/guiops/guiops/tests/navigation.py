@@ -1,12 +1,12 @@
 import unittest
+from guiops.pages.basepage import LogoutTests
+from guiops.utilities import Utilities
+from guiops.pages.loginpage import LoginTests
 
-from guiops.tests.base import BaseTestCase
-from guiops.tests.login import LoginTest
-
-class Navigation_sequence_run(BaseTestCase):
+class Navigation_sequence(Utilities):
      def navigation_sequence(self):
-        LoginTest.test_euca_login()
-        LoginTest.test_euca_logout()
+        LoginTests.test_euca_login()
+        LogoutTests.test_euca_logout()
 
 if __name__ == '__main__':
         unittest.main()

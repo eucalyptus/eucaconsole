@@ -1,8 +1,8 @@
 from guiops.utilities import Utilities
-from guiops.tests.base import BaseTestCase
 
 
-class BasePage(Utilities):
+
+class BasePage():
 
 
     _euca_logo_id="logo"
@@ -33,18 +33,21 @@ class BasePage(Utilities):
 
 
     def assert_euca_logo(self):
-        self.wait_for_visible("ID",self._euca_logo_id)
+        self.tester.wait_for_visible("ID",self._euca_logo_id)
 
     def assert_euca_logobar(self):
-        self.wait_for_visible("ID",self._euca_logo_bar_id)
+        self.tester.wait_for_visible("ID",self._euca_logo_bar_id)
 
-    def __init__(self, driver):
-        super(BasePage, self).__init__(driver)
-        self.driver=driver
+    def __init__(self, tester):
+        self.tester = tester
+        self.assert_euca_logo()
+        self.assert_euca_logobar()
 
+    def logout(self):
+        self.tester.click_on_visible("XPATH",BasePage._user_dropdown_xpath)
+        self.tester.click_on_visible("ID", BasePage._user_logout_id)
 
-class NavBarTests(BaseTestCase):
-
+class NavBarTests(Utilities):
 
     def test_from_dashboard_goto_keypairs_lp_via_nav_bar(self):
             self.click_on_visible("ID",BasePage._network_sec_nav_bar_menu_id)
@@ -52,4 +55,5 @@ class NavBarTests(BaseTestCase):
 
     def test_goto_dashboard(self):
             self.click_on_visible("XPATH",BasePage._dashboard_nav_bar_button_id)
+
 

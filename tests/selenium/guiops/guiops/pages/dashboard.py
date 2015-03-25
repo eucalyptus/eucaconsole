@@ -1,5 +1,5 @@
 from guiops.pages.basepage import BasePage
-from guiops.tests.base import BaseTestCase
+from guiops.utilities import Utilities
 
 
 class Dashboard (BasePage):
@@ -11,7 +11,7 @@ class Dashboard (BasePage):
 
 
 
-class DashboardTests(BaseTestCase):
+class DashboardTests(Utilities):
 
         def test_verify_dashnoard_loaded(self):
             self.wait_for_visible("XPATH",Dashboard._launch_instance_button_xpath)

@@ -1,5 +1,6 @@
 from selenium import webdriver
 from selenium import selenium
+from guiops.guitester import Config
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
 from selenium.common.exceptions import NoSuchElementException
@@ -16,16 +17,23 @@ class UICheckException(Exception):
         raise Exception(message)
 
 
-class Utilities(unittest.TestCase):
+class Utilities():
+
+    def __init__(self,driver):
+        self.driver = driver
+        self.driver.implicitly_wait(Config.implicit_wait)
+        self.driver.maximize_window()
+        self.driver.get(Config.console_url)
+
 
     retry = 400
 
-    def NoOp(self):
-        return 0
+    #def NoOp(self):
+    #    return 0
 
-    def setSeleniumWebDriver(self, driver):
-        self.driver = driver
-        return 0
+   # def setSeleniumWebDriver(self, driver):
+   #     self.driver = RemoteWebdriver()
+   #     return 0
 
 
     def is_element_present(self, how, what):
@@ -119,7 +127,7 @@ class Utilities(unittest.TestCase):
             #     self.fail("timed out after "+`self.retry`+" seconds")
 
         try:
-            self.assertTrue(self.is_element_present(this_element_type, element))
+            self.is_element_present(this_element_type, element)
         except AssertionError as e:
             self.verificationErrors.append(str(e))
             print "TEST FAILED::: Wait On:: Element Type: " + element_type + ", Element: " + element
@@ -176,10 +184,10 @@ class Utilities(unittest.TestCase):
     def verify_text_not_present_by_css(self, locator, text):
         print"Verifying that text displayed at " + locator + " does not match " + text
         for i in range(1, self.trials, 1):
-            displayed = self.get_text_by_css_selector(locator)
+            displayed = self.store_text_by_css_selector(locator)
             print "Currently displayed at locator " + locator + " is " + displayed
             if displayed != text:
-                print "Verified " + self.get_text_by_css_selector(locator) + " does not match " + text
+                print "Verified " + self.store_text_by_css_selector(locator) + " does not match " + text
                 return True
             else:
                 print
@@ -188,8 +196,8 @@ class Utilities(unittest.TestCase):
     def verify_text_not_present_by_id(self, locator, text):
         print"Verifying that text displayed at " + locator + " does not match " + text
         for i in range(1, self.trials, 1):
-            if self.get_text_by_id(locator) != text:
-                print "Verified " + self.get_text_by_id(locator) + " does not match " + text
+            if self.store_text_by_id(locator) != text:
+                print "Verified " + self.store_text_by_id(locator) + " does not match " + text
                 return True
             else:
                 print
@@ -198,8 +206,8 @@ class Utilities(unittest.TestCase):
     def verify_text_not_present_by_name(self, locator, text):
         print"Verifying that text displayed at " + locator + " does not match " + text
         for i in range(1, self.trials, 1):
-            if self.get_text_by_name(locator) != text:
-                print "Verified " + self.get_text_by_name(locator) + " does not match " + text
+            if self.store_text_by_name(locator) != text:
+                print "Verified " + self.store_text_by_name(locator) + " does not match " + text
                 return True
             else:
                 print
@@ -208,10 +216,10 @@ class Utilities(unittest.TestCase):
     def verify_text_not_present_by_xpath(self, locator, text):
         print"Verifying that text displayed at " + locator + " does not match " + text
         for i in range(1, self.trials, 1):
-            text_on_page = self.get_text_by_xpath(locator)
+            text_on_page = self.store_text_by_xpath(locator)
             time.sleep(10)
             if text_on_page != text:
-                print "Verified " + self.get_text_by_xpath(locator) + " does not match " + text
+                print "Verified " + self.store_text_by_xpath(locator) + " does not match " + text
                 return True
             else:
                 print
@@ -267,7 +275,7 @@ class Utilities(unittest.TestCase):
         for i in range(self.retry):
             print "Wait On:: Trial: " + str(i) + " Verifying text " + element_text + " displayed at xpath " + locator
             try:
-                text_on_page = self.get_text_by_xpath(locator)
+                text_on_page = self.store_text_by_xpath(locator)
                 if element_text == text_on_page:
                     print"Found text"
                     displayed_text = text_on_page
@@ -393,7 +401,7 @@ class Utilities(unittest.TestCase):
     def store_text_by_id(self, this_id):
         if self.check_if_element_present_by_type("ID", this_id) is not 0:
             raise UICheckException("Element by id not present:" + this_id)
-        if self.check_if_element_visible_by_type("ID", this_id) is not True:
+        if self.verify_visible_element_by_id(this_id) is not True:
             raise UICheckException("Element by id not visible:" + this_id)
         print "Get Text: Element Type: ID, Element: " + this_id
         return self.driver.find_element_by_id(this_id).text
@@ -401,7 +409,7 @@ class Utilities(unittest.TestCase):
     def store_text_by_css_selector(self, css_selector):
         if self.check_if_element_present_by_type("CSS_SELECTOR", css_selector) is not 0:
             raise UICheckException("Element by css selector not present:" + css_selector)
-        if self.check_if_element_visible_by_type("CSS_SELECTOR", css_selector) is not True:
+        if self.verify_visible_element_by_css_selector(css_selector) is not True:
             raise UICheckException("Element by css selector not visible:" + css_selector)
         print "Get Text: Element Type: CSS_SELECTOR, Element: " + css_selector
         return self.driver.find_element_by_css_selector(css_selector).text
