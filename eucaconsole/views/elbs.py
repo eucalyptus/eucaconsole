@@ -401,8 +401,10 @@ class CreateELBView(BaseView):
                 self.elb_conn.register_instances(name, instances)
                 if cross_zone_enabled == 'y':
                     self.elb_conn.modify_lb_attribute(name, 'crossZoneLoadBalancing', True)
+                #TEMP
+                #if 1 == 1:
                 if backend_certificates is not None and backend_certificates != '[]':
-                    self.handle_backend_certificate_create()
+                    self.handle_backend_certificate_create(name)
                 prefix = _(u'Successfully created elastic load balancer')
                 msg = u'{0} {1}'.format(prefix, name)
                 location = self.request.route_path('elbs')
@@ -427,6 +429,9 @@ class CreateELBView(BaseView):
                 listeners_args.append((from_port, to_port, from_protocol, to_protocol, certificate_arn))
             else:
                 listeners_args.append((from_port, to_port, from_protocol, to_protocol))
+
+        #TEMP
+        #listeners_args.append((8888, 443, 'HTTP', 'HTTPS'))
 
         return listeners_args
 
@@ -469,14 +474,26 @@ class CreateELBView(BaseView):
             form_errors = ', '.join(self.certificate_form.get_errors_list())
             return JSONResponse(status=400, message=form_errors)  # Validation failure = bad request
 
-    def handle_backend_certificate_create(self):
+    def handle_backend_certificate_create(self, elb_name):
         backend_certificates_json = self.request.params.get('backend_certificates')
         backend_certificates = json.loads(backend_certificates_json) if backend_certificates_json else []
-        backend_certificates_args = []
+        public_policy_attributes = dict() 
+        backend_policy_attributes = dict() 
+        public_policy_type = u'PublicKeyPolicyType' 
+        backend_policy_type = u'BackendServerAuthenticationPolicyType'
 
+        #TEMP
+        #backend_certificates = [{"name":"backend-pubkey-0003","certificateBody":"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQD4twb3z/YJYR+eNlTVISHLkqgx0YtCJq2BF8MNPFwY7fArCedRAT1LnbZX+3UGd0P33hWKFL37k0HqH73pKK/goisZ0I5c9B4w0nxqXiKUZxaEv3Wdwi6YupUXtViybc1zH9kEFYLL+TDYhePtmbKnUMWklgdUGm1jHvbKubNaZwIDAQAB"}]
         for cert in backend_certificates:
-            name = cert.get('name')
-            body = cert.get('certificateBody')
-            backend_certificates_args.append((name, body))
-
-        return backend_certificates_args
+            public_policy_name = u'PublicKeyPolicy-{0}'.format(cert.get('name'))
+            public_policy_attributes['PublicKey'] = cert.get('certificateBody')
+            print public_policy_name
+            self.elb_conn.create_lb_policy(elb_name, public_policy_name, public_policy_type, public_policy_attributes)
+            backend_policy_name = u'BackendPolicy-{0}'.format(elb_name)
+            backend_policy_attributes['PublicKeyPolicyName'] = public_policy_name 
+            print backend_policy_name
+            self.elb_conn.create_lb_policy(elb_name, backend_policy_name, backend_policy_type, backend_policy_attributes)
+            print "here"
+            instance_port = 443
+            self.elb_conn.set_lb_policies_of_backend_server(elb_name, instance_port, backend_policy_name)
+        print "done setting backend cert"
