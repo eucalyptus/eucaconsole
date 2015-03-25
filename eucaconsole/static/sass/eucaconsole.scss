@@ -146,7 +146,7 @@ h1, h2, h3, h4, h5, h6 {
 // Logo bar (top-most bar)
 #logobar {
     height: 44px;
-    padding: 5px 0 10px 15px;
+    padding: 5px 0 10px 0;
     margin-top: 20px;
     background-color: #fff;
     color: #333;
@@ -186,15 +186,15 @@ h1, h2, h3, h4, h5, h6 {
         position: relative;
         top: -10px;
     }
-    .menu-label {
-        display: block;
-        position: relative;
-        top: -25px;
-    }
     #logo {
         display: inline-block;
-        width: 199px; height: 55px;
+        width: 199px; height: 32px;
         background: url(../img/eucalogo-199x22.png) no-repeat;
+    }
+    .product-name {
+        font-size: 1.4rem;
+        position: relative;
+        top: -12px;
     }
     #selected-region {
         position: relative;
@@ -1097,6 +1097,39 @@ footer {
     }
     #navbar {
         display: none;
+    }
+}
+
+// Off-canvas Nav adjustments
+div.left-off-canvas-menu {
+    color: white;
+    background-color: white;
+}
+ul.off-canvas-list {
+    li {
+        label {
+            background-color: white;
+            color: $euca-grey;
+            padding-left: 0.5rem;
+            border-top: 0;
+        }
+        a.lnk-dashboard {
+            padding-left: 0.5rem;
+        }
+        a {
+            background-color: white;
+            color: $euca-grey;
+            padding: 0.125rem;
+            border-bottom: 0;
+        }
+        a:hover {
+            background-color: lighten($euca-grey, 50%);
+            color: black;
+        }
+        .dropdown {
+            background-color: white;
+            margin-bottom: 0;
+        }
     }
 }
 
