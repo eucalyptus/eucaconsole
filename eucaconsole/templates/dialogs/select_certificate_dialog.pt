@@ -60,8 +60,7 @@
         </div>
         <div ng-show="certificateTab === 'SSL'">
             <p>SSL certificates are required for secure(HTTPS or SSL) listeners. Choose or upload a pem-encoded certificate below.</p>
-            <form method="post" data-abide="abide" id="select-certificate-form"
-                 ng-submit="handleCertificateCreate($event, '${request.route_path('certificate_create')}')">
+            <form method="post" data-abide="abide" id="select-certificate-form">
                  ${structure:certificate_form['csrf_token']}
                 <div>
                     <input type="radio" id="certificate-type-radio-existing" name="certificate_type_radio" value="existing" ng-model="certificateRadioButton" \>
@@ -79,19 +78,22 @@
                     ${panel('form_field', field=certificate_form['public_key_certificate'], ng_attrs={'model': 'publicKeyCertificate'}, leftcol_width=3, rightcol_width=9)}
                     ${panel('form_field', field=certificate_form['certificate_chain'], ng_attrs={'model': 'certificateChain'}, leftcol_width=3, rightcol_width=9)}
                 </div>
-                <hr />
-                <div class="row">
-                    <div class="dialog-submit-button">
-                        <button type="submit" class="button expand" id="create-securitygroup-btn" i18n:translate="" >
-                            Use This Certificate
-                        </button>
-                    </div>
-                    <div class="dialog-progress-display hide">
-                        <span i18n:translate="">Sending request </span>&nbsp;<em><span class="busy">&nbsp;</span></em>
-                    </div>
-                </div>
             </form>
             <a href="#" id="select-certificate-close-link" class="close-reveal-modal">&#215;</a>
+        </div>
+    </div>
+    <hr />
+    <div>
+        <div class="row">
+            <div class="dialog-submit-button">
+                <button type="submit" class="button expand" id="create-securitygroup-btn" i18n:translate=""
+                    ng-click="handleCertificateCreate($event, '${request.route_path('certificate_create')}')">
+                    Use This Certificate
+                </button>
+            </div>
+            <div class="dialog-progress-display hide">
+                <span i18n:translate="">Sending request </span>&nbsp;<em><span class="busy">&nbsp;</span></em>
+            </div>
         </div>
     </div>
 </div>

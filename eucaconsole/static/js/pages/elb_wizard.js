@@ -376,7 +376,8 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
         };
         $scope.syncBackendCertificates = function () {
             if ($scope.backendCertificateTextarea.length > 0) {
-                $scope.backendCertificateTextarea.val(JSON.stringify($scope.backendCertificateArray));
+                var backendCertificateJSON = JSON.stringify($scope.backendCertificateArray);
+                $scope.backendCertificateTextarea.val(backendCertificateJSON);
             }
         };
         $scope.resetBackendCertificateValues = function () {
@@ -426,15 +427,15 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
         $scope.handleCertificateCreate = function ($event, newCertURL) {
             $event.preventDefault();
             if ($scope.certificateRadioButton === 'new') {
-                $scope.createNewCertificate($event, newCertURL);
+                $scope.createNewCertificate(newCertURL);
             }
             var modal = $('#select-certificate-modal');
             if (modal.length > 0) {
                 modal.foundation('reveal', 'close');
             }
         };
-        $scope.createNewCertificate = function ($event, url) {
-            var formData = $($event.target).serialize();
+        $scope.createNewCertificate = function (url) {
+            var formData = $('#select-certificate-form').serialize();
             $scope.certificateForm = $('#select-certificate-form');
             $scope.certificateForm.trigger('validate');
             if ($scope.certificateForm.find('[data-invalid]').length) {
