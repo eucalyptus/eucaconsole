@@ -30,6 +30,7 @@ Pyramid views for Eucalyptus and AWS elbs
 """
 from urllib import quote
 import simplejson as json
+import time
 
 import boto.utils
 from boto.ec2.elb import HealthCheck
@@ -483,7 +484,7 @@ class CreateELBView(BaseView):
         backend_policy_type = u'BackendServerAuthenticationPolicyType'
 
         #TEMP
-        #backend_certificates = [{"name":"backend-pubkey-0003","certificateBody":"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQD4twb3z/YJYR+eNlTVISHLkqgx0YtCJq2BF8MNPFwY7fArCedRAT1LnbZX+3UGd0P33hWKFL37k0HqH73pKK/goisZ0I5c9B4w0nxqXiKUZxaEv3Wdwi6YupUXtViybc1zH9kEFYLL+TDYhePtmbKnUMWklgdUGm1jHvbKubNaZwIDAQAB"}]
+        #backend_certificates = [{"name":"backend-pubkey-0003","certificateBody":"-----BEGIN CERTIFICATE-----\nMIIDNDCCAhygAwIBAgIGDcRVCui6MA0GCSqGSIb3DQEBDQUAMEExCzAJBgNVBAYT\nAlVTMQ0wCwYDVQQKEwRVc2VyMRMwEQYDVQQLEwpFdWNhbHlwdHVzMQ4wDAYDVQQD\nEwVhZG1pbjAeFw0xNTAzMjAxODI5MjFaFw0yMDAzMjAxODI5MjFaMEExCzAJBgNV\nBAYTAlVTMQ0wCwYDVQQKEwRVc2VyMRMwEQYDVQQLEwpFdWNhbHlwdHVzMQ4wDAYD\nVQQDEwVhZG1pbjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKD0iDkJ\nr9LDzhTkgo7FAcBZO3ne1AHDxjDUypd8PjQH32ZdDNbw1hkcBKX02hOjckc8V1q3\nYveK88LSewtwkUOg9r+6gWo+HpuDjgoEVwr6y+FDPSraovhLPM4+s9GSDaUpYjoy\nNJpQ3o6kfo1FfRxcCrRmbcBn26W1BbF8YIOei47g+I/qLe7CuBmXR8/T+CIwYvk0\n1G0uBslAcKyrLIrSOEpC+ygd0IwWMRvsZKOLLkc+8OMCJLWRiSM2wXFDV4xlu6rI\noDazEMu2Ur+8FwCacQEaIZYCSTu0j385PRtXy5+Mm23GKm3jBfFZ7n3Mm2jcJ70d\nYA5oCooyt+SJDjcCAwEAAaMyMDAwDwYDVR0TAQH/BAUwAwEB/zAdBgNVHQ4EFgQU\n4ZCGFikCuQ/nF3EBb2AZJuwdIycwDQYJKoZIhvcNAQENBQADggEBADp0Hf9B7bod\nAHlH+PiwdqMT7eYjMFU2xQwO+g0rZQT52gBXCqdt7TLH7tFYCHWjqm46y01NHfl6\niUq3lGK1xpBUZgXPf9E5dBYAq1d9ECdepzCroTTV4VaA7ejaMJGxW4+aoPuKdDuH\nzELYzYXEUOoMDuWbovdAavp0bXegYY8oX0cjO0eW+NbvMsTqQbZCm6ZL8p17tMcj\nX2BtF+O2DWFs9jBi+uCz2M2S5OAo8uk9ucZxAjAS+KxGlxySeBPDF0IPSsfTrD+1\noMBam78O/LCLaxBKdDNHxtXSyHjZ9nOYAeInua/AsKwl+NbP84zVpC2WbEl2G/l9\nY0TER9yGuhI=\n-----END CERTIFICATE-----"}]
         for cert in backend_certificates:
             public_policy_name = u'PublicKeyPolicy-{0}'.format(cert.get('name'))
             public_policy_attributes['PublicKey'] = cert.get('certificateBody')
@@ -494,6 +495,8 @@ class CreateELBView(BaseView):
             print backend_policy_name
             self.elb_conn.create_lb_policy(elb_name, backend_policy_name, backend_policy_type, backend_policy_attributes)
             print "here"
+            # sleep is needed for the previous policy creation to complete
+            time.sleep(1)
             instance_port = 443
             self.elb_conn.set_lb_policies_of_backend_server(elb_name, instance_port, backend_policy_name)
         print "done setting backend cert"
