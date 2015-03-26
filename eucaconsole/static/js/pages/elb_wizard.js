@@ -456,6 +456,8 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
                         .text(newCertificateName));
                     $scope.certificateARN = newARN;
                     $scope.certificateName = newCertificateName;
+                    // broadcast call needs to be made explicitly
+                    $scope.$broadcast('eventUpdateCertificateName', $scope.certificateName);
                 }
             }).error(function (oData) {
                 eucaHandleError(oData, status);
