@@ -256,11 +256,11 @@ angular.module('EucaConsoleUtils').directive('elbListenerEditor', function() {
                         }
                     });
                 }; 
-                $scope.showSelectCertificateModalLink = function (listener) {
-                    if (listener.fromProtocol.toUpperCase() === 'HTTPS' ||
-                        listener.fromProtocol.toUpperCase() === 'SSL' ||
-                        listener.toProtocol.toUpperCase() === 'HTTPS' ||
-                        listener.toProtocol.toUpperCase() === 'SSL') {
+                $scope.showSelectCertificateModalLink = function (fromProtocol, toProtocol) {
+                    if (fromProtocol.toUpperCase() === 'HTTPS' ||
+                        fromProtocol.toUpperCase() === 'SSL' ||
+                        toProtocol.toUpperCase() === 'HTTPS' ||
+                        toProtocol.toUpperCase() === 'SSL') {
                         return true;
                     }
                     return false;
@@ -283,7 +283,7 @@ angular.module('EucaConsoleUtils').directive('elbListenerEditor', function() {
                     return false;
                 };
                 $scope.openCertificateModal = function (fromProtocol, toProtocol) {
-                    $scope.$emit('eventOpenSelectCertificateModal', fromProtocol, toProtocol);
+                    $scope.$emit('eventOpenSelectCertificateModal', fromProtocol.toUpperCase(), toProtocol.toUpperCase());
                 };
                 $scope.initEditor();
             }

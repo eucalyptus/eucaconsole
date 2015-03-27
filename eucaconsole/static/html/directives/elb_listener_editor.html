@@ -7,8 +7,8 @@
 		    {{ listener.fromProtocol.toUpperCase() }} ({{ listener.fromPort }}) - 
 		    {{ listener.toProtocol.toUpperCase() }} ({{ listener.toPort }})
 	        </span>
-                <span ng-show="showSelectCertificateModalLink(listener)">
-	            <a ng-click="openCertificateModal(listener.fromProtocol.toUpperCase(), listener.toProtocol.toUpperCase())"
+                <span ng-show="showSelectCertificateModalLink(listener.fromProtocol, listener.toProtocol)">
+	            <a ng-click="openCertificateModal(listener.fromProtocol, listener.toProtocol)"
                         title="Change certficate">
                         <span ng-show="showServerCertificateNameLink(listener)">
                             {{ serverCertificateName }}
@@ -97,7 +97,35 @@
 	        </div>
 	    </div>
 	</div>
-        <div>
+        <div ng-show="showSelectCertificateModalLink(fromProtocol, toProtocol)">
+	    <div class="row controls-wrapper">
+	        <div class="small-1 columns"></div>
+	        <div class="small-11 columns"><label class="left">Security</label></div>
+	    </div>
+	    <div class="row controls-wrapper">
+	        <div class="small-3 columns">
+		    <label class="right protocol" i18n:translate="">Cipher</label>
+	        </div>
+	        <div class="small-9 columns">
+	            <a ng-click="openCertificateModal(fromProtocol, toProtocol)"
+                        title="Change certficate">
+                        Select
+                    </a>
+	        </div>
+	    </div>
+	    <div class="row controls-wrapper">
+	        <div class="small-3 columns">
+		    <label class="right protocol" i18n:translate="">Certificates</label>
+	        </div>
+	        <div class="small-9 columns">
+	            <a ng-click="openCertificateModal(fromProtocol, toProtocol)"
+                        title="Change certficate">
+                        Select
+                    </a>
+	        </div>
+	    </div>
+        </div>
+        <div id="listener-error-div">
 	    <div class="row controls-wrapper">
 	        <div class="small-3 columns"></div>
 	        <div class="small-9 columns field">
