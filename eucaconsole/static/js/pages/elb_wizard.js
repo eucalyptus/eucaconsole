@@ -36,6 +36,7 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
         $scope.certificateRadioButton = '';
         $scope.certificateARN = '';
         $scope.certificateName = '';
+        $scope.newCertificateName = '';
         $scope.includesBackendCertificate = false;
         $scope.backendCertificateArray = [];
         $scope.backendCertificateName = '';
@@ -441,7 +442,7 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
             if ($scope.certificateForm.find('[data-invalid]').length) {
                 return false;
             }
-            var newCertificateName = $scope.certificateForm.find('#certificate_name').val();
+            var newCertificateName = $scope.newCertificateName;
             $http({
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                 method: 'POST',
@@ -455,9 +456,10 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
                         .attr("value", newARN)
                         .text(newCertificateName));
                     $scope.certificateARN = newARN;
-                    $scope.certificateName = newCertificateName;
-                    // broadcast call needs to be made explicitly
-                    $scope.$broadcast('eventUpdateCertificateName', $scope.certificateName);
+                    // timeout is needed for the select element to be updated with the new option
+                    $timeout(function () {
+                        $scope.certificateName = newCertificateName;
+                    });
                 }
             }).error(function (oData) {
                 eucaHandleError(oData, status);
