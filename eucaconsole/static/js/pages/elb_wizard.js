@@ -37,7 +37,7 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
         $scope.certificateARN = '';
         $scope.certificateName = '';
         $scope.newCertificateName = '';
-        $scope.includesBackendCertificate = false;
+        $scope.showsCertificateTabDiv = false;
         $scope.backendCertificateArray = [];
         $scope.backendCertificateName = '';
         $scope.backendCertificateBody = '';
@@ -80,7 +80,7 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
             $scope.timeBetweenPings = 30;
             $scope.failuresUntilUnhealthy = 2;
             $scope.passesUntilUnhealthy = 10;
-            $scope.includesBackendCertificate = false;
+            $scope.showsCertificateTabDiv = false;
             $scope.certificateTab = 'SSL';
             $scope.certificateRadioButton = "existing";
             $scope.backendCertificateArray = [];
@@ -123,12 +123,17 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
                 $scope.listenerArray = listenerArray;
             });
             $scope.$on('eventOpenSelectCertificateModal', function ($event, fromProtocol, toProtocol) {
-                if (toProtocol === 'HTTPS' || toProtocol === 'SSL') {
-                    $scope.includesBackendCertificate = true;
+                if ((fromProtocol === 'HTTPS' || fromProtocol === 'SSL') &&
+                     (toProtocol === 'HTTPS' || toProtocol === 'SSL')) {
+                    $scope.showsCertificateTabDiv = true;
                 } else {
-                    $scope.includesBackendCertificate = false;
+                    $scope.showsCertificateTabDiv = false;
                     // Set the tab display to 'SSL' if the backend certificate section is hidden
-                    $scope.certificateTab = 'SSL';
+                    if (fromProtocol === 'HTTPS' || fromProtocol === 'SSL') {
+                        $scope.certificateTab = 'SSL';
+                    } else if (toProtocol === 'HTTPS' || toProtocol === 'SSL') {
+                        $scope.certificateTab = 'BACKEND';
+                    }
                 }
                 $scope.openSelectCertificateModal();
             });

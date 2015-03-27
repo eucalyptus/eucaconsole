@@ -256,6 +256,32 @@ angular.module('EucaConsoleUtils').directive('elbListenerEditor', function() {
                         }
                     });
                 }; 
+                $scope.showSelectCertificateModalLink = function (listener) {
+                    if (listener.fromProtocol.toUpperCase() === 'HTTPS' ||
+                        listener.fromProtocol.toUpperCase() === 'SSL' ||
+                        listener.toProtocol.toUpperCase() === 'HTTPS' ||
+                        listener.toProtocol.toUpperCase() === 'SSL') {
+                        return true;
+                    }
+                    return false;
+                };
+                $scope.showServerCertificateNameLink = function (listener) {
+                    if (listener.fromProtocol.toUpperCase() === 'HTTPS' ||
+                        listener.fromProtocol.toUpperCase() === 'SSL') { 
+                        return true;
+                    }
+                    return false;
+                };
+                $scope.showBackendCertificateLink = function (listener) {
+                    if (listener.fromProtocol.toUpperCase() === 'HTTPS' ||
+                        listener.fromProtocol.toUpperCase() === 'SSL') { 
+                        return false;
+                    } else if (listener.toProtocol.toUpperCase() === 'HTTPS' ||
+                               listener.toProtocol.toUpperCase() === 'SSL') {
+                        return true;
+                    }
+                    return false;
+                };
                 $scope.openCertificateModal = function (fromProtocol, toProtocol) {
                     $scope.$emit('eventOpenSelectCertificateModal', fromProtocol, toProtocol);
                 };

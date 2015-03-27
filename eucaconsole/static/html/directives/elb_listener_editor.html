@@ -7,8 +7,16 @@
 		    {{ listener.fromProtocol.toUpperCase() }} ({{ listener.fromPort }}) - 
 		    {{ listener.toProtocol.toUpperCase() }} ({{ listener.toPort }})
 	        </span>
-                <span ng-show="listener.fromProtocol.toUpperCase() === 'HTTPS' || listener.fromProtocol.toUpperCase() === 'SSL'">
-	            <a ng-click="openCertificateModal(listener.fromProtocol.toUpperCase(), listener.toProtocol.toUpperCase())" title="Change certficate">{{ serverCertificateName }}</a>
+                <span ng-show="showSelectCertificateModalLink(listener)">
+	            <a ng-click="openCertificateModal(listener.fromProtocol.toUpperCase(), listener.toProtocol.toUpperCase())"
+                        title="Change certficate">
+                        <span ng-show="showServerCertificateNameLink(listener)">
+                            {{ serverCertificateName }}
+                        </span>
+                        <span ng-show="showBackendCertificateLink(listener)">
+                            Backend Certificate 
+                        </span>
+                    </a>
                 </span>
 	        <a class="remove" ng-click="removeListener($event, $index)" title="Remove rule"><i class="fi-x"></i></a>
 	    </span>
