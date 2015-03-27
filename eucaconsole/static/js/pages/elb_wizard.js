@@ -336,8 +336,14 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
             if (modal.length > 0) {
                 modal.foundation('reveal', 'open');
                 $scope.certificateRadioButton = 'existing';
-                $("#certificate-type-radio-existing").prop('checked', true);
-                $("#certificates").val($scope.certificateARN);
+                $('#certificate-type-radio-existing').prop('checked', true);
+                $('#certificates').val($scope.certificateARN);
+                // Remove any empty options created by Angular model issue 
+                $('#certificates option').each(function () {
+                    if ($(this).text() === '') {
+                        $(this).remove();
+                    }
+                });
             }
         };
         $scope.selectCertificateTab = function ($event, tab) {
