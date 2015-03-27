@@ -331,7 +331,7 @@ class BucketContentsView(LandingPageView, BucketMixin):
         ]
         json_route_path = self.request.route_path('bucket_contents', name=self.bucket_name, subpath=self.subpath)
         if len(self.subpath) > 0 and self.subpath[-1] == '':
-            json_route_path = json_route_path + '/'
+            json_route_path += '/'
         self.render_dict.update(
             prefix=self.prefix,
             key_prefix=self.key_prefix,
@@ -612,13 +612,17 @@ class BucketDetailsView(BaseView, BucketMixin):
     """Views for Bucket details"""
     VIEW_TEMPLATE = '../templates/buckets/bucket_details.pt'
 
-    def __init__(self, request):
-        super(BucketDetailsView, self).__init__(request)
+    def __init__(self, request, bucket=None, bucket_acl=None, **kwargs):
+        super(BucketDetailsView, self).__init__(request, **kwargs)
         self.s3_conn = self.get_connection(conn_type='s3')
+        self.bucket = bucket
+        self.bucket_acl = bucket_acl
         request.subpath = self.get_subpath()
         with boto_error_handler(request):
-            self.bucket = BucketContentsView.get_bucket(request, self.s3_conn) if self.s3_conn else None
-            self.bucket_acl = self.bucket.get_acl() if self.bucket else None
+            if self.s3_conn and self.bucket is None:
+                self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
+            if self.bucket and self.bucket_acl is None:
+                self.bucket_acl = self.bucket.get_acl() if self.bucket else None
         self.details_form = BucketDetailsForm(request, formdata=self.request.params or None)
         self.sharing_form = SharingPanelForm(
             request, bucket_object=self.bucket, sharing_acl=self.bucket_acl, formdata=self.request.params or None)

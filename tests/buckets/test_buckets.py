@@ -27,8 +27,13 @@
 Tests for S3 buckets, objects, and related forms
 
 """
+import boto
+
+from boto.s3.acl import ACL, Policy
 from boto.s3.bucket import Bucket
 from boto.s3.key import Key
+from boto.s3.user import User
+from moto import mock_s3
 
 from pyramid import testing
 from pyramid.httpexceptions import HTTPNotFound, HTTPBadRequest
@@ -39,16 +44,32 @@ from eucaconsole.views.buckets import BucketContentsView, BucketDetailsView, Buc
 from tests import BaseFormTestCase, BaseViewTestCase
 
 
+class MockBucketMixin(object):
+    @staticmethod
+    @mock_s3
+    def make_bucket(name='test_bucket', policy=None, owner_id=None):
+        s3_conn = boto.connect_s3()
+        policy = policy or Policy()
+        owner_id = owner_id or 'test_owner_id'
+        policy.owner = User(id=owner_id)
+        acl = ACL()
+        acl.grants = []
+        policy.acl = acl
+        bucket = s3_conn.create_bucket(name)
+        bucket.policy = policy
+        return bucket, policy
+
+
 class BucketMixinTestCase(BaseViewTestCase):
 
     def test_subpath_fixes(self):
         request = testing.DummyRequest()
-        request.environ = {}
-        request.environ['PATH_INFO'] = "some/path//with/extra/slash"
+        request.environ = {'PATH_INFO': "some/path//with/extra/slash"}
         request.subpath = ('some', 'path', 'with', 'extra', 'slash')
         view = BucketXHRView(request)
         new_subpath = view.get_subpath()
         self.assertEqual(request.environ['PATH_INFO'], "/".join(new_subpath))
+
 
 class BucketContentsViewTestCase(BaseViewTestCase):
 
@@ -97,6 +118,17 @@ class BucketDetailsViewTestCase(BaseViewTestCase):
         self.assertEqual(view.get_versioning_update_action('Enabled'), 'disable')
 
 
+class MockBucketDetailsViewTestCase(BaseViewTestCase, MockBucketMixin):
+
+    @mock_s3
+    def test_bucket_details_view(self):
+        request = self.create_request()
+        bucket, bucket_acl = self.make_bucket()
+        view = BucketDetailsView(request, bucket=bucket, bucket_acl=bucket_acl)
+        bucket_detail_view = view.bucket_details()
+        self.assertEqual(bucket_detail_view.get('bucket_name'), 'test_bucket')
+
+
 class SharingPanelFormTestCase(BaseFormTestCase):
     form_class = SharingPanelForm
     request = testing.DummyRequest()
@@ -119,4 +151,3 @@ class SharingPanelFormTestCase(BaseFormTestCase):
         self.assertEqual(permission_choices.get('FULL_CONTROL'), 'Full Control')
         self.assertEqual(permission_choices.get('READ'), 'Read-only')
         self.assertEqual(permission_choices.get('WRITE'), None)
-
