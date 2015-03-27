@@ -10,10 +10,10 @@
                 <span ng-show="showSelectCertificateModalLink(listener.fromProtocol, listener.toProtocol)">
 	            <a ng-click="openCertificateModal(listener.fromProtocol, listener.toProtocol)"
                         title="Change certficate">
-                        <span ng-show="showServerCertificateNameLink(listener)">
+                        <span ng-show="showServerCertificateNameLink(listener.fromProtocol)">
                             {{ serverCertificateName }}
                         </span>
-                        <span ng-show="showBackendCertificateLink(listener)">
+                        <span ng-show="showBackendCertificateLink(listener.fromProtocol, listener.toProtocol)">
                             Backend Certificate 
                         </span>
                     </a>

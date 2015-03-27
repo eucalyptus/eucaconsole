@@ -265,19 +265,19 @@ angular.module('EucaConsoleUtils').directive('elbListenerEditor', function() {
                     }
                     return false;
                 };
-                $scope.showServerCertificateNameLink = function (listener) {
-                    if (listener.fromProtocol.toUpperCase() === 'HTTPS' ||
-                        listener.fromProtocol.toUpperCase() === 'SSL') { 
+                $scope.showServerCertificateNameLink = function (fromProtocol) {
+                    if (fromProtocol.toUpperCase() === 'HTTPS' ||
+                        fromProtocol.toUpperCase() === 'SSL') { 
                         return true;
                     }
                     return false;
                 };
-                $scope.showBackendCertificateLink = function (listener) {
-                    if (listener.fromProtocol.toUpperCase() === 'HTTPS' ||
-                        listener.fromProtocol.toUpperCase() === 'SSL') { 
+                $scope.showBackendCertificateLink = function (fromProtocol, toProtocol) {
+                    if (fromProtocol.toUpperCase() === 'HTTPS' ||
+                        fromProtocol.toUpperCase() === 'SSL') { 
                         return false;
-                    } else if (listener.toProtocol.toUpperCase() === 'HTTPS' ||
-                               listener.toProtocol.toUpperCase() === 'SSL') {
+                    } else if (toProtocol.toUpperCase() === 'HTTPS' ||
+                               toProtocol.toUpperCase() === 'SSL') {
                         return true;
                     }
                     return false;
