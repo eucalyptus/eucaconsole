@@ -39,7 +39,7 @@ from pyramid import testing
 from pyramid.httpexceptions import HTTPNotFound, HTTPBadRequest
 
 from eucaconsole.forms.buckets import SharingPanelForm
-from eucaconsole.views.buckets import BucketContentsView, BucketDetailsView, BucketXHRView
+from eucaconsole.views.buckets import BucketContentsView, BucketContentsJsonView, BucketDetailsView, BucketXHRView
 
 from tests import BaseFormTestCase, BaseViewTestCase
 
@@ -127,6 +127,42 @@ class MockBucketDetailsViewTestCase(BaseViewTestCase, MockBucketMixin):
         view = BucketDetailsView(request, bucket=bucket, bucket_acl=bucket_acl)
         bucket_detail_view = view.bucket_details()
         self.assertEqual(bucket_detail_view.get('bucket_name'), 'test_bucket')
+
+
+class MockBucketContentsJsonViewTestCase(BaseViewTestCase, MockBucketMixin):
+
+    @mock_s3
+    def test_bucket_contents_view_with_file(self):
+        request = self.create_request(matchdict=dict(name='test_bucket'))
+        request.params['csrf_token'] = request.session.get_csrf_token()
+        bucket, bucket_acl = self.make_bucket()
+        bucket.new_key("/file-one").set_contents_from_string('file content')
+        view = BucketContentsJsonView(request, bucket=bucket)
+        bucket_contents_json_view = view.bucket_contents_json()
+        results = bucket_contents_json_view.get('results')
+        self.assertEqual(len(results), 1)
+        item = results[0]
+        self.assertEqual(item.get('details_url'), '/buckets/test_bucket/itemdetails/file-one')
+        self.assertEqual(item.get('full_key_name'), 'file-one')
+        self.assertEqual(item.get('is_folder'), False)
+
+    @mock_s3
+    def test_bucket_contents_view_with_folder(self):
+        request = self.create_request(matchdict=dict(name='test_bucket'))
+        request.params['csrf_token'] = request.session.get_csrf_token()
+        bucket, bucket_acl = self.make_bucket()
+        bucket.new_key("/folder-one/").set_contents_from_string('')
+        view = BucketContentsJsonView(request, bucket=bucket)
+        bucket_contents_json_view = view.bucket_contents_json()
+        results = bucket_contents_json_view.get('results')
+        self.assertEqual(len(results), 1)
+        item = results[0]
+        self.assertEqual(item.get('details_url'), '/buckets/test_bucket/itemdetails/folder-one/')
+        self.assertEqual(item.get('full_key_name'), 'folder-one/')
+        self.assertEqual(item.get('is_folder'), True)
+        self.assertEqual(item.get('icon'), 'fi-folder')
+        self.assertEqual(item.get('size'), 0)
+        self.assertEqual(item.get('download_url'), '')
 
 
 class SharingPanelFormTestCase(BaseFormTestCase):

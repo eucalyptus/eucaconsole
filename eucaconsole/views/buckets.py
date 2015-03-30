@@ -528,11 +528,13 @@ class BucketContentsView(LandingPageView, BucketMixin):
 
 
 class BucketContentsJsonView(BaseView, BucketMixin):
-    def __init__(self, request):
-        super(BucketContentsJsonView, self).__init__(request)
+    def __init__(self, request, bucket=None, **kwargs):
+        super(BucketContentsJsonView, self).__init__(request, bucket=None, **kwargs)
+        self.bucket = bucket
         with boto_error_handler(request):
             self.s3_conn = self.get_connection(conn_type='s3')
-            self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
+            if self.s3_conn and self.bucket is None:
+                self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
         self.bucket_name = self.bucket.name
         request.subpath = self.get_subpath()
         self.subpath = request.subpath

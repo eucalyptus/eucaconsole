@@ -89,10 +89,11 @@ class BaseViewTestCase(unittest.TestCase):
     def tearDown(self):
         testing.tearDown()
 
-    def create_request(self, is_xhr=False):
+    def create_request(self, is_xhr=False, matchdict=None):
         request = testing.DummyRequest()
         request.id = 'test_request_id'
         request.is_xhr = is_xhr
+        request.matchdict = matchdict or {}
         return request
 
 
