@@ -782,15 +782,19 @@ class BucketItemDetailsView(BaseView, BucketMixin):
     """Views for Bucket item (folder/object) details"""
     VIEW_TEMPLATE = '../templates/buckets/bucket_item_details.pt'
 
-    def __init__(self, request):
-        super(BucketItemDetailsView, self).__init__(request)
+    def __init__(self, request, bucket=None, bucket_item_acl=None, **kwargs):
+        super(BucketItemDetailsView, self).__init__(request, bucket=None, bucket_item_acl=None, **kwargs)
+        self.bucket = bucket
+        self.bucket_item_acl = bucket_item_acl
         self.s3_conn = self.get_connection(conn_type='s3')
         request.subpath = self.get_subpath()
         with boto_error_handler(request):
-            self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
+            if self.s3_conn and self.bucket is None:
+                self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
             self.bucket_name = self.bucket.name
             self.bucket_item = self.get_bucket_item()
-            self.bucket_item_acl = self.bucket_item.get_acl() if self.bucket_item else None
+            if self.s3_conn and self.bucket_item_acl is None:
+                self.bucket_item_acl = self.bucket_item.get_acl() if self.bucket_item else None
         if self.bucket_item is None:
             raise HTTPNotFound()
         unprefixed_name = BucketContentsView.get_unprefixed_key_name(self.bucket_item.name)

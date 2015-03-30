@@ -39,7 +39,8 @@ from pyramid import testing
 from pyramid.httpexceptions import HTTPNotFound, HTTPBadRequest
 
 from eucaconsole.forms.buckets import SharingPanelForm
-from eucaconsole.views.buckets import BucketContentsView, BucketContentsJsonView, BucketDetailsView, BucketXHRView
+from eucaconsole.views.buckets import (
+    BucketContentsView, BucketContentsJsonView, BucketDetailsView, BucketItemDetailsView, BucketXHRView)
 
 from tests import BaseFormTestCase, BaseViewTestCase
 
@@ -176,6 +177,28 @@ class MockBucketContentsJsonViewTestCase(BaseViewTestCase, MockBucketMixin):
         self.assertEqual(item.get('icon'), 'fi-folder')
         self.assertEqual(item.get('size'), 0)
         self.assertEqual(item.get('download_url'), '')
+
+
+class MockObjectDetailsViewTestCase(BaseViewTestCase, MockBucketMixin):
+
+    @mock_s3
+    def test_object_details_view(self):
+        request = self.create_request()
+        path = '/buckets/test_bucket/itemdetails/'
+        file_name = 'file-two'
+        file_content = 'file two content'
+        request.path = path
+        request.subpath = (file_name, )
+        request.environ = {'PATH_INFO': u'{0}/{1}'.format(path, file_name)}
+        bucket, bucket_acl = self.make_bucket()
+        bucket.new_key(u'/{0}'.format(file_name)).set_contents_from_string(file_content)
+        view = BucketItemDetailsView(request, bucket=bucket, bucket_item_acl=bucket_acl).bucket_item_details()
+        item = view.get('bucket_item')
+        self.assertEqual(item.bucket.name, 'test_bucket')
+        self.assertEqual(int(item.content_length), len(file_content))
+        self.assertEqual(item.content_type, 'application/octet-stream')
+        self.assertEqual(item.etag, '"257075e03fc5351067247f7e04f8c74f"')
+        self.assertEqual(item.content_md5, 'JXB14D/FNRBnJH9+BPjHTw==')
 
 
 class SharingPanelFormTestCase(BaseFormTestCase):
