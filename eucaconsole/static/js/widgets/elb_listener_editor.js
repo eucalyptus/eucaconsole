@@ -256,7 +256,10 @@ angular.module('EucaConsoleUtils').directive('elbListenerEditor', function() {
                         }
                     });
                 }; 
-                $scope.showSelectCertificateModalLink = function (fromProtocol, toProtocol) {
+                $scope.showSelectCertificateModalLink = function (fromProtocol, toProtocol, fromPort, toPort) {
+                    if (toPort === '' || fromPort === '') {
+                        return false;
+                    }
                     if (fromProtocol.toUpperCase() === 'HTTPS' ||
                         fromProtocol.toUpperCase() === 'SSL' ||
                         toProtocol.toUpperCase() === 'HTTPS' ||
