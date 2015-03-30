@@ -198,6 +198,7 @@
                                     <thead class="header"><tr>
                                         <th i18n:translate="">TIMESTAMP</th>
                                         <th i18n:translate="">STATUS</th>
+                                        <th i18n:translate="">STATUS REASON</th>
                                         <th i18n:translate="">TYPE (LOGICAL ID)</th>
                                         <th i18n:translate="">PHYSICAL ID</th>
                                     </tr></thead>
@@ -205,6 +206,9 @@
                                         <tr ng-repeat="item in events | orderBy: sortBy:sortReverse" ng-cloak="true">
                                             <td>{{ item.timestamp | date:'${layout.angular_date_format}' }}</td>
                                             <td><span class="label radius status {{ item.status }}">{{ item.status.replace('-', ' ').replace('-', ' ') }}</span></td>
+                                            <td>
+                                                {{ item.status_reason }}
+                                            </td>
                                             <td>{{ item.type }} ({{ item.logical_id }})</td>
                                             <td ng-hide="item.url">
                                                 {{ item.physical_id }}
