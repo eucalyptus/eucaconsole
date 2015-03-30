@@ -484,19 +484,31 @@ class CreateELBView(BaseView):
         backend_policy_type = u'BackendServerAuthenticationPolicyType'
 
         #TEMP
-        #backend_certificates = [{"name":"backend-pubkey-0003","certificateBody":"-----BEGIN CERTIFICATE-----\nMIIDNDCCAhygAwIBAgIGDcRVCui6MA0GCSqGSIb3DQEBDQUAMEExCzAJBgNVBAYT\nAlVTMQ0wCwYDVQQKEwRVc2VyMRMwEQYDVQQLEwpFdWNhbHlwdHVzMQ4wDAYDVQQD\nEwVhZG1pbjAeFw0xNTAzMjAxODI5MjFaFw0yMDAzMjAxODI5MjFaMEExCzAJBgNV\nBAYTAlVTMQ0wCwYDVQQKEwRVc2VyMRMwEQYDVQQLEwpFdWNhbHlwdHVzMQ4wDAYD\nVQQDEwVhZG1pbjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKD0iDkJ\nr9LDzhTkgo7FAcBZO3ne1AHDxjDUypd8PjQH32ZdDNbw1hkcBKX02hOjckc8V1q3\nYveK88LSewtwkUOg9r+6gWo+HpuDjgoEVwr6y+FDPSraovhLPM4+s9GSDaUpYjoy\nNJpQ3o6kfo1FfRxcCrRmbcBn26W1BbF8YIOei47g+I/qLe7CuBmXR8/T+CIwYvk0\n1G0uBslAcKyrLIrSOEpC+ygd0IwWMRvsZKOLLkc+8OMCJLWRiSM2wXFDV4xlu6rI\noDazEMu2Ur+8FwCacQEaIZYCSTu0j385PRtXy5+Mm23GKm3jBfFZ7n3Mm2jcJ70d\nYA5oCooyt+SJDjcCAwEAAaMyMDAwDwYDVR0TAQH/BAUwAwEB/zAdBgNVHQ4EFgQU\n4ZCGFikCuQ/nF3EBb2AZJuwdIycwDQYJKoZIhvcNAQENBQADggEBADp0Hf9B7bod\nAHlH+PiwdqMT7eYjMFU2xQwO+g0rZQT52gBXCqdt7TLH7tFYCHWjqm46y01NHfl6\niUq3lGK1xpBUZgXPf9E5dBYAq1d9ECdepzCroTTV4VaA7ejaMJGxW4+aoPuKdDuH\nzELYzYXEUOoMDuWbovdAavp0bXegYY8oX0cjO0eW+NbvMsTqQbZCm6ZL8p17tMcj\nX2BtF+O2DWFs9jBi+uCz2M2S5OAo8uk9ucZxAjAS+KxGlxySeBPDF0IPSsfTrD+1\noMBam78O/LCLaxBKdDNHxtXSyHjZ9nOYAeInua/AsKwl+NbP84zVpC2WbEl2G/l9\nY0TER9yGuhI=\n-----END CERTIFICATE-----"}]
+        #backend_certificates = [{"name":"test-backend-pubkey-0001","certificateBody":"-----BEGIN CERTIFICATE-----\nMIIDNDCCAhygAwIBAgIGIPPz3M6BMA0GCSqGSIb3DQEBDQUAMEExCzAJBgNVBAYT\nAlVTMQ0wCwYDVQQKEwRVc2VyMRMwEQYDVQQLEwpFdWNhbHlwdHVzMQ4wDAYDVQQD\nEwVhZG1pbjAeFw0xNDA0MTAxOTIwMjJaFw0xOTA0MTAxOTIwMjJaMEExCzAJBgNV\nBAYTAlVTMQ0wCwYDVQQKEwRVc2VyMRMwEQYDVQQLEwpFdWNhbHlwdHVzMQ4wDAYD\nVQQDEwVhZG1pbjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALutKPbt\nDhEQVRw1ZIgaOiA1BdYFssQ9bnhEfC7Lq68hK42lH+K1Rmr/803nuhktITVMvb7R\njFxkYXDi1BZtjgMssWm3K8UegyQb098uScYixK7M/g60/SSbzS2b6ga2Tc4aLg9B\n+YT5d1llqB/W4t19NkqB2ncuk7weB+UYh2PNOHGh+/haLz9/vHOIRerRMyd77q1W\nCQ24HDA/j3sXaNLS/cTe2iVJZWdpb9V57ivVlh+J4ZZqq2mBYCIVwA660/clqJcT\nLu7OsQ4eUHTEEpaUF8EQYMFm4FXNwxLZd7nBdBA97Ip2prvkIrW7WsWXrf0oH6If\nq4ZuDhuTThkGcI8CAwEAAaMyMDAwDwYDVR0TAQH/BAUwAwEB/zAdBgNVHQ4EFgQU\n4UfCYeA290g+BSzSvavJhv7CU6wwDQYJKoZIhvcNAQENBQADggEBAFghqNx0YSIA\nwZad3vaEkCVDmgOyL0m4NyJU0uAl+rtFKuR1fv0lIR22zLG5Pw6UH/7fS1TBw7Kc\nCiDF+eYfkKM9e7mf45iukIF1GuTRXcKFk9Nop0Il0bi9Jas+vhidlVyO7VjHbicW\nIcCFXiOx5KDA9yhKiHGBU6SGxQUdijE+S2+XsvtOqNGGezzFCc/colQXXyOdxvM2\njLVUgVctURXeDJsKuO1Drq0Iy5opTc2XE0WzZ4AxVAuC5UdYIfJ1XzjRRqDIf5+r\n2n1Mf5mLBmhzSXpd6cdDiK7YNt1uGK4ydOt/z2FYLBl9cVJoWG5zRMbJuiFdwIlw\nhW/GWUvLKJQ=\n-----END CERTIFICATE-----","$$hashKey":"object:43"},{"name":"test-backend-pubkey-0002","certificateBody":"-----BEGIN CERTIFICATE-----\nMIIDNDCCAhygAwIBAgIGIPPz3M6BMA0GCSqGSIb3DQEBDQUAMEExCzAJBgNVBAYT\nAlVTMQ0wCwYDVQQKEwRVc2VyMRMwEQYDVQQLEwpFdWNhbHlwdHVzMQ4wDAYDVQQD\nEwVhZG1pbjAeFw0xNDA0MTAxOTIwMjJaFw0xOTA0MTAxOTIwMjJaMEExCzAJBgNV\nBAYTAlVTMQ0wCwYDVQQKEwRVc2VyMRMwEQYDVQQLEwpFdWNhbHlwdHVzMQ4wDAYD\nVQQDEwVhZG1pbjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALutKPbt\nDhEQVRw1ZIgaOiA1BdYFssQ9bnhEfC7Lq68hK42lH+K1Rmr/803nuhktITVMvb7R\njFxkYXDi1BZtjgMssWm3K8UegyQb098uScYixK7M/g60/SSbzS2b6ga2Tc4aLg9B\n+YT5d1llqB/W4t19NkqB2ncuk7weB+UYh2PNOHGh+/haLz9/vHOIRerRMyd77q1W\nCQ24HDA/j3sXaNLS/cTe2iVJZWdpb9V57ivVlh+J4ZZqq2mBYCIVwA660/clqJcT\nLu7OsQ4eUHTEEpaUF8EQYMFm4FXNwxLZd7nBdBA97Ip2prvkIrW7WsWXrf0oH6If\nq4ZuDhuTThkGcI8CAwEAAaMyMDAwDwYDVR0TAQH/BAUwAwEB/zAdBgNVHQ4EFgQU\n4UfCYeA290g+BSzSvavJhv7CU6wwDQYJKoZIhvcNAQENBQADggEBAFghqNx0YSIA\nwZad3vaEkCVDmgOyL0m4NyJU0uAl+rtFKuR1fv0lIR22zLG5Pw6UH/7fS1TBw7Kc\nCiDF+eYfkKM9e7mf45iukIF1GuTRXcKFk9Nop0Il0bi9Jas+vhidlVyO7VjHbicW\nIcCFXiOx5KDA9yhKiHGBU6SGxQUdijE+S2+XsvtOqNGGezzFCc/colQXXyOdxvM2\njLVUgVctURXeDJsKuO1Drq0Iy5opTc2XE0WzZ4AxVAuC5UdYIfJ1XzjRRqDIf5+r\n2n1Mf5mLBmhzSXpd6cdDiK7YNt1uGK4ydOt/z2FYLBl9cVJoWG5zRMbJuiFdwIlw\nhW/GWUvLKJQ=\n-----END CERTIFICATE-----","$$hashKey":"object:45"},{"name":"test-backend-pubkey-0003","certificateBody":"-----BEGIN CERTIFICATE-----\nMIIDNDCCAhygAwIBAgIGIPPz3M6BMA0GCSqGSIb3DQEBDQUAMEExCzAJBgNVBAYT\nAlVTMQ0wCwYDVQQKEwRVc2VyMRMwEQYDVQQLEwpFdWNhbHlwdHVzMQ4wDAYDVQQD\nEwVhZG1pbjAeFw0xNDA0MTAxOTIwMjJaFw0xOTA0MTAxOTIwMjJaMEExCzAJBgNV\nBAYTAlVTMQ0wCwYDVQQKEwRVc2VyMRMwEQYDVQQLEwpFdWNhbHlwdHVzMQ4wDAYD\nVQQDEwVhZG1pbjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALutKPbt\nDhEQVRw1ZIgaOiA1BdYFssQ9bnhEfC7Lq68hK42lH+K1Rmr/803nuhktITVMvb7R\njFxkYXDi1BZtjgMssWm3K8UegyQb098uScYixK7M/g60/SSbzS2b6ga2Tc4aLg9B\n+YT5d1llqB/W4t19NkqB2ncuk7weB+UYh2PNOHGh+/haLz9/vHOIRerRMyd77q1W\nCQ24HDA/j3sXaNLS/cTe2iVJZWdpb9V57ivVlh+J4ZZqq2mBYCIVwA660/clqJcT\nLu7OsQ4eUHTEEpaUF8EQYMFm4FXNwxLZd7nBdBA97Ip2prvkIrW7WsWXrf0oH6If\nq4ZuDhuTThkGcI8CAwEAAaMyMDAwDwYDVR0TAQH/BAUwAwEB/zAdBgNVHQ4EFgQU\n4UfCYeA290g+BSzSvavJhv7CU6wwDQYJKoZIhvcNAQENBQADggEBAFghqNx0YSIA\nwZad3vaEkCVDmgOyL0m4NyJU0uAl+rtFKuR1fv0lIR22zLG5Pw6UH/7fS1TBw7Kc\nCiDF+eYfkKM9e7mf45iukIF1GuTRXcKFk9Nop0Il0bi9Jas+vhidlVyO7VjHbicW\nIcCFXiOx5KDA9yhKiHGBU6SGxQUdijE+S2+XsvtOqNGGezzFCc/colQXXyOdxvM2\njLVUgVctURXeDJsKuO1Drq0Iy5opTc2XE0WzZ4AxVAuC5UdYIfJ1XzjRRqDIf5+r\n2n1Mf5mLBmhzSXpd6cdDiK7YNt1uGK4ydOt/z2FYLBl9cVJoWG5zRMbJuiFdwIlw\nhW/GWUvLKJQ=\n-----END CERTIFICATE-----"}]
+
+        backend_policy_name = u'BackendPolicy-{0}'.format(elb_name)
+        print backend_policy_name
+        backend_policy_params = {'LoadBalancerName': elb_name,
+                                 'PolicyName': backend_policy_name,
+                                 'PolicyTypeName': backend_policy_type}
+        index = 1 
         for cert in backend_certificates:
             public_policy_name = u'PublicKeyPolicy-{0}'.format(cert.get('name'))
             public_policy_attributes['PublicKey'] = cert.get('certificateBody')
             print public_policy_name
             self.elb_conn.create_lb_policy(elb_name, public_policy_name, public_policy_type, public_policy_attributes)
-            backend_policy_name = u'BackendPolicy-{0}'.format(elb_name)
-            backend_policy_attributes['PublicKeyPolicyName'] = public_policy_name 
-            print backend_policy_name
-            self.elb_conn.create_lb_policy(elb_name, backend_policy_name, backend_policy_type, backend_policy_attributes)
-            print "here"
-            # sleep is needed for the previous policy creation to complete
-            time.sleep(1)
-            instance_port = 443
-            self.elb_conn.set_lb_policies_of_backend_server(elb_name, instance_port, backend_policy_name)
-        print "done setting backend cert"
+            backend_policy_params['PolicyAttributes.member.%d.AttributeName' % index] = 'PublicKeyPolicyName' 
+            backend_policy_params['PolicyAttributes.member.%d.AttributeValue' % index] = public_policy_name 
+            index += 1
+
+        # Cannot use the boto call below since it won't allow having multiple 'PublicKeyPolicyName' keys as the attributes 
+        #backend_policy_attributes['PublicKeyPolicyName'] = public_policy_name 
+        #self.elb_conn.create_lb_policy(elb_name, backend_policy_name, backend_policy_type, backend_policy_attributes)
+        print backend_policy_params
+        self.elb_conn.get_status('CreateLoadBalancerPolicy', backend_policy_params)
+        print "Created elb policy"
+        # sleep is needed for the previous policy creation to complete
+        time.sleep(1)
+        instance_port = 443
+        self.elb_conn.set_lb_policies_of_backend_server(elb_name, instance_port, backend_policy_name)
+        print "Done setting up backend cert"
