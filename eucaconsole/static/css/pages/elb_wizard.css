@@ -45,3 +45,4 @@
 #elb-form select.ip-protocol { width: 100px; }
 #elb-form select.ping-delay { width: 120px; }
 #elb-form select.ping-threshold { width: 100px; }
+#elb-form table { margin-left: auto; margin-right: auto; }
