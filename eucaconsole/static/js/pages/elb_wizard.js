@@ -122,20 +122,14 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
             $scope.$on('eventUpdateListenerArray', function ($event, listenerArray) {
                 $scope.listenerArray = listenerArray;
             });
-            $scope.$on('eventOpenSelectCertificateModal', function ($event, fromProtocol, toProtocol) {
+            $scope.$on('eventOpenSelectCertificateModal', function ($event, fromProtocol, toProtocol, certificateTab) {
                 if ((fromProtocol === 'HTTPS' || fromProtocol === 'SSL') &&
-                     (toProtocol === 'HTTPS' || toProtocol === 'SSL')) {
+                    (toProtocol === 'HTTPS' || toProtocol === 'SSL')) {
                     $scope.showsCertificateTabDiv = true;
-                    $scope.certificateTab = 'SSL';
                 } else {
                     $scope.showsCertificateTabDiv = false;
-                    // Set the tab display to 'SSL' if the backend certificate section is hidden
-                    if (fromProtocol === 'HTTPS' || fromProtocol === 'SSL') {
-                        $scope.certificateTab = 'SSL';
-                    } else if (toProtocol === 'HTTPS' || toProtocol === 'SSL') {
-                        $scope.certificateTab = 'BACKEND';
-                    }
                 }
+                $scope.certificateTab = certificateTab;
                 $scope.openSelectCertificateModal();
             });
             $scope.$on('eventUpdateSelectedInstanceList', function ($event, instanceList) {

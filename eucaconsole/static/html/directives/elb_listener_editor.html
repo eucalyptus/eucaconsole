@@ -29,7 +29,7 @@
                         <td>{{ listener.toPort }}</td>
                         <td>
                             <span ng-show="showSelectCertificateModalLink(listener.fromProtocol, listener.toProtocol)">
-	                        <a ng-click="openCertificateModal(listener.fromProtocol, listener.toProtocol)"
+	                        <a ng-click="openCertificateModal(listener.fromProtocol, listener.toProtocol, 'BACKEND')"
                                     title="Change certficate">
                                     <span ng-show="showBackendCertificateLink(listener.fromProtocol, listener.toProtocol)">
                                         Backend Certificate 
@@ -39,7 +39,7 @@
                         </td>
                         <td>
                             <span ng-show="showSelectCertificateModalLink(listener.fromProtocol, listener.toProtocol)">
-	                        <a ng-click="openCertificateModal(listener.fromProtocol, listener.toProtocol)"
+	                        <a ng-click="openCertificateModal(listener.fromProtocol, listener.toProtocol, 'SSL')"
                                     title="Change certficate">
                                     <span ng-show="showServerCertificateNameLink(listener.fromProtocol)">
                                         {{ serverCertificateName }}
@@ -139,7 +139,7 @@
 		    <label class="right protocol" i18n:translate="">Cipher</label>
 	        </div>
 	        <div class="small-9 columns">
-	            <a ng-click="openCertificateModal(fromProtocol, toProtocol)"
+	            <a ng-click="openCertificateModal(fromProtocol, toProtocol, 'SSL')"
                         title="Change certficate">
                         Select
                     </a>
@@ -150,7 +150,7 @@
 		    <label class="right protocol" i18n:translate="">Certificates</label>
 	        </div>
 	        <div class="small-9 columns">
-	            <a ng-click="openCertificateModal(fromProtocol, toProtocol)"
+	            <a ng-click="openCertificateModal(fromProtocol, toProtocol, 'SSL')"
                         title="Change certficate">
                         Select
                     </a>

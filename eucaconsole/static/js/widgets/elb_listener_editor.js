@@ -279,8 +279,8 @@ angular.module('EucaConsoleUtils').directive('elbListenerEditor', function() {
                     }
                     return false;
                 };
-                $scope.openCertificateModal = function (fromProtocol, toProtocol) {
-                    $scope.$emit('eventOpenSelectCertificateModal', fromProtocol.toUpperCase(), toProtocol.toUpperCase());
+                $scope.openCertificateModal = function (fromProtocol, toProtocol, certificateTab) {
+                    $scope.$emit('eventOpenSelectCertificateModal', fromProtocol.toUpperCase(), toProtocol.toUpperCase(), certificateTab);
                 };
                 $scope.initEditor();
             }
