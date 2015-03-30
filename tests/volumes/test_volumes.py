@@ -39,7 +39,7 @@ from eucaconsole.forms import BaseSecureForm
 from eucaconsole.forms.volumes import (
     VolumeForm, DeleteVolumeForm, CreateSnapshotForm, DeleteSnapshotForm, AttachForm, DetachForm)
 from eucaconsole.views import TaggedItemView
-from eucaconsole.views.volumes import VolumesView, VolumeView, VolumesJsonView
+from eucaconsole.views.volumes import VolumesView, VolumeView, VolumesJsonView, VolumeStateView, VolumeSnapshotsView
 
 from tests import BaseViewTestCase, BaseFormTestCase
 
@@ -209,3 +209,52 @@ class MockVolumesJsonViewTestCase(BaseViewTestCase, MockVolumeMixin):
         self.assertEqual(volume.get('size'), 1)
         self.assertEqual(volume.get('status'), 'available')
         self.assertEqual(volume.get('attach_status'), None)
+
+
+class MockVolumeViewTestCase(BaseViewTestCase, MockVolumeMixin):
+
+    @mock_ec2
+    def test_volume_detail_view_with_existing_volume(self):
+        volume, conn = self.make_volume()
+        request = self.create_request(matchdict=dict(id=volume.id))
+        view = VolumeView(request, ec2_conn=conn).volume_view()
+        self.assertEqual(view.get('volume').id, volume.id)
+        self.assertEqual(view.get('volume_name'), volume.id)
+
+    @mock_ec2
+    def test_volume_detail_view_with_new_volume(self):
+        volume, conn = self.make_volume()
+        request = self.create_request(matchdict=dict(id='new'))
+        view = VolumeView(request, ec2_conn=conn).volume_view()
+        self.assertEqual(view.get('volume'), None)
+
+
+class MockVolumeStateViewTestCase(BaseViewTestCase, MockVolumeMixin):
+
+    @mock_ec2
+    def test_volume_state_view(self):
+        volume, conn = self.make_volume()
+        request = self.create_request(matchdict=dict(id=volume.id))
+        view = VolumeStateView(request=request, ec2_conn=conn).volume_state_json()
+        results = view.get('results')
+        self.assertEqual(results.get('attach_device'), None)
+        self.assertEqual(results.get('attach_instance'), None)
+        self.assertEqual(results.get('attach_status'), None)
+        self.assertEqual(results.get('attach_time'), None)
+        self.assertEqual(results.get('volume_status'), u'available')
+
+
+class MockVolumeSnapshotsViewTestCase(BaseViewTestCase, MockVolumeMixin):
+
+    @mock_ec2
+    def test_volume_snapshots_json_view(self):
+        volume, conn = self.make_volume()
+        snapshot_description = 'a test snapshot for a mock volume'
+        new_snapshot = conn.create_snapshot(volume.id, description=snapshot_description)
+        request = self.create_request(matchdict=dict(id=volume.id))
+        view = VolumeSnapshotsView(request=request, ec2_conn=conn).volume_snapshots_json()
+        results = view.get('results')
+        self.assertEqual(len(results), 1)
+        snapshot = results[0]
+        self.assertEqual(snapshot.get('description'), snapshot_description)
+        self.assertEqual(snapshot.get('name'), new_snapshot.id)

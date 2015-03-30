@@ -529,7 +529,7 @@ class BucketContentsView(LandingPageView, BucketMixin):
 
 class BucketContentsJsonView(BaseView, BucketMixin):
     def __init__(self, request, bucket=None, **kwargs):
-        super(BucketContentsJsonView, self).__init__(request, bucket=None, **kwargs)
+        super(BucketContentsJsonView, self).__init__(request, **kwargs)
         self.bucket = bucket
         with boto_error_handler(request):
             self.s3_conn = self.get_connection(conn_type='s3')
@@ -783,7 +783,7 @@ class BucketItemDetailsView(BaseView, BucketMixin):
     VIEW_TEMPLATE = '../templates/buckets/bucket_item_details.pt'
 
     def __init__(self, request, bucket=None, bucket_item_acl=None, **kwargs):
-        super(BucketItemDetailsView, self).__init__(request, bucket=None, bucket_item_acl=None, **kwargs)
+        super(BucketItemDetailsView, self).__init__(request, **kwargs)
         self.bucket = bucket
         self.bucket_item_acl = bucket_item_acl
         self.s3_conn = self.get_connection(conn_type='s3')

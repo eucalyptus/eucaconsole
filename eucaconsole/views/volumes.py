@@ -49,8 +49,8 @@ from . import boto_error_handler
 
 class BaseVolumeView(BaseView):
     """Base class for volume-related views"""
-    def __init__(self, request):
-        super(BaseVolumeView, self).__init__(request)
+    def __init__(self, request, **kwargs):
+        super(BaseVolumeView, self).__init__(request, **kwargs)
         self.conn = self.get_connection()
 
     def get_volume(self, volume_id=None):
@@ -241,10 +241,10 @@ class VolumesJsonView(LandingPageView):
 class VolumeView(TaggedItemView, BaseVolumeView):
     VIEW_TEMPLATE = '../templates/volumes/volume_view.pt'
 
-    def __init__(self, request):
-        super(VolumeView, self).__init__(request)
+    def __init__(self, request, ec2_conn=None, **kwargs):
+        super(VolumeView, self).__init__(request, **kwargs)
         self.request = request
-        self.conn = self.get_connection()
+        self.conn = ec2_conn or self.get_connection()
         self.location = self.request.route_path('volume_view', id=self.request.matchdict.get('id'))
         with boto_error_handler(request, self.location):
             self.volume = self.get_volume()
@@ -412,10 +412,10 @@ class VolumeView(TaggedItemView, BaseVolumeView):
 
 
 class VolumeStateView(BaseVolumeView):
-    def __init__(self, request):
-        super(VolumeStateView, self).__init__(request)
+    def __init__(self, request, ec2_conn=None, **kwargs):
+        super(VolumeStateView, self).__init__(request, **kwargs)
         self.request = request
-        self.conn = self.get_connection()
+        self.conn = ec2_conn or self.get_connection()
         self.volume = self.get_volume()
 
     @view_config(route_name='volume_state_json', renderer='json', request_method='GET')
@@ -438,10 +438,10 @@ class VolumeStateView(BaseVolumeView):
 class VolumeSnapshotsView(BaseVolumeView):
     VIEW_TEMPLATE = '../templates/volumes/volume_snapshots.pt'
 
-    def __init__(self, request):
-        super(VolumeSnapshotsView, self).__init__(request)
+    def __init__(self, request, ec2_conn=None, **kwargs):
+        super(VolumeSnapshotsView, self).__init__(request, **kwargs)
         self.request = request
-        self.conn = self.get_connection()
+        self.conn = ec2_conn or self.get_connection()
         self.location = self.request.route_path('volume_snapshots', id=self.request.matchdict.get('id'))
         with boto_error_handler(request, self.location):
             self.volume = self.get_volume()
