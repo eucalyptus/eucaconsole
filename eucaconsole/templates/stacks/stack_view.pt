@@ -38,23 +38,24 @@
                         </metal:actions>
                     </metal:block>
                     <div class="columns section">
+                        &nbsp;
                         <h6 i18n:translate="">Stack</h6>
                         <div class="row readonly">
-                            <div class="small-2 columns"><label i18n:translate="">Name</label></div>
+                            <div class="small-2 columns"><label i18n:translate="" class="right">Name</label></div>
                             <div class="small-10 columns value">${stack_name}</div>
                         </div>
                         <div class="row readonly">
-                            <div class="small-2 columns"><label i18n:translate="">ID</label></div>
+                            <div class="small-2 columns"><label i18n:translate="" class="right">ID</label></div>
                             <div class="small-10 columns value">${stack.stack_id}</div>
                         </div>
                         <div class="row readonly">
-                            <div class="small-2 columns"><label i18n:translate="">Creation time</label></div>
+                            <div class="small-2 columns"><label i18n:translate="" class="right">Creation time</label></div>
                             <div class="small-10 columns value" ng-cloak="">
                                 {{ '${stack_creation_time}' | date: '${layout.angular_date_format}' }}
                             </div>
                         </div>
                         <div class="row readonly">
-                            <div class="small-2 columns"><label i18n:translate="">Status</label></div>
+                            <div class="small-2 columns"><label i18n:translate="" class="right">Status</label></div>
                             <div class="small-10 columns value" ng-cloak="">
                                 <span class="label radius status ${status}">{{ stackStatus.replace('-', ' ').replace('-', ' ') }}</span>
                                 <span class="busy" ng-show="isTransitional()">&nbsp;</span>
@@ -69,7 +70,7 @@
                                 <!-- Begin table view -->
                                 <table class="table">
                                     <thead><tr>
-                                        <th i18n:translate="">NAME</th>
+                                        <th i18n:translate="">KEY</th>
                                         <th i18n:translate="">VALUE</th>
                                     </tr></thead>
                                     <tbody>
@@ -152,32 +153,19 @@
                         </ul>
                     </div>
                     <div class="columns section">
+                        &nbsp;
                         <h6 i18n:translate="">Template</h6>
                         <div class="row readonly">
-                            <div class="small-2 columns"><label i18n:translate="">Description</label></div>
+                            <div class="small-2 columns"><label i18n:translate="" class="right">Description</label></div>
                             <div class="small-10 columns value">${stack_description}</div>
                         </div>
                     </div>
                     <hr/>
                     <div class="columns section">
                         <h6 i18n:translate="">Parameters</h6>
-                        <div class="datagrid" id="datagrid-items">
-                            <div id="tableview" class="gridwrapper">
-                                <!-- Begin table view -->
-                                <table class="table">
-                                    <thead><tr>
-                                        <th i18n:translate="">NAME</th>
-                                        <th i18n:translate="">DESCRIPTION</th>
-                                    </tr></thead>
-                                    <tbody>
-                                        <tr tal:repeat="item stack.parameters" ng-cloak="true">
-                                            <td>${item.key}</td>
-                                            <td>${item.value}</td>
-                                        </tr>
-                                        <tr></tr>
-                                    </tbody>
-                                </table>
-                            </div>
+                        <div class="row readonly" tal:repeat="item stack.parameters" ng-cloak="true">
+                            <div class="small-2 columns"><label class="right">${item.key}</label></div>
+                            <div class="small-10 columns value">${item.value}</div>
                         </div>
                     </div>
                 </div>
@@ -195,6 +183,7 @@
                         </ul>
                     </div>
                     <div class="columns section">
+                        &nbsp;
                         <h6 i18n:translate="">Events</h6>
                         <div ng-app="MagicSearch">
                             <magic-search template="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.html')}"
