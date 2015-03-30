@@ -62,7 +62,7 @@
 	        </div>
 	        <div class="small-9 columns field">
 		    <div ng-class="classFromPortDiv">
-		        <input class="port from" id="from-port-input" name="from_port" ng-model="fromPort" pattern="{{ portRangePattern }}" />
+		        <input type="number" class="port from" id="from-port-input" name="from_port" ng-model="fromPort" pattern="{{ portRangePattern }}" />
 		        <small class="error" i18n:translate="">Port range value must be whole numbers between 1-65535</small>
 		    </div>
 	        </div>
@@ -91,7 +91,7 @@
 	        </div>
 	        <div class="small-9 columns field">
 		    <div ng-class="classToPortDiv">
-		        <input class="port to" id="to-port-input" name="to_port" ng-model="toPort" pattern="{{ portRangePattern }}" />
+		        <input type="number" class="port to" id="to-port-input" name="to_port" ng-model="toPort" pattern="{{ portRangePattern }}" />
 		        <small class="error" i18n:translate="">Port range value must be whole numbers between 1-65535</small>
 		    </div>
 	        </div>

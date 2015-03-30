@@ -64,12 +64,12 @@ angular.module('EucaConsoleUtils').directive('elbListenerEditor', function() {
 		};
 		$scope.setWatcher = function () {
 		    $scope.$watch('fromProtocol', function(){
-			$scope.fromPort = $scope.getPortFromProtocolList($scope.fromProtocol);
+			$scope.fromPort = parseInt($scope.getPortFromProtocolList($scope.fromProtocol));
                         $scope.checkAddListenerButtonCondition(); 
                         $scope.adjustToProtocolList();
 		    });
 		    $scope.$watch('toProtocol', function(){
-			$scope.toPort = $scope.getPortFromProtocolList($scope.toProtocol);
+			$scope.toPort = parseInt($scope.getPortFromProtocolList($scope.toProtocol));
                         $scope.checkAddListenerButtonCondition(); 
 		    });
 		    $scope.$watch('fromPort', function(){
