@@ -180,9 +180,11 @@ class VolumesView(LandingPageView, BaseVolumeView):
 
 
 class VolumesJsonView(LandingPageView):
-    def __init__(self, request):
-        super(VolumesJsonView, self).__init__(request)
-        self.conn = self.get_connection()
+    def __init__(self, request, conn=None, zone=None, enable_filters=True, **kwargs):
+        super(VolumesJsonView, self).__init__(request, **kwargs)
+        self.conn = conn or self.get_connection()
+        self.zone = zone
+        self.enable_filters = enable_filters
 
     @view_config(route_name='volumes_json', renderer='json', request_method='POST')
     def volumes_json(self):
@@ -191,14 +193,17 @@ class VolumesJsonView(LandingPageView):
         volumes = []
         transitional_states = ['attaching', 'detaching', 'creating', 'deleting']
         filters = {}
-        availability_zone_param = self.request.params.getall('zone')
+        availability_zone_param = self.zone or self.request.params.getall('zone')
         if availability_zone_param:
             filters.update({'availability-zone': availability_zone_param})
         # Don't filter by these request params in Python, as they're included in the "filters" params sent to the CLC
         # Note: the choices are from attributes in VolumesFiltersForm
         ignore_params = ['zone']
         with boto_error_handler(self.request):
-            filtered_items = self.filter_items(self.get_items(filters=filters), ignore=ignore_params)
+            if self.enable_filters:
+                filtered_items = self.filter_items(self.get_items(filters=filters), ignore=ignore_params)
+            else:
+                filtered_items = self.get_items()
             instance_ids = list(set([
                 vol.attach_data.instance_id for vol in filtered_items if vol.attach_data.instance_id is not None]))
             volume_ids = [volume.id for volume in filtered_items]
