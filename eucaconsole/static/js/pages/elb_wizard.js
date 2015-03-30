@@ -172,6 +172,9 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
             $scope.$watch('instanceList', function () {
                 $scope.checkRequiredInput(3);
             }, true);
+            $scope.$watch('pingProtocol', function (){
+                $scope.updateDefaultPingProtocol();
+            });
             $scope.$watch('pingPort', function (){
                 $scope.checkRequiredInput(4);
             });
@@ -336,6 +339,13 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
             angular.forEach($scope.vpcSubnets, function (vpcSubnet) {
                 $scope.vpcSubnetNames.push($scope.vpcSubnetChoices[vpcSubnet]);
             });
+        };
+        $scope.updateDefaultPingProtocol = function () {
+            if ($scope.pingProtocol === 'HTTP' || $scope.pingProtocol === 'TCP') {
+               $scope.pingPort = 80;
+            } else if ($scope.pingProtocol === 'HTTPS' || $scope.pingProtocol === 'SSL' ) {
+               $scope.pingPort = 443;
+            }
         };
         $scope.openSelectCertificateModal = function () {
             var modal = $('#select-certificate-modal');
