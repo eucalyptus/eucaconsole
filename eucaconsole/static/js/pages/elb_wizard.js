@@ -126,6 +126,7 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
                 if ((fromProtocol === 'HTTPS' || fromProtocol === 'SSL') &&
                      (toProtocol === 'HTTPS' || toProtocol === 'SSL')) {
                     $scope.showsCertificateTabDiv = true;
+                    $scope.certificateTab = 'SSL';
                 } else {
                     $scope.showsCertificateTabDiv = false;
                     // Set the tab display to 'SSL' if the backend certificate section is hidden
