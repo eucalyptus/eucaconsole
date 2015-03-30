@@ -2,8 +2,15 @@
     <div ng-cloak="true">
 	<label>Listeners</label>
         <div ng-cloak="true">
-            <table class="table" ng-cloak="true">
+            <table class="table" ng-cloak="true" ng-show="listenerArray.length !== 0">
                 <thead>
+                    <tr>
+                        <th colspan="2" i18n:translate="">CLIENT SIDE</th>
+                        <th colspan="2" i18n:translate="">INSTANCE SIDE</th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                    </tr>
                     <tr>
                         <th i18n:translate="">PROTOCOL</th>
                         <th i18n:translate="">PORT</th>
@@ -43,15 +50,6 @@
                         <td>
 	                    <a class="remove" ng-click="removeListener($event, $index)" title="Remove rule"><i class="fi-x"></i></a>
                         </td>
-                    </tr>
-                    <tr ng-cloak="true" ng-show="listenerArray.length === 0">
-                        <td><span class="" i18n:translate="">No load balancer listeners</span></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
                     </tr>
                 </tbody>
 	    </table>
