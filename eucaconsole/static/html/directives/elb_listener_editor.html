@@ -1,25 +1,60 @@
 <div id="elb-listener-editor">
     <div ng-cloak="true">
 	<label>Listeners</label>
-        <div>
-	    <span class="label radius secondary item" ng-repeat="listener in listenerArray">
-	        <span>
-		    {{ listener.fromProtocol.toUpperCase() }} ({{ listener.fromPort }}) - 
-		    {{ listener.toProtocol.toUpperCase() }} ({{ listener.toPort }})
-	        </span>
-                <span ng-show="showSelectCertificateModalLink(listener.fromProtocol, listener.toProtocol)">
-	            <a ng-click="openCertificateModal(listener.fromProtocol, listener.toProtocol)"
-                        title="Change certficate">
-                        <span ng-show="showServerCertificateNameLink(listener.fromProtocol)">
-                            {{ serverCertificateName }}
-                        </span>
-                        <span ng-show="showBackendCertificateLink(listener.fromProtocol, listener.toProtocol)">
-                            Backend Certificate 
-                        </span>
-                    </a>
-                </span>
-	        <a class="remove" ng-click="removeListener($event, $index)" title="Remove rule"><i class="fi-x"></i></a>
-	    </span>
+        <div ng-cloak="true">
+            <table class="table" ng-cloak="true">
+                <thead>
+                    <tr>
+                        <th i18n:translate="">PROTOCOL</th>
+                        <th i18n:translate="">PORT</th>
+                        <th i18n:translate="">PROTOCOL</th>
+                        <th i18n:translate="">PORT</th>
+                        <th i18n:translate="">CIPHER</th>
+                        <th i18n:translate="">CERTIFICATES</th>
+                        <th i18n:translate=""></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-cloak="true" ng-repeat="listener in listenerArray">
+	                <td>{{ listener.fromProtocol.toUpperCase() }}</td>
+                        <td>{{ listener.fromPort }}</td>
+		        <td>{{ listener.toProtocol.toUpperCase() }}</td>
+                        <td>{{ listener.toPort }}</td>
+                        <td>
+                            <span ng-show="showSelectCertificateModalLink(listener.fromProtocol, listener.toProtocol)">
+	                        <a ng-click="openCertificateModal(listener.fromProtocol, listener.toProtocol)"
+                                    title="Change certficate">
+                                    <span ng-show="showBackendCertificateLink(listener.fromProtocol, listener.toProtocol)">
+                                        Backend Certificate 
+                                    </span>
+                                </a>
+                            </span>
+                        </td>
+                        <td>
+                            <span ng-show="showSelectCertificateModalLink(listener.fromProtocol, listener.toProtocol)">
+	                        <a ng-click="openCertificateModal(listener.fromProtocol, listener.toProtocol)"
+                                    title="Change certficate">
+                                    <span ng-show="showServerCertificateNameLink(listener.fromProtocol)">
+                                        {{ serverCertificateName }}
+                                    </span>
+                                </a>
+                            </span>
+                        </td>
+                        <td>
+	                    <a class="remove" ng-click="removeListener($event, $index)" title="Remove rule"><i class="fi-x"></i></a>
+                        </td>
+                    </tr>
+                    <tr ng-cloak="true" ng-show="listenerArray.length === 0">
+                        <td><span class="" i18n:translate="">No load balancer listeners</span></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+	    </table>
         </div>
         <div>
 	    <div class="row controls-wrapper">
@@ -30,7 +65,6 @@
                 </div>
             </div>
         </div>
-        <div>&nbsp;</div>
         <div>
             <div ng-show="listenerArray.length === 0">
 	        <label i18n:translate="">Add a listener</label>
