@@ -209,6 +209,15 @@ h1, h2, h3, h4, h5, h6 {
         }
     }
     #offcanvas-icon {
+        left: -1000px;
+        display: none;
+        margin-right: 12px;
+        i {
+            font-size: 1.8rem;
+        }
+    }
+    #dropdown-icon {
+        left: -1000px;
         display: none;
         margin-right: 12px;
         i {
@@ -1078,7 +1087,17 @@ footer {
 }
 
 // Nav bar adjustments
-@media screen {
+@media screen and (min-width: $euca-extrasmall-breakpoint) {
+    #logobar {
+        #dropdown-icon {
+            left: 0px;
+            display: inline-block !important;
+            margin-right: 12px;
+        }
+    }
+}
+
+@media screen and (max-width: $euca-extrasmall-breakpoint) {
     #logobar {
         //border-bottom: 1px solid black;
         margin-top: 8px;
@@ -1087,6 +1106,7 @@ footer {
             top: 4px;
         }
         #offcanvas-icon {
+            left: 0px;
             display: inline-block !important;
             margin-right: 12px;
         }
@@ -1100,11 +1120,29 @@ footer {
     }
 }
 
+// On-canvas Nav adjustments
+#nav-drop ul {
+    list-style-type: none;
+    .dropdown {
+        margin-bottom: 0.5rem;
+    }
+    li {
+        a {
+            padding: 0.125rem;
+        }
+    }
+}
+
+a.lnk-dashboard {
+    padding-left: 0.0rem !important;
+}
+
 // Off-canvas Nav adjustments
 div.left-off-canvas-menu {
     color: white;
     background-color: white;
 }
+
 ul.off-canvas-list {
     li {
         label {
@@ -1113,14 +1151,17 @@ ul.off-canvas-list {
             padding-left: 0.5rem;
             border-top: 0;
         }
-        a.lnk-dashboard {
-            padding-left: 0.5rem;
-        }
         a {
             background-color: white;
             color: $euca-grey;
             padding: 0.125rem;
             border-bottom: 0;
+            label {
+                background-color: white;
+                color: $euca-grey;
+                padding-left: 0.5rem;
+                border-top: 0;
+            }
         }
         a:hover {
             background-color: lighten($euca-grey, 50%);
