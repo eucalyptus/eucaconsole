@@ -121,12 +121,25 @@ class BucketDetailsViewTestCase(BaseViewTestCase):
 class MockBucketDetailsViewTestCase(BaseViewTestCase, MockBucketMixin):
 
     @mock_s3
-    def test_bucket_details_view(self):
+    def test_bucket_details_view_without_versioning(self):
         request = self.create_request()
         bucket, bucket_acl = self.make_bucket()
-        view = BucketDetailsView(request, bucket=bucket, bucket_acl=bucket_acl)
-        bucket_detail_view = view.bucket_details()
-        self.assertEqual(bucket_detail_view.get('bucket_name'), 'test_bucket')
+        view = BucketDetailsView(request, bucket=bucket, bucket_acl=bucket_acl).bucket_details()
+        self.assertEqual(view.get('bucket_name'), 'test_bucket')
+        self.assertEqual(view.get('bucket_contents_url'), '/buckets/test_bucket/contents/')
+        self.assertEqual(view.get('versioning_status'), 'Disabled')
+        self.assertEqual(view.get('update_versioning_action'), 'enable')
+
+    @mock_s3
+    def test_bucket_details_view_with_versioning(self):
+        request = self.create_request()
+        bucket, bucket_acl = self.make_bucket()
+        bucket.configure_versioning(True)
+        view = BucketDetailsView(request, bucket=bucket, bucket_acl=bucket_acl).bucket_details()
+        self.assertEqual(view.get('bucket_name'), 'test_bucket')
+        self.assertEqual(view.get('bucket_contents_url'), '/buckets/test_bucket/contents/')
+        self.assertEqual(view.get('versioning_status'), 'Enabled')
+        self.assertEqual(view.get('update_versioning_action'), 'disable')
 
 
 class MockBucketContentsJsonViewTestCase(BaseViewTestCase, MockBucketMixin):
