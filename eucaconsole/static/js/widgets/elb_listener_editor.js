@@ -215,7 +215,7 @@ angular.module('EucaConsoleUtils').directive('elbListenerEditor', function() {
 		    return port;
 		};
                 $scope.validateFromProtocol = function () {
-                    if ($scope.fromPort !== '') {
+                    if ($scope.fromProtocol !== 'None' && $scope.fromPort !== '') {
                         $scope.isFromProtocolValid = true;
                     }
                 }; 
