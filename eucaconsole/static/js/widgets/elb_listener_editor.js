@@ -273,8 +273,11 @@ angular.module('EucaConsoleUtils').directive('elbListenerEditor', function() {
                     return false;
                 };
                 $scope.showBackendCertificateLink = function (fromProtocol, toProtocol) {
-                    if (toProtocol.toUpperCase() === 'HTTPS' ||
-                        toProtocol.toUpperCase() === 'SSL') {
+                    if (fromProtocol.toUpperCase() === 'HTTPS' ||
+                        fromProtocol.toUpperCase() === 'SSL') {
+                        return false;
+                    } else if (toProtocol.toUpperCase() === 'HTTPS' ||
+                               toProtocol.toUpperCase() === 'SSL') {
                         return true;
                     }
                     return false;

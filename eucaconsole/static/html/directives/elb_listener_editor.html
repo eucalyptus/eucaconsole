@@ -29,22 +29,28 @@
                         <td>{{ listener.toPort }}</td>
                         <td>
                             <span ng-show="showSelectCertificateModalLink(listener.fromProtocol, listener.toProtocol)">
-	                        <a ng-click="openCertificateModal(listener.fromProtocol, listener.toProtocol, 'BACKEND')"
+	                        <a ng-click="openCertificateModal(listener.fromProtocol, listener.toProtocol, 'SSL')"
                                     title="Change certficate">
-                                    <span ng-show="showBackendCertificateLink(listener.fromProtocol, listener.toProtocol)">
-                                        Backend Certificate 
+                                    <span ng-show="showServerCertificateNameLink(listener.fromProtocol, listener.toProtocol)">
+                                        Cipher 
                                     </span>
                                 </a>
                             </span>
                         </td>
                         <td>
                             <span ng-show="showSelectCertificateModalLink(listener.fromProtocol, listener.toProtocol)">
-	                        <a ng-click="openCertificateModal(listener.fromProtocol, listener.toProtocol, 'SSL')"
-                                    title="Change certficate">
-                                    <span ng-show="showServerCertificateNameLink(listener.fromProtocol)">
+                                <span ng-show="showServerCertificateNameLink(listener.fromProtocol)">
+	                            <a ng-click="openCertificateModal(listener.fromProtocol, listener.toProtocol, 'SSL')"
+                                        title="Change certficate">
                                         {{ serverCertificateName }}
-                                    </span>
-                                </a>
+                                    </a>
+                                </span>
+                                <span ng-show="showBackendCertificateLink(listener.fromProtocol, listener.toProtocol)">
+	                            <a ng-click="openCertificateModal(listener.fromProtocol, listener.toProtocol, 'BACKEND')"
+                                        title="Change certficate">
+                                        Backend Certificate 
+                                    </a>
+                                </span>
                             </span>
                         </td>
                         <td>
