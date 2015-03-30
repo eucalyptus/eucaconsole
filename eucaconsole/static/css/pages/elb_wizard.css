@@ -41,4 +41,7 @@
 @media screen and (max-width: 560px) { dl.tabs a b { display: none; } }
 /* @section Elasitc Load Balancer Wizard styles */
 #elb-form input.name { width: 100px; margin-right: 8px; margin-bottom: 4px; padding: 4px; }
-#elb-form input[type="number"] { width: 70px; text-align: right; }
+#elb-form input[type="number"] { width: 100px; }
+#elb-form select.ip-protocol { width: 100px; }
+#elb-form select.ping-delay { width: 120px; }
+#elb-form select.ping-threshold { width: 100px; }

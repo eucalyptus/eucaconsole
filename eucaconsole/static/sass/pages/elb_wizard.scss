@@ -15,7 +15,15 @@
         padding: 4px;
     }
     input[type="number"] {
-        width: 70px;
-        text-align: right;
+        width: 100px;
+    }
+    select.ip-protocol {
+        width: 100px;
+    }
+    select.ping-delay {
+        width: 120px;
+    }
+    select.ping-threshold {
+        width: 100px;
     }
 }
