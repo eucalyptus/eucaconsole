@@ -62,7 +62,7 @@
                                         <label i18n:translate="">Use sample template</label>
                                     </input>
                                     <div id="sample-template-div" ng-show="inputtype=='sample'">
-                                        <select chosen="" width="80%" id="sample-template" name="sample-template" ng-model="templateSample">
+                                        <select chosen="" id="sample-template" name="sample-template" ng-model="templateSample">
                                             <option value="" i18n:translate="">Select a template</option>
                                             <optgroup tal:repeat="group create_form['sample_template'].choices" label="${group[0]}">
                                                 <option tal:repeat="name group[1]">${name[0]}</option>
@@ -119,11 +119,14 @@
                                         ng-model="paramModels[item.name]" ng-change="checkRequiredInput()">
                                     </input>
                                     <small class='error' ng-hide="">{{ item.constraint }}</small>
-                                    <select chosen="" type="text" name="{{ item.name }}" id="{{ item.name }}" 
-                                        value='{{ item.default }}' ng-show="item.options"
-                                        ng-model="paramModels[item.name]" ng-change="checkRequiredInput()">
-                                        <option ng-repeat="option in item.options" value="{{ option[0] }}">{{ option[1] }}</option>
-                                    </select>
+                                    <div ng-show="item.options">
+                                        <select chosen="" name="{{ item.name }}" id="{{ item.name }}" 
+                                            search-contains="true"
+                                            value='{{ item.default }}'
+                                            ng-model="paramModels[item.name]" ng-change="checkRequiredInput()"
+                                            ng-options="option[0] as option[1] for option in item.options">
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                             <hr/>
