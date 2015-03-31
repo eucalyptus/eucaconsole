@@ -1,8 +1,6 @@
 /* @fileOverview Dashboard CSS */
 @import "../includes/eucavariables";
 
-@import "font-awesome/font-awesome";
-
 $dashboard-panel-tile-height: 240px;
 $dashboard-panel-padding: 4px;
 $dashboard-panel-border-width: 4px;
@@ -109,13 +107,6 @@ $tile-row-height: 24px;
             &::before, &::after {
                 border: none;
             }
-//            .tile-action {
-//                position: relative;
-//                top: 4px;
-//                //color: $euca-grey;
-//                @extend .fa;
-//                @extend .fa-ellipsis-v;
-//            }
         }
         .f-dropdown {
             @include dropdown-shadow-mixin;

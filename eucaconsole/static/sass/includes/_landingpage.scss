@@ -91,14 +91,6 @@ $dropdown-border-color: $euca-green;
         &::before, &::after {
             border: none;
         }
-//        .grid-action {
-//            position: relative;
-//            top: 4px;
-//            //color: $euca-grey;
-//            @extend .fa;
-//            @extend .fa-ellipsis-v;
-//            @extend [class^="fa-"];
-//        }
     }
     .f-dropdown {
         @include dropdown-shadow-mixin;

@@ -365,15 +365,6 @@ hr {
     border-width: 1px 0 0;
 }
 
-//.busy {
-//    @extend .fa;
-//    @extend .fa-spinner;
-//    @extend .fa-pulse;
-//    .loading & {
-//        @extend .fa-2x;
-//    }
-//}
-
 a.has-tip {
     border-bottom: none !important;
 }
@@ -767,16 +758,6 @@ textarea.hidden {
         display: block;
     }
 }
-
-// Help text icon for inline help on form fields
-//.helptext-icon {
-//    @extend .fa;
-//    @extend .fa-question-circle;
-//    @extend .fa-lg;
-//    margin-left: 5px;
-//    text-align: center;
-//}
-
 
 /* -----------------------------------------
    Chosen widget
