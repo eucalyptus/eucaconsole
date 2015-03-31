@@ -92,7 +92,15 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                             // Click instance checkbox
                             $('#instance-all-checkbox').prop('checked', false);
                             if ($(this).prop("checked") === true){
-                                $scope.selectedInstanceList.push(instanceName);
+                                var itemExists = false;
+                                angular.forEach($scope.selectedInstanceList, function(instance, $index) {
+                                    if (instance === instanceID || instance === instanceName) {
+                                        itemExists = true;
+                                    }
+                                });
+                                if (itemExists === false) {
+                                    $scope.selectedInstanceList.push(instanceName);
+                                }
                             } else {
                                 angular.forEach($scope.selectedInstanceList, function(instance, $index) {
                                     if (instance === instanceID || instance === instanceName) {
@@ -148,6 +156,19 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                                 }
                             });
                         }
+                    });
+                    $scope.updateSelectedInstanceList();
+                };
+                // Only keep the selected instances that are in the current instanceList
+                $scope.updateSelectedInstanceList = function () {
+                    var dupList = $scope.selectedInstanceList.slice(0);
+                    $scope.selectedInstanceList = [];
+                    angular.forEach(dupList, function (selectedInstance, $index) {
+                        angular.forEach($scope.instanceList, function (instance) {
+                            if (selectedInstance.indexOf(instance.id) > -1) {
+                                $scope.selectedInstanceList.push(selectedInstance);
+                            } 
+                        });
                     });
                 };
                 /*  Filter items client side based on search criteria.
