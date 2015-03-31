@@ -214,7 +214,7 @@
                                                 {{ item.physical_id }}
                                             </td>
                                             <td ng-show="item.url">
-                                                <a href="{{ item.url }}">{{ item.physical_id }}<a>
+                                                <a href="{{ item.url }}">{{ item.physical_id }}</a>
                                             </td>
                                         </tr>
                                         <tr ng-show="!eventsLoading"></tr>

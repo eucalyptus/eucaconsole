@@ -67,7 +67,6 @@
                                             <optgroup tal:repeat="group create_form['sample_template'].choices" label="${group[0]}">
                                                 <option tal:repeat="name group[1]">${name[0]}</option>
                                             </optgroup>
-                                            <optgroup>
                                         </select>
                                     </div>
                                     <br ng-hide="inputtype=='sample'"/>
