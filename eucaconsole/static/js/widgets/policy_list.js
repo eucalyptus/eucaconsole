@@ -3,8 +3,8 @@
  * @requires AngularJS
  *
  */
-angular.module('PolicyList', [])
-    .controller('PolicyListCtrl', function ($scope, $http, $rootScope) {
+angular.module('PolicyList', ['EucaConsoleUtils'])
+    .controller('PolicyListCtrl', function ($scope, $http, $rootScope, eucaHandleErrorNoNotify) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.policyList = $('#policy-list');
         $scope.itemsLoading = true;
@@ -49,11 +49,8 @@ angular.module('PolicyList', [])
                 $scope.syncPolicies();
               }
             ).error(function (oData, status) {
-                var errorMsg = oData.message || '';
                 $scope.itemsLoading = false;
-                if (errorMsg !== undefined) {
-                    Notify.failure(errorMsg);
-                }
+                eucaHandleErrorNoNotify(oData, status);
             });
         };
         $rootScope.getPolicies = function() {
