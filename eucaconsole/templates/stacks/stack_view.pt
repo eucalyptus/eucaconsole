@@ -127,7 +127,7 @@
                                                 {{ item.physical_id }}
                                             </td>
                                             <td ng-show="item.url">
-                                                <a href="{{ item.url }}">{{ item.physical_id }}<a>
+                                                <a href="{{ item.url }}">{{ item.physical_id }}</a>
                                             </td>
                                             <td><span class="label radius status {{ item.status }}">{{ item.status.replace('-', ' ').replace('-', ' ') }}</span></td>
                                             <td>{{ item.updated_timestamp | date:'${layout.angular_date_format}' }}</td>
