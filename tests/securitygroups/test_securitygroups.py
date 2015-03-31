@@ -30,6 +30,8 @@ Security Group tests
 See http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/testing.html
 
 """
+import re
+
 from pyramid import testing
 
 from eucaconsole.forms.securitygroups import SecurityGroupForm, SecurityGroupDeleteForm
@@ -106,6 +108,20 @@ class SecurityGroupFormTestCase(BaseFormTestCase):
         self.assertTrue(hasattr(self.form.name.flags, 'required'))
         self.assertTrue('required' in fieldrow.get('html_attrs').keys())
         self.assertTrue(fieldrow.get('html_attrs').get('maxlength') is not None)
+
+    def test_description_constraint(self):
+        valid_pattern = self.form.sgroup_description_pattern
+        matches = (
+            (u'foo123', True),
+            (u'foo_123', True),
+            (u'foo-123', True),
+            (u'foo*123', True),
+            (u'foo+123', True),
+            (u'foo&123', False),
+            (u'fooÅ', False),
+        )
+        for pattern, valid in matches:
+            self.assertEqual(bool(re.match(valid_pattern, pattern)), valid)
 
 
 class DeleteFormTestCase(BaseFormTestCase):

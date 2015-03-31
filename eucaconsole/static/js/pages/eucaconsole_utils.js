@@ -30,6 +30,19 @@ angular.module('EucaConsoleUtils', [])
         Notify.failure(errorMsg);
     };
 })
+.service('eucaHandleErrorNoNotify', function() {
+    /**
+     * Provide generic error handling in the browser for XHR calls. 
+     */
+    return function(data, status) {
+        var errorMsg = data['message'] || '';
+        if (status === 403) {
+            if (errorMsg.indexOf('Not authorized') == -1) {
+                $('#timed-out-modal').foundation('reveal', 'open');
+            }
+        }
+    };
+})
 .service('eucaHandleErrorS3', function() {
     /**
      * Provide generic error handling in the browser for XHR calls to Object Storage. 
