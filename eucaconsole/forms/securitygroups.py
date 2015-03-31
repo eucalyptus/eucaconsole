@@ -36,7 +36,7 @@ from . import BaseSecureForm, ChoicesManager, TextEscapedField, ASCII_WITHOUT_SL
 
 
 class SecurityGroupForm(BaseSecureForm):
-    """Security Group form
+    """Security Group create/edit form
        Constraints for VPC security group name/desc: a-z, A-Z, 0-9, spaces, and ._-:/()#,@[]+=;{}!$*
        See http://docs.aws.amazon.com/cli/latest/reference/ec2/create-security-group.html
     """
@@ -48,8 +48,9 @@ class SecurityGroupForm(BaseSecureForm):
     sgroup_description_pattern = r'^[a-zA-Z0-9\s\._\-:\/\(\)#,@\[\]\+=;\{\}!\$\*]+$'
     DESCRIPTION_RESTRICTION_NOTICE = _(
         u'Description is required, must be between 1 and 255 characters, and may only contain '
-        u'letters, numbers, spaces, and select special characters')
-    desc_error_msg = DESCRIPTION_RESTRICTION_NOTICE
+        u'letters, numbers, spaces, and the following characters:')
+    special_chars = u'._-:/()#,@[]+=;{}!$*'
+    desc_error_msg = u'{0} {1}'.format(DESCRIPTION_RESTRICTION_NOTICE, special_chars)
     description = wtforms.TextAreaField(
         label=_(u'Description'),
         validators=[
