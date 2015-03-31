@@ -150,6 +150,15 @@
                                          options='${controller_options_json}'>
                                      </instance-selector>
                                 </div>
+                                <div>
+	                            <div class="row controls-wrapper">
+	                                <div class="small-12 columns field">
+                                            <div ng-class="classNoInstanceWarningDiv">
+                                                <small class="error" i18n:translate="">You must select at least one instance.</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <hr />
                             <div>

@@ -23,6 +23,7 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
         $scope.securityGroupCollection = []; 
         $scope.availabilityZones = [];
         $scope.instanceList = [];
+        $scope.classNoInstanceWarningDiv = '';
         $scope.crossZoneEnabled = false;
         $scope.protocolList = []; 
         $scope.pingProtocol = '';
@@ -163,8 +164,12 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
                 $scope.checkRequiredInput(3);
                 $scope.$broadcast('eventUpdateVPCSubnets', $scope.vpcSubnets);
             }, true);
-            $scope.$watch('instanceList', function () {
+            $scope.$watch('instanceList', function (newValue, oldValue) {
                 $scope.checkRequiredInput(3);
+                $scope.classNoInstanceWarningDiv = '';
+                if (oldValue.length > 0 && $scope.instanceList.length === 0 ) {
+                    $scope.classNoInstanceWarningDiv = 'error';
+                }
             }, true);
             $scope.$watch('pingProtocol', function (){
                 $scope.updateDefaultPingProtocol();
