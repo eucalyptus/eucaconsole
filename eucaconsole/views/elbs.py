@@ -493,7 +493,7 @@ class CreateELBView(BaseView):
                                  'PolicyTypeName': backend_policy_type}
         index = 1 
         for cert in backend_certificates:
-            public_policy_name = u'PublicKeyPolicy-{0}'.format(cert.get('name'))
+            public_policy_name = u'EucaConsole-PublicKeyPolicy-{0}'.format(cert.get('name'))
             public_policy_attributes['PublicKey'] = cert.get('certificateBody')
             print public_policy_name
             self.elb_conn.create_lb_policy(elb_name, public_policy_name, public_policy_type, public_policy_attributes)
