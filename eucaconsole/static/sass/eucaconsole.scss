@@ -372,7 +372,7 @@ hr {
     @extend .fa-spinner;
     @extend .fa-pulse;
     .loading & {
-        @extend .fa-3x;
+        @extend .fa-2x;
     }
 }
 
@@ -776,9 +776,9 @@ textarea.hidden {
 .helptext-icon {
     @extend .fa;
     @extend .fa-question-circle;
-    @extend .fa-2x;
+    @extend .fa-lg;
     margin-left: 5px;
-    width: 20px; height: 20px;
+    //width: 20px; height: 20px;
     //color: white;
     text-align: center;
     //padding-top: 1px;

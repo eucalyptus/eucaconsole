@@ -112,7 +112,7 @@ $tile-row-height: 24px;
             .tile-action {
                 position: relative;
                 top: 4px;
-                color: $euca-grey;
+                //color: $euca-grey;
                 @extend .fa;
                 @extend .fa-ellipsis-v;
             }

@@ -1127,7 +1127,7 @@
 .panel .tile .dropdown.button.tiny { z-index: 99999; background: none; box-shadow: none; position: absolute; width: 30px; height: 24px; top: 0; right: 0; color: #8cc63e; font-size: 1.1rem; padding: 0 0 0 0; border: none; }
 .panel .tile .dropdown.button.tiny:hover { color: #8cc63e; }
 .panel .tile .dropdown.button.tiny::before, .panel .tile .dropdown.button.tiny::after { border: none; }
-.panel .tile .dropdown.button.tiny .tile-action { position: relative; top: 4px; color: #6a737b; }
+.panel .tile .dropdown.button.tiny .tile-action { position: relative; top: 4px; }
 .panel .tile .f-dropdown { border-color: #8dc640; box-shadow: 2px 2px 5px #6a737b; }
 .panel .tile .f-dropdown.open { top: 34px; min-width: 10rem; padding-top: 0; }
 .panel .tile.add { text-align: center; text-transform: uppercase; position: relative; }

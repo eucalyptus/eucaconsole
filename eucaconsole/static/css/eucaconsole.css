@@ -137,11 +137,11 @@ table { border-collapse: collapse; border-spacing: 0; }
 .fa, .busy, .row.controls-wrapper .helptext-icon.reverse, .helptext-icon { display: inline-block; font: normal normal normal 14px/1 FontAwesome; font-size: inherit; text-rendering: auto; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; transform: translate(0, 0); }
 
 /* makes the font 33% larger relative to the icon container */
-.fa-lg { font-size: 1.33333em; line-height: 0.75em; vertical-align: -15%; }
+.fa-lg, .helptext-icon { font-size: 1.33333em; line-height: 0.75em; vertical-align: -15%; }
 
-.fa-2x, .helptext-icon { font-size: 2em; }
+.fa-2x, .loading .busy { font-size: 2em; }
 
-.fa-3x, .loading .busy { font-size: 3em; }
+.fa-3x { font-size: 3em; }
 
 .fa-4x { font-size: 4em; }
 
@@ -153,7 +153,7 @@ table { border-collapse: collapse; border-spacing: 0; }
 .fa-ul > li { position: relative; }
 
 .fa-li { position: absolute; left: -2.14286em; width: 2.14286em; top: 0.14286em; text-align: center; }
-.fa-li.fa-lg { left: -1.85714em; }
+.fa-li.fa-lg, .fa-li.helptext-icon { left: -1.85714em; }
 
 .fa-border { padding: .2em .25em .15em; border: solid 0.08em #eee; border-radius: .1em; }
 
@@ -2894,7 +2894,7 @@ form .controls-wrapper > [class*='small-'] label.right { position: relative; rig
 textarea.hidden { display: none; }
 textarea.hidden.debug { display: block; }
 
-.helptext-icon { margin-left: 5px; width: 20px; height: 20px; text-align: center; }
+.helptext-icon { margin-left: 5px; text-align: center; }
 
 /* ----------------------------------------- Chosen widget
 ----------------------------------------- */
