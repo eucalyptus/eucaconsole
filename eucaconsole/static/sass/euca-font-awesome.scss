@@ -23,6 +23,7 @@ $fa-font-path:        "../fonts/font-awesome";
 @import "font-awesome/stacked";
 @import "font-awesome/icons";
 
+// app-wide busy indication
 .busy {
     @extend .fa;
     @extend .fa-spinner;
@@ -32,6 +33,7 @@ $fa-font-path:        "../fonts/font-awesome";
     }
 }
 
+// action menu icons
 .gridwrapper {
     .dropdown.button.tiny {
         .grid-action {
