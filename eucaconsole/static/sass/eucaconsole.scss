@@ -35,8 +35,6 @@
 // Note: foundation/settings imports includes/eucavariables
 @import "includes/eucavariables";
 
-@import "font-awesome/font-awesome";
-
 // Behold, here are all the Foundation 5 components.
 @import
 //  "foundation/components/accordion",
@@ -367,14 +365,14 @@ hr {
     border-width: 1px 0 0;
 }
 
-.busy {
-    @extend .fa;
-    @extend .fa-spinner;
-    @extend .fa-pulse;
-    .loading & {
-        @extend .fa-2x;
-    }
-}
+//.busy {
+//    @extend .fa;
+//    @extend .fa-spinner;
+//    @extend .fa-pulse;
+//    .loading & {
+//        @extend .fa-2x;
+//    }
+//}
 
 a.has-tip {
     border-bottom: none !important;
@@ -694,8 +692,6 @@ form {
         left: -1rem;
     }
     .helptext-icon.reverse {
-        @extend .fa;
-        @extend .fa-question-circle;
         position: relative;
         left: 1.5rem;
     }
@@ -773,16 +769,13 @@ textarea.hidden {
 }
 
 // Help text icon for inline help on form fields
-.helptext-icon {
-    @extend .fa;
-    @extend .fa-question-circle;
-    @extend .fa-lg;
-    margin-left: 5px;
-    //width: 20px; height: 20px;
-    //color: white;
-    text-align: center;
-    //padding-top: 1px;
-}
+//.helptext-icon {
+//    @extend .fa;
+//    @extend .fa-question-circle;
+//    @extend .fa-lg;
+//    margin-left: 5px;
+//    text-align: center;
+//}
 
 
 /* -----------------------------------------

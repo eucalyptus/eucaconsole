@@ -27,8 +27,6 @@
 
 @import "../includes/eucavariables";
 
-@import "font-awesome/font-awesome";
-
 /* @section Landing pages styles */
 
 // Sass variables
@@ -93,13 +91,14 @@ $dropdown-border-color: $euca-green;
         &::before, &::after {
             border: none;
         }
-        .grid-action {
-            position: relative;
-            top: 4px;
-            //color: $euca-grey;
-            @extend .fa;
-            @extend .fa-ellipsis-v;
-        }
+//        .grid-action {
+//            position: relative;
+//            top: 4px;
+//            //color: $euca-grey;
+//            @extend .fa;
+//            @extend .fa-ellipsis-v;
+//            @extend [class^="fa-"];
+//        }
     }
     .f-dropdown {
         @include dropdown-shadow-mixin;
