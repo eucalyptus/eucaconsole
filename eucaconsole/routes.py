@@ -142,6 +142,17 @@ urls = [
     Route(name='launchconfig_delete', pattern='/launchconfigs/{id}/delete'),
     Route(name='launchconfig_view', pattern='/launchconfigs/{id}'),
 
+    # ELBs #####
+    # Landing page
+    Route(name='elbs', pattern='/elbs'),
+    Route(name='elbs_json', pattern='/elbs/json'),
+    Route(name='elbs_delete', pattern='/elbs/delete'),
+    # Detail page
+    Route(name='elb_new', pattern='/elbs/new'),
+    Route(name='elb_create', pattern='/elbs/create'),
+    Route(name='elb_delete', pattern='/elbs/{id}/delete'),
+    Route(name='elb_view', pattern='/elbs/{id}'),
+
     # Volumes #####
     # Landing page
     Route(name='volumes', pattern='/volumes'),
@@ -322,6 +333,19 @@ urls = [
     Route(name='iam_policy_new', pattern='/policies/new'),
     Route(name='iam_policy_create', pattern='/policies/create'),
     Route(name='iam_policy_json', pattern='/policies/canned/json'),
+
+    # Stacks #####
+    # Landing page
+    Route(name='stacks', pattern='/stacks'),
+    Route(name='stacks_json', pattern='/stacks/json'),
+    Route(name='stacks_delete', pattern='/stacks/delete'),
+    # Detail page
+    Route(name='stack_new', pattern='/stacks/new'),
+    Route(name='stack_create', pattern='/stacks/create'),
+    Route(name='stack_template_parse', pattern='/stacks/templateparse'),
+    Route(name='stack_view', pattern='/stacks/{name}'),
+    Route(name='stack_delete', pattern='/stacks/{name}/delete'),
+    Route(name='stack_state_json', pattern='/stacks/{name}/state/json'),
+    Route(name='stack_template', pattern='/stacks/{name}/template'),
+    Route(name='stack_events', pattern='/stacks/{name}/events'),
 ]
-
-

@@ -13,9 +13,9 @@ angular.module('AutoScaleTagEditor', ['ngSanitize', 'EucaConsoleUtils'])
         };
     })
     .controller('AutoScaleTagEditorCtrl', function ($scope, $sanitize, $timeout, eucaUnescapeJson) {
-        $scope.tagEditor = $('#tag-editor');
-        $scope.tagInputs = $scope.tagEditor.find('.taginput');
-        $scope.tagsTextarea = $scope.tagEditor.find('textarea#tags');
+        $scope.tagEditor = undefined;
+        $scope.tagInputs = undefined;
+        $scope.tagsTextarea = undefined;
         $scope.tagsArray = [];
         $scope.newTagKey = '';
         $scope.newTagValue = '';
@@ -40,6 +40,9 @@ angular.module('AutoScaleTagEditor', ['ngSanitize', 'EucaConsoleUtils'])
                     });
                 }
             });
+            $scope.tagEditor = $('#tag-editor');
+            $scope.tagInputs = $scope.tagEditor.find('.taginput');
+            $scope.tagsTextarea = $scope.tagEditor.find('textarea#tags');
             $scope.syncTags();
             $scope.setWatch();
         };

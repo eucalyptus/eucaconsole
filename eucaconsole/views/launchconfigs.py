@@ -28,8 +28,8 @@
 Pyramid views for Eucalyptus and AWS launch configurations
 
 """
-from urllib import quote
 import simplejson as json
+from urllib import quote, urlencode
 
 from boto.ec2.autoscale.launchconfig import LaunchConfiguration
 
@@ -56,6 +56,7 @@ class LaunchConfigsView(LandingPageView):
         super(LaunchConfigsView, self).__init__(request)
         self.request = request
         self.ec2_conn = self.get_connection()
+        self.autoscale_conn = self.get_connection(conn_type='autoscale')
         self.iam_conn = self.get_connection(conn_type="iam")
         self.autoscale_conn = self.get_connection(conn_type='autoscale')
         self.initial_sort_key = 'name'
@@ -65,7 +66,12 @@ class LaunchConfigsView(LandingPageView):
         self.json_items_endpoint = self.get_json_endpoint('launchconfigs_json')
         self.delete_form = LaunchConfigDeleteForm(self.request, formdata=self.request.params or None)
         self.filters_form = LaunchConfigsFiltersForm(
-            self.request, cloud_type=self.cloud_type, ec2_conn=self.ec2_conn, formdata=self.request.params or None)
+            self.request,
+            cloud_type=self.cloud_type,
+            ec2_conn=self.ec2_conn,
+            autoscale_conn=self.autoscale_conn,
+            formdata=self.request.params or None
+        )
         search_facets = self.filters_form.facets
         self.render_dict = dict(
             filter_fields=False,
@@ -89,12 +95,11 @@ class LaunchConfigsView(LandingPageView):
             name = self.request.params.get('name')
             location = self.request.route_path('launchconfigs')
             prefix = _(u'Unable to delete launch configuration')
-            template = '{0} {1} - {2}'.format(prefix, name, '{0}')
+            template = u'{0} {1} - {2}'.format(prefix, name, u'{0}')
             with boto_error_handler(self.request, location, template):
-                launch_config = self.autoscale_conn.get_all_launch_configurations(names=[name])
                 self.autoscale_conn.delete_launch_configuration(name)
                 prefix = _(u'Successfully deleted launch configuration.')
-                msg = '{0} {1}'.format(prefix, name)
+                msg = u'{0} {1}'.format(prefix, name)
                 queue = Notification.SUCCESS
                 notification_msg = msg
                 self.request.session.flash(notification_msg, queue=queue)
@@ -215,6 +220,7 @@ class LaunchConfigsJsonView(LandingPageView):
             return len(security_group.rules)
         return None 
 
+
 class LaunchConfigView(BaseView):
     """Views for single LaunchConfig"""
     TEMPLATE = '../templates/launchconfigs/launchconfig_view.pt'
@@ -233,7 +239,10 @@ class LaunchConfigView(BaseView):
         self.role = None
         if self.launch_config and self.launch_config.instance_profile_name:
             arn = self.launch_config.instance_profile_name
-            profile_name = arn[(arn.rindex('/')+1):]
+            try:
+                profile_name = arn[(arn.rindex('/')+1):]
+            except ValueError:
+                profile_name = arn
             inst_profile = self.iam_conn.get_instance_profile(profile_name)
             self.role = inst_profile.roles.member.role_name
 
@@ -258,7 +267,7 @@ class LaunchConfigView(BaseView):
             launch_config_vpc_ip_assignment=self.get_vpc_ip_assignment_display(
                 self.launch_config.associate_public_ip_address) if self.launch_config else '',
             lc_created_time=self.dt_isoformat(self.launch_config.created_time),
-            escaped_launch_config_name=quote(self.launch_config.name),
+            escaped_launch_config_name=quote(self.launch_config.name.encode('utf-8')),
             in_use=self.in_use,
             image=self.image,
             security_groups=self.security_groups,
@@ -278,12 +287,12 @@ class LaunchConfigView(BaseView):
             name = self.request.params.get('name')
             location = self.request.route_path('launchconfigs')
             prefix = _(u'Unable to delete launch configuration')
-            template = '{0} {1} - {2}'.format(prefix, self.launch_config.name, '{0}')
+            template = u'{0} {1} - {2}'.format(prefix, self.launch_config.name, '{0}')
             with boto_error_handler(self.request, location, template):
                 self.log_request(_(u"Deleting launch configuration {0}").format(name))
                 self.autoscale_conn.delete_launch_configuration(name)
                 prefix = _(u'Successfully deleted launch configuration.')
-                msg = '{0} {1}'.format(prefix, name)
+                msg = u'{0} {1}'.format(prefix, name)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
         else:
@@ -479,8 +488,10 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
                 self.request.session.flash(msg, queue=queue)
 
             if self.request.params.get('create_sg_from_lc') == 'y':
-                escaped_name = quote(name)
-                location = self.request.route_path('scalinggroup_new')+("?launch_config={0}".format(escaped_name))
+                location = u'{0}?{1}'.format(
+                    self.request.route_path('scalinggroup_new'),
+                    urlencode(self.encode_unicode_dict({'launch_config': name}))
+                )
             return HTTPFound(location=location)
         else:
             self.request.error_messages = self.create_form.get_errors_list()

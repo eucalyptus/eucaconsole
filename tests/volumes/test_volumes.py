@@ -73,6 +73,7 @@ class VolumeViewTests(BaseViewTestCase):
     def test_volume_update_view(self):
         """Volume update should contain the volume form"""
         request = testing.DummyRequest(post=True)
+        request.POST = {}
         view = VolumeView(request).volume_update()
         self.assertTrue(view.get('volume_form') is not None)
 

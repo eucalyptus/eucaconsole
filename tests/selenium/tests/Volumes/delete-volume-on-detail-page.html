@@ -82,16 +82,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>storeText</td>
-	<td>id=notifications</td>
-	<td>breadcrumbs</td>
-</tr>
-<tr>
-	<td>echo</td>
-	<td>${breadcrumbs}</td>
-	<td></td>
-</tr>
-<tr>
 	<td>storeEval</td>
 	<td>1</td>
 	<td>k</td>
@@ -152,6 +142,21 @@
 	<td></td>
 </tr>
 <tr>
+	<td>storeElementPresent</td>
+	<td>//td/a[@href=&quot;/volumes/${volume_id}&quot;]/../../td[2]</td>
+	<td>volume_status_present</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${volume_status_present}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>gotoIf</td>
+	<td>storedVars['volume_status_present'] == false</td>
+	<td>END</td>
+</tr>
+<tr>
 	<td>storeText</td>
 	<td>//td/a[@href=&quot;/volumes/${volume_id}&quot;]/../../td[2]</td>
 	<td>status</td>
@@ -185,6 +190,11 @@
 	<td>assertText</td>
 	<td>//td/a[@href=&quot;/volumes/${volume_id}&quot;]/../../td[2]</td>
 	<td>deleted</td>
+</tr>
+<tr>
+	<td>label</td>
+	<td>END</td>
+	<td></td>
 </tr>
 </tbody></table>
 </body>

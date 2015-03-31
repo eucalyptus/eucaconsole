@@ -24,7 +24,7 @@ module.exports = function(grunt) {
                   destPrefix: 'eucaconsole/static/js/thirdparty/jquery'
               },
               files: {
-                'jquery.min.js': 'jquery/jquery.min.js'
+                'jquery.min.js': 'jquery/dist/jquery.min.js'
               }
           },
           jasmine: {
@@ -55,6 +55,12 @@ module.exports = function(grunt) {
                 'eucaconsole/static/sass/font-awesome':'components-font-awesome/scss/*.scss'
               }
           },
+          foundation: {
+              files: {
+                  'eucaconsole/static/js/thirdparty/foundation': 'foundation/js/**/foundation*.js',
+                  'eucaconsole/static/sass/foundation': 'foundation/scss/foundation'
+              }
+          },
           angular_magic_search: {
               options: {
               },
@@ -81,6 +87,13 @@ module.exports = function(grunt) {
                   'nv.d3.min.js': 'nvd3/build/nv.d3.min.js',
                   'nv.d3.css': 'nvd3/build/nv.d3.css',
                   'nv.d3.min.css': 'nvd3/build/nv.d3.min.css'
+              }
+          },
+          angular_chosen: {
+              options: {
+              },
+              files: {
+                'eucaconsole/static/js/thirdparty/angular': 'angular-chosen-localytics/chosen.*'
               }
           }
       },
@@ -190,7 +203,7 @@ module.exports = function(grunt) {
                       dest: 'eucaconsole/static/js/minified/',   // Destination path prefix.
                       ext: '.min.js',   // Dest filepaths will have this extension.
                       extDot: 'first'   // Extensions in filenames begin after the first dot
-                  },
+                  }
               ]
           }
       },

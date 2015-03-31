@@ -136,7 +136,7 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="small-8 columns right" tal:condition="layout.cloud_type == 'euca'">
+                                <div class="small-8 columns right" tal:condition="layout.cloud_type == 'euca' and not is_vpc_supported">
                                     ${structure:launch_more_form['private_addressing']}
                                     ${launch_more_form['private_addressing'].label}
                                 </div>

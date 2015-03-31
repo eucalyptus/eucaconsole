@@ -21,7 +21,6 @@ angular.module('VolumeSnapshots', ['TagEditor', 'EucaConsoleUtils'])
             $scope.imagesURL = imagesURL;
             $scope.getVolumeSnapshots();
             $scope.setFocus();
-            $scope.setDropdownMenusListener();
         };
         $scope.revealRegisterSnapshotModal = function (snapshot_id) {
             var modal = $('#register-snapshot-modal');
@@ -38,7 +37,7 @@ angular.module('VolumeSnapshots', ['TagEditor', 'EucaConsoleUtils'])
             modal.foundation('reveal', 'open');
         };
         $scope.setFocus = function () {
-            $(document).on('opened', '[data-reveal]', function () {
+            $(document).on('opened.fndtn.reveal', '[data-reveal]', function () {
                 var modal = $(this);
                 var inputElement = modal.find('input[type!=hidden]').get(0);
                 var modalButton = modal.find('button').get(0);
@@ -47,15 +46,6 @@ angular.module('VolumeSnapshots', ['TagEditor', 'EucaConsoleUtils'])
                 } else if (!!modalButton) {
                     modalButton.focus();
                 }
-            });
-        };
-        $scope.setDropdownMenusListener = function () {
-            var modals = $('[data-reveal]');
-            modals.on('open', function () {
-                $('.gridwrapper').find('.f-dropdown').filter('.open').css('display', 'none');
-            });
-            modals.on('close', function () {
-                $('.gridwrapper').find('.f-dropdown').filter('.open').css('display', 'block');
             });
         };
         $scope.getVolumeSnapshots = function () {

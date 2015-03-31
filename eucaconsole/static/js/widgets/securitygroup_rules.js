@@ -7,9 +7,9 @@
 angular.module('SecurityGroupRules', ['CustomFilters', 'EucaConsoleUtils'])
     .controller('SecurityGroupRulesCtrl', function ($scope, $http, $timeout, eucaUnescapeJson) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-        $scope.rulesEditor = $('#rules-editor');
-        $scope.rulesTextarea = $scope.rulesEditor.find('textarea#rules');
-        $scope.rulesEgressTextarea = $scope.rulesEditor.find('textarea#rules_egress');
+        $scope.rulesEditor = undefined;
+        $scope.rulesTextarea = undefined;
+        $scope.rulesEgressTextarea = undefined;
         $scope.rulesArray = [];
         $scope.rulesEgressArray = [];
         $scope.jsonEndpoint='';
@@ -55,6 +55,9 @@ angular.module('SecurityGroupRules', ['CustomFilters', 'EucaConsoleUtils'])
             $scope.rulesEgressArray = options.rules_egress_array;
             $scope.jsonEndpoint = options.json_endpoint;
             $scope.internetProtocolsJsonEndpoint = options.protocols_json_endpoint;
+            $scope.rulesEditor = $('#rules-editor');
+            $scope.rulesTextarea = $scope.rulesEditor.find('textarea#rules');
+            $scope.rulesEgressTextarea = $scope.rulesEditor.find('textarea#rules_egress');
             $scope.initInternetProtocols();
             $scope.syncRules();
             $scope.setWatchers();
@@ -231,7 +234,7 @@ angular.module('SecurityGroupRules', ['CustomFilters', 'EucaConsoleUtils'])
                     $scope.trafficType = 'ip';
                 });
             });
-            $(document).on('closed', '#create-securitygroup-modal', function () {
+            $(document).on('closed.fndtn.reveal', '#create-securitygroup-modal', function () {
                 $scope.$apply(function(){
                     $scope.rulesArray = [];  // Empty out the rules when the dialog is closed 
                     $scope.rulesEgressArray = [];  // Empty out the rules when the dialog is closed 
@@ -382,7 +385,7 @@ angular.module('SecurityGroupRules', ['CustomFilters', 'EucaConsoleUtils'])
         };
         // Create an array block that represents a new security group rule submiitted by user
         $scope.createRuleArrayBlock = function () {
-            var name = $scope.groupName ? $scope.trafficType == 'securitygroup' && $scope.groupName : null;
+            var name = $scope.trafficType == 'securitygroup' && $scope.groupName ? $scope.groupName : null;
             var owner_id = null;
             var group_id = null;
             if (name !== null) {
@@ -402,7 +405,7 @@ angular.module('SecurityGroupRules', ['CustomFilters', 'EucaConsoleUtils'])
                 'ip_protocol': $scope.ipProtocol,
                 'custom_protocol': $scope.getCustomProtocolName($scope.customProtocol),
                 'grants': [{
-                    'cidr_ip': $scope.cidrIp ? $scope.trafficType == 'ip' && $scope.cidrIp : null,
+                    'cidr_ip': $scope.trafficType == 'ip' && $scope.cidrIp ? $scope.cidrIp : null,
                     'group_id': group_id,
                     'name': name,
                     'owner_id': owner_id

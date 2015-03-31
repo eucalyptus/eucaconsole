@@ -17,33 +17,17 @@
 
 <!-- Landing page datagrid macro ===== -->
 <metal:datagrid_macro metal:define-macro="landing_page_datagrid">
-    <link rel="stylesheet" type-"text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.css')}"/>
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.css')}"/>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.js')}"></script>
     <div class="large-${'10' if filter_fields else '12'} columns datagrid" id="landing-page-items">
         <div class="row" id="buttons-row">
-            <div class="small-12 columns" id="primary-buttons">
+            <div class="small-7 columns" id="primary-buttons">
                 <metal:block metal:define-slot="new_button" />
             </div>
-        </div>
-        <div ng-app="MagicSearch">
-            <magic-search template="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.html')}"
-                strings="{'remove':'${layout.searchtext_remove}', 'cancel':'${layout.searchtext_cancel}', 'prompt':'${layout.searchtext_prompt}'}"
-                facets="${search_facets}" filter-keys="${filter_keys}"></magic-search>
-        </div>
-        <div class="row sort-search" ng-cloak="cloak">
-            <div class="small-5 columns" id="results-count" ng-cloak="cloak" metal:define-slot="results_count">
-                <a class="label radius" ng-show="!itemsLoading" ng-cloak="" id="refresh-btn"
-                   ng-click="itemsLoading=true; getItems()"></a>
-                &nbsp;
-                <span ng-show="!itemsLoading" class="items-found">
-                    <strong>{{ items.length }}</strong>
-                    <span class="hide-for-small">items</span> found
-                </span>
-            </div>
-            <div class="small-5 columns" id="sorting-controls" ng-show="!itemsLoading">
+            <div class="small-3 columns" id="sorting-controls" ng-show="!itemsLoading">
                 <metal:block metal:define-slot="sorting_controls">
                     <strong>Sort by</strong>
-                    <a href="#" data-dropdown="sorting-dropdown">
+                    <a href="#" data-dropdown="sorting-dropdown" ng-cloak="">
                         <span tal:repeat="sort sort_keys" ng-show="sortBy == '${sort.key}'">${sort.name}</span>
                         <span class="down-caret"></span>
                     </a>
@@ -57,10 +41,26 @@
             <div class="small-2 columns displayicons" ng-cloak="">
                 <a id="gridview-button" class="gridview" title="Grid view" ng-click="switchView('gridview')"><i class="fi-thumbnails"></i></a>
                 <a id="tableview-button" class="tableview" title="Table view" ng-click="switchView('tableview')"><i class="fi-list-thumbnails"></i></a>
-                <label i18n:translate="" class="hide-for-medium-down">View:</label>
             </div>
         </div>
-        <div ng-show="itemsLoading"><span class="dots"></span></div>
+        <div class="row sort-search" ng-cloak="cloak">
+            <div class="small-10 columns">
+                <div ng-app="MagicSearch">
+                    <magic-search template="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.html')}"
+                        strings="{'remove':'${layout.searchtext_remove}', 'cancel':'${layout.searchtext_cancel}', 'prompt':'${layout.searchtext_prompt}', 'text':'${layout.searchtext_text_facet}'}"
+                        facets="${search_facets}" filter-keys="${filter_keys}"></magic-search>
+                </div>
+            </div>
+            <div class="small-2 columns" id="results-count" ng-cloak="cloak" metal:define-slot="results_count">
+                <a class="label radius" ng-show="!itemsLoading" ng-cloak="" id="refresh-btn"
+                   ng-click="itemsLoading=true; getItems()"></a>
+                &nbsp;
+                <span ng-show="!itemsLoading" class="items-found">
+                    <strong>{{ items.length }}</strong> found
+                </span>
+            </div>
+        </div>
+        <div class="loading" ng-show="itemsLoading"><i class="busy" ></i></div>
         <div id="gridview" class="gridwrapper" ng-if="landingPageView == 'gridview' &amp;&amp; !itemsLoading" ng-cloak="">
             <div ng-show="!itemsLoading">
                 <div data-alert="alert" class="alert-box secondary" ng-show="items.length == 0" ng-cloak="1">
@@ -131,7 +131,7 @@
 <!-- Plain datagrid macro (no search or filtering) ===== -->
 <metal:plaindatagrid_macro metal:define-macro="plain_datagrid">
     <div class="large-12 columns datagrid" id="datagrid-items">
-        <div ng-show="itemsLoading"><span class="dots"></span></div>
+        <div ng-show="itemsLoading"><span class="busy"></span></div>
         <div id="gridview" class="gridwrapper" ng-show="!itemsLoading">
         <!--
             <div ng-show="!itemsLoading">
@@ -174,7 +174,7 @@
 
 <metal:plaintableview_macro metal:define-macro="plain_tableview">
     <div class="datagrid" id="datagrid-items">
-        <div ng-show="itemsLoading"><span class="dots"></span></div>
+        <div ng-show="itemsLoading"><span class="busy"></span></div>
         <div id="tableview" class="gridwrapper" ng-show="!itemsLoading">
             <!-- Begin table view -->
             <table class="table" ng-show="!itemsLoading" ng-cloak="true">

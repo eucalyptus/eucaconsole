@@ -24,13 +24,20 @@ input[type="number"] {
     max-width: 10rem;
 }
 
-// Capacity section
-#controls_min_size, #controls_desired_capacity, #controls_max_size {
-    display: inline-block; margin-left: 1rem;
+#capacity-section {
+    .controls-wrapper.inline {
+        display: inline-block;
+        label {
+            right: 0;
+        }
+    }
 }
 
-#controls_max_size {
-    margin-left: -1rem;
+#controls_desired_capacity {
+    padding-left: 1.8rem;
+    label {
+        margin-left: -1rem;
+    }
 }
 
 [data-abide] #capacity-section .error {

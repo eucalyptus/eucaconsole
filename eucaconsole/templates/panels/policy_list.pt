@@ -28,7 +28,7 @@
                 <span>{{ policy.name }}</span>
             </div>
         </div>
-        <div ng-show="itemsLoading"><span class="dots"></span></div>
+        <div ng-show="itemsLoading"><span class="busy"></span></div>
         <textarea id="policies" name="policies" class="hidden"></textarea>
         <div id="policy-edit-modal" class="reveal-modal medium" data-reveal="">
             <h3 i18n:translate="">{{ policyName }} policy</h3>

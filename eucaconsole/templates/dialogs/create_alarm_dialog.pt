@@ -151,7 +151,7 @@
                 </button>
                 <div ng-show="isCreatingAlarm">
                     <span i18n:translate="">Creating alarm...</span>
-                    <span class="dots">&nbsp;</span>
+                    <span class="busy">&nbsp;</span>
                 </div>
             </div>
         </form>

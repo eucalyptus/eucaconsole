@@ -106,6 +106,9 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             });
         };
         $scope.updateSecurityGroup = function () {
+            if ($scope.securityGroups === undefined) {
+                $scope.securityGroups = [];
+            }
             angular.forEach($scope.securityGroups, function(securityGroupID) {
                 $scope.selectedGroupRules[securityGroupID] = $scope.securityGroupsRules[securityGroupID];
             });
@@ -256,14 +259,14 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             $scope.$watch('keyPair', function(){
                 $scope.checkRequiredInput();
             });
-            $(document).on('open', '[data-reveal]', function () {
+            $(document).on('open.fndtn.reveal', '[data-reveal]', function () {
                 // When a dialog opens, reset the progress button status
                 $(this).find('.dialog-submit-button').css('display', 'block');                
                 $(this).find('.dialog-progress-display').css('display', 'none');                
                 // Broadcast initModal signal to trigger the modal initialization
                 $scope.$broadcast('initModal');
             });
-            $(document).on('opened', '[data-reveal]', function () {
+            $(document).on('opened.fndtn.reveal', '[data-reveal]', function () {
                 // Handle the angular and foundation conflict when setting the select options after the dialog opens
                 if( $('#securitygroup_vpc_network').children('option').first().text() === '' ){
                     $('#securitygroup_vpc_network').children('option').first().remove();
@@ -277,7 +280,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                 $(this).find('.dialog-submit-button').css('display', 'none');                
                 $(this).find('.dialog-progress-display').css('display', 'block');                
             });
-            $(document).on('close', '[data-reveal]', function () {
+            $(document).on('close.fndtn.reveal', '[data-reveal]', function () {
                 var modal = $(this);
                 modal.find('input[type="text"]').val('');
                 modal.find('input[type="number"]').val('');
@@ -345,7 +348,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             });
         };
         $scope.setFocus = function () {
-            $(document).on('opened', '[data-reveal]', function () {
+            $(document).on('opened.fndtn.reveal', '[data-reveal]', function () {
                 var modal = $(this);
                 var modalID = $(this).attr('id');
                 if( modalID.match(/terminate/)  || modalID.match(/delete/) || modalID.match(/release/) ){
@@ -445,7 +448,8 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
         $scope.handleKeyPairCreate = function ($event, createUrl, downloadUrl) {
             $event.preventDefault();
             var form = $($event.target);
-            if ($scope.newKeyPairName.indexOf('/') !== -1 || $scope.newKeyPairName.indexOf('\\') !== -1) {
+            if (form.find('[name="name"]').attr('data-invalid') !== undefined) {
+                // prevent invalid (non-ASCII) chars and slashes in key pair name
                 return;
             }
             var formData = form.serialize();

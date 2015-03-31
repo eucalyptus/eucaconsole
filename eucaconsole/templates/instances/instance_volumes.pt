@@ -36,7 +36,7 @@
                         <div i18n:translate="">Attach a volume</div>
                     </a>
                 </div>
-                <span class="dots" ng-show="initialLoading">&nbsp;</span>
+                <span class="busy" ng-show="initialLoading">&nbsp;</span>
                 <div class="tile item" ng-repeat="volume in volumes | orderBy: -attach_time" ng-cloak="">
                     <div class="header">
                         <strong><a ng-href="/volumes/{{ volume.id }}">{{ volume.name || volume.id }}</a></strong>
@@ -68,7 +68,7 @@
                     </div>
                     <div class="footer status {{ volume.attach_status }}">
                         {{ volume.attach_status }}
-                        <span class="dots" ng-show="volume.transitional">&nbsp;</span>
+                        <span class="busy" ng-show="volume.transitional">&nbsp;</span>
                     </div>
                 </div>
             </div>

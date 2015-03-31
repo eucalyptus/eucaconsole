@@ -51,14 +51,14 @@
                     ${structure:securitygroup_form['csrf_token']}
                     <h6 i18n:translate="">Security group</h6>
                     <div tal:condition="not security_group" tal:omit-tag="">
-                        ${panel('form_field', field=securitygroup_form['name'], ng_attrs={'model': 'securityGroupName'}, leftcol_width=3, rightcol_width=9, autofocus='')}
+                        ${panel('form_field', field=securitygroup_form['name'], ng_attrs={'model': 'securityGroupName'}, leftcol_width=3, rightcol_width=9, autofocus='', **{'pattern': layout.ascii_without_slashes_pattern})}
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="security_group">
                         <div class="small-3 columns"><label i18n:translate="">Name</label></div>
                         <div class="small-9 columns field inline breakword">${security_group_name}</div>
                     </div>
                     <div tal:condition="not security_group" tal:omit-tag="">
-                        ${panel('form_field', field=securitygroup_form['description'], ng_attrs={'model': 'securityGroupDescription'}, leftcol_width=3, rightcol_width=9)}
+                        ${panel('form_field', field=securitygroup_form['description'], ng_attrs={'model': 'securityGroupDescription'}, leftcol_width=3, rightcol_width=9, **{'pattern': securitygroup_form.sgroup_description_pattern})}
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="security_group and security_group.description">
                         <div class="small-3 columns"><label i18n:translate="">Description</label></div>

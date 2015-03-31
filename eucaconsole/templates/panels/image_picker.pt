@@ -1,7 +1,7 @@
 <div tal:omit-tag="" i18n:domain="eucaconsole">
     <!--! Image Picker widget (Used in Launch Instance wizard) -->
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/image_picker.css')}" />
-    <link rel="stylesheet" type-"text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.css')}"/>
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.css')}"/>
     <div id="image-picker" ng-app="ImagePicker" tal:define="launchconfig_wizard 'launchconfig' in request.url"
          ng-controller="ImagePickerCtrl" ng-init="initImagePicker('${controller_options_json}')">
         <!--! Image picker widget -->
@@ -14,7 +14,7 @@
                 </label>
                 <div ng-app="MagicSearch">
                     <magic-search template="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.html')}"
-                        strings="{'remove':'Remove facet', 'cancel':'Clear search', 'prompt':'Select facets for filter, or enter text to search'}"
+                        strings="{'remove':'${layout.searchtext_remove}', 'cancel':'${layout.searchtext_cancel}', 'prompt':'${layout.searchtext_prompt}', 'text':'${layout.searchtext_text_facet}'}"
                         facets="${search_facets}" filter-keys="${filter_keys}"></magic-search>
                 </div>
                 <table class="table" ng-cloak="">
@@ -22,7 +22,7 @@
                     <tr ng-show="itemsLoading">
                         <td colspan="2">
                             <div ng-show="itemsLoading">
-                                <span i18n:translate="">Loading...</span>&nbsp;&nbsp;<span class="dots"></span>
+                                <span i18n:translate="">Loading...</span>&nbsp;&nbsp;<span class="busy"></span>
                             </div>
                         </td>
                     </tr>

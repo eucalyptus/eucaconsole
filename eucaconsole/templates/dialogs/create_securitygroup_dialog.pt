@@ -6,8 +6,8 @@
         <form method="post" data-abide="abide" id="create-securitygroup-form"
               ng-submit="handleSecurityGroupCreate($event, '${request.route_path('securitygroup_create')}')">
             ${structure:securitygroup_form['csrf_token']}
-            ${panel('form_field', field=securitygroup_form['name'], ng_attrs={'model': 'newSecurityGroupName'}, leftcol_width=3, rightcol_width=9)}
-            ${panel('form_field', field=securitygroup_form['description'], ng_attrs={'model': 'newSecurityGroupDesc'}, leftcol_width=3, rightcol_width=9)}
+            ${panel('form_field', field=securitygroup_form['name'], ng_attrs={'model': 'newSecurityGroupName'}, leftcol_width=3, rightcol_width=9, **{'pattern': layout.ascii_without_slashes_pattern})}
+            ${panel('form_field', field=securitygroup_form['description'], ng_attrs={'model': 'newSecurityGroupDesc'}, leftcol_width=3, rightcol_width=9, **{'pattern': securitygroup_form.sgroup_description_pattern})}
             <div tal:condition="is_vpc_supported" ng-cloak="">
                 <div ng-show="instanceVPC == undefined">
                     ${panel('form_field', field=securitygroup_form['securitygroup_vpc_network'], ng_attrs={'model': 'securityGroupVPC'}, leftcol_width=3, rightcol_width=9)}
@@ -29,7 +29,7 @@
                         </button>
                     </div>
                     <div class="dialog-progress-display hide">
-                        <span i18n:translate="">Sending request </span>&nbsp;<em><span class="dots">&nbsp;</span></em>
+                        <span i18n:translate="">Sending request </span>&nbsp;<em><span class="busy">&nbsp;</span></em>
                     </div>
             </div>
         </form>

@@ -348,3 +348,30 @@ Selenium.prototype.doSendKeys = function(locator, value) {
     bot.action.type(element, value);
   }
 };
+
+
+Selenium.prototype.doStoreTextIfPresent = function(locator, value) {
+  /**
+  * <p>Stores text if it is present.</p>
+  *
+  *
+  */
+  if( !locator || !value ) {
+            LOG.info( 'locator or value was empty.' );
+        }
+        else {
+  
+  var notification = this.browserbot.findElement(locator);
+
+  
+  if (notification.textContent != "") 
+  {
+
+  storedVars[value] = notification.textContent;
+  }
+  else
+  {
+  storedVars[value] = "No text found!";
+  }
+  }
+  }

@@ -77,6 +77,9 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             $('#securitygroup').chosen({'width': '100%', search_contains: true});
         };
         $scope.updateSelectedSecurityGroupRules = function () {
+            if ($scope.securityGroups === undefined) {
+                $scope.securityGroups = [];
+            }
             angular.forEach($scope.securityGroups, function(securityGroupID) {
                 $scope.selectedGroupRules[securityGroupID] = $scope.securityGroupsRules[securityGroupID];
             });
@@ -148,8 +151,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             }, 300);
         };
         $scope.watchTags = function () {
-            var addTagButton = $('#add-tag-btn');
-            addTagButton.on('click', function () {
+            $scope.$on('tagUpdate', function () {
                 $scope.updateTagsPreview();
             });
         };
@@ -266,31 +268,6 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 $scope.$broadcast('setBDM', item.block_device_mapping);
                 $scope.existsImage = true;
                 $scope.imageIDNonexistErrorClass = "";
-                if (item.root_device_type == 'ebs') {
-                    // adjust vmtypes menu
-                    var rootSize = item.block_device_mapping[item.root_device_name].size;
-                    var selectedOne = false;
-                    angular.forEach($('#instance_type option'), function(value, idx) {
-                        var text = value.text;
-                        var size = text.split(',')[2].trim();
-                        size = size.substring(0, size.indexOf(' '));
-                        if (size < rootSize) {  // disable entries that won't fit
-                            value.disabled = true;
-                        }
-                        else {
-                            value.disabled = false;
-                            if (!selectedOne) {  // select first one that fits
-                                value.selected = true;
-                                selectedOne = true;
-                            }
-                        }
-                    });
-                }
-                else {
-                    angular.forEach($('#instance_type option'), function(value, idx) {
-                        value.disabled = false;
-                    });
-                }
             }).error(function (oData) {
                 $scope.existsImage = false;
                 $scope.imageIDNonexistErrorClass = "error";
@@ -303,14 +280,14 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             }
         };
         $scope.setDialogFocus = function () {
-            $(document).on('open', '[data-reveal]', function () {
+            $(document).on('open.fndtn.reveal', '[data-reveal]', function () {
                 // When a dialog opens, reset the progress button status
                 $(this).find('.dialog-submit-button').css('display', 'block');                
                 $(this).find('.dialog-progress-display').css('display', 'none');                
                 // Broadcast initModal signal to trigger the modal initialization
                 $scope.$broadcast('initModal');
             });
-            $(document).on('opened', '[data-reveal]', function () {
+            $(document).on('opened.fndtn.reveal', '[data-reveal]', function () {
                 var modal = $(this);
                 modal.find('div.error').removeClass('error');
                 var modalID = $(this).attr('id');
@@ -341,7 +318,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 $(this).find('.dialog-submit-button').css('display', 'none');                
                 $(this).find('.dialog-progress-display').css('display', 'block');                
             });
-            $(document).on('close', '[data-reveal]', function () {
+            $(document).on('close.fndtn.reveal', '[data-reveal]', function () {
                 var modal = $(this);
                 modal.find('input[type="text"]').val('');
                 modal.find('input:checked').attr('checked', false);
@@ -353,7 +330,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                     chosenSelect.chosen();
                 }
             });
-            $(document).on('closed', '[data-reveal]', function () {
+            $(document).on('closed.fndtn.reveal', '[data-reveal]', function () {
                 $scope.setWizardFocus($scope.currentStepIndex);
             });
         };
@@ -452,7 +429,8 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.handleKeyPairCreate = function ($event, createUrl, downloadUrl) {
             $event.preventDefault();
             var form = $($event.target);
-            if ($scope.newKeyPairName.indexOf('/') !== -1 || $scope.newKeyPairName.indexOf('\\') !== -1) {
+            if (form.find('[name="name"]').attr('data-invalid') !== undefined) {
+                // prevent invalid (non-ASCII) chars and slashes in key pair name
                 return;
             }
             var formData = form.serialize();
@@ -530,6 +508,10 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 modal.foundation('reveal', 'close');
                 Notify.success(oData.message);
             }).error(function (oData) {
+                // this is a hack to fix GUI-1563. The whole progress display should be done
+                // with angular ng-show/ng-hide and a scope variable
+                $('.dialog-progress-display').css('display', 'none');                
+                $('.dialog-submit-button').css('display', 'block');                
                 $scope.isLoadingSecurityGroup = false;
                 eucaHandleError(oData, status);
             });
