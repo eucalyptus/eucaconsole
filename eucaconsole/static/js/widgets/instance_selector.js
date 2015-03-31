@@ -59,7 +59,6 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
 		    }, true);
                     $scope.$watch('selectedInstanceList', function () {
                         // When selectedInstanceList is empty and the select all checkbox is clicked, clear the checkbox
-                        console.log($scope.selectedInstanceList);
                         if ($scope.selectedInstanceList.length === 0 && 
                             $('#instance-all-checkbox').prop('checked') === true) {
                             $('#instance-all-checkbox').prop('checked', false);
