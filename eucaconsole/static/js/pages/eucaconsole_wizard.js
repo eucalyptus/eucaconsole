@@ -67,21 +67,19 @@ angular.module('EucaConsoleWizard', ['EucaConsoleUtils', 'MagicSearch'])
                 var currentStepID = $scope.currentStepIndex + 1;
                 $scope.existInvalidFields(currentStepID);
             });
-            $(document).on('open', '[data-reveal]', function () {
+            $(document).on('open.fndtn.reveal', '[data-reveal]', function () {
                 // When a dialog opens, reset the progress button status
                 $(this).find('.dialog-submit-button').css('display', 'block');                
                 $(this).find('.dialog-progress-display').css('display', 'none');                
                 // Broadcast initModal signal to trigger the modal initialization
                 $scope.$broadcast('initModal');
             });
-            $(document).on('opened', '[data-reveal]', function () {
-            });
             $(document).on('submit', '[data-reveal] form', function () {
                 // When a dialog is submitted, display the progress button status
                 $(this).find('.dialog-submit-button').css('display', 'none');                
                 $(this).find('.dialog-progress-display').css('display', 'block');                
             });
-            $(document).on('closed', '[data-reveal]', function () {
+            $(document).on('closed.fndtn.reveal', '[data-reveal]', function () {
                 var modal = $(this);
                 modal.find('input[type="text"]').val('');
                 modal.find('input[type="number"]').val('');
@@ -96,7 +94,7 @@ angular.module('EucaConsoleWizard', ['EucaConsoleUtils', 'MagicSearch'])
             });
         };
         $scope.setFocus = function () {
-            $(document).on('opened', '[data-reveal]', function () {
+            $(document).on('opened.fndtn.reveal', '[data-reveal]', function () {
                 var modal = $(this);
                 var modalID = $(this).attr('id');
                 if( modalID.match(/terminate/)  || modalID.match(/delete/) || modalID.match(/release/) ){
