@@ -308,7 +308,6 @@ class CreateELBView(BaseView):
         }))
 
     def get_wizard_tab_list(self):
-        tab_list = ()
         if self.cloud_type == 'aws' or self.is_vpc_supported:
             tab_list = ({'title': 'General', 'render': True, 'display_id': 1},
                         {'title': 'Network', 'render': True, 'display_id': 2},
@@ -451,7 +450,7 @@ class CreateELBView(BaseView):
         failures_until_unhealthy = self.request.params.get('failures_until_unhealthy')
         passes_until_unhealthy = self.request.params.get('passes_until_unhealthy')
         ping_target = u"{0}:{1}".format(ping_protocol, ping_port)
-        if ping_protocol == 'HTTP' or ping_protocol == 'HTTPS':
+        if ping_protocol in ['HTTP', 'HTTPS']:
             ping_target = u"{0}{1}".format(ping_target, ping_path)
         hc = HealthCheck(
             timeout=response_timeout,
