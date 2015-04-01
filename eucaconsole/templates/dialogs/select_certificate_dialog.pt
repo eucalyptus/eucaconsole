@@ -87,18 +87,18 @@
             </form>
             <a href="#" id="select-certificate-close-link" class="close-reveal-modal">&#215;</a>
         </div>
-    </div>
-    <hr />
-    <div>
-        <div class="row">
-            <div class="dialog-submit-button">
-                <button type="submit" class="button expand" id="create-securitygroup-btn" i18n:translate=""
-                    ng-click="handleCertificateCreate($event, '${request.route_path('certificate_create')}')">
-                    Use This Certificate
-                </button>
-            </div>
-            <div class="dialog-progress-display hide">
-                <span i18n:translate="">Sending request </span>&nbsp;<em><span class="busy">&nbsp;</span></em>
+        <hr />
+        <div>
+            <div class="row">
+                <div class="dialog-submit-button">
+                    <button type="submit" class="button expand" id="create-securitygroup-btn" i18n:translate=""
+                        ng-click="handleCertificateCreate($event, '${request.route_path('certificate_create')}')">
+                        Use This Certificate
+                    </button>
+                </div>
+                <div class="dialog-progress-display hide">
+                    <span i18n:translate="">Sending request </span>&nbsp;<em><span class="busy">&nbsp;</span></em>
+                </div>
             </div>
         </div>
     </div>
