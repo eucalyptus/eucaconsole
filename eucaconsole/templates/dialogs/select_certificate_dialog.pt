@@ -68,13 +68,14 @@
             <form method="post" data-abide="abide" id="select-certificate-form">
                  ${structure:certificate_form['csrf_token']}
                 <div>
-                    <input type="radio" id="certificate-type-radio-existing" name="certificate_type_radio" value="existing" ng-model="certificateRadioButton" \>
+                    <input type="radio" id="certificate-type-radio-existing" name="certificate_type_radio" value="existing" ng-model="certificateRadioButton"/>
                     <span>Choose an existing SSL certificate</span>
+                </div>
                 <div ng-show="certificateRadioButton === 'existing'">
                     ${panel('form_field', field=certificate_form['certificates'], ng_attrs={'model': 'certificateARN'}, leftcol_width=3, rightcol_width=9)}
                 </div>
                 <div>
-                    <input type="radio" id="certificate-type-radio-new" name="certificate_type_radio" value="new" ng-model="certificateRadioButton" \>
+                    <input type="radio" id="certificate-type-radio-new" name="certificate_type_radio" value="new" ng-model="certificateRadioButton"/>
                     <span>Upload a new SSL certificate</span>
                 </div>
                 <div ng-show="certificateRadioButton === 'new'">

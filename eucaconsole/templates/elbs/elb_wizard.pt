@@ -2,7 +2,7 @@
 
 <head metal:fill-slot="head_css">
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/elb_wizard.css')}" />
-    <link rel="stylesheet" type-"text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.css')}"/>
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.css')}"/>
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/instance_selector.css')}" />
 </head>
 
@@ -109,8 +109,10 @@
                                         vpc_subnets_attrs {'data-placeholder': vpc_subnets_placeholder_text};">
                             <div ng-cloak="true" ng-show="vpcNetwork === 'None'">
                                 <div>
-                                    <label i18n:translate="">
-                                        Add availability zones&nbsp;
+                                    <label>
+                                        <span i18n:translate="">
+                                            Add availability zones
+                                        </span>&nbsp;
                                         <span class="helptext-icon" data-tooltip="" title="${create_form.add_availability_zones_help_text}">?</span>
                                     </label>
                                 </div>
@@ -124,8 +126,11 @@
                             </div>
                             <div ng-cloak="true" ng-show="vpcNetwork !== 'None'">
                                 <div>
-                                    <label i18n:translate="">
-                                        Add VPC subnets&nbsp;
+                                    <label>
+                                        <span i18n:translate="">
+                                            Add VPC subnets
+                                        </span>
+                                        &nbsp;
                                         <span class="helptext-icon" data-tooltip="" title="${create_form.add_vpc_subnets_help_text}">?</span>
                                     </label>
                                 </div>
@@ -134,8 +139,11 @@
                             </div>
                             <div ng-cloak="true">
                                 <div>
-                                    <label i18n:translate="">
-                                        Add instances&nbsp;
+                                    <label>
+                                        <span i18n:translate="">
+                                            Add instances
+                                        </span>
+                                        &nbsp;
                                         <span class="helptext-icon" data-tooltip="" title="${create_form.add_instances_help_text}">?</span>
                                     </label>
                                 </div>
