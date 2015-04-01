@@ -441,10 +441,7 @@ angular.module('Wizard').controller('ELBWizardCtrl', function ($scope, $http, $t
         return;
     };
     $scope.compareBackendCertificates = function (block1, block2) {
-        if (block1.name == block2.name) {
-            return true;
-        }
-        return false;
+        return block1.name == block2.name;
     };
     $scope.handleCertificateCreate = function ($event, newCertURL) {
         $event.preventDefault();
