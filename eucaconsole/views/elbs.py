@@ -39,7 +39,8 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config
 
 from ..i18n import _
-from ..forms.elbs import ELBDeleteForm, ELBsFiltersForm, CreateELBForm, ELBInstancesFiltersForm, CertificateForm, BackendCertificateForm 
+from ..forms.elbs import (ELBDeleteForm, ELBsFiltersForm, CreateELBForm,
+                          ELBInstancesFiltersForm, CertificateForm, BackendCertificateForm)
 from ..models import Notification
 from ..views import LandingPageView, BaseView, JSONResponse
 from . import boto_error_handler
@@ -164,18 +165,18 @@ class ELBsJsonView(LandingPageView):
                 else:
                     security_group = self.get_security_group_by_name(id)
                 if security_group:
-                    security_groups.append(security_group) 
+                    security_groups.append(security_group)
         return security_groups
 
     def get_security_group_by_id(self, id):
-        if self.securitygroups: 
+        if self.securitygroups:
             for sgroup in self.securitygroups:
                 if sgroup.id == id:
                     return sgroup
         return ''
 
     def get_security_group_by_name(self, name):
-        if self.securitygroups: 
+        if self.securitygroups:
             for sgroup in self.securitygroups:
                 if sgroup.name == name:
                     return sgroup
@@ -188,7 +189,8 @@ class ELBsJsonView(LandingPageView):
             security_group = self.get_security_group_by_name(id)
         if security_group:
             return len(security_group.rules)
-        return None 
+        return None
+
 
 class ELBView(BaseView):
     """Views for single ELB"""
@@ -216,7 +218,7 @@ class ELBView(BaseView):
     @view_config(route_name='elb_view', renderer=TEMPLATE)
     def elb_view(self):
         return self.render_dict
- 
+
     @view_config(route_name='elb_delete', request_method='POST', renderer=TEMPLATE)
     def elb_delete(self):
         if self.delete_form.validate():
@@ -262,8 +264,12 @@ class CreateELBView(BaseView):
         self.is_vpc_supported = BaseView.is_vpc_supported(request)
         self.create_form = CreateELBForm(
             self.request, conn=self.ec2_conn, vpc_conn=self.vpc_conn, formdata=self.request.params or None)
-        self.certificate_form = CertificateForm(self.request, conn=self.ec2_conn, iam_conn=self.iam_conn, elb_conn=self.elb_conn, formdata=self.request.params or None)
-        self.backend_certificate_form = BackendCertificateForm(self.request, conn=self.ec2_conn, iam_conn=self.iam_conn, elb_conn=self.elb_conn, formdata=self.request.params or None)
+        self.certificate_form = CertificateForm(self.request, conn=self.ec2_conn,
+                                                iam_conn=self.iam_conn, elb_conn=self.elb_conn,
+                                                formdata=self.request.params or None)
+        self.backend_certificate_form = BackendCertificateForm(self.request, conn=self.ec2_conn,
+                                                               iam_conn=self.iam_conn, elb_conn=self.elb_conn,
+                                                               formdata=self.request.params or None)
         filter_keys = ['id', 'name', 'placement', 'state', 'tags', 'vpc_subnet_display', 'vpc_name']
         filters_form = ELBInstancesFiltersForm(
             self.request, ec2_conn=self.ec2_conn, autoscale_conn=self.autoscale_conn,
@@ -292,7 +298,8 @@ class CreateELBView(BaseView):
             'resource_name': 'elb',
             'wizard_tab_list': self.get_wizard_tab_list(),
             'protocol_list': self.get_protocol_list(),
-            'port_range_pattern':'^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$',
+            'port_range_pattern':
+                '^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$',
             'is_vpc_supported': self.is_vpc_supported,
             'default_vpc_network': self.get_default_vpc_network(),
             'vpc_subnet_choices': self.get_vpc_subnets(),
@@ -303,29 +310,28 @@ class CreateELBView(BaseView):
     def get_wizard_tab_list(self):
         tab_list = ()
         if self.cloud_type == 'aws' or self.is_vpc_supported:
-            tab_list = ({ 'title': 'General', 'render': True, 'display_id': 1 }, 
-                        { 'title': 'Network', 'render': True, 'display_id': 2 },
-                        { 'title': 'Instances', 'render': True, 'display_id': 3 },
-                        { 'title': 'Health Check', 'render': True, 'display_id': 4 }) 
+            tab_list = ({'title': 'General', 'render': True, 'display_id': 1},
+                        {'title': 'Network', 'render': True, 'display_id': 2},
+                        {'title': 'Instances', 'render': True, 'display_id': 3},
+                        {'title': 'Health Check', 'render': True, 'display_id': 4})
         else:
-            tab_list = ({ 'title': 'General', 'render': True, 'display_id': 1 }, 
-                        { 'title': 'Network', 'render': False, 'display_id': '' },
-                        { 'title': 'Instances', 'render': True, 'display_id': 2 },
-                        { 'title': 'Health Check', 'render': True, 'display_id': 3 }) 
+            tab_list = ({'title': 'General', 'render': True, 'display_id': 1},
+                        {'title': 'Network', 'render': False, 'display_id': ''},
+                        {'title': 'Instances', 'render': True, 'display_id': 2},
+                        {'title': 'Health Check', 'render': True, 'display_id': 3})
         return tab_list
 
     def get_protocol_list(self):
         protocol_list = ()
         if self.cloud_type == 'aws':
-            protocol_list = ({ 'name': 'HTTP', 'value': 'HTTP', 'port': '80' },
-                             { 'name': 'TCP', 'value': 'TCP', 'port': '80' })
+            protocol_list = ({'name': 'HTTP', 'value': 'HTTP', 'port': '80'},
+                             {'name': 'TCP', 'value': 'TCP', 'port': '80'})
         else:
-            protocol_list = ({ 'name': 'HTTP', 'value': 'HTTP', 'port': '80' },
-                             { 'name': 'HTTPS', 'value': 'HTTPS', 'port': '443' },
-                             { 'name': 'TCP', 'value': 'TCP', 'port': '80' },
-                             { 'name': 'SSL', 'value': 'SSL', 'port': '443' })
+            protocol_list = ({'name': 'HTTP', 'value': 'HTTP', 'port': '80'},
+                             {'name': 'HTTPS', 'value': 'HTTPS', 'port': '443'},
+                             {'name': 'TCP', 'value': 'TCP', 'port': '80'},
+                             {'name': 'SSL', 'value': 'SSL', 'port': '443'})
         return protocol_list
-
 
     def get_default_vpc_network(self):
         default_vpc = self.request.session.get('default_vpc', [])
@@ -378,32 +384,32 @@ class CreateELBView(BaseView):
             backend_certificates = self.request.params.get('backend_certificates') or None
             print name
             print elb_listener
-            print certificate_arn 
+            print certificate_arn
             print listeners_args
             print vpc_network
             print vpc_subnet
             print securitygroup
             print zone
             print cross_zone_enabled
-	    print instances
+            print instances
             print backend_certificates
             with boto_error_handler(self.request, self.request.route_path('elbs')):
                 self.log_request(_(u"Creating elastic load balancer {0}").format(name))
                 if vpc_subnet is None:
-                    params = dict(complex_listeners=listeners_args)  
+                    params = dict(complex_listeners=listeners_args)
                     self.elb_conn.create_load_balancer(name, zone, **params)
                     self.elb_conn.enable_availability_zones(name, zone)
                 else:
                     params = dict(subnets=vpc_subnet,
-                              security_groups=securitygroup,
-                              complex_listeners=listeners_args)  
+                                  security_groups=securitygroup,
+                                  complex_listeners=listeners_args)
                     self.elb_conn.create_load_balancer(name, None, **params)
                 self.handle_configure_health_check(name)
                 self.elb_conn.register_instances(name, instances)
                 if cross_zone_enabled == 'y':
                     self.elb_conn.modify_lb_attribute(name, 'crossZoneLoadBalancing', True)
-                #TEMP
-                #if 1 == 1:
+                # TEMP
+                # if 1 == 1:
                 if backend_certificates is not None and backend_certificates != '[]':
                     self.handle_backend_certificate_create(name)
                 prefix = _(u'Successfully created elastic load balancer')
@@ -431,8 +437,8 @@ class CreateELBView(BaseView):
             else:
                 listeners_args.append((from_port, to_port, from_protocol, to_protocol))
 
-        #TEMP
-        #listeners_args.append((8888, 443, 'HTTP', 'HTTPS'))
+        # TEMP
+        # listeners_args.append((8888, 443, 'HTTP', 'HTTPS'))
 
         return listeners_args
 
@@ -452,7 +458,7 @@ class CreateELBView(BaseView):
             interval=time_between_pings,
             healthy_threshold=passes_until_unhealthy,
             unhealthy_threshold=failures_until_unhealthy,
-            target=ping_target 
+            target=ping_target
         )
         self.elb_conn.configure_health_check(name, hc)
 
@@ -466,7 +472,8 @@ class CreateELBView(BaseView):
             certificate_chain = self.request.params.get('certificate_chain')
             certificates = self.request.params.get('certificates')
             with boto_error_handler(self.request):
-                certificate_result = self.iam_conn.upload_server_cert(certificate_name, public_key_certificate, private_key, cert_chain=None, path=None)
+                certificate_result = self.iam_conn.upload_server_cert(certificate_name, public_key_certificate,
+                                                                      private_key, cert_chain=None, path=None)
                 prefix = _(u'Successfully uploaded server certificate')
                 msg = u'{0} {1}'.format(prefix, certificate_name)
                 certificate_arn = certificate_result.upload_server_certificate_result.server_certificate_metadata.arn
@@ -478,32 +485,33 @@ class CreateELBView(BaseView):
     def handle_backend_certificate_create(self, elb_name):
         backend_certificates_json = self.request.params.get('backend_certificates')
         backend_certificates = json.loads(backend_certificates_json) if backend_certificates_json else []
-        public_policy_attributes = dict() 
-        backend_policy_attributes = dict() 
-        public_policy_type = u'PublicKeyPolicyType' 
+        public_policy_attributes = dict()
+        backend_policy_attributes = dict()
+        public_policy_type = u'PublicKeyPolicyType'
         backend_policy_type = u'BackendServerAuthenticationPolicyType'
 
-        #TEMP
-        #backend_certificates = [{"name":"test-backend-pubkey-0001","certificateBody":"-----BEGIN CERTIFICATE-----\nMIIDNDCCAhygAwIBAgIGIPPz3M6BMA0GCSqGSIb3DQEBDQUAMEExCzAJBgNVBAYT\nAlVTMQ0wCwYDVQQKEwRVc2VyMRMwEQYDVQQLEwpFdWNhbHlwdHVzMQ4wDAYDVQQD\nEwVhZG1pbjAeFw0xNDA0MTAxOTIwMjJaFw0xOTA0MTAxOTIwMjJaMEExCzAJBgNV\nBAYTAlVTMQ0wCwYDVQQKEwRVc2VyMRMwEQYDVQQLEwpFdWNhbHlwdHVzMQ4wDAYD\nVQQDEwVhZG1pbjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALutKPbt\nDhEQVRw1ZIgaOiA1BdYFssQ9bnhEfC7Lq68hK42lH+K1Rmr/803nuhktITVMvb7R\njFxkYXDi1BZtjgMssWm3K8UegyQb098uScYixK7M/g60/SSbzS2b6ga2Tc4aLg9B\n+YT5d1llqB/W4t19NkqB2ncuk7weB+UYh2PNOHGh+/haLz9/vHOIRerRMyd77q1W\nCQ24HDA/j3sXaNLS/cTe2iVJZWdpb9V57ivVlh+J4ZZqq2mBYCIVwA660/clqJcT\nLu7OsQ4eUHTEEpaUF8EQYMFm4FXNwxLZd7nBdBA97Ip2prvkIrW7WsWXrf0oH6If\nq4ZuDhuTThkGcI8CAwEAAaMyMDAwDwYDVR0TAQH/BAUwAwEB/zAdBgNVHQ4EFgQU\n4UfCYeA290g+BSzSvavJhv7CU6wwDQYJKoZIhvcNAQENBQADggEBAFghqNx0YSIA\nwZad3vaEkCVDmgOyL0m4NyJU0uAl+rtFKuR1fv0lIR22zLG5Pw6UH/7fS1TBw7Kc\nCiDF+eYfkKM9e7mf45iukIF1GuTRXcKFk9Nop0Il0bi9Jas+vhidlVyO7VjHbicW\nIcCFXiOx5KDA9yhKiHGBU6SGxQUdijE+S2+XsvtOqNGGezzFCc/colQXXyOdxvM2\njLVUgVctURXeDJsKuO1Drq0Iy5opTc2XE0WzZ4AxVAuC5UdYIfJ1XzjRRqDIf5+r\n2n1Mf5mLBmhzSXpd6cdDiK7YNt1uGK4ydOt/z2FYLBl9cVJoWG5zRMbJuiFdwIlw\nhW/GWUvLKJQ=\n-----END CERTIFICATE-----","$$hashKey":"object:43"},{"name":"test-backend-pubkey-0002","certificateBody":"-----BEGIN CERTIFICATE-----\nMIIDNDCCAhygAwIBAgIGIPPz3M6BMA0GCSqGSIb3DQEBDQUAMEExCzAJBgNVBAYT\nAlVTMQ0wCwYDVQQKEwRVc2VyMRMwEQYDVQQLEwpFdWNhbHlwdHVzMQ4wDAYDVQQD\nEwVhZG1pbjAeFw0xNDA0MTAxOTIwMjJaFw0xOTA0MTAxOTIwMjJaMEExCzAJBgNV\nBAYTAlVTMQ0wCwYDVQQKEwRVc2VyMRMwEQYDVQQLEwpFdWNhbHlwdHVzMQ4wDAYD\nVQQDEwVhZG1pbjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALutKPbt\nDhEQVRw1ZIgaOiA1BdYFssQ9bnhEfC7Lq68hK42lH+K1Rmr/803nuhktITVMvb7R\njFxkYXDi1BZtjgMssWm3K8UegyQb098uScYixK7M/g60/SSbzS2b6ga2Tc4aLg9B\n+YT5d1llqB/W4t19NkqB2ncuk7weB+UYh2PNOHGh+/haLz9/vHOIRerRMyd77q1W\nCQ24HDA/j3sXaNLS/cTe2iVJZWdpb9V57ivVlh+J4ZZqq2mBYCIVwA660/clqJcT\nLu7OsQ4eUHTEEpaUF8EQYMFm4FXNwxLZd7nBdBA97Ip2prvkIrW7WsWXrf0oH6If\nq4ZuDhuTThkGcI8CAwEAAaMyMDAwDwYDVR0TAQH/BAUwAwEB/zAdBgNVHQ4EFgQU\n4UfCYeA290g+BSzSvavJhv7CU6wwDQYJKoZIhvcNAQENBQADggEBAFghqNx0YSIA\nwZad3vaEkCVDmgOyL0m4NyJU0uAl+rtFKuR1fv0lIR22zLG5Pw6UH/7fS1TBw7Kc\nCiDF+eYfkKM9e7mf45iukIF1GuTRXcKFk9Nop0Il0bi9Jas+vhidlVyO7VjHbicW\nIcCFXiOx5KDA9yhKiHGBU6SGxQUdijE+S2+XsvtOqNGGezzFCc/colQXXyOdxvM2\njLVUgVctURXeDJsKuO1Drq0Iy5opTc2XE0WzZ4AxVAuC5UdYIfJ1XzjRRqDIf5+r\n2n1Mf5mLBmhzSXpd6cdDiK7YNt1uGK4ydOt/z2FYLBl9cVJoWG5zRMbJuiFdwIlw\nhW/GWUvLKJQ=\n-----END CERTIFICATE-----","$$hashKey":"object:45"},{"name":"test-backend-pubkey-0003","certificateBody":"-----BEGIN CERTIFICATE-----\nMIIDNDCCAhygAwIBAgIGIPPz3M6BMA0GCSqGSIb3DQEBDQUAMEExCzAJBgNVBAYT\nAlVTMQ0wCwYDVQQKEwRVc2VyMRMwEQYDVQQLEwpFdWNhbHlwdHVzMQ4wDAYDVQQD\nEwVhZG1pbjAeFw0xNDA0MTAxOTIwMjJaFw0xOTA0MTAxOTIwMjJaMEExCzAJBgNV\nBAYTAlVTMQ0wCwYDVQQKEwRVc2VyMRMwEQYDVQQLEwpFdWNhbHlwdHVzMQ4wDAYD\nVQQDEwVhZG1pbjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALutKPbt\nDhEQVRw1ZIgaOiA1BdYFssQ9bnhEfC7Lq68hK42lH+K1Rmr/803nuhktITVMvb7R\njFxkYXDi1BZtjgMssWm3K8UegyQb098uScYixK7M/g60/SSbzS2b6ga2Tc4aLg9B\n+YT5d1llqB/W4t19NkqB2ncuk7weB+UYh2PNOHGh+/haLz9/vHOIRerRMyd77q1W\nCQ24HDA/j3sXaNLS/cTe2iVJZWdpb9V57ivVlh+J4ZZqq2mBYCIVwA660/clqJcT\nLu7OsQ4eUHTEEpaUF8EQYMFm4FXNwxLZd7nBdBA97Ip2prvkIrW7WsWXrf0oH6If\nq4ZuDhuTThkGcI8CAwEAAaMyMDAwDwYDVR0TAQH/BAUwAwEB/zAdBgNVHQ4EFgQU\n4UfCYeA290g+BSzSvavJhv7CU6wwDQYJKoZIhvcNAQENBQADggEBAFghqNx0YSIA\nwZad3vaEkCVDmgOyL0m4NyJU0uAl+rtFKuR1fv0lIR22zLG5Pw6UH/7fS1TBw7Kc\nCiDF+eYfkKM9e7mf45iukIF1GuTRXcKFk9Nop0Il0bi9Jas+vhidlVyO7VjHbicW\nIcCFXiOx5KDA9yhKiHGBU6SGxQUdijE+S2+XsvtOqNGGezzFCc/colQXXyOdxvM2\njLVUgVctURXeDJsKuO1Drq0Iy5opTc2XE0WzZ4AxVAuC5UdYIfJ1XzjRRqDIf5+r\n2n1Mf5mLBmhzSXpd6cdDiK7YNt1uGK4ydOt/z2FYLBl9cVJoWG5zRMbJuiFdwIlw\nhW/GWUvLKJQ=\n-----END CERTIFICATE-----"}]
+        # TEMP
+        # backend_certificates = [{"name":"test-backend-pubkey-0001","certificateBody":"-----BEGIN CERTIFICATE-----\nMIIDNDCCAhygAwIBAgIGIPPz3M6BMA0GCSqGSIb3DQEBDQUAMEExCzAJBgNVBAYT\nAlVTMQ0wCwYDVQQKEwRVc2VyMRMwEQYDVQQLEwpFdWNhbHlwdHVzMQ4wDAYDVQQD\nEwVhZG1pbjAeFw0xNDA0MTAxOTIwMjJaFw0xOTA0MTAxOTIwMjJaMEExCzAJBgNV\nBAYTAlVTMQ0wCwYDVQQKEwRVc2VyMRMwEQYDVQQLEwpFdWNhbHlwdHVzMQ4wDAYD\nVQQDEwVhZG1pbjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALutKPbt\nDhEQVRw1ZIgaOiA1BdYFssQ9bnhEfC7Lq68hK42lH+K1Rmr/803nuhktITVMvb7R\njFxkYXDi1BZtjgMssWm3K8UegyQb098uScYixK7M/g60/SSbzS2b6ga2Tc4aLg9B\n+YT5d1llqB/W4t19NkqB2ncuk7weB+UYh2PNOHGh+/haLz9/vHOIRerRMyd77q1W\nCQ24HDA/j3sXaNLS/cTe2iVJZWdpb9V57ivVlh+J4ZZqq2mBYCIVwA660/clqJcT\nLu7OsQ4eUHTEEpaUF8EQYMFm4FXNwxLZd7nBdBA97Ip2prvkIrW7WsWXrf0oH6If\nq4ZuDhuTThkGcI8CAwEAAaMyMDAwDwYDVR0TAQH/BAUwAwEB/zAdBgNVHQ4EFgQU\n4UfCYeA290g+BSzSvavJhv7CU6wwDQYJKoZIhvcNAQENBQADggEBAFghqNx0YSIA\nwZad3vaEkCVDmgOyL0m4NyJU0uAl+rtFKuR1fv0lIR22zLG5Pw6UH/7fS1TBw7Kc\nCiDF+eYfkKM9e7mf45iukIF1GuTRXcKFk9Nop0Il0bi9Jas+vhidlVyO7VjHbicW\nIcCFXiOx5KDA9yhKiHGBU6SGxQUdijE+S2+XsvtOqNGGezzFCc/colQXXyOdxvM2\njLVUgVctURXeDJsKuO1Drq0Iy5opTc2XE0WzZ4AxVAuC5UdYIfJ1XzjRRqDIf5+r\n2n1Mf5mLBmhzSXpd6cdDiK7YNt1uGK4ydOt/z2FYLBl9cVJoWG5zRMbJuiFdwIlw\nhW/GWUvLKJQ=\n-----END CERTIFICATE-----","$$hashKey":"object:43"},{"name":"test-backend-pubkey-0002","certificateBody":"-----BEGIN CERTIFICATE-----\nMIIDNDCCAhygAwIBAgIGIPPz3M6BMA0GCSqGSIb3DQEBDQUAMEExCzAJBgNVBAYT\nAlVTMQ0wCwYDVQQKEwRVc2VyMRMwEQYDVQQLEwpFdWNhbHlwdHVzMQ4wDAYDVQQD\nEwVhZG1pbjAeFw0xNDA0MTAxOTIwMjJaFw0xOTA0MTAxOTIwMjJaMEExCzAJBgNV\nBAYTAlVTMQ0wCwYDVQQKEwRVc2VyMRMwEQYDVQQLEwpFdWNhbHlwdHVzMQ4wDAYD\nVQQDEwVhZG1pbjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALutKPbt\nDhEQVRw1ZIgaOiA1BdYFssQ9bnhEfC7Lq68hK42lH+K1Rmr/803nuhktITVMvb7R\njFxkYXDi1BZtjgMssWm3K8UegyQb098uScYixK7M/g60/SSbzS2b6ga2Tc4aLg9B\n+YT5d1llqB/W4t19NkqB2ncuk7weB+UYh2PNOHGh+/haLz9/vHOIRerRMyd77q1W\nCQ24HDA/j3sXaNLS/cTe2iVJZWdpb9V57ivVlh+J4ZZqq2mBYCIVwA660/clqJcT\nLu7OsQ4eUHTEEpaUF8EQYMFm4FXNwxLZd7nBdBA97Ip2prvkIrW7WsWXrf0oH6If\nq4ZuDhuTThkGcI8CAwEAAaMyMDAwDwYDVR0TAQH/BAUwAwEB/zAdBgNVHQ4EFgQU\n4UfCYeA290g+BSzSvavJhv7CU6wwDQYJKoZIhvcNAQENBQADggEBAFghqNx0YSIA\nwZad3vaEkCVDmgOyL0m4NyJU0uAl+rtFKuR1fv0lIR22zLG5Pw6UH/7fS1TBw7Kc\nCiDF+eYfkKM9e7mf45iukIF1GuTRXcKFk9Nop0Il0bi9Jas+vhidlVyO7VjHbicW\nIcCFXiOx5KDA9yhKiHGBU6SGxQUdijE+S2+XsvtOqNGGezzFCc/colQXXyOdxvM2\njLVUgVctURXeDJsKuO1Drq0Iy5opTc2XE0WzZ4AxVAuC5UdYIfJ1XzjRRqDIf5+r\n2n1Mf5mLBmhzSXpd6cdDiK7YNt1uGK4ydOt/z2FYLBl9cVJoWG5zRMbJuiFdwIlw\nhW/GWUvLKJQ=\n-----END CERTIFICATE-----","$$hashKey":"object:45"},{"name":"test-backend-pubkey-0003","certificateBody":"-----BEGIN CERTIFICATE-----\nMIIDNDCCAhygAwIBAgIGIPPz3M6BMA0GCSqGSIb3DQEBDQUAMEExCzAJBgNVBAYT\nAlVTMQ0wCwYDVQQKEwRVc2VyMRMwEQYDVQQLEwpFdWNhbHlwdHVzMQ4wDAYDVQQD\nEwVhZG1pbjAeFw0xNDA0MTAxOTIwMjJaFw0xOTA0MTAxOTIwMjJaMEExCzAJBgNV\nBAYTAlVTMQ0wCwYDVQQKEwRVc2VyMRMwEQYDVQQLEwpFdWNhbHlwdHVzMQ4wDAYD\nVQQDEwVhZG1pbjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALutKPbt\nDhEQVRw1ZIgaOiA1BdYFssQ9bnhEfC7Lq68hK42lH+K1Rmr/803nuhktITVMvb7R\njFxkYXDi1BZtjgMssWm3K8UegyQb098uScYixK7M/g60/SSbzS2b6ga2Tc4aLg9B\n+YT5d1llqB/W4t19NkqB2ncuk7weB+UYh2PNOHGh+/haLz9/vHOIRerRMyd77q1W\nCQ24HDA/j3sXaNLS/cTe2iVJZWdpb9V57ivVlh+J4ZZqq2mBYCIVwA660/clqJcT\nLu7OsQ4eUHTEEpaUF8EQYMFm4FXNwxLZd7nBdBA97Ip2prvkIrW7WsWXrf0oH6If\nq4ZuDhuTThkGcI8CAwEAAaMyMDAwDwYDVR0TAQH/BAUwAwEB/zAdBgNVHQ4EFgQU\n4UfCYeA290g+BSzSvavJhv7CU6wwDQYJKoZIhvcNAQENBQADggEBAFghqNx0YSIA\nwZad3vaEkCVDmgOyL0m4NyJU0uAl+rtFKuR1fv0lIR22zLG5Pw6UH/7fS1TBw7Kc\nCiDF+eYfkKM9e7mf45iukIF1GuTRXcKFk9Nop0Il0bi9Jas+vhidlVyO7VjHbicW\nIcCFXiOx5KDA9yhKiHGBU6SGxQUdijE+S2+XsvtOqNGGezzFCc/colQXXyOdxvM2\njLVUgVctURXeDJsKuO1Drq0Iy5opTc2XE0WzZ4AxVAuC5UdYIfJ1XzjRRqDIf5+r\n2n1Mf5mLBmhzSXpd6cdDiK7YNt1uGK4ydOt/z2FYLBl9cVJoWG5zRMbJuiFdwIlw\nhW/GWUvLKJQ=\n-----END CERTIFICATE-----"}]
 
         backend_policy_name = u'BackendPolicy-{0}'.format(elb_name)
         print backend_policy_name
         backend_policy_params = {'LoadBalancerName': elb_name,
                                  'PolicyName': backend_policy_name,
                                  'PolicyTypeName': backend_policy_type}
-        index = 1 
+        index = 1
         for cert in backend_certificates:
             public_policy_name = u'EucaConsole-PublicKeyPolicy-{0}'.format(cert.get('name'))
             public_policy_attributes['PublicKey'] = cert.get('certificateBody')
             print public_policy_name
             self.elb_conn.create_lb_policy(elb_name, public_policy_name, public_policy_type, public_policy_attributes)
-            backend_policy_params['PolicyAttributes.member.%d.AttributeName' % index] = 'PublicKeyPolicyName' 
-            backend_policy_params['PolicyAttributes.member.%d.AttributeValue' % index] = public_policy_name 
+            backend_policy_params['PolicyAttributes.member.%d.AttributeName' % index] = 'PublicKeyPolicyName'
+            backend_policy_params['PolicyAttributes.member.%d.AttributeValue' % index] = public_policy_name
             index += 1
 
-        # Cannot use the boto call below since it won't allow having multiple 'PublicKeyPolicyName' keys as the attributes 
-        #backend_policy_attributes['PublicKeyPolicyName'] = public_policy_name 
-        #self.elb_conn.create_lb_policy(elb_name, backend_policy_name, backend_policy_type, backend_policy_attributes)
+        # Cannot use the boto call below
+        # since it won't allow having multiple 'PublicKeyPolicyName' keys as the attributes
+        # backend_policy_attributes['PublicKeyPolicyName'] = public_policy_name
+        # self.elb_conn.create_lb_policy(elb_name, backend_policy_name, backend_policy_type, backend_policy_attributes)
         print backend_policy_params
         self.elb_conn.get_status('CreateLoadBalancerPolicy', backend_policy_params)
         print "Created elb policy"
