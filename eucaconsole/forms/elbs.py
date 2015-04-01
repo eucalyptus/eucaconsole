@@ -25,7 +25,7 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 """
-Forms for Elastic Load Balancer 
+Forms for Elastic Load Balancer
 
 """
 import wtforms
@@ -62,12 +62,12 @@ class ELBsFiltersForm(BaseSecureForm):
         self.key_name.choices = self.ec2_choices_manager.keypairs(add_blank=False, no_keypair_filter_option=True)
         self.security_groups.choices = self.ec2_choices_manager.security_groups(use_id=True, add_blank=False)
         self.facets = [
-            {'name':'instance_type', 'label':self.instance_type.label.text,
-                'options':self.getOptionsFromChoices(self.instance_type.choices)},
-            {'name':'key_name', 'label':self.key_name.label.text,
-                'options':self.getOptionsFromChoices(self.key_name.choices)},
-            {'name':'security_group', 'label':self.security_groups.label.text,
-                'options':self.getOptionsFromChoices(self.security_groups.choices)},
+            {'name': 'instance_type', 'label': self.instance_type.label.text,
+                'options': self.getOptionsFromChoices(self.instance_type.choices)},
+            {'name': 'key_name', 'label': self.key_name.label.text,
+                'options': self.getOptionsFromChoices(self.key_name.choices)},
+            {'name': 'security_group', 'label': self.security_groups.label.text,
+                'options': self.getOptionsFromChoices(self.security_groups.choices)},
         ]
 
 
@@ -94,6 +94,10 @@ class CreateELBForm(BaseSecureForm):
     )
     cross_zone_enabled_help_text = _(u'Distribute traffic evenly across all instances in all availability zones')
     cross_zone_enabled = wtforms.BooleanField(label=_(u'Enable cross-zone load balancing'))
+    add_availability_zones_help_text = _(u'Enable this load balancer \
+        to route traffic to instances in the selected zones')
+    add_vpc_subnets_help_text = _(u'Enable this load balancer to route traffic to instances in the selected subnets')
+    add_instances_help_text = _(u'Balance traffic between the selected instances')
     ping_protocol_error_msg = _(u'Ping protocol is required')
     ping_protocol = wtforms.SelectField(
         label=_(u'Protocol'),
@@ -145,14 +149,8 @@ class CreateELBForm(BaseSecureForm):
         self.set_error_messages()
         self.choices_manager = ChoicesManager(conn=conn)
         self.vpc_choices_manager = ChoicesManager(conn=vpc_conn)
-        self.set_help_text()
         self.set_choices(request)
-
-    def set_help_text(self):
-        self.cross_zone_enabled.label_help_text = self.cross_zone_enabled_help_text 
-        self.add_availability_zones_help_text = _(u'Enable this load balancer to route traffic to instances in the selected zones')
-        self.add_vpc_subnets_help_text = _(u'Enable this load balancer to route traffic to instances in the selected subnets')
-        self.add_instances_help_text = _(u'Balance traffic between the selected instances')
+        self.cross_zone_enabled.label_help_text = self.cross_zone_enabled_help_text
 
     def set_choices(self, request):
         if self.cloud_type == 'euca' and self.is_vpc_supported:
@@ -169,7 +167,7 @@ class CreateELBForm(BaseSecureForm):
         self.failures_until_unhealthy.choices = self.get_failures_until_unhealthy_choices()
         self.passes_until_unhealthy.choices = self.get_passes_until_unhealthy_choices()
 
-        self.cross_zone_enabled.data = False 
+        self.cross_zone_enabled.data = False
         # Set default choices where applicable, defaulting to first non-blank choice
         if self.cloud_type == 'aws' and len(self.zone.choices) > 1:
             self.zone.data = self.zone.choices[0]
@@ -261,38 +259,38 @@ class ELBInstancesFiltersForm(BaseSecureForm):
     def set_search_facets(self):
         if self.cloud_type == 'aws':
             self.facets = [
-                {'name':'state', 'label':self.state.label.text, 'options':self.get_status_choices()},
-                {'name':'availability_zone', 'label':self.availability_zone.label.text,
-                    'options':self.get_availability_zone_choices(self.region)},
-                {'name':'subnet_id', 'label':self.subnet_id.label.text,
-                    'options':self.getOptionsFromChoices(self.vpc_choices_manager.vpc_subnets(add_blank=False))},
-                {'name':'tags', 'label':self.tags.label.text},
+                {'name': 'state', 'label': self.state.label.text, 'options': self.get_status_choices()},
+                {'name': 'availability_zone', 'label': self.availability_zone.label.text,
+                    'options': self.get_availability_zone_choices(self.region)},
+                {'name': 'subnet_id', 'label': self.subnet_id.label.text,
+                    'options': self.getOptionsFromChoices(self.vpc_choices_manager.vpc_subnets(add_blank=False))},
+                {'name': 'tags', 'label': self.tags.label.text},
             ]
             vpc_choices = self.vpc_choices_manager.vpc_networks(add_blank=False)
             vpc_choices.append(('None', _(u'No VPC')))
             self.facets.append(
-                {'name':'vpc_id', 'label':self.vpc_id.label.text,
+                {'name': 'vpc_id', 'label': self.vpc_id.label.text,
                     'options': self.getOptionsFromChoices(vpc_choices)},
             )
         else:
             self.facets = [
-                {'name':'state', 'label':self.state.label.text, 'options':self.get_status_choices()},
-                {'name':'tags', 'label':self.tags.label.text},
+                {'name': 'state', 'label': self.state.label.text, 'options': self.get_status_choices()},
+                {'name': 'tags', 'label': self.tags.label.text},
             ]
             if self.is_vpc_supported:
                 self.facets.append(
-                    {'name':'subnet_id', 'label':self.subnet_id.label.text,
-                        'options':self.getOptionsFromChoices(self.vpc_choices_manager.vpc_subnets(add_blank=False))},
+                    {'name': 'subnet_id', 'label': self.subnet_id.label.text,
+                        'options': self.getOptionsFromChoices(self.vpc_choices_manager.vpc_subnets(add_blank=False))},
                 )
                 vpc_choices = self.vpc_choices_manager.vpc_networks(add_blank=False)
                 self.facets.append(
-                    {'name':'vpc_id', 'label':self.vpc_id.label.text,
-                       'options': self.getOptionsFromChoices(vpc_choices)},
+                    {'name': 'vpc_id', 'label': self.vpc_id.label.text,
+                        'options': self.getOptionsFromChoices(vpc_choices)},
                 )
             else:
                 self.facets.append(
-                    {'name':'availability_zone', 'label':self.availability_zone.label.text,
-                       'options':self.get_availability_zone_choices(self.region)},
+                    {'name': 'availability_zone', 'label': self.availability_zone.label.text,
+                        'options': self.get_availability_zone_choices(self.region)},
                 )
 
     def get_availability_zone_choices(self, region):
@@ -301,13 +299,14 @@ class ELBInstancesFiltersForm(BaseSecureForm):
     @staticmethod
     def get_status_choices():
         return [
-            {'key':'running', 'label':'Running'},
-            {'key':'pending', 'label':'Pending'},
-            {'key':'stopping', 'label':'Stopping'},
-            {'key':'stopped', 'label':'Stopped'},
-            {'key':'shutting-down', 'label':'Terminating'},
-            {'key':'terminated', 'label':'Terminated'},
+            {'key': 'running', 'label': 'Running'},
+            {'key': 'pending', 'label': 'Pending'},
+            {'key': 'stopping', 'label': 'Stopping'},
+            {'key': 'stopped', 'label': 'Stopped'},
+            {'key': 'shutting-down', 'label': 'Terminating'},
+            {'key': 'terminated', 'label': 'Terminated'},
         ]
+
 
 class CertificateForm(BaseSecureForm):
     """Create SSL Certificate form"""
@@ -343,7 +342,7 @@ class CertificateForm(BaseSecureForm):
             self.certificates.data = self.certificates.choices[0][0]
 
     def get_all_server_certs(self,  iam_conn=None, add_blank=True):
-        choices = [] 
+        choices = []
         certificates = {}
         if iam_conn is not None:
             certificates = self.iam_conn.get_all_server_certs()
@@ -356,7 +355,8 @@ class CertificateForm(BaseSecureForm):
 
 class BackendCertificateForm(BaseSecureForm):
     """Create SSL Certificate form"""
-    backend_certificate_name_error_msg = _(u'Name must be between 1 and 255 characters long, and must not contain space')
+    backend_certificate_name_error_msg = _(u'Name must be between 1 and 255 characters long, \
+        and must not contain space')
     backend_certificate_name = wtforms.TextField(
         label=_(u'Certificate name'),
     )
