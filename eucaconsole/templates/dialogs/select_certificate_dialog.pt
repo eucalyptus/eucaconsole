@@ -23,10 +23,13 @@
                 <div>
                     <label>Back-end certificates</label>
                     <div>
-	                <span class="label radius secondary item" ng-repeat="cert in backendCertificateArray">
-	                    <span>{{ cert.name }}</span>
-	                    <a class="remove" ng-click="removeBackendCertificate($event, $index)" title="Remove rule"><i class="fi-x"></i></a>
-	                </span>
+                        <span class="label radius secondary item" ng-repeat="cert in backendCertificateArray">
+                            <span>{{ cert.name }}</span>
+                            <a class="remove" ng-click="removeBackendCertificate($event, $index)"
+                                title="Remove rule">
+                                <i class="fi-x"></i>
+                            </a>
+                        </span>
                     </div>
                 </div>
                 <div>&nbsp;</div>
@@ -34,9 +37,9 @@
                     <label>Add a certificate:</label>
                     <div>
                         ${panel('form_field', field=backend_certificate_form['backend_certificate_name'], ng_attrs={'model': 'backendCertificateName'}, leftcol_width=3, rightcol_width=9)}
-	                <div class="row inline controls-wrapper" ng-show="duplicatedBackendCertificateDivClass === 'error'">
-	                    <div class="small-3 columns">&nbsp;</div>
-	                    <div class="small-9 columns field">
+                        <div class="row inline controls-wrapper" ng-show="duplicatedBackendCertificateDivClass === 'error'">
+                            <div class="small-3 columns">&nbsp;</div>
+                            <div class="small-9 columns field">
                                 <div ng-class="duplicatedBackendCertificateDivClass">
                                     <small class="error" i18n:translate="">You may not have duplicate backend certificates.</small>
                                 </div>
@@ -45,15 +48,17 @@
                         ${panel('form_field', field=backend_certificate_form['backend_certificate_body'], ng_attrs={'model': 'backendCertificateBody'}, leftcol_width=3, rightcol_width=9)}
                     </div>
                     <div>
-	                <div class="row inline controls-wrapper" id="add-backend-certificate-button-div">
-	                    <div class="small-3 columns">&nbsp;</div>
-	                    <div class="small-9 columns field">
-		                <span id="button-add-backend-certificate" class="button round small" i18n:translate=""
+                        <div class="row inline controls-wrapper" id="add-backend-certificate-button-div">
+                            <div class="small-3 columns">&nbsp;</div>
+                            <div class="small-9 columns field">
+                                <span id="button-add-backend-certificate" class="button round small" i18n:translate=""
                                     ng-class="addBackendCertificateButtonClass"
-		                    ng-click="addBackendCertificate($event)">Add Certificate</span>
-	                </div>
+                                    ng-click="addBackendCertificate($event)">
+                                    Add Certificate
+                                </span>
+                            </div>
+                        </div>
                     </div>
-	        </div>
                 </div>
             </form>
             <a href="#" id="select-certificate-close-link" class="close-reveal-modal">&#215;</a>
@@ -97,4 +102,3 @@
         </div>
     </div>
 </div>
-
