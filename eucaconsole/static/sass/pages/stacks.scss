@@ -1,0 +1,24 @@
+/* @fileOverview Cloud Formations landing page CSS */
+@import "../includes/landingpage";
+
+// Status colors
+$stack-status-color-create-in-progress: lighten($euca-darkblue, 20%);
+$stack-status-color-create-complete: $euca-darkblue;
+$stack-status-color-create-failed: darkred;
+$stack-status-color-rollback-in-progress: lighten(darkred, 20%);
+$stack-status-color-rollback-complete: $euca-darkblue;
+$stack-status-color-rollback-failed: darkred;
+$stack-status-color-delete-in-progress: darken($euca-grey, 10%);
+$stack-status-color-delete-complete: $euca-darkblue;
+$stack-status-color-delete-failed: darkred;
+
+// Stack status
+.status.Create-in-progress { background-color: $stack-status-color-create-in-progress; }
+.status.Create-complete { background-color: $stack-status-color-create-complete; }
+.status.Create-failed { background-color: $stack-status-color-create-failed; }
+.status.Rollback-in-progress { background-color: $stack-status-color-rollback-in-progress; }
+.status.Rollback-complete { background-color: $stack-status-color-rollback-complete; }
+.status.Rollback-failed { background-color: $stack-status-color-rollback-failed; }
+.status.Delete-in-progress { background-color: $stack-status-color-delete-in-progress; }
+.status.Delete-complete { background-color: $stack-status-color-delete-complete; }
+.status.Delete-failed { background-color: $stack-status-color-delete-failed; }

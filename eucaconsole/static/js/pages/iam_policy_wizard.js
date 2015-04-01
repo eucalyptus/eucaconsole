@@ -266,18 +266,20 @@ angular.module('IAMPolicyWizard', ['EucaConsoleUtils'])
             });
         };
         $scope.selectPolicy = function(policyType) {
-            // Fetch hard-coded canned policies
-            var jsonUrl = $scope.policyJsonEndpoint + "?type=" + policyType;
-            $http.get(jsonUrl).success(function(oData) {
-                var results = oData ? oData.policy : '',
-                    formattedResults = '';
-                if (results) {
-                    formattedResults = JSON.stringify(results, null, 2);
-                    $scope.policyText = formattedResults;
-                    $scope.codeEditor.setValue(formattedResults);
-                    $scope.codeEditor.focus();
-                }
-            });
+            if (policyType !== 'custom') {
+                // Fetch hard-coded canned policies
+                var jsonUrl = $scope.policyJsonEndpoint + "?type=" + policyType;
+                $http.get(jsonUrl).success(function(oData) {
+                    var results = oData ? oData.policy : '',
+                        formattedResults = '';
+                    if (results) {
+                        formattedResults = JSON.stringify(results, null, 2);
+                        $scope.policyText = formattedResults;
+                        $scope.codeEditor.setValue(formattedResults);
+                        $scope.codeEditor.focus();
+                    }
+                });
+            }
             // Set policy name
             $scope.setPolicyName(policyType);
         };

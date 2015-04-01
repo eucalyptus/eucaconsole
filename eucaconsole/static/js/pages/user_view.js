@@ -72,7 +72,6 @@ angular.module('UserView', ['PolicyList', 'Quotas', 'EucaConsoleUtils'])
             $('#delete-user-form').attr('action', options.user_delete_url);
             $scope.setFocus();
             $scope.setWatch();
-            $scope.setDropdownMenusListener();
             $scope.adjustTab();
         };
         $scope.adjustTab = function() {
@@ -143,15 +142,6 @@ angular.module('UserView', ['PolicyList', 'Quotas', 'EucaConsoleUtils'])
             $(document).on('click', '.cancel-link', function(event) {
                 window.onbeforeunload = null;
             });
-        }; 
-        $scope.setDropdownMenusListener = function () {
-            var modals = $('[data-reveal]');
-            modals.on('open', function () {
-                $('.gridwrapper').find('.f-dropdown').filter('.open').css('display', 'none');
-            });
-            modals.on('close', function () {
-                $('.gridwrapper').find('.f-dropdown').filter('.open').css('display', 'block');
-            });
         };
         $scope.setFocus = function () {
             $(document).on('ready', function(){
@@ -159,7 +149,7 @@ angular.module('UserView', ['PolicyList', 'Quotas', 'EucaConsoleUtils'])
                 // Prevent change password confirmation input from being disabled on IE
                 $('#password').removeAttr('maxlength');
             });
-            $(document).on('opened', '[data-reveal]', function () {
+            $(document).on('opened.fndtn.reveal', '[data-reveal]', function () {
                 var modal = $(this);
                 var modalID = $(this).attr('id');
                 if( modalID.match(/terminate/)  || modalID.match(/delete/) || modalID.match(/release/) ){
@@ -366,7 +356,7 @@ angular.module('UserView', ['PolicyList', 'Quotas', 'EucaConsoleUtils'])
             $('#delete-password-modal').foundation('reveal', 'close');
         };
     })
-    .controller('UserAccessKeysCtrl', function($scope, $http, $timeout, eucaHandleError) {
+    .controller('UserAccessKeysCtrl', function($scope, $http, $timeout, eucaHandleError, eucaHandleErrorNoNotify) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.jsonEndpoint = '';
         $scope.jsonItemsEndpoint = '';
@@ -387,7 +377,7 @@ angular.module('UserView', ['PolicyList', 'Quotas', 'EucaConsoleUtils'])
                 $scope.itemsLoading = false;
                 $scope.items = results;
             }).error(function (oData, status) {
-                eucaHandleError(oData, status);
+                eucaHandleErrorNoNotify(oData, status);
             });
         };
         $scope.generateKeys = function ($event) {
@@ -477,7 +467,7 @@ angular.module('UserView', ['PolicyList', 'Quotas', 'EucaConsoleUtils'])
             link: linker
         };
     })
-    .controller('UserGroupsCtrl', function($scope, $http, $timeout, eucaHandleError) {
+    .controller('UserGroupsCtrl', function($scope, $http, $timeout, eucaHandleError, eucaHandleErrorNoNotify) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.addEndpoint = '';
         $scope.removeEndpoint = '';
@@ -527,7 +517,7 @@ angular.module('UserView', ['PolicyList', 'Quotas', 'EucaConsoleUtils'])
                     $scope.loadPolicies(results[i].group_name, i);
                 }
             }).error(function (oData, status) {
-                eucaHandleError(oData, status);
+                eucaHandleErrorNoNotify(oData, status);
             });
         };
         $scope.loadPolicies = function (groupName, index) {
@@ -536,7 +526,7 @@ angular.module('UserView', ['PolicyList', 'Quotas', 'EucaConsoleUtils'])
                 var results = oData ? oData.results : [];
                 $scope.items[index].policies = results;
             }).error(function (oData, status) {
-                eucaHandleError(oData, status);
+                eucaHandleErrorNoNotify(oData, status);
             });
         };
         $scope.getAvailableGroups = function () {
@@ -548,7 +538,7 @@ angular.module('UserView', ['PolicyList', 'Quotas', 'EucaConsoleUtils'])
                 $scope.noAvailableGroups = $scope.alreadyMemberOfAllGroups || $scope.noGroupsDefined;
                 $scope.groupName = '';
             }).error(function (oData, status) {
-                eucaHandleError(oData, status);
+                eucaHandleErrorNoNotify(oData, status);
             });
         };
         $scope.addUserToGroup = function ($event) {

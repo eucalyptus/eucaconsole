@@ -332,6 +332,19 @@ urls = [
     Route(name='iam_policy_new', pattern='/policies/new'),
     Route(name='iam_policy_create', pattern='/policies/create'),
     Route(name='iam_policy_json', pattern='/policies/canned/json'),
+
+    # Stacks #####
+    # Landing page
+    Route(name='stacks', pattern='/stacks'),
+    Route(name='stacks_json', pattern='/stacks/json'),
+    Route(name='stacks_delete', pattern='/stacks/delete'),
+    # Detail page
+    Route(name='stack_new', pattern='/stacks/new'),
+    Route(name='stack_create', pattern='/stacks/create'),
+    Route(name='stack_template_parse', pattern='/stacks/templateparse'),
+    Route(name='stack_view', pattern='/stacks/{name}'),
+    Route(name='stack_delete', pattern='/stacks/{name}/delete'),
+    Route(name='stack_state_json', pattern='/stacks/{name}/state/json'),
+    Route(name='stack_template', pattern='/stacks/{name}/template'),
+    Route(name='stack_events', pattern='/stacks/{name}/events'),
 ]
-
-

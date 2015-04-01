@@ -716,7 +716,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
         if self.instance and self.associate_ip_form.validate():
             with boto_error_handler(self.request, self.location):
                 new_ip = self.request.params.get('ip_address')
-                address=self.get_ip_address(new_ip)
+                address = self.get_ip_address(new_ip)
                 if address and address.allocation_id:
                     self.conn.associate_address(self.instance.id, new_ip, allocation_id=address.allocation_id)
                 else:

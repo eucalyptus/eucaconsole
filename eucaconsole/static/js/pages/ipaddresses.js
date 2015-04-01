@@ -26,12 +26,12 @@ angular.module('ElasticIPsPage', ['LandingPage'])
             $scope.setWatch();
         };
         $scope.setWatch = function () {
-            $(document).on('open', '[data-reveal]', function () {
+            $(document).on('open.fndtn.reveal', '[data-reveal]', function () {
                 // Set the IP Count value to be 1 when re-opened
                 var modal = $(this);
                 modal.find('#ipcount').val('1');
             });
-            $(document).on('close', '[data-reveal]', function () {
+            $(document).on('close.fndtn.reveal', '[data-reveal]', function () {
                 // Turn off the listeners on #ipcount
                 $(document).off('input', '#ipcount');
                 $(document).off('change', '#ipcount');

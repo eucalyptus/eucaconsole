@@ -41,13 +41,10 @@
                                   load_balancers_html_attrs {'data-placeholder': ' '};
                                   term_policies_html_attrs {'data-placeholder': termination_policies_placeholder_text};">
                     ${structure:edit_form['csrf_token']}
-                    <div class="row controls-wrapper" id="capacity-section">
-                        <div class="medium-2 columns">
-                            <h6 i18n:translate="">Capacity</h6>
-                        </div>
-                        <div class="medium-10 columns">
+                    <div id="capacity-section">
+                        <h6 i18n:translate="">Capacity</h6>
+                        <div class="medium-10 columns right">
                             ${panel('form_field', field=edit_form['min_size'], maxlength=2, ng_attrs={'model': 'minSize', 'change': 'handleSizeChange()'})}
-                            <!--! TODO: Leverage input type="range" for desired capacity when we drop IE9 support -->
                             ${panel('form_field', field=edit_form['desired_capacity'], maxlength=2, ng_attrs={'model': 'desiredCapacity', 'change': 'handleSizeChange()'})}
                             ${panel('form_field', field=edit_form['max_size'], maxlength=2, ng_attrs={'model': 'maxSize', 'change': 'handleSizeChange()'})}
                         </div>

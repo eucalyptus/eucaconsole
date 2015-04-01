@@ -56,6 +56,7 @@ class LaunchConfigsView(LandingPageView):
         super(LaunchConfigsView, self).__init__(request)
         self.request = request
         self.ec2_conn = self.get_connection()
+        self.autoscale_conn = self.get_connection(conn_type='autoscale')
         self.iam_conn = self.get_connection(conn_type="iam")
         self.autoscale_conn = self.get_connection(conn_type='autoscale')
         self.initial_sort_key = 'name'
@@ -65,7 +66,12 @@ class LaunchConfigsView(LandingPageView):
         self.json_items_endpoint = self.get_json_endpoint('launchconfigs_json')
         self.delete_form = LaunchConfigDeleteForm(self.request, formdata=self.request.params or None)
         self.filters_form = LaunchConfigsFiltersForm(
-            self.request, cloud_type=self.cloud_type, ec2_conn=self.ec2_conn, formdata=self.request.params or None)
+            self.request,
+            cloud_type=self.cloud_type,
+            ec2_conn=self.ec2_conn,
+            autoscale_conn=self.autoscale_conn,
+            formdata=self.request.params or None
+        )
         search_facets = self.filters_form.facets
         self.render_dict = dict(
             filter_fields=False,
@@ -233,7 +239,10 @@ class LaunchConfigView(BaseView):
         self.role = None
         if self.launch_config and self.launch_config.instance_profile_name:
             arn = self.launch_config.instance_profile_name
-            profile_name = arn[(arn.rindex('/')+1):]
+            try:
+                profile_name = arn[(arn.rindex('/')+1):]
+            except ValueError:
+                profile_name = arn
             inst_profile = self.iam_conn.get_instance_profile(profile_name)
             self.role = inst_profile.roles.member.role_name
 

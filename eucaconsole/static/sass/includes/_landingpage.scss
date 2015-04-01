@@ -85,12 +85,11 @@ $dropdown-border-color: $euca-green;
         color: $euca-green;
         font-size: 1.1rem;
         padding: 0 0 0 0;
-        border-top: none;
-        border-right: none;
+        border: none;
         &:hover {
             color: $euca-green;
         }
-        &::before {
+        &::before, &::after {
             border: none;
         }
         .fi-widget {
@@ -143,7 +142,7 @@ $dropdown-border-color: $euca-green;
         }
         .plus {
             font-size: 5rem;
-            margin-bottom: 0.5rem;
+            margin-bottom: -1rem;
         }
     }
     .header {
@@ -255,9 +254,6 @@ $dropdown-border-color: $euca-green;
             position: relative;
             padding: 8px 4px 8px 6px;
             vertical-align: top;
-            &.status {
-                text-transform: capitalize;
-            }
             a {
                 color: $euca-darkgreen;
                 &:hover {
@@ -328,6 +324,7 @@ $dropdown-border-color: $euca-green;
 // tableview/gridview icon switcher
 .displayicons {
     font-size: 2rem;
+    padding-left: 0rem;
     a {
         float: right;
         border-bottom: none;
@@ -352,7 +349,7 @@ $dropdown-border-color: $euca-green;
     }
     i {
         display: inline-block;
-        padding: 2px 8px;
+        padding: 2px 12px;
     }
 }
 
@@ -383,17 +380,19 @@ $dropdown-border-color: $euca-green;
 }
 
 #sorting-controls {
-    padding-top: 22px;
+    padding-top: 10px;
+    text-align: right;
+    font-size: 14px;
     .f-dropdown {
         @include dropdown-shadow-mixin;
     }
 }
 
 #results-count {
-    padding-top: 1rem;
+    padding-top: 0.25rem;
+    text-align: right;
     .items-found {
-        position: relative;
-        top: -6px;
+        vertical-align: 40%;
     }
     em {
         color: #555;

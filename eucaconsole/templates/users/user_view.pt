@@ -157,6 +157,7 @@
                             </div>
                         </div>
                     </div>
+                    <div>&nbsp;</div>
                 </div>
                 <div class="content panel has-actions" id="security-tab">
                     <div class="actions-menu">
@@ -336,6 +337,7 @@
                             </div>
                         </div>
                     </div>
+                    <div>&nbsp;</div>
                 </div>
                 <div class="content panel has-actions" id="quotas-tab">
                     <div class="actions-menu">
@@ -372,6 +374,7 @@
                             </div>
                         </form>
                     </div>
+                    <div>&nbsp;</div>
                 </div>
             </div>
         </div>

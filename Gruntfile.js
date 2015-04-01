@@ -24,7 +24,7 @@ module.exports = function(grunt) {
                   destPrefix: 'eucaconsole/static/js/thirdparty/jquery'
               },
               files: {
-                'jquery.min.js': 'jquery/jquery.min.js'
+                'jquery.min.js': 'jquery/dist/jquery.min.js'
               }
           },
           jasmine: {
@@ -55,11 +55,24 @@ module.exports = function(grunt) {
                 'eucaconsole/static/sass/font-awesome':'components-font-awesome/scss/*.scss'
               }
           },
+          foundation: {
+              files: {
+                  'eucaconsole/static/js/thirdparty/foundation': 'foundation/js/**/foundation*.js',
+                  'eucaconsole/static/sass/foundation': 'foundation/scss/foundation'
+              }
+          },
           angular_magic_search: {
               options: {
               },
               files: {
                 'eucaconsole/static/js/thirdparty/magic-search': 'angular-magic-search/magic_search.*'
+              }
+          },
+          angular_chosen: {
+              options: {
+              },
+              files: {
+                'eucaconsole/static/js/thirdparty/angular': 'angular-chosen-localytics/chosen.*'
               }
           }
       },
@@ -78,7 +91,7 @@ module.exports = function(grunt) {
           },
           ci: {
               configFile: 'karma.conf.js',
-              singleRun: true,
+              singleRun: true
           }
       },
       clean: {
@@ -91,7 +104,7 @@ module.exports = function(grunt) {
                   expand: true,
                   cwd: 'eucaconsole.backup/eucaconsole/',
                   src: ['**/*'],
-                  dest: 'eucaconsole',
+                  dest: 'eucaconsole'
               }],
               options: {
                   force: true,
@@ -103,7 +116,7 @@ module.exports = function(grunt) {
               files: [{ 
                   expand: true,
                   src: ['eucaconsole/**'],
-                  dest: 'eucaconsole.backup/',
+                  dest: 'eucaconsole.backup/'
               }],
               options: {
                   force: false,
@@ -169,7 +182,7 @@ module.exports = function(grunt) {
                       dest: 'eucaconsole/static/js/minified/',   // Destination path prefix.
                       ext: '.min.js',   // Dest filepaths will have this extension.
                       extDot: 'first'   // Extensions in filenames begin after the first dot
-                  },
+                  }
               ]
           }
       },
@@ -178,9 +191,9 @@ module.exports = function(grunt) {
               files: ['eucaconsole/static/js/**/*.js'],
               tasks: ['karma:ci', 'jshint'],
               options: {
-                  spawn: false,
-              },
-          },
+                  spawn: false
+              }
+          }
       }
   });
 

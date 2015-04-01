@@ -89,7 +89,6 @@ class IPAddressesFiltersForm(BaseSecureForm):
         self.domain.choices = self.get_domain_choices()
         self.facets = [
             {'name':'assignment', 'label':self.assignment.label.text, 'options':self.get_assignment_choices()},
-            {'name':'domain', 'label':self.domain.label.text, 'options':self.get_domain_choices()},
         ]
 
     @staticmethod

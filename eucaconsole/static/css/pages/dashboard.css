@@ -19,9 +19,9 @@
 .panel .tile .footer a:hover { text-decoration: underline; }
 .panel .tile .footer .button { display: inline-block; font-weight: bold; }
 .panel .tile .footer .button:hover { text-decoration: none; }
-.panel .tile .dropdown.button.tiny { z-index: 99999; background: none; box-shadow: none; position: absolute; width: 30px; height: 24px; top: 0; right: 0; color: #8cc63e; font-size: 1.1rem; padding: 0 0 0 0; border-top: none; border-right: none; }
+.panel .tile .dropdown.button.tiny { z-index: 99999; background: none; box-shadow: none; position: absolute; width: 30px; height: 24px; top: 0; right: 0; color: #8cc63e; font-size: 1.1rem; padding: 0 0 0 0; border: none; }
 .panel .tile .dropdown.button.tiny:hover { color: #8cc63e; }
-.panel .tile .dropdown.button.tiny::before { border: none; }
+.panel .tile .dropdown.button.tiny::before, .panel .tile .dropdown.button.tiny::after { border: none; }
 .panel .tile .dropdown.button.tiny .fi-widget { position: relative; top: 4px; background-image: url(../../img/svg/gear.svg); display: inline-block; width: 20px; height: 20px; }
 .panel .tile .dropdown.button.tiny .fi-widget::before { content: " "; }
 .panel .tile .f-dropdown { border-color: #8dc640; box-shadow: 2px 2px 5px #6a737b; }
@@ -59,8 +59,8 @@
 
 #service-unknown { margin-top: 13px; }
 
-#health .statusrow { font-size: 11pt; text-align: left; color: #6a737b; margin-top: 10px; line-height: 1.4rem; }
+#health .statusrow { font-size: 10pt; text-align: left; color: #6a737b; margin-top: 10px; line-height: 1.2rem; }
 #health .statusrow .status { position: relative; left: 8px; }
 #health .statusrow i.service-up { color: #03405f; font-size: 16pt; text-align: left; }
 #health .statusrow i.service-down { color: red; font-size: 16pt; text-align: left; }
-#health .statusrow i.service-denied { color: #444444; font-size: 16pt; text-align: left; }
+#health .statusrow i.service-denied { color: #444; font-size: 16pt; text-align: left; }
