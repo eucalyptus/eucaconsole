@@ -162,10 +162,10 @@ class CreateELBForm(BaseSecureForm):
             securitygroups=None, use_id=True, add_blank=False)
         region = request.session.get('region')
         self.zone.choices = self.get_availability_zone_choices(region)
-        self.ping_protocol.choices = self.get_ping_protocol_choices()
-        self.time_between_pings.choices = self.get_time_between_pings_choices()
-        self.failures_until_unhealthy.choices = self.get_failures_until_unhealthy_choices()
-        self.passes_until_unhealthy.choices = self.get_passes_until_unhealthy_choices()
+        self.ping_protocol.choices = CreateELBForm.get_ping_protocol_choices()
+        self.time_between_pings.choices = CreateELBForm.get_time_between_pings_choices()
+        self.failures_until_unhealthy.choices = CreateELBForm.get_failures_until_unhealthy_choices()
+        self.passes_until_unhealthy.choices = CreateELBForm.get_passes_until_unhealthy_choices()
 
         self.cross_zone_enabled.data = False
         # Set default choices where applicable, defaulting to first non-blank choice
@@ -181,7 +181,8 @@ class CreateELBForm(BaseSecureForm):
     def get_availability_zone_choices(self, region):
         return self.choices_manager.availability_zones(region, add_blank=False)
 
-    def get_ping_protocol_choices(self):
+    @staticmethod
+    def get_ping_protocol_choices():
         return [
             ('HTTP', 'HTTP'),
             ('HTTPS', 'HTTPS'),
@@ -189,14 +190,16 @@ class CreateELBForm(BaseSecureForm):
             ('TCP', 'TCP')
         ]
 
-    def get_time_between_pings_choices(self):
+    @staticmethod
+    def get_time_between_pings_choices():
         return [
             ('30', '30 seconds'),
             ('60', '1 minute'),
             ('300', '5 minutes')
         ]
 
-    def get_failures_until_unhealthy_choices(self):
+    @staticmethod
+    def get_failures_until_unhealthy_choices():
         return [
             ('1', '1'),
             ('2', '2'),
@@ -210,7 +213,8 @@ class CreateELBForm(BaseSecureForm):
             ('10', '10'),
         ]
 
-    def get_passes_until_unhealthy_choices(self):
+    @staticmethod
+    def get_passes_until_unhealthy_choices():
         return [
             ('1', '1'),
             ('2', '2'),
