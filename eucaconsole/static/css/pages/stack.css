@@ -90,10 +90,7 @@
 #sorting-controls .f-dropdown { border-color: #8dc640; box-shadow: 2px 2px 5px #6a737b; }
 
 #results-count { padding-top: 0.25rem; text-align: right; }
-#results-count .items-found { vertical-align: 40%; }
-#results-count em { color: #555; font-style: normal; }
-
-#refresh-btn { background-image: url(../../img/svg/icon_reload.svg); background-color: transparent; width: 24px; height: 24px; }
+#results-count .items-found { vertical-align: center; }
 
 /* ----------------------------------------- Media Queries
 ----------------------------------------- */
@@ -101,3 +98,9 @@
 /* Small screen */
 @media screen and (max-width: 1020px) { .columns.datagrid { padding-left: 1rem; } }
 .content { width: 100%; padding-left: 10px; padding-right: 10px; }
+
+.panel { overflow: hidden; min-height: 400px; }
+
+.magic-search { width: 80%; }
+
+label { font-weight: bold; color: #6a737b; }

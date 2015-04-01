@@ -17,6 +17,7 @@ angular.module('StackPage', ['MagicSearch', 'EucaConsoleUtils'])
             $scope.stack_name = optionsJson.stack_name;
             $scope.stackStatusEndpoint = options.stack_status_json_url;
             $scope.stackTemplateEndpoint = options.stack_template_url;
+            $scope.stackEventsEndpointOrig = options.stack_events_url;
             $scope.stackEventsEndpoint = options.stack_events_url;
             if ($scope.stackStatusEndpoint) {
                 $scope.getStackState();
@@ -124,6 +125,7 @@ angular.module('StackPage', ['MagicSearch', 'EucaConsoleUtils'])
                 if (results) {
                     $scope.unfilteredEvents = results.events;
                     $scope.searchEvents();
+                    $('#events-table').stickyTableHeaders();
                 }
             });
         };
@@ -156,7 +158,7 @@ angular.module('StackPage', ['MagicSearch', 'EucaConsoleUtils'])
             $scope.events = filteredItems;
         };
         $scope.$on('searchUpdated', function($event, query) {
-            $scope.jsonEndpoint = decodeURIComponent($scope.jsonEndpointPrefix + "&" + query);
+            $scope.stackEventsEndpoint = decodeURIComponent($scope.stackEventsEndpointOrig + "?" + query);
             $scope.getStackEvents();
         });
         $scope.$on('textSearch', function($event, text, filter_keys) {

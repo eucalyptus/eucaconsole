@@ -158,8 +158,7 @@ class StackView(BaseView):
                 {'key': 'rollback-complete', 'label': _("Rollback Complete")},
                 {'key': 'rollback-in-progress', 'label': _("Rollback In Progresss")},
                 {'key': 'rollback-failed', 'label': _("Rollback Failed")}
-            ]},
-            {'name': 'phys-id', 'label': _(u"Physical ID")}
+            ]}
         ]
         self.render_dict = dict(
             stack=self.stack,
@@ -268,19 +267,23 @@ class StackStateView(BaseView):
     @view_config(route_name='stack_events', renderer='json', request_method='GET')
     def stack_events(self):
         """Return stack events"""
+        status = self.request.params.getall('status')
         with boto_error_handler(self.request):
             stack_events = self.cloudformation_conn.describe_stack_events(self.stack_name)
             events = []
             for event in stack_events:
-                events.append({
-                    'timestamp': event.timestamp.strftime('%Y-%m-%dT%H:%M:%SZ'),
-                    'status': event.resource_status.lower().capitalize().replace('_', '-'),
-                    'status_reason': event.resource_status_reason,
-                    'type': event.resource_type,
-                    'logical_id': event.logical_resource_id,
-                    'physical_id': event.physical_resource_id,
-                    'url': self.get_url_for_resource(event.resource_type, event.physical_resource_id)
-                })
+                stack_status = event.resource_status.lower().replace('_', '-')
+
+                if len(status) == 0 or stack_status in status:
+                    events.append({
+                        'timestamp': event.timestamp.strftime('%Y-%m-%dT%H:%M:%SZ'),
+                        'status': event.resource_status.lower().capitalize().replace('_', '-'),
+                        'status_reason': event.resource_status_reason,
+                        'type': event.resource_type,
+                        'logical_id': event.logical_resource_id,
+                        'physical_id': event.physical_resource_id,
+                        'url': self.get_url_for_resource(event.resource_type, event.physical_resource_id)
+                    })
             return dict(
                 results=dict(events=events)
             )

@@ -74,6 +74,15 @@ module.exports = function(grunt) {
               files: {
                 'eucaconsole/static/js/thirdparty/angular': 'angular-chosen-localytics/chosen.*'
               }
+          },
+          sticky_table_headers: {
+              options: {
+                  destPrefix: 'eucaconsole/static/js/thirdparty/jquery'
+              },
+              files: {
+                'jquery.stickytableheaders.js': 'StickyTableHeaders/js/jquery.stickytableheaders.js',
+                'jquery.stickytableheaders.min.js': 'StickyTableHeaders/js/jquery.stickytableheaders.min.js'
+              }
           }
       },
       jshint: {

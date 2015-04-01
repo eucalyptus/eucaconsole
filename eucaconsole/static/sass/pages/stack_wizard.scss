@@ -33,7 +33,16 @@
 }
 
 .keyvalsummary {
+    display: flex;
+    justify-content: flex-start;
     line-height: 1.375rem;
+}
+
+.param-name {
+    color: $euca-grey;
+}
+
+.param-value {
 }
 
 $template-indent: 1.5rem;

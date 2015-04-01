@@ -37,9 +37,14 @@
             <a class="left-off-canvas-toggle" id="offcanvas-icon"
                tal:condition="request.user.is_authenticated()">
                <i class="fi-list"></i>
-               <span class="menu-label" i18n:translate="">Menu</span>
             </a>
-            <a id="logo" href="${layout.home_url}" title="${layout.site_title}"></a>
+            <a id="dropdown-icon" data-dropdown="nav-drop"
+               tal:condition="request.user.is_authenticated()">
+               <i class="fi-list"></i>
+            </a>
+            <a href="${layout.home_url}" title="${layout.site_title}">
+                <span class="product-name">HP Helion Eucalyptus</span>
+            </a>
             <section tal:condition="request.user.is_authenticated()" id="user-dropdown-section">
                 <a href="#" data-dropdown="user-dropdown" class="small secondary dropdown">
                     <span class="${layout.cloud_type} username-label">${layout.username_label}</span>
@@ -76,6 +81,11 @@
     <!-- Off Canvas Menu: Left -->
     <div class="left-off-canvas-menu">
         ${panel('top_nav', off_canvas=True)}
+    </div>
+
+    <!-- Dropdown Menu: Left -->
+    <div id="nav-drop" class="f-dropdown">
+        ${panel('top_nav', off_canvas=False)}
     </div>
 
     <!-- Off Canvas Menu: Right-->
