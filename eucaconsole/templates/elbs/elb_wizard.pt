@@ -197,7 +197,7 @@
                             </div>
                             <div>&nbsp;</div>
                             <div ng-cloak="true">
-                                <label>Ping settings</label>
+                                <label i18n:translate="">Ping settings</label>
                                 <div class="">
                                     ${panel('form_field', field=create_form['ping_protocol'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'pingProtocol'}, **ping_protocol_attrs)}
                                 </div>
@@ -219,7 +219,7 @@
                                 <div>&nbsp;</div>
                                 <div class="section columns" ng-show="expanded">
                                     <div ng-cloak="true">
-                                        <label>Timing settings</label>
+                                        <label i18n:translate="">Timing settings</label>
                                         <div class="">
                                             ${panel('form_field', field=create_form['response_timeout'], leftcol_width=3, rightcol_width=9, min=1, ng_attrs={'model': 'responseTimeout'}, pattern=layout.integer_gt_zero_pattern)}
                                         </div>
