@@ -2,7 +2,7 @@
 <ul class="resources-nav left-align ${'off-canvas-list' if off_canvas else ''}" i18n:domain="eucaconsole">
     <li><a id="resource-menu-dashboard" class="lnk-dashboard"
            href="${request.route_path('dashboard')}"><label i18n:translate="">Dashboard</label></a></li>
-    <li><a id="resource-menuitem-images" class="lnk-dashboard"
+    <li><a id="resource-menu-images" class="lnk-dashboard"
            href="${request.route_path('images')}"><label i18n:translate="">Images</label></a></li>
     <li class="has-dropdown">
         <li><label id="resource-menu-instances" i18n:translate="">Instances</label></li>
