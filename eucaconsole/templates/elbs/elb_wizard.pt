@@ -6,7 +6,7 @@
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/instance_selector.css')}" />
 </head>
 
-<div metal:fill-slot="main_content" ng-app="Wizard" ng-controller="WizardCtrl" ng-init="initController('${controller_options_json}')">
+<div metal:fill-slot="main_content" ng-app="EucaConsoleWizard" ng-controller="EucaConsoleWizardCtrl" ng-init="initController('${controller_options_json}')">
     <div class="row" id="contentwrap" ng-controller="ELBWizardCtrl" ng-init="initController('${controller_options_json}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
@@ -344,7 +344,7 @@
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/utils/purl.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/pages/wizard.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/eucaconsole_wizard.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/elb_wizard.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/elb_listener_editor.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.js')}"></script>

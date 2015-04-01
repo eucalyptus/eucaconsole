@@ -4,8 +4,8 @@
  *
  */
 
-angular.module('Wizard', ['EucaConsoleUtils', 'MagicSearch'])
-    .controller('WizardCtrl', function ($scope, $http, $timeout, eucaHandleError, eucaUnescapeJson) {
+angular.module('EucaConsoleWizard', ['EucaConsoleUtils', 'MagicSearch'])
+    .controller('EucaConsoleWizardCtrl', function ($scope, $http, $timeout, eucaHandleError, eucaUnescapeJson) {
         $scope.elbForm = undefined;
         $scope.urlParams = undefined;
         $scope.resourceName  = '';
@@ -215,4 +215,4 @@ angular.module('Wizard', ['EucaConsoleUtils', 'MagicSearch'])
         };
     })
 ;
-angular.module('Wizard');
+angular.module('EucaConsoleWizard');
