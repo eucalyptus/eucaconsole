@@ -23,14 +23,14 @@
                 </thead>
                 <tbody>
                     <tr ng-cloak="true" ng-repeat="listener in listenerArray">
-                        <td>{{ listener.fromProtocol.toUpperCase() }}</td>
+                        <td>{{ listener.fromProtocol }}</td>
                         <td>{{ listener.fromPort }}</td>
-                        <td>{{ listener.toProtocol.toUpperCase() }}</td>
+                        <td>{{ listener.toProtocol }}</td>
                         <td>{{ listener.toPort }}</td>
                         <td>
                             <a ng-click="openCertificateModal(listener.fromProtocol, listener.toProtocol, 'SSL')"
                                 title="Change certficate">
-                                <span ng-show="showServerCertificateNameLink(listener.fromProtocol, listener.toProtocol)">
+                                <span ng-show="showServerCertificateNameLink(listener.fromProtocol)">
                                     Cipher
                                  </span>
                             </a>
@@ -84,9 +84,8 @@
                 </div>
                 <div class="small-9 columns">
                     <select id="from-protocol-select" name="from_protocol" class="ip-protocol"
+                        ng-options="protocol.name for protocol in protocolList track by protocol.value"
                         ng-model="fromProtocol" data-placeholder="select..." >
-                        <option ng-repeat="protocol in protocolList" 
-                            value="{{ protocol.value }}">{{ protocol.name }}</option>
                     </select>
                 </div>
             </div>
@@ -103,7 +102,7 @@
                 </div>
             </div>
         </div>
-        <div ng-show="isFromProtocolValid === true">
+        <div ng-show="isFromProtocolValid">
             <div class="row controls-wrapper">
                 <div class="small-1 columns"></div>
                 <div class="small-11 columns"><label class="left">Instance side</label></div>
@@ -114,9 +113,8 @@
                 </div>
                 <div class="small-9 columns">
                     <select id="to-protocol-select" name="to_protocol" class="ip-protocol"
+                        ng-options="protocol.name for protocol in toProtocolList track by protocol.value"
                         ng-model="toProtocol" data-placeholder="select..." >
-                        <option ng-repeat="protocol in toProtocolList" 
-                            value="{{ protocol.value }}">{{ protocol.name }}</option>
                     </select>
                 </div>
             </div>
@@ -135,7 +133,7 @@
                 </div>
             </div>
         </div>
-        <div ng-show="showSelectCertificateModalLink(fromProtocol, toProtocol, fromPort, toPort)">
+        <div ng-show="showSelectCertificateModalLink()">
             <div class="row controls-wrapper">
                 <div class="small-1 columns"></div>
                 <div class="small-11 columns"><label class="left">Security</label></div>
@@ -145,7 +143,7 @@
                     <label class="right protocol" i18n:translate="">Cipher</label>
                 </div>
                 <div class="small-9 columns">
-                    <a ng-click="openCertificateModal(fromProtocol, toProtocol, 'SSL')"
+                    <a ng-click="openCertificateModal(fromProtocol.value, toProtocol.value, 'SSL')"
                         title="Change certficate">
                         Select
                     </a>
@@ -156,7 +154,7 @@
                     <label class="right protocol" i18n:translate="">Certificates</label>
                 </div>
                 <div class="small-9 columns">
-                    <a ng-click="openCertificateModal(fromProtocol, toProtocol, 'SSL')"
+                    <a ng-click="openCertificateModal(fromProtocol.value, toProtocol.value, 'SSL')"
                         title="Change certficate">
                         Select
                     </a>

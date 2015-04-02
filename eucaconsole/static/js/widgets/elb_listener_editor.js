@@ -19,8 +19,8 @@ angular.module('EucaConsoleUtils').directive('elbListenerEditor', function() {
             $scope.listenerArray = []; 
             $scope.protocolList = []; 
             $scope.toProtocolList = []; 
-            $scope.fromProtocol = '';
-            $scope.toProtocol = '';
+            $scope.fromProtocol = undefined;
+            $scope.toProtocol = undefined;
             $scope.fromPort = '';
             $scope.toPort = '';
             $scope.portRangePattern = '';
@@ -45,8 +45,8 @@ angular.module('EucaConsoleUtils').directive('elbListenerEditor', function() {
                 $scope.protocolList = []; 
                 $scope.toProtocolList = []; 
                 $scope.protocolList.push({'name': 'Select...', 'value': 'None', 'port': ''});
-                $scope.fromProtocol = $scope.protocolList[0].value;
-                $scope.toProtocol = $scope.protocolList[0].value;
+                $scope.fromProtocol = $scope.protocolList[0];
+                $scope.toProtocol = $scope.protocolList[0];
                 $scope.fromPort = $scope.protocolList[0].port;
                 $scope.toPort = $scope.protocolList[0].port;
                 if (options.hasOwnProperty('protocol_list')) {
@@ -65,12 +65,12 @@ angular.module('EucaConsoleUtils').directive('elbListenerEditor', function() {
             };
             $scope.setWatcher = function () {
                 $scope.$watch('fromProtocol', function(){
-                    $scope.fromPort = parseInt($scope.getPortFromProtocolList($scope.fromProtocol));
+                    $scope.fromPort = parseInt($scope.fromProtocol.port);
                     $scope.checkAddListenerButtonCondition();
                     $scope.adjustToProtocolList();
                 });
                 $scope.$watch('toProtocol', function(){
-                    $scope.toPort = parseInt($scope.getPortFromProtocolList($scope.toProtocol));
+                    $scope.toPort = parseInt($scope.toProtocol.port);
                     $scope.checkAddListenerButtonCondition();
                 });
                 $scope.$watch('fromPort', function(){
@@ -124,8 +124,8 @@ angular.module('EucaConsoleUtils').directive('elbListenerEditor', function() {
                 }
             };
             $scope.resetValues = function () {
-                $scope.fromProtocol = $scope.protocolList[0].value;
-                $scope.toProtocol = $scope.protocolList[0].value;
+                $scope.fromProtocol = $scope.protocolList[0];
+                $scope.toProtocol = $scope.protocolList[0];
                 $scope.isFromProtocolValid = false;
             };
             $scope.checkForDuplicatedListeners = function () {
@@ -144,17 +144,17 @@ angular.module('EucaConsoleUtils').directive('elbListenerEditor', function() {
             $scope.compareListeners = function (block1, block2) {
                 if (block1.fromPort == block2.fromPort &&
                     block1.toPort == block2.toPort &&
-                    block1.fromProtocol == block2.fromProtocol &&
-                    block1.toProtocol == block2.toProtocol) {
+                    block1.fromProtocol.value == block2.fromProtocol.value &&
+                    block1.toProtocol.value == block2.toProtocol.value) {
                     return true;
                 }
                 return false;
             };
             $scope.createListenerArrayBlock = function () {
                 var block = {
-                    'fromProtocol': $scope.fromProtocol,
+                    'fromProtocol': $scope.fromProtocol.value,
                     'fromPort': $scope.fromPort,
-                    'toProtocol': $scope.toProtocol,
+                    'toProtocol': $scope.toProtocol.value,
                     'toPort': $scope.toPort,
                 };
                 return block;
@@ -192,7 +192,9 @@ angular.module('EucaConsoleUtils').directive('elbListenerEditor', function() {
                 });
             };
             $scope.checkAddListenerButtonCondition = function () {
-                if ($scope.fromProtocol === 'None' || $scope.toProtocol === 'None') {
+                if ($scope.fromProtocol.value === undefined || $scope.toProtocol.value === undefined) {
+                    $scope.isListenerNotComplete = true;
+                } else if ($scope.fromProtocol.value === 'None' || $scope.toProtocol.value === 'None') {
                     $scope.isListenerNotComplete = true;
                 } else if ($scope.fromPort === '' || $scope.toPort === '') {
                     $scope.isListenerNotComplete = true;
@@ -216,28 +218,31 @@ angular.module('EucaConsoleUtils').directive('elbListenerEditor', function() {
                 return port;
             };
             $scope.validateFromProtocol = function () {
-                if ($scope.fromProtocol !== 'None' && $scope.fromPort !== '') {
+                if ($scope.fromProtocol.value !== undefined &&
+                    $scope.fromProtocol.value !== 'None' &&
+                    !isNaN($scope.fromPort)) {
                     $scope.isFromProtocolValid = true;
                 }
             }; 
             $scope.adjustToProtocolList = function () {
-                $scope.toProtocolList = [];
-                $scope.toProtocolList.push({'name': 'Select...', 'value': 'None', 'port': ''});
-                $scope.toProtocol = $scope.protocolList[0].value;
+                var newProtocolList = []
+                newProtocolList.push({'name': 'Select...', 'value': 'None', 'port': ''});
+                $scope.toProtocol = $scope.protocolList[0];
                 $scope.toPort = $scope.protocolList[0].port;
-                if ($scope.fromProtocol === 'HTTP' || $scope.fromProtocol === 'HTTPS') {
+                if ($scope.fromProtocol.value === 'HTTP' || $scope.fromProtocol.value === 'HTTPS') {
                     angular.forEach($scope.protocolList, function (protocol) {
                         if (protocol.value === 'HTTP' || protocol.value === 'HTTPS') {
-                            $scope.toProtocolList.push(protocol);
+                            newProtocolList.push(protocol);
                         }
                     });
-                } else if ($scope.fromProtocol === 'TCP' || $scope.fromProtocol === 'SSL') {
+                } else if ($scope.fromProtocol.value === 'TCP' || $scope.fromProtocol.value === 'SSL') {
                     angular.forEach($scope.protocolList, function (protocol) {
                         if (protocol.value === 'TCP' || protocol.value === 'SSL') {
-                            $scope.toProtocolList.push(protocol);
+                            newProtocolList.push(protocol);
                         }
                     });
                 }
+                $scope.toProtocolList = newProtocolList;
             };
             $scope.checkFromPortInputCondition = function () {
                 $scope.classFromPortDiv = "";
@@ -257,37 +262,37 @@ angular.module('EucaConsoleUtils').directive('elbListenerEditor', function() {
                     }
                 });
             }; 
-            $scope.showSelectCertificateModalLink = function (fromProtocol, toProtocol, fromPort, toPort) {
-                if (toPort === '' || fromPort === '') {
+            $scope.showSelectCertificateModalLink = function () {
+                if ($scope.toPort === '' || $scope.fromPort === '') {
                     return false;
                 }
-                if (fromProtocol.toUpperCase() === 'HTTPS' ||
-                    fromProtocol.toUpperCase() === 'SSL' ||
-                    toProtocol.toUpperCase() === 'HTTPS' ||
-                    toProtocol.toUpperCase() === 'SSL') {
+                if ($scope.fromProtocol.value === 'HTTPS' ||
+                    $scope.fromProtocol.value === 'SSL' ||
+                    $scope.toProtocol.value === 'HTTPS' ||
+                    $scope.toProtocol.value === 'SSL') {
                     return true;
                 }
                 return false;
             };
             $scope.showServerCertificateNameLink = function (fromProtocol) {
-                if (fromProtocol.toUpperCase() === 'HTTPS' ||
-                    fromProtocol.toUpperCase() === 'SSL') { 
+                if (fromProtocol === 'HTTPS' ||
+                    fromProtocol === 'SSL') { 
                     return true;
                 }
                 return false;
             };
             $scope.showBackendCertificateLink = function (fromProtocol, toProtocol) {
-                if (fromProtocol.toUpperCase() === 'HTTPS' ||
-                    fromProtocol.toUpperCase() === 'SSL') {
+                if (fromProtocol === 'HTTPS' ||
+                    fromProtocol === 'SSL') {
                     return false;
-                } else if (toProtocol.toUpperCase() === 'HTTPS' ||
-                           toProtocol.toUpperCase() === 'SSL') {
+                } else if (toProtocol === 'HTTPS' ||
+                           toProtocol === 'SSL') {
                     return true;
                 }
                 return false;
             };
             $scope.openCertificateModal = function (fromProtocol, toProtocol, certificateTab) {
-                $scope.$emit('eventOpenSelectCertificateModal', fromProtocol.toUpperCase(), toProtocol.toUpperCase(), certificateTab);
+                $scope.$emit('eventOpenSelectCertificateModal', fromProtocol, toProtocol, certificateTab);
             };
             $scope.initEditor();
         }
