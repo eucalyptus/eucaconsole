@@ -173,8 +173,10 @@ angular.module('EucaConsoleUtils').directive('elbListenerEditor', function() {
                     $scope.$emit('listenerArrayUpdate');
                 });
             };
-            $scope.removeListener = function ($event, index) {
-                $event.preventDefault();
+            $scope.removeListener = function (index) {
+                // Workaround for the Bug in jQuery to prevent JS Uncaught TypeError
+                // See http://stackoverflow.com/questions/27408501/ng-repeat-sorting-is-throwing-an-exception-in-jquery
+                Object.getPrototypeOf(document.createComment('')).getAttribute = function() {};
                 $scope.listenerArray.splice(index, 1);
                 $scope.syncListeners();
                 $scope.$emit('listenerArrayUpdate');
