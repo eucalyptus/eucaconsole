@@ -5,12 +5,12 @@
         <div ng-show="showsCertificateTabDiv">
             <dl id="wizard-tabs" class="tabs" data-tab="" ng-cloak="">
                 <dd id="select-certificate-modal-tab-ssl" class="active">
-                    <a ng-click="selectCertificateTab($event, 'SSL')">
+                    <a href="" ng-click="selectCertificateTab($event, 'SSL')">
                         <span class="cir">SSL</span>
                     </a>
                 </dd>
                 <dd id="select-certificate-modal-tab-backend">
-                    <a ng-click="selectCertificateTab($event, 'BACKEND')">
+                    <a href="" ng-click="selectCertificateTab($event, 'BACKEND')">
                         <span class="cir">Backend</span>
                     </a>
                 </dd>

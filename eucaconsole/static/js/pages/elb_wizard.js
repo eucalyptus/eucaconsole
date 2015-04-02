@@ -381,6 +381,7 @@ angular.module('EucaConsoleWizard').controller('ELBWizardCtrl', function ($scope
         }
     };
     $scope.selectCertificateTab = function ($event, tab) {
+        $event.preventDefault();
         $scope.certificateTab = tab;
     };
     $scope.adjustSelectCertificateModalTabDisplay = function () {
