@@ -38,6 +38,9 @@ angular.module('EucaConsoleWizard').controller('ELBWizardCtrl', function ($scope
     $scope.certificateARN = '';
     $scope.certificateName = '';
     $scope.newCertificateName = '';
+    $scope.privateKey = '';
+    $scope.publicKeyCertificate = '';
+    $scope.certificateChain = '';
     $scope.showsCertificateTabDiv = false;
     $scope.backendCertificateArray = [];
     $scope.backendCertificateName = '';
@@ -45,8 +48,9 @@ angular.module('EucaConsoleWizard').controller('ELBWizardCtrl', function ($scope
     $scope.backendCertificateTextarea = '';
     $scope.isBackendCertificateNotComplete = true;
     $scope.hasDuplicatedBackendCertificate = false;
-    $scope.duplicatedBackendCertificateDivClass = '';
-    $scope.addBackendCertificateButtonClass = 'disabled';
+    $scope.classDuplicatedBackendCertificateDiv = '';
+    $scope.classAddBackendCertificateButton = 'disabled';
+    $scope.classUseThisCertificateButton = 'disabled';
     $scope.initController = function (optionsJson) {
         var options = JSON.parse(eucaUnescapeJson(optionsJson));
         $scope.setInitialValues(options);
@@ -83,15 +87,16 @@ angular.module('EucaConsoleWizard').controller('ELBWizardCtrl', function ($scope
         $scope.passesUntilUnhealthy = 10;
         $scope.showsCertificateTabDiv = false;
         $scope.certificateTab = 'SSL';
-        $scope.certificateRadioButton = "existing";
+        $scope.certificateRadioButton = 'existing';
         $scope.backendCertificateArray = [];
         if ($('#hidden_backend_certificates').length > 0) {
             $scope.backendCertificateTextarea = $('#hidden_backend_certificates');
         }
         $scope.isBackendCertificateNotComplete = true;
         $scope.hasDuplicatedBackendCertificate = false;
-        $scope.duplicatedBackendCertificateDivClass = '';
-        $scope.addBackendCertificateButtonClass = 'disabled';
+        $scope.classDuplicatedBackendCertificateDiv = '';
+        $scope.classAddBackendCertificateButton = 'disabled';
+        $scope.classUseThisCertificateButton = 'disabled';
         // timeout is needed to wait for the elb listener directive to be initialized
         if ($('#certificates').children('option').length > 0) {
             $scope.certificateName = $('#certificates').children('option').first().text();
@@ -197,6 +202,18 @@ angular.module('EucaConsoleWizard').controller('ELBWizardCtrl', function ($scope
             // Broadcast the certificate name change to the elb listener directive
             $scope.$broadcast('eventUpdateCertificateName', $scope.certificateName);
         });
+        $scope.$watch('certificateRadioButton', function(){
+            $scope.setClassUseThisCertificateButton()
+        });
+        $scope.$watch('newCertificateName', function(){
+            $scope.setClassUseThisCertificateButton()
+        });
+        $scope.$watch('privateKey', function(){
+            $scope.setClassUseThisCertificateButton()
+        });
+        $scope.$watch('publicKeyCertificate', function(){
+            $scope.setClassUseThisCertificateButton()
+        });
         $scope.$watch('backendCertificateName', function () {
             $scope.checkAddBackendCertificateButtonCondition(); 
         });
@@ -208,15 +225,15 @@ angular.module('EucaConsoleWizard').controller('ELBWizardCtrl', function ($scope
             $scope.checkAddBackendCertificateButtonCondition(); 
         }, true);
         $scope.$watch('isBackendCertificateNotComplete', function () {
-            $scope.setAddBackendCertificateButtonClass();
+            $scope.setClassAddBackendCertificateButton();
         });
         $scope.$watch('hasDuplicatedBackendCertificate', function () {
-            $scope.setAddBackendCertificateButtonClass();
-            $scope.duplicatedBackendCertificateDivClass = '';
+            $scope.setClassAddBackendCertificateButton();
+            $scope.classDuplicatedBackendCertificateDiv = '';
             // timeout is needed for the DOM update to complete
             $timeout(function () {
                 if ($scope.hasDuplicatedBackendCertificate === true) {
-                    $scope.duplicatedBackendCertificateDivClass = 'error';
+                    $scope.classDuplicatedBackendCertificateDiv = 'error';
                 }
             });
         });
@@ -410,11 +427,26 @@ angular.module('EucaConsoleWizard').controller('ELBWizardCtrl', function ($scope
         $event.preventDefault();
         $scope.backendCertificateArray.splice(index, 1);
     };
-    $scope.setAddBackendCertificateButtonClass = function () {
-        if( $scope.isBackendCertificateNotComplete === true || $scope.hasDuplicatedBackendCertificate === true){
-            $scope.addBackendCertificateButtonClass = 'disabled';
+    $scope.setClassAddBackendCertificateButton = function () {
+        if ($scope.isBackendCertificateNotComplete === true || $scope.hasDuplicatedBackendCertificate === true) {
+            $scope.classAddBackendCertificateButton = 'disabled';
         } else {
-            $scope.addBackendCertificateButtonClass = '';
+            $scope.classAddBackendCertificateButton = '';
+        }
+    };
+    $scope.setClassUseThisCertificateButton = function () {
+        if ($scope.certificateRadioButton === 'existing') {
+            $scope.classUseThisCertificateButton = '';
+        } else {
+            if ($scope.newCertificateName === undefined || $scope.newCertificateName === '') {
+                $scope.classUseThisCertificateButton = 'disabled';
+            } else if ($scope.privateKey === undefined || $scope.privateKey === '') {
+                $scope.classUseThisCertificateButton = 'disabled';
+            } else if ($scope.publicKeyCertificate === undefined || $scope.publicKeyCertificate === '') {
+                $scope.classUseThisCertificateButton = 'disabled';
+            } else {
+                $scope.classUseThisCertificateButton = '';
+            }
         }
     };
     $scope.checkAddBackendCertificateButtonCondition = function () {
@@ -445,6 +477,9 @@ angular.module('EucaConsoleWizard').controller('ELBWizardCtrl', function ($scope
     };
     $scope.handleCertificateCreate = function ($event, newCertURL) {
         $event.preventDefault();
+        if ($scope.classUseThisCertificateButton === 'disabled') {
+            return false;
+        }
         if ($scope.certificateRadioButton === 'new') {
             $scope.createNewCertificate(newCertURL);
         }

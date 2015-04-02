@@ -37,10 +37,10 @@
                     <label>Add a certificate:</label>
                     <div>
                         ${panel('form_field', field=backend_certificate_form['backend_certificate_name'], ng_attrs={'model': 'backendCertificateName'}, leftcol_width=3, rightcol_width=9)}
-                        <div class="row inline controls-wrapper" ng-show="duplicatedBackendCertificateDivClass === 'error'">
+                        <div class="row inline controls-wrapper" ng-show="classDuplicatedBackendCertificateDiv === 'error'">
                             <div class="small-3 columns">&nbsp;</div>
                             <div class="small-9 columns field">
-                                <div ng-class="duplicatedBackendCertificateDivClass">
+                                <div ng-class="classDuplicatedBackendCertificateDiv">
                                     <small class="error" i18n:translate="">You may not have duplicate backend certificates.</small>
                                 </div>
                             </div>
@@ -52,7 +52,7 @@
                             <div class="small-3 columns">&nbsp;</div>
                             <div class="small-9 columns field">
                                 <span id="button-add-backend-certificate" class="button round small" i18n:translate=""
-                                    ng-class="addBackendCertificateButtonClass"
+                                    ng-class="classAddBackendCertificateButton"
                                     ng-click="addBackendCertificate($event)">
                                     Add Certificate
                                 </span>
@@ -92,6 +92,7 @@
             <div class="row">
                 <div class="dialog-submit-button">
                     <button type="submit" class="button expand" id="create-securitygroup-btn" i18n:translate=""
+                        ng-class="classUseThisCertificateButton"
                         ng-click="handleCertificateCreate($event, '${request.route_path('certificate_create')}')">
                         Use This Certificate
                     </button>
