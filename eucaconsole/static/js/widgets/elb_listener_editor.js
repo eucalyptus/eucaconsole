@@ -227,7 +227,7 @@ angular.module('EucaConsoleUtils').directive('elbListenerEditor', function() {
                 }
             }; 
             $scope.adjustToProtocolList = function () {
-                var newProtocolList = []
+                var newProtocolList = [];
                 newProtocolList.push({'name': 'Select...', 'value': 'None', 'port': ''});
                 $scope.toProtocol = $scope.protocolList[0];
                 $scope.toPort = $scope.protocolList[0].port;
