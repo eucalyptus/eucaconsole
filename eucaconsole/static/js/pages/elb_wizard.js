@@ -187,6 +187,7 @@ angular.module('EucaConsoleWizard').controller('ELBWizardCtrl', function ($scope
         });
         $scope.$watch('certificateTab', function () {
             $scope.adjustSelectCertificateModalTabDisplay();
+            $scope.setClassUseThisCertificateButton()
         });
         $scope.$watch('certificateARN', function(){
             // Find the certficate name when selected on the select certificate dialog
@@ -223,6 +224,7 @@ angular.module('EucaConsoleWizard').controller('ELBWizardCtrl', function ($scope
         $scope.$watch('backendCertificateArray', function () {
             $scope.syncBackendCertificates();
             $scope.checkAddBackendCertificateButtonCondition(); 
+            $scope.setClassUseThisCertificateButton()
         }, true);
         $scope.$watch('isBackendCertificateNotComplete', function () {
             $scope.setClassAddBackendCertificateButton();
@@ -435,18 +437,28 @@ angular.module('EucaConsoleWizard').controller('ELBWizardCtrl', function ($scope
         }
     };
     $scope.setClassUseThisCertificateButton = function () {
-        if ($scope.certificateRadioButton === 'existing') {
-            $scope.classUseThisCertificateButton = '';
-        } else {
-            if ($scope.newCertificateName === undefined || $scope.newCertificateName === '') {
-                $scope.classUseThisCertificateButton = 'disabled';
-            } else if ($scope.privateKey === undefined || $scope.privateKey === '') {
-                $scope.classUseThisCertificateButton = 'disabled';
-            } else if ($scope.publicKeyCertificate === undefined || $scope.publicKeyCertificate === '') {
+        if ($scope.certificateTab === 'SSL') {
+            if ($scope.certificateRadioButton === 'existing') {
+                $scope.classUseThisCertificateButton = '';
+            } else {
+                if ($scope.newCertificateName === undefined || $scope.newCertificateName === '') {
+                    $scope.classUseThisCertificateButton = 'disabled';
+                } else if ($scope.privateKey === undefined || $scope.privateKey === '') {
+                    $scope.classUseThisCertificateButton = 'disabled';
+                } else if ($scope.publicKeyCertificate === undefined || $scope.publicKeyCertificate === '') {
+                    $scope.classUseThisCertificateButton = 'disabled';
+                } else {
+                    $scope.classUseThisCertificateButton = '';
+                }
+            }
+        } else if ($scope.certificateTab === 'BACKEND') {
+            if ($scope.backendCertificateArray.length === 0) {
                 $scope.classUseThisCertificateButton = 'disabled';
             } else {
                 $scope.classUseThisCertificateButton = '';
             }
+        } else {
+            $scope.classUseThisCertificateButton = 'disabled';
         }
     };
     $scope.checkAddBackendCertificateButtonCondition = function () {
