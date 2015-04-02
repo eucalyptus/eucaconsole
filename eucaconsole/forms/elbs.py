@@ -341,9 +341,15 @@ class CertificateForm(BaseSecureForm):
         self.conn = conn
         self.iam_conn = iam_conn
         self.elb_conn = elb_conn
+        self.set_error_messages()
         self.certificates.choices = self.get_all_server_certs(iam_conn=self.iam_conn)
         if len(self.certificates.choices) > 1:
             self.certificates.data = self.certificates.choices[0][0]
+
+    def set_error_messages(self):
+        self.certificate_name.error_msg = self.certificate_name_error_msg
+        self.private_key.error_msg = self.private_key_error_msg
+        self.public_key_certificate.error_msg = self.public_key_certificate_error_msg
 
     def get_all_server_certs(self,  iam_conn=None, add_blank=True):
         choices = []
