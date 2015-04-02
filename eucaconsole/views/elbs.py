@@ -302,6 +302,7 @@ class CreateELBView(BaseView):
                 '^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$',
             'is_vpc_supported': self.is_vpc_supported,
             'default_vpc_network': self.get_default_vpc_network(),
+            'availability_zone_choices': self.get_availability_zones(),
             'vpc_subnet_choices': self.get_vpc_subnets(),
             'securitygroups_json_endpoint': self.request.route_path('securitygroups_json'),
             'instances_json_endpoint': self.request.route_path('instances_json')
@@ -362,6 +363,15 @@ class CreateELBView(BaseView):
                         cidr_block=vpc_subnet.cidr_block,
                     ))
         return subnets
+
+    def get_availability_zones(self):
+        availability_zones = []
+        if self.ec2_conn:
+            with boto_error_handler(self.request):
+                zones = self.ec2_conn.get_all_zones()
+                for zone in zones:
+                    availability_zones.append(dict(id=zone.name, name=zone.name)) 
+        return availability_zones
 
     @view_config(route_name='elb_create', request_method='POST', renderer=TEMPLATE)
     def elb_create(self):

@@ -116,7 +116,7 @@
                                         <span class="helptext-icon" data-tooltip="" title="${create_form.add_availability_zones_help_text}">?</span>
                                     </label>
                                 </div>
-                                ${panel('form_field', field=create_form['zone'], leftcol_width=0, rightcol_width=12, ng_attrs={'model': 'availabilityZones'}, **avail_zones_attrs)}
+                                ${panel('form_field', field=create_form['zone'], leftcol_width=0, rightcol_width=12, ng_attrs={'model': 'availabilityZones', 'options': 'k as v for (k, v) in availabilityZoneChoices'}, **avail_zones_attrs)}
                             </div>
                             <div ng-cloak="true" ng-show="vpcNetwork === 'None'">
                                 ${structure:create_form.cross_zone_enabled(**{'ng-model': 'crossZoneEnabled'})}

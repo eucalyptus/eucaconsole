@@ -15,13 +15,14 @@ angular.module('EucaConsoleWizard').controller('ELBWizardCtrl', function ($scope
     $scope.vpcNetworkName = '';
     $scope.vpcSubnets = [];
     $scope.vpcSubnetNames = [];
-    $scope.vpcSubnetChoices = [];
+    $scope.vpcSubnetChoices = {};
     $scope.vpcSubnetList = [];
     $scope.securityGroups = [];
     $scope.securityGroupNames = [];
     $scope.securityGroupChoices = [];
     $scope.securityGroupCollection = []; 
     $scope.availabilityZones = [];
+    $scope.availabilityZoneChoices = {};
     $scope.instanceList = [];
     $scope.classNoInstanceWarningDiv = '';
     $scope.crossZoneEnabled = false;
@@ -70,6 +71,10 @@ angular.module('EucaConsoleWizard').controller('ELBWizardCtrl', function ($scope
         }
         if (options.hasOwnProperty('default_vpc_network')) {
             $scope.vpcNetwork = options.default_vpc_network;
+        }
+        if (options.hasOwnProperty('availability_zone_choices')) {
+            $scope.availabilityZoneList = options.availability_zone_choices;
+            $scope.updateAvailabilityZoneChoices();
         }
         if (options.hasOwnProperty('vpc_subnet_choices')) {
             $scope.vpcSubnetList = options.vpc_subnet_choices;
@@ -175,6 +180,7 @@ angular.module('EucaConsoleWizard').controller('ELBWizardCtrl', function ($scope
             if (oldValue.length > 0 && $scope.instanceList.length === 0 ) {
                 $scope.classNoInstanceWarningDiv = 'error';
             }
+            $scope.updateAvailabilityZoneChoices();
         }, true);
         $scope.$watch('pingProtocol', function (){
             $scope.updateDefaultPingProtocol();
@@ -315,6 +321,18 @@ angular.module('EucaConsoleWizard').controller('ELBWizardCtrl', function ($scope
         // Timeout is needed for chosen to react after Angular updates the options
         $timeout(function(){
             $('#securitygroup').trigger('chosen:updated');
+        }, 500);
+    };
+    $scope.updateAvailabilityZoneChoices = function () {
+        $scope.availabilityZoneChoices = {};
+        angular.forEach($scope.availabilityZoneList, function(zone){
+            var instanceCount = $scope.instanceList.length;
+            $scope.availabilityZoneChoices[zone.name] = zone.name +
+                ": " + instanceCount + " instances";
+        });
+        // Timeout is needed for chosen to react after Angular updates the options
+        $timeout(function(){
+            $('#zone').trigger('chosen:updated');
         }, 500);
     };
     $scope.updateVPCSubnetChoices = function () {
