@@ -314,7 +314,8 @@ class ELBInstancesFiltersForm(BaseSecureForm):
 
 class CertificateForm(BaseSecureForm):
     """Create SSL Certificate form"""
-    certificate_name_error_msg = _(u'Name must be between 1 and 255 characters long, and must not contain space')
+    certificate_name_error_msg = _(u'Name must be between 1 and 255 characters long, \
+        and must not contain space')
     certificate_name = wtforms.TextField(
         label=_(u'Certificate name'),
         validators=[validators.InputRequired(message=certificate_name_error_msg)],
@@ -369,10 +370,12 @@ class BackendCertificateForm(BaseSecureForm):
         and must not contain space')
     backend_certificate_name = wtforms.TextField(
         label=_(u'Certificate name'),
+        validators=[validators.InputRequired(message=backend_certificate_name_error_msg)],
     )
     backend_certificate_body_error_msg = _(u'Backend certificate body is required')
     backend_certificate_body = wtforms.TextAreaField(
         label=_(u'Body (pem encoded)'),
+        validators=[validators.InputRequired(message=backend_certificate_body_error_msg)],
     )
 
     def __init__(self, request, conn=None, iam_conn=None, elb_conn=None, **kwargs):
