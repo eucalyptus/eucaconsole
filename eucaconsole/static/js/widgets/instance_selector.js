@@ -32,6 +32,9 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                     if ($scope.instancesJsonEndpoint !== '') {
                         $scope.getAllInstanceList();
                     }
+                    // Workaround for the Bug in jQuery to prevent JS Uncaught TypeError
+                    // See http://stackoverflow.com/questions/27408501/ng-repeat-sorting-is-throwing-an-exception-in-jquery
+                    Object.getPrototypeOf(document.createComment('')).getAttribute = function() {};
                 };
                 $scope.setInitialValues = function (options) {
                     $scope.allInstanceList = [];

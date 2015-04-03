@@ -37,6 +37,9 @@ angular.module('EucaConsoleUtils').directive('elbListenerEditor', function() {
                 $scope.setInitialValues(options);
                 $scope.setWatcher();
                 $scope.setFocus();
+                // Workaround for the Bug in jQuery to prevent JS Uncaught TypeError
+                // See http://stackoverflow.com/questions/27408501/ng-repeat-sorting-is-throwing-an-exception-in-jquery
+                Object.getPrototypeOf(document.createComment('')).getAttribute = function() {};
             };
             $scope.setInitialValues = function (options) {
                 if ($('#elb-listener').length > 0) {
@@ -174,9 +177,6 @@ angular.module('EucaConsoleUtils').directive('elbListenerEditor', function() {
                 });
             };
             $scope.removeListener = function (index) {
-                // Workaround for the Bug in jQuery to prevent JS Uncaught TypeError
-                // See http://stackoverflow.com/questions/27408501/ng-repeat-sorting-is-throwing-an-exception-in-jquery
-                Object.getPrototypeOf(document.createComment('')).getAttribute = function() {};
                 $scope.listenerArray.splice(index, 1);
                 $scope.syncListeners();
                 $scope.$emit('listenerArrayUpdate');

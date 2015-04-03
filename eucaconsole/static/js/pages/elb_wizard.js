@@ -57,6 +57,9 @@ angular.module('EucaConsoleWizard').controller('ELBWizardCtrl', function ($scope
         $scope.setInitialValues(options);
         $scope.setWatcher();
         $scope.setFocus();
+        // Workaround for the Bug in jQuery to prevent JS Uncaught TypeError
+        // See http://stackoverflow.com/questions/27408501/ng-repeat-sorting-is-throwing-an-exception-in-jquery
+        Object.getPrototypeOf(document.createComment('')).getAttribute = function() {};
     };
     $scope.setInitialValues = function (options) {
         $scope.elbForm = $('#elb-form');
@@ -461,9 +464,6 @@ angular.module('EucaConsoleWizard').controller('ELBWizardCtrl', function ($scope
     };
     $scope.removeBackendCertificate = function ($event, index) {
         $event.preventDefault();
-        // Workaround for the Bug in jQuery to prevent JS Uncaught TypeError
-        // See http://stackoverflow.com/questions/27408501/ng-repeat-sorting-is-throwing-an-exception-in-jquery
-        Object.getPrototypeOf(document.createComment('')).getAttribute = function() {};
         $scope.backendCertificateArray.splice(index, 1);
     };
     $scope.setClassAddBackendCertificateButton = function () {
