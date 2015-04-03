@@ -21,7 +21,7 @@
     <metal:block metal:define-slot="head_css" />
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/modernizr/custom.modernizr.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/jquery.min.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular-sanitize.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/jquery.generateFile.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/notify.js')}"></script>
@@ -77,11 +77,6 @@
     <!-- Off Canvas Menu: Left -->
     <div class="left-off-canvas-menu">
         ${panel('top_nav', off_canvas=True)}
-    </div>
-
-    <!-- Dropdown Menu: Left -->
-    <div id="nav-drop" class="f-dropdown">
-        ${panel('top_nav', off_canvas=False)}
     </div>
 
     <!-- Off Canvas Menu: Right-->
