@@ -317,7 +317,7 @@
                     <div class="row">
                         <div class="small-4 columns"><label i18n:translate="" class="right">Instances:</label></div>
                         <div class="small-8 columns value">
-                            <div ng-repeat="instance in instanceList">{{ instance }}</div>
+                            <div ng-repeat="instance in instanceList">{{ instance.name }}</div>
                         </div>
                     </div>
                 </div>

@@ -330,7 +330,12 @@ angular.module('EucaConsoleWizard').controller('ELBWizardCtrl', function ($scope
     $scope.updateAvailabilityZoneChoices = function () {
         $scope.availabilityZoneChoices = {};
         angular.forEach($scope.availabilityZoneList, function(zone){
-            var instanceCount = $scope.instanceList.length;
+            var instanceCount = 0;
+            angular.forEach($scope.instanceList, function(instance) {
+                if (instance.placement === zone.name) {
+                    instanceCount += 1;
+                } 
+            });
             $scope.availabilityZoneChoices[zone.name] = zone.name +
                 ": " + instanceCount + " instances";
         });
@@ -343,7 +348,12 @@ angular.module('EucaConsoleWizard').controller('ELBWizardCtrl', function ($scope
         $scope.vpcSubnetChoices = {};
         angular.forEach($scope.vpcSubnetList, function(subnet){
             if (subnet.vpc_id === $scope.vpcNetwork) {
-                var instanceCount = $scope.instanceList.length;
+                var instanceCount = 0;
+                angular.forEach($scope.instanceList, function(instance) {
+                    if (instance.subnet_id === subnet.id) {
+                        instanceCount += 1;
+                    } 
+                });
                 $scope.vpcSubnetChoices[subnet.id] = 
                     subnet.cidr_block + ' (' + subnet.id + ') | ' + 
                     subnet.availability_zone + ": " + instanceCount + " instances";
