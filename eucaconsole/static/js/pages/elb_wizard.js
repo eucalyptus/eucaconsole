@@ -200,7 +200,7 @@ angular.module('EucaConsoleWizard').controller('ELBWizardCtrl', function ($scope
         });
         $scope.$watch('certificateTab', function () {
             $scope.adjustSelectCertificateModalTabDisplay();
-            $scope.setClassUseThisCertificateButton()
+            $scope.setClassUseThisCertificateButton();
         });
         $scope.$watch('certificateARN', function(){
             // Find the certficate name when selected on the select certificate dialog
@@ -217,16 +217,16 @@ angular.module('EucaConsoleWizard').controller('ELBWizardCtrl', function ($scope
             $scope.$broadcast('eventUpdateCertificateName', $scope.certificateName);
         });
         $scope.$watch('certificateRadioButton', function(){
-            $scope.setClassUseThisCertificateButton()
+            $scope.setClassUseThisCertificateButton();
         });
         $scope.$watch('newCertificateName', function(){
-            $scope.setClassUseThisCertificateButton()
+            $scope.setClassUseThisCertificateButton();
         });
         $scope.$watch('privateKey', function(){
-            $scope.setClassUseThisCertificateButton()
+            $scope.setClassUseThisCertificateButton();
         });
         $scope.$watch('publicKeyCertificate', function(){
-            $scope.setClassUseThisCertificateButton()
+            $scope.setClassUseThisCertificateButton();
         });
         $scope.$watch('backendCertificateName', function () {
             $scope.checkAddBackendCertificateButtonCondition(); 
@@ -237,7 +237,7 @@ angular.module('EucaConsoleWizard').controller('ELBWizardCtrl', function ($scope
         $scope.$watch('backendCertificateArray', function () {
             $scope.syncBackendCertificates();
             $scope.checkAddBackendCertificateButtonCondition(); 
-            $scope.setClassUseThisCertificateButton()
+            $scope.setClassUseThisCertificateButton();
         }, true);
         $scope.$watch('isBackendCertificateNotComplete', function () {
             $scope.setClassAddBackendCertificateButton();
