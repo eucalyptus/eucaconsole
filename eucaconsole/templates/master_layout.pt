@@ -21,7 +21,7 @@
     <metal:block metal:define-slot="head_css" />
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/modernizr/custom.modernizr.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/jquery.min.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular-sanitize.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/jquery.generateFile.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/notify.js')}"></script>
@@ -35,10 +35,6 @@
     <div id="logobar-wrapper">
         <nav id="logobar" class="row" metal:define-slot="logobar">
             <a class="left-off-canvas-toggle" id="offcanvas-icon"
-               tal:condition="request.user.is_authenticated()">
-               <i class="fi-list"></i>
-            </a>
-            <a id="dropdown-icon" data-dropdown="nav-drop"
                tal:condition="request.user.is_authenticated()">
                <i class="fi-list"></i>
             </a>

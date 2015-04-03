@@ -6,7 +6,11 @@
 
 (function($) {
     // Initialize all Zurb Foundation components
-    $(document).foundation();
+    $(document).foundation({
+        offcanvas : {
+            open_method: 'overlap_single', 
+        }
+    });
 
     $(document).ready(function () {
 

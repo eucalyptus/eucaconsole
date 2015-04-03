@@ -216,14 +216,6 @@ h1, h2, h3, h4, h5, h6 {
             font-size: 1.8rem;
         }
     }
-    #dropdown-icon {
-        left: -1000px;
-        display: none;
-        margin-right: 12px;
-        i {
-            font-size: 1.8rem;
-        }
-    }
 }
 
 // Nav bar styles
@@ -1087,17 +1079,7 @@ footer {
 }
 
 // Nav bar adjustments
-@media screen and (min-width: $euca-extrasmall-breakpoint) {
-    #logobar {
-        #dropdown-icon {
-            left: 0px;
-            display: inline-block !important;
-            margin-right: 12px;
-        }
-    }
-}
-
-@media screen and (max-width: $euca-extrasmall-breakpoint) {
+@media screen {
     #logobar {
         //border-bottom: 1px solid black;
         margin-top: 8px;
@@ -1144,6 +1126,10 @@ div.left-off-canvas-menu {
 }
 
 ul.off-canvas-list {
+    border-style: solid;
+    border-width: 0 1px 0 0;
+    border-color: $euca-grey;
+    padding-left: 0.5rem;
     li {
         label {
             background-color: white;

@@ -2734,8 +2734,6 @@ h1, h2, h3, h4, h5, h6 { font-family: Oswald, Helvetica, Arial, sans-serif; lett
 #logobar #region-dropdown li[data-selected] { display: none; }
 #logobar #offcanvas-icon { left: -1000px; display: none; margin-right: 12px; }
 #logobar #offcanvas-icon i { font-size: 1.8rem; }
-#logobar #dropdown-icon { left: -1000px; display: none; margin-right: 12px; }
-#logobar #dropdown-icon i { font-size: 1.8rem; }
 
 #navbar { border-top: 1px solid black; border-bottom: 1px solid black; }
 #navbar .top-bar-section ul li > a { font-family: Oswald, Helvetica, Arial, sans-serif; font-size: 1.2rem; padding-left: 14px; padding-right: 14px; }
@@ -2993,8 +2991,7 @@ footer .copyright { font-size: 0.9em; }
   #logobar #user-dropdown-section .dropdown { position: relative; width: 4rem; margin-right: 1rem; padding-right: 12px; }
   #logobar #user-dropdown-section .dropdown .aws.down-caret { position: absolute; top: 8px; right: 0; } }
 @media screen and (max-width: 640px) { #logo { width: 20px !important; } }
-@media screen and (min-width: 480px) { #logobar #dropdown-icon { left: 0px; display: inline-block !important; margin-right: 12px; } }
-@media screen and (max-width: 480px) { #logobar { margin-top: 8px; }
+@media screen { #logobar { margin-top: 8px; }
   #logobar .dropdown { position: relative; top: 4px; }
   #logobar #offcanvas-icon { left: 0px; display: inline-block !important; margin-right: 12px; }
   #logobar #user-dropdown-section { position: relative; left: -10px; }
@@ -3007,6 +3004,7 @@ a.lnk-dashboard { padding-left: 0.0rem !important; }
 
 div.left-off-canvas-menu { color: white; background-color: white; }
 
+ul.off-canvas-list { border-style: solid; border-width: 0 1px 0 0; border-color: #6a737b; padding-left: 0.5rem; }
 ul.off-canvas-list li label { background-color: white; color: #6a737b; padding-left: 0.5rem; border-top: 0; }
 ul.off-canvas-list li a { background-color: white; color: #6a737b; padding: 0.125rem; border-bottom: 0; }
 ul.off-canvas-list li a label { background-color: white; color: #6a737b; padding-left: 0.5rem; border-top: 0; }
