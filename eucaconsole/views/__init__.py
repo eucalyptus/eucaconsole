@@ -440,8 +440,8 @@ class BaseView(object):
 class TaggedItemView(BaseView):
     """Common view for items that have tags (e.g. security group)"""
 
-    def __init__(self, request):
-        super(TaggedItemView, self).__init__(request)
+    def __init__(self, request, **kwargs):
+        super(TaggedItemView, self).__init__(request, **kwargs)
         self.tagged_obj = None
         self.conn = None
 
