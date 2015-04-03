@@ -24,15 +24,15 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                 $scope.searchQueryURL = '';
                 $scope.searchFilter = '';
                 $scope.filterKeys = [];
-		$scope.initSelector = function () {
-		    var options = JSON.parse(eucaUnescapeJson($scope.option_json));
-		    $scope.setInitialValues(options);
-		    $scope.setWatcher();
-		    $scope.setFocus();
+                $scope.initSelector = function () {
+                    var options = JSON.parse(eucaUnescapeJson($scope.option_json));
+                    $scope.setInitialValues(options);
+                    $scope.setWatcher();
+                    $scope.setFocus();
                     if ($scope.instancesJsonEndpoint !== '') {
                         $scope.getAllInstanceList();
                     }
-		};
+                };
                 $scope.setInitialValues = function (options) {
                     $scope.allInstanceList = [];
                     $scope.instanceList = [];
@@ -50,13 +50,13 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                         $scope.instancesJsonEndpoint = options.instances_json_endpoint;
                     }
                     if (options.hasOwnProperty('all_instance_list')) {
-		        $scope.allInstanceList = options.allInstance_list;
+                        $scope.allInstanceList = options.allInstance_list;
                     }
-		};
-		$scope.setWatcher = function () {
-		    $scope.$watch('allInstanceList', function () {
+                };
+                $scope.setWatcher = function () {
+                    $scope.$watch('allInstanceList', function () {
                         $scope.updateInstanceList();
-		    }, true);
+                    }, true);
                     $scope.$watch('selectedInstanceList', function () {
                         // When selectedInstanceList is empty and the select all checkbox is clicked, clear the checkbox
                         if ($scope.selectedInstanceList.length === 0 && 
@@ -64,7 +64,7 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                             $('#instance-all-checkbox').prop('checked', false);
                         }
                         $scope.$emit('eventUpdateSelectedInstanceList', $scope.selectedInstanceList);
-		    }, true);
+                    }, true);
                     $scope.$on('eventQuerySearch', function ($event, query) {
                         $scope.searchQueryURL = '';
                         if (query.length > 0) {
@@ -126,8 +126,8 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                         $scope.vpcSubnets = vpcSubnets;
                         $scope.updateInstanceList();
                     });
-		};
-		$scope.setFocus = function () {
+                };
+                $scope.setFocus = function () {
                 };
                 $scope.getAllInstanceList = function () {
                     var csrf_token = $('#csrf_token').val();

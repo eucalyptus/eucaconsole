@@ -180,7 +180,11 @@ angular.module('EucaConsoleWizard').controller('ELBWizardCtrl', function ($scope
             if (oldValue.length > 0 && $scope.instanceList.length === 0 ) {
                 $scope.classNoInstanceWarningDiv = 'error';
             }
-            $scope.updateAvailabilityZoneChoices();
+            if ($scope.vpcNetwork !== 'None') { 
+                $scope.updateVPCSubnetChoices();
+            } else {
+                $scope.updateAvailabilityZoneChoices();
+            }
         }, true);
         $scope.$watch('pingProtocol', function (){
             $scope.updateDefaultPingProtocol();
@@ -337,16 +341,17 @@ angular.module('EucaConsoleWizard').controller('ELBWizardCtrl', function ($scope
     };
     $scope.updateVPCSubnetChoices = function () {
         $scope.vpcSubnetChoices = {};
-        $scope.vpcSubnets = [];
         angular.forEach($scope.vpcSubnetList, function(subnet){
             if (subnet.vpc_id === $scope.vpcNetwork) {
+                var instanceCount = $scope.instanceList.length;
                 $scope.vpcSubnetChoices[subnet.id] = 
                     subnet.cidr_block + ' (' + subnet.id + ') | ' + 
-                    subnet.availability_zone;
+                    subnet.availability_zone + ": " + instanceCount + " instances";
             }
         });
         if ($scope.vpcSubnetChoices.length === 0) {
             $scope.vpcSubnetChoices.None = $('#hidden_vpc_subnet_empty_option').text();
+            $scope.vpcSubnets = [];
             $scope.vpcSubnets.push('None');
         }
         // Timeout is needed for chosen to react after Angular updates the options
