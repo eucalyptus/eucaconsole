@@ -1,11 +1,11 @@
 <!-- top nav links (reused in off-canvas menu) -->
 <ul class="resources-nav left-align ${'off-canvas-list' if off_canvas else ''}" i18n:domain="eucaconsole">
     <li><a id="resource-menu-dashboard" class="lnk-dashboard"
-           href="${request.route_path('dashboard')}" i18n:translate="">Dashboard</a></li>
+           href="${request.route_path('dashboard')}" i18n:translate="">DASHBOARD</a></li>
     <li><a id="resource-menu-images" class="lnk-dashboard"
-           href="${request.route_path('images')}" i18n:translate="">Images</a></li>
-    <li class="has-dropdown">
-        <a id="resource-menu-instances" i18n:translate="">Instances</a>
+           href="${request.route_path('images')}" i18n:translate="">IMAGES</a></li>
+    <li class="has-dropdown" tal:condition="layout.account_access">
+        <a id="resource-menu-instances" i18n:translate="">INSTANCES</a>
         <ul class="dropdown">
             <li><a id="resource-menuitem-instances" i18n:translate=""
                    href="${request.route_path('instances')}">Instances</a></li>
@@ -15,15 +15,18 @@
             </li>
         </ul>
     </li>
+    <li tal:condition="not layout.account_access">
+        <a id="resource-menuitem-instances" i18n:translate="" href="${request.route_path('instances')}">INSTANCES</a>
+    </li>
     <li class="has-dropdown">
-        <a id="resource-menu-instances" i18n:translate="">CloudFormation</a>
+        <a id="resource-menu-instances" i18n:translate="">CLOUDFORMATION</a>
         <ul class="dropdown">
             <li><a id="resource-menuitem-instances" i18n:translate=""
                    href="${request.route_path('stacks')}">Stacks</a></li>
         </ul>
     </li>
     <li class="has-dropdown">
-        <a id="resource-menu-netsec" i18n:translate="">Network &amp; Security</a>
+        <a id="resource-menu-netsec" i18n:translate="">NETWORK &amp; SECURITY</a>
         <ul class="dropdown">
             <li><a id="resource-menuitem-eips" href="${request.route_path('ipaddresses')}" i18n:translate="">Elastic IPs</a></li>
             <li><a id="resource-menuitem-securitygroups" i18n:translate="" 
@@ -34,7 +37,7 @@
         </ul>
     </li>
     <li class="has-dropdown">
-        <a id="resource-menu-storage" i18n:translate="">Storage</a>
+        <a id="resource-menu-storage" i18n:translate="">STORAGE</a>
         <ul class="dropdown">
             <li><a id="resource-menuitem-volumes" href="${request.route_path('volumes')}" i18n:translate="">Volumes</a></li>
             <li><a id="resource-menuitem-snapshots" href="${request.route_path('snapshots')}" i18n:translate="">Snapshots</a></li>
@@ -42,7 +45,7 @@
         </ul>
     </li>
     <li class="has-dropdown">
-        <a id="resource-menu-autoscaling" i18n:translate="">Auto Scaling</a>
+        <a id="resource-menu-autoscaling" i18n:translate="">AUTO SCALING</a>
         <ul class="dropdown">
             <li><a id="resource-menuitem-scalinggroups" i18n:translate=""
                    href="${request.route_path('scalinggroups')}">Scaling Groups</a></li>
@@ -51,7 +54,7 @@
         </ul>
     </li>
     <li class="has-dropdown" tal:condition="layout.user_access or layout.group_access or layout.role_access">
-        <a id="resource-menu-iam" i18n:translate="">Identity &amp; Access</a>
+        <a id="resource-menu-iam" i18n:translate="">IDENTITY &amp; ACCESS</a>
         <ul class="dropdown">
             <li tal:condition="layout.account_access"><a id="resource-menuitem-users" href="${request.route_path('accounts')}" i18n:translate="">Accounts</a></li>
             <li tal:condition="layout.user_access"><a id="resource-menuitem-users" href="${request.route_path('users')}" i18n:translate="">Users</a></li>

@@ -61,6 +61,11 @@
                                 <span class="busy" ng-show="isTransitional()">&nbsp;</span>
                             </div>
                         </div>
+                        <div class="row readonly" ng-show="statusReason">
+                            <div class="small-2 columns"><label i18n:translate="" class="right">Status Reason</label></div>
+                            <div class="small-10 columns value">{{ stackReason }}</div>
+                        </div>
+                        <br/>
                     </div>
                     <hr/>
                     <div class="columns section">
@@ -88,21 +93,9 @@
                         <h6 i18n:translate="">Outputs</h6>
                         <div class="datagrid" id="datagrid-items">
                             <div ng-show="itemsLoading"><span class="busy"></span></div>
-                            <div id="tableview" class="gridwrapper" ng-show="!itemsLoading">
-                                <!-- Begin table view -->
-                                <table class="table" ng-show="!itemsLoading" ng-cloak="true">
-                                    <thead><tr>
-                                        <th i18n:translate="">KEY</th>
-                                        <th i18n:translate="">VALUE</th>
-                                    </tr></thead>
-                                    <tbody>
-                                        <tr ng-repeat="item in outputs | orderBy: sortBy:sortReverse" ng-cloak="true">
-                                            <td>{{ item.key }}</td>
-                                            <td>{{ item.value }}</td>
-                                        </tr>
-                                        <tr ng-show="!itemsLoading"></tr>
-                                    </tbody>
-                                </table>
+                            <div class="row readonly" ng-repeat="item in outputs | orderBy: sortBy:sortReverse" ng-cloak="true">
+                                <div class="small-2 columns"><label i18n:translate="" class="right">{{ item.key }}</label></div>
+                                <div class="small-10 columns value">{{ item.value }}</div>
                             </div>
                         </div>
                     </div>
@@ -118,7 +111,7 @@
                                         <th i18n:translate="">TYPE (LOGICAL ID)</th>
                                         <th i18n:translate="">PHYSICAL ID</th>
                                         <th i18n:translate="">STATUS</th>
-                                        <th i18n:translate="">TIME UPDATED</th>
+                                        <th i18n:translate="">STATUS REASON</th>
                                     </tr></thead>
                                     <tbody>
                                         <tr ng-repeat="item in resources | orderBy: sortBy:sortReverse" ng-cloak="true">
@@ -130,7 +123,9 @@
                                                 <a ng-href="{{ item.url }}">{{ item.physical_id }}</a>
                                             </td>
                                             <td><span class="label radius status {{ item.status }}">{{ item.status.replace('-', ' ').replace('-', ' ') }}</span></td>
-                                            <td>{{ item.updated_timestamp | date:'${layout.angular_date_format}' }}</td>
+                                            <td>
+                                                {{ item.status_reason }}
+                                            </td>
                                         </tr>
                                         <tr ng-show="!itemsLoading"></tr>
                                     </tbody>

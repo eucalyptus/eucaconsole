@@ -3002,9 +3002,9 @@ footer .copyright { font-size: 0.9em; }
 
 a.lnk-dashboard { padding-left: 0.0rem !important; }
 
-div.left-off-canvas-menu { color: white; background-color: white; }
+div.left-off-canvas-menu { color: white; background-color: white; border-style: solid; border-width: 0 1px 0 0; border-color: #6a737b; }
 
-ul.off-canvas-list { border-style: solid; border-width: 0 1px 0 0; border-color: #6a737b; padding-left: 0.5rem; }
+ul.off-canvas-list { padding-left: 0.5rem; }
 ul.off-canvas-list li label { background-color: white; color: #6a737b; padding-left: 0.5rem; border-top: 0; }
 ul.off-canvas-list li a { background-color: white; color: #6a737b; padding: 0.125rem; border-bottom: 0; }
 ul.off-canvas-list li a label { background-color: white; color: #6a737b; padding-left: 0.5rem; border-top: 0; }

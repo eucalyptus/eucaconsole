@@ -126,6 +126,14 @@ angular.module('StackPage', ['MagicSearch', 'EucaConsoleUtils'])
                     $scope.unfilteredEvents = results.events;
                     $scope.searchEvents();
                     $('#events-table').stickyTableHeaders();
+                    // look for first stack status and pull status reason
+                    var found = false;
+                    angular.forEach(results.events, function(value, key) {
+                        if (value.type == 'AWS::CloudFormation::Stack' && !found) {
+                            $scope.statusReason = value.status_reason;
+                            found = true;
+                        }
+                    }, found);
                 }
             });
         };
