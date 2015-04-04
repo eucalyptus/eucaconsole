@@ -66,7 +66,7 @@ class BucketMixin(object):
     def real_path(request):
         if len(request.subpath) == 0:
             return ''
-        path = request.environ['PATH_INFO']
+        path = request.environ['PATH_INFO'].decode('utf-8')
         path = path[path.index(request.subpath[0]):] if len(request.subpath) > 0 else ''
         return path
 
@@ -74,7 +74,7 @@ class BucketMixin(object):
         path = BucketMixin.real_path(self.request)
         subpath = []
         if path != '':
-            if path.endswith('/'): # and not path.endswith('//'):
+            if path.endswith('/'):  # and not path.endswith('//'):
                 path = path[:-1]
             subpath = path.split('/')
         return tuple(subpath)
@@ -594,7 +594,7 @@ class BucketContentsJsonView(BaseView, BucketMixin):
         return dict(results=items)
 
     def get_absolute_path(self, key_name):
-        key_name = urllib.quote(key_name, '')
+        key_name = urllib.quote(key_name.encode('utf-8'), '')
         # NOTE: Need to hard-code the path here due to escaped key name
         return u'/buckets/{0}/contents/{1}'.format(self.bucket_name, key_name)
 

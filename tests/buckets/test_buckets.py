@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2013-2014 Eucalyptus Systems, Inc.
 #
 # Redistribution and use of this software in source and binary forms,
@@ -27,6 +28,8 @@
 Tests for S3 buckets, objects, and related forms
 
 """
+import re
+
 import boto
 
 from boto.s3.acl import ACL, Policy
@@ -40,9 +43,11 @@ from pyramid.httpexceptions import HTTPNotFound, HTTPBadRequest
 
 from eucaconsole.forms.buckets import SharingPanelForm
 from eucaconsole.views.buckets import (
-    BucketContentsView, BucketContentsJsonView, BucketDetailsView, BucketItemDetailsView, BucketXHRView)
+    BucketContentsView, BucketContentsJsonView, BucketDetailsView, BucketItemDetailsView, BucketXHRView,
+    FOLDER_NAME_PATTERN
+)
 
-from tests import BaseFormTestCase, BaseViewTestCase
+from tests import BaseFormTestCase, BaseViewTestCase, BaseTestCase
 
 
 class MockBucketMixin(object):
@@ -223,3 +228,16 @@ class SharingPanelFormTestCase(BaseFormTestCase):
         self.assertEqual(permission_choices.get('FULL_CONTROL'), 'Full Control')
         self.assertEqual(permission_choices.get('READ'), 'Read-only')
         self.assertEqual(permission_choices.get('WRITE'), None)
+
+
+class CreateS3FolderTestCase(BaseTestCase):
+
+    def test_valid_s3_folder_names(self):
+        valid_pattern = FOLDER_NAME_PATTERN
+        matches = (
+            (u'folder123', True),
+            (u'folderÅ', True),
+            (u'folder/123', False),
+        )
+        for pattern, valid in matches:
+            self.assertEqual(bool(re.match(valid_pattern, pattern)), valid)
