@@ -127,13 +127,23 @@ angular.module('StackPage', ['MagicSearch', 'EucaConsoleUtils'])
                     $scope.searchEvents();
                     $('#events-table').stickyTableHeaders();
                     // look for first stack status and pull status reason
-                    var found = false;
-                    angular.forEach(results.events, function(value, key) {
-                        if (value.type == 'AWS::CloudFormation::Stack' && !found) {
-                            $scope.statusReason = value.status_reason;
-                            found = true;
+                    $timeout(function() {
+                        for (var i=0; i<results.events.length; i++) {
+                            if (results.events[i].type == 'AWS::CloudFormation::Stack') {
+                                $scope.statusReason = results.events[i].status_reason;
+                                break;
+                            }
                         }
-                    }, found);
+                    });
+                    // look for status for each resource and pull status reason
+                    angular.forEach($scope.resources, function(value, key) {
+                        for (var i=0; i<results.events.length; i++) {
+                            if (value.physical_id == results.events[i].physical_id) {
+                                value.status_reason = results.events.status_reason;
+                                break;
+                            }
+                        }
+                    });
                 }
             });
         };

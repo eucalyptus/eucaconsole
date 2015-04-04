@@ -63,7 +63,7 @@
                         </div>
                         <div class="row readonly" ng-show="statusReason">
                             <div class="small-2 columns"><label i18n:translate="" class="right">Status Reason</label></div>
-                            <div class="small-10 columns value">{{ stackReason }}</div>
+                            <div class="small-10 columns value">{{ statusReason }}</div>
                         </div>
                         <br/>
                     </div>
@@ -98,6 +98,7 @@
                                 <div class="small-10 columns value">{{ item.value }}</div>
                             </div>
                         </div>
+                        <br/>
                     </div>
                     <hr/>
                     <div class="columns section">
