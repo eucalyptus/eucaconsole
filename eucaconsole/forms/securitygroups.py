@@ -36,15 +36,21 @@ from . import BaseSecureForm, ChoicesManager, TextEscapedField, ASCII_WITHOUT_SL
 
 
 class SecurityGroupForm(BaseSecureForm):
-    """Security Group form
-       Note: no need to add a 'tags' field.  Use the tag_editor panel (in a template) instead
+    """Security Group create/edit form
+       Constraints for VPC security group name/desc: a-z, A-Z, 0-9, spaces, and ._-:/()#,@[]+=;{}!$*
+       See http://docs.aws.amazon.com/cli/latest/reference/ec2/create-security-group.html
     """
     name_error_msg = ASCII_WITHOUT_SLASHES_NOTICE
     name = wtforms.TextField(
         label=_(u'Name'),
         validators=[validators.DataRequired(message=name_error_msg)],
     )
-    desc_error_msg = _(u'Description is required')
+    sgroup_description_pattern = r'^[a-zA-Z0-9\s\._\-:\/\(\)#,@\[\]\+=;\{\}!\$\*]+$'
+    DESCRIPTION_RESTRICTION_NOTICE = _(
+        u'Description is required, must be between 1 and 255 characters, and may only contain '
+        u'letters, numbers, spaces, and the following characters:')
+    special_chars = u'._-:/()#,@[]+=;{}!$*'
+    desc_error_msg = u'{0} {1}'.format(DESCRIPTION_RESTRICTION_NOTICE, special_chars)
     description = wtforms.TextAreaField(
         label=_(u'Description'),
         validators=[
@@ -60,7 +66,6 @@ class SecurityGroupForm(BaseSecureForm):
         self.name.error_msg = self.name_error_msg  # Used for Foundation Abide error message
         self.description.error_msg = self.desc_error_msg  # Used for Foundation Abide error message
         self.vpc_choices_manager = ChoicesManager(conn=vpc_conn)
-        region = request.session.get('region')
         self.cloud_type = request.session.get('cloud_type', 'euca')
         from ..views import BaseView
         self.is_vpc_supported = BaseView.is_vpc_supported(request)
