@@ -104,8 +104,13 @@
                             <div class="row controls-wrapper" ng-repeat="item in parameters" ng-cloak="true">
                                 <div class="small-3 columns subheading">
                                     <label class="right">{{ item.name }}
-                                        <span class="helptext-icon" data-tooltip=""
-                                            ng-attr-title='{{ item.description }}'>?</span>
+                                        <!-- documenting here so it doesn't get lost -->
+                                        <!-- foundation need to be re-initilaized after params populated -->
+                                        <!-- when that happens we hit another bug with foundation tooltip where -->
+                                        <!-- all the tips get the same selector(class). Trying to use data-options -->
+                                        <!-- helps, but that's broken https://github.com/zurb/foundation/issues/6349 -->
+                                        <span class="helptext-icon" data-options="selector: param-tip{{$index}};"
+                                            ng-attr-title='{{item.description}}'>?</span>
                                     </label>
                                 </div>
                                 <div class="small-9 columns field">
