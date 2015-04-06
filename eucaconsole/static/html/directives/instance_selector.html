@@ -12,7 +12,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr ng-cloak="true" ng-repeat="instance in instanceList">
+                <tr ng-cloak="true" ng-repeat="instance in instanceList track by instance.id">
                     <td>
                         <input type="checkbox" name="instances" id="instance-checkbox-{{ instance.id }}" value="{{ instance.id }}" />
                     </td>
