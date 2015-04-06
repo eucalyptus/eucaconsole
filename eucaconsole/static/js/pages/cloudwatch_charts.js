@@ -49,13 +49,13 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
                     ;
                     chart.xScale(d3.time.scale());
                     chart.xAxis.tickFormat(function(d) {
-                        return d3.time.format('%m/%d %H:%M')(new Date(d));
+                        return d3.time.format('%m/%d %H:%M %p')(new Date(d));
                     });
                     if ($scope.unit === 'Percent') {
                         chart.forceY([0, 100]);  // Set proper y-axis range for percentage units
                     }
-                    if ($scope.metric === 'NetworkOut') {
-                        chart.forceY([0, 1000]);  // Prevent display of negative values on chart
+                    if ($scope.metric === 'NetworkIn' || $scope.metric === 'NetworkOut') {
+                        chart.forceY([0, 1000]);  // Anchor chart to zero baseline
                     }
                     chart.yAxis.axisLabel(unit).tickFormat(d3.format('.02f'));
                     d3.select('#' + $scope.elemId).datum(results).call(chart);

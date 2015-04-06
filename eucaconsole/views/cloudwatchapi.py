@@ -85,8 +85,11 @@ class CloudWatchAPIView(BaseView):
             dt_object = stat.get('Timestamp')
             if tz_offset:  # Convert to local time based on client offset
                 dt_object = dt_object - datetime.timedelta(minutes=tz_offset)
-            timestamp = time.mktime(dt_object.timetuple()) * 1000,  # Milliseconds since Unix epoch
-            json_stats.append(dict(x=timestamp, y=amount))
+            json_stats.append(dict(
+                # Note: time.mktime must be inline here to avoid chart tick formatting issues
+                x=time.mktime(dt_object.timetuple()) * 1000,  # Milliseconds since Unix epoch
+                y=amount
+            ))
         return dict(
             unit=unit,
             results=[dict(key=metric, values=json_stats)],
