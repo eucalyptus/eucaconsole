@@ -36,7 +36,6 @@ angular.module('EucaConsoleUtils').directive('elbListenerEditor', function() {
                 var options = JSON.parse(eucaUnescapeJson($scope.option_json));
                 $scope.setInitialValues(options);
                 $scope.setWatcher();
-                $scope.setFocus();
                 // Workaround for the Bug in jQuery to prevent JS Uncaught TypeError
                 // See http://stackoverflow.com/questions/27408501/ng-repeat-sorting-is-throwing-an-exception-in-jquery
                 Object.getPrototypeOf(document.createComment('')).getAttribute = function() {};
@@ -115,8 +114,6 @@ angular.module('EucaConsoleUtils').directive('elbListenerEditor', function() {
                 $scope.$on('eventUpdateCertificateName', function ($event, name) {
                     $scope.serverCertificateName = name;
                 });
-            };
-            $scope.setFocus = function () {
             };
             // In case of the duplicated listener, add the 'disabled' class to the button
             $scope.setAddListenerButtonClass = function () {
