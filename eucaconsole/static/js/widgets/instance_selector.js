@@ -166,6 +166,11 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                         }
                     });
                     $scope.updateSelectedInstanceList();
+                    // Update the instance checkboxes to ensure the checked values are matched
+                    // timeout is needed for the table's display update to complete
+                    $timeout(function() {
+                        $scope.matchInstanceCheckboxes();
+                    });
                 };
                 // Only keep the selected instances that are in the current instanceList
                 $scope.updateSelectedInstanceList = function () {
