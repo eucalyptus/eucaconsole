@@ -13,7 +13,9 @@
             </thead>
             <tbody>
                 <tr ng-cloak="true" ng-repeat="instance in instanceList">
-                    <td><input type="checkbox" name="instances" value="{{ instance.id }}" /></td>
+                    <td>
+                        <input type="checkbox" name="instances" id="instance-checkbox-{{ instance.id }}" value="{{ instance.id }}" />
+                    </td>
                     <td><span id="instance-name-{{ instance.id }}" class="id breakword">{{ instance.name }}</span></td>
                     <td><span class="">{{ instance.tags }}</span></td>
                     <td><span class="">{{ instance.placement }}</span></td>

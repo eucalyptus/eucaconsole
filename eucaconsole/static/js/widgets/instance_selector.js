@@ -28,7 +28,6 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                     var options = JSON.parse(eucaUnescapeJson($scope.option_json));
                     $scope.setInitialValues(options);
                     $scope.setWatcher();
-                    $scope.setFocus();
                     if ($scope.instancesJsonEndpoint !== '') {
                         $scope.getAllInstanceList();
                     }
@@ -61,11 +60,11 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                         $scope.updateInstanceList();
                     }, true);
                     $scope.$watch('selectedInstanceList', function () {
-                        // When selectedInstanceList is empty and the select all checkbox is clicked, clear the checkbox
-                        if ($scope.selectedInstanceList.length === 0 && 
-                            $('#instance-all-checkbox').prop('checked') === true) {
-                            $('#instance-all-checkbox').prop('checked', false);
-                        }
+                        // Timeout is needed for the ng-repeat's table to update
+                        $timeout(function() {
+                            $scope.checkInstanceAllCheckbox();
+                            $scope.matchInstanceCheckboxes();
+                        });
                         $scope.$emit('eventUpdateSelectedInstanceList', $scope.selectedInstanceList);
                     }, true);
                     $scope.$on('eventQuerySearch', function ($event, query) {
@@ -132,8 +131,6 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                         $scope.vpcSubnets = vpcSubnets;
                         $scope.updateInstanceList();
                     });
-                };
-                $scope.setFocus = function () {
                 };
                 $scope.getAllInstanceList = function () {
                     var csrf_token = $('#csrf_token').val();
@@ -215,6 +212,22 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                     });
                     // Update the items[] with the filtered items
                     $scope.instanceList = filteredItems;
+                };
+                $scope.checkInstanceAllCheckbox = function () {
+                    // When selectedInstanceList is empty and the select all checkbox is clicked, clear the checkbox
+                    if ($scope.selectedInstanceList.length === 0 && 
+                        $('#instance-all-checkbox').prop('checked') === true) {
+                        $('#instance-all-checkbox').prop('checked', false);
+                    }
+                };
+                $scope.matchInstanceCheckboxes = function () {
+                    // Ensure that the selectedInstanceList's items are checked when the table updates
+                    angular.forEach($scope.selectedInstanceList, function(instance) {
+                        var checkbox = $('#instance-checkbox-' + instance.id);
+                        if (checkbox.length > 0 && checkbox.prop("checked") === false){
+                            checkbox.prop("checked", true);
+                        }
+                    });
                 };
                 $scope.initSelector();
             }
