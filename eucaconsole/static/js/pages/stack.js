@@ -8,10 +8,11 @@ angular.module('StackPage', ['MagicSearch', 'EucaConsoleUtils'])
     .controller('StackPageCtrl', function ($scope, $http, $timeout, eucaUnescapeJson) {
         $scope.stackStatusEndpoint = '';
         $scope.stackTemplateEndpoint = '';
-        $scope.transitionalStates = ['create-in-progress', 'rollback-in-progress', 'delete-in-progress'];
+        $scope.transitionalStates = ['Create-in-progress', 'Rollback-in-progress', 'Delete-in-progress'];
         $scope.stackStatus = '';
         $scope.templateLoading = true;
         $scope.eventsLoading = true;
+        $scope.resources = [];
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.stack_name = optionsJson.stack_name;
@@ -101,8 +102,10 @@ angular.module('StackPage', ['MagicSearch', 'EucaConsoleUtils'])
                     if ($scope.isTransitional()) {
                         $scope.isUpdating = true;
                         $timeout(function() {$scope.getStackState();}, 4000);  // Poll every 4 seconds
+                        $scope.getStackEvents();
                     } else {
                         $scope.isUpdating = false;
+                        $scope.updateStatusReasons();
                     }
                 }
             });
@@ -123,27 +126,36 @@ angular.module('StackPage', ['MagicSearch', 'EucaConsoleUtils'])
                 var results = oData ? oData.results : '';
                 $scope.eventsLoading = false;
                 if (results) {
+                    for (var i=0; i<results.events.length; i++) {
+                        results.events[i].status_reason = '';
+                    }
                     $scope.unfilteredEvents = results.events;
                     $scope.searchEvents();
                     $('#events-table').stickyTableHeaders();
-                    // look for first stack status and pull status reason
-                    $timeout(function() {
-                        for (var i=0; i<results.events.length; i++) {
-                            if (results.events[i].type == 'AWS::CloudFormation::Stack') {
-                                $scope.statusReason = results.events[i].status_reason;
-                                break;
-                            }
-                        }
-                    });
-                    // look for status for each resource and pull status reason
-                    angular.forEach($scope.resources, function(value, key) {
-                        for (var i=0; i<results.events.length; i++) {
-                            if (value.physical_id == results.events[i].physical_id) {
-                                value.status_reason = results.events.status_reason;
-                                break;
-                            }
-                        }
-                    });
+                    $scope.updateStatusReasons();
+                }
+            });
+        };
+        $scope.updateStatusReasons = function() {
+            if ($scope.unfilteredEvents === undefined) {
+                return;
+            }
+            // look for first stack status and pull status reason
+            $timeout(function() {
+                for (var i=0; i<$scope.unfilteredEvents.length; i++) {
+                    if ($scope.unfilteredEvents[i].type == 'AWS::CloudFormation::Stack') {
+                        $scope.statusReason = $scope.unfilteredEvents[i].status_reason;
+                        break;
+                    }
+                }
+            });
+            // look for status for each resource and pull status reason
+            angular.forEach($scope.resources, function(value, key) {
+                for (var i=0; i<$scope.unfilteredEvents.length; i++) {
+                    if (value.physical_id == $scope.unfilteredEvents[i].physical_id) {
+                        value.status_reason = $scope.unfilteredEvents[i].status_reason;
+                        break;
+                    }
                 }
             });
         };
