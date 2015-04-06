@@ -38,10 +38,6 @@
                tal:condition="request.user.is_authenticated()">
                <i class="fi-list"></i>
             </a>
-            <a id="dropdown-icon" data-dropdown="nav-drop"
-               tal:condition="request.user.is_authenticated()">
-               <i class="fi-list"></i>
-            </a>
             <a href="${layout.home_url}" title="${layout.site_title}">
                 <span class="product-name">HP Helion Eucalyptus</span>
             </a>
@@ -81,11 +77,6 @@
     <!-- Off Canvas Menu: Left -->
     <div class="left-off-canvas-menu">
         ${panel('top_nav', off_canvas=True)}
-    </div>
-
-    <!-- Dropdown Menu: Left -->
-    <div id="nav-drop" class="f-dropdown">
-        ${panel('top_nav', off_canvas=False)}
     </div>
 
     <!-- Off Canvas Menu: Right-->
