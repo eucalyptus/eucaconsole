@@ -370,7 +370,7 @@ class CreateELBView(BaseView):
             with boto_error_handler(self.request):
                 zones = self.ec2_conn.get_all_zones()
                 for zone in zones:
-                    availability_zones.append(dict(id=zone.name, name=zone.name)) 
+                    availability_zones.append(dict(id=zone.name, name=zone.name))
         return availability_zones
 
     @view_config(route_name='elb_create', request_method='POST', renderer=TEMPLATE)
@@ -391,17 +391,6 @@ class CreateELBView(BaseView):
             cross_zone_enabled = self.request.params.get('cross_zone_enabled') or False
             instances = self.request.params.getall('instances') or None
             backend_certificates = self.request.params.get('backend_certificates') or None
-            print name
-            print elb_listener
-            print certificate_arn
-            print listeners_args
-            print vpc_network
-            print vpc_subnet
-            print securitygroup
-            print zone
-            print cross_zone_enabled
-            print instances
-            print backend_certificates
             with boto_error_handler(self.request, self.request.route_path('elbs')):
                 self.log_request(_(u"Creating elastic load balancer {0}").format(name))
                 if vpc_subnet is None:
@@ -417,8 +406,6 @@ class CreateELBView(BaseView):
                 self.elb_conn.register_instances(name, instances)
                 if cross_zone_enabled == 'y':
                     self.elb_conn.modify_lb_attribute(name, 'crossZoneLoadBalancing', True)
-                # TEMP
-                # if 1 == 1:
                 if backend_certificates is not None and backend_certificates != '[]':
                     self.handle_backend_certificate_create(name)
                 prefix = _(u'Successfully created elastic load balancer')
@@ -445,10 +432,6 @@ class CreateELBView(BaseView):
                 listeners_args.append((from_port, to_port, from_protocol, to_protocol, certificate_arn))
             else:
                 listeners_args.append((from_port, to_port, from_protocol, to_protocol))
-
-        # TEMP
-        # listeners_args.append((8888, 443, 'HTTP', 'HTTPS'))
-
         return listeners_args
 
     def handle_configure_health_check(self, name):
@@ -480,7 +463,8 @@ class CreateELBView(BaseView):
             certificate_chain = self.request.params.get('certificate_chain') or None
             with boto_error_handler(self.request):
                 certificate_result = self.iam_conn.upload_server_cert(certificate_name, public_key_certificate,
-                                                                      private_key, cert_chain=certificate_chain, path=None)
+                                                                      private_key, cert_chain=certificate_chain,
+                                                                      path=None)
                 prefix = _(u'Successfully uploaded server certificate')
                 msg = u'{0} {1}'.format(prefix, certificate_name)
                 certificate_arn = certificate_result.upload_server_certificate_result.server_certificate_metadata.arn
@@ -495,10 +479,6 @@ class CreateELBView(BaseView):
         public_policy_attributes = dict()
         public_policy_type = u'PublicKeyPolicyType'
         backend_policy_type = u'BackendServerAuthenticationPolicyType'
-
-        # TEMP
-        # backend_certificates = [{"name":"test-backend-pubkey-0001","certificateBody":"-----BEGIN CERTIFICATE-----\nMIIDNDCCAhygAwIBAgIGIPPz3M6BMA0GCSqGSIb3DQEBDQUAMEExCzAJBgNVBAYT\nAlVTMQ0wCwYDVQQKEwRVc2VyMRMwEQYDVQQLEwpFdWNhbHlwdHVzMQ4wDAYDVQQD\nEwVhZG1pbjAeFw0xNDA0MTAxOTIwMjJaFw0xOTA0MTAxOTIwMjJaMEExCzAJBgNV\nBAYTAlVTMQ0wCwYDVQQKEwRVc2VyMRMwEQYDVQQLEwpFdWNhbHlwdHVzMQ4wDAYD\nVQQDEwVhZG1pbjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALutKPbt\nDhEQVRw1ZIgaOiA1BdYFssQ9bnhEfC7Lq68hK42lH+K1Rmr/803nuhktITVMvb7R\njFxkYXDi1BZtjgMssWm3K8UegyQb098uScYixK7M/g60/SSbzS2b6ga2Tc4aLg9B\n+YT5d1llqB/W4t19NkqB2ncuk7weB+UYh2PNOHGh+/haLz9/vHOIRerRMyd77q1W\nCQ24HDA/j3sXaNLS/cTe2iVJZWdpb9V57ivVlh+J4ZZqq2mBYCIVwA660/clqJcT\nLu7OsQ4eUHTEEpaUF8EQYMFm4FXNwxLZd7nBdBA97Ip2prvkIrW7WsWXrf0oH6If\nq4ZuDhuTThkGcI8CAwEAAaMyMDAwDwYDVR0TAQH/BAUwAwEB/zAdBgNVHQ4EFgQU\n4UfCYeA290g+BSzSvavJhv7CU6wwDQYJKoZIhvcNAQENBQADggEBAFghqNx0YSIA\nwZad3vaEkCVDmgOyL0m4NyJU0uAl+rtFKuR1fv0lIR22zLG5Pw6UH/7fS1TBw7Kc\nCiDF+eYfkKM9e7mf45iukIF1GuTRXcKFk9Nop0Il0bi9Jas+vhidlVyO7VjHbicW\nIcCFXiOx5KDA9yhKiHGBU6SGxQUdijE+S2+XsvtOqNGGezzFCc/colQXXyOdxvM2\njLVUgVctURXeDJsKuO1Drq0Iy5opTc2XE0WzZ4AxVAuC5UdYIfJ1XzjRRqDIf5+r\n2n1Mf5mLBmhzSXpd6cdDiK7YNt1uGK4ydOt/z2FYLBl9cVJoWG5zRMbJuiFdwIlw\nhW/GWUvLKJQ=\n-----END CERTIFICATE-----","$$hashKey":"object:43"},{"name":"test-backend-pubkey-0002","certificateBody":"-----BEGIN CERTIFICATE-----\nMIIDNDCCAhygAwIBAgIGIPPz3M6BMA0GCSqGSIb3DQEBDQUAMEExCzAJBgNVBAYT\nAlVTMQ0wCwYDVQQKEwRVc2VyMRMwEQYDVQQLEwpFdWNhbHlwdHVzMQ4wDAYDVQQD\nEwVhZG1pbjAeFw0xNDA0MTAxOTIwMjJaFw0xOTA0MTAxOTIwMjJaMEExCzAJBgNV\nBAYTAlVTMQ0wCwYDVQQKEwRVc2VyMRMwEQYDVQQLEwpFdWNhbHlwdHVzMQ4wDAYD\nVQQDEwVhZG1pbjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALutKPbt\nDhEQVRw1ZIgaOiA1BdYFssQ9bnhEfC7Lq68hK42lH+K1Rmr/803nuhktITVMvb7R\njFxkYXDi1BZtjgMssWm3K8UegyQb098uScYixK7M/g60/SSbzS2b6ga2Tc4aLg9B\n+YT5d1llqB/W4t19NkqB2ncuk7weB+UYh2PNOHGh+/haLz9/vHOIRerRMyd77q1W\nCQ24HDA/j3sXaNLS/cTe2iVJZWdpb9V57ivVlh+J4ZZqq2mBYCIVwA660/clqJcT\nLu7OsQ4eUHTEEpaUF8EQYMFm4FXNwxLZd7nBdBA97Ip2prvkIrW7WsWXrf0oH6If\nq4ZuDhuTThkGcI8CAwEAAaMyMDAwDwYDVR0TAQH/BAUwAwEB/zAdBgNVHQ4EFgQU\n4UfCYeA290g+BSzSvavJhv7CU6wwDQYJKoZIhvcNAQENBQADggEBAFghqNx0YSIA\nwZad3vaEkCVDmgOyL0m4NyJU0uAl+rtFKuR1fv0lIR22zLG5Pw6UH/7fS1TBw7Kc\nCiDF+eYfkKM9e7mf45iukIF1GuTRXcKFk9Nop0Il0bi9Jas+vhidlVyO7VjHbicW\nIcCFXiOx5KDA9yhKiHGBU6SGxQUdijE+S2+XsvtOqNGGezzFCc/colQXXyOdxvM2\njLVUgVctURXeDJsKuO1Drq0Iy5opTc2XE0WzZ4AxVAuC5UdYIfJ1XzjRRqDIf5+r\n2n1Mf5mLBmhzSXpd6cdDiK7YNt1uGK4ydOt/z2FYLBl9cVJoWG5zRMbJuiFdwIlw\nhW/GWUvLKJQ=\n-----END CERTIFICATE-----","$$hashKey":"object:45"},{"name":"test-backend-pubkey-0003","certificateBody":"-----BEGIN CERTIFICATE-----\nMIIDNDCCAhygAwIBAgIGIPPz3M6BMA0GCSqGSIb3DQEBDQUAMEExCzAJBgNVBAYT\nAlVTMQ0wCwYDVQQKEwRVc2VyMRMwEQYDVQQLEwpFdWNhbHlwdHVzMQ4wDAYDVQQD\nEwVhZG1pbjAeFw0xNDA0MTAxOTIwMjJaFw0xOTA0MTAxOTIwMjJaMEExCzAJBgNV\nBAYTAlVTMQ0wCwYDVQQKEwRVc2VyMRMwEQYDVQQLEwpFdWNhbHlwdHVzMQ4wDAYD\nVQQDEwVhZG1pbjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALutKPbt\nDhEQVRw1ZIgaOiA1BdYFssQ9bnhEfC7Lq68hK42lH+K1Rmr/803nuhktITVMvb7R\njFxkYXDi1BZtjgMssWm3K8UegyQb098uScYixK7M/g60/SSbzS2b6ga2Tc4aLg9B\n+YT5d1llqB/W4t19NkqB2ncuk7weB+UYh2PNOHGh+/haLz9/vHOIRerRMyd77q1W\nCQ24HDA/j3sXaNLS/cTe2iVJZWdpb9V57ivVlh+J4ZZqq2mBYCIVwA660/clqJcT\nLu7OsQ4eUHTEEpaUF8EQYMFm4FXNwxLZd7nBdBA97Ip2prvkIrW7WsWXrf0oH6If\nq4ZuDhuTThkGcI8CAwEAAaMyMDAwDwYDVR0TAQH/BAUwAwEB/zAdBgNVHQ4EFgQU\n4UfCYeA290g+BSzSvavJhv7CU6wwDQYJKoZIhvcNAQENBQADggEBAFghqNx0YSIA\nwZad3vaEkCVDmgOyL0m4NyJU0uAl+rtFKuR1fv0lIR22zLG5Pw6UH/7fS1TBw7Kc\nCiDF+eYfkKM9e7mf45iukIF1GuTRXcKFk9Nop0Il0bi9Jas+vhidlVyO7VjHbicW\nIcCFXiOx5KDA9yhKiHGBU6SGxQUdijE+S2+XsvtOqNGGezzFCc/colQXXyOdxvM2\njLVUgVctURXeDJsKuO1Drq0Iy5opTc2XE0WzZ4AxVAuC5UdYIfJ1XzjRRqDIf5+r\n2n1Mf5mLBmhzSXpd6cdDiK7YNt1uGK4ydOt/z2FYLBl9cVJoWG5zRMbJuiFdwIlw\nhW/GWUvLKJQ=\n-----END CERTIFICATE-----"}]
-
         backend_policy_name = u'BackendPolicy-{0}'.format(elb_name)
         backend_policy_params = {'LoadBalancerName': elb_name,
                                  'PolicyName': backend_policy_name,
