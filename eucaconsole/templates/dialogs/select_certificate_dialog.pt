@@ -22,7 +22,7 @@
         <div ng-show="certificateTab === 'BACKEND'">
             <p>Including back-end certificates ensures that your instances accept only encrypted communication from trusted sources. Back-end certificates are optional.</p>
             <form method="post" data-abide="abide" id="backend-certificate-form">
-                 ${structure:backend_certificate_form['csrf_token']}
+                ${structure:backend_certificate_form['csrf_token']}
                 <div>
                     <label>Back-end certificates</label>
                     <div>
@@ -35,7 +35,6 @@
                         </span>
                     </div>
                 </div>
-                <div>&nbsp;</div>
                 <div>
                     <label>Add a certificate:</label>
                     <div>

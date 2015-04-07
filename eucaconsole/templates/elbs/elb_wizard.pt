@@ -112,7 +112,8 @@
                                     <label>
                                         <span i18n:translate="">
                                             Add availability zones
-                                        </span>&nbsp;
+                                        </span>
+                                        &nbsp;
                                         <span class="helptext-icon" data-tooltip="" title="${create_form.add_availability_zones_help_text}">?</span>
                                     </label>
                                 </div>
@@ -195,7 +196,6 @@
                                 <span i18n:translate="">Your load balancer will monitor the health of its instances based on the following health check.</span>
                                 <span i18n:translate="">Instances that fail the health check will be removed from the load balancer.</span>
                             </div>
-                            <div>&nbsp;</div>
                             <div ng-cloak="true">
                                 <label i18n:translate="">Ping settings</label>
                                 <div class="">
@@ -216,7 +216,6 @@
                                         &nbsp;<span i18n:translate="">Advanced</span>
                                     </a>
                                 </div>
-                                <div>&nbsp;</div>
                                 <div class="section columns" ng-show="expanded">
                                     <div ng-cloak="true">
                                         <label i18n:translate="">Timing settings</label>
