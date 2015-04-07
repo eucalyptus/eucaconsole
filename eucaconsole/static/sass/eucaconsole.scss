@@ -1120,6 +1120,7 @@ a.lnk-dashboard {
 
 // Off-canvas Nav adjustments
 div.left-off-canvas-menu {
+    z-index: 999999 !important;
     color: white;
     background-color: white;
     border-style: solid;
@@ -1139,7 +1140,7 @@ ul.off-canvas-list {
         a {
             background-color: white;
             color: $euca-grey;
-            padding: 0.125rem;
+            padding: 0.5rem;
             border-bottom: 0;
             label {
                 background-color: white;
