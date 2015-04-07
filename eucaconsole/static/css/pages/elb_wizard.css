@@ -24,11 +24,11 @@
 .wizard .chosen-container-multi .chosen-choices li.search-field input.default { color: #333; font-size: 14px; font-family: Lato, Helvetica, Arial, sans-serif; margin-left: 3px; }
 
 .summary { background-color: white; position: relative; top: 2px; padding: 8px; padding-bottom: 2rem; margin-bottom: 1rem; }
-.summary label { position: relative; right: -1rem; color: #6a737b; font-weight: bold; margin-bottom: 2px; margin-top: 4px; }
-.summary .value { word-break: break-all; }
+.summary label { position: relative; right: -1rem; color: #6a737b; font-weight: bold; margin-top: 4px; }
+.summary .value { word-break: break-all; line-height: 1rem; }
 .summary .row { margin-bottom: 5px; }
-.summary .title { font-weight: bold; border-bottom: 1px solid #03405f; margin-top: 7px; margin-bottom: 1rem; }
-.summary .section { padding: 0.5rem 0; border-bottom: 1px solid #cccccc; }
+.summary .title { font-weight: bold; border-bottom: 1px solid #03405f; margin-top: 7px; margin-bottom: 0.25rem; }
+.summary .section { padding: 0.5rem 0; border-bottom: 1px solid #ccc; }
 .summary .section:last-child { border-bottom: none; }
 .summary #tag-preview { word-break: break-all; }
 
@@ -40,9 +40,15 @@
 /* Extra small screen (< 481px) */
 @media screen and (max-width: 560px) { dl.tabs a b { display: none; } }
 /* @section Elasitc Load Balancer Wizard styles */
+form .section-label { margin-top: 4px; margin-bottom: 6px; }
+
 #elb-form input.name { width: 100px; margin-right: 8px; margin-bottom: 4px; padding: 4px; }
 #elb-form input[type="number"] { width: 100px; }
 #elb-form select.ip-protocol { width: 100px; }
 #elb-form select.ping-delay { width: 120px; }
 #elb-form select.ping-threshold { width: 100px; }
 #elb-form table { margin-left: auto; margin-right: auto; }
+
+#backend-certificate-form .item-list { margin-bottom: 6px; }
+#backend-certificate-form .item-list .item { color: #333; background-color: #e6e7e8; margin-right: 8px; }
+#backend-certificate-form .item-list .item a { color: white; }

@@ -7,6 +7,13 @@
 
 /* @section Elasitc Load Balancer Wizard styles */
 
+form {
+    .section-label {
+        margin-top: 4px;
+        margin-bottom: 6px;
+    }
+}
+
 #elb-form {
     input.name {
         width: 100px;
@@ -30,4 +37,8 @@
         margin-left: auto;
         margin-right: auto;
     }
+}
+
+#backend-certificate-form {
+    @include item-list;
 }
