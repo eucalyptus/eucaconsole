@@ -234,6 +234,7 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
                 fd.append('template-file', file);
             }
             $scope.loading = true;
+            $scope.description = undefined;
             $http.post($scope.stackTemplateEndpoint, fd, {
                     headers: {'Content-Type': undefined},
                     transformRequest: angular.identity

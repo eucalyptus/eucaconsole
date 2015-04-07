@@ -61,8 +61,9 @@
                                     <input type="radio" id="inputtype" name="inputtype" value="sample" ng-model="inputtype"/>
                                     <label i18n:translate="">Use sample template</label>
                                     <div id="sample-template-div" ng-show="inputtype=='sample'">
-                                        <select chosen="" id="sample-template" name="sample-template" ng-model="templateSample">
-                                            <option value="" i18n:translate="">Select a template</option>
+                                        <select chosen="" id="sample-template" name="sample-template"
+                                            ng-model="templateSample" i18n:translate="placeholder"
+                                            placeholder="Select a template">
                                             <optgroup tal:repeat="group create_form['sample_template'].choices" label="${group[0]}">
                                                 <option tal:repeat="name group[1]">${name[0]}</option>
                                             </optgroup>
