@@ -42,7 +42,7 @@
                         <div class="content" ng-class="stepClasses[0]" id="step1"
                             tal:define="html_attrs_val {'pattern': '^[a-zA-Z0-9\-]{1,255}$'};">
                             <div ng-cloak="true">
-                                <label>General</label>
+                                <label class="section-label" i18n:translate="">General</label>
                                 ${panel('form_field', field=create_form['name'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'elbName'}, **html_attrs_val)}
                             </div>
                             <div>
@@ -79,7 +79,7 @@
                         <div class="content" ng-class="stepClasses[1]" id="step2"
                             tal:define="security_group_attrs {'data-placeholder': security_group_placeholder_text};">
                             <div ng-cloak="true">
-                                <label>Network</label>
+                                <label class="section-label" i18n:translate="">Network</label>
                                 ${panel('form_field', field=create_form['vpc_network'], ng_attrs={'model': 'vpcNetwork'}, leftcol_width=4, rightcol_width=8)}
                             </div>
                             <div ng-cloak="true" ng-show="vpcNetwork !== 'None'">
@@ -227,7 +227,7 @@
                                         </div>
                                     </div>
                                     <div ng-cloak="true">
-                                        <label>Instance thresholds</label>
+                                        <label class="section-label" i18n:translate="">Instance thresholds</label>
                                         <div class="">
                                             ${panel('form_field', field=create_form['failures_until_unhealthy'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'failuresUntilUnhealthy'}, **ping_threshold_attrs)}
                                         </div>
