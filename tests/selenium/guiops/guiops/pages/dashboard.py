@@ -1,26 +1,28 @@
 from guiops.pages.basepage import BasePage
-from guiops.utilities import Utilities
+
+class Dashboard(BasePage):
+
+        _launch_instance_button_css='#item-dropdown_instances-running+div+div>a'
+        _keypairs_icon_css='#key-pairs > div.tile > div.content > a > i.icon'
+        _create_keypair_link_css='#item-dropdown_key-pairs+div+div>a'
+
+        def __init__(self, tester):
+            """
+            :type tester: GuiTester
+            :param tester:
+            """
+            self.tester = tester
+
+        def verify_dashboard_loaded(self):
+            self.tester.wait_for_visible_by_css_selector(self._launch_instance_button_css)
+
+        def from_dashboard_goto_keypairs_lp_via_icon(self):
+            self.tester.click_on_visible_by_css_selector(self._keypairs_icon_css)
+
+        def click_create_keypair_link_from_dashboard(self):
+            self.tester.click_on_visible_by_css_selector(Dashboard._create_keypair_link_css)
 
 
-class Dashboard (BasePage):
-
-        _launch_instance_button_xpath='//div[@id="running"]/div[2]/a'
-
-        _keypairs_icon_xpath='//ul[@id="item-dropdown_key-pairs"]/../div/a/'
-        _create_keypair_link_xpath='//ul[@id="item-dropdown_key-pairs"]/../div[2]/a'
-
-
-
-class DashboardTests(Utilities):
-
-        def test_verify_dashnoard_loaded(self):
-            self.wait_for_visible("XPATH",Dashboard._launch_instance_button_xpath)
-
-        def test_from_dashboard_goto_keypairs_lp_via_icon(self):
-            self.click_on_visible("XPATH", Dashboard._keypairs_icon_xpath)
-
-        def test_call_create_keypair_dialog_from_dashboard(self):
-            self.click_on_visible("XPATH",Dashboard._create_keypair_link_xpath)
 
 
 

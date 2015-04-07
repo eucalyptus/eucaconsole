@@ -1,19 +1,17 @@
-from guiops.pages.loginpage import LoginPage, LoginTests
-from guiops.pages.basepage import BasePage, LogoutTests
+
 from guiops.pages.dashboard import Dashboard
-from guiops.utilities import Utilities, Config
-from guiops.guitester import GuiTestCase
+from guiops.utilities import Utilities
+from guiops.guitester.guitester import GuiTester
 
 class Test_login(Utilities):
 
 
-   # def setup(self):
-   #     self.tester = Utilities()
+    def setup(self):
+        self.tester = GuiTester()
 
     def test_euca_login(self):
-        LoginTests().test_euca_login()
-
-        LogoutTests().test_euca_logout()
+        self.tester.login()
+        self.tester.logout()
 
 
 if __name__ == "__main__":

@@ -1,7 +1,6 @@
 import unittest
 from guiops.utilities import Utilities
 from guiops.pages.dashboard import Dashboard
-from guiops.tests.login import LoginTest
 
 class DashboardTests(Utilities):
 

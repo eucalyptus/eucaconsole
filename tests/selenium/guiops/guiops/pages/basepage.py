@@ -2,7 +2,7 @@ from guiops.utilities import Utilities
 
 
 
-class BasePage():
+class BasePage(Utilities):
 
 
     _euca_logo_id="logo"
@@ -29,6 +29,7 @@ class BasePage():
     _groups_menuitem_id="resource-menuitem-groups"
     _roles_menuitem_id="resource-menuitem-roles"
     _hamburger_menu_xpath='//nav[@ id="logobar"]/a/'
+    _notification_id="notifications"
 
 
 
@@ -47,13 +48,11 @@ class BasePage():
         self.tester.click_on_visible("XPATH",BasePage._user_dropdown_xpath)
         self.tester.click_on_visible("ID", BasePage._user_logout_id)
 
-class NavBarTests(Utilities):
+    def from_dashboard_goto_keypairs_lp_via_nav_bar(self):
+            self.tester.click_on_visible("ID",BasePage._network_sec_nav_bar_menu_id)
+            self.tester.click_on_visible("ID",BasePage._keypair_menuitem_id)
 
-    def test_from_dashboard_goto_keypairs_lp_via_nav_bar(self):
-            self.click_on_visible("ID",BasePage._network_sec_nav_bar_menu_id)
-            self.click_on_visible("ID",BasePage._keypair_menuitem_id)
-
-    def test_goto_dashboard(self):
-            self.click_on_visible("XPATH",BasePage._dashboard_nav_bar_button_id)
+    def click_nav_bar_dashboard_link(self):
+            self.tester.click_on_visible("XPATH",BasePage._dashboard_nav_bar_button_id)
 
 

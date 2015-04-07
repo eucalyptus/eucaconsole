@@ -21,7 +21,7 @@ class LoginPage(BasePage):
         self.tester.send_keys_by_id(LoginPage._eucalyptus_username_field_id,self.tester.user)
         self.tester.send_keys_by_id(LoginPage._eucalyptus_password_field_id,self.tester.password)
         self.tester.click_on_visible("ID", LoginPage._eucalyptus_login_button_id)
-        self.tester.verify_visible_element_by_xpath(Dashboard._launch_instance_button_xpath)
+
 
 
 

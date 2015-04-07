@@ -1,6 +1,5 @@
 from selenium import webdriver
 from selenium import selenium
-from guiops.guitester import Config
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
 from selenium.common.exceptions import NoSuchElementException
@@ -10,7 +9,7 @@ from selenium.webdriver.support import expected_conditions as EC # available sin
 import unittest, time, re
 
 
-retry = 400
+
 
 class UICheckException(Exception):
     def __init__(self, message):
@@ -20,10 +19,13 @@ class UICheckException(Exception):
 class Utilities():
 
     def __init__(self,driver):
+        """
+
+        :param driver: webdriver
+        """
+        assert isinstance(driver, webdriver.Firefox)
         self.driver = driver
-        self.driver.implicitly_wait(Config.implicit_wait)
-        self.driver.maximize_window()
-        self.driver.get(Config.console_url)
+
 
 
     retry = 400
@@ -34,7 +36,8 @@ class Utilities():
    # def setSeleniumWebDriver(self, driver):
    #     self.driver = RemoteWebdriver()
    #     return 0
-
+    def setUp(self):
+        self.verificationErrors = []
 
     def is_element_present(self, how, what):
         try:
@@ -43,9 +46,32 @@ class Utilities():
             return False
         return True
 
+    def wait_for_visible_by_id(self, element_id):
+        is_visible = False
+        for i in range(self.retry):
+            is_visible = self.driver.find_element_by_id(element_id).is_displayed()
+            if is_visible is True:
+                print "Element " + element_id + " is visible"
+                break
+            time.sleep(1)
 
+    def wait_for_visible_by_css_selector(self, css_selector):
+        is_visible = False
+        for i in range(self.retry):
+            is_visible = self.driver.find_element_by_css_selector(css_selector).is_displayed()
+            if is_visible is True:
+                print "Element " + css_selector + " is visible"
+                break
+            time.sleep(1)
 
-
+    def wait_for_visible_by_xpath(self, xpath):
+        is_visible = False
+        for i in range(self.retry):
+            is_visible = self.driver.find_element_by_xpath(xpath).is_displayed()
+            if is_visible is True:
+                print "Element " + xpath + " is visible"
+                break
+            time.sleep(1)
 
     def wait_for_visible(self, element_type, element):
         """
@@ -79,6 +105,18 @@ class Utilities():
             print "Element " + element + " is NOT visible!"
 
         return is_visible
+
+
+    def click_on_visible_by_id(self, element_id):
+        self.wait_for_visible_by_id(element_id)
+        self.click_element_by_id(element_id)
+
+    def click_on_visible_by_css_selector(self,css_selector):
+        self.wait_for_visible_by_css_selector(css_selector)
+        self.click_element_by_css_selector(css_selector)
+
+
+
 
     def click_on_visible(self, element_type, element):
         self.wait_for_visible(element_type, element)
@@ -170,7 +208,7 @@ class Utilities():
         elif element_type is "NAME":
             this_element_type = By.NAME
 
-        for i in range(1, self.trials, 1):
+        for i in range(1, self.retry, 1):
             print "Wait On Removal:: Trial: " + str(i) + " Element Type: " + element_type + ", Element: " + element
             try:
                 self.driver.find_element(this_element_type, element)
@@ -183,7 +221,7 @@ class Utilities():
 
     def verify_text_not_present_by_css(self, locator, text):
         print"Verifying that text displayed at " + locator + " does not match " + text
-        for i in range(1, self.trials, 1):
+        for i in range(1, self.retry, 1):
             displayed = self.store_text_by_css_selector(locator)
             print "Currently displayed at locator " + locator + " is " + displayed
             if displayed != text:
@@ -195,7 +233,7 @@ class Utilities():
 
     def verify_text_not_present_by_id(self, locator, text):
         print"Verifying that text displayed at " + locator + " does not match " + text
-        for i in range(1, self.trials, 1):
+        for i in range(1, self.retry, 1):
             if self.store_text_by_id(locator) != text:
                 print "Verified " + self.store_text_by_id(locator) + " does not match " + text
                 return True
@@ -205,7 +243,7 @@ class Utilities():
 
     def verify_text_not_present_by_name(self, locator, text):
         print"Verifying that text displayed at " + locator + " does not match " + text
-        for i in range(1, self.trials, 1):
+        for i in range(1, self.retry, 1):
             if self.store_text_by_name(locator) != text:
                 print "Verified " + self.store_text_by_name(locator) + " does not match " + text
                 return True
@@ -215,7 +253,7 @@ class Utilities():
 
     def verify_text_not_present_by_xpath(self, locator, text):
         print"Verifying that text displayed at " + locator + " does not match " + text
-        for i in range(1, self.trials, 1):
+        for i in range(1, self.retry, 1):
             text_on_page = self.store_text_by_xpath(locator)
             time.sleep(10)
             if text_on_page != text:
@@ -234,19 +272,12 @@ class Utilities():
             try:
                 if element_text == self.driver.find_element_by_id(element_id).text:
                     print"Found text"
+                    displayed_text = self.driver.find_element_by_id(element_id).text
+                    print("Text displayed at ID " + element_id + " is " + displayed_text)
                     break
             except:
                 pass
             time.sleep(1)
-        else:
-            self.fail("time out")
-        try:
-            self.assertEqual(element_text, self.driver.find_element_by_id(element_id).text)
-        except AssertionError as e:
-            self.verificationErrors.append(str(e))
-
-        displayed_text = self.driver.find_element_by_id(element_id).text
-        print("Text displayed at ID " + element_id + " is " + displayed_text)
 
     def verify_text_displayed_by_css(self, element_css, element_text):
         #print("Verifying text " +element_text+" displayed at ID "+element_css)
@@ -259,10 +290,8 @@ class Utilities():
             except:
                 pass
             time.sleep(1)
-        else:
-            self.fail("time out")
         try:
-            self.assertEqual(element_text, self.driver.find_element_by_css_selector(element_css).text)
+            self.driver.find_element_by_css_selector(element_css).text
         except AssertionError as e:
             self.verificationErrors.append(str(e))
 
@@ -283,10 +312,9 @@ class Utilities():
             except:
                 pass
             time.sleep(1)
-        else:
-            self.fail("time out")
         try:
-            self.assertEqual(element_text, displayed_text)
+            text_on_page = self.store_text_by_xpath(locator)
+            element_text == text_on_page
         except AssertionError as e:
             self.verificationErrors.append(str(e))
 
