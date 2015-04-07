@@ -388,7 +388,12 @@ angular.module('EucaConsoleWizard').controller('ELBWizardCtrl', function ($scope
     $scope.updateVPCSubnetNames = function () {
         $scope.vpcSubnetNames = [];
         angular.forEach($scope.vpcSubnets, function (vpcSubnet) {
-            $scope.vpcSubnetNames.push($scope.vpcSubnetChoices[vpcSubnet]);
+            angular.forEach($scope.vpcSubnetList, function (subnet) {
+                if (subnet.id === vpcSubnet) {
+                    var vpcSubnetName =  subnet.cidr_block + ' (' + subnet.id + ') | ' + subnet.availability_zone;
+                    $scope.vpcSubnetNames.push(vpcSubnetName);
+                }
+            });
         });
     };
     $scope.updateDefaultPingProtocol = function () {
@@ -397,6 +402,17 @@ angular.module('EucaConsoleWizard').controller('ELBWizardCtrl', function ($scope
         } else if ($scope.pingProtocol === 'HTTPS' || $scope.pingProtocol === 'SSL' ) {
            $scope.pingPort = 443;
         }
+    };
+    $scope.getInstanceCount = function (type, group) {
+        var count = 0;
+        angular.forEach($scope.instanceList, function (instance) {
+            if (type === 'ZONE' && instance.placement === group) {
+                count += 1;
+            } else if (type === 'SUBNET' && instance.subnet_id === group) {
+                count += 1;
+            }
+        });
+        return count;
     };
     $scope.openSelectCertificateModal = function () {
         var modal = $('#select-certificate-modal');

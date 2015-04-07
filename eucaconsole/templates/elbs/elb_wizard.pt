@@ -303,21 +303,31 @@
                             <div ng-repeat="zone in availabilityZones">{{ zone }}</div>
                         </div>
                     </div>
-                    <div class="row" ng-show="crossZoneEnabled === true">
-                        <label i18n:translate="">Cross Zone Load Balancing</label>
-                        <div class="columns value">{{ crossZoneEnabled }}</div>
-                    </div>
                     <div class="row" ng-show="vpcNetwork !== 'None'">
                         <label i18n:translate="">VPC Subnets</label>
                         <div class="columns value">
                             <div ng-repeat="vpcSubnetName in vpcSubnetNames">{{ vpcSubnetName }}</div>
                         </div>
                     </div>
-                    <div class="row">
-                        <label i18n:translate="">Instances</label>
+                </div>
+                <div class="section" ng-show="summaryDisplays[2]">
+                    <div class="row" ng-show="vpcNetwork === 'None'">
                         <div class="columns value">
-                            <div ng-repeat="instance in instanceList">{{ instance.name }}</div>
+                            <div ng-repeat="zone in availabilityZones">
+                                {{ getInstanceCount('ZONE', zone) }} instances in zone {{ zone }}
+                            </div>
                         </div>
+                    </div>
+                    <div class="row" ng-show="vpcNetwork !== 'None'">
+                        <div class="columns value">
+                            <div ng-repeat="vpcSubnet in vpcSubnets">
+                                {{ getInstanceCount('SUBNET', vpcSubnet) }} instances in {{ vpcSubnet }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" ng-show="crossZoneEnabled === true">
+                        <label i18n:translate="">Cross Zone Load Balancing</label>
+                        <div class="columns value">{{ crossZoneEnabled }}</div>
                     </div>
                 </div>
                 <div class="section" ng-show="summaryDisplays[3]">
