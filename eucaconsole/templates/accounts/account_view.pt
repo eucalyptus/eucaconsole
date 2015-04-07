@@ -30,7 +30,7 @@
                 <em>${account.account_name}</em>
             </metal:block>
         </h3>
-        <div class="large-8 columns">
+        <div class="large-12 columns">
             <dl class="tabs">
                 <dd class="active"><a href="#general-tab" ng-click="clickTab($event, 'general-tab')" i18n:translate="">General</a></dd>
                 <dd ng-cloak="" ng-show="userName != 'admin'"><a href="#quotas-tab" ng-click="clickTab($event, 'quotas-tab')" i18n:translate="">Quotas</a></dd>
@@ -138,7 +138,7 @@
                 </div>
             </div>
         </div>
-        <div class="large-4 columns">
+        <div class="large-12 columns">
             <metal:block metal:use-macro="layout.global_macros['help_expando']" />
             <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                 <!--! Help goes here -->

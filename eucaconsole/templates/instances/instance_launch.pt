@@ -209,6 +209,13 @@
                     </div>
                     <div class="clearfix">&nbsp;</div>
                 </form>
+                <div class="">
+                    <metal:block metal:use-macro="layout.global_macros['help_expando']" />
+                    <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
+                        <!-- HELP CONTENT -->
+                        <div id="help-html-console_create_instances" ng-include="'${layout.help_path('console_create_instances.html')}'"></div> 
+                    </div>
+                </div>
             </div>
         </div>
         <div class="large-4 columns" ng-cloak="">
@@ -297,13 +304,6 @@
                             <i class="fi-check"></i> Uses private addressing
                         </div>
                     </div>
-                </div>
-            </div>
-            <div class="">
-                <metal:block metal:use-macro="layout.global_macros['help_expando']" />
-                <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
-                    <!-- HELP CONTENT -->
-                    <div id="help-html-console_create_instances" ng-include="'${layout.help_path('console_create_instances.html')}'"></div> 
                 </div>
             </div>
         </div>
