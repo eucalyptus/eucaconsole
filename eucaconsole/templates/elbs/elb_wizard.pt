@@ -193,8 +193,8 @@
                                         ping_delay_attrs {'class': 'ping-delay'};
                                         ping_threshold_attrs {'class': 'ping-threshold'};">
                             <div ng-cloak="true">
-                                <span i18n:translate="">Your load balancer will monitor the health of its instances based on the following health check.</span>
-                                <span i18n:translate="">Instances that fail the health check will be removed from the load balancer.</span>
+                                <div i18n:translate="">Your load balancer will monitor the health of its instances based on the following health check.</div>
+                                <div i18n:translate="">Instances that fail the health check will be removed from the load balancer.</div>
                             </div>
                             <div ng-cloak="true">
                                 <label class="section-label" i18n:translate="">Ping settings</label>
