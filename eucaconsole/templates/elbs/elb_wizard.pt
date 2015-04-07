@@ -266,12 +266,12 @@
                 <h5 i18n:translate="" class="title">Summary</h5>
                 <div class="section" ng-show="summaryDisplays[0]">
                     <div class="row">
-                        <div class="small-4 columns"><label i18n:translate="" class="right">Name:</label></div>
-                        <div class="small-8 columns value">{{ elbName }}</div>
+                        <label i18n:translate="">Name</label>
+                        <div class="columns value">{{ elbName }}</div>
                     </div>
                     <div class="row">
-                        <div class="small-4 columns"><label i18n:translate="" class="right">Listeners:</label></div>
-                        <div class="small-8 columns value">
+                        <label i18n:translate="">Listeners</label>
+                        <div class="columns value">
                             <div class="" ng-repeat="listener in listenerArray">
                                 <div>
                                     {{ listener.fromProtocol.toUpperCase() }} ({{ listener.fromPort }}) - 
@@ -286,51 +286,51 @@
                 </div>
                 <div class="section" ng-show="summaryDisplays[1]">
                     <div class="row">
-                        <div class="small-4 columns"><label i18n:translate="" class="right">VPC Network:</label></div>
-                        <div class="small-8 columns value">{{ vpcNetworkName }}</div>
+                        <label i18n:translate="">VPC Network</label>
+                        <div class="columns value">{{ vpcNetworkName }}</div>
                     </div>
                     <div class="row" ng-show="vpcNetwork !== 'None'">
-                        <div class="small-4 columns"><label i18n:translate="" class="right">Security Groups:</label></div>
-                        <div class="small-8 columns value">
+                        <label i18n:translate="">Security Groups</label>
+                        <div class="columns value">
                             <div ng-repeat="securityGroupName in securityGroupNames">{{ securityGroupName }}</div>
                         </div>
                     </div>
                 </div>
                 <div class="section" ng-show="summaryDisplays[2]">
                     <div class="row" ng-show="vpcNetwork === 'None'">
-                        <div class="small-4 columns"><label i18n:translate="" class="right">Availability Zones:</label></div>
-                        <div class="small-8 columns value">
+                        <label i18n:translate="">Availability Zones</label>
+                        <div class="columns value">
                             <div ng-repeat="zone in availabilityZones">{{ zone }}</div>
                         </div>
                     </div>
                     <div class="row" ng-show="crossZoneEnabled === true">
-                        <div class="small-4 columns"><label i18n:translate="" class="right">Cross Zone Load Balancing:</label></div>
-                        <div class="small-8 columns value">{{ crossZoneEnabled }}</div>
+                        <label i18n:translate="">Cross Zone Load Balancing</label>
+                        <div class="columns value">{{ crossZoneEnabled }}</div>
                     </div>
                     <div class="row" ng-show="vpcNetwork !== 'None'">
-                        <div class="small-4 columns"><label i18n:translate="" class="right">VPC Subnets:</label></div>
-                        <div class="small-8 columns value">
+                        <label i18n:translate="">VPC Subnets</label>
+                        <div class="columns value">
                             <div ng-repeat="vpcSubnetName in vpcSubnetNames">{{ vpcSubnetName }}</div>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="small-4 columns"><label i18n:translate="" class="right">Instances:</label></div>
-                        <div class="small-8 columns value">
+                        <label i18n:translate="">Instances</label>
+                        <div class="columns value">
                             <div ng-repeat="instance in instanceList">{{ instance.name }}</div>
                         </div>
                     </div>
                 </div>
                 <div class="section" ng-show="summaryDisplays[3]">
                     <div class="row">
-                        <div class="small-4 columns"><label i18n:translate="" class="right">Protocol:</label></div>
+                        <label i18n:translate="">Protocol</label>
                         <div class="small-8 columns value">{{ pingProtocol }}</div>
                     </div>
                     <div class="row">
-                        <div class="small-4 columns"><label i18n:translate="" class="right">Port:</label></div>
+                        <label i18n:translate="">Port</label>
                         <div class="small-8 columns value">{{ pingPort }}</div>
                     </div>
                     <div class="row" ng-show="pingProtocol === 'HTTP' || pingProtocol === 'HTTPS'">
-                        <div class="small-4 columns"><label i18n:translate="" class="right">Path:</label></div>
+                        <label i18n:translate="">Path</label>
                         <div class="small-8 columns value">{{ pingPath }}</div>
                     </div>
                 </div>
