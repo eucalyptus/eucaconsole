@@ -85,6 +85,15 @@ form .row.controls-wrapper {
 
 // Instance monitoring page
 // TODO: Move this somewhere more reusable
+.cloudwatch-charts {
+    .toprow {
+        @include flexbox-mixin;
+        .actions {
+            display: inline-block;
+        }
+    }
+}
+
 .chart-wrapper {
     margin-bottom: 1.5rem;
     h6 {
@@ -112,7 +121,7 @@ form .row.controls-wrapper {
 }
 
 #userdatalabel {
-    right: 0px;
+    right: 0;
 }
 
 #userdata {

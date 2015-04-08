@@ -496,6 +496,20 @@ textarea.policy-area {
     }
 }
 
+// Three vertical dot drop-downs
+.vdots {
+    display: inline-block;
+    font-size: 1.4rem;
+    color: $euca-green;
+    padding-right: 0.5rem;
+    padding-left: 0.5rem;
+    &.dropdown {
+        &:hover {
+            cursor: pointer;
+        }
+    }
+}
+
 
 /* -----------------------------------------
    Tag editor

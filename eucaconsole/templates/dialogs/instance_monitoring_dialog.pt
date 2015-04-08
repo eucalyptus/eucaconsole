@@ -1,0 +1,33 @@
+<!--! Modal dialog for Instance Monitoring page -->
+<div tal:omit-tag="" i18n:domain="eucaconsole">
+    <div id="instance-monitoring-modal" class="reveal-modal small" data-reveal=""
+         tal:define="monitoring_state instance.monitoring_state">
+        <h3>
+            <span i18n:translate="" tal:condition="monitoring_state == 'enabled'">Disable</span>
+            <span i18n:translate="" tal:condition="monitoring_state != 'enabled'">Enable</span>
+            <span i18n:translate="">monitoring</span>
+        </h3>
+        <p>
+            <span i18n:translate="">Are you sure you want to</span>
+            <span i18n:translate="" tal:condition="monitoring_state == 'enabled'">disable</span>
+            <span i18n:translate="" tal:condition="monitoring_state != 'enabled'">enable</span>
+            <span i18n:translate="">monitoring for instance</span>
+            <span>${instance.id}</span><span i18n:translate="">?</span>
+        </p>
+        <form method="post" id="monitoring-form" action="${request.route_path('instance_monitoring_update', id=instance.id)}">
+            ${structure:monitoring_form['csrf_token']}
+            <div class="dialog-submit-button">
+                <button type="submit" id="reboot_instance_submit_button" class="button expand">
+                    <span i18n:translate="">Yes,</span>
+                    <span i18n:translate="" tal:condition="monitoring_state == 'enabled'">disable</span>
+                    <span i18n:translate="" tal:condition="monitoring_state != 'enabled'">enable</span>
+                    <span i18n:translate="">monitoring</span>
+                </button>
+            </div>
+            <div class="dialog-progress-display hide">
+                <span i18n:translate="">Sending request </span>&nbsp;<em><span class="busy">&nbsp;</span></em>
+            </div>
+        </form>
+        <a href="#" id="update-monitoring-close-link" class="close-reveal-modal">&#215;</a>
+    </div>
+</div>

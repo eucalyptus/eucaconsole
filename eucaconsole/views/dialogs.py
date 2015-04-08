@@ -66,7 +66,9 @@ def ipaddress_dialogs(context, request, eip=None, landingpage=False,
 def snapshot_dialogs(context, request, snapshot=None, snapshot_name=None, landingpage=False, volume_id=None,
                      delete_form=None, register_form=None):
     """Modal dialogs for Snapshot landing and detail page."""
-    snapshot_image_name_validation_error_msg = _(u"AMI names must be between 3 and 128 characters long, and may contain letters, numbers, \'(\', \')\', \'.\', \'-\', \'/\' and \'_\', and cannot contain spaces.")
+    snapshot_image_name_validation_error_msg = _(
+        u"AMI names must be between 3 and 128 characters long, and may contain letters, numbers, "
+        u"\'(\', \')\', \'.\', \'-\', \'/\' and \'_\', and cannot contain spaces.")
     return dict(
         snapshot=snapshot,
         snapshot_name=snapshot_name,
@@ -80,7 +82,8 @@ def snapshot_dialogs(context, request, snapshot=None, snapshot_name=None, landin
 
 @panel_config('instance_dialogs', renderer='../templates/dialogs/instance_dialogs.pt')
 def instance_dialogs(context, request, instance=None, instance_name=None, landingpage=False, start_form=None,
-                     stop_form=None, reboot_form=None, terminate_form=None, associate_ip_form=None, disassociate_ip_form=None):
+                     stop_form=None, reboot_form=None, terminate_form=None, associate_ip_form=None,
+                     disassociate_ip_form=None):
     """Modal dialogs for Instance landing and detail page."""
     return dict(
         instance=instance,
@@ -124,7 +127,7 @@ def volume_dialogs(context, request, volume=None, volume_name=None, instance_nam
 
 @panel_config('user_dialogs', renderer='../templates/dialogs/user_dialogs.pt')
 def user_dialogs(context, request, user=None, user_name=None, landingpage=False,
-                   disable_form=None, enable_form=None, delete_form=None):
+                 disable_form=None, enable_form=None, delete_form=None):
     """Modal dialogs for User landing and detail page."""
     return dict(
         user=user,
@@ -305,3 +308,11 @@ def create_folder_dialog(context, request, bucket_name=None, create_folder_form=
         folder_name_pattern=FOLDER_NAME_PATTERN,
     )
 
+
+@panel_config('instance_monitoring_dialog', renderer='../templates/dialogs/instance_monitoring_dialog.pt')
+def instance_monitoring_dialog(context, request, instance=None, monitoring_form=None):
+    """ Modal dialog creating a folder in a bucket."""
+    return dict(
+        instance=instance,
+        monitoring_form=monitoring_form,
+    )

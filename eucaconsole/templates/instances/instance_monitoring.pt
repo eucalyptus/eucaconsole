@@ -25,10 +25,25 @@
                 <dd><a href="${request.route_path('instance_volumes', id=instance.id)}" i18n:translate="">Volumes</a></dd>
                 <dd class="active"><a i18n:translate="">Monitoring</a></dd>
             </dl>
-            <div class="panel no-title" ng-app="CloudWatchCharts">
-                <p i18n:translate="">
-                    Displaying statistics for the past hour.
-                </p>
+            <div class="panel no-title cloudwatch-charts" ng-app="CloudWatchCharts">
+                <div class="toprow">
+                    <div class="blurb">
+                        <span i18n:translate="">Displaying statistics for the past</span> hour.
+                    </div>
+                    <div class="actions">
+                        <span id="enable-monitoring-icon" class="vdots dropdown"
+                              data-dropdown="enable-monitoring-dropdown"><i class="fa fa-ellipsis-v"></i></span>
+                        <ul id="enable-monitoring-dropdown" class="f-dropdown" data-dropdown-content="">
+                            <li>
+                                <a href="" data-reveal-id="instance-monitoring-modal">
+                                    <span i18n:translate="">Turn monitoring</span>
+                                    <span i18n:translate="" tal:condition="monitoring_state == 'enabled'">off</span>
+                                    <span i18n:translate="" tal:condition="monitoring_state != 'enabled'">on</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
                 <div class="row">
                     <div class="medium-6 columns">
                         <div class="chart-wrapper">
@@ -56,6 +71,8 @@
                 </div>
             </div>
         </div>
+        <!--! Enable/disable monitoring dialog -->
+        ${panel('instance_monitoring_dialog', instance=instance, monitoring_form=monitoring_form)}
     </div>
 </div>
 

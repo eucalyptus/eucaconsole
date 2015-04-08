@@ -48,7 +48,7 @@ from ..forms.images import ImagesFiltersForm
 from ..forms.instances import (
     InstanceForm, AttachVolumeForm, DetachVolumeForm, LaunchInstanceForm, LaunchMoreInstancesForm,
     RebootInstanceForm, StartInstanceForm, StopInstanceForm, TerminateInstanceForm, InstanceCreateImageForm,
-    BatchTerminateInstancesForm, InstancesFiltersForm, InstanceTypeForm,
+    BatchTerminateInstancesForm, InstancesFiltersForm, InstanceTypeForm, InstanceMonitoringForm,
     AssociateIpToInstanceForm, DisassociateIpFromInstanceForm)
 from ..forms import ChoicesManager, GenerateFileForm
 from ..forms.keypairs import KeyPairForm
@@ -970,11 +970,15 @@ class InstanceMonitoringView(BaseInstanceView):
         self.request = request
         self.cw_conn = self.get_connection(conn_type='cloudwatch')
         self.location = self.request.route_path('instance_monitoring', id=self.request.matchdict.get('id'))
-        self.instance = self.get_instance()
+        with boto_error_handler(self.request):
+            self.instance = self.get_instance()
         self.instance_name = TaggedItemView.get_display_name(self.instance)
+        self.monitoring_form = InstanceMonitoringForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
             instance=self.instance,
             instance_name=self.instance_name,
+            monitoring_state=self.instance.monitoring_state,
+            monitoring_form=self.monitoring_form,
         )
 
     @view_config(route_name='instance_monitoring', renderer=VIEW_TEMPLATE, request_method='GET')
@@ -983,6 +987,24 @@ class InstanceMonitoringView(BaseInstanceView):
             raise HTTPNotFound()
         render_dict = self.render_dict
         return render_dict
+
+    @view_config(route_name='instance_monitoring_update', renderer=VIEW_TEMPLATE, request_method='POST')
+    def instance_monitoring_update(self):
+        if self.monitoring_form.validate():
+            if self.instance:
+                location = self.request.route_path('instance_monitoring', id=self.instance.id)
+                with boto_error_handler(self.request, location):
+                    monitoring_state = self.instance.monitoring_state
+                    action = 'disabled' if monitoring_state == 'enabled' else 'enabled'
+                    self.log_request(_(u"Monitoring for instance {0} {1}").format(self.instance.id, action))
+                    if monitoring_state == 'disabled':
+                        self.conn.monitor_instances([self.instance.id])
+                    else:
+                        self.conn.unmonitor_instances([self.instance.id])
+                    msg = _(
+                        u'Request successfully submitted.  It may take a moment for the monitoring status to update')
+                    self.request.session.flash(msg, queue=Notification.SUCCESS)
+                return HTTPFound(location=location)
 
 
 class InstanceLaunchView(BaseInstanceView, BlockDeviceMappingItemView):
