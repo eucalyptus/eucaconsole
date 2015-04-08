@@ -48,9 +48,9 @@
                                             <span class="req">*</span>
                                         </label>
                                     </div>
-                                    <div ng-non-bindable=""><!--! Note: Don't remove non-bindable attr here -->
+                                    <div>
                                         ${structure:create_form['name'](autocomplete="off", **html_attrs_val)}
-                                        <small class="error" ng-hide=''>${create_form['name'].error_msg}</small>
+                                        <small ng-non-bindable="" class="error" ng-hide=''>${create_form['name'].error_msg}</small>
                                     </div>
                                 </div>
                             </div>
