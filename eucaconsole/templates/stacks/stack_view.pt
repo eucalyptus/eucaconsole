@@ -38,7 +38,6 @@
                         </metal:actions>
                     </metal:block>
                     <div class="columns section">
-                        &nbsp;
                         <h6 i18n:translate="">Stack</h6>
                         <div class="row readonly">
                             <div class="small-2 columns"><label i18n:translate="" class="right">Name</label></div>

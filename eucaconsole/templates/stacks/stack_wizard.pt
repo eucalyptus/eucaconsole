@@ -38,7 +38,7 @@
                     <div class="tabs-content">
                         <!--! Step 1: General tab content -->
                         <div class="content active" id="step1"
-                            tal:define="html_attrs_val {'pattern': '^[^\/\\\]{1,255}$'};">
+                            tal:define="html_attrs_val {'pattern': '^[^\/\\\]{1,255}$', 'ng-model': 'stackName'};">
                             <h6 i18n:translate="">General</h6>
                             <div class="row controls-wrapper">
                                 <div class="small-12 columns field">
@@ -159,10 +159,12 @@
                         <label i18n:translate="">Template</label>
                         <div class="columns value">{{ templateIdent }}</div>
                     </div>
-                    <div ng-show="loading"><i class="busy" ></i></div>
-                    <div class="row" ng-show="description">
+                    <div class="row" ng-show="description || loading">
                         <label i18n:translate="">Description</label>
-                        <div class="columns value">{{ description }}</div>
+                        <div class="columns value">
+                            <span ng-show="loading"><i class="busy" ></i></span>
+                            {{ description }}
+                        </div>
                     </div>
                 </div>
                 <div class="section" ng-show="tagsLength > 0">

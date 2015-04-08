@@ -43,7 +43,7 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
             $scope.setInitialValues();
             //$('#sample-template').chosen({'width': '100%', search_contains: true});
             $scope.watchTags();
-            $scope.setWatcher();
+            $scope.setWatchers();
             $scope.setFocus();
         };
         $scope.setFocus = function () {
@@ -51,12 +51,12 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
                 $("#name").focus();
             }, 50);
         };
-        $("#name").on('change', function() {
-            $timeout(function() {
-                $scope.stackName = $("#name").val();
-                $scope.checkRequiredInput();
-            });
-        });
+        //$("#name").on('change', function() {
+        //    $timeout(function() {
+        //        $scope.stackName = $("#name").val();
+        //        $scope.checkRequiredInput();
+        //    });
+        //});
         $('#template-url').on('change', function(){
             $timeout(function() {
                 $scope.checkRequiredInput();
@@ -128,7 +128,10 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
                 });
             }
         };
-        $scope.setWatcher = function () {
+        $scope.setWatchers = function () {
+            $scope.$watch('stackName', function(){
+                $scope.checkRequiredInput();
+            });
             $scope.$watch('inputtype', function(){
                 $scope.checkRequiredInput();
             });
@@ -234,7 +237,7 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
                 fd.append('template-file', file);
             }
             $scope.loading = true;
-            $scope.description = undefined;
+            $scope.description = '';
             $http.post($scope.stackTemplateEndpoint, fd, {
                     headers: {'Content-Type': undefined},
                     transformRequest: angular.identity
