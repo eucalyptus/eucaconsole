@@ -259,4 +259,4 @@ class LogoutView(BaseView):
             forget(self.request)
             self.request.session.invalidate()
             # self.invalidate_connection_cache()
-            return HTTPFound(location=self.login_url)
+            raise HTTPFound(location=self.login_url)
