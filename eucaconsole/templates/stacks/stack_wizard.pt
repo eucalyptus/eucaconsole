@@ -72,7 +72,7 @@
                                     <br ng-hide="inputtype=='sample'"/>
                                     <input type="radio" id="inputtype" name="inputtype" value="file" ng-model="inputtype"/>
                                     <label i18n:translate="">Upload template</label>
-                                    <input id="template-file" type="file" data-file="template-files" ng-disabled="isNotStopped" name="template-file" ng-show="inputtype=='file'"></input>
+                                    <input id="template-file" type="file" data-file="template-files" ng-disabled="isNotStopped" name="template-file" ng-show="inputtype=='file'"/>
                                     <br/>
                                     <input type="radio" id="inputtype" name="inputtype" value="url" ng-model="inputtype"/>
                                     <label i18n:translate="">Use template from URL</label>
