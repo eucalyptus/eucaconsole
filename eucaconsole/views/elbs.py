@@ -408,6 +408,7 @@ class CreateELBView(BaseView):
                     self.elb_conn.modify_lb_attribute(name, 'crossZoneLoadBalancing', True)
                 if backend_certificates is not None and backend_certificates != '[]':
                     self.handle_backend_certificate_create(name)
+                self.add_elb_tags(name)
                 prefix = _(u'Successfully created elastic load balancer')
                 msg = u'{0} {1}'.format(prefix, name)
                 location = self.request.route_path('elbs')
@@ -453,6 +454,20 @@ class CreateELBView(BaseView):
             target=ping_target
         )
         self.elb_conn.configure_health_check(name, hc)
+
+    def add_elb_tags(self, elb_name):
+        tags_json = self.request.params.get('tags')
+        tags_dict = json.loads(tags_json) if tags_json else {}
+        add_tags_params = {'LoadBalancerNames.member.1': elb_name}
+        index = 1
+        for key, value in tags_dict.items():
+            key = self.unescape_braces(key.strip())
+            if not any([key.startswith('aws:'), key.startswith('euca:')]):
+                add_tags_params['Tags.member.%d.Key' % index] = key
+                add_tags_params['Tags.member.%d.Value' % index] = self.unescape_braces(value.strip())
+                index += 1
+        if index > 1:
+            self.elb_conn.get_status('AddTags', add_tags_params)
 
     @view_config(route_name='certificate_create', request_method='POST', renderer=TEMPLATE)
     def certificate_create(self):
