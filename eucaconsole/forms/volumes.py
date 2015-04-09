@@ -225,8 +225,7 @@ class VolumesFiltersForm(BaseSecureForm):
         return [
             {'key':'creating', 'label':'Creating'},
             {'key':'available', 'label':'Available'},
-            {'key':'in-use', 'label':'In use'},
-            {'key':'deleting', 'label':'Deleting'},
-            {'key':'deleted', 'label':'Deleted'},
-            {'key':'error', 'label':'Error'},
+            {'key':'attached', 'label':'Attached'},
+            {'key':'attaching', 'label':'Attaching'},
+            {'key':'detaching', 'label':'Detaching'}
         ]

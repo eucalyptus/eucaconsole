@@ -239,7 +239,12 @@ class VolumesJsonView(LandingPageView):
             return dict(results=volumes)
 
     def get_items(self, filters=None):
-        return self.conn.get_all_volumes(filters=filters) if self.conn else []
+        items = self.conn.get_all_volumes(filters=filters) if self.conn else []
+        # because volume status is a combination of status and attach_status, resolve that here
+        for item in items:
+            if item.status == 'in-use':
+                item.status = item.attach_data.status
+        return items;
 
 
 class VolumeView(TaggedItemView, BaseVolumeView):
