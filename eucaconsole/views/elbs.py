@@ -305,7 +305,8 @@ class CreateELBView(BaseView):
             'availability_zone_choices': self.get_availability_zones(),
             'vpc_subnet_choices': self.get_vpc_subnets(),
             'securitygroups_json_endpoint': self.request.route_path('securitygroups_json'),
-            'instances_json_endpoint': self.request.route_path('instances_json')
+            'instances_json_endpoint': self.request.route_path('instances_json'),
+            'show_name_tag': False
         }))
 
     def get_wizard_tab_list(self):

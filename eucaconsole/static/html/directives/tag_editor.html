@@ -1,9 +1,5 @@
 <!--! Tag editor -->
 <div id="tag-editor" class="row controls-wrapper">
-    <style type="text/css" tal:condition="not show_name_tag">
-        /* Hide name tag based on option passed to tag editor panel */
-        .item-list .item.Name { display: none; }
-    </style>
     <div class="columns"><h6 i18n:translate="">Tags</h6></div>
     <div class="columns field" ng-cloak="">
         <div class="item-list">
@@ -50,7 +46,7 @@
         <div ng-show="tagCount &gt;= 10">
             <p>
                 <span i18n:translate="">You may not add more than ten tags to a resource.</span>
-                <span tal:condition="not show_name_tag" ng-show="visibleTagsCount &lt; tagCount" i18n:translate="">
+                <span ng-show="showNameTag === false &amp;&amp; visibleTagsCount &lt; tagCount" i18n:translate="">
                     Note that one of your tags is being used to display the resource name.
                 </span>
             </p>
