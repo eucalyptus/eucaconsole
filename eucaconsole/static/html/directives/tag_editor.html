@@ -19,7 +19,7 @@
         <div class="row tagentry controls-wrapper" ng-class="tagKeyClass" ng-show="tagCount &lt; 10">
             <div>
                 <div id="tag-name-input-div" class="small-4 columns">
-                    <input id='tag-name-input' class="taginput key" placeholder="name..." ng-model="newTagKey" pattern="${layout.tag_pattern_key}" />
+                    <input id='tag-name-input' class="taginput key" placeholder="name..." ng-model="newTagKey" pattern="{{ tagKeyPattern }}" />
                     <div ng-show="!existsTagKey">
                         <small class="error" i18n:translate="">Tag may not begin with "aws:" or its length cannot be longer than 128 chars</small>
                     </div>
@@ -28,7 +28,7 @@
                     </div>
                 </div>
                 <div id="tag-value-input-div" class="small-8 columns">
-                    <input id='tag-value-input' class="taginput value" placeholder="value..." ng-model="newTagValue" pattern="${layout.tag_pattern_value}" ng-keypress="keyListener($event)" />
+                    <input id='tag-value-input' class="taginput value" placeholder="value..." ng-model="newTagValue" pattern="{{ tagValuePattern }}" ng-keypress="keyListener($event)" />
                     <div ng-show="!existsTagKey">
                         <small class="error" i18n:translate="">Tag may not begin with "aws:" or its length cannot be longer than 256 chars</small>
                     </div>

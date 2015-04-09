@@ -300,13 +300,15 @@ class CreateELBView(BaseView):
             'protocol_list': self.get_protocol_list(),
             'port_range_pattern':
                 '^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$',
+            'tag_key_pattern': '^(?!aws:).{0,128}$',
+            'tag_value_pattern': '^(?!aws:).{0,256}$',
             'is_vpc_supported': self.is_vpc_supported,
             'default_vpc_network': self.get_default_vpc_network(),
             'availability_zone_choices': self.get_availability_zones(),
             'vpc_subnet_choices': self.get_vpc_subnets(),
             'securitygroups_json_endpoint': self.request.route_path('securitygroups_json'),
             'instances_json_endpoint': self.request.route_path('instances_json'),
-            'show_name_tag': False
+            'show_name_tag': True
         }))
 
     def get_wizard_tab_list(self):

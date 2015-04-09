@@ -26,6 +26,8 @@ angular.module('EucaConsoleUtils').directive('tagEditor', function() {
         $scope.isTagNotComplete = true;
         $scope.visibleTagsCount = 0;
         $scope.tagCount = 0;
+        $scope.tagKeyPattern = '';
+        $scope.tagValuePattern = '';
         $scope.syncTags = function () {
             var tagsObj = {};
             $scope.tagsArray.forEach(function(tag) {
@@ -51,6 +53,9 @@ angular.module('EucaConsoleUtils').directive('tagEditor', function() {
             if ($scope.isNameTagIncluded() === false) { 
                 if ($('#security-group-detail-form').length > 0) {
                     // security groups have their own name attributes, thus skip
+                    return;
+                } else if ($('#elb-form').length > 0) {
+                    // load balancers have their own name attributes, thus skip
                     return;
                 } else if ($('#launch-instance-form').length > 0) {
                     // Sepcial case: instance launch wizard page can have mutiple name fields
@@ -109,6 +114,12 @@ angular.module('EucaConsoleUtils').directive('tagEditor', function() {
             if (options.hasOwnProperty('show_name_tag')) {
                 $scope.showNameTag = options.show_name_tag;
             }
+            if (options.hasOwnProperty('tag_key_pattern')) {
+                $scope.tagKeyPattern = options.tag_key_pattern;
+            }
+            if (options.hasOwnProperty('tag_value_pattern')) {
+                $scope.tagValuePattern = options.tag_value_pattern;
+            }
             $scope.syncTags();
             $scope.setWatch();
         };
@@ -128,6 +139,7 @@ angular.module('EucaConsoleUtils').directive('tagEditor', function() {
         };
         $scope.addTag = function ($event) {
             $event.preventDefault();
+            $('form').trigger('validate');
             $scope.checkRequiredInput();
             if ($scope.isTagNotComplete) {
                 return;
@@ -200,6 +212,9 @@ angular.module('EucaConsoleUtils').directive('tagEditor', function() {
         };
         $scope.setWatch = function () {
             $scope.$watch('newTagKey', function () {
+                if ($scope.newTagKey !== '') {
+                    $('form').trigger('validate');
+                }
                 $scope.checkRequiredInput();
                 // timeout is needed to react to Foundation's validation check
                 $timeout(function() {
@@ -208,6 +223,9 @@ angular.module('EucaConsoleUtils').directive('tagEditor', function() {
                 }, 1000);
             });
             $scope.$watch('newTagValue', function () {
+                if ($scope.newTagValue !== '') {
+                    $('form').trigger('validate');
+                }
                 $scope.checkRequiredInput();
                 // timeout is needed to react to Foundation's validation check
                 $timeout(function() {
