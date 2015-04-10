@@ -5,13 +5,13 @@
     <li><a id="resource-menu-images" class="lnk-dashboard"
            href="${request.route_path('images')}" i18n:translate="">IMAGES</a></li>
     <li class="has-dropdown" tal:condition="layout.account_access">
-        <a id="resource-menu-instances" i18n:translate="">INSTANCES</a>
+        <a id="resource-menu-instances" class="nolink" i18n:translate="">INSTANCES</a>
         <ul class="dropdown">
             <li><a id="resource-menuitem-instances" i18n:translate=""
                    href="${request.route_path('instances')}">Instances</a></li>
             <li tal:condition="layout.account_access">
                 <a id="resource-menuitem-instance-types" i18n:translate=""
-                   href="${request.route_path('instance_types')}">Instance Types</a>
+                   href="${request.route_path('instance_types')}">Instance types</a>
             </li>
         </ul>
     </li>
@@ -19,25 +19,25 @@
         <a id="resource-menuitem-instances" i18n:translate="" href="${request.route_path('instances')}">INSTANCES</a>
     </li>
     <li class="has-dropdown">
-        <a id="resource-menu-instances" i18n:translate="">CLOUDFORMATION</a>
+        <a id="resource-menu-instances" class="nolink" i18n:translate="">CLOUDFORMATION</a>
         <ul class="dropdown">
             <li><a id="resource-menuitem-instances" i18n:translate=""
                    href="${request.route_path('stacks')}">Stacks</a></li>
         </ul>
     </li>
     <li class="has-dropdown">
-        <a id="resource-menu-netsec" i18n:translate="">NETWORK &amp; SECURITY</a>
+        <a id="resource-menu-netsec" class="nolink" i18n:translate="">NETWORK &amp; SECURITY</a>
         <ul class="dropdown">
-            <li><a id="resource-menuitem-eips" href="${request.route_path('ipaddresses')}" i18n:translate="">Elastic IPs</a></li>
+            <li><a id="resource-menuitem-eips" href="${request.route_path('ipaddresses')}" i18n:translate="">Elastic IP addresses</a></li>
             <li><a id="resource-menuitem-securitygroups" i18n:translate="" 
-                   href="${request.route_path('securitygroups')}">Security Groups</a></li>
+                   href="${request.route_path('securitygroups')}">Security groups</a></li>
             <li><a id="resource-menuitem-elb" i18n:translate=""
-                   href="${request.route_path('elbs')}">Load Balancers</a></li>
-            <li><a id="resource-menuitem-keypairs" href="${request.route_path('keypairs')}" i18n:translate="">Key Pairs</a></li>
+                   href="${request.route_path('elbs')}">Load balancers</a></li>
+            <li><a id="resource-menuitem-keypairs" href="${request.route_path('keypairs')}" i18n:translate="">Key pairs</a></li>
         </ul>
     </li>
     <li class="has-dropdown">
-        <a id="resource-menu-storage" i18n:translate="">STORAGE</a>
+        <a id="resource-menu-storage" class="nolink" i18n:translate="">STORAGE</a>
         <ul class="dropdown">
             <li><a id="resource-menuitem-volumes" href="${request.route_path('volumes')}" i18n:translate="">Volumes</a></li>
             <li><a id="resource-menuitem-snapshots" href="${request.route_path('snapshots')}" i18n:translate="">Snapshots</a></li>
@@ -45,16 +45,16 @@
         </ul>
     </li>
     <li class="has-dropdown">
-        <a id="resource-menu-autoscaling" i18n:translate="">AUTO SCALING</a>
+        <a id="resource-menu-autoscaling" class="nolink" i18n:translate="">AUTO SCALING</a>
         <ul class="dropdown">
             <li><a id="resource-menuitem-scalinggroups" i18n:translate=""
-                   href="${request.route_path('scalinggroups')}">Scaling Groups</a></li>
+                   href="${request.route_path('scalinggroups')}">Auto scaling groups</a></li>
             <li><a id="resource-menuitem-launchconfigs" i18n:translate=""
-                   href="${request.route_path('launchconfigs')}">Launch Configurations</a></li>
+                   href="${request.route_path('launchconfigs')}">Launch configurations</a></li>
         </ul>
     </li>
     <li class="has-dropdown" tal:condition="layout.user_access or layout.group_access or layout.role_access">
-        <a id="resource-menu-iam" i18n:translate="">IDENTITY &amp; ACCESS</a>
+        <a id="resource-menu-iam" class="nolink" i18n:translate="">IDENTITY &amp; ACCESS</a>
         <ul class="dropdown">
             <li tal:condition="layout.account_access"><a id="resource-menuitem-users" href="${request.route_path('accounts')}" i18n:translate="">Accounts</a></li>
             <li tal:condition="layout.user_access"><a id="resource-menuitem-users" href="${request.route_path('users')}" i18n:translate="">Users</a></li>
