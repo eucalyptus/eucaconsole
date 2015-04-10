@@ -1,6 +1,6 @@
 <div id="elb-listener-editor">
     <div ng-cloak="true">
-        <label class="section-label" i18n:translate="">Listeners</label>
+        <label class="section-label description" i18n:translate="">Listeners</label>
         <div ng-cloak="true">
             <table class="table" ng-cloak="true" ng-show="listenerArray.length !== 0">
                 <thead>
@@ -67,16 +67,16 @@
         </div>
         <div>
             <div ng-show="listenerArray.length === 0">
-                <label class="section-label" i18n:translate="">Add a listener</label>
+                <label class="section-label description" i18n:translate="">Add a listener</label>
             </div>
             <div ng-show="listenerArray.length > 0">
-                <label class="section-label" i18n:translate="">Add another listener</label>
+                <label class="section-label description" i18n:translate="">Add another listener</label>
             </div>
         </div>
         <div>
             <div class="row controls-wrapper">
                 <div class="small-1 columns"></div>
-                <div class="small-11 columns"><label class="left">Client side</label></div>
+                <div class="small-11 columns"><label class="left sub-section-label">Client side</label></div>
             </div>
             <div class="row controls-wrapper">
                 <div class="small-3 columns">
@@ -105,7 +105,7 @@
         <div ng-show="isFromProtocolValid">
             <div class="row controls-wrapper">
                 <div class="small-1 columns"></div>
-                <div class="small-11 columns"><label class="left">Instance side</label></div>
+                <div class="small-11 columns"><label class="left sub-section-label">Instance side</label></div>
             </div>
             <div class="row controls-wrapper">
                 <div class="small-3 columns">
@@ -136,7 +136,7 @@
         <div ng-show="showSelectCertificateModalLink()">
             <div class="row controls-wrapper">
                 <div class="small-1 columns"></div>
-                <div class="small-11 columns"><label class="left">Security</label></div>
+                <div class="small-11 columns"><label class="left sub-section-label">Security</label></div>
             </div>
             <div class="row controls-wrapper">
                 <div class="small-3 columns">

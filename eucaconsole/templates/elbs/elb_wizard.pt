@@ -42,7 +42,7 @@
                         <div class="content" ng-class="stepClasses[0]" id="step1"
                             tal:define="html_attrs_val {'pattern': '^[a-zA-Z0-9\-]{1,255}$'};">
                             <div ng-cloak="true">
-                                <label class="section-label" i18n:translate="">General</label>
+                                <label class="section-label description" i18n:translate="">General</label>
                                 ${panel('form_field', field=create_form['name'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'elbName'}, **html_attrs_val)}
                             </div>
                             <div>
@@ -204,7 +204,7 @@
                                 <div i18n:translate="">Instances that fail the health check will be removed from the load balancer.</div>
                             </div>
                             <div ng-cloak="true">
-                                <label class="section-label" i18n:translate="">Ping settings</label>
+                                <label class="section-label description" i18n:translate="">Ping settings</label>
                                 <div class="">
                                     ${panel('form_field', field=create_form['ping_protocol'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'pingProtocol'}, **ping_protocol_attrs)}
                                 </div>
@@ -225,7 +225,7 @@
                                 </div>
                                 <div class="section columns" ng-show="expanded">
                                     <div ng-cloak="true">
-                                        <label class="section-label" i18n:translate="">Timing settings</label>
+                                        <label class="section-label description" i18n:translate="">Timing settings</label>
                                         <div class="">
                                             ${panel('form_field', field=create_form['response_timeout'], leftcol_width=3, rightcol_width=9, min=1, ng_attrs={'model': 'responseTimeout'}, pattern=layout.integer_gt_zero_pattern)}
                                         </div>
@@ -234,7 +234,7 @@
                                         </div>
                                     </div>
                                     <div ng-cloak="true">
-                                        <label class="section-label" i18n:translate="">Instance thresholds</label>
+                                        <label class="section-label description" i18n:translate="">Instance thresholds</label>
                                         <div class="">
                                             ${panel('form_field', field=create_form['failures_until_unhealthy'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'failuresUntilUnhealthy'}, **ping_threshold_attrs)}
                                         </div>
