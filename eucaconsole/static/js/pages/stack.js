@@ -20,13 +20,14 @@ angular.module('StackPage', ['MagicSearch', 'EucaConsoleUtils'])
             $scope.stackTemplateEndpoint = options.stack_template_url;
             $scope.stackEventsEndpointOrig = options.stack_events_url;
             $scope.stackEventsEndpoint = options.stack_events_url;
+            $scope.stackStatus = options.stack_status;
             if ($scope.stackStatusEndpoint) {
                 $scope.getStackState();
             }
             if ($scope.stackEventsEndpoint) {
                 $scope.getStackEvents();
             }
-            //$scope.setWatch();
+            $scope.setWatch();
             $scope.setFocus();
         };
         $scope.isTransitional = function () {

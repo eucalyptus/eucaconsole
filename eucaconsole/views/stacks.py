@@ -210,6 +210,7 @@ class StackView(BaseView):
             'stack_status_json_url': self.request.route_path('stack_state_json', name=self.stack.stack_name),
             'stack_template_url': self.request.route_path('stack_template', name=self.stack.stack_name),
             'stack_events_url': self.request.route_path('stack_events', name=self.stack.stack_name),
+            'stack_status': self.stack.stack_status.lower().capitalize().replace('_', '-'),
         }))
 
 
