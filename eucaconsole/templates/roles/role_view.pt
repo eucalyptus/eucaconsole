@@ -72,19 +72,19 @@
                                             <div id="xacct-section" ng-cloak="">
                                                 <div class="section" ng-show="roleType == 'xacct'">
                                                     <div class="row controls-wrapper">
-                                                        <div class="small-3 columns">
+                                                        <div class="large-2 small-3 columns">
                                                             <label class="right" ng-non-bindable="" i18n:translate="">Account ID<span class="req">*</span></label>
                                                         </div>
-                                                        <div class="small-9 columns field">
+                                                        <div class="large-10 small-9 columns field">
                                                             <input id="accountid" name="accountid" type="text" pattern="^[0-9]{12}$"/>
                                                             <small class="error" ng-non-bindable="" i18n:translate="">Account ID must be a 12 digit number</small>
                                                         </div>
                                                     </div>
                                                     <div class="row controls-wrapper">
-                                                        <div class="small-3 columns">
+                                                        <div class="large-2 small-3 columns">
                                                             <label class="right" i18n:translate="">External ID</label>
                                                         </div>
-                                                        <div class="small-9 columns field">
+                                                        <div class="large-10 small-9 columns field">
                                                             <input id="externalid" name="externalid" type="text"/>
                                                         </div>
                                                     </div>
@@ -142,25 +142,25 @@
                     <div class="section">
                         <h6 i18n:translate="">General</h6>
                         <div class="row controls-wrapper readonly">
-                            <div class="small-3 columns"><label class="right" i18n:translate="">Name</label></div>
-                            <div class="small-9 columns value">${role.role_name}</div>
+                            <div class="large-2 small-3 columns"><label class="right" i18n:translate="">Name</label></div>
+                            <div class="large-10 small-9 columns value">${role.role_name}</div>
                         </div>
                         <div class="row controls-wrapper readonly">
-                            <div class="small-3 columns"><label class="right" i18n:translate="">Creation time</label></div>
-                            <div class="small-9 columns value">${role_create_date.strftime(layout.date_format)}</div>
+                            <div class="large-2 small-3 columns"><label class="right" i18n:translate="">Creation time</label></div>
+                            <div class="large-10 small-9 columns value">${role_create_date.strftime(layout.date_format)}</div>
                         </div>
                         <div class="row controls-wrapper readonly">
-                            <div class="small-3 columns"><label class="right" i18n:translate="">ARN</label></div>
-                            <div class="small-9 columns value inline breakword">${role_arn if role_arn else ''}</div>
+                            <div class="large-2 small-3 columns"><label class="right" i18n:translate="">ARN</label></div>
+                            <div class="large-10 small-9 columns value inline breakword">${role_arn if role_arn else ''}</div>
                         </div>
                         <div class="row controls-wrapper readonly">
-                            <div class="small-3 columns"><label class="right" i18n:translate="">Path</label></div>
-                            <div class="small-9 columns value inline breakword">${role_path if role_path else ''}</div>
+                            <div class="large-2 small-3 columns"><label class="right" i18n:translate="">Path</label></div>
+                            <div class="large-10 small-9 columns value inline breakword">${role_path if role_path else ''}</div>
                         </div>
                         <div class="row controls-wrapper readonly" tal:condition="instances">
-                            <div class="small-3 columns"><label class="right" i18n:translate="">Instances</label></div>
-                            <div tal:repeat="instance instances">
-                                <div class="small-9 columns value inline breakword">
+                            <div class="large-2 small-3 columns"><label class="right" i18n:translate="">Instances</label></div>
+                            <div class="large-10 small-9 columns value inline breakword">
+                                <div tal:repeat="instance instances">
                                     <a href="${request.route_path('instance_view', id=instance.id)}">${instance.name}</a>
                                 </div>
                             </div>
@@ -183,10 +183,10 @@
                             </div>
                         </div>
                         <div class="row controls-wrapper readonly">
-                            <div class="small-3 columns">
-                                <label class="right" i18n:translate="">Trusted entities: </label>
+                            <div class="large-2 small-3 columns">
+                                <label class="right" i18n:translate="">Trusted entities</label>
                             </div>
-                            <div class="small-9 columns value inline breakword" ng-cloak="">
+                            <div class="large-10 small-9 columns value inline breakword" ng-cloak="">
                                 {{ trustedEntity }}
                             </div>
                         </div>

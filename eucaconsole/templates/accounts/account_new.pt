@@ -38,7 +38,7 @@
                         ${structure:account_form['csrf_token']}
                         <div class="section columns">
                             <div class="">
-                                ${panel('form_field', field=account_form.account_name, leftcol_width=1, rightcol_width=11, autofocus='', ng_attrs={'model': 'accountName'}, **html_attrs)}
+                                ${panel('form_field', field=account_form.account_name, leftcol_width=1, rightcol_width=11, leftcol_width_large=1, rightcol_width_large=11, autofocus='', ng_attrs={'model': 'accountName'}, **html_attrs)}
                             </div>
                         </div>
                         <hr />

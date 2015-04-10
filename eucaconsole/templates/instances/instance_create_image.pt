@@ -53,7 +53,7 @@
                         </h6>
                         <div class="content" ng-show="expanded">
                             <div tal:condition="isEBS">
-                                ${structure:create_image_form['no_reboot']}&nbsp;${create_image_form.no_reboot.label}
+                                ${structure:create_image_form['no_reboot']}&nbsp;<label id="no-reboot" for="no_reboot">${create_image_form.no_reboot.label.text}</label>
                                 <span class="helptext-icon" data-tooltip=""
                                     title="${create_image_form.no_reboot.label_help_text}">?</span>
                             </div>

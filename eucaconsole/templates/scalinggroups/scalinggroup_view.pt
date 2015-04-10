@@ -43,10 +43,14 @@
                     ${structure:edit_form['csrf_token']}
                     <div id="capacity-section">
                         <h6 i18n:translate="">Capacity</h6>
-                        <div class="medium-10 columns right">
-                            ${panel('form_field', field=edit_form['min_size'], maxlength=2, ng_attrs={'model': 'minSize', 'change': 'handleSizeChange()'})}
-                            ${panel('form_field', field=edit_form['desired_capacity'], maxlength=2, ng_attrs={'model': 'desiredCapacity', 'change': 'handleSizeChange()'})}
-                            ${panel('form_field', field=edit_form['max_size'], maxlength=2, ng_attrs={'model': 'maxSize', 'change': 'handleSizeChange()'})}
+                        <div class="row">
+                            <div class="medium-1 columns">
+                            </div>
+                            <div class="medium-10 columns">
+                                ${panel('form_field', field=edit_form['min_size'], maxlength=2, ng_attrs={'model': 'minSize', 'change': 'handleSizeChange()'})}
+                                ${panel('form_field', field=edit_form['desired_capacity'], maxlength=2, ng_attrs={'model': 'desiredCapacity', 'change': 'handleSizeChange()'})}
+                                ${panel('form_field', field=edit_form['max_size'], maxlength=2, ng_attrs={'model': 'maxSize', 'change': 'handleSizeChange()'})}
+                            </div>
                         </div>
                     </div>
                     <div>&nbsp;</div>

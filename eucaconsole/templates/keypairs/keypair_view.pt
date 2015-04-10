@@ -48,12 +48,12 @@
                 <div tal:condition="keypair">
                     <h6 i18n:translate="">Key pair</h6>
                     <div class="row controls-wrapper readonly">
-                        <div class="small-3 columns"><label i18n:translate="">Name</label></div>
-                        <div class="small-9 columns value breakword">${keypair_name if keypair_name else ''}</div>
+                        <div class="large-2 small-3 columns"><label i18n:translate="">Name</label></div>
+                        <div class="large-10 small-9 columns value breakword">${keypair_name if keypair_name else ''}</div>
                     </div>
                     <div class="row controls-wrapper readonly">
-                        <div class="small-3 columns"><label i18n:translate="">Fingerprint</label></div>
-                        <div class="small-9 columns value breakword">${keypair.fingerprint if keypair.fingerprint else ''}</div>
+                        <div class="large-2 small-3 columns"><label i18n:translate="">Fingerprint</label></div>
+                        <div class="large-10 small-9 columns value breakword">${keypair.fingerprint if keypair.fingerprint else ''}</div>
                     </div>
                 </div>
                 <div tal:condition="not keypair and keypair_route_id == 'new'">
@@ -85,15 +85,15 @@
                         ${panel('form_field', field=keypair_import_form['name'], leftcol_width=3, rightcol_width=9, autofocus='', ng_attrs={'model': 'keypairName'}, **html_attrs_val)}
                         ${panel('form_field', field=keypair_import_form['key_material'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'keypairMaterial'}, **html_attrs)}
                         <div class="row">
-                            <div class="small-3 columns">&nbsp;</div>
-                            <div class="small-9 columns">
+                            <div class="large-2 small-3 columns">&nbsp;</div>
+                            <div class="large-10 small-9 columns">
                                 <label for="key-import-file">Or: </label>
                                 <input type="file" id="key-import-file"/>
                             </div>
                         </div>
                         <div class="row controls-wrapper readonly" tal:condition="keypair">
-                            <div class="small-3 columns"><label i18n:translate="">Fingerprint</label></div>
-                            <div class="small-9 columns value">${keypair.fingerprint if keypair.fingerprint else ''}</div>
+                            <div class="large-2 small-3 columns"><label i18n:translate="">Fingerprint</label></div>
+                            <div class="large-10 small-9 columns value">${keypair.fingerprint if keypair.fingerprint else ''}</div>
                         </div>
                         <hr/>
                         <div tal:condition="not keypair">

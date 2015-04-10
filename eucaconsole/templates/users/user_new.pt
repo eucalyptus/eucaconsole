@@ -61,7 +61,7 @@
                             </a>
                         </h6>
                         <div class="advance-content" ng-show="adv_expanded">
-                            ${panel('form_field', field=user_form['path'], leftcol_width=2, rightcol_width=10)}
+                            ${panel('form_field', field=user_form['path'], leftcol_width=2, rightcol_width=10, leftcol_width_large=1, rightcol_width_large=11)}
                         </div>
                     </div>
                     <hr />
