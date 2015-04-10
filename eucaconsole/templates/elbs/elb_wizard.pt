@@ -239,7 +239,7 @@
                                             ${panel('form_field', field=create_form['failures_until_unhealthy'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'failuresUntilUnhealthy'}, **ping_threshold_attrs)}
                                         </div>
                                         <div class="">
-                                            ${panel('form_field', field=create_form['passes_until_unhealthy'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'passesUntilUnhealthy'}, **ping_threshold_attrs)}
+                                            ${panel('form_field', field=create_form['passes_until_healthy'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'passesUntilHealthy'}, **ping_threshold_attrs)}
                                         </div>
                                     </div>
                                 </div>

@@ -445,14 +445,14 @@ class CreateELBView(BaseView):
         response_timeout = self.request.params.get('response_timeout')
         time_between_pings = self.request.params.get('time_between_pings')
         failures_until_unhealthy = self.request.params.get('failures_until_unhealthy')
-        passes_until_unhealthy = self.request.params.get('passes_until_unhealthy')
+        passes_until_healthy = self.request.params.get('passes_until_healthy')
         ping_target = u"{0}:{1}".format(ping_protocol, ping_port)
         if ping_protocol in ['HTTP', 'HTTPS']:
             ping_target = u"{0}{1}".format(ping_target, ping_path)
         hc = HealthCheck(
             timeout=response_timeout,
             interval=time_between_pings,
-            healthy_threshold=passes_until_unhealthy,
+            healthy_threshold=passes_until_healthy,
             unhealthy_threshold=failures_until_unhealthy,
             target=ping_target
         )

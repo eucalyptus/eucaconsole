@@ -33,7 +33,7 @@ angular.module('EucaConsoleWizard').controller('ELBWizardCtrl', function ($scope
     $scope.responseTimeout = '';
     $scope.timeBetweenPings = '';
     $scope.failuresUntilUnhealthy = '';
-    $scope.passesUntilUnhealthy = '';
+    $scope.passesUntilHealthy = '';
     $scope.certificateTab = 'SSL';
     $scope.certificateRadioButton = '';
     $scope.certificateARN = '';
@@ -91,7 +91,7 @@ angular.module('EucaConsoleWizard').controller('ELBWizardCtrl', function ($scope
         $scope.responseTimeout = 5;
         $scope.timeBetweenPings = 30;
         $scope.failuresUntilUnhealthy = 2;
-        $scope.passesUntilUnhealthy = 10;
+        $scope.passesUntilHealthy = 10;
         $scope.showsCertificateTabDiv = false;
         $scope.certificateTab = 'SSL';
         $scope.certificateRadioButton = 'existing';

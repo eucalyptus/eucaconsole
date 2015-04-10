@@ -133,10 +133,10 @@ class CreateELBForm(BaseSecureForm):
         label=_(u'Failures until unhealthy'),
         validators=[validators.InputRequired(message=failures_until_unhealthy_error_msg)],
     )
-    passes_until_unhealthy_error_msg = _(u'Passes until unhealthy is required')
-    passes_until_unhealthy = wtforms.SelectField(
-        label=_(u'Passes until unhealthy'),
-        validators=[validators.InputRequired(message=passes_until_unhealthy_error_msg)],
+    passes_until_healthy_error_msg = _(u'Passes until healthy is required')
+    passes_until_healthy = wtforms.SelectField(
+        label=_(u'Passes until healthy'),
+        validators=[validators.InputRequired(message=passes_until_healthy_error_msg)],
     )
 
     def __init__(self, request, conn=None, vpc_conn=None, **kwargs):
@@ -165,7 +165,7 @@ class CreateELBForm(BaseSecureForm):
         self.ping_protocol.choices = CreateELBForm.get_ping_protocol_choices()
         self.time_between_pings.choices = CreateELBForm.get_time_between_pings_choices()
         self.failures_until_unhealthy.choices = CreateELBForm.get_failures_until_unhealthy_choices()
-        self.passes_until_unhealthy.choices = CreateELBForm.get_passes_until_unhealthy_choices()
+        self.passes_until_healthy.choices = CreateELBForm.get_passes_until_healthy_choices()
 
         self.cross_zone_enabled.data = False
         # Set default choices where applicable, defaulting to first non-blank choice
@@ -214,7 +214,7 @@ class CreateELBForm(BaseSecureForm):
         ]
 
     @staticmethod
-    def get_passes_until_unhealthy_choices():
+    def get_passes_until_healthy_choices():
         return [
             ('1', '1'),
             ('2', '2'),
