@@ -1,7 +1,11 @@
-from guiops.guitester.guitester import GuiTester
+from guitester import GuiTester
 
 
 class GuiEC2(GuiTester):
+
+    def __init__(self):
+        pass
+
     def create_keypair_from_landing(self):
         pass
 
