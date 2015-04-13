@@ -20,7 +20,6 @@ form {
 #elb-form {
     input.text-input {
         width: 300px;
-
     }
     input[type="number"] {
         width: 100px;
@@ -42,4 +41,8 @@ form {
 
 #backend-certificate-form {
     @include item-list;
+    .description {
+        font-weight: bold;
+        color: $euca-darkblue;
+    }
 }
