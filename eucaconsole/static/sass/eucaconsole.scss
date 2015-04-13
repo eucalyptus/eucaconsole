@@ -1088,12 +1088,9 @@ footer {
     }
 }
 
-a.lnk-dashboard {
-    padding-left: 0.0rem !important;
-}
-
 // Off-canvas Nav adjustments
 div.left-off-canvas-menu {
+    z-index: 999999 !important;
     color: white;
     background-color: white;
     border-style: solid;
@@ -1113,7 +1110,7 @@ ul.off-canvas-list {
         a {
             background-color: white;
             color: $euca-grey;
-            padding: 0.125rem;
+            padding: 0.5rem;
             border-bottom: 0;
             label {
                 background-color: white;
@@ -1122,9 +1119,13 @@ ul.off-canvas-list {
                 border-top: 0;
             }
         }
-        a:hover {
+        a:hover:not(.nolink) {
             background-color: lighten($euca-grey, 50%);
             color: black;
+        }
+        a.nolink:hover {
+            background-color: white;
+            color: $euca-grey;
         }
         .dropdown {
             background-color: white;

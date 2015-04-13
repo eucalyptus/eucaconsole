@@ -38,30 +38,29 @@
                         </metal:actions>
                     </metal:block>
                     <div class="columns section">
-                        &nbsp;
                         <h6 i18n:translate="">Stack</h6>
-                        <div class="row readonly">
+                        <div class="row controls-wrapper readonly">
                             <div class="small-2 columns"><label i18n:translate="" class="right">Name</label></div>
                             <div class="small-10 columns value">${stack_name}</div>
                         </div>
-                        <div class="row readonly">
+                        <div class="row controls-wrapper readonly">
                             <div class="small-2 columns"><label i18n:translate="" class="right">ID</label></div>
                             <div class="small-10 columns value">${stack.stack_id}</div>
                         </div>
-                        <div class="row readonly">
+                        <div class="row controls-wrapper readonly">
                             <div class="small-2 columns"><label i18n:translate="" class="right">Creation time</label></div>
                             <div class="small-10 columns value" ng-cloak="">
                                 {{ '${stack_creation_time}' | date: '${layout.angular_date_format}' }}
                             </div>
                         </div>
-                        <div class="row readonly">
+                        <div class="row controls-wrapper readonly">
                             <div class="small-2 columns"><label i18n:translate="" class="right">Status</label></div>
                             <div class="small-10 columns value" ng-cloak="">
                                 <span class="label radius status {{stackStatus}}">{{ stackStatus.replace('-', ' ').replace('-', ' ') }}</span>
                                 <span class="busy" ng-show="isTransitional()">&nbsp;</span>
                             </div>
                         </div>
-                        <div class="row readonly" ng-show="statusReason">
+                        <div class="row controls-wrapper readonly" ng-show="statusReason">
                             <div class="small-2 columns"><label i18n:translate="" class="right">Status Reason</label></div>
                             <div class="small-10 columns value">{{ statusReason }}</div>
                         </div>
@@ -93,9 +92,21 @@
                         <h6 i18n:translate="">Outputs</h6>
                         <div class="datagrid" id="datagrid-items">
                             <div ng-show="itemsLoading"><span class="busy"></span></div>
-                            <div class="row readonly" ng-repeat="item in outputs | orderBy: sortBy:sortReverse" ng-cloak="true">
-                                <div class="small-2 columns"><label i18n:translate="" class="right">{{ item.key }}</label></div>
-                                <div class="small-10 columns value">{{ item.value }}</div>
+                            <div id="tableview" class="gridwrapper" ng-show="!itemsLoading">
+                                <!-- Begin table view -->
+                                <table class="table" ng-show="!itemsLoading" ng-cloak="true">
+                                    <thead><tr>
+                                        <th i18n:translate="">KEY</th>
+                                        <th i18n:translate="">VALUE</th>
+                                    </tr></thead>
+                                    <tbody>
+                                        <tr ng-repeat="item in outputs | orderBy: sortBy:sortReverse" ng-cloak="true">
+                                            <td>{{ item.key }}</td>
+                                            <td>{{ item.value }}</td>
+                                        </tr>
+                                        <tr ng-show="!itemsLoading"></tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                         <br/>
@@ -151,15 +162,16 @@
                     <div class="columns section">
                         &nbsp;
                         <h6 i18n:translate="">Template</h6>
-                        <div class="row readonly">
+                        <div class="row controls-wrapper readonly">
                             <div class="small-2 columns"><label i18n:translate="" class="right">Description</label></div>
                             <div class="small-10 columns value">${stack_description}</div>
                         </div>
+                        <span>&nbsp;</span>
                     </div>
                     <hr/>
                     <div class="columns section">
                         <h6 i18n:translate="">Parameters</h6>
-                        <div class="row readonly" tal:repeat="item stack.parameters" ng-cloak="true">
+                        <div class="row controls-wrapper readonly" tal:repeat="item stack.parameters" ng-cloak="true">
                             <div class="small-2 columns"><label class="right">${item.key}</label></div>
                             <div class="small-10 columns value">${item.value}</div>
                         </div>
