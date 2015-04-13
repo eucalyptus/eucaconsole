@@ -12,4 +12,4 @@ form input.name { margin-right: 6px; }
 
 #bdmapping-editor .storage-label { display: none; }
 
-#controls_ramdisk_id div label { width: 145px; left: 8px; }
+@media screen and (min-width: 1020px) { #controls_ramdisk_id div label { width: 145px; left: 8px; } }
