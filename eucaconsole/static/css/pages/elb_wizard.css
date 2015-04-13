@@ -54,3 +54,5 @@ form .sub-section-label { color: black; }
 #backend-certificate-form .item-list .item { color: #333; background-color: #e6e7e8; margin-right: 8px; }
 #backend-certificate-form .item-list .item a { color: white; }
 #backend-certificate-form .description { font-weight: bold; color: #03405f; }
+
+.elb-listener-table th.header { color: #6a737b; }
