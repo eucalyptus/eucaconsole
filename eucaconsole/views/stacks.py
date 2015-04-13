@@ -346,6 +346,7 @@ class StackWizardView(BaseView):
     def get_controller_options_json(self):
         return BaseView.escape_json(json.dumps({
             'stack_template_url': self.request.route_path('stack_template_parse'),
+            'sample_templates': self.create_form.sample_template.choices
         }))
 
     @view_config(route_name='stack_new', renderer=TEMPLATE, request_method='GET')
@@ -491,6 +492,7 @@ class StackWizardView(BaseView):
         template_url = self.request.params.get('template-url')
         files = self.request.POST.getall('template-file')
         template_body = ''
+
         if len(files) > 0 and len(str(files[0])) > 0:  # read from file
             # TODO: body limit is 51,200 in the API, check that!
             template_body = files[0].file.read()
@@ -504,14 +506,12 @@ class StackWizardView(BaseView):
             mgr = CFSampleTemplateManager(s3_bucket)
             templates = mgr.get_template_list()
             for directory, files in templates:
-                if template_name in [name for (name, f) in files]:
+                if template_name in [f for (name, f) in files]:
                     if directory == 's3':
-                        key = [key for (name, key) in files if name == template_name]
-                        s3_key = s3_bucket.get_key(key[0])
+                        s3_key = s3_bucket.get_key(template_name)
                         template_body = s3_key.get_contents_as_string()
                     else:
-                        f = [f for (name, f) in files if name == template_name]
-                        fd = open(os.path.join(directory, f[0]), 'r')
+                        fd = open(os.path.join(directory, template_name), 'r')
                         template_body = fd.read()
 
         # now that we have it, store in S3
@@ -519,11 +519,13 @@ class StackWizardView(BaseView):
         account_id = User.get_account_id(ec2_conn=self.get_connection(), request=self.request)
         region = self.request.session.get('region')
         bucket = s3_conn.create_bucket("cf-template-{acct}-{region}".format(acct=account_id, region=region))
+        logging.info("template name :"+template_name)
         key = bucket.get_key(template_name)
         if key is None:
             key = bucket.new_key(template_name)
         key.set_contents_from_string(template_body)
         template_url = key.generate_url(300)  # 5 minute URL, more than enough time, right?
+        logging.info("template body :"+template_body)
 
         parsed = json.loads(template_body)
         return template_url, parsed
