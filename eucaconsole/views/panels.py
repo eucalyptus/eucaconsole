@@ -139,6 +139,7 @@ def tag_editor(context, request, tags=None, leftcol_width=4, rightcol_width=8, s
         rightcol_width=rightcol_width,
     )
 
+
 @panel_config('user_editor', renderer='../templates/panels/user_editor.pt')
 def user_editor(context, request, leftcol_width=4, rightcol_width=8):
     """ User editor panel.
@@ -152,7 +153,8 @@ def policy_list(context, request, policies_url=None, policy_url=None, remove_url
     """ User list panel.
         Usage example (in Chameleon template): ${panel('policy_list')}
     """
-    return dict(policies_url=policies_url, policy_url=policy_url, remove_url=remove_url, update_url=update_url, add_url=add_url)
+    return dict(policies_url=policies_url, policy_url=policy_url,
+                remove_url=remove_url, update_url=update_url, add_url=add_url)
 
 
 @panel_config('autoscale_tag_editor', renderer='../templates/panels/autoscale_tag_editor.pt')
@@ -220,7 +222,7 @@ def securitygroup_rules(context, request, rules=None, rules_egress=None, leftcol
         'json_endpoint': request.route_path('securitygroups_json'),
         'protocols_json_endpoint': request.route_path('internet_protocols_json'),
     }))
-    remote_addr=BaseView.get_remote_addr(request)
+    remote_addr = BaseView.get_remote_addr(request)
 
     return dict(
         protocol_choices=RULE_PROTOCOL_CHOICES,
@@ -306,7 +308,7 @@ def image_picker(context, request, image=None, filters_form=None,
     return dict(
         image=image,
         search_facets=BaseView.escape_json(json.dumps(search_facets)),
-        filter_keys = [],  # defined within image picker javascript
+        filter_keys=[],  # defined within image picker javascript
         maxheight=maxheight,
         owner_choices=owner_choices,
         prefix_route=prefix_route,
@@ -406,4 +408,3 @@ def s3_metadata_editor(context, request, bucket_object=None, metadata_form=None)
         metadata_key_create_option_text=_(u'Add Metadata'),
         metadata_key_no_results_text=_(u'Click below to add the new key'),
     )
-
