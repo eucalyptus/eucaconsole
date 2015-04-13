@@ -280,7 +280,7 @@
                     <div class="row">
                         <label i18n:translate="">Listeners</label>
                         <div class="columns value">
-                            <div class="" ng-repeat="listener in listenerArray">
+                            <div class="multi-row" ng-repeat="listener in listenerArray">
                                 <div>
                                     {{ listener.fromProtocol.toUpperCase() }} ({{ listener.fromPort }}) - 
                                     {{ listener.toProtocol.toUpperCase() }} ({{ listener.toPort }})

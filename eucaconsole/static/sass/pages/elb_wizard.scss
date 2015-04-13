@@ -15,6 +15,9 @@ form {
     .sub-section-label {
         color: black;
     }
+    .stack-label {
+        margin-bottom: 0.25rem;
+    }
 }
 
 #elb-form {
@@ -50,5 +53,11 @@ form {
 .elb-listener-table {
     th.header {
         color: $euca-grey;
+    }
+}
+
+.summary {
+    .multi-row {
+        margin-bottom: 0.25rem;
     }
 }

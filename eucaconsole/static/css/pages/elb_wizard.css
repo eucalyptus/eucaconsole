@@ -42,6 +42,7 @@
 /* @section Elasitc Load Balancer Wizard styles */
 form .section-label { margin-top: 4px; margin-bottom: 6px; }
 form .sub-section-label { color: black; }
+form .stack-label { margin-bottom: 0.25rem; }
 
 #elb-form input.text-input { width: 300px; }
 #elb-form input[type="number"] { width: 100px; }
@@ -56,3 +57,5 @@ form .sub-section-label { color: black; }
 #backend-certificate-form .description { font-weight: bold; color: #03405f; }
 
 .elb-listener-table th.header { color: #6a737b; }
+
+.summary .multi-row { margin-bottom: 0.25rem; }
