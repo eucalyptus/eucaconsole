@@ -51,8 +51,19 @@ form {
 }
 
 .elb-listener-table {
+    tr.top-header {
+        border-bottom: 0px;
+    }
     th.header {
         color: $euca-grey;
+    }
+    th.center {
+        text-align: center;
+    }
+    th.vertical-border-header {
+        border-right-width: 2px;
+        border-right-style: solid;
+        border-right-color: $euca-grey;
     }
 }
 

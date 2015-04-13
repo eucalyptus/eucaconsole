@@ -282,7 +282,7 @@
                         <div class="columns value">
                             <div class="multi-row" ng-repeat="listener in listenerArray">
                                 <div>
-                                    {{ listener.fromProtocol.toUpperCase() }} ({{ listener.fromPort }}) - 
+                                    {{ listener.fromProtocol.toUpperCase() }} ({{ listener.fromPort }}) to 
                                     {{ listener.toProtocol.toUpperCase() }} ({{ listener.toPort }})
                                 </div>
                                 <div ng-show="listener.fromProtocol.toUpperCase() === 'HTTPS' || listener.fromProtocol.toUpperCase() === 'SSL'">
