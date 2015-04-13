@@ -18,11 +18,9 @@ form {
 }
 
 #elb-form {
-    input.name {
-        width: 100px;
-        margin-right: 8px;
-        margin-bottom: 4px;
-        padding: 4px;
+    input.text-input {
+        width: 300px;
+
     }
     input[type="number"] {
         width: 100px;

@@ -40,10 +40,10 @@
                     <div class="tabs-content">
                         <!--! Step 1: General tab content -->
                         <div class="content" ng-class="stepClasses[0]" id="step1"
-                            tal:define="html_attrs_val {'pattern': '^[a-zA-Z0-9\-]{1,255}$'};">
+                            tal:define="html_attrs_val {'pattern': '^[a-zA-Z0-9\-]{1,255}$', 'class': 'text-input'};">
                             <div ng-cloak="true">
                                 <label class="section-label description" i18n:translate="">General</label>
-                                ${panel('form_field', field=create_form['name'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'elbName'}, **html_attrs_val)}
+                                ${panel('form_field', field=create_form['name'], leftcol_width=0, rightcol_width=12, stack_label=True, ng_attrs={'model': 'elbName'}, **html_attrs_val)}
                             </div>
                             <div>
                                 <elb-listener-editor
@@ -87,10 +87,10 @@
                             tal:define="security_group_attrs {'data-placeholder': security_group_placeholder_text};">
                             <div ng-cloak="true">
                                 <label class="section-label" i18n:translate="">Network</label>
-                                ${panel('form_field', field=create_form['vpc_network'], ng_attrs={'model': 'vpcNetwork'}, leftcol_width=4, rightcol_width=8)}
+                                ${panel('form_field', field=create_form['vpc_network'], ng_attrs={'model': 'vpcNetwork'}, leftcol_width=0, rightcol_width=12, stack_label=True)}
                             </div>
                             <div ng-cloak="true" ng-show="vpcNetwork !== 'None'">
-                                ${panel('form_field', field=create_form['securitygroup'], leftcol_width=4, rightcol_width=8, ng_attrs={'model': 'securityGroups', 'options': 'k as v for (k, v) in securityGroupChoices'}, **security_group_attrs)}
+                                ${panel('form_field', field=create_form['securitygroup'], leftcol_width=0, rightcol_width=12, stack_label=True, ng_attrs={'model': 'securityGroups', 'options': 'k as v for (k, v) in securityGroupChoices'}, **security_group_attrs)}
                             </div>
                             <hr />
                             <div>
@@ -196,7 +196,8 @@
                         </div>
                         <!--! Step 4: Health Check tab content -->
                         <div class="content" ng-class="stepClasses[3]" id="step4"
-                            tal:define="ping_protocol_attrs {'class': 'ip-protocol'};
+                            tal:define="ping_path_attrs {'class': 'text-input'};
+                                        ping_protocol_attrs {'class': 'ip-protocol'};
                                         ping_delay_attrs {'class': 'ping-delay'};
                                         ping_threshold_attrs {'class': 'ping-threshold'};">
                             <div ng-cloak="true">
@@ -206,13 +207,13 @@
                             <div ng-cloak="true">
                                 <label class="section-label description" i18n:translate="">Ping settings</label>
                                 <div class="">
-                                    ${panel('form_field', field=create_form['ping_protocol'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'pingProtocol'}, **ping_protocol_attrs)}
+                                    ${panel('form_field', field=create_form['ping_protocol'], leftcol_width=0, rightcol_width=12, stack_label=True, ng_attrs={'model': 'pingProtocol'}, **ping_protocol_attrs)}
                                 </div>
                                 <div class="">
-                                    ${panel('form_field', field=create_form['ping_port'], leftcol_width=3, rightcol_width=9, min=1, max=65535, maxlength=5, ng_attrs={'model': 'pingPort'}, pattern=layout.integer_gt_zero_pattern)}
+                                    ${panel('form_field', field=create_form['ping_port'], leftcol_width=0, rightcol_width=12, stack_label=True, min=1, max=65535, maxlength=5, ng_attrs={'model': 'pingPort'}, pattern=layout.integer_gt_zero_pattern)}
                                 </div>
                                 <div class="" ng-show="pingProtocol === 'HTTP' || pingProtocol === 'HTTPS'">
-                                    ${panel('form_field', field=create_form['ping_path'], ng_attrs={'model': 'pingPath'}, leftcol_width=3, rightcol_width=9)}
+                                    ${panel('form_field', field=create_form['ping_path'], ng_attrs={'model': 'pingPath'}, leftcol_width=0, rightcol_width=12, stack_label=True, **ping_path_attrs)}
                                 </div>
                             </div>
                             <div class="expando" id="advanced-section" ng-cloak="" ng-init="expanded = false">
@@ -227,19 +228,19 @@
                                     <div ng-cloak="true">
                                         <label class="section-label description" i18n:translate="">Timing settings</label>
                                         <div class="">
-                                            ${panel('form_field', field=create_form['response_timeout'], leftcol_width=3, rightcol_width=9, min=1, ng_attrs={'model': 'responseTimeout'}, pattern=layout.integer_gt_zero_pattern)}
+                                            ${panel('form_field', field=create_form['response_timeout'], leftcol_width=0, rightcol_width=12, stack_label=True,  min=1, ng_attrs={'model': 'responseTimeout'}, pattern=layout.integer_gt_zero_pattern)}
                                         </div>
                                         <div class="">
-                                            ${panel('form_field', field=create_form['time_between_pings'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'timeBetweenPings'}, **ping_delay_attrs)}
+                                            ${panel('form_field', field=create_form['time_between_pings'], leftcol_width=0, rightcol_width=12, stack_label=True, ng_attrs={'model': 'timeBetweenPings'}, **ping_delay_attrs)}
                                         </div>
                                     </div>
                                     <div ng-cloak="true">
                                         <label class="section-label description" i18n:translate="">Instance thresholds</label>
                                         <div class="">
-                                            ${panel('form_field', field=create_form['failures_until_unhealthy'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'failuresUntilUnhealthy'}, **ping_threshold_attrs)}
+                                            ${panel('form_field', field=create_form['failures_until_unhealthy'], leftcol_width=0, rightcol_width=12, stack_label=True, ng_attrs={'model': 'failuresUntilUnhealthy'}, **ping_threshold_attrs)}
                                         </div>
                                         <div class="">
-                                            ${panel('form_field', field=create_form['passes_until_healthy'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'passesUntilHealthy'}, **ping_threshold_attrs)}
+                                            ${panel('form_field', field=create_form['passes_until_healthy'], leftcol_width=0, rightcol_width=12, stack_label=True, ng_attrs={'model': 'passesUntilHealthy'}, **ping_threshold_attrs)}
                                         </div>
                                     </div>
                                 </div>

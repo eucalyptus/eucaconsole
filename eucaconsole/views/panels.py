@@ -70,7 +70,7 @@ def top_nav(context, request, off_canvas=False):
 
 @panel_config('form_field', renderer='../templates/panels/form_field_row.pt')
 def form_field_row(context, request, field=None, reverse=False, leftcol_width=4, rightcol_width=8,
-                   inline=True, ng_attrs=None, **kwargs):
+                   inline=True, stack_label=False, ng_attrs=None, **kwargs):
     """ Widget for a singe form field row.
         The left/right column widths are Zurb Foundation grid units.
             e.g. leftcol_width=3 would set column for labels with a wrapper of <div class="small-3 columns">...</div>
@@ -113,9 +113,12 @@ def form_field_row(context, request, field=None, reverse=False, leftcol_width=4,
         for ngkey, ngvalue in ng_attrs.items():
             html_attrs[u'ng-{0}'.format(ngkey)] = ngvalue
 
+    if stack_label:
+        leftcol_width = 0
+
     return dict(
         field=field, error_msg=error_msg, html_attrs=html_attrs, inline=inline, checkbox=checkbox,
-        leftcol_width=leftcol_width, rightcol_width=rightcol_width, reverse=reverse
+        leftcol_width=leftcol_width, rightcol_width=rightcol_width, reverse=reverse, stack_label=stack_label
     )
 
 
