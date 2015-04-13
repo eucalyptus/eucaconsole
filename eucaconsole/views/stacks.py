@@ -28,7 +28,6 @@
 Pyramid views for Eucalyptus and AWS CloudFormation stacks
 
 """
-import logging
 import simplejson as json
 import os
 import urllib2
@@ -498,9 +497,8 @@ class StackWizardView(BaseView):
             template_body = files[0].file.read()
             template_name = files[0].name
         elif template_url:  # read from url
-            logging.info("reading template from :"+template_url)
             template_body = urllib2.urlopen(template_url).read()
-            template_name = template_url[template_url.rindex('/')+1:]
+            template_name = template_url[template_url.rindex('/') + 1:]
         else:
             s3_bucket = self.get_template_samples_bucket()
             mgr = CFSampleTemplateManager(s3_bucket)
@@ -519,13 +517,11 @@ class StackWizardView(BaseView):
         account_id = User.get_account_id(ec2_conn=self.get_connection(), request=self.request)
         region = self.request.session.get('region')
         bucket = s3_conn.create_bucket("cf-template-{acct}-{region}".format(acct=account_id, region=region))
-        logging.info("template name :"+template_name)
         key = bucket.get_key(template_name)
         if key is None:
             key = bucket.new_key(template_name)
         key.set_contents_from_string(template_body)
         template_url = key.generate_url(300)  # 5 minute URL, more than enough time, right?
-        logging.info("template body :"+template_body)
 
         parsed = json.loads(template_body)
         return template_url, parsed
