@@ -13,7 +13,7 @@
                         <span i18n:translate="">Size</span>
                         <span i18n:translate="" class="hide-for-small">(GB)</span>
                     </th>
-                    <th class="delete-on-terminate">
+                    <th class="delete-on-terminate" style="text-align:center;">
                         <span i18n:translate="" class="hide-for-small">Delete on Terminate</span>
                         <span class="show-for-small"
                               title="Delete on terminate" i18n:attributes="title"><i class="fi-trash"></i></span>

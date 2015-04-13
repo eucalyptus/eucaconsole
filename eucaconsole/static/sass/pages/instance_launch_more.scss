@@ -24,3 +24,9 @@ form input.name {
         display: none;
     }
 }
+
+// big hack to give this label a little more space and avoid wrapping
+#controls_ramdisk_id div label {
+    width: 145px;
+    left: 8px;
+}

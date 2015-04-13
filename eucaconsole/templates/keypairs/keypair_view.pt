@@ -82,11 +82,11 @@
                     <p i18n:translate="">Importing a public key allows you to use an existing SSH key to access your Eucalyptus instances.</p>
                     <form action="${request.route_path('keypair_import')}" method="post" data-abide="abide">
                         ${structure:keypair_import_form['csrf_token']}
-                        ${panel('form_field', field=keypair_import_form['name'], leftcol_width=3, rightcol_width=9, autofocus='', ng_attrs={'model': 'keypairName'}, **html_attrs_val)}
-                        ${panel('form_field', field=keypair_import_form['key_material'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'keypairMaterial'}, **html_attrs)}
+                        ${panel('form_field', field=keypair_import_form['name'], leftcol_width=3, rightcol_width=9, leftcol_width_large=3, rightcol_width_large=9, autofocus='', ng_attrs={'model': 'keypairName'}, **html_attrs_val)}
+                        ${panel('form_field', field=keypair_import_form['key_material'], leftcol_width=3, rightcol_width=9, leftcol_width_large=3, rightcol_width_large=9, ng_attrs={'model': 'keypairMaterial'}, **html_attrs)}
                         <div class="row">
-                            <div class="large-2 small-3 columns">&nbsp;</div>
-                            <div class="large-10 small-9 columns">
+                            <div class="small-3 columns">&nbsp;</div>
+                            <div class="small-9 columns">
                                 <label for="key-import-file">Or: </label>
                                 <input type="file" id="key-import-file"/>
                             </div>
