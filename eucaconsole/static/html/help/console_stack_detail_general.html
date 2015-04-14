@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en-us" lang="en-us">
+<head>
+<title>Stack Detail</title>
+</head>
+<body id="stack_detail_ui_context">
+
+
+    <h1 class="title topictitle1">Stack Detail</h1>
+
+    
+    <div class="body taskbody"><p class="shortdesc"> This page allows you to view details and delete the stack.</p>
+</div>
+
+    <div class="topic task nested1" id="stack_detail_general">
+        <h2 class="title topictitle2">General tab</h2>
+
+        
+        <div class="body taskbody"><p class="shortdesc">The General tab displays a variety of information about the stack. All the information in this window is non-editable.</p>
+
+            <ul class="ul steps-unordered"><li class="li step">
+                    <span class="ph cmd">The <strong class="ph b">Stack</strong> section shows the name of the stack, the ID associated with the stack, when it was created and its current status.</span>
+                </li>
+<li class="li step">
+                    <span class="ph cmd">The <strong class="ph b">Tags</strong> section shows up to 10 user-defined tags to associate with this stack, represented by key/value pairs. 
+                        Tags defined for the stack are propagated to EC2 resources that are created as part of the stack.</span>
+                </li>
+<li class="li step">
+                    <span class="ph cmd">The <strong class="ph b">Outputs</strong> section displays the values declared in response to <em class="ph i">describe-stack</em> calls that can be easily read in a string form. 
+                        These values are those in the stack that are not otherwise displayed, like resource attributes.</span>
+                </li>
+<li class="li step">
+                    <span class="ph cmd">The <strong class="ph b">Resources</strong> section lists the various resources used in the stack, such as auto scaling groups, security groups, 
+                    load balancers, launch configurations, and so on.</span>
+                </li>
+</ul>
+
+        </div>
+
+    
+        <div class="topic task nested2" id="stack_detail_ui_context_menu">
+            <h3 class="title topictitle3">Actions menu</h3>
+
+            
+            <div class="body taskbody"><p class="shortdesc">Clicking the down arrow from the <span class="ph uicontrol">Actions</span> menu allows you to delete the stack.</p>
+</div>
+
+            <div class="topic task nested3" id="stack_detail_general_delete">
+                <h4 class="title topictitle4">Delete a stack</h4>
+
+                
+                <div class="body taskbody">
+                    <div class="section context">To delete a stack:</div>
+
+                    <ol class="ol steps"><li class="li step">
+                            <span class="ph cmd">Click the<span class="ph uicontrol"> Actions</span> menu and select<span class="ph uicontrol"> Delete</span>.</span>
+                        </li>
+<li class="li step">
+                            <span class="ph cmd">When the confirmation dialog box displays, click the <span class="ph uicontrol">Yes, Delete Stack</span> button
+                                to confirm the deletion. Otherwise, close the confirmation dialog box to cancel. </span>
+                        </li>
+</ol>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+        
+        <div class="topic task nested1" id="stack_detail_template">
+            <h2 class="title topictitle2">Template tab</h2>
+
+            
+            <div class="body taskbody"><p class="shortdesc">The Template tab displays information about the template used to create the stack.</p>
+
+               <ul class="ul steps-unordered"><li class="li step">
+                       <span class="ph cmd">The <strong class="ph b">Template</strong> section provides a desription of the template used to create the stack.</span>
+                   </li>
+<li class="li step">
+                      <span class="ph cmd">The <strong class="ph b">Parameters</strong> section displays the set of values provided when creating the stack that match 
+                          the parameters defined in the template.</span>
+                  </li>
+</ul>
+
+            </div>
+
+        </div>
+
+
+
+<div class="topic task nested1" id="stack_detail_events">
+            <h2 class="title topictitle2">Events tab</h2>
+
+            
+            <div class="body taskbody"><p class="shortdesc">The Events tab lists each event that took place in creation of a stack.</p>
+
+                <ul class="ul steps-unordered"><li class="li step stepexpand">
+                        <span class="ph cmd">Use the Magic search bar to filter the events you want to view.</span>
+                        <div class="itemgroup info">Status and Physical ID are examples of event criteria that can be specified. Additionally, you 
+                        can filter by typing in text similar to searching by keywords.</div>
+                    </li>
+<li class="li step stepexpand">
+                        <span class="ph cmd">The <strong class="ph b">Timestamp</strong> column shows the date and time in which the event associated with the status occured.</span>
+                    </li>
+<li class="li step stepexpand">
+                        <span class="ph cmd">The <strong class="ph b">Status Reason</strong> column shows any reason for an exception of an event to occur on a particular action made on the stack.</span>
+                    </li>
+<li class="li step stepexpand">
+                        <span class="ph cmd">The <strong class="ph b">Status</strong> column shows the current state of a particular resource applied to the stack. 
+                            For example, the action associated with establighing a load balancer for the stack is identified as its own event.</span>
+                    </li>
+<li class="li step stepexpand">
+                        <span class="ph cmd">The <strong class="ph b">Physical ID</strong> column provides an active link (if available) to the resource created that triggered the event.</span>
+                    </li>
+</ul>
+
+               
+            </div>
+
+        </div>
+
+    
+</body>
+</html>
