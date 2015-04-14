@@ -129,7 +129,7 @@ angular.module('UploadFilePage', ['S3SharingPanel', 'S3MetadataEditor'])
             $scope.cancel();
         };
         $scope.cancel = function () {
-            if (window.matchMedia(Foundation.media_queries.small).matches === false) {
+            if (Foundation.utils.is_medium_up()) {
                 window.close();
             }
             else {
