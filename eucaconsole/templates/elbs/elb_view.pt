@@ -6,7 +6,7 @@
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="ELBPage" ng-controller="ELBPageCtrl"
-         ng-init="initController('${controller_options_json}')">
+        ng-init="initController('${controller_options_json}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('elbs')}" i18n:translate="">Load balancer</a></li>
@@ -32,12 +32,12 @@
                 <form>
                     <h6 i18n:translate="">Load balancer</h6>
                     <div class="row controls-wrapper readonly">
-                        <div class="small-3 columns"><label i18n:translate="">DNS name</label></div>
-                        <div class="small-9 columns value">${elb.dns_name}</div>
+                        <div class="small-3 columns"><label i18n:translate="">Name</label></div>
+                        <div class="small-9 columns value">${elb_name}</div>
                     </div>
                     <div class="row controls-wrapper readonly">
-                        <div class="small-3 columns"><label i18n:translate="">In use?</label></div>
-                        <div class="small-9 columns value">${'yes' if in_use else 'no'}</div>
+                        <div class="small-3 columns"><label i18n:translate="">DNS name</label></div>
+                        <div class="small-9 columns value">${elb.dns_name}</div>
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="small-3 columns"><label i18n:translate="">Creation time</label></div>
@@ -45,6 +45,20 @@
                             {{ '${elb_created_time}' | date: '${layout.angular_date_format}' }}
                         </div>
                     </div>
+                    <div class="row controls-wrapper readonly">
+                        <div class="small-3 columns"><label i18n:translate="">Source security group</label></div>
+                        <div class="small-9 columns value">${elb.source_security_group.name}</div>
+                    </div>
+                    <div class="row controls-wrapper readonly">
+                        <div class="small-3 columns"><label i18n:translate="">Idle timeout</label></div>
+                        <div class="small-9 columns value">${elb.health_check.interval}</div>
+                    </div>
+                    <hr />
+                    <h6 i18n:translate="">Listeners</h6>
+                    <hr />
+                    <h6 i18n:translate="">Tags</h6>
+                    <hr />
+                    <h6 i18n:translate="">Network & security</h6>
                 </form>
                 <div>&nbsp;</div>
             </div>

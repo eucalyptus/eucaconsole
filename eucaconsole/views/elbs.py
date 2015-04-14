@@ -203,7 +203,8 @@ class ELBView(BaseView):
         with boto_error_handler(request):
             self.elb = self.get_elb()
             # boto doesn't convert elb created_time into dtobj like it does for others
-            self.elb.created_time = boto.utils.parse_ts(self.elb.created_time)
+            if self.elb:
+                self.elb.created_time = boto.utils.parse_ts(self.elb.created_time)
         self.delete_form = ELBDeleteForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
             elb=self.elb,
