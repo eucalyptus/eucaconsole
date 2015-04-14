@@ -199,13 +199,17 @@ class ELBView(BaseView):
     def __init__(self, request):
         super(ELBView, self).__init__(request)
         self.ec2_conn = self.get_connection()
+        self.iam_conn = self.get_connection(conn_type='iam')
         self.elb_conn = self.get_connection(conn_type='elb')
+        self.autoscale_conn = self.get_connection(conn_type='autoscale')
+        self.vpc_conn = self.get_connection(conn_type='vpc')
         with boto_error_handler(request):
             self.elb = self.get_elb()
             # boto doesn't convert elb created_time into dtobj like it does for others
             if self.elb:
                 self.elb.created_time = boto.utils.parse_ts(self.elb.created_time)
         self.delete_form = ELBDeleteForm(self.request, formdata=self.request.params or None)
+        self.is_vpc_supported = BaseView.is_vpc_supported(request)
         self.render_dict = dict(
             elb=self.elb,
             elb_name=self.escape_braces(self.elb.name) if self.elb else '',
@@ -248,7 +252,82 @@ class ELBView(BaseView):
 
     def get_controller_options_json(self):
         return BaseView.escape_json(json.dumps({
+            'resource_name': 'elb',
+            'listener_list': self.get_listener_list(),
+            'protocol_list': self.get_protocol_list(),
+            'port_range_pattern':
+                '^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$',
+            'tag_key_pattern': '^(?!aws:).{0,128}$',
+            'tag_value_pattern': '^(?!aws:).{0,256}$',
+            'is_vpc_supported': self.is_vpc_supported,
+            'default_vpc_network': self.get_default_vpc_network(),
+            'availability_zone_choices': self.get_availability_zones(),
+            'vpc_subnet_choices': self.get_vpc_subnets(),
+            'securitygroups_json_endpoint': self.request.route_path('securitygroups_json'),
+            'instances_json_endpoint': self.request.route_path('instances_json'),
+            'show_name_tag': True
         }))
+
+    def get_listener_list(self):
+        listener_list = [] 
+        for listener_obj in self.elb.listeners:
+           listener = listener_obj.get_tuple()
+           listener_list.append({'from_port': listener[0],
+                                 'to_port': listener[1],
+                                 'protocol': listener[2]})
+        return listener_list
+
+    def get_protocol_list(self):
+        protocol_list = ()
+        if self.cloud_type == 'aws':
+            protocol_list = ({'name': 'HTTP', 'value': 'HTTP', 'port': '80'},
+                             {'name': 'TCP', 'value': 'TCP', 'port': '80'})
+        else:
+            protocol_list = ({'name': 'HTTP', 'value': 'HTTP', 'port': '80'},
+                             {'name': 'HTTPS', 'value': 'HTTPS', 'port': '443'},
+                             {'name': 'TCP', 'value': 'TCP', 'port': '80'},
+                             {'name': 'SSL', 'value': 'SSL', 'port': '443'})
+        return protocol_list
+
+    def get_default_vpc_network(self):
+        default_vpc = self.request.session.get('default_vpc', [])
+        if self.is_vpc_supported:
+            if 'none' in default_vpc or 'None' in default_vpc:
+                if self.cloud_type == 'aws':
+                    return 'None'
+                # for euca, return the first vpc on the list
+                if self.vpc_conn:
+                    with boto_error_handler(self.request):
+                        vpc_networks = self.vpc_conn.get_all_vpcs()
+                        if vpc_networks:
+                            return vpc_networks[0].id
+            else:
+                return default_vpc[0]
+        return 'None'
+
+    def get_vpc_subnets(self):
+        subnets = []
+        if self.vpc_conn:
+            with boto_error_handler(self.request):
+                vpc_subnets = self.vpc_conn.get_all_subnets()
+                for vpc_subnet in vpc_subnets:
+                    subnets.append(dict(
+                        id=vpc_subnet.id,
+                        vpc_id=vpc_subnet.vpc_id,
+                        availability_zone=vpc_subnet.availability_zone,
+                        state=vpc_subnet.state,
+                        cidr_block=vpc_subnet.cidr_block,
+                    ))
+        return subnets
+
+    def get_availability_zones(self):
+        availability_zones = []
+        if self.ec2_conn:
+            with boto_error_handler(self.request):
+                zones = self.ec2_conn.get_all_zones()
+                for zone in zones:
+                    availability_zones.append(dict(id=zone.name, name=zone.name))
+        return availability_zones
 
 
 class CreateELBView(BaseView):

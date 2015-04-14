@@ -56,6 +56,11 @@ angular.module('EucaConsoleUtils').directive('elbListenerEditor', function() {
                         $scope.protocolList = $scope.protocolList.concat(options.protocol_list);
                     }
                 }
+                if (options.hasOwnProperty('listener_list')) {
+                    if (options.listener_list instanceof Array && options.listener_list.length > 0) {
+                        $scope.setInitialListenerArray(options.listener_list);
+                    }
+                }
                 if (options.hasOwnProperty('port_range_pattern')) {
                     $scope.portRangePattern = options.port_range_pattern;
                 }
@@ -158,6 +163,17 @@ angular.module('EucaConsoleUtils').directive('elbListenerEditor', function() {
                     'toPort': $scope.toPort,
                 };
                 return block;
+            };
+            $scope.setInitialListenerArray = function (listener_list) {
+                angular.forEach(listener_list, function (listener) {
+                    var block = {
+                        'fromProtocol': listener.protocol,
+                        'fromPort': listener.from_port,
+                        'toProtocol': listener.protocol,
+                        'toPort': listener.to_port,
+                    };
+                    $scope.listenerArray.push(block);
+                });
             };
             $scope.addListener = function ($event) {
                 $event.preventDefault();
