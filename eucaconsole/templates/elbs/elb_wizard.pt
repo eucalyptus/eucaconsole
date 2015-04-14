@@ -42,7 +42,7 @@
                         <div class="content" ng-class="stepClasses[0]" id="step1"
                             tal:define="html_attrs_val {'pattern': '^[a-zA-Z0-9\-]{1,255}$', 'class': 'text-input'};">
                             <div ng-cloak="true">
-                                <label class="section-label description" i18n:translate="">General</label>
+                                <h6 i18n:translate="">General</h6>
                                 ${panel('form_field', field=create_form['name'], rightcol_width=12, stack_label=True, ng_attrs={'model': 'elbName'}, **html_attrs_val)}
                             </div>
                             <hr />
@@ -87,7 +87,6 @@
                         <div class="content" ng-class="stepClasses[1]" id="step2"
                             tal:define="security_group_attrs {'data-placeholder': security_group_placeholder_text};">
                             <div ng-cloak="true">
-                                <label class="section-label" i18n:translate="">Network</label>
                                 ${panel('form_field', field=create_form['vpc_network'], ng_attrs={'model': 'vpcNetwork'}, rightcol_width=12, stack_label=True)}
                             </div>
                             <div ng-cloak="true" ng-show="vpcNetwork !== 'None'">
@@ -206,7 +205,7 @@
                                 <div i18n:translate="">Instances that fail the health check will be removed from the load balancer.</div>
                             </div>
                             <div ng-cloak="true">
-                                <label class="section-label description" i18n:translate="">Ping settings</label>
+                                <h6 i18n:translate="">Ping settings</h6>
                                 <div class="">
                                     ${panel('form_field', field=create_form['ping_protocol'], rightcol_width=12, stack_label=True, ng_attrs={'model': 'pingProtocol'}, **ping_protocol_attrs)}
                                 </div>
@@ -227,7 +226,7 @@
                                 </div>
                                 <div class="section columns" ng-show="expanded">
                                     <div ng-cloak="true">
-                                        <label class="section-label description" i18n:translate="">Timing settings</label>
+                                        <h6 i18n:translate="">Timing settings</h6>
                                         <div class="">
                                             ${panel('form_field', field=create_form['response_timeout'], rightcol_width=12, stack_label=True,  min=1, ng_attrs={'model': 'responseTimeout'}, pattern=layout.integer_gt_zero_pattern)}
                                         </div>
@@ -236,7 +235,7 @@
                                         </div>
                                     </div>
                                     <div ng-cloak="true">
-                                        <label class="section-label description" i18n:translate="">Instance thresholds</label>
+                                        <h6 i18n:translate="">Instance thresholds</h6>
                                         <div class="">
                                             ${panel('form_field', field=create_form['failures_until_unhealthy'], rightcol_width=12, stack_label=True, ng_attrs={'model': 'failuresUntilUnhealthy'}, **ping_threshold_attrs)}
                                         </div>
