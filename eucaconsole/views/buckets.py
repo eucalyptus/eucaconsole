@@ -201,7 +201,6 @@ class BucketXHRView(BaseView, BucketMixin):
         if not keys:
             return dict(message=_(u"keys must be specified."), errors=[])
         bucket = self.s3_conn.head_bucket(self.bucket_name)
-        errors = []
         deleted_keys = ', '.join(keys) if isinstance(keys, list) else keys
         self.log_request(u"Deleting keys from {0} : {1}".format(self.bucket_name, deleted_keys))
         with boto_error_handler(self.request):
