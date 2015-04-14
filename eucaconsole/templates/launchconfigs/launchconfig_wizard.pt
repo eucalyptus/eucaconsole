@@ -75,6 +75,23 @@
                                 </div>
                             </div>
                             <hr />
+                            <p class="description" i18n:translate="">User data</p>
+                            <div class="row controls-wrapper readonly">
+                                <div class="small-3 columns">
+                                    <label i18n:translate="">User data<span class="helptext-icon" title="User data file may not exceed 16 KB" data-tooltip="">?</span></label>
+                                </div>
+                                <div class="small-9 columns value">
+                                    <input type="radio" id="inputtype" name="inputtype" value="text" ng-model="inputtype"/>
+                                    <label id='userdatalabel' i18n:translate="">Enter text</label>
+                                    <textarea id="userdata" name="userdata" ng-model="userData" ng-show="inputtype=='text'"></textarea>
+                                    <br/>
+                                    <input type="radio" id="inputtype" name="inputtype" value="file" ng-model="inputtype"/>
+                                    <label id='userdatalabel' i18n:translate="">Upload file</label>
+                                    <input id="userdata_file" type="file" ng-model="userDataFile" ng-disabled="isNotStopped" name="userdata_file" disabled="disabled" ng-show="inputtype=='file'"/><span id="userdatatype"></span>
+                                    
+                                </div>
+                            </div>
+                            <hr />
                             <div>
                                 <label>
                                     <span class="req">*</span>
@@ -176,23 +193,8 @@
                         <!--! Step 4: Advanced tab content -->
                         <div class="content" id="step4">
                             <p class="description" i18n:translate="">
-                                Please specify user data and other advanced options (optional).
+                                Advanced options.
                             </p>
-                            <div class="row controls-wrapper readonly">
-                                <div class="small-4 columns">
-                                    <label i18n:translate="">User data<span class="helptext-icon" title="User data file may not exceed 16 KB" data-tooltip="">?</span></label>
-                                </div>
-                                <div class="small-8 columns value">
-                                    <input type="radio" id="inputtype" name="inputtype" value="text" ng-model="inputtype"/>
-                                    <label id='userdatalabel' i18n:translate="">Enter text</label>
-                                    <textarea id="userdata" name="userdata" ng-show="inputtype=='text'"></textarea>
-                                    <br/>
-                                    <input type="radio" id="inputtype" name="inputtype" value="file" ng-model="inputtype"/>
-                                    <label id='userdatalabel' i18n:translate="">Upload file</label>
-                                    <input id="userdata_file" type="file" ng-model="userDataFile" ng-disabled="isNotStopped" name="userdata_file" disabled="disabled" ng-show="inputtype=='file'"/><span id="userdatatype"></span>
-                                    
-                                </div>
-                            </div>
                             ${panel('form_field', field=create_form['kernel_id'])}
                             ${panel('form_field', field=create_form['ramdisk_id'])}
                             <div class="small-8 columns right">
@@ -250,6 +252,12 @@
                         <div class="small-4 columns"><label i18n:translate="" class="right">Type:</label></div>
                         <div class="small-8 columns value">{{ instanceType }}</div>
                     </div>
+                    <div class="row">
+                        <div class="columns value" ng-show="userData || userDataFile">
+                            <br/>
+                            <i class="fi-check"></i> User data added
+                        </div>
+                    </div>
                 </div>
                 <div class="section step3 hide">
                     <div class="row">
@@ -268,11 +276,6 @@
                     </div>
                 </div>
                 <div class="section step4 hide">
-                    <div class="row">
-                        <div class="columns value" ng-show="userData || userDataFile">
-                            <i class="fi-check"></i> User data added
-                        </div>
-                    </div>
                     <div class="row">
                         <div class="columns value" ng-show="monitoringEnabled">
                             <i class="fi-check"></i> Monitoring enabled
