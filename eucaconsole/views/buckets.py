@@ -204,6 +204,14 @@ class BucketXHRView(BaseView, BucketMixin):
         errors = []
         deleted_keys = ', '.join(keys) if isinstance(keys, list) else keys
         self.log_request(u"Deleting keys from {0} : {1}".format(self.bucket_name, deleted_keys))
+        with boto_error_handler(self.request):
+            bucket.delete_keys(keys.split(','))
+            success_msg = _(u"Successfully deleted key(s).")
+            if detailpage:
+                # Send notification via session on detail page since post-delete URL updates via window.location
+                self.request.session.flash(success_msg, queue=Notification.SUCCESS)
+            return dict(message=success_msg)
+        """
         for k in keys.split(','):
             key = bucket.get_key(k, validate=False)
             try:
@@ -212,13 +220,11 @@ class BucketXHRView(BaseView, BucketMixin):
                 self.log_request("Couldn't delete "+k+":"+err.message)
                 errors.append(k)
         if len(errors) == 0:
-            success_msg = _(u"Successfully deleted key(s).")
-            if detailpage:
-                # Send notification via session on detail page since post-delete URL updates via window.location
-                self.request.session.flash(success_msg, queue=Notification.SUCCESS)
-            return dict(message=success_msg)
+        """
+        """
         else:
             return dict(message=_(u"Failed to delete all keys."), errors=errors)
+        """
 
     @view_config(route_name='bucket_put_items', renderer='json', request_method='POST', xhr=True)
     def bucket_put_items(self):
