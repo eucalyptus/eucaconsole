@@ -50,7 +50,15 @@ form {
     }
 }
 
-.elb-listener-table {
+table.elb-listener-table {
+    border-width: 2px;
+    border-style: solid;
+    border-color: $euca-grey;
+    thead {
+        border-width: 2px;
+        border-style: solid;
+        border-color: $euca-grey;
+    }
     tr.top-header {
         border-bottom: 0px;
     }
