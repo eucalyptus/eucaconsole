@@ -6,6 +6,7 @@
 
 angular.module('ELBPage', ['EucaConsoleUtils'])
     .controller('ELBPageCtrl', function ($scope, eucaUnescapeJson) {
+        $scope.isNotChanged = true;
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.elbInUse = options.in_use;
@@ -44,6 +45,8 @@ angular.module('ELBPage', ['EucaConsoleUtils'])
                     }
                }
             });
+        };
+        $scope.submitSaveChanges = function ($event) {
         };
     })
 ;
