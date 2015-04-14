@@ -42,7 +42,7 @@ from ..i18n import _
 from ..forms.elbs import (ELBDeleteForm, ELBsFiltersForm, CreateELBForm,
                           ELBInstancesFiltersForm, CertificateForm, BackendCertificateForm)
 from ..models import Notification
-from ..views import LandingPageView, BaseView, JSONResponse
+from ..views import LandingPageView, BaseView, TaggedItemView, JSONResponse
 from . import boto_error_handler
 
 
@@ -192,7 +192,7 @@ class ELBsJsonView(LandingPageView):
         return None
 
 
-class ELBView(BaseView):
+class ELBView(TaggedItemView):
     """Views for single ELB"""
     TEMPLATE = '../templates/elbs/elb_view.pt'
 
@@ -218,6 +218,7 @@ class ELBView(BaseView):
             delete_form=self.delete_form,
             in_use=False,
             is_vpc_supported=self.is_vpc_supported,
+            elb_vpc_network=self.get_vpc_network_name(),
             controller_options_json=self.get_controller_options_json(),
         )
 
@@ -270,12 +271,12 @@ class ELBView(BaseView):
         }))
 
     def get_listener_list(self):
-        listener_list = [] 
+        listener_list = []
         for listener_obj in self.elb.listeners:
-           listener = listener_obj.get_tuple()
-           listener_list.append({'from_port': listener[0],
-                                 'to_port': listener[1],
-                                 'protocol': listener[2]})
+            listener = listener_obj.get_tuple()
+            listener_list.append({'from_port': listener[0],
+                                  'to_port': listener[1],
+                                  'protocol': listener[2]})
         return listener_list
 
     def get_protocol_list(self):
@@ -289,6 +290,16 @@ class ELBView(BaseView):
                              {'name': 'TCP', 'value': 'TCP', 'port': '80'},
                              {'name': 'SSL', 'value': 'SSL', 'port': '443'})
         return protocol_list
+
+    def get_vpc_network_name(self):
+        if self.is_vpc_supported:
+            if self.elb.vpc_id and self.vpc_conn:
+                with boto_error_handler(self.request):
+                    vpc_networks = self.vpc_conn.get_all_vpcs(vpc_ids=self.elb.vpc_id)
+                    if vpc_networks:
+                        vpc_name = TaggedItemView.get_display_name(vpc_networks[0])
+                        return vpc_name
+        return 'None'
 
     def get_default_vpc_network(self):
         default_vpc = self.request.session.get('default_vpc', [])
