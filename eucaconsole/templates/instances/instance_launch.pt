@@ -180,9 +180,6 @@
                         </div>
                         <!--! Step 4: Advanced tab content -->
                         <div class="content" id="step4">
-                            <p class="description" i18n:translate="">
-                                Advanced options.
-                            </p>
                             ${panel('form_field', field=launch_form['kernel_id'])}
                             ${panel('form_field', field=launch_form['ramdisk_id'])}
                             <div class="small-8 columns right">
