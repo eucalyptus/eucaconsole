@@ -33,6 +33,41 @@ from wtforms import validators
 
 from ..i18n import _
 from . import BaseSecureForm, ChoicesManager, TextEscapedField
+from ..views import BaseView
+
+
+class ELBForm(BaseSecureForm):
+    """Elastic Load Balancer update form"""
+    securitygroup_error_msg = _(u'Security groups are required')
+    securitygroup = wtforms.SelectMultipleField(
+        label=_(u'Security groups'),
+    )
+
+    def __init__(self, request, conn=None, vpc_conn=None, securitygroups=None, **kwargs):
+        super(ELBForm, self).__init__(request, **kwargs)
+        self.conn = conn
+        self.vpc_conn = vpc_conn
+        self.cloud_type = request.session.get('cloud_type', 'euca')
+        self.is_vpc_supported = BaseView.is_vpc_supported(request)
+        self.security_groups = securitygroups or []
+        self.set_error_messages()
+        self.set_choices()
+
+    def set_error_messages(self):
+        self.securitygroup.error_msg = self.securitygroup_error_msg
+
+    def set_choices(self):
+        self.securitygroup.choices = self.set_security_group_choices()
+
+    def set_security_group_choices(self):
+        choices = []
+        for sgroup in self.security_groups:
+            sg_name = sgroup.name
+            sg_name = BaseView.escape_braces(sg_name)
+            choices.append((sgroup.id, sg_name))
+        if not self.security_groups:
+            choices.append(('default', 'default'))
+        return sorted(set(choices))
 
 
 class ELBDeleteForm(BaseSecureForm):

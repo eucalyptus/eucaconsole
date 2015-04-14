@@ -32,6 +32,7 @@
                 </metal:block>
                 <form action="" id="elb-view-form"
                       method="post" data-abide="abide" enctype="multipart/form-data">
+                    ${structure:elb_form['csrf_token']}
                     <h6 i18n:translate="">Load balancer</h6>
                     <div class="row controls-wrapper readonly">
                         <div class="small-3 columns"><label i18n:translate="">Name</label></div>
@@ -69,17 +70,15 @@
                             options='${controller_options_json}'>
                         </tag-editor>
                     </div>
-                    <div tal:condition="is_vpc_supported and elb_vpc_network is not 'None'">
+                    <div tal:condition="is_vpc_supported and elb_vpc_network is not 'None'"
+                            tal:define="security_group_attrs {'data-placeholder': security_group_placeholder_text};">
                         <hr />
                         <h6 i18n:translate="">Network & security</h6>
                         <div class="row controls-wrapper readonly">
                             <div class="small-3 columns"><label i18n:translate="">VPC network</label></div>
                             <div class="small-9 columns value">${elb_vpc_network}</div>
                         </div>
-                        <div class="row controls-wrapper readonly">
-                            <div class="small-3 columns"><label i18n:translate="">Security groups</label></div>
-                            <div class="small-9 columns value">${elb.security_groups}</div>
-                        </div>
+                        ${panel('form_field', field=elb_form['securitygroup'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'securityGroups'}, **security_group_attrs)}
                     </div>
                     <hr />
                     <div>

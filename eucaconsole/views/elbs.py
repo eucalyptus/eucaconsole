@@ -39,7 +39,7 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config
 
 from ..i18n import _
-from ..forms.elbs import (ELBDeleteForm, ELBsFiltersForm, CreateELBForm,
+from ..forms.elbs import (ELBForm, ELBDeleteForm, ELBsFiltersForm, CreateELBForm,
                           ELBInstancesFiltersForm, CertificateForm, BackendCertificateForm)
 from ..models import Notification
 from ..views import LandingPageView, BaseView, TaggedItemView, JSONResponse
@@ -208,17 +208,23 @@ class ELBView(TaggedItemView):
             # boto doesn't convert elb created_time into dtobj like it does for others
             if self.elb:
                 self.elb.created_time = boto.utils.parse_ts(self.elb.created_time)
-        self.delete_form = ELBDeleteForm(self.request, formdata=self.request.params or None)
         self.is_vpc_supported = BaseView.is_vpc_supported(request)
+        self.elb_form = ELBForm(
+            self.request, conn=self.ec2_conn, vpc_conn=self.vpc_conn,
+            securitygroups=self.get_security_groups(),
+            formdata=self.request.params or None)
+        self.delete_form = ELBDeleteForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
             elb=self.elb,
             elb_name=self.escape_braces(self.elb.name) if self.elb else '',
             elb_created_time=self.dt_isoformat(self.elb.created_time),
             escaped_elb_name=quote(self.elb.name),
+            elb_form=self.elb_form,
             delete_form=self.delete_form,
             in_use=False,
             is_vpc_supported=self.is_vpc_supported,
             elb_vpc_network=self.get_vpc_network_name(),
+            security_group_placeholder_text=_(u'Select...'),
             controller_options_json=self.get_controller_options_json(),
         )
 
@@ -265,6 +271,7 @@ class ELBView(TaggedItemView):
             'default_vpc_network': self.get_default_vpc_network(),
             'availability_zone_choices': self.get_availability_zones(),
             'vpc_subnet_choices': self.get_vpc_subnets(),
+            'securitygroups': self.elb.security_groups,
             'securitygroups_json_endpoint': self.request.route_path('securitygroups_json'),
             'instances_json_endpoint': self.request.route_path('instances_json'),
             'show_name_tag': True
@@ -340,6 +347,13 @@ class ELBView(TaggedItemView):
                 for zone in zones:
                     availability_zones.append(dict(id=zone.name, name=zone.name))
         return availability_zones
+
+    def get_security_groups(self):
+        securitygroups = []
+        if self.elb.vpc_id:
+            with boto_error_handler(self.request):
+                securitygroups = self.ec2_conn.get_all_security_groups(filters={'vpc-id': [self.elb.vpc_id]})
+        return securitygroups
 
 
 class CreateELBView(BaseView):
