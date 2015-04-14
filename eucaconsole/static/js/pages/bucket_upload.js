@@ -41,7 +41,7 @@ angular.module('UploadFilePage', ['S3SharingPanel', 'S3MetadataEditor'])
             $scope.$on('s3:sharingPanelAclUpdated', function () {
                 $scope.hasChangesToBeSaved = true;
             });
-            $scope.$watch('files', function (newVals) {
+            $scope.$watchCollection('files', function (newVals) {
                 $('#size-error').css('display', 'none');
                 $scope.isNotValid = false;
                 if (newVals.length > 0) {
@@ -105,7 +105,9 @@ angular.module('UploadFilePage', ['S3SharingPanel', 'S3MetadataEditor'])
                         var parentWindow = window.opener;
                         $('#upload-files-modal').foundation('reveal', 'close');
                         $scope.hasChangesToBeSaved = false;
-                        parentWindow.postMessage('s3:fileUploaded', '*');
+                        if (parentWindow) {
+                            parentWindow.postMessage('s3:fileUploaded', '*');
+                        }
                         $scope.cancel();
                     }
                     if ($scope.uploading === true) {
