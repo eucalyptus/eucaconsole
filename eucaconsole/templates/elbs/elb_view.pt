@@ -56,7 +56,6 @@
                         <div class="small-9 columns value">${elb.health_check.interval}</div>
                     </div>
                     <hr />
-                    <h6 i18n:translate="">Listeners</h6>
                     <div>
                         <elb-listener-editor
                             template="${request.static_path('eucaconsole:static/html/directives/elb_listener_editor.html')}"
