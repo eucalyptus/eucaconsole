@@ -64,11 +64,17 @@
                         </elb-listener-editor>
                     </div>
                     <hr />
-                    <h6 i18n:translate="">Tags</h6>
+                    <div>
+                        <tag-editor
+                            template="${request.static_path('eucaconsole:static/html/directives/tag_editor.html')}"
+                            options='${controller_options_json}'>
+                        </tag-editor>
+                    </div>
                     <hr />
-                    <h6 i18n:translate="">Network & security</h6>
+                    <div tal:condition="is_vpc_supported">
+                        <h6 i18n:translate="">Network & security</h6>
+                    </div>
                 </form>
-                <div>&nbsp;</div>
             </div>
         </div>
         <div class="large-5 columns">
@@ -89,6 +95,7 @@
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/elb.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/elb_listener_editor.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/tag_editor_directive.js')}"></script>
 </div>
 
 </metal:block>

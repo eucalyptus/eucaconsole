@@ -217,6 +217,7 @@ class ELBView(BaseView):
             escaped_elb_name=quote(self.elb.name),
             delete_form=self.delete_form,
             in_use=False,
+            is_vpc_supported=self.is_vpc_supported,
             controller_options_json=self.get_controller_options_json(),
         )
 
