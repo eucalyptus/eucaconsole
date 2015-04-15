@@ -35,7 +35,7 @@ import time
 import boto.utils
 from boto.ec2.elb import HealthCheck
 
-from pyramid.httpexceptions import HTTPFound
+from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from pyramid.view import view_config
 
 from ..i18n import _
@@ -208,6 +208,8 @@ class ELBView(TaggedItemView):
             # boto doesn't convert elb created_time into dtobj like it does for others
             if self.elb:
                 self.elb.created_time = boto.utils.parse_ts(self.elb.created_time)
+            else:
+                raise HTTPNotFound()
         self.is_vpc_supported = BaseView.is_vpc_supported(request)
         self.elb_form = ELBForm(
             self.request, conn=self.ec2_conn, vpc_conn=self.vpc_conn,
@@ -217,8 +219,8 @@ class ELBView(TaggedItemView):
         self.render_dict = dict(
             elb=self.elb,
             elb_name=self.escape_braces(self.elb.name) if self.elb else '',
-            elb_created_time=self.dt_isoformat(self.elb.created_time),
-            escaped_elb_name=quote(self.elb.name),
+            elb_created_time=self.dt_isoformat(self.elb.created_time) if self.elb else '',
+            escaped_elb_name=quote(self.elb.name) if self.elb else '',
             elb_form=self.elb_form,
             delete_form=self.delete_form,
             in_use=False,
@@ -271,7 +273,7 @@ class ELBView(TaggedItemView):
             'default_vpc_network': self.get_default_vpc_network(),
             'availability_zone_choices': self.get_availability_zones(),
             'vpc_subnet_choices': self.get_vpc_subnets(),
-            'securitygroups': self.elb.security_groups,
+            'securitygroups': self.elb.security_groups if self.elb else [],
             'securitygroups_json_endpoint': self.request.route_path('securitygroups_json'),
             'instances_json_endpoint': self.request.route_path('instances_json'),
             'show_name_tag': True
@@ -279,11 +281,12 @@ class ELBView(TaggedItemView):
 
     def get_listener_list(self):
         listener_list = []
-        for listener_obj in self.elb.listeners:
-            listener = listener_obj.get_tuple()
-            listener_list.append({'from_port': listener[0],
-                                  'to_port': listener[1],
-                                  'protocol': listener[2]})
+        if self.elb:
+            for listener_obj in self.elb.listeners:
+                listener = listener_obj.get_tuple()
+                listener_list.append({'from_port': listener[0],
+                                      'to_port': listener[1],
+                                      'protocol': listener[2]})
         return listener_list
 
     def get_protocol_list(self):
@@ -350,7 +353,7 @@ class ELBView(TaggedItemView):
 
     def get_security_groups(self):
         securitygroups = []
-        if self.elb.vpc_id:
+        if self.elb and self.elb.vpc_id:
             with boto_error_handler(self.request):
                 securitygroups = self.ec2_conn.get_all_security_groups(filters={'vpc-id': [self.elb.vpc_id]})
         return securitygroups
