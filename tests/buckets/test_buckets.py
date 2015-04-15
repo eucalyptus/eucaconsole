@@ -30,24 +30,47 @@ Tests for S3 buckets, objects, and related forms
 """
 import re
 
+import boto
+
+from boto.s3.acl import ACL, Policy
 from boto.s3.bucket import Bucket
 from boto.s3.key import Key
+from boto.s3.user import User
+from moto import mock_s3
 
 from pyramid import testing
 from pyramid.httpexceptions import HTTPNotFound, HTTPBadRequest
 
 from eucaconsole.forms.buckets import SharingPanelForm
-from eucaconsole.views.buckets import BucketContentsView, BucketDetailsView, BucketXHRView, FOLDER_NAME_PATTERN
+from eucaconsole.views.buckets import (
+    BucketContentsView, BucketContentsJsonView, BucketDetailsView, BucketItemDetailsView, BucketXHRView,
+    FOLDER_NAME_PATTERN
+)
 
 from tests import BaseFormTestCase, BaseViewTestCase, BaseTestCase
+
+
+class MockBucketMixin(object):
+    @staticmethod
+    @mock_s3
+    def make_bucket(name='test_bucket', policy=None, owner_id=None):
+        s3_conn = boto.connect_s3()
+        policy = policy or Policy()
+        owner_id = owner_id or 'test_owner_id'
+        policy.owner = User(id=owner_id)
+        acl = ACL()
+        acl.grants = []
+        policy.acl = acl
+        bucket = s3_conn.create_bucket(name)
+        bucket.policy = policy
+        return bucket, policy
 
 
 class BucketMixinTestCase(BaseViewTestCase):
 
     def test_subpath_fixes(self):
         request = testing.DummyRequest()
-        request.environ = {}
-        request.environ['PATH_INFO'] = "some/path//with/extra/slash"
+        request.environ = {'PATH_INFO': "some/path//with/extra/slash"}
         request.subpath = ('some', 'path', 'with', 'extra', 'slash')
         view = BucketXHRView(request)
         new_subpath = view.get_subpath()
@@ -99,6 +122,88 @@ class BucketDetailsViewTestCase(BaseViewTestCase):
         self.assertEqual(view.get_versioning_update_action('Disabled'), 'enable')
         self.assertEqual(view.get_versioning_update_action('Suspended'), 'enable')
         self.assertEqual(view.get_versioning_update_action('Enabled'), 'disable')
+
+
+class MockBucketDetailsViewTestCase(BaseViewTestCase, MockBucketMixin):
+
+    @mock_s3
+    def test_bucket_details_view_without_versioning(self):
+        request = self.create_request()
+        bucket, bucket_acl = self.make_bucket()
+        view = BucketDetailsView(request, bucket=bucket, bucket_acl=bucket_acl).bucket_details()
+        self.assertEqual(view.get('bucket_name'), 'test_bucket')
+        self.assertEqual(view.get('bucket_contents_url'), '/buckets/test_bucket/contents/')
+        self.assertEqual(view.get('versioning_status'), 'Disabled')
+        self.assertEqual(view.get('update_versioning_action'), 'enable')
+
+    @mock_s3
+    def test_bucket_details_view_with_versioning(self):
+        request = self.create_request()
+        bucket, bucket_acl = self.make_bucket()
+        bucket.configure_versioning(True)
+        view = BucketDetailsView(request, bucket=bucket, bucket_acl=bucket_acl).bucket_details()
+        self.assertEqual(view.get('bucket_name'), 'test_bucket')
+        self.assertEqual(view.get('bucket_contents_url'), '/buckets/test_bucket/contents/')
+        self.assertEqual(view.get('versioning_status'), 'Enabled')
+        self.assertEqual(view.get('update_versioning_action'), 'disable')
+
+
+class MockBucketContentsJsonViewTestCase(BaseViewTestCase, MockBucketMixin):
+
+    @mock_s3
+    def test_bucket_contents_view_with_file(self):
+        request = self.create_request(matchdict=dict(name='test_bucket'))
+        request.params['csrf_token'] = request.session.get_csrf_token()
+        bucket, bucket_acl = self.make_bucket()
+        bucket.new_key("/file-one").set_contents_from_string('file content')
+        view = BucketContentsJsonView(request, bucket=bucket)
+        bucket_contents_json_view = view.bucket_contents_json()
+        results = bucket_contents_json_view.get('results')
+        self.assertEqual(len(results), 1)
+        item = results[0]
+        self.assertEqual(item.get('details_url'), '/buckets/test_bucket/itemdetails/file-one')
+        self.assertEqual(item.get('full_key_name'), 'file-one')
+        self.assertEqual(item.get('is_folder'), False)
+
+    @mock_s3
+    def test_bucket_contents_view_with_folder(self):
+        request = self.create_request(matchdict=dict(name='test_bucket'))
+        request.params['csrf_token'] = request.session.get_csrf_token()
+        bucket, bucket_acl = self.make_bucket()
+        bucket.new_key("/folder-one/").set_contents_from_string('')
+        view = BucketContentsJsonView(request, bucket=bucket)
+        bucket_contents_json_view = view.bucket_contents_json()
+        results = bucket_contents_json_view.get('results')
+        self.assertEqual(len(results), 1)
+        item = results[0]
+        self.assertEqual(item.get('details_url'), '/buckets/test_bucket/itemdetails/folder-one/')
+        self.assertEqual(item.get('full_key_name'), 'folder-one/')
+        self.assertEqual(item.get('is_folder'), True)
+        self.assertEqual(item.get('icon'), 'fi-folder')
+        self.assertEqual(item.get('size'), 0)
+        self.assertEqual(item.get('download_url'), '')
+
+
+class MockObjectDetailsViewTestCase(BaseViewTestCase, MockBucketMixin):
+
+    @mock_s3
+    def test_object_details_view(self):
+        request = self.create_request()
+        path = '/buckets/test_bucket/itemdetails/'
+        file_name = 'file-two'
+        file_content = 'file two content'
+        request.path = path
+        request.subpath = (file_name, )
+        request.environ = {'PATH_INFO': u'{0}/{1}'.format(path, file_name)}
+        bucket, bucket_acl = self.make_bucket()
+        bucket.new_key(u'/{0}'.format(file_name)).set_contents_from_string(file_content)
+        view = BucketItemDetailsView(request, bucket=bucket, bucket_item_acl=bucket_acl).bucket_item_details()
+        item = view.get('bucket_item')
+        self.assertEqual(item.bucket.name, 'test_bucket')
+        self.assertEqual(int(item.content_length), len(file_content))
+        self.assertEqual(item.content_type, 'application/octet-stream')
+        self.assertEqual(item.etag, '"257075e03fc5351067247f7e04f8c74f"')
+        self.assertEqual(item.content_md5, 'JXB14D/FNRBnJH9+BPjHTw==')
 
 
 class SharingPanelFormTestCase(BaseFormTestCase):

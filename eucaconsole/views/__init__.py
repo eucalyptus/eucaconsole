@@ -103,7 +103,7 @@ class JSONError(HTTPUnprocessableEntity):
 
 class BaseView(object):
     """Base class for all views"""
-    def __init__(self, request):
+    def __init__(self, request, **kwargs):
         self.request = request
         self.region = request.session.get('region')
         self.access_key = request.session.get('access_id')
@@ -443,8 +443,8 @@ class BaseView(object):
 class TaggedItemView(BaseView):
     """Common view for items that have tags (e.g. security group)"""
 
-    def __init__(self, request):
-        super(TaggedItemView, self).__init__(request)
+    def __init__(self, request, **kwargs):
+        super(TaggedItemView, self).__init__(request, **kwargs)
         self.tagged_obj = None
         self.conn = None
 
@@ -595,8 +595,8 @@ class LandingPageView(BaseView):
         For example, prefix = '/instances' for Instances
 
     """
-    def __init__(self, request):
-        super(LandingPageView, self).__init__(request)
+    def __init__(self, request, **kwargs):
+        super(LandingPageView, self).__init__(request, **kwargs)
         self.filter_fields = []
         self.filter_keys = []
         self.sort_keys = []

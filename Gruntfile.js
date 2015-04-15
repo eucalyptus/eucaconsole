@@ -186,10 +186,27 @@ module.exports = function(grunt) {
               ]
           }
       },
+      compass: {
+          sass: {
+              options: {
+                  outputStyle: 'compact',
+                  noLineComments: '',
+                  sassDir: 'eucaconsole/static/sass',
+                  cssDir: 'eucaconsole/static/css'
+              }
+          }
+      },
       watch: {
           scripts: {
               files: ['eucaconsole/static/js/**/*.js'],
               tasks: ['karma:ci', 'jshint'],
+              options: {
+                  spawn: false
+              }
+          },
+          sass: {
+              files: ['eucaconsole/static/sass/**/*.scss'],
+              tasks: ['compass'],
               options: {
                   spawn: false
               }
@@ -207,6 +224,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-bowercopy');
   grunt.loadNpmTasks('grunt-karma');
   grunt.loadNpmTasks('grunt-text-replace');
+  grunt.loadNpmTasks('grunt-contrib-compass');
 
   // Default task(s).
   grunt.registerTask('default', ['watch']);
