@@ -189,10 +189,10 @@ class LaunchConfigMoreForm(BaseSecureForm):
     ramdisk_id = wtforms.SelectField(label=_(u'RAM disk ID (RAMFS)'))
     monitoring_enabled = wtforms.BooleanField(label=_(u'Enable detailed monitoring'))
 
-    def __init__(self, request, image=None, instance=None, conn=None, **kwargs):
-        super(LaunchMoreInstancesForm, self).__init__(request, **kwargs)
+    def __init__(self, request, image=None, launch_config=None, conn=None, **kwargs):
+        super(LaunchConfigMoreForm, self).__init__(request, **kwargs)
         self.image = image
-        self.instance = instance
+        self.launch_config = launch_config
         self.conn = conn
         self.choices_manager = ChoicesManager(conn=conn)
         self.set_error_messages()
@@ -211,5 +211,5 @@ class LaunchConfigMoreForm(BaseSecureForm):
         self.ramdisk_id.choices = self.choices_manager.ramdisks(image=self.image)
 
     def set_initial_data(self):
-        self.monitoring_enabled.data = self.instance.monitored
+        self.monitoring_enabled.data = self.launch_config.instance_monitoring.enabled
 

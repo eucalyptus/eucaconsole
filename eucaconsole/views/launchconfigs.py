@@ -222,6 +222,12 @@ class LaunchConfigsJsonView(LandingPageView):
 
 class BaseLaunchConfigView(BaseView):
 
+    def __init__(self, request):
+        super(BaseLaunchConfigView, self).__init__(request)
+        self.ec2_conn = self.get_connection()
+        self.iam_conn = self.get_connection(conn_type="iam")
+        self.autoscale_conn = self.get_connection(conn_type='autoscale')
+
     def get_launch_config(self):
         if self.autoscale_conn:
             launch_config_param = self.request.matchdict.get('id')
@@ -238,6 +244,14 @@ class BaseLaunchConfigView(BaseView):
             image.platform = ImageView.get_platform(image)
             return image
         return None
+
+    def get_vpc_subnet_display(self, subnet_id):
+        if self.vpc_conn and subnet_id:
+            with boto_error_handler(self.request):
+                vpc_subnet = self.vpc_conn.get_all_subnets(subnet_ids=[subnet_id])
+                if vpc_subnet:
+                    return u"{0} ({1})".format(vpc_subnet[0].cidr_block, subnet_id)
+        return ''
 
 
 class LaunchConfigView(BaseLaunchConfigView):
@@ -542,26 +556,27 @@ class LaunchConfigMoreView(BaseLaunchConfigView, BlockDeviceMappingItemView):
         if BaseView.has_role_access(request):
             self.iam_conn = self.get_connection(conn_type="iam")
         with boto_error_handler(request):
-            self.instance = self.get_launchconfig()
-            self.instance_name = TaggedItemView.get_display_name(self.instance)
-            self.image = self.get_image(instance=self.instance)  # From BaseInstanceView
+            self.launch_config = self.get_launch_config()
+            self.image = self.get_image()
         self.location = self.request.route_path('launchconfigs')
         self.launch_more_form = LaunchConfigMoreForm(
-            self.request, image=self.image, launchconfig=self.launchconfig,
+            self.request, image=self.image, launch_config=self.launch_config,
             conn=self.conn, formdata=self.request.params or None)
         self.role = None
-        if BaseView.has_role_access(request) and self.instance.instance_profile:
-            arn = self.instance.instance_profile['arn']
-            profile_name = arn[(arn.rindex('/')+1):]
+        if BaseView.has_role_access(request) and self.launch_config.instance_profile_name:
+            arn = self.launch_config.instance_profile_name
+            try:
+                profile_name = arn[(arn.rindex('/')+1):]
+            except ValueError:
+                profile_name = arn
             inst_profile = self.iam_conn.get_instance_profile(profile_name)
             self.role = inst_profile.roles.member.role_name
         self.render_dict = dict(
             image=self.image,
-            instance=self.instance,
-            instance_name=self.instance_name,
+            launchconfig=self.launch_config,
             launch_more_form=self.launch_more_form,
             snapshot_choices=self.get_snapshot_choices(),
-            vpc_subnet_display=self.get_vpc_subnet_display(self.instance.subnet_id) if self.instance else None,
+            vpc_subnet_display=self.get_vpc_subnet_display(self.launch_config.subnet_id) if self.launch_config else None,
             is_vpc_supported=self.is_vpc_supported,
             role=self.role,
         )
@@ -570,9 +585,9 @@ class LaunchConfigMoreView(BaseLaunchConfigView, BlockDeviceMappingItemView):
     def instance_more(self):
         return self.render_dict
 
-    @view_config(route_name='launchconfig_more_launch', renderer=TEMPLATE, request_method='POST')
+    @view_config(route_name='launchconfig_more_create', renderer=TEMPLATE, request_method='POST')
     def instance_more_launch(self):
-        """Handles the POST from the Launch more instances like this form"""
+        """Handles the POST from the Create launchconfig like this form"""
         if self.launch_more_form.validate():
             image_id = self.image.id
             source_instance_tags = self.instance.tags
