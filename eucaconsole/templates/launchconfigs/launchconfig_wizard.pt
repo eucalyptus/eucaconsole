@@ -77,10 +77,7 @@
                             <hr />
                             <p class="description" i18n:translate="">User data</p>
                             <div class="row controls-wrapper readonly">
-                                <div class="small-3 columns">
-                                    <label i18n:translate="">User data<span class="helptext-icon" title="User data file may not exceed 16 KB" data-tooltip="">?</span></label>
-                                </div>
-                                <div class="small-9 columns value">
+                                <div class="small-12 columns value">
                                     <input type="radio" id="inputtype" name="inputtype" value="text" ng-model="inputtype"/>
                                     <label id='userdatalabel' i18n:translate="">Enter text</label>
                                     <textarea id="userdata" name="userdata" ng-model="userData" ng-show="inputtype=='text'"></textarea>
@@ -224,29 +221,29 @@
                 <h5 i18n:translate="" class="title">Summary</h5>
                 <div class="section step1 hide">
                     <div class="row">
-                        <label i18n:translate="">Image:</label>
+                        <label i18n:translate="">Image</label>
                         <div class="columns value">{{ imageName }}</div>
                     </div>
                     <div class="row">
-                        <label i18n:translate="">Platform:</label>
+                        <label i18n:translate="">Platform</label>
                         <div class="columns value">{{ imagePlatform }}</div>
                     </div>
                     <div class="row">
-                        <label i18n:translate="">Root device:</label>
+                        <label i18n:translate="">Root device</label>
                         <div class="columns value">{{ imageRootDeviceType }}</div>
                     </div>
                     <div class="row">
-                        <label i18n:translate="">Manifest:</label>
+                        <label i18n:translate="">Manifest</label>
                         <div class="columns value">{{ imageLocation }}</div>
                     </div>
                 </div>
                 <div class="section step2 hide">
                     <div class="row">
-                        <label i18n:translate="">Name:</label>
+                        <label i18n:translate="">Name</label>
                         <div class="columns value">{{ launchconfigName }}</div>
                     </div>
                     <div class="row">
-                        <label i18n:translate="">Type:</label>
+                        <label i18n:translate="">Type</label>
                         <div class="columns value">{{ instanceType }}</div>
                     </div>
                     <div class="row">
@@ -258,17 +255,17 @@
                 </div>
                 <div class="section step3 hide">
                     <div class="row">
-                        <label i18n:translate="">Key pair:</label>
+                        <label i18n:translate="">Key pair</label>
                         <div class="columns value">{{ keyPair }}</div>
                     </div>
                     <div class="row">
-                        <label i18n:translate="">Security group:</label>
+                        <label i18n:translate="">Security group</label>
                         <div class="columns value" ng-repeat="sgroup in securityGroups">
                             {{ securityGroupChoices[sgroup] }}
                         </div>
                     </div>
                     <div class="row" ng-show="role">
-                        <label i18n:translate="">Role:</label>
+                        <label i18n:translate="">Role</label>
                         <div class="columns value">{{ role }}</div>
                     </div>
                 </div>

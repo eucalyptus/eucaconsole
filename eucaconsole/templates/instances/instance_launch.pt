@@ -83,10 +83,7 @@
                             <hr />
                             <p class="description" i18n:translate="">User data</p>
                             <div class="row controls-wrapper readonly">
-                                <div class="small-3 columns">
-                                    <label i18n:translate="">User data<span class="helptext-icon" title="User data file may not exceed 16 KB" data-tooltip="">?</span></label>
-                                </div>
-                                <div class="small-9 columns value">
+                                <div class="small-12 columns value">
                                     <input type="radio" id="inputtype" name="inputtype" value="text" ng-model="inputtype"/>
                                     <label id='userdatalabel' i18n:translate="">Enter text</label>
                                     <textarea id="userdata" name="userdata" ng-model="userData" ng-show="inputtype=='text'"></textarea>
@@ -214,33 +211,33 @@
                 <h5 i18n:translate="" class="title">Summary</h5>
                 <div class="section step1 hide">
                     <div class="row">
-                        <label i18n:translate="">Image:</label>
+                        <label i18n:translate="">Image</label>
                         <div class="columns value">{{ imageName }}</div>
                     </div>
                     <div class="row">
-                        <label i18n:translate="">Platform:</label>
+                        <label i18n:translate="">Platform</label>
                         <div class="columns value">{{ imagePlatform }}</div>
                     </div>
                     <div class="row">
-                        <label i18n:translate="">Root device:</label>
+                        <label i18n:translate="">Root device</label>
                         <div class="columns value">{{ imageRootDeviceType }}</div>
                     </div>
                 </div>
                 <div class="section step2 ${'hide' if not image else ''}">
                     <div class="row">
-                        <label i18n:translate="">Size:</label>
+                        <label i18n:translate="">Size</label>
                         <div class="columns value">{{ instanceType }}</div>
                     </div>
                     <div class="row">
-                        <label i18n:translate="">Number:</label>
+                        <label i18n:translate="">Number</label>
                         <div class="columns value">{{ instanceNumber }}</div>
                     </div>
                     <div class="row">
-                        <label i18n:translate="">Zone:</label>
+                        <label i18n:translate="">Zone</label>
                         <div class="columns value">{{ instanceZone || 'no preference' }}</div>
                     </div>
                     <div class="row">
-                        <label i18n:translate="">Names:</label>
+                        <label i18n:translate="">Names</label>
                         <div class="columns value">
                             <span ng-repeat="instanceName in instanceNames">
                                 {{ instanceName }}<span ng-show="!$last">, </span>
@@ -248,7 +245,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <label i18n:translate="">Tags:</label>
+                        <label i18n:translate="">Tags</label>
                         <div class="columns value" id="tag-preview">
                             <div ng-repeat="(name, value) in tagsObject">{{ name }}={{ value }}</div>
                         </div>
@@ -262,25 +259,25 @@
                 </div>
                 <div class="section step3 hide">
                     <div class="row" ng-show="instanceVPC != ''">
-                        <label i18n:translate="">Network:</label>
+                        <label i18n:translate="">Network</label>
                         <div class="columns value">{{ instanceVPCName }}</div>
                     </div>
                     <div class="row" ng-show="instanceVPC != ''">
-                        <label i18n:translate="">Subnet:</label>
+                        <label i18n:translate="">Subnet</label>
                         <div class="columns value">{{ vpcSubnetChoices[subnetVPC] }}</div>
                     </div>
                     <div class="row">
-                        <label i18n:translate="">Key:</label>
+                        <label i18n:translate="">Key</label>
                         <div class="columns value">{{ keyPair }}</div>
                     </div>
                     <div class="row">
-                        <label i18n:translate="">Security group:</label>
+                        <label i18n:translate="">Security group</label>
                         <div class="columns value" ng-repeat="sgroup in securityGroups">
                             {{ securityGroupChoices[sgroup] }}
                         </div>
                     </div>
                     <div class="row" ng-show="role">
-                        <label i18n:translate="">Role:</label>
+                        <label i18n:translate="">Role</label>
                         <div class="columns value">{{ role }}</div>
                     </div>
                 </div>
