@@ -174,3 +174,42 @@ class LaunchConfigsFiltersForm(BaseSecureForm):
             {'key': 'instance-store', 'label': _(u'Instance-store')}
         ]
 
+
+class LaunchConfigMoreForm(BaseSecureForm):
+    """Form class for create launchconfig like this one"""
+    name_error_msg = _(u'Name must be between 1 and 255 characters long, and must not contain \'/\' and \'\\\'')
+    name = wtforms.TextField(
+        label=_(u'Name'),
+        validators=[validators.InputRequired(message=name_error_msg)],
+    )
+    userdata = wtforms.TextAreaField(label=_(u'User data'))
+    userdata_file_helptext = _(u'User data file may not exceed 16 KB')
+    userdata_file = wtforms.FileField(label='')
+    kernel_id = wtforms.SelectField(label=_(u'Kernel ID'))
+    ramdisk_id = wtforms.SelectField(label=_(u'RAM disk ID (RAMFS)'))
+    monitoring_enabled = wtforms.BooleanField(label=_(u'Enable detailed monitoring'))
+
+    def __init__(self, request, image=None, instance=None, conn=None, **kwargs):
+        super(LaunchMoreInstancesForm, self).__init__(request, **kwargs)
+        self.image = image
+        self.instance = instance
+        self.conn = conn
+        self.choices_manager = ChoicesManager(conn=conn)
+        self.set_error_messages()
+        self.set_help_text()
+        self.set_choices()
+        self.set_initial_data()
+
+    def set_error_messages(self):
+        self.name.error_msg = self.name_error_msg
+
+    def set_help_text(self):
+        self.userdata_file.help_text = self.userdata_file_helptext
+
+    def set_choices(self):
+        self.kernel_id.choices = self.choices_manager.kernels(image=self.image)
+        self.ramdisk_id.choices = self.choices_manager.ramdisks(image=self.image)
+
+    def set_initial_data(self):
+        self.monitoring_enabled.data = self.instance.monitored
+

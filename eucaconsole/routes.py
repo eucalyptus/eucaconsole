@@ -142,6 +142,8 @@ urls = [
     Route(name='launchconfig_create', pattern='/launchconfigs/create'),
     Route(name='launchconfig_delete', pattern='/launchconfigs/{id}/delete'),
     Route(name='launchconfig_view', pattern='/launchconfigs/{id}'),
+    Route(name='launchconfig_more', pattern='/launchconfigs/{id}/more'),
+    Route(name='launchconfig_more_create', pattern='/launchconfigs/{id}/more/create'),
 
     # ELBs #####
     # Landing page
