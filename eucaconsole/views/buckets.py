@@ -301,12 +301,12 @@ class BucketContentsView(LandingPageView, BucketMixin):
     """Views for actions on single bucket"""
     VIEW_TEMPLATE = '../templates/buckets/bucket_contents.pt'
 
-    def __init__(self, request):
-        super(BucketContentsView, self).__init__(request)
+    def __init__(self, request, bucket_name=None, **kwargs):
+        super(BucketContentsView, self).__init__(request, **kwargs)
         self.s3_conn = self.get_connection(conn_type='s3')
         request.subpath = self.get_subpath()
         self.prefix = '/buckets'
-        self.bucket_name = self.get_bucket_name(request)
+        self.bucket_name = bucket_name or self.get_bucket_name(request)
         self.create_folder_form = CreateFolderForm(request, formdata=self.request.params or None)
         self.subpath = request.subpath
         self.key_prefix = '/'.join(self.subpath) if len(self.subpath) > 0 else ''
