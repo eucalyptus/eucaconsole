@@ -248,7 +248,7 @@ class BaseView(object):
             acct = ''
         try:
             return self._get_images_cached_(owners, executors, ec2_region, acct)
-        except pylibmc.Error as err:
+        except pylibmc.Error:
             logging.warn('memcached not responding')
             return self._get_images_(owners, executors, ec2_region)
 
@@ -349,9 +349,9 @@ class BaseView(object):
         if err.error_message is not None:
             message = err.error_message
             if 'because of:' in message:
-                message = message[message.index("because of:")+11:]
+                message = message[message.index("because of:") + 11:]
             if 'RelatesTo Error:' in message:
-                message = message[message.index("RelatesTo Error:")+16:]
+                message = message[message.index("RelatesTo Error:") + 16:]
             # do we need this logic in the common code?? msg = err.message.split('remoteDevice')[0]
             # this logic found in volumes.js
         BaseView.log_message(request, message, level='error')

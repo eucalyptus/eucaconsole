@@ -172,8 +172,8 @@
                     <div class="columns section">
                         <h6 i18n:translate="">Parameters</h6>
                         <div class="row controls-wrapper readonly" tal:repeat="item stack.parameters" ng-cloak="true">
-                            <div class="small-2 columns"><label class="right">${item.key}</label></div>
-                            <div class="small-10 columns value">${item.value}</div>
+                            <div class="small-2 columns"><label class="right" ng-non-bindable="">${item.key}</label></div>
+                            <div class="small-10 columns value" ng-non-bindable="">${item.value}</div>
                         </div>
                     </div>
                 </div>
