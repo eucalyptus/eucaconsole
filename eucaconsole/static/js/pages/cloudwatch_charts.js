@@ -25,6 +25,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
         controller: function ($scope, $http, eucaHandleError) {
             var cloudwatchApiUrl = '/cloudwatch/api';  // Fine to hard-code this here since it won't likely change
             $scope.initChart = function() {
+                // Anchor chart to zero for the following metrics
                 var params = {
                     'ids': $scope.ids,
                     'idtype': $scope.idtype,
@@ -41,6 +42,10 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
                 }).success(function(oData) {
                     var results = oData ? oData.results : '';
                     var unit = oData.unit || $scope.unit;
+                    var forceZeroBaselineMetrics = [
+                        'NetworkIn', 'NetworkOut', 'DiskReadBytes', 'DiskReadOps',
+                        'DiskWriteBytes', 'DiskWriteOps'
+                    ];
                     var chart = nv.models.lineChart()
                         .margin({left: 80})
                         .useInteractiveGuideline(true)
@@ -54,7 +59,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
                     if ($scope.unit === 'Percent') {
                         chart.forceY([0, 100]);  // Set proper y-axis range for percentage units
                     }
-                    if ($scope.metric === 'NetworkIn' || $scope.metric === 'NetworkOut') {
+                    if (forceZeroBaselineMetrics.indexOf($scope.metric) !== -1) {
                         chart.forceY([0, 1000]);  // Anchor chart to zero baseline
                     }
                     chart.yAxis.axisLabel(unit).tickFormat(d3.format('.02f'));

@@ -47,31 +47,43 @@
                         </ul>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="medium-6 columns">
-                        <div class="chart-wrapper">
-                            <h6 i18n:translate="">CPU Utilization</h6>
-                            <svg cloudwatch-chart="" id="cwchart-cpu" class="cwchart" ids="${instance.id}" idtype="InstanceId"
-                                 metric="CPUUtilization" duration="3600" unit="Percent" statistic="Average"></svg>
-                        </div>
-                    </div>
-                    <div class="medium-6 columns">
-                        <div class="chart-wrapper">
-                            <h6 i18n:translate="">Network In</h6>
-                            <svg cloudwatch-chart="" id="cwchart-networkin" class="cwchart" ids="${instance.image_id}"
-                                 idtype="ImageId" metric="NetworkIn" duration="3600" unit="Bytes"></svg>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="medium-6 columns">
-                        <div class="chart-wrapper">
-                            <h6 i18n:translate="">Network Out</h6>
-                            <svg cloudwatch-chart="" id="cwchart-networkout" class="cwchart" ids="${instance.image_id}"
-                                 idtype="ImageId" metric="NetworkOut" duration="3600" unit="Bytes"></svg>
-                        </div>
-                    </div>
-                </div>
+                <ul class="small-block-grid-1 medium-block-grid-2 large-block-grid-3">
+                    <li class="chart-wrapper">
+                        <h6 i18n:translate="">CPU utilization</h6>
+                        <svg cloudwatch-chart="" id="cwchart-cpu" class="cwchart" ids="${instance.id}" idtype="InstanceId"
+                             metric="CPUUtilization" duration="3600" unit="Percent" statistic="Average"></svg>
+                    </li>
+                    <li class="chart-wrapper">
+                        <h6 i18n:translate="">Disk read bytes</h6>
+                        <svg cloudwatch-chart="" id="cwchart-disk-read-bytes" class="cwchart" ids="${instance.id}" idtype="InstanceId"
+                             metric="DiskReadBytes" duration="3600" unit="Bytes"></svg>
+                    </li>
+                    <li class="chart-wrapper">
+                        <h6 i18n:translate="">Disk read operations</h6>
+                        <svg cloudwatch-chart="" id="cwchart-disk-read-ops" class="cwchart" ids="${instance.id}" idtype="InstanceId"
+                             metric="DiskReadOps" duration="3600" unit="Count"></svg>
+                    </li>
+                    <li class="chart-wrapper">
+                        <h6 i18n:translate="">Disk write bytes</h6>
+                        <svg cloudwatch-chart="" id="cwchart-disk-write-bytes" class="cwchart" ids="${instance.id}" idtype="InstanceId"
+                             metric="DiskWriteBytes" duration="3600" unit="Bytes"></svg>
+                    </li>
+                    <li class="chart-wrapper">
+                        <h6 i18n:translate="">Disk write operations</h6>
+                        <svg cloudwatch-chart="" id="cwchart-disk-write-ops" class="cwchart" ids="${instance.id}" idtype="InstanceId"
+                             metric="DiskWriteOps" duration="3600" unit="Count"></svg>
+                    </li>
+                    <li class="chart-wrapper">
+                        <h6 i18n:translate="">Network in</h6>
+                        <svg cloudwatch-chart="" id="cwchart-networkin" class="cwchart" ids="${instance.image_id}"
+                             idtype="ImageId" metric="NetworkIn" duration="3600" unit="Bytes"></svg>
+                    </li>
+                    <li class="chart-wrapper">
+                        <h6 i18n:translate="">Network out</h6>
+                        <svg cloudwatch-chart="" id="cwchart-networkout" class="cwchart" ids="${instance.image_id}"
+                             idtype="ImageId" metric="NetworkOut" duration="3600" unit="Bytes"></svg>
+                    </li>
+                </ul>
             </div>
         </div>
         <form method="post" id="monitoring-form" action="${request.route_path('instance_monitoring_update', id=instance.id)}">

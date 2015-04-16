@@ -72,11 +72,11 @@ class BaseInstanceView(BaseView):
         self.vpc_conn = self.get_connection(conn_type='vpc')
         self.is_vpc_supported = BaseView.is_vpc_supported(request)
 
-    def get_instance(self, instance_id=None):
+    def get_instance(self, instance_id=None, reservations=None):
         instance_id = instance_id or self.request.matchdict.get('id')
         if instance_id:
             try:
-                reservations_list = self.conn.get_all_reservations(instance_ids=[instance_id])
+                reservations_list = reservations or self.conn.get_all_reservations(instance_ids=[instance_id])
                 reservation = reservations_list[0] if reservations_list else None
                 if reservation:
                     instance = reservation.instances[0]
@@ -969,9 +969,13 @@ class InstanceMonitoringView(BaseInstanceView):
         super(InstanceMonitoringView, self).__init__(request)
         self.request = request
         self.cw_conn = self.get_connection(conn_type='cloudwatch')
-        self.location = self.request.route_path('instance_monitoring', id=self.request.matchdict.get('id'))
+        self.instance_id = self.request.matchdict.get('id')
+        self.location = self.request.route_path('instance_monitoring', id=self.instance_id)
         with boto_error_handler(self.request):
-            self.instance = self.get_instance()
+            # Note: We're fetching reservations here since calling self.get_instance() in the context manager
+            # will return a 500 error instead of invoking the session timeout handler
+            reservations = self.conn.get_all_reservations(instance_ids=[self.instance_id])
+        self.instance = self.get_instance(instance_id=self.instance_id, reservations=reservations)
         self.instance_name = TaggedItemView.get_display_name(self.instance)
         self.monitoring_form = InstanceMonitoringForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
