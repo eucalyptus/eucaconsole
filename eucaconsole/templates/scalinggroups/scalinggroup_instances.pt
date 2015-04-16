@@ -31,7 +31,7 @@
                     <a href="${request.route_path('scalinggroup_policy_new', id=scaling_group.name)}" i18n:translate="">add scaling policies</a>
                 </p>
                 <div ng-show="initialLoading">
-                    <span class="busy">&nbsp;</span>
+                    <span class="busy"></span>
                 </div>
                 <div class="alert alert-info" ng-show="!initialLoading &amp;&amp; instances.length === 0" ng-cloak="">
                     There are no instances in this scaling group
@@ -62,7 +62,7 @@
                     </div>
                     <div class="footer status {{ item.status.toLowerCase() }} {{ item.lifecycle_statue.toLowerCase() }}">
                         {{ item.status }} ({{ item.lifecycle_state }})
-                        <span class="busy" ng-show="item.transitional">&nbsp;</span>
+                        <span class="busy" ng-show="item.transitional"></span>
                     </div>
                 </div>
             </div>
