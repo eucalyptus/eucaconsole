@@ -253,7 +253,7 @@ class ELBView(TaggedItemView):
         self.is_vpc_supported = BaseView.is_vpc_supported(request)
         self.elb_form = ELBForm(
             self.request, conn=self.ec2_conn, vpc_conn=self.vpc_conn,
-            securitygroups=self.get_security_groups(),
+            elb=self.elb, securitygroups=self.get_security_groups(),
             formdata=self.request.params or None)
         self.delete_form = ELBDeleteForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
