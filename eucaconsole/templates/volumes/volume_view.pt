@@ -69,8 +69,11 @@
                             &nbsp;<span class="busy" ng-show="isUpdating">&nbsp;</span>
                         </div>
                     </div>
-                    <div tal:define="autofocus_attr {'autofocus': 'autofocus'} if not volume else {};">
-                        ${panel('form_field', field=volume_form.name, pattern=layout.tag_pattern_value, **autofocus_attr)}
+                    <div tal:condition="not volume">
+                        ${panel('form_field', field=volume_form.name, leftcol_width_large=3, rightcol_width_large=9, pattern=layout.tag_pattern_value, **{'autofocus': 'autofocus'})}
+                    </div>
+                    <div tal:condition="volume">
+                        ${panel('form_field', field=volume_form.name, pattern=layout.tag_pattern_value)}
                     </div>
                     <div class="row controls-wrapper readonly" ng-show="attach_instance">
                         <div class="large-2 small-4 columns"><label i18n:translate="">Attached to instance</label></div>
@@ -87,14 +90,14 @@
                         <div class="large-10 small-8 columns value">{{attach_time | date:'${layout.angular_date_format}'}}</div>
                     </div>
                     <div tal:condition="not volume" tal:omit-tag="">
-                        ${panel('form_field', field=volume_form['snapshot_id'], ng_attrs={'model': 'snapshotId', 'change': 'populateVolumeSize($event)'}, **html_attrs)}
+                        ${panel('form_field', field=volume_form['snapshot_id'], leftcol_width_large=3, rightcol_width_large=9, ng_attrs={'model': 'snapshotId', 'change': 'populateVolumeSize($event)'}, **html_attrs)}
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="volume and volume.snapshot_id">
                         <div class="large-2 small-4 columns"><label i18n:translate="">Created from snapshot</label></div>
                         <div class="large-10 small-8 columns field inline">${volume.snapshot_id}</div>
                     </div>
                     <div tal:condition="not volume" tal:omit-tag="">
-                        ${panel('form_field', field=volume_form['size'], min=1, ng_attrs={'model': 'volumeSize'}, pattern='^\d+$', **html_attrs)}
+                        ${panel('form_field', field=volume_form['size'], min=1, leftcol_width_large=3, rightcol_width_large=9, ng_attrs={'model': 'volumeSize'}, pattern='^\d+$', **html_attrs)}
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="not volume">
                         <div class="large-2 small-4 columns"></div>
@@ -114,7 +117,7 @@
                         <div>&nbsp;</div>
                         <span i18n:translate="">You should create your volume in the same availability zone as the instance with which you want to use it.</span>
                         <div>&nbsp;</div>
-                        ${panel('form_field', field=volume_form['zone'], **html_attrs)}
+                        ${panel('form_field', field=volume_form['zone'], leftcol_width_large=3, rightcol_width_large=9, **html_attrs)}
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="volume">
                         <div class="large-2 small-4 columns"><label i18n:translate="">Availability zone</label></div>
