@@ -307,12 +307,3 @@ def create_folder_dialog(context, request, bucket_name=None, create_folder_form=
         create_folder_form=create_folder_form,
         folder_name_pattern=FOLDER_NAME_PATTERN,
     )
-
-
-@panel_config('instance_monitoring_dialog', renderer='../templates/dialogs/instance_monitoring_dialog.pt')
-def instance_monitoring_dialog(context, request, instance=None, monitoring_form=None):
-    """ Modal dialog creating a folder in a bucket."""
-    return dict(
-        instance=instance,
-        monitoring_form=monitoring_form,
-    )

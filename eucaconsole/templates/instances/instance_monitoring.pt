@@ -6,7 +6,7 @@
 </head>
 
 <div metal:fill-slot="main_content">
-    <div class="row" id="contentwrap">
+    <div class="row" id="contentwrap" ng-app="InstanceMonitoring" ng-controller="InstanceMonitoringCtrl as monitoringCtrl">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('instances')}" i18n:translate="">Instances</a></li>
@@ -28,6 +28,9 @@
             <div class="panel no-title cloudwatch-charts" ng-app="CloudWatchCharts">
                 <div class="toprow">
                     <div class="blurb">
+                        <span i18n:translate="">Monitoring is</span>
+                        <strong i18n:translate="" tal:condition="monitoring_state == 'enabled'">enabled.</strong>
+                        <strong i18n:translate="" tal:condition="monitoring_state == 'disabled'">disabled.</strong>
                         <span i18n:translate="">Displaying statistics for the past</span> hour.
                     </div>
                     <div class="actions">
@@ -35,7 +38,7 @@
                               data-dropdown="enable-monitoring-dropdown"><i class="fa fa-ellipsis-v"></i></span>
                         <ul id="enable-monitoring-dropdown" class="f-dropdown" data-dropdown-content="">
                             <li>
-                                <a href="" data-reveal-id="instance-monitoring-modal">
+                                <a href="" ng-click="monitoringCtrl.submitMonitoringForm()">
                                     <span i18n:translate="">Turn monitoring</span>
                                     <span i18n:translate="" tal:condition="monitoring_state == 'enabled'">off</span>
                                     <span i18n:translate="" tal:condition="monitoring_state != 'enabled'">on</span>
@@ -71,8 +74,9 @@
                 </div>
             </div>
         </div>
-        <!--! Enable/disable monitoring dialog -->
-        ${panel('instance_monitoring_dialog', instance=instance, monitoring_form=monitoring_form)}
+        <form method="post" id="monitoring-form" action="${request.route_path('instance_monitoring_update', id=instance.id)}">
+            ${structure:monitoring_form['csrf_token']}
+        </form>
     </div>
 </div>
 
@@ -81,6 +85,7 @@
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/d3/d3.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/nvd3/nv.d3.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/cloudwatch_charts.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/instance_monitoring.js')}"></script>
 </div>
 
 </metal:block>

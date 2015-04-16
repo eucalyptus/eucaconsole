@@ -146,6 +146,7 @@ form .row.controls-wrapper { margin-bottom: 0; }
 #attach-volume-modal #device { width: 10rem; }
 
 .cloudwatch-charts .toprow { display: -ms-flexbox; display: -webkit-flex; display: flex; }
+.cloudwatch-charts .toprow .blurb { -webkit-flex-grow: 1; flex-grow: 1; }
 .cloudwatch-charts .toprow .actions { display: inline-block; }
 
 .chart-wrapper { margin-bottom: 1.5rem; }

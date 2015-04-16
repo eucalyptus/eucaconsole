@@ -88,6 +88,9 @@ form .row.controls-wrapper {
 .cloudwatch-charts {
     .toprow {
         @include flexbox-mixin;
+        .blurb {
+            @include flexgrow-mixin(1);
+        }
         .actions {
             display: inline-block;
         }
