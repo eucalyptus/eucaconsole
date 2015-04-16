@@ -28,7 +28,7 @@
                 <button type="submit" id="delete_scalinggroup_submit_button" class="close-modal-button button expand" i18n:translate="">Yes, Delete</button>
             </div>
             <div class="dialog-progress-display hide">
-                <span i18n:translate="">Delete in progress </span>&nbsp;<em><span class="busy">&nbsp;</span></em>
+                <span i18n:translate="">Delete in progress </span>&nbsp;<i class="busy"></i>
             </div>
         </form>
         <a href="#" id="delete_scalinggroup_close_link" class="close-reveal-modal">&#215;</a>
