@@ -100,9 +100,8 @@
                             </div>
                         </div>
                     </div>
-                    <hr />
-                    <h6 class="title" i18n:translate="">User data</h6>
-                    <div class="row controls-wrapper readonly">
+                    <span>&nbsp;</span>
+                    <div class="row controls-wrapper">
                         <div class="small-4 columns">
                             <label i18n:translate="">User data<span class="helptext-icon" title="User data file may not exceed 16 KB" data-tooltip="">?</span></label>
                         </div>

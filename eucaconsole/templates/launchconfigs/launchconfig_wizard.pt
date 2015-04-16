@@ -75,8 +75,10 @@
                                 </div>
                             </div>
                             <hr />
-                            <p class="description" i18n:translate="">User data</p>
                             <div class="row controls-wrapper readonly">
+                                <div class="columns">
+                                    <h6 i18n:translate="">User data</h6>
+                                </div>
                                 <div class="small-12 columns value">
                                     <input type="radio" id="inputtype" name="inputtype" value="text" ng-model="inputtype"/>
                                     <label id='userdatalabel' i18n:translate="">Enter text</label>

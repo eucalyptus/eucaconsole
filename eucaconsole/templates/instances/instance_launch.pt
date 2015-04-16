@@ -81,8 +81,10 @@
                             <hr />
                             ${panel('tag_editor', show_name_tag=False, leftcol_width=3, rightcol_width=9)}
                             <hr />
-                            <p class="description" i18n:translate="">User data</p>
                             <div class="row controls-wrapper readonly">
+                                <div class="columns">
+                                    <h6 i18n:translate="">User data</h6>
+                                </div>
                                 <div class="small-12 columns value">
                                     <input type="radio" id="inputtype" name="inputtype" value="text" ng-model="inputtype"/>
                                     <label id='userdatalabel' i18n:translate="">Enter text</label>
