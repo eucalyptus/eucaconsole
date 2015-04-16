@@ -192,6 +192,45 @@ class ELBsJsonView(LandingPageView):
         return None
 
 
+class ConnectionSettingAttribute(object):
+    """
+    Represents the ConnectionSetting segment of ELB Attributes.
+    """
+    def __init__(self, connection=None):
+        self.idle_timeout = None
+
+    def __repr__(self):
+        return 'ConnectionSettingAttribute(%s)' % (
+            self.idle_timeout)
+
+    def startElement(self, name, attrs, connection):
+        pass
+
+    def endElement(self, name, value, connection):
+        if name == 'IdleTimeout':
+            self.idle_timeout = int(value)
+
+
+# Current boto version 2.34.0 does not support ConnecitonSettingAttribute
+class CustomLbAttributes(object):
+    """
+    Represents the Attributes of an Elastic Load Balancer.
+    """
+    def __init__(self, connection=None):
+        self.connection = connection
+        self.connecting_settings = ConnectionSettingAttribute(self.connection)
+
+    def __repr__(self):
+        return 'LbAttributes(%s)' % (
+            repr(self.connecting_settings))
+
+    def startElement(self, name, attrs, connection):
+            return self.connecting_settings
+
+    def endElement(self, name, value, connection):
+        pass
+
+
 class ELBView(TaggedItemView):
     """Views for single ELB"""
     TEMPLATE = '../templates/elbs/elb_view.pt'
@@ -208,6 +247,7 @@ class ELBView(TaggedItemView):
             # boto doesn't convert elb created_time into dtobj like it does for others
             if self.elb:
                 self.elb.created_time = boto.utils.parse_ts(self.elb.created_time)
+                self.elb.idle_timeout = self.get_elb_attribute_idle_timeout()
             else:
                 raise HTTPNotFound()
         self.is_vpc_supported = BaseView.is_vpc_supported(request)
@@ -278,6 +318,14 @@ class ELBView(TaggedItemView):
             'instances_json_endpoint': self.request.route_path('instances_json'),
             'show_name_tag': True
         }))
+
+    def get_elb_attribute_idle_timeout(self):
+        if self.elb:
+            params = {'LoadBalancerName': self.elb.name}
+            elb_attrs = self.elb_conn.get_object('DescribeLoadBalancerAttributes',
+                                                 params, CustomLbAttributes)
+            if elb_attrs:
+                return elb_attrs.connecting_settings.idle_timeout
 
     def get_listener_list(self):
         listener_list = []

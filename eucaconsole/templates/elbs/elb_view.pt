@@ -54,7 +54,7 @@
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="small-3 columns"><label i18n:translate="">Idle timeout</label></div>
-                        <div class="small-9 columns value">${elb.health_check.interval}</div>
+                        <div class="small-9 columns value">${elb.idle_timeout}</div>
                     </div>
                     <hr />
                     <div>
