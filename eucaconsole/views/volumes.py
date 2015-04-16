@@ -95,7 +95,6 @@ class VolumesView(LandingPageView, BaseVolumeView):
         search_facets = filters_form.facets
         # filter_keys are passed to client-side filtering in search box
         self.render_dict.update(dict(
-            filter_fields=False,
             filters_form=filters_form,
             search_facets=BaseView.escape_json(json.dumps(search_facets)),
             sort_keys=self.get_sort_keys(),
