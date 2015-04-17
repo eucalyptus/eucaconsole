@@ -21,3 +21,5 @@
 .content { width: 100%; padding-left: 10px; padding-right: 10px; }
 
 .panel { overflow: hidden; }
+
+.top-section { padding-bottom: 0.5rem; }
