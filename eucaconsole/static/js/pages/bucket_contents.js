@@ -15,7 +15,7 @@ angular.module('BucketContentsPage', ['LandingPage', 'EucaConsoleUtils'])
         $scope.copyingAll = false;
         $scope.progress = 0;
         $scope.total = 0;
-        $scope.chunkSize = 10;  // set this based on how many keys we want to delete at once
+        $scope.chunkSize = 100;  // set this based on how many keys we want to delete at once
         $scope.index = 0;
         $scope.items = null;
         $scope.op_prefix = '';
