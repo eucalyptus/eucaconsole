@@ -28,6 +28,8 @@
 Common constants for CloudWatch
 
 """
+from ..i18n import _
+
 
 METRIC_TYPES = [
     {'namespace': 'AWS/AutoScaling', 'name': 'GroupDesiredCapacity', 'unit': 'None'},
@@ -86,3 +88,16 @@ METRIC_DIMENSION_INPUTS = {
     'volume': 'volume_id',
 }
 
+# Build choices for CloudWatch charts (e.g. on Instance monitoring page)
+HOUR = 3600  # seconds
+DAY = HOUR * 24
+MONITORING_DURATION_CHOICES = [
+    (HOUR, _(u'Last hour')),
+    (HOUR * 3, _(u'Last 3 hours')),
+    (HOUR * 6, _(u'Last 6 hours')),
+    (HOUR * 12, _(u'Last 12 hours')),
+    (DAY, _(u'Last day')),
+    (DAY * 3, _(u'Last 3 days')),
+    (DAY * 7, _(u'Last 1 week')),
+    (DAY * 14, _(u'Last 2 weeks')),
+]
