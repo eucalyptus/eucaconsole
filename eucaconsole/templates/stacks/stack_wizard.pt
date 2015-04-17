@@ -125,7 +125,7 @@
                                             i18n:translate="data-placeholder"
                                             data-placeholder="Select an option"
                                             ng-model="paramModels[item.name]" ng-change="checkRequiredInput()"
-                                            ng-options="option[0] as option[1] for option in item.options">
+                                            ng-options="option[0] for option in item.options track by option[1]">
                                         </select>
                                     </div>
                                 </div>
