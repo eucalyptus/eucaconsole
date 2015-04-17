@@ -31,7 +31,7 @@
                     ${structure:launch_more_form['csrf_token']}
                     ${panel('form_field', field=launch_more_form['number'], min=1, maxlength=2, leftcol_width=8, rightcol_width=4, autofocus='', ng_attrs={'model': 'instanceNumber'}, pattern=layout.integer_gt_zero_pattern)}
                     <hr />
-                    <div class="row controls-wrapper" ng-cloak="">
+                    <div class="row controls-wrapper readonly" ng-cloak="">
                         <div class="small-4 columns">
                             <label i18n:translate="">Names</label>
                         </div>
@@ -101,7 +101,7 @@
                         </div>
                     </div>
                     <span>&nbsp;</span>
-                    <div class="row controls-wrapper">
+                    <div class="row controls-wrapper readonly">
                         <div class="small-4 columns">
                             <label i18n:translate="">User data<span class="helptext-icon" title="User data file may not exceed 16 KB" data-tooltip="">?</span></label>
                         </div>
