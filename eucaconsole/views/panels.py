@@ -408,3 +408,16 @@ def s3_metadata_editor(context, request, bucket_object=None, metadata_form=None)
         metadata_key_create_option_text=_(u'Add Metadata'),
         metadata_key_no_results_text=_(u'Click below to add the new key'),
     )
+
+
+@panel_config('elb_listener_editor', renderer='../templates/panels/elb_listener_editor.pt')
+def elb_listener_editor(context, request, listeners=None, protocol_list=None):
+    """ ELB listener editor panel """
+    listeners = listeners or {}
+    controller_options_json = BaseView.escape_json(json.dumps({
+        'listeners': listeners,
+        'protocol_list': protocol_list,
+    }))
+    return dict(
+        controller_options_json=controller_options_json,
+    )

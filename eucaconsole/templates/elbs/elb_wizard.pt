@@ -47,10 +47,7 @@
                             </div>
                             <hr />
                             <div>
-                                <elb-listener-editor
-                                    template="${request.static_path('eucaconsole:static/html/directives/elb_listener_editor.html')}"
-                                    options='${controller_options_json}'>
-                                </elb-listener-editor>
+                                 ${panel('elb_listener_editor', protocol_list=protocol_list)}
                                  <div id="hidden_certificate_arn_input_div" class="hide">
                                      <input type='hidden' id="hidden_certificate_arn_input" name='certificate_arn'/> 
                                  </div>
@@ -368,7 +365,6 @@
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/utils/purl.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/eucaconsole_wizard.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/elb_wizard.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/widgets/elb_listener_editor.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/instance_selector.js')}"></script>
 </div>

@@ -1,19 +1,10 @@
 /**
- * @fileOverview Elastic Load Balander Listener Editor Directive JS
+ * @fileOverview Elastic Load Balander Listener Editor JS
  * @requires AngularJS
  *
  */
-
-angular.module('EucaConsoleUtils').directive('elbListenerEditor', function() {
-    return {
-        restrict: 'E',
-        scope: {
-            option_json: '@options'
-        },
-        templateUrl: function (scope, elem) {
-            return elem.template;
-        },
-        controller: function ($scope, $timeout, eucaHandleError, eucaUnescapeJson) {
+angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
+    .controller('ELBListenerEditorCtrl', function ($scope, $timeout, eucaHandleError, eucaUnescapeJson) {
             $scope.isListenerNotComplete = true;
             $scope.hasDuplicatedListener = false;
             $scope.listenerArray = []; 
@@ -32,8 +23,8 @@ angular.module('EucaConsoleUtils').directive('elbListenerEditor', function() {
             $scope.elbListenerTextarea = undefined;
             $scope.serverCertificateName = '';
             $scope.addListenerButtonClass = 'disabled';
-            $scope.initEditor = function () {
-                var options = JSON.parse(eucaUnescapeJson($scope.option_json));
+            $scope.initEditor = function (optionsJson) {
+                var options = JSON.parse(eucaUnescapeJson(optionsJson));
                 $scope.setInitialValues(options);
                 $scope.setWatcher();
                 // Workaround for the Bug in jQuery to prevent JS Uncaught TypeError
@@ -293,8 +284,5 @@ angular.module('EucaConsoleUtils').directive('elbListenerEditor', function() {
             $scope.openCertificateModal = function (fromProtocol, toProtocol, certificateTab) {
                 $scope.$emit('eventOpenSelectCertificateModal', fromProtocol, toProtocol, certificateTab);
             };
-            $scope.initEditor();
-        }
-    };
-})
+    })
 ;

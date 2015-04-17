@@ -4,7 +4,7 @@
  *
  */
 
-angular.module('EucaConsoleWizard', ['EucaConsoleUtils', 'MagicSearch', 'TagEditor'])
+angular.module('EucaConsoleWizard', ['EucaConsoleUtils', 'MagicSearch', 'TagEditor', 'ELBListenerEditor'])
     .controller('EucaConsoleWizardCtrl', function ($scope, $http, $timeout, eucaHandleError, eucaUnescapeJson) {
         $scope.elbForm = undefined;
         $scope.urlParams = undefined;
