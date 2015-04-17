@@ -38,7 +38,7 @@ from ..views import BaseView
 
 class ELBForm(BaseSecureForm):
     """Elastic Load Balancer update form"""
-    idle_timeout = wtforms.SelectField(
+    idle_timeout = wtforms.TextField(
         label=_(u'Idle timeout'),
     )
     securitygroup_error_msg = _(u'Security groups are required')
@@ -56,22 +56,13 @@ class ELBForm(BaseSecureForm):
         self.set_error_messages()
         self.set_choices()
         if elb is not None:
-            self.idle_timeout.data = str(elb.idle_timeout)
+            self.idle_timeout.data = elb.idle_timeout
 
     def set_error_messages(self):
         self.securitygroup.error_msg = self.securitygroup_error_msg
 
     def set_choices(self):
-        self.idle_timeout.choices = self.set_idle_timeout_choices()
         self.securitygroup.choices = self.set_security_group_choices()
-
-    def set_idle_timeout_choices(self):
-        choices = [(30, '30 seconds'),
-                   (60, '1 minute'),
-                   (90, '90 seconds'),
-                   (120, '2 minutes'),
-                   (300, '5 minutes')]
-        return sorted(set(choices))
 
     def set_security_group_choices(self):
         choices = []
