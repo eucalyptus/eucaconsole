@@ -60,10 +60,7 @@
                             </div>
                             <hr />
                             <div>
-                                <tag-editor
-                                    template="${request.static_path('eucaconsole:static/html/directives/tag_editor.html')}"
-                                    options='${controller_options_json}'>
-                                </tag-editor>
+                                ${panel('tag_editor', show_name_tag=True)}
                             </div>
                             <hr />
                             <div>
@@ -372,7 +369,6 @@
     <script src="${request.static_path('eucaconsole:static/js/pages/eucaconsole_wizard.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/elb_wizard.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/elb_listener_editor.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/widgets/tag_editor_directive.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/instance_selector.js')}"></script>
 </div>
