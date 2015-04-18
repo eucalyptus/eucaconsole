@@ -1,8 +1,8 @@
 <metal:block use-macro="main_template" i18n:domain="eucaconsole" xmlns="http://www.w3.org/1999/html">
 
 <head metal:fill-slot="head_css">
-    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/instance.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/nvd3/nv.d3.min.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/cloudwatch_charts.css')}" />
 </head>
 
 <div metal:fill-slot="main_content">
@@ -29,15 +29,18 @@
             <div class="panel no-title cloudwatch-charts">
                 <div class="toprow">
                     <div class="blurb">
-                        <div class="timespan-wrapper" tal:condition="monitoring_enabled">
+                        <div class="duration-wrapper" tal:condition="monitoring_enabled">
                             <label class="left" i18n:translate="">Show data for</label>
-                            <select name="monitoring_duration" ng-model="monitoringCtrl.monitoringDuration"
-                                    ng-options="opt.label as opt.val for opt in monitoringCtrl.monitoringDurationChoices">
+                            <select name="monitoring_duration" ng-model="monitoringCtrl.duration"
+                                    ng-options="opt.label as opt.val for opt in monitoringCtrl.durationChoices"
+                                    ng-change="monitoringCtrl.refreshCharts()">
                             </select>
                         </div>
                     </div>
                     <div class="actions">
-                        <span id="enable-monitoring-icon" class="vdots dropdown"
+                        <span id="refresh-charts-icon" class="action-icon"
+                              ng-click="monitoringCtrl.refreshCharts()"><i class="fa fa-refresh"></i></span>
+                        <span id="enable-monitoring-icon" class="action-icon dropdown"
                               data-dropdown="enable-monitoring-dropdown"><i class="fa fa-ellipsis-v"></i></span>
                         <ul id="enable-monitoring-dropdown" class="f-dropdown" data-dropdown-content="">
                             <li>
@@ -58,37 +61,51 @@
                     <li class="chart-wrapper">
                         <h6 i18n:translate="">CPU utilization</h6>
                         <svg cloudwatch-chart="" id="cwchart-cpu" class="cwchart" ids="${instance.id}" idtype="InstanceId"
-                             metric="CPUUtilization" duration="3600" unit="Percent" statistic="Average"></svg>
+                             metric="CPUUtilization" duration="{{ monitoringCtrl.duration }}" unit="Percent" statistic="Average">
+                            <metal:block metal:use-macro="layout.global_macros['svg_loading']" />
+                        </svg>
                     </li>
                     <li class="chart-wrapper">
                         <h6 i18n:translate="">Disk read bytes</h6>
                         <svg cloudwatch-chart="" id="cwchart-disk-read-bytes" class="cwchart" ids="${instance.id}" idtype="InstanceId"
-                             metric="DiskReadBytes" duration="3600" unit="Bytes"></svg>
+                             metric="DiskReadBytes" duration="{{ monitoringCtrl.duration }}" unit="Bytes">
+                            <metal:block metal:use-macro="layout.global_macros['svg_loading']" />
+                        </svg>
                     </li>
                     <li class="chart-wrapper">
                         <h6 i18n:translate="">Disk read operations</h6>
                         <svg cloudwatch-chart="" id="cwchart-disk-read-ops" class="cwchart" ids="${instance.id}" idtype="InstanceId"
-                             metric="DiskReadOps" duration="3600" unit="Count"></svg>
+                             metric="DiskReadOps" duration="{{ monitoringCtrl.duration }}" unit="Count">
+                            <metal:block metal:use-macro="layout.global_macros['svg_loading']" />
+                        </svg>
                     </li>
                     <li class="chart-wrapper">
                         <h6 i18n:translate="">Disk write bytes</h6>
                         <svg cloudwatch-chart="" id="cwchart-disk-write-bytes" class="cwchart" ids="${instance.id}" idtype="InstanceId"
-                             metric="DiskWriteBytes" duration="3600" unit="Bytes"></svg>
+                             metric="DiskWriteBytes" duration="{{ monitoringCtrl.duration }}" unit="Bytes">
+                            <metal:block metal:use-macro="layout.global_macros['svg_loading']" />
+                        </svg>
                     </li>
                     <li class="chart-wrapper">
                         <h6 i18n:translate="">Disk write operations</h6>
                         <svg cloudwatch-chart="" id="cwchart-disk-write-ops" class="cwchart" ids="${instance.id}" idtype="InstanceId"
-                             metric="DiskWriteOps" duration="3600" unit="Count"></svg>
+                             metric="DiskWriteOps" duration="{{ monitoringCtrl.duration }}" unit="Count">
+                            <metal:block metal:use-macro="layout.global_macros['svg_loading']" />
+                        </svg>
                     </li>
                     <li class="chart-wrapper">
                         <h6 i18n:translate="">Network in KB</h6>
                         <svg cloudwatch-chart="" id="cwchart-networkin" class="cwchart" ids="${instance.image_id}"
-                             idtype="ImageId" metric="NetworkIn" duration="3600" unit="Bytes"></svg>
+                             idtype="ImageId" metric="NetworkIn" duration="{{ monitoringCtrl.duration }}" unit="Bytes">
+                            <metal:block metal:use-macro="layout.global_macros['svg_loading']" />
+                        </svg>
                     </li>
                     <li class="chart-wrapper">
                         <h6 i18n:translate="">Network out KB</h6>
                         <svg cloudwatch-chart="" id="cwchart-networkout" class="cwchart" ids="${instance.image_id}"
-                             idtype="ImageId" metric="NetworkOut" duration="3600" unit="Bytes"></svg>
+                             idtype="ImageId" metric="NetworkOut" duration="{{ monitoringCtrl.duration }}" unit="Bytes">
+                            <metal:block metal:use-macro="layout.global_macros['svg_loading']" />
+                        </svg>
                     </li>
                 </ul>
             </div>

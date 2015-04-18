@@ -1,0 +1,41 @@
+/* @fileOverview single Instance page CSS */
+
+@import "../includes/eucavariables";
+
+.duration-wrapper {
+    label {
+        font-weight: bold;
+        line-height: 2rem;
+    }
+    [name='monitoring_duration'] {
+        width: 300px;
+        margin-left: 1rem;
+    }
+}
+
+
+.cloudwatch-charts {
+    .toprow {
+        @include flexbox-mixin;
+        .blurb {
+            @include flexgrow-mixin(1);
+        }
+        .actions {
+            display: inline-block;
+        }
+    }
+}
+
+.chart-wrapper {
+    h6 {
+        color: white;
+        background-color: $euca-darkblue;
+        margin-bottom: 0;
+        padding: 8px 0 4px 8px;
+    }
+    svg {
+        width: 100%;
+        height: 300px;
+        border: 1px solid $euca-darkblue;
+    }
+}

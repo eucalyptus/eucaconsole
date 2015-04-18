@@ -2807,8 +2807,8 @@ textarea.policy-area { width: 100%; min-height: 30rem; font-family: Courier, "co
 .expando .title a { color: #03405f; }
 .expando .title a:hover { color: #8cc63e; border-bottom: 1px solid #8cc63e; }
 
-.vdots { display: inline-block; font-size: 1.4rem; color: #8cc63e; padding-right: 0.5rem; padding-left: 0.5rem; }
-.vdots.dropdown:hover { cursor: pointer; }
+.action-icon { display: inline-block; font-size: 1.4rem; color: #8cc63e; padding-right: 0.5rem; padding-left: 0.5rem; }
+.action-icon:hover { cursor: pointer; }
 
 /* ----------------------------------------- Tag editor
 ----------------------------------------- */

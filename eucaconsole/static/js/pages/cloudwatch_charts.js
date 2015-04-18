@@ -22,10 +22,11 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
             'unit': '@unit',
             'statistic': '@statistic'
         },
-        controller: function ($scope, $http, eucaHandleError) {
+        controller: function ($scope, $http, $timeout, eucaHandleError) {
             var cloudwatchApiUrl = '/cloudwatch/api';  // Fine to hard-code this here since it won't likely change
-            $scope.initChart = function() {
+            $scope.renderChart = function() {
                 // Anchor chart to zero for the following metrics
+                $scope.chartLoading = true;
                 var params = {
                     'ids': $scope.ids,
                     'idtype': $scope.idtype,
@@ -40,6 +41,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
                     'method': 'GET',
                     'params': params
                 }).success(function(oData) {
+                    $scope.chartLoading = false;
                     var results = oData ? oData.results : '';
                     var unit = oData.unit || $scope.unit;
                     var forceZeroBaselineMetrics = [
@@ -69,7 +71,22 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
                     eucaHandleError(oData, status);
                 });
             };
-            $scope.initChart();
+            $scope.renderChart();
+            $scope.$on('cloudwatch:refreshCharts', function () {
+                $timeout(function () {
+                    $scope.renderChart();
+                });
+            })
+        },
+        link: function (scope, element, attrs) {
+            scope.$watch('chartLoading', function (newVal) {
+                var loadingElem = element.find('text.loading');
+                if (newVal) {  // Chart is loading, so display progress indicator
+                    loadingElem.attr('visibility', 'visible');
+                } else {
+                    loadingElem.attr('visibility', 'hidden');
+                }
+            });
         }
     };
 })
