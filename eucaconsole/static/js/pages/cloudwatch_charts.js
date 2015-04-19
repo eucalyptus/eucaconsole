@@ -76,7 +76,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
                 $timeout(function () {
                     $scope.renderChart();
                 });
-            })
+            });
         },
         link: function (scope, element, attrs) {
             scope.$watch('chartLoading', function (newVal) {
