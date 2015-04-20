@@ -315,6 +315,7 @@ class ELBView(TaggedItemView):
             'resource_name': 'elb',
             'is_vpc_supported': self.is_vpc_supported,
             'default_vpc_network': self.get_default_vpc_network(),
+            'availability_zones': self.elb.availability_zones if self.elb else [],
             'availability_zone_choices': self.get_availability_zones(),
             'vpc_subnet_choices': self.get_vpc_subnets(),
             'securitygroups': self.elb.security_groups if self.elb else [],

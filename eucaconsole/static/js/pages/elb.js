@@ -8,6 +8,7 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
     .controller('ELBPageCtrl', function ($scope, $timeout, eucaUnescapeJson) {
         $scope.isNotChanged = true;
         $scope.securityGroups = [];
+        $scope.availabilityZones = []; 
         $scope.unsavedChangesWarningModalLeaveCallback = null;
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
@@ -31,6 +32,13 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
             if (options.hasOwnProperty('has_image')) {
                 $scope.hasImage = options.has_image;
             }
+            if (options.hasOwnProperty('availability_zones')) {
+                $scope.availabilityZones = options.availability_zones;
+                // Timeout is needed for the instance selector to be initizalized
+                $timeout(function () {
+                    $scope.$broadcast('eventUpdateAvailabilityZones', $scope.availabilityZones);
+                }, 500);
+            }
             if (!$scope.hasImage) {
                 $('#image-missing-modal').foundation('reveal', 'open');
             }
@@ -44,6 +52,9 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
                 $(this).find('.dialog-submit-button').css('display', 'none');                
                 $(this).find('.dialog-progress-display').css('display', 'block');                
             });
+            $scope.$watch('availabilityZones', function () {
+                $scope.$broadcast('eventUpdateAvailabilityZones', $scope.availabilityZones);
+            }, true);
         };
         $scope.setFocus = function () {
             $(document).on('ready', function(){
