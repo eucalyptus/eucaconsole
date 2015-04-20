@@ -8,6 +8,7 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor']
     .controller('ELBPageCtrl', function ($scope, $timeout, eucaUnescapeJson) {
         $scope.isNotChanged = true;
         $scope.securityGroups = [];
+        $scope.unsavedChangesWarningModalLeaveCallback = null;
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.setInitialValues(options);
@@ -66,6 +67,34 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor']
                     }
                }
             });
+        };
+        $scope.clickTab = function ($event, tab){
+            $event.preventDefault();
+            // If there exists unsaved changes, open the wanring modal instead
+            if ($scope.isNotChanged === false) {
+                // $scope.openModalById('unsaved-changes-warning-modal');
+                $scope.unsavedChangesWarningModalLeaveCallback = function() {
+                    $scope.isNotChanged = true;
+                    $scope.toggleTab(tab);
+                    // $('#unsaved-changes-warning-modal').foundation('reveal', 'close');
+                };
+                return;
+            } 
+            $scope.toggleTab(tab);
+        };
+        $scope.toggleTab = function (tab) {
+            $(".tabs").children("dd").each(function() {
+                var id = $(this).find("a").attr("href").substring(1);
+                var $container = $("#" + id);
+                $(this).removeClass("active");
+                $container.removeClass("active");
+                if (id == tab || $container.find("#" + tab).length) {
+                    $(this).addClass("active");
+                    $container.addClass("active");
+                    $scope.currentTab = id; // Update the currentTab value for the help display
+                    $scope.$broadcast('updatedTab', $scope.currentTab);
+                }
+             });
         };
         $scope.submitSaveChanges = function ($event) {
         };
