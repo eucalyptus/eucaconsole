@@ -6,6 +6,21 @@
 
 // Launch Instance page includes the Tag Editor, the Image Picker, BDM editor, and security group rules editor
 angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'ImagePicker', 'SecurityGroupRules', 'EucaConsoleUtils'])
+    .directive('option', function() {
+        return {
+            restrict: 'E',
+            scope: {
+                value: '='
+            },
+            link: function (scope, elem, attrs, controller) {
+                scope.$watch('value', function(newval, oldval) {
+                    //if (newval !== undefined && newval.indexOf('string:') === 0) {
+                    //    scope.value = newval.length === 7 ? "" : newval.substring(7);
+                    //}
+                });
+            }
+        };
+    })
     .controller('LaunchInstanceCtrl', function ($scope, $http, $timeout, eucaHandleError, eucaUnescapeJson) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.launchForm = $('#launch-instance-form');
