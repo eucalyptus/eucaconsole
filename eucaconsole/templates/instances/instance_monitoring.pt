@@ -32,7 +32,7 @@
                         <div class="duration-wrapper" tal:condition="monitoring_enabled">
                             <label class="left" i18n:translate="">Show data for</label>
                             <select name="monitoring_duration" ng-model="monitoringCtrl.duration"
-                                    ng-options="opt.label as opt.val for opt in monitoringCtrl.durationChoices"
+                                    ng-options="opt.val as opt.label for opt in monitoringCtrl.durationChoices"
                                     ng-change="monitoringCtrl.refreshCharts()">
                             </select>
                         </div>

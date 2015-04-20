@@ -7,7 +7,7 @@
 angular.module('InstanceMonitoring', ['CloudWatchCharts', 'EucaConsoleUtils'])
     .controller('InstanceMonitoringCtrl', function ($scope, eucaUnescapeJson) {
         var vm = this;
-        vm.duration = '3600';  // Default duration value is one hour
+        vm.duration = 3600;  // Default duration value is one hour
         vm.durationChoices = [];
         vm.initController = initController;
         vm.submitMonitoringForm = submitMonitoringForm;
@@ -19,8 +19,8 @@ angular.module('InstanceMonitoring', ['CloudWatchCharts', 'EucaConsoleUtils'])
 
         function initController(optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
-            angular.forEach(options.monitoring_duration_choices, function(value, label) {
-                vm.durationChoices.push({val: value, label: label});
+            angular.forEach(options.monitoring_duration_choices, function(item) {
+                vm.durationChoices.push({val: item[0], label: item[1]});
             });
         }
 

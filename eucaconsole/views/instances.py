@@ -32,11 +32,6 @@ import base64
 import re
 import simplejson as json
 
-try:
-    from collections import OrderedDict
-except ImportError:
-    from ordereddict import OrderedDict
-
 from M2Crypto import RSA
 from operator import attrgetter
 from urllib2 import HTTPError, URLError
@@ -1020,7 +1015,7 @@ class InstanceMonitoringView(BaseInstanceView):
     def get_controller_options_json(self):
         if not self.instance:
             return ''
-        monitoring_duration_choices = OrderedDict(MONITORING_DURATION_CHOICES)
+        monitoring_duration_choices = MONITORING_DURATION_CHOICES
         return BaseView.escape_json(json.dumps({
             'monitoring_duration_choices': monitoring_duration_choices,
         }))

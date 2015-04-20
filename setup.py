@@ -133,9 +133,6 @@ requires = [
     'WTForms >= 1.0.2',
 ]
 
-if py_version < (2, 7):
-    requires.append('ordereddict == 1.1')  # shim for collections.OrderedDict on Python 2.6
-
 i18n_extras = [
     'Babel',
     'lingua == 1.6',
