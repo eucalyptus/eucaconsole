@@ -61,9 +61,11 @@ class CloudWatchAPIView(BaseView):
         if not ids:
             raise HTTPBadRequest()
         ids = ids.split(',')  # Allow ids to be passed as a comma-separated list
+
         period = int(self.request.params.get('period', 60))
         if period % 60 != 0:
             raise HTTPBadRequest()  # Period (granularity) must be a multiple of 60 seconds
+
         duration = int(self.request.params.get('duration', 3600))
         metric = self.request.params.get('metric') or 'CPUUtilization'
         namespace = u'AWS/{0}'.format(self.request.params.get('namespace', 'EC2'))
@@ -71,13 +73,17 @@ class CloudWatchAPIView(BaseView):
         idtype = self.request.params.get('idtype') or 'InstanceId'
         tz_offset = int(self.request.params.get('tzoffset', 0))
         unit = self.request.params.get('unit')
-        with boto_error_handler(self.request):
-            stats = self.get_stats(period, duration, metric, namespace, statistic, idtype, ids, unit)
+        convert_to_kilobytes = ['NetworkIn', 'NetworkOut']
         json_stats = []
         divider = 1
-        if unit == 'Bytes':  # Convert Bytes to Kilobytes
+
+        with boto_error_handler(self.request):
+            stats = self.get_stats(period, duration, metric, namespace, statistic, idtype, ids, unit)
+
+        if metric in convert_to_kilobytes:
             divider = 1000
             unit = 'Kilobytes'
+
         for stat in stats:
             amount = stat.get(statistic)
             if divider != 1:
@@ -90,6 +96,7 @@ class CloudWatchAPIView(BaseView):
                 x=time.mktime(dt_object.timetuple()) * 1000,  # Milliseconds since Unix epoch
                 y=amount
             ))
+
         return dict(
             unit=unit,
             results=[dict(key=metric, values=json_stats)],
@@ -126,10 +133,10 @@ class CloudWatchAPIView(BaseView):
         :param unit: Valid values are Seconds, Kilobytes, Percent, Count, Kilobytes/Second, Count/Second, et. al.
 
         """
-        # TODO: Accept start/end time params, falling back to duration if missing
         end_time = datetime.datetime.utcnow()
         start_time = end_time - datetime.timedelta(seconds=duration)
         statistics = [statistic]
+
         return self.cw_conn.get_metric_statistics(
             period, start_time, end_time, metric, namespace, statistics,
             dimensions={idtype: ids}, unit=unit

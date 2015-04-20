@@ -30,8 +30,8 @@
                 <div class="toprow">
                     <div class="blurb">
                         <div class="duration-wrapper" tal:condition="monitoring_enabled">
-                            <label class="left" i18n:translate="">Show data for</label>
-                            <select name="monitoring_duration" ng-model="monitoringCtrl.duration"
+                            <label for="monitoring-duration" class="left" i18n:translate="">Show data for</label>
+                            <select name="monitoring_duration" id="monitoring-duration" ng-model="monitoringCtrl.duration"
                                     ng-options="opt.val as opt.label for opt in monitoringCtrl.durationChoices"
                                     ng-change="monitoringCtrl.refreshCharts()">
                             </select>
@@ -45,9 +45,19 @@
                         <ul id="enable-monitoring-dropdown" class="f-dropdown" data-dropdown-content="">
                             <li>
                                 <a href="" ng-click="monitoringCtrl.submitMonitoringForm()">
-                                    <span i18n:translate="">Turn monitoring</span>
-                                    <span i18n:translate="" tal:condition="monitoring_enabled">off</span>
-                                    <span i18n:translate="" tal:condition="not monitoring_enabled">on</span>
+                                    <div tal:condition="layout.cloud_type == 'euca'" tal:omit-tag="">
+                                        <span i18n:translate="">Turn monitoring</span>
+                                        <span i18n:translate="" tal:condition="monitoring_enabled">off</span>
+                                        <span i18n:translate="" tal:condition="not monitoring_enabled">on</span>
+                                    </div>
+                                    <div tal:condition="layout.cloud_type == 'aws'" tal:omit-tag="">
+                                        <span i18n:translate="" tal:condition="monitoring_enabled">
+                                            Disable detailed monitoring
+                                        </span>
+                                        <span i18n:translate="" tal:condition="not monitoring_enabled">
+                                            Enable detailed monitoring
+                                        </span>
+                                    </div>
                                 </a>
                             </li>
                         </ul>

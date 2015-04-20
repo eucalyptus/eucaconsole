@@ -49,7 +49,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
                         'DiskWriteBytes', 'DiskWriteOps'
                     ];
                     var chart = nv.models.lineChart()
-                        .margin({left: 80})
+                        .margin({left: 68})
                         .useInteractiveGuideline(true)
                         .showYAxis(true)
                         .showXAxis(true)
@@ -62,9 +62,9 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
                         chart.forceY([0, 100]);  // Set proper y-axis range for percentage units
                     }
                     if (forceZeroBaselineMetrics.indexOf($scope.metric) !== -1) {
-                        chart.forceY([0, 1000]);  // Anchor chart to zero baseline
+                        chart.forceY([0, 100]);  // Anchor chart to zero baseline
                     }
-                    chart.yAxis.axisLabel(unit).tickFormat(d3.format('.02f'));
+                    chart.yAxis.axisLabel(unit).tickFormat(d3.format('.f'));
                     d3.select('#' + $scope.elemId).datum(results).call(chart);
                     nv.utils.windowResize(chart.update);
                 }).error(function (oData, status) {
