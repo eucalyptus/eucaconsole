@@ -264,6 +264,8 @@ class ELBView(TaggedItemView):
             elb_form=self.elb_form,
             delete_form=self.delete_form,
             in_use=False,
+            protocol_list=self.get_protocol_list(),
+            listener_list=self.get_listener_list(),
             is_vpc_supported=self.is_vpc_supported,
             elb_vpc_network=self.get_vpc_network_name(),
             security_group_placeholder_text=_(u'Select...'),
@@ -303,8 +305,6 @@ class ELBView(TaggedItemView):
     def get_controller_options_json(self):
         return BaseView.escape_json(json.dumps({
             'resource_name': 'elb',
-            'listener_list': self.get_listener_list(),
-            'protocol_list': self.get_protocol_list(),
             'port_range_pattern':
                 '^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$',
             'tag_key_pattern': '^(?!aws:).{0,128}$',
@@ -437,6 +437,7 @@ class CreateELBView(BaseView):
             create_form=self.create_form,
             certificate_form=self.certificate_form,
             backend_certificate_form=self.backend_certificate_form,
+            protocol_list=self.get_protocol_list(),
             security_group_placeholder_text=_(u'Select...'),
             is_vpc_supported=self.is_vpc_supported,
             avail_zones_placeholder_text=_(u'Select availability zones'),
@@ -454,18 +455,12 @@ class CreateELBView(BaseView):
         return BaseView.escape_json(json.dumps({
             'resource_name': 'elb',
             'wizard_tab_list': self.get_wizard_tab_list(),
-            'protocol_list': self.get_protocol_list(),
-            'port_range_pattern':
-                '^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$',
-            'tag_key_pattern': '^(?!aws:).{0,128}$',
-            'tag_value_pattern': '^(?!aws:).{0,256}$',
             'is_vpc_supported': self.is_vpc_supported,
             'default_vpc_network': self.get_default_vpc_network(),
             'availability_zone_choices': self.get_availability_zones(),
             'vpc_subnet_choices': self.get_vpc_subnets(),
             'securitygroups_json_endpoint': self.request.route_path('securitygroups_json'),
             'instances_json_endpoint': self.request.route_path('instances_json'),
-            'show_name_tag': True
         }))
 
     def get_wizard_tab_list(self):

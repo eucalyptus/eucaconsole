@@ -212,9 +212,8 @@ module.exports = function(grunt) {
           directives: ['eucaconsole/static/html/directives/*.html'],
           help: ['eucaconsole/static/html/help/*.html'],
           elb: ['eucaconsole/templates/dialogs/select_certificate_dialog.pt',
+                'eucaconsole/templates/panels/elb_listener_editor.pt',
                 'eucaconsole/static/html/directives/instance_selector.html',
-                'eucaconsole/static/html/directives/elb_listener_editor.html',
-                'eucaconsole/static/html/directives/tag_editor.html',
                 'eucaconsole/templates/elbs/elb_wizard.pt'],
       }
   });

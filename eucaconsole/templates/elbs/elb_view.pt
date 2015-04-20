@@ -56,17 +56,11 @@
                     ${panel('form_field', field=elb_form['idle_timeout'], leftcol_width=3, rightcol_width=9, **idle_timeout_attrs)}
                     <hr />
                     <div>
-                        <elb-listener-editor
-                            template="${request.static_path('eucaconsole:static/html/directives/elb_listener_editor.html')}"
-                            options='${controller_options_json}'>
-                        </elb-listener-editor>
+                        ${panel('elb_listener_editor', listener_list=listener_list, protocol_list=protocol_list)}
                     </div>
                     <hr />
                     <div>
-                        <tag-editor
-                            template="${request.static_path('eucaconsole:static/html/directives/tag_editor.html')}"
-                            options='${controller_options_json}'>
-                        </tag-editor>
+                        ${panel('tag_editor', show_name_tag=True)}
                     </div>
                     <div tal:condition="is_vpc_supported and elb_vpc_network is not 'None'"
                             tal:define="security_group_attrs {'data-placeholder': security_group_placeholder_text};">
@@ -112,8 +106,6 @@
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/elb.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/widgets/elb_listener_editor.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/widgets/tag_editor_directive.js')}"></script>
 </div>
 
 </metal:block>

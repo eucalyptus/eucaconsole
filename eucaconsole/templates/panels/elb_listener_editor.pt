@@ -1,4 +1,7 @@
-<div id="elb-listener-editor">
+
+<!--! ELB listener editor -->
+<div id="elb-listener-editor" i18n:domain="eucaconsole"
+     ng-controller="ELBListenerEditorCtrl" ng-init="initEditor('${controller_options_json}')">
     <div ng-cloak="true">
         <h6 i18n:translate="">Listeners</h6>
         <div ng-cloak="true">
@@ -18,7 +21,7 @@
                         <th class="header vertical-border-header" i18n:translate="">PORT</th>
                         <th class="header" i18n:translate="">CIPHER</th>
                         <th class="header" i18n:translate="">CERTIFICATES</th>
-                        <th i18n:translate=""></th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -96,7 +99,7 @@
                 <div class="small-9 columns field">
                     <div ng-class="classFromPortDiv">
                         <input type="number" class="port from" id="from-port-input" name="from_port"
-                            ng-model="fromPort" pattern="{{ portRangePattern }}"/>
+                            ng-model="fromPort" pattern="${layout.port_range_pattern}" />
                         <small class="error" i18n:translate="">Port range value must be whole numbers between 1-65535</small>
                     </div>
                 </div>
@@ -125,7 +128,7 @@
                 <div class="small-9 columns field">
                     <div ng-class="classToPortDiv">
                         <input type="number" class="port to" id="to-port-input" name="to_port"
-                            ng-model="toPort" pattern="{{ portRangePattern }}"/>
+                            ng-model="toPort" pattern="${layout.port_range_pattern}" />
                         <small class="error" i18n:translate="">
                             Port range value must be whole numbers between 1-65535
                         </small>
@@ -186,4 +189,5 @@
             <textarea id="elb-listener" name="elb_listener" class="hidden" style="height: 8rem;"></textarea>
         </div>
     </div>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/elb_listener_editor.js')}"></script>
 </div>
