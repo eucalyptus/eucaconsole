@@ -4,7 +4,7 @@
  *
  */
 
-angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor'])
+angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor', 'MagicSearch'])
     .controller('ELBPageCtrl', function ($scope, $timeout, eucaUnescapeJson) {
         $scope.isNotChanged = true;
         $scope.securityGroups = [];
@@ -70,7 +70,7 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor']
         };
         $scope.clickTab = function ($event, tab){
             $event.preventDefault();
-            // If there exists unsaved changes, open the wanring modal instead
+            // If there exists unsaved changes, open the warning modal instead
             if ($scope.isNotChanged === false) {
                 // $scope.openModalById('unsaved-changes-warning-modal');
                 $scope.unsavedChangesWarningModalLeaveCallback = function() {
@@ -94,7 +94,7 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor']
                     $scope.currentTab = id; // Update the currentTab value for the help display
                     $scope.$broadcast('updatedTab', $scope.currentTab);
                 }
-             });
+            });
         };
         $scope.submitSaveChanges = function ($event) {
         };

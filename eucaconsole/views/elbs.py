@@ -256,6 +256,12 @@ class ELBView(TaggedItemView):
             elb=self.elb, securitygroups=self.get_security_groups(),
             formdata=self.request.params or None)
         self.delete_form = ELBDeleteForm(self.request, formdata=self.request.params or None)
+        filter_keys = ['id', 'name', 'placement', 'state', 'tags', 'vpc_subnet_display', 'vpc_name']
+        filters_form = ELBInstancesFiltersForm(
+            self.request, ec2_conn=self.ec2_conn, autoscale_conn=self.autoscale_conn,
+            iam_conn=None, vpc_conn=self.vpc_conn,
+            cloud_type=self.cloud_type, formdata=self.request.params or None)
+        search_facets = filters_form.facets
         self.render_dict = dict(
             elb=self.elb,
             elb_name=self.escape_braces(self.elb.name) if self.elb else '',
@@ -269,6 +275,8 @@ class ELBView(TaggedItemView):
             is_vpc_supported=self.is_vpc_supported,
             elb_vpc_network=self.get_vpc_network_name(),
             security_group_placeholder_text=_(u'Select...'),
+            filter_keys=filter_keys,
+            search_facets=BaseView.escape_json(json.dumps(search_facets)),
             controller_options_json=self.get_controller_options_json(),
         )
 
