@@ -55,6 +55,14 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
             $scope.$watch('availabilityZones', function () {
                 $scope.$broadcast('eventUpdateAvailabilityZones', $scope.availabilityZones);
             }, true);
+            $scope.$on('searchUpdated', function ($event, query) {
+                // Relay the query search update signal
+                $scope.$broadcast('eventQuerySearch', query);
+            });
+            $scope.$on('textSearch', function ($event, searchVal, filterKeys) {
+                // Relay the text search update signal
+                $scope.$broadcast('eventTextSearch', searchVal, filterKeys);
+            });
         };
         $scope.setFocus = function () {
             $(document).on('ready', function(){
