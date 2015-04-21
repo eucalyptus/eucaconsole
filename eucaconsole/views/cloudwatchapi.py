@@ -39,7 +39,35 @@ from pyramid.view import view_config
 from ..views import BaseView, boto_error_handler
 
 
-class CloudWatchAPIView(BaseView):
+class CloudWatchAPIMixin(object):
+    @staticmethod
+    def adjust_granularity(duration):
+        """
+        Adjust granularity based on duration to avoid exceeding 1440 data points
+
+        :type duration: integer
+        :param duration:  Length, in seconds, spanning the returned datapoints.
+
+        :rtype: integer
+        :returns: adusted granularity (period)
+
+        """
+        hour = 3600
+        ranges = [  # min/max values are in hours
+            dict(min=0, max=6, period=300),  # Set granularity to 5 minutes if duration < 6 hours
+            dict(min=6, max=24, period=600),
+            dict(min=24, max=3 * 24, period=1 * hour),
+            dict(min=3 * 24, max=7 * 24, period=3 * hour),
+            dict(min=7 * 24, max=30 * 24, period=6 * hour),
+        ]
+        for item in ranges:
+            if (item.get('min') * hour) <= duration < (item.get('max') * hour):
+                return item.get('period')
+
+        return 300  # Default to 5 minutes
+
+
+class CloudWatchAPIView(BaseView, CloudWatchAPIMixin):
     """CloudWatch Charts API"""
 
     def __init__(self, request):
@@ -62,11 +90,12 @@ class CloudWatchAPIView(BaseView):
             raise HTTPBadRequest()
         ids = ids.split(',')  # Allow ids to be passed as a comma-separated list
 
-        period = int(self.request.params.get('period', 60))
+        period = int(self.request.params.get('period', 300))
         if period % 60 != 0:
             raise HTTPBadRequest()  # Period (granularity) must be a multiple of 60 seconds
 
         duration = int(self.request.params.get('duration', 3600))
+        period = self.adjust_granularity(duration)
         metric = self.request.params.get('metric') or 'CPUUtilization'
         namespace = u'AWS/{0}'.format(self.request.params.get('namespace', 'EC2'))
         statistic = self.request.params.get('statistic') or 'Average'

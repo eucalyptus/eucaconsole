@@ -68,7 +68,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
                 'unit': $scope.unit,
                 'statistic': $scope.statistic
             };
-            params['tzoffset'] = (new Date()).getTimezoneOffset();
+            params.tzoffset = (new Date()).getTimezoneOffset();
             $http({
                 'url': cloudwatchApiUrl,
                 'method': 'GET',
