@@ -9,6 +9,13 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
         $scope.isNotChanged = true;
         $scope.securityGroups = [];
         $scope.availabilityZones = []; 
+        $scope.pingProtocol = '';
+        $scope.pingPort = '';
+        $scope.pingPath = '';
+        $scope.responseTimeout = '';
+        $scope.timeBetweenPings = '';
+        $scope.failuresUntilUnhealthy = '';
+        $scope.passesUntilHealthy = '';
         $scope.unsavedChangesWarningModalLeaveCallback = null;
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
@@ -32,6 +39,9 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
             if (options.hasOwnProperty('has_image')) {
                 $scope.hasImage = options.has_image;
             }
+            if (!$scope.hasImage) {
+                $('#image-missing-modal').foundation('reveal', 'open');
+            }
             if (options.hasOwnProperty('availability_zones')) {
                 $scope.availabilityZones = options.availability_zones;
                 // Timeout is needed for the instance selector to be initizalized
@@ -39,8 +49,26 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
                     $scope.$broadcast('eventUpdateAvailabilityZones', $scope.availabilityZones);
                 }, 500);
             }
-            if (!$scope.hasImage) {
-                $('#image-missing-modal').foundation('reveal', 'open');
+            if (options.hasOwnProperty('health_check_ping_protocol')) {
+                $scope.pingProtocol = options.health_check_ping_protocol;
+            }
+            if (options.hasOwnProperty('health_check_ping_port')) {
+                $scope.pingPort = options.health_check_ping_port;
+            }
+            if (options.hasOwnProperty('health_check_ping_path')) {
+                $scope.pingPath = options.health_check_ping_path;
+            }
+            if (options.hasOwnProperty('health_check_interval')) {
+                $scope.timeBetweenPings = options.health_check_interval;
+            }
+            if (options.hasOwnProperty('health_check_timeout')) {
+                $scope.responseTimeout = options.health_check_timeout;
+            }
+            if (options.hasOwnProperty('health_check_unhealthy_threshold')) {
+                $scope.failuresUntilUnhealthy = options.health_check_unhealthy_threshold;
+            }
+            if (options.hasOwnProperty('health_check_healthy_threshold')) {
+                $scope.passesUntilHealthy = options.health_check_healthy_threshold;
             }
             $scope.initChosenSelectors(); 
         };
@@ -62,6 +90,9 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
             $scope.$on('textSearch', function ($event, searchVal, filterKeys) {
                 // Relay the text search update signal
                 $scope.$broadcast('eventTextSearch', searchVal, filterKeys);
+            });
+            $scope.$watch('pingProtocol', function (){
+                $scope.updateDefaultPingProtocol();
             });
         };
         $scope.setFocus = function () {
@@ -114,6 +145,13 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
                     $scope.$broadcast('updatedTab', $scope.currentTab);
                 }
             });
+        };
+        $scope.updateDefaultPingProtocol = function () {
+            if ($scope.pingProtocol === 'HTTP' || $scope.pingProtocol === 'TCP') {
+               $scope.pingPort = 80;
+            } else if ($scope.pingProtocol === 'HTTPS' || $scope.pingProtocol === 'SSL' ) {
+               $scope.pingPort = 443;
+            }
         };
         $scope.submitSaveChanges = function ($event) {
         };

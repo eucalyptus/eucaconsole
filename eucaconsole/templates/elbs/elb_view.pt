@@ -145,7 +145,11 @@
                     </div>
                 </div>
                 <!--! Step 4: Health checks tab content -->
-                <div class="content panel has-actions" id="health-checks-tab">
+                <div class="content panel has-actions" id="health-checks-tab"
+                    tal:define="ping_path_attrs {'class': 'text-input'};
+                                ping_protocol_attrs {'class': 'ip-protocol'};
+                                ping_delay_attrs {'class': 'ping-delay'};
+                                ping_threshold_attrs {'class': 'ping-threshold'};">
                     <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="elb">
                         <metal:actions metal:fill-slot="actions">
                             <li>
@@ -154,7 +158,60 @@
                             </li>
                         </metal:actions>
                     </metal:block>
-                    Health checks Tab
+                    <div ng-cloak="true">
+                        <h6 i18n:translate="">Ping settings</h6>
+                        <div class="">
+                            ${panel('form_field', field=elb_form['ping_protocol'], rightcol_width=12, stack_label=True, ng_attrs={'model': 'pingProtocol'}, **ping_protocol_attrs)}
+                        </div>
+                        <div class="">
+                            ${panel('form_field', field=elb_form['ping_port'], rightcol_width=12, stack_label=True, min=1, max=65535, maxlength=5, ng_attrs={'model': 'pingPort'}, pattern=layout.integer_gt_zero_pattern)}
+                        </div>
+                        <div class="" ng-show="pingProtocol === 'HTTP' || pingProtocol === 'HTTPS'">
+                            ${panel('form_field', field=elb_form['ping_path'], ng_attrs={'model': 'pingPath'}, rightcol_width=12, stack_label=True, **ping_path_attrs)}
+                        </div>
+                    </div>
+                    <div class="expando" id="advanced-section" ng-cloak="" ng-init="expanded = false">
+                        <div class="title">
+                            <a ng-click="expanded = !expanded">
+                                <i class="fi-plus" ng-show="!expanded"></i>
+                                <i class="fi-minus" ng-show="expanded"></i>
+                                &nbsp;<span i18n:translate="">Advanced</span>
+                            </a>
+                        </div>
+                        <div class="section columns" ng-show="expanded">
+                            <div ng-cloak="true">
+                                <h6 i18n:translate="">Timing settings</h6>
+                                <div class="">
+                                    ${panel('form_field', field=elb_form['response_timeout'], rightcol_width=12, stack_label=True,  min=1, ng_attrs={'model': 'responseTimeout'}, pattern=layout.integer_gt_zero_pattern)}
+                                </div>
+                                <div class="">
+                                    ${panel('form_field', field=elb_form['time_between_pings'], rightcol_width=12, stack_label=True, ng_attrs={'model': 'timeBetweenPings'}, **ping_delay_attrs)}
+                                </div>
+                            </div>
+                            <div ng-cloak="true">
+                                <h6 i18n:translate="">Instance thresholds</h6>
+                                <div class="">
+                                    ${panel('form_field', field=elb_form['failures_until_unhealthy'], rightcol_width=12, stack_label=True, ng_attrs={'model': 'failuresUntilUnhealthy'}, **ping_threshold_attrs)}
+                                </div>
+                                <div class="">
+                                    ${panel('form_field', field=elb_form['passes_until_healthy'], rightcol_width=12, stack_label=True, ng_attrs={'model': 'passesUntilHealthy'}, **ping_threshold_attrs)}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="save-changes-button">
+                        <div class="row controls-wrapper">
+                            <div class="small-6 columns"></div>
+                            <div class="small-6 columns value right">
+                                <a href="${request.route_path('elbs')}" id="cancel-update-link"
+                                    class="cancel-link" i18n:translate="">Cancel</a>
+                                <button type="submit" class="button" id="save-changes-btn"
+                                    ng-click="submitSaveChanges($event)" ng-disabled="isNotChanged">
+                                    <span i18n:translate="">Save Changes</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

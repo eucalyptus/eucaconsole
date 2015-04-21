@@ -31,6 +31,7 @@ Pyramid views for Eucalyptus and AWS elbs
 from urllib import quote
 import simplejson as json
 import time
+import re
 
 import boto.utils
 from boto.ec2.elb import HealthCheck
@@ -248,6 +249,10 @@ class ELBView(TaggedItemView):
             if self.elb:
                 self.elb.created_time = boto.utils.parse_ts(self.elb.created_time)
                 self.elb.idle_timeout = self.get_elb_attribute_idle_timeout()
+                self.elb.ping_protocol = ''
+                self.elb.ping_port = ''
+                self.elb.ping_path = ''
+                self.set_health_check_data()
             else:
                 raise HTTPNotFound()
         self.is_vpc_supported = BaseView.is_vpc_supported(request)
@@ -320,7 +325,14 @@ class ELBView(TaggedItemView):
             'vpc_subnet_choices': self.get_vpc_subnets(),
             'securitygroups': self.elb.security_groups if self.elb else [],
             'securitygroups_json_endpoint': self.request.route_path('securitygroups_json'),
-            'instances_json_endpoint': self.request.route_path('instances_json')
+            'instances_json_endpoint': self.request.route_path('instances_json'),
+            'health_check_ping_protocol': self.elb.ping_protocol if self.elb else '',
+            'health_check_ping_port': self.elb.ping_port if self.elb else '',
+            'health_check_ping_path': self.elb.ping_path if self.elb else '',
+            'health_check_interval': self.elb.health_check.interval if self.elb else '',
+            'health_check_timeout': self.elb.health_check.timeout if self.elb else '',
+            'health_check_healthy_threshold': self.elb.health_check.healthy_threshold if self.elb else '',
+            'health_check_unhealthy_threshold': self.elb.health_check.unhealthy_threshold if self.elb else '',
         }))
 
     def get_elb_attribute_idle_timeout(self):
@@ -409,6 +421,15 @@ class ELBView(TaggedItemView):
             with boto_error_handler(self.request):
                 securitygroups = self.ec2_conn.get_all_security_groups(filters={'vpc-id': [self.elb.vpc_id]})
         return securitygroups
+
+    def set_health_check_data(self):
+        if self.elb is not None and self.elb.health_check.target is not None:
+            match = re.search('^(\w+):(\d+)\/(.+)?', self.elb.health_check.target)
+            if match:
+                self.elb.ping_protocol = match.group(1)
+                self.elb.ping_port = match.group(2)
+                if match.group(3) is not None:
+                    self.elb.ping_path = match.group(3)
 
 
 class CreateELBView(BaseView):

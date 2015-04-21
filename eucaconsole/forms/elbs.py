@@ -45,6 +45,46 @@ class ELBForm(BaseSecureForm):
     securitygroup = wtforms.SelectMultipleField(
         label=_(u'Security groups'),
     )
+    ping_protocol_error_msg = _(u'Ping protocol is required')
+    ping_protocol = wtforms.SelectField(
+        label=_(u'Protocol'),
+        validators=[validators.InputRequired(message=ping_protocol_error_msg)],
+    )
+    ping_port_error_msg = _(u'Port range value must be whole numbers between 1-65535')
+    ping_port = wtforms.IntegerField(
+        label=_(u'Port'),
+        validators=[
+            validators.InputRequired(message=ping_port_error_msg),
+            validators.NumberRange(min=1, max=65535),
+        ],
+    )
+    ping_path_error_msg = _(u'Ping path is required')
+    ping_path = TextEscapedField(
+        id=u'ping-path',
+        label=_(u'Path'),
+        default="/index.html",
+        validators=[validators.InputRequired(message=ping_path_error_msg)],
+    )
+    response_timeout_error_msg = _(u'Response timeout is required')
+    response_timeout = wtforms.IntegerField(
+        label=_(u'Response timeout (secs)'),
+        validators=[validators.InputRequired(message=response_timeout_error_msg)],
+    )
+    time_between_pings_error_msg = _(u'Time between pings is required')
+    time_between_pings = wtforms.SelectField(
+        label=_(u'Time between pings'),
+        validators=[validators.InputRequired(message=time_between_pings_error_msg)],
+    )
+    failures_until_unhealthy_error_msg = _(u'Failures until unhealthy is required')
+    failures_until_unhealthy = wtforms.SelectField(
+        label=_(u'Failures until unhealthy'),
+        validators=[validators.InputRequired(message=failures_until_unhealthy_error_msg)],
+    )
+    passes_until_healthy_error_msg = _(u'Passes until healthy is required')
+    passes_until_healthy = wtforms.SelectField(
+        label=_(u'Passes until healthy'),
+        validators=[validators.InputRequired(message=passes_until_healthy_error_msg)],
+    )
 
     def __init__(self, request, conn=None, vpc_conn=None, elb=None, securitygroups=None, **kwargs):
         super(ELBForm, self).__init__(request, **kwargs)
@@ -63,6 +103,10 @@ class ELBForm(BaseSecureForm):
 
     def set_choices(self):
         self.securitygroup.choices = self.set_security_group_choices()
+        self.ping_protocol.choices = CreateELBForm.get_ping_protocol_choices()
+        self.time_between_pings.choices = CreateELBForm.get_time_between_pings_choices()
+        self.failures_until_unhealthy.choices = CreateELBForm.get_failures_until_unhealthy_choices()
+        self.passes_until_healthy.choices = CreateELBForm.get_passes_until_healthy_choices()
 
     def set_security_group_choices(self):
         choices = []
