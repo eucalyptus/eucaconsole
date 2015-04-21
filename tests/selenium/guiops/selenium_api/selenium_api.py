@@ -48,37 +48,37 @@ class SeleniumApi():
         return True
 
 
-    def wait_for_visible_by_id(self, element_id):
+    def wait_for_visible_by_id(self, id):
         """
         Checks visibility of an element using its id.
         Keeps checking for visibility until max number of trials self.retry is reached.
-        :param element_id:
+        :param id:
         """
         for i in range(self.retry):
-            is_visible = self.driver.find_element_by_id(element_id).is_displayed()
+            is_visible = self.driver.find_element_by_id(id).is_displayed()
             if is_visible is True:
-                print "Element " + element_id + " is visible"
+                print "Element " + id + " is visible"
                 break
             time.sleep(1)
         if is_visible is False:
-            print "Element " + element_id + " is not visible"
+            print "Element " + id + " is not visible"
 
-    def wait_for_visible_by_css_selector(self, css_selector):
+    def wait_for_visible_by_css_selector(self, css):
         """
         Checks visibility of an element using its css.
         Keeps checking for visibility until max number of trials self.retry is reached.
         :param self:
-        :param css_selector:
+        :param css:
         """
         is_visible = False
         for i in range(self.retry):
-            is_visible = self.driver.find_element_by_css_selector(css_selector).is_displayed()
+            is_visible = self.driver.find_element_by_css_selector(css).is_displayed()
             if is_visible is True:
-                print "Element " + css_selector + " is visible"
+                print "Element " + css + " is visible"
                 break
             time.sleep(1)
         if is_visible is False:
-            print "Element " + css_selector + " is not visible"
+            print "Element " + css + " is not visible"
 
     def wait_for_visible_by_xpath(self, xpath):
         """
@@ -131,21 +131,21 @@ class SeleniumApi():
 
         return is_visible
 
-    def click_on_visible_by_id(self, element_id):
+    def click_on_visible_by_id(self, id):
         """
         Waits for an element to become visible then clicks the element by its id.
-        :param element_id:
+        :param id:
         """
-        self.wait_for_visible_by_id(element_id)
-        self.click_element_by_id(element_id)
+        self.wait_for_visible_by_id(id)
+        self.click_element_by_id(id)
 
-    def click_on_visible_by_css_selector(self, css_selector):
+    def click_on_visible_by_css_selector(self, css):
         """
         Waits for an element to become visible then clicks the element by its css.
-        :param css_selector:
+        :param css:
         """
-        self.wait_for_visible_by_css_selector(css_selector)
-        self.click_element_by_css_selector(css_selector)
+        self.wait_for_visible_by_css_selector(css)
+        self.click_element_by_css_selector(css)
 
 
     def click_on_visible(self, element_type, element):
@@ -209,46 +209,46 @@ class SeleniumApi():
         print "Found:: Element type: " + element_type + ", Element: " + element
         return 0
 
-    def verify_visible_element_by_link_text(self, element):
+    def verify_visible_element_by_link_text(self, link_text):
         """
         Checks if element is visible using link text. Does not retry.
-        :param element:
+        :param link_text:
         """
-        return self.driver.find_element_by_link_text(element).is_displayed()
+        return self.driver.find_element_by_link_text(link_text).is_displayed()
 
-    def verify_visible_element_by_id(self, element):
+    def verify_visible_element_by_id(self, id):
         """
         Checks if element is visible using id. Does not retry.
-        :param element:
+        :param id:
         """
-        return self.driver.find_element_by_id(element).is_displayed()
+        return self.driver.find_element_by_id(id).is_displayed()
 
-    def verify_visible_element_by_css_selector(self, element):
+    def verify_visible_element_by_css_selector(self, css):
         """
         Checks if element is visible using css. Does not retry.
-        :param element:
+        :param css:
         """
-        return self.driver.find_element_by_css_selector(element).is_displayed()
+        return self.driver.find_element_by_css_selector(css).is_displayed()
 
-    def verify_visible_element_by_xpath(self, element):
+    def verify_visible_element_by_xpath(self, xpath):
         """
         Checks if element is visible using xpath. Does not retry.
-        :param element:
+        :param xpath:
         """
-        return self.driver.find_element_by_xpath(element).is_displayed()
+        return self.driver.find_element_by_xpath(xpath).is_displayed()
 
-    def verify_visible_element_by_name(self, element):
+    def verify_visible_element_by_name(self, name):
         """
         Checks if element is visible using name. Does not retry.
-        :param element:
+        :param name:
         """
-        return self.driver.find_element_by_name(element).is_displayed()
+        return self.driver.find_element_by_name(name).is_displayed()
 
 
     def verify_element_not_present(self, element_type, element):
 
         """
-        Driver waits for the element to disappear from the page.
+        Waits for the element to disappear from the page.
         Keeps checking until max number or retries self.retry is reached.
         :param element_type:
         :param element:
@@ -277,45 +277,67 @@ class SeleniumApi():
             time.sleep(1)
         return False
 
-    def verify_text_not_present_by_css(self, locator, text):
-        print"Verifying that text displayed at " + locator + " does not match " + text
+    def verify_text_not_present_by_css(self, css, text):
+        """
+        Waits for the element to disappear from the page by css.
+        Keeps checking until max number or retries self.retry is reached.
+        :param css:
+        :param text:
+        """
+        print"Verifying that text displayed at " + css + " does not match " + text
         for i in range(1, self.retry, 1):
-            displayed = self.store_text_by_css_selector(locator)
-            print "Currently displayed at locator " + locator + " is " + displayed
+            displayed = self.store_text_by_css_selector(css)
+            print "Currently displayed at locator " + css + " is " + displayed
             if displayed != text:
-                print "Verified " + self.store_text_by_css_selector(locator) + " does not match " + text
+                print "Verified " + self.store_text_by_css_selector(css) + " does not match " + text
                 return True
             else:
                 print
                 print "Trial " + str(i) + " :"
 
-    def verify_text_not_present_by_id(self, locator, text):
-        print"Verifying that text displayed at " + locator + " does not match " + text
+    def verify_text_not_present_by_id(self, id, text):
+        """
+        Waits for the element to disappear from the page by id.
+        Keeps checking until max number or retries self.retry is reached.
+        :param id:
+        :param text:
+        """
+        print"Verifying that text displayed at " + id + " does not match " + text
         for i in range(1, self.retry, 1):
-            if self.store_text_by_id(locator) != text:
-                print "Verified " + self.store_text_by_id(locator) + " does not match " + text
+            if self.store_text_by_id(id) != text:
+                print "Verified " + self.store_text_by_id(id) + " does not match " + text
                 return True
             else:
                 print
                 print "Trial " + str(i) + " :"
 
-    def verify_text_not_present_by_name(self, locator, text):
-        print"Verifying that text displayed at " + locator + " does not match " + text
+    def verify_text_not_present_by_name(self, name, text):
+        """
+        Waits for the element to disappear from the page by name.
+        Keeps checking until max number or retries self.retry is reached.
+        """
+        print"Verifying that text displayed at " + name + " does not match " + text
         for i in range(1, self.retry, 1):
-            if self.store_text_by_name(locator) != text:
-                print "Verified " + self.store_text_by_name(locator) + " does not match " + text
+            if self.store_text_by_name(name) != text:
+                print "Verified " + self.store_text_by_name(name) + " does not match " + text
                 return True
             else:
                 print
                 print "Trial " + str(i) + " :"
 
-    def verify_text_not_present_by_xpath(self, locator, text):
-        print"Verifying that text displayed at " + locator + " does not match " + text
+    def verify_text_not_present_by_xpath(self, xpath, text):
+        """
+        Waits for the element to disappear from the page by xpath.
+        Keeps checking until max number or retries self.retry is reached.
+        :param xpath:
+        :param text:
+        """
+        print"Verifying that text displayed at " + xpath + " does not match " + text
         for i in range(1, self.retry, 1):
-            text_on_page = self.store_text_by_xpath(locator)
+            text_on_page = self.store_text_by_xpath(xpath)
             time.sleep(10)
             if text_on_page != text:
-                print "Verified " + self.store_text_by_xpath(locator) + " does not match " + text
+                print "Verified " + self.store_text_by_xpath(xpath) + " does not match " + text
                 return True
             else:
                 print
