@@ -1,5 +1,5 @@
 from selenium import webdriver
-from selenium import selenium
+#from selenium.webdriver.remote import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
 from selenium.common.exceptions import NoSuchElementException
@@ -24,7 +24,7 @@ class SeleniumApi():
         :param driver: webdriver
         """
         assert isinstance(driver, webdriver.Firefox)
-        self.driver = driver
+        self.driver = driver.find_element().
 
 
 
@@ -40,20 +40,31 @@ class SeleniumApi():
         self.verificationErrors = []
 
     def is_element_present(self, how, what):
+        """
+        Finds element by locator. Takes as arguments element type and element locator.
+        Returns NoSuchElementException if element is not found.
+        """
         try:
             self.driver.find_element(by=how, value=what)
+
         except NoSuchElementException, e:
             return False
         return True
 
+
     def wait_for_visible_by_id(self, element_id):
-        is_visible = False
+        """
+        Checks visibility of an element using its id.
+        Keeps checking for visibility until max number of trials self.retry is reached.
+        """
         for i in range(self.retry):
             is_visible = self.driver.find_element_by_id(element_id).is_displayed()
             if is_visible is True:
                 print "Element " + element_id + " is visible"
                 break
             time.sleep(1)
+        if is_visible is False
+            print  "Element " + element_id + " is not visible"
 
     def wait_for_visible_by_css_selector(self, css_selector):
         is_visible = False
@@ -418,7 +429,7 @@ class SeleniumApi():
         self.driver.find_element_by_name(name).clear()
         return 0
 
-    def store_text_by_link_text(self, link_text):
+    def store_visible_text_by_link_text(self, link_text):
         if self.check_if_element_present_by_type("LINK_TEXT", link_text) is not 0:
             raise UICheckException("Element by link text not present:" + link_text)
         if self.verify_visible_element_by_link_text(link_text) is not True:
@@ -426,7 +437,7 @@ class SeleniumApi():
         print "Get Text: Element Type: LINK_TEXT, Element: " + link_text
         return self.driver.find_element_by_link_text(link_text).text
 
-    def store_text_by_id(self, this_id):
+    def store_visible_text_by_id(self, this_id):
         if self.check_if_element_present_by_type("ID", this_id) is not 0:
             raise UICheckException("Element by id not present:" + this_id)
         if self.verify_visible_element_by_id(this_id) is not True:
@@ -434,7 +445,7 @@ class SeleniumApi():
         print "Get Text: Element Type: ID, Element: " + this_id
         return self.driver.find_element_by_id(this_id).text
 
-    def store_text_by_css_selector(self, css_selector):
+    def store_visible_text_by_css_selector(self, css_selector):
         if self.check_if_element_present_by_type("CSS_SELECTOR", css_selector) is not 0:
             raise UICheckException("Element by css selector not present:" + css_selector)
         if self.verify_visible_element_by_css_selector(css_selector) is not True:
@@ -442,7 +453,7 @@ class SeleniumApi():
         print "Get Text: Element Type: CSS_SELECTOR, Element: " + css_selector
         return self.driver.find_element_by_css_selector(css_selector).text
 
-    def store_text_by_xpath(self, xpath):
+    def store_visible_text_by_xpath(self, xpath):
         if self.check_if_element_present_by_type("XPATH", xpath) is not 0:
             raise UICheckException("Element by xpath not present: " + xpath)
 #        if self.check_if_element_visible_by_type("XPATH", xpath) is not True:
@@ -450,7 +461,7 @@ class SeleniumApi():
         print "Get Text: Element Type: XPATH, Element: " + xpath
         return self.driver.find_element_by_xpath(xpath).text
 
-    def store_text_by_name(self, name):
+    def store_visible_text_by_name(self, name):
         if self.check_if_element_present_by_type("NAME", name) is not 0:
             raise UICheckException("Element by name not present: " + name)
         if self.verify_visible_element_by_name( name) is not True:
@@ -458,7 +469,7 @@ class SeleniumApi():
         print "Click: Element Type: NAME, Element: " + name
         return self.driver.find_element_by_name(name).text
 
-    def select_text_by_link_text(self, link_text, visible_text):
+    def select_visible_text_by_link_text(self, link_text, visible_text):
         if self.check_if_element_present_by_type("LINK_TEXT", link_text) is not 0:
             raise UICheckException("Element by link text not present: " + link_text)
         if self.verify_visible_element_by_link_text(link_text) is not True:
@@ -467,7 +478,7 @@ class SeleniumApi():
         Select(self.driver.find_element_by_link_text(link_text)).select_by_visible_text(visible_text)
         return 0
 
-    def select_text_by_id(self, this_id, visible_text):
+    def select_visible_text_by_id(self, this_id, visible_text):
         if self.check_if_element_present_by_type("ID", this_id) is not 0:
             raise UICheckException("Element by id not present: " + this_id)
         if self.verify_visible_element_by_id(this_id) is not True:
@@ -476,7 +487,7 @@ class SeleniumApi():
         Select(self.driver.find_element_by_id(this_id)).select_by_visible_text(visible_text)
         return 0
 
-    def select_text_by_css_selector(self, css_selector, visible_text):
+    def select_visible_text_by_css_selector(self, css_selector, visible_text):
         if self.check_if_element_present_by_type("CSS_SELECTOR", css_selector) is not 0:
             raise UICheckException("Element by css selector not present: " + css_selector)
         if self.verify_visible_element_by_css_selector(css_selector) is not True:
@@ -485,7 +496,7 @@ class SeleniumApi():
         Select(self.driver.find_element_by_css_selector(css_selector)).select_by_visible_text(visible_text)
         return 0
 
-    def select_text_by_xpath(self, xpath, visible_text):
+    def select_visible_text_by_xpath(self, xpath, visible_text):
         if self.check_if_element_present_by_type("XPATH", xpath) is not 0:
             raise UICheckException("Element by xpath not present: " + xpath)
 #        if self.check_if_element_visible_by_type("XPATH", xpath) is not True:
@@ -494,7 +505,7 @@ class SeleniumApi():
         Select(self.driver.find_element_by_xpath(xpath)).select_by_visible_text(visible_text)
         return 0
 
-    def select_text_by_name(self, name, visible_text):
+    def select_visible_text_by_name(self, name, visible_text):
         if self.check_if_element_present_by_type("NAME", name) is not 0:
             raise UICheckException("Element by name not present: " + name)
         if self.verify_visible_element_by_name(name) is not True:
