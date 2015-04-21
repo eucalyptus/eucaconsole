@@ -48,20 +48,20 @@ class SeleniumApi():
         return True
 
 
-    def wait_for_visible_by_id(self, id):
+    def wait_for_visible_by_id(self, element_id):
         """
         Checks visibility of an element using its id.
         Keeps checking for visibility until max number of trials self.retry is reached.
-        :param id:
+        :param element_id:
         """
         for i in range(self.retry):
-            is_visible = self.driver.find_element_by_id(id).is_displayed()
+            is_visible = self.driver.find_element_by_id(element_id).is_displayed()
             if is_visible is True:
-                print "Element " + id + " is visible"
+                print "Element " + element_id + " is visible"
                 break
             time.sleep(1)
         if is_visible is False:
-            print "Element " + id + " is not visible"
+            print "Element " + element_id + " is not visible"
 
     def wait_for_visible_by_css_selector(self, css):
         """
@@ -131,13 +131,13 @@ class SeleniumApi():
 
         return is_visible
 
-    def click_on_visible_by_id(self, id):
+    def click_on_visible_by_id(self, element_id):
         """
         Waits for an element to become visible then clicks the element by its id.
-        :param id:
+        :param element_id:
         """
-        self.wait_for_visible_by_id(id)
-        self.click_element_by_id(id)
+        self.wait_for_visible_by_id(element_id)
+        self.click_element_by_id(element_id)
 
     def click_on_visible_by_css_selector(self, css):
         """
@@ -146,7 +146,6 @@ class SeleniumApi():
         """
         self.wait_for_visible_by_css_selector(css)
         self.click_element_by_css_selector(css)
-
 
     def click_on_visible(self, element_type, element):
         """
@@ -165,7 +164,6 @@ class SeleniumApi():
             self.click_element_by_xpath(element)
         elif element_type is "NAME":
             self.click_element_by_name(element)
-
 
     def check_if_element_present_by_type(self, element_type, element):
         """
@@ -216,12 +214,12 @@ class SeleniumApi():
         """
         return self.driver.find_element_by_link_text(link_text).is_displayed()
 
-    def verify_visible_element_by_id(self, id):
+    def verify_visible_element_by_id(self, element_id):
         """
         Checks if element is visible using id. Does not retry.
-        :param id:
+        :param element_id:
         """
-        return self.driver.find_element_by_id(id).is_displayed()
+        return self.driver.find_element_by_id(element_id).is_displayed()
 
     def verify_visible_element_by_css_selector(self, css):
         """
@@ -243,7 +241,6 @@ class SeleniumApi():
         :param name:
         """
         return self.driver.find_element_by_name(name).is_displayed()
-
 
     def verify_element_not_present(self, element_type, element):
 
@@ -286,26 +283,26 @@ class SeleniumApi():
         """
         print"Verifying that text displayed at " + css + " does not match " + text
         for i in range(1, self.retry, 1):
-            displayed = self.store_text_by_css_selector(css)
+            displayed = self.store_visible_text_by_css_selector(css)
             print "Currently displayed at locator " + css + " is " + displayed
             if displayed != text:
-                print "Verified " + self.store_text_by_css_selector(css) + " does not match " + text
+                print "Verified " + self.store_visible_text_by_css_selector(css) + " does not match " + text
                 return True
             else:
                 print
                 print "Trial " + str(i) + " :"
 
-    def verify_text_not_present_by_id(self, id, text):
+    def verify_text_not_present_by_id(self, element_id, text):
         """
         Waits for the element to disappear from the page by id.
         Keeps checking until max number or retries self.retry is reached.
-        :param id:
+        :param element_id:
         :param text:
         """
-        print"Verifying that text displayed at " + id + " does not match " + text
+        print"Verifying that text displayed at " + element_id + " does not match " + text
         for i in range(1, self.retry, 1):
-            if self.store_text_by_id(id) != text:
-                print "Verified " + self.store_text_by_id(id) + " does not match " + text
+            if self.store_visible_text_by_id(element_id) != text:
+                print "Verified " + self.store_visible_text_by_id(element_id) + " does not match " + text
                 return True
             else:
                 print
@@ -318,8 +315,8 @@ class SeleniumApi():
         """
         print"Verifying that text displayed at " + name + " does not match " + text
         for i in range(1, self.retry, 1):
-            if self.store_text_by_name(name) != text:
-                print "Verified " + self.store_text_by_name(name) + " does not match " + text
+            if self.store_visible_text_by_name(name) != text:
+                print "Verified " + self.store_visible_text_by_name(name) + " does not match " + text
                 return True
             else:
                 print
@@ -334,10 +331,10 @@ class SeleniumApi():
         """
         print"Verifying that text displayed at " + xpath + " does not match " + text
         for i in range(1, self.retry, 1):
-            text_on_page = self.store_text_by_xpath(xpath)
+            text_on_page = self.store_visible_text_by_xpath(xpath)
             time.sleep(10)
             if text_on_page != text:
-                print "Verified " + self.store_text_by_xpath(xpath) + " does not match " + text
+                print "Verified " + self.store_visible_text_by_xpath(xpath) + " does not match " + text
                 return True
             else:
                 print
@@ -384,7 +381,7 @@ class SeleniumApi():
         for i in range(self.retry):
             print "Wait On:: Trial: " + str(i) + " Verifying text " + element_text + " displayed at xpath " + locator
             try:
-                text_on_page = self.store_text_by_xpath(locator)
+                text_on_page = self.store_visible_text_by_xpath(locator)
                 if element_text == text_on_page:
                     print"Found text"
                     displayed_text = text_on_page
@@ -393,7 +390,7 @@ class SeleniumApi():
                 pass
             time.sleep(1)
         try:
-            text_on_page = self.store_text_by_xpath(locator)
+            text_on_page = self.store_visible_text_by_xpath(locator)
             if element_text == text_on_page:
                 print "Found text"
                 displayed_text = text_on_page
@@ -435,7 +432,7 @@ class SeleniumApi():
     def click_element_by_xpath(self, xpath):
         if self.check_if_element_present_by_type("XPATH", xpath) is not 0:
             raise UICheckException("Element by xpath not present: " + xpath)
-        #        if self.check_if_element_visible_by_type("XPATH", xpath) is not True:
+            #        if self.check_if_element_visible_by_type("XPATH", xpath) is not True:
         #            raise UICheckException("Element by xpath not visible:" + xpath)
         print "Click: Element Type: XPATH, Element: " + xpath
         self.driver.find_element_by_xpath(xpath).click()
@@ -484,7 +481,7 @@ class SeleniumApi():
     def send_keys_by_xpath(self, xpath, keys):
         if self.check_if_element_present_by_type("XPATH", xpath) is not 0:
             raise UICheckException("Element by xpath not found :" + xpath)
-        #        if self.check_if_element_visible_by_type("XPATH", xpath) is not True:
+            #        if self.check_if_element_visible_by_type("XPATH", xpath) is not True:
         #            raise UICheckException("Element by xpath not visible:" + xpath)
         print "Set: Element Type: XPATH, Element: " + xpath + ", Keys: " + keys
         self.driver.find_element_by_xpath(xpath).clear()
@@ -527,7 +524,7 @@ class SeleniumApi():
     def store_visible_text_by_xpath(self, xpath):
         if self.check_if_element_present_by_type("XPATH", xpath) is not 0:
             raise UICheckException("Element by xpath not present: " + xpath)
-        #        if self.check_if_element_visible_by_type("XPATH", xpath) is not True:
+            #        if self.check_if_element_visible_by_type("XPATH", xpath) is not True:
         #            raise UICheckException("Element by xpath not visible:" + xpath)
         print "Get Text: Element Type: XPATH, Element: " + xpath
         return self.driver.find_element_by_xpath(xpath).text
@@ -570,7 +567,7 @@ class SeleniumApi():
     def select_visible_text_by_xpath(self, xpath, visible_text):
         if self.check_if_element_present_by_type("XPATH", xpath) is not 0:
             raise UICheckException("Element by xpath not present: " + xpath)
-        #        if self.check_if_element_visible_by_type("XPATH", xpath) is not True:
+            #        if self.check_if_element_visible_by_type("XPATH", xpath) is not True:
         #            raise UICheckException("Element by xpath not visible:" + xpath)
         print "Select: Element Type: XPATH, Element: " + xpath + ", Text: " + visible_text
         Select(self.driver.find_element_by_xpath(xpath)).select_by_visible_text(visible_text)
