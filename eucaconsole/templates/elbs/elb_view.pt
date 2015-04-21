@@ -119,11 +119,33 @@
                         </metal:block>
                         <div ng-cloak="true">
                             <div>
-                                <label class="section-label">
-                                    <span i18n:translate="">
-                                        Instances
-                                    </span>
-                                </label>
+                                <h6 i18n:translate="">
+                                    Availability zones
+                                </h6>
+                                <div i18n:translate="">
+                                    Instances registered with the load balancer will not receive requests until their associated availability zones are enabled.
+                                </div>
+                            </div>
+                        </div>
+                        <div ng-cloak="true">
+                            <div>
+                                <h6 i18n:translate="">
+                                    Subnets
+                                </h6>
+                                <div i18n:translate="">
+                                    Instances registered with the load balancer will not receive requests until their associated subnets are enabled.
+                                </div>
+                            </div>
+                        </div>
+                        <hr />
+                        <div ng-cloak="true">
+                            <div>
+                                <h6 i18n:translate="">
+                                    Instances
+                                </h6>
+                                <div i18n:translate="">
+                                    Select instances to add to this load balancer. Unchecking instances will remove them from the load balancer.
+                                </div>
                             </div>
                             <div ng-app="MagicSearch">
                                 <magic-search
