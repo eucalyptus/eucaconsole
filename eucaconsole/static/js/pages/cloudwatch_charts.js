@@ -52,18 +52,23 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
 
     function ChartController($scope, $http, $timeout, eucaHandleError) {
         var cloudwatchApiUrl = '/cloudwatch/api';  // Fine to hard-code this here since it won't likely change
-        $scope.renderChart = function() {
+        $scope.renderChart = function(options) {
+            options = options || {};
             // Anchor chart to zero for the following metrics
             $scope.chartLoading = true;
-            var params = {
+            var chartElemId = options.elemId || $scope.elemId;
+            if (options.empty) {
+                $('#' + chartElemId).empty();
+            }
+            var params = options.params || {
                 'ids': $scope.ids,
                 'idtype': $scope.idtype,
                 'metric': $scope.metric,
                 'duration': $scope.duration,
                 'unit': $scope.unit,
-                'statistic': $scope.statistic,
-                'tzoffset': (new Date()).getTimezoneOffset()
+                'statistic': $scope.statistic
             };
+            params['tzoffset'] = (new Date()).getTimezoneOffset();
             $http({
                 'url': cloudwatchApiUrl,
                 'method': 'GET',
@@ -84,7 +89,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
                 ;
                 chart.xScale(d3.time.scale());
                 chart.xAxis.tickFormat(function(d) {
-                    return d3.time.format('%m/%d %H:%M %p')(new Date(d));
+                    return d3.time.format('%m/%d %H:%M')(new Date(d));
                 });
                 if ($scope.unit === 'Percent') {
                     chart.forceY([0, 100]);  // Set proper y-axis range for percentage units
@@ -92,8 +97,8 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
                 if (forceZeroBaselineMetrics.indexOf($scope.metric) !== -1) {
                     chart.forceY([0, 100]);  // Anchor chart to zero baseline
                 }
-                chart.yAxis.axisLabel(unit).tickFormat(d3.format('.f'));
-                d3.select('#' + $scope.elemId).datum(results).call(chart);
+                chart.yAxis.axisLabel(unit).tickFormat(d3.format('.0f'));
+                d3.select('#' + chartElemId).datum(results).call(chart);
                 nv.utils.windowResize(chart.update);
             }).error(function (oData, status) {
                 eucaHandleError(oData, status);
@@ -108,6 +113,21 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
     }
 
     function linkFunc(scope, element, attrs) {
+        // Enable large charts
+        element.closest('.chart-wrapper').on('click', function () {
+            scope.$parent.chartsCtrl.selectedChart = attrs;
+            var options = {
+                'elemId': 'large-chart',
+                'params': attrs,
+                'empty': true  // empty chart prior to rendering
+            };
+            var chartModal = $('#large-chart-modal');
+            chartModal.foundation('reveal', 'open');
+            scope.renderChart(options);
+            scope.$apply();
+        });
+
+        // Handle visibility of loading indicators
         scope.$watch('chartLoading', function (newVal) {
             var loadingElem = element.find('text.loading');
             if (newVal) {  // Chart is loading, so display progress indicator

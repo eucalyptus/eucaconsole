@@ -12,3 +12,6 @@
 
 .chart-wrapper h6 { color: white; background-color: #03405f; margin-bottom: 0; padding: 8px 0 4px 8px; }
 .chart-wrapper svg { width: 100%; height: 300px; border: 1px solid #03405f; }
+.chart-wrapper:hover { cursor: pointer; }
+
+.large-chart-wrapper svg { width: 100%; height: 500px; }
