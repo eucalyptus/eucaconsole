@@ -372,7 +372,9 @@ class SeleniumApi():
             time.sleep(1)
         try:
             text_on_page = self.store_text_by_xpath(locator)
-            element_text == text_on_page
+            if element_text == text_on_page:
+                print "Found text"
+                displayed_text = text_on_page
         except AssertionError as e:
             self.verificationErrors.append(str(e))
 
