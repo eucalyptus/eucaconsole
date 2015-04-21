@@ -53,7 +53,7 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
                 $scope.pingProtocol = options.health_check_ping_protocol;
             }
             if (options.hasOwnProperty('health_check_ping_port')) {
-                $scope.pingPort = options.health_check_ping_port;
+                $scope.pingPort = parseInt(options.health_check_ping_port);
             }
             if (options.hasOwnProperty('health_check_ping_path')) {
                 $scope.pingPath = options.health_check_ping_path;
@@ -90,9 +90,6 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
             $scope.$on('textSearch', function ($event, searchVal, filterKeys) {
                 // Relay the text search update signal
                 $scope.$broadcast('eventTextSearch', searchVal, filterKeys);
-            });
-            $scope.$watch('pingProtocol', function (){
-                $scope.updateDefaultPingProtocol();
             });
         };
         $scope.setFocus = function () {
@@ -145,13 +142,6 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
                     $scope.$broadcast('updatedTab', $scope.currentTab);
                 }
             });
-        };
-        $scope.updateDefaultPingProtocol = function () {
-            if ($scope.pingProtocol === 'HTTP' || $scope.pingProtocol === 'TCP') {
-               $scope.pingPort = 80;
-            } else if ($scope.pingProtocol === 'HTTPS' || $scope.pingProtocol === 'SSL' ) {
-               $scope.pingPort = 443;
-            }
         };
         $scope.submitSaveChanges = function ($event) {
         };

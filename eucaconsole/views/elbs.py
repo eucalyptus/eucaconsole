@@ -424,7 +424,7 @@ class ELBView(TaggedItemView):
 
     def set_health_check_data(self):
         if self.elb is not None and self.elb.health_check.target is not None:
-            match = re.search('^(\w+):(\d+)\/(.+)?', self.elb.health_check.target)
+            match = re.search('^(\w+):(\d+)\/?(.+)?', self.elb.health_check.target)
             if match:
                 self.elb.ping_protocol = match.group(1)
                 self.elb.ping_port = match.group(2)
