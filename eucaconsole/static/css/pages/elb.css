@@ -5,4 +5,10 @@
 ----------------------------------------- */
 .fi-alert { color: darkred; }
 
+#elb-view-form input.text-input { width: 300px; }
 #elb-view-form input.timeout-field { width: 60px; }
+#elb-view-form input[type="number"] { width: 100px; }
+#elb-view-form select.ip-protocol { width: 100px; }
+#elb-view-form select.ping-delay { width: 120px; }
+#elb-view-form select.ping-threshold { width: 100px; }
+#elb-view-form table { margin-left: auto; margin-right: auto; }
