@@ -210,25 +210,48 @@ class SeleniumApi():
         return 0
 
     def verify_visible_element_by_link_text(self, element):
+        """
+        Checks if element is visible using link text. Does not retry.
+        :param element:
+        """
         return self.driver.find_element_by_link_text(element).is_displayed()
 
     def verify_visible_element_by_id(self, element):
+        """
+        Checks if element is visible using id. Does not retry.
+        :param element:
+        """
         return self.driver.find_element_by_id(element).is_displayed()
 
     def verify_visible_element_by_css_selector(self, element):
+        """
+        Checks if element is visible using css. Does not retry.
+        :param element:
+        """
         return self.driver.find_element_by_css_selector(element).is_displayed()
 
     def verify_visible_element_by_xpath(self, element):
+        """
+        Checks if element is visible using xpath. Does not retry.
+        :param element:
+        """
         return self.driver.find_element_by_xpath(element).is_displayed()
 
     def verify_visible_element_by_name(self, element):
+        """
+        Checks if element is visible using name. Does not retry.
+        :param element:
+        """
         return self.driver.find_element_by_name(element).is_displayed()
 
 
     def verify_element_not_present(self, element_type, element):
 
         """
-        Driver waits for the element to disappear from the page
+        Driver waits for the element to disappear from the page.
+        Keeps checking until max number or retries self.retry is reached.
+        :param element_type:
+        :param element:
         """
 
         this_element_type = ""
