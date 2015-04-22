@@ -343,9 +343,17 @@ class SeleniumApi():
                 print "Trial " + str(i) + " :"
 
     def verify_text_displayed_by_id(self, element_id, element_text):
+        """
+        Will wait for element to become visible. Will check if text displayed at element_id matches element_text.
+        Keeps checking until max number or retries self.retry is reached.
+
+        :param element_id:
+        :param element_text:
+        """
         #print("Verifying text " +element_text+" displayed at ID "+element_id)
         for i in range(self.retry):
             print "Wait On:: Trial: " + str(i) + " Verifying text " + element_text + " displayed at ID " + element_id
+            self.wait_for_visible_by_id(element_id)
             try:
                 if element_text == self.driver.find_element_by_id(element_id).text:
                     print"Found text"
@@ -354,12 +362,20 @@ class SeleniumApi():
                     break
             except:
                 pass
+
             time.sleep(1)
 
     def verify_text_displayed_by_css(self, element_css, element_text):
+        """
+        Will wait for element to become visible. Will check if text displayed at element_css matches element_text.
+        Keeps checking until max number or retries self.retry is reached.
+        :param element_css:
+        :param element_text:
+        """
         #print("Verifying text " +element_text+" displayed at ID "+element_css)
         for i in range(self.retry):
             print "Wait On:: Trial: " + str(i) + " Verifying text " + element_text + " displayed at ID " + element_css
+            self.wait_for_visible_by_css_selector(element_css)
             try:
                 if element_text == self.driver.find_element_by_css_selector(element_css).text:
                     print"Found text"
@@ -375,13 +391,20 @@ class SeleniumApi():
         displayed_text = self.driver.find_element_by_css_selector(element_css).text
         print("Text displayed at ID " + element_css + " is " + displayed_text)
 
-    def verify_text_displayed_by_xpath(self, locator, element_text):
+    def verify_text_displayed_by_xpath(self, xpath, element_text):
+        """
+        Will wait for element to become visible. Will check if text displayed at xpath matches element_text.
+        Keeps checking until max number or retries self.retry is reached.
+        :param xpath:
+        :param element_text:
+        """
         #print("Verifying text " +element_text+" displayed at xpath "+locator)
         displayed_text = None
         for i in range(self.retry):
-            print "Wait On:: Trial: " + str(i) + " Verifying text " + element_text + " displayed at xpath " + locator
+            print "Wait On:: Trial: " + str(i) + " Verifying text " + element_text + " displayed at xpath " + xpath
+            self.wait_for_visible_by_xpath(xpath)
             try:
-                text_on_page = self.store_visible_text_by_xpath(locator)
+                text_on_page = self.store_visible_text_by_xpath(xpath)
                 if element_text == text_on_page:
                     print"Found text"
                     displayed_text = text_on_page
@@ -390,14 +413,14 @@ class SeleniumApi():
                 pass
             time.sleep(1)
         try:
-            text_on_page = self.store_visible_text_by_xpath(locator)
+            text_on_page = self.store_visible_text_by_xpath(xpath)
             if element_text == text_on_page:
                 print "Found text"
                 displayed_text = text_on_page
         except AssertionError as e:
             self.verificationErrors.append(str(e))
 
-        print("Text displayed at xpath " + locator + " is " + displayed_text)
+        print("Text displayed at xpath " + xpath + " is " + displayed_text)
 
     def click_element_by_link_text(self, link_text):
         if self.check_if_element_present_by_type("LINK_TEXT", link_text) is not 0:
