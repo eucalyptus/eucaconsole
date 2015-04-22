@@ -18,6 +18,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
     vm.initController = initController;
     vm.submitMonitoringForm = submitMonitoringForm;
     vm.refreshCharts = refreshCharts;
+    vm.refreshLargeChart = refreshLargeChart;
 
     function submitMonitoringForm() {
         document.getElementById('monitoring-form').submit();
@@ -34,8 +35,13 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
         // Broadcast message to CW charts directive controller to refresh
         $scope.$broadcast('cloudwatch:refreshCharts');
     }
+
+    function refreshLargeChart() {
+        $scope.$broadcast('cloudwatch:refreshLargeChart');
+    }
+
 })
-.directive('cloudwatchChart', function($http, eucaHandleError) {
+.directive('cloudwatchChart', function($http, $timeout, eucaHandleError) {
     return {
         restrict: 'A',  // Restrict to attribute since container element must be <svg>
         scope: {
@@ -61,12 +67,12 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
     }
 
     function renderChart(scope, options) {
-        var cloudwatchApiUrl = '/cloudwatch/api';  // Fine to hard-code this here since it won't likely change
         options = options || {};
-        // Anchor chart to zero for the following metrics
-        scope.chartLoading = true;
-        var chartElemId = options.elemId || scope.elemId;
-        if (options.empty) {
+        scope.chartLoading = !options.largeChart;
+        var cloudwatchApiUrl = '/cloudwatch/api';  // Fine to hard-code this here since it won't likely change
+        var largeChart = options.largeChart || false;
+        var chartElemId = largeChart ? 'large-chart' : scope.elemId;
+        if (largeChart) {
             $('#' + chartElemId).empty();
         }
         var params = options.params || {
@@ -86,6 +92,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
             scope.chartLoading = false;
             var results = oData ? oData.results : '';
             var unit = oData.unit || scope.unit;
+            // Anchor chart to zero for the following metrics
             var forceZeroBaselineMetrics = [
                 'NetworkIn', 'NetworkOut', 'DiskReadBytes', 'DiskReadOps',
                 'DiskWriteBytes', 'DiskWriteOps'
@@ -115,25 +122,25 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
     }
 
     function linkFunc(scope, element, attrs) {
-        var options = {
-            'elemId': 'large-chart',
-            'params': attrs,
-            'chartLoading': false,  // Prevent loading indicators on parent charts page
-            'empty': true  // empty chart prior to rendering
-        };
-
-        // Enable large charts
+        var chartModal = $('#large-chart-modal');
+        // Display large chart on small chart click
         element.closest('.chart-wrapper').on('click', function () {
+            var options = {
+                'params': attrs,
+                'largeChart': true
+            };
+            console.log(options.params);
             scope.$parent.chartsCtrl.selectedChart = attrs;
-            var chartModal = $('#large-chart-modal');
+            scope.$parent.chartsCtrl.largeChartDuration = scope.$parent.chartsCtrl.duration;
             chartModal.foundation('reveal', 'open');
             renderChart(scope, options);
             scope.$apply();
-        });
-
-        scope.$on('refreshLargeChart', function () {
-            options.duration = scope.$parent.chartsCtrl.largeChartDuration;
-            renderChart(scope, options);
+            scope.$on('cloudwatch:refreshLargeChart', function () {
+                $timeout(function () {
+                    options.params.duration = scope.$parent.chartsCtrl.largeChartDuration;
+                    renderChart(scope, options);
+                });
+            });
         });
 
         // Handle visibility of loading indicators

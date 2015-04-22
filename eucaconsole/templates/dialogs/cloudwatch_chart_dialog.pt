@@ -6,12 +6,13 @@
             <div class="blurb">
                 <label for="large-chart-monitoring-duration" class="left" i18n:translate="">Show data for</label>
                 <select name="large_chart_monitoring_duration" id="large-chart-monitoring-duration" class="duration-input"
-                        ng-model="chartsCtrl.largeChartDuration"
+                        ng-model="chartsCtrl.largeChartDuration" ng-change="chartsCtrl.refreshLargeChart()"
                         ng-options="opt.val as opt.label for opt in chartsCtrl.durationChoices">
                 </select>
             </div>
             <div class="actions">
-                <span id="refresh-charts-icon" class="action-icon"><i class="fa fa-refresh"></i></span>
+                <span id="refresh-charts-icon" class="action-icon"
+                      ng-click="chartsCtrl.refreshLargeChart()"><i class="fa fa-refresh"></i></span>
             </div>
         </div>
         <div class="large-chart-wrapper">
