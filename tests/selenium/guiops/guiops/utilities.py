@@ -41,7 +41,7 @@ class Utilities():
 
     def is_element_present(self, how, what):
         try:
-            self.driver.find_element(by=how, value=what)
+            self.driver.verify_element_present(by=how, value=what)
         except NoSuchElementException, e:
             return False
         return True
@@ -211,7 +211,7 @@ class Utilities():
         for i in range(1, self.retry, 1):
             print "Wait On Removal:: Trial: " + str(i) + " Element Type: " + element_type + ", Element: " + element
             try:
-                self.driver.find_element(this_element_type, element)
+                self.driver.verify_element_present(this_element_type, element)
             except NoSuchElementException:
                 print
                 print "Verified Removal:: Element type: " + element_type + ", Element: " + element
