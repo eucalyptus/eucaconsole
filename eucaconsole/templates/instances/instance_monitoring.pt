@@ -123,14 +123,8 @@
         <form method="post" id="monitoring-form" action="${request.route_path('instance_monitoring_update', id=instance.id)}">
             ${structure:monitoring_form['csrf_token']}
         </form>
-        <div class="reveal-modal xlarge" id="large-chart-modal" data-reveal="">
-            <!--! TODO: Move this to a macro or panel -->
-            <h3>{{ chartsCtrl.selectedChart.metric }}</h3>
-            <div class="large-chart-wrapper">
-                <svg id="large-chart"></svg>
-            </div>
-            <a href="#" id="large_chart_close-link" class="close-reveal-modal">&#215;</a>
-        </div>
+        <!--! Modal dialog for large chart -->
+        ${panel('cloudwatch_chart_dialog')}
     </div>
 </div>
 
