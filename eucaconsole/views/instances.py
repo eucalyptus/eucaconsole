@@ -44,7 +44,7 @@ from boto.ec2.networkinterface import NetworkInterfaceCollection, NetworkInterfa
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from pyramid.view import view_config
 
-from ..constants.cloudwatch import MONITORING_DURATION_CHOICES
+from ..constants.cloudwatch import MONITORING_DURATION_CHOICES, METRIC_TITLE_MAPPING
 from ..forms.images import ImagesFiltersForm
 from ..forms.instances import (
     InstanceForm, AttachVolumeForm, DetachVolumeForm, LaunchInstanceForm, LaunchMoreInstancesForm,
@@ -984,6 +984,7 @@ class InstanceMonitoringView(BaseInstanceView):
             instance_name=self.instance_name,
             monitoring_enabled=self.instance.monitoring_state == 'enabled',
             monitoring_form=self.monitoring_form,
+            metric_title=METRIC_TITLE_MAPPING,
             controller_options_json=self.get_controller_options_json()
         )
 
@@ -991,8 +992,7 @@ class InstanceMonitoringView(BaseInstanceView):
     def instance_monitoring(self):
         if self.instance is None:
             raise HTTPNotFound()
-        render_dict = self.render_dict
-        return render_dict
+        return self.render_dict
 
     @view_config(route_name='instance_monitoring_update', renderer=VIEW_TEMPLATE, request_method='POST')
     def instance_monitoring_update(self):
@@ -1018,6 +1018,7 @@ class InstanceMonitoringView(BaseInstanceView):
         monitoring_duration_choices = MONITORING_DURATION_CHOICES
         return BaseView.escape_json(json.dumps({
             'monitoring_duration_choices': monitoring_duration_choices,
+            'metric_title_mapping': METRIC_TITLE_MAPPING,
         }))
 
 

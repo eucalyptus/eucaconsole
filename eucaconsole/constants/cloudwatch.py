@@ -88,6 +88,17 @@ METRIC_DIMENSION_INPUTS = {
     'volume': 'volume_id',
 }
 
+# Maps metric names to friendly titles, primarily for CloudWatch charts
+METRIC_TITLE_MAPPING = {
+    'CPUUtilization': _(u'CPU utilization %'),
+    'DiskReadBytes': _(u'Disk read bytes'),
+    'DiskReadOps': _(u'Disk read operations'),
+    'DiskWriteBytes': _(u'Disk write bytes'),
+    'DiskWriteOps': _(u'Disk write operations'),
+    'NetworkIn': _(u'Network in KB'),
+    'NetworkOut': _(u'Network out KB'),
+}
+
 # Build choices for CloudWatch charts (e.g. on Instance monitoring page)
 HOUR = 3600  # seconds
 DAY = HOUR * 24

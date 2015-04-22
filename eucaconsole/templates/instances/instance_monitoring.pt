@@ -32,7 +32,7 @@
                         <div class="duration-wrapper" tal:condition="monitoring_enabled">
                             <label for="monitoring-duration" class="left" i18n:translate="">Show data for</label>
                             <select name="monitoring_duration" id="monitoring-duration" ng-model="chartsCtrl.duration"
-                                    ng-options="opt.val as opt.label for opt in chartsCtrl.durationChoices"
+                                    ng-options="opt.value as opt.label for opt in chartsCtrl.durationChoices"
                                     ng-change="chartsCtrl.refreshCharts()" class="duration-input">
                             </select>
                         </div>
@@ -69,49 +69,49 @@
                 </div>
                 <ul class="small-block-grid-1 medium-block-grid-2 large-block-grid-3" tal:condition="monitoring_enabled">
                     <li class="chart-wrapper">
-                        <h6 i18n:translate="">CPU utilization</h6>
+                        <h6>${metric_title['CPUUtilization']}</h6>
                         <svg cloudwatch-chart="" id="cwchart-cpu" class="cwchart" ids="${instance.id}" idtype="InstanceId"
                              metric="CPUUtilization" duration="{{ chartsCtrl.duration }}" unit="Percent" statistic="Average">
                             <metal:block metal:use-macro="layout.global_macros['svg_loading']" />
                         </svg>
                     </li>
                     <li class="chart-wrapper">
-                        <h6 i18n:translate="">Disk read bytes</h6>
+                        <h6>${metric_title['DiskReadBytes']}</h6>
                         <svg cloudwatch-chart="" id="cwchart-disk-read-bytes" class="cwchart" ids="${instance.id}" idtype="InstanceId"
                              metric="DiskReadBytes" duration="{{ chartsCtrl.duration }}" unit="Bytes">
                             <metal:block metal:use-macro="layout.global_macros['svg_loading']" />
                         </svg>
                     </li>
                     <li class="chart-wrapper">
-                        <h6 i18n:translate="">Disk read operations</h6>
+                        <h6>${metric_title['DiskReadOps']}</h6>
                         <svg cloudwatch-chart="" id="cwchart-disk-read-ops" class="cwchart" ids="${instance.id}" idtype="InstanceId"
                              metric="DiskReadOps" duration="{{ chartsCtrl.duration }}" unit="Count">
                             <metal:block metal:use-macro="layout.global_macros['svg_loading']" />
                         </svg>
                     </li>
                     <li class="chart-wrapper">
-                        <h6 i18n:translate="">Disk write bytes</h6>
+                        <h6>${metric_title['DiskWriteBytes']}</h6>
                         <svg cloudwatch-chart="" id="cwchart-disk-write-bytes" class="cwchart" ids="${instance.id}" idtype="InstanceId"
                              metric="DiskWriteBytes" duration="{{ chartsCtrl.duration }}" unit="Bytes">
                             <metal:block metal:use-macro="layout.global_macros['svg_loading']" />
                         </svg>
                     </li>
                     <li class="chart-wrapper">
-                        <h6 i18n:translate="">Disk write operations</h6>
+                        <h6>${metric_title['DiskWriteOps']}</h6>
                         <svg cloudwatch-chart="" id="cwchart-disk-write-ops" class="cwchart" ids="${instance.id}" idtype="InstanceId"
                              metric="DiskWriteOps" duration="{{ chartsCtrl.duration }}" unit="Count">
                             <metal:block metal:use-macro="layout.global_macros['svg_loading']" />
                         </svg>
                     </li>
                     <li class="chart-wrapper">
-                        <h6 i18n:translate="">Network in KB</h6>
+                        <h6>${metric_title['NetworkIn']}</h6>
                         <svg cloudwatch-chart="" id="cwchart-networkin" class="cwchart" ids="${instance.image_id}"
                              idtype="ImageId" metric="NetworkIn" duration="{{ chartsCtrl.duration }}" unit="Bytes">
                             <metal:block metal:use-macro="layout.global_macros['svg_loading']" />
                         </svg>
                     </li>
                     <li class="chart-wrapper">
-                        <h6 i18n:translate="">Network out KB</h6>
+                        <h6>${metric_title['NetworkOut']}</h6>
                         <svg cloudwatch-chart="" id="cwchart-networkout" class="cwchart" ids="${instance.image_id}"
                              idtype="ImageId" metric="NetworkOut" duration="{{ chartsCtrl.duration }}" unit="Bytes">
                             <metal:block metal:use-macro="layout.global_macros['svg_loading']" />

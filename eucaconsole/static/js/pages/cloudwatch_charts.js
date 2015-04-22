@@ -19,6 +19,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
     vm.submitMonitoringForm = submitMonitoringForm;
     vm.refreshCharts = refreshCharts;
     vm.refreshLargeChart = refreshLargeChart;
+    vm.metricTitleMapping = {};
 
     function submitMonitoringForm() {
         document.getElementById('monitoring-form').submit();
@@ -26,8 +27,10 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
 
     function initController(optionsJson) {
         var options = JSON.parse(eucaUnescapeJson(optionsJson));
+        vm.metricTitleMapping = options.metric_title_mapping;
+        // Convert list of value/label tuples to array of value/label pairs for ng-options array
         angular.forEach(options.monitoring_duration_choices, function(item) {
-            vm.durationChoices.push({val: item[0], label: item[1]});
+            vm.durationChoices.push({value: item[0], label: item[1]});
         });
     }
 
@@ -125,19 +128,19 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
         var chartModal = $('#large-chart-modal');
         // Display large chart on small chart click
         element.closest('.chart-wrapper').on('click', function () {
+            var parentCtrl = scope.$parent.chartsCtrl;
             var options = {
                 'params': attrs,
                 'largeChart': true
             };
-            console.log(options.params);
-            scope.$parent.chartsCtrl.selectedChart = attrs;
-            scope.$parent.chartsCtrl.largeChartDuration = scope.$parent.chartsCtrl.duration;
+            parentCtrl.selectedChartTitle = parentCtrl.metricTitleMapping[attrs.metric];
+            parentCtrl.largeChartDuration = parentCtrl.duration;
             chartModal.foundation('reveal', 'open');
             renderChart(scope, options);
             scope.$apply();
             scope.$on('cloudwatch:refreshLargeChart', function () {
                 $timeout(function () {
-                    options.params.duration = scope.$parent.chartsCtrl.largeChartDuration;
+                    options.params.duration = parentCtrl.largeChartDuration;
                     renderChart(scope, options);
                 });
             });

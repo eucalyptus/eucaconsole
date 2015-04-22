@@ -1,13 +1,13 @@
 <!--! Modal dialog for large CloudWatch chart -->
 <div tal:omit-tag="" i18n:domain="eucaconsole">
     <div class="reveal-modal xlarge cloudwatch-charts" id="large-chart-modal" data-reveal="">
-        <h3>{{ chartsCtrl.selectedChart.metric }}</h3>
+        <h3>{{ chartsCtrl.selectedChartTitle }}</h3>
         <div class="toprow">
             <div class="blurb">
                 <label for="large-chart-monitoring-duration" class="left" i18n:translate="">Show data for</label>
                 <select name="large_chart_monitoring_duration" id="large-chart-monitoring-duration" class="duration-input"
                         ng-model="chartsCtrl.largeChartDuration" ng-change="chartsCtrl.refreshLargeChart()"
-                        ng-options="opt.val as opt.label for opt in chartsCtrl.durationChoices">
+                        ng-options="opt.value as opt.label for opt in chartsCtrl.durationChoices">
                 </select>
             </div>
             <div class="actions">
