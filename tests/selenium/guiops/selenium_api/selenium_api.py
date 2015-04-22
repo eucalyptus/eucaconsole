@@ -1,12 +1,8 @@
 from selenium import webdriver
-#from selenium.webdriver.remote import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
 from selenium.common.exceptions import NoSuchElementException
-from selenium.common.exceptions import TimeoutException
-from selenium.webdriver.support.ui import WebDriverWait # available since 2.4.0
-from selenium.webdriver.support import expected_conditions as EC # available since 2.26.0
-import unittest, time, re
+import time
 
 
 class UICheckException(Exception):
@@ -23,7 +19,6 @@ class SeleniumApi():
         assert isinstance(driver, webdriver.Firefox)
         self.driver = driver
 
-
     retry = 400
 
     #def NoOp(self):
@@ -39,14 +34,15 @@ class SeleniumApi():
         """
         Finds element by locator. Takes as arguments element type and element locator.
         Returns NoSuchElementException if element is not found.
+        :param how:
+        :param what:
         """
         try:
             self.driver.find_element(by=how, value=what)
 
-        except NoSuchElementException, e:
+        except NoSuchElementException:
             return False
         return True
-
 
     def wait_for_visible_by_id(self, element_id):
         """
@@ -54,6 +50,7 @@ class SeleniumApi():
         Keeps checking for visibility until max number of trials self.retry is reached.
         :param element_id:
         """
+        is_visible = False
         for i in range(self.retry):
             is_visible = self.driver.find_element_by_id(element_id).is_displayed()
             if is_visible is True:
