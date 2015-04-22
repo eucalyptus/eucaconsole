@@ -2,18 +2,6 @@
 
 @import "../includes/eucavariables";
 
-.duration-wrapper {
-    label {
-        font-weight: bold;
-        line-height: 2rem;
-    }
-    [name='monitoring_duration'] {
-        width: 300px;
-        margin-left: 1rem;
-    }
-}
-
-
 .cloudwatch-charts {
     .toprow {
         @include flexbox-mixin;
@@ -22,6 +10,14 @@
         }
         .actions {
             display: inline-block;
+        }
+        label {
+            font-weight: bold;
+            line-height: 2rem;
+        }
+        .duration-input {
+            width: 300px;
+            margin-left: 1rem;
         }
     }
 }

@@ -33,7 +33,7 @@
                             <label for="monitoring-duration" class="left" i18n:translate="">Show data for</label>
                             <select name="monitoring_duration" id="monitoring-duration" ng-model="chartsCtrl.duration"
                                     ng-options="opt.val as opt.label for opt in chartsCtrl.durationChoices"
-                                    ng-change="chartsCtrl.refreshCharts()">
+                                    ng-change="chartsCtrl.refreshCharts()" class="duration-input">
                             </select>
                         </div>
                     </div>
