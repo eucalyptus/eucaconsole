@@ -13,11 +13,15 @@
         }
         label {
             font-weight: bold;
-            line-height: 2rem;
+            line-height: 2.2rem;
         }
         .duration-input {
-            width: 300px;
+            width: 200px;
             margin-left: 1rem;
+        }
+        .field-wrapper {
+            display: inline-block;
+            margin-right: 2rem;
         }
     }
 }

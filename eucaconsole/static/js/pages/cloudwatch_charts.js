@@ -10,28 +10,28 @@
  */
 
 angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
-.controller('CloudWatchChartsCtrl', function ($scope, eucaUnescapeJson) {
+.controller('CloudWatchChartsCtrl', function ($scope, eucaUnescapeJson, eucaOptionsArray) {
     var vm = this;
     vm.duration = 3600;  // Default duration value is one hour
     vm.largeChartDuration = 3600;
     vm.durationChoices = [];
+    vm.statisticChoices = [];
+    vm.metricTitleMapping = {};
     vm.initController = initController;
     vm.submitMonitoringForm = submitMonitoringForm;
     vm.refreshCharts = refreshCharts;
     vm.refreshLargeChart = refreshLargeChart;
-    vm.metricTitleMapping = {};
-
-    function submitMonitoringForm() {
-        document.getElementById('monitoring-form').submit();
-    }
 
     function initController(optionsJson) {
         var options = JSON.parse(eucaUnescapeJson(optionsJson));
         vm.metricTitleMapping = options.metric_title_mapping;
         // Convert list of value/label tuples to array of value/label pairs for ng-options array
-        angular.forEach(options.monitoring_duration_choices, function(item) {
-            vm.durationChoices.push({value: item[0], label: item[1]});
-        });
+        vm.durationChoices = eucaOptionsArray(options.monitoring_duration_choices);
+        vm.statisticChoices = eucaOptionsArray(options.statistic_choices);
+    }
+
+    function submitMonitoringForm() {
+        document.getElementById('monitoring-form').submit();
     }
 
     function refreshCharts() {
@@ -135,12 +135,14 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
             };
             parentCtrl.selectedChartTitle = parentCtrl.metricTitleMapping[attrs.metric];
             parentCtrl.largeChartDuration = parentCtrl.duration;
+            parentCtrl.largeChartStatistic = attrs.statistic || 'Average';
             chartModal.foundation('reveal', 'open');
             renderChart(scope, options);
             scope.$apply();
             scope.$on('cloudwatch:refreshLargeChart', function () {
                 $timeout(function () {
                     options.params.duration = parentCtrl.largeChartDuration;
+                    options.params.statistic = parentCtrl.largeChartStatistic;
                     renderChart(scope, options);
                 });
             });

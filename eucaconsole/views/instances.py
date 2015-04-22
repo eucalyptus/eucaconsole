@@ -44,7 +44,7 @@ from boto.ec2.networkinterface import NetworkInterfaceCollection, NetworkInterfa
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from pyramid.view import view_config
 
-from ..constants.cloudwatch import MONITORING_DURATION_CHOICES, METRIC_TITLE_MAPPING
+from ..constants.cloudwatch import MONITORING_DURATION_CHOICES, METRIC_TITLE_MAPPING, STATISTIC_CHOICES
 from ..forms.images import ImagesFiltersForm
 from ..forms.instances import (
     InstanceForm, AttachVolumeForm, DetachVolumeForm, LaunchInstanceForm, LaunchMoreInstancesForm,
@@ -1019,6 +1019,7 @@ class InstanceMonitoringView(BaseInstanceView):
         return BaseView.escape_json(json.dumps({
             'monitoring_duration_choices': monitoring_duration_choices,
             'metric_title_mapping': METRIC_TITLE_MAPPING,
+            'statistic_choices': STATISTIC_CHOICES,
         }))
 
 

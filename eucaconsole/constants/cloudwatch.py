@@ -99,7 +99,16 @@ METRIC_TITLE_MAPPING = {
     'NetworkOut': _(u'Network out KB'),
 }
 
-# Build choices for CloudWatch charts (e.g. on Instance monitoring page)
+# Statistic choices for CloudWatch charts
+STATISTIC_CHOICES = [
+    ('Average', _(u'Average')),
+    ('Minimum', _(u'Minimum')),
+    ('Maximum', _(u'Maximum')),
+    ('Sum', _(u'Sum')),
+    ('SampleCount', _(u'Sample Count')),
+]
+
+# Duration choices for CloudWatch charts (e.g. on Instance monitoring page)
 HOUR = 3600  # seconds
 DAY = HOUR * 24
 MONITORING_DURATION_CHOICES = [
