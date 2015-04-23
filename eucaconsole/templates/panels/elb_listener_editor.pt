@@ -100,7 +100,9 @@
                     <div ng-class="classFromPortDiv">
                         <input type="number" class="port from" id="from-port-input" name="from_port"
                             ng-model="fromPort" pattern="${layout.port_range_pattern}" />
-                        <small class="error" i18n:translate="">Port range value must be whole numbers between 1-65535</small>
+                        <small class="error" i18n:translate="">
+                            Port range value must be a whole number between 1-65535
+                        </small>
                     </div>
                 </div>
             </div>
@@ -130,7 +132,7 @@
                         <input type="number" class="port to" id="to-port-input" name="to_port"
                             ng-model="toPort" pattern="${layout.port_range_pattern}" />
                         <small class="error" i18n:translate="">
-                            Port range value must be whole numbers between 1-65535
+                            Port range value must be a whole number between 1-65535
                         </small>
                     </div>
                 </div>
