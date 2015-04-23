@@ -70,10 +70,10 @@
         </div>
         <div>
             <div ng-show="listenerArray.length === 0">
-                <label class="section-label description" i18n:translate="">Add a listener</label>
+                <span class="section-label" i18n:translate="">Add a listener</span>
             </div>
             <div ng-show="listenerArray.length > 0">
-                <label class="section-label description" i18n:translate="">Add another listener</label>
+                <span class="section-label" i18n:translate="">Add another listener</span>
             </div>
         </div>
         <div>

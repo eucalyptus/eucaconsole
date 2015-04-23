@@ -11,6 +11,7 @@ form {
     .section-label {
         margin-top: 4px;
         margin-bottom: 6px;
+        color: $euca-darkblue;
     }
     .sub-section-label {
         color: black;
@@ -45,7 +46,6 @@ form {
 #backend-certificate-form {
     @include item-list;
     .description {
-        font-weight: bold;
         color: $euca-darkblue;
     }
 }

@@ -40,7 +40,7 @@
 /* Extra small screen (< 481px) */
 @media screen and (max-width: 560px) { dl.tabs a b { display: none; } }
 /* @section Elasitc Load Balancer Wizard styles */
-form .section-label { margin-top: 4px; margin-bottom: 6px; }
+form .section-label { margin-top: 4px; margin-bottom: 6px; color: #03405f; }
 form .sub-section-label { color: black; }
 form .stack-label { margin-bottom: 0.25rem; }
 
@@ -54,7 +54,7 @@ form .stack-label { margin-bottom: 0.25rem; }
 #backend-certificate-form .item-list { margin-bottom: 6px; }
 #backend-certificate-form .item-list .item { color: #333; background-color: #e6e7e8; margin-right: 8px; }
 #backend-certificate-form .item-list .item a { color: white; }
-#backend-certificate-form .description { font-weight: bold; color: #03405f; }
+#backend-certificate-form .description { color: #03405f; }
 
 table.elb-listener-table { border-width: 2px; border-style: solid; border-color: #6a737b; }
 table.elb-listener-table thead { border-width: 2px; border-style: solid; border-color: #6a737b; }
