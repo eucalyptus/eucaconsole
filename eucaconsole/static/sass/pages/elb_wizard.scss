@@ -51,6 +51,7 @@ form {
 }
 
 table.elb-listener-table {
+    width: 100%;
     tr.top-header {
         border-bottom: 0px;
     }
@@ -60,9 +61,7 @@ table.elb-listener-table {
 }
 
 table.instance-selector-table {
-    border-width: 2px;
-    border-style: solid;
-    border-color: $euca-grey;
+    width: 100%;
 }
 .summary {
     .multi-row {

@@ -56,9 +56,10 @@ form .stack-label { margin-bottom: 0.25rem; }
 #backend-certificate-form .item-list .item a { color: white; }
 #backend-certificate-form .description { color: #03405f; }
 
+table.elb-listener-table { width: 100%; }
 table.elb-listener-table tr.top-header { border-bottom: 0px; }
 table.elb-listener-table th.center { text-align: center; }
 
-table.instance-selector-table { border-width: 2px; border-style: solid; border-color: #6a737b; }
+table.instance-selector-table { width: 100%; }
 
 .summary .multi-row { margin-bottom: 0.25rem; }
