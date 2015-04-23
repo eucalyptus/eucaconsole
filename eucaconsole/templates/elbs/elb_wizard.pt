@@ -10,14 +10,14 @@
     <div class="row" id="contentwrap" ng-controller="ELBWizardCtrl" ng-init="initController('${controller_options_json}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
-                <li><a href="${request.route_path('elbs')}" i18n:translate="">ELBs</a></li>
-                <li class="current"><a href="#" i18n:translate="">Create ELB</a></li>
+                <li><a href="${request.route_path('elbs')}" i18n:translate="">Load balancers</a></li>
+                <li class="current"><a href="#" i18n:translate="">Create load balancer</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
         <h3 id="pagetitle">
-            <strong i18n:translate="">Create new elastic load balancer</strong>
+            <strong i18n:translate="">Create load balancer</strong>
         </h3>
         <div class="large-8 columns">
             <div class="wizard no-title">
