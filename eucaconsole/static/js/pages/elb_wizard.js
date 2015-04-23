@@ -148,6 +148,12 @@ angular.module('EucaConsoleWizard').controller('ELBWizardCtrl', function ($scope
         $scope.$on('eventUpdateSelectedInstanceList', function ($event, instanceList) {
             $scope.instanceList = instanceList;
         });
+        $scope.$on('eventUpdateAvailabilityZones', function ($event, availabilityZones) {
+            $scope.availabilityZones = availabilityZones;
+        });
+        $scope.$on('eventUpdateVPCSubnets', function ($event, vpcSubnets) {
+            $scope.vpcSubnets = vpcSubnets;
+        });
         $scope.$watch('elbName', function (){
             $scope.checkRequiredInput(1);
         });
@@ -169,12 +175,12 @@ angular.module('EucaConsoleWizard').controller('ELBWizardCtrl', function ($scope
         }, true);
         $scope.$watch('availabilityZones', function () {
             $scope.checkRequiredInput(3);
-            $scope.$broadcast('eventUpdateAvailabilityZones', $scope.availabilityZones);
+            $scope.$broadcast('eventWizardUpdateAvailabilityZones', $scope.availabilityZones);
         }, true);
         $scope.$watch('vpcSubnets', function () {
             $scope.updateVPCSubnetNames();
             $scope.checkRequiredInput(3);
-            $scope.$broadcast('eventUpdateVPCSubnets', $scope.vpcSubnets);
+            $scope.$broadcast('eventWizardUpdateVPCSubnets', $scope.vpcSubnets);
         }, true);
         $scope.$watch('instanceList', function (newValue, oldValue) {
             $scope.checkRequiredInput(3);
