@@ -29,7 +29,7 @@
         <div class="large-7 columns">
             <div ng-show="pageLoading">
                 <span i18n:translate="">Loading...</span>
-                <span class="busy">&nbsp;</span>
+                <i class="busy"></i>
             </div>
             <div class="wizard no-title" ng-cloak="">
                 <dl class="tabs" data-tab="">
@@ -154,8 +154,10 @@
                             Create Policy
                         </button>
                         <a class="cancel-link" id="return-link" href="${cancel_link_url}">Cancel</a>
-                        <div class="small-12 columns" ng-show="isCreating">
-                            <span i18n:translate="">Creating Policy</span>&nbsp;<em><span class="busy">&nbsp;</span></em>
+                        <div class="small-12 columns" ng-show="isCreating" ng-cloak="">
+                            <span i18n:translate="">Creating Policy</span>
+                            <i class="busy"></i>
+                            <div>&nbsp;</div>
                         </div>
                     </div>
                 </form>

@@ -117,7 +117,7 @@
                                 </div>
                                 <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
                                     <a class="tiny secondary button dropdown right"
-                                       data-dropdown="item-dropdown-group-{{ $index }}"><i class="fi-widget"></i></a>
+                                       data-dropdown="item-dropdown-group-{{ $index }}"><i class="grid-action"></i></a>
                                     <ul id="item-dropdown-group-{{ $index }}" class="f-dropdown" data-dropdown-content="">
                                         <li>
                                             <a i18n:translate="" ng-click="removeUserFromGroup(item)">Remove user</a>
@@ -298,7 +298,7 @@
                                     <td>{{ item.status }}</td>
                                     <td>
                                         <span class="actions">
-                                            <a class="tiny secondary button dropdown round" data-dropdown="item-dropdown_{{ item.access_key_id }}"><i class="fi-widget"></i></a>
+                                            <a class="tiny secondary button dropdown round" data-dropdown="item-dropdown_{{ item.access_key_id }}"><i class="grid-action"></i></a>
                                             <ul id="item-dropdown_{{ item.access_key_id }}" class="f-dropdown" data-dropdown-content="">
                                                 <li ng-show="item.status === 'Active'">
                                                     <a i18n:translate="" ng-click="makeAjaxCall('${request.route_path('user_deactivate_key', name='_name_', key='_key_')}', item)">Deactivate</a>

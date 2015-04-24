@@ -57,7 +57,7 @@
                             <div class="small-2 columns"><label i18n:translate="" class="right">Status</label></div>
                             <div class="small-10 columns value" ng-cloak="">
                                 <span class="label radius status {{stackStatus}}">{{ stackStatus.replace('-', ' ').replace('-', ' ') }}</span>
-                                <span class="busy" ng-show="isTransitional()">&nbsp;</span>
+                                <span class="busy" ng-show="isTransitional()"></span>
                             </div>
                         </div>
                         <div class="row controls-wrapper readonly" ng-show="statusReason">

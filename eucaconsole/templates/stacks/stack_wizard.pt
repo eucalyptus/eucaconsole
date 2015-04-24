@@ -108,8 +108,10 @@
                                         <!-- when that happens we hit another bug with foundation tooltip where -->
                                         <!-- all the tips get the same selector(class). Trying to use data-options -->
                                         <!-- helps, but that's broken https://github.com/zurb/foundation/issues/6349 -->
-                                        <span class="helptext-icon" data-options="selector: param-tip{{$index}};"
-                                            ng-attr-title='{{item.description}}'>?</span>
+                                        <span data-options="selector: param-tip{{$index}};"
+                                            ng-attr-title='{{item.description}}'>
+                                            <i class="helptext-icon"></i>
+                                        </span>
                                     </label>
                                 </div>
                                 <div class="small-9 columns field">

@@ -107,16 +107,6 @@ $tile-row-height: 24px;
             &::before, &::after {
                 border: none;
             }
-            .fi-widget {
-                position: relative;
-                top: 4px;
-                background-image: url(../../img/svg/gear.svg);
-                display: inline-block;
-                width: 20px; height: 20px;
-                &::before {
-                    content: " "
-                }
-            }
         }
         .f-dropdown {
             @include dropdown-shadow-mixin;

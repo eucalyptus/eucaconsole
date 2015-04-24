@@ -99,7 +99,7 @@
                         <div class="large-2 small-4 columns"><label i18n:translate="" id="instance-status-label">Status</label></div>
                         <div class="large-10 small-8 columns value" ng-cloak="">
                             <span class="label radius status {{ instanceState }}">{{instanceState}}</span>
-                            <span class="busy" ng-show="isUpdating">&nbsp;</span>
+                            <span class="busy" ng-show="isUpdating"></span>
                         </div>
                     </div>
                     <div>
@@ -224,7 +224,11 @@
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="large-2 small-4 columns">
-                            <label i18n:translate="">User data<span class="helptext-icon" title="User data file may not exceed 16 KB" data-tooltip="">?</span></label>
+                            <label i18n:translate="">User data
+                                <span title="User data file may not exceed 16 KB" data-tooltip="">
+                                    <i class="helptext-icon"></i>
+                                </span>
+                            </label>
                         </div>
                         <div class="large-10 small-8 columns value">
                             <div ng-show="isNotStopped">
