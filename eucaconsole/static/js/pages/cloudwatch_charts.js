@@ -145,11 +145,11 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
 
         // Handle visibility of loading indicators
         scope.$watch('chartLoading', function (newVal) {
-            var loadingElem = element.find('text.loading');
+            var loadingElem = element.closest('.chart-wrapper').find('.busy');
             if (newVal) {  // Chart is loading, so display progress indicator
-                loadingElem.attr('visibility', 'visible');
+                loadingElem.show();
             } else {
-                loadingElem.attr('visibility', 'hidden');
+                loadingElem.hide();
             }
         });
     }

@@ -33,6 +33,10 @@
         padding: 8px 0 4px 8px;
         border: 1px solid $euca-lightgrey;
         border-bottom: none;
+        .busy {
+            margin-left: 1rem;
+            color: $euca-grey;
+        }
     }
     svg {
         width: 100%;
