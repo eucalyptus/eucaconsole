@@ -54,7 +54,7 @@
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
                 <a id="tile-item-dropdown_{{ item.bucket_name | escapeHTMLTagID }}"
                    class="tiny secondary button dropdown right"
-                   data-dropdown="item-dropdown_{{ item.bucket_name |  escapeHTMLTagID }}"><i class="fi-widget"></i></a>
+                   data-dropdown="item-dropdown_{{ item.bucket_name |  escapeHTMLTagID }}"><i class="grid-action"></i></a>
                 <ul id="item-dropdown_{{ item.bucket_name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
                     <li>
                         <a i18n:translate="" ng-href="{{ item.contents_url }}">View contents</a>
@@ -114,7 +114,7 @@
                     <span class="actions">
                         <a id="table-item-dropdown_{{ item.bucket_name | escapeHTMLTagID }}"
                            class="tiny secondary button dropdown right round"
-                           data-dropdown="item-dropdown_{{ item.bucket_name | escapeHTMLTagID }}"><i class="fi-widget"></i></a>
+                           data-dropdown="item-dropdown_{{ item.bucket_name | escapeHTMLTagID }}"><i class="grid-action"></i></a>
                         <ul id="item-dropdown_{{ item.bucket_name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
                             <li>
                                 <a i18n:translate="" ng-href="{{ item.contents_url }}">View contents</a>

@@ -28,7 +28,6 @@
 Pyramid views for Eucalyptus and AWS CloudFormation stacks
 
 """
-import logging
 import simplejson as json
 import os
 import urllib2
@@ -158,8 +157,7 @@ class StackView(BaseView):
                 {'key': 'rollback-complete', 'label': _("Rollback Complete")},
                 {'key': 'rollback-in-progress', 'label': _("Rollback In Progresss")},
                 {'key': 'rollback-failed', 'label': _("Rollback Failed")}
-            ]},
-            {'name': 'phys-id', 'label': _(u"Physical ID")}
+            ]}
         ]
         self.render_dict = dict(
             stack=self.stack,
@@ -211,6 +209,7 @@ class StackView(BaseView):
             'stack_status_json_url': self.request.route_path('stack_state_json', name=self.stack.stack_name),
             'stack_template_url': self.request.route_path('stack_template', name=self.stack.stack_name),
             'stack_events_url': self.request.route_path('stack_events', name=self.stack.stack_name),
+            'stack_status': self.stack.stack_status.lower().capitalize().replace('_', '-'),
         }))
 
 
@@ -268,19 +267,23 @@ class StackStateView(BaseView):
     @view_config(route_name='stack_events', renderer='json', request_method='GET')
     def stack_events(self):
         """Return stack events"""
+        status = self.request.params.getall('status')
         with boto_error_handler(self.request):
             stack_events = self.cloudformation_conn.describe_stack_events(self.stack_name)
             events = []
             for event in stack_events:
-                events.append({
-                    'timestamp': event.timestamp.strftime('%Y-%m-%dT%H:%M:%SZ'),
-                    'status': event.resource_status.lower().capitalize().replace('_', '-'),
-                    'status_reason': event.resource_status_reason,
-                    'type': event.resource_type,
-                    'logical_id': event.logical_resource_id,
-                    'physical_id': event.physical_resource_id,
-                    'url': self.get_url_for_resource(event.resource_type, event.physical_resource_id)
-                })
+                stack_status = event.resource_status.lower().replace('_', '-')
+
+                if len(status) == 0 or stack_status in status:
+                    events.append({
+                        'timestamp': event.timestamp.strftime('%Y-%m-%dT%H:%M:%SZ'),
+                        'status': event.resource_status.lower().capitalize().replace('_', '-'),
+                        'status_reason': event.resource_status_reason,
+                        'type': event.resource_type,
+                        'logical_id': event.logical_resource_id,
+                        'physical_id': event.physical_resource_id,
+                        'url': self.get_url_for_resource(event.resource_type, event.physical_resource_id)
+                    })
             return dict(
                 results=dict(events=events)
             )
@@ -342,6 +345,7 @@ class StackWizardView(BaseView):
     def get_controller_options_json(self):
         return BaseView.escape_json(json.dumps({
             'stack_template_url': self.request.route_path('stack_template_parse'),
+            'sample_templates': self.create_form.sample_template.choices
         }))
 
     @view_config(route_name='stack_new', renderer=TEMPLATE, request_method='GET')
@@ -487,27 +491,25 @@ class StackWizardView(BaseView):
         template_url = self.request.params.get('template-url')
         files = self.request.POST.getall('template-file')
         template_body = ''
+
         if len(files) > 0 and len(str(files[0])) > 0:  # read from file
             # TODO: body limit is 51,200 in the API, check that!
             template_body = files[0].file.read()
             template_name = files[0].name
         elif template_url:  # read from url
-            logging.info("reading template from :"+template_url)
             template_body = urllib2.urlopen(template_url).read()
-            template_name = template_url[template_url.rindex('/')+1:]
+            template_name = template_url[template_url.rindex('/') + 1:]
         else:
             s3_bucket = self.get_template_samples_bucket()
             mgr = CFSampleTemplateManager(s3_bucket)
             templates = mgr.get_template_list()
             for directory, files in templates:
-                if template_name in [name for (name, f) in files]:
+                if template_name in [f for (name, f) in files]:
                     if directory == 's3':
-                        key = [key for (name, key) in files if name == template_name]
-                        s3_key = s3_bucket.get_key(key[0])
+                        s3_key = s3_bucket.get_key(template_name)
                         template_body = s3_key.get_contents_as_string()
                     else:
-                        f = [f for (name, f) in files if name == template_name]
-                        fd = open(os.path.join(directory, f[0]), 'r')
+                        fd = open(os.path.join(directory, template_name), 'r')
                         template_body = fd.read()
 
         # now that we have it, store in S3

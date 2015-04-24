@@ -8,7 +8,6 @@ angular.module('ELBPage', ['EucaConsoleUtils'])
     .controller('ELBPageCtrl', function ($scope, eucaUnescapeJson) {
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
-            $scope.elbInUse = options.in_use;
             $scope.hasImage = options.has_image;
             $scope.setWatch();
             $scope.setFocus();
