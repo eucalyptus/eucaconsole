@@ -103,7 +103,10 @@
                     <span>&nbsp;</span>
                     <div class="row controls-wrapper readonly">
                         <div class="small-4 columns">
-                            <label i18n:translate="">User data<span class="helptext-icon" title="User data file may not exceed 16 KB" data-tooltip="">?</span></label>
+                            <label>
+                                <span i18n:translate="">User data</span>
+                                <i class="helptext-icon" i18n:translate="title" title="User data file may not exceed 16 KB" data-tooltip=""></i>
+                            </label>
                         </div>
                         <div class="small-8 columns value">
                             <input type="radio" id="inputtype" name="inputtype" value="text" ng-model="inputtype"/>
