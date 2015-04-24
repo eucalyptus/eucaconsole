@@ -28,15 +28,17 @@
 
 .chart-wrapper {
     h6 {
-        color: white;
-        background-color: $euca-darkblue;
+        color: $euca-darkblue;
         margin-bottom: 0;
         padding: 8px 0 4px 8px;
+        border: 1px solid $euca-lightgrey;
+        border-bottom: none;
     }
     svg {
         width: 100%;
         height: 300px;
-        border: 1px solid $euca-darkblue;
+        border: 1px solid $euca-lightgrey;
+        border-top: none;
     }
     &:hover {
         cursor: pointer;
