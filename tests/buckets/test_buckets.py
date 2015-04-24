@@ -199,7 +199,7 @@ class MockBucketContentsViewTestCase(BaseViewTestCase, MockBucketMixin):
         request.environ = {'PATH_INFO': u'test_bucket/folder-one'}
         request.subpath = ('folder-one', )
         view = BucketContentsView(request, bucket=bucket).bucket_contents()
-        self.assertEqual(view.get('display_path'), 'test_bucket/folder-one')
+        self.assertEqual(view.get('display_path'), 'folder-one')
 
 
 class MockObjectDetailsViewTestCase(BaseViewTestCase, MockBucketMixin):

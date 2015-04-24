@@ -323,13 +323,10 @@ class BucketContentsView(LandingPageView, BucketMixin):
         json_route_path = self.request.route_path('bucket_contents', name=self.bucket_name, subpath=self.subpath)
         if len(self.subpath) > 0 and self.subpath[-1] == '':
             json_route_path += '/'
-        display_path = self.bucket_name
-        if len(self.key_prefix) > 0:
-            display_path = display_path + '/' + self.key_prefix
         self.render_dict.update(
             prefix=self.prefix,
             key_prefix=self.key_prefix,
-            display_path=display_path,
+            display_path=self.key_prefix or self.bucket_name,
             initial_sort_key='name',
             json_items_endpoint=u"{0}?{1}".format(json_route_path, self.key_prefix),
             sort_keys=self.sort_keys,
