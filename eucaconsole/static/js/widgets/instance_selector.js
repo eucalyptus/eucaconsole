@@ -19,6 +19,7 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
             $scope.selectedInstanceList = [];
             $scope.instancesJsonEndpoint = '';
             $scope.isVPCSupported = false;
+            $scope.vpcNetwork = 'None';
             $scope.vpcSubnets = [];
             $scope.availabilityZones = [];
             $scope.searchQueryURL = '';
@@ -39,6 +40,7 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                 $scope.allInstanceList = [];
                 $scope.instanceList = [];
                 $scope.selectedInstanceList = [];
+                $scope.vpcNetwork = 'None';
                 $scope.vpcSubnets = [];
                 $scope.availabilityZones = [];
                 $scope.isVPCSupported = false;
@@ -64,8 +66,11 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                     $timeout(function() {
                         $scope.checkInstanceAllCheckbox();
                         $scope.matchInstanceCheckboxes();
-                        $scope.updateInstanceAvailabilityZones();
-                        $scope.updateInstanceVPCSubnets();
+                        if ($scope.vpcNetwork === 'None') { 
+                            $scope.updateInstanceAvailabilityZones();
+                        } else {
+                            $scope.updateInstanceVPCSubnets();
+                        }
                     });
                     $scope.$emit('eventUpdateSelectedInstanceList', $scope.selectedInstanceList);
                 }, true);
@@ -138,12 +143,15 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                     });
                 });
                 $scope.$on('eventWizardUpdateVPCSubnets', function ($event, vpcSubnets) {
-                    //$scope.vpcSubnets = vpcSubnets;
-                    //$scope.updateSelectedInstanceListForVPCSubnets();
-                    //$timeout(function() {
-                    //    $scope.clearInstanceCheckboxes();
-                    //    $scope.matchInstanceCheckboxes();
-                    //});
+                    $scope.vpcSubnets = vpcSubnets;
+                    $scope.updateSelectedInstanceListForVPCSubnets();
+                    $timeout(function() {
+                        $scope.clearInstanceCheckboxes();
+                        $scope.matchInstanceCheckboxes();
+                    });
+                });
+                $scope.$on('eventWizardUpdateVPCNetwork', function ($event, vpcNetwork) {
+                    $scope.vpcNetwork = vpcNetwork;
                 });
             };
             $scope.getAllInstanceList = function () {
@@ -209,7 +217,7 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                     angular.forEach($scope.instanceList, function (instance) {
                         if (selectedInstance.id === instance.id) {
                             var includesSubnet = false;
-                            angular.forEach($scope.VPCSubnets, function(subnet) {
+                            angular.forEach($scope.vpcSubnets, function(subnet) {
                                 if (subnet === instance.subnet_id) {
                                     includesSubnet = true;
                                 }
