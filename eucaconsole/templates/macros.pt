@@ -52,8 +52,9 @@
                 </div>
             </div>
             <div class="small-2 columns" id="results-count" ng-cloak="cloak" metal:define-slot="results_count">
-                <a class="label radius" ng-show="!itemsLoading" ng-cloak="" id="refresh-btn"
-                   ng-click="itemsLoading=true; getItems()"></a>
+                <a id="refresh-btn" ng-show="!itemsLoading" ng-cloak="" ng-click="itemsLoading=true; getItems()">
+                    <i class="fa fa-refresh fa-lg"></i>
+                </a>
                 &nbsp;
                 <span ng-show="!itemsLoading" class="items-found">
                     <strong>{{ items.length }}</strong> found
@@ -79,7 +80,7 @@
                     </strong>
                     <metal:block metal:define-slot="tile_dropdown_button">
                         <a href="#" class="tiny secondary button dropdown right"
-                              data-dropdown="item-dropdown_{{ $index }}"><i class="fi-widget"></i></a>
+                              data-dropdown="item-dropdown_{{ $index }}"><i class="grid-action"></i></a>
                         <ul id="item-dropdown_{{ $index }}" class="f-dropdown">
                             <metal:block metal:define-slot="tile-dropdown-items">
                                 <li><a href="#">This is a link</a></li>
@@ -151,7 +152,7 @@
                     </strong>
                     <metal:block metal:define-slot="tile_dropdown_button">
                         <a href="#" class="tiny secondary button dropdown right"
-                              data-dropdown="item-dropdown_{{ $index }}"><i class="fi-widget"></i></a>
+                              data-dropdown="item-dropdown_{{ $index }}"><i class="grid-action"></i></a>
                         <ul id="item-dropdown_{{ $index }}" class="f-dropdown">
                             <metal:block metal:define-slot="tile-dropdown-items">
                                 <li><a href="#">This is a link</a></li>
@@ -226,7 +227,7 @@
 
 <!-- action menu for dash tiles ===== -->
 <metal:dashaction metal:define-macro="dashaction">
-    <span id="tile-item-dropdown_${tile}" class="tiny secondary button dropdown" data-dropdown="item-dropdown_${tile}"><i class="fi-widget"></i></span>
+    <span id="tile-item-dropdown_${tile}" class="tiny secondary button dropdown" data-dropdown="item-dropdown_${tile}"><i class="tile-action"></i></span>
     <ul id="item-dropdown_${tile}" class="f-dropdown" data-dropdown-content="">
         <li> <a ng-click="removeTile('${tile}')" i18n:translate="">Remove</a> </li>
     </ul>

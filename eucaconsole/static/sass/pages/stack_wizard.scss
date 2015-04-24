@@ -36,11 +36,22 @@
     line-height: 1.375rem;
 }
 
+.param-name {
+    color: $euca-grey;
+}
+
 $template-indent: 1.5rem;
 
-#sample-template {
-    margin-left: $template-indent;
-    width: 90%;
+#sample-template-div {
+    .chosen-container {
+        margin-left: $template-indent;
+        margin-bottom: 0.75rem;
+        width: 90% !important;
+    }
+}
+
+.chosen-container {
+    width: 100%;
 }
 
 #template-file {

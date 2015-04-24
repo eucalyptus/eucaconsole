@@ -7,7 +7,7 @@ install:
     - sudo apt-get -y update
     - sudo apt-get -y install openssl python-dev swig
     - python setup.py develop
-    - pip install Babel lingua pylibmc
+    - pip install Babel lingua pylibmc moto
     - sudo apt-get -y install npm
     - npm install
 # command to run tests, e.g. python setup.py test

@@ -186,7 +186,7 @@ Note that you will need to `pip install nose, coverage, nose-cov` to use nose wi
 
 To run a single test (this is not obvious with nose integrated with setup.py)::
 
-    python nosetests --tests tests.somepkg.somemodule
+    python setup.py nosetests --tests tests.somepkg.somemodule
 
 
 Configuring i18n

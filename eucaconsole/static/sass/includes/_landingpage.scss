@@ -27,7 +27,6 @@
 
 @import "../includes/eucavariables";
 
-
 /* @section Landing pages styles */
 
 // Sass variables
@@ -91,16 +90,6 @@ $dropdown-border-color: $euca-green;
         }
         &::before, &::after {
             border: none;
-        }
-        .fi-widget {
-            position: relative;
-            top: 4px;
-            background-image: url(../../img/svg/gear.svg);
-            display: inline-block;
-            width: 20px; height: 20px;
-            &::before {
-                content: " "
-            }
         }
     }
     .f-dropdown {
@@ -392,21 +381,9 @@ $dropdown-border-color: $euca-green;
     padding-top: 0.25rem;
     text-align: right;
     .items-found {
-        vertical-align: 40%;
-    }
-    em {
-        color: #555;
-        font-style: normal;
+        vertical-align: center;
     }
 }
-
-#refresh-btn {
-    background-image: url(../../img/svg/icon_reload.svg);
-    background-color: transparent;
-    width: 24px;
-    height: 24px;
-}
-
 
 
 /* -----------------------------------------

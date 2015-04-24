@@ -35,8 +35,9 @@
                     <div class="small-2 columns">
                         <label class="right">
                             ${sharing_form.share_account.label.text}&nbsp;<span class="req">*</span>
-                            <span class="helptext-icon" data-tooltip=""
-                                  title="${sharing_form.share_account.help_text}">?</span>
+                            <span data-tooltip="" title="${sharing_form.share_account.help_text}">
+                                <i class="helptext-icon"></i>
+                            </span>
                         </label>
                     </div>
                     <div class="small-10 columns">
