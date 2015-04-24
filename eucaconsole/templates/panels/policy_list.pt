@@ -2,7 +2,6 @@
 <!--! Policy list -->
 <div id="policy-list" class="row controls-wrapper" ng-app="PolicyList" i18n:domain="eucaconsole"
      ng-controller="PolicyListCtrl" ng-init="initPolicies('${policies_url}', '${policy_url}', '${remove_url}', '${update_url}')">
-    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/policy_list.css')}" />
     <div class="small-12 columns field">
         <div class="row userentry controls-wrapper">
             <div>

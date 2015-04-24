@@ -1,7 +1,6 @@
 <!--! Block Device Mapping editor -->
 <div id="bdmapping-editor" class="row controls-wrapper" ng-app="BlockDeviceMappingEditor" i18n:domain="eucaconsole"
      ng-controller="BlockDeviceMappingEditorCtrl" ng-init="initBlockDeviceMappingEditor('${controller_options_json}')">
-    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/bdmapping_editor.css')}" />
     <div class="columns" ng-show="bdMapping">
         <h6 i18n:translate="" class="storage-label">Storage</h6>
         <table class="table bdmapping-table">
