@@ -46,6 +46,9 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
             $scope.watchTags();
             $scope.setWatchers();
             $scope.setFocus();
+            $timeout(function() {
+                $('#sample-template').trigger('chosen:updated');
+            }, 1000);
         };
         $scope.setFocus = function () {
             $timeout(function() {

@@ -64,20 +64,6 @@ class AWSLoginFormTestCase(BaseFormTestCase):
         self.has_field('csrf_token')
 
 
-class EucaAuthTestCase(BaseTestCase):
-    host = 'unknown_host'
-    port = 8773
-    auth = EucaAuthenticator(host=host, port=port)
-    account = 'foo_account'
-    username = 'foo'
-    password = 'pw'
-    duration = 3600
-
-    def test_euca_authentication_failure(self):
-        kwargs = dict(account=self.account, user=self.username, passwd=self.password, duration=self.duration)
-        self.assertRaises(URLError, self.auth.authenticate, **kwargs)
-
-
 class AWSAuthTestCase(BaseTestCase):
     host = 'sts.amazonaws.com'
     port = 443

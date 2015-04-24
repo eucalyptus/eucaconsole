@@ -127,15 +127,15 @@
                                             i18n:translate="data-placeholder"
                                             data-placeholder="Select an option"
                                             ng-model="paramModels[item.name]" ng-change="checkRequiredInput()"
-                                            ng-options="option[0] as option[1] for option in item.options">
+                                            ng-options="option[0] for option in item.options track by option[1]">
                                         </select>
                                     </div>
                                 </div>
                             </div>
                             <hr/>
                             <div class="row">
-                                <div class="small-4 columns">&nbsp;</div>
-                                <div class="small-8 columns field inline">
+                                <div class="small-3 columns">&nbsp;</div>
+                                <div class="small-9 columns field inline">
                                     <button type="submit" class="button" id="stack-wizard-btn-step2" ng-disabled="isNotValid">
                                         <span i18n:translate="">Create Stack</span>
                                     </button>

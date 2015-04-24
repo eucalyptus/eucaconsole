@@ -201,24 +201,15 @@ class BucketXHRView(BaseView, BucketMixin):
         if not keys:
             return dict(message=_(u"keys must be specified."), errors=[])
         bucket = self.s3_conn.head_bucket(self.bucket_name)
-        errors = []
         deleted_keys = ', '.join(keys) if isinstance(keys, list) else keys
         self.log_request(u"Deleting keys from {0} : {1}".format(self.bucket_name, deleted_keys))
-        for k in keys.split(','):
-            key = bucket.get_key(k, validate=False)
-            try:
-                key.delete()
-            except BotoServerError as err:
-                self.log_request("Couldn't delete "+k+":"+err.message)
-                errors.append(k)
-        if len(errors) == 0:
+        with boto_error_handler(self.request):
+            bucket.delete_keys(keys.split(','))
             success_msg = _(u"Successfully deleted key(s).")
             if detailpage:
                 # Send notification via session on detail page since post-delete URL updates via window.location
                 self.request.session.flash(success_msg, queue=Notification.SUCCESS)
             return dict(message=success_msg)
-        else:
-            return dict(message=_(u"Failed to delete all keys."), errors=errors)
 
     @view_config(route_name='bucket_put_items', renderer='json', request_method='POST', xhr=True)
     def bucket_put_items(self):
@@ -331,7 +322,7 @@ class BucketContentsView(LandingPageView, BucketMixin):
         ]
         json_route_path = self.request.route_path('bucket_contents', name=self.bucket_name, subpath=self.subpath)
         if len(self.subpath) > 0 and self.subpath[-1] == '':
-            json_route_path = json_route_path + '/'
+            json_route_path += '/'
         self.render_dict.update(
             prefix=self.prefix,
             key_prefix=self.key_prefix,
@@ -528,11 +519,13 @@ class BucketContentsView(LandingPageView, BucketMixin):
 
 
 class BucketContentsJsonView(BaseView, BucketMixin):
-    def __init__(self, request):
-        super(BucketContentsJsonView, self).__init__(request)
+    def __init__(self, request, bucket=None, **kwargs):
+        super(BucketContentsJsonView, self).__init__(request, **kwargs)
+        self.bucket = bucket
         with boto_error_handler(request):
             self.s3_conn = self.get_connection(conn_type='s3')
-            self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
+            if self.s3_conn and self.bucket is None:
+                self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
         self.bucket_name = self.bucket.name
         request.subpath = self.get_subpath()
         self.subpath = request.subpath
@@ -612,13 +605,17 @@ class BucketDetailsView(BaseView, BucketMixin):
     """Views for Bucket details"""
     VIEW_TEMPLATE = '../templates/buckets/bucket_details.pt'
 
-    def __init__(self, request):
-        super(BucketDetailsView, self).__init__(request)
+    def __init__(self, request, bucket=None, bucket_acl=None, **kwargs):
+        super(BucketDetailsView, self).__init__(request, **kwargs)
         self.s3_conn = self.get_connection(conn_type='s3')
+        self.bucket = bucket
+        self.bucket_acl = bucket_acl
         request.subpath = self.get_subpath()
         with boto_error_handler(request):
-            self.bucket = BucketContentsView.get_bucket(request, self.s3_conn) if self.s3_conn else None
-            self.bucket_acl = self.bucket.get_acl() if self.bucket else None
+            if self.s3_conn and self.bucket is None:
+                self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
+            if self.bucket and self.bucket_acl is None:
+                self.bucket_acl = self.bucket.get_acl() if self.bucket else None
         self.details_form = BucketDetailsForm(request, formdata=self.request.params or None)
         self.sharing_form = SharingPanelForm(
             request, bucket_object=self.bucket, sharing_acl=self.bucket_acl, formdata=self.request.params or None)
@@ -776,15 +773,19 @@ class BucketItemDetailsView(BaseView, BucketMixin):
     """Views for Bucket item (folder/object) details"""
     VIEW_TEMPLATE = '../templates/buckets/bucket_item_details.pt'
 
-    def __init__(self, request):
-        super(BucketItemDetailsView, self).__init__(request)
+    def __init__(self, request, bucket=None, bucket_item_acl=None, **kwargs):
+        super(BucketItemDetailsView, self).__init__(request, **kwargs)
+        self.bucket = bucket
+        self.bucket_item_acl = bucket_item_acl
         self.s3_conn = self.get_connection(conn_type='s3')
         request.subpath = self.get_subpath()
         with boto_error_handler(request):
-            self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
+            if self.s3_conn and self.bucket is None:
+                self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
             self.bucket_name = self.bucket.name
             self.bucket_item = self.get_bucket_item()
-            self.bucket_item_acl = self.bucket_item.get_acl() if self.bucket_item else None
+            if self.s3_conn and self.bucket_item_acl is None:
+                self.bucket_item_acl = self.bucket_item.get_acl() if self.bucket_item else None
         if self.bucket_item is None:
             raise HTTPNotFound()
         unprefixed_name = BucketContentsView.get_unprefixed_key_name(self.bucket_item.name)
