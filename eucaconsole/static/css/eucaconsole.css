@@ -2718,7 +2718,7 @@ h1, h2, h3, h4, h5, h6 { font-family: Oswald, Helvetica, Arial, sans-serif; lett
 
 /* ----------------------------------------- Header
 ----------------------------------------- */
-#logobar { height: 44px; padding: 5px 0 10px 15px; margin-top: 20px; background-color: #fff; color: #333; }
+#logobar { height: 44px; padding: 5px 0 10px 0; margin-top: 20px; background-color: #fff; color: #333; }
 #logobar a { font-size: 0.9rem; color: #333; }
 #logobar section { position: relative; line-height: 1rem; display: inline-block; float: right; margin-top: 4px; }
 #logobar section .icon { font-size: 1.5rem; }
@@ -2727,12 +2727,12 @@ h1, h2, h3, h4, h5, h6 { font-family: Oswald, Helvetica, Arial, sans-serif; lett
 #logobar .f-dropdown { border-color: #8dc640; box-shadow: 2px 2px 5px #6a737b; width: auto; min-width: 8rem; }
 #logobar .f-dropdown.open { width: auto !important; }
 #logobar .fi-list { margin-left: 8px; position: relative; top: -10px; }
-#logobar .menu-label { display: block; position: relative; top: -25px; }
-#logobar #logo { display: inline-block; width: 199px; height: 55px; background: url(../img/eucalogo-199x22.png) no-repeat; }
+#logobar #logo { display: inline-block; width: 199px; height: 32px; background: url(../img/eucalogo-199x22.png) no-repeat; }
+#logobar .product-name { font-size: 1.4rem; position: relative; top: -12px; }
 #logobar #selected-region { position: relative; display: inline-block; padding-left: 24px; background: transparent url(../img/aws_favicon.png) no-repeat left 0; }
 #logobar #region-dropdown { min-width: 12rem; }
 #logobar #region-dropdown li[data-selected] { display: none; }
-#logobar #offcanvas-icon { display: none; margin-right: 12px; }
+#logobar #offcanvas-icon { left: -1000px; display: none; margin-right: 12px; }
 #logobar #offcanvas-icon i { font-size: 1.8rem; }
 
 #navbar { border-top: 1px solid black; border-bottom: 1px solid black; }
@@ -2993,9 +2993,23 @@ footer .copyright { font-size: 0.9em; }
 @media screen and (max-width: 640px) { #logo { width: 20px !important; } }
 @media screen { #logobar { margin-top: 8px; }
   #logobar .dropdown { position: relative; top: 4px; }
-  #logobar #offcanvas-icon { display: inline-block !important; margin-right: 12px; }
+  #logobar #offcanvas-icon { left: 0px; display: inline-block !important; margin-right: 12px; }
   #logobar #user-dropdown-section { position: relative; left: -10px; }
   #navbar { display: none; } }
+#nav-drop ul { list-style-type: none; }
+#nav-drop ul .dropdown { margin-bottom: 0.5rem; }
+#nav-drop ul li a { padding: 0.125rem; }
+
+div.left-off-canvas-menu { z-index: 999999 !important; color: white; background-color: white; border-style: solid; border-width: 0 1px 0 0; border-color: #6a737b; }
+
+ul.off-canvas-list { padding-left: 0.5rem; }
+ul.off-canvas-list li label { background-color: white; color: #6a737b; padding-left: 0.5rem; border-top: 0; }
+ul.off-canvas-list li a { background-color: white; color: #6a737b; padding: 0.5rem; border-bottom: 0; }
+ul.off-canvas-list li a label { background-color: white; color: #6a737b; padding-left: 0.5rem; border-top: 0; }
+ul.off-canvas-list li a:hover:not(.nolink) { background-color: #f1f2f3; color: black; }
+ul.off-canvas-list li a.nolink:hover { background-color: white; color: #6a737b; }
+ul.off-canvas-list li .dropdown { background-color: white; margin-bottom: 0; }
+
 /* Responsive tweaks for landing page title */
 @media screen and (max-width: 65rem) { #pagetitle.landingpage { top: -0.5rem; }
   #landing-page-filters { padding-top: 1rem; margin-bottom: 1rem; } }

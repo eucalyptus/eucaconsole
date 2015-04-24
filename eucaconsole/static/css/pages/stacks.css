@@ -108,14 +108,14 @@
 
 .status.Create-failed { background-color: darkred; }
 
-.status.Rollback-in-progress { background-color: #f10000; }
+.status.Rollback-in-progress { background-color: #6a737b; }
 
-.status.Rollback-complete { background-color: #03405f; }
+.status.Rollback-complete { background-color: #444; }
 
 .status.Rollback-failed { background-color: darkred; }
 
-.status.Delete-in-progress { background-color: #525960; }
+.status.Delete-in-progress { background-color: #6a737b; }
 
-.status.Delete-complete { background-color: #03405f; }
+.status.Delete-complete { background-color: #444; }
 
 .status.Delete-failed { background-color: darkred; }

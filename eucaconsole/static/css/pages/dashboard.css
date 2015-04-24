@@ -19,7 +19,7 @@
 .panel .tile .footer a:hover { text-decoration: underline; }
 .panel .tile .footer .button { display: inline-block; font-weight: bold; }
 .panel .tile .footer .button:hover { text-decoration: none; }
-.panel .tile .dropdown.button.tiny { z-index: 99999; background: none; box-shadow: none; position: absolute; width: 30px; height: 24px; top: 0; right: 0; color: #8cc63e; font-size: 1.1rem; padding: 0 0 0 0; border: none; }
+.panel .tile .dropdown.button.tiny { z-index: 99998; background: none; box-shadow: none; position: absolute; width: 30px; height: 24px; top: 0; right: 0; color: #8cc63e; font-size: 1.1rem; padding: 0 0 0 0; border: none; }
 .panel .tile .dropdown.button.tiny:hover { color: #8cc63e; }
 .panel .tile .dropdown.button.tiny::before, .panel .tile .dropdown.button.tiny::after { border: none; }
 .panel .tile .dropdown.button.tiny .fi-widget { position: relative; top: 4px; background-image: url(../../img/svg/gear.svg); display: inline-block; width: 20px; height: 20px; }

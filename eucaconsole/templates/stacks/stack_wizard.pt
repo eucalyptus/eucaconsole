@@ -38,7 +38,7 @@
                     <div class="tabs-content">
                         <!--! Step 1: General tab content -->
                         <div class="content active" id="step1"
-                            tal:define="html_attrs_val {'pattern': '^[^\/\\\]{1,255}$'};">
+                            tal:define="html_attrs_val {'pattern': '^[^\/\\\]{1,255}$', 'ng-model': 'stackName'};">
                             <h6 i18n:translate="">General</h6>
                             <div class="row controls-wrapper">
                                 <div class="small-12 columns field">
@@ -48,9 +48,9 @@
                                             <span class="req">*</span>
                                         </label>
                                     </div>
-                                    <div ng-non-bindable=""><!--! Note: Don't remove non-bindable attr here -->
+                                    <div>
                                         ${structure:create_form['name'](autocomplete="off", **html_attrs_val)}
-                                        <small class="error" ng-hide=''>${create_form['name'].error_msg}</small>
+                                        <small ng-non-bindable="" class="error" ng-hide=''>${create_form['name'].error_msg}</small>
                                     </div>
                                 </div>
                             </div>
@@ -58,26 +58,22 @@
                             <h6 i18n:translate="">Template</h6>
                             <div class="row">
                                 <div class="small-12 columns value">
-                                    <input type="radio" id="inputtype" name="inputtype" value="sample" ng-model="inputtype">
-                                        <label i18n:translate="">Use sample template</label>
-                                    </input>
+                                    <input type="radio" id="inputtype" name="inputtype" value="sample" ng-model="inputtype"/>
+                                    <label i18n:translate="">Use sample template</label>
                                     <div id="sample-template-div" ng-show="inputtype=='sample'">
-                                        <select chosen="" width="80%" id="sample-template" name="sample-template" ng-model="templateSample">
-                                            <option value="" i18n:translate="">Select a template</option>
-                                            <optgroup tal:repeat="group create_form['sample_template'].choices" label="${group[0]}">
-                                                <option tal:repeat="name group[1]">${name[0]}</option>
-                                            </optgroup>
-                                            <optgroup>
+                                        <select chosen="" id="sample-template" name="sample-template"
+                                            ng-model="templateSample" i18n:translate="data-placeholder"
+                                            data-placeholder="Select a template"
+                                            ng-options="option.label group by option.group for option in templates track by option.name">
                                         </select>
                                     </div>
-                                    <input type="radio" id="inputtype" name="inputtype" value="file" ng-model="inputtype">
-                                        <label i18n:translate="">Upload template</label>
-                                    </input>
-                                    <input id="template-file" type="file" data-file="template-files" ng-disabled="isNotStopped" name="template-file" ng-show="inputtype=='file'"></input>
+                                    <br ng-hide="inputtype=='sample'"/>
+                                    <input type="radio" id="inputtype" name="inputtype" value="file" ng-model="inputtype"/>
+                                    <label i18n:translate="">Upload template</label>
+                                    <input id="template-file" type="file" data-file="template-files" ng-disabled="isNotStopped" name="template-file" ng-show="inputtype=='file'"/>
                                     <br/>
-                                    <input type="radio" id="inputtype" name="inputtype" value="url" ng-model="inputtype">
-                                        <label i18n:translate="">Use template from URL</label>
-                                    </input>
+                                    <input type="radio" id="inputtype" name="inputtype" value="url" ng-model="inputtype"/>
+                                    <label i18n:translate="">Use template from URL</label>
                                     <input type="text" id="template-url" name="template-url" ng-model="templateUrl" ng-show="inputtype=='url'"/>
                                 </div>
                             </div>
@@ -107,25 +103,37 @@
                             <div class="row controls-wrapper" ng-repeat="item in parameters" ng-cloak="true">
                                 <div class="small-3 columns subheading">
                                     <label class="right">{{ item.name }}
-                                        <span class="helptext-icon" data-tooltip=""
-                                            title="{{ item.description }}">?</span>
+                                        <!-- documenting here so it doesn't get lost -->
+                                        <!-- foundation need to be re-initilaized after params populated -->
+                                        <!-- when that happens we hit another bug with foundation tooltip where -->
+                                        <!-- all the tips get the same selector(class). Trying to use data-options -->
+                                        <!-- helps, but that's broken https://github.com/zurb/foundation/issues/6349 -->
+                                        <span class="helptext-icon" data-options="selector: param-tip{{$index}};"
+                                            ng-attr-title='{{item.description}}'>?</span>
                                     </label>
                                 </div>
                                 <div class="small-9 columns field">
                                     <input type="text" name="{{ item.name }}" id="{{ item.name }}"
                                         value='{{ item.default }}' ng-hide="item.options"
-                                        min='{{ item.min }}' max='{{ item.max }}' pattern='{{ item.regex }}'>
-                                    </input>
+                                        min='{{ item.min }}' max='{{ item.max }}' pattern='{{ item.regex }}'
+                                        ng-model="paramModels[item.name]" ng-change="checkRequiredInput()"/>
                                     <small class='error' ng-hide="">{{ item.constraint }}</small>
-                                    <select type="text" name="{{ item.name }}" id="{{ item.name }}" value='{{ item.default }}' ng-show="item.options">
-                                        <option ng-repeat="option in item.options" value="{{ option[0] }}">{{ option[1] }}</option>
-                                    </select>
+                                    <div ng-show="item.options">
+                                        <select chosen="" name="{{ item.name }}" id="{{ item.name }}" 
+                                            search-contains="true" width="100"
+                                            value='{{ item.default }}'
+                                            i18n:translate="data-placeholder"
+                                            data-placeholder="Select an option"
+                                            ng-model="paramModels[item.name]" ng-change="checkRequiredInput()"
+                                            ng-options="option[0] for option in item.options track by option[1]">
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                             <hr/>
                             <div class="row">
-                                <div class="small-4 columns">&nbsp;</div>
-                                <div class="small-8 columns field inline">
+                                <div class="small-3 columns">&nbsp;</div>
+                                <div class="small-9 columns field inline">
                                     <button type="submit" class="button" id="stack-wizard-btn-step2" ng-disabled="isNotValid">
                                         <span i18n:translate="">Create Stack</span>
                                     </button>
@@ -142,7 +150,7 @@
             <div class="help-padding">&nbsp;</div>
             <div class="summary" ng-cloak="">
                 <h5 i18n:translate="" class="title">Summary</h5>
-                <div class="section step1">
+                <div class="section step1" ng-show="stackName || templateIdent">
                     <div class="row" ng-show="stackName">
                         <label i18n:translate="">Name</label>
                         <div class="columns value">{{ stackName }}</div>
@@ -151,24 +159,31 @@
                         <label i18n:translate="">Template</label>
                         <div class="columns value">{{ templateIdent }}</div>
                     </div>
-                    <div class="row" ng-show="description">
+                    <div class="row" ng-show="description || loading">
                         <label i18n:translate="">Description</label>
-                        <div class="columns value">{{ description }}</div>
+                        <div class="columns value">
+                            <span ng-show="loading"><i class="busy" ></i></span>
+                            {{ description }}
+                        </div>
                     </div>
                 </div>
                 <div class="section" ng-show="tagsLength > 0">
                     <div class="row">
-                        <label i18n:translate="">Tags</label>
                         <div class="columns value" id="tag-preview">
-                            <div class="keyvalsummary" ng-repeat="(name, value) in tagsObject">{{ name }}={{ value }}</div>
+                            <div class="keyvalsummary" ng-repeat="(name, value) in tagsObject">
+                                <span class='param-name'>{{ name }}</span><br/>
+                                <span class='param-value'>{{ value }}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="section step2 hide">
                     <div class="row">
-                        <label i18n:translate="">Parameters</label>
                         <div class="columns value" id="parameter-preview">
-                            <div class="keyvalsummary" ng-repeat="param in parametersObject">{{ param.name }} = {{ param.value }}</div>
+                            <div class="keyvalsummary" ng-repeat="param in parameters">
+                                <span class='param-name'>{{ param.name }}</span><br/>
+                                <span class='param-value'>{{ paramModels[param.name] }}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
