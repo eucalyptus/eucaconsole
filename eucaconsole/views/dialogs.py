@@ -310,6 +310,11 @@ def create_folder_dialog(context, request, bucket_name=None, create_folder_form=
 
 
 @panel_config('cloudwatch_chart_dialog', renderer='../templates/dialogs/cloudwatch_chart_dialog.pt')
-def cloudwatch_chart_dialog(context, request):
+def cloudwatch_chart_dialog(context, request, duration_choices=None, statistic_choices=None):
     """ Modal dialog for large CloudWatch chart"""
-    return dict()
+    duration_choices = duration_choices or []
+    statistic_choices = statistic_choices or []
+    return dict(
+        duration_choices=duration_choices,
+        statistic_choices=statistic_choices,
+    )

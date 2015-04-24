@@ -10,12 +10,10 @@
  */
 
 angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
-.controller('CloudWatchChartsCtrl', function ($scope, eucaUnescapeJson, eucaOptionsArray) {
+.controller('CloudWatchChartsCtrl', function ($scope, eucaUnescapeJson) {
     var vm = this;
     vm.duration = 3600;  // Default duration value is one hour
     vm.largeChartDuration = 3600;
-    vm.durationChoices = [];
-    vm.statisticChoices = [];
     vm.metricTitleMapping = {};
     vm.initController = initController;
     vm.submitMonitoringForm = submitMonitoringForm;
@@ -25,9 +23,6 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
     function initController(optionsJson) {
         var options = JSON.parse(eucaUnescapeJson(optionsJson));
         vm.metricTitleMapping = options.metric_title_mapping;
-        // Convert list of value/label tuples to array of value/label pairs for ng-options array
-        vm.durationChoices = eucaOptionsArray(options.monitoring_duration_choices);
-        vm.statisticChoices = eucaOptionsArray(options.statistic_choices);
     }
 
     function submitMonitoringForm() {

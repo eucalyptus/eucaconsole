@@ -32,8 +32,10 @@
                         <div class="duration-wrapper" tal:condition="monitoring_enabled">
                             <label for="monitoring-duration" class="left" i18n:translate="">Show data for</label>
                             <select name="monitoring_duration" id="monitoring-duration" ng-model="chartsCtrl.duration"
-                                    ng-options="opt.value as opt.label for opt in chartsCtrl.durationChoices"
                                     ng-change="chartsCtrl.refreshCharts()" class="duration-input">
+                                <option tal:repeat="duration duration_choices" value="${duration[0]}">
+                                    ${duration[1]}
+                                </option>
                             </select>
                         </div>
                     </div>
@@ -124,7 +126,7 @@
             ${structure:monitoring_form['csrf_token']}
         </form>
         <!--! Modal dialog for large chart -->
-        ${panel('cloudwatch_chart_dialog')}
+        ${panel('cloudwatch_chart_dialog', duration_choices=duration_choices, statistic_choices=statistic_choices)}
     </div>
 </div>
 

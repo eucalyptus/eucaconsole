@@ -985,6 +985,8 @@ class InstanceMonitoringView(BaseInstanceView):
             monitoring_enabled=self.instance.monitoring_state == 'enabled',
             monitoring_form=self.monitoring_form,
             metric_title=METRIC_TITLE_MAPPING,
+            duration_choices=MONITORING_DURATION_CHOICES,
+            statistic_choices=STATISTIC_CHOICES,
             controller_options_json=self.get_controller_options_json()
         )
 
@@ -1015,11 +1017,8 @@ class InstanceMonitoringView(BaseInstanceView):
     def get_controller_options_json(self):
         if not self.instance:
             return ''
-        monitoring_duration_choices = MONITORING_DURATION_CHOICES
         return BaseView.escape_json(json.dumps({
-            'monitoring_duration_choices': monitoring_duration_choices,
             'metric_title_mapping': METRIC_TITLE_MAPPING,
-            'statistic_choices': STATISTIC_CHOICES,
         }))
 
 

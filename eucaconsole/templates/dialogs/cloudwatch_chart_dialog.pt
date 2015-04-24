@@ -7,15 +7,19 @@
                 <div class="field-wrapper">
                     <label for="large-chart-statistic" class="left" i18n:translate="">Statistic</label>
                     <select name="large_chart_statistic" id="large-chart-statistic" class="duration-input"
-                            ng-model="chartsCtrl.largeChartStatistic" ng-change="chartsCtrl.refreshLargeChart()"
-                            ng-options="opt.value as opt.label for opt in chartsCtrl.statisticChoices">
+                            ng-model="chartsCtrl.largeChartStatistic" ng-change="chartsCtrl.refreshLargeChart()">
+                        <option tal:repeat="option statistic_choices" value="${option[0]}">
+                            ${option[1]}
+                        </option>
                     </select>
                 </div>
                 <div class="field-wrapper">
                     <label for="large-chart-monitoring-duration" class="left" i18n:translate="">Show data for</label>
                     <select name="large_chart_monitoring_duration" id="large-chart-monitoring-duration" class="duration-input"
-                            ng-model="chartsCtrl.largeChartDuration" ng-change="chartsCtrl.refreshLargeChart()"
-                            ng-options="opt.value as opt.label for opt in chartsCtrl.durationChoices">
+                            ng-model="chartsCtrl.largeChartDuration" ng-change="chartsCtrl.refreshLargeChart()">
+                        <option tal:repeat="option duration_choices" value="${option[0]}">
+                            ${option[1]}
+                        </option>
                     </select>
                 </div>
             </div>
