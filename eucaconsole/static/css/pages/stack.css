@@ -103,3 +103,7 @@
 /* Small screen */
 @media screen and (max-width: 1020px) { .columns.datagrid { padding-left: 1rem; } }
 .content { width: 100%; padding-left: 10px; padding-right: 10px; }
+
+.panel { overflow: hidden; min-height: 400px; }
+
+label { font-weight: bold; color: #6a737b; }

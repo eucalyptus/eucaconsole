@@ -8,7 +8,6 @@
 angular.module('ELBsPage', ['LandingPage'])
     .controller('ELBsPageCtrl', function ($scope) {
         $scope.elbName = '';
-        $scope.elbInUse = false;
         $scope.revealModal = function (action, elb) {
             $scope.elbName = elb.name;
             var modal = $('#' + action + '-elb-modal');

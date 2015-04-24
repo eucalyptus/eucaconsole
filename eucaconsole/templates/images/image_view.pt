@@ -131,8 +131,8 @@
                         <div tal:condition="not is_owned_by_user">
                             <div class="row controls-wrapper readonly">
                                 <div class="small-12 columns value" ng-cloak="">
-                                    <span ng-show="isPublic">Public</span>
-                                    <span ng-hide="isPublic">Private</span>
+                                    <span ng-show="isPublic === true">Public</span>
+                                    <span ng-show="isPublic === false">Private</span>
                                 </div>
                             </div> 
                         </div>
@@ -141,25 +141,25 @@
                                 <div class="small-12 columns value">
                                     <div id="sharing-radio-buttons">
                                          <span class="padded-element"> 
-                                            <input type="radio" name="sharing" value="true" ng-model="isPublic" /> Public
+                                            <input type="radio" name="sharing" ng-value="true" ng-model="isPublic" /> Public
                                         </span>
                                         <span class="padded-element"> 
-                                            <input type="radio" class="padded-element" name="sharing" value="false" ng-model="isPublic" /> Private
+                                            <input type="radio" class="padded-element" name="sharing" ng-value="false" ng-model="isPublic" /> Private
                                         </span>
                                     </div>
-                                    <div class="bottom-padding" ng-show="isPublic">
+                                    <div class="bottom-padding" ng-show="isPublic === true">
                                         <span i18n:translate="">
                                             Anyone can see this image.
                                         </span>
                                     </div>
-                                    <div class="bottom-padding" ng-hide="isPublic">
+                                    <div class="bottom-padding" ng-show="isPublic === false">
                                         <span i18n:translate="">
                                            Only my account and accounts I share with can see this image.
                                         </span>
                                     </div>
                                 </div>
                             </div>
-                            <div class="row controls-wrapper readonly" ng-hide="isPublic">
+                            <div class="row controls-wrapper readonly" ng-show="isPublic === false">
                                 <div id="private-account-input-field" class="small-12 columns value" ng-class="errorClass">
                                     <div class="subsection-label top-bottom-padding" ng-show="launchPermissions.length > 0">
                                         <span i18n:translate="">
