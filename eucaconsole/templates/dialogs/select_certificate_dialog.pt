@@ -14,7 +14,7 @@
                 <dt></dt>
                 <dd id="select-certificate-modal-tab-backend">
                     <a href="" ng-click="selectCertificateTab($event, 'BACKEND')">
-                        <span class="cir">Backend</span>
+                        <span class="cir">Back end</span>
                     </a>
                 </dd>
             </dl>
@@ -24,7 +24,7 @@
             <form method="post" data-abide="abide" id="backend-certificate-form">
                 ${structure:backend_certificate_form['csrf_token']}
                 <div>
-                    <label class="section-label description" i18n:translate="">Back-end certificates</label>
+                    <span class="section-label" i18n:translate="">Back-end certificates</span>
                     <div class="item-list">
                         <span class="label radius secondary item" ng-repeat="cert in backendCertificateArray">
                             <span>{{ cert.name }}</span>
@@ -36,7 +36,7 @@
                     </div>
                 </div>
                 <div>
-                    <label class="section-label description" i18n:translate="">Add a certificate:</label>
+                    <span class="section-label" i18n:translate="">Add a certificate:</span>
                     <div>
                         ${panel('form_field', field=backend_certificate_form['backend_certificate_name'], ng_attrs={'model': 'backendCertificateName'}, leftcol_width=3, rightcol_width=9, **name_html_attrs)}
                         <div class="row inline controls-wrapper" ng-show="classDuplicatedBackendCertificateDiv === 'error'">

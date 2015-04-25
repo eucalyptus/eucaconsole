@@ -488,8 +488,16 @@ angular.module('EucaConsoleWizard').controller('ELBWizardCtrl', function ($scope
         }
     };
     $scope.resetBackendCertificateValues = function () {
+        // Remove the required attr from the body field to avoid false negative validation error
+        // when the input fields are cleared
+        $('#backend_certificate_body').removeAttr('required');
         $scope.backendCertificateName = '';
         $scope.backendCertificateBody = '';
+        // timeout is needed for Foundation's validation to complete
+        // re-insert the required attr to the input field
+        $timeout(function () {
+            $('#backend_certificate_body').attr('required', 'required');
+        }, 1000);
     };
     $scope.removeBackendCertificate = function ($event, index) {
         $event.preventDefault();
