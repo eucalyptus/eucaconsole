@@ -36,6 +36,8 @@
         .busy {
             margin-left: 1rem;
             color: $euca-grey;
+            max-width: 1rem;
+            max-height: 1rem;
         }
     }
     svg {
