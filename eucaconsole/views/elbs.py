@@ -373,11 +373,12 @@ class CreateELBView(BaseView):
 
     @view_config(route_name='elb_create', request_method='POST', renderer=TEMPLATE)
     def elb_create(self):
+        # Ignore the security group requirement in case on Non-VPC system
         vpc_network = self.request.params.get('vpc_network') or None
         if vpc_network == 'None':
             vpc_network = None
         if vpc_network is None:
-            del self.create_form.securitygroup 
+            del self.create_form.securitygroup
         if self.create_form.validate():
             name = self.request.params.get('name')
             elb_listener = self.request.params.get('elb_listener')
