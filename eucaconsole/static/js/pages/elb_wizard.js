@@ -166,6 +166,11 @@ angular.module('EucaConsoleWizard').controller('ELBWizardCtrl', function ($scope
             $scope.updateVPCSubnetChoices();
             $scope.checkRequiredInput(2);
             $scope.$broadcast('eventWizardUpdateVPCNetwork', $scope.vpcNetwork);
+            $timeout(function(){
+                if ($('#securitygroup_chosen').length === 0) {
+                    $('#securitygroup').chosen({'width': '100%', search_contains: true});
+                }
+            });
         }, true);
         $scope.$watch('securityGroups', function () {
             $scope.updateSecurityGroupNames();

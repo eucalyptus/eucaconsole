@@ -373,14 +373,16 @@ class CreateELBView(BaseView):
 
     @view_config(route_name='elb_create', request_method='POST', renderer=TEMPLATE)
     def elb_create(self):
+        vpc_network = self.request.params.get('vpc_network') or None
+        if vpc_network == 'None':
+            vpc_network = None
+        if vpc_network is None:
+            del self.create_form.securitygroup 
         if self.create_form.validate():
             name = self.request.params.get('name')
             elb_listener = self.request.params.get('elb_listener')
             certificate_arn = self.request.params.get('certificate_arn') or None
             listeners_args = self.get_listeners_args()
-            vpc_network = self.request.params.get('vpc_network') or None
-            if vpc_network == 'None':
-                vpc_network = None
             vpc_subnet = self.request.params.get('vpc_subnet') or None
             if vpc_subnet == 'None':
                 vpc_subnet = None

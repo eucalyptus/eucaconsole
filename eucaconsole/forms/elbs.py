@@ -86,8 +86,10 @@ class CreateELBForm(BaseSecureForm):
     vpc_subnet = wtforms.SelectMultipleField(
         label=_(u'VPC subnets'),
     )
+    securitygroup_error_msg = _(u'Security group is required')
     securitygroup = wtforms.SelectMultipleField(
         label=_(u'Security groups'),
+        validators=[validators.InputRequired(message=securitygroup_error_msg)],
     )
     zone = wtforms.SelectMultipleField(
         label=_(u'Availability zones'),
