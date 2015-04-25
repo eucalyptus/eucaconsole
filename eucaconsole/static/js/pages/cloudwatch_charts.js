@@ -16,6 +16,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
     vm.largeChartDuration = 3600;
     vm.metricTitleMapping = {};
     vm.chartsList = [];
+    vm.largeChartMetric = '';
     vm.initController = initController;
     vm.submitMonitoringForm = submitMonitoringForm;
     vm.refreshCharts = refreshCharts;
@@ -69,11 +70,16 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
     function renderChart(scope, options) {
         options = options || {};
         scope.chartLoading = !options.largeChart;
+        var parentCtrl = scope.$parent.chartsCtrl;
         var cloudwatchApiUrl = '/cloudwatch/api';  // Fine to hard-code this here since it won't likely change
         var largeChart = options.largeChart || false;
         var chartElemId = largeChart ? 'large-chart' : scope.elemId;
         if (largeChart) {
             $('#' + chartElemId).empty();
+            if (scope.metric !== parentCtrl.largeChartMetric) {
+                // Workaround refreshLargeChart event firing multiple times to avoid multi-chart display in dialog
+                return false;
+            }
         }
         var params = options.params || {
             'ids': scope.ids,
@@ -123,13 +129,15 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
 
     function linkFunc(scope, element, attrs) {
         var chartModal = $('#large-chart-modal');
+        var chartWrapper = element.closest('.chart-wrapper');
         // Display large chart on small chart click
-        element.closest('.chart-wrapper').on('click', function () {
+        chartWrapper.on('click', function () {
             var parentCtrl = scope.$parent.chartsCtrl;
             var options = {
                 'params': attrs,
                 'largeChart': true
             };
+            parentCtrl.largeChartMetric = attrs.metric;
             parentCtrl.selectedChartTitle = parentCtrl.metricTitleMapping[attrs.metric];
             parentCtrl.largeChartDuration = parentCtrl.duration;
             parentCtrl.largeChartStatistic = attrs.statistic || 'Average';
