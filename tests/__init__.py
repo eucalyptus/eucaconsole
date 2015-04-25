@@ -64,6 +64,7 @@ import collections
 import unittest
 
 from pyramid import testing
+from webob.multidict import MultiDict
 from wtforms import Field
 from wtforms.validators import DataRequired, InputRequired, Length, Email, Optional, NumberRange
 
@@ -80,6 +81,7 @@ class Mock(object):
 
 
 class BaseViewTestCase(unittest.TestCase):
+
     def setUp(self):
         self.config = testing.setUp()
         for route in urls:
@@ -87,6 +89,16 @@ class BaseViewTestCase(unittest.TestCase):
 
     def tearDown(self):
         testing.tearDown()
+
+    def create_request(self, path='/', is_xhr=False, matchdict=None, params=None):
+        request = testing.DummyRequest(path=path)
+        request.id = 'test_request_id'
+        request.is_xhr = is_xhr
+        request.matchdict = matchdict or {}
+        request.params = MultiDict(csrf_token=request.session.get_csrf_token())
+        if params:
+            request.params.update(params)
+        return request
 
 
 class BaseTestCase(unittest.TestCase):

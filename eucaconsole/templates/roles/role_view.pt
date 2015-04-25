@@ -63,12 +63,16 @@
                                         <div class="ec2-block">
                                             <input type="radio" name="roletype" value="ec2" checked="checked" ng-model="roleType"/>
                                             <label><span i18n:translate="" class="ip-label">EC2 service</span></label>
-                                            <span class="helptext-icon" data-tooltip="" title="Allows EC2 instances to call other services on your behalf" i18n:translate="title">?</span>
+                                            <span data-tooltip="" title="Allows EC2 instances to call other services on your behalf" i18n:translate="title">
+                                                <i class="helptext-icon"></i>
+                                            </span>
                                         </div>
                                         <div class="cross-acct-block">
                                             <input type="radio" name="roletype" value="xacct" ng-model="roleType"/>
                                             <label><span i18n:translate="" class="ip-label">Cross-account access</span></label>
-                                            <span class="helptext-icon" data-tooltip="" title="Allows Users from an account you specify (regardless of owner) to access this account. If specified, the external ID must be entered in addition to the account ID before a user from that account can access this account. This field is only used when you are granting access to an account that you do not own." i18n:translate="title">?</span>
+                                            <span data-tooltip="" title="Allows Users from an account you specify (regardless of owner) to access this account. If specified, the external ID must be entered in addition to the account ID before a user from that account can access this account. This field is only used when you are granting access to an account that you do not own." i18n:translate="title">
+                                                <i class="helptext-icon"></i>
+                                            </span>
                                             <div id="xacct-section" ng-cloak="">
                                                 <div class="section" ng-show="roleType == 'xacct'">
                                                     <div class="row controls-wrapper">

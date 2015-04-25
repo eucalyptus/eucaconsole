@@ -13,7 +13,7 @@
     "d3": "3.3.13",
     "nvd3": "1.7.1",
     "angular-magic-search": "~0.2.0",
-    "angular-chosen-localytics": "~1.0.7"
+    "angular-chosen-localytics": "~1.0.7",
+    "StickyTableHeaders": "~0.1.15"
   }
 }
-

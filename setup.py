@@ -52,11 +52,11 @@ def get_data_files(path, regex):
 def get_package_files(package_dir, regex):
     package_files = []
     if not package_dir.endswith('/'):
-        package_dir = package_dir + '/'
+        package_dir += '/'
     for root, _, filenames in os.walk(package_dir, followlinks=True):
         files = []
-        for file in filenames:
-            package_path = os.path.join(root[len(package_dir):], file)
+        for fname in filenames:
+            package_path = os.path.join(root[len(package_dir):], fname)
             if re.match(regex, package_path) is not None:
                 files.append(package_path)
         package_files.extend(files)
@@ -77,8 +77,7 @@ class build_py_with_git_version(build_py):
         print module, module_file, package
         if module == 'version' and '.' not in package:
             version_line = "__version__ = '{0}'\n".format(__version__)
-            old_ver_name = self.get_module_outfile(self.build_lib, (package,),
-                                                    module)
+            old_ver_name = self.get_module_outfile(self.build_lib, (package,), module)
             new_ver_name = old_ver_name + '.new'
             with open(new_ver_name, 'w') as new_ver:
                 with open(old_ver_name) as old_ver:
@@ -139,10 +138,11 @@ i18n_extras = [
 ]
 
 dev_extras = [
-    'pyramid_debugtoolbar',
     'gevent',
-    'waitress',
+    'moto',
     'pylibmc',
+    'pyramid_debugtoolbar',
+    'waitress',
 ]
 
 message_extractors = {'eucaconsole': [

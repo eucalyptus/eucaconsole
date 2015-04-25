@@ -35,8 +35,6 @@
 // Note: foundation/settings imports includes/eucavariables
 @import "includes/eucavariables";
 
-@import "font-awesome/font-awesome";
-
 // Behold, here are all the Foundation 5 components.
 @import
 //  "foundation/components/accordion",
@@ -146,7 +144,7 @@ h1, h2, h3, h4, h5, h6 {
 // Logo bar (top-most bar)
 #logobar {
     height: 44px;
-    padding: 5px 0 10px 15px;
+    padding: 5px 0 10px 0;
     margin-top: 20px;
     background-color: #fff;
     color: #333;
@@ -186,15 +184,15 @@ h1, h2, h3, h4, h5, h6 {
         position: relative;
         top: -10px;
     }
-    .menu-label {
-        display: block;
-        position: relative;
-        top: -25px;
-    }
     #logo {
         display: inline-block;
-        width: 199px; height: 55px;
+        width: 199px; height: 32px;
         background: url(../img/eucalogo-199x22.png) no-repeat;
+    }
+    .product-name {
+        font-size: 1.4rem;
+        position: relative;
+        top: -12px;
     }
     #selected-region {
         position: relative;
@@ -209,6 +207,7 @@ h1, h2, h3, h4, h5, h6 {
         }
     }
     #offcanvas-icon {
+        left: -1000px;
         display: none;
         margin-right: 12px;
         i {
@@ -365,15 +364,6 @@ $breadcrumb-border-color: darken($breadcrumb-background-color, 20%);
 hr {
     border: 1px solid $euca-grey;
     border-width: 1px 0 0;
-}
-
-.busy {
-    @extend .fa;
-    @extend .fa-spinner;
-    @extend .fa-pulse;
-    .loading & {
-        @extend .fa-3x;
-    }
 }
 
 a.has-tip {
@@ -781,21 +771,6 @@ textarea.hidden {
     }
 }
 
-// Help text icon for inline help on form fields
-.helptext-icon {
-    display: inline-block;
-    margin-left: 5px;
-    width: 20px; height: 20px;
-    border-radius: 32px;
-    border: 1px solid $euca-grey;
-    background-color: $euca-lightgrey;
-    color: white;
-    text-align: center;
-    padding-top: 1px;
-    font-size: 0.825rem;
-}
-
-
 /* -----------------------------------------
    Chosen widget
 ----------------------------------------- */
@@ -862,7 +837,7 @@ textarea.hidden {
     }
     &.has-actions {
         position: relative;
-        padding-top: 50px;
+        padding-top: 60px !important;
         h6.title {
             position: absolute;
             top: 0; left: 0; right: 0;
@@ -1098,6 +1073,7 @@ footer {
             top: 4px;
         }
         #offcanvas-icon {
+            left: 0px;
             display: inline-block !important;
             margin-right: 12px;
         }
@@ -1108,6 +1084,65 @@ footer {
     }
     #navbar {
         display: none;
+    }
+}
+
+// On-canvas Nav adjustments
+#nav-drop ul {
+    list-style-type: none;
+    .dropdown {
+        margin-bottom: 0.5rem;
+    }
+    li {
+        a {
+            padding: 0.125rem;
+        }
+    }
+}
+
+// Off-canvas Nav adjustments
+div.left-off-canvas-menu {
+    z-index: 999999 !important;
+    color: white;
+    background-color: white;
+    border-style: solid;
+    border-width: 0 1px 0 0;
+    border-color: $euca-grey;
+}
+
+ul.off-canvas-list {
+    padding-left: 0.5rem;
+    li {
+        label {
+            background-color: white;
+            color: $euca-grey;
+            padding-left: 0.5rem;
+            border-top: 0;
+        }
+        a {
+            background-color: white;
+            color: $euca-grey;
+            padding: 0.5rem;
+            border-bottom: 0;
+            label {
+                background-color: white;
+                color: $euca-grey;
+                padding-left: 0.5rem;
+                border-top: 0;
+            }
+        }
+        a:hover:not(.nolink) {
+            background-color: lighten($euca-grey, 50%);
+            color: black;
+        }
+        a.nolink:hover {
+            background-color: white;
+            color: $euca-grey;
+        }
+        .dropdown {
+            background-color: white;
+            margin-bottom: 0;
+        }
     }
 }
 

@@ -40,7 +40,7 @@ class StacksCreateForm(BaseSecureForm):
        Only need to initialize as a secure form to generate CSRF token
     """
     name_error_msg = _(u"""Name is required and may contain lowercase letters,
-        numbers, and/or hyphens and not longer than 255 characters""")
+        numbers, and/or hyphens and should not be longer than 255 characters""")
     name = wtforms.TextField(
         label=_(u'Name'),
         validators=[validators.InputRequired(message=name_error_msg)],

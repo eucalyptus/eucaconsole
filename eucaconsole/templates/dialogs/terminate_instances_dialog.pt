@@ -20,7 +20,7 @@
                 <button type="submit" id="terminate_all_instances_submit_button" class="button expand" i18n:translate="">Yes, Terminate</button>
             </div>
             <div class="dialog-progress-display hide">
-                <span i18n:translate="">Sending request </span>&nbsp;<em><span class="busy">&nbsp;</span></em>
+                <span i18n:translate="">Sending request </span>&nbsp;<i class="busy"></i>
             </div>
         </form>
         <a href="#" id="terminate_all_instances_close_link" class="close-reveal-modal">&#215;</a>
