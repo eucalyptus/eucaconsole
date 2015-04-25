@@ -17,6 +17,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
     vm.metricTitleMapping = {};
     vm.chartsList = [];
     vm.largeChartMetric = '';
+    vm.largeChartLoading = false;
     vm.initController = initController;
     vm.submitMonitoringForm = submitMonitoringForm;
     vm.refreshCharts = refreshCharts;
@@ -26,6 +27,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
         var options = JSON.parse(eucaUnescapeJson(optionsJson));
         vm.metricTitleMapping = options.metric_title_mapping;
         vm.chartsList = options.charts_list;
+        emptyLargeChartDialogOnOpen();
     }
 
     function submitMonitoringForm() {
@@ -39,6 +41,13 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
 
     function refreshLargeChart() {
         $scope.$broadcast('cloudwatch:refreshLargeChart');
+    }
+
+    function emptyLargeChartDialogOnOpen() {
+        var chartModal = $('#large-chart-modal');
+        chartModal.on('open.fndtn.reveal', function () {
+            chartModal.find('#large-chart').empty();
+        });
     }
 
 })
@@ -75,7 +84,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
         var largeChart = options.largeChart || false;
         var chartElemId = largeChart ? 'large-chart' : scope.elemId;
         if (largeChart) {
-            $('#' + chartElemId).empty();
+            parentCtrl.largeChartLoading = true;
             if (scope.metric !== parentCtrl.largeChartMetric) {
                 // Workaround refreshLargeChart event firing multiple times to avoid multi-chart display in dialog
                 return false;
@@ -122,6 +131,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
             chart.yAxis.axisLabel(unit).tickFormat(d3.format('.0f'));
             d3.select('#' + chartElemId).datum(results).call(chart);
             nv.utils.windowResize(chart.update);
+            parentCtrl.largeChartLoading = false;
         }).error(function (oData, status) {
             eucaHandleError(oData, status);
         });

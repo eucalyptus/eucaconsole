@@ -29,6 +29,7 @@
             </div>
         </div>
         <div class="large-chart-wrapper">
+            <i class="busy loading" ng-if="chartsCtrl.largeChartLoading"></i>
             <svg id="large-chart"></svg>
         </div>
         <a href="#" id="large_chart_close-link" class="close-reveal-modal">&#215;</a>

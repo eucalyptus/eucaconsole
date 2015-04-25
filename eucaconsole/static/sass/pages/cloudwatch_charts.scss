@@ -56,5 +56,14 @@
         width: 100%;
         height: 500px;
     }
+    .busy.loading {
+        position: absolute;
+        top: 50%;
+        left: 48%;
+        width: 3rem;
+        height: 3rem;
+        font-size: 3rem;
+        color: $euca-grey;
+    }
 }
 
