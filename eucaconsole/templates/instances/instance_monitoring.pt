@@ -70,46 +70,12 @@
                     <p i18n:translate="">Turn on monitoring to view metric data.</p>
                 </div>
                 <ul class="small-block-grid-1 medium-block-grid-2 large-block-grid-3" tal:condition="monitoring_enabled">
-                    <li class="chart-wrapper">
-                        <h6>${metric_title['CPUUtilization']}<i class="busy"></i></h6>
-                        <svg cloudwatch-chart="" id="cwchart-cpu" class="cwchart" ids="${instance.id}" idtype="InstanceId"
-                             metric="CPUUtilization" duration="{{ chartsCtrl.duration }}" unit="Percent" statistic="Average">
-                        </svg>
-                    </li>
-                    <li class="chart-wrapper">
-                        <h6>${metric_title['DiskReadBytes']}<i class="busy"></i></h6>
-                        <svg cloudwatch-chart="" id="cwchart-disk-read-bytes" class="cwchart" ids="${instance.id}" idtype="InstanceId"
-                             metric="DiskReadBytes" duration="{{ chartsCtrl.duration }}" unit="Bytes">
-                        </svg>
-                    </li>
-                    <li class="chart-wrapper">
-                        <h6>${metric_title['DiskReadOps']}<i class="busy"></i></h6>
-                        <svg cloudwatch-chart="" id="cwchart-disk-read-ops" class="cwchart" ids="${instance.id}" idtype="InstanceId"
-                             metric="DiskReadOps" duration="{{ chartsCtrl.duration }}" unit="Count">
-                        </svg>
-                    </li>
-                    <li class="chart-wrapper">
-                        <h6>${metric_title['DiskWriteBytes']}<i class="busy"></i></h6>
-                        <svg cloudwatch-chart="" id="cwchart-disk-write-bytes" class="cwchart" ids="${instance.id}" idtype="InstanceId"
-                             metric="DiskWriteBytes" duration="{{ chartsCtrl.duration }}" unit="Bytes">
-                        </svg>
-                    </li>
-                    <li class="chart-wrapper">
-                        <h6>${metric_title['DiskWriteOps']}<i class="busy"></i></h6>
-                        <svg cloudwatch-chart="" id="cwchart-disk-write-ops" class="cwchart" ids="${instance.id}" idtype="InstanceId"
-                             metric="DiskWriteOps" duration="{{ chartsCtrl.duration }}" unit="Count">
-                        </svg>
-                    </li>
-                    <li class="chart-wrapper">
-                        <h6>${metric_title['NetworkIn']}<i class="busy"></i></h6>
-                        <svg cloudwatch-chart="" id="cwchart-networkin" class="cwchart" ids="${instance.image_id}"
-                             idtype="ImageId" metric="NetworkIn" duration="{{ chartsCtrl.duration }}" unit="Bytes">
-                        </svg>
-                    </li>
-                    <li class="chart-wrapper">
-                        <h6>${metric_title['NetworkOut']}<i class="busy"></i></h6>
-                        <svg cloudwatch-chart="" id="cwchart-networkout" class="cwchart" ids="${instance.image_id}"
-                             idtype="ImageId" metric="NetworkOut" duration="{{ chartsCtrl.duration }}" unit="Bytes">
+                    <li class="chart-wrapper" ng-repeat="chart in chartsCtrl.chartsList"
+                        ng-click="chartsCtrl.displayLargeChart(chart, 'InstanceId', '${instance.id}')" ng-cloak="">
+                        <h6>{{ chartsCtrl.metricTitleMapping[chart.metric] }}<i class="busy"></i></h6>
+                        <svg cloudwatch-chart="" id="cwchart-{{ chart.metric }}" class="cwchart"
+                             ids="${instance.id}" idtype="InstanceId" metric="{{ chart.metric }}"
+                             duration="{{ chartsCtrl.duration }}" unit="{{ chart.unit }}" statistic="Average">
                         </svg>
                     </li>
                 </ul>

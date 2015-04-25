@@ -15,6 +15,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
     vm.duration = 3600;  // Default duration value is one hour
     vm.largeChartDuration = 3600;
     vm.metricTitleMapping = {};
+    vm.chartsList = [];
     vm.initController = initController;
     vm.submitMonitoringForm = submitMonitoringForm;
     vm.refreshCharts = refreshCharts;
@@ -23,6 +24,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
     function initController(optionsJson) {
         var options = JSON.parse(eucaUnescapeJson(optionsJson));
         vm.metricTitleMapping = options.metric_title_mapping;
+        vm.chartsList = options.charts_list;
     }
 
     function submitMonitoringForm() {
