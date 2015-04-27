@@ -65,37 +65,6 @@ METRIC_TYPES = [
     {'namespace': 'AWS/ELB', 'name': 'UnHealthyHostCount', 'unit': 'Count'},
 ]
 
-INSTANCE_MONITORING_CHARTS_LIST = [
-    {
-        'metric': 'CPUUtilization',
-        'unit': 'Percent',
-    },
-    {
-        'metric': 'DiskReadBytes',
-        'unit': 'Bytes',
-    },
-    {
-        'metric': 'DiskReadOps',
-        'unit': 'Count',
-    },
-    {
-        'metric': 'DiskWriteBytes',
-        'unit': 'Bytes',
-    },
-    {
-        'metric': 'DiskWriteOps',
-        'unit': 'Count',
-    },
-    {
-        'metric': 'NetworkIn',
-        'unit': 'Bytes',
-    },
-    {
-        'metric': 'NetworkOut',
-        'unit': 'Bytes',
-    },
-]
-
 
 # Maps simplified dimension keys to dimension names (for dict key in MetricAlarm().dimensions attr)
 METRIC_DIMENSION_NAMES = {

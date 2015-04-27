@@ -68,3 +68,33 @@ AWS_INSTANCE_TYPE_CHOICES = [
 ]
 
 
+INSTANCE_MONITORING_CHARTS_LIST = [
+    {
+        'metric': 'CPUUtilization',
+        'unit': 'Percent',
+    },
+    {
+        'metric': 'DiskReadBytes',
+        'unit': 'Bytes',
+    },
+    {
+        'metric': 'DiskReadOps',
+        'unit': 'Count',
+    },
+    {
+        'metric': 'DiskWriteBytes',
+        'unit': 'Bytes',
+    },
+    {
+        'metric': 'DiskWriteOps',
+        'unit': 'Count',
+    },
+    {
+        'metric': 'NetworkIn',
+        'unit': 'Bytes',
+    },
+    {
+        'metric': 'NetworkOut',
+        'unit': 'Bytes',
+    },
+]

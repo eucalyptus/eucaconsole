@@ -44,8 +44,8 @@ from boto.ec2.networkinterface import NetworkInterfaceCollection, NetworkInterfa
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from pyramid.view import view_config
 
-from ..constants.cloudwatch import (
-    MONITORING_DURATION_CHOICES, METRIC_TITLE_MAPPING, STATISTIC_CHOICES, INSTANCE_MONITORING_CHARTS_LIST)
+from ..constants.cloudwatch import MONITORING_DURATION_CHOICES, METRIC_TITLE_MAPPING, STATISTIC_CHOICES
+from ..constants.instances import INSTANCE_MONITORING_CHARTS_LIST
 from ..forms.images import ImagesFiltersForm
 from ..forms.instances import (
     InstanceForm, AttachVolumeForm, DetachVolumeForm, LaunchInstanceForm, LaunchMoreInstancesForm,
