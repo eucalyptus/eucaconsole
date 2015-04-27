@@ -175,6 +175,8 @@ angular.module('EucaConsoleWizard').controller('ELBWizardCtrl', function ($scope
         $scope.$watch('securityGroups', function () {
             $scope.updateSecurityGroupNames();
             $scope.checkRequiredInput(2);
+            // Update the VPC network on the instance selector when security group is updated
+            $scope.$broadcast('eventWizardUpdateVPCNetwork', $scope.vpcNetwork);
         }, true);
         $scope.$watch('securityGroupCollection', function () {
             $scope.updateSecurityGroupChoices();
