@@ -95,7 +95,9 @@ class CloudWatchAPIView(BaseView, CloudWatchAPIMixin):
             raise HTTPBadRequest()  # Period (granularity) must be a multiple of 60 seconds
 
         duration = int(self.request.params.get('duration', 3600))
-        period = self.adjust_granularity(duration)
+        adjust_granularity = int(self.request.params.get('adjustGranularity', 1))
+        if adjust_granularity:
+            period = self.adjust_granularity(duration)
         metric = self.request.params.get('metric') or 'CPUUtilization'
         namespace = u'AWS/{0}'.format(self.request.params.get('namespace', 'EC2'))
         statistic = self.request.params.get('statistic') or 'Average'

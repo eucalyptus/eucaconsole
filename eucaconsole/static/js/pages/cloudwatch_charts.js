@@ -10,15 +10,21 @@
  */
 
 angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
-.controller('CloudWatchChartsCtrl', function ($scope, eucaUnescapeJson) {
+.controller('CloudWatchChartsCtrl', function ($scope, eucaUnescapeJson, eucaOptionsArray) {
     var vm = this;
     vm.duration = 3600;  // Default duration value is one hour
     vm.largeChartDuration = 3600;
+    vm.largeChartGranularity = 300;
     vm.metricTitleMapping = {};
     vm.chartsList = [];
+    vm.granularityChoices = [];
+    vm.originalDurationGranularitiesMapping = {};
+    vm.durationGranularitiesMapping = {};
     vm.largeChartMetric = '';
     vm.largeChartLoading = false;
     vm.initController = initController;
+    vm.setDurationGranularitiesOptions = setDurationGranularitiesOptions;
+    vm.handleDurationChange = handleDurationChange;
     vm.submitMonitoringForm = submitMonitoringForm;
     vm.refreshCharts = refreshCharts;
     vm.refreshLargeChart = refreshLargeChart;
@@ -27,7 +33,28 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
         var options = JSON.parse(eucaUnescapeJson(optionsJson));
         vm.metricTitleMapping = options.metric_title_mapping;
         vm.chartsList = options.charts_list;
+        vm.originalDurationGranularitiesMapping = options.duration_granularities_mapping;
+        vm.durationGranularitiesMapping = setDurationGranularitiesOptions(options.duration_granularities_mapping);
+        vm.granularityChoices = vm.durationGranularitiesMapping[vm.largeChartDuration];
         emptyLargeChartDialogOnOpen();
+    }
+
+    function setDurationGranularitiesOptions(mapping) {
+        // Convert duration : value/label mapping to a form compatible with ng-options
+        var optionsMapping = {};
+        angular.forEach(Object.keys(mapping), function (duration) {
+            optionsMapping[duration] = eucaOptionsArray(mapping[duration]);
+        });
+        return optionsMapping;
+    }
+
+    function handleDurationChange() {
+        vm.granularityChoices = vm.durationGranularitiesMapping[vm.largeChartDuration];
+        if (!vm.granularityChoices[vm.largeChartDuration]) {
+            // Avoid empty granularity choice when duration is modified
+            vm.largeChartGranularity = vm.originalDurationGranularitiesMapping[vm.largeChartDuration][0][0];
+        }
+        vm.refreshLargeChart();
     }
 
     function submitMonitoringForm() {
@@ -49,7 +76,6 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
             chartModal.find('#large-chart').empty();
         });
     }
-
 })
 .directive('cloudwatchChart', function($http, $timeout, eucaHandleError) {
     return {
@@ -89,6 +115,8 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
                 // Workaround refreshLargeChart event firing multiple times to avoid multi-chart display in dialog
                 return false;
             }
+            // Granularity is user-selectable in large chart, so don't auto-adjust on the server
+            options.params.adjustGranularity = 0;
         }
         var params = options.params || {
             'ids': scope.ids,
@@ -143,6 +171,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
         // Display large chart on small chart click
         chartWrapper.on('click', function () {
             var parentCtrl = scope.$parent.chartsCtrl;
+            // Granularity (period) defaults to 5 min, so no need to pass it here
             var options = {
                 'params': attrs,
                 'largeChart': true
@@ -158,6 +187,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
                 $timeout(function () {
                     options.params.duration = parentCtrl.largeChartDuration;
                     options.params.statistic = parentCtrl.largeChartStatistic;
+                    options.params.period = parentCtrl.largeChartGranularity;
                     renderChart(scope, options);
                 });
             });

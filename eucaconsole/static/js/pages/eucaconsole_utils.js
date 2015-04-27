@@ -15,6 +15,20 @@ angular.module('EucaConsoleUtils', [])
         return jsonString.replace(/__apos__/g, "\'").replace(/__dquote__/g, '\\"').replace(/__bslash__/g, "\\");
     };
 })
+.service('eucaOptionsArray', function () {
+    /**
+     * Return an array of objects with value/label keys for select drop-downs based on ng-options
+     * @param {array} optionsList - Array of value, label arrays (e.g. [['value1', 'label1'], ['value2', 'label2']]
+     * @return {array} Array of objects with value/label keys (e.g. [{'value': 'value1', 'label': 'label1'}, ...]
+     */
+    return function(optionsList) {
+        var optionsArray = [];
+        angular.forEach(optionsList, function(item) {
+            optionsArray.push({value: item[0], label: item[1]});
+        });
+        return optionsArray;
+    };
+})
 .service('eucaHandleError', function() {
     /**
      * Provide generic error handling in the browser for XHR calls. 

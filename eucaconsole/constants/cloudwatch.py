@@ -108,16 +108,46 @@ STATISTIC_CHOICES = [
     ('SampleCount', _(u'Sample Count')),
 ]
 
-# Duration choices for CloudWatch charts (e.g. on Instance monitoring page)
-HOUR = 3600  # seconds
+# Durations for CloudWatch charts (e.g. on Instance monitoring page)
+MIN = 60  # seconds
+FIVE_MIN = MIN * 5
+FIFTEEN_MIN = MIN * 15
+HOUR = 3600
 DAY = HOUR * 24
+THREE_HOURS = HOUR * 3
+SIX_HOURS = HOUR * 6
+TWELVE_HOURS = HOUR * 12
+THREE_DAYS = DAY * 3
+SEVEN_DAYS = DAY * 7
+FOURTEEN_DAYS = DAY * 14
+
 MONITORING_DURATION_CHOICES = [
     (HOUR, _(u'Last hour')),
-    (HOUR * 3, _(u'Last 3 hours')),
-    (HOUR * 6, _(u'Last 6 hours')),
-    (HOUR * 12, _(u'Last 12 hours')),
+    (THREE_HOURS, _(u'Last 3 hours')),
+    (SIX_HOURS, _(u'Last 6 hours')),
+    (TWELVE_HOURS, _(u'Last 12 hours')),
     (DAY, _(u'Last day')),
-    (DAY * 3, _(u'Last 3 days')),
-    (DAY * 7, _(u'Last 1 week')),
-    (DAY * 14, _(u'Last 2 weeks')),
+    (THREE_DAYS, _(u'Last 3 days')),
+    (SEVEN_DAYS, _(u'Last 1 week')),
+    (FOURTEEN_DAYS, _(u'Last 2 weeks')),
 ]
+
+GRANULARITY_CHOICES = [
+    (FIVE_MIN, _(U'5 minutes')),
+    (FIFTEEN_MIN, _(U'15 minutes')),
+    (HOUR, _(u'1 hour')),
+    (SIX_HOURS, _(u'6 hours')),
+    (DAY, _(u'1 day')),
+]
+
+# Trim granularity choices when longer durations are selected to avoid exceeding 1,440 data points limit in API
+DURATION_GRANULARITY_CHOICES_MAPPING = {
+    HOUR: GRANULARITY_CHOICES[:2],
+    THREE_HOURS: GRANULARITY_CHOICES[:3],
+    SIX_HOURS: GRANULARITY_CHOICES[1:3],
+    TWELVE_HOURS: GRANULARITY_CHOICES[1:4],
+    DAY: GRANULARITY_CHOICES[1:4],
+    THREE_DAYS: GRANULARITY_CHOICES[2:],
+    SEVEN_DAYS: GRANULARITY_CHOICES[2:],
+    FOURTEEN_DAYS: GRANULARITY_CHOICES[2:],
+}

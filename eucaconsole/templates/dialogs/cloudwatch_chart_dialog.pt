@@ -16,10 +16,17 @@
                 <div class="field-wrapper">
                     <label for="large-chart-monitoring-duration" class="left" i18n:translate="">Show data for</label>
                     <select name="large_chart_monitoring_duration" id="large-chart-monitoring-duration" class="duration-input"
-                            ng-model="chartsCtrl.largeChartDuration" ng-change="chartsCtrl.refreshLargeChart()">
+                            ng-model="chartsCtrl.largeChartDuration" ng-change="chartsCtrl.handleDurationChange()">
                         <option tal:repeat="option duration_choices" value="${option[0]}">
                             ${option[1]}
                         </option>
+                    </select>
+                </div>
+                <div class="field-wrapper" id="measurement-period-controls">
+                    <label for="large-chart-monitoring-granularity" class="left" i18n:translate="">Measurement period</label>
+                    <select name="large_chart_monitoring_granularity" id="large-chart-monitoring-granularity" class="period-input"
+                            ng-model="chartsCtrl.largeChartGranularity" ng-change="chartsCtrl.refreshLargeChart()"
+                            ng-options="opt.value as opt.label for opt in chartsCtrl.granularityChoices">
                     </select>
                 </div>
             </div>
