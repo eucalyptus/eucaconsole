@@ -71,5 +71,30 @@ class StacksFiltersForm(BaseSecureForm):
     def __init__(self, request, **kwargs):
         super(StacksFiltersForm, self).__init__(request, **kwargs)
         self.facets = [
-            {'name': 'tags', 'label': self.tags.label.text}
+            {'name': 'stack_status', 'label': _(u'Status'), 'options':[
+                {'key':'CREATE_IN_PROGRESS', 'label':'Create in progress'},
+                {'key':'CREATE_COMPLETE', 'label':'Create complete'},
+                {'key':'CREATE_FAILED', 'label':'Create failed'},
+                {'key':'ROLLBACK_IN_PROGRESS', 'label':'Rollback in progress'},
+                {'key':'ROLLBACK_COMPLETE', 'label':'Rollback complete'},
+                {'key':'ROLLBACK_FAILED', 'label':'Rollback failed'},
+                {'key':'DELETE_IN_PROGRESS', 'label':'Delete in progress'},
+                {'key':'DELETE_COMPLETE', 'label':'Delete complete'},
+                {'key':'DELETE_FAILED', 'label':'Delete failed'},
+            ]}
         ]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
