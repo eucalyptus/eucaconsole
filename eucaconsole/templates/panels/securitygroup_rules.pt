@@ -149,7 +149,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="row" id="add-rule-button-div" ng-show="selectedProtocol">
+                <div class="row add-button" id="add-rule-button-div" ng-show="selectedProtocol">
                     <div class="small-3 columns">&nbsp;</div>
                     <div class="small-9 columns">
                         <a href="#" id="button-add-rule" class="button round small" i18n:translate="" ng-class="addRuleButtonClass"
