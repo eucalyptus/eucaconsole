@@ -209,7 +209,8 @@
                 <div tal:condition="landingpage" tal:omit-tag="">
                     <input type="hidden" name="instance_id" value="{{ instanceID }}" />
                 </div>
-                ${panel('form_field', field=associate_ip_form.ip_address, **html_attrs)}
+                ${panel('form_field', field=associate_ip_form.ip_address, ng_attrs={'model': 'securityGroups', 'options': 'k as v for (k, v) in ipAddressList'},**html_attrs)}
+
                 <div>
                     <label>
                         <span class="req">*</span>
