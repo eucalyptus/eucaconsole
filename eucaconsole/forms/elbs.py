@@ -236,6 +236,7 @@ class ELBInstancesFiltersForm(BaseSecureForm):
     state = wtforms.SelectMultipleField(label=_(u'Status'))
     availability_zone = wtforms.SelectMultipleField(label=_(u'Availability zone'))
     tags = TextEscapedField(label=_(u'Tags'))
+    security_group = wtforms.SelectMultipleField(label=_(u'Security group'))
     vpc_id = wtforms.SelectMultipleField(label=_(u'VPC network'))
     subnet_id = wtforms.SelectMultipleField(label=_(u'VPC subnet'))
 
@@ -254,6 +255,7 @@ class ELBInstancesFiltersForm(BaseSecureForm):
         self.region = request.session.get('region')
         self.availability_zone.choices = self.get_availability_zone_choices(self.region)
         self.state.choices = self.get_status_choices()
+        self.security_group.choices = self.ec2_choices_manager.security_groups(add_blank=False)
         self.vpc_id.choices = self.vpc_choices_manager.vpc_networks(add_blank=False)
         if self.cloud_type == 'aws':
             self.vpc_id.choices.append(('None', _(u'No VPC')))
@@ -271,6 +273,8 @@ class ELBInstancesFiltersForm(BaseSecureForm):
                 {'name': 'subnet_id', 'label': self.subnet_id.label.text,
                     'options': self.getOptionsFromChoices(self.vpc_choices_manager.vpc_subnets(add_blank=False))},
                 {'name': 'tags', 'label': self.tags.label.text},
+                {'name':'security_group', 'label':self.security_group.label.text,
+                    'options':self.getOptionsFromChoices(self.ec2_choices_manager.security_groups(add_blank=False))},
             ]
             vpc_choices = self.vpc_choices_manager.vpc_networks(add_blank=False)
             vpc_choices.append(('None', _(u'No VPC')))
@@ -282,6 +286,8 @@ class ELBInstancesFiltersForm(BaseSecureForm):
             self.facets = [
                 {'name': 'state', 'label': self.state.label.text, 'options': self.get_status_choices()},
                 {'name': 'tags', 'label': self.tags.label.text},
+                {'name':'security_group', 'label':self.security_group.label.text,
+                    'options':self.getOptionsFromChoices(self.ec2_choices_manager.security_groups(add_blank=False))},
             ]
             if self.is_vpc_supported:
                 self.facets.append(
