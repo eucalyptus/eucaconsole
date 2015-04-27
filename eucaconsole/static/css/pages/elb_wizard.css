@@ -50,6 +50,7 @@ form .stack-label { margin-bottom: 0.25rem; }
 #elb-form select.ping-delay { width: 120px; }
 #elb-form select.ping-threshold { width: 100px; }
 #elb-form table { margin-left: auto; margin-right: auto; }
+#elb-form .checkbox-with-helptext-icon label { margin-right: 0rem; }
 
 #backend-certificate-form .item-list { margin-bottom: 6px; }
 #backend-certificate-form .item-list .item { color: #333; background-color: #e6e7e8; margin-right: 8px; }

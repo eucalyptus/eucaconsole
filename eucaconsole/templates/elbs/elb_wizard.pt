@@ -120,7 +120,7 @@
                                 </div>
                                 ${panel('form_field', field=create_form['zone'], leftcol_width=0, rightcol_width=12, ng_attrs={'model': 'availabilityZones', 'options': 'k as v for (k, v) in availabilityZoneChoices'}, **avail_zones_attrs)}
                             </div>
-                            <div ng-cloak="true" ng-show="vpcNetwork === 'None'">
+                            <div ng-cloak="true" ng-show="vpcNetwork === 'None'" class="checkbox-with-helptext-icon">
                                 ${structure:create_form.cross_zone_enabled(**{'ng-model': 'crossZoneEnabled'})}
                                 ${create_form['cross_zone_enabled'].label}
                                 <span class="helptext-icon" data-tooltip=""
