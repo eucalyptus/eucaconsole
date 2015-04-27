@@ -8,6 +8,6 @@ form input.name { margin-right: 6px; }
 #controls_userdata_file { position: relative; top: -0.5rem; }
 #controls_userdata_file #userdata_file { width: 80%; display: inline-block; }
 
-#userdatalabel { right: 0px; }
+.userdatalabel { right: 0px !important; }
 
 #bdmapping-editor .storage-label { display: none; }

@@ -87,11 +87,11 @@
                                 </div>
                                 <div class="small-12 columns value">
                                     <input type="radio" id="inputtype" name="inputtype" value="text" ng-model="inputtype"/>
-                                    <label id='userdatalabel' i18n:translate="">Enter text</label>
+                                    <label class='userdatalabel' i18n:translate="">Enter text</label>
                                     <textarea id="userdata" name="userdata" ng-model="userData" ng-show="inputtype=='text'"></textarea>
                                     <br/>
                                     <input type="radio" id="inputtype" name="inputtype" value="file" ng-model="inputtype"/>
-                                    <label id='userdatalabel' i18n:translate="">Upload file</label>
+                                    <label class='userdatalabel' i18n:translate="">Upload file</label>
                                     <input id="userdata_file" type="file" ng-model="userDataFile" ng-disabled="isNotStopped" name="userdata_file" disabled="disabled" ng-show="inputtype=='file'"/><span id="userdatatype"></span>
                                     
                                 </div>
