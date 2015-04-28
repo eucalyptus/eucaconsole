@@ -384,7 +384,7 @@ class CreateELBView(BaseView):
             elb_listener = self.request.params.get('elb_listener')
             certificate_arn = self.request.params.get('certificate_arn') or None
             listeners_args = self.get_listeners_args()
-            vpc_subnet = self.request.params.get('vpc_subnet') or None
+            vpc_subnet = self.request.params.getall('vpc_subnet') or None
             if vpc_subnet == 'None':
                 vpc_subnet = None
             securitygroup = self.request.params.getall('securitygroup') or None
@@ -404,7 +404,8 @@ class CreateELBView(BaseView):
                                   complex_listeners=listeners_args)
                     self.elb_conn.create_load_balancer(name, None, **params)
                 self.handle_configure_health_check(name)
-                self.elb_conn.register_instances(name, instances)
+                if instances is not None:
+                    self.elb_conn.register_instances(name, instances)
                 if cross_zone_enabled == 'y':
                     self.elb_conn.modify_lb_attribute(name, 'crossZoneLoadBalancing', True)
                 if backend_certificates is not None and backend_certificates != '[]':

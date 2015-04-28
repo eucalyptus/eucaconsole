@@ -24,7 +24,6 @@ angular.module('EucaConsoleWizard').controller('ELBWizardCtrl', function ($scope
     $scope.availabilityZones = [];
     $scope.availabilityZoneChoices = {};
     $scope.instanceList = [];
-    $scope.classNoInstanceWarningDiv = '';
     $scope.crossZoneEnabled = true;
     $scope.protocolList = []; 
     $scope.pingProtocol = '';
@@ -196,10 +195,6 @@ angular.module('EucaConsoleWizard').controller('ELBWizardCtrl', function ($scope
         }, true);
         $scope.$watch('instanceList', function (newValue, oldValue) {
             $scope.checkRequiredInput(3);
-            $scope.classNoInstanceWarningDiv = '';
-            if (oldValue.length > 0 && $scope.instanceList.length === 0 ) {
-                $scope.classNoInstanceWarningDiv = 'error';
-            }
             if ($scope.vpcNetwork !== 'None') { 
                 $scope.updateVPCSubnetChoices();
             } else {
@@ -297,8 +292,6 @@ angular.module('EucaConsoleWizard').controller('ELBWizardCtrl', function ($scope
             }
         } else if (step === 3) {
             if ($scope.availabilityZones.length === 0 && $scope.vpcSubnets.length === 0) {
-                $scope.isNotValid = true;
-            } else if ($scope.instanceList.length === 0){
                 $scope.isNotValid = true;
             }
         } else if (step === 4) {
