@@ -21,7 +21,11 @@
         </div>
         <div>&nbsp;</div>
         <div ng-show="certificateTab === 'BACKEND'">
-            <p i18n:translate="">Including back-end certificates ensures that your instances accept only encrypted communication from trusted sources.  Back-end certificates are optional.</p>
+            <p>
+                <span i18n:translate="">
+                    Including back-end certificates ensures that your instances accept only encrypted communication from trusted sources.  Back-end certificates are optional.
+                </span>
+            </p>
             <form method="post" data-abide="abide" id="backend-certificate-form">
                 ${structure:backend_certificate_form['csrf_token']}
                 <div>
@@ -67,7 +71,11 @@
             <a href="#" id="select-certificate-close-link-form-backend" class="close-reveal-modal">&#215;</a>
         </div>
         <div ng-show="certificateTab === 'SSL'">
-            <p i18n:translate="">SSL certificates are required for secure(HTTPS or SSL) listeners.  Choose or upload a pem-encoded certificate below.</p>
+            <p>
+                <span i18n:translate="">
+                    SSL certificates are required for secure(HTTPS or SSL) listeners.  Choose or upload a pem-encoded certificate below.
+                </span>
+            </p>
             <form method="post" data-abide="abide" id="select-certificate-form">
                  ${structure:certificate_form['csrf_token']}
                 <div>

@@ -284,6 +284,22 @@ angular.module('EucaConsoleWizard').controller('ELBWizardCtrl', function ($scope
                     $scope.isNotValid = true;
                 }
             }
+            // Handle the unsaved listener issue
+            if( $('#from-port-input').val() !== '' ){
+                $('#unsaved-listener-warn-modal').foundation('reveal', 'open');
+                $scope.isNotValid = true;
+            }
+            // Handle the unsaved tag issue
+            var existsUnsavedTag = false;
+            $('input.taginput').each(function(){
+                if($(this).val() !== ''){
+                    existsUnsavedTag = true;
+                }
+            });
+            if( existsUnsavedTag ){
+                $('#unsaved-tag-warn-modal').foundation('reveal', 'open');
+                $scope.isNotValid = true;
+            }
         } else if (step === 2) {
             if ($scope.vpcNetwork !== 'None') {
                 if ($scope.securityGroups.length === 0) {

@@ -197,6 +197,14 @@
                 </span>
             </div>
         </div>
+        <div id="unsaved-listener-warn-modal" class="reveal-modal small" data-reveal="">
+            <p>
+                <span i18n:translate="">
+                    You must click the "Add Listener" button before you submit this for your listener to be included.
+                </span>
+            </p>
+            <a href="#" class="close-reveal-modal">&#215;</a>
+        </div>
         <div>
             <textarea id="elb-listener" name="elb_listener" class="hidden" style="height: 8rem;"></textarea>
         </div>
