@@ -970,7 +970,7 @@ class InstanceVolumesView(BaseInstanceView):
 class InstanceMonitoringView(BaseInstanceView):
     VIEW_TEMPLATE = '../templates/instances/instance_monitoring.pt'
 
-    def __init__(self, request):
+    def __init__(self, request, instance=None):
         super(InstanceMonitoringView, self).__init__(request)
         self.request = request
         self.cw_conn = self.get_connection(conn_type='cloudwatch')
@@ -979,14 +979,14 @@ class InstanceMonitoringView(BaseInstanceView):
         with boto_error_handler(self.request):
             # Note: We're fetching reservations here since calling self.get_instance() in the context manager
             # will return a 500 error instead of invoking the session timeout handler
-            reservations = self.conn.get_all_reservations(instance_ids=[self.instance_id])
-        self.instance = self.get_instance(instance_id=self.instance_id, reservations=reservations)
+            reservations = self.conn.get_all_reservations(instance_ids=[self.instance_id]) if self.conn else []
+        self.instance = instance or self.get_instance(instance_id=self.instance_id, reservations=reservations)
         self.instance_name = TaggedItemView.get_display_name(self.instance)
         self.monitoring_form = InstanceMonitoringForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
             instance=self.instance,
             instance_name=self.instance_name,
-            monitoring_enabled=self.instance.monitoring_state == 'enabled',
+            monitoring_enabled=self.instance.monitoring_state == 'enabled' if self.instance else False,
             monitoring_form=self.monitoring_form,
             metric_title=METRIC_TITLE_MAPPING,
             duration_choices=MONITORING_DURATION_CHOICES,
