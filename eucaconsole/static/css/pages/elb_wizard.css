@@ -40,6 +40,9 @@
 /* Extra small screen (< 481px) */
 @media screen and (max-width: 560px) { dl.tabs a b { display: none; } }
 /* @section Elasitc Load Balancer Wizard styles */
+#wizard-tabs dd a b { font-size: 0.85rem; }
+#wizard-tabs dd span b { font-size: 0.85rem; }
+
 form .section-label { margin-top: 4px; margin-bottom: 6px; color: #03405f; }
 form .sub-section-label { color: black; }
 form .stack-label { margin-bottom: 0.25rem; }
