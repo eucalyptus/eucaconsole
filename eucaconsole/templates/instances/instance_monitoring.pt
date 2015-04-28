@@ -53,10 +53,10 @@
                                         <span i18n:translate="" tal:condition="not monitoring_enabled">on</span>
                                     </div>
                                     <div tal:condition="layout.cloud_type == 'aws'" tal:omit-tag="">
-                                        <span i18n:translate="" tal:condition="monitoring_enabled">
+                                        <span i18n:translate="" tal:condition="detailed_monitoring_enabled">
                                             Disable detailed monitoring
                                         </span>
-                                        <span i18n:translate="" tal:condition="not monitoring_enabled">
+                                        <span i18n:translate="" tal:condition="not detailed_monitoring_enabled">
                                             Enable detailed monitoring
                                         </span>
                                     </div>
@@ -65,7 +65,7 @@
                         </ul>
                     </div>
                 </div>
-                <div tal:condition="not monitoring_enabled">
+                <div tal:condition="layout.cloud_type == 'euca' and not monitoring_enabled">
                     <p i18n:translate="">Monitoring is currently turned off for this instance.</p>
                     <p>
                         <a href="" ng-click="chartsCtrl.submitMonitoringForm()" i18n:translate="">

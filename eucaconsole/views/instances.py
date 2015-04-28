@@ -983,10 +983,12 @@ class InstanceMonitoringView(BaseInstanceView):
         self.instance = instance or self.get_instance(instance_id=self.instance_id, reservations=reservations)
         self.instance_name = TaggedItemView.get_display_name(self.instance)
         self.monitoring_form = InstanceMonitoringForm(self.request, formdata=self.request.params or None)
+        self.monitoring_enabled = self.instance.monitoring_state == 'enabled' if self.instance else False
         self.render_dict = dict(
             instance=self.instance,
             instance_name=self.instance_name,
-            monitoring_enabled=self.instance.monitoring_state == 'enabled' if self.instance else False,
+            monitoring_enabled=self.monitoring_is_enabled(),
+            detailed_monitoring_enabled=self.detailed_monitoring_is_enabled(),
             monitoring_form=self.monitoring_form,
             metric_title=METRIC_TITLE_MAPPING,
             duration_choices=MONITORING_DURATION_CHOICES,
@@ -1017,6 +1019,16 @@ class InstanceMonitoringView(BaseInstanceView):
                         u'Request successfully submitted.  It may take a moment for the monitoring status to update')
                     self.request.session.flash(msg, queue=Notification.SUCCESS)
                 return HTTPFound(location=location)
+
+    def monitoring_is_enabled(self):
+        if self.cloud_type == 'aws':
+            return True
+        return self.instance.monitoring_state == 'enabled' if self.instance else False
+
+    def detailed_monitoring_is_enabled(self):
+        if self.cloud_type == 'euca':
+            return False
+        return self.instance.monitoring_state == 'enabled' if self.instance else False
 
     def get_controller_options_json(self):
         if not self.instance:

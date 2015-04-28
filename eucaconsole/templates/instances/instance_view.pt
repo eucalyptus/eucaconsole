@@ -222,7 +222,10 @@
                         <div class="small-8 columns value">${instance.client_token}</div>
                     </div>
                     <div class="row controls-wrapper readonly">
-                        <div class="small-4 columns"><label i18n:translate="">Monitoring</label></div>
+                        <div class="small-4 columns">
+                            <label i18n:translate="" tal:condition="layout.cloud_type == 'euca'">Monitoring</label>
+                            <label i18n:translate="" tal:condition="layout.cloud_type == 'aws'">Detailed monitoring</label>
+                        </div>
                         <div class="small-8 columns value">${instance.monitoring_state}</div>
                     </div>
                     <div class="row controls-wrapper readonly">

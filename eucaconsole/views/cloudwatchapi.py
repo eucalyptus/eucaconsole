@@ -29,6 +29,7 @@ CloudWatch REST API
 
 """
 from __future__ import division
+from operator import itemgetter
 
 import datetime
 import time
@@ -127,6 +128,9 @@ class CloudWatchAPIView(BaseView, CloudWatchAPIMixin):
                 x=time.mktime(dt_object.timetuple()) * 1000,  # Milliseconds since Unix epoch
                 y=amount
             ))
+
+        # Sort by timestamp to avoid chart anomalies
+        json_stats = sorted(json_stats, key=itemgetter('x'))
 
         return dict(
             unit=unit,
