@@ -63,7 +63,7 @@
                             </span>
                         </td>
                         <td>
-                            <a class="remove" ng-click="removeListener($index)" title="Remove rule"><i class="fi-x"></i></a>
+                            <a class="remove" ng-click="removeListener($index)" title="Remove rule"><i class="fi-minus-circle"></i></a>
                         </td>
                     </tr>
                 </tbody>
@@ -80,10 +80,10 @@
         </div>
         <div>
             <div ng-show="listenerArray.length === 0">
-                <span class="section-label" i18n:translate="">Add a listener</span>
+                <span class="section-label" i18n:translate="">Add a listener:</span>
             </div>
             <div ng-show="listenerArray.length > 0">
-                <span class="section-label" i18n:translate="">Add another listener</span>
+                <span class="section-label" i18n:translate="">Add another listener:</span>
             </div>
         </div>
         <div>
@@ -191,7 +191,7 @@
         <div class="row controls-wrapper" id="add-listener-button-div">
             <div class="small-3 columns"></div>
             <div class="small-9 columns field">
-                <span id="button-add-listener" class="button round small" i18n:translate=""
+                <span id="button-add-listener" class="button round tiny" i18n:translate=""
                     ng-class="addListenerButtonClass" ng-click="addListener($event)">
                     Add Listener
                 </span>

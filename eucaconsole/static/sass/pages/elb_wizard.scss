@@ -58,6 +58,11 @@ table.elb-listener-table {
     tr.top-header {
         border-bottom: 0px;
     }
+    th.vertical-border-header {
+        border-right-width: 1px;
+        border-right-style: solid;
+        border-right-color: $euca-grey;
+    } 
     th.center {
         text-align: center;
     }
