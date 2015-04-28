@@ -28,7 +28,7 @@ angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils'])
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
             if (options.hasOwnProperty('addresses_json_items_endpoint')) {
                 $scope.addressesEndpoint = options.addresses_json_items_endpoint;
-            }; 
+            } 
             $scope.getIPAddresses(); 
             $scope.initChosenSelectors();
             $('#file').on('change', $scope.getPassword);
