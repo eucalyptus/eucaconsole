@@ -25,7 +25,7 @@ angular.module('EucaConsoleWizard').controller('ELBWizardCtrl', function ($scope
     $scope.availabilityZoneChoices = {};
     $scope.instanceList = [];
     $scope.classNoInstanceWarningDiv = '';
-    $scope.crossZoneEnabled = false;
+    $scope.crossZoneEnabled = true;
     $scope.protocolList = []; 
     $scope.pingProtocol = '';
     $scope.pingPort = '';
@@ -84,7 +84,7 @@ angular.module('EucaConsoleWizard').controller('ELBWizardCtrl', function ($scope
         }
         $scope.listenerArray = [];
         $scope.instanceList = [];
-        $scope.crossZoneEnabled = false;
+        $scope.crossZoneEnabled = true;
         $scope.pingProtocol = 'HTTP';
         $scope.pingPort = 80;
         $scope.pingPath = '/index.html';

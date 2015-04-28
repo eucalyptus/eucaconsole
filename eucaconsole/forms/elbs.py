@@ -169,7 +169,7 @@ class CreateELBForm(BaseSecureForm):
         self.failures_until_unhealthy.choices = CreateELBForm.get_failures_until_unhealthy_choices()
         self.passes_until_healthy.choices = CreateELBForm.get_passes_until_healthy_choices()
 
-        self.cross_zone_enabled.data = False
+        self.cross_zone_enabled.data = True 
         # Set default choices where applicable, defaulting to first non-blank choice
         if self.cloud_type == 'aws' and len(self.zone.choices) > 1:
             self.zone.data = self.zone.choices[0]
@@ -272,7 +272,6 @@ class ELBInstancesFiltersForm(BaseSecureForm):
                     'options': self.get_availability_zone_choices(self.region)},
                 {'name': 'subnet_id', 'label': self.subnet_id.label.text,
                     'options': self.getOptionsFromChoices(self.vpc_choices_manager.vpc_subnets(add_blank=False))},
-                {'name': 'tags', 'label': self.tags.label.text},
                 {'name': 'security_group', 'label': self.security_group.label.text,
                     'options': self.getOptionsFromChoices(self.ec2_choices_manager.security_groups(add_blank=False))},
             ]
@@ -285,7 +284,6 @@ class ELBInstancesFiltersForm(BaseSecureForm):
         else:
             self.facets = [
                 {'name': 'state', 'label': self.state.label.text, 'options': self.get_status_choices()},
-                {'name': 'tags', 'label': self.tags.label.text},
                 {'name': 'security_group', 'label': self.security_group.label.text,
                     'options': self.getOptionsFromChoices(self.ec2_choices_manager.security_groups(add_blank=False))},
             ]
