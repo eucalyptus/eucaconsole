@@ -44,6 +44,10 @@ form {
     .checkbox-with-helptext-icon label {
         margin-right: 0rem;
     }
+    .section-label {
+        margin-top: 1.5rem;
+        margin-bottom: 1rem;
+    }
 }
 
 #backend-certificate-form {
@@ -71,6 +75,7 @@ table.elb-listener-table {
 table.instance-selector-table {
     width: 100%;
 }
+
 .summary {
     .multi-row {
         margin-bottom: 0.25rem;

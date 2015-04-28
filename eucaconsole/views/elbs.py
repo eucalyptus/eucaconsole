@@ -311,12 +311,12 @@ class CreateELBView(BaseView):
             tab_list = ({'title': 'General', 'render': True, 'display_id': 1},
                         {'title': 'Network', 'render': True, 'display_id': 2},
                         {'title': 'Instances', 'render': True, 'display_id': 3},
-                        {'title': 'Health Check', 'render': True, 'display_id': 4})
+                        {'title': 'Health Check & Advanced', 'render': True, 'display_id': 4})
         else:
             tab_list = ({'title': 'General', 'render': True, 'display_id': 1},
                         {'title': 'Network', 'render': False, 'display_id': ''},
                         {'title': 'Instances', 'render': True, 'display_id': 2},
-                        {'title': 'Health Check', 'render': True, 'display_id': 3})
+                        {'title': 'Health Check & Advanced', 'render': True, 'display_id': 3})
         return tab_list
 
     def get_protocol_list(self):
