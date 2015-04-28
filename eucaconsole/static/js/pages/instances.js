@@ -26,8 +26,9 @@ angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils'])
         };
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
-            $scope.addressesEndpoint = options.addresses_json_items_endpoint;
-console.log(options.addresses_json_items_endpoint);
+            if (options.hasOwnProperty('addresses_json_items_endpoint')) {
+                $scope.addressesEndpoint = options.addresses_json_items_endpoint;
+            }; 
             $scope.getIPAddresses(); 
             $scope.initChosenSelectors();
             $('#file').on('change', $scope.getPassword);
@@ -154,14 +155,12 @@ console.log(options.addresses_json_items_endpoint);
         $scope.getIPAddresses = function () {
             var csrf_token = $('#csrf_token').val();
             var data = "csrf_token=" + csrf_token;
-console.log($scope.addressesEndpoint);
             $http({
                 method:'POST', url:$scope.addressesEndpoint, data:data,
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             }).success(function(oData) {
                 var results = oData ? oData.results : [];
                 $scope.ipAddresses = results;
-console.log($scope.ipAddresses);
             }).error(function (oData) {
                 eucaHandleError(oData, status);
             });
@@ -171,13 +170,17 @@ console.log($scope.ipAddresses);
             if (instance.vpc_name === '') {
                 angular.forEach($scope.ipAddresses, function(ip){
                     if (ip.domain === 'standard') {
-                        $scope.ipAddressList[ip.public_ip] = ip.public_ip;
+                        if (ip.instance_id === '' || ip.instance_id === null) {
+                            $scope.ipAddressList[ip.public_ip] = ip.public_ip;
+                        }
                     }
                 }); 
             } else {
                 angular.forEach($scope.ipAddresses, function(ip){
                     if (ip.domain === 'vpc') {
-                        $scope.ipAddressList[ip.public_ip] = ip.public_ip;
+                        if (ip.instance_id === '' || ip.instance_id === null) {
+                            $scope.ipAddressList[ip.public_ip] = ip.public_ip;
+                        }
                     }
                 }); 
             }
