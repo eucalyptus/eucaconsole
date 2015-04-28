@@ -281,7 +281,11 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
             }
             return false;
         };
-        $scope.openCertificateModal = function (fromProtocol, toProtocol, certificateTab) {
+        $scope.openCertificateModal = function (fromProtocol, toProtocol) {
+            var certificateTab = 'SSL';
+            if (fromProtocol !== 'HTTPS' && fromProtocol !== 'SSL') {
+                certificateTab = 'BACKEND';
+            }
             $scope.$emit('eventOpenSelectCertificateModal', fromProtocol, toProtocol, certificateTab);
         };
     })
