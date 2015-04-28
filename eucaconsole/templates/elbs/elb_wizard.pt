@@ -252,7 +252,7 @@
                                 <div class="small-3 columns">&nbsp;</div>
                                 <div class="small-9 columns field inline">
                                     <button type="submit" class="button" ng-click="createELB()" id="create-elb-btn-step4" ng-disabled="isValidationError">
-                                        <span i18n:translate="">Create Elastic Load Balancer</span>
+                                        <span i18n:translate="">Create Load Balancer</span>
                                     </button>
                                     <a href="${request.route_path('elbs')}"
                                        class="cancel-link" i18n:translate="">Cancel</a>
