@@ -40,7 +40,7 @@
                         </div>
                     </div>
                     <div class="actions">
-                        <span id="refresh-charts-icon" class="action-icon"
+                        <span id="refresh-charts-icon" class="action-icon" title="Refresh data" i18n:attributes="title"
                               ng-click="chartsCtrl.refreshCharts()"><i class="fa fa-refresh"></i></span>
                         <span id="enable-monitoring-icon" class="action-icon dropdown"
                               data-dropdown="enable-monitoring-dropdown"><i class="fa fa-ellipsis-v"></i></span>
