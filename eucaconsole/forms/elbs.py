@@ -341,8 +341,10 @@ class CertificateForm(BaseSecureForm):
     certificate_chain = wtforms.TextAreaField(
         label=_(u'Certificate chain'),
     )
+    certificates_error_msg = _(u'Certificate is required')
     certificates = wtforms.SelectField(
         label=_(u'Certificate name'),
+        validators=[validators.InputRequired(message=certificates_error_msg)],
     )
 
     def __init__(self, request, conn=None, iam_conn=None, elb_conn=None, **kwargs):
