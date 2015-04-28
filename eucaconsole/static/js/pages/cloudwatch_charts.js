@@ -173,7 +173,14 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
             var parentCtrl = scope.$parent.chartsCtrl;
             // Granularity (period) defaults to 5 min, so no need to pass it here
             var options = {
-                'params': attrs,
+                'params': {
+                    'ids': attrs.ids,
+                    'idType': attrs.idType,
+                    'metric': attrs.metric,
+                    'duration': attrs.duration,
+                    'unit': attrs.unit,
+                    'statistic': attrs.statistic
+                },
                 'largeChart': true
             };
             parentCtrl.largeChartMetric = attrs.metric;
@@ -181,8 +188,9 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
             parentCtrl.largeChartDuration = parentCtrl.duration;
             parentCtrl.largeChartStatistic = attrs.statistic || 'Average';
             chartModal.foundation('reveal', 'open');
-            renderChart(scope, options);
-            scope.$apply();
+            $timeout(function () {
+                renderChart(scope, options);
+            });
             scope.$on('cloudwatch:refreshLargeChart', function () {
                 $timeout(function () {
                     options.params.duration = parentCtrl.largeChartDuration;
