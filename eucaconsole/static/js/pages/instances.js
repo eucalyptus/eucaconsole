@@ -27,6 +27,7 @@ angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils'])
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.addressesEndpoint = options.addresses_json_items_endpoint;
+console.log(options.addresses_json_items_endpoint);
             $scope.getIPAddresses(); 
             $scope.initChosenSelectors();
             $('#file').on('change', $scope.getPassword);
@@ -153,12 +154,14 @@ angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils'])
         $scope.getIPAddresses = function () {
             var csrf_token = $('#csrf_token').val();
             var data = "csrf_token=" + csrf_token;
+console.log($scope.addressesEndpoint);
             $http({
                 method:'POST', url:$scope.addressesEndpoint, data:data,
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             }).success(function(oData) {
                 var results = oData ? oData.results : [];
                 $scope.ipAddresses = results;
+console.log($scope.ipAddresses);
             }).error(function (oData) {
                 eucaHandleError(oData, status);
             });

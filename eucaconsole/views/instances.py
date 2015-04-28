@@ -156,7 +156,7 @@ class InstancesView(LandingPageView, BaseInstanceView):
             self.request, conn=self.conn, formdata=self.request.params or None)
         self.disassociate_ip_form = DisassociateIpFromInstanceForm(self.request, formdata=self.request.params or None)
         controller_options_json = BaseView.escape_json(json.dumps({
-            'addresses_json_items_endpoint': self.get_json_endpoint('ipaddresses_json'),
+            'addresses_json_items_endpoint': self.request.route_path('ipaddresses_json'),
         }))
         self.render_dict = dict(
             prefix=self.prefix,
@@ -314,7 +314,9 @@ class InstancesView(LandingPageView, BaseInstanceView):
                 msg = _(u'Successfully associated the IP to the instance.')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=self.location)
-        return self.render_dict
+        msg = _(u'Failed to associate the IP to the instance.')
+        self.request.session.flash(msg, queue=Notification.ERROR)
+        return HTTPFound(location=self.location)
 
     @view_config(route_name='instances_disassociate', request_method='POST')
     def instances_disassociate_ip_address(self):
@@ -330,7 +332,9 @@ class InstancesView(LandingPageView, BaseInstanceView):
                 msg = _(u'Successfully disassociated the IP from the instance.')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=self.location)
-        return self.render_dict
+        msg = _(u'Failed to disassociate the IP to the instance.')
+        self.request.session.flash(msg, queue=Notification.ERROR)
+        return HTTPFound(location=self.location)
 
 
 class InstancesJsonView(LandingPageView):
