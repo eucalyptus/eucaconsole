@@ -22,6 +22,8 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
         $scope.classNoListenerWarningDiv = '';
         $scope.elbListenerTextarea = undefined;
         $scope.serverCertificateName = '';
+        $scope.serverCertificateARN = '';
+        $scope.serverCertificateARNBlock = {};
         $scope.addListenerButtonClass = 'disabled';
         $scope.initEditor = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
@@ -105,6 +107,15 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
             $scope.$on('eventUpdateCertificateName', function ($event, name) {
                 $scope.serverCertificateName = name;
             });
+            $scope.$on('eventUpdateCertificateARN', function ($event, arn, block) {
+                $scope.serverCertificateARN = arn;
+                $scope.serverCertificateARNBlock = block;
+            });
+            $scope.$on('eventUseThisCertificate', function ($event, arn, name) {
+                $scope.serverCertificateARN = arn;
+                $scope.serverCertificateName = name;
+                $scope.handleEventUseThisCertificate();
+            });
         };
         // In case of the duplicated listener, add the 'disabled' class to the button
         $scope.setAddListenerButtonClass = function () {
@@ -148,6 +159,10 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
                 'toProtocol': $scope.toProtocol.value,
                 'toPort': $scope.toPort,
             };
+            if (block.fromProtocol === 'HTTPS' || block.fromProtocol === 'SSL') {
+                block.certificateARN = $scope.serverCertificateARN;
+                block.certificateName = $scope.serverCertificateName;
+            }
             return block;
         };
         $scope.addListener = function ($event) {
@@ -161,13 +176,13 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
                 // Add the listener 
                 $scope.listenerArray.push($scope.createListenerArrayBlock());
                 $scope.syncListeners();
-                $scope.$emit('listenerArrayUpdate');
+                $scope.$emit('eventUpdateListenerArray', $scope.listenerArray);
             });
         };
         $scope.removeListener = function (index) {
             $scope.listenerArray.splice(index, 1);
             $scope.syncListeners();
-            $scope.$emit('listenerArrayUpdate');
+            $scope.$emit('eventUpdateListenerArray', $scope.listenerArray);
             if ($scope.listenerArray.length === 0) {
                 $scope.classNoListenerWarningDiv = 'error';
             }
@@ -275,28 +290,36 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
             return false;
         };
         $scope.showServerCertificateNameLink = function (fromProtocol) {
-            if (fromProtocol === 'HTTPS' ||
-                fromProtocol === 'SSL') { 
+            if (fromProtocol === 'HTTPS' || fromProtocol === 'SSL') { 
                 return true;
             }
             return false;
         };
         $scope.showBackendCertificateLink = function (fromProtocol, toProtocol) {
-            if (fromProtocol === 'HTTPS' ||
-                fromProtocol === 'SSL') {
+            if (fromProtocol === 'HTTPS' || fromProtocol === 'SSL') {
                 return false;
-            } else if (toProtocol === 'HTTPS' ||
-                       toProtocol === 'SSL') {
+            } else if (toProtocol === 'HTTPS' || toProtocol === 'SSL') {
                 return true;
             }
             return false;
         };
-        $scope.openCertificateModal = function (fromProtocol, toProtocol) {
+        $scope.openCertificateModal = function (fromProtocol, toProtocol, fromPort, toPort) {
             var certificateTab = 'SSL';
             if (fromProtocol !== 'HTTPS' && fromProtocol !== 'SSL') {
                 certificateTab = 'BACKEND';
             }
-            $scope.$emit('eventOpenSelectCertificateModal', fromProtocol, toProtocol, certificateTab);
+            $scope.$emit('eventOpenSelectCertificateModal', fromProtocol, toProtocol, fromPort, toPort, certificateTab);
+        };
+        $scope.handleEventUseThisCertificate = function () {
+            angular.forEach($scope.listenerArray, function (block) {
+                if (block.fromPort === $scope.serverCertificateARNBlock.fromPort &&
+                    block.toPort === $scope.serverCertificateARNBlock.toPort) {
+                    block.certificateARN = $scope.serverCertificateARN;
+                    block.certificateName = $scope.serverCertificateName;
+                    $scope.elbListenerTextarea.val(JSON.stringify($scope.listenerArray));
+                    $scope.$emit('eventUpdateListenerArray', $scope.listenerArray);
+                }
+            });
         };
     })
 ;

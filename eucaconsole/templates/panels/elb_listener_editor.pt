@@ -33,7 +33,7 @@
                         <td>
                             <span ng-show="showServerCertificateNameLink(listener.fromProtocol)">
                                 <span i18n:translate="">cipher_name_placeholder</span>
-                                <a ng-click="openCertificateModal(listener.fromProtocol, listener.toProtocol)"
+                                <a ng-click="openCertificateModal(listener.fromProtocol, listener.toProtocol, listener.fromPort, listener.toPort)"
                                     title="Change certficate" i18n:translate="">
                                     Change
                                 </a>
@@ -44,15 +44,15 @@
                         </td>
                         <td>
                             <span ng-show="showServerCertificateNameLink(listener.fromProtocol)">
-                                <span>{{ serverCertificateName }}</span>
-                                <a ng-click="openCertificateModal(listener.fromProtocol, listener.toProtocol)"
+                                <span>{{ listener.certificateName }}</span>
+                                <a ng-click="openCertificateModal(listener.fromProtocol, listener.toProtocol, listener.fromPort, listener.toPort)"
                                     title="Change certficate" i18n:translate="">
                                     Change
                                 </a>
                             </span>
                             <span ng-show="showBackendCertificateLink(listener.fromProtocol, listener.toProtocol)">
                                 <span i18n:translate="">Backend Certificate</span>
-                                <a ng-click="openCertificateModal(listener.fromProtocol, listener.toProtocol)"
+                                <a ng-click="openCertificateModal(listener.fromProtocol, listener.toProtocol, listener.fromPort, listener.toPort)"
                                     title="Change certficate" i18n:translate="">
                                     Change
                                 </a>
@@ -170,7 +170,7 @@
                     <label class="right protocol" i18n:translate="">Cipher</label>
                 </div>
                 <div class="small-9 columns">
-                    <a ng-click="openCertificateModal(fromProtocol.value, toProtocol.value)"
+                    <a ng-click="openCertificateModal(fromProtocol.value, toProtocol.value, fromPort, toPort)"
                         title="Change certficate">
                         Select
                     </a>
@@ -181,7 +181,7 @@
                     <label class="right protocol" i18n:translate="">Certificates</label>
                 </div>
                 <div class="small-9 columns">
-                    <a ng-click="openCertificateModal(fromProtocol.value, toProtocol.value)"
+                    <a ng-click="openCertificateModal(fromProtocol.value, toProtocol.value, fromPort, toPort)"
                         title="Change certficate">
                         Select
                     </a>

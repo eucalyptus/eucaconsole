@@ -422,7 +422,6 @@ class CreateELBView(BaseView):
 
     def get_listeners_args(self):
         listeners_json = self.request.params.get('elb_listener')
-        certificate_arn = self.request.params.get('certificate_arn') or None
         listeners = json.loads(listeners_json) if listeners_json else []
         listeners_args = []
 
@@ -431,7 +430,8 @@ class CreateELBView(BaseView):
             from_port = listener.get('fromPort')
             to_protocol = listener.get('toProtocol')
             to_port = listener.get('toPort')
-            if from_protocol == 'HTTPS' or from_protocol == 'SSL':
+            certificate_arn = listener.get('certificateARN') or None
+            if certificate_arn is not None:
                 listeners_args.append((from_port, to_port, from_protocol, to_protocol, certificate_arn))
             else:
                 listeners_args.append((from_port, to_port, from_protocol, to_protocol))
