@@ -314,7 +314,7 @@ class InstancesView(LandingPageView, BaseInstanceView):
                 msg = _(u'Successfully associated the IP to the instance.')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=self.location)
-        msg = _(u'Failed to associate the IP to the instance.')
+        msg = _(u'Failed to associate the IP address to the instance.')
         self.request.session.flash(msg, queue=Notification.ERROR)
         return HTTPFound(location=self.location)
 
@@ -332,7 +332,7 @@ class InstancesView(LandingPageView, BaseInstanceView):
                 msg = _(u'Successfully disassociated the IP from the instance.')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=self.location)
-        msg = _(u'Failed to disassociate the IP to the instance.')
+        msg = _(u'Failed to disassociate the IP address from the instance.')
         self.request.session.flash(msg, queue=Notification.ERROR)
         return HTTPFound(location=self.location)
 
