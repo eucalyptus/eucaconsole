@@ -178,6 +178,9 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
             $scope.classDuplicatedListenerDiv = '';
             $scope.classNoListenerWarningDiv = '';
             $scope.addListenerButtonClass = 'disabled';
+            $timeout(function () {
+                $scope.$emit('requestValidationCheck');
+            });
         };
         $scope.syncListeners = function () {
             $scope.elbListenerTextarea.val(JSON.stringify($scope.listenerArray));
