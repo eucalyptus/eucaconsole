@@ -187,8 +187,8 @@ class CreateELBForm(BaseSecureForm):
     def get_ping_protocol_choices():
         return [
             ('HTTP', 'HTTP'),
-            ('TCP', 'TCP'),
             ('HTTPS', 'HTTPS'),
+            ('TCP', 'TCP'),
             ('SSL', 'SSL')
         ]
 
