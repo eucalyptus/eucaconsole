@@ -117,7 +117,19 @@
                 </div>
             </div>
         </div>
-        <div ng-show="isFromProtocolValid">
+        <div id="listener-error-div">
+            <div class="row controls-wrapper">
+                <div class="small-3 columns"></div>
+                <div class="small-9 columns field">
+                    <div ng-class="classDuplicatedFromPortDiv">
+                        <small class="error" i18n:translate="">
+                            Selected port already in use by another listener. Please select an unused port.
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div ng-show="isFromProtocolValid &amp;&amp; !hasDuplicatedFromPort">
             <div class="row controls-wrapper">
                 <div class="small-1 columns"></div>
                 <div class="small-11 columns"><label class="left sub-section-label">Instance side</label></div>

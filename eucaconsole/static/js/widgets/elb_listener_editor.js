@@ -7,6 +7,7 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
     .controller('ELBListenerEditorCtrl', function ($scope, $timeout, eucaHandleError, eucaUnescapeJson) {
         $scope.isListenerNotComplete = true;
         $scope.hasDuplicatedListener = false;
+        $scope.hasDuplicatedFromPorts = false;
         $scope.listenerArray = []; 
         $scope.protocolList = []; 
         $scope.toProtocolList = []; 
@@ -18,6 +19,7 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
         $scope.isFromProtocolValid = false;
         $scope.classFromPortDiv = '';
         $scope.classToPortDiv = '';
+        $scope.classDuplicatedFromPortDiv = '';
         $scope.classDuplicatedListenerDiv = '';
         $scope.classNoListenerWarningDiv = '';
         $scope.elbListenerTextarea = undefined;
@@ -69,6 +71,7 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
                 $scope.checkAddListenerButtonCondition();
             });
             $scope.$watch('fromPort', function(){
+                $scope.checkForDuplicatedFromPorts();
                 $scope.checkAddListenerButtonCondition(); 
                 $scope.validateFromProtocol();
             });
@@ -87,6 +90,16 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
             });
             $scope.$watch('isListenerNotComplete', function () {
                 $scope.setAddListenerButtonClass();
+            });
+            $scope.$watch('hasDuplicatedFromPort', function () {
+                $scope.setAddListenerButtonClass(); 
+                $scope.classDuplicatedFromPortDiv = '';
+                // timeout is needed for the DOM update to complete
+                $timeout(function () {
+                    if ($scope.hasDuplicatedFromPort === true) {
+                        $scope.classDuplicatedFromPortDiv = 'error';
+                    }
+                });
             });
             $scope.$watch('hasDuplicatedListener', function () {
                 $scope.setAddListenerButtonClass(); 
@@ -119,7 +132,9 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
         };
         // In case of the duplicated listener, add the 'disabled' class to the button
         $scope.setAddListenerButtonClass = function () {
-            if( $scope.isListenerNotComplete === true || $scope.hasDuplicatedListener === true){
+            if ($scope.isListenerNotComplete === true ||
+                $scope.hasDuplicatedFromPort === true ||
+                $scope.hasDuplicatedListener === true) {
                 $scope.addListenerButtonClass = 'disabled';
             } else {
                 $scope.addListenerButtonClass = '';
@@ -129,6 +144,15 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
             $scope.fromProtocol = $scope.protocolList[0];
             $scope.toProtocol = $scope.protocolList[0];
             $scope.isFromProtocolValid = false;
+        };
+        $scope.checkForDuplicatedFromPorts = function () {
+            $scope.hasDuplicatedFromPort = false;
+            angular.forEach($scope.listenerArray, function (block) {
+                if (block.fromPort === $scope.fromPort) {
+                    $scope.hasDuplicatedFromPort = true;
+                }
+            });
+            return;
         };
         $scope.checkForDuplicatedListeners = function () {
             $scope.hasDuplicatedListener = false;
@@ -170,7 +194,9 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
             $scope.checkAddListenerButtonCondition(); 
             // timeout is needed for all DOM updates and validations to be complete
             $timeout(function () {
-                if ($scope.isListenerNotComplete === true || $scope.hasDuplicatedListener === true) {
+                if ($scope.isListenerNotComplete === true ||
+                    $scope.hasDuplicatedFromPort === true ||
+                    $scope.hasDuplicatedListener === true) {
                     return false;
                 }
                 // Add the listener 
@@ -190,6 +216,7 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
         $scope.cancelListener = function ($event) {
             $event.preventDefault();
             $scope.resetValues();
+            $scope.classDuplicatedFromPortDiv = '';
             $scope.classDuplicatedListenerDiv = '';
             $scope.classNoListenerWarningDiv = '';
             $scope.addListenerButtonClass = 'disabled';
