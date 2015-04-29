@@ -172,6 +172,13 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
                 $scope.classNoListenerWarningDiv = 'error';
             }
         };
+        $scope.cancelListener = function ($event) {
+            $event.preventDefault();
+            $scope.resetValues();
+            $scope.classDuplicatedListenerDiv = '';
+            $scope.classNoListenerWarningDiv = '';
+            $scope.addListenerButtonClass = 'disabled';
+        };
         $scope.syncListeners = function () {
             $scope.elbListenerTextarea.val(JSON.stringify($scope.listenerArray));
             $scope.resetValues();

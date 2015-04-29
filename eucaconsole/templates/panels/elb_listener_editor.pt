@@ -148,6 +148,18 @@
                 </div>
             </div>
         </div>
+        <div id="listener-error-div">
+            <div class="row controls-wrapper">
+                <div class="small-3 columns"></div>
+                <div class="small-9 columns field">
+                    <div ng-class="classDuplicatedListenerDiv">
+                        <small class="error" i18n:translate="">
+                            Selected port already in use by another listener. Please select an unused port.
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div ng-show="showSelectCertificateModalLink()">
             <div class="row controls-wrapper">
                 <div class="small-1 columns"></div>
@@ -176,18 +188,6 @@
                 </div>
             </div>
         </div>
-        <div id="listener-error-div">
-            <div class="row controls-wrapper">
-                <div class="small-3 columns"></div>
-                <div class="small-9 columns field">
-                    <div ng-class="classDuplicatedListenerDiv">
-                        <small class="error" i18n:translate="">
-                            You may not have duplicate load balancer ports defined.
-                        </small>
-                    </div>
-                </div>
-            </div>
-        </div>
         <div class="row controls-wrapper" id="add-listener-button-div">
             <div class="small-3 columns"></div>
             <div class="small-9 columns field">
@@ -195,9 +195,12 @@
                     ng-class="addListenerButtonClass" ng-click="addListener($event)">
                     Add Listener
                 </span>
+                <a href="#" id="button-cancel-listener" class="cancel-link" i18n:translate="" 
+                    ng-click="cancelListener($event)">Cancel</a>
             </div>
         </div>
         <div id="unsaved-listener-warn-modal" class="reveal-modal small" data-reveal="">
+            <h3></h3>
             <p>
                 <span i18n:translate="">
                     You must click the "Add Listener" button before you submit this for your listener to be included.

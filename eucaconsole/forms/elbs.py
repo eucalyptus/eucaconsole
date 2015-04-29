@@ -368,7 +368,7 @@ class CertificateForm(BaseSecureForm):
             for cert in certificates.list_server_certificates_result.server_certificate_metadata_list:
                 choices.append((cert.arn, cert.server_certificate_name))
         if len(choices) == 0:
-            choices.append(('None', _(u'No certs')))
+            choices.append(('None', _(u'')))
         return sorted(set(choices))
 
 
