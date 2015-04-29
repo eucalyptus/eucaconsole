@@ -270,7 +270,7 @@
                                     {{ listener.toProtocol.toUpperCase() }} ({{ listener.toPort }})
                                 </div>
                                 <div ng-show="listener.fromProtocol.toUpperCase() === 'HTTPS' || listener.fromProtocol.toUpperCase() === 'SSL'">
-                                    {{ certificateName }}
+                                    {{ listener.certificateName }}
                                 </div>
                             </div>
                         </div>
