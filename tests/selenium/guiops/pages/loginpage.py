@@ -12,7 +12,7 @@ class LoginPage(BasePage):
     _amazon_log_in_tab_xpath= "//dd[@id='aws-tab']/a"
 
     def __init__(self, tester):
-        self.tester=tester
+        self.tester = tester
 
     def login(self):
         self.tester.click_on_visible("XPATH", LoginPage._eucalyptus_log_in_tab_xpath)

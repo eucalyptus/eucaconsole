@@ -1,4 +1,4 @@
-from guitester.guitester import GuiTester
+from guitester import GuiTester
 
 
 class GuiEC2(GuiTester):

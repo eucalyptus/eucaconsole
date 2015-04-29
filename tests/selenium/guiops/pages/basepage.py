@@ -5,8 +5,6 @@ from selenium_api.selenium_api import SeleniumApi
 class BasePage(SeleniumApi):
 
 
-    _euca_logo_id="logo"
-    _euca_logo_bar_id="logobar"
     _user_dropdown_xpath= '//section[@id="user-dropdown-section"]/a/span'
     _user_help_link='//ul[@id="user-dropdown"]/li/a'
     _user_logout_id="logout"
@@ -31,18 +29,8 @@ class BasePage(SeleniumApi):
     _hamburger_menu_xpath='//nav[@ id="logobar"]/a/'
     _notification_id="notifications"
 
-
-
-    def assert_euca_logo(self):
-        self.tester.wait_for_visible("ID",self._euca_logo_id)
-
-    def assert_euca_logobar(self):
-        self.tester.wait_for_visible("ID",self._euca_logo_bar_id)
-
     def __init__(self, tester):
         self.tester = tester
-        self.assert_euca_logo()
-        self.assert_euca_logobar()
 
     def logout(self):
         self.tester.click_on_visible("XPATH",BasePage._user_dropdown_xpath)

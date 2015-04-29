@@ -20,7 +20,16 @@ class Dashboard(BasePage):
             self.tester.click_on_visible_by_css_selector(self._keypairs_icon_css)
 
         def click_create_keypair_link_from_dashboard(self):
+            """
+            Clicks create keypair link on Dashboard.
+            """
             self.tester.click_on_visible_by_css_selector(Dashboard._create_keypair_link_css)
+
+        def dashboard_click_keypair_tile(self,_keypairs_icon_css):
+            """
+            Clciks keypais tile on Dashboard.
+            """
+            self.tester.click_on_visible_by_css_selector(_keypairs_icon_css)
 
 
 
