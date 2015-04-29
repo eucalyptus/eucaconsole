@@ -278,27 +278,25 @@
                 </div>
                 <div class="section" ng-show="summaryDisplays[1]">
                     <div class="row">
-                        <label i18n:translate="">VPC Network</label>
+                        <label i18n:translate="">VPC network</label>
                         <div class="columns value">{{ vpcNetworkName }}</div>
                     </div>
-                    <div class="row" ng-show="vpcNetwork !== 'None'">
-                        <label i18n:translate="">Security Groups</label>
-                        <div class="columns value multi-row">
-                            <div ng-repeat="securityGroupName in securityGroupNames">{{ securityGroupName }}</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="section" ng-show="summaryDisplays[2]">
-                    <div class="row" ng-show="vpcNetwork === 'None'">
-                        <label i18n:translate="">Availability Zones</label>
+                    <div class="row" ng-show="summaryDisplays[2] &amp;&amp; vpcNetwork === 'None'">
+                        <label i18n:translate="">Availability zones</label>
                         <div class="columns value">
                             <div ng-repeat="zone in availabilityZones">{{ zone }}</div>
                         </div>
                     </div>
-                    <div class="row" ng-show="vpcNetwork !== 'None'">
-                        <label i18n:translate="">VPC Subnets</label>
+                    <div class="row" ng-show="summaryDisplays[2] &amp;&amp; vpcNetwork !== 'None'">
+                        <label i18n:translate="">VPC subnets</label>
                         <div class="columns value">
                             <div ng-repeat="vpcSubnetName in vpcSubnetNames">{{ vpcSubnetName }}</div>
+                        </div>
+                    </div>
+                    <div class="row" ng-show="vpcNetwork !== 'None'">
+                        <label i18n:translate="">Security groups</label>
+                        <div class="columns value multi-row">
+                            <div ng-repeat="securityGroupName in securityGroupNames">{{ securityGroupName }}</div>
                         </div>
                     </div>
                 </div>
@@ -316,10 +314,6 @@
                                 {{ getInstanceCount('SUBNET', vpcSubnet) }} instances in {{ vpcSubnet }}
                             </div>
                         </div>
-                    </div>
-                    <div class="row" ng-show="crossZoneEnabled === true">
-                        <label i18n:translate="">Cross Zone Load Balancing</label>
-                        <div class="columns value">{{ crossZoneEnabled }}</div>
                     </div>
                 </div>
                 <div class="section" ng-show="summaryDisplays[3]">
