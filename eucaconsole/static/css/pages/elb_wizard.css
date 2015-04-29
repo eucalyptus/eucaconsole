@@ -56,6 +56,8 @@ form .stack-label { margin-bottom: 0.25rem; }
 #elb-form .checkbox-with-helptext-icon label { margin-right: 0rem; }
 #elb-form .section-label { margin-top: 1.5rem; margin-bottom: 1rem; }
 #elb-form a.remove { color: #6a737b; }
+#elb-form #controls_name label { margin-bottom: 0.5rem; }
+#elb-form #elb-listener-security-field { padding-bottom: 0.8rem; }
 #elb-form #controls_securitygroup label { margin-top: 0.7rem; margin-bottom: 0.7rem; }
 #elb-form #securitygroup_chosen .chosen-choices { height: 37px !important; }
 
@@ -71,4 +73,4 @@ table.elb-listener-table th.center { text-align: center; }
 
 table.instance-selector-table { width: 100%; }
 
-.summary .multi-row { margin-bottom: 0.25rem; }
+.summary .multi-row { margin-bottom: 0.25rem; padding-bottom: 0.2rem; }

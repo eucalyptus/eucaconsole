@@ -62,6 +62,14 @@ form {
     a.remove {
         color: $euca-grey;
     }
+    #controls_name {
+        label {
+            margin-bottom: 0.5rem;
+        }
+    }
+    #elb-listener-security-field {
+        padding-bottom: 0.8rem;
+    }
     #controls_securitygroup {
         label {
             margin-top: 0.7rem;
@@ -105,5 +113,6 @@ table.instance-selector-table {
 .summary {
     .multi-row {
         margin-bottom: 0.25rem;
+        padding-bottom: 0.2rem;
     }
 }

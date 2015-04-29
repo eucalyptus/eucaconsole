@@ -160,7 +160,7 @@
                 </div>
             </div>
         </div>
-        <div ng-show="showSelectCertificateModalLink()">
+        <div id="elb-listener-security-field" ng-show="showSelectCertificateModalLink()">
             <div class="row controls-wrapper">
                 <div class="small-1 columns"></div>
                 <div class="small-11 columns"><label class="left sub-section-label">Security</label></div>
