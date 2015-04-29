@@ -73,7 +73,7 @@ class ELBsFiltersForm(BaseSecureForm):
 
 class CreateELBForm(BaseSecureForm):
     """Create Elastic Load Balancer form"""
-    name_error_msg = _(u'Name must be between 1 and 255 characters long, and must not contain space')
+    name_error_msg = _(u'Name must be between 1 and 255 characters long, and must not contain spaces')
     name = wtforms.TextField(
         label=_(u'Name'),
         validators=[validators.InputRequired(message=name_error_msg)],
@@ -321,7 +321,7 @@ class ELBInstancesFiltersForm(BaseSecureForm):
 class CertificateForm(BaseSecureForm):
     """Create SSL Certificate form"""
     certificate_name_error_msg = _(u'Name must be between 1 and 255 characters long, \
-        and must not contain space')
+        and must not contain spaces')
     certificate_name = wtforms.TextField(
         label=_(u'Certificate name'),
         validators=[validators.InputRequired(message=certificate_name_error_msg)],
@@ -375,7 +375,7 @@ class CertificateForm(BaseSecureForm):
 class BackendCertificateForm(BaseSecureForm):
     """Create SSL Certificate form"""
     backend_certificate_name_error_msg = _(u'Name must be between 1 and 255 characters long, \
-        and must not contain space')
+        and must not contain spaces')
     backend_certificate_name = wtforms.TextField(
         label=_(u'Certificate name'),
         validators=[validators.InputRequired(message=backend_certificate_name_error_msg)],

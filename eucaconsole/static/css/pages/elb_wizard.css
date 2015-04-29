@@ -55,6 +55,7 @@ form .stack-label { margin-bottom: 0.25rem; }
 #elb-form table { margin-left: auto; margin-right: auto; }
 #elb-form .checkbox-with-helptext-icon label { margin-right: 0rem; }
 #elb-form .section-label { margin-top: 1.5rem; margin-bottom: 1rem; }
+#elb-form a.remove { color: #6a737b; }
 
 #backend-certificate-form .item-list { margin-bottom: 6px; }
 #backend-certificate-form .item-list .item { color: #333; background-color: #e6e7e8; margin-right: 8px; }
@@ -63,7 +64,7 @@ form .stack-label { margin-bottom: 0.25rem; }
 
 table.elb-listener-table { width: 100%; }
 table.elb-listener-table tr.top-header { border-bottom: 0px; }
-table.elb-listener-table th.vertical-border-header { border-right-width: 1px; border-right-style: solid; border-right-color: #6a737b; }
+table.elb-listener-table th.vertical-border-header { border-collapse: collapse; border-right-width: 1px; border-right-style: solid; border-right-color: #ddd; }
 table.elb-listener-table th.center { text-align: center; }
 
 table.instance-selector-table { width: 100%; }
