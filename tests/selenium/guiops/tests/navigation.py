@@ -9,9 +9,14 @@ class Navigation_sequence(GuiTester):
 
     def navigation_test(self):
 
-        self.tester.login()
+        self.tester.verify_element_present("ID", "euca-login-button")
 
-        self.tester.logout()
+        #self.tester.login()
+
+        #self.tester.wait_for_element_not_present_by_id("boo")
+
+        #self.tester.logout()
+        self.tester.exit_browser()
 
 if __name__ == '__main__':
         tester = Navigation_sequence()
