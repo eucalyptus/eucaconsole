@@ -116,9 +116,7 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <div id="listener-error-div">
-            <div class="row controls-wrapper">
+            <div id="from-port-error-div" class="row controls-wrapper">
                 <div class="small-3 columns"></div>
                 <div class="small-9 columns field">
                     <div ng-class="classDuplicatedFromPortDiv">
@@ -159,9 +157,7 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <div id="listener-error-div">
-            <div class="row controls-wrapper">
+            <div id="listener-error-div" class="row controls-wrapper">
                 <div class="small-3 columns"></div>
                 <div class="small-9 columns field">
                     <div ng-class="classDuplicatedListenerDiv">
