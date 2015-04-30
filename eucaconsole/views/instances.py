@@ -546,7 +546,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
         self.reboot_form = RebootInstanceForm(self.request, formdata=self.request.params or None)
         self.terminate_form = TerminateInstanceForm(self.request, formdata=self.request.params or None)
         self.associate_ip_form = AssociateIpToInstanceForm(
-            self.request, conn=self.conn, formdata=self.request.params or None)
+            self.request, conn=self.conn, instance=self.instance, formdata=self.request.params or None)
         self.disassociate_ip_form = DisassociateIpFromInstanceForm(self.request, formdata=self.request.params or None)
         self.tagged_obj = self.instance
         self.location = self.get_redirect_location()
