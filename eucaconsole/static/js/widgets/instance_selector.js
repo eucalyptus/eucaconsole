@@ -80,6 +80,9 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                 $scope.$watch('vpcSubnets', function () {
                     $scope.$emit('eventUpdateVPCSubnets', $scope.vpcSubnets);
                 }, true);
+                $scope.$watch('vpcNetwork', function () {
+                    $scope.updateInstanceList();
+                });
                 $scope.$on('eventQuerySearch', function ($event, query) {
                     $scope.searchQueryURL = '';
                     if (query.length > 0) {
@@ -171,7 +174,19 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                 });
             };
             $scope.updateInstanceList = function () {
-                angular.copy($scope.allInstanceList, $scope.instanceList);
+                var tempInstanceArray = [];
+                angular.forEach($scope.allInstanceList, function (instance) {
+                    if ($scope.vpcNetwork === 'None') {
+                        if (instance.vpc_name === '') {
+                            tempInstanceArray.push(instance);
+                        }
+                    } else {
+                        if (instance.vpc_name !== '') {
+                            tempInstanceArray.push(instance);
+                        }
+                    }
+                });
+                angular.copy(tempInstanceArray, $scope.instanceList);
                 $scope.updateSelectedInstanceList();
                 // Update the instance checkboxes to ensure the checked values are matched
                 // timeout is needed for the table's display update to complete
