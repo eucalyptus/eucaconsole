@@ -43,28 +43,22 @@
 #wizard-tabs dd a b { font-size: 0.85rem; }
 #wizard-tabs dd span b { font-size: 0.85rem; }
 
-form .section-label { margin-top: 4px; margin-bottom: 6px; color: #03405f; }
-form .sub-section-label { color: black; }
-form .stack-label { margin-bottom: 0.25rem; }
-
 #elb-form input.text-input { width: 300px; }
 #elb-form input[type="number"] { width: 100px; }
 #elb-form select.ip-protocol { width: 100px; }
 #elb-form select.ping-delay { width: 120px; }
 #elb-form select.ping-threshold { width: 100px; }
 #elb-form table { margin-left: auto; margin-right: auto; }
-#elb-form .section-label { margin-top: 1.5rem; margin-bottom: 1rem; }
+#elb-form .stack-label { margin-bottom: 0.5rem; }
+#elb-form .section-label { margin-top: 1.5rem; margin-bottom: 1rem; color: #03405f; }
+#elb-form .sub-section-label { color: black; }
 #elb-form .section-label-with-helptext-icon { margin-bottom: 0.5rem; }
 #elb-form .checkbox-with-helptext-icon label { margin-right: 0rem; }
 #elb-form a.remove { color: #6a737b; }
-#elb-form #controls_name label { margin-bottom: 0.5rem; }
-#elb-form #elb-listener-security-field { padding-bottom: 0.8rem; }
-#elb-form #controls_securitygroup label { margin-top: 0.7rem; margin-bottom: 0.7rem; }
+#elb-form #elb-listener-security-field { margin-bottom: 1.5rem; }
 
-#backend-certificate-form .item-list { margin-bottom: 6px; }
-#backend-certificate-form .item-list .item { color: #333; background-color: #e6e7e8; margin-right: 8px; }
-#backend-certificate-form .item-list .item a { color: white; }
-#backend-certificate-form .description { color: #03405f; }
+#select-certificate-modal .section-label { margin-top: 1.5rem; margin-bottom: 1rem; color: #03405f; }
+#select-certificate-modal #backend-certificates-display { margin-bottom: 1rem; }
 
 table.elb-listener-table { width: 100%; }
 table.elb-listener-table tr.top-header { border-bottom: 0px; }
@@ -73,4 +67,4 @@ table.elb-listener-table th.center { text-align: center; }
 
 table.instance-selector-table { width: 100%; }
 
-.summary .multi-row { margin-bottom: 0.25rem; padding-bottom: 0.2rem; }
+.summary .multi-row div { padding-bottom: 0.25rem; }

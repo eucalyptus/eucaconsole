@@ -28,7 +28,7 @@
             </p>
             <form method="post" data-abide="abide" id="backend-certificate-form">
                 ${structure:backend_certificate_form['csrf_token']}
-                <div>
+                <div id="backend-certificates-display">
                     <span class="section-label" i18n:translate="">Back-end certificates</span>
                     <div class="item-list">
                         <span class="label radius secondary item" ng-repeat="cert in backendCertificateArray">
@@ -41,7 +41,8 @@
                     </div>
                 </div>
                 <div>
-                    <span class="section-label" i18n:translate="">Add a certificate:</span>
+                    <span class="section-label" ng-show="backendCertificateArray.length === 0" i18n:translate="">Add a certificate:</span>
+                    <span class="section-label" ng-show="backendCertificateArray.length > 0" i18n:translate="">Add another certificate:</span>
                     <div>
                         ${panel('form_field', field=backend_certificate_form['backend_certificate_name'], ng_attrs={'model': 'backendCertificateName'}, leftcol_width=3, rightcol_width=9, **name_html_attrs)}
                         <div class="row inline controls-wrapper" ng-show="classDuplicatedBackendCertificateDiv === 'error'">

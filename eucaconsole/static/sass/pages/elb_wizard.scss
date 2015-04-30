@@ -18,20 +18,6 @@
     }
 }
 
-form {
-    .section-label {
-        margin-top: 4px;
-        margin-bottom: 6px;
-        color: $euca-darkblue;
-    }
-    .sub-section-label {
-        color: black;
-    }
-    .stack-label {
-        margin-bottom: 0.25rem;
-    }
-}
-
 #elb-form {
     input.text-input {
         width: 300px;
@@ -52,9 +38,16 @@ form {
         margin-left: auto;
         margin-right: auto;
     }
+    .stack-label {
+        margin-bottom: 0.5rem;
+    }
     .section-label {
         margin-top: 1.5rem;
         margin-bottom: 1rem;
+        color: $euca-darkblue;
+    }
+    .sub-section-label {
+        color: black;
     }
     .section-label-with-helptext-icon {
         margin-bottom: 0.5rem;
@@ -65,26 +58,19 @@ form {
     a.remove {
         color: $euca-grey;
     }
-    #controls_name {
-        label {
-            margin-bottom: 0.5rem;
-        }
-    }
     #elb-listener-security-field {
-        padding-bottom: 0.8rem;
-    }
-    #controls_securitygroup {
-        label {
-            margin-top: 0.7rem;
-            margin-bottom: 0.7rem;
-        }
+        margin-bottom: 1.5rem;
     }
 }
 
-#backend-certificate-form {
-    @include item-list;
-    .description {
+#select-certificate-modal {
+    .section-label {
+        margin-top: 1.5rem;
+        margin-bottom: 1rem;
         color: $euca-darkblue;
+    }
+    #backend-certificates-display {
+        margin-bottom: 1rem;
     }
 }
 
@@ -109,8 +95,7 @@ table.instance-selector-table {
 }
 
 .summary {
-    .multi-row {
-        margin-bottom: 0.25rem;
-        padding-bottom: 0.2rem;
+    .multi-row div {
+        padding-bottom: 0.25rem;
     }
 }
