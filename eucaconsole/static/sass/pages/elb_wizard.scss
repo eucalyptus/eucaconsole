@@ -52,12 +52,15 @@ form {
         margin-left: auto;
         margin-right: auto;
     }
-    .checkbox-with-helptext-icon label {
-        margin-right: 0rem;
-    }
     .section-label {
         margin-top: 1.5rem;
         margin-bottom: 1rem;
+    }
+    .section-label-with-helptext-icon {
+        margin-bottom: 0.5rem;
+    }
+    .checkbox-with-helptext-icon label {
+        margin-right: 0rem;
     }
     a.remove {
         color: $euca-grey;
