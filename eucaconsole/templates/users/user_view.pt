@@ -149,8 +149,9 @@
                             <div class="columns section">
                                 <h6 i18n:translate="">Permissions</h6>
                                 <div>
-                                    <strong i18n:translate="">User policies</strong>
-                                    <p/>
+                                    <p>
+                                        <strong i18n:translate="">User policies</strong>
+                                    </p>
                                     <p i18n:translate="">Best practice: Only define user policies when group policies do not meet your needs.</p>
                                     ${panel('policy_list', policies_url=policies_url, policy_url=policy_url, remove_url=remove_url, update_url=update_url, add_url=add_url)}
                                 </div>

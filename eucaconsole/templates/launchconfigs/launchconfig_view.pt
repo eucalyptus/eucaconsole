@@ -89,7 +89,7 @@
                         <div class="row controls-wrapper readonly">
                             <div class="large-2 small-3 columns"><label i18n:translate="">Image</label></div>
                             <div class="large-10 small-9 columns value">
-                                <a href="${request.route_path('image_view', id=image.id)}">${image.name or image.id}</a>
+                                <a href="${request.route_path('image_view', id=image.id)}" ng-non-bindable="">${image.name or image.id}</a>
                             </div>
                         </div>
                         <div class="row controls-wrapper readonly" tal:condition="image.id != image.name">
