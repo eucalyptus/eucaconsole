@@ -112,6 +112,7 @@ angular.module('EucaConsoleWizard').controller('ELBWizardCtrl', function ($scope
         $scope.initChosenSelectors(); 
     };
     $scope.initChosenSelectors = function () {
+        $('#vpc_network').chosen({'width': '100%', search_contains: true});
         $('#vpc_subnet').chosen({'width': '100%', search_contains: true});
         $('#securitygroup').chosen({'width': '100%', search_contains: true});
         $('#zone').chosen({'width': '100%', search_contains: true});
