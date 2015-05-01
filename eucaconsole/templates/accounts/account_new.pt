@@ -29,7 +29,7 @@
                 <strong i18n:translate="">Create new account</strong>
             </metal:block>
         </h3>
-        <div class="large-7 columns">
+        <div class="large-12 columns">
             <div class="panel">
                 <!--! TODO: Move account name error_msg to view and mark for i18n -->
                 <div tal:define="html_attrs {'pattern': '^[a-z0-9]{1}[a-z0-9\.\@\-]{1,61}[a-z0-9]{1}$',
@@ -38,7 +38,7 @@
                         ${structure:account_form['csrf_token']}
                         <div class="section columns">
                             <div class="">
-                                ${panel('form_field', field=account_form.account_name, leftcol_width=1, rightcol_width=11, autofocus='', ng_attrs={'model': 'accountName'}, **html_attrs)}
+                                ${panel('form_field', field=account_form.account_name, leftcol_width=1, rightcol_width=11, leftcol_width_large=1, rightcol_width_large=11, autofocus='', ng_attrs={'model': 'accountName'}, **html_attrs)}
                             </div>
                         </div>
                         <hr />
@@ -80,7 +80,7 @@
                 </div>
             </div>
         </div>
-        <div class="large-5 columns">
+        <div class="large-12 columns">
             <metal:block metal:use-macro="layout.global_macros['help_expando']" />
             <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                 <!--! Help goes here -->

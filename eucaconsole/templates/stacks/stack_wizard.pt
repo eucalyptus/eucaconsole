@@ -145,7 +145,15 @@
                             </div>
                         </div>
                     </div>
+                    <div class="clearfix">&nbsp;</div>
                 </form>
+                <div class="">
+                    <metal:block metal:use-macro="layout.global_macros['help_expando']" />
+                    <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
+                        <!-- HELP CONTENT -->
+                        <div id="help-html-console_create_stack" ng-include="'${layout.help_path('console_create_stack.html')}'"></div> 
+                    </div>
+                </div>
             </div>
         </div>
         <div class="large-4 columns" ng-cloak="">
@@ -188,15 +196,6 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-            <div class="">
-                <metal:block metal:use-macro="layout.global_macros['help_expando']" />
-                <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
-                    <!-- HELP CONTENT -->
-                    <!--
-                    <div id="help-html-console_create_stack" ng-include="'${layout.help_path('console_create_stack.html')}'"></div> 
-                    -->
                 </div>
             </div>
         </div>

@@ -6,6 +6,10 @@ form input.name {
     margin-right: 6px;
 }
 
+#userdatalabel {
+    right: 0px;
+}
+
 #controls_userdata_file {
     position: relative;
     top: -0.5rem;
@@ -18,5 +22,13 @@ form input.name {
 #bdmapping-editor {
     .storage-label {
         display: none;
+    }
+}
+
+// big hack to give this label a little more space and avoid wrapping
+@media screen and (min-width: $topbar-breakpoint) {
+    #controls_ramdisk_id div label {
+        width: 145px;
+        left: 8px;
     }
 }

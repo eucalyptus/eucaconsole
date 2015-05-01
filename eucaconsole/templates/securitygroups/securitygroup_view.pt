@@ -30,7 +30,7 @@
                 <strong i18n:translate="">Create new security group</strong>
             </metal:block>
         </h3>
-        <div class="large-7 columns"
+        <div class="large-12 columns"
                 tal:define="form_action request.route_path('securitygroup_update', id=security_group.id)
                         if security_group else request.route_path('securitygroup_create')">
             <div class="panel ${'has-actions' if security_group else ''}"
@@ -54,22 +54,22 @@
                         ${panel('form_field', field=securitygroup_form['name'], ng_attrs={'model': 'securityGroupName'}, leftcol_width=3, rightcol_width=9, autofocus='', **{'pattern': layout.ascii_without_slashes_pattern})}
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="security_group">
-                        <div class="small-3 columns"><label i18n:translate="">Name</label></div>
-                        <div class="small-9 columns field inline breakword">${security_group_name}</div>
+                        <div class="large-2 small-3 columns"><label i18n:translate="">Name</label></div>
+                        <div class="large-10 small-9 columns field inline breakword">${security_group_name}</div>
                     </div>
                     <div tal:condition="not security_group" tal:omit-tag="">
                         ${panel('form_field', field=securitygroup_form['description'], ng_attrs={'model': 'securityGroupDescription'}, leftcol_width=3, rightcol_width=9, **{'pattern': securitygroup_form.sgroup_description_pattern})}
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="security_group and security_group.description">
-                        <div class="small-3 columns"><label i18n:translate="">Description</label></div>
-                        <div class="small-9 columns field inline">${layout.escape_braces(security_group.description)}</div>
+                        <div class="large-2 small-3 columns"><label i18n:translate="">Description</label></div>
+                        <div class="large-10 small-9 columns field inline">${layout.escape_braces(security_group.description)}</div>
                     </div>
                     <div tal:condition="not security_group and is_vpc_supported" tal:omit-tag="">
                         ${panel('form_field', field=securitygroup_form['securitygroup_vpc_network'], ng_attrs={'model': 'securityGroupVPC'}, leftcol_width=3, rightcol_width=9)}
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="security_group and is_vpc_supported">
-                        <div class="small-3 columns"><label i18n:translate="">VPC</label></div>
-                        <div class="small-9 columns field inline" ng-init="securityGroupVPC='${security_group.vpc_id}'">${security_group_vpc}</div>
+                        <div class="large-2 small-3 columns"><label i18n:translate="">VPC</label></div>
+                        <div class="large-10 small-9 columns field inline" ng-init="securityGroupVPC='${security_group.vpc_id}'">${security_group_vpc}</div>
                     </div>
                     <hr />
                     ${panel('securitygroup_rules', rules=sgroup_rules, rules_egress=sgroup_rules_egress)}
@@ -95,7 +95,7 @@
                 </form>
             </div>
         </div>
-        <div class="large-5 columns">
+        <div class="large-12 columns">
             <metal:block metal:use-macro="layout.global_macros['help_expando']" />
             <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                 <div tal:condition="not security_group">
