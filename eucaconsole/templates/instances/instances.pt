@@ -4,7 +4,7 @@
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/instances.css')}" />
 </head>
 
-<div metal:fill-slot="main_content" ng-app="InstancesPage" ng-controller="InstancesCtrl" ng-init="initController()">
+<div metal:fill-slot="main_content" ng-app="InstancesPage" ng-controller="InstancesCtrl" ng-init="initController('${controller_options_json}')">
     <div class="row" id="contentwrap" ng-controller="ItemsCtrl"
          ng-init="initController('instances', '${initial_sort_key}', '${json_items_endpoint}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">

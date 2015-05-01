@@ -40,23 +40,23 @@
                         <div class="content active" id="step1"
                             tal:define="html_attrs_val {'pattern': '^[^\/\\\]{1,255}$'};
                                         vpc_subnet_html_attrs {'data-placeholder': vpc_subnet_placeholder_text};">
-                            ${panel('form_field', field=create_form['name'], ng_attrs={'model': 'scalingGroupName'}, **html_attrs_val)}
+                            ${panel('form_field', field=create_form['name'], leftcol_width_large=3, rightcol_width_large=9, ng_attrs={'model': 'scalingGroupName'}, **html_attrs_val)}
                             <div tal:condition="launch_config_param">
                                 <input type="hidden" id="hidden_launch_config_input" name="launch_config" value="${launch_config_param}" />
                                 <div class="row controls-wrapper">
-                                    <div class="small-4 columns">
+                                    <div class="large-3 small-4 columns">
                                         <label class="right" i18n:translate="">Launch configuration</label>
                                     </div>
-                                    <div class="small-8 columns launchconfig-value">${launch_config_param}</div>
+                                    <div class="large-9 small-8 columns launchconfig-value">${launch_config_param}</div>
                                 </div>
                             </div>
                             <div tal:condition="not launch_config_param">
-                                ${panel('form_field', field=create_form['launch_config'], ng_attrs={'model': 'launchConfig'})}
+                                ${panel('form_field', field=create_form['launch_config'], leftcol_width_large=3, rightcol_width_large=9, ng_attrs={'model': 'launchConfig'})}
                             </div>
                             <div tal:condition="is_vpc_supported">
-                                ${panel('form_field', field=create_form['vpc_network'], ng_attrs={'model': 'vpcNetwork'}, leftcol_width=4, rightcol_width=8)}
+                                ${panel('form_field', field=create_form['vpc_network'], leftcol_width_large=3, rightcol_width_large=9, ng_attrs={'model': 'vpcNetwork'}, leftcol_width=4, rightcol_width=8)}
                                 <div ng-show="vpcNetwork != '' &amp;&amp; vpcNetwork != 'None'">
-                                    ${panel('form_field', field=create_form['vpc_subnet'], leftcol_width=4, rightcol_width=8, ng_attrs={'model': 'vpcSubnets', 'options': 'k as v for (k, v) in vpcSubnetChoices'}, **vpc_subnet_html_attrs)}
+                                    ${panel('form_field', field=create_form['vpc_subnet'], leftcol_width=4, rightcol_width=8, leftcol_width_large=3, rightcol_width_large=9, ng_attrs={'model': 'vpcSubnets', 'options': 'k as v for (k, v) in vpcSubnetChoices'}, **vpc_subnet_html_attrs)}
                                     <span id="vpc_subnet_empty_option" class="hide" i18n:translate="">No subnets found</span>
                                 </div>
                             </div>
@@ -66,9 +66,9 @@
                                     <h6 i18n:translate="">Capacity</h6>
                                 </div>
                                 <div class="medium-10 columns">
-                                    ${panel('form_field', field=create_form['min_size'], maxlength=2, ng_attrs={'model': 'minSize', 'change': 'handleSizeChange()'})}
-                                    ${panel('form_field', field=create_form['desired_capacity'], maxlength=2, ng_attrs={'model': 'desiredCapacity', 'change': 'handleSizeChange()'})}
-                                    ${panel('form_field', field=create_form['max_size'], maxlength=2, ng_attrs={'model': 'maxSize', 'change': 'handleSizeChange()'})}
+                                    ${panel('form_field', field=create_form['min_size'], leftcol_width_large=6, rightcol_width_large=6, maxlength=2, ng_attrs={'model': 'minSize', 'change': 'handleSizeChange()'})}
+                                    ${panel('form_field', field=create_form['desired_capacity'], leftcol_width_large=6, rightcol_width_large=6, maxlength=2, ng_attrs={'model': 'desiredCapacity', 'change': 'handleSizeChange()'})}
+                                    ${panel('form_field', field=create_form['max_size'], leftcol_width_large=6, rightcol_width_large=6, maxlength=2, ng_attrs={'model': 'maxSize', 'change': 'handleSizeChange()'})}
                                 </div>
                             </div>
                             <hr />
@@ -82,8 +82,8 @@
                             </div>
                             <div>&nbsp;</div>
                             <div class="row">
-                                <div class="small-4 columns">&nbsp;</div>
-                                <div class="small-8 columns field inline">
+                                <div class="large-3 small-4 columns">&nbsp;</div>
+                                <div class="large-9 small-8 columns field inline">
                                     <a id="visit-step-2" class="button small round" ng-click="visitNextStep(2, $event)" ng-disabled="isNotValid">
                                         <span i18n:translate="">Next</span>
                                         <a class="cancel-link" href="${request.route_path('scalinggroups')}" i18n:translate="">Cancel</a>
@@ -94,12 +94,12 @@
                         <!--! Step 2: Membership tab content -->
                         <div class="content" id="step2" tal:define="avail_zones_attrs {'data-placeholder': avail_zones_placeholder_text};
                                             load_balancers_html_attrs {'data-placeholder': elb_placeholder_text}">
-                            ${panel('form_field', field=create_form['health_check_type'], ng_attrs={'model': 'healthCheckType'})}
-                            ${panel('form_field', field=create_form['health_check_period'], ng_attrs={'model': 'healthCheckPeriod'}, step=30)}
+                            ${panel('form_field', field=create_form['health_check_type'], leftcol_width_large=3, rightcol_width_large=9, ng_attrs={'model': 'healthCheckType'})}
+                            ${panel('form_field', field=create_form['health_check_period'], leftcol_width_large=3, rightcol_width_large=9, ng_attrs={'model': 'healthCheckPeriod'}, step=30)}
                             <div ng-show="vpcNetwork == '' || vpcNetwork == 'None'">
-                                ${panel('form_field', field=create_form['availability_zones'], ng_attrs={'model': 'availZones'}, **avail_zones_attrs)}
+                                ${panel('form_field', field=create_form['availability_zones'], leftcol_width_large=3, rightcol_width_large=9, ng_attrs={'model': 'availZones'}, **avail_zones_attrs)}
                             </div>
-                            ${panel('form_field', field=create_form['load_balancers'], ng_attrs={'model': 'loadBalancers'}, **load_balancers_html_attrs)}
+                            ${panel('form_field', field=create_form['load_balancers'], leftcol_width_large=3, rightcol_width_large=9, ng_attrs={'model': 'loadBalancers'}, **load_balancers_html_attrs)}
                             <div>&nbsp;</div>
                             <hr />
                             <div>
@@ -109,8 +109,8 @@
                                 </label>
                             </div>
                             <div class="row">
-                                <div class="small-4 columns">&nbsp;</div>
-                                <div class="small-8 columns field inline">
+                                <div class="large-3 small-4 columns">&nbsp;</div>
+                                <div class="large-9 small-8 columns field inline">
                                     <button type="submit" class="button" id="create-scalinggroup-btn" ng-disabled="isNotValid">
                                         <span i18n:translate="">Create Scaling Group</span>
                                     </button>
@@ -121,6 +121,13 @@
                     </div>
                     <div class="clearfix">&nbsp;</div>
                 </form>
+                <div class="">
+                    <metal:block metal:use-macro="layout.global_macros['help_expando']" />
+                    <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
+                        <!-- HELP CONTENT -->
+                        <div id="help-html-console_create_scaling_group" ng-include="'${layout.help_path('console_create_scaling_group.html')}'"></div> 
+                    </div>
+                </div>
             </div>
         </div>
         <div class="large-4 columns" ng-cloak="">
@@ -171,13 +178,6 @@
                             <span ng-repeat="zone in availZones">{{ zone }}<span ng-show="!$last">, </span></span>
                         </div>
                     </div>
-                </div>
-            </div>
-            <div class="">
-                <metal:block metal:use-macro="layout.global_macros['help_expando']" />
-                <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
-                    <!-- HELP CONTENT -->
-                    <div id="help-html-console_create_scaling_group" ng-include="'${layout.help_path('console_create_scaling_group.html')}'"></div> 
                 </div>
             </div>
         </div>

@@ -40,6 +40,7 @@ form {
     @include item-list;
     .add-label {
         margin-bottom: 6px;
+        color: $euca-darkblue;
     }
     .tabs-content {
         margin-top: 0.5rem;
@@ -49,6 +50,10 @@ form {
 .duplicated-rule-error{
     color: red;
     padding: 10px 10px;
+}
+
+.add-button {
+    padding-top: 2rem;
 }
 
 div {

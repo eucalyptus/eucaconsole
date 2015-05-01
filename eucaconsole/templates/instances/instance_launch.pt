@@ -62,22 +62,22 @@
                             <p class="description" i18n:translate="">
                                 Specify the number, name(s), size, availability zone, and tags.
                             </p>
-                            ${panel('form_field', field=launch_form['number'], leftcol_width=3, rightcol_width=9, min=1, max=10, maxlength=2, ng_attrs={'model': 'instanceNumber'}, pattern=layout.integer_gt_zero_pattern)}
+                            ${panel('form_field', field=launch_form['number'], leftcol_width=3, rightcol_width=9, leftcol_width_large=3, rightcol_width_large=9, min=1, max=10, maxlength=2, ng_attrs={'model': 'instanceNumber'}, pattern=layout.integer_gt_zero_pattern)}
                             <div class="row controls-wrapper" ng-cloak="">
-                                <div class="small-3 columns">
+                                <div class="large-3 small-3 columns">
                                     <label>
                                         <span i18n:translate="">Name</span><span ng-show="instanceNumber > 1">s</span>
                                     </label>
                                 </div>
-                                <div class="small-9 columns field inline">
+                                <div class="large-9 small-9 columns field inline">
                                     <span ng-repeat="name in buildNumberList()">
                                         <input class="name" placeholder="instance{{ $index + 1 }}"
                                                name="name_{{ $index }}" ng-model="instanceNames[$index]" />
                                     </span>
                                 </div>
                             </div>
-                            ${panel('form_field', field=launch_form['instance_type'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'instanceType'})}
-                            ${panel('form_field', field=launch_form['zone'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'instanceZone'})}
+                            ${panel('form_field', field=launch_form['instance_type'], leftcol_width=3, rightcol_width=9, leftcol_width_large=3, rightcol_width_large=9, ng_attrs={'model': 'instanceType'})}
+                            ${panel('form_field', field=launch_form['zone'], leftcol_width=3, rightcol_width=9, leftcol_width_large=3, rightcol_width_large=9, ng_attrs={'model': 'instanceZone'})}
                             <hr />
                             ${panel('tag_editor', show_name_tag=False, leftcol_width=3, rightcol_width=9)}
                             <hr />
@@ -123,35 +123,35 @@
                                 <p class="description" i18n:translate="">Specify key pair and security group.</p>
                             </div>
                             <div tal:condition="is_vpc_supported">
-                                ${panel('form_field', field=launch_form['vpc_network'], ng_attrs={'model': 'instanceVPC'}, leftcol_width=4, rightcol_width=8)}
+                                ${panel('form_field', field=launch_form['vpc_network'], ng_attrs={'model': 'instanceVPC'}, leftcol_width=4, rightcol_width=8, leftcol_width_large=3, rightcol_width_large=9)}
                                 <div ng-show="instanceVPC != 'None'">
                                     ${panel('form_field', field=launch_form['vpc_subnet'], leftcol_width=4, rightcol_width=8, ng_attrs={'model': 'subnetVPC', 'options': 'k as v for (k, v) in vpcSubnetChoices'})}
                                     <span id="hidden_vpc_subnet_empty_option" class="hide" i18n:translate="">No subnets found</span>
                                     ${panel('form_field', field=launch_form['associate_public_ip_address'], leftcol_width=4, rightcol_width=8)}
                                 </div>
                             </div>
-                            ${panel('form_field', field=launch_form['keypair'], leftcol_width=4, rightcol_width=8, ng_attrs={'model': 'keyPair', 'options': 'k as v for (k, v) in keyPairChoices'})}
+                            ${panel('form_field', field=launch_form['keypair'], leftcol_width=4, rightcol_width=8, leftcol_width_large=3, rightcol_width_large=9, ng_attrs={'model': 'keyPair', 'options': 'k as v for (k, v) in keyPairChoices'})}
                             <div class="row">
-                                <div class="small-8 columns right" id="create-keypair-link">
+                                <div class="large-9 small-8 columns right" id="create-keypair-link">
                                     <span class="or" i18n:translate="">Or: </span>
                                     <a ng-click="showCreateKeypairModal()" i18n:translate="">Create key pair</a>
                                 </div>
                             </div>
-                            ${panel('form_field', field=launch_form['securitygroup'], leftcol_width=4, rightcol_width=8, ng_attrs={'model': 'securityGroups', 'options': 'k as v for (k, v) in securityGroupChoices'}, **security_group_attrs)}
+                            ${panel('form_field', field=launch_form['securitygroup'], leftcol_width=4, rightcol_width=8, leftcol_width_large=3, rightcol_width_large=9, ng_attrs={'model': 'securityGroups', 'options': 'k as v for (k, v) in securityGroupChoices'}, **security_group_attrs)}
                             <div class="row">
-                                <div class="small-8 columns right" id="create-securitygroup-link">
+                                <div class="large-9 small-8 columns right" id="create-securitygroup-link">
                                     <span class="or" i18n:translate="">Or: </span>
                                     <a data-reveal-id="create-securitygroup-modal" i18n:translate="">Create security group</a>
                                 </div>
                             </div>
-                            ${panel('securitygroup_rules_preview', leftcol_width=4, rightcol_width=8)}
+                            ${panel('securitygroup_rules_preview', leftcol_width=4, rightcol_width=8, leftcol_width_large=3, rightcol_width_large=9)}
                             <hr />
                             <p class="description" i18n:translate="">Specify an IAM role if you would like to give this instance special access privileges.</p>
                             <div class="row">
-                                <div class="small-4 columns">
+                                <div class="large-3 small-4 columns">
                                     <label class="right" i18n:translate="">Role</label>
                                 </div>
-                                <div class="small-8 columns field">
+                                <div class="large-9 small-8 columns field">
                                     <select id="role" ng-options="k as v for (k, v) in roleList" ng-model="role" name="role"></select>
                                 </div>
                             </div>
@@ -163,8 +163,8 @@
                                 </label>
                             </div>
                             <div class="row">
-                                <div class="small-4 columns">&nbsp;</div>
-                                <div class="small-8 columns field inline">
+                                <div class="large-3 small-4 columns">&nbsp;</div>
+                                <div class="large-9 small-8 columns field inline">
                                     <button type="submit" class="button" ng-click="saveOptions()" id="launch-instance-btn-step3" ng-disabled="isNotValid">
                                         <span i18n:translate="">Launch Instance<span ng-show="instanceNumber > 1">s</span></span>
                                     </button>
@@ -179,21 +179,21 @@
                         </div>
                         <!--! Step 4: Advanced tab content -->
                         <div class="content" id="step4">
-                            ${panel('form_field', field=launch_form['kernel_id'])}
-                            ${panel('form_field', field=launch_form['ramdisk_id'])}
-                            <div class="small-8 columns right">
+                            ${panel('form_field', field=launch_form['kernel_id'], leftcol_width_large=3, rightcol_width_large=9)}
+                            ${panel('form_field', field=launch_form['ramdisk_id'], leftcol_width_large=3, rightcol_width_large=9)}
+                            <div class="large-9 small-8 columns right">
                                 ${structure:launch_form.monitoring_enabled(**{'ng-model': 'monitoringEnabled'})}
                                 ${launch_form['monitoring_enabled'].label}
                             </div>
-                            <div class="small-8 columns right" tal:condition="layout.cloud_type == 'euca' and not is_vpc_supported">
+                            <div class="large-9 small-8 columns right" tal:condition="layout.cloud_type == 'euca' and not is_vpc_supported">
                                 ${structure:launch_form.private_addressing(**{'ng-model': 'privateAddressing'})}
                                 ${launch_form['private_addressing'].label}
                             </div>
                             <hr/>
                             ${panel('bdmapping_editor', image=image, snapshot_choices=snapshot_choices)}
                             <div class="row">
-                                <div class="small-4 columns">&nbsp;</div>
-                                <div class="small-8 columns field inline">
+                                <div class="large-3 small-4 columns">&nbsp;</div>
+                                <div class="large-9 small-8 columns field inline">
                                     <button type="submit" class="button" ng-click="saveOptions()" id="launch-instance-btn-step4" ng-disabled="isNotValid">
                                         <span i18n:translate="">Launch Instance</span><span ng-show="instanceNumber > 1">s</span>
                                     </button>
@@ -205,6 +205,13 @@
                     </div>
                     <div class="clearfix">&nbsp;</div>
                 </form>
+                <div class="">
+                    <metal:block metal:use-macro="layout.global_macros['help_expando']" />
+                    <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
+                        <!-- HELP CONTENT -->
+                        <div id="help-html-console_create_instances" ng-include="'${layout.help_path('console_create_instances.html')}'"></div> 
+                    </div>
+                </div>
             </div>
         </div>
         <div class="large-4 columns" ng-cloak="">
@@ -294,13 +301,6 @@
                             <i class="fi-check"></i> Uses private addressing
                         </div>
                     </div>
-                </div>
-            </div>
-            <div class="">
-                <metal:block metal:use-macro="layout.global_macros['help_expando']" />
-                <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
-                    <!-- HELP CONTENT -->
-                    <div id="help-html-console_create_instances" ng-include="'${layout.help_path('console_create_instances.html')}'"></div> 
                 </div>
             </div>
         </div>

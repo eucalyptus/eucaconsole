@@ -21,7 +21,7 @@
             <strong i18n:translate="">Details for stack:</strong>
             <em>${stack_name}</em>
         </h3>
-        <div class="large-10 columns">
+        <div class="large-12 columns">
             <dl class="tabs">
                 <dd class="active"><a href="#general-tab" ng-click="clickTab($event, 'general-tab')" i18n:translate="">General</a></dd>
                 <dd><a href="#template-tab" ng-click="clickTab($event, 'template-tab')" i18n:translate="">Template</a></dd>
@@ -234,15 +234,13 @@
                 </div>
             </div>
         </div>
-        <div class="large-2 columns">
+        <div class="large-12 columns">
             <metal:block metal:use-macro="layout.global_macros['help_expando']" />
             <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                 <!--! Help goes here -->
-                <!--
                 <div id="help-html-console_edit_launch_config"
-                    ng-include="'${layout.help_path('console_stack_view.html')}'">
+                    ng-include="'${layout.help_path('console_stack_detail_general.html')}'">
                 </div> 
-                -->
             </div>
         </div>
         <!--! Modal dialogs -->

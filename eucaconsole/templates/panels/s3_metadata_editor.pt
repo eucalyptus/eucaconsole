@@ -25,13 +25,13 @@
         <div>&nbsp;</div>
         <div class="metadataentry">
             <div>
-                ${panel('form_field', field=metadata_form['metadata_key'], leftcol_width=2, rightcol_width=10, ng_attrs={'model': 'newMetadataKey'})}
+                ${panel('form_field', field=metadata_form['metadata_key'], leftcol_width=2, rightcol_width=10, leftcol_width_large=1, rightcol_width_large=11, ng_attrs={'model': 'newMetadataKey'})}
             </div>
             <div ng-show="newMetadataKey != 'Content-Type'">
-                ${panel('form_field', field=metadata_form['metadata_value'], leftcol_width=2, rightcol_width=10, ng_attrs={'model': 'newMetadataValue'})}
+                ${panel('form_field', field=metadata_form['metadata_value'], leftcol_width=2, rightcol_width=10, leftcol_width_large=1, rightcol_width_large=11, ng_attrs={'model': 'newMetadataValue'})}
             </div>
             <div ng-show="newMetadataKey == 'Content-Type'">
-                ${panel('form_field', field=metadata_form['metadata_content_type'], leftcol_width=2, rightcol_width=10, ng_attrs={'model': 'newMetadataContentType'})}
+                ${panel('form_field', field=metadata_form['metadata_content_type'], leftcol_width=2, rightcol_width=10, leftcol_width_large=1, rightcol_width_large=11, ng_attrs={'model': 'newMetadataContentType'})}
             </div>
             <div class="row">
                 <div class="small-10 columns right">

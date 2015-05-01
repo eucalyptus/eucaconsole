@@ -30,7 +30,7 @@
                 <strong i18n:translate="">Create new volume</strong>
             </metal:block>
         </h3>
-        <div class="large-8 columns"
+        <div class="large-12 columns"
              tal:define="form_action request.route_path('volume_update', id=volume.id)
                          if volume else request.route_path('volume_create');
                          volume_tags volume.tags if volume else {};
@@ -61,44 +61,47 @@
                     ${structure:volume_form['csrf_token']}
                     <h6 i18n:translate="">Volume</h6>
                     <div class="row controls-wrapper readonly" ng-cloak="" tal:condition="volume">
-                        <div class="small-4 columns"><label i18n:translate="" id="volume-status-label">Status</label></div>
-                        <div class="small-8 columns value" ng-cloak="">
+                        <div class="large-2 small-4 columns"><label i18n:translate="" id="volume-status-label">Status</label></div>
+                        <div class="large-10 small-8 columns value" ng-cloak="">
                             <span class="label radius status {{ volumeAttachStatus || volumeStatus || 'deleted' }}">
                                 {{ volumeAttachStatus || volumeStatus || 'deleted' }}
                             </span>
                             &nbsp;<span class="busy" ng-show="isUpdating"></span>
                         </div>
                     </div>
-                    <div tal:define="autofocus_attr {'autofocus': 'autofocus'} if not volume else {};">
-                        ${panel('form_field', field=volume_form.name, pattern=layout.tag_pattern_value, **autofocus_attr)}
+                    <div tal:condition="not volume">
+                        ${panel('form_field', field=volume_form.name, leftcol_width_large=3, rightcol_width_large=9, pattern=layout.tag_pattern_value, **{'autofocus': 'autofocus'})}
+                    </div>
+                    <div tal:condition="volume">
+                        ${panel('form_field', field=volume_form.name, pattern=layout.tag_pattern_value)}
                     </div>
                     <div class="row controls-wrapper readonly" ng-show="attach_instance">
-                        <div class="small-4 columns"><label i18n:translate="">Attached to instance</label></div>
-                        <div class="small-8 columns value">
+                        <div class="large-2 small-4 columns"><label i18n:translate="">Attached to instance</label></div>
+                        <div class="large-10 small-8 columns value">
                             <a href="${request.route_path('instance_view', id=instance_id)}">${instance_name}</a>
                         </div>
                     </div>
                     <div class="row controls-wrapper readonly" ng-show="device_name">
-                        <div class="small-4 columns"><label i18n:translate="">Attached as device</label></div>
-                        <div class="small-8 columns value"> {{device_name}} </div>
+                        <div class="large-2 small-4 columns"><label i18n:translate="">Attached as device</label></div>
+                        <div class="large-10 small-8 columns value"> {{device_name}} </div>
                     </div>
                     <div class="row controls-wrapper readonly" ng-show="attach_time">
-                        <div class="small-4 columns"><label i18n:translate="">Attachment time</label></div>
-                        <div class="small-8 columns value">{{attach_time | date:'${layout.angular_date_format}'}}</div>
+                        <div class="large-2 small-4 columns"><label i18n:translate="">Attachment time</label></div>
+                        <div class="large-10 small-8 columns value">{{attach_time | date:'${layout.angular_date_format}'}}</div>
                     </div>
                     <div tal:condition="not volume" tal:omit-tag="">
-                        ${panel('form_field', field=volume_form['snapshot_id'], ng_attrs={'model': 'snapshotId', 'change': 'populateVolumeSize($event)'}, **html_attrs)}
+                        ${panel('form_field', field=volume_form['snapshot_id'], leftcol_width_large=3, rightcol_width_large=9, ng_attrs={'model': 'snapshotId', 'change': 'populateVolumeSize($event)'}, **html_attrs)}
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="volume and volume.snapshot_id">
-                        <div class="small-4 columns"><label i18n:translate="">Created from snapshot</label></div>
-                        <div class="small-8 columns field inline">${volume.snapshot_id}</div>
+                        <div class="large-2 small-4 columns"><label i18n:translate="">Created from snapshot</label></div>
+                        <div class="large-10 small-8 columns field inline">${volume.snapshot_id}</div>
                     </div>
                     <div tal:condition="not volume" tal:omit-tag="">
-                        ${panel('form_field', field=volume_form['size'], min=1, ng_attrs={'model': 'volumeSize'}, pattern='^\d+$', **html_attrs)}
+                        ${panel('form_field', field=volume_form['size'], min=1, leftcol_width_large=3, rightcol_width_large=9, ng_attrs={'model': 'volumeSize'}, pattern='^\d+$', **html_attrs)}
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="not volume">
-                        <div class="small-4 columns"></div>
-                        <div class="small-8 columns field error hide" id="volume_size_error"> 
+                        <div class="large-2 small-4 columns"></div>
+                        <div class="large-10 small-8 columns field error hide" id="volume_size_error"> 
                             <small class="error">
                                 <span i18n:translate="">
                                     Volume size must be greater than or equal to {{ snapshotSize }}
@@ -107,21 +110,22 @@
                         </div>
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="volume">
-                        <div class="small-4 columns"><label i18n:translate="">Volume size</label></div>
-                        <div class="small-8 columns field inline">${volume.size} GB</div>
+                        <div class="large-2 small-4 columns"><label i18n:translate="">Volume size</label></div>
+                        <div class="large-10 small-8 columns field inline">${volume.size} GB</div>
                     </div>
-                    <div tal:condition="not volume" tal:omit-tag="">
-                        <p><span i18n:translate="">You should create your volume in the same availability zone as the instance with which you want to use it.</span>
-                        </p>
-                        ${panel('form_field', field=volume_form['zone'], **html_attrs)}
-                    </div>
-                    <div class="row controls-wrapper readonly" tal:condition="volume">
-                        <div class="small-4 columns"><label i18n:translate="">Availability zone</label></div>
-                        <div class="small-8 columns field inline">${volume.zone}</div>
+                    <div class="row" tal:condition="not volume" tal:omit-tag="">
+                        <div>&nbsp;</div>
+                        <span i18n:translate="">You should create your volume in the same availability zone as the instance with which you want to use it.</span>
+                        <div>&nbsp;</div>
+                        ${panel('form_field', field=volume_form['zone'], leftcol_width_large=3, rightcol_width_large=9, **html_attrs)}
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="volume">
-                        <div class="small-4 columns"><label i18n:translate="">Creation time</label></div>
-                        <div class="small-8 columns value" ng-cloak="">
+                        <div class="large-2 small-4 columns"><label i18n:translate="">Availability zone</label></div>
+                        <div class="large-10 small-8 columns field inline">${volume.zone}</div>
+                    </div>
+                    <div class="row controls-wrapper readonly" tal:condition="volume">
+                        <div class="large-2 small-4 columns"><label i18n:translate="">Creation time</label></div>
+                        <div class="large-10 small-8 columns value" ng-cloak="">
                             {{ '${volume.create_time}' | date: '${layout.angular_date_format}' }}
                         </div>
                     </div>
@@ -147,8 +151,7 @@
                 </form>
             </div>
         </div>
-        <div class="large-4 columns">
-            <div class="help-padding" tal:condition="volume">&nbsp;</div>
+        <div class="large-12 columns">
             <metal:block metal:use-macro="layout.global_macros['help_expando']" />
             <div class="help-content" tal:condition="not volume" ng-show="isHelpExpanded" ng-cloak="">
                 <div id="help-html-console_create_volume"

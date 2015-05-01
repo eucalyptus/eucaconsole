@@ -16,9 +16,11 @@ form label.protocol { margin-bottom: 1.5rem; }
 #rules-editor .item-list { margin-bottom: 6px; }
 #rules-editor .item-list .item { color: #333; background-color: #e6e7e8; margin-right: 8px; }
 #rules-editor .item-list .item a { color: white; }
-#rules-editor .add-label { margin-bottom: 6px; }
+#rules-editor .add-label { margin-bottom: 6px; color: #03405f; }
 #rules-editor .tabs-content { margin-top: 0.5rem; }
 
 .duplicated-rule-error { color: red; padding: 10px 10px; }
+
+.add-button { padding-top: 2rem; }
 
 div small.error-msg { color: darkred; font-weight: bold; font-size: 0.75rem; }

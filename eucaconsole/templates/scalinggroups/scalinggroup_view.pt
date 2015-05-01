@@ -19,7 +19,7 @@
             <strong i18n:translate="">Details for scaling group:</strong>
             <em>${scaling_group_name}</em>
         </h3>
-        <div class="large-7 columns">
+        <div class="large-12 columns">
             <dl class="tabs" id="scalinggroup-subnav">
                 <dd class="active"><a href="#" i18n:translate="">General</a></dd>
                 <dd><a href="${request.route_path('scalinggroup_policies', id=scaling_group.name)}" i18n:translate="">Scaling Policies</a></dd>
@@ -43,35 +43,39 @@
                     ${structure:edit_form['csrf_token']}
                     <div id="capacity-section">
                         <h6 i18n:translate="">Capacity</h6>
-                        <div class="medium-10 columns right">
-                            ${panel('form_field', field=edit_form['min_size'], maxlength=2, ng_attrs={'model': 'minSize', 'change': 'handleSizeChange()'})}
-                            ${panel('form_field', field=edit_form['desired_capacity'], maxlength=2, ng_attrs={'model': 'desiredCapacity', 'change': 'handleSizeChange()'})}
-                            ${panel('form_field', field=edit_form['max_size'], maxlength=2, ng_attrs={'model': 'maxSize', 'change': 'handleSizeChange()'})}
+                        <div class="row">
+                            <div class="medium-1 columns">
+                            </div>
+                            <div class="medium-10 columns">
+                                ${panel('form_field', field=edit_form['min_size'], maxlength=2, ng_attrs={'model': 'minSize', 'change': 'handleSizeChange()'}, leftcol_width_large=4, rightcol_width_large=8)}
+                                ${panel('form_field', field=edit_form['desired_capacity'], maxlength=2, ng_attrs={'model': 'desiredCapacity', 'change': 'handleSizeChange()'}, leftcol_width_large=4, rightcol_width_large=8)}
+                                ${panel('form_field', field=edit_form['max_size'], maxlength=2, ng_attrs={'model': 'maxSize', 'change': 'handleSizeChange()'}, leftcol_width_large=4, rightcol_width_large=8)}
+                            </div>
                         </div>
                     </div>
                     <div>&nbsp;</div>
-                    ${panel('form_field', field=edit_form['termination_policies'], ng_attrs={'model': 'terminationPoliciesUpdate'}, **term_policies_html_attrs)}
+                    ${panel('form_field', field=edit_form['termination_policies'], leftcol_width_large=3, rightcol_width_large=9, ng_attrs={'model': 'terminationPoliciesUpdate'}, **term_policies_html_attrs)}
                     <hr />
                     <h6 i18n:translate="">Details</h6>
-                    ${panel('form_field', field=edit_form['launch_config'])}
+                    ${panel('form_field', field=edit_form['launch_config'], leftcol_width_large=3, rightcol_width_large=9)}
                     <div class="row controls-wrapper readonly" tal:condition="vpc_network">
-                        <div class="small-4 columns">
+                        <div class="large-3 small-4 columns">
                             <label class="right" i18n:translate="">VPC network</label>&nbsp;
                         </div>
-                        <div class="small-8 columns value">${vpc_network}</div>
+                        <div class="large-9 small-8 columns value">${vpc_network}</div>
                     </div>
                     <div tal:condition="vpc_network">
-                        ${panel('form_field', field=edit_form['vpc_subnet'], ng_attrs={'model': 'vpcSubnets'}, **vpc_subnet_html_attrs)}
+                        ${panel('form_field', field=edit_form['vpc_subnet'], leftcol_width_large=3, rightcol_width_large=9, ng_attrs={'model': 'vpcSubnets'}, **vpc_subnet_html_attrs)}
                     </div>
                     <div tal:condition="not vpc_network">
                         <input type="hidden" name="vpc_subnet" value="None" />
-                        ${panel('form_field', field=edit_form['availability_zones'], **avail_zone_html_attrs)}
+                        ${panel('form_field', field=edit_form['availability_zones'], leftcol_width_large=3, rightcol_width_large=9, **avail_zone_html_attrs)}
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="vpc_network">
-                        <div class="small-4 columns">
+                        <div class="large-3 small-4 columns">
                             <label class="right" i18n:translate="">Availability zone(s)</label>&nbsp;
                         </div>
-                        <div class="small-8 columns">
+                        <div class="large-9 small-8 columns">
                             <div tal:repeat="az scaling_group.availability_zones" class="value" ng-non-bindable="">
                                 ${az}<br/>
                             </div>
@@ -80,20 +84,20 @@
                         </div>
                     </div>
                     <div class="row controls-wrapper" tal:condition="scaling_group.load_balancers">
-                        <div class="small-4 columns">
+                        <div class="large-3 small-4 columns">
                             <label class="right" i18n:translate="">Load balancers</label>
                         </div>
-                        <div class="small-8 columns">
+                        <div class="large-9 small-8 columns">
                             <div tal:repeat="elb scaling_group.load_balancers" class="value" ng-non-bindable="">
                                 ${elb}<br/>
                             </div>
                         </div>
                     </div>
-                    ${panel('form_field', field=edit_form['default_cooldown'], step='30')}
+                    ${panel('form_field', field=edit_form['default_cooldown'], leftcol_width_large=3, rightcol_width_large=9, step='30')}
                     <hr />
                     <h6 i18n:translate="">Health Check</h6>
-                    ${panel('form_field', field=edit_form['health_check_type'])}
-                    ${panel('form_field', field=edit_form['health_check_period'], step='30')}
+                    ${panel('form_field', field=edit_form['health_check_type'], leftcol_width_large=3, rightcol_width_large=9)}
+                    ${panel('form_field', field=edit_form['health_check_period'], step='30', leftcol_width_large=3, rightcol_width_large=9)}
                     <hr />
                     ${panel('autoscale_tag_editor', tags=scaling_group.tags)}
                     <hr />
@@ -107,8 +111,7 @@
                 </form>
             </div>
         </div>
-        <div class="large-5 columns">
-            <div class="help-padding">&nbsp;</div>
+        <div class="large-12 columns">
             <metal:block metal:use-macro="layout.global_macros['help_expando']" />
             <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                  <!--! Help goes here -->
