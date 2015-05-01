@@ -1697,6 +1697,8 @@ textarea.console-output { width: 100%; min-height: 30rem; background-color: blac
 
 textarea.policy-area { width: 100%; min-height: 30rem; font-family: Courier, "courier new", monospace; font-weight: bold; }
 
+.policy-row-item { vertical-align: middle; padding: 0.25rem; }
+
 .expando i { color: #8cc63e; }
 .expando .title { font-size: 1.1rem; }
 .expando .title a { color: #03405f; }
@@ -1717,10 +1719,12 @@ textarea.policy-area { width: 100%; min-height: 30rem; font-family: Courier, "co
 
 /* ----------------------------------------- Block device mapping (BDM) editor
 ----------------------------------------- */
+#bdmapping-editor .bdmapping-table { width: 100%; }
 #bdmapping-editor th { padding-left: 9px; }
 #bdmapping-editor .storage-label { text-align: left; }
 #bdmapping-editor #new-blockdevice-entry label { text-align: left; }
 #bdmapping-editor input.number { width: 2rem; }
+#bdmapping-editor .delete-on-terminate { text-align: center; }
 
 /* ----------------------------------------- Help content
 ----------------------------------------- */

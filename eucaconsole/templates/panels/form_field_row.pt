@@ -2,14 +2,14 @@
 <!--! Form field row -->
 <div class="row ${'inline' if inline else 'block'} controls-wrapper" id="controls_${field.name}">
     <div tal:condition="not:reverse" tal:omit-tag="">
-        <div class="small-${leftcol_width} columns" tal:condition="leftcol_width">
+        <div class="large-${leftcol_width_large} small-${leftcol_width} columns" tal:condition="leftcol_width">
             <label class="${'right' if inline else 'left'}">
                 ${field.label.text}&nbsp;<span tal:condition="field.flags.required" class="req">*</span>
                 <span tal:condition="getattr(field, 'label_help_text', None)" class="helptext-icon"
                     data-tooltip="" title="${field.label_help_text}">?</span>
             </label>
         </div>
-        <div class="small-${rightcol_width} columns field">
+        <div class="large-${rightcol_width_large} small-${rightcol_width} columns field">
             ${structure:field(**html_attrs)}
             <small class="error" tal:condition="error_msg">${error_msg}</small>
             <div tal:condition="field.errors" class="server-validation">
@@ -33,7 +33,7 @@
             </div>
         </div>
         <div tal:condition="not: checkbox" tal:omit-tag="">
-            <div class="columns small-${leftcol_width} reverse">
+            <div class="columns large-${leftcol_width_large} small-${leftcol_width} reverse">
                 ${structure:field(**html_attrs)}
                 <small class="error" tal:condition="error_msg">${error_msg}</small>
             </div>

@@ -470,6 +470,11 @@ textarea.policy-area {
     font-weight: bold;
 }
 
+.policy-row-item {
+    vertical-align: middle;
+    padding: 0.25rem;
+}
+
 .expando {
     i {
         color: $euca-green;
@@ -525,6 +530,9 @@ textarea.policy-area {
 ----------------------------------------- */
 
 #bdmapping-editor {
+    .bdmapping-table {
+        width: 100%;
+    }
     th {
         padding-left: 9px;
     }
@@ -538,6 +546,9 @@ textarea.policy-area {
     }
     input.number {
         width: 2rem;
+    }
+    .delete-on-terminate {
+        text-align: center;
     }
 }
 
