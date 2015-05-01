@@ -115,7 +115,7 @@
                                         <span i18n:translate="">
                                             Add availability zones
                                         </span>
-                                        <span class="helptext-icon" data-tooltip="" title="${create_form.add_availability_zones_help_text}">?</span>
+                                        <span class="helptext-icon" data-tooltip="" title="${create_form.add_availability_zones_help_text}"></span>
                                     </span>
                                 </div>
                                 ${panel('form_field', field=create_form['zone'], leftcol_width=0, rightcol_width=12, ng_attrs={'model': 'availabilityZones', 'options': 'k as v for (k, v) in availabilityZoneChoices'}, **avail_zones_attrs)}
@@ -124,7 +124,7 @@
                                 ${structure:create_form.cross_zone_enabled(**{'ng-model': 'crossZoneEnabled'})}
                                 ${create_form['cross_zone_enabled'].label}
                                 <span class="helptext-icon" data-tooltip=""
-                                    title="${create_form.cross_zone_enabled.label_help_text}">?</span>
+                                    title="${create_form.cross_zone_enabled.label_help_text}"></span>
                             </div>
                             <div ng-cloak="true" ng-show="vpcNetwork !== 'None'">
                                 <div class="section-label-with-helptext-icon">
@@ -132,7 +132,7 @@
                                         <span i18n:translate="">
                                             Add VPC subnets
                                         </span>
-                                        <span class="helptext-icon" data-tooltip="" title="${create_form.add_vpc_subnets_help_text}">?</span>
+                                        <span class="helptext-icon" data-tooltip="" title="${create_form.add_vpc_subnets_help_text}"></span>
                                     </span>
                                 </div>
                                 ${panel('form_field', field=create_form['vpc_subnet'], leftcol_width=0, rightcol_width=12, ng_attrs={'model': 'vpcSubnets', 'options': 'k as v for (k, v) in vpcSubnetChoices'}, **vpc_subnets_attrs)}
@@ -145,7 +145,7 @@
                                         <span i18n:translate="">
                                             Add instances
                                         </span>
-                                        <span class="helptext-icon" data-tooltip="" title="${create_form.add_instances_help_text}">?</span>
+                                        <span class="helptext-icon" data-tooltip="" title="${create_form.add_instances_help_text}"></span>
                                     </span>
                                 </div>
                                 <div ng-app="MagicSearch">

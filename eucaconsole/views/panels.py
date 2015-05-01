@@ -116,6 +116,8 @@ def form_field_row(context, request, field=None, reverse=False, leftcol_width=4,
 
     if stack_label:
         leftcol_width = 0
+        leftcol_width_large=0
+        rightcol_width_large=12
 
     return dict(
         field=field, error_msg=error_msg, html_attrs=html_attrs, inline=inline, checkbox=checkbox,
