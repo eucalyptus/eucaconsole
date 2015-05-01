@@ -151,6 +151,8 @@ urls = [
     Route(name='elb_create', pattern='/elbs/create'),
     Route(name='elb_delete', pattern='/elbs/{id}/delete'),
     Route(name='elb_view', pattern='/elbs/{id}'),
+    # Certificate modal 
+    Route(name='certificate_create', pattern='/certificate/create'),
 
     # Volumes #####
     # Landing page

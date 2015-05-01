@@ -1,0 +1,43 @@
+<div id="instance_selector">
+    <div ng-cloak="true">
+        <table class="table instance-selector-table" ng-cloak="true">
+            <thead>
+                <tr>
+                    <th><input type="checkbox" id="instance-all-checkbox" value="_all" /></th>
+                    <th i18n:translate="">NAME (ID)</th>
+                    <th i18n:translate="">TAGS</th>
+                    <th i18n:translate="">AVAILABILITY ZONE</th>
+                    <th ng-if="isVPCSupported == true" i18n:translate="">VPC SUBNET</th>
+                    <th i18n:translate="">STATUS</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-cloak="true" ng-repeat="instance in instanceList track by instance.id">
+                    <td>
+                        <input type="checkbox" name="instances" id="instance-checkbox-{{ instance.id }}" value="{{ instance.id }}" />
+                    </td>
+                    <td><span id="instance-name-{{ instance.id }}" class="id breakword">{{ instance.name }}</span></td>
+                    <td><span class="">{{ instance.tags }}</span></td>
+                    <td><span class="">{{ instance.placement }}</span></td>
+                    <td ng-if="isVPCSupported == true">
+                        <span class="" ng-show="instance.vpc_name != ''">
+                            {{ instance.vpc_subnet_display }} | {{ instance.vpc_name }}
+                        </span>
+                    </td>
+                    <td class="status">
+                        <span class="label radius status {{ instance.status }}">{{ instance.status }}</span>
+                        <span class="busy" ng-show="instance.transitional">&nbsp;</span>
+                    </td>
+                </tr> 
+                <tr ng-cloak="true" ng-show="instanceList.length === 0">
+                    <td></td>
+                    <td><span class="">No matching instances</span></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

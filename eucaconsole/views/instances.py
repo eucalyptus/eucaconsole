@@ -131,12 +131,20 @@ class BaseInstanceView(BaseView):
         ip_addresses = self.conn.get_all_addresses(addresses=[ip_address]) if self.conn else []
         return ip_addresses[0] if ip_addresses else []
 
-    def get_vpc_subnet_display(self, subnet_id):
+    def get_vpc_subnet_display(self, subnet_id, vpc_subnet_list=None):
         if self.vpc_conn and subnet_id:
-            with boto_error_handler(self.request):
-                vpc_subnet = self.vpc_conn.get_all_subnets(subnet_ids=[subnet_id])
-                if vpc_subnet:
-                    return u"{0} ({1})".format(vpc_subnet[0].cidr_block, subnet_id)
+            cidr_block = ''
+            if vpc_subnet_list:
+                for vpc in vpc_subnet_list:
+                    if vpc.id == subnet_id:
+                        cidr_block = vpc.cidr_block 
+            else:
+                with boto_error_handler(self.request):
+                     vpc_subnet = self.vpc_conn.get_all_subnets(subnet_ids=[subnet_id])
+                     if vpc_subnet and vpc_subnet[0].cidr_block:
+                         cidr_block = vpc_subnet[0].cidr_block
+            if cidr_block:
+                return u"{0} ({1})".format(cidr_block, subnet_id)
         return ''
 
 
@@ -336,13 +344,13 @@ class InstancesView(LandingPageView, BaseInstanceView):
         self.request.session.flash(msg, queue=Notification.ERROR)
         return HTTPFound(location=self.location)
 
-
-class InstancesJsonView(LandingPageView):
+class InstancesJsonView(LandingPageView, BaseInstanceView):
     def __init__(self, request):
         super(InstancesJsonView, self).__init__(request)
         self.conn = self.get_connection()
         self.vpc_conn = self.get_connection(conn_type='vpc')
         self.vpcs = self.get_all_vpcs()
+        self.vpc_subnets = self.vpc_conn.get_all_subnets()
         self.keypairs = self.get_all_keypairs()
         self.security_groups = self.get_all_security_groups()
 
@@ -411,6 +419,10 @@ class InstancesJsonView(LandingPageView):
                 key_name=instance.key_name,
                 exists_key=exists_key,
                 vpc_name=instance.vpc_name,
+                subnet_id=instance.subnet_id if instance.subnet_id else None,
+                vpc_subnet_display=
+                    self.get_vpc_subnet_display(instance.subnet_id, vpc_subnet_list=self.vpc_subnets)
+                    if instance.subnet_id else None,
                 status=instance.state,
                 tags=TaggedItemView.get_tags_display(instance.tags),
                 transitional=is_transitional,
