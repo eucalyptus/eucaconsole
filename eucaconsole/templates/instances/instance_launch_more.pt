@@ -31,9 +31,9 @@
                     ${structure:launch_more_form['csrf_token']}
                     ${panel('form_field', field=launch_more_form['number'], min=1, maxlength=2, leftcol_width=8, rightcol_width=4, leftcol_width_large=4, rightcol_width_large=8, autofocus='', ng_attrs={'model': 'instanceNumber'}, pattern=layout.integer_gt_zero_pattern)}
                     <hr />
-                    <div class="row controls-wrapper" ng-cloak="">
+                    <div class="row controls-wrapper readonly" ng-cloak="">
                         <div class="large-2 small-4 columns">
-                            <label class="right" i18n:translate="">Name(s)</label>
+                            <label i18n:translate="">Name(s)</label>
                         </div>
                         <div class="large-10 small-8 columns field inline">
                             <input class="name" ng-repeat="name in buildNumberList(instanceNumber)"
@@ -100,6 +100,25 @@
                             </div>
                         </div>
                     </div>
+                    <span>&nbsp;</span>
+                    <div class="row controls-wrapper readonly">
+                        <div class="large-2 small-4 columns">
+                            <label>
+                                <span i18n:translate="">User data</span>
+                                <i class="helptext-icon" i18n:translate="title" title="User data file may not exceed 16 KB" data-tooltip=""></i>
+                            </label>
+                        </div>
+                        <div class="large-10 small-8 columns value">
+                            <input type="radio" id="inputtype" name="inputtype" value="text" ng-model="inputtype"/>
+                            <label class='userdatalabel' i18n:translate="">Enter text</label>
+                            <textarea id="userdata" name="userdata" ng-show="inputtype=='text'"></textarea>
+                            <br/>
+                            <input type="radio" id="inputtype" name="inputtype" value="file" ng-model="inputtype"/>
+                            <label class='userdatalabel' i18n:translate="">Upload file</label>
+                            <input id="userdata_file" type="file" ng-model="userDataFile" ng-disabled="isNotStopped" name="userdata_file" disabled="disabled" ng-show="inputtype=='file'"/><span id="userdatatype"></span>
+                            
+                        </div>
+                    </div>
                     <hr />
                     <div class="expando" id="advanced-section" ng-cloak="">
                         <h6 class="title" >
@@ -110,25 +129,6 @@
                             </a>
                         </h6>
                         <div class="content" ng-show="expanded">
-                            <div class="row controls-wrapper readonly">
-                                <div class="large-2 small-4 columns">
-                                    <label i18n:translate="">User data
-                                        <span title="User data file may not exceed 16 KB" data-tooltip="">
-                                            <i class="helptext-icon"></i>
-                                        </span>
-                                    </label>
-                                </div>
-                                <div class="large-10 small-8 columns value">
-                                    <input type="radio" id="inputtype" name="inputtype" value="text" ng-model="inputtype"/>
-                                    <label id='userdatalabel' i18n:translate="">Enter text</label>
-                                    <textarea id="userdata" name="userdata" ng-show="inputtype=='text'"></textarea>
-                                    <br/>
-                                    <input type="radio" id="inputtype" name="inputtype" value="file" ng-model="inputtype"/>
-                                    <label id='userdatalabel' i18n:translate="">Upload file</label>
-                                    <input id="userdata_file" type="file" ng-model="userDataFile" ng-disabled="isNotStopped" name="userdata_file" disabled="disabled" ng-show="inputtype=='file'"/><span id="userdatatype"></span>
-                                    
-                                </div>
-                            </div>
                             ${panel('form_field', field=launch_more_form['kernel_id'])}
                             ${panel('form_field', field=launch_more_form['ramdisk_id'])}
                             <div class="row">

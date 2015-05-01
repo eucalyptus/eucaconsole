@@ -81,6 +81,22 @@
                             <hr />
                             ${panel('tag_editor', show_name_tag=False, leftcol_width=3, rightcol_width=9)}
                             <hr />
+                            <div class="row controls-wrapper readonly">
+                                <div class="columns">
+                                    <h6 i18n:translate="">User data</h6>
+                                </div>
+                                <div class="small-12 columns value">
+                                    <input type="radio" id="inputtype" name="inputtype" value="text" ng-model="inputtype"/>
+                                    <label class='userdatalabel' i18n:translate="">Enter text</label>
+                                    <textarea id="userdata" name="userdata" ng-model="userData" ng-show="inputtype=='text'"></textarea>
+                                    <br/>
+                                    <input type="radio" id="inputtype" name="inputtype" value="file" ng-model="inputtype"/>
+                                    <label class='userdatalabel' i18n:translate="">Upload file</label>
+                                    <input id="userdata_file" type="file" ng-model="userDataFile" ng-disabled="isNotStopped" name="userdata_file" disabled="disabled" ng-show="inputtype=='file'"/><span id="userdatatype"></span>
+                                    
+                                </div>
+                            </div>
+                            <hr />
                             <div>
                                 <label>
                                     <span class="req">*</span>
@@ -163,28 +179,6 @@
                         </div>
                         <!--! Step 4: Advanced tab content -->
                         <div class="content" id="step4">
-                            <p class="description" i18n:translate="">
-                                User data and other advanced options (optional).
-                            </p>
-                            <div class="row controls-wrapper readonly">
-                                <div class="large-3 small-4 columns">
-                                    <label i18n:translate="">User data
-                                        <span title="User data file may not exceed 16 KB" data-tooltip="">
-                                            <i class="helptext-icon"></i>
-                                        </span>
-                                    </label>
-                                </div>
-                                <div class="large-9 small-8 columns value">
-                                    <input type="radio" id="inputtype" name="inputtype" value="text" ng-model="inputtype"/>
-                                    <label id='userdatalabel' i18n:translate="">Enter text</label>
-                                    <textarea id="userdata" name="userdata" ng-show="inputtype=='text'"></textarea>
-                                    <br/>
-                                    <input type="radio" id="inputtype" name="inputtype" value="file" ng-model="inputtype"/>
-                                    <label id='userdatalabel' i18n:translate="">Upload file</label>
-                                    <input id="userdata_file" type="file" ng-model="userDataFile" ng-disabled="isNotStopped" name="userdata_file" disabled="disabled" ng-show="inputtype=='file'"/><span id="userdatatype"></span>
-                                    
-                                </div>
-                            </div>
                             ${panel('form_field', field=launch_form['kernel_id'], leftcol_width_large=3, rightcol_width_large=9)}
                             ${panel('form_field', field=launch_form['ramdisk_id'], leftcol_width_large=3, rightcol_width_large=9)}
                             <div class="large-9 small-8 columns right">
@@ -226,33 +220,33 @@
                 <h5 i18n:translate="" class="title">Summary</h5>
                 <div class="section step1 hide">
                     <div class="row">
-                        <label i18n:translate="">Image:</label>
+                        <label i18n:translate="">Image</label>
                         <div class="columns value">{{ imageName }}</div>
                     </div>
                     <div class="row">
-                        <label i18n:translate="">Platform:</label>
+                        <label i18n:translate="">Platform</label>
                         <div class="columns value">{{ imagePlatform }}</div>
                     </div>
                     <div class="row">
-                        <label i18n:translate="">Root device:</label>
+                        <label i18n:translate="">Root device</label>
                         <div class="columns value">{{ imageRootDeviceType }}</div>
                     </div>
                 </div>
                 <div class="section step2 ${'hide' if not image else ''}">
                     <div class="row">
-                        <label i18n:translate="">Size:</label>
+                        <label i18n:translate="">Size</label>
                         <div class="columns value">{{ instanceType }}</div>
                     </div>
                     <div class="row">
-                        <label i18n:translate="">Number:</label>
+                        <label i18n:translate="">Number</label>
                         <div class="columns value">{{ instanceNumber }}</div>
                     </div>
                     <div class="row">
-                        <label i18n:translate="">Zone:</label>
+                        <label i18n:translate="">Zone</label>
                         <div class="columns value">{{ instanceZone || 'no preference' }}</div>
                     </div>
                     <div class="row">
-                        <label i18n:translate="">Names:</label>
+                        <label i18n:translate="">Names</label>
                         <div class="columns value">
                             <span ng-repeat="instanceName in instanceNames">
                                 {{ instanceName }}<span ng-show="!$last">, </span>
@@ -260,42 +254,43 @@
                         </div>
                     </div>
                     <div class="row">
-                        <label i18n:translate="">Tags:</label>
+                        <label i18n:translate="">Tags</label>
                         <div class="columns value" id="tag-preview">
                             <div ng-repeat="(name, value) in tagsObject">{{ name }}={{ value }}</div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="columns value" ng-show="userData || userDataFile">
+                            <br/>
+                            <i class="fi-check"></i> User data added
                         </div>
                     </div>
                 </div>
                 <div class="section step3 hide">
                     <div class="row" ng-show="instanceVPC != ''">
-                        <label i18n:translate="">Network:</label>
+                        <label i18n:translate="">Network</label>
                         <div class="columns value">{{ instanceVPCName }}</div>
                     </div>
                     <div class="row" ng-show="instanceVPC != ''">
-                        <label i18n:translate="">Subnet:</label>
+                        <label i18n:translate="">Subnet</label>
                         <div class="columns value">{{ vpcSubnetChoices[subnetVPC] }}</div>
                     </div>
                     <div class="row">
-                        <label i18n:translate="">Key:</label>
+                        <label i18n:translate="">Key</label>
                         <div class="columns value">{{ keyPair }}</div>
                     </div>
                     <div class="row">
-                        <label i18n:translate="">Security group:</label>
+                        <label i18n:translate="">Security group</label>
                         <div class="columns value" ng-repeat="sgroup in securityGroups">
                             {{ securityGroupChoices[sgroup] }}
                         </div>
                     </div>
                     <div class="row" ng-show="role">
-                        <label i18n:translate="">Role:</label>
+                        <label i18n:translate="">Role</label>
                         <div class="columns value">{{ role }}</div>
                     </div>
                 </div>
                 <div class="section step4 hide">
-                    <div class="row">
-                        <div class="columns value" ng-show="userData || userDataFile">
-                            <i class="fi-check"></i> User data added
-                        </div>
-                    </div>
                     <div class="row">
                         <div class="columns value" ng-show="monitoringEnabled">
                             <i class="fi-check"></i> Monitoring enabled
