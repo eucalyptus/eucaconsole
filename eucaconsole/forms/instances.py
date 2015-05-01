@@ -454,15 +454,15 @@ class AssociateIpToInstanceForm(BaseSecureForm):
         choices = []
         if self.conn is not None:
             ipaddresses = self.conn.get_all_addresses()
-        for eip in ipaddresses:
-            if eip.instance_id is None or eip.instance_id == '':
-                if instance is None:
-                    choices.append((eip.public_ip, eip.public_ip))
-                if instance is not None:
-                    if eip.domain == 'standard' and instance.vpc_id is None:
+            for eip in ipaddresses:
+                if eip.instance_id is None or eip.instance_id == '':
+                    if instance is None:
                         choices.append((eip.public_ip, eip.public_ip))
-                    elif eip.domain == 'vpc' and instance.vpc_id is not None:
-                        choices.append((eip.public_ip, eip.public_ip))
+                    if instance is not None:
+                        if eip.domain == 'standard' and instance.vpc_id is None:
+                            choices.append((eip.public_ip, eip.public_ip))
+                        elif eip.domain == 'vpc' and instance.vpc_id is not None:
+                            choices.append((eip.public_ip, eip.public_ip))
         return sorted(set(choices))
 
 
