@@ -111,7 +111,7 @@
                                         vpc_subnets_attrs {'data-placeholder': vpc_subnets_placeholder_text};">
                             <div ng-cloak="true" ng-show="vpcNetwork === 'None'">
                                 <div class="section-label-with-helptext-icon">
-                                    <span class="section-label">
+                                    <label class="left stack-label">
                                         <span i18n:translate="">
                                             Add availability zones
                                         </span>
@@ -128,7 +128,7 @@
                             </div>
                             <div ng-cloak="true" ng-show="vpcNetwork !== 'None'">
                                 <div class="section-label-with-helptext-icon">
-                                    <span class="section-label">
+                                    <label class="left stack-label">
                                         <span i18n:translate="">
                                             Add VPC subnets
                                         </span>
@@ -141,7 +141,7 @@
                             <div>&nbsp;</div>
                             <div ng-cloak="true">
                                 <div class="section-label-with-helptext-icon">
-                                    <span class="section-label">
+                                    <label class="stack-label">
                                         <span i18n:translate="">
                                             Add instances
                                         </span>
