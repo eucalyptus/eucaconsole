@@ -15,7 +15,7 @@ class UICheckException(Exception):
         raise Exception(message)
 
 
-class SeleniumApi():
+class SeleniumApi_experimental():
     def __init__(self, driver):
         """
 
@@ -30,7 +30,6 @@ class SeleniumApi():
     timeout_to_determine_visibility_in_seconds = 5
     timeout_to_determine_if_clickable_in_seconds = 20
 
-
     def wait_for_element_present_by_id_experimental(self, element_id):
         """
         Waits for element to be present on the page for timeout_to_locate_element_in_seconds
@@ -43,10 +42,39 @@ class SeleniumApi():
        # element_present = self.driver.find_element(By.ID, element_id)
 
         wait = WebDriverWait(self.driver, self.timeout_to_locate_element_in_seconds, 1, (NoSuchElementException))
-
-        wait.until(self.driver.find_element(By.ID, element_id), message = "Found element")
+        def my_method():
+            try:
+                self.driver.find_element(By.ID, element_id)
+                return True
+            except NoSuchElementException, nse:
+                return False
+        wait.until(my_method, message="Found element")
 
         return 0
+
+
+    def wait_for_element_present_by_id_experimental(self, element_id):
+        """
+        Waits for element to be present on the page for timeout_to_locate_element_in_seconds
+        Checks for presence every 500 milliseconds
+        """
+        print "Executing wait_for_element_present_by_id("+element_id+")"
+        print "Looking for element id = " + element_id + " in the DOM."
+        print "Timeout is set to " + str(self.timeout_to_locate_element_in_seconds) + " seconds"
+
+       # element_present = self.driver.find_element(By.ID, element_id)
+
+        #wait = WebDriverWait(self.driver, self.timeout_to_locate_element_in_seconds, 1, (NoSuchElementException))
+        def my_method(self):
+            try:
+                self.driver.find_element_by_id(element_id)
+                return True
+            except NoSuchElementException, nse:
+                return False
+        WebDriverWait(self.driver, self.timeout_to_locate_element_in_seconds).until(my_method, "Found element")
+
+        return 0
+
 
     def wait_for_element_not_present_by_id_experimental(self, element_id):
 
@@ -168,3 +196,58 @@ class SeleniumApi():
             print "Element " + element + " is not visible!"
 
         return is_visible
+
+    def click_on_visible(self, element_type, element):
+        """
+        Waits for an element to become visible then clicks the element by its locator.
+        :rtype : object
+        :param element_type:
+        :param element:
+        """
+        self.wait_for_visible(element_type, element)
+        if element_type is "LINK_TEXT":
+            self.click_element_by_link_text(element)
+        elif element_type is "ID":
+            self.click_element_by_id(element)
+        elif element_type is "CSS_SELECTOR":
+            self.click_element_by_css_selector(element)
+        elif element_type is "XPATH":
+            self.click_element_by_xpath(element)
+        elif element_type is "NAME":
+            self.click_element_by_name(element)
+
+    def verify_element_present(self, how, what):
+        """
+        Finds element by locator. Takes as arguments element type and element locator.
+        Will try locating element until implicit wait limit timeout_to_locate_element_in_seconds is reached.
+        Returns NoSuchElementException if element is not found.
+        :param how:
+        :param what:
+        """
+        print "Executing verify_element_present (" + str(how) + " , " + str(what) + " )"
+
+        self.set_implicit_wait(self.timeout_to_locate_element_in_seconds)
+        try:
+            self.driver.find_element(by=how, value=what)
+
+        except NoSuchElementException:
+            return False
+        return True
+
+    def verify_element_present(self, how, what):
+        """
+        Finds element by locator. Takes as arguments element type and element locator.
+        Will try locating element until implicit wait limit timeout_to_locate_element_in_seconds is reached.
+        Returns NoSuchElementException if element is not found.
+        :param how:
+        :param what:
+        """
+        print "Executing verify_element_present (" + str(how) + " , " + str(what) + " )"
+
+        self.set_implicit_wait(self.timeout_to_locate_element_in_seconds)
+        try:
+            self.driver.find_element(by=how, value=what)
+
+        except NoSuchElementException:
+            return False
+        return True

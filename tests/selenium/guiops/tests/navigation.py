@@ -9,7 +9,10 @@ class Navigation_sequence(GuiTester):
 
     def navigation_test(self):
 
-        self.tester.verify_element_present("ID", "euca-login-button")
+        #self.tester.wait_for_element_present_by_id("euca")
+        self.tester.wait_for_visible_by_id_experimental("euca-login-button")
+
+        #self.tester.verify_element_visible_by_id("euca-login-button")
 
         #self.tester.login()
 

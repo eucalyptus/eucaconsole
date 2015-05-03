@@ -2,9 +2,10 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
 from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import TimeoutException
 from selenium.common.exceptions import ElementNotVisibleException
-#from selenium.webdriver.support.ui import WebDriverWait
-#from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 
 import time
@@ -25,9 +26,9 @@ class SeleniumApi():
         self.driver = driver
 
 
-    retry = 100
+    retry = 2
     timeout_to_locate_element_in_seconds = 30
-    timeout_to_determine_visibility_in_seconds = 5
+    timeout_to_determine_visibility_in_seconds = 30
     timeout_to_determine_if_clickable_in_seconds = 20
 
     #def NoOp(self):
@@ -46,23 +47,59 @@ class SeleniumApi():
         """
         self.driver.implicitly_wait(self, implicit_wait_time)
 
-    def verify_element_present(self, how, what):
+    def wait_for_element_present_by_id(self, element_id):
         """
-        Finds element by locator. Takes as arguments element type and element locator.
-        Will try locating element until implicit wait limit timeout_to_locate_element_in_seconds is reached.
-        Returns NoSuchElementException if element is not found.
-        :param how:
-        :param what:
+        Waits for element to be present on the page for timeout_to_locate_element_in_seconds
+        Checks for presence every 500 milliseconds
         """
-        print "Executing verify_element_present (" + str(how) + " , " + str(what) + " )"
+        print "Executing wait_for_element_present_by_id_experimental("+element_id+")"
+        print "Looking for element id = " + element_id + " in the DOM."
+        print "Timeout is set to " + str(self.timeout_to_locate_element_in_seconds) + " seconds"
 
-        self.set_implicit_wait(self.timeout_to_locate_element_in_seconds)
         try:
-            self.driver.find_element(by=how, value=what)
+            WebDriverWait(self.driver, self.timeout_to_locate_element_in_seconds).until(EC.presence_of_element_located((By.ID, element_id)))
+            print "Found element {0}".format(element_id)
+        except NoSuchElementException, nse:
+            print "Did not find element({0})".format(element_id)
+        except TimeoutException, t:
+            print "ERROR: Timed out. Did not find element {0}.".format(element_id)
+            return 0
 
-        except NoSuchElementException:
-            return False
-        return True
+    def wait_for_clickable_by_id(self, element_id):
+        """
+        Waits for an element to be present, visible and enabled such that you can click it.
+        :param element_id:
+        """
+        print "Executing wait_for_clickable_by_id({0})".format(element_id)
+
+        try:
+            WebDriverWait(self.driver, self.timeout_to_locate_element_in_seconds).until(EC.element_to_be_clickable((By.ID, element_id)))
+            print "Found clickable element {0}".format(element_id)
+        except TimeoutException, tout:
+            print "ERROR: Did not find clickable element by id {0}".format(element_id)
+
+    def wait_for_visible_by_id_experimental(self, element_id):
+        """
+        Waits for the element to become visible.
+        :param element_id:
+        """
+
+        print "Executing wait_for_visible_by_id_experimental ({0})".format(element_id)
+
+        try:
+            WebDriverWait(self.driver, self.timeout_to_determine_visibility_in_seconds).until(EC.visibility_of_element_located((By.ID,element_id)))
+            print "Element by id={0} was located in DOM and is visible.".format(element_id)
+        except TimeoutException:
+            print "ERROR: Timed out."
+            try:
+                EC.presence_of_element_located((By.ID,element_id))
+                try:
+                    EC.visibility_of_element_located((By.ID,element_id))
+                except ElementNotVisibleException:
+                    print "ERROR: Element id={0} found in DOM but NOT visible".format(element_id)
+
+            except NoSuchElementException:
+                print "ERROR: No element id={0} found in DOM".format(element_id)
 
     def wait_for_visible_by_id(self, element_id):
         """
@@ -70,6 +107,10 @@ class SeleniumApi():
         Keeps checking for visibility until max number of trials self.retry is reached.
         :param element_id:
         """
+
+        print "Executing wait_for_visible_by_id( "+element_id+" )"
+
+        self.wait_for_element_present_by_id(element_id)
         is_visible = False
         for i in range(self.retry):
             is_visible = self.driver.find_element_by_id(element_id).is_displayed()
@@ -128,25 +169,6 @@ class SeleniumApi():
         """
         self.wait_for_visible_by_css_selector(css)
         self.click_element_by_css_selector(css)
-
-    def click_on_visible(self, element_type, element):
-        """
-        Waits for an element to become visible then clicks the element by its locator.
-        :rtype : object
-        :param element_type:
-        :param element:
-        """
-        self.wait_for_visible(element_type, element)
-        if element_type is "LINK_TEXT":
-            self.click_element_by_link_text(element)
-        elif element_type is "ID":
-            self.click_element_by_id(element)
-        elif element_type is "CSS_SELECTOR":
-            self.click_element_by_css_selector(element)
-        elif element_type is "XPATH":
-            self.click_element_by_xpath(element)
-        elif element_type is "NAME":
-            self.click_element_by_name(element)
 
     def check_if_element_present_by_type(self, element_type, element):
         """
