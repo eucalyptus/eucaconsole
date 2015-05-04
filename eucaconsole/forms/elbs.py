@@ -39,7 +39,7 @@ from ..views import BaseView
 class ELBForm(BaseSecureForm):
     """Elastic Load Balancer update form"""
     idle_timeout = wtforms.TextField(
-        label=_(u'Idle timeout'),
+        label=_(u'Idle timeout (secs)'),
     )
     idle_timeout_help_text = _(u'Amount of time a connection to an instance can be idle \
                                  before the load balancer closes it. If keep alive is set for instances, \
