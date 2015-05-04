@@ -70,6 +70,7 @@ def top_nav(context, request, off_canvas=False):
 
 @panel_config('form_field', renderer='../templates/panels/form_field_row.pt')
 def form_field_row(context, request, field=None, reverse=False, leftcol_width=4, rightcol_width=8,
+                   leftcol_width_large=2, rightcol_width_large=10,
                    inline=True, stack_label=False, ng_attrs=None, **kwargs):
     """ Widget for a singe form field row.
         The left/right column widths are Zurb Foundation grid units.
@@ -115,10 +116,14 @@ def form_field_row(context, request, field=None, reverse=False, leftcol_width=4,
 
     if stack_label:
         leftcol_width = 0
+        leftcol_width_large = 0
+        rightcol_width_large = 12
 
     return dict(
         field=field, error_msg=error_msg, html_attrs=html_attrs, inline=inline, checkbox=checkbox,
-        leftcol_width=leftcol_width, rightcol_width=rightcol_width, reverse=reverse, stack_label=stack_label
+        leftcol_width=leftcol_width, rightcol_width=rightcol_width,
+        leftcol_width_large=leftcol_width_large, rightcol_width_large=rightcol_width_large,
+        reverse=reverse, stack_label=stack_label
     )
 
 
@@ -235,12 +240,15 @@ def securitygroup_rules(context, request, rules=None, rules_egress=None, leftcol
 
 
 @panel_config('securitygroup_rules_preview', renderer='../templates/panels/securitygroup_rules_preview.pt')
-def securitygroup_rules_preview(context, request, leftcol_width=3, rightcol_width=9):
+def securitygroup_rules_preview(context, request, leftcol_width=3, rightcol_width=9,
+                   leftcol_width_large=2, rightcol_width_large=10):
     """ Security group rules preview, used in Launch Instance and Create Launch Configuration wizards.
     """
     return dict(
         leftcol_width=leftcol_width,
         rightcol_width=rightcol_width,
+        leftcol_width_large=leftcol_width_large,
+        rightcol_width_large=rightcol_width_large,
     )
 
 

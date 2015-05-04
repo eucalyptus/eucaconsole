@@ -5,11 +5,14 @@
  */
 
 angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils'])
-    .controller('InstancesCtrl', function ($scope, $http, eucaHandleError) {
+    .controller('InstancesCtrl', function ($scope, $timeout, $http, eucaUnescapeJson, eucaHandleError) {
         $scope.instanceID = '';
         $scope.fileName = '';
+        $scope.ipAddresses = [];
+        $scope.ipAddressList = {};
         $scope.batchTerminateModal = $('#batch-terminate-modal');
         $scope.associateIPModal = $('#associate-ip-to-instance-modal');
+        $scope.addressesEndpoint = '';
         $scope.initChosenSelectors = function () {
             $scope.batchTerminateModal.on('open.fndtn.reveal', function () {
                 var instanceIdsSelect = $scope.batchTerminateModal.find('select');
@@ -21,7 +24,12 @@ angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils'])
                 $('#ip_address').trigger('chosen:updated');
             });
         };
-        $scope.initController = function () {
+        $scope.initController = function (optionsJson) {
+            var options = JSON.parse(eucaUnescapeJson(optionsJson));
+            if (options.hasOwnProperty('addresses_json_items_endpoint')) {
+                $scope.addressesEndpoint = options.addresses_json_items_endpoint;
+            } 
+            $scope.getIPAddresses(); 
             $scope.initChosenSelectors();
             $('#file').on('change', $scope.getPassword);
         };
@@ -52,6 +60,13 @@ angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils'])
             $scope.publicDNS = instance.public_dns_name;
             $scope.platform = instance.platform;
             $scope.ipAddress = instance.ip_address;
+            if (action === 'associate-ip-to') {
+                $scope.adjustIPAddressOptions(instance);
+                // timeout is needed for ipAddressList to be updated
+                $timeout(function () {
+                    $('#ip_address').trigger('chosen:updated');
+                });
+            }
             modal.foundation('reveal', 'open');
         };
         $scope.removeFromView = function(instance, url) {
@@ -137,6 +152,38 @@ angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils'])
                 "&amp;preset=true";
             return launchConfigPath;
         };
+        $scope.getIPAddresses = function () {
+            var csrf_token = $('#csrf_token').val();
+            var data = "csrf_token=" + csrf_token;
+            $http({
+                method:'POST', url:$scope.addressesEndpoint, data:data,
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            }).success(function(oData) {
+                var results = oData ? oData.results : [];
+                $scope.ipAddresses = results;
+            }).error(function (oData) {
+                eucaHandleError(oData, status);
+            });
+        };
+        $scope.adjustIPAddressOptions = function (instance) {
+            $scope.ipAddressList = {};
+            if (instance.vpc_name === '') {
+                angular.forEach($scope.ipAddresses, function(ip){
+                    if (ip.domain === 'standard') {
+                        if (ip.instance_id === '' || ip.instance_id === null) {
+                            $scope.ipAddressList[ip.public_ip] = ip.public_ip;
+                        }
+                    }
+                }); 
+            } else {
+                angular.forEach($scope.ipAddresses, function(ip){
+                    if (ip.domain === 'vpc') {
+                        if (ip.instance_id === '' || ip.instance_id === null) {
+                            $scope.ipAddressList[ip.public_ip] = ip.public_ip;
+                        }
+                    }
+                }); 
+            }
+        };
     })
 ;
-

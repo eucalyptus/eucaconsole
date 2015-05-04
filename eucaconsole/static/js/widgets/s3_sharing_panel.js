@@ -45,6 +45,9 @@ angular.module('S3SharingPanel', ['EucaConsoleUtils'])
                 create_with_enter: true,
                 create_option_text: $scope.createOptionText
             });
+            $('#share_permissions').chosen({
+                search_contains: true
+            });
         };
         $scope.addListeners = function () {
             $(document).ready(function() {

@@ -43,7 +43,7 @@ describe("InstancesPage", function() {
 
         it("Should call initChosenSelectors() when initController() is called", function() {
             spyOn(scope, 'initChosenSelectors');
-            scope.initController();
+            scope.initController('{}');
             expect(scope.initChosenSelectors).toHaveBeenCalled();
         });
     });

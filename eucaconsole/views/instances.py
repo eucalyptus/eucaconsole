@@ -163,6 +163,9 @@ class InstancesView(LandingPageView, BaseInstanceView):
         self.associate_ip_form = AssociateIpToInstanceForm(
             self.request, conn=self.conn, formdata=self.request.params or None)
         self.disassociate_ip_form = DisassociateIpFromInstanceForm(self.request, formdata=self.request.params or None)
+        controller_options_json = BaseView.escape_json(json.dumps({
+            'addresses_json_items_endpoint': self.request.route_path('ipaddresses_json'),
+        }))
         self.render_dict = dict(
             prefix=self.prefix,
             initial_sort_key=self.initial_sort_key,
@@ -174,6 +177,7 @@ class InstancesView(LandingPageView, BaseInstanceView):
             associate_ip_form=self.associate_ip_form,
             disassociate_ip_form=self.disassociate_ip_form,
             is_vpc_supported=self.is_vpc_supported,
+            controller_options_json=controller_options_json,
         )
 
     @view_config(route_name='instances', renderer='../templates/instances/instances.pt')
@@ -310,7 +314,7 @@ class InstancesView(LandingPageView, BaseInstanceView):
             with boto_error_handler(self.request, self.location):
                 new_ip = self.request.params.get('ip_address')
                 self.log_request(_(u"Associating IP {0} with instances {1}").format(new_ip, instance_id))
-                address=self.get_ip_address(new_ip)
+                address = self.get_ip_address(new_ip)
                 if address and address.allocation_id:
                     self.conn.associate_address(instance_id, new_ip, allocation_id=address.allocation_id)
                 else:
@@ -318,7 +322,9 @@ class InstancesView(LandingPageView, BaseInstanceView):
                 msg = _(u'Successfully associated the IP to the instance.')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=self.location)
-        return self.render_dict
+        msg = _(u'Failed to associate the IP address to the instance.')
+        self.request.session.flash(msg, queue=Notification.ERROR)
+        return HTTPFound(location=self.location)
 
     @view_config(route_name='instances_disassociate', request_method='POST')
     def instances_disassociate_ip_address(self):
@@ -326,7 +332,7 @@ class InstancesView(LandingPageView, BaseInstanceView):
             with boto_error_handler(self.request, self.location):
                 ip_address = self.request.params.get('ip_address')
                 self.log_request(_(u"Disassociating IP {0}").format(ip_address))
-                address=self.get_ip_address(ip_address)
+                address = self.get_ip_address(ip_address)
                 if address and address.association_id:
                     self.conn.disassociate_address(ip_address, association_id=address.association_id)
                 else:
@@ -334,7 +340,9 @@ class InstancesView(LandingPageView, BaseInstanceView):
                 msg = _(u'Successfully disassociated the IP from the instance.')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=self.location)
-        return self.render_dict
+        msg = _(u'Failed to disassociate the IP address from the instance.')
+        self.request.session.flash(msg, queue=Notification.ERROR)
+        return HTTPFound(location=self.location)
 
 class InstancesJsonView(LandingPageView, BaseInstanceView):
     def __init__(self, request):
@@ -470,13 +478,13 @@ class InstancesJsonView(LandingPageView, BaseInstanceView):
     def get_security_group_by_id(self, id):
         for sgroup in self.security_groups:
             if sgroup.id == id:
-                return sgroup 
+                return sgroup
 
     def get_security_group_rules_count_by_id(self, id):
         sgroup = self.get_security_group_by_id(id)
         if sgroup:
             return len(sgroup.rules)
-        return None 
+        return None
 
     @staticmethod
     def get_image_by_id(images, image_id):
@@ -527,8 +535,7 @@ class InstanceJsonView(BaseInstanceView):
                     state_reason=instance.state_reason,
                     ip_address=instance.ip_address,
                     root_device_name=instance.root_device_name,
-                    root_device_type=instance.root_device_type,
-               ))
+                    root_device_type=instance.root_device_type))
 
 
 class InstanceView(TaggedItemView, BaseInstanceView):
@@ -551,7 +558,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
         self.reboot_form = RebootInstanceForm(self.request, formdata=self.request.params or None)
         self.terminate_form = TerminateInstanceForm(self.request, formdata=self.request.params or None)
         self.associate_ip_form = AssociateIpToInstanceForm(
-            self.request, conn=self.conn, formdata=self.request.params or None)
+            self.request, conn=self.conn, instance=self.instance, formdata=self.request.params or None)
         self.disassociate_ip_form = DisassociateIpFromInstanceForm(self.request, formdata=self.request.params or None)
         self.tagged_obj = self.instance
         self.location = self.get_redirect_location()
@@ -758,10 +765,10 @@ class InstanceView(TaggedItemView, BaseInstanceView):
                     sgroup_dict = {}
                     sgroup_dict['id'] = sgroup.id
                     sgroup_dict['name'] = sgroup.name
-                    sgroup_dict['rules'] = rules 
-                    sgroup_dict['rule_count'] = len(rules) 
+                    sgroup_dict['rules'] = rules
+                    sgroup_dict['rule_count'] = len(rules)
                     security_group_list.append(sgroup_dict)
-        return security_group_list 
+        return security_group_list
 
     def get_redirect_location(self):
         if self.instance:

@@ -11,7 +11,7 @@
     "jasmine": "2.0.3",
     "jasmine-jquery": "2.0.5",
     "angular-magic-search": "~0.2.0",
-    "angular-chosen-localytics": "~1.0.7"
+    "angular-chosen-localytics": "~1.0.7",
+    "StickyTableHeaders": "~0.1.15"
   }
 }
-
