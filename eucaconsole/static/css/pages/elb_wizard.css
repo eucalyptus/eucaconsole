@@ -52,10 +52,13 @@
 #elb-form .stack-label { margin-bottom: 0.5rem; }
 #elb-form .section-label { margin-top: 1.5rem; margin-bottom: 1rem; color: #03405f; }
 #elb-form .sub-section-label { color: black; }
+<<<<<<< HEAD
 #elb-form .helptext-icon { color: #6a737b; font-size: 1.2rem; }
+=======
+#elb-form .helptext-icon { color: #6a737b; font-size: 1.3rem; }
+>>>>>>> GUI-1484
 #elb-form .section-label-with-helptext-icon { margin-bottom: 0.5rem; }
 #elb-form .checkbox-with-helptext-icon label { margin-right: 0rem; }
-#elb-form a.remove { color: #6a737b; }
 #elb-form #elb-listener-security-field { margin-bottom: 1.5rem; }
 
 #select-certificate-modal .section-label { margin-top: 1.5rem; margin-bottom: 1rem; color: #03405f; }

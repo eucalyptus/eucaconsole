@@ -116,8 +116,8 @@ def form_field_row(context, request, field=None, reverse=False, leftcol_width=4,
 
     if stack_label:
         leftcol_width = 0
-        leftcol_width_large=0
-        rightcol_width_large=12
+        leftcol_width_large = 0
+        rightcol_width_large = 12
 
     return dict(
         field=field, error_msg=error_msg, html_attrs=html_attrs, inline=inline, checkbox=checkbox,
@@ -241,7 +241,7 @@ def securitygroup_rules(context, request, rules=None, rules_egress=None, leftcol
 
 @panel_config('securitygroup_rules_preview', renderer='../templates/panels/securitygroup_rules_preview.pt')
 def securitygroup_rules_preview(context, request, leftcol_width=3, rightcol_width=9,
-                   leftcol_width_large=2, rightcol_width_large=10):
+                                leftcol_width_large=2, rightcol_width_large=10):
     """ Security group rules preview, used in Launch Instance and Create Launch Configuration wizards.
     """
     return dict(
