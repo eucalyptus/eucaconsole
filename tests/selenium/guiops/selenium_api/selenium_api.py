@@ -27,8 +27,8 @@ class SeleniumApi():
 
 
     retry = 2
-    timeout_to_locate_element_in_seconds = 10
-    timeout_to_determine_visibility_in_seconds = 10
+    timeout_to_locate_element_in_seconds = 60
+    timeout_to_determine_visibility_in_seconds = 60
     timeout_to_determine_if_clickable_in_seconds = 20
 
     #def NoOp(self):
@@ -63,22 +63,9 @@ class SeleniumApi():
             print "ERROR: Timed out. Did not find element by id = '{0}'.".format(element_id)
             return 0
 
-    def wait_for_clickable_by_id(self, element_id):
+    def wait_for_visible_by_id(self, element_id):
         """
-        Waits for an element to be present, visible and enabled such that you can click it.
-        :param element_id:
-        """
-        print "Executing wait_for_clickable_by_id({0})".format(element_id)
-
-        try:
-            WebDriverWait(self.driver, self.timeout_to_locate_element_in_seconds).until(EC.element_to_be_clickable((By.ID, element_id)))
-            print "Found clickable element {0}".format(element_id)
-        except TimeoutException, tout:
-            print "ERROR: Did not find clickable element by id {0}".format(element_id)
-
-    def wait_for_visible_by_id_experimental(self, element_id):
-        """
-        Waits for the element to become visible.
+        Waits for the element to become visible. First, checks if element is present.
         :param element_id:
         """
 
@@ -90,6 +77,19 @@ class SeleniumApi():
             print "Element by id= '{0}' was located in DOM and is visible.".format(element_id)
         except TimeoutException:
             print "ERROR: Timed out: element by id = '{0}' not visible.".format(element_id)
+
+    def wait_for_clickable_by_id(self, element_id):
+        """
+        Waits for an element to be present, visible and enabled such that you can click it.
+        :param element_id:
+        """
+        print "Executing wait_for_clickable_by_id('{0}')".format(element_id)
+
+        try:
+            WebDriverWait(self.driver, self.timeout_to_locate_element_in_seconds).until(EC.element_to_be_clickable((By.ID, element_id)))
+            print "Found clickable element by id = '{0}'".format(element_id)
+        except TimeoutException, tout:
+            print "ERROR: Did not find clickable element by id = '{0}'".format(element_id)
 
     def click_on_visible_by_id(self, element_id):
         """
