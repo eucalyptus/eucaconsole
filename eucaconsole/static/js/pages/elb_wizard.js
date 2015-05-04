@@ -24,8 +24,7 @@ angular.module('EucaConsoleWizard').controller('ELBWizardCtrl', function ($scope
     $scope.availabilityZones = [];
     $scope.availabilityZoneChoices = {};
     $scope.instanceList = [];
-    $scope.classNoInstanceWarningDiv = '';
-    $scope.crossZoneEnabled = false;
+    $scope.crossZoneEnabled = true;
     $scope.protocolList = []; 
     $scope.pingProtocol = '';
     $scope.pingPort = '';
@@ -42,6 +41,7 @@ angular.module('EucaConsoleWizard').controller('ELBWizardCtrl', function ($scope
     $scope.privateKey = '';
     $scope.publicKeyCertificate = '';
     $scope.certificateChain = '';
+    $scope.tempListenerBlock = {};
     $scope.showsCertificateTabDiv = false;
     $scope.backendCertificateArray = [];
     $scope.backendCertificateName = '';
@@ -84,7 +84,7 @@ angular.module('EucaConsoleWizard').controller('ELBWizardCtrl', function ($scope
         }
         $scope.listenerArray = [];
         $scope.instanceList = [];
-        $scope.crossZoneEnabled = false;
+        $scope.crossZoneEnabled = true;
         $scope.pingProtocol = 'HTTP';
         $scope.pingPort = 80;
         $scope.pingPath = '/index.html';
@@ -135,18 +135,31 @@ angular.module('EucaConsoleWizard').controller('ELBWizardCtrl', function ($scope
         $scope.$on('eventUpdateListenerArray', function ($event, listenerArray) {
             $scope.listenerArray = listenerArray;
         });
-        $scope.$on('eventOpenSelectCertificateModal', function ($event, fromProtocol, toProtocol, certificateTab) {
+        $scope.$on('eventOpenSelectCertificateModal', function ($event, fromProtocol, toProtocol, fromPort, toPort, certificateTab) {
             if ((fromProtocol === 'HTTPS' || fromProtocol === 'SSL') &&
                 (toProtocol === 'HTTPS' || toProtocol === 'SSL')) {
                 $scope.showsCertificateTabDiv = true;
             } else {
                 $scope.showsCertificateTabDiv = false;
             }
+            var block = {
+                'fromProtocol': fromProtocol,
+                'fromPort': fromPort,
+                'toProtocol': toProtocol,
+                'toPort': toPort,
+            };
+            $scope.tempListenerBlock = block;
             $scope.certificateTab = certificateTab;
             $scope.openSelectCertificateModal();
         });
         $scope.$on('eventUpdateSelectedInstanceList', function ($event, instanceList) {
             $scope.instanceList = instanceList;
+        });
+        $scope.$on('eventUpdateAvailabilityZones', function ($event, availabilityZones) {
+            $scope.availabilityZones = availabilityZones;
+        });
+        $scope.$on('eventUpdateVPCSubnets', function ($event, vpcSubnets) {
+            $scope.vpcSubnets = vpcSubnets;
         });
         $scope.$watch('elbName', function (){
             $scope.checkRequiredInput(1);
@@ -159,29 +172,37 @@ angular.module('EucaConsoleWizard').controller('ELBWizardCtrl', function ($scope
             $scope.getAllSecurityGroups($scope.vpcNetwork);
             $scope.updateVPCSubnetChoices();
             $scope.checkRequiredInput(2);
+            $scope.$broadcast('eventWizardUpdateVPCNetwork', $scope.vpcNetwork);
+            $timeout(function(){
+                if ($('#securitygroup_chosen').length === 0) {
+                    $('#securitygroup').chosen({'width': '100%', search_contains: true});
+                }
+            });
         }, true);
         $scope.$watch('securityGroups', function () {
             $scope.updateSecurityGroupNames();
             $scope.checkRequiredInput(2);
+            // Update the VPC network on the instance selector when security group is updated
+            $scope.$broadcast('eventWizardUpdateVPCNetwork', $scope.vpcNetwork);
         }, true);
         $scope.$watch('securityGroupCollection', function () {
             $scope.updateSecurityGroupChoices();
         }, true);
         $scope.$watch('availabilityZones', function () {
             $scope.checkRequiredInput(3);
-            $scope.$broadcast('eventUpdateAvailabilityZones', $scope.availabilityZones);
+            if ($scope.vpcNetwork === 'None') { 
+                $scope.$broadcast('eventWizardUpdateAvailabilityZones', $scope.availabilityZones);
+            }
         }, true);
         $scope.$watch('vpcSubnets', function () {
             $scope.updateVPCSubnetNames();
             $scope.checkRequiredInput(3);
-            $scope.$broadcast('eventUpdateVPCSubnets', $scope.vpcSubnets);
+            if ($scope.vpcNetwork !== 'None') { 
+                $scope.$broadcast('eventWizardUpdateVPCSubnets', $scope.vpcSubnets);
+            }
         }, true);
         $scope.$watch('instanceList', function (newValue, oldValue) {
             $scope.checkRequiredInput(3);
-            $scope.classNoInstanceWarningDiv = '';
-            if (oldValue.length > 0 && $scope.instanceList.length === 0 ) {
-                $scope.classNoInstanceWarningDiv = 'error';
-            }
             if ($scope.vpcNetwork !== 'None') { 
                 $scope.updateVPCSubnetChoices();
             } else {
@@ -210,6 +231,7 @@ angular.module('EucaConsoleWizard').controller('ELBWizardCtrl', function ($scope
             if ($('#hidden_certificate_arn_input').length > 0) {
                 $('#hidden_certificate_arn_input').val($scope.certificateARN);
             }
+            $scope.$broadcast('eventUpdateCertificateARN', $scope.certificateARN, $scope.tempListenerBlock);
         });
         $scope.$watch('certificateName', function(){
             // Broadcast the certificate name change to the elb listener directive
@@ -271,6 +293,22 @@ angular.module('EucaConsoleWizard').controller('ELBWizardCtrl', function ($scope
                     $scope.isNotValid = true;
                 }
             }
+            // Handle the unsaved listener issue
+            if( $('#from-port-input').val() !== '' ){
+                $('#unsaved-listener-warn-modal').foundation('reveal', 'open');
+                $scope.isNotValid = true;
+            }
+            // Handle the unsaved tag issue
+            var existsUnsavedTag = false;
+            $('input.taginput').each(function(){
+                if($(this).val() !== ''){
+                    existsUnsavedTag = true;
+                }
+            });
+            if( existsUnsavedTag ){
+                $('#unsaved-tag-warn-modal').foundation('reveal', 'open');
+                $scope.isNotValid = true;
+            }
         } else if (step === 2) {
             if ($scope.vpcNetwork !== 'None') {
                 if ($scope.securityGroups.length === 0) {
@@ -279,8 +317,6 @@ angular.module('EucaConsoleWizard').controller('ELBWizardCtrl', function ($scope
             }
         } else if (step === 3) {
             if ($scope.availabilityZones.length === 0 && $scope.vpcSubnets.length === 0) {
-                $scope.isNotValid = true;
-            } else if ($scope.instanceList.length === 0){
                 $scope.isNotValid = true;
             }
         } else if (step === 4) {
@@ -420,6 +456,13 @@ angular.module('EucaConsoleWizard').controller('ELBWizardCtrl', function ($scope
             modal.foundation('reveal', 'open');
             $scope.certificateRadioButton = 'existing';
             $('#certificate-type-radio-existing').prop('checked', true);
+            angular.forEach($scope.listenerArray, function (block) {
+                if (block.fromPort === $scope.tempListenerBlock.fromPort &&
+                    block.toPort === $scope.tempListenerBlock.toPort) {
+                    $scope.certificateARN = block.certificateARN;
+                    $scope.certificateName = block.certificateName;
+                }
+            });
             $('#certificates').val($scope.certificateARN);
             // Remove any empty options created by Angular model issue 
             $('#certificates option').each(function () {
@@ -472,8 +515,16 @@ angular.module('EucaConsoleWizard').controller('ELBWizardCtrl', function ($scope
         }
     };
     $scope.resetBackendCertificateValues = function () {
+        // Remove the required attr from the body field to avoid false negative validation error
+        // when the input fields are cleared
+        $('#backend_certificate_body').removeAttr('required');
         $scope.backendCertificateName = '';
         $scope.backendCertificateBody = '';
+        // timeout is needed for Foundation's validation to complete
+        // re-insert the required attr to the input field
+        $timeout(function () {
+            $('#backend_certificate_body').attr('required', 'required');
+        }, 1000);
     };
     $scope.removeBackendCertificate = function ($event, index) {
         $event.preventDefault();
@@ -548,6 +599,7 @@ angular.module('EucaConsoleWizard').controller('ELBWizardCtrl', function ($scope
         var modal = $('#select-certificate-modal');
         if (modal.length > 0) {
             modal.foundation('reveal', 'close');
+            $scope.$broadcast('eventUseThisCertificate', $scope.certificateARN, $scope.certificateName);
         }
     };
     $scope.createNewCertificate = function (url) {
@@ -574,6 +626,8 @@ angular.module('EucaConsoleWizard').controller('ELBWizardCtrl', function ($scope
                 // timeout is needed for the select element to be updated with the new option
                 $timeout(function () {
                     $scope.certificateName = newCertificateName;
+                    // inform elb listener editor about the new certificate
+                    $scope.$broadcast('eventUseThisCertificate', newARN, newCertificateName);
                 });
             }
         }).error(function (oData) {

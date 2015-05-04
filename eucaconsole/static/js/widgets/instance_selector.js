@@ -19,6 +19,7 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
             $scope.selectedInstanceList = [];
             $scope.instancesJsonEndpoint = '';
             $scope.isVPCSupported = false;
+            $scope.vpcNetwork = 'None';
             $scope.vpcSubnets = [];
             $scope.availabilityZones = [];
             $scope.searchQueryURL = '';
@@ -39,6 +40,7 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                 $scope.allInstanceList = [];
                 $scope.instanceList = [];
                 $scope.selectedInstanceList = [];
+                $scope.vpcNetwork = 'None';
                 $scope.vpcSubnets = [];
                 $scope.availabilityZones = [];
                 $scope.isVPCSupported = false;
@@ -64,9 +66,23 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                     $timeout(function() {
                         $scope.checkInstanceAllCheckbox();
                         $scope.matchInstanceCheckboxes();
+                        if ($scope.vpcNetwork === 'None') { 
+                            $scope.updateInstanceAvailabilityZones();
+                        } else {
+                            $scope.updateInstanceVPCSubnets();
+                        }
                     });
                     $scope.$emit('eventUpdateSelectedInstanceList', $scope.selectedInstanceList);
                 }, true);
+                $scope.$watch('availabilityZones', function () {
+                    $scope.$emit('eventUpdateAvailabilityZones', $scope.availabilityZones);
+                }, true);
+                $scope.$watch('vpcSubnets', function () {
+                    $scope.$emit('eventUpdateVPCSubnets', $scope.vpcSubnets);
+                }, true);
+                $scope.$watch('vpcNetwork', function () {
+                    $scope.updateInstanceList();
+                });
                 $scope.$on('eventQuerySearch', function ($event, query) {
                     $scope.searchQueryURL = '';
                     if (query.length > 0) {
@@ -121,15 +137,24 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                     }
                     $scope.$apply();
                 });
-                $scope.$on('eventUpdateAvailabilityZones', function ($event, availabilityZones) {
-                    $scope.vpcSubnets = [];
+                $scope.$on('eventWizardUpdateAvailabilityZones', function ($event, availabilityZones) {
                     $scope.availabilityZones = availabilityZones;
-                    $scope.updateInstanceList();
+                    $scope.updateSelectedInstanceListForAvailabilityZones();
+                    $timeout(function() {
+                        $scope.clearInstanceCheckboxes();
+                        $scope.matchInstanceCheckboxes();
+                    });
                 });
-                $scope.$on('eventUpdateVPCSubnets', function ($event, vpcSubnets) {
-                    $scope.availabilityZones = [];
+                $scope.$on('eventWizardUpdateVPCSubnets', function ($event, vpcSubnets) {
                     $scope.vpcSubnets = vpcSubnets;
-                    $scope.updateInstanceList();
+                    $scope.updateSelectedInstanceListForVPCSubnets();
+                    $timeout(function() {
+                        $scope.clearInstanceCheckboxes();
+                        $scope.matchInstanceCheckboxes();
+                    });
+                });
+                $scope.$on('eventWizardUpdateVPCNetwork', function ($event, vpcNetwork) {
+                    $scope.vpcNetwork = vpcNetwork;
                 });
             };
             $scope.getAllInstanceList = function () {
@@ -149,22 +174,19 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                 });
             };
             $scope.updateInstanceList = function () {
-                $scope.instanceList = [];
+                var tempInstanceArray = [];
                 angular.forEach($scope.allInstanceList, function (instance) {
-                    if ($scope.vpcSubnets.length > 0) {
-                        angular.forEach($scope.vpcSubnets, function (vpcSubnet) {
-                            if (instance.subnet_id === vpcSubnet) {
-                                $scope.instanceList.push(instance);
-                            }
-                        });
-                    } else if ($scope.availabilityZones.length > 0) {
-                        angular.forEach($scope.availabilityZones, function (zone) {
-                            if (instance.placement === zone && instance.subnet_id === null) {
-                                $scope.instanceList.push(instance);
-                            }
-                        });
+                    if ($scope.vpcNetwork === 'None') {
+                        if (instance.vpc_name === '') {
+                            tempInstanceArray.push(instance);
+                        }
+                    } else {
+                        if (instance.vpc_name !== '') {
+                            tempInstanceArray.push(instance);
+                        }
                     }
                 });
+                angular.copy(tempInstanceArray, $scope.instanceList);
                 $scope.updateSelectedInstanceList();
                 // Update the instance checkboxes to ensure the checked values are matched
                 // timeout is needed for the table's display update to complete
@@ -180,6 +202,80 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                     angular.forEach($scope.instanceList, function (instance) {
                         if (selectedInstance.id === instance.id) {
                             $scope.selectedInstanceList.push(selectedInstance);
+                        } 
+                    });
+                });
+            };
+            $scope.updateSelectedInstanceListForAvailabilityZones = function () {
+                var dupList = $scope.selectedInstanceList.slice(0);
+                $scope.selectedInstanceList = [];
+                angular.forEach(dupList, function (selectedInstance) {
+                    angular.forEach($scope.instanceList, function (instance) {
+                        if (selectedInstance.id === instance.id) {
+                            var includesZone = false;
+                            angular.forEach($scope.availabilityZones, function(zone) {
+                                if (zone === instance.placement) {
+                                    includesZone = true;
+                                }
+                            });
+                            if (includesZone === true) {
+                                $scope.selectedInstanceList.push(selectedInstance);
+                            }
+                        } 
+                    });
+                });
+            };
+            $scope.updateSelectedInstanceListForVPCSubnets = function () {
+                var dupList = $scope.selectedInstanceList.slice(0);
+                $scope.selectedInstanceList = [];
+                angular.forEach(dupList, function (selectedInstance) {
+                    angular.forEach($scope.instanceList, function (instance) {
+                        if (selectedInstance.id === instance.id) {
+                            var includesSubnet = false;
+                            angular.forEach($scope.vpcSubnets, function(subnet) {
+                                if (subnet === instance.subnet_id) {
+                                    includesSubnet = true;
+                                }
+                            });
+                            if (includesSubnet === true) {
+                                $scope.selectedInstanceList.push(selectedInstance);
+                            }
+                        } 
+                    });
+                });
+            };
+            $scope.updateInstanceAvailabilityZones = function () {
+                $scope.availabilityZones = [];
+                angular.forEach($scope.selectedInstanceList, function (selectedInstance) {
+                    angular.forEach($scope.instanceList, function (instance) {
+                        if (selectedInstance.id === instance.id) {
+                            var existsZone = false;
+                            angular.forEach($scope.availabilityZones, function (zone) {
+                                if (zone == instance.placement) {
+                                    existsZone = true;
+                                }
+                            });
+                            if (existsZone === false) {
+                                $scope.availabilityZones.push(instance.placement);
+                            }
+                        } 
+                    });
+                });
+            };
+            $scope.updateInstanceVPCSubnets = function () {
+                $scope.vpcSubnets = [];
+                angular.forEach($scope.selectedInstanceList, function (selectedInstance) {
+                    angular.forEach($scope.instanceList, function (instance) {
+                        if (selectedInstance.id === instance.id) {
+                            var existsSubnet = false;
+                            angular.forEach($scope.vpcSubnets, function (subnet) {
+                                if (subnet == instance.subnet_id) {
+                                    existsSubnet = true;
+                                }
+                            });
+                            if (existsSubnet === false) {
+                                $scope.vpcSubnets.push(instance.subnet_id);
+                            }
                         } 
                     });
                 });
@@ -224,6 +320,12 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                     $('#instance-all-checkbox').prop('checked') === true) {
                     $('#instance-all-checkbox').prop('checked', false);
                 }
+            };
+            $scope.clearInstanceCheckboxes = function () {
+                angular.forEach($scope.allInstanceList, function(instance) {
+                    var checkbox = $('#instance-checkbox-' + instance.id);
+                    checkbox.prop("checked", false);
+                });
             };
             $scope.matchInstanceCheckboxes = function () {
                 // Ensure that the selectedInstanceList's items are checked when the table updates

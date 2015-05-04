@@ -7,16 +7,14 @@
 
 /* @section Elasitc Load Balancer Wizard styles */
 
-form {
-    .section-label {
-        margin-top: 4px;
-        margin-bottom: 6px;
-    }
-    .sub-section-label {
-        color: black;
-    }
-    .stack-label {
-        margin-bottom: 0.25rem;
+#wizard-tabs {
+    dd {
+        a b {
+            font-size: 0.85rem;
+        }
+        span b {
+            font-size: 0.85rem;
+        }
     }
 }
 
@@ -40,48 +38,65 @@ form {
         margin-left: auto;
         margin-right: auto;
     }
+    .stack-label {
+        margin-bottom: 0.5rem;
+    }
+    .section-label {
+        margin-top: 1.5rem;
+        margin-bottom: 1rem;
+        color: $euca-darkblue;
+    }
+    .sub-section-label {
+        color: black;
+    }
+    .helptext-icon {
+        color: $euca-grey;
+        font-size: 1.3rem;
+    }
+    .section-label-with-helptext-icon {
+        margin-bottom: 0.5rem;
+    }
+    .checkbox-with-helptext-icon label {
+        margin-right: 0rem;
+    }
+    #elb-listener-security-field {
+        margin-bottom: 1.5rem;
+    }
 }
 
-#backend-certificate-form {
-    @include item-list;
-    .description {
-        font-weight: bold;
+#select-certificate-modal {
+    .section-label {
+        margin-top: 1.5rem;
+        margin-bottom: 1rem;
         color: $euca-darkblue;
+    }
+    #backend-certificates-display {
+        margin-bottom: 1rem;
     }
 }
 
 table.elb-listener-table {
-    border-width: 2px;
-    border-style: solid;
-    border-color: $euca-grey;
-    thead {
-        border-width: 2px;
-        border-style: solid;
-        border-color: $euca-grey;
-    }
+    width: 100%;
     tr.top-header {
         border-bottom: 0px;
     }
-    th.header {
-        color: $euca-grey;
-    }
+    th.vertical-border-header {
+        border-collapse: collapse;
+        border-right-width: 1px;
+        border-right-style: solid;
+        border-right-color: #ddd;
+    } 
     th.center {
         text-align: center;
-    }
-    th.vertical-border-header {
-        border-right-width: 2px;
-        border-right-style: solid;
-        border-right-color: $euca-grey;
     }
 }
 
 table.instance-selector-table {
-    border-width: 2px;
-    border-style: solid;
-    border-color: $euca-grey;
+    width: 100%;
 }
+
 .summary {
-    .multi-row {
-        margin-bottom: 0.25rem;
+    .multi-row div {
+        padding-bottom: 0.25rem;
     }
 }

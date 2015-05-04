@@ -31,29 +31,39 @@
                         <td>{{ listener.toProtocol }}</td>
                         <td>{{ listener.toPort }}</td>
                         <td>
-                            <a ng-click="openCertificateModal(listener.fromProtocol, listener.toProtocol, 'SSL')"
-                                title="Change certficate">
-                                <span ng-show="showServerCertificateNameLink(listener.fromProtocol)">
-                                    Cipher
-                                 </span>
-                            </a>
+                            <span ng-show="showServerCertificateNameLink(listener.fromProtocol)">
+                                <span i18n:translate="">cipher_name_placeholder</span>
+                                <a ng-click="openCertificateModal(listener.fromProtocol, listener.toProtocol, listener.fromPort, listener.toPort)"
+                                    title="Change certficate" i18n:translate="">
+                                    Change
+                                </a>
+                            </span>
+                            <span ng-hide="showServerCertificateNameLink(listener.fromProtocol)">
+                                <span i18n:translate="">N/A</span>
+                            </span>
                         </td>
                         <td>
                             <span ng-show="showServerCertificateNameLink(listener.fromProtocol)">
-                                <a ng-click="openCertificateModal(listener.fromProtocol, listener.toProtocol, 'SSL')"
-                                    title="Change certficate">
-                                    {{ serverCertificateName }}
+                                <span>{{ listener.certificateName }}</span>
+                                <a ng-click="openCertificateModal(listener.fromProtocol, listener.toProtocol, listener.fromPort, listener.toPort)"
+                                    title="Change certficate" i18n:translate="">
+                                    Change
                                 </a>
                             </span>
                             <span ng-show="showBackendCertificateLink(listener.fromProtocol, listener.toProtocol)">
-                                <a ng-click="openCertificateModal(listener.fromProtocol, listener.toProtocol, 'BACKEND')"
-                                    title="Change certficate">
-                                    Backend Certificate 
+                                <span i18n:translate="">Backend Certificate</span>
+                                <a ng-click="openCertificateModal(listener.fromProtocol, listener.toProtocol, listener.fromPort, listener.toPort)"
+                                    title="Change certficate" i18n:translate="">
+                                    Change
                                 </a>
+                            </span>
+                            <span ng-hide="showServerCertificateNameLink(listener.fromProtocol) ||
+                                           showBackendCertificateLink(listener.fromProtocol, listener.toProtocol)">
+                                <span i18n:translate="">N/A</span>
                             </span>
                         </td>
                         <td>
-                            <a class="remove" ng-click="removeListener($index)" title="Remove rule"><i class="fi-x"></i></a>
+                            <a class="circle remove" ng-click="removeListener($index)" title="Remove rule"><i class="fi-minus-circle"></i></a>
                         </td>
                     </tr>
                 </tbody>
@@ -70,10 +80,10 @@
         </div>
         <div>
             <div ng-show="listenerArray.length === 0">
-                <label class="section-label description" i18n:translate="">Add a listener</label>
+                <span class="section-label" i18n:translate="">Add a listener:</span>
             </div>
             <div ng-show="listenerArray.length > 0">
-                <label class="section-label description" i18n:translate="">Add another listener</label>
+                <span class="section-label" i18n:translate="">Add another listener:</span>
             </div>
         </div>
         <div>
@@ -100,12 +110,24 @@
                     <div ng-class="classFromPortDiv">
                         <input type="number" class="port from" id="from-port-input" name="from_port"
                             ng-model="fromPort" pattern="${layout.port_range_pattern}" />
-                        <small class="error" i18n:translate="">Port range value must be whole numbers between 1-65535</small>
+                        <small class="error" i18n:translate="">
+                            Port range value must be a whole number between 1-65535
+                        </small>
+                    </div>
+                </div>
+            </div>
+            <div id="from-port-error-div" class="row controls-wrapper">
+                <div class="small-3 columns"></div>
+                <div class="small-9 columns field">
+                    <div ng-class="classDuplicatedFromPortDiv">
+                        <small class="error" i18n:translate="">
+                            Selected port already in use by another listener. Please select an unused port.
+                        </small>
                     </div>
                 </div>
             </div>
         </div>
-        <div ng-show="isFromProtocolValid">
+        <div ng-show="isFromProtocolValid &amp;&amp; !hasDuplicatedFromPort">
             <div class="row controls-wrapper">
                 <div class="small-1 columns"></div>
                 <div class="small-11 columns"><label class="left sub-section-label">Instance side</label></div>
@@ -130,13 +152,23 @@
                         <input type="number" class="port to" id="to-port-input" name="to_port"
                             ng-model="toPort" pattern="${layout.port_range_pattern}" />
                         <small class="error" i18n:translate="">
-                            Port range value must be whole numbers between 1-65535
+                            Port range value must be a whole number between 1-65535
+                        </small>
+                    </div>
+                </div>
+            </div>
+            <div id="listener-error-div" class="row controls-wrapper">
+                <div class="small-3 columns"></div>
+                <div class="small-9 columns field">
+                    <div ng-class="classDuplicatedListenerDiv">
+                        <small class="error" i18n:translate="">
+                            Selected port already in use by another listener. Please select an unused port.
                         </small>
                     </div>
                 </div>
             </div>
         </div>
-        <div ng-show="showSelectCertificateModalLink()">
+        <div id="elb-listener-security-field" ng-show="showSelectCertificateModalLink() &amp;&amp; !hasDuplicatedFromPort">
             <div class="row controls-wrapper">
                 <div class="small-1 columns"></div>
                 <div class="small-11 columns"><label class="left sub-section-label">Security</label></div>
@@ -146,7 +178,7 @@
                     <label class="right protocol" i18n:translate="">Cipher</label>
                 </div>
                 <div class="small-9 columns">
-                    <a ng-click="openCertificateModal(fromProtocol.value, toProtocol.value, 'SSL')"
+                    <a ng-click="openCertificateModal(fromProtocol.value, toProtocol.value, fromPort, toPort)"
                         title="Change certficate">
                         Select
                     </a>
@@ -157,33 +189,32 @@
                     <label class="right protocol" i18n:translate="">Certificates</label>
                 </div>
                 <div class="small-9 columns">
-                    <a ng-click="openCertificateModal(fromProtocol.value, toProtocol.value, 'SSL')"
+                    <a ng-click="openCertificateModal(fromProtocol.value, toProtocol.value, fromPort, toPort)"
                         title="Change certficate">
                         Select
                     </a>
                 </div>
             </div>
         </div>
-        <div id="listener-error-div">
-            <div class="row controls-wrapper">
-                <div class="small-3 columns"></div>
-                <div class="small-9 columns field">
-                    <div ng-class="classDuplicatedListenerDiv">
-                        <small class="error" i18n:translate="">
-                            You may not have duplicate load balancer ports defined.
-                        </small>
-                    </div>
-                </div>
-            </div>
-        </div>
         <div class="row controls-wrapper" id="add-listener-button-div">
             <div class="small-3 columns"></div>
             <div class="small-9 columns field">
-                <span id="button-add-listener" class="button round small" i18n:translate=""
+                <span id="button-add-listener" class="button round tiny" i18n:translate=""
                     ng-class="addListenerButtonClass" ng-click="addListener($event)">
                     Add Listener
                 </span>
+                <a href="#" id="button-cancel-listener" class="cancel-link" i18n:translate="" 
+                    ng-click="cancelListener($event)">Cancel</a>
             </div>
+        </div>
+        <div id="unsaved-listener-warn-modal" class="reveal-modal small" data-reveal="">
+            <h3></h3>
+            <p>
+                <span i18n:translate="">
+                    You must click the "Add Listener" button before you submit this for your listener to be included.
+                </span>
+            </p>
+            <a href="#" class="close-reveal-modal">&#215;</a>
         </div>
         <div>
             <textarea id="elb-listener" name="elb_listener" class="hidden" style="height: 8rem;"></textarea>

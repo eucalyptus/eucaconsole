@@ -5,25 +5,12 @@
                      detailpage_action request.route_path('elb_delete', id=elb.name) if elb else '';
                      action landingpage_action if landingpage else detailpage_action;">
         <h3 i18n:translate="">Delete load balancer</h3>
-        <div ng-show="!!elbInUse" tal:condition="in_use if elb else True">
-            <p>
-                <span i18n:translate="">Load balancer</span>
-                <span tal:condition="elb" class="breakword"><b>${elb_name}</b></span>
-                <span tal:condition="not elb" class="breakword"><b>{{ elbName }}</b></span>
-                <span i18n:translate="">is in use and may not be deleted.</span>
-            </p>
-            <p i18n:translate="">
-                Change the load balancer from ??? detail page,
-                and then try to delete this load balancer again.
-            </p>
-        </div>
-        <p ng-show="!elbInUse" tal:condition="not in_use if elb else True">
-            <span i18n:translate="">Are you sure you want to delete the load balancer</span>
+        <p>
+            <span i18n:translate="">Are you sure you want to delete load balancer</span>
             <span tal:condition="elb" class="breakword"><b>${elb_name}</b></span>
-            <span tal:condition="not elb" class="breakword"><b>{{ elbName }}</b></span>
-            ?
+            <span tal:condition="not elb" class="breakword"><b>{{ elbName }}</b></span>?
         </p>
-        <form action="${action}" method="post" ng-show="!elbInUse"
+        <form action="${action}" method="post"
               tal:condition="not in_use if elb else True">
             ${structure:delete_form['csrf_token']}
             <div tal:condition="landingpage" tal:omit-tag="">
@@ -33,10 +20,10 @@
                 <input type="hidden" name="name" value="${elb_name}" />
             </div>
             <div class="dialog-submit-button">
-                <button type="submit" id="delete_elb_submit_button" class="button expand" i18n:translate="">Yes, Delete</button>
+                <button type="submit" id="delete_elb_submit_button" class="button expand" i18n:translate="">Yes, Delete Load Balancer</button>
             </div>
             <div class="dialog-progress-display hide">
-                <span i18n:translate="">Sending request </span>&nbsp;<em><span class="busy">&nbsp;</span></em>
+                <span i18n:translate="">Sending request </span>&nbsp;<i class="busy"></i>
             </div>
         </form>
         <a href="#" id="delete_elb_close_link" class="close-reveal-modal">&#215;</a>

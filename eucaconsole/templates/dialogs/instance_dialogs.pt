@@ -21,7 +21,7 @@
                     <button type="submit" id="reboot_instance_submit_button" class="button expand" i18n:translate="">Yes, Reboot</button>
                 </div>
                 <div class="dialog-progress-display hide">
-                    <span i18n:translate="">Sending request </span>&nbsp;<em><span class="busy">&nbsp;</span></em>
+                    <span i18n:translate="">Sending request </span>&nbsp;<i class="busy"></i>
                 </div>
             </form>
             <a href="#" id="reboot_instance_close_link" class="close-reveal-modal">&#215;</a>
@@ -45,7 +45,7 @@
                     <button type="submit" id="start_instance_submit_button" class="button expand" i18n:translate="">Yes, Start Instance</button>
                 </div>
                 <div class="dialog-progress-display hide">
-                    <span i18n:translate="">Sending request </span>&nbsp;<em><span class="busy">&nbsp;</span></em>
+                    <span i18n:translate="">Sending request </span>&nbsp;<i class="busy"></i>
                 </div>
             </form>
             <a href="#" id="start_instance_close_link" class="close-reveal-modal">&#215;</a>
@@ -69,7 +69,7 @@
                     <button type="submit" id="stop_instance_submit_button" class="button expand" i18n:translate="">Yes, Stop Instance</button>
                 </div>
                 <div class="dialog-progress-display hide">
-                    <span i18n:translate="">Sending request </span>&nbsp;<em><span class="busy">&nbsp;</span></em>
+                    <span i18n:translate="">Sending request </span>&nbsp;<i class="busy"></i>
                 </div>
             </form>
             <a href="#" class="close-reveal-modal">&#215;</a>
@@ -103,7 +103,7 @@
                     <button type="submit" id="terminate_instance_submit_button" class="button expand" i18n:translate="">Yes, Terminate</button>
                 </div>
                 <div class="dialog-progress-display hide">
-                    <span i18n:translate="">Sending request </span>&nbsp;<em><span class="busy">&nbsp;</span></em>
+                    <span i18n:translate="">Sending request </span>&nbsp;<i class="busy"></i>
                 </div>
             </form>
             <a href="#" id="terminate_instance_close_link" class="close-reveal-modal">&#215;</a>
@@ -209,7 +209,12 @@
                 <div tal:condition="landingpage" tal:omit-tag="">
                     <input type="hidden" name="instance_id" value="{{ instanceID }}" />
                 </div>
-                ${panel('form_field', field=associate_ip_form.ip_address, **html_attrs)}
+                <div tal:condition="instance">
+                    ${panel('form_field', field=associate_ip_form.ip_address, **html_attrs)}
+                </div>
+                <div tal:condition="not instance">
+                    ${panel('form_field', field=associate_ip_form.ip_address, ng_attrs={'model': 'associateIP', 'options': 'k as v for (k, v) in ipAddressList'}, **html_attrs)}
+                </div>
                 <div>
                     <label>
                         <span class="req">*</span>
@@ -220,7 +225,7 @@
                     <button type="submit" id="associate_ip_to_instance_submit_button" class="button expand" i18n:translate="">Associate Address with Instance</button>
                 </div>
                 <div class="dialog-progress-display hide">
-                    <span i18n:translate="">Sending request</span>&nbsp;&nbsp;<em><span class="busy">&nbsp;</span></em>
+                    <span i18n:translate="">Sending request</span>&nbsp;<i class="busy"></i>
                 </div>
             </form>
             <div tal:condition="not ip_addresses_available">
@@ -271,7 +276,7 @@
                     <button type="submit" id="disassociate_ip_to_instance_submit_button" class="button expand" i18n:translate="">Yes, Disassociate Address from Instance</button>
                 </div>
                 <div class="dialog-progress-display hide">
-                    <span i18n:translate="">Sending request </span>&nbsp;<em><span class="busy">&nbsp;</span></em>
+                    <span i18n:translate="">Sending request </span>&nbsp;<i class="busy"></i>
                 </div>
             </form>
             <a href="#" id="disassociate_ip_to_instance_close_link" class="close-reveal-modal">&#215;</a>

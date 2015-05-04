@@ -157,7 +157,7 @@ class ELBsFiltersForm(BaseSecureForm):
 
 class CreateELBForm(BaseSecureForm):
     """Create Elastic Load Balancer form"""
-    name_error_msg = _(u'Name must be between 1 and 255 characters long, and must not contain space')
+    name_error_msg = _(u'Name must be between 1 and 255 characters long, and must not contain spaces')
     name = wtforms.TextField(
         label=_(u'Name'),
         validators=[validators.InputRequired(message=name_error_msg)],
@@ -170,8 +170,10 @@ class CreateELBForm(BaseSecureForm):
     vpc_subnet = wtforms.SelectMultipleField(
         label=_(u'VPC subnets'),
     )
+    securitygroup_error_msg = _(u'Security group is required')
     securitygroup = wtforms.SelectMultipleField(
         label=_(u'Security groups'),
+        validators=[validators.InputRequired(message=securitygroup_error_msg)],
     )
     zone = wtforms.SelectMultipleField(
         label=_(u'Availability zones'),
@@ -251,7 +253,7 @@ class CreateELBForm(BaseSecureForm):
         self.failures_until_unhealthy.choices = CreateELBForm.get_failures_until_unhealthy_choices()
         self.passes_until_healthy.choices = CreateELBForm.get_passes_until_healthy_choices()
 
-        self.cross_zone_enabled.data = False
+        self.cross_zone_enabled.data = True
         # Set default choices where applicable, defaulting to first non-blank choice
         if self.cloud_type == 'aws' and len(self.zone.choices) > 1:
             self.zone.data = self.zone.choices[0]
@@ -270,8 +272,8 @@ class CreateELBForm(BaseSecureForm):
         return [
             ('HTTP', 'HTTP'),
             ('HTTPS', 'HTTPS'),
-            ('SSL', 'SSL'),
-            ('TCP', 'TCP')
+            ('TCP', 'TCP'),
+            ('SSL', 'SSL')
         ]
 
     @staticmethod
@@ -318,6 +320,7 @@ class ELBInstancesFiltersForm(BaseSecureForm):
     state = wtforms.SelectMultipleField(label=_(u'Status'))
     availability_zone = wtforms.SelectMultipleField(label=_(u'Availability zone'))
     tags = TextEscapedField(label=_(u'Tags'))
+    security_group = wtforms.SelectMultipleField(label=_(u'Security group'))
     vpc_id = wtforms.SelectMultipleField(label=_(u'VPC network'))
     subnet_id = wtforms.SelectMultipleField(label=_(u'VPC subnet'))
 
@@ -336,6 +339,7 @@ class ELBInstancesFiltersForm(BaseSecureForm):
         self.region = request.session.get('region')
         self.availability_zone.choices = self.get_availability_zone_choices(self.region)
         self.state.choices = self.get_status_choices()
+        self.security_group.choices = self.ec2_choices_manager.security_groups(add_blank=False)
         self.vpc_id.choices = self.vpc_choices_manager.vpc_networks(add_blank=False)
         if self.cloud_type == 'aws':
             self.vpc_id.choices.append(('None', _(u'No VPC')))
@@ -352,7 +356,8 @@ class ELBInstancesFiltersForm(BaseSecureForm):
                     'options': self.get_availability_zone_choices(self.region)},
                 {'name': 'subnet_id', 'label': self.subnet_id.label.text,
                     'options': self.getOptionsFromChoices(self.vpc_choices_manager.vpc_subnets(add_blank=False))},
-                {'name': 'tags', 'label': self.tags.label.text},
+                {'name': 'security_group', 'label': self.security_group.label.text,
+                    'options': self.getOptionsFromChoices(self.ec2_choices_manager.security_groups(add_blank=False))},
             ]
             vpc_choices = self.vpc_choices_manager.vpc_networks(add_blank=False)
             vpc_choices.append(('None', _(u'No VPC')))
@@ -363,7 +368,8 @@ class ELBInstancesFiltersForm(BaseSecureForm):
         else:
             self.facets = [
                 {'name': 'state', 'label': self.state.label.text, 'options': self.get_status_choices()},
-                {'name': 'tags', 'label': self.tags.label.text},
+                {'name': 'security_group', 'label': self.security_group.label.text,
+                    'options': self.getOptionsFromChoices(self.ec2_choices_manager.security_groups(add_blank=False))},
             ]
             if self.is_vpc_supported:
                 self.facets.append(
@@ -399,7 +405,7 @@ class ELBInstancesFiltersForm(BaseSecureForm):
 class CertificateForm(BaseSecureForm):
     """Create SSL Certificate form"""
     certificate_name_error_msg = _(u'Name must be between 1 and 255 characters long, \
-        and must not contain space')
+        and must not contain spaces')
     certificate_name = wtforms.TextField(
         label=_(u'Certificate name'),
         validators=[validators.InputRequired(message=certificate_name_error_msg)],
@@ -417,8 +423,10 @@ class CertificateForm(BaseSecureForm):
     certificate_chain = wtforms.TextAreaField(
         label=_(u'Certificate chain'),
     )
+    certificates_error_msg = _(u'Certificate is required')
     certificates = wtforms.SelectField(
         label=_(u'Certificate name'),
+        validators=[validators.InputRequired(message=certificates_error_msg)],
     )
 
     def __init__(self, request, conn=None, iam_conn=None, elb_conn=None, **kwargs):
@@ -444,14 +452,14 @@ class CertificateForm(BaseSecureForm):
             for cert in certificates.list_server_certificates_result.server_certificate_metadata_list:
                 choices.append((cert.arn, cert.server_certificate_name))
         if len(choices) == 0:
-            choices.append(('None', _(u'No certs')))
+            choices.append(('None', _(u'')))
         return sorted(set(choices))
 
 
 class BackendCertificateForm(BaseSecureForm):
     """Create SSL Certificate form"""
     backend_certificate_name_error_msg = _(u'Name must be between 1 and 255 characters long, \
-        and must not contain space')
+        and must not contain spaces')
     backend_certificate_name = wtforms.TextField(
         label=_(u'Certificate name'),
         validators=[validators.InputRequired(message=backend_certificate_name_error_msg)],

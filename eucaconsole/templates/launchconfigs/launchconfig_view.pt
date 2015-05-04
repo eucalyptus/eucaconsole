@@ -19,7 +19,7 @@
             <strong i18n:translate="">Details for launch configuration:</strong>
             <em>${launch_config_name}</em>
         </h3>
-        <div class="large-7 columns">
+        <div class="large-12 columns">
             <div class="panel has-actions">
                 <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="launch_config">
                     <metal:actions metal:fill-slot="actions">
@@ -38,20 +38,20 @@
                 <form>
                     <h6 i18n:translate="">Launch configuration</h6>
                     <div class="row controls-wrapper readonly">
-                        <div class="small-3 columns"><label i18n:translate="">In use?</label></div>
-                        <div class="small-9 columns value">${'yes' if in_use else 'no'}</div>
+                        <div class="large-2 small-3 columns"><label i18n:translate="">In use?</label></div>
+                        <div class="large-10 small-9 columns value">${'yes' if in_use else 'no'}</div>
                     </div>
                     <div class="row controls-wrapper readonly">
-                        <div class="small-3 columns"><label i18n:translate="">Key pair</label></div>
-                        <div class="small-9 columns value">
+                        <div class="large-2 small-3 columns"><label i18n:translate="">Key pair</label></div>
+                        <div class="large-10 small-9 columns value">
                             <a href="${request.route_path('keypair_view', subpath=launch_config.key_name)}">
                                 ${launch_config_key_name}
                             </a>
                         </div>
                     </div>
                     <div class="row controls-wrapper readonly">
-                        <div class="small-3 columns"><label i18n:translate="">Security group(s)</label></div>
-                        <div class="small-9 columns value">
+                        <div class="large-2 small-3 columns"><label i18n:translate="">Security group(s)</label></div>
+                        <div class="large-10 small-9 columns value">
                             <div tal:repeat="security_group security_groups">
                                 <i tal:condition="not security_group.rule_count" class="fi-alert" data-tooltip="" i18n:attributes="title"
                                     title="Warning: No rules defined for security group. Instance may be unreachable."></i>
@@ -62,71 +62,71 @@
                         </div>
                     </div>
                     <div tal:condition="is_vpc_supported" class="row controls-wrapper readonly">
-                        <div class="small-3 columns"><label i18n:translate="">VPC IP Assignment</label></div>
-                        <div class="small-9 columns value">${launch_config_vpc_ip_assignment}</div>
+                        <div class="large-2 small-3 columns"><label i18n:translate="">VPC IP Assignment</label></div>
+                        <div class="large-10 small-9 columns value">${launch_config_vpc_ip_assignment}</div>
                     </div>
                     <div class="row controls-wrapper readonly"
                          tal:define="monitored launch_config.instance_monitoring.enabled == 'true'">
-                        <div class="small-3 columns"><label i18n:translate="">Monitoring</label></div>
-                        <div class="small-9 columns value">
+                        <div class="large-2 small-3 columns"><label i18n:translate="">Monitoring</label></div>
+                        <div class="large-10 small-9 columns value">
                             <span tal:condition="monitored" i18n:translate="">enabled</span>
                             <span tal:condition="not monitored" i18n:translate="">disabled</span>
                         </div>
                     </div>
                     <div class="row controls-wrapper readonly">
-                        <div class="small-3 columns"><label i18n:translate="">Creation time</label></div>
-                        <div class="small-9 columns value" ng-cloak="">
+                        <div class="large-2 small-3 columns"><label i18n:translate="">Creation time</label></div>
+                        <div class="large-10 small-9 columns value" ng-cloak="">
                             {{ '${lc_created_time}' | date: '${layout.angular_date_format}' }}
                         </div>
                     </div>
                     <hr />
                     <h6 i18n:translate="">Instance</h6>
                     <div class="row controls-wrapper readonly">
-                        <div class="small-3 columns"><label i18n:translate="">Instance type</label></div>
-                        <div class="small-9 columns value">${launch_config.instance_type}</div>
+                        <div class="large-2 small-3 columns"><label i18n:translate="">Instance type</label></div>
+                        <div class="large-10 small-9 columns value">${launch_config.instance_type}</div>
                     </div>
                     <div tal:condition="image">
                         <div class="row controls-wrapper readonly">
-                            <div class="small-3 columns"><label i18n:translate="">Image</label></div>
-                            <div class="small-9 columns value">
-                                <a href="${request.route_path('image_view', id=image.id)}">${image.name or image.id}</a>
+                            <div class="large-2 small-3 columns"><label i18n:translate="">Image</label></div>
+                            <div class="large-10 small-9 columns value">
+                                <a href="${request.route_path('image_view', id=image.id)}" ng-non-bindable="">${image.name or image.id}</a>
                             </div>
                         </div>
                         <div class="row controls-wrapper readonly" tal:condition="image.id != image.name">
-                            <div class="small-3 columns"><label i18n:translate="">Image ID</label></div>
-                            <div class="small-9 columns value">${image.id}</div>
+                            <div class="large-2 small-3 columns"><label i18n:translate="">Image ID</label></div>
+                            <div class="large-10 small-9 columns value">${image.id}</div>
                         </div>
                         <div class="row controls-wrapper readonly">
-                            <div class="small-3 columns"><label i18n:translate="">Root device</label></div>
-                            <div class="small-9 columns value">${image.root_device_type}</div>
+                            <div class="large-2 small-3 columns"><label i18n:translate="">Root device</label></div>
+                            <div class="large-10 small-9 columns value">${image.root_device_type}</div>
                         </div>
                         <div class="row controls-wrapper readonly">
-                            <div class="small-3 columns"><label i18n:translate="">Platform</label></div>
-                            <div class="small-9 columns value">${image.platform.name}</div>
+                            <div class="large-2 small-3 columns"><label i18n:translate="">Platform</label></div>
+                            <div class="large-10 small-9 columns value">${image.platform.name}</div>
                         </div>
                         <div class="row controls-wrapper readonly" tal:condition="launch_config.kernel_id">
-                            <div class="small-3 columns"><label i18n:translate="">Kernel ID</label></div>
-                            <div class="small-9 columns value">${launch_config.kernel_id}</div>
+                            <div class="large-2 small-3 columns"><label i18n:translate="">Kernel ID</label></div>
+                            <div class="large-10 small-9 columns value">${launch_config.kernel_id}</div>
                         </div>
                         <div class="row controls-wrapper readonly" tal:condition="launch_config.ramdisk_id">
-                            <div class="small-3 columns"><label i18n:translate="">Ramdisk ID</label></div>
-                            <div class="small-9 columns value">${launch_config.ramdisk_id}</div>
+                            <div class="large-2 small-3 columns"><label i18n:translate="">Ramdisk ID</label></div>
+                            <div class="large-10 small-9 columns value">${launch_config.ramdisk_id}</div>
                         </div>
                         <div class="row controls-wrapper readonly">
-                            <div class="small-3 columns"><label i18n:translate="">Image manifest</label></div>
-                            <div class="small-9 columns value breakword">${image.location}</div>
+                            <div class="large-2 small-3 columns"><label i18n:translate="">Image manifest</label></div>
+                            <div class="large-10 small-9 columns value breakword">${image.location}</div>
                         </div>
                         <div class="row controls-wrapper readonly" tal:condition="role">
-                            <div class="small-3 columns"><label i18n:translate="">Role</label></div>
-                            <div class="small-9 columns value">
+                            <div class="large-2 small-3 columns"><label i18n:translate="">Role</label></div>
+                            <div class="large-10 small-9 columns value">
                                 <a href="/roles/${role}">${role}</a>
                             </div>
                         </div>
                         <div class="row controls-wrapper readonly" tal:condition="launch_config.userdata_type">
-                            <div class="small-3 columns">
+                            <div class="large-2 small-3 columns">
                                 <label i18n:translate="">User data</label>
                             </div>
-                            <div class="small-9 columns value">
+                            <div class="large-10 small-9 columns value">
                                 <textarea diabled="disabled" tal:condition="launch_config.userdata_istext">${launch_config.user_data}</textarea>
                                 <span tal:condition="not launch_config.userdata_istext">${launch_config.userdata_type}</span>
                             </div>
@@ -135,13 +135,13 @@
                     <div tal:condition="not image" style="text-align:center;">
                         <strong style="color:red;" i18n:translate="">Image not found</strong>
                     </div>
-                    <hr/>
+                    <hr tal:condition="launch_config.block_device_mappings" />
                     ${panel('bdmapping_editor', image=image, launch_config=launch_config, read_only=True)}
                 </form>
                 <div>&nbsp;</div>
             </div>
         </div>
-        <div class="large-5 columns">
+        <div class="large-12 columns">
             <metal:block metal:use-macro="layout.global_macros['help_expando']" />
             <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                 <!--! Help goes here -->

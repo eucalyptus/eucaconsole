@@ -7,6 +7,7 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
     .controller('ELBListenerEditorCtrl', function ($scope, $timeout, eucaHandleError, eucaUnescapeJson) {
         $scope.isListenerNotComplete = true;
         $scope.hasDuplicatedListener = false;
+        $scope.hasDuplicatedFromPorts = false;
         $scope.listenerArray = []; 
         $scope.protocolList = []; 
         $scope.toProtocolList = []; 
@@ -18,10 +19,13 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
         $scope.isFromProtocolValid = false;
         $scope.classFromPortDiv = '';
         $scope.classToPortDiv = '';
+        $scope.classDuplicatedFromPortDiv = '';
         $scope.classDuplicatedListenerDiv = '';
         $scope.classNoListenerWarningDiv = '';
         $scope.elbListenerTextarea = undefined;
         $scope.serverCertificateName = '';
+        $scope.serverCertificateARN = '';
+        $scope.serverCertificateARNBlock = {};
         $scope.addListenerButtonClass = 'disabled';
         $scope.initEditor = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
@@ -72,6 +76,7 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
                 $scope.checkAddListenerButtonCondition();
             });
             $scope.$watch('fromPort', function(){
+                $scope.checkForDuplicatedFromPorts();
                 $scope.checkAddListenerButtonCondition(); 
                 $scope.validateFromProtocol();
             });
@@ -90,6 +95,16 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
             });
             $scope.$watch('isListenerNotComplete', function () {
                 $scope.setAddListenerButtonClass();
+            });
+            $scope.$watch('hasDuplicatedFromPort', function () {
+                $scope.setAddListenerButtonClass(); 
+                $scope.classDuplicatedFromPortDiv = '';
+                // timeout is needed for the DOM update to complete
+                $timeout(function () {
+                    if ($scope.hasDuplicatedFromPort === true) {
+                        $scope.classDuplicatedFromPortDiv = 'error';
+                    }
+                });
             });
             $scope.$watch('hasDuplicatedListener', function () {
                 $scope.setAddListenerButtonClass(); 
@@ -110,10 +125,21 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
             $scope.$on('eventUpdateCertificateName', function ($event, name) {
                 $scope.serverCertificateName = name;
             });
+            $scope.$on('eventUpdateCertificateARN', function ($event, arn, block) {
+                $scope.serverCertificateARN = arn;
+                $scope.serverCertificateARNBlock = block;
+            });
+            $scope.$on('eventUseThisCertificate', function ($event, arn, name) {
+                $scope.serverCertificateARN = arn;
+                $scope.serverCertificateName = name;
+                $scope.handleEventUseThisCertificate();
+            });
         };
         // In case of the duplicated listener, add the 'disabled' class to the button
         $scope.setAddListenerButtonClass = function () {
-            if( $scope.isListenerNotComplete === true || $scope.hasDuplicatedListener === true){
+            if ($scope.isListenerNotComplete === true ||
+                $scope.hasDuplicatedFromPort === true ||
+                $scope.hasDuplicatedListener === true) {
                 $scope.addListenerButtonClass = 'disabled';
             } else {
                 $scope.addListenerButtonClass = '';
@@ -123,6 +149,15 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
             $scope.fromProtocol = $scope.protocolList[0];
             $scope.toProtocol = $scope.protocolList[0];
             $scope.isFromProtocolValid = false;
+        };
+        $scope.checkForDuplicatedFromPorts = function () {
+            $scope.hasDuplicatedFromPort = false;
+            angular.forEach($scope.listenerArray, function (block) {
+                if (block.fromPort === $scope.fromPort) {
+                    $scope.hasDuplicatedFromPort = true;
+                }
+            });
+            return;
         };
         $scope.checkForDuplicatedListeners = function () {
             $scope.hasDuplicatedListener = false;
@@ -153,6 +188,10 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
                 'toProtocol': $scope.toProtocol.value,
                 'toPort': $scope.toPort,
             };
+            if (block.fromProtocol === 'HTTPS' || block.fromProtocol === 'SSL') {
+                block.certificateARN = $scope.serverCertificateARN;
+                block.certificateName = $scope.serverCertificateName;
+            }
             return block;
         };
         $scope.setInitialListenerArray = function (listener_list) {
@@ -171,22 +210,35 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
             $scope.checkAddListenerButtonCondition(); 
             // timeout is needed for all DOM updates and validations to be complete
             $timeout(function () {
-                if ($scope.isListenerNotComplete === true || $scope.hasDuplicatedListener === true) {
+                if ($scope.isListenerNotComplete === true ||
+                    $scope.hasDuplicatedFromPort === true ||
+                    $scope.hasDuplicatedListener === true) {
                     return false;
                 }
                 // Add the listener 
                 $scope.listenerArray.push($scope.createListenerArrayBlock());
                 $scope.syncListeners();
-                $scope.$emit('listenerArrayUpdate');
+                $scope.$emit('eventUpdateListenerArray', $scope.listenerArray);
             });
         };
         $scope.removeListener = function (index) {
             $scope.listenerArray.splice(index, 1);
             $scope.syncListeners();
-            $scope.$emit('listenerArrayUpdate');
+            $scope.$emit('eventUpdateListenerArray', $scope.listenerArray);
             if ($scope.listenerArray.length === 0) {
                 $scope.classNoListenerWarningDiv = 'error';
             }
+        };
+        $scope.cancelListener = function ($event) {
+            $event.preventDefault();
+            $scope.resetValues();
+            $scope.classDuplicatedFromPortDiv = '';
+            $scope.classDuplicatedListenerDiv = '';
+            $scope.classNoListenerWarningDiv = '';
+            $scope.addListenerButtonClass = 'disabled';
+            $timeout(function () {
+                $scope.$emit('requestValidationCheck');
+            });
         };
         $scope.syncListeners = function () {
             $scope.elbListenerTextarea.val(JSON.stringify($scope.listenerArray));
@@ -281,24 +333,36 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
             return false;
         };
         $scope.showServerCertificateNameLink = function (fromProtocol) {
-            if (fromProtocol === 'HTTPS' ||
-                fromProtocol === 'SSL') { 
+            if (fromProtocol === 'HTTPS' || fromProtocol === 'SSL') { 
                 return true;
             }
             return false;
         };
         $scope.showBackendCertificateLink = function (fromProtocol, toProtocol) {
-            if (fromProtocol === 'HTTPS' ||
-                fromProtocol === 'SSL') {
+            if (fromProtocol === 'HTTPS' || fromProtocol === 'SSL') {
                 return false;
-            } else if (toProtocol === 'HTTPS' ||
-                       toProtocol === 'SSL') {
+            } else if (toProtocol === 'HTTPS' || toProtocol === 'SSL') {
                 return true;
             }
             return false;
         };
-        $scope.openCertificateModal = function (fromProtocol, toProtocol, certificateTab) {
-            $scope.$emit('eventOpenSelectCertificateModal', fromProtocol, toProtocol, certificateTab);
+        $scope.openCertificateModal = function (fromProtocol, toProtocol, fromPort, toPort) {
+            var certificateTab = 'SSL';
+            if (fromProtocol !== 'HTTPS' && fromProtocol !== 'SSL') {
+                certificateTab = 'BACKEND';
+            }
+            $scope.$emit('eventOpenSelectCertificateModal', fromProtocol, toProtocol, fromPort, toPort, certificateTab);
+        };
+        $scope.handleEventUseThisCertificate = function () {
+            angular.forEach($scope.listenerArray, function (block) {
+                if (block.fromPort === $scope.serverCertificateARNBlock.fromPort &&
+                    block.toPort === $scope.serverCertificateARNBlock.toPort) {
+                    block.certificateARN = $scope.serverCertificateARN;
+                    block.certificateName = $scope.serverCertificateName;
+                    $scope.elbListenerTextarea.val(JSON.stringify($scope.listenerArray));
+                    $scope.$emit('eventUpdateListenerArray', $scope.listenerArray);
+                }
+            });
         };
     })
 ;

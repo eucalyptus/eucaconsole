@@ -452,7 +452,7 @@ class CreateELBView(BaseView):
         self.backend_certificate_form = BackendCertificateForm(self.request, conn=self.ec2_conn,
                                                                iam_conn=self.iam_conn, elb_conn=self.elb_conn,
                                                                formdata=self.request.params or None)
-        filter_keys = ['id', 'name', 'placement', 'state', 'tags', 'vpc_subnet_display', 'vpc_name']
+        filter_keys = ['id', 'name', 'placement', 'state', 'security_groups', 'vpc_subnet_display', 'vpc_name']
         filters_form = ELBInstancesFiltersForm(
             self.request, ec2_conn=self.ec2_conn, autoscale_conn=self.autoscale_conn,
             iam_conn=None, vpc_conn=self.vpc_conn,
@@ -493,12 +493,12 @@ class CreateELBView(BaseView):
             tab_list = ({'title': 'General', 'render': True, 'display_id': 1},
                         {'title': 'Network', 'render': True, 'display_id': 2},
                         {'title': 'Instances', 'render': True, 'display_id': 3},
-                        {'title': 'Health Check', 'render': True, 'display_id': 4})
+                        {'title': 'Health Check & Advanced', 'render': True, 'display_id': 4})
         else:
             tab_list = ({'title': 'General', 'render': True, 'display_id': 1},
                         {'title': 'Network', 'render': False, 'display_id': ''},
                         {'title': 'Instances', 'render': True, 'display_id': 2},
-                        {'title': 'Health Check', 'render': True, 'display_id': 3})
+                        {'title': 'Health Check & Advanced', 'render': True, 'display_id': 3})
         return tab_list
 
     def get_protocol_list(self):
@@ -555,15 +555,18 @@ class CreateELBView(BaseView):
 
     @view_config(route_name='elb_create', request_method='POST', renderer=TEMPLATE)
     def elb_create(self):
+        # Ignore the security group requirement in case on Non-VPC system
+        vpc_network = self.request.params.get('vpc_network') or None
+        if vpc_network == 'None':
+            vpc_network = None
+        if vpc_network is None:
+            del self.create_form.securitygroup
         if self.create_form.validate():
             name = self.request.params.get('name')
             elb_listener = self.request.params.get('elb_listener')
             certificate_arn = self.request.params.get('certificate_arn') or None
             listeners_args = self.get_listeners_args()
-            vpc_network = self.request.params.get('vpc_network') or None
-            if vpc_network == 'None':
-                vpc_network = None
-            vpc_subnet = self.request.params.get('vpc_subnet') or None
+            vpc_subnet = self.request.params.getall('vpc_subnet') or None
             if vpc_subnet == 'None':
                 vpc_subnet = None
             securitygroup = self.request.params.getall('securitygroup') or None
@@ -583,7 +586,8 @@ class CreateELBView(BaseView):
                                   complex_listeners=listeners_args)
                     self.elb_conn.create_load_balancer(name, None, **params)
                 self.handle_configure_health_check(name)
-                self.elb_conn.register_instances(name, instances)
+                if instances is not None:
+                    self.elb_conn.register_instances(name, instances)
                 if cross_zone_enabled == 'y':
                     self.elb_conn.modify_lb_attribute(name, 'crossZoneLoadBalancing', True)
                 if backend_certificates is not None and backend_certificates != '[]':
@@ -600,7 +604,6 @@ class CreateELBView(BaseView):
 
     def get_listeners_args(self):
         listeners_json = self.request.params.get('elb_listener')
-        certificate_arn = self.request.params.get('certificate_arn') or None
         listeners = json.loads(listeners_json) if listeners_json else []
         listeners_args = []
 
@@ -609,7 +612,8 @@ class CreateELBView(BaseView):
             from_port = listener.get('fromPort')
             to_protocol = listener.get('toProtocol')
             to_port = listener.get('toPort')
-            if from_protocol == 'HTTPS' or from_protocol == 'SSL':
+            certificate_arn = listener.get('certificateARN') or None
+            if certificate_arn is not None:
                 listeners_args.append((from_port, to_port, from_protocol, to_protocol, certificate_arn))
             else:
                 listeners_args.append((from_port, to_port, from_protocol, to_protocol))

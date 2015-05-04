@@ -3,8 +3,8 @@
     <div ng-repeat="groupID in securityGroups" ng-init="isRuleExpanded[groupID] = false;">
         <div ng-show="selectedGroupRules[groupID].length > 0 &amp;&amp; selectedGroupRules[groupID][0].ip_protocol != '-1'">
             <div class="row">
-                <div class="small-${leftcol_width} columns">&nbsp;</div>
-                <div class="small-${rightcol_width} columns rules-title">
+                <div class="large-${leftcol_width_large} small-${leftcol_width} columns">&nbsp;</div>
+                <div class="large-${rightcol_width_large} small-${rightcol_width} columns rules-title">
                     <a ng-click="isRuleExpanded[groupID] = !isRuleExpanded[groupID]">
                         <i class="fi-plus" ng-show="!isRuleExpanded[groupID]"></i>
                         <i class="fi-minus" ng-show="isRuleExpanded[groupID]"></i>
@@ -17,13 +17,13 @@
             </div>
             <div class="row controls-wrapper rules-display" ng-repeat="rule in selectedGroupRules[groupID] | filter: {rule_type: 'inbound'}" ng-show="isRuleExpanded[groupID]">
                 <div ng-if="$first">
-                    <div class="small-${leftcol_width} columns">&nbsp;</div>
-                    <div class="small-${rightcol_width} columns rules-title">
+                    <div class="large-${leftcol_width_large} small-${leftcol_width} columns">&nbsp;</div>
+                    <div class="large-${rightcol_width_large} small-${rightcol_width} columns rules-title">
                         <span id="security-group-rule-type" i18n:translate="">Inbound:</span>
                     </div>
                 </div>
-                <div class="small-${leftcol_width} columns">&nbsp;</div>
-                <div class="small-${rightcol_width} columns">
+                <div class="large-${leftcol_width_large} small-${leftcol_width} columns">&nbsp;</div>
+                <div class="large-${rightcol_width_large} small-${rightcol_width} columns">
                     <strong i18n:translate="">Rule</strong>:
                     {{ rule.ip_protocol.toUpperCase() }}
                     ({{ rule.from_port }}<span ng-show="rule.to_port != rule.from_port"> - {{ rule.to_port }}</span>)
@@ -35,13 +35,13 @@
             </div>
             <div class="row controls-wrapper rules-display" ng-repeat="rule in selectedGroupRules[groupID] | filter: {rule_type: 'outbound'}" ng-show="isRuleExpanded[groupID]">
                 <div ng-if="$first">
-                    <div class="small-${leftcol_width} columns">&nbsp;</div>
-                    <div class="small-${rightcol_width} columns rules-title">
+                    <div class="large-${leftcol_width_large} small-${leftcol_width} columns">&nbsp;</div>
+                    <div class="large-${rightcol_width_large} small-${rightcol_width} columns rules-title">
                         <span id="security-group-rule-type" i18n:translate="">Outbound:</span>
                     </div>
                 </div>
-                <div class="small-${leftcol_width} columns">&nbsp;</div>
-                <div class="small-${rightcol_width} columns">
+                <div class="large-${leftcol_width_large} small-${leftcol_width} columns">&nbsp;</div>
+                <div class="large-${rightcol_width_large} small-${rightcol_width} columns">
                     <strong i18n:translate="">Rule</strong>:
                     {{ rule.ip_protocol.toUpperCase() }}
                     ({{ rule.from_port }}<span ng-show="rule.to_port != rule.from_port"> - {{ rule.to_port }}</span>)
@@ -54,8 +54,8 @@
         </div>
         <div ng-show="selectedGroupRules[groupID].length === 0 || selectedGroupRules[groupID][0].ip_protocol == '-1'">
             <div class="row">
-                <div class="small-${leftcol_width} columns">&nbsp;</div>
-                <div class="small-${rightcol_width} columns rules-title">
+                <div class="large-${leftcol_width_large} small-${leftcol_width} columns">&nbsp;</div>
+                <div class="large-${rightcol_width_large} small-${rightcol_width} columns rules-title">
                     <a ng-click="isRuleExpanded[groupID] = !isRuleExpanded[groupID]">
                         <i class="fi-plus" ng-show="!isRuleExpanded[groupID]"></i>
                         <i class="fi-minus" ng-show="isRuleExpanded[groupID]"></i>
@@ -69,8 +69,8 @@
                 </div>
             </div>
             <div class="row rules-display" ng-show="isRuleExpanded[groupID]">
-                <div class="small-${leftcol_width} columns">&nbsp;</div>
-                <div class="small-${rightcol_width} columns rules-title">
+                <div class="large-${leftcol_width_large} small-${leftcol_width} columns">&nbsp;</div>
+                <div class="large-${rightcol_width_large} small-${rightcol_width} columns rules-title">
                     <p class="normal-word-break">
                         <strong i18n:translate="">WARNING: </strong>
                         <span i18n:translate="">
