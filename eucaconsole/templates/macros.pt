@@ -57,14 +57,15 @@
                 </a>
                 &nbsp;
                 <span ng-show="!itemsLoading" class="items-found">
-                    <strong>{{ items.length }}</strong> found
+                    <strong>{{ items.length }}</strong>
+                    <span i18n:translate="">found</span>
                 </span>
             </div>
         </div>
-        <div class="loading" ng-show="itemsLoading"><i class="busy" ></i></div>
+        <div class="loading" ng-show="itemsLoading"><i class="busy"></i></div>
         <div id="gridview" class="gridwrapper" ng-if="landingPageView == 'gridview' &amp;&amp; !itemsLoading" ng-cloak="">
             <div ng-show="!itemsLoading">
-                <div data-alert="alert" class="alert-box secondary" ng-show="items.length == 0" ng-cloak="1">
+                <div data-alert="alert" class="alert-box secondary" ng-show="items.length == 0" ng-cloak="1" i18n:translate="">
                     No items were found
                     <a href="#" class="close">&times;</a>
                 </div>
@@ -255,6 +256,7 @@
         </ul>
     </div>
 </metal:actionsmenu>
+
 
 <!--! Help content expando ===== -->
 <metal:helpexpando metal:define-macro="help_expando">

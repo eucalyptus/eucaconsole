@@ -1,0 +1,73 @@
+/* @fileOverview single Instance page CSS */
+
+@import "../includes/eucavariables";
+
+.cloudwatch-charts {
+    .toprow {
+        @include flexbox-mixin;
+        .blurb {
+            @include flexgrow-mixin(1);
+        }
+        .actions {
+            display: inline-block;
+        }
+        label {
+            font-weight: bold;
+            line-height: 2.2rem;
+            margin-right: 1rem;
+        }
+        .duration-input {
+            width: 200px;
+        }
+        .field-wrapper {
+            display: inline-block;
+            margin-right: 2rem;
+            select {
+                width: 150px;
+                margin-left: 0;
+            }
+        }
+    }
+}
+
+.chart-wrapper {
+    h6 {
+        color: $euca-darkblue;
+        margin-bottom: 0;
+        padding: 8px 0 4px 8px;
+        border: 1px solid $euca-lightgrey;
+        border-bottom: none;
+        .busy {
+            margin-left: 1rem;
+            color: $euca-grey;
+            max-width: 1rem;
+            max-height: 1rem;
+        }
+    }
+    svg {
+        width: 100%;
+        height: 300px;
+        border: 1px solid $euca-lightgrey;
+        border-top: none;
+    }
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.large-chart-wrapper {
+    svg {
+        width: 100%;
+        height: 500px;
+    }
+    .busy.loading {
+        position: absolute;
+        top: 50%;
+        left: 48%;
+        width: 3rem;
+        height: 3rem;
+        font-size: 3rem;
+        color: $euca-grey;
+    }
+}
+

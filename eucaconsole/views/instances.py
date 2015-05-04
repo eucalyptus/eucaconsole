@@ -29,10 +29,11 @@ Pyramid views for Eucalyptus and AWS instances
 
 """
 import base64
-from operator import attrgetter
-import simplejson as json
-from M2Crypto import RSA
 import re
+import simplejson as json
+
+from M2Crypto import RSA
+from operator import attrgetter
 from urllib2 import HTTPError, URLError
 
 from boto.exception import BotoServerError
@@ -43,11 +44,16 @@ from boto.ec2.networkinterface import NetworkInterfaceCollection, NetworkInterfa
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from pyramid.view import view_config
 
+from ..constants.cloudwatch import (
+    MONITORING_DURATION_CHOICES, METRIC_TITLE_MAPPING, STATISTIC_CHOICES, GRANULARITY_CHOICES,
+    DURATION_GRANULARITY_CHOICES_MAPPING
+)
+from ..constants.instances import INSTANCE_MONITORING_CHARTS_LIST
 from ..forms.images import ImagesFiltersForm
 from ..forms.instances import (
     InstanceForm, AttachVolumeForm, DetachVolumeForm, LaunchInstanceForm, LaunchMoreInstancesForm,
     RebootInstanceForm, StartInstanceForm, StopInstanceForm, TerminateInstanceForm, InstanceCreateImageForm,
-    BatchTerminateInstancesForm, InstancesFiltersForm, InstanceTypeForm,
+    BatchTerminateInstancesForm, InstancesFiltersForm, InstanceTypeForm, InstanceMonitoringForm,
     AssociateIpToInstanceForm, DisassociateIpFromInstanceForm)
 from ..forms import ChoicesManager, GenerateFileForm
 from ..forms.keypairs import KeyPairForm
@@ -71,11 +77,11 @@ class BaseInstanceView(BaseView):
         self.vpc_conn = self.get_connection(conn_type='vpc')
         self.is_vpc_supported = BaseView.is_vpc_supported(request)
 
-    def get_instance(self, instance_id=None):
+    def get_instance(self, instance_id=None, reservations=None):
         instance_id = instance_id or self.request.matchdict.get('id')
         if instance_id:
             try:
-                reservations_list = self.conn.get_all_reservations(instance_ids=[instance_id])
+                reservations_list = reservations or self.conn.get_all_reservations(instance_ids=[instance_id])
                 reservation = reservations_list[0] if reservations_list else None
                 if reservation:
                     instance = reservation.instances[0]
@@ -966,6 +972,80 @@ class InstanceVolumesView(BaseInstanceView):
         volumes = [vol for vol in self.volumes if vol.attach_data.instance_id == self.instance.id]
         # Sort by most recently attached first
         return sorted(volumes, key=attrgetter('attach_data.attach_time'), reverse=True) if volumes else []
+
+
+class InstanceMonitoringView(BaseInstanceView):
+    VIEW_TEMPLATE = '../templates/instances/instance_monitoring.pt'
+
+    def __init__(self, request, instance=None):
+        super(InstanceMonitoringView, self).__init__(request)
+        self.request = request
+        self.cw_conn = self.get_connection(conn_type='cloudwatch')
+        self.instance_id = self.request.matchdict.get('id')
+        self.location = self.request.route_path('instance_monitoring', id=self.instance_id)
+        with boto_error_handler(self.request):
+            # Note: We're fetching reservations here since calling self.get_instance() in the context manager
+            # will return a 500 error instead of invoking the session timeout handler
+            reservations = self.conn.get_all_reservations(instance_ids=[self.instance_id]) if self.conn else []
+        self.instance = instance or self.get_instance(instance_id=self.instance_id, reservations=reservations)
+        self.instance_name = TaggedItemView.get_display_name(self.instance)
+        self.monitoring_form = InstanceMonitoringForm(self.request, formdata=self.request.params or None)
+        self.monitoring_enabled = self.instance.monitoring_state == 'enabled' if self.instance else False
+        self.render_dict = dict(
+            instance=self.instance,
+            instance_name=self.instance_name,
+            monitoring_enabled=self.monitoring_is_enabled(),
+            detailed_monitoring_enabled=self.detailed_monitoring_is_enabled(),
+            monitoring_form=self.monitoring_form,
+            metric_title=METRIC_TITLE_MAPPING,
+            duration_choices=MONITORING_DURATION_CHOICES,
+            statistic_choices=STATISTIC_CHOICES,
+            controller_options_json=self.get_controller_options_json()
+        )
+
+    @view_config(route_name='instance_monitoring', renderer=VIEW_TEMPLATE, request_method='GET')
+    def instance_monitoring(self):
+        if self.instance is None:
+            raise HTTPNotFound()
+        return self.render_dict
+
+    @view_config(route_name='instance_monitoring_update', renderer=VIEW_TEMPLATE, request_method='POST')
+    def instance_monitoring_update(self):
+        if self.monitoring_form.validate():
+            if self.instance:
+                location = self.request.route_path('instance_monitoring', id=self.instance.id)
+                with boto_error_handler(self.request, location):
+                    monitoring_state = self.instance.monitoring_state
+                    action = 'disabled' if monitoring_state == 'enabled' else 'enabled'
+                    self.log_request(_(u"Monitoring for instance {0} {1}").format(self.instance.id, action))
+                    if monitoring_state == 'disabled':
+                        self.conn.monitor_instances([self.instance.id])
+                    else:
+                        self.conn.unmonitor_instances([self.instance.id])
+                    msg = _(
+                        u'Request successfully submitted.  It may take a moment for the monitoring status to update')
+                    self.request.session.flash(msg, queue=Notification.SUCCESS)
+                return HTTPFound(location=location)
+
+    def monitoring_is_enabled(self):
+        if self.cloud_type == 'aws':
+            return True
+        return self.instance.monitoring_state == 'enabled' if self.instance else False
+
+    def detailed_monitoring_is_enabled(self):
+        if self.cloud_type == 'euca':
+            return False
+        return self.instance.monitoring_state == 'enabled' if self.instance else False
+
+    def get_controller_options_json(self):
+        if not self.instance:
+            return ''
+        return BaseView.escape_json(json.dumps({
+            'metric_title_mapping': METRIC_TITLE_MAPPING,
+            'charts_list': INSTANCE_MONITORING_CHARTS_LIST,
+            'granularity_choices': GRANULARITY_CHOICES,
+            'duration_granularities_mapping': DURATION_GRANULARITY_CHOICES_MAPPING,
+        }))
 
 
 class InstanceLaunchView(BaseInstanceView, BlockDeviceMappingItemView):
