@@ -41,6 +41,9 @@ class ELBForm(BaseSecureForm):
     idle_timeout = wtforms.TextField(
         label=_(u'Idle timeout'),
     )
+    idle_timeout_help_text = _(u'Amount of time a connection to an instance can be idle \
+                                 before the load balancer closes it. If keep alive is set for instances, \
+                                 keep alive value should be set higher than idle timeout.')
     securitygroup_error_msg = _(u'Security groups are required')
     securitygroup = wtforms.SelectMultipleField(
         label=_(u'Security groups'),
@@ -93,6 +96,7 @@ class ELBForm(BaseSecureForm):
         self.cloud_type = request.session.get('cloud_type', 'euca')
         self.is_vpc_supported = BaseView.is_vpc_supported(request)
         self.security_groups = securitygroups or []
+        self.idle_timeout.label_help_text = self.idle_timeout_help_text
         self.set_error_messages()
         self.set_choices()
         if elb is not None:
