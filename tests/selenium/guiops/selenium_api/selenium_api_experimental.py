@@ -251,3 +251,56 @@ class SeleniumApi_experimental():
         except NoSuchElementException:
             return False
         return True
+
+    def wait_for_visible_by_id(self, element_id):
+        """
+        Checks visibility of an element using its id.
+        Keeps checking for visibility until max number of trials self.retry is reached.
+        :param element_id:
+        """
+
+        print "Executing wait_for_visible_by_id( "+element_id+" )"
+
+        self.wait_for_element_present_by_id(element_id)
+        is_visible = False
+        for i in range(self.retry):
+            is_visible = self.driver.find_element_by_id(element_id).is_displayed()
+            if is_visible is True:
+                print "Element " + element_id + " is visible"
+                break
+            time.sleep(1)
+        if is_visible is False:
+            print "Element " + element_id + " is not visible"
+
+    def wait_for_visible_by_css_selector(self, css):
+        """
+        Checks visibility of an element using its css.
+        Keeps checking for visibility until max number of trials self.retry is reached.
+        :param self:
+        :param css:
+        """
+        is_visible = False
+        for i in range(self.retry):
+            is_visible = self.driver.find_element_by_css_selector(css).is_displayed()
+            if is_visible is True:
+                print "Element " + css + " is visible"
+                break
+            time.sleep(1)
+        if is_visible is False:
+            print "Element " + css + " is not visible"
+
+    def wait_for_visible_by_xpath(self, xpath):
+        """
+        Checks visibility of an element using its xpath.
+        Keeps checking for visibility until max number of trials self.retry is reached.
+        :param xpath:
+        """
+        is_visible = False
+        for i in range(self.retry):
+            is_visible = self.driver.find_element_by_xpath(xpath).is_displayed()
+            if is_visible is True:
+                print "Element " + xpath + " is visible"
+                break
+            time.sleep(1)
+        if is_visible is False:
+            print "Element " + xpath + " is not visible"

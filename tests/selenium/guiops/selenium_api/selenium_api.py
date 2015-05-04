@@ -27,8 +27,8 @@ class SeleniumApi():
 
 
     retry = 2
-    timeout_to_locate_element_in_seconds = 30
-    timeout_to_determine_visibility_in_seconds = 30
+    timeout_to_locate_element_in_seconds = 10
+    timeout_to_determine_visibility_in_seconds = 10
     timeout_to_determine_if_clickable_in_seconds = 20
 
     #def NoOp(self):
@@ -54,15 +54,13 @@ class SeleniumApi():
         """
         print "Executing wait_for_element_present_by_id_experimental("+element_id+")"
         print "Looking for element id = " + element_id + " in the DOM."
-        print "Timeout is set to " + str(self.timeout_to_locate_element_in_seconds) + " seconds"
-
         try:
             WebDriverWait(self.driver, self.timeout_to_locate_element_in_seconds).until(EC.presence_of_element_located((By.ID, element_id)))
-            print "Found element {0}".format(element_id)
+            print "Found element by id = '{0}'".format(element_id)
         except NoSuchElementException, nse:
-            print "Did not find element({0})".format(element_id)
+            print "Did not find element by id = '{0}'".format(element_id)
         except TimeoutException, t:
-            print "ERROR: Timed out. Did not find element {0}.".format(element_id)
+            print "ERROR: Timed out. Did not find element by id = '{0}'.".format(element_id)
             return 0
 
     def wait_for_clickable_by_id(self, element_id):
@@ -84,75 +82,14 @@ class SeleniumApi():
         :param element_id:
         """
 
-        print "Executing wait_for_visible_by_id_experimental ({0})".format(element_id)
+        print "Executing wait_for_visible_by_id_experimental('{0}')".format(element_id)
 
         try:
+            self.wait_for_element_present_by_id(element_id)
             WebDriverWait(self.driver, self.timeout_to_determine_visibility_in_seconds).until(EC.visibility_of_element_located((By.ID,element_id)))
-            print "Element by id={0} was located in DOM and is visible.".format(element_id)
+            print "Element by id= '{0}' was located in DOM and is visible.".format(element_id)
         except TimeoutException:
-            print "ERROR: Timed out."
-            try:
-                EC.presence_of_element_located((By.ID,element_id))
-                try:
-                    EC.visibility_of_element_located((By.ID,element_id))
-                except ElementNotVisibleException:
-                    print "ERROR: Element id={0} found in DOM but NOT visible".format(element_id)
-
-            except NoSuchElementException:
-                print "ERROR: No element id={0} found in DOM".format(element_id)
-
-    def wait_for_visible_by_id(self, element_id):
-        """
-        Checks visibility of an element using its id.
-        Keeps checking for visibility until max number of trials self.retry is reached.
-        :param element_id:
-        """
-
-        print "Executing wait_for_visible_by_id( "+element_id+" )"
-
-        self.wait_for_element_present_by_id(element_id)
-        is_visible = False
-        for i in range(self.retry):
-            is_visible = self.driver.find_element_by_id(element_id).is_displayed()
-            if is_visible is True:
-                print "Element " + element_id + " is visible"
-                break
-            time.sleep(1)
-        if is_visible is False:
-            print "Element " + element_id + " is not visible"
-
-    def wait_for_visible_by_css_selector(self, css):
-        """
-        Checks visibility of an element using its css.
-        Keeps checking for visibility until max number of trials self.retry is reached.
-        :param self:
-        :param css:
-        """
-        is_visible = False
-        for i in range(self.retry):
-            is_visible = self.driver.find_element_by_css_selector(css).is_displayed()
-            if is_visible is True:
-                print "Element " + css + " is visible"
-                break
-            time.sleep(1)
-        if is_visible is False:
-            print "Element " + css + " is not visible"
-
-    def wait_for_visible_by_xpath(self, xpath):
-        """
-        Checks visibility of an element using its xpath.
-        Keeps checking for visibility until max number of trials self.retry is reached.
-        :param xpath:
-        """
-        is_visible = False
-        for i in range(self.retry):
-            is_visible = self.driver.find_element_by_xpath(xpath).is_displayed()
-            if is_visible is True:
-                print "Element " + xpath + " is visible"
-                break
-            time.sleep(1)
-        if is_visible is False:
-            print "Element " + xpath + " is not visible"
+            print "ERROR: Timed out: element by id = '{0}' not visible.".format(element_id)
 
     def click_on_visible_by_id(self, element_id):
         """

@@ -10,6 +10,7 @@ class Navigation_sequence(GuiTester):
     def navigation_test(self):
 
         #self.tester.wait_for_element_present_by_id("euca")
+        self.tester.set_implicit_wait("10")
         self.tester.wait_for_visible_by_id_experimental("euca-login-button")
 
         #self.tester.verify_element_visible_by_id("euca-login-button")
