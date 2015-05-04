@@ -91,6 +91,56 @@ class SeleniumApi():
         except TimeoutException, tout:
             print "ERROR: Did not find clickable element by id = '{0}'".format(element_id)
 
+    def wait_for_clickable_by_css(self, css):
+        """
+        Waits for an element to be present, visible and enabled such that you can click it.
+        :param css:
+        """
+        print "Executing wait_for_clickable_by_css('{0}')".format(css)
+
+        try:
+            WebDriverWait(self.driver, self.timeout_to_locate_element_in_seconds).until(EC.element_to_be_clickable((By.CSS_SELECTOR, css)))
+            print "Found clickable element by css = '{0}'".format(css)
+        except TimeoutException, tout:
+            print "ERROR: Did not find clickable element by css = '{0}'".format(css)
+
+    def wait_for_clickable_by_xpath(self, xpath):
+        """
+        Waits for an element to be present, visible and enabled such that you can click it.
+        :param xpath:
+        """
+        print "Executing wait_for_clickable_by_xpath('{0}')".format(xpath)
+
+        try:
+            WebDriverWait(self.driver, self.timeout_to_locate_element_in_seconds).until(EC.element_to_be_clickable((By.XPATH, xpath)))
+            print "Found clickable element by xpath = '{0}'".format(xpath)
+        except TimeoutException, tout:
+            print "ERROR: Did not find clickable element by xpath = '{0}'".format(xpath)
+
+    def click_element_by_id(self, element_id):
+        """
+        Waits for an element to be present, visible and enabled such that you can click it.
+        Clicks the element.
+        :param element_id:
+        """
+        print "Executing click_element_by_id('{0}')".format(element_id)
+        self.wait_for_clickable_by_id(element_id)
+        try:
+            self.driver.find_element_by_id(element_id).click()
+            print "Trying to click element by id = ('{0}')".format(element_id)
+        except NoSuchElementException:
+            print "Could not perform click_element_by_id "
+
+        #if self.check_if_element_present_by_type("ID", this_id) is not 0:
+        #    raise UICheckException("Element by id not present: " + this_id)
+        #if self.verify_element_visible_by_id(this_id) is not True:
+        #    raise UICheckException("Element by id not visible:" + this_id)
+        #print "Click: Element Type: ID, Element: " + this_id
+        #self.driver.find_element_by_id(this_id).click()
+        #time.sleep(1)
+        #return 0
+
+############################################################################################################################
     def click_on_visible_by_id(self, element_id):
         """
         Waits for an element to become visible then clicks the element by its id.
@@ -107,47 +157,7 @@ class SeleniumApi():
         self.wait_for_visible_by_css_selector(css)
         self.click_element_by_css_selector(css)
 
-    def check_if_element_present_by_type(self, element_type, element):
-        """
-        Checks if element is present using element type and its locator.
-        Keeps checking until max number of trials self.retry are exhausted.
-        :param element_type:
-        :param element:
-        :return: :raise:
-        """
-        this_element_type = ""
-        if element_type is "LINK_TEXT":
-            this_element_type = By.LINK_TEXT
-        elif element_type is "ID":
-            this_element_type = By.ID
-        elif element_type is "CSS_SELECTOR":
-            this_element_type = By.CSS_SELECTOR
-        elif element_type is "XPATH":
-            this_element_type = By.XPATH
-        elif element_type is "NAME":
-            this_element_type = By.NAME
 
-        for i in range(self.retry):
-            print "Wait On:: Trial: " + str(i) + " Element Type: " + element_type + ", Element: " + element
-            try:
-                if self.verify_element_present(this_element_type, element):
-                    break
-            except:
-                pass
-                #raise UICheckException("Time out")
-            time.sleep(1)
-            # else:
-            #     self.fail("timed out after "+`self.retry`+" seconds")
-
-        try:
-            self.verify_element_present(this_element_type, element)
-        except AssertionError as e:
-            self.verificationErrors.append(str(e))
-            print "TEST FAILED::: Wait On:: Element Type: " + element_type + ", Element: " + element
-            raise UICheckException("Failed to find element of type " + element_type + element + " present")
-
-        print "Found:: Element type: " + element_type + ", Element: " + element
-        return 0
 
     def verify_element_visible_by_link_text(self, link_text):
         """
@@ -375,15 +385,6 @@ class SeleniumApi():
         time.sleep(1)
         return 0
 
-    def click_element_by_id(self, this_id):
-        if self.check_if_element_present_by_type("ID", this_id) is not 0:
-            raise UICheckException("Element by id not present: " + this_id)
-        if self.verify_element_visible_by_id(this_id) is not True:
-            raise UICheckException("Element by id not visible:" + this_id)
-        print "Click: Element Type: ID, Element: " + this_id
-        self.driver.find_element_by_id(this_id).click()
-        time.sleep(1)
-        return 0
 
     def click_element_by_css_selector(self, css_selector):
         if self.check_if_element_present_by_type("CSS_SELECTOR", css_selector) is not 0:
@@ -546,4 +547,46 @@ class SeleniumApi():
             raise UICheckException("Element by name not visible:" + name)
         print "Select: Element Type: NAME, Element: " + name + ", Text: " + visible_text
         Select(self.driver.find_element_by_name(name)).select_by_visible_text(visible_text)
+        return 0
+
+    def check_if_element_present_by_type(self, element_type, element):
+        """
+        Checks if element is present using element type and its locator.
+        Keeps checking until max number of trials self.retry are exhausted.
+        :param element_type:
+        :param element:
+        :return: :raise:
+        """
+        this_element_type = ""
+        if element_type is "LINK_TEXT":
+            this_element_type = By.LINK_TEXT
+        elif element_type is "ID":
+            this_element_type = By.ID
+        elif element_type is "CSS_SELECTOR":
+            this_element_type = By.CSS_SELECTOR
+        elif element_type is "XPATH":
+            this_element_type = By.XPATH
+        elif element_type is "NAME":
+            this_element_type = By.NAME
+
+        for i in range(self.retry):
+            print "Wait On:: Trial: " + str(i) + " Element Type: " + element_type + ", Element: " + element
+            try:
+                if self.verify_element_present(this_element_type, element):
+                    break
+            except:
+                pass
+                #raise UICheckException("Time out")
+            time.sleep(1)
+            # else:
+            #     self.fail("timed out after "+`self.retry`+" seconds")
+
+        try:
+            self.verify_element_present(this_element_type, element)
+        except AssertionError as e:
+            self.verificationErrors.append(str(e))
+            print "TEST FAILED::: Wait On:: Element Type: " + element_type + ", Element: " + element
+            raise UICheckException("Failed to find element of type " + element_type + element + " present")
+
+        print "Found:: Element type: " + element_type + ", Element: " + element
         return 0
