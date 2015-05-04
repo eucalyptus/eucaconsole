@@ -325,6 +325,7 @@ class ELBView(TaggedItemView):
             'vpc_subnet_choices': self.get_vpc_subnets(),
             'securitygroups': self.elb.security_groups if self.elb else [],
             'securitygroups_json_endpoint': self.request.route_path('securitygroups_json'),
+            'instances': self.get_elb_instance_list(),
             'instances_json_endpoint': self.request.route_path('instances_json'),
             'health_check_ping_protocol': self.elb.ping_protocol if self.elb else '',
             'health_check_ping_port': self.elb.ping_port if self.elb else '',
@@ -421,6 +422,13 @@ class ELBView(TaggedItemView):
             with boto_error_handler(self.request):
                 securitygroups = self.ec2_conn.get_all_security_groups(filters={'vpc-id': [self.elb.vpc_id]})
         return securitygroups
+
+    def get_elb_instance_list(self):
+        instances = []
+        if self.elb:
+            for instance in self.elb.instances:
+                instances.append(instance.id)
+        return instances
 
     def set_health_check_data(self):
         if self.elb is not None and self.elb.health_check.target is not None:

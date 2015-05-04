@@ -9,6 +9,7 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
         $scope.isNotChanged = true;
         $scope.securityGroups = [];
         $scope.availabilityZones = []; 
+        $scope.instanceList = [];
         $scope.pingProtocol = '';
         $scope.pingPort = '';
         $scope.pingPath = '';
@@ -48,6 +49,9 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
                 $timeout(function () {
                     $scope.$broadcast('eventUpdateAvailabilityZones', $scope.availabilityZones);
                 }, 500);
+            }
+            if (options.hasOwnProperty('instances')) {
+                $scope.instanceList = options.instances;
             }
             if (options.hasOwnProperty('health_check_ping_protocol')) {
                 $scope.pingProtocol = options.health_check_ping_protocol;
