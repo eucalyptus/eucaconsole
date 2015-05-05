@@ -40,10 +40,10 @@
                     <div class="tabs-content">
                         <!--! Step 1: General tab content -->
                         <div class="content" ng-class="stepClasses[0]" id="step1"
-                            tal:define="html_attrs_val {'pattern': '^[a-zA-Z0-9\-]{1,255}$', 'class': 'text-input'};">
+                            tal:define="html_attrs_val {'class': 'text-input'};">
                             <div ng-cloak="true">
                                 <h6 i18n:translate="">General</h6>
-                                ${panel('form_field', field=create_form['name'], rightcol_width=12, stack_label=True, ng_attrs={'model': 'elbName'}, **html_attrs_val)}
+                                ${panel('form_field', field=create_form['name'], rightcol_width=12, stack_label=True, ng_attrs={'model': 'elbName'}, pattern=layout.name_without_spaces_pattern, **html_attrs_val)}
                             </div>
                             <hr />
                             <div>
