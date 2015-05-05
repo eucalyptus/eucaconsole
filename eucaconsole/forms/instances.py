@@ -476,6 +476,11 @@ class InstanceTypeForm(BaseSecureForm):
     pass
 
 
+class InstanceMonitoringForm(BaseSecureForm):
+    """CSRF-protected form to enable/disable monitoring for an instance"""
+    pass
+
+
 class InstanceCreateImageForm(BaseSecureForm):
     """CSRF-protected form to create an image from an instance"""
     name_error_msg = _(

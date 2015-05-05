@@ -491,6 +491,18 @@ textarea.policy-area {
     }
 }
 
+// Action icons such as the three vertical dots
+.action-icon {
+    display: inline-block;
+    font-size: 1.4rem;
+    color: $euca-green;
+    padding-right: 0.5rem;
+    padding-left: 0.5rem;
+    &:hover {
+        cursor: pointer;
+    }
+}
+
 
 /* -----------------------------------------
    Tag editor

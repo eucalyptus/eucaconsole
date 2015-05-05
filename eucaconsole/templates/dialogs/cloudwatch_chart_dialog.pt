@@ -1,0 +1,44 @@
+<!--! Modal dialog for large CloudWatch chart -->
+<div tal:omit-tag="" i18n:domain="eucaconsole">
+    <div class="reveal-modal xlarge cloudwatch-charts" id="large-chart-modal" data-reveal="">
+        <h3>{{ chartsCtrl.selectedChartTitle }}</h3>
+        <div class="toprow">
+            <div class="blurb">
+                <div class="field-wrapper">
+                    <label for="large-chart-statistic" class="left" i18n:translate="">Statistic</label>
+                    <select name="large_chart_statistic" id="large-chart-statistic" class="duration-input"
+                            ng-model="chartsCtrl.largeChartStatistic" ng-change="chartsCtrl.refreshLargeChart()">
+                        <option tal:repeat="option statistic_choices" value="${option[0]}">
+                            ${option[1]}
+                        </option>
+                    </select>
+                </div>
+                <div class="field-wrapper">
+                    <label for="large-chart-monitoring-duration" class="left" i18n:translate="">Show data for</label>
+                    <select name="large_chart_monitoring_duration" id="large-chart-monitoring-duration" class="duration-input"
+                            ng-model="chartsCtrl.largeChartDuration" ng-change="chartsCtrl.handleDurationChange()">
+                        <option tal:repeat="option duration_choices" value="${option[0]}">
+                            ${option[1]}
+                        </option>
+                    </select>
+                </div>
+                <div class="field-wrapper" id="measurement-period-controls">
+                    <label for="large-chart-monitoring-granularity" class="left" i18n:translate="">Measurement period</label>
+                    <select name="large_chart_monitoring_granularity" id="large-chart-monitoring-granularity" class="period-input"
+                            ng-model="chartsCtrl.largeChartGranularity" ng-change="chartsCtrl.refreshLargeChart()"
+                            ng-options="opt.value as opt.label for opt in chartsCtrl.granularityChoices">
+                    </select>
+                </div>
+            </div>
+            <div class="actions">
+                <span id="refresh-charts-icon" class="action-icon"
+                      ng-click="chartsCtrl.refreshLargeChart()"><i class="fa fa-refresh"></i></span>
+            </div>
+        </div>
+        <div class="large-chart-wrapper">
+            <i class="busy loading" ng-if="chartsCtrl.largeChartLoading"></i>
+            <svg id="large-chart"></svg>
+        </div>
+        <a href="#" id="large_chart_close-link" class="close-reveal-modal">&#215;</a>
+    </div>
+</div>
