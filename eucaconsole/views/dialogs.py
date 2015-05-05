@@ -320,6 +320,7 @@ def select_certificate_dialog(context, request, certificate_form=None, backend_c
         certificate_form=certificate_form,
         backend_certificate_form=backend_certificate_form,
         is_vpc_supported=is_vpc_supported,
+    )
 
 
 @panel_config('cloudwatch_chart_dialog', renderer='../templates/dialogs/cloudwatch_chart_dialog.pt')
