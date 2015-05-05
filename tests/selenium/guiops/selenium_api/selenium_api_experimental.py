@@ -304,3 +304,98 @@ class SeleniumApi_experimental():
             time.sleep(1)
         if is_visible is False:
             print "Element " + xpath + " is not visible"
+
+
+    def click_element_by_link_text(self, link_text):
+
+        if self.check_if_element_present_by_type("LINK_TEXT", link_text) is not 0:
+            raise UICheckException("Element by link text not present: " + link_text)
+        if self.verify_element_visible_by_link_text(link_text) is not True:
+            raise UICheckException("Element by link text not visible:" + link_text)
+        print "Click: Element Type: LINK_TEXT, Element: " + link_text
+        self.driver.find_element_by_link_text(link_text).click()
+        time.sleep(1)
+        return 0
+
+
+    def click_element_by_css_selector(self, css_selector):
+        if self.check_if_element_present_by_type("CSS_SELECTOR", css_selector) is not 0:
+            raise UICheckException("Element by css selector not present: " + css_selector)
+        if self.verify_element_visible_by_css_selector(css_selector) is not True:
+            raise UICheckException("Element by css selector not visible:" + css_selector)
+        print "Click: Element Type: CSS_SELECTOR, Element: " + css_selector
+        self.driver.find_element_by_css_selector(css_selector).click()
+        time.sleep(1)
+        return 0
+
+    def click_element_by_xpath(self, xpath):
+        if self.check_if_element_present_by_type("XPATH", xpath) is not 0:
+            raise UICheckException("Element by xpath not present: " + xpath)
+            #        if self.check_if_element_visible_by_type("XPATH", xpath) is not True:
+        #            raise UICheckException("Element by xpath not visible:" + xpath)
+        print "Click: Element Type: XPATH, Element: " + xpath
+        self.driver.find_element_by_xpath(xpath).click()
+        time.sleep(1)
+        return 0
+
+    def click_element_by_name(self, name):
+        if self.check_if_element_present_by_type("NAME", name) is not 0:
+            raise UICheckException("Element by name not present: " + name)
+        if self.verify_text_not_present_by_name("NAME", name) is not True:
+            raise UICheckException("Element by name not visible:" + name)
+        print "Click: Element Type: NAME, Element: " + name
+        self.driver.find_element_by_name(name).click()
+        return 0
+
+    def click_on_visible_by_id(self, element_id):
+        """
+        Waits for an element to become visible then clicks the element by its id.
+        :param element_id:
+        """
+        self.wait_for_visible_by_id(element_id)
+        self.click_element_by_id(element_id)
+
+    def click_on_visible_by_css_selector(self, css):
+        """
+        Waits for an element to become visible then clicks the element by its css.
+        :param css:
+        """
+        self.wait_for_visible_by_css_selector(css)
+        self.click_element_by_css_selector(css)
+
+
+
+    def verify_element_visible_by_link_text(self, link_text):
+        """
+        Checks if element is visible using link text. Does not retry.
+        :param link_text:
+        """
+        return self.driver.find_element_by_link_text(link_text).is_displayed()
+
+    def verify_element_visible_by_id(self, element_id):
+        """
+        Checks if element is visible using id. Does not retry.
+        :param element_id:
+        """
+        return self.driver.find_element_by_id(element_id).is_displayed()
+
+    def verify_element_visible_by_css_selector(self, css):
+        """
+        Checks if element is visible using css. Does not retry.
+        :param css:
+        """
+        return self.driver.find_element_by_css_selector(css).is_displayed()
+
+    def verify_element_visible_by_xpath(self, xpath):
+        """
+        Checks if element is visible using xpath. Does not retry.
+        :param xpath:
+        """
+        return self.driver.find_element_by_xpath(xpath).is_displayed()
+
+    def verify_element_visible_by_name(self, name):
+        """
+        Checks if element is visible using name. Does not retry.
+        :param name:
+        """
+        return self.driver.find_element_by_name(name).is_displayed()

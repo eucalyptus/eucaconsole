@@ -12,7 +12,7 @@ class Navigation_sequence(GuiTester):
         #self.tester.wait_for_element_present_by_id("euca")
         #self.tester.wait_for_visible_by_id("euca")
 
-        self.tester.click_element_by_id("euca")
+        self.tester.wait_for_element_not_present_by_id("euca-login-button")
 
         #self.tester.login()
 
