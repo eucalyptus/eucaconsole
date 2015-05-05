@@ -9,6 +9,7 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
         $scope.isNotChanged = true;
         $scope.securityGroups = [];
         $scope.availabilityZones = []; 
+        $scope.vpcNetwork = 'None';
         $scope.instanceList = [];
         $scope.pingProtocol = '';
         $scope.pingPort = '';
@@ -50,8 +51,21 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
                     $scope.$broadcast('eventUpdateAvailabilityZones', $scope.availabilityZones);
                 }, 500);
             }
+            if (options.hasOwnProperty('elb_vpc_network')) {
+                if (options.elb_vpc_network !== null) {
+                    $scope.vpcNetwork = options.elb_vpc_network;
+                    // Timeout is needed for the instance selector to be initizalized
+                    $timeout(function () {
+                        $scope.$broadcast('eventWizardUpdateVPCNetwork', $scope.vpcNetwork);
+                    }, 500);
+                }
+            }
             if (options.hasOwnProperty('instances')) {
                 $scope.instanceList = options.instances;
+                // Timeout is needed for the instance selector to be initizalized
+                $timeout(function () {
+                    $scope.$broadcast('eventInitSelectedInstances', $scope.instanceList);
+                }, 2000);
             }
             if (options.hasOwnProperty('health_check_ping_protocol')) {
                 $scope.pingProtocol = options.health_check_ping_protocol;
@@ -87,6 +101,9 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
             $scope.$watch('availabilityZones', function () {
                 $scope.$broadcast('eventUpdateAvailabilityZones', $scope.availabilityZones);
             }, true);
+            $scope.$watch('instanceList', function () {
+                $scope.$broadcast('eventInitSelectedInstances', $scope.instanceList);
+            }, true);
             $scope.$on('searchUpdated', function ($event, query) {
                 // Relay the query search update signal
                 $scope.$broadcast('eventQuerySearch', query);
@@ -95,6 +112,7 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
                 // Relay the text search update signal
                 $scope.$broadcast('eventTextSearch', searchVal, filterKeys);
             });
+
         };
         $scope.setFocus = function () {
             $(document).on('ready', function(){

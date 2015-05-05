@@ -156,6 +156,9 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                 $scope.$on('eventWizardUpdateVPCNetwork', function ($event, vpcNetwork) {
                     $scope.vpcNetwork = vpcNetwork;
                 });
+                $scope.$on('eventInitSelectedInstances', function ($event, newSelectedInstances) {
+                    $scope.initSelectedInstances(newSelectedInstances);
+                });
             };
             $scope.getAllInstanceList = function () {
                 var csrf_token = $('#csrf_token').val();
@@ -205,6 +208,17 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                         } 
                     });
                 });
+            };
+            $scope.initSelectedInstances = function (newSelectedInstances) {
+                var newList = [];
+                angular.forEach(newSelectedInstances, function (instanceID) {
+                    angular.forEach($scope.allInstanceList, function (instance) {
+                        if (instance.id === instanceID) {
+                            newList.push(instance);
+                        } 
+                    });
+                });
+                $scope.selectedInstanceList = newList;
             };
             $scope.updateSelectedInstanceListForAvailabilityZones = function () {
                 var dupList = $scope.selectedInstanceList.slice(0);
