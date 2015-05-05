@@ -130,7 +130,7 @@
         <div ng-show="isFromProtocolValid &amp;&amp; !hasDuplicatedFromPort">
             <div class="row controls-wrapper">
                 <div class="small-1 columns"></div>
-                <div class="small-11 columns"><label class="left sub-section-label">Instance side</label></div>
+                <div class="small-11 columns"><label class="left sub-section-label" i18n:translate="">Instance side</label></div>
             </div>
             <div class="row controls-wrapper">
                 <div class="small-3 columns">
@@ -139,7 +139,7 @@
                 <div class="small-9 columns">
                     <select id="to-protocol-select" name="to_protocol" class="ip-protocol"
                         ng-options="protocol.name for protocol in toProtocolList track by protocol.value"
-                        ng-model="toProtocol" data-placeholder="select..." >
+                        ng-model="toProtocol" data-placeholder="select..." i18n:attributes="data-placeholder">
                     </select>
                 </div>
             </div>
@@ -171,7 +171,7 @@
         <div id="elb-listener-security-field" ng-show="showSelectCertificateModalLink() &amp;&amp; !hasDuplicatedFromPort">
             <div class="row controls-wrapper">
                 <div class="small-1 columns"></div>
-                <div class="small-11 columns"><label class="left sub-section-label">Security</label></div>
+                <div class="small-11 columns"><label class="left sub-section-label" i18n:translate="">Security</label></div>
             </div>
             <div class="row controls-wrapper">
                 <div class="small-3 columns">
@@ -179,7 +179,7 @@
                 </div>
                 <div class="small-9 columns">
                     <a ng-click="openCertificateModal(fromProtocol.value, toProtocol.value, fromPort, toPort)"
-                        title="Change certficate">
+                        title="Change certficate" i18n:translate="">
                         Select
                     </a>
                 </div>
@@ -190,7 +190,7 @@
                 </div>
                 <div class="small-9 columns">
                     <a ng-click="openCertificateModal(fromProtocol.value, toProtocol.value, fromPort, toPort)"
-                        title="Change certficate">
+                        title="Change certficate" i18n:translate="">
                         Select
                     </a>
                 </div>
