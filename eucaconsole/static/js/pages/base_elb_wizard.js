@@ -1,5 +1,5 @@
 /**
- * @fileOverview Wizard JS
+ * @fileOverview Base ELB Wizard JS
  * @requires AngularJS
  *
  */
