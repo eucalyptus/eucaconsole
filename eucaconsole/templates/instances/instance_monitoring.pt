@@ -24,7 +24,7 @@
             <dl class="tabs" id="instance-subnav">
                 <dd><a href="${request.route_path('instance_view', id=instance.id)}" i18n:translate="">General</a></dd>
                 <dd><a href="${request.route_path('instance_volumes', id=instance.id)}" i18n:translate="">Volumes</a></dd>
-                <dd class="active"><a i18n:translate="">Monitoring</a></dd>
+                <dd class="active"><a>${monitoring_tab_title}</a></dd>
             </dl>
             <div class="panel no-title cloudwatch-charts">
                 <div class="toprow">

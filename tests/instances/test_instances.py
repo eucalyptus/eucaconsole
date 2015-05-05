@@ -303,3 +303,19 @@ class InstanceMonitoringViewTestCase(BaseViewTestCase, MockInstanceMixin):
         duration_choices = dict(view.get('duration_choices'))
         for choice in [3600, 10800, 21600, 43200, 86400, 259200, 604800, 1209600]:
             assert choice in duration_choices
+
+    def test_instance_monitoring_state_on_aws(self):
+        session = {'cloud_type': 'aws'}
+        request = self.create_request(session=session)
+        instance = self.make_instance()
+        view = InstanceView(request, instance=instance).instance_view()
+        monitoring_state = view.get('instance_monitoring_state')
+        self.assertEqual(monitoring_state, u'Detailed')
+
+    def test_instance_monitoring_tab_title_on_aws(self):
+        session = {'cloud_type': 'aws'}
+        request = self.create_request(session=session)
+        instance = self.make_instance()
+        view = InstanceMonitoringView(request, instance=instance).instance_monitoring()
+        monitoring_tab_title = view.get('monitoring_tab_title')
+        self.assertEqual(monitoring_tab_title, u'Detailed Monitoring')
