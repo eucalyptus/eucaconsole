@@ -59,7 +59,7 @@ class BaseVolumeView(BaseView):
             try:
                 volumes_list = self.conn.get_all_volumes(volume_ids=[volume_id])
                 return volumes_list[0] if volumes_list else None
-            except BotoServerError as err:
+            except BotoServerError:
                 return None
         return None
 
@@ -243,7 +243,7 @@ class VolumesJsonView(LandingPageView):
         for item in items:
             if item.status == 'in-use':
                 item.status = item.attach_data.status
-        return items;
+        return items
 
 
 class VolumeView(TaggedItemView, BaseVolumeView):
@@ -505,7 +505,7 @@ class VolumeSnapshotsView(BaseVolumeView):
                 if description:
                     params['Description'] = description[0:255]
                 snapshot = self.volume.connection.get_object('CreateSnapshot', params, Snapshot, verb='POST')
-                
+
                 # Add name tag
                 if name:
                     snapshot.add_tag('Name', name)

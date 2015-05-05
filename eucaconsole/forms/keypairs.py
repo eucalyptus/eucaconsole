@@ -25,14 +25,14 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 """
-Forms for Key Pairs 
+Forms for Key Pairs
 
 """
 import wtforms
 from wtforms import validators
 
 from ..i18n import _
-from . import BaseSecureForm, ASCII_WITHOUT_SLASHES_NOTICE
+from . import BaseSecureForm
 
 
 class KeyPairForm(BaseSecureForm):

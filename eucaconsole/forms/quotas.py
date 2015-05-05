@@ -25,7 +25,7 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 """
-Form for Quotas 
+Form for Quotas
 
 """
 import simplejson as json
@@ -73,23 +73,29 @@ class QuotasForm(BaseSecureForm):
             try:
                 policies = conn.get_all_user_policies(user_name=user.user_name)
                 for policy_name in policies.policy_names:
-                    policy_json = conn.get_user_policy(user_name=user.user_name,
-                                        policy_name=policy_name).policy_document
+                    policy_json = conn.get_user_policy(
+                        user_name=user.user_name,
+                        policy_name=policy_name
+                    ).policy_document
                     self.scan_policy(policy_json)
             except BotoServerError as err:
                 pass
         if account is not None:
             try:
                 policies = conn.get_response(
-                            'ListAccountPolicies',
-                            params={'AccountName':account.account_name}, list_marker='PolicyNames')
-                
+                    'ListAccountPolicies',
+                    params={'AccountName': account.account_name},
+                    list_marker='PolicyNames'
+                )
+
                 for policy_name in policies.policy_names:
                     policy_json = conn.get_response(
-                            'GetAccountPolicy',
-                            params={'AccountName':account.account_name, 'PolicyName':policy_name}, verb='POST').policy_document
+                        'GetAccountPolicy',
+                        params={'AccountName': account.account_name, 'PolicyName': policy_name},
+                        verb='POST'
+                    ).policy_document
                     self.scan_policy(policy_json)
-            except BotoServerError as err:
+            except BotoServerError:
                 pass
 
     def scan_policy(self, policy_json):
@@ -100,7 +106,7 @@ class QuotasForm(BaseSecureForm):
             except KeyError:
                 continue
             for cond in s['Condition'].keys():
-                if cond == "NumericLessThanEquals": 
+                if cond == "NumericLessThanEquals":
                     for val in s['Condition'][cond].keys():
                         limit = s['Condition'][cond][val]
                         if val == 'ec2:quota-imagenumber':
