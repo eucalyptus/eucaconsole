@@ -1,3 +1,4 @@
+@charset "UTF-8";
 /* @fileOverview Image picker widget Sass CSS styles */
 /* Dropdown elements */
 /* Set the link colors and styles for top-level nav */
@@ -31,4 +32,4 @@
 
 #filters label { margin-top: 8px; margin-bottom: 2px; }
 
-#search-entry #search-input { height: 1.5rem !important; line-height: 1.5rem !important; }
+.search-entry .search-input { height: 1.5rem !important; line-height: 1.5rem !important; }
