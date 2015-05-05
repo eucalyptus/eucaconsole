@@ -42,6 +42,8 @@
                 <a id="gridview-button" class="gridview" title="Grid view" ng-click="switchView('gridview')"><i class="fi-thumbnails"></i></a>
                 <a id="tableview-button" class="tableview" title="Table view" ng-click="switchView('tableview')"><i class="fi-list-thumbnails"></i></a>
             </div>
+        </div>
+        <div class="lp-header">
             <div class="lp-search">
                 <div ng-app="MagicSearch">
                     <magic-search template="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.html')}"
