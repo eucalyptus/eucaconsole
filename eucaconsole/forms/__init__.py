@@ -51,6 +51,8 @@ from ..i18n import _
 BLANK_CHOICE = ('', _(u'Select...'))
 ASCII_WITHOUT_SLASHES_NOTICE = _(
     u'Name is required and must be between 1 and 255 ASCII characters long and may not contain slashes')
+NAME_WITHOUT_SPACES_NOTICE = _(
+    u'Name must be between 1 and 255 characters long, and must not contain spaces')
 
 
 class NgNonBindableOptionSelect(Select):
@@ -480,4 +482,3 @@ class CFSampleTemplateManager(object):
             if len(admin_templates) > 0:
                 templates.append(('s3', _(u'Local'), admin_templates))
         return templates
-

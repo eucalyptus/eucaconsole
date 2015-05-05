@@ -32,7 +32,7 @@ import wtforms
 from wtforms import validators
 
 from ..i18n import _
-from . import BaseSecureForm, ChoicesManager, TextEscapedField
+from . import BaseSecureForm, ChoicesManager, TextEscapedField, NAME_WITHOUT_SPACES_NOTICE
 
 
 class ELBDeleteForm(BaseSecureForm):
@@ -73,7 +73,7 @@ class ELBsFiltersForm(BaseSecureForm):
 
 class CreateELBForm(BaseSecureForm):
     """Create Elastic Load Balancer form"""
-    name_error_msg = _(u'Name must be between 1 and 255 characters long, and must not contain spaces')
+    name_error_msg = NAME_WITHOUT_SPACES_NOTICE
     name = wtforms.TextField(
         label=_(u'Name'),
         validators=[validators.InputRequired(message=name_error_msg)],
@@ -195,9 +195,9 @@ class CreateELBForm(BaseSecureForm):
     @staticmethod
     def get_time_between_pings_choices():
         return [
-            ('30', '30 seconds'),
-            ('60', '1 minute'),
-            ('300', '5 minutes')
+            ('30', _(u'30 seconds')),
+            ('60', _(u'1 minute')),
+            ('300', _(u'5 minutes'))
         ]
 
     @staticmethod
@@ -309,19 +309,18 @@ class ELBInstancesFiltersForm(BaseSecureForm):
     @staticmethod
     def get_status_choices():
         return [
-            {'key': 'running', 'label': 'Running'},
-            {'key': 'pending', 'label': 'Pending'},
-            {'key': 'stopping', 'label': 'Stopping'},
-            {'key': 'stopped', 'label': 'Stopped'},
-            {'key': 'shutting-down', 'label': 'Terminating'},
-            {'key': 'terminated', 'label': 'Terminated'},
+            {'key': 'running', 'label': _(u'Running')},
+            {'key': 'pending', 'label': _(u'Pending')},
+            {'key': 'stopping', 'label': _(u'Stopping')},
+            {'key': 'stopped', 'label': _(u'Stopped')},
+            {'key': 'shutting-down', 'label': _(u'Terminating')},
+            {'key': 'terminated', 'label': _(u'Terminated')},
         ]
 
 
 class CertificateForm(BaseSecureForm):
     """Create SSL Certificate form"""
-    certificate_name_error_msg = _(u'Name must be between 1 and 255 characters long, \
-        and must not contain spaces')
+    certificate_name_error_msg = NAME_WITHOUT_SPACES_NOTICE
     certificate_name = wtforms.TextField(
         label=_(u'Certificate name'),
         validators=[validators.InputRequired(message=certificate_name_error_msg)],
@@ -374,8 +373,7 @@ class CertificateForm(BaseSecureForm):
 
 class BackendCertificateForm(BaseSecureForm):
     """Create SSL Certificate form"""
-    backend_certificate_name_error_msg = _(u'Name must be between 1 and 255 characters long, \
-        and must not contain spaces')
+    backend_certificate_name_error_msg = NAME_WITHOUT_SPACES_NOTICE
     backend_certificate_name = wtforms.TextField(
         label=_(u'Certificate name'),
         validators=[validators.InputRequired(message=backend_certificate_name_error_msg)],
