@@ -1,11 +1,11 @@
 /**
- * @fileOverview Wizard JS
+ * @fileOverview Base ELB Wizard JS
  * @requires AngularJS
  *
  */
 
-angular.module('EucaConsoleWizard', ['EucaConsoleUtils', 'MagicSearch', 'TagEditor', 'ELBListenerEditor'])
-    .controller('EucaConsoleWizardCtrl', function ($scope, $http, $timeout, eucaHandleError, eucaUnescapeJson) {
+angular.module('BaseELBWizard', ['EucaConsoleUtils', 'MagicSearch', 'TagEditor', 'ELBListenerEditor'])
+    .controller('BaseELBWizardCtrl', function ($scope, $http, $timeout, eucaHandleError, eucaUnescapeJson) {
         $scope.elbForm = undefined;
         $scope.urlParams = undefined;
         $scope.resourceName  = '';
@@ -213,4 +213,4 @@ angular.module('EucaConsoleWizard', ['EucaConsoleUtils', 'MagicSearch', 'TagEdit
         };
     })
 ;
-angular.module('EucaConsoleWizard');
+angular.module('BaseELBWizard');
