@@ -25,6 +25,9 @@
                 <dd ng-show="instanceState != 'terminated' &amp;&amp; instanceState != 'shutting-down'" ng-cloak="true">
                     <a href="${request.route_path('instance_volumes', id=instance.id)}" i18n:translate="">Volumes</a>
                 </dd>
+                <dd ng-show="instanceState != 'terminated' &amp;&amp; instanceState != 'shutting-down'" ng-cloak="true">
+                    <a href="${request.route_path('instance_monitoring', id=instance.id)}" i18n:translate="">Monitoring</a>
+                </dd>
             </dl>
             <div class="panel has-actions">
                 <metal:block metal:use-macro="layout.global_macros['actions_menu']">
@@ -219,7 +222,10 @@
                         <div class="large-10 small-8 columns value">${instance.client_token}</div>
                     </div>
                     <div class="row controls-wrapper readonly">
-                        <div class="large-2 small-4 columns"><label i18n:translate="">Monitoring</label></div>
+                        <div class="large-2 small-4 columns">
+                            <label i18n:translate="" tal:condition="layout.cloud_type == 'euca'">Monitoring</label>
+                            <label i18n:translate="" tal:condition="layout.cloud_type == 'aws'">Detailed monitoring</label>
+                        </div>
                         <div class="large-10 small-8 columns value">${instance.monitoring_state}</div>
                     </div>
                     <div class="row controls-wrapper readonly">

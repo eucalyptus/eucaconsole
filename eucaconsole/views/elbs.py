@@ -493,21 +493,22 @@ class CreateELBView(BaseView):
             'default_vpc_network': self.get_default_vpc_network(),
             'availability_zone_choices': self.get_availability_zones(),
             'vpc_subnet_choices': self.get_vpc_subnets(),
+            'instance_selector_text': self.get_instance_selector_text(),
             'securitygroups_json_endpoint': self.request.route_path('securitygroups_json'),
             'instances_json_endpoint': self.request.route_path('instances_json'),
         }))
 
     def get_wizard_tab_list(self):
         if self.cloud_type == 'aws' or self.is_vpc_supported:
-            tab_list = ({'title': 'General', 'render': True, 'display_id': 1},
-                        {'title': 'Network', 'render': True, 'display_id': 2},
-                        {'title': 'Instances', 'render': True, 'display_id': 3},
-                        {'title': 'Health Check & Advanced', 'render': True, 'display_id': 4})
+            tab_list = ({'title': _(u'General'), 'render': True, 'display_id': 1},
+                        {'title': _(u'Network'), 'render': True, 'display_id': 2},
+                        {'title': _(u'Instances'), 'render': True, 'display_id': 3},
+                        {'title': _(u'Health Check & Advanced'), 'render': True, 'display_id': 4})
         else:
-            tab_list = ({'title': 'General', 'render': True, 'display_id': 1},
-                        {'title': 'Network', 'render': False, 'display_id': ''},
-                        {'title': 'Instances', 'render': True, 'display_id': 2},
-                        {'title': 'Health Check & Advanced', 'render': True, 'display_id': 3})
+            tab_list = ({'title': _(u'General'), 'render': True, 'display_id': 1},
+                        {'title': _(u'Network'), 'render': False, 'display_id': ''},
+                        {'title': _(u'Instances'), 'render': True, 'display_id': 2},
+                        {'title': _(u'Health Check & Advanced'), 'render': True, 'display_id': 3})
         return tab_list
 
     def get_protocol_list(self):
@@ -521,6 +522,12 @@ class CreateELBView(BaseView):
                              {'name': 'TCP', 'value': 'TCP', 'port': '80'},
                              {'name': 'SSL', 'value': 'SSL', 'port': '443'})
         return protocol_list
+
+    def get_instance_selector_text(self):
+        instance_selector_text = {'name': _(u'NAME (ID)'), 'tags': _(u'TAGS'),
+                                  'zone': _(u'AVAILABILITY ZONE'), 'subnet': _(u'VPC SUBNET'), 'status': _(u'STATUS'),
+                                  'no_matching_instance_error_msg': _(u'No matching instances')}
+        return instance_selector_text
 
     def get_default_vpc_network(self):
         default_vpc = self.request.session.get('default_vpc', [])

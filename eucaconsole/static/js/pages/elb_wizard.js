@@ -634,7 +634,5 @@ angular.module('EucaConsoleWizard').controller('ELBWizardCtrl', function ($scope
             eucaHandleError(oData, status);
         });
     };
-    $scope.createELB = function () {
-    };
 })
 ;

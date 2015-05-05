@@ -25,6 +25,7 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
             $scope.searchQueryURL = '';
             $scope.searchFilter = '';
             $scope.filterKeys = [];
+            $scope.tableText = {};
             $scope.initSelector = function () {
                 var options = JSON.parse(eucaUnescapeJson($scope.option_json));
                 $scope.setInitialValues(options);
@@ -49,6 +50,9 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                 $scope.filterKeys = [];
                 if (options.hasOwnProperty('is_vpc_supported')) {
                     $scope.isVPCSupported = options.is_vpc_supported;
+                }
+                if (options.hasOwnProperty('instance_selector_text')) {
+                    $scope.tableText = options.instance_selector_text;
                 }
                 if (options.hasOwnProperty('instances_json_endpoint')) {
                     $scope.instancesJsonEndpoint = options.instances_json_endpoint;
