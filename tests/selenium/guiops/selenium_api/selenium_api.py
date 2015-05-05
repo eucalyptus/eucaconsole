@@ -182,6 +182,7 @@ class SeleniumApi():
         """
         Waits for element to NOT be present on the page for timeout_to_locate_element_in_seconds
         Checks for presence every 500 milliseconds
+        :param element_id:
         """
         print "Executing wait_for_element_not_present_by_id('{0}')".format(element_id)
         print "Looking for element id = '{0}' in the DOM".format(element_id)
@@ -189,10 +190,49 @@ class SeleniumApi():
             WebDriverWait(self.driver, self.timeout_to_locate_element_in_seconds).until_not(
                 EC.presence_of_element_located((By.ID, element_id)))
             print "Verified element by id = '{0}' not in the DOM".format(element_id)
-        except Exception, e:
-            print "ERROR: Can not verify the element by id = '{0}' is not in the DOM".format(element_id)
+        #except Exception, e:
+        #    print "ERROR: Can not verify the element by id = '{0}' is not in the DOM".format(element_id)
         except TimeoutException, t:
             print "ERROR: Timed out. Element by id = '{0}' still found in the DOM.".format(element_id)
+
+    def wait_for_element_not_present_by_css(self, css):
+        """
+        Waits for element to NOT be present on the page for timeout_to_locate_element_in_seconds
+        Checks for presence every 500 milliseconds
+        :param css:
+        """
+        print "Executing wait_for_element_not_present_by_css('{0}')".format(css)
+        print "Looking for element css = '{0}' in the DOM".format(css)
+        try:
+            WebDriverWait(self.driver, self.timeout_to_locate_element_in_seconds).until_not(
+                EC.presence_of_element_located((By.CSS_SELECTOR, css)))
+            print "Verified element by css = '{0}' not in the DOM".format(css)
+        #except Exception, e:
+        #    print "ERROR: Can not verify the element by id = '{0}' is not in the DOM".format(element_id)
+        except TimeoutException, t:
+            print "ERROR: Timed out. Element by css = '{0}' still found in the DOM.".format(css)
+
+
+    def element_found_by_id(self, element_id):
+            try:
+                self.driver.find_element(By.ID, element_id)
+                return True
+            except NoSuchElementException, nse:
+                return False
+
+    def wait_for_not_present_by_id(self,element_id):
+        """
+
+        """
+        print "Executing wait_for_not_present_by_id('{0}')".format(element_id)
+
+
+        try:
+            WebDriverWait(self.driver, self.timeout_to_locate_element_in_seconds).until_not(self.element_found_by_id(element_id))
+            print "Verified element by id = '{0}' is not in the DOM."
+        except TimeoutException, t:
+            print "ERROR: Timed out. Element by id = '{0}' still in the DOM.".format(element_id)
+
 
 ############################################################################################################################
     def verify_element_not_present(self, element_type, element):
@@ -219,7 +259,7 @@ class SeleniumApi():
         for i in range(1, self.retry, 1):
             print "Wait On Removal:: Trial: " + str(i) + " Element Type: " + element_type + ", Element: " + element
             try:
-                self.driver.verify_element_present(this_element_type, element)
+                self.driver.find_element(this_element_type, element)
             except NoSuchElementException:
                 print
                 print "Verified Removal:: Element type: " + element_type + ", Element: " + element
@@ -375,17 +415,10 @@ class SeleniumApi():
 
         print("Text displayed at xpath " + xpath + " is " + displayed_text)
 
-    def send_keys_by_link_text(self, link_text, keys):
-        if self.check_if_element_present_by_type("LINK_TEXT", link_text) is not 0:
-            raise UICheckException("Element by link text not present:" + link_text)
-        if self.verify_element_visible_by_link_text(link_text) is not True:
-            raise UICheckException("Element by link text not visible:" + link_text)
-        print "Set: Element Type: LINK_TEXT, Element: " + link_text + ", Keys: " + keys
-        self.driver.find_element_by_link_text(link_text).clear()
-        self.driver.find_element_by_link_text(link_text).send_keys(keys)
-        return 0
-
     def send_keys_by_id(self, this_id, keys):
+        """
+
+        """
         if self.check_if_element_present_by_type("ID", this_id) is not 0:
             raise UICheckException("Element by id not present:" + this_id)
         if self.verify_element_visible_by_id(this_id) is not True:
@@ -500,15 +533,6 @@ class SeleniumApi():
         Select(self.driver.find_element_by_xpath(xpath)).select_by_visible_text(visible_text)
         return 0
 
-    def select_visible_text_by_name(self, name, visible_text):
-        if self.check_if_element_present_by_type("NAME", name) is not 0:
-            raise UICheckException("Element by name not present: " + name)
-        if self.verify_element_visible_by_name(name) is not True:
-            raise UICheckException("Element by name not visible:" + name)
-        print "Select: Element Type: NAME, Element: " + name + ", Text: " + visible_text
-        Select(self.driver.find_element_by_name(name)).select_by_visible_text(visible_text)
-        return 0
-
     def check_if_element_present_by_type(self, element_type, element):
         """
         Checks if element is present using element type and its locator.
@@ -532,7 +556,7 @@ class SeleniumApi():
         for i in range(self.retry):
             print "Wait On:: Trial: " + str(i) + " Element Type: " + element_type + ", Element: " + element
             try:
-                if self.verify_element_present(this_element_type, element):
+                if self.driver.find_element(this_element_type, element):
                     break
             except:
                 pass
@@ -542,7 +566,7 @@ class SeleniumApi():
             #     self.fail("timed out after "+`self.retry`+" seconds")
 
         try:
-            self.verify_element_present(this_element_type, element)
+            self.driver.find_element(this_element_type, element)
         except AssertionError as e:
             self.verificationErrors.append(str(e))
             print "TEST FAILED::: Wait On:: Element Type: " + element_type + ", Element: " + element

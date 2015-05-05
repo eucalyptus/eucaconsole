@@ -399,3 +399,22 @@ class SeleniumApi_experimental():
         :param name:
         """
         return self.driver.find_element_by_name(name).is_displayed()
+
+    def send_keys_by_link_text(self, link_text, keys):
+        if self.check_if_element_present_by_type("LINK_TEXT", link_text) is not 0:
+            raise UICheckException("Element by link text not present:" + link_text)
+        if self.verify_element_visible_by_link_text(link_text) is not True:
+            raise UICheckException("Element by link text not visible:" + link_text)
+        print "Set: Element Type: LINK_TEXT, Element: " + link_text + ", Keys: " + keys
+        self.driver.find_element_by_link_text(link_text).clear()
+        self.driver.find_element_by_link_text(link_text).send_keys(keys)
+        return 0
+
+    def select_visible_text_by_name(self, name, visible_text):
+        if self.check_if_element_present_by_type("NAME", name) is not 0:
+            raise UICheckException("Element by name not present: " + name)
+        if self.verify_element_visible_by_name(name) is not True:
+            raise UICheckException("Element by name not visible:" + name)
+        print "Select: Element Type: NAME, Element: " + name + ", Text: " + visible_text
+        Select(self.driver.find_element_by_name(name)).select_by_visible_text(visible_text)
+        return 0
