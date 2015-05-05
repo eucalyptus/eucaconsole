@@ -547,7 +547,7 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
 
 class LaunchConfigMoreView(BaseLaunchConfigView, BlockDeviceMappingItemView):
     """Create Launchconfig like this view"""
-    TEMPLATE = '../templates/instances/launchconfig_create_more.pt'
+    TEMPLATE = '../templates/launchconfigs/launchconfig_create_more.pt'
 
     def __init__(self, request):
         super(LaunchConfigMoreView, self).__init__(request)
@@ -576,7 +576,7 @@ class LaunchConfigMoreView(BaseLaunchConfigView, BlockDeviceMappingItemView):
             launchconfig=self.launch_config,
             launch_more_form=self.launch_more_form,
             snapshot_choices=self.get_snapshot_choices(),
-            vpc_subnet_display=self.get_vpc_subnet_display(self.launch_config.subnet_id) if self.launch_config else None,
+            #vpc_subnet_display=self.get_vpc_subnet_display(self.launch_config.subnet_id) if self.launch_config else None,
             is_vpc_supported=self.is_vpc_supported,
             role=self.role,
         )
