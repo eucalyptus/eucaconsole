@@ -234,6 +234,18 @@ $tooltip-padding: rem-calc(5);
     }
 }
 
+
+// Flexbox mixins //
+@mixin flexbox-mixin {
+    display: -ms-flexbox; // IE10
+    display: -webkit-flex; // Safari 7+
+    display: flex;
+}
+@mixin flexgrow-mixin($amount:1) {
+    -webkit-flex-grow: $amount;  // Safari 7+ and IE10
+    flex-grow: $amount;
+}
+
 /* -----------------------------------------
    Item list
 ----------------------------------------- */

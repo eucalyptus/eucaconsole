@@ -25,6 +25,7 @@
 
 import os
 import re
+import sys
 
 from distutils.command.build_py import build_py
 from distutils.command.sdist import sdist
@@ -34,14 +35,16 @@ from eucaconsole import __version__
 
 DATA_DIR = '/usr/share/'
 
+py_version = sys.version_info[:2]
+
 
 def get_data_files(path, regex):
     data_files = []
     for root, _, filenames in os.walk(path, followlinks=True):
         files = []
-        for file in filenames:
-            if re.match(regex, file) is not None:
-                files.append(os.path.join(root, file))
+        for filename in filenames:
+            if re.match(regex, filename) is not None:
+                files.append(os.path.join(root, filename))
         data_files.append((os.path.join(DATA_DIR, root), files))
     return data_files
 
@@ -111,9 +114,8 @@ requires = [
     'boto == 2.34.0',
     'chameleon >= 2.5.3',
     'dogpile.cache >= 0.5.3',
-    # Note: gevent 1.0 no longer requires libevent, it bundles libev instead,
     # taking this out since we need gevent1 for pkg install
-    # 'gevent >= 0.13.8',
+    # 'gevent >= 0.13.8',  # Note: gevent 1.0 no longer requires libevent, it bundles libev instead,
     # 'greenlet >= 0.3.1',
     'gunicorn >= 18.0',
     'M2Crypto >= 0.20.2',

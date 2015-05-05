@@ -1,0 +1,20 @@
+/* @fileOverview single Instance page CSS */
+/* Dropdown elements */
+/* Set the link colors and styles for top-level nav */
+/* ----------------------------------------- Item list
+----------------------------------------- */
+.cloudwatch-charts .toprow { display: -ms-flexbox; display: -webkit-flex; display: flex; }
+.cloudwatch-charts .toprow .blurb { -webkit-flex-grow: 1; flex-grow: 1; }
+.cloudwatch-charts .toprow .actions { display: inline-block; }
+.cloudwatch-charts .toprow label { font-weight: bold; line-height: 2.2rem; margin-right: 1rem; }
+.cloudwatch-charts .toprow .duration-input { width: 200px; }
+.cloudwatch-charts .toprow .field-wrapper { display: inline-block; margin-right: 2rem; }
+.cloudwatch-charts .toprow .field-wrapper select { width: 150px; margin-left: 0; }
+
+.chart-wrapper h6 { color: #03405f; margin-bottom: 0; padding: 8px 0 4px 8px; border: 1px solid #ccc; border-bottom: none; }
+.chart-wrapper h6 .busy { margin-left: 1rem; color: #6a737b; max-width: 1rem; max-height: 1rem; }
+.chart-wrapper svg { width: 100%; height: 300px; border: 1px solid #ccc; border-top: none; }
+.chart-wrapper:hover { cursor: pointer; }
+
+.large-chart-wrapper svg { width: 100%; height: 500px; }
+.large-chart-wrapper .busy.loading { position: absolute; top: 50%; left: 48%; width: 3rem; height: 3rem; font-size: 3rem; color: #6a737b; }

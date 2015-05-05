@@ -1,0 +1,103 @@
+<metal:block use-macro="main_template" i18n:domain="eucaconsole" xmlns="http://www.w3.org/1999/html">
+
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/nvd3/nv.d3.min.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/cloudwatch_charts.css')}" />
+</head>
+
+<div metal:fill-slot="main_content">
+    <div class="row" id="contentwrap" ng-app="CloudWatchCharts" ng-controller="CloudWatchChartsCtrl as chartsCtrl"
+         ng-init="chartsCtrl.initController('${controller_options_json}')">
+        <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+            <metal:crumbs metal:fill-slot="crumbs">
+                <li><a href="${request.route_path('instances')}" i18n:translate="">Instances</a></li>
+                <li class="current"><a href="#">${instance_name}</a></li>
+            </metal:crumbs>
+        </metal:breadcrumbs>
+        <!--! Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
+        <h3 id="pagetitle">
+            <strong i18n:translate="">Details for instance:</strong>
+            <em>${instance_name}</em>
+        </h3>
+        <div class="large-12 columns">
+            <dl class="tabs" id="instance-subnav">
+                <dd><a href="${request.route_path('instance_view', id=instance.id)}" i18n:translate="">General</a></dd>
+                <dd><a href="${request.route_path('instance_volumes', id=instance.id)}" i18n:translate="">Volumes</a></dd>
+                <dd class="active"><a i18n:translate="">Monitoring</a></dd>
+            </dl>
+            <div class="panel no-title cloudwatch-charts">
+                <div class="toprow">
+                    <div class="blurb">
+                        <div class="duration-wrapper" tal:condition="monitoring_enabled">
+                            <label for="monitoring-duration" class="left" i18n:translate="">Show data for</label>
+                            <select name="monitoring_duration" id="monitoring-duration" ng-model="chartsCtrl.duration"
+                                    ng-change="chartsCtrl.refreshCharts()" class="duration-input">
+                                <option tal:repeat="duration duration_choices" value="${duration[0]}">
+                                    ${duration[1]}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="actions">
+                        <span id="refresh-charts-icon" class="action-icon" title="Refresh data" i18n:attributes="title"
+                              ng-click="chartsCtrl.refreshCharts()"><i class="fa fa-refresh"></i></span>
+                        <span id="enable-monitoring-icon" class="action-icon dropdown"
+                              data-dropdown="enable-monitoring-dropdown"><i class="fa fa-ellipsis-v"></i></span>
+                        <ul id="enable-monitoring-dropdown" class="f-dropdown" data-dropdown-content="">
+                            <li>
+                                <a href="" ng-click="chartsCtrl.submitMonitoringForm()">
+                                    <div tal:condition="layout.cloud_type == 'euca'" tal:omit-tag="">
+                                        <span i18n:translate="">Turn monitoring</span>
+                                        <span i18n:translate="" tal:condition="monitoring_enabled">off</span>
+                                        <span i18n:translate="" tal:condition="not monitoring_enabled">on</span>
+                                    </div>
+                                    <div tal:condition="layout.cloud_type == 'aws'" tal:omit-tag="">
+                                        <span i18n:translate="" tal:condition="detailed_monitoring_enabled">
+                                            Disable detailed monitoring
+                                        </span>
+                                        <span i18n:translate="" tal:condition="not detailed_monitoring_enabled">
+                                            Enable detailed monitoring
+                                        </span>
+                                    </div>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div tal:condition="layout.cloud_type == 'euca' and not monitoring_enabled">
+                    <p i18n:translate="">Monitoring is currently turned off for this instance.</p>
+                    <p>
+                        <a href="" ng-click="chartsCtrl.submitMonitoringForm()" i18n:translate="">
+                            Turn on monitoring
+                        </a>
+                        <span i18n:translate="">to view metric data.</span>
+                    </p>
+                </div>
+                <ul class="small-block-grid-1 medium-block-grid-2 large-block-grid-3" tal:condition="monitoring_enabled">
+                    <li class="chart-wrapper" ng-repeat="chart in chartsCtrl.chartsList"
+                        ng-click="chartsCtrl.displayLargeChart(chart, 'InstanceId', '${instance.id}')" ng-cloak="">
+                        <h6>{{ chartsCtrl.metricTitleMapping[chart.metric] }}<i class="busy"></i></h6>
+                        <svg cloudwatch-chart="" id="cwchart-{{ chart.metric }}" class="cwchart"
+                             ids="${instance.id}" idtype="InstanceId" metric="{{ chart.metric }}"
+                             duration="{{ chartsCtrl.duration }}" unit="{{ chart.unit }}" statistic="Average">
+                        </svg>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <form method="post" id="monitoring-form" action="${request.route_path('instance_monitoring_update', id=instance.id)}">
+            ${structure:monitoring_form['csrf_token']}
+        </form>
+        <!--! Modal dialog for large chart -->
+        ${panel('cloudwatch_chart_dialog', duration_choices=duration_choices, statistic_choices=statistic_choices)}
+    </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/d3/d3.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/nvd3/nv.d3.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/cloudwatch_charts.js')}"></script>
+</div>
+
+</metal:block>
