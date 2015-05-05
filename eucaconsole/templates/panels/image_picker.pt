@@ -2,7 +2,7 @@
     <!--! Image Picker widget (Used in Launch Instance wizard) -->
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/image_picker.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.css')}"/>
-    <div id="image-picker" ng-app="ImagePicker" tal:define="launchconfig_wizard 'launchconfig' in request.url"
+    <div id="image-picker" tal:define="launchconfig_wizard 'launchconfig' in request.url"
          ng-controller="ImagePickerCtrl" ng-init="initImagePicker('${controller_options_json}')">
         <!--! Image picker widget -->
         <div class="row">
@@ -12,7 +12,7 @@
                     <span i18n:translate="" tal:condition="not launchconfig_wizard">virtual machine instance</span>
                     <span i18n:translate="" tal:condition="launchconfig_wizard">launch configuration</span>
                 </label>
-                <div ng-app="MagicSearch">
+                <div>
                     <magic-search template="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.html')}"
                         strings="{'remove':'${layout.searchtext_remove}', 'cancel':'${layout.searchtext_cancel}', 'prompt':'${layout.searchtext_prompt}', 'text':'${layout.searchtext_text_facet}'}"
                         facets="${search_facets}" filter-keys="${filter_keys}"></magic-search>
