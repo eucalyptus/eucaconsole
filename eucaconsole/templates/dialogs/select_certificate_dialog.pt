@@ -1,20 +1,20 @@
 <!--! Select certificate modal dialog -->
 <div tal:omit-tag="" i18n:domain="eucaconsole">
     <div id="select-certificate-modal" class="reveal-modal medium" data-reveal="" ng-cloak=""
-        tal:define="name_html_attrs {'pattern': '^[a-zA-Z0-9\-]{1,255}$'};">
+        tal:define="name_html_attrs {'pattern': '^[a-zA-Z0-9\-]{1,255}$'}">
         <h3 i18n:translate="">Select certificate</h3>
         <div ng-show="showsCertificateTabDiv">
             <dl id="wizard-tabs" class="tabs" data-tab="" ng-cloak="">
                 <dt></dt>
                 <dd id="select-certificate-modal-tab-ssl" class="active">
                     <a href="" ng-click="selectCertificateTab($event, 'SSL')">
-                        <span class="cir">SSL</span>
+                        <span class="cir" i18n:translate="">SSL</span>
                     </a>
                 </dd>
                 <dt></dt>
                 <dd id="select-certificate-modal-tab-backend">
                     <a href="" ng-click="selectCertificateTab($event, 'BACKEND')">
-                        <span class="cir">Back end</span>
+                        <span class="cir" i18n:translate="">Back end</span>
                     </a>
                 </dd>
             </dl>
