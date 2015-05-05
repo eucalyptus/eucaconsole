@@ -4,9 +4,9 @@
  *
  */
 
-angular.module('EucaConsoleWizard', ['EucaConsoleUtils', 'MagicSearch', 'TagEditor', 'ELBListenerEditor'])
-    .controller('EucaConsoleWizardCtrl', function ($scope, $http, $timeout, eucaHandleError, eucaUnescapeJson) {
-        $scope.elbForm = undefined;
+angular.module('BaseELBWizard', ['EucaConsoleUtils', 'MagicSearch', 'TagEditor', 'ELBListenerEditor'])
+    .controller('BaseELBWizardCtrl', function ($scope, $http, $timeout, eucaHandleError, eucaUnescapeJson) {
+        $scope.thisForm = undefined;
         $scope.urlParams = undefined;
         $scope.resourceName  = '';
         $scope.totalSteps = 0;
@@ -30,7 +30,7 @@ angular.module('EucaConsoleWizard', ['EucaConsoleUtils', 'MagicSearch', 'TagEdit
                 $scope.tabList = options.wizard_tab_list;
             }
             $scope.totalSteps = $scope.tabList.length;
-            $scope.elbForm = $('#' + $scope.resourceName + '-form');
+            $scope.thisForm = $('#' + $scope.resourceName + '-form');
             $scope.urlParams = $.url().param();
             $scope.currentStepIndex = 0;
             $scope.isValidationError = true;
@@ -122,11 +122,11 @@ angular.module('EucaConsoleWizard', ['EucaConsoleUtils', 'MagicSearch', 'TagEdit
         // return true if exists invalid input fields on 'step' page
         // also set the focus on the invalid field
         $scope.existInvalidFields = function(step) {
-            if ($scope.elbForm === undefined) {
+            if ($scope.thisForm === undefined) {
                 return true;
             }
-            $scope.elbForm.trigger('validate');
-            var tabContent = $scope.elbForm.find('#step' + step);
+            $scope.thisForm.trigger('validate');
+            var tabContent = $scope.thisForm.find('#step' + step);
             var invalidFields = tabContent.find('[data-invalid]');
             invalidFields.focus();
             if (invalidFields.length > 0 || $('#step' + step).find('div.error').length > 0) {
@@ -213,4 +213,4 @@ angular.module('EucaConsoleWizard', ['EucaConsoleUtils', 'MagicSearch', 'TagEdit
         };
     })
 ;
-angular.module('EucaConsoleWizard');
+angular.module('BaseELBWizard');

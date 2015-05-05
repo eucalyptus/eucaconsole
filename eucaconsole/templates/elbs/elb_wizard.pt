@@ -6,7 +6,7 @@
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/instance_selector.css')}" />
 </head>
 
-<div metal:fill-slot="main_content" ng-app="EucaConsoleWizard" ng-controller="EucaConsoleWizardCtrl" ng-init="initController('${controller_options_json}')">
+<div metal:fill-slot="main_content" ng-app="BaseELBWizard" ng-controller="BaseELBWizardCtrl" ng-init="initController('${controller_options_json}')">
     <div class="row" id="contentwrap" ng-controller="ELBWizardCtrl" ng-init="initController('${controller_options_json}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
@@ -43,7 +43,7 @@
                             tal:define="html_attrs_val {'class': 'text-input'};">
                             <div ng-cloak="true">
                                 <h6 i18n:translate="">General</h6>
-                                ${panel('form_field', field=create_form['name'], rightcol_width=12, stack_label=True, ng_attrs={'model': 'elbName'}, pattern=layout.name_without_spaces_pattern, **html_attrs_val)}
+                                ${panel('form_field', field=create_form['name'], leftcol_width=0, rightcol_width=12, leftcol_width_large=0, rightcol_width_large=12, stack_label=True, ng_attrs={'model': 'elbName'}, pattern=layout.name_without_spaces_pattern, **html_attrs_val)}
                             </div>
                             <hr />
                             <div>
@@ -118,7 +118,7 @@
                                         <span class="helptext-icon" data-tooltip="" title="${create_form.add_availability_zones_help_text}"></span>
                                     </label>
                                 </div>
-                                ${panel('form_field', field=create_form['zone'], leftcol_width=0, rightcol_width=12, ng_attrs={'model': 'availabilityZones', 'options': 'k as v for (k, v) in availabilityZoneChoices'}, **avail_zones_attrs)}
+                                ${panel('form_field', field=create_form['zone'], leftcol_width=0, rightcol_width=12, leftcol_width_large=0, rightcol_width_large=12, ng_attrs={'model': 'availabilityZones', 'options': 'k as v for (k, v) in availabilityZoneChoices'}, **avail_zones_attrs)}
                             </div>
                             <div ng-cloak="true" ng-show="vpcNetwork === 'None'" class="checkbox-with-helptext-icon">
                                 ${structure:create_form.cross_zone_enabled(**{'ng-model': 'crossZoneEnabled'})}
@@ -135,7 +135,7 @@
                                         <span class="helptext-icon" data-tooltip="" title="${create_form.add_vpc_subnets_help_text}"></span>
                                     </label>
                                 </div>
-                                ${panel('form_field', field=create_form['vpc_subnet'], leftcol_width=0, rightcol_width=12, ng_attrs={'model': 'vpcSubnets', 'options': 'k as v for (k, v) in vpcSubnetChoices'}, **vpc_subnets_attrs)}
+                                ${panel('form_field', field=create_form['vpc_subnet'], leftcol_width=0, rightcol_width=12, leftcol_width_large=0, rightcol_width_large=12, ng_attrs={'model': 'vpcSubnets', 'options': 'k as v for (k, v) in vpcSubnetChoices'}, **vpc_subnets_attrs)}
                                  <span id="hidden_vpc_subnet_empty_option" class="hide" i18n:translate="">No subnets found</span>
                             </div>
                             <div>&nbsp;</div>
@@ -349,7 +349,7 @@
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/utils/purl.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/pages/eucaconsole_wizard.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/base_elb_wizard.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/elb_wizard.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/instance_selector.js')}"></script>
