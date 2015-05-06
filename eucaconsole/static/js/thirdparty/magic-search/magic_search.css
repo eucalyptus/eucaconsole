@@ -5,85 +5,104 @@
 /*-----------------------------------------
    Item list
   ----------------------------------------- */
+@-moz-document url-prefix() {
+  /* line 33, ../src/magic_search.scss */
+  .item-list .item {
+    top: -0.40rem;
+  }
+
+  /* line 37, ../src/magic_search.scss */
+  .search-selected {
+    top: -0.40rem;
+  }
+}
 /*-----------------------------------------
    Magic Search bar
   ----------------------------------------- */
-/* line 30, ../src/magic_search.scss */
+/* line 45, ../src/magic_search.scss */
 .search-bar {
   position: relative;
-  border: 1px solid black;
+  border: 1px solid #ccc;
   background-color: white;
   margin-bottom: 0.5rem;
-  padding: 4px;
+  padding: 0.25rem;
   height: auto;
 }
-/* line 37, ../src/magic_search.scss */
+/* line 52, ../src/magic_search.scss */
 .search-bar i.fi-filter {
-  color: #444444;
+  color: #6a737b;
   position: absolute;
-  top: 0.5rem;
+  top: 0.35rem;
   left: 0.65rem;
 }
-/* line 43, ../src/magic_search.scss */
+/* line 58, ../src/magic_search.scss */
 .search-bar .search-main-area {
   position: relative;
   margin-left: 1.65rem;
   margin-right: 1.65rem;
   cursor: text;
 }
-/* line 14, ../src/magic_search.scss */
-.search-bar .item-list {
-  margin-bottom: 6px;
-}
 /* line 16, ../src/magic_search.scss */
+.search-bar .item-list {
+  position: relative;
+}
+/* line 19, ../src/magic_search.scss */
 .search-bar .item-list .item {
   color: #333;
   background-color: #e6e7e8;
-  margin-right: 8px;
+  height: 1.3rem;
+  margin-right: 0.5rem;
 }
-/* line 20, ../src/magic_search.scss */
+/* line 24, ../src/magic_search.scss */
 .search-bar .item-list .item a {
   color: white;
 }
-/* line 50, ../src/magic_search.scss */
-.search-bar .item-list {
-  margin-bottom: 2px;
-}
-/* line 53, ../src/magic_search.scss */
+/* line 68, ../src/magic_search.scss */
 .search-bar .search-selected {
+  position: relative;
+  padding-left: 0;
+  padding-right: 0;
   background-color: white;
-  color: #444444;
+  color: #444;
 }
-/* line 57, ../src/magic_search.scss */
+/* line 75, ../src/magic_search.scss */
 .search-bar .search-entry {
+  position: relative;
   display: inline-block;
   height: 1.5rem;
+  height: 1.5rem;
 }
-/* line 61, ../src/magic_search.scss */
+/* line 81, ../src/magic_search.scss */
 .search-bar .search-input {
-  width: 220px;
+  width: 17.5rem;
   border: 0;
   box-shadow: none;
   height: 1.5rem;
-  padding: 3px;
+  padding: 0.25rem;
+  margin-bottom: 0;
   background-color: white;
 }
-/* line 68, ../src/magic_search.scss */
+/* line 89, ../src/magic_search.scss */
 .search-bar .search-input:focus {
   box-shadow: none;
+  background-color: white;
 }
-/* line 72, ../src/magic_search.scss */
+/* line 94, ../src/magic_search.scss */
 .search-bar .match {
   font-weight: bold;
 }
-/* line 75, ../src/magic_search.scss */
+/* line 97, ../src/magic_search.scss */
 .search-bar i.cancel {
-  color: #444444;
+  color: #6a737b;
   position: absolute;
-  top: 0.5rem;
+  top: 0.35rem;
   right: 0.65rem;
 }
-/* line 77, ../src/magic_search.scss */
+/* line 99, ../src/magic_search.scss */
 .search-bar i.cancel:hover {
   color: darkred;
+}
+/* line 106, ../src/magic_search.scss */
+.search-bar .f-dropdown.open {
+  left: 0 !important;
 }

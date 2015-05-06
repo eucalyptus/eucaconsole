@@ -1,7 +1,6 @@
 
 <!--! S3 Object Metadata panel -->
-<div id="s3-metadata-editor" ng-app="S3MetadataEditor" i18n:domain="eucaconsole"
-     ng-controller="S3MetadataEditorCtrl"
+<div id="s3-metadata-editor" i18n:domain="eucaconsole" ng-controller="S3MetadataEditorCtrl"
      ng-init="initMetadata('${metadata_json}', '${metadata_key_create_option_text}', '${metadata_key_no_results_text}')">
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/s3_metadata_editor.css')}" />
     <h6 i18n:translate="">Metadata</h6>

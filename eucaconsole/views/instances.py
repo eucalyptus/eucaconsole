@@ -219,7 +219,6 @@ class InstancesView(LandingPageView, BaseInstanceView):
             del filters_form.vpc_id
             del filters_form.subnet_id
         self.render_dict.update(dict(
-            filter_fields=False,
             filter_keys=self.filter_keys,
             search_facets=BaseView.escape_json(json.dumps(search_facets)),
             sort_keys=self.sort_keys,
@@ -1517,7 +1516,6 @@ class InstanceTypesView(LandingPageView, BaseInstanceView):
         self.conn = self.get_connection()
         self.render_dict = dict(
             instance_type_form=InstanceTypeForm(self.request),
-            filter_fields=True,
             sort_keys=[],
             filter_keys=[],
             prefix='',

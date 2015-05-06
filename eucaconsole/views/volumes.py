@@ -59,7 +59,7 @@ class BaseVolumeView(BaseView):
             try:
                 volumes_list = self.conn.get_all_volumes(volume_ids=[volume_id])
                 return volumes_list[0] if volumes_list else None
-            except BotoServerError as err:
+            except BotoServerError:
                 return None
         return None
 
@@ -95,7 +95,6 @@ class VolumesView(LandingPageView, BaseVolumeView):
         search_facets = filters_form.facets
         # filter_keys are passed to client-side filtering in search box
         self.render_dict.update(dict(
-            filter_fields=False,
             filters_form=filters_form,
             search_facets=BaseView.escape_json(json.dumps(search_facets)),
             sort_keys=self.get_sort_keys(),
@@ -239,7 +238,12 @@ class VolumesJsonView(LandingPageView):
             return dict(results=volumes)
 
     def get_items(self, filters=None):
-        return self.conn.get_all_volumes(filters=filters) if self.conn else []
+        items = self.conn.get_all_volumes(filters=filters) if self.conn else []
+        # because volume status is a combination of status and attach_status, resolve that here
+        for item in items:
+            if item.status == 'in-use':
+                item.status = item.attach_data.status
+        return items
 
 
 class VolumeView(TaggedItemView, BaseVolumeView):
@@ -501,7 +505,7 @@ class VolumeSnapshotsView(BaseVolumeView):
                 if description:
                     params['Description'] = description[0:255]
                 snapshot = self.volume.connection.get_object('CreateSnapshot', params, Snapshot, verb='POST')
-                
+
                 # Add name tag
                 if name:
                     snapshot.add_tag('Name', name)

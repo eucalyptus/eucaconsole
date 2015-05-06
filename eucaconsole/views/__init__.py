@@ -594,7 +594,6 @@ class LandingPageView(BaseView):
     """
     def __init__(self, request, **kwargs):
         super(LandingPageView, self).__init__(request, **kwargs)
-        self.filter_fields = []
         self.filter_keys = []
         self.sort_keys = []
         self.initial_sort_key = ''
