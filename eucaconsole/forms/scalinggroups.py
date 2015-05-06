@@ -185,7 +185,6 @@ class BaseScalingGroupForm(BaseSecureForm):
         return sorted(set(choices))
 
     def get_vpc_subnet_choices(self):
-        choices = []
         if self.scaling_group is not None and self.scaling_group.vpc_zone_identifier:
             # return VPC specific subnets only
             vpc_subnets = self.scaling_group.vpc_zone_identifier.split(',')
@@ -239,7 +238,7 @@ class ScalingGroupEditForm(BaseScalingGroupForm):
     default_cooldown_help_text = _(
         u'Number of seconds after a Scaling Activity completes before any further scaling activities can start')
     default_cooldown = wtforms.IntegerField(
-        label=_(u'Default cooldown period (seconds)'),
+        label=_(u'Default cooldown period (secs)'),
         validators=[
             validators.InputRequired(message=default_cooldown_error_msg),
         ],
@@ -273,7 +272,7 @@ class ScalingGroupEditForm(BaseScalingGroupForm):
 
         if scaling_group is not None:
             self.default_cooldown.data = scaling_group.default_cooldown
-            #self.termination_policies.data = scaling_group.termination_policies
+            # self.termination_policies.data = scaling_group.termination_policies
             # Need to set the proper launch config since the launch config choices may have braces escaped
             from ..views import BaseView
             self.launch_config.data = BaseView.escape_braces(scaling_group.launch_config_name)
@@ -424,11 +423,11 @@ class ScalingGroupsFiltersForm(BaseSecureForm):
             self.vpc_zone_identifier.choices.append(('None', _(u'No subnets')))
         self.vpc_zone_identifier.choices = sorted(self.vpc_zone_identifier.choices)
         self.facets = [
-            {'name':'launch_config_name', 'label':self.launch_config_name.label.text,
-                'options':self.getOptionsFromChoices(self.launch_config_name.choices)},
-            {'name':'availability_zone', 'label':self.availability_zones.label.text,
-                'options':self.getOptionsFromChoices(self.availability_zones.choices)},
-            {'name':'vpc_zone', 'label':self.vpc_zone_identifier.label.text,
-                'options':self.getOptionsFromChoices(self.vpc_zone_identifier.choices)},
-            {'name':'tags', 'label':self.tags.label.text, 'options':[]},
+            {'name': 'launch_config_name', 'label': self.launch_config_name.label.text,
+                'options': self.getOptionsFromChoices(self.launch_config_name.choices)},
+            {'name': 'availability_zone', 'label': self.availability_zones.label.text,
+                'options': self.getOptionsFromChoices(self.availability_zones.choices)},
+            {'name': 'vpc_zone', 'label': self.vpc_zone_identifier.label.text,
+                'options': self.getOptionsFromChoices(self.vpc_zone_identifier.choices)},
+            {'name': 'tags', 'label': self.tags.label.text, 'options': []},
         ]
