@@ -185,7 +185,7 @@ class DashboardJsonView(BaseView):
             securitygroups_count = len(ec2_conn.get_all_security_groups()) if 'security-groups' in tiles else 0
             keypairs_count = len(ec2_conn.get_all_key_pairs()) if 'key-pairs' in tiles else 0
             elasticips_count = len(ec2_conn.get_all_addresses()) if 'elastic-ips' in tiles else 0
-            loadbalancers_count = len(elb_conn.get_all_load_balancers()) if 'load-balancers' else 0
+            loadbalancers_count = len(elb_conn.get_all_load_balancers()) if 'load-balancers' in tiles else 0
 
             # TODO: catch errors in this block and turn iam health off
             # IAM counts
