@@ -10,7 +10,9 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
         $scope.securityGroups = [];
         $scope.availabilityZones = []; 
         $scope.vpcNetwork = 'None';
-        $scope.vpcSubnets = [];
+        $scope.vpcSubnetList = [];
+        $scope.selectedVPCSubnetList = [];
+        $scope.allVPCSubnetList = [];
         $scope.instanceList = [];
         $scope.pingProtocol = '';
         $scope.pingPort = '';
@@ -52,6 +54,9 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
                     $scope.$broadcast('eventUpdateAvailabilityZones', $scope.availabilityZones);
                 }, 500);
             }
+            if (options.hasOwnProperty('vpc_subnet_choices')) {
+                $scope.allVPCSubnetList = options.vpc_subnet_choices;
+            }
             if (options.hasOwnProperty('elb_vpc_network')) {
                 if (options.elb_vpc_network !== null) {
                     $scope.vpcNetwork = options.elb_vpc_network;
@@ -62,7 +67,7 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
                 }
             }
             if (options.hasOwnProperty('elb_vpc_subnets')) {
-                $scope.vpcSubnets = options.elb_vpc_subnets;
+                $scope.vpcSubnetList = options.elb_vpc_subnets;
             }
             if (options.hasOwnProperty('instances')) {
                 $scope.instanceList = options.instances;
@@ -104,6 +109,9 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
             });
             $scope.$watch('availabilityZones', function () {
                 $scope.$broadcast('eventUpdateAvailabilityZones', $scope.availabilityZones);
+            }, true);
+            $scope.$watch('vpcSubnetList', function () {
+                $scope.updateSelectedVPCSubnetList();
             }, true);
             $scope.$watch('instanceList', function () {
                 $scope.$broadcast('eventInitSelectedInstances', $scope.instanceList);
@@ -167,6 +175,17 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
                     $scope.$broadcast('updatedTab', $scope.currentTab);
                 }
             });
+        };
+        $scope.updateSelectedVPCSubnetList = function () {
+            var selected = [];
+            angular.forEach($scope.vpcSubnetList, function (subnetID) {
+                angular.forEach($scope.allVPCSubnetList, function (subnet) {
+                    if (subnetID === subnet.id) {
+                        selected.push(subnet);
+                    }
+                });
+            });
+            $scope.selectedVPCSubnetList = selected;
         };
         $scope.submitSaveChanges = function ($event) {
         };

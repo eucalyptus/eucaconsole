@@ -129,7 +129,7 @@
 #elb-view-form .section-label-with-helptext-icon { margin-bottom: 0.5rem; }
 #elb-view-form .checkbox-with-helptext-icon label { margin-right: 0rem; }
 #elb-view-form .cancel-link { margin-right: 1.5rem; }
-#elb-view-form .description { margin-bottom: 1.5rem; }
+#elb-view-form .description { margin-bottom: 1.0rem; }
 #elb-view-form #elb-listener-security-field { margin-bottom: 1.5rem; }
 #elb-view-form #advanced-section { margin-top: 1.5rem; }
 
