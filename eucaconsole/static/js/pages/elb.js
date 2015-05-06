@@ -9,6 +9,8 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
         $scope.isNotChanged = true;
         $scope.securityGroups = [];
         $scope.availabilityZones = []; 
+        $scope.selectedZoneList = [];
+        $scope.allZoneList = [] 
         $scope.vpcNetwork = 'None';
         $scope.vpcSubnetList = [];
         $scope.selectedVPCSubnetList = [];
@@ -46,6 +48,9 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
             }
             if (!$scope.hasImage) {
                 $('#image-missing-modal').foundation('reveal', 'open');
+            }
+            if (options.hasOwnProperty('availability_zone_choices')) {
+                $scope.allZoneList = options.availability_zone_choices;
             }
             if (options.hasOwnProperty('availability_zones')) {
                 $scope.availabilityZones = options.availability_zones;
@@ -108,6 +113,7 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
                 $(this).find('.dialog-progress-display').css('display', 'block');
             });
             $scope.$watch('availabilityZones', function () {
+                $scope.updateSelectedZoneList();
                 $scope.$broadcast('eventUpdateAvailabilityZones', $scope.availabilityZones);
             }, true);
             $scope.$watch('vpcSubnetList', function () {
@@ -175,6 +181,17 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
                     $scope.$broadcast('updatedTab', $scope.currentTab);
                 }
             });
+        };
+        $scope.updateSelectedZoneList = function () {
+            var selected = [];
+            angular.forEach($scope.availabilityZones, function (zoneID) {
+                angular.forEach($scope.allZoneList, function (zone) {
+                    if (zoneID === zone.id) {
+                        selected.push(zone);
+                    }
+                });
+            });
+            $scope.selectedZoneList = selected;
         };
         $scope.updateSelectedVPCSubnetList = function () {
             var selected = [];

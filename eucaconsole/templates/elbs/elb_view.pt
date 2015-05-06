@@ -124,6 +124,31 @@
                             <div i18n:translate="" class="description">
                                 Instances registered with the load balancer will not receive requests until their associated availability zones are enabled.
                             </div>
+                            <div class="tile item" ng-cloak="true"
+                                ng-repeat="zone in selectedZoneList | orderBy: sortBy:sortReverse">
+                                <div class="header">
+                                    <strong>
+                                        {{ zone.name }}
+                                    </strong>
+                                    <span id="tile-item-dropdown_{{ zone.id }}" class="tiny secondary button dropdown"
+                                        data-dropdown="item-dropdown_{{ zone.id }}"><i class="grid-action"></i></span>
+                                        <ul id="item-dropdown_{{ zone.id }}" class="f-dropdown" data-dropdown-content="">
+                                            <li>
+                                                <a ng-href="/snapshots/{{ zone.id }}" i18n:translate="">Disable zone</a>
+                                            </li>
+                                        </ul>
+                                </div>
+                                <div class="content">
+                                    <div>
+                                        <span class="label" title="Name" i18n:attributes="title" data-tooltip="">NM</span>
+                                        {{ zone.name }}
+                                    </div>
+                                </div>
+                                <div class="footer status">
+                                    {{ zone.name }}
+                                </div>
+                            </div>
+                            <hr />
                         </div>
                         <div class="gridwrapper" ng-cloak="true" tal:condition="elb_vpc_network != 'None'">
                             <h6 i18n:translate="">
