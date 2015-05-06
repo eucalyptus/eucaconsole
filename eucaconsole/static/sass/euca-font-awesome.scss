@@ -1,0 +1,68 @@
+/*!
+ * Eucalyptus version includes some of our own wrap-ups of fa classes
+ * which act as single-class aliases we can references many places.
+ * Also setting font path based on our source tree.
+ *
+ * copied from
+ *  Font Awesome 4.3.0 by @davegandy - http://fontawesome.io - @fontawesome
+ *  License - http://fontawesome.io/license (Font: SIL OFL 1.1, CSS: MIT License)
+ */
+
+$fa-font-path:        "../fonts/font-awesome";
+
+@import "font-awesome/variables";
+@import "font-awesome/mixins";
+@import "font-awesome/path";
+@import "font-awesome/core";
+@import "font-awesome/larger";
+@import "font-awesome/fixed-width";
+@import "font-awesome/list";
+@import "font-awesome/bordered-pulled";
+@import "font-awesome/animated";
+@import "font-awesome/rotated-flipped";
+@import "font-awesome/stacked";
+@import "font-awesome/icons";
+
+// app-wide busy indication
+.busy {
+    @extend .fa;
+    @extend .fa-spinner;
+    @extend .fa-pulse;
+    .loading & {
+        @extend .fa-2x;
+    }
+}
+
+// action menu icons
+.gridwrapper {
+    .dropdown.button.tiny {
+        .grid-action {
+            position: relative;
+            top: 4px;
+            @extend .fa;
+            @extend .fa-ellipsis-v;
+        }
+    }
+}
+
+.panel {
+    .tile {
+        .dropdown.button.tiny {
+            .tile-action {
+                position: relative;
+                top: 4px;
+                @extend .fa;
+                @extend .fa-ellipsis-v;
+            }
+        }
+    }
+}
+
+// Help text icon for inline help on form fields
+.helptext-icon {
+    @extend .fa;
+    @extend .fa-question-circle;
+    @extend .fa-lg;
+    margin-left: 5px;
+    text-align: center;
+}

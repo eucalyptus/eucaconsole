@@ -213,9 +213,8 @@ class VolumesFiltersForm(BaseSecureForm):
         self.zone.choices = self.get_availability_zone_choices(region)
         self.status.choices = self.get_status_choices()
         self.facets = [
-            {'name':'zone', 'label':self.zone.label.text, 'options':self.get_availability_zone_choices(region)},
-            {'name':'status', 'label':self.status.label.text, 'options':self.get_status_choices()},
-            {'name':'tags', 'label':self.tags.label.text},
+            {'name': 'zone', 'label': self.zone.label.text, 'options': self.get_availability_zone_choices(region)},
+            {'name': 'status', 'label': self.status.label.text, 'options': self.get_status_choices()},
         ]
 
     def get_availability_zone_choices(self, region):
@@ -224,10 +223,9 @@ class VolumesFiltersForm(BaseSecureForm):
     @staticmethod
     def get_status_choices():
         return [
-            {'key':'creating', 'label':'Creating'},
-            {'key':'available', 'label':'Available'},
-            {'key':'in-use', 'label':'In use'},
-            {'key':'deleting', 'label':'Deleting'},
-            {'key':'deleted', 'label':'Deleted'},
-            {'key':'error', 'label':'Error'},
+            {'key': 'creating', 'label': _(u'Creating')},
+            {'key': 'available', 'label': _(u'Available')},
+            {'key': 'attached', 'label': _(u'Attached')},
+            {'key': 'attaching', 'label': _(u'Attaching')},
+            {'key': 'detaching', 'label': _(u'Detaching')}
         ]

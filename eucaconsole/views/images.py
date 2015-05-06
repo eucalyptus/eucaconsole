@@ -162,7 +162,6 @@ class ImagesView(LandingPageView):
             prefix=self.prefix,
             initial_sort_key=self.initial_sort_key,
             json_items_endpoint=self.json_items_endpoint,
-            filter_fields=False,
             filters_form=self.filters_form,
             deregister_form=self.deregister_form,
             account_id=self.account_id,

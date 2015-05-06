@@ -4,9 +4,6 @@
 /* Set the link colors and styles for top-level nav */
 /* ----------------------------------------- Item list
 ----------------------------------------- */
-#image-picker #search-input { line-height: 1.5rem; background-color: transparent; }
-#image-picker .search-filter { position: relative; }
-#image-picker .search-filter .search-icon { position: absolute; top: 10px; right: 10px; }
 #image-picker .table { width: 100% !important; border: 1px solid #ccc; }
 #image-picker .table tbody { display: block; overflow-y: scroll; height: 22rem; }
 #image-picker .table tbody tr { display: block; border-bottom: 1px solid #ccc; }
@@ -34,3 +31,5 @@
 #image-picker .cancel-link { margin-left: 1.5rem; }
 
 #filters label { margin-top: 8px; margin-bottom: 2px; }
+
+.search-entry .search-input { height: 1.5rem !important; line-height: 1.5rem !important; }

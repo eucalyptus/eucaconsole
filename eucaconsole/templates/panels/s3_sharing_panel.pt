@@ -1,5 +1,5 @@
 <!--! S3 bucket/object sharing panel -->
-<div id="s3-sharing-panel" ng-app="S3SharingPanel" i18n:domain="eucaconsole" ng-form="sharingPanelForm"
+<div id="s3-sharing-panel" i18n:domain="eucaconsole" ng-form="sharingPanelForm"
      ng-controller="S3SharingPanelCtrl" ng-init="initS3SharingPanel('${controller_options_json}')">
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/s3_sharing_panel.css')}" />
     <h6 i18n:translate="" class="sharing-label">Sharing</h6>
@@ -35,8 +35,9 @@
                     <div class="small-2 columns">
                         <label class="right">
                             ${sharing_form.share_account.label.text}&nbsp;<span class="req">*</span>
-                            <span class="helptext-icon" data-tooltip=""
-                                  title="${sharing_form.share_account.help_text}">?</span>
+                            <span data-tooltip="" title="${sharing_form.share_account.help_text}">
+                                <i class="helptext-icon"></i>
+                            </span>
                         </label>
                     </div>
                     <div class="small-10 columns">

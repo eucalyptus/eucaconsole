@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Forms for Roles 
+Forms for Roles
 
 """
 import wtforms

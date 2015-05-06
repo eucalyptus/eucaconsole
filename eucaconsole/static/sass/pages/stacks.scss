@@ -5,11 +5,11 @@
 $stack-status-color-create-in-progress: lighten($euca-darkblue, 20%);
 $stack-status-color-create-complete: $euca-darkblue;
 $stack-status-color-create-failed: darkred;
-$stack-status-color-rollback-in-progress: lighten(darkred, 20%);
-$stack-status-color-rollback-complete: $euca-darkblue;
+$stack-status-color-rollback-in-progress: $euca-grey;
+$stack-status-color-rollback-complete: $euca-darkgrey;
 $stack-status-color-rollback-failed: darkred;
-$stack-status-color-delete-in-progress: darken($euca-grey, 10%);
-$stack-status-color-delete-complete: $euca-darkblue;
+$stack-status-color-delete-in-progress: $euca-grey;
+$stack-status-color-delete-complete: $euca-darkgrey;
 $stack-status-color-delete-failed: darkred;
 
 // Stack status

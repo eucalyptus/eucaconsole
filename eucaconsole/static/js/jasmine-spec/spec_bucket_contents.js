@@ -61,9 +61,9 @@ describe("BucketContentsPage", function() {
         it("Initial value of total is 0", function() {
             expect(scope.total).toEqual(0);
         });
-        it("Initial value of chunkSize is 10", function() {
+        it("Initial value of chunkSize is 100", function() {
 
-            expect(scope.chunkSize).toEqual(10);
+            expect(scope.chunkSize).toEqual(100);
         });
     });
 

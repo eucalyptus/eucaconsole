@@ -32,6 +32,7 @@ import wtforms
 from wtforms import validators
 
 from ..i18n import _
+from ..views import BaseView
 from . import BaseSecureForm, ChoicesManager, TextEscapedField
 
 
@@ -135,7 +136,6 @@ class LaunchInstanceForm(BaseSecureForm):
         self.image = image
         self.securitygroups = securitygroups
         self.cloud_type = request.session.get('cloud_type', 'euca')
-        from ..views import BaseView
         self.is_vpc_supported = BaseView.is_vpc_supported(request)
         self.set_error_messages()
         self.monitoring_enabled.data = True
@@ -383,30 +383,33 @@ class InstancesFiltersForm(BaseSecureForm):
         self.vpc_id.choices = sorted(self.vpc_id.choices)
         self.subnet_id.choices = self.vpc_choices_manager.vpc_subnets(add_blank=False)
         self.facets = [
-            {'name':'state', 'label':self.state.label.text, 'options':self.get_status_choices()},
-            {'name':'availability_zone', 'label':self.availability_zone.label.text, 'options':self.get_availability_zone_choices(region)},
-            {'name':'instance_type', 'label':self.instance_type.label.text,
-                'options':self.get_instance_type_choices()},
-            {'name':'root_device_type', 'label':self.root_device_type.label.text,
-                'options':self.get_root_device_type_choices()},
-            {'name':'security_group', 'label':self.security_group.label.text,
-                'options':self.getOptionsFromChoices(self.ec2_choices_manager.security_groups(add_blank=False))},
-            {'name':'scaling_group', 'label':self.scaling_group.label.text,
-                'options':self.getOptionsFromChoices(self.autoscale_choices_manager.scaling_groups(add_blank=False))},
-            {'name':'subnet_id', 'label':self.subnet_id.label.text,
-                'options':self.getOptionsFromChoices(self.vpc_choices_manager.vpc_subnets(add_blank=False))},
-            {'name':'tags', 'label':self.tags.label.text},
+            {'name': 'state', 'label': self.state.label.text, 'options': self.get_status_choices()},
+            {'name': 'availability_zone', 'label': self.availability_zone.label.text,
+                'options': self.get_availability_zone_choices(region)},
+            {'name': 'instance_type', 'label': self.instance_type.label.text,
+                'options': self.get_instance_type_choices()},
+            {'name': 'root_device_type', 'label': self.root_device_type.label.text,
+                'options': self.get_root_device_type_choices()},
+            {'name': 'security_group', 'label': self.security_group.label.text,
+                'options': self.getOptionsFromChoices(self.ec2_choices_manager.security_groups(add_blank=False))},
+            {'name': 'scaling_group', 'label': self.scaling_group.label.text,
+                'options': self.getOptionsFromChoices(self.autoscale_choices_manager.scaling_groups(add_blank=False))},
         ]
-        vpc_choices = self.vpc_choices_manager.vpc_networks(add_blank=False)
-        vpc_choices.append(('None', _(u'No VPC')))
-        self.facets.append(
-            {'name':'vpc_id', 'label':self.vpc_id.label.text,
-                'options': self.getOptionsFromChoices(vpc_choices)},
-        )
-        if cloud_type=='euca':
+        if cloud_type == 'euca':
             self.facets.append(
-                {'name':'roles', 'label':self.roles.label.text,
-                    'options':self.getOptionsFromChoices(self.iam_choices_manager.roles(add_blank=False))},
+                {'name': 'roles', 'label': self.roles.label.text,
+                    'options': self.getOptionsFromChoices(self.iam_choices_manager.roles(add_blank=False))},
+            )
+        if BaseView.is_vpc_supported(request):
+            self.facets.append(
+                {'name': 'subnet_id', 'label': self.subnet_id.label.text,
+                    'options': self.getOptionsFromChoices(self.vpc_choices_manager.vpc_subnets(add_blank=False))}
+            )
+            vpc_choices = self.vpc_choices_manager.vpc_networks(add_blank=False)
+            vpc_choices.append(('None', _(u'No VPC')))
+            self.facets.append(
+                {'name': 'vpc_id', 'label': self.vpc_id.label.text,
+                    'options': self.getOptionsFromChoices(vpc_choices)},
             )
 
     def get_availability_zone_choices(self, region):
@@ -419,19 +422,19 @@ class InstancesFiltersForm(BaseSecureForm):
     @staticmethod
     def get_status_choices():
         return [
-            {'key':'running', 'label':'Running'},
-            {'key':'pending', 'label':'Pending'},
-            {'key':'stopping', 'label':'Stopping'},
-            {'key':'stopped', 'label':'Stopped'},
-            {'key':'shutting-down', 'label':'Terminating'},
-            {'key':'terminated', 'label':'Terminated'},
+            {'key': 'running', 'label': _(u'Running')},
+            {'key': 'pending', 'label': _(u'Pending')},
+            {'key': 'stopping', 'label': _(u'Stopping')},
+            {'key': 'stopped', 'label': _(u'Stopped')},
+            {'key': 'shutting-down', 'label': _(u'Terminating')},
+            {'key': 'terminated', 'label': _(u'Terminated')},
         ]
 
     @staticmethod
     def get_root_device_type_choices():
         return [
-            {'key':'ebs', 'label':'EBS'},
-            {'key':'instance-store', 'label':'Instance-store'}
+            {'key': 'ebs', 'label': _(u'EBS')},
+            {'key': 'instance-store', 'label': _(u'Instance-store')}
         ]
 
 
@@ -443,12 +446,27 @@ class AssociateIpToInstanceForm(BaseSecureForm):
         validators=[validators.InputRequired(message=associate_ip_error_msg)],
     )
 
-    def __init__(self, request, conn=None, **kwargs):
+    def __init__(self, request, conn=None, instance=None, **kwargs):
         super(AssociateIpToInstanceForm, self).__init__(request, **kwargs)
         self.conn = conn
         self.choices_manager = ChoicesManager(conn=self.conn)
-        self.ip_address.choices = self.choices_manager.elastic_ips()
+        self.ip_address.choices = self.get_elastic_ips(instance=instance)
         self.ip_address.error_msg = self.associate_ip_error_msg
+
+    def get_elastic_ips(self, instance=None, add_blank=True):
+        choices = []
+        if self.conn is not None:
+            ipaddresses = self.conn.get_all_addresses()
+            for eip in ipaddresses:
+                if eip.instance_id is None or eip.instance_id == '':
+                    if instance is None:
+                        choices.append((eip.public_ip, eip.public_ip))
+                    if instance is not None:
+                        if eip.domain == 'standard' and instance.vpc_id is None:
+                            choices.append((eip.public_ip, eip.public_ip))
+                        elif eip.domain == 'vpc' and instance.vpc_id is not None:
+                            choices.append((eip.public_ip, eip.public_ip))
+        return sorted(set(choices))
 
 
 class DisassociateIpFromInstanceForm(BaseSecureForm):
@@ -458,6 +476,11 @@ class DisassociateIpFromInstanceForm(BaseSecureForm):
 
 class InstanceTypeForm(BaseSecureForm):
     """CSRF-protected form to disassociate IP from an instance"""
+    pass
+
+
+class InstanceMonitoringForm(BaseSecureForm):
+    """CSRF-protected form to enable/disable monitoring for an instance"""
     pass
 
 

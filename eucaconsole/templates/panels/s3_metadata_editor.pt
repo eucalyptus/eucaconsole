@@ -1,7 +1,6 @@
 
 <!--! S3 Object Metadata panel -->
-<div id="s3-metadata-editor" ng-app="S3MetadataEditor" i18n:domain="eucaconsole"
-     ng-controller="S3MetadataEditorCtrl"
+<div id="s3-metadata-editor" i18n:domain="eucaconsole" ng-controller="S3MetadataEditorCtrl"
      ng-init="initMetadata('${metadata_json}', '${metadata_key_create_option_text}', '${metadata_key_no_results_text}')">
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/s3_metadata_editor.css')}" />
     <h6 i18n:translate="">Metadata</h6>
@@ -25,13 +24,13 @@
         <div>&nbsp;</div>
         <div class="metadataentry">
             <div>
-                ${panel('form_field', field=metadata_form['metadata_key'], leftcol_width=2, rightcol_width=10, ng_attrs={'model': 'newMetadataKey'})}
+                ${panel('form_field', field=metadata_form['metadata_key'], leftcol_width=2, rightcol_width=10, leftcol_width_large=1, rightcol_width_large=11, ng_attrs={'model': 'newMetadataKey'})}
             </div>
             <div ng-show="newMetadataKey != 'Content-Type'">
-                ${panel('form_field', field=metadata_form['metadata_value'], leftcol_width=2, rightcol_width=10, ng_attrs={'model': 'newMetadataValue'})}
+                ${panel('form_field', field=metadata_form['metadata_value'], leftcol_width=2, rightcol_width=10, leftcol_width_large=1, rightcol_width_large=11, ng_attrs={'model': 'newMetadataValue'})}
             </div>
             <div ng-show="newMetadataKey == 'Content-Type'">
-                ${panel('form_field', field=metadata_form['metadata_content_type'], leftcol_width=2, rightcol_width=10, ng_attrs={'model': 'newMetadataContentType'})}
+                ${panel('form_field', field=metadata_form['metadata_content_type'], leftcol_width=2, rightcol_width=10, leftcol_width_large=1, rightcol_width_large=11, ng_attrs={'model': 'newMetadataContentType'})}
             </div>
             <div class="row">
                 <div class="small-10 columns right">

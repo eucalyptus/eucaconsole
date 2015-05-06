@@ -25,6 +25,7 @@
 
 import os
 import re
+import sys
 
 from distutils.command.build_py import build_py
 from distutils.command.sdist import sdist
@@ -32,26 +33,30 @@ from setuptools import setup, find_packages
 
 from eucaconsole import __version__
 
-DATA_DIR='/usr/share/'
+DATA_DIR = '/usr/share/'
+
+py_version = sys.version_info[:2]
+
 
 def get_data_files(path, regex):
     data_files = []
     for root, _, filenames in os.walk(path, followlinks=True):
         files = []
-        for file in filenames:
-            if re.match(regex, file) is not None:
-                files.append(os.path.join(root, file))
+        for filename in filenames:
+            if re.match(regex, filename) is not None:
+                files.append(os.path.join(root, filename))
         data_files.append((os.path.join(DATA_DIR, root), files))
     return data_files
+
 
 def get_package_files(package_dir, regex):
     package_files = []
     if not package_dir.endswith('/'):
-        package_dir = package_dir + '/'
+        package_dir += '/'
     for root, _, filenames in os.walk(package_dir, followlinks=True):
         files = []
-        for file in filenames:
-            package_path = os.path.join(root[len(package_dir):], file)
+        for fname in filenames:
+            package_path = os.path.join(root[len(package_dir):], fname)
             if re.match(regex, package_path) is not None:
                 files.append(package_path)
         package_files.extend(files)
@@ -62,17 +67,17 @@ here = os.path.abspath(os.path.dirname(__file__))
 with open(os.path.join(here, 'README.rst')) as f:
     README = f.read()
 
+
 class build_py_with_git_version(build_py):
-    '''Like build_py, but also hardcoding the version in version.__version__
-       so it's consistent even outside of the source tree'''
+    """Like build_py, but also hardcoding the version in version.__version__
+       so it's consistent even outside of the source tree"""
 
     def build_module(self, module, module_file, package):
         build_py.build_module(self, module, module_file, package)
         print module, module_file, package
         if module == 'version' and '.' not in package:
             version_line = "__version__ = '{0}'\n".format(__version__)
-            old_ver_name = self.get_module_outfile(self.build_lib, (package,),
-                                                    module)
+            old_ver_name = self.get_module_outfile(self.build_lib, (package,), module)
             new_ver_name = old_ver_name + '.new'
             with open(new_ver_name, 'w') as new_ver:
                 with open(old_ver_name) as old_ver:
@@ -86,8 +91,8 @@ class build_py_with_git_version(build_py):
 
 
 class sdist_with_git_version(sdist):
-    '''Like sdist, but also hardcoding the version in version.__version__ so
-       it's consistent even outside of the source tree'''
+    """Like sdist, but also hardcoding the version in version.__version__ so
+       it's consistent even outside of the source tree"""
 
     def make_release_tree(self, base_dir, files):
         sdist.make_release_tree(self, base_dir, files)
@@ -109,7 +114,8 @@ requires = [
     'boto == 2.34.0',
     'chameleon >= 2.5.3',
     'dogpile.cache >= 0.5.3',
-    #'gevent >= 0.13.8',  # Note: gevent 1.0 no longer requires libevent, it bundles libev instead, taking this out since we need gevent1 for pkg install
+    # taking this out since we need gevent1 for pkg install
+    # 'gevent >= 0.13.8',  # Note: gevent 1.0 no longer requires libevent, it bundles libev instead,
     # 'greenlet >= 0.3.1',
     'gunicorn >= 18.0',
     'M2Crypto >= 0.20.2',
@@ -132,10 +138,11 @@ i18n_extras = [
 ]
 
 dev_extras = [
-    'pyramid_debugtoolbar',
     'gevent',
-    'waitress',
+    'moto',
     'pylibmc',
+    'pyramid_debugtoolbar',
+    'waitress',
 ]
 
 message_extractors = {'eucaconsole': [

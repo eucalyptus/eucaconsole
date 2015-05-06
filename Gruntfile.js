@@ -14,6 +14,7 @@ module.exports = function(grunt) {
                   destPrefix: 'eucaconsole/static/js/thirdparty/angular'
               },
               files: {
+                'angular.js': 'angular/angular.js',
                 'angular.min.js': 'angular/angular.min.js',
                 'angular-sanitize.min.js': 'angular-sanitize/angular-sanitize.min.js',
                 'angular-mocks.js': 'angular-mocks/angular-mocks.js'
@@ -68,11 +69,41 @@ module.exports = function(grunt) {
                 'eucaconsole/static/js/thirdparty/magic-search': 'angular-magic-search/magic_search.*'
               }
           },
+          d3: {
+              options: {
+                  destPrefix: 'eucaconsole/static/js/thirdparty/d3'
+              },
+              files: {
+                  'd3.js': 'd3/d3.js',
+                  'd3.min.js': 'd3/d3.min.js',
+                  'LICENSE.txt': 'd3/LICENSE'
+              }
+          },
+          nvd3: {
+              options: {
+                  destPrefix: 'eucaconsole/static/js/thirdparty/nvd3'
+              },
+              files: {
+                  'nv.d3.js': 'nvd3/build/nv.d3.js',
+                  'nv.d3.min.js': 'nvd3/build/nv.d3.min.js',
+                  'nv.d3.css': 'nvd3/build/nv.d3.css',
+                  'nv.d3.min.css': 'nvd3/build/nv.d3.min.css'
+              }
+          },
           angular_chosen: {
               options: {
               },
               files: {
                 'eucaconsole/static/js/thirdparty/angular': 'angular-chosen-localytics/chosen.*'
+              }
+          },
+          sticky_table_headers: {
+              options: {
+                  destPrefix: 'eucaconsole/static/js/thirdparty/jquery'
+              },
+              files: {
+                'jquery.stickytableheaders.js': 'StickyTableHeaders/js/jquery.stickytableheaders.js',
+                'jquery.stickytableheaders.min.js': 'StickyTableHeaders/js/jquery.stickytableheaders.min.js'
               }
           }
       },
@@ -186,10 +217,27 @@ module.exports = function(grunt) {
               ]
           }
       },
+      compass: {
+          sass: {
+              options: {
+                  outputStyle: 'compact',
+                  noLineComments: '',
+                  sassDir: 'eucaconsole/static/sass',
+                  cssDir: 'eucaconsole/static/css'
+              }
+          }
+      },
       watch: {
           scripts: {
               files: ['eucaconsole/static/js/**/*.js'],
               tasks: ['karma:ci', 'jshint'],
+              options: {
+                  spawn: false
+              }
+          },
+          sass: {
+              files: ['eucaconsole/static/sass/**/*.scss'],
+              tasks: ['compass'],
               options: {
                   spawn: false
               }
@@ -207,6 +255,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-bowercopy');
   grunt.loadNpmTasks('grunt-karma');
   grunt.loadNpmTasks('grunt-text-replace');
+  grunt.loadNpmTasks('grunt-contrib-compass');
 
   // Default task(s).
   grunt.registerTask('default', ['watch']);

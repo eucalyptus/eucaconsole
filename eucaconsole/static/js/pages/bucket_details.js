@@ -18,7 +18,7 @@ angular.module('BucketDetailsPage', ['S3SharingPanel', 'EucaConsoleUtils'])
             $scope.handleUnsavedChanges();
             $scope.handleUnsavedSharingEntry($scope.bucketDetailsForm);
             // set upload button target based on media query
-            if (window.matchMedia(Foundation.media_queries.small).matches === false) {
+            if (Foundation.utils.is_medium_up()) {
                 $('#upload-file-action').attr('target', '_blank');
             }
         };
