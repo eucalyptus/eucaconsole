@@ -43,7 +43,7 @@ class SnapshotForm(BaseSecureForm):
     volume_error_msg = _(u'Volume is required')
     volume_id = wtforms.SelectField(
         label=_(u'Create from volume'),
-        validators=[validators.DataRequired(message=volume_error_msg),],
+        validators=[validators.DataRequired(message=volume_error_msg)],
     )
     desc_error_msg = _(u'Description is required')
     description = wtforms.TextAreaField(
@@ -110,14 +110,13 @@ class SnapshotsFiltersForm(BaseSecureForm):
         self.request = request
         self.status.choices = self.get_status_choices()
         self.facets = [
-            {'name':'status', 'label':self.status.label.text, 'options':self.get_status_choices()},
-            {'name':'tags', 'label':self.tags.label.text},
+            {'name': 'status', 'label': self.status.label.text, 'options': self.get_status_choices()},
         ]
 
     @staticmethod
     def get_status_choices():
         return [
-            {'key':'pending', 'label':'In progress'},
-            {'key':'completed', 'label':'Completed'},
+            {'key': 'pending', 'label': _(u'In progress')},
+            {'key': 'completed', 'label': _(u'Completed')},
         ]
 

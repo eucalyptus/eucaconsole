@@ -87,7 +87,6 @@ class UsersView(LandingPageView):
         ]
 
         return dict(
-            filter_fields=False,
             filter_keys=self.filter_keys,
             search_facets=BaseView.escape_json(json.dumps([])),
             sort_keys=self.sort_keys,

@@ -74,7 +74,6 @@ class LaunchConfigsView(LandingPageView):
         )
         search_facets = self.filters_form.facets
         self.render_dict = dict(
-            filter_fields=False,
             filter_keys=self.filter_keys,
             search_facets=BaseView.escape_json(json.dumps(search_facets)),
             sort_keys=self.sort_keys,

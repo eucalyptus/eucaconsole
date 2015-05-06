@@ -1,6 +1,6 @@
 
 <!--! Tag editor -->
-<div id="tag-editor" class="row controls-wrapper" ng-app="TagEditor" i18n:domain="eucaconsole"
+<div id="tag-editor" class="row controls-wrapper" i18n:domain="eucaconsole"
      ng-controller="TagEditorCtrl" ng-init="initTags('${controller_options_json}')">
     <style type="text/css" tal:condition="not show_name_tag">
         /* Hide name tag based on option passed to tag editor panel */

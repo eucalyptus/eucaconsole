@@ -62,7 +62,6 @@ class ELBsView(LandingPageView):
             self.request, cloud_type=self.cloud_type, ec2_conn=self.ec2_conn, formdata=self.request.params or None)
         search_facets = self.filters_form.facets
         self.render_dict = dict(
-            filter_fields=False,
             filter_keys=self.filter_keys,
             search_facets=BaseView.escape_json(json.dumps(search_facets)),
             sort_keys=self.sort_keys,
