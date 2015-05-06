@@ -128,12 +128,36 @@
                             </div>
                         </div>
                         <div ng-cloak="true" tal:condition="elb_vpc_network != 'None'">
-                            <div>
+                            <div class="panel gridwrapper no-title">
                                 <h6 i18n:translate="">
                                     Subnets
                                 </h6>
-                                <div i18n:translate="">
+                                <div i18n:translate="" class="description">
                                     Instances registered with the load balancer will not receive requests until their associated subnets are enabled.
+                                </div>
+                                <div class="tile item" ng-cloak="true"
+                                    ng-repeat="subnet in vpcSubnets | orderBy: sortBy:sortReverse">
+                                    <div class="header">
+                                        <strong>
+                                            {{ subnet }}
+                                        </strong>
+                                        <span id="tile-item-dropdown_{{ subnet }}" class="tiny secondary button dropdown"
+                                            data-dropdown="item-dropdown_{{ subnet }}"><i class="grid-action"></i></span>
+                                            <ul id="item-dropdown_{{ subnet }}" class="f-dropdown" data-dropdown-content="">
+                                                <li>
+                                                    <a ng-href="/snapshots/{{ subnet }}" i18n:translate="">View details</a>
+                                                </li>
+                                            </ul>
+                                    </div>
+                                    <div class="content">
+                                        <div>
+                                            <span class="label" title="Size" i18n:attributes="title" data-tooltip="">GB</span>
+                                            {{ subnet }}
+                                        </div>
+                                    </div>
+                                    <div class="footer status">
+                                        {{ subnet }}
+                                    </div>
                                 </div>
                             </div>
                         </div>

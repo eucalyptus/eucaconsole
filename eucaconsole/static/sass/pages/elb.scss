@@ -2,6 +2,7 @@
 
 @import "../includes/eucavariables";
 
+@import "../includes/landingpage";
 
 #elb-view-form {
     dd {
@@ -54,6 +55,9 @@
     .cancel-link {
         margin-right: 1.5rem;
     }
+    .description {
+        margin-bottom: 1.5rem;
+    }
     #elb-listener-security-field {
         margin-bottom: 1.5rem;
     }
@@ -80,4 +84,23 @@ table.elb-listener-table {
 
 table.instance-selector-table {
     width: 100%;
+}
+
+.tile {
+    @include panel-tile-mixin;
+    .footer {
+        &.has-progress {
+            .progress {
+                padding-right: 0;
+                .meter {
+                    color: black;
+                    text-align: left;
+                }
+            }
+            .completed {
+                position: relative;
+                top: -3px;
+            }
+        }
+    }
 }

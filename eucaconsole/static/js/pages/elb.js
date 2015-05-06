@@ -10,6 +10,7 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
         $scope.securityGroups = [];
         $scope.availabilityZones = []; 
         $scope.vpcNetwork = 'None';
+        $scope.vpcSubnets = [];
         $scope.instanceList = [];
         $scope.pingProtocol = '';
         $scope.pingPort = '';
@@ -60,6 +61,9 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
                     }, 500);
                 }
             }
+            if (options.hasOwnProperty('elb_vpc_subnets')) {
+                $scope.vpcSubnets = options.elb_vpc_subnets;
+            }
             if (options.hasOwnProperty('instances')) {
                 $scope.instanceList = options.instances;
                 // Timeout is needed for the instance selector to be initizalized
@@ -95,8 +99,8 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
         };
         $scope.setWatch = function () {
             $(document).on('submit', '[data-reveal] form', function () {
-                $(this).find('.dialog-submit-button').css('display', 'none');                
-                $(this).find('.dialog-progress-display').css('display', 'block');                
+                $(this).find('.dialog-submit-button').css('display', 'none');
+                $(this).find('.dialog-progress-display').css('display', 'block');
             });
             $scope.$watch('availabilityZones', function () {
                 $scope.$broadcast('eventUpdateAvailabilityZones', $scope.availabilityZones);
@@ -112,7 +116,6 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
                 // Relay the text search update signal
                 $scope.$broadcast('eventTextSearch', searchVal, filterKeys);
             });
-
         };
         $scope.setFocus = function () {
             $(document).on('ready', function(){
@@ -169,6 +172,3 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
         };
     })
 ;
-
-
-
