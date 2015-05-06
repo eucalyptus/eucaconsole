@@ -95,7 +95,6 @@ class IPAddressesView(LandingPageView):
         self.render_dict.update(
             initial_sort_key='public_ip',
             json_items_endpoint=self.get_json_endpoint('ipaddresses_json'),
-            filter_fields=False,
             filters_form=filters_form,
             filter_keys=['public_ip', 'instance_id', 'domain'],
             search_facets=BaseView.escape_json(json.dumps(search_facets)),

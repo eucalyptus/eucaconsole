@@ -25,7 +25,7 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 """
-Forms for Groups 
+Forms for Groups
 
 """
 import wtforms
@@ -33,6 +33,7 @@ from wtforms import validators
 
 from ..i18n import _
 from . import BaseSecureForm, TextEscapedField
+
 
 class GroupForm(BaseSecureForm):
     """Group form

@@ -100,7 +100,6 @@ class ScalingGroupsView(LandingPageView, DeleteScalingGroupMixin):
         if not self.is_vpc_supported:
             del self.filters_form.vpc_zone_identifier
         self.render_dict = dict(
-            filter_fields=False,
             filter_keys=self.filter_keys,
             search_facets=BaseView.escape_json(json.dumps(search_facets)),
             sort_keys=self.get_sort_keys(),
