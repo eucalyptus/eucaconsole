@@ -30,13 +30,15 @@ Tests for login forms
 from urllib2 import HTTPError, URLError
 
 import boto
+from pyramid.httpexceptions import HTTPFound
 from pyramid.security import Authenticated
 from pyramid.testing import DummyRequest
 
 from eucaconsole.forms.login import AWSLoginForm, EucaLoginForm
-from eucaconsole.models.auth import AWSAuthenticator, EucaAuthenticator, User, groupfinder
+from eucaconsole.models.auth import AWSAuthenticator, User, groupfinder
 from eucaconsole.views import BaseView
-from tests import BaseTestCase, BaseFormTestCase
+from eucaconsole.views.login import LogoutView
+from tests import BaseTestCase, BaseFormTestCase, BaseViewTestCase
 
 
 class EucaLoginFormTestCase(BaseFormTestCase):
@@ -116,3 +118,9 @@ class ArbitraryRedirectTestCase(BaseTestCase):
         url = 'http://www.example.com/foo/bar'
         self.assertEqual(BaseView.sanitize_url(url), '/foo/bar')
 
+
+class LogoutViewTestCase(BaseViewTestCase):
+    def test_logout_always_returns_http_found(self):
+        request = self.create_request()
+        view = LogoutView(request).logout
+        self.assert_(isinstance(view(), HTTPFound))
