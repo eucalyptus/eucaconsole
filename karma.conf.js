@@ -34,6 +34,7 @@ module.exports = function(config) {
       'templates/snapshots/*.pt',
       'templates/users/*.pt',
       'templates/volumes/*.pt',
+      'static/html/directives/*.html',
       'static/js/thirdparty/modernizr/custom.modernizr.js',
       'static/js/thirdparty/jquery/jquery.min.js',
       'static/js/thirdparty/angular/angular.min.js',

@@ -242,6 +242,27 @@ module.exports = function(grunt) {
                   spawn: false
               }
           }
+      },
+      htmllint: {
+          options: {
+              ignore: [
+                  /Attribute “ng-[a-z-]+” not allowed/,
+                  /Attribute “tal:[a-z-]+” not allowed/,
+                  /Attribute “tal:[a-z-]+” is not serializable/,
+                  /Attribute “i18n:[a-z-]+” not allowed/,
+                  /Attribute “i18n:[a-z-]+” is not serializable/,
+                  /Attribute “metal:[a-z-]+” is not serializable/,
+              ] 
+          },
+          all: ['eucaconsole/static/html/**/*.html', 'eucaconsole/templates/**/*.pt'],
+          templates: ['eucaconsole/templates/**/*.pt'],
+          dialogs: ['eucaconsole/templates/dialogs/*.pt'],
+          directives: ['eucaconsole/static/html/directives/*.html'],
+          help: ['eucaconsole/static/html/help/*.html'],
+          elb: ['eucaconsole/templates/dialogs/select_certificate_dialog.pt',
+                'eucaconsole/templates/panels/elb_listener_editor.pt',
+                'eucaconsole/static/html/directives/instance_selector.html',
+                'eucaconsole/templates/elbs/elb_wizard.pt'],
       }
   });
 
@@ -255,6 +276,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-bowercopy');
   grunt.loadNpmTasks('grunt-karma');
   grunt.loadNpmTasks('grunt-text-replace');
+  grunt.loadNpmTasks('grunt-html');
   grunt.loadNpmTasks('grunt-contrib-compass');
 
   // Default task(s).
