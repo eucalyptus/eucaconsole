@@ -131,7 +131,6 @@ class BaseView(object):
         if self.request.registry.settings:  # do this to pass tests
             validate_certs = asbool(self.request.registry.settings.get('connection.ssl.validation', False))
             certs_file = self.request.registry.settings.get('connection.ssl.certfile', None)
-            
         if cloud_type == 'aws':
             conn = ConnectionManager.aws_connection(
                 region, access_key, secret_key, security_token, conn_type, validate_certs)
@@ -271,7 +270,6 @@ class BaseView(object):
         port = int(self.request.registry.settings.get('sts.port', port))
         validate_certs = asbool(self.request.registry.settings.get('connection.ssl.validation', False))
         conn = AWSAuthConnection(None, aws_access_key_id='', aws_secret_access_key='')
-        
         ca_certs_file = conn.ca_certificates_file
         conn = None
         ca_certs_file = self.request.registry.settings.get('connection.ssl.certfile', ca_certs_file)
@@ -405,7 +403,6 @@ class BaseView(object):
                       ['starts-with', '$key', prefix]]
         if token is not None:
             conditions.append({'x-amz-security-token': token})
-                      
         policy = {'conditions': conditions,
                   'expiration': time.strftime('%Y-%m-%dT%H:%M:%SZ',
                                               expire_time.timetuple())}
@@ -597,7 +594,6 @@ class LandingPageView(BaseView):
     """
     def __init__(self, request, **kwargs):
         super(LandingPageView, self).__init__(request, **kwargs)
-        self.filter_fields = []
         self.filter_keys = []
         self.sort_keys = []
         self.initial_sort_key = ''

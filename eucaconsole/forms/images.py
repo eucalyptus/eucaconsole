@@ -25,7 +25,7 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 """
-Forms for Images 
+Forms for Images
 
 """
 import wtforms
@@ -52,7 +52,7 @@ class ImageForm(BaseSecureForm):
 
     def __init__(self, request, image=None, conn=None, **kwargs):
         super(ImageForm, self).__init__(request, **kwargs)
-        self.image = image 
+        self.image = image
         self.conn = conn
         self.description.error_msg = self.desc_error_msg
 
@@ -87,11 +87,14 @@ class ImagesFiltersForm(BaseSecureForm):
         if cloud_type == 'aws' and not self.request.params.get('owner_alias'):
             self.owner_alias.data = 'amazon'  # Default to Amazon AMIs on AWS
         self.facets = [
-            {'name':'owner_alias', 'label':self.owner_alias.label.text, 'options':self.get_owner_choices()},
-            {'name':'platform', 'label':self.platform.label.text, 'options':self.get_platform_choices()},
-            {'name':'architecture', 'label':self.architecture.label.text, 'options':self.get_architecture_choices()},
-            {'name':'root_device_type', 'label':self.root_device_type.label.text, 'options':self.get_root_device_type_choices()},
-            {'name':'tags', 'label':self.tags.label.text},
+            {'name': 'owner_alias', 'label': self.owner_alias.label.text, 'options': self.get_owner_choices()},
+            {'name': 'platform', 'label': self.platform.label.text, 'options': self.get_platform_choices()},
+            {'name': 'architecture', 'label': self.architecture.label.text, 'options': self.get_architecture_choices()},
+            {
+                'name': 'root_device_type',
+                'label': self.root_device_type.label.text,
+                'options': self.get_root_device_type_choices()
+            },
         ]
 
     def get_owner_choices(self):
@@ -103,23 +106,23 @@ class ImagesFiltersForm(BaseSecureForm):
     def get_platform_choices(self):
         if self.cloud_type == 'euca':
             return [
-                {'key':'linux', 'label':'Linux'},
-                {'key':'windows', 'label':'Windows'},
+                {'key': 'linux', 'label': _(u'Linux')},
+                {'key': 'windows', 'label': _(u'Windows')},
             ]
         else:
-            return [{'key':'windows', 'label':'Windows'}]
+            return [{'key': 'windows', 'label': _(u'Windows')}]
 
     @staticmethod
     def get_root_device_type_choices():
         return [
-            {'key':'ebs', 'label':'EBS'},
-            {'key':'instance-store', 'label':'Instance-store'},
+            {'key': 'ebs', 'label': _(u'EBS')},
+            {'key': 'instance-store', 'label': _(u'Instance-store')},
         ]
 
     @staticmethod
     def get_architecture_choices():
         return [
-            {'key':'x86_64', 'label':'64-bit'},
-            {'key':'i386', 'label':'32-bit'},
+            {'key': 'x86_64', 'label': _(u'64-bit')},
+            {'key': 'i386', 'label': _(u'32-bit')},
         ]
 

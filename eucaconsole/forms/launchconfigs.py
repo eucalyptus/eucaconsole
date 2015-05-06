@@ -25,7 +25,7 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 """
-Forms for Launch Config 
+Forms for Launch Config
 
 """
 import wtforms
@@ -113,7 +113,10 @@ class CreateLaunchConfigForm(BaseSecureForm):
             self.securitygroup.data = [value for value, label in self.securitygroup.choices]
 
     def get_associate_public_ip_address_choices(self):
-        choices = [('None', _(u'Only for instances in default VPC & subnet')), ('true', _(u'For all instances')), ('false', _(u'Never'))]
+        choices = [
+            ('None', _(u'Only for instances in default VPC & subnet')),
+            ('true', _(u'For all instances')), ('false', _(u'Never'))
+        ]
         return choices
 
     def set_error_messages(self):
@@ -147,17 +150,18 @@ class LaunchConfigsFiltersForm(BaseSecureForm):
         self.security_groups.choices = self.ec2_choices_manager.security_groups(use_id=True, add_blank=False)
         self.scaling_group.choices = self.autoscale_choices_manager.scaling_groups(add_blank=False)
         self.facets = [
-            {'name':'availability_zone', 'label':self.availability_zone.label.text, 'options':self.get_availability_zone_choices(region)},
-            {'name':'instance_type', 'label':self.instance_type.label.text,
-                'options':self.getOptionsFromChoices(self.instance_type.choices)},
-            {'name':'root_device_type', 'label':self.root_device_type.label.text,
-                'options':self.get_root_device_type_choices()},
-            {'name':'key_name', 'label':self.key_name.label.text,
-                'options':self.getOptionsFromChoices(self.key_name.choices)},
-            {'name':'security_group', 'label':self.security_groups.label.text,
-                'options':self.getOptionsFromChoices(self.security_groups.choices)},
-            {'name':'scaling_group', 'label':self.scaling_group.label.text,
-                'options':self.getOptionsFromChoices(self.autoscale_choices_manager.scaling_groups(add_blank=False))},
+            {'name': 'availability_zone', 'label': self.availability_zone.label.text,
+                'options': self.get_availability_zone_choices(region)},
+            {'name': 'instance_type', 'label': self.instance_type.label.text,
+                'options': self.getOptionsFromChoices(self.instance_type.choices)},
+            {'name': 'root_device_type', 'label': self.root_device_type.label.text,
+                'options': self.get_root_device_type_choices()},
+            {'name': 'key_name', 'label': self.key_name.label.text,
+                'options': self.getOptionsFromChoices(self.key_name.choices)},
+            {'name': 'security_group', 'label': self.security_groups.label.text,
+                'options': self.getOptionsFromChoices(self.security_groups.choices)},
+            {'name': 'scaling_group', 'label': self.scaling_group.label.text,
+                'options': self.getOptionsFromChoices(self.autoscale_choices_manager.scaling_groups(add_blank=False))},
         ]
 
     def get_availability_zone_choices(self, region):
@@ -166,7 +170,7 @@ class LaunchConfigsFiltersForm(BaseSecureForm):
     @staticmethod
     def get_root_device_type_choices():
         return [
-            {'key':'ebs', 'label':'EBS'},
-            {'key':'instance-store', 'label':'Instance-store'}
+            {'key': 'ebs', 'label': _(u'EBS')},
+            {'key': 'instance-store', 'label': _(u'Instance-store')}
         ]
 
