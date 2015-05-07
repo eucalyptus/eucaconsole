@@ -4,6 +4,10 @@
 
 @import "../includes/landingpage";
 
+
+$health-status-color-allhealthy: $euca-darkblue;
+$health-status-color-unhealthy: darkred;
+
 #elb-view-form {
     dd {
         a {
@@ -58,6 +62,8 @@
     .description {
         margin-bottom: 1.0rem;
     }
+    .allhealthy { background-color: $health-status-color-allhealthy; }
+    .unhealthy { background-color: $health-status-color-unhealthy; }
     #elb-listener-security-field {
         margin-bottom: 1.5rem;
     }

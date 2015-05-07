@@ -15,6 +15,8 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
         $scope.vpcSubnetList = [];
         $scope.selectedVPCSubnetList = [];
         $scope.allVPCSubnetList = [];
+        $scope.allInstanceList = [];
+        $scope.ELBInstanceHealthList = [];
         $scope.instanceList = [];
         $scope.pingProtocol = '';
         $scope.pingPort = '';
@@ -73,6 +75,14 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
             }
             if (options.hasOwnProperty('elb_vpc_subnets')) {
                 $scope.vpcSubnetList = options.elb_vpc_subnets;
+            }
+            if (options.hasOwnProperty('all_instances')) {
+                $scope.allInstanceList = options.all_instances;
+console.log($scope.allInstanceList);
+            }
+            if (options.hasOwnProperty('elb_instance_health')) {
+                $scope.ELBInstanceHealthList = options.elb_instance_health;
+console.log($scope.ELBInstanceHealthList);
             }
             if (options.hasOwnProperty('instances')) {
                 $scope.instanceList = options.instances;
@@ -187,7 +197,10 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
             angular.forEach($scope.availabilityZones, function (zoneID) {
                 angular.forEach($scope.allZoneList, function (zone) {
                     if (zoneID === zone.id) {
+                        zone.instanceCount = $scope.getInstanceCountInZone(zone);
+                        zone.unhealthyInstanceCount = $scope.getUnhealthyInstanceCountInZone(zone);
                         selected.push(zone);
+                        
                     }
                 });
             });
@@ -203,6 +216,34 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
                 });
             });
             $scope.selectedVPCSubnetList = selected;
+        };
+        $scope.getInstanceCountInZone = function (zone) {
+            var count = 0;
+            angular.forEach($scope.ELBInstanceHealthList, function (instanceHealth) {
+                angular.forEach($scope.allInstanceList, function (instance) {
+                    if (instanceHealth.instance_id === instance.id) {
+                        if (instance.zone === zone.id) {
+                            count += 1;
+                        }
+                    }
+                });
+            });
+            return count;
+        };
+        $scope.getUnhealthyInstanceCountInZone = function (zone) {
+            var count = 0;
+            angular.forEach($scope.ELBInstanceHealthList, function (instanceHealth) {
+                if (instanceHealth.state === 'OutOfService') {
+                    angular.forEach($scope.allInstanceList, function (instance) {
+                        if (instanceHealth.instance_id === instance.id) {
+                            if (instance.zone === zone.id) {
+                                count += 1;
+                            }
+                        }
+                    });
+                }
+            });
+            return count;
         };
         $scope.submitSaveChanges = function ($event) {
         };

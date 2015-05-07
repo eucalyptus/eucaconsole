@@ -324,6 +324,8 @@ class ELBView(TaggedItemView):
             'vpc_subnet_choices': self.get_vpc_subnets(),
             'elb_vpc_network': self.elb.vpc_id if self.elb else [],
             'elb_vpc_subnets': self.elb.subnets if self.elb else [],
+            'all_instances': self.get_all_instances(),
+            'elb_instance_health': self.get_elb_instance_health(),
             'securitygroups': self.elb.security_groups if self.elb else [],
             'securitygroups_json_endpoint': self.request.route_path('securitygroups_json'),
             'instances': self.get_elb_instance_list(),
@@ -430,6 +432,29 @@ class ELBView(TaggedItemView):
             for instance in self.elb.instances:
                 instances.append(instance.id)
         return instances
+
+    def get_all_instances(self):
+        if self.ec2_conn:
+            instances = []
+            for reservation in self.ec2_conn.get_all_reservations():
+                for instance in reservation.instances:
+                    instances.append(dict(
+                        id=instance.id,
+                        vpc_id=instance.vpc_id,
+                        zone=instance._placement.zone,
+                    ))
+        return instances
+
+    def get_elb_instance_health(self):
+        if self.elb_conn and self.elb:
+            instance_health = []
+            instances = self.elb_conn.describe_instance_health(self.elb.name)
+            for instance in instances:
+                instance_health.append(dict(
+                    instance_id=instance.instance_id,
+                    state=instance.state,
+                ))
+        return instance_health
 
     def set_health_check_data(self):
         if self.elb is not None and self.elb.health_check.target is not None:

@@ -130,6 +130,8 @@
 #elb-view-form .checkbox-with-helptext-icon label { margin-right: 0rem; }
 #elb-view-form .cancel-link { margin-right: 1.5rem; }
 #elb-view-form .description { margin-bottom: 1.0rem; }
+#elb-view-form .allhealthy { background-color: #03405f; }
+#elb-view-form .unhealthy { background-color: darkred; }
 #elb-view-form #elb-listener-security-field { margin-bottom: 1.5rem; }
 #elb-view-form #advanced-section { margin-top: 1.5rem; }
 
