@@ -124,6 +124,21 @@
                             <div i18n:translate="" class="description">
                                 Instances registered with the load balancer will not receive requests until their associated availability zones are enabled.
                             </div>
+                            <div>
+                                <div class="row controls-wrapper readonly">
+                                    <div class="small-3 columns">
+                                        <select id="enable-zone-select"
+                                            ng-options="zone.id for zone in allZoneList track by zone.id"
+                                            ng-model="newZone"></select>
+                                    </div>
+                                    <div class="small-9 columns field">
+                                        <button class="button" id="enable-zone-btn"
+                                            ng-click="clickEnableZone($event)">
+                                            <span i18n:translate="">Enable Zone</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="tile item" ng-cloak="true"
                                 ng-repeat="zone in selectedZoneList | orderBy: sortBy:sortReverse">
                                 <div class="header">
@@ -174,6 +189,21 @@
                             </h6>
                             <div i18n:translate="" class="description">
                                 Instances registered with the load balancer will not receive requests until their associated subnets are enabled.
+                            </div>
+                            <div>
+                                <div class="row controls-wrapper readonly">
+                                    <div class="small-3 columns">
+                                        <select id="enable-vpc-subnet-select"
+                                            ng-options="subnet.id for subnet in allVPCSubnetList track by subnet.id"
+                                            ng-model="newVPCSubnet"></select>
+                                    </div>
+                                    <div class="small-9 columns field">
+                                        <button class="button" id="enable-subnet-btn"
+                                            ng-click="clickEnableVPCSubnet($event)">
+                                            <span i18n:translate="">Enable Subnet</span>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                             <div class="tile item" ng-cloak="true"
                                 ng-repeat="subnet in selectedVPCSubnetList | orderBy: sortBy:sortReverse">

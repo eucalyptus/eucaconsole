@@ -12,6 +12,7 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
         $scope.selectedZoneList = [];
         $scope.allZoneList = [];
         $scope.vpcNetwork = 'None';
+        $scope.newVPCSubnet = '';
         $scope.vpcSubnetList = [];
         $scope.selectedVPCSubnetList = [];
         $scope.allVPCSubnetList = [];
@@ -287,6 +288,24 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
                 }
             });
             return count;
+        };
+        $scope.clickEnableZone = function ($event) {
+            $event.preventDefault();
+            angular.forEach($scope.allZoneList, function (zone, $index) {
+                if ($scope.newZone.id === zone.id) {
+                    $scope.selectedZoneList.push(zone);
+                }
+            });
+            $scope.newZone = {};
+        };
+        $scope.clickEnableVPCSubnet = function ($event) {
+            $event.preventDefault();
+            angular.forEach($scope.allVPCSubnetList, function (subnet, $index) {
+                if ($scope.newVPCSubnet.id === subnet.id) {
+                    $scope.selectedVPCSubnetList.push(subnet);
+                }
+            });
+            $scope.newVPCSubnet = {};
         };
         $scope.clickDisableZone = function (thisZoneID) {
             angular.forEach($scope.selectedZoneList, function (zone, $index) {
