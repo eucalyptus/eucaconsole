@@ -441,6 +441,7 @@ class ELBView(TaggedItemView):
                     instances.append(dict(
                         id=instance.id,
                         vpc_id=instance.vpc_id,
+                        subnet_id=instance.subnet_id,
                         zone=instance._placement.zone,
                     ))
         return instances
