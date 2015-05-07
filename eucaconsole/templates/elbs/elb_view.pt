@@ -151,10 +151,20 @@
                                     {{ zone.unhealthyInstanceCount }} <span i18n:translate="">unhealthy</span>
                                 </div>
                             </div>
-                            <div id="cross-zone-div">
-                                <span i18n:translate="">Cross-zone load balancing</span>
-                                <a ng-class="classCrossZoneEnabled"><span ng-click="clickCrossZoneLink('enabled')" i18n:translate="">Enabled</span></a>
-                                <a ng-class="classCrossZoneDisabled"><span ng-click="clickCrossZoneLink('disabled')" i18n:translate="">Disabled</span></a>
+                            <div>
+                                <div id="cross-zone-div">
+                                    <span>
+                                        <label i18n:translate="">Cross-zone load balancing</label>
+                                    </span>
+                                    <span>
+                                        <a ng-class="classCrossZoneEnabled">
+                                            <span ng-click="clickCrossZoneLink('enabled')" i18n:translate="">Enabled</span>
+                                        </a>
+                                        <a ng-class="classCrossZoneDisabled">
+                                            <span ng-click="clickCrossZoneLink('disabled')" i18n:translate="">Disabled</span>
+                                        </a>
+                                    </span>
+                                </div>
                             </div>
                             <hr />
                         </div>

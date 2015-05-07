@@ -62,6 +62,14 @@
     .allhealthy { background-color: $euca-darkblue; }
     .unhealthy { background-color: darkred; }
     #cross-zone-div {
+        label { 
+            display: inline;
+            margin-left: 0.5rem;
+            margin-right: 1.0rem;
+        }
+        a {
+            margin-right: 0.5rem;
+         }
         .active { color: $euca-darkgrey; }
         .inactive { color: $euca-green; }
     }
