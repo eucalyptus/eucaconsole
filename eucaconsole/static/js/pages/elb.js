@@ -288,6 +288,20 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
             });
             return count;
         };
+        $scope.clickDisableZone = function (thisZoneID) {
+            angular.forEach($scope.selectedZoneList, function (zone, $index) {
+                if (thisZoneID === zone.id) {
+                    $scope.selectedZoneList.splice($index, 1);
+                }
+            });
+        };
+        $scope.clickDisableVPCSubnet = function (thisSubnetID) {
+            angular.forEach($scope.selectedVPCSubnetList, function (subnet, $index) {
+                if (thisSubnetID === subnet.id) {
+                    $scope.selectedVPCSubnetList.splice($index, 1);
+                }
+            });
+        };
         $scope.clickCrossZoneLink = function (click) {
             if (click === 'enabled') {
                 $scope.isCrossZoneEnabled = true;

@@ -134,7 +134,7 @@
                                         data-dropdown="item-dropdown_{{ zone.id }}"><i class="grid-action"></i></span>
                                         <ul id="item-dropdown_{{ zone.id }}" class="f-dropdown" data-dropdown-content="">
                                             <li>
-                                                <a ng-href="/snapshots/{{ zone.id }}" i18n:translate="">Disable zone</a>
+                                                <a ng-click="clickDisableZone(zone.id)" i18n:translate="">Disable zone</a>
                                             </li>
                                         </ul>
                                 </div>
@@ -185,7 +185,7 @@
                                         data-dropdown="item-dropdown_{{ subnet.id }}"><i class="grid-action"></i></span>
                                         <ul id="item-dropdown_{{ subnet.id }}" class="f-dropdown" data-dropdown-content="">
                                             <li>
-                                                <a ng-href="/snapshots/{{ subnet.id }}" i18n:translate="">Disable subnet</a>
+                                                <a ng-click="clickDisableVPCSubnet(subnet.id)" i18n:translate="">Disable subnet</a>
                                             </li>
                                         </ul>
                                 </div>
