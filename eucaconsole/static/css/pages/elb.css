@@ -132,6 +132,8 @@
 #elb-view-form .description { margin-bottom: 1.0rem; }
 #elb-view-form .allhealthy { background-color: #03405f; }
 #elb-view-form .unhealthy { background-color: darkred; }
+#elb-view-form #cross-zone-div .active { color: #444; }
+#elb-view-form #cross-zone-div .inactive { color: #8cc63e; }
 #elb-view-form #elb-listener-security-field { margin-bottom: 1.5rem; }
 #elb-view-form #advanced-section { margin-top: 1.5rem; }
 

@@ -18,6 +18,9 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
         $scope.allInstanceList = [];
         $scope.ELBInstanceHealthList = [];
         $scope.instanceList = [];
+        $scope.isCrossZoneEnabled = '';
+        $scope.classCrossZoneEnabled = 'active';
+        $scope.classCrossZoneDisabled = 'inactive';
         $scope.pingProtocol = '';
         $scope.pingPort = '';
         $scope.pingPath = '';
@@ -82,6 +85,9 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
             if (options.hasOwnProperty('elb_instance_health')) {
                 $scope.ELBInstanceHealthList = options.elb_instance_health;
             }
+            if (options.hasOwnProperty('is_cross_zone_enabled')) {
+                $scope.isCrossZoneEnabled = options.is_cross_zone_enabled;
+            }
             if (options.hasOwnProperty('instances')) {
                 $scope.instanceList = options.instances;
                 // Timeout is needed for the instance selector to be initizalized
@@ -130,6 +136,15 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
             $scope.$watch('instanceList', function () {
                 $scope.$broadcast('eventInitSelectedInstances', $scope.instanceList);
             }, true);
+            $scope.$watch('isCrossZoneEnabled', function () {
+                if ($scope.isCrossZoneEnabled === true) {
+                    $scope.classCrossZoneEnabled = 'active';
+                    $scope.classCrossZoneDisabled = 'inactive';
+                } else {
+                    $scope.classCrossZoneEnabled = 'inactive';
+                    $scope.classCrossZoneDisabled = 'active';
+                }
+            });
             $scope.$on('searchUpdated', function ($event, query) {
                 // Relay the query search update signal
                 $scope.$broadcast('eventQuerySearch', query);
@@ -272,6 +287,13 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
                 }
             });
             return count;
+        };
+        $scope.clickCrossZoneLink = function (click) {
+            if (click === 'enabled') {
+                $scope.isCrossZoneEnabled = true;
+            } else {
+                $scope.isCrossZoneEnabled = false;
+            }
         };
         $scope.submitSaveChanges = function ($event) {
         };

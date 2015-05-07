@@ -251,7 +251,7 @@ class ELBView(TaggedItemView):
                 self.elb.ping_protocol = ''
                 self.elb.ping_port = ''
                 self.elb.ping_path = ''
-                self.set_health_check_data()
+                self.get_health_check_data()
             else:
                 raise HTTPNotFound()
         self.is_vpc_supported = BaseView.is_vpc_supported(request)
@@ -326,6 +326,7 @@ class ELBView(TaggedItemView):
             'elb_vpc_subnets': self.elb.subnets if self.elb else [],
             'all_instances': self.get_all_instances(),
             'elb_instance_health': self.get_elb_instance_health(),
+            'is_cross_zone_enabled': self.get_elb_cross_zone_load_balancing(),
             'securitygroups': self.elb.security_groups if self.elb else [],
             'securitygroups_json_endpoint': self.request.route_path('securitygroups_json'),
             'instances': self.get_elb_instance_list(),
@@ -457,7 +458,7 @@ class ELBView(TaggedItemView):
                 ))
         return instance_health
 
-    def set_health_check_data(self):
+    def get_health_check_data(self):
         if self.elb is not None and self.elb.health_check.target is not None:
             match = re.search('^(\w+):(\d+)\/?(.+)?', self.elb.health_check.target)
             if match:
@@ -465,6 +466,11 @@ class ELBView(TaggedItemView):
                 self.elb.ping_port = match.group(2)
                 if match.group(3) is not None:
                     self.elb.ping_path = match.group(3)
+
+    def get_elb_cross_zone_load_balancing(self):
+        if self.elb_conn and self.elb:
+            is_cross_zone_enabled = self.elb.is_cross_zone_load_balancing()
+        return is_cross_zone_enabled 
 
 
 class CreateELBView(BaseView):
