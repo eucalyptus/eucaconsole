@@ -128,11 +128,11 @@
                                 <div class="row controls-wrapper readonly">
                                     <div class="small-3 columns">
                                         <select id="enable-zone-select"
-                                            ng-options="zone.id for zone in allZoneList track by zone.id"
+                                            ng-options="zone.id for zone in unselectedZoneList track by zone.id"
                                             ng-model="newZone"></select>
                                     </div>
                                     <div class="small-9 columns field">
-                                        <button class="button" id="enable-zone-btn"
+                                        <button class="button enable-button" id="enable-zone-btn"
                                             ng-click="clickEnableZone($event)">
                                             <span i18n:translate="">Enable Zone</span>
                                         </button>
@@ -194,11 +194,11 @@
                                 <div class="row controls-wrapper readonly">
                                     <div class="small-3 columns">
                                         <select id="enable-vpc-subnet-select"
-                                            ng-options="subnet.id for subnet in allVPCSubnetList track by subnet.id"
+                                            ng-options="subnet.id for subnet in unselectedVPCSubnetList track by subnet.id"
                                             ng-model="newVPCSubnet"></select>
                                     </div>
                                     <div class="small-9 columns field">
-                                        <button class="button" id="enable-subnet-btn"
+                                        <button class="button enable-button" id="enable-subnet-btn"
                                             ng-click="clickEnableVPCSubnet($event)">
                                             <span i18n:translate="">Enable Subnet</span>
                                         </button>

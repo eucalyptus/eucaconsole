@@ -130,6 +130,7 @@
 #elb-view-form .checkbox-with-helptext-icon label { margin-right: 0rem; }
 #elb-view-form .cancel-link { margin-right: 1.5rem; }
 #elb-view-form .description { margin-bottom: 1.0rem; }
+#elb-view-form .enable-button { height: 37px; padding-top: 0.5rem; }
 #elb-view-form .allhealthy { background-color: #03405f; }
 #elb-view-form .unhealthy { background-color: darkred; }
 #elb-view-form #cross-zone-div label { display: inline; margin-left: 0.5rem; margin-right: 1.0rem; }

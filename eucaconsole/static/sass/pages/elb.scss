@@ -59,6 +59,10 @@
     .description {
         margin-bottom: 1.0rem;
     }
+    .enable-button {
+        height: 37px;
+        padding-top: 0.5rem;
+    }
     .allhealthy { background-color: $euca-darkblue; }
     .unhealthy { background-color: darkred; }
     #cross-zone-div {

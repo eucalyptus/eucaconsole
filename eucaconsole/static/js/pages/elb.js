@@ -10,11 +10,13 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
         $scope.securityGroups = [];
         $scope.availabilityZones = []; 
         $scope.selectedZoneList = [];
+        $scope.unselectedZoneList = [];
         $scope.allZoneList = [];
         $scope.vpcNetwork = 'None';
         $scope.newVPCSubnet = '';
         $scope.vpcSubnetList = [];
         $scope.selectedVPCSubnetList = [];
+        $scope.unselectedVPCSubnetList = [];
         $scope.allVPCSubnetList = [];
         $scope.allInstanceList = [];
         $scope.ELBInstanceHealthList = [];
@@ -129,10 +131,12 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
             });
             $scope.$watch('availabilityZones', function () {
                 $scope.updateSelectedZoneList();
+                $scope.updateUnselectedZoneList();
                 $scope.$broadcast('eventUpdateAvailabilityZones', $scope.availabilityZones);
             }, true);
             $scope.$watch('vpcSubnetList', function () {
                 $scope.updateSelectedVPCSubnetList();
+                $scope.updateUnselectedVPCSubnetList(); 
             }, true);
             $scope.$watch('instanceList', function () {
                 $scope.$broadcast('eventInitSelectedInstances', $scope.instanceList);
@@ -210,15 +214,32 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
             var selected = [];
             angular.forEach($scope.availabilityZones, function (zoneID) {
                 angular.forEach($scope.allZoneList, function (zone) {
+                    zone.instanceCount = $scope.getInstanceCountInZone(zone);
+                    zone.unhealthyInstanceCount = $scope.getUnhealthyInstanceCountInZone(zone);
                     if (zoneID === zone.id) {
-                        zone.instanceCount = $scope.getInstanceCountInZone(zone);
-                        zone.unhealthyInstanceCount = $scope.getUnhealthyInstanceCountInZone(zone);
                         selected.push(zone);
-                        
                     }
                 });
             });
             $scope.selectedZoneList = selected;
+        };
+        $scope.updateUnselectedZoneList = function () {
+            var allList = $scope.allZoneList;
+            var unselected = [];
+            angular.forEach(allList, function (zone) {
+                var isSelected = false;
+                angular.forEach($scope.selectedZoneList, function (thisZone, $index) {
+                    if (thisZone.id === zone.id) {
+                       isSelected = true;
+                    }
+                });
+                if (isSelected === false) {
+                    zone.instanceCount = $scope.getInstanceCountInZone(zone);
+                    zone.unhealthyInstanceCount = $scope.getUnhealthyInstanceCountInZone(zone);
+                    unselected.push(zone);
+                }
+            });
+            $scope.unselectedZoneList = unselected;
         };
         $scope.updateSelectedVPCSubnetList = function () {
             var selected = [];
@@ -232,6 +253,24 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
                 });
             });
             $scope.selectedVPCSubnetList = selected;
+        };
+        $scope.updateUnselectedVPCSubnetList = function () {
+            var allList = $scope.allVPCSubnetList;
+            var unselected = [];
+            angular.forEach(allList, function (subnet) {
+                var isSelected = false;
+                angular.forEach($scope.selectedVPCSubnetList, function (thisSubnet, $index) {
+                    if (thisSubnet.id === subnet.id) {
+                       isSelected = true;
+                    }
+                });
+                if (isSelected === false) {
+                    subnet.instanceCount = $scope.getInstanceCountInSubnet(subnet.id);
+                    subnet.unhealthyInstanceCount = $scope.getUnhealthyInstanceCountInSubnet(subnet.id);
+                    unselected.push(subnet);
+                }
+            });
+            $scope.unselectedVPCSubnetList = unselected;
         };
         $scope.getInstanceCountInZone = function (zone) {
             var count = 0;
@@ -291,18 +330,20 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
         };
         $scope.clickEnableZone = function ($event) {
             $event.preventDefault();
-            angular.forEach($scope.allZoneList, function (zone, $index) {
+            angular.forEach($scope.unselectedZoneList, function (zone, $index) {
                 if ($scope.newZone.id === zone.id) {
                     $scope.selectedZoneList.push(zone);
+                    $scope.unselectedZoneList.splice($index, 1);
                 }
             });
             $scope.newZone = {};
         };
         $scope.clickEnableVPCSubnet = function ($event) {
             $event.preventDefault();
-            angular.forEach($scope.allVPCSubnetList, function (subnet, $index) {
+            angular.forEach($scope.unselectedVPCSubnetList, function (subnet, $index) {
                 if ($scope.newVPCSubnet.id === subnet.id) {
                     $scope.selectedVPCSubnetList.push(subnet);
+                    $scope.unselectedVPCSubnetList.splice($index, 1);
                 }
             });
             $scope.newVPCSubnet = {};
@@ -311,6 +352,7 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
             angular.forEach($scope.selectedZoneList, function (zone, $index) {
                 if (thisZoneID === zone.id) {
                     $scope.selectedZoneList.splice($index, 1);
+                    $scope.unselectedZoneList.push(zone);
                 }
             });
         };
@@ -318,6 +360,7 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
             angular.forEach($scope.selectedVPCSubnetList, function (subnet, $index) {
                 if (thisSubnetID === subnet.id) {
                     $scope.selectedVPCSubnetList.splice($index, 1);
+                    $scope.unselectedVPCSubnetList.push(subnet);
                 }
             });
         };
