@@ -6,7 +6,7 @@
 
 angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor', 'MagicSearch'])
     .controller('ELBPageCtrl', function ($scope, $timeout, eucaUnescapeJson) {
-        $scope.isNotChanged = true;
+        $scope.listenerArray = [];
         $scope.securityGroups = [];
         $scope.availabilityZones = []; 
         $scope.selectedZoneList = [];
@@ -32,12 +32,17 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
         $scope.timeBetweenPings = '';
         $scope.failuresUntilUnhealthy = '';
         $scope.passesUntilHealthy = '';
+        $scope.isNotChanged = true;
+        $scope.isInitComplete = false;
         $scope.unsavedChangesWarningModalLeaveCallback = null;
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.setInitialValues(options);
             $scope.setWatch();
             $scope.setFocus();
+            $timeout(function(){
+                $scope.isInitComplete = true;
+            }, 1000);
         };
         $scope.setInitialValues = function (options) {
             if (options.hasOwnProperty('securitygroups')) {
@@ -130,18 +135,29 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
                 $(this).find('.dialog-submit-button').css('display', 'none');
                 $(this).find('.dialog-progress-display').css('display', 'block');
             });
+            $scope.$watch('securityGroups', function () {
+                if ($scope.isInitComplete === true) {;
+                    $scope.isNotChanged = false;
+                }
+            }, true);
             $scope.$watch('availabilityZones', function () {
                 $scope.updateSelectedZoneList();
                 $scope.$broadcast('eventUpdateAvailabilityZones', $scope.availabilityZones);
             }, true);
             $scope.$watch('selectedZoneList', function () {
                 $scope.updateUnselectedZoneList();
+                if ($scope.isInitComplete === true) {;
+                    $scope.isNotChanged = false;
+                }
             }, true);
             $scope.$watch('vpcSubnetList', function () {
                 $scope.updateSelectedVPCSubnetList();
             }, true);
             $scope.$watch('selectedVPCSubnetList', function () {
                 $scope.updateUnselectedVPCSubnetList(); 
+                if ($scope.isInitComplete === true) {;
+                    $scope.isNotChanged = false;
+                }
             }, true);
             $scope.$watch('instanceList', function () {
                 $scope.$broadcast('eventInitSelectedInstances', $scope.instanceList);
@@ -153,6 +169,9 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
                 } else {
                     $scope.classCrossZoneEnabled = 'inactive';
                     $scope.classCrossZoneDisabled = 'active';
+                }
+                if ($scope.isInitComplete === true) {;
+                    $scope.isNotChanged = false;
                 }
             });
             $scope.$watch('isNotChanged', function () {
@@ -170,10 +189,28 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
                 // Relay the text search update signal
                 $scope.$broadcast('eventTextSearch', searchVal, filterKeys);
             });
+            $scope.$on('eventUpdateListenerArray', function ($event, listenerArray) {
+                if ($scope.isInitComplete === true) {;
+                    $scope.isNotChanged = false;
+                }
+                $scope.listenerArray = listenerArray;
+            });
             $scope.$on('tagUpdate', function($event) {
                 $scope.isNotChanged = false;
             });
-            $(document).on('input', 'input[type="text"]', function () {
+            $(document).on('input', '#general-tab input[type="text"]', function () {
+                $scope.isNotChanged = false;
+                $scope.$apply();
+            });
+            $(document).on('click', '#instances-tab input[type="checkbox"]', function () {
+                $scope.isNotChanged = false;
+                $scope.$apply();
+            });
+            $(document).on('input', '#health-checks-tab input', function () {
+                $scope.isNotChanged = false;
+                $scope.$apply();
+            });
+            $(document).on('change', '#health-checks-tab select', function () {
                 $scope.isNotChanged = false;
                 $scope.$apply();
             });

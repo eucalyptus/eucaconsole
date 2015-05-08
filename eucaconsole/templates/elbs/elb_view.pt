@@ -117,7 +117,7 @@
                                 </li>
                             </metal:actions>
                         </metal:block>
-                        <div class="gridwrapper" ng-cloak="true" tal:condition="elb_vpc_network == 'None'">
+                        <div class="gridwrapper section" ng-cloak="true" tal:condition="elb_vpc_network == 'None'">
                             <h6 i18n:translate="">
                                 Availability zones
                             </h6>
@@ -152,7 +152,7 @@
                                         data-dropdown="item-dropdown_{{ zone.id }}"><i class="grid-action"></i></span>
                                         <ul id="item-dropdown_{{ zone.id }}" class="f-dropdown" data-dropdown-content="">
                                             <li>
-                                                <a ng-click="clickDisableZone(zone.id)" i18n:translate="">Disable zone</a>
+                                                <a class="disable-button" ng-click="clickDisableZone(zone.id)" i18n:translate="">Disable zone</a>
                                             </li>
                                         </ul>
                                 </div>
@@ -186,7 +186,7 @@
                             </div>
                             <hr />
                         </div>
-                        <div class="gridwrapper" ng-cloak="true" tal:condition="elb_vpc_network != 'None'">
+                        <div class="gridwrapper section" ng-cloak="true" tal:condition="elb_vpc_network != 'None'">
                             <h6 i18n:translate="">
                                 Subnets
                             </h6>
@@ -221,7 +221,7 @@
                                         data-dropdown="item-dropdown_{{ subnet.id }}"><i class="grid-action"></i></span>
                                         <ul id="item-dropdown_{{ subnet.id }}" class="f-dropdown" data-dropdown-content="">
                                             <li>
-                                                <a ng-click="clickDisableVPCSubnet(subnet.id)" i18n:translate="">Disable subnet</a>
+                                                <a class="disable-button" ng-click="clickDisableVPCSubnet(subnet.id)" i18n:translate="">Disable subnet</a>
                                             </li>
                                         </ul>
                                 </div>
@@ -248,7 +248,7 @@
                             </div>
                             <hr />
                         </div>
-                        <div id="instance-section" ng-cloak="true">
+                        <div id="instance-section" class="section" ng-cloak="true">
                             <h6 i18n:translate="">
                                 Instances
                             </h6>
