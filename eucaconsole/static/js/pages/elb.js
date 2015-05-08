@@ -136,7 +136,7 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
                 $(this).find('.dialog-progress-display').css('display', 'block');
             });
             $scope.$watch('securityGroups', function () {
-                if ($scope.isInitComplete === true) {;
+                if ($scope.isInitComplete === true) {
                     $scope.isNotChanged = false;
                 }
             }, true);
@@ -146,7 +146,7 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
             }, true);
             $scope.$watch('selectedZoneList', function () {
                 $scope.updateUnselectedZoneList();
-                if ($scope.isInitComplete === true) {;
+                if ($scope.isInitComplete === true) {
                     $scope.isNotChanged = false;
                 }
             }, true);
@@ -155,7 +155,7 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
             }, true);
             $scope.$watch('selectedVPCSubnetList', function () {
                 $scope.updateUnselectedVPCSubnetList(); 
-                if ($scope.isInitComplete === true) {;
+                if ($scope.isInitComplete === true) {
                     $scope.isNotChanged = false;
                 }
             }, true);
@@ -170,7 +170,7 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
                     $scope.classCrossZoneEnabled = 'inactive';
                     $scope.classCrossZoneDisabled = 'active';
                 }
-                if ($scope.isInitComplete === true) {;
+                if ($scope.isInitComplete === true) {
                     $scope.isNotChanged = false;
                 }
             });
@@ -190,7 +190,7 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
                 $scope.$broadcast('eventTextSearch', searchVal, filterKeys);
             });
             $scope.$on('eventUpdateListenerArray', function ($event, listenerArray) {
-                if ($scope.isInitComplete === true) {;
+                if ($scope.isInitComplete === true) {
                     $scope.isNotChanged = false;
                 }
                 $scope.listenerArray = listenerArray;
@@ -258,6 +258,7 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
                 $scope.openModalById('unsaved-changes-warning-modal');
                 $scope.unsavedChangesWarningModalLeaveCallback = function() {
                     $scope.isNotChanged = true;
+                    $scope.$apply();
                     $scope.toggleTab(tab);
                     $('#unsaved-changes-warning-modal').foundation('reveal', 'close');
                 };
