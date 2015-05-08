@@ -28,6 +28,7 @@
 Pyramid views for Eucalyptus and AWS launch configurations
 
 """
+import base64
 import simplejson as json
 from urllib import quote, urlencode
 
@@ -39,7 +40,7 @@ from pyramid.view import view_config
 from ..forms import GenerateFileForm
 from ..forms.images import ImagesFiltersForm
 from ..forms.keypairs import KeyPairForm
-from ..forms.launchconfigs import LaunchConfigDeleteForm, CreateLaunchConfigForm, LaunchConfigsFiltersForm, LaunchConfigMoreForm
+from ..forms.launchconfigs import LaunchConfigDeleteForm, CreateLaunchConfigForm, LaunchConfigsFiltersForm
 from ..forms.securitygroups import SecurityGroupForm
 from ..i18n import _
 from ..models import Notification
@@ -401,6 +402,7 @@ class LaunchConfigView(BaseLaunchConfigView):
 class CreateLaunchConfigView(BlockDeviceMappingItemView):
     """Create Launch Configuration wizard"""
     TEMPLATE = '../templates/launchconfigs/launchconfig_wizard.pt'
+    TEMPLATE_MORE = '../templates/launchconfigs/launchconfig_create_more.pt'
 
     def __init__(self, request):
         super(CreateLaunchConfigView, self).__init__(request)
@@ -451,6 +453,38 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
     def launchconfig_new(self):
         """Displays the Create Launch Configuration wizard"""
         self.render_dict['preset'] = self.request.params.get('preset')
+        return self.render_dict
+
+    @view_config(route_name='launchconfig_more', renderer=TEMPLATE_MORE, request_method='GET')
+    def launchconfig_more(self):
+        name = self.request.matchdict.get('id')
+        autoscale_conn = self.get_connection(conn_type='autoscale')
+        with boto_error_handler(self.request):
+            lc = autoscale_conn.get_all_launch_configurations(names=[name])
+            self.launch_config = lc[0]
+            self.render_dict['launch_config'] = self.launch_config
+            self.create_form.image_id.data = self.launch_config.image_id
+            self.create_form.instance_type.data = self.launch_config.instance_type
+            self.create_form.keypair.data = self.launch_config.key_name
+            self.create_form.securitygroup.data = self.launch_config.security_groups
+            self.render_dict['launchconfig_name'] = self.launch_config.name
+            images = self.get_connection().get_all_images(image_ids=[self.launch_config.image_id])
+            self.image = images[0] if images else None
+            self.image.platform_name = ImageView.get_platform(self.image)[2]
+            self.render_dict['image'] = self.image
+            if self.launch_config.user_data != None and self.launch_config.user_data != '':
+                user_data = self.launch_config.user_data
+                mime_type = guess_mimetype_from_buffer(user_data, mime=True)
+                if mime_type.find('text') != 0:
+                    # get more descriptive text
+                    mime_type = guess_mimetype_from_buffer(user_data)
+                    user_data = None
+            else:
+                user_data = ''
+                mime_type = ''
+            self.render_dict['controller_options_json'] = BaseView.escape_json(json.dumps({
+                'user_data': dict(type=mime_type, data=user_data)
+            }))
         return self.render_dict
 
     @view_config(route_name='launchconfig_create', renderer=TEMPLATE, request_method='POST')
@@ -543,134 +577,4 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
             else:
                 return default_vpc[0]
         return 'None'
-
-
-class LaunchConfigMoreView(BaseLaunchConfigView, BlockDeviceMappingItemView):
-    """Create Launchconfig like this view"""
-    TEMPLATE = '../templates/launchconfigs/launchconfig_create_more.pt'
-
-    def __init__(self, request):
-        super(LaunchConfigMoreView, self).__init__(request)
-        self.request = request
-        self.iam_conn = None
-        if BaseView.has_role_access(request):
-            self.iam_conn = self.get_connection(conn_type="iam")
-        with boto_error_handler(request):
-            self.launch_config = self.get_launch_config()
-            self.image = self.get_image()
-        self.location = self.request.route_path('launchconfigs')
-        self.launch_more_form = LaunchConfigMoreForm(
-            self.request, image=self.image, launch_config=self.launch_config,
-            conn=self.conn, formdata=self.request.params or None)
-        self.role = None
-        if BaseView.has_role_access(request) and self.launch_config.instance_profile_name:
-            arn = self.launch_config.instance_profile_name
-            try:
-                profile_name = arn[(arn.rindex('/')+1):]
-            except ValueError:
-                profile_name = arn
-            inst_profile = self.iam_conn.get_instance_profile(profile_name)
-            self.role = inst_profile.roles.member.role_name
-        self.render_dict = dict(
-            image=self.image,
-            launchconfig=self.launch_config,
-            launch_more_form=self.launch_more_form,
-            snapshot_choices=self.get_snapshot_choices(),
-            #vpc_subnet_display=self.get_vpc_subnet_display(self.launch_config.subnet_id) if self.launch_config else None,
-            is_vpc_supported=self.is_vpc_supported,
-            role=self.role,
-        )
-
-    @view_config(route_name='launchconfig_more', renderer=TEMPLATE, request_method='GET')
-    def instance_more(self):
-        return self.render_dict
-
-    @view_config(route_name='launchconfig_more_create', renderer=TEMPLATE, request_method='POST')
-    def instance_more_launch(self):
-        """Handles the POST from the Create launchconfig like this form"""
-        if self.launch_more_form.validate():
-            image_id = self.image.id
-            source_instance_tags = self.instance.tags
-            key_name = self.instance.key_name
-            num_instances = int(self.request.params.get('number', 1))
-            security_groups = [group.id for group in self.instance.groups]
-            instance_type = self.instance.instance_type
-            availability_zone = self.instance.placement
-            vpc_network = self.instance.vpc_id or None
-            vpc_subnet = self.instance.subnet_id or None
-            if self.associate_public_ip_address == 'Enabled':
-                associate_public_ip_address = True
-            else:
-                associate_public_ip_address = False
-            kernel_id = self.request.params.get('kernel_id') or None
-            ramdisk_id = self.request.params.get('ramdisk_id') or None
-            monitoring_enabled = self.request.params.get('monitoring_enabled') == 'y'
-            private_addressing = self.request.params.get('private_addressing') == 'y'
-            addressing_type = 'private' if private_addressing else 'public'
-            if vpc_network is not None and self.cloud_type == 'euca':
-                addressing_type = None  # Don't pass addressing scheme if on Euca VPC
-            if self.cloud_type == 'aws':  # AWS only supports public, so enforce that here
-                addressing_type = 'public'
-            bdmapping_json = self.request.params.get('block_device_mapping')
-            block_device_map = self.get_block_device_map(bdmapping_json)
-            new_instance_ids = []
-            with boto_error_handler(self.request, self.location):
-                self.log_request(_(u"Running instance(s) (num={0}, image={1}, type={2})").format(
-                    num_instances, image_id, instance_type))
-                instance_profile_arn = self.instance.instance_profile['arn'] if self.instance.instance_profile else None
-                # Create base params for run_instances()
-                params = dict(
-                    min_count=num_instances,
-                    max_count=num_instances,
-                    key_name=key_name,
-                    user_data=self.get_user_data(),
-                    addressing_type=addressing_type,
-                    instance_type=instance_type,
-                    kernel_id=kernel_id,
-                    ramdisk_id=ramdisk_id,
-                    monitoring_enabled=monitoring_enabled,
-                    block_device_map=block_device_map,
-                    instance_profile_arn=instance_profile_arn,
-                )
-                if vpc_network is not None:
-                    network_interface = NetworkInterfaceSpecification(
-                        subnet_id=vpc_subnet,
-                        groups=security_groups,
-                        associate_public_ip_address=associate_public_ip_address,
-                    )
-                    network_interfaces = NetworkInterfaceCollection(network_interface)
-                    # Use the EC2-VPC setting
-                    params.update(dict(
-                        network_interfaces=network_interfaces,
-                    ))
-                    reservation = self.conn.run_instances(image_id, **params)
-                else:
-                    # Use the EC2-Classic setting
-                    params.update(dict(
-                        placement=availability_zone,
-                        security_group_ids=security_groups,
-                    ))
-                    reservation = self.conn.run_instances(image_id, **params)
-
-                for idx, instance in enumerate(reservation.instances):
-                    # Add tags for newly launched instance(s)
-                    # Try adding name tag (from collection of name input fields)
-                    input_field_name = u'name_{0}'.format(idx)
-                    name = self.request.params.get(input_field_name, '').strip()
-                    new_instance_ids.append(name or instance.id)
-                    if name:
-                        instance.add_tag('Name', name)
-                    if source_instance_tags:
-                        for tagname, tagvalue in source_instance_tags.items():
-                            # Don't copy 'Name' tag, and avoid tags that start with 'aws:' and 'euca:'
-                            if all([tagname != 'Name', not tagname.startswith('aws:'),
-                                    not tagname.startswith('euca:')]):
-                                instance.add_tag(tagname, tagvalue)
-                msg = _(u'Successfully sent launch instances request.  It may take a moment to launch instances ')
-                msg += ', '.join(new_instance_ids)
-                self.request.session.flash(msg, queue=Notification.SUCCESS)
-            return HTTPFound(location=self.location)
-        else:
-            self.request.error_messages = self.launch_more_form.get_errors_list()
-        return self.render_dict
 

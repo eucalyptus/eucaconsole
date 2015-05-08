@@ -30,6 +30,12 @@
                             </a>
                         </li>
                         <li>
+                            <a href="${request.route_path('launchconfig_more', id=escaped_launch_config_name)}"
+                               id="create-another-launchconfig-action" i18n:translate="">
+                                Create launch configuration like this
+                            </a>
+                        </li>
+                        <li>
                             <a id="delete-launchconfig-action" data-reveal-id="delete-launchconfig-modal"
                                i18n:translate="">Delete launch configuration</a>
                         </li>
