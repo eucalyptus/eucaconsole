@@ -402,8 +402,11 @@ class ELBView(TaggedItemView):
             with boto_error_handler(self.request):
                 vpc_subnets = self.vpc_conn.get_all_subnets()
                 for vpc_subnet in vpc_subnets:
+                    subnet_string = u'{0} ({1}) | {2}'.format(vpc_subnet.cidr_block,
+                                                              vpc_subnet.id, vpc_subnet.availability_zone)
                     subnets.append(dict(
                         id=vpc_subnet.id,
+                        name=subnet_string,
                         vpc_id=vpc_subnet.vpc_id,
                         availability_zone=vpc_subnet.availability_zone,
                         state=vpc_subnet.state,
@@ -470,7 +473,7 @@ class ELBView(TaggedItemView):
     def get_elb_cross_zone_load_balancing(self):
         if self.elb_conn and self.elb:
             is_cross_zone_enabled = self.elb.is_cross_zone_load_balancing()
-        return is_cross_zone_enabled 
+        return is_cross_zone_enabled
 
 
 class CreateELBView(BaseView):
@@ -583,8 +586,10 @@ class CreateELBView(BaseView):
             with boto_error_handler(self.request):
                 vpc_subnets = self.vpc_conn.get_all_subnets()
                 for vpc_subnet in vpc_subnets:
+                    subnet_string = u'{0} ({1}) | {2}'.format(vpc.cidr_block, vpc.id, vpc.availability_zone)
                     subnets.append(dict(
                         id=vpc_subnet.id,
+                        name=subnet_string,
                         vpc_id=vpc_subnet.vpc_id,
                         availability_zone=vpc_subnet.availability_zone,
                         state=vpc_subnet.state,

@@ -13,7 +13,8 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
         $scope.unselectedZoneList = [];
         $scope.allZoneList = [];
         $scope.vpcNetwork = 'None';
-        $scope.newVPCSubnet = '';
+        $scope.newVPCSubnet = 'None';
+        $scope.newZone = 'None';
         $scope.vpcSubnetList = [];
         $scope.selectedVPCSubnetList = [];
         $scope.unselectedVPCSubnetList = [];
@@ -131,11 +132,15 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
             });
             $scope.$watch('availabilityZones', function () {
                 $scope.updateSelectedZoneList();
-                $scope.updateUnselectedZoneList();
                 $scope.$broadcast('eventUpdateAvailabilityZones', $scope.availabilityZones);
+            }, true);
+            $scope.$watch('selectedZoneList', function () {
+                $scope.updateUnselectedZoneList();
             }, true);
             $scope.$watch('vpcSubnetList', function () {
                 $scope.updateSelectedVPCSubnetList();
+            }, true);
+            $scope.$watch('selectedVPCSubnetList', function () {
                 $scope.updateUnselectedVPCSubnetList(); 
             }, true);
             $scope.$watch('instanceList', function () {
@@ -226,6 +231,10 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
         $scope.updateUnselectedZoneList = function () {
             var allList = $scope.allZoneList;
             var unselected = [];
+            var placeholder = {};
+            placeholder.id = 'None';
+            placeholder.name = $('#hidden_zone_selector_placeholder').text(); 
+            unselected.push(placeholder);
             angular.forEach(allList, function (zone) {
                 var isSelected = false;
                 angular.forEach($scope.selectedZoneList, function (thisZone, $index) {
@@ -240,6 +249,7 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
                 }
             });
             $scope.unselectedZoneList = unselected;
+            $scope.newZone = placeholder;
         };
         $scope.updateSelectedVPCSubnetList = function () {
             var selected = [];
@@ -257,6 +267,10 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
         $scope.updateUnselectedVPCSubnetList = function () {
             var allList = $scope.allVPCSubnetList;
             var unselected = [];
+            var placeholder = {};
+            placeholder.id = 'None';
+            placeholder.name = $('#hidden_subnet_selector_placeholder').text(); 
+            unselected.push(placeholder);
             angular.forEach(allList, function (subnet) {
                 var isSelected = false;
                 angular.forEach($scope.selectedVPCSubnetList, function (thisSubnet, $index) {
@@ -271,6 +285,7 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
                 }
             });
             $scope.unselectedVPCSubnetList = unselected;
+            $scope.newVPCSubnet = placeholder;
         };
         $scope.getInstanceCountInZone = function (zone) {
             var count = 0;
@@ -330,23 +345,27 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
         };
         $scope.clickEnableZone = function ($event) {
             $event.preventDefault();
+            if ($scope.newZone.id === 'None') {
+                return;
+            }
             angular.forEach($scope.unselectedZoneList, function (zone, $index) {
                 if ($scope.newZone.id === zone.id) {
                     $scope.selectedZoneList.push(zone);
                     $scope.unselectedZoneList.splice($index, 1);
                 }
             });
-            $scope.newZone = {};
         };
         $scope.clickEnableVPCSubnet = function ($event) {
             $event.preventDefault();
+            if ($scope.newVPCSubnet.id === 'None') {
+                return;
+            }
             angular.forEach($scope.unselectedVPCSubnetList, function (subnet, $index) {
                 if ($scope.newVPCSubnet.id === subnet.id) {
                     $scope.selectedVPCSubnetList.push(subnet);
                     $scope.unselectedVPCSubnetList.splice($index, 1);
                 }
             });
-            $scope.newVPCSubnet = {};
         };
         $scope.clickDisableZone = function (thisZoneID) {
             angular.forEach($scope.selectedZoneList, function (zone, $index) {

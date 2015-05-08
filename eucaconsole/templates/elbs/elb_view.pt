@@ -126,17 +126,20 @@
                             </div>
                             <div>
                                 <div class="row controls-wrapper readonly">
-                                    <div class="small-3 columns">
+                                    <div class="small-4 columns">
                                         <select id="enable-zone-select"
-                                            ng-options="zone.id for zone in unselectedZoneList track by zone.id"
+                                            ng-options="zone.name for zone in unselectedZoneList track by zone.id"
                                             ng-model="newZone"></select>
                                     </div>
-                                    <div class="small-9 columns field">
+                                    <div class="small-8 columns field">
                                         <button class="button enable-button" id="enable-zone-btn"
                                             ng-click="clickEnableZone($event)">
                                             <span i18n:translate="">Enable Zone</span>
                                         </button>
                                     </div>
+                                </div>
+                                <div id="hidden_zone_selector_placeholder" class="hide" i18n:translate="">
+                                    Select zone
                                 </div>
                             </div>
                             <div class="tile item" ng-cloak="true"
@@ -192,17 +195,20 @@
                             </div>
                             <div>
                                 <div class="row controls-wrapper readonly">
-                                    <div class="small-3 columns">
+                                    <div class="small-5 columns">
                                         <select id="enable-vpc-subnet-select"
-                                            ng-options="subnet.id for subnet in unselectedVPCSubnetList track by subnet.id"
+                                            ng-options="subnet.name for subnet in unselectedVPCSubnetList track by subnet.id"
                                             ng-model="newVPCSubnet"></select>
                                     </div>
-                                    <div class="small-9 columns field">
+                                    <div class="small-7 columns field">
                                         <button class="button enable-button" id="enable-subnet-btn"
                                             ng-click="clickEnableVPCSubnet($event)">
                                             <span i18n:translate="">Enable Subnet</span>
                                         </button>
                                     </div>
+                                </div>
+                                <div id="hidden_subnet_selector_placeholder" class="hide" i18n:translate="">
+                                    Select subnet 
                                 </div>
                             </div>
                             <div class="tile item" ng-cloak="true"
