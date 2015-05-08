@@ -123,7 +123,7 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
             $scope.initChosenSelectors(); 
         };
         $scope.initChosenSelectors = function () {
-            $('#securitygroup').chosen({'width': '100%', search_contains: true});
+            $('#securitygroup').chosen({'width': '70%', search_contains: true});
         };
         $scope.setWatch = function () {
             $(document).on('submit', '[data-reveal] form', function () {
@@ -155,6 +155,13 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
                     $scope.classCrossZoneDisabled = 'active';
                 }
             });
+            $scope.$watch('isNotChanged', function () {
+                if ($scope.isNotChanged === false) {
+                    $('#elb-view-tabs').removeAttr('data-tab');
+                } else {
+                    $('#elb-view-tabs').attr('data-tab', '');
+                }
+            });
             $scope.$on('searchUpdated', function ($event, query) {
                 // Relay the query search update signal
                 $scope.$broadcast('eventQuerySearch', query);
@@ -162,6 +169,21 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
             $scope.$on('textSearch', function ($event, searchVal, filterKeys) {
                 // Relay the text search update signal
                 $scope.$broadcast('eventTextSearch', searchVal, filterKeys);
+            });
+            $scope.$on('tagUpdate', function($event) {
+                $scope.isNotChanged = false;
+            });
+            $(document).on('input', 'input[type="text"]', function () {
+                $scope.isNotChanged = false;
+                $scope.$apply();
+            });
+            // Leave button is clicked on the warning unsaved changes modal
+            $(document).on('click', '#unsaved-changes-warning-modal-stay-button', function () {
+                $('#unsaved-changes-warning-modal').foundation('reveal', 'close');
+            });
+            // Stay button is clicked on the warning unsaved changes modal
+            $(document).on('click', '#unsaved-changes-warning-modal-leave-link', function () {
+                $scope.unsavedChangesWarningModalLeaveCallback();
             });
         };
         $scope.setFocus = function () {
@@ -187,15 +209,20 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
                }
             });
         };
+        $scope.openModalById = function (modalID) {
+            var modal = $('#' + modalID);
+            modal.foundation('reveal', 'open');
+            modal.find('h3').click();  // Workaround for dropdown menu not closing
+        };
         $scope.clickTab = function ($event, tab){
             $event.preventDefault();
             // If there exists unsaved changes, open the warning modal instead
             if ($scope.isNotChanged === false) {
-                // $scope.openModalById('unsaved-changes-warning-modal');
+                $scope.openModalById('unsaved-changes-warning-modal');
                 $scope.unsavedChangesWarningModalLeaveCallback = function() {
                     $scope.isNotChanged = true;
                     $scope.toggleTab(tab);
-                    // $('#unsaved-changes-warning-modal').foundation('reveal', 'close');
+                    $('#unsaved-changes-warning-modal').foundation('reveal', 'close');
                 };
                 return;
             } 
@@ -391,6 +418,8 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
             }
         };
         $scope.submitSaveChanges = function ($event) {
+            $event.preventDefault();
+            $scope.isNotChanged = true;
         };
     })
 ;
