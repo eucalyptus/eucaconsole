@@ -324,6 +324,7 @@ class ELBView(TaggedItemView):
             'vpc_subnet_choices': self.get_vpc_subnets(),
             'elb_vpc_network': self.elb.vpc_id if self.elb else [],
             'elb_vpc_subnets': self.elb.subnets if self.elb else [],
+            'instance_selector_text': self.get_instance_selector_text(),
             'all_instances': self.get_all_instances(),
             'elb_instance_health': self.get_elb_instance_health(),
             'is_cross_zone_enabled': self.get_elb_cross_zone_load_balancing(),
@@ -357,6 +358,12 @@ class ELBView(TaggedItemView):
                                       'to_port': listener[1],
                                       'protocol': listener[2]})
         return listener_list
+
+    def get_instance_selector_text(self):
+        instance_selector_text = {'name': _(u'NAME (ID)'), 'tags': _(u'TAGS'),
+                                  'zone': _(u'AVAILABILITY ZONE'), 'subnet': _(u'VPC SUBNET'), 'status': _(u'STATUS'),
+                                  'no_matching_instance_error_msg': _(u'No matching instances')}
+        return instance_selector_text
 
     def get_protocol_list(self):
         protocol_list = ()
