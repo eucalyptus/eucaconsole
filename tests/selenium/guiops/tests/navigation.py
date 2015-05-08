@@ -9,11 +9,11 @@ class Navigation_sequence(GuiTester):
 
     def navigation_test(self):
 
-        #self.tester.wait_for_element_present_by_id("euca")
+
         #self.tester.wait_for_visible_by_id("euca")
 
-        self.tester.wait_for_not_present_by_id("euca")
-
+        #self.tester.verify_element_not_present("ID","euca")
+        self.tester.wait_for_text_not_present_by_css("#euca-login-button", "Log in to Eucalyptus")
         #self.tester.login()
 
         #self.tester.wait_for_element_not_present_by_id("boo")

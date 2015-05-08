@@ -30,6 +30,8 @@ class SeleniumApi():
     timeout_to_locate_element_in_seconds = 60
     timeout_to_determine_visibility_in_seconds = 60
     timeout_to_determine_if_clickable_in_seconds = 20
+    timeout_to_wait_for_text_in_seconds = 40
+    implicit_wait_default_in_seconds = 30
 
     #def NoOp(self):
     #    return 0
@@ -186,6 +188,7 @@ class SeleniumApi():
         """
         print "Executing wait_for_element_not_present_by_id('{0}')".format(element_id)
         print "Looking for element id = '{0}' in the DOM".format(element_id)
+        self.set_implicit_wait(5)
         try:
             WebDriverWait(self.driver, self.timeout_to_locate_element_in_seconds).until_not(
                 EC.presence_of_element_located((By.ID, element_id)))
@@ -194,6 +197,7 @@ class SeleniumApi():
         #    print "ERROR: Can not verify the element by id = '{0}' is not in the DOM".format(element_id)
         except TimeoutException, t:
             print "ERROR: Timed out. Element by id = '{0}' still found in the DOM.".format(element_id)
+        self.set_implicit_wait(self.implicit_wait_default_in_seconds)
 
     def wait_for_element_not_present_by_css(self, css):
         """
@@ -203,6 +207,7 @@ class SeleniumApi():
         """
         print "Executing wait_for_element_not_present_by_css('{0}')".format(css)
         print "Looking for element css = '{0}' in the DOM".format(css)
+        self.set_implicit_wait(5)
         try:
             WebDriverWait(self.driver, self.timeout_to_locate_element_in_seconds).until_not(
                 EC.presence_of_element_located((By.CSS_SELECTOR, css)))
@@ -211,209 +216,73 @@ class SeleniumApi():
         #    print "ERROR: Can not verify the element by id = '{0}' is not in the DOM".format(element_id)
         except TimeoutException, t:
             print "ERROR: Timed out. Element by css = '{0}' still found in the DOM.".format(css)
+        self.set_implicit_wait(self.implicit_wait_default_in_seconds)
 
-
-    def element_found_by_id(self, element_id):
-            try:
-                self.driver.find_element(By.ID, element_id)
-                return True
-            except NoSuchElementException, nse:
-                return False
-
-    def wait_for_not_present_by_id(self,element_id):
+    def wait_for_text_present_by_id(self, element_id, text):
         """
-
+        Waits for text to be present.
+        :param element_id:
+        :param text:
         """
-        print "Executing wait_for_not_present_by_id('{0}')".format(element_id)
-
-
+        self.set_implicit_wait(5)
+        print "Executing wait_for_text_present_by_id id = '{0}', text = '{1}'".format(element_id, text)
         try:
-            WebDriverWait(self.driver, self.timeout_to_locate_element_in_seconds).until_not(self.element_found_by_id(element_id))
-            print "Verified element by id = '{0}' is not in the DOM."
+            WebDriverWait(self.driver, self.timeout_to_wait_for_text_in_seconds).until(
+                EC.text_to_be_present_in_element((By.ID, element_id), text))
+            print "Verified text {0} present in element by id = {1}".format(text, element_id)
+
         except TimeoutException, t:
-            print "ERROR: Timed out. Element by id = '{0}' still in the DOM.".format(element_id)
+            print "ERROR: Timed out. Could not verify presence of text = '{1}' in element by id = '{0}'".format(element_id, text)
+        self.set_implicit_wait(self.implicit_wait_default_in_seconds)
 
-
-############################################################################################################################
-    def verify_element_not_present(self, element_type, element):
-
+    def wait_for_text_present_by_css(self, css, text):
         """
-        Waits for the element to disappear from the page.
-        Keeps checking until max number or retries self.retry is reached.
-        :param element_type:
-        :param element:
-        """
-
-        this_element_type = ""
-        if element_type is "LINK_TEXT":
-            this_element_type = By.LINK_TEXT
-        elif element_type is "ID":
-            this_element_type = By.ID
-        elif element_type is "CSS_SELECTOR":
-            this_element_type = By.CSS_SELECTOR
-        elif element_type is "XPATH":
-            this_element_type = By.XPATH
-        elif element_type is "NAME":
-            this_element_type = By.NAME
-
-        for i in range(1, self.retry, 1):
-            print "Wait On Removal:: Trial: " + str(i) + " Element Type: " + element_type + ", Element: " + element
-            try:
-                self.driver.find_element(this_element_type, element)
-            except NoSuchElementException:
-                print
-                print "Verified Removal:: Element type: " + element_type + ", Element: " + element
-                return True
-            time.sleep(1)
-        return False
-
-    def verify_text_not_present_by_css(self, css, text):
-        """
-        Waits for the element to disappear from the page by css.
-        Keeps checking until max number or retries self.retry is reached.
+        Waits for text to be present.
         :param css:
         :param text:
         """
-        print"Verifying that text displayed at " + css + " does not match " + text
-        for i in range(1, self.retry, 1):
-            displayed = self.store_visible_text_by_css_selector(css)
-            print "Currently displayed at locator " + css + " is " + displayed
-            if displayed != text:
-                print "Verified " + self.store_visible_text_by_css_selector(css) + " does not match " + text
-                return True
-            else:
-                print
-                print "Trial " + str(i) + " :"
+        self.set_implicit_wait(5)
+        print "Executing wait_for_text_present_by_css css = '{0}', text = '{1}'".format(css, text)
+        try:
+            WebDriverWait(self.driver, self.timeout_to_wait_for_text_in_seconds).until(
+                EC.text_to_be_present_in_element((By.CSS_SELECTOR, css), text))
+            print "Verified text {0} present in element by id = {1}".format(text, css)
 
-    def verify_text_not_present_by_id(self, element_id, text):
+        except TimeoutException, t:
+            print "ERROR: Timed out. Could not verify presence of text = '{1}' in element by css = '{0}'".format(css, text)
+        self.set_implicit_wait(self.implicit_wait_default_in_seconds)
+
+    def wait_for_text_not_present_by_id(self, element_id, text):
         """
-        Waits for the element to disappear from the page by id.
-        Keeps checking until max number or retries self.retry is reached.
-        :param element_id:
+        Waits for text to be not present.
+        """
+        self.set_implicit_wait(5)
+        print "Executing wait_for_text_not_present_by_id id = '{0}', text = '{1}'".format(element_id, text)
+        try:
+            WebDriverWait(self.driver, self.timeout_to_wait_for_text_in_seconds).until_not(
+                EC.text_to_be_present_in_element((By.ID, element_id), text))
+            print "Verified text {0} not present in element by id = {1}".format(text, element_id)
+
+        except TimeoutException, t:
+            print "ERROR: Timed out. Could not verify text = '{1}' not present in element by id = '{0}'".format(element_id, text)
+        self.set_implicit_wait(self.implicit_wait_default_in_seconds)
+
+    def wait_for_text_not_present_by_css(self, css, text):
+        """
+        Waits for text to be not present.
+        :param css:
         :param text:
         """
-        print"Verifying that text displayed at " + element_id + " does not match " + text
-        for i in range(1, self.retry, 1):
-            if self.store_visible_text_by_id(element_id) != text:
-                print "Verified " + self.store_visible_text_by_id(element_id) + " does not match " + text
-                return True
-            else:
-                print
-                print "Trial " + str(i) + " :"
-
-    def verify_text_not_present_by_name(self, name, text):
-        """
-        Waits for the element to disappear from the page by name.
-        Keeps checking until max number or retries self.retry is reached.
-        """
-        print"Verifying that text displayed at " + name + " does not match " + text
-        for i in range(1, self.retry, 1):
-            if self.store_visible_text_by_name(name) != text:
-                print "Verified " + self.store_visible_text_by_name(name) + " does not match " + text
-                return True
-            else:
-                print
-                print "Trial " + str(i) + " :"
-
-    def verify_text_not_present_by_xpath(self, xpath, text):
-        """
-        Waits for the element to disappear from the page by xpath.
-        Keeps checking until max number or retries self.retry is reached.
-        :param xpath:
-        :param text:
-        """
-        print"Verifying that text displayed at " + xpath + " does not match " + text
-        for i in range(1, self.retry, 1):
-            text_on_page = self.store_visible_text_by_xpath(xpath)
-            time.sleep(10)
-            if text_on_page != text:
-                print "Verified " + self.store_visible_text_by_xpath(xpath) + " does not match " + text
-                return True
-            else:
-                print
-                print "Found text: " + text_on_page + "( Waiting for " + text + " to disappear )"
-                print
-                print "Trial " + str(i) + " :"
-
-    def verify_text_displayed_by_id(self, element_id, element_text):
-        """
-        Will wait for element to become visible. Will check if text displayed at element_id matches element_text.
-        Keeps checking until max number or retries self.retry is reached.
-
-        :param element_id:
-        :param element_text:
-        """
-        #print("Verifying text " +element_text+" displayed at ID "+element_id)
-        for i in range(self.retry):
-            print "Wait On:: Trial: " + str(i) + " Verifying text " + element_text + " displayed at ID " + element_id
-            self.wait_for_visible_by_id(element_id)
-            try:
-                if element_text == self.driver.find_element_by_id(element_id).text:
-                    print"Found text"
-                    displayed_text = self.driver.find_element_by_id(element_id).text
-                    print("Text displayed at ID " + element_id + " is " + displayed_text)
-                    break
-            except:
-                pass
-
-            time.sleep(1)
-
-    def verify_text_displayed_by_css(self, element_css, element_text):
-        """
-        Will wait for element to become visible. Will check if text displayed at element_css matches element_text.
-        Keeps checking until max number or retries self.retry is reached.
-        :param element_css:
-        :param element_text:
-        """
-        #print("Verifying text " +element_text+" displayed at ID "+element_css)
-        for i in range(self.retry):
-            print "Wait On:: Trial: " + str(i) + " Verifying text " + element_text + " displayed at ID " + element_css
-            self.wait_for_visible_by_css_selector(element_css)
-            try:
-                if element_text == self.driver.find_element_by_css_selector(element_css).text:
-                    print"Found text"
-                    break
-            except:
-                pass
-            time.sleep(1)
+        self.set_implicit_wait(5)
+        print "Executing wait_for_text_not_present_by_css css = '{0}', text = '{1}'".format(css, text)
         try:
-            self.driver.find_element_by_css_selector(element_css).text
-        except AssertionError as e:
-            self.verificationErrors.append(str(e))
+            WebDriverWait(self.driver, self.timeout_to_wait_for_text_in_seconds).until_not(
+                EC.text_to_be_present_in_element((By.CSS_SELECTOR, css), text))
+            print "Verified text {0} not present in element by css = {1}".format(text, css)
 
-        displayed_text = self.driver.find_element_by_css_selector(element_css).text
-        print("Text displayed at ID " + element_css + " is " + displayed_text)
-
-    def verify_text_displayed_by_xpath(self, xpath, element_text):
-        """
-        Will wait for element to become visible. Will check if text displayed at xpath matches element_text.
-        Keeps checking until max number or retries self.retry is reached.
-        :param xpath:
-        :param element_text:
-        """
-        #print("Verifying text " +element_text+" displayed at xpath "+locator)
-        displayed_text = None
-        for i in range(self.retry):
-            print "Wait On:: Trial: " + str(i) + " Verifying text " + element_text + " displayed at xpath " + xpath
-            self.wait_for_visible_by_xpath(xpath)
-            try:
-                text_on_page = self.store_visible_text_by_xpath(xpath)
-                if element_text == text_on_page:
-                    print"Found text"
-                    displayed_text = text_on_page
-                    break
-            except:
-                pass
-            time.sleep(1)
-        try:
-            text_on_page = self.store_visible_text_by_xpath(xpath)
-            if element_text == text_on_page:
-                print "Found text"
-                displayed_text = text_on_page
-        except AssertionError as e:
-            self.verificationErrors.append(str(e))
-
-        print("Text displayed at xpath " + xpath + " is " + displayed_text)
+        except TimeoutException, t:
+            print "ERROR: Timed out. Could not verify text = '{1}' not present in element by css = '{0}'".format(css, text)
+        self.set_implicit_wait(self.implicit_wait_default_in_seconds)
 
     def send_keys_by_id(self, this_id, keys):
         """
