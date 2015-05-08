@@ -1,7 +1,5 @@
 from selenium_api.selenium_api import SeleniumApi
 
-
-
 class BasePage(SeleniumApi):
 
 

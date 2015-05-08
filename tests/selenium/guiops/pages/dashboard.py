@@ -5,6 +5,8 @@ class Dashboard(BasePage):
         _launch_instance_button_css='#item-dropdown_instances-running+div+div>a'
         _keypairs_icon_css='#key-pairs > div.tile > div.content > a > i.icon'
         _create_keypair_link_css='#item-dropdown_key-pairs+div+div>a'
+        _availability_zone_menu_css="#zone-selector>a"
+        _first_availability_zone_on_list_css="ul#zone-dropdown>li:nth-of-type(2)>a"
 
         def __init__(self, tester):
             """
@@ -14,7 +16,7 @@ class Dashboard(BasePage):
             self.tester = tester
 
         def verify_dashboard_loaded(self):
-            self.tester.wait_for_visible_by_css_selector(self._launch_instance_button_css)
+            self.tester.wait_for_visible_by_css(self._launch_instance_button_css)
 
         def from_dashboard_goto_keypairs_lp_via_icon(self):
             self.tester.click_on_visible_by_css_selector(self._keypairs_icon_css)

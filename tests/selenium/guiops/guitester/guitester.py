@@ -33,12 +33,21 @@ class GuiTester(SeleniumApi):
         """
         self.driver.implicitly_wait(time_to_wait=time_to_wait)
 
-    def login(self):
+    def login(self, account, username, password):
         """
         Logs in to eucaconsole with credentials specified in the GuiTester object, verifies dashboard is loaded.
+        :param account:
+        :param username:
+        :param password:
         """
-        LoginPage(self).login()
+        LoginPage(self).login(account, username, password)
         Dashboard(self).verify_dashboard_loaded()
+
+    def create_keypair_from_dashboard(self, keypair_name):
+        """
+
+        :param keypair_name:
+        """
 
     def exit_browser(self):
         """

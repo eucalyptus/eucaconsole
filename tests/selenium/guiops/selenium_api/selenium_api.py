@@ -27,7 +27,7 @@ class SeleniumApi():
 
 
     retry = 2
-    timeout_to_locate_element_in_seconds = 60
+    timeout_to_locate_element_in_seconds = 20
     timeout_to_determine_visibility_in_seconds = 60
     timeout_to_determine_if_clickable_in_seconds = 20
     timeout_to_wait_for_text_in_seconds = 40
@@ -65,21 +65,21 @@ class SeleniumApi():
         except TimeoutException, t:
             print "ERROR: Timed out. Did not find element by id = '{0}'.".format(element_id)
 
-    def wait_for_element_present_by_css(self, css):
+    def wait_for_element_present_by_css(self, css_selector):
         """
         Waits for element to be present on the page for timeout_to_locate_element_in_seconds
         Checks for presence every 500 milliseconds
         """
-        print "Executing wait_for_element_present_by_css ('{0}')".format(css)
-        print "Looking for element by css = '{0}' in the DOM.".format(css)
+        print "Executing wait_for_element_present_by_css ('{0}')".format(css_selector)
+        print "Looking for element by css = '{0}' in the DOM.".format(css_selector)
         try:
             WebDriverWait(self.driver, self.timeout_to_locate_element_in_seconds).until(EC.presence_of_element_located(
-                (By.CSS_SELECTOR, css)))
-            print "Found element by css = '{0}'".format(css)
+                (By.CSS_SELECTOR, css_selector)))
+            print "Found element by css = '{0}'".format(css_selector)
         except NoSuchElementException, nse:
-            print "Did not find element by css = '{0}'".format(css)
+            print "Did not find element by css = '{0}'".format(css_selector)
         except TimeoutException, t:
-            print "ERROR: Timed out. Did not find element by css = '{0}'".format(css)
+            print "ERROR: Timed out. Did not find element by css = '{0}'".format(css_selector)
 
     def wait_for_visible_by_id(self, element_id):
         """
@@ -152,13 +152,13 @@ class SeleniumApi():
 
     def click_element_by_id(self, element_id):
         """
-        Waits for an element to be present, visible and enabled such that you can click it.
+        Waits for an element to be present and visible such that you can click it.
         Clicks the element.
         :param element_id:
         """
         print "Executing click_element_by_id('{0}')".format(element_id)
 
-        self.wait_for_clickable_by_id(element_id)
+        self.wait_for_visible_by_id(element_id)
         try:
             self.driver.find_element_by_id(element_id).click()
             print "Clicking on element by id = ('{0}')".format(element_id)
@@ -167,13 +167,13 @@ class SeleniumApi():
 
     def click_element_by_css(self, css):
         """
-        Waits for an element to be present, visible and enabled such that you can click it.
+        Waits for an element to be present and visible such that you can click it.
         Clicks the element.
         :param css:
         """
         print "Executing click_element_by_css('{0}')".format(css)
 
-        self.wait_for_clickable_by_css(css)
+        self.wait_for_visible_by_css(css)
         try:
             self.driver.find_element_by_css_selector(css).click()
             print "Clicking on element by css = ('{0}')".format(css)
@@ -284,87 +284,78 @@ class SeleniumApi():
             print "ERROR: Timed out. Could not verify text = '{1}' not present in element by css = '{0}'".format(css, text)
         self.set_implicit_wait(self.implicit_wait_default_in_seconds)
 
-    def send_keys_by_id(self, this_id, keys):
+    def send_keys_by_id(self, element_id, text):
         """
-
+        Simulates user typing text input.
+        :param element_id:
+        :param text:
         """
-        if self.check_if_element_present_by_type("ID", this_id) is not 0:
-            raise UICheckException("Element by id not present:" + this_id)
-        if self.verify_element_visible_by_id(this_id) is not True:
-            raise UICheckException("Element by id not visible:" + this_id)
-        print "Set: Element Type: ID, Element: " + this_id + ", Keys: " + keys
-        self.driver.find_element_by_id(this_id).clear()
-        self.driver.find_element_by_id(this_id).send_keys(keys)
-        return 0
+        print "Executing send_keys_by_id id={0}, text={1}".format(element_id, text)
+        self.wait_for_visible_by_id(element_id)
+        print "Clearing field by if = '{0}'".format(element_id)
+        self.driver.find_element_by_id(element_id).clear()
+        print "Typing text '{1}' into field by id = '{0}'".format(element_id, text)
+        self.driver.find_element_by_id(element_id).send_keys(text)
 
-    def send_keys_by_css_selector(self, css_selector, keys):
-        if self.check_if_element_present_by_type("CSS_SELECTOR", css_selector) is not 0:
-            raise UICheckException("Element by css selector not present:" + css_selector)
-        if self.verify_element_visible_by_css_selector(css_selector) is not True:
-            raise UICheckException("Element by css selector not visible:" + css_selector)
-        print "Set: Element Type: CSS_SELECTOR, Element: " + css_selector + ", Keys: " + keys
-        self.driver.find_element_by_css_selector(css_selector).clear()
-        self.driver.find_element_by_css_selector(css_selector).send_keys(keys)
-        return 0
+    def send_keys_by_css(self, css, text):
+        """
+        Simulates user typing text input.
+        :param css:
+        :param text:
+        """
+        print "Executing send_keys_by_css css={0}, text={1}".format(css, text)
+        self.wait_for_visible_by_css(css)
+        print "Clearing field by css = '{0}'".format(css)
+        self.driver.find_element_by_css_selector(css).clear()
+        print "Typing text '{1}' into field by css = '{0}'".format(css, text)
+        self.driver.find_element_by_css_selector(css).send_keys(text)
 
-    def send_keys_by_xpath(self, xpath, keys):
-        if self.check_if_element_present_by_type("XPATH", xpath) is not 0:
-            raise UICheckException("Element by xpath not found :" + xpath)
-            #        if self.check_if_element_visible_by_type("XPATH", xpath) is not True:
-        #            raise UICheckException("Element by xpath not visible:" + xpath)
-        print "Set: Element Type: XPATH, Element: " + xpath + ", Keys: " + keys
-        self.driver.find_element_by_xpath(xpath).clear()
-        self.driver.find_element_by_xpath(xpath).send_keys(keys)
-        return 0
+    def store_text_by_id(self, element_id):
+        """
+        Stores visible text.
+        :param element_id:
+        """
+        print "Executing store_text_by_id('{0}')".format(element_id)
+        self.wait_for_visible_by_id(element_id)
+        print "Getting text by id = '{0}'".format(element_id)
+        return self.driver.find_element_by_id(element_id).text
 
-    def send_keys_by_name(self, name, keys):
-        if self.check_if_element_present_by_type("NAME", name) is not 0:
-            raise UICheckException("Element by name not found:" + name)
-        if self.verify_element_visible_by_name(name) is not True:
-            raise UICheckException("Element by name not visible:" + name)
-        print "Set: Element Type: NAME, Element: " + name + ", Keys: " + keys
-        self.driver.find_element_by_name(name).clear()
-        return 0
+    def store_text_by_css(self, css):
+        """
+        Stores visible text.
+        :param css:
+        """
+        print "Executing store_text_by_css('{0}')".format(css)
+        self.wait_for_visible_by_css(css)
+        print "Getting text by css = '{0}'".format(css)
+        return self.driver.find_element_by_css(css).text
 
-    def store_visible_text_by_link_text(self, link_text):
-        if self.check_if_element_present_by_type("LINK_TEXT", link_text) is not 0:
-            raise UICheckException("Element by link text not present:" + link_text)
-        if self.verify_element_visible_by_link_text(link_text) is not True:
-            raise UICheckException("Element by link text not visible:" + link_text)
-        print "Get Text: Element Type: LINK_TEXT, Element: " + link_text
-        return self.driver.find_element_by_link_text(link_text).text
+    def select_by_id(self, element_id, text):
+        """
+        Selects element with particular text on it.
+        :param element_id:
+        :param text:
+        """
+        print "Executing select_by_id id = {0}, text = {1}".format(element_id, text)
+        self.wait_for_text_present_by_id(element_id, text)
+        print "Selecting element with text = {1} by id = {0}".format(element_id, text)
+        Select(self.driver.find_element_by_id(element_id)).select_by_visible_text(text)
 
-    def store_visible_text_by_id(self, this_id):
-        if self.check_if_element_present_by_type("ID", this_id) is not 0:
-            raise UICheckException("Element by id not present:" + this_id)
-        if self.verify_element_visible_by_id(this_id) is not True:
-            raise UICheckException("Element by id not visible:" + this_id)
-        print "Get Text: Element Type: ID, Element: " + this_id
-        return self.driver.find_element_by_id(this_id).text
+    def select_by_css(self, css, text):
+        """
+        Selects element with particular text on it.
+        :param css:
+        :param text:
+        """
+        print "Executing select_by_id css = {0}, text = {1}".format(css, text)
+        self.wait_for_text_present_by_css(css, text)
+        print "Selecting element with text = {1} by css = {0}".format(css, text)
+        Select(self.driver.find_element_by_css_selector(css)).select_by_visible_text(text)
 
-    def store_visible_text_by_css_selector(self, css_selector):
-        if self.check_if_element_present_by_type("CSS_SELECTOR", css_selector) is not 0:
-            raise UICheckException("Element by css selector not present:" + css_selector)
-        if self.verify_element_visible_by_css_selector(css_selector) is not True:
-            raise UICheckException("Element by css selector not visible:" + css_selector)
-        print "Get Text: Element Type: CSS_SELECTOR, Element: " + css_selector
-        return self.driver.find_element_by_css_selector(css_selector).text
 
-    def store_visible_text_by_xpath(self, xpath):
-        if self.check_if_element_present_by_type("XPATH", xpath) is not 0:
-            raise UICheckException("Element by xpath not present: " + xpath)
-            #        if self.check_if_element_visible_by_type("XPATH", xpath) is not True:
-        #            raise UICheckException("Element by xpath not visible:" + xpath)
-        print "Get Text: Element Type: XPATH, Element: " + xpath
-        return self.driver.find_element_by_xpath(xpath).text
+#####################################################################################
 
-    def store_visible_text_by_name(self, name):
-        if self.check_if_element_present_by_type("NAME", name) is not 0:
-            raise UICheckException("Element by name not present: " + name)
-        if self.verify_element_visible_by_name(name) is not True:
-            raise UICheckException("Element by name not visible:" + name)
-        print "Click: Element Type: NAME, Element: " + name
-        return self.driver.find_element_by_name(name).text
+
 
     def select_visible_text_by_link_text(self, link_text, visible_text):
         if self.check_if_element_present_by_type("LINK_TEXT", link_text) is not 0:

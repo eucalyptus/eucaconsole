@@ -1,5 +1,5 @@
-from selenium_api.selenium_api import SeleniumApi
 from guitester.guitester import GuiTester
+import time
 
 
 class Navigation_sequence(GuiTester):
@@ -9,16 +9,10 @@ class Navigation_sequence(GuiTester):
 
     def navigation_test(self):
 
-
-        #self.tester.wait_for_visible_by_id("euca")
-
-        #self.tester.verify_element_not_present("ID","euca")
-        self.tester.wait_for_text_not_present_by_css("#euca-login-button", "Log in to Eucalyptus")
-        #self.tester.login()
-
-        #self.tester.wait_for_element_not_present_by_id("boo")
-
-        #self.tester.logout()
+        self.tester.login("ui-test-acct-00", "admin", "mypassword0")
+        self.tester.click_element_by_css("#zone-selector>a")
+        self.tester.click_element_by_css("ul#zone-dropdown>li:nth-of-type(2)>a")
+        time.sleep(10)
         self.tester.exit_browser()
 
 if __name__ == '__main__':
