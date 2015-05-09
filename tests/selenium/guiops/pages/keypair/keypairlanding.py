@@ -1,5 +1,6 @@
 from pages.landingpage import LandingPage
 from guitester.guitester import GuiTester
+from dialogs.create_keypair_dialog import CreateKeypairDialog
 
 class KeypairLandingPage(LandingPage):
 
@@ -10,9 +11,21 @@ class KeypairLandingPage(LandingPage):
     _create_keypair_btn_id = "create-keypair-btn"
     _import_keypair_btn_css = "#create-keypair-btn + a"
 
+    def create_keypair(self, keypair_name):
+        self.click_element_by_id(self._create_keypair_btn_id)
+        CreateKeypairDialog.create_keypair(keypair_name)
 
-    def click_create_keypair_button(self):
-        self.click_on_visible_by_id(self._create_keypair_btn_id)
+    def import_keypair(self , keypair_name):
+        self.click_element_by_css(self._import_keypair_btn_css)
+        CreateKeypairDialog.create_keypair(keypair_name)
 
-    def click_import_keypair_button(self):
-        self.click_on_visible_by_css_selector(self._import_keypair_btn_css)
+    def verify_keypair_present(self, keypair_name):
+        pass
+
+    def verify_keypair_not_present(self, keypair_name):
+        pass
+
+    def delete_keypair(self , keypair_name):
+        pass
+
+

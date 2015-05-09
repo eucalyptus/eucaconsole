@@ -54,6 +54,12 @@ class GuiTester(SeleniumApi):
     def import_keypair(self, keypair_name):
         pass
 
+    def delete_keypair_from_detail_page(self, kekeypair_name):
+        pass
+
+    def delete_keypair_from_landing_page(self, kekeypair_name):
+        pass
+
     def goto_dashboard(self):
         Dashboard(self).goto_keypair_landing_via_hamburger()
 

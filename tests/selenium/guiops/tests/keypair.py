@@ -1,15 +1,21 @@
 from guitester.guitester import GuiTester
-from selenium_api.selenium_api import SeleniumApi
+import time
 
 
-class Test_login(GuiTester):
+class Keypair_operations(GuiTester):
+
     def __init__(self):
         self.tester = GuiTester("http://10.111.80.147:4444/wd/hub", "http://10.111.5.145:8888")
 
-    def test_login(self):
-        self.tester.login()
-        self.tester.logout()
+    def keypair_sequence(self):
 
-if __name__ == "__main__":
-    tester = Test_login()
-    Test_login.test_login(tester)
+        self.tester.login("ui-test-acct-00", "admin", "mypassword0")
+        self.tester.create_keypair_from_dashboard("keypair1")
+        self.delete_keypair_from_detail_page("keypair1")
+        self.tester.exit_browser()
+
+
+
+if __name__ == '__main__':
+        tester = Keypair_operations()
+        Keypair_operations.keypair_sequence(tester)

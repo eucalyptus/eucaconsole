@@ -38,4 +38,10 @@ class BasePage(SeleniumApi):
         self.tester.click_element_by_css(self._hamburger_css)
         self.tester.click_element_by_id(self._keypair_menuitem_id)
 
+    def get_notification(self):
+        self.tester.wait_for_visible_by_id(BasePage._notification_id)
+        notification = self.tester.store_text_by_id(BasePage._notification_id)
+        print("Notification on page: " + notification)
+
+
 
