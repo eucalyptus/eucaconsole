@@ -24,8 +24,6 @@ class GuiTester(SeleniumApi):
         self.user = user
         self.password = password
 
-
-
     def set_implicit_wait(self, time_to_wait):
         """
         Sets implicit wait to time_to_wait
@@ -45,9 +43,19 @@ class GuiTester(SeleniumApi):
 
     def create_keypair_from_dashboard(self, keypair_name):
         """
-
+        Goes to Dashboard, creates keypair.
         :param keypair_name:
         """
+        pass
+
+    def create_keypair_from_keypair_landing(self, keypair_name):
+        pass
+
+    def import_keypair(self, keypair_name):
+        pass
+
+    def goto_dashboard(self):
+        Dashboard(self).goto_keypair_landing_via_hamburger()
 
     def exit_browser(self):
         """
