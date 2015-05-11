@@ -220,41 +220,7 @@ class LaunchConfigsJsonView(LandingPageView):
         return None
 
 
-class BaseLaunchConfigView(BaseView):
-
-    def __init__(self, request):
-        super(BaseLaunchConfigView, self).__init__(request)
-        self.ec2_conn = self.get_connection()
-        self.iam_conn = self.get_connection(conn_type="iam")
-        self.autoscale_conn = self.get_connection(conn_type='autoscale')
-
-    def get_launch_config(self):
-        if self.autoscale_conn:
-            launch_config_param = self.request.matchdict.get('id')
-            launch_configs = self.autoscale_conn.get_all_launch_configurations(names=[launch_config_param])
-            return launch_configs[0] if launch_configs else None
-        return None
-
-    def get_image(self):
-        if self.ec2_conn:
-            images = self.ec2_conn.get_all_images(image_ids=[self.launch_config.image_id])
-            image = images[0] if images else None
-            if image is None:
-                return None
-            image.platform = ImageView.get_platform(image)
-            return image
-        return None
-
-    def get_vpc_subnet_display(self, subnet_id):
-        if self.vpc_conn and subnet_id:
-            with boto_error_handler(self.request):
-                vpc_subnet = self.vpc_conn.get_all_subnets(subnet_ids=[subnet_id])
-                if vpc_subnet:
-                    return u"{0} ({1})".format(vpc_subnet[0].cidr_block, subnet_id)
-        return ''
-
-
-class LaunchConfigView(BaseLaunchConfigView):
+class LaunchConfigView(BaseView):
     """Views for single LaunchConfig"""
     TEMPLATE = '../templates/launchconfigs/launchconfig_view.pt'
 
@@ -332,6 +298,13 @@ class LaunchConfigView(BaseLaunchConfigView):
             self.request.error_messages = self.delete_form.get_errors_list()
         return self.render_dict
 
+    def get_launch_config(self):
+        if self.autoscale_conn:
+            launch_config_param = self.request.matchdict.get('id')
+            launch_configs = self.autoscale_conn.get_all_launch_configurations(names=[launch_config_param])
+            return launch_configs[0] if launch_configs else None
+        return None
+
     def get_security_groups(self):
         if self.ec2_conn:
             groupids = self.launch_config.security_groups
@@ -343,6 +316,16 @@ class LaunchConfigView(BaseLaunchConfigView):
                     security_groups = self.ec2_conn.get_all_security_groups(filters={'group-name': groupids})
             return security_groups
         return []
+
+    def get_image(self):
+        if self.ec2_conn:
+            images = self.ec2_conn.get_all_images(image_ids=[self.launch_config.image_id])
+            image = images[0] if images else None
+            if image is None:
+                return None
+            image.platform = ImageView.get_platform(image)
+            return image
+        return None
 
     def get_securitygroups_rules(self, securitygroups):
         rules_dict = {}
