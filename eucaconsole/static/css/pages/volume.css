@@ -120,7 +120,7 @@ input#size { width: 4rem; }
 
 input#name { width: 50%; }
 
-select#zone { width: 200px; }
+select#zone { width: 50%; }
 
 .status { background-color: transparent; text-transform: capitalize; }
 
