@@ -89,9 +89,6 @@
                                 </div>
                             </div>
                             <hr/>
-                            <h6 tal:condition="image and image.root_device_type == 'ebs'" i18n:translate="">
-                                Storage
-                            </h6>
                             ${panel('bdmapping_editor', image=image, snapshot_choices=snapshot_choices)}
                         </div>
                     </div>
