@@ -81,6 +81,23 @@ class SeleniumApi():
         except TimeoutException, t:
             print "ERROR: Timed out. Did not find element by css = '{0}'".format(css_selector)
 
+    def wait_for_element_present_by_link_text(self, link_text):
+        """
+        Waits for element to be present on the page for timeout_to_locate_element_in_seconds
+        Checks for presence every 500 milliseconds
+        :param link_text:
+        """
+        print "Executing wait_for_element_present_by_link_text ('{0}')".format(link_text)
+        print "Looking for element by link_text = '{0}' in the DOM.".format(link_text)
+        try:
+            WebDriverWait(self.driver, self.timeout_to_locate_element_in_seconds).until(EC.presence_of_element_located(
+                (By.LINK_TEXT, link_text)))
+            print "Found element by link_text = '{0}'".format(link_text)
+        except NoSuchElementException, nse:
+            print "Did not find element by link_text = '{0}'".format(link_text)
+        except TimeoutException, t:
+            print "ERROR: Timed out. Did not find element by link_text = '{0}'".format(link_text)
+
     def wait_for_visible_by_id(self, element_id):
         """
         Waits for the element to become visible. First, checks if element is present.
@@ -352,85 +369,14 @@ class SeleniumApi():
         print "Selecting element with text = {1} by css = {0}".format(css, text)
         Select(self.driver.find_element_by_css_selector(css)).select_by_visible_text(text)
 
-
-#####################################################################################
-
-
-
-    def select_visible_text_by_link_text(self, link_text, visible_text):
-        if self.check_if_element_present_by_type("LINK_TEXT", link_text) is not 0:
-            raise UICheckException("Element by link text not present: " + link_text)
-        if self.verify_element_visible_by_link_text(link_text) is not True:
-            raise UICheckException("Element by link text not visible:" + link_text)
-        print "Select: Element Type: LINK_TEXT, Element: " + link_text + ", Text: " + visible_text
-        Select(self.driver.find_element_by_link_text(link_text)).select_by_visible_text(visible_text)
-        return 0
-
-    def select_visible_text_by_id(self, this_id, visible_text):
-        if self.check_if_element_present_by_type("ID", this_id) is not 0:
-            raise UICheckException("Element by id not present: " + this_id)
-        if self.verify_element_visible_by_id(this_id) is not True:
-            raise UICheckException("Element by id not visible:" + this_id)
-        print "Select: Element Type: ID, Element: " + this_id + ", Text: " + visible_text
-        Select(self.driver.find_element_by_id(this_id)).select_by_visible_text(visible_text)
-        return 0
-
-    def select_visible_text_by_css_selector(self, css_selector, visible_text):
-        if self.check_if_element_present_by_type("CSS_SELECTOR", css_selector) is not 0:
-            raise UICheckException("Element by css selector not present: " + css_selector)
-        if self.verify_element_visible_by_css_selector(css_selector) is not True:
-            raise UICheckException("Element by css selector not visible:" + css_selector)
-        print "Select: Element Type: CSS_SELECTOR, Element: " + css_selector + ", Text: " + visible_text
-        Select(self.driver.find_element_by_css_selector(css_selector)).select_by_visible_text(visible_text)
-        return 0
-
-    def select_visible_text_by_xpath(self, xpath, visible_text):
-        if self.check_if_element_present_by_type("XPATH", xpath) is not 0:
-            raise UICheckException("Element by xpath not present: " + xpath)
-            #        if self.check_if_element_visible_by_type("XPATH", xpath) is not True:
-        #            raise UICheckException("Element by xpath not visible:" + xpath)
-        print "Select: Element Type: XPATH, Element: " + xpath + ", Text: " + visible_text
-        Select(self.driver.find_element_by_xpath(xpath)).select_by_visible_text(visible_text)
-        return 0
-
-    def check_if_element_present_by_type(self, element_type, element):
+    def select_by_link_text(self, link_text, text):
         """
-        Checks if element is present using element type and its locator.
-        Keeps checking until max number of trials self.retry are exhausted.
-        :param element_type:
-        :param element:
-        :return: :raise:
+        Selects element with particular text on it.
+        :param link_text:
+        :param text:
         """
-        this_element_type = ""
-        if element_type is "LINK_TEXT":
-            this_element_type = By.LINK_TEXT
-        elif element_type is "ID":
-            this_element_type = By.ID
-        elif element_type is "CSS_SELECTOR":
-            this_element_type = By.CSS_SELECTOR
-        elif element_type is "XPATH":
-            this_element_type = By.XPATH
-        elif element_type is "NAME":
-            this_element_type = By.NAME
+        self.wait_for_element_present_by_link_text(text)
+        print "Selecting element with text = {1} by link_text = {0}".format(link_text, text)
+        Select(self.driver.find_element_by_link_text(link_text)).select_by_visible_text(text)
 
-        for i in range(self.retry):
-            print "Wait On:: Trial: " + str(i) + " Element Type: " + element_type + ", Element: " + element
-            try:
-                if self.driver.find_element(this_element_type, element):
-                    break
-            except:
-                pass
-                #raise UICheckException("Time out")
-            time.sleep(1)
-            # else:
-            #     self.fail("timed out after "+`self.retry`+" seconds")
 
-        try:
-            self.driver.find_element(this_element_type, element)
-        except AssertionError as e:
-            self.verificationErrors.append(str(e))
-            print "TEST FAILED::: Wait On:: Element Type: " + element_type + ", Element: " + element
-            raise UICheckException("Failed to find element of type " + element_type + element + " present")
-
-        print "Found:: Element type: " + element_type + ", Element: " + element
-        return 0

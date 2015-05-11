@@ -664,3 +664,72 @@ class SeleniumApi_experimental():
             raise UICheckException("Element by name not visible:" + name)
         print "Click: Element Type: NAME, Element: " + name
         return self.driver.find_element_by_name(name).text
+
+    def select_visible_text_by_id(self, this_id, visible_text):
+        if self.check_if_element_present_by_type("ID", this_id) is not 0:
+            raise UICheckException("Element by id not present: " + this_id)
+        if self.verify_element_visible_by_id(this_id) is not True:
+            raise UICheckException("Element by id not visible:" + this_id)
+        print "Select: Element Type: ID, Element: " + this_id + ", Text: " + visible_text
+        Select(self.driver.find_element_by_id(this_id)).select_by_visible_text(visible_text)
+        return 0
+
+    def select_visible_text_by_css_selector(self, css_selector, visible_text):
+        if self.check_if_element_present_by_type("CSS_SELECTOR", css_selector) is not 0:
+            raise UICheckException("Element by css selector not present: " + css_selector)
+        if self.verify_element_visible_by_css_selector(css_selector) is not True:
+            raise UICheckException("Element by css selector not visible:" + css_selector)
+        print "Select: Element Type: CSS_SELECTOR, Element: " + css_selector + ", Text: " + visible_text
+        Select(self.driver.find_element_by_css_selector(css_selector)).select_by_visible_text(visible_text)
+        return 0
+
+    def select_visible_text_by_xpath(self, xpath, visible_text):
+        if self.check_if_element_present_by_type("XPATH", xpath) is not 0:
+            raise UICheckException("Element by xpath not present: " + xpath)
+            #        if self.check_if_element_visible_by_type("XPATH", xpath) is not True:
+        #            raise UICheckException("Element by xpath not visible:" + xpath)
+        print "Select: Element Type: XPATH, Element: " + xpath + ", Text: " + visible_text
+        Select(self.driver.find_element_by_xpath(xpath)).select_by_visible_text(visible_text)
+        return 0
+
+    def check_if_element_present_by_type(self, element_type, element):
+        """
+        Checks if element is present using element type and its locator.
+        Keeps checking until max number of trials self.retry are exhausted.
+        :param element_type:
+        :param element:
+        :return: :raise:
+        """
+        this_element_type = ""
+        if element_type is "LINK_TEXT":
+            this_element_type = By.LINK_TEXT
+        elif element_type is "ID":
+            this_element_type = By.ID
+        elif element_type is "CSS_SELECTOR":
+            this_element_type = By.CSS_SELECTOR
+        elif element_type is "XPATH":
+            this_element_type = By.XPATH
+        elif element_type is "NAME":
+            this_element_type = By.NAME
+
+        for i in range(self.retry):
+            print "Wait On:: Trial: " + str(i) + " Element Type: " + element_type + ", Element: " + element
+            try:
+                if self.driver.find_element(this_element_type, element):
+                    break
+            except:
+                pass
+                #raise UICheckException("Time out")
+            time.sleep(1)
+            # else:
+            #     self.fail("timed out after "+`self.retry`+" seconds")
+
+        try:
+            self.driver.find_element(this_element_type, element)
+        except AssertionError as e:
+            self.verificationErrors.append(str(e))
+            print "TEST FAILED::: Wait On:: Element Type: " + element_type + ", Element: " + element
+            raise UICheckException("Failed to find element of type " + element_type + element + " present")
+
+        print "Found:: Element type: " + element_type + ", Element: " + element
+        return 0
