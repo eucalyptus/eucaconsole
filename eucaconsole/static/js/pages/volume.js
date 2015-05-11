@@ -62,12 +62,11 @@ angular.module('VolumePage', ['TagEditor', 'EucaConsoleUtils'])
                 $scope.snapshotId = $scope.urlParams.from_snapshot;
                 $scope.populateVolumeSize();
             }
-            snapshotField.chosen({'width': '75%', 'search_contains': true});
+            snapshotField.chosen({'width': '50%', 'search_contains': true});
             // Instance choices in "Attach to instance" modal dialog
             $('#attach-volume-modal').on('open.fndtn.reveal', function() {
                 $('#instance_id').chosen({'width': '75%', search_contains: true});
             });
-            $('#zone').chosen({'width': '75', 'search_contains': true});
         };
         $scope.initAvailZoneChoice = function () {
             var availZoneParam = $scope.urlParams.avail_zone;
