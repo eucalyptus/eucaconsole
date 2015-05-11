@@ -193,7 +193,7 @@
                     <div class="columns section">
                         &nbsp;
                         <h6 i18n:translate="">Events</h6>
-                        <div ng-app="MagicSearch">
+                        <div>
                             <magic-search template="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.html')}"
                                 strings="{'remove':'${layout.searchtext_remove}', 'cancel':'${layout.searchtext_cancel}', 'prompt':'${layout.searchtext_prompt}', 'text':'${layout.searchtext_text_facet}'}"
                                 facets="${search_facets}" filter-keys="${filter_keys}"></magic-search>

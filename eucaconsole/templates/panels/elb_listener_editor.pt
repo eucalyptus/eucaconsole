@@ -1,0 +1,224 @@
+
+<!--! ELB listener editor -->
+<div id="elb-listener-editor" i18n:domain="eucaconsole"
+     ng-controller="ELBListenerEditorCtrl" ng-init="initEditor('${controller_options_json}')">
+    <div ng-cloak="true">
+        <h6 i18n:translate="">Listeners</h6>
+        <div ng-cloak="true">
+            <table class="table elb-listener-table" ng-cloak="true" ng-show="listenerArray.length !== 0">
+                <thead>
+                    <tr class="top-header">
+                        <th colspan="2" class="header vertical-border-header center" i18n:translate="">CLIENT SIDE</th>
+                        <th colspan="2" class="header vertical-border-header center" i18n:translate="">INSTANCE SIDE</th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                    <tr>
+                        <th class="header" i18n:translate="">PROTOCOL</th>
+                        <th class="header vertical-border-header" i18n:translate="">PORT</th>
+                        <th class="header" i18n:translate="">PROTOCOL</th>
+                        <th class="header vertical-border-header" i18n:translate="">PORT</th>
+                        <th class="header" i18n:translate="">CIPHER</th>
+                        <th class="header" i18n:translate="">CERTIFICATES</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-cloak="true" ng-repeat="listener in listenerArray">
+                        <td>{{ listener.fromProtocol }}</td>
+                        <td>{{ listener.fromPort }}</td>
+                        <td>{{ listener.toProtocol }}</td>
+                        <td>{{ listener.toPort }}</td>
+                        <td>
+                            <span ng-show="showServerCertificateNameLink(listener.fromProtocol)">
+                                <span i18n:translate="">cipher_name_placeholder</span>
+                                <a ng-click="openCertificateModal(listener.fromProtocol, listener.toProtocol, listener.fromPort, listener.toPort)"
+                                    title="Change certficate" i18n:translate="">
+                                    Change
+                                </a>
+                            </span>
+                            <span ng-hide="showServerCertificateNameLink(listener.fromProtocol)">
+                                <span i18n:translate="">N/A</span>
+                            </span>
+                        </td>
+                        <td>
+                            <span ng-show="showServerCertificateNameLink(listener.fromProtocol)">
+                                <span>{{ listener.certificateName }}</span>
+                                <a ng-click="openCertificateModal(listener.fromProtocol, listener.toProtocol, listener.fromPort, listener.toPort)"
+                                    title="Change certficate" i18n:translate="">
+                                    Change
+                                </a>
+                            </span>
+                            <span ng-show="showBackendCertificateLink(listener.fromProtocol, listener.toProtocol)">
+                                <span i18n:translate="">Backend Certificate</span>
+                                <a ng-click="openCertificateModal(listener.fromProtocol, listener.toProtocol, listener.fromPort, listener.toPort)"
+                                    title="Change certficate" i18n:translate="">
+                                    Change
+                                </a>
+                            </span>
+                            <span ng-hide="showServerCertificateNameLink(listener.fromProtocol) ||
+                                           showBackendCertificateLink(listener.fromProtocol, listener.toProtocol)">
+                                <span i18n:translate="">N/A</span>
+                            </span>
+                        </td>
+                        <td>
+                            <a class="circle remove" ng-click="removeListener($index)" title="Remove rule"><i class="fi-minus-circle"></i></a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div>
+            <div class="row controls-wrapper">
+                <div class="small-12 columns field">
+                    <div ng-class="classNoListenerWarningDiv">
+                        <small class="error" i18n:translate="">You must define at least one listener.</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div ng-show="listenerArray.length === 0">
+                <span class="section-label" i18n:translate="">Add a listener:</span>
+            </div>
+            <div ng-show="listenerArray.length > 0">
+                <span class="section-label" i18n:translate="">Add another listener:</span>
+            </div>
+        </div>
+        <div>
+            <div class="row controls-wrapper">
+                <div class="small-1 columns"></div>
+                <div class="small-11 columns"><label class="left sub-section-label">Client side</label></div>
+            </div>
+            <div class="row controls-wrapper">
+                <div class="small-3 columns">
+                    <label class="right protocol" i18n:translate="">Protocol</label>
+                </div>
+                <div class="small-9 columns">
+                    <select id="from-protocol-select" name="from_protocol" class="ip-protocol"
+                        ng-options="protocol.name for protocol in protocolList track by protocol.value"
+                        ng-model="fromProtocol" data-placeholder="select..." >
+                    </select>
+                </div>
+            </div>
+            <div class="row controls-wrapper">
+                <div class="small-3 columns">
+                    <label class="right" i18n:translate="">Port</label>
+                </div>
+                <div class="small-9 columns field">
+                    <div ng-class="classFromPortDiv">
+                        <input type="number" class="port from" id="from-port-input" name="from_port"
+                            ng-model="fromPort" pattern="${layout.port_range_pattern}" />
+                        <small class="error" i18n:translate="">
+                            Port range value must be a whole number between 1-65535
+                        </small>
+                    </div>
+                </div>
+            </div>
+            <div id="from-port-error-div" class="row controls-wrapper">
+                <div class="small-3 columns"></div>
+                <div class="small-9 columns field">
+                    <div ng-class="classDuplicatedFromPortDiv">
+                        <small class="error" i18n:translate="">
+                            Selected port already in use by another listener. Please select an unused port.
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div ng-show="isFromProtocolValid &amp;&amp; !hasDuplicatedFromPort">
+            <div class="row controls-wrapper">
+                <div class="small-1 columns"></div>
+                <div class="small-11 columns"><label class="left sub-section-label" i18n:translate="">Instance side</label></div>
+            </div>
+            <div class="row controls-wrapper">
+                <div class="small-3 columns">
+                    <label class="right protocol" i18n:translate="">Protocol</label>
+                </div>
+                <div class="small-9 columns">
+                    <select id="to-protocol-select" name="to_protocol" class="ip-protocol"
+                        ng-options="protocol.name for protocol in toProtocolList track by protocol.value"
+                        ng-model="toProtocol" data-placeholder="select..." i18n:attributes="data-placeholder">
+                    </select>
+                </div>
+            </div>
+            <div class="row controls-wrapper">
+                <div class="small-3 columns">
+                    <label class="right" i18n:translate="">Port</label>
+                </div>
+                <div class="small-9 columns field">
+                    <div ng-class="classToPortDiv">
+                        <input type="number" class="port to" id="to-port-input" name="to_port"
+                            ng-model="toPort" pattern="${layout.port_range_pattern}" />
+                        <small class="error" i18n:translate="">
+                            Port range value must be a whole number between 1-65535
+                        </small>
+                    </div>
+                </div>
+            </div>
+            <div id="listener-error-div" class="row controls-wrapper">
+                <div class="small-3 columns"></div>
+                <div class="small-9 columns field">
+                    <div ng-class="classDuplicatedListenerDiv">
+                        <small class="error" i18n:translate="">
+                            Selected port already in use by another listener. Please select an unused port.
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="elb-listener-security-field" ng-show="showSelectCertificateModalLink() &amp;&amp; !hasDuplicatedFromPort">
+            <div class="row controls-wrapper">
+                <div class="small-1 columns"></div>
+                <div class="small-11 columns"><label class="left sub-section-label" i18n:translate="">Security</label></div>
+            </div>
+            <div class="row controls-wrapper">
+                <div class="small-3 columns">
+                    <label class="right protocol" i18n:translate="">Cipher</label>
+                </div>
+                <div class="small-9 columns">
+                    <a ng-click="openCertificateModal(fromProtocol.value, toProtocol.value, fromPort, toPort)"
+                        title="Change certficate" i18n:translate="">
+                        Select
+                    </a>
+                </div>
+            </div>
+            <div class="row controls-wrapper">
+                <div class="small-3 columns">
+                    <label class="right protocol" i18n:translate="">Certificates</label>
+                </div>
+                <div class="small-9 columns">
+                    <a ng-click="openCertificateModal(fromProtocol.value, toProtocol.value, fromPort, toPort)"
+                        title="Change certficate" i18n:translate="">
+                        Select
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="row controls-wrapper" id="add-listener-button-div">
+            <div class="small-3 columns"></div>
+            <div class="small-9 columns field">
+                <span id="button-add-listener" class="button round tiny" i18n:translate=""
+                    ng-class="addListenerButtonClass" ng-click="addListener($event)">
+                    Add Listener
+                </span>
+                <a href="#" id="button-cancel-listener" class="cancel-link" i18n:translate="" 
+                    ng-click="cancelListener($event)">Cancel</a>
+            </div>
+        </div>
+        <div id="unsaved-listener-warn-modal" class="reveal-modal small" data-reveal="">
+            <h3></h3>
+            <p>
+                <span i18n:translate="">
+                    You must click the "Add Listener" button before you submit this for your listener to be included.
+                </span>
+            </p>
+            <a href="#" class="close-reveal-modal">&#215;</a>
+        </div>
+        <div>
+            <textarea id="elb-listener" name="elb_listener" class="hidden" style="height: 8rem;"></textarea>
+        </div>
+    </div>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/elb_listener_editor.js')}"></script>
+</div>

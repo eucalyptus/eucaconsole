@@ -4,7 +4,7 @@
  *
  */
 
-angular.module('EucaConsoleUtils', [])
+angular.module('EucaConsoleUtils', ['CustomFilters', 'ngSanitize'])
 .service('eucaUnescapeJson', function() {
     /**
      * Unescape JSON escaped server-side via BaseView.escape_json() custom method
@@ -72,3 +72,5 @@ angular.module('EucaConsoleUtils', [])
         Notify.failure(errorMsg);
     };
 });
+
+angular.module('EucaConsoleUtils');

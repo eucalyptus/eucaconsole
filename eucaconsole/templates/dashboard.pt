@@ -194,6 +194,22 @@
                             </div>
                         </div>
                     </li>
+                    <li class="panel" id="load-balancers" tal:case="'load-balancers'">
+                        <div class="tile">
+                            <h5 class="subheader" i18n:translate="">Load balancers</h5>
+                            <metal:block metal:use-macro="layout.global_macros['dashaction']" />
+                            <div class="content">
+                                <a href="${request.route_path('elbs')}">
+                                    <i class="icon"><em><i ng-show="itemsLoading" class="busy" ></i>
+                                        <span ng-show="!itemsLoading" id="loadbalancers-count" ng-cloak="">{{ totals.loadbalancers }}</span></em>
+                                    </i>
+                                </a>
+                            </div>
+                            <div class="footer">
+                                <a href="${request.route_path('elb_new')}" i18n:translate="">Create load balancer</a>
+                            </div>
+                        </div>
+                    </li>
                     <li class="panel" id="accounts" tal:condition="layout.account_access" tal:case="'accounts'">
                         <div class="tile">
                             <h5 class="subheader" i18n:translate="">Accounts</h5>

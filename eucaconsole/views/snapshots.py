@@ -69,7 +69,6 @@ class SnapshotsView(LandingPageView):
 
         self.render_dict.update(dict(
             filter_keys=filter_keys,
-            filter_fields=False,
             filters_form=filters_form,
             search_facets=BaseView.escape_json(json.dumps(search_facets)),
             sort_keys=self.get_sort_keys(),

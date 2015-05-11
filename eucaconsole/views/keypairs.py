@@ -61,7 +61,6 @@ class KeyPairsView(LandingPageView):
         ]
 
         return dict(
-            filter_fields=self.filter_fields,
             filter_keys=self.filter_keys,
             search_facets=[],
             sort_keys=self.sort_keys,
