@@ -18,7 +18,7 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor', 'EucaConsoleUtils'])
         $scope.isSubmitted = false;
         $scope.pendingModalID = '';
         $scope.initChosenSelectors = function () {
-            $('#launch_config').chosen({'width': '60%', search_contains: true});
+            $('#launch_config').chosen({'width': '80%', search_contains: true});
             // Remove the option if it has no vpc subnet ID associated
             var selectVPCSubnetObject = $('#vpc_subnet option');
             if (selectVPCSubnetObject.length > 0) {
@@ -29,7 +29,7 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor', 'EucaConsoleUtils'])
             }
             $('#vpc_subnet').chosen({'width': '80%', search_contains: true});
             $('#availability_zones').chosen({'width': '80%', search_contains: true});
-            $('#termination_policies').chosen({'width': '80%', search_contains: true});
+            $('#termination_policies').chosen({'width': '70%', search_contains: true});
         };
         $scope.setInitialValues = function () {
             $scope.minSize = parseInt($('#min_size').val(), 10);
