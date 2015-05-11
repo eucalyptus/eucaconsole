@@ -443,19 +443,19 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
         autoscale_conn = self.get_connection(conn_type='autoscale')
         with boto_error_handler(self.request):
             lc = autoscale_conn.get_all_launch_configurations(names=[name])
-            self.launch_config = lc[0]
-            self.render_dict['launch_config'] = self.launch_config
-            self.create_form.image_id.data = self.launch_config.image_id
-            self.create_form.instance_type.data = self.launch_config.instance_type
-            self.create_form.keypair.data = self.launch_config.key_name
-            self.create_form.securitygroup.data = self.launch_config.security_groups
-            self.render_dict['launchconfig_name'] = self.launch_config.name
-            images = self.get_connection().get_all_images(image_ids=[self.launch_config.image_id])
+            launch_config = lc[0]
+            self.render_dict['launch_config'] = launch_config
+            self.create_form.image_id.data = launch_config.image_id
+            self.create_form.instance_type.data = launch_config.instance_type
+            self.create_form.keypair.data = launch_config.key_name
+            self.create_form.securitygroup.data = launch_config.security_groups
+            self.render_dict['launchconfig_name'] = launch_config.name
+            images = self.get_connection().get_all_images(image_ids=[launch_config.image_id])
             self.image = images[0] if images else None
             self.image.platform_name = ImageView.get_platform(self.image)[2]
             self.render_dict['image'] = self.image
-            if self.launch_config.user_data is not None and self.launch_config.user_data != '':
-                user_data = self.launch_config.user_data
+            if launch_config.user_data is not None and launch_config.user_data != '':
+                user_data = launch_config.user_data
                 mime_type = guess_mimetype_from_buffer(user_data, mime=True)
                 if mime_type.find('text') != 0:
                     # get more descriptive text
