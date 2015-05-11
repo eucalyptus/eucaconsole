@@ -240,7 +240,7 @@
                             <div ng-show="!isNotStopped">
                                 <input type="radio" id="inputtype" name="inputtype" value="text" ng-model="inputtype"/>
                                 <label id="userdatalabel" i18n:translate="">Enter text</label>
-                                <textarea id="userdata" name="userdata" ng-show="inputtype=='text'" maxlength="16000"></textarea>
+                                <textarea id="userdata" name="userdata" ng-show="inputtype=='text'" maxlength="16384"></textarea>
                                 <br/>
                                 <input type="radio" id="inputtype" name="inputtype" value="file" ng-model="inputtype"/>
                                 <label id="userdatalabel">
