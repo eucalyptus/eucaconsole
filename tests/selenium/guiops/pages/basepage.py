@@ -30,11 +30,11 @@ class BasePage(SeleniumApi):
         self.tester.click_element_by_css(self._user_dropdown_css)
         self.tester.click_element_by_id(self._user_logout_id)
 
-    def goto_dashboard_via_hamburger(self):
+    def goto_dashboard_via_menu(self):
         self.tester.click_element_by_css(self._hamburger_css)
         self.tester.click_element_by_id(self._dashboard_menuitem_id)
 
-    def goto_keypair_landing_via_hamburger(self):
+    def goto_keypair_landing_via_menu(self):
         self.tester.click_element_by_css(self._hamburger_css)
         self.tester.click_element_by_id(self._keypair_menuitem_id)
 
