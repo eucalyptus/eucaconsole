@@ -475,6 +475,9 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
         if self.create_form.validate():
             autoscale_conn = self.get_connection(conn_type='autoscale')
             location = self.request.route_path('launchconfigs')
+            from_url = self.request.params.get('from_url')
+            if from_url is not None and from_url != '':
+                location = from_url
             image_id = self.image.id
             name = self.request.params.get('name')
             key_name = self.unescape_braces(self.request.params.get('keypair', ''))
