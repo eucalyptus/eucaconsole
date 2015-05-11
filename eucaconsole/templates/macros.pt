@@ -19,12 +19,12 @@
 <metal:datagrid_macro metal:define-macro="landing_page_datagrid">
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.css')}"/>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.js')}"></script>
-    <div class="large-${'10' if filter_fields else '12'} columns datagrid" id="landing-page-items">
-        <div class="row" id="buttons-row">
-            <div class="small-7 columns" id="primary-buttons">
+    <div class="large-12 columns datagrid" id="landing-page-items">
+        <div class="lp-header">
+            <div class="lp-action-buttons" id="primary-buttons">
                 <metal:block metal:define-slot="new_button" />
             </div>
-            <div class="small-3 columns" id="sorting-controls" ng-show="!itemsLoading">
+            <div class="lp-sort" id="sorting-controls" ng-show="!itemsLoading">
                 <metal:block metal:define-slot="sorting_controls">
                     <strong>Sort by</strong>
                     <a href="#" data-dropdown="sorting-dropdown" ng-cloak="">
@@ -38,32 +38,32 @@
                     </ul>
                 </metal:block>
             </div>
-            <div class="small-2 columns displayicons" ng-cloak="">
+            <div class="lp-view-buttons displayicons" ng-cloak="">
                 <a id="gridview-button" class="gridview" title="Grid view" ng-click="switchView('gridview')"><i class="fi-thumbnails"></i></a>
                 <a id="tableview-button" class="tableview" title="Table view" ng-click="switchView('tableview')"><i class="fi-list-thumbnails"></i></a>
             </div>
         </div>
-        <div class="row sort-search" ng-cloak="cloak">
-            <div class="small-10 columns">
-                <div ng-app="MagicSearch">
-                    <magic-search template="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.html')}"
-                        strings="{'remove':'${layout.searchtext_remove}', 'cancel':'${layout.searchtext_cancel}', 'prompt':'${layout.searchtext_prompt}', 'text':'${layout.searchtext_text_facet}'}"
-                        facets="${search_facets}" filter-keys="${filter_keys}"></magic-search>
-                </div>
+        <div class="lp-header">
+            <div class="lp-search">
+                <magic-search template="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.html')}"
+                    strings="{'remove':'${layout.searchtext_remove}', 'cancel':'${layout.searchtext_cancel}', 'prompt':'${layout.searchtext_prompt}', 'text':'${layout.searchtext_text_facet}'}"
+                    facets="${search_facets}" filter-keys="${filter_keys}"></magic-search>
             </div>
-            <div class="small-2 columns" id="results-count" ng-cloak="cloak" metal:define-slot="results_count">
-                <a class="label radius" ng-show="!itemsLoading" ng-cloak="" id="refresh-btn"
-                   ng-click="itemsLoading=true; getItems()"></a>
+            <div class="lp-reload" id="results-count" ng-cloak="cloak" metal:define-slot="results_count">
+                <a id="refresh-btn" ng-show="!itemsLoading" ng-cloak="" ng-click="itemsLoading=true; getItems()">
+                    <i class="fa fa-refresh fa-lg"></i>
+                </a>
                 &nbsp;
                 <span ng-show="!itemsLoading" class="items-found">
-                    <strong>{{ items.length }}</strong> found
+                    <strong>{{ items.length }}</strong>
+                    <span i18n:translate="">found</span>
                 </span>
             </div>
         </div>
-        <div class="loading" ng-show="itemsLoading"><i class="busy" ></i></div>
+        <div class="loading" ng-show="itemsLoading"><i class="busy"></i></div>
         <div id="gridview" class="gridwrapper" ng-if="landingPageView == 'gridview' &amp;&amp; !itemsLoading" ng-cloak="">
             <div ng-show="!itemsLoading">
-                <div data-alert="alert" class="alert-box secondary" ng-show="items.length == 0" ng-cloak="1">
+                <div data-alert="alert" class="alert-box secondary" ng-show="items.length == 0" ng-cloak="1" i18n:translate="">
                     No items were found
                     <a href="#" class="close">&times;</a>
                 </div>
@@ -79,7 +79,7 @@
                     </strong>
                     <metal:block metal:define-slot="tile_dropdown_button">
                         <a href="#" class="tiny secondary button dropdown right"
-                              data-dropdown="item-dropdown_{{ $index }}"><i class="fi-widget"></i></a>
+                              data-dropdown="item-dropdown_{{ $index }}"><i class="grid-action"></i></a>
                         <ul id="item-dropdown_{{ $index }}" class="f-dropdown">
                             <metal:block metal:define-slot="tile-dropdown-items">
                                 <li><a href="#">This is a link</a></li>
@@ -151,7 +151,7 @@
                     </strong>
                     <metal:block metal:define-slot="tile_dropdown_button">
                         <a href="#" class="tiny secondary button dropdown right"
-                              data-dropdown="item-dropdown_{{ $index }}"><i class="fi-widget"></i></a>
+                              data-dropdown="item-dropdown_{{ $index }}"><i class="grid-action"></i></a>
                         <ul id="item-dropdown_{{ $index }}" class="f-dropdown">
                             <metal:block metal:define-slot="tile-dropdown-items">
                                 <li><a href="#">This is a link</a></li>
@@ -226,7 +226,7 @@
 
 <!-- action menu for dash tiles ===== -->
 <metal:dashaction metal:define-macro="dashaction">
-    <span id="tile-item-dropdown_${tile}" class="tiny secondary button dropdown" data-dropdown="item-dropdown_${tile}"><i class="fi-widget"></i></span>
+    <span id="tile-item-dropdown_${tile}" class="tiny secondary button dropdown" data-dropdown="item-dropdown_${tile}"><i class="tile-action"></i></span>
     <ul id="item-dropdown_${tile}" class="f-dropdown" data-dropdown-content="">
         <li> <a ng-click="removeTile('${tile}')" i18n:translate="">Remove</a> </li>
     </ul>
@@ -254,6 +254,7 @@
         </ul>
     </div>
 </metal:actionsmenu>
+
 
 <!--! Help content expando ===== -->
 <metal:helpexpando metal:define-macro="help_expando">

@@ -21,7 +21,7 @@
             <strong i18n:translate="">Details for user:</strong>
             <em>${user_name}</em>
         </h3>
-        <div class="large-8 columns">
+        <div class="large-12 columns">
             <dl class="tabs">
                 <dd class="active"><a href="#general-tab" ng-click="clickTab($event, 'general-tab')" i18n:translate="">General</a></dd>
                 <dd><a href="#security-tab" ng-click="clickTab($event, 'security-tab')" i18n:translate="">Security credentials</a></dd>
@@ -51,20 +51,20 @@
                                 ${panel('form_field', field=user_form['user_name'], leftcol_width=3, rightcol_width=9)}
                                 <!-- ${panel('form_field', field=user_form['email'])} -->
                                 <div class="row controls-wrapper readonly" tal:condition="user_create_date">
-                                    <div class="small-3 columns"><label class="right" i18n:translate="">Creation time</label></div>
-                                    <div class="small-9 columns field inline breakword" ng-cloak="">
+                                    <div class="large-2 small-3 columns"><label class="right" i18n:translate="">Creation time</label></div>
+                                    <div class="large-10 small-9 columns field inline breakword" ng-cloak="">
                                         {{ '${user_create_date}' | date: '${layout.angular_date_format}' }}
                                     </div>
                                 </div>
                                 <div class="row controls-wrapper readonly">
-                                    <div class="small-3 columns"><label i18n:translate="">ARN</label></div>
-                                    <div class="small-9 columns value" ng-non-bindable="">${user_arn if user_arn else ''}</div>
+                                    <div class="large-2 small-3 columns"><label i18n:translate="">ARN</label></div>
+                                    <div class="large-10 small-9 columns value" ng-non-bindable="">${user_arn if user_arn else ''}</div>
                                 </div>
                                 ${panel('form_field', field=user_form['path'], leftcol_width=3, rightcol_width=9)}
                             </div>
                             <div class="row">
-                                <div class="small-3 columns">&nbsp;</div>
-                                <div class="small-9 columns field inline">
+                                <div class="large-2 small-3 columns">&nbsp;</div>
+                                <div class="large-10 small-9 columns field inline">
                                     <button type="submit" class="button" id="save-user-btn" ng-disabled="isUserInfoNotChanged">
                                         <span tal:condition="user" i18n:translate="">Save Changes</span>
                                     </button>
@@ -117,7 +117,7 @@
                                 </div>
                                 <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
                                     <a class="tiny secondary button dropdown right"
-                                       data-dropdown="item-dropdown-group-{{ $index }}"><i class="fi-widget"></i></a>
+                                       data-dropdown="item-dropdown-group-{{ $index }}"><i class="grid-action"></i></a>
                                     <ul id="item-dropdown-group-{{ $index }}" class="f-dropdown" data-dropdown-content="">
                                         <li>
                                             <a i18n:translate="" ng-click="removeUserFromGroup(item)">Remove user</a>
@@ -149,8 +149,9 @@
                             <div class="columns section">
                                 <h6 i18n:translate="">Permissions</h6>
                                 <div>
-                                    <strong i18n:translate="">User policies</strong>
-                                    <span>&nbsp;</span>
+                                    <p>
+                                        <strong i18n:translate="">User policies</strong>
+                                    </p>
                                     <p i18n:translate="">Best practice: Only define user policies when group policies do not meet your needs.</p>
                                     ${panel('policy_list', policies_url=policies_url, policy_url=policy_url, remove_url=remove_url, update_url=update_url, add_url=add_url)}
                                 </div>
@@ -188,9 +189,9 @@
                         <p>&nbsp;</p>
                         <div class="subsection-label" i18n:translate="">Create new password:</div>
                         <div class="row">
-                            <div class="small-6 columns gen-password">
+                            <div class="small-5 columns gen-password">
                                 <span i18n:translate="">Generate and download a random password.</span>
-                                <p>&nbsp;</p>
+                                <p/>
                                 <form id="user-generate-password-form" ng-submit="genPassword($event)">
                                     <button type="submit" class="button" id="generate-password-btn">
                                         <span tal:condition="user" i18n:translate="">Generate Random Password</span>
@@ -198,7 +199,7 @@
                                 </form>
                                 <span class="or-circle" i18n:translate="">OR</span>
                             </div>
-                            <div class="small-6 columns set-password">
+                            <div class="small-7 columns set-password">
                                 <span i18n:translate="">Manually enter a password.</span>
                                 <form id="user-change-password-form" ng-submit="submitChange($event)">
                                     <div class="row controls-wrapper controls_new_password">
@@ -298,7 +299,7 @@
                                     <td>{{ item.status }}</td>
                                     <td>
                                         <span class="actions">
-                                            <a class="tiny secondary button dropdown round" data-dropdown="item-dropdown_{{ item.access_key_id }}"><i class="fi-widget"></i></a>
+                                            <a class="tiny secondary button dropdown round" data-dropdown="item-dropdown_{{ item.access_key_id }}"><i class="grid-action"></i></a>
                                             <ul id="item-dropdown_{{ item.access_key_id }}" class="f-dropdown" data-dropdown-content="">
                                                 <li ng-show="item.status === 'Active'">
                                                     <a i18n:translate="" ng-click="makeAjaxCall('${request.route_path('user_deactivate_key', name='_name_', key='_key_')}', item)">Deactivate</a>
@@ -378,8 +379,7 @@
                 </div>
             </div>
         </div>
-        <div class="large-4 columns">
-            <div class="help-padding">&nbsp;</div>
+        <div class="large-12 columns">
             <metal:block metal:use-macro="layout.global_macros['help_expando']" />
             <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                 <!--! Help goes here -->

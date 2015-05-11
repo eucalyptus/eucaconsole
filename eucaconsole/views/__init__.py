@@ -103,7 +103,7 @@ class JSONError(HTTPUnprocessableEntity):
 
 class BaseView(object):
     """Base class for all views"""
-    def __init__(self, request):
+    def __init__(self, request, **kwargs):
         self.request = request
         self.region = request.session.get('region')
         self.access_key = request.session.get('access_id')
@@ -131,7 +131,6 @@ class BaseView(object):
         if self.request.registry.settings:  # do this to pass tests
             validate_certs = asbool(self.request.registry.settings.get('connection.ssl.validation', False))
             certs_file = self.request.registry.settings.get('connection.ssl.certfile', None)
-            
         if cloud_type == 'aws':
             conn = ConnectionManager.aws_connection(
                 region, access_key, secret_key, security_token, conn_type, validate_certs)
@@ -248,7 +247,7 @@ class BaseView(object):
             acct = ''
         try:
             return self._get_images_cached_(owners, executors, ec2_region, acct)
-        except pylibmc.Error as err:
+        except pylibmc.Error:
             logging.warn('memcached not responding')
             return self._get_images_(owners, executors, ec2_region)
 
@@ -271,7 +270,6 @@ class BaseView(object):
         port = int(self.request.registry.settings.get('sts.port', port))
         validate_certs = asbool(self.request.registry.settings.get('connection.ssl.validation', False))
         conn = AWSAuthConnection(None, aws_access_key_id='', aws_secret_access_key='')
-        
         ca_certs_file = conn.ca_certificates_file
         conn = None
         ca_certs_file = self.request.registry.settings.get('connection.ssl.certfile', ca_certs_file)
@@ -349,9 +347,9 @@ class BaseView(object):
         if err.error_message is not None:
             message = err.error_message
             if 'because of:' in message:
-                message = message[message.index("because of:")+11:]
+                message = message[message.index("because of:") + 11:]
             if 'RelatesTo Error:' in message:
-                message = message[message.index("RelatesTo Error:")+16:]
+                message = message[message.index("RelatesTo Error:") + 16:]
             # do we need this logic in the common code?? msg = err.message.split('remoteDevice')[0]
             # this logic found in volumes.js
         BaseView.log_message(request, message, level='error')
@@ -405,7 +403,6 @@ class BaseView(object):
                       ['starts-with', '$key', prefix]]
         if token is not None:
             conditions.append({'x-amz-security-token': token})
-                      
         policy = {'conditions': conditions,
                   'expiration': time.strftime('%Y-%m-%dT%H:%M:%SZ',
                                               expire_time.timetuple())}
@@ -443,8 +440,8 @@ class BaseView(object):
 class TaggedItemView(BaseView):
     """Common view for items that have tags (e.g. security group)"""
 
-    def __init__(self, request):
-        super(TaggedItemView, self).__init__(request)
+    def __init__(self, request, **kwargs):
+        super(TaggedItemView, self).__init__(request, **kwargs)
         self.tagged_obj = None
         self.conn = None
 
@@ -595,9 +592,8 @@ class LandingPageView(BaseView):
         For example, prefix = '/instances' for Instances
 
     """
-    def __init__(self, request):
-        super(LandingPageView, self).__init__(request)
-        self.filter_fields = []
+    def __init__(self, request, **kwargs):
+        super(LandingPageView, self).__init__(request, **kwargs)
         self.filter_keys = []
         self.sort_keys = []
         self.initial_sort_key = ''

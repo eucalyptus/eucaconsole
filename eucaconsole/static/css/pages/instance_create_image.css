@@ -5,4 +5,6 @@
 ----------------------------------------- */
 #s3_bucket, #s3_prefix { width: 70%; }
 
+#no-reboot { margin-right: 0; }
+
 .code { background: #e6e6e6; padding-left: 8px; margin: 10px; }

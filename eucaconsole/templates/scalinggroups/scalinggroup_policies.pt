@@ -19,7 +19,7 @@
             <strong i18n:translate="">Details for scaling group:</strong>
             <em>${scaling_group_name}</em>
         </h3>
-        <div class="large-8 columns">
+        <div class="large-12 columns">
             <dl class="tabs" id="scalinggroup-subnav">
                 <dd><a href="${request.route_path('scalinggroup_view', id=scaling_group.name)}" i18n:translate="">General</a></dd>
                 <dd class="active"><a href="#" i18n:translate="">Scaling Policies</a></dd>
@@ -35,8 +35,9 @@
                 <div class="tile item policy" tal:repeat="policy policies">
                     <div class="header" tal:define="policy_name layout.escape_braces(policy.name)">
                         <strong><a class="title">${policy_name}</a></strong>
-                        <a class="tiny secondary button dropdown right" data-dropdown="item-dropdown_${policy_ids[policy.name]}" ><i class="fi-widget"></i></a>
-                        <ul id="item-dropdown_${policy_ids[policy.name]}" class="f-dropdown" data-dropdown-content="" >
+                        <a class="tiny secondary button dropdown right"
+                           data-dropdown="item-dropdown_${policy_ids[policy.name.encode('UTF-8')]}" ><i class="grid-action"></i></a>
+                        <ul id="item-dropdown_${policy_ids[policy.name.encode('UTF-8')]}" class="f-dropdown" data-dropdown-content="" >
                             <li><a i18n:translate="" ng-click="revealDeleteModal('${policy.name}')">Delete policy</a></li>
                         </ul>
                     </div>
@@ -52,8 +53,7 @@
                 </div>
             </div>
         </div>
-        <div class="large-4 columns">
-            <div class="help-padding">&nbsp;</div>
+        <div class="large-12 columns">
             <metal:block metal:use-macro="layout.global_macros['help_expando']" />
              <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                  <!--! Help goes here -->

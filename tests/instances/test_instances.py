@@ -29,6 +29,10 @@ Instances tests
 See http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/testing.html
 
 """
+import boto
+
+from moto import mock_ec2
+
 from pyramid import testing
 from pyramid.httpexceptions import HTTPNotFound
 
@@ -40,9 +44,20 @@ from eucaconsole.forms.instances import (
 )
 from eucaconsole.i18n import _
 from eucaconsole.views import TaggedItemView
-from eucaconsole.views.instances import InstancesView, InstanceView
+from eucaconsole.views.instances import InstancesView, InstanceView, InstanceMonitoringView
 
 from tests import BaseViewTestCase, BaseFormTestCase, Mock
+
+
+class MockInstanceMixin(object):
+    @staticmethod
+    @mock_ec2
+    def make_instance(image_id=None, **kwargs):
+        ec2_conn = boto.connect_ec2('us-east')
+        if image_id is None:
+            image_id = 'ami-1234abcd'
+        reservation = ec2_conn.run_instances(image_id, **kwargs)
+        return reservation.instances[0]
 
 
 class InstancesViewTests(BaseViewTestCase):
@@ -277,3 +292,14 @@ class InstancesFiltersFormTestCaseOnAWS(BaseFormTestCase):
 
     def test_instances_filters_form_vpc_id_choices_on_aws(self):
         self.assertTrue(('None', _(u'No VPC')) in self.form.vpc_id.choices)
+
+
+class InstanceMonitoringViewTestCase(BaseViewTestCase, MockInstanceMixin):
+
+    def test_instance_monitoring_view_duration_choices(self):
+        request = testing.DummyRequest()
+        instance = self.make_instance()
+        view = InstanceMonitoringView(request, instance=instance).instance_monitoring()
+        duration_choices = dict(view.get('duration_choices'))
+        for choice in [3600, 10800, 21600, 43200, 86400, 259200, 604800, 1209600]:
+            assert choice in duration_choices

@@ -5,7 +5,7 @@
 </head>
 
 <div metal:fill-slot="main_content" ng-app="AlarmsPage" ng-controller="AlarmsCtrl">
-    <div class="row" id="contentwrap" ng-app="LandingPage" ng-controller="ItemsCtrl"
+    <div class="row" id="contentwrap" ng-controller="ItemsCtrl"
          ng-init="initController('alarms', '${initial_sort_key}', '${json_items_endpoint}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
@@ -24,7 +24,7 @@
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
                 <!--!
-                <span class="tiny secondary button dropdown" data-dropdown="item-dropdown_{{ item.name }}"><i class="fi-widget"></i></span>
+                <span class="tiny secondary button dropdown" data-dropdown="item-dropdown_{{ item.name }}"><i class="grid-action"></i></span>
                 <ul id="item-dropdown_{{ item.name }}" class="f-dropdown" data-dropdown-content="">
                     <li>
                         <a ng-click="revealModal('delete', item)" i18n:translate="">Delete alarm</a>
@@ -63,7 +63,7 @@
                 <!--!
                 <td>
                    <span class="actions">
-                        <span class="tiny secondary button dropdown round" data-dropdown="item-dropdown_{{ item.name }}"><i class="fi-widget"></i></span>
+                        <span class="tiny secondary button dropdown round" data-dropdown="item-dropdown_{{ item.name }}"><i class="grid-action"></i></span>
                         <ul id="item-dropdown_{{ item.name }}" class="f-dropdown" data-dropdown-content="">
                             <li>
                                 <a ng-click="revealModal('delete', item)" i18n:translate="">Delete alarm</a>
@@ -79,7 +79,6 @@
 </div>
 
 <div metal:fill-slot="tail_js">
-    <script src="${request.static_path('eucaconsole:static/js/pages/custom_filters.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/landingpage.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/alarms.js')}"></script>
 </div>

@@ -6,7 +6,7 @@
 
 <div metal:fill-slot="main_content" ng-app="BucketContentsPage" ng-controller="BucketContentsCtrl"
         ng-init="initController('${controller_options_json}')">
-    <div class="row" id="contentwrap" ng-app="LandingPage" ng-controller="ItemsCtrl"
+    <div class="row" id="contentwrap" ng-controller="ItemsCtrl"
          ng-init="initController('bucketcontents', '${initial_sort_key}', '${json_items_endpoint}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
@@ -76,7 +76,7 @@
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
                 <a id="{{ ('tile-item-dropdown_${bucket_name}_'+item.name) | escapeHTMLTagID }}"
                    class="tiny secondary button dropdown right"
-                   data-dropdown="{{ ('item-dropdown_${bucket_name}_'+item.name) |  escapeHTMLTagID }}"><i class="fi-widget"></i></a>
+                   data-dropdown="{{ ('item-dropdown_${bucket_name}_'+item.name) |  escapeHTMLTagID }}"><i class="grid-action"></i></a>
                 <ul id="{{ ('item-dropdown_${bucket_name}_'+item.name) | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
                     <li ng-show="item.is_folder">
                         <a i18n:translate="" ng-href="{{ item.absolute_path }}">View contents</a>
@@ -134,7 +134,7 @@
                     <span class="actions">
                         <a id="{{ ('table-item-dropdown_${bucket_name}_'+item.name) | escapeHTMLTagID }}"
                            class="tiny secondary button dropdown right round"
-                           data-dropdown="{{ ('item-dropdown_${bucket_name}_'+item.name) | escapeHTMLTagID }}"><i class="fi-widget"></i></a>
+                           data-dropdown="{{ ('item-dropdown_${bucket_name}_'+item.name) | escapeHTMLTagID }}"><i class="grid-action"></i></a>
                         <ul id="{{ ('item-dropdown_${bucket_name}_'+item.name) | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
                             <li ng-show="item.is_folder">
                                 <a i18n:translate="" ng-href="{{ item.absolute_path }}">View contents</a>
@@ -238,7 +238,6 @@
 </div>
 
 <div metal:fill-slot="tail_js">
-    <script src="${request.static_path('eucaconsole:static/js/pages/custom_filters.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/landingpage.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/bucket_contents.js')}"></script>
 </div>

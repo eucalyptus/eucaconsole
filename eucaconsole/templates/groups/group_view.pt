@@ -31,7 +31,7 @@
                 <strong i18n:translate="">Create new group</strong>
             </metal:block>
         </h3>
-        <div class="large-7 columns"
+        <div class="large-12 columns"
             tal:define="readonly True if group else False;">
             <div class="panel has-actions">
                 <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="group">
@@ -102,14 +102,14 @@
                                 ${panel('form_field', field=group_update_form.group_name, leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'groupName'}, **html_attrs)}
                             </div>
                             <div class="row controls-wrapper readonly">
-                                <div class="small-3 columns"><label class="right" i18n:translate="">Creation time</label></div>
-                                <div class="small-9 columns value" ng-cloak="">
+                                <div class="large-2 small-3 columns"><label class="right" i18n:translate="">Creation time</label></div>
+                                <div class="large-10 small-9 columns value" ng-cloak="">
                                     {{ '${group_create_date}' | date: '${layout.angular_date_format}' }}
                                 </div>
                             </div>
                             <div class="row controls-wrapper readonly">
-                                <div class="small-3 columns"><label class="right" i18n:translate="">ARN</label></div>
-                                <div class="small-9 columns value inline breakword" ng-non-bindable="">${group_arn if group_arn else ''}</div>
+                                <div class="large-2 small-3 columns"><label class="right" i18n:translate="">ARN</label></div>
+                                <div class="large-10 small-9 columns value inline breakword" ng-non-bindable="">${group_arn if group_arn else ''}</div>
                             </div>
                             <div class="top-bottom-padding">
                                 ${panel('form_field', field=group_update_form['path'], leftcol_width=3, rightcol_width=9)}
@@ -157,7 +157,9 @@
                         <div class="section">
                             <h6 i18n:translate="">Permissions</h6>
                             <div>
-                                <strong i18n:translate="">Group policies</strong>
+                                <p>
+                                    <strong i18n:translate="">Group policies</strong>
+                                </p>
                                 ${panel('policy_list', policies_url=policies_url, policy_url=policy_url, remove_url=remove_url, update_url=update_url, add_url=add_url)}
                             </div>
                         </div>
@@ -165,7 +167,7 @@
                 </div>
             </div>
         </div>
-        <div class="large-5 columns">
+        <div class="large-12 columns">
             <metal:block metal:use-macro="layout.global_macros['help_expando']" />
             <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                 <!--! Help goes here -->

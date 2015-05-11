@@ -69,7 +69,6 @@ class SnapshotsView(LandingPageView):
 
         self.render_dict.update(dict(
             filter_keys=filter_keys,
-            filter_fields=False,
             filters_form=filters_form,
             search_facets=BaseView.escape_json(json.dumps(search_facets)),
             sort_keys=self.get_sort_keys(),
@@ -188,16 +187,20 @@ class SnapshotsView(LandingPageView):
 
 
 class SnapshotsJsonView(LandingPageView):
-    def __init__(self, request):
-        super(SnapshotsJsonView, self).__init__(request)
-        self.conn = self.get_connection()
+    def __init__(self, request, conn=None, enable_filters=True, **kwargs):
+        super(SnapshotsJsonView, self).__init__(request, **kwargs)
+        self.conn = conn or self.get_connection()
+        self.enable_filters = enable_filters
 
     @view_config(route_name='snapshots_json', renderer='json', request_method='POST')
     def snapshots_json(self):
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
         snapshots = []
-        filtered_snapshots = self.filter_items(self.get_items())
+        if self.enable_filters:
+            filtered_snapshots = self.filter_items(self.get_items())
+        else:
+            filtered_snapshots = self.get_items()
         volume_ids = list(set([snapshot.volume_id for snapshot in filtered_snapshots]))
         volumes = self.conn.get_all_volumes(filters={'volume_id': volume_ids}) if self.conn else []
         for snapshot in filtered_snapshots:
@@ -237,10 +240,10 @@ class SnapshotsJsonView(LandingPageView):
 class SnapshotView(TaggedItemView):
     VIEW_TEMPLATE = '../templates/snapshots/snapshot_view.pt'
 
-    def __init__(self, request):
-        super(SnapshotView, self).__init__(request)
+    def __init__(self, request, ec2_conn=None, **kwargs):
+        super(SnapshotView, self).__init__(request, **kwargs)
         self.request = request
-        self.conn = self.get_connection()
+        self.conn = ec2_conn or self.get_connection()
         self.location = self.request.route_path('snapshot_view', id=self.request.matchdict.get('id'))
         with boto_error_handler(request, self.location):
             self.snapshot = self.get_snapshot()

@@ -19,11 +19,9 @@
 .panel .tile .footer a:hover { text-decoration: underline; }
 .panel .tile .footer .button { display: inline-block; font-weight: bold; }
 .panel .tile .footer .button:hover { text-decoration: none; }
-.panel .tile .dropdown.button.tiny { z-index: 99999; background: none; box-shadow: none; position: absolute; width: 30px; height: 24px; top: 0; right: 0; color: #8cc63e; font-size: 1.1rem; padding: 0 0 0 0; border: none; }
+.panel .tile .dropdown.button.tiny { z-index: 99998; background: none; box-shadow: none; position: absolute; width: 30px; height: 24px; top: 0; right: 0; color: #8cc63e; font-size: 1.1rem; padding: 0 0 0 0; border: none; }
 .panel .tile .dropdown.button.tiny:hover { color: #8cc63e; }
 .panel .tile .dropdown.button.tiny::before, .panel .tile .dropdown.button.tiny::after { border: none; }
-.panel .tile .dropdown.button.tiny .fi-widget { position: relative; top: 4px; background-image: url(../../img/svg/gear.svg); display: inline-block; width: 20px; height: 20px; }
-.panel .tile .dropdown.button.tiny .fi-widget::before { content: " "; }
 .panel .tile .f-dropdown { border-color: #8dc640; box-shadow: 2px 2px 5px #6a737b; }
 .panel .tile .f-dropdown.open { top: 34px; min-width: 10rem; padding-top: 0; }
 .panel .tile.add { text-align: center; text-transform: uppercase; position: relative; }
@@ -37,6 +35,8 @@
 
 #scaling-groups .icon { background-image: url(../../img/svg/icon_instances_scaling_groups.svg); }
 
+#stacks .icon { background-image: url(../../img/svg/icon_cloud_formation.svg); }
+
 #elastic-ips .icon { background-image: url(../../img/svg/icon_elastic_IP.svg); }
 
 #volumes .icon { background-image: url(../../img/svg/icon_volumes.svg); }
@@ -48,6 +48,8 @@
 #security-groups .icon { background-image: url(../../img/svg/icon_security_groups.svg); }
 
 #key-pairs .icon { background-image: url(../../img/svg/icon_key-pair.svg); }
+
+#load-balancers .icon { background-image: url(../../img/svg/icon_load_balancing.svg); }
 
 #accounts .icon { background-image: url(../../img/svg/icon_IAM_accounts.svg); }
 

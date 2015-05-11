@@ -91,7 +91,7 @@ $tile-row-height: 24px;
             }
         }
         .dropdown.button.tiny {
-            z-index: 99999;
+            z-index: 99998;
             background: none;
             box-shadow: none;
             position: absolute;
@@ -106,16 +106,6 @@ $tile-row-height: 24px;
             }
             &::before, &::after {
                 border: none;
-            }
-            .fi-widget {
-                position: relative;
-                top: 4px;
-                background-image: url(../../img/svg/gear.svg);
-                display: inline-block;
-                width: 20px; height: 20px;
-                &::before {
-                    content: " "
-                }
             }
         }
         .f-dropdown {
@@ -150,12 +140,14 @@ $tile-row-height: 24px;
 #instances-running .icon { background-image: url(../../img/svg/icon_running_instances.svg); }
 #instances-stopped .icon { background-image: url(../../img/svg/icon_stopped_instances.svg); }
 #scaling-groups .icon { background-image: url(../../img/svg/icon_instances_scaling_groups.svg); }
+#stacks .icon { background-image: url(../../img/svg/icon_cloud_formation.svg); }
 #elastic-ips .icon { background-image: url(../../img/svg/icon_elastic_IP.svg); }
 #volumes .icon { background-image: url(../../img/svg/icon_volumes.svg); }
 #snapshots .icon { background-image: url(../../img/svg/icon_snapshot.svg); }
 #buckets .icon { background-image: url(../../img/svg/icon_buckets.svg); }
 #security-groups .icon { background-image: url(../../img/svg/icon_security_groups.svg); }
 #key-pairs .icon { background-image: url(../../img/svg/icon_key-pair.svg); }
+#load-balancers .icon { background-image: url(../../img/svg/icon_load_balancing.svg); }
 #accounts .icon { background-image: url(../../img/svg/icon_IAM_accounts.svg); }
 #users .icon { background-image: url(../../img/svg/icon_IAM_users.svg); }
 #groups .icon { background-image: url(../../img/svg/IAM_group.svg); }

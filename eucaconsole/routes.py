@@ -104,6 +104,8 @@ urls = [
     Route(name='instance_volumes_json', pattern='/instances/{id}/volumes/json'),
     Route(name='instance_volume_attach', pattern='/instances/{id}/volumes/attach'),
     Route(name='instance_volume_detach', pattern='/instances/{id}/volumes/{volume_id}/detach'),
+    Route(name='instance_monitoring', pattern='/instances/{id}/monitoring'),
+    Route(name='instance_monitoring_update', pattern='/instances/{id}/monitoring/update'),
 
     # Instance Types page
     Route(name='instance_types', pattern='/instance-types'),
@@ -151,6 +153,8 @@ urls = [
     Route(name='elb_create', pattern='/elbs/create'),
     Route(name='elb_delete', pattern='/elbs/{id}/delete'),
     Route(name='elb_view', pattern='/elbs/{id}'),
+    # Certificate modal
+    Route(name='certificate_create', pattern='/certificate/create'),
 
     # Volumes #####
     # Landing page
@@ -249,12 +253,14 @@ urls = [
     Route(name='ipaddress_disassociate', pattern='/ipaddresses/{public_ip}/disassociate'),
     Route(name='ipaddress_release', pattern='/ipaddresses/{public_ip}/release'),
 
-    # CloudWatch Alarms #####
-    # Landing page
+    # CloudWatch #####
+    # Alarms Landing page
     Route(name='cloudwatch_alarms', pattern='/cloudwatch/alarms'),
     Route(name='cloudwatch_alarms_json', pattern='/cloudwatch/alarms/json'),
     Route(name='cloudwatch_alarms_create', pattern='/cloudwatch/alarms/create'),
     Route(name='cloudwatch_alarms_delete', pattern='/cloudwatch/alarms/delete'),
+    # REST API
+    Route(name='cloudwatch_api', pattern='/cloudwatch/api'),
 
     # Accounts #####
     Route(name='accounts', pattern='/accounts'),

@@ -100,7 +100,6 @@ class ScalingGroupsView(LandingPageView, DeleteScalingGroupMixin):
         if not self.is_vpc_supported:
             del self.filters_form.vpc_zone_identifier
         self.render_dict = dict(
-            filter_fields=False,
             filter_keys=self.filter_keys,
             search_facets=BaseView.escape_json(json.dumps(search_facets)),
             sort_keys=self.get_sort_keys(),
@@ -517,7 +516,8 @@ class ScalingGroupPoliciesView(BaseScalingGroupView):
             self.scaling_group = self.get_scaling_group()
             self.policies = self.get_policies(self.scaling_group)
             for policy in self.policies:
-                policy_ids[policy.name] = md5(policy.name).hexdigest()[:8]
+                policy_name = policy.name.encode('UTF-8')
+                policy_ids[policy_name] = md5(policy_name).hexdigest()[:8]
             self.alarms = self.get_alarms()
         self.create_form = ScalingGroupPolicyCreateForm(
             self.request, scaling_group=self.scaling_group, alarms=self.alarms, formdata=self.request.params or None)

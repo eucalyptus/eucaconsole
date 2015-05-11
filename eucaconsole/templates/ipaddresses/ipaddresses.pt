@@ -5,7 +5,7 @@
 </head>
 
 <div metal:fill-slot="main_content" ng-app="ElasticIPsPage" ng-controller="ElasticIPsCtrl" ng-init="initController()">
-    <div class="row" id="contentwrap" ng-app="LandingPage" ng-controller="ItemsCtrl"
+    <div class="row" id="contentwrap" ng-controller="ItemsCtrl"
          ng-init="initController('ipaddresses', '${initial_sort_key}', '${json_items_endpoint}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
@@ -45,7 +45,7 @@
                 </div>
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
-                <a id="tile-item-dropdown_{{ item.public_ip | escapeHTMLTagID }}" class="tiny secondary button dropdown right" data-dropdown="item-dropdown_{{ item.public_ip |  escapeHTMLTagID }}"><i class="fi-widget"></i></a>
+                <a id="tile-item-dropdown_{{ item.public_ip | escapeHTMLTagID }}" class="tiny secondary button dropdown right" data-dropdown="item-dropdown_{{ item.public_ip |  escapeHTMLTagID }}"><i class="grid-action"></i></a>
                 <ul id="item-dropdown_{{ item.public_ip | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
                     <li ng-show="item.instance_id">
                         <a i18n:translate=""
@@ -79,7 +79,7 @@
                 <td class="breakword"><a ng-href="/instances/{{item.instance_id}}">{{ item.instance_name | ellipsis: 30 }}</a></td>
                 <td>
                     <span class="actions">
-                        <a id="table-item-dropdown_{{ item.public_ip | escapeHTMLTagID }}" class="tiny secondary button dropdown right round" data-dropdown="item-dropdown_{{ item.public_ip | escapeHTMLTagID }}"><i class="fi-widget"></i></a>
+                        <a id="table-item-dropdown_{{ item.public_ip | escapeHTMLTagID }}" class="tiny secondary button dropdown right round" data-dropdown="item-dropdown_{{ item.public_ip | escapeHTMLTagID }}"><i class="grid-action"></i></a>
                         <ul id="item-dropdown_{{ item.public_ip | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
                             <li ng-show="item.instance_id">
                                 <a i18n:translate=""
@@ -133,7 +133,7 @@
                         i18n:translate="">Allocate Addresses From Cloud</button>
                 </div>
                 <div class="dialog-progress-display hide">
-                    <span i18n:translate="">Sending request </span>&nbsp;<em><span class="busy">&nbsp;</span></em>
+                    <span i18n:translate="">Sending request </span>&nbsp;<i class="busy"></i>
                 </div>
             </form>
             <a class="close-reveal-modal">&#215;</a>
@@ -152,7 +152,6 @@
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/utils/purl.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/pages/custom_filters.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/landingpage.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/ipaddresses.js')}"></script>
 </div>

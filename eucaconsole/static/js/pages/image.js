@@ -12,7 +12,7 @@ angular.module('ImagePage', ['BlockDeviceMappingEditor', 'TagEditor', 'EucaConso
         $scope.imageCancelUrl = '';
         $scope.imagesUrl = '';
         $scope.transitionalStates = ['pending', 'storing'];
-        $scope.isPublic = '';
+        $scope.isPublic = false;
         $scope.errorClass= '';
         $scope.launchPermissions = [];
         $scope.isAccountNotTyped = true;
@@ -24,7 +24,9 @@ angular.module('ImagePage', ['BlockDeviceMappingEditor', 'TagEditor', 'EucaConso
         $scope.cancelling = false;
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
-            $scope.isPublic = options.is_public;
+            if (options.hasOwnProperty('is_public') && options.is_public === 'true') {
+                $scope.isPublic = true;
+            }
             $scope.launchPermissions = options.image_launch_permissions;
             $scope.imageStatusEndpoint = options.image_state_json_url;
             $scope.imageCancelUrl = options.image_cancel_url;

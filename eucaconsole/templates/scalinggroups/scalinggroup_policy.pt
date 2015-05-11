@@ -20,7 +20,7 @@
             <strong i18n:translate="">Create scaling policy for:</strong>
             <em>${scaling_group_name}</em>
         </h3>
-        <div class="large-7 columns">
+        <div class="large-12 columns">
             <div class="panel no-title">
                 <form action="${request.route_path('scalinggroup_policy_create', id=scaling_group.name)}"
                       method="post" data-abide="" id="add-policy-form">
@@ -32,10 +32,10 @@
                     ${panel('form_field', field=policy_form['adjustment_type'], leftcol_width=3, rightcol_width=9)}
                     ${panel('form_field', field=policy_form['cooldown'], ng_attrs={'model': 'coolDown'}, leftcol_width=3, rightcol_width=9)}
                     <div class="row controls-wrapper">
-                        <div class="small-3 columns">
+                        <div class="large-2 small-3 columns">
                             <label class="right"><span i18n:translate="">Alarm</span>&nbsp;<span class="req">*</span></label>
                         </div>
-                        <div class="small-9 columns">
+                        <div class="large-10 small-9 columns">
                             <select name="alarm" ng-model="$parent.alarm" style="margin-bottom: 0.5rem;"
                                     ng-options="k as v for (k, v) in $parent.alarmChoices">
                                 <option value="" i18n:translate="">select alarm...</option>
@@ -60,7 +60,7 @@
                 </form>
             </div>
         </div>
-        <div class="large-5 columns">
+        <div class="large-12 columns">
             <metal:block metal:use-macro="layout.global_macros['help_expando']" />
             <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                 <!--! Help goes here -->

@@ -51,6 +51,8 @@ from ..i18n import _
 BLANK_CHOICE = ('', _(u'Select...'))
 ASCII_WITHOUT_SLASHES_NOTICE = _(
     u'Name is required and must be between 1 and 255 ASCII characters long and may not contain slashes')
+NAME_WITHOUT_SPACES_NOTICE = _(
+    u'Name must be between 1 and 255 characters long, and must not contain spaces')
 
 
 class NgNonBindableOptionSelect(Select):
@@ -449,7 +451,9 @@ class CFSampleTemplateManager(object):
         self.s3_bucket = s3_bucket
 
     def get_template_options(self):
-        templates = [(category, files) for (directory, category, files) in self._get_templates_()]
+        templates = []
+        for cat in self._get_templates_():
+            templates.extend([{'name': opt, 'label': label, 'group': cat[1]} for (label, opt) in cat[2]])
         return templates
 
     def get_template_list(self):
@@ -478,4 +482,3 @@ class CFSampleTemplateManager(object):
             if len(admin_templates) > 0:
                 templates.append(('s3', _(u'Local'), admin_templates))
         return templates
-

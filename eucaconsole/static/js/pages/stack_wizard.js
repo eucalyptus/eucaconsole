@@ -5,7 +5,7 @@
  */
 
 // Launch Instance page includes the Tag Editor, the Image Picker, BDM editor, and security group rules editor
-angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils'])
+angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.directives'])
     .directive('file', function(){
         return {
             restrict: 'A',
@@ -15,6 +15,9 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils'])
                     $scope.templateIdent = event.target.files[0].name;
                     $scope.$apply();
                     $scope.checkRequiredInput();
+                    if ($scope.templateIdent !== undefined) {
+                        $scope.getStackTemplateInfo();
+                    }
                 });
             }
         };
@@ -32,30 +35,33 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils'])
         $scope.step2Invalid = true;
         $scope.imageJsonURL = '';
         $scope.isNotValid = true;
+        $scope.loading = false;
+        $scope.paramModels = [];
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.stackTemplateEndpoint = options.stack_template_url;
+            $scope.templates = options.sample_templates;
             $scope.setInitialValues();
             //$('#sample-template').chosen({'width': '100%', search_contains: true});
             $scope.watchTags();
-            $scope.setWatcher();
+            $scope.setWatchers();
             $scope.setFocus();
+            $timeout(function() {
+                $('#sample-template').trigger('chosen:updated');
+            }, 1000);
         };
         $scope.setFocus = function () {
             $timeout(function() {
                 $("#name").focus();
             }, 50);
         };
-        $("#name").on('change', function() {
-            $timeout(function() {
-                $scope.stackName = $("#name").val();
-                $scope.checkRequiredInput();
-            });
-        });
         $('#template-url').on('change', function(){
             $timeout(function() {
                 $scope.checkRequiredInput();
                 $scope.templateIdent = $scope.templateUrl;
+                if ($scope.templateIdent !== undefined) {
+                    $scope.getStackTemplateInfo();
+                }
             });
         });
         $scope.setInitialValues = function () {
@@ -110,23 +116,31 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils'])
                     // Once invalid name has been entered, do not enable the button unless the name length is valid
                     $scope.isNotValid = true;
                 }
-                if ($scope.isNotValid === false) {
-                    $scope.getStackTemplateInfo();
-                }
             } else if ($scope.currentStepIndex == 2) {
                 $scope.isNotValid = false;
-                if ($scope.parametersObject === undefined) {
-                    $scope.isNotValid = true;
-                }
+                angular.forEach($scope.parameters, function(param, idx) {
+                    var val = $scope.paramModels[param.name];
+                    if (val === undefined) {
+                        $scope.isNotValid = true;
+                    }
+                });
             }
         };
-        $scope.setWatcher = function () {
+        $scope.setWatchers = function () {
+            $scope.$watch('stackName', function(){
+                $scope.checkRequiredInput();
+            });
             $scope.$watch('inputtype', function(){
                 $scope.checkRequiredInput();
             });
             $scope.$watch('templateSample', function(){
                 $scope.checkRequiredInput();
-                $scope.templateIdent = $scope.templateSample;
+                if ($scope.templateSample !== undefined) {
+                    $scope.templateIdent = $scope.templateSample.label;
+                    if ($scope.templateIdent !== undefined) {
+                        $scope.getStackTemplateInfo();
+                    }
+                }
             });
             $scope.$watch('currentStepIndex', function(){
                  $scope.setWizardFocus($scope.currentStepIndex);
@@ -222,6 +236,8 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils'])
                 var file = $scope.templateFiles[0];
                 fd.append('template-file', file);
             }
+            $scope.loading = true;
+            $scope.description = '';
             $http.post($scope.stackTemplateEndpoint, fd, {
                     headers: {'Content-Type': undefined},
                     transformRequest: angular.identity
@@ -229,26 +245,17 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils'])
             success(function(oData) {
                 var results = oData ? oData.results : '';
                 if (results) {
+                    $scope.loading = false;
                     $scope.description = results.description;
                     $scope.parameters = results.parameters;
-                    $timeout(function () {
-                        $scope.updateParamSummary();
-                    }, 100);
+                    angular.forEach($scope.parameters, function(param, idx) {
+                        $scope.paramModels[param.name] = param.default;
+                    });
+                    $scope.checkRequiredInput();
                 }
             }).
             error(function (oData, status) {
                 eucaHandleError(oData, status);
-            });
-        };
-        $scope.updateParamSummary = function() {
-            $scope.parametersObject = [];
-            angular.forEach($scope.parameters, function(param, idx) {
-                if (param.options === undefined) {
-                    $scope.parametersObject.push({'name':param.name, 'value':$('input#'+param.name).val()});
-                }
-                else {
-                    $scope.parametersObject.push({'name':param.name, 'value':$('select#'+param.name).val()});
-                }
             });
         };
     })

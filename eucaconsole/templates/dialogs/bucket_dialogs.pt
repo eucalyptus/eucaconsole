@@ -52,7 +52,7 @@
                 </button>
             </div>
             <div class="dialog-progress-display hide">
-                <span i18n:translate="">Sending request </span>&nbsp;<em><span class="busy">&nbsp;</span></em>
+                <span i18n:translate="">Sending request </span>&nbsp;<i class="busy"></i>
             </div>
         </form>
         <a href="#" id="update_versioning_close_link" class="close-reveal-modal">&#215;</a>
@@ -88,7 +88,7 @@
                 </button>
             </div>
             <div class="dialog-progress-display hide">
-                <span i18n:translate="">Sending request </span>&nbsp;<em><span class="busy">&nbsp;</span></em>
+                <span i18n:translate="">Sending request </span>&nbsp;<i class="busy"></i>
             </div>
         </form>
         <a href="#" id="delete_bucket_close_link" class="close-reveal-modal">&#215;</a>

@@ -33,6 +33,7 @@ import wtforms
 from wtforms import validators
 
 from ..i18n import _
+from ..views import BaseView
 from . import BaseSecureForm, ChoicesManager, TextEscapedField, NgNonBindableOptionSelect
 
 
@@ -124,7 +125,6 @@ class BaseScalingGroupForm(BaseSecureForm):
         self.elb_choices_manager = ChoicesManager(conn=elb_conn) if elb_conn else None
         region = request.session.get('region')
         cloud_type = request.session.get('cloud_type', 'euca')
-        from ..views import BaseView
         self.is_vpc_supported = BaseView.is_vpc_supported(request)
         self.launch_config.choices = self.get_launch_config_choices()
         if cloud_type == 'euca' and self.is_vpc_supported:
@@ -287,7 +287,7 @@ class ScalingGroupEditForm(BaseScalingGroupForm):
 
         if scaling_group is not None:
             self.default_cooldown.data = scaling_group.default_cooldown
-            #self.termination_policies.data = scaling_group.termination_policies
+            # self.termination_policies.data = scaling_group.termination_policies
             # Need to set the proper launch config since the launch config choices may have braces escaped
             from ..views import BaseView
             self.launch_config.data = BaseView.escape_braces(scaling_group.launch_config_name)
@@ -438,11 +438,13 @@ class ScalingGroupsFiltersForm(BaseSecureForm):
             self.vpc_zone_identifier.choices.append(('None', _(u'No subnets')))
         self.vpc_zone_identifier.choices = sorted(self.vpc_zone_identifier.choices)
         self.facets = [
-            {'name':'launch_config_name', 'label':self.launch_config_name.label.text,
-                'options':self.getOptionsFromChoices(self.launch_config_name.choices)},
-            {'name':'availability_zone', 'label':self.availability_zones.label.text,
-                'options':self.getOptionsFromChoices(self.availability_zones.choices)},
-            {'name':'vpc_zone', 'label':self.vpc_zone_identifier.label.text,
-                'options':self.getOptionsFromChoices(self.vpc_zone_identifier.choices)},
-            {'name':'tags', 'label':self.tags.label.text, 'options':[]},
+            {'name': 'launch_config_name', 'label': self.launch_config_name.label.text,
+                'options': self.getOptionsFromChoices(self.launch_config_name.choices)},
+            {'name': 'availability_zone', 'label': self.availability_zones.label.text,
+                'options': self.getOptionsFromChoices(self.availability_zones.choices)},
         ]
+        if BaseView.is_vpc_supported(request):
+            self.facets.append(
+                {'name': 'vpc_zone', 'label': self.vpc_zone_identifier.label.text,
+                    'options': self.getOptionsFromChoices(self.vpc_zone_identifier.choices)}
+            )

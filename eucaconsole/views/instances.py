@@ -29,10 +29,11 @@ Pyramid views for Eucalyptus and AWS instances
 
 """
 import base64
-from operator import attrgetter
-import simplejson as json
-from M2Crypto import RSA
 import re
+import simplejson as json
+
+from M2Crypto import RSA
+from operator import attrgetter
 from urllib2 import HTTPError, URLError
 
 from boto.exception import BotoServerError
@@ -43,11 +44,16 @@ from boto.ec2.networkinterface import NetworkInterfaceCollection, NetworkInterfa
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from pyramid.view import view_config
 
+from ..constants.cloudwatch import (
+    MONITORING_DURATION_CHOICES, METRIC_TITLE_MAPPING, STATISTIC_CHOICES, GRANULARITY_CHOICES,
+    DURATION_GRANULARITY_CHOICES_MAPPING
+)
+from ..constants.instances import INSTANCE_MONITORING_CHARTS_LIST
 from ..forms.images import ImagesFiltersForm
 from ..forms.instances import (
     InstanceForm, AttachVolumeForm, DetachVolumeForm, LaunchInstanceForm, LaunchMoreInstancesForm,
     RebootInstanceForm, StartInstanceForm, StopInstanceForm, TerminateInstanceForm, InstanceCreateImageForm,
-    BatchTerminateInstancesForm, InstancesFiltersForm, InstanceTypeForm,
+    BatchTerminateInstancesForm, InstancesFiltersForm, InstanceTypeForm, InstanceMonitoringForm,
     AssociateIpToInstanceForm, DisassociateIpFromInstanceForm)
 from ..forms import ChoicesManager, GenerateFileForm
 from ..forms.keypairs import KeyPairForm
@@ -71,11 +77,11 @@ class BaseInstanceView(BaseView):
         self.vpc_conn = self.get_connection(conn_type='vpc')
         self.is_vpc_supported = BaseView.is_vpc_supported(request)
 
-    def get_instance(self, instance_id=None):
+    def get_instance(self, instance_id=None, reservations=None):
         instance_id = instance_id or self.request.matchdict.get('id')
         if instance_id:
             try:
-                reservations_list = self.conn.get_all_reservations(instance_ids=[instance_id])
+                reservations_list = reservations or self.conn.get_all_reservations(instance_ids=[instance_id])
                 reservation = reservations_list[0] if reservations_list else None
                 if reservation:
                     instance = reservation.instances[0]
@@ -131,12 +137,20 @@ class BaseInstanceView(BaseView):
         ip_addresses = self.conn.get_all_addresses(addresses=[ip_address]) if self.conn else []
         return ip_addresses[0] if ip_addresses else []
 
-    def get_vpc_subnet_display(self, subnet_id):
+    def get_vpc_subnet_display(self, subnet_id, vpc_subnet_list=None):
         if self.vpc_conn and subnet_id:
-            with boto_error_handler(self.request):
-                vpc_subnet = self.vpc_conn.get_all_subnets(subnet_ids=[subnet_id])
-                if vpc_subnet:
-                    return u"{0} ({1})".format(vpc_subnet[0].cidr_block, subnet_id)
+            cidr_block = ''
+            if vpc_subnet_list:
+                for vpc in vpc_subnet_list:
+                    if vpc.id == subnet_id:
+                        cidr_block = vpc.cidr_block 
+            else:
+                with boto_error_handler(self.request):
+                     vpc_subnet = self.vpc_conn.get_all_subnets(subnet_ids=[subnet_id])
+                     if vpc_subnet and vpc_subnet[0].cidr_block:
+                         cidr_block = vpc_subnet[0].cidr_block
+            if cidr_block:
+                return u"{0} ({1})".format(cidr_block, subnet_id)
         return ''
 
 
@@ -155,6 +169,9 @@ class InstancesView(LandingPageView, BaseInstanceView):
         self.associate_ip_form = AssociateIpToInstanceForm(
             self.request, conn=self.conn, formdata=self.request.params or None)
         self.disassociate_ip_form = DisassociateIpFromInstanceForm(self.request, formdata=self.request.params or None)
+        controller_options_json = BaseView.escape_json(json.dumps({
+            'addresses_json_items_endpoint': self.request.route_path('ipaddresses_json'),
+        }))
         self.render_dict = dict(
             prefix=self.prefix,
             initial_sort_key=self.initial_sort_key,
@@ -166,6 +183,7 @@ class InstancesView(LandingPageView, BaseInstanceView):
             associate_ip_form=self.associate_ip_form,
             disassociate_ip_form=self.disassociate_ip_form,
             is_vpc_supported=self.is_vpc_supported,
+            controller_options_json=controller_options_json,
         )
 
     @view_config(route_name='instances', renderer='../templates/instances/instances.pt')
@@ -201,7 +219,6 @@ class InstancesView(LandingPageView, BaseInstanceView):
             del filters_form.vpc_id
             del filters_form.subnet_id
         self.render_dict.update(dict(
-            filter_fields=False,
             filter_keys=self.filter_keys,
             search_facets=BaseView.escape_json(json.dumps(search_facets)),
             sort_keys=self.sort_keys,
@@ -302,7 +319,7 @@ class InstancesView(LandingPageView, BaseInstanceView):
             with boto_error_handler(self.request, self.location):
                 new_ip = self.request.params.get('ip_address')
                 self.log_request(_(u"Associating IP {0} with instances {1}").format(new_ip, instance_id))
-                address=self.get_ip_address(new_ip)
+                address = self.get_ip_address(new_ip)
                 if address and address.allocation_id:
                     self.conn.associate_address(instance_id, new_ip, allocation_id=address.allocation_id)
                 else:
@@ -310,7 +327,9 @@ class InstancesView(LandingPageView, BaseInstanceView):
                 msg = _(u'Successfully associated the IP to the instance.')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=self.location)
-        return self.render_dict
+        msg = _(u'Failed to associate the IP address to the instance.')
+        self.request.session.flash(msg, queue=Notification.ERROR)
+        return HTTPFound(location=self.location)
 
     @view_config(route_name='instances_disassociate', request_method='POST')
     def instances_disassociate_ip_address(self):
@@ -318,7 +337,7 @@ class InstancesView(LandingPageView, BaseInstanceView):
             with boto_error_handler(self.request, self.location):
                 ip_address = self.request.params.get('ip_address')
                 self.log_request(_(u"Disassociating IP {0}").format(ip_address))
-                address=self.get_ip_address(ip_address)
+                address = self.get_ip_address(ip_address)
                 if address and address.association_id:
                     self.conn.disassociate_address(ip_address, association_id=address.association_id)
                 else:
@@ -326,15 +345,17 @@ class InstancesView(LandingPageView, BaseInstanceView):
                 msg = _(u'Successfully disassociated the IP from the instance.')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=self.location)
-        return self.render_dict
+        msg = _(u'Failed to disassociate the IP address from the instance.')
+        self.request.session.flash(msg, queue=Notification.ERROR)
+        return HTTPFound(location=self.location)
 
-
-class InstancesJsonView(LandingPageView):
+class InstancesJsonView(LandingPageView, BaseInstanceView):
     def __init__(self, request):
         super(InstancesJsonView, self).__init__(request)
         self.conn = self.get_connection()
         self.vpc_conn = self.get_connection(conn_type='vpc')
         self.vpcs = self.get_all_vpcs()
+        self.vpc_subnets = self.vpc_conn.get_all_subnets()
         self.keypairs = self.get_all_keypairs()
         self.security_groups = self.get_all_security_groups()
 
@@ -403,6 +424,10 @@ class InstancesJsonView(LandingPageView):
                 key_name=instance.key_name,
                 exists_key=exists_key,
                 vpc_name=instance.vpc_name,
+                subnet_id=instance.subnet_id if instance.subnet_id else None,
+                vpc_subnet_display=
+                    self.get_vpc_subnet_display(instance.subnet_id, vpc_subnet_list=self.vpc_subnets)
+                    if instance.subnet_id else None,
                 status=instance.state,
                 tags=TaggedItemView.get_tags_display(instance.tags),
                 transitional=is_transitional,
@@ -458,13 +483,13 @@ class InstancesJsonView(LandingPageView):
     def get_security_group_by_id(self, id):
         for sgroup in self.security_groups:
             if sgroup.id == id:
-                return sgroup 
+                return sgroup
 
     def get_security_group_rules_count_by_id(self, id):
         sgroup = self.get_security_group_by_id(id)
         if sgroup:
             return len(sgroup.rules)
-        return None 
+        return None
 
     @staticmethod
     def get_image_by_id(images, image_id):
@@ -515,8 +540,7 @@ class InstanceJsonView(BaseInstanceView):
                     state_reason=instance.state_reason,
                     ip_address=instance.ip_address,
                     root_device_name=instance.root_device_name,
-                    root_device_type=instance.root_device_type,
-               ))
+                    root_device_type=instance.root_device_type))
 
 
 class InstanceView(TaggedItemView, BaseInstanceView):
@@ -539,7 +563,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
         self.reboot_form = RebootInstanceForm(self.request, formdata=self.request.params or None)
         self.terminate_form = TerminateInstanceForm(self.request, formdata=self.request.params or None)
         self.associate_ip_form = AssociateIpToInstanceForm(
-            self.request, conn=self.conn, formdata=self.request.params or None)
+            self.request, conn=self.conn, instance=self.instance, formdata=self.request.params or None)
         self.disassociate_ip_form = DisassociateIpFromInstanceForm(self.request, formdata=self.request.params or None)
         self.tagged_obj = self.instance
         self.location = self.get_redirect_location()
@@ -746,10 +770,10 @@ class InstanceView(TaggedItemView, BaseInstanceView):
                     sgroup_dict = {}
                     sgroup_dict['id'] = sgroup.id
                     sgroup_dict['name'] = sgroup.name
-                    sgroup_dict['rules'] = rules 
-                    sgroup_dict['rule_count'] = len(rules) 
+                    sgroup_dict['rules'] = rules
+                    sgroup_dict['rule_count'] = len(rules)
                     security_group_list.append(sgroup_dict)
-        return security_group_list 
+        return security_group_list
 
     def get_redirect_location(self):
         if self.instance:
@@ -959,6 +983,80 @@ class InstanceVolumesView(BaseInstanceView):
         volumes = [vol for vol in self.volumes if vol.attach_data.instance_id == self.instance.id]
         # Sort by most recently attached first
         return sorted(volumes, key=attrgetter('attach_data.attach_time'), reverse=True) if volumes else []
+
+
+class InstanceMonitoringView(BaseInstanceView):
+    VIEW_TEMPLATE = '../templates/instances/instance_monitoring.pt'
+
+    def __init__(self, request, instance=None):
+        super(InstanceMonitoringView, self).__init__(request)
+        self.request = request
+        self.cw_conn = self.get_connection(conn_type='cloudwatch')
+        self.instance_id = self.request.matchdict.get('id')
+        self.location = self.request.route_path('instance_monitoring', id=self.instance_id)
+        with boto_error_handler(self.request):
+            # Note: We're fetching reservations here since calling self.get_instance() in the context manager
+            # will return a 500 error instead of invoking the session timeout handler
+            reservations = self.conn.get_all_reservations(instance_ids=[self.instance_id]) if self.conn else []
+        self.instance = instance or self.get_instance(instance_id=self.instance_id, reservations=reservations)
+        self.instance_name = TaggedItemView.get_display_name(self.instance)
+        self.monitoring_form = InstanceMonitoringForm(self.request, formdata=self.request.params or None)
+        self.monitoring_enabled = self.instance.monitoring_state == 'enabled' if self.instance else False
+        self.render_dict = dict(
+            instance=self.instance,
+            instance_name=self.instance_name,
+            monitoring_enabled=self.monitoring_is_enabled(),
+            detailed_monitoring_enabled=self.detailed_monitoring_is_enabled(),
+            monitoring_form=self.monitoring_form,
+            metric_title=METRIC_TITLE_MAPPING,
+            duration_choices=MONITORING_DURATION_CHOICES,
+            statistic_choices=STATISTIC_CHOICES,
+            controller_options_json=self.get_controller_options_json()
+        )
+
+    @view_config(route_name='instance_monitoring', renderer=VIEW_TEMPLATE, request_method='GET')
+    def instance_monitoring(self):
+        if self.instance is None:
+            raise HTTPNotFound()
+        return self.render_dict
+
+    @view_config(route_name='instance_monitoring_update', renderer=VIEW_TEMPLATE, request_method='POST')
+    def instance_monitoring_update(self):
+        if self.monitoring_form.validate():
+            if self.instance:
+                location = self.request.route_path('instance_monitoring', id=self.instance.id)
+                with boto_error_handler(self.request, location):
+                    monitoring_state = self.instance.monitoring_state
+                    action = 'disabled' if monitoring_state == 'enabled' else 'enabled'
+                    self.log_request(_(u"Monitoring for instance {0} {1}").format(self.instance.id, action))
+                    if monitoring_state == 'disabled':
+                        self.conn.monitor_instances([self.instance.id])
+                    else:
+                        self.conn.unmonitor_instances([self.instance.id])
+                    msg = _(
+                        u'Request successfully submitted.  It may take a moment for the monitoring status to update')
+                    self.request.session.flash(msg, queue=Notification.SUCCESS)
+                return HTTPFound(location=location)
+
+    def monitoring_is_enabled(self):
+        if self.cloud_type == 'aws':
+            return True
+        return self.instance.monitoring_state == 'enabled' if self.instance else False
+
+    def detailed_monitoring_is_enabled(self):
+        if self.cloud_type == 'euca':
+            return False
+        return self.instance.monitoring_state == 'enabled' if self.instance else False
+
+    def get_controller_options_json(self):
+        if not self.instance:
+            return ''
+        return BaseView.escape_json(json.dumps({
+            'metric_title_mapping': METRIC_TITLE_MAPPING,
+            'charts_list': INSTANCE_MONITORING_CHARTS_LIST,
+            'granularity_choices': GRANULARITY_CHOICES,
+            'duration_granularities_mapping': DURATION_GRANULARITY_CHOICES_MAPPING,
+        }))
 
 
 class InstanceLaunchView(BaseInstanceView, BlockDeviceMappingItemView):
@@ -1418,7 +1516,6 @@ class InstanceTypesView(LandingPageView, BaseInstanceView):
         self.conn = self.get_connection()
         self.render_dict = dict(
             instance_type_form=InstanceTypeForm(self.request),
-            filter_fields=True,
             sort_keys=[],
             filter_keys=[],
             prefix='',

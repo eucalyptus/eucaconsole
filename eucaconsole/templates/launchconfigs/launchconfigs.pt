@@ -5,7 +5,7 @@
 </head>
 
 <div metal:fill-slot="main_content" ng-app="LaunchConfigsPage" ng-controller="LaunchConfigsPageCtrl">
-    <div class="row" id="contentwrap" ng-app="LandingPage" ng-controller="ItemsCtrl"
+    <div class="row" id="contentwrap" ng-controller="ItemsCtrl"
          ng-init="initController('launchconfigs', '${initial_sort_key}', '${json_items_endpoint}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
@@ -14,14 +14,14 @@
         </metal:breadcrumbs>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
-        <h3 id="pagetitle"><strong i18n:translate="">Launch configuration</strong></h3>
+        <h3 id="pagetitle"><strong i18n:translate="">Launch configurations</strong></h3>
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
                 <a class="button" i18n:translate="" id="create-launchconfig-btn"
                    href="${request.route_path('launchconfig_new')}">Create New Launch Configuration</a>
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
-                <a id="tile-item-dropdown_{{ item.name | escapeHTMLTagID }}" class="tiny secondary button dropdown right" data-dropdown="item-dropdown_{{ item.name | escapeHTMLTagID }}"><i class="fi-widget"></i></a>
+                <a id="tile-item-dropdown_{{ item.name | escapeHTMLTagID }}" class="tiny secondary button dropdown right" data-dropdown="item-dropdown_{{ item.name | escapeHTMLTagID }}"><i class="grid-action"></i></a>
                 <ul id="item-dropdown_{{ item.name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
                     <li><a i18n:translate="" ng-href="${prefix}/{{ item.name | escapeURL }}">View details</a></li>
                     <li><a i18n:translate=""
@@ -73,7 +73,7 @@
                 <td>{{ item.created_time | date:'${layout.angular_date_format}' }}</td>
                 <td>
                     <span class="actions">
-                        <a id="table-item-dropdown_{{ item.name | escapeHTMLTagID }}" class="tiny secondary button dropdown right round" data-dropdown="item-dropdown_{{ item.name | escapeHTMLTagID }}"><i class="fi-widget"></i></a>
+                        <a id="table-item-dropdown_{{ item.name | escapeHTMLTagID }}" class="tiny secondary button dropdown right round" data-dropdown="item-dropdown_{{ item.name | escapeHTMLTagID }}"><i class="grid-action"></i></a>
                         <ul id="item-dropdown_{{ item.name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
                             <li><a i18n:translate="" ng-href="${prefix}/{{ item.name | escapeURL }}">View details</a></li>
                             <li><a i18n:translate=""
@@ -97,7 +97,6 @@
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/pages/custom_filters.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/landingpage.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/launchconfigs.js')}"></script>
 </div>

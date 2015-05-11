@@ -1,6 +1,6 @@
 
 <!--! Security group rules editor -->
-<div id="rules-editor" class="row controls-wrapper" ng-app="SecurityGroupRules" i18n:domain="eucaconsole"
+<div id="rules-editor" class="row controls-wrapper" i18n:domain="eucaconsole"
      ng-controller="SecurityGroupRulesCtrl" ng-init="initRules('${controller_options_json}')">
     <link rel="stylesheet" href="${request.static_path('eucaconsole:static/css/widgets/securitygroup_rules.css')}"
           type="text/css" charset="utf-8" />
@@ -149,10 +149,10 @@
                         </div>
                     </div>
                 </div>
-                <div class="row" id="add-rule-button-div" ng-show="selectedProtocol">
+                <div class="row add-button" id="add-rule-button-div" ng-show="selectedProtocol">
                     <div class="small-3 columns">&nbsp;</div>
                     <div class="small-9 columns">
-                        <a href="#" id="button-add-rule" class="button round small" i18n:translate="" ng-class="addRuleButtonClass"
+                        <a href="#" id="button-add-rule" class="button round tiny" i18n:translate="" ng-class="addRuleButtonClass"
                             ng-click="addRule($event)" ng-disabled="isRuleNotComplete">Add Rule</a>
                         <a href="#" id="button-cancel-rule" class="cancel-link" i18n:translate="" 
                             ng-click="cancelRule($event)">Cancel</a>
@@ -177,6 +177,5 @@
         <span id="all-traffic-option-text" i18n:translate="">All traffic</span> 
         <span id="custom-protocol-option-text" i18n:translate="">Custom protocol</span> 
     </div>
-    <script src="${request.static_path('eucaconsole:static/js/pages/custom_filters.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/securitygroup_rules.js')}"></script>
 </div>

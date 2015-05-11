@@ -66,7 +66,9 @@ def ipaddress_dialogs(context, request, eip=None, landingpage=False,
 def snapshot_dialogs(context, request, snapshot=None, snapshot_name=None, landingpage=False, volume_id=None,
                      delete_form=None, register_form=None):
     """Modal dialogs for Snapshot landing and detail page."""
-    snapshot_image_name_validation_error_msg = _(u"AMI names must be between 3 and 128 characters long, and may contain letters, numbers, \'(\', \')\', \'.\', \'-\', \'/\' and \'_\', and cannot contain spaces.")
+    snapshot_image_name_validation_error_msg = _(
+        u"AMI names must be between 3 and 128 characters long, and may contain letters, numbers, "
+        u"\'(\', \')\', \'.\', \'-\', \'/\' and \'_\', and cannot contain spaces.")
     return dict(
         snapshot=snapshot,
         snapshot_name=snapshot_name,
@@ -80,7 +82,8 @@ def snapshot_dialogs(context, request, snapshot=None, snapshot_name=None, landin
 
 @panel_config('instance_dialogs', renderer='../templates/dialogs/instance_dialogs.pt')
 def instance_dialogs(context, request, instance=None, instance_name=None, landingpage=False, start_form=None,
-                     stop_form=None, reboot_form=None, terminate_form=None, associate_ip_form=None, disassociate_ip_form=None):
+                     stop_form=None, reboot_form=None, terminate_form=None, associate_ip_form=None,
+                     disassociate_ip_form=None):
     """Modal dialogs for Instance landing and detail page."""
     return dict(
         instance=instance,
@@ -122,9 +125,10 @@ def volume_dialogs(context, request, volume=None, volume_name=None, instance_nam
         ng_attrs=ng_attrs,
     )
 
+
 @panel_config('user_dialogs', renderer='../templates/dialogs/user_dialogs.pt')
 def user_dialogs(context, request, user=None, user_name=None, landingpage=False,
-                   disable_form=None, enable_form=None, delete_form=None):
+                 disable_form=None, enable_form=None, delete_form=None):
     """Modal dialogs for User landing and detail page."""
     return dict(
         user=user,
@@ -134,6 +138,7 @@ def user_dialogs(context, request, user=None, user_name=None, landingpage=False,
         enable_form=enable_form,
         delete_form=delete_form,
     )
+
 
 @panel_config('securitygroup_dialogs', renderer='../templates/dialogs/securitygroup_dialogs.pt')
 def securitygroup_dialogs(context, request, security_group=None, landingpage=False, delete_form=None):
@@ -216,6 +221,7 @@ def scalinggroup_dialogs(context, request, scaling_group=None, landingpage=False
         landingpage=landingpage,
         delete_form=delete_form,
     )
+
 
 @panel_config('elb_dialogs', renderer='../templates/dialogs/elb_dialogs.pt')
 def elb_dialogs(context, request, elb=None, in_use=False, landingpage=False, delete_form=None):
@@ -305,3 +311,24 @@ def create_folder_dialog(context, request, bucket_name=None, create_folder_form=
         folder_name_pattern=FOLDER_NAME_PATTERN,
     )
 
+
+@panel_config('select_certificate_dialog', renderer='../templates/dialogs/select_certificate_dialog.pt')
+def select_certificate_dialog(context, request, certificate_form=None, backend_certificate_form=None):
+    """ Modal dialog for selecting SSL certificate"""
+    is_vpc_supported = BaseView.is_vpc_supported(request)
+    return dict(
+        certificate_form=certificate_form,
+        backend_certificate_form=backend_certificate_form,
+        is_vpc_supported=is_vpc_supported,
+    )
+
+
+@panel_config('cloudwatch_chart_dialog', renderer='../templates/dialogs/cloudwatch_chart_dialog.pt')
+def cloudwatch_chart_dialog(context, request, duration_choices=None, statistic_choices=None):
+    """ Modal dialog for large CloudWatch chart"""
+    duration_choices = duration_choices or []
+    statistic_choices = statistic_choices or []
+    return dict(
+        duration_choices=duration_choices,
+        statistic_choices=statistic_choices,
+    )

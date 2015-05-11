@@ -6,7 +6,7 @@
 
 <div metal:fill-slot="main_content" ng-app="BucketsPage" ng-controller="BucketsCtrl"
      ng-init="initController('${controller_options_json}')">
-    <div class="row" id="contentwrap" ng-app="LandingPage" ng-controller="ItemsCtrl"
+    <div class="row" id="contentwrap" ng-controller="ItemsCtrl"
          ng-init="initController('buckets', '${initial_sort_key}', '${json_items_endpoint}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
@@ -54,7 +54,7 @@
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
                 <a id="tile-item-dropdown_{{ item.bucket_name | escapeHTMLTagID }}"
                    class="tiny secondary button dropdown right"
-                   data-dropdown="item-dropdown_{{ item.bucket_name |  escapeHTMLTagID }}"><i class="fi-widget"></i></a>
+                   data-dropdown="item-dropdown_{{ item.bucket_name |  escapeHTMLTagID }}"><i class="grid-action"></i></a>
                 <ul id="item-dropdown_{{ item.bucket_name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
                     <li>
                         <a i18n:translate="" ng-href="{{ item.contents_url }}">View contents</a>
@@ -114,7 +114,7 @@
                     <span class="actions">
                         <a id="table-item-dropdown_{{ item.bucket_name | escapeHTMLTagID }}"
                            class="tiny secondary button dropdown right round"
-                           data-dropdown="item-dropdown_{{ item.bucket_name | escapeHTMLTagID }}"><i class="fi-widget"></i></a>
+                           data-dropdown="item-dropdown_{{ item.bucket_name | escapeHTMLTagID }}"><i class="grid-action"></i></a>
                         <ul id="item-dropdown_{{ item.bucket_name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
                             <li>
                                 <a i18n:translate="" ng-href="{{ item.contents_url }}">View contents</a>
@@ -156,7 +156,6 @@
 
 
 <div metal:fill-slot="tail_js">
-    <script src="${request.static_path('eucaconsole:static/js/pages/custom_filters.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/landingpage.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/buckets.js')}"></script>
 </div>

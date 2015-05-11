@@ -1,0 +1,16 @@
+/* @fileOverview Instance Selector CSS */
+/* Dropdown elements */
+/* Set the link colors and styles for top-level nav */
+/* ----------------------------------------- Item list
+----------------------------------------- */
+.status.running { background-color: #03405f; }
+
+.status.pending { background-color: #0683c2; }
+
+.status.stopped { background-color: #990000; }
+
+.status.stopping { background-color: #ff6666; }
+
+.status.terminated { background-color: #444444; }
+
+.status.shutting-down { background-color: lightgrey; }
