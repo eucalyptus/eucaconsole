@@ -305,6 +305,16 @@ class LaunchConfigView(BaseView):
             return launch_configs[0] if launch_configs else None
         return None
 
+    def get_image(self):
+        if self.ec2_conn:
+            images = self.ec2_conn.get_all_images(image_ids=[self.launch_config.image_id])
+            image = images[0] if images else None
+            if image is None:
+                return None
+            image.platform = ImageView.get_platform(image)
+            return image
+        return None
+
     def get_security_groups(self):
         if self.ec2_conn:
             groupids = self.launch_config.security_groups
@@ -316,16 +326,6 @@ class LaunchConfigView(BaseView):
                     security_groups = self.ec2_conn.get_all_security_groups(filters={'group-name': groupids})
             return security_groups
         return []
-
-    def get_image(self):
-        if self.ec2_conn:
-            images = self.ec2_conn.get_all_images(image_ids=[self.launch_config.image_id])
-            image = images[0] if images else None
-            if image is None:
-                return None
-            image.platform = ImageView.get_platform(image)
-            return image
-        return None
 
     def get_securitygroups_rules(self, securitygroups):
         rules_dict = {}
