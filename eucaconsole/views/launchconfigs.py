@@ -28,7 +28,6 @@
 Pyramid views for Eucalyptus and AWS launch configurations
 
 """
-import base64
 import simplejson as json
 from urllib import quote, urlencode
 
@@ -194,18 +193,18 @@ class LaunchConfigsJsonView(LandingPageView):
                 else:
                     security_group = self.get_security_group_by_name(id)
                 if security_group:
-                    security_groups.append(security_group) 
+                    security_groups.append(security_group)
         return security_groups
 
     def get_security_group_by_id(self, id):
-        if self.securitygroups: 
+        if self.securitygroups:
             for sgroup in self.securitygroups:
                 if sgroup.id == id:
                     return sgroup
         return ''
 
     def get_security_group_by_name(self, name):
-        if self.securitygroups: 
+        if self.securitygroups:
             for sgroup in self.securitygroups:
                 if sgroup.name == name:
                     return sgroup
@@ -218,7 +217,7 @@ class LaunchConfigsJsonView(LandingPageView):
             security_group = self.get_security_group_by_name(id)
         if security_group:
             return len(security_group.rules)
-        return None 
+        return None
 
 
 class BaseLaunchConfigView(BaseView):
@@ -284,11 +283,11 @@ class LaunchConfigView(BaseLaunchConfigView):
             user_data = self.launch_config.user_data
             mime_type = guess_mimetype_from_buffer(user_data, mime=True)
             if mime_type.find('text') == 0:
-                self.launch_config.user_data=user_data
+                self.launch_config.user_data = user_data
             else:
                 # get more descriptive text
                 mime_type = guess_mimetype_from_buffer(user_data)
-                self.launch_config.user_data=None
+                self.launch_config.user_data = None
             self.launch_config.userdata_type = mime_type
             self.launch_config.userdata_istext = True if mime_type.find('text') >= 0 else False
         else:
@@ -314,7 +313,7 @@ class LaunchConfigView(BaseLaunchConfigView):
     @view_config(route_name='launchconfig_view', renderer=TEMPLATE)
     def launchconfig_view(self):
         return self.render_dict
- 
+
     @view_config(route_name='launchconfig_delete', request_method='POST', renderer=TEMPLATE)
     def launchconfig_delete(self):
         if self.delete_form.validate():
@@ -366,10 +365,10 @@ class LaunchConfigView(BaseLaunchConfigView):
                 sgroup_dict = {}
                 sgroup_dict['id'] = sgroup.id
                 sgroup_dict['name'] = sgroup.name
-                sgroup_dict['rules'] = rules 
-                sgroup_dict['rule_count'] = len(rules) 
+                sgroup_dict['rules'] = rules
+                sgroup_dict['rule_count'] = len(rules)
                 security_group_list.append(sgroup_dict)
-        return security_group_list 
+        return security_group_list
 
     def is_in_use(self):
         """Returns whether or not the launch config is in use (i.e. in any scaling group).
@@ -383,8 +382,8 @@ class LaunchConfigView(BaseLaunchConfigView):
     @staticmethod
     def get_vpc_ip_assignment_display(value):
         choices = [
-            ('None', _(u'Only for instances in default VPC & subnet')), 
-            ('True', _(u'For all instances')), 
+            ('None', _(u'Only for instances in default VPC & subnet')),
+            ('True', _(u'For all instances')),
             ('False', _(u'Never'))
         ]
         for choice in choices:
@@ -472,7 +471,7 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
             self.image = images[0] if images else None
             self.image.platform_name = ImageView.get_platform(self.image)[2]
             self.render_dict['image'] = self.image
-            if self.launch_config.user_data != None and self.launch_config.user_data != '':
+            if self.launch_config.user_data is not None and self.launch_config.user_data != '':
                 user_data = self.launch_config.user_data
                 mime_type = guess_mimetype_from_buffer(user_data, mime=True)
                 if mime_type.find('text') != 0:
@@ -558,7 +557,7 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
             rules = SecurityGroupsView.get_rules(security_group.rules)
             if security_group.vpc_id is not None:
                 rules_egress = SecurityGroupsView.get_rules(security_group.rules_egress, rule_type='outbound')
-                rules = rules + rules_egress 
+                rules = rules + rules_egress
             rules_dict[security_group.id] = rules
         return rules_dict
 
