@@ -23,14 +23,16 @@ angular.module('LaunchconfigMore', ['BlockDeviceMappingEditor', 'EucaConsoleUtil
             $('#securitygroup').chosen({'width': '100%', search_contains: true});
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
             var userData = options.user_data;
-            if (userData.type.indexOf('text') === 0 || userData.type === 'empty') {
-                $scope.isFileUserData = false;
-                $("#userdata:not([display='none'])").val(userData.data);
-                $timeout(function() { $scope.inputtype = 'text'; });
-            } else {
-                $scope.isFileUserData = true;
-                $("#userdatatype:not([display='none'])").text(userData.type);
-                $timeout(function() { $scope.inputtype = 'file'; });
+            if (userData.type !== '') {
+                if (userData.type.indexOf('text') === 0) {
+                    $scope.isFileUserData = false;
+                    $("#userdata:not([display='none'])").val(userData.data);
+                    $timeout(function() { $scope.inputtype = 'text'; });
+                } else {
+                    $scope.isFileUserData = true;
+                    $("#userdatatype:not([display='none'])").text(userData.type);
+                    $timeout(function() { $scope.inputtype = 'file'; });
+                }
             }
         };
     })
