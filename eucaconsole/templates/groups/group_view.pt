@@ -131,7 +131,7 @@
                                     <div class="item-list">
                                         <span class="label radius secondar item" ng-repeat="user in groupUsers">
                                             <span> {{ user }} </span>
-                                            <a class="remove" title="Remove user from group" i18n:translate="title"
+                                            <a class="remove" title="Remove user from group" i18n:attributes="title"
                                                ng-click="removeUser(user)"><i class="fi-x"></i></a>
                                         </span>
                                     </div>

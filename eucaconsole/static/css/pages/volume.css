@@ -116,6 +116,12 @@
 @media screen and (max-width: 1020px) { .columns.datagrid { padding-left: 1rem; } }
 #breadcrumbs .icon-block { display: none; }
 
+input#size { width: 4rem; }
+
+input#name { width: 50%; }
+
+select#zone { width: 50%; }
+
 .status { background-color: transparent; text-transform: capitalize; }
 
 .status.creating { background-color: #9aa84b; }

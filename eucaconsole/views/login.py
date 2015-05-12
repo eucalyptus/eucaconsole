@@ -165,7 +165,6 @@ class LoginView(BaseView, PermissionCheckMixin):
                 logging.info(u"Authenticated Eucalyptus user: {acct}/{user} from {ip}".format(
                     acct=account, user=username, ip=BaseView.get_remote_addr(self.request)))
                 user_account = u'{user}@{account}'.format(user=username, account=account)
-                # self.invalidate_connection_cache()
                 session.invalidate()  # Refresh session
                 session['cloud_type'] = 'euca'
                 session['account'] = account
@@ -217,7 +216,6 @@ class LoginView(BaseView, PermissionCheckMixin):
                 creds = auth.authenticate(timeout=10)
                 logging.info(u"Authenticated AWS user from {ip}".format(ip=BaseView.get_remote_addr(self.request)))
                 default_region = self.request.registry.settings.get('aws.default.region', 'us-east-1')
-                # self.invalidate_connection_cache()
                 session.invalidate()  # Refresh session
                 session['cloud_type'] = 'aws'
                 session['session_token'] = creds.session_token
@@ -258,5 +256,4 @@ class LogoutView(BaseView):
         if self.euca_logout_form.validate():
             forget(self.request)
             self.request.session.invalidate()
-            # self.invalidate_connection_cache()
-            return HTTPFound(location=self.login_url)
+        return HTTPFound(location=self.login_url)

@@ -439,9 +439,10 @@ class ELBView(TaggedItemView):
 
     def get_elb_instance_list(self):
         instances = []
-        if self.elb:
+        if self.elb and self.elb.instances:
             for instance in self.elb.instances:
-                instances.append(instance.id)
+                if instance:
+                    instances.append(instance.id)
         return instances
 
     def get_all_instances(self):
@@ -593,7 +594,8 @@ class CreateELBView(BaseView):
             with boto_error_handler(self.request):
                 vpc_subnets = self.vpc_conn.get_all_subnets()
                 for vpc_subnet in vpc_subnets:
-                    subnet_string = u'{0} ({1}) | {2}'.format(vpc.cidr_block, vpc.id, vpc.availability_zone)
+                    subnet_string = u'{0} ({1}) | {2}'.format(vpc_subnet.cidr_block,
+                                                              vpc_subnet.id, vpc_subnet.availability_zone)
                     subnets.append(dict(
                         id=vpc_subnet.id,
                         name=subnet_string,

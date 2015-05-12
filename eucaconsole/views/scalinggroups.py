@@ -365,7 +365,7 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
             self.scaling_group.termination_policies.append('Default')
         self.scaling_group.max_size = self.request.params.get('max_size', 1)
         self.scaling_group.min_size = self.request.params.get('min_size', 0)
-        self.scaling_group.health_check_type = self.request.params.get('health_check_type')
+        self.scaling_group.health_check_type = 'EC2'
         self.scaling_group.health_check_period = self.request.params.get('health_check_period', 120)
         self.scaling_group.default_cooldown = self.request.params.get('default_cooldown', 120)
         self.scaling_group.update()
@@ -516,7 +516,8 @@ class ScalingGroupPoliciesView(BaseScalingGroupView):
             self.scaling_group = self.get_scaling_group()
             self.policies = self.get_policies(self.scaling_group)
             for policy in self.policies:
-                policy_ids[policy.name] = md5(policy.name).hexdigest()[:8]
+                policy_name = policy.name.encode('UTF-8')
+                policy_ids[policy_name] = md5(policy_name).hexdigest()[:8]
             self.alarms = self.get_alarms()
         self.create_form = ScalingGroupPolicyCreateForm(
             self.request, scaling_group=self.scaling_group, alarms=self.alarms, formdata=self.request.params or None)
@@ -701,7 +702,7 @@ class ScalingGroupWizardView(BaseScalingGroupView):
                     name=scaling_group_name,
                     launch_config=launch_config_name,
                     load_balancers=self.request.params.getall('load_balancers'),
-                    health_check_type=self.request.params.get('health_check_type'),
+                    health_check_type='EC2',
                     health_check_period=self.request.params.get('health_check_period'),
                     desired_capacity=self.request.params.get('desired_capacity'),
                     min_size=self.request.params.get('min_size'),
