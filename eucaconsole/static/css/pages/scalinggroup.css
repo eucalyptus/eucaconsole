@@ -126,6 +126,7 @@ input[type="number"] { width: 3rem; }
 
 #capacity-section .controls-wrapper.inline { display: inline-block; }
 #capacity-section .controls-wrapper.inline label { right: 0; }
+#capacity-section .columns { padding-left: 1rem; }
 
 #controls_desired_capacity { padding-left: 1.8rem; }
 #controls_desired_capacity label { margin-left: -1rem; }

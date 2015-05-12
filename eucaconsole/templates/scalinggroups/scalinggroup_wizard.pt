@@ -94,7 +94,6 @@
                         <!--! Step 2: Membership tab content -->
                         <div class="content" id="step2" tal:define="avail_zones_attrs {'data-placeholder': avail_zones_placeholder_text};
                                             load_balancers_html_attrs {'data-placeholder': elb_placeholder_text}">
-                            ${panel('form_field', field=create_form['health_check_type'], leftcol_width_large=3, rightcol_width_large=9, ng_attrs={'model': 'healthCheckType'})}
                             ${panel('form_field', field=create_form['health_check_period'], leftcol_width_large=3, rightcol_width_large=9, ng_attrs={'model': 'healthCheckPeriod'}, step=30)}
                             <div ng-show="vpcNetwork == '' || vpcNetwork == 'None'">
                                 ${panel('form_field', field=create_form['availability_zones'], leftcol_width_large=3, rightcol_width_large=9, ng_attrs={'model': 'availZones'}, **avail_zones_attrs)}

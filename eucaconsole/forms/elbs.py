@@ -152,7 +152,7 @@ class CreateELBForm(BaseSecureForm):
         self.choices_manager = ChoicesManager(conn=conn)
         self.vpc_choices_manager = ChoicesManager(conn=vpc_conn)
         self.set_choices(request)
-        self.cross_zone_enabled.label_help_text = self.cross_zone_enabled_help_text
+        self.cross_zone_enabled.help_text = self.cross_zone_enabled_help_text
 
     def set_choices(self, request):
         if self.cloud_type == 'euca' and self.is_vpc_supported:

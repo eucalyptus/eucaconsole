@@ -90,7 +90,6 @@ class BaseScalingGroupFormTestCase(BaseFormTestCase):
         self.assert_required('desired_capacity')
         self.assert_required('max_size')
         self.assert_required('min_size')
-        self.assert_required('health_check_type')
         self.assert_required('health_check_period')
 
     def test_field_validators(self):

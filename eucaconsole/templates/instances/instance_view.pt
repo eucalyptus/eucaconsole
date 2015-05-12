@@ -240,11 +240,15 @@
                             </div>
                             <div ng-show="!isNotStopped">
                                 <input type="radio" id="inputtype" name="inputtype" value="text" ng-model="inputtype"/>
-                                <label id='userdatalabel' i18n:translate="">Enter text</label>
-                                <textarea id="userdata" name="userdata" ng-show="inputtype=='text'"></textarea>
+                                <label id="userdatalabel" i18n:translate="">Enter text</label>
+                                <textarea id="userdata" name="userdata" ng-show="inputtype=='text'" maxlength="16384"></textarea>
                                 <br/>
                                 <input type="radio" id="inputtype" name="inputtype" value="file" ng-model="inputtype"/>
-                                <label id='userdatalabel' i18n:translate="">Upload file</label>
+                                <label id="userdatalabel">
+                                    <span i18n:translate="">Upload file</span>
+                                    <span tal:condition="getattr(instance_form.userdata_file, 'help_text', None)" class="helptext-icon"
+                                        data-tooltip="" title="${instance_form.userdata_file.help_text}"></span>
+                                </label>
                                 <input id="userdata_file" type="file" ng-model="userDataFile" ng-disabled="isNotStopped"
                                        name="userdata_file" disabled="disabled" ng-show="inputtype=='file'" />
                                 <span id="userdatatype"></span>
