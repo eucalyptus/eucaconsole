@@ -305,7 +305,7 @@ class InstanceMonitoringViewTestCase(BaseViewTestCase, MockInstanceMixin):
             assert choice in duration_choices
 
     def test_instance_monitoring_state_on_aws(self):
-        session = {'cloud_type': 'aws'}
+        session = {'cloud_type': 'aws', 'region': 'us-east-1', 'access_id':'foo', 'secret_key':'bar'}
         request = self.create_request(session=session)
         instance = self.make_instance()
         view = InstanceView(request, instance=instance).instance_view()
@@ -313,7 +313,7 @@ class InstanceMonitoringViewTestCase(BaseViewTestCase, MockInstanceMixin):
         self.assertEqual(monitoring_state, u'Detailed')
 
     def test_instance_monitoring_tab_title_on_aws(self):
-        session = {'cloud_type': 'aws'}
+        session = {'cloud_type': 'aws', 'region': 'us-east-1', 'access_id':'foo', 'secret_key':'bar'}
         request = self.create_request(session=session)
         instance = self.make_instance()
         view = InstanceMonitoringView(request, instance=instance).instance_monitoring()
