@@ -384,7 +384,6 @@ class LaunchConfigView(BaseView):
 class CreateLaunchConfigView(BlockDeviceMappingItemView):
     """Create Launch Configuration wizard"""
     TEMPLATE = '../templates/launchconfigs/launchconfig_wizard.pt'
-    TEMPLATE_MORE = '../templates/launchconfigs/launchconfig_create_more.pt'
 
     def __init__(self, request):
         super(CreateLaunchConfigView, self).__init__(request)
@@ -435,38 +434,6 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
     def launchconfig_new(self):
         """Displays the Create Launch Configuration wizard"""
         self.render_dict['preset'] = self.request.params.get('preset')
-        return self.render_dict
-
-    @view_config(route_name='launchconfig_more', renderer=TEMPLATE_MORE, request_method='GET')
-    def launchconfig_more(self):
-        name = self.request.matchdict.get('id')
-        autoscale_conn = self.get_connection(conn_type='autoscale')
-        with boto_error_handler(self.request):
-            lc = autoscale_conn.get_all_launch_configurations(names=[name])
-            launch_config = lc[0]
-            self.render_dict['launch_config'] = launch_config
-            self.create_form.image_id.data = launch_config.image_id
-            self.create_form.instance_type.data = launch_config.instance_type
-            self.create_form.keypair.data = launch_config.key_name
-            self.create_form.securitygroup.data = launch_config.security_groups
-            self.render_dict['launchconfig_name'] = launch_config.name
-            images = self.get_connection().get_all_images(image_ids=[launch_config.image_id])
-            self.image = images[0] if images else None
-            self.image.platform_name = ImageView.get_platform(self.image)[2]
-            self.render_dict['image'] = self.image
-            if launch_config.user_data is not None and launch_config.user_data != '':
-                user_data = launch_config.user_data
-                mime_type = guess_mimetype_from_buffer(user_data, mime=True)
-                if mime_type.find('text') != 0:
-                    # get more descriptive text
-                    mime_type = guess_mimetype_from_buffer(user_data)
-                    user_data = None
-            else:
-                user_data = ''
-                mime_type = ''
-            self.render_dict['controller_options_json'] = BaseView.escape_json(json.dumps({
-                'user_data': dict(type=mime_type, data=user_data)
-            }))
         return self.render_dict
 
     @view_config(route_name='launchconfig_create', renderer=TEMPLATE, request_method='POST')
@@ -562,4 +529,72 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
             else:
                 return default_vpc[0]
         return 'None'
+
+
+class CreateMoreLaunchConfigView(BlockDeviceMappingItemView):
+    """Create another Launch Configuration like this one"""
+    TEMPLATE = '../templates/launchconfigs/launchconfig_create_more.pt'
+
+    def __init__(self, request):
+        super(CreateMoreLaunchConfigView, self).__init__(request)
+        self.request = request
+        self.iam_conn = None
+        if BaseView.has_role_access(request):
+            self.iam_conn = self.get_connection(conn_type="iam")
+        self.vpc_conn = self.get_connection(conn_type='vpc')
+        autoscale_conn = self.get_connection(conn_type='autoscale')
+        name = self.request.matchdict.get('id')
+        with boto_error_handler(request):
+            lc = autoscale_conn.get_all_launch_configurations(names=[name])
+            launch_config = lc[0]
+            images = self.get_connection().get_all_images(image_ids=[launch_config.image_id])
+            self.image = images[0] if images else None
+            self.image.platform_name = ImageView.get_platform(self.image)[2]
+
+        self.create_form = CreateLaunchConfigForm(
+            self.request, image=self.image, conn=self.conn, iam_conn=self.iam_conn,
+            formdata=self.request.params or None)
+        self.create_form.image_id.data = launch_config.image_id
+        self.create_form.instance_type.data = launch_config.instance_type
+        self.create_form.keypair.data = launch_config.key_name
+        self.create_form.securitygroup.data = launch_config.security_groups
+        self.filters_form = ImagesFiltersForm(
+            self.request, cloud_type=self.cloud_type, formdata=self.request.params or None)
+        self.keypair_form = KeyPairForm(self.request, formdata=self.request.params or None)
+        self.securitygroup_form = SecurityGroupForm(self.request, self.vpc_conn, formdata=self.request.params or None)
+        self.generate_file_form = GenerateFileForm(self.request, formdata=self.request.params or None)
+        self.owner_choices = self.get_owner_choices()
+
+        if launch_config.user_data is not None and launch_config.user_data != '':
+            user_data = launch_config.user_data
+            mime_type = guess_mimetype_from_buffer(user_data, mime=True)
+        else:
+            user_data = ''
+            mime_type = ''
+
+        controller_options_json = BaseView.escape_json(json.dumps({
+            'user_data': dict(type=mime_type, data=user_data)
+        }))
+        self.is_vpc_supported = BaseView.is_vpc_supported(request)
+
+        self.render_dict = dict(
+            image=self.image,
+            launch_config=launch_config,
+            launchconfig_name=launch_config.name,
+            create_form=self.create_form,
+            filters_form=self.filters_form,
+            keypair_form=self.keypair_form,
+            securitygroup_form=self.securitygroup_form,
+            generate_file_form=self.generate_file_form,
+            owner_choices=self.owner_choices,
+            snapshot_choices=self.get_snapshot_choices(),
+            preset='',
+            security_group_placeholder_text=_(u'Select...'),
+            controller_options_json=controller_options_json,
+            is_vpc_supported=self.is_vpc_supported,
+        )
+
+    @view_config(route_name='launchconfig_more', renderer=TEMPLATE, request_method='GET')
+    def launchconfig_more(self):
+        return self.render_dict
 
