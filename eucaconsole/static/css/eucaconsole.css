@@ -155,7 +155,7 @@ html, body { height: 100%; }
 
 html, body { font-size: 100%; }
 
-body { background: #fff; color: #222; padding: 0; margin: 0; font-family: Verdana, Geneva, Lucida, "Lucida Grande", Helvetica, Arial, sans-serif; font-weight: normal; font-style: normal; line-height: 1.5; position: relative; cursor: auto; }
+body { background: #fff; color: #222; padding: 0; margin: 0; font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif; font-weight: normal; font-style: normal; line-height: 1.5; position: relative; cursor: auto; }
 
 a:hover { cursor: pointer; }
 
@@ -325,7 +325,7 @@ select { width: 100%; }
 /* Accessibility - hides the forward slash */
 [aria-label="breadcrumbs"] [aria-hidden="true"]:after { content: "/"; }
 
-button, .button { border-style: solid; border-width: 1px; cursor: pointer; font-family: Verdana, Geneva, Lucida, "Lucida Grande", Helvetica, Arial, sans-serif; font-weight: normal; line-height: normal; margin: 0 0 1.25rem; position: relative; text-decoration: none; text-align: center; -webkit-appearance: none; -moz-appearance: none; border-radius: 0; display: inline-block; padding-top: 0.625rem; padding-right: 1.25rem; padding-bottom: 0.6875rem; padding-left: 1.25rem; font-size: 1rem; background-color: #8cc63e; border-color: #70a12f; color: #FFFFFF; transition: background-color 300ms ease-out; }
+button, .button { border-style: solid; border-width: 1px; cursor: pointer; font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif; font-weight: normal; line-height: normal; margin: 0 0 1.25rem; position: relative; text-decoration: none; text-align: center; -webkit-appearance: none; -moz-appearance: none; border-radius: 0; display: inline-block; padding-top: 0.625rem; padding-right: 1.25rem; padding-bottom: 0.6875rem; padding-left: 1.25rem; font-size: 1rem; background-color: #8cc63e; border-color: #70a12f; color: #FFFFFF; transition: background-color 300ms ease-out; }
 button:hover, button:focus, .button:hover, .button:focus { background-color: #70a12f; }
 button:hover, button:focus, .button:hover, .button:focus { color: #FFFFFF; }
 button.secondary, .button.secondary { background-color: #6a737b; border-color: #555c62; color: #FFFFFF; }
@@ -609,7 +609,7 @@ textarea[rows] { height: auto; }
 textarea { max-width: 100%; }
 
 /* Add height value for select elements to match text input height */
-select { -webkit-appearance: none !important; border-radius: 0; background-color: #FAFAFA; background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgeD0iMTJweCIgeT0iMHB4IiB3aWR0aD0iMjRweCIgaGVpZ2h0PSIzcHgiIHZpZXdCb3g9IjAgMCA2IDMiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDYgMyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+PHBvbHlnb24gcG9pbnRzPSI1Ljk5MiwwIDIuOTkyLDMgLTAuMDA4LDAgIi8+PC9zdmc+); background-position: 100% center; background-repeat: no-repeat; border-style: solid; border-width: 1px; border-color: #cccccc; padding: 0.5rem; font-size: 0.875rem; font-family: Verdana, Geneva, Lucida, "Lucida Grande", Helvetica, Arial, sans-serif; color: rgba(0, 0, 0, 0.75); line-height: normal; border-radius: 0; height: 2.3125rem; }
+select { -webkit-appearance: none !important; border-radius: 0; background-color: #FAFAFA; background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgeD0iMTJweCIgeT0iMHB4IiB3aWR0aD0iMjRweCIgaGVpZ2h0PSIzcHgiIHZpZXdCb3g9IjAgMCA2IDMiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDYgMyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+PHBvbHlnb24gcG9pbnRzPSI1Ljk5MiwwIDIuOTkyLDMgLTAuMDA4LDAgIi8+PC9zdmc+); background-position: 100% center; background-repeat: no-repeat; border-style: solid; border-width: 1px; border-color: #cccccc; padding: 0.5rem; font-size: 0.875rem; font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif; color: rgba(0, 0, 0, 0.75); line-height: normal; border-radius: 0; height: 2.3125rem; }
 select::-ms-expand { display: none; }
 select.radius { border-radius: 3px; }
 select:hover { background-color: #f3f3f3; border-color: #999999; }
@@ -892,7 +892,7 @@ label.error { color: #f04124; }
 
 .keystroke, kbd { background-color: #ededed; border-color: #dddddd; color: #222222; border-style: solid; border-width: 1px; margin: 0; font-family: "Consolas", "Menlo", "Courier", monospace; font-size: inherit; padding: 0.125rem 0.25rem 0; border-radius: 3px; }
 
-.label { font-weight: normal; font-family: Verdana, Geneva, Lucida, "Lucida Grande", Helvetica, Arial, sans-serif; text-align: center; text-decoration: none; line-height: 1; white-space: nowrap; display: inline-block; position: relative; margin-bottom: auto; padding: 0.25rem 0.5rem 0.25rem; font-size: 0.6875rem; background-color: #8cc63e; color: #FFFFFF; }
+.label { font-weight: normal; font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif; text-align: center; text-decoration: none; line-height: 1; white-space: nowrap; display: inline-block; position: relative; margin-bottom: auto; padding: 0.25rem 0.5rem 0.25rem; font-size: 0.6875rem; background-color: #8cc63e; color: #FFFFFF; }
 .label.radius { border-radius: 3px; }
 .label.round { border-radius: 1000px; }
 .label.alert { background-color: #f04124; color: #FFFFFF; }
@@ -987,7 +987,7 @@ label.error { color: #f04124; }
 
 .sub-nav { display: block; width: auto; overflow: hidden; margin-bottom: -0.25rem 0 1.125rem; padding-top: 0.25rem; }
 .sub-nav dt { text-transform: uppercase; }
-.sub-nav dt, .sub-nav dd, .sub-nav li { float: left; margin-left: 1rem; margin-bottom: 0; font-family: Verdana, Geneva, Lucida, "Lucida Grande", Helvetica, Arial, sans-serif; font-weight: normal; font-size: 0.875rem; color: #999999; }
+.sub-nav dt, .sub-nav dd, .sub-nav li { float: left; margin-left: 1rem; margin-bottom: 0; font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif; font-weight: normal; font-size: 0.875rem; color: #999999; }
 .sub-nav dt a, .sub-nav dd a, .sub-nav li a { text-decoration: none; color: #999999; padding: 0.1875rem 1rem; }
 .sub-nav dt a:hover, .sub-nav dd a:hover, .sub-nav li a:hover { color: #737373; }
 .sub-nav dt.active a, .sub-nav dd.active a, .sub-nav li.active a { border-radius: 3px; font-weight: normal; background: #03405f; padding: 0.1875rem 1rem; cursor: default; color: #FFFFFF; }
@@ -1045,7 +1045,7 @@ table thead tr th, table tfoot tr th, table tfoot tr td, table tbody tr th, tabl
 .tabs:before, .tabs:after { content: " "; display: table; }
 .tabs:after { clear: both; }
 .tabs dd, .tabs .tab-title { position: relative; margin-bottom: 0 !important; list-style: none; float: left; }
-.tabs dd > a, .tabs .tab-title > a { display: block; background-color: #8cc63e; color: #222222; padding: 0.25rem 0.5rem; font-family: Verdana, Geneva, Lucida, "Lucida Grande", Helvetica, Arial, sans-serif; font-size: 1rem; }
+.tabs dd > a, .tabs .tab-title > a { display: block; background-color: #8cc63e; color: #222222; padding: 0.25rem 0.5rem; font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif; font-size: 1rem; }
 .tabs dd > a:hover, .tabs .tab-title > a:hover { background-color: #98cc52; }
 .tabs dd > a:focus, .tabs .tab-title > a:focus { outline: none; }
 .tabs dd.active a, .tabs .tab-title.active a { background-color: #FFFFFF; color: #222222; }
@@ -1123,7 +1123,7 @@ meta.foundation-mq-topbar { font-family: "/only screen and (min-width:40.063em)/
 .top-bar-section ul { padding: 0; width: 100%; height: auto; display: block; font-size: 16px; margin: 0; }
 .top-bar-section .divider, .top-bar-section [role="separator"] { border-top: solid 1px gray; clear: both; height: 1px; width: 100%; }
 .top-bar-section ul li { background: white; }
-.top-bar-section ul li > a { display: block; width: 100%; color: #000; padding: 12px 0 12px 0; padding-left: 0.9375rem; font-family: Verdana, Geneva, Lucida, "Lucida Grande", Helvetica, Arial, sans-serif; font-size: 0.8125rem; font-weight: normal; text-transform: none; }
+.top-bar-section ul li > a { display: block; width: 100%; color: #000; padding: 12px 0 12px 0; padding-left: 0.9375rem; font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif; font-size: 0.8125rem; font-weight: normal; text-transform: none; }
 .top-bar-section ul li > a.button { font-size: 0.8125rem; padding-right: 0.9375rem; padding-left: 0.9375rem; background-color: #8cc63e; border-color: #70a12f; color: #FFFFFF; }
 .top-bar-section ul li > a.button:hover, .top-bar-section ul li > a.button:focus { background-color: #70a12f; }
 .top-bar-section ul li > a.button:hover, .top-bar-section ul li > a.button:focus { color: #FFFFFF; }
@@ -1279,7 +1279,7 @@ p.lead { font-size: 1.21875rem; line-height: 1.6; }
 p aside { font-size: 0.875rem; line-height: 1.35; font-style: italic; }
 
 /* Default header styles */
-h1, h2, h3, h4, h5, h6 { font-family: Verdana, Geneva, Lucida, "Lucida Grande", Helvetica, Arial, sans-serif; font-weight: normal; font-style: normal; color: #222222; text-rendering: optimizeLegibility; margin-top: 0.2rem; margin-bottom: 0.5rem; line-height: 1.4; }
+h1, h2, h3, h4, h5, h6 { font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif; font-weight: normal; font-style: normal; color: #222222; text-rendering: optimizeLegibility; margin-top: 0.2rem; margin-bottom: 0.5rem; line-height: 1.4; }
 h1 small, h2 small, h3 small, h4 small, h5 small, h6 small { font-size: 60%; color: #6f6f6f; line-height: 0; }
 
 h1 { font-size: 2.125rem; }
@@ -1598,15 +1598,13 @@ th.hide-for-touch { display: table-cell !important; }
 ----------------------------------------- */
 @font-face { font-family: 'Lato'; font-style: normal; font-weight: 400; src: local("Lato Regular"), local("Lato-Regular"), url(../fonts/Lato/Lato-Regular.woff) format("woff"); }
 @font-face { font-family: 'Lato'; font-style: normal; font-weight: 700; src: local("Lato Bold"), local("Lato-Bold"), url(../fonts/Lato/Lato-Bold.woff) format("woff"); }
-@font-face { font-family: 'Oswald'; font-style: normal; font-weight: 400; src: local("Oswald Regular"), local("Oswald-Regular"), url(../fonts/Oswald/Oswald-Regular.woff) format("woff"); }
-@font-face { font-family: 'Oswald'; font-style: normal; font-weight: 700; src: local("Oswald Bold"), local("Oswald-Bold"), url(../fonts/Oswald/Oswald-Bold.woff) format("woff"); }
 /* ----------------------------------------- Master Layout
 ----------------------------------------- */
 html { background-color: white; }
 
 body { position: relative; color: #333; min-height: 100%; font-family: Lato, Helvetica, Arial, sans-serif; overflow-y: scroll; }
 
-h1, h2, h3, h4, h5, h6 { font-family: Oswald, Helvetica, Arial, sans-serif; letter-spacing: 1px; color: #03405f; }
+h1, h2, h3, h4, h5, h6 { font-family: Lato, Helvetica, Arial, sans-serif; color: #03405f; }
 
 .panel h1, .panel h2, .panel h3, .panel h4, .panel h5, .panel h6 { color: #03405f; }
 
@@ -1630,7 +1628,7 @@ h1, h2, h3, h4, h5, h6 { font-family: Oswald, Helvetica, Arial, sans-serif; lett
 #logobar #offcanvas-icon i { font-size: 1.8rem; }
 
 #navbar { border-top: 1px solid black; border-bottom: 1px solid black; }
-#navbar .top-bar-section ul li > a { font-family: Oswald, Helvetica, Arial, sans-serif; font-size: 1.2rem; padding-left: 14px; padding-right: 14px; }
+#navbar .top-bar-section ul li > a { font-family: Lato, Helvetica, Arial, sans-serif; font-size: 1.2rem; padding-left: 14px; padding-right: 14px; }
 #navbar a { text-transform: uppercase; font-size: 0.9rem; }
 #navbar .top-bar-section ul.dropdown li > a { font-family: Lato, Helvetica, Arial, sans-serif; font-size: 1rem; }
 #navbar .dropdown { z-index: 999999; box-shadow: 0 0 1px 1px #f6a84d; }
@@ -1669,7 +1667,7 @@ hr { border: 1px solid #6a737b; border-width: 1px 0 0; }
 
 a.has-tip { border-bottom: none !important; }
 
-.tooltip { font-weight: normal; font-size: 0.825rem; font-family: Verdana, Geneva, Helvetica, sans-serif; max-width: 260px; }
+.tooltip { font-weight: normal; font-size: 0.825rem; font-family: Lato, Geneva, Helvetica, sans-serif; max-width: 260px; }
 
 .breakword { word-wrap: break-word; }
 
