@@ -1,7 +1,6 @@
-from pages.landingpage import LandingPage
 from pages.basepage import BasePage
 
-class CreateKeypairDialog(LandingPage):
+class CreateKeypairDialog(BasePage):
 
     def __init__(self, tester):
         self.tester = tester

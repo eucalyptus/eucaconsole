@@ -6,6 +6,7 @@ class KeypairDetailPage(DetailPage):
         self.tester = tester
 
     _keypair_detail_page_title = "Details for key pair"
+    _delete_keypair_action_menuitem_id = "delete-keypair-action"
 
     def verify_keypair_detail_page_loaded(self):
         """
@@ -14,3 +15,6 @@ class KeypairDetailPage(DetailPage):
         self.tester.wait_for_text_present_by_id(DetailPage._detail_page_title_id, self._keypair_detail_page_title)
         self.tester.wait_for_visible_by_css(DetailPage._actions_menu_css)
 
+    def click_action_delete_keypair_on_detail_page(self):
+        self.tester.click_element_by_css(DetailPage._actions_menu_css)
+        self.tester.click_element_by_id(self._delete_keypair_action_menuitem_id)

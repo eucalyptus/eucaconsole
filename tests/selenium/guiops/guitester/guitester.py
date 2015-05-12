@@ -6,6 +6,7 @@ from pages.keypair.keypairdetail import KeypairDetailPage
 from selenium_api.selenium_api import SeleniumApi
 from pages.keypair.keypairlanding import KeypairLandingPage
 from dialogs.create_keypair_dialog import CreateKeypairDialog
+from dialogs.delete_keypair_modal import DeleteKeypairModal
 
 class GuiTester(SeleniumApi):
 
@@ -56,7 +57,7 @@ class GuiTester(SeleniumApi):
         """
         BasePage(self).goto_keypair_landing_via_menu()
         KeypairLandingPage(self).verify_keypair_landing_page_loaded()
-        KeypairLandingPage(self).click_create_keypair_button_on_landing_page(keypair_name)
+        KeypairLandingPage(self).click_create_keypair_button_on_landing_page()
         CreateKeypairDialog(self).create_keypair(keypair_name)
         KeypairDetailPage(self).verify_keypair_detail_page_loaded()
 
@@ -64,7 +65,18 @@ class GuiTester(SeleniumApi):
         pass
 
     def delete_keypair_from_detail_page(self, kekeypair_name):
-        pass
+        """
+        Goes to keypair landing page, finds keypair, goes to keypair detail page via keypair name link. Deletes keypair.
+        :param kekeypair_name:
+        """
+        BasePage(self).goto_keypair_landing_via_menu()
+        KeypairLandingPage(self).verify_keypair_landing_page_loaded()
+        KeypairLandingPage(self).click_keypair_link_on_landing_page(kekeypair_name)
+        KeypairDetailPage(self).verify_keypair_detail_page_loaded()
+        KeypairDetailPage(self).click_action_delete_keypair_on_detail_page()
+        DeleteKeypairModal(self).click_delete_keypair_submit_button()
+        BasePage(self).goto_keypair_landing_via_menu()
+        KeypairLandingPage(self).verify_keypair_not_present_on_landing(kekeypair_name)
 
     def delete_keypair_from_landing_page(self, kekeypair_name):
         pass

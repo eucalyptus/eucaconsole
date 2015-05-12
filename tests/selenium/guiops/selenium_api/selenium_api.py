@@ -122,7 +122,7 @@ class SeleniumApi():
         try:
             self.wait_for_element_present_by_css(css)
             WebDriverWait(self.driver, self.timeout_to_determine_visibility_in_seconds).until(EC.visibility_of_element_located((By.CSS_SELECTOR, css)))
-            print "Element by icss = '{0}' was located in DOM and is visible.".format(css)
+            print "Element by css = '{0}' was located in DOM and is visible.".format(css)
         except TimeoutException:
             print "ERROR: Timed out: element by css = '{0}' not visible.".format(css)
 

@@ -16,6 +16,9 @@ class Dashboard(BasePage):
             self.tester = tester
 
         def verify_dashboard_loaded(self):
+            """
+            Waits for the 'Launch instance' button to become visible
+            """
             self.tester.wait_for_visible_by_css(self._launch_instance_button_css)
 
         def from_dashboard_goto_keypairs_lp_via_icon(self):
