@@ -105,8 +105,8 @@ class SeleniumApi():
         print "Executing wait_for_visible_by_id('{0}')".format(element_id)
 
         try:
-            self.wait_for_element_present_by_id(element_id)
-            WebDriverWait(self.driver, self.timeout_to_determine_visibility_in_seconds).until(EC.visibility_of_element_located((By.ID,element_id)))
+            #self.wait_for_element_present_by_id(element_id)
+            WebDriverWait(self.driver, self.timeout_to_determine_visibility_in_seconds).until(EC.visibility_of_element_located((By.ID, element_id)))
             print "Element by id = '{0}' was located in DOM and is visible.".format(element_id)
         except TimeoutException:
             print "ERROR: Timed out: element by id = '{0}' not visible.".format(element_id)
@@ -120,7 +120,7 @@ class SeleniumApi():
         print "Executing wait_for_visible_by_css('{0}')".format(css)
 
         try:
-            self.wait_for_element_present_by_css(css)
+            #self.wait_for_element_present_by_css(css)
             WebDriverWait(self.driver, self.timeout_to_determine_visibility_in_seconds).until(EC.visibility_of_element_located((By.CSS_SELECTOR, css)))
             print "Element by css = '{0}' was located in DOM and is visible.".format(css)
         except TimeoutException:
@@ -171,9 +171,8 @@ class SeleniumApi():
         Clicks the element.
         :param element_id:
         """
-        print "Executing click_element_by_id('{0}')".format(element_id)
-
         self.wait_for_visible_by_id(element_id)
+        print "Executing click_element_by_id('{0}')".format(element_id)
         try:
             self.driver.find_element_by_id(element_id).click()
             print "Clicking on element by id = ('{0}')".format(element_id)
@@ -186,9 +185,8 @@ class SeleniumApi():
         Clicks the element.
         :param css:
         """
-        print "Executing click_element_by_css('{0}')".format(css)
-
         self.wait_for_visible_by_css(css)
+        print "Executing click_element_by_css('{0}')".format(css)
         try:
             self.driver.find_element_by_css_selector(css).click()
             print "Clicking on element by css = ('{0}')".format(css)
