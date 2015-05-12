@@ -34,7 +34,7 @@ class BasePage(SeleniumApi):
         self.tester.click_element_by_css(self._hamburger_css)
         self.tester.click_element_by_id(self._dashboard_menuitem_id)
 
-    def goto_keypair_landing_via_menu(self):
+    def goto_keypair_view_page_via_menu(self):
         self.tester.click_element_by_css(self._hamburger_css)
         self.tester.click_element_by_id(self._keypair_menuitem_id)
 

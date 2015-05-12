@@ -21,10 +21,6 @@ class Dashboard(BasePage):
             """
             self.tester.wait_for_visible_by_css(self._launch_instance_button_css)
 
-        def from_dashboard_goto_keypairs_lp_via_icon(self):
-            self.tester.click_element_by_css(self._keypairs_icon_css)
-
-
         def click_create_keypair_link_from_dashboard(self):
             """
             Clicks create keypair link on Dashboard.

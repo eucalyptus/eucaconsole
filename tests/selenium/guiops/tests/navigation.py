@@ -5,7 +5,6 @@ import time
 
 class Navigation_sequence(GuiTester, GuiEC2):
 
-    keypair_name = "gui-test"
 
     def __init__(self):
         self.tester = GuiTester("http://10.111.80.147:4444/wd/hub", "http://10.111.5.145:8888")
@@ -13,12 +12,7 @@ class Navigation_sequence(GuiTester, GuiEC2):
     def navigation_test(self):
 
         self.tester.login("ui-test-acct-00", "admin", "mypassword0")
-        self.tester.create_keypair_from_keypair_landing(self.keypair_name)
-        self.tester.delete_keypair_from_detail_page(self.keypair_name)
-        self.tester.create_keypair_from_dashboard(self.keypair_name)
-        self.tester.delete_keypair_from_landing_page(self.keypair_name)
-        self.tester.import_keypair(self.keypair_name)
-        self.tester.delete_keypair_from_detail_page(self.keypair_name)
+
         self.tester.logout()
         self.tester.exit_browser()
 

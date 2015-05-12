@@ -18,7 +18,7 @@ class GuiEC2(GuiTester):
         """
         Goes from Dashboard to keypair landing page via menu. Creates keypair, verifies keypair detail page is loaded after keypair creation.
         """
-        BasePage(self).goto_keypair_landing_via_menu()
+        BasePage(self).goto_keypair_view_page_via_menu()
         KeypairView(self).verify_keypair_landing_page_loaded()
         KeypairView(self).click_create_keypair_button_on_landing_page(keypair_name)
         CreateKeypairDialog(self).create_keypair(keypair_name)

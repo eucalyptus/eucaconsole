@@ -5,7 +5,7 @@ from pages.loginpage import LoginPage
 from pages.keypair.keypairdetail import KeypairDetailPage
 from selenium_api.selenium_api import SeleniumApi
 from pages.keypair.keypairview import KeypairView
-from dialogs.keypair_dialogs import CreateKeypairDialog, DeleteKeypairModal
+from dialogs.keypair_dialogs import CreateKeypairDialog, DeleteKeypairModal, ImportKeypairDialog
 
 class GuiTester(SeleniumApi):
 
@@ -45,43 +45,61 @@ class GuiTester(SeleniumApi):
 
     def create_keypair_from_dashboard(self, keypair_name):
         """
-        Goes to Dashboard, creates keypair.
+        Navigates to Dashboard via menu, creates keypair. Verifies keypair visible on Keypair View page.
         :param keypair_name:
         """
-        pass
+        BasePage(self).goto_dashboard_via_menu()
+        Dashboard(self).click_create_keypair_link_from_dashboard()
+        CreateKeypairDialog(self).create_keypair(keypair_name)
+        KeypairDetailPage(self).verify_keypair_detail_page_loaded()
 
     def create_keypair_from_keypair_landing(self, keypair_name):
         """
         Goes from Dashboard to keypair landing page via menu. Creates keypair, verifies keypair detail page is loaded after keypair creation.
+        :param keypair_name:
         """
-        BasePage(self).goto_keypair_landing_via_menu()
+        BasePage(self).goto_keypair_view_page_via_menu()
         KeypairView(self).verify_keypair_landing_page_loaded()
         KeypairView(self).click_create_keypair_button_on_landing_page()
         CreateKeypairDialog(self).create_keypair(keypair_name)
         KeypairDetailPage(self).verify_keypair_detail_page_loaded()
 
-    def import_keypair(self, keypair_name):
-        pass
-
-    def delete_keypair_from_detail_page(self, kekeypair_name):
+    def import_keypair(self, keypair, keypair_name):
         """
-        Goes to keypair landing page, finds keypair, goes to keypair detail page via keypair name link. Deletes keypair.
-        :param kekeypair_name:
+        Navigates to Keypair View via menu. Imports keypair. Verifies keypair visible on Keypair View page.
+        :param keypair_name:
         """
-        BasePage(self).goto_keypair_landing_via_menu()
+        BasePage(self).goto_keypair_view_page_via_menu()
         KeypairView(self).verify_keypair_landing_page_loaded()
-        KeypairView(self).click_keypair_link_on_landing_page(kekeypair_name)
+        KeypairView(self).click_import_keypair_button()
+        ImportKeypairDialog(self).import_keypair(keypair, keypair_name)
+        KeypairDetailPage(self).verify_keypair_detail_page_loaded()
+
+    def delete_keypair_from_detail_page(self, keypair_name):
+        """
+        Navigates to Keypair View via menu, finds keypair, goes to keypair detail page via keypair name link. Deletes keypair.
+        :param keypair_name:
+        """
+        BasePage(self).goto_keypair_view_page_via_menu()
+        KeypairView(self).verify_keypair_landing_page_loaded()
+        KeypairView(self).click_keypair_link_on_landing_page(keypair_name)
         KeypairDetailPage(self).verify_keypair_detail_page_loaded()
         KeypairDetailPage(self).click_action_delete_keypair_on_detail_page()
         DeleteKeypairModal(self).click_delete_keypair_submit_button()
-        BasePage(self).goto_keypair_landing_via_menu()
-        KeypairView(self).verify_keypair_not_present_on_landing(kekeypair_name)
+        BasePage(self).goto_keypair_view_page_via_menu()
+        KeypairView(self).verify_keypair_not_present_on_landing(keypair_name)
 
-    def delete_keypair_from_landing_page(self, kekeypair_name):
-        pass
+    def delete_keypair_from_view_page(self, keypair_name):
+        """
+        Navigates to Keypair View via menu. Deletes keypair from view page. Verifies keypair was removed from view page.
+        """
+        BasePage(self).goto_keypair_view_page_via_menu()
+        KeypairView(self).verify_keypair_landing_page_loaded()
+        KeypairView(self).click_action_delete_keypair_on_landing(keypair_name)
+        DeleteKeypairModal(self).click_delete_keypair_submit_button()
+        BasePage(self).goto_keypair_view_page_via_menu()
+        KeypairView(self).verify_keypair_not_present_on_landing(keypair_name)
 
-    def goto_dashboard(self):
-        Dashboard(self).goto_keypair_landing_via_hamburger()
 
     def exit_browser(self):
         """
