@@ -52,11 +52,13 @@
                             </a>
                         </h6>
                         <div class="content" ng-show="expanded">
-                            <div tal:condition="isEBS">
-                                ${structure:create_image_form['no_reboot']}&nbsp;<label id="no-reboot" for="no_reboot">${create_image_form.no_reboot.label.text}</label>
-                                <span data-tooltip="" title="${create_image_form.no_reboot.label_help_text}">
-                                    <i class="helptext-icon"></i>
-                                </span>
+                            <div tal:condition="isEBS" class="controls-wrapper">
+                                ${structure:create_image_form['no_reboot']}
+                                <label id="no-reboot" for="no_reboot">
+                                    ${create_image_form.no_reboot.label.text}
+                                    <span tal:condition="getattr(create_image_form.no_reboot, 'help_text', None)" class="helptext-icon"
+                                        data-tooltip="" title="${create_image_form.no_reboot.help_text}"></span>
+                                </label>
                             </div>
                             ${panel('bdmapping_editor', image=image, snapshot_choices=snapshot_choices)}
                         </div>

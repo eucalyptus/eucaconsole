@@ -138,7 +138,7 @@ class BaseScalingGroupForm(BaseSecureForm):
         self.health_check_period.error_msg = self.health_check_period_error_msg
 
         # Set help text
-        self.vpc_network.label_help_text = self.vpc_network_helptext
+        self.vpc_network.help_text = self.vpc_network_helptext
 
         if scaling_group is not None:
             self.launch_config.data = scaling_group.launch_config_name

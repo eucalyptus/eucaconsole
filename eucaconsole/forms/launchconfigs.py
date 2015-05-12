@@ -95,7 +95,7 @@ class CreateLaunchConfigForm(BaseSecureForm):
             self.image_id.data = self.image.id
 
     def set_help_text(self):
-        self.associate_public_ip_address.label_help_text = self.associate_public_ip_address_helptext
+        self.associate_public_ip_address.help_text = self.associate_public_ip_address_helptext
         self.userdata_file.help_text = self.userdata_file_helptext
 
     def set_choices(self):
