@@ -11,8 +11,8 @@ from dialogs.keypair_dialogs import CreateKeypairDialog
 
 class GuiEC2(GuiTester):
 
-    def __init__(self):
-        super(GuiTester, self).__init__()
+    def __init__(self, webdriver_url, console_url, account="ui-test-acct-00", user="admin", password="mypassword0"):
+        super(GuiEC2, self).__init__(webdriver_url, console_url, account=account, user=user, password=password)
 
     def create_keypair_from_landing(self, keypair_name):
         """

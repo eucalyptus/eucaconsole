@@ -82,7 +82,7 @@ class GuiTester(SeleniumApi):
         """
         BasePage(self).goto_keypair_view_page_via_menu()
         KeypairView(self).verify_keypair_landing_page_loaded()
-        KeypairView(self).click_keypair_link_on_landing_page(keypair_name)
+        KeypairView(self).click_keypair_link_on_view_page(keypair_name)
         KeypairDetailPage(self).verify_keypair_detail_page_loaded()
         KeypairDetailPage(self).click_action_delete_keypair_on_detail_page()
         DeleteKeypairModal(self).click_delete_keypair_submit_button()

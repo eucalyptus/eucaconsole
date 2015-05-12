@@ -14,7 +14,7 @@ class UICheckException(Exception):
         raise Exception(message)
 
 
-class SeleniumApi():
+class SeleniumApi(object):
     def __init__(self, driver):
         """
 
@@ -105,11 +105,16 @@ class SeleniumApi():
         print "Executing wait_for_visible_by_id('{0}')".format(element_id)
 
         try:
-            #self.wait_for_element_present_by_id(element_id)
             WebDriverWait(self.driver, self.timeout_to_determine_visibility_in_seconds).until(EC.visibility_of_element_located((By.ID, element_id)))
             print "Element by id = '{0}' was located in DOM and is visible.".format(element_id)
         except TimeoutException:
             print "ERROR: Timed out: element by id = '{0}' not visible.".format(element_id)
+            print "Checking whether element by id = '{0}' present in the DOM.".format(element_id)
+            try:
+                self.driver.find_element_by_id(element_id)
+                print "Element by id = '{0}' is present in the DOM but not visible.".format(element_id)
+            except NoSuchElementException:
+                print "ERROR: Element by id = '{0}' not found in the DOM.".format(element_id)
 
     def wait_for_visible_by_css(self, css):
         """
@@ -120,11 +125,16 @@ class SeleniumApi():
         print "Executing wait_for_visible_by_css('{0}')".format(css)
 
         try:
-            #self.wait_for_element_present_by_css(css)
             WebDriverWait(self.driver, self.timeout_to_determine_visibility_in_seconds).until(EC.visibility_of_element_located((By.CSS_SELECTOR, css)))
             print "Element by css = '{0}' was located in DOM and is visible.".format(css)
         except TimeoutException:
             print "ERROR: Timed out: element by css = '{0}' not visible.".format(css)
+            print "Checking whether element by css = '{0}' present in the DOM.".format(css)
+            try:
+                self.driver.find_element_by_css_selector(css)
+                print "Element by css = '{0}' is present in the DOM but not visible.".format(css)
+            except NoSuchElementException:
+                print "ERROR: Element by css = '{0}' not found in the DOM.".format(css)
 
     def wait_for_clickable_by_id(self, element_id):
         """
@@ -138,6 +148,12 @@ class SeleniumApi():
             print "Found clickable element by id = '{0}'".format(element_id)
         except TimeoutException, tout:
             print "ERROR: Did not find clickable element by id = '{0}'".format(element_id)
+            print "Checking whether element by id = '{0}' present in the DOM.".format(element_id)
+            try:
+                self.driver.find_element_by_id(element_id)
+                print "Element by id = '{0}' is present in the DOM but not clickable.".format(element_id)
+            except NoSuchElementException:
+                print "ERROR: Element by id = '{0}' not found in the DOM.".format(element_id)
 
     def wait_for_clickable_by_css(self, css):
         """
@@ -151,6 +167,12 @@ class SeleniumApi():
             print "Found clickable element by css = '{0}'".format(css)
         except TimeoutException, tout:
             print "ERROR: Did not find clickable element by css = '{0}'".format(css)
+            print "Checking whether element by css = '{0}' present in the DOM.".format(css)
+            try:
+                self.driver.find_element_by_css_selector(css)
+                print "Element by css = '{0}' is present in the DOM but not clickable.".format(css)
+            except NoSuchElementException:
+                print "ERROR: Element by css = '{0}' not found in the DOM.".format(css)
 
     def wait_for_clickable_by_xpath(self, xpath):
         """
@@ -164,6 +186,13 @@ class SeleniumApi():
             print "Found clickable element by xpath = '{0}'".format(xpath)
         except TimeoutException, tout:
             print "ERROR: Did not find clickable element by xpath = '{0}'".format(xpath)
+            print "Checking whether element by xpath = '{0}' present in the DOM.".format(xpath)
+            try:
+                self.driver.find_element_by_xpath(xpath)
+                print "Element by css = '{0}' is present in the DOM but not clickable.".format(xpath)
+            except NoSuchElementException:
+                print "ERROR: Element by css = '{0}' not found in the DOM.".format(xpath)
+
 
     def click_element_by_id(self, element_id):
         """

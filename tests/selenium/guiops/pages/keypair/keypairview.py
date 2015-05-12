@@ -6,6 +6,7 @@ class KeypairView(ViewPage):
 
     def __init__(self, tester):
         self.tester = tester
+        self.verify_keypair_landing_page_loaded()
 
     _keypair_view_page_title = "Key Pairs"
     _create_keypair_btn_id = "create-keypair-btn"
@@ -28,10 +29,10 @@ class KeypairView(ViewPage):
     def click_import_keypair_button(self):
         self.tester.click_element_by_css(self._import_keypair_btn_css)
 
-    def click_keypair_link_on_landing_page(self, keypair_name):
+    def click_keypair_link_on_view_page(self, keypair_name):
         self.tester.click_element_by_css(self._keypair_link_css.format(keypair_name))
 
-    def verify_keypair_present_on_landing(self, keypair_name):
+    def verify_keypair_present_on_view_page(self, keypair_name):
         self.tester.wait_for_element_present_by_css(self._keypair_link_css.format(keypair_name))
 
     def verify_keypair_not_present_on_landing(self, keypair_name):

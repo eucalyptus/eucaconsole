@@ -12,7 +12,7 @@ class Navigation_sequence(GuiTester, GuiEC2):
     def navigation_test(self):
 
         self.tester.login("ui-test-acct-00", "admin", "mypassword0")
-
+        self.tester.wait_for_visible_by_id("unsaved-changes-warning-modal")
         self.tester.logout()
         self.tester.exit_browser()
 
