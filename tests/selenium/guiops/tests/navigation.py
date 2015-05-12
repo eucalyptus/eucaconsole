@@ -15,6 +15,10 @@ class Navigation_sequence(GuiTester, GuiEC2):
         self.tester.login("ui-test-acct-00", "admin", "mypassword0")
         self.tester.create_keypair_from_keypair_landing(self.keypair_name)
         self.tester.delete_keypair_from_detail_page(self.keypair_name)
+        self.tester.create_keypair_from_dashboard(self.keypair_name)
+        self.tester.delete_keypair_from_landing_page(self.keypair_name)
+        self.tester.import_keypair(self.keypair_name)
+        self.tester.delete_keypair_from_detail_page(self.keypair_name)
         self.tester.logout()
         self.tester.exit_browser()
 

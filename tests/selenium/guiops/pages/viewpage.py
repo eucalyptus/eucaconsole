@@ -1,6 +1,6 @@
 from basepage import BasePage
 
-class LandingPage(BasePage):
+class ViewPage(BasePage):
 
     def __init__(self, tester):
         self.tester = tester
