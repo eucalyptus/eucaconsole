@@ -230,7 +230,7 @@ class StackStateView(BaseView):
             stack_outputs = stack.outputs if stack else None
             outputs = []
             for output in stack_outputs:
-                outputs.append({'key': output.key, 'value': output.value})
+                outputs.append({'key': output.key, 'description': output.description, 'value': output.value})
             resources = []
             for resource in stack_resources:
                 resources.append({

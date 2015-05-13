@@ -260,6 +260,13 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
                 eucaHandleError(oData, status);
             });
         };
+        $scope.paramValue = function(name) {
+            var ret = $scope.paramModels[name];
+            if (Array.isArray(ret)) {
+                ret = ret[0];
+            }
+            return ret;
+        }
     })
 ;
 
