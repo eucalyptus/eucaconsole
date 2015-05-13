@@ -6,6 +6,7 @@
 
 angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor', 'MagicSearch'])
     .controller('ELBPageCtrl', function ($scope, $timeout, eucaUnescapeJson) {
+        $scope.elbForm = undefined;
         $scope.listenerArray = [];
         $scope.securityGroups = [];
         $scope.availabilityZones = []; 
@@ -45,6 +46,8 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
             }, 1000);
         };
         $scope.setInitialValues = function (options) {
+
+            $scope.elbForm = $('#elb-view-form');
             if (options.hasOwnProperty('securitygroups')) {
                 if (options.securitygroups instanceof Array && options.securitygroups.length > 0) {
                     $scope.securityGroups = options.securitygroups;
@@ -458,6 +461,7 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
         $scope.submitSaveChanges = function ($event) {
             $event.preventDefault();
             $scope.isNotChanged = true;
+            $scope.elbForm.submit();
         };
     })
 ;

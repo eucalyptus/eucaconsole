@@ -6,7 +6,8 @@
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="ELBPage" ng-controller="ELBPageCtrl"
-        ng-init="initController('${controller_options_json}')">
+        ng-init="initController('${controller_options_json}')"
+         tal:define="form_action request.route_path('elb_update', id=elb.name)">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('elbs')}" i18n:translate="">Load balancers</a></li>
@@ -20,7 +21,7 @@
             <em>${elb_name}</em>
         </h3>
         <div class="large-12 columns">
-            <form action="" id="elb-view-form"
+            <form tal:attributes="action form_action" id="elb-view-form"
                 method="post" data-abide="abide" enctype="multipart/form-data">
                 ${structure:elb_form['csrf_token']}
                 <dl id="elb-view-tabs" class="tabs" data-tab="" ng-cloak="">
