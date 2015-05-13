@@ -62,10 +62,8 @@ $euca-validation-input-bgcolor: lighten(lightpink, 10%);
 $euca-input-field-height: 2rem;
 
 // Text
-$body-font-family: Verdana, Geneva, Lucida, "Lucida Grande", Helvetica, Arial, sans-serif;
 $euca-text-font-family: Lato, Helvetica, Arial, sans-serif;
-$euca-header-font-family: Oswald, Helvetica, Arial, sans-serif;
-$euca-header-font: "Trebuchet MS", "Droid Sans", "Helvetica Nueue", Helvetica, sans-serif;
+$euca-header-font-family: Lato, Helvetica, Arial, sans-serif;
 $euca-font-size: 0.8125rem;
 $euca-text-color: #333;
 $euca-link-color: darken($euca-darkgreen, 10%);
@@ -124,7 +122,7 @@ $topbar-link-hover-lightness: -10%; // Darken by 10%
 $topbar-link-bg-hover: $euca-orange;
 $topbar-link-bg-active: $euca-orange;
 $topbar-link-bg-active-hover: $primary-color;
-$topbar-link-font-family: $body-font-family;
+
 
 // Sub-nav
 $sub-nav-active-bg: $euca-darkblue;
