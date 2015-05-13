@@ -90,7 +90,7 @@ class BaseViewTestCase(unittest.TestCase):
     def tearDown(self):
         testing.tearDown()
 
-    def create_request(self, path='/', is_xhr=False, matchdict=None, params=None):
+    def create_request(self, path='/', is_xhr=False, matchdict=None, params=None, session=None):
         request = testing.DummyRequest(path=path)
         request.id = 'test_request_id'
         request.is_xhr = is_xhr
@@ -98,6 +98,8 @@ class BaseViewTestCase(unittest.TestCase):
         request.params = MultiDict(csrf_token=request.session.get_csrf_token())
         if params:
             request.params.update(params)
+        if session:
+            request.session.update(session)
         return request
 
 
