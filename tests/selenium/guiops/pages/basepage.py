@@ -38,6 +38,45 @@ class BasePage(SeleniumApi):
         self.tester.click_element_by_css(self._hamburger_css)
         self.tester.click_element_by_id(self._keypair_menuitem_id)
 
+    def goto_images_view_via_menu(self):
+        pass
+
+    def goto_instances_via_menu(self):
+        pass
+
+    def goto_stacks_view_via_menu(self):
+        pass
+
+    def goto_elestic_ip_view_via_menu(self):
+        pass
+
+    def goto_security_groups_view_via_menu(self):
+        pass
+
+    def goto_load_balancers_view_via_menu(self):
+        pass
+
+    def goto_keypairs_view_via_menu(self):
+        pass
+
+    def goto_volumes_view_via_menu(self):
+        pass
+
+    def goto_snapshots_view_via_menu(self):
+        pass
+
+    def goto_buckets_view_via_menu(self):
+        pass
+
+    def goto_asg_view_via_menu(self):
+        pass
+
+    def goto_launch_config_view_via_menu(self):
+        pass
+
+    def goto_iam_users_view_via_menu(self):
+        pass
+
     def get_notification(self):
         self.tester.wait_for_visible_by_id(BasePage._notification_id)
         notification = self.tester.store_text_by_id(BasePage._notification_id)

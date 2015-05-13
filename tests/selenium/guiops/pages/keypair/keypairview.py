@@ -1,6 +1,4 @@
 from pages.viewpage import ViewPage
-from dialogs.keypair_dialogs import CreateKeypairDialog
-from pages.keypair.keypairdetail import KeypairDetailPage
 
 class KeypairView(ViewPage):
 
@@ -35,7 +33,7 @@ class KeypairView(ViewPage):
     def verify_keypair_present_on_view_page(self, keypair_name):
         self.tester.wait_for_element_present_by_css(self._keypair_link_css.format(keypair_name))
 
-    def verify_keypair_not_present_on_landing(self, keypair_name):
+    def verify_keypair_not_present_on_view_page(self, keypair_name):
         self.tester.wait_for_element_not_present_by_css(self._keypair_link_css.format(keypair_name))
 
     def click_action_delete_keypair_on_landing(self, keypair_name):

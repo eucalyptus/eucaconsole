@@ -3,7 +3,7 @@ from guitester.guiec2 import GuiEC2
 import time
 
 
-class Keypair_operations_sequence(GuiTester, GuiEC2):
+class Keypair_operations_sequence(GuiEC2):
 
     keypair_name = "gui-test"
 
@@ -13,7 +13,7 @@ class Keypair_operations_sequence(GuiTester, GuiEC2):
                   "tlZD0zbdV/tpADxDpnhW2cPVpXcjy4sRzUCc8AZW+OE3LQxXild alicehubenko@Alices-MacBook-Pro.local"
 
     def __init__(self):
-        self.tester = GuiTester("http://10.111.80.147:4444/wd/hub", "http://10.111.5.145:8888")
+        self.tester = GuiEC2("http://10.111.80.147:4444/wd/hub", "http://10.111.5.145:8888")
 
     def keypair_ops_test(self):
 

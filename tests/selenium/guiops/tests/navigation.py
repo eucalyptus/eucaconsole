@@ -1,18 +1,18 @@
-from guitester.guitester import GuiTester
 from guitester.guiec2 import GuiEC2
+from guitester.guiiam import GuiIAM
 import time
 
 
-class Navigation_sequence(GuiTester, GuiEC2):
+class Navigation_sequence(GuiEC2):
 
 
     def __init__(self):
-        self.tester = GuiTester("http://10.111.80.147:4444/wd/hub", "http://10.111.5.145:8888")
+        self.tester = GuiEC2("http://10.111.80.147:4444/wd/hub", "http://10.111.5.145:8888")
 
     def navigation_test(self):
 
         self.tester.login("ui-test-acct-00", "admin", "mypassword0")
-        self.tester.wait_for_visible_by_id("unsaved-changes-warning-modal")
+        self.tester.create_keypair_from_dashboard("keypair-test")
         self.tester.logout()
         self.tester.exit_browser()
 
