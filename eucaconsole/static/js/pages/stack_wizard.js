@@ -266,7 +266,7 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
                 ret = ret[0];
             }
             return ret;
-        }
+        };
     })
 ;
 
