@@ -55,3 +55,6 @@
 .userdatalabel { right: 0px !important; }
 
 #userdata { margin: 0 0 0; }
+
+div#controls_associate_public_ip_address .large-2.columns { padding-left: 0.25rem; }
+div#controls_associate_public_ip_address .large-3.columns { padding-left: 0.25rem; }
