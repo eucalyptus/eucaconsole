@@ -180,11 +180,11 @@
                             {{ description }}
                         </div>
                     </div>
-                </div>
-                <div class="section" ng-show="tagsLength > 0">
-                    <div class="row" ng-repeat="(name, value) in tagsObject">
-                        <label>{{ name }}</label>
-                        <div class='columns value'>{{ value }}</div>
+                    <div class="row">
+                        <label i18n:translate="">Tags</label>
+                        <div class="columns value" id="tag-preview">
+                            <div ng-repeat="(name, value) in tagsObject">{{ name }}={{ value }}</div>
+                        </div>
                     </div>
                 </div>
                 <div class="section step2 hide">
