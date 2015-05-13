@@ -148,6 +148,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                     $scope.updateTagsPreview();
                 });
                 $scope.tagsObject = JSON.parse(tagsJson);
+                $scope.tagsLength = Object.keys($scope.tagsObject).length;
             }, 300);
         };
         $scope.watchTags = function () {
