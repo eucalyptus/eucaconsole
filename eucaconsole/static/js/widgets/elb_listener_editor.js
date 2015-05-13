@@ -54,6 +54,9 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
             if (options.hasOwnProperty('listener_list')) {
                 if (options.listener_list instanceof Array && options.listener_list.length > 0) {
                     $scope.setInitialListenerArray(options.listener_list);
+                    if ($scope.listenerArray.length > 0) {
+                        $scope.elbListenerTextarea.val(JSON.stringify($scope.listenerArray));
+                    }
                 }
             }
             if (options.hasOwnProperty('port_range_pattern')) {
