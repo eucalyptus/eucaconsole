@@ -231,6 +231,36 @@ class CustomLbAttributes(object):
         pass
 
 
+class LbTagSet(dict):
+    """
+    A TagSet is used to collect the tags associated with a particular
+    Load Balancer instance.
+    """
+
+    def __init__(self, connection=None):
+        self.connection = connection
+        self._current_key = None
+        self._current_value = None
+        self._tags_tag = False
+
+    def startElement(self, name, attrs, connection):
+        if name == 'Tags':
+            self._tags_tag = True
+        elif name == 'member' and self._tags_tag is True:
+            self._current_key = None
+            self._current_value = None
+
+    def endElement(self, name, value, connection):
+        if name == 'Key':
+            self._current_key = value
+        elif name == 'Value':
+            self._current_value = value
+        elif name == 'member' and self._tags_tag is True:
+            self[self._current_key] = self._current_value
+        elif name == 'Tags':
+            self._tags_tag = False
+
+
 class ELBView(TaggedItemView):
     """Views for single ELB"""
     TEMPLATE = '../templates/elbs/elb_view.pt'
@@ -252,6 +282,8 @@ class ELBView(TaggedItemView):
                 self.elb.ping_port = ''
                 self.elb.ping_path = ''
                 self.get_health_check_data()
+                tags_params = {'LoadBalancerNames.member.1': self.elb.name}
+                self.elb.tags = self.elb_conn.get_object('DescribeTags', tags_params, LbTagSet)
             else:
                 raise HTTPNotFound()
         self.is_vpc_supported = BaseView.is_vpc_supported(request)
@@ -271,6 +303,7 @@ class ELBView(TaggedItemView):
             elb_name=self.escape_braces(self.elb.name) if self.elb else '',
             elb_created_time=self.dt_isoformat(self.elb.created_time) if self.elb else '',
             escaped_elb_name=quote(self.elb.name) if self.elb else '',
+            elb_tags=TaggedItemView.get_tags_display(self.elb.tags) if self.elb.tags else '',
             elb_form=self.elb_form,
             delete_form=self.delete_form,
             in_use=False,
@@ -324,6 +357,7 @@ class ELBView(TaggedItemView):
             print time_between_pings
             print failures_until_unhealthy
             print passes_until_healthy
+            self.add_elb_tags(self.elb.name)
             location = self.request.route_path('elb_view', id=self.elb.name)
             prefix = _(u'Unable to update load balancer')
             template = u'{0} {1} - {2}'.format(prefix, self.elb.name, '{0}')
@@ -424,6 +458,20 @@ class ELBView(TaggedItemView):
                                       'to_port': listener[1],
                                       'protocol': listener[2]})
         return listener_list
+
+    def add_elb_tags(self, elb_name):
+        tags_json = self.request.params.get('tags')
+        tags_dict = json.loads(tags_json) if tags_json else {}
+        add_tags_params = {'LoadBalancerNames.member.1': elb_name}
+        index = 1
+        for key, value in tags_dict.items():
+            key = self.unescape_braces(key.strip())
+            if not any([key.startswith('aws:'), key.startswith('euca:')]):
+                add_tags_params['Tags.member.%d.Key' % index] = key
+                add_tags_params['Tags.member.%d.Value' % index] = self.unescape_braces(value.strip())
+                index += 1
+        if index > 1:
+            self.elb_conn.get_status('AddTags', add_tags_params)
 
     def get_instance_selector_text(self):
         instance_selector_text = {'name': _(u'NAME (ID)'), 'tags': _(u'TAGS'),

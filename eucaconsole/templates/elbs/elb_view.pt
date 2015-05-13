@@ -7,7 +7,8 @@
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="ELBPage" ng-controller="ELBPageCtrl"
         ng-init="initController('${controller_options_json}')"
-         tal:define="form_action request.route_path('elb_update', id=elb.name)">
+         tal:define="form_action request.route_path('elb_update', id=elb.name);
+                     elb_tags elb.tags if elb.tags else {};">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('elbs')}" i18n:translate="">Load balancers</a></li>
@@ -68,7 +69,7 @@
                         </div>
                         <hr />
                         <div>
-                            ${panel('tag_editor', show_name_tag=True)}
+                            ${panel('tag_editor',tags=elb_tags, show_name_tag=True)}
                         </div>
                         <div tal:condition="is_vpc_supported and elb_vpc_network is not 'None'"
                                 tal:define="security_group_attrs {'data-placeholder': security_group_placeholder_text};">
