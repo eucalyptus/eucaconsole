@@ -227,8 +227,9 @@
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="large-2 small-4 columns">
-                            <label i18n:translate="">User data
-                                <span title="User data file may not exceed 16 KB" data-tooltip="">
+                            <label>
+                                <span i18n:translate="">User data</span>
+                                <span title="User data file may not exceed 16 KB" data-tooltip="" i18n:attributes="title">
                                     <i class="helptext-icon"></i>
                                 </span>
                             </label>
