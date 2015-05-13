@@ -1,0 +1,358 @@
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
+
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/elb_wizard.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.css')}"/>
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/instance_selector.css')}" />
+</head>
+
+<div metal:fill-slot="main_content" ng-app="BaseELBWizard" ng-controller="BaseELBWizardCtrl" ng-init="initController('${controller_options_json}')">
+    <div class="row" id="contentwrap" ng-controller="ELBWizardCtrl" ng-init="initController('${controller_options_json}')">
+        <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+            <metal:crumbs metal:fill-slot="crumbs">
+                <li><a href="${request.route_path('elbs')}" i18n:translate="">Load balancers</a></li>
+                <li class="current"><a href="#" i18n:translate="">Create load balancer</a></li>
+            </metal:crumbs>
+        </metal:breadcrumbs>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
+        <h3 id="pagetitle">
+            <strong i18n:translate="">Create new load balancer</strong>
+        </h3>
+        <div class="large-8 columns">
+            <div class="wizard no-title">
+                <form action="${request.route_path('elb_create')}" id="elb-form"
+                      method="post" data-abide="abide" enctype="multipart/form-data">
+                    ${structure:create_form['csrf_token']}
+                    <dl id="wizard-tabs" class="tabs" data-tab="" ng-cloak="">
+                        <dd ng-repeat="tab in tabList" ng-class="{disabled: invalidSteps[$index]}" ng-show="tab.render">
+                            <a id="{{ 'tabStep' + ($index+1) }}" ng-click="visitStep($event, $index)"
+                               href="{{ '#step' + ($index+1) }}" ng-hide="invalidSteps[$index]">
+                                <span class="cir">{{ tab.display_id }}</span>
+                                <b>{{ tab.title }}</b>
+                            </a>
+                            <span ng-show="invalidSteps[$index]">
+                                <span class="cir">{{ tab.display_id }}</span>
+                                <b>{{ tab.title }}</b>
+                            </span>
+                        </dd>
+                    </dl>
+                    <div class="tabs-content">
+                        <!--! Step 1: General tab content -->
+                        <div class="content" ng-class="stepClasses[0]" id="step1"
+                            tal:define="html_attrs_val {'class': 'text-input'};">
+                            <div ng-cloak="true">
+                                <h6 i18n:translate="">General</h6>
+                                ${panel('form_field', field=create_form['name'], leftcol_width=0, rightcol_width=12, leftcol_width_large=0, rightcol_width_large=12, stack_label=True, ng_attrs={'model': 'elbName'}, pattern=layout.name_without_spaces_pattern, **html_attrs_val)}
+                            </div>
+                            <hr />
+                            <div>
+                                 ${panel('elb_listener_editor', protocol_list=protocol_list)}
+                                 <div id="hidden_certificate_arn_input_div" class="hide">
+                                     <input type='hidden' id="hidden_certificate_arn_input" name='certificate_arn'/> 
+                                 </div>
+                                 <div id="hidden_backend_certificates_input_div">
+                                     <textarea id="hidden_backend_certificates" name="backend_certificates" class="hidden" style="height: 8rem;"></textarea>
+                                 </div>
+                            </div>
+                            <hr />
+                            <div>
+                                ${panel('tag_editor', show_name_tag=True)}
+                            </div>
+                            <hr />
+                            <div>
+                                <label>
+                                    <span class="req">*</span>
+                                    <span i18n:translate="">Required fields</span>
+                                </label>
+                            </div>
+                            <div class="row">
+                                <div class="small-3 columns">&nbsp;</div>
+                                <div class="small-9 columns field inline">
+                                    <a id="visit-next-step-from-step1" class="button small round" ng-click="visitStep($event, currentStepIndex+1)" ng-disabled="isValidationError">
+                                        <span i18n:translate="">Next</span>
+                                    </a>
+                                    <a href="${request.route_path('elbs')}"
+                                       class="cancel-link" i18n:translate="">Cancel</a>
+                                </div>
+                            </div>
+                        </div>
+                        <!--! Step 2: Network tab content -->
+                        <div class="content" ng-class="stepClasses[1]" id="step2"
+                            tal:define="security_group_attrs {'data-placeholder': security_group_placeholder_text};">
+                            <div ng-cloak="true">
+                                ${panel('form_field', field=create_form['vpc_network'], ng_attrs={'model': 'vpcNetwork'}, rightcol_width=12, stack_label=True)}
+                            </div>
+                            <div>&nbsp;</div>
+                            <div ng-cloak="true" ng-if="vpcNetwork !== 'None'">
+                                ${panel('form_field', field=create_form['securitygroup'], rightcol_width=12, stack_label=True, ng_attrs={'model': '$parent.securityGroups', 'options': 'k as v for (k, v) in $parent.securityGroupChoices'}, **security_group_attrs)}
+                            </div>
+                            <hr />
+                            <div>
+                                <label>
+                                    <span class="req">*</span>
+                                    <span i18n:translate="">Required fields</span>
+                                </label>
+                            </div>
+                            <div class="row">
+                                <div class="small-3 columns">&nbsp;</div>
+                                <div class="small-9 columns field inline">
+                                    <a id="visit-next-step-from-step2" class="button small round" ng-click="visitStep($event, currentStepIndex+1)" ng-disabled="isValidationError">
+                                        <span i18n:translate="">Next</span>
+                                    </a>
+                                    <a href="${request.route_path('elbs')}"
+                                       class="cancel-link" i18n:translate="">Cancel</a>
+                                </div>
+                            </div>
+                        </div>
+                        <!--! Step 3: Instances tab content -->
+                        <div class="content" ng-class="stepClasses[2]" id="step3"
+                            tal:define="avail_zones_attrs {'data-placeholder': avail_zones_placeholder_text};
+                                        vpc_subnets_attrs {'data-placeholder': vpc_subnets_placeholder_text};">
+                            <div ng-cloak="true" ng-show="vpcNetwork === 'None'">
+                                <div class="section-label-with-helptext-icon">
+                                    <label class="left stack-label">
+                                        <span i18n:translate="">
+                                            Add availability zones
+                                        </span>
+                                        <span class="helptext-icon" data-tooltip="" title="${create_form.add_availability_zones_help_text}"></span>
+                                    </label>
+                                </div>
+                                ${panel('form_field', field=create_form['zone'], leftcol_width=0, rightcol_width=12, leftcol_width_large=0, rightcol_width_large=12, ng_attrs={'model': 'availabilityZones', 'options': 'k as v for (k, v) in availabilityZoneChoices'}, **avail_zones_attrs)}
+                            </div>
+                            <div ng-cloak="true" ng-show="vpcNetwork === 'None'" class="checkbox-with-helptext-icon">
+                                ${structure:create_form.cross_zone_enabled(**{'ng-model': 'crossZoneEnabled'})}
+                                ${create_form['cross_zone_enabled'].label}
+                                <span class="helptext-icon" data-tooltip=""
+                                    title="${create_form.cross_zone_enabled.help_text}"></span>
+                            </div>
+                            <div ng-cloak="true" ng-show="vpcNetwork !== 'None'">
+                                <div class="section-label-with-helptext-icon">
+                                    <label class="left stack-label">
+                                        <span i18n:translate="">
+                                            Add VPC subnets
+                                        </span>
+                                        <span class="helptext-icon" data-tooltip="" title="${create_form.add_vpc_subnets_help_text}"></span>
+                                    </label>
+                                </div>
+                                ${panel('form_field', field=create_form['vpc_subnet'], leftcol_width=0, rightcol_width=12, leftcol_width_large=0, rightcol_width_large=12, ng_attrs={'model': 'vpcSubnets', 'options': 'k as v for (k, v) in vpcSubnetChoices'}, **vpc_subnets_attrs)}
+                                 <span id="hidden_vpc_subnet_empty_option" class="hide" i18n:translate="">No subnets found</span>
+                            </div>
+                            <div>&nbsp;</div>
+                            <div ng-cloak="true">
+                                <div class="section-label-with-helptext-icon">
+                                    <label class="stack-label">
+                                        <span i18n:translate="">
+                                            Add instances
+                                        </span>
+                                        <span class="helptext-icon" data-tooltip="" title="${create_form.add_instances_help_text}"></span>
+                                    </label>
+                                </div>
+                                <div>
+                                    <magic-search template="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.html')}"
+
+                                        strings="{'remove':'${layout.searchtext_remove}', 'cancel':'${layout.searchtext_cancel}', 'prompt':'${layout.searchtext_prompt}'}" facets="${search_facets}" filter-keys="${filter_keys}"></magic-search>
+                                </div>
+                                <div>
+                                     <instance-selector
+                                         template="${request.static_path('eucaconsole:static/html/directives/instance_selector.html')}"
+                                         options='${controller_options_json}'>
+                                     </instance-selector>
+                                </div>
+                            </div>
+                            <hr />
+                            <div>
+                                <label>
+                                    <span class="req">*</span>
+                                    <span i18n:translate="">Required fields</span>
+                                </label>
+                            </div>
+                            <div class="row">
+                                <div class="small-3 columns">&nbsp;</div>
+                                <div class="small-9 columns field inline">
+                                    <a id="visit-next-step-from-step4" class="button small round" ng-click="visitStep($event, currentStepIndex+1)" ng-disabled="isValidationError">
+                                        <span i18n:translate="">Next</span>
+                                    </a>
+                                    <a href="${request.route_path('elbs')}"
+                                       class="cancel-link" i18n:translate="">Cancel</a>
+                                </div>
+                            </div>
+                        </div>
+                        <!--! Step 4: Health Check tab content -->
+                        <div class="content" ng-class="stepClasses[3]" id="step4"
+                            tal:define="ping_path_attrs {'class': 'text-input'};
+                                        ping_protocol_attrs {'class': 'ip-protocol'};
+                                        ping_delay_attrs {'class': 'ping-delay'};
+                                        ping_threshold_attrs {'class': 'ping-threshold'};">
+                            <div ng-cloak="true">
+                                <div i18n:translate="">Your load balancer will monitor the health of its instances based on the following health check.</div>
+                                <div i18n:translate="">Instances that fail the health check will be removed from the load balancer.</div>
+                            </div>
+                            <div ng-cloak="true">
+                                <h6 class="section-label" i18n:translate="">Ping settings</h6>
+                                <div>
+                                    ${panel('form_field', field=create_form['ping_protocol'], rightcol_width=12, stack_label=True, ng_attrs={'model': 'pingProtocol'}, **ping_protocol_attrs)}
+                                </div>
+                                <div>
+                                    ${panel('form_field', field=create_form['ping_port'], rightcol_width=12, stack_label=True, min=1, max=65535, maxlength=5, ng_attrs={'model': 'pingPort'}, pattern=layout.integer_gt_zero_pattern)}
+                                </div>
+                                <div ng-show="pingProtocol === 'HTTP' || pingProtocol === 'HTTPS'">
+                                    ${panel('form_field', field=create_form['ping_path'], ng_attrs={'model': 'pingPath'}, rightcol_width=12, stack_label=True, **ping_path_attrs)}
+                                </div>
+                            </div>
+                            <div>&nbsp;</div>
+                            <div class="expando" id="advanced-section" ng-cloak="" ng-init="expanded = false">
+                                <div class="title">
+                                    <a ng-click="expanded = !expanded">
+                                        <i class="fi-plus" ng-show="!expanded"></i>
+                                        <i class="fi-minus" ng-show="expanded"></i>
+                                        &nbsp;<span i18n:translate="">Advanced</span>
+                                    </a>
+                                </div>
+                                <div class="section" ng-show="expanded">
+                                    <div ng-cloak="true">
+                                        <h6 class="section-label" i18n:translate="">Health check timing settings</h6>
+                                        <div>
+                                            ${panel('form_field', field=create_form['response_timeout'], rightcol_width=12, stack_label=True,  min=1, ng_attrs={'model': 'responseTimeout'}, pattern=layout.integer_gt_zero_pattern)}
+                                        </div>
+                                        <div>
+                                            ${panel('form_field', field=create_form['time_between_pings'], rightcol_width=12, stack_label=True, ng_attrs={'model': 'timeBetweenPings'}, **ping_delay_attrs)}
+                                        </div>
+                                    </div>
+                                    <div ng-cloak="true">
+                                        <h6 class="section-label" i18n:translate="">Health check instance thresholds</h6>
+                                        <div>
+                                            ${panel('form_field', field=create_form['failures_until_unhealthy'], rightcol_width=12, stack_label=True, ng_attrs={'model': 'failuresUntilUnhealthy'}, **ping_threshold_attrs)}
+                                        </div>
+                                        <div>
+                                            ${panel('form_field', field=create_form['passes_until_healthy'], rightcol_width=12, stack_label=True, ng_attrs={'model': 'passesUntilHealthy'}, **ping_threshold_attrs)}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>&nbsp;</div>
+                            <hr/>
+                            <div>
+                                <label>
+                                    <span class="req">*</span>
+                                    <span i18n:translate="">Required fields</span>
+                                </label>
+                            </div>
+                            <div class="row">
+                                <div class="small-3 columns">&nbsp;</div>
+                                <div class="small-9 columns field inline">
+                                    <button type="submit" class="button" ng-click="createELB()" id="create-elb-btn-step4" ng-disabled="isValidationError">
+                                        <span i18n:translate="">Create Load Balancer</span>
+                                    </button>
+                                    <a href="${request.route_path('elbs')}"
+                                       class="cancel-link" i18n:translate="">Cancel</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clearfix">&nbsp;</div>
+                </form>
+            </div>
+        </div>
+        <div class="large-4 columns">
+            <div class="help-padding">&nbsp;</div>
+            <div class="summary" ng-cloak="">
+                <h5 i18n:translate="" class="title">Summary</h5>
+                <div class="section" ng-show="summaryDisplays[0]">
+                    <div class="row">
+                        <label i18n:translate="">Name</label>
+                        <div class="columns value">{{ elbName }}</div>
+                    </div>
+                    <div class="row">
+                        <label i18n:translate="">Listeners</label>
+                        <div class="columns value">
+                            <div class="multi-row" ng-repeat="listener in listenerArray">
+                                <div>
+                                    {{ listener.fromProtocol.toUpperCase() }} ({{ listener.fromPort }}) to 
+                                    {{ listener.toProtocol.toUpperCase() }} ({{ listener.toPort }})
+                                </div>
+                                <div ng-show="listener.fromProtocol.toUpperCase() === 'HTTPS' || listener.fromProtocol.toUpperCase() === 'SSL'">
+                                    {{ listener.certificateName }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section" ng-show="summaryDisplays[1]">
+                    <div class="row">
+                        <label i18n:translate="">VPC network</label>
+                        <div class="columns value">{{ vpcNetworkName }}</div>
+                    </div>
+                    <div class="row" ng-show="summaryDisplays[2] &amp;&amp; vpcNetwork === 'None'">
+                        <label i18n:translate="">Availability zones</label>
+                        <div class="columns value">
+                            <div ng-repeat="zone in availabilityZones">{{ zone }}</div>
+                        </div>
+                    </div>
+                    <div class="row" ng-show="summaryDisplays[2] &amp;&amp; vpcNetwork !== 'None'">
+                        <label i18n:translate="">VPC subnets</label>
+                        <div class="columns value">
+                            <div ng-repeat="vpcSubnetName in vpcSubnetNames">{{ vpcSubnetName }}</div>
+                        </div>
+                    </div>
+                    <div class="row" ng-show="vpcNetwork !== 'None'">
+                        <label i18n:translate="">Security groups</label>
+                        <div class="columns value multi-row">
+                            <div ng-repeat="securityGroupName in securityGroupNames">{{ securityGroupName }}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section" ng-show="summaryDisplays[2]">
+                    <div class="row" ng-show="vpcNetwork === 'None'">
+                        <div class="columns value">
+                            <div ng-repeat="zone in availabilityZones">
+                                {{ getInstanceCount('ZONE', zone) }} instances in zone {{ zone }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" ng-show="vpcNetwork !== 'None'">
+                        <div class="columns value">
+                            <div ng-repeat="vpcSubnet in vpcSubnets">
+                                {{ getInstanceCount('SUBNET', vpcSubnet) }} instances in {{ vpcSubnet }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section" ng-show="summaryDisplays[3]">
+                    <div class="row">
+                        <label i18n:translate="">Health check ping</label>
+                        <div class="small-8 columns value">{{ pingProtocol }}</div>
+                    </div>
+                    <div class="row">
+                        <label i18n:translate="">Port</label>
+                        <div class="small-8 columns value">{{ pingPort }}</div>
+                    </div>
+                    <div class="row" ng-show="pingProtocol === 'HTTP' || pingProtocol === 'HTTPS'">
+                        <label i18n:translate="">Path</label>
+                        <div class="small-8 columns value">{{ pingPath }}</div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <metal:block metal:use-macro="layout.global_macros['help_expando']" />
+                <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
+                    <!-- HELP CONTENT -->
+                    <div id="help-html-console_create_elb" ng-include="'${layout.help_path('console_create_elb.html')}'"></div> 
+                </div>
+            </div>
+        </div>
+        <!--! Modal dialogs -->
+        ${panel('select_certificate_dialog', certificate_form=certificate_form, backend_certificate_form=backend_certificate_form)}
+    </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/utils/purl.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/base_elb_wizard.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/elb_wizard.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/instance_selector.js')}"></script>
+</div>
+
+</metal:block>

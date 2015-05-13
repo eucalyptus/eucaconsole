@@ -1,0 +1,102 @@
+// Import common Foundation variables
+@import "../includes/eucavariables";
+
+// Import common wizard styles
+@import "../includes/wizard";
+
+
+/* @section Elasitc Load Balancer Wizard styles */
+
+#wizard-tabs {
+    dd {
+        a b {
+            font-size: 0.85rem;
+        }
+        span b {
+            font-size: 0.85rem;
+        }
+    }
+}
+
+#elb-form {
+    input.text-input {
+        width: 300px;
+    }
+    input[type="number"] {
+        width: 100px;
+    }
+    select.ip-protocol {
+        width: 100px;
+    }
+    select.ping-delay {
+        width: 120px;
+    }
+    select.ping-threshold {
+        width: 100px;
+    }
+    table {
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .stack-label {
+        margin-bottom: 0.5rem;
+    }
+    .section-label {
+        margin-top: 1.5rem;
+        margin-bottom: 1rem;
+        color: $euca-darkblue;
+    }
+    .sub-section-label {
+        color: black;
+    }
+    .helptext-icon {
+        color: $euca-grey;
+        font-size: 1.3rem;
+    }
+    .section-label-with-helptext-icon {
+        margin-bottom: 0.5rem;
+    }
+    .checkbox-with-helptext-icon label {
+        margin-right: 0rem;
+    }
+    #elb-listener-security-field {
+        margin-bottom: 1.5rem;
+    }
+}
+
+#select-certificate-modal {
+    .section-label {
+        margin-top: 1.5rem;
+        margin-bottom: 1rem;
+        color: $euca-darkblue;
+    }
+    #backend-certificates-display {
+        margin-bottom: 1rem;
+    }
+}
+
+table.elb-listener-table {
+    width: 100%;
+    tr.top-header {
+        border-bottom: 0px;
+    }
+    th.vertical-border-header {
+        border-collapse: collapse;
+        border-right-width: 1px;
+        border-right-style: solid;
+        border-right-color: #ddd;
+    } 
+    th.center {
+        text-align: center;
+    }
+}
+
+table.instance-selector-table {
+    width: 100%;
+}
+
+.summary {
+    .multi-row div {
+        padding-bottom: 0.25rem;
+    }
+}

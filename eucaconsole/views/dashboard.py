@@ -44,16 +44,17 @@ TILE_MASTER_LIST = [
     ('stacks', 'Stacks'),
     ('scaling-groups', 'Instances in scaling groups'),
     ('elastic-ips', 'Elastic IPs'),
+    ('security-groups', 'Security groups'),
+    ('key-pairs', 'Key pairs'),
+    ('load-balancers', 'Load balancers'),
+    ('health', 'Service status'),
     ('volumes', 'Volumes'),
     ('snapshots', 'Snapshots'),
     ('buckets', 'Buckets (S3)'),
-    ('security-groups', 'Security groups'),
-    ('key-pairs', 'Key pairs'),
     ('accounts', 'Accounts'),
     ('users', 'Users'),
     ('groups', 'Groups'),
-    ('roles', 'Roles'),
-    ('health', 'Service status')
+    ('roles', 'Roles')
 ]
 
 
@@ -143,6 +144,7 @@ class DashboardJsonView(BaseView):
     @view_config(route_name='dashboard_json', request_method='GET', renderer='json')
     def dashboard_json(self):
         ec2_conn = self.get_connection()
+        elb_conn = self.get_connection(conn_type='elb')
 
         # Fetch availability zone if set
         zone = self.request.params.get('zone')
@@ -183,6 +185,7 @@ class DashboardJsonView(BaseView):
             securitygroups_count = len(ec2_conn.get_all_security_groups()) if 'security-groups' in tiles else 0
             keypairs_count = len(ec2_conn.get_all_key_pairs()) if 'key-pairs' in tiles else 0
             elasticips_count = len(ec2_conn.get_all_addresses()) if 'elastic-ips' in tiles else 0
+            loadbalancers_count = len(elb_conn.get_all_load_balancers()) if 'load-balancers' in tiles else 0
 
             # TODO: catch errors in this block and turn iam health off
             # IAM counts
@@ -222,6 +225,7 @@ class DashboardJsonView(BaseView):
                 buckets=buckets_count,
                 securitygroups=securitygroups_count,
                 keypairs=keypairs_count,
+                loadbalancers=loadbalancers_count,
                 eips=elasticips_count,
                 accounts=accounts_count,
                 users=users_count,

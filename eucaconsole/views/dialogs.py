@@ -125,6 +125,7 @@ def volume_dialogs(context, request, volume=None, volume_name=None, instance_nam
         ng_attrs=ng_attrs,
     )
 
+
 @panel_config('user_dialogs', renderer='../templates/dialogs/user_dialogs.pt')
 def user_dialogs(context, request, user=None, user_name=None, landingpage=False,
                  disable_form=None, enable_form=None, delete_form=None):
@@ -137,6 +138,7 @@ def user_dialogs(context, request, user=None, user_name=None, landingpage=False,
         enable_form=enable_form,
         delete_form=delete_form,
     )
+
 
 @panel_config('securitygroup_dialogs', renderer='../templates/dialogs/securitygroup_dialogs.pt')
 def securitygroup_dialogs(context, request, security_group=None, landingpage=False, delete_form=None):
@@ -219,6 +221,7 @@ def scalinggroup_dialogs(context, request, scaling_group=None, landingpage=False
         landingpage=landingpage,
         delete_form=delete_form,
     )
+
 
 @panel_config('elb_dialogs', renderer='../templates/dialogs/elb_dialogs.pt')
 def elb_dialogs(context, request, elb=None, in_use=False, landingpage=False, delete_form=None):
@@ -306,6 +309,17 @@ def create_folder_dialog(context, request, bucket_name=None, create_folder_form=
         bucket_name=bucket_name,
         create_folder_form=create_folder_form,
         folder_name_pattern=FOLDER_NAME_PATTERN,
+    )
+
+
+@panel_config('select_certificate_dialog', renderer='../templates/dialogs/select_certificate_dialog.pt')
+def select_certificate_dialog(context, request, certificate_form=None, backend_certificate_form=None):
+    """ Modal dialog for selecting SSL certificate"""
+    is_vpc_supported = BaseView.is_vpc_supported(request)
+    return dict(
+        certificate_form=certificate_form,
+        backend_certificate_form=backend_certificate_form,
+        is_vpc_supported=is_vpc_supported,
     )
 
 
