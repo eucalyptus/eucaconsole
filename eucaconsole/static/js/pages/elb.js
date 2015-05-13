@@ -46,8 +46,9 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
             }, 1000);
         };
         $scope.setInitialValues = function (options) {
-
-            $scope.elbForm = $('#elb-view-form');
+            if ($('#elb-view-form').length > 0) {
+                $scope.elbForm = $('#elb-view-form');
+            }
             if (options.hasOwnProperty('securitygroups')) {
                 if (options.securitygroups instanceof Array && options.securitygroups.length > 0) {
                     $scope.securityGroups = options.securitygroups;

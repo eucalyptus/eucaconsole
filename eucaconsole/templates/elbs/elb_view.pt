@@ -143,8 +143,9 @@
                                     Select zone
                                 </div>
                                 <div id="hidden_zone_select" class="hide">
-                                    <select id="selected-zone-select" name="zone"
-                                        ng-model="selectedZoneList"></select>
+                                    <div ng-repeat="zone in selectedZoneList">
+                                        <input type="text" name="zone" ng-value="zone.id" />
+                                    </div>
                                 </div>
                             </div>
                             <div class="tile item" ng-cloak="true"
@@ -216,8 +217,9 @@
                                     Select subnet 
                                 </div>
                                 <div id="hidden_vpc_subnet_select" class="hide">
-                                    <select id="selected-vpc-subnet-select" name="vpc_subnet"
-                                        ng-model="selectedVPCSubnetList"></select>
+                                    <div ng-repeat="subnet in selectedVPCSubnetList">
+                                        <input type="text" name="vpc_subnet" ng-value="subnet.id" />
+                                    </div>
                                 </div>
                             </div>
                             <div class="tile item" ng-cloak="true"
