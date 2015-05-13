@@ -142,6 +142,10 @@
                                 <div id="hidden_zone_selector_placeholder" class="hide" i18n:translate="">
                                     Select zone
                                 </div>
+                                <div id="hidden_zone_select" class="hide">
+                                    <select id="selected-zone-select" name="zone"
+                                        ng-model="selectedZoneList"></select>
+                                </div>
                             </div>
                             <div class="tile item" ng-cloak="true"
                                 ng-repeat="zone in selectedZoneList | orderBy: sortBy:sortReverse">
@@ -210,6 +214,10 @@
                                 </div>
                                 <div id="hidden_subnet_selector_placeholder" class="hide" i18n:translate="">
                                     Select subnet 
+                                </div>
+                                <div id="hidden_vpc_subnet_select" class="hide">
+                                    <select id="selected-vpc-subnet-select" name="vpc_subnet"
+                                        ng-model="selectedVPCSubnetList"></select>
                                 </div>
                             </div>
                             <div class="tile item" ng-cloak="true"

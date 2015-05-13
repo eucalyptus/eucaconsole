@@ -294,7 +294,15 @@ class ELBView(TaggedItemView):
         if self.elb_form.validate():
             name = self.elb.name
             idle_timeout = self.request.params.get('idle_timeout')
-            securitygroup = self.request.params.get('securitygroup')
+            elb_listener = self.request.params.get('elb_listener')
+            securitygroup = self.request.params.getall('securitygroup') or None
+            listeners_args = self.get_listeners_args()
+            vpc_subnet = self.request.params.getall('vpc_subnet') or None
+            if vpc_subnet == 'None':
+                vpc_subnet = None
+            zone = self.request.params.getall('zone') or None
+            cross_zone_enabled = self.request.params.get('cross_zone_enabled') or False
+            instances = self.request.params.getall('instances') or None
             ping_protocol = self.request.params.get('ping_protocol')
             ping_port = self.request.params.get('ping_port')
             ping_path = self.request.params.get('ping_path')
@@ -303,7 +311,12 @@ class ELBView(TaggedItemView):
             failures_until_unhealthy = self.request.params.get('failures_until_unhealthy')
             passes_until_healthy = self.request.params.get('passes_until_healthy')
             print idle_timeout
+            print elb_listener
             print securitygroup
+            print vpc_subnet
+            print zone
+            print cross_zone_enabled
+            print instances
             print ping_protocol
             print ping_port
             print ping_path
@@ -324,6 +337,22 @@ class ELBView(TaggedItemView):
         else:
             self.request.error_messages = self.elb_form.get_errors_list()
         return self.render_dict
+
+    def get_listeners_args(self):
+        listeners_json = self.request.params.get('elb_listener')
+        listeners = json.loads(listeners_json) if listeners_json else []
+        listeners_args = []
+        for listener in listeners:
+            from_protocol = listener.get('fromProtocol')
+            from_port = listener.get('fromPort')
+            to_protocol = listener.get('toProtocol')
+            to_port = listener.get('toPort')
+            certificate_arn = listener.get('certificateARN') or None
+            if certificate_arn is not None:
+                listeners_args.append((from_port, to_port, from_protocol, to_protocol, certificate_arn))
+            else:
+                listeners_args.append((from_port, to_port, from_protocol, to_protocol))
+        return listeners_args
 
     @view_config(route_name='elb_delete', request_method='POST', renderer=TEMPLATE)
     def elb_delete(self):
