@@ -29,6 +29,7 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
         $scope.stackTemplateEndpoint = '';
         $scope.tagsObject = {};
         $scope.templateFiles = [];
+        $scope.templateSample = undefined;
         $scope.summarySection = $('.summary');
         $scope.currentStepIndex = 1;
         $scope.step1Invalid = true;
@@ -135,7 +136,7 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
             });
             $scope.$watch('templateSample', function(){
                 $scope.checkRequiredInput();
-                if ($scope.templateSample !== undefined) {
+                if ($scope.templateSample !== undefined && $scope.templateSample !== '') {
                     $scope.templateIdent = $scope.templateSample.label;
                     if ($scope.templateIdent !== undefined) {
                         $scope.getStackTemplateInfo();
@@ -238,6 +239,7 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
             }
             $scope.loading = true;
             $scope.description = '';
+            $scope.parameters = undefined;
             $http.post($scope.stackTemplateEndpoint, fd, {
                     headers: {'Content-Type': undefined},
                     transformRequest: angular.identity
@@ -257,6 +259,13 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
             error(function (oData, status) {
                 eucaHandleError(oData, status);
             });
+        };
+        $scope.paramValue = function(name) {
+            var ret = $scope.paramModels[name];
+            if (Array.isArray(ret)) {
+                ret = ret[0];
+            }
+            return ret;
         };
     })
 ;

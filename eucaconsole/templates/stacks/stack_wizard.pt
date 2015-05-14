@@ -61,10 +61,10 @@
                                     <input type="radio" id="inputtype" name="inputtype" value="sample" ng-model="inputtype"/>
                                     <label i18n:translate="">Use sample template</label>
                                     <div id="sample-template-div" ng-show="inputtype=='sample'">
-                                        <select chosen="" id="sample-template" name="sample-template"
+                                        <select id="sample-template" name="sample-template"
                                             ng-model="templateSample" i18n:attributes="data-placeholder"
-                                            data-placeholder="Select a template"
                                             ng-options="option.label group by option.group for option in templates track by option.name">
+                                            <option value="" i18n:translate="">Select a template</option>
                                         </select>
                                     </div>
                                     <br ng-hide="inputtype=='sample'"/>
@@ -125,13 +125,13 @@
                                         ng-model="paramModels[item.name]" ng-change="checkRequiredInput()"/>
                                     <small class="error" ng-hide="">{{ item.constraint }}</small>
                                     <div ng-show="item.options">
-                                        <select chosen="" name="{{ item.name }}" id="{{ item.name }}" 
+                                        <select name="{{ item.name }}" id="{{ item.name }}" 
                                             search-contains="true" width="100"
                                             value="{{ item.default }}"
-                                            i18n:attributes="data-placeholder"
-                                            data-placeholder="Select an option"
+                                            i18n:attributes="placeholder"
                                             ng-model="paramModels[item.name]" ng-change="checkRequiredInput()"
-                                            ng-options="option[0] for option in item.options track by option[1]">
+                                            ng-options="option[1] for option in item.options track by option[0]">
+                                            <option ng-show="!item.default" value="" i18n:translate="">Select an option</option>
                                         </select>
                                     </div>
                                 </div>
@@ -180,25 +180,17 @@
                             {{ description }}
                         </div>
                     </div>
-                </div>
-                <div class="section" ng-show="tagsLength > 0">
-                    <div class="row">
+                    <div class="row" ng-show="tagsLength &gt; 0">
+                        <label i18n:translate="">Tags</label>
                         <div class="columns value" id="tag-preview">
-                            <div class="keyvalsummary" ng-repeat="(name, value) in tagsObject">
-                                <span class='param-name'>{{ name }}</span><br/>
-                                <span class='param-value'>{{ value }}</span>
-                            </div>
+                            <div ng-repeat="(name, value) in tagsObject">{{ name }}={{ value }}</div>
                         </div>
                     </div>
                 </div>
                 <div class="section step2 hide">
-                    <div class="row">
-                        <div class="columns value" id="parameter-preview">
-                            <div class="keyvalsummary" ng-repeat="param in parameters">
-                                <span class='param-name'>{{ param.name }}</span><br/>
-                                <span class='param-value'>{{ paramModels[param.name] }}</span>
-                            </div>
-                        </div>
+                    <div class="row" ng-repeat="param in parameters">
+                        <label>{{ param.name }}</label>
+                        <div class='columns value'>{{ paramValue(param.name) }}</div>
                     </div>
                 </div>
             </div>

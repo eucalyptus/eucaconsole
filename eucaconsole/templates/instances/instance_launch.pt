@@ -257,7 +257,7 @@
                             </span>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row" ng-show="tagsLength &gt; 0">
                         <label i18n:translate="">Tags</label>
                         <div class="columns value" id="tag-preview">
                             <div ng-repeat="(name, value) in tagsObject">{{ name }}={{ value }}</div>

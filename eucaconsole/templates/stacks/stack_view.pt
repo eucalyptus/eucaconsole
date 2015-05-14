@@ -97,11 +97,13 @@
                                 <table class="table" ng-show="!itemsLoading" ng-cloak="true">
                                     <thead><tr>
                                         <th i18n:translate="">KEY</th>
+                                        <th i18n:translate="">DESCRIPTION</th>
                                         <th i18n:translate="">VALUE</th>
                                     </tr></thead>
                                     <tbody>
                                         <tr ng-repeat="item in outputs | orderBy: sortBy:sortReverse" ng-cloak="true">
                                             <td>{{ item.key }}</td>
+                                            <td>{{ item.description }}</td>
                                             <td>{{ item.value }}</td>
                                         </tr>
                                         <tr ng-show="!itemsLoading"></tr>
