@@ -95,7 +95,7 @@ class GuiEC2(GuiTester):
         Navigates to Keypair View via menu. Deletes keypair from view page. Verifies keypair was removed from view page.
         """
         BasePage(self).goto_keypair_view_page_via_menu()
-        KeypairView(self).click_action_delete_keypair_on_landing(keypair_name)
+        KeypairView(self).click_action_delete_keypair_on_view_page(keypair_name)
         DeleteKeypairModal(self).click_delete_keypair_submit_button()
         BasePage(self).goto_keypair_view_page_via_menu()
         KeypairView(self).verify_keypair_not_present_on_view_page(keypair_name)

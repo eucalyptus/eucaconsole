@@ -4,7 +4,7 @@ class KeypairView(ViewPage):
 
     def __init__(self, tester):
         self.tester = tester
-        self.verify_keypair_landing_page_loaded()
+        self.verify_keypair_view_page_loaded()
 
     _keypair_view_page_title = "Key Pairs"
     _create_keypair_btn_id = "create-keypair-btn"
@@ -13,7 +13,7 @@ class KeypairView(ViewPage):
     _keypair_actions_menu_id = "table-item-dropdown_{0}"
     _delete_keypair_actions_menuitem_css ="#item-dropdown_{0}>li>a"
 
-    def verify_keypair_landing_page_loaded(self):
+    def verify_keypair_view_page_loaded(self):
         """
         Waits for page title to load; waits for refresh button to load; wait for 'Create New Key Pair' button to load.
         """
@@ -36,7 +36,7 @@ class KeypairView(ViewPage):
     def verify_keypair_not_present_on_view_page(self, keypair_name):
         self.tester.wait_for_element_not_present_by_css(self._keypair_link_css.format(keypair_name))
 
-    def click_action_delete_keypair_on_landing(self, keypair_name):
+    def click_action_delete_keypair_on_view_page(self, keypair_name):
         self.tester.click_element_by_id(self._keypair_actions_menu_id.format(keypair_name))
         self.tester.click_element_by_css(self._delete_keypair_actions_menuitem_css.format(keypair_name))
 
