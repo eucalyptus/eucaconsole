@@ -91,7 +91,7 @@
                                         <a href="${request.route_path('elbs')}" id="cancel-update-link"
                                             class="cancel-link" i18n:translate="">Cancel</a>
                                         <button type="submit" class="button" id="save-changes-btn"
-                                            ng-click="submitSaveChanges($event)" ng-disabled="isNotChanged">
+                                            ng-click="submitSaveChanges($event, 'general-tab')" ng-disabled="isNotChanged">
                                             <span i18n:translate="">Save Changes</span>
                                         </button>
                                     </div>
@@ -296,7 +296,7 @@
                                         <a href="${request.route_path('elbs')}" id="cancel-update-link"
                                             class="cancel-link" i18n:translate="">Cancel</a>
                                         <button type="submit" class="button" id="save-changes-btn"
-                                            ng-click="submitSaveChanges($event)" ng-disabled="isNotChanged">
+                                            ng-click="submitSaveChanges($event, 'instances-tab')" ng-disabled="isNotChanged">
                                             <span i18n:translate="">Save Changes</span>
                                         </button>
                                     </div>
@@ -366,7 +366,7 @@
                                         <a href="${request.route_path('elbs')}" id="cancel-update-link"
                                             class="cancel-link" i18n:translate="">Cancel</a>
                                         <button type="submit" class="button" id="save-changes-btn"
-                                            ng-click="submitSaveChanges($event)" ng-disabled="isNotChanged">
+                                            ng-click="submitSaveChanges($event, 'health-checks-tab')" ng-disabled="isNotChanged">
                                             <span i18n:translate="">Save Changes</span>
                                         </button>
                                     </div>
@@ -374,6 +374,9 @@
                             </div>
                         </div>
                     </div>
+                </div>
+                <div id="hidden-current-tab-input" class="hide">
+                    <input type="text" name="current_tab" ng-value="thisTab" />
                 </div>
             </form>
         </div>
@@ -393,6 +396,7 @@
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/utils/purl.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/elb.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/instance_selector.js')}"></script>

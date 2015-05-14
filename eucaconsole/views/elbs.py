@@ -453,6 +453,9 @@ class ELBView(BaseELBView):
             cross_zone_enabled = self.request.params.get('cross_zone_enabled') or False
             instances = self.request.params.getall('instances') or None
             location = self.request.route_path('elb_view', id=self.elb.name)
+            current_tab = self.request.params.get('current_tab') or None
+            if current_tab:
+                location = '{0}?tab={1}'.format(location, current_tab)
             prefix = _(u'Unable to update load balancer')
             template = u'{0} {1} - {2}'.format(prefix, self.elb.name, '{0}')
             with boto_error_handler(self.request, location, template):

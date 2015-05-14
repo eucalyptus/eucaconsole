@@ -7,6 +7,7 @@
 angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor', 'MagicSearch'])
     .controller('ELBPageCtrl', function ($scope, $timeout, eucaUnescapeJson) {
         $scope.elbForm = undefined;
+        $scope.thisTab = '';
         $scope.listenerArray = [];
         $scope.securityGroups = [];
         $scope.availabilityZones = []; 
@@ -48,6 +49,11 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
         $scope.setInitialValues = function (options) {
             if ($('#elb-view-form').length > 0) {
                 $scope.elbForm = $('#elb-view-form');
+            }
+            var urlParams = $.url().param();
+            if (urlParams.tab) {
+                $scope.thisTab = urlParams.tab;
+                $scope.toggleTab($scope.thisTab);
             }
             if (options.hasOwnProperty('securitygroups')) {
                 if (options.securitygroups instanceof Array && options.securitygroups.length > 0) {
@@ -459,10 +465,14 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
                 $scope.isCrossZoneEnabled = false;
             }
         };
-        $scope.submitSaveChanges = function ($event) {
+        $scope.submitSaveChanges = function ($event, tab) {
             $event.preventDefault();
             $scope.isNotChanged = true;
-            $scope.elbForm.submit();
+            $scope.thisTab = tab;
+            // timeout is needed for the tab input to be passed
+            $timeout(function() {
+                $scope.elbForm.submit();
+            });
         };
     })
 ;
