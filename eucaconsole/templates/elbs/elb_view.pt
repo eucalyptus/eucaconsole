@@ -190,6 +190,9 @@
                                         </a>
                                     </span>
                                 </div>
+                                <div id="hidden-cross-zone-load-balancer-input" class="hide">
+                                    <input type="checkbox" name="cross_zone_enabled" ng-model="isCrossZoneEnabled" />
+                                </div>
                             </div>
                             <hr />
                         </div>

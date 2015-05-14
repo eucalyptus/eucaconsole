@@ -368,6 +368,11 @@ class ELBView(TaggedItemView):
                 self.update_elb_tags(self.elb.name)
                 self.update_elb_zones(self.elb.name, self.elb.availability_zones, zone)
                 self.update_elb_subnets(self.elb.name, self.elb.subnets, vpc_subnet)
+                if vpc_subnet is None: 
+                    if cross_zone_enabled == 'on':
+                        self.elb_conn.modify_lb_attribute(name, 'crossZoneLoadBalancing', True)
+                    else:
+                        self.elb_conn.modify_lb_attribute(name, 'crossZoneLoadBalancing', False)
                 msg = _(u"Updating load balancer")
                 self.log_request(u"{0} {1}".format(msg, name))
                 prefix = _(u'Successfully updated load balancer.')
