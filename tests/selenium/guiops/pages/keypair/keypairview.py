@@ -21,7 +21,7 @@ class KeypairView(ViewPage):
         self.tester.wait_for_visible_by_id(ViewPage._refresh_button_id)
         self.tester.wait_for_visible_by_id(self._create_keypair_btn_id)
 
-    def click_create_keypair_button_on_landing_page(self):
+    def click_create_keypair_button_on_view_page(self):
         self.tester.click_element_by_id(self._create_keypair_btn_id)
 
     def click_import_keypair_button(self):

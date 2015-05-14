@@ -23,22 +23,12 @@ class SeleniumApi(object):
         assert isinstance(driver, webdriver.Firefox)
         self.driver = driver
 
-
     retry = 2
     timeout_to_locate_element_in_seconds = 20
     timeout_to_determine_visibility_in_seconds = 60
     timeout_to_determine_if_clickable_in_seconds = 20
     timeout_to_wait_for_text_in_seconds = 40
     implicit_wait_default_in_seconds = 30
-
-    #def NoOp(self):
-    #    return 0
-
-    # def setSeleniumWebDriver(self, driver):
-    #     self.driver = RemoteWebdriver()
-    #     return 0
-    #def setUp(self):
-    #    self.verificationErrors = []
 
     def set_implicit_wait(self, implicit_wait_time):
         """
@@ -192,7 +182,6 @@ class SeleniumApi(object):
                 print "Element by css = '{0}' is present in the DOM but not clickable.".format(xpath)
             except NoSuchElementException:
                 print "ERROR: Element by css = '{0}' not found in the DOM.".format(xpath)
-
 
     def click_element_by_id(self, element_id):
         """

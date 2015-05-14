@@ -18,7 +18,7 @@ class Keypair_operations_sequence(GuiEC2):
     def keypair_ops_test(self):
 
         self.tester.login("ui-test-acct-00", "admin", "mypassword0")
-        self.tester.create_keypair_from_keypair_landing(self.keypair_name)
+        self.tester.create_keypair_from_keypair_view_page(self.keypair_name)
         self.tester.delete_keypair_from_detail_page(self.keypair_name)
         self.tester.create_keypair_from_dashboard(self.keypair_name)
         self.tester.delete_keypair_from_view_page(self.keypair_name)

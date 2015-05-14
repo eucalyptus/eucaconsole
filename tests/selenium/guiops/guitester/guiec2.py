@@ -30,6 +30,24 @@ class GuiEC2(GuiTester):
         LoginPage(self).login(account, username, password)
         Dashboard(self).verify_dashboard_loaded()
 
+    def set_all_pages_to_list_view(self):
+        pass
+
+    def set_all_pages_to_tile_view(self):
+        pass
+
+    def exit_browser(self):
+        """
+        Closes browser.
+        """
+        self.driver.quit()
+
+    def logout(self):
+        """
+        Logs out the user.
+        """
+        BasePage(self).logout()
+
     def create_keypair_from_dashboard(self, keypair_name):
         """
         Navigates to Dashboard via menu, creates keypair. Verifies keypair visible on Keypair View page.
@@ -40,13 +58,13 @@ class GuiEC2(GuiTester):
         CreateKeypairDialog(self).create_keypair(keypair_name)
         KeypairDetailPage(self, keypair_name)
 
-    def create_keypair_from_keypair_landing(self, keypair_name):
+    def create_keypair_from_keypair_view_page(self, keypair_name):
         """
         Goes from Dashboard to keypair landing page via menu. Creates keypair, verifies keypair detail page is loaded after keypair creation.
         :param keypair_name:
         """
         BasePage(self).goto_keypair_view_page_via_menu()
-        KeypairView(self).click_create_keypair_button_on_landing_page()
+        KeypairView(self).click_create_keypair_button_on_view_page()
         CreateKeypairDialog(self).create_keypair(keypair_name)
         KeypairDetailPage(self, keypair_name)
 
@@ -82,21 +100,28 @@ class GuiEC2(GuiTester):
         BasePage(self).goto_keypair_view_page_via_menu()
         KeypairView(self).verify_keypair_not_present_on_view_page(keypair_name)
 
-    def set_all_pages_to_list_view(self):
+    def create_security_group_from_dashboard(self, sgroup_name):
+        """
+        Creates security group from dashboard without adding rules or tags.
+        """
         pass
 
-    def set_all_pages_to_tile_view(self):
+    def create_security_group_from_view_page(self, sgroup_name):
+        """
+        Creates security group from S. groups view page without adding rules or tags.
+        """
         pass
 
-    def exit_browser(self):
-        """
-        Closes browser.
-        """
-        self.driver.quit()
+    def edit_security_group(self, sgroup_name):
+        pass
 
-    def logout(self):
-        """
-        Logs out the user.
-        """
-        BasePage(self).logout()
+    def delete_security_group_from_view_page(self, sgroup_name):
+        pass
+
+    def delete_security_group_from_detail_page(self, sgroup_name):
+        pass
+
+
+
+
 
