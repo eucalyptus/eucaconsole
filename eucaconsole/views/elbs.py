@@ -326,7 +326,6 @@ class ELBView(TaggedItemView):
     @view_config(route_name='elb_update', request_method='POST', renderer=TEMPLATE)
     def elb_update(self):
         if self.elb_form.validate():
-            name = self.elb.name
             idle_timeout = self.request.params.get('idle_timeout')
             elb_listener = self.request.params.get('elb_listener')
             securitygroup = self.request.params.getall('securitygroup') or None
@@ -347,19 +346,19 @@ class ELBView(TaggedItemView):
                 if vpc_subnet is None:
                     self.update_elb_zones(self.elb.name, self.elb.availability_zones, zone)
                     if cross_zone_enabled == 'on':
-                        self.elb_conn.modify_lb_attribute(name, 'crossZoneLoadBalancing', True)
+                        self.elb_conn.modify_lb_attribute(self.elb.name, 'crossZoneLoadBalancing', True)
                     else:
-                        self.elb_conn.modify_lb_attribute(name, 'crossZoneLoadBalancing', False)
+                        self.elb_conn.modify_lb_attribute(self.elb.name, 'crossZoneLoadBalancing', False)
                 else:
-                    if securitygroup:
+                    if self.elb.security_groups != securitygroup:
                         self.elb_conn.apply_security_groups_to_lb(self.elb.name, securitygroup)
                     self.update_elb_subnets(self.elb.name, self.elb.subnets, vpc_subnet)
                 self.update_elb_instances(self.elb.name, self.elb.instances, instances)
                 self.handle_configure_health_check(self.elb.name)
                 msg = _(u"Updating load balancer")
-                self.log_request(u"{0} {1}".format(msg, name))
+                self.log_request(u"{0} {1}".format(msg, self.elb.name))
                 prefix = _(u'Successfully updated load balancer.')
-                msg = u'{0} {1}'.format(prefix, name)
+                msg = u'{0} {1}'.format(prefix, self.elb.name)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
         else:
