@@ -365,6 +365,7 @@ class ELBView(TaggedItemView):
             template = u'{0} {1} - {2}'.format(prefix, self.elb.name, '{0}')
             with boto_error_handler(self.request, location, template):
                 self.update_load_balancer_listeners(self.elb.name, listeners_args)
+                self.remove_all_elb_tags(self.elb.name)
                 self.add_elb_tags(self.elb.name)
                 msg = _(u"Updating load balancer")
                 self.log_request(u"{0} {1}".format(msg, name))
@@ -489,6 +490,18 @@ class ELBView(TaggedItemView):
                 index += 1
         if index > 1:
             self.elb_conn.get_status('AddTags', add_tags_params)
+
+    def remove_all_elb_tags(self, elb_name):
+        if self.elb.tags:
+            remove_tags_params = {'LoadBalancerNames.member.1': elb_name}
+            index = 1
+            for tag in self.elb.tags.items():
+                key = self.unescape_braces(tag[0].strip())
+                if not any([key.startswith('aws:'), key.startswith('euca:')]):
+                    remove_tags_params['Tags.member.%d.Key' % index] = key
+                    index += 1
+            if index > 1:
+                self.elb_conn.get_status('RemoveTags', remove_tags_params, verb='POST')
 
     def get_instance_selector_text(self):
         instance_selector_text = {'name': _(u'NAME (ID)'), 'tags': _(u'TAGS'),
@@ -843,7 +856,6 @@ class CreateELBView(BaseView):
                 add_tags_params['Tags.member.%d.Key' % index] = key
                 add_tags_params['Tags.member.%d.Value' % index] = self.unescape_braces(value.strip())
                 index += 1
-        print add_tags_params
         if index > 1:
             self.elb_conn.get_status('AddTags', add_tags_params)
 
