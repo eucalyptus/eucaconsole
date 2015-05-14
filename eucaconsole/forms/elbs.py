@@ -65,7 +65,7 @@ class ELBForm(BaseSecureForm):
     ping_path = TextEscapedField(
         id=u'ping-path',
         label=_(u'Path'),
-        default="/index.html",
+        default="index.html",
         validators=[validators.InputRequired(message=ping_path_error_msg)],
     )
     response_timeout_error_msg = _(u'Response timeout is required')

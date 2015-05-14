@@ -339,13 +339,6 @@ class ELBView(TaggedItemView):
             zone = self.request.params.getall('zone') or None
             cross_zone_enabled = self.request.params.get('cross_zone_enabled') or False
             instances = self.request.params.getall('instances') or None
-            ping_protocol = self.request.params.get('ping_protocol')
-            ping_port = self.request.params.get('ping_port')
-            ping_path = self.request.params.get('ping_path')
-            response_timeout = self.request.params.get('response_timeout')
-            time_between_pings = self.request.params.get('time_between_pings')
-            failures_until_unhealthy = self.request.params.get('failures_until_unhealthy')
-            passes_until_healthy = self.request.params.get('passes_until_healthy')
             print idle_timeout
             print elb_listener
             print securitygroup
@@ -353,13 +346,6 @@ class ELBView(TaggedItemView):
             print zone
             print cross_zone_enabled
             print instances
-            print ping_protocol
-            print ping_port
-            print ping_path
-            print response_timeout
-            print time_between_pings
-            print failures_until_unhealthy
-            print passes_until_healthy
             location = self.request.route_path('elb_view', id=self.elb.name)
             prefix = _(u'Unable to update load balancer')
             template = u'{0} {1} - {2}'.format(prefix, self.elb.name, '{0}')
@@ -377,6 +363,7 @@ class ELBView(TaggedItemView):
                         self.elb_conn.apply_security_groups_to_lb(self.elb.name, securitygroup)
                     self.update_elb_subnets(self.elb.name, self.elb.subnets, vpc_subnet)
                 self.update_elb_instances(self.elb.name, self.elb.instances, instances)
+                self.handle_configure_health_check(self.elb.name)
                 msg = _(u"Updating load balancer")
                 self.log_request(u"{0} {1}".format(msg, name))
                 prefix = _(u'Successfully updated load balancer.')
@@ -593,6 +580,26 @@ class ELBView(TaggedItemView):
             self.elb_conn.deregister_instances(elb_name, remove_instances)
         if add_instances:
             self.elb_conn.register_instances(elb_name, add_instances)
+
+    def handle_configure_health_check(self, name):
+        ping_protocol = self.request.params.get('ping_protocol')
+        ping_port = self.request.params.get('ping_port')
+        ping_path = self.request.params.get('ping_path')
+        response_timeout = self.request.params.get('response_timeout')
+        time_between_pings = self.request.params.get('time_between_pings')
+        failures_until_unhealthy = self.request.params.get('failures_until_unhealthy')
+        passes_until_healthy = self.request.params.get('passes_until_healthy')
+        ping_target = u"{0}:{1}".format(ping_protocol, ping_port)
+        if ping_protocol in ['HTTP', 'HTTPS']:
+            ping_target = u"{0}/{1}".format(ping_target, ping_path)
+        hc = HealthCheck(
+            timeout=response_timeout,
+            interval=time_between_pings,
+            healthy_threshold=passes_until_healthy,
+            unhealthy_threshold=failures_until_unhealthy,
+            target=ping_target
+        )
+        self.elb_conn.configure_health_check(name, hc)
 
     def get_instance_selector_text(self):
         instance_selector_text = {'name': _(u'NAME (ID)'), 'tags': _(u'TAGS'),
@@ -926,7 +933,7 @@ class CreateELBView(BaseView):
         passes_until_healthy = self.request.params.get('passes_until_healthy')
         ping_target = u"{0}:{1}".format(ping_protocol, ping_port)
         if ping_protocol in ['HTTP', 'HTTPS']:
-            ping_target = u"{0}{1}".format(ping_target, ping_path)
+            ping_target = u"{0}/{1}".format(ping_target, ping_path)
         hc = HealthCheck(
             timeout=response_timeout,
             interval=time_between_pings,
