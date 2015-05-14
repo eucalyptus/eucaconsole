@@ -366,6 +366,7 @@ class ELBView(TaggedItemView):
             with boto_error_handler(self.request, location, template):
                 self.update_load_balancer_listeners(self.elb.name, listeners_args)
                 self.update_elb_tags(self.elb.name)
+                self.update_elb_zones(self.elb.name, self.elb.availability_zones, zone)
                 self.update_elb_subnets(self.elb.name, self.elb.subnets, vpc_subnet)
                 msg = _(u"Updating load balancer")
                 self.log_request(u"{0} {1}".format(msg, name))
@@ -508,27 +509,51 @@ class ELBView(TaggedItemView):
             if index > 1:
                 self.elb_conn.get_status('RemoveTags', remove_tags_params, verb='POST')
 
+    def update_elb_zones(self, elb_name, prev_zones, new_zones):
+        if prev_zones and new_zones:
+            add_zones = []
+            remove_zones = []
+            for prev_zone in prev_zones:
+                exists_zone = False
+                for new_zone in new_zones:
+                    if prev_zone == new_zone:
+                        exists_zone = True
+                if exists_zone is False:
+                    remove_zones.append(prev_zone)
+            for new_zone in new_zones:
+                exists_zone = False
+                for prev_zone in prev_zones:
+                    if prev_zone == new_zone:
+                        exists_zone = True
+                if exists_zone is False:
+                    add_zones.append(new_zone)
+            if remove_zones:
+                self.elb_conn.disable_availability_zones(elb_name, remove_zones)
+            if add_zones:
+                self.elb_conn.enable_availability_zones(elb_name, add_zones)
+
     def update_elb_subnets(self, elb_name, prev_subnets, new_subnets):
-        add_subnets = []
-        remove_subnets = []
-        for prev_subnet in prev_subnets:
-            exists_subnet = False
-            for new_subnet in new_subnets:
-                if prev_subnet == new_subnet:
-                    exists_subnet = True
-            if exists_subnet is False:
-                remove_subnets.append(prev_subnet)
-        for new_subnet in new_subnets:
-            exists_subnet = False
+        if prev_subnets and new_subnets:
+            add_subnets = []
+            remove_subnets = []
             for prev_subnet in prev_subnets:
-                if prev_subnet == new_subnet:
-                    exists_subnet = True
-            if exists_subnet is False:
-                add_subnets.append(new_subnet)
-        if remove_subnets:
-            self.elb_conn.detach_lb_from_subnets(elb_name, remove_subnets)
-        if add_subnets:
-            self.elb_conn.attach_lb_to_subnets(elb_name, add_subnets)
+                exists_subnet = False
+                for new_subnet in new_subnets:
+                    if prev_subnet == new_subnet:
+                        exists_subnet = True
+                if exists_subnet is False:
+                    remove_subnets.append(prev_subnet)
+            for new_subnet in new_subnets:
+                exists_subnet = False
+                for prev_subnet in prev_subnets:
+                    if prev_subnet == new_subnet:
+                        exists_subnet = True
+                if exists_subnet is False:
+                    add_subnets.append(new_subnet)
+            if remove_subnets:
+                self.elb_conn.detach_lb_from_subnets(elb_name, remove_subnets)
+            if add_subnets:
+                self.elb_conn.attach_lb_to_subnets(elb_name, add_subnets)
 
     def get_instance_selector_text(self):
         instance_selector_text = {'name': _(u'NAME (ID)'), 'tags': _(u'TAGS'),
