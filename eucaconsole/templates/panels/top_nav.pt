@@ -21,7 +21,7 @@
     <li class="has-dropdown">
         <a id="resource-menu-cloudformation" class="nolink" i18n:translate="">CLOUDFORMATION</a>
         <ul class="dropdown">
-            <li><a id="resource-menuitem-stackss" i18n:translate=""
+            <li><a id="resource-menuitem-stacks" i18n:translate=""
                    href="${request.route_path('stacks')}">Stacks</a></li>
         </ul>
     </li>
