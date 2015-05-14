@@ -267,6 +267,7 @@ class ELBView(TaggedItemView):
 
     def __init__(self, request):
         super(ELBView, self).__init__(request)
+        self.request = request
         self.ec2_conn = self.get_connection()
         self.iam_conn = self.get_connection(conn_type='iam')
         self.elb_conn = self.get_connection(conn_type='elb')
@@ -319,6 +320,8 @@ class ELBView(TaggedItemView):
 
     @view_config(route_name='elb_view', renderer=TEMPLATE)
     def elb_view(self):
+        self.__init__(self.request)
+        print "elb_view()"
         return self.render_dict
 
     @view_config(route_name='elb_update', request_method='POST', renderer=TEMPLATE)
@@ -357,11 +360,12 @@ class ELBView(TaggedItemView):
             print time_between_pings
             print failures_until_unhealthy
             print passes_until_healthy
-            self.add_elb_tags(self.elb.name)
             location = self.request.route_path('elb_view', id=self.elb.name)
             prefix = _(u'Unable to update load balancer')
             template = u'{0} {1} - {2}'.format(prefix, self.elb.name, '{0}')
             with boto_error_handler(self.request, location, template):
+                self.update_load_balancer_listeners(self.elb.name, listeners_args)
+                self.add_elb_tags(self.elb.name)
                 msg = _(u"Updating load balancer")
                 self.log_request(u"{0} {1}".format(msg, name))
                 prefix = _(u'Successfully updated load balancer.')
@@ -451,13 +455,26 @@ class ELBView(TaggedItemView):
 
     def get_listener_list(self):
         listener_list = []
-        if self.elb:
+        if self.elb and self.elb.listeners:
             for listener_obj in self.elb.listeners:
                 listener = listener_obj.get_tuple()
                 listener_list.append({'from_port': listener[0],
                                       'to_port': listener[1],
                                       'protocol': listener[2]})
         return listener_list
+
+    def update_load_balancer_listeners(self, name, listeners_args):
+        if self.elb_conn and self.elb:
+            ports = []
+            if self.elb.listeners:
+                for listener_obj in self.elb.listeners:
+                    listener = listener_obj.get_tuple()
+                    ports.append(listener[0])
+                if ports:
+                    self.elb_conn.delete_load_balancer_listeners(name, ports)
+                    # sleep is needed for Eucalyptus to avoid not finding the elb error
+                    time.sleep(1)
+            self.elb_conn.create_load_balancer_listeners(name, listeners=listeners_args)
 
     def add_elb_tags(self, elb_name):
         tags_json = self.request.params.get('tags')
@@ -826,6 +843,7 @@ class CreateELBView(BaseView):
                 add_tags_params['Tags.member.%d.Key' % index] = key
                 add_tags_params['Tags.member.%d.Value' % index] = self.unescape_braces(value.strip())
                 index += 1
+        print add_tags_params
         if index > 1:
             self.elb_conn.get_status('AddTags', add_tags_params)
 
