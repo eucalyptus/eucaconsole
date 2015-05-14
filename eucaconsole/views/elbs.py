@@ -376,6 +376,7 @@ class ELBView(TaggedItemView):
                     if securitygroup:
                         self.elb_conn.apply_security_groups_to_lb(self.elb.name, securitygroup)
                     self.update_elb_subnets(self.elb.name, self.elb.subnets, vpc_subnet)
+                self.update_elb_instances(self.elb.name, self.elb.instances, instances)
                 msg = _(u"Updating load balancer")
                 self.log_request(u"{0} {1}".format(msg, name))
                 prefix = _(u'Successfully updated load balancer.')
@@ -562,6 +563,36 @@ class ELBView(TaggedItemView):
                 self.elb_conn.detach_lb_from_subnets(elb_name, remove_subnets)
             if add_subnets:
                 self.elb_conn.attach_lb_to_subnets(elb_name, add_subnets)
+
+    def update_elb_instances(self, elb_name, prev_instances, new_instances):
+        add_instances = []
+        remove_instances = []
+        if prev_instances and new_instances:
+            for prev_instance in prev_instances:
+                exists_instance = False
+                for new_instance in new_instances:
+                    if prev_instance.id == new_instance:
+                        exists_instance = True
+                if exists_instance is False:
+                    remove_instances.append(prev_instance.id)
+            for new_instance in new_instances:
+                exists_instance = False
+                for prev_instance in prev_instances:
+                    if prev_instance.id == new_instance:
+                        exists_instance = True
+                if exists_instance is False:
+                    add_instances.append(new_instance)
+        else:
+            if prev_instances:
+                for prev_instance in prev_instances:
+                    remove_instances.append(prev_instance.id)
+            if new_instances:
+                for new_instance in new_instances:
+                    add_instances.append(new_instance)
+        if remove_instances:
+            self.elb_conn.deregister_instances(elb_name, remove_instances)
+        if add_instances:
+            self.elb_conn.register_instances(elb_name, add_instances)
 
     def get_instance_selector_text(self):
         instance_selector_text = {'name': _(u'NAME (ID)'), 'tags': _(u'TAGS'),
