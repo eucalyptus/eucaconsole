@@ -261,33 +261,149 @@ class LbTagSet(dict):
             self._tags_tag = False
 
 
-class ELBView(TaggedItemView):
+class BaseELBView(TaggedItemView):
     """Views for single ELB"""
     TEMPLATE = '../templates/elbs/elb_view.pt'
 
     def __init__(self, request):
-        super(ELBView, self).__init__(request)
+        super(BaseELBView, self).__init__(request)
         self.request = request
         self.ec2_conn = self.get_connection()
         self.iam_conn = self.get_connection(conn_type='iam')
         self.elb_conn = self.get_connection(conn_type='elb')
         self.autoscale_conn = self.get_connection(conn_type='autoscale')
         self.vpc_conn = self.get_connection(conn_type='vpc')
+        self.is_vpc_supported = BaseView.is_vpc_supported(request)
+
+    def get_listeners_args(self):
+        listeners_json = self.request.params.get('elb_listener')
+        listeners = json.loads(listeners_json) if listeners_json else []
+        listeners_args = []
+        for listener in listeners:
+            from_protocol = listener.get('fromProtocol')
+            from_port = listener.get('fromPort')
+            to_protocol = listener.get('toProtocol')
+            to_port = listener.get('toPort')
+            certificate_arn = listener.get('certificateARN') or None
+            if certificate_arn is not None:
+                listeners_args.append((from_port, to_port, from_protocol, to_protocol, certificate_arn))
+            else:
+                listeners_args.append((from_port, to_port, from_protocol, to_protocol))
+        return listeners_args
+
+    def handle_configure_health_check(self, name):
+        ping_protocol = self.request.params.get('ping_protocol')
+        ping_port = self.request.params.get('ping_port')
+        ping_path = self.request.params.get('ping_path')
+        response_timeout = self.request.params.get('response_timeout')
+        time_between_pings = self.request.params.get('time_between_pings')
+        failures_until_unhealthy = self.request.params.get('failures_until_unhealthy')
+        passes_until_healthy = self.request.params.get('passes_until_healthy')
+        ping_target = u"{0}:{1}".format(ping_protocol, ping_port)
+        if ping_protocol in ['HTTP', 'HTTPS']:
+            ping_target = u"{0}/{1}".format(ping_target, ping_path)
+        hc = HealthCheck(
+            timeout=response_timeout,
+            interval=time_between_pings,
+            healthy_threshold=passes_until_healthy,
+            unhealthy_threshold=failures_until_unhealthy,
+            target=ping_target
+        )
+        self.elb_conn.configure_health_check(name, hc)
+
+    def get_instance_selector_text(self):
+        instance_selector_text = {'name': _(u'NAME (ID)'), 'tags': _(u'TAGS'),
+                                  'zone': _(u'AVAILABILITY ZONE'), 'subnet': _(u'VPC SUBNET'), 'status': _(u'STATUS'),
+                                  'no_matching_instance_error_msg': _(u'No matching instances')}
+        return instance_selector_text
+
+    def get_protocol_list(self):
+        protocol_list = ()
+        if self.cloud_type == 'aws':
+            protocol_list = ({'name': 'HTTP', 'value': 'HTTP', 'port': '80'},
+                             {'name': 'TCP', 'value': 'TCP', 'port': '80'})
+        else:
+            protocol_list = ({'name': 'HTTP', 'value': 'HTTP', 'port': '80'},
+                             {'name': 'HTTPS', 'value': 'HTTPS', 'port': '443'},
+                             {'name': 'TCP', 'value': 'TCP', 'port': '80'},
+                             {'name': 'SSL', 'value': 'SSL', 'port': '443'})
+        return protocol_list
+
+    def get_default_vpc_network(self):
+        default_vpc = self.request.session.get('default_vpc', [])
+        if self.is_vpc_supported:
+            if 'none' in default_vpc or 'None' in default_vpc:
+                if self.cloud_type == 'aws':
+                    return 'None'
+                # for euca, return the first vpc on the list
+                if self.vpc_conn:
+                    with boto_error_handler(self.request):
+                        vpc_networks = self.vpc_conn.get_all_vpcs()
+                        if vpc_networks:
+                            return vpc_networks[0].id
+            else:
+                return default_vpc[0]
+        return 'None'
+
+    def get_vpc_subnets(self):
+        subnets = []
+        if self.vpc_conn:
+            with boto_error_handler(self.request):
+                vpc_subnets = self.vpc_conn.get_all_subnets()
+                for vpc_subnet in vpc_subnets:
+                    subnet_string = u'{0} ({1}) | {2}'.format(vpc_subnet.cidr_block,
+                                                              vpc_subnet.id, vpc_subnet.availability_zone)
+                    subnets.append(dict(
+                        id=vpc_subnet.id,
+                        name=subnet_string,
+                        vpc_id=vpc_subnet.vpc_id,
+                        availability_zone=vpc_subnet.availability_zone,
+                        state=vpc_subnet.state,
+                        cidr_block=vpc_subnet.cidr_block,
+                    ))
+        return subnets
+
+    def get_availability_zones(self):
+        availability_zones = []
+        if self.ec2_conn:
+            with boto_error_handler(self.request):
+                zones = self.ec2_conn.get_all_zones()
+                for zone in zones:
+                    availability_zones.append(dict(id=zone.name, name=zone.name))
+        return availability_zones
+
+    def add_elb_tags(self, elb_name):
+        tags_json = self.request.params.get('tags')
+        tags_dict = json.loads(tags_json) if tags_json else {}
+        add_tags_params = {'LoadBalancerNames.member.1': elb_name}
+        index = 1
+        for key, value in tags_dict.items():
+            key = self.unescape_braces(key.strip())
+            if not any([key.startswith('aws:'), key.startswith('euca:')]):
+                add_tags_params['Tags.member.%d.Key' % index] = key
+                add_tags_params['Tags.member.%d.Value' % index] = self.unescape_braces(value.strip())
+                index += 1
+        if index > 1:
+            self.elb_conn.get_status('AddTags', add_tags_params)
+
+
+class ELBView(BaseELBView):
+    """Views for single ELB"""
+    TEMPLATE = '../templates/elbs/elb_view.pt'
+
+    def __init__(self, request):
+        super(ELBView, self).__init__(request)
         with boto_error_handler(request):
             self.elb = self.get_elb()
             # boto doesn't convert elb created_time into dtobj like it does for others
             if self.elb:
                 self.elb.created_time = boto.utils.parse_ts(self.elb.created_time)
                 self.elb.idle_timeout = self.get_elb_attribute_idle_timeout()
-                self.elb.ping_protocol = ''
-                self.elb.ping_port = ''
-                self.elb.ping_path = ''
                 self.get_health_check_data()
                 tags_params = {'LoadBalancerNames.member.1': self.elb.name}
                 self.elb.tags = self.elb_conn.get_object('DescribeTags', tags_params, LbTagSet)
             else:
                 raise HTTPNotFound()
-        self.is_vpc_supported = BaseView.is_vpc_supported(request)
         self.elb_form = ELBForm(
             self.request, conn=self.ec2_conn, vpc_conn=self.vpc_conn,
             elb=self.elb, securitygroups=self.get_security_groups(),
@@ -364,22 +480,6 @@ class ELBView(TaggedItemView):
         else:
             self.request.error_messages = self.elb_form.get_errors_list()
         return self.render_dict
-
-    def get_listeners_args(self):
-        listeners_json = self.request.params.get('elb_listener')
-        listeners = json.loads(listeners_json) if listeners_json else []
-        listeners_args = []
-        for listener in listeners:
-            from_protocol = listener.get('fromProtocol')
-            from_port = listener.get('fromPort')
-            to_protocol = listener.get('toProtocol')
-            to_port = listener.get('toPort')
-            certificate_arn = listener.get('certificateARN') or None
-            if certificate_arn is not None:
-                listeners_args.append((from_port, to_port, from_protocol, to_protocol, certificate_arn))
-            else:
-                listeners_args.append((from_port, to_port, from_protocol, to_protocol))
-        return listeners_args
 
     @view_config(route_name='elb_delete', request_method='POST', renderer=TEMPLATE)
     def elb_delete(self):
@@ -476,20 +576,6 @@ class ELBView(TaggedItemView):
             self.remove_all_elb_tags(elb_name)
             self.add_elb_tags(elb_name)
 
-    def add_elb_tags(self, elb_name):
-        tags_json = self.request.params.get('tags')
-        tags_dict = json.loads(tags_json) if tags_json else {}
-        add_tags_params = {'LoadBalancerNames.member.1': elb_name}
-        index = 1
-        for key, value in tags_dict.items():
-            key = self.unescape_braces(key.strip())
-            if not any([key.startswith('aws:'), key.startswith('euca:')]):
-                add_tags_params['Tags.member.%d.Key' % index] = key
-                add_tags_params['Tags.member.%d.Value' % index] = self.unescape_braces(value.strip())
-                index += 1
-        if index > 1:
-            self.elb_conn.get_status('AddTags', add_tags_params)
-
     def remove_all_elb_tags(self, elb_name):
         if self.elb.tags:
             remove_tags_params = {'LoadBalancerNames.member.1': elb_name}
@@ -578,44 +664,6 @@ class ELBView(TaggedItemView):
         if add_instances:
             self.elb_conn.register_instances(elb_name, add_instances)
 
-    def handle_configure_health_check(self, name):
-        ping_protocol = self.request.params.get('ping_protocol')
-        ping_port = self.request.params.get('ping_port')
-        ping_path = self.request.params.get('ping_path')
-        response_timeout = self.request.params.get('response_timeout')
-        time_between_pings = self.request.params.get('time_between_pings')
-        failures_until_unhealthy = self.request.params.get('failures_until_unhealthy')
-        passes_until_healthy = self.request.params.get('passes_until_healthy')
-        ping_target = u"{0}:{1}".format(ping_protocol, ping_port)
-        if ping_protocol in ['HTTP', 'HTTPS']:
-            ping_target = u"{0}/{1}".format(ping_target, ping_path)
-        hc = HealthCheck(
-            timeout=response_timeout,
-            interval=time_between_pings,
-            healthy_threshold=passes_until_healthy,
-            unhealthy_threshold=failures_until_unhealthy,
-            target=ping_target
-        )
-        self.elb_conn.configure_health_check(name, hc)
-
-    def get_instance_selector_text(self):
-        instance_selector_text = {'name': _(u'NAME (ID)'), 'tags': _(u'TAGS'),
-                                  'zone': _(u'AVAILABILITY ZONE'), 'subnet': _(u'VPC SUBNET'), 'status': _(u'STATUS'),
-                                  'no_matching_instance_error_msg': _(u'No matching instances')}
-        return instance_selector_text
-
-    def get_protocol_list(self):
-        protocol_list = ()
-        if self.cloud_type == 'aws':
-            protocol_list = ({'name': 'HTTP', 'value': 'HTTP', 'port': '80'},
-                             {'name': 'TCP', 'value': 'TCP', 'port': '80'})
-        else:
-            protocol_list = ({'name': 'HTTP', 'value': 'HTTP', 'port': '80'},
-                             {'name': 'HTTPS', 'value': 'HTTPS', 'port': '443'},
-                             {'name': 'TCP', 'value': 'TCP', 'port': '80'},
-                             {'name': 'SSL', 'value': 'SSL', 'port': '443'})
-        return protocol_list
-
     def get_vpc_network_name(self):
         if self.is_vpc_supported:
             if self.elb.vpc_id and self.vpc_conn:
@@ -625,49 +673,6 @@ class ELBView(TaggedItemView):
                         vpc_name = TaggedItemView.get_display_name(vpc_networks[0])
                         return vpc_name
         return 'None'
-
-    def get_default_vpc_network(self):
-        default_vpc = self.request.session.get('default_vpc', [])
-        if self.is_vpc_supported:
-            if 'none' in default_vpc or 'None' in default_vpc:
-                if self.cloud_type == 'aws':
-                    return 'None'
-                # for euca, return the first vpc on the list
-                if self.vpc_conn:
-                    with boto_error_handler(self.request):
-                        vpc_networks = self.vpc_conn.get_all_vpcs()
-                        if vpc_networks:
-                            return vpc_networks[0].id
-            else:
-                return default_vpc[0]
-        return 'None'
-
-    def get_vpc_subnets(self):
-        subnets = []
-        if self.vpc_conn:
-            with boto_error_handler(self.request):
-                vpc_subnets = self.vpc_conn.get_all_subnets()
-                for vpc_subnet in vpc_subnets:
-                    subnet_string = u'{0} ({1}) | {2}'.format(vpc_subnet.cidr_block,
-                                                              vpc_subnet.id, vpc_subnet.availability_zone)
-                    subnets.append(dict(
-                        id=vpc_subnet.id,
-                        name=subnet_string,
-                        vpc_id=vpc_subnet.vpc_id,
-                        availability_zone=vpc_subnet.availability_zone,
-                        state=vpc_subnet.state,
-                        cidr_block=vpc_subnet.cidr_block,
-                    ))
-        return subnets
-
-    def get_availability_zones(self):
-        availability_zones = []
-        if self.ec2_conn:
-            with boto_error_handler(self.request):
-                zones = self.ec2_conn.get_all_zones()
-                for zone in zones:
-                    availability_zones.append(dict(id=zone.name, name=zone.name))
-        return availability_zones
 
     def get_security_groups(self):
         securitygroups = []
@@ -710,6 +715,9 @@ class ELBView(TaggedItemView):
 
     def get_health_check_data(self):
         if self.elb is not None and self.elb.health_check.target is not None:
+            self.elb.ping_protocol = ''
+            self.elb.ping_port = ''
+            self.elb.ping_path = ''
             match = re.search('^(\w+):(\d+)\/?(.+)?', self.elb.health_check.target)
             if match:
                 self.elb.ping_protocol = match.group(1)
@@ -723,18 +731,12 @@ class ELBView(TaggedItemView):
         return is_cross_zone_enabled
 
 
-class CreateELBView(BaseView):
+class CreateELBView(BaseELBView):
     """Create ELB wizard"""
     TEMPLATE = '../templates/elbs/elb_wizard.pt'
 
     def __init__(self, request):
         super(CreateELBView, self).__init__(request)
-        self.ec2_conn = self.get_connection()
-        self.iam_conn = self.get_connection(conn_type='iam')
-        self.elb_conn = self.get_connection(conn_type='elb')
-        self.autoscale_conn = self.get_connection(conn_type='autoscale')
-        self.vpc_conn = self.get_connection(conn_type='vpc')
-        self.is_vpc_supported = BaseView.is_vpc_supported(request)
         self.create_form = CreateELBForm(
             self.request, conn=self.ec2_conn, vpc_conn=self.vpc_conn, formdata=self.request.params or None)
         self.certificate_form = CertificateForm(self.request, conn=self.ec2_conn,
@@ -793,67 +795,6 @@ class CreateELBView(BaseView):
                         {'title': _(u'Health Check & Advanced'), 'render': True, 'display_id': 3})
         return tab_list
 
-    def get_protocol_list(self):
-        protocol_list = ()
-        if self.cloud_type == 'aws':
-            protocol_list = ({'name': 'HTTP', 'value': 'HTTP', 'port': '80'},
-                             {'name': 'TCP', 'value': 'TCP', 'port': '80'})
-        else:
-            protocol_list = ({'name': 'HTTP', 'value': 'HTTP', 'port': '80'},
-                             {'name': 'HTTPS', 'value': 'HTTPS', 'port': '443'},
-                             {'name': 'TCP', 'value': 'TCP', 'port': '80'},
-                             {'name': 'SSL', 'value': 'SSL', 'port': '443'})
-        return protocol_list
-
-    def get_instance_selector_text(self):
-        instance_selector_text = {'name': _(u'NAME (ID)'), 'tags': _(u'TAGS'),
-                                  'zone': _(u'AVAILABILITY ZONE'), 'subnet': _(u'VPC SUBNET'), 'status': _(u'STATUS'),
-                                  'no_matching_instance_error_msg': _(u'No matching instances')}
-        return instance_selector_text
-
-    def get_default_vpc_network(self):
-        default_vpc = self.request.session.get('default_vpc', [])
-        if self.is_vpc_supported:
-            if 'none' in default_vpc or 'None' in default_vpc:
-                if self.cloud_type == 'aws':
-                    return 'None'
-                # for euca, return the first vpc on the list
-                if self.vpc_conn:
-                    with boto_error_handler(self.request):
-                        vpc_networks = self.vpc_conn.get_all_vpcs()
-                        if vpc_networks:
-                            return vpc_networks[0].id
-            else:
-                return default_vpc[0]
-        return 'None'
-
-    def get_vpc_subnets(self):
-        subnets = []
-        if self.vpc_conn:
-            with boto_error_handler(self.request):
-                vpc_subnets = self.vpc_conn.get_all_subnets()
-                for vpc_subnet in vpc_subnets:
-                    subnet_string = u'{0} ({1}) | {2}'.format(vpc_subnet.cidr_block,
-                                                              vpc_subnet.id, vpc_subnet.availability_zone)
-                    subnets.append(dict(
-                        id=vpc_subnet.id,
-                        name=subnet_string,
-                        vpc_id=vpc_subnet.vpc_id,
-                        availability_zone=vpc_subnet.availability_zone,
-                        state=vpc_subnet.state,
-                        cidr_block=vpc_subnet.cidr_block,
-                    ))
-        return subnets
-
-    def get_availability_zones(self):
-        availability_zones = []
-        if self.ec2_conn:
-            with boto_error_handler(self.request):
-                zones = self.ec2_conn.get_all_zones()
-                for zone in zones:
-                    availability_zones.append(dict(id=zone.name, name=zone.name))
-        return availability_zones
-
     @view_config(route_name='elb_create', request_method='POST', renderer=TEMPLATE)
     def elb_create(self):
         # Ignore the security group requirement in case on Non-VPC system
@@ -902,57 +843,6 @@ class CreateELBView(BaseView):
         else:
             self.request.error_messages = self.create_form.get_errors_list()
             return self.render_dict
-
-    def get_listeners_args(self):
-        listeners_json = self.request.params.get('elb_listener')
-        listeners = json.loads(listeners_json) if listeners_json else []
-        listeners_args = []
-
-        for listener in listeners:
-            from_protocol = listener.get('fromProtocol')
-            from_port = listener.get('fromPort')
-            to_protocol = listener.get('toProtocol')
-            to_port = listener.get('toPort')
-            certificate_arn = listener.get('certificateARN') or None
-            if certificate_arn is not None:
-                listeners_args.append((from_port, to_port, from_protocol, to_protocol, certificate_arn))
-            else:
-                listeners_args.append((from_port, to_port, from_protocol, to_protocol))
-        return listeners_args
-
-    def handle_configure_health_check(self, name):
-        ping_protocol = self.request.params.get('ping_protocol')
-        ping_port = self.request.params.get('ping_port')
-        ping_path = self.request.params.get('ping_path')
-        response_timeout = self.request.params.get('response_timeout')
-        time_between_pings = self.request.params.get('time_between_pings')
-        failures_until_unhealthy = self.request.params.get('failures_until_unhealthy')
-        passes_until_healthy = self.request.params.get('passes_until_healthy')
-        ping_target = u"{0}:{1}".format(ping_protocol, ping_port)
-        if ping_protocol in ['HTTP', 'HTTPS']:
-            ping_target = u"{0}/{1}".format(ping_target, ping_path)
-        hc = HealthCheck(
-            timeout=response_timeout,
-            interval=time_between_pings,
-            healthy_threshold=passes_until_healthy,
-            unhealthy_threshold=failures_until_unhealthy,
-            target=ping_target
-        )
-        self.elb_conn.configure_health_check(name, hc)
-
-    def add_elb_tags(self, elb_name):
-        tags_json = self.request.params.get('tags')
-        tags_dict = json.loads(tags_json) if tags_json else {}
-        add_tags_params = {'LoadBalancerNames.member.1': elb_name}
-        index = 1
-        for key, value in tags_dict.items():
-            key = self.unescape_braces(key.strip())
-            if not any([key.startswith('aws:'), key.startswith('euca:')]):
-                add_tags_params['Tags.member.%d.Key' % index] = key
-                add_tags_params['Tags.member.%d.Value' % index] = self.unescape_braces(value.strip())
-                index += 1
-        if index > 1:
-            self.elb_conn.get_status('AddTags', add_tags_params)
 
     @view_config(route_name='certificate_create', request_method='POST', renderer=TEMPLATE)
     def certificate_create(self):
