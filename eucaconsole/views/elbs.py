@@ -321,12 +321,10 @@ class ELBView(TaggedItemView):
     @view_config(route_name='elb_view', renderer=TEMPLATE)
     def elb_view(self):
         self.__init__(self.request)
-        print "elb_view()"
         return self.render_dict
 
     @view_config(route_name='elb_update', request_method='POST', renderer=TEMPLATE)
     def elb_update(self):
-        print "elb_update()"
         if self.elb_form.validate():
             name = self.elb.name
             idle_timeout = self.request.params.get('idle_timeout')
@@ -339,17 +337,11 @@ class ELBView(TaggedItemView):
             zone = self.request.params.getall('zone') or None
             cross_zone_enabled = self.request.params.get('cross_zone_enabled') or False
             instances = self.request.params.getall('instances') or None
-            print idle_timeout
-            print elb_listener
-            print securitygroup
-            print vpc_subnet
-            print zone
-            print cross_zone_enabled
-            print instances
             location = self.request.route_path('elb_view', id=self.elb.name)
             prefix = _(u'Unable to update load balancer')
             template = u'{0} {1} - {2}'.format(prefix, self.elb.name, '{0}')
             with boto_error_handler(self.request, location, template):
+                self.update_elb_idle_timeout(self.elb.name, idle_timeout)
                 self.update_load_balancer_listeners(self.elb.name, listeners_args)
                 self.update_elb_tags(self.elb.name)
                 if vpc_subnet is None:
@@ -450,6 +442,12 @@ class ELBView(TaggedItemView):
                                                  params, CustomLbAttributes)
             if elb_attrs:
                 return elb_attrs.connecting_settings.idle_timeout
+
+    def update_elb_idle_timeout(self, elb_name, idle_timeout):
+        if self.elb_conn:
+            params = {'LoadBalancerName': elb_name}
+            params['LoadBalancerAttributes.ConnectionSettings.IdleTimeout'] = idle_timeout
+            self.elb_conn.get_status('ModifyLoadBalancerAttributes', params, verb='GET')
 
     def get_listener_list(self):
         listener_list = []
