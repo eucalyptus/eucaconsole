@@ -347,7 +347,7 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
                        isSelected = true;
                     }
                 });
-                if (isSelected === false) {
+                if (isSelected === false && subnet.vpc_id === $scope.vpcNetwork) {
                     subnet.instanceCount = $scope.getInstanceCountInSubnet(subnet.id);
                     subnet.unhealthyInstanceCount = $scope.getUnhealthyInstanceCountInSubnet(subnet.id);
                     unselected.push(subnet);
