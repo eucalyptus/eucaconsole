@@ -4,6 +4,9 @@ from pages.dashboard import Dashboard
 from pages.loginpage import LoginPage
 from pages.keypair.keypairdetail import KeypairDetailPage
 from pages.keypair.keypairview import KeypairView
+from pages.security_group.security_group_view import SecurityGroupView
+from pages.security_group.security_group_detail import SecurityGroupDetailPage
+from dialogs.security_group_dialogs import CreateScurityGroupDialog
 from dialogs.keypair_dialogs import CreateKeypairDialog, DeleteKeypairModal, ImportKeypairDialog
 
 
@@ -100,11 +103,14 @@ class GuiEC2(GuiTester):
         BasePage(self).goto_keypair_view_page_via_menu()
         KeypairView(self).verify_keypair_not_present_on_view_page(keypair_name)
 
-    def create_security_group_from_dashboard(self, sgroup_name):
+    def create_security_group_from_dashboard(self, s_group_name, s_group_description):
         """
         Creates security group from dashboard without adding rules or tags.
         """
-        pass
+        BasePage(self).goto_dashboard_via_menu()
+        Dashboard(self).click_create_s_group_link_from_dashboard()
+        CreateScurityGroupDialog(self).create_s_group(s_group_name, s_group_description)
+        SecurityGroupDetailPage(self, s_group_name)
 
     def create_security_group_from_view_page(self, sgroup_name):
         """
