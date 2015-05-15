@@ -16,7 +16,7 @@
 #login-wrapper .tabs a { color: #5a5a5a; }
 #login-wrapper .tabs a:hover { color: #007dba; }
 #login-wrapper .tabs dd.active { padding-bottom: 0; }
-#login-wrapper .tabs dd.active a { color: #5a5a5a; background-color: white; border: 1px solid #cccccc; border-bottom: none; }
+#login-wrapper .tabs dd.active a { color: #007dba; background-color: white; border: 1px solid #cccccc; border-bottom: none; }
 #login-wrapper .tabs-content { padding: 1rem; padding-bottom: 2rem; background-color: white; border: 1px solid #cccccc; }
 #login-wrapper .tabs-content .content { width: 85%; margin: 0 auto; }
 #login-wrapper .button { display: block; width: 100%; margin-top: 12px; margin-bottom: 12px; background-color: #007dba; }

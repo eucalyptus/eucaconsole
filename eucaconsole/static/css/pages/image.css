@@ -5,11 +5,11 @@
 ----------------------------------------- */
 .state { background-color: transparent; text-transform: capitalize; }
 
-.state.available { background-color: #03405f; }
+.state.available { background-color: #008424; }
 
 .state.cancelling { background-color: #ccc; }
 
-.state.faied { background-color: darkred; }
+.state.faied { background-color: hp-red; }
 
 .state.pending { background-color: #0683c2; }
 
@@ -24,7 +24,7 @@
 /* ----------------------------------------- Account ID Icon 
 ----------------------------------------- */
 .items { margin-bottom: 6px; }
-.items .account-id-icon { color: #333; background-color: #e6e7e8; margin-right: 8px; }
+.items .account-id-icon { color: #333; background-color: #f2f2f2; margin-right: 8px; }
 .items .account-id-icon a { color: white; }
 
 .progress { text-align: left; position: relative; border: none; }

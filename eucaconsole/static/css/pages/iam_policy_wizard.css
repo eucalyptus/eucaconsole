@@ -6,7 +6,7 @@
 .tabs a { color: #5a5a5a; }
 .tabs a:hover { color: #007dba; }
 .tabs dd.active { padding-bottom: 0; }
-.tabs dd.active a { color: #5a5a5a; background-color: white; border: 1px solid #cccccc; border-bottom: none; }
+.tabs dd.active a { color: #007dba; background-color: white; border: 1px solid #cccccc; border-bottom: none; }
 
 .tabs-content { background-color: white; }
 .tabs-content p { line-height: 1.3rem; }

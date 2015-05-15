@@ -54,7 +54,7 @@
 .tile .footer .progress { position: relative; margin: 0 0 0 0; height: 24px; border: none; }
 .tile .footer .progress .meter { position: relative; top: -2px; left: -2px; padding: 4px 0 4px 8px; height: 24px; display: inline-block; white-space: nowrap; font-weight: bold; text-align: center; }
 
-.gridwrapper .table { border: none; width: 100%; }
+.gridwrapper .table { border: 1px solid #cccccc; width: 100%; }
 .gridwrapper .table thead tr { background-color: #f2f2f2; }
 .gridwrapper .table thead tr th { padding-top: 0.5rem; padding-bottom: 0.5rem; padding-left: 6px; padding-right: 6px; vertical-align: top; color: #444; text-transform: uppercase; }
 .gridwrapper .table thead tr th.actions { text-align: right; }
@@ -98,8 +98,7 @@
 .displayicons a { float: right; border-bottom: none; color: #5a5a5a; }
 .displayicons a:hover { border-bottom: none; color: #006699; }
 .displayicons label { float: right; line-height: 2.5rem; margin-right: 5px; }
-.displayicons .selected { background-color: white; color: black; }
-.displayicons .selected:hover { color: black; cursor: default; }
+.displayicons .selected { background-color: white; color: #007dba; }
 .displayicons i { display: inline-block; padding: 2px 12px; }
 
 #filters { position: relative; background-color: white; padding: 8px; margin-top: 108px; font-size: 0.8rem; }
@@ -118,7 +117,7 @@
 @media screen and (max-width: 1024px) { #filters { margin-top: 1rem; } }
 /* Small screen */
 @media screen and (max-width: 1020px) { .columns.datagrid { padding-left: 1rem; } }
-.status.running { background-color: #03405f; }
+.status.running { background-color: #008424; }
 
 .status.pending { background-color: #0683c2; }
 

@@ -1667,7 +1667,7 @@ a { color: #007dba; }
 
 .subsection-label { color: #5a5a5a; margin-bottom: 6px; }
 
-hr { border: 1px solid #6a737b; border-width: 1px 0 0; }
+hr { border: 1px solid #cccccc; border-width: 1px 0 0; }
 
 a.has-tip { border-bottom: none !important; }
 
@@ -1752,11 +1752,11 @@ textarea.policy-area { width: 100%; min-height: 30rem; font-family: Courier, "co
 /* ----------------------------------------- Forms
 ----------------------------------------- */
 form label { color: #6a737b; font-weight: bold; cursor: default; }
-form input { background-color: #eef7e3; }
-form input[type=text], form input[type=password], form input[type=number] { background-color: #eef7e3; }
+form input { background-color: #f2f2f2; }
+form input[type=text], form input[type=password], form input[type=number] { background-color: #f2f2f2; }
 form input[type=file] { background-color: transparent; }
 form input[type=password] { font-family: Arial, Helvetica, sans-serif !important; font-size: 1rem; color: black; }
-form select, form textarea { background-color: #eef7e3; }
+form select, form textarea { background-color: #f2f2f2; }
 form .req { color: darkred; }
 form .row .inline-label { line-height: 2rem; }
 form .row input[type='text'], form .row input[type='password'] { margin: 0 0 0 0; }
@@ -1836,7 +1836,7 @@ textarea.hidden.debug { display: block; }
 
 /* ----------------------------------------- Tables
 ----------------------------------------- */
-table.table { border: none; }
+table.table { border: 1px solid #cccccc; }
 table.table thead tr { background-color: #f2f2f2; }
 table.table thead tr th { padding-top: 0.5rem; padding-bottom: 0.5rem; padding-left: 6px; padding-right: 6px; vertical-align: top; color: #444; text-transform: uppercase; }
 table.table thead tr th.actions { text-align: right; }
@@ -1866,7 +1866,7 @@ footer .copyright { font-size: 0.9em; }
 .tabs dd a { color: #5a5a5a; background-color: transparent; padding: 10px 32px 6px 24px; font-weight: bold; }
 .tabs dd a:hover { color: #007dba; background-color: transparent; }
 .tabs dd.active { position: relative; top: 1px; z-index: 999; }
-.tabs dd.active a { color: #5a5a5a; background-color: white; border: 1px solid #cccccc; border-bottom: none; }
+.tabs dd.active a { color: #007dba; background-color: white; border: 1px solid #cccccc; border-bottom: none; }
 
 .tabs-content { border: 1px solid #cccccc; background-color: white; }
 .tabs-content .panel { border: none; }

@@ -355,7 +355,7 @@ $breadcrumb-border-color: darken($breadcrumb-background-color, 20%);
 }
 
 hr {
-    border: 1px solid $euca-grey;
+    border: 1px solid $hp-gray-20;
     border-width: 1px 0 0;
 }
 
@@ -618,11 +618,11 @@ form {
         cursor: default;
     }
     input {
-        background-color: $euca-extralightgreen;
+        background-color: $hp-gray-5;
         &[type=text],
         &[type=password],
         &[type=number] {
-            background-color: $euca-extralightgreen;
+            background-color: $hp-gray-5;
         }
         &[type=file] {
             background-color: transparent;
@@ -634,7 +634,7 @@ form {
         }
     }
     select, textarea {
-        background-color: $euca-extralightgreen;
+        background-color: $hp-gray-5;
     }
     .req {
         color: darkred;

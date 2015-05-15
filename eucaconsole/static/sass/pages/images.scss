@@ -37,9 +37,9 @@
     }
     .label {
         padding: 4px 6px;
-        &.i386 { background-color: $euca-grey; }
-        &.x86_64 { background-color: $euca-notificationblue; }
-        &.ebs { background-color: $euca-olive; text-transform: uppercase; }
+        &.i386 { background-color: $hp-orange; }
+        &.x86_64 { background-color: $hp-accessible-blue; }
+        &.ebs { background-color: $hp-purple; text-transform: uppercase; }
         &.instance-store { background-color: darken($euca-grey, 15%); }
     }
     .emi-name {
@@ -51,7 +51,7 @@
 
 // Status colors
 $snapshot-status-color-pending: lighten($euca-darkblue, 20%);
-$snapshot-status-color-available: $euca-darkblue;
+$snapshot-status-color-available: $hp-green;
 $snapshot-status-color-failed: darken(red, 20%);
 
 
