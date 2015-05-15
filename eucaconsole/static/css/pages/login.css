@@ -16,7 +16,7 @@
 #login-wrapper .tabs dd { position: relative; top: 1px; z-index: 999; }
 #login-wrapper .tabs dd a { padding: 10px 32px 6px 24px; color: #5a5a5a; background-color: transparent; font-weight: bold; }
 #login-wrapper .tabs dd a:hover { color: #007dba; background-color: transparent; }
-#login-wrapper .tabs dd.active a { color: #007dba; background-color: white; border: 1px solid #cccccc; border-bottom-color: white; padding-top: 8px; padding-right: 31px; padding-left: 23px; }
+#login-wrapper .tabs dd.active a { color: #007dba; background-color: white; border: 1px solid #cccccc; border-bottom-color: white; padding: 9px 31px 5px 23px; }
 #login-wrapper .tabs-content { padding: 1rem; padding-bottom: 2rem; background-color: white; border: 1px solid #cccccc; }
 #login-wrapper .tabs-content .content { width: 85%; margin: 0 auto; }
 #login-wrapper .button { display: block; width: 100%; margin-top: 12px; margin-bottom: 12px; background-color: #007dba; }
