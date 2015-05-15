@@ -104,6 +104,7 @@ class ELBForm(BaseSecureForm):
 
     def set_error_messages(self):
         self.securitygroup.error_msg = self.securitygroup_error_msg
+        self.ping_path.error_msg = self.ping_path_error_msg
 
     def set_choices(self):
         self.securitygroup.choices = self.set_security_group_choices()
@@ -205,7 +206,7 @@ class CreateELBForm(BaseSecureForm):
     ping_path = TextEscapedField(
         id=u'ping-path',
         label=_(u'Path'),
-        default="/index.html",
+        default="index.html",
         validators=[validators.InputRequired(message=ping_path_error_msg)],
     )
     response_timeout_error_msg = _(u'Response timeout is required')

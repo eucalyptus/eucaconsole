@@ -184,6 +184,9 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
                     $scope.isNotChanged = false;
                 }
             });
+            $scope.$watch('pingProtocol', function () {
+                $scope.updatePingPath();
+            });
             $scope.$watch('isNotChanged', function () {
                 if ($scope.isNotChanged === false) {
                     $('#elb-view-tabs').removeAttr('data-tab');
@@ -463,6 +466,15 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
                 $scope.isCrossZoneEnabled = true;
             } else {
                 $scope.isCrossZoneEnabled = false;
+            }
+        };
+        $scope.updatePingPath = function () {
+            if ($scope.pingProtocol === 'TCP' || $scope.pingProtocol === 'SSL') {
+                $scope.pingPath = 'None';
+            } else if ($scope.pingProtocol === 'HTTP' || $scope.pingProtocol === 'HTTPS') {
+                if ($scope.pingPath === 'None') {
+                    $scope.pingPath = '';
+                }
             }
         };
         $scope.submitSaveChanges = function ($event, tab) {
