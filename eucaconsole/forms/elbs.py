@@ -96,7 +96,7 @@ class ELBForm(BaseSecureForm):
         self.cloud_type = request.session.get('cloud_type', 'euca')
         self.is_vpc_supported = BaseView.is_vpc_supported(request)
         self.security_groups = securitygroups or []
-        self.idle_timeout.label_help_text = self.idle_timeout_help_text
+        self.idle_timeout.help_text = self.idle_timeout_help_text
         self.set_error_messages()
         self.set_choices()
         if elb is not None:
