@@ -7,10 +7,8 @@ class Security_group_operations_sequence(GuiEC2):
     s_group_name = "test-123-sgroup"
     s_group_description = "Security group created by gui test"
 
-
     def __init__(self):
         self.tester = GuiEC2("http://10.111.80.147:4444/wd/hub", "http://10.111.5.145:8888")
-
 
     def security_group_ops_test(self):
 

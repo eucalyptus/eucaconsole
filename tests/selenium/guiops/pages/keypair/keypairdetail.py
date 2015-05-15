@@ -20,3 +20,6 @@ class KeypairDetailPage(DetailPage):
     def click_action_delete_keypair_on_detail_page(self):
         self.tester.click_element_by_css(DetailPage._actions_menu_css)
         self.tester.click_element_by_id(self._delete_keypair_action_menuitem_id)
+
+    def get_s_group_id_from_detail_page(self, s_group_name):
+        pass
