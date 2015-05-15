@@ -10,7 +10,6 @@ $dashboard-panel-icon-size: 100px;
 
 #maincontent {
     padding-top: 1rem;
-    background: #eef7e3;
     #pagetitle {
         margin-bottom: 0.5rem;
         margin-left: 0;
@@ -44,6 +43,7 @@ $tile-row-height: 24px;
     font-size: 0.825rem;
     .tile {
         background-color: white;
+        border: 1px solid $hp-gray-20;
         position: relative;
         height: $dashboard-panel-tile-height;
         padding: 4px 8px;
@@ -97,12 +97,12 @@ $tile-row-height: 24px;
             position: absolute;
             width: 30px; height: $tile-row-height;
             top: 0; right: 0;
-            color: $euca-green;
+            color: $hp-accessible-blue;
             font-size: 1.1rem;
             padding: 0 0 0 0;
             border: none;
             &:hover {
-                color: $euca-green;
+                color: $hp-hover-blue;
             }
             &::before, &::after {
                 border: none;
@@ -125,7 +125,7 @@ $tile-row-height: 24px;
                 position: absolute;
                 top: 0; bottom: 0; left: 0; right: 0;
                 &:hover {
-                    background-color: lighten($euca-lightgreen, 30%);
+                    background-color: lighten($hp-accessible-blue, 50%);
                 }
             }
             .plus {

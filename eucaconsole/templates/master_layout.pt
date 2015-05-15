@@ -40,7 +40,7 @@
                <i class="fi-list"></i>
             </a>
             <a href="${layout.home_url}" title="${layout.site_title}">
-                <span class="product-name">HP Helion Eucalyptus</span>
+                <span id="hp-logo"></span><span class="product-name">Eucalyptus</span>
             </a>
             <section tal:condition="request.user.is_authenticated()" id="user-dropdown-section">
                 <a href="#" data-dropdown="user-dropdown" class="small secondary dropdown">

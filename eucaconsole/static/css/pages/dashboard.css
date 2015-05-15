@@ -3,14 +3,14 @@
 /* Set the link colors and styles for top-level nav */
 /* ----------------------------------------- Item list
 ----------------------------------------- */
-#maincontent { padding-top: 1rem; background: #eef7e3; }
+#maincontent { padding-top: 1rem; }
 #maincontent #pagetitle { margin-bottom: 0.5rem; margin-left: 0; margin-top: 1rem; }
 #maincontent #pagetitle h3 { font-weight: bold; margin-top: 0; display: inline-block; }
 #maincontent #pagetitle #zone-selector { display: inline-block; margin-left: 1rem; }
 #maincontent #pagetitle #reset-dash { margin-top: 1.25rem; font-size: 0.825rem; display: inline-block; float: right; }
 
 .panel { background-color: transparent; border: none; margin-bottom: 0; box-sizing: border-box; position: relative; font-size: 0.825rem; }
-.panel .tile { background-color: white; position: relative; height: 240px; padding: 4px 8px; }
+.panel .tile { background-color: white; border: 1px solid #cccccc; position: relative; height: 240px; padding: 4px 8px; }
 .panel .tile .subheader { font-size: 1rem; font-weight: 500; margin: 0 0 0 0; }
 .panel .tile .icon { position: absolute; top: 20%; left: 50%; margin-left: -50px; display: inline-block; width: 100px; height: 100px; text-align: center; color: white; font-size: 3rem; }
 .panel .tile .icon em { font-size: 1.3rem; font-weight: bold; position: absolute; bottom: -40%; left: 0; right: 0; text-align: center; color: black; font-style: normal; }
@@ -19,14 +19,14 @@
 .panel .tile .footer a:hover { text-decoration: underline; }
 .panel .tile .footer .button { display: inline-block; font-weight: bold; }
 .panel .tile .footer .button:hover { text-decoration: none; }
-.panel .tile .dropdown.button.tiny { z-index: 99998; background: none; box-shadow: none; position: absolute; width: 30px; height: 24px; top: 0; right: 0; color: #8cc63e; font-size: 1.1rem; padding: 0 0 0 0; border: none; }
-.panel .tile .dropdown.button.tiny:hover { color: #8cc63e; }
+.panel .tile .dropdown.button.tiny { z-index: 99998; background: none; box-shadow: none; position: absolute; width: 30px; height: 24px; top: 0; right: 0; color: #007dba; font-size: 1.1rem; padding: 0 0 0 0; border: none; }
+.panel .tile .dropdown.button.tiny:hover { color: #006699; }
 .panel .tile .dropdown.button.tiny::before, .panel .tile .dropdown.button.tiny::after { border: none; }
-.panel .tile .f-dropdown { border-color: #8dc640; box-shadow: 2px 2px 5px #6a737b; }
+.panel .tile .f-dropdown { border-color: #cccccc; box-shadow: 2px 2px 5px #6a737b; }
 .panel .tile .f-dropdown.open { top: 34px; min-width: 10rem; padding-top: 0; }
 .panel .tile.add { text-align: center; text-transform: uppercase; position: relative; }
 .panel .tile.add a { display: block; position: absolute; top: 0; bottom: 0; left: 0; right: 0; }
-.panel .tile.add a:hover { background-color: #d3e9b6; }
+.panel .tile.add a:hover { background-color: #bae8ff; }
 .panel .tile.add .plus { font-size: 5rem; margin-bottom: 0.5rem; }
 
 #instances-running .icon { background-image: url(../../img/svg/icon_running_instances.svg); }

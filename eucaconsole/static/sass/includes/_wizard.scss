@@ -27,10 +27,6 @@
 @import "../includes/eucavariables";
 
 
-$wizard-border-width: 16px;
-$wizard-tab-padding: 8px 1rem;
-
-
 /* @section Wizard styles */
 .wizard {
     position: relative;
@@ -55,23 +51,7 @@ $wizard-tab-padding: 8px 1rem;
     }
     .tabs {
         dd {
-            &.active {
-                a {
-                    background-color: white;
-                    &:hover {
-                        background-color: white;
-                    }
-                }
-            }
-            &.disabled {
-                padding: $wizard-tab-padding;
-                background-color: $euca-extralightgrey;
-            }
-            a {
-                box-shadow: none;
-                white-space: nowrap;
-                padding: $wizard-tab-padding;
-            }
+            @include wizard-tabs-mixin;
             .cir {
                 position: relative;
                 top: -2px;

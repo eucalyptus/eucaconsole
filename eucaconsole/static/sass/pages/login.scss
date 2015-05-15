@@ -1,9 +1,6 @@
 /* @fileOverview Login page CSS */
 @import "../includes/eucavariables";
 
-#logobar-wrapper {
-    border-bottom: 1px solid black;
-}
 
 #notifications-wrapper {
     padding-top: 2rem;
@@ -51,7 +48,7 @@
         width: 100%;
         margin-top: 12px;
         margin-bottom: 12px;
-        background-color: $euca-orange;
+        background-color: $hp-accessible-blue;
     }
     #euca-tab.active, #aws-tab.active {
         background-color: white;

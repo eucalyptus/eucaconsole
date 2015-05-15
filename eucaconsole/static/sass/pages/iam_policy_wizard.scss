@@ -3,6 +3,11 @@
 // Import common Foundation variables
 @import "../includes/eucavariables";
 
+.tabs {
+    dd {
+        @include wizard-tabs-mixin;
+    }
+}
 
 // Select/create policy choices
 .tabs-content {

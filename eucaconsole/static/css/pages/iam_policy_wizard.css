@@ -2,6 +2,12 @@
 /* Set the link colors and styles for top-level nav */
 /* ----------------------------------------- Item list
 ----------------------------------------- */
+.tabs dd a { background-color: #cccccc; box-shadow: none; white-space: nowrap; padding: 8px 1rem; }
+.tabs dd a:hover { color: white; background-color: #006699; }
+.tabs dd.active a { color: white; background-color: #007dba; }
+.tabs dd.active a:hover { background-color: #007dba; }
+.tabs dd.disabled { padding: 8px 1rem; background-color: #e6e7e8; }
+
 .tabs-content { background-color: white; }
 .tabs-content p { line-height: 1.3rem; }
 .tabs-content .small-10.columns { padding-left: 0; }

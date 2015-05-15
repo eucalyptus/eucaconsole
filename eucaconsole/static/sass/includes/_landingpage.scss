@@ -39,7 +39,7 @@ $tile-label-padding: 28px;
 $grid-dropdown-width: 160px;
 $gridwrapper-table-width: 100%;
 
-$dropdown-border-color: $euca-green;
+$dropdown-border-color: $hp-gray-65;
 
 
 .columns.datagrid {
@@ -55,7 +55,7 @@ $dropdown-border-color: $euca-green;
 .clear-link {
     color: $euca-grey;
     &:hover {
-        color: $euca-green;
+        color: $hp-hover-blue;
     }
 }
 
@@ -72,6 +72,10 @@ $dropdown-border-color: $euca-green;
     }
 }
 
+.gridwrapper {
+    margin-top: 1rem;
+}
+
 // Dropdown buttons on landing page tile/table view
 .gridwrapper {
     .dropdown.button.tiny {
@@ -81,12 +85,12 @@ $dropdown-border-color: $euca-green;
         position: absolute;
         width: 30px; height: $tile-row-height;
         top: 0; right: 0;
-        color: $euca-green;
+        color: $hp-accessible-blue;
         font-size: 1.1rem;
         padding: 0 0 0 0;
         border: none;
         &:hover {
-            color: $euca-green;
+            color: $hp-hover-blue;
         }
         &::before, &::after {
             border: none;
@@ -126,7 +130,7 @@ $dropdown-border-color: $euca-green;
             position: absolute;
             top: 0; bottom: 0; left: 0; right: 0;
             &:hover {
-                background-color: lighten($euca-lightgreen, 30%);
+                background-color: lighten($hp-accessible-blue, 30%);
             }
         }
         .plus {
@@ -144,7 +148,7 @@ $dropdown-border-color: $euca-green;
             color: $euca-darkblue;
             font-weight: bold;
             &:hover {
-                color: $euca-green;
+                color: $hp-accessible-blue;
             }
         }
         strong {
@@ -161,7 +165,7 @@ $dropdown-border-color: $euca-green;
     .content {
         padding: 8px;
         font-size: 0.9em;
-        a { color: $euca-darkgreen; }
+        a { color: $hp-accessible-blue; }
         a:hover { text-decoration: underline; }
         div {
             margin-bottom: 2px;
@@ -186,7 +190,7 @@ $dropdown-border-color: $euca-green;
         }
     }
     .link {
-        color: $euca-green;
+        color: $hp-accessible-blue;
         text-transform: uppercase;
         padding: 1px 3px;
         margin-bottom: 2px;
@@ -244,7 +248,7 @@ $dropdown-border-color: $euca-green;
             padding: 8px 4px 8px 6px;
             vertical-align: top;
             a {
-                color: $euca-darkgreen;
+                color: $hp-accessible-blue;
                 &:hover {
                     text-decoration: underline;
                 }
@@ -384,10 +388,10 @@ $dropdown-border-color: $euca-green;
     a {
         float: right;
         border-bottom: none;
-        color: $euca-green;
+        color: $hp-accessible-blue;
         &:hover {
             border-bottom: none;
-            color: $euca-green;
+            color: $hp-accessible-blue;
         }
     }
     label {
