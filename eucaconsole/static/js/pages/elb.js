@@ -4,7 +4,7 @@
  *
  */
 
-angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor', 'MagicSearch'])
+angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor', 'MagicSearch', 'CloudWatchCharts'])
     .controller('ELBPageCtrl', function ($scope, $timeout, eucaUnescapeJson) {
         $scope.elbForm = undefined;
         $scope.thisTab = '';
