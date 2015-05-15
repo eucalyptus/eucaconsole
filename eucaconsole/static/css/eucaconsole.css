@@ -990,8 +990,8 @@ label.error { color: #f04124; }
 .sub-nav dt, .sub-nav dd, .sub-nav li { float: left; margin-left: 1rem; margin-bottom: 0; font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif; font-weight: normal; font-size: 0.875rem; color: #999999; }
 .sub-nav dt a, .sub-nav dd a, .sub-nav li a { text-decoration: none; color: #999999; padding: 0.1875rem 1rem; }
 .sub-nav dt a:hover, .sub-nav dd a:hover, .sub-nav li a:hover { color: #737373; }
-.sub-nav dt.active a, .sub-nav dd.active a, .sub-nav li.active a { border-radius: 3px; font-weight: normal; background: #03405f; padding: 0.1875rem 1rem; cursor: default; color: #FFFFFF; }
-.sub-nav dt.active a:hover, .sub-nav dd.active a:hover, .sub-nav li.active a:hover { background: #033752; }
+.sub-nav dt.active a, .sub-nav dd.active a, .sub-nav li.active a { border-radius: 3px; font-weight: normal; background: #007dba; padding: 0.1875rem 1rem; cursor: default; color: #FFFFFF; }
+.sub-nav dt.active a:hover, .sub-nav dd.active a:hover, .sub-nav li.active a:hover { background: #006ba0; }
 
 div.switch { position: relative; padding: 0; display: block; overflow: hidden; border-style: solid; border-width: 1px; margin-bottom: 1.25rem; height: 2.25rem; background: #fff; border-color: #cccccc; }
 div.switch label { position: relative; left: 0; z-index: 2; float: left; width: 50%; height: 100%; margin: 0; font-weight: bold; text-align: left; transition: all 0.1s ease-out; }
@@ -1604,9 +1604,9 @@ html { background-color: white; }
 
 body { position: relative; color: #333; min-height: 100%; font-family: Lato, Helvetica, Arial, sans-serif; overflow-y: scroll; }
 
-h1, h2, h3, h4, h5, h6 { font-family: Lato, Helvetica, Arial, sans-serif; color: #03405f; }
+h1, h2, h3, h4, h5, h6 { font-family: Lato, Helvetica, Arial, sans-serif; color: #5a5a5a; }
 
-.panel h1, .panel h2, .panel h3, .panel h4, .panel h5, .panel h6 { color: #03405f; }
+.panel h1, .panel h2, .panel h3, .panel h4, .panel h5, .panel h6 { color: #5a5a5a; }
 
 a { color: #007dba; }
 
@@ -1621,7 +1621,7 @@ a { color: #007dba; }
 #logobar section .icon { font-size: 1.5rem; }
 #logobar .dropdown { display: inline-block; margin-left: 1.3rem; color: #007dba; }
 #logobar .dropdown .icon { display: inline-block; }
-#logobar .f-dropdown { border-color: #007dba; box-shadow: 2px 2px 5px #6a737b; width: auto; min-width: 8rem; }
+#logobar .f-dropdown { box-shadow: 0 0 1px 1px #cccccc; width: auto; min-width: 8rem; }
 #logobar .f-dropdown.open { width: auto !important; }
 #logobar .fi-list { margin-left: 8px; position: relative; top: -10px; }
 #logobar .product-name { font-size: 1.4rem; position: relative; top: -12px; }
@@ -1665,7 +1665,7 @@ a { color: #007dba; }
 #pagetitle.landingpage, .pagetitle.landingpage { margin-left: 0; position: absolute; top: 0; left: 1rem; }
 #pagetitle em, .pagetitle em { font-style: normal; font-weight: 700; font-family: Lato, Helvetica, Arial, sans-serif; color: #444; }
 
-.subsection-label { color: #03405f; margin-bottom: 6px; }
+.subsection-label { color: #5a5a5a; margin-bottom: 6px; }
 
 hr { border: 1px solid #6a737b; border-width: 1px 0 0; }
 
@@ -1702,7 +1702,7 @@ textarea.policy-area { width: 100%; min-height: 30rem; font-family: Courier, "co
 
 .expando i { color: #007dba; }
 .expando .title { font-size: 1.1rem; }
-.expando .title a { color: #03405f; }
+.expando .title a { color: #5a5a5a; }
 .expando .title a:hover { color: #007dba; border-bottom: 1px solid #007dba; }
 
 .action-icon { display: inline-block; font-size: 1.4rem; color: #007dba; padding-right: 0.5rem; padding-left: 0.5rem; }
@@ -1715,7 +1715,7 @@ textarea.policy-area { width: 100%; min-height: 30rem; font-family: Courier, "co
 #tag-editor .item-list .item { color: #333; background-color: #e6e7e8; margin-right: 8px; }
 #tag-editor .item-list .item a { color: white; }
 #tag-editor .propagates { color: #777; font-size: 0.7em; }
-#tag-editor .add-label { margin-bottom: 6px; color: #03405f; }
+#tag-editor .add-label { margin-bottom: 6px; color: #5a5a5a; }
 #tag-editor #add-tag-btn { margin-bottom: 0; }
 
 /* ----------------------------------------- Block device mapping (BDM) editor
@@ -1811,15 +1811,15 @@ textarea.hidden.debug { display: block; }
 
 /* ----------------------------------------- Panels and modals
 ----------------------------------------- */
-.panel { background-color: white; border: 0; position: relative; }
-.panel h6 { font-weight: bold; color: #03405f; }
+.panel { background-color: white; border: 1px solid #cccccc; position: relative; }
+.panel h6 { font-weight: bold; color: #5a5a5a; }
 .panel.has-actions { position: relative; padding-top: 60px !important; }
-.panel.has-actions h6.title { position: absolute; top: 0; left: 0; right: 0; line-height: 2rem; padding-left: 8px; background-color: #03405f; color: white; font-weight: normal; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.panel.has-actions h6.title { position: absolute; top: 0; left: 0; right: 0; line-height: 2rem; padding-left: 8px; background-color: #5a5a5a; color: white; font-weight: normal; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .panel.has-actions .label.status { margin-bottom: 8px; }
 .panel.has-actions .actions-menu { position: absolute; top: 10px; right: 10px; }
 .panel.has-actions .actions-menu .button.dropdown { padding: 12px 38px 12px 22px; }
 .panel.has-actions .actions-menu .button.dropdown a { color: white; }
-.panel.has-actions .actions-menu .f-dropdown { box-shadow: 0 0 1px 1px #54c7ff; min-width: 12rem; width: auto; }
+.panel.has-actions .actions-menu .f-dropdown { box-shadow: 0 0 1px 1px #cccccc; min-width: 12rem; width: auto; }
 
 .reveal-modal-bg { z-index: 9999990; }
 
@@ -1835,11 +1835,10 @@ textarea.hidden.debug { display: block; }
 /* ----------------------------------------- Tables
 ----------------------------------------- */
 table.table { border: none; }
-table.table thead tr { background-color: #f5f5f5; }
+table.table thead tr { background-color: #f2f2f2; }
 table.table thead tr th { padding-top: 0.5rem; padding-bottom: 0.5rem; padding-left: 6px; padding-right: 6px; vertical-align: top; color: #444; text-transform: uppercase; }
 table.table thead tr th.actions { text-align: right; }
 table.table thead tr th.count { text-align: center; }
-table.table tr { border-bottom: 1px solid #ddd; }
 table.table tr td.count { text-align: center; }
 table.table tr td { vertical-align: top; }
 
@@ -1863,7 +1862,7 @@ footer .copyright { font-size: 0.9em; }
 .tabs { max-height: 2.6rem; }
 .tabs dd { margin-bottom: 6px; background-color: transparent; color: darkred; font-weight: bold; padding-left: 0; font-style: normal; padding-bottom: 4px; }
 .tabs dd:first-child a { box-shadow: none; }
-.tabs dd a { color: #03405f; box-shadow: inset 6px 0 4px 0 rgba(50, 50, 50, 0.2); padding: 10px 32px 6px 24px; font-weight: bold; }
+.tabs dd a { color: #007dba; box-shadow: inset 6px 0 4px 0 rgba(50, 50, 50, 0.2); padding: 10px 32px 6px 24px; font-weight: bold; }
 .tabs dd.active a { box-shadow: none; }
 
 .tabs-content > .content { padding: 1rem; }

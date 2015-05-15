@@ -135,9 +135,6 @@ $topbar-link-hover-lightness: -10%; // Darken by 10%
 $topbar-link-bg-active-hover: $primary-color;
 
 
-// Sub-nav
-$sub-nav-active-bg: $euca-darkblue;
-
 // Breadcrumbs
 $crumb-bg: transparent;
 $crumb-padding: 0 0 0 0;
@@ -217,7 +214,7 @@ $tooltip-padding: rem-calc(5);
 @mixin table-styles-mixin {
     border: none;
     thead tr {
-        background-color: #f5f5f5;
+        background-color: $hp-gray-5;
         th {
             // Note: Do not use shorthand padding rules here since we need to override Foundation styles
             padding-top: 0.5rem;
@@ -236,7 +233,6 @@ $tooltip-padding: rem-calc(5);
         }
     }
     tr {
-        border-bottom: 1px solid #ddd;
         td.count {
             text-align: center;
         }

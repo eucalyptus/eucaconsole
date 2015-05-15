@@ -113,12 +113,12 @@ body {
 
 h1, h2, h3, h4, h5, h6 {
     font-family: $euca-header-font-family;
-    color: $euca-darkblue;
+    color: $hp-gray-65;
 }
 
 .panel {
     h1, h2, h3, h4, h5, h6 {
-        color: $euca-darkblue;
+        color: $hp-gray-65;
     }
 
 }
@@ -171,8 +171,7 @@ a {
         }
     }
     .f-dropdown {
-        border-color: $hp-accessible-blue;
-        box-shadow: 2px 2px 5px $euca-grey;
+        box-shadow: 0 0 1px 1px $hp-gray-20;
         width: auto;
         min-width: 8rem;
         &.open {
@@ -351,7 +350,7 @@ $breadcrumb-border-color: darken($breadcrumb-background-color, 20%);
 }
 
 .subsection-label {
-    color: $euca-darkblue;
+    color: $hp-gray-65;
     margin-bottom: 6px;
 }
 
@@ -476,7 +475,7 @@ textarea.policy-area {
     .title {
         font-size: 1.1rem;
         a {
-            color: $euca-darkblue;
+            color: $hp-gray-65;
             &:hover {
                 color: $hp-accessible-blue;
                 border-bottom: 1px solid $hp-accessible-blue;
@@ -512,7 +511,7 @@ textarea.policy-area {
     }
     .add-label {
         margin-bottom: 6px;
-        color: $euca-darkblue;
+        color: $hp-gray-65;
     }
     #add-tag-btn {
         margin-bottom: 0;
@@ -832,11 +831,11 @@ textarea.hidden {
 ----------------------------------------- */
 .panel {
     background-color: white;
-    border: 0;
+    border: 1px solid $hp-gray-20;
     position: relative;
     h6 {
         font-weight: bold;
-        color: $euca-darkblue;
+        color: $hp-gray-65;
     }
     &.has-actions {
         position: relative;
@@ -846,7 +845,7 @@ textarea.hidden {
             top: 0; left: 0; right: 0;
             line-height: 2rem;
             padding-left: 8px;
-            background-color: $euca-darkblue;
+            background-color: $hp-gray-65;
             color: white;
             font-weight: normal;
             @include ellipsis-overflow;
@@ -864,7 +863,7 @@ textarea.hidden {
                 }
             }
             .f-dropdown {
-                box-shadow: 0 0 1px 1px lighten($hp-accessible-blue, 30%);
+                box-shadow: 0 0 1px 1px $hp-gray-20;
                 min-width: 12rem;
                 width: auto;
             }
@@ -965,7 +964,7 @@ footer {
             box-shadow: none;
         }
         a {
-            color: $euca-darkblue;
+            color: $hp-accessible-blue;
             box-shadow: inset 6px 0 4px 0 rgba(50, 50, 50, 0.2);
             padding: 10px 32px 6px 24px;
             font-weight: bold;

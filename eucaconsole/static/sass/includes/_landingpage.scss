@@ -73,7 +73,7 @@ $dropdown-border-color: $hp-gray-65;
 }
 
 .gridwrapper {
-    margin-top: 1rem;
+    margin-top: 0.5rem;
 }
 
 // Dropdown buttons on landing page tile/table view
@@ -108,6 +108,7 @@ $dropdown-border-color: $hp-gray-65;
 
 // Tile/grid view
 .tile {
+    border: 1px solid $hp-gray-20;
     font-size: $euca-font-size;
     position: relative;
     display: inline-block;
@@ -145,7 +146,7 @@ $dropdown-border-color: $hp-gray-65;
             @include ellipsis-overflow;
             display: block;
             padding: 6px 30px 4px 10px;
-            color: $euca-darkblue;
+            color: $hp-gray-65;
             font-weight: bold;
             &:hover {
                 color: $hp-accessible-blue;

@@ -23,7 +23,7 @@
 
 #policy-preview { background-color: white; padding: 1rem; margin-top: 40px; }
 #policy-preview input[type=text], #policy-preview textarea { background-color: white; }
-#policy-preview h6.title { font-weight: bold; color: #03405f; margin-bottom: 1rem; }
+#policy-preview h6.title { font-weight: bold; color: #5a5a5a; margin-bottom: 1rem; }
 
 #policy-generator { border-color: #ccc; border-left: none; border-right: none; width: 100%; }
 #policy-generator tr.namespace { border-top: 1px solid #ccc; background-color: white; }
@@ -49,7 +49,7 @@
 #policy-generator td .advanced .chosen-search input[type=text] { width: 100%; }
 #policy-generator td label { margin-bottom: 2px; margin-top: 6px; }
 #policy-generator td i.tick { color: #ccc; font-size: 1.2rem; }
-#policy-generator td i.tick.fi-check.selected { color: #03405f; }
+#policy-generator td i.tick.fi-check.selected { color: #007dba; }
 #policy-generator td i.tick.fi-x.selected { color: darkred; }
 
 #create-iam-policy-btn { margin-top: 1rem; }

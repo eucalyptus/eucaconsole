@@ -41,7 +41,7 @@
             top: 0; left: 0; right: 0;
             line-height: 2.5rem;
             padding-left: 12px;
-            background-color: $euca-darkblue;
+            background-color: $hp-accessible-blue;
             color: white;
             @include ellipsis-overflow;
         }
@@ -62,23 +62,24 @@
                 padding: 0 0 0 0;
                 text-align: center;
                 vertical-align: middle;
-                background-color: $euca-darkblue;
+                background-color: $hp-accessible-blue;
                 color: white;
             }
         }
     }
     .tabs-content {
         min-height: 400px;
+        border: 1px solid $hp-gray-20;
         margin: 0 0 0 0;
         padding: 1rem;
         background-color: white;
         .content {
             width: 100%;
             .description {
-                color: $euca-darkblue;
+                color: $hp-gray-65;
             }
             .rule-description-label {
-                color: $euca-darkblue;
+                color: $hp-gray-65;
             }
         }
     }
@@ -102,6 +103,7 @@
 }
 
 .summary {
+    border: 1px solid $hp-gray-20;
     background-color: white;
     position: relative;
     top: 2px;
@@ -124,7 +126,7 @@
     }
     .title {
         font-weight: bold;
-        border-bottom: 1px solid $euca-darkblue;
+        border-bottom: 1px solid $hp-gray-65;
         margin-top: 7px;
         margin-bottom: 0.25rem;
     }
