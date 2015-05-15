@@ -838,6 +838,9 @@ textarea.hidden {
         font-weight: bold;
         color: $hp-gray-65;
     }
+    .tabs-content {
+        border: none;
+    }
     &.no-title {
         margin-top: 0;
     }
@@ -967,7 +970,7 @@ footer {
    Note: Wizard tabs are at _wizards.scss
 ----------------------------------------- */
 .tabs {
-    @include detail-page-tabs-mixin;
+    @include standard-tabs-mixin;
 }
 
 .tabs-content {

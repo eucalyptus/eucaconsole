@@ -2,11 +2,11 @@
 /* Set the link colors and styles for top-level nav */
 /* ----------------------------------------- Item list
 ----------------------------------------- */
-.tabs { position: relative; top: 1px; }
-.tabs a { color: #5a5a5a; }
-.tabs a:hover { color: #007dba; }
-.tabs dd.active { padding-bottom: 0; }
-.tabs dd.active a { color: #007dba; background-color: white; border: 1px solid #cccccc; border-bottom: none; }
+.tabs { max-height: 2.6rem !important; }
+.tabs dd { position: relative; top: 1px; z-index: 999; }
+.tabs dd a { padding: 10px 32px 6px 24px; color: #5a5a5a; background-color: transparent; font-weight: bold; }
+.tabs dd a:hover { color: #007dba; background-color: transparent; }
+.tabs dd.active a { color: #007dba; background-color: white; border: 1px solid #cccccc; border-bottom-color: white; padding-top: 8px; padding-right: 31px; padding-left: 23px; }
 
 .tabs-content { background-color: white; }
 .tabs-content p { line-height: 1.3rem; }

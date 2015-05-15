@@ -95,6 +95,7 @@
 .displayicons a:hover { border-bottom: none; color: #006699; }
 .displayicons label { float: right; line-height: 2.5rem; margin-right: 5px; }
 .displayicons .selected { background-color: white; color: #007dba; }
+.displayicons .selected:hover { color: #007dba; cursor: inherit; }
 .displayicons i { display: inline-block; padding: 2px 12px; }
 
 #filters { position: relative; background-color: white; padding: 8px; margin-top: 108px; font-size: 0.8rem; }

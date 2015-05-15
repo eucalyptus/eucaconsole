@@ -410,6 +410,10 @@ $dropdown-border-color: $hp-gray-65;
     .selected {
         background-color: white;
         color: $hp-accessible-blue;
+        &:hover {
+            color: $hp-accessible-blue;
+            cursor: inherit;
+        }
     }
     i {
         display: inline-block;

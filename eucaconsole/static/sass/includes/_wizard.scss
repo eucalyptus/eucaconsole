@@ -50,8 +50,6 @@
         margin-bottom: 0.5rem;
     }
     .tabs {
-        position: relative;
-        top: 1px;
         dd {
             @include wizard-tabs-mixin;
         }

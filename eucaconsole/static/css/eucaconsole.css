@@ -1813,6 +1813,7 @@ textarea.hidden.debug { display: block; }
 ----------------------------------------- */
 .panel { background-color: white; border: 1px solid #cccccc; position: relative; }
 .panel h6 { font-weight: bold; color: #5a5a5a; }
+.panel .tabs-content { border: none; }
 .panel.no-title { margin-top: 0; }
 .panel.has-actions { position: relative; padding-top: 60px !important; }
 .panel.has-actions h6.title { position: absolute; top: 0; left: 0; right: 0; line-height: 2rem; padding-left: 8px; background-color: #5a5a5a; color: white; font-weight: normal; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
@@ -1862,11 +1863,10 @@ footer .copyright { font-size: 0.9em; }
 /* ----------------------------------------- Tabs (on detail pages) Note: Wizard tabs are at _wizards.scss
 ----------------------------------------- */
 .tabs { max-height: 2.6rem !important; }
-.tabs dd { margin-bottom: 6px; background-color: transparent; color: darkred; font-weight: bold; padding-left: 0; font-style: normal; padding-bottom: 4px; padding-bottom: 0 !important; }
-.tabs dd a { color: #5a5a5a; background-color: transparent; padding: 10px 32px 6px 24px; font-weight: bold; }
+.tabs dd { position: relative; top: 1px; z-index: 999; }
+.tabs dd a { padding: 10px 32px 6px 24px; color: #5a5a5a; background-color: transparent; font-weight: bold; }
 .tabs dd a:hover { color: #007dba; background-color: transparent; }
-.tabs dd.active { position: relative; top: 1px; z-index: 999; }
-.tabs dd.active a { color: #007dba; background-color: white; border: 1px solid #cccccc; border-bottom: none; }
+.tabs dd.active a { color: #007dba; background-color: white; border: 1px solid #cccccc; border-bottom-color: white; padding-top: 8px; padding-right: 31px; padding-left: 23px; }
 
 .tabs-content { border: 1px solid #cccccc; background-color: white; }
 .tabs-content .panel { border: none; }
