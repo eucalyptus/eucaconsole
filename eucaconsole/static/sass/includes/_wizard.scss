@@ -50,26 +50,14 @@
         margin-bottom: 0.5rem;
     }
     .tabs {
+        position: relative;
+        top: 1px;
         dd {
             @include wizard-tabs-mixin;
-            .cir {
-                position: relative;
-                top: -2px;
-                font-size: 0.825rem;
-                display: inline-block;
-                border-radius: 60px;
-                width: 20px; height: 20px;
-                padding: 0 0 0 0;
-                text-align: center;
-                vertical-align: middle;
-                background-color: $hp-accessible-blue;
-                color: white;
-            }
         }
     }
     .tabs-content {
         min-height: 400px;
-        border: 1px solid $hp-gray-20;
         margin: 0 0 0 0;
         padding: 1rem;
         background-color: white;

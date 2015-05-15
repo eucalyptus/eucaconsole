@@ -268,13 +268,62 @@ $tooltip-padding: rem-calc(5);
     }
 }
 
-// Tabs (wizards, etc.)
-@mixin wizard-tabs-mixin {
+// Tab mixins (wizards, etc.)
+@mixin standard-tabs-mixin {
+    position: relative;
+    top: 1px;
     a {
-        background-color: $hp-gray-20;
+        color: $hp-gray-65;
         &:hover {
-            color: white;
-            background-color: $hp-hover-blue;
+            color: $hp-accessible-blue;
+        }
+    }
+    dd.active {
+        padding-bottom: 0;
+        a {
+            color: $hp-gray-65;
+            background-color: white;
+            border: 1px solid $hp-gray-20;
+            border-bottom: none;
+        }
+    }
+}
+
+@mixin detail-page-tabs-mixin {
+    max-height: 2.6rem !important;
+    dd {
+        @include validation-error-mixin;
+        padding-bottom: 0 !important;
+        a {
+            color: $hp-gray-65;
+            background-color: transparent;
+            padding: 10px 32px 6px 24px;
+            font-weight: bold;
+            &:hover {
+                color: $hp-accessible-blue;
+                background-color: transparent;
+            }
+        }
+        &.active {
+            position: relative;
+            top: 1px;
+            z-index: 999;
+            a {
+                color: $hp-gray-65;
+                background-color: white;
+                border: 1px solid $hp-gray-20;
+                border-bottom: none;
+            }
+        }
+    }
+}
+
+@mixin wizard-tabs-mixin {
+    a {  // Visited tabs
+        color: $hp-gray-65;
+        background-color: transparent;
+        &:hover {
+            color: $hp-accessible-blue;
         }
         box-shadow: none;
         white-space: nowrap;
@@ -282,16 +331,32 @@ $tooltip-padding: rem-calc(5);
     }
     &.active {  // Active tab
         a {
-            color: white;
-            background-color: $hp-accessible-blue;
-            &:hover {
-                background-color: $hp-accessible-blue;
-            }
+            color: $hp-gray-65;
+            background-color: white;
+            border: 1px solid $hp-gray-20;
+            border-bottom: none;
         }
     }
     &.disabled {  // Unvisited tabs
+        color: darken($hp-gray-20, 30%);
         padding: $wizard-tab-padding;
-        background-color: $euca-extralightgrey;
+        .cir {
+            background-color: $hp-gray-65;
+        }
+    }
+    .cir {
+        position: relative;
+        top: -2px;
+        font-size: 0.825rem;
+        display: inline-block;
+        border-radius: 60px;
+        width: 20px; height: 20px;
+        padding: 0 0 0 0;
+        text-align: center;
+        vertical-align: middle;
+        background-color: $hp-accessible-blue;
+        color: white;
+        margin-right: 4px;
     }
 }
 

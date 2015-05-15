@@ -19,7 +19,7 @@
 .panel .tile .footer a:hover { text-decoration: underline; }
 .panel .tile .footer .button { display: inline-block; font-weight: bold; }
 .panel .tile .footer .button:hover { text-decoration: none; }
-.panel .tile .dropdown.button.tiny { z-index: 99998; background: none; box-shadow: none; position: absolute; width: 30px; height: 24px; top: 0; right: 0; color: #007dba; font-size: 1.1rem; padding: 0 0 0 0; border: none; }
+.panel .tile .dropdown.button.tiny { z-index: 99998; background: none; box-shadow: none; position: absolute; width: 30px; height: 24px; top: 0; right: 0; color: #5a5a5a; font-size: 1.1rem; padding: 0 0 0 0; border: none; }
 .panel .tile .dropdown.button.tiny:hover { color: #006699; }
 .panel .tile .dropdown.button.tiny::before, .panel .tile .dropdown.button.tiny::after { border: none; }
 .panel .tile .f-dropdown { border-color: #cccccc; box-shadow: 2px 2px 5px #6a737b; }

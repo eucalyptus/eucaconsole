@@ -488,11 +488,12 @@ textarea.policy-area {
 .action-icon {
     display: inline-block;
     font-size: 1.4rem;
-    color: $hp-accessible-blue;
+    color: $hp-gray-65;
     padding-right: 0.5rem;
     padding-left: 0.5rem;
     &:hover {
         cursor: pointer;
+        color: $hp-accessible-blue;
     }
 }
 
@@ -837,6 +838,9 @@ textarea.hidden {
         font-weight: bold;
         color: $hp-gray-65;
     }
+    &.no-title {
+        margin-top: 0;
+    }
     &.has-actions {
         position: relative;
         padding-top: 60px !important;
@@ -898,6 +902,11 @@ textarea.hidden {
     .center {
         text-align: center;
     }
+    .close-reveal-modal {
+        &:hover {
+            color: $hp-accessible-blue;
+        }
+    }
 }
 
 /* -----------------------------------------
@@ -954,25 +963,20 @@ footer {
 }
 
 /* -----------------------------------------
-   Tabs
+   Tabs (on detail pages)
+   Note: Wizard tabs are at _wizards.scss
 ----------------------------------------- */
 .tabs {
-    max-height: 2.6rem;
-    dd {
-        @include validation-error-mixin;
-        &:first-child a {
-            box-shadow: none;
-        }
-        a {
-            color: $hp-accessible-blue;
-            box-shadow: inset 6px 0 4px 0 rgba(50, 50, 50, 0.2);
-            padding: 10px 32px 6px 24px;
-            font-weight: bold;
-        }
-        &.active a {
-            box-shadow: none;
-        }
+    @include detail-page-tabs-mixin;
+}
+
+.tabs-content {
+    border: 1px solid $hp-gray-20;
+    background-color: white;
+    .panel {
+        border: none;
     }
+
 }
 
 .tabs-content > .content {

@@ -76,6 +76,13 @@ $dropdown-border-color: $hp-gray-65;
     margin-top: 0.5rem;
 }
 
+#refresh-btn {
+    color: $hp-gray-65;
+    &:hover {
+        color: $hp-hover-blue;
+    }
+}
+
 // Dropdown buttons on landing page tile/table view
 .gridwrapper {
     .dropdown.button.tiny {
@@ -85,7 +92,7 @@ $dropdown-border-color: $hp-gray-65;
         position: absolute;
         width: 30px; height: $tile-row-height;
         top: 0; right: 0;
-        color: $hp-accessible-blue;
+        color: $hp-gray-65;
         font-size: 1.1rem;
         padding: 0 0 0 0;
         border: none;
@@ -131,7 +138,7 @@ $dropdown-border-color: $hp-gray-65;
             position: absolute;
             top: 0; bottom: 0; left: 0; right: 0;
             &:hover {
-                background-color: lighten($hp-accessible-blue, 30%);
+                background-color: lighten($hp-accessible-blue, 60%);
             }
         }
         .plus {
@@ -385,14 +392,14 @@ $dropdown-border-color: $hp-gray-65;
 // tableview/gridview icon switcher
 .displayicons {
     font-size: 2rem;
-    padding-left: 0rem;
+    padding-left: 0;
     a {
         float: right;
         border-bottom: none;
-        color: $hp-accessible-blue;
+        color: $hp-gray-65;
         &:hover {
             border-bottom: none;
-            color: $hp-accessible-blue;
+            color: $hp-hover-blue;
         }
     }
     label {

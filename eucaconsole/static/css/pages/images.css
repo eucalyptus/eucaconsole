@@ -21,7 +21,10 @@
 
 .gridwrapper { margin-top: 0.5rem; }
 
-.gridwrapper .dropdown.button.tiny { z-index: 99999; background: none; box-shadow: none; position: absolute; width: 30px; height: 24px; top: 0; right: 0; color: #007dba; font-size: 1.1rem; padding: 0 0 0 0; border: none; }
+#refresh-btn { color: #5a5a5a; }
+#refresh-btn:hover { color: #006699; }
+
+.gridwrapper .dropdown.button.tiny { z-index: 99999; background: none; box-shadow: none; position: absolute; width: 30px; height: 24px; top: 0; right: 0; color: #5a5a5a; font-size: 1.1rem; padding: 0 0 0 0; border: none; }
 .gridwrapper .dropdown.button.tiny:hover { color: #006699; }
 .gridwrapper .dropdown.button.tiny::before, .gridwrapper .dropdown.button.tiny::after { border: none; }
 .gridwrapper .f-dropdown { border-color: #cccccc; box-shadow: 2px 2px 5px #6a737b; }
@@ -30,7 +33,7 @@
 .tile { border: 1px solid #cccccc; font-size: 0.8125rem; position: relative; display: inline-block; vertical-align: top; width: 202px; height: 220px; max-height: 220px; background-color: white; margin-right: 10px; margin-bottom: 10px; padding-bottom: 24px; word-wrap: break-word; }
 .tile.add { text-align: center; text-transform: uppercase; position: relative; }
 .tile.add a { display: block; position: absolute; top: 0; bottom: 0; left: 0; right: 0; }
-.tile.add a:hover { background-color: #54c7ff; }
+.tile.add a:hover { background-color: #edf9ff; }
 .tile.add .plus { font-size: 5rem; margin-bottom: -1rem; }
 .tile .header { position: relative; height: 24px; }
 .tile .header a { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; display: block; padding: 6px 30px 4px 10px; color: #5a5a5a; font-weight: bold; }
@@ -91,9 +94,9 @@
 
 .lp-reload { -webkit-box-ordinal-group: 2; -webkit-order: 2; -ms-flex-order: 2; order: 2; -webkit-box-flex: 0.1; -webkit-flex: 0 0 10%; flex: 0 0 10%; }
 
-.displayicons { font-size: 2rem; padding-left: 0rem; }
-.displayicons a { float: right; border-bottom: none; color: #007dba; }
-.displayicons a:hover { border-bottom: none; color: #007dba; }
+.displayicons { font-size: 2rem; padding-left: 0; }
+.displayicons a { float: right; border-bottom: none; color: #5a5a5a; }
+.displayicons a:hover { border-bottom: none; color: #006699; }
 .displayicons label { float: right; line-height: 2.5rem; margin-right: 5px; }
 .displayicons .selected { background-color: white; color: black; }
 .displayicons .selected:hover { color: black; cursor: default; }

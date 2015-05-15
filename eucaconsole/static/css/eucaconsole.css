@@ -1705,8 +1705,8 @@ textarea.policy-area { width: 100%; min-height: 30rem; font-family: Courier, "co
 .expando .title a { color: #5a5a5a; }
 .expando .title a:hover { color: #007dba; border-bottom: 1px solid #007dba; }
 
-.action-icon { display: inline-block; font-size: 1.4rem; color: #007dba; padding-right: 0.5rem; padding-left: 0.5rem; }
-.action-icon:hover { cursor: pointer; }
+.action-icon { display: inline-block; font-size: 1.4rem; color: #5a5a5a; padding-right: 0.5rem; padding-left: 0.5rem; }
+.action-icon:hover { cursor: pointer; color: #007dba; }
 
 /* ----------------------------------------- Tag editor
 ----------------------------------------- */
@@ -1813,6 +1813,7 @@ textarea.hidden.debug { display: block; }
 ----------------------------------------- */
 .panel { background-color: white; border: 1px solid #cccccc; position: relative; }
 .panel h6 { font-weight: bold; color: #5a5a5a; }
+.panel.no-title { margin-top: 0; }
 .panel.has-actions { position: relative; padding-top: 60px !important; }
 .panel.has-actions h6.title { position: absolute; top: 0; left: 0; right: 0; line-height: 2rem; padding-left: 8px; background-color: #5a5a5a; color: white; font-weight: normal; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .panel.has-actions .label.status { margin-bottom: 8px; }
@@ -1831,6 +1832,7 @@ textarea.hidden.debug { display: block; }
 .reveal-modal .button.expand:focus { box-shadow: 0 0 3px 3px #7bb0e0; }
 .reveal-modal .top-margin { margin-top: 0.7rem; }
 .reveal-modal .center { text-align: center; }
+.reveal-modal .close-reveal-modal:hover { color: #007dba; }
 
 /* ----------------------------------------- Tables
 ----------------------------------------- */
@@ -1857,13 +1859,17 @@ footer .copyright { font-size: 0.9em; }
 .button:hover { background-color: #006699; }
 .button:focus { background-color: #006699; }
 
-/* ----------------------------------------- Tabs
+/* ----------------------------------------- Tabs (on detail pages) Note: Wizard tabs are at _wizards.scss
 ----------------------------------------- */
-.tabs { max-height: 2.6rem; }
-.tabs dd { margin-bottom: 6px; background-color: transparent; color: darkred; font-weight: bold; padding-left: 0; font-style: normal; padding-bottom: 4px; }
-.tabs dd:first-child a { box-shadow: none; }
-.tabs dd a { color: #007dba; box-shadow: inset 6px 0 4px 0 rgba(50, 50, 50, 0.2); padding: 10px 32px 6px 24px; font-weight: bold; }
-.tabs dd.active a { box-shadow: none; }
+.tabs { max-height: 2.6rem !important; }
+.tabs dd { margin-bottom: 6px; background-color: transparent; color: darkred; font-weight: bold; padding-left: 0; font-style: normal; padding-bottom: 4px; padding-bottom: 0 !important; }
+.tabs dd a { color: #5a5a5a; background-color: transparent; padding: 10px 32px 6px 24px; font-weight: bold; }
+.tabs dd a:hover { color: #007dba; background-color: transparent; }
+.tabs dd.active { position: relative; top: 1px; z-index: 999; }
+.tabs dd.active a { color: #5a5a5a; background-color: white; border: 1px solid #cccccc; border-bottom: none; }
+
+.tabs-content { border: 1px solid #cccccc; background-color: white; }
+.tabs-content .panel { border: none; }
 
 .tabs-content > .content { padding: 1rem; }
 .tabs-content > .content.large-centered, .tabs-content > .content.medium-centered { float: none; }

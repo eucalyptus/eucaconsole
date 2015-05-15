@@ -2,11 +2,11 @@
 /* Set the link colors and styles for top-level nav */
 /* ----------------------------------------- Item list
 ----------------------------------------- */
-.tabs dd a { background-color: #cccccc; box-shadow: none; white-space: nowrap; padding: 8px 1rem; }
-.tabs dd a:hover { color: white; background-color: #006699; }
-.tabs dd.active a { color: white; background-color: #007dba; }
-.tabs dd.active a:hover { background-color: #007dba; }
-.tabs dd.disabled { padding: 8px 1rem; background-color: #e6e7e8; }
+.tabs { position: relative; top: 1px; }
+.tabs a { color: #5a5a5a; }
+.tabs a:hover { color: #007dba; }
+.tabs dd.active { padding-bottom: 0; }
+.tabs dd.active a { color: #5a5a5a; background-color: white; border: 1px solid #cccccc; border-bottom: none; }
 
 .tabs-content { background-color: white; }
 .tabs-content p { line-height: 1.3rem; }
@@ -21,7 +21,7 @@
 .tabs-content .content .choice .fileupload { margin-left: 2rem; }
 .tabs-content .content .choice input[type=file] { display: inline-block; width: 90%; margin-left: 8px; }
 
-#policy-preview { background-color: white; padding: 1rem; margin-top: 40px; }
+#policy-preview { background-color: white; border: 1px solid #cccccc; padding: 1rem; margin-top: 40px; }
 #policy-preview input[type=text], #policy-preview textarea { background-color: white; }
 #policy-preview h6.title { font-weight: bold; color: #5a5a5a; margin-bottom: 1rem; }
 

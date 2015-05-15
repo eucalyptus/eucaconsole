@@ -39,7 +39,7 @@
                tal:condition="request.user.is_authenticated()">
                <i class="fi-list"></i>
             </a>
-            <a href="${layout.home_url}" title="${layout.site_title}">
+            <a href="${layout.home_url}" title="${layout.site_title}" metal:define-slot="logo">
                 <span id="hp-logo"></span><span class="product-name">Eucalyptus</span>
             </a>
             <section tal:condition="request.user.is_authenticated()" id="user-dropdown-section">

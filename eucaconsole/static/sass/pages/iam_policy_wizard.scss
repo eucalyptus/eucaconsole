@@ -4,9 +4,7 @@
 @import "../includes/eucavariables";
 
 .tabs {
-    dd {
-        @include wizard-tabs-mixin;
-    }
+    @include standard-tabs-mixin;
 }
 
 // Select/create policy choices
@@ -52,6 +50,7 @@
 // Policy preview
 #policy-preview {
     background-color: white;
+    border: 1px solid $hp-gray-20;
     padding: 1rem;
     margin-top: 40px;
     input[type=text], textarea {
