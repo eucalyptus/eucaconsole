@@ -50,7 +50,7 @@
 .tile .footer .progress { position: relative; margin: 0 0 0 0; height: 24px; border: none; }
 .tile .footer .progress .meter { position: relative; top: -2px; left: -2px; padding: 4px 0 4px 8px; height: 24px; display: inline-block; white-space: nowrap; font-weight: bold; text-align: center; }
 
-.gridwrapper .table { border: 1px solid #cccccc; width: 100%; }
+.gridwrapper .table { border: none; width: 100%; }
 .gridwrapper .table thead tr { background-color: #f2f2f2; }
 .gridwrapper .table thead tr th { padding-top: 0.5rem; padding-bottom: 0.5rem; padding-left: 6px; padding-right: 6px; vertical-align: top; color: #444; text-transform: uppercase; }
 .gridwrapper .table thead tr th.actions { text-align: right; }

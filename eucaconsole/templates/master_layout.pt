@@ -95,7 +95,7 @@
     <footer>
         <div class="row">
            <div class="copyright subheader">
-               © 2015 Eucalyptus Systems, Inc.
+               © 2015 Hewlett-Packard Development Company, L.P.
            </div>
         </div>
         <form id="euca-logout-form" method="post" action="${request.route_path('logout')}">

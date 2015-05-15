@@ -217,7 +217,7 @@ $tooltip-padding: rem-calc(5);
 }
 
 @mixin table-styles-mixin {
-    border: 1px solid $hp-gray-20;
+    border: none;
     thead tr {
         background-color: $hp-gray-5;
         th {
