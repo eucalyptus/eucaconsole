@@ -780,10 +780,10 @@ textarea.hidden {
 .chosen-container {
     &.chosen-container-multi {
         background: none;
-        background-color: $euca-extralightgreen !important;
+        background-color: $hp-gray-5 !important;
         .chosen-choices  {
             background: none;
-            background-color: $euca-extralightgreen !important;
+            background-color: $hp-gray-5 !important;
             li {
                 &.search-field  {
                     input[type=text] {
@@ -810,7 +810,7 @@ textarea.hidden {
     &.chosen-container-single {
         .chosen-single {
             background-image: none;
-            background-color: $euca-extralightgreen !important;
+            background-color: $hp-gray-5 !important;
             border-radius: 0;
             height: 2rem;
             line-height: 2rem;
