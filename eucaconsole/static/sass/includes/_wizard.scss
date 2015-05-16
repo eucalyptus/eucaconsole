@@ -27,10 +27,6 @@
 @import "../includes/eucavariables";
 
 
-$wizard-border-width: 16px;
-$wizard-tab-padding: 8px 1rem;
-
-
 /* @section Wizard styles */
 .wizard {
     position: relative;
@@ -45,7 +41,7 @@ $wizard-tab-padding: 8px 1rem;
             top: 0; left: 0; right: 0;
             line-height: 2.5rem;
             padding-left: 12px;
-            background-color: $euca-darkblue;
+            background-color: $hp-accessible-blue;
             color: white;
             @include ellipsis-overflow;
         }
@@ -55,36 +51,7 @@ $wizard-tab-padding: 8px 1rem;
     }
     .tabs {
         dd {
-            &.active {
-                a {
-                    background-color: white;
-                    &:hover {
-                        background-color: white;
-                    }
-                }
-            }
-            &.disabled {
-                padding: $wizard-tab-padding;
-                background-color: $euca-extralightgrey;
-            }
-            a {
-                box-shadow: none;
-                white-space: nowrap;
-                padding: $wizard-tab-padding;
-            }
-            .cir {
-                position: relative;
-                top: -2px;
-                font-size: 0.825rem;
-                display: inline-block;
-                border-radius: 60px;
-                width: 20px; height: 20px;
-                padding: 0 0 0 0;
-                text-align: center;
-                vertical-align: middle;
-                background-color: $euca-darkblue;
-                color: white;
-            }
+            @include wizard-tabs-mixin;
         }
     }
     .tabs-content {
@@ -95,10 +62,10 @@ $wizard-tab-padding: 8px 1rem;
         .content {
             width: 100%;
             .description {
-                color: $euca-darkblue;
+                color: $hp-gray-65;
             }
             .rule-description-label {
-                color: $euca-darkblue;
+                color: $hp-gray-65;
             }
         }
     }
@@ -122,6 +89,7 @@ $wizard-tab-padding: 8px 1rem;
 }
 
 .summary {
+    border: 1px solid $hp-gray-20;
     background-color: white;
     position: relative;
     top: 2px;
@@ -144,7 +112,7 @@ $wizard-tab-padding: 8px 1rem;
     }
     .title {
         font-weight: bold;
-        border-bottom: 1px solid $euca-darkblue;
+        border-bottom: 1px solid $hp-gray-65;
         margin-top: 7px;
         margin-bottom: 0.25rem;
     }

@@ -16,7 +16,7 @@
                 display: block;
                 border-bottom: 1px solid $euca-lightgrey;
                 &.selected {
-                    background-color: $euca-extralightgreen;
+                    background-color: lighten($hp-accessible-blue, 60%)
                 }
                 &.selected:hover {
                     cursor: inherit;
