@@ -95,19 +95,6 @@
     src: local('Lato Bold'), local('Lato-Bold'), url(../fonts/Lato/Lato-Bold.woff) format('woff');
 }
 
-@font-face {
-    font-family: 'Oswald';
-    font-style: normal;
-    font-weight: 400;
-    src: local('Oswald Regular'), local('Oswald-Regular'), url(../fonts/Oswald/Oswald-Regular.woff) format('woff');
-}
-
-@font-face {
-    font-family: 'Oswald';
-    font-style: normal;
-    font-weight: 700;
-    src: local('Oswald Bold'), local('Oswald-Bold'), url(../fonts/Oswald/Oswald-Bold.woff) format('woff');
-}
 
 /* -----------------------------------------
    Master Layout
@@ -126,15 +113,18 @@ body {
 
 h1, h2, h3, h4, h5, h6 {
     font-family: $euca-header-font-family;
-    letter-spacing: 1px;
-    color: $euca-darkblue;
+    color: $hp-gray-65;
 }
 
 .panel {
     h1, h2, h3, h4, h5, h6 {
-        color: $euca-darkblue;
+        color: $hp-gray-65;
     }
 
+}
+
+a {
+    color: $hp-accessible-blue;
 }
 
 /* -----------------------------------------
@@ -142,12 +132,22 @@ h1, h2, h3, h4, h5, h6 {
 ----------------------------------------- */
 
 // Logo bar (top-most bar)
+#logobar-wrapper {
+    border-bottom: 1px solid $hp-gray-20;
+}
 #logobar {
     height: 44px;
     padding: 5px 0 10px 0;
     margin-top: 20px;
     background-color: #fff;
     color: #333;
+    #hp-logo {
+        display: inline-block;
+        width: 36px;
+        height: 36px;
+        background: url(../img/hp-logo-36x36.png) no-repeat;
+        margin-right: 0.8rem;
+    }
     a {
         font-size: 0.9rem;
         color: #333;
@@ -165,14 +165,13 @@ h1, h2, h3, h4, h5, h6 {
     .dropdown {
         display: inline-block;
         margin-left: 1.3rem;
-        color: $euca-green;
+        color: $hp-accessible-blue;
         .icon {
             display: inline-block;
         }
     }
     .f-dropdown {
-        border-color: $euca-lightgreen;
-        box-shadow: 2px 2px 5px $euca-grey;
+        box-shadow: 0 0 1px 1px $hp-gray-20;
         width: auto;
         min-width: 8rem;
         &.open {
@@ -183,11 +182,6 @@ h1, h2, h3, h4, h5, h6 {
         margin-left: 8px;
         position: relative;
         top: -10px;
-    }
-    #logo {
-        display: inline-block;
-        width: 199px; height: 32px;
-        background: url(../img/eucalogo-199x22.png) no-repeat;
     }
     .product-name {
         font-size: 1.4rem;
@@ -219,7 +213,7 @@ h1, h2, h3, h4, h5, h6 {
 // Nav bar styles
 #navbar {
     .top-bar-section ul li > a {
-        font-family: Oswald, Helvetica, Arial, sans-serif;
+        font-family: Lato, Helvetica, Arial, sans-serif;
         font-size: 1.2rem;
         padding-left: 14px;
         padding-right: 14px;
@@ -236,7 +230,7 @@ h1, h2, h3, h4, h5, h6 {
     }
     .dropdown {
         z-index: 999999;
-        box-shadow: 0 0 1px 1px lighten($euca-orange, 10%);
+        box-shadow: 0 0 1px 1px lighten($hp-accessible-blue, 30%);
         li {
             a {
                 text-transform: none;
@@ -259,7 +253,6 @@ $breadcrumb-border-color: darken($breadcrumb-background-color, 20%);
     padding-top: 6px;
     padding-bottom: 1px;
     color: $euca-darkgrey;
-    background-color: $breadcrumb-background-color;
     letter-spacing: 1px;
     font-weight: normal;
     li {
@@ -301,14 +294,14 @@ $breadcrumb-border-color: darken($breadcrumb-background-color, 20%);
             font-weight: bold;
             margin-right: 0.5rem;
             &:hover {
-                color: $euca-green;
+                color: $hp-accessible-blue;
                 text-decoration: underline;
             }
         }
         &.active a:hover {
             color: white;
             text-decoration: none;
-            background-color: $euca-green;
+            background-color: $hp-accessible-blue;
         }
     }
 }
@@ -318,7 +311,7 @@ $breadcrumb-border-color: darken($breadcrumb-background-color, 20%);
    Main Content
 ----------------------------------------- */
 #maincontent {
-    background: $euca-extralightgreen;
+    background: $hp-gray-5;
     position: relative;
     padding-bottom: 3rem;
 }
@@ -357,12 +350,12 @@ $breadcrumb-border-color: darken($breadcrumb-background-color, 20%);
 }
 
 .subsection-label {
-    color: $euca-darkblue;
+    color: $hp-gray-65;
     margin-bottom: 6px;
 }
 
 hr {
-    border: 1px solid $euca-grey;
+    border: 1px solid $hp-gray-20;
     border-width: 1px 0 0;
 }
 
@@ -373,7 +366,7 @@ a.has-tip {
 .tooltip {
     font-weight: normal;
     font-size: 0.825rem;
-    font-family: Verdana, Geneva, Helvetica, sans-serif;
+    font-family: Lato, Geneva, Helvetica, sans-serif;
     max-width: 260px;
 }
 
@@ -405,7 +398,7 @@ a.circle {
     top: -1px;
     display: inline-block;
     border-right: 6px solid transparent;
-    border-top: 6px solid $euca-green;
+    border-top: 6px solid $hp-accessible-blue;
     border-left: 6px solid transparent;
     content: '';
 }
@@ -415,7 +408,7 @@ a.circle {
     top: -1px;
     display: inline-block;
     border-right: 6px solid transparent;
-    border-bottom: 6px solid $euca-green;
+    border-bottom: 6px solid $hp-accessible-blue;
     border-left: 6px solid transparent;
     content: '';
 }
@@ -477,15 +470,15 @@ textarea.policy-area {
 
 .expando {
     i {
-        color: $euca-green;
+        color: $hp-accessible-blue;
     }
     .title {
         font-size: 1.1rem;
         a {
-            color: $euca-darkblue;
+            color: $hp-gray-65;
             &:hover {
-                color: $euca-green;
-                border-bottom: 1px solid $euca-green;
+                color: $hp-accessible-blue;
+                border-bottom: 1px solid $hp-accessible-blue;
             }
         }
     }
@@ -495,11 +488,12 @@ textarea.policy-area {
 .action-icon {
     display: inline-block;
     font-size: 1.4rem;
-    color: $euca-green;
+    color: $hp-gray-65;
     padding-right: 0.5rem;
     padding-left: 0.5rem;
     &:hover {
         cursor: pointer;
+        color: $hp-accessible-blue;
     }
 }
 
@@ -518,7 +512,7 @@ textarea.policy-area {
     }
     .add-label {
         margin-bottom: 6px;
-        color: $euca-darkblue;
+        color: $hp-gray-65;
     }
     #add-tag-btn {
         margin-bottom: 0;
@@ -624,11 +618,11 @@ form {
         cursor: default;
     }
     input {
-        background-color: $euca-extralightgreen;
+        background-color: $hp-gray-5;
         &[type=text],
         &[type=password],
         &[type=number] {
-            background-color: $euca-extralightgreen;
+            background-color: $hp-gray-5;
         }
         &[type=file] {
             background-color: transparent;
@@ -640,7 +634,7 @@ form {
         }
     }
     select, textarea {
-        background-color: $euca-extralightgreen;
+        background-color: $hp-gray-5;
     }
     .req {
         color: darkred;
@@ -669,7 +663,7 @@ form {
         margin-left: 2rem;
         color: $euca-grey;
         &:hover {
-            color: $euca-green;
+            color: $hp-hover-blue;
         }
     }
     .controls_csrf_token {
@@ -786,10 +780,10 @@ textarea.hidden {
 .chosen-container {
     &.chosen-container-multi {
         background: none;
-        background-color: $euca-extralightgreen !important;
+        background-color: $hp-gray-5 !important;
         .chosen-choices  {
             background: none;
-            background-color: $euca-extralightgreen !important;
+            background-color: $hp-gray-5 !important;
             li {
                 &.search-field  {
                     input[type=text] {
@@ -816,7 +810,7 @@ textarea.hidden {
     &.chosen-container-single {
         .chosen-single {
             background-image: none;
-            background-color: $euca-extralightgreen !important;
+            background-color: $hp-gray-5 !important;
             border-radius: 0;
             height: 2rem;
             line-height: 2rem;
@@ -838,11 +832,17 @@ textarea.hidden {
 ----------------------------------------- */
 .panel {
     background-color: white;
-    border: 0;
+    border: 1px solid $hp-gray-20;
     position: relative;
     h6 {
         font-weight: bold;
-        color: $euca-darkblue;
+        color: $hp-gray-65;
+    }
+    .tabs-content {
+        border: none;
+    }
+    &.no-title {
+        margin-top: 0;
     }
     &.has-actions {
         position: relative;
@@ -852,7 +852,7 @@ textarea.hidden {
             top: 0; left: 0; right: 0;
             line-height: 2rem;
             padding-left: 8px;
-            background-color: $euca-darkblue;
+            background-color: $hp-gray-65;
             color: white;
             font-weight: normal;
             @include ellipsis-overflow;
@@ -870,7 +870,7 @@ textarea.hidden {
                 }
             }
             .f-dropdown {
-                box-shadow: 0 0 1px 1px lighten($euca-orange, 10%);
+                box-shadow: 0 0 1px 1px $hp-gray-20;
                 min-width: 12rem;
                 width: auto;
             }
@@ -887,7 +887,7 @@ textarea.hidden {
     h3 {
         font-weight: bold;
         &#about-cloud:hover {
-            color: $euca-green;
+            color: $hp-hover-blue;
         }
     }
     form .row.controls-wrapper {
@@ -904,6 +904,11 @@ textarea.hidden {
     }
     .center {
         text-align: center;
+    }
+    .close-reveal-modal {
+        &:hover {
+            color: $hp-accessible-blue;
+        }
     }
 }
 
@@ -922,6 +927,7 @@ table.table {
    Footer
 ----------------------------------------- */
 footer {
+    border-top: 1px solid $hp-gray-20;
     padding: 15px 0 3rem 1rem;
     .copyright {
         font-size: 0.9em;
@@ -933,8 +939,11 @@ footer {
    Buttons
 ----------------------------------------- */
 .button {
-    background-color: $euca-orange;
-    border-color: $euca-orange;
+    background-color: $hp-accessible-blue;
+    border-color: $hp-hover-blue;
+    a {
+        color: white;
+    }
     &.secondary {
         background-color: $euca-grey;
         border-color: $euca-grey;
@@ -949,31 +958,28 @@ footer {
         }
     }
     &:hover {
-        background-color: darken($euca-orange, 10%);
+        background-color: $hp-hover-blue;
     }
     &:focus {
-        background-color: $euca-orange;
+        background-color: $hp-hover-blue;
     }
 }
 
 /* -----------------------------------------
-   Tabs
+   Tabs (on detail pages)
+   Note: Wizard tabs are at _wizards.scss
 ----------------------------------------- */
 .tabs {
-    dd {
-        &:first-child a {
-            box-shadow: none;
-        }
-        a {
-            color: $euca-darkblue;
-            box-shadow: inset 6px 0 4px 0 rgba(50, 50, 50, 0.2);
-            padding: 10px 32px 6px 24px;
-            font-weight: bold;
-        }
-        &.active a {
-            box-shadow: none;
-        }
+    @include standard-tabs-mixin;
+}
+
+.tabs-content {
+    border: 1px solid $hp-gray-20;
+    background-color: white;
+    .panel {
+        border: none;
     }
+
 }
 
 .tabs-content > .content {
@@ -1066,11 +1072,6 @@ footer {
     }
 }
 
-@media screen and (max-width: 640px) {
-    #logo {
-        width: 20px !important;
-    }
-}
 
 // Nav bar adjustments
 @media screen {

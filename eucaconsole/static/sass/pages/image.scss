@@ -4,9 +4,9 @@
 // Image state choices are: available, pending, waiting-for-shutdown, cancellng, failed, bundling, storing, registering
 
 // State colors
-$image-state-color-available: $euca-darkblue;
+$image-state-color-available: $hp-green;
 $image-state-color-cancelling: $euca-lightgrey;
-$image-state-color-failed: darkred;
+$image-state-color-failed: hp-red;
 $image-state-color-pending: lighten($euca-darkblue, 20%);
 $image-state-color-waiting-for-shutdown: lighten($euca-darkblue, 20%);
 $image-state-color-bundling: lighten($euca-darkblue, 20%);
@@ -31,7 +31,7 @@ $image-state-color-registering: lighten($euca-darkblue, 20%);
     margin-bottom: 6px;
     .account-id-icon {
         color: #333;
-        background-color: $euca-extralightgrey;
+        background-color: $hp-gray-5;
         margin-right: 8px;
         a {
             color: white;

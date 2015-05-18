@@ -11,6 +11,6 @@
 
 .status.stopping { background-color: #ff6666; }
 
-.status.terminated { background-color: #444444; }
+.status.terminated { background-color: #444; }
 
 .status.shutting-down { background-color: lightgrey; }

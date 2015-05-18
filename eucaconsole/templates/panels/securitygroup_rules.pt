@@ -8,11 +8,11 @@
         <h6 i18n:translate="">Rules</h6>
     </div>
     <div class="columns">
-        <dl class="tabs" data-tab="">
+        <dl class="tabs" data-tab="" ng-show="securityGroupVPC != '' &amp;&amp; securityGroupVPC != 'None'">
             <dd ng-class="inboundButtonClass">
                 <a id="inbound-rules-tab" ng-click="selectRuleType('inbound')" i18n:translate="">Inbound</a>
             </dd>
-            <dd ng-class="outboundButtonClass" ng-show="securityGroupVPC != '' &amp;&amp; securityGroupVPC != 'None'">
+            <dd ng-class="outboundButtonClass">
                 <a id="outbound-rules-tab" ng-click="selectRuleType('outbound')" i18n:translate="">Outbound</a>
             </dd>
         </dl>

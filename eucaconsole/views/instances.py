@@ -153,6 +153,18 @@ class BaseInstanceView(BaseView):
                 return u"{0} ({1})".format(cidr_block, subnet_id)
         return ''
 
+    def get_monitoring_state(self, instance=None):
+        if self.cloud_type == 'euca':
+            return instance.monitoring_state.capitalize()
+        if self.cloud_type == 'aws':
+            return _(u'Detailed') if instance.monitoring_state == 'enabled' else _(u'Basic')
+
+    def get_monitoring_tab_title(self, instance=None):
+        if self.cloud_type == 'euca':
+            return _(u'Monitoring')
+        if self.cloud_type == 'aws':
+            return _(u'Detailed Monitoring') if instance.monitoring_state == 'enabled' else _(u'Basic Monitoring')
+
 
 class InstancesView(LandingPageView, BaseInstanceView):
     def __init__(self, request):
@@ -546,14 +558,14 @@ class InstanceJsonView(BaseInstanceView):
 class InstanceView(TaggedItemView, BaseInstanceView):
     VIEW_TEMPLATE = '../templates/instances/instance_view.pt'
 
-    def __init__(self, request):
-        super(InstanceView, self).__init__(request)
+    def __init__(self, request, instance=None, **kwargs):
+        super(InstanceView, self).__init__(request, **kwargs)
         self.request = request
         self.conn = self.get_connection()
         self.iam_conn = None
         if BaseView.has_role_access(request):
             self.iam_conn = self.get_connection(conn_type="iam")
-        self.instance = self.get_instance()
+        self.instance = instance or self.get_instance()
         self.image = self.get_image(self.instance)
         self.scaling_group = self.get_scaling_group()
         self.instance_form = InstanceForm(
@@ -590,6 +602,8 @@ class InstanceView(TaggedItemView, BaseInstanceView):
             instance_name=self.instance_name,
             instance_security_groups=self.security_group_list_string,
             instance_keypair=self.instance_keypair,
+            instance_monitoring_state=self.get_monitoring_state(self.instance),
+            monitoring_tab_title=self.get_monitoring_tab_title(self.instance),
             security_group_list=self.security_group_list,
             image=self.image,
             scaling_group=self.scaling_group,
@@ -789,7 +803,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
 
     def check_has_elastic_ip(self, ip_address):
         has_elastic_ip = False
-        elastic_ips = self.conn.get_all_addresses()
+        elastic_ips = self.conn.get_all_addresses() if self.conn else []
         if ip_address is not None:
             for ip in elastic_ips:
                 if ip_address == ip.public_ip:
@@ -902,6 +916,7 @@ class InstanceVolumesView(BaseInstanceView):
         self.render_dict = dict(
             instance=self.instance,
             instance_name=self.instance_name,
+            monitoring_tab_title=self.get_monitoring_tab_title(self.instance),
             attach_form=self.attach_form,
             detach_form=self.detach_form,
             instance_zone=self.instance.placement,
@@ -1008,6 +1023,7 @@ class InstanceMonitoringView(BaseInstanceView):
             monitoring_enabled=self.monitoring_is_enabled(),
             detailed_monitoring_enabled=self.detailed_monitoring_is_enabled(),
             monitoring_form=self.monitoring_form,
+            monitoring_tab_title=self.get_monitoring_tab_title(self.instance),
             metric_title=METRIC_TITLE_MAPPING,
             duration_choices=MONITORING_DURATION_CHOICES,
             statistic_choices=STATISTIC_CHOICES,

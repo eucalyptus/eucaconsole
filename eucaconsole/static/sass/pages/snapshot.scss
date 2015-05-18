@@ -16,10 +16,10 @@
 .label.status {
     text-transform: capitalize;
     &.failed {
-        background-color: darken(red, 20%);
+        background-color: $hp-red;
     }
     &.completed { 
-        background-color: $euca-darkblue;
+        background-color: $hp-green;
     }
     &.pending { 
         background-color: lighten($euca-darkblue, 20%); 

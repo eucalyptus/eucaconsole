@@ -65,3 +65,15 @@
     margin: 0 0 0;
 }
 
+
+// big hack to allow more space for this one label so it doesn't wrap the help bubble
+div#controls_associate_public_ip_address {
+    // fixes 'launch config like this'
+    .large-2.columns {
+        padding-left: 0.25rem;
+    }
+    // fixes 'launch config wizard'
+    .large-3.columns {
+        padding-left: 0.25rem;
+    }
+}

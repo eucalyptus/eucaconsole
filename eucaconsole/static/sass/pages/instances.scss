@@ -5,7 +5,7 @@
 
 
 // Status colors
-$instance-status-color-running: $euca-darkblue;
+$instance-status-color-running: $hp-green;
 $instance-status-color-pending: lighten($euca-darkblue, 20%);
 $instance-status-color-stopped: darken(red, 20%);
 $instance-status-color-stopping: lighten(red, 20%);
