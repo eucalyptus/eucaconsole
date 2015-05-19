@@ -130,10 +130,10 @@
                                     <tbody>
                                         <tr ng-repeat="item in resources | orderBy: sortBy:sortReverse" ng-cloak="true">
                                             <td>{{ item.type }} ({{ item.logical_id }})</td>
-                                            <td ng-hide="item.url">
+                                            <td ng-hide="item.url" style="word-break: break-all;">
                                                 {{ item.physical_id }}
                                             </td>
-                                            <td ng-show="item.url">
+                                            <td ng-show="item.url" style="word-break: break-all;">
                                                 <a ng-href="{{ item.url }}">{{ item.physical_id }}</a>
                                             </td>
                                             <td><span class="label radius status {{ item.status }}">{{ item.status.replace('-', ' ').replace('-', ' ') }}</span></td>
@@ -220,10 +220,10 @@
                                                 {{ item.status_reason }}
                                             </td>
                                             <td>{{ item.type }} ({{ item.logical_id }})</td>
-                                            <td ng-hide="item.url">
+                                            <td ng-hide="item.url" style="word-break: break-all;">
                                                 {{ item.physical_id }}
                                             </td>
-                                            <td ng-show="item.url">
+                                            <td ng-show="item.url" style="word-break: break-all;">
                                                 <a ng-href="{{ item.url }}">{{ item.physical_id }}</a>
                                             </td>
                                         </tr>
