@@ -34,7 +34,9 @@ import time
 import re
 
 import boto.utils
+
 from boto.ec2.elb import HealthCheck
+from boto.ec2.elb.attributes import ConnectionSettingAttribute
 
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from pyramid.view import view_config
@@ -195,46 +197,6 @@ class ELBsJsonView(LandingPageView):
         if security_group:
             return len(security_group.rules)
         return None
-
-
-class ConnectionSettingAttribute(object):
-    """
-    Represents the ConnectionSetting segment of ELB Attributes.
-    TODO: Remove this when we update to Boto 2.38 or later
-    """
-    def __init__(self, connection=None):
-        self.idle_timeout = None
-
-    def __repr__(self):
-        return 'ConnectionSettingAttribute(%s)' % (
-            self.idle_timeout)
-
-    def startElement(self, name, attrs, connection):
-        pass
-
-    def endElement(self, name, value, connection):
-        if name == 'IdleTimeout':
-            self.idle_timeout = int(value)
-
-
-class CustomLbAttributes(object):
-    """
-    Represents the Attributes of an Elastic Load Balancer.
-    TODO: Remove this when we update to Boto 2.38 or later
-    """
-    def __init__(self, connection=None):
-        self.connection = connection
-        self.connecting_settings = ConnectionSettingAttribute(self.connection)
-
-    def __repr__(self):
-        return 'LbAttributes(%s)' % (
-            repr(self.connecting_settings))
-
-    def startElement(self, name, attrs, connection):
-            return self.connecting_settings
-
-    def endElement(self, name, value, connection):
-        pass
 
 
 class LbTagSet(dict):
@@ -546,17 +508,15 @@ class ELBView(BaseELBView):
 
     def get_elb_attribute_idle_timeout(self):
         if self.elb:
-            params = {'LoadBalancerName': self.elb.name}
-            elb_attrs = self.elb_conn.get_object('DescribeLoadBalancerAttributes',
-                                                 params, CustomLbAttributes)
+            elb_attrs = self.elb.get_attributes()
             if elb_attrs:
                 return elb_attrs.connecting_settings.idle_timeout
 
     def update_elb_idle_timeout(self, elb_name, idle_timeout):
         if self.elb_conn:
-            params = {'LoadBalancerName': elb_name}
-            params['LoadBalancerAttributes.ConnectionSettings.IdleTimeout'] = idle_timeout
-            self.elb_conn.get_status('ModifyLoadBalancerAttributes', params, verb='GET')
+            setting_attribute = ConnectionSettingAttribute()
+            setting_attribute.idle_timeout = idle_timeout
+            self.elb_conn.modify_lb_attribute(elb_name, 'connectingSettings', setting_attribute)
 
     def get_listener_list(self):
         listener_list = []
@@ -700,8 +660,8 @@ class ELBView(BaseELBView):
         return instances
 
     def get_all_instances(self):
+        instances = []
         if self.ec2_conn:
-            instances = []
             for reservation in self.ec2_conn.get_all_reservations():
                 for instance in reservation.instances:
                     instances.append(dict(
@@ -713,8 +673,8 @@ class ELBView(BaseELBView):
         return instances
 
     def get_elb_instance_health(self):
+        instance_health = []
         if self.elb_conn and self.elb:
-            instance_health = []
             instances = self.elb_conn.describe_instance_health(self.elb.name)
             for instance in instances:
                 instance_health.append(dict(
@@ -736,6 +696,7 @@ class ELBView(BaseELBView):
                     self.elb.ping_path = match.group(3)
 
     def get_elb_cross_zone_load_balancing(self):
+        is_cross_zone_enabled = False
         if self.elb_conn and self.elb:
             is_cross_zone_enabled = self.elb.is_cross_zone_load_balancing()
         return is_cross_zone_enabled
@@ -894,9 +855,8 @@ class CreateELBView(BaseELBView):
             public_key_certificate = self.request.params.get('public_key_certificate')
             certificate_chain = self.request.params.get('certificate_chain') or None
             with boto_error_handler(self.request):
-                certificate_result = self.iam_conn.upload_server_cert(certificate_name, public_key_certificate,
-                                                                      private_key, cert_chain=certificate_chain,
-                                                                      path=None)
+                certificate_result = self.iam_conn.upload_server_cert(
+                    certificate_name, public_key_certificate, private_key, cert_chain=certificate_chain, path=None)
                 prefix = _(u'Successfully uploaded server certificate')
                 msg = u'{0} {1}'.format(prefix, certificate_name)
                 certificate_arn = certificate_result.upload_server_certificate_result.server_certificate_metadata.arn
