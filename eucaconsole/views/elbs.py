@@ -195,6 +195,7 @@ class ELBsJsonView(LandingPageView):
 class ConnectionSettingAttribute(object):
     """
     Represents the ConnectionSetting segment of ELB Attributes.
+    TODO: Remove this when we update to Boto 2.38 or later
     """
     def __init__(self, connection=None):
         self.idle_timeout = None
@@ -211,10 +212,10 @@ class ConnectionSettingAttribute(object):
             self.idle_timeout = int(value)
 
 
-# Current boto version 2.34.0 does not support ConnecitonSettingAttribute
 class CustomLbAttributes(object):
     """
     Represents the Attributes of an Elastic Load Balancer.
+    TODO: Remove this when we update to Boto 2.38 or later
     """
     def __init__(self, connection=None):
         self.connection = connection
@@ -235,6 +236,7 @@ class LbTagSet(dict):
     """
     A TagSet is used to collect the tags associated with a particular
     Load Balancer instance.
+    TODO: Remove this when we update to Boto 2.38 or later
     """
 
     def __init__(self, connection=None):
