@@ -4,8 +4,6 @@
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/elb.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.css')}"/>
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/instance_selector.css')}" />
-    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/nvd3/nv.d3.min.css')}" />
-    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/cloudwatch_charts.css')}" />
 </head>
 
 <div metal:fill-slot="main_content">
@@ -31,9 +29,9 @@
                 ${structure:elb_form['csrf_token']}
                 <dl id="elb-view-tabs" class="tabs" data-tab="" ng-cloak="">
                     <dd class="active"><a href="#general-tab" ng-click="clickTab($event, 'general-tab')" i18n:translate="">General</a></dd>
-                    <dd><a href="${request.route_path('elb_monitoring', id=elb.name)}" i18n:translate="">Monitoring</a></dd>
                     <dd><a href="#instances-tab" ng-click="clickTab($event, 'instances-tab')" i18n:translate="">Instances</a></dd>
                     <dd><a href="#health-checks-tab" ng-click="clickTab($event, 'health-checks-tab')" i18n:translate="">Health checks</a></dd>
+                    <dd><a href="#monitoring-tab-ext" ng-click="clickTab($event, 'monitoring-tab')" i18n:translate="">Monitoring</a></dd>
                 </dl>
                 <div class="tabs-content">
                     <!--! Step 1: General tab content -->
@@ -378,9 +376,6 @@
     <script src="${request.static_path('eucaconsole:static/js/pages/elb.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/instance_selector.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/thirdparty/d3/d3.min.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/thirdparty/nvd3/nv.d3.min.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/pages/cloudwatch_charts.js')}"></script>
 </div>
 
 </metal:block>

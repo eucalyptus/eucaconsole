@@ -4,7 +4,7 @@
  *
  */
 
-angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor', 'MagicSearch', 'CloudWatchCharts'])
+angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor', 'MagicSearch'])
     .controller('ELBPageCtrl', function ($scope, $timeout, eucaUnescapeJson) {
         $scope.elbForm = undefined;
         $scope.thisTab = '';
@@ -135,6 +135,7 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
             if (options.hasOwnProperty('health_check_healthy_threshold')) {
                 $scope.passesUntilHealthy = options.health_check_healthy_threshold;
             }
+            $scope.monitoringTabUrl = options.monitoring_tab_url;
             $scope.initChosenSelectors(); 
         };
         $scope.initChosenSelectors = function () {
@@ -265,6 +266,10 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
             modal.find('h3').click();  // Workaround for dropdown menu not closing
         };
         $scope.clickTab = function ($event, tab){
+            if (tab === 'monitoring-tab') {
+                // Monitoring tab has a dedicated view/template
+                document.location = $scope.monitoringTabUrl;
+            }
             $event.preventDefault();
             // If there exists unsaved changes, open the warning modal instead
             if ($scope.isNotChanged === false) {

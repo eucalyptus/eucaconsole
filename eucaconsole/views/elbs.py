@@ -333,7 +333,6 @@ class BaseELBView(TaggedItemView):
         return instance_selector_text
 
     def get_protocol_list(self):
-        protocol_list = ()
         if self.cloud_type == 'aws':
             protocol_list = ({'name': 'HTTP', 'value': 'HTTP', 'port': '80'},
                              {'name': 'TCP', 'value': 'TCP', 'port': '80'})
@@ -542,6 +541,7 @@ class ELBView(BaseELBView):
             'health_check_timeout': self.elb.health_check.timeout if self.elb else '',
             'health_check_healthy_threshold': self.elb.health_check.healthy_threshold if self.elb else '',
             'health_check_unhealthy_threshold': self.elb.health_check.unhealthy_threshold if self.elb else '',
+            'monitoring_tab_url': self.request.route_path('elb_monitoring', id=self.elb.name),
         }))
 
     def get_elb_attribute_idle_timeout(self):
