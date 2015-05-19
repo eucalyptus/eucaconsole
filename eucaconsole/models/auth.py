@@ -198,7 +198,7 @@ class ConnectionManager(object):
 
             dns_enabled = True
             if dns_enabled:
-                _clchost = "{0}.{1}".format(path, _clchost)
+                _clchost = "{0}.{1}".format(path.lower(), _clchost)
                 path = "/"
             else:
                 path = '/services/{0}'.format(path)
