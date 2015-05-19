@@ -16,7 +16,11 @@
                     <td>
                         <input type="checkbox" name="instances" id="instance-checkbox-{{ instance.id }}" value="{{ instance.id }}" />
                     </td>
-                    <td><span id="instance-name-{{ instance.id }}" class="id breakword">{{ instance.name }}</span></td>
+                    <td>
+                        <span id="instance-name-{{ instance.id }}" class="id breakword">
+                            <a ng-href="/instances/{{ instance.id }}">{{ instance.name }}</a>
+                        </span>
+                    </td>
                     <td><span>{{ instance.tags }}</span></td>
                     <td><span>{{ instance.placement }}</span></td>
                     <td ng-if="isVPCSupported == true">
@@ -31,7 +35,10 @@
                 </tr> 
                 <tr ng-cloak="true" ng-show="instanceList.length === 0">
                     <td></td>
-                    <td colspan="5"><span>{{ tableText.no_matching_instance_error_msg }}</span></td>
+                    <td colspan="5">
+                        <span ng-show="instancesLoading" class="busy"></span>
+                        <span ng-show="!instancesLoading">{{ tableText.no_matching_instance_error_msg }}</span>
+                    </td>
                 </tr>
             </tbody>
         </table>

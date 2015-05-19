@@ -26,6 +26,7 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
             $scope.searchFilter = '';
             $scope.filterKeys = [];
             $scope.tableText = {};
+            $scope.instancesLoading = true;
             $scope.initSelector = function () {
                 var options = JSON.parse(eucaUnescapeJson($scope.option_json));
                 $scope.setInitialValues(options);
@@ -176,6 +177,7 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                 }).success(function(oData) {
                     var results = oData ? oData.results : [];
                     $scope.allInstanceList = results;
+                    $scope.instancesLoading = false;
                 }).error(function (oData) {
                     eucaHandleError(oData, status);
                 });
