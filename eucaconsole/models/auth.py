@@ -169,8 +169,7 @@ class ConnectionManager(object):
 
         """
         def _euca_connection(_clchost, _port, _access_id, _secret_key, _token, _conn_type):
-            region = RegionInfo(name='eucalyptus', endpoint=_clchost)
-            path = '/services/Eucalyptus'
+            path = 'compute'
             conn_class = EC2Connection
             api_version = '2012-12-01'
 
@@ -178,25 +177,32 @@ class ConnectionManager(object):
             if conn_type == 'autoscale':
                 api_version = '2011-01-01'
                 conn_class = boto.ec2.autoscale.AutoScaleConnection
-                path = '/services/AutoScaling'
+                path = 'AutoScaling'
             elif conn_type == 'cloudwatch':
-                path = '/services/CloudWatch'
+                path = 'CloudWatch'
                 conn_class = boto.ec2.cloudwatch.CloudWatchConnection
             elif conn_type == 'cloudformation':
-                path = '/services/CloudFormation'
+                path = 'CloudFormation'
                 conn_class = boto.cloudformation.CloudFormationConnection
             elif conn_type == 'elb':
-                path = '/services/LoadBalancing'
+                path = 'LoadBalancing'
                 conn_class = boto.ec2.elb.ELBConnection
             elif conn_type == 'iam':
-                path = '/services/Euare'
+                path = 'Euare'
                 conn_class = boto.iam.IAMConnection
             elif conn_type == 's3':
-                path = '/services/objectstorage'
+                path = 'objectstorage'
                 conn_class = S3Connection
             elif conn_type == 'vpc':
                 conn_class = boto.vpc.VPCConnection
 
+            dns_enabled = True
+            if dns_enabled:
+                _clchost = "{0}.{1}".format(path, _clchost)
+                path = "/"
+            else:
+                path = '/services/{0}'.format(path)
+            region = RegionInfo(name='eucalyptus', endpoint=_clchost)
             # IAM and S3 connections need host instead of region info
             if conn_type in ['iam', 's3']:
                 conn = conn_class(
@@ -247,7 +253,7 @@ class EucaAuthenticator(object):
         :param port: port number to use when making the connection
 
         """
-        self.host = host
+        self.host = 'tokens.'+host
         self.port = port
         self.validate_certs = validate_certs
         self.kwargs = validate_kwargs
