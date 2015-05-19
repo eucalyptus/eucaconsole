@@ -37,6 +37,12 @@ class SeleniumApi(object):
         """
         self.driver.implicitly_wait(self, implicit_wait_time)
 
+    def close_browser(self):
+        """
+        Closes firefox.
+        """
+        self.driver.quit()
+
     def wait_for_element_present_by_id(self, element_id):
         """
         Waits for element to be present on the page for timeout_to_locate_element_in_seconds
@@ -196,6 +202,7 @@ class SeleniumApi(object):
             print "Clicking on element by id = ('{0}')".format(element_id)
         except Exception, e:
             print "ERROR: Could not perform click on element by id = ('{0}')".format(element_id)
+            self.close_browser()
             raise
 
     def click_element_by_css(self, css):
@@ -211,6 +218,7 @@ class SeleniumApi(object):
             print "Clicking on element by css = ('{0}')".format(css)
         except Exception, e:
             print "ERROR: Could not perform click on element by css = ('{0}')".format(css)
+            self.close_browser()
             raise
 
     def wait_for_element_not_present_by_id(self, element_id):
