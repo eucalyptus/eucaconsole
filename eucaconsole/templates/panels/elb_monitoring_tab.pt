@@ -1,0 +1,35 @@
+
+<!--! ELB listener editor -->
+<div i18n:domain="eucaconsole" ng-controller="CloudWatchChartsCtrl as chartsCtrl"
+     ng-init="chartsCtrl.initController('${cloudwatch_options_json}')">
+    <div class="cloudwatch-charts">
+        <div class="toprow">
+            <div class="blurb">
+                <div class="duration-wrapper">
+                    <label for="monitoring-duration" class="left" i18n:translate="">Show data for</label>
+                    <select name="monitoring_duration" id="monitoring-duration" ng-model="chartsCtrl.duration"
+                            ng-change="chartsCtrl.refreshCharts()" class="duration-input">
+                        <option tal:repeat="duration duration_choices" value="${duration[0]}">
+                            ${duration[1]}
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="actions">
+                <span id="refresh-charts-icon" class="action-icon" title="Refresh data" i18n:attributes="title"
+                      ng-click="chartsCtrl.refreshCharts()"><i class="fa fa-refresh"></i></span>
+            </div>
+        </div>
+        <ul class="small-block-grid-1 medium-block-grid-2 large-block-grid-3">
+            <li class="chart-wrapper" ng-repeat="chart in chartsCtrl.chartsList"
+                ng-click="chartsCtrl.displayLargeChart(chart, 'LoadBalancerName', '${elb_name}')" ng-cloak="">
+                <h6>{{ chartsCtrl.metricTitleMapping[chart.metric] }}<i class="busy"></i></h6>
+                <svg cloudwatch-chart="" id="cwchart-{{ chart.metric }}" class="cwchart"
+                     ids="${elb_name}" idtype="LoadBalancerName" metric="{{ chart.metric }}"
+                     duration="{{ chartsCtrl.duration }}" unit="{{ chart.unit }}"
+                     statistic="{{ chart.statistic || 'Average' }}">
+                </svg>
+            </li>
+        </ul>
+    </div>
+</div>

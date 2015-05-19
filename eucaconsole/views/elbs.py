@@ -39,6 +39,11 @@ from boto.ec2.elb import HealthCheck
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from pyramid.view import view_config
 
+from ..constants.cloudwatch import (
+    MONITORING_DURATION_CHOICES, GRANULARITY_CHOICES, DURATION_GRANULARITY_CHOICES_MAPPING,
+    METRIC_TITLE_MAPPING,
+    STATISTIC_CHOICES)
+from ..constants.elbs import ELB_MONITORING_CHARTS_LIST
 from ..i18n import _
 from ..forms.elbs import (ELBForm, ELBDeleteForm, ELBsFiltersForm, CreateELBForm,
                           ELBInstancesFiltersForm, CertificateForm, BackendCertificateForm)
@@ -434,6 +439,9 @@ class ELBView(BaseELBView):
             filter_keys=filter_keys,
             search_facets=BaseView.escape_json(json.dumps(search_facets)),
             controller_options_json=self.get_controller_options_json(),
+            duration_choices=MONITORING_DURATION_CHOICES,
+            statistic_choices=STATISTIC_CHOICES,
+            cloudwatch_options_json=self.get_cloudwatch_options_json()
         )
 
     @view_config(route_name='elb_view', renderer=TEMPLATE)
@@ -537,6 +545,15 @@ class ELBView(BaseELBView):
             'health_check_timeout': self.elb.health_check.timeout if self.elb else '',
             'health_check_healthy_threshold': self.elb.health_check.healthy_threshold if self.elb else '',
             'health_check_unhealthy_threshold': self.elb.health_check.unhealthy_threshold if self.elb else '',
+        }))
+
+    @staticmethod
+    def get_cloudwatch_options_json():
+        return BaseView.escape_json(json.dumps({
+            'metric_title_mapping': METRIC_TITLE_MAPPING,
+            'charts_list': ELB_MONITORING_CHARTS_LIST,
+            'granularity_choices': GRANULARITY_CHOICES,
+            'duration_granularities_mapping': DURATION_GRANULARITY_CHOICES_MAPPING,
         }))
 
     def get_elb_attribute_idle_timeout(self):

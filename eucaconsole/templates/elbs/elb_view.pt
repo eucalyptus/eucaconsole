@@ -4,6 +4,8 @@
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/elb.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.css')}"/>
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/instance_selector.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/nvd3/nv.d3.min.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/cloudwatch_charts.css')}" />
 </head>
 
 <div metal:fill-slot="main_content">
@@ -95,15 +97,7 @@
                     </div>
                     <!--! Step 2: Monitoring tab content -->
                     <div class="content panel has-actions" id="monitoring-tab">
-                        <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="elb">
-                            <metal:actions metal:fill-slot="actions">
-                                <li>
-                                    <a id="delete-elb-action" data-reveal-id="delete-elb-modal"
-                                        i18n:translate="">Delete load balancer</a>
-                                </li>
-                            </metal:actions>
-                        </metal:block>
-                        Monitoring Tab
+                        ${panel('elb_monitoring_tab', elb=elb, duration_choices=duration_choices, cloudwatch_options_json=cloudwatch_options_json)}
                     </div>
                     <!--! Step 3: Instances tab content -->
                     <div class="content panel has-actions" id="instances-tab">
@@ -384,6 +378,9 @@
     <script src="${request.static_path('eucaconsole:static/js/pages/elb.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/instance_selector.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/d3/d3.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/nvd3/nv.d3.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/cloudwatch_charts.js')}"></script>
 </div>
 
 </metal:block>
