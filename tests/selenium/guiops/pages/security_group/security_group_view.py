@@ -18,7 +18,6 @@ class SecurityGroupView(ViewPage):
     def get_s_group_id_from_view_page(self, s_group_name):
         pass
 
-
     def click_create_s_group_actions_menu(self):
         pass
 

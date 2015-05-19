@@ -196,6 +196,7 @@ class SeleniumApi(object):
             print "Clicking on element by id = ('{0}')".format(element_id)
         except Exception, e:
             print "ERROR: Could not perform click on element by id = ('{0}')".format(element_id)
+            raise
 
     def click_element_by_css(self, css):
         """
@@ -210,6 +211,7 @@ class SeleniumApi(object):
             print "Clicking on element by css = ('{0}')".format(css)
         except Exception, e:
             print "ERROR: Could not perform click on element by css = ('{0}')".format(css)
+            raise
 
     def wait_for_element_not_present_by_id(self, element_id):
         """
