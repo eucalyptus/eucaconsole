@@ -5,7 +5,7 @@
     <div ng-cloak="true">
         <h6 i18n:translate="">Listeners</h6>
         <div ng-cloak="true">
-            <table class="table elb-listener-table" ng-cloak="true" ng-show="listenerArray.length !== 0">
+            <table class="table" ng-cloak="true" ng-show="listenerArray.length !== 0">
                 <thead>
                     <tr class="top-header">
                         <th colspan="2" class="header vertical-border-header center" i18n:translate="">CLIENT SIDE</th>

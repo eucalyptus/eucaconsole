@@ -6,14 +6,6 @@
 
 
 #elb-view-form {
-    dd {
-        a {
-            font-size: 0.85rem;
-        }
-        span {
-            font-size: 0.85rem;
-        }
-    }
     input.text-input {
         width: 300px;
     }
@@ -75,7 +67,7 @@
             margin-right: 0.5rem;
          }
         .active { color: $euca-darkgrey; }
-        .inactive { color: $euca-green; }
+        .inactive { color: $hp-accessible-blue; }
     }
     #elb-listener-security-field {
         margin-bottom: 1.5rem;
@@ -85,16 +77,14 @@
     }
 }
 
-table.elb-listener-table {
+table.table {
     width: 100%;
     tr.top-header {
-        border-bottom: 0px;
+        border-bottom: 0;
     }
     th.vertical-border-header {
         border-collapse: collapse;
-        border-right-width: 1px;
-        border-right-style: solid;
-        border-right-color: #ddd;
+        border-right: 1px solid #ddd;
     } 
     th.center {
         text-align: center;
