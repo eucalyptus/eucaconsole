@@ -161,22 +161,22 @@ class ELBsJsonView(LandingPageView):
     def get_security_groups(self, groupids):
         security_groups = []
         if groupids:
-            for id in groupids:
+            for sgid in groupids:
                 security_group = ''
                 # Due to the issue that AWS-Classic and AWS-VPC different values,
                 # name and id, for .securitygroup for launch config object
-                if id.startswith('sg-'):
-                    security_group = self.get_security_group_by_id(id)
+                if sgid.startswith('sg-'):
+                    security_group = self.get_security_group_by_id(sgid)
                 else:
-                    security_group = self.get_security_group_by_name(id)
+                    security_group = self.get_security_group_by_name(sgid)
                 if security_group:
                     security_groups.append(security_group)
         return security_groups
 
-    def get_security_group_by_id(self, id):
+    def get_security_group_by_id(self, sgid):
         if self.securitygroups:
             for sgroup in self.securitygroups:
-                if sgroup.id == id:
+                if sgroup.id == sgid:
                     return sgroup
         return ''
 
@@ -187,11 +187,11 @@ class ELBsJsonView(LandingPageView):
                     return sgroup
         return ''
 
-    def get_security_group_rules_count_by_id(self, id):
-        if id.startswith('sg-'):
-            security_group = self.get_security_group_by_id(id)
+    def get_security_group_rules_count_by_id(self, sgid):
+        if sgid.startswith('sg-'):
+            security_group = self.get_security_group_by_id(sgid)
         else:
-            security_group = self.get_security_group_by_name(id)
+            security_group = self.get_security_group_by_name(sgid)
         if security_group:
             return len(security_group.rules)
         return None
@@ -244,7 +244,8 @@ class LbTagSet(dict):
     TODO: Remove this when we update to Boto 2.38 or later
     """
 
-    def __init__(self, connection=None):
+    def __init__(self, connection=None, **kwargs):
+        super(LbTagSet, self).__init__(**kwargs)
         self.connection = connection
         self._current_key = None
         self._current_value = None
@@ -269,8 +270,7 @@ class LbTagSet(dict):
 
 
 class BaseELBView(TaggedItemView):
-    """Views for single ELB"""
-    TEMPLATE = '../templates/elbs/elb_view.pt'
+    """Base view for ELB detail page tabs/views"""
 
     def __init__(self, request):
         super(BaseELBView, self).__init__(request)
@@ -281,6 +281,13 @@ class BaseELBView(TaggedItemView):
         self.autoscale_conn = self.get_connection(conn_type='autoscale')
         self.vpc_conn = self.get_connection(conn_type='vpc')
         self.is_vpc_supported = BaseView.is_vpc_supported(request)
+
+    def get_elb(self):
+        if self.elb_conn:
+            elb_param = self.request.matchdict.get('id')
+            elbs = self.elb_conn.get_all_load_balancers(load_balancer_names=[elb_param])
+            return elbs[0] if elbs else None
+        return None
 
     def get_listeners_args(self):
         listeners_json = self.request.params.get('elb_listener')
@@ -318,7 +325,8 @@ class BaseELBView(TaggedItemView):
         )
         self.elb_conn.configure_health_check(name, hc)
 
-    def get_instance_selector_text(self):
+    @staticmethod
+    def get_instance_selector_text():
         instance_selector_text = {'name': _(u'NAME (ID)'), 'tags': _(u'TAGS'),
                                   'zone': _(u'AVAILABILITY ZONE'), 'subnet': _(u'VPC SUBNET'), 'status': _(u'STATUS'),
                                   'no_matching_instance_error_msg': _(u'No matching instances')}
@@ -439,14 +447,10 @@ class ELBView(BaseELBView):
             filter_keys=filter_keys,
             search_facets=BaseView.escape_json(json.dumps(search_facets)),
             controller_options_json=self.get_controller_options_json(),
-            duration_choices=MONITORING_DURATION_CHOICES,
-            statistic_choices=STATISTIC_CHOICES,
-            cloudwatch_options_json=self.get_cloudwatch_options_json()
         )
 
     @view_config(route_name='elb_view', renderer=TEMPLATE)
     def elb_view(self):
-        self.__init__(self.request)
         return self.render_dict
 
     @view_config(route_name='elb_update', request_method='POST', renderer=TEMPLATE)
@@ -513,13 +517,6 @@ class ELBView(BaseELBView):
             self.request.error_messages = self.delete_form.get_errors_list()
         return self.render_dict
 
-    def get_elb(self):
-        if self.elb_conn:
-            elb_param = self.request.matchdict.get('id')
-            elbs = self.elb_conn.get_all_load_balancers(load_balancer_names=[elb_param])
-            return elbs[0] if elbs else None
-        return None
-
     def get_controller_options_json(self):
         return BaseView.escape_json(json.dumps({
             'resource_name': 'elb',
@@ -545,15 +542,6 @@ class ELBView(BaseELBView):
             'health_check_timeout': self.elb.health_check.timeout if self.elb else '',
             'health_check_healthy_threshold': self.elb.health_check.healthy_threshold if self.elb else '',
             'health_check_unhealthy_threshold': self.elb.health_check.unhealthy_threshold if self.elb else '',
-        }))
-
-    @staticmethod
-    def get_cloudwatch_options_json():
-        return BaseView.escape_json(json.dumps({
-            'metric_title_mapping': METRIC_TITLE_MAPPING,
-            'charts_list': ELB_MONITORING_CHARTS_LIST,
-            'granularity_choices': GRANULARITY_CHOICES,
-            'duration_granularities_mapping': DURATION_GRANULARITY_CHOICES_MAPPING,
         }))
 
     def get_elb_attribute_idle_timeout(self):
@@ -751,6 +739,38 @@ class ELBView(BaseELBView):
         if self.elb_conn and self.elb:
             is_cross_zone_enabled = self.elb.is_cross_zone_load_balancing()
         return is_cross_zone_enabled
+
+
+class ELBMonitoringView(BaseELBView):
+    TEMPLATE = '../templates/elbs/elb_monitoring.pt'
+
+    def __init__(self, request):
+        super(ELBMonitoringView, self).__init__(request)
+        with boto_error_handler(request):
+            self.elb = self.get_elb()
+            if not self.elb:
+                raise HTTPNotFound()
+        self.render_dict = dict(
+            elb=self.elb,
+            elb_name=self.escape_braces(self.elb.name) if self.elb else '',
+            escaped_elb_name=quote(self.elb.name) if self.elb else '',
+            duration_choices=MONITORING_DURATION_CHOICES,
+            statistic_choices=STATISTIC_CHOICES,
+            controller_options_json=self.get_controller_options_json()
+        )
+
+    @view_config(route_name='elb_monitoring', renderer=TEMPLATE)
+    def elb_view(self):
+        return self.render_dict
+
+    @staticmethod
+    def get_controller_options_json():
+        return BaseView.escape_json(json.dumps({
+            'metric_title_mapping': METRIC_TITLE_MAPPING,
+            'charts_list': ELB_MONITORING_CHARTS_LIST,
+            'granularity_choices': GRANULARITY_CHOICES,
+            'duration_granularities_mapping': DURATION_GRANULARITY_CHOICES_MAPPING,
+        }))
 
 
 class CreateELBView(BaseELBView):

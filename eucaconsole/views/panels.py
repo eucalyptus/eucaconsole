@@ -431,11 +431,3 @@ def elb_listener_editor(context, request, listener_list=None, protocol_list=None
     )
 
 
-@panel_config('elb_monitoring_tab', renderer='../templates/panels/elb_monitoring_tab.pt')
-def elb_monitoring_tab(context, request, **kwargs):
-    """ ELB monitoring tab """
-    return dict(
-        elb_name=kwargs.get('elb').name,
-        duration_choices=kwargs.get('duration_choices'),
-        cloudwatch_options_json=kwargs.get('cloudwatch_options_json'),
-    )

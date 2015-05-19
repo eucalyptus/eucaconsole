@@ -31,7 +31,7 @@
                 ${structure:elb_form['csrf_token']}
                 <dl id="elb-view-tabs" class="tabs" data-tab="" ng-cloak="">
                     <dd class="active"><a href="#general-tab" ng-click="clickTab($event, 'general-tab')" i18n:translate="">General</a></dd>
-                    <dd><a href="#monitoring-tab" ng-click="clickTab($event, 'monitoring-tab')" i18n:translate="">Monitoring</a></dd>
+                    <dd><a href="${request.route_path('elb_monitoring', id=elb.name)}" i18n:translate="">Monitoring</a></dd>
                     <dd><a href="#instances-tab" ng-click="clickTab($event, 'instances-tab')" i18n:translate="">Instances</a></dd>
                     <dd><a href="#health-checks-tab" ng-click="clickTab($event, 'health-checks-tab')" i18n:translate="">Health checks</a></dd>
                 </dl>
@@ -97,7 +97,7 @@
                     </div>
                     <!--! Step 2: Monitoring tab content -->
                     <div class="content panel has-actions" id="monitoring-tab">
-                        ${panel('elb_monitoring_tab', elb=elb, duration_choices=duration_choices, cloudwatch_options_json=cloudwatch_options_json)}
+                        <!--! Monitoring tab is at templates/elb_monitoring.pt -->
                     </div>
                     <!--! Step 3: Instances tab content -->
                     <div class="content panel has-actions" id="instances-tab">
