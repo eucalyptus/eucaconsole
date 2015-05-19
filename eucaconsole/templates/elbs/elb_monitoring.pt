@@ -61,6 +61,8 @@
                 </div>
             </div>
         </div>
+        <!--! Modal dialog for large chart -->
+        ${panel('cloudwatch_chart_dialog', duration_choices=duration_choices, statistic_choices=statistic_choices)}
     </div>
 </div>
 

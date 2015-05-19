@@ -90,6 +90,7 @@ METRIC_DIMENSION_INPUTS = {
 
 # Maps metric names to friendly titles, primarily for CloudWatch charts
 METRIC_TITLE_MAPPING = {
+    # EC2 Metrics
     'CPUUtilization': _(u'CPU utilization %'),
     'DiskReadBytes': _(u'Disk read bytes'),
     'DiskReadOps': _(u'Disk read operations'),
@@ -97,6 +98,17 @@ METRIC_TITLE_MAPPING = {
     'DiskWriteOps': _(u'Disk write operations'),
     'NetworkIn': _(u'Network in KB'),
     'NetworkOut': _(u'Network out KB'),
+    # ELB Metrics
+    'RequestCount': _(u'Sum request count'),
+    'Latency': _(u'Avg latency (ms)'),
+    'UnhealthyHostCount': _(u'Unhealthy hosts'),
+    'HealthyHostCount': _(u'Healthy hosts'),
+    'HTTPCode_ELB_4XX': _(u'Sum ELB 4xxs'),
+    'HTTPCode_ELB_5XX': _(u'Sum ELB 5xxs'),
+    'HTTPCode_Backend_2XX': _(u'Sum HTTP 2xxs'),
+    'HTTPCode_Backend_3XX': _(u'Sum HTTP 3xxs'),
+    'HTTPCode_Backend_4XX': _(u'Sum HTTP 4xxs'),
+    'HTTPCode_Backend_5XX': _(u'Sum HTTP 5xxs'),
 }
 
 # Statistic choices for CloudWatch charts
