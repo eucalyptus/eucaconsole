@@ -155,9 +155,7 @@
                         </span>
                         <ul id="actions-dropdown2" class="f-dropdown" data-dropdown-content="">
                             <li>
-                                <a id="delete-user-action" i18n:translate="">
-                                    Delete stack
-                                </a>
+                                <a i18n:translate="" ng-click="revealModal('delete', item)">Delete stack</a>
                             </li>
                         </ul>
                     </div>
