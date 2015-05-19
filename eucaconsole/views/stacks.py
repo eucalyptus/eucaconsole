@@ -459,6 +459,7 @@ class StackWizardView(BaseView):
             stack_name = self.request.params.get('name')
             location = self.request.route_path('stacks')
             (template_url, parsed) = self.parse_store_template()
+            capabilities = ['CAPABILITY_IAM']
             params = []
             for name in parsed['Parameters'].keys():
                 val = self.request.params.get(name)
@@ -472,7 +473,7 @@ class StackWizardView(BaseView):
                 cloudformation_conn = self.get_connection(conn_type='cloudformation')
                 self.log_request(u"Creating stack:{0}".format(stack_name))
                 cloudformation_conn.create_stack(
-                    stack_name, template_url=template_url,
+                    stack_name, template_url=template_url, capabilities=capabilities,
                     parameters=params, tags=tags
                 )
                 msg = _(u'Successfully sent create stack request. '
