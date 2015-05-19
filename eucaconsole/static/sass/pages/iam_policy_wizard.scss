@@ -3,6 +3,9 @@
 // Import common Foundation variables
 @import "../includes/eucavariables";
 
+.tabs {
+    @include standard-tabs-mixin;
+}
 
 // Select/create policy choices
 .tabs-content {
@@ -47,6 +50,7 @@
 // Policy preview
 #policy-preview {
     background-color: white;
+    border: 1px solid $hp-gray-20;
     padding: 1rem;
     margin-top: 40px;
     input[type=text], textarea {
@@ -54,7 +58,7 @@
     }
     h6.title {
         font-weight: bold;
-        color: $euca-darkblue;
+        color: $hp-gray-65;
         margin-bottom: 1rem;
     }
 }
@@ -157,7 +161,7 @@
             color: $euca-lightgrey;
             font-size: 1.2rem;
             &.fi-check.selected {
-                color: $euca-darkblue;
+                color: $hp-accessible-blue;
             }
             &.fi-x.selected {
                 color: darkred;

@@ -39,7 +39,7 @@ $tile-label-padding: 28px;
 $grid-dropdown-width: 160px;
 $gridwrapper-table-width: 100%;
 
-$dropdown-border-color: $euca-green;
+$dropdown-border-color: $hp-gray-65;
 
 
 .columns.datagrid {
@@ -55,7 +55,7 @@ $dropdown-border-color: $euca-green;
 .clear-link {
     color: $euca-grey;
     &:hover {
-        color: $euca-green;
+        color: $hp-hover-blue;
     }
 }
 
@@ -72,6 +72,17 @@ $dropdown-border-color: $euca-green;
     }
 }
 
+.gridwrapper {
+    margin-top: 0.5rem;
+}
+
+#refresh-btn {
+    color: $hp-gray-65;
+    &:hover {
+        color: $hp-hover-blue;
+    }
+}
+
 // Dropdown buttons on landing page tile/table view
 .gridwrapper {
     .dropdown.button.tiny {
@@ -81,12 +92,12 @@ $dropdown-border-color: $euca-green;
         position: absolute;
         width: 30px; height: $tile-row-height;
         top: 0; right: 0;
-        color: $euca-green;
+        color: $hp-gray-65;
         font-size: 1.1rem;
         padding: 0 0 0 0;
         border: none;
         &:hover {
-            color: $euca-green;
+            color: $hp-hover-blue;
         }
         &::before, &::after {
             border: none;
@@ -104,6 +115,7 @@ $dropdown-border-color: $euca-green;
 
 // Tile/grid view
 .tile {
+    border: 1px solid $hp-gray-20;
     font-size: $euca-font-size;
     position: relative;
     display: inline-block;
@@ -126,7 +138,7 @@ $dropdown-border-color: $euca-green;
             position: absolute;
             top: 0; bottom: 0; left: 0; right: 0;
             &:hover {
-                background-color: lighten($euca-lightgreen, 30%);
+                background-color: lighten($hp-accessible-blue, 60%);
             }
         }
         .plus {
@@ -141,10 +153,10 @@ $dropdown-border-color: $euca-green;
             @include ellipsis-overflow;
             display: block;
             padding: 6px 30px 4px 10px;
-            color: $euca-darkblue;
+            color: $hp-gray-65;
             font-weight: bold;
             &:hover {
-                color: $euca-green;
+                color: $hp-accessible-blue;
             }
         }
         strong {
@@ -161,7 +173,7 @@ $dropdown-border-color: $euca-green;
     .content {
         padding: 8px;
         font-size: 0.9em;
-        a { color: $euca-darkgreen; }
+        a { color: $hp-accessible-blue; }
         a:hover { text-decoration: underline; }
         div {
             margin-bottom: 2px;
@@ -186,7 +198,7 @@ $dropdown-border-color: $euca-green;
         }
     }
     .link {
-        color: $euca-green;
+        color: $hp-accessible-blue;
         text-transform: uppercase;
         padding: 1px 3px;
         margin-bottom: 2px;
@@ -244,7 +256,7 @@ $dropdown-border-color: $euca-green;
             padding: 8px 4px 8px 6px;
             vertical-align: top;
             a {
-                color: $euca-darkgreen;
+                color: $hp-accessible-blue;
                 &:hover {
                     text-decoration: underline;
                 }
@@ -380,14 +392,14 @@ $dropdown-border-color: $euca-green;
 // tableview/gridview icon switcher
 .displayicons {
     font-size: 2rem;
-    padding-left: 0rem;
+    padding-left: 0;
     a {
         float: right;
         border-bottom: none;
-        color: $euca-green;
+        color: $hp-gray-65;
         &:hover {
             border-bottom: none;
-            color: $euca-green;
+            color: $hp-hover-blue;
         }
     }
     label {
@@ -397,10 +409,10 @@ $dropdown-border-color: $euca-green;
     }
     .selected {
         background-color: white;
-        color: black;
+        color: $hp-accessible-blue;
         &:hover {
-            color: black;
-            cursor: default;
+            color: $hp-accessible-blue;
+            cursor: inherit;
         }
     }
     i {

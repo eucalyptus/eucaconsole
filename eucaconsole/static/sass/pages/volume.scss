@@ -9,9 +9,9 @@
 
 // Status colors
 $volume-status-color-creating: lighten($euca-olive, 10%);
-$volume-status-color-available: $euca-olive;
-$volume-status-color-detached: $euca-olive;
-$volume-status-color-detaching: lighten($euca-olive, 20%);
+$volume-status-color-available: $hp-purple;
+$volume-status-color-detached: $hp-purple;
+$volume-status-color-detaching: lighten($hp-purple, 20%);
 $volume-status-color-deleting: $euca-lightgrey;
 $volume-status-color-deleted: $euca-grey;
 $volume-status-color-error: darkred;

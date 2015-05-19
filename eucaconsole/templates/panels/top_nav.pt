@@ -19,9 +19,9 @@
         <a id="resource-menuitem-instances" i18n:translate="" href="${request.route_path('instances')}">INSTANCES</a>
     </li>
     <li class="has-dropdown">
-        <a id="resource-menu-instances" class="nolink" i18n:translate="">CLOUDFORMATION</a>
+        <a id="resource-menu-cloudformation" class="nolink" i18n:translate="">CLOUDFORMATION</a>
         <ul class="dropdown">
-            <li><a id="resource-menuitem-instances" i18n:translate=""
+            <li><a id="resource-menuitem-stacks" i18n:translate=""
                    href="${request.route_path('stacks')}">Stacks</a></li>
         </ul>
     </li>

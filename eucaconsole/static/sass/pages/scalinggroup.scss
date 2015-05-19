@@ -76,8 +76,8 @@ input[type="number"] {
 .tile {
     .footer {
         &.healthy {
-            background-color: $euca-green;
-            &.pending { background-color: $euca-lightgreen; }
+            background-color: $hp-accessible-blue;
+            &.pending { background-color: lighten($hp-accessible-blue, 20%); }
         }
     }
 }
