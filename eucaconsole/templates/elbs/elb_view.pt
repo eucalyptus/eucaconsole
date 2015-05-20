@@ -28,9 +28,9 @@
                 ${structure:elb_form['csrf_token']}
                 <dl id="elb-view-tabs" class="tabs" data-tab="" ng-cloak="">
                     <dd class="active"><a href="#general-tab" ng-click="clickTab($event, 'general-tab')" i18n:translate="">General</a></dd>
+                    <dd><a href="#" ng-click="clickTab($event, 'monitoring-tab')" i18n:translate="">Monitoring</a></dd>
                     <dd><a href="#instances-tab" ng-click="clickTab($event, 'instances-tab')" i18n:translate="">Instances</a></dd>
                     <dd><a href="#" ng-click="clickTab($event, 'health-checks-tab')" i18n:translate="">Health checks</a></dd>
-                    <dd><a href="#" ng-click="clickTab($event, 'monitoring-tab')" i18n:translate="">Monitoring</a></dd>
                 </dl>
                 <div class="tabs-content">
                     <!--! Step 1: General tab content -->
