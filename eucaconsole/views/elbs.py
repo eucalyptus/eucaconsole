@@ -267,6 +267,26 @@ class BaseELBView(TaggedItemView):
                 listeners_args.append((from_port, to_port, from_protocol, to_protocol))
         return listeners_args
 
+    def configure_health_checks(self, name):
+        ping_protocol = self.request.params.get('ping_protocol')
+        ping_port = self.request.params.get('ping_port')
+        ping_path = self.request.params.get('ping_path')
+        response_timeout = self.request.params.get('response_timeout')
+        time_between_pings = self.request.params.get('time_between_pings')
+        failures_until_unhealthy = self.request.params.get('failures_until_unhealthy')
+        passes_until_healthy = self.request.params.get('passes_until_healthy')
+        ping_target = u"{0}:{1}".format(ping_protocol, ping_port)
+        if ping_protocol in ['HTTP', 'HTTPS']:
+            ping_target = u"{0}/{1}".format(ping_target, ping_path)
+        health_check = HealthCheck(
+            timeout=response_timeout,
+            interval=time_between_pings,
+            healthy_threshold=passes_until_healthy,
+            unhealthy_threshold=failures_until_unhealthy,
+            target=ping_target
+        )
+        self.elb_conn.configure_health_check(name, health_check)
+
     @staticmethod
     def get_instance_selector_text():
         instance_selector_text = {'name': _(u'NAME (ID)'), 'tags': _(u'TAGS'),
@@ -458,7 +478,6 @@ class ELBView(BaseELBView):
 
     def get_controller_options_json(self):
         return BaseView.escape_json(json.dumps({
-            'resource_name': 'elb',
             'is_vpc_supported': self.is_vpc_supported,
             'default_vpc_network': self.get_default_vpc_network(),
             'availability_zones': self.elb.availability_zones if self.elb else [],
@@ -701,26 +720,6 @@ class ELBHealthChecksView(BaseELBView):
             self.request.error_messages = self.elb_form.get_errors_list()
         return self.render_dict
 
-    def configure_health_checks(self, name):
-        ping_protocol = self.request.params.get('ping_protocol')
-        ping_port = self.request.params.get('ping_port')
-        ping_path = self.request.params.get('ping_path')
-        response_timeout = self.request.params.get('response_timeout')
-        time_between_pings = self.request.params.get('time_between_pings')
-        failures_until_unhealthy = self.request.params.get('failures_until_unhealthy')
-        passes_until_healthy = self.request.params.get('passes_until_healthy')
-        ping_target = u"{0}:{1}".format(ping_protocol, ping_port)
-        if ping_protocol in ['HTTP', 'HTTPS']:
-            ping_target = u"{0}/{1}".format(ping_target, ping_path)
-        health_check = HealthCheck(
-            timeout=response_timeout,
-            interval=time_between_pings,
-            healthy_threshold=passes_until_healthy,
-            unhealthy_threshold=failures_until_unhealthy,
-            target=ping_target
-        )
-        self.elb_conn.configure_health_check(name, health_check)
-
 
 class ELBMonitoringView(BaseELBView):
     TEMPLATE = '../templates/elbs/elb_monitoring.pt'
@@ -741,7 +740,7 @@ class ELBMonitoringView(BaseELBView):
         )
 
     @view_config(route_name='elb_monitoring', renderer=TEMPLATE)
-    def elb_view(self):
+    def elb_monitoring(self):
         return self.render_dict
 
     @staticmethod
@@ -789,7 +788,7 @@ class CreateELBView(BaseELBView):
         )
 
     @view_config(route_name='elb_new', renderer=TEMPLATE)
-    def elb_view(self):
+    def elb_new(self):
         return self.render_dict
 
     def get_controller_options_json(self):
@@ -850,7 +849,7 @@ class CreateELBView(BaseELBView):
                                   security_groups=securitygroup,
                                   complex_listeners=listeners_args)
                     self.elb_conn.create_load_balancer(name, None, **params)
-                self.handle_configure_health_check(name)
+                self.configure_health_checks(name)
                 if instances is not None:
                     self.elb_conn.register_instances(name, instances)
                 if cross_zone_enabled == 'y':
