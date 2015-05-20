@@ -893,6 +893,9 @@ textarea.hidden {
     form .row.controls-wrapper {
         margin-bottom: 1rem;
     }
+    .tabs-content {
+        border: none;
+    }
     .button.expand {
         margin-bottom: 0;
         &:focus {
