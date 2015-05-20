@@ -1717,6 +1717,7 @@ textarea.policy-area { width: 100%; min-height: 30rem; font-family: Courier, "co
 #tag-editor .propagates { color: #777; font-size: 0.7em; }
 #tag-editor .add-label { margin-bottom: 6px; color: #5a5a5a; }
 #tag-editor #add-tag-btn { margin-bottom: 0; }
+#tag-editor #propagate-wrapper { white-space: nowrap; }
 
 /* ----------------------------------------- Block device mapping (BDM) editor
 ----------------------------------------- */
