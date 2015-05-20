@@ -136,6 +136,8 @@ h6.section-label { margin-top: 1.5rem; }
 
 .unhealthy { background-color: darkred; }
 
+#from-protocol-select { width: 12rem; }
+
 #cross-zone-div label { display: inline; margin-left: 0.5rem; margin-right: 1.0rem; }
 #cross-zone-div a { margin-right: 0.5rem; }
 #cross-zone-div .active { color: #444; }

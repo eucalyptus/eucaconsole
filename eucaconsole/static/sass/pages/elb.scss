@@ -51,6 +51,10 @@ h6.section-label {
 .allhealthy { background-color: $euca-darkblue; }
 .unhealthy { background-color: darkred; }
 
+#from-protocol-select {
+    width: 12rem;
+}
+
 #cross-zone-div {
     label {
         display: inline;

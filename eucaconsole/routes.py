@@ -155,6 +155,8 @@ urls = [
     Route(name='elb_delete', pattern='/elbs/{id}/delete'),
     Route(name='elb_view', pattern='/elbs/{id}'),
     Route(name='elb_update', pattern='/elbs/{id}/update'),
+    Route(name='elb_instances', pattern='/elbs/{id}/instances'),
+    Route(name='elb_instances_update', pattern='/elbs/{id}/instances/update'),
     Route(name='elb_healthchecks', pattern='/elbs/{id}/healthchecks'),
     Route(name='elb_healthchecks_update', pattern='/elbs/{id}/healthchecks/update'),
     Route(name='elb_monitoring', pattern='/elbs/{id}/monitoring'),

@@ -25,7 +25,7 @@
             <dl id="elb-view-tabs" class="tabs" ng-cloak="">
                 <dd><a href="${request.route_path('elb_view', id=elb.name)}" i18n:translate="">General</a></dd>
                 <dd class="active"><a i18n:translate="">Monitoring</a></dd>
-                <dd><a href="${request.route_path('elb_view', id=elb.name)}?tab=instances-tab" i18n:translate="">Instances</a></dd>
+                <dd><a href="${request.route_path('elb_instances', id=elb.name)}" i18n:translate="">Instances</a></dd>
                 <dd><a href="${request.route_path('elb_healthchecks', id=elb.name)}" i18n:translate="">Health checks</a></dd>
             </dl>
             <div class="panel">
@@ -61,17 +61,18 @@
                 </div>
             </div>
         </div>
+        <div class="large-12 columns">
+            <metal:block metal:use-macro="layout.global_macros['help_expando']" />
+            <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
+                <!--! Help goes here -->
+            </div>
+        </div>
         <!--! Modal dialog for large chart -->
         ${panel('cloudwatch_chart_dialog', duration_choices=duration_choices, statistic_choices=statistic_choices)}
     </div>
 </div>
 
 <div metal:fill-slot="tail_js">
-    <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/thirdparty/utils/purl.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/pages/elb.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/widgets/instance_selector.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/d3/d3.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/nvd3/nv.d3.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/cloudwatch_charts.js')}"></script>

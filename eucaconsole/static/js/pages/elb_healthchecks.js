@@ -1,5 +1,5 @@
 /**
- * @fileOverview ELB Detail Page JS
+ * @fileOverview ELB Health Checks Page JS
  * @requires AngularJS
  *
  */

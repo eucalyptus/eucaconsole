@@ -38,7 +38,7 @@ from ..views import BaseView
 
 
 class ELBForm(BaseSecureForm):
-    """Elastic Load Balancer update form"""
+    """Elastic Load Balancer update form (General tab)"""
     idle_timeout = wtforms.TextField(
         label=_(u'Idle timeout (secs)'),
     )
@@ -159,6 +159,13 @@ class ELBHealthChecksForm(BaseSecureForm):
                 ping_path=match.group(3),
             )
         return {}
+
+
+class ELBInstancesForm(BaseSecureForm):
+    """ELB Instances form.
+       Only need to initialize as a secure form to generate CSRF token
+    """
+    pass
 
 
 class ELBDeleteForm(BaseSecureForm):

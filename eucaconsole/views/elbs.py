@@ -48,7 +48,7 @@ from ..constants.cloudwatch import (
 from ..constants.elbs import ELB_MONITORING_CHARTS_LIST
 from ..i18n import _
 from ..forms.elbs import (ELBForm, ELBDeleteForm, ELBsFiltersForm, CreateELBForm, ELBHealthChecksForm,
-                          ELBInstancesFiltersForm, CertificateForm, BackendCertificateForm)
+                          ELBInstancesForm, ELBInstancesFiltersForm, CertificateForm, BackendCertificateForm)
 from ..models import Notification
 from ..views import LandingPageView, BaseView, TaggedItemView, JSONResponse
 from . import boto_error_handler
@@ -384,12 +384,6 @@ class ELBView(BaseELBView):
             elb=self.elb, securitygroups=self.get_security_groups(),
             formdata=self.request.params or None)
         self.delete_form = ELBDeleteForm(self.request, formdata=self.request.params or None)
-        filter_keys = ['id', 'name', 'placement', 'state', 'tags', 'vpc_subnet_display', 'vpc_name']
-        filters_form = ELBInstancesFiltersForm(
-            self.request, ec2_conn=self.ec2_conn, autoscale_conn=self.autoscale_conn,
-            iam_conn=None, vpc_conn=self.vpc_conn,
-            cloud_type=self.cloud_type, formdata=self.request.params or None)
-        search_facets = filters_form.facets
         self.render_dict = dict(
             elb=self.elb,
             elb_name=self.escape_braces(self.elb.name) if self.elb else '',
@@ -404,8 +398,6 @@ class ELBView(BaseELBView):
             is_vpc_supported=self.is_vpc_supported,
             elb_vpc_network=self.get_vpc_network_name(),
             security_group_placeholder_text=_(u'Select...'),
-            filter_keys=filter_keys,
-            search_facets=BaseView.escape_json(json.dumps(search_facets)),
             controller_options_json=self.get_controller_options_json(),
         )
 
@@ -423,13 +415,8 @@ class ELBView(BaseELBView):
             vpc_subnet = self.request.params.getall('vpc_subnet') or None
             if vpc_subnet == 'None':
                 vpc_subnet = None
-            zone = self.request.params.getall('zone') or None
             cross_zone_enabled = self.request.params.get('cross_zone_enabled') or False
-            instances = self.request.params.getall('instances') or None
             location = self.request.route_path('elb_view', id=self.elb.name)
-            current_tab = self.request.params.get('current_tab') or None
-            if current_tab:
-                location = '{0}?tab={1}'.format(location, current_tab)
             prefix = _(u'Unable to update load balancer')
             template = u'{0} {1} - {2}'.format(prefix, self.elb.name, '{0}')
             with boto_error_handler(self.request, location, template):
@@ -437,7 +424,6 @@ class ELBView(BaseELBView):
                 self.update_load_balancer_listeners(self.elb.name, listeners_args)
                 self.update_elb_tags(self.elb.name)
                 if vpc_subnet is None:
-                    self.update_elb_zones(self.elb.name, self.elb.availability_zones, zone)
                     if cross_zone_enabled == 'on':
                         self.elb_conn.modify_lb_attribute(self.elb.name, 'crossZoneLoadBalancing', True)
                     else:
@@ -445,8 +431,6 @@ class ELBView(BaseELBView):
                 else:
                     if self.elb.security_groups != securitygroup:
                         self.elb_conn.apply_security_groups_to_lb(self.elb.name, securitygroup)
-                    self.update_elb_subnets(self.elb.name, self.elb.subnets, vpc_subnet)
-                self.update_elb_instances(self.elb.name, self.elb.instances, instances)
                 msg = _(u"Updating load balancer")
                 self.log_request(u"{0} {1}".format(msg, self.elb.name))
                 prefix = _(u'Successfully updated load balancer.')
@@ -480,21 +464,10 @@ class ELBView(BaseELBView):
         return BaseView.escape_json(json.dumps({
             'is_vpc_supported': self.is_vpc_supported,
             'default_vpc_network': self.get_default_vpc_network(),
-            'availability_zones': self.elb.availability_zones if self.elb else [],
-            'availability_zone_choices': self.get_availability_zones(),
-            'vpc_subnet_choices': self.get_vpc_subnets(),
             'elb_vpc_network': self.elb.vpc_id if self.elb else [],
             'elb_vpc_subnets': self.elb.subnets if self.elb else [],
-            'instance_selector_text': self.get_instance_selector_text(),
-            'all_instances': self.get_all_instances(),
-            'elb_instance_health': self.get_elb_instance_health(),
-            'is_cross_zone_enabled': self.get_elb_cross_zone_load_balancing(),
             'securitygroups': self.elb.security_groups if self.elb else [],
             'securitygroups_json_endpoint': self.request.route_path('securitygroups_json'),
-            'instances': self.get_elb_instance_list(),
-            'instances_json_endpoint': self.request.route_path('instances_json'),
-            'monitoring_tab_url': self.request.route_path('elb_monitoring', id=self.elb.name),
-            'health_checks_tab_url': self.request.route_path('elb_healthchecks', id=self.elb.name),
         }))
 
     def get_elb_attribute_idle_timeout(self):
@@ -548,6 +521,153 @@ class ELBView(BaseELBView):
                     index += 1
             if index > 1:
                 self.elb_conn.get_status('RemoveTags', remove_tags_params, verb='POST')
+
+    def get_vpc_network_name(self):
+        if self.is_vpc_supported:
+            if self.elb.vpc_id and self.vpc_conn:
+                with boto_error_handler(self.request):
+                    vpc_networks = self.vpc_conn.get_all_vpcs(vpc_ids=self.elb.vpc_id)
+                    if vpc_networks:
+                        vpc_name = TaggedItemView.get_display_name(vpc_networks[0])
+                        return vpc_name
+        return 'None'
+
+    def get_security_groups(self):
+        securitygroups = []
+        if self.elb and self.elb.vpc_id:
+            with boto_error_handler(self.request):
+                securitygroups = self.ec2_conn.get_all_security_groups(filters={'vpc-id': [self.elb.vpc_id]})
+        return securitygroups
+
+
+class ELBInstancesView(BaseELBView):
+    TEMPLATE = '../templates/elbs/elb_instances.pt'
+
+    def __init__(self, request):
+        super(ELBInstancesView, self).__init__(request)
+        with boto_error_handler(request):
+            self.elb = self.get_elb()
+            if not self.elb:
+                raise HTTPNotFound()
+        self.elb_form = ELBInstancesForm(self.request, formdata=self.request.params or None)
+        self.delete_form = ELBDeleteForm(self.request, formdata=self.request.params or None)
+        filters_form = ELBInstancesFiltersForm(
+            self.request, ec2_conn=self.ec2_conn, autoscale_conn=self.autoscale_conn,
+            iam_conn=None, vpc_conn=self.vpc_conn,
+            cloud_type=self.cloud_type, formdata=self.request.params or None)
+        search_facets = filters_form.facets
+        filter_keys = ['id', 'name', 'placement', 'state', 'tags', 'vpc_subnet_display', 'vpc_name']
+        self.render_dict = dict(
+            elb=self.elb,
+            in_use=False,
+            elb_name=self.escape_braces(self.elb.name) if self.elb else '',
+            escaped_elb_name=quote(self.elb.name) if self.elb else '',
+            elb_vpc_network=self.elb.vpc_id if self.elb else [],
+            elb_form=self.elb_form,
+            delete_form=ELBDeleteForm(self.request, formdata=self.request.params or None),
+            search_facets=BaseView.escape_json(json.dumps(search_facets)),
+            filter_keys=filter_keys,
+            controller_options_json=self.get_controller_options_json(),
+        )
+
+    @view_config(route_name='elb_instances', renderer=TEMPLATE)
+    def elb_instances(self):
+        return self.render_dict
+
+    @view_config(route_name='elb_instances_update', request_method='POST', renderer=TEMPLATE)
+    def elb_instances_update(self):
+        if self.elb_form.validate():
+            securitygroup = self.request.params.getall('securitygroup') or None
+            vpc_subnet = self.request.params.getall('vpc_subnet') or None
+            if vpc_subnet == 'None':
+                vpc_subnet = None
+            zone = self.request.params.getall('zone') or None
+            cross_zone_enabled = self.request.params.get('cross_zone_enabled') or False
+            instances = self.request.params.getall('instances') or None
+            location = self.request.route_path('elb_instances', id=self.elb.name)
+            prefix = _(u'Unable to update load balancer')
+            template = u'{0} {1} - {2}'.format(prefix, self.elb.name, '{0}')
+            with boto_error_handler(self.request, location, template):
+                if vpc_subnet is None:
+                    self.update_elb_zones(self.elb.name, self.elb.availability_zones, zone)
+                    if cross_zone_enabled == 'on':
+                        self.elb_conn.modify_lb_attribute(self.elb.name, 'crossZoneLoadBalancing', True)
+                    else:
+                        self.elb_conn.modify_lb_attribute(self.elb.name, 'crossZoneLoadBalancing', False)
+                else:
+                    if self.elb.security_groups != securitygroup:
+                        self.elb_conn.apply_security_groups_to_lb(self.elb.name, securitygroup)
+                    self.update_elb_subnets(self.elb.name, self.elb.subnets, vpc_subnet)
+                self.update_elb_instances(self.elb.name, self.elb.instances, instances)
+                prefix = _(u'Successfully updated load balancer')
+                msg = u'{0} {1}'.format(prefix, self.elb.name)
+                self.log_request(u"{0} {1}".format(msg, self.elb.name))
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
+            return HTTPFound(location=location)
+        else:
+            self.request.error_messages = self.elb_form.get_errors_list()
+        return self.render_dict
+
+    def get_controller_options_json(self):
+        return BaseView.escape_json(json.dumps({
+            'is_vpc_supported': self.is_vpc_supported,
+            'default_vpc_network': self.get_default_vpc_network(),
+            'availability_zones': self.elb.availability_zones if self.elb else [],
+            'availability_zone_choices': self.get_availability_zones(),
+            'vpc_subnet_choices': self.get_vpc_subnets(),
+            'elb_vpc_network': self.elb.vpc_id if self.elb else [],
+            'elb_vpc_subnets': self.elb.subnets if self.elb else [],
+            'instance_selector_text': self.get_instance_selector_text(),
+            'all_instances': self.get_all_instances(),
+            'elb_instance_health': self.get_elb_instance_health(),
+            'is_cross_zone_enabled': self.get_elb_cross_zone_load_balancing(),
+            'securitygroups': self.elb.security_groups if self.elb else [],
+            'securitygroups_json_endpoint': self.request.route_path('securitygroups_json'),
+            'instances': self.get_elb_instance_list(),
+            'instances_json_endpoint': self.request.route_path('instances_json'),
+            'monitoring_tab_url': self.request.route_path('elb_monitoring', id=self.elb.name),
+            'health_checks_tab_url': self.request.route_path('elb_healthchecks', id=self.elb.name),
+        }))
+
+    def get_all_instances(self):
+        instances = []
+        if self.ec2_conn:
+            with boto_error_handler(self.request):
+                reservations = self.ec2_conn.get_all_reservations()
+            for reservation in reservations:
+                for instance in reservation.instances:
+                    instances.append(dict(
+                        id=instance.id,
+                        vpc_id=instance.vpc_id,
+                        subnet_id=instance.subnet_id,
+                        zone=instance._placement.zone,
+                    ))
+        return instances
+
+    def get_elb_instance_health(self):
+        instance_health = []
+        if self.elb_conn and self.elb:
+            instances = self.elb_conn.describe_instance_health(self.elb.name)
+            for instance in instances:
+                instance_health.append(dict(
+                    instance_id=instance.instance_id,
+                    state=instance.state,
+                ))
+        return instance_health
+
+    def get_elb_instance_list(self):
+        instances = []
+        if self.elb and self.elb.instances:
+            for instance in self.elb.instances:
+                if instance:
+                    instances.append(instance.id)
+        return instances
+
+    def get_elb_cross_zone_load_balancing(self):
+        is_cross_zone_enabled = False
+        if self.elb_conn and self.elb:
+            is_cross_zone_enabled = self.elb.is_cross_zone_load_balancing()
+        return is_cross_zone_enabled
 
     def update_elb_zones(self, elb_name, prev_zones, new_zones):
         if prev_zones and new_zones:
@@ -624,61 +744,6 @@ class ELBView(BaseELBView):
             self.elb_conn.deregister_instances(elb_name, remove_instances)
         if add_instances:
             self.elb_conn.register_instances(elb_name, add_instances)
-
-    def get_vpc_network_name(self):
-        if self.is_vpc_supported:
-            if self.elb.vpc_id and self.vpc_conn:
-                with boto_error_handler(self.request):
-                    vpc_networks = self.vpc_conn.get_all_vpcs(vpc_ids=self.elb.vpc_id)
-                    if vpc_networks:
-                        vpc_name = TaggedItemView.get_display_name(vpc_networks[0])
-                        return vpc_name
-        return 'None'
-
-    def get_security_groups(self):
-        securitygroups = []
-        if self.elb and self.elb.vpc_id:
-            with boto_error_handler(self.request):
-                securitygroups = self.ec2_conn.get_all_security_groups(filters={'vpc-id': [self.elb.vpc_id]})
-        return securitygroups
-
-    def get_elb_instance_list(self):
-        instances = []
-        if self.elb and self.elb.instances:
-            for instance in self.elb.instances:
-                if instance:
-                    instances.append(instance.id)
-        return instances
-
-    def get_all_instances(self):
-        instances = []
-        if self.ec2_conn:
-            for reservation in self.ec2_conn.get_all_reservations():
-                for instance in reservation.instances:
-                    instances.append(dict(
-                        id=instance.id,
-                        vpc_id=instance.vpc_id,
-                        subnet_id=instance.subnet_id,
-                        zone=instance._placement.zone,
-                    ))
-        return instances
-
-    def get_elb_instance_health(self):
-        instance_health = []
-        if self.elb_conn and self.elb:
-            instances = self.elb_conn.describe_instance_health(self.elb.name)
-            for instance in instances:
-                instance_health.append(dict(
-                    instance_id=instance.instance_id,
-                    state=instance.state,
-                ))
-        return instance_health
-
-    def get_elb_cross_zone_load_balancing(self):
-        is_cross_zone_enabled = False
-        if self.elb_conn and self.elb:
-            is_cross_zone_enabled = self.elb.is_cross_zone_load_balancing()
-        return is_cross_zone_enabled
 
 
 class ELBHealthChecksView(BaseELBView):

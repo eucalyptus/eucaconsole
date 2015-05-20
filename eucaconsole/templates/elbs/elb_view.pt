@@ -9,8 +9,7 @@
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="ELBPage" ng-controller="ELBPageCtrl"
         ng-init="initController('${controller_options_json}')"
-         tal:define="form_action request.route_path('elb_update', id=elb.name);
-                     elb_tags elb.tags if elb.tags else {};">
+         tal:define="elb_tags elb.tags if elb.tags else {};">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('elbs')}" i18n:translate="">Load balancers</a></li>
@@ -24,269 +23,71 @@
             <em>${elb_name}</em>
         </h3>
         <div class="large-12 columns">
-            <form tal:attributes="action form_action" id="elb-view-form" method="post" data-abide="abide">
+            <form method="post" action="${request.route_path('elb_update', id=elb.name)}" id="elb-view-form" data-abide="">
                 ${structure:elb_form['csrf_token']}
-                <dl id="elb-view-tabs" class="tabs" data-tab="" ng-cloak="">
-                    <dd class="active"><a href="#general-tab" ng-click="clickTab($event, 'general-tab')" i18n:translate="">General</a></dd>
-                    <dd><a href="#" ng-click="clickTab($event, 'monitoring-tab')" i18n:translate="">Monitoring</a></dd>
-                    <dd><a href="#instances-tab" ng-click="clickTab($event, 'instances-tab')" i18n:translate="">Instances</a></dd>
-                    <dd><a href="#" ng-click="clickTab($event, 'health-checks-tab')" i18n:translate="">Health checks</a></dd>
+                <dl id="elb-view-tabs" class="tabs">
+                    <dd class="active"><a i18n:translate="">General</a></dd>
+                    <dd><a href="${request.route_path('elb_monitoring', id=elb.name)}" i18n:translate="">Monitoring</a></dd>
+                    <dd><a href="${request.route_path('elb_instances', id=elb.name)}" i18n:translate="">Instances</a></dd>
+                    <dd><a href="${request.route_path('elb_healthchecks', id=elb.name)}" i18n:translate="">Health checks</a></dd>
                 </dl>
-                <div class="tabs-content">
-                    <!--! Step 1: General tab content -->
-                    <div class="content active panel has-actions" id="general-tab"
-                        tal:define="idle_timeout_attrs {'class': 'timeout-field'};">
-                        <metal:block metal:use-macro="layout.global_macros['actions_menu']">
-                            <metal:actions metal:fill-slot="actions">
-                                <li>
-                                    <a id="delete-elb-action" data-reveal-id="delete-elb-modal"
-                                        i18n:translate="">Delete load balancer</a>
-                                </li>
-                            </metal:actions>
-                        </metal:block>
-                        <h6 i18n:translate="">Load balancer</h6>
-                        <div class="row controls-wrapper readonly">
-                            <div class="small-3 columns"><label i18n:translate="">Name</label></div>
-                            <div class="small-9 columns value">${elb_name}</div>
-                        </div>
-                        <div class="row controls-wrapper readonly">
-                            <div class="small-3 columns"><label i18n:translate="">DNS name</label></div>
-                            <div class="small-9 columns value">${elb.dns_name}</div>
-                        </div>
-                        <div class="row controls-wrapper readonly">
-                            <div class="small-3 columns"><label i18n:translate="">Creation time</label></div>
-                            <div class="small-9 columns value" ng-cloak="">
-                                {{ '${elb_created_time}' | date: '${layout.angular_date_format}' }}
-                            </div>
-                        </div>
-                        <div class="row controls-wrapper readonly">
-                            <div class="small-3 columns"><label i18n:translate="">Source security group</label></div>
-                            <div class="small-9 columns value">${elb.source_security_group.name}</div>
-                        </div>
-                        ${panel('form_field', field=elb_form['idle_timeout'], leftcol_width=3, rightcol_width=9, leftcol_width_large=3, rightcol_width_large=9,  **idle_timeout_attrs)}
-                        <hr />
-                        <div>
-                            ${panel('elb_listener_editor', listener_list=listener_list, protocol_list=protocol_list)}
-                        </div>
-                        <hr />
-                        <div>
-                            ${panel('tag_editor',tags=elb_tags, show_name_tag=True)}
-                        </div>
-                        <div tal:condition="is_vpc_supported and elb_vpc_network is not 'None'"
-                                tal:define="security_group_attrs {'data-placeholder': security_group_placeholder_text};">
-                            <hr />
-                            <h6 i18n:translate="">Network & security</h6>
-                            <div class="row controls-wrapper readonly">
-                                <div class="small-3 columns"><label i18n:translate="">VPC network</label></div>
-                                <div class="small-9 columns value">${elb_vpc_network}</div>
-                            </div>
-                            ${panel('form_field', field=elb_form['securitygroup'], leftcol_width=3, rightcol_width=9, leftcol_width_large=3, rightcol_width_large=9, ng_attrs={'model': 'securityGroups'}, **security_group_attrs)}
-                        </div>
-                        <hr />
-                        <div class="save-changes-button">
-                            <button type="submit" class="button" id="save-changes-btn-general"
-                                ng-click="submitSaveChanges($event, 'general-tab')" ng-disabled="isNotChanged">
-                                <span i18n:translate="">Save Changes</span>
-                            </button>
-                            <a href="${request.route_path('elbs')}" id="cancel-update-link"
-                                class="cancel-link" i18n:translate="">Cancel</a>
+                <div class="content active panel has-actions" id="general-tab"
+                    tal:define="idle_timeout_attrs {'class': 'timeout-field'};">
+                    <metal:block metal:use-macro="layout.global_macros['actions_menu']">
+                        <metal:actions metal:fill-slot="actions">
+                            <li>
+                                <a id="delete-elb-action" data-reveal-id="delete-elb-modal"
+                                    i18n:translate="">Delete load balancer</a>
+                            </li>
+                        </metal:actions>
+                    </metal:block>
+                    <h6 i18n:translate="">Load balancer</h6>
+                    <div class="row controls-wrapper readonly">
+                        <div class="small-3 columns"><label i18n:translate="">Name</label></div>
+                        <div class="small-9 columns value">${elb_name}</div>
+                    </div>
+                    <div class="row controls-wrapper readonly">
+                        <div class="small-3 columns"><label i18n:translate="">DNS name</label></div>
+                        <div class="small-9 columns value">${elb.dns_name}</div>
+                    </div>
+                    <div class="row controls-wrapper readonly">
+                        <div class="small-3 columns"><label i18n:translate="">Creation time</label></div>
+                        <div class="small-9 columns value" ng-cloak="">
+                            {{ '${elb_created_time}' | date: '${layout.angular_date_format}' }}
                         </div>
                     </div>
-                    <!--! Step 2: Monitoring tab content -->
-                    <div class="content panel has-actions" id="monitoring-tab">
-                        <!--! Monitoring tab is at templates/elb_monitoring.pt -->
+                    <div class="row controls-wrapper readonly">
+                        <div class="small-3 columns"><label i18n:translate="">Source security group</label></div>
+                        <div class="small-9 columns value">${elb.source_security_group.name}</div>
                     </div>
-                    <!--! Step 3: Instances tab content -->
-                    <div class="content panel has-actions" id="instances-tab">
-                        <metal:block metal:use-macro="layout.global_macros['actions_menu']">
-                            <metal:actions metal:fill-slot="actions">
-                                <li>
-                                    <a id="delete-elb-action" data-reveal-id="delete-elb-modal"
-                                        i18n:translate="">Delete load balancer</a>
-                                </li>
-                            </metal:actions>
-                        </metal:block>
-                        <div class="gridwrapper section" ng-cloak="true" tal:condition="elb_vpc_network == 'None'">
-                            <h6 i18n:translate="">
-                                Availability zones
-                            </h6>
-                            <div i18n:translate="" class="description">
-                                Instances registered with the load balancer will not receive requests until their associated availability zones are enabled.
-                            </div>
-                            <div>
-                                <div class="row controls-wrapper readonly">
-                                    <div class="small-4 columns">
-                                        <select id="enable-zone-select"
-                                            ng-options="zone.name for zone in unselectedZoneList track by zone.id"
-                                            ng-model="newZone"></select>
-                                    </div>
-                                    <div class="small-8 columns field">
-                                        <button class="button enable-button" id="enable-zone-btn"
-                                            ng-click="clickEnableZone($event)">
-                                            <span i18n:translate="">Enable Zone</span>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div id="hidden_zone_selector_placeholder" class="hide" i18n:translate="">
-                                    Select zone
-                                </div>
-                                <div id="hidden_zone_select" class="hide">
-                                    <div ng-repeat="zone in selectedZoneList">
-                                        <input type="text" name="zone" ng-value="zone.id" />
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="tile item" ng-cloak="true"
-                                ng-repeat="zone in selectedZoneList | orderBy: sortBy:sortReverse">
-                                <div class="header">
-                                    <strong>
-                                        {{ zone.name }}
-                                    </strong>
-                                    <span id="tile-item-dropdown_{{ zone.id }}" class="tiny secondary button dropdown"
-                                        data-dropdown="item-dropdown_{{ zone.id }}"><i class="grid-action"></i></span>
-                                        <ul id="item-dropdown_{{ zone.id }}" class="f-dropdown" data-dropdown-content="">
-                                            <li>
-                                                <a class="disable-button" ng-click="clickDisableZone(zone.id)" i18n:translate="">Disable zone</a>
-                                            </li>
-                                        </ul>
-                                </div>
-                                <div class="content">
-                                    <div>
-                                        <span class="label" title="Instance Count" i18n:attributes="title" data-tooltip="">IC</span>
-                                        {{ zone.instanceCount }} <span i18n:translate="">instances</span>
-                                    </div>
-                                </div>
-                                <div class="footer status allhealthy" ng-show="zone.unhealthyInstanceCount === 0">
-                                    <span i18n:translate="">All healthy</span>
-                                </div>
-                                <div class="footer status unhealthy" ng-show="zone.unhealthyInstanceCount > 0">
-                                    {{ zone.unhealthyInstanceCount }} <span i18n:translate="">unhealthy</span>
-                                </div>
-                            </div>
-                            <div>
-                                <div id="cross-zone-div">
-                                    <span>
-                                        <label i18n:translate="">Cross-zone load balancing</label>
-                                    </span>
-                                    <span>
-                                        <a ng-class="classCrossZoneEnabled">
-                                            <span ng-click="clickCrossZoneLink('enabled')" i18n:translate="">Enabled</span>
-                                        </a>
-                                        <a ng-class="classCrossZoneDisabled">
-                                            <span ng-click="clickCrossZoneLink('disabled')" i18n:translate="">Disabled</span>
-                                        </a>
-                                    </span>
-                                </div>
-                                <div id="hidden-cross-zone-load-balancer-input" class="hide">
-                                    <input type="checkbox" name="cross_zone_enabled" ng-model="isCrossZoneEnabled" />
-                                </div>
-                            </div>
-                            <hr />
-                        </div>
-                        <div class="gridwrapper section" ng-cloak="true" tal:condition="elb_vpc_network != 'None'">
-                            <h6 i18n:translate="">
-                                Subnets
-                            </h6>
-                            <div i18n:translate="" class="description">
-                                Instances registered with the load balancer will not receive requests until their associated subnets are enabled.
-                            </div>
-                            <div>
-                                <div class="row controls-wrapper readonly">
-                                    <div class="small-5 columns">
-                                        <select id="enable-vpc-subnet-select"
-                                            ng-options="subnet.name for subnet in unselectedVPCSubnetList track by subnet.id"
-                                            ng-model="newVPCSubnet"></select>
-                                    </div>
-                                    <div class="small-7 columns field">
-                                        <button class="button enable-button" id="enable-subnet-btn"
-                                            ng-click="clickEnableVPCSubnet($event)">
-                                            <span i18n:translate="">Enable Subnet</span>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div id="hidden_subnet_selector_placeholder" class="hide" i18n:translate="">
-                                    Select subnet 
-                                </div>
-                                <div id="hidden_vpc_subnet_select" class="hide">
-                                    <div ng-repeat="subnet in selectedVPCSubnetList">
-                                        <input type="text" name="vpc_subnet" ng-value="subnet.id" />
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="tile item" ng-cloak="true"
-                                ng-repeat="subnet in selectedVPCSubnetList | orderBy: sortBy:sortReverse">
-                                <div class="header">
-                                    <strong>
-                                        {{ subnet.id }}
-                                    </strong>
-                                    <span id="tile-item-dropdown_{{ subnet.id }}" class="tiny secondary button dropdown"
-                                        data-dropdown="item-dropdown_{{ subnet.id }}"><i class="grid-action"></i></span>
-                                        <ul id="item-dropdown_{{ subnet.id }}" class="f-dropdown" data-dropdown-content="">
-                                            <li>
-                                                <a class="disable-button" ng-click="clickDisableVPCSubnet(subnet.id)" i18n:translate="">Disable subnet</a>
-                                            </li>
-                                        </ul>
-                                </div>
-                                <div class="content">
-                                    <div>
-                                        <span class="label" title="CIDR" i18n:attributes="title" data-tooltip="">CR</span>
-                                        {{ subnet.cidr_block }}
-                                    </div>
-                                    <div>
-                                        <span class="label" title="Availability zone" i18n:attributes="title" data-tooltip="">AZ</span>
-                                        {{ subnet.availability_zone }}
-                                    </div>
-                                    <div>
-                                        <span class="label" title="Instance Count" i18n:attributes="title" data-tooltip="">IC</span>
-                                        {{ subnet.instanceCount }} <span i18n:translate="">instances</span>
-                                    </div>
-                                </div>
-                                <div class="footer status allhealthy" ng-show="subnet.unhealthyInstanceCount === 0">
-                                    <span i18n:translate="">All healthy</span>
-                                </div>
-                                <div class="footer status unhealthy" ng-show="subnet.unhealthyInstanceCount > 0">
-                                    {{ subnet.unhealthyInstanceCount }} <span i18n:translate="">unhealthy</span>
-                                </div>
-                            </div>
-                            <hr />
-                        </div>
-                        <div id="instance-section" class="section" ng-cloak="true">
-                            <h6 i18n:translate="">
-                                Instances
-                            </h6>
-                            <div i18n:translate="" class="description">
-                                Select instances to add to this load balancer. Unchecking instances will remove them from the load balancer.
-                            </div>
-                            <div ng-app="MagicSearch">
-                                <magic-search
-                                    template="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.html')}"
-                                    strings="{'remove':'${layout.searchtext_remove}',
-                                              'cancel':'${layout.searchtext_cancel}',
-                                              'prompt':'${layout.searchtext_prompt}'}"
-                                    facets="${search_facets}"
-                                    filter-keys="${filter_keys}">
-                                </magic-search>
-                            </div>
-                            <div>
-                                 <instance-selector
-                                     template="${request.static_path('eucaconsole:static/html/directives/instance_selector.html')}"
-                                     options='${controller_options_json}'>
-                                 </instance-selector>
-                            </div>
-                        </div>
+                    ${panel('form_field', field=elb_form['idle_timeout'], leftcol_width=3, rightcol_width=9, leftcol_width_large=3, rightcol_width_large=9,  **idle_timeout_attrs)}
+                    <hr />
+                    <div>
+                        ${panel('elb_listener_editor', listener_list=listener_list, protocol_list=protocol_list)}
+                    </div>
+                    <hr />
+                    <div>
+                        ${panel('tag_editor',tags=elb_tags, show_name_tag=True)}
+                    </div>
+                    <div tal:condition="is_vpc_supported and elb_vpc_network is not 'None'"
+                            tal:define="security_group_attrs {'data-placeholder': security_group_placeholder_text};">
                         <hr />
-                        <div class="save-changes-button">
-                            <button type="submit" class="button" id="save-changes-btn-instances"
-                                ng-click="submitSaveChanges($event, 'instances-tab')" ng-disabled="isNotChanged">
-                                <span i18n:translate="">Save Changes</span>
-                            </button>
-                            <a href="${request.route_path('elbs')}" id="cancel-update-link"
-                                class="cancel-link" i18n:translate="">Cancel</a>
+                        <h6 i18n:translate="">Network & security</h6>
+                        <div class="row controls-wrapper readonly">
+                            <div class="small-3 columns"><label i18n:translate="">VPC network</label></div>
+                            <div class="small-9 columns value">${elb_vpc_network}</div>
                         </div>
+                        ${panel('form_field', field=elb_form['securitygroup'], leftcol_width=3, rightcol_width=9, leftcol_width_large=3, rightcol_width_large=9, ng_attrs={'model': 'securityGroups'}, **security_group_attrs)}
                     </div>
-                </div>
-                <div id="hidden-current-tab-input" class="hide">
-                    <input type="text" name="current_tab" ng-value="thisTab" />
+                    <hr />
+                    <div class="save-changes-button">
+                        <button type="submit" class="button" id="save-changes-btn-general"
+                            ng-click="submitSaveChanges($event, 'general-tab')" ng-disabled="isNotChanged">
+                            <span i18n:translate="">Save Changes</span>
+                        </button>
+                        <a href="${request.route_path('elbs')}" id="cancel-update-link"
+                            class="cancel-link" i18n:translate="">Cancel</a>
+                    </div>
                 </div>
             </form>
         </div>
@@ -306,10 +107,7 @@
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/thirdparty/utils/purl.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/elb.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/widgets/instance_selector.js')}"></script>
 </div>
 
 </metal:block>
