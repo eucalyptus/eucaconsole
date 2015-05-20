@@ -65,7 +65,7 @@
                             ${panel('form_field', field=launch_form['number'], leftcol_width=3, rightcol_width=9, leftcol_width_large=3, rightcol_width_large=9, min=1, max=10, maxlength=2, ng_attrs={'model': 'instanceNumber'}, pattern=layout.integer_gt_zero_pattern)}
                             <div class="row controls-wrapper" ng-cloak="">
                                 <div class="large-3 small-3 columns">
-                                    <label>
+                                    <label class="right">
                                         <span i18n:translate="">Name</span><span ng-show="instanceNumber > 1">s</span>
                                     </label>
                                 </div>
@@ -129,9 +129,9 @@
                             <div tal:condition="is_vpc_supported">
                                 ${panel('form_field', field=launch_form['vpc_network'], ng_attrs={'model': 'instanceVPC'}, leftcol_width=4, rightcol_width=8, leftcol_width_large=3, rightcol_width_large=9)}
                                 <div ng-show="instanceVPC != 'None'">
-                                    ${panel('form_field', field=launch_form['vpc_subnet'], leftcol_width=4, rightcol_width=8, ng_attrs={'model': 'subnetVPC', 'options': 'k as v for (k, v) in vpcSubnetChoices'})}
+                                    ${panel('form_field', field=launch_form['vpc_subnet'], leftcol_width_large=3, rightcol_width_large=9, ng_attrs={'model': 'subnetVPC', 'options': 'k as v for (k, v) in vpcSubnetChoices'})}
                                     <span id="hidden_vpc_subnet_empty_option" class="hide" i18n:translate="">No subnets found</span>
-                                    ${panel('form_field', field=launch_form['associate_public_ip_address'], leftcol_width=4, rightcol_width=8)}
+                                    ${panel('form_field', field=launch_form['associate_public_ip_address'], leftcol_width_large=3, rightcol_width_large=9)}
                                 </div>
                             </div>
                             ${panel('form_field', field=launch_form['keypair'], leftcol_width=4, rightcol_width=8, leftcol_width_large=3, rightcol_width_large=9, ng_attrs={'model': 'keyPair', 'options': 'k as v for (k, v) in keyPairChoices'})}
