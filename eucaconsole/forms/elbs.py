@@ -126,20 +126,20 @@ class ELBHealthChecksForm(BaseSecureForm):
     def __init__(self, request, elb=None, **kwargs):
         super(ELBHealthChecksForm, self).__init__(request, **kwargs)
         self.elb = elb
-        self.set_initial_data()
         self.set_error_messages()
         self.set_choices()
+        self.set_initial_data()
 
     def set_initial_data(self):
         if self.elb:
             hc_data = self.get_health_check_data()
             self.ping_protocol.data = hc_data.get('ping_protocol')
-            self.ping_port.data = hc_data.get('ping_port')
+            self.ping_port.data = int(hc_data.get('ping_port', 80))
             self.ping_path.data = hc_data.get('ping_path')
-            self.time_between_pings.data = self.elb.health_check.interval
+            self.time_between_pings.data = str(self.elb.health_check.interval)
             self.response_timeout.data = self.elb.health_check.timeout
-            self.failures_until_unhealthy.data = self.elb.health_check.unhealthy_threshold
-            self.passes_until_healthy.data = self.elb.health_check.healthy_threshold
+            self.failures_until_unhealthy.data = str(self.elb.health_check.unhealthy_threshold)
+            self.passes_until_healthy.data = str(self.elb.health_check.healthy_threshold)
 
     def set_error_messages(self):
         self.ping_path.error_msg = self.ping_path_error_msg
@@ -153,14 +153,12 @@ class ELBHealthChecksForm(BaseSecureForm):
     def get_health_check_data(self):
         if self.elb is not None and self.elb.health_check.target is not None:
             match = re.search('^(\w+):(\d+)/?(.+)?', self.elb.health_check.target)
-            listener = self.elb.listeners[0]
-            ping_protocol = listener[2]
-            ping_port = listener[1]
             return dict(
-                ping_protocol=ping_protocol,
-                ping_port=ping_port,
+                ping_protocol=match.group(1),
+                ping_port=match.group(2),
                 ping_path=match.group(3),
             )
+        return {}
 
 
 class ELBDeleteForm(BaseSecureForm):
@@ -330,33 +328,11 @@ class CreateELBForm(BaseSecureForm):
 
     @staticmethod
     def get_failures_until_unhealthy_choices():
-        return [
-            ('1', '1'),
-            ('2', '2'),
-            ('3', '3'),
-            ('4', '4'),
-            ('5', '5'),
-            ('6', '6'),
-            ('7', '7'),
-            ('8', '8'),
-            ('9', '9'),
-            ('10', '10'),
-        ]
+        return [(str(x), str(x)) for x in range(1, 11)]
 
     @staticmethod
     def get_passes_until_healthy_choices():
-        return [
-            ('1', '1'),
-            ('2', '2'),
-            ('3', '3'),
-            ('4', '4'),
-            ('5', '5'),
-            ('6', '6'),
-            ('7', '7'),
-            ('8', '8'),
-            ('9', '9'),
-            ('10', '10'),
-        ]
+        return [(str(x), str(x)) for x in range(1, 11)]
 
 
 class ELBInstancesFiltersForm(BaseSecureForm):

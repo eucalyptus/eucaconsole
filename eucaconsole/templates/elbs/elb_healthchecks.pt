@@ -4,7 +4,8 @@
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/elb.css')}" />
 </head>
 
-<div metal:fill-slot="main_content">
+<div metal:fill-slot="main_content" ng-app="ELBHealthChecksPage"
+     ng-controller="ELBHealthChecksPageCtrl" ng-init="initController()">
     <div class="row" id="contentwrap">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
@@ -25,12 +26,8 @@
                 <dd class="active"><a href="${request.route_path('elb_view', id=elb.name)}?tab=health-checks-tab" i18n:translate="">Health checks</a></dd>
                 <dd><a href="${request.route_path('elb_monitoring', id=elb.name)}" i18n:translate="">Monitoring</a></dd>
             </dl>
-            <div class="content panel has-actions" id="health-checks-tab"
-                tal:define="ping_path_attrs {'class': 'text-input'};
-                            ping_protocol_attrs {'class': 'ip-protocol'};
-                            ping_delay_attrs {'class': 'ping-delay'};
-                            ping_threshold_attrs {'class': 'ping-threshold'};">
-                <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="elb">
+            <div class="content panel has-actions">
+                <metal:block metal:use-macro="layout.global_macros['actions_menu']">
                     <metal:actions metal:fill-slot="actions">
                         <li>
                             <a id="delete-elb-action" data-reveal-id="delete-elb-modal"
@@ -38,20 +35,21 @@
                         </li>
                     </metal:actions>
                 </metal:block>
-                <form method="post" action="${request.route_path('elb_healthchecks_update', id=elb.name)}">
+                <form method="post" action="${request.route_path('elb_healthchecks_update', id=elb.name)}" data-abide="">
+                    ${structure:elb_form['csrf_token']}
                     <div>
                         <h6 class="section-label" i18n:translate="">Ping settings</h6>
-                        <div class="">
-                            ${panel('form_field', field=elb_form['ping_protocol'], rightcol_width=12, stack_label=True, ng_attrs={'model': 'pingProtocol'}, **ping_protocol_attrs)}
+                        <div>
+                            ${panel('form_field', field=elb_form['ping_protocol'], stack_label=True)}
                         </div>
-                        <div class="">
-                            ${panel('form_field', field=elb_form['ping_port'], rightcol_width=12, stack_label=True, min=1, max=65535, maxlength=5, ng_attrs={'model': 'pingPort'}, pattern=layout.integer_gt_zero_pattern)}
+                        <div>
+                            ${panel('form_field', field=elb_form['ping_port'], stack_label=True, min=1, max=65535, maxlength=5, pattern=layout.integer_gt_zero_pattern)}
                         </div>
-                        <div class="" ng-show="pingProtocol === 'HTTP' || pingProtocol === 'HTTPS'">
-                            ${panel('form_field', field=elb_form['ping_path'], ng_attrs={'model': 'pingPath'}, rightcol_width=12, stack_label=True, **ping_path_attrs)}
+                        <div>
+                            ${panel('form_field', field=elb_form['ping_path'], stack_label=True)}
                         </div>
                     </div>
-                    <div class="expando" id="advanced-section" ng-init="expanded = false">
+                    <div class="expando" id="advanced-section" ng-init="expanded = false" ng-cloak="">
                         <div class="title">
                             <a ng-click="expanded = !expanded">
                                 <i class="fi-plus" ng-show="!expanded"></i>
@@ -62,20 +60,20 @@
                         <div class="section" ng-show="expanded">
                             <div>
                                 <h6 class="section-label" i18n:translate="">Timing settings</h6>
-                                <div class="">
-                                    ${panel('form_field', field=elb_form['response_timeout'], rightcol_width=12, stack_label=True,  min=1, ng_attrs={'model': 'responseTimeout'}, pattern=layout.integer_gt_zero_pattern)}
+                                <div>
+                                    ${panel('form_field', field=elb_form['response_timeout'], stack_label=True,  min=1, pattern=layout.integer_gt_zero_pattern)}
                                 </div>
-                                <div class="">
-                                    ${panel('form_field', field=elb_form['time_between_pings'], rightcol_width=12, stack_label=True, ng_attrs={'model': 'timeBetweenPings'}, **ping_delay_attrs)}
+                                <div>
+                                    ${panel('form_field', field=elb_form['time_between_pings'], stack_label=True)}
                                 </div>
                             </div>
                             <div>
                                 <h6 class="section-label" i18n:translate="">Instance thresholds</h6>
-                                <div class="">
-                                    ${panel('form_field', field=elb_form['failures_until_unhealthy'], rightcol_width=12, stack_label=True, ng_attrs={'model': 'failuresUntilUnhealthy'}, **ping_threshold_attrs)}
+                                <div>
+                                    ${panel('form_field', field=elb_form['failures_until_unhealthy'], stack_label=True)}
                                 </div>
-                                <div class="">
-                                    ${panel('form_field', field=elb_form['passes_until_healthy'], rightcol_width=12, stack_label=True, ng_attrs={'model': 'passesUntilHealthy'}, **ping_threshold_attrs)}
+                                <div>
+                                    ${panel('form_field', field=elb_form['passes_until_healthy'], stack_label=True)}
                                 </div>
                             </div>
                         </div>
@@ -91,12 +89,14 @@
                 </form>
             </div>
         </div>
+        <!--! Modal dialogs -->
+        ${panel('elb_dialogs', elb=elb, in_use=in_use, delete_form=delete_form)}
     </div>
 </div>
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/thirdparty/utils/purl.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/elb_healthchecks.js')}"></script>
 </div>
 
 </metal:block>

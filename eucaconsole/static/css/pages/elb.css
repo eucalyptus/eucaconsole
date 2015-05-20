@@ -120,27 +120,30 @@
 @media screen and (max-width: 1020px) { .columns.datagrid { padding-left: 1rem; } }
 #elb-view-form input.text-input { width: 300px; }
 #elb-view-form input.timeout-field { width: 60px; }
-#elb-view-form input[type="number"] { width: 100px; }
-#elb-view-form select.ip-protocol { width: 100px; }
-#elb-view-form select.ping-delay { width: 120px; }
-#elb-view-form select.ping-threshold { width: 100px; }
+#elb-view-form input[type="number"] { width: 140px; }
 #elb-view-form .stack-label { margin-bottom: 0.5rem; }
-#elb-view-form .section-label { margin-top: 1.5rem; margin-bottom: 1rem; color: #03405f; }
 #elb-view-form .sub-section-label { color: black; }
 #elb-view-form .helptext-icon { color: #6a737b; font-size: 1.3rem; }
 #elb-view-form .section-label-with-helptext-icon { margin-bottom: 0.5rem; }
-#elb-view-form .checkbox-with-helptext-icon label { margin-right: 0rem; }
+#elb-view-form .checkbox-with-helptext-icon label { margin-right: 0; }
 #elb-view-form .cancel-link { margin-right: 1.5rem; }
 #elb-view-form .description { margin-bottom: 1.0rem; }
 #elb-view-form .enable-button { height: 37px; padding-top: 0.5rem; }
-#elb-view-form .allhealthy { background-color: #03405f; }
-#elb-view-form .unhealthy { background-color: darkred; }
-#elb-view-form #cross-zone-div label { display: inline; margin-left: 0.5rem; margin-right: 1.0rem; }
-#elb-view-form #cross-zone-div a { margin-right: 0.5rem; }
-#elb-view-form #cross-zone-div .active { color: #444; }
-#elb-view-form #cross-zone-div .inactive { color: #007dba; }
-#elb-view-form #elb-listener-security-field { margin-bottom: 1.5rem; }
-#elb-view-form #advanced-section { margin-top: 1.5rem; }
+
+h6.section-label { margin-top: 1.5rem; }
+
+.allhealthy { background-color: #03405f; }
+
+.unhealthy { background-color: darkred; }
+
+#cross-zone-div label { display: inline; margin-left: 0.5rem; margin-right: 1.0rem; }
+#cross-zone-div a { margin-right: 0.5rem; }
+#cross-zone-div .active { color: #444; }
+#cross-zone-div .inactive { color: #007dba; }
+
+#elb-listener-security-field { margin-bottom: 1.5rem; }
+
+#advanced-section { margin-top: 1.5rem; }
 
 table.table { width: 100%; }
 table.table tr.top-header { border-bottom: 0; }
@@ -154,3 +157,13 @@ table.instance-selector-table { width: 100%; }
 .tile .footer.has-progress .progress { padding-right: 0; }
 .tile .footer.has-progress .progress .meter { color: black; text-align: left; }
 .tile .footer.has-progress .completed { position: relative; top: -3px; }
+
+select[name="ping_protocol"] { width: 100px; }
+
+select[name="response_timeout"] { width: 120px; }
+
+select[name="time_between_pings"] { width: 100px; }
+
+#ping-path { min-width: 12rem; max-width: 50%; }
+
+#ping_port, #response_timeout, #failures_until_unhealthy, #passes_until_healthy { width: 4rem; }

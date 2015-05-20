@@ -24,8 +24,7 @@
             <em>${elb_name}</em>
         </h3>
         <div class="large-12 columns">
-            <form tal:attributes="action form_action" id="elb-view-form"
-                method="post" data-abide="abide" enctype="multipart/form-data">
+            <form tal:attributes="action form_action" id="elb-view-form" method="post" data-abide="abide">
                 ${structure:elb_form['csrf_token']}
                 <dl id="elb-view-tabs" class="tabs" data-tab="" ng-cloak="">
                     <dd class="active"><a href="#general-tab" ng-click="clickTab($event, 'general-tab')" i18n:translate="">General</a></dd>
@@ -37,7 +36,7 @@
                     <!--! Step 1: General tab content -->
                     <div class="content active panel has-actions" id="general-tab"
                         tal:define="idle_timeout_attrs {'class': 'timeout-field'};">
-                        <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="elb">
+                        <metal:block metal:use-macro="layout.global_macros['actions_menu']">
                             <metal:actions metal:fill-slot="actions">
                                 <li>
                                     <a id="delete-elb-action" data-reveal-id="delete-elb-modal"
@@ -99,7 +98,7 @@
                     </div>
                     <!--! Step 3: Instances tab content -->
                     <div class="content panel has-actions" id="instances-tab">
-                        <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="elb">
+                        <metal:block metal:use-macro="layout.global_macros['actions_menu']">
                             <metal:actions metal:fill-slot="actions">
                                 <li>
                                     <a id="delete-elb-action" data-reveal-id="delete-elb-modal"

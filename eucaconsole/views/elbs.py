@@ -677,6 +677,8 @@ class ELBHealthChecksView(BaseELBView):
             elb_name=self.escape_braces(self.elb.name) if self.elb else '',
             elb_form=self.elb_form,
             escaped_elb_name=quote(self.elb.name) if self.elb else '',
+            delete_form=ELBDeleteForm(self.request, formdata=self.request.params or None),
+            in_use=False,
         )
 
     @view_config(route_name='elb_healthchecks', renderer=TEMPLATE)

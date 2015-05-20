@@ -114,27 +114,6 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
                     $scope.$broadcast('eventInitSelectedInstances', $scope.instanceList);
                 }, 2000);
             }
-            if (options.hasOwnProperty('health_check_ping_protocol')) {
-                $scope.pingProtocol = options.health_check_ping_protocol;
-            }
-            if (options.hasOwnProperty('health_check_ping_port')) {
-                $scope.pingPort = parseInt(options.health_check_ping_port);
-            }
-            if (options.hasOwnProperty('health_check_ping_path')) {
-                $scope.pingPath = options.health_check_ping_path;
-            }
-            if (options.hasOwnProperty('health_check_interval')) {
-                $scope.timeBetweenPings = options.health_check_interval;
-            }
-            if (options.hasOwnProperty('health_check_timeout')) {
-                $scope.responseTimeout = options.health_check_timeout;
-            }
-            if (options.hasOwnProperty('health_check_unhealthy_threshold')) {
-                $scope.failuresUntilUnhealthy = options.health_check_unhealthy_threshold;
-            }
-            if (options.hasOwnProperty('health_check_healthy_threshold')) {
-                $scope.passesUntilHealthy = options.health_check_healthy_threshold;
-            }
             // Set dedicated tab URLs
             $scope.monitoringTabUrl = options.monitoring_tab_url;
             $scope.healthChecksTabUrl = options.health_checks_tab_url;

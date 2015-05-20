@@ -5,6 +5,7 @@
 @import "../includes/landingpage";
 
 
+// ELB Detail page
 #elb-view-form {
     input.text-input {
         width: 300px;
@@ -13,24 +14,10 @@
         width: 60px;
     }
     input[type="number"] {
-        width: 100px;
-    }
-    select.ip-protocol {
-        width: 100px;
-    }
-    select.ping-delay {
-        width: 120px;
-    }
-    select.ping-threshold {
-        width: 100px;
+        width: 140px;
     }
     .stack-label {
         margin-bottom: 0.5rem;
-    }
-    .section-label {
-        margin-top: 1.5rem;
-        margin-bottom: 1rem;
-        color: $euca-darkblue;
     }
     .sub-section-label {
         color: black;
@@ -43,7 +30,7 @@
         margin-bottom: 0.5rem;
     }
     .checkbox-with-helptext-icon label {
-        margin-right: 0rem;
+        margin-right: 0;
     }
     .cancel-link {
         margin-right: 1.5rem;
@@ -55,26 +42,34 @@
         height: 37px;
         padding-top: 0.5rem;
     }
-    .allhealthy { background-color: $euca-darkblue; }
-    .unhealthy { background-color: darkred; }
-    #cross-zone-div {
-        label { 
-            display: inline;
-            margin-left: 0.5rem;
-            margin-right: 1.0rem;
-        }
-        a {
-            margin-right: 0.5rem;
-         }
-        .active { color: $euca-darkgrey; }
-        .inactive { color: $hp-accessible-blue; }
+}
+
+h6.section-label {
+    margin-top: 1.5rem;
+}
+
+.allhealthy { background-color: $euca-darkblue; }
+.unhealthy { background-color: darkred; }
+
+#cross-zone-div {
+    label {
+        display: inline;
+        margin-left: 0.5rem;
+        margin-right: 1.0rem;
     }
-    #elb-listener-security-field {
-        margin-bottom: 1.5rem;
-    }
-    #advanced-section {
-        margin-top: 1.5rem;
-    }
+    a {
+        margin-right: 0.5rem;
+     }
+    .active { color: $euca-darkgrey; }
+    .inactive { color: $hp-accessible-blue; }
+}
+
+#elb-listener-security-field {
+    margin-bottom: 1.5rem;
+}
+
+#advanced-section {
+    margin-top: 1.5rem;
 }
 
 table.table {
@@ -112,4 +107,23 @@ table.instance-selector-table {
             }
         }
     }
+}
+
+
+// Health Checks tab ================
+select[name="ping_protocol"] {
+    width: 100px;
+}
+select[name="response_timeout"] {
+    width: 120px;
+}
+select[name="time_between_pings"] {
+    width: 100px;
+}
+#ping-path {
+    min-width: 12rem;
+    max-width: 50%;
+}
+#ping_port, #response_timeout, #failures_until_unhealthy, #passes_until_healthy {
+    width: 4rem;
 }
