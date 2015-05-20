@@ -2,6 +2,14 @@
 
 @import "../includes/eucavariables";
 
+@mixin line-dots-mixin {
+    .nv-lineChart path.nv-point {
+        // show points on line charts
+        stroke-opacity: 1 !important;
+        fill-opacity: 1 !important;
+    }
+}
+
 .cloudwatch-charts {
     .toprow {
         @include flexbox-mixin;
@@ -49,6 +57,7 @@
         height: 300px;
         border: 1px solid $euca-lightgrey;
         border-top: none;
+        @include line-dots-mixin;
     }
     &:hover {
         cursor: pointer;
@@ -59,6 +68,7 @@
     svg {
         width: 100%;
         height: 500px;
+        @include line-dots-mixin;
     }
     .busy.loading {
         position: absolute;
