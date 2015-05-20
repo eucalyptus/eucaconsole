@@ -47,7 +47,7 @@ from ..constants.cloudwatch import (
     STATISTIC_CHOICES)
 from ..constants.elbs import ELB_MONITORING_CHARTS_LIST
 from ..i18n import _
-from ..forms.elbs import (ELBForm, ELBDeleteForm, ELBsFiltersForm, CreateELBForm,
+from ..forms.elbs import (ELBForm, ELBDeleteForm, ELBsFiltersForm, CreateELBForm, ELBHealthChecksForm,
                           ELBInstancesFiltersForm, CertificateForm, BackendCertificateForm)
 from ..models import Notification
 from ..views import LandingPageView, BaseView, TaggedItemView, JSONResponse
@@ -267,26 +267,6 @@ class BaseELBView(TaggedItemView):
                 listeners_args.append((from_port, to_port, from_protocol, to_protocol))
         return listeners_args
 
-    def handle_configure_health_check(self, name):
-        ping_protocol = self.request.params.get('ping_protocol')
-        ping_port = self.request.params.get('ping_port')
-        ping_path = self.request.params.get('ping_path')
-        response_timeout = self.request.params.get('response_timeout')
-        time_between_pings = self.request.params.get('time_between_pings')
-        failures_until_unhealthy = self.request.params.get('failures_until_unhealthy')
-        passes_until_healthy = self.request.params.get('passes_until_healthy')
-        ping_target = u"{0}:{1}".format(ping_protocol, ping_port)
-        if ping_protocol in ['HTTP', 'HTTPS']:
-            ping_target = u"{0}/{1}".format(ping_target, ping_path)
-        hc = HealthCheck(
-            timeout=response_timeout,
-            interval=time_between_pings,
-            healthy_threshold=passes_until_healthy,
-            unhealthy_threshold=failures_until_unhealthy,
-            target=ping_target
-        )
-        self.elb_conn.configure_health_check(name, hc)
-
     @staticmethod
     def get_instance_selector_text():
         instance_selector_text = {'name': _(u'NAME (ID)'), 'tags': _(u'TAGS'),
@@ -375,7 +355,6 @@ class ELBView(BaseELBView):
             if self.elb:
                 self.elb.created_time = boto.utils.parse_ts(self.elb.created_time)
                 self.elb.idle_timeout = self.get_elb_attribute_idle_timeout()
-                self.get_health_check_data()
                 tags_params = {'LoadBalancerNames.member.1': self.elb.name}
                 self.elb.tags = self.elb_conn.get_object('DescribeTags', tags_params, LbTagSet)
             else:
@@ -448,7 +427,6 @@ class ELBView(BaseELBView):
                         self.elb_conn.apply_security_groups_to_lb(self.elb.name, securitygroup)
                     self.update_elb_subnets(self.elb.name, self.elb.subnets, vpc_subnet)
                 self.update_elb_instances(self.elb.name, self.elb.instances, instances)
-                self.handle_configure_health_check(self.elb.name)
                 msg = _(u"Updating load balancer")
                 self.log_request(u"{0} {1}".format(msg, self.elb.name))
                 prefix = _(u'Successfully updated load balancer.')
@@ -496,14 +474,8 @@ class ELBView(BaseELBView):
             'securitygroups_json_endpoint': self.request.route_path('securitygroups_json'),
             'instances': self.get_elb_instance_list(),
             'instances_json_endpoint': self.request.route_path('instances_json'),
-            'health_check_ping_protocol': self.elb.ping_protocol if self.elb else '',
-            'health_check_ping_port': self.elb.ping_port if self.elb else '',
-            'health_check_ping_path': self.elb.ping_path if self.elb else '',
-            'health_check_interval': self.elb.health_check.interval if self.elb else '',
-            'health_check_timeout': self.elb.health_check.timeout if self.elb else '',
-            'health_check_healthy_threshold': self.elb.health_check.healthy_threshold if self.elb else '',
-            'health_check_unhealthy_threshold': self.elb.health_check.unhealthy_threshold if self.elb else '',
             'monitoring_tab_url': self.request.route_path('elb_monitoring', id=self.elb.name),
+            'health_checks_tab_url': self.request.route_path('elb_healthchecks', id=self.elb.name),
         }))
 
     def get_elb_attribute_idle_timeout(self):
@@ -683,23 +655,69 @@ class ELBView(BaseELBView):
                 ))
         return instance_health
 
-    def get_health_check_data(self):
-        if self.elb is not None and self.elb.health_check.target is not None:
-            self.elb.ping_protocol = ''
-            self.elb.ping_port = ''
-            self.elb.ping_path = ''
-            match = re.search('^(\w+):(\d+)\/?(.+)?', self.elb.health_check.target)
-            if match:
-                self.elb.ping_protocol = match.group(1)
-                self.elb.ping_port = match.group(2)
-                if match.group(3) is not None:
-                    self.elb.ping_path = match.group(3)
-
     def get_elb_cross_zone_load_balancing(self):
         is_cross_zone_enabled = False
         if self.elb_conn and self.elb:
             is_cross_zone_enabled = self.elb.is_cross_zone_load_balancing()
         return is_cross_zone_enabled
+
+
+class ELBHealthChecksView(BaseELBView):
+    TEMPLATE = '../templates/elbs/elb_healthchecks.pt'
+
+    def __init__(self, request):
+        super(ELBHealthChecksView, self).__init__(request)
+        with boto_error_handler(request):
+            self.elb = self.get_elb()
+            if not self.elb:
+                raise HTTPNotFound()
+            self.elb_form = ELBHealthChecksForm(self.request, elb=self.elb, formdata=self.request.params or None)
+        self.render_dict = dict(
+            elb=self.elb,
+            elb_name=self.escape_braces(self.elb.name) if self.elb else '',
+            elb_form=self.elb_form,
+            escaped_elb_name=quote(self.elb.name) if self.elb else '',
+        )
+
+    @view_config(route_name='elb_healthchecks', renderer=TEMPLATE)
+    def elb_healthchecks(self):
+        return self.render_dict
+
+    @view_config(route_name='elb_healthchecks_update', request_method='POST', renderer=TEMPLATE)
+    def elb_healthchecks_update(self):
+        if self.elb_form.validate():
+            location = self.request.route_path('elb_healthchecks', id=self.elb.name)
+            prefix = _(u'Unable to update load balancer')
+            template = u'{0} {1} - {2}'.format(prefix, self.elb.name, '{0}')
+            with boto_error_handler(self.request, location, template):
+                self.configure_health_checks(self.elb.name)
+                prefix = _(u'Successfully updated health checks for')
+                msg = u'{0} {1}'.format(prefix, self.elb.name)
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
+            return HTTPFound(location=location)
+        else:
+            self.request.error_messages = self.elb_form.get_errors_list()
+        return self.render_dict
+
+    def configure_health_checks(self, name):
+        ping_protocol = self.request.params.get('ping_protocol')
+        ping_port = self.request.params.get('ping_port')
+        ping_path = self.request.params.get('ping_path')
+        response_timeout = self.request.params.get('response_timeout')
+        time_between_pings = self.request.params.get('time_between_pings')
+        failures_until_unhealthy = self.request.params.get('failures_until_unhealthy')
+        passes_until_healthy = self.request.params.get('passes_until_healthy')
+        ping_target = u"{0}:{1}".format(ping_protocol, ping_port)
+        if ping_protocol in ['HTTP', 'HTTPS']:
+            ping_target = u"{0}/{1}".format(ping_target, ping_path)
+        health_check = HealthCheck(
+            timeout=response_timeout,
+            interval=time_between_pings,
+            healthy_threshold=passes_until_healthy,
+            unhealthy_threshold=failures_until_unhealthy,
+            target=ping_target
+        )
+        self.elb_conn.configure_health_check(name, health_check)
 
 
 class ELBMonitoringView(BaseELBView):

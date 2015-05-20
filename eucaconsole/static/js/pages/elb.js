@@ -135,8 +135,10 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
             if (options.hasOwnProperty('health_check_healthy_threshold')) {
                 $scope.passesUntilHealthy = options.health_check_healthy_threshold;
             }
+            // Set dedicated tab URLs
             $scope.monitoringTabUrl = options.monitoring_tab_url;
-            $scope.initChosenSelectors(); 
+            $scope.healthChecksTabUrl = options.health_checks_tab_url;
+            $scope.initChosenSelectors();
         };
         $scope.initChosenSelectors = function () {
             $('#securitygroup').chosen({'width': '70%', search_contains: true});
@@ -265,10 +267,14 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor',
             modal.foundation('reveal', 'open');
             modal.find('h3').click();  // Workaround for dropdown menu not closing
         };
-        $scope.clickTab = function ($event, tab){
+        $scope.clickTab = function ($event, tab) {
             if (tab === 'monitoring-tab') {
                 // Monitoring tab has a dedicated view/template
                 document.location = $scope.monitoringTabUrl;
+            }
+            if (tab === 'health-checks-tab') {
+                // Monitoring tab has a dedicated view/template
+                document.location = $scope.healthChecksTabUrl;
             }
             $event.preventDefault();
             // If there exists unsaved changes, open the warning modal instead

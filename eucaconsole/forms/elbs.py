@@ -28,6 +28,7 @@
 Forms for Elastic Load Balancer
 
 """
+import re
 import wtforms
 from wtforms import validators
 
@@ -48,6 +49,39 @@ class ELBForm(BaseSecureForm):
     securitygroup = wtforms.SelectMultipleField(
         label=_(u'Security groups'),
     )
+
+    def __init__(self, request, conn=None, vpc_conn=None, elb=None, securitygroups=None, **kwargs):
+        super(ELBForm, self).__init__(request, **kwargs)
+        self.conn = conn
+        self.vpc_conn = vpc_conn
+        self.cloud_type = request.session.get('cloud_type', 'euca')
+        self.is_vpc_supported = BaseView.is_vpc_supported(request)
+        self.security_groups = securitygroups or []
+        self.idle_timeout.help_text = self.idle_timeout_help_text
+        self.set_error_messages()
+        self.set_choices()
+        if elb is not None:
+            self.idle_timeout.data = elb.idle_timeout
+
+    def set_error_messages(self):
+        self.securitygroup.error_msg = self.securitygroup_error_msg
+
+    def set_choices(self):
+        self.securitygroup.choices = self.set_security_group_choices()
+
+    def set_security_group_choices(self):
+        choices = []
+        for sgroup in self.security_groups:
+            sg_name = sgroup.name
+            sg_name = BaseView.escape_braces(sg_name)
+            choices.append((sgroup.id, sg_name))
+        if not self.security_groups:
+            choices.append(('default', 'default'))
+        return sorted(set(choices))
+
+
+class ELBHealthChecksForm(BaseSecureForm):
+    """ELB Health Checks form"""
     ping_protocol_error_msg = _(u'Ping protocol is required')
     ping_protocol = wtforms.SelectField(
         label=_(u'Protocol'),
@@ -89,39 +123,44 @@ class ELBForm(BaseSecureForm):
         validators=[validators.InputRequired(message=passes_until_healthy_error_msg)],
     )
 
-    def __init__(self, request, conn=None, vpc_conn=None, elb=None, securitygroups=None, **kwargs):
-        super(ELBForm, self).__init__(request, **kwargs)
-        self.conn = conn
-        self.vpc_conn = vpc_conn
-        self.cloud_type = request.session.get('cloud_type', 'euca')
-        self.is_vpc_supported = BaseView.is_vpc_supported(request)
-        self.security_groups = securitygroups or []
-        self.idle_timeout.help_text = self.idle_timeout_help_text
+    def __init__(self, request, elb=None, **kwargs):
+        super(ELBHealthChecksForm, self).__init__(request, **kwargs)
+        self.elb = elb
+        self.set_initial_data()
         self.set_error_messages()
         self.set_choices()
-        if elb is not None:
-            self.idle_timeout.data = elb.idle_timeout
+
+    def set_initial_data(self):
+        if self.elb:
+            hc_data = self.get_health_check_data()
+            self.ping_protocol.data = hc_data.get('ping_protocol')
+            self.ping_port.data = hc_data.get('ping_port')
+            self.ping_path.data = hc_data.get('ping_path')
+            self.time_between_pings.data = self.elb.health_check.interval
+            self.response_timeout.data = self.elb.health_check.timeout
+            self.failures_until_unhealthy.data = self.elb.health_check.unhealthy_threshold
+            self.passes_until_healthy.data = self.elb.health_check.healthy_threshold
 
     def set_error_messages(self):
-        self.securitygroup.error_msg = self.securitygroup_error_msg
         self.ping_path.error_msg = self.ping_path_error_msg
 
     def set_choices(self):
-        self.securitygroup.choices = self.set_security_group_choices()
         self.ping_protocol.choices = CreateELBForm.get_ping_protocol_choices()
         self.time_between_pings.choices = CreateELBForm.get_time_between_pings_choices()
         self.failures_until_unhealthy.choices = CreateELBForm.get_failures_until_unhealthy_choices()
         self.passes_until_healthy.choices = CreateELBForm.get_passes_until_healthy_choices()
 
-    def set_security_group_choices(self):
-        choices = []
-        for sgroup in self.security_groups:
-            sg_name = sgroup.name
-            sg_name = BaseView.escape_braces(sg_name)
-            choices.append((sgroup.id, sg_name))
-        if not self.security_groups:
-            choices.append(('default', 'default'))
-        return sorted(set(choices))
+    def get_health_check_data(self):
+        if self.elb is not None and self.elb.health_check.target is not None:
+            match = re.search('^(\w+):(\d+)/?(.+)?', self.elb.health_check.target)
+            listener = self.elb.listeners[0]
+            ping_protocol = listener[2]
+            ping_port = listener[1]
+            return dict(
+                ping_protocol=ping_protocol,
+                ping_port=ping_port,
+                ping_path=match.group(3),
+            )
 
 
 class ELBDeleteForm(BaseSecureForm):
