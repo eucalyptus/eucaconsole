@@ -14,11 +14,11 @@ angular.module('ELBHealthChecksPage', [])
             $scope.$watch('pingProtocol', function () {
                 $scope.updatePingPath();
             });
-            $(document).on('input', '#health-checks-tab input', function () {
+            $(document).on('input', 'input', function () {
                 $scope.isNotChanged = false;
                 $scope.$apply();
             });
-            $(document).on('change', '#health-checks-tab select', function () {
+            $(document).on('change', 'select', function () {
                 $scope.isNotChanged = false;
                 $scope.$apply();
             });

@@ -80,7 +80,7 @@
                     </div>
                     <hr />
                     <div class="save-changes-button">
-                        <button type="submit" class="button" id="save-changes-btn-healthchecks">
+                        <button type="submit" class="button" id="save-changes-btn-healthchecks" ng-disabled="isNotChanged">
                             <span i18n:translate="">Save Changes</span>
                         </button>
                         <a href="${request.route_path('elbs')}" id="cancel-update-link"

@@ -5,7 +5,26 @@
 @import "../includes/landingpage";
 
 
-// ELB Detail page
+h6.section-label {
+    margin-top: 1.5rem;
+}
+
+table.table {
+    width: 100%;
+    tr.top-header {
+        border-bottom: 0;
+    }
+    th.vertical-border-header {
+        border-collapse: collapse;
+        border-right: 1px solid #ddd;
+    }
+    th.center {
+        text-align: center;
+    }
+}
+
+
+// General tab ==================
 #elb-view-form {
     input.text-input {
         width: 300px;
@@ -44,23 +63,20 @@
     }
 }
 
-h6.section-label {
-    margin-top: 1.5rem;
-}
-
-a.nolink {
-    color: $hp-gray-65;
-    &:hover {
-        color: $hp-gray-65 !important;
-        cursor: inherit;
-    }
-}
-
-
 #from-protocol-select, #to-protocol-select {
     width: 12rem;
 }
 
+#elb-listener-security-field {
+    margin-bottom: 1.5rem;
+}
+
+#advanced-section {
+    margin-top: 1.5rem;
+}
+
+
+// Instances tab ===================
 #cross-zone-div {
     margin-top: 0.5rem;
     label {
@@ -78,25 +94,11 @@ a.nolink {
     .inactive { color: $hp-accessible-blue; }
 }
 
-#elb-listener-security-field {
-    margin-bottom: 1.5rem;
-}
-
-#advanced-section {
-    margin-top: 1.5rem;
-}
-
-table.table {
-    width: 100%;
-    tr.top-header {
-        border-bottom: 0;
-    }
-    th.vertical-border-header {
-        border-collapse: collapse;
-        border-right: 1px solid #ddd;
-    } 
-    th.center {
-        text-align: center;
+a.nolink {
+    color: $hp-gray-65;
+    &:hover {
+        color: $hp-gray-65 !important;
+        cursor: inherit;
     }
 }
 
