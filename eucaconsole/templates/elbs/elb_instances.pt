@@ -39,7 +39,7 @@
                             </li>
                         </metal:actions>
                     </metal:block>
-                    <div class="gridwrapper section" ng-cloak="true" tal:condition="elb_vpc_network == 'None'">
+                    <div class="gridwrapper section" ng-cloak="" tal:condition="elb_vpc_network == 'None'">
                         <h6 i18n:translate="">
                             Availability zones
                         </h6>
@@ -69,7 +69,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="tile item" ng-cloak="true"
+                        <div class="tile item" ng-cloak=""
                             ng-repeat="zone in selectedZoneList | orderBy: sortBy:sortReverse">
                             <div class="header">
                                 <strong>
@@ -116,7 +116,7 @@
                         </div>
                         <hr />
                     </div>
-                    <div class="gridwrapper section" ng-cloak="true" tal:condition="elb_vpc_network != 'None'">
+                    <div class="gridwrapper section" ng-cloak="" tal:condition="elb_vpc_network != 'None'">
                         <h6 i18n:translate="">
                             Subnets
                         </h6>
@@ -146,7 +146,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="tile item" ng-cloak="true"
+                        <div class="tile item" ng-cloak=""
                             ng-repeat="subnet in selectedVPCSubnetList | orderBy: sortBy:sortReverse">
                             <div class="header">
                                 <strong>
@@ -183,7 +183,7 @@
                         </div>
                         <hr />
                     </div>
-                    <div id="instance-section" class="section" ng-cloak="true">
+                    <div id="instance-section" class="section" ng-cloak="">
                         <h6 i18n:translate="">
                             Instances
                         </h6>

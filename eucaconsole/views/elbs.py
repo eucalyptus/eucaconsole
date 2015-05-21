@@ -362,6 +362,16 @@ class BaseELBView(TaggedItemView):
         if index > 1:
             self.elb_conn.get_status('AddTags', add_tags_params)
 
+    def get_vpc_network_name(self, elb=None):
+        if elb and self.is_vpc_supported:
+            if elb.vpc_id and self.vpc_conn:
+                with boto_error_handler(self.request):
+                    vpc_networks = self.vpc_conn.get_all_vpcs(vpc_ids=elb.vpc_id)
+                    if vpc_networks:
+                        vpc_name = TaggedItemView.get_display_name(vpc_networks[0])
+                        return vpc_name
+        return 'None'
+
 
 class ELBView(BaseELBView):
     """Views for single ELB"""
@@ -396,7 +406,7 @@ class ELBView(BaseELBView):
             protocol_list=self.get_protocol_list(),
             listener_list=self.get_listener_list(),
             is_vpc_supported=self.is_vpc_supported,
-            elb_vpc_network=self.get_vpc_network_name(),
+            elb_vpc_network=self.get_vpc_network_name(self.elb),
             security_group_placeholder_text=_(u'Select...'),
             controller_options_json=self.get_controller_options_json(),
         )
@@ -522,16 +532,6 @@ class ELBView(BaseELBView):
             if index > 1:
                 self.elb_conn.get_status('RemoveTags', remove_tags_params, verb='POST')
 
-    def get_vpc_network_name(self):
-        if self.is_vpc_supported:
-            if self.elb.vpc_id and self.vpc_conn:
-                with boto_error_handler(self.request):
-                    vpc_networks = self.vpc_conn.get_all_vpcs(vpc_ids=self.elb.vpc_id)
-                    if vpc_networks:
-                        vpc_name = TaggedItemView.get_display_name(vpc_networks[0])
-                        return vpc_name
-        return 'None'
-
     def get_security_groups(self):
         securitygroups = []
         if self.elb and self.elb.vpc_id:
@@ -562,7 +562,7 @@ class ELBInstancesView(BaseELBView):
             in_use=False,
             elb_name=self.escape_braces(self.elb.name) if self.elb else '',
             escaped_elb_name=quote(self.elb.name) if self.elb else '',
-            elb_vpc_network=self.elb.vpc_id if self.elb else [],
+            elb_vpc_network=self.get_vpc_network_name(self.elb),
             elb_form=self.elb_form,
             delete_form=ELBDeleteForm(self.request, formdata=self.request.params or None),
             search_facets=BaseView.escape_json(json.dumps(search_facets)),
