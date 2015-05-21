@@ -159,6 +159,7 @@ class LoginView(BaseView, PermissionCheckMixin):
             username = self.request.params.get('username')
             password = self.request.params.get('password')
             try:
+                # TODO: also return dns enablement
                 creds = auth.authenticate(
                     account=account, user=username, passwd=password,
                     new_passwd=new_passwd, timeout=8, duration=self.duration)
@@ -176,6 +177,7 @@ class LoginView(BaseView, PermissionCheckMixin):
                 session['username_label'] = user_account
                 session['supported_platforms'] = self.get_account_attributes(['supported-platforms'])
                 session['default_vpc'] = self.get_account_attributes(['default-vpc'])
+                session['dns_enabled'] = asbool(request.registry.settings.get('dns.enabled'))
 
                 # handle checks for IAM perms
                 self.check_iam_perms(session, creds)

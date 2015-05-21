@@ -240,7 +240,9 @@ def groupfinder(user_id, request):
 
 class EucaAuthenticator(object):
     """Eucalyptus cloud token authenticator"""
-    TEMPLATE = '/services/Tokens?Action=GetAccessToken&DurationSeconds={dur}&Version=2011-06-15'
+    #TEMPLATE = '/services/Tokens?Action=GetAccessToken&DurationSeconds={dur}&Version=2011-06-15'
+    NON_DNS_QUERY_PATH = '/services/Tokens'
+    TEMPLATE = '?Action=GetAccessToken&DurationSeconds={dur}&Version=2011-06-15'
 
     def __init__(self, host, port, validate_certs=False, **validate_kwargs):
         """
@@ -253,7 +255,8 @@ class EucaAuthenticator(object):
         :param port: port number to use when making the connection
 
         """
-        self.host = 'tokens.'+host
+        #self.host = 'tokens.'+host
+        self.host = host
         self.port = port
         self.validate_certs = validate_certs
         self.kwargs = validate_kwargs
@@ -262,7 +265,7 @@ class EucaAuthenticator(object):
         if user == 'admin' and duration > 3600:  # admin cannot have more than 1 hour duration
             duration = 3600
         # because of the variability, we need to keep this here, not in __init__
-        auth_path = self.TEMPLATE.format(
+        auth_path = self.NON_DNS_QUERY_PATH + self.TEMPLATE.format(
             dur=duration,
         )
         if self.validate_certs:
@@ -303,6 +306,8 @@ class EucaAuthenticator(object):
             else:
                 raise urllib2.URLError(err[1])
         except socket.error as err:
+            # when dns enabled, but path cloud, we get here with err=gaierror(8, 'nodename nor servname provided, or not known')
+            # when dns disabled, but path cloud, we get here with err=gaierror(8, 'nodename nor servname provided, or not known')
             raise urllib2.URLError(str(err))
 
 
