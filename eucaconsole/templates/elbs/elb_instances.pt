@@ -135,9 +135,7 @@
                         <div class="tile item" ng-cloak=""
                             ng-repeat="subnet in selectedVPCSubnetList | orderBy: sortBy:sortReverse">
                             <div class="header">
-                                <strong>
-                                    {{ subnet.id }}
-                                </strong>
+                                <a class="nolink">{{ subnet.id }}</a>
                                 <span id="tile-item-dropdown_{{ subnet.id }}" class="tiny secondary button dropdown"
                                     data-dropdown="item-dropdown_{{ subnet.id }}"><i class="grid-action"></i></span>
                                     <ul id="item-dropdown_{{ subnet.id }}" class="f-dropdown" data-dropdown-content="">

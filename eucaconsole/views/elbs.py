@@ -419,13 +419,8 @@ class ELBView(BaseELBView):
     def elb_update(self):
         if self.elb_form.validate():
             idle_timeout = self.request.params.get('idle_timeout')
-            elb_listener = self.request.params.get('elb_listener')
             securitygroup = self.request.params.getall('securitygroup') or None
             listeners_args = self.get_listeners_args()
-            vpc_subnet = self.request.params.getall('vpc_subnet') or None
-            if vpc_subnet == 'None':
-                vpc_subnet = None
-            cross_zone_enabled = self.request.params.get('cross_zone_enabled') or False
             location = self.request.route_path('elb_view', id=self.elb.name)
             prefix = _(u'Unable to update load balancer')
             template = u'{0} {1} - {2}'.format(prefix, self.elb.name, '{0}')
@@ -433,14 +428,8 @@ class ELBView(BaseELBView):
                 self.update_elb_idle_timeout(self.elb.name, idle_timeout)
                 self.update_load_balancer_listeners(self.elb.name, listeners_args)
                 self.update_elb_tags(self.elb.name)
-                if vpc_subnet is None:
-                    if cross_zone_enabled == 'on':
-                        self.elb_conn.modify_lb_attribute(self.elb.name, 'crossZoneLoadBalancing', True)
-                    else:
-                        self.elb_conn.modify_lb_attribute(self.elb.name, 'crossZoneLoadBalancing', False)
-                else:
-                    if self.elb.security_groups != securitygroup:
-                        self.elb_conn.apply_security_groups_to_lb(self.elb.name, securitygroup)
+                if self.is_vpc_supported and self.elb.security_groups != securitygroup:
+                    self.elb_conn.apply_security_groups_to_lb(self.elb.name, securitygroup)
                 msg = _(u"Updating load balancer")
                 self.log_request(u"{0} {1}".format(msg, self.elb.name))
                 prefix = _(u'Successfully updated load balancer.')
@@ -598,8 +587,6 @@ class ELBInstancesView(BaseELBView):
                     else:
                         self.elb_conn.modify_lb_attribute(self.elb.name, 'crossZoneLoadBalancing', False)
                 else:
-                    if self.elb.security_groups != securitygroup:
-                        self.elb_conn.apply_security_groups_to_lb(self.elb.name, securitygroup)
                     self.update_elb_subnets(self.elb.name, self.elb.subnets, vpc_subnet)
                 self.update_elb_instances(self.elb.name, self.elb.instances, instances)
                 prefix = _(u'Successfully updated load balancer')
