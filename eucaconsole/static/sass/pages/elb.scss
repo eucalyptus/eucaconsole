@@ -48,18 +48,28 @@ h6.section-label {
     margin-top: 1.5rem;
 }
 
-.allhealthy { background-color: $euca-darkblue; }
-.unhealthy { background-color: darkred; }
+a.nolink {
+    color: $hp-gray-65;
+    &:hover {
+        color: $hp-gray-65 !important;
+        cursor: inherit;
+    }
+}
 
-#from-protocol-select {
+
+#from-protocol-select, #to-protocol-select {
     width: 12rem;
 }
 
 #cross-zone-div {
+    margin-top: 0.5rem;
     label {
         display: inline;
         margin-left: 0.5rem;
         margin-right: 1.0rem;
+    }
+    input {
+        margin-right: 0.5rem;
     }
     a {
         margin-right: 0.5rem;
@@ -109,6 +119,10 @@ table.instance-selector-table {
                 position: relative;
                 top: -3px;
             }
+        }
+        &.status {
+            &.allhealthy { background-color: $euca-darkblue; }
+            &.unhealthy { background-color: darkred; }
         }
     }
 }

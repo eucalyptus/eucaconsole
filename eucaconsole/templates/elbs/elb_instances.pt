@@ -72,9 +72,7 @@
                         <div class="tile item" ng-cloak=""
                             ng-repeat="zone in selectedZoneList | orderBy: sortBy:sortReverse">
                             <div class="header">
-                                <strong>
-                                    {{ zone.name }}
-                                </strong>
+                                <a class="nolink">{{ zone.name }}</a>
                                 <span id="tile-item-dropdown_{{ zone.id }}" class="tiny secondary button dropdown"
                                     data-dropdown="item-dropdown_{{ zone.id }}"><i class="grid-action"></i></span>
                                     <ul id="item-dropdown_{{ zone.id }}" class="f-dropdown" data-dropdown-content="">
@@ -96,23 +94,11 @@
                                 {{ zone.unhealthyInstanceCount }} <span i18n:translate="">unhealthy</span>
                             </div>
                         </div>
-                        <div>
-                            <div id="cross-zone-div">
-                                <span>
-                                    <label i18n:translate="">Cross-zone load balancing</label>
-                                </span>
-                                <span>
-                                    <a ng-class="classCrossZoneEnabled">
-                                        <span ng-click="clickCrossZoneLink('enabled')" i18n:translate="">Enabled</span>
-                                    </a>
-                                    <a ng-class="classCrossZoneDisabled">
-                                        <span ng-click="clickCrossZoneLink('disabled')" i18n:translate="">Disabled</span>
-                                    </a>
-                                </span>
-                            </div>
-                            <div id="hidden-cross-zone-load-balancer-input" class="hide">
-                                <input type="checkbox" name="cross_zone_enabled" ng-model="isCrossZoneEnabled" />
-                            </div>
+                        <div id="cross-zone-div">
+                            <label for="cross-zone-input" i18n:translate="">Cross-zone load balancing:</label>
+                            <input type="checkbox" id="cross-zone-input" name="cross_zone_enabled" ng-model="isCrossZoneEnabled" />
+                            <span ng-show="isCrossZoneEnabled" i18n:translate="">Enabled</span>
+                            <span ng-show="!isCrossZoneEnabled" i18n:translate="">Disabled</span>
                         </div>
                         <hr />
                     </div>

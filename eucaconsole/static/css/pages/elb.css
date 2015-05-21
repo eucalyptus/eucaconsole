@@ -132,13 +132,14 @@
 
 h6.section-label { margin-top: 1.5rem; }
 
-.allhealthy { background-color: #03405f; }
+a.nolink { color: #5a5a5a; }
+a.nolink:hover { color: #5a5a5a !important; cursor: inherit; }
 
-.unhealthy { background-color: darkred; }
+#from-protocol-select, #to-protocol-select { width: 12rem; }
 
-#from-protocol-select { width: 12rem; }
-
+#cross-zone-div { margin-top: 0.5rem; }
 #cross-zone-div label { display: inline; margin-left: 0.5rem; margin-right: 1.0rem; }
+#cross-zone-div input { margin-right: 0.5rem; }
 #cross-zone-div a { margin-right: 0.5rem; }
 #cross-zone-div .active { color: #444; }
 #cross-zone-div .inactive { color: #007dba; }
@@ -159,6 +160,8 @@ table.instance-selector-table { width: 100%; }
 .tile .footer.has-progress .progress { padding-right: 0; }
 .tile .footer.has-progress .progress .meter { color: black; text-align: left; }
 .tile .footer.has-progress .completed { position: relative; top: -3px; }
+.tile .footer.status.allhealthy { background-color: #03405f; }
+.tile .footer.status.unhealthy { background-color: darkred; }
 
 select[name="ping_protocol"] { width: 100px; }
 

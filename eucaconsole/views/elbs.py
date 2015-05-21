@@ -557,6 +557,8 @@ class ELBInstancesView(BaseELBView):
             cloud_type=self.cloud_type, formdata=self.request.params or None)
         search_facets = filters_form.facets
         filter_keys = ['id', 'name', 'placement', 'state', 'tags', 'vpc_subnet_display', 'vpc_name']
+        elb_attrs = self.elb.get_attributes()
+        self.cross_zone_enabled = elb_attrs.cross_zone_load_balancing.enabled
         self.render_dict = dict(
             elb=self.elb,
             in_use=False,
@@ -567,6 +569,7 @@ class ELBInstancesView(BaseELBView):
             delete_form=ELBDeleteForm(self.request, formdata=self.request.params or None),
             search_facets=BaseView.escape_json(json.dumps(search_facets)),
             filter_keys=filter_keys,
+            cross_zone_enabled=self.cross_zone_enabled,
             controller_options_json=self.get_controller_options_json(),
         )
 
@@ -625,8 +628,7 @@ class ELBInstancesView(BaseELBView):
             'securitygroups_json_endpoint': self.request.route_path('securitygroups_json'),
             'instances': self.get_elb_instance_list(),
             'instances_json_endpoint': self.request.route_path('instances_json'),
-            'monitoring_tab_url': self.request.route_path('elb_monitoring', id=self.elb.name),
-            'health_checks_tab_url': self.request.route_path('elb_healthchecks', id=self.elb.name),
+            'cross_zone_enabled': self.cross_zone_enabled,
         }))
 
     def get_all_instances(self):
@@ -640,7 +642,7 @@ class ELBInstancesView(BaseELBView):
                         id=instance.id,
                         vpc_id=instance.vpc_id,
                         subnet_id=instance.subnet_id,
-                        zone=instance._placement.zone,
+                        zone=instance.placement,
                     ))
         return instances
 

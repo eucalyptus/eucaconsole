@@ -14,13 +14,6 @@ angular.module('ELBHealthChecksPage', [])
             $scope.$watch('pingProtocol', function () {
                 $scope.updatePingPath();
             });
-            $scope.$watch('isNotChanged', function () {
-                if ($scope.isNotChanged === false) {
-                    $('#elb-view-tabs').removeAttr('data-tab');
-                } else {
-                    $('#elb-view-tabs').attr('data-tab', '');
-                }
-            });
             $(document).on('input', '#health-checks-tab input', function () {
                 $scope.isNotChanged = false;
                 $scope.$apply();

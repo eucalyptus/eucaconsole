@@ -35,47 +35,30 @@ angular.module('ELBInstancesPage', ['EucaConsoleUtils', 'MagicSearch'])
             }, 1000);
         };
         $scope.setInitialValues = function (options) {
-            if (options.hasOwnProperty('availability_zone_choices')) {
-                $scope.allZoneList = options.availability_zone_choices;
-            }
-            if (options.hasOwnProperty('availability_zones')) {
-                $scope.availabilityZones = options.availability_zones;
+            $scope.allZoneList = options.availability_zone_choices;
+            $scope.availabilityZones = options.availability_zones;
+            $scope.isCrossZoneEnabled = options.cross_zone_enabled;
+            // Timeout is needed for the instance selector to be initizalized
+            $timeout(function () {
+                $scope.$broadcast('eventUpdateAvailabilityZones', $scope.availabilityZones);
+            }, 500);
+            $scope.allVPCSubnetList = options.vpc_subnet_choices;
+            if (options.elb_vpc_network !== null) {
+                $scope.vpcNetwork = options.elb_vpc_network;
                 // Timeout is needed for the instance selector to be initizalized
                 $timeout(function () {
-                    $scope.$broadcast('eventUpdateAvailabilityZones', $scope.availabilityZones);
+                    $scope.$broadcast('eventWizardUpdateVPCNetwork', $scope.vpcNetwork);
                 }, 500);
             }
-            if (options.hasOwnProperty('vpc_subnet_choices')) {
-                $scope.allVPCSubnetList = options.vpc_subnet_choices;
-            }
-            if (options.hasOwnProperty('elb_vpc_network')) {
-                if (options.elb_vpc_network !== null) {
-                    $scope.vpcNetwork = options.elb_vpc_network;
-                    // Timeout is needed for the instance selector to be initizalized
-                    $timeout(function () {
-                        $scope.$broadcast('eventWizardUpdateVPCNetwork', $scope.vpcNetwork);
-                    }, 500);
-                }
-            }
-            if (options.hasOwnProperty('elb_vpc_subnets')) {
-                $scope.vpcSubnetList = options.elb_vpc_subnets;
-            }
-            if (options.hasOwnProperty('all_instances')) {
-                $scope.allInstanceList = options.all_instances;
-            }
-            if (options.hasOwnProperty('elb_instance_health')) {
-                $scope.ELBInstanceHealthList = options.elb_instance_health;
-            }
-            if (options.hasOwnProperty('is_cross_zone_enabled')) {
-                $scope.isCrossZoneEnabled = options.is_cross_zone_enabled;
-            }
-            if (options.hasOwnProperty('instances')) {
-                $scope.instanceList = options.instances;
-                // Timeout is needed for the instance selector to be initizalized
-                $timeout(function () {
-                    $scope.$broadcast('eventInitSelectedInstances', $scope.instanceList);
-                }, 2000);
-            }
+            $scope.vpcSubnetList = options.elb_vpc_subnets;
+            $scope.allInstanceList = options.all_instances;
+            $scope.ELBInstanceHealthList = options.elb_instance_health;
+            $scope.isCrossZoneEnabled = options.is_cross_zone_enabled;
+            $scope.instanceList = options.instances;
+            // Timeout is needed for the instance selector to be initizalized
+            $timeout(function () {
+                $scope.$broadcast('eventInitSelectedInstances', $scope.instanceList);
+            }, 2000);
         };
         $scope.setWatch = function () {
             $(document).on('submit', '[data-reveal] form', function () {
@@ -105,22 +88,8 @@ angular.module('ELBInstancesPage', ['EucaConsoleUtils', 'MagicSearch'])
                 $scope.$broadcast('eventInitSelectedInstances', $scope.instanceList);
             }, true);
             $scope.$watch('isCrossZoneEnabled', function () {
-                if ($scope.isCrossZoneEnabled === true) {
-                    $scope.classCrossZoneEnabled = 'active';
-                    $scope.classCrossZoneDisabled = 'inactive';
-                } else {
-                    $scope.classCrossZoneEnabled = 'inactive';
-                    $scope.classCrossZoneDisabled = 'active';
-                }
                 if ($scope.isInitComplete === true) {
                     $scope.isNotChanged = false;
-                }
-            });
-            $scope.$watch('isNotChanged', function () {
-                if ($scope.isNotChanged === false) {
-                    $('#elb-view-tabs').removeAttr('data-tab');
-                } else {
-                    $('#elb-view-tabs').attr('data-tab', '');
                 }
             });
             $scope.$on('searchUpdated', function ($event, query) {

@@ -25,23 +25,19 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor']
             if ($('#elb-view-form').length > 0) {
                 $scope.elbForm = $('#elb-view-form');
             }
-            if (options.hasOwnProperty('securitygroups')) {
-                if (options.securitygroups instanceof Array && options.securitygroups.length > 0) {
-                    $scope.securityGroups = options.securitygroups;
-                    // Timeout is needed for chosen to react after Angular updates the options
-                    $timeout(function(){
-                        $('#securitygroup').trigger('chosen:updated');
-                    }, 500);
-                }
+            if (options.securitygroups instanceof Array && options.securitygroups.length > 0) {
+                $scope.securityGroups = options.securitygroups;
+                // Timeout is needed for chosen to react after Angular updates the options
+                $timeout(function(){
+                    $('#securitygroup').trigger('chosen:updated');
+                }, 500);
             }
-            if (options.hasOwnProperty('elb_vpc_network')) {
-                if (options.elb_vpc_network !== null) {
-                    $scope.vpcNetwork = options.elb_vpc_network;
-                    // Timeout is needed for the instance selector to be initizalized
-                    $timeout(function () {
-                        $scope.$broadcast('eventWizardUpdateVPCNetwork', $scope.vpcNetwork);
-                    }, 500);
-                }
+            if (options.elb_vpc_network !== null) {
+                $scope.vpcNetwork = options.elb_vpc_network;
+                // Timeout is needed for the instance selector to be initizalized
+                $timeout(function () {
+                    $scope.$broadcast('eventWizardUpdateVPCNetwork', $scope.vpcNetwork);
+                }, 500);
             }
             $scope.initChosenSelectors();
         };
@@ -58,13 +54,6 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor']
                     $scope.isNotChanged = false;
                 }
             }, true);
-            $scope.$watch('isNotChanged', function () {
-                if ($scope.isNotChanged === false) {
-                    $('#elb-view-tabs').removeAttr('data-tab');
-                } else {
-                    $('#elb-view-tabs').attr('data-tab', '');
-                }
-            });
             $scope.$on('eventUpdateListenerArray', function ($event, listenerArray) {
                 if ($scope.isInitComplete === true) {
                     $scope.isNotChanged = false;
