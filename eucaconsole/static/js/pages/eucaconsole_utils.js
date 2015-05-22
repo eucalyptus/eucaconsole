@@ -59,8 +59,12 @@ angular.module('EucaConsoleUtils', ['CustomFilters', 'ngSanitize'])
 })
 .service('eucaHandleUnsavedChanges', function() {
     return function(scope) {
+        scope.isSubmitted = false;
+        $(document).on('submit', 'form', function () {
+            scope.isSubmitted = true;
+        });
         window.onbeforeunload = function() {
-            if (!scope.isNotChanged) {
+            if (!scope.isNotChanged && !scope.isSubmitted) {
                 return $('#warning-message-unsaved-changes').text();
             }
         };
