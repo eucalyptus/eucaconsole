@@ -141,7 +141,11 @@ class GuiEC2(GuiTester):
         SecurityGroupView(self).verify_s_group_not_present(sgroup_name)
 
     def delete_security_group_from_detail_page(self, sgroup_name, s_group_id):
-        pass
+        BasePage(self).goto_security_groups_view_via_menu()
+        SecurityGroupView(self).click_action_view_s_group_details_on_view_page(s_group_id)
+        SecurityGroupDetailPage(self, sgroup_name).click_action_delete_s_group_on_detail_page()
+        DeleteScurityGroupDialog(self).delete_s_group()
+        SecurityGroupView(self).verify_s_group_not_present(sgroup_name)
 
 
 

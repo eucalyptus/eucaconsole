@@ -14,6 +14,7 @@ class Security_group_operations_sequence(GuiEC2):
 
         self.tester.login("ui-test-acct-00", "admin", "mypassword0")
         self.tester.create_security_group_from_dashboard(self.s_group_name, self.s_group_description)
+        #self.tester.add_rule_to_s_group(self.s_group_name)
         self.tester.logout()
         self.tester.exit_browser()
 
