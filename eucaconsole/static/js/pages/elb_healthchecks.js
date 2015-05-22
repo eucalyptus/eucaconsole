@@ -4,13 +4,14 @@
  *
  */
 
-angular.module('ELBHealthChecksPage', [])
-    .controller('ELBHealthChecksPageCtrl', function ($scope) {
+angular.module('ELBHealthChecksPage', ['EucaConsoleUtils'])
+    .controller('ELBHealthChecksPageCtrl', function ($scope, eucaHandleUnsavedChanges) {
         $scope.isNotChanged = true;
         $scope.initController = function () {
             $scope.setWatch();
         };
         $scope.setWatch = function () {
+            eucaHandleUnsavedChanges($scope);
             $scope.$watch('pingProtocol', function () {
                 $scope.updatePingPath();
             });

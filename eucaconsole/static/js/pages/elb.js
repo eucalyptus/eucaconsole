@@ -5,7 +5,7 @@
  */
 
 angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor'])
-    .controller('ELBPageCtrl', function ($scope, $timeout, eucaUnescapeJson) {
+    .controller('ELBPageCtrl', function ($scope, $timeout, eucaUnescapeJson, eucaHandleUnsavedChanges) {
         $scope.elbForm = undefined;
         $scope.listenerArray = [];
         $scope.securityGroups = [];
@@ -45,6 +45,7 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor']
             $('#securitygroup').chosen({'width': '70%', search_contains: true});
         };
         $scope.setWatch = function () {
+            eucaHandleUnsavedChanges($scope);
             $(document).on('submit', '[data-reveal] form', function () {
                 $(this).find('.dialog-submit-button').css('display', 'none');
                 $(this).find('.dialog-progress-display').css('display', 'block');
@@ -66,14 +67,6 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor']
             $(document).on('input', '#general-tab input[type="text"]', function () {
                 $scope.isNotChanged = false;
                 $scope.$apply();
-            });
-            // Leave button is clicked on the warning unsaved changes modal
-            $(document).on('click', '#unsaved-changes-warning-modal-stay-button', function () {
-                $('#unsaved-changes-warning-modal').foundation('reveal', 'close');
-            });
-            // Stay button is clicked on the warning unsaved changes modal
-            $(document).on('click', '#unsaved-changes-warning-modal-leave-link', function () {
-                $scope.unsavedChangesWarningModalLeaveCallback();
             });
         };
         $scope.openModalById = function (modalID) {

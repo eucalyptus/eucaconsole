@@ -57,6 +57,15 @@ angular.module('EucaConsoleUtils', ['CustomFilters', 'ngSanitize'])
         }
     };
 })
+.service('eucaHandleUnsavedChanges', function() {
+    return function(scope) {
+        window.onbeforeunload = function() {
+            if (!scope.isNotChanged) {
+                return $('#warning-message-unsaved-changes').text();
+            }
+        };
+    };
+})
 .service('eucaHandleErrorS3', function() {
     /**
      * Provide generic error handling in the browser for XHR calls to Object Storage. 

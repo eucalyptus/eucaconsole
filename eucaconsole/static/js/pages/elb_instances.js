@@ -5,7 +5,7 @@
  */
 
 angular.module('ELBInstancesPage', ['EucaConsoleUtils', 'MagicSearch'])
-    .controller('ELBInstancesPageCtrl', function ($scope, $timeout, eucaUnescapeJson) {
+    .controller('ELBInstancesPageCtrl', function ($scope, $timeout, eucaUnescapeJson, eucaHandleUnsavedChanges) {
         $scope.availabilityZones = [];
         $scope.selectedZoneList = [];
         $scope.unselectedZoneList = [];
@@ -61,6 +61,7 @@ angular.module('ELBInstancesPage', ['EucaConsoleUtils', 'MagicSearch'])
             }, 2000);
         };
         $scope.setWatch = function () {
+            eucaHandleUnsavedChanges($scope);
             $(document).on('submit', '[data-reveal] form', function () {
                 $(this).find('.dialog-submit-button').css('display', 'none');
                 $(this).find('.dialog-progress-display').css('display', 'block');
