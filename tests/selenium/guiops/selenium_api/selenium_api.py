@@ -43,6 +43,16 @@ class SeleniumApi(object):
         """
         self.driver.quit()
 
+
+    def get_url(self):
+        """
+        Returns currentv url.
+        """
+        url = self.driver.current_url.encode('ascii', 'ignore')
+        url = str(url)
+        return url
+
+
     def wait_for_element_present_by_id(self, element_id):
         """
         Waits for element to be present on the page for timeout_to_locate_element_in_seconds
@@ -92,6 +102,23 @@ class SeleniumApi(object):
         except TimeoutException, t:
             print "ERROR: Timed out. Did not find element by link_text = '{0}'".format(link_text)
 
+    def wait_for_element_present_by_name(self, name):
+        """
+        Waits for element to be present on the page for timeout_to_locate_element_in_seconds
+        Checks for presence every 500 milliseconds
+        :param name:
+        """
+        print "Executing wait_for_element_present_by_name ('{0}')".format(name)
+        print "Looking for element by name = '{0}' in the DOM.".format(name)
+        try:
+            WebDriverWait(self.driver, self.timeout_to_locate_element_in_seconds).until(EC.presence_of_element_located(
+                (By.NAME, name)))
+            print "Found element by name = '{0}'".format(name)
+        except NoSuchElementException, nse:
+            print "Did not find element by name = '{0}'".format(name)
+        except TimeoutException, t:
+            print "ERROR: Timed out. Did not find element by name = '{0}'".format(name)
+
     def wait_for_visible_by_id(self, element_id):
         """
         Waits for the element to become visible. First, checks if element is present.
@@ -111,6 +138,7 @@ class SeleniumApi(object):
                 print "Element by id = '{0}' is present in the DOM but not visible.".format(element_id)
             except NoSuchElementException:
                 print "ERROR: Element by id = '{0}' not found in the DOM.".format(element_id)
+                raise
 
     def wait_for_visible_by_css(self, css):
         """
@@ -131,6 +159,7 @@ class SeleniumApi(object):
                 print "Element by css = '{0}' is present in the DOM but not visible.".format(css)
             except NoSuchElementException:
                 print "ERROR: Element by css = '{0}' not found in the DOM.".format(css)
+                raise
 
     def wait_for_clickable_by_id(self, element_id):
         """
@@ -403,4 +432,13 @@ class SeleniumApi(object):
         print "Selecting element with text = {1} by link_text = {0}".format(link_text, text)
         Select(self.driver.find_element_by_link_text(link_text)).select_by_visible_text(text)
 
+    def select_by_name_and_value(self, name, value):
+        """
+        Selects element with particular text on it.
+        :param name:
+        :param text:
+        """
+        self.wait_for_element_present_by_name(name)
+        print "Selecting element with value = {1} by lname = {0}".format(name, value)
+        Select(self.driver.find_element_by_name(name)).select_by_value(value)
 

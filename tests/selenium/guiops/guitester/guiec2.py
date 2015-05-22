@@ -110,15 +110,22 @@ class GuiEC2(GuiTester):
         BasePage(self).goto_dashboard_via_menu()
         Dashboard(self).click_create_s_group_link_from_dashboard()
         CreateScurityGroupDialog(self).create_s_group(s_group_name, s_group_description)
-        SecurityGroupDetailPage(self, s_group_name)
+        s_group_id = SecurityGroupDetailPage(self, s_group_name).get_s_group_id()
+        return {'s_group_name': s_group_name, 's_group_id':s_group_id}
 
-    def create_security_group_from_view_page(self, sgroup_name):
+    def add_rule_to_s_group(self, s_group_name):
+        BasePage(self).goto_security_groups_view_via_menu()
+        SecurityGroupView(self).click_action_view_s_group_details_on_view_page(s_group_name)
+        SecurityGroupDetailPage(self, s_group_name).add_rule_to_s_group_open_to_my_ip()
+
+    def create_security_group_from_view_page(self, s_group_name):
         """
         Creates security group from S. groups view page without adding rules or tags.
         """
         pass
 
-    def edit_security_group(self, sgroup_name):
+    def add_rule_to_security_group(self, sgroup_name, name, value):
+
         pass
 
     def delete_security_group_from_view_page(self, sgroup_name):

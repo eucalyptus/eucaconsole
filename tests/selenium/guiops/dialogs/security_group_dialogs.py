@@ -19,3 +19,5 @@ class CreateScurityGroupDialog(BasePage):
         self.tester.send_keys_by_id(self._s_group_name_field_id, s_group_name)
         self.tester.send_keys_by_id(self._s_group_description_field,  s_group_description)
         self.tester.click_element_by_id(self._create_s_group_button_id)
+
+
