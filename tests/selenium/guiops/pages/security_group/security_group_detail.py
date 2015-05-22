@@ -36,7 +36,7 @@ class SecurityGroupDetailPage(DetailPage):
     def add_rule_to_s_group_open_to_my_ip(self):
 
         self.tester.click_element_by_css(self._add_inbound_rules_protocol_menu_css)
-        self.tester.select_by_name_and_value("ip_protocol","3389")
+        self.tester.select_by_name_and_value("ip_protocol","3306")
         self.tester.click_element_by_id(self._use_my_ip_address_link_id)
         self.tester.click_element_by_id(self._add_rule_button_id)
         self.tester.click_element_by_id(self._save_changes_button_id)

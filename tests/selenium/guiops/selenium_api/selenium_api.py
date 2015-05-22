@@ -439,6 +439,6 @@ class SeleniumApi(object):
         :param text:
         """
         self.wait_for_element_present_by_name(name)
-        print "Selecting element with value = {1} by lname = {0}".format(name, value)
+        print "Selecting element with value = {1} by name = {0}".format(name, value)
         Select(self.driver.find_element_by_name(name)).select_by_value(value)
 

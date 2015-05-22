@@ -96,6 +96,7 @@ class GuiEC2(GuiTester):
     def delete_keypair_from_view_page(self, keypair_name):
         """
         Navigates to Keypair View via menu. Deletes keypair from view page. Verifies keypair was removed from view page.
+        :param keypair_name:
         """
         BasePage(self).goto_keypair_view_page_via_menu()
         KeypairView(self).click_action_delete_keypair_on_view_page(keypair_name)
@@ -106,6 +107,8 @@ class GuiEC2(GuiTester):
     def create_security_group_from_dashboard(self, s_group_name, s_group_description):
         """
         Creates security group from dashboard without adding rules or tags.
+        :param s_group_name:
+        :param s_group_description:
         """
         BasePage(self).goto_dashboard_via_menu()
         Dashboard(self).click_create_s_group_link_from_dashboard()
@@ -116,6 +119,8 @@ class GuiEC2(GuiTester):
     def add_rule_to_s_group(self, s_group_name, s_group_id):
         """
         Goes to security group detail page. Adds a rule.
+        :param s_group_name:
+        :param s_group_id:
         """
         BasePage(self).goto_security_groups_view_via_menu()
         SecurityGroupView(self).click_action_view_s_group_details_on_view_page(s_group_id)
@@ -124,6 +129,8 @@ class GuiEC2(GuiTester):
     def create_security_group_from_view_page(self, s_group_name, s_group_description):
         """
         Creates security group from S. groups view page without adding rules or tags.
+        :param s_group_name:
+        :param s_group_description:
         """
         BasePage(self).goto_security_groups_view_via_menu()
         SecurityGroupView(self).click_create_new_s_group_button()
@@ -133,7 +140,9 @@ class GuiEC2(GuiTester):
 
     def delete_security_group_from_view_page(self, sgroup_name, s_group_id):
         """
-        Deletes security group from view page.
+        Goes to security group view page. Deletes security group from view page.
+        :param sgroup_name:
+        :param s_group_id:
         """
         BasePage(self).goto_security_groups_view_via_menu()
         SecurityGroupView(self).click_action_delete_s_group_on_view_page(s_group_id)
@@ -141,6 +150,11 @@ class GuiEC2(GuiTester):
         SecurityGroupView(self).verify_s_group_not_present(sgroup_name)
 
     def delete_security_group_from_detail_page(self, sgroup_name, s_group_id):
+        """
+        Goes to security group detail page. Deletes security group.
+        :param sgroup_name:
+        :param s_group_id:
+        """
         BasePage(self).goto_security_groups_view_via_menu()
         SecurityGroupView(self).click_action_view_s_group_details_on_view_page(s_group_id)
         SecurityGroupDetailPage(self, sgroup_name).click_action_delete_s_group_on_detail_page()
