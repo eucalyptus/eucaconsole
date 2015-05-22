@@ -11,8 +11,12 @@ class SecurityGroupDetailPage(DetailPage):
     _delete_s_group_action_menuitem_id = "delete-securitygroup-action"
     _add_inbound_rules_protocol_menu_css = "a.chosen-single > span"
     _use_my_ip_address_link_id = "sgroup-use-my-ip"
+    _open_to_all_addresses_link_id ="sgroup-use-my-ip"
     _add_rule_button_id = "button-add-rule"
     _save_changes_button_id = "save-securitygroup-btn"
+    _security_group_radio_button_css = "input.[class='ng-untouched ng-valid ng-dirty ng-valid-parse']"
+    _groupname_selection_menu_css ="#groupname_select_chosen>a"
+    _groupname_selection_search_css ="#groupname_select_chosen>div>div>input"
 
     def verify_s_group_detail_page_loaded(self):
         """
@@ -33,10 +37,40 @@ class SecurityGroupDetailPage(DetailPage):
         self.tester.click_element_by_css(DetailPage._actions_menu_css)
         self.tester.click_element_by_id(self._delete_s_group_action_menuitem_id)
 
-    def add_rule_to_s_group_open_to_my_ip(self):
-
+    def add_rule_to_s_group_open_to_my_ip(self, rule):
+        """
+        Adds single port rule and opens it to user's ip.
+        """
         self.tester.click_element_by_css(self._add_inbound_rules_protocol_menu_css)
-        self.tester.select_by_name_and_value("ip_protocol","3306")
+        self.tester.send_keys_by_css("input[type='text']", rule)
+        self.tester.click_element_by_css(".active-result")
         self.tester.click_element_by_id(self._use_my_ip_address_link_id)
+        self.tester.click_element_by_id(self._add_rule_button_id)
+        self.tester.click_element_by_id(self._save_changes_button_id)
+
+    def add_rule_to_s_group_open_to_all_addresses(self, rule):
+        """
+        Adds single port rule and opens it to all addresses.
+        """
+        self.tester.click_element_by_css(self._add_inbound_rules_protocol_menu_css)
+        self.tester.send_keys_by_css("input[type='text']", rule)
+        self.tester.click_element_by_css(".active-result")
+        self.tester.click_element_by_id(self._open_to_all_addresses_link_id)
+        self.tester.click_element_by_id(self._add_rule_button_id)
+        self.tester.click_element_by_id(self._save_changes_button_id)
+
+    def add_custom_tcp_rule_open_to_default_group(self, port_begin, port_end):
+        """
+        Adds single port rule and opens it to all addresses.
+        """
+        self.tester.click_element_by_css(self._add_inbound_rules_protocol_menu_css)
+        self.tester.send_keys_by_css("input[type='text']", "Custom TCP")
+        self.tester.click_element_by_css(".active-result")
+        self.tester.send_keys_by_css("[class='port from ng-pristine ng-untouched ng-valid ng-valid-pattern']", "22")
+        self.tester.send_keys_by_css("[class='port from ng-pristine ng-untouched ng-valid ng-valid-pattern']", "3389")
+        self.tester.click_element_by_css(self._security_group_radio_button_css)
+        self.tester.click_element_by_css(self._groupname_selection_menu_css, "default")
+        self.tester.click_element_by_css('[class="active-result ng-binding ng-scope highlighted"]')
+        self.tester.send_keys_by_css(self._groupname_selection_search_css)
         self.tester.click_element_by_id(self._add_rule_button_id)
         self.tester.click_element_by_id(self._save_changes_button_id)

@@ -116,15 +116,35 @@ class GuiEC2(GuiTester):
         s_group_id = SecurityGroupDetailPage(self, s_group_name).get_s_group_id()
         return {'s_group_name': s_group_name, 's_group_id':s_group_id}
 
-    def add_rule_to_s_group(self, s_group_name, s_group_id):
+    def add_tcp_22_rule_to_s_group(self, s_group_name, s_group_id):
         """
-        Goes to security group detail page. Adds a rule.
+        Goes to security group detail page. Opens TCP 22 port to user's IP.
         :param s_group_name:
         :param s_group_id:
         """
         BasePage(self).goto_security_groups_view_via_menu()
         SecurityGroupView(self).click_action_view_s_group_details_on_view_page(s_group_id)
-        SecurityGroupDetailPage(self, s_group_name).add_rule_to_s_group_open_to_my_ip()
+        SecurityGroupDetailPage(self, s_group_name).add_rule_to_s_group_open_to_my_ip("TCP port 22")
+
+    def add_ldap_rule_to_s_group(self, s_group_name, s_group_id):
+        """
+        Goes to security group detail page. Opens TCP 389 port to all addresses.
+        :param s_group_name:
+        :param s_group_id:
+        """
+        BasePage(self).goto_security_groups_view_via_menu()
+        SecurityGroupView(self).click_action_view_s_group_details_on_view_page(s_group_id)
+        SecurityGroupDetailPage(self, s_group_name).add_rule_to_s_group_open_to_all_addresses("TCP port 389")
+
+     def add_custom_tcp_rule_to_s_group(self, s_group_name, s_group_id):
+        """
+        Goes to security group detail page. Opens TCP port 22-3389 to default group.
+        :param s_group_name:
+        :param s_group_id:
+        """
+        BasePage(self).goto_security_groups_view_via_menu()
+        SecurityGroupView(self).click_action_view_s_group_details_on_view_page(s_group_id)
+        SecurityGroupDetailPage(self, s_group_name).add_custom_tcp_rule_open_to_default_group()
 
     def create_security_group_from_view_page(self, s_group_name, s_group_description):
         """
