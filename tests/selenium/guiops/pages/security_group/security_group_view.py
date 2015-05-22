@@ -17,10 +17,6 @@ class SecurityGroupView(ViewPage):
         self.tester.wait_for_visible_by_id(self._create_s_group_btn_id)
         self.tester.wait_for_visible_by_id(ViewPage()._refresh_button_id)
 
-    def goto_s_group_detail_page(self, s_group_id):
-        self.tester.click_element_by_id(self._s_group_actions_menu_id.format(s_group_id))
-        self.tester.click_element_by_css(self._view_details_actions_menuitem_css.format(s_group_id))
-
     def get_s_group_id_from_view_page(self, s_group_name):
         pass
 
@@ -30,4 +26,11 @@ class SecurityGroupView(ViewPage):
     def click_action_delete_s_group_on_view_page(self, s_group_id):
         self.tester.click_element_by_id(self._s_group_actions_menu_id.format(s_group_id))
         self.tester.click_element_by_css(self._delete_s_group_actions_menuitem_css.format(s_group_id))
+
+    def click_action_view_s_group_details_on_view_page(self, s_group_id):
+        self.tester.click_element_by_id(self._s_group_actions_menu_id.format(s_group_id))
+        self.tester.click_element_by_css(self._view_details_actions_menuitem_css.format(s_group_id))
+
+    def verify_s_group_not_present(self, s_group_name):
+        self.wait_for_element_not_present_by_css(self._s_group_link_css.format(s_group_name))
 

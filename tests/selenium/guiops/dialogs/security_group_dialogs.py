@@ -20,4 +20,15 @@ class CreateScurityGroupDialog(BasePage):
         self.tester.send_keys_by_id(self._s_group_description_field,  s_group_description)
         self.tester.click_element_by_id(self._create_s_group_button_id)
 
+class DeleteScurityGroupDialog(BasePage):
 
+    """
+    Clicks the 'Yes, Delete' button in delete security group modal.
+    """
+    def __init__(self, tester):
+        self.tester = tester
+
+    _delete_s_group_submit_button_id = "delete_securitygroup_submit_button"
+
+    def delete_s_group(self):
+        self.tester.click_element_by_id(self._delete_s_group_submit_button_id)

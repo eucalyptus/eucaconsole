@@ -6,7 +6,7 @@ from pages.keypair.keypairdetail import KeypairDetailPage
 from pages.keypair.keypairview import KeypairView
 from pages.security_group.security_group_view import SecurityGroupView
 from pages.security_group.security_group_detail import SecurityGroupDetailPage
-from dialogs.security_group_dialogs import CreateScurityGroupDialog
+from dialogs.security_group_dialogs import CreateScurityGroupDialog, DeleteScurityGroupDialog
 from dialogs.keypair_dialogs import CreateKeypairDialog, DeleteKeypairModal, ImportKeypairDialog
 
 
@@ -113,25 +113,34 @@ class GuiEC2(GuiTester):
         s_group_id = SecurityGroupDetailPage(self, s_group_name).get_s_group_id()
         return {'s_group_name': s_group_name, 's_group_id':s_group_id}
 
-    def add_rule_to_s_group(self, s_group_name):
+    def add_rule_to_s_group(self, s_group_name, s_group_id):
+        """
+        Goes to security group detail page. Adds a rule.
+        """
         BasePage(self).goto_security_groups_view_via_menu()
-        SecurityGroupView(self).click_action_view_s_group_details_on_view_page(s_group_name)
+        SecurityGroupView(self).click_action_view_s_group_details_on_view_page(s_group_id)
         SecurityGroupDetailPage(self, s_group_name).add_rule_to_s_group_open_to_my_ip()
 
-    def create_security_group_from_view_page(self, s_group_name):
+    def create_security_group_from_view_page(self, s_group_name, s_group_description):
         """
         Creates security group from S. groups view page without adding rules or tags.
         """
-        pass
+        BasePage(self).goto_security_groups_view_via_menu()
+        SecurityGroupView(self).click_create_new_s_group_button()
+        CreateScurityGroupDialog(self).create_s_group(s_group_name, s_group_description)
+        s_group_id = SecurityGroupDetailPage(self, s_group_name).get_s_group_id()
+        return {'s_group_name': s_group_name, 's_group_id':s_group_id}
 
-    def add_rule_to_security_group(self, sgroup_name, name, value):
+    def delete_security_group_from_view_page(self, sgroup_name, s_group_id):
+        """
+        Deletes security group from view page.
+        """
+        BasePage(self).goto_security_groups_view_via_menu()
+        SecurityGroupView(self).click_action_delete_s_group_on_view_page(s_group_id)
+        DeleteScurityGroupDialog(self).delete_s_group()
+        SecurityGroupView(self).verify_s_group_not_present(sgroup_name)
 
-        pass
-
-    def delete_security_group_from_view_page(self, sgroup_name):
-        pass
-
-    def delete_security_group_from_detail_page(self, sgroup_name):
+    def delete_security_group_from_detail_page(self, sgroup_name, s_group_id):
         pass
 
 
