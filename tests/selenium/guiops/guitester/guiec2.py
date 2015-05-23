@@ -4,6 +4,8 @@ from pages.dashboard import Dashboard
 from pages.loginpage import LoginPage
 from pages.keypair.keypairdetail import KeypairDetailPage
 from pages.keypair.keypairview import KeypairView
+from pages.instance.instanceview import InstanceView
+from pages.instance.instancedetail import InstanceDetailPage
 from pages.security_group.security_group_view import SecurityGroupView
 from pages.security_group.security_group_detail import SecurityGroupDetailPage
 from dialogs.security_group_dialogs import CreateScurityGroupDialog, DeleteScurityGroupDialog
@@ -180,6 +182,24 @@ class GuiEC2(GuiTester):
         SecurityGroupDetailPage(self, sgroup_name).click_action_delete_s_group_on_detail_page()
         DeleteScurityGroupDialog(self).delete_s_group()
         SecurityGroupView(self).verify_s_group_not_present(sgroup_name)
+
+    def launch_instance_from_dashboard(self, instance_name=None):
+        pass
+
+    def launch_instance_from_image_view_page(self, instance_name=None):
+        pass
+
+    def launch_more_like_this_from_view_page(self):
+        pass
+
+    def launch_more_like_this_from_detail_page(self):
+        pass
+
+    def terminate_instance_from_view_page(self):
+        pass
+
+    def terminate_instance_from_detail_page(self):
+        pass
 
 
 

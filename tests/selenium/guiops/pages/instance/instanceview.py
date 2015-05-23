@@ -1,6 +1,6 @@
 from pages.viewpage import ViewPage
 
-class InstancepView(ViewPage):
+class InstanceView(ViewPage):
 
 
 
