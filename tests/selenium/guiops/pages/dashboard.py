@@ -43,6 +43,9 @@ class Dashboard(BasePage):
             """
             self.tester.click_element_by_css(Dashboard._create_s_group_link_css)
 
+        def click_launch_instance_button_from_dashboard(self):
+            self.tester.click_element_by_css(self._launch_instance_button_css)
+
         def get_availability_zone_list(self):
             """
             Gets availability zone list.

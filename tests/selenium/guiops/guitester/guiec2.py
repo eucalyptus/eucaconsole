@@ -10,6 +10,7 @@ from pages.security_group.security_group_view import SecurityGroupView
 from pages.security_group.security_group_detail import SecurityGroupDetailPage
 from dialogs.security_group_dialogs import CreateScurityGroupDialog, DeleteScurityGroupDialog
 from dialogs.keypair_dialogs import CreateKeypairDialog, DeleteKeypairModal, ImportKeypairDialog
+from dialogs.instance_dialogs import LaunchInstanceWidget
 
 
 
@@ -184,7 +185,13 @@ class GuiEC2(GuiTester):
         SecurityGroupView(self).verify_s_group_not_present(sgroup_name)
 
     def launch_instance_from_dashboard(self, instance_name=None):
-        pass
+        """
+        Goes to dashboard via menu. Launches centos instance.
+        """
+        BasePage(self).goto_dashboard_via_menu()
+        Dashboard(self).click_launch_instance_button_from_dashboard()
+        LaunchInstanceWidget(self).launch_centos_instance()
+
 
     def launch_instance_from_image_view_page(self, instance_name=None):
         pass
