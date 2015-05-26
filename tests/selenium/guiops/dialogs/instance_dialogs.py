@@ -37,6 +37,25 @@ class LaunchInstanceWidget(BaseDialog):
         self.tester.click_element_by_css(self._highlighted_security_group_css)
         self.tester.click_element_by_id(self._launch_instance_button_id)
 
+class TerminateInstance(BaseDialog):
+
+    def __init__(self, tester):
+        self.tester = tester
+
+    _terminate_instance_submit_button_id = "terminate_instance_submit_button"
+    _instance_id_in_modal_css ="#terminate-instance-modal>div>p>strong"
+
+    def click_terminate_instance_submit_button(self, instance_id,  instance_name=None):
+        """
+        Waits for instance id appear in the modal. Clicks terminate submit button.
+        :param instance_id:
+        """
+        if instance_name != None:
+            instance_full_name = instance_name + " (" + instance_id +")"
+        else:
+            instance_full_name = instance_id
+        self.tester.wait_for_text_not_present_by_css(self._instance_id_in_modal_css, instance_full_name)
+        self.tester.click_element_by_id(self._terminate_instance_submit_button_id)
 
 
 

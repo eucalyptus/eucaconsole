@@ -191,7 +191,7 @@ class GuiEC2(GuiTester):
         BasePage(self).goto_dashboard_via_menu()
         Dashboard(self).click_launch_instance_button_from_dashboard()
         LaunchInstanceWidget(self).launch_centos_instance()
-
+        InstanceView(self)
 
     def launch_instance_from_image_view_page(self, instance_name=None):
         pass

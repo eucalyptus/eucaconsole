@@ -13,8 +13,9 @@ class Instance_operations_sequence(GuiEC2):
     def instance_ops_test(self):
 
         self.tester.login("ui-test-acct-00", "admin", "mypassword0")
-        self.tester.launch_instance_from_dashboard()
-
+        #self.tester.launch_instance_from_dashboard()
+        #self.tester.get_attrubute_by_css("#tableview>table>tbody>tr>td>a", "href")
+        self.tester.get_attrubute_by_css("#item-dropdown_instances-running", "class")
         self.tester.logout()
         self.tester.exit_browser()
 
