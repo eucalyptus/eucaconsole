@@ -1,6 +1,7 @@
 <metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
 <head metal:fill-slot="head_css">
+    <link rel="stylesheet" href="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/codemirror.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/stacks.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/stack.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.css')}"/>
@@ -166,7 +167,7 @@
                         <h6 i18n:translate="">Template</h6>
                         <div class="row controls-wrapper readonly">
                             <div class="small-2 columns"><label i18n:translate="" class="right">Description</label></div>
-                            <div class="small-10 columns value">${stack_description}
+                            <div class="small-10 columns value">${stack_description}&nbsp;
                                 <a ng-click="viewTemplate($event)" i18n:translate="">view template</a>
                             </div>
                         </div>
@@ -250,11 +251,19 @@
         <!--! Modal dialogs -->
         ${panel('stack_dialogs', stack=stack, delete_form=delete_form)}
     </div>
+    <div id="view-template-modal" class="reveal-modal large" data-reveal="">
+        <h3>${stack_name} <span i18n:translate="">template</span></h3>
+        <textarea id="template-area" class="template-area" ng-model="stackTemplate"></textarea>
+        <a class="close-reveal-modal">&#215;</a>
+    </div>
 </div>
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/jquery.stickytableheaders.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/codemirror.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/javascript.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/active-line.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/stack.js')}"></script>
 </div>
 

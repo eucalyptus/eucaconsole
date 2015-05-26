@@ -16,3 +16,8 @@ label {
     font-weight: bold;
     color: $euca-grey;
 }
+
+/* override for height of template view dialog */
+.CodeMirror {
+    height: 450px;
+}

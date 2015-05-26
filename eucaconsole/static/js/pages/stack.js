@@ -13,6 +13,8 @@ angular.module('StackPage', ['MagicSearch', 'EucaConsoleUtils'])
         $scope.templateLoading = true;
         $scope.eventsLoading = true;
         $scope.resources = [];
+        $scope.codeEditor = null;
+        $scope.stackTemplate = '';
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.stack_name = optionsJson.stack_name;
@@ -29,6 +31,7 @@ angular.module('StackPage', ['MagicSearch', 'EucaConsoleUtils'])
             }
             $scope.setWatch();
             $scope.setFocus();
+            $scope.initCodeMirror();
         };
         $scope.isTransitional = function () {
             return $scope.transitionalStates.indexOf($scope.stackStatus) !== -1;
@@ -112,29 +115,34 @@ angular.module('StackPage', ['MagicSearch', 'EucaConsoleUtils'])
             });
         };
         $scope.getStackTemplate = function () {
-            $http.get($scope.stackTemplateEndpoint).success(function(oData) {
-                var results = oData ? oData.results : '';
-                $scope.templateLoading = false;
-                if (results) {
-                    $scope.description = results.description;
-                    $scope.parameters = results.parameters;
-                }
+        };
+        $scope.initCodeMirror = function () {
+            var templateTextarea = document.getElementById('template-area');
+            $scope.codeEditor = CodeMirror.fromTextArea(templateTextarea, {
+                mode: {name:"javascript", json:true},
+                lineWrapping: true,
+                styleActiveLine: true,
+                lineNumbers: true,
+                readOnly: true
             });
+        };
+        $scope.clearCodeEditor = function () {
+            $scope.codeEditor.setValue('');
+            $scope.codeEditor.clearHistory();
         };
         $scope.viewTemplate = function ($event) {
             $event.preventDefault();
             $scope.clearCodeEditor();
-            $scope.editPolicyModal.foundation('reveal', 'open');
-            $scope.editPolicyModal.on('close.fndtn.reveal', function() {
+            var viewModal = $('#view-template-modal');
+            viewModal.foundation('reveal', 'open');
+            viewModal.on('close.fndtn.reveal', function() {
                 $scope.clearCodeEditor();
             });
-            $scope.policyJson = ''; // clear any previous policy
-            $scope.policyName = $scope.policyArray[index].name;
-            var url = $scope.policyUrl.replace('_policy_', $scope.policyName);
-            $http.get(url).success(function(oData) {
-                var results = oData ? oData.results : [];
-                $scope.policyJson = results;
-                $scope.codeEditor.setValue(results);
+            $scope.stackTemplate = ''; // clear any previous policy
+            $http.get($scope.stackTemplateEndpoint).success(function(oData) {
+                var results = oData ? oData.results : '';
+                $scope.stackTemplate = eucaUnescapeJson(results);
+                $scope.codeEditor.setValue($scope.stackTemplate);
                 $scope.codeEditor.focus();
             }).error(function (oData, status) {
                 var errorMsg = oData.message || '';

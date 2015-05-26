@@ -254,13 +254,9 @@ class StackStateView(BaseView):
         with boto_error_handler(self.request):
             template = self.cloudformation_conn.get_template(self.stack_name)
             parsed = json.loads(template['GetTemplateResponse']['GetTemplateResult']['TemplateBody'])
-            params = []
-            for name in parsed['Parameters'].keys():
-                param = parsed['Parameters'][name]
-                params.append({'name': name, 'description': param['Description'], 'type': param['Type']})
+            
             return dict(
-                results=dict(description=parsed['Description'],
-                             parameters=params)
+                results=BaseView.escape_json(json.dumps(parsed, indent=2))
             )
 
     @view_config(route_name='stack_events', renderer='json', request_method='GET')
