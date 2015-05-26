@@ -30,6 +30,12 @@ form .row input[type="number"] {
     }
 }
 
+#tag-editor.autoscale {
+    #autoscale-tag-name-input-div, #autoscale-tag-value-input-div {
+        position: relative;
+        left: 2rem;
+    }
+}
 
 .launchconfig-value {
     line-height: 1.5rem;
