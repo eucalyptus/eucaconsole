@@ -295,7 +295,7 @@ class StackStateView(BaseView):
             if "SecurityGroup" in res_type:
                 url = self.request.route_path('securitygroup_view', id=resource_id)
             elif "EIP" in res_type:
-                url = self.request.route_path('ipaddress_view', id=resource_id)
+                url = self.request.route_path('ipaddress_view', public_ip=resource_id)
             elif "Instance" in res_type:
                 url = self.request.route_path('instance_view', id=resource_id)
             elif "Volume" in res_type:

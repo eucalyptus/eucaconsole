@@ -121,6 +121,28 @@ angular.module('StackPage', ['MagicSearch', 'EucaConsoleUtils'])
                 }
             });
         };
+        $scope.viewTemplate = function ($event) {
+            $event.preventDefault();
+            $scope.clearCodeEditor();
+            $scope.editPolicyModal.foundation('reveal', 'open');
+            $scope.editPolicyModal.on('close.fndtn.reveal', function() {
+                $scope.clearCodeEditor();
+            });
+            $scope.policyJson = ''; // clear any previous policy
+            $scope.policyName = $scope.policyArray[index].name;
+            var url = $scope.policyUrl.replace('_policy_', $scope.policyName);
+            $http.get(url).success(function(oData) {
+                var results = oData ? oData.results : [];
+                $scope.policyJson = results;
+                $scope.codeEditor.setValue(results);
+                $scope.codeEditor.focus();
+            }).error(function (oData, status) {
+                var errorMsg = oData.message || '';
+                if (errorMsg && status === 403) {
+                    $('#timed-out-modal').foundation('reveal', 'open');
+                }
+            });
+        };
         $scope.getStackEvents = function () {
             $scope.eventsLoading = true;
             $http.get($scope.stackEventsEndpoint).success(function(oData) {
