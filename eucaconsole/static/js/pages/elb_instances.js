@@ -20,11 +20,9 @@ angular.module('ELBInstancesPage', ['EucaConsoleUtils', 'MagicSearch'])
         $scope.allInstanceList = [];
         $scope.ELBInstanceHealthList = [];
         $scope.instanceList = [];
-        $scope.isCrossZoneEnabled = '';
-        $scope.classCrossZoneEnabled = 'active';
-        $scope.classCrossZoneDisabled = 'inactive';
         $scope.isNotChanged = true;
         $scope.isInitComplete = false;
+        $scope.isCrossZoneEnabled = false;
         $scope.unsavedChangesWarningModalLeaveCallback = null;
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
@@ -53,7 +51,6 @@ angular.module('ELBInstancesPage', ['EucaConsoleUtils', 'MagicSearch'])
             $scope.vpcSubnetList = options.elb_vpc_subnets;
             $scope.allInstanceList = options.all_instances;
             $scope.ELBInstanceHealthList = options.elb_instance_health;
-            $scope.isCrossZoneEnabled = options.is_cross_zone_enabled;
             $scope.instanceList = options.instances;
             // Timeout is needed for the instance selector to be initizalized
             $timeout(function () {
@@ -292,9 +289,6 @@ angular.module('ELBInstancesPage', ['EucaConsoleUtils', 'MagicSearch'])
                     $scope.unselectedVPCSubnetList.push(subnet);
                 }
             });
-        };
-        $scope.clickCrossZoneLink = function (click) {
-            $scope.isCrossZoneEnabled = click === 'enabled';
         };
     })
 ;

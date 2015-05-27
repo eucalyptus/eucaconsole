@@ -538,7 +538,7 @@ class ELBInstancesView(BaseELBView):
             self.elb = self.get_elb()
             if not self.elb:
                 raise HTTPNotFound()
-        self.elb_form = ELBInstancesForm(self.request, formdata=self.request.params or None)
+        self.elb_form = ELBInstancesForm(self.request, elb=self.elb, formdata=self.request.params or None)
         self.delete_form = ELBDeleteForm(self.request, formdata=self.request.params or None)
         filters_form = ELBInstancesFiltersForm(
             self.request, ec2_conn=self.ec2_conn, autoscale_conn=self.autoscale_conn,
@@ -558,7 +558,6 @@ class ELBInstancesView(BaseELBView):
             delete_form=ELBDeleteForm(self.request, formdata=self.request.params or None),
             search_facets=BaseView.escape_json(json.dumps(search_facets)),
             filter_keys=filter_keys,
-            cross_zone_enabled=self.cross_zone_enabled,
             controller_options_json=self.get_controller_options_json(),
         )
 
@@ -569,12 +568,11 @@ class ELBInstancesView(BaseELBView):
     @view_config(route_name='elb_instances_update', request_method='POST', renderer=TEMPLATE)
     def elb_instances_update(self):
         if self.elb_form.validate():
-            securitygroup = self.request.params.getall('securitygroup') or None
             vpc_subnet = self.request.params.getall('vpc_subnet') or None
             if vpc_subnet == 'None':
                 vpc_subnet = None
             zone = self.request.params.getall('zone') or None
-            cross_zone_enabled = self.request.params.get('cross_zone_enabled') or False
+            cross_zone_enabled = self.request.params.get('cross_zone_enabled') == 'y'
             instances = self.request.params.getall('instances') or None
             location = self.request.route_path('elb_instances', id=self.elb.name)
             prefix = _(u'Unable to update load balancer')
@@ -582,7 +580,7 @@ class ELBInstancesView(BaseELBView):
             with boto_error_handler(self.request, location, template):
                 if vpc_subnet is None:
                     self.update_elb_zones(self.elb.name, self.elb.availability_zones, zone)
-                    if cross_zone_enabled == 'on':
+                    if cross_zone_enabled:
                         self.elb_conn.modify_lb_attribute(self.elb.name, 'crossZoneLoadBalancing', True)
                     else:
                         self.elb_conn.modify_lb_attribute(self.elb.name, 'crossZoneLoadBalancing', False)

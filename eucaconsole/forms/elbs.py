@@ -162,10 +162,16 @@ class ELBHealthChecksForm(BaseSecureForm):
 
 
 class ELBInstancesForm(BaseSecureForm):
-    """ELB Instances form.
-       Only need to initialize as a secure form to generate CSRF token
-    """
-    pass
+    """ELB Instances form."""
+    cross_zone_enabled_help_text = _(u'Distribute traffic evenly across all instances in all availability zones')
+    cross_zone_enabled = wtforms.BooleanField(label=_(u'Enable cross-zone load balancing'))
+
+    def __init__(self, request, elb=None, **kwargs):
+        super(ELBInstancesForm, self).__init__(request, **kwargs)
+        self.elb = elb
+        elb_attrs = self.elb.get_attributes()
+        self.cross_zone_enabled.data = elb_attrs.cross_zone_load_balancing.enabled
+        self.cross_zone_enabled.help_text = self.cross_zone_enabled_help_text
 
 
 class ELBDeleteForm(BaseSecureForm):
@@ -229,8 +235,8 @@ class CreateELBForm(BaseSecureForm):
     )
     cross_zone_enabled_help_text = _(u'Distribute traffic evenly across all instances in all availability zones')
     cross_zone_enabled = wtforms.BooleanField(label=_(u'Enable cross-zone load balancing'))
-    add_availability_zones_help_text = _(u'Enable this load balancer \
-        to route traffic to instances in the selected zones')
+    add_availability_zones_help_text = _(
+        u'Enable this load balancer to route traffic to instances in the selected zones')
     add_vpc_subnets_help_text = _(u'Enable this load balancer to route traffic to instances in the selected subnets')
     add_instances_help_text = _(u'Balance traffic between the selected instances')
     ping_protocol_error_msg = _(u'Ping protocol is required')
