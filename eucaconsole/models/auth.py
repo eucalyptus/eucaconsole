@@ -30,10 +30,11 @@ Authentication and Authorization models
 """
 import base64
 import httplib
-from ssl import SSLError
 import socket
 import urllib2
-import xml
+
+from defusedxml.sax import parseString
+from ssl import SSLError
 
 from boto import ec2
 from boto import vpc
@@ -289,7 +290,7 @@ class EucaAuthenticator(object):
             # parse AccessKeyId, SecretAccessKey and SessionToken
             creds = Credentials()
             h = BotoXmlHandler(creds, None)
-            xml.sax.parseString(body, h)
+            parseString(body, h)
             return creds
         except SSLError as err:
             if err.message != '':
@@ -335,7 +336,7 @@ class AWSAuthenticator(object):
             # parse AccessKeyId, SecretAccessKey and SessionToken
             creds = Credentials()
             h = BotoXmlHandler(creds, None)
-            xml.sax.parseString(body, h)
+            parseString(body, h)
             return creds
         except SSLError as err:
             if err.message != '':
