@@ -143,13 +143,6 @@ table.table th.center { text-align: center; }
 
 #advanced-section { margin-top: 1.5rem; }
 
-#cross-zone-div { margin-top: 0.5rem; }
-#cross-zone-div label { display: inline; margin-left: 0.5rem; margin-right: 1.0rem; }
-#cross-zone-div input { margin-right: 0.5rem; }
-#cross-zone-div a { margin-right: 0.5rem; }
-#cross-zone-div .active { color: #444; }
-#cross-zone-div .inactive { color: #007dba; }
-
 a.nolink { color: #5a5a5a; }
 a.nolink:hover { color: #5a5a5a !important; cursor: inherit; }
 

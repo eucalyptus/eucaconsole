@@ -77,23 +77,6 @@ table.table {
 
 
 // Instances tab ===================
-#cross-zone-div {
-    margin-top: 0.5rem;
-    label {
-        display: inline;
-        margin-left: 0.5rem;
-        margin-right: 1.0rem;
-    }
-    input {
-        margin-right: 0.5rem;
-    }
-    a {
-        margin-right: 0.5rem;
-     }
-    .active { color: $euca-darkgrey; }
-    .inactive { color: $hp-accessible-blue; }
-}
-
 a.nolink {
     color: $hp-gray-65;
     &:hover {
