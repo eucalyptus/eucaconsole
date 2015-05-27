@@ -538,7 +538,11 @@ class ELBInstancesView(BaseELBView):
             self.elb = self.get_elb()
             if not self.elb:
                 raise HTTPNotFound()
-        self.elb_form = ELBInstancesForm(self.request, elb=self.elb, formdata=self.request.params or None)
+            elb_attrs = self.elb.get_attributes()
+            self.cross_zone_enabled = elb_attrs.cross_zone_load_balancing.enabled
+        self.elb_form = ELBInstancesForm(
+            self.request, elb=self.elb, cross_zone_enabled=self.cross_zone_enabled,
+            formdata=self.request.params or None)
         self.delete_form = ELBDeleteForm(self.request, formdata=self.request.params or None)
         filters_form = ELBInstancesFiltersForm(
             self.request, ec2_conn=self.ec2_conn, autoscale_conn=self.autoscale_conn,
@@ -546,8 +550,6 @@ class ELBInstancesView(BaseELBView):
             cloud_type=self.cloud_type, formdata=self.request.params or None)
         search_facets = filters_form.facets
         filter_keys = ['id', 'name', 'placement', 'state', 'tags', 'vpc_subnet_display', 'vpc_name']
-        elb_attrs = self.elb.get_attributes()
-        self.cross_zone_enabled = elb_attrs.cross_zone_load_balancing.enabled
         self.render_dict = dict(
             elb=self.elb,
             in_use=False,

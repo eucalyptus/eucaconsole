@@ -166,11 +166,10 @@ class ELBInstancesForm(BaseSecureForm):
     cross_zone_enabled_help_text = _(u'Distribute traffic evenly across all instances in all availability zones')
     cross_zone_enabled = wtforms.BooleanField(label=_(u'Enable cross-zone load balancing'))
 
-    def __init__(self, request, elb=None, **kwargs):
+    def __init__(self, request, elb=None, cross_zone_enabled=False, **kwargs):
         super(ELBInstancesForm, self).__init__(request, **kwargs)
         self.elb = elb
-        elb_attrs = self.elb.get_attributes()
-        self.cross_zone_enabled.data = elb_attrs.cross_zone_load_balancing.enabled
+        self.cross_zone_enabled.data = cross_zone_enabled
         self.cross_zone_enabled.help_text = self.cross_zone_enabled_help_text
 
 
