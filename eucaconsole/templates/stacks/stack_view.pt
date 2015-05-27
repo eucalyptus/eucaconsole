@@ -168,7 +168,7 @@
                         <div class="row controls-wrapper readonly">
                             <div class="small-2 columns"><label i18n:translate="" class="right">Description</label></div>
                             <div class="small-10 columns value">${stack_description}&nbsp;
-                                <a ng-click="viewTemplate($event)" i18n:translate="">view template</a>
+                                <a ng-click="viewTemplate($event)" i18n:translate="">View template</a>
                             </div>
                         </div>
                         <span>&nbsp;</span>
