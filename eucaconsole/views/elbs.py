@@ -31,7 +31,6 @@ Pyramid views for Eucalyptus and AWS elbs
 from urllib import quote
 import simplejson as json
 import time
-import re
 
 import boto.utils
 
@@ -234,12 +233,12 @@ class LbTagSet(dict):
 class BaseELBView(TaggedItemView):
     """Base view for ELB detail page tabs/views"""
 
-    def __init__(self, request):
-        super(BaseELBView, self).__init__(request)
+    def __init__(self, request, elb_conn=None, elb=None, **kwargs):
+        super(BaseELBView, self).__init__(request, **kwargs)
         self.request = request
         self.ec2_conn = self.get_connection()
         self.iam_conn = self.get_connection(conn_type='iam')
-        self.elb_conn = self.get_connection(conn_type='elb')
+        self.elb_conn = elb_conn or self.get_connection(conn_type='elb')
         self.autoscale_conn = self.get_connection(conn_type='autoscale')
         self.vpc_conn = self.get_connection(conn_type='vpc')
         self.is_vpc_supported = BaseView.is_vpc_supported(request)
@@ -377,16 +376,16 @@ class ELBView(BaseELBView):
     """Views for single ELB"""
     TEMPLATE = '../templates/elbs/elb_view.pt'
 
-    def __init__(self, request):
-        super(ELBView, self).__init__(request)
+    def __init__(self, request, elb_conn=None, elb=None, elb_tags=None, **kwargs):
+        super(ELBView, self).__init__(request, elb_conn=elb_conn, **kwargs)
         with boto_error_handler(request):
-            self.elb = self.get_elb()
-            # boto doesn't convert elb created_time into dtobj like it does for others
+            self.elb = elb or self.get_elb()
             if self.elb:
-                self.elb.created_time = boto.utils.parse_ts(self.elb.created_time)
-                self.elb.idle_timeout = self.get_elb_attribute_idle_timeout()
+                if self.elb.created_time:
+                    # boto doesn't convert elb created_time into dtobj like it does for others
+                    self.elb.created_time = boto.utils.parse_ts(self.elb.created_time)
                 tags_params = {'LoadBalancerNames.member.1': self.elb.name}
-                self.elb.tags = self.elb_conn.get_object('DescribeTags', tags_params, LbTagSet)
+                self.elb.tags = elb_tags or self.elb_conn.get_object('DescribeTags', tags_params, LbTagSet)
             else:
                 raise HTTPNotFound()
         self.elb_form = ELBForm(
@@ -397,7 +396,7 @@ class ELBView(BaseELBView):
         self.render_dict = dict(
             elb=self.elb,
             elb_name=self.escape_braces(self.elb.name) if self.elb else '',
-            elb_created_time=self.dt_isoformat(self.elb.created_time) if self.elb else '',
+            elb_created_time=self.dt_isoformat(self.elb.created_time) if self.elb and self.elb.created_time else '',
             escaped_elb_name=quote(self.elb.name) if self.elb else '',
             elb_tags=TaggedItemView.get_tags_display(self.elb.tags) if self.elb.tags else '',
             elb_form=self.elb_form,
@@ -427,6 +426,7 @@ class ELBView(BaseELBView):
             with boto_error_handler(self.request, location, template):
                 self.update_elb_idle_timeout(self.elb.name, idle_timeout)
                 self.update_load_balancer_listeners(self.elb.name, listeners_args)
+                time.sleep(1)  # Delay is needed to avoid missing listeners post-update
                 self.update_elb_tags(self.elb.name)
                 if self.is_vpc_supported and self.elb.security_groups != securitygroup:
                     self.elb_conn.apply_security_groups_to_lb(self.elb.name, securitygroup)
@@ -466,14 +466,7 @@ class ELBView(BaseELBView):
             'elb_vpc_network': self.elb.vpc_id if self.elb else [],
             'elb_vpc_subnets': self.elb.subnets if self.elb else [],
             'securitygroups': self.elb.security_groups if self.elb else [],
-            'securitygroups_json_endpoint': self.request.route_path('securitygroups_json'),
         }))
-
-    def get_elb_attribute_idle_timeout(self):
-        if self.elb:
-            elb_attrs = self.elb.get_attributes()
-            if elb_attrs:
-                return elb_attrs.connecting_settings.idle_timeout
 
     def update_elb_idle_timeout(self, elb_name, idle_timeout):
         if self.elb_conn:
@@ -611,8 +604,6 @@ class ELBInstancesView(BaseELBView):
             'all_instances': self.get_all_instances(),
             'elb_instance_health': self.get_elb_instance_health(),
             'is_cross_zone_enabled': self.get_elb_cross_zone_load_balancing(),
-            'securitygroups': self.elb.security_groups if self.elb else [],
-            'securitygroups_json_endpoint': self.request.route_path('securitygroups_json'),
             'instances': self.get_elb_instance_list(),
             'instances_json_endpoint': self.request.route_path('instances_json'),
             'cross_zone_enabled': self.cross_zone_enabled,
@@ -778,10 +769,10 @@ class ELBHealthChecksView(BaseELBView):
 class ELBMonitoringView(BaseELBView):
     TEMPLATE = '../templates/elbs/elb_monitoring.pt'
 
-    def __init__(self, request):
-        super(ELBMonitoringView, self).__init__(request)
+    def __init__(self, request, elb=None, **kwargs):
+        super(ELBMonitoringView, self).__init__(request, elb=elb, **kwargs)
         with boto_error_handler(request):
-            self.elb = self.get_elb()
+            self.elb = elb or self.get_elb()
             if not self.elb:
                 raise HTTPNotFound()
         self.render_dict = dict(
@@ -881,7 +872,6 @@ class CreateELBView(BaseELBView):
             del self.create_form.securitygroup
         if self.create_form.validate():
             name = self.request.params.get('name')
-            elb_listener = self.request.params.get('elb_listener')
             certificate_arn = self.request.params.get('certificate_arn') or None
             listeners_args = self.get_listeners_args()
             vpc_subnet = self.request.params.getall('vpc_subnet') or None

@@ -127,7 +127,7 @@ table.table th.center { text-align: center; }
 
 #elb-view-form input.text-input { width: 300px; }
 #elb-view-form input.timeout-field { width: 60px; }
-#elb-view-form input[type="number"] { width: 140px; }
+#elb-view-form input[type="number"] { width: 80px; }
 #elb-view-form .stack-label { margin-bottom: 0.5rem; }
 #elb-view-form .sub-section-label { color: black; }
 #elb-view-form .helptext-icon { color: #6a737b; font-size: 1.3rem; }

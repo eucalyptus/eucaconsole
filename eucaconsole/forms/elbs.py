@@ -39,7 +39,7 @@ from ..views import BaseView
 
 class ELBForm(BaseSecureForm):
     """Elastic Load Balancer update form (General tab)"""
-    idle_timeout = wtforms.TextField(
+    idle_timeout = wtforms.IntegerField(
         label=_(u'Idle timeout (secs)'),
     )
     idle_timeout_help_text = _(u'Amount of time a connection to an instance can be idle \
@@ -61,7 +61,7 @@ class ELBForm(BaseSecureForm):
         self.set_error_messages()
         self.set_choices()
         if elb is not None:
-            self.idle_timeout.data = elb.idle_timeout
+            self.idle_timeout.data = self.get_idle_timeout(elb)
 
     def set_error_messages(self):
         self.securitygroup.error_msg = self.securitygroup_error_msg
@@ -78,6 +78,15 @@ class ELBForm(BaseSecureForm):
         if not self.security_groups:
             choices.append(('default', 'default'))
         return sorted(set(choices))
+
+    @staticmethod
+    def get_idle_timeout(elb=None):
+        if hasattr(elb, 'idle_timeout'):
+            return elb.idle_timeout
+        if elb:
+            elb_attrs = elb.get_attributes()
+            if elb_attrs:
+                return elb_attrs.connecting_settings.idle_timeout
 
 
 class ELBHealthChecksForm(BaseSecureForm):

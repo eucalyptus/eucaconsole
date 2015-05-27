@@ -64,7 +64,7 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor']
             $scope.$on('tagUpdate', function($event) {
                 $scope.isNotChanged = false;
             });
-            $(document).on('input', '#general-tab input[type="text"]', function () {
+            $(document).on('input', 'input', function () {
                 $scope.isNotChanged = false;
                 $scope.$apply();
             });
