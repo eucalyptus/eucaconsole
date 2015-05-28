@@ -142,7 +142,7 @@ class ConnectionManager(object):
         return _aws_connection(region, access_key, secret_key, token, conn_type)
 
     @staticmethod
-    def euca_connection(clchost, port, access_id, secret_key, token, conn_type, validate_certs=False, certs_file=None):
+    def euca_connection(clchost, port, access_id, secret_key, token, conn_type, dns_enabled=True, validate_certs=False, certs_file=None):
         """Return Eucalyptus connection object
         Pulls from Beaker cache on subsequent calls to avoid connection overhead
 
@@ -161,6 +161,9 @@ class ConnectionManager(object):
         :type conn_type: string
         :param conn_type: Connection type ('ec2', 'autoscale', 'cloudwatch', 'cloudformation', 'elb', 'iam', 'sts', or 's3')
 
+        :type dns_enabled: boolean
+        :param dns_enabled: True if dns enabled for cloud we're connecting to
+
         :type validate_certs: bool
         :param validate_certs: indicates to check the ssl cert the server provides
 
@@ -168,7 +171,7 @@ class ConnectionManager(object):
         :param certs_file: indicates the location of the certificates file, if otherthan standard
 
         """
-        def _euca_connection(_clchost, _port, _access_id, _secret_key, _token, _conn_type):
+        def _euca_connection(_clchost, _port, _access_id, _secret_key, _token, _conn_type, _dns_enabled):
             path = 'compute'
             conn_class = EC2Connection
             api_version = '2012-12-01'
@@ -196,12 +199,9 @@ class ConnectionManager(object):
             elif conn_type == 'vpc':
                 conn_class = boto.vpc.VPCConnection
 
-            dns_enabled = True
-            if dns_enabled:
+            if _dns_enabled:
                 _clchost = "{0}.{1}".format(path.lower(), _clchost)
-                path = "/"
-            else:
-                path = '/services/{0}'.format(path)
+            path = '/services/{0}'.format(path)
             region = RegionInfo(name='eucalyptus', endpoint=_clchost)
             # IAM and S3 connections need host instead of region info
             if conn_type in ['iam', 's3']:
@@ -229,7 +229,7 @@ class ConnectionManager(object):
             # conn.set_request_hook(RequestLogger())
             return conn
 
-        return _euca_connection(clchost, port, access_id, secret_key, token, conn_type)
+        return _euca_connection(clchost, port, access_id, secret_key, token, conn_type, dns_enabled)
 
 
 def groupfinder(user_id, request):
@@ -244,7 +244,7 @@ class EucaAuthenticator(object):
     NON_DNS_QUERY_PATH = '/services/Tokens'
     TEMPLATE = '?Action=GetAccessToken&DurationSeconds={dur}&Version=2011-06-15'
 
-    def __init__(self, host, port, validate_certs=False, **validate_kwargs):
+    def __init__(self, host, port, dns_enabled=True, validate_certs=False, **validate_kwargs):
         """
         Configure connection to Eucalyptus STS service to authenticate with the CLC (cloud controller)
 
@@ -254,24 +254,39 @@ class EucaAuthenticator(object):
         :type port: integer
         :param port: port number to use when making the connection
 
+        :type dns_enabled: boolean
+        :param dns_enabled: if true, prefix host with tokens., otherwise use request path method
+
         """
-        #self.host = 'tokens.'+host
+        self.dns_enabled = dns_enabled
         self.host = host
         self.port = port
         self.validate_certs = validate_certs
         self.kwargs = validate_kwargs
 
     def authenticate(self, account, user, passwd, new_passwd=None, timeout=15, duration=3600):
+        # try authentication with default of dns_enabled = True. Set to False if we fail
+        # and if that also fails, let that error raise up
+        try:
+            return self._authenticate_(account, user, passwd, new_passwd, timeout, duration)
+        except urllib2.URLError:
+            self.dns_enabled = False
+            return self._authenticate_(account, user, passwd, new_passwd, timeout, duration)
+
+    def _authenticate_(self, account, user, passwd, new_passwd=None, timeout=15, duration=3600):
         if user == 'admin' and duration > 3600:  # admin cannot have more than 1 hour duration
             duration = 3600
         # because of the variability, we need to keep this here, not in __init__
         auth_path = self.NON_DNS_QUERY_PATH + self.TEMPLATE.format(
             dur=duration,
         )
+        host = self.host
+        if self.dns_enabled:
+            host = 'tokens.' + host
         if self.validate_certs:
-            conn = CertValidatingHTTPSConnection(self.host, self.port, timeout=timeout, **self.kwargs)
+            conn = CertValidatingHTTPSConnection(host, self.port, timeout=timeout, **self.kwargs)
         else:
-            conn = httplib.HTTPSConnection(self.host, self.port, timeout=timeout)
+            conn = httplib.HTTPSConnection(host, self.port, timeout=timeout)
 
         if new_passwd:
             auth_string = u"{user}@{account};{pw}@{new_pw}".format(
