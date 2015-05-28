@@ -5,7 +5,7 @@
  */
 
 angular.module('StackPage', ['MagicSearch', 'EucaConsoleUtils'])
-    .controller('StackPageCtrl', function ($scope, $http, $timeout, eucaUnescapeJson) {
+    .controller('StackPageCtrl', function ($scope, $http, $timeout, eucaUnescapeJson, eucaHandleError) {
         $scope.stackStatusEndpoint = '';
         $scope.stackTemplateEndpoint = '';
         $scope.transitionalStates = ['Create-in-progress', 'Rollback-in-progress', 'Delete-in-progress'];
@@ -145,10 +145,7 @@ angular.module('StackPage', ['MagicSearch', 'EucaConsoleUtils'])
                 $scope.codeEditor.setValue($scope.stackTemplate);
                 $scope.codeEditor.focus();
             }).error(function (oData, status) {
-                var errorMsg = oData.message || '';
-                if (errorMsg && status === 403) {
-                    $('#timed-out-modal').foundation('reveal', 'open');
-                }
+                eucaHandleError(oData, status);
             });
         };
         $scope.getStackEvents = function () {

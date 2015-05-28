@@ -4,7 +4,7 @@
  *
  */
 angular.module('PolicyList', ['EucaConsoleUtils'])
-    .controller('PolicyListCtrl', function ($scope, $http, $rootScope, eucaHandleErrorNoNotify) {
+    .controller('PolicyListCtrl', function ($scope, $http, $rootScope, eucaHandleError, eucaHandleErrorNoNotify) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.policyList = $('#policy-list');
         $scope.itemsLoading = true;
@@ -109,10 +109,7 @@ angular.module('PolicyList', ['EucaConsoleUtils'])
                 $scope.codeEditor.setValue(results);
                 $scope.codeEditor.focus();
             }).error(function (oData, status) {
-                var errorMsg = oData.message || '';
-                if (errorMsg && status === 403) {
-                    $('#timed-out-modal').foundation('reveal', 'open');
-                }
+                eucaHandleError(oData, status);
             });
         };
         $scope.savePolicy = function($event) {
