@@ -112,8 +112,8 @@
                         <div class="small-9 columns">
                             <div class="ipaddress">
                                 <div class="cidr-block">
-                                    <input type="radio" name="traffictype" value="ip" checked="checked" ng-model="trafficType"/>
-                                    <label><span i18n:translate="" class="ip-label">IP address</span></label>
+                                    <input id="traffictype-ip" type="radio" name="traffictype" value="ip" checked="checked" ng-model="trafficType"/>
+                                    <label for="traffictype-ip"><span i18n:translate="" class="ip-label">IP address</span></label>
                                 </div>
                                 <div class="cidr-block">
                                     <div> 
@@ -133,8 +133,8 @@
                                 </div>
                             </div>
                             <div class="securitygroupname">
-                                <input type="radio" name="traffictype" value="securitygroup" ng-model="trafficType" />
-                                <label><span i18n:translate="" class="sg-label">Security group</span></label>
+                                <input id="traffictype-group" type="radio" name="traffictype" value="securitygroup" ng-model="trafficType" />
+                                <label for="traffictype-group"><span i18n:translate="" class="sg-label">Security group</span></label>
                                 <select id="groupname-select" name="groupname" class="groupname" ng-model="groupName"
                                     ng-required="selectedProtocol &amp;&amp; trafficType=='securitygroup'" data-placeholder="select...">
                                     <option ng-repeat="securityGroup in securityGroupList" 
