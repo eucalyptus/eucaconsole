@@ -18,7 +18,7 @@
                 </span>
             </label>
         </div>
-        <div class="large-${rightcol_width_large} small-${rightcol_width} columns field">
+        <div class="large-${rightcol_width_large if not stack_label else '12'} small-${rightcol_width if not stack_label else '12'} columns field">
             ${structure:field(**html_attrs)}
             <small class="error" tal:condition="error_msg">${error_msg}</small>
             <div tal:condition="field.errors" class="server-validation">
