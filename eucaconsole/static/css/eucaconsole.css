@@ -1667,6 +1667,8 @@ a { color: #007dba; }
 
 .subsection-label { color: #5a5a5a; margin-bottom: 6px; }
 
+.upper { text-transform: uppercase; }
+
 hr { border: 1px solid #cccccc; border-width: 1px 0 0; }
 
 a.has-tip { border-bottom: none !important; }
@@ -1752,6 +1754,7 @@ textarea.policy-area { width: 100%; min-height: 30rem; font-family: Courier, "co
 /* ----------------------------------------- Forms
 ----------------------------------------- */
 form label { color: #6a737b; font-weight: bold; cursor: default; }
+form label.inline { display: inline-block; }
 form input { background-color: #f2f2f2; }
 form input[type=text], form input[type=password], form input[type=number] { background-color: #f2f2f2; }
 form input[type=file] { background-color: transparent; }

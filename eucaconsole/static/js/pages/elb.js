@@ -1,5 +1,5 @@
 /**
- * @fileOverview ELB Detail Page JS
+ * @fileOverview ELB Detail Page JS (General tab)
  * @requires AngularJS
  *
  */

@@ -81,7 +81,8 @@
                     <hr />
                     <div class="save-changes-button">
                         <button type="submit" class="button" id="save-changes-btn-general"
-                            ng-click="submitSaveChanges($event, 'general-tab')" ng-disabled="isNotChanged">
+                            ng-click="submitSaveChanges($event, 'general-tab')"
+                            ng-disabled="isNotChanged || listenerArray.length === 0">
                             <span i18n:translate="">Save Changes</span>
                         </button>
                         <a href="${request.route_path('elbs')}" id="cancel-update-link"

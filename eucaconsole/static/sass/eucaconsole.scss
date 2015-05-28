@@ -354,6 +354,10 @@ $breadcrumb-border-color: darken($breadcrumb-background-color, 20%);
     margin-bottom: 6px;
 }
 
+.upper {
+    text-transform: uppercase;
+}
+
 hr {
     border: 1px solid $hp-gray-20;
     border-width: 1px 0 0;
@@ -616,6 +620,9 @@ form {
         color: $euca-grey;
         font-weight: bold;
         cursor: default;
+        &.inline {
+            display: inline-block;
+        }
     }
     input {
         background-color: $hp-gray-5;
