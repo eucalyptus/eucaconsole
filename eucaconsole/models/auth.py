@@ -142,12 +142,12 @@ class ConnectionManager(object):
         return _aws_connection(region, access_key, secret_key, token, conn_type)
 
     @staticmethod
-    def euca_connection(clchost, port, access_id, secret_key, token, conn_type, validate_certs=False, certs_file=None):
+    def euca_connection(ufshost, port, access_id, secret_key, token, conn_type, validate_certs=False, certs_file=None):
         """Return Eucalyptus connection object
         Pulls from Beaker cache on subsequent calls to avoid connection overhead
 
-        :type clchost: string
-        :param clchost: FQDN or IP of Eucalyptus CLC (cloud controller)
+        :type ufshost: string
+        :param ufshost: FQDN or IP of Eucalyptus UFS host (for user facing services)
 
         :type port: int
         :param port: Port of Eucalyptus CLC (usually 8773)
@@ -168,8 +168,8 @@ class ConnectionManager(object):
         :param certs_file: indicates the location of the certificates file, if otherthan standard
 
         """
-        def _euca_connection(_clchost, _port, _access_id, _secret_key, _token, _conn_type):
-            region = RegionInfo(name='eucalyptus', endpoint=_clchost)
+        def _euca_connection(_ufshost, _port, _access_id, _secret_key, _token, _conn_type):
+            region = RegionInfo(name='eucalyptus', endpoint=_ufshost)
             path = '/services/Eucalyptus'
             conn_class = EC2Connection
             api_version = '2012-12-01'
@@ -200,7 +200,7 @@ class ConnectionManager(object):
             # IAM and S3 connections need host instead of region info
             if conn_type in ['iam', 's3']:
                 conn = conn_class(
-                    _access_id, _secret_key, host=_clchost, port=_port, path=path, is_secure=True, security_token=_token
+                    _access_id, _secret_key, host=_ufshost, port=_port, path=path, is_secure=True, security_token=_token
                 )
             else:
                 conn = conn_class(
@@ -223,7 +223,7 @@ class ConnectionManager(object):
             # conn.set_request_hook(RequestLogger())
             return conn
 
-        return _euca_connection(clchost, port, access_id, secret_key, token, conn_type)
+        return _euca_connection(ufshost, port, access_id, secret_key, token, conn_type)
 
 
 def groupfinder(user_id, request):

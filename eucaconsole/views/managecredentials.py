@@ -131,8 +131,8 @@ class ManageCredentialsView(BaseView, PermissionCheckMixin):
                 except URLError, err:
                     logging.info("url error "+str(vars(err)))
                     if str(err.reason) == 'timed out':
-                        clchost = self.request.registry.settings.get('clchost')
-                        self.changepassword_form_errors.append(u'No response from host ' + clchost)
+                        ufshost = self.request.registry.settings.get('ufshost')
+                        self.changepassword_form_errors.append(u'No response from host ' + ufshost)
         return dict(
             changepassword_form=changepassword_form,
             changepassword_form_errors=self.changepassword_form_errors,

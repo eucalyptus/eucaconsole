@@ -135,8 +135,8 @@ class BaseView(object):
             conn = ConnectionManager.aws_connection(
                 region, access_key, secret_key, security_token, conn_type, validate_certs)
         elif cloud_type == 'euca':
-            host = self.request.registry.settings.get('clchost', 'localhost')
-            port = int(self.request.registry.settings.get('clcport', 8773))
+            host = self.request.registry.settings.get('ufshost', 'localhost')
+            port = int(self.request.registry.settings.get('ufsport', 8773))
             if conn_type == 'ec2':
                 host = self.request.registry.settings.get('ec2.host', host)
                 port = int(self.request.registry.settings.get('ec2.port', port))
@@ -264,8 +264,8 @@ class BaseView(object):
         """
         This method centralizes configuration of the EucaAuthenticator.
         """
-        host = self.request.registry.settings.get('clchost', 'localhost')
-        port = int(self.request.registry.settings.get('clcport', 8773))
+        host = self.request.registry.settings.get('ufshost', 'localhost')
+        port = int(self.request.registry.settings.get('ufsport', 8773))
         host = self.request.registry.settings.get('sts.host', host)
         port = int(self.request.registry.settings.get('sts.port', port))
         validate_certs = asbool(self.request.registry.settings.get('connection.ssl.validation', False))
