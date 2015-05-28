@@ -137,28 +137,6 @@ class BaseView(object):
         elif cloud_type == 'euca':
             host = self.request.registry.settings.get('ufshost', 'localhost')
             port = int(self.request.registry.settings.get('ufsport', 8773))
-            if conn_type == 'ec2':
-                host = self.request.registry.settings.get('ec2.host', host)
-                port = int(self.request.registry.settings.get('ec2.port', port))
-            elif conn_type == 'autoscale':
-                host = self.request.registry.settings.get('autoscale.host', host)
-                port = int(self.request.registry.settings.get('autoscale.port', port))
-            elif conn_type == 'cloudwatch':
-                host = self.request.registry.settings.get('cloudwatch.host', host)
-                port = int(self.request.registry.settings.get('cloudwatch.port', port))
-            elif conn_type == 'elb':
-                host = self.request.registry.settings.get('elb.host', host)
-                port = int(self.request.registry.settings.get('elb.port', port))
-            elif conn_type == 'iam':
-                host = self.request.registry.settings.get('iam.host', host)
-                port = int(self.request.registry.settings.get('iam.port', port))
-            elif conn_type == 's3':
-                host = self.request.registry.settings.get('s3.host', host)
-                port = int(self.request.registry.settings.get('s3.port', port))
-            elif conn_type == 'vpc':
-                host = self.request.registry.settings.get('vpc.host', host)
-                port = int(self.request.registry.settings.get('vpc.port', port))
-
             conn = ConnectionManager.euca_connection(
                 host, port, access_key, secret_key, security_token, conn_type, validate_certs, certs_file)
 
