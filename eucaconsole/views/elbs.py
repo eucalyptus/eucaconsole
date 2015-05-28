@@ -233,7 +233,7 @@ class LbTagSet(dict):
 class BaseELBView(TaggedItemView):
     """Base view for ELB detail page tabs/views"""
 
-    def __init__(self, request, elb_conn=None, elb=None, **kwargs):
+    def __init__(self, request, elb_conn=None, **kwargs):
         super(BaseELBView, self).__init__(request, **kwargs)
         self.request = request
         self.ec2_conn = self.get_connection()
@@ -525,14 +525,13 @@ class ELBView(BaseELBView):
 class ELBInstancesView(BaseELBView):
     TEMPLATE = '../templates/elbs/elb_instances.pt'
 
-    def __init__(self, request):
-        super(ELBInstancesView, self).__init__(request)
+    def __init__(self, request, elb=None, elb_attrs=None, **kwargs):
+        super(ELBInstancesView, self).__init__(request, **kwargs)
         with boto_error_handler(request):
-            self.elb = self.get_elb()
+            self.elb = elb or self.get_elb()
             if not self.elb:
                 raise HTTPNotFound()
-            elb_attrs = self.elb.get_attributes()
-            self.cross_zone_enabled = elb_attrs.cross_zone_load_balancing.enabled
+            self.cross_zone_enabled = self.is_cross_zone_enabled(elb_attrs=elb_attrs)
         self.elb_form = ELBInstancesForm(
             self.request, elb=self.elb, cross_zone_enabled=self.cross_zone_enabled,
             formdata=self.request.params or None)
@@ -591,6 +590,10 @@ class ELBInstancesView(BaseELBView):
             self.request.error_messages = self.elb_form.get_errors_list()
         return self.render_dict
 
+    def is_cross_zone_enabled(self, elb_attrs=None):
+        attrs = elb_attrs or self.elb.get_attributes()
+        return attrs.cross_zone_load_balancing.enabled
+
     def get_controller_options_json(self):
         return BaseView.escape_json(json.dumps({
             'is_vpc_supported': self.is_vpc_supported,
@@ -603,7 +606,6 @@ class ELBInstancesView(BaseELBView):
             'instance_selector_text': self.get_instance_selector_text(),
             'all_instances': self.get_all_instances(),
             'elb_instance_health': self.get_elb_instance_health(),
-            'is_cross_zone_enabled': self.get_elb_cross_zone_load_balancing(),
             'instances': self.get_elb_instance_list(),
             'instances_json_endpoint': self.request.route_path('instances_json'),
             'cross_zone_enabled': self.cross_zone_enabled,
@@ -642,12 +644,6 @@ class ELBInstancesView(BaseELBView):
                 if instance:
                     instances.append(instance.id)
         return instances
-
-    def get_elb_cross_zone_load_balancing(self):
-        is_cross_zone_enabled = False
-        if self.elb_conn and self.elb:
-            is_cross_zone_enabled = self.elb.is_cross_zone_load_balancing()
-        return is_cross_zone_enabled
 
     def update_elb_zones(self, elb_name, prev_zones, new_zones):
         if prev_zones and new_zones:
@@ -729,10 +725,10 @@ class ELBInstancesView(BaseELBView):
 class ELBHealthChecksView(BaseELBView):
     TEMPLATE = '../templates/elbs/elb_healthchecks.pt'
 
-    def __init__(self, request):
-        super(ELBHealthChecksView, self).__init__(request)
+    def __init__(self, request, elb=None, **kwargs):
+        super(ELBHealthChecksView, self).__init__(request, **kwargs)
         with boto_error_handler(request):
-            self.elb = self.get_elb()
+            self.elb = elb or self.get_elb()
             if not self.elb:
                 raise HTTPNotFound()
             self.elb_form = ELBHealthChecksForm(self.request, elb=self.elb, formdata=self.request.params or None)
@@ -770,7 +766,7 @@ class ELBMonitoringView(BaseELBView):
     TEMPLATE = '../templates/elbs/elb_monitoring.pt'
 
     def __init__(self, request, elb=None, **kwargs):
-        super(ELBMonitoringView, self).__init__(request, elb=elb, **kwargs)
+        super(ELBMonitoringView, self).__init__(request, **kwargs)
         with boto_error_handler(request):
             self.elb = elb or self.get_elb()
             if not self.elb:

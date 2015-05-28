@@ -7,8 +7,17 @@
 angular.module('ELBHealthChecksPage', ['EucaConsoleUtils'])
     .controller('ELBHealthChecksPageCtrl', function ($scope, eucaHandleUnsavedChanges) {
         $scope.isNotChanged = true;
+        $scope.pingPathRequired = false;
         $scope.initController = function () {
+            $scope.setInitialValues();
             $scope.setWatch();
+        };
+        $scope.setInitialValues = function () {
+            $scope.pingProtocol = $('#ping_protocol').val();
+            $scope.pingPath = $('#ping_path').val();
+            if ($scope.pingProtocol === 'HTTP' || $scope.pingProtocol === 'HTTPS') {
+                $scope.pingPathRequired = true;
+            }
         };
         $scope.setWatch = function () {
             eucaHandleUnsavedChanges($scope);
@@ -34,10 +43,12 @@ angular.module('ELBHealthChecksPage', ['EucaConsoleUtils'])
         };
         $scope.updatePingPath = function () {
             if ($scope.pingProtocol === 'TCP' || $scope.pingProtocol === 'SSL') {
+                $scope.pingPathRequired = false;
                 $scope.pingPath = 'None';
             } else if ($scope.pingProtocol === 'HTTP' || $scope.pingProtocol === 'HTTPS') {
+                $scope.pingPathRequired = true;
                 if ($scope.pingPath === 'None') {
-                    $scope.pingPath = '';
+                    $scope.pingPath = 'index.html';
                 }
             }
         };

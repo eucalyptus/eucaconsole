@@ -40,12 +40,12 @@
                     <div>
                         <h6 class="section-label" i18n:translate="">Ping settings</h6>
                         <div>
-                            ${panel('form_field', field=elb_form['ping_protocol'], stack_label=True)}
+                            ${panel('form_field', field=elb_form['ping_protocol'], stack_label=True, ng_attrs=dict(model='pingProtocol'))}
                         </div>
                         <div>
                             ${panel('form_field', field=elb_form['ping_port'], stack_label=True, min=1, max=65535, maxlength=5, pattern=layout.integer_gt_zero_pattern)}
                         </div>
-                        <div>
+                        <div ng-if="pingPathRequired">
                             ${panel('form_field', field=elb_form['ping_path'], stack_label=True)}
                         </div>
                     </div>

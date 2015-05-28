@@ -37,6 +37,17 @@ from . import BaseSecureForm, ChoicesManager, TextEscapedField, NAME_WITHOUT_SPA
 from ..views import BaseView
 
 
+class PingPathRequired(validators.Required):
+    """Ping path is conditionally required based on protocol value"""
+
+    def __init__(self, *args, **kwargs):
+        super(PingPathRequired, self).__init__(*args, **kwargs)
+
+    def __call__(self, form, field):
+        if form.ping_protocol.data in ['HTTP', 'HTTPS']:
+            super(PingPathRequired, self).__call__(form, field)
+
+
 class ELBForm(BaseSecureForm):
     """Elastic Load Balancer update form (General tab)"""
     idle_timeout = wtforms.IntegerField(
@@ -109,7 +120,7 @@ class ELBHealthChecksForm(BaseSecureForm):
         id=u'ping-path',
         label=_(u'Path'),
         default="index.html",
-        validators=[validators.InputRequired(message=ping_path_error_msg)],
+        validators=[PingPathRequired(message=ping_path_error_msg)],
     )
     response_timeout_error_msg = _(u'Response timeout is required')
     response_timeout = wtforms.IntegerField(
