@@ -1861,6 +1861,15 @@ footer .copyright { font-size: 0.9em; }
 .button:hover { background-color: #006699; }
 .button:focus { background-color: #006699; }
 
+/* ----------------------------------------- Button groups (Foundation's button groups seem broken)
+----------------------------------------- */
+.btn-group li { list-style-type: none; margin: 0; padding: 0; }
+.btn-group li a { display: inline-block; padding: 0.2rem 1.5rem 0.3rem 1.5rem; border-collapse: collapse; margin: 0; border: 1px solid #cccccc; font-weight: bold; color: #5a5a5a; }
+.btn-group li a:hover { color: #007dba; }
+.btn-group li a.active { color: white; background-color: #007dba; }
+.btn-group li a:first-child { border-top-left-radius: 10px; border-bottom-left-radius: 10px; }
+.btn-group li a:last-child { border-top-right-radius: 10px; border-bottom-right-radius: 10px; border-left: none; position: relative; left: -4px; }
+
 /* ----------------------------------------- Tabs (on detail pages) Note: Wizard tabs are at _wizards.scss
 ----------------------------------------- */
 .tabs { max-height: 2.6rem !important; }
