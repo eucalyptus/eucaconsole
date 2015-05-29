@@ -38,7 +38,7 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor','EucaConsoleUtils'])
             $scope.availZones = $('#availability_zones').val();
             $(document).ready(function () {
                 $scope.cleanLaunchConfigOptions();
-            })
+            });
         };
         $scope.cleanLaunchConfigOptions = function () {
             var launchConfigSelect = $('#launch_config');

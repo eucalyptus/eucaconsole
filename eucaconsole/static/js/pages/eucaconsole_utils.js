@@ -64,10 +64,10 @@ angular.module('EucaConsoleUtils', ['CustomFilters', 'ngSanitize'])
     return function(str) {
         str = str + '';
         if (str) {
-            return str.replace(/\D+/g, '')
+            return str.replace(/\D+/g, '');
         }
         return str;
-    }
+    };
 })
 .service('eucaHandleErrorS3', function() {
     /**
