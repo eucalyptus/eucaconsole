@@ -81,6 +81,11 @@ table.instance-selector-table {
     width: 100%;
 }
 
+#controls_cross_zone_enabled {
+    margin-top: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
 .tile {
     @include panel-tile-mixin;
     .footer {

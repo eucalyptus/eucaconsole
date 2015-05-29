@@ -46,15 +46,20 @@
                         <div i18n:translate="" class="description">
                             Instances registered with the load balancer will not receive requests until their associated availability zones are enabled.
                         </div>
+                        ${panel('form_field', field=elb_form['cross_zone_enabled'], reverse=True, ng_attrs={'model': 'isCrossZoneEnabled'})}
                         <div>
                             <div class="row controls-wrapper readonly">
                                 <div class="small-4 columns">
-                                    <select id="enable-zone-select"
+                                    <span i18n:translate="" ng-show="unselectedZoneList.length == 1">
+                                        All available zones have been selected
+                                    </span>
+                                    <select id="enable-zone-select" ng-show="unselectedZoneList.length &gt; 1"
                                         ng-options="zone.name for zone in unselectedZoneList track by zone.id"
                                         ng-model="newZone"></select>
                                 </div>
                                 <div class="small-8 columns field">
                                     <button class="button enable-button" id="enable-zone-btn"
+                                            ng-disabled="unselectedZoneList.length == 1"
                                         ng-click="clickEnableZone($event)">
                                         <span i18n:translate="">Enable Zone</span>
                                     </button>
@@ -94,7 +99,6 @@
                                 {{ zone.unhealthyInstanceCount }} <span i18n:translate="">unhealthy</span>
                             </div>
                         </div>
-                        ${panel('form_field', field=elb_form['cross_zone_enabled'], reverse=True, ng_attrs={'model': 'isCrossZoneEnabled'})}
                         <hr />
                     </div>
                     <div class="gridwrapper section" ng-cloak="" tal:condition="elb_vpc_network != 'None'">
