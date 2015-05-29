@@ -40,9 +40,8 @@
 ----------------------------------------- */
 /* Extra small screen (< 481px) */
 @media screen and (max-width: 560px) { dl.tabs a b { display: none; } }
-form .row input[type="number"] { width: 3.5rem; max-width: 3.5rem; margin-left: 4px; }
-
 #controls_min_size, #controls_desired_capacity, #controls_max_size { display: inline-block; margin-left: 1rem; }
+#controls_min_size input, #controls_desired_capacity input, #controls_max_size input { width: 3.5rem; max-width: 3.5rem; margin-left: 4px; }
 
 #controls_max_size { margin-left: -1rem; }
 

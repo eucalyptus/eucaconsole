@@ -5,14 +5,13 @@
 @import "../includes/wizard";
 
 // Capacity section
-form .row input[type="number"] {
-    width: 3.5rem;
-    max-width: 3.5rem;
-    margin-left: 4px;
-}
-
 #controls_min_size, #controls_desired_capacity, #controls_max_size {
     display: inline-block; margin-left: 1rem;
+    input {
+        width: 3.5rem;
+        max-width: 3.5rem;
+        margin-left: 4px;
+    }
 }
 
 #controls_max_size {

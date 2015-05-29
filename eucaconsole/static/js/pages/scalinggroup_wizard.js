@@ -60,7 +60,7 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor','EucaConsoleUtils'])
             }, 500);
         };
         $scope.checkRequiredInput = function () {
-            if( $scope.currentStepIndex == 1 ){ 
+            if( $scope.currentStepIndex == 1 ){
                 $scope.isNotValid = false;
                 if( $scope.scalingGroupName === '' || $scope.scalingGroupName === undefined ){
                     $scope.isNotValid = true;
@@ -82,7 +82,15 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor','EucaConsoleUtils'])
                 }
             }
         };
+        $scope.numbersOnly = function (str) {
+            str = str + '';
+            if (str) {
+                return str.replace(/\D+/g, '')
+            }
+            return str;
+        };
         $scope.setWatcher = function (){
+            $scope.watchCapacityEntries();
             $scope.$watch('currentStepIndex', function(){
                  $scope.setWizardFocus($scope.currentStepIndex);
             });
@@ -90,15 +98,6 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor','EucaConsoleUtils'])
                 $scope.checkRequiredInput();
             });
             $scope.$watch('launchConfig', function(){
-                $scope.checkRequiredInput();
-            });
-            $scope.$watch('minSize', function(){
-                $scope.checkRequiredInput();
-            });
-            $scope.$watch('desiredCapacity', function(){
-                $scope.checkRequiredInput();
-            });
-            $scope.$watch('maxSize', function(){
                 $scope.checkRequiredInput();
             });
             $scope.$watch('healthCheckPeriod', function(){
@@ -116,6 +115,19 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor','EucaConsoleUtils'])
                 $scope.disableVPCSubnetOptions();
                 $scope.updateSelectedVPCSubnetNames();
             }, true);
+        };
+        $scope.watchCapacityEntries = function () {
+            var entries = ['minSize', 'maxSize', 'desiredCapacity'];
+            angular.forEach(entries, function (item) {
+                $scope.$watch(item, function(newVal) {
+                    if (newVal) {
+                        $scope[item] = $scope.numbersOnly(newVal);
+                        $scope.isNotValid = false;
+                    } else {
+                        $scope.isNotValid = true;
+                    }
+                });
+            });
         };
         $scope.adjustVPCSubnetSelectAbide = function () {
             // If VPC option is not chosen, remove the 'required' attribute
