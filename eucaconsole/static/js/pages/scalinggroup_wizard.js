@@ -6,7 +6,7 @@
 
 // Scaling Group wizard includes the AutoScale Tag Editor
 angular.module('ScalingGroupWizard', ['AutoScaleTagEditor','EucaConsoleUtils'])
-    .controller('ScalingGroupWizardCtrl', function ($scope, $timeout, eucaUnescapeJson) {
+    .controller('ScalingGroupWizardCtrl', function ($scope, $timeout, eucaUnescapeJson, eucaNumbersOnly) {
         $scope.form = $('#scalinggroup-wizard-form');
         $scope.scalingGroupName = '';
         $scope.launchConfig = '';
@@ -29,14 +29,21 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor','EucaConsoleUtils'])
         $scope.currentStepIndex = 1;
         $scope.isNotValid = true;
         $scope.initChosenSelectors = function () {
-            $('#launch_config').chosen({'width': '80%', search_contains: true});
+            // $('#launch_config').chosen({'width': '80%', search_contains: true});
             $('#load_balancers').chosen({'width': '100%', search_contains: true});
             $('#availability_zones').chosen({'width': '100%', search_contains: true});
             $('#vpc_subnet').chosen({'width': '100%', search_contains: true});
         };
         $scope.setInitialValues = function () {
             $scope.availZones = $('#availability_zones').val();
-            $('#launch_config').val('').trigger('chosen:updated');  // Clear launch config value on page refresh
+            $(document).ready(function () {
+                $scope.cleanLaunchConfigOptions();
+            })
+        };
+        $scope.cleanLaunchConfigOptions = function () {
+            var launchConfigSelect = $('#launch_config');
+            launchConfigSelect.find("option[value='? string: ?']").remove();
+            launchConfigSelect.val('').trigger('chosen:updated');  // Clear launch config value on page refresh
         };
         $scope.checkLaunchConfigParam = function () {
             if( $('#hidden_launch_config_input').length > 0 ){
@@ -64,8 +71,6 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor','EucaConsoleUtils'])
                 $scope.isNotValid = false;
                 if( $scope.scalingGroupName === '' || $scope.scalingGroupName === undefined ){
                     $scope.isNotValid = true;
-                }else if( $scope.launchConfig === '' || $scope.launchConfig === undefined ){
-                    $scope.isNotValid = true;
                 }else if( $scope.minSize === '' || $scope.minSize === undefined ){
                     $scope.isNotValid = true;
                 }else if( $scope.desiredCapacity === '' || $scope.desiredCapacity === undefined ){
@@ -81,13 +86,6 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor','EucaConsoleUtils'])
                     $scope.isNotValid = true;
                 }
             }
-        };
-        $scope.numbersOnly = function (str) {
-            str = str + '';
-            if (str) {
-                return str.replace(/\D+/g, '')
-            }
-            return str;
         };
         $scope.setWatcher = function (){
             $scope.watchCapacityEntries();
@@ -121,7 +119,7 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor','EucaConsoleUtils'])
             angular.forEach(entries, function (item) {
                 $scope.$watch(item, function(newVal) {
                     if (newVal) {
-                        $scope[item] = $scope.numbersOnly(newVal);
+                        $scope[item] = eucaNumbersOnly(newVal);
                         $scope.isNotValid = false;
                     } else {
                         $scope.isNotValid = true;

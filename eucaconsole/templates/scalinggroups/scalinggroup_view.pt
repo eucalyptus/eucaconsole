@@ -82,12 +82,12 @@
                         </div>
                     </div>
                     <div class="row controls-wrapper" tal:condition="scaling_group.load_balancers">
-                        <div class="large-4 small-4 columns">
+                        <div class="large-3 small-3 columns">
                             <label class="right" i18n:translate="">Load balancers</label>
                         </div>
-                        <div class="large-8 small-8 columns">
+                        <div class="large-9 small-9 columns">
                             <div tal:repeat="elb scaling_group.load_balancers" class="value" ng-non-bindable="">
-                                ${elb}<br/>
+                                <a href="${request.route_path('elb_view', id=elb)}">${elb}</a>
                             </div>
                         </div>
                     </div>
@@ -97,7 +97,7 @@
                     ${panel('autoscale_tag_editor', tags=scaling_group.tags)}
                     <hr />
                     <div>
-                        <button type="submit" class="button" id="save-changes-btn" ng-disabled="isNotChanged">
+                        <button type="submit" class="button" id="save-changes-btn" ng-disabled="isNotValid || isNotChanged">
                             <span tal:condition="scaling_group" i18n:translate="">Save Changes</span>
                         </button>
                         <a href="${request.route_path('scalinggroups')}"

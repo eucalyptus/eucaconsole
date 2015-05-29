@@ -57,6 +57,18 @@ angular.module('EucaConsoleUtils', ['CustomFilters', 'ngSanitize'])
         }
     };
 })
+.service('eucaNumbersOnly', function () {
+    /**
+     * Convert string to integers only
+     */
+    return function(str) {
+        str = str + '';
+        if (str) {
+            return str.replace(/\D+/g, '')
+        }
+        return str;
+    }
+})
 .service('eucaHandleErrorS3', function() {
     /**
      * Provide generic error handling in the browser for XHR calls to Object Storage. 
