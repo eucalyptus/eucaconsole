@@ -8,7 +8,7 @@
         <h6 i18n:translate="">Rules</h6>
     </div>
     <div class="columns">
-        <ul class="btn-group" ng-show="securityGroupVPC != '' &amp;&amp; securityGroupVPC != 'None'">
+        <ul class="btn-group" ng-show="securityGroupVPC != '' &amp;&amp; securityGroupVPC != 'None'" ng-cloak="">
             <li>
                 <a id="inbound-rules-tab" ng-class="inboundButtonClass"
                    ng-click="selectRuleType('inbound')" i18n:translate="">Inbound</a>
@@ -17,7 +17,7 @@
             </li>
         </ul>
         <div class="tabs-content">
-            <div class="columns field" ng-cloak="cloak">
+            <div class="columns field" ng-cloak="">
                 <div class="item-list">
                     <span class="label radius secondary item" ng-repeat="rule in rulesArray" ng-show="ruleType=='inbound'">
                         <span ng-show="!rule.custom_protocol">
