@@ -109,6 +109,10 @@
 #results-count { padding-top: 0.25rem; text-align: right; }
 #results-count .items-found { vertical-align: center; }
 
+.euca-split { border-color: #e6e7e8 !important; width: 2.0rem !important; }
+
+.split.button { padding-right: 4.0rem !important; }
+
 /* ----------------------------------------- Media Queries
 ----------------------------------------- */
 @media screen and (max-width: 1024px) { #filters { margin-top: 1rem; } }

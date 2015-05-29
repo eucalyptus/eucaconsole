@@ -33,7 +33,7 @@
             <div metal:fill-slot="new_button">
                 <a id="create-item-menu" class="button split">
                     <span i18n:translate="" tal:omit-tag="">Create Item</span>
-                    <span data-dropdown="drop"></span>
+                    <span class="euca-split" data-dropdown="drop"></span>
                 </a>
                 <ul id="drop" class="f-dropdown" data-dropdown-contents="" tal:condition="layout.file_uploads_enabled">
                     <li>

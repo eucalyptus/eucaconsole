@@ -464,6 +464,14 @@ $dropdown-border-color: $hp-gray-65;
     }
 }
 
+.euca-split {
+    border-color: $euca-extralightgrey !important;
+    width: 2.0rem !important;
+}
+
+.split.button {
+    padding-right: 4.0rem !important;
+}
 
 /* -----------------------------------------
    Media Queries
