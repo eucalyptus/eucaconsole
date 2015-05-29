@@ -2,6 +2,9 @@
 Eucalyptus Management Console
 =============================
 
+[![Build Status](https://travis-ci.org/eucalyptus/eucaconsole.svg?branch=develop)](https://travis-ci.org/eucalyptus/eucaconsole)
+
+
 The Eucalyptus Management Console is a web-based interface to a local Eucalyptus cloud and/or AWS services.
 
 
