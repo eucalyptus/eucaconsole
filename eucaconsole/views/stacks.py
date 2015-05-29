@@ -524,3 +524,31 @@ class StackWizardView(BaseView):
 
         parsed = json.loads(template_body)
         return template_url, parsed
+
+    def identify_aws_template(self, parsed_template):
+        # drawn from here: http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-template-resource-type-ref.html
+        aws_resource_prefixes = [
+            'AWS::CloudFront',
+            'AWS::CloudTrail',
+            'AWS::DynamoDB'
+            'AWS::ElastiCache',
+            'AWS::ElasticBeanstalk',
+            'AWS::Kinesis',
+            'AWS::Logs',
+            'AWS::OpsWOrks',
+            'AWS::Redshift',
+            'AWS::RDS',
+            'AWS::Route53',
+            'AWS::SDB',
+            'AWS::SNS',
+            'AWS::SQS'
+        ]
+        ret = []
+        for name in parsed['Resources'].keys():
+            resource = parsed['Resources'][name]
+            for prefix in aws_resource_prefixes:
+                if resource['Type'] in prefix:
+                    ret.append(resource['Type'])
+        if len(ret) > 0:
+            return set(ret)
+        return None
