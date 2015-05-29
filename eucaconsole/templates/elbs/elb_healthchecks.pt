@@ -43,7 +43,7 @@
                             ${panel('form_field', field=elb_form['ping_protocol'], stack_label=True, ng_attrs=dict(model='pingProtocol'))}
                         </div>
                         <div>
-                            ${panel('form_field', field=elb_form['ping_port'], stack_label=True, min=1, max=65535, maxlength=5, pattern=layout.integer_gt_zero_pattern)}
+                            ${panel('form_field', field=elb_form['ping_port'], stack_label=True, ng_attrs=dict(model='pingPort'), min=1, max=65535, maxlength=5, pattern=layout.integer_gt_zero_pattern)}
                         </div>
                         <div ng-if="pingPathRequired">
                             ${panel('form_field', field=elb_form['ping_path'], stack_label=True)}

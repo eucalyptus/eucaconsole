@@ -14,6 +14,7 @@ angular.module('ELBHealthChecksPage', ['EucaConsoleUtils'])
         };
         $scope.setInitialValues = function () {
             $scope.pingProtocol = $('#ping_protocol').val();
+            $scope.pingPort = parseInt($('#ping_port').val() || 80, 10);
             $scope.pingPath = $('#ping_path').val();
             if ($scope.pingProtocol === 'HTTP' || $scope.pingProtocol === 'HTTPS') {
                 $scope.pingPathRequired = true;
@@ -21,11 +22,22 @@ angular.module('ELBHealthChecksPage', ['EucaConsoleUtils'])
         };
         $scope.setWatch = function () {
             eucaHandleUnsavedChanges($scope);
-            $scope.$watch('pingProtocol', function () {
+            $scope.$watch('pingProtocol', function (newVal) {
+                $scope.updatePingPort(newVal);
                 $scope.updatePingPath();
             });
             $(document).on('input', 'input', function () {
                 $scope.isNotChanged = false;
+                $scope.$apply();
+            });
+            $(document).on('input', '#ping-path', function () {
+                var field = $(this);
+                var fieldWrapper = field.closest('.field');
+                if (field.val()) {
+                    fieldWrapper.removeClass('error');
+                } else {
+                    fieldWrapper.addClass('error');
+                }
                 $scope.$apply();
             });
             $(document).on('change', 'select', function () {
@@ -40,6 +52,16 @@ angular.module('ELBHealthChecksPage', ['EucaConsoleUtils'])
             $(document).on('click', '#unsaved-changes-warning-modal-leave-link', function () {
                 $scope.unsavedChangesWarningModalLeaveCallback();
             });
+        };
+        $scope.updatePingPort = function (newVal) {
+            var protocolPortMapping = {
+                'HTTP': 80,
+                'HTTPS': 443,
+                'SSL': 443
+            };
+            if (!!protocolPortMapping[newVal]) {
+                $scope.pingPort = protocolPortMapping[newVal];
+            }
         };
         $scope.updatePingPath = function () {
             if ($scope.pingProtocol === 'TCP' || $scope.pingProtocol === 'SSL') {
