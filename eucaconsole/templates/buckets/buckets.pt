@@ -18,9 +18,17 @@
         <h3 id="pagetitle"><strong i18n:translate="">Buckets</strong></h3>
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
-                <a class="button" id="create-bucket-btn" i18n:translate="" href="${request.route_path('bucket_new')}">
-                    Create Bucket
+                <a id="create-bucket-btn" class="button split"
+                    href="${request.route_path('bucket_new')}">
+                    <span i18n:translate="" tal:omit-tag="">Create Bucket</span>
+                    <span class="euca-split" data-dropdown="create-drop"></span>
                 </a>
+                <ul id="create-drop" class="f-dropdown" data-dropdown-content="">
+                    <li>
+                        <a id="create-TBD" i18n:translate=""
+                            href="#">TBD</a>
+                    </li>
+                </ul>
             </div>
             <div metal:fill-slot="tile_header">
                 <a ng-href="{{ item.contents_url }}" class="has-bucket-icon">
@@ -75,11 +83,8 @@
                         </a>
                     </li>
                     -->
-                    <li ng-show="bucketCanCopyItem(item)">
-                        <a i18n:translate="" ng-click="doPaste(item)">Paste object</a>
-                    </li>
-                    <li ng-show="bucketCanCopyFolder(item)">
-                        <a i18n:translate="" ng-click="doPaste(item)">Paste folder</a>
+                    <li ng-show="bucketCanCopyItem(item) or bucketCanCopyFolder(item)">
+                        <a i18n:translate="" ng-click="doPaste(item)">Paste</a>
                     </li>
                     <li>
                         <a i18n:translate="" ng-click="revealModal('delete-bucket', item)">Delete</a>

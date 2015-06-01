@@ -17,7 +17,7 @@
 
 #breadcrumbs .icon-block { display: none; }
 
-#primary-buttons .button { padding: 8px 3rem; }
+#primary-buttons .button { padding: 8px 1rem; }
 
 .gridwrapper { margin-top: 0.5rem; }
 
@@ -115,7 +115,7 @@
 
 .euca-split { border-color: #e6e7e8 !important; width: 2.0rem !important; }
 
-.split.button { padding-right: 4.0rem !important; }
+.split.button { padding-right: 3.0rem !important; }
 
 /* ----------------------------------------- Media Queries
 ----------------------------------------- */
@@ -139,6 +139,6 @@
 
 .tile { height: 244px; max-height: 244px; }
 
-#terminate-instances-btn { margin-left: 1rem; border: none; }
+#terminate-instances-btn { margin-left: 1rem; }
 
 .connect-center { text-align: center; }

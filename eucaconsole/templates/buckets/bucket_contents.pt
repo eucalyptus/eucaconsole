@@ -31,17 +31,12 @@
            tal:condition="len(request.subpath) == 0" i18n:translate="">View details</a>
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
-                <a id="create-item-menu" class="button split">
-                    <span i18n:translate="" tal:omit-tag="">Create Item</span>
-                    <span class="euca-split" data-dropdown="drop"></span>
+                <a id="upload-file-btn" class="button split"
+                    href="${request.route_path('bucket_upload', name=bucket_name, subpath=request.subpath)}">
+                    <span i18n:translate="" tal:omit-tag="">Upload Object(s)</span>
+                    <span class="euca-split" data-dropdown="create-drop"></span>
                 </a>
-                <ul id="drop" class="f-dropdown" data-dropdown-contents="" tal:condition="layout.file_uploads_enabled">
-                    <li>
-                        <a id="upload-file-btn" i18n:translate="" tal:condition="layout.file_uploads_enabled"
-                           href="${request.route_path('bucket_upload', name=bucket_name, subpath=request.subpath)}">
-                            Upload File(s)
-                        </a>
-                    </li>
+                <ul id="create-drop" class="f-dropdown" data-dropdown-content="" tal:condition="layout.file_uploads_enabled">
                     <li>
                         <a id="create-folder-btn" i18n:translate="" data-reveal-id="create-folder-modal">
                             Create New Folder
@@ -57,12 +52,10 @@
                 </a>
                 &nbsp;&nbsp;
                 <a class="button secondary ng-binding" id="paste-btn" i18n:translate="" ng-cloak=""
-                    ng-show="hasCopyItem" ng-click="doPaste('${bucket_name}', null, '${key_prefix}')">
-                    Paste Object
-                </a>
-                <a class="button secondary ng-binding" id="paste-btn" i18n:translate="" ng-cloak=""
-                    ng-show="hasCopyFolder" ng-click="doPaste('${bucket_name}', null, '${key_prefix}')">
-                    Paste Folder
+                    ng-show="hasCopyItem or hasCopyFolder"
+                    ng-click="doPaste('${bucket_name}', null, '${key_prefix}')"
+                    title="Paste" i18n:attributes="title">
+                    <i class="fa fa-paste fa-lg"></i>
                 </a>
             </div>
             <div metal:fill-slot="tile_header">
