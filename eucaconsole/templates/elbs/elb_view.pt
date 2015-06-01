@@ -57,7 +57,9 @@
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="small-3 columns"><label i18n:translate="">Source security group</label></div>
-                        <div class="small-9 columns value">${elb.source_security_group.name}</div>
+                        <div class="small-9 columns value">
+                            ${elb.source_security_group.name if elb.source_security_group else 'None'}
+                        </div>
                     </div>
                     ${panel('form_field', field=elb_form['idle_timeout'], leftcol_width=3, rightcol_width=9, leftcol_width_large=3, rightcol_width_large=9)}
                     <hr />
