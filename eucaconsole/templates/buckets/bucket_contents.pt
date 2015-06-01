@@ -39,12 +39,12 @@
                 <ul id="create-drop" class="f-dropdown" data-dropdown-content="" tal:condition="layout.file_uploads_enabled">
                     <li>
                         <a id="create-folder-btn" i18n:translate="" data-reveal-id="create-folder-modal">
-                            Create New Folder
+                            Create Folder
                         </a>
                     </li>
                 </ul>
                 <a class="button" id="create-folder-btn" i18n:translate="" data-reveal-id="create-folder-modal" tal:condition="not layout.file_uploads_enabled">
-                    Create New Folder
+                    Create Folder
                 </a>
                 &nbsp;&nbsp;
                 <a class="button secondary ng-binding" id="delete-all-btn" i18n:translate="" ng-click="revealModal('delete-all')">
