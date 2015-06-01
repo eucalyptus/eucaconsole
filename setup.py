@@ -113,7 +113,7 @@ requires = [
     'beaker >= 1.5.4',
     'boto == 2.34.0',
     'chameleon >= 2.5.3',
-    'defusedxml == 0.4.1',
+    'defusedxml >= 0.4.1',
     'dogpile.cache >= 0.5.3',
     # taking this out since we need gevent1 for pkg install
     # 'gevent >= 0.13.8',  # Note: gevent 1.0 no longer requires libevent, it bundles libev instead,
