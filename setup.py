@@ -111,7 +111,7 @@ class sdist_with_git_version(sdist):
 
 requires = [
     'beaker >= 1.5.4',
-    'boto == 2.38.0',
+    'boto >= 2.38.0',
     'chameleon >= 2.5.3',
     'dogpile.cache >= 0.5.3',
     # taking this out since we need gevent1 for pkg install
