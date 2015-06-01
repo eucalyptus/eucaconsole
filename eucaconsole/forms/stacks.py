@@ -64,6 +64,13 @@ class StacksDeleteForm(BaseSecureForm):
     pass
 
 
+class StacksConvertForm(BaseSecureForm):
+    """Stacks convert template form.
+       Only need to initialize as a secure form to generate CSRF token
+    """
+    pass
+
+
 class StacksFiltersForm(BaseSecureForm):
     """Form class for filters on landing page"""
     tags = TextEscapedField(label=_(u'Tags'))

@@ -38,7 +38,7 @@ from pyramid.view import view_config
 from ..i18n import _
 from ..forms import ChoicesManager, CFSampleTemplateManager
 
-from ..forms.stacks import StacksDeleteForm, StacksFiltersForm, StacksCreateForm
+from ..forms.stacks import StacksDeleteForm, StacksFiltersForm, StacksCreateForm, StacksConvertForm
 from ..models import Notification
 from ..models.auth import User
 from ..views import LandingPageView, BaseView, JSONResponse
@@ -329,8 +329,10 @@ class StackWizardView(BaseView):
         with boto_error_handler(self.request):
             s3_bucket = self.get_template_samples_bucket()
             self.create_form = StacksCreateForm(request, s3_bucket)
+        self.convert_form = StacksConvertForm(request)
         self.render_dict = dict(
             create_form=self.create_form,
+            convert_form=self.convert_form,
             controller_options_json=self.get_controller_options_json(),
         )
 
@@ -359,6 +361,14 @@ class StackWizardView(BaseView):
         namely description and parameters.
         """
         (template_url, parsed) = self.parse_store_template()
+        resource_list = self.identify_aws_template(parsed)
+        if len(resource_list) > 0:
+            return dict(
+                results=dict(
+                    description=parsed['Description'] if 'Description' in parsed else '',
+                    resource_list=resource_list
+                )
+            )
         params = []
         for name in parsed['Parameters'].keys():
             param = parsed['Parameters'][name]
@@ -402,7 +412,6 @@ class StackWizardView(BaseView):
             )
         )
 
-#                parameters=BaseView.escape_json(json.dumps(params))
     def get_key_options(self):
         conn = self.get_connection()
         keys = conn.get_all_key_pairs()
@@ -525,7 +534,7 @@ class StackWizardView(BaseView):
         parsed = json.loads(template_body)
         return template_url, parsed
 
-    def identify_aws_template(self, parsed_template):
+    def identify_aws_template(self, parsed):
         # drawn from here: http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-template-resource-type-ref.html
         aws_resource_prefixes = [
             'AWS::CloudFront',
@@ -547,8 +556,8 @@ class StackWizardView(BaseView):
         for name in parsed['Resources'].keys():
             resource = parsed['Resources'][name]
             for prefix in aws_resource_prefixes:
-                if resource['Type'] in prefix:
+                if resource['Type'].find(prefix) == 0:
                     ret.append(resource['Type'])
         if len(ret) > 0:
-            return set(ret)
-        return None
+            return ret
+        return ret

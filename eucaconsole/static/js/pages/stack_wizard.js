@@ -249,6 +249,10 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
                 if (results) {
                     $scope.loading = false;
                     $scope.description = results.description;
+                    if (results.resource_list) {
+                        $('#aws-warn-modal').foundation('reveal', 'open');
+                        return;
+                    }
                     $scope.parameters = results.parameters;
                     angular.forEach($scope.parameters, function(param, idx) {
                         $scope.paramModels[param.name] = param.default;

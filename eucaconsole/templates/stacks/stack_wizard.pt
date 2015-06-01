@@ -198,6 +198,23 @@
             </div>
         </div>
     </div>
+    <div id="aws-warn-modal" class="reveal-modal medium" data-reveal="">
+        <h3 i18n:translate="">Warning: AWS template detected</h3>
+        <p i18n:translate="">
+            It appears you have selected an AWS template to create a stack on a Eucalyptus cloud.
+        </p>
+        <p i18n:translate="">
+            Services defined in this template that Eucalyptus does not support will not be included. Supported parameters (for example, machine images) will be converted to maintain compatibility with this cloud.
+        </p>
+        <form action="${request.route_path('stack_convert')}" method="post">
+            ${structure:convert_form['csrf_token']}
+            <div class="dialog-submit-button">
+                <button type="submit" id="convert_template_submit_button" class="button expand" i18n:translate="">I Understand, Use This Template</button>
+                <a class="" i18n:translate="">Go back, I want to select a different template</a>
+            </div>
+        </form>
+        <a href="#" id="convert_template_close_link" class="close-reveal-modal">&#215;</a>
+    </div>
 </div>
 
 <div metal:fill-slot="tail_js">

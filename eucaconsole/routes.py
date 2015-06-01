@@ -352,4 +352,5 @@ urls = [
     Route(name='stack_state_json', pattern='/stacks/{name}/state/json'),
     Route(name='stack_template', pattern='/stacks/{name}/template'),
     Route(name='stack_events', pattern='/stacks/{name}/events'),
+    Route(name='stack_convert', pattern='/stacks/convert'),
 ]
