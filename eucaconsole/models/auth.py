@@ -142,7 +142,8 @@ class ConnectionManager(object):
         return _aws_connection(region, access_key, secret_key, token, conn_type)
 
     @staticmethod
-    def euca_connection(clchost, port, access_id, secret_key, token, conn_type, dns_enabled=True, validate_certs=False, certs_file=None):
+    def euca_connection(clchost, port, access_id, secret_key, token, conn_type,
+                        dns_enabled=True, validate_certs=False, certs_file=None):
         """Return Eucalyptus connection object
         Pulls from Beaker cache on subsequent calls to avoid connection overhead
 
@@ -159,7 +160,8 @@ class ConnectionManager(object):
         :param secret_key: Eucalyptus secret key
 
         :type conn_type: string
-        :param conn_type: Connection type ('ec2', 'autoscale', 'cloudwatch', 'cloudformation', 'elb', 'iam', 'sts', or 's3')
+        :param conn_type: Connection type ('ec2', 'autoscale', 'cloudwatch', 'cloudformation', 'elb',
+                                           'iam', 'sts', or 's3')
 
         :type dns_enabled: boolean
         :param dns_enabled: True if dns enabled for cloud we're connecting to
@@ -213,7 +215,7 @@ class ConnectionManager(object):
                     _access_id, _secret_key, region=region, port=_port, path=path, is_secure=True, security_token=_token
                 )
             if conn_type == 's3':
-                conn.calling_format=OrdinaryCallingFormat()
+                conn.calling_format = OrdinaryCallingFormat()
 
             # AutoScaling service needs additional auth info
             if conn_type == 'autoscale':
@@ -240,7 +242,7 @@ def groupfinder(user_id, request):
 
 class EucaAuthenticator(object):
     """Eucalyptus cloud token authenticator"""
-    #TEMPLATE = '/services/Tokens?Action=GetAccessToken&DurationSeconds={dur}&Version=2011-06-15'
+    # TEMPLATE = '/services/Tokens?Action=GetAccessToken&DurationSeconds={dur}&Version=2011-06-15'
     NON_DNS_QUERY_PATH = '/services/Tokens'
     TEMPLATE = '?Action=GetAccessToken&DurationSeconds={dur}&Version=2011-06-15'
 
@@ -282,7 +284,7 @@ class EucaAuthenticator(object):
         )
         host = self.host
         if self.dns_enabled:
-            host = 'tokens.' + host
+            host = 'tokens.{0}'.format(host)
         if self.validate_certs:
             conn = CertValidatingHTTPSConnection(host, self.port, timeout=timeout, **self.kwargs)
         else:
@@ -321,8 +323,10 @@ class EucaAuthenticator(object):
             else:
                 raise urllib2.URLError(err[1])
         except socket.error as err:
-            # when dns enabled, but path cloud, we get here with err=gaierror(8, 'nodename nor servname provided, or not known')
-            # when dns disabled, but path cloud, we get here with err=gaierror(8, 'nodename nor servname provided, or not known')
+            # when dns enabled, but path cloud, we get here with
+            # err=gaierror(8, 'nodename nor servname provided, or not known')
+            # when dns disabled, but path cloud, we get here with
+            # err=gaierror(8, 'nodename nor servname provided, or not known')
             raise urllib2.URLError(str(err))
 
 
@@ -370,4 +374,3 @@ class AWSAuthenticator(object):
                 raise urllib2.URLError(err[1])
         except socket.error as err:
             raise urllib2.URLError(err.message)
-

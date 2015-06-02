@@ -175,7 +175,7 @@ class LoginView(BaseView, PermissionCheckMixin):
                 session['secret_key'] = creds.secret_key
                 session['region'] = 'euca'
                 session['username_label'] = user_account
-                session['dns_enabled'] = auth.dns_enabled # this *must* be prior to line below
+                session['dns_enabled'] = auth.dns_enabled  # this *must* be prior to line below
                 session['supported_platforms'] = self.get_account_attributes(['supported-platforms'])
                 session['default_vpc'] = self.get_account_attributes(['default-vpc'])
 
