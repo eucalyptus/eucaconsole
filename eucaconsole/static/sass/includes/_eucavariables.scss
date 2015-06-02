@@ -63,6 +63,7 @@ $hp-accessible-blue: #007dba;
 $hp-hover-blue: #006699;
 $hp-hover-orange: #c1401a;
 $hp-gray-65: #5a5a5a;
+$hp-gray-40: #b3b3b3;
 $hp-gray-20: #cccccc;
 $hp-gray-5: #f2f2f2;
 $hp-red: #ff0000;
@@ -106,7 +107,7 @@ $row-width: rem-calc(1040);
 // Colors
 $primary-color: $hp-accessible-blue;
 $secondary-color: $hp-gray-65;
-$success-color: $euca-lightgreen;
+$success-color: $hp-green;
 $code-color: darkred;
 
 // Dropdown menus
@@ -121,7 +122,7 @@ $topbar-breakpoint: 1020px !default; // Change to 9999px for always mobile layou
 $topbar-bg-color: white;
 $topbar-bg: $topbar-bg-color;
 $topbar-dropdown-link-bg: $hp-accessible-blue;
-$topbar-link-bg-hover: $euca-darkgreen;
+$topbar-link-bg-hover: $hp-hover-blue;
 /* Dropdown elements */
 $topbar-dropdown-bg: white;
 $topbar-dropdown-link-color: #000;

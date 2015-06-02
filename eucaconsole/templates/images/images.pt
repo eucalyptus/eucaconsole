@@ -108,7 +108,7 @@
                 <th i18n:translate="">Description</th>
                 <th i18n:translate="">Root Device</th>
                 <th i18n:translate="">Platform</th>
-                <th i18n:translate="">Actions</th>
+                <th class="actions" i18n:translate="">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
                 <td class="id breakword" ng-show="!item.fake_id">
