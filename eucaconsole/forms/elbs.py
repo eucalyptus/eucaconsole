@@ -408,30 +408,17 @@ class ELBInstancesFiltersForm(BaseSecureForm):
                     'options': self.get_availability_zone_choices(self.region)},
                 {'name': 'subnet_id', 'label': self.subnet_id.label.text,
                     'options': self.getOptionsFromChoices(self.vpc_choices_manager.vpc_subnets(add_blank=False))},
-                {'name': 'security_group', 'label': self.security_group.label.text,
-                    'options': self.getOptionsFromChoices(self.ec2_choices_manager.security_groups(add_blank=False))},
             ]
             vpc_choices = self.vpc_choices_manager.vpc_networks(add_blank=False)
             vpc_choices.append(('None', _(u'No VPC')))
-            self.facets.append(
-                {'name': 'vpc_id', 'label': self.vpc_id.label.text,
-                    'options': self.getOptionsFromChoices(vpc_choices)},
-            )
         else:
             self.facets = [
                 {'name': 'state', 'label': self.state.label.text, 'options': self.get_status_choices()},
-                {'name': 'security_group', 'label': self.security_group.label.text,
-                    'options': self.getOptionsFromChoices(self.ec2_choices_manager.security_groups(add_blank=False))},
             ]
             if self.is_vpc_supported:
                 self.facets.append(
                     {'name': 'subnet_id', 'label': self.subnet_id.label.text,
                         'options': self.getOptionsFromChoices(self.vpc_choices_manager.vpc_subnets(add_blank=False))},
-                )
-                vpc_choices = self.vpc_choices_manager.vpc_networks(add_blank=False)
-                self.facets.append(
-                    {'name': 'vpc_id', 'label': self.vpc_id.label.text,
-                        'options': self.getOptionsFromChoices(vpc_choices)},
                 )
             else:
                 self.facets.append(

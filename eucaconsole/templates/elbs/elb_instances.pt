@@ -180,16 +180,14 @@
                         <div i18n:translate="" class="description">
                             Select instances to add to this load balancer. Unchecking instances will remove them from the load balancer.
                         </div>
-                        <div ng-app="MagicSearch">
-                            <magic-search
-                                template="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.html')}"
-                                strings="{'remove':'${layout.searchtext_remove}',
-                                          'cancel':'${layout.searchtext_cancel}',
-                                          'prompt':'${layout.searchtext_prompt}'}"
-                                facets="${search_facets}"
-                                filter-keys="${filter_keys}">
-                            </magic-search>
-                        </div>
+                        <magic-search
+                            template="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.html')}"
+                            strings="{'remove':'${layout.searchtext_remove}',
+                                      'cancel':'${layout.searchtext_cancel}',
+                                      'prompt':'${layout.searchtext_prompt}'}"
+                            facets="${search_facets}"
+                            filter-keys="${filter_keys}">
+                        </magic-search>
                         <div>
                              <instance-selector
                                  template="${request.static_path('eucaconsole:static/html/directives/instance_selector.html')}"

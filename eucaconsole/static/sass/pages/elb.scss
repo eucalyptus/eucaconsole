@@ -86,6 +86,10 @@ table.instance-selector-table {
     margin-bottom: 0.75rem;
 }
 
+.magic-search {
+    margin-top: 0.5rem;
+}
+
 .tile {
     @include panel-tile-mixin;
     .footer {

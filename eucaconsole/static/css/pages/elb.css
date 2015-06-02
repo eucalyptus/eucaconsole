@@ -146,6 +146,8 @@ table.instance-selector-table { width: 100%; }
 
 #controls_cross_zone_enabled { margin-top: 0.75rem; margin-bottom: 0.75rem; }
 
+.magic-search { margin-top: 0.5rem; }
+
 .tile { background-color: white; border: 1px solid #cccccc; width: 190px; height: 160px; }
 .tile .footer { height: 24px; padding-top: 2px; }
 .tile .footer.has-progress .progress { padding-right: 0; }
