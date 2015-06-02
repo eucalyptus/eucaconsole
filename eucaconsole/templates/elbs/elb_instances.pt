@@ -92,11 +92,13 @@
                                     {{ zone.instanceCount }} <span i18n:translate="">instances</span>
                                 </div>
                             </div>
-                            <div class="footer status allhealthy" ng-show="zone.unhealthyInstanceCount === 0">
-                                <span i18n:translate="">All healthy</span>
-                            </div>
-                            <div class="footer status unhealthy" ng-show="zone.unhealthyInstanceCount > 0">
-                                {{ zone.unhealthyInstanceCount }} <span i18n:translate="">unhealthy</span>
+                            <div ng-show="zone.instanceCount !== 0">
+                                <div class="footer status allhealthy" ng-show="zone.unhealthyInstanceCount === 0">
+                                    <span i18n:translate="">All healthy</span>
+                                </div>
+                                <div class="footer status unhealthy" ng-show="zone.unhealthyInstanceCount > 0">
+                                    {{ zone.unhealthyInstanceCount }} <span i18n:translate="">unhealthy</span>
+                                </div>
                             </div>
                         </div>
                         <hr />
@@ -160,11 +162,13 @@
                                     {{ subnet.instanceCount }} <span i18n:translate="">instances</span>
                                 </div>
                             </div>
-                            <div class="footer status allhealthy" ng-show="subnet.unhealthyInstanceCount === 0">
-                                <span i18n:translate="">All healthy</span>
-                            </div>
-                            <div class="footer status unhealthy" ng-show="subnet.unhealthyInstanceCount > 0">
-                                {{ subnet.unhealthyInstanceCount }} <span i18n:translate="">unhealthy</span>
+                            <div ng-show="subnet.instanceCount !== 0">
+                                <div class="footer status allhealthy" ng-show="subnet.unhealthyInstanceCount === 0">
+                                    <span i18n:translate="">All healthy</span>
+                                </div>
+                                <div class="footer status unhealthy" ng-show="subnet.unhealthyInstanceCount > 0">
+                                    {{ subnet.unhealthyInstanceCount }} <span i18n:translate="">unhealthy</span>
+                                </div>
                             </div>
                         </div>
                         <hr />
