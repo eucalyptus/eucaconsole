@@ -319,7 +319,7 @@ select { width: 100%; }
 .breadcrumbs > *.unavailable { color: #999; }
 .breadcrumbs > *.unavailable a { color: #999; }
 .breadcrumbs > *.unavailable:hover, .breadcrumbs > *.unavailable:hover a, .breadcrumbs > *.unavailable:focus, .breadcrumbs > *.unavailable a:focus { text-decoration: none; color: #999; cursor: not-allowed; }
-.breadcrumbs > *:before { content: ">"; color: #333; margin: 0 0.375rem; position: relative; top: 1px; }
+.breadcrumbs > *:before { content: "/"; color: #b3b3b3; margin: 0 0.375rem; position: relative; top: 1px; }
 .breadcrumbs > *:first-child:before { content: " "; margin: 0; }
 
 /* Accessibility - hides the forward slash */
@@ -1636,7 +1636,7 @@ a { color: #007dba; }
 #breadcrumbs li.current a { color: #444; }
 #breadcrumbs .icon-block { display: none; position: absolute; top: 0; bottom: 0; right: 0; vertical-align: middle; padding-top: 8px; }
 #breadcrumbs .help-icon { position: relative; padding: 8px 16px; border-left: 1px solid #bee094; font-weight: bold; text-align: center; }
-#breadcrumbs .breadcrumbs > ::before { position: relative; top: -2px; font-size: 0.7rem; }
+#breadcrumbs .breadcrumbs > ::before { position: relative; top: -1px; font-size: 0.7rem; }
 
 .sub-nav { position: relative; top: -1.5rem; left: 1rem; margin-bottom: -1rem; }
 .sub-nav dd a { font-weight: bold; margin-right: 0.5rem; }
