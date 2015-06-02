@@ -176,10 +176,7 @@ setup(
         'dev': dev_extras,
     },
     message_extractors=message_extractors,
-    data_files=[
-        get_data_files("locale", r'.*\.mo$'),
-        get_data_files("cf-templates", r'.*\.json$')
-        ],
+    data_files=get_data_files("locale", r'.*\.mo$') + get_data_files("cf-templates", r'.*\.json$'),
     test_suite="tests",
     entry_points="""\
     [paste.app_factory]
