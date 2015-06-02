@@ -120,9 +120,9 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor','EucaConsoleUtils'])
                 $scope.$watch(item, function(newVal) {
                     if (newVal) {
                         $scope[item] = eucaNumbersOnly(newVal);
-                        $scope.isNotValid = false;
+                        $scope.checkRequiredInput();
                     } else {
-                        $scope.isNotValid = true;
+                        $scope.checkRequiredInput();
                     }
                 });
             });
