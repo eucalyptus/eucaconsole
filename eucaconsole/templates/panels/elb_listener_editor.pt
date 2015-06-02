@@ -93,15 +93,20 @@
                 <label class="inline" i18n:translate="">Protocol</label>
                 <select id="from-protocol-select" name="from_protocol" class="ip-protocol"
                     ng-options="protocol.name for protocol in protocolList track by protocol.value"
-                    ng-model="fromProtocol" data-placeholder="select..." >
+                    ng-model="fromProtocol" data-placeholder="select..."
+                    i18n:attributes="data-placeholder">
                 </select>
             </div>
             <div class="controls-wrapper">
                 <label class="inline" i18n:translate="">Port</label>
                 <input type="number" class="port from" id="from-port-input" name="from_port"
                     ng-model="fromPort" pattern="${layout.port_range_pattern}" />
+                <span title="Load balancer port must be either 25, 80, 443, 465, 587 or from 1024 to 65535"
+                      data-tooltip="" i18n:attributes="title">
+                    <i class="helptext-icon"></i>
+                </span>
                 <small class="error" i18n:translate="">
-                    Port range value must be a whole number between 1-65535
+                    Load balancer port must be either 25, 80, 443, 465, 587 or from 1024 to 65535
                 </small>
             </div>
             <div id="from-port-error-div" class="row controls-wrapper">

@@ -433,7 +433,7 @@ class ELBView(BaseELBView):
             template = u'{0} {1} - {2}'.format(prefix, self.elb.name, '{0}')
             with boto_error_handler(self.request, location, template):
                 self.update_elb_idle_timeout(self.elb.name, idle_timeout)
-                self.update_load_balancer_listeners(self.elb.name, listeners_args)
+                self.update_listeners(self.elb.name, listeners_args)
                 time.sleep(1)  # Delay is needed to avoid missing listeners post-update
                 self.update_elb_tags(self.elb.name)
                 if self.is_vpc_supported and self.elb.security_groups != securitygroup:
@@ -492,7 +492,7 @@ class ELBView(BaseELBView):
                                       'protocol': listener[2]})
         return listener_list
 
-    def update_load_balancer_listeners(self, name, listeners_args):
+    def update_listeners(self, name, listeners_args):
         if self.elb_conn and self.elb:
             ports = []
             if self.elb.listeners:
