@@ -50,17 +50,17 @@
                         <div>
                             <div class="row controls-wrapper readonly">
                                 <div class="small-4 columns">
-                                    <span i18n:translate="" ng-show="unselectedZoneList.length == 1">
-                                        All available zones have been selected
-                                    </span>
+                                    <p i18n:translate="" ng-show="unselectedZoneList.length == 1">
+                                        All available zones have been selected.
+                                    </p>
                                     <select id="enable-zone-select" ng-show="unselectedZoneList.length &gt; 1"
                                         ng-options="zone.name for zone in unselectedZoneList track by zone.id"
                                         ng-model="newZone"></select>
                                 </div>
                                 <div class="small-8 columns field">
                                     <button class="button enable-button" id="enable-zone-btn"
-                                            ng-disabled="unselectedZoneList.length == 1"
-                                        ng-click="clickEnableZone($event)">
+                                            ng-hide="unselectedZoneList.length == 1"
+                                            ng-click="clickEnableZone($event)">
                                         <span i18n:translate="">Enable Zone</span>
                                     </button>
                                 </div>
