@@ -361,7 +361,7 @@ class StackWizardView(BaseView):
         namely description and parameters.
         """
         (template_url, parsed) = self.parse_store_template()
-        resource_list = self.identify_aws_template(parsed)
+        resource_list = StackWizardView.identify_aws_template(parsed)
         if len(resource_list) > 0:
             return dict(
                 results=dict(
@@ -534,7 +534,8 @@ class StackWizardView(BaseView):
         parsed = json.loads(template_body)
         return template_url, parsed
 
-    def identify_aws_template(self, parsed):
+    @staticmethod
+    def identify_aws_template(parsed, modify=True):
         # drawn from here: http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-template-resource-type-ref.html
         aws_resource_prefixes = [
             'AWS::CloudFront',
@@ -553,11 +554,27 @@ class StackWizardView(BaseView):
             'AWS::SQS'
         ]
         ret = []
+        # first pass, find non-euca resources
         for name in parsed['Resources'].keys():
             resource = parsed['Resources'][name]
             for prefix in aws_resource_prefixes:
                 if resource['Type'].find(prefix) == 0:
-                    ret.append(resource['Type'])
+                    ret.append({'name': name, 'type':resource['Type']})
+        # second pass, find refs to cloud-specific resources
+        for name in parsed['Resources'].keys():
+            resource = parsed['Resources'][name]
+        if modify:
+            # remove resources found in pass 1
+            for res in ret:
+                for name in parsed['Resources'].keys():
+                    if res['name'] == name:
+                        del parsed['Resources'][name]
+            # and, because we know better, remove 'AllowedValues' for InstanceType
+            for name in parsed['Parameters'].keys():
+                if name == 'InstanceType':
+                    del parsed['Parameters'][name]['AllowedValues']
+
+
         if len(ret) > 0:
             return ret
         return ret
