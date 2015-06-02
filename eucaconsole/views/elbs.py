@@ -494,16 +494,37 @@ class ELBView(BaseELBView):
 
     def update_listeners(self, name, listeners_args):
         if self.elb_conn and self.elb:
-            ports = []
+            # Convert strs in existing ELB listeners to unicode objects for add/remove comparisons
+            normalized_elb_listeners = []
             if self.elb.listeners:
-                for listener_obj in self.elb.listeners:
-                    listener = listener_obj.get_tuple()
-                    ports.append(listener[0])
-                if ports:
-                    self.elb_conn.delete_load_balancer_listeners(name, ports)
-                    # sleep is needed for Eucalyptus to avoid not finding the elb error
-                    time.sleep(1)
-            self.elb_conn.create_load_balancer_listeners(name, listeners=listeners_args)
+                for listener in self.elb.listeners:
+                    normalized_elb_listeners.append(self.normalize_listener(listener))
+
+            listeners_to_add = [x for x in listeners_args if x not in normalized_elb_listeners]
+            listeners_to_remove = [x[0] for x in normalized_elb_listeners if x not in listeners_args]
+            if listeners_to_remove:
+                self.elb.delete_listeners(listeners_to_remove)
+                # sleep is needed for Eucalyptus to avoid not finding the elb error
+                time.sleep(1)
+            if listeners_to_add:
+                self.elb_conn.create_load_balancer_listeners(self.elb.name, complex_listeners=listeners_to_add)
+                # sleep is needed for Eucalyptus to avoid not finding the elb error
+                time.sleep(1)
+
+    @staticmethod
+    def normalize_listener(listener):
+        """Listeners obtained from API call aren't exactly the same format as the listener_args,
+           so normalize them (i.e. convert strings to unicode and set tuple to 4 items) for comparison checks"""
+        normalized_listener = []
+        for item in listener.get_tuple():
+            if item:
+                if type(item) == int:
+                    normalized_listener.append(item)
+                else:
+                    normalized_listener.append(unicode(item))
+        if len(normalized_listener) < 4:
+            normalized_listener.append(normalized_listener[2])
+        return tuple(normalized_listener)
 
     def update_elb_tags(self, elb_name):
         if elb_name:
