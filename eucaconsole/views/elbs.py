@@ -293,6 +293,14 @@ class BaseELBView(TaggedItemView):
                                   'no_matching_instance_error_msg': _(u'No matching instances')}
         return instance_selector_text
 
+    @staticmethod
+    def get_instance_health_status_names():
+        """Map ELB instance health status to human-friendly names"""
+        return {
+            'InService': _(u'In service'),
+            'OutOfService': _(u'Out of service'),
+        }
+
     def get_protocol_list(self):
         if self.cloud_type == 'aws':
             protocol_list = ({'name': 'HTTP', 'value': 'HTTP', 'port': '80'},
@@ -604,6 +612,7 @@ class ELBInstancesView(BaseELBView):
             'elb_vpc_network': self.elb.vpc_id if self.elb else [],
             'elb_vpc_subnets': self.elb.subnets if self.elb else [],
             'instance_selector_text': self.get_instance_selector_text(),
+            'health_status_names': self.get_instance_health_status_names(),
             'all_instances': self.get_all_instances(),
             'elb_instance_health': self.get_elb_instance_health(),
             'instances': self.get_elb_instance_list(),

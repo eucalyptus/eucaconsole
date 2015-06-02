@@ -22,3 +22,6 @@ $instance-status-color-terminating: lightgrey;
 .status.terminated { background-color: $instance-status-color-terminated; }
 .status.shutting-down { background-color: $instance-status-color-terminating; }
 
+// ELB instance status
+.status.InService {background-color: $instance-status-color-running; }
+.status.OutOfService { background-color: $instance-status-color-stopped; }

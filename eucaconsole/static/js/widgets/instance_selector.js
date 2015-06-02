@@ -18,6 +18,7 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
             $scope.instanceList = [];
             $scope.selectedInstanceList = [];
             $scope.instancesJsonEndpoint = '';
+            $scope.instanceHealthMapping = {};
             $scope.isVPCSupported = false;
             $scope.vpcNetwork = 'None';
             $scope.vpcSubnets = [];
@@ -49,6 +50,9 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                 $scope.searchQueryURL = '';
                 $scope.searchFilter = '';
                 $scope.filterKeys = [];
+                $scope.ELBInstanceHealthList = options.elb_instance_health;
+                $scope.healthStatusNames = options.health_status_names;
+                $scope.instanceHealthMapping = $scope.getInstanceHealthMapping();
                 if (options.hasOwnProperty('is_vpc_supported')) {
                     $scope.isVPCSupported = options.is_vpc_supported;
                 }
@@ -61,6 +65,13 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                 if (options.hasOwnProperty('all_instance_list')) {
                     $scope.allInstanceList = options.allInstance_list;
                 }
+            };
+            $scope.getInstanceHealthMapping = function () {
+                var mapping = {};
+                angular.forEach($scope.ELBInstanceHealthList, function (instance) {
+                    mapping[instance.instance_id] = instance.state;
+                });
+                return mapping;
             };
             $scope.setWatcher = function () {
                 $scope.$watch('allInstanceList', function () {
