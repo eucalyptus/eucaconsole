@@ -67,6 +67,16 @@ class ELBViewTests(BaseViewTestCase, MockELBMixin):
         self.assertEqual(view.get('elb_tags'), 'foo=bar')
         self.assert_({'name': 'HTTP', 'port': '80', 'value': 'HTTP'} in view.get('protocol_list'))
 
+    def test_normalize_listeners(self):
+        listeners = [
+            {'input': (80, 80, 'HTTP'), 'output': (80, 80, u'HTTP', u'HTTP')},
+            {'input': (80, 80, 'HTTP', 'HTTP'), 'output': (80, 80, u'HTTP', u'HTTP')},
+            {'input': (80, 80, u'HTTP', u'HTTP'), 'output': (80, 80, u'HTTP', u'HTTP')},
+        ]
+        for listener in listeners:
+            normalized_listener = ELBView.normalize_listener(listener.get('input'))
+            self.assertEqual(normalized_listener, listener.get('output'))
+
 
 class ELBMonitoringViewTests(BaseViewTestCase, MockELBMixin):
     """ELB detail page view - Monitoring tab"""

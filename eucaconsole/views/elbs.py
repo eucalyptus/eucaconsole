@@ -516,7 +516,9 @@ class ELBView(BaseELBView):
         """Listeners obtained from API call aren't exactly the same format as the listener_args,
            so normalize them (i.e. convert strings to unicode and set tuple to 4 items) for comparison checks"""
         normalized_listener = []
-        for item in listener.get_tuple():
+        if type(listener) != tuple:
+            listener = listener.get_tuple()
+        for item in listener:
             if item:
                 if type(item) == int:
                     normalized_listener.append(item)
