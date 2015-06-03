@@ -6,7 +6,8 @@
 angular.module('TagEditor', ['ngSanitize', 'EucaConsoleUtils'])
     .filter('ellipsis', function () {
         return function (line, num) {
-            if( line.length <= num ){
+            if (!line) return line;
+            if (line.length <= num) {
                 return line;
             }
             return line.substring(0, num) + "...";
