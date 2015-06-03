@@ -3,9 +3,9 @@
 /* Set the link colors and styles for top-level nav */
 /* ----------------------------------------- Item list
 ----------------------------------------- */
-.status.running { background-color: #03405f; }
+.status.running { background-color: #468400; }
 
-.status.pending { background-color: #0683c2; }
+.status.pending { background-color: #822980; }
 
 .status.stopped { background-color: #990000; }
 
@@ -15,6 +15,6 @@
 
 .status.shutting-down { background-color: lightgrey; }
 
-.status.InService { background-color: #03405f; }
+.status.InService { background-color: #468400; }
 
 .status.OutOfService { background-color: #990000; }

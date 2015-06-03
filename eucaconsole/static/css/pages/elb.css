@@ -153,6 +153,7 @@ table.instance-selector-table { width: 100%; }
 .tile .footer.has-progress .progress { padding-right: 0; }
 .tile .footer.has-progress .progress .meter { color: black; text-align: left; }
 .tile .footer.has-progress .completed { position: relative; top: -3px; }
+.tile .footer.status { text-transform: none; }
 .tile .footer.status.allhealthy { background-color: #03405f; }
 .tile .footer.status.unhealthy { background-color: darkred; }
 

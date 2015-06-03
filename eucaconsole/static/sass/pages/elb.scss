@@ -107,6 +107,7 @@ table.instance-selector-table {
             }
         }
         &.status {
+            text-transform: none;
             &.allhealthy { background-color: $euca-darkblue; }
             &.unhealthy { background-color: darkred; }
         }
