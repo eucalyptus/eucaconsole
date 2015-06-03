@@ -678,6 +678,16 @@ form {
     }
     .server-validation span.error {
         display: block !important;
+        background-color: white;
+        color: darkred;
+        padding-left: 0;
+    }
+    &[data-abide] .error small.error {
+        background-color: white;
+        color: darkred;
+        &.inline {
+            display: inline-block !important;
+        }
     }
     .error .chosen-container .chosen-single {
         border-color: darkred;

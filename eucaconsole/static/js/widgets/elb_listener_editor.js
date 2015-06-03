@@ -309,8 +309,25 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
             $scope.classFromPortDiv = "";
             // timeout is needed for the update of the input element DOM to be completed
             $timeout(function () {
-                if ($('#from-port-input').hasClass('ng-invalid-pattern')) {
+                var portInput = $('#from-port-input'),
+                    portError = $('#from-port-error'),
+                    portVal = parseInt(portInput.val(), 10),
+                    validPorts = [25, 80, 443, 465, 587],
+                    validPortMin = 1024,
+                    validPortMax = 65535;
+                portError.hide();
+                if (portInput.hasClass('ng-invalid-pattern')) {
                     $scope.classFromPortDiv = "error";
+                }
+                if (isNaN(portVal)) {
+                    $scope.classFromPortDiv = "error";
+                    return false;
+                }
+                if (validPorts.indexOf(portVal) === -1 && (portVal < validPortMin || portVal > validPortMax)) {
+                    $scope.classFromPortDiv = "error";
+                    portInput.focus();
+                    portError.show();
+                    return false;
                 }
             });
         }; 

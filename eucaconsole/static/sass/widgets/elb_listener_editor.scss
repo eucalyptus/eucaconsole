@@ -16,6 +16,16 @@
         select.ip-protocol {
             width: 8rem;
         }
+        .elb-port-tooltip {
+            position: relative;
+            left: -8px;
+        }
+        #from-port-error {
+            margin-left: 1rem;
+            background: white;
+            color: darkred;
+            font-style: normal;
+        }
     }
     .security-row {
         label.inline {
