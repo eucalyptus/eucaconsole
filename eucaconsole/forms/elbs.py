@@ -360,11 +360,11 @@ class CreateELBForm(BaseSecureForm):
 
     @staticmethod
     def get_failures_until_unhealthy_choices():
-        return [(str(x), str(x)) for x in range(1, 11)]
+        return [(str(x), str(x)) for x in range(2, 11)]
 
     @staticmethod
     def get_passes_until_healthy_choices():
-        return [(str(x), str(x)) for x in range(1, 11)]
+        return [(str(x), str(x)) for x in range(2, 11)]
 
 
 class ELBInstancesFiltersForm(BaseSecureForm):
