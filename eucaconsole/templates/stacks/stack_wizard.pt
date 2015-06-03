@@ -23,6 +23,8 @@
                 <form action="${request.route_path('stack_create')}" id="stack-wizard-form"
                       method="post" data-abide="abide" enctype="multipart/form-data">
                     ${structure:create_form['csrf_token']}
+                    <input name="s3-template-url" type="hidden" value="{{ s3TemplateUrl }}"/>
+                    <input name="s3-template-key" type="hidden" value="{{ s3TemplateKey }}"/>
                     <dl id="wizard-tabs" class="tabs" data-tab="">
                         <dd class="active">
                             <a id="tabStep1" href="#step1" ng-click="visitNextStep(1, $event)">
@@ -197,23 +199,87 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div id="aws-warn-modal" class="reveal-modal medium" data-reveal="">
-        <h3 i18n:translate="">Warning: AWS template detected</h3>
-        <p i18n:translate="">
-            It appears you have selected an AWS template to create a stack on a Eucalyptus cloud.
-        </p>
-        <p i18n:translate="">
-            Services defined in this template that Eucalyptus does not support will not be included. Supported parameters (for example, machine images) will be converted to maintain compatibility with this cloud.
-        </p>
-        <form action="${request.route_path('stack_convert')}" method="post">
-            ${structure:convert_form['csrf_token']}
-            <div class="dialog-submit-button">
-                <button type="submit" id="convert_template_submit_button" class="button expand" i18n:translate="">I Understand, Use This Template</button>
-                <a class="" i18n:translate="">Go back, I want to select a different template</a>
+        <div id="aws-error-modal" class="reveal-modal medium" data-reveal="">
+            <h3 i18n:translate="">Warning: Unsupported items detected</h3>
+            <p i18n:translate="">
+                This AWS template contains services or resources that Eucalyptus does not yet support.
+            </p>
+            <p i18n:translate="">
+                Please edit the template to remove the unsupported items and try again.
+            </p>
+            <div class="expando" id="details-section" ng-cloak="">
+                <h6 class="title" >
+                    <a ng-click="toggleContent()">
+                        <i class="fi-plus" ng-show="!expanded"></i>
+                        <i class="fi-minus" ng-show="expanded"></i>
+                        &nbsp;<span i18n:translate="">Details</span>
+                    </a>
+                </h6>
+                <div class="content" ng-show="expanded">
+                    <div class="datagrid" id="datagrid-items">
+                        <div id="tableview" class="gridwrapper">
+                            <table class="table">
+                                <thead><tr>
+                                    <th i18n:translate="">UNSUPPORTED SERVICES</th>
+                                    <th i18n:translate="">UNSUPPORTED RESOURCES</th>
+                                </tr></thead>
+                                <tbody>
+                                    <tr ng-repeat="item in resourceList | orderBy: sortBy:sortReverse" ng-cloak="true">
+                                        <td>{{ item.type }}</td>
+                                        <td>{{ item.name }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </form>
-        <a href="#" id="convert_template_close_link" class="close-reveal-modal">&#215;</a>
+            <a href="#" id="convert_template_close_link" class="close-reveal-modal">&#215;</a>
+        </div>
+        <div id="aws-warn-modal" class="reveal-modal medium" data-reveal="">
+            <h3 i18n:translate="">Warning: AWS template detected</h3>
+            <p i18n:translate="">
+                It appears you have selected an AWS template to create a stack on a Eucalyptus cloud.
+            </p>
+            <p i18n:translate="">
+                Supported parameters (for example, machine images or instance types) will be converted to maintain compatibility with this cloud.
+            </p>
+            <div class="expando" id="details-section" ng-cloak="">
+                <h6 class="title" >
+                    <a ng-click="toggleContent()">
+                        <i class="fi-plus" ng-show="!expanded"></i>
+                        <i class="fi-minus" ng-show="expanded"></i>
+                        &nbsp;<span i18n:translate="">Details</span>
+                    </a>
+                </h6>
+                <div class="content" ng-show="expanded">
+                    <div class="datagrid" id="datagrid-items">
+                        <div id="tableview" class="gridwrapper">
+                            <table class="table">
+                                <thead><tr>
+                                    <th i18n:translate="">PARAMETERS TO CONVERT</th>
+                                </tr></thead>
+                                <tbody>
+                                    <tr ng-repeat="item in resourceList | orderBy: sortBy:sortReverse" ng-cloak="true">
+                                        <td>{{ item.name }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="dialog-option">
+                <input type="checkbox" id="check-do-not-show-me-again" />&nbsp;<span i18n:translate="">Do not show me this again</span>
+            </div>
+            <div class="dialog-submit-button">
+                <a ng-click="convertTemplate()" id="convert_template_submit_button" class="button expand" i18n:translate="">I Understand, Use This Template</a>
+                <!--
+                <a class="cancel-link" i18n:translate="">Go back, I want to select a different template</a>
+                -->
+            </div>
+            <a href="#" id="convert_template_close_link" class="close-reveal-modal">&#215;</a>
+        </div>
     </div>
 </div>
 

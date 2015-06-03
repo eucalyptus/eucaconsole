@@ -38,7 +38,7 @@ from pyramid.view import view_config
 from ..i18n import _
 from ..forms import ChoicesManager, CFSampleTemplateManager
 
-from ..forms.stacks import StacksDeleteForm, StacksFiltersForm, StacksCreateForm, StacksConvertForm
+from ..forms.stacks import StacksDeleteForm, StacksFiltersForm, StacksCreateForm 
 from ..models import Notification
 from ..models.auth import User
 from ..views import LandingPageView, BaseView, JSONResponse
@@ -329,10 +329,8 @@ class StackWizardView(BaseView):
         with boto_error_handler(self.request):
             s3_bucket = self.get_template_samples_bucket()
             self.create_form = StacksCreateForm(request, s3_bucket)
-        self.convert_form = StacksConvertForm(request)
         self.render_dict = dict(
             create_form=self.create_form,
-            convert_form=self.convert_form,
             controller_options_json=self.get_controller_options_json(),
         )
 
@@ -346,6 +344,7 @@ class StackWizardView(BaseView):
     def get_controller_options_json(self):
         return BaseView.escape_json(json.dumps({
             'stack_template_url': self.request.route_path('stack_template_parse'),
+            'convert_template_url': self.request.route_path('stack_template_convert'),
             'sample_templates': self.create_form.sample_template.choices
         }))
 
@@ -360,15 +359,58 @@ class StackWizardView(BaseView):
         Fetches then parsed template to return information needed by wizard,
         namely description and parameters.
         """
-        (template_url, parsed) = self.parse_store_template()
+        (template_url, template_name, parsed) = self.parse_store_template()
         resource_list = StackWizardView.identify_aws_template(parsed)
         if len(resource_list) > 0:
             return dict(
                 results=dict(
+                    template_url=template_url,
+                    template_key=template_name,
                     description=parsed['Description'] if 'Description' in parsed else '',
                     resource_list=resource_list
                 )
             )
+        params = self.generate_param_list(parsed)
+        return dict(
+            results=dict(
+                template_url=template_url,
+                template_key=template_name,
+                description=parsed['Description'] if 'Description' in parsed else '',
+                parameters=params
+            )
+        )
+
+    @view_config(route_name='stack_template_convert', renderer='json', request_method='POST')
+    def stack_template_convert(self):
+        """
+        Fetches then parsed template to return information needed by wizard,
+        namely description and parameters.
+        """
+        (template_url, template_name, parsed) = self.parse_store_template()
+        resource_list = StackWizardView.identify_aws_template(parsed, modify=True)
+        template_body = json.dumps(parsed)
+
+        # now, store it back in S3
+        s3_conn = self.get_connection(conn_type="s3")
+        account_id = User.get_account_id(ec2_conn=self.get_connection(), request=self.request)
+        region = self.request.session.get('region')
+        bucket = s3_conn.create_bucket("cf-template-{acct}-{region}".format(acct=account_id, region=region))
+        key = bucket.get_key(template_name)
+        if key is None:
+            key = bucket.new_key(template_name)
+        key.set_contents_from_string(template_body)
+        template_url = key.generate_url(300)  # 5 minute URL, more than enough time, right?
+
+        params = self.generate_param_list(parsed)
+        return dict(
+            results=dict(
+                template_url=template_url,
+                template_key=template_name,
+                parameters=params
+            )
+        )
+
+    def generate_param_list(self, parsed):
         params = []
         for name in parsed['Parameters'].keys():
             param = parsed['Parameters'][name]
@@ -405,12 +447,7 @@ class StackWizardView(BaseView):
             if ('vmtype' in name.lower() or 'instancetype' in name.lower()) and 'options' not in param_vals.keys():
                 param_vals['options'] = self.get_vmtype_options()
             params.append(param_vals)
-        return dict(
-            results=dict(
-                description=parsed['Description'] if 'Description' in parsed else '',
-                parameters=params
-            )
-        )
+        return params
 
     def get_key_options(self):
         conn = self.get_connection()
@@ -467,7 +504,7 @@ class StackWizardView(BaseView):
         if True:  # self.create_form.validate():
             stack_name = self.request.params.get('name')
             location = self.request.route_path('stacks')
-            (template_url, parsed) = self.parse_store_template()
+            (template_url, template_name, parsed) = self.parse_store_template()
             params = []
             for name in parsed['Parameters'].keys():
                 val = self.request.params.get(name)
@@ -495,47 +532,54 @@ class StackWizardView(BaseView):
         return self.render_dict
 
     def parse_store_template(self):
-        template_name = self.request.params.get('sample-template')
-        template_url = self.request.params.get('template-url')
-        files = self.request.POST.getall('template-file')
-        template_body = ''
-
-        if len(files) > 0 and len(str(files[0])) > 0:  # read from file
-            # TODO: body limit is 51,200 in the API, check that!
-            template_body = files[0].file.read()
-            template_name = files[0].name
-        elif template_url:  # read from url
+        s3_template_url = self.request.params.get('s3-template-url')
+        if s3_template_url:
+            # pull previously uploaded...
+            template_url = s3_template_url
             template_body = urllib2.urlopen(template_url).read()
-            template_name = template_url[template_url.rindex('/') + 1:]
+            template_name = self.request.params.get('s3-template-key')
         else:
-            s3_bucket = self.get_template_samples_bucket()
-            mgr = CFSampleTemplateManager(s3_bucket)
-            templates = mgr.get_template_list()
-            for directory, files in templates:
-                if template_name in [f for (name, f) in files]:
-                    if directory == 's3':
-                        s3_key = s3_bucket.get_key(template_name)
-                        template_body = s3_key.get_contents_as_string()
-                    else:
-                        fd = open(os.path.join(directory, template_name), 'r')
-                        template_body = fd.read()
+            template_name = self.request.params.get('sample-template')
+            template_url = self.request.params.get('template-url')
+            files = self.request.POST.getall('template-file')
+            template_body = ''
 
-        # now that we have it, store in S3
-        s3_conn = self.get_connection(conn_type="s3")
-        account_id = User.get_account_id(ec2_conn=self.get_connection(), request=self.request)
-        region = self.request.session.get('region')
-        bucket = s3_conn.create_bucket("cf-template-{acct}-{region}".format(acct=account_id, region=region))
-        key = bucket.get_key(template_name)
-        if key is None:
-            key = bucket.new_key(template_name)
-        key.set_contents_from_string(template_body)
-        template_url = key.generate_url(300)  # 5 minute URL, more than enough time, right?
+            if len(files) > 0 and len(str(files[0])) > 0:  # read from file
+                # TODO: body limit is 51,200 in the API, check that!
+                template_body = files[0].file.read()
+                template_name = files[0].name
+            elif template_url:  # read from url
+                template_body = urllib2.urlopen(template_url).read()
+                template_name = template_url[template_url.rindex('/') + 1:]
+            else:
+                s3_bucket = self.get_template_samples_bucket()
+                mgr = CFSampleTemplateManager(s3_bucket)
+                templates = mgr.get_template_list()
+                for directory, files in templates:
+                    if template_name in [f for (name, f) in files]:
+                        if directory == 's3':
+                            s3_key = s3_bucket.get_key(template_name)
+                            template_body = s3_key.get_contents_as_string()
+                        else:
+                            fd = open(os.path.join(directory, template_name), 'r')
+                            template_body = fd.read()
+
+            # now that we have it, store in S3
+            s3_conn = self.get_connection(conn_type="s3")
+            account_id = User.get_account_id(ec2_conn=self.get_connection(), request=self.request)
+            region = self.request.session.get('region')
+            bucket = s3_conn.create_bucket("cf-template-{acct}-{region}".format(acct=account_id, region=region))
+            key = bucket.get_key(template_name)
+            if key is None:
+                key = bucket.new_key(template_name)
+            key.set_contents_from_string(template_body)
+            template_url = key.generate_url(300)  # 5 minute URL, more than enough time, right?
 
         parsed = json.loads(template_body)
-        return template_url, parsed
+        return template_url, template_name, parsed
 
     @staticmethod
-    def identify_aws_template(parsed, modify=True):
+    def identify_aws_template(parsed, modify=False):
         # drawn from here: http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-template-resource-type-ref.html
         aws_resource_prefixes = [
             'AWS::CloudFront',
@@ -559,22 +603,50 @@ class StackWizardView(BaseView):
             resource = parsed['Resources'][name]
             for prefix in aws_resource_prefixes:
                 if resource['Type'].find(prefix) == 0:
-                    ret.append({'name': name, 'type':resource['Type']})
+                    ret.append({'name': name, 'type': resource['Type']})
         # second pass, find refs to cloud-specific resources
-        for name in parsed['Resources'].keys():
-            resource = parsed['Resources'][name]
+        def find_image_ref(name, item):
+            if name == 'Parameters':
+                return  # ignore refs already in params
+            if type(item) is dict and 'ImageId' in item.keys():
+                img_item = item['ImageId']
+                if 'Ref' not in img_item.keys():
+                    ret.append({'name': 'ImageId', 'type': 'Property', 'item': img_item})
+        StackWizardView.traverse(parsed, find_image_ref)
+
         if modify:
-            # remove resources found in pass 1
             for res in ret:
+                # remove resources found in pass 1
                 for name in parsed['Resources'].keys():
                     if res['name'] == name:
                         del parsed['Resources'][name]
-            # and, because we know better, remove 'AllowedValues' for InstanceType
+                # modify resource refs into params
+                if res['name'] == 'ImageId':
+                    res['item'].update({'Ref': 'EucaImageId'})
+                    parsed['Parameters']['EucaImageId'] = dict(
+                            Description='Image required to run this template',
+                            Type='AWS::EC2::Image::Id'
+                        )
+            # and, because we provide instance types, remove 'AllowedValues' for InstanceType
             for name in parsed['Parameters'].keys():
-                if name == 'InstanceType':
+                if name == 'InstanceType' and 'AllowedValues' in parsed['Parameters'][name]:
                     del parsed['Parameters'][name]['AllowedValues']
 
 
         if len(ret) > 0:
             return ret
         return ret
+
+    @staticmethod
+    def traverse(graph, func, depth=0):
+        if depth > 5:   # safety valve
+            return
+        if type(graph) is list:
+            for item in graph:
+                func(None, item)
+                StackWizardView.traverse(item, func, depth+1)
+        if type(graph) is dict:
+            for key in graph.keys():
+                item = graph[key]
+                func(key, item)
+                StackWizardView.traverse(item, func, depth+1)

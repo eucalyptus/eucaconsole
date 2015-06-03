@@ -24,9 +24,13 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
     })
     .controller('StackWizardCtrl', function ($scope, $http, $timeout, eucaHandleError, eucaUnescapeJson) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+        $scope.expanded = false;
         $scope.stackForm = $('#stack-wizard-form');
         $scope.stackName = '';
+        $scope.s3TemplateUrl = undefined;
+        $scope.s3TemplateKey = undefined;
         $scope.stackTemplateEndpoint = '';
+        $scope.convertTemplateEndpoint = '';
         $scope.tagsObject = {};
         $scope.templateFiles = [];
         $scope.templateSample = undefined;
@@ -41,6 +45,7 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.stackTemplateEndpoint = options.stack_template_url;
+            $scope.convertTemplateEndpoint = options.convert_template_url;
             $scope.templates = options.sample_templates;
             $scope.setInitialValues();
             //$('#sample-template').chosen({'width': '100%', search_contains: true});
@@ -50,6 +55,9 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
             $timeout(function() {
                 $('#sample-template').trigger('chosen:updated');
             }, 1000);
+        };
+        $scope.toggleContent = function () {
+            $scope.expanded = !$scope.expanded;
         };
         $scope.setFocus = function () {
             $timeout(function() {
@@ -248,11 +256,86 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
                 var results = oData ? oData.results : '';
                 if (results) {
                     $scope.loading = false;
+                    $scope.s3TemplateUrl = results.template_url;
+                    $scope.s3TemplateKey = results.template_key;
                     $scope.description = results.description;
                     if (results.resource_list) {
-                        $('#aws-warn-modal').foundation('reveal', 'open');
+                        $scope.resourceList = results.resource_list;
+                        var warn_only = true;
+                        var i;
+                        for (i=0; i<$scope.resourceList.length; i++) {
+                            if ($scope.resourceList[i].type != 'Property') {
+                                warn_only = false;
+                            }
+                        }
+                        if (warn_only === true) {
+                            $scope.showAWSWarn();
+                        }
+                        else {
+                            $scope.resourceList = [];
+                            for (i=0; i<results.resource_list.length; i++) {
+                                if (results.resource_list[i].type != 'Property') {
+                                    $scope.resourceList.push(results.resource_list[i]);
+                                }
+                            }
+                            $('#aws-error-modal').foundation('reveal', 'open');
+                        }
                         return;
                     }
+                    $scope.parameters = results.parameters;
+                    angular.forEach($scope.parameters, function(param, idx) {
+                        $scope.paramModels[param.name] = param.default;
+                    });
+                    $scope.checkRequiredInput();
+                    // prune form elements not needed so we don't have 2 w/ same name
+                    $timeout(function() {
+                        $("#params-list").find(".ng-hide").each(function() {
+                            $(this).remove();
+                        });
+                    }, 1000);
+                }
+            }).
+            error(function (oData, status) {
+                eucaHandleError(oData, status);
+            });
+        };
+        $scope.showAWSWarn = function () {
+            var thisKey = "do-not-show-aws-template-warning";
+            if (Modernizr.localstorage && localStorage.getItem(thisKey) != "true") {
+                var modal = $('#aws-warn-modal');
+                modal.foundation('reveal', 'open');
+                modal.on('click', '#convert_template_submit_button', function(){
+                    if (modal.find('input#check-do-not-show-me-again').is(':checked')) {
+                        if (Modernizr.localstorage) {
+                            localStorage.setItem(thisKey, "true");
+                        }
+                    }
+                });
+            }
+            else {
+                $scope.convertTemplate();
+            }
+        };
+        $scope.convertTemplate = function () {
+            var fd = new FormData();
+            // fill from actual form
+            angular.forEach($('form').serializeArray(), function(value, key) {
+                this.append(value.name, value.value);
+            }, fd);
+            // skip file param since we're relying on template already being in S3
+            $scope.loading = true;
+            $scope.parameters = undefined;
+            $http.post($scope.convertTemplateEndpoint, fd, {
+                    headers: {'Content-Type': undefined},
+                    transformRequest: angular.identity
+            }).
+            success(function(oData) {
+                var results = oData ? oData.results : '';
+                if (results) {
+                    $scope.loading = false;
+                    $('#aws-warn-modal').foundation('reveal', 'close');
+                    $scope.s3TemplateUrl = results.template_url;
+                    $scope.s3TemplateKey = results.template_key;
                     $scope.parameters = results.parameters;
                     angular.forEach($scope.parameters, function(param, idx) {
                         $scope.paramModels[param.name] = param.default;
