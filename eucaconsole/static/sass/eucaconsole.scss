@@ -136,12 +136,13 @@ a {
     border-bottom: 1px solid $hp-gray-20;
 }
 #logobar {
-    height: 44px;
-    padding: 5px 0 10px 0;
+    padding: 6px 0 0 0;
     margin-top: 20px;
     background-color: #fff;
     color: #333;
     #hp-logo {
+        position: relative;
+        bottom: 1px;
         display: inline-block;
         width: 36px;
         height: 36px;
@@ -210,37 +211,6 @@ a {
     }
 }
 
-// Nav bar styles
-#navbar {
-    .top-bar-section ul li > a {
-        font-family: Lato, Helvetica, Arial, sans-serif;
-        font-size: 1.2rem;
-        padding-left: 14px;
-        padding-right: 14px;
-    }
-    border-top: 1px solid black;
-    border-bottom: 1px solid black;
-    a {
-        text-transform: uppercase;
-        font-size: 0.9rem;
-    }
-    .top-bar-section ul.dropdown li > a {
-        font-family: Lato, Helvetica, Arial, sans-serif;
-        font-size: 1rem;
-    }
-    .dropdown {
-        z-index: 999999;
-        box-shadow: 0 0 1px 1px lighten($hp-accessible-blue, 30%);
-        li {
-            a {
-                text-transform: none;
-                &:hover {
-                    background-color: #eee;
-                }
-            }
-        }
-    }
-}
 
 // Breadcrumbs
 $breadcrumb-background-color: $euca-extralightgreen;
@@ -278,7 +248,7 @@ $breadcrumb-border-color: darken($breadcrumb-background-color, 20%);
     }
     .breadcrumbs > ::before {
         position: relative;
-        top: -2px;
+        top: -1px;
         font-size: 0.7rem;
     }
 }
@@ -419,15 +389,14 @@ a.circle {
     margin-top: -1rem;
     font-weight: bold;
     .alert-box {
-        background-color: $euca-notificationblue;
+        background-color: $hp-green;
         position: fixed;
         top: 10px;
         left: 10px;
         z-index: 9999999;
         width:99%;
         &.success {
-            background-color: $euca-notificationblue;
-            border-color: $euca-extralightblue;
+            background-color: $hp-green;
         }
         &.warning {
             color: #333;
@@ -621,6 +590,7 @@ form {
         cursor: default;
     }
     input {
+        border-color: $hp-gray-20;
         background-color: $hp-gray-5;
         &[type=text],
         &[type=password],
@@ -948,17 +918,24 @@ footer {
         color: white;
     }
     &.secondary {
-        background-color: $euca-grey;
-        border-color: $euca-grey;
-        color: white;
+        background-color: $white;
+        border-color: $hp-gray-65;
+            &:hover {
+                background-color: white;
+                border-color: $hp-hover-blue;
+                color: $hp-hover-blue;
+            } 
+        color: $hp-gray-65;
     }
     &.disabled, &[disabled] {
-        background-color: $euca-grey;
-        border-color: $euca-grey;
-        &:hover {
-            background-color: $euca-grey;
-            border-color: $euca-grey;
-        }
+        background-color: white;
+        border-color: $hp-gray-40;
+            &:hover {
+                background-color: $white;
+                border-color: $hp-gray-40;
+                color: $hp-gray-40;
+            }
+        color: $hp-gray-40;           
     }
     &:hover {
         background-color: $hp-hover-blue;
@@ -1120,7 +1097,7 @@ div.left-off-canvas-menu {
     background-color: white;
     border-style: solid;
     border-width: 0 1px 0 0;
-    border-color: $euca-grey;
+    border-color: $hp-gray-20;
 }
 
 ul.off-canvas-list {
@@ -1128,29 +1105,29 @@ ul.off-canvas-list {
     li {
         label {
             background-color: white;
-            color: $euca-grey;
+            color: $hp-gray-65;
             padding-left: 0.5rem;
             border-top: 0;
         }
         a {
             background-color: white;
-            color: $euca-grey;
+            color: $hp-gray-65;
             padding: 0.5rem;
             border-bottom: 0;
             label {
                 background-color: white;
-                color: $euca-grey;
+                color: $hp-gray-65;
                 padding-left: 0.5rem;
                 border-top: 0;
             }
         }
         a:hover:not(.nolink) {
-            background-color: lighten($euca-grey, 50%);
-            color: black;
+            background-color: $hp-gray-5;
+            color: $hp-hover-blue;
         }
         a.nolink:hover {
             background-color: white;
-            color: $euca-grey;
+            color: $hp-gray-65;
         }
         .dropdown {
             background-color: white;

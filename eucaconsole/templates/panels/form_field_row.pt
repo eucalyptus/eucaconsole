@@ -4,9 +4,9 @@
     <div tal:condition="not:reverse" tal:omit-tag="">
         <div class="large-${leftcol_width_large} small-${leftcol_width} columns" tal:condition="leftcol_width">
             <label class="${'right' if inline else 'left'}">
-                ${field.label.text}&nbsp;<span tal:condition="field.flags.required" class="req">*</span>
-                <span tal:condition="getattr(field, 'help_text', None)" data-tooltip="" title="${field.help_text}">
-                    <i class="helptext-icon"></i>
+                ${field.label.text}&nbsp;<span tal:condition="field.flags.required"
+                        class="req">*</span><span tal:condition="getattr(field, 'help_text', None)"
+                        data-tooltip="" title="${field.help_text}"><i class="helptext-icon"></i>
                 </span>
             </label>
         </div>

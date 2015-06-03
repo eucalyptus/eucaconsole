@@ -111,7 +111,7 @@ class sdist_with_git_version(sdist):
 
 requires = [
     'beaker >= 1.5.4',
-    'boto == 2.34.0',
+    'boto >= 2.38.0',
     'chameleon >= 2.5.3',
     'dogpile.cache >= 0.5.3',
     # taking this out since we need gevent1 for pkg install
@@ -176,7 +176,7 @@ setup(
         'dev': dev_extras,
     },
     message_extractors=message_extractors,
-    data_files=get_data_files("locale", r'.*\.mo$'),
+    data_files=get_data_files("locale", r'.*\.mo$') + get_data_files("cf-templates", r'.*\.json$'),
     test_suite="tests",
     entry_points="""\
     [paste.app_factory]
