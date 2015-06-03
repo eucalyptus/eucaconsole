@@ -10,7 +10,7 @@ from pages.security_group.security_group_view import SecurityGroupView
 from pages.security_group.security_group_detail import SecurityGroupDetailPage
 from dialogs.security_group_dialogs import CreateScurityGroupDialog, DeleteScurityGroupDialog
 from dialogs.keypair_dialogs import CreateKeypairDialog, DeleteKeypairModal, ImportKeypairDialog
-from dialogs.instance_dialogs import LaunchInstanceWidget
+from dialogs.instance_dialogs import LaunchInstanceWidget, TerminateInstanceModal
 
 
 
@@ -184,14 +184,17 @@ class GuiEC2(GuiTester):
         DeleteScurityGroupDialog(self).delete_s_group()
         SecurityGroupView(self).verify_s_group_not_present(sgroup_name)
 
-    def launch_instance_from_dashboard(self, instance_name=None):
+    def launch_instance_from_dashboard(self, availability_zone = None, instance_type = "t1.micro: 1 CPUs, 256 memory (MB), 5 disk (GB,root device)", number_of_of_instances = None, instance_name = None, key_name = "None (advanced option)", security_group = "default"):
         """
         Goes to dashboard via menu. Launches centos instance.
         """
         BasePage(self).goto_dashboard_via_menu()
         Dashboard(self).click_launch_instance_button_from_dashboard()
-        LaunchInstanceWidget(self).launch_centos_instance()
-        InstanceView(self)
+        LaunchInstanceWidget(self).launch_centos_instance(availability_zone, instance_type, number_of_of_instances, instance_name, key_name, security_group)
+        instance_id = InstanceView(self).get_id_of_newly_launched_instance()
+        InstanceView(self).goto_instance_detail_page_via_link(instance_id)
+        InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_in_running_state()
+        return {'instance_name': instance_name, 'instance_id':instance_id}
 
     def launch_instance_from_image_view_page(self, instance_name=None):
         pass
@@ -202,8 +205,17 @@ class GuiEC2(GuiTester):
     def launch_more_like_this_from_detail_page(self):
         pass
 
-    def terminate_instance_from_view_page(self):
-        pass
+    def terminate_instance_from_view_page(self, instance_name, instance_id):
+        """
+        Goes to view page, terminates instance.
+        :param instance_name:
+        :param instance_id:
+        """
+        BasePage(self).goto_instances_via_menu()
+        InstanceView(self).click_action_terminate_instance_on_view_page(instance_id)
+        TerminateInstanceModal(self).click_terminate_instance_submit_button(instance_id)
+        InstanceView(self)
+
 
     def terminate_instance_from_detail_page(self):
         pass

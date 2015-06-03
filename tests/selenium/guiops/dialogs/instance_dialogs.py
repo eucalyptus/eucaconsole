@@ -6,7 +6,7 @@ class LaunchInstanceWidget(BaseDialog):
         self.tester = tester
 
     _image_search_field_css = ".search-input"
-    _centos_image_select_button_css = "tr.ng-scope>td.btns>a"
+    _first_image_button_css = "tr.ng-scope>td.btns>a"
     _number_of_instances_input_field_id = "number"
     _instance_type_selector_id = "instance_type"
     _availability_zone_selector_id = "zone"
@@ -19,25 +19,50 @@ class LaunchInstanceWidget(BaseDialog):
     _highlighted_security_group_css = "[class = 'active-result highlighted']"
     _launch_instance_button_id = "launch-instance-btn-step3"
 
-    def launch_centos_instance(self, availability_zone = None, instance_type = "t1.micro: 1 CPUs, 256 memory (MB), 5 disk (GB,root device)", number_of_of_instances = None, name = None, key_name = "None (advanced option)", security_group = "default"):
+    instance_types = {"m1.small": "m1.small: 1 CPUs, 256 memory (MB), 5 disk (GB,root device)",
+                       "t1.micro": "t1.micro: 1 CPUs, 256 memory (MB), 5 disk (GB,root device)",
+                       "m1.medium": "m1.medium: 1 CPUs, 512 memory (MB), 10 disk (GB,root device)",
+                       "c1.medium": "c1.medium: 2 CPUs, 512 memory (MB), 10 disk (GB,root device)",
+                       "m1.large": "m1.large: 2 CPUs, 512 memory (MB), 10 disk (GB,root device)",
+                       "m1.xlarge": "m1.xlarge: 2 CPUs, 1024 memory (MB), 10 disk (GB,root device)",
+                       "c1.xlarge": "c1.xlarge: 2 CPUs, 2048 memory (MB), 10 disk (GB,root device)",
+                       "m2.xlarge": "m2.xlarge: 2 CPUs, 2048 memory (MB), 10 disk (GB,root device)",
+                       "m3.xlarge": "m3.xlarge: 4 CPUs, 2048 memory (MB), 15 disk (GB,root device)",
+                       "m2.2xlarge": "m2.2xlarge: 2 CPUs, 4096 memory (MB), 30 disk (GB,root device)",
+                       "m3.2xlarge": "m3.2xlarge: 4 CPUs, 4096 memory (MB), 30 disk (GB,root device)",
+                       "cc1.4xlarge": "cc1.4xlarge: 8 CPUs, 3072 memory (MB), 60 disk (GB,root device)",
+                       "m2.4xlarge": "m2.4xlarge: 8 CPUs, 4096 memory (MB), 60 disk (GB,root device)",
+                       "hi1.4xlarge": "hi1.4xlarge: 8 CPUs, 6144 memory (MB), 120 disk (GB,root device)",
+                       "cc2.8xlarge": "cc2.8xlarge: 16 CPUs, 6144 memory (MB), 120 disk (GB,root device)",
+                       "cg1.4xlarge": "cg1.4xlarge: 16 CPUs, 12288 memory (MB), 200 disk (GB,root device)",
+                       "cr1.8xlarge": "cr1.8xlarge: 16 CPUs, 16384 memory (MB), 240 disk (GB,root device)",
+                       "hs1.8xlarge": "hs1.8xlarge: 48 CPUs, 119808 memory (MB), 24000 disk (GB,root device)"}
+
+    def launch_centos_instance(self, availability_zone = None, instance_type = "t1.micro: 1 CPUs, 256 memory (MB), 5 disk (GB,root device)", number_of_of_instances = None, instance_name = None, key_name = "None (advanced option)", security_group = "default"):
         self.tester.send_keys_by_css(self._image_search_field_css, "centos")
-        self.tester.click_element_by_css(self._centos_image_select_button_css)
+        if self.tester.wait_for_element_present_by_css(self._first_image_button_css):
+            self.tester.click_element_by_css(self._first_image_button_css)
+        else:
+            self.tester.send_keys_by_css(self._image_search_field_css, "precise")
+            self.tester.click_element_by_css(self._first_image_button_css)
+
         if number_of_of_instances != None:
-            self.send_keys_by_css(self._number_of_instances_input_field_id, number_of_of_instances)
+            self.tester.send_keys_by_id(self._number_of_instances_input_field_id, number_of_of_instances)
         if instance_type != None:
-            self.tester.select_by_id(self._instance_type_selector_id, instance_type)
+            self.tester.select_by_id(self._instance_type_selector_id, self.instance_types.get(instance_type))
         if availability_zone != None:
             self.tester.select_by_id(self._availability_zone_selector_id, availability_zone)
-        if name != None:
-            self.tester.send_keys_by_css(self._name_input_field_css, name)
+        if instance_name != None:
+            self.tester.send_keys_by_css(self._name_input_field_css, instance_name)
+        self.tester.wait_for_clickable_by_id(self._step2_next_button_id)
         self.tester.click_element_by_id(self._step2_next_button_id)
         self.tester.select_by_id(self._keypair_selector_id, key_name)
-        self.tester.click_element_by_css(self._security_group_choices_css)
+        self.tester.click_element_by_id(self._security_group_selector_id)
         self.tester.send_keys_by_css(self._security_group_search_field_css, security_group)
         self.tester.click_element_by_css(self._highlighted_security_group_css)
         self.tester.click_element_by_id(self._launch_instance_button_id)
 
-class TerminateInstance(BaseDialog):
+class TerminateInstanceModal(BaseDialog):
 
     def __init__(self, tester):
         self.tester = tester
@@ -54,7 +79,7 @@ class TerminateInstance(BaseDialog):
             instance_full_name = instance_name + " (" + instance_id +")"
         else:
             instance_full_name = instance_id
-        self.tester.wait_for_text_not_present_by_css(self._instance_id_in_modal_css, instance_full_name)
+        self.tester.wait_for_text_present_by_css(self._instance_id_in_modal_css, instance_full_name)
         self.tester.click_element_by_id(self._terminate_instance_submit_button_id)
 
 
