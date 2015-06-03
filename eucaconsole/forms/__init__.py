@@ -462,10 +462,10 @@ class CFSampleTemplateManager(object):
 
     def _get_templates_(self):
         templates = []
-        self.template_dir = os.path.join(os.getcwd(), 'cf-templates')
+        self.template_dir = os.path.join(os.getcwd(), 'eucaconsole/cf-templates')
         # TODO: this next path really should be within the package, so perhaps relative path is OK?
-        if not os.path.exists(self.template_dir) and os.path.exists('/usr/share/cf-templates'):
-            self.template_dir = '/usr/share/cf-templates'
+        if not os.path.exists(self.template_dir) and os.path.exists('/usr/share/eucaconsole/cf-templates'):
+            self.template_dir = '/usr/share/eucaconsole/cf-templates'
         euca_templates = []
         for dir_name, subdir_list, filelist in os.walk(self.template_dir):
             for file_item in filelist:
