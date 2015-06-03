@@ -750,8 +750,10 @@ class ELBInstancesView(BaseELBView):
                     add_instances.append(new_instance)
         if remove_instances:
             self.elb_conn.deregister_instances(elb_name, remove_instances)
+            time.sleep(1)  # Delay needed to prevent missing instances on subsequent page load
         if add_instances:
             self.elb_conn.register_instances(elb_name, add_instances)
+            time.sleep(1)  # Delay needed to prevent missing instances on subsequent page load
 
 
 class ELBHealthChecksView(BaseELBView):
