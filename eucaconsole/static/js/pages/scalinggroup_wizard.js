@@ -109,9 +109,12 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor','EucaConsoleUtils'])
                 $scope.updateSelectedVPCNetworkName();
                 $scope.adjustVPCSubnetSelectAbide();
             });
-            $scope.$watch('vpcSubnets', function () { 
+            $scope.$watch('vpcSubnets', function (newVal) {
                 $scope.disableVPCSubnetOptions();
                 $scope.updateSelectedVPCSubnetNames();
+                if ($scope.vpcNetwork !== 'None') {
+                    $scope.isNotValid = newVal.length === 0;
+                }
             }, true);
         };
         $scope.watchCapacityEntries = function () {
