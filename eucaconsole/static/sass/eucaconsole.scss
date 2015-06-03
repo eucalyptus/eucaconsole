@@ -703,7 +703,7 @@ form {
         margin-bottom: 0;
         label {
             position: relative;
-            right: -12px;
+            right: -15px;
         }
         .value {
             padding-bottom: 6px;
@@ -866,6 +866,9 @@ textarea.hidden {
     form .row.controls-wrapper {
         margin-bottom: 1rem;
     }
+    .tabs-content {
+        border: none;
+    }
     .button.expand {
         margin-bottom: 0;
         &:focus {
@@ -947,6 +950,48 @@ footer {
         background-color: $hp-hover-blue;
     }
 }
+
+/* -----------------------------------------
+   Button groups
+   (Foundation's button groups seem broken)
+----------------------------------------- */
+$btn-group-radius: 10px;
+.btn-group {
+    li {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        a {
+            display: inline-block;
+            padding: 0.2rem 1.5rem 0.3rem 1.5rem;
+            border-collapse: collapse;
+            margin: 0;
+            border: 1px solid $hp-gray-20;
+            font-weight: bold;
+            color: $hp-gray-65;
+            &:hover {
+                color: $hp-accessible-blue;
+            }
+            &.active {
+                color: white;
+                background-color: $hp-accessible-blue;
+            }
+            &:first-child {
+                border-top-left-radius: $btn-group-radius;
+                border-bottom-left-radius: $btn-group-radius;
+            }
+            &:last-child {
+                border-top-right-radius: $btn-group-radius;
+                border-bottom-right-radius: $btn-group-radius;
+                border-left: none;
+                position: relative;
+                left: -4px;
+            }
+        }
+    }
+}
+
+
 
 /* -----------------------------------------
    Tabs (on detail pages)

@@ -14,8 +14,8 @@
                 </div>
                 <div ng-show="instanceVPC != undefined">
                     <div class="row controls-wrapper readonly">
-                        <div class="small-3 columns"><label i18n:translate="">VPC Network</label></div>
-                        <div class="small-9 columns value">{{ instanceVPCName }}</div>
+                        <div class="large-2 small-3 columns"><label i18n:translate="">VPC Network</label></div>
+                        <div class="large-10 small-9 columns value">{{ instanceVPCName }}</div>
                     </div>
                 </div>
             </div>
