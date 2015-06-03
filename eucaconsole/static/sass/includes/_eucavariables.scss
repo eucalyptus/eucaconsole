@@ -156,8 +156,8 @@ $crumb-font-color-current: #333;
 $crumb-font-color-unavailable: #999;
 $crumb-font-transform: normal;
 $crumb-link-decor: underline;
-$crumb-slash-color: #333;
-$crumb-slash: ">";
+$crumb-slash-color: $hp-gray-40;
+$crumb-slash: "/";
 
 // Buttons
 $button-tny: rem-calc(6);
