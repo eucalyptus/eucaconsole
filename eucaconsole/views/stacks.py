@@ -295,7 +295,7 @@ class StackStateView(BaseView):
             if "SecurityGroup" in res_type:
                 url = self.request.route_path('securitygroup_view', id=resource_id)
             elif "EIP" in res_type:
-                url = self.request.route_path('ipaddress_view', id=resource_id)
+                url = self.request.route_path('ipaddress_view', public_ip=resource_id)
             elif "Instance" in res_type:
                 url = self.request.route_path('instance_view', id=resource_id)
             elif "Volume" in res_type:
@@ -309,12 +309,12 @@ class StackStateView(BaseView):
             if "Group" in res_type:
                 url = self.request.route_path('group_view', id=resource_id)
             elif "Role" in res_type:
-                url = self.request.route_path('role_view', id=resource_id)
+                url = self.request.route_path('role_view', name=resource_id)
             elif "User" in res_type:
-                url = self.request.route_path('user_view', id=resource_id)
+                url = self.request.route_path('user_view', name=resource_id)
         elif "AWS::S3::" in res_type:
             if "Bucket" in res_type:
-                url = self.request.route_path('bucket_contents', id=resource_id)
+                url = self.request.route_path('bucket_contents', name=resource_id)
         return url
 
 
