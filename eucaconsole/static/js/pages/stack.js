@@ -33,6 +33,11 @@ angular.module('StackPage', ['MagicSearch', 'EucaConsoleUtils'])
             $scope.setFocus();
             $scope.initCodeMirror();
         };
+        $scope.revealModal = function (action, stack) {
+            $scope.stackName = stack.name;
+            var modal = $('#' + action + '-stack-modal');
+            modal.foundation('reveal', 'open');
+        };
         $scope.isTransitional = function () {
             return $scope.transitionalStates.indexOf($scope.stackStatus) !== -1;
         };
@@ -149,7 +154,7 @@ angular.module('StackPage', ['MagicSearch', 'EucaConsoleUtils'])
             });
         };
         $scope.getStackEvents = function () {
-            $scope.eventsLoading = true;
+            //$scope.eventsLoading = true;
             $http.get($scope.stackEventsEndpoint).success(function(oData) {
                 var results = oData ? oData.results : '';
                 $scope.eventsLoading = false;

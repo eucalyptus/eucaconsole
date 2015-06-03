@@ -893,6 +893,9 @@ table.table {
     tr td {
         vertical-align: top;
     }
+    td.breakall {
+        word-break: break-all !important;
+    }
 }
 
 

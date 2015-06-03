@@ -305,12 +305,12 @@ class StackStateView(BaseView):
             if "Group" in res_type:
                 url = self.request.route_path('group_view', id=resource_id)
             elif "Role" in res_type:
-                url = self.request.route_path('role_view', id=resource_id)
+                url = self.request.route_path('role_view', name=resource_id)
             elif "User" in res_type:
-                url = self.request.route_path('user_view', id=resource_id)
+                url = self.request.route_path('user_view', name=resource_id)
         elif "AWS::S3::" in res_type:
             if "Bucket" in res_type:
-                url = self.request.route_path('bucket_contents', id=resource_id)
+                url = self.request.route_path('bucket_contents', name=resource_id)
         return url
 
 
@@ -455,6 +455,7 @@ class StackWizardView(BaseView):
             stack_name = self.request.params.get('name')
             location = self.request.route_path('stacks')
             (template_url, parsed) = self.parse_store_template()
+            capabilities = ['CAPABILITY_IAM']
             params = []
             for name in parsed['Parameters'].keys():
                 val = self.request.params.get(name)
@@ -468,7 +469,7 @@ class StackWizardView(BaseView):
                 cloudformation_conn = self.get_connection(conn_type='cloudformation')
                 self.log_request(u"Creating stack:{0}".format(stack_name))
                 cloudformation_conn.create_stack(
-                    stack_name, template_url=template_url,
+                    stack_name, template_url=template_url, capabilities=capabilities,
                     parameters=params, tags=tags
                 )
                 msg = _(u'Successfully sent create stack request. '

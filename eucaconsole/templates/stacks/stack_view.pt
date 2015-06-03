@@ -131,10 +131,10 @@
                                     <tbody>
                                         <tr ng-repeat="item in resources | orderBy: sortBy:sortReverse" ng-cloak="true">
                                             <td>{{ item.type }} ({{ item.logical_id }})</td>
-                                            <td ng-hide="item.url">
+                                            <td ng-hide="item.url" class="breakall">
                                                 {{ item.physical_id }}
                                             </td>
-                                            <td ng-show="item.url">
+                                            <td ng-show="item.url" class="breakall">
                                                 <a ng-href="{{ item.url }}">{{ item.physical_id }}</a>
                                             </td>
                                             <td><span class="label radius status {{ item.status }}">{{ item.status.replace('-', ' ').replace('-', ' ') }}</span></td>
@@ -156,9 +156,7 @@
                         </span>
                         <ul id="actions-dropdown2" class="f-dropdown" data-dropdown-content="">
                             <li>
-                                <a id="delete-user-action" i18n:translate="">
-                                    Delete stack
-                                </a>
+                                <a i18n:translate="" ng-click="revealModal('delete', item)">Delete stack</a>
                             </li>
                         </ul>
                     </div>
@@ -223,10 +221,10 @@
                                                 {{ item.status_reason }}
                                             </td>
                                             <td>{{ item.type }} ({{ item.logical_id }})</td>
-                                            <td ng-hide="item.url">
+                                            <td ng-hide="item.url" class="breakall">
                                                 {{ item.physical_id }}
                                             </td>
-                                            <td ng-show="item.url">
+                                            <td ng-show="item.url" class="breakall">
                                                 <a ng-href="{{ item.url }}">{{ item.physical_id }}</a>
                                             </td>
                                         </tr>
