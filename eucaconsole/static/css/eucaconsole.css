@@ -1845,6 +1845,7 @@ table.table thead tr th.actions { text-align: right; }
 table.table thead tr th.count { text-align: center; }
 table.table tr td.count { text-align: center; }
 table.table tr td { vertical-align: top; }
+table.table td.breakall { word-break: break-all !important; }
 
 /* ----------------------------------------- Footer
 ----------------------------------------- */
