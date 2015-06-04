@@ -1140,7 +1140,7 @@ ul.bullet-list {
     list-style-type: none;
     li:before {
         font-family: 'FontAwesome';
-        font-size: 15px;
+        font-size: 0.9rem;
         content: '\f138';
         margin: 0 5px 0 -15px;
         color: $hp-accessible-blue;

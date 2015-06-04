@@ -268,7 +268,7 @@
             </div>
             <div class="dialog-submit-button">
                 <a ng-click="convertTemplate()" id="convert_template_submit_button" class="button expand" i18n:translate="">I Understand, Use This Template</a>
-                <!--
+                <!-- also, do busy indicator
                 <a class="cancel-link" i18n:translate="">Go back, I want to select a different template</a>
                 -->
             </div>

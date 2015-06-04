@@ -64,6 +64,18 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
                 $("#name").focus();
             }, 50);
         };
+        // This timer code will trigger the change event if someone
+        // types in the field and hasn't typed anything for 2 seconds
+        $scope.url_timer = undefined;
+        $('#template-url').on('keypress', function() {
+            if ($scope.url_timer) {
+                window.clearTimeout($scope.url_timer);
+            }
+            $scope.url_timer = window.setTimeout(function() {
+                $scope.url_timer = undefined;
+                $('#template-url').trigger('change');
+            }, 2000);
+        });
         $('#template-url').on('change', function(){
             $timeout(function() {
                 $scope.checkRequiredInput();
@@ -235,6 +247,9 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
             });
         };
         $scope.getStackTemplateInfo = function () {
+            if ($scope.loading == true) {
+                return;
+            }
             var fd = new FormData();
             // fill from actual form
             angular.forEach($('form').serializeArray(), function(value, key) {
