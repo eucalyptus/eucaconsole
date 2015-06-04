@@ -69,14 +69,21 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor','EucaConsoleUtils'])
         $scope.checkRequiredInput = function () {
             if( $scope.currentStepIndex == 1 ){
                 $scope.isNotValid = false;
-                if( $scope.scalingGroupName === '' || $scope.scalingGroupName === undefined ){
+                if ($scope.scalingGroupName === '' || $scope.scalingGroupName === undefined) {
                     $scope.isNotValid = true;
-                }else if( $scope.minSize === '' || $scope.minSize === undefined ){
+                } else if ($scope.minSize === '' || $scope.minSize === undefined) {
                     $scope.isNotValid = true;
-                }else if( $scope.desiredCapacity === '' || $scope.desiredCapacity === undefined ){
+                } else if ($scope.desiredCapacity === '' || $scope.desiredCapacity === undefined) {
                     $scope.isNotValid = true;
-                }else if( $scope.maxSize === '' || $scope.maxSize === undefined ){
+                } else if ($scope.maxSize === '' || $scope.maxSize === undefined ) {
                     $scope.isNotValid = true;
+                } else if (!$scope.launchConfig) {
+                    $scope.isNotValid = true;
+                } else if ($scope.vpcNetwork !== 'None') {
+                    if (typeof $scope.vpcSubnets === 'undefined') {
+                        $scope.vpcSubnets = [];  // Work around case where vpcSubnets list is undefined
+                    }
+                    $scope.isNotValid = $scope.vpcSubnets.length === 0;
                 }
             }else if( $scope.currentStepIndex == 2 ){
                 $scope.isNotValid = false;
@@ -108,13 +115,15 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor','EucaConsoleUtils'])
                 $scope.updateVPCSubnetChoices();
                 $scope.updateSelectedVPCNetworkName();
                 $scope.adjustVPCSubnetSelectAbide();
+                $scope.checkRequiredInput();
             });
             $scope.$watch('vpcSubnets', function (newVal) {
+                if (typeof newVal === 'undefined') {
+                    $scope.subnets = [];
+                }
                 $scope.disableVPCSubnetOptions();
                 $scope.updateSelectedVPCSubnetNames();
-                if ($scope.vpcNetwork !== 'None') {
-                    $scope.isNotValid = newVal.length === 0;
-                }
+                $scope.checkRequiredInput();
             }, true);
         };
         $scope.watchCapacityEntries = function () {
