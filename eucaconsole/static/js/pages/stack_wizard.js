@@ -248,6 +248,8 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
             $scope.loading = true;
             $scope.description = '';
             $scope.parameters = undefined;
+            $scope.s3TemplateUrl = undefined;
+            $scope.s3TemplateKey = undefined;
             $http.post($scope.stackTemplateEndpoint, fd, {
                     headers: {'Content-Type': undefined},
                     transformRequest: angular.identity

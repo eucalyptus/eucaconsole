@@ -61,3 +61,7 @@
 #userdatalabel { right: 0; }
 
 #userdata { margin: 0 0 0; }
+
+ul { list-style-type: none; }
+
+li:before { font-family: 'FontAwesome'; content: '\f105'; margin: 0 5px 0 -15px; color: #5a5a5a; }

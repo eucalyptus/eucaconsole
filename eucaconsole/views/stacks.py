@@ -29,6 +29,7 @@ Pyramid views for Eucalyptus and AWS CloudFormation stacks
 
 """
 import simplejson as json
+from simplejson import JSONDecodeError
 import os
 import urllib2
 
@@ -43,6 +44,7 @@ from ..models import Notification
 from ..models.auth import User
 from ..views import LandingPageView, BaseView, JSONResponse
 from . import boto_error_handler
+from . import JSONError
 
 
 class StacksView(LandingPageView):
@@ -355,26 +357,31 @@ class StackWizardView(BaseView):
         Fetches then parsed template to return information needed by wizard,
         namely description and parameters.
         """
-        (template_url, template_name, parsed) = self.parse_store_template()
-        resource_list = StackWizardView.identify_aws_template(parsed)
-        if len(resource_list) > 0:
+        try:
+            (template_url, template_name, parsed) = self.parse_store_template()
+            if 'Resources' not in parsed:
+                raise JSONError(message=_(u'Invalid CloudFormation Template, Resources not found'), status=400)
+            resource_list = StackWizardView.identify_aws_template(parsed)
+            if len(resource_list) > 0:
+                return dict(
+                    results=dict(
+                        template_url=template_url,
+                        template_key=template_name,
+                        description=parsed['Description'] if 'Description' in parsed else '',
+                        resource_list=resource_list
+                    )
+                )
+            params = self.generate_param_list(parsed)
             return dict(
                 results=dict(
                     template_url=template_url,
                     template_key=template_name,
                     description=parsed['Description'] if 'Description' in parsed else '',
-                    resource_list=resource_list
+                    parameters=params
                 )
             )
-        params = self.generate_param_list(parsed)
-        return dict(
-            results=dict(
-                template_url=template_url,
-                template_key=template_name,
-                description=parsed['Description'] if 'Description' in parsed else '',
-                parameters=params
-            )
-        )
+        except JSONDecodeError as json_err:
+            raise JSONError(message=_(u'Invalid JSON File ({0})').format(json_err.message), status=400)
 
     @view_config(route_name='stack_template_convert', renderer='json', request_method='POST')
     def stack_template_convert(self):

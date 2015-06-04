@@ -216,20 +216,22 @@
                     </a>
                 </h6>
                 <div class="content" ng-show="expanded">
-                    <div class="datagrid" id="datagrid-items">
-                        <div id="tableview" class="gridwrapper">
-                            <table class="table">
-                                <thead><tr>
-                                    <th i18n:translate="">UNSUPPORTED SERVICES</th>
-                                    <th i18n:translate="">UNSUPPORTED RESOURCES</th>
-                                </tr></thead>
-                                <tbody>
-                                    <tr ng-repeat="item in resourceList | orderBy: sortBy:sortReverse" ng-cloak="true">
-                                        <td>{{ item.type }}</td>
-                                        <td>{{ item.name }}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                    <div class="row">
+                        <div class="small-6 columns">
+                            <h6 i18n:translate="">UNSUPPORTED SERVICES</h6>
+                            <ul>
+                                <li ng-repeat="item in resourceList | orderBy: sortBy:sortReverse" ng-cloak="true">
+                                    {{ item.type }}
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="small-6 columns">
+                            <h6 i18n:translate="">UNSUPPORTED RESOURCES</h6>
+                            <ul>
+                                <li ng-repeat="item in resourceList | orderBy: sortBy:sortReverse" ng-cloak="true">
+                                    {{ item.name }}
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -253,20 +255,12 @@
                     </a>
                 </h6>
                 <div class="content" ng-show="expanded">
-                    <div class="datagrid" id="datagrid-items">
-                        <div id="tableview" class="gridwrapper">
-                            <table class="table">
-                                <thead><tr>
-                                    <th i18n:translate="">PARAMETERS TO CONVERT</th>
-                                </tr></thead>
-                                <tbody>
-                                    <tr ng-repeat="item in resourceList | orderBy: sortBy:sortReverse" ng-cloak="true">
-                                        <td>{{ item.name }}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+                    <h6 i18n:translate="">PARAMETERS TO CONVERT</h6>
+                    <ul>
+                        <li ng-repeat="item in resourceList | orderBy: sortBy:sortReverse" ng-cloak="true">
+                            {{ item.name }}
+                        </li>
+                    </ul>
                 </div>
             </div>
             <div class="dialog-option">
