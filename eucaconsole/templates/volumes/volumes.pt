@@ -32,7 +32,7 @@
                     <li ng-show="item.status === 'available'">
                         <a i18n:translate="" ng-click="revealModal('attach', item)">Attach to instance</a>
                     </li>
-                    <li ng-show="item.status === 'in-use' &amp;&amp; item.attach_status !== 'detaching'">
+                    <li ng-show="item.attach_status === 'attached' &amp;&amp; item.attach_status !== 'detaching'">
                         <a ng-click="detachModal(item, '${request.route_path('instance_json', id='_id_')}')"
                                id="detach-volume-action" i18n:translate="">Detach from instance</a>
                     </li>
@@ -87,7 +87,7 @@
                 <th i18n:translate="">Avail Zone</th>
                 <th i18n:translate="">Tags</th>
                 <th i18n:translate="">Creation Time</th>
-                <th i18n:translate="">Actions</th>
+                <th class="actions" i18n:translate="">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
                 <td class="breakword"><a ng-href="${prefix}/{{ item.id }}">{{ item.name || item.id | ellipsis: 30 }}</a></td>
@@ -122,7 +122,7 @@
                             <li ng-show="item.status === 'available'">
                                 <a i18n:translate="" ng-click="revealModal('attach', item)">Attach to instance</a>
                             </li>
-                            <li ng-show="item.status === 'in-use' &amp;&amp; item.attach_status !== 'detaching'">
+                            <li ng-show="item.attach_status === 'attached' &amp;&amp; item.attach_status !== 'detaching'">
                                 <a ng-click="detachModal(item, '${request.route_path('instance_json', id='_id_')}')"
                                    id="detach-volume-action" i18n:translate="">Detach from instance</a>
                             </li>
