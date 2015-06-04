@@ -219,7 +219,7 @@
                     <div class="row">
                         <div class="small-6 columns">
                             <h6 i18n:translate="">UNSUPPORTED SERVICES</h6>
-                            <ul>
+                            <ul class="euca-list">
                                 <li ng-repeat="item in resourceList | orderBy: sortBy:sortReverse" ng-cloak="true">
                                     {{ item.type }}
                                 </li>
@@ -227,7 +227,7 @@
                         </div>
                         <div class="small-6 columns">
                             <h6 i18n:translate="">UNSUPPORTED RESOURCES</h6>
-                            <ul>
+                            <ul class="euca-list">
                                 <li ng-repeat="item in resourceList | orderBy: sortBy:sortReverse" ng-cloak="true">
                                     {{ item.name }}
                                 </li>
@@ -256,7 +256,7 @@
                 </h6>
                 <div class="content" ng-show="expanded">
                     <h6 i18n:translate="">PARAMETERS TO CONVERT</h6>
-                    <ul>
+                    <ul class="euca-list">
                         <li ng-repeat="item in resourceList | orderBy: sortBy:sortReverse" ng-cloak="true">
                             {{ item.name }}
                         </li>

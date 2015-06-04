@@ -1136,6 +1136,16 @@ ul.off-canvas-list {
     }
 }
 
+ul.euca-list {
+    list-style-type: none;
+    li:before {
+        font-family: 'FontAwesome';
+        content: '\f138';
+        margin: 0 5px 0 -15px;
+        color: $hp-accessible-blue;
+    }
+}
+
 /* Responsive tweaks for landing page title */
 @media screen and (max-width: $row-width) {
     #pagetitle.landingpage {

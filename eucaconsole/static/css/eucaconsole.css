@@ -1912,6 +1912,9 @@ ul.off-canvas-list li a:hover:not(.nolink) { background-color: #f2f2f2; color: #
 ul.off-canvas-list li a.nolink:hover { background-color: white; color: #5a5a5a; }
 ul.off-canvas-list li .dropdown { background-color: white; margin-bottom: 0; }
 
+ul.euca-list { list-style-type: none; }
+ul.euca-list li:before { font-family: 'FontAwesome'; content: '\f138'; margin: 0 5px 0 -15px; color: #007dba; }
+
 /* Responsive tweaks for landing page title */
 @media screen and (max-width: 65rem) { #pagetitle.landingpage { top: -0.5rem; }
   #landing-page-filters { padding-top: 1rem; margin-bottom: 1rem; } }
