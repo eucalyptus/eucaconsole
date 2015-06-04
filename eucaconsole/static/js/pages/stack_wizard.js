@@ -261,28 +261,15 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
                     $scope.s3TemplateUrl = results.template_url;
                     $scope.s3TemplateKey = results.template_key;
                     $scope.description = results.description;
-                    if (results.resource_list) {
+                    if (results.service_list.length > 0 || results.resource_list.length > 0) {
+                        $scope.serviceList = results.service_list;
                         $scope.resourceList = results.resource_list;
-                        var warn_only = true;
-                        var i;
-                        for (i=0; i<$scope.resourceList.length; i++) {
-                            if ($scope.resourceList[i].type != 'Property') {
-                                warn_only = false;
-                            }
-                        }
-                        if (warn_only === true) {
-                            $scope.showAWSWarn();
-                        }
-                        else {
-                            $scope.resourceList = [];
-                            for (i=0; i<results.resource_list.length; i++) {
-                                if (results.resource_list[i].type != 'Property') {
-                                    $scope.resourceList.push(results.resource_list[i]);
-                                }
-                            }
-                            $('#aws-error-modal').foundation('reveal', 'open');
-                        }
+                        $('#aws-error-modal').foundation('reveal', 'open');
                         return;
+                    }
+                    if (results.property_list.length > 0) {
+                        $scope.propertyList = results.property_list;
+                        $scope.showAWSWarn();
                     }
                     $scope.parameters = results.parameters;
                     angular.forEach($scope.parameters, function(param, idx) {

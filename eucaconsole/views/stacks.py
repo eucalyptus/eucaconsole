@@ -361,14 +361,32 @@ class StackWizardView(BaseView):
             (template_url, template_name, parsed) = self.parse_store_template()
             if 'Resources' not in parsed:
                 raise JSONError(message=_(u'Invalid CloudFormation Template, Resources not found'), status=400)
-            resource_list = StackWizardView.identify_aws_template(parsed)
-            if len(resource_list) > 0:
+            exception_list = StackWizardView.identify_aws_template(parsed)
+            if len(exception_list) > 0:
+                # massage for the browser
+                service_list = []
+                resource_list = []
+                property_list = []
+                for resource in exception_list:
+                    if resource['type'] == 'Property':
+                        property_list.append(resource['name'])
+                    else:
+                        tmp = resource['type']
+                        tmp = tmp[5:]
+                        if tmp.find('::') > -1:  # this means there's a resource there
+                            resource_list.append(tmp[tmp.find('::')+2:])
+                        else:
+                            service_list.append(tmp)
+                service_list = list(set(service_list))
+                resource_list = list(set(resource_list))
                 return dict(
                     results=dict(
                         template_url=template_url,
                         template_key=template_name,
                         description=parsed['Description'] if 'Description' in parsed else '',
-                        resource_list=resource_list
+                        service_list=service_list,
+                        resource_list=resource_list,
+                        property_list=property_list
                     )
                 )
             params = self.generate_param_list(parsed)
@@ -606,7 +624,7 @@ class StackWizardView(BaseView):
             resource = parsed['Resources'][name]
             for prefix in aws_resource_prefixes:
                 if resource['Type'].find(prefix) == 0:
-                    ret.append({'name': name, 'type': resource['Type']})
+                    ret.append({'name': name, 'type': prefix})
         # second pass, find refs to cloud-specific resources
         def find_image_ref(name, item):
             if name == 'Parameters':

@@ -220,16 +220,16 @@
                         <div class="small-6 columns">
                             <h6 i18n:translate="">UNSUPPORTED SERVICES</h6>
                             <ul class="bullet-list">
-                                <li ng-repeat="item in resourceList | orderBy: sortBy:sortReverse" ng-cloak="true">
-                                    {{ item.type }}
+                                <li ng-repeat="item in serviceList" ng-cloak="true">
+                                    {{ item }}
                                 </li>
                             </ul>
                         </div>
                         <div class="small-6 columns">
                             <h6 i18n:translate="">UNSUPPORTED RESOURCES</h6>
                             <ul class="bullet-list">
-                                <li ng-repeat="item in resourceList | orderBy: sortBy:sortReverse" ng-cloak="true">
-                                    {{ item.name }}
+                                <li ng-repeat="item in resourceList" ng-cloak="true">
+                                    {{ item }}
                                 </li>
                             </ul>
                         </div>
@@ -257,8 +257,8 @@
                 <div class="content" ng-show="expanded">
                     <h6 i18n:translate="">PARAMETERS TO CONVERT</h6>
                     <ul class="bullet-list">
-                        <li ng-repeat="item in resourceList | orderBy: sortBy:sortReverse" ng-cloak="true">
-                            {{ item.name }}
+                        <li ng-repeat="item in propertyList" ng-cloak="true">
+                            {{ item }}
                         </li>
                     </ul>
                 </div>
