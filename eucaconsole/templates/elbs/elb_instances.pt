@@ -74,6 +74,9 @@
                                 </div>
                             </div>
                         </div>
+                        <p ng-show="selectedZoneList.length === 0" i18n:translate="" class="error">
+                            You must select at least one availability zone.
+                        </p>
                         <div class="tile item" ng-cloak=""
                             ng-repeat="zone in selectedZoneList | orderBy: sortBy:sortReverse">
                             <div class="header">
@@ -136,6 +139,9 @@
                                 </div>
                             </div>
                         </div>
+                        <p ng-show="selectedVPCSubnetList.length === 0" i18n:translate="" class="error">
+                            You must select at least one subnet.
+                        </p>
                         <div class="tile item" ng-cloak=""
                             ng-repeat="subnet in selectedVPCSubnetList | orderBy: sortBy:sortReverse">
                             <div class="header">
@@ -197,7 +203,8 @@
                     </div>
                     <hr />
                     <div class="save-changes-button">
-                        <button type="submit" class="button" id="save-changes-btn-instances" ng-disabled="isNotChanged">
+                        <button type="submit" class="button" id="save-changes-btn-instances"
+                                ng-disabled="isNotChanged || isNotValid">
                             <span i18n:translate="">Save Changes</span>
                         </button>
                         <a href="${request.route_path('elbs')}" id="cancel-update-link"

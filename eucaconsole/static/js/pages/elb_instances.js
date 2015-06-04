@@ -21,6 +21,7 @@ angular.module('ELBInstancesPage', ['EucaConsoleUtils', 'MagicSearch'])
         $scope.ELBInstanceHealthList = [];
         $scope.instanceList = [];
         $scope.isNotChanged = true;
+        $scope.isNotValid = false;
         $scope.isInitComplete = false;
         $scope.isCrossZoneEnabled = false;
         $scope.unsavedChangesWarningModalLeaveCallback = null;
@@ -67,19 +68,25 @@ angular.module('ELBInstancesPage', ['EucaConsoleUtils', 'MagicSearch'])
                 $scope.updateSelectedZoneList();
                 $scope.$broadcast('eventUpdateAvailabilityZones', $scope.availabilityZones);
             }, true);
-            $scope.$watch('selectedZoneList', function () {
+            $scope.$watch('selectedZoneList', function (newVal) {
                 $scope.updateUnselectedZoneList();
                 if ($scope.isInitComplete === true) {
                     $scope.isNotChanged = false;
+                }
+                if ($scope.vpcNetwork === 'None') {
+                    $scope.isNotValid = newVal.length === 0;
                 }
             }, true);
             $scope.$watch('vpcSubnetList', function () {
                 $scope.updateSelectedVPCSubnetList();
             }, true);
-            $scope.$watch('selectedVPCSubnetList', function () {
+            $scope.$watch('selectedVPCSubnetList', function (newVal) {
                 $scope.updateUnselectedVPCSubnetList();
                 if ($scope.isInitComplete === true) {
                     $scope.isNotChanged = false;
+                }
+                if ($scope.vpcNetwork !== 'None') {
+                    $scope.isNotValid = newVal.length === 0;
                 }
             }, true);
             $scope.$watch('instanceList', function () {
