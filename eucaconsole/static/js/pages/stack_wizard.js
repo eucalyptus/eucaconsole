@@ -247,7 +247,7 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
             });
         };
         $scope.getStackTemplateInfo = function () {
-            if ($scope.loading == true) {
+            if ($scope.loading === true) {
                 return;
             }
             var fd = new FormData();
