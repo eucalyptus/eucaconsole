@@ -44,7 +44,7 @@ class LaunchInstanceWidget(BaseDialog):
                        "cr1.8xlarge": "cr1.8xlarge: 16 CPUs, 16384 memory (MB), 240 disk (GB,root device)",
                        "hs1.8xlarge": "hs1.8xlarge: 48 CPUs, 119808 memory (MB), 24000 disk (GB,root device)"}
 
-    def launch_centos_instance(self, image="centos", availability_zone=None,
+    def launch_instance(self, image="centos", availability_zone=None,
                                instance_type="t1.micro: 1 CPUs, 256 memory (MB), 5 disk (GB,root device)",
                                number_of_of_instances=None, instance_name=None, key_name="None (advanced option)",
                                security_group="default", user_data=None, monitoring=False, private_addressing=False):

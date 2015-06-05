@@ -18,7 +18,7 @@ class Instance_operations_sequence(GuiEC2):
         keypair1_name = self.id_generator()+"-key-pair"
         self.tester.create_keypair_from_dashboard(keypair1_name)
         instance1_name = self.id_generator()+"-instance"
-        instance1 = self.tester.launch_instance_from_dashboard(image="ubuntu", instance_name=instance1_name, availability_zone="two",
+        instance1 = self.tester.launch_instance_from_dashboard(image="centos", instance_name=instance1_name, availability_zone="two",
                                                                instance_type= "m1.small",security_group=s_group1_name, key_name=keypair1_name)
         instance1_id = instance1.get("instance_id")
         self.tester.terminate_instance_from_view_page(instance1_name, instance1_id)

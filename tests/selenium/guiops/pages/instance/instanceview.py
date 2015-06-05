@@ -7,6 +7,7 @@ class InstanceView(ViewPage):
         self.verify_instance_view_page_loaded()
 
     _instances_view_page_title = "Instances"
+    _launch_instance_button_id = "launch-instance-btn"
     _instance_action_menu_id = "table-item-dropdown_{0}"  #instance_id required
     _terminate_instance_actions_menu_item_css = "#item-dropdown_{0}>li:nth-of-type(13)>a"  #instance_id required
     _first_pending_instance_status_css = "status>span:contains('pending')"
@@ -17,6 +18,9 @@ class InstanceView(ViewPage):
     def verify_instance_view_page_loaded(self):
         self.tester.wait_for_text_present_by_id(ViewPage(self)._page_title_id, self._instances_view_page_title)
         self.tester.wait_for_visible_by_id(ViewPage(self)._refresh_button_id)
+
+    def click_action_launch_instance_on_view_page(self):
+        self.tester.click_element_by_id(self._launch_instance_button_id)
 
     def click_action_terminate_instance_on_view_page(self, instance_id):
         self.tester.click_element_by_id(self._instance_action_menu_id.format(instance_id))
