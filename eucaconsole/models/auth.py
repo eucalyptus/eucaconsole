@@ -203,9 +203,9 @@ class ConnectionManager(object):
                 conn_class = boto.vpc.VPCConnection
 
             if _dns_enabled:
-                _clchost = "{0}.{1}".format(path.lower(), _clchost)
+                _ufshost = "{0}.{1}".format(path.lower(), _ufshost)
             path = '/services/{0}'.format(path)
-            region = RegionInfo(name='eucalyptus', endpoint=_clchost)
+            region = RegionInfo(name='eucalyptus', endpoint=_ufshost)
             # IAM and S3 connections need host instead of region info
             if conn_type in ['iam', 's3']:
                 conn = conn_class(

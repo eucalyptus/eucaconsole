@@ -135,8 +135,13 @@ class BaseView(object):
             conn = ConnectionManager.aws_connection(
                 region, access_key, secret_key, security_token, conn_type, validate_certs)
         elif cloud_type == 'euca':
-            host = self.request.registry.settings.get('ufshost', 'localhost')
-            port = int(self.request.registry.settings.get('ufsport', 8773))
+            host = self.request.registry.settings.get('ufshost')
+            if not host:
+                host = self.request.registry.settings.get('clchost', 'localhost')
+            port = self.request.registry.settings.get('ufsport')
+            if not port:
+                port = self.request.registry.settings.get('clcport', 8773)
+            port = int(port)
             dns_enabled = self.request.session.get('dns_enabled', True)
             conn = ConnectionManager.euca_connection(
                 host, port, access_key, secret_key, security_token,
