@@ -120,18 +120,26 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
                         if (val === undefined || val === '') {
                             $scope.isNotValid = true;
                         }
+                        $scope.templateFiles = undefined;
+                        $('#template-file').val(undefined);
+                        $scope.templateUrl = undefined;
                         break;
                     case 'file':
                         val = $scope.templateFiles;
                         if (val === undefined || val.length === 0) {
                             $scope.isNotValid = true;
                         }
+                        $scope.templateSample = undefined;
+                        $scope.templateUrl = undefined;
                         break;
                     case 'url':
                         val = $scope.templateUrl;
                         if (val === undefined || val === '') {
                             $scope.isNotValid = true;
                         }
+                        $scope.templateSample = undefined;
+                        $scope.templateFiles = undefined;
+                        $('#template-file').val(undefined);
                         break;
                     default:
                         $scope.isNotValid = true;
