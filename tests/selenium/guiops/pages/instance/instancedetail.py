@@ -11,7 +11,6 @@ class InstanceDetailPage(DetailPage):
     _terminate_instance_action_item_id = "terminate-instance-action"
     _instance_status_css = "[class='label radius status {0}']" #instance status is required
 
-
     def verify_instance_detail_page_loaded(self):
         if self.instance_name == None:
             instance_name_full = self.instance_id
@@ -26,4 +25,7 @@ class InstanceDetailPage(DetailPage):
 
     def verify_instance_is_in_running_state(self):
         self.tester.wait_for_visible_by_css(self._instance_status_css.format("running"))
+
+    def verify_instance_is_terminated(self):
+        self.tester.wait_for_visible_by_css(self._instance_status_css.format("terminated"))
 

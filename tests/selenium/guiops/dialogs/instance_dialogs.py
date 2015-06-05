@@ -17,7 +17,13 @@ class LaunchInstanceWidget(BaseDialog):
     _security_group_choices_css = "ul.chosen-choices"
     _security_group_search_field_css = "ul.chosen-choices>li.search-field>input"
     _highlighted_security_group_css = "[class = 'active-result highlighted']"
-    _launch_instance_button_id = "launch-instance-btn-step3"
+    _launch_instance_button_step3_id = "launch-instance-btn-step3"
+    _launch_instance_button_step4_id = "launch-instance-btn-step4"
+    _user_data_text_radio_bttn_css ="#inputtype[value = 'text']"
+    _user_data_text_input_field_id ="userdata"
+    _advanced_options_link_id = "visit-step-4"
+    _enable_monitoring_checkbox_id = "monitoring_enabled"
+    _use_private_addressing_only_checkbox_id ="private_addressing"
 
     instance_types = {"m1.small": "m1.small: 1 CPUs, 256 memory (MB), 5 disk (GB,root device)",
                        "t1.micro": "t1.micro: 1 CPUs, 256 memory (MB), 5 disk (GB,root device)",
@@ -38,8 +44,11 @@ class LaunchInstanceWidget(BaseDialog):
                        "cr1.8xlarge": "cr1.8xlarge: 16 CPUs, 16384 memory (MB), 240 disk (GB,root device)",
                        "hs1.8xlarge": "hs1.8xlarge: 48 CPUs, 119808 memory (MB), 24000 disk (GB,root device)"}
 
-    def launch_centos_instance(self, availability_zone = None, instance_type = "t1.micro: 1 CPUs, 256 memory (MB), 5 disk (GB,root device)", number_of_of_instances = None, instance_name = None, key_name = "None (advanced option)", security_group = "default"):
-        self.tester.send_keys_by_css(self._image_search_field_css, "centos")
+    def launch_centos_instance(self, image="centos", availability_zone=None,
+                               instance_type="t1.micro: 1 CPUs, 256 memory (MB), 5 disk (GB,root device)",
+                               number_of_of_instances=None, instance_name=None, key_name="None (advanced option)",
+                               security_group="default", user_data=None, monitoring=False, private_addressing=False):
+        self.tester.send_keys_by_css(self._image_search_field_css, image)
         if self.tester.wait_for_element_present_by_css(self._first_image_button_css):
             self.tester.click_element_by_css(self._first_image_button_css)
         else:
@@ -54,13 +63,24 @@ class LaunchInstanceWidget(BaseDialog):
             self.tester.select_by_id(self._availability_zone_selector_id, availability_zone)
         if instance_name != None:
             self.tester.send_keys_by_css(self._name_input_field_css, instance_name)
+        if user_data!=None:
+            self.tester.click_element_by_css(self._user_data_text_radio_bttn_css)
+            self.send_keys_by_id(self._user_data_text_input_field_id, user_data)
         self.tester.wait_for_clickable_by_id(self._step2_next_button_id)
         self.tester.click_element_by_id(self._step2_next_button_id)
         self.tester.select_by_id(self._keypair_selector_id, key_name)
         self.tester.click_element_by_id(self._security_group_selector_id)
         self.tester.send_keys_by_css(self._security_group_search_field_css, security_group)
         self.tester.click_element_by_css(self._highlighted_security_group_css)
-        self.tester.click_element_by_id(self._launch_instance_button_id)
+        if monitoring or private_addressing:
+            self.tester.click_element_by_id(self._advanced_options_link_id)
+            if monitoring:
+                self.tester.click_element_by_id(self._enable_monitoring_checkbox_id)
+            if private_addressing:
+                self.tester.click_element_by_id(self._use_private_addressing_only_checkbox_id)
+            self.tester.click_element_by_id(self._launch_instance_button_step4_id)
+        else:
+            self.tester.click_element_by_id(self._launch_instance_button_step3_id)
 
 class TerminateInstanceModal(BaseDialog):
 

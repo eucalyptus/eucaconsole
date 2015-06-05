@@ -184,13 +184,18 @@ class GuiEC2(GuiTester):
         DeleteScurityGroupDialog(self).delete_s_group()
         SecurityGroupView(self).verify_s_group_not_present(sgroup_name)
 
-    def launch_instance_from_dashboard(self, availability_zone = None, instance_type = "t1.micro: 1 CPUs, 256 memory (MB), 5 disk (GB,root device)", number_of_of_instances = None, instance_name = None, key_name = "None (advanced option)", security_group = "default"):
+    def launch_instance_from_dashboard(self, image = "centos",availability_zone = None,
+                                       instance_type = "t1.micro: 1 CPUs, 256 memory (MB), 5 disk (GB,root device)",
+                                       number_of_of_instances = None, instance_name = None, key_name = "None (advanced option)",
+                                       security_group = "default", user_data=None, monitoring=False, private_addressing=False):
         """
         Goes to dashboard via menu. Launches centos instance.
         """
         BasePage(self).goto_dashboard_via_menu()
         Dashboard(self).click_launch_instance_button_from_dashboard()
-        LaunchInstanceWidget(self).launch_centos_instance(availability_zone, instance_type, number_of_of_instances, instance_name, key_name, security_group)
+        LaunchInstanceWidget(self).launch_centos_instance(image, availability_zone, instance_type,
+                                                          number_of_of_instances, instance_name, key_name,
+                                                          security_group, user_data, monitoring, private_addressing)
         instance_id = InstanceView(self).get_id_of_newly_launched_instance()
         InstanceView(self).goto_instance_detail_page_via_link(instance_id)
         InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_in_running_state()
@@ -214,8 +219,8 @@ class GuiEC2(GuiTester):
         BasePage(self).goto_instances_via_menu()
         InstanceView(self).click_action_terminate_instance_on_view_page(instance_id)
         TerminateInstanceModal(self).click_terminate_instance_submit_button(instance_id)
-        InstanceView(self)
-
+        InstanceView(self).goto_instance_detail_page_via_link(instance_id)
+        InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_terminated()
 
     def terminate_instance_from_detail_page(self):
         pass

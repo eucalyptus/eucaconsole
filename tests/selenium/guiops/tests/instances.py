@@ -17,10 +17,11 @@ class Instance_operations_sequence(GuiEC2):
         s_group1_id = s_group1.get("s_group_id")
         keypair1_name = self.id_generator()+"-key-pair"
         self.tester.create_keypair_from_dashboard(keypair1_name)
-        instance_1_name = self.id_generator()+"-instance"
-        instance1 = self.tester.launch_instance_from_dashboard(instance_name=instance_1_name, availability_zone="two", instance_type= "m1.small",security_group=s_group1_name, key_name=keypair1_name)
+        instance1_name = self.id_generator()+"-instance"
+        instance1 = self.tester.launch_instance_from_dashboard(image="ubuntu", instance_name=instance1_name, availability_zone="two",
+                                                               instance_type= "m1.small",security_group=s_group1_name, key_name=keypair1_name)
         instance1_id = instance1.get("instance_id")
-        self.tester.terminate_instance_from_view_page(instance_1_name, instance1_id)
+        self.tester.terminate_instance_from_view_page(instance1_name, instance1_id)
         self.tester.delete_keypair_from_detail_page(keypair1_name)
         self.tester.delete_security_group_from_view_page(s_group1_name, s_group1_id)
         self.tester.logout()
