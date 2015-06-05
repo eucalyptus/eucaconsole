@@ -32,6 +32,7 @@ import simplejson as json
 from simplejson import JSONDecodeError
 import os
 import urllib2
+from urllib2 import HTTPError
 
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config
@@ -357,49 +358,52 @@ class StackWizardView(BaseView):
         Fetches then parsed template to return information needed by wizard,
         namely description and parameters.
         """
-        try:
-            (template_url, template_name, parsed) = self.parse_store_template()
-            if 'Resources' not in parsed:
-                raise JSONError(message=_(u'Invalid CloudFormation Template, Resources not found'), status=400)
-            exception_list = StackWizardView.identify_aws_template(parsed)
-            if len(exception_list) > 0:
-                # massage for the browser
-                service_list = []
-                resource_list = []
-                property_list = []
-                for resource in exception_list:
-                    if resource['type'] == 'Property':
-                        property_list.append(resource['name'])
-                    else:
-                        tmp = resource['type']
-                        tmp = tmp[5:]
-                        if tmp.find('::') > -1:  # this means there's a resource there
-                            resource_list.append(tmp[tmp.find('::')+2:])
+        with boto_error_handler(self.request):
+            try:
+                (template_url, template_name, parsed) = self.parse_store_template()
+                if 'Resources' not in parsed:
+                    raise JSONError(message=_(u'Invalid CloudFormation Template, Resources not found'), status=400)
+                exception_list = StackWizardView.identify_aws_template(parsed)
+                if len(exception_list) > 0:
+                    # massage for the browser
+                    service_list = []
+                    resource_list = []
+                    property_list = []
+                    for resource in exception_list:
+                        if resource['type'] == 'Property':
+                            property_list.append(resource['name'])
                         else:
-                            service_list.append(tmp)
-                service_list = list(set(service_list))
-                resource_list = list(set(resource_list))
+                            tmp = resource['type']
+                            tmp = tmp[5:]
+                            if tmp.find('::') > -1:  # this means there's a resource there
+                                resource_list.append(tmp[tmp.find('::')+2:])
+                            else:
+                                service_list.append(tmp)
+                    service_list = list(set(service_list))
+                    resource_list = list(set(resource_list))
+                    return dict(
+                        results=dict(
+                            template_url=template_url,
+                            template_key=template_name,
+                            description=parsed['Description'] if 'Description' in parsed else '',
+                            service_list=service_list,
+                            resource_list=resource_list,
+                            property_list=property_list
+                        )
+                    )
+                params = self.generate_param_list(parsed)
                 return dict(
                     results=dict(
                         template_url=template_url,
                         template_key=template_name,
                         description=parsed['Description'] if 'Description' in parsed else '',
-                        service_list=service_list,
-                        resource_list=resource_list,
-                        property_list=property_list
+                        parameters=params
                     )
                 )
-            params = self.generate_param_list(parsed)
-            return dict(
-                results=dict(
-                    template_url=template_url,
-                    template_key=template_name,
-                    description=parsed['Description'] if 'Description' in parsed else '',
-                    parameters=params
-                )
-            )
-        except JSONDecodeError as json_err:
-            raise JSONError(message=_(u'Invalid JSON File ({0})').format(json_err.message), status=400)
+            except JSONDecodeError as json_err:
+                raise JSONError(message=_(u'Invalid JSON File ({0})').format(json_err.message), status=400)
+            except HTTPError as http_err:
+                raise JSONError(message=_(u'Cannot read URL ({0})').format(http_err.reason), status=400)
 
     @view_config(route_name='stack_template_convert', renderer='json', request_method='POST')
     def stack_template_convert(self):
@@ -407,29 +411,30 @@ class StackWizardView(BaseView):
         Fetches then parsed template to return information needed by wizard,
         namely description and parameters.
         """
-        (template_url, template_name, parsed) = self.parse_store_template()
-        resource_list = StackWizardView.identify_aws_template(parsed, modify=True)
-        template_body = json.dumps(parsed)
+        with boto_error_handler(self.request):
+            (template_url, template_name, parsed) = self.parse_store_template()
+            resource_list = StackWizardView.identify_aws_template(parsed, modify=True)
+            template_body = json.dumps(parsed)
 
-        # now, store it back in S3
-        s3_conn = self.get_connection(conn_type="s3")
-        account_id = User.get_account_id(ec2_conn=self.get_connection(), request=self.request)
-        region = self.request.session.get('region')
-        bucket = s3_conn.create_bucket("cf-template-{acct}-{region}".format(acct=account_id, region=region))
-        key = bucket.get_key(template_name)
-        if key is None:
-            key = bucket.new_key(template_name)
-        key.set_contents_from_string(template_body)
-        template_url = key.generate_url(300)  # 5 minute URL, more than enough time, right?
+            # now, store it back in S3
+            s3_conn = self.get_connection(conn_type="s3")
+            account_id = User.get_account_id(ec2_conn=self.get_connection(), request=self.request)
+            region = self.request.session.get('region')
+            bucket = s3_conn.create_bucket("cf-template-{acct}-{region}".format(acct=account_id, region=region))
+            key = bucket.get_key(template_name)
+            if key is None:
+                key = bucket.new_key(template_name)
+            key.set_contents_from_string(template_body)
+            template_url = key.generate_url(300)  # 5 minute URL, more than enough time, right?
 
-        params = self.generate_param_list(parsed)
-        return dict(
-            results=dict(
-                template_url=template_url,
-                template_key=template_name,
-                parameters=params
+            params = self.generate_param_list(parsed)
+            return dict(
+                results=dict(
+                    template_url=template_url,
+                    template_key=template_name,
+                    parameters=params
+                )
             )
-        )
 
     def generate_param_list(self, parsed):
         params = []

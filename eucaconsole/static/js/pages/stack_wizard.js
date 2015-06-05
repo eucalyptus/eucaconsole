@@ -42,6 +42,9 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
         $scope.isNotValid = true;
         $scope.loading = false;
         $scope.paramModels = [];
+        $scope.serviceList = undefined;
+        $scope.resourceList = undefined;
+        $scope.propertyList = undefined;
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.stackTemplateEndpoint = options.stack_template_url;
@@ -265,6 +268,9 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
             $scope.parameters = undefined;
             $scope.s3TemplateUrl = undefined;
             $scope.s3TemplateKey = undefined;
+            $scope.serviceList = undefined;
+            $scope.resourceList = undefined;
+            $scope.propertyList = undefined;
             $http.post($scope.stackTemplateEndpoint, fd, {
                     headers: {'Content-Type': undefined},
                     transformRequest: angular.identity
@@ -276,13 +282,17 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
                     $scope.s3TemplateUrl = results.template_url;
                     $scope.s3TemplateKey = results.template_key;
                     $scope.description = results.description;
-                    if (results.service_list.length > 0 || results.resource_list.length > 0) {
+                    if (results.service_list && results.service_list.length > 0) {
                         $scope.serviceList = results.service_list;
+                    }
+                    if (results.resource_list && results.resource_list.length > 0) {
                         $scope.resourceList = results.resource_list;
+                    }
+                    if ($scope.serviceList || $scope.resourceList) {
                         $('#aws-error-modal').foundation('reveal', 'open');
                         return;
                     }
-                    if (results.property_list.length > 0) {
+                    if (results.property_list && results.property_list.length > 0) {
                         $scope.propertyList = results.property_list;
                         $scope.showAWSWarn();
                     }
@@ -300,6 +310,7 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
                 }
             }).
             error(function (oData, status) {
+                $scope.loading = false;
                 eucaHandleError(oData, status);
             });
         };
@@ -354,6 +365,7 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
                 }
             }).
             error(function (oData, status) {
+                $scope.loading = false;
                 eucaHandleError(oData, status);
             });
         };
