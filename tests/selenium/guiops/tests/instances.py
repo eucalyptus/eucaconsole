@@ -5,7 +5,7 @@ import string, random, time
 class Instance_operations_sequence(GuiEC2):
 
     def __init__(self):
-        self.tester = GuiEC2("http://10.111.80.147:4444/wd/hub", "https://10.111.5.1")
+        self.tester = GuiEC2("http://10.111.80.147:4444/wd/hub", "https://10.111.5.145")
 
     def id_generator(self, size = 6, chars=string.ascii_uppercase + string.digits):
         return ''.join(random.choice(chars) for j in range(size))
@@ -15,14 +15,16 @@ class Instance_operations_sequence(GuiEC2):
         s_group1_name = self.id_generator()+"-group"
         s_group1=self.tester.create_security_group_from_view_page(s_group1_name, "Security group created by GUI test")
         s_group1_id = s_group1.get("s_group_id")
-        keypair1_name = self.id_generator()+"-key-pair"
-        self.tester.create_keypair_from_dashboard(keypair1_name)
+        #keypair1_name = self.id_generator()+"-key-pair"
+        #self.tester.create_keypair_from_dashboard(keypair1_name)
         instance1_name = self.id_generator()+"-instance"
-        instance1 = self.tester.launch_instance_from_dashboard(image="centos", instance_name=instance1_name, availability_zone="two",
-                                                               instance_type= "m1.small",security_group=s_group1_name, key_name=keypair1_name)
+        instance1 = self.tester.launch_instance_from_image_view_page(image_id="emi-787cc87c", instance_name=instance1_name,
+                                                               instance_type= "m1.small",security_group=s_group1_name)
+        #instance1 = self.tester.launch_instance_from_dashboard(image="centos", instance_name=instance1_name, availability_zone="two",
+        #                                                     instance_type= "m1.small",security_group=s_group1_name, key_name=keypair1_name)
         instance1_id = instance1.get("instance_id")
         self.tester.terminate_instance_from_view_page(instance1_name, instance1_id)
-        self.tester.delete_keypair_from_detail_page(keypair1_name)
+        #self.tester.delete_keypair_from_detail_page(keypair1_name)
         self.tester.delete_security_group_from_view_page(s_group1_name, s_group1_id)
         self.tester.logout()
         self.tester.exit_browser()

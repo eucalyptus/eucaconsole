@@ -6,6 +6,7 @@ from pages.keypair.keypairdetail import KeypairDetailPage
 from pages.keypair.keypairview import KeypairView
 from pages.instance.instanceview import InstanceView
 from pages.instance.instancedetail import InstanceDetailPage
+from pages.image.image_view import ImageView
 from pages.security_group.security_group_view import SecurityGroupView
 from pages.security_group.security_group_detail import SecurityGroupDetailPage
 from dialogs.security_group_dialogs import CreateScurityGroupDialog, DeleteScurityGroupDialog
@@ -238,14 +239,38 @@ class GuiEC2(GuiTester):
         InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_in_running_state()
         return {'instance_name': instance_name, 'instance_id':instance_id}
 
+    def launch_instance_from_image_view_page(self, image_id, availability_zone = None,
+                                               instance_type = "t1.micro: 1 CPUs, 256 memory (MB), 5 disk (GB,root device)",
+                                               number_of_of_instances = None, instance_name = None, key_name = "None (advanced option)",
+                                               security_group = "default", user_data=None, monitoring=False, private_addressing=False ):
+        """
+        Navigates to image view page via menu. Launches instance from given image.
+        :param image_id:
+        :param availability_zone:
+        :param instance_type:
+        :param number_of_of_instances:
+        :param instance_name:
+        :param key_name:
+        :param security_group:
+        :param user_data:
+        :param monitoring:
+        :param private_addressing:
+        """
 
-    def launch_instance_from_image_view_page(self, instance_name=None):
+        BasePage(self).goto_images_view_via_menu()
+        ImageView(self).click_action_launch_instance(image_id)
+        LaunchInstanceWidget(self).launch_instance_step2(availability_zone, instance_type,
+                                                        number_of_of_instances, instance_name, key_name,
+                                                        security_group, user_data, monitoring, private_addressing)
+        instance_id = InstanceView(self).get_id_of_newly_launched_instance()
+        InstanceView(self).goto_instance_detail_page_via_link(instance_id)
+        InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_in_running_state()
+        return {'instance_name': instance_name, 'instance_id':instance_id}
+
+    def launch_more_like_this_from_view_page(self, inatance_id):
         pass
 
-    def launch_more_like_this_from_view_page(self):
-        pass
-
-    def launch_more_like_this_from_detail_page(self):
+    def launch_more_like_this_from_detail_page(self, inatance_id):
         pass
 
     def terminate_instance_from_view_page(self, instance_name, instance_id):
