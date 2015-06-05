@@ -55,15 +55,15 @@ class LaunchInstanceWidget(BaseDialog):
             self.tester.send_keys_by_css(self._image_search_field_css, "precise")
             self.tester.click_element_by_css(self._first_image_button_css)
 
-        if number_of_of_instances != None:
+        if number_of_of_instances is not None:
             self.tester.send_keys_by_id(self._number_of_instances_input_field_id, number_of_of_instances)
-        if instance_type != None:
+        if instance_type is not None:
             self.tester.select_by_id(self._instance_type_selector_id, self.instance_types.get(instance_type))
-        if availability_zone != None:
+        if availability_zone is not None:
             self.tester.select_by_id(self._availability_zone_selector_id, availability_zone)
-        if instance_name != None:
+        if instance_name is not None:
             self.tester.send_keys_by_css(self._name_input_field_css, instance_name)
-        if user_data!=None:
+        if user_data is not None:
             self.tester.click_element_by_css(self._user_data_text_radio_bttn_css)
             self.send_keys_by_id(self._user_data_text_input_field_id, user_data)
         self.tester.wait_for_clickable_by_id(self._step2_next_button_id)
@@ -87,15 +87,15 @@ class LaunchInstanceWidget(BaseDialog):
                                number_of_of_instances=None, instance_name=None, key_name="None (advanced option)",
                                security_group="default", user_data=None, monitoring=False, private_addressing=False):
 
-        if number_of_of_instances != None:
+        if number_of_of_instances is not None:
             self.tester.send_keys_by_id(self._number_of_instances_input_field_id, number_of_of_instances)
-        if instance_type != None:
+        if instance_type is not None:
             self.tester.select_by_id(self._instance_type_selector_id, self.instance_types.get(instance_type))
-        if availability_zone != None:
+        if availability_zone is not None:
             self.tester.select_by_id(self._availability_zone_selector_id, availability_zone)
-        if instance_name != None:
+        if instance_name is not None:
             self.tester.send_keys_by_css(self._name_input_field_css, instance_name)
-        if user_data!=None:
+        if user_data is not None:
             self.tester.click_element_by_css(self._user_data_text_radio_bttn_css)
             self.send_keys_by_id(self._user_data_text_input_field_id, user_data)
         self.tester.wait_for_clickable_by_id(self._step2_next_button_id)
@@ -113,6 +113,7 @@ class LaunchInstanceWidget(BaseDialog):
             self.tester.click_element_by_id(self._launch_instance_button_step4_id)
         else:
             self.tester.click_element_by_id(self._launch_instance_button_step3_id)
+
 
 class TerminateInstanceModal(BaseDialog):
 
@@ -134,6 +135,34 @@ class TerminateInstanceModal(BaseDialog):
         self.tester.wait_for_text_present_by_css(self._instance_id_in_modal_css, instance_full_name)
         self.tester.click_element_by_id(self._terminate_instance_submit_button_id)
 
+
+class LaunchMoreLikeThisDialog(BaseDialog):
+
+    def __init__(self, tester):
+        self.tester = tester
+
+    _launch_instance_button_id = "save-changes-btn"
+    _instance_name_field_css = "[class='name ng-scope']"
+    _advanced_options_css = "#advanced-section>h6>a"
+    _help_expando_css = "#help-expando>div>a"
+    _enable_monitoring_chkbox_id = "monitoring_enabled"
+    _use_private_addressing_chkbox_id = "private_addressing"
+    _user_data_text_radio_button_css = "#inputtype[value='text']"
+    _user_data_text_input_field_id = "userdata"
+
+    def launch_more_like_this(self, instance_name=None, user_data=None, monitoring=False, private_addressing=False):
+        if instance_name is not None:
+            self.tester.send_keys_by_css(self._instance_name_field_css, instance_name)
+        if user_data is not None:
+            self.tester.click_element_by_css(self._user_data_text_radio_button_css)
+            self.send_keys_by_id(self._user_data_text_input_field_id, user_data)
+        if monitoring or private_addressing:
+            self.tester.click_element_by_id(self._advanced_options_css)
+            if monitoring:
+                self.tester.click_element_by_id(self._enable_monitoring_chkbox_id)
+            if private_addressing:
+                self.tester.click_element_by_id(self._use_private_addressing_chkbox_id)
+        self.tester.click_element_by_id(self._launch_instance_button_id)
 
 
 

@@ -11,7 +11,7 @@ from pages.security_group.security_group_view import SecurityGroupView
 from pages.security_group.security_group_detail import SecurityGroupDetailPage
 from dialogs.security_group_dialogs import CreateScurityGroupDialog, DeleteScurityGroupDialog
 from dialogs.keypair_dialogs import CreateKeypairDialog, DeleteKeypairModal, ImportKeypairDialog
-from dialogs.instance_dialogs import LaunchInstanceWidget, TerminateInstanceModal
+from dialogs.instance_dialogs import LaunchInstanceWidget, LaunchMoreLikeThisDialog, TerminateInstanceModal
 
 
 
@@ -267,10 +267,24 @@ class GuiEC2(GuiTester):
         InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_in_running_state()
         return {'instance_name': instance_name, 'instance_id':instance_id}
 
-    def launch_more_like_this_from_view_page(self, inatance_id):
-        pass
+    def launch_more_like_this_from_view_page(self, inatance_id, instance_name=None, user_data=None, monitoring=False, private_addressing=False):
+        """
+        Navigates to instances view page. Launches an instance like given instance.
+        :param inatance_id:
+        :param instance_name:
+        :param user_data:
+        :param monitoring:
+        :param private_addressing:
+        """
+        BasePage(self).goto_instances_via_menu()
+        InstanceView(self).click_action_launch_more_like_this(inatance_id)
+        LaunchMoreLikeThisDialog(self).launch_more_like_this(instance_name, user_data, monitoring, private_addressing)
+        instance_id = InstanceView(self).get_id_of_newly_launched_instance()
+        InstanceView(self).goto_instance_detail_page_via_link(instance_id)
+        InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_in_running_state()
+        return {'instance_name': instance_name, 'instance_id':instance_id}
 
-    def launch_more_like_this_from_detail_page(self, inatance_id):
+    def launch_more_like_this_from_detail_page(self, inatance_id, instance_name, user_data, monitoring, private_addressing):
         pass
 
     def terminate_instance_from_view_page(self, instance_name, instance_id):
