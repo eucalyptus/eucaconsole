@@ -743,13 +743,20 @@ form .controls-wrapper > [class*='small-'] label {
     }
 }
 
-[data-abide] .controls-wrapper .error {
+[data-abide] .controls-wrapper .error, [data-abide] .controls-wrapper.error {
+    label {
+        color: $euca-grey;
+    }
     input, select {
         border: 1px solid darkred;
         background-color: $euca-validation-input-bgcolor;
     }
     small.error {
         @include validation-error-mixin;
+        &.inline {
+            display: inline-block;
+            margin-left: 1rem;
+        }
     }
 }
 

@@ -8,6 +8,6 @@
 #elb-listener-editor .controls-wrapper input, #elb-listener-editor .controls-wrapper select { display: inline-block; }
 #elb-listener-editor .controls-wrapper select.ip-protocol { width: 8rem; }
 #elb-listener-editor .controls-wrapper .elb-port-tooltip { position: relative; left: -8px; }
-#elb-listener-editor .controls-wrapper #from-port-error { margin-left: 1rem; background: white; color: darkred; font-style: normal; }
+#elb-listener-editor .controls-wrapper #from-port-error { margin-left: 1rem; }
 #elb-listener-editor .security-row label.inline { width: 7rem; text-align: right; line-height: 1.1rem; margin: 0 0.5rem 0 0; padding: 0 0 0 0; }
 #elb-listener-editor .security-section { margin-bottom: 1.5rem; }
