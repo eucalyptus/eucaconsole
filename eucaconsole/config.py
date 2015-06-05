@@ -87,6 +87,11 @@ def check_config(settings):
             logging.error(" Please correct this and restart eucaconsole.")
             logging.error("*****************************************************************")
             sys.exit(1)
+    if not settings.get('ufshost'):
+        logging.warn(
+            ('\'clchost\' and \'clcport\' are deprecated in 4.2 and'
+            'will be removed in 4.3. Use use \'ufshost\' and \'ufsport\' instead.')
+        )
 
 
 def get_configurator(settings, enable_auth=True):
