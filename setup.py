@@ -113,6 +113,7 @@ requires = [
     'beaker >= 1.5.4',
     'boto >= 2.38.0',
     'chameleon >= 2.5.3',
+    'defusedxml >= 0.4.1',
     'dogpile.cache >= 0.5.3',
     # taking this out since we need gevent1 for pkg install
     # 'gevent >= 0.13.8',  # Note: gevent 1.0 no longer requires libevent, it bundles libev instead,
@@ -176,7 +177,7 @@ setup(
         'dev': dev_extras,
     },
     message_extractors=message_extractors,
-    data_files=get_data_files("locale", r'.*\.mo$') + get_data_files("cf-templates", r'.*\.json$'),
+    data_files=get_data_files("locale", r'.*\.mo$') + get_data_files("eucaconsole/cf-templates", r'.*\.json$'),
     test_suite="tests",
     entry_points="""\
     [paste.app_factory]

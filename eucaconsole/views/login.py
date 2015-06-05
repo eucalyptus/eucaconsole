@@ -159,6 +159,7 @@ class LoginView(BaseView, PermissionCheckMixin):
             username = self.request.params.get('username')
             password = self.request.params.get('password')
             try:
+                # TODO: also return dns enablement
                 creds = auth.authenticate(
                     account=account, user=username, passwd=password,
                     new_passwd=new_passwd, timeout=8, duration=self.duration)
@@ -174,6 +175,7 @@ class LoginView(BaseView, PermissionCheckMixin):
                 session['secret_key'] = creds.secret_key
                 session['region'] = 'euca'
                 session['username_label'] = user_account
+                session['dns_enabled'] = auth.dns_enabled  # this *must* be prior to line below
                 session['supported_platforms'] = self.get_account_attributes(['supported-platforms'])
                 session['default_vpc'] = self.get_account_attributes(['default-vpc'])
 
