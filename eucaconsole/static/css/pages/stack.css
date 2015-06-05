@@ -119,3 +119,6 @@
 .panel { overflow: hidden; min-height: 400px; }
 
 label { font-weight: bold; color: #6a737b; }
+
+/* override for height of template view dialog */
+.CodeMirror { height: 450px; }

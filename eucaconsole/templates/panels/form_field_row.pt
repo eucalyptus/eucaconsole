@@ -4,9 +4,9 @@
     <div tal:condition="not:reverse" tal:omit-tag="">
         <div class="large-${leftcol_width_large} small-${leftcol_width} columns" tal:condition="leftcol_width">
             <label class="${'right' if inline else 'left'}">
-                ${field.label.text}&nbsp;<span tal:condition="field.flags.required" class="req">*</span>
-                <span tal:condition="getattr(field, 'help_text', None)" data-tooltip="" title="${field.help_text}">
-                    <i class="helptext-icon"></i>
+                ${field.label.text}&nbsp;<span tal:condition="field.flags.required"
+                        class="req">*</span><span tal:condition="getattr(field, 'help_text', None)"
+                        data-tooltip="" title="${field.help_text}"><i class="helptext-icon"></i>
                 </span>
             </label>
         </div>
@@ -18,7 +18,7 @@
                 </span>
             </label>
         </div>
-        <div class="large-${rightcol_width_large} small-${rightcol_width} columns field">
+        <div class="large-${rightcol_width_large if not stack_label else '12'} small-${rightcol_width if not stack_label else '12'} columns field">
             ${structure:field(**html_attrs)}
             <small class="error" tal:condition="error_msg">${error_msg}</small>
             <div tal:condition="field.errors" class="server-validation">

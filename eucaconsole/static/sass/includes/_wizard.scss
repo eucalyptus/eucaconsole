@@ -55,6 +55,9 @@
         }
     }
     .tabs-content {
+        div.large-3.small-4.columns {
+            padding-left: 0;
+        }
         min-height: 400px;
         margin: 0 0 0 0;
         padding: 1rem;

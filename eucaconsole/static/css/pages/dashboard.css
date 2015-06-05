@@ -63,6 +63,6 @@
 
 #health .statusrow { font-size: 10pt; text-align: left; color: #6a737b; margin-top: 10px; line-height: 1.2rem; }
 #health .statusrow .status { position: relative; left: 8px; }
-#health .statusrow i.service-up { color: #007dba; font-size: 16pt; text-align: left; }
+#health .statusrow i.service-up { color: #008424; font-size: 16pt; text-align: left; }
 #health .statusrow i.service-down { color: red; font-size: 16pt; text-align: left; }
 #health .statusrow i.service-denied { color: #444; font-size: 16pt; text-align: left; }
