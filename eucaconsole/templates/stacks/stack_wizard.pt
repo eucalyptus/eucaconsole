@@ -123,11 +123,11 @@
                                     </div>
                                     <div class="small-9 columns field">
                                         <input type="text" name="{{ item.name }}" id="{{ item.name }}"
-                                            value="{{ paramModels[item.name] }}" ng-hide="item.options"
+                                            value="{{ paramModels[item.name] }}" ng-if="!item.options"
                                             min="{{ item.min }}" max="{{ item.max }}" pattern="{{ item.regex }}"
                                             ng-model="paramModels[item.name]" ng-change="checkRequiredInput()"/>
                                         <small class="error" ng-hide="">{{ item.constraint }}</small>
-                                        <div ng-show="item.options">
+                                        <div ng-if="item.options">
                                             <select name="{{ item.name }}" id="{{ item.name }}" 
                                                 search-contains="true" width="100"
                                                 value="{{ item.default }}"

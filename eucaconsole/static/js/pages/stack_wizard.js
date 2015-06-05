@@ -309,12 +309,6 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
                         $scope.paramModels[param.name] = param.default;
                     });
                     $scope.checkRequiredInput();
-                    // prune form elements not needed so we don't have 2 w/ same name
-                    $timeout(function() {
-                        $("#params-list").find(".ng-hide").each(function() {
-                            $(this).remove();
-                        });
-                    }, 1000);
                 }
             }).
             error(function (oData, status) {
