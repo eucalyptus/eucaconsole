@@ -284,7 +284,7 @@ class GuiEC2(GuiTester):
         InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_in_running_state()
         return {'instance_name': instance_name, 'instance_id':instance_id}
 
-    def launch_more_like_this_from_detail_page(self, inatance_id, instance_name=None, user_data=None, monitoring=False, private_addressing=False):
+    def launch_more_like_this_from_detail_page(self, base_instance_id, instance_name=None, user_data=None, monitoring=False, private_addressing=False):
         """
         Navigates to instance detail page. Launches an instance like given instance.
         :param inatance_id:
@@ -294,8 +294,9 @@ class GuiEC2(GuiTester):
         :param private_addressing:
         """
         BasePage(self).goto_instances_via_menu()
-        InstanceView(self).goto_instance_detail_page_via_actions(inatance_id)
-        InstanceDetailPage(self, inatance_id, instance_name).click_action_launch_more_like_this()
+        base_instance_name=InstanceView(self).get_instance_name(base_instance_id)
+        InstanceView(self).goto_instance_detail_page_via_actions(base_instance_id)
+        InstanceDetailPage(self, base_instance_id, base_instance_name).click_action_launch_more_like_this()
         LaunchMoreLikeThisDialog(self).launch_more_like_this(instance_name, user_data, monitoring, private_addressing)
         instance_id = InstanceView(self).get_id_of_newly_launched_instance()
         InstanceView(self).goto_instance_detail_page_via_link(instance_id)
@@ -314,8 +315,15 @@ class GuiEC2(GuiTester):
         InstanceView(self).goto_instance_detail_page_via_link(instance_id)
         InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_terminated()
 
-    def terminate_instance_from_detail_page(self):
-        pass
+    def terminate_instance_from_detail_page(self, instance_id):
+
+        BasePage(self).goto_instances_via_menu()
+        instance_name=InstanceView(self).get_instance_name(instance_id)
+        InstanceView(self).goto_instance_detail_page_via_actions(instance_id)
+        InstanceDetailPage(self, instance_id, instance_name).click_terminate_instance_action_item_from_detail_page()
+        TerminateInstanceModal(self).click_terminate_instance_submit_button(instance_id)
+        InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_terminated()
+
 
 
 

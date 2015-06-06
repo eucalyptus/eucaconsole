@@ -25,7 +25,7 @@ class SeleniumApi(object):
 
     retry = 2
     timeout_to_locate_element_in_seconds = 20
-    timeout_to_determine_visibility_in_seconds = 60
+    timeout_to_determine_visibility_in_seconds = 240
     timeout_to_determine_if_clickable_in_seconds = 20
     timeout_to_wait_for_text_in_seconds = 120
     implicit_wait_default_in_seconds = 30

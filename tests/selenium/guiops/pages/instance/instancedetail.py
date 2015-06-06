@@ -31,7 +31,7 @@ class InstanceDetailPage(DetailPage):
         self.tester.wait_for_visible_by_css(self._instance_status_css.format("terminated"))
 
     def click_action_launch_more_like_this(self):
-        self.tester.click_element_by_id(DetailPage(self)._actions_menu_css)
+        self.tester.click_element_by_css(DetailPage(self)._actions_menu_css)
         self.tester.click_element_by_id(self._launch_more_like_this_action_menuitem_id)
 
 
