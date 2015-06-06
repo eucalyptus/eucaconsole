@@ -48,3 +48,10 @@ class InstanceView(ViewPage):
         self.tester.click_element_by_id(self._instance_action_menu_id.format(instance_id))
         self.tester.click_element_by_css(self._launch_more_like_this_actionmenu_item_css.format(instance_id))
 
+    def get_instance_name(self, instance_id):
+        full_name = self.tester.store_text_by_css(self._instance_link_css.format(instance_id))
+        instance_name=None
+        if len(full_name)>11:
+            instance_name = full_name[:-13]
+        return instance_name
+

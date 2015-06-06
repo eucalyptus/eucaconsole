@@ -10,6 +10,7 @@ class InstanceDetailPage(DetailPage):
 
     _terminate_instance_action_item_id = "terminate-instance-action"
     _instance_status_css = "[class='label radius status {0}']" #instance status is required
+    _launch_more_like_this_action_menuitem_id = "launchmore-instance-action"
 
     def verify_instance_detail_page_loaded(self):
         if self.instance_name == None:
@@ -28,4 +29,9 @@ class InstanceDetailPage(DetailPage):
 
     def verify_instance_is_terminated(self):
         self.tester.wait_for_visible_by_css(self._instance_status_css.format("terminated"))
+
+    def click_action_launch_more_like_this(self):
+        self.tester.click_element_by_id(DetailPage(self)._actions_menu_css)
+        self.tester.click_element_by_id(self._launch_more_like_this_action_menuitem_id)
+
 
