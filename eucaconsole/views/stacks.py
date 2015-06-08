@@ -34,7 +34,7 @@ import os
 import urllib2
 from urllib2 import HTTPError
 
-from pyramid.httpexceptions import HTTPFound
+from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.view import view_config
 
 from ..i18n import _
@@ -166,8 +166,8 @@ class StackView(BaseView):
             stack_name=self.stack.stack_name if self.stack else '',
             stack_description=self.stack.description if self.stack else '',
             stack_id=self.stack.stack_id if self.stack else '',
-            stack_creation_time=self.dt_isoformat(self.stack.creation_time),
-            status=self.stack.stack_status.lower().capitalize().replace('_', '-'),
+            stack_creation_time=self.dt_isoformat(self.stack.creation_time) if self.stack else None,
+            status=self.stack.stack_status.lower().capitalize().replace('_', '-') if self.stack else None,
             delete_form=self.delete_form,
             in_use=False,
             search_facets=BaseView.escape_json(json.dumps(search_facets)),
@@ -177,6 +177,8 @@ class StackView(BaseView):
 
     @view_config(route_name='stack_view', renderer=TEMPLATE)
     def stack_view(self):
+        if self.stack is None and self.request.matchdict.get('id') != 'new':
+            raise HTTPNotFound
         return self.render_dict
 
     @view_config(route_name='stack_delete', request_method='POST', renderer=TEMPLATE)
@@ -200,13 +202,19 @@ class StackView(BaseView):
 
     def get_stack(self):
         if self.cloudformation_conn:
-            stack_param = self.request.matchdict.get('name')
-            stacks = self.cloudformation_conn.describe_stacks(stack_name_or_id=stack_param)
-            return stacks[0] if stacks else None
+            try:
+                stack_param = self.request.matchdict.get('name')
+                stacks = self.cloudformation_conn.describe_stacks(stack_name_or_id=stack_param)
+                return stacks[0] if stacks else None
+            except BotoServerError as err:
+                pass
         return None
 
     def get_controller_options_json(self):
-        return BaseView.escape_json(json.dumps({
+        if self.stack is None:
+            return '{}'
+        else:
+            return BaseView.escape_json(json.dumps({
             'stack_name': self.stack.stack_name,
             'stack_status_json_url': self.request.route_path('stack_state_json', name=self.stack.stack_name),
             'stack_template_url': self.request.route_path('stack_template', name=self.stack.stack_name),
@@ -437,6 +445,23 @@ class StackWizardView(BaseView):
             )
 
     def generate_param_list(self, parsed):
+        """
+        Valid values are [
+            String,
+            Number,
+            CommaDelimitedList,
+            AWS::EC2::KeyPair::KeyName,
+            AWS::EC2::SecurityGroup::Id,
+            AWS::EC2::Subnet::Id,
+            AWS::EC2::VPC::Id,
+            List<String>,
+            List<Number>,
+            List<AWS::EC2::KeyPair::KeyName>,
+            List<AWS::EC2::SecurityGroup::Id>,
+            List<AWS::EC2::Subnet::Id>,
+            List<AWS::EC2::VPC::Id>
+        ]
+        """
         params = []
         for name in parsed['Parameters'].keys():
             param = parsed['Parameters'][name]

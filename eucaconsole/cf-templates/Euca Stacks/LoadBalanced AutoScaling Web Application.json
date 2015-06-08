@@ -18,7 +18,7 @@
 
     "KeyName" : {
       "Description" : "The EC2 Key Pair to allow SSH access to the instances",
-      "Type" : "String",
+      "Type" : "AWS::EC2::KeyPair::KeyName",
       "ConstraintDescription" : "must be the name of an existing EC2 KeyPair."
     },
       
@@ -51,8 +51,8 @@
       "Properties" : {
         "AvailabilityZones" : { "Fn::GetAZs" : ""},
         "LaunchConfigurationName" : { "Ref" : "ConsoleLaunchConfig" },
-        "MinSize" : "2",
-        "DesiredSize" : "2",
+        "MinSize" : "1",
+        "DesiredSize" : "1",
         "MaxSize" : "3",
         "LoadBalancerNames" : [ { "Ref" : "ConsoleELB" } ]
       }
@@ -131,7 +131,7 @@
 
   "Outputs" : {
     "URL" : {
-      "Description" : "The URL of the website",
+      "Description" : "The URL of the Eucalpytus Console",
       "Value" :  { "Fn::Join" : [ "", [ "https://", { "Fn::GetAtt" : [ "ConsoleELB", "DNSName" ]}]]}
     }
   }
