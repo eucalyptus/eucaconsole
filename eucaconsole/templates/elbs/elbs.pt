@@ -33,8 +33,8 @@
             </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
                 <div>
-                    <span class="label" title="Latency" i18n:attributes="title" data-tooltip="">LA</span>
-                    {{ item.latency }}
+                    <span class="label" title="Avg Latency (ms)" i18n:attributes="title" data-tooltip="">LA</span>
+                    {{ item.latency | number: 2 }}
                 </div>
                 <div>
                     <span class="label" title="Unhealhty hosts" i18n:attributes="title" data-tooltip="">UH</span>
@@ -47,7 +47,7 @@
             </div>
             <metal:block metal:fill-slot="tableview_headers">
                 <th i18n:translate="">Name</th>
-                <th i18n:translate="">Avg Latency (MS)</th>
+                <th i18n:translate="">Avg Latency (ms)</th>
                 <th i18n:translate="">Unhealthy Hosts</th>
                 <th i18n:translate="">Healthy Hosts</th>
                 <th i18n:translate="" class="actions">Actions</th>
@@ -56,7 +56,7 @@
                 <td class="breakword">
                     <a ng-href="${prefix}/{{ item.id || item.name | escapeURL }}/monitoring">{{ item.name | ellipsis: 30 }}</a>
                 </td>
-                <td>{{ item.latency }}</td>
+                <td>{{ item.latency | number: 2 }}</td>
                 <td>{{ item.unhealthy_hosts }}</td>
                 <td>{{ item.healthy_hosts }}</td>
                 <td>

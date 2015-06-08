@@ -50,6 +50,7 @@ from ..forms.elbs import (ELBForm, ELBDeleteForm, ELBsFiltersForm, CreateELBForm
                           ELBInstancesForm, ELBInstancesFiltersForm, CertificateForm, BackendCertificateForm)
 from ..models import Notification
 from ..views import LandingPageView, BaseView, TaggedItemView, JSONResponse
+from ..views.cloudwatchapi import CloudWatchAPIMixin
 from . import boto_error_handler
 
 
@@ -116,12 +117,13 @@ class ELBsView(LandingPageView):
         ]
 
 
-class ELBsJsonView(LandingPageView):
+class ELBsJsonView(LandingPageView, CloudWatchAPIMixin):
     """JSON response view for ELB landing page"""
     def __init__(self, request):
         super(ELBsJsonView, self).__init__(request)
         self.ec2_conn = self.get_connection()
         self.elb_conn = self.get_connection(conn_type='elb')
+        self.cw_conn = self.get_connection(conn_type='cloudwatch')
         with boto_error_handler(request):
             self.items = self.get_items()
             self.securitygroups = self.get_all_security_groups()
@@ -140,6 +142,7 @@ class ELBsJsonView(LandingPageView):
                     name=name,
                     healthy_hosts=health_counts.get('healthy'),
                     unhealthy_hosts=health_counts.get('unhealthy'),
+                    latency=self.get_average_latency(elb),
                 ))
             return dict(results=elbs_array)
 
@@ -157,6 +160,16 @@ class ELBsJsonView(LandingPageView):
                 elif instance.state == 'OutOfService':
                     unhealthy_count += 1
         return dict(healthy=healthy_count, unhealthy=unhealthy_count)
+
+    def get_average_latency(self, elb=None, duration=21600):
+        """Get average latency for a given duration in milliseconds"""
+        period = self.adjust_granularity(duration)
+        stats = self.get_cloudwatch_stats(
+            cw_conn=self.cw_conn, period=period, duration=duration, metric='Latency',
+            namespace='AWS/ELB', idtype='LoadBalancerName', ids=[elb.name])
+        if stats:
+            return sum(stat.get('Average') * 1000 for stat in stats)/len(stats)
+        return None
 
     def get_all_security_groups(self):
         if self.ec2_conn:

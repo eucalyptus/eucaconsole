@@ -67,6 +67,47 @@ class CloudWatchAPIMixin(object):
 
         return 300  # Default to 5 minutes
 
+    @staticmethod
+    def get_cloudwatch_stats(cw_conn=None, period=60, duration=600, metric='CPUUtilization', namespace='AWS/EC2',
+                             statistic='Average', idtype='InstanceId', ids=None, unit=None):
+        """
+        Wrapper for time-series data for statistics of a given metric for one or more resources
+
+        :type period: integer
+        :param period: The granularity, in seconds, of the returned datapoints; must be a multiple of 60
+
+        :type duration: integer
+        :param duration:  Length, in seconds, spanning the returned datapoints.
+        Example: duration=3600 returns the last hour's data
+
+        :type metric: str
+        :param metric: Metric name, see eucaconsole.constants.cloudwatch.METRIC_TYPES
+
+        :type namespace: str
+        :param namespace: Either 'AWS/EC2', 'AWS/EBS', or 'AWS/AutoScaling'
+
+        :type statistic: str
+        :param statistic: Valid values: Average | Sum | SampleCount | Maximum | Minimum
+
+        :type idtype: str
+        :param idtype: Dimension key (e.g. 'InstanceId', 'ImageId')
+
+        :type ids: list
+        :param ids: List of resource ids
+
+        :type unit: str
+        :param unit: Valid values are Seconds, Kilobytes, Percent, Count, Kilobytes/Second, Count/Second, et. al.
+
+        """
+        end_time = datetime.datetime.utcnow()
+        start_time = end_time - datetime.timedelta(seconds=duration)
+        statistics = [statistic]
+
+        return cw_conn.get_metric_statistics(
+            period, start_time, end_time, metric, namespace, statistics,
+            dimensions={idtype: ids}, unit=unit
+        )
+
 
 class CloudWatchAPIView(BaseView, CloudWatchAPIMixin):
     """CloudWatch Charts API"""
@@ -110,7 +151,8 @@ class CloudWatchAPIView(BaseView, CloudWatchAPIMixin):
         divider = 1
 
         with boto_error_handler(self.request):
-            stats = self.get_stats(period, duration, metric, namespace, statistic, idtype, ids, unit)
+            stats = self.get_cloudwatch_stats(
+                self.cw_conn, period, duration, metric, namespace, statistic, idtype, ids, unit)
 
         if metric in convert_to_kilobytes:
             divider = 1000
@@ -137,42 +179,3 @@ class CloudWatchAPIView(BaseView, CloudWatchAPIMixin):
             results=[dict(key=metric, values=json_stats)],
         )
 
-    def get_stats(self, period=60, duration=600, metric='CPUUtilization', namespace='AWS/EC2',
-                  statistic='Average', idtype='InstanceId', ids=None, unit=None):
-        """
-        Wrapper for time-series data for statistics of a given metric for one or more resources
-
-        :type period: integer
-        :param period: The granularity, in seconds, of the returned datapoints; must be a multiple of 60
-
-        :type duration: integer
-        :param duration:  Length, in seconds, spanning the returned datapoints.
-        Example: duration=3600 returns the last hour's data
-
-        :type metric: str
-        :param metric: Metric name, see eucaconsole.constants.cloudwatch.METRIC_TYPES
-
-        :type namespace: str
-        :param namespace: Either 'AWS/EC2', 'AWS/EBS', or 'AWS/AutoScaling'
-
-        :type statistic: str
-        :param statistic: Valid values: Average | Sum | SampleCount | Maximum | Minimum
-
-        :type idtype: str
-        :param idtype: Dimension key (e.g. 'InstanceId', 'ImageId')
-
-        :type ids: list
-        :param ids: List of resource ids
-
-        :type unit: str
-        :param unit: Valid values are Seconds, Kilobytes, Percent, Count, Kilobytes/Second, Count/Second, et. al.
-
-        """
-        end_time = datetime.datetime.utcnow()
-        start_time = end_time - datetime.timedelta(seconds=duration)
-        statistics = [statistic]
-
-        return self.cw_conn.get_metric_statistics(
-            period, start_time, end_time, metric, namespace, statistics,
-            dimensions={idtype: ids}, unit=unit
-        )
