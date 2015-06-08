@@ -62,7 +62,7 @@ class InstanceView(ViewPage):
 
     def verify_there_are_no_running_instances(self):
         self.tester.send_keys_by_css(self._search_input_field_css, "running")
-        self.wait_for_text_present_by_css(ViewPage(self)._item_count_css,"0")
+        self.tester.wait_for_text_present_by_css(ViewPage(self)._item_count_css,"0")
 
 
 

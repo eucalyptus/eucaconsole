@@ -49,11 +49,7 @@ class LaunchInstanceWidget(BaseDialog):
                                number_of_of_instances=None, instance_name=None, key_name="None (advanced option)",
                                security_group="default", user_data=None, monitoring=False, private_addressing=False):
         self.tester.send_keys_by_css(self._image_search_field_css, image)
-        if self.tester.wait_for_element_present_by_css(self._first_image_button_css):
-            self.tester.click_element_by_css(self._first_image_button_css)
-        else:
-            self.tester.send_keys_by_css(self._image_search_field_css, "precise")
-            self.tester.click_element_by_css(self._first_image_button_css)
+        self.tester.click_element_by_css(self._first_image_button_css)
 
         if number_of_of_instances is not None:
             self.tester.send_keys_by_id(self._number_of_instances_input_field_id, number_of_of_instances)
