@@ -155,14 +155,24 @@ class LaunchMoreLikeThisDialog(BaseDialog):
             self.tester.send_keys_by_css(self._instance_name_field_css, instance_name)
         if user_data is not None:
             self.tester.click_element_by_css(self._user_data_text_radio_button_css)
-            self.send_keys_by_id(self._user_data_text_input_field_id, user_data)
+            self.tester.send_keys_by_id(self._user_data_text_input_field_id, user_data)
         if monitoring or private_addressing:
-            self.tester.click_element_by_id(self._advanced_options_css)
+            self.tester.click_element_by_css(self._advanced_options_css)
             if monitoring:
                 self.tester.click_element_by_id(self._enable_monitoring_chkbox_id)
             if private_addressing:
                 self.tester.click_element_by_id(self._use_private_addressing_chkbox_id)
         self.tester.click_element_by_id(self._launch_instance_button_id)
+
+class TerminateAllInstancesModal(BaseDialog):
+
+    def __init__(self, tester):
+        self.tester = tester
+
+    _terminate_all_instances_submit_btn_id = "terminate_all_instances_submit_button"
+
+    def click_terminate_all_instances_submit_button(self):
+        self.tester.click_element_by_id(self._terminate_all_instances_submit_btn_id)
 
 
 

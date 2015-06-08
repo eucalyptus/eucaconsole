@@ -16,6 +16,8 @@ class InstanceView(ViewPage):
     _instance_link_css = 'a[ng-href="/instances/{0}"]'  #instance_id required;
     _view_details_actionmenu_item_css = "#item-dropdown_{0}>li>a"  #instance_id required
     _launch_more_like_this_actionmenu_item_css = "#item-dropdown_{0}>li:nth-of-type(3)>a"  #instance_id required
+    _terminate_all_instances_btn_id = "terminate-instances-btn"
+    _search_input_field_css = ".search-input"
 
     def verify_instance_view_page_loaded(self):
         self.tester.wait_for_text_present_by_id(ViewPage(self)._page_title_id, self._instances_view_page_title)
@@ -54,4 +56,16 @@ class InstanceView(ViewPage):
         if len(full_name)>11:
             instance_name = full_name[:-13]
         return instance_name
+
+    def click_terminate_all_instances_button(self):
+        self.tester.click_element_by_id(self._terminate_all_instances_btn_id)
+
+    def verify_there_are_no_running_instances(self):
+        self.tester.send_keys_by_css(self._search_input_field_css, "running")
+        self.wait_for_text_present_by_css(ViewPage(self)._item_count_css,"0")
+
+
+
+
+
 

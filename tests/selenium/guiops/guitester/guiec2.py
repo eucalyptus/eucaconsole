@@ -11,7 +11,7 @@ from pages.security_group.security_group_view import SecurityGroupView
 from pages.security_group.security_group_detail import SecurityGroupDetailPage
 from dialogs.security_group_dialogs import CreateScurityGroupDialog, DeleteScurityGroupDialog
 from dialogs.keypair_dialogs import CreateKeypairDialog, DeleteKeypairModal, ImportKeypairDialog
-from dialogs.instance_dialogs import LaunchInstanceWidget, LaunchMoreLikeThisDialog, TerminateInstanceModal
+from dialogs.instance_dialogs import LaunchInstanceWidget, LaunchMoreLikeThisDialog, TerminateInstanceModal, TerminateAllInstancesModal
 
 
 
@@ -316,6 +316,10 @@ class GuiEC2(GuiTester):
         InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_terminated()
 
     def terminate_instance_from_detail_page(self, instance_id):
+        """
+        Navigates to detail page, terminates instance.
+        :param instance_id:
+        """
 
         BasePage(self).goto_instances_via_menu()
         instance_name=InstanceView(self).get_instance_name(instance_id)
@@ -323,6 +327,13 @@ class GuiEC2(GuiTester):
         InstanceDetailPage(self, instance_id, instance_name).click_terminate_instance_action_item_from_detail_page()
         TerminateInstanceModal(self).click_terminate_instance_submit_button(instance_id)
         InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_terminated()
+
+    def batch_terminate_all_instances(self):
+
+        BasePage(self).goto_instances_via_menu()
+        InstanceView(self).click_terminate_all_instances_button()
+        TerminateAllInstancesModal(self).click_terminate_all_instances_submit_button()
+        InstanceView(self).verify_there_are_no_running_instances()
 
 
 

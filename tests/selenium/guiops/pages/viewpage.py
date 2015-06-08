@@ -6,7 +6,7 @@ class ViewPage(BasePage):
         self.tester = tester
 
     _refresh_button_id = "refresh-btn"
-    _item_count_css = "strong.ng-binding"
+    _item_count_css = ".items-found>.ng-binding"
     _page_title_id = "pagetitle"
     _dashboard_icon_css = "i.fi-home"
     _list_view_icon = "a#tableview-button"

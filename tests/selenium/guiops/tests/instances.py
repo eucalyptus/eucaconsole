@@ -25,13 +25,15 @@ class Instance_operations_sequence(GuiEC2):
         instance2 = self.tester.launch_more_like_this_from_view_page(inatance_id=instance1_id, instance_name=instance2_name)
         instance2 = self.tester.launch_more_like_this_from_detail_page(base_instance_id=instance1_id, instance_name=instance2_name)
         instance2_id = instance2.get("instance_id")
+        self.tester.terminate_instance_from_view_page(instance2_name, instance2_id)
+        instance4 = self.tester.launch_more_like_this_from_detail_page(instance2_id, monitoring=True, user_data="Test user data.")
+        self.tester.terminate_instance_from_detail_page(instance1_id)
         instance3_name = self.id_generator()+"-instance"
         instance3 = self.tester.launch_instance_from_dashboard(image="centos", instance_name=instance1_name, availability_zone="two",
                                                             instance_type= "m1.small",security_group=s_group1_name, key_name=keypair1_name)
-        self.tester.terminate_instance_from_detail_page(instance1_id)
-        #self.tester.terminate_instance_from_view_page(instance2_name, instance2_id)
-        #self.tester.delete_keypair_from_detail_page(keypair1_name)
-        #self.tester.delete_security_group_from_view_page(s_group1_name, s_group1_id)
+        self.tester.batch_terminate_all_instances()
+        self.tester.delete_keypair_from_detail_page(keypair1_name)
+        self.tester.delete_security_group_from_view_page(s_group1_name, s_group1_id)
         self.tester.logout()
         self.tester.exit_browser()
 
