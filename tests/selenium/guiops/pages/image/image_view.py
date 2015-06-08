@@ -11,8 +11,8 @@ class ImageView(ViewPage):
     _view_details_actions_menu_item_css ="#item-dropdown_{0}>li:nth-of-type(1)>a" #image_id required
     _launch_instance_actions_menu_item_css ="#item-dropdown_{0}>li:nth-of-type(4)>a" #image_id required
     _search_input_css = ".search-input"
-    _action_menu_of_first_image_in_list_css = ".grid-action"
-    _launch_instance_actions_menu_item_for_first_in_list_css = "[class ='f-dropdown open f-open-dropdown']>li:nth-of-type(4)"
+    _action_menu_of_first_image_in_list_css = "[class='grid-action']"
+    _launch_instance_actions_menu_item_for_first_in_list_css = "[class ='f-dropdown open f-open-dropdown']>li:nth-of-type(4)>a"
 
     def verify_image_view_page_loaded(self):
         self.tester.wait_for_text_present_by_id(ViewPage(self)._page_title_id, self._image_view_page_title)

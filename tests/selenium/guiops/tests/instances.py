@@ -18,16 +18,16 @@ class Instance_operations_sequence(GuiEC2):
         keypair1_name = self.id_generator()+"-key-pair"
         self.tester.create_keypair_from_dashboard(keypair1_name)
         instance1_name = self.id_generator()+"-instance"
-        instance1 = self.tester.launch_instance_from_image_view_page(image_id_or_type="emi-787cc87c", instance_name=instance1_name,
-                                                               instance_type= "m1.small")
-        #instance1 = self.tester.launch_instance_from_dashboard(image="centos", instance_name=instance1_name, availability_zone="two",
-        #                                                     instance_type= "m1.small",security_group=s_group1_name, key_name=keypair1_name)
+        instance1 = self.tester.launch_instance_from_image_view_page(image_id_or_type="centos", instance_name=instance1_name,
+                                                               instance_type= "m1.medium", security_group=s_group1_name, key_name=keypair1_name)
         instance1_id = instance1.get("instance_id")
-        #instance2_name = self.id_generator()+"-instance"
-        #instance2 = self.tester.launch_more_like_this_from_view_page(inatance_id=instance1_id, instance_name=instance2_name)
-        print "-------------------Launch instance like this --------------------------"
-        #instance2 = self.tester.launch_more_like_this_from_detail_page(base_instance_id=instance1_id, instance_name=instance2_name)
-        #instance2_id = instance2.get("instance_id")
+        instance2_name = self.id_generator()+"-instance"
+        instance2 = self.tester.launch_more_like_this_from_view_page(inatance_id=instance1_id, instance_name=instance2_name)
+        instance2 = self.tester.launch_more_like_this_from_detail_page(base_instance_id=instance1_id, instance_name=instance2_name)
+        instance2_id = instance2.get("instance_id")
+        instance3_name = self.id_generator()+"-instance"
+        instance3 = self.tester.launch_instance_from_dashboard(image="centos", instance_name=instance1_name, availability_zone="two",
+                                                            instance_type= "m1.small",security_group=s_group1_name, key_name=keypair1_name)
         self.tester.terminate_instance_from_detail_page(instance1_id)
         #self.tester.terminate_instance_from_view_page(instance2_name, instance2_id)
         #self.tester.delete_keypair_from_detail_page(keypair1_name)
