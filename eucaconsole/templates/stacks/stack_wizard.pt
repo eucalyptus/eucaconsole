@@ -23,8 +23,8 @@
                 <form action="${request.route_path('stack_create')}" id="stack-wizard-form"
                       method="post" data-abide="abide" enctype="multipart/form-data">
                     ${structure:create_form['csrf_token']}
-                    <input name="s3-template-url" type="hidden" value="{{ s3TemplateUrl }}"/>
-                    <input name="s3-template-key" type="hidden" value="{{ s3TemplateKey }}"/>
+                    <input id="s3-template-url" name="s3-template-url" type="hidden" value="{{ s3TemplateUrl }}"/>
+                    <input id="s3-template-key" name="s3-template-key" type="hidden" value="{{ s3TemplateKey }}"/>
                     <dl id="wizard-tabs" class="tabs" data-tab="">
                         <dd class="active">
                             <a id="tabStep1" href="#step1" ng-click="visitNextStep(1, $event)">

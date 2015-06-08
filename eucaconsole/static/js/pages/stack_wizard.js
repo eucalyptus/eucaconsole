@@ -70,23 +70,20 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
         // This timer code will trigger the change event if someone
         // types in the field and hasn't typed anything for 2 seconds
         $scope.url_timer = undefined;
-        $('#template-url').on('keypress', function() {
+        $('#template-url').on('keydown', function() {
             if ($scope.url_timer) {
                 window.clearTimeout($scope.url_timer);
             }
             $scope.url_timer = window.setTimeout(function() {
                 $scope.url_timer = undefined;
-                $('#template-url').trigger('change');
-            }, 2000);
-        });
-        $('#template-url').on('change', function(){
-            $timeout(function() {
-                $scope.checkRequiredInput();
-                $scope.templateIdent = $scope.templateUrl;
-                if ($scope.templateIdent !== undefined) {
-                    $scope.getStackTemplateInfo();
-                }
-            });
+                $timeout(function() {
+                    $scope.checkRequiredInput();
+                    $scope.templateIdent = $scope.templateUrl;
+                    if ($scope.templateIdent !== undefined) {
+                        $scope.getStackTemplateInfo();
+                    }
+                });
+            }, 1000);
         });
         $scope.setInitialValues = function () {
             $scope.inputtype = 'sample';
@@ -120,26 +117,18 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
                         if (val === undefined || val === '') {
                             $scope.isNotValid = true;
                         }
-                        $scope.templateFiles = undefined;
-                        $('#template-file').val(undefined);
-                        $scope.templateUrl = undefined;
                         break;
                     case 'file':
                         val = $scope.templateFiles;
                         if (val === undefined || val.length === 0) {
                             $scope.isNotValid = true;
                         }
-                        $scope.templateSample = undefined;
-                        $scope.templateUrl = undefined;
                         break;
                     case 'url':
                         val = $scope.templateUrl;
                         if (val === undefined || val === '') {
                             $scope.isNotValid = true;
                         }
-                        $scope.templateSample = undefined;
-                        $scope.templateFiles = undefined;
-                        $('#template-file').val(undefined);
                         break;
                     default:
                         $scope.isNotValid = true;
@@ -164,6 +153,28 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
             });
             $scope.$watch('inputtype', function(){
                 $scope.checkRequiredInput();
+                switch ($scope.inputtype) {
+                    case 'sample':
+                        $scope.templateFiles = undefined;
+                        $('#template-file').val(undefined);
+                        $scope.templateUrl = undefined;
+                        $scope.templateIdent = undefined;
+                        $scope.description = '';
+                        break;
+                    case 'file':
+                        $scope.templateSample = undefined;
+                        $scope.templateUrl = undefined;
+                        $scope.templateIdent = undefined;
+                        $scope.description = '';
+                        break;
+                    case 'url':
+                        $scope.templateSample = undefined;
+                        $scope.templateFiles = undefined;
+                        $('#template-file').val(undefined);
+                        $scope.templateIdent = undefined;
+                        $scope.description = '';
+                        break;
+                }
             });
             $scope.$watch('templateSample', function(){
                 $scope.checkRequiredInput();
@@ -261,6 +272,15 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
             if ($scope.loading === true) {
                 return;
             }
+            $scope.description = '';
+            $scope.parameters = undefined;
+            $scope.s3TemplateUrl = undefined;
+            $scope.s3TemplateKey = undefined;
+            $('#s3-template-url').val('');
+            $('#s3-template-key').val('');
+            $scope.serviceList = undefined;
+            $scope.resourceList = undefined;
+            $scope.propertyList = undefined;
             var fd = new FormData();
             // fill from actual form
             angular.forEach($('form').serializeArray(), function(value, key) {
@@ -272,13 +292,6 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
                 fd.append('template-file', file);
             }
             $scope.loading = true;
-            $scope.description = '';
-            $scope.parameters = undefined;
-            $scope.s3TemplateUrl = undefined;
-            $scope.s3TemplateKey = undefined;
-            $scope.serviceList = undefined;
-            $scope.resourceList = undefined;
-            $scope.propertyList = undefined;
             $http.post($scope.stackTemplateEndpoint, fd, {
                     headers: {'Content-Type': undefined},
                     transformRequest: angular.identity
@@ -298,6 +311,9 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
                     }
                     if ($scope.serviceList || $scope.resourceList) {
                         $('#aws-error-modal').foundation('reveal', 'open');
+                        $scope.templateUrl = undefined;
+                        $scope.templateIdent = undefined;
+                        $scope.description = '';
                         return;
                     }
                     if (results.property_list && results.property_list.length > 0) {

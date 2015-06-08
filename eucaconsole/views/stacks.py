@@ -520,7 +520,7 @@ class StackWizardView(BaseView):
             images = conn.get_all_ramdisks()
         ret = []
         for image in images:
-            ret.append((image.id, image.name))
+            ret.append((image.id, "{0} | {1}".format(image.id, image.name)))
         return ret
 
     def get_cert_options(self):
