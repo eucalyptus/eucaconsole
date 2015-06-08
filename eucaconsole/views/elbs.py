@@ -133,26 +133,30 @@ class ELBsJsonView(LandingPageView):
         with boto_error_handler(self.request):
             elbs_array = []
             for elb in self.filter_items(self.items):
-                # boto doesn't convert elb created_time into dtobj like it does for others
-                elb.created_time = boto.utils.parse_ts(elb.created_time)
                 name = elb.name
-                security_groups = self.get_security_groups(elb.security_groups)
-                security_groups_array = sorted({
-                    'name': group.name,
-                    'id': group.id,
-                    'rules_count': self.get_security_group_rules_count_by_id(group.id)
-                    } for group in security_groups)
+                health_counts = self.get_elb_health_counts(elb)
                 elbs_array.append(dict(
-                    created_time=self.dt_isoformat(elb.created_time),
-                    in_use=False,
                     dns_name=elb.dns_name,
                     name=name,
-                    security_groups=security_groups_array,
+                    healthy_hosts=health_counts.get('healthy'),
+                    unhealthy_hosts=health_counts.get('unhealthy'),
                 ))
             return dict(results=elbs_array)
 
     def get_items(self):
         return self.elb_conn.get_all_load_balancers() if self.elb_conn else []
+
+    def get_elb_health_counts(self, elb=None):
+        healthy_count = 0
+        unhealthy_count = 0
+        if elb:
+            instances = self.elb_conn.describe_instance_health(elb.name)
+            for instance in instances:
+                if instance.state == 'InService':
+                    healthy_count += 1
+                elif instance.state == 'OutOfService':
+                    unhealthy_count += 1
+        return dict(healthy=healthy_count, unhealthy=unhealthy_count)
 
     def get_all_security_groups(self):
         if self.ec2_conn:
@@ -409,7 +413,6 @@ class ELBView(BaseELBView):
             elb_tags=TaggedItemView.get_tags_display(self.elb.tags) if self.elb.tags else '',
             elb_form=self.elb_form,
             delete_form=self.delete_form,
-            in_use=False,
             protocol_list=self.get_protocol_list(),
             listener_list=self.get_listener_list(),
             is_vpc_supported=self.is_vpc_supported,
@@ -575,7 +578,6 @@ class ELBInstancesView(BaseELBView):
         filter_keys = ['id', 'name', 'placement', 'state', 'tags', 'vpc_subnet_display', 'vpc_name']
         self.render_dict = dict(
             elb=self.elb,
-            in_use=False,
             elb_name=self.escape_braces(self.elb.name) if self.elb else '',
             escaped_elb_name=quote(self.elb.name) if self.elb else '',
             elb_vpc_network=self.get_vpc_network_name(self.elb),
@@ -772,7 +774,6 @@ class ELBHealthChecksView(BaseELBView):
             elb_form=self.elb_form,
             escaped_elb_name=quote(self.elb.name) if self.elb else '',
             delete_form=ELBDeleteForm(self.request, formdata=self.request.params or None),
-            in_use=False,
         )
 
     @view_config(route_name='elb_healthchecks', renderer=TEMPLATE)
