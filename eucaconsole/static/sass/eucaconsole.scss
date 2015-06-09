@@ -324,6 +324,10 @@ $breadcrumb-border-color: darken($breadcrumb-background-color, 20%);
     margin-bottom: 6px;
 }
 
+.upper {
+    text-transform: uppercase;
+}
+
 hr {
     border: 1px solid $hp-gray-20;
     border-width: 1px 0 0;
@@ -588,6 +592,9 @@ form {
         color: $euca-grey;
         font-weight: bold;
         cursor: default;
+        &.inline {
+            display: inline-block;
+        }
     }
     input {
         border-color: $hp-gray-20;
@@ -644,6 +651,16 @@ form {
     }
     .server-validation span.error {
         display: block !important;
+        background-color: white;
+        color: darkred;
+        padding-left: 0;
+    }
+    &[data-abide] .error small.error {
+        background-color: white;
+        color: darkred;
+        &.inline {
+            display: inline-block !important;
+        }
     }
     .error .chosen-container .chosen-single {
         border-color: darkred;
@@ -726,13 +743,20 @@ form .controls-wrapper > [class*='small-'] label {
     }
 }
 
-[data-abide] .controls-wrapper .error {
+[data-abide] .controls-wrapper .error, [data-abide] .controls-wrapper.error {
+    label {
+        color: $euca-grey;
+    }
     input, select {
         border: 1px solid darkred;
         background-color: $euca-validation-input-bgcolor;
     }
     small.error {
         @include validation-error-mixin;
+        &.inline {
+            display: inline-block;
+            margin-left: 1rem;
+        }
     }
 }
 

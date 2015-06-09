@@ -1,7 +1,7 @@
 <!--! Modal dialog for large CloudWatch chart -->
 <div tal:omit-tag="" i18n:domain="eucaconsole">
     <div class="reveal-modal xlarge cloudwatch-charts" id="large-chart-modal" data-reveal="">
-        <h3>{{ chartsCtrl.selectedChartTitle }}</h3>
+        <h3>{{ chartsCtrl.selectedChartTitle || '&nbsp;' }}</h3>
         <div class="toprow">
             <div class="blurb">
                 <div class="field-wrapper">

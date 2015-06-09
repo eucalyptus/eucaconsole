@@ -85,6 +85,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
             'ids': '@ids',
             'idtype': '@idtype',
             'metric': '@metric',
+            'namespace': '@namespace',
             'duration': '@duration',
             'unit': '@unit',
             'statistic': '@statistic'
@@ -122,6 +123,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
             'ids': scope.ids,
             'idtype': scope.idtype,
             'metric': scope.metric,
+            'namespace': scope.namespace,
             'duration': scope.duration,
             'unit': scope.unit,
             'statistic': scope.statistic
@@ -138,7 +140,9 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
             // Anchor chart to zero for the following metrics
             var forceZeroBaselineMetrics = [
                 'NetworkIn', 'NetworkOut', 'DiskReadBytes', 'DiskReadOps',
-                'DiskWriteBytes', 'DiskWriteOps'
+                'DiskWriteBytes', 'DiskWriteOps', 'HealthyHostCount', 'UnhealthyHostCount',
+                'HTTPCode_ELB_4XX', 'HTTPCode_ELB_5XX', 'HTTPCode_Backend_2XX', 'HTTPCode_Backend_3XX',
+                'HTTPCode_Backend_4XX', 'HTTPCode_Backend_5XX'
             ];
             var chart = nv.models.lineChart()
                 .margin({left: 68})
@@ -154,7 +158,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
                 chart.forceY([0, 100]);  // Set proper y-axis range for percentage units
             }
             if (forceZeroBaselineMetrics.indexOf(scope.metric) !== -1) {
-                chart.forceY([0, 100]);  // Anchor chart to zero baseline
+                chart.forceY([0, 10]);  // Anchor chart to zero baseline
             }
             chart.yAxis.axisLabel(unit).tickFormat(d3.format('.0f'));
             d3.select('#' + chartElemId).datum(results).call(chart);
@@ -177,6 +181,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
                     'ids': attrs.ids,
                     'idType': attrs.idType,
                     'metric': attrs.metric,
+                    'namespace': attrs.namespace,
                     'duration': attrs.duration,
                     'unit': attrs.unit,
                     'statistic': attrs.statistic
