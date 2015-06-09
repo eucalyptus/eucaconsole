@@ -50,6 +50,9 @@ class QuotasForm(BaseSecureForm):
     ec2_total_size_all_vols = wtforms.TextField(label=_(u'Total size of all volumes (GB)'))
     ec2_snapshots_max = wtforms.TextField(label=_(u'Snapshots (maximum)'))
     ec2_elastic_ip_max = wtforms.TextField(label=_(u'Elastic IP addresses (maximum)'))
+    ec2_instance_cpu = wtforms.TextField(label=_(u'CPU in cores (maximum)'))
+    ec2_instance_disk = wtforms.TextField(label=_(u'Root Disk in GB (maximum)'))
+    ec2_instance_memory = wtforms.TextField(label=_(u'Memory in MB (maximum)'))
 
     s3_buckets_max = wtforms.TextField(label=_(u'Buckets (maximum)'))
     s3_objects_per_max = wtforms.TextField(label=_(u'Objects per bucket (maximum)'))
@@ -121,6 +124,12 @@ class QuotasForm(BaseSecureForm):
                             self.set_lowest(self.ec2_total_size_all_vols, limit)
                         elif val == 'ec2:quota-addressnumber':
                             self.set_lowest(self.ec2_elastic_ip_max, limit)
+                        elif val == 'ec2:quota-cputotalsize':
+                            self.set_lowest(self.ec2_instance_cpu, limit)
+                        elif val == 'ec2:quota-disktotalsize':
+                            self.set_lowest(self.ec2_instance_disk, limit)
+                        elif val == 'ec2:quota-memorytotalsize':
+                            self.set_lowest(self.ec2_instance_memory, limit)
                         elif val == 's3:quota-bucketnumber':
                             self.set_lowest(self.s3_buckets_max, limit)
                         elif val == 's3:quota-bucketobjectnumber':

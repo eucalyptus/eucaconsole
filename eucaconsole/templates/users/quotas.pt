@@ -22,6 +22,9 @@
                 ${panel('form_field', field=quota_form['ec2_total_size_all_vols'], reverse=True, leftcol_width=2, rightcol_width=10, pattern=layout.non_negative_pattern, error_msg=quota_err)}
                 ${panel('form_field', field=quota_form['ec2_snapshots_max'], reverse=True, leftcol_width=2, rightcol_width=10, pattern=layout.non_negative_pattern, error_msg=quota_err)}
                 ${panel('form_field', field=quota_form['ec2_elastic_ip_max'], reverse=True, leftcol_width=2, rightcol_width=10, pattern=layout.non_negative_pattern, error_msg=quota_err)}
+                ${panel('form_field', field=quota_form['ec2_instance_cpu'], reverse=True, leftcol_width=2, rightcol_width=10, pattern=layout.non_negative_pattern, error_msg=quota_err)}
+                ${panel('form_field', field=quota_form['ec2_instance_disk'], reverse=True, leftcol_width=2, rightcol_width=10, pattern=layout.non_negative_pattern, error_msg=quota_err)}
+                ${panel('form_field', field=quota_form['ec2_instance_memory'], reverse=True, leftcol_width=2, rightcol_width=10, pattern=layout.non_negative_pattern, error_msg=quota_err)}
             </div>
         </div>
         <div class="expando" id="s3-section" ng-cloak="">
