@@ -25,7 +25,8 @@
                       method="post" data-abide="abide" enctype="multipart/form-data">
                     ${structure:create_form['csrf_token']}
                     <dl id="wizard-tabs" class="tabs" data-tab="" ng-cloak="">
-                        <dd ng-repeat="tab in tabList" ng-class="{disabled: invalidSteps[$index]}" ng-show="tab.render">
+                        <dd ng-repeat="tab in tabList" ng-class="{disabled: invalidSteps[$index]}" ng-show="tab.render"
+                                class="active">
                             <a id="{{ 'tabStep' + ($index+1) }}" ng-click="visitStep($event, $index)"
                                href="{{ '#step' + ($index+1) }}" ng-hide="invalidSteps[$index]">
                                 <span class="cir">{{ tab.display_id }}</span>

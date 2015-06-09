@@ -29,7 +29,6 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor','EucaConsoleUtils'])
         $scope.currentStepIndex = 1;
         $scope.isNotValid = true;
         $scope.initChosenSelectors = function () {
-            // $('#launch_config').chosen({'width': '80%', search_contains: true});
             $('#load_balancers').chosen({'width': '100%', search_contains: true});
             $('#availability_zones').chosen({'width': '100%', search_contains: true});
             $('#vpc_subnet').chosen({'width': '100%', search_contains: true});

@@ -28,11 +28,169 @@
 Forms for Elastic Load Balancer
 
 """
+import re
 import wtforms
 from wtforms import validators
 
 from ..i18n import _
 from . import BaseSecureForm, ChoicesManager, TextEscapedField, NAME_WITHOUT_SPACES_NOTICE
+from ..views import BaseView
+
+
+class PingPathRequired(validators.Required):
+    """Ping path is conditionally required based on protocol value"""
+
+    def __init__(self, *args, **kwargs):
+        super(PingPathRequired, self).__init__(*args, **kwargs)
+
+    def __call__(self, form, field):
+        if form.ping_protocol.data in ['HTTP', 'HTTPS']:
+            super(PingPathRequired, self).__call__(form, field)
+
+
+class ELBForm(BaseSecureForm):
+    """Elastic Load Balancer update form (General tab)"""
+    idle_timeout = wtforms.IntegerField(
+        label=_(u'Idle timeout (secs)'),
+    )
+    idle_timeout_help_text = _(u'Amount of time a connection to an instance can be idle \
+                                 before the load balancer closes it. If keep alive is set for instances, \
+                                 keep alive value should be set higher than idle timeout.')
+    securitygroup_error_msg = _(u'Security groups are required')
+    securitygroup = wtforms.SelectMultipleField(
+        label=_(u'Security groups'),
+    )
+
+    def __init__(self, request, conn=None, vpc_conn=None, elb=None, securitygroups=None, **kwargs):
+        super(ELBForm, self).__init__(request, **kwargs)
+        self.conn = conn
+        self.vpc_conn = vpc_conn
+        self.cloud_type = request.session.get('cloud_type', 'euca')
+        self.is_vpc_supported = BaseView.is_vpc_supported(request)
+        self.security_groups = securitygroups or []
+        self.idle_timeout.help_text = self.idle_timeout_help_text
+        self.set_error_messages()
+        self.set_choices()
+        if elb is not None:
+            self.idle_timeout.data = self.get_idle_timeout(elb)
+
+    def set_error_messages(self):
+        self.securitygroup.error_msg = self.securitygroup_error_msg
+
+    def set_choices(self):
+        self.securitygroup.choices = self.set_security_group_choices()
+
+    def set_security_group_choices(self):
+        choices = []
+        for sgroup in self.security_groups:
+            sg_name = sgroup.name
+            sg_name = BaseView.escape_braces(sg_name)
+            choices.append((sgroup.id, sg_name))
+        if not self.security_groups:
+            choices.append(('default', 'default'))
+        return sorted(set(choices))
+
+    @staticmethod
+    def get_idle_timeout(elb=None):
+        if hasattr(elb, 'idle_timeout'):
+            return elb.idle_timeout
+        if elb:
+            elb_attrs = elb.get_attributes()
+            if elb_attrs:
+                return elb_attrs.connecting_settings.idle_timeout
+
+
+class ELBHealthChecksForm(BaseSecureForm):
+    """ELB Health Checks form"""
+    ping_protocol_error_msg = _(u'Ping protocol is required')
+    ping_protocol = wtforms.SelectField(
+        label=_(u'Protocol'),
+        validators=[validators.InputRequired(message=ping_protocol_error_msg)],
+    )
+    ping_port_error_msg = _(u'Port range value must be whole numbers between 1-65535')
+    ping_port = wtforms.IntegerField(
+        label=_(u'Port'),
+        validators=[
+            validators.InputRequired(message=ping_port_error_msg),
+            validators.NumberRange(min=1, max=65535),
+        ],
+    )
+    ping_path_error_msg = _(u'Ping path is required')
+    ping_path = TextEscapedField(
+        id=u'ping-path',
+        label=_(u'Path'),
+        default="index.html",
+        validators=[PingPathRequired(message=ping_path_error_msg)],
+    )
+    response_timeout_error_msg = _(u'Response timeout is required')
+    response_timeout = wtforms.IntegerField(
+        label=_(u'Response timeout (secs)'),
+        validators=[validators.InputRequired(message=response_timeout_error_msg)],
+    )
+    time_between_pings_error_msg = _(u'Time between pings is required')
+    time_between_pings = wtforms.SelectField(
+        label=_(u'Time between pings'),
+        validators=[validators.InputRequired(message=time_between_pings_error_msg)],
+    )
+    failures_until_unhealthy_error_msg = _(u'Failures until unhealthy is required')
+    failures_until_unhealthy = wtforms.SelectField(
+        label=_(u'Failures until unhealthy'),
+        validators=[validators.InputRequired(message=failures_until_unhealthy_error_msg)],
+    )
+    passes_until_healthy_error_msg = _(u'Passes until healthy is required')
+    passes_until_healthy = wtforms.SelectField(
+        label=_(u'Passes until healthy'),
+        validators=[validators.InputRequired(message=passes_until_healthy_error_msg)],
+    )
+
+    def __init__(self, request, elb=None, **kwargs):
+        super(ELBHealthChecksForm, self).__init__(request, **kwargs)
+        self.elb = elb
+        self.set_error_messages()
+        self.set_choices()
+        self.set_initial_data()
+
+    def set_initial_data(self):
+        if self.elb:
+            hc_data = self.get_health_check_data()
+            self.ping_protocol.data = hc_data.get('ping_protocol')
+            self.ping_port.data = int(hc_data.get('ping_port', 80))
+            self.ping_path.data = hc_data.get('ping_path')
+            self.time_between_pings.data = str(self.elb.health_check.interval)
+            self.response_timeout.data = self.elb.health_check.timeout
+            self.failures_until_unhealthy.data = str(self.elb.health_check.unhealthy_threshold)
+            self.passes_until_healthy.data = str(self.elb.health_check.healthy_threshold)
+
+    def set_error_messages(self):
+        self.ping_path.error_msg = self.ping_path_error_msg
+
+    def set_choices(self):
+        self.ping_protocol.choices = CreateELBForm.get_ping_protocol_choices()
+        self.time_between_pings.choices = CreateELBForm.get_time_between_pings_choices()
+        self.failures_until_unhealthy.choices = CreateELBForm.get_failures_until_unhealthy_choices()
+        self.passes_until_healthy.choices = CreateELBForm.get_passes_until_healthy_choices()
+
+    def get_health_check_data(self):
+        if self.elb is not None and self.elb.health_check.target is not None:
+            match = re.search('^(\w+):(\d+)/?(.+)?', self.elb.health_check.target)
+            return dict(
+                ping_protocol=match.group(1),
+                ping_port=match.group(2),
+                ping_path=match.group(3),
+            )
+        return {}
+
+
+class ELBInstancesForm(BaseSecureForm):
+    """ELB Instances form."""
+    cross_zone_enabled_help_text = _(u'Distribute traffic evenly across all instances in all availability zones')
+    cross_zone_enabled = wtforms.BooleanField(label=_(u'Enable cross-zone load balancing'))
+
+    def __init__(self, request, elb=None, cross_zone_enabled=False, **kwargs):
+        super(ELBInstancesForm, self).__init__(request, **kwargs)
+        self.elb = elb
+        self.cross_zone_enabled.data = cross_zone_enabled
+        self.cross_zone_enabled.help_text = self.cross_zone_enabled_help_text
 
 
 class ELBDeleteForm(BaseSecureForm):
@@ -96,8 +254,8 @@ class CreateELBForm(BaseSecureForm):
     )
     cross_zone_enabled_help_text = _(u'Distribute traffic evenly across all instances in all availability zones')
     cross_zone_enabled = wtforms.BooleanField(label=_(u'Enable cross-zone load balancing'))
-    add_availability_zones_help_text = _(u'Enable this load balancer \
-        to route traffic to instances in the selected zones')
+    add_availability_zones_help_text = _(
+        u'Enable this load balancer to route traffic to instances in the selected zones')
     add_vpc_subnets_help_text = _(u'Enable this load balancer to route traffic to instances in the selected subnets')
     add_instances_help_text = _(u'Balance traffic between the selected instances')
     ping_protocol_error_msg = _(u'Ping protocol is required')
@@ -117,7 +275,7 @@ class CreateELBForm(BaseSecureForm):
     ping_path = TextEscapedField(
         id=u'ping-path',
         label=_(u'Path'),
-        default="/index.html",
+        default="index.html",
         validators=[validators.InputRequired(message=ping_path_error_msg)],
     )
     response_timeout_error_msg = _(u'Response timeout is required')
@@ -202,33 +360,11 @@ class CreateELBForm(BaseSecureForm):
 
     @staticmethod
     def get_failures_until_unhealthy_choices():
-        return [
-            ('1', '1'),
-            ('2', '2'),
-            ('3', '3'),
-            ('4', '4'),
-            ('5', '5'),
-            ('6', '6'),
-            ('7', '7'),
-            ('8', '8'),
-            ('9', '9'),
-            ('10', '10'),
-        ]
+        return [(str(x), str(x)) for x in range(2, 11)]
 
     @staticmethod
     def get_passes_until_healthy_choices():
-        return [
-            ('1', '1'),
-            ('2', '2'),
-            ('3', '3'),
-            ('4', '4'),
-            ('5', '5'),
-            ('6', '6'),
-            ('7', '7'),
-            ('8', '8'),
-            ('9', '9'),
-            ('10', '10'),
-        ]
+        return [(str(x), str(x)) for x in range(2, 11)]
 
 
 class ELBInstancesFiltersForm(BaseSecureForm):
@@ -272,30 +408,17 @@ class ELBInstancesFiltersForm(BaseSecureForm):
                     'options': self.get_availability_zone_choices(self.region)},
                 {'name': 'subnet_id', 'label': self.subnet_id.label.text,
                     'options': self.getOptionsFromChoices(self.vpc_choices_manager.vpc_subnets(add_blank=False))},
-                {'name': 'security_group', 'label': self.security_group.label.text,
-                    'options': self.getOptionsFromChoices(self.ec2_choices_manager.security_groups(add_blank=False))},
             ]
             vpc_choices = self.vpc_choices_manager.vpc_networks(add_blank=False)
             vpc_choices.append(('None', _(u'No VPC')))
-            self.facets.append(
-                {'name': 'vpc_id', 'label': self.vpc_id.label.text,
-                    'options': self.getOptionsFromChoices(vpc_choices)},
-            )
         else:
             self.facets = [
                 {'name': 'state', 'label': self.state.label.text, 'options': self.get_status_choices()},
-                {'name': 'security_group', 'label': self.security_group.label.text,
-                    'options': self.getOptionsFromChoices(self.ec2_choices_manager.security_groups(add_blank=False))},
             ]
             if self.is_vpc_supported:
                 self.facets.append(
                     {'name': 'subnet_id', 'label': self.subnet_id.label.text,
                         'options': self.getOptionsFromChoices(self.vpc_choices_manager.vpc_subnets(add_blank=False))},
-                )
-                vpc_choices = self.vpc_choices_manager.vpc_networks(add_blank=False)
-                self.facets.append(
-                    {'name': 'vpc_id', 'label': self.vpc_id.label.text,
-                        'options': self.getOptionsFromChoices(vpc_choices)},
                 )
             else:
                 self.facets.append(

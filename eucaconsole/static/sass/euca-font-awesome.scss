@@ -40,7 +40,7 @@ $fa-font-path:        "../fonts/font-awesome";
             position: relative;
             top: 4px;
             @extend .fa;
-            @extend .fa-ellipsis-v;
+            @extend .fa-ellipsis-h;
         }
     }
 }

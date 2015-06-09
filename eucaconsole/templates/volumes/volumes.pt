@@ -87,7 +87,7 @@
                 <th i18n:translate="">Avail Zone</th>
                 <th i18n:translate="">Tags</th>
                 <th i18n:translate="">Creation Time</th>
-                <th i18n:translate="">Actions</th>
+                <th class="actions" i18n:translate="">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
                 <td class="breakword"><a ng-href="${prefix}/{{ item.id }}">{{ item.name || item.id | ellipsis: 30 }}</a></td>

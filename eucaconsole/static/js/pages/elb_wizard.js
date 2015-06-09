@@ -87,7 +87,7 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
         $scope.crossZoneEnabled = true;
         $scope.pingProtocol = 'HTTP';
         $scope.pingPort = 80;
-        $scope.pingPath = '/index.html';
+        $scope.pingPath = 'index.html';
         $scope.responseTimeout = 5;
         $scope.timeBetweenPings = 30;
         $scope.failuresUntilUnhealthy = 2;

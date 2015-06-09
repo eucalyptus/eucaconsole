@@ -8,16 +8,16 @@
         <h6 i18n:translate="">Rules</h6>
     </div>
     <div class="columns">
-        <dl class="tabs" data-tab="" ng-show="securityGroupVPC != '' &amp;&amp; securityGroupVPC != 'None'">
-            <dd ng-class="inboundButtonClass">
-                <a id="inbound-rules-tab" ng-click="selectRuleType('inbound')" i18n:translate="">Inbound</a>
-            </dd>
-            <dd ng-class="outboundButtonClass">
-                <a id="outbound-rules-tab" ng-click="selectRuleType('outbound')" i18n:translate="">Outbound</a>
-            </dd>
-        </dl>
+        <ul class="btn-group" ng-show="securityGroupVPC != '' &amp;&amp; securityGroupVPC != 'None'" ng-cloak="">
+            <li>
+                <a id="inbound-rules-tab" ng-class="inboundButtonClass"
+                   ng-click="selectRuleType('inbound')" i18n:translate="">Inbound</a>
+                <a id="outbound-rules-tab" ng-class="outboundButtonClass"
+                   ng-click="selectRuleType('outbound')" i18n:translate="">Outbound</a>
+            </li>
+        </ul>
         <div class="tabs-content">
-            <div class="columns field" ng-cloak="cloak">
+            <div class="columns field" ng-cloak="">
                 <div class="item-list">
                     <span class="label radius secondary item" ng-repeat="rule in rulesArray" ng-show="ruleType=='inbound'">
                         <span ng-show="!rule.custom_protocol">
@@ -112,8 +112,8 @@
                         <div class="small-9 columns">
                             <div class="ipaddress">
                                 <div class="cidr-block">
-                                    <input type="radio" name="traffictype" value="ip" checked="checked" ng-model="trafficType"/>
-                                    <label><span i18n:translate="" class="ip-label">IP address</span></label>
+                                    <input id="traffictype-ip" type="radio" name="traffictype" value="ip" checked="checked" ng-model="trafficType"/>
+                                    <label for="traffictype-ip"><span i18n:translate="" class="ip-label">IP address</span></label>
                                 </div>
                                 <div class="cidr-block">
                                     <div> 
@@ -133,8 +133,8 @@
                                 </div>
                             </div>
                             <div class="securitygroupname">
-                                <input type="radio" name="traffictype" value="securitygroup" ng-model="trafficType" />
-                                <label><span i18n:translate="" class="sg-label">Security group</span></label>
+                                <input id="traffictype-group" type="radio" name="traffictype" value="securitygroup" ng-model="trafficType" />
+                                <label for="traffictype-group"><span i18n:translate="" class="sg-label">Security group</span></label>
                                 <select id="groupname-select" name="groupname" class="groupname" ng-model="groupName"
                                     ng-required="selectedProtocol &amp;&amp; trafficType=='securitygroup'" data-placeholder="select...">
                                     <option ng-repeat="securityGroup in securityGroupList" 

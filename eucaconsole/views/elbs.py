@@ -33,16 +33,23 @@ import simplejson as json
 import time
 
 import boto.utils
-from boto.ec2.elb import HealthCheck
 
-from pyramid.httpexceptions import HTTPFound
+from boto.ec2.elb import HealthCheck
+from boto.ec2.elb.attributes import ConnectionSettingAttribute
+
+from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from pyramid.view import view_config
 
+from ..constants.cloudwatch import (
+    MONITORING_DURATION_CHOICES, GRANULARITY_CHOICES, DURATION_GRANULARITY_CHOICES_MAPPING,
+    METRIC_TITLE_MAPPING,
+    STATISTIC_CHOICES)
+from ..constants.elbs import ELB_MONITORING_CHARTS_LIST
 from ..i18n import _
-from ..forms.elbs import (ELBDeleteForm, ELBsFiltersForm, CreateELBForm,
-                          ELBInstancesFiltersForm, CertificateForm, BackendCertificateForm)
+from ..forms.elbs import (ELBForm, ELBDeleteForm, ELBsFiltersForm, CreateELBForm, ELBHealthChecksForm,
+                          ELBInstancesForm, ELBInstancesFiltersForm, CertificateForm, BackendCertificateForm)
 from ..models import Notification
-from ..views import LandingPageView, BaseView, JSONResponse
+from ..views import LandingPageView, BaseView, TaggedItemView, JSONResponse
 from . import boto_error_handler
 
 
@@ -155,22 +162,22 @@ class ELBsJsonView(LandingPageView):
     def get_security_groups(self, groupids):
         security_groups = []
         if groupids:
-            for id in groupids:
+            for sgid in groupids:
                 security_group = ''
                 # Due to the issue that AWS-Classic and AWS-VPC different values,
                 # name and id, for .securitygroup for launch config object
-                if id.startswith('sg-'):
-                    security_group = self.get_security_group_by_id(id)
+                if sgid.startswith('sg-'):
+                    security_group = self.get_security_group_by_id(sgid)
                 else:
-                    security_group = self.get_security_group_by_name(id)
+                    security_group = self.get_security_group_by_name(sgid)
                 if security_group:
                     security_groups.append(security_group)
         return security_groups
 
-    def get_security_group_by_id(self, id):
+    def get_security_group_by_id(self, sgid):
         if self.securitygroups:
             for sgroup in self.securitygroups:
-                if sgroup.id == id:
+                if sgroup.id == sgid:
                     return sgroup
         return ''
 
@@ -181,41 +188,264 @@ class ELBsJsonView(LandingPageView):
                     return sgroup
         return ''
 
-    def get_security_group_rules_count_by_id(self, id):
-        if id.startswith('sg-'):
-            security_group = self.get_security_group_by_id(id)
+    def get_security_group_rules_count_by_id(self, sgid):
+        if sgid.startswith('sg-'):
+            security_group = self.get_security_group_by_id(sgid)
         else:
-            security_group = self.get_security_group_by_name(id)
+            security_group = self.get_security_group_by_name(sgid)
         if security_group:
             return len(security_group.rules)
         return None
 
 
-class ELBView(BaseView):
+class LbTagSet(dict):
+    """
+    A TagSet is used to collect the tags associated with a particular
+    Load Balancer instance.
+    TODO: Remove this when we update to Boto 2.38 or later
+    """
+
+    def __init__(self, connection=None, **kwargs):
+        super(LbTagSet, self).__init__(**kwargs)
+        self.connection = connection
+        self._current_key = None
+        self._current_value = None
+        self._tags_tag = False
+
+    def startElement(self, name, attrs, connection):
+        if name == 'Tags':
+            self._tags_tag = True
+        elif name == 'member' and self._tags_tag is True:
+            self._current_key = None
+            self._current_value = None
+
+    def endElement(self, name, value, connection):
+        if name == 'Key':
+            self._current_key = value
+        elif name == 'Value':
+            self._current_value = value
+        elif name == 'member' and self._tags_tag is True:
+            self[self._current_key] = self._current_value
+        elif name == 'Tags':
+            self._tags_tag = False
+
+
+class BaseELBView(TaggedItemView):
+    """Base view for ELB detail page tabs/views"""
+
+    def __init__(self, request, elb_conn=None, **kwargs):
+        super(BaseELBView, self).__init__(request, **kwargs)
+        self.request = request
+        self.ec2_conn = self.get_connection()
+        self.iam_conn = self.get_connection(conn_type='iam')
+        self.elb_conn = elb_conn or self.get_connection(conn_type='elb')
+        self.autoscale_conn = self.get_connection(conn_type='autoscale')
+        self.vpc_conn = self.get_connection(conn_type='vpc')
+        self.is_vpc_supported = BaseView.is_vpc_supported(request)
+
+    def get_elb(self):
+        if self.elb_conn:
+            elb_param = self.request.matchdict.get('id')
+            elbs = self.elb_conn.get_all_load_balancers(load_balancer_names=[elb_param])
+            return elbs[0] if elbs else None
+        return None
+
+    def get_listeners_args(self):
+        listeners_json = self.request.params.get('elb_listener')
+        listeners = json.loads(listeners_json) if listeners_json else []
+        listeners_args = []
+        for listener in listeners:
+            from_protocol = listener.get('fromProtocol')
+            from_port = listener.get('fromPort')
+            to_protocol = listener.get('toProtocol')
+            to_port = listener.get('toPort')
+            certificate_arn = listener.get('certificateARN') or None
+            if certificate_arn is not None:
+                listeners_args.append((from_port, to_port, from_protocol, to_protocol, certificate_arn))
+            else:
+                listeners_args.append((from_port, to_port, from_protocol, to_protocol))
+        return listeners_args
+
+    def configure_health_checks(self, name):
+        ping_protocol = self.request.params.get('ping_protocol')
+        ping_port = self.request.params.get('ping_port')
+        ping_path = self.request.params.get('ping_path')
+        response_timeout = self.request.params.get('response_timeout')
+        time_between_pings = self.request.params.get('time_between_pings')
+        failures_until_unhealthy = self.request.params.get('failures_until_unhealthy')
+        passes_until_healthy = self.request.params.get('passes_until_healthy')
+        ping_target = u"{0}:{1}".format(ping_protocol, ping_port)
+        if ping_protocol in ['HTTP', 'HTTPS']:
+            ping_target = u"{0}/{1}".format(ping_target, ping_path)
+        health_check = HealthCheck(
+            timeout=response_timeout,
+            interval=time_between_pings,
+            healthy_threshold=passes_until_healthy,
+            unhealthy_threshold=failures_until_unhealthy,
+            target=ping_target
+        )
+        self.elb_conn.configure_health_check(name, health_check)
+
+    @staticmethod
+    def get_instance_selector_text():
+        instance_selector_text = {'name': _(u'NAME (ID)'), 'tags': _(u'TAGS'),
+                                  'zone': _(u'AVAILABILITY ZONE'), 'subnet': _(u'VPC SUBNET'), 'status': _(u'STATUS'),
+                                  'no_matching_instance_error_msg': _(u'No matching instances')}
+        return instance_selector_text
+
+    @staticmethod
+    def get_instance_health_status_names():
+        """Map ELB instance health status to human-friendly names"""
+        return {
+            'InService': _(u'In service'),
+            'OutOfService': _(u'Out of service'),
+        }
+
+    def get_protocol_list(self):
+        if self.cloud_type == 'aws':
+            protocol_list = ({'name': 'HTTP', 'value': 'HTTP', 'port': '80'},
+                             {'name': 'TCP', 'value': 'TCP', 'port': '80'})
+        else:
+            protocol_list = ({'name': 'HTTP', 'value': 'HTTP', 'port': '80'},
+                             {'name': 'HTTPS', 'value': 'HTTPS', 'port': '443'},
+                             {'name': 'TCP', 'value': 'TCP', 'port': '80'},
+                             {'name': 'SSL', 'value': 'SSL', 'port': '443'})
+        return protocol_list
+
+    def get_default_vpc_network(self):
+        default_vpc = self.request.session.get('default_vpc', [])
+        if self.is_vpc_supported:
+            if 'none' in default_vpc or 'None' in default_vpc:
+                if self.cloud_type == 'aws':
+                    return 'None'
+                # for euca, return the first vpc on the list
+                if self.vpc_conn:
+                    with boto_error_handler(self.request):
+                        vpc_networks = self.vpc_conn.get_all_vpcs()
+                        if vpc_networks:
+                            return vpc_networks[0].id
+            else:
+                return default_vpc[0]
+        return 'None'
+
+    def get_vpc_subnets(self):
+        subnets = []
+        if self.vpc_conn:
+            with boto_error_handler(self.request):
+                vpc_subnets = self.vpc_conn.get_all_subnets()
+                for vpc_subnet in vpc_subnets:
+                    subnet_string = u'{0} ({1}) | {2}'.format(vpc_subnet.cidr_block,
+                                                              vpc_subnet.id, vpc_subnet.availability_zone)
+                    subnets.append(dict(
+                        id=vpc_subnet.id,
+                        name=subnet_string,
+                        vpc_id=vpc_subnet.vpc_id,
+                        availability_zone=vpc_subnet.availability_zone,
+                        state=vpc_subnet.state,
+                        cidr_block=vpc_subnet.cidr_block,
+                    ))
+        return subnets
+
+    def get_availability_zones(self):
+        availability_zones = []
+        if self.ec2_conn:
+            with boto_error_handler(self.request):
+                zones = self.ec2_conn.get_all_zones()
+                for zone in zones:
+                    availability_zones.append(dict(id=zone.name, name=zone.name))
+        return availability_zones
+
+    def add_elb_tags(self, elb_name):
+        tags_json = self.request.params.get('tags')
+        tags_dict = json.loads(tags_json) if tags_json else {}
+        add_tags_params = {'LoadBalancerNames.member.1': elb_name}
+        index = 1
+        for key, value in tags_dict.items():
+            key = self.unescape_braces(key.strip())
+            if not any([key.startswith('aws:'), key.startswith('euca:')]):
+                add_tags_params['Tags.member.%d.Key' % index] = key
+                add_tags_params['Tags.member.%d.Value' % index] = self.unescape_braces(value.strip())
+                index += 1
+        if index > 1:
+            self.elb_conn.get_status('AddTags', add_tags_params)
+
+    def get_vpc_network_name(self, elb=None):
+        if elb and self.is_vpc_supported:
+            if elb.vpc_id and self.vpc_conn:
+                with boto_error_handler(self.request):
+                    vpc_networks = self.vpc_conn.get_all_vpcs(vpc_ids=elb.vpc_id)
+                    if vpc_networks:
+                        vpc_name = TaggedItemView.get_display_name(vpc_networks[0])
+                        return vpc_name
+        return 'None'
+
+
+class ELBView(BaseELBView):
     """Views for single ELB"""
     TEMPLATE = '../templates/elbs/elb_view.pt'
 
-    def __init__(self, request):
-        super(ELBView, self).__init__(request)
-        self.ec2_conn = self.get_connection()
-        self.elb_conn = self.get_connection(conn_type='elb')
+    def __init__(self, request, elb_conn=None, elb=None, elb_tags=None, **kwargs):
+        super(ELBView, self).__init__(request, elb_conn=elb_conn, **kwargs)
         with boto_error_handler(request):
-            self.elb = self.get_elb()
-            # boto doesn't convert elb created_time into dtobj like it does for others
-            self.elb.created_time = boto.utils.parse_ts(self.elb.created_time)
+            self.elb = elb or self.get_elb()
+            if self.elb:
+                if self.elb.created_time:
+                    # boto doesn't convert elb created_time into dtobj like it does for others
+                    self.elb.created_time = boto.utils.parse_ts(self.elb.created_time)
+                tags_params = {'LoadBalancerNames.member.1': self.elb.name}
+                self.elb.tags = elb_tags or self.elb_conn.get_object('DescribeTags', tags_params, LbTagSet)
+            else:
+                raise HTTPNotFound()
+        self.elb_form = ELBForm(
+            self.request, conn=self.ec2_conn, vpc_conn=self.vpc_conn,
+            elb=self.elb, securitygroups=self.get_security_groups(),
+            formdata=self.request.params or None)
         self.delete_form = ELBDeleteForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
             elb=self.elb,
             elb_name=self.escape_braces(self.elb.name) if self.elb else '',
-            elb_created_time=self.dt_isoformat(self.elb.created_time),
-            escaped_elb_name=quote(self.elb.name),
+            elb_created_time=self.dt_isoformat(self.elb.created_time) if self.elb and self.elb.created_time else '',
+            escaped_elb_name=quote(self.elb.name) if self.elb else '',
+            elb_tags=TaggedItemView.get_tags_display(self.elb.tags) if self.elb.tags else '',
+            elb_form=self.elb_form,
             delete_form=self.delete_form,
             in_use=False,
+            protocol_list=self.get_protocol_list(),
+            listener_list=self.get_listener_list(),
+            is_vpc_supported=self.is_vpc_supported,
+            elb_vpc_network=self.get_vpc_network_name(self.elb),
+            security_group_placeholder_text=_(u'Select...'),
             controller_options_json=self.get_controller_options_json(),
         )
 
     @view_config(route_name='elb_view', renderer=TEMPLATE)
     def elb_view(self):
+        return self.render_dict
+
+    @view_config(route_name='elb_update', request_method='POST', renderer=TEMPLATE)
+    def elb_update(self):
+        if self.elb_form.validate():
+            idle_timeout = self.request.params.get('idle_timeout')
+            securitygroup = self.request.params.getall('securitygroup') or None
+            listeners_args = self.get_listeners_args()
+            location = self.request.route_path('elb_view', id=self.elb.name)
+            prefix = _(u'Unable to update load balancer')
+            template = u'{0} {1} - {2}'.format(prefix, self.elb.name, '{0}')
+            with boto_error_handler(self.request, location, template):
+                self.update_elb_idle_timeout(self.elb.name, idle_timeout)
+                self.update_listeners(self.elb.name, listeners_args)
+                time.sleep(1)  # Delay is needed to avoid missing listeners post-update
+                self.update_elb_tags(self.elb.name)
+                if self.is_vpc_supported and self.elb.security_groups != securitygroup:
+                    self.elb_conn.apply_security_groups_to_lb(self.elb.name, securitygroup)
+                msg = _(u"Updating load balancer")
+                self.log_request(u"{0} {1}".format(msg, self.elb.name))
+                prefix = _(u'Successfully updated load balancer.')
+                msg = u'{0} {1}'.format(prefix, self.elb.name)
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
+            return HTTPFound(location=location)
+        else:
+            self.request.error_messages = self.elb_form.get_errors_list()
         return self.render_dict
 
     @view_config(route_name='elb_delete', request_method='POST', renderer=TEMPLATE)
@@ -237,30 +467,373 @@ class ELBView(BaseView):
             self.request.error_messages = self.delete_form.get_errors_list()
         return self.render_dict
 
-    def get_elb(self):
+    def get_controller_options_json(self):
+        return BaseView.escape_json(json.dumps({
+            'is_vpc_supported': self.is_vpc_supported,
+            'default_vpc_network': self.get_default_vpc_network(),
+            'elb_vpc_network': self.elb.vpc_id if self.elb else [],
+            'elb_vpc_subnets': self.elb.subnets if self.elb else [],
+            'securitygroups': self.elb.security_groups if self.elb else [],
+        }))
+
+    def update_elb_idle_timeout(self, elb_name, idle_timeout):
         if self.elb_conn:
-            elb_param = self.request.matchdict.get('id')
-            elbs = self.elb_conn.get_all_load_balancers(load_balancer_names=[elb_param])
-            return elbs[0] if elbs else None
-        return None
+            setting_attribute = ConnectionSettingAttribute()
+            setting_attribute.idle_timeout = idle_timeout
+            self.elb_conn.modify_lb_attribute(elb_name, 'connectingSettings', setting_attribute)
+
+    def get_listener_list(self):
+        listener_list = []
+        if self.elb and self.elb.listeners:
+            for listener_obj in self.elb.listeners:
+                listener = listener_obj.get_tuple()
+                listener_list.append({'from_port': listener[0],
+                                      'to_port': listener[1],
+                                      'protocol': listener[2]})
+        return listener_list
+
+    def update_listeners(self, name, listeners_args):
+        if self.elb_conn and self.elb:
+            # Convert strs in existing ELB listeners to unicode objects for add/remove comparisons
+            normalized_elb_listeners = []
+            if self.elb.listeners:
+                for listener in self.elb.listeners:
+                    normalized_elb_listeners.append(self.normalize_listener(listener))
+
+            listeners_to_add = [x for x in listeners_args if x not in normalized_elb_listeners]
+            listeners_to_remove = [x[0] for x in normalized_elb_listeners if x not in listeners_args]
+            if listeners_to_remove:
+                self.elb.delete_listeners(listeners_to_remove)
+                # sleep is needed for Eucalyptus to avoid not finding the elb error
+                time.sleep(1)
+            if listeners_to_add:
+                self.elb_conn.create_load_balancer_listeners(self.elb.name, complex_listeners=listeners_to_add)
+                # sleep is needed for Eucalyptus to avoid not finding the elb error
+                time.sleep(1)
+
+    @staticmethod
+    def normalize_listener(listener):
+        """Listeners obtained from API call aren't exactly the same format as the listener_args,
+           so normalize them (i.e. convert strings to unicode and set tuple to 4 items) for comparison checks"""
+        normalized_listener = []
+        if type(listener) != tuple:
+            listener = listener.get_tuple()
+        for item in listener:
+            if item:
+                if type(item) == int:
+                    normalized_listener.append(item)
+                else:
+                    normalized_listener.append(unicode(item))
+        if len(normalized_listener) < 4:
+            normalized_listener.append(normalized_listener[2])
+        return tuple(normalized_listener)
+
+    def update_elb_tags(self, elb_name):
+        if elb_name:
+            self.remove_all_elb_tags(elb_name)
+            self.add_elb_tags(elb_name)
+
+    def remove_all_elb_tags(self, elb_name):
+        if self.elb.tags:
+            remove_tags_params = {'LoadBalancerNames.member.1': elb_name}
+            index = 1
+            for tag in self.elb.tags.items():
+                key = self.unescape_braces(tag[0].strip())
+                if not any([key.startswith('aws:'), key.startswith('euca:')]):
+                    remove_tags_params['Tags.member.%d.Key' % index] = key
+                    index += 1
+            if index > 1:
+                self.elb_conn.get_status('RemoveTags', remove_tags_params, verb='POST')
+
+    def get_security_groups(self):
+        securitygroups = []
+        if self.elb and self.elb.vpc_id:
+            with boto_error_handler(self.request):
+                securitygroups = self.ec2_conn.get_all_security_groups(filters={'vpc-id': [self.elb.vpc_id]})
+        return securitygroups
+
+
+class ELBInstancesView(BaseELBView):
+    TEMPLATE = '../templates/elbs/elb_instances.pt'
+
+    def __init__(self, request, elb=None, elb_attrs=None, **kwargs):
+        super(ELBInstancesView, self).__init__(request, **kwargs)
+        with boto_error_handler(request):
+            self.elb = elb or self.get_elb()
+            if not self.elb:
+                raise HTTPNotFound()
+            self.cross_zone_enabled = self.is_cross_zone_enabled(elb_attrs=elb_attrs)
+        self.elb_form = ELBInstancesForm(
+            self.request, elb=self.elb, cross_zone_enabled=self.cross_zone_enabled,
+            formdata=self.request.params or None)
+        self.delete_form = ELBDeleteForm(self.request, formdata=self.request.params or None)
+        filters_form = ELBInstancesFiltersForm(
+            self.request, ec2_conn=self.ec2_conn, autoscale_conn=self.autoscale_conn,
+            iam_conn=None, vpc_conn=self.vpc_conn,
+            cloud_type=self.cloud_type, formdata=self.request.params or None)
+        search_facets = filters_form.facets
+        filter_keys = ['id', 'name', 'placement', 'state', 'tags', 'vpc_subnet_display', 'vpc_name']
+        self.render_dict = dict(
+            elb=self.elb,
+            in_use=False,
+            elb_name=self.escape_braces(self.elb.name) if self.elb else '',
+            escaped_elb_name=quote(self.elb.name) if self.elb else '',
+            elb_vpc_network=self.get_vpc_network_name(self.elb),
+            elb_form=self.elb_form,
+            delete_form=ELBDeleteForm(self.request, formdata=self.request.params or None),
+            search_facets=BaseView.escape_json(json.dumps(search_facets)),
+            filter_keys=filter_keys,
+            controller_options_json=self.get_controller_options_json(),
+        )
+
+    @view_config(route_name='elb_instances', renderer=TEMPLATE)
+    def elb_instances(self):
+        return self.render_dict
+
+    @view_config(route_name='elb_instances_update', request_method='POST', renderer=TEMPLATE)
+    def elb_instances_update(self):
+        if self.elb_form.validate():
+            vpc_subnet = self.request.params.getall('vpc_subnet') or None
+            if vpc_subnet == 'None':
+                vpc_subnet = None
+            zone = self.request.params.getall('zone') or None
+            cross_zone_enabled = self.request.params.get('cross_zone_enabled') == 'y'
+            instances = self.request.params.getall('instances') or None
+            location = self.request.route_path('elb_instances', id=self.elb.name)
+            prefix = _(u'Unable to update load balancer')
+            template = u'{0} {1} - {2}'.format(prefix, self.elb.name, '{0}')
+            with boto_error_handler(self.request, location, template):
+                if vpc_subnet is None:
+                    self.update_elb_zones(self.elb.name, self.elb.availability_zones, zone)
+                    if cross_zone_enabled:
+                        self.elb_conn.modify_lb_attribute(self.elb.name, 'crossZoneLoadBalancing', True)
+                    else:
+                        self.elb_conn.modify_lb_attribute(self.elb.name, 'crossZoneLoadBalancing', False)
+                else:
+                    self.update_elb_subnets(self.elb.name, self.elb.subnets, vpc_subnet)
+                self.update_elb_instances(self.elb.name, self.elb.instances, instances)
+                prefix = _(u'Successfully updated load balancer')
+                msg = u'{0} {1}'.format(prefix, self.elb.name)
+                self.log_request(u"{0} {1}".format(msg, self.elb.name))
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
+            return HTTPFound(location=location)
+        else:
+            self.request.error_messages = self.elb_form.get_errors_list()
+        return self.render_dict
+
+    def is_cross_zone_enabled(self, elb_attrs=None):
+        attrs = elb_attrs or self.elb.get_attributes()
+        return attrs.cross_zone_load_balancing.enabled
 
     def get_controller_options_json(self):
         return BaseView.escape_json(json.dumps({
+            'is_vpc_supported': self.is_vpc_supported,
+            'default_vpc_network': self.get_default_vpc_network(),
+            'availability_zones': self.elb.availability_zones if self.elb else [],
+            'availability_zone_choices': self.get_availability_zones(),
+            'vpc_subnet_choices': self.get_vpc_subnets(),
+            'elb_vpc_network': self.elb.vpc_id if self.elb else [],
+            'elb_vpc_subnets': self.elb.subnets if self.elb else [],
+            'instance_selector_text': self.get_instance_selector_text(),
+            'health_status_names': self.get_instance_health_status_names(),
+            'all_instances': self.get_all_instances(),
+            'elb_instance_health': self.get_elb_instance_health(),
+            'instances': self.get_elb_instance_list(),
+            'instances_json_endpoint': self.request.route_path('instances_json'),
+            'cross_zone_enabled': self.cross_zone_enabled,
+        }))
+
+    def get_all_instances(self):
+        instances = []
+        if self.ec2_conn:
+            with boto_error_handler(self.request):
+                reservations = self.ec2_conn.get_all_reservations()
+            for reservation in reservations:
+                for instance in reservation.instances:
+                    instances.append(dict(
+                        id=instance.id,
+                        vpc_id=instance.vpc_id,
+                        subnet_id=instance.subnet_id,
+                        zone=instance.placement,
+                    ))
+        return instances
+
+    def get_elb_instance_health(self):
+        instance_health = []
+        if self.elb_conn and self.elb:
+            instances = self.elb_conn.describe_instance_health(self.elb.name)
+            for instance in instances:
+                instance_health.append(dict(
+                    instance_id=instance.instance_id,
+                    state=instance.state,
+                ))
+        return instance_health
+
+    def get_elb_instance_list(self):
+        instances = []
+        if self.elb and self.elb.instances:
+            for instance in self.elb.instances:
+                if instance:
+                    instances.append(instance.id)
+        return instances
+
+    def update_elb_zones(self, elb_name, prev_zones, new_zones):
+        if prev_zones and new_zones:
+            add_zones = []
+            remove_zones = []
+            for prev_zone in prev_zones:
+                exists_zone = False
+                for new_zone in new_zones:
+                    if prev_zone == new_zone:
+                        exists_zone = True
+                if exists_zone is False:
+                    remove_zones.append(prev_zone)
+            for new_zone in new_zones:
+                exists_zone = False
+                for prev_zone in prev_zones:
+                    if prev_zone == new_zone:
+                        exists_zone = True
+                if exists_zone is False:
+                    add_zones.append(new_zone)
+            if remove_zones:
+                self.elb_conn.disable_availability_zones(elb_name, remove_zones)
+            if add_zones:
+                self.elb_conn.enable_availability_zones(elb_name, add_zones)
+
+    def update_elb_subnets(self, elb_name, prev_subnets, new_subnets):
+        if prev_subnets and new_subnets:
+            add_subnets = []
+            remove_subnets = []
+            for prev_subnet in prev_subnets:
+                exists_subnet = False
+                for new_subnet in new_subnets:
+                    if prev_subnet == new_subnet:
+                        exists_subnet = True
+                if exists_subnet is False:
+                    remove_subnets.append(prev_subnet)
+            for new_subnet in new_subnets:
+                exists_subnet = False
+                for prev_subnet in prev_subnets:
+                    if prev_subnet == new_subnet:
+                        exists_subnet = True
+                if exists_subnet is False:
+                    add_subnets.append(new_subnet)
+            if remove_subnets:
+                self.elb_conn.detach_lb_from_subnets(elb_name, remove_subnets)
+            if add_subnets:
+                self.elb_conn.attach_lb_to_subnets(elb_name, add_subnets)
+
+    def update_elb_instances(self, elb_name, prev_instances, new_instances):
+        add_instances = []
+        remove_instances = []
+        if prev_instances and new_instances:
+            for prev_instance in prev_instances:
+                exists_instance = False
+                for new_instance in new_instances:
+                    if prev_instance.id == new_instance:
+                        exists_instance = True
+                if exists_instance is False:
+                    remove_instances.append(prev_instance.id)
+            for new_instance in new_instances:
+                exists_instance = False
+                for prev_instance in prev_instances:
+                    if prev_instance.id == new_instance:
+                        exists_instance = True
+                if exists_instance is False:
+                    add_instances.append(new_instance)
+        else:
+            if prev_instances:
+                for prev_instance in prev_instances:
+                    remove_instances.append(prev_instance.id)
+            if new_instances:
+                for new_instance in new_instances:
+                    add_instances.append(new_instance)
+        if remove_instances:
+            self.elb_conn.deregister_instances(elb_name, remove_instances)
+            time.sleep(1)  # Delay needed to prevent missing instances on subsequent page load
+        if add_instances:
+            self.elb_conn.register_instances(elb_name, add_instances)
+            time.sleep(1)  # Delay needed to prevent missing instances on subsequent page load
+
+
+class ELBHealthChecksView(BaseELBView):
+    TEMPLATE = '../templates/elbs/elb_healthchecks.pt'
+
+    def __init__(self, request, elb=None, **kwargs):
+        super(ELBHealthChecksView, self).__init__(request, **kwargs)
+        with boto_error_handler(request):
+            self.elb = elb or self.get_elb()
+            if not self.elb:
+                raise HTTPNotFound()
+            self.elb_form = ELBHealthChecksForm(self.request, elb=self.elb, formdata=self.request.params or None)
+        self.render_dict = dict(
+            elb=self.elb,
+            elb_name=self.escape_braces(self.elb.name) if self.elb else '',
+            elb_form=self.elb_form,
+            escaped_elb_name=quote(self.elb.name) if self.elb else '',
+            delete_form=ELBDeleteForm(self.request, formdata=self.request.params or None),
+            in_use=False,
+        )
+
+    @view_config(route_name='elb_healthchecks', renderer=TEMPLATE)
+    def elb_healthchecks(self):
+        return self.render_dict
+
+    @view_config(route_name='elb_healthchecks_update', request_method='POST', renderer=TEMPLATE)
+    def elb_healthchecks_update(self):
+        if self.elb_form.validate():
+            location = self.request.route_path('elb_healthchecks', id=self.elb.name)
+            prefix = _(u'Unable to update load balancer')
+            template = u'{0} {1} - {2}'.format(prefix, self.elb.name, '{0}')
+            with boto_error_handler(self.request, location, template):
+                self.configure_health_checks(self.elb.name)
+                prefix = _(u'Successfully updated health checks for')
+                msg = u'{0} {1}'.format(prefix, self.elb.name)
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
+            return HTTPFound(location=location)
+        else:
+            self.request.error_messages = self.elb_form.get_errors_list()
+        return self.render_dict
+
+
+class ELBMonitoringView(BaseELBView):
+    TEMPLATE = '../templates/elbs/elb_monitoring.pt'
+
+    def __init__(self, request, elb=None, **kwargs):
+        super(ELBMonitoringView, self).__init__(request, **kwargs)
+        with boto_error_handler(request):
+            self.elb = elb or self.get_elb()
+            if not self.elb:
+                raise HTTPNotFound()
+        self.render_dict = dict(
+            elb=self.elb,
+            elb_name=self.escape_braces(self.elb.name) if self.elb else '',
+            escaped_elb_name=quote(self.elb.name) if self.elb else '',
+            duration_choices=MONITORING_DURATION_CHOICES,
+            statistic_choices=STATISTIC_CHOICES,
+            controller_options_json=self.get_controller_options_json()
+        )
+
+    @view_config(route_name='elb_monitoring', renderer=TEMPLATE)
+    def elb_monitoring(self):
+        return self.render_dict
+
+    @staticmethod
+    def get_controller_options_json():
+        return BaseView.escape_json(json.dumps({
+            'metric_title_mapping': METRIC_TITLE_MAPPING,
+            'charts_list': ELB_MONITORING_CHARTS_LIST,
+            'granularity_choices': GRANULARITY_CHOICES,
+            'duration_granularities_mapping': DURATION_GRANULARITY_CHOICES_MAPPING,
         }))
 
 
-class CreateELBView(BaseView):
+class CreateELBView(BaseELBView):
     """Create ELB wizard"""
     TEMPLATE = '../templates/elbs/elb_wizard.pt'
 
     def __init__(self, request):
         super(CreateELBView, self).__init__(request)
-        self.ec2_conn = self.get_connection()
-        self.iam_conn = self.get_connection(conn_type='iam')
-        self.elb_conn = self.get_connection(conn_type='elb')
-        self.autoscale_conn = self.get_connection(conn_type='autoscale')
-        self.vpc_conn = self.get_connection(conn_type='vpc')
-        self.is_vpc_supported = BaseView.is_vpc_supported(request)
         self.create_form = CreateELBForm(
             self.request, conn=self.ec2_conn, vpc_conn=self.vpc_conn, formdata=self.request.params or None)
         self.certificate_form = CertificateForm(self.request, conn=self.ec2_conn,
@@ -290,7 +863,7 @@ class CreateELBView(BaseView):
         )
 
     @view_config(route_name='elb_new', renderer=TEMPLATE)
-    def elb_view(self):
+    def elb_new(self):
         return self.render_dict
 
     def get_controller_options_json(self):
@@ -319,64 +892,6 @@ class CreateELBView(BaseView):
                         {'title': _(u'Health Check & Advanced'), 'render': True, 'display_id': 3})
         return tab_list
 
-    def get_protocol_list(self):
-        protocol_list = ()
-        if self.cloud_type == 'aws':
-            protocol_list = ({'name': 'HTTP', 'value': 'HTTP', 'port': '80'},
-                             {'name': 'TCP', 'value': 'TCP', 'port': '80'})
-        else:
-            protocol_list = ({'name': 'HTTP', 'value': 'HTTP', 'port': '80'},
-                             {'name': 'HTTPS', 'value': 'HTTPS', 'port': '443'},
-                             {'name': 'TCP', 'value': 'TCP', 'port': '80'},
-                             {'name': 'SSL', 'value': 'SSL', 'port': '443'})
-        return protocol_list
-
-    def get_instance_selector_text(self):
-        instance_selector_text = {'name': _(u'NAME (ID)'), 'tags': _(u'TAGS'),
-                                  'zone': _(u'AVAILABILITY ZONE'), 'subnet': _(u'VPC SUBNET'), 'status': _(u'STATUS'),
-                                  'no_matching_instance_error_msg': _(u'No matching instances')}
-        return instance_selector_text
-
-    def get_default_vpc_network(self):
-        default_vpc = self.request.session.get('default_vpc', [])
-        if self.is_vpc_supported:
-            if 'none' in default_vpc or 'None' in default_vpc:
-                if self.cloud_type == 'aws':
-                    return 'None'
-                # for euca, return the first vpc on the list
-                if self.vpc_conn:
-                    with boto_error_handler(self.request):
-                        vpc_networks = self.vpc_conn.get_all_vpcs()
-                        if vpc_networks:
-                            return vpc_networks[0].id
-            else:
-                return default_vpc[0]
-        return 'None'
-
-    def get_vpc_subnets(self):
-        subnets = []
-        if self.vpc_conn:
-            with boto_error_handler(self.request):
-                vpc_subnets = self.vpc_conn.get_all_subnets()
-                for vpc_subnet in vpc_subnets:
-                    subnets.append(dict(
-                        id=vpc_subnet.id,
-                        vpc_id=vpc_subnet.vpc_id,
-                        availability_zone=vpc_subnet.availability_zone,
-                        state=vpc_subnet.state,
-                        cidr_block=vpc_subnet.cidr_block,
-                    ))
-        return subnets
-
-    def get_availability_zones(self):
-        availability_zones = []
-        if self.ec2_conn:
-            with boto_error_handler(self.request):
-                zones = self.ec2_conn.get_all_zones()
-                for zone in zones:
-                    availability_zones.append(dict(id=zone.name, name=zone.name))
-        return availability_zones
-
     @view_config(route_name='elb_create', request_method='POST', renderer=TEMPLATE)
     def elb_create(self):
         # Ignore the security group requirement in case on Non-VPC system
@@ -387,7 +902,6 @@ class CreateELBView(BaseView):
             del self.create_form.securitygroup
         if self.create_form.validate():
             name = self.request.params.get('name')
-            elb_listener = self.request.params.get('elb_listener')
             certificate_arn = self.request.params.get('certificate_arn') or None
             listeners_args = self.get_listeners_args()
             vpc_subnet = self.request.params.getall('vpc_subnet') or None
@@ -409,7 +923,7 @@ class CreateELBView(BaseView):
                                   security_groups=securitygroup,
                                   complex_listeners=listeners_args)
                     self.elb_conn.create_load_balancer(name, None, **params)
-                self.handle_configure_health_check(name)
+                self.configure_health_checks(name)
                 if instances is not None:
                     self.elb_conn.register_instances(name, instances)
                 if cross_zone_enabled == 'y':
@@ -426,57 +940,6 @@ class CreateELBView(BaseView):
             self.request.error_messages = self.create_form.get_errors_list()
             return self.render_dict
 
-    def get_listeners_args(self):
-        listeners_json = self.request.params.get('elb_listener')
-        listeners = json.loads(listeners_json) if listeners_json else []
-        listeners_args = []
-
-        for listener in listeners:
-            from_protocol = listener.get('fromProtocol')
-            from_port = listener.get('fromPort')
-            to_protocol = listener.get('toProtocol')
-            to_port = listener.get('toPort')
-            certificate_arn = listener.get('certificateARN') or None
-            if certificate_arn is not None:
-                listeners_args.append((from_port, to_port, from_protocol, to_protocol, certificate_arn))
-            else:
-                listeners_args.append((from_port, to_port, from_protocol, to_protocol))
-        return listeners_args
-
-    def handle_configure_health_check(self, name):
-        ping_protocol = self.request.params.get('ping_protocol')
-        ping_port = self.request.params.get('ping_port')
-        ping_path = self.request.params.get('ping_path')
-        response_timeout = self.request.params.get('response_timeout')
-        time_between_pings = self.request.params.get('time_between_pings')
-        failures_until_unhealthy = self.request.params.get('failures_until_unhealthy')
-        passes_until_healthy = self.request.params.get('passes_until_healthy')
-        ping_target = u"{0}:{1}".format(ping_protocol, ping_port)
-        if ping_protocol in ['HTTP', 'HTTPS']:
-            ping_target = u"{0}{1}".format(ping_target, ping_path)
-        hc = HealthCheck(
-            timeout=response_timeout,
-            interval=time_between_pings,
-            healthy_threshold=passes_until_healthy,
-            unhealthy_threshold=failures_until_unhealthy,
-            target=ping_target
-        )
-        self.elb_conn.configure_health_check(name, hc)
-
-    def add_elb_tags(self, elb_name):
-        tags_json = self.request.params.get('tags')
-        tags_dict = json.loads(tags_json) if tags_json else {}
-        add_tags_params = {'LoadBalancerNames.member.1': elb_name}
-        index = 1
-        for key, value in tags_dict.items():
-            key = self.unescape_braces(key.strip())
-            if not any([key.startswith('aws:'), key.startswith('euca:')]):
-                add_tags_params['Tags.member.%d.Key' % index] = key
-                add_tags_params['Tags.member.%d.Value' % index] = self.unescape_braces(value.strip())
-                index += 1
-        if index > 1:
-            self.elb_conn.get_status('AddTags', add_tags_params)
-
     @view_config(route_name='certificate_create', request_method='POST', renderer=TEMPLATE)
     def certificate_create(self):
         if self.certificate_form.validate():
@@ -485,9 +948,8 @@ class CreateELBView(BaseView):
             public_key_certificate = self.request.params.get('public_key_certificate')
             certificate_chain = self.request.params.get('certificate_chain') or None
             with boto_error_handler(self.request):
-                certificate_result = self.iam_conn.upload_server_cert(certificate_name, public_key_certificate,
-                                                                      private_key, cert_chain=certificate_chain,
-                                                                      path=None)
+                certificate_result = self.iam_conn.upload_server_cert(
+                    certificate_name, public_key_certificate, private_key, cert_chain=certificate_chain, path=None)
                 prefix = _(u'Successfully uploaded server certificate')
                 msg = u'{0} {1}'.format(prefix, certificate_name)
                 certificate_arn = certificate_result.upload_server_certificate_result.server_certificate_metadata.arn

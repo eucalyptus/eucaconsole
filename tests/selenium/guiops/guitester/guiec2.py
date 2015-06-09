@@ -4,10 +4,14 @@ from pages.dashboard import Dashboard
 from pages.loginpage import LoginPage
 from pages.keypair.keypairdetail import KeypairDetailPage
 from pages.keypair.keypairview import KeypairView
+from pages.instance.instanceview import InstanceView
+from pages.instance.instancedetail import InstanceDetailPage
+from pages.image.image_view import ImageView
 from pages.security_group.security_group_view import SecurityGroupView
 from pages.security_group.security_group_detail import SecurityGroupDetailPage
 from dialogs.security_group_dialogs import CreateScurityGroupDialog, DeleteScurityGroupDialog
 from dialogs.keypair_dialogs import CreateKeypairDialog, DeleteKeypairModal, ImportKeypairDialog
+from dialogs.instance_dialogs import LaunchInstanceWidget, LaunchMoreLikeThisDialog, TerminateInstanceModal, TerminateAllInstancesModal
 
 
 
@@ -63,7 +67,7 @@ class GuiEC2(GuiTester):
 
     def create_keypair_from_keypair_view_page(self, keypair_name):
         """
-        Goes from Dashboard to keypair landing page via menu. Creates keypair, verifies keypair detail page is loaded after keypair creation.
+        Navigates from Dashboard to keypair landing page via menu. Creates keypair, verifies keypair detail page is loaded after keypair creation.
         :param keypair_name:
         """
         BasePage(self).goto_keypair_view_page_via_menu()
@@ -118,7 +122,7 @@ class GuiEC2(GuiTester):
 
     def add_tcp_22_rule_to_s_group(self, s_group_name, s_group_id):
         """
-        Goes to security group detail page. Opens TCP 22 port to user's IP.
+        Navigates to security group detail page. Opens TCP 22 port to user's IP.
         :param s_group_name:
         :param s_group_id:
         """
@@ -128,7 +132,7 @@ class GuiEC2(GuiTester):
 
     def add_ldap_rule_to_s_group(self, s_group_name, s_group_id):
         """
-        Goes to security group detail page. Opens TCP 389 port to all addresses.
+        Navigates to security group detail page. Opens TCP 389 port to all addresses.
         :param s_group_name:
         :param s_group_id:
         """
@@ -138,7 +142,7 @@ class GuiEC2(GuiTester):
 
     def add_custom_tcp_rule_to_s_group(self, s_group_name, s_group_id):
         """
-        Goes to security group detail page. Opens TCP port 22-3389 to default group.
+        Navigates to security group detail page. Opens TCP port 22-3389 to default group.
         :param s_group_name:
         :param s_group_id:
         """
@@ -160,7 +164,7 @@ class GuiEC2(GuiTester):
 
     def delete_security_group_from_view_page(self, sgroup_name, s_group_id):
         """
-        Goes to security group view page. Deletes security group from view page.
+        Navigates to security group view page. Deletes security group from view page.
         :param sgroup_name:
         :param s_group_id:
         """
@@ -171,7 +175,7 @@ class GuiEC2(GuiTester):
 
     def delete_security_group_from_detail_page(self, sgroup_name, s_group_id):
         """
-        Goes to security group detail page. Deletes security group.
+        Navigates to security group detail page. Deletes security group.
         :param sgroup_name:
         :param s_group_id:
         """
@@ -180,6 +184,157 @@ class GuiEC2(GuiTester):
         SecurityGroupDetailPage(self, sgroup_name).click_action_delete_s_group_on_detail_page()
         DeleteScurityGroupDialog(self).delete_s_group()
         SecurityGroupView(self).verify_s_group_not_present(sgroup_name)
+
+    def launch_instance_from_dashboard(self, image = "centos",availability_zone = None,
+                                       instance_type = "t1.micro: 1 CPUs, 256 memory (MB), 5 disk (GB,root device)",
+                                       number_of_of_instances = None, instance_name = None, key_name = "None (advanced option)",
+                                       security_group = "default", user_data=None, monitoring=False, private_addressing=False):
+        """
+        Navigates to dashboard via menu. Launches instance.
+        :param image:
+        :param availability_zone:
+        :param instance_type:
+        :param number_of_of_instances:
+        :param instance_name:
+        :param key_name:
+        :param security_group:
+        :param user_data:
+        :param monitoring:
+        :param private_addressing:
+        """
+        BasePage(self).goto_dashboard_via_menu()
+        Dashboard(self).click_launch_instance_button_from_dashboard()
+        LaunchInstanceWidget(self).launch_instance(image, availability_zone, instance_type,
+                                                          number_of_of_instances, instance_name, key_name,
+                                                          security_group, user_data, monitoring, private_addressing)
+        instance_id = InstanceView(self).get_id_of_newly_launched_instance()
+        InstanceView(self).goto_instance_detail_page_via_link(instance_id)
+        InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_in_running_state()
+        return {'instance_name': instance_name, 'instance_id':instance_id}
+
+    def launch_instance_from_instance_view_page(self, image = "centos",availability_zone = None,
+                                               instance_type = "t1.micro: 1 CPUs, 256 memory (MB), 5 disk (GB,root device)",
+                                               number_of_of_instances = None, instance_name = None, key_name = "None (advanced option)",
+                                               security_group = "default", user_data=None, monitoring=False, private_addressing=False):
+        """
+        Navigates to instance view page via menu. Launches instance.
+        :param image:
+        :param availability_zone:
+        :param instance_type:
+        :param number_of_of_instances:
+        :param instance_name:
+        :param key_name:
+        :param security_group:
+        :param user_data:
+        :param monitoring:
+        :param private_addressing:
+        """
+        BasePage(self).goto_instances_via_menu()
+        InstanceView(self).click_action_launch_instance_on_view_page()
+        LaunchInstanceWidget(self).launch_instance(image, availability_zone, instance_type,
+                                                    number_of_of_instances, instance_name, key_name,
+                                                    security_group, user_data, monitoring, private_addressing)
+        instance_id = InstanceView(self).get_id_of_newly_launched_instance()
+        InstanceView(self).goto_instance_detail_page_via_link(instance_id)
+        InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_in_running_state()
+        return {'instance_name': instance_name, 'instance_id':instance_id}
+
+    def launch_instance_from_image_view_page(self, image_id_or_type, availability_zone = None,
+                                               instance_type = "t1.micro: 1 CPUs, 256 memory (MB), 5 disk (GB,root device)",
+                                               number_of_of_instances = None, instance_name = None, key_name = "None (advanced option)",
+                                               security_group = "default", user_data=None, monitoring=False, private_addressing=False ):
+        """
+        Navigates to image view page via menu. Launches instance from given image.
+        :param image_id_or_type:
+        :param availability_zone:
+        :param instance_type:
+        :param number_of_of_instances:
+        :param instance_name:
+        :param key_name:
+        :param security_group:
+        :param user_data:
+        :param monitoring:
+        :param private_addressing:
+        """
+
+        BasePage(self).goto_images_view_via_menu()
+        ImageView(self).click_action_launch_instance(image_id_or_type)
+        LaunchInstanceWidget(self).launch_instance_step2(availability_zone, instance_type,
+                                                        number_of_of_instances, instance_name, key_name,
+                                                        security_group, user_data, monitoring, private_addressing)
+        instance_id = InstanceView(self).get_id_of_newly_launched_instance()
+        InstanceView(self).goto_instance_detail_page_via_link(instance_id)
+        InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_in_running_state()
+        return {'instance_name': instance_name, 'instance_id':instance_id}
+
+    def launch_more_like_this_from_view_page(self, inatance_id, instance_name=None, user_data=None, monitoring=False, private_addressing=False):
+        """
+        Navigates to instances view page. Launches an instance like given instance.
+        :param inatance_id:
+        :param instance_name:
+        :param user_data:
+        :param monitoring:
+        :param private_addressing:
+        """
+        BasePage(self).goto_instances_via_menu()
+        InstanceView(self).click_action_launch_more_like_this(inatance_id)
+        LaunchMoreLikeThisDialog(self).launch_more_like_this(instance_name, user_data, monitoring, private_addressing)
+        instance_id = InstanceView(self).get_id_of_newly_launched_instance()
+        InstanceView(self).goto_instance_detail_page_via_link(instance_id)
+        InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_in_running_state()
+        return {'instance_name': instance_name, 'instance_id':instance_id}
+
+    def launch_more_like_this_from_detail_page(self, base_instance_id, instance_name=None, user_data=None, monitoring=False, private_addressing=False):
+        """
+        Navigates to instance detail page. Launches an instance like given instance.
+        :param inatance_id:
+        :param instance_name:
+        :param user_data:
+        :param monitoring:
+        :param private_addressing:
+        """
+        BasePage(self).goto_instances_via_menu()
+        base_instance_name=InstanceView(self).get_instance_name(base_instance_id)
+        InstanceView(self).goto_instance_detail_page_via_actions(base_instance_id)
+        InstanceDetailPage(self, base_instance_id, base_instance_name).click_action_launch_more_like_this()
+        LaunchMoreLikeThisDialog(self).launch_more_like_this(instance_name, user_data, monitoring, private_addressing)
+        instance_id = InstanceView(self).get_id_of_newly_launched_instance()
+        InstanceView(self).goto_instance_detail_page_via_link(instance_id)
+        InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_in_running_state()
+        return {'instance_name': instance_name, 'instance_id':instance_id}
+
+    def terminate_instance_from_view_page(self, instance_name, instance_id):
+        """
+        Navigates to view page, terminates instance.
+        :param instance_name:
+        :param instance_id:
+        """
+        BasePage(self).goto_instances_via_menu()
+        InstanceView(self).click_action_terminate_instance_on_view_page(instance_id)
+        TerminateInstanceModal(self).click_terminate_instance_submit_button(instance_id)
+        InstanceView(self).goto_instance_detail_page_via_link(instance_id)
+        InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_terminated()
+
+    def terminate_instance_from_detail_page(self, instance_id):
+        """
+        Navigates to detail page, terminates instance.
+        :param instance_id:
+        """
+
+        BasePage(self).goto_instances_via_menu()
+        instance_name=InstanceView(self).get_instance_name(instance_id)
+        InstanceView(self).goto_instance_detail_page_via_actions(instance_id)
+        InstanceDetailPage(self, instance_id, instance_name).click_terminate_instance_action_item_from_detail_page()
+        TerminateInstanceModal(self).click_terminate_instance_submit_button(instance_id)
+        InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_terminated()
+
+    def batch_terminate_all_instances(self):
+
+        BasePage(self).goto_instances_via_menu()
+        InstanceView(self).click_terminate_all_instances_button()
+        TerminateAllInstancesModal(self).click_terminate_all_instances_submit_button()
+        InstanceView(self).verify_there_are_no_running_instances()
+
 
 
 

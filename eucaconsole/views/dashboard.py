@@ -209,8 +209,7 @@ class DashboardJsonView(BaseView):
             stacks_count = 0
             try:
                 cf_conn = self.get_connection(conn_type="cloudformation")
-                stacks_count = len(
-                    cf_conn.list_stacks(stack_status_filters=['CREATE_COMPLETE'])) if 'stacks' in tiles else 0
+                stacks_count = len(cf_conn.describe_stacks()) if 'stacks' in tiles else 0
             except BotoServerError:
                 pass
 

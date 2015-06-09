@@ -5,7 +5,7 @@
  */
 
 angular.module('StackPage', ['MagicSearch', 'EucaConsoleUtils'])
-    .controller('StackPageCtrl', function ($scope, $http, $timeout, eucaUnescapeJson) {
+    .controller('StackPageCtrl', function ($scope, $http, $timeout, eucaUnescapeJson, eucaHandleError) {
         $scope.stackStatusEndpoint = '';
         $scope.stackTemplateEndpoint = '';
         $scope.transitionalStates = ['Create-in-progress', 'Rollback-in-progress', 'Delete-in-progress'];
@@ -13,6 +13,8 @@ angular.module('StackPage', ['MagicSearch', 'EucaConsoleUtils'])
         $scope.templateLoading = true;
         $scope.eventsLoading = true;
         $scope.resources = [];
+        $scope.codeEditor = null;
+        $scope.stackTemplate = '';
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.stack_name = optionsJson.stack_name;
@@ -29,6 +31,12 @@ angular.module('StackPage', ['MagicSearch', 'EucaConsoleUtils'])
             }
             $scope.setWatch();
             $scope.setFocus();
+            $scope.initCodeMirror();
+        };
+        $scope.revealModal = function (action, stack) {
+            $scope.stackName = stack.name;
+            var modal = $('#' + action + '-stack-modal');
+            modal.foundation('reveal', 'open');
         };
         $scope.isTransitional = function () {
             return $scope.transitionalStates.indexOf($scope.stackStatus) !== -1;
@@ -112,17 +120,41 @@ angular.module('StackPage', ['MagicSearch', 'EucaConsoleUtils'])
             });
         };
         $scope.getStackTemplate = function () {
+        };
+        $scope.initCodeMirror = function () {
+            var templateTextarea = document.getElementById('template-area');
+            $scope.codeEditor = CodeMirror.fromTextArea(templateTextarea, {
+                mode: {name:"javascript", json:true},
+                lineWrapping: true,
+                styleActiveLine: true,
+                lineNumbers: true,
+                readOnly: true
+            });
+        };
+        $scope.clearCodeEditor = function () {
+            $scope.codeEditor.setValue('');
+            $scope.codeEditor.clearHistory();
+        };
+        $scope.viewTemplate = function ($event) {
+            $event.preventDefault();
+            $scope.clearCodeEditor();
+            var viewModal = $('#view-template-modal');
+            viewModal.foundation('reveal', 'open');
+            viewModal.on('close.fndtn.reveal', function() {
+                $scope.clearCodeEditor();
+            });
+            $scope.stackTemplate = ''; // clear any previous policy
             $http.get($scope.stackTemplateEndpoint).success(function(oData) {
                 var results = oData ? oData.results : '';
-                $scope.templateLoading = false;
-                if (results) {
-                    $scope.description = results.description;
-                    $scope.parameters = results.parameters;
-                }
+                $scope.stackTemplate = eucaUnescapeJson(results);
+                $scope.codeEditor.setValue($scope.stackTemplate);
+                $scope.codeEditor.focus();
+            }).error(function (oData, status) {
+                eucaHandleError(oData, status);
             });
         };
         $scope.getStackEvents = function () {
-            $scope.eventsLoading = true;
+            //$scope.eventsLoading = true;
             $http.get($scope.stackEventsEndpoint).success(function(oData) {
                 var results = oData ? oData.results : '';
                 $scope.eventsLoading = false;
