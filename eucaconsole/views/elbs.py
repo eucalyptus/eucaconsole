@@ -46,7 +46,7 @@ from ..constants.cloudwatch import (
     STATISTIC_CHOICES)
 from ..constants.elbs import ELB_MONITORING_CHARTS_LIST
 from ..i18n import _
-from ..forms.elbs import (ELBForm, ELBDeleteForm, ELBsFiltersForm, CreateELBForm, ELBHealthChecksForm,
+from ..forms.elbs import (ELBForm, ELBDeleteForm, CreateELBForm, ELBHealthChecksForm,
                           ELBInstancesForm, ELBInstancesFiltersForm, CertificateForm, BackendCertificateForm)
 from ..models import Notification
 from ..views import LandingPageView, BaseView, TaggedItemView, JSONResponse
@@ -62,16 +62,13 @@ class ELBsView(LandingPageView):
         self.elb_conn = self.get_connection(conn_type="elb")
         self.initial_sort_key = 'name'
         self.prefix = '/elbs'
-        self.filter_keys = ['name', 'dns_name']
+        self.filter_keys = ['name']
         self.sort_keys = self.get_sort_keys()
         self.json_items_endpoint = self.get_json_endpoint('elbs_json')
         self.delete_form = ELBDeleteForm(self.request, formdata=self.request.params or None)
-        self.filters_form = ELBsFiltersForm(
-            self.request, cloud_type=self.cloud_type, ec2_conn=self.ec2_conn, formdata=self.request.params or None)
-        search_facets = self.filters_form.facets
         self.render_dict = dict(
             filter_keys=self.filter_keys,
-            search_facets=BaseView.escape_json(json.dumps(search_facets)),
+            search_facets='[]',
             sort_keys=self.sort_keys,
             prefix=self.prefix,
             initial_sort_key=self.initial_sort_key,
@@ -108,12 +105,12 @@ class ELBsView(LandingPageView):
         return [
             dict(key='name', name=_(u'Name: A to Z')),
             dict(key='-name', name=_(u'Name: Z to A')),
-            dict(key='created_time', name=_(u'Creation time: Oldest to Newest')),
-            dict(key='-created_time', name=_(u'Creation time: Newest to Oldest')),
-            dict(key='image_name', name=_(u'Image Name: A to Z')),
-            dict(key='-image_name', name=_(u'Image Name: Z to A')),
-            dict(key='key_name', name=_(u'Key pair: A to Z')),
-            dict(key='-key_name', name=_(u'Key pair: Z to A')),
+            dict(key='latency', name=_(u'Avg latency (low to high)')),
+            dict(key='-latency', name=_(u'Avg latency (high to low)')),
+            dict(key='unhealthy_hosts', name=_(u'Unhealthy hosts (low to high)')),
+            dict(key='-unhealthy_hosts', name=_(u'Unhealthy hosts (high to low)')),
+            dict(key='healthy_hosts', name=_(u'Healthy hosts (low to high)')),
+            dict(key='-healthy_hosts', name=_(u'Healthy hosts (high to low)')),
         ]
 
 

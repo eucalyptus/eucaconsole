@@ -200,35 +200,6 @@ class ELBDeleteForm(BaseSecureForm):
     pass
 
 
-class ELBsFiltersForm(BaseSecureForm):
-    """Form class for filters on landing page"""
-    availability_zones = wtforms.SelectMultipleField(label=_(u'Availability zone'))
-    instance_type = wtforms.SelectMultipleField(label=_(u'Instance type'))
-    key_name = wtforms.SelectMultipleField(label=_(u'Key pair'))
-    security_groups = wtforms.SelectMultipleField(label=_(u'Security group'))
-
-    def __init__(self, request, cloud_type='euca', ec2_conn=None, **kwargs):
-        super(ELBsFiltersForm, self).__init__(request, **kwargs)
-        self.request = request
-        self.cloud_type = cloud_type
-        self.ec2_conn = ec2_conn
-        self.ec2_choices_manager = ChoicesManager(conn=ec2_conn)
-        region = request.session.get('region')
-        self.availability_zones.choices = self.ec2_choices_manager.availability_zones(region, add_blank=False)
-        self.instance_type.choices = self.ec2_choices_manager.instance_types(
-            add_blank=False, cloud_type=self.cloud_type, add_description=False)
-        self.key_name.choices = self.ec2_choices_manager.keypairs(add_blank=False, no_keypair_filter_option=True)
-        self.security_groups.choices = self.ec2_choices_manager.security_groups(use_id=True, add_blank=False)
-        self.facets = [
-            {'name': 'instance_type', 'label': self.instance_type.label.text,
-                'options': self.getOptionsFromChoices(self.instance_type.choices)},
-            {'name': 'key_name', 'label': self.key_name.label.text,
-                'options': self.getOptionsFromChoices(self.key_name.choices)},
-            {'name': 'security_group', 'label': self.security_groups.label.text,
-                'options': self.getOptionsFromChoices(self.security_groups.choices)},
-        ]
-
-
 class CreateELBForm(BaseSecureForm):
     """Create Elastic Load Balancer form"""
     name_error_msg = NAME_WITHOUT_SPACES_NOTICE
