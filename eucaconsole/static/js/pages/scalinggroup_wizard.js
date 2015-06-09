@@ -6,7 +6,7 @@
 
 // Scaling Group wizard includes the AutoScale Tag Editor
 angular.module('ScalingGroupWizard', ['AutoScaleTagEditor','EucaConsoleUtils'])
-    .controller('ScalingGroupWizardCtrl', function ($scope, $timeout, eucaUnescapeJson) {
+    .controller('ScalingGroupWizardCtrl', function ($scope, $timeout, eucaUnescapeJson, eucaNumbersOnly) {
         $scope.form = $('#scalinggroup-wizard-form');
         $scope.scalingGroupName = '';
         $scope.launchConfig = '';
@@ -29,14 +29,20 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor','EucaConsoleUtils'])
         $scope.currentStepIndex = 1;
         $scope.isNotValid = true;
         $scope.initChosenSelectors = function () {
-            $('#launch_config').chosen({'width': '80%', search_contains: true});
             $('#load_balancers').chosen({'width': '100%', search_contains: true});
             $('#availability_zones').chosen({'width': '100%', search_contains: true});
             $('#vpc_subnet').chosen({'width': '100%', search_contains: true});
         };
         $scope.setInitialValues = function () {
             $scope.availZones = $('#availability_zones').val();
-            $('#launch_config').val('').trigger('chosen:updated');  // Clear launch config value on page refresh
+            $(document).ready(function () {
+                $scope.cleanLaunchConfigOptions();
+            });
+        };
+        $scope.cleanLaunchConfigOptions = function () {
+            var launchConfigSelect = $('#launch_config');
+            launchConfigSelect.find("option[value='? string: ?']").remove();
+            launchConfigSelect.val('').trigger('chosen:updated');  // Clear launch config value on page refresh
         };
         $scope.checkLaunchConfigParam = function () {
             if( $('#hidden_launch_config_input').length > 0 ){
@@ -60,18 +66,23 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor','EucaConsoleUtils'])
             }, 500);
         };
         $scope.checkRequiredInput = function () {
-            if( $scope.currentStepIndex == 1 ){ 
+            if( $scope.currentStepIndex == 1 ){
                 $scope.isNotValid = false;
-                if( $scope.scalingGroupName === '' || $scope.scalingGroupName === undefined ){
+                if ($scope.scalingGroupName === '' || $scope.scalingGroupName === undefined) {
                     $scope.isNotValid = true;
-                }else if( $scope.launchConfig === '' || $scope.launchConfig === undefined ){
+                } else if ($scope.minSize === '' || $scope.minSize === undefined) {
                     $scope.isNotValid = true;
-                }else if( $scope.minSize === '' || $scope.minSize === undefined ){
+                } else if ($scope.desiredCapacity === '' || $scope.desiredCapacity === undefined) {
                     $scope.isNotValid = true;
-                }else if( $scope.desiredCapacity === '' || $scope.desiredCapacity === undefined ){
+                } else if ($scope.maxSize === '' || $scope.maxSize === undefined ) {
                     $scope.isNotValid = true;
-                }else if( $scope.maxSize === '' || $scope.maxSize === undefined ){
+                } else if (!$scope.launchConfig) {
                     $scope.isNotValid = true;
+                } else if ($scope.vpcNetwork !== 'None') {
+                    if (typeof $scope.vpcSubnets === 'undefined') {
+                        $scope.vpcSubnets = [];  // Work around case where vpcSubnets list is undefined
+                    }
+                    $scope.isNotValid = $scope.vpcSubnets.length === 0;
                 }
             }else if( $scope.currentStepIndex == 2 ){
                 $scope.isNotValid = false;
@@ -83,6 +94,7 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor','EucaConsoleUtils'])
             }
         };
         $scope.setWatcher = function (){
+            $scope.watchCapacityEntries();
             $scope.$watch('currentStepIndex', function(){
                  $scope.setWizardFocus($scope.currentStepIndex);
             });
@@ -90,15 +102,6 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor','EucaConsoleUtils'])
                 $scope.checkRequiredInput();
             });
             $scope.$watch('launchConfig', function(){
-                $scope.checkRequiredInput();
-            });
-            $scope.$watch('minSize', function(){
-                $scope.checkRequiredInput();
-            });
-            $scope.$watch('desiredCapacity', function(){
-                $scope.checkRequiredInput();
-            });
-            $scope.$watch('maxSize', function(){
                 $scope.checkRequiredInput();
             });
             $scope.$watch('healthCheckPeriod', function(){
@@ -111,11 +114,29 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor','EucaConsoleUtils'])
                 $scope.updateVPCSubnetChoices();
                 $scope.updateSelectedVPCNetworkName();
                 $scope.adjustVPCSubnetSelectAbide();
+                $scope.checkRequiredInput();
             });
-            $scope.$watch('vpcSubnets', function () { 
+            $scope.$watch('vpcSubnets', function (newVal) {
+                if (typeof newVal === 'undefined') {
+                    $scope.subnets = [];
+                }
                 $scope.disableVPCSubnetOptions();
                 $scope.updateSelectedVPCSubnetNames();
+                $scope.checkRequiredInput();
             }, true);
+        };
+        $scope.watchCapacityEntries = function () {
+            var entries = ['minSize', 'maxSize', 'desiredCapacity'];
+            angular.forEach(entries, function (item) {
+                $scope.$watch(item, function(newVal) {
+                    if (newVal) {
+                        $scope[item] = eucaNumbersOnly(newVal);
+                        $scope.checkRequiredInput();
+                    } else {
+                        $scope.checkRequiredInput();
+                    }
+                });
+            });
         };
         $scope.adjustVPCSubnetSelectAbide = function () {
             // If VPC option is not chosen, remove the 'required' attribute
