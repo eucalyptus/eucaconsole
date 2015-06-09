@@ -116,14 +116,12 @@ class ELBsView(LandingPageView):
 
 class ELBsJsonView(LandingPageView, CloudWatchAPIMixin):
     """JSON response view for ELB landing page"""
-    def __init__(self, request):
-        super(ELBsJsonView, self).__init__(request)
-        self.ec2_conn = self.get_connection()
-        self.elb_conn = self.get_connection(conn_type='elb')
-        self.cw_conn = self.get_connection(conn_type='cloudwatch')
+    def __init__(self, request, elb_conn=None, cw_conn=None, **kwargs):
+        super(ELBsJsonView, self).__init__(request, **kwargs)
+        self.elb_conn = elb_conn or self.get_connection(conn_type='elb')
+        self.cw_conn = cw_conn or self.get_connection(conn_type='cloudwatch')
         with boto_error_handler(request):
             self.items = self.get_items()
-            self.securitygroups = self.get_all_security_groups()
 
     @view_config(route_name='elbs_json', renderer='json', request_method='POST')
     def elbs_json(self):
@@ -166,49 +164,6 @@ class ELBsJsonView(LandingPageView, CloudWatchAPIMixin):
             namespace='AWS/ELB', idtype='LoadBalancerName', ids=[elb.name])
         if stats:
             return sum(stat.get('Average') * 1000 for stat in stats)/len(stats)
-        return None
-
-    def get_all_security_groups(self):
-        if self.ec2_conn:
-            return self.ec2_conn.get_all_security_groups()
-        return []
-
-    def get_security_groups(self, groupids):
-        security_groups = []
-        if groupids:
-            for sgid in groupids:
-                security_group = ''
-                # Due to the issue that AWS-Classic and AWS-VPC different values,
-                # name and id, for .securitygroup for launch config object
-                if sgid.startswith('sg-'):
-                    security_group = self.get_security_group_by_id(sgid)
-                else:
-                    security_group = self.get_security_group_by_name(sgid)
-                if security_group:
-                    security_groups.append(security_group)
-        return security_groups
-
-    def get_security_group_by_id(self, sgid):
-        if self.securitygroups:
-            for sgroup in self.securitygroups:
-                if sgroup.id == sgid:
-                    return sgroup
-        return ''
-
-    def get_security_group_by_name(self, name):
-        if self.securitygroups:
-            for sgroup in self.securitygroups:
-                if sgroup.name == name:
-                    return sgroup
-        return ''
-
-    def get_security_group_rules_count_by_id(self, sgid):
-        if sgid.startswith('sg-'):
-            security_group = self.get_security_group_by_id(sgid)
-        else:
-            security_group = self.get_security_group_by_name(sgid)
-        if security_group:
-            return len(security_group.rules)
         return None
 
 

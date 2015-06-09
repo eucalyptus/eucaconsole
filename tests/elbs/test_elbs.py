@@ -35,10 +35,10 @@ import boto
 
 from boto.ec2.elb.attributes import LbAttributes, CrossZoneLoadBalancingAttribute
 
-from moto import mock_elb
+from moto import mock_elb, mock_cloudwatch
 
 
-from eucaconsole.views.elbs import ELBView, ELBMonitoringView, ELBInstancesView, ELBHealthChecksView
+from eucaconsole.views.elbs import ELBsJsonView, ELBView, ELBMonitoringView, ELBInstancesView, ELBHealthChecksView
 
 from tests import BaseViewTestCase, Mock
 
@@ -47,13 +47,32 @@ class MockELBMixin(object):
     @staticmethod
     @mock_elb
     def make_elb():
-        elb_conn = boto.connect_elb('us-east')
+        elb_conn = boto.connect_elb()
         name = 'test_elb'
         zones = ['us-east-1a']
         listeners = [(80, 80, 'HTTP', 'HTTP')]
         elb = elb_conn.create_load_balancer(name, zones, complex_listeners=listeners)
         elb.idle_timeout = 60
         return elb_conn, elb
+
+    @staticmethod
+    @mock_cloudwatch
+    def make_cw_conn():
+        return boto.connect_cloudwatch()
+
+
+class ELBLandingPageJsonViewTests(BaseViewTestCase, MockELBMixin):
+    @mock_elb
+    def test_elb_landing_page_json_view(self):
+        elb_conn, elb = self.make_elb()
+        cw_conn = self.make_cw_conn()
+        request = self.create_request()
+        view = ELBsJsonView(request, elb_conn=elb_conn, cw_conn=cw_conn, elb=elb).elbs_json()
+        results = view.get('results')
+        elb = results[0]
+        self.assertEqual(len(results), 1)
+        self.assertEqual(elb.get('healthy_hosts'), 0)
+        self.assertEqual(elb.get('unhealthy_hosts'), 0)
 
 
 class ELBViewTests(BaseViewTestCase, MockELBMixin):

@@ -103,10 +103,14 @@ class CloudWatchAPIMixin(object):
         start_time = end_time - datetime.timedelta(seconds=duration)
         statistics = [statistic]
 
-        return cw_conn.get_metric_statistics(
-            period, start_time, end_time, metric, namespace, statistics,
-            dimensions={idtype: ids}, unit=unit
-        )
+        try:
+            return cw_conn.get_metric_statistics(
+                period, start_time, end_time, metric, namespace, statistics,
+                dimensions={idtype: ids}, unit=unit
+            )
+        except NotImplementedError:
+            # TODO: Remove try/except block when moto has implemented cw_conn.get_metric_statistics
+            return None
 
 
 class CloudWatchAPIView(BaseView, CloudWatchAPIMixin):
