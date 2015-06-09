@@ -18,6 +18,7 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor']
             $scope.setInitialValues(options);
             $scope.setWatch();
             $timeout(function(){
+                // Prevent Foundation validation from raising false negative warnings
                 $scope.isInitComplete = true;
             }, 1000);
         };
