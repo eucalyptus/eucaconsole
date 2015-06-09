@@ -46,13 +46,13 @@ class QuotasForm(BaseSecureForm):
     """
     ec2_images_max = wtforms.TextField(label=_(u'Images (maximum)'))
     ec2_instances_max = wtforms.TextField(label=_(u'Instances (maximum)'))
+    ec2_instance_cpu = wtforms.TextField(label=_(u'CPU (cores, maximum)'))
+    ec2_instance_disk = wtforms.TextField(label=_(u'Root disk (GB, maximum)'))
+    ec2_instance_memory = wtforms.TextField(label=_(u'Memory (MB, maximum)'))
     ec2_volumes_max = wtforms.TextField(label=_(u'Volumes (maximum)'))
     ec2_total_size_all_vols = wtforms.TextField(label=_(u'Total size of all volumes (GB)'))
     ec2_snapshots_max = wtforms.TextField(label=_(u'Snapshots (maximum)'))
     ec2_elastic_ip_max = wtforms.TextField(label=_(u'Elastic IP addresses (maximum)'))
-    ec2_instance_cpu = wtforms.TextField(label=_(u'CPU in cores (maximum)'))
-    ec2_instance_disk = wtforms.TextField(label=_(u'Root Disk in GB (maximum)'))
-    ec2_instance_memory = wtforms.TextField(label=_(u'Memory in MB (maximum)'))
 
     s3_buckets_max = wtforms.TextField(label=_(u'Buckets (maximum)'))
     s3_objects_per_max = wtforms.TextField(label=_(u'Objects per bucket (maximum)'))
