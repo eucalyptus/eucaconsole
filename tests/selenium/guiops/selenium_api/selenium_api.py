@@ -29,6 +29,7 @@ class SeleniumApi(object):
     timeout_to_determine_if_clickable_in_seconds = 20
     timeout_to_wait_for_text_in_seconds = 120
     implicit_wait_default_in_seconds = 30
+    timeout_to_check_for_visibility_in_seconds = 5
 
     def set_implicit_wait(self, implicit_wait_time):
         """
@@ -158,6 +159,22 @@ class SeleniumApi(object):
                 print "Element by css = '{0}' is present in the DOM but not visible.".format(css)
             except NoSuchElementException:
                 print "ERROR: Element by css = '{0}' not found in the DOM.".format(css)
+            return False
+
+    def check_visibility_by_css(self, css):
+        """
+        Checks if the element is visible.
+        :param css:
+        """
+
+        print "Executing check_visibility_by_css('{0}')".format(css)
+
+        try:
+            WebDriverWait(self.driver, self.timeout_to_check_for_visibility_in_seconds).until(EC.visibility_of_element_located((By.CSS_SELECTOR, css)))
+            print "Element by css = '{0}' was located in DOM and is visible.".format(css)
+            return True
+        except TimeoutException:
+            print "Element by css = '{0}' not visible.".format(css)
             return False
 
     def wait_for_clickable_by_id(self, element_id):
