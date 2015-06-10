@@ -245,7 +245,8 @@ class BaseELBView(TaggedItemView):
         self.is_vpc_supported = BaseView.is_vpc_supported(request)
         self.can_list_certificates = True
         try:
-            self.iam_conn.get_all_server_certs()
+            if self.iam_conn:
+                self.iam_conn.get_all_server_certs()
         except BotoServerError:
             # IAM policy prevents listing certificates
             self.can_list_certificates = False
