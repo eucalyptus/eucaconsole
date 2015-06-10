@@ -57,6 +57,31 @@ angular.module('EucaConsoleUtils', ['CustomFilters', 'ngSanitize'])
         }
     };
 })
+.service('eucaNumbersOnly', function () {
+    /**
+     * Convert string to integers only
+     */
+    return function(str) {
+        str = str + '';
+        if (str) {
+            return str.replace(/\D+/g, '');
+        }
+        return str;
+    };
+})
+.service('eucaHandleUnsavedChanges', function() {
+    return function(scope) {
+        scope.isSubmitted = false;
+        $(document).on('submit', 'form', function () {
+            scope.isSubmitted = true;
+        });
+        window.onbeforeunload = function() {
+            if (!scope.isNotChanged && !scope.isSubmitted) {
+                return $('#warning-message-unsaved-changes').text();
+            }
+        };
+    };
+})
 .service('eucaHandleErrorS3', function() {
     /**
      * Provide generic error handling in the browser for XHR calls to Object Storage. 

@@ -51,6 +51,14 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
                     $scope.protocolList = $scope.protocolList.concat(options.protocol_list);
                 }
             }
+            if (options.hasOwnProperty('listener_list')) {
+                if (options.listener_list instanceof Array && options.listener_list.length > 0) {
+                    $scope.setInitialListenerArray(options.listener_list);
+                    if ($scope.listenerArray.length > 0) {
+                        $scope.elbListenerTextarea.val(JSON.stringify($scope.listenerArray));
+                    }
+                }
+            }
             if (options.hasOwnProperty('port_range_pattern')) {
                 $scope.portRangePattern = options.port_range_pattern;
             }
@@ -189,6 +197,17 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
             }
             return block;
         };
+        $scope.setInitialListenerArray = function (listener_list) {
+            angular.forEach(listener_list, function (listener) {
+                var block = {
+                    'fromProtocol': listener.protocol,
+                    'fromPort': listener.from_port,
+                    'toProtocol': listener.protocol,
+                    'toPort': listener.to_port,
+                };
+                $scope.listenerArray.push(block);
+            });
+        };
         $scope.addListener = function ($event) {
             $event.preventDefault();
             $scope.checkAddListenerButtonCondition(); 
@@ -290,8 +309,25 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
             $scope.classFromPortDiv = "";
             // timeout is needed for the update of the input element DOM to be completed
             $timeout(function () {
-                if ($('#from-port-input').hasClass('ng-invalid-pattern')) {
+                var portInput = $('#from-port-input'),
+                    portError = $('#from-port-error'),
+                    portVal = parseInt(portInput.val(), 10),
+                    validPorts = [25, 80, 443, 465, 587],
+                    validPortMin = 1024,
+                    validPortMax = 65535;
+                portError.hide();
+                if (portInput.hasClass('ng-invalid-pattern')) {
                     $scope.classFromPortDiv = "error";
+                }
+                if (isNaN(portVal)) {
+                    $scope.classFromPortDiv = "error";
+                    return false;
+                }
+                if (validPorts.indexOf(portVal) === -1 && (portVal < validPortMin || portVal > validPortMax)) {
+                    $scope.classFromPortDiv = "error";
+                    portInput.focus();
+                    portError.show();
+                    return false;
                 }
             });
         }; 

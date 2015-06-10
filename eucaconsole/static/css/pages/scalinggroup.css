@@ -128,6 +128,7 @@ input[type="number"] { width: 3rem; }
 
 #launch_config, #health_check_type { max-width: 10rem; }
 
+#capacity-section input { width: 3rem; }
 #capacity-section .controls-wrapper.inline { display: inline-block; }
 #capacity-section .controls-wrapper.inline label { right: 0; }
 #capacity-section .columns { padding-left: 1rem; }

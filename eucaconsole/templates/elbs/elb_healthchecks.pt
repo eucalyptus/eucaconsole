@@ -1,0 +1,108 @@
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
+
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/elb.css')}" />
+</head>
+
+<div metal:fill-slot="main_content" ng-app="ELBHealthChecksPage"
+     ng-controller="ELBHealthChecksPageCtrl" ng-init="initController()">
+    <div class="row" id="contentwrap">
+        <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+            <metal:crumbs metal:fill-slot="crumbs">
+                <li><a href="${request.route_path('elbs')}" i18n:translate="">Load balancers</a></li>
+                <li class="current"><a href="#">${elb_name}</a></li>
+            </metal:crumbs>
+        </metal:breadcrumbs>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
+        <h3 id="pagetitle">
+            <strong i18n:translate="">Details for load balancer:</strong>
+            <em>${elb_name}</em>
+        </h3>
+        <div class="large-12 columns">
+            <dl id="elb-view-tabs" class="tabs">
+                <dd><a href="${request.route_path('elb_view', id=elb.name)}" i18n:translate="">General</a></dd>
+                <dd><a href="${request.route_path('elb_monitoring', id=elb.name)}" i18n:translate="">Monitoring</a></dd>
+                <dd><a href="${request.route_path('elb_instances', id=elb.name)}" i18n:translate="">Instances</a></dd>
+                <dd class="active"><a i18n:translate="">Health checks</a></dd>
+            </dl>
+            <div class="content panel has-actions">
+                <metal:block metal:use-macro="layout.global_macros['actions_menu']">
+                    <metal:actions metal:fill-slot="actions">
+                        <li>
+                            <a id="delete-elb-action" data-reveal-id="delete-elb-modal"
+                                i18n:translate="">Delete load balancer</a>
+                        </li>
+                    </metal:actions>
+                </metal:block>
+                <form method="post" action="${request.route_path('elb_healthchecks_update', id=elb.name)}" data-abide="">
+                    ${structure:elb_form['csrf_token']}
+                    <div>
+                        <h6 class="section-label" i18n:translate="">Ping settings</h6>
+                        <div>
+                            ${panel('form_field', field=elb_form['ping_protocol'], stack_label=True, ng_attrs=dict(model='pingProtocol'))}
+                        </div>
+                        <div>
+                            ${panel('form_field', field=elb_form['ping_port'], stack_label=True, ng_attrs=dict(model='pingPort'), min=1, max=65535, maxlength=5, pattern=layout.integer_gt_zero_pattern)}
+                        </div>
+                        <div ng-if="pingPathRequired">
+                            ${panel('form_field', field=elb_form['ping_path'], stack_label=True)}
+                        </div>
+                    </div>
+                    <div class="expando" id="advanced-section" ng-init="expanded = false" ng-cloak="">
+                        <div class="title">
+                            <a ng-click="expanded = !expanded">
+                                <i class="fi-plus" ng-show="!expanded"></i>
+                                <i class="fi-minus" ng-show="expanded"></i>
+                                &nbsp;<span i18n:translate="">Advanced</span>
+                            </a>
+                        </div>
+                        <div class="section" ng-show="expanded">
+                            <div>
+                                <h6 class="section-label" i18n:translate="">Timing settings</h6>
+                                <div>
+                                    ${panel('form_field', field=elb_form['response_timeout'], stack_label=True,  min=1, pattern=layout.integer_gt_zero_pattern)}
+                                </div>
+                                <div>
+                                    ${panel('form_field', field=elb_form['time_between_pings'], stack_label=True)}
+                                </div>
+                            </div>
+                            <div>
+                                <h6 class="section-label" i18n:translate="">Instance thresholds</h6>
+                                <div>
+                                    ${panel('form_field', field=elb_form['failures_until_unhealthy'], stack_label=True)}
+                                </div>
+                                <div>
+                                    ${panel('form_field', field=elb_form['passes_until_healthy'], stack_label=True)}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="save-changes-button">
+                        <button type="submit" class="button" id="save-changes-btn-healthchecks" ng-disabled="isNotChanged">
+                            <span i18n:translate="">Save Changes</span>
+                        </button>
+                        <a href="${request.route_path('elbs')}" id="cancel-update-link"
+                            class="cancel-link" i18n:translate="">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="large-12 columns">
+            <metal:block metal:use-macro="layout.global_macros['help_expando']" />
+            <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
+                <!--! Help goes here -->
+            </div>
+        </div>
+        <!--! Modal dialogs -->
+        ${panel('elb_dialogs', elb=elb, in_use=in_use, delete_form=delete_form)}
+    </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_path('eucaconsole:static/js/pages/elb_healthchecks.js')}"></script>
+</div>
+
+</metal:block>
+

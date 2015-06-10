@@ -1,0 +1,40 @@
+/* @fileOverview ELB Listener Editor Widget CSS */
+
+@import "../includes/eucavariables";
+
+
+#elb-listener-editor {
+    .controls-wrapper {
+        display: inline-block;
+        margin-right: 1.5rem;
+        label {
+            margin-right: 0.5rem;
+        }
+        input, select {
+            display: inline-block;
+        }
+        select.ip-protocol {
+            width: 8rem;
+        }
+        .elb-port-tooltip {
+            position: relative;
+            left: -8px;
+        }
+        #from-port-error {
+            margin-left: 1rem;
+        }
+    }
+    .security-row {
+        label.inline {
+            width: 7rem;
+            text-align: right;
+            line-height: 1.1rem;
+            margin: 0 0.5rem 0 0;
+            padding: 0 0 0 0;
+        }
+    }
+    .security-section {
+        margin-bottom: 1.5rem;
+    }
+}
+

@@ -67,27 +67,24 @@ class BaseScalingGroupForm(BaseSecureForm):
         label=_(u'Load balancer(s)'),
     )
     desired_capacity_error_msg = _(u'Field is required')
-    desired_capacity = wtforms.IntegerField(
+    desired_capacity = wtforms.TextField(
         label=_(u'Desired'),
         validators=[
             validators.InputRequired(message=desired_capacity_error_msg),
-            validators.NumberRange(min=0, max=99),
         ],
     )
     max_size_error_msg = _(u'Max is required')
-    max_size = wtforms.IntegerField(
+    max_size = wtforms.TextField(
         label=_(u'Max'),
         validators=[
             validators.InputRequired(message=max_size_error_msg),
-            validators.NumberRange(min=0, max=99),
         ],
     )
     min_size_error_msg = _(u'Min is required')
-    min_size = wtforms.IntegerField(
+    min_size = wtforms.TextField(
         label=_(u'Min'),
         validators=[
             validators.InputRequired(message=min_size_error_msg),
-            validators.NumberRange(min=0, max=99),
         ],
     )
     health_check_period_error_msg = _(u'Health check grace period is required')
