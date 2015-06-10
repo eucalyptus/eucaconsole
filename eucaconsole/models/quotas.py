@@ -63,11 +63,11 @@ class Quotas(object):
         self.add_quota_limit(
             view, statements, 'ec2_total_size_all_vols', 'ec2:Createvolume', 'ec2:quota-volumetotalsize')
         self.add_quota_limit(
-            view, statements, 'ec2_instance_cpu', '["ec2:RunInstances", "ec2:StartInstance"]', 'ec2:quota-cputotalsize')
+            view, statements, 'ec2_instance_cpu', '["ec2:RunInstances", "ec2:StartInstances"]', 'ec2:quota-cputotalsize')
         self.add_quota_limit(
-            view, statements, 'ec2_instance_disk', '["ec2:RunInstances", "ec2:StartInstance"]', 'ec2:quota-disktotalsize')
+            view, statements, 'ec2_instance_disk', '["ec2:RunInstances", "ec2:StartInstances"]', 'ec2:quota-disktotalsize')
         self.add_quota_limit(
-            view, statements, 'ec2_instance_memory', '["ec2:RunInstances", "ec2:StartInstance"]', 'ec2:quota-memorytotalsize')
+            view, statements, 'ec2_instance_memory', '["ec2:RunInstances", "ec2:StartInstances"]', 'ec2:quota-memorytotalsize')
         #  s3
         self.add_quota_limit(
             view, statements, 's3_buckets_max', 's3:CreateBucket', 's3:quota-bucketnumber')
@@ -176,15 +176,15 @@ class Quotas(object):
             )
             self._update_quota_limit_(
                 view, policy_list, new_stmts,
-                'ec2_instance_cpu', '["ec2:RunInstances", "ec2:StartInstance"]', 'ec2:quota-cputotalsize'
+                'ec2_instance_cpu', '["ec2:RunInstances", "ec2:StartInstances"]', 'ec2:quota-cputotalsize'
             )
             self._update_quota_limit_(
                 view, policy_list, new_stmts,
-                'ec2_instance_disk', '["ec2:RunInstances", "ec2:StartInstance"]', 'ec2:quota-disktotalsize'
+                'ec2_instance_disk', '["ec2:RunInstances", "ec2:StartInstances"]', 'ec2:quota-disktotalsize'
             )
             self._update_quota_limit_(
                 view, policy_list, new_stmts,
-                'ec2_instance_memory', '["ec2:RunInstances", "ec2:StartInstance"]', 'ec2:quota-memorytotalsize'
+                'ec2_instance_memory', '["ec2:RunInstances", "ec2:StartInstances"]', 'ec2:quota-memorytotalsize'
             )
             #  s3
             self._update_quota_limit_(
