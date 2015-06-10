@@ -634,9 +634,17 @@ class StackWizardView(BaseView):
     def identify_aws_template(parsed, modify=False):
         # drawn from here: http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-template-resource-type-ref.html
         aws_resource_prefixes = [
+            'AWS::AutoScaling::LifecycleHook',
+            'AWS::AutoScaling::ScheduledAction',
             'AWS::CloudFront',
             'AWS::CloudTrail',
             'AWS::DynamoDB'
+            'AWS::EC2::NetworkInterfaceAttachment'
+            'AWS::EC2::VPCPeeringConnection'
+            'AWS::EC2::VPCConnection'
+            'AWS::EC2::VPCConnectionRoute'
+            'AWS::EC2::VPCGateway'
+            'AWS::EC2::VPCGatewayRoutePropagation'
             'AWS::ElastiCache',
             'AWS::ElasticBeanstalk',
             'AWS::Kinesis',
@@ -645,6 +653,7 @@ class StackWizardView(BaseView):
             'AWS::Redshift',
             'AWS::RDS',
             'AWS::Route53',
+            'AWS::S3::BucketPolicy',
             'AWS::SDB',
             'AWS::SNS',
             'AWS::SQS'
