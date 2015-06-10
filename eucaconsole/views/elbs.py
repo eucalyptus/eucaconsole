@@ -36,6 +36,7 @@ import boto.utils
 
 from boto.ec2.elb import HealthCheck
 from boto.ec2.elb.attributes import ConnectionSettingAttribute
+from boto.exception import BotoServerError
 
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from pyramid.view import view_config
@@ -242,6 +243,12 @@ class BaseELBView(TaggedItemView):
         self.autoscale_conn = self.get_connection(conn_type='autoscale')
         self.vpc_conn = self.get_connection(conn_type='vpc')
         self.is_vpc_supported = BaseView.is_vpc_supported(request)
+        self.can_list_certificates = True
+        try:
+            self.iam_conn.get_all_server_certs()
+        except BotoServerError:
+            # IAM policy prevents listing certificates
+            self.can_list_certificates = False
 
     def get_elb(self):
         if self.elb_conn:
@@ -836,12 +843,12 @@ class CreateELBView(BaseELBView):
         super(CreateELBView, self).__init__(request)
         self.create_form = CreateELBForm(
             self.request, conn=self.ec2_conn, vpc_conn=self.vpc_conn, formdata=self.request.params or None)
-        self.certificate_form = CertificateForm(self.request, conn=self.ec2_conn,
-                                                iam_conn=self.iam_conn, elb_conn=self.elb_conn,
-                                                formdata=self.request.params or None)
-        self.backend_certificate_form = BackendCertificateForm(self.request, conn=self.ec2_conn,
-                                                               iam_conn=self.iam_conn, elb_conn=self.elb_conn,
-                                                               formdata=self.request.params or None)
+        self.certificate_form = CertificateForm(
+            self.request, conn=self.ec2_conn, iam_conn=self.iam_conn, elb_conn=self.elb_conn,
+            can_list_certificates=self.can_list_certificates, formdata=self.request.params or None)
+        self.backend_certificate_form = BackendCertificateForm(
+            self.request, conn=self.ec2_conn, iam_conn=self.iam_conn, elb_conn=self.elb_conn,
+            formdata=self.request.params or None)
         filter_keys = ['id', 'name', 'placement', 'state', 'security_groups', 'vpc_subnet_display', 'vpc_name']
         filters_form = ELBInstancesFiltersForm(
             self.request, ec2_conn=self.ec2_conn, autoscale_conn=self.autoscale_conn,
@@ -852,6 +859,7 @@ class CreateELBView(BaseELBView):
             create_form=self.create_form,
             certificate_form=self.certificate_form,
             backend_certificate_form=self.backend_certificate_form,
+            can_list_certificates=self.can_list_certificates,
             protocol_list=self.get_protocol_list(),
             security_group_placeholder_text=_(u'Select...'),
             is_vpc_supported=self.is_vpc_supported,
@@ -871,6 +879,7 @@ class CreateELBView(BaseELBView):
             'resource_name': 'elb',
             'wizard_tab_list': self.get_wizard_tab_list(),
             'is_vpc_supported': self.is_vpc_supported,
+            'can_list_certificates': self.can_list_certificates,
             'default_vpc_network': self.get_default_vpc_network(),
             'availability_zone_choices': self.get_availability_zones(),
             'vpc_subnet_choices': self.get_vpc_subnets(),

@@ -33,6 +33,7 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
     $scope.timeBetweenPings = '';
     $scope.failuresUntilUnhealthy = '';
     $scope.passesUntilHealthy = '';
+    $scope.canListCertificates = true;
     $scope.certificateTab = 'SSL';
     $scope.certificateRadioButton = '';
     $scope.certificateARN = '';
@@ -109,7 +110,8 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
             $scope.certificateName = $('#certificates').children('option').first().text();
             $scope.certificateARN = $('#certificates').children('option').first().val();
         }
-        $scope.initChosenSelectors(); 
+        $scope.canListCertificates = options.can_list_certificates;
+        $scope.initChosenSelectors();
     };
     $scope.initChosenSelectors = function () {
         $('#vpc_subnet').chosen({'width': '100%', search_contains: true});
@@ -454,7 +456,7 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
         var modal = $('#select-certificate-modal');
         if (modal.length > 0) {
             modal.foundation('reveal', 'open');
-            $scope.certificateRadioButton = 'existing';
+            $scope.certificateRadioButton = $scope.canListCertificates ? 'existing' : 'new';
             $('#certificate-type-radio-existing').prop('checked', true);
             angular.forEach($scope.listenerArray, function (block) {
                 if (block.fromPort === $scope.tempListenerBlock.fromPort &&
