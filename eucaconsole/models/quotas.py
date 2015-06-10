@@ -37,7 +37,8 @@ Quota handling code
 class Quotas(object):
     EUCA_DEFAULT_POLICY = 'euca-console-quota-policy'
 
-    def add_quota_limit(self, view, statements, param, action, condition):
+    @staticmethod
+    def add_quota_limit(view, statements, param, action, condition):
         val = view.request.params.get(param, None)
         if val:
             statements.append({
@@ -63,11 +64,14 @@ class Quotas(object):
         self.add_quota_limit(
             view, statements, 'ec2_total_size_all_vols', 'ec2:Createvolume', 'ec2:quota-volumetotalsize')
         self.add_quota_limit(
-            view, statements, 'ec2_instance_cpu', '["ec2:RunInstances", "ec2:StartInstances"]', 'ec2:quota-cputotalsize')
+            view, statements, 'ec2_instance_cpu', '["ec2:RunInstances", "ec2:StartInstances"]', 'ec2:quota-cputotalsize'
+        )
         self.add_quota_limit(
-            view, statements, 'ec2_instance_disk', '["ec2:RunInstances", "ec2:StartInstances"]', 'ec2:quota-disktotalsize')
+            view, statements, 'ec2_instance_disk',
+            '["ec2:RunInstances", "ec2:StartInstances"]', 'ec2:quota-disktotalsize')
         self.add_quota_limit(
-            view, statements, 'ec2_instance_memory', '["ec2:RunInstances", "ec2:StartInstances"]', 'ec2:quota-memorytotalsize')
+            view, statements, 'ec2_instance_memory',
+            '["ec2:RunInstances", "ec2:StartInstances"]', 'ec2:quota-memorytotalsize')
         #  s3
         self.add_quota_limit(
             view, statements, 's3_buckets_max', 's3:CreateBucket', 's3:quota-bucketnumber')
@@ -122,6 +126,7 @@ class Quotas(object):
     def update_quotas(self, view, user=None, account=None, as_account=''):
             # load all policies for this user
             policy_list = []
+            policies = None
             if user is not None:
                 params = {'UserName': user}
                 if as_account is not None:
@@ -132,21 +137,24 @@ class Quotas(object):
                 if as_account is not None:
                     params['DelegateAccount'] = as_account
                 policies = view.conn.get_response('ListAccountPolicies', params=params, list_marker='PolicyNames')
-            for policy_name in policies.policy_names:
-                if user is not None:
-                    params = {'UserName': user, 'PolicyName': policy_name}
-                    if as_account is not None:
-                        params['DelegateAccount'] = as_account
-                    policy_json = view.conn.get_response('GetUserPolicy', params=params, verb='POST').policy_document
-                    policy = json.loads(unquote(policy_json))
-                    policy_list.append(policy)
-                if account is not None:
-                    params = {'AccountName': account, 'PolicyName': policy_name}
-                    if as_account is not None:
-                        params['DelegateAccount'] = as_account
-                    policy_json = view.conn.get_response('GetAccountPolicy', params=params, verb='POST').policy_document
-                    policy = json.loads(unquote(policy_json))
-                    policy_list.append(policy)
+            if policies is not None:
+                for policy_name in policies.policy_names:
+                    if user is not None:
+                        params = {'UserName': user, 'PolicyName': policy_name}
+                        if as_account is not None:
+                            params['DelegateAccount'] = as_account
+                        policy_json = view.conn.get_response(
+                            'GetUserPolicy', params=params, verb='POST').policy_document
+                        policy = json.loads(unquote(policy_json))
+                        policy_list.append(policy)
+                    if account is not None:
+                        params = {'AccountName': account, 'PolicyName': policy_name}
+                        if as_account is not None:
+                            params['DelegateAccount'] = as_account
+                        policy_json = view.conn.get_response(
+                            'GetAccountPolicy', params=params, verb='POST').policy_document
+                        policy = json.loads(unquote(policy_json))
+                        policy_list.append(policy)
             # for each form item, update proper policy if needed
             new_stmts = []
             #  ec2
@@ -304,7 +312,8 @@ class Quotas(object):
                         params['AccountName'] = account
                         view.conn.get_response('PutAccountPolicy', params=params, verb='POST')
 
-    def _update_quota_limit_(self, view, policy_list, new_stmts, param, action, condition):
+    @staticmethod
+    def _update_quota_limit_(view, policy_list, new_stmts, param, action, condition):
         new_limit = view.request.params.get(param, '')
         lowest_val = sys.maxint
         lowest_policy = None
@@ -342,4 +351,3 @@ class Quotas(object):
             else:  # need to change the value
                 lowest_stmt['Condition']['NumericLessThanEquals'][lowest_policy_val] = new_limit
             lowest_policy['dirty'] = True
-
