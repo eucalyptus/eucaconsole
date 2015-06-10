@@ -304,7 +304,6 @@ class CreateELBForm(BaseSecureForm):
         self.conn = conn
         self.vpc_conn = vpc_conn
         self.cloud_type = request.session.get('cloud_type', 'euca')
-        from ..views import BaseView
         self.is_vpc_supported = BaseView.is_vpc_supported(request)
         self.set_error_messages()
         self.choices_manager = ChoicesManager(conn=conn)
