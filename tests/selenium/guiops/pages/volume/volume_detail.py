@@ -4,7 +4,7 @@ class VolumeDetailPage(DetailPage):
 
     def __init__(self, tester):
         self.tester = tester
-        self.verify_volume_detail_page_loaded()
+
 
     _volume_detail_page_title = "Details for volume: {0}"
     _delete_volume_action_menuitem_id = "delete-volume-action"
@@ -35,5 +35,8 @@ class VolumeDetailPage(DetailPage):
 
     def verify_volume_status_is_attached(self):
         self.tester.wait_for_visible_by_css(self._volume_status_css.format("attached"))
+
+    def get_volume_name_and_id(self):
+
 
 
