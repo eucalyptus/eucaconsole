@@ -313,12 +313,14 @@ def create_folder_dialog(context, request, bucket_name=None, create_folder_form=
 
 
 @panel_config('select_certificate_dialog', renderer='../templates/dialogs/select_certificate_dialog.pt')
-def select_certificate_dialog(context, request, certificate_form=None, backend_certificate_form=None):
+def select_certificate_dialog(context, request, can_list_certificates=True,
+                              certificate_form=None, backend_certificate_form=None):
     """ Modal dialog for selecting SSL certificate"""
     is_vpc_supported = BaseView.is_vpc_supported(request)
     return dict(
         certificate_form=certificate_form,
         backend_certificate_form=backend_certificate_form,
+        can_list_certificates=can_list_certificates,
         is_vpc_supported=is_vpc_supported,
     )
 
