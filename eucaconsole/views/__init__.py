@@ -135,30 +135,13 @@ class BaseView(object):
             conn = ConnectionManager.aws_connection(
                 region, access_key, secret_key, security_token, conn_type, validate_certs)
         elif cloud_type == 'euca':
-            host = self.request.registry.settings.get('clchost', 'localhost')
-            port = int(self.request.registry.settings.get('clcport', 8773))
-            if conn_type == 'ec2':
-                host = self.request.registry.settings.get('ec2.host', host)
-                port = int(self.request.registry.settings.get('ec2.port', port))
-            elif conn_type == 'autoscale':
-                host = self.request.registry.settings.get('autoscale.host', host)
-                port = int(self.request.registry.settings.get('autoscale.port', port))
-            elif conn_type == 'cloudwatch':
-                host = self.request.registry.settings.get('cloudwatch.host', host)
-                port = int(self.request.registry.settings.get('cloudwatch.port', port))
-            elif conn_type == 'elb':
-                host = self.request.registry.settings.get('elb.host', host)
-                port = int(self.request.registry.settings.get('elb.port', port))
-            elif conn_type == 'iam':
-                host = self.request.registry.settings.get('iam.host', host)
-                port = int(self.request.registry.settings.get('iam.port', port))
-            elif conn_type == 's3':
-                host = self.request.registry.settings.get('s3.host', host)
-                port = int(self.request.registry.settings.get('s3.port', port))
-            elif conn_type == 'vpc':
-                host = self.request.registry.settings.get('vpc.host', host)
-                port = int(self.request.registry.settings.get('vpc.port', port))
-
+            host = self.request.registry.settings.get('ufshost')
+            if not host:
+                host = self.request.registry.settings.get('clchost', 'localhost')
+            port = self.request.registry.settings.get('ufsport')
+            if not port:
+                port = self.request.registry.settings.get('clcport', 8773)
+            port = int(port)
             dns_enabled = self.request.session.get('dns_enabled', True)
             conn = ConnectionManager.euca_connection(
                 host, port, access_key, secret_key, security_token,
@@ -267,8 +250,8 @@ class BaseView(object):
         """
         This method centralizes configuration of the EucaAuthenticator.
         """
-        host = self.request.registry.settings.get('clchost', 'localhost')
-        port = int(self.request.registry.settings.get('clcport', 8773))
+        host = self.request.registry.settings.get('ufshost', 'localhost')
+        port = int(self.request.registry.settings.get('ufsport', 8773))
         host = self.request.registry.settings.get('sts.host', host)
         port = int(self.request.registry.settings.get('sts.port', port))
         validate_certs = asbool(self.request.registry.settings.get('connection.ssl.validation', False))
