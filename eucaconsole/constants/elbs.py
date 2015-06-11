@@ -42,7 +42,7 @@ ELB_MONITORING_CHARTS_LIST = [
         'statistic': 'Average',
     },
     {
-        'metric': 'UnhealthyHostCount',
+        'metric': 'UnHealthyHostCount',
         'unit': 'Count',
         'statistic': 'Average',
     },

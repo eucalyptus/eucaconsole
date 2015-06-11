@@ -140,7 +140,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
             // Anchor chart to zero for the following metrics
             var forceZeroBaselineMetrics = [
                 'NetworkIn', 'NetworkOut', 'DiskReadBytes', 'DiskReadOps',
-                'DiskWriteBytes', 'DiskWriteOps', 'HealthyHostCount', 'UnhealthyHostCount',
+                'DiskWriteBytes', 'DiskWriteOps', 'HealthyHostCount', 'UnHealthyHostCount',
                 'HTTPCode_ELB_4XX', 'HTTPCode_ELB_5XX', 'HTTPCode_Backend_2XX', 'HTTPCode_Backend_3XX',
                 'HTTPCode_Backend_4XX', 'HTTPCode_Backend_5XX'
             ];
