@@ -454,6 +454,9 @@ $dropdown-border-color: $hp-gray-65;
     .f-dropdown {
         @include dropdown-shadow-mixin;
     }
+    #sorting-dropdown {
+        text-align: left;
+    }
 }
 
 #results-count {
