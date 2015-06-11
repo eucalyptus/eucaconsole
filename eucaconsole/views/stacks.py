@@ -432,7 +432,7 @@ class StackWizardView(BaseView):
             if key is None:
                 key = bucket.new_key(template_name)
             key.set_contents_from_string(template_body)
-            template_url = key.generate_url(300)  # 5 minute URL, more than enough time, right?
+            template_url = key.generate_url(900)  # 15 minute URL, more than enough time, right?
 
             params = self.generate_param_list(parsed)
             return dict(
@@ -624,7 +624,7 @@ class StackWizardView(BaseView):
             if key is None:
                 key = bucket.new_key(template_name)
             key.set_contents_from_string(template_body)
-            template_url = key.generate_url(300)  # 5 minute URL, more than enough time, right?
+            template_url = key.generate_url(900)  # 15 minute URL, more than enough time, right?
 
         parsed = json.loads(template_body)
         return template_url, template_name, parsed
@@ -715,7 +715,7 @@ class StackWizardView(BaseView):
             if type(item) is dict and 'ImageId' in item.keys():
                 img_item = item['ImageId']
                 if 'Ref' not in img_item.keys():
-                    ret.append({'name': 'ImageId', 'type': 'Property', 'item': img_item})
+                    ret.append({'name': 'ImageId', 'type': 'Property', 'item': item})
         StackWizardView.traverse(parsed, find_image_ref)
 
         if modify:
@@ -726,10 +726,10 @@ class StackWizardView(BaseView):
                         del parsed['Resources'][name]
                 # modify resource refs into params
                 if res['name'] == 'ImageId':
-                    res['item'].update({'Ref': 'ImageId'})
+                    res['item']['ImageId'] = {'Ref': 'ImageId'}
                     parsed['Parameters']['ImageId'] = dict(
                             Description='Image required to run this template',
-                            Type='AWS::EC2::Image::Id'
+                            Type='String'
                         )
             # and, because we provide instance types, remove 'AllowedValues' for InstanceType
             for name in parsed['Parameters'].keys():

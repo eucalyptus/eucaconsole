@@ -310,6 +310,7 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils'])
                         $scope.resourceList = results.resource_list;
                     }
                     if ($scope.serviceList || $scope.resourceList) {
+                        $scope.expanded = false;
                         $('#aws-error-modal').foundation('reveal', 'open');
                         $scope.templateUrl = undefined;
                         $scope.templateIdent = undefined;
@@ -318,6 +319,7 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils'])
                     }
                     if (results.property_list && results.property_list.length > 0) {
                         $scope.propertyList = results.property_list;
+                        $scope.expanded = false;
                         $scope.showAWSWarn();
                     }
                     $scope.parameters = results.parameters;
