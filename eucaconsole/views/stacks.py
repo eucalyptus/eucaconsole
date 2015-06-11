@@ -498,6 +498,8 @@ class StackWizardView(BaseView):
         elif template_url:  # read from url
             template_body = urllib2.urlopen(template_url).read()
             template_name = template_url[template_url.rindex('/') + 1:]
+            if len(template_body) > 460800:
+                raise JSONError(status=400, message=_(u"Template too large: ")+template_name)
         else:
             s3_bucket = self.get_template_samples_bucket()
             mgr = CFSampleTemplateManager(s3_bucket)
