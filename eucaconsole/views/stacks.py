@@ -41,7 +41,7 @@ from ..forms import ChoicesManager, CFSampleTemplateManager
 from ..forms.stacks import StacksDeleteForm, StacksFiltersForm, StacksCreateForm
 from ..models import Notification
 from ..models.auth import User
-from ..views import LandingPageView, BaseView, JSONResponse
+from ..views import LandingPageView, BaseView, JSONResponse, JSONError
 from . import boto_error_handler
 
 
@@ -351,7 +351,7 @@ class StackWizardView(BaseView):
     @view_config(route_name='stack_template_parse', renderer='json', request_method='POST')
     def stack_template_parse(self):
         """
-        Fetches then parsed template to return information needed by wizard,
+        Fetches then parses template to return information needed by wizard,
         namely description and parameters.
         """
         (template_url, parsed) = self.parse_store_template()
@@ -489,7 +489,10 @@ class StackWizardView(BaseView):
         template_body = ''
 
         if len(files) > 0 and len(str(files[0])) > 0:  # read from file
-            # TODO: body limit is 51,200 in the API, check that!
+            files[0].file.seek(0, 2)  # seek to end
+            if files[0].file.tell() > 460800:
+                raise JSONError(status=400, message=_(u"File too large: ")+files[0].filename)
+            files[0].file.seek(0, 0)  # seek to start
             template_body = files[0].file.read()
             template_name = files[0].name
         elif template_url:  # read from url
