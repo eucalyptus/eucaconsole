@@ -5,6 +5,8 @@ from pages.loginpage import LoginPage
 from pages.keypair.keypairdetail import KeypairDetailPage
 from pages.keypair.keypairview import KeypairView
 from pages.instance.instanceview import InstanceView
+from pages.volume.volume_view import VolumeView
+from pages.volume.volume_detail import VolumeDetailPage
 from pages.instance.instancedetail import InstanceDetailPage
 from pages.image.image_view import ImageView
 from pages.security_group.security_group_view import SecurityGroupView
@@ -12,7 +14,7 @@ from pages.security_group.security_group_detail import SecurityGroupDetailPage
 from dialogs.security_group_dialogs import CreateScurityGroupDialog, DeleteScurityGroupDialog
 from dialogs.keypair_dialogs import CreateKeypairDialog, DeleteKeypairModal, ImportKeypairDialog
 from dialogs.instance_dialogs import LaunchInstanceWidget, LaunchMoreLikeThisDialog, TerminateInstanceModal, TerminateAllInstancesModal
-
+from dialogs.volume_dialogs import CreateVolumeDialog, DeleteVolumeModal
 
 
 class GuiEC2(GuiTester):
@@ -334,6 +336,16 @@ class GuiEC2(GuiTester):
         InstanceView(self).click_terminate_all_instances_button()
         TerminateAllInstancesModal(self).click_terminate_all_instances_submit_button()
         InstanceView(self).verify_there_are_no_running_instances()
+
+    def create_volume_from_view_page(self, volume_name=None, create_from_snapshot=False, snapshot_id = None, volume_size=None, availability_zone=None):
+
+        BasePage(self).goto_volumes_view_via_menu()
+        VolumeView(self).click_create_volume_btn_on_view_page()
+        CreateVolumeDialog(self).create_volume(volume_name, create_from_snapshot, snapshot_id, volume_size, availability_zone)
+        VolumeDetailPage(self, volume_id, volume_name).verify_volume_status_is_available()
+
+    def delete_volume_from_view_page(self):
+        pass
 
 
 
