@@ -693,7 +693,8 @@ class StackWizardView(BaseView):
         ]
         ret = []
         # first pass, find non-euca resources
-        for resource in parsed['Resources']:
+        for name in parsed['Resources']:
+            resource = parsed['Resources'][name]
             for prefix in aws_resource_prefixes:
                 if resource['Type'].find(prefix) == 0:
                     ret.append({'name': name, 'type': prefix})
