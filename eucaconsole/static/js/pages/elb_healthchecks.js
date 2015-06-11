@@ -13,8 +13,12 @@ angular.module('ELBHealthChecksPage', ['EucaConsoleUtils'])
             $scope.setWatch();
         };
         $scope.setInitialValues = function () {
-            $scope.pingProtocol = $('#ping_protocol').val();
-            $scope.pingPort = parseInt($('#ping_port').val() || 80, 10);
+            var originalPingPort = parseInt($('#ping_port').val() || 80, 10);
+            var originalProtocol = $('#ping_protocol').val();
+            $scope.originalPingProtocol = originalProtocol;
+            $scope.pingProtocol = originalProtocol;
+            $scope.originalPingPort = originalPingPort;
+            $scope.pingPort = originalPingPort;
             $scope.pingPath = $('#ping_path').val();
             if ($scope.pingProtocol === 'HTTP' || $scope.pingProtocol === 'HTTPS') {
                 $scope.pingPathRequired = true;
@@ -54,10 +58,12 @@ angular.module('ELBHealthChecksPage', ['EucaConsoleUtils'])
             });
         };
         $scope.updatePingPort = function (newVal) {
+            // Look up original protocol/port values to avoid wiping out set value when selecting protocol
             var protocolPortMapping = {
-                'HTTP': 80,
-                'HTTPS': 443,
-                'SSL': 443
+                'HTTP': $scope.originalPingProtocol === 'HTTP'? $scope.originalPingPort : 80,
+                'HTTPS': $scope.originalPingProtocol === 'HTTPS'? $scope.originalPingPort : 443,
+                'SSL': $scope.originalPingProtocol === 'SSL'? $scope.originalPingPort :  443,
+                'TCP': $scope.originalPingProtocol === 'TCP'? $scope.originalPingPort : 25
             };
             if (!!protocolPortMapping[newVal]) {
                 $scope.pingPort = protocolPortMapping[newVal];
