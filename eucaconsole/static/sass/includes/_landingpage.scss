@@ -68,7 +68,7 @@ $dropdown-border-color: $hp-gray-65;
 // Primary buttons
 #primary-buttons {
     .button {
-        padding: 8px 3rem;
+        padding: 8px 1rem;
     }
 }
 
@@ -464,6 +464,14 @@ $dropdown-border-color: $hp-gray-65;
     }
 }
 
+.euca-split {
+    border-color: $euca-extralightgrey !important;
+    width: 2.0rem !important;
+}
+
+.split.button {
+    padding-right: 3.0rem !important;
+}
 
 /* -----------------------------------------
    Media Queries

@@ -17,11 +17,17 @@
         <h3 id="pagetitle"><strong i18n:translate="">Key Pairs</strong></h3>
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
-                <a class="button small" i18n:translate="" id="create-keypair-btn"
-                    href="${request.route_path('keypair_view', subpath='new')}">Create New Key Pair</a>
-                &nbsp;&nbsp;
-                <a class="button small" i18n:translate=""
-                    href="${request.route_path('keypair_view', subpath='new2')}">Import Public Key</a>
+                <a id="create-keypair-btn" class="button split"
+                    href="${request.route_path('keypair_view', subpath='new')}">
+                    <span i18n:translate="" tal:omit-tag="">Create Key Pair</span>
+                    <span class="euca-split" data-dropdown="create-drop"></span>
+                </a>
+                <ul id="create-drop" class="f-dropdown" data-dropdown-content="">
+                    <li>
+                        <a id="import-keypair-btn" i18n:translate=""
+                            href="${request.route_path('keypair_view', subpath='new2')}">Import Public Key</a>
+                    </li>
+                </ul>
             </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
                 <div>

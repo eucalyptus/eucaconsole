@@ -18,9 +18,8 @@
         <h3 id="pagetitle"><strong i18n:translate="">Buckets</strong></h3>
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
-                <a class="button" id="create-bucket-btn" i18n:translate="" href="${request.route_path('bucket_new')}">
-                    Create Bucket
-                </a>
+                <a id="create-bucket-btn" class="button"
+                    href="${request.route_path('bucket_new')}" i18n:translate="">Create Bucket</a>
             </div>
             <div metal:fill-slot="tile_header">
                 <a ng-href="{{ item.contents_url }}" class="has-bucket-icon">
@@ -75,11 +74,8 @@
                         </a>
                     </li>
                     -->
-                    <li ng-show="bucketCanCopyItem(item)">
-                        <a i18n:translate="" ng-click="doPaste(item)">Paste object</a>
-                    </li>
-                    <li ng-show="bucketCanCopyFolder(item)">
-                        <a i18n:translate="" ng-click="doPaste(item)">Paste folder</a>
+                    <li ng-show="bucketCanCopyItem(item) || bucketCanCopyFolder(item)">
+                        <a i18n:translate="" ng-click="doPaste(item)">Paste</a>
                     </li>
                     <li>
                         <a i18n:translate="" ng-click="revealModal('delete-bucket', item)">Delete</a>
@@ -135,11 +131,8 @@
                                 </a>
                             </li>
                             -->
-                            <li ng-show="bucketCanCopyItem(item)">
-                                <a i18n:translate="" ng-click="doPaste(item)">Paste object</a>
-                            </li>
-                            <li ng-show="bucketCanCopyFolder(item)">
-                                <a i18n:translate="" ng-click="doPaste(item)">Paste folder</a>
+                            <li ng-show="bucketCanCopyItem(item) || bucketCanCopyFolder(item)">
+                                <a i18n:translate="" ng-click="doPaste(item)">Paste</a>
                             </li>
                             <li>
                                 <a i18n:translate="" ng-click="revealModal('delete-bucket', item)">Delete</a>
