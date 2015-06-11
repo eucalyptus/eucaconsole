@@ -21,4 +21,3 @@ class KeypairDetailPage(DetailPage):
         self.tester.click_element_by_css(DetailPage._actions_menu_css)
         self.tester.click_element_by_id(self._delete_keypair_action_menuitem_id)
 
-
