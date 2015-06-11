@@ -152,7 +152,6 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils'])
                 $scope.checkRequiredInput();
             });
             $scope.$watch('inputtype', function(){
-                $scope.checkRequiredInput();
                 switch ($scope.inputtype) {
                     case 'sample':
                         $scope.templateFiles = undefined;
@@ -175,6 +174,7 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils'])
                         $scope.description = '';
                         break;
                 }
+                $scope.checkRequiredInput();
             });
             $scope.$watch('templateSample', function(){
                 $scope.checkRequiredInput();

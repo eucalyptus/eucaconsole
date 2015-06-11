@@ -726,8 +726,8 @@ class StackWizardView(BaseView):
                         del parsed['Resources'][name]
                 # modify resource refs into params
                 if res['name'] == 'ImageId':
-                    res['item'].update({'Ref': 'EucaImageId'})
-                    parsed['Parameters']['EucaImageId'] = dict(
+                    res['item'].update({'Ref': 'ImageId'})
+                    parsed['Parameters']['ImageId'] = dict(
                             Description='Image required to run this template',
                             Type='AWS::EC2::Image::Id'
                         )
