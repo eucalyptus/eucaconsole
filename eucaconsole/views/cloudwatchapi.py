@@ -152,6 +152,7 @@ class CloudWatchAPIView(BaseView, CloudWatchAPIMixin):
         unit = self.request.params.get('unit')
         convert_to_kilobytes = ['NetworkIn', 'NetworkOut']
         json_stats = []
+        multiplier = 1
         divider = 1
 
         with boto_error_handler(self.request):
@@ -162,10 +163,16 @@ class CloudWatchAPIView(BaseView, CloudWatchAPIMixin):
             divider = 1000
             unit = 'Kilobytes'
 
+        if metric == 'Latency':
+            multiplier = 1000
+            unit = 'Milliseconds'
+
         for stat in stats:
             amount = stat.get(statistic)
             if divider != 1:
-                amount /= divider
+                amount = float(amount) / divider
+            if multiplier != 1:
+                amount *= multiplier
             dt_object = stat.get('Timestamp')
             if tz_offset:  # Convert to local time based on client offset
                 dt_object = dt_object - datetime.timedelta(minutes=tz_offset)

@@ -137,12 +137,16 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
             scope.chartLoading = false;
             var results = oData ? oData.results : '';
             var unit = oData.unit || scope.unit;
+            var yformatter = '.0f';
             // Anchor chart to zero for the following metrics
             var forceZeroBaselineMetrics = [
                 'NetworkIn', 'NetworkOut', 'DiskReadBytes', 'DiskReadOps',
                 'DiskWriteBytes', 'DiskWriteOps', 'HealthyHostCount', 'UnHealthyHostCount',
                 'HTTPCode_ELB_4XX', 'HTTPCode_ELB_5XX', 'HTTPCode_Backend_2XX', 'HTTPCode_Backend_3XX',
                 'HTTPCode_Backend_4XX', 'HTTPCode_Backend_5XX'
+            ];
+            var preciseFormatterMetrics = [
+                'Latency', 'HealthyHostCount', 'UnHealthyHostCount'
             ];
             var chart = nv.models.lineChart()
                 .margin({left: 68})
@@ -160,7 +164,10 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
             if (forceZeroBaselineMetrics.indexOf(scope.metric) !== -1) {
                 chart.forceY([0, 10]);  // Anchor chart to zero baseline
             }
-            chart.yAxis.axisLabel(unit).tickFormat(d3.format('.0f'));
+            if (preciseFormatterMetrics.indexOf(scope.metric) !== -1) {
+                yformatter = '.2f';
+            }
+            chart.yAxis.axisLabel(unit).tickFormat(d3.format(yformatter));
             d3.select('#' + chartElemId).datum(results).call(chart);
             nv.utils.windowResize(chart.update);
             parentCtrl.largeChartLoading = false;

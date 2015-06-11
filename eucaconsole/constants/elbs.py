@@ -38,7 +38,7 @@ ELB_MONITORING_CHARTS_LIST = [
     },
     {
         'metric': 'Latency',
-        'unit': 'Milliseconds',
+        'unit': 'Seconds',
         'statistic': 'Average',
     },
     {
