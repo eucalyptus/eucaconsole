@@ -37,6 +37,7 @@ class VolumeDetailPage(DetailPage):
         self.tester.wait_for_visible_by_css(self._volume_status_css.format("attached"))
 
     def get_volume_name_and_id(self):
+        pass
 
 
 
