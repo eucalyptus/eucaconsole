@@ -200,6 +200,36 @@ class ELBDeleteForm(BaseSecureForm):
     pass
 
 
+class ELBsFiltersForm(BaseSecureForm):
+    """Form class for filters on landing page"""
+    availability_zones = wtforms.SelectMultipleField(label=_(u'Availability zone'))
+    subnets = wtforms.SelectMultipleField(label=_(u'Subnet'))
+
+    def __init__(self, request, cloud_type='euca', ec2_conn=None, vpc_conn=None, is_vpc_supported=False, **kwargs):
+        super(ELBsFiltersForm, self).__init__(request, **kwargs)
+        self.request = request
+        self.cloud_type = cloud_type
+        self.vpc_conn = vpc_conn
+        region = request.session.get('region')
+        self.facets = []
+        if is_vpc_supported:
+            vpc_choices_manager = ChoicesManager(conn=self.vpc_conn)
+            self.subnets.choices = vpc_choices_manager.vpc_subnets(add_blank=False, show_zone=True)
+            self.facets.append(dict(
+                name='subnet',
+                label=self.subnets.label.text,
+                options=self.getOptionsFromChoices(self.subnets.choices)
+            ))
+        else:
+            ec2_choices_manager = ChoicesManager(conn=ec2_conn)
+            self.availability_zones.choices = ec2_choices_manager.availability_zones(region, add_blank=False)
+            self.facets.append(dict(
+                name='availability_zone',
+                label=self.availability_zones.label.text,
+                options=self.getOptionsFromChoices(self.availability_zones.choices)
+            ))
+
+
 class CreateELBForm(BaseSecureForm):
     """Create Elastic Load Balancer form"""
     name_error_msg = NAME_WITHOUT_SPACES_NOTICE

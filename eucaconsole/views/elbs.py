@@ -46,7 +46,7 @@ from ..constants.cloudwatch import (
     STATISTIC_CHOICES)
 from ..constants.elbs import ELB_MONITORING_CHARTS_LIST
 from ..i18n import _
-from ..forms.elbs import (ELBForm, ELBDeleteForm, CreateELBForm, ELBHealthChecksForm,
+from ..forms.elbs import (ELBForm, ELBDeleteForm, CreateELBForm, ELBHealthChecksForm, ELBsFiltersForm,
                           ELBInstancesForm, ELBInstancesFiltersForm, CertificateForm, BackendCertificateForm)
 from ..models import Notification
 from ..views import LandingPageView, BaseView, TaggedItemView, JSONResponse
@@ -60,15 +60,19 @@ class ELBsView(LandingPageView):
         self.request = request
         self.ec2_conn = self.get_connection(conn_type="ec2")
         self.elb_conn = self.get_connection(conn_type="elb")
+        self.vpc_conn = self.get_connection(conn_type="vpc")
         self.initial_sort_key = 'name'
         self.prefix = '/elbs'
         self.filter_keys = ['name']
         self.sort_keys = self.get_sort_keys()
         self.json_items_endpoint = self.get_json_endpoint('elbs_json')
         self.delete_form = ELBDeleteForm(self.request, formdata=self.request.params or None)
+        self.filters_form = ELBsFiltersForm(
+            self.request, cloud_type=self.cloud_type, ec2_conn=self.ec2_conn, vpc_conn=self.vpc_conn,
+            is_vpc_supported=self.is_vpc_supported(self.request), formdata=self.request.params or None)
         self.render_dict = dict(
             filter_keys=self.filter_keys,
-            search_facets='[]',
+            search_facets=BaseView.escape_json(json.dumps(self.filters_form.facets)),
             sort_keys=self.sort_keys,
             prefix=self.prefix,
             initial_sort_key=self.initial_sort_key,
@@ -123,13 +127,23 @@ class ELBsJsonView(LandingPageView, CloudWatchAPIMixin):
         with boto_error_handler(request):
             self.items = self.get_items()
 
+        # Filter items based on MSB params
+        if self.is_vpc_supported(self.request):
+            subnet = self.request.params.get('subnet')
+            if subnet:
+                self.items = self.filter_by_vpc_subnet(self.items, subnet=subnet)
+        else:
+            zone = self.request.params.get('availability_zone')
+            if zone:
+                self.items = self.filter_by_availability_zone(self.items, zone=zone)
+
     @view_config(route_name='elbs_json', renderer='json', request_method='POST')
     def elbs_json(self):
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
         with boto_error_handler(self.request):
             elbs_array = []
-            for elb in self.filter_items(self.items):
+            for elb in self.items:
                 name = elb.name
                 health_counts = self.get_elb_health_counts(elb)
                 elbs_array.append(dict(
@@ -143,6 +157,14 @@ class ELBsJsonView(LandingPageView, CloudWatchAPIMixin):
 
     def get_items(self):
         return self.elb_conn.get_all_load_balancers() if self.elb_conn else []
+
+    @staticmethod
+    def filter_by_availability_zone(items, zone=None):
+        return [item for item in items if zone in item.availability_zones]
+
+    @staticmethod
+    def filter_by_vpc_subnet(items, subnet=None):
+        return [item for item in items if subnet in item.subnets]
 
     def get_elb_health_counts(self, elb=None):
         healthy_count = 0
