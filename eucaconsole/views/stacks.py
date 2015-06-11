@@ -684,7 +684,8 @@ class StackWizardView(BaseView):
                 'HealthCheckType', 'Tags'
             ]},
             {'resource': 'AWS::ElasticLoadBalancing::LoadBalancer', 'properties': [
-                'AccessLoggingPolicy', 'ConnectionDrainingPolicy', 'CrossZone', 'Policies.InstancePorts', 'Policies.LoadBalancerPorts'
+                'AccessLoggingPolicy', 'ConnectionDrainingPolicy', 'CrossZone',
+                'Policies.InstancePorts', 'Policies.LoadBalancerPorts'
             ]},
             {'resource': 'AWS::IAM::AccessKey', 'properties': [
                 'Serial'
@@ -692,8 +693,7 @@ class StackWizardView(BaseView):
         ]
         ret = []
         # first pass, find non-euca resources
-        for name in parsed['Resources'].keys():
-            resource = parsed['Resources'][name]
+        for resource in parsed['Resources']:
             for prefix in aws_resource_prefixes:
                 if resource['Type'].find(prefix) == 0:
                     ret.append({'name': name, 'type': prefix})
