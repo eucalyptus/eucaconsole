@@ -29,7 +29,6 @@ Pyramid views for Eucalyptus and AWS CloudFormation stacks
 
 """
 import simplejson as json
-from simplejson import JSONDecodeError
 import os
 import urllib2
 from urllib2 import HTTPError
@@ -408,7 +407,7 @@ class StackWizardView(BaseView):
                         parameters=params
                     )
                 )
-            except JSONDecodeError as json_err:
+            except ValueError as json_err:
                 raise JSONError(message=_(u'Invalid JSON File ({0})').format(json_err.message), status=400)
             except HTTPError as http_err:
                 raise JSONError(message=_(u'Cannot read URL ({0})').format(http_err.reason), status=400)
@@ -633,6 +632,7 @@ class StackWizardView(BaseView):
     @staticmethod
     def identify_aws_template(parsed, modify=False):
         # drawn from here: http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-template-resource-type-ref.html
+        # and https://www.eucalyptus.com/docs/eucalyptus/4.1.1/index.html#cloudformation/cf_overview.html
         aws_resource_prefixes = [
             'AWS::AutoScaling::LifecycleHook',
             'AWS::AutoScaling::ScheduledAction',
@@ -658,6 +658,38 @@ class StackWizardView(BaseView):
             'AWS::SNS',
             'AWS::SQS'
         ]
+        unsupported_properties = [
+            {'resource': 'AWS::AutoScaling::AutoScalingGroup', 'properties': [
+                'HealthCheckType', 'Tags', 'VpcZoneIdentifier'
+            ]},
+            {'resource': 'AWS::AutoScaling::LaunchConiguration', 'properties': [
+                'AssociatePublicIpAddress'
+            ]},
+            {'resource': 'AWS::EC2::EIP', 'properties': [
+                'Domain'
+            ]},
+            {'resource': 'AWS::EC2::EIPAssociation', 'properties': [
+                'AllocationId', 'NetworkInterfaceId', 'PrivateIpAddress'
+            ]},
+            {'resource': 'AWS::EC2::Instance', 'properties': [
+                'NetworkInterfaces', 'SecurityGroupIds', 'SourceDestCheck', 'Tags', 'Tenancy'
+            ]},
+            {'resource': 'AWS::EC2::SecurityGroup', 'properties': [
+                'SecurityGroupEgress', 'Tags', 'VpcId'
+            ]},
+            {'resource': 'AWS::EC2::SecurityGroupIngress', 'properties': [
+                'SourceSecurityGroupId'
+            ]},
+            {'resource': 'AWS::EC2::Volume', 'properties': [
+                'HealthCheckType', 'Tags'
+            ]},
+            {'resource': 'AWS::ElasticLoadBalancing::LoadBalancer', 'properties': [
+                'AccessLoggingPolicy', 'ConnectionDrainingPolicy', 'CrossZone', 'Policies.InstancePorts', 'Policies.LoadBalancerPorts'
+            ]},
+            {'resource': 'AWS::IAM::AccessKey', 'properties': [
+                'Serial'
+            ]}
+        ]
         ret = []
         # first pass, find non-euca resources
         for name in parsed['Resources'].keys():
@@ -665,7 +697,17 @@ class StackWizardView(BaseView):
             for prefix in aws_resource_prefixes:
                 if resource['Type'].find(prefix) == 0:
                     ret.append({'name': name, 'type': prefix})
-        # second pass, find refs to cloud-specific resources
+        # second pass, find non-euca properties
+        """
+        for name in parsed['Resources'].keys():
+            resource = parsed['Resources'][name]
+            for props in unsupported_properties:
+                if resource['Type'].find(props['resource']) == 0:
+                    for prop in props['properties']:
+                        if prop in resource['Properties'].keys():
+                            ret.append({'name': prop, 'type': props['resource']})
+        """
+        # third pass, find refs to cloud-specific resources
         def find_image_ref(name, item):
             if name == 'Parameters':
                 return  # ignore refs already in params
