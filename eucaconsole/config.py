@@ -89,8 +89,8 @@ def check_config(settings):
             sys.exit(1)
     if not settings.get('ufshost'):
         logging.warn(
-            ('\'clchost\' and \'clcport\' are deprecated in 4.2 and'
-            'will be removed in 4.3. Use use \'ufshost\' and \'ufsport\' instead.')
+            "'clchost' and 'clcport' are deprecated in 4.2 and "
+            "will be removed in 4.3. Use 'ufshost' and 'ufsport' instead."
         )
 
 
