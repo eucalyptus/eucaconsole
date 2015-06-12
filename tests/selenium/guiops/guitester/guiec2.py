@@ -341,7 +341,14 @@ class GuiEC2(GuiTester):
         InstanceView(self).verify_there_are_no_running_instances()
 
     def create_volume_from_view_page(self, volume_name=None, create_from_snapshot=False, snapshot_id = None, volume_size=None, availability_zone=None):
-
+        """
+        Navigates to volumes view page and creates volume.
+        :param volume_name:
+        :param create_from_snapshot:
+        :param snapshot_id:
+        :param volume_size:
+        :param availability_zone:
+        """
         BasePage(self).goto_volumes_view_via_menu()
         VolumeView(self).click_create_volume_btn_on_view_page()
         CreateVolumeDialog(self).create_volume(volume_name, create_from_snapshot, snapshot_id, volume_size, availability_zone)
@@ -351,10 +358,22 @@ class GuiEC2(GuiTester):
         return volume
 
     def delete_volume_from_view_page(self, volume_id):
+        """
+        Navigates to volumes view page and deletes volume.
+        :param volume_id:
+        """
         BasePage(self).goto_volumes_view_via_menu()
         VolumeView(self).click_action_delete_volume_on_view_page(volume_id)
         DeleteVolumeModal(self).delete_volume()
         VolumeView(self).verify_volume_status_is_deleted(volume_id)
+
+    def create_snapshot_from_volume_on_volumes_view_page(self, volume_id):
+        """
+        Navigates to volumes view page and creates a snapshot of a volume.
+        :param volume_id:
+        """
+        BasePage(self).goto_volumes_view_via_menu()
+        VolumeView(self).click_action_manage_snaspshots(volume_id)
 
 
 
