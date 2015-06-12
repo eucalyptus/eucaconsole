@@ -202,8 +202,8 @@ class ELBDeleteForm(BaseSecureForm):
 
 class ELBsFiltersForm(BaseSecureForm):
     """Form class for filters on landing page"""
-    availability_zones = wtforms.SelectMultipleField(label=_(u'Availability zones'))
-    subnets = wtforms.SelectMultipleField(label=_(u'VPC subnets'))
+    availability_zones = wtforms.SelectMultipleField(label=_(u'Availability zone'))
+    subnets = wtforms.SelectMultipleField(label=_(u'VPC subnet'))
 
     def __init__(self, request, cloud_type='euca', ec2_conn=None, vpc_conn=None, is_vpc_supported=False, **kwargs):
         super(ELBsFiltersForm, self).__init__(request, **kwargs)
