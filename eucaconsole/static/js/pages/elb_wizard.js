@@ -142,13 +142,12 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
             } else {
                 $scope.showsCertificateTabDiv = false;
             }
-            var block = {
+            $scope.tempListenerBlock = {
                 'fromProtocol': fromProtocol,
                 'fromPort': fromPort,
                 'toProtocol': toProtocol,
-                'toPort': toPort,
+                'toPort': toPort
             };
-            $scope.tempListenerBlock = block;
             $scope.certificateTab = certificateTab;
             $scope.openSelectCertificateModal();
         });
@@ -464,8 +463,8 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
                 }
             });
             $('#certificates').val($scope.certificateARN);
-            // Remove any empty options created by Angular model issue 
-            $('#certificates option').each(function () {
+            // Remove any empty options created by Angular model issue
+            $('#certificates').find('option').each(function () {
                 if ($(this).text() === '') {
                     $(this).remove();
                 }

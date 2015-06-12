@@ -74,5 +74,43 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor']
             modal.foundation('reveal', 'open');
             modal.find('h3').click();  // Workaround for dropdown menu not closing
         };
+        $scope.openSelectCertificateModal = function () {
+            var modal = $('#select-certificate-modal');
+            if (modal.length > 0) {
+                modal.foundation('reveal', 'open');
+                $scope.certificateRadioButton = 'existing';
+                $('#certificate-type-radio-existing').prop('checked', true);
+                angular.forEach($scope.listenerArray, function (block) {
+                    if (block.fromPort === $scope.tempListenerBlock.fromPort &&
+                        block.toPort === $scope.tempListenerBlock.toPort) {
+                        $scope.certificateARN = block.certificateARN;
+                        $scope.certificateName = block.certificateName;
+                    }
+                });
+                $('#certificates').val($scope.certificateARN);
+                // Remove any empty options created by Angular model issue
+                $('#certificates').find('option').each(function () {
+                    if ($(this).text() === '') {
+                        $(this).remove();
+                    }
+                });
+            }
+        };
+        $scope.$on('eventOpenSelectCertificateModal', function ($event, fromProtocol, toProtocol, fromPort, toPort, certificateTab) {
+            if ((fromProtocol === 'HTTPS' || fromProtocol === 'SSL') &&
+                (toProtocol === 'HTTPS' || toProtocol === 'SSL')) {
+                $scope.showsCertificateTabDiv = true;
+            } else {
+                $scope.showsCertificateTabDiv = false;
+            }
+            $scope.tempListenerBlock = {
+                'fromProtocol': fromProtocol,
+                'fromPort': fromPort,
+                'toProtocol': toProtocol,
+                'toPort': toPort
+            };
+            $scope.certificateTab = certificateTab;
+            $scope.openSelectCertificateModal();
+        });
     })
 ;

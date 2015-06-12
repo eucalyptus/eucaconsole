@@ -233,6 +233,12 @@ class BaseELBView(TaggedItemView):
         self.autoscale_conn = self.get_connection(conn_type='autoscale')
         self.vpc_conn = self.get_connection(conn_type='vpc')
         self.is_vpc_supported = BaseView.is_vpc_supported(request)
+        self.certificate_form = CertificateForm(
+            self.request, conn=self.ec2_conn, iam_conn=self.iam_conn, elb_conn=self.elb_conn,
+            formdata=self.request.params or None)
+        self.backend_certificate_form = BackendCertificateForm(
+            self.request, conn=self.ec2_conn, iam_conn=self.iam_conn, elb_conn=self.elb_conn,
+            formdata=self.request.params or None)
 
     def get_elb(self):
         if self.elb_conn:
@@ -276,6 +282,30 @@ class BaseELBView(TaggedItemView):
             target=ping_target
         )
         self.elb_conn.configure_health_check(name, health_check)
+
+    def handle_backend_certificate_create(self, elb_name):
+        backend_certificates_json = self.request.params.get('backend_certificates')
+        backend_certificates = json.loads(backend_certificates_json) if backend_certificates_json else []
+        public_policy_attributes = dict()
+        public_policy_type = u'PublicKeyPolicyType'
+        backend_policy_type = u'BackendServerAuthenticationPolicyType'
+        backend_policy_name = u'BackendPolicy-{0}'.format(elb_name)
+        backend_policy_params = {'LoadBalancerName': elb_name,
+                                 'PolicyName': backend_policy_name,
+                                 'PolicyTypeName': backend_policy_type}
+        index = 1
+        for cert in backend_certificates:
+            public_policy_name = u'EucaConsole-PublicKeyPolicy-{0}'.format(cert.get('name'))
+            public_policy_attributes['PublicKey'] = cert.get('certificateBody')
+            self.elb_conn.create_lb_policy(elb_name, public_policy_name, public_policy_type, public_policy_attributes)
+            backend_policy_params['PolicyAttributes.member.%d.AttributeName' % index] = 'PublicKeyPolicyName'
+            backend_policy_params['PolicyAttributes.member.%d.AttributeValue' % index] = public_policy_name
+            index += 1
+        self.elb_conn.get_status('CreateLoadBalancerPolicy', backend_policy_params)
+        # sleep is needed for the previous policy creation to complete
+        time.sleep(1)
+        instance_port = 443
+        self.elb_conn.set_lb_policies_of_backend_server(elb_name, instance_port, backend_policy_name)
 
     @staticmethod
     def get_instance_selector_text():
@@ -400,6 +430,8 @@ class ELBView(BaseELBView):
             elb_tags=TaggedItemView.get_tags_display(self.elb.tags) if self.elb.tags else '',
             elb_form=self.elb_form,
             delete_form=self.delete_form,
+            certificate_form=self.certificate_form,
+            backend_certificate_form=self.backend_certificate_form,
             protocol_list=self.get_protocol_list(),
             listener_list=self.get_listener_list(),
             is_vpc_supported=self.is_vpc_supported,
@@ -824,12 +856,6 @@ class CreateELBView(BaseELBView):
         super(CreateELBView, self).__init__(request)
         self.create_form = CreateELBForm(
             self.request, conn=self.ec2_conn, vpc_conn=self.vpc_conn, formdata=self.request.params or None)
-        self.certificate_form = CertificateForm(self.request, conn=self.ec2_conn,
-                                                iam_conn=self.iam_conn, elb_conn=self.elb_conn,
-                                                formdata=self.request.params or None)
-        self.backend_certificate_form = BackendCertificateForm(self.request, conn=self.ec2_conn,
-                                                               iam_conn=self.iam_conn, elb_conn=self.elb_conn,
-                                                               formdata=self.request.params or None)
         filter_keys = ['id', 'name', 'placement', 'state', 'security_groups', 'vpc_subnet_display', 'vpc_name']
         filters_form = ELBInstancesFiltersForm(
             self.request, ec2_conn=self.ec2_conn, autoscale_conn=self.autoscale_conn,
@@ -945,27 +971,3 @@ class CreateELBView(BaseELBView):
         else:
             form_errors = ', '.join(self.certificate_form.get_errors_list())
             return JSONResponse(status=400, message=form_errors)  # Validation failure = bad request
-
-    def handle_backend_certificate_create(self, elb_name):
-        backend_certificates_json = self.request.params.get('backend_certificates')
-        backend_certificates = json.loads(backend_certificates_json) if backend_certificates_json else []
-        public_policy_attributes = dict()
-        public_policy_type = u'PublicKeyPolicyType'
-        backend_policy_type = u'BackendServerAuthenticationPolicyType'
-        backend_policy_name = u'BackendPolicy-{0}'.format(elb_name)
-        backend_policy_params = {'LoadBalancerName': elb_name,
-                                 'PolicyName': backend_policy_name,
-                                 'PolicyTypeName': backend_policy_type}
-        index = 1
-        for cert in backend_certificates:
-            public_policy_name = u'EucaConsole-PublicKeyPolicy-{0}'.format(cert.get('name'))
-            public_policy_attributes['PublicKey'] = cert.get('certificateBody')
-            self.elb_conn.create_lb_policy(elb_name, public_policy_name, public_policy_type, public_policy_attributes)
-            backend_policy_params['PolicyAttributes.member.%d.AttributeName' % index] = 'PublicKeyPolicyName'
-            backend_policy_params['PolicyAttributes.member.%d.AttributeValue' % index] = public_policy_name
-            index += 1
-        self.elb_conn.get_status('CreateLoadBalancerPolicy', backend_policy_params)
-        # sleep is needed for the previous policy creation to complete
-        time.sleep(1)
-        instance_port = 443
-        self.elb_conn.set_lb_policies_of_backend_server(elb_name, instance_port, backend_policy_name)
