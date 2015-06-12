@@ -74,6 +74,10 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor']
             modal.foundation('reveal', 'open');
             modal.find('h3').click();  // Workaround for dropdown menu not closing
         };
+        $scope.selectCertificateTab = function ($event, tab) {
+            $event.preventDefault();
+            $scope.certificateTab = tab;
+        };
         $scope.openSelectCertificateModal = function () {
             var modal = $('#select-certificate-modal');
             if (modal.length > 0) {

@@ -3,20 +3,14 @@
     <div id="select-certificate-modal" class="reveal-modal medium" data-reveal="" ng-cloak="">
         <h3 i18n:translate="">Select certificate</h3>
         <div ng-show="showsCertificateTabDiv">
-            <dl id="wizard-tabs" class="tabs" data-tab="" ng-cloak="">
-                <dt></dt>
-                <dd id="select-certificate-modal-tab-ssl" class="active">
-                    <a href="" ng-click="selectCertificateTab($event, 'SSL')">
-                        <span class="cir" i18n:translate="">SSL</span>
-                    </a>
-                </dd>
-                <dt></dt>
-                <dd id="select-certificate-modal-tab-backend">
-                    <a href="" ng-click="selectCertificateTab($event, 'BACKEND')">
-                        <span class="cir" i18n:translate="">Back end</span>
-                    </a>
-                </dd>
-            </dl>
+            <ul class="btn-group" ng-cloak="">
+                <li>
+                    <a id="select-certificate-modal-tab-ssl" class="active" ng-click="selectCertificateTab($event, 'SSL')"
+                       ng-class="{'active': certificateTab === 'SSL'}" i18n:translate="">SSL</a>
+                    <a id="select-certificate-modal-tab-backend" ng-click="selectCertificateTab($event, 'BACKEND')"
+                       ng-class="{'active': certificateTab === 'BACKEND'}" i18n:translate="">Back end</a>
+                </li>
+            </ul>
         </div>
         <div>&nbsp;</div>
         <div ng-show="certificateTab === 'BACKEND'">
