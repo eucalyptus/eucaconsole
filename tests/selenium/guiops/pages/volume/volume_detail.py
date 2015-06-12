@@ -6,11 +6,10 @@ class VolumeDetailPage(DetailPage):
     def __init__(self, tester):
         self.tester = tester
 
-
     _volume_detail_page_title = "Details for volume: {0}"
     _delete_volume_action_menuitem_id = "delete-volume-action"
     _attach_volume_action_menuitem_id = "attach-volume-action"
-    _volume_status_css = "[class='label radius status {0}']" #volume status is required
+    _volume_status_css = "[class='label radius status {0}']"  # volume status is required
 
     def verify_volume_detail_page_loaded(self, volume_id, volume_name):
         """
