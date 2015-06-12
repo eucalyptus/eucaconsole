@@ -331,6 +331,9 @@ class GuiEC2(GuiTester):
         InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_terminated()
 
     def batch_terminate_all_instances(self):
+        """
+        Navigates to instances view page and terminates all instances
+        """
 
         BasePage(self).goto_instances_via_menu()
         InstanceView(self).click_terminate_all_instances_button()
