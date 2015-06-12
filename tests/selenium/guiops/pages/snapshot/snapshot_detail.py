@@ -21,27 +21,28 @@ class SnapshotDetailPage(DetailPage):
             snapshot_name_full = snapshot_id
         else:
             snapshot_name_full = snapshot_name + " (" + snapshot_id + ")"
-        self.tester.wait_for_text_present_by_id(DetailPage(self)._detail_page_title_id, volume_name_full)
+        self.tester.wait_for_text_present_by_id(DetailPage(self)._detail_page_title_id, snapshot_name_full)
         self.tester.wait_for_element_present_by_css(DetailPage(self)._actions_menu_css)
 
-    def click_action_delete_volume_on_detail_page(self):
+    def click_action_delete_snapshot_on_detail_page(self):
         self.tester.click_element_by_css(DetailPage._actions_menu_css)
-        self.tester.click_element_by_id(self._delete_volume_action_menuitem_id)
+        self.tester.click_element_by_id(self._delete_snapshot_action_menuitem_id)
 
-    def click_action_attach_volume_on_detail_page(self):
+    def click_action_register_as_image_on_detail_page(self):
         self.tester.click_element_by_css(DetailPage._actions_menu_css)
-        self.tester.click_element_by_id(self._attach_volume_action_menuitem_id)
+        self.tester.click_element_by_id(self._register_as_image_action_menuitem_id)
 
-    def verify_volume_status_is_available(self):
-        self.tester.wait_for_visible_by_css(self._volume_status_css.format("available"))
+    def click_action_create_volume_from_snapshot_on_detail_page(self):
+        self.tester.click_element_by_css(DetailPage._actions_menu_css)
+        self.tester.click_element_by_id(self._create_volume_from_snapshot_actions_menuitem_id)
 
-    def verify_volume_status_is_attached(self):
-        self.tester.wait_for_visible_by_css(self._volume_status_css.format("attached"))
+    def verify_snapshot_status_is_completed(self):
+        self.tester.wait_for_visible_by_css(self._snapshot_status_css.format("completed"))
 
-    def get_volume_name_and_id(self):
+    def get_snapshot_name_and_id(self):
         name_and_id = str(self.tester.store_text_by_css(DetailPage(self)._resource_name_and_id_css))
-        volume_id = name_and_id[-13:-1]
-        volume_name = name_and_id[1:-15]
-        return {'volume_name': volume_name, 'volume_id': volume_id}
+        snapshot_id = name_and_id[-15:-1]
+        snapshot_name = name_and_id[1:-17]
+        return {'snapshot_name': snapshot_name, 'snapshot_id': snapshot_id}
 
 
