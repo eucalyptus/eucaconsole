@@ -39,27 +39,28 @@ class SnapshotView(ViewPage):
         self.tester.wait_for_text_present_by_xpath(self._snapshot_status_xpath.format(snapshot_id), "completed")
 
     def goto_snapshot_detail_page_via_link(self, snapshot_id):
-        self.tester.click_element_by_css(self._volume_link_css.format(volume_id))
+        self.tester.click_element_by_css(self._snapshot_link_css.format(snapshot_id))
 
-    def goto_volume_detail_page_via_actions(self, volume_id):
-        self.tester.click_element_by_id(self._volume_action_menu_id.format(volume_id))
-        self.tester.click_element_by_css(self._view_details_actions_menu_item_css.format(volume_id))
+    def goto_snapshot_detail_page_via_actions(self, snapshot_id):
+        self.tester.click_element_by_id(ViewPage(self)._resource_action_menu_id.format(snapshot_id))
+        self.tester.click_element_by_css(self._view_details_actions_menu_item_css.format(snapshot_id))
 
-    def click_action_manage_snaspshots(self, volume_id):
-        self.tester.click_element_by_id(self._volume_action_menu_id.format(volume_id))
-        self.tester.click_element_by_css(self._manage_snapshots_actions_menu_item_css.format(volume_id))
+    def click_action_create_volume_from_snapshot(self, snapshot_id):
+        self.tester.click_element_by_id(ViewPage(self)._resource_action_menu_id.format(snapshot_id))
+        self.tester.click_element_by_css(self._create_volume_from_snapshot_actions_menu_item_css.format(snapshot_id))
 
-    def get_volume_name(self, volume_id):
-        full_name = self.tester.store_text_by_css(self._volume_link_css.format(volume_id))
-        volume_name=None
-        if len(full_name)>14:
-            volume_name = full_name[:-14]
-        return volume_name
+    def get_snapshot_name(self, snapshot_id):
+        full_name = self.tester.store_text_by_css(self._snapshot_link_css.format(snapshot_id))
+        snapshot_name=None
+        if len(full_name)>16:
+            snapshot_name = full_name[:-16]
+        print snapshot_name
+        return snapshot_name
 
-    def click_action_attach_to_instance(self, volume_id):
-        self.tester.click_element_by_id(self._volume_action_menu_id.format(volume_id))
-        self.tester.click_element_by_css(self._attach_to_instance_actions_menu_item_css.format(volume_id))
+    def click_action_register_as_image(self, snapshot_id):
+        self.tester.click_element_by_id(ViewPage(self)._resource_action_menu_id.format(snapshot_id))
+        self.tester.click_element_by_css(self._register_as_image_actions_menu_item_css.format(snapshot_id))
 
-    def verify_there_are_no_available_volumes(self):
-        self.tester.send_keys_by_css(self._search_input_field_css, "available")
+    def verify_there_are_no_completed_snapshots(self):
+        self.tester.send_keys_by_css(ViewPage(self)._search_input_field_css, "completed")
         self.tester.wait_for_text_present_by_css(ViewPage(self)._item_count_css,"0")
