@@ -1,4 +1,5 @@
 from pages.detailpage import DetailPage
+from string import split
 
 class VolumeDetailPage(DetailPage):
 
@@ -37,7 +38,9 @@ class VolumeDetailPage(DetailPage):
         self.tester.wait_for_visible_by_css(self._volume_status_css.format("attached"))
 
     def get_volume_name_and_id(self):
-        pass
-
+        name_and_id = str(self.tester.store_text_by_css(DetailPage(self)._resource_name_and_id_css))
+        volume_id = name_and_id[-13:-1]
+        volume_name = name_and_id[1:-15]
+        return {'volume_name': volume_name, 'volume_id': volume_id}
 
 

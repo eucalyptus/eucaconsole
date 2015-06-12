@@ -15,6 +15,7 @@ class VolumeView(ViewPage):
     _attach_to_instance_actions_menu_item_css = "#item-dropdown_{0}>li:nth-of-type(3)>a"  #volume_id required
     _first_volume_link_in_list_css = "#tableview>table>tbody>tr>td>a"
     _volume_link_css = 'a[ng-href="/volumes/{0}"]'  #volume_id required;
+    _volume_status_xpath =  '//td/a[@href="/volumes/{0}"]/../../td[2]' #volume_id required;
     _search_input_field_css = ".search-input"
 
     def verify_volume_view_page_loaded(self):
@@ -35,7 +36,10 @@ class VolumeView(ViewPage):
         return volume_id
 
     def verify_volume_status_is_available(self, volume_id):
-        NotImplementedError
+        self.tester.wait_for_text_present_by_xpath(self._volume_status_xpath, "available")
+
+    def verify_volume_status_is_deleted(self, volume_id):
+        self.tester.wait_for_text_present_by_xpath(self._volume_status_xpath, "deleted")
 
     def goto_volume_detail_page_via_link(self, volume_id):
         self.tester.click_element_by_css(self._volume_link_css.format(volume_id))

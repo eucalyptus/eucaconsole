@@ -358,6 +358,24 @@ class SeleniumApi(object):
             print "ERROR: Timed out. Could not verify presence of text = '{1}' in element by id = '{0}'".format(element_id, text)
         self.set_implicit_wait(self.implicit_wait_default_in_seconds)
 
+    def wait_for_text_present_by_xpath(self, xpath, text):
+        """
+        Waits for text to be present.
+        :param xpath:
+        :param text:
+        """
+        self.set_implicit_wait(5)
+        print "Executing wait_for_text_present_by_xpath xpath = '{0}', text = '{1}'".format(xpath, text)
+        try:
+            WebDriverWait(self.driver, self.timeout_to_wait_for_text_in_seconds).until(
+                EC.text_to_be_present_in_element((By.XPATH, xpath), text))
+            print "Verified text {0} present in element by xpath = {1}".format(text, xpath)
+
+        except TimeoutException, t:
+            print "ERROR: Timed out. Could not verify presence of text = '{1}' in element by xpath = '{0}'".format(xpath, text)
+        self.set_implicit_wait(self.implicit_wait_default_in_seconds)
+
+
     def wait_for_text_present_by_css(self, css, text):
         """
         Waits for text to be present.

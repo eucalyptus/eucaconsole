@@ -343,12 +343,15 @@ class GuiEC2(GuiTester):
         VolumeView(self).click_create_volume_btn_on_view_page()
         CreateVolumeDialog(self).create_volume(volume_name, create_from_snapshot, snapshot_id, volume_size, availability_zone)
         VolumeDetailPage(self).verify_volume_status_is_available()
+        volume = VolumeDetailPage(self).get_volume_name_and_id()
+        print volume
+        return volume
 
     def delete_volume_from_view_page(self, volume_id):
         BasePage(self).goto_volumes_view_via_menu()
         VolumeView(self).click_action_delete_volume_on_view_page(volume_id)
         DeleteVolumeModal(self).delete_volume()
-        VolumeView(self)
+        VolumeView(self).verify_volume_status_is_deleted(volume_id)
 
 
 
