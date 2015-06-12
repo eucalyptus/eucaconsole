@@ -161,6 +161,27 @@ class SeleniumApi(object):
                 print "ERROR: Element by css = '{0}' not found in the DOM.".format(css)
             return False
 
+    def wait_for_visible_by_xpath(self, xpath):
+        """
+        Waits for the element to become visible. First, checks if element is present.
+        :param xpath:
+        """
+
+        print "Executing wait_for_visible_by_xpath('{0}')".format(xpath)
+
+        try:
+            WebDriverWait(self.driver, self.timeout_to_determine_visibility_in_seconds).until(EC.visibility_of_element_located((By.XPATH, xpath)))
+            print "Element by xpath = '{0}' was located in DOM and is visible.".format(xpath)
+        except TimeoutException:
+            print "ERROR: Timed out: element by xpath = '{0}' not visible.".format(xpath)
+            print "Checking whether element by xpath = '{0}' present in the DOM.".format(xpath)
+            try:
+                self.driver.find_element_by_xpath(xpath)
+                print "Element by xpath = '{0}' is present in the DOM but not visible.".format(xpath)
+            except NoSuchElementException:
+                print "ERROR: Element by xpath = '{0}' not found in the DOM.".format(xpath)
+            return False
+
     def check_visibility_by_id(self, element_id):
         """
         Checks if the element is visible.
@@ -435,6 +456,18 @@ class SeleniumApi(object):
         self.wait_for_visible_by_css(css)
         print "Getting text by css = '{0}'".format(css)
         return self.driver.find_element_by_css_selector(css).text
+
+
+    def store_text_by_xpath(self, xpath):
+        """
+        Stores visible text.
+        :param xpath:
+        """
+        print "Executing store_text_by_xpath('{0}')".format(xpath)
+        self.wait_for_visible_by_xpath(xpath)
+        print "Getting text by xpath = '{0}'".format(xpath)
+        return self.driver.find_element_by_xpath(xpath).text
+
 
     def select_by_id(self, element_id, text):
         """
