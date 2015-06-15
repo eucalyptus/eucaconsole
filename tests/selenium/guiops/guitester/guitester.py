@@ -18,7 +18,17 @@ class GuiTester(SeleniumApi):
         :param user:
         :param password:
         """
-        self.driver = webdriver.Remote(webdriver_url, webdriver.DesiredCapabilities.FIREFOX)
+
+        ffprofile = webdriver.FirefoxProfile()
+        ffprofile.set_preference("browser.download.folderList",2)
+        ffprofile.set_preference("browser.download.manager.showWhenStarting", False)
+        ffprofile.set_preference("browser.download.dir", "/tmp/")
+        ffprofile.set_preference("browser.helperApps.alwaysAsk.force", False)
+        ffprofile.set_preference("browser.helperApps.neverAsk.saveToDisk", "application/x-pem-file, text/csv, application/xml, text/plain, file/pem, image/jpeg, application/x-apple-diskimage, application/zip")
+        ffprofile.update_preferences()
+
+        self.driver = webdriver.Remote(webdriver_url, webdriver.DesiredCapabilities.FIREFOX, browser_profile=ffprofile)
+        print "Setting webdriver profile"
         self.driver.implicitly_wait(60)
         self.driver.maximize_window()
         self.driver.get(console_url)
