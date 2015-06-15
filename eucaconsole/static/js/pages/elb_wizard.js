@@ -602,8 +602,9 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
         }
     };
     $scope.createNewCertificate = function (url) {
-        var formData = $('#select-certificate-form').serialize();
-        $scope.certificateForm = $('#select-certificate-form');
+        var certForm = $('#select-certificate-form');
+        var formData = certForm.serialize();
+        $scope.certificateForm = certForm;
         $scope.certificateForm.trigger('validate');
         if ($scope.certificateForm.find('[data-invalid]').length) {
             return false;
