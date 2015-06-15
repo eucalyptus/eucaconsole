@@ -365,7 +365,6 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor']
                 }
             }).error(function (oData) {
                 eucaHandleError(oData, status);
-                return false;
             });
         };
     })

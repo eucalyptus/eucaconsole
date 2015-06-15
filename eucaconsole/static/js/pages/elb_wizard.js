@@ -597,7 +597,7 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
             return false;
         }
         if ($scope.certificateRadioButton === 'new') {
-            $scope.createNewCertificate(newCertURL, $event);
+            $scope.createNewCertificate(newCertURL);
         }
         var modal = $('#select-certificate-modal');
         if (modal.length > 0) {
@@ -605,7 +605,7 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
             $scope.$broadcast('eventUseThisCertificate', $scope.certificateARN, $scope.certificateName);
         }
     };
-    $scope.createNewCertificate = function (url, $event) {
+    $scope.createNewCertificate = function (url) {
         var certForm = $('#select-certificate-form');
         var formData = certForm.serialize();
         $scope.certificateForm = certForm;
@@ -635,7 +635,6 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
                 });
             }
         }).error(function (oData) {
-            $event.preventDefault();
             eucaHandleError(oData, status);
         });
     };

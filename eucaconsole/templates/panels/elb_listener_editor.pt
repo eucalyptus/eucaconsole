@@ -45,7 +45,7 @@
                         </td>
                         <td>
                             <span ng-show="showServerCertificateNameLink(listener.fromProtocol)">
-                                <span>{{ listener.certificateName }}</span>
+                                <span>{{ listener.certificateName || listener.certificateId }}</span>
                                 <a ng-click="openCertificateModal(listener.fromProtocol, listener.toProtocol, listener.fromPort, listener.toPort)"
                                     title="Change certficate" i18n:translate="">
                                     Change

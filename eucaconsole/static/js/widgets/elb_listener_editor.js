@@ -203,8 +203,11 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
                     'fromProtocol': listener.protocol,
                     'fromPort': listener.from_port,
                     'toProtocol': listener.protocol,
-                    'toPort': listener.to_port,
+                    'toPort': listener.to_port
                 };
+                if (!!listener.certificate_id) {
+                    block.certificateId = listener.certificate_id;
+                }
                 $scope.listenerArray.push(block);
             });
         };

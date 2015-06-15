@@ -508,11 +508,17 @@ class ELBView(BaseELBView):
     def get_listener_list(self):
         listener_list = []
         if self.elb and self.elb.listeners:
-            for listener_obj in self.elb.listeners:
-                listener = listener_obj.get_tuple()
-                listener_list.append({'from_port': listener[0],
-                                      'to_port': listener[1],
-                                      'protocol': listener[2]})
+            for listener in self.elb.listeners:
+                listener_dict = {
+                    'from_port': listener.load_balancer_port,
+                    'to_port': listener.instance_port,
+                    'protocol': listener.protocol
+                }
+                if listener.ssl_certificate_id:
+                    listener_dict.update({
+                        'certificate_id': listener.ssl_certificate_id
+                    })
+                listener_list.append(listener_dict)
         return listener_list
 
     def update_listeners(self, name, listeners_args):
@@ -917,7 +923,6 @@ class CreateELBView(BaseELBView):
             del self.create_form.securitygroup
         if self.create_form.validate():
             name = self.request.params.get('name')
-            certificate_arn = self.request.params.get('certificate_arn') or None
             listeners_args = self.get_listeners_args()
             vpc_subnet = self.request.params.getall('vpc_subnet') or None
             if vpc_subnet == 'None':
@@ -958,13 +963,16 @@ class CreateELBView(BaseELBView):
     @view_config(route_name='certificate_create', request_method='POST', renderer='json')
     def certificate_create(self):
         if self.certificate_form.validate():
+            certificate_arn = self.request.params.get('certificate_arn')
+            if certificate_arn != 'None':
+                pass  # TODO: Handle selecting an existing certificate
             certificate_name = self.request.params.get('certificate_name')
             private_key = self.request.params.get('private_key')
             public_key_certificate = self.request.params.get('public_key_certificate')
             certificate_chain = self.request.params.get('certificate_chain') or None
             try:
                 certificate_result = self.iam_conn.upload_server_cert(
-                    certificate_name, public_key_certificate, private_key, cert_chain=certificate_chain, path=None)
+                    certificate_name, public_key_certificate, private_key, cert_chain=certificate_chain)
                 prefix = _(u'Successfully uploaded server certificate')
                 msg = u'{0} {1}'.format(prefix, certificate_name)
                 certificate_arn = certificate_result.upload_server_certificate_result.server_certificate_metadata.arn
