@@ -33,8 +33,11 @@ import wtforms
 from wtforms import validators
 
 from ..i18n import _
-from . import BaseSecureForm, ChoicesManager, TextEscapedField, NAME_WITHOUT_SPACES_NOTICE
+from . import BaseSecureForm, ChoicesManager, TextEscapedField, NAME_WITHOUT_SPACES_NOTICE, BLANK_CHOICE
 from ..views import BaseView
+
+
+NO_CERTIFICATES_CHOICE = ('None', _(u'There are no certificates available'))
 
 
 class PingPathRequired(validators.Required):
@@ -46,6 +49,17 @@ class PingPathRequired(validators.Required):
     def __call__(self, form, field):
         if form.ping_protocol.data in ['HTTP', 'HTTPS']:
             super(PingPathRequired, self).__call__(form, field)
+
+
+class CertificateARNRequired(validators.Required):
+    """Custom validator to conditionally require certificate_arn when certificate_name is missing"""
+
+    def __init__(self, *args, **kwargs):
+        super(CertificateARNRequired, self).__init__(*args, **kwargs)
+
+    def __call__(self, form, field):
+        if not form.certificate_name.data:
+            super(CertificateARNRequired, self).__call__(form, field)
 
 
 class ELBForm(BaseSecureForm):
@@ -463,9 +477,9 @@ class CertificateForm(BaseSecureForm):
         label=_(u'Certificate chain'),
     )
     certificates_error_msg = _(u'Certificate is required')
-    certificates = wtforms.SelectField(
-        label=_(u'Certificate name'),
-        validators=[validators.InputRequired(message=certificates_error_msg)],
+    certificate_arn = wtforms.SelectField(
+        label=_(u'Certificate'),
+        validators=[CertificateARNRequired(message=certificates_error_msg)],
     )
 
     def __init__(self, request, conn=None, iam_conn=None, elb_conn=None, **kwargs):
@@ -474,24 +488,25 @@ class CertificateForm(BaseSecureForm):
         self.iam_conn = iam_conn
         self.elb_conn = elb_conn
         self.set_error_messages()
-        self.certificates.choices = self.get_all_server_certs(iam_conn=self.iam_conn)
-        if len(self.certificates.choices) > 1:
-            self.certificates.data = self.certificates.choices[0][0]
+        self.certificate_arn.choices = self.get_all_server_certs(iam_conn=self.iam_conn)
+        if len(self.certificate_arn.choices) > 1:
+            self.certificate_arn.data = self.certificate_arn.choices[0][0]
 
     def set_error_messages(self):
         self.certificate_name.error_msg = self.certificate_name_error_msg
         self.private_key.error_msg = self.private_key_error_msg
         self.public_key_certificate.error_msg = self.public_key_certificate_error_msg
 
-    def get_all_server_certs(self,  iam_conn=None, add_blank=True):
+    def get_all_server_certs(self, iam_conn=None, add_blank=True):
         choices = []
-        certificates = {}
         if iam_conn is not None:
             certificates = self.iam_conn.get_all_server_certs()
             for cert in certificates.list_server_certificates_result.server_certificate_metadata_list:
                 choices.append((cert.arn, cert.server_certificate_name))
         if len(choices) == 0:
-            choices.append(('None', _(u'')))
+            choices.append(NO_CERTIFICATES_CHOICE)
+        else:
+            choices.insert(0, BLANK_CHOICE)
         return sorted(set(choices))
 
 

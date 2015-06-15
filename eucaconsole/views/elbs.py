@@ -36,6 +36,7 @@ import boto.utils
 
 from boto.ec2.elb import HealthCheck
 from boto.ec2.elb.attributes import ConnectionSettingAttribute
+from boto.exception import BotoServerError
 
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from pyramid.view import view_config
@@ -954,20 +955,22 @@ class CreateELBView(BaseELBView):
             self.request.error_messages = self.create_form.get_errors_list()
             return self.render_dict
 
-    @view_config(route_name='certificate_create', request_method='POST', renderer=TEMPLATE)
+    @view_config(route_name='certificate_create', request_method='POST', renderer='json')
     def certificate_create(self):
         if self.certificate_form.validate():
             certificate_name = self.request.params.get('certificate_name')
             private_key = self.request.params.get('private_key')
             public_key_certificate = self.request.params.get('public_key_certificate')
             certificate_chain = self.request.params.get('certificate_chain') or None
-            with boto_error_handler(self.request):
+            try:
                 certificate_result = self.iam_conn.upload_server_cert(
                     certificate_name, public_key_certificate, private_key, cert_chain=certificate_chain, path=None)
                 prefix = _(u'Successfully uploaded server certificate')
                 msg = u'{0} {1}'.format(prefix, certificate_name)
                 certificate_arn = certificate_result.upload_server_certificate_result.server_certificate_metadata.arn
                 return JSONResponse(status=200, message=msg, id=certificate_arn)
+            except BotoServerError as err:
+                return JSONResponse(status=400, message=err.message)  # Malformed certificate
         else:
             form_errors = ', '.join(self.certificate_form.get_errors_list())
             return JSONResponse(status=400, message=form_errors)  # Validation failure = bad request

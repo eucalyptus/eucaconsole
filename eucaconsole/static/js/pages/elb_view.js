@@ -39,6 +39,7 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor']
             }, 1000);
         };
         $scope.setInitialValues = function (options) {
+            var certArnField = $('#certificate_arn');
             if ($('#elb-view-form').length > 0) {
                 $scope.elbForm = $('#elb-view-form');
             }
@@ -68,10 +69,9 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor']
             $scope.classDuplicatedBackendCertificateDiv = '';
             $scope.classAddBackendCertificateButton = 'disabled';
             $scope.classUseThisCertificateButton = 'disabled';
-            // timeout is needed to wait for the elb listener directive to be initialized
-            if ($('#certificates').children('option').length > 0) {
-                $scope.certificateName = $('#certificates').children('option').first().text();
-                $scope.certificateARN = $('#certificates').children('option').first().val();
+            if (certArnField.children('option').length > 0) {
+                $scope.certificateName = certArnField.children('option').first().text();
+                $scope.certificateARN = certArnField.children('option').first().val();
             }
             $scope.initChosenSelectors();
         };
@@ -116,13 +116,15 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor']
                 $scope.setClassUseThisCertificateButton();
             });
             $scope.$watch('certificateARN', function(){
+                var certArnField = $('#certificate_arn');
+                var hiddenArnInput = $('#hidden_certificate_arn_input');
                 // Find the certficate name when selected on the select certificate dialog
-                if ($('#certificates option:selected').length > 0) {
-                    $scope.certificateName = $('#certificates option:selected').text();
+                if (certArnField.find('option:selected').length > 0) {
+                    $scope.certificateName = certArnField.find('option:selected').text();
                 }
                 // Assign the certificate ARN value as hidden input
-                if ($('#hidden_certificate_arn_input').length > 0) {
-                    $('#hidden_certificate_arn_input').val($scope.certificateARN);
+                if (hiddenArnInput.length > 0) {
+                    hiddenArnInput.val($scope.certificateARN);
                 }
                 $scope.$broadcast('eventUpdateCertificateARN', $scope.certificateARN, $scope.tempListenerBlock);
             });
@@ -181,6 +183,7 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor']
         };
         $scope.openSelectCertificateModal = function () {
             var modal = $('#select-certificate-modal');
+            var certArnField = $('#certificate_arn');
             if (modal.length > 0) {
                 modal.foundation('reveal', 'open');
                 $scope.certificateRadioButton = 'existing';
@@ -192,9 +195,9 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor']
                         $scope.certificateName = block.certificateName;
                     }
                 });
-                $('#certificates').val($scope.certificateARN);
+                certArnField.val($scope.certificateARN);
                 // Remove any empty options created by Angular model issue
-                $('#certificates').find('option').each(function () {
+                certArnField.find('option').each(function () {
                     if ($(this).text() === '') {
                         $(this).remove();
                     }
@@ -349,7 +352,7 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor']
                 Notify.success(oData.message);
                 if (oData.id) {
                     var newARN = oData.id;
-                    $('#certificates').append($("<option></option>")
+                    $('#certificate_arn').append($("<option></option>")
                         .attr("value", newARN)
                         .text(newCertificateName));
                     $scope.certificateARN = newARN;
@@ -362,6 +365,7 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor']
                 }
             }).error(function (oData) {
                 eucaHandleError(oData, status);
+                return false;
             });
         };
     })
