@@ -77,6 +77,7 @@
                                             data-tooltip="" title="${create_form.template_file.help_text}"></span>
                                     </label>
                                     <input id="template-file" type="file" data-file="template-files" ng-disabled="isNotStopped" name="template-file" ng-show="inputtype=='file'"/>
+                                    <small id="size-error" class="error" i18n:translate="">You cannot upload templates larger than 460,800 bytes.</small>
                                     <br/>
                                     <input type="radio" id="inputtype" name="inputtype" value="url" ng-model="inputtype"/>
                                     <label i18n:translate="">Use template from URL</label>

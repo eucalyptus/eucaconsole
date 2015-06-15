@@ -110,6 +110,7 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils'])
         $scope.checkRequiredInput = function () {
             if ($scope.currentStepIndex == 1) { 
                 $scope.isNotValid = false;
+                $('#size-error').css('display', 'none');
                 var val;
                 switch ($scope.inputtype) {
                     case 'sample':
@@ -121,6 +122,10 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils'])
                     case 'file':
                         val = $scope.templateFiles;
                         if (val === undefined || val.length === 0) {
+                            $scope.isNotValid = true;
+                        }
+                        if (val !== undefined && val.length > 0 && val[0].size > 460800) {
+                            $('#size-error').css('display', 'block');
                             $scope.isNotValid = true;
                         }
                         break;
@@ -286,9 +291,13 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils'])
             angular.forEach($('form').serializeArray(), function(value, key) {
                 this.append(value.name, value.value);
             }, fd);
-            // Add file: consider batching up lots of small files
+            // Add file
             if ($scope.inputtype == 'file') {
                 var file = $scope.templateFiles[0];
+                // another check to ensure we don't upload something too large
+                if (file.size > 460800) {
+                    return;
+                }
                 fd.append('template-file', file);
             }
             $scope.loading = true;
