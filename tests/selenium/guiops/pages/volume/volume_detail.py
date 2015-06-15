@@ -12,7 +12,8 @@ class VolumeDetailPage(DetailPage):
     _volume_status_css = "[class='label radius status {0}']"  # volume status is required
     _create_snapshot_tile_id = "create-snapshot"
     _snapshots_tab_css = "[href='/volumes/{0}/snapshots']"  # volume_id is required
-    _general_tab_css = '[href="/volumes/vol-ed9ea924/snapshots"]'
+    _general_tab_css = '[href="/volumes/{0}/snapshots"]'  # volume_id is required
+    _active_tab_css ="dd.active"
 
     def verify_volume_detail_page_loaded(self, volume_id, volume_name):
         """
@@ -44,5 +45,18 @@ class VolumeDetailPage(DetailPage):
         volume_id = name_and_id[-13:-1]
         volume_name = name_and_id[1:-15]
         return {'volume_name': volume_name, 'volume_id': volume_id}
+
+    def goto_snapshots_tab(self, volume_id):
+        tab=self.tester.store_text_by_css(self._active_tab_css)
+        if tab is "General":
+            self.tester.click_element_by_css(self._snapshots_tab_css.format(volume_id))
+        elif tab is "Snapshot":
+            pass
+        else:
+            print "ERROR: tab {0} not among recognized tab names.".format(tab)
+
+    def click_create_snapshot_from_volume_tile(self, volume_id):
+        self.goto_snapshots_tab(volume_id)
+        self.tester.click_element_by_id(self._create_snapshot_tile_id)
 
 
