@@ -220,7 +220,7 @@
             </div>
         </div>
         <!--! Modal dialogs -->
-        ${panel('elb_dialogs', elb=elb, in_use=in_use, delete_form=delete_form)}
+        ${panel('elb_dialogs', elb=elb, delete_form=delete_form)}
     </div>
 </div>
 

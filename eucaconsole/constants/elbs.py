@@ -38,18 +38,18 @@ ELB_MONITORING_CHARTS_LIST = [
     },
     {
         'metric': 'Latency',
-        'unit': 'Milliseconds',
+        'unit': 'Seconds',
         'statistic': 'Average',
     },
     {
-        'metric': 'UnhealthyHostCount',
+        'metric': 'UnHealthyHostCount',
         'unit': 'Count',
-        'statistic': 'Average',
+        'statistic': 'Maximum',
     },
     {
         'metric': 'HealthyHostCount',
         'unit': 'Count',
-        'statistic': 'Average',
+        'statistic': 'Maximum',
     },
     {
         'metric': 'HTTPCode_ELB_4XX',

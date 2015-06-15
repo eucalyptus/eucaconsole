@@ -10,8 +10,7 @@
             <span tal:condition="elb" class="breakword"><b>${elb_name}</b></span>
             <span tal:condition="not elb" class="breakword"><b>{{ elbName }}</b></span>?
         </p>
-        <form action="${action}" method="post"
-              tal:condition="not in_use if elb else True">
+        <form action="${action}" method="post">
             ${structure:delete_form['csrf_token']}
             <div tal:condition="landingpage" tal:omit-tag="">
                 <input type="hidden" name="name" value="{{ elbName }}" />
