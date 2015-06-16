@@ -189,7 +189,7 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
                 'fromProtocol': $scope.fromProtocol.value,
                 'fromPort': $scope.fromPort,
                 'toProtocol': $scope.toProtocol.value,
-                'toPort': $scope.toPort,
+                'toPort': $scope.toPort
             };
             if (block.fromProtocol === 'HTTPS' || block.fromProtocol === 'SSL') {
                 block.certificateARN = $scope.serverCertificateARN;

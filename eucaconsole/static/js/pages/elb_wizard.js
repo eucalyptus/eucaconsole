@@ -491,11 +491,10 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
         }
     };
     $scope.createBackendCertificateArrayBlock = function () {
-        var block = {
+        return {
             'name': $scope.backendCertificateName,
             'certificateBody': $scope.backendCertificateBody
         };
-        return block;
     };
     $scope.addBackendCertificate = function ($event) {
         $event.preventDefault();
@@ -610,10 +609,9 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
         var formData = certForm.serialize();
         $scope.certificateForm = certForm;
         $scope.certificateForm.trigger('validate');
-        if ($scope.certificateForm.find('[data-invalid]').length) {
+        if (!$scope.certificateARN && !$scope.newCertificateName) {
             return false;
         }
-        var newCertificateName = $scope.newCertificateName;
         $http({
             headers: {'Content-Type': 'application/x-www-form-urlencoded'},
             method: 'POST',
@@ -625,13 +623,13 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
                 var newARN = oData.id;
                 $('#certificate_arn').append($("<option></option>")
                     .attr("value", newARN)
-                    .text(newCertificateName));
+                    .text($scope.newCertificateName));
                 $scope.certificateARN = newARN;
                 // timeout is needed for the select element to be updated with the new option
                 $timeout(function () {
-                    $scope.certificateName = newCertificateName;
+                    $scope.certificateName = $scope.newCertificateName;
                     // inform elb listener editor about the new certificate
-                    $scope.$broadcast('eventUseThisCertificate', newARN, newCertificateName);
+                    $scope.$broadcast('eventUseThisCertificate', newARN, $scope.newCertificateName);
                 });
             }
         }).error(function (oData) {
