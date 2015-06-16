@@ -376,8 +376,7 @@ class GuiEC2(GuiTester):
     def delete_volume_from_detail_page(self, volume_id):
         NotImplementedError()
 
-
-    def create_snapshot_from_volume_on_volumes_view_page(self, volume_id, snapshot_name, snapshot_description):
+    def create_snapshot_on_volumes_view_page(self, volume_id, snapshot_name, snapshot_description):
         """
         Navigates to volumes view page and creates a snapshot of a volume.
         :param volume_id:
@@ -388,11 +387,11 @@ class GuiEC2(GuiTester):
         CreateSnapshotModal(self).create_snapshot(snapshot_name, snapshot_description)
         VolumeDetailPage(self).goto_detail_page_of_newly_created_snapshot(volume_id)
         snapshot=SnapshotDetailPage(self).get_snapshot_name_and_id()
+        SnapshotDetailPage(self).verify_snapshot_status_is_completed()
         print snapshot
         return snapshot
 
-
-    def create_snapshot_from_volume_on_volume_detail_page(self, volume_id, snapshot_name, snapshot_description):
+    def create_snapshot_on_volume_detail_page(self, volume_id, snapshot_name, snapshot_description):
         """
         Navigates to volume detail page and creates a snapshot.
         :param volume_id:
@@ -405,8 +404,12 @@ class GuiEC2(GuiTester):
         CreateSnapshotModal(self).create_snapshot(snapshot_name, snapshot_description)
         VolumeDetailPage(self).goto_detail_page_of_newly_created_snapshot(volume_id)
         snapshot=SnapshotDetailPage(self).get_snapshot_name_and_id()
+        SnapshotDetailPage(self).verify_snapshot_status_is_completed()
         print snapshot
         return snapshot
+
+    def create_snapshot_on_snapshot_view_page(self):
+        NotImplementedError()
 
     def create_snapshot_from_dashboard(self):
         NotImplementedError()
@@ -414,8 +417,12 @@ class GuiEC2(GuiTester):
     def delete_snapshot_from_view_page(self):
         NotImplementedError()
 
-    def delete_snapshot_from_detail_page(self):
-        NotImplementedError()
+    def delete_snapshot_from_detail_page(self, snapshot_id, snapshot_name=None):
+        BasePage(self).goto_snapshots_view_via_menu()
+        SnapshotView(self).click_action_delete_snapshot_on_view_page(snapshot_id)
+
+
+
 
     def delete_snapshot_from_tab_on_volume_detail_page(self):
         NotImplementedError()

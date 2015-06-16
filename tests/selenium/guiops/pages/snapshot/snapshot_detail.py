@@ -42,7 +42,7 @@ class SnapshotDetailPage(DetailPage):
     def get_snapshot_name_and_id(self):
         name_and_id = str(self.tester.store_text_by_css(DetailPage(self)._resource_name_and_id_css))
         snapshot_id = name_and_id[-15:-1]
-        snapshot_name = name_and_id[1:-17]
+        snapshot_name = name_and_id[0:-16]
         return {'snapshot_name': snapshot_name, 'snapshot_id': snapshot_id}
 
 

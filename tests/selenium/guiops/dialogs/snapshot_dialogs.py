@@ -15,7 +15,7 @@ class CreateSnapshotModal(BasePage):
 
     _snapshot_name_field_xpath = "(//input[@id='name'])[2]"
     _snapshot_description_field_xpath = "(//textarea[@id='description'])[2]"
-    _create_snapshot_submit_button_css = '[class="button expand"]'
+    _create_snapshot_submit_button_css = "input.button.expand"
 
     def create_snapshot(self, snapshot_name=None, snapshot_description=None):
         if snapshot_name is not None:
