@@ -421,12 +421,11 @@ class GuiEC2(GuiTester):
         BasePage(self).goto_snapshots_view_via_menu()
         SnapshotView(self).click_action_delete_snapshot_on_view_page(snapshot_id)
 
-
-
-
     def delete_snapshot_from_tab_on_volume_detail_page(self):
         NotImplementedError()
 
+    def register_snapshot_as_an_image_from_snapshot_view_page(self):
+        NotImplementedError()
 
 
 
