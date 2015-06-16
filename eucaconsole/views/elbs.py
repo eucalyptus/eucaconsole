@@ -515,8 +515,9 @@ class ELBView(BaseELBView):
                     'protocol': listener.protocol
                 }
                 if listener.ssl_certificate_id:
+                    certificate_id = listener.ssl_certificate_id.split('/')[-1]
                     listener_dict.update({
-                        'certificate_id': listener.ssl_certificate_id
+                        'certificate_id': certificate_id
                     })
                 listener_list.append(listener_dict)
         return listener_list
