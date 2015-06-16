@@ -53,8 +53,8 @@
                     </div>
                     <div>
                         <div class="row inline controls-wrapper" id="add-backend-certificate-button-div">
-                            <div class="small-3 columns">&nbsp;</div>
-                            <div class="small-9 columns field">
+                            <div class="large-2 small-3 columns">&nbsp;</div>
+                            <div class="large-10 small-9 columns field">
                                 <span id="button-add-backend-certificate" class="button round small" i18n:translate=""
                                     ng-class="classAddBackendCertificateButton"
                                     ng-click="addBackendCertificate($event)">

@@ -126,6 +126,9 @@ table.table tr.top-header { border-bottom: 0; }
 table.table th.vertical-border-header { border-collapse: collapse; border-right: 1px solid #ddd; }
 table.table th.center { text-align: center; }
 
+#elb-view-form .item-list { margin-bottom: 6px; }
+#elb-view-form .item-list .item { color: #333; background-color: #e6e7e8; margin-right: 8px; }
+#elb-view-form .item-list .item a { color: white; }
 #elb-view-form input.text-input { width: 300px; }
 #elb-view-form input.timeout-field { width: 60px; }
 #elb-view-form input[type="number"] { width: 80px; }
@@ -137,6 +140,12 @@ table.table th.center { text-align: center; }
 #elb-view-form .cancel-link { margin-right: 1.5rem; }
 #elb-view-form .description { margin-bottom: 1.0rem; }
 #elb-view-form .enable-button { height: 37px; padding-top: 0.5rem; }
+
+#select-certificate-modal .item-list { margin-bottom: 6px; }
+#select-certificate-modal .item-list .item { color: #333; background-color: #e6e7e8; margin-right: 8px; }
+#select-certificate-modal .item-list .item a { color: white; }
+#select-certificate-modal .section-label { margin-top: 1.5rem; margin-bottom: 1rem; color: #5a5a5a; }
+#select-certificate-modal #backend-certificates-display { margin-bottom: 1rem; }
 
 #advanced-section { margin-top: 1.5rem; }
 

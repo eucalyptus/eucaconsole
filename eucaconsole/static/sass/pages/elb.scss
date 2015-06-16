@@ -26,6 +26,7 @@ table.table {
 
 // General tab ==================
 #elb-view-form {
+    @include item-list;
     input.text-input {
         width: 300px;
     }
@@ -62,6 +63,19 @@ table.table {
         padding-top: 0.5rem;
     }
 }
+
+#select-certificate-modal {
+    @include item-list;
+    .section-label {
+        margin-top: 1.5rem;
+        margin-bottom: 1rem;
+        color: $hp-gray-65;
+    }
+    #backend-certificates-display {
+        margin-bottom: 1rem;
+    }
+}
+
 
 #advanced-section {
     margin-top: 1.5rem;
