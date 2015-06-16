@@ -361,7 +361,7 @@ class GuiEC2(GuiTester):
         return volume
 
     def create_volume_from_dashboard(self):
-        NotImplementedError
+        NotImplementedError()
 
     def delete_volume_from_view_page(self, volume_id):
         """
@@ -372,6 +372,10 @@ class GuiEC2(GuiTester):
         VolumeView(self).click_action_delete_volume_on_view_page(volume_id)
         DeleteVolumeModal(self).delete_volume()
         VolumeView(self).verify_volume_status_is_deleted(volume_id)
+
+    def delete_volume_from_detail_page(self, volume_id):
+        NotImplementedError()
+
 
     def create_snapshot_from_volume_on_volumes_view_page(self, volume_id, snapshot_name, snapshot_description):
         """
@@ -405,7 +409,19 @@ class GuiEC2(GuiTester):
         return snapshot
 
     def create_snapshot_from_dashboard(self):
-        NotImplementedError
+        NotImplementedError()
+
+    def delete_snapshot_from_view_page(self):
+        NotImplementedError()
+
+    def delete_snapshot_from_detail_page(self):
+        NotImplementedError()
+
+    def delete_snapshot_from_tab_on_volume_detail_page(self):
+        NotImplementedError()
+
+
+
 
 
 
