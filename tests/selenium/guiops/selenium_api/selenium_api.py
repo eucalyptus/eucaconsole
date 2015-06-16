@@ -455,6 +455,19 @@ class SeleniumApi(object):
         print "Typing text '{1}' into field by css = '{0}'".format(css, text)
         self.driver.find_element_by_css_selector(css).send_keys(text)
 
+    def send_keys_by_xpath(self, xpath, text):
+        """
+        Simulates user typing text input.
+        :param xpath:
+        :param text:
+        """
+        print "Executing send_keys_by_xpath xpath={0}, text={1}".format(xpath, text)
+        self.wait_for_visible_by_xpath(xpath)
+        print "Clearing field by xpath = '{0}'".format(xpath)
+        self.driver.find_element_by_xpath(xpath).clear()
+        print "Typing text '{1}' into field by xpath = '{0}'".format(xpath, text)
+        self.driver.find_element_by_xpath(xpath).send_keys(text)
+
     def store_text_by_id(self, element_id):
         """
         Stores visible text.

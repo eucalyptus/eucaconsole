@@ -10,7 +10,7 @@ class VolumeDetailPage(DetailPage):
     _delete_volume_action_menuitem_id = "delete-volume-action"
     _attach_volume_action_menuitem_id = "attach-volume-action"
     _volume_status_css = "[class='label radius status {0}']"  # volume status is required
-    _create_snapshot_tile_id = "create-snapshot"
+    _create_snapshot_tile_css = "#create-snapshot>a"
     _snapshots_tab_css = "[href='/volumes/{0}/snapshots']"  # volume_id is required
     _general_tab_css = '[href="/volumes/{0}/snapshots"]'  # volume_id is required
     _active_tab_css ="dd.active"
@@ -58,7 +58,7 @@ class VolumeDetailPage(DetailPage):
 
     def click_create_snapshot_from_volume_tile(self, volume_id):
         self.goto_snapshots_tab(volume_id)
-        self.tester.click_element_by_id(self._create_snapshot_tile_id)
+        self.tester.click_element_by_css(self._create_snapshot_tile_css)
 
     def goto_detail_page_of_newly_created_snapshot(self, volume_id):
         tab=self.tester.store_text_by_css(self._active_tab_css)

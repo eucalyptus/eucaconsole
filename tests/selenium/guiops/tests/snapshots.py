@@ -15,7 +15,7 @@ class Volume_operations_sequence(GuiEC2):
         volume1_name = self.id_generator()+"-volume"
         volume1 = self.tester.create_volume_from_view_page(volume1_name, volume_size=2, availability_zone="two")
         volume1_id = volume1.get("volume_id")
-
+        snapshot1 = self.tester.create_snapshot_from_volume_on_volumes_view_page(volume1_id, "Test-snap", "Created by a GUI test")
         self.tester.delete_volume_from_view_page(volume1_id)
         time.sleep(15)
         self.tester.logout()
