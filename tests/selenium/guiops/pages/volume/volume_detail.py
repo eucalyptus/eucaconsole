@@ -14,6 +14,7 @@ class VolumeDetailPage(DetailPage):
     _snapshots_tab_css = "[href='/volumes/{0}/snapshots']"  # volume_id is required
     _general_tab_css = '[href="/volumes/{0}/snapshots"]'  # volume_id is required
     _active_tab_css ="dd.active"
+    _id_link_in_tile_of_newly_created_snapshot_css='[class="ng-binding"]'
 
     def verify_volume_detail_page_loaded(self, volume_id, volume_name):
         """
@@ -58,5 +59,18 @@ class VolumeDetailPage(DetailPage):
     def click_create_snapshot_from_volume_tile(self, volume_id):
         self.goto_snapshots_tab(volume_id)
         self.tester.click_element_by_id(self._create_snapshot_tile_id)
+
+    def goto_detail_page_of_newly_created_snapshot(self, volume_id):
+        tab=self.tester.store_text_by_css(self._active_tab_css)
+        if tab is "General":
+            self.tester.click_element_by_css(self._snapshots_tab_css.format(volume_id))
+        elif tab is "Snapshot":
+            pass
+        else:
+            print "ERROR: tab {0} not among recognized tab names.".format(tab)
+        self.tester.click_element_by_css(self._id_link_in_tile_of_newly_created_snapshot_css)
+
+
+
 
 

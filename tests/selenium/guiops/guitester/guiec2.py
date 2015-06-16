@@ -7,6 +7,8 @@ from pages.keypair.keypairview import KeypairView
 from pages.instance.instanceview import InstanceView
 from pages.volume.volume_view import VolumeView
 from pages.volume.volume_detail import VolumeDetailPage
+from pages.snapshot.snapshot_detail import SnapshotDetailPage
+from pages.snapshot.snapshot_view import SnapshotView
 from pages.instance.instancedetail import InstanceDetailPage
 from pages.image.image_view import ImageView
 from pages.security_group.security_group_view import SecurityGroupView
@@ -15,6 +17,7 @@ from dialogs.security_group_dialogs import CreateScurityGroupDialog, DeleteScuri
 from dialogs.keypair_dialogs import CreateKeypairDialog, DeleteKeypairModal, ImportKeypairDialog
 from dialogs.instance_dialogs import LaunchInstanceWidget, LaunchMoreLikeThisDialog, TerminateInstanceModal, TerminateAllInstancesModal
 from dialogs.volume_dialogs import CreateVolumeDialog, DeleteVolumeModal
+from dialogs.snapshot_dialogs import CreateSnapshotModal, DeleteSnapshotModal
 
 
 class GuiEC2(GuiTester):
@@ -367,13 +370,33 @@ class GuiEC2(GuiTester):
         DeleteVolumeModal(self).delete_volume()
         VolumeView(self).verify_volume_status_is_deleted(volume_id)
 
-    def create_snapshot_from_volume_on_volumes_view_page(self, volume_id):
+    def create_snapshot_from_volume_on_volumes_view_page(self, volume_id, snapshot_name, snapshot_description):
         """
         Navigates to volumes view page and creates a snapshot of a volume.
         :param volume_id:
         """
         BasePage(self).goto_volumes_view_via_menu()
         VolumeView(self).click_action_manage_snaspshots(volume_id)
+        VolumeDetailPage(self).click_create_snapshot_from_volume_tile(volume_id)
+        CreateSnapshotModal(self).create_snapshot(snapshot_name, snapshot_description)
+        VolumeDetailPage(self).goto_detail_page_of_newly_created_snapshot(volume_id)
+
+
+
+    def create_snapshot_from_volume_on_volume_detail_page(self, volume_id, snapshot_name, snapshot_description):
+        """
+        Navigates to volume detail page and creates a snapshot.
+        :param volume_id:
+        :param snapshot_name:
+        :param snapshot_description:
+        """
+        BasePage(self).goto_volumes_view_via_menu()
+        VolumeView(self).goto_volume_detail_page_via_actions(volume_id)
+        VolumeDetailPage(self).click_create_snapshot_from_volume_tile(volume_id)
+        CreateSnapshotModal(self).create_snapshot(snapshot_name, snapshot_description)
+        VolumeDetailPage(self).goto_detail_page_of_newly_created_snapshot(volume_id)
+
+
 
 
 
