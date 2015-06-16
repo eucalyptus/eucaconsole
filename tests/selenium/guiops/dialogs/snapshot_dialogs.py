@@ -1,5 +1,13 @@
 from pages.basepage import BasePage
 
+class CreateNewSnapshotDialog(BasePage):
+
+    def __init__(self, tester):
+        self.tester = tester
+
+        NotImplementedError
+
+
 class CreateSnapshotModal(BasePage):
 
     def __init__(self, tester):

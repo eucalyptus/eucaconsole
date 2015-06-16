@@ -360,6 +360,9 @@ class GuiEC2(GuiTester):
         print volume
         return volume
 
+    def create_volume_from_dashboard(self):
+        NotImplementedError
+
     def delete_volume_from_view_page(self, volume_id):
         """
         Navigates to volumes view page and deletes volume.
@@ -380,7 +383,9 @@ class GuiEC2(GuiTester):
         VolumeDetailPage(self).click_create_snapshot_from_volume_tile(volume_id)
         CreateSnapshotModal(self).create_snapshot(snapshot_name, snapshot_description)
         VolumeDetailPage(self).goto_detail_page_of_newly_created_snapshot(volume_id)
-
+        snapshot=SnapshotDetailPage(self).get_snapshot_name_and_id()
+        print snapshot
+        return snapshot
 
 
     def create_snapshot_from_volume_on_volume_detail_page(self, volume_id, snapshot_name, snapshot_description):
@@ -395,7 +400,12 @@ class GuiEC2(GuiTester):
         VolumeDetailPage(self).click_create_snapshot_from_volume_tile(volume_id)
         CreateSnapshotModal(self).create_snapshot(snapshot_name, snapshot_description)
         VolumeDetailPage(self).goto_detail_page_of_newly_created_snapshot(volume_id)
+        snapshot=SnapshotDetailPage(self).get_snapshot_name_and_id()
+        print snapshot
+        return snapshot
 
+    def create_snapshot_from_dashboard(self):
+        NotImplementedError
 
 
 
