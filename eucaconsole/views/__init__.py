@@ -135,13 +135,8 @@ class BaseView(object):
             conn = ConnectionManager.aws_connection(
                 region, access_key, secret_key, security_token, conn_type, validate_certs)
         elif cloud_type == 'euca':
-            host = self.request.registry.settings.get('ufshost')
-            if not host:
-                host = self.request.registry.settings.get('clchost', 'localhost')
-            port = self.request.registry.settings.get('ufsport')
-            if not port:
-                port = self.request.registry.settings.get('clcport', 8773)
-            port = int(port)
+            host = self._get_ufs_host_setting_()
+            port = self._get_ufs_port_setting_()
             dns_enabled = self.request.session.get('dns_enabled', True)
             conn = ConnectionManager.euca_connection(
                 host, port, access_key, secret_key, security_token,
@@ -250,10 +245,8 @@ class BaseView(object):
         """
         This method centralizes configuration of the EucaAuthenticator.
         """
-        host = self.request.registry.settings.get('ufshost', 'localhost')
-        port = int(self.request.registry.settings.get('ufsport', 8773))
-        host = self.request.registry.settings.get('sts.host', host)
-        port = int(self.request.registry.settings.get('sts.port', port))
+        host = self._get_ufs_host_setting_()
+        port = self._get_ufs_port_setting_()
         validate_certs = asbool(self.request.registry.settings.get('connection.ssl.validation', False))
         conn = AWSAuthConnection(None, aws_access_key_id='', aws_secret_access_key='')
         ca_certs_file = conn.ca_certificates_file
@@ -271,6 +264,18 @@ class BaseView(object):
             with boto_error_handler(self.request):
                 attributes = conn.describe_account_attributes(attribute_names=attribute_names)
                 return attributes[0].attribute_values
+
+    def _get_ufs_host_setting_(self):
+        host = self.request.registry.settings.get('ufshost')
+        if not host:
+            host = self.request.registry.settings.get('clchost', 'localhost')
+        return host
+
+    def _get_ufs_port_setting_(self):
+        port = self.request.registry.settings.get('ufsport')
+        if not port:
+            port = self.request.registry.settings.get('clcport', 8773)
+        return int(port)
 
     @staticmethod
     def is_vpc_supported(request):
