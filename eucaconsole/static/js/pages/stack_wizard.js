@@ -5,7 +5,7 @@
  */
 
 // Launch Instance page includes the Tag Editor, the Image Picker, BDM editor, and security group rules editor
-angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils'])
+angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.directives'])
     .directive('file', function(){
         return {
             restrict: 'A',
@@ -45,6 +45,7 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils'])
         $scope.serviceList = undefined;
         $scope.resourceList = undefined;
         $scope.propertyList = undefined;
+        $scope.parameterList = undefined;
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.stackTemplateEndpoint = options.stack_template_url;
@@ -326,7 +327,9 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils'])
                         $scope.description = '';
                         return;
                     }
-                    if (results.property_list && results.property_list.length > 0) {
+                    if ((results.parameter_list && results.parameter_list.length) ||
+                        (results.property_list && results.property_list.length > 0)) {
+                        $scope.parameterList = results.parameter_list;
                         $scope.propertyList = results.property_list;
                         $scope.expanded = false;
                         $scope.showAWSWarn();

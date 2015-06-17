@@ -1220,6 +1220,10 @@ ul.bullet-list {
     }
 }
 
+.columns.subheading {
+    padding-left: 0.125rem;
+}
+
 /* Responsive tweaks for landing page title */
 @media screen and (max-width: $row-width) {
     #pagetitle.landingpage {

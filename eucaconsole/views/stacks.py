@@ -376,18 +376,23 @@ class StackWizardView(BaseView):
                     service_list = []
                     resource_list = []
                     property_list = []
+                    parameter_list = []
                     for resource in exception_list:
-                        if resource['type'] == 'Property':
-                            property_list.append(resource['name'])
+                        print "exception: "+json.dumps(resource)
+                        if resource['type'] == 'Parameter':
+                            parameter_list.append(resource['name'])
                         else:
                             tmp = resource['type']
                             tmp = tmp[5:]
-                            if tmp.find('::') > -1:  # this means there's a resource there
-                                resource_list.append(tmp[tmp.find('::')+2:])
+                            if 'property' in resource.keys():
+                                property_list.append('{0} ({1})'.format(resource['name'], tmp))
+                            elif tmp.find('::') > -1:  # this means there's a resource there
+                                resource_list.append(tmp)
                             else:
                                 service_list.append(tmp)
                     service_list = list(set(service_list))
                     resource_list = list(set(resource_list))
+                    property_list = list(set(property_list))
                     return dict(
                         results=dict(
                             template_url=template_url,
@@ -395,7 +400,8 @@ class StackWizardView(BaseView):
                             description=parsed['Description'] if 'Description' in parsed else '',
                             service_list=service_list,
                             resource_list=resource_list,
-                            property_list=property_list
+                            property_list=property_list,
+                            parameter_list=parameter_list
                         )
                     )
                 params = self.generate_param_list(parsed)
@@ -496,6 +502,10 @@ class StackWizardView(BaseView):
                 param_vals['options'] = self.get_instance_profile_options()
             if ('vmtype' in name.lower() or 'instancetype' in name.lower()) and 'options' not in param_vals.keys():
                 param_vals['options'] = self.get_vmtype_options()
+            # if no default, and options are a single value, set that as default
+            if 'default' not in param_vals.keys() and 'options' in param_vals.keys() and len(param_vals['options']) == 1:
+                param_vals['default'] = param_vals['options'][0][0]
+            param_vals['chosen'] = True if 'options' in param_vals.keys() and len(param_vals['options']) > 9 else False
             params.append(param_vals)
         return params
 
@@ -519,7 +529,7 @@ class StackWizardView(BaseView):
             images = conn.get_all_ramdisks()
         ret = []
         for image in images:
-            ret.append((image.id, "{0} | {1}".format(image.id, image.name)))
+            ret.append((image.id, "{0} ({1})".format(image.name, image.id)))
         return ret
 
     def get_cert_options(self):
@@ -607,18 +617,6 @@ class StackWizardView(BaseView):
                 template_name = template_url[template_url.rindex('/') + 1:]
                 if len(template_body) > 460800:
                     raise JSONError(status=400, message=_(u"Template too large: ")+template_name)
-            template_name = self.request.params.get('sample-template')
-            template_url = self.request.params.get('template-url')
-            files = self.request.POST.getall('template-file')
-            template_body = ''
-
-            if len(files) > 0 and len(str(files[0])) > 0:  # read from file
-                # TODO: body limit is 51,200 in the API, check that!
-                template_body = files[0].file.read()
-                template_name = files[0].name
-            elif template_url:  # read from url
-                template_body = urllib2.urlopen(template_url).read()
-                template_name = template_url[template_url.rindex('/') + 1:]
             else:
                 s3_bucket = self.get_template_samples_bucket()
                 mgr = CFSampleTemplateManager(s3_bucket)
@@ -716,15 +714,17 @@ class StackWizardView(BaseView):
                 if resource['Type'].find(prefix) == 0:
                     ret.append({'name': name, 'type': prefix})
         # second pass, find non-euca properties
-        """
         for name in parsed['Resources'].keys():
             resource = parsed['Resources'][name]
             for props in unsupported_properties:
                 if resource['Type'].find(props['resource']) == 0:
                     for prop in props['properties']:
                         if prop in resource['Properties'].keys():
-                            ret.append({'name': prop, 'type': props['resource']})
-        """
+                            ret.append({
+                                'name': prop,
+                                'type': props['resource'],
+                                'property': True
+                            })
         # third pass, find refs to cloud-specific resources
         def find_image_ref(name, item):
             if name == 'Parameters':
@@ -732,14 +732,17 @@ class StackWizardView(BaseView):
             if type(item) is dict and 'ImageId' in item.keys():
                 img_item = item['ImageId']
                 if 'Ref' not in img_item.keys():
-                    ret.append({'name': 'ImageId', 'type': 'Property', 'item': item})
+                    ret.append({
+                        'name': 'ImageId',
+                        'type': 'Parameter',
+                        'item': item})
         StackWizardView.traverse(parsed, find_image_ref)
 
         if modify:
             for res in ret:
                 # remove resources found in pass 1
                 for name in parsed['Resources'].keys():
-                    if res['name'] == name:
+                    if res['name'] == name and 'property' not in res.keys():
                         del parsed['Resources'][name]
                 # modify resource refs into params
                 if res['name'] == 'ImageId':
