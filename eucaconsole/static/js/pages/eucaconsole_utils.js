@@ -57,6 +57,18 @@ angular.module('EucaConsoleUtils', ['CustomFilters', 'ngSanitize'])
         }
     };
 })
+.service('eucaNumbersOnly', function () {
+    /**
+     * Convert string to integers only
+     */
+    return function(str) {
+        str = str + '';
+        if (str) {
+            return str.replace(/\D+/g, '');
+        }
+        return str;
+    };
+})
 .service('eucaHandleUnsavedChanges', function() {
     return function(scope) {
         scope.isSubmitted = false;

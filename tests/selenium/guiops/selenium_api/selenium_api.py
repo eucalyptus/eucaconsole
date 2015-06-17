@@ -25,9 +25,9 @@ class SeleniumApi(object):
 
     retry = 2
     timeout_to_locate_element_in_seconds = 20
-    timeout_to_determine_visibility_in_seconds = 60
+    timeout_to_determine_visibility_in_seconds = 240
     timeout_to_determine_if_clickable_in_seconds = 20
-    timeout_to_wait_for_text_in_seconds = 40
+    timeout_to_wait_for_text_in_seconds = 120
     implicit_wait_default_in_seconds = 30
 
     def set_implicit_wait(self, implicit_wait_time):
@@ -51,7 +51,6 @@ class SeleniumApi(object):
         url = self.driver.current_url.encode('ascii', 'ignore')
         url = str(url)
         return url
-
 
     def wait_for_element_present_by_id(self, element_id):
         """
@@ -138,7 +137,7 @@ class SeleniumApi(object):
                 print "Element by id = '{0}' is present in the DOM but not visible.".format(element_id)
             except NoSuchElementException:
                 print "ERROR: Element by id = '{0}' not found in the DOM.".format(element_id)
-                raise
+            return False
 
     def wait_for_visible_by_css(self, css):
         """
@@ -159,7 +158,7 @@ class SeleniumApi(object):
                 print "Element by css = '{0}' is present in the DOM but not visible.".format(css)
             except NoSuchElementException:
                 print "ERROR: Element by css = '{0}' not found in the DOM.".format(css)
-                raise
+            return False
 
     def wait_for_clickable_by_id(self, element_id):
         """
@@ -313,6 +312,8 @@ class SeleniumApi(object):
         """
         self.set_implicit_wait(5)
         print "Executing wait_for_text_present_by_css css = '{0}', text = '{1}'".format(css, text)
+        text_present = self.store_text_by_css(css)
+        print "Text present: "+text_present
         try:
             WebDriverWait(self.driver, self.timeout_to_wait_for_text_in_seconds).until(
                 EC.text_to_be_present_in_element((By.CSS_SELECTOR, css), text))
@@ -321,6 +322,8 @@ class SeleniumApi(object):
         except TimeoutException, t:
             print "ERROR: Timed out. Could not verify presence of text = '{1}' in element by css = '{0}'".format(css, text)
         self.set_implicit_wait(self.implicit_wait_default_in_seconds)
+        text_present=self.store_text_by_css(css)
+        print "Text present: "+text_present
 
     def wait_for_text_not_present_by_id(self, element_id, text):
         """
@@ -398,7 +401,7 @@ class SeleniumApi(object):
         print "Executing store_text_by_css('{0}')".format(css)
         self.wait_for_visible_by_css(css)
         print "Getting text by css = '{0}'".format(css)
-        return self.driver.find_element_by_css(css).text
+        return self.driver.find_element_by_css_selector(css).text
 
     def select_by_id(self, element_id, text):
         """
@@ -442,3 +445,24 @@ class SeleniumApi(object):
         print "Selecting element with value = {1} by name = {0}".format(name, value)
         Select(self.driver.find_element_by_name(name)).select_by_value(value)
 
+    def get_attrubute_by_css(self, css, attribute_name):
+        """
+        Finds element by css. Returns specified attribute.
+        :param css:
+        :param attribute_name:
+        """
+        element = self.driver.find_element_by_css_selector(css)
+        attribute = element.get_attribute(attribute_name)
+        print attribute
+        return attribute
+
+    def get_attrubute_by_id(self, element_id, attribute_name):
+        """
+        Finds element by id. Returns specified attribute.
+        :param element_id:
+        :param attribute_name:
+        """
+        element = self.driver.find_element_by_id(element_id)
+        attribute = element.get_attribute(attribute_name)
+        print attribute
+        return attribute

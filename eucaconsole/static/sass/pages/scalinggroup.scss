@@ -25,6 +25,9 @@ input[type="number"] {
 }
 
 #capacity-section {
+    input {
+        width: 3rem;
+    }
     .controls-wrapper.inline {
         display: inline-block;
         label {

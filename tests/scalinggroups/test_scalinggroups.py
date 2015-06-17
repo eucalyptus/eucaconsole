@@ -92,14 +92,6 @@ class BaseScalingGroupFormTestCase(BaseFormTestCase):
         self.assert_required('min_size')
         self.assert_required('health_check_period')
 
-    def test_field_validators(self):
-        self.assert_min('desired_capacity', 0)
-        self.assert_max('desired_capacity', 99)
-        self.assert_min('max_size', 0)
-        self.assert_max('max_size', 99)
-        self.assert_min('min_size', 0)
-        self.assert_max('min_size', 99)
-
     def test_launch_config_field_html_attrs(self):
         """Test if required fields pass the proper HTML attributes to the form_field_row panel"""
         fieldrow = form_field_row(None, self.request, self.form.launch_config)

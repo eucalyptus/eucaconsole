@@ -122,7 +122,7 @@ class RolesJsonView(BaseView):
                 instances = []
                 try:
                     profile_arns = [profile.arn for profile in profiles if
-                                    profile.roles.member.role_name == role.role_name]
+                                    profile.roles and profile.roles.member.role_name == role.role_name]
                     instances = self.get_connection().get_only_instances(
                         filters={'iam-instance-profile.arn': profile_arns})
                 except BotoServerError as exc:

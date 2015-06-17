@@ -216,8 +216,8 @@ class ELBDeleteForm(BaseSecureForm):
 
 class ELBsFiltersForm(BaseSecureForm):
     """Form class for filters on landing page"""
-    availability_zones = wtforms.SelectMultipleField(label=_(u'Availability zones'))
-    subnets = wtforms.SelectMultipleField(label=_(u'VPC subnets'))
+    availability_zones = wtforms.SelectMultipleField(label=_(u'Availability zone'))
+    subnets = wtforms.SelectMultipleField(label=_(u'VPC subnet'))
 
     def __init__(self, request, cloud_type='euca', ec2_conn=None, vpc_conn=None, is_vpc_supported=False, **kwargs):
         super(ELBsFiltersForm, self).__init__(request, **kwargs)
@@ -319,7 +319,6 @@ class CreateELBForm(BaseSecureForm):
         self.conn = conn
         self.vpc_conn = vpc_conn
         self.cloud_type = request.session.get('cloud_type', 'euca')
-        from ..views import BaseView
         self.is_vpc_supported = BaseView.is_vpc_supported(request)
         self.set_error_messages()
         self.choices_manager = ChoicesManager(conn=conn)
@@ -482,22 +481,29 @@ class CertificateForm(BaseSecureForm):
         validators=[CertificateARNRequired(message=certificates_error_msg)],
     )
 
-    def __init__(self, request, conn=None, iam_conn=None, elb_conn=None, **kwargs):
+    def __init__(self, request, conn=None, iam_conn=None, elb_conn=None, can_list_certificates=True, **kwargs):
         super(CertificateForm, self).__init__(request, **kwargs)
         self.conn = conn
         self.iam_conn = iam_conn
         self.elb_conn = elb_conn
+        self.can_list_certificates = can_list_certificates
         self.set_error_messages()
-        self.certificate_arn.choices = self.get_all_server_certs(iam_conn=self.iam_conn)
-        if len(self.certificate_arn.choices) > 1:
-            self.certificate_arn.data = self.certificate_arn.choices[0][0]
+        self.set_certificate_choices()
 
     def set_error_messages(self):
         self.certificate_name.error_msg = self.certificate_name_error_msg
         self.private_key.error_msg = self.private_key_error_msg
         self.public_key_certificate.error_msg = self.public_key_certificate_error_msg
 
-    def get_all_server_certs(self, iam_conn=None, add_blank=True):
+    def set_certificate_choices(self):
+        if self.iam_conn and self.can_list_certificates:
+            self.certificate_arn.choices = self.get_all_server_certs(iam_conn=self.iam_conn)
+            if len(self.certificate_arn.choices) > 1:
+                self.certificate_arn.data = self.certificate_arn.choices[0][0]
+        else:
+            self.certificate_arn.choices = []
+
+    def get_all_server_certs(self,  iam_conn=None, add_blank=True):
         choices = []
         if iam_conn is not None:
             certificates = self.iam_conn.get_all_server_certs()
