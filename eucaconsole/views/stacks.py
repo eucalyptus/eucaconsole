@@ -385,7 +385,7 @@ class StackWizardView(BaseView):
                             tmp = resource['type']
                             tmp = tmp[5:]
                             if 'property' in resource.keys():
-                                property_list.append('{0} ({1})'.format(resource['name'], tmp))
+                                property_list.append('{0} ({1})'.format(tmp, resource['name']))
                             elif tmp.find('::') > -1:  # this means there's a resource there
                                 resource_list.append(tmp)
                             else:

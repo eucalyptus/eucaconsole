@@ -470,6 +470,13 @@ textarea.policy-area {
     }
 }
 
+.flex-space {
+    @include flexbox-mixin;
+    .flex-column {
+        @include flexgrow-mixin(1);
+    }
+}
+
 
 /* -----------------------------------------
    Tag editor

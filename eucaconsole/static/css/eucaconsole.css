@@ -1702,6 +1702,9 @@ textarea.policy-area { width: 100%; min-height: 30rem; font-family: Courier, "co
 .action-icon { display: inline-block; font-size: 1.4rem; color: #5a5a5a; padding-right: 0.5rem; padding-left: 0.5rem; }
 .action-icon:hover { cursor: pointer; color: #007dba; }
 
+.flex-space { display: -ms-flexbox; display: -webkit-flex; display: flex; }
+.flex-space .flex-column { -webkit-flex-grow: 1; flex-grow: 1; }
+
 /* ----------------------------------------- Tag editor
 ----------------------------------------- */
 #tag-editor small { font-size: 0.825rem; }

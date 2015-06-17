@@ -267,8 +267,8 @@
                     </a>
                 </h6>
                 <div class="content" ng-show="expanded">
-                    <div class="row">
-                        <div class="small-6 columns">
+                    <div class="flex-space">
+                        <div class="flex-column">
                             <h6 i18n:translate="">PARAMETERS TO CONVERT</h6>
                             <ul class="bullet-list">
                                 <li ng-repeat="item in parameterList" ng-cloak="true">
@@ -276,10 +276,10 @@
                                 </li>
                             </ul>
                         </div>
-                        <div class="small-6 columns">
+                        <div class="flex-column">
                             <h6 i18n:translate="">UNSUPPORTED PROPERTIES</h6>
                             <ul class="bullet-list">
-                                <li ng-repeat="item in propertiesList" ng-cloak="true">
+                                <li ng-repeat="item in propertyList" ng-cloak="true">
                                     {{ item }}
                                 </li>
                             </ul>
