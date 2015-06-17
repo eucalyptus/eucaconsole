@@ -1,7 +1,7 @@
 <!--! Select certificate modal dialog -->
 <div tal:omit-tag="" i18n:domain="eucaconsole">
     <div id="select-certificate-modal" class="reveal-modal medium" data-reveal="" ng-cloak="">
-        <h3 i18n:translate="">Select certificate</h3>
+        <h3 i18n:translate="">Select certificate(s)</h3>
         <div ng-show="showsCertificateTabDiv">
             <ul class="btn-group" ng-cloak="">
                 <li>
@@ -70,7 +70,7 @@
         <div ng-show="certificateTab === 'SSL'">
             <p i18n:translate="">
                 <span i18n:translate="">
-                    SSL certificates are required for secure(HTTPS or SSL) listeners.
+                    SSL certificates are required for secure (HTTPS or SSL) listeners.
                 </span>
                 <span i18n:translate="" tal:condition="can_list_certificates">
                     Choose or upload a pem-encoded certificate below.
