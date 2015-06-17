@@ -699,7 +699,7 @@ class StackWizardView(BaseView):
                 'HealthCheckType', 'Tags'
             ]},
             {'resource': 'AWS::ElasticLoadBalancing::LoadBalancer', 'properties': [
-                'AccessLoggingPolicy', 'ConnectionDrainingPolicy', 'CrossZone',
+                'AccessLoggingPolicy', 'ConnectionDrainingPolicy',
                 'Policies.InstancePorts', 'Policies.LoadBalancerPorts'
             ]},
             {'resource': 'AWS::IAM::AccessKey', 'properties': [
