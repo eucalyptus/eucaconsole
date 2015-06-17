@@ -39,6 +39,7 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
             if ($('#elb-listener').length > 0) {
                 $scope.elbListenerTextarea = $('#elb-listener');
             }
+            $scope.certificateRequiredNotice = options.certificate_required_notice;
             $scope.protocolList = []; 
             $scope.toProtocolList = []; 
             $scope.protocolList.push({'name': 'Select...', 'value': 'None', 'port': ''});
@@ -213,9 +214,16 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
         };
         $scope.addListener = function ($event) {
             $event.preventDefault();
-            $scope.checkAddListenerButtonCondition(); 
+            $scope.checkAddListenerButtonCondition();
             // timeout is needed for all DOM updates and validations to be complete
             $timeout(function () {
+                // Prevent adding HTTPS/SSL listener w/o certificate configured
+                if ($scope.fromProtocol.value === 'HTTPS' || $scope.fromProtocol.value === 'SSL') {
+                    if (!$scope.certificateARN && $scope.certificateName === "Select...") {
+                        alert($scope.certificateRequiredNotice);
+                        return false;
+                    }
+                }
                 if ($scope.isListenerNotComplete === true ||
                     $scope.hasDuplicatedFromPort === true ||
                     $scope.hasDuplicatedListener === true) {
@@ -268,7 +276,6 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
             if ($scope.isListenerNotComplete === false) {
                 $scope.checkFromPortInputCondition();
                 $scope.checkToPortInputCondition();
-                $scope.checkForDuplicatedListeners();
             }
         };
         // Return the matching port given the protocol name

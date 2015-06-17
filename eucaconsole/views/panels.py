@@ -425,6 +425,7 @@ def elb_listener_editor(context, request, listener_list=None, protocol_list=None
     controller_options_json = BaseView.escape_json(json.dumps({
         'listener_list': listener_list,
         'protocol_list': protocol_list,
+        'certificate_required_notice': _(u'Certificate is required'),
     }))
     return dict(
         controller_options_json=controller_options_json,
