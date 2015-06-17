@@ -324,6 +324,14 @@ def select_certificate_dialog(context, request, can_list_certificates=True,
     )
 
 
+@panel_config('elb_security_policy_dialog', renderer='../templates/dialogs/elb_security_policy_dialog.pt')
+def elb_security_policy_dialog(context, request, policy_form=None):
+    """ Modal dialog for selecting SSL certificate"""
+    return dict(
+        policy_form=policy_form,
+    )
+
+
 @panel_config('cloudwatch_chart_dialog', renderer='../templates/dialogs/cloudwatch_chart_dialog.pt')
 def cloudwatch_chart_dialog(context, request, duration_choices=None, statistic_choices=None):
     """ Modal dialog for large CloudWatch chart"""

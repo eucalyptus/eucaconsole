@@ -102,6 +102,7 @@
         <!--! Modal dialogs -->
         ${panel('elb_dialogs', elb=elb, delete_form=delete_form)}
         ${panel('select_certificate_dialog', certificate_form=certificate_form, backend_certificate_form=backend_certificate_form)}
+        ${panel('elb_security_policy_dialog', policy_form=policy_form)}
     </div>
 </div>
 

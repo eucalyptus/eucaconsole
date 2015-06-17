@@ -456,7 +456,7 @@ class ELBInstancesFiltersForm(BaseSecureForm):
 
 
 class CertificateForm(BaseSecureForm):
-    """Create SSL Certificate form"""
+    """ELB Certificate form (used on wizard and detail page)"""
     certificate_name_error_msg = NAME_WITHOUT_SPACES_NOTICE
     certificate_name = wtforms.TextField(
         label=_(u'Certificate name'),
@@ -517,7 +517,7 @@ class CertificateForm(BaseSecureForm):
 
 
 class BackendCertificateForm(BaseSecureForm):
-    """Create SSL Certificate form"""
+    """ELB Backend Certificate form (used on wizard and detail page)"""
     backend_certificate_name_error_msg = NAME_WITHOUT_SPACES_NOTICE
     backend_certificate_name = wtforms.TextField(
         label=_(u'Certificate name'),
@@ -539,3 +539,41 @@ class BackendCertificateForm(BaseSecureForm):
     def set_error_messages(self):
         self.backend_certificate_name.error_msg = self.backend_certificate_name_error_msg
         self.backend_certificate_body.error_msg = self.backend_certificate_body_error_msg
+
+
+class PredefinedPolicyRequired(validators.Required):
+    """Custom validator to conditionally require predefined policy if custom policy isn't uploaded"""
+
+    def __init__(self, *args, **kwargs):
+        super(PredefinedPolicyRequired, self).__init__(*args, **kwargs)
+
+    def __call__(self, form, field):
+        conditions = [
+            form.ssl_protocols.data,
+            form.ssl_ciphers.data
+        ]
+        if not all(conditions):
+            super(PredefinedPolicyRequired, self).__call__(form, field)
+
+
+class SecurityPolicyForm(BaseSecureForm):
+    """ELB Security Policy form"""
+    predefined_policy_error_msg = _(u'Policy is required')
+    predefined_policy = wtforms.SelectField(
+        label=_(u'Policy name'),
+        validators=[PredefinedPolicyRequired(message=predefined_policy_error_msg)],
+    )
+    ssl_protocols = wtforms.SelectField(
+        label=_(u'SSL Protocols'),
+    )
+    ssl_ciphers = wtforms.SelectField(
+        label=_(u'SSL Ciphers'),
+    )
+    ssl_options = wtforms.BooleanField(label=_(u'SSL Options'))
+
+    def __init__(self, request, **kwargs):
+        super(SecurityPolicyForm, self).__init__(request, **kwargs)
+        self.set_error_messages()
+
+    def set_error_messages(self):
+        self.predefined_policy.error_msg = self.predefined_policy_error_msg
