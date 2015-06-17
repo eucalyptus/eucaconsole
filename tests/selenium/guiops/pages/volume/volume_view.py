@@ -36,10 +36,10 @@ class VolumeView(ViewPage):
         return volume_id
 
     def verify_volume_status_is_available(self, volume_id):
-        self.tester.wait_for_text_present_by_xpath(self._volume_status_xpath.format(volume_id), "available")
+        self.tester.wait_for_text_present_by_xpath(self._volume_status_xpath.format(volume_id), "available", 240)
 
     def verify_volume_status_is_deleted(self, volume_id):
-        self.tester.wait_for_text_present_by_xpath(self._volume_status_xpath.format(volume_id), "deleted")
+        self.tester.wait_for_text_present_by_xpath(self._volume_status_xpath.format(volume_id), "deleted", 240)
 
     def goto_volume_detail_page_via_link(self, volume_id):
         self.tester.click_element_by_css(self._volume_link_css.format(volume_id))
@@ -65,4 +65,4 @@ class VolumeView(ViewPage):
 
     def verify_there_are_no_available_volumes(self):
         self.tester.send_keys_by_css(self._search_input_field_css, "available")
-        self.tester.wait_for_text_present_by_css(ViewPage(self)._item_count_css,"0")
+        self.tester.wait_for_text_present_by_css(ViewPage(self)._item_count_css,"0", 240)
