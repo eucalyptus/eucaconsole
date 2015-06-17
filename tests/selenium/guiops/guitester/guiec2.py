@@ -343,7 +343,7 @@ class GuiEC2(GuiTester):
         TerminateAllInstancesModal(self).click_terminate_all_instances_submit_button()
         InstanceView(self).verify_there_are_no_running_instances()
 
-    def create_volume_from_view_page(self, volume_name=None, create_from_snapshot=False, snapshot_id = None, volume_size=None, availability_zone=None):
+    def create_volume_from_view_page(self, volume_name=None, create_from_snapshot=False, snapshot_id = None, volume_size=None, availability_zone=None, timeout_in_seconds=240):
         """
         Navigates to volumes view page and creates volume.
         :param volume_name:
@@ -355,7 +355,7 @@ class GuiEC2(GuiTester):
         BasePage(self).goto_volumes_view_via_menu()
         VolumeView(self).click_create_volume_btn_on_view_page()
         CreateVolumeDialog(self).create_volume(volume_name, create_from_snapshot, snapshot_id, volume_size, availability_zone)
-        VolumeDetailPage(self).verify_volume_status_is_available()
+        VolumeDetailPage(self).verify_volume_status_is_available(timeout_in_seconds=timeout_in_seconds)
         volume = VolumeDetailPage(self).get_volume_name_and_id()
         print volume
         return volume
@@ -363,7 +363,7 @@ class GuiEC2(GuiTester):
     def create_volume_from_dashboard(self):
         NotImplementedError()
 
-    def delete_volume_from_view_page(self, volume_id):
+    def delete_volume_from_view_page(self, volume_id, timeout_in_seconds=240):
         """
         Navigates to volumes view page and deletes volume.
         :param volume_id:
@@ -371,7 +371,7 @@ class GuiEC2(GuiTester):
         BasePage(self).goto_volumes_view_via_menu()
         VolumeView(self).click_action_delete_volume_on_view_page(volume_id)
         DeleteVolumeModal(self).delete_volume()
-        VolumeView(self).verify_volume_status_is_deleted(volume_id)
+        VolumeView(self).verify_volume_status_is_deleted(volume_id, timeout_in_seconds)
 
     def delete_volume_from_detail_page(self, volume_id):
         NotImplementedError()

@@ -35,11 +35,11 @@ class VolumeView(ViewPage):
         print(volume_id)
         return volume_id
 
-    def verify_volume_status_is_available(self, volume_id):
-        self.tester.wait_for_text_present_by_xpath(self._volume_status_xpath.format(volume_id), "available", 240)
+    def verify_volume_status_is_available(self, volume_id, timeout_in_seconds):
+        self.tester.wait_for_text_present_by_xpath(self._volume_status_xpath.format(volume_id), "available", timeout_in_seconds)
 
-    def verify_volume_status_is_deleted(self, volume_id):
-        self.tester.wait_for_text_present_by_xpath(self._volume_status_xpath.format(volume_id), "deleted", 240)
+    def verify_volume_status_is_deleted(self, volume_id, timeout_in_seconds):
+        self.tester.wait_for_text_present_by_xpath(self._volume_status_xpath.format(volume_id), "deleted", timeout_in_seconds)
 
     def goto_volume_detail_page_via_link(self, volume_id):
         self.tester.click_element_by_css(self._volume_link_css.format(volume_id))
@@ -63,6 +63,6 @@ class VolumeView(ViewPage):
         self.tester.click_element_by_id(self._volume_action_menu_id.format(volume_id))
         self.tester.click_element_by_css(self._attach_to_instance_actions_menu_item_css.format(volume_id))
 
-    def verify_there_are_no_available_volumes(self):
+    def verify_there_are_no_available_volumes(self, timeout_in_seconds):
         self.tester.send_keys_by_css(self._search_input_field_css, "available")
-        self.tester.wait_for_text_present_by_css(ViewPage(self)._item_count_css,"0", 240)
+        self.tester.wait_for_text_present_by_css(ViewPage(self)._item_count_css, "0", timeout_in_seconds)
