@@ -48,10 +48,11 @@ class VolumeDetailPage(DetailPage):
         return {'volume_name': volume_name, 'volume_id': volume_id}
 
     def goto_snapshots_tab(self, volume_id):
-        tab=self.tester.store_text_by_css(self._active_tab_css)
-        if tab is "General":
+        tab = self.tester.store_text_by_css(self._active_tab_css)
+        print "Found active tab {0}".format(tab)
+        if tab == "General":
             self.tester.click_element_by_css(self._snapshots_tab_css.format(volume_id))
-        elif tab is "Snapshot":
+        elif tab == "Snapshots":
             pass
         else:
             print "ERROR: tab {0} not among recognized tab names.".format(tab)
@@ -61,13 +62,7 @@ class VolumeDetailPage(DetailPage):
         self.tester.click_element_by_css(self._create_snapshot_tile_css)
 
     def goto_detail_page_of_newly_created_snapshot(self, volume_id):
-        tab=self.tester.store_text_by_css(self._active_tab_css)
-        if tab is "General":
-            self.tester.click_element_by_css(self._snapshots_tab_css.format(volume_id))
-        elif tab is "Snapshot":
-            pass
-        else:
-            print "ERROR: tab {0} not among recognized tab names.".format(tab)
+        self.goto_snapshots_tab(volume_id)
         self.tester.click_element_by_css(self._id_link_in_tile_of_newly_created_snapshot_css)
 
 
