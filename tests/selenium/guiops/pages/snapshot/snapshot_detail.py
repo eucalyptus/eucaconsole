@@ -36,8 +36,8 @@ class SnapshotDetailPage(DetailPage):
         self.tester.click_element_by_css(DetailPage._actions_menu_css)
         self.tester.click_element_by_id(self._create_volume_from_snapshot_actions_menuitem_id)
 
-    def verify_snapshot_status_is_completed(self):
-        self.tester.wait_for_visible_by_css(self._snapshot_status_css.format("completed"))
+    def verify_snapshot_status_is_completed(self, timeout_in_seconds):
+        self.tester.wait_for_visible_by_css(self._snapshot_status_css.format("completed"), timeout_in_seconds)
 
     def get_snapshot_name_and_id(self):
         name_and_id = str(self.tester.store_text_by_css(DetailPage(self)._resource_name_and_id_css))

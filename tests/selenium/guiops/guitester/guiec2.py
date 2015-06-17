@@ -376,7 +376,7 @@ class GuiEC2(GuiTester):
     def delete_volume_from_detail_page(self, volume_id):
         NotImplementedError()
 
-    def create_snapshot_on_volumes_view_page(self, volume_id, snapshot_name, snapshot_description):
+    def create_snapshot_on_volumes_view_page(self, volume_id, snapshot_name, snapshot_description, timeout_in_seconds=240):
         """
         Navigates to volumes view page and creates a snapshot of a volume.
         :param volume_id:
@@ -387,11 +387,11 @@ class GuiEC2(GuiTester):
         CreateSnapshotModal(self).create_snapshot(snapshot_name, snapshot_description)
         VolumeDetailPage(self).goto_detail_page_of_newly_created_snapshot(volume_id)
         snapshot=SnapshotDetailPage(self).get_snapshot_name_and_id()
-        SnapshotDetailPage(self).verify_snapshot_status_is_completed()
+        SnapshotDetailPage(self).verify_snapshot_status_is_completed(timeout_in_seconds)
         print snapshot
         return snapshot
 
-    def create_snapshot_on_volume_detail_page(self, volume_id, snapshot_name, snapshot_description):
+    def create_snapshot_on_volume_detail_page(self, volume_id, snapshot_name, snapshot_description, timeout_in_seconds=240):
         """
         Navigates to volume detail page and creates a snapshot.
         :param volume_id:
@@ -404,7 +404,7 @@ class GuiEC2(GuiTester):
         CreateSnapshotModal(self).create_snapshot(snapshot_name, snapshot_description)
         VolumeDetailPage(self).goto_detail_page_of_newly_created_snapshot(volume_id)
         snapshot=SnapshotDetailPage(self).get_snapshot_name_and_id()
-        SnapshotDetailPage(self).verify_snapshot_status_is_completed()
+        SnapshotDetailPage(self).verify_snapshot_status_is_completed(timeout_in_seconds)
         print snapshot
         return snapshot
 

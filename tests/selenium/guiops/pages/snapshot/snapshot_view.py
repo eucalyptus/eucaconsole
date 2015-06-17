@@ -35,8 +35,8 @@ class SnapshotView(ViewPage):
         print(snapshot_id)
         return snapshot_id
 
-    def verify_snapshot_status_is_completed(self, snapshot_id):
-        self.tester.wait_for_text_present_by_xpath(self._snapshot_status_xpath.format(snapshot_id), "completed")
+    def verify_snapshot_status_is_completed(self, snapshot_id, timeout_in_seconds):
+        self.tester.wait_for_text_present_by_xpath(self._snapshot_status_xpath.format(snapshot_id), "completed", timeout_in_seconds)
 
     def goto_snapshot_detail_page_via_link(self, snapshot_id):
         self.tester.click_element_by_css(self._snapshot_link_css.format(snapshot_id))
