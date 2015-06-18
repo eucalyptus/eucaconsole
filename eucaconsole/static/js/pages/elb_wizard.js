@@ -64,6 +64,7 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
     };
     $scope.setInitialValues = function (options) {
         var certArnField = $('#certificate_arn');
+        $scope.existingCertificateChoices = options.existing_certificate_choices;
         $scope.elbForm = $('#elb-form');
         $scope.urlParams = $.url().param();
         $scope.isNotValid = true;

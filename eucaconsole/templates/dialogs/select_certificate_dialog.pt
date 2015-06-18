@@ -81,7 +81,10 @@
             </p>
             <form method="post" data-abide="abide" id="select-certificate-form">
                  ${structure:certificate_form['csrf_token']}
-                <div tal:condition="can_list_certificates">
+                <p ng-if="existingCertificateChoices.length === 1" i18n:translate="">
+                    No certificates are available. Please upload a new certificate instead.
+                </p>
+                <div tal:condition="can_list_certificates" ng-if="existingCertificateChoices.length != 1">
                     <div>
                         <input type="radio" id="certificate-type-radio-existing" name="certificate_type_radio"
                                value="existing" ng-model="certificateRadioButton" />
@@ -93,10 +96,12 @@
                 </div>
                 <div>
                     <input type="radio" id="certificate-type-radio-new" name="certificate_type_radio"
-                           value="new" ng-model="certificateRadioButton" />
-                    <label for="certificate-type-radio-new" i18n:translate="">Upload a new SSL certificate</label>
+                           value="new" ng-model="certificateRadioButton" ng-checked="existingCertificateChoices.length === 1" />
+                    <label id="certificate-type-radio-new-label" for="certificate-type-radio-new" i18n:translate="">
+                        Upload a new SSL certificate
+                    </label>
                 </div>
-                <div ng-show="certificateRadioButton === 'new'">
+                <div ng-show="certificateRadioButton === 'new' || existingCertificateChoices.length === 1">
                     ${panel('form_field', field=certificate_form['certificate_name'], ng_attrs={'model': 'newCertificateName'}, leftcol_width=3, rightcol_width=9, pattern=layout.name_without_spaces_pattern)}
                     ${panel('form_field', field=certificate_form['private_key'], ng_attrs={'model': 'privateKey'}, leftcol_width=3, rightcol_width=9)}
                     ${panel('form_field', field=certificate_form['public_key_certificate'], ng_attrs={'model': 'publicKeyCertificate'}, leftcol_width=3, rightcol_width=9)}

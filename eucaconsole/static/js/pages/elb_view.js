@@ -41,6 +41,7 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor']
         };
         $scope.setInitialValues = function (options) {
             var certArnField = $('#certificate_arn');
+            $scope.existingCertificateChoices = options.existing_certificate_choices;
             if ($('#elb-view-form').length > 0) {
                 $scope.elbForm = $('#elb-view-form');
             }

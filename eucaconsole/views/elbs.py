@@ -513,6 +513,7 @@ class ELBView(BaseELBView):
             'elb_vpc_network': self.elb.vpc_id if self.elb else [],
             'elb_vpc_subnets': self.elb.subnets if self.elb else [],
             'securitygroups': self.elb.security_groups if self.elb else [],
+            'existing_certificate_choices': self.certificate_form.certificate_arn.choices,
         }))
 
     def update_elb_idle_timeout(self, elb_name, idle_timeout):
@@ -923,6 +924,7 @@ class CreateELBView(BaseELBView):
             'instance_selector_text': self.get_instance_selector_text(),
             'securitygroups_json_endpoint': self.request.route_path('securitygroups_json'),
             'instances_json_endpoint': self.request.route_path('instances_json'),
+            'existing_certificate_choices': self.certificate_form.certificate_arn.choices,
         }))
 
     def get_wizard_tab_list(self):
