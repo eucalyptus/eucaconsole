@@ -4,7 +4,8 @@
  *
  */
 
-angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $http, $timeout, eucaHandleError, eucaUnescapeJson) {
+angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $http, $timeout, eucaHandleError,
+                                                                      eucaUnescapeJson, eucaFixHiddenTooltips) {
     $scope.elbForm = undefined;
     $scope.urlParams = undefined;
     $scope.isNotValid = true;
@@ -120,6 +121,7 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
         $('#zone').chosen({'width': '100%', search_contains: true});
     };
     $scope.setWatcher = function (){
+        eucaFixHiddenTooltips();
         // Handle the next step tab click event
         $scope.$on('eventClickVisitNextStep', function($event, thisStep, nextStep) {
             $scope.checkRequiredInput(thisStep);

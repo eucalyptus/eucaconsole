@@ -5,7 +5,8 @@
  */
 
 angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor'])
-    .controller('ELBPageCtrl', function ($scope, $http, $timeout, eucaUnescapeJson, eucaHandleUnsavedChanges, eucaHandleError) {
+    .controller('ELBPageCtrl', function ($scope, $http, $timeout, eucaUnescapeJson, eucaHandleUnsavedChanges,
+                                         eucaHandleError, eucaFixHiddenTooltips) {
         $scope.elbForm = undefined;
         $scope.listenerArray = [];
         $scope.securityGroups = [];
@@ -80,6 +81,7 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor']
         };
         $scope.setWatch = function () {
             eucaHandleUnsavedChanges($scope);
+            eucaFixHiddenTooltips();
             $(document).on('submit', '[data-reveal] form', function () {
                 $(this).find('.dialog-submit-button').css('display', 'none');
                 $(this).find('.dialog-progress-display').css('display', 'block');
@@ -132,7 +134,7 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor']
                 // Broadcast the certificate name change to the elb listener directive
                 $scope.$broadcast('eventUpdateCertificateName', $scope.certificateName);
             });
-            $scope.$watch('certificateRadioButton', function(){
+            $scope.$watch('certificateRadioButton', function () {
                 $scope.setClassUseThisCertificateButton();
             });
             $scope.$watch('newCertificateName', function(){

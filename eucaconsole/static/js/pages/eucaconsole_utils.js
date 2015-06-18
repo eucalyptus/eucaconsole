@@ -82,6 +82,22 @@ angular.module('EucaConsoleUtils', ['CustomFilters', 'ngSanitize'])
         };
     };
 })
+.service('eucaFixHiddenTooltips', function() {
+    /** Foundation tooltips don't normally work when inside elements that are initially hidden */
+    return function(tooltipSelector) {
+        tooltipSelector = tooltipSelector || '[data-reveal] form [data-tooltip]';
+        $(document).on('mouseover', tooltipSelector, function () {
+            var tipBubble = $(this),
+                selector = tipBubble.attr('data-selector');
+            $('#' + selector).show().css({'z-index': '9999999999'});
+        });
+        $(document).on('mouseout', tooltipSelector, function () {
+            var tipBubble = $(this),
+                selector = tipBubble.attr('data-selector');
+            $('#' + selector).hide();
+        });
+    }
+})
 .service('eucaHandleErrorS3', function() {
     /**
      * Provide generic error handling in the browser for XHR calls to Object Storage. 
