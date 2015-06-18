@@ -79,12 +79,12 @@
                     Upload a pem-encoded certificate below.
                 </span>
             </p>
-            <form method="post" data-abide="abide" id="select-certificate-form">
+            <form method="post" data-abide="abide" id="select-certificate-form" ng-cloak="">
                  ${structure:certificate_form['csrf_token']}
-                <p ng-if="existingCertificateChoices.length === 1" i18n:translate="">
+                <p ng-show="existingCertificateChoices.length === 1" i18n:translate="">
                     No certificates are available. Please upload a new certificate instead.
                 </p>
-                <div tal:condition="can_list_certificates" ng-if="existingCertificateChoices.length != 1">
+                <div tal:condition="can_list_certificates" ng-show="existingCertificateChoices.length != 1">
                     <div>
                         <input type="radio" id="certificate-type-radio-existing" name="certificate_type_radio"
                                value="existing" ng-model="certificateRadioButton" />
