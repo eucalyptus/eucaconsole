@@ -391,7 +391,7 @@ class SeleniumApi(object):
         self.set_implicit_wait(self.implicit_wait_default_in_seconds)
 
 
-    def wait_for_text_present_by_css(self, css, text, timeout_in_seconds):
+    def wait_for_text_present_by_css(self, css, text, timeout_in_seconds=None):
         """
         Waits for text to be present.
         :param css:
