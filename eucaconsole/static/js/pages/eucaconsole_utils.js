@@ -96,7 +96,7 @@ angular.module('EucaConsoleUtils', ['CustomFilters', 'ngSanitize'])
                 selector = tipBubble.attr('data-selector');
             $('#' + selector).hide();
         });
-    }
+    };
 })
 .service('eucaHandleErrorS3', function() {
     /**
