@@ -379,7 +379,6 @@ class StackWizardView(BaseView):
                     property_list = []
                     parameter_list = []
                     for resource in exception_list:
-                        print "exception: "+json.dumps(resource)
                         if resource['type'] == 'Parameter':
                             parameter_list.append(resource['name'])
                         else:
@@ -469,7 +468,7 @@ class StackWizardView(BaseView):
         ]
         """
         params = []
-        for name in parsed['Parameters'].keys():
+        for name in parsed['Parameters']:
             param = parsed['Parameters'][name]
             param_vals = {
                 'name': name,
@@ -568,7 +567,7 @@ class StackWizardView(BaseView):
             (template_url, template_name, parsed) = self.parse_store_template()
             capabilities = ['CAPABILITY_IAM']
             params = []
-            for name in parsed['Parameters'].keys():
+            for name in parsed['Parameters']:
                 val = self.request.params.get(name)
                 if val:
                     params.append((name, val))
@@ -715,7 +714,7 @@ class StackWizardView(BaseView):
                 if resource['Type'].find(prefix) == 0:
                     ret.append({'name': name, 'type': prefix})
         # second pass, find non-euca properties
-        for name in parsed['Resources'].keys():
+        for name in parsed['Resources']:
             resource = parsed['Resources'][name]
             for props in unsupported_properties:
                 if resource['Type'].find(props['resource']) == 0:
@@ -742,7 +741,7 @@ class StackWizardView(BaseView):
         if modify:
             for res in ret:
                 # remove resources found in pass 1
-                for name in parsed['Resources'].keys():
+                for name in parsed['Resources']:
                     if res['name'] == name and 'property' not in res.keys():
                         del parsed['Resources'][name]
                 # modify resource refs into params
@@ -753,7 +752,7 @@ class StackWizardView(BaseView):
                             Type='String'
                         )
             # and, because we provide instance types, remove 'AllowedValues' for InstanceType
-            for name in parsed['Parameters'].keys():
+            for name in parsed['Parameters']:
                 if name == 'InstanceType' and 'AllowedValues' in parsed['Parameters'][name]:
                     del parsed['Parameters'][name]['AllowedValues']
 
@@ -771,7 +770,7 @@ class StackWizardView(BaseView):
                 func(None, item)
                 StackWizardView.traverse(item, func, depth+1)
         if type(graph) is dict:
-            for key in graph.keys():
+            for key in graph:
                 item = graph[key]
                 func(key, item)
                 StackWizardView.traverse(item, func, depth+1)

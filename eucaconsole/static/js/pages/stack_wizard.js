@@ -52,13 +52,9 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
             $scope.convertTemplateEndpoint = options.convert_template_url;
             $scope.templates = options.sample_templates;
             $scope.setInitialValues();
-            //$('#sample-template').chosen({'width': '100%', search_contains: true});
             $scope.watchTags();
             $scope.setWatchers();
             $scope.setFocus();
-            $timeout(function() {
-                $('#sample-template').trigger('chosen:updated');
-            }, 1000);
         };
         $scope.toggleContent = function () {
             $scope.expanded = !$scope.expanded;
