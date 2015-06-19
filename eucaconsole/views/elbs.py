@@ -34,7 +34,7 @@ import time
 
 import boto.utils
 
-from boto.ec2.elb import HealthCheck, LoadBalancer
+from boto.ec2.elb import HealthCheck
 from boto.ec2.elb.attributes import ConnectionSettingAttribute
 from boto.exception import BotoServerError
 
@@ -45,7 +45,7 @@ from ..constants.cloudwatch import (
     MONITORING_DURATION_CHOICES, GRANULARITY_CHOICES, DURATION_GRANULARITY_CHOICES_MAPPING,
     METRIC_TITLE_MAPPING,
     STATISTIC_CHOICES)
-from ..constants.elbs import ELB_MONITORING_CHARTS_LIST
+from ..constants.elbs import ELB_MONITORING_CHARTS_LIST, ELB_BACKEND_CERTIFICATE_NAME_PREFIX
 from ..i18n import _
 from ..forms.elbs import (ELBForm, ELBDeleteForm, CreateELBForm, ELBHealthChecksForm, ELBsFiltersForm,
                           ELBInstancesForm, ELBInstancesFiltersForm, CertificateForm, BackendCertificateForm)
@@ -304,8 +304,7 @@ class BaseELBView(TaggedItemView):
                                  'PolicyTypeName': backend_policy_type}
         index = 1
         for cert in backend_certificates:
-            random_string = self.generate_random_string(length=8)
-            public_policy_name = u'PublicKeyPolicy-{0}-{1}'.format(random_string, cert.get('name'))
+            public_policy_name = u'{0}-{1}'.format(ELB_BACKEND_CERTIFICATE_NAME_PREFIX, cert.get('name'))
             public_policy_attributes['PublicKey'] = cert.get('certificateBody')
             self.elb_conn.create_lb_policy(elb_name, public_policy_name, public_policy_type, public_policy_attributes)
             backend_policy_params['PolicyAttributes.member.%d.AttributeName' % index] = 'PublicKeyPolicyName'
