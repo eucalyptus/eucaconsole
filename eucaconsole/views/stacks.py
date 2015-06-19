@@ -45,7 +45,6 @@ from ..models import Notification
 from ..models.auth import User
 from ..views import LandingPageView, BaseView, JSONResponse, JSONError
 from . import boto_error_handler
-from . import JSONError
 
 
 class StacksView(LandingPageView):
@@ -206,7 +205,7 @@ class StackView(BaseView):
                 stack_param = self.request.matchdict.get('name')
                 stacks = self.cloudformation_conn.describe_stacks(stack_name_or_id=stack_param)
                 return stacks[0] if stacks else None
-            except BotoServerError as err:
+            except BotoServerError:
                 pass
         return None
 
@@ -215,12 +214,12 @@ class StackView(BaseView):
             return '{}'
         else:
             return BaseView.escape_json(json.dumps({
-            'stack_name': self.stack.stack_name,
-            'stack_status_json_url': self.request.route_path('stack_state_json', name=self.stack.stack_name),
-            'stack_template_url': self.request.route_path('stack_template', name=self.stack.stack_name),
-            'stack_events_url': self.request.route_path('stack_events', name=self.stack.stack_name),
-            'stack_status': self.stack.stack_status.lower().capitalize().replace('_', '-'),
-        }))
+                'stack_name': self.stack.stack_name,
+                'stack_status_json_url': self.request.route_path('stack_state_json', name=self.stack.stack_name),
+                'stack_template_url': self.request.route_path('stack_template', name=self.stack.stack_name),
+                'stack_events_url': self.request.route_path('stack_events', name=self.stack.stack_name),
+                'stack_status': self.stack.stack_status.lower().capitalize().replace('_', '-'),
+            }))
 
 
 class StackStateView(BaseView):
@@ -426,7 +425,7 @@ class StackWizardView(BaseView):
         """
         with boto_error_handler(self.request):
             (template_url, template_name, parsed) = self.parse_store_template()
-            resource_list = StackWizardView.identify_aws_template(parsed, modify=True)
+            StackWizardView.identify_aws_template(parsed, modify=True)
             template_body = json.dumps(parsed)
 
             # now, store it back in S3
@@ -500,12 +499,16 @@ class StackWizardView(BaseView):
                 param_vals['options'] = self.get_cert_options()  # fetch server cert names
             if 'instance' in name.lower() and 'profile' in name.lower():
                 param_vals['options'] = self.get_instance_profile_options()
-            if ('vmtype' in name.lower() or 'instancetype' in name.lower()) and 'options' not in param_vals.keys():
+            if ('vmtype' in name.lower() or 'instancetype' in name.lower()) and \
+                    'options' not in param_vals.keys():
                 param_vals['options'] = self.get_vmtype_options()
             # if no default, and options are a single value, set that as default
-            if 'default' not in param_vals.keys() and 'options' in param_vals.keys() and len(param_vals['options']) == 1:
+            if 'default' not in param_vals.keys() and \
+                    'options' in param_vals.keys() and len(param_vals['options']) == 1:
                 param_vals['default'] = param_vals['options'][0][0]
-            param_vals['chosen'] = True if 'options' in param_vals.keys() and len(param_vals['options']) > 9 else False
+            param_vals['chosen'] = True if \
+                'options' in param_vals.keys() and len(param_vals['options']) > 9 \
+                else False
             params.append(param_vals)
         return params
 
@@ -608,7 +611,7 @@ class StackWizardView(BaseView):
             if len(files) > 0 and len(str(files[0])) > 0:  # read from file
                 files[0].file.seek(0, 2)  # seek to end
                 if files[0].file.tell() > 460800:
-                    raise JSONError(status=400, message=_(u"File too large: ")+files[0].filename)
+                    raise JSONError(status=400, message=_(u'File too large: ') + files[0].filename)
                 files[0].file.seek(0, 0)  # seek to start
                 template_body = files[0].file.read()
                 template_name = files[0].name
@@ -616,7 +619,7 @@ class StackWizardView(BaseView):
                 template_body = urllib2.urlopen(template_url).read()
                 template_name = template_url[template_url.rindex('/') + 1:]
                 if len(template_body) > 460800:
-                    raise JSONError(status=400, message=_(u"Template too large: ")+template_name)
+                    raise JSONError(status=400, message=_(u'Template too large: ') + template_name)
             else:
                 s3_bucket = self.get_template_samples_bucket()
                 mgr = CFSampleTemplateManager(s3_bucket)
@@ -646,8 +649,11 @@ class StackWizardView(BaseView):
 
     @staticmethod
     def identify_aws_template(parsed, modify=False):
-        # drawn from here: http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-template-resource-type-ref.html
-        # and https://www.eucalyptus.com/docs/eucalyptus/4.1.1/index.html#cloudformation/cf_overview.html
+        """
+        drawn from here:
+        http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-template-resource-type-ref.html
+        and https://www.eucalyptus.com/docs/eucalyptus/4.1.1/index.html#cloudformation/cf_overview.html
+        """
         aws_resource_prefixes = [
             'AWS::AutoScaling::LifecycleHook',
             'AWS::AutoScaling::ScheduledAction',
@@ -713,6 +719,7 @@ class StackWizardView(BaseView):
             for prefix in aws_resource_prefixes:
                 if resource['Type'].find(prefix) == 0:
                     ret.append({'name': name, 'type': prefix})
+
         # second pass, find non-euca properties
         for name in parsed['Resources']:
             resource = parsed['Resources'][name]
@@ -725,6 +732,7 @@ class StackWizardView(BaseView):
                                 'type': props['resource'],
                                 'property': True
                             })
+
         # third pass, find refs to cloud-specific resources
         def find_image_ref(name, item):
             if name == 'Parameters':
@@ -748,17 +756,14 @@ class StackWizardView(BaseView):
                 if res['name'] == 'ImageId':
                     res['item']['ImageId'] = {'Ref': 'ImageId'}
                     parsed['Parameters']['ImageId'] = dict(
-                            Description='Image required to run this template',
-                            Type='String'
-                        )
+                        Description='Image required to run this template',
+                        Type='String'
+                    )
             # and, because we provide instance types, remove 'AllowedValues' for InstanceType
             for name in parsed['Parameters']:
                 if name == 'InstanceType' and 'AllowedValues' in parsed['Parameters'][name]:
                     del parsed['Parameters'][name]['AllowedValues']
 
-
-        if len(ret) > 0:
-            return ret
         return ret
 
     @staticmethod
@@ -768,9 +773,9 @@ class StackWizardView(BaseView):
         if type(graph) is list:
             for item in graph:
                 func(None, item)
-                StackWizardView.traverse(item, func, depth+1)
+                StackWizardView.traverse(item, func, depth + 1)
         if type(graph) is dict:
             for key in graph:
                 item = graph[key]
                 func(key, item)
-                StackWizardView.traverse(item, func, depth+1)
+                StackWizardView.traverse(item, func, depth + 1)

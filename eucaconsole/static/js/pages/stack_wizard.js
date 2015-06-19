@@ -323,10 +323,13 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
                         $scope.description = '';
                         return;
                     }
-                    if ((results.parameter_list && results.parameter_list.length) ||
-                        (results.property_list && results.property_list.length > 0)) {
+                    if (results.parameter_list && results.parameter_list.length) {
                         $scope.parameterList = results.parameter_list;
+                    }
+                    if (results.property_list && results.property_list.length > 0) {
                         $scope.propertyList = results.property_list;
+                    }
+                    if ($scope.parameterList || $scope.propertyList) {
                         $scope.expanded = false;
                         $scope.showAWSWarn();
                     }
