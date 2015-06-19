@@ -749,7 +749,7 @@ class StackWizardView(BaseView):
         if modify:
             for res in ret:
                 # remove resources found in pass 1
-                for name in parsed['Resources']:
+                for name in parsed['Resources'].keys():
                     if res['name'] == name and 'property' not in res.keys():
                         del parsed['Resources'][name]
                 # modify resource refs into params
