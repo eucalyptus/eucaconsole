@@ -156,9 +156,17 @@
             </div>
             <div class="security-row">
                 <label class="inline" i18n:translate="">Certificates</label>
+                <span ng-show="serverCertificateARN || serverCertificateName !== 'Select...'">
+                    {{ pruneCertificateLabel(serverCertificateARN) || serverCertificateName }}
+                </span>
                 <a ng-click="openCertificateModal(fromProtocol.value, toProtocol.value, fromPort, toPort)"
                     title="Change certficate" i18n:translate="">
-                    Select
+                    <span i18n:translate="" ng-show="!serverCertificateARN &amp;&amp; serverCertificateName ==='Select...'">
+                        Select
+                    </span>
+                    <span i18n:translate="" ng-show="serverCertificateARN || serverCertificateName !== 'Select...'">
+                        Change
+                    </span>
                 </a>
             </div>
         </div>

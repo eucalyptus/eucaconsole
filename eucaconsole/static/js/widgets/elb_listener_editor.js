@@ -394,5 +394,14 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
                 }
             });
         };
+        $scope.pruneCertificateLabel = function (certARN) {
+            if (!certARN) {
+                return certARN;
+            }
+            var certArray = certARN.split('/');
+            if (certArray.length) {
+                return certArray[certArray.length -1]
+            }
+        }
     })
 ;
