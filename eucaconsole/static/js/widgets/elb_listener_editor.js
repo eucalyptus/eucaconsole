@@ -177,10 +177,10 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
             return;
         };
         $scope.compareListeners = function (block1, block2) {
-            if (block1.fromPort == block2.fromPort &&
-                block1.toPort == block2.toPort &&
-                block1.fromProtocol.value == block2.fromProtocol.value &&
-                block1.toProtocol.value == block2.toProtocol.value) {
+            if (block1.fromPort === block2.fromPort &&
+                block1.toPort === block2.toPort &&
+                block1.fromProtocol.value === block2.fromProtocol.value &&
+                block1.toProtocol.value === block2.toProtocol.value) {
                 return true;
             }
             return false;
@@ -400,8 +400,8 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
             }
             var certArray = certARN.split('/');
             if (certArray.length) {
-                return certArray[certArray.length -1]
+                return certArray[certArray.length -1];
             }
-        }
+        };
     })
 ;
