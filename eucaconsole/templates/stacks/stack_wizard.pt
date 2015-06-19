@@ -107,7 +107,7 @@
                         <div class="content" id="step2">
                             <h6 i18n:translate="">Parameters</h6>
                             <div class="loading" ng-hide="parameters"><i class="busy" ></i></div>
-                            <div id="params-list">
+                            <div id="params-list" ng-if="currentStepIndex == 2">
                                 <div class="row controls-wrapper" ng-repeat="item in parameters" ng-cloak="true">
                                     <div class="small-3 columns subheading">
                                         <label class="right">{{ item.name }}
