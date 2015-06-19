@@ -468,6 +468,7 @@ class ELBView(BaseELBView):
             prefix = _(u'Unable to update load balancer')
             template = u'{0} {1} - {2}'.format(prefix, self.elb.name, '{0}')
             backend_certificates = self.request.params.get('backend_certificates') or None
+            import ipdb; ipdb.set_trace()
             if backend_certificates is not None and backend_certificates != '[]':
                 self.handle_backend_certificate_create(self.elb.name)
             with boto_error_handler(self.request, location, template):
