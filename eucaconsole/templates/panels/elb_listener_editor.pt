@@ -45,16 +45,16 @@
                         </td>
                         <td>
                             <span ng-show="showServerCertificateNameLink(listener.fromProtocol)">
-                                <span>{{ listener.certificateName || listener.certificateId }}</span>
+                                <span class="label radius cert">{{ listener.certificateName || listener.certificateId }}</span>
                                 <a ng-click="openCertificateModal(listener.fromProtocol, listener.toProtocol, listener.fromPort, listener.toPort)"
-                                    title="Change certficate" i18n:translate="">
+                                    title="Change certficate" i18n:translate="" i18n:attributes="title">
                                     Change
                                 </a>
                             </span>
                             <span ng-show="showBackendCertificateLink(listener.fromProtocol, listener.toProtocol)">
                                 <span i18n:translate="">Backend Certificate</span>
                                 <a ng-click="openCertificateModal(listener.fromProtocol, listener.toProtocol, listener.fromPort, listener.toPort)"
-                                    title="Change backend certficate" i18n:translate="">
+                                    title="Change backend certficate" i18n:translate="" i18n:attributes="title">
                                     Change
                                 </a>
                             </span>
@@ -165,7 +165,7 @@
                     {{ bcert.name }}
                 </span>
                 <a ng-click="openCertificateModal(fromProtocol.value, toProtocol.value, fromPort, toPort)"
-                    title="Change certficate" i18n:translate="">
+                    title="Change certficate">
                     <span i18n:translate="" ng-show="!serverCertificateARN &amp;&amp; serverCertificateName ==='Select...'">
                         Select
                     </span>
