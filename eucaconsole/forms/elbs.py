@@ -545,6 +545,7 @@ class BackendCertificateForm(BaseSecureForm):
         self.iam_conn = iam_conn
         self.elb_conn = elb_conn
         self.set_error_messages()
+        self.backend_certificate_body.help_text = CertificateForm.public_key_help_text
 
     def set_error_messages(self):
         self.backend_certificate_name.error_msg = self.backend_certificate_name_error_msg
