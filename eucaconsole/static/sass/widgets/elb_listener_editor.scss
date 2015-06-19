@@ -36,5 +36,15 @@
     .security-section {
         margin-bottom: 1.5rem;
     }
+    .label.radius {
+        color: $hp-gray-65;
+        &.cert {
+            background-color: $hp-gray-20;
+        }
+        &.bcert {
+            background-color: $hp-gray-40;
+            margin-right: 6px;
+        }
+    }
 }
 

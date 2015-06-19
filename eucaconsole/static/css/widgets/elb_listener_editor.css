@@ -11,3 +11,6 @@
 #elb-listener-editor .controls-wrapper #from-port-error { margin-left: 1rem; }
 #elb-listener-editor .security-row label.inline { width: 7rem; text-align: right; line-height: 1.1rem; margin: 0 0.5rem 0 0; padding: 0 0 0 0; }
 #elb-listener-editor .security-section { margin-bottom: 1.5rem; }
+#elb-listener-editor .label.radius { color: #5a5a5a; }
+#elb-listener-editor .label.radius.cert { background-color: #cccccc; }
+#elb-listener-editor .label.radius.bcert { background-color: #b3b3b3; margin-right: 6px; }
