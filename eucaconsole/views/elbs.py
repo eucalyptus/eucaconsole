@@ -34,7 +34,7 @@ import time
 
 import boto.utils
 
-from boto.ec2.elb import HealthCheck
+from boto.ec2.elb import HealthCheck, LoadBalancer
 from boto.ec2.elb.attributes import ConnectionSettingAttribute
 from boto.exception import BotoServerError
 
@@ -297,13 +297,15 @@ class BaseELBView(TaggedItemView):
         public_policy_attributes = dict()
         public_policy_type = u'PublicKeyPolicyType'
         backend_policy_type = u'BackendServerAuthenticationPolicyType'
-        backend_policy_name = u'BackendPolicy-{0}'.format(elb_name)
+        random_string = self.generate_random_string(length=8)
+        backend_policy_name = u'BackendPolicy-{0}-{1}'.format(random_string, elb_name)
         backend_policy_params = {'LoadBalancerName': elb_name,
                                  'PolicyName': backend_policy_name,
                                  'PolicyTypeName': backend_policy_type}
         index = 1
         for cert in backend_certificates:
-            public_policy_name = u'EucaConsole-PublicKeyPolicy-{0}'.format(cert.get('name'))
+            random_string = self.generate_random_string(length=8)
+            public_policy_name = u'PublicKeyPolicy-{0}-{1}'.format(random_string, cert.get('name'))
             public_policy_attributes['PublicKey'] = cert.get('certificateBody')
             self.elb_conn.create_lb_policy(elb_name, public_policy_name, public_policy_type, public_policy_attributes)
             backend_policy_params['PolicyAttributes.member.%d.AttributeName' % index] = 'PublicKeyPolicyName'
@@ -311,7 +313,7 @@ class BaseELBView(TaggedItemView):
             index += 1
         self.elb_conn.get_status('CreateLoadBalancerPolicy', backend_policy_params)
         # sleep is needed for the previous policy creation to complete
-        time.sleep(1)
+        time.sleep(index)
         instance_port = 443
         self.elb_conn.set_lb_policies_of_backend_server(elb_name, instance_port, backend_policy_name)
 
@@ -469,14 +471,14 @@ class ELBView(BaseELBView):
             template = u'{0} {1} - {2}'.format(prefix, self.elb.name, '{0}')
             backend_certificates = self.request.params.get('backend_certificates') or None
             with boto_error_handler(self.request, location, template):
-                if backend_certificates is not None and backend_certificates != '[]':
-                    self.handle_backend_certificate_create(self.elb.name)
                 self.update_elb_idle_timeout(self.elb.name, idle_timeout)
                 self.update_listeners(self.elb.name, listeners_args)
                 time.sleep(1)  # Delay is needed to avoid missing listeners post-update
                 self.update_elb_tags(self.elb.name)
                 if self.is_vpc_supported and self.elb.security_groups != securitygroup:
                     self.elb_conn.apply_security_groups_to_lb(self.elb.name, securitygroup)
+                if backend_certificates is not None and backend_certificates != '[]':
+                    self.handle_backend_certificate_create(self.elb.name)
                 msg = _(u"Updating load balancer")
                 self.log_request(u"{0} {1}".format(msg, self.elb.name))
                 prefix = _(u'Successfully updated load balancer.')
