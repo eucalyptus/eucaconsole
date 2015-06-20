@@ -536,12 +536,12 @@ class ELBView(BaseELBView):
                     certificate_id = listener.ssl_certificate_id.split('/')[-1]
                     listener_dict.update({
                         'certificate_id': certificate_id,
-                        'backend_certificates': self.get_backend_certificates(),
+                        'backend_policies': self.get_backend_policies(),
                     })
                 listener_list.append(listener_dict)
         return listener_list
 
-    def get_backend_certificates(self):
+    def get_backend_policies(self):
         backend_certificates = []
         if self.elb:
             for backend in self.elb.backends:

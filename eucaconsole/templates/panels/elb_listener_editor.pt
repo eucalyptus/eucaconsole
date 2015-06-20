@@ -49,9 +49,9 @@
                                       title="SSL certificate" i18n:attributes="title">
                                     {{ listener.certificateName || listener.certificateId }}
                                 </span>
-                                <span ng-repeat="backendCert in listener.backendCertificates" class="label radius bcert"
-                                      data-tooltip="" title="Back-end certificate" i18n:attributes="title">
-                                    {{ backendCert }}
+                                <span ng-repeat="backendPolicy in listener.backendPolicies" class="label radius bcert"
+                                      data-tooltip="" title="Back-end policy (contains certificates)" i18n:attributes="title">
+                                    {{ backendPolicy }}
                                 </span>
                                 <a ng-click="openCertificateModal(listener.fromProtocol, listener.toProtocol, listener.fromPort, listener.toPort, listener.certificateId);"
                                     title="Change certficate" i18n:translate="" i18n:attributes="title">
