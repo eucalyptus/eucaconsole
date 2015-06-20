@@ -471,7 +471,7 @@ class ELBView(BaseELBView):
             backend_certificates = self.request.params.get('backend_certificates') or None
             with boto_error_handler(self.request, location, template):
                 self.update_elb_idle_timeout(self.elb.name, idle_timeout)
-                self.update_listeners(self.elb.name, listeners_args)
+                self.update_listeners(listeners_args)
                 time.sleep(1)  # Delay is needed to avoid missing listeners post-update
                 self.update_elb_tags(self.elb.name)
                 if self.is_vpc_supported and self.elb.security_groups != securitygroup:
@@ -535,12 +535,21 @@ class ELBView(BaseELBView):
                 if listener.ssl_certificate_id:
                     certificate_id = listener.ssl_certificate_id.split('/')[-1]
                     listener_dict.update({
-                        'certificate_id': certificate_id
+                        'certificate_id': certificate_id,
+                        'backend_certificates': self.get_backend_certificates(),
                     })
                 listener_list.append(listener_dict)
         return listener_list
 
-    def update_listeners(self, name, listeners_args):
+    def get_backend_certificates(self):
+        backend_certificates = []
+        if self.elb:
+            for backend in self.elb.backends:
+                backend_certificates.extend(
+                    [policy.policy_name for policy in backend.policies if backend.instance_port == 443])
+        return backend_certificates
+
+    def update_listeners(self, listeners_args):
         if self.elb_conn and self.elb:
             # Convert strs in existing ELB listeners to unicode objects for add/remove comparisons
             normalized_elb_listeners = []

@@ -209,6 +209,9 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
                 if (!!listener.certificate_id) {
                     block.certificateId = listener.certificate_id;
                 }
+                if (!!listener.backend_certificates && listener.backend_certificates.length) {
+                    block.backendCertificates = listener.backend_certificates;
+                }
                 $scope.listenerArray.push(block);
             });
         };

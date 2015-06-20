@@ -45,7 +45,14 @@
                         </td>
                         <td>
                             <span ng-show="showServerCertificateNameLink(listener.fromProtocol)">
-                                <span class="label radius cert">{{ listener.certificateName || listener.certificateId }}</span>
+                                <span class="label radius cert" data-tooltip=""
+                                      title="SSL certificate" i18n:attributes="title">
+                                    {{ listener.certificateName || listener.certificateId }}
+                                </span>
+                                <span ng-repeat="backendCert in listener.backendCertificates" class="label radius bcert"
+                                      data-tooltip="" title="Back-end certificate" i18n:attributes="title">
+                                    {{ backendCert }}
+                                </span>
                                 <a ng-click="openCertificateModal(listener.fromProtocol, listener.toProtocol, listener.fromPort, listener.toPort)"
                                     title="Change certficate" i18n:translate="" i18n:attributes="title">
                                     Change
@@ -157,7 +164,7 @@
             <div class="security-row">
                 <label class="inline" i18n:translate="">Certificates</label>
                 <span ng-show="serverCertificateARN || serverCertificateName !== 'Select...'"
-                      class="label radius cert" data-tooltip="" title="SSL Certificate" i18n:attributes="title">
+                      class="label radius cert" data-tooltip="" title="SSL certificate" i18n:attributes="title">
                     {{ pruneCertificateLabel(serverCertificateARN) || serverCertificateName }}
                 </span>
                 <span ng-repeat="bcert in backendCertificateArray" class="label radius bcert"
