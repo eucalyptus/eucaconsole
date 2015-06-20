@@ -53,7 +53,7 @@
                                       data-tooltip="" title="Back-end certificate" i18n:attributes="title">
                                     {{ backendCert }}
                                 </span>
-                                <a ng-click="openCertificateModal(listener.fromProtocol, listener.toProtocol, listener.fromPort, listener.toPort)"
+                                <a ng-click="openCertificateModal(listener.fromProtocol, listener.toProtocol, listener.fromPort, listener.toPort, listener.certificateId);"
                                     title="Change certficate" i18n:translate="" i18n:attributes="title">
                                     Change
                                 </a>

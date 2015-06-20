@@ -98,7 +98,8 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor']
                 }
                 $scope.listenerArray = listenerArray;
             });
-            $scope.$on('eventOpenSelectCertificateModal', function ($event, fromProtocol, toProtocol, fromPort, toPort, certificateTab) {
+            $scope.$on('eventOpenSelectCertificateModal', function ($event, fromProtocol, toProtocol, fromPort, toPort,
+                                                                    certificateTab, existingCertId) {
                 if ((fromProtocol === 'HTTPS' || fromProtocol === 'SSL') &&
                     (toProtocol === 'HTTPS' || toProtocol === 'SSL')) {
                     $scope.showsCertificateTabDiv = true;
@@ -112,7 +113,7 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor']
                     'toPort': toPort
                 };
                 $scope.certificateTab = certificateTab;
-                $scope.openSelectCertificateModal();
+                $scope.openSelectCertificateModal(existingCertId);
             });
             $scope.$watch('certificateTab', function () {
                 $scope.adjustSelectCertificateModalTabDisplay();
@@ -184,7 +185,7 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor']
             modal.foundation('reveal', 'open');
             modal.find('h3').click();  // Workaround for dropdown menu not closing
         };
-        $scope.openSelectCertificateModal = function () {
+        $scope.openSelectCertificateModal = function (existingCertId) {
             var modal = $('#select-certificate-modal');
             var certArnField = $('#certificate_arn');
             if (modal.length > 0) {
@@ -198,7 +199,10 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor']
                         $scope.certificateName = block.certificateName;
                     }
                 });
-                certArnField.val($scope.certificateARN);
+                // Set Certificate ARN field to existing SSL cert ID if opened via "Change" link in listener editor
+                if (!!existingCertId) {
+                    $scope.certificateARN = (certArnField.find('option[value$="' + existingCertId + '"]').val());
+                }
                 // Remove any empty options created by Angular model issue
                 certArnField.find('option').each(function () {
                     if ($(this).text() === '') {
@@ -320,7 +324,7 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor']
             return;
         };
         $scope.compareBackendCertificates = function (block1, block2) {
-            return block1.name == block2.name;
+            return block1.name === block2.name;
         };
         $scope.handleCertificateCreate = function ($event, newCertURL) {
             $event.preventDefault();

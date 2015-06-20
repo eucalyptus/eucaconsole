@@ -379,12 +379,13 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
             }
             return false;
         };
-        $scope.openCertificateModal = function (fromProtocol, toProtocol, fromPort, toPort) {
+        $scope.openCertificateModal = function (fromProtocol, toProtocol, fromPort, toPort, existingCertId) {
             var certificateTab = 'SSL';
             if (fromProtocol !== 'HTTPS' && fromProtocol !== 'SSL') {
                 certificateTab = 'BACKEND';
             }
-            $scope.$emit('eventOpenSelectCertificateModal', fromProtocol, toProtocol, fromPort, toPort, certificateTab);
+            $scope.$emit('eventOpenSelectCertificateModal', fromProtocol, toProtocol, fromPort, toPort,
+                certificateTab, existingCertId);
         };
         $scope.handleEventUseThisCertificate = function () {
             angular.forEach($scope.listenerArray, function (block) {
