@@ -1000,9 +1000,6 @@ class CreateELBView(BaseELBView):
     @view_config(route_name='certificate_create', request_method='POST', renderer='json')
     def certificate_create(self):
         if self.certificate_form.validate():
-            certificate_arn = self.request.params.get('certificate_arn')
-            if certificate_arn != 'None':
-                pass  # TODO: Handle selecting an existing certificate
             certificate_name = self.request.params.get('certificate_name')
             private_key = self.request.params.get('private_key')
             public_key_certificate = self.request.params.get('public_key_certificate')
