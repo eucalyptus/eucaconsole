@@ -1,0 +1,47 @@
+<!--! ELB Security Policy dialog -->
+<div tal:omit-tag="" i18n:domain="eucaconsole">
+    <div id="elb-security-policy-modal" class="reveal-modal medium" data-reveal="" ng-cloak="">
+        <h3 i18n:translate="">Select security Policy</h3>
+        <p i18n:translate="">
+            A security policy configures SSL negotiation settings when you use a secure
+            protocol like HTTPS or SSL.
+        </p>
+        <form method="post" data-abide="abide" id="select-certificate-form">
+             ${structure:certificate_form['csrf_token']}
+            <div tal:condition="can_list_certificates">
+                <div>
+                    <input type="radio" id="policy-type-predefined" name="policy_type_radio"
+                           value="existing" ng-model="policyRadioButton" />
+                    <label for="policy-type-predefined" i18n:translate="">
+                        Choose a predefined security policy
+                    </label>
+                </div>
+                <div ng-show="policyRadioButton === 'existing'">
+                    ${panel('form_field', field=policy_form['predefined_policy'], ng_attrs={'model': 'predefinedPolicy'})}
+                </div>
+            </div>
+            <div>
+                <input type="radio" id="policy-type-new" name="policy_type_radio"
+                       value="new" ng-model="policyRadioButton" />
+                <label for="policy-type-new" i18n:translate="">Create a custom security policy</label>
+            </div>
+            <div ng-show="policyRadioButton === 'new'">
+                ${panel('form_field', field=policy_form['ssl_protocols'], ng_attrs=dict(model='sslProtocols'))}
+                ${panel('form_field', field=policy_form['ssl_ciphers'], ng_attrs=dict(model='sslCiphers'))}
+                ${panel('form_field', field=policy_form['ssl_options'], ng_attrs=dict(model='sslOptions'))}
+            </div>
+        </form>
+        <a href="#" id="select-certificate-close-link-form-ssl" class="close-reveal-modal">&#215;</a>
+    </div>
+    <hr />
+    <div>
+        <div class="row">
+            <div class="dialog-submit-button">
+                <button type="submit" class="button expand" id="create-securitygroup-btn" i18n:translate=""
+                    ng-click="setSecurityPolicy($event)">
+                    Use This Policy
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
