@@ -489,8 +489,6 @@ class StackWizardView(BaseView):
             # guess at more options
             if 'key' in name.lower():
                 param_vals['options'] = self.get_key_options()  # fetch keypair names
-            if 'image' in name.lower():
-                param_vals['options'] = self.get_image_options()  # fetch image ids
             if 'kernel' in name.lower():
                 param_vals['options'] = self.get_image_options(img_type='kernel')  # fetch kernel ids
             if 'ramdisk' in name.lower():
@@ -509,6 +507,10 @@ class StackWizardView(BaseView):
             param_vals['chosen'] = True if \
                 'options' in param_vals.keys() and len(param_vals['options']) > 9 \
                 else False
+            if 'image' in name.lower():
+                param_vals['options'] = self.get_image_options()  # fetch image ids
+                # force image param to use chosen
+                param_vals['chosen'] = True
             params.append(param_vals)
         return params
 
