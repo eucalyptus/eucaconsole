@@ -6,9 +6,9 @@
             A security policy configures SSL negotiation settings when you use a secure
             protocol like HTTPS or SSL.
         </p>
-        <form method="post" data-abide="abide" id="select-certificate-form">
-             ${structure:certificate_form['csrf_token']}
-            <div tal:condition="can_list_certificates">
+        <form method="post" data-abide="abide" id="security-policy-form">
+             ${structure:policy_form['csrf_token']}
+            <div>
                 <div>
                     <input type="radio" id="policy-type-predefined" name="policy_type_radio"
                            value="existing" ng-model="policyRadioButton" />
@@ -17,7 +17,7 @@
                     </label>
                 </div>
                 <div ng-show="policyRadioButton === 'existing'">
-                    ${panel('form_field', field=policy_form['predefined_policy'], ng_attrs={'model': 'predefinedPolicy'})}
+                    ${panel('form_field', field=policy_form['predefined_policy'])}
                 </div>
             </div>
             <div>
@@ -31,7 +31,7 @@
                 ${panel('form_field', field=policy_form['ssl_options'], ng_attrs=dict(model='sslOptions'))}
             </div>
         </form>
-        <a href="#" id="select-certificate-close-link-form-ssl" class="close-reveal-modal">&#215;</a>
+        <a href="#" id="security-policy-modal-close-link" class="close-reveal-modal">&#215;</a>
     </div>
     <hr />
     <div>

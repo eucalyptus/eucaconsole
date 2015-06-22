@@ -562,18 +562,32 @@ class SecurityPolicyForm(BaseSecureForm):
     predefined_policy = wtforms.SelectField(
         label=_(u'Policy name'),
         validators=[PredefinedPolicyRequired(message=predefined_policy_error_msg)],
+        choices=[],
     )
-    ssl_protocols = wtforms.SelectField(
+    ssl_protocols = wtforms.SelectMultipleField(
         label=_(u'SSL Protocols'),
     )
-    ssl_ciphers = wtforms.SelectField(
+    ssl_ciphers = wtforms.SelectMultipleField(
         label=_(u'SSL Ciphers'),
+        choices=[],
     )
     ssl_options = wtforms.BooleanField(label=_(u'SSL Options'))
 
     def __init__(self, request, **kwargs):
         super(SecurityPolicyForm, self).__init__(request, **kwargs)
         self.set_error_messages()
+        self.set_choices()
 
     def set_error_messages(self):
         self.predefined_policy.error_msg = self.predefined_policy_error_msg
+
+    def set_choices(self):
+        self.ssl_protocols.choices = self.get_ssl_protocol_choices()
+
+    @staticmethod
+    def get_ssl_protocol_choices():
+        return [
+            ('Protocol-TLSv1.2', u'TLSv1.2'),
+            ('Protocol-TLSv1.1', u'TLSv1.1'),
+            ('Protocol-TLSv1', u'TLSv1'),
+        ]

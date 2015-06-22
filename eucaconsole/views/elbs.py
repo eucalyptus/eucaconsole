@@ -47,8 +47,10 @@ from ..constants.cloudwatch import (
     STATISTIC_CHOICES)
 from ..constants.elbs import ELB_MONITORING_CHARTS_LIST
 from ..i18n import _
-from ..forms.elbs import (ELBForm, ELBDeleteForm, CreateELBForm, ELBHealthChecksForm, ELBsFiltersForm,
-                          ELBInstancesForm, ELBInstancesFiltersForm, CertificateForm, BackendCertificateForm)
+from ..forms.elbs import (
+    ELBForm, ELBDeleteForm, CreateELBForm, ELBHealthChecksForm, ELBsFiltersForm,
+    ELBInstancesForm, ELBInstancesFiltersForm, CertificateForm, BackendCertificateForm, SecurityPolicyForm,
+)
 from ..models import Notification
 from ..views import LandingPageView, BaseView, TaggedItemView, JSONResponse
 from ..views.cloudwatchapi import CloudWatchAPIMixin
@@ -436,6 +438,7 @@ class ELBView(BaseELBView):
             elb=self.elb, securitygroups=self.get_security_groups(),
             formdata=self.request.params or None)
         self.delete_form = ELBDeleteForm(self.request, formdata=self.request.params or None)
+        self.policy_form = SecurityPolicyForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
             elb=self.elb,
             elb_name=self.escape_braces(self.elb.name) if self.elb else '',
@@ -443,6 +446,7 @@ class ELBView(BaseELBView):
             escaped_elb_name=quote(self.elb.name) if self.elb else '',
             elb_tags=TaggedItemView.get_tags_display(self.elb.tags) if self.elb.tags else '',
             elb_form=self.elb_form,
+            policy_form=self.policy_form,
             delete_form=self.delete_form,
             certificate_form=self.certificate_form,
             backend_certificate_form=self.backend_certificate_form,
