@@ -560,13 +560,20 @@ class ELBView(BaseELBView):
             listeners_to_add = [x for x in listeners_args if x not in normalized_elb_listeners]
             listeners_to_remove = [x[0] for x in normalized_elb_listeners if x not in listeners_args]
             if listeners_to_remove:
-                self.elb.delete_listeners(listeners_to_remove)
+                if 443 in listeners_to_remove:
+                    self.cleanup_backend_policies()
+                self.elb_conn.delete_load_balancer_listeners(self.elb.name, listeners_to_remove)
                 # sleep is needed for Eucalyptus to avoid not finding the elb error
                 time.sleep(1)
             if listeners_to_add:
                 self.elb_conn.create_load_balancer_listeners(self.elb.name, complex_listeners=listeners_to_add)
                 # sleep is needed for Eucalyptus to avoid not finding the elb error
                 time.sleep(1)
+
+    def cleanup_backend_policies(self):
+        if self.elb and self.elb_conn:
+            if self.elb.backends:
+                self.elb_conn.set_lb_policies_of_backend_server(self.elb.name, 443, [])
 
     @staticmethod
     def normalize_listener(listener):
