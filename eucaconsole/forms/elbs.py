@@ -595,7 +595,8 @@ class SecurityPolicyForm(BaseSecureForm):
             xml_prefix = '{http://elasticloadbalancing.amazonaws.com/doc/2012-12-01/}'
             resp = self.elb_conn.make_request('DescribeLoadBalancerPolicies')
             root = ElementTree.fromstring(resp.read())
-            policies = root.find('.//{0}PolicyDescriptions'.format(xml_prefix)).getchildren()
+            policy_descriptions = root.find('.//{0}PolicyDescriptions'.format(xml_prefix))
+            policies = policy_descriptions.getchildren() if policy_descriptions else []
             for policy in policies:
                 policy_type = policy.find('.//{0}PolicyTypeName'.format(xml_prefix))
                 if policy_type is not None and policy_type.text == 'SSLNegotiationPolicyType':
