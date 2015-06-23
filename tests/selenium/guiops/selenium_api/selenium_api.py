@@ -580,3 +580,14 @@ class SeleniumApi(object):
         attribute = element.get_attribute(attribute_name)
         print attribute
         return attribute
+
+    def get_attrubute_by_xpath(self, xpath, attribute_name):
+        """
+        Finds element by xpath. Returns specified attribute.
+        :param xpath:
+        :param attribute_name:
+        """
+        element = self.driver.find_element_by_xpath(xpath)
+        attribute = element.get_attribute(attribute_name)
+        print attribute
+        return attribute
