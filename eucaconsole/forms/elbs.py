@@ -30,6 +30,8 @@ Forms for Elastic Load Balancer
 """
 import re
 import wtforms
+
+from defusedxml import ElementTree
 from wtforms import validators
 
 from ..i18n import _
@@ -573,8 +575,9 @@ class SecurityPolicyForm(BaseSecureForm):
     )
     ssl_options = wtforms.BooleanField(label=_(u'SSL Options'))
 
-    def __init__(self, request, **kwargs):
+    def __init__(self, request, elb_conn=None, **kwargs):
         super(SecurityPolicyForm, self).__init__(request, **kwargs)
+        self.elb_conn = elb_conn
         self.set_error_messages()
         self.set_choices()
 
@@ -583,6 +586,22 @@ class SecurityPolicyForm(BaseSecureForm):
 
     def set_choices(self):
         self.ssl_protocols.choices = self.get_ssl_protocol_choices()
+        self.predefined_policy.choices = self.get_predefined_policy_choices()
+
+    def get_predefined_policy_choices(self):
+        """Boto 2 doesn't offer a DescribeLoadBalancerPolicies API method, so we'll need to use a lower-level call"""
+        policy_choices = []
+        if self.elb_conn:
+            xml_prefix = '{http://elasticloadbalancing.amazonaws.com/doc/2012-12-01/}'
+            resp = self.elb_conn.make_request('DescribeLoadBalancerPolicies')
+            root = ElementTree.fromstring(resp.read())
+            policies = root.find('.//{0}PolicyDescriptions'.format(xml_prefix)).getchildren()
+            for policy in policies:
+                policy_type = policy.find('.//{0}PolicyTypeName'.format(xml_prefix))
+                if policy_type is not None and policy_type.text == 'SSLNegotiationPolicyType':
+                    policy_name = policy.find('.//{0}PolicyName'.format(xml_prefix)).text
+                    policy_choices.append((policy_name, policy_name))
+        return reversed(sorted(set(policy_choices)))
 
     @staticmethod
     def get_ssl_protocol_choices():

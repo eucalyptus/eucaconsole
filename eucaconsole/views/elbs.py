@@ -438,7 +438,8 @@ class ELBView(BaseELBView):
             elb=self.elb, securitygroups=self.get_security_groups(),
             formdata=self.request.params or None)
         self.delete_form = ELBDeleteForm(self.request, formdata=self.request.params or None)
-        self.policy_form = SecurityPolicyForm(self.request, formdata=self.request.params or None)
+        self.policy_form = SecurityPolicyForm(
+            self.request, elb_conn=self.elb_conn, formdata=self.request.params or None)
         self.render_dict = dict(
             elb=self.elb,
             elb_name=self.escape_braces(self.elb.name) if self.elb else '',
