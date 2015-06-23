@@ -46,11 +46,12 @@ from ..constants.cloudwatch import (
     METRIC_TITLE_MAPPING,
     STATISTIC_CHOICES)
 from ..constants.elbs import ELB_MONITORING_CHARTS_LIST
-from ..i18n import _
+from ..forms import ChoicesManager
 from ..forms.elbs import (
     ELBForm, ELBDeleteForm, CreateELBForm, ELBHealthChecksForm, ELBsFiltersForm,
     ELBInstancesForm, ELBInstancesFiltersForm, CertificateForm, BackendCertificateForm, SecurityPolicyForm,
 )
+from ..i18n import _
 from ..models import Notification
 from ..views import LandingPageView, BaseView, TaggedItemView, JSONResponse
 from ..views.cloudwatchapi import CloudWatchAPIMixin
@@ -236,12 +237,17 @@ class BaseELBView(TaggedItemView):
         self.autoscale_conn = self.get_connection(conn_type='autoscale')
         self.vpc_conn = self.get_connection(conn_type='vpc')
         self.is_vpc_supported = BaseView.is_vpc_supported(request)
+        self.predefined_policy_choices = ChoicesManager(conn=elb_conn).predefined_policy_choices(add_blank=False)
         self.certificate_form = CertificateForm(
             self.request, conn=self.ec2_conn, iam_conn=self.iam_conn, elb_conn=self.elb_conn,
             formdata=self.request.params or None)
         self.backend_certificate_form = BackendCertificateForm(
             self.request, conn=self.ec2_conn, iam_conn=self.iam_conn, elb_conn=self.elb_conn,
             formdata=self.request.params or None)
+        self.security_policy_form = SecurityPolicyForm(
+            self.request, elb_conn=self.elb_conn, predefined_policy_choices=self.predefined_policy_choices,
+            formdata=self.request.params or None
+        )
         self.can_list_certificates = True
         try:
             if self.iam_conn:
@@ -438,8 +444,6 @@ class ELBView(BaseELBView):
             elb=self.elb, securitygroups=self.get_security_groups(),
             formdata=self.request.params or None)
         self.delete_form = ELBDeleteForm(self.request, formdata=self.request.params or None)
-        self.policy_form = SecurityPolicyForm(
-            self.request, elb_conn=self.elb_conn, formdata=self.request.params or None)
         self.render_dict = dict(
             elb=self.elb,
             elb_name=self.escape_braces(self.elb.name) if self.elb else '',
@@ -447,7 +451,7 @@ class ELBView(BaseELBView):
             escaped_elb_name=quote(self.elb.name) if self.elb else '',
             elb_tags=TaggedItemView.get_tags_display(self.elb.tags) if self.elb.tags else '',
             elb_form=self.elb_form,
-            policy_form=self.policy_form,
+            security_policy_form=self.security_policy_form,
             delete_form=self.delete_form,
             certificate_form=self.certificate_form,
             backend_certificate_form=self.backend_certificate_form,

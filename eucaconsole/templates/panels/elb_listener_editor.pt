@@ -9,10 +9,9 @@
             <table class="table" ng-cloak="true" ng-show="listenerArray.length !== 0">
                 <thead>
                     <tr class="top-header">
-                        <th colspan="2" class="header vertical-border-header center" i18n:translate="">CLIENT SIDE</th>
-                        <th colspan="2" class="header vertical-border-header center" i18n:translate="">INSTANCE SIDE</th>
-                        <th></th>
-                        <th></th>
+                        <th colspan="2" class="header vertical-border-header center" i18n:translate="">Client Side</th>
+                        <th colspan="2" class="header vertical-border-header center" i18n:translate="">Instance Side</th>
+                        <th colspan="2" class="header center" i18n:translate="">Security</th>
                         <th></th>
                     </tr>
                     <tr>
@@ -20,7 +19,7 @@
                         <th class="header vertical-border-header" i18n:translate="">PORT</th>
                         <th class="header" i18n:translate="">PROTOCOL</th>
                         <th class="header vertical-border-header" i18n:translate="">PORT</th>
-                        <th class="header" i18n:translate="">CIPHER</th>
+                        <th class="header" i18n:translate="">POLICY</th>
                         <th class="header" i18n:translate="">CERTIFICATES</th>
                         <th></th>
                     </tr>

@@ -9,7 +9,7 @@
             protocol like HTTPS or SSL.
         </p>
         <form method="post" data-abide="abide" id="security-policy-form">
-             ${structure:policy_form['csrf_token']}
+             ${structure:security_policy_form['csrf_token']}
             <div>
                 <input type="radio" id="policy-type-predefined" name="policy_type_radio"
                        value="existing" ng-model="policyRadioButton" />
@@ -18,7 +18,7 @@
                 </label>
             </div>
             <div ng-show="policyRadioButton === 'existing'">
-                ${panel('form_field', field=policy_form['predefined_policy'])}
+                ${panel('form_field', field=security_policy_form['predefined_policy'])}
             </div>
             <div>
                 <input type="radio" id="policy-type-new" name="policy_type_radio"
@@ -26,10 +26,10 @@
                 <label for="policy-type-new" i18n:translate="">Create a custom security policy</label>
             </div>
             <div ng-show="policyRadioButton === 'new'" id="new-policy-wrapper">
-                ${panel('form_field', field=policy_form['ssl_protocols'], stack_label=True)}
-                ${panel('form_field', field=policy_form['ssl_ciphers'], stack_label=True)}
+                ${panel('form_field', field=security_policy_form['ssl_protocols'], stack_label=True)}
+                ${panel('form_field', field=security_policy_form['ssl_ciphers'], stack_label=True)}
                 <h6 i18n:translate="">SSL Options</h6>
-                ${panel('form_field', field=policy_form['server_order_preference'], reverse=True)}
+                ${panel('form_field', field=security_policy_form['server_order_preference'], reverse=True)}
             </div>
         </form>
         <hr />
