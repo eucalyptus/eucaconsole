@@ -31,17 +31,17 @@
                 ${panel('form_field', field=policy_form['ssl_options'], ng_attrs=dict(model='sslOptions'))}
             </div>
         </form>
-        <a href="#" id="security-policy-modal-close-link" class="close-reveal-modal">&#215;</a>
-    </div>
-    <hr />
-    <div>
-        <div class="row">
-            <div class="dialog-submit-button">
-                <button type="submit" class="button expand" id="create-securitygroup-btn" i18n:translate=""
-                    ng-click="setSecurityPolicy($event)">
-                    Use This Policy
-                </button>
+        <hr />
+        <div>
+            <div class="row">
+                <div class="dialog-submit-button">
+                    <button type="submit" class="button expand" id="create-securitygroup-btn" i18n:translate=""
+                        ng-click="setSecurityPolicy($event)">
+                        Use This Policy
+                    </button>
+                </div>
             </div>
         </div>
+        <a href="#" id="security-policy-modal-close-link" class="close-reveal-modal">&#215;</a>
     </div>
 </div>
