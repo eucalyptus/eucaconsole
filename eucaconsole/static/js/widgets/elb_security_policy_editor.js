@@ -4,23 +4,14 @@
  *
  */
 angular.module('ELBSecurityPolicyEditor', [])
-    .controller('ELBSecurityPolicyEditorCtrl', function ($scope, $timeout) {
+    .controller('ELBSecurityPolicyEditorCtrl', function ($scope) {
         $scope.policyRadioButton = 'existing';
         $scope.initSecurityPolicyEditor = function () {
             $scope.initChosenSelectors();
-            $scope.setWatchers();
         };
         $scope.initChosenSelectors = function () {
             $('#ssl_protocols').chosen({width: '100%'});
-        };
-        $scope.setWatchers = function () {
-            $scope.$watch('policyRadioButton', function (newVal) {
-                if (newVal === 'new') {
-                    $timeout(function() {
-                        $scope.initChosenSelectors();
-                    }, 100);
-                }
-            });
+            $('#ssl_ciphers').chosen({width: '100%', search_contains: true});
         };
     })
 ;

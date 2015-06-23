@@ -36,6 +36,7 @@ from wtforms import validators
 
 from ..i18n import _
 from . import BaseSecureForm, ChoicesManager, TextEscapedField, NAME_WITHOUT_SPACES_NOTICE, BLANK_CHOICE
+from ..constants.elbs import SSL_CIPHERS
 from ..views import BaseView
 
 
@@ -586,6 +587,7 @@ class SecurityPolicyForm(BaseSecureForm):
 
     def set_choices(self):
         self.ssl_protocols.choices = self.get_ssl_protocol_choices()
+        self.ssl_ciphers.choices = self.get_ssl_cipher_choices()
         self.predefined_policy.choices = self.get_predefined_policy_choices()
 
     def set_initial_data(self):
@@ -615,3 +617,7 @@ class SecurityPolicyForm(BaseSecureForm):
             ('Protocol-TLSv1.1', u'TLSv1.1'),
             ('Protocol-TLSv1', u'TLSv1'),
         ]
+
+    @staticmethod
+    def get_ssl_cipher_choices():
+        return [(val, val) for val in SSL_CIPHERS]
