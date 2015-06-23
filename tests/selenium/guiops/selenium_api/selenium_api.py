@@ -551,7 +551,7 @@ class SeleniumApi(object):
 
     def select_by_name_and_value(self, name, value):
         """
-        Selects element with particular text on it.
+        Selects element by name and value.
         :param name:
         :param text:
         """
