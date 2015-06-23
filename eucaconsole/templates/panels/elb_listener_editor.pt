@@ -34,7 +34,7 @@
                         <td>
                             <span ng-show="showServerCertificateNameLink(listener.fromProtocol)">
                                 <span i18n:translate="">cipher_name_placeholder</span>
-                                <a href="#"
+                                <a ng-click="openSecurityPolicyModal()"
                                     title="Change security policy" i18n:translate="">
                                     Change
                                 </a>
@@ -149,7 +149,7 @@
             <div class="subsection-label"><strong i18n:translate="" class="upper">Security</strong></div>
             <div class="security-row">
                 <label class="inline" i18n:translate="">Policy</label>
-                <a href="#"
+                <a ng-click="openSecurityPolicyModal()"
                     title="Change policy" i18n:translate="">
                     Select
                 </a>

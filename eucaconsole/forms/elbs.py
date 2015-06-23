@@ -564,7 +564,6 @@ class SecurityPolicyForm(BaseSecureForm):
     predefined_policy = wtforms.SelectField(
         label=_(u'Policy name'),
         validators=[PredefinedPolicyRequired(message=predefined_policy_error_msg)],
-        choices=[],
     )
     ssl_protocols = wtforms.SelectMultipleField(
         label=_(u'SSL Protocols'),
@@ -573,13 +572,14 @@ class SecurityPolicyForm(BaseSecureForm):
         label=_(u'SSL Ciphers'),
         choices=[],
     )
-    ssl_options = wtforms.BooleanField(label=_(u'SSL Options'))
+    server_order_preference = wtforms.BooleanField(label=_(u'Server order preference'))  # Under SSL Options
 
     def __init__(self, request, elb_conn=None, **kwargs):
         super(SecurityPolicyForm, self).__init__(request, **kwargs)
         self.elb_conn = elb_conn
         self.set_error_messages()
         self.set_choices()
+        self.set_initial_data()
 
     def set_error_messages(self):
         self.predefined_policy.error_msg = self.predefined_policy_error_msg
@@ -587,6 +587,10 @@ class SecurityPolicyForm(BaseSecureForm):
     def set_choices(self):
         self.ssl_protocols.choices = self.get_ssl_protocol_choices()
         self.predefined_policy.choices = self.get_predefined_policy_choices()
+
+    def set_initial_data(self):
+        # Default to TLS 1, 1.1, and 1.2 for ssl_protocols
+        self.ssl_protocols.data = [val for val, label in self.get_ssl_protocol_choices()]
 
     def get_predefined_policy_choices(self):
         """Boto 2 doesn't offer a DescribeLoadBalancerPolicies API method, so we'll need to use a lower-level call"""

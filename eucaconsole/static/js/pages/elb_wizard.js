@@ -4,7 +4,8 @@
  *
  */
 
-angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $http, $timeout, eucaHandleError, eucaUnescapeJson) {
+angular.module('BaseELBWizard').controller('ELBWizardCtrl', ['ELBSecurityPolicyEditor'],
+    function ($scope, $http, $timeout, eucaHandleError, eucaUnescapeJson) {
     $scope.elbForm = undefined;
     $scope.urlParams = undefined;
     $scope.isNotValid = true;

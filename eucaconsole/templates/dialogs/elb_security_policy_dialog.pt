@@ -1,6 +1,8 @@
 <!--! ELB Security Policy dialog -->
+<link rel="stylesheet" href="${request.static_path('eucaconsole:static/css/widgets/elb_security_policy_editor.css')}" />
 <div tal:omit-tag="" i18n:domain="eucaconsole">
-    <div id="elb-security-policy-modal" class="reveal-modal medium" data-reveal="" ng-cloak="">
+    <div id="elb-security-policy-modal" class="reveal-modal medium" data-reveal="" ng-cloak=""
+         ng-controller="ELBSecurityPolicyEditorCtrl" ng-init="initSecurityPolicyEditor()">
         <h3 i18n:translate="">Select security Policy</h3>
         <p i18n:translate="">
             A security policy configures SSL negotiation settings when you use a secure
@@ -9,26 +11,25 @@
         <form method="post" data-abide="abide" id="security-policy-form">
              ${structure:policy_form['csrf_token']}
             <div>
-                <div>
-                    <input type="radio" id="policy-type-predefined" name="policy_type_radio"
-                           value="existing" ng-model="policyRadioButton" />
-                    <label for="policy-type-predefined" i18n:translate="">
-                        Choose a predefined security policy
-                    </label>
-                </div>
-                <div ng-show="policyRadioButton === 'existing'">
-                    ${panel('form_field', field=policy_form['predefined_policy'])}
-                </div>
+                <input type="radio" id="policy-type-predefined" name="policy_type_radio"
+                       value="existing" ng-model="policyRadioButton" />
+                <label for="policy-type-predefined" i18n:translate="">
+                    Choose a predefined security policy
+                </label>
+            </div>
+            <div ng-show="policyRadioButton === 'existing'">
+                ${panel('form_field', field=policy_form['predefined_policy'])}
             </div>
             <div>
                 <input type="radio" id="policy-type-new" name="policy_type_radio"
                        value="new" ng-model="policyRadioButton" />
                 <label for="policy-type-new" i18n:translate="">Create a custom security policy</label>
             </div>
-            <div ng-show="policyRadioButton === 'new'">
-                ${panel('form_field', field=policy_form['ssl_protocols'], ng_attrs=dict(model='sslProtocols'))}
-                ${panel('form_field', field=policy_form['ssl_ciphers'], ng_attrs=dict(model='sslCiphers'))}
-                ${panel('form_field', field=policy_form['ssl_options'], ng_attrs=dict(model='sslOptions'))}
+            <div ng-show="policyRadioButton === 'new'" id="new-policy-wrapper">
+                ${panel('form_field', field=policy_form['ssl_protocols'], stack_label=True)}
+                ${panel('form_field', field=policy_form['ssl_ciphers'], stack_label=True)}
+                <h6 i18n:translate="">SSL Options</h6>
+                ${panel('form_field', field=policy_form['server_order_preference'], reverse=True)}
             </div>
         </form>
         <hr />
@@ -44,4 +45,5 @@
         </div>
         <a href="#" id="security-policy-modal-close-link" class="close-reveal-modal">&#215;</a>
     </div>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/elb_security_policy_editor.js')}"></script>
 </div>
