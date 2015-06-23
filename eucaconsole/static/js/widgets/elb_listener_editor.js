@@ -138,6 +138,15 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
                 $scope.serverCertificateName = name;
                 $scope.handleEventUseThisCertificate();
             });
+            $(document).on('opened.fndtn.reveal', '#select-certificate-modal', function () {
+                // Ensure new certificate radio button is selected when no existing SSL certs are available
+                var modal = $(this),
+                    existingRadioBtn = modal.find('#certificate-type-radio-existing'),
+                    newRadioBtn = modal.find('#certificate-type-radio-new');
+                if (!existingRadioBtn.is(':visible')) {
+                    newRadioBtn.click();
+                }
+            });
         };
         // In case of the duplicated listener, add the 'disabled' class to the button
         $scope.setAddListenerButtonClass = function () {
@@ -222,7 +231,7 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
             $timeout(function () {
                 // Prevent adding HTTPS/SSL listener w/o certificate configured
                 if ($scope.fromProtocol.value === 'HTTPS' || $scope.fromProtocol.value === 'SSL') {
-                    if (!$scope.certificateARN && $scope.certificateName === "Select...") {
+                    if (!$scope.pruneCertificateLabel($scope.certificateARN) && !$scope.pruneCertificateLabel($scope.certificateName)) {
                         alert($scope.certificateRequiredNotice);
                         return false;
                     }
@@ -398,12 +407,12 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
                 }
             });
         };
-        $scope.pruneCertificateLabel = function (certARN) {
-            if (!certARN) {
-                return certARN;
+        $scope.pruneCertificateLabel = function (certLabel) {
+            if (!certLabel || certLabel === 'None' || certLabel === 'Select...') {
+                return '';
             }
-            var certArray = certARN.split('/');
-            if (certArray.length) {
+            var certArray = certLabel.split('/');
+            if (certArray.length > 1) {
                 return certArray[certArray.length -1];
             }
         };
