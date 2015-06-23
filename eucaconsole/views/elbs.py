@@ -323,6 +323,10 @@ class BaseELBView(TaggedItemView):
         instance_port = 443
         self.elb_conn.set_lb_policies_of_backend_server(elb_name, instance_port, backend_policy_name)
 
+    def get_latest_predefined_policy(self):
+        if self.predefined_policy_choices:
+            return self.predefined_policy_choices[0][0]
+
     @staticmethod
     def get_instance_selector_text():
         instance_selector_text = {'name': _(u'NAME (ID)'), 'tags': _(u'TAGS'),
@@ -906,6 +910,8 @@ class CreateELBView(BaseELBView):
             certificate_form=self.certificate_form,
             backend_certificate_form=self.backend_certificate_form,
             can_list_certificates=self.can_list_certificates,
+            security_policy_form=self.security_policy_form,
+            latest_predefined_policy=self.get_latest_predefined_policy(),
             protocol_list=self.get_protocol_list(),
             security_group_placeholder_text=_(u'Select...'),
             is_vpc_supported=self.is_vpc_supported,

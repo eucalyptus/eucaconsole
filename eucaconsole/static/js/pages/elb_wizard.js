@@ -2,10 +2,11 @@
  * @fileOverview Elastic Load Balancer Wizard JS
  * @requires AngularJS
  *
+ * Note: Specify dependencies array in base_elb_wizard.js
+ *
  */
 
-angular.module('BaseELBWizard').controller('ELBWizardCtrl', ['ELBSecurityPolicyEditor'],
-    function ($scope, $http, $timeout, eucaHandleError, eucaUnescapeJson) {
+angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $http, $timeout, eucaHandleError, eucaUnescapeJson) {
     $scope.elbForm = undefined;
     $scope.urlParams = undefined;
     $scope.isNotValid = true;

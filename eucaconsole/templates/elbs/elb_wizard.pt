@@ -344,6 +344,7 @@
         </div>
         <!--! Modal dialogs -->
         ${panel('select_certificate_dialog', can_list_certificates=can_list_certificates, certificate_form=certificate_form, backend_certificate_form=backend_certificate_form)}
+        ${panel('elb_security_policy_dialog', security_policy_form=security_policy_form)}
     </div>
 </div>
 
