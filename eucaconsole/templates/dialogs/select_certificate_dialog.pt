@@ -101,11 +101,11 @@
                         Upload a new SSL certificate
                     </label>
                 </div>
-                <div ng-show="certificateRadioButton === 'new' || existingCertificateChoices.length === 1">
-                    ${panel('form_field', field=certificate_form['certificate_name'], ng_attrs={'model': 'newCertificateName'}, leftcol_width=3, rightcol_width=9, pattern=layout.name_without_spaces_pattern)}
-                    ${panel('form_field', field=certificate_form['private_key'], ng_attrs={'model': 'privateKey'}, leftcol_width=3, rightcol_width=9)}
-                    ${panel('form_field', field=certificate_form['public_key_certificate'], ng_attrs={'model': 'publicKeyCertificate'}, leftcol_width=3, rightcol_width=9)}
-                    ${panel('form_field', field=certificate_form['certificate_chain'], ng_attrs={'model': 'certificateChain'}, leftcol_width=3, rightcol_width=9)}
+                <div ng-show="certificateRadioButton === 'new' || existingCertificateChoices.length === 1" id="new-certificate-wrapper">
+                    ${panel('form_field', field=certificate_form['certificate_name'], ng_attrs={'model': 'newCertificateName'}, stack_label=True, pattern=layout.name_without_spaces_pattern)}
+                    ${panel('form_field', field=certificate_form['private_key'], ng_attrs={'model': 'privateKey'}, stack_label=True)}
+                    ${panel('form_field', field=certificate_form['public_key_certificate'], ng_attrs={'model': 'publicKeyCertificate'}, stack_label=True)}
+                    ${panel('form_field', field=certificate_form['certificate_chain'], ng_attrs={'model': 'certificateChain'}, stack_label=True)}
                 </div>
             </form>
             <a href="#" id="select-certificate-close-link-form-ssl" class="close-reveal-modal">&#215;</a>

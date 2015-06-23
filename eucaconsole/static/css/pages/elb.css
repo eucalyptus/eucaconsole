@@ -17,7 +17,7 @@
 
 #breadcrumbs .icon-block { display: none; }
 
-#primary-buttons .button { padding: 8px 3rem; }
+#primary-buttons .button { padding: 8px 1rem; }
 
 .gridwrapper { margin-top: 0.5rem; }
 
@@ -114,6 +114,10 @@
 #results-count { padding-top: 0.25rem; text-align: right; }
 #results-count .items-found { vertical-align: center; }
 
+.euca-split { border-color: #e6e7e8 !important; width: 2.0rem !important; }
+
+.split.button { padding-right: 3.0rem !important; }
+
 /* ----------------------------------------- Media Queries
 ----------------------------------------- */
 @media screen and (max-width: 1024px) { #filters { margin-top: 1rem; } }
@@ -140,12 +144,6 @@ table.table th.center { text-align: center; }
 #elb-view-form .cancel-link { margin-right: 1.5rem; }
 #elb-view-form .description { margin-bottom: 1.0rem; }
 #elb-view-form .enable-button { height: 37px; padding-top: 0.5rem; }
-
-#select-certificate-modal .item-list { margin-bottom: 6px; }
-#select-certificate-modal .item-list .item { color: #333; background-color: #e6e7e8; margin-right: 8px; }
-#select-certificate-modal .item-list .item a { color: white; }
-#select-certificate-modal .section-label { margin-top: 1.5rem; margin-bottom: 1rem; color: #5a5a5a; }
-#select-certificate-modal #backend-certificates-display { margin-bottom: 1rem; }
 
 #advanced-section { margin-top: 1.5rem; }
 

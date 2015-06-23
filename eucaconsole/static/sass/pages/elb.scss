@@ -64,17 +64,6 @@ table.table {
     }
 }
 
-#select-certificate-modal {
-    @include item-list;
-    .section-label {
-        margin-top: 1.5rem;
-        margin-bottom: 1rem;
-        color: $hp-gray-65;
-    }
-    #backend-certificates-display {
-        margin-bottom: 1rem;
-    }
-}
 
 
 #advanced-section {

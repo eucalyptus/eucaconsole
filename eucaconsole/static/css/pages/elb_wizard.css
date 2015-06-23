@@ -59,12 +59,6 @@
 #elb-form .section-label-with-helptext-icon { margin-bottom: 0.5rem; }
 #elb-form .checkbox-with-helptext-icon label { margin-right: 0; }
 
-#select-certificate-modal .item-list { margin-bottom: 6px; }
-#select-certificate-modal .item-list .item { color: #333; background-color: #e6e7e8; margin-right: 8px; }
-#select-certificate-modal .item-list .item a { color: white; }
-#select-certificate-modal .section-label { margin-top: 1.5rem; margin-bottom: 1rem; color: #5a5a5a; }
-#select-certificate-modal #backend-certificates-display { margin-bottom: 1rem; }
-
 table.elb-listener-table { width: 100%; }
 table.elb-listener-table tr.top-header { border-bottom: 0px; }
 table.elb-listener-table th.vertical-border-header { border-collapse: collapse; border-right-width: 1px; border-right-style: solid; border-right-color: #ddd; }
