@@ -51,7 +51,7 @@
                                     {{ backendPolicy }}
                                 </span>
                                 <span ng-show="backendCertificateArray.length">
-                                    <span i18n:translate="">Back-end certs</span>
+                                    <span i18n:translate="">Back-end cert(s)</span>
                                     <span ng-repeat="bcert in backendCertificateArray">
                                         {{ bcert.name }}<span ng-hide="$last">, </span>
                                     </span>
