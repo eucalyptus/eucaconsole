@@ -329,6 +329,7 @@ def elb_security_policy_dialog(context, request, security_policy_form=None):
     """ Modal dialog for selecting SSL certificate"""
     return dict(
         security_policy_form=security_policy_form,
+        chosen_placeholder_text=_(u'Select...'),
     )
 
 

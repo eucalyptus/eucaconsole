@@ -25,9 +25,10 @@
                        value="new" ng-model="policyRadioButton" />
                 <label for="policy-type-new" i18n:translate="">Create a custom security policy</label>
             </div>
-            <div ng-show="policyRadioButton === 'new'" id="new-policy-wrapper">
-                ${panel('form_field', field=security_policy_form['ssl_protocols'], stack_label=True)}
-                ${panel('form_field', field=security_policy_form['ssl_ciphers'], stack_label=True)}
+            <div ng-show="policyRadioButton === 'new'" id="new-policy-wrapper"
+                 tal:define="html_attrs {'data-placeholder': chosen_placeholder_text}">
+                ${panel('form_field', field=security_policy_form['ssl_protocols'], stack_label=True, **html_attrs)}
+                ${panel('form_field', field=security_policy_form['ssl_ciphers'], stack_label=True, **html_attrs)}
                 <h6 i18n:translate="">SSL Options</h6>
                 ${panel('form_field', field=security_policy_form['server_order_preference'], reverse=True)}
             </div>
