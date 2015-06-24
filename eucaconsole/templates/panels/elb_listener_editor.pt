@@ -20,7 +20,13 @@
                         <th class="header" i18n:translate="">PROTOCOL</th>
                         <th class="header vertical-border-header" i18n:translate="">PORT</th>
                         <th class="header" i18n:translate="">POLICY</th>
-                        <th class="header" i18n:translate="">CERTIFICATES</th>
+                        <th class="header">
+                            <span i18n:translate="">CERTIFICATES</span>
+                            <span title="Back-end certificates are contained within back-end policies once they are saved to the cloud."
+                                  data-tooltip="" i18n:attributes="title">
+                                <i class="helptext-icon"></i>
+                            </span>
+                        </th>
                         <th></th>
                     </tr>
                 </thead>
