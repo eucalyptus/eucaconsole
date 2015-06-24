@@ -130,6 +130,7 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor']
                 if (hiddenArnInput.length > 0) {
                     hiddenArnInput.val($scope.certificateARN);
                 }
+                $scope.setClassUseThisCertificateButton();
                 $scope.$broadcast('eventUpdateCertificateARN', $scope.certificateARN, $scope.tempListenerBlock);
             });
             $scope.$watch('certificateName', function(){
@@ -278,7 +279,11 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor']
         $scope.setClassUseThisCertificateButton = function () {
             if ($scope.certificateTab === 'SSL') {
                 if ($scope.certificateRadioButton === 'existing') {
-                    $scope.classUseThisCertificateButton = '';
+                    if (!$scope.certificateARN) {
+                        $scope.classUseThisCertificateButton = 'disabled';
+                    } else {
+                        $scope.classUseThisCertificateButton = '';
+                    }
                 } else {
                     if ($scope.newCertificateName === undefined || $scope.newCertificateName === '') {
                         $scope.classUseThisCertificateButton = 'disabled';
