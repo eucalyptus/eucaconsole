@@ -117,10 +117,10 @@
                     <button type="submit" class="button expand" id="create-securitygroup-btn"
                         ng-class="classUseThisCertificateButton"
                         ng-click="handleCertificateCreate($event, '${request.route_path('certificate_create')}')">
-                        <span i18n:translate="" ng-show="!showsCertificateTabDiv">
+                        <span i18n:translate="" ng-show="!showsCertificateTabDiv || backendCertificateArray.length === 0">
                             Use This Certificate
                         </span>
-                        <span i18n:translate="" ng-show="showsCertificateTabDiv">
+                        <span i18n:translate="" ng-show="showsCertificateTabDiv &amp;&amp; backendCertificateArray.length">
                             Use These Certificates
                         </span>
                     </button>
