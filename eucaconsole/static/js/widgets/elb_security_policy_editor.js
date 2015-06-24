@@ -4,7 +4,7 @@
  *
  */
 angular.module('ELBSecurityPolicyEditor', ['EucaConsoleUtils'])
-    .controller('ELBSecurityPolicyEditorCtrl', function ($scope) {
+    .controller('ELBSecurityPolicyEditorCtrl', function ($scope, $rootScope) {
         $scope.policyRadioButton = 'existing';
         $scope.policyModal = $('#elb-security-policy-modal');
         $scope.sslProtocols = [];
@@ -31,6 +31,9 @@ angular.module('ELBSecurityPolicyEditor', ['EucaConsoleUtils'])
             elbForm.find('#predefined_policy_hidden_input').val($scope.predefinedPolicy);
             serverOrderPrefInput.prop('checked', $scope.sslServerOrderPref);
             sslUsingCustomPolicy.prop('checked', $scope.policyRadioButton === 'new');
+            if ($scope.policyRadioButton === 'existing') {
+                $rootScope.$broadcast('elb:predefinedPolicySelected', $scope.predefinedPolicy);
+            }
             $scope.policyModal.foundation('reveal', 'close');
         };
     })

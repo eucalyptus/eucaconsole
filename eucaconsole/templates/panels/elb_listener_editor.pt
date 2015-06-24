@@ -32,7 +32,7 @@
                         <td>{{ listener.toPort }}</td>
                         <td>
                             <span ng-show="showServerCertificateNameLink(listener.fromProtocol)">
-                                <span i18n:translate="">${latest_predefined_policy}</span>
+                                <span>{{ selectedPredefinedPolicy || '${latest_predefined_policy}' }}</span>
                                 <a ng-click="openSecurityPolicyModal()"
                                     title="Change security policy" i18n:translate="">
                                     Change
@@ -148,9 +148,9 @@
             <div class="subsection-label"><strong i18n:translate="" class="upper">Security</strong></div>
             <div class="security-row">
                 <label class="inline" i18n:translate="">Policy</label>
-                <a ng-click="openSecurityPolicyModal()"
-                    title="Change policy" i18n:translate="">
-                    Select
+                <span>{{ selectedPredefinedPolicy || '${latest_predefined_policy}' }}</span>
+                <a ng-click="openSecurityPolicyModal()" title="Change policy" i18n:translate="">
+                    Change
                 </a>
             </div>
             <div class="security-row">

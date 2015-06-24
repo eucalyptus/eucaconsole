@@ -26,6 +26,7 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
         $scope.serverCertificateName = '';
         $scope.serverCertificateARN = '';
         $scope.serverCertificateARNBlock = {};
+        $scope.selectedPredefinedPolicy = '';
         $scope.addListenerButtonClass = 'disabled';
         $scope.initEditor = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
@@ -137,6 +138,9 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
                 $scope.serverCertificateARN = arn;
                 $scope.serverCertificateName = name;
                 $scope.handleEventUseThisCertificate();
+            });
+            $scope.$on('elb:predefinedPolicySelected', function ($event, newPredefinedPolicy) {
+                $scope.selectedPredefinedPolicy = newPredefinedPolicy;
             });
         };
         // In case of the duplicated listener, add the 'disabled' class to the button
