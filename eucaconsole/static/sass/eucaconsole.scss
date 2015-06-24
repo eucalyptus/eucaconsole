@@ -681,6 +681,9 @@ form {
         &.nowrap {
             white-space: nowrap;
         }
+        &.stack-label {
+            margin-bottom: 4px;
+        }
     }
     label.reverse {
         display: inline-block;
@@ -731,6 +734,13 @@ form {
         margin-bottom: 4px;
         label {
             right: -6px;
+        }
+    }
+    &.stacked {
+        .field {
+            select {
+                margin-top: 0;
+            }
         }
     }
 }
