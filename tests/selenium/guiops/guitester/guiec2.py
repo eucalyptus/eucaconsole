@@ -15,7 +15,7 @@ from pages.security_group.security_group_view import SecurityGroupView
 from pages.security_group.security_group_detail import SecurityGroupDetailPage
 from dialogs.security_group_dialogs import CreateScurityGroupDialog, DeleteScurityGroupDialog
 from dialogs.keypair_dialogs import CreateKeypairDialog, DeleteKeypairModal, ImportKeypairDialog
-from dialogs.instance_dialogs import LaunchInstanceWidget, LaunchMoreLikeThisDialog, TerminateInstanceModal, TerminateAllInstancesModal
+from dialogs.instance_dialogs import LaunchInstanceWizard, LaunchMoreLikeThisDialog, TerminateInstanceModal, TerminateAllInstancesModal
 from dialogs.volume_dialogs import CreateVolumeDialog, DeleteVolumeModal
 from dialogs.snapshot_dialogs import CreateSnapshotModal, DeleteSnapshotModal
 
@@ -209,7 +209,7 @@ class GuiEC2(GuiTester):
         """
         BasePage(self).goto_dashboard_via_menu()
         Dashboard(self).click_launch_instance_button_from_dashboard()
-        LaunchInstanceWidget(self).launch_instance(image, availability_zone, instance_type,
+        LaunchInstanceWizard(self).launch_instance(image, availability_zone, instance_type,
                                                           number_of_of_instances, instance_name, key_name,
                                                           security_group, user_data, monitoring, private_addressing)
         instance_id = InstanceView(self).get_id_of_newly_launched_instance()
@@ -236,7 +236,7 @@ class GuiEC2(GuiTester):
         """
         BasePage(self).goto_instances_via_menu()
         InstanceView(self).click_action_launch_instance_on_view_page()
-        LaunchInstanceWidget(self).launch_instance(image, availability_zone, instance_type,
+        LaunchInstanceWizard(self).launch_instance(image, availability_zone, instance_type,
                                                     number_of_of_instances, instance_name, key_name,
                                                     security_group, user_data, monitoring, private_addressing)
         instance_id = InstanceView(self).get_id_of_newly_launched_instance()
@@ -264,7 +264,7 @@ class GuiEC2(GuiTester):
 
         BasePage(self).goto_images_view_via_menu()
         ImageView(self).click_action_launch_instance(image_id_or_type)
-        LaunchInstanceWidget(self).launch_instance_step2(availability_zone, instance_type,
+        LaunchInstanceWizard(self).launch_instance_step2(availability_zone, instance_type,
                                                         number_of_of_instances, instance_name, key_name,
                                                         security_group, user_data, monitoring, private_addressing)
         instance_id = InstanceView(self).get_id_of_newly_launched_instance()
