@@ -45,10 +45,16 @@
                         <td>
                             <span ng-show="showServerCertificateNameLink(listener.fromProtocol)">
                                 <span i18n:translate="">SSL cert</span>
-                                {{ listener.certificateName || listener.certificateId }}<span ng-show="listener.backendPolicies.length">,</span>
+                                {{ listener.certificateName || listener.certificateId }}<span ng-show="listener.backendPolicies.length || backendCertificateArray.length">,</span>
                                 <span ng-repeat="backendPolicy in listener.backendPolicies">
                                     <span i18n:translate="">Back-end policy</span>
                                     {{ backendPolicy }}
+                                </span>
+                                <span ng-show="backendCertificateArray.length">
+                                    <span i18n:translate="">Back-end certs</span>
+                                    <span ng-repeat="bcert in backendCertificateArray">
+                                        {{ bcert.name }}<span ng-hide="$last">, </span>
+                                    </span>
                                 </span>
                                 <a ng-click="openCertificateModal(listener.fromProtocol, listener.toProtocol, listener.fromPort, listener.toPort, listener.certificateId);"
                                     title="Change certficate" i18n:translate="" i18n:attributes="title">

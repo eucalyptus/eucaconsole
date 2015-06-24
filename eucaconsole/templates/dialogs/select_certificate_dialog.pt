@@ -40,7 +40,7 @@
                         Add another certificate:
                     </span>
                     <div>
-                        ${panel('form_field', field=backend_certificate_form['backend_certificate_name'], ng_attrs={'model': 'backendCertificateName'}, leftcol_width=3, rightcol_width=9, pattern=layout.name_without_spaces_pattern)}
+                        ${panel('form_field', field=backend_certificate_form['backend_certificate_name'], ng_attrs={'model': 'backendCertificateName'}, stack_label=True, pattern=layout.name_without_spaces_pattern)}
                         <div class="row inline controls-wrapper" ng-show="classDuplicatedBackendCertificateDiv === 'error'">
                             <div class="small-3 columns">&nbsp;</div>
                             <div class="small-9 columns field">
@@ -49,19 +49,14 @@
                                 </div>
                             </div>
                         </div>
-                        ${panel('form_field', field=backend_certificate_form['backend_certificate_body'], ng_attrs={'model': 'backendCertificateBody'}, leftcol_width=3, rightcol_width=9)}
+                        ${panel('form_field', field=backend_certificate_form['backend_certificate_body'], ng_attrs={'model': 'backendCertificateBody'}, stack_label=True)}
                     </div>
-                    <div>
-                        <div class="row inline controls-wrapper" id="add-backend-certificate-button-div">
-                            <div class="large-2 small-3 columns">&nbsp;</div>
-                            <div class="large-10 small-9 columns field">
-                                <span id="button-add-backend-certificate" class="button round small" i18n:translate=""
-                                    ng-class="classAddBackendCertificateButton"
-                                    ng-click="addBackendCertificate($event)">
-                                    Add Certificate
-                                </span>
-                            </div>
-                        </div>
+                    <div id="add-backend-certificate-button-div" class="columns">
+                        <span id="button-add-backend-certificate" class="button round small" i18n:translate=""
+                            ng-class="classAddBackendCertificateButton"
+                            ng-click="addBackendCertificate($event)">
+                            Add Certificate
+                        </span>
                     </div>
                 </div>
             </form>
