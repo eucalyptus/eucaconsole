@@ -9,13 +9,26 @@
         padding-left: 20px;
         background: url(../../img/svg/bucket_solo_green.svg) no-repeat;
     }
-    .tile .header a.has-bucket-icon {
+    .has-shared-icon {
         padding-left: 20px;
+        background: url(../../img/svg/bucket_shared.svg) no-repeat;
+    }
+    .tile .header a {
+        &.has-bucket-icon {
+            padding-left: 20px;
+        }
+        &.has-shared-icon {
+            padding-left: 20px;
+        }
     }
 }
 
 .button.cancel {
     background-color: darken(red, 20%);
+}
+
+#open-shared-btn {
+    margin-left: 1rem;
 }
 
 .bucket-progress {

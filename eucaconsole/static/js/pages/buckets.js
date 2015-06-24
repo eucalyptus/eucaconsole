@@ -33,6 +33,8 @@ angular.module('BucketsPage', ['LandingPage', 'EucaConsoleUtils'])
             $scope.getKeysGenericUrl = options.get_keys_generic_url;
             $scope.putKeysUrl = options.put_keys_url;
             $scope.uploadUrl = options.upload_url;
+            $scope.contentsUrl = options.contents_url;
+            $scope.itemUrl = options.bucket_item_url;
             $scope.updatePasteValues();
         };
         $scope.revealModal = function (action, bucket) {
@@ -91,6 +93,13 @@ angular.module('BucketsPage', ['LandingPage', 'EucaConsoleUtils'])
                     }
                 });
             });
+            var saved_names = localStorage.getItem('shared_buckets');
+            if (saved_names) {
+                angular.forEach(saved_names.split(','), function(item, key) {
+                    items.push({'bucket_name': item, 'creation_date': 'unknown',
+                        'shared': true, 'contents_url': $scope.contentsUrl.replace('_name_', item)});
+                });
+            }
         });
         $scope.updatePasteValues = function() {
             $scope.pasteBuffer = Modernizr.sessionstorage && sessionStorage.getItem('copy-object-buffer');
@@ -219,13 +228,69 @@ angular.module('BucketsPage', ['LandingPage', 'EucaConsoleUtils'])
                 error(function (oData, status) {
                     $('#copy-folder-modal').foundation('reveal', 'close');
                     $scope.copyingAll = false;
-                    Notify.failure("some kind of error");
+                    Notify.failure("error copying some keys");
                 });
         };
         $scope.cancelCopying = function () {
             $('#copy-folder-modal').foundation('reveal', 'close');
             $scope.copyingAll = false;
             $scope.$broadcast('refresh');
+        };
+        $scope.openSharedBucket = function($event) {
+            var form = $('#open-shared-form');
+            form.trigger('validate');
+            invalidFields = form.find('[data-invalid]');
+            if (invalidFields.length || $scope.isNotValid === true) {
+                invalidFields.focus();
+                $event.preventDefault();
+                return;
+            }
+            var url = window.location.href;
+            var bucket_name = $('#shared-bucket-name').val();
+            var save_name = $('#save-bucket-to-list').is(':checked');
+            if (Modernizr.localstorage && save_name === true) {
+                var saved_names = localStorage.getItem('shared_buckets');
+                if (saved_names) {
+                    saved_names = saved_names + "," + bucket_name;
+                }
+                else {
+                    saved_names = bucket_name;
+                }
+                localStorage.setItem('shared_buckets', saved_names);
+            }
+            window.location = $scope.contentsUrl.replace("_name_", bucket_name);
+        };
+        $scope.downloadSharedObject = function($event) {
+            var form = $('#download-object-form');
+            form.trigger('validate');
+            invalidFields = form.find('[data-invalid]');
+            if (invalidFields.length || $scope.isNotValid === true) {
+                invalidFields.focus();
+                $event.preventDefault();
+                return;
+            }
+            var objectPath = $('#shared-object-path').val();
+            var bucketName = objectPath.substring(0, objectPath.indexOf('/'));
+            var key = objectPath.substring(objectPath.indexOf('/')+1);
+            var url = $scope.itemUrl.replace('_name_', bucketName).replace('_subpath_', key);
+            $http({method: 'POST', url: url, data: '',
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
+                success(function (oData) {
+                    if (oData.errors !== undefined) {
+                        console.log('error getting shared object url ' + oData.errors);
+                    }
+                    $('#download-object-modal').foundation('reveal', 'close');
+                    $("#download-object-fake-form").attr('action', oData.item_link);
+                    // download the object 1 second after.
+                    setTimeout(function(){
+                        $("#download-object-fake-form").submit();
+                    }, 1000);
+                }).
+                error(function (oData, status) {
+                    $('#copy-folder-modal').foundation('reveal', 'close');
+                    $scope.copyingAll = false;
+                    Notify.failure("error getting shared object url");
+                });
         };
     })
 ;

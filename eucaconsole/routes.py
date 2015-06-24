@@ -222,6 +222,7 @@ urls = [
     Route(name='bucket_create_folder', pattern='/buckets/{name}/createfolder/*subpath'),
     Route(name='bucket_upload', pattern='/buckets/{name}/upload/*subpath'),
     Route(name='bucket_sign_req', pattern='/buckets/{name}/signreq/*subpath'),
+    Route(name='bucket_item_url', pattern='/buckets/{name}/geturl/*subpath'),
 
 
     # Security Groups #####

@@ -58,6 +58,7 @@ DELIMITER = '/'
 BUCKET_ITEM_URL_EXPIRES = 300  # Link to item expires in ___ seconds (after page load)
 BUCKET_NAME_PATTERN = '^[a-z0-9-\.]+$'
 FOLDER_NAME_PATTERN = '^[^\/]+$'
+OBJECT_PATH_PATTERN = '^[a-z0-9-\.]+/.+$'
 
 
 class BucketMixin(object):
@@ -95,6 +96,12 @@ class BucketsView(LandingPageView):
             dict(key='creation_date', name=_(u'Creation time: Oldest to Newest')),
             dict(key='-creation_date', name=_(u'Creation time: Newest to Oldest')),
         ]
+        s3_conn = self.get_connection(conn_type='s3')
+        s3_url_prefix = "https://{host}:{port}/{path}/".format(
+            host=s3_conn.host,
+            port=s3_conn.port,
+            path=s3_conn.path
+        )
         self.render_dict = dict(
             prefix=self.prefix,
             versioning_form=BucketUpdateVersioningForm(request, formdata=self.request.params or None),
@@ -105,6 +112,9 @@ class BucketsView(LandingPageView):
             filter_keys=['bucket_name'],
             controller_options_json=self.get_controller_options_json(),
             search_facets=BaseView.escape_json(json.dumps([])),
+            bucket_name_pattern=BUCKET_NAME_PATTERN,
+            object_path_pattern=OBJECT_PATH_PATTERN,
+            object_url_prefix=s3_url_prefix
         )
 
     @view_config(route_name='buckets', renderer=VIEW_TEMPLATE)
@@ -134,6 +144,8 @@ class BucketsView(LandingPageView):
             'get_keys_generic_url': self.request.route_path('bucket_keys', name='_name_', subpath='_subpath_'),
             'put_keys_url': self.request.route_path('bucket_put_items', name='_name_', subpath='_subpath_'),
             'upload_url': self.request.route_path('bucket_upload', name='_name_', subpath=''),
+            'contents_url': self.request.route_path('bucket_contents', name='_name_', subpath=''),
+            'bucket_item_url': self.request.route_path('bucket_item_url', name='_name_', subpath='_subpath_')
         }))
 
 
@@ -963,6 +975,22 @@ class BucketItemDetailsView(BaseView, BucketMixin):
                 metadata[metadata_attr_mapping[attr]] = getattr(bucket_item, attr)
         return metadata
 
+class BucketSharedItemView(BaseView, BucketMixin):
+    def __init__(self, request, bucket=None, bucket_item_acl=None, **kwargs):
+        super(BucketSharedItemView, self).__init__(request, **kwargs)
+        self.bucket = bucket
+        s3_conn = self.get_connection(conn_type='s3')
+        request.subpath = self.get_subpath()
+        if s3_conn and self.bucket is None:
+            bucket_name = request.matchdict.get('name')
+            self.bucket = s3_conn.get_bucket(bucket_name, validate=False)
+            self.bucket_item = self.bucket.get_key('/'.join(request.subpath), validate=False)
+
+    @view_config(route_name='bucket_item_url', renderer='json', request_method='POST', xhr=True)
+    def bucket_item_url(self):
+        return dict(
+            item_link=self.bucket_item.generate_url(expires_in=BUCKET_ITEM_URL_EXPIRES),
+        )
 
 class CreateBucketView(BaseView):
     """Views for creating a bucket"""
