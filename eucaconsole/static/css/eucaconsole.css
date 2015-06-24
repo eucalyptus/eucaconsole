@@ -1784,7 +1784,7 @@ form .error .chosen-container .chosen-single { border-color: darkred; background
 .row.controls-wrapper.readonly .value { padding-bottom: 6px; }
 .row.controls-wrapper.inline { margin-bottom: 4px; }
 .row.controls-wrapper.inline label { right: -6px; }
-.row.controls-wrapper.stacked .field select { margin-top: 0; }
+.row.controls-wrapper.stacked .field select, .row.controls-wrapper.stacked .field textarea { margin-top: 0; }
 
 form .controls-wrapper > [class*='small-'] label { font-weight: bold; padding-top: 0.3rem; }
 form .controls-wrapper > [class*='small-'] label.right { position: relative; right: -1rem; }

@@ -738,7 +738,7 @@ form {
     }
     &.stacked {
         .field {
-            select {
+            select, textarea {
                 margin-top: 0;
             }
         }
