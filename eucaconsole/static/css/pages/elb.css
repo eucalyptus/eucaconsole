@@ -17,7 +17,7 @@
 
 #breadcrumbs .icon-block { display: none; }
 
-#primary-buttons .button { padding: 8px 3rem; }
+#primary-buttons .button { padding: 8px 1rem; }
 
 .gridwrapper { margin-top: 0.5rem; }
 
@@ -114,6 +114,10 @@
 #results-count { padding-top: 0.25rem; text-align: right; }
 #results-count .items-found { vertical-align: center; }
 
+.euca-split { border-color: #e6e7e8 !important; width: 2.0rem !important; }
+
+.split.button { padding-right: 3.0rem !important; }
+
 /* ----------------------------------------- Media Queries
 ----------------------------------------- */
 @media screen and (max-width: 1024px) { #filters { margin-top: 1rem; } }
@@ -126,20 +130,20 @@ table.table tr.top-header { border-bottom: 0; }
 table.table th.vertical-border-header { border-collapse: collapse; border-right: 1px solid #ddd; }
 table.table th.center { text-align: center; }
 
-#elb-view-form .item-list { margin-bottom: 6px; }
-#elb-view-form .item-list .item { color: #333; background-color: #e6e7e8; margin-right: 8px; }
-#elb-view-form .item-list .item a { color: white; }
-#elb-view-form input.text-input { width: 300px; }
-#elb-view-form input.timeout-field { width: 60px; }
-#elb-view-form input[type="number"] { width: 80px; }
-#elb-view-form .stack-label { margin-bottom: 0.5rem; }
-#elb-view-form .sub-section-label { color: black; }
-#elb-view-form .helptext-icon { color: #6a737b; font-size: 1.3rem; }
-#elb-view-form .section-label-with-helptext-icon { margin-bottom: 0.5rem; }
-#elb-view-form .checkbox-with-helptext-icon label { margin-right: 0; }
-#elb-view-form .cancel-link { margin-right: 1.5rem; }
-#elb-view-form .description { margin-bottom: 1.0rem; }
-#elb-view-form .enable-button { height: 37px; padding-top: 0.5rem; }
+#elb-form .item-list { margin-bottom: 6px; }
+#elb-form .item-list .item { color: #333; background-color: #e6e7e8; margin-right: 8px; }
+#elb-form .item-list .item a { color: white; }
+#elb-form input.text-input { width: 300px; }
+#elb-form input.timeout-field { width: 60px; }
+#elb-form input[type="number"] { width: 80px; }
+#elb-form .stack-label { margin-bottom: 0.5rem; }
+#elb-form .sub-section-label { color: black; }
+#elb-form .helptext-icon { color: #6a737b; font-size: 1.3rem; }
+#elb-form .section-label-with-helptext-icon { margin-bottom: 0.5rem; }
+#elb-form .checkbox-with-helptext-icon label { margin-right: 0; }
+#elb-form .cancel-link { margin-right: 1.5rem; }
+#elb-form .description { margin-bottom: 1.0rem; }
+#elb-form .enable-button { height: 37px; padding-top: 0.5rem; }
 
 #select-certificate-modal .item-list { margin-bottom: 6px; }
 #select-certificate-modal .item-list .item { color: #333; background-color: #e6e7e8; margin-right: 8px; }

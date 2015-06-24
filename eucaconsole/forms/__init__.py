@@ -375,7 +375,7 @@ class ChoicesManager(object):
             resp = self.conn.make_request('DescribeLoadBalancerPolicies')
             root = ElementTree.fromstring(resp.read())
             policy_descriptions = root.find('.//{0}PolicyDescriptions'.format(xml_prefix))
-            policies = policy_descriptions.getchildren() if policy_descriptions else []
+            policies = policy_descriptions.getchildren() if policy_descriptions is not None else []
             for policy in policies:
                 policy_type = policy.find('.//{0}PolicyTypeName'.format(xml_prefix))
                 if policy_type is not None and policy_type.text == 'SSLNegotiationPolicyType':
@@ -383,7 +383,7 @@ class ChoicesManager(object):
                     choices.append((policy_name, policy_name))
         if choices:
             choices = reversed(sorted(set(choices)))
-        return choices
+        return list(choices)
 
     # IAM options
 

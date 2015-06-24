@@ -325,10 +325,11 @@ def select_certificate_dialog(context, request, can_list_certificates=True,
 
 
 @panel_config('elb_security_policy_dialog', renderer='../templates/dialogs/elb_security_policy_dialog.pt')
-def elb_security_policy_dialog(context, request, security_policy_form=None):
+def elb_security_policy_dialog(context, request, security_policy_form=None, latest_predefined_policy=None):
     """ Modal dialog for selecting SSL certificate"""
     return dict(
         security_policy_form=security_policy_form,
+        latest_predefined_policy=latest_predefined_policy,
         chosen_placeholder_text=_(u'Select...'),
     )
 

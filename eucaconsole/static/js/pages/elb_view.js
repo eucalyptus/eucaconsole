@@ -28,6 +28,10 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'ELBSecurity
         $scope.classAddBackendCertificateButton = 'disabled';
         $scope.classUseThisCertificateButton = 'disabled';
         $scope.vpcNetwork = 'None';
+        // TODO: Add this to ELB wizard
+        $scope.sslProtocols = [];
+        $scope.sslCiphers = [];
+        $scope.sslServerOrderPref = false;
         $scope.isNotChanged = true;
         $scope.isInitComplete = false;
         $scope.unsavedChangesWarningModalLeaveCallback = null;
@@ -41,8 +45,9 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'ELBSecurity
         };
         $scope.setInitialValues = function (options) {
             var certArnField = $('#certificate_arn');
-            if ($('#elb-view-form').length > 0) {
-                $scope.elbForm = $('#elb-view-form');
+            var elbForm = $('#elb-form');
+            if (elbForm.length > 0) {
+                $scope.elbForm = elbForm;
             }
             if (options.securitygroups instanceof Array && options.securitygroups.length > 0) {
                 $scope.securityGroups = options.securitygroups;

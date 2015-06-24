@@ -237,7 +237,7 @@ class BaseELBView(TaggedItemView):
         self.autoscale_conn = self.get_connection(conn_type='autoscale')
         self.vpc_conn = self.get_connection(conn_type='vpc')
         self.is_vpc_supported = BaseView.is_vpc_supported(request)
-        self.predefined_policy_choices = ChoicesManager(conn=elb_conn).predefined_policy_choices(add_blank=False)
+        self.predefined_policy_choices = ChoicesManager(conn=self.elb_conn).predefined_policy_choices(add_blank=False)
         self.certificate_form = CertificateForm(
             self.request, conn=self.ec2_conn, iam_conn=self.iam_conn, elb_conn=self.elb_conn,
             formdata=self.request.params or None)
@@ -456,6 +456,7 @@ class ELBView(BaseELBView):
             elb_tags=TaggedItemView.get_tags_display(self.elb.tags) if self.elb.tags else '',
             elb_form=self.elb_form,
             security_policy_form=self.security_policy_form,
+            latest_predefined_policy=self.get_latest_predefined_policy(),
             delete_form=self.delete_form,
             certificate_form=self.certificate_form,
             backend_certificate_form=self.backend_certificate_form,
