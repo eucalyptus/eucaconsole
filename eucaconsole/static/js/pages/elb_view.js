@@ -6,7 +6,7 @@
 
 angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'ELBSecurityPolicyEditor', 'TagEditor'])
     .controller('ELBPageCtrl', function ($scope, $http, $timeout, eucaUnescapeJson, eucaHandleUnsavedChanges,
-                                         eucaHandleError) {
+                                         eucaHandleError, eucaFixHiddenTooltips) {
         $scope.elbForm = undefined;
         $scope.listenerArray = [];
         $scope.securityGroups = [];
@@ -28,10 +28,6 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'ELBSecurity
         $scope.classAddBackendCertificateButton = 'disabled';
         $scope.classUseThisCertificateButton = 'disabled';
         $scope.vpcNetwork = 'None';
-        // TODO: Add this to ELB wizard
-        $scope.sslProtocols = [];
-        $scope.sslCiphers = [];
-        $scope.sslServerOrderPref = false;
         $scope.isNotChanged = true;
         $scope.isInitComplete = false;
         $scope.unsavedChangesWarningModalLeaveCallback = null;
@@ -49,6 +45,7 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'ELBSecurity
             if (elbForm.length > 0) {
                 $scope.elbForm = elbForm;
             }
+            $scope.existingCertificateChoices = options.existing_certificate_choices;
             if (options.securitygroups instanceof Array && options.securitygroups.length > 0) {
                 $scope.securityGroups = options.securitygroups;
                 // Timeout is needed for chosen to react after Angular updates the options
@@ -86,6 +83,7 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'ELBSecurity
         };
         $scope.setWatch = function () {
             eucaHandleUnsavedChanges($scope);
+            eucaFixHiddenTooltips();
             $(document).on('submit', '[data-reveal] form', function () {
                 $(this).find('.dialog-submit-button').css('display', 'none');
                 $(this).find('.dialog-progress-display').css('display', 'block');
@@ -101,7 +99,8 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'ELBSecurity
                 }
                 $scope.listenerArray = listenerArray;
             });
-            $scope.$on('eventOpenSelectCertificateModal', function ($event, fromProtocol, toProtocol, fromPort, toPort, certificateTab) {
+            $scope.$on('eventOpenSelectCertificateModal', function ($event, fromProtocol, toProtocol, fromPort, toPort,
+                                                                    certificateTab, existingCertId) {
                 if ((fromProtocol === 'HTTPS' || fromProtocol === 'SSL') &&
                     (toProtocol === 'HTTPS' || toProtocol === 'SSL')) {
                     $scope.showsCertificateTabDiv = true;
@@ -115,7 +114,7 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'ELBSecurity
                     'toPort': toPort
                 };
                 $scope.certificateTab = certificateTab;
-                $scope.openSelectCertificateModal();
+                $scope.openSelectCertificateModal(existingCertId);
             });
             $scope.$watch('certificateTab', function () {
                 $scope.adjustSelectCertificateModalTabDisplay();
@@ -132,13 +131,14 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'ELBSecurity
                 if (hiddenArnInput.length > 0) {
                     hiddenArnInput.val($scope.certificateARN);
                 }
+                $scope.setClassUseThisCertificateButton();
                 $scope.$broadcast('eventUpdateCertificateARN', $scope.certificateARN, $scope.tempListenerBlock);
             });
             $scope.$watch('certificateName', function(){
                 // Broadcast the certificate name change to the elb listener directive
                 $scope.$broadcast('eventUpdateCertificateName', $scope.certificateName);
             });
-            $scope.$watch('certificateRadioButton', function(){
+            $scope.$watch('certificateRadioButton', function () {
                 $scope.setClassUseThisCertificateButton();
             });
             $scope.$watch('newCertificateName', function(){
@@ -187,7 +187,7 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'ELBSecurity
             modal.foundation('reveal', 'open');
             modal.find('h3').click();  // Workaround for dropdown menu not closing
         };
-        $scope.openSelectCertificateModal = function () {
+        $scope.openSelectCertificateModal = function (existingCertId) {
             var modal = $('#select-certificate-modal');
             var certArnField = $('#certificate_arn');
             if (modal.length > 0) {
@@ -201,7 +201,10 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'ELBSecurity
                         $scope.certificateName = block.certificateName;
                     }
                 });
-                certArnField.val($scope.certificateARN);
+                // Set Certificate ARN field to existing SSL cert ID if opened via "Change" link in listener editor
+                if (!!existingCertId) {
+                    $scope.certificateARN = (certArnField.find('option[value$="' + existingCertId + '"]').val());
+                }
                 // Remove any empty options created by Angular model issue
                 certArnField.find('option').each(function () {
                     if ($(this).text() === '') {
@@ -277,7 +280,11 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'ELBSecurity
         $scope.setClassUseThisCertificateButton = function () {
             if ($scope.certificateTab === 'SSL') {
                 if ($scope.certificateRadioButton === 'existing') {
-                    $scope.classUseThisCertificateButton = '';
+                    if (!$scope.certificateARN) {
+                        $scope.classUseThisCertificateButton = 'disabled';
+                    } else {
+                        $scope.classUseThisCertificateButton = '';
+                    }
                 } else {
                     if ($scope.newCertificateName === undefined || $scope.newCertificateName === '') {
                         $scope.classUseThisCertificateButton = 'disabled';
@@ -323,7 +330,7 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'ELBSecurity
             return;
         };
         $scope.compareBackendCertificates = function (block1, block2) {
-            return block1.name == block2.name;
+            return block1.name === block2.name;
         };
         $scope.handleCertificateCreate = function ($event, newCertURL) {
             $event.preventDefault();

@@ -465,11 +465,16 @@ class CertificateForm(BaseSecureForm):
         validators=[validators.InputRequired(message=certificate_name_error_msg)],
     )
     private_key_error_msg = _(u'Private key is required')
+    private_key_help_text = _(
+        u'Enter the contents of your private key file. Begins with Private-Key:')
     private_key = wtforms.TextAreaField(
         label=_(u'Private key'),
         validators=[validators.InputRequired(message=private_key_error_msg)],
     )
     public_key_certificate_error_msg = _(u'Public key certificate is required')
+    public_key_help_text = _(
+        u'Enter the contents of your public key certificate file. Begins with -----BEGIN CERTIFICATE-----'
+    )
     public_key_certificate = wtforms.TextAreaField(
         label=_(u'Public key certificate'),
         validators=[validators.InputRequired(message=public_key_certificate_error_msg)],
@@ -490,12 +495,17 @@ class CertificateForm(BaseSecureForm):
         self.elb_conn = elb_conn
         self.can_list_certificates = can_list_certificates
         self.set_error_messages()
+        self.set_help_text()
         self.set_certificate_choices()
 
     def set_error_messages(self):
         self.certificate_name.error_msg = self.certificate_name_error_msg
         self.private_key.error_msg = self.private_key_error_msg
         self.public_key_certificate.error_msg = self.public_key_certificate_error_msg
+
+    def set_help_text(self):
+        self.private_key.help_text = self.private_key_help_text
+        self.public_key_certificate.help_text = self.public_key_help_text
 
     def set_certificate_choices(self):
         if self.iam_conn and self.can_list_certificates:
@@ -537,6 +547,7 @@ class BackendCertificateForm(BaseSecureForm):
         self.iam_conn = iam_conn
         self.elb_conn = elb_conn
         self.set_error_messages()
+        self.backend_certificate_body.help_text = CertificateForm.public_key_help_text
 
     def set_error_messages(self):
         self.backend_certificate_name.error_msg = self.backend_certificate_name_error_msg

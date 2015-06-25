@@ -45,7 +45,7 @@ from ..constants.cloudwatch import (
     MONITORING_DURATION_CHOICES, GRANULARITY_CHOICES, DURATION_GRANULARITY_CHOICES_MAPPING,
     METRIC_TITLE_MAPPING,
     STATISTIC_CHOICES)
-from ..constants.elbs import ELB_MONITORING_CHARTS_LIST
+from ..constants.elbs import ELB_MONITORING_CHARTS_LIST, ELB_BACKEND_CERTIFICATE_NAME_PREFIX
 from ..forms import ChoicesManager
 from ..forms.elbs import (
     ELBForm, ELBDeleteForm, CreateELBForm, ELBHealthChecksForm, ELBsFiltersForm,
@@ -305,13 +305,14 @@ class BaseELBView(TaggedItemView):
         public_policy_attributes = dict()
         public_policy_type = u'PublicKeyPolicyType'
         backend_policy_type = u'BackendServerAuthenticationPolicyType'
-        backend_policy_name = u'BackendPolicy-{0}'.format(elb_name)
+        random_string = self.generate_random_string(length=8)
+        backend_policy_name = u'BackendPolicy-{0}-{1}'.format(random_string, elb_name)
         backend_policy_params = {'LoadBalancerName': elb_name,
                                  'PolicyName': backend_policy_name,
                                  'PolicyTypeName': backend_policy_type}
         index = 1
         for cert in backend_certificates:
-            public_policy_name = u'EucaConsole-PublicKeyPolicy-{0}'.format(cert.get('name'))
+            public_policy_name = u'{0}-{1}'.format(ELB_BACKEND_CERTIFICATE_NAME_PREFIX, cert.get('name'))
             public_policy_attributes['PublicKey'] = cert.get('certificateBody')
             self.elb_conn.create_lb_policy(elb_name, public_policy_name, public_policy_type, public_policy_attributes)
             backend_policy_params['PolicyAttributes.member.%d.AttributeName' % index] = 'PublicKeyPolicyName'
@@ -319,7 +320,7 @@ class BaseELBView(TaggedItemView):
             index += 1
         self.elb_conn.get_status('CreateLoadBalancerPolicy', backend_policy_params)
         # sleep is needed for the previous policy creation to complete
-        time.sleep(1)
+        time.sleep(index)
         instance_port = 443
         self.elb_conn.set_lb_policies_of_backend_server(elb_name, instance_port, backend_policy_name)
 
@@ -482,15 +483,15 @@ class ELBView(BaseELBView):
             prefix = _(u'Unable to update load balancer')
             template = u'{0} {1} - {2}'.format(prefix, self.elb.name, '{0}')
             backend_certificates = self.request.params.get('backend_certificates') or None
-            if backend_certificates is not None and backend_certificates != '[]':
-                self.handle_backend_certificate_create(self.elb.name)
             with boto_error_handler(self.request, location, template):
                 self.update_elb_idle_timeout(self.elb.name, idle_timeout)
-                self.update_listeners(self.elb.name, listeners_args)
+                self.update_listeners(listeners_args)
                 time.sleep(1)  # Delay is needed to avoid missing listeners post-update
                 self.update_elb_tags(self.elb.name)
                 if self.is_vpc_supported and self.elb.security_groups != securitygroup:
                     self.elb_conn.apply_security_groups_to_lb(self.elb.name, securitygroup)
+                if backend_certificates is not None and backend_certificates != '[]':
+                    self.handle_backend_certificate_create(self.elb.name)
                 msg = _(u"Updating load balancer")
                 self.log_request(u"{0} {1}".format(msg, self.elb.name))
                 prefix = _(u'Successfully updated load balancer.')
@@ -527,6 +528,7 @@ class ELBView(BaseELBView):
             'elb_vpc_network': self.elb.vpc_id if self.elb else [],
             'elb_vpc_subnets': self.elb.subnets if self.elb else [],
             'securitygroups': self.elb.security_groups if self.elb else [],
+            'existing_certificate_choices': self.certificate_form.certificate_arn.choices,
         }))
 
     def update_elb_idle_timeout(self, elb_name, idle_timeout):
@@ -547,12 +549,21 @@ class ELBView(BaseELBView):
                 if listener.ssl_certificate_id:
                     certificate_id = listener.ssl_certificate_id.split('/')[-1]
                     listener_dict.update({
-                        'certificate_id': certificate_id
+                        'certificate_id': certificate_id,
+                        'backend_policies': self.get_backend_policies(),
                     })
                 listener_list.append(listener_dict)
         return listener_list
 
-    def update_listeners(self, name, listeners_args):
+    def get_backend_policies(self):
+        backend_certificates = []
+        if self.elb:
+            for backend in self.elb.backends:
+                backend_certificates.extend(
+                    [policy.policy_name for policy in backend.policies if backend.instance_port == 443])
+        return backend_certificates
+
+    def update_listeners(self, listeners_args):
         if self.elb_conn and self.elb:
             # Convert strs in existing ELB listeners to unicode objects for add/remove comparisons
             normalized_elb_listeners = []
@@ -563,13 +574,20 @@ class ELBView(BaseELBView):
             listeners_to_add = [x for x in listeners_args if x not in normalized_elb_listeners]
             listeners_to_remove = [x[0] for x in normalized_elb_listeners if x not in listeners_args]
             if listeners_to_remove:
-                self.elb.delete_listeners(listeners_to_remove)
+                if 443 in listeners_to_remove:
+                    self.cleanup_backend_policies()
+                self.elb_conn.delete_load_balancer_listeners(self.elb.name, listeners_to_remove)
                 # sleep is needed for Eucalyptus to avoid not finding the elb error
                 time.sleep(1)
             if listeners_to_add:
                 self.elb_conn.create_load_balancer_listeners(self.elb.name, complex_listeners=listeners_to_add)
                 # sleep is needed for Eucalyptus to avoid not finding the elb error
                 time.sleep(1)
+
+    def cleanup_backend_policies(self):
+        if self.elb and self.elb_conn:
+            if self.elb.backends:
+                self.elb_conn.set_lb_policies_of_backend_server(self.elb.name, 443, [])
 
     @staticmethod
     def normalize_listener(listener):
@@ -939,6 +957,7 @@ class CreateELBView(BaseELBView):
             'instance_selector_text': self.get_instance_selector_text(),
             'securitygroups_json_endpoint': self.request.route_path('securitygroups_json'),
             'instances_json_endpoint': self.request.route_path('instances_json'),
+            'existing_certificate_choices': self.certificate_form.certificate_arn.choices,
         }))
 
     def get_wizard_tab_list(self):
@@ -1004,9 +1023,6 @@ class CreateELBView(BaseELBView):
     @view_config(route_name='certificate_create', request_method='POST', renderer='json')
     def certificate_create(self):
         if self.certificate_form.validate():
-            certificate_arn = self.request.params.get('certificate_arn')
-            if certificate_arn != 'None':
-                pass  # TODO: Handle selecting an existing certificate
             certificate_name = self.request.params.get('certificate_name')
             private_key = self.request.params.get('private_key')
             public_key_certificate = self.request.params.get('public_key_certificate')

@@ -5,7 +5,7 @@
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/elb_listener_editor.css')}" />
     <div ng-cloak="true">
         <h6 i18n:translate="">Listeners</h6>
-        <div ng-cloak="true">
+        <div ng-cloak="">
             <table class="table" ng-cloak="true" ng-show="listenerArray.length !== 0">
                 <thead>
                     <tr class="top-header">
@@ -20,7 +20,13 @@
                         <th class="header" i18n:translate="">PROTOCOL</th>
                         <th class="header vertical-border-header" i18n:translate="">PORT</th>
                         <th class="header" i18n:translate="">POLICY</th>
-                        <th class="header" i18n:translate="">CERTIFICATES</th>
+                        <th class="header">
+                            <span i18n:translate="">CERTIFICATES</span>
+                            <span title="Back-end certificates are contained within back-end policies once they are saved to the cloud."
+                                  data-tooltip="" i18n:attributes="title">
+                                <i class="helptext-icon"></i>
+                            </span>
+                        </th>
                         <th></th>
                     </tr>
                 </thead>
@@ -44,16 +50,27 @@
                         </td>
                         <td>
                             <span ng-show="showServerCertificateNameLink(listener.fromProtocol)">
-                                <span>{{ listener.certificateName || listener.certificateId }}</span>
-                                <a ng-click="openCertificateModal(listener.fromProtocol, listener.toProtocol, listener.fromPort, listener.toPort)"
-                                    title="Change certficate" i18n:translate="">
+                                <span i18n:translate="">SSL cert</span>
+                                {{ listener.certificateName || listener.certificateId }}<span ng-show="listener.backendPolicies.length || backendCertificateArray.length">,</span>
+                                <span ng-repeat="backendPolicy in listener.backendPolicies">
+                                    <span i18n:translate="">Back-end policy</span>
+                                    {{ backendPolicy }}
+                                </span>
+                                <span ng-show="backendCertificateArray.length">
+                                    <span i18n:translate="">Back-end cert(s)</span>
+                                    <span ng-repeat="bcert in backendCertificateArray">
+                                        {{ bcert.name }}<span ng-hide="$last">, </span>
+                                    </span>
+                                </span>
+                                <a ng-click="openCertificateModal(listener.fromProtocol, listener.toProtocol, listener.fromPort, listener.toPort, listener.certificateId);"
+                                    title="Change certficate" i18n:translate="" i18n:attributes="title">
                                     Change
                                 </a>
                             </span>
                             <span ng-show="showBackendCertificateLink(listener.fromProtocol, listener.toProtocol)">
                                 <span i18n:translate="">Backend Certificate</span>
                                 <a ng-click="openCertificateModal(listener.fromProtocol, listener.toProtocol, listener.fromPort, listener.toPort)"
-                                    title="Change backend certficate" i18n:translate="">
+                                    title="Change backend certficate" i18n:translate="" i18n:attributes="title">
                                     Change
                                 </a>
                             </span>
@@ -111,7 +128,7 @@
             <div id="from-port-error-div" class="row controls-wrapper">
                 <div ng-class="classDuplicatedFromPortDiv">
                     <small class="error" i18n:translate="">
-                        Selected port already in use by another listener. Please select an unused port.
+                        Selected port is already in use by another listener. Please select an unused port.
                     </small>
                 </div>
             </div>
@@ -138,7 +155,7 @@
                 <div class="small-9 columns field">
                     <div ng-class="classDuplicatedListenerDiv">
                         <small class="error" i18n:translate="">
-                            Selected port already in use by another listener. Please select an unused port.
+                            Selected port is already in use by another listener. Please select an unused port.
                         </small>
                     </div>
                 </div>
@@ -154,10 +171,28 @@
                 </a>
             </div>
             <div class="security-row">
-                <label class="inline" i18n:translate="">Certificates</label>
+                <label class="inline">
+                    <span i18n:translate="">Certificates</span>
+                    <span class="req">*</span>
+                </label>
+                <span ng-show="pruneCertificateLabel(serverCertificateARN || serverCertificateName)">
+                    <span i18n:translate="">SSL cert</span>
+                    {{ pruneCertificateLabel(serverCertificateARN || serverCertificateName) }}<span ng-show="backendCertificateArray.length">, </span>
+                </span>
+                <span ng-show="backendCertificateArray.length" i18n:translate="">
+                    Back-end certs
+                </span>
+                <span ng-repeat="bcert in backendCertificateArray">
+                    {{ bcert.name }}<span ng-hide="$last">, </span>
+                </span>
                 <a ng-click="openCertificateModal(fromProtocol.value, toProtocol.value, fromPort, toPort)"
-                    title="Change certficate" i18n:translate="">
-                    Select
+                    title="Change certficate">
+                    <span i18n:translate="" ng-show="!pruneCertificateLabel(serverCertificateARN || serverCertificateName)">
+                        Select
+                    </span>
+                    <span i18n:translate="" ng-show="pruneCertificateLabel(serverCertificateARN || serverCertificateName)">
+                        Change
+                    </span>
                 </a>
             </div>
         </div>
