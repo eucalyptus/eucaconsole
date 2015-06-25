@@ -35,6 +35,7 @@ angular.module('BucketsPage', ['LandingPage', 'EucaConsoleUtils'])
             $scope.uploadUrl = options.upload_url;
             $scope.contentsUrl = options.contents_url;
             $scope.itemUrl = options.bucket_item_url;
+            $scope.storageKey = options.storage_key + "shared_buckets";
             $scope.updatePasteValues();
         };
         $scope.revealModal = function (action, bucket) {
@@ -93,7 +94,7 @@ angular.module('BucketsPage', ['LandingPage', 'EucaConsoleUtils'])
                     }
                 });
             });
-            var saved_names = localStorage.getItem('shared_buckets');
+            var saved_names = localStorage.getItem($scope.storageKey);
             if (saved_names) {
                 angular.forEach(saved_names.split(','), function(item, key) {
                     items.push({'bucket_name': item, 'creation_date': 'unknown',
@@ -249,14 +250,14 @@ angular.module('BucketsPage', ['LandingPage', 'EucaConsoleUtils'])
             var bucket_name = $('#shared-bucket-name').val();
             var save_name = $('#save-bucket-to-list').is(':checked');
             if (Modernizr.localstorage && save_name === true) {
-                var saved_names = localStorage.getItem('shared_buckets');
+                var saved_names = localStorage.getItem($scope.storageKey);
                 if (saved_names) {
                     saved_names = saved_names + "," + bucket_name;
                 }
                 else {
                     saved_names = bucket_name;
                 }
-                localStorage.setItem('shared_buckets', saved_names);
+                localStorage.setItem($scope.storageKey, saved_names);
             }
             window.location = $scope.contentsUrl.replace("_name_", bucket_name);
         };

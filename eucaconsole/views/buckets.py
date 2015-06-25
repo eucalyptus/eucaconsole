@@ -102,6 +102,12 @@ class BucketsView(LandingPageView):
             port=s3_conn.port,
             path=s3_conn.path
         )
+        storage_key = "{0}{1}{2}{3}".format(
+            s3_conn.host,
+            request.session['region'],
+            request.session['account'],
+            request.session['username']
+        )
         self.render_dict = dict(
             prefix=self.prefix,
             versioning_form=BucketUpdateVersioningForm(request, formdata=self.request.params or None),
@@ -110,11 +116,12 @@ class BucketsView(LandingPageView):
             json_items_endpoint=self.get_json_endpoint('buckets_json'),
             sort_keys=self.sort_keys,
             filter_keys=['bucket_name'],
-            controller_options_json=self.get_controller_options_json(),
+            controller_options_json=self.get_controller_options_json(storage_key),
             search_facets=BaseView.escape_json(json.dumps([])),
             bucket_name_pattern=BUCKET_NAME_PATTERN,
             object_path_pattern=OBJECT_PATH_PATTERN,
-            object_url_prefix=s3_url_prefix
+            object_url_prefix=s3_url_prefix,
+            storage_key=storage_key
         )
 
     @view_config(route_name='buckets', renderer=VIEW_TEMPLATE)
@@ -136,7 +143,7 @@ class BucketsView(LandingPageView):
             return HTTPFound(location=self.request.route_path('buckets'))
         return self.render_dict
 
-    def get_controller_options_json(self):
+    def get_controller_options_json(self, storage_key):
         return BaseView.escape_json(json.dumps({
             'bucket_objects_count_url': self.request.route_path('bucket_objects_count_versioning_json', name='_name_'),
             'update_versioning_url': self.request.route_path('bucket_update_versioning', name='_name_'),
@@ -145,7 +152,8 @@ class BucketsView(LandingPageView):
             'put_keys_url': self.request.route_path('bucket_put_items', name='_name_', subpath='_subpath_'),
             'upload_url': self.request.route_path('bucket_upload', name='_name_', subpath=''),
             'contents_url': self.request.route_path('bucket_contents', name='_name_', subpath=''),
-            'bucket_item_url': self.request.route_path('bucket_item_url', name='_name_', subpath='_subpath_')
+            'bucket_item_url': self.request.route_path('bucket_item_url', name='_name_', subpath='_subpath_'),
+            'storage_key': storage_key
         }))
 
 
