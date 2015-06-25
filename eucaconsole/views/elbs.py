@@ -335,14 +335,16 @@ class BaseELBView(TaggedItemView):
         has_https_listener = 443 in flattened_listeners
         if not has_https_listener:
             return None  # Don't set security policy unless an HTTPS listener is set
-        elb_predefined_policy = req_params.get('elb_predefined_policy')
-        elb_ssl_protocols = req_params.get('elb_ssl_protocols')
-        elb_ssl_ciphers = req_params.get('elb_ssl_ciphers')
-        using_server_order_pref = req_params.get('elb_ssl_server_order_pref') == 'y'
-        using_custom_policy = req_params.get('elb_ssl_using_custom_policy') == 'y'
+        elb_security_policy_updated = req_params.get('elb_security_policy_updated') == 'on'
+        if not elb_security_policy_updated:
+            return None  # Don't set security policy unless Security Policy dialog submit button has been clicked
+        using_custom_policy = req_params.get('elb_ssl_using_custom_policy') == 'on'
         if self.elb_conn:
             policy_type = 'SSLNegotiationPolicyType'
             if using_custom_policy:
+                elb_ssl_protocols = json.loads(req_params.get('elb_ssl_protocols', '[]'))
+                elb_ssl_ciphers = json.loads(req_params.get('elb_ssl_ciphers', '[]'))
+                using_server_order_pref = req_params.get('elb_ssl_server_order_pref') == 'on'
                 random_string = self.generate_random_string(length=8)
                 policy_name = 'ELB-CustomSecurityPolicy-{0}'.format(random_string)
                 policy_attributes = {'Reference-Security-Policy': policy_name}
@@ -353,7 +355,7 @@ class BaseELBView(TaggedItemView):
                 if using_server_order_pref:
                     policy_attributes.update({'Server-Defined-Cipher-Order': True})
             else:
-                policy_name = elb_predefined_policy
+                policy_name = req_params.get('elb_predefined_policy')
                 policy_attributes = {'Reference-Security-Policy': policy_name}
             security_policy = self.elb_conn.create_lb_policy(elb_name, policy_name, policy_type, policy_attributes)
             policies = [security_policy]

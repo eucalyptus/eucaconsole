@@ -88,6 +88,10 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'ELBSecurity
                 $(this).find('.dialog-submit-button').css('display', 'none');
                 $(this).find('.dialog-progress-display').css('display', 'block');
             });
+            $(document).on('click', '#security-policy-dialog-submit-btn', function () {
+                $scope.isNotChanged = false;
+                $scope.$apply();
+            });
             $scope.$watch('securityGroups', function () {
                 if ($scope.isInitComplete === true) {
                     $scope.isNotChanged = false;

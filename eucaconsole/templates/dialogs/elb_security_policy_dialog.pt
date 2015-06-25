@@ -37,7 +37,7 @@
         <div>
             <div class="row">
                 <div class="dialog-submit-button">
-                    <button type="submit" class="button expand" id="create-securitygroup-btn" i18n:translate=""
+                    <button type="submit" class="button expand" id="security-policy-dialog-submit-btn" i18n:translate=""
                         ng-click="setSecurityPolicy()">
                         Use This Policy
                     </button>

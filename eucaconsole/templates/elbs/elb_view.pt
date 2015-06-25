@@ -29,6 +29,7 @@
                     <input type="text" name="elb_predefined_policy" id="predefined_policy_hidden_input" />
                     <input type="text" name="elb_ssl_protocols" id="ssl_protocols_hidden_input" />
                     <input type="text" name="elb_ssl_ciphers" id="ssl_ciphers_hidden_input" />
+                    <input type="checkbox" name="elb_security_policy_updated" id="security_policy_updated" />
                     <input type="checkbox" name="elb_ssl_server_order_pref" id="ssl_server_order_pref_hidden_input" />
                     <input type="checkbox" name="elb_ssl_using_custom_policy" id="ssl_using_custom_policy" />
                 </div>

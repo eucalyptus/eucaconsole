@@ -8,6 +8,8 @@ angular.module('ELBSecurityPolicyEditor', ['EucaConsoleUtils'])
         $scope.policyRadioButton = 'existing';
         $scope.policyModal = $('#elb-security-policy-modal');
         $scope.sslProtocols = [];
+        $scope.sslCiphers = [];
+        $scope.sslServerOrderPref = false;
         $scope.predefinedPolicy = '';
         $scope.initSecurityPolicyEditor = function (latestPredefinedPolicy) {
             $scope.setInitialValues(latestPredefinedPolicy);
@@ -26,6 +28,7 @@ angular.module('ELBSecurityPolicyEditor', ['EucaConsoleUtils'])
             var elbForm = $('#elb-form'),
                 serverOrderPrefInput = elbForm.find('#ssl_server_order_pref_hidden_input'),
                 sslUsingCustomPolicy = elbForm.find('#ssl_using_custom_policy');
+            elbForm.find('#security_policy_updated').prop('checked', true);
             elbForm.find('#ssl_protocols_hidden_input').val(JSON.stringify($scope.sslProtocols));
             elbForm.find('#ssl_ciphers_hidden_input').val(JSON.stringify($scope.sslCiphers));
             elbForm.find('#predefined_policy_hidden_input').val($scope.predefinedPolicy);

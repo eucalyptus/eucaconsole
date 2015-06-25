@@ -109,7 +109,7 @@
         <div>
             <div class="row">
                 <div class="dialog-submit-button">
-                    <button type="submit" class="button expand" id="create-securitygroup-btn"
+                    <button type="submit" class="button expand" id="select-certificate-submit-btn"
                         ng-class="classUseThisCertificateButton"
                         ng-click="handleCertificateCreate($event, '${request.route_path('certificate_create')}')">
                         <span i18n:translate="" ng-show="!showsCertificateTabDiv || backendCertificateArray.length === 0">
