@@ -28,9 +28,11 @@
 Pyramid views for Eucalyptus and AWS elbs
 
 """
-from urllib import quote
+import itertools
 import simplejson as json
 import time
+
+from urllib import quote
 
 import boto.utils
 
@@ -324,6 +326,39 @@ class BaseELBView(TaggedItemView):
         instance_port = 443
         self.elb_conn.set_lb_policies_of_backend_server(elb_name, instance_port, backend_policy_name)
 
+    def set_security_policy(self, elb_name):
+        """
+        See http://docs.aws.amazon.com/ElasticLoadBalancing/latest/DeveloperGuide/ssl-config-update.html
+        """
+        req_params = self.request.params
+        flattened_listeners = [x for x in itertools.chain.from_iterable(self.get_listeners_args())]
+        has_https_listener = 443 in flattened_listeners
+        if not has_https_listener:
+            return None  # Don't set security policy unless an HTTPS listener is set
+        elb_predefined_policy = req_params.get('elb_predefined_policy')
+        elb_ssl_protocols = req_params.get('elb_ssl_protocols')
+        elb_ssl_ciphers = req_params.get('elb_ssl_ciphers')
+        using_server_order_pref = req_params.get('elb_ssl_server_order_pref') == 'y'
+        using_custom_policy = req_params.get('elb_ssl_using_custom_policy') == 'y'
+        if self.elb_conn:
+            policy_type = 'SSLNegotiationPolicyType'
+            if using_custom_policy:
+                random_string = self.generate_random_string(length=8)
+                policy_name = 'ELB-CustomSecurityPolicy-{0}'.format(random_string)
+                policy_attributes = {'Reference-Security-Policy': policy_name}
+                for protocol in elb_ssl_protocols:
+                    policy_attributes.update({protocol: True})
+                for cipher in elb_ssl_ciphers:
+                    policy_attributes.update({cipher: True})
+                if using_server_order_pref:
+                    policy_attributes.update({'Server-Defined-Cipher-Order': True})
+            else:
+                policy_name = elb_predefined_policy
+                policy_attributes = {'Reference-Security-Policy': policy_name}
+            security_policy = self.elb_conn.create_lb_policy(elb_name, policy_name, policy_type, policy_attributes)
+            policies = [security_policy]
+            self.elb_conn.set_lb_policies_of_listener(elb_name, 443, policies)
+
     def get_latest_predefined_policy(self):
         if self.predefined_policy_choices:
             return self.predefined_policy_choices[0][0]
@@ -488,6 +523,7 @@ class ELBView(BaseELBView):
                 self.update_listeners(listeners_args)
                 time.sleep(1)  # Delay is needed to avoid missing listeners post-update
                 self.update_elb_tags(self.elb.name)
+                self.set_security_policy(self.elb.name)
                 if self.is_vpc_supported and self.elb.security_groups != securitygroup:
                     self.elb_conn.apply_security_groups_to_lb(self.elb.name, securitygroup)
                 if backend_certificates is not None and backend_certificates != '[]':
