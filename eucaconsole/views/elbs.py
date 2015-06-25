@@ -38,6 +38,7 @@ import boto.utils
 
 from boto.ec2.elb import HealthCheck
 from boto.ec2.elb.attributes import ConnectionSettingAttribute
+from boto.ec2.elb.policies import OtherPolicy
 from boto.exception import BotoServerError
 
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound
@@ -354,10 +355,16 @@ class BaseELBView(TaggedItemView):
                     policy_attributes.update({cipher: True})
                 if using_server_order_pref:
                     policy_attributes.update({'Server-Defined-Cipher-Order': True})
+                security_policy = self.elb_conn.create_lb_policy(elb_name, policy_name, policy_type, policy_attributes)
+                time.sleep(1)
             else:
                 policy_name = req_params.get('elb_predefined_policy')
                 policy_attributes = {'Reference-Security-Policy': policy_name}
-            security_policy = self.elb_conn.create_lb_policy(elb_name, policy_name, policy_type, policy_attributes)
+                security_policy = OtherPolicy()
+                security_policy.policy_name = policy_name
+                security_policy.policy_type = policy_type
+                for k, v in policy_attributes.items():
+                    setattr(security_policy, k, v)
             policies = [security_policy]
             self.elb_conn.set_lb_policies_of_listener(elb_name, 443, policies)
 
