@@ -1,4 +1,3 @@
-from guitester.guitester import GuiTester
 from guitester.guiec2 import GuiEC2
 import time
 
