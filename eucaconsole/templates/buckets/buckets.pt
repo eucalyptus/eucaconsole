@@ -26,12 +26,12 @@
                 </a>
                 <ul id="download-drop" class="f-dropdown" data-dropdown-content="">
                     <li>
-                        <a id="import-keypair-btn" i18n:translate=""
+                        <a id="download-object-btn" i18n:translate=""
                             data-reveal-id="download-object-modal">Download Object</a>
                     </li>
                     <li>
-                        <a id="import-keypair-btn" i18n:translate=""
-                            href="${request.route_path('bucket_upload', name='', subpath='')}">Upload Object(s)</a>
+                        <a id="upload-object-btn" i18n:translate="" target="_blank"
+                            href="${request.route_path('bucket_upload', name='__shared__', subpath='')}">Upload Object(s)</a>
                     </li>
                 </ul>
             </div>

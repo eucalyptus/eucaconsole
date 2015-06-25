@@ -352,21 +352,35 @@ class BucketContentsView(LandingPageView, BucketMixin):
         if not self.file_uploads_enabled:
             raise HTTPNotFound()  # Return 404 if file uploads are disabled
         with boto_error_handler(self.request):
-            bucket = BucketContentsView.get_bucket(self.request, self.s3_conn)
-            if not hasattr(bucket, 'metadata'):
-                bucket.metadata = {}
-            acl_obj = Key(bucket, '')
-            sharing_form = SharingPanelForm(
-                self.request, bucket_object=acl_obj, sharing_acl=None, formdata=self.request.params or None)
             metadata_form = MetadataForm(self.request, formdata=self.request.params or None)
-            self.render_dict.update(
-                bucket=bucket,
-                bucket_name=bucket.name,
-                acl_obj=acl_obj,
-                upload_form=BucketUploadForm(self.request),
-                sharing_form=sharing_form,
-                metadata_form=metadata_form,
-            )
+            if self.bucket_name != '__shared__':
+                bucket = BucketContentsView.get_bucket(self.request, self.s3_conn)
+                if not hasattr(bucket, 'metadata'):
+                    bucket.metadata = {}
+                acl_obj = Key(bucket, '')
+                sharing_form = SharingPanelForm(
+                    self.request, bucket_object=acl_obj, sharing_acl=None, formdata=self.request.params or None)
+                self.render_dict.update(
+                    bucket=bucket,
+                    bucket_name=bucket.name,
+                    acl_obj=acl_obj,
+                    upload_form=BucketUploadForm(self.request),
+                    sharing_form=sharing_form,
+                    metadata_form=metadata_form,
+                )
+            else:
+                acl_obj = None
+                sharing_form = SharingPanelForm(
+                    self.request, bucket_object=acl_obj, sharing_acl=None, formdata=self.request.params or None)
+                self.render_dict.update(
+                    bucket=None,
+                    bucket_name=self.bucket_name,
+                    upload_form=BucketUploadForm(self.request),
+                    acl_obj=acl_obj,
+                    sharing_form=sharing_form,
+                    metadata_form=metadata_form,
+                    object_path_pattern=OBJECT_PATH_PATTERN,
+                )
         return self.render_dict
 
     @view_config(route_name='bucket_upload', renderer='json', request_method='POST', xhr=True)
@@ -376,15 +390,22 @@ class BucketContentsView(LandingPageView, BucketMixin):
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
         bucket_name = self.request.matchdict.get('name')
+        shared_object_path = self.request.params.get('shared-object-path')
+        if shared_object_path is not None:
+            bucket_name = shared_object_path[:shared_object_path.find('/')]
+            path = shared_object_path[shared_object_path.find('/') + 1:]
         files = self.request.POST.getall('files')
         with boto_error_handler(self.request):
-            bucket = self.s3_conn.get_bucket(bucket_name)
+            bucket = self.s3_conn.get_bucket(bucket_name, validate=False)
             for upload_file in files:
                 upload_file.file.seek(0, 2)  # seek to end
                 if upload_file.file.tell() > 5000000000:
                     return JSONResponse(status=400, message=_(u"File too large :")+upload_file.filename)
                 upload_file.file.seek(0, 0)  # seek to start
-                bucket_item = bucket.new_key("/".join(self.request.subpath))
+                if path:
+                    bucket_item = bucket.new_key(path)
+                else:
+                    bucket_item = bucket.new_key("/".join(self.request.subpath))
                 self.log_request(u"Uploading file {0} to bucket {1}".format(bucket_item.key, bucket_name))
                 bucket_item.set_metadata('Content-Type', upload_file.type)
                 headers = {'Content-Type': upload_file.type}
@@ -968,7 +989,7 @@ class BucketItemDetailsView(BaseView, BucketMixin):
     @classmethod
     def get_extended_metadata(cls, bucket_item):
         """Extend object metadata with metadata-like attributes"""
-        metadata = bucket_item.metadata
+        metadata = bucket_item.metadata if bucket_item else {}
         metadata_attr_mapping = cls.attribute_metadata_mapping()
         for attr in metadata_attr_mapping:
             if getattr(bucket_item, attr, None):

@@ -16,11 +16,12 @@
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('buckets')}" i18n:translate="">Buckets</a></li>
-                <li>
+                <li tal:condition="bucket_name != '__shared__'">
                     <a href="${request.route_path('bucket_contents', name=bucket_name, subpath='')}"
                        i18n:translate="">${bucket_name}</a>
                 </li>
-                <li tal:repeat="folder request.subpath" class="${'current' if repeat.folder.end else ''}">
+                <li tal:condition="bucket_name != '__shared__'"
+                    tal:repeat="folder request.subpath" class="${'current' if repeat.folder.end else ''}">
                     <a tal:condition="repeat.folder.end" ng-non-bindable="">${folder}</a>
                     <a href="${request.route_path('bucket_contents', name=bucket_name, subpath='/'.join(request.subpath[:repeat.folder.index+1]))}"
                        ng-non-bindable="" tal:condition="not repeat.folder.end">${folder}</a>
@@ -38,7 +39,23 @@
                       method="POST" accept-charset="utf-8" enctype="multipart/form-data">
                     ${structure:upload_form['csrf_token']}
                     <h6 class='subheading-label' i18n:translate=''>Select file(s)</h6>
-                    <input type="file" id="files" data-file="files" multiple="" name='files' />
+                    <label class="left" i18n:translate="">Upload file to</label>&nbsp;<span class="req">*</span>
+                    <p tal:condition="bucket_name != '__shared__'">
+                        <span i18n:translate="">S3://</span>${bucket_name}/${'/'.join(request.subpath)}
+                    </p>
+                    <div class="flex-space" tal:condition="bucket_name == '__shared__'">
+                        <div class="flex-column-0">
+                            <span i18n:translate="">S3://</span>&nbsp;
+                        </div>
+                        <div class="flex-column-1">
+                            <input id="shared-object-path" name="shared-object-path" type="text"
+                                   pattern="${object_path_pattern}" placeholder="enter bucket/folder/folder"
+                                   i18n:attributes="placeholder"/>
+                            <small class="error" i18n:translate="">Path must contain lowercase letters, numbers, hyphens, and/or dots followed by slash, then any other characters</small>
+                        </div>
+                    </div>
+                    <input tal:condition="bucket_name == '__shared__'" type="file" id="files" data-file="files" name='files' />
+                    <input tal:condition="bucket_name != '__shared__'" type="file" id="files" data-file="files" multiple="" name='files' />
                     <p class="file-list" ng-show="files.length > 1">
                         <span ng-repeat="file in files">{{ file.name }}<br/></span>
                     </p>
