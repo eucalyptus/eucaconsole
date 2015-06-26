@@ -636,25 +636,27 @@ class ELBView(BaseELBView):
 
             listeners_to_add = [x for x in listeners_args if x not in normalized_elb_listeners]
             listeners_to_remove = [x[0] for x in normalized_elb_listeners if x not in listeners_args]
+            self.cleanup_security_policies(delete_stale_policies=True)
+            self.cleanup_backend_policies()  # Note: this must be before HTTPS listeners are removed
             if listeners_to_remove:
                 self.elb_conn.delete_load_balancer_listeners(self.elb.name, listeners_to_remove)
                 time.sleep(1)  # sleep is needed for Eucalyptus to avoid not finding the elb error
-                if 443 in listeners_to_remove:
-                    self.cleanup_backend_policies()
-                    self.cleanup_security_policies()
 
             if listeners_to_add:
                 self.elb_conn.create_load_balancer_listeners(self.elb.name, complex_listeners=listeners_to_add)
                 time.sleep(1)  # sleep is needed for Eucalyptus to avoid not finding the elb error
 
-    def cleanup_backend_policies(self):
-        if self.elb and self.elb_conn:
-            if self.elb.backends:
-                self.elb_conn.set_lb_policies_of_backend_server(self.elb.name, 443, [])
+    def cleanup_security_policies(self, delete_stale_policies=False):
+        """Empty security policies before setting them in ELB"""
+        if self.elb_conn and self.elb:
+            elb_listener_ports = [x[0] for x in self.elb.listeners]
+            if 443 in elb_listener_ports:
+                self.elb_conn.set_lb_policies_of_listener(self.elb.name, 443, [])
+                if delete_stale_policies:
+                    self.delete_stale_policies()
 
-    def cleanup_security_policies(self):
-        """Clean up stale security policies in ELB"""
-        if self.elb and self.elb_conn:
+    def delete_stale_policies(self):
+        if self.elb and self.elb.policies and self.elb.policies.other_policies:
             for policy in self.elb.policies.other_policies:
                 policy_name_conditions = [
                     policy.policy_name.startswith(ELB_PREDEFINED_SECURITY_POLICY_NAME_PREFIX),
@@ -662,6 +664,12 @@ class ELBView(BaseELBView):
                 ]
                 if any(policy_name_conditions):
                     self.elb_conn.delete_lb_policy(self.elb.name, policy.policy_name)
+
+    def cleanup_backend_policies(self):
+        if self.elb_conn and self.elb:
+            elb_listener_ports = [x[0] for x in self.elb.listeners]
+            if self.elb.backends and 443 in elb_listener_ports:
+                self.elb_conn.set_lb_policies_of_backend_server(self.elb.name, 443, [])
 
     @staticmethod
     def normalize_listener(listener):
