@@ -307,7 +307,7 @@ angular.module('BucketsPage', ['LandingPage', 'EucaConsoleUtils'])
                 localStorage.setItem($scope.storageKey, saved_names);
                 $scope.$broadcast('refresh');
             }
-        }
+        };
     })
 ;
 

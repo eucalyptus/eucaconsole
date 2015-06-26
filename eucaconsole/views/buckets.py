@@ -254,7 +254,7 @@ class BucketXHRView(BaseView, BucketMixin):
                         src_key_name=k
                     )
                 except BotoServerError as err:
-                    self.log_request("Couldn't copy "+k+":"+err.message)
+                    self.log_request("Couldn't copy " + k + ":" + err.message)
                     errors.append(k)
             if len(errors) == 0:
                 return dict(message=_(u"Successfully copied object(s)."))
@@ -269,7 +269,7 @@ class BucketXHRView(BaseView, BucketMixin):
         subpath = self.request.subpath
         src_bucket = self.request.params.get('src_bucket')
         src_key = self.request.params.get('src_key')
-        dest_key = '/'.join(subpath) + '/' + src_key[src_key.rfind('/')+1:]
+        dest_key = '/'.join(subpath) + '/' + src_key[src_key.rfind('/') + 1:]
         with boto_error_handler(self.request):
             self.log_request(u"Copying key from {0}:{1} to {2}:{3}".format(
                 src_bucket, src_key, self.bucket_name, dest_key))
@@ -409,7 +409,7 @@ class BucketContentsView(LandingPageView, BucketMixin):
             for upload_file in files:
                 upload_file.file.seek(0, 2)  # seek to end
                 if upload_file.file.tell() > 5000000000:
-                    return JSONResponse(status=400, message=_(u"File too large :")+upload_file.filename)
+                    return JSONResponse(status=400, message=_(u"File too large :") + upload_file.filename)
                 upload_file.file.seek(0, 0)  # seek to start
                 if folder:
                     bucket_item = bucket.new_key("{0}/{1}".format(folder, upload_file.filename))
@@ -1005,6 +1005,7 @@ class BucketItemDetailsView(BaseView, BucketMixin):
                 metadata[metadata_attr_mapping[attr]] = getattr(bucket_item, attr)
         return metadata
 
+
 class BucketSharedItemView(BaseView, BucketMixin):
     def __init__(self, request, bucket=None, bucket_item_acl=None, **kwargs):
         super(BucketSharedItemView, self).__init__(request, **kwargs)
@@ -1021,6 +1022,7 @@ class BucketSharedItemView(BaseView, BucketMixin):
         return dict(
             item_link=self.bucket_item.generate_url(expires_in=BUCKET_ITEM_URL_EXPIRES),
         )
+
 
 class CreateBucketView(BaseView):
     """Views for creating a bucket"""
