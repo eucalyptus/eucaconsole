@@ -52,7 +52,7 @@
 
 #sample-template-div .chosen-container { margin-left: 1.5rem; margin-bottom: 0.75rem; width: 90% !important; }
 
-.chosen-container { width: 100%; }
+.chosen-container { width: 100%; padding-bottom: 0.25rem; }
 
 #template-file { margin-left: 1.5rem; width: 90%; }
 

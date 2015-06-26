@@ -290,7 +290,7 @@ class VolumeView(TaggedItemView, BaseVolumeView):
     @view_config(route_name='volume_view', renderer=VIEW_TEMPLATE, request_method='GET')
     def volume_view(self):
         if self.volume is None and self.request.matchdict.get('id') != 'new':
-            raise HTTPNotFound
+            raise HTTPNotFound()
         return self.render_dict
 
     def get_attachment_time(self):
