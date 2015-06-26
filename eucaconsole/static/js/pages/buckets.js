@@ -94,12 +94,14 @@ angular.module('BucketsPage', ['LandingPage', 'EucaConsoleUtils'])
                     }
                 });
             });
-            var saved_names = localStorage.getItem($scope.storageKey);
-            if (saved_names) {
-                angular.forEach(saved_names.split(','), function(item, key) {
-                    items.push({'bucket_name': item, 'creation_date': 'unknown',
-                        'shared': true, 'contents_url': $scope.contentsUrl.replace('_name_', item)});
-                });
+            if (Modernizr.localstorage) {
+                var saved_names = localStorage.getItem($scope.storageKey);
+                if (saved_names) {
+                    angular.forEach(saved_names.split(','), function(item, key) {
+                        items.push({'bucket_name': item, 'creation_date': 'unknown',
+                            'shared': true, 'contents_url': $scope.contentsUrl.replace('_name_', item)});
+                    });
+                }
             }
         });
         $scope.updatePasteValues = function() {
@@ -251,11 +253,14 @@ angular.module('BucketsPage', ['LandingPage', 'EucaConsoleUtils'])
             var save_name = $('#save-bucket-to-list').is(':checked');
             if (Modernizr.localstorage && save_name === true) {
                 var saved_names = localStorage.getItem($scope.storageKey);
-                if (saved_names) {
-                    saved_names = saved_names + "," + bucket_name;
-                }
-                else {
-                    saved_names = bucket_name;
+                var names = saved_names.split(',');
+                if (names.indexOf(bucket_name) === -1) {
+                    if (saved_names) {
+                        saved_names = saved_names + "," + bucket_name;
+                    }
+                    else {
+                        saved_names = bucket_name;
+                    }
                 }
                 localStorage.setItem($scope.storageKey, saved_names);
             }
@@ -293,6 +298,16 @@ angular.module('BucketsPage', ['LandingPage', 'EucaConsoleUtils'])
                     Notify.failure("error getting shared object url");
                 });
         };
+        $scope.removeShared = function(item) {
+            if (Modernizr.localstorage) {
+                var saved_names = localStorage.getItem($scope.storageKey);
+                var names = saved_names.split(',');
+                names.splice(names.indexOf(item.bucket_name), 1);
+                saved_names = names.join(',');
+                localStorage.setItem($scope.storageKey, saved_names);
+                $scope.$broadcast('refresh');
+            }
+        }
     })
 ;
 

@@ -28,6 +28,6 @@
 			C380.8,243.4,380.8,240.7,380.8,238.1z"/>
 	</g>
 </g>
-<line stroke="#8CC640" stroke-width="20" stroke-linecap="round" stroke-miterlimit="10" x1="304" y1="503" x2="676" y2="503"/>
-<line fill="none" stroke="#8CC640" stroke-width="20" stroke-miterlimit="10" x1="488" y1="360.9" x2="488" y2="502.7"/>
+<line stroke="#007DBA" stroke-width="20" stroke-linecap="round" stroke-miterlimit="10" x1="304" y1="503" x2="676" y2="503"/>
+<line fill="none" stroke="#007DBA" stroke-width="20" stroke-miterlimit="10" x1="488" y1="360.9" x2="488" y2="502.7"/>
 </svg>

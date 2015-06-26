@@ -94,8 +94,11 @@
                     <li ng-show="bucketCanCopyItem(item) || bucketCanCopyFolder(item)">
                         <a i18n:translate="" ng-click="doPaste(item)">Paste</a>
                     </li>
-                    <li>
+                    <li ng-show="!item.shared">
                         <a i18n:translate="" ng-click="revealModal('delete-bucket', item)">Delete</a>
+                    </li>
+                    <li ng-show="item.shared">
+                        <a i18n:translate="" ng-click="removeShared(item)">Remove from view</a>
                     </li>
                 </ul>
             </div>
@@ -154,8 +157,11 @@
                             <li ng-show="bucketCanCopyItem(item) || bucketCanCopyFolder(item)">
                                 <a i18n:translate="" ng-click="doPaste(item)">Paste</a>
                             </li>
-                            <li>
+                            <li ng-show="!item.shared">
                                 <a i18n:translate="" ng-click="revealModal('delete-bucket', item)">Delete</a>
+                            </li>
+                            <li ng-show="item.shared">
+                                <a i18n:translate="" ng-click="removeShared(item)">Remove from view</a>
                             </li>
                         </ul>
                     </span>
