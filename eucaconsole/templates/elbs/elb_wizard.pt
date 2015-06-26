@@ -56,7 +56,7 @@
                             </div>
                             <hr />
                             <div>
-                                ${panel('elb_listener_editor', protocol_list=protocol_list, latest_predefined_policy=latest_predefined_policy)}
+                                ${panel('elb_listener_editor', protocol_list=protocol_list, elb_security_policy=elb_security_policy)}
                                 <div id="hidden_certificate_arn_input_div" class="hide">
                                     <input type="hidden" id="hidden_certificate_arn_input" name="certificate_arn" />
                                 </div>

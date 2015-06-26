@@ -38,7 +38,6 @@ import boto.utils
 
 from boto.ec2.elb import HealthCheck
 from boto.ec2.elb.attributes import ConnectionSettingAttribute
-from boto.ec2.elb.policies import OtherPolicy
 from boto.exception import BotoServerError
 
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound
@@ -48,7 +47,10 @@ from ..constants.cloudwatch import (
     MONITORING_DURATION_CHOICES, GRANULARITY_CHOICES, DURATION_GRANULARITY_CHOICES_MAPPING,
     METRIC_TITLE_MAPPING,
     STATISTIC_CHOICES)
-from ..constants.elbs import ELB_MONITORING_CHARTS_LIST, ELB_BACKEND_CERTIFICATE_NAME_PREFIX
+from ..constants.elbs import (
+    ELB_MONITORING_CHARTS_LIST, ELB_BACKEND_CERTIFICATE_NAME_PREFIX,
+    ELB_PREDEFINED_SECURITY_POLICY_NAME_PREFIX, ELB_CUSTOM_SECURITY_POLICY_NAME_PREFIX
+)
 from ..forms import ChoicesManager
 from ..forms.elbs import (
     ELBForm, ELBDeleteForm, CreateELBForm, ELBHealthChecksForm, ELBsFiltersForm,
@@ -327,7 +329,7 @@ class BaseELBView(TaggedItemView):
         instance_port = 443
         self.elb_conn.set_lb_policies_of_backend_server(elb_name, instance_port, backend_policy_name)
 
-    def set_security_policy(self, elb_name):
+    def set_security_policy(self, elb_name, elb=None):
         """
         See http://docs.aws.amazon.com/ElasticLoadBalancing/latest/DeveloperGuide/ssl-config-update.html
         """
@@ -352,7 +354,7 @@ class BaseELBView(TaggedItemView):
                 elb_ssl_protocols = json.loads(req_params.get('elb_ssl_protocols', '[]'))
                 elb_ssl_ciphers = json.loads(req_params.get('elb_ssl_ciphers', '[]'))
                 using_server_order_pref = req_params.get('elb_ssl_server_order_pref') == 'on'
-                policy_name = 'ELB-CustomSecurityPolicy-{0}'.format(random_string)
+                policy_name = '{0}-{1}'.format(ELB_CUSTOM_SECURITY_POLICY_NAME_PREFIX,  random_string)
                 policy_attributes = {'Reference-Security-Policy': latest_predefined_policy}
                 for protocol in elb_ssl_protocols:
                     policy_attributes.update({protocol: True})
@@ -369,14 +371,25 @@ class BaseELBView(TaggedItemView):
                 self.elb_conn.create_lb_policy(elb_name, policy_name, policy_type, policy_attributes)
                 time.sleep(1)  # Give new policy time to persist before setting ELB security policy for HTTPS listener
             # Set security policy for HTTPS listener in ELB
-            security_policy = OtherPolicy()
-            security_policy.policy_name = policy_name
-            policies = [security_policy]
+            policies = [policy_name]
             self.elb_conn.set_lb_policies_of_listener(elb_name, 443, policies)
 
     def get_latest_predefined_policy(self):
         if self.predefined_policy_choices:
             return self.predefined_policy_choices[0][0]
+
+    def get_security_policy(self, elb=None):
+        """Get SSL security policy attached to an ELB"""
+        if elb:
+            for policy in elb.policies.other_policies:
+                if policy.policy_name.startswith(ELB_PREDEFINED_SECURITY_POLICY_NAME_PREFIX):
+                    return policy.policy_name
+                elif policy.policy_name.startswith(ELB_CUSTOM_SECURITY_POLICY_NAME_PREFIX):
+                    return policy.policy_name
+            return self.get_latest_predefined_policy()
+        else:
+            # Handle case for Create ELB Wizard
+            return self.get_latest_predefined_policy()
 
     @staticmethod
     def get_instance_selector_text():
@@ -508,6 +521,7 @@ class ELBView(BaseELBView):
             elb_form=self.elb_form,
             security_policy_form=self.security_policy_form,
             latest_predefined_policy=self.get_latest_predefined_policy(),
+            elb_security_policy=self.get_security_policy(elb=self.elb),
             delete_form=self.delete_form,
             certificate_form=self.certificate_form,
             backend_certificate_form=self.backend_certificate_form,
@@ -630,6 +644,10 @@ class ELBView(BaseELBView):
                 self.elb_conn.delete_load_balancer_listeners(self.elb.name, listeners_to_remove)
                 # sleep is needed for Eucalyptus to avoid not finding the elb error
                 time.sleep(1)
+
+            # NOTE: We must remove state security policies here before adding the new listeners
+            self.cleanup_security_policies()
+
             if listeners_to_add:
                 self.elb_conn.create_load_balancer_listeners(self.elb.name, complex_listeners=listeners_to_add)
                 # sleep is needed for Eucalyptus to avoid not finding the elb error
@@ -639,6 +657,17 @@ class ELBView(BaseELBView):
         if self.elb and self.elb_conn:
             if self.elb.backends:
                 self.elb_conn.set_lb_policies_of_backend_server(self.elb.name, 443, [])
+
+    def cleanup_security_policies(self):
+        """Clean up stale security policies in ELB"""
+        if self.elb and self.elb_conn:
+            for policy in self.elb.policies.other_policies:
+                policy_name_conditions = [
+                    policy.policy_name.startswith(ELB_PREDEFINED_SECURITY_POLICY_NAME_PREFIX),
+                    policy.policy_name.startswith(ELB_CUSTOM_SECURITY_POLICY_NAME_PREFIX),
+                ]
+                if any(policy_name_conditions):
+                    self.elb_conn.delete_lb_policy(self.elb.name, policy.policy_name)
 
     @staticmethod
     def normalize_listener(listener):
@@ -982,6 +1011,7 @@ class CreateELBView(BaseELBView):
             can_list_certificates=self.can_list_certificates,
             security_policy_form=self.security_policy_form,
             latest_predefined_policy=self.get_latest_predefined_policy(),
+            elb_security_policy=self.get_security_policy(),
             protocol_list=self.get_protocol_list(),
             security_group_placeholder_text=_(u'Select...'),
             is_vpc_supported=self.is_vpc_supported,

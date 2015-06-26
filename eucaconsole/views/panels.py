@@ -419,7 +419,7 @@ def s3_metadata_editor(context, request, bucket_object=None, metadata_form=None)
 
 
 @panel_config('elb_listener_editor', renderer='../templates/panels/elb_listener_editor.pt')
-def elb_listener_editor(context, request, listener_list=None, protocol_list=None, latest_predefined_policy=None):
+def elb_listener_editor(context, request, listener_list=None, protocol_list=None, elb_security_policy=None):
     """ ELB listener editor panel """
     listener_list = listener_list or {}
     controller_options_json = BaseView.escape_json(json.dumps({
@@ -429,5 +429,5 @@ def elb_listener_editor(context, request, listener_list=None, protocol_list=None
     }))
     return dict(
         controller_options_json=controller_options_json,
-        latest_predefined_policy=latest_predefined_policy,
+        elb_security_policy=elb_security_policy,
     )

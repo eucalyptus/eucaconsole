@@ -30,6 +30,8 @@ Eucalyptus and AWS ELB constants
 """
 
 ELB_BACKEND_CERTIFICATE_NAME_PREFIX = 'EucaConsole-BackendServerAuthPolicy'
+ELB_PREDEFINED_SECURITY_POLICY_NAME_PREFIX = 'ELBSecurityPolicy'
+ELB_CUSTOM_SECURITY_POLICY_NAME_PREFIX = 'ELB-CustomSecurityPolicy'
 
 ELB_MONITORING_CHARTS_LIST = [
     {

@@ -45,6 +45,7 @@ from boto.exception import BotoServerError
 
 from ..caches import extra_long_term
 from ..caches import invalidate_cache
+from ..constants.elbs import ELB_PREDEFINED_SECURITY_POLICY_NAME_PREFIX
 from ..constants.instances import AWS_INSTANCE_TYPE_CHOICES
 from ..i18n import _
 
@@ -380,7 +381,8 @@ class ChoicesManager(object):
                 policy_type = policy.find('.//{0}PolicyTypeName'.format(xml_prefix))
                 if policy_type is not None and policy_type.text == 'SSLNegotiationPolicyType':
                     policy_name = policy.find('.//{0}PolicyName'.format(xml_prefix)).text
-                    choices.append((policy_name, policy_name))
+                    if policy_name.startswith(ELB_PREDEFINED_SECURITY_POLICY_NAME_PREFIX):
+                        choices.append((policy_name, policy_name))
         if choices:
             choices = reversed(sorted(set(choices)))
         return list(choices)
