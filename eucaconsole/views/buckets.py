@@ -399,9 +399,10 @@ class BucketContentsView(LandingPageView, BucketMixin):
             return JSONResponse(status=400, message="missing CSRF token")
         bucket_name = self.request.matchdict.get('name')
         shared_object_path = self.request.params.get('shared-object-path')
+        folder = None
         if shared_object_path is not None:
             bucket_name = shared_object_path[:shared_object_path.find('/')]
-            path = shared_object_path[shared_object_path.find('/') + 1:]
+            folder = shared_object_path[shared_object_path.find('/') + 1:]
         files = self.request.POST.getall('files')
         with boto_error_handler(self.request):
             bucket = self.s3_conn.get_bucket(bucket_name, validate=False)
@@ -410,8 +411,8 @@ class BucketContentsView(LandingPageView, BucketMixin):
                 if upload_file.file.tell() > 5000000000:
                     return JSONResponse(status=400, message=_(u"File too large :")+upload_file.filename)
                 upload_file.file.seek(0, 0)  # seek to start
-                if path:
-                    bucket_item = bucket.new_key(path)
+                if folder:
+                    bucket_item = bucket.new_key("{0}/{1}".format(folder, upload_file.filename))
                 else:
                     bucket_item = bucket.new_key("/".join(self.request.subpath))
                 self.log_request(u"Uploading file {0} to bucket {1}".format(bucket_item.key, bucket_name))

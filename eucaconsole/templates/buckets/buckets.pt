@@ -183,14 +183,14 @@
                             <span i18n:translate="">S3://</span>&nbsp;
                         </div>
                         <div class="flex-column-1">
-                            <input id="shared-bucket-name" type="text" pattern="${bucket_name_pattern}"/>
+                            <input id="shared-bucket-name" type="text" ng-model="sharedBucketName" pattern="${bucket_name_pattern}"/>
                             <small class="error" i18n:translate="">Name may only contain lowercase letters, numbers, hyphens, and/or dots</small>
                         </div>
                     </div>
                     <div class="dialog-option">
                         <input type="checkbox" id="save-bucket-to-list"/>&nbsp;<span i18n:translate="">Save this bucket to my list</span>
                     </div>
-                    <a id="open-bucket-btn" class="button expand"
+                    <a id="open-bucket-btn" class="button expand" ng-disabled="!sharedBucketName"
                        ng-click="openSharedBucket($event)" i18n:translate="">Open Bucket</a>
                 </div>
             </form>
@@ -216,11 +216,11 @@
                             <span i18n:translate="">S3://</span>&nbsp;
                         </div>
                         <div class="flex-column-1">
-                            <input id="shared-object-path" type="text" pattern="${object_path_pattern}"/>
+                            <input id="shared-object-path" type="text" ng-model="sharedObjectPath" pattern="${object_path_pattern}"/>
                             <small class="error" i18n:translate="">Path must contain lowercase letters, numbers, hyphens, and/or dots followed by slash, then any other characters</small>
                         </div>
                     </div>
-                    <a id="download-object-btn" class="button expand"
+                    <a id="download-object-btn" class="button expand" ng-disabled="!sharedObjectPath"
                        ng-click="downloadSharedObject($event)" i18n:translate="">Download Object</a>
                 </div>
             </form>

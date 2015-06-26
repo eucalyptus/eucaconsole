@@ -54,8 +54,7 @@
                             <small class="error" i18n:translate="">Path must contain lowercase letters, numbers, hyphens, and/or dots followed by slash, then any other characters</small>
                         </div>
                     </div>
-                    <input tal:condition="bucket_name == '__shared__'" type="file" id="files" data-file="files" name='files' />
-                    <input tal:condition="bucket_name != '__shared__'" type="file" id="files" data-file="files" multiple="" name='files' />
+                    <input type="file" id="files" data-file="files" multiple="" name='files' />
                     <p class="file-list" ng-show="files.length > 1">
                         <span ng-repeat="file in files">{{ file.name }}<br/></span>
                     </p>
