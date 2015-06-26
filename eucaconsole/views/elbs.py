@@ -381,15 +381,13 @@ class BaseELBView(TaggedItemView):
     def get_security_policy(self, elb=None):
         """Get SSL security policy attached to an ELB"""
         if elb:
-            for policy in elb.policies.other_policies:
-                if policy.policy_name.startswith(ELB_PREDEFINED_SECURITY_POLICY_NAME_PREFIX):
-                    return policy.policy_name
-                elif policy.policy_name.startswith(ELB_CUSTOM_SECURITY_POLICY_NAME_PREFIX):
-                    return policy.policy_name
-            return self.get_latest_predefined_policy()
-        else:
-            # Handle case for Create ELB Wizard
-            return self.get_latest_predefined_policy()
+            if elb.policies:
+                for policy in elb.policies.other_policies:
+                    if policy.policy_name.startswith(ELB_PREDEFINED_SECURITY_POLICY_NAME_PREFIX):
+                        return policy.policy_name
+                    elif policy.policy_name.startswith(ELB_CUSTOM_SECURITY_POLICY_NAME_PREFIX):
+                        return policy.policy_name
+        return self.get_latest_predefined_policy()
 
     @staticmethod
     def get_instance_selector_text():
@@ -639,19 +637,15 @@ class ELBView(BaseELBView):
             listeners_to_add = [x for x in listeners_args if x not in normalized_elb_listeners]
             listeners_to_remove = [x[0] for x in normalized_elb_listeners if x not in listeners_args]
             if listeners_to_remove:
+                self.elb_conn.delete_load_balancer_listeners(self.elb.name, listeners_to_remove)
+                time.sleep(1)  # sleep is needed for Eucalyptus to avoid not finding the elb error
                 if 443 in listeners_to_remove:
                     self.cleanup_backend_policies()
-                self.elb_conn.delete_load_balancer_listeners(self.elb.name, listeners_to_remove)
-                # sleep is needed for Eucalyptus to avoid not finding the elb error
-                time.sleep(1)
-
-            # NOTE: We must remove state security policies here before adding the new listeners
-            self.cleanup_security_policies()
+                    self.cleanup_security_policies()
 
             if listeners_to_add:
                 self.elb_conn.create_load_balancer_listeners(self.elb.name, complex_listeners=listeners_to_add)
-                # sleep is needed for Eucalyptus to avoid not finding the elb error
-                time.sleep(1)
+                time.sleep(1)  # sleep is needed for Eucalyptus to avoid not finding the elb error
 
     def cleanup_backend_policies(self):
         if self.elb and self.elb_conn:
