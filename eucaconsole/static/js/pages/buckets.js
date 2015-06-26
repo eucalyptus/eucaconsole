@@ -253,7 +253,7 @@ angular.module('BucketsPage', ['LandingPage', 'EucaConsoleUtils'])
             var save_name = $('#save-bucket-to-list').is(':checked');
             if (Modernizr.localstorage && save_name === true) {
                 var saved_names = localStorage.getItem($scope.storageKey);
-                var names = saved_names.split(',');
+                var names = (saved_names === undefined) ? [] : saved_names.split(',');
                 if (names.indexOf(bucket_name) === -1) {
                     if (saved_names) {
                         saved_names = saved_names + "," + bucket_name;
