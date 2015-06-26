@@ -339,32 +339,38 @@ class BaseELBView(TaggedItemView):
         elb_security_policy_updated = req_params.get('elb_security_policy_updated') == 'on'
         if not elb_security_policy_updated:
             return None  # Don't set security policy unless Security Policy dialog submit button has been clicked
+        latest_predefined_policy = self.get_latest_predefined_policy()
+        if not latest_predefined_policy:
+            return None  # Policy will fail unless at least one predefined security policy is configured for the cloud
         using_custom_policy = req_params.get('elb_ssl_using_custom_policy') == 'on'
+        selected_predefined_policy = req_params.get('elb_predefined_policy')
+        random_string = self.generate_random_string(length=8)
         if self.elb_conn:
             policy_type = 'SSLNegotiationPolicyType'
             if using_custom_policy:
+                # Create custom security policy
                 elb_ssl_protocols = json.loads(req_params.get('elb_ssl_protocols', '[]'))
                 elb_ssl_ciphers = json.loads(req_params.get('elb_ssl_ciphers', '[]'))
                 using_server_order_pref = req_params.get('elb_ssl_server_order_pref') == 'on'
-                random_string = self.generate_random_string(length=8)
                 policy_name = 'ELB-CustomSecurityPolicy-{0}'.format(random_string)
-                policy_attributes = {'Reference-Security-Policy': policy_name}
+                policy_attributes = {'Reference-Security-Policy': latest_predefined_policy}
                 for protocol in elb_ssl_protocols:
                     policy_attributes.update({protocol: True})
                 for cipher in elb_ssl_ciphers:
                     policy_attributes.update({cipher: True})
                 if using_server_order_pref:
                     policy_attributes.update({'Server-Defined-Cipher-Order': True})
-                security_policy = self.elb_conn.create_lb_policy(elb_name, policy_name, policy_type, policy_attributes)
-                time.sleep(1)
+                self.elb_conn.create_lb_policy(elb_name, policy_name, policy_type, policy_attributes)
+                time.sleep(1)  # Give new policy time to persist before setting ELB security policy for HTTPS listener
             else:
-                policy_name = req_params.get('elb_predefined_policy')
-                policy_attributes = {'Reference-Security-Policy': policy_name}
-                security_policy = OtherPolicy()
-                security_policy.policy_name = policy_name
-                security_policy.policy_type = policy_type
-                for k, v in policy_attributes.items():
-                    setattr(security_policy, k, v)
+                # Create predefined security policy
+                policy_name = '{0}-{1}'.format(selected_predefined_policy, random_string)
+                policy_attributes = {'Reference-Security-Policy': selected_predefined_policy}
+                self.elb_conn.create_lb_policy(elb_name, policy_name, policy_type, policy_attributes)
+                time.sleep(1)  # Give new policy time to persist before setting ELB security policy for HTTPS listener
+            # Set security policy for HTTPS listener in ELB
+            security_policy = OtherPolicy()
+            security_policy.policy_name = policy_name
             policies = [security_policy]
             self.elb_conn.set_lb_policies_of_listener(elb_name, 443, policies)
 
