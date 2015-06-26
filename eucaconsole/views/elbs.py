@@ -637,8 +637,9 @@ class ELBView(BaseELBView):
             listeners_to_add = [x for x in listeners_args if x not in normalized_elb_listeners]
             listeners_to_remove = [x[0] for x in normalized_elb_listeners if x not in listeners_args]
             self.cleanup_security_policies(delete_stale_policies=True)
-            self.cleanup_backend_policies()  # Note: this must be before HTTPS listeners are removed
             if listeners_to_remove:
+                if 443 in listeners_to_remove:
+                    self.cleanup_backend_policies()  # Note: this must be before HTTPS listeners are removed
                 self.elb_conn.delete_load_balancer_listeners(self.elb.name, listeners_to_remove)
                 time.sleep(1)  # sleep is needed for Eucalyptus to avoid not finding the elb error
 
