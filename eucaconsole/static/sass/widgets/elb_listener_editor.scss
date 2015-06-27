@@ -46,6 +46,14 @@
             margin-right: 6px;
         }
     }
+    #listeners-table-security-header {
+        // Adjust alignment of SECURITY table header based on certificates in table
+        padding-left: 3.5rem;
+        &.has-certificate {
+            padding-left: 0;
+            text-align: center;
+        }
+    }
 }
 
 #select-certificate-modal {

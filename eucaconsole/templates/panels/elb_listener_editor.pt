@@ -11,7 +11,10 @@
                     <tr class="top-header">
                         <th colspan="2" class="header vertical-border-header center" i18n:translate="">Client Side</th>
                         <th colspan="2" class="header vertical-border-header center" i18n:translate="">Instance Side</th>
-                        <th colspan="2" class="header center" i18n:translate="">Security</th>
+                        <th colspan="2" class="header" id="listeners-table-security-header"
+                            ng-class="{'has-certificate': hasSecureListener}" i18n:translate="">
+                            Security
+                        </th>
                         <th></th>
                     </tr>
                     <tr>

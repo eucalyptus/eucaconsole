@@ -14,6 +14,8 @@
 #elb-listener-editor .label.radius { color: #5a5a5a; }
 #elb-listener-editor .label.radius.cert { background-color: #cccccc; }
 #elb-listener-editor .label.radius.bcert { background-color: #b3b3b3; margin-right: 6px; }
+#elb-listener-editor #listeners-table-security-header { padding-left: 3.5rem; }
+#elb-listener-editor #listeners-table-security-header.has-certificate { padding-left: 0; text-align: center; }
 
 #select-certificate-modal .item-list { margin-bottom: 6px; }
 #select-certificate-modal .item-list .item { color: #333; background-color: #e6e7e8; margin-right: 8px; }
