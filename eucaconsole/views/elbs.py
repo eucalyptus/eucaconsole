@@ -656,6 +656,9 @@ class ELBView(BaseELBView):
     def cleanup_security_policies(self, delete_stale_policies=False):
         """Empty security policies before setting them in ELB"""
         if self.elb_conn and self.elb and self.cloud_type == 'euca':
+            elb_security_policy_updated = self.request.params.get('elb_security_policy_updated') == 'on'
+            if not elb_security_policy_updated:
+                return None  # Skip cleanup if security policy wasn't updated
             elb_listener_ports = [x[0] for x in self.elb.listeners]
             if 443 in elb_listener_ports:
                 self.elb_conn.set_lb_policies_of_listener(self.elb.name, 443, [])
