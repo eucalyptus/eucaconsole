@@ -1095,6 +1095,7 @@ class CreateELBView(BaseELBView):
                 if backend_certificates is not None and backend_certificates != '[]':
                     self.handle_backend_certificate_create(name)
                 self.add_elb_tags(name)
+                self.set_security_policy(name)
                 prefix = _(u'Successfully created elastic load balancer')
                 msg = u'{0} {1}'.format(prefix, name)
                 location = self.request.route_path('elbs')
