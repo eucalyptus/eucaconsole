@@ -305,6 +305,8 @@ class BaseELBView(TaggedItemView):
         self.elb_conn.configure_health_check(name, health_check)
 
     def handle_backend_certificate_create(self, elb_name):
+        if self.cloud_type == 'aws':
+            return None  # Eucalyptus only
         backend_certificates_json = self.request.params.get('backend_certificates')
         backend_certificates = json.loads(backend_certificates_json) if backend_certificates_json else []
         public_policy_attributes = dict()
@@ -333,6 +335,8 @@ class BaseELBView(TaggedItemView):
         """
         See http://docs.aws.amazon.com/ElasticLoadBalancing/latest/DeveloperGuide/ssl-config-update.html
         """
+        if self.cloud_type == 'aws':
+            return None  # Eucalyptus only
         req_params = self.request.params
         flattened_listeners = [x for x in itertools.chain.from_iterable(self.get_listeners_args())]
         has_https_listener = 443 in flattened_listeners
@@ -380,6 +384,8 @@ class BaseELBView(TaggedItemView):
 
     def get_security_policy(self, elb=None):
         """Get SSL security policy attached to an ELB"""
+        if self.cloud_type == 'aws':
+            return None  # Eucalyptus only
         if elb:
             if elb.policies:
                 for policy in elb.policies.other_policies:
@@ -620,7 +626,7 @@ class ELBView(BaseELBView):
 
     def get_backend_policies(self):
         backend_certificates = []
-        if self.elb:
+        if self.elb and self.cloud_type == 'euca':
             for backend in self.elb.backends:
                 backend_certificates.extend(
                     [policy.policy_name for policy in backend.policies if backend.instance_port == 443])
@@ -649,7 +655,7 @@ class ELBView(BaseELBView):
 
     def cleanup_security_policies(self, delete_stale_policies=False):
         """Empty security policies before setting them in ELB"""
-        if self.elb_conn and self.elb:
+        if self.elb_conn and self.elb and self.cloud_type == 'euca':
             elb_listener_ports = [x[0] for x in self.elb.listeners]
             if 443 in elb_listener_ports:
                 self.elb_conn.set_lb_policies_of_listener(self.elb.name, 443, [])
@@ -657,7 +663,7 @@ class ELBView(BaseELBView):
                     self.delete_stale_policies()
 
     def delete_stale_policies(self):
-        if self.elb and self.elb.policies and self.elb.policies.other_policies:
+        if self.elb and self.elb.policies and self.elb.policies.other_policies and self.cloud_type == 'euca':
             for policy in self.elb.policies.other_policies:
                 policy_name_conditions = [
                     policy.policy_name.startswith(ELB_PREDEFINED_SECURITY_POLICY_NAME_PREFIX),
@@ -667,7 +673,7 @@ class ELBView(BaseELBView):
                     self.elb_conn.delete_lb_policy(self.elb.name, policy.policy_name)
 
     def cleanup_backend_policies(self):
-        if self.elb_conn and self.elb:
+        if self.elb_conn and self.elb and self.cloud_type == 'euca':
             elb_listener_ports = [x[0] for x in self.elb.listeners]
             if self.elb.backends and 443 in elb_listener_ports:
                 self.elb_conn.set_lb_policies_of_backend_server(self.elb.name, 443, [])

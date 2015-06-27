@@ -1,5 +1,5 @@
 <!--! Select certificate modal dialog -->
-<div tal:omit-tag="" i18n:domain="eucaconsole">
+<div tal:omit-tag="" i18n:domain="eucaconsole" tal:condition="layout.cloud_type == 'euca'">
     <div id="select-certificate-modal" class="reveal-modal medium" data-reveal="" ng-cloak="">
         <h3 i18n:translate="">Select certificate(s)</h3>
         <div ng-show="showsCertificateTabDiv">
