@@ -26,6 +26,8 @@ angular.module('ELBSecurityPolicyEditor', ['EucaConsoleUtils'])
         $scope.setSecurityPolicy = function () {
             // TODO: Perform validation checks
             var elbForm = $('#elb-form'),
+                selectedPolicyName,
+                customPolicyPlaceholder = 'ELB-CustomSecurityPolicy',
                 serverOrderPrefInput = elbForm.find('#ssl_server_order_pref_hidden_input'),
                 sslUsingCustomPolicy = elbForm.find('#ssl_using_custom_policy');
             elbForm.find('#security_policy_updated').prop('checked', true);
@@ -34,9 +36,8 @@ angular.module('ELBSecurityPolicyEditor', ['EucaConsoleUtils'])
             elbForm.find('#predefined_policy_hidden_input').val($scope.predefinedPolicy);
             serverOrderPrefInput.prop('checked', $scope.sslServerOrderPref);
             sslUsingCustomPolicy.prop('checked', $scope.policyRadioButton === 'new');
-            if ($scope.policyRadioButton === 'existing') {
-                $rootScope.$broadcast('elb:predefinedPolicySelected', $scope.predefinedPolicy);
-            }
+            selectedPolicyName = $scope.policyRadioButton === 'existing'? $scope.predefinedPolicy: customPolicyPlaceholder;
+            $rootScope.$broadcast('elb:securityPolicySelected', selectedPolicyName);
             $scope.policyModal.foundation('reveal', 'close');
         };
     })

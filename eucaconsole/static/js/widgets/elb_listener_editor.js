@@ -26,7 +26,7 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
         $scope.serverCertificateName = '';
         $scope.serverCertificateARN = '';
         $scope.serverCertificateARNBlock = {};
-        $scope.selectedPredefinedPolicy = '';
+        $scope.selectedSecurityPolicy = '';
         $scope.addListenerButtonClass = 'disabled';
         $scope.initEditor = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
@@ -139,8 +139,8 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
                 $scope.serverCertificateName = name;
                 $scope.handleEventUseThisCertificate();
             });
-            $scope.$on('elb:predefinedPolicySelected', function ($event, newPredefinedPolicy) {
-                $scope.selectedPredefinedPolicy = newPredefinedPolicy;
+            $scope.$on('elb:securityPolicySelected', function ($event, newSecurityPolicy) {
+                $scope.selectedSecurityPolicy = newSecurityPolicy;
             });
             $(document).on('opened.fndtn.reveal', '#select-certificate-modal', function () {
                 // Ensure new certificate radio button is selected when no existing SSL certs are available
