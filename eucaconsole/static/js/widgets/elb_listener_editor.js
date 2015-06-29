@@ -9,8 +9,7 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
         $scope.hasDuplicatedListener = false;
         $scope.hasDuplicatedFromPorts = false;
         $scope.listenerArray = [];
-        $scope.hasSecureListener = false;
-        $scope.protocolList = []; 
+        $scope.protocolList = [];
         $scope.toProtocolList = []; 
         $scope.fromProtocol = undefined;
         $scope.toProtocol = undefined;
@@ -127,7 +126,6 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
                     $scope.classNoListenerWarningDiv = '';
                 }
                 $scope.$emit('eventUpdateListenerArray', $scope.listenerArray);
-                $scope.detectSecureListener(newVal);
             }, true);
             $scope.$on('eventUpdateCertificateName', function ($event, name) {
                 $scope.serverCertificateName = name;
@@ -151,16 +149,6 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
                     newRadioBtn = modal.find('#certificate-type-radio-new');
                 if (!existingRadioBtn.is(':visible')) {
                     newRadioBtn.click();
-                }
-            });
-        };
-        $scope.detectSecureListener = function(listenerArray) {
-            // Determine if at least one secure listener is present
-            $scope.hasSecureListener = false;
-            angular.forEach(listenerArray, function (block) {
-                if (block.fromProtocol === 'HTTPS' || block.fromProtocol === 'SSL') {
-                    $scope.hasSecureListener = true;
-                    return true;
                 }
             });
         };

@@ -46,12 +46,17 @@
             margin-right: 6px;
         }
     }
-    #listeners-table-security-header {
-        // Adjust alignment of SECURITY table header based on certificates in table
-        padding-left: 3.5rem;
-        &.has-certificate {
-            padding-left: 0;
-            text-align: center;
+    table.table {
+        width: 100%;
+        tr.top-header {
+            border-bottom: 0;
+        }
+        th {
+            white-space: nowrap;
+            &.vertical-border-header {
+                border-collapse: collapse;
+                border-right: 1px solid #ddd;
+            }
         }
     }
 }

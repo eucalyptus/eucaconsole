@@ -125,11 +125,6 @@
 @media screen and (max-width: 1020px) { .columns.datagrid { padding-left: 1rem; } }
 h6.section-label { margin-top: 1.5rem; }
 
-table.table { width: 100%; }
-table.table tr.top-header { border-bottom: 0; }
-table.table th.vertical-border-header { border-collapse: collapse; border-right: 1px solid #ddd; }
-table.table th.center { text-align: center; }
-
 #elb-form .item-list { margin-bottom: 6px; }
 #elb-form .item-list .item { color: #333; background-color: #e6e7e8; margin-right: 8px; }
 #elb-form .item-list .item a { color: white; }
