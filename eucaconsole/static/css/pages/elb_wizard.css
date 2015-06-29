@@ -58,11 +58,4 @@
 #elb-form .section-label-with-helptext-icon { margin-bottom: 0.5rem; }
 #elb-form .checkbox-with-helptext-icon label { margin-right: 0; }
 
-table.elb-listener-table { width: 100%; }
-table.elb-listener-table tr.top-header { border-bottom: 0px; }
-table.elb-listener-table th.vertical-border-header { border-collapse: collapse; border-right-width: 1px; border-right-style: solid; border-right-color: #ddd; }
-table.elb-listener-table th.center { text-align: center; }
-
-table.instance-selector-table { width: 100%; }
-
 .summary .multi-row div { padding-bottom: 0.25rem; }

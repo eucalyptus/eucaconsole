@@ -37,17 +37,13 @@
                 </metal:block>
                 <form method="post" action="${request.route_path('elb_healthchecks_update', id=elb.name)}" data-abide="">
                     ${structure:elb_form['csrf_token']}
-                    <div>
-                        <h6 class="section-label" i18n:translate="">Ping settings</h6>
-                        <div>
-                            ${panel('form_field', field=elb_form['ping_protocol'], stack_label=True, ng_attrs=dict(model='pingProtocol'))}
-                        </div>
-                        <div>
-                            ${panel('form_field', field=elb_form['ping_port'], stack_label=True, ng_attrs=dict(model='pingPort'), min=1, max=65535, maxlength=5, pattern=layout.integer_gt_zero_pattern)}
-                        </div>
-                        <div ng-if="pingPathRequired">
-                            ${panel('form_field', field=elb_form['ping_path'], stack_label=True)}
-                        </div>
+                    <div i18n:translate="">Your load balancer will monitor the health of its instances based on the following health check.</div>
+                    <div i18n:translate="">Instances that fail the health check will be removed from the load balancer.</div>
+                    <h6 class="section-label" i18n:translate="">Ping settings</h6>
+                    ${panel('form_field', field=elb_form['ping_protocol'], stack_label=True, ng_attrs=dict(model='pingProtocol'))}
+                    ${panel('form_field', field=elb_form['ping_port'], stack_label=True, ng_attrs=dict(model='pingPort'), min=1, max=65535, maxlength=5, pattern=layout.integer_gt_zero_pattern)}
+                    <div ng-if="pingPathRequired">
+                        ${panel('form_field', field=elb_form['ping_path'], stack_label=True)}
                     </div>
                     <div class="expando" id="advanced-section" ng-init="expanded = false" ng-cloak="">
                         <div class="title">
@@ -58,23 +54,21 @@
                             </a>
                         </div>
                         <div class="section" ng-show="expanded">
-                            <div>
-                                <h6 class="section-label" i18n:translate="">Timing settings</h6>
-                                <div>
-                                    ${panel('form_field', field=elb_form['response_timeout'], stack_label=True,  min=1, pattern=layout.integer_gt_zero_pattern)}
-                                </div>
-                                <div>
-                                    ${panel('form_field', field=elb_form['time_between_pings'], stack_label=True)}
-                                </div>
-                            </div>
-                            <div>
-                                <h6 class="section-label" i18n:translate="">Instance thresholds</h6>
-                                <div>
-                                    ${panel('form_field', field=elb_form['failures_until_unhealthy'], stack_label=True)}
-                                </div>
-                                <div>
-                                    ${panel('form_field', field=elb_form['passes_until_healthy'], stack_label=True)}
-                                </div>
+                            <h6 class="section-label" i18n:translate="">Health check timing settings</h6>
+                            ${panel('form_field', field=elb_form['response_timeout'], stack_label=True,  min=1, pattern=layout.integer_gt_zero_pattern)}
+                            ${panel('form_field', field=elb_form['time_between_pings'], stack_label=True)}
+                            <h6 class="section-label" i18n:translate="">Health check instance thresholds</h6>
+                            ${panel('form_field', field=elb_form['failures_until_unhealthy'], stack_label=True)}
+                            ${panel('form_field', field=elb_form['passes_until_healthy'], stack_label=True)}
+                            <h6 class="section-label" i18n:translate="">Access logs</h6>
+                            ${panel('form_field', field=elb_form['logging_enabled'], reverse=True, ng_attrs=dict(model='loggingEnabled'))}
+                            <div ng-show="loggingEnabled" id="access-logs-wrapper">
+                                <p i18n:translate="">
+                                    Specify where your logs should be stored in the cloud.
+                                </p>
+                                ${panel('form_field', field=elb_form['bucket_name'], stack_label=True)}
+                                ${panel('form_field', field=elb_form['bucket_prefix'], stack_label=True)}
+                                ${panel('form_field', field=elb_form['collection_interval'], stack_label=True)}
                             </div>
                         </div>
                     </div>

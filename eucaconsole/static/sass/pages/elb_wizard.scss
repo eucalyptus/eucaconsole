@@ -61,25 +61,7 @@
     }
 }
 
-table.elb-listener-table {
-    width: 100%;
-    tr.top-header {
-        border-bottom: 0px;
-    }
-    th.vertical-border-header {
-        border-collapse: collapse;
-        border-right-width: 1px;
-        border-right-style: solid;
-        border-right-color: #ddd;
-    } 
-    th.center {
-        text-align: center;
-    }
-}
 
-table.instance-selector-table {
-    width: 100%;
-}
 
 .summary {
     .multi-row div {

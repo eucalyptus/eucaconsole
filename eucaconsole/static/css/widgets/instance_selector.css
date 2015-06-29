@@ -18,3 +18,5 @@
 .status.InService { background-color: #468400; }
 
 .status.OutOfService { background-color: #990000; }
+
+#instance-selector table.table { width: 100%; }

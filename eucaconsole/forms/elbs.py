@@ -53,6 +53,17 @@ class PingPathRequired(validators.Required):
             super(PingPathRequired, self).__call__(form, field)
 
 
+class BucketInfoRequired(validators.Required):
+    """Bucket info (name, interval) conditionally required based on logging_enabled value"""
+
+    def __init__(self, *args, **kwargs):
+        super(BucketInfoRequired, self).__init__(*args, **kwargs)
+
+    def __call__(self, form, field):
+        if form.logging_enabled.data:
+            super(BucketInfoRequired, self).__call__(form, field)
+
+
 class CertificateARNRequired(validators.Required):
     """Custom validator to conditionally require certificate_arn when certificate_name is missing"""
 
@@ -158,15 +169,32 @@ class ELBHealthChecksForm(BaseSecureForm):
         label=_(u'Passes until healthy'),
         validators=[validators.InputRequired(message=passes_until_healthy_error_msg)],
     )
+    # Access logs fields
+    logging_enabled = wtforms.BooleanField(label=_(u'Enable logging'))
+    bucket_name_error_msg = _(u'Bucket name is required')
+    bucket_name_help_text = _(u'Choose from your existing buckets, or enter a name to create a new bucket.')
+    bucket_name = TextEscapedField(
+        label=_(u'Bucket name'),
+        validators=[BucketInfoRequired(message=bucket_name_error_msg)],
+    )
+    bucket_prefix_help_text = _(
+        u"The path to your log file within the bucket. "
+        u"If not specified, log will be created at the bucket's root level")
+    bucket_prefix = TextEscapedField(label=_(u'Prefix'))
+    collection_interval = wtforms.SelectField(
+        label=_(u'Collection interval'),
+        validators=[BucketInfoRequired()],
+    )
 
     def __init__(self, request, elb=None, **kwargs):
         super(ELBHealthChecksForm, self).__init__(request, **kwargs)
         self.elb = elb
-        self.set_error_messages()
-        self.set_choices()
-        self.set_initial_data()
+        self.set_health_check_initial_data()
+        self.set_health_check_choices()
+        self.set_health_check_error_messages()
+        self.set_health_check_help_text()
 
-    def set_initial_data(self):
+    def set_health_check_initial_data(self):
         if self.elb:
             hc_data = self.get_health_check_data()
             self.ping_protocol.data = hc_data.get('ping_protocol')
@@ -177,14 +205,20 @@ class ELBHealthChecksForm(BaseSecureForm):
             self.failures_until_unhealthy.data = str(self.elb.health_check.unhealthy_threshold)
             self.passes_until_healthy.data = str(self.elb.health_check.healthy_threshold)
 
-    def set_error_messages(self):
+    def set_health_check_error_messages(self):
         self.ping_path.error_msg = self.ping_path_error_msg
+        self.bucket_name.error_msg = self.bucket_name_error_msg
 
-    def set_choices(self):
-        self.ping_protocol.choices = CreateELBForm.get_ping_protocol_choices()
-        self.time_between_pings.choices = CreateELBForm.get_time_between_pings_choices()
-        self.failures_until_unhealthy.choices = CreateELBForm.get_failures_until_unhealthy_choices()
-        self.passes_until_healthy.choices = CreateELBForm.get_passes_until_healthy_choices()
+    def set_health_check_choices(self):
+        self.ping_protocol.choices = self.get_ping_protocol_choices()
+        self.time_between_pings.choices = self.get_time_between_pings_choices()
+        self.failures_until_unhealthy.choices = self.get_failures_until_unhealthy_choices()
+        self.passes_until_healthy.choices = self.get_passes_until_healthy_choices()
+        self.collection_interval.choices = self.get_collection_interval_choices()
+
+    def set_health_check_help_text(self):
+        self.bucket_name.help_text = self.bucket_name_help_text
+        self.bucket_prefix.help_text = self.bucket_prefix_help_text
 
     def get_health_check_data(self):
         if self.elb is not None and self.elb.health_check.target is not None:
@@ -195,6 +229,38 @@ class ELBHealthChecksForm(BaseSecureForm):
                 ping_path=match.group(3),
             )
         return {}
+
+    @staticmethod
+    def get_ping_protocol_choices():
+        return [
+            ('HTTP', 'HTTP'),
+            ('HTTPS', 'HTTPS'),
+            ('TCP', 'TCP'),
+            ('SSL', 'SSL')
+        ]
+
+    @staticmethod
+    def get_time_between_pings_choices():
+        return [
+            ('30', _(u'30 seconds')),
+            ('60', _(u'1 minute')),
+            ('300', _(u'5 minutes'))
+        ]
+
+    @staticmethod
+    def get_failures_until_unhealthy_choices():
+        return [(str(x), str(x)) for x in range(2, 11)]
+
+    @staticmethod
+    def get_passes_until_healthy_choices():
+        return [(str(x), str(x)) for x in range(2, 11)]
+
+    @staticmethod
+    def get_collection_interval_choices():
+        return [
+            (60, _(u'60 minutes')),
+            (5, _(u'5 minutes')),
+        ]
 
 
 class ELBInstancesForm(BaseSecureForm):
@@ -246,7 +312,7 @@ class ELBsFiltersForm(BaseSecureForm):
             ))
 
 
-class CreateELBForm(BaseSecureForm):
+class CreateELBForm(ELBHealthChecksForm):
     """Create Elastic Load Balancer form"""
     name_error_msg = NAME_WITHOUT_SPACES_NOTICE
     name = wtforms.TextField(
@@ -275,46 +341,6 @@ class CreateELBForm(BaseSecureForm):
         u'Enable this load balancer to route traffic to instances in the selected zones')
     add_vpc_subnets_help_text = _(u'Enable this load balancer to route traffic to instances in the selected subnets')
     add_instances_help_text = _(u'Balance traffic between the selected instances')
-    ping_protocol_error_msg = _(u'Ping protocol is required')
-    ping_protocol = wtforms.SelectField(
-        label=_(u'Protocol'),
-        validators=[validators.InputRequired(message=ping_protocol_error_msg)],
-    )
-    ping_port_error_msg = _(u'Port range value must be whole numbers between 1-65535')
-    ping_port = wtforms.IntegerField(
-        label=_(u'Port'),
-        validators=[
-            validators.InputRequired(message=ping_port_error_msg),
-            validators.NumberRange(min=1, max=65535),
-        ],
-    )
-    ping_path_error_msg = _(u'Ping path is required')
-    ping_path = TextEscapedField(
-        id=u'ping-path',
-        label=_(u'Path'),
-        default="index.html",
-        validators=[validators.InputRequired(message=ping_path_error_msg)],
-    )
-    response_timeout_error_msg = _(u'Response timeout is required')
-    response_timeout = wtforms.IntegerField(
-        label=_(u'Response timeout (secs)'),
-        validators=[validators.InputRequired(message=response_timeout_error_msg)],
-    )
-    time_between_pings_error_msg = _(u'Time between pings is required')
-    time_between_pings = wtforms.SelectField(
-        label=_(u'Time between pings'),
-        validators=[validators.InputRequired(message=time_between_pings_error_msg)],
-    )
-    failures_until_unhealthy_error_msg = _(u'Failures until unhealthy is required')
-    failures_until_unhealthy = wtforms.SelectField(
-        label=_(u'Failures until unhealthy'),
-        validators=[validators.InputRequired(message=failures_until_unhealthy_error_msg)],
-    )
-    passes_until_healthy_error_msg = _(u'Passes until healthy is required')
-    passes_until_healthy = wtforms.SelectField(
-        label=_(u'Passes until healthy'),
-        validators=[validators.InputRequired(message=passes_until_healthy_error_msg)],
-    )
 
     def __init__(self, request, conn=None, vpc_conn=None, **kwargs):
         super(CreateELBForm, self).__init__(request, **kwargs)
@@ -338,10 +364,10 @@ class CreateELBForm(BaseSecureForm):
             securitygroups=None, use_id=True, add_blank=False)
         region = request.session.get('region')
         self.zone.choices = self.get_availability_zone_choices(region)
-        self.ping_protocol.choices = CreateELBForm.get_ping_protocol_choices()
-        self.time_between_pings.choices = CreateELBForm.get_time_between_pings_choices()
-        self.failures_until_unhealthy.choices = CreateELBForm.get_failures_until_unhealthy_choices()
-        self.passes_until_healthy.choices = CreateELBForm.get_passes_until_healthy_choices()
+        self.ping_protocol.choices = self.get_ping_protocol_choices()
+        self.time_between_pings.choices = self.get_time_between_pings_choices()
+        self.failures_until_unhealthy.choices = self.get_failures_until_unhealthy_choices()
+        self.passes_until_healthy.choices = self.get_passes_until_healthy_choices()
 
         self.cross_zone_enabled.data = True
         # Set default choices where applicable, defaulting to first non-blank choice
@@ -356,31 +382,6 @@ class CreateELBForm(BaseSecureForm):
 
     def get_availability_zone_choices(self, region):
         return self.choices_manager.availability_zones(region, add_blank=False)
-
-    @staticmethod
-    def get_ping_protocol_choices():
-        return [
-            ('HTTP', 'HTTP'),
-            ('HTTPS', 'HTTPS'),
-            ('TCP', 'TCP'),
-            ('SSL', 'SSL')
-        ]
-
-    @staticmethod
-    def get_time_between_pings_choices():
-        return [
-            ('30', _(u'30 seconds')),
-            ('60', _(u'1 minute')),
-            ('300', _(u'5 minutes'))
-        ]
-
-    @staticmethod
-    def get_failures_until_unhealthy_choices():
-        return [(str(x), str(x)) for x in range(2, 11)]
-
-    @staticmethod
-    def get_passes_until_healthy_choices():
-        return [(str(x), str(x)) for x in range(2, 11)]
 
 
 class ELBInstancesFiltersForm(BaseSecureForm):
