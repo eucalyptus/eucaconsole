@@ -25,6 +25,7 @@ angular.module('BucketsPage', ['LandingPage', 'EucaConsoleUtils'])
         $scope.items = null;
         $scope.hasCopyItem = false;
         $scope.hasCopyFolder = false;
+        $scope.fetchingUrl = false;
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.bucketObjectsCountUrl = options.bucket_objects_count_url;
@@ -266,37 +267,48 @@ angular.module('BucketsPage', ['LandingPage', 'EucaConsoleUtils'])
             }
             window.location = $scope.contentsUrl.replace("_name_", bucket_name);
         };
-        $scope.downloadSharedObject = function($event) {
+        $scope.s3url_timer = undefined;
+        $('#shared-object-path').on('keydown', function() {
+            if ($scope.s3url_timer) {
+                window.clearTimeout($scope.s3url_timer);
+            }
+            $scope.s3url_timer = window.setTimeout(function() {
+                $scope.s3url_timer = undefined;
+                $timeout(function() {
+                    $scope.getSharedObjectUrl();
+                });
+            }, 2000);
+        });
+        $scope.getSharedObjectUrl = function() {
             var form = $('#download-object-form');
             form.trigger('validate');
             invalidFields = form.find('[data-invalid]');
             if (invalidFields.length || $scope.isNotValid === true) {
                 invalidFields.focus();
-                $event.preventDefault();
                 return;
             }
             var objectPath = $('#shared-object-path').val();
             var bucketName = objectPath.substring(0, objectPath.indexOf('/'));
             var key = objectPath.substring(objectPath.indexOf('/')+1);
             var url = $scope.itemUrl.replace('_name_', bucketName).replace('_subpath_', key);
+            $scope.fetchingUrl = true;
             $http({method: 'POST', url: url, data: '',
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
                 success(function (oData) {
+                    $scope.fetchingUrl = false;
                     if (oData.errors !== undefined) {
                         console.log('error getting shared object url ' + oData.errors);
                     }
-                    $('#download-object-modal').foundation('reveal', 'close');
-                    $("#download-object-fake-form").attr('action', oData.item_link);
-                    // download the object 1 second after.
-                    setTimeout(function(){
-                        $("#download-object-fake-form").submit();
-                    }, 1000);
+                    $scope.sharedObjectUrl = oData.item_link;
                 }).
                 error(function (oData, status) {
                     $('#copy-folder-modal').foundation('reveal', 'close');
                     $scope.copyingAll = false;
                     Notify.failure("error getting shared object url");
                 });
+        };
+        $scope.closeDialog = function() {
+            $('#download-object-modal').foundation('reveal', 'close');
         };
         $scope.removeShared = function(item) {
             if (Modernizr.localstorage) {

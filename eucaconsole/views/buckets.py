@@ -1028,7 +1028,7 @@ class BucketSharedItemView(BaseView, BucketMixin):
     @view_config(route_name='bucket_item_url', renderer='json', request_method='POST', xhr=True)
     def bucket_item_url(self):
         return dict(
-            item_link=self.bucket_item.generate_url(expires_in=BUCKET_ITEM_URL_EXPIRES),
+            item_link=BucketContentsView.get_item_download_url(self.bucket_item),
         )
 
 

@@ -226,8 +226,8 @@
                             <small class="error" i18n:translate="">Path must contain lowercase letters, numbers, hyphens, and/or dots followed by slash, then any other characters</small>
                         </div>
                     </div>
-                    <a id="download-object-btn" class="button expand" ng-disabled="!sharedObjectPath"
-                       ng-click="downloadSharedObject($event)" i18n:translate="">Download Object</a>
+                    <a id="download-object-btn" class="button expand" ng-disabled="!sharedObjectUrl"
+                       ng-click="closeDialog()" ng-href="{{ sharedObjectUrl }}" i18n:translate="">Download Object</a>
                 </div>
             </form>
             <a href="#" id="download-object-close-link" class="close-reveal-modal">&#215;</a>

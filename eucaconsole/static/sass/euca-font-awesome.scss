@@ -22,6 +22,7 @@ $fa-font-path:        "../fonts/font-awesome";
 @import "font-awesome/rotated-flipped";
 @import "font-awesome/stacked";
 @import "font-awesome/icons";
+@import "includes/eucavariables";
 
 // app-wide busy indication
 .busy {
@@ -65,4 +66,12 @@ $fa-font-path:        "../fonts/font-awesome";
     @extend .fa-lg;
     margin-left: 5px;
     text-align: center;
+}
+
+h3.warn-dialog:before {
+    @extend .fa;
+    @extend .fa-exclamation-triangle;
+    @extend .fa-lg;
+    color: $euca-orange;
+    padding-right: 0.5rem;
 }
