@@ -360,8 +360,24 @@ class GuiEC2(GuiTester):
         print volume
         return volume
 
-    def create_volume_from_dashboard(self):
-        NotImplementedError()
+    def create_volume_from_dashboard(self, volume_name=None, create_from_snapshot=False,snapshot_id=None, volume_size=None, availability_zone=None, timeout_in_seconds=240 ):
+        """
+        Navigates to dashboard and creates volume.
+        :param volume_name:
+        :param create_from_snapshot:
+        :param snapshot_id:
+        :param volume_size:
+        :param availability_zone:
+        :param timeout_in_seconds:
+        """
+        BasePage(self).goto_dashboard_via_menu()
+        Dashboard(self).click_create_volume_link()
+        CreateVolumeDialog(self).create_volume(volume_name=volume_name, create_from_snapshot=create_from_snapshot, snapshot_id=snapshot_id, volume_size=volume_size, availability_zone=None)
+        VolumeDetailPage(self).verify_volume_status_is_available(timeout_in_seconds=timeout_in_seconds)
+        volume = VolumeDetailPage(self).get_volume_name_and_id()
+        print volume
+        return volume
+
 
     def delete_volume_from_view_page(self, volume_id, timeout_in_seconds=240):
         """
@@ -385,7 +401,6 @@ class GuiEC2(GuiTester):
         VolumeDetailPage(self).click_action_delete_volume_on_detail_page()
         DeleteVolumeModal(self).delete_volume()
         VolumeView(self).verify_volume_status_is_deleted(volume_id, 240)
-
 
 
     def create_snapshot_on_volumes_view_page(self, volume_id, snapshot_name, snapshot_description, timeout_in_seconds=240):
