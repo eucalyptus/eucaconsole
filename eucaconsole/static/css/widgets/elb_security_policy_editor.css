@@ -1,8 +1,0 @@
-/* @fileOverview ELB Security Policy Editor Widget CSS */
-/* Dropdown elements */
-/* Set the link colors and styles for top-level nav */
-/* ----------------------------------------- Item list
------------------------------------------ */
-#elb-security-policy-modal #new-policy-wrapper { padding-left: 1rem; }
-#elb-security-policy-modal #new-policy-wrapper h6, #elb-security-policy-modal #new-policy-wrapper label { text-transform: uppercase; font-family: Lato, Helvetica, Arial, sans-serif; font-size: 0.9rem; font-weight: bold; }
-#elb-security-policy-modal #new-policy-wrapper h6 { position: relative; left: 14px; }

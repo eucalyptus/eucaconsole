@@ -1,9 +1,8 @@
 <!--! ELB Security Policy dialog -->
-<link rel="stylesheet" href="${request.static_path('eucaconsole:static/css/widgets/elb_security_policy_editor.css')}" />
 <div tal:omit-tag="" i18n:domain="eucaconsole">
     <div id="elb-security-policy-modal" class="reveal-modal medium" data-reveal="" ng-cloak=""
          ng-controller="ELBSecurityPolicyEditorCtrl" ng-init="initSecurityPolicyEditor('${latest_predefined_policy}')">
-        <h3 i18n:translate="">Select security Policy</h3>
+        <h3 i18n:translate="">Select security policy</h3>
         <p i18n:translate="">
             A security policy configures SSL negotiation settings when you use a secure
             protocol like HTTPS or SSL.
@@ -29,7 +28,7 @@
                  tal:define="html_attrs {'data-placeholder': chosen_placeholder_text}">
                 ${panel('form_field', field=security_policy_form['ssl_protocols'], ng_attrs=dict(model='sslProtocols'), stack_label=True, **html_attrs)}
                 ${panel('form_field', field=security_policy_form['ssl_ciphers'], ng_attrs=dict(model='sslCiphers'), stack_label=True, **html_attrs)}
-                <h6 i18n:translate="">SSL Options</h6>
+                <h6 i18n:translate="" id="ssl-options-header">SSL Options</h6>
                 ${panel('form_field', field=security_policy_form['server_order_preference'],ng_attrs=dict(model='sslServerOrderPref'),  reverse=True)}
             </div>
         </form>

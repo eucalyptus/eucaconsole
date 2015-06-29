@@ -76,3 +76,27 @@
     }
 }
 
+#elb-security-policy-modal {
+    #new-policy-wrapper {
+        padding-left: 1rem;
+        h6, label {
+            text-transform: uppercase;
+            font-family: $euca-header-font-family;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        label[for='server_order_preference'] {
+            text-transform: none;
+        }
+        h6 {
+            position: relative;
+            left: 14px;
+        }
+        #ssl-options-header {
+            color: $euca-grey;
+            margin-bottom: 0;
+        }
+    }
+}
+
+

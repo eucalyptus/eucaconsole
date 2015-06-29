@@ -576,12 +576,15 @@ class SecurityPolicyForm(BaseSecureForm):
         label=_(u'Policy name'),
         validators=[PredefinedPolicyRequired(message=predefined_policy_error_msg)],
     )
+    ssl_protocols_error_msg = _(u'At least one protocol is required.')
     ssl_protocols = wtforms.SelectMultipleField(
         label=_(u'SSL Protocols'),
+        validators=[validators.InputRequired(message=ssl_protocols_error_msg)],
     )
+    ssl_ciphers_error_msg = _(u'At least one cipher is required.')
     ssl_ciphers = wtforms.SelectMultipleField(
         label=_(u'SSL Ciphers'),
-        choices=[],
+        validators=[validators.InputRequired(message=ssl_ciphers_error_msg)],
     )
     server_order_preference = wtforms.BooleanField(label=_(u'Server order preference'))  # Under SSL Options
 
@@ -595,6 +598,8 @@ class SecurityPolicyForm(BaseSecureForm):
 
     def set_error_messages(self):
         self.predefined_policy.error_msg = self.predefined_policy_error_msg
+        self.ssl_protocols.error_msg = self.ssl_protocols_error_msg
+        self.ssl_ciphers.error_msg = self.ssl_ciphers_error_msg
 
     def set_choices(self):
         self.ssl_protocols.choices = self.get_ssl_protocol_choices()
