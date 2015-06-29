@@ -49,10 +49,6 @@
     .sub-section-label {
         color: black;
     }
-    .helptext-icon {
-        color: $euca-grey;
-        font-size: 1.3rem;
-    }
     .section-label-with-helptext-icon {
         margin-bottom: 0.5rem;
     }
@@ -61,10 +57,17 @@
     }
 }
 
-
-
+// Summary area
 .summary {
     .multi-row div {
         padding-bottom: 0.25rem;
+    }
+}
+
+// Health checks tab
+#access-logs-wrapper {
+    margin-left: 1.5rem;
+    #bucket_name, #bucket_prefix, #collection_interval {
+        width: 12rem;
     }
 }
