@@ -470,6 +470,13 @@ textarea.policy-area {
     }
 }
 
+.flex-space {
+    @include flexbox-mixin;
+    .flex-column {
+        @include flexgrow-mixin(1);
+    }
+}
+
 
 /* -----------------------------------------
    Tag editor
@@ -1207,6 +1214,21 @@ ul.off-canvas-list {
             margin-bottom: 0;
         }
     }
+}
+
+ul.bullet-list {
+    list-style-type: none;
+    li:before {
+        font-family: 'FontAwesome';
+        font-size: 0.9rem;
+        content: '\f138';
+        margin: 0 5px 0 -15px;
+        color: $hp-accessible-blue;
+    }
+}
+
+.columns.subheading {
+    padding-left: 0.125rem;
 }
 
 /* Responsive tweaks for landing page title */

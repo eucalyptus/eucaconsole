@@ -159,9 +159,6 @@ angular.module('StackPage', ['MagicSearch', 'EucaConsoleUtils'])
                 var results = oData ? oData.results : '';
                 $scope.eventsLoading = false;
                 if (results) {
-                    for (var i=0; i<results.events.length; i++) {
-                        results.events[i].status_reason = '';
-                    }
                     $scope.unfilteredEvents = results.events;
                     $scope.searchEvents();
                     $('#events-table').stickyTableHeaders();
