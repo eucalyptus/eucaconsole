@@ -475,6 +475,9 @@ $dropdown-border-color: $hp-gray-65;
 .secondary {
     .euca-split {
         border-color: $hp-gray-65 !important;
+        &:hover {
+            border-color: $hp-hover-blue !important;
+        }
     }
 }
 

@@ -5,7 +5,7 @@
  */
 
 angular.module('BucketsPage', ['LandingPage', 'EucaConsoleUtils'])
-    .controller('BucketsCtrl', function ($scope, $http, eucaUnescapeJson) {
+    .controller('BucketsCtrl', function ($scope, $http, $timeout, eucaUnescapeJson) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.bucketName = '';
         $scope.updateVersioningAction = '';

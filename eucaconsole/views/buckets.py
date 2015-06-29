@@ -401,8 +401,12 @@ class BucketContentsView(LandingPageView, BucketMixin):
         shared_object_path = self.request.params.get('shared-object-path')
         folder = None
         if shared_object_path is not None:
-            bucket_name = shared_object_path[:shared_object_path.find('/')]
-            folder = shared_object_path[shared_object_path.find('/') + 1:]
+            if shared_object_path.find('/') == -1:
+                bucket_name = shared_object_path
+                folder = ''
+            else:
+                bucket_name = shared_object_path[:shared_object_path.find('/')]
+                folder = shared_object_path[shared_object_path.find('/') + 1:]
         files = self.request.POST.getall('files')
         with boto_error_handler(self.request):
             bucket = self.s3_conn.get_bucket(bucket_name, validate=False)
@@ -412,9 +416,13 @@ class BucketContentsView(LandingPageView, BucketMixin):
                     return JSONResponse(status=400, message=_(u"File too large :") + upload_file.filename)
                 upload_file.file.seek(0, 0)  # seek to start
                 if folder:
-                    bucket_item = bucket.new_key("{0}/{1}".format(folder, upload_file.filename))
+                    if folder == '':
+                        the_key = upload_file.filename
+                    else:
+                        the_key = "{0}/{1}".format(folder, upload_file.filename)
                 else:
-                    bucket_item = bucket.new_key("/".join(self.request.subpath))
+                    the_key = "/".join(self.request.subpath)
+                bucket_item = bucket.new_key(the_key)
                 self.log_request(u"Uploading file {0} to bucket {1}".format(bucket_item.key, bucket_name))
                 bucket_item.set_metadata('Content-Type', upload_file.type)
                 headers = {'Content-Type': upload_file.type}

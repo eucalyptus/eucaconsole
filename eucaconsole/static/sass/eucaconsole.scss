@@ -666,6 +666,7 @@ form {
     }
     &[data-abide] .error small.error {
         background-color: white;
+        font-style: normal;
         color: darkred;
         &.inline {
             display: inline-block !important;

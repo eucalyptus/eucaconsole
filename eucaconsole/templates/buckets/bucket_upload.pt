@@ -49,7 +49,7 @@
                         </div>
                         <div class="flex-column-1">
                             <input id="shared-object-path" name="shared-object-path" type="text"
-                                   pattern="${object_path_pattern}" placeholder="enter bucket/folder/folder"
+                                   pattern="^[a-z0-9-\.]+(\/.+)?$" placeholder="enter bucket/folder/folder"
                                    i18n:attributes="placeholder"/>
                             <small class="error" i18n:translate="">Path must contain lowercase letters, numbers, hyphens, and/or dots followed by slash, then any other characters</small>
                         </div>

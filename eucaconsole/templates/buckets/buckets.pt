@@ -211,11 +211,11 @@
                 <div class="controls-wrapper">
                     <label for="shared-object-path" class="left">
                         <span i18n:translate="">Object path</span>&nbsp;<span class="req">*</span>
+                        <span class="" i18n:attributes="title"
+                            title="Enter the full path to the object, including the bucket name">
+                            <i class="helptext-icon"></i>
+                        </span>
                     </label>
-                    <span class="helptext-icon" data-tooltip=""
-                        title="Enter the full path to the object, including the bucket name"
-                        i18n:attributes="title">
-                    </span>
                     <br/>
                     <div class="flex-space">
                         <div class="flex-column-0">
@@ -232,12 +232,6 @@
             </form>
             <a href="#" id="download-object-close-link" class="close-reveal-modal">&#215;</a>
         </div>
-        <!-- Object Download -->
-        <div>
-           <form id="download-object-fake-form" action="" method="post" target="_blank">
-           </form>
-        </div>
-
     </div>
 </div>
 

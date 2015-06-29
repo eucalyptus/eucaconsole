@@ -113,6 +113,7 @@
 .euca-split { #border-color: #e6e7e8 !important; width: 2.0rem !important; }
 
 .secondary .euca-split { border-color: #5a5a5a !important; }
+.secondary .euca-split:hover { border-color: #006699 !important; }
 
 .split.button { padding-right: 3.0rem !important; }
 
