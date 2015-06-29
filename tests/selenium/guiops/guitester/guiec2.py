@@ -373,8 +373,20 @@ class GuiEC2(GuiTester):
         DeleteVolumeModal(self).delete_volume()
         VolumeView(self).verify_volume_status_is_deleted(volume_id, timeout_in_seconds)
 
-    def delete_volume_from_detail_page(self, volume_id):
-        NotImplementedError()
+    def delete_volume_from_detail_page(self, volume_id, volume_name=None):
+        """
+        Navigates to volume detail page and deletes volume. Waits for volume state to become 'deleted' on landing page.
+        :param volume_id:
+        :param volume_name:
+        """
+        BasePage(self).goto_volumes_view_via_menu()
+        VolumeView(self).goto_volume_detail_page_via_actions(volume_id)
+        VolumeDetailPage(self).verify_volume_detail_page_loaded(volume_id, volume_name)
+        VolumeDetailPage(self).click_action_delete_volume_on_detail_page()
+        DeleteVolumeModal(self).delete_volume()
+        VolumeView(self).verify_volume_status_is_deleted(volume_id, 240)
+
+
 
     def create_snapshot_on_volumes_view_page(self, volume_id, snapshot_name, snapshot_description, timeout_in_seconds=240):
         """
