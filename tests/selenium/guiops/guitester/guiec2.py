@@ -403,7 +403,7 @@ class GuiEC2(GuiTester):
         DeleteVolumeModal(self).delete_volume()
         VolumeView(self).verify_volume_status_is_deleted(volume_id, 240)
 
-    def create_snapshot_on_volumes_view_page(self, volume_id, snapshot_name, snapshot_description, timeout_in_seconds=240):
+    def create_snapshot_on_volumes_view_page(self, volume_id, snapshot_name=None, snapshot_description=None, timeout_in_seconds=240):
         """
         Navigates to volumes view page and creates a snapshot of a volume.
         :param snapshot_name:
@@ -416,12 +416,12 @@ class GuiEC2(GuiTester):
         VolumeDetailPage(self).click_create_snapshot_from_volume_tile(volume_id)
         CreateSnapshotModal(self).create_snapshot(snapshot_name, snapshot_description)
         VolumeDetailPage(self).goto_detail_page_of_newly_created_snapshot(volume_id)
-        snapshot=SnapshotDetailPage(self).get_snapshot_name_and_id()
+        snapshot=SnapshotDetailPage(self).get_snapshot_name_and_id(snapshot_name)
         SnapshotDetailPage(self).verify_snapshot_status_is_completed(timeout_in_seconds)
         print snapshot
         return snapshot
 
-    def create_snapshot_on_volume_detail_page(self, volume_id, snapshot_name, snapshot_description, timeout_in_seconds=240):
+    def create_snapshot_on_volume_detail_page(self, volume_id, snapshot_name=None, snapshot_description=None, timeout_in_seconds=240):
         """
         Navigates to volume detail page and creates a snapshot.
         :param timeout_in_seconds:
@@ -434,7 +434,7 @@ class GuiEC2(GuiTester):
         VolumeDetailPage(self).click_create_snapshot_from_volume_tile(volume_id)
         CreateSnapshotModal(self).create_snapshot(snapshot_name, snapshot_description)
         VolumeDetailPage(self).goto_detail_page_of_newly_created_snapshot(volume_id)
-        snapshot=SnapshotDetailPage(self).get_snapshot_name_and_id()
+        snapshot=SnapshotDetailPage(self).get_snapshot_name_and_id(snapshot_name)
         SnapshotDetailPage(self).verify_snapshot_status_is_completed(timeout_in_seconds)
         print snapshot
         return snapshot
@@ -450,7 +450,7 @@ class GuiEC2(GuiTester):
         BasePage(self).goto_snapshots_view_via_menu()
         SnapshotView(self).click_create_snapshot_btn_on_view_page()
         CreateSnapshotPage(self).create_snapshot(volume_id=volume_id, snapshot_name=snapshot_name, snapshot_description=snapshot_description)
-        snapshot = SnapshotDetailPage(self).get_snapshot_name_and_id()
+        snapshot = SnapshotDetailPage(self).get_snapshot_name_and_id(snapshot_name)
         SnapshotDetailPage(self).verify_snapshot_status_is_completed(timeout_in_seconds)
         print snapshot
         return snapshot
@@ -466,7 +466,7 @@ class GuiEC2(GuiTester):
         BasePage(self).goto_dashboard_via_menu()
         Dashboard(self).click_create_snapshot_link()
         CreateSnapshotPage(self).create_snapshot(volume_id=volume_id, snapshot_name=snapshot_name, snapshot_description=snapshot_description)
-        snapshot = SnapshotDetailPage(self).get_snapshot_name_and_id()
+        snapshot = SnapshotDetailPage(self).get_snapshot_name_and_id(snapshot_name)
         SnapshotDetailPage(self).verify_snapshot_status_is_completed(timeout_in_seconds)
         print snapshot
         return snapshot
