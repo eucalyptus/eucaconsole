@@ -38,5 +38,15 @@
             $('#euca-logout-form').submit();
         });
 
+        // set active selection in nav
+        var path = window.location.pathname;
+        var screen = '';
+        if (path === '') {
+            screen = 'dashboard';
+        }
+        else {
+            screen = path.substring(1);
+        }
+        $('ul.off-canvas-list').find("."+screen).addClass('active');
     });
 })(jQuery);

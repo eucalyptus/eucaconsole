@@ -1919,21 +1919,50 @@ footer .copyright { font-size: 0.9em; }
   #logobar #offcanvas-icon { left: 0px; display: inline-block !important; margin-right: 12px; }
   #logobar #user-dropdown-section { position: relative; left: -10px; }
   #navbar { display: none; } }
-#nav-drop ul { list-style-type: none; }
-#nav-drop ul .dropdown { margin-bottom: 0.5rem; }
-#nav-drop ul li a { padding: 0.125rem; }
+div.left-off-canvas-menu { z-index: 999999 !important; background-color: white; border-style: solid; border-width: 0 1px 0 0; border-color: #cccccc; }
 
-div.left-off-canvas-menu { z-index: 999999 !important; color: white; background-color: white; border-style: solid; border-width: 0 1px 0 0; border-color: #cccccc; }
+ul.off-canvas-list { list-style-type: none; padding-left: 0.5rem; }
+ul.off-canvas-list li a { background-color: white; color: #5a5a5a; padding-left: 2.5rem; line-height: 1.5rem; border-bottom: 0; position: static; }
+ul.off-canvas-list li a:hover { background-color: #f2f2f2; color: #006699; }
+ul.off-canvas-list li i.icon { position: absolute; margin-top: 0.5rem; height: 2rem; width: 2rem; }
+ul.off-canvas-list li i.icon.accounts { background-image: url(../img/nav/Accounts.svg); }
+ul.off-canvas-list li i.icon.accounts.active { background-image: url(../img/nav/Accounts_Active_40x40.svg); }
+ul.off-canvas-list li i.icon.buckets { background-image: url(../img/nav/Bucket.svg); }
+ul.off-canvas-list li i.icon.buckets.active { background-image: url(../img/nav/Bucket_Active.svg); }
+ul.off-canvas-list li i.icon.dashboard { background-image: url(../img/nav/Dashboard.svg); }
+ul.off-canvas-list li i.icon.dashboard.active { background-image: url(../img/nav/Dashboard_Active.svg); }
+ul.off-canvas-list li i.icon.ipaddresses { background-image: url(../img/nav/Elastic-IP.svg); }
+ul.off-canvas-list li i.icon.ipaddresses.active { background-image: url(../img/nav/Elastic-IP_Active.svg); }
+ul.off-canvas-list li i.icon.groups { background-image: url(../img/nav/Groups.svg); }
+ul.off-canvas-list li i.icon.groups.active { background-image: url(../img/nav/Groups_Active.svg); }
+ul.off-canvas-list li i.icon.images { background-image: url(../img/nav/Images.svg); }
+ul.off-canvas-list li i.icon.images.active { background-image: url(../img/nav/Images_Active.svg); }
+ul.off-canvas-list li i.icon.instances { background-image: url(../img/nav/Instances.svg); }
+ul.off-canvas-list li i.icon.instances.active { background-image: url(../img/nav/Instances_Active.svg); }
+ul.off-canvas-list li i.icon.keypairs { background-image: url(../img/nav/Key-Pairs.svg); }
+ul.off-canvas-list li i.icon.keypairs.active { background-image: url(../img/nav/Key-Pairs_Active.svg); }
+ul.off-canvas-list li i.icon.launchconfigs { background-image: url(../img/nav/Launch-configs.svg); }
+ul.off-canvas-list li i.icon.launchconfigs.active { background-image: url(../img/nav/Launch-configs_Active.svg); }
+ul.off-canvas-list li i.icon.loadbalancers { background-image: url(../img/nav/Load-Balance.svg); }
+ul.off-canvas-list li i.icon.loadbalancers.active { background-image: url(../img/nav/Load-Balance_Active.svg); }
+ul.off-canvas-list li i.icon.roles { background-image: url(../img/nav/Roles.svg); }
+ul.off-canvas-list li i.icon.roles.active { background-image: url(../img/nav/Roles_Active.svg); }
+ul.off-canvas-list li i.icon.scalinggroups { background-image: url(../img/nav/Auto-Scaling-Groups.svg); }
+ul.off-canvas-list li i.icon.scalinggroups.active { background-image: url(../img/nav/Auto-Scaling-Groups_Active.svg); }
+ul.off-canvas-list li i.icon.securitygroups { background-image: url(../img/nav/Security.svg); }
+ul.off-canvas-list li i.icon.securitygroups.active { background-image: url(../img/nav/Security_Active.svg); }
+ul.off-canvas-list li i.icon.snapshots { background-image: url(../img/nav/Snapshots.svg); }
+ul.off-canvas-list li i.icon.snapshots-active { background-image: url(../img/nav/Snapshots_Active.svg); }
+ul.off-canvas-list li i.icon.stacks { background-image: url(../img/nav/stacks.svg); }
+ul.off-canvas-list li i.icon.stacks.active { background-image: url(../img/nav/stacks_Active.svg); }
+ul.off-canvas-list li i.icon.users { background-image: url(../img/nav/Users.svg); }
+ul.off-canvas-list li i.icon.users.active { background-image: url(../img/nav/Users_Active.svg); }
+ul.off-canvas-list li i.icon.vmtypes { background-image: url(../img/nav/VM-Types.svg); }
+ul.off-canvas-list li i.icon.vmtypes.active { background-image: url(../img/nav/VM-Types_Active.svg); }
+ul.off-canvas-list li i.icon.volumes { background-image: url(../img/nav/Volumes.svg); }
+ul.off-canvas-list li i.icon.volumes.active { background-image: url(../img/nav/Volumes_Active.svg); }
+ul.off-canvas-list label { background-color: white; color: #5a5a5a; padding-top: 1.0rem; border-top: 0; }
 
-ul.off-canvas-list { padding-left: 0.5rem; }
-ul.off-canvas-list li label { background-color: white; color: #5a5a5a; padding-left: 0.5rem; border-top: 0; }
-ul.off-canvas-list li a { background-color: white; color: #5a5a5a; padding: 0.5rem; border-bottom: 0; }
-ul.off-canvas-list li a label { background-color: white; color: #5a5a5a; padding-left: 0.5rem; border-top: 0; }
-ul.off-canvas-list li a:hover:not(.nolink) { background-color: #f2f2f2; color: #006699; }
-ul.off-canvas-list li a.nolink:hover { background-color: white; color: #5a5a5a; }
-ul.off-canvas-list li .dropdown { background-color: white; margin-bottom: 0; }
-
-ul.bullet-list { list-style-type: none; }
 ul.bullet-list li:before { font-family: 'FontAwesome'; font-size: 0.9rem; content: '\f138'; margin: 0 5px 0 -15px; color: #007dba; }
 
 .columns.subheading { padding-left: 0.125rem; }
