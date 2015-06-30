@@ -962,6 +962,7 @@ class ELBHealthChecksView(BaseELBView):
         super(ELBHealthChecksView, self).__init__(request, **kwargs)
         with boto_error_handler(request):
             self.elb = elb or self.get_elb()
+            self.access_logs = self.elb_conn.get_lb_attribute(self.elb.name, 'accessLog')
             if not self.elb:
                 raise HTTPNotFound()
             self.elb_form = ELBHealthChecksForm(
@@ -972,6 +973,7 @@ class ELBHealthChecksView(BaseELBView):
             elb_form=self.elb_form,
             escaped_elb_name=quote(self.elb.name) if self.elb else '',
             delete_form=ELBDeleteForm(self.request, formdata=self.request.params or None),
+            controller_options_json=self.get_controller_options_json()
         )
 
     @view_config(route_name='elb_healthchecks', renderer=TEMPLATE)
@@ -994,6 +996,11 @@ class ELBHealthChecksView(BaseELBView):
         else:
             self.request.error_messages = self.elb_form.get_errors_list()
         return self.render_dict
+
+    def get_controller_options_json(self):
+        return BaseView.escape_json(json.dumps({
+            'logging_enabled': self.access_logs.enabled if self.elb else False,
+        }))
 
 
 class ELBMonitoringView(BaseELBView):

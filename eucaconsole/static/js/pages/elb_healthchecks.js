@@ -5,26 +5,34 @@
  */
 
 angular.module('ELBHealthChecksPage', ['EucaConsoleUtils'])
-    .controller('ELBHealthChecksPageCtrl', function ($scope, eucaHandleUnsavedChanges) {
+    .controller('ELBHealthChecksPageCtrl', function ($scope, eucaHandleUnsavedChanges, eucaUnescapeJson) {
         $scope.isNotChanged = true;
         $scope.pingPathRequired = false;
-        $scope.initController = function () {
-            $scope.setInitialValues();
+        $scope.loggingEnabled = false;
+        $scope.initController = function (optionsJson) {
+            var options = JSON.parse(eucaUnescapeJson(optionsJson));
+            $scope.setInitialValues(options);
             $scope.setWatch();
         };
-        $scope.setInitialValues = function () {
+        $scope.setInitialValues = function (options) {
             $scope.pingProtocol = $('#ping_protocol').val();
             $scope.pingPort = parseInt($('#ping_port').val() || 80, 10);
             $scope.pingPath = $('#ping_path').val();
             if ($scope.pingProtocol === 'HTTP' || $scope.pingProtocol === 'HTTPS') {
                 $scope.pingPathRequired = true;
             }
+            $scope.loggingEnabled = options.logging_enabled;
         };
         $scope.setWatch = function () {
             eucaHandleUnsavedChanges($scope);
             $scope.$watch('pingProtocol', function (newVal) {
                 $scope.updatePingPort(newVal);
                 $scope.updatePingPath();
+            });
+            $scope.$watch('loggingEnabled', function (newVal, oldVal) {
+                if (newVal !== oldVal) {
+                    $scope.isNotChanged = false;
+                }
             });
             $(document).on('input', 'input', function () {
                 $scope.isNotChanged = false;

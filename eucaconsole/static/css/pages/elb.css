@@ -174,3 +174,4 @@ select[name="time_between_pings"] { width: 100px; }
 
 #access-logs-wrapper { margin-left: 1.5rem; }
 #access-logs-wrapper #bucket_name, #access-logs-wrapper #bucket_prefix, #access-logs-wrapper #collection_interval { width: 12rem; }
+#access-logs-wrapper p { margin-bottom: 0.5rem; }

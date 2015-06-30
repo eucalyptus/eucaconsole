@@ -206,15 +206,15 @@ class ELBHealthChecksForm(BaseSecureForm):
             self.response_timeout.data = self.elb.health_check.timeout
             self.failures_until_unhealthy.data = str(self.elb.health_check.unhealthy_threshold)
             self.passes_until_healthy.data = str(self.elb.health_check.healthy_threshold)
-            self.set_access_logs_data()
+            self.set_initial_access_logs_data()
 
-    def set_access_logs_data(self):
+    def set_initial_access_logs_data(self):
         if not self.kwargs.get('formdata'):
             access_logs = self.elb_conn.get_lb_attribute(self.elb.name, 'accessLog')
             self.logging_enabled.data = access_logs.enabled
             self.bucket_name.data = access_logs.s3_bucket_name
             self.bucket_prefix.data = access_logs.s3_bucket_prefix
-            self.collection_interval.data = access_logs.emit_interval
+            self.collection_interval.data = '60' if access_logs.emit_interval == 60 else '5'
 
     def set_health_check_error_messages(self):
         self.ping_path.error_msg = self.ping_path_error_msg
