@@ -230,7 +230,7 @@ class RoleView(BaseView):
                 profiles = self.conn.list_instance_profiles()
                 profiles = profiles.list_instance_profiles_response.list_instance_profiles_result.instance_profiles
                 profile_arns = [profile.arn for profile in profiles if
-                                profile.roles.member.role_name == self.role.role_name]
+                                profile.roles and profile.roles.member.role_name == self.role.role_name]
                 instances = self.get_connection().get_only_instances(filters={'iam-instance-profile.arn': profile_arns})
                 for instance in instances:
                     instance.name = TaggedItemView.get_display_name(instance)
