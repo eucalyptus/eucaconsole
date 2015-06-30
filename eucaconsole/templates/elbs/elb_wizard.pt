@@ -48,13 +48,13 @@
                             </div>
                             <hr />
                             <div>
-                                 ${panel('elb_listener_editor', protocol_list=protocol_list)}
-                                 <div id="hidden_certificate_arn_input_div" class="hide">
-                                     <input type='hidden' id="hidden_certificate_arn_input" name='certificate_arn'/> 
-                                 </div>
-                                 <div id="hidden_backend_certificates_input_div">
-                                     <textarea id="hidden_backend_certificates" name="backend_certificates" class="hidden" style="height: 8rem;"></textarea>
-                                 </div>
+                                ${panel('elb_listener_editor', protocol_list=protocol_list)}
+                                <div id="hidden_certificate_arn_input_div" class="hide">
+                                    <input type="hidden" id="hidden_certificate_arn_input" name="certificate_arn" />
+                                </div>
+                                <div id="hidden_backend_certificates_input_div">
+                                    <textarea id="hidden_backend_certificates" name="backend_certificates" class="hidden"></textarea>
+                                </div>
                             </div>
                             <hr />
                             <div>

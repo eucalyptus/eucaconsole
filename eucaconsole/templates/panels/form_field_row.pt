@@ -1,6 +1,6 @@
 
 <!--! Form field row -->
-<div class="row ${'inline' if inline else 'block'} controls-wrapper" id="controls_${field.name}">
+<div class="row ${'inline' if inline else 'block'} ${'stacked' if stack_label else ''} controls-wrapper" id="controls_${field.name}">
     <div tal:condition="not:reverse" tal:omit-tag="">
         <div class="large-${leftcol_width_large} small-${leftcol_width} columns" tal:condition="leftcol_width">
             <label class="${'right' if inline else 'left'}">

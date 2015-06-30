@@ -39,6 +39,7 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
             if ($('#elb-listener').length > 0) {
                 $scope.elbListenerTextarea = $('#elb-listener');
             }
+            $scope.certificateRequiredNotice = options.certificate_required_notice;
             $scope.protocolList = []; 
             $scope.toProtocolList = []; 
             $scope.protocolList.push({'name': 'Select...', 'value': 'None', 'port': ''});
@@ -137,6 +138,15 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
                 $scope.serverCertificateName = name;
                 $scope.handleEventUseThisCertificate();
             });
+            $(document).on('opened.fndtn.reveal', '#select-certificate-modal', function () {
+                // Ensure new certificate radio button is selected when no existing SSL certs are available
+                var modal = $(this),
+                    existingRadioBtn = modal.find('#certificate-type-radio-existing'),
+                    newRadioBtn = modal.find('#certificate-type-radio-new');
+                if (!existingRadioBtn.is(':visible')) {
+                    newRadioBtn.click();
+                }
+            });
         };
         // In case of the duplicated listener, add the 'disabled' class to the button
         $scope.setAddListenerButtonClass = function () {
@@ -176,10 +186,10 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
             return;
         };
         $scope.compareListeners = function (block1, block2) {
-            if (block1.fromPort == block2.fromPort &&
-                block1.toPort == block2.toPort &&
-                block1.fromProtocol.value == block2.fromProtocol.value &&
-                block1.toProtocol.value == block2.toProtocol.value) {
+            if (block1.fromPort === block2.fromPort &&
+                block1.toPort === block2.toPort &&
+                block1.fromProtocol.value === block2.fromProtocol.value &&
+                block1.toProtocol.value === block2.toProtocol.value) {
                 return true;
             }
             return false;
@@ -189,7 +199,7 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
                 'fromProtocol': $scope.fromProtocol.value,
                 'fromPort': $scope.fromPort,
                 'toProtocol': $scope.toProtocol.value,
-                'toPort': $scope.toPort,
+                'toPort': $scope.toPort
             };
             if (block.fromProtocol === 'HTTPS' || block.fromProtocol === 'SSL') {
                 block.certificateARN = $scope.serverCertificateARN;
@@ -203,16 +213,29 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
                     'fromProtocol': listener.protocol,
                     'fromPort': listener.from_port,
                     'toProtocol': listener.protocol,
-                    'toPort': listener.to_port,
+                    'toPort': listener.to_port
                 };
+                if (!!listener.certificate_id) {
+                    block.certificateId = listener.certificate_id;
+                }
+                if (!!listener.backend_policies && listener.backend_policies.length) {
+                    block.backendPolicies = listener.backend_policies;
+                }
                 $scope.listenerArray.push(block);
             });
         };
         $scope.addListener = function ($event) {
             $event.preventDefault();
-            $scope.checkAddListenerButtonCondition(); 
+            $scope.checkAddListenerButtonCondition();
             // timeout is needed for all DOM updates and validations to be complete
             $timeout(function () {
+                // Prevent adding HTTPS/SSL listener w/o certificate configured
+                if ($scope.fromProtocol.value === 'HTTPS' || $scope.fromProtocol.value === 'SSL') {
+                    if (!$scope.pruneCertificateLabel($scope.certificateARN) && !$scope.pruneCertificateLabel($scope.certificateName)) {
+                        alert($scope.certificateRequiredNotice);
+                        return false;
+                    }
+                }
                 if ($scope.isListenerNotComplete === true ||
                     $scope.hasDuplicatedFromPort === true ||
                     $scope.hasDuplicatedListener === true) {
@@ -265,7 +288,6 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
             if ($scope.isListenerNotComplete === false) {
                 $scope.checkFromPortInputCondition();
                 $scope.checkToPortInputCondition();
-                $scope.checkForDuplicatedListeners();
             }
         };
         // Return the matching port given the protocol name
@@ -366,12 +388,13 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
             }
             return false;
         };
-        $scope.openCertificateModal = function (fromProtocol, toProtocol, fromPort, toPort) {
+        $scope.openCertificateModal = function (fromProtocol, toProtocol, fromPort, toPort, existingCertId) {
             var certificateTab = 'SSL';
             if (fromProtocol !== 'HTTPS' && fromProtocol !== 'SSL') {
                 certificateTab = 'BACKEND';
             }
-            $scope.$emit('eventOpenSelectCertificateModal', fromProtocol, toProtocol, fromPort, toPort, certificateTab);
+            $scope.$emit('eventOpenSelectCertificateModal', fromProtocol, toProtocol, fromPort, toPort,
+                certificateTab, existingCertId);
         };
         $scope.handleEventUseThisCertificate = function () {
             angular.forEach($scope.listenerArray, function (block) {
@@ -383,6 +406,15 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
                     $scope.$emit('eventUpdateListenerArray', $scope.listenerArray);
                 }
             });
+        };
+        $scope.pruneCertificateLabel = function (certLabel) {
+            if (!certLabel || certLabel === 'None' || certLabel === 'Select...') {
+                return '';
+            }
+            var certArray = certLabel.split('/');
+            if (certArray.length > 1) {
+                return certArray[certArray.length -1];
+            }
         };
     })
 ;

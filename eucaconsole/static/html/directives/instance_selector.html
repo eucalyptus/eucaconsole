@@ -20,8 +20,8 @@
                         <a ng-href="/instances/{{ instance.id }}">{{ instance.name }}</a>
                     </span>
                 </td>
-                <td><span>{{ instance.tags }}</span></td>
-                <td><span>{{ instance.placement }}</span></td>
+                <td class="breakall">{{ instance.tags }}</td>
+                <td>{{ instance.placement }}</td>
                 <td ng-if="isVPCSupported">
                     <span ng-show="instance.vpc_name != ''">
                         {{ instance.vpc_subnet_display }} | {{ instance.vpc_name }}
