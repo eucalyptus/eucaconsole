@@ -471,12 +471,27 @@ class GuiEC2(GuiTester):
         print snapshot
         return snapshot
 
-    def delete_snapshot_from_landing_page(self):
-        NotImplementedError()
-
-    def delete_snapshot_from_detail_page(self, snapshot_id, snapshot_name=None):
+    def delete_snapshot_from_landing_page(self, snapshot_id):
+        """
+        Navigates to landing page, deletes snapshot, verifies snapshot is gone from landing page.
+        :param snapshot_id:
+        """
         BasePage(self).goto_snapshots_view_via_menu()
         SnapshotView(self).click_action_delete_snapshot_on_view_page(snapshot_id)
+        DeleteSnapshotModal(self).delete_snapshot()
+        SnapshotView(self).verify_snapshot_not_present(snapshot_id)
+
+    def delete_snapshot_from_detail_page(self, snapshot_id):
+        """
+        Navigates to detail page, deletes snapshot, verifies snapshot is gone from landing page.
+        :param snapshot_id:
+        """
+        BasePage(self).goto_snapshots_view_via_menu()
+        SnapshotView(self).goto_snapshot_detail_page_via_link(snapshot_id)
+        SnapshotDetailPage(self).click_action_delete_snapshot_on_detail_page()
+        DeleteSnapshotModal(self).delete_snapshot()
+        SnapshotView(self).verify_snapshot_not_present(snapshot_id)
+
 
     def delete_snapshot_from_tab_on_volume_detail_page(self):
         NotImplementedError()

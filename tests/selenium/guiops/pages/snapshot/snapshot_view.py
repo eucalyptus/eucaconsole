@@ -64,3 +64,6 @@ class SnapshotView(ViewPage):
     def verify_there_are_no_completed_snapshots(self):
         self.tester.send_keys_by_css(ViewPage(self)._search_input_field_css, "completed")
         self.tester.wait_for_text_present_by_css(ViewPage(self)._item_count_css,"0")
+
+    def verify_snapshot_not_present(self, snapshot_id):
+        self.tester.wait_for_element_not_present_by_id(self._snapshot_action_menu_id.format(snapshot_id))
