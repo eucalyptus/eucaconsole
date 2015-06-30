@@ -9,6 +9,7 @@ from pages.volume.volume_view import VolumeView
 from pages.volume.volume_detail import VolumeDetailPage
 from pages.snapshot.snapshot_detail import SnapshotDetailPage
 from pages.snapshot.snapshot_view import SnapshotView
+from pages.snapshot.create_snapshot import CreateSnapshotPage
 from pages.instance.instancedetail import InstanceDetailPage
 from pages.image.image_view import ImageView
 from pages.security_group.security_group_view import SecurityGroupView
@@ -378,7 +379,6 @@ class GuiEC2(GuiTester):
         print volume
         return volume
 
-
     def delete_volume_from_view_page(self, volume_id, timeout_in_seconds=240):
         """
         Navigates to volumes view page and deletes volume.
@@ -401,7 +401,6 @@ class GuiEC2(GuiTester):
         VolumeDetailPage(self).click_action_delete_volume_on_detail_page()
         DeleteVolumeModal(self).delete_volume()
         VolumeView(self).verify_volume_status_is_deleted(volume_id, 240)
-
 
     def create_snapshot_on_volumes_view_page(self, volume_id, snapshot_name, snapshot_description, timeout_in_seconds=240):
         """
@@ -435,8 +434,16 @@ class GuiEC2(GuiTester):
         print snapshot
         return snapshot
 
-    def create_snapshot_on_snapshot_view_page(self):
-        NotImplementedError()
+    def create_snapshot_on_snapshot_view_page(self, volume_id, snapshot_name=None, snapshot_description=None, timeout_in_seconds=240):
+        BasePage(self).goto_snapshots_view_via_menu()
+        SnapshotView(self).click_create_snapshot_btn_on_view_page()
+        CreateSnapshotPage(self).create_snapshot(volume_id=volume_id, snapshot_name=snapshot_name, snapshot_description=snapshot_description)
+        snapshot=SnapshotDetailPage(self).get_snapshot_name_and_id()
+        SnapshotDetailPage(self).verify_snapshot_status_is_completed(timeout_in_seconds)
+        print snapshot
+        return snapshot
+
+
 
     def create_snapshot_from_dashboard(self):
         NotImplementedError()
