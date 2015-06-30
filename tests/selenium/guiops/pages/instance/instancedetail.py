@@ -25,10 +25,10 @@ class InstanceDetailPage(DetailPage):
         self.tester.click_element_by_id(self._terminate_instance_action_item_id)
 
     def verify_instance_is_in_running_state(self):
-        self.tester.wait_for_visible_by_css(self._instance_status_css.format("running"))
+        self.tester.wait_for_visible_by_css(self._instance_status_css.format("running"), 240)
 
     def verify_instance_is_terminated(self):
-        self.tester.wait_for_visible_by_css(self._instance_status_css.format("terminated"))
+        self.tester.wait_for_visible_by_css(self._instance_status_css.format("terminated"), 240)
 
     def click_action_launch_more_like_this(self):
         self.tester.click_element_by_css(DetailPage(self)._actions_menu_css)

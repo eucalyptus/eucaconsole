@@ -6,7 +6,7 @@ class SnapshotView(ViewPage):
         self.tester = tester
         self.verify_snapshot_view_page_loaded()
 
-    _snapshot_view_page_title = "Volumes"
+    _snapshot_view_page_title = "Snapshots"
     _create_snapshot_button_id = "create-snapshot-btn"
     _snapshot_action_menu_id = "table-item-dropdown_{0}"  #snapshot_id required
     _delete_snapshot_actions_menu_item_css = "#item-dropdown_{0}>li:nth-of-type(4)>a"  #snapshot_id required
@@ -64,3 +64,6 @@ class SnapshotView(ViewPage):
     def verify_there_are_no_completed_snapshots(self):
         self.tester.send_keys_by_css(ViewPage(self)._search_input_field_css, "completed")
         self.tester.wait_for_text_present_by_css(ViewPage(self)._item_count_css,"0")
+
+    def verify_snapshot_not_present(self, snapshot_id):
+        self.tester.wait_for_element_not_present_by_id(self._snapshot_action_menu_id.format(snapshot_id))

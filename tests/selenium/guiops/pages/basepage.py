@@ -29,6 +29,7 @@ class BasePage(SeleniumApi):
     _iam_users_menuitem_id = "resource-menuitem-groups"
     _iam_roles_menuitem_id = "resource-menuitem-roles"
     _notification_id="notifications"
+    _page_title_id = "pagetitle"
 
     def __init__(self, tester):
         self.tester = tester
