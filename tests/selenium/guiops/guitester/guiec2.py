@@ -492,7 +492,6 @@ class GuiEC2(GuiTester):
         DeleteSnapshotModal(self).delete_snapshot()
         SnapshotView(self).verify_snapshot_not_present(snapshot_id)
 
-
     def delete_snapshot_from_tab_on_volume_detail_page(self):
         NotImplementedError()
 

@@ -6,7 +6,7 @@ class SnapshotView(ViewPage):
         self.tester = tester
         self.verify_snapshot_view_page_loaded()
 
-    _snapshot_view_page_title = "Volumes"
+    _snapshot_view_page_title = "Snapshots"
     _create_snapshot_button_id = "create-snapshot-btn"
     _snapshot_action_menu_id = "table-item-dropdown_{0}"  #snapshot_id required
     _delete_snapshot_actions_menu_item_css = "#item-dropdown_{0}>li:nth-of-type(4)>a"  #snapshot_id required
