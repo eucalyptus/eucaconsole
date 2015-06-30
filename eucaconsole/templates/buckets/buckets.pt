@@ -180,7 +180,7 @@
             </p>
             <form id="open-shared-form" data-abide="abide">
                 <div class="controls-wrapper">
-                    <label for="shared-bucket-name" class="left">
+                    <label class="left">
                         <span i18n:translate="">Bucket name</span>&nbsp;<span class="req">*</span>
                     </label>
                     <br/>
@@ -209,7 +209,7 @@
             </p>
             <form id="download-object-form" data-abide="abide">
                 <div class="controls-wrapper">
-                    <label for="shared-object-path" class="left">
+                    <label class="left">
                         <span i18n:translate="">Object path</span>&nbsp;<span class="req">*</span>
                         <span class="" i18n:attributes="title"
                             title="Enter the full path to the object, including the bucket name">
