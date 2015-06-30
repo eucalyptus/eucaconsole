@@ -37,7 +37,7 @@ from urllib import quote
 import boto.utils
 
 from boto.ec2.elb import HealthCheck
-from boto.ec2.elb.attributes import ConnectionSettingAttribute
+from boto.ec2.elb.attributes import ConnectionSettingAttribute, AccessLogAttribute
 from boto.exception import BotoServerError
 
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound
@@ -48,7 +48,7 @@ from ..constants.cloudwatch import (
     METRIC_TITLE_MAPPING,
     STATISTIC_CHOICES)
 from ..constants.elbs import (
-    ELB_MONITORING_CHARTS_LIST, ELB_BACKEND_CERTIFICATE_NAME_PREFIX,
+    ELB_MONITORING_CHARTS_LIST, ELB_BACKEND_CERTIFICATE_NAME_PREFIX, ELB_ACCESS_LOGS_BUCKET_PREFIX_NAME_PREFIX,
     ELB_PREDEFINED_SECURITY_POLICY_NAME_PREFIX, ELB_CUSTOM_SECURITY_POLICY_NAME_PREFIX
 )
 from ..forms import ChoicesManager
@@ -303,6 +303,36 @@ class BaseELBView(TaggedItemView):
             target=ping_target
         )
         self.elb_conn.configure_health_check(name, health_check)
+
+    def configure_access_logs(self, elb_name=None, elb=None):
+        req_params = self.request.params
+        params_logging_enabled = req_params.get('logging_enabled') == 'y'
+        params_bucket_name = req_params.get('bucket_name')
+        params_bucket_prefix = req_params.get('bucket_prefix')
+        params_collection_interval = int(req_params.get('collection_interval', 60))
+        if elb is not None:
+            existing_access_log = self.elb_conn.get_lb_attribute(elb.name, 'accessLog')
+            unchanged_conditions = [
+                existing_access_log.enabled == params_logging_enabled,
+                existing_access_log.s3_bucket_name == params_bucket_name,
+                existing_access_log.s3_bucket_prefix == params_bucket_prefix,
+                existing_access_log.emit_interval == params_collection_interval,
+            ]
+            if all(unchanged_conditions):
+                return None  # Skip if nothing has changed in the ELB's access log config
+        # Set Access Logs
+        elb_name = elb.name if elb is not None else elb_name
+        bucket_prefix = params_bucket_prefix or self.generate_bucket_prefix(elb_name)
+        new_access_log_config = AccessLogAttribute()
+        new_access_log_config.enabled = params_logging_enabled
+        new_access_log_config.s3_bucket_name = params_bucket_name
+        new_access_log_config.s3_bucket_prefix = bucket_prefix
+        new_access_log_config.emit_interval = params_collection_interval
+        self.elb_conn.modify_lb_attribute(elb_name, 'accessLog', new_access_log_config)
+
+    @staticmethod
+    def generate_bucket_prefix(elb_name):
+        return '{0}-{1}'.format(ELB_ACCESS_LOGS_BUCKET_PREFIX_NAME_PREFIX, elb_name)
 
     def handle_backend_certificate_create(self, elb_name):
         if self.cloud_type == 'aws':
@@ -934,7 +964,8 @@ class ELBHealthChecksView(BaseELBView):
             self.elb = elb or self.get_elb()
             if not self.elb:
                 raise HTTPNotFound()
-            self.elb_form = ELBHealthChecksForm(self.request, elb=self.elb, formdata=self.request.params or None)
+            self.elb_form = ELBHealthChecksForm(
+                self.request, elb_conn=self.elb_conn, elb=self.elb, formdata=self.request.params or None)
         self.render_dict = dict(
             elb=self.elb,
             elb_name=self.escape_braces(self.elb.name) if self.elb else '',
@@ -955,6 +986,7 @@ class ELBHealthChecksView(BaseELBView):
             template = u'{0} {1} - {2}'.format(prefix, self.elb.name, '{0}')
             with boto_error_handler(self.request, location, template):
                 self.configure_health_checks(self.elb.name)
+                self.configure_access_logs(elb=self.elb)
                 prefix = _(u'Successfully updated health checks for')
                 msg = u'{0} {1}'.format(prefix, self.elb.name)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
@@ -1105,6 +1137,7 @@ class CreateELBView(BaseELBView):
                     self.handle_backend_certificate_create(name)
                 self.add_elb_tags(name)
                 self.set_security_policy(name)
+                self.configure_access_logs(elb_name=name)
                 prefix = _(u'Successfully created elastic load balancer')
                 msg = u'{0} {1}'.format(prefix, name)
                 location = self.request.route_path('elbs')

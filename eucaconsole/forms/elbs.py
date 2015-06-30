@@ -183,19 +183,21 @@ class ELBHealthChecksForm(BaseSecureForm):
     bucket_prefix = TextEscapedField(label=_(u'Prefix'))
     collection_interval = wtforms.SelectField(
         label=_(u'Collection interval'),
-        validators=[BucketInfoRequired()],
     )
 
-    def __init__(self, request, elb=None, **kwargs):
+    def __init__(self, request, elb_conn=None, elb=None, **kwargs):
         super(ELBHealthChecksForm, self).__init__(request, **kwargs)
+        self.elb_conn = elb_conn
         self.elb = elb
+        self.kwargs = kwargs
         self.set_health_check_initial_data()
         self.set_health_check_choices()
         self.set_health_check_error_messages()
         self.set_health_check_help_text()
 
     def set_health_check_initial_data(self):
-        if self.elb:
+        if self.elb is not None:
+            # Set health check initial data
             hc_data = self.get_health_check_data()
             self.ping_protocol.data = hc_data.get('ping_protocol')
             self.ping_port.data = int(hc_data.get('ping_port', 80))
@@ -204,6 +206,15 @@ class ELBHealthChecksForm(BaseSecureForm):
             self.response_timeout.data = self.elb.health_check.timeout
             self.failures_until_unhealthy.data = str(self.elb.health_check.unhealthy_threshold)
             self.passes_until_healthy.data = str(self.elb.health_check.healthy_threshold)
+            self.set_access_logs_data()
+
+    def set_access_logs_data(self):
+        if not self.kwargs.get('formdata'):
+            access_logs = self.elb_conn.get_lb_attribute(self.elb.name, 'accessLog')
+            self.logging_enabled.data = access_logs.enabled
+            self.bucket_name.data = access_logs.s3_bucket_name
+            self.bucket_prefix.data = access_logs.s3_bucket_prefix
+            self.collection_interval.data = access_logs.emit_interval
 
     def set_health_check_error_messages(self):
         self.ping_path.error_msg = self.ping_path_error_msg
@@ -258,8 +269,8 @@ class ELBHealthChecksForm(BaseSecureForm):
     @staticmethod
     def get_collection_interval_choices():
         return [
-            (60, _(u'60 minutes')),
-            (5, _(u'5 minutes')),
+            (u'60', _(u'60 minutes')),
+            (u'5', _(u'5 minutes')),
         ]
 
 
