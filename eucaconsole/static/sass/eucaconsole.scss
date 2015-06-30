@@ -686,6 +686,7 @@ form {
         }
         &.stack-label {
             margin-bottom: 4px;
+            white-space: nowrap;
         }
     }
     label.reverse {

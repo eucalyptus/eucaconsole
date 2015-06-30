@@ -173,9 +173,8 @@ class ELBHealthChecksForm(BaseSecureForm):
     logging_enabled = wtforms.BooleanField(label=_(u'Enable logging'))
     bucket_name_error_msg = _(u'Bucket name is required')
     bucket_name_help_text = _(u'Choose from your existing buckets, or enter a name to create a new bucket.')
-    bucket_name = TextEscapedField(
+    bucket_name = wtforms.SelectField(
         label=_(u'Bucket name'),
-        validators=[BucketInfoRequired(message=bucket_name_error_msg)],
     )
     bucket_prefix_help_text = _(
         u"The path to your log file within the bucket. "
@@ -185,8 +184,10 @@ class ELBHealthChecksForm(BaseSecureForm):
         label=_(u'Collection interval'),
     )
 
-    def __init__(self, request, elb_conn=None, elb=None, **kwargs):
+    def __init__(self, request, s3_conn=None, elb_conn=None, elb=None, **kwargs):
         super(ELBHealthChecksForm, self).__init__(request, **kwargs)
+        self.s3_conn = s3_conn
+        self.s3_choices_manager = ChoicesManager(conn=s3_conn)
         self.elb_conn = elb_conn
         self.elb = elb
         self.kwargs = kwargs
@@ -206,9 +207,9 @@ class ELBHealthChecksForm(BaseSecureForm):
             self.response_timeout.data = self.elb.health_check.timeout
             self.failures_until_unhealthy.data = str(self.elb.health_check.unhealthy_threshold)
             self.passes_until_healthy.data = str(self.elb.health_check.healthy_threshold)
-            self.set_initial_access_logs_data()
+            self.set_access_logs_initial_data()
 
-    def set_initial_access_logs_data(self):
+    def set_access_logs_initial_data(self):
         if not self.kwargs.get('formdata'):
             access_logs = self.elb_conn.get_lb_attribute(self.elb.name, 'accessLog')
             self.logging_enabled.data = access_logs.enabled
@@ -226,6 +227,7 @@ class ELBHealthChecksForm(BaseSecureForm):
         self.failures_until_unhealthy.choices = self.get_failures_until_unhealthy_choices()
         self.passes_until_healthy.choices = self.get_passes_until_healthy_choices()
         self.collection_interval.choices = self.get_collection_interval_choices()
+        self.bucket_name.choices = self.s3_choices_manager.buckets()
 
     def set_health_check_help_text(self):
         self.bucket_name.help_text = self.bucket_name_help_text

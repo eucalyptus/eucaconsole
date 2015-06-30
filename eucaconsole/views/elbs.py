@@ -233,12 +233,13 @@ class LbTagSet(dict):
 class BaseELBView(TaggedItemView):
     """Base view for ELB detail page tabs/views"""
 
-    def __init__(self, request, elb_conn=None, **kwargs):
+    def __init__(self, request, elb_conn=None, s3_conn=None, **kwargs):
         super(BaseELBView, self).__init__(request, **kwargs)
         self.request = request
         self.ec2_conn = self.get_connection()
         self.iam_conn = self.get_connection(conn_type='iam')
         self.elb_conn = elb_conn or self.get_connection(conn_type='elb')
+        self.s3_conn = s3_conn or self.get_connection(conn_type='s3')
         self.autoscale_conn = self.get_connection(conn_type='autoscale')
         self.vpc_conn = self.get_connection(conn_type='vpc')
         self.is_vpc_supported = BaseView.is_vpc_supported(request)
@@ -966,7 +967,8 @@ class ELBHealthChecksView(BaseELBView):
             if not self.elb:
                 raise HTTPNotFound()
             self.elb_form = ELBHealthChecksForm(
-                self.request, elb_conn=self.elb_conn, elb=self.elb, formdata=self.request.params or None)
+                self.request, s3_conn=self.s3_conn, elb_conn=self.elb_conn, elb=self.elb,
+                formdata=self.request.params or None)
         self.render_dict = dict(
             elb=self.elb,
             elb_name=self.escape_braces(self.elb.name) if self.elb else '',
@@ -1041,8 +1043,10 @@ class CreateELBView(BaseELBView):
 
     def __init__(self, request):
         super(CreateELBView, self).__init__(request)
+        # Note: CreateELBForm contains (inherits from) ELBHealthChecksForm
         self.create_form = CreateELBForm(
-            self.request, conn=self.ec2_conn, vpc_conn=self.vpc_conn, formdata=self.request.params or None)
+            self.request, conn=self.ec2_conn, vpc_conn=self.vpc_conn, s3_conn=self.s3_conn,
+            formdata=self.request.params or None)
         self.certificate_form = CertificateForm(
             self.request, conn=self.ec2_conn, iam_conn=self.iam_conn, elb_conn=self.elb_conn,
             can_list_certificates=self.can_list_certificates, formdata=self.request.params or None)
