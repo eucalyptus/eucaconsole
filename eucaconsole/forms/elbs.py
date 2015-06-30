@@ -215,7 +215,7 @@ class ELBHealthChecksForm(BaseSecureForm):
             self.logging_enabled.data = access_logs.enabled
             self.bucket_name.data = access_logs.s3_bucket_name
             self.bucket_prefix.data = access_logs.s3_bucket_prefix
-            self.collection_interval.data = '60' if access_logs.emit_interval == 60 else '5'
+            self.collection_interval.data = '5' if access_logs.emit_interval == 5 else '60'
 
     def set_health_check_error_messages(self):
         self.ping_path.error_msg = self.ping_path_error_msg
