@@ -323,7 +323,9 @@ class BaseELBView(TaggedItemView):
                 return None  # Skip if nothing has changed in the ELB's access log config
         # Set Access Logs
         elb_name = elb.name if elb is not None else elb_name
-        bucket_prefix = params_bucket_prefix or self.generate_bucket_prefix(elb_name)
+        bucket_prefix = params_bucket_prefix or self.generate_bucket_prefix_name(elb_name)
+        if params_logging_enabled:
+            self.configure_logging_bucket(bucket_name=params_bucket_name, bucket_prefix=bucket_prefix)
         new_access_log_config = AccessLogAttribute()
         new_access_log_config.enabled = params_logging_enabled
         new_access_log_config.s3_bucket_name = params_bucket_name
@@ -331,8 +333,27 @@ class BaseELBView(TaggedItemView):
         new_access_log_config.emit_interval = params_collection_interval
         self.elb_conn.modify_lb_attribute(elb_name, 'accessLog', new_access_log_config)
 
+    def configure_logging_bucket(self, bucket_name=None, bucket_prefix=None):
+        if bucket_name and bucket_prefix and self.s3_conn:
+            existing_bucket_names = [bucket.name for bucket in self.s3_conn.get_all_buckets()]
+            if bucket_name in existing_bucket_names:
+                bucket = self.s3_conn.lookup(bucket_name, validate=False)
+            else:
+                self.log_request(u"Creating ELB access logs bucket {0}".format(bucket_name))
+                bucket = self.s3_conn.create_bucket(bucket_name)
+            # Create access logs folder
+            bucket_prefix_exists = bucket.get_key(u'{0}/'.format(bucket_prefix))
+            if not bucket_prefix_exists:
+                bucket_prefix = bucket_prefix.replace('/', '_')
+                bucket_prefix_key = u'{0}/'.format(bucket_prefix)
+                self.log_request(u"Creating ELB access logs folder {0} in bucket {1}".format(
+                    bucket_prefix_key, bucket_name))
+                new_folder = bucket.new_key(bucket_prefix_key)
+                new_folder.set_contents_from_string('')
+            # TODO: Set bucket ACL to allow ELB access logs to be captured
+
     @staticmethod
-    def generate_bucket_prefix(elb_name):
+    def generate_bucket_prefix_name(elb_name):
         return '{0}-{1}'.format(ELB_ACCESS_LOGS_BUCKET_PREFIX_NAME_PREFIX, elb_name)
 
     def handle_backend_certificate_create(self, elb_name):
