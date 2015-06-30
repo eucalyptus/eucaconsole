@@ -63,7 +63,7 @@
             <a href="#" id="select-certificate-close-link-form-backend" class="close-reveal-modal">&#215;</a>
         </div>
         <div ng-show="certificateTab === 'SSL'">
-            <p i18n:translate="">
+            <p>
                 <span i18n:translate="">
                     SSL certificates are required for secure (HTTPS or SSL) listeners.
                 </span>
