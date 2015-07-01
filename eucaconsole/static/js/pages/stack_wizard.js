@@ -65,7 +65,7 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
             }, 50);
         };
         // This timer code will trigger the change event if someone
-        // types in the field and hasn't typed anything for 2 seconds
+        // types in the field and hasn't typed anything for 1 second
         $scope.url_timer = undefined;
         $('#template-url').on('keydown', function() {
             if ($scope.url_timer) {
