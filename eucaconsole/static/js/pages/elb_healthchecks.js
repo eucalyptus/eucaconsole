@@ -5,7 +5,7 @@
  */
 
 angular.module('ELBHealthChecksPage', ['EucaConsoleUtils'])
-    .controller('ELBHealthChecksPageCtrl', function ($scope, eucaHandleUnsavedChanges, eucaUnescapeJson) {
+    .controller('ELBHealthChecksPageCtrl', function ($scope, $timeout, eucaHandleUnsavedChanges, eucaUnescapeJson) {
         $scope.isNotChanged = true;
         $scope.pingPathRequired = false;
         $scope.loggingEnabled = false;
@@ -14,6 +14,7 @@ angular.module('ELBHealthChecksPage', ['EucaConsoleUtils'])
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.setInitialValues(options);
+            $scope.initChosenSelectors();
             $scope.setWatch();
         };
         $scope.setInitialValues = function (options) {
@@ -24,6 +25,19 @@ angular.module('ELBHealthChecksPage', ['EucaConsoleUtils'])
                 $scope.pingPathRequired = true;
             }
             $scope.loggingEnabled = options.logging_enabled;
+        };
+        $scope.initChosenSelectors = function () {
+            $('#bucket_name').chosen({
+                width: '12rem',
+                search_contains: true, create_option: function (bucketName) {
+                    var chosen = this;
+                    $timeout(function () {
+                        chosen.append_option({value: bucketName, text: bucketName});
+                    });
+                },
+                create_with_enter: true,
+                create_option_text: 'Create bucket'
+            });
         };
         $scope.setWatch = function () {
             eucaHandleUnsavedChanges($scope);

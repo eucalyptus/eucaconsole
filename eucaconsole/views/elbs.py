@@ -1005,6 +1005,10 @@ class ELBHealthChecksView(BaseELBView):
 
     @view_config(route_name='elb_healthchecks_update', request_method='POST', renderer=TEMPLATE)
     def elb_healthchecks_update(self):
+        bucket_name = self.request.params.get('bucket_name')
+        if (bucket_name, bucket_name) not in self.elb_form.bucket_name.choices:
+            # Bucket name is a chosen select widget that accepts an arbitrary value
+            self.elb_form.bucket_name.choices.append((bucket_name, bucket_name))
         if self.elb_form.validate():
             location = self.request.route_path('elb_healthchecks', id=self.elb.name)
             prefix = _(u'Unable to update load balancer')
@@ -1138,6 +1142,10 @@ class CreateELBView(BaseELBView):
             vpc_network = None
         if vpc_network is None:
             del self.create_form.securitygroup
+        bucket_name = self.request.params.get('bucket_name')
+        if (bucket_name, bucket_name) not in self.create_form.bucket_name.choices:
+            # Bucket name is a chosen select widget that accepts an arbitrary value
+            self.create_form.bucket_name.choices.append((bucket_name, bucket_name))
         if self.create_form.validate():
             name = self.request.params.get('name')
             listeners_args = self.get_listeners_args()

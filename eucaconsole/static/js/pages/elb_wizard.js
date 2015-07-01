@@ -125,6 +125,17 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
         $('#vpc_subnet').chosen({'width': '100%', search_contains: true});
         $('#securitygroup').chosen({'width': '100%', search_contains: true});
         $('#zone').chosen({'width': '100%', search_contains: true});
+        $('#bucket_name').chosen({
+            width: '12rem',
+            search_contains: true, create_option: function (bucketName) {
+                var chosen = this;
+                $timeout(function () {
+                    chosen.append_option({value: bucketName, text: bucketName});
+                });
+            },
+            create_with_enter: true,
+            create_option_text: 'Create bucket'
+        });
     };
     $scope.setWatcher = function (){
         eucaFixHiddenTooltips();
