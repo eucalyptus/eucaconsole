@@ -5,7 +5,7 @@ import string, random, time
 class Instance_operations_sequence(GuiEC2):
 
     def __init__(self):
-        self.tester = GuiEC2("http://10.111.80.147:4444/wd/hub", "https://10.111.5.145")
+        self.tester = GuiEC2("https://10.111.5.145","http://10.111.80.147:4444/wd/hub")
 
     def id_generator(self, size = 6, chars=string.ascii_uppercase + string.digits):
         return ''.join(random.choice(chars) for j in range(size))
@@ -29,7 +29,7 @@ class Instance_operations_sequence(GuiEC2):
         self.tester.terminate_instance_from_detail_page(instance1_id)
         instance3_name = self.id_generator()+"-instance"
         self.tester.launch_instance_from_dashboard(image="centos", instance_name=instance3_name, availability_zone="one",
-                                                            instance_type= "m1.small")#,security_group=s_group1_name, key_name=keypair1_name)
+                                                            instance_type= "m1.small",security_group=s_group1_name, key_name=keypair1_name)
         self.tester.batch_terminate_all_instances()
         self.tester.delete_keypair_from_detail_page(keypair1_name)
         self.tester.delete_security_group_from_view_page(s_group1_name, s_group1_id)

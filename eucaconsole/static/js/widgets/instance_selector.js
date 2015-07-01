@@ -74,6 +74,7 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                 return mapping;
             };
             $scope.setWatcher = function () {
+                var instanceSelector = $('#instance-selector');
                 $scope.$watch('allInstanceList', function () {
                     $scope.updateInstanceList();
                 }, true);
@@ -112,8 +113,9 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                         $scope.searchFilterItems(filterKeys);
                     });
                 });
-                $('#instance_selector').on('click', 'input:checkbox', function () {
+                instanceSelector.on('click', 'input:checkbox', function () {
                     var instanceID = $(this).val();
+                    var instanceSelector = $('#instance-selector');
                     if (instanceID === '_all') {
                         // Clicked all checkbox
                         if ($(this).prop("checked") === true){
@@ -121,10 +123,10 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                             angular.forEach($scope.instanceList, function(instance) {
                                 $scope.selectedInstanceList.push(instance);
                             });
-                            $('#instance_selector input:checkbox').not(this).prop('checked', true);
+                            instanceSelector.find('input:checkbox').not(this).prop('checked', true);
                         } else {
                             $scope.selectedInstanceList = [];
-                            $('#instance_selector input:checkbox').not(this).prop('checked', false);
+                            instanceSelector.find('input:checkbox').not(this).prop('checked', false);
                         }
                     } else {
                         // Click instance checkbox

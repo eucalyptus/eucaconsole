@@ -1702,6 +1702,9 @@ textarea.policy-area { width: 100%; min-height: 30rem; font-family: Courier, "co
 .action-icon { display: inline-block; font-size: 1.4rem; color: #5a5a5a; padding-right: 0.5rem; padding-left: 0.5rem; }
 .action-icon:hover { cursor: pointer; color: #007dba; }
 
+.flex-space { display: -ms-flexbox; display: -webkit-flex; display: flex; }
+.flex-space .flex-column { -webkit-flex-grow: 1; flex-grow: 1; }
+
 /* ----------------------------------------- Tag editor
 ----------------------------------------- */
 #tag-editor small { font-size: 0.825rem; }
@@ -1932,6 +1935,11 @@ ul.off-canvas-list li a label { background-color: white; color: #5a5a5a; padding
 ul.off-canvas-list li a:hover:not(.nolink) { background-color: #f2f2f2; color: #006699; }
 ul.off-canvas-list li a.nolink:hover { background-color: white; color: #5a5a5a; }
 ul.off-canvas-list li .dropdown { background-color: white; margin-bottom: 0; }
+
+ul.bullet-list { list-style-type: none; }
+ul.bullet-list li:before { font-family: 'FontAwesome'; font-size: 0.9rem; content: '\f138'; margin: 0 5px 0 -15px; color: #007dba; }
+
+.columns.subheading { padding-left: 0.125rem; }
 
 /* Responsive tweaks for landing page title */
 @media screen and (max-width: 65rem) { #pagetitle.landingpage { top: -0.5rem; }

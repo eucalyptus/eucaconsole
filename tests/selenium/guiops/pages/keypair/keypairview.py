@@ -8,7 +8,8 @@ class KeypairView(ViewPage):
 
     _keypair_view_page_title = "Key Pairs"
     _create_keypair_btn_id = "create-keypair-btn"
-    _import_keypair_btn_css = "#create-keypair-btn + a"
+    _split_button_css =".euca-split"
+    _import_keypair_btn_id = "import-keypair-btn"
     _keypair_link_css = 'td>a[href="/keypairs/{0}"]'
     _keypair_actions_menu_id = "table-item-dropdown_{0}"
     _delete_keypair_actions_menuitem_css ="#item-dropdown_{0}>li>a"
@@ -25,7 +26,8 @@ class KeypairView(ViewPage):
         self.tester.click_element_by_id(self._create_keypair_btn_id)
 
     def click_import_keypair_button(self):
-        self.tester.click_element_by_css(self._import_keypair_btn_css)
+        self.tester.click_element_by_css(self._split_button_css)
+        self.tester.click_element_by_id(self._import_keypair_btn_id)
 
     def click_keypair_link_on_view_page(self, keypair_name):
         self.tester.click_element_by_css(self._keypair_link_css.format(keypair_name))
