@@ -36,10 +36,10 @@
                 </ul>
             </div>
             <div metal:fill-slot="tile_header">
-                <a ng-href="{{ item.contents_url }}" class="has-shared-icon" ng-show="{{ item.shared }}">
+                <a ng-href="{{ item.contents_url }}" class="has-shared-icon" ng-show="item.shared">
                     {{ item.bucket_name }}
                 </a>
-                <a ng-href="{{ item.contents_url }}" class="has-bucket-icon" ng-hide="{{ item.shared }}">
+                <a ng-href="{{ item.contents_url }}" class="has-bucket-icon" ng-hide="item.shared">
                     {{ item.bucket_name }}
                 </a>
             </div>
@@ -111,10 +111,10 @@
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
                 <td>
-                    <a ng-href="{{ item.contents_url }}" class="has-shared-icon" ng-show="{{ item.shared }}">
+                    <a ng-href="{{ item.contents_url }}" class="has-shared-icon" ng-show="item.shared">
                         {{ item.bucket_name }}
                     </a>
-                    <a ng-href="{{ item.contents_url }}" class="has-bucket-icon" ng-hide="{{ item.shared }}">
+                    <a ng-href="{{ item.contents_url }}" class="has-bucket-icon" ng-hide="item.shared">
                         {{ item.bucket_name }}
                     </a>
                 </td>
