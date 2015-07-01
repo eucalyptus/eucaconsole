@@ -1,0 +1,50 @@
+<!--! ELB Security Policy dialog -->
+<div tal:omit-tag="" i18n:domain="eucaconsole">
+    <div id="elb-security-policy-modal" class="reveal-modal medium" data-reveal="" ng-cloak=""
+         ng-controller="ELBSecurityPolicyEditorCtrl" ng-init="initSecurityPolicyEditor('${latest_predefined_policy}')">
+        <h3 i18n:translate="">Select security policy</h3>
+        <p i18n:translate="">
+            A security policy configures SSL negotiation settings when you use a secure
+            protocol like HTTPS or SSL.
+        </p>
+        <form method="post" data-abide="abide" id="security-policy-form">
+             ${structure:security_policy_form['csrf_token']}
+            <div>
+                <input type="radio" id="policy-type-predefined" name="policy_type_radio"
+                       value="existing" ng-model="policyRadioButton" />
+                <label for="policy-type-predefined" i18n:translate="">
+                    Choose a predefined security policy
+                </label>
+            </div>
+            <div ng-show="policyRadioButton === 'existing'">
+                ${panel('form_field', field=security_policy_form['predefined_policy'], ng_attrs=dict(model='predefinedPolicy'))}
+            </div>
+            <div>
+                <input type="radio" id="policy-type-new" name="policy_type_radio"
+                       value="new" ng-model="policyRadioButton" />
+                <label for="policy-type-new" i18n:translate="">Create a custom security policy</label>
+            </div>
+            <div ng-show="policyRadioButton === 'new'" id="new-policy-wrapper"
+                 tal:define="html_attrs {'data-placeholder': chosen_placeholder_text}">
+                ${panel('form_field', field=security_policy_form['ssl_protocols'], ng_attrs=dict(model='sslProtocols'), stack_label=True, **html_attrs)}
+                ${panel('form_field', field=security_policy_form['ssl_ciphers'], ng_attrs=dict(model='sslCiphers'), stack_label=True, **html_attrs)}
+                <h6 i18n:translate="" id="ssl-options-header">SSL Options</h6>
+                ${panel('form_field', field=security_policy_form['server_order_preference'],ng_attrs=dict(model='sslServerOrderPref'),  reverse=True)}
+            </div>
+        </form>
+        <hr />
+        <div>
+            <div class="row">
+                <div class="dialog-submit-button">
+                    <button type="submit" class="button expand" id="security-policy-dialog-submit-btn" i18n:translate=""
+                        ng-click="setSecurityPolicy()"
+                        ng-disabled="policyRadioButton === 'new' &amp;&amp; (!sslProtocols.length || !sslCiphers.length)">
+                        Use This Policy
+                    </button>
+                </div>
+            </div>
+        </div>
+        <a href="#" id="security-policy-modal-close-link" class="close-reveal-modal">&#215;</a>
+    </div>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/elb_security_policy_editor.js')}"></script>
+</div>

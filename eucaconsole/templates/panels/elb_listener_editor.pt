@@ -9,9 +9,9 @@
             <table class="table" ng-cloak="true" ng-show="listenerArray.length !== 0">
                 <thead>
                     <tr class="top-header">
-                        <th colspan="2" class="header vertical-border-header center" i18n:translate="">Client Side</th>
-                        <th colspan="2" class="header vertical-border-header center" i18n:translate="">Instance Side</th>
-                        <th colspan="2" class="header center" i18n:translate="">Security</th>
+                        <th colspan="2" class="header vertical-border-header" i18n:translate="">Client Side:</th>
+                        <th colspan="2" class="header vertical-border-header" i18n:translate="">Instance Side:</th>
+                        <th colspan="2" class="header" i18n:translate="">Security:</th>
                         <th></th>
                     </tr>
                     <tr>
@@ -38,8 +38,8 @@
                         <td>{{ listener.toPort }}</td>
                         <td>
                             <span ng-show="showServerCertificateNameLink(listener.fromProtocol)">
-                                <span i18n:translate="">cipher_name_placeholder</span>
-                                <a href="#"
+                                <span>{{ selectedSecurityPolicy || '${elb_security_policy}' }}</span>
+                                <a ng-click="openSecurityPolicyModal()"
                                     title="Change security policy" i18n:translate="">
                                     Change
                                 </a>
@@ -80,7 +80,8 @@
                             </span>
                         </td>
                         <td>
-                            <a class="circle remove" ng-click="removeListener($index)" title="Remove rule"><i class="fi-minus-circle"></i></a>
+                            <a class="circle remove" ng-click="removeListener($index)" title="Remove listener"
+                               i18n:attributes="title"><i class="fi-minus-circle"></i></a>
                         </td>
                     </tr>
                 </tbody>
@@ -165,9 +166,9 @@
             <div class="subsection-label"><strong i18n:translate="" class="upper">Security</strong></div>
             <div class="security-row">
                 <label class="inline" i18n:translate="">Policy</label>
-                <a href="#"
-                    title="Change policy" i18n:translate="">
-                    Select
+                <span>{{ selectedSecurityPolicy || '${elb_security_policy}' }}</span>
+                <a ng-click="openSecurityPolicyModal()" title="Change policy" i18n:translate="">
+                    Change
                 </a>
             </div>
             <div class="security-row">

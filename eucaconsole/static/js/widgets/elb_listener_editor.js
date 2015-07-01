@@ -8,8 +8,8 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
         $scope.isListenerNotComplete = true;
         $scope.hasDuplicatedListener = false;
         $scope.hasDuplicatedFromPorts = false;
-        $scope.listenerArray = []; 
-        $scope.protocolList = []; 
+        $scope.listenerArray = [];
+        $scope.protocolList = [];
         $scope.toProtocolList = []; 
         $scope.fromProtocol = undefined;
         $scope.toProtocol = undefined;
@@ -26,6 +26,7 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
         $scope.serverCertificateName = '';
         $scope.serverCertificateARN = '';
         $scope.serverCertificateARNBlock = {};
+        $scope.selectedSecurityPolicy = '';
         $scope.addListenerButtonClass = 'disabled';
         $scope.initEditor = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
@@ -120,7 +121,7 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
                     }
                 });
             });
-            $scope.$watch('listenerArray', function () {
+            $scope.$watch('listenerArray', function (newVal) {
                 if ($scope.listenerArray.length > 0) {
                     $scope.classNoListenerWarningDiv = '';
                 }
@@ -137,6 +138,9 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
                 $scope.serverCertificateARN = arn;
                 $scope.serverCertificateName = name;
                 $scope.handleEventUseThisCertificate();
+            });
+            $scope.$on('elb:securityPolicySelected', function ($event, newSecurityPolicy) {
+                $scope.selectedSecurityPolicy = newSecurityPolicy;
             });
             $(document).on('opened.fndtn.reveal', '#select-certificate-modal', function () {
                 // Ensure new certificate radio button is selected when no existing SSL certs are available
@@ -406,6 +410,10 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
                     $scope.$emit('eventUpdateListenerArray', $scope.listenerArray);
                 }
             });
+        };
+        $scope.openSecurityPolicyModal = function () {
+            var modal = $('#elb-security-policy-modal');
+            modal.foundation('reveal', 'open');
         };
         $scope.pruneCertificateLabel = function (certLabel) {
             if (!certLabel || certLabel === 'None' || certLabel === 'Select...') {

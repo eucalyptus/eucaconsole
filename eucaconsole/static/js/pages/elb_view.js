@@ -4,7 +4,7 @@
  *
  */
 
-angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor'])
+angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'ELBSecurityPolicyEditor', 'TagEditor'])
     .controller('ELBPageCtrl', function ($scope, $http, $timeout, eucaUnescapeJson, eucaHandleUnsavedChanges,
                                          eucaHandleError, eucaFixHiddenTooltips) {
         $scope.elbForm = undefined;
@@ -41,10 +41,11 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor']
         };
         $scope.setInitialValues = function (options) {
             var certArnField = $('#certificate_arn');
-            $scope.existingCertificateChoices = options.existing_certificate_choices;
-            if ($('#elb-view-form').length > 0) {
-                $scope.elbForm = $('#elb-view-form');
+            var elbForm = $('#elb-form');
+            if (elbForm.length > 0) {
+                $scope.elbForm = elbForm;
             }
+            $scope.existingCertificateChoices = options.existing_certificate_choices;
             if (options.securitygroups instanceof Array && options.securitygroups.length > 0) {
                 $scope.securityGroups = options.securitygroups;
                 // Timeout is needed for chosen to react after Angular updates the options
@@ -86,6 +87,10 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'TagEditor']
             $(document).on('submit', '[data-reveal] form', function () {
                 $(this).find('.dialog-submit-button').css('display', 'none');
                 $(this).find('.dialog-progress-display').css('display', 'block');
+            });
+            $(document).on('click', '#security-policy-dialog-submit-btn', function () {
+                $scope.isNotChanged = false;
+                $scope.$apply();
             });
             $scope.$watch('securityGroups', function () {
                 if ($scope.isInitComplete === true) {

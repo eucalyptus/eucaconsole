@@ -9,23 +9,9 @@ h6.section-label {
     margin-top: 1.5rem;
 }
 
-table.table {
-    width: 100%;
-    tr.top-header {
-        border-bottom: 0;
-    }
-    th.vertical-border-header {
-        border-collapse: collapse;
-        border-right: 1px solid #ddd;
-    }
-    th.center {
-        text-align: center;
-    }
-}
-
 
 // General tab ==================
-#elb-view-form {
+#elb-form {
     @include item-list;
     input.text-input {
         width: 300px;

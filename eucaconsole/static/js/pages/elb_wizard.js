@@ -2,6 +2,8 @@
  * @fileOverview Elastic Load Balancer Wizard JS
  * @requires AngularJS
  *
+ * Note: Specify dependencies array in base_elb_wizard.js
+ *
  */
 
 angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $http, $timeout, eucaHandleError,
@@ -123,6 +125,10 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
     };
     $scope.setWatcher = function (){
         eucaFixHiddenTooltips();
+        $(document).on('click', '#security-policy-dialog-submit-btn', function () {
+            $scope.isNotChanged = false;
+            $scope.$apply();
+        });
         // Handle the next step tab click event
         $scope.$on('eventClickVisitNextStep', function($event, thisStep, nextStep) {
             $scope.checkRequiredInput(thisStep);

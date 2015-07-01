@@ -14,6 +14,10 @@
 #elb-listener-editor .label.radius { color: #5a5a5a; }
 #elb-listener-editor .label.radius.cert { background-color: #cccccc; }
 #elb-listener-editor .label.radius.bcert { background-color: #b3b3b3; margin-right: 6px; }
+#elb-listener-editor table.table { width: 100%; }
+#elb-listener-editor table.table tr.top-header { border-bottom: 0; }
+#elb-listener-editor table.table th { white-space: nowrap; }
+#elb-listener-editor table.table th.vertical-border-header { border-collapse: collapse; border-right: 1px solid #ddd; }
 
 #select-certificate-modal .item-list { margin-bottom: 6px; }
 #select-certificate-modal .item-list .item { color: #333; background-color: #e6e7e8; margin-right: 8px; }
@@ -21,3 +25,9 @@
 #select-certificate-modal .section-label { margin-top: 1.5rem; margin-bottom: 1rem; color: #5a5a5a; }
 #select-certificate-modal #backend-certificates-display { margin-bottom: 1rem; }
 #select-certificate-modal #new-certificate-wrapper { padding-left: 1rem; }
+
+#elb-security-policy-modal #new-policy-wrapper { padding-left: 1rem; }
+#elb-security-policy-modal #new-policy-wrapper h6, #elb-security-policy-modal #new-policy-wrapper label { text-transform: uppercase; font-family: Lato, Helvetica, Arial, sans-serif; font-size: 0.9rem; font-weight: bold; }
+#elb-security-policy-modal #new-policy-wrapper label[for='server_order_preference'] { text-transform: none; }
+#elb-security-policy-modal #new-policy-wrapper h6 { position: relative; left: 14px; }
+#elb-security-policy-modal #new-policy-wrapper #ssl-options-header { color: #6a737b; margin-bottom: 0; }

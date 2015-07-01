@@ -24,6 +24,14 @@
                 <form action="${request.route_path('elb_create')}" id="elb-form"
                       method="post" data-abide="abide" enctype="multipart/form-data">
                     ${structure:create_form['csrf_token']}
+                    <div id="elb-ssl-hidden-fields-wrapper" class="hide">
+                        <input type="text" name="elb_predefined_policy" id="predefined_policy_hidden_input" />
+                        <input type="text" name="elb_ssl_protocols" id="ssl_protocols_hidden_input" />
+                        <input type="text" name="elb_ssl_ciphers" id="ssl_ciphers_hidden_input" />
+                        <input type="checkbox" name="elb_security_policy_updated" id="security_policy_updated" />
+                        <input type="checkbox" name="elb_ssl_server_order_pref" id="ssl_server_order_pref_hidden_input" />
+                        <input type="checkbox" name="elb_ssl_using_custom_policy" id="ssl_using_custom_policy" />
+                    </div>
                     <dl id="wizard-tabs" class="tabs" data-tab="" ng-cloak="">
                         <dd ng-repeat="tab in tabList" ng-class="{disabled: invalidSteps[$index]}" ng-show="tab.render"
                                 class="active">
@@ -48,7 +56,7 @@
                             </div>
                             <hr />
                             <div>
-                                ${panel('elb_listener_editor', protocol_list=protocol_list)}
+                                ${panel('elb_listener_editor', protocol_list=protocol_list, elb_security_policy=elb_security_policy)}
                                 <div id="hidden_certificate_arn_input_div" class="hide">
                                     <input type="hidden" id="hidden_certificate_arn_input" name="certificate_arn" />
                                 </div>
@@ -344,6 +352,7 @@
         </div>
         <!--! Modal dialogs -->
         ${panel('select_certificate_dialog', can_list_certificates=can_list_certificates, certificate_form=certificate_form, backend_certificate_form=backend_certificate_form)}
+        ${panel('elb_security_policy_dialog', security_policy_form=security_policy_form, latest_predefined_policy=latest_predefined_policy)}
     </div>
 </div>
 

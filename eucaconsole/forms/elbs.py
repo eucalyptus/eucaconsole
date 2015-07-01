@@ -30,10 +30,12 @@ Forms for Elastic Load Balancer
 """
 import re
 import wtforms
+
 from wtforms import validators
 
 from ..i18n import _
 from . import BaseSecureForm, ChoicesManager, TextEscapedField, NAME_WITHOUT_SPACES_NOTICE, BLANK_CHOICE
+from ..constants.elbs import SSL_CIPHERS
 from ..views import BaseView
 
 
@@ -456,7 +458,7 @@ class ELBInstancesFiltersForm(BaseSecureForm):
 
 
 class CertificateForm(BaseSecureForm):
-    """Create SSL Certificate form"""
+    """ELB Certificate form (used on wizard and detail page)"""
     certificate_name_error_msg = NAME_WITHOUT_SPACES_NOTICE
     certificate_name = wtforms.TextField(
         label=_(u'Certificate name'),
@@ -527,7 +529,7 @@ class CertificateForm(BaseSecureForm):
 
 
 class BackendCertificateForm(BaseSecureForm):
-    """Create SSL Certificate form"""
+    """ELB Backend Certificate form (used on wizard and detail page)"""
     backend_certificate_name_error_msg = NAME_WITHOUT_SPACES_NOTICE
     backend_certificate_name = wtforms.TextField(
         label=_(u'Certificate name'),
@@ -550,3 +552,79 @@ class BackendCertificateForm(BaseSecureForm):
     def set_error_messages(self):
         self.backend_certificate_name.error_msg = self.backend_certificate_name_error_msg
         self.backend_certificate_body.error_msg = self.backend_certificate_body_error_msg
+
+
+class PredefinedPolicyRequired(validators.Required):
+    """Custom validator to conditionally require predefined policy if custom policy isn't uploaded"""
+
+    def __init__(self, *args, **kwargs):
+        super(PredefinedPolicyRequired, self).__init__(*args, **kwargs)
+
+    def __call__(self, form, field):
+        conditions = [
+            form.ssl_protocols.data,
+            form.ssl_ciphers.data
+        ]
+        if not all(conditions):
+            super(PredefinedPolicyRequired, self).__call__(form, field)
+
+
+class SecurityPolicyForm(BaseSecureForm):
+    """ELB Security Policy form"""
+    predefined_policy_error_msg = _(u'Policy is required')
+    predefined_policy = wtforms.SelectField(
+        label=_(u'Policy name'),
+        validators=[PredefinedPolicyRequired(message=predefined_policy_error_msg)],
+    )
+    ssl_protocols_error_msg = _(u'At least one protocol is required.')
+    ssl_protocols = wtforms.SelectMultipleField(
+        label=_(u'SSL Protocols'),
+        validators=[validators.InputRequired(message=ssl_protocols_error_msg)],
+    )
+    ssl_ciphers_error_msg = _(u'At least one cipher is required.')
+    ssl_ciphers = wtforms.SelectMultipleField(
+        label=_(u'SSL Ciphers'),
+        validators=[validators.InputRequired(message=ssl_ciphers_error_msg)],
+    )
+    server_order_preference = wtforms.BooleanField(label=_(u'Server order preference'))  # Under SSL Options
+
+    def __init__(self, request, elb_conn=None, predefined_policy_choices=None, **kwargs):
+        super(SecurityPolicyForm, self).__init__(request, **kwargs)
+        self.elb_conn = elb_conn
+        self.predefined_policy_choices = predefined_policy_choices
+        self.set_error_messages()
+        self.set_choices()
+        self.set_initial_data()
+
+    def set_error_messages(self):
+        self.predefined_policy.error_msg = self.predefined_policy_error_msg
+        self.ssl_protocols.error_msg = self.ssl_protocols_error_msg
+        self.ssl_ciphers.error_msg = self.ssl_ciphers_error_msg
+
+    def set_choices(self):
+        self.ssl_protocols.choices = self.get_ssl_protocol_choices()
+        self.ssl_ciphers.choices = self.get_ssl_cipher_choices()
+        self.predefined_policy.choices = self.get_predefined_policy_choices()
+
+    def set_initial_data(self):
+        # Default to TLS 1, 1.1, and 1.2 for ssl_protocols
+        self.ssl_protocols.data = [val for val, label in self.get_ssl_protocol_choices()]
+
+    def get_predefined_policy_choices(self):
+        if self.predefined_policy_choices:
+            return self.predefined_policy_choices
+        if self.elb_conn is not None:
+            return ChoicesManager(conn=self.elb_conn).predefined_policy_choices(add_blank=False)
+        return []
+
+    @staticmethod
+    def get_ssl_protocol_choices():
+        return [
+            ('Protocol-TLSv1.2', u'TLSv1.2'),
+            ('Protocol-TLSv1.1', u'TLSv1.1'),
+            ('Protocol-TLSv1', u'TLSv1'),
+        ]
+
+    @staticmethod
+    def get_ssl_cipher_choices():
+        return [(val, val) for val in SSL_CIPHERS]
