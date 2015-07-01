@@ -46,6 +46,9 @@
         }
         else {
             screen = path.substring(1);
+            if (screen.indexOf("/") > -1) {
+                screen = screen.substring(0, screen.indexOf("/"));
+            }
         }
         $('ul.off-canvas-list').find("."+screen).addClass('active');
     });
