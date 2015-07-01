@@ -211,7 +211,7 @@
                 <div class="controls-wrapper">
                     <label class="left">
                         <span i18n:translate="">Object path</span>&nbsp;<span class="req">*</span>
-                        <span class="" i18n:attributes="title"
+                        <span class="" i18n:attributes="title" data-tooltip=""
                             title="Enter the full path to the object, including the bucket name">
                             <i class="helptext-icon"></i>
                         </span>

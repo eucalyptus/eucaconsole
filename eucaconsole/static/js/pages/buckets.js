@@ -5,7 +5,7 @@
  */
 
 angular.module('BucketsPage', ['LandingPage', 'EucaConsoleUtils'])
-    .controller('BucketsCtrl', function ($scope, $http, $timeout, eucaUnescapeJson) {
+    .controller('BucketsCtrl', function ($scope, $http, $timeout, eucaUnescapeJson, eucaFixHiddenTooltips) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.bucketName = '';
         $scope.updateVersioningAction = '';
@@ -38,6 +38,7 @@ angular.module('BucketsPage', ['LandingPage', 'EucaConsoleUtils'])
             $scope.itemUrl = options.bucket_item_url;
             $scope.storageKey = options.storage_key + "shared_buckets";
             $scope.updatePasteValues();
+            eucaFixHiddenTooltips();
         };
         $scope.revealModal = function (action, bucket) {
             var modal = $('#' + action + '-modal');
