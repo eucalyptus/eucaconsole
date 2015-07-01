@@ -137,18 +137,9 @@ a {
 }
 #logobar {
     padding: 6px 0 0 0;
-    margin-top: 20px;
+    margin-top: 8px;
     background-color: #fff;
     color: #333;
-    #hp-logo {
-        position: relative;
-        bottom: 1px;
-        display: inline-block;
-        width: 36px;
-        height: 36px;
-        background: url(../img/hp-logo-36x36.png) no-repeat;
-        margin-right: 0.8rem;
-    }
     a {
         font-size: 0.9rem;
         color: #333;
@@ -187,7 +178,8 @@ a {
     .product-name {
         font-size: 1.4rem;
         position: relative;
-        top: -12px;
+        top: -8px;
+        padding-left: 0.5rem;
     }
     #selected-region {
         position: relative;
@@ -208,6 +200,10 @@ a {
         i {
             font-size: 1.8rem;
         }
+    }
+    #user-dropdown-section {
+        position: relative;
+        left: -10px;
     }
 }
 
@@ -1129,32 +1125,37 @@ $btn-group-radius: 10px;
                 top: 8px; right: 0;
             }
         }
-    }
-}
-
-
-// Nav bar adjustments
-@media screen {
-    #logobar {
-        //border-bottom: 1px solid black;
-        margin-top: 8px;
-        .dropdown {
-            position: relative;
-            top: 4px;
+        .product-name {
+            display: none;
         }
         #offcanvas-icon {
             left: 0px;
             display: inline-block !important;
             margin-right: 12px;
-        }
-        #user-dropdown-section {
-            position: relative;
-            left: -10px;
+            i {
+                padding-right: 0.5rem;
+            }
         }
     }
-    #navbar {
+    .left-nav {
         display: none;
     }
+}
+
+div.left-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    z-index: 999999 !important;
+    background-color: white;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    border-style: solid;
+    border-width: 0 1px 0 0;
+    border-color: $hp-gray-20;
+}
+div.inner-wrap {
 }
 
 // Off-canvas Nav adjustments
@@ -1164,72 +1165,122 @@ div.left-off-canvas-menu {
     border-style: solid;
     border-width: 0 1px 0 0;
     border-color: $hp-gray-20;
+ }
+
+.left-nav {
+    width: 200px !important;
+    overflow-y: scroll;
+    transition: width 0.3s;
 }
 
-ul.off-canvas-list {
+.nav-collapsed.left-nav {
+    width: 50px !important;
+    label {
+        visibility: hidden;
+    }
+}
+
+#hp-logo {
+    position: relative;
+    margin-top: 0.5rem;
+    bottom: 1px;
+    display: inline-block;
+    width: 36px;
+    height: 36px;
+    background: url(../img/hp-logo-36x36.png) no-repeat;
+    margin-right: 0.8rem;
+}
+
+ul.resources-nav {
+    width: 200px;
     list-style-type: none;
     padding-left: 0.5rem;
+    line-height: 2.5rem;
+    margin-left: 0;
+    left: 0;
+    label {
+        background-color: white;
+        color: $hp-gray-65;
+        padding-top: 1.0rem;
+        border-top: 0;
+    }
     li {
         a {
-            background-color: white;
+            background-color: transparent;
             color: $hp-gray-65;
             padding-left: 2.5rem;
             line-height: 1.5rem;
             border-bottom: 0;
             position: static;
         }
-        a:hover {
+        &:hover {
             background-color: $hp-gray-5;
+            color: $hp-hover-blue;
+        }
+        a:hover {
             color: $hp-hover-blue;
         }
         i.icon {
             position: absolute;
+            left: 0.5rem;
             margin-top: 0.5rem;
             height: 2rem;
             width: 2rem;
         }
         i.icon.accounts { background-image: url(../img/nav/Accounts.svg); }
         i.icon.accounts.active { background-image: url(../img/nav/Accounts_Active_40x40.svg); }
+        i.icon.accounts:hover { background-image: url(../img/nav/Accounts_Active_40x40.svg); }
         i.icon.buckets { background-image: url(../img/nav/Bucket.svg); }
         i.icon.buckets.active { background-image: url(../img/nav/Bucket_Active.svg); }
+        i.icon.buckets:hover { background-image: url(../img/nav/Bucket_Active.svg); }
         i.icon.dashboard { background-image: url(../img/nav/Dashboard.svg); }
         i.icon.dashboard.active { background-image: url(../img/nav/Dashboard_Active.svg); }
+        i.icon.dashboard:hover { background-image: url(../img/nav/Dashboard_Active.svg); }
         i.icon.ipaddresses { background-image: url(../img/nav/Elastic-IP.svg); }
         i.icon.ipaddresses.active { background-image: url(../img/nav/Elastic-IP_Active.svg); }
+        i.icon.ipaddresses:hover { background-image: url(../img/nav/Elastic-IP_Active.svg); }
         i.icon.groups { background-image: url(../img/nav/Groups.svg); }
         i.icon.groups.active { background-image: url(../img/nav/Groups_Active.svg); }
+        i.icon.groups:hover { background-image: url(../img/nav/Groups_Active.svg); }
         i.icon.images { background-image: url(../img/nav/Images.svg); }
         i.icon.images.active { background-image: url(../img/nav/Images_Active.svg); }
+        i.icon.images:hover { background-image: url(../img/nav/Images_Active.svg); }
         i.icon.instances { background-image: url(../img/nav/Instances.svg); }
         i.icon.instances.active { background-image: url(../img/nav/Instances_Active.svg); }
+        i.icon.instances:hover { background-image: url(../img/nav/Instances_Active.svg); }
         i.icon.keypairs { background-image: url(../img/nav/Key-Pairs.svg); }
         i.icon.keypairs.active { background-image: url(../img/nav/Key-Pairs_Active.svg); }
+        i.icon.keypairs:hover { background-image: url(../img/nav/Key-Pairs_Active.svg); }
         i.icon.launchconfigs { background-image: url(../img/nav/Launch-configs.svg); }
         i.icon.launchconfigs.active { background-image: url(../img/nav/Launch-configs_Active.svg); }
-        i.icon.loadbalancers { background-image: url(../img/nav/Load-Balance.svg); }
-        i.icon.loadbalancers.active { background-image: url(../img/nav/Load-Balance_Active.svg); }
+        i.icon.launchconfigs:hover { background-image: url(../img/nav/Launch-configs_Active.svg); }
+        i.icon.elbs { background-image: url(../img/nav/Load-Balance.svg); }
+        i.icon.elbs.active { background-image: url(../img/nav/Load-Balance_Active.svg); }
+        i.icon.elbs:hover { background-image: url(../img/nav/Load-Balance_Active.svg); }
         i.icon.roles { background-image: url(../img/nav/Roles.svg); }
         i.icon.roles.active { background-image: url(../img/nav/Roles_Active.svg); }
+        i.icon.roles:hover { background-image: url(../img/nav/Roles_Active.svg); }
         i.icon.scalinggroups { background-image: url(../img/nav/Auto-Scaling-Groups.svg); }
         i.icon.scalinggroups.active { background-image: url(../img/nav/Auto-Scaling-Groups_Active.svg); }
+        i.icon.scalinggroups:hover { background-image: url(../img/nav/Auto-Scaling-Groups_Active.svg); }
         i.icon.securitygroups { background-image: url(../img/nav/Security.svg); }
         i.icon.securitygroups.active { background-image: url(../img/nav/Security_Active.svg); }
+        i.icon.securitygroups:hover { background-image: url(../img/nav/Security_Active.svg); }
         i.icon.snapshots { background-image: url(../img/nav/Snapshots.svg); }
-        i.icon.snapshots-active { background-image: url(../img/nav/Snapshots_Active.svg); }
+        i.icon.snapshots.active { background-image: url(../img/nav/Snapshots_Active.svg); }
+        i.icon.snapshots:hover { background-image: url(../img/nav/Snapshots_Active.svg); }
         i.icon.stacks { background-image: url(../img/nav/stacks.svg); }
         i.icon.stacks.active { background-image: url(../img/nav/stacks_Active.svg); }
+        i.icon.stacks:hover { background-image: url(../img/nav/stacks_Active.svg); }
         i.icon.users { background-image: url(../img/nav/Users.svg); }
         i.icon.users.active { background-image: url(../img/nav/Users_Active.svg); }
+        i.icon.users:hover { background-image: url(../img/nav/Users_Active.svg); }
         i.icon.vmtypes { background-image: url(../img/nav/VM-Types.svg); }
         i.icon.vmtypes.active { background-image: url(../img/nav/VM-Types_Active.svg); }
+        i.icon.vmtypes:hover { background-image: url(../img/nav/VM-Types_Active.svg); }
         i.icon.volumes { background-image: url(../img/nav/Volumes.svg); }
         i.icon.volumes.active { background-image: url(../img/nav/Volumes_Active.svg); }
-    }
-    label {
-        background-color: white;
-        color: $hp-gray-65;
-        padding-top: 1.0rem;
-        border-top: 0;
+        i.icon.volumes:hover { background-image: url(../img/nav/Volumes_Active.svg); }
     }
 }
 

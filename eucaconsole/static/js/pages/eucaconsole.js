@@ -41,7 +41,7 @@
         // set active selection in nav
         var path = window.location.pathname;
         var screen = '';
-        if (path === '') {
+        if (path === '/') {
             screen = 'dashboard';
         }
         else {
@@ -50,6 +50,14 @@
                 screen = screen.substring(0, screen.indexOf("/"));
             }
         }
-        $('ul.off-canvas-list').find("."+screen).addClass('active');
+        $('ul.resources-nav').find("."+screen).addClass('active');
+        $('.left-nav').mouseenter(expand).mouseleave(collapse);
+        function collapse() {
+          $('.left-nav').addClass('nav-collapsed');
+        }
+      
+        function expand() {
+          $('.left-nav').removeClass('nav-collapsed');
+        }
     });
 })(jQuery);
