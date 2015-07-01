@@ -9,6 +9,8 @@ angular.module('ELBHealthChecksPage', ['EucaConsoleUtils'])
         $scope.isNotChanged = true;
         $scope.pingPathRequired = false;
         $scope.loggingEnabled = false;
+        $scope.accessLoggingConfirmed = false;
+        $scope.accessLogConfirmationDialog = $('#elb-bucket-access-log-dialog');
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.setInitialValues(options);
@@ -32,6 +34,19 @@ angular.module('ELBHealthChecksPage', ['EucaConsoleUtils'])
             $scope.$watch('loggingEnabled', function (newVal, oldVal) {
                 if (newVal !== oldVal) {
                     $scope.isNotChanged = false;
+                    if (newVal) {
+                        $scope.accessLogConfirmationDialog.foundation('reveal', 'open');
+                    }
+                }
+            });
+            $scope.accessLogConfirmationDialog.on('opened.fndtn.reveal', function () {
+                $scope.accessLoggingConfirmed = false;
+                $scope.$apply();
+            });
+            $scope.accessLogConfirmationDialog.on('close.fndtn.reveal', function () {
+                if (!$scope.accessLoggingConfirmed) {
+                    $scope.loggingEnabled = false;
+                    $scope.$apply();
                 }
             });
             $(document).on('input', 'input', function () {
@@ -81,6 +96,10 @@ angular.module('ELBHealthChecksPage', ['EucaConsoleUtils'])
                     $scope.pingPath = 'index.html';
                 }
             }
+        };
+        $scope.confirmEnableAccessLogs = function () {
+            $scope.accessLoggingConfirmed = true;
+            $scope.accessLogConfirmationDialog.foundation('reveal', 'close');
         };
     })
 ;

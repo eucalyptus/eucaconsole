@@ -56,6 +56,9 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
     $scope.classDuplicatedBackendCertificateDiv = '';
     $scope.classAddBackendCertificateButton = 'disabled';
     $scope.classUseThisCertificateButton = 'disabled';
+    $scope.loggingEnabled = false;
+    $scope.accessLoggingConfirmed = false;
+    $scope.accessLogConfirmationDialog = $('#elb-bucket-access-log-dialog');
     $scope.initController = function (optionsJson) {
         var options = JSON.parse(eucaUnescapeJson(optionsJson));
         $scope.setInitialValues(options);
@@ -293,6 +296,24 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
         $scope.$on('textSearch', function ($event, searchVal, filterKeys) {
             // Relay the text search update signal
             $scope.$broadcast('eventTextSearch', searchVal, filterKeys);
+        });
+        $scope.$watch('loggingEnabled', function (newVal, oldVal) {
+            if (newVal !== oldVal) {
+                $scope.isNotChanged = false;
+                if (newVal) {
+                    $scope.accessLogConfirmationDialog.foundation('reveal', 'open');
+                }
+            }
+        });
+        $scope.accessLogConfirmationDialog.on('opened.fndtn.reveal', function () {
+            $scope.accessLoggingConfirmed = false;
+            $scope.$apply();
+        });
+        $scope.accessLogConfirmationDialog.on('close.fndtn.reveal', function () {
+            if (!$scope.accessLoggingConfirmed) {
+                $scope.loggingEnabled = false;
+                $scope.$apply();
+            }
         });
     };
     $scope.checkRequiredInput = function (step) {
@@ -646,6 +667,10 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
         }).error(function (oData) {
             eucaHandleError(oData, status);
         });
+    };
+    $scope.confirmEnableAccessLogs = function () {
+        $scope.accessLoggingConfirmed = true;
+        $scope.accessLogConfirmationDialog.foundation('reveal', 'close');
     };
 })
 ;
