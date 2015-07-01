@@ -34,6 +34,7 @@ import hmac
 import logging
 import pylibmc
 import simplejson as json
+import string
 import textwrap
 import time
 from datetime import datetime, timedelta
@@ -43,6 +44,7 @@ from cgi import FieldStorage
 from contextlib import contextmanager
 from dateutil import tz
 from markupsafe import Markup
+from random import choice
 from urllib import urlencode
 from urlparse import urlparse
 try:
@@ -412,6 +414,11 @@ class BaseView(object):
     @staticmethod
     def has_role_access(request):
         return request.session['cloud_type'] == 'euca' and request.session['role_access']
+
+    @staticmethod
+    def generate_random_string(length=16):
+        chars = string.letters + string.digits
+        return ''.join(choice(chars) for i in range(length))
 
     @staticmethod
     def encode_unicode_dict(unicode_dict):

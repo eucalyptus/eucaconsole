@@ -26,6 +26,7 @@ table.table {
 
 // General tab ==================
 #elb-view-form {
+    @include item-list;
     input.text-input {
         width: 300px;
     }
@@ -62,6 +63,8 @@ table.table {
         padding-top: 0.5rem;
     }
 }
+
+
 
 #advanced-section {
     margin-top: 1.5rem;

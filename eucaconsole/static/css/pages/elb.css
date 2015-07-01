@@ -114,10 +114,14 @@
 #results-count { padding-top: 0.25rem; text-align: right; }
 #results-count .items-found { vertical-align: center; }
 
+<<<<<<< HEAD
 .euca-split { #border-color: #e6e7e8 !important; width: 2.0rem !important; }
 
 .secondary .euca-split { border-color: #5a5a5a !important; }
 .secondary .euca-split:hover { border-color: #006699 !important; }
+=======
+.euca-split { border-color: #e6e7e8 !important; width: 2.0rem !important; }
+>>>>>>> master
 
 .split.button { padding-right: 3.0rem !important; }
 
@@ -133,6 +137,9 @@ table.table tr.top-header { border-bottom: 0; }
 table.table th.vertical-border-header { border-collapse: collapse; border-right: 1px solid #ddd; }
 table.table th.center { text-align: center; }
 
+#elb-view-form .item-list { margin-bottom: 6px; }
+#elb-view-form .item-list .item { color: #333; background-color: #e6e7e8; margin-right: 8px; }
+#elb-view-form .item-list .item a { color: white; }
 #elb-view-form input.text-input { width: 300px; }
 #elb-view-form input.timeout-field { width: 60px; }
 #elb-view-form input[type="number"] { width: 80px; }

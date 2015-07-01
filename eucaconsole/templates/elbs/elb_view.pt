@@ -65,6 +65,12 @@
                     <hr />
                     <div>
                         ${panel('elb_listener_editor', listener_list=listener_list, protocol_list=protocol_list)}
+                        <div id="hidden_certificate_arn_input_div" class="hide">
+                            <input type="hidden" id="hidden_certificate_arn_input" name="certificate_arn" />
+                        </div>
+                        <div id="hidden_backend_certificates_input_div">
+                            <textarea id="hidden_backend_certificates" name="backend_certificates" class="hidden"></textarea>
+                        </div>
                     </div>
                     <hr />
                     <div>
@@ -101,12 +107,13 @@
         </div>
         <!--! Modal dialogs -->
         ${panel('elb_dialogs', elb=elb, delete_form=delete_form)}
+        ${panel('select_certificate_dialog', certificate_form=certificate_form, backend_certificate_form=backend_certificate_form)}
     </div>
 </div>
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/pages/elb.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/elb_view.js')}"></script>
 </div>
 
 </metal:block>

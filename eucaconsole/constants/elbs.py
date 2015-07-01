@@ -29,6 +29,7 @@ Eucalyptus and AWS ELB constants
 
 """
 
+ELB_BACKEND_CERTIFICATE_NAME_PREFIX = 'EucaConsole-BackendServerAuthPolicy'
 
 ELB_MONITORING_CHARTS_LIST = [
     {
