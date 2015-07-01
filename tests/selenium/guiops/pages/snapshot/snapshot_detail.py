@@ -39,10 +39,12 @@ class SnapshotDetailPage(DetailPage):
     def verify_snapshot_status_is_completed(self, timeout_in_seconds):
         self.tester.wait_for_visible_by_css(self._snapshot_status_css.format("completed"), timeout_in_seconds)
 
-    def get_snapshot_name_and_id(self):
+    def get_snapshot_name_and_id(self, snapshot_name=None):
         name_and_id = str(self.tester.store_text_by_css(DetailPage(self)._resource_name_and_id_css))
-        snapshot_id = name_and_id[-15:-1]
-        snapshot_name = name_and_id[0:-16]
+        if snapshot_name is None:
+            snapshot_id = name_and_id[-13:]
+        else:
+            snapshot_id = name_and_id[-14:-1]
         return {'snapshot_name': snapshot_name, 'snapshot_id': snapshot_id}
 
 

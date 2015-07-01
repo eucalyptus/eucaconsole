@@ -6,6 +6,8 @@ class Dashboard(BasePage):
         _launch_instance_button_css ='#item-dropdown_instances-running+div+div>a'
         _keypairs_icon_css ='#key-pairs > div.tile > div.content > a > i.icon'
         _create_keypair_link_css ='#item-dropdown_key-pairs+div+div>a'
+        _create_volume_link_css = 'a[href="/volumes/new"]'
+        _create_snapshot_link_css = 'a[href="/snapshots/new"]'
         _availability_zone_menu_css = "#zone-selector>a"
         _availability_zone_dropdown_id = "zone-dropdown"
         _first_availability_zone_on_list_css = "ul#zone-dropdown>li:nth-of-type(2)>a"
@@ -30,6 +32,12 @@ class Dashboard(BasePage):
             Clicks create keypair link on Dashboard.
             """
             self.tester.click_element_by_css(Dashboard._create_keypair_link_css)
+
+        def click_create_volume_link(self):
+            self.tester.click_element_by_css(self._create_volume_link_css)
+
+        def click_create_snapshot_link(self):
+            self.tester.click_element_by_css(self._create_snapshot_link_css)
 
         def dashboard_click_keypair_tile(self, _keypairs_icon_css):
             """
