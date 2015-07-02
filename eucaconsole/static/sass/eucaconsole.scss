@@ -1183,8 +1183,10 @@ div.left-off-canvas-menu {
     border-color: $hp-gray-20;
  }
 
+$expanded-nav-width: 215px;
+
 .left-nav {
-    width: 200px !important;
+    width: $expanded-nav-width !important;
     overflow-y: scroll;
     transition: width 0.3s;
 }
@@ -1208,7 +1210,7 @@ div.left-off-canvas-menu {
 }
 
 ul.resources-nav {
-    width: 200px;
+    width: $expanded-nav-width;
     list-style-type: none;
     padding-left: 0.5rem;
     line-height: 2.5rem;
@@ -1235,6 +1237,9 @@ ul.resources-nav {
         }
         a:hover {
             color: $hp-hover-blue;
+        }
+        span {
+            white-space: nowrap;
         }
         i.icon {
             position: absolute;
@@ -1301,7 +1306,7 @@ ul.resources-nav {
 }
 
 ul.bullet-list {
-    //list-style-type: none;
+    list-style-type: none;
     li:before {
         font-family: 'FontAwesome';
         font-size: 0.9rem;
