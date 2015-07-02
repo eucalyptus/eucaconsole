@@ -1,4 +1,5 @@
 from guitester.guiec2 import GuiEC2
+from option_parser import Option_parser
 import time
 
 
@@ -12,7 +13,10 @@ class Keypair_operations_sequence(GuiEC2):
                   "tlZD0zbdV/tpADxDpnhW2cPVpXcjy4sRzUCc8AZW+OE3LQxXild alicehubenko@Alices-MacBook-Pro.local"
 
     def __init__(self):
-        self.tester = GuiEC2("https://10.111.5.145")
+        parser = Option_parser()
+        console_url = parser.parse_options()['console_url']
+        webdriver_url = parser.parse_options()['web_driver']
+        self.tester = GuiEC2(console_url="http://localhost:8888")
 
     def keypair_ops_test(self):
 
