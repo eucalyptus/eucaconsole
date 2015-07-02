@@ -559,7 +559,7 @@ class SeleniumApi(object):
         print "Selecting element with value = {1} by name = {0}".format(name, value)
         Select(self.driver.find_element_by_name(name)).select_by_value(value)
 
-    def get_attrubute_by_css(self, css, attribute_name):
+    def get_attribute_by_css(self, css, attribute_name):
         """
         Finds element by css. Returns specified attribute.
         :param css:
@@ -570,7 +570,7 @@ class SeleniumApi(object):
         print attribute
         return attribute
 
-    def get_attrubute_by_id(self, element_id, attribute_name):
+    def get_attribute_by_id(self, element_id, attribute_name):
         """
         Finds element by id. Returns specified attribute.
         :param element_id:
@@ -581,7 +581,7 @@ class SeleniumApi(object):
         print attribute
         return attribute
 
-    def get_attrubute_by_xpath(self, xpath, attribute_name):
+    def get_attribute_by_xpath(self, xpath, attribute_name):
         """
         Finds element by xpath. Returns specified attribute.
         :param xpath:

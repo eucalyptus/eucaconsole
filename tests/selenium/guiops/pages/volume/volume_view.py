@@ -30,7 +30,7 @@ class VolumeView(ViewPage):
         self.tester.click_element_by_css(self._delete_volume_actions_menu_item_css.format(volume_id))
 
     def get_id_of_newly_created_volume(self, name=None):
-        contains_id = self.tester.get_attrubute_by_css(self._first_volume_link_in_list_css, "ng-href")
+        contains_id = self.tester.get_attribute_by_css(self._first_volume_link_in_list_css, "ng-href")
         volume_id = contains_id[-12:]
         print(volume_id)
         return volume_id
