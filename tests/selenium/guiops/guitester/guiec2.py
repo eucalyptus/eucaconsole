@@ -24,7 +24,7 @@ from dialogs.snapshot_dialogs import CreateSnapshotModal, DeleteSnapshotModal
 class GuiEC2(GuiTester):
 
     def __init__(self, console_url, webdriver_url = None, account="ui-test-acct-00", user="admin", password="mypassword0"):
-        super(GuiEC2, self).__init__(console_url, webdriver_url = webdriver_url, account=account, user=user, password=password)
+        super(GuiEC2, self).__init__(console_url, webdriver_url = webdriver_url)
 
     def set_implicit_wait(self, time_to_wait):
         """

@@ -14,17 +14,16 @@ class Keypair_operations_sequence(GuiEC2):
 
     def __init__(self):
         parser = Option_parser()
-        console_url = parser.parse_options()['console_url']
-        webdriver_url = parser.parse_options()['web_driver']
-        account = parser.parse_options()['account']
-        user = parser.parse_options()['user_name']
-        password = parser.parse_options()['password']
-
-        self.tester = GuiEC2(console_url=console_url, webdriver_url=webdriver_url, account=account, user=user, password=password)
+        self.console_url = parser.parse_options()['console_url']
+        self.webdriver_url = parser.parse_options()['web_driver']
+        self.account = parser.parse_options()['account']
+        self.user = parser.parse_options()['user_name']
+        self.password = parser.parse_options()['password']
+        self.tester = GuiEC2(console_url=self.console_url, webdriver_url=self.webdriver_url)
 
     def keypair_ops_test(self):
 
-        self.tester.login("ui-test-acct-00", "admin", "mypassword0")
+        self.tester.login(self.account, self.user, self.password)
         self.tester.create_keypair_from_keypair_view_page(self.keypair_name)
         self.tester.delete_keypair_from_detail_page(self.keypair_name)
         self.tester.create_keypair_from_dashboard(self.keypair_name)
