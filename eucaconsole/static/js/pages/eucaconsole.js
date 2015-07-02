@@ -38,20 +38,28 @@
             $('#euca-logout-form').submit();
         });
 
-        // set active selection in nav
-        var path = window.location.pathname;
-        var screen = '';
-        if (path === '/') {
-            screen = 'dashboard';
+        // hide nav on login screen
+        if ($('#login-wrapper').length > 0) {
+            $('.left-nav').remove();
         }
         else {
-            screen = path.substring(1);
-            if (screen.indexOf("/") > -1) {
-                screen = screen.substring(0, screen.indexOf("/"));
+            // set active selection in nav
+            var path = window.location.pathname;
+            var screen = '';
+            if (path === '/') {
+                screen = 'dashboard';
             }
+            else {
+                screen = path.substring(1);
+                if (screen.indexOf("/") > -1) {
+                    screen = screen.substring(0, screen.indexOf("/"));
+                }
+            }
+            $('ul.resources-nav').find("."+screen).addClass('active');
+
+            // handlers for nav expand/collapse w/ mouse
+            $('.left-nav').mouseenter(expand).mouseleave(collapse);
         }
-        $('ul.resources-nav').find("."+screen).addClass('active');
-        $('.left-nav').mouseenter(expand).mouseleave(collapse);
         function collapse() {
           $('.left-nav').addClass('nav-collapsed');
         }
