@@ -1165,8 +1165,7 @@ div.left-nav {
     height: 100%;
     z-index: 999999 !important;
     background-color: white;
-    overflow-x: hidden;
-    overflow-y: hidden;
+    overflow: hidden;
     border-style: solid;
     border-width: 0 1px 0 0;
     border-color: $hp-gray-20;
@@ -1187,12 +1186,13 @@ $expanded-nav-width: 215px;
 
 .left-nav {
     width: $expanded-nav-width !important;
-    overflow-y: scroll;
+    overflow-y: scroll !important;
     transition: width 0.3s;
 }
 
 .nav-collapsed.left-nav {
     width: 50px !important;
+    overflow-y: hidden !important;
     label {
         visibility: hidden;
     }

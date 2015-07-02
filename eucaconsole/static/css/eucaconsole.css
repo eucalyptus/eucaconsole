@@ -1922,13 +1922,13 @@ footer .copyright { font-size: 0.9em; }
   #logobar #offcanvas-icon { left: 0px; display: inline-block !important; margin-right: 12px; }
   #logobar #offcanvas-icon i { padding-right: 0.5rem; }
   .left-nav { display: none; } }
-div.left-nav { position: fixed; top: 0; left: 0; height: 100%; z-index: 999999 !important; background-color: white; overflow-x: hidden; overflow-y: hidden; border-style: solid; border-width: 0 1px 0 0; border-color: #cccccc; }
+div.left-nav { position: fixed; top: 0; left: 0; height: 100%; z-index: 999999 !important; background-color: white; overflow: hidden; border-style: solid; border-width: 0 1px 0 0; border-color: #cccccc; }
 
 div.left-off-canvas-menu { z-index: 999999 !important; background-color: white; border-style: solid; border-width: 0 1px 0 0; border-color: #cccccc; }
 
-.left-nav { width: 215px !important; overflow-y: scroll; transition: width 0.3s; }
+.left-nav { width: 215px !important; overflow-y: scroll !important; transition: width 0.3s; }
 
-.nav-collapsed.left-nav { width: 50px !important; }
+.nav-collapsed.left-nav { width: 50px !important; overflow-y: hidden !important; }
 .nav-collapsed.left-nav label { visibility: hidden; }
 
 #hp-logo { position: relative; margin-top: 0.5rem; bottom: 1px; display: inline-block; width: 36px; height: 36px; background: url(../img/hp-logo-36x36.png) no-repeat; margin-right: 0.8rem; }
