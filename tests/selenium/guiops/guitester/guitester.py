@@ -9,7 +9,7 @@ from dialogs.keypair_dialogs import CreateKeypairDialog, DeleteKeypairModal, Imp
 
 class GuiTester(SeleniumApi):
 
-    def __init__(self, console_url, webdriver_url=None, account="ui-test-acct-00", user="admin", password="mypassword0"):
+    def __init__(self, console_url, webdriver_url=None, account=None, user=None, password=None):
         """
         Initiates a  tester object. Initiates a copy of the browser. Opens console_url.
         :param webdriver_url:
