@@ -16,7 +16,8 @@ class Keypair_operations_sequence(GuiEC2):
         parser = Option_parser()
         console_url = parser.parse_options()['console_url']
         webdriver_url = parser.parse_options()['web_driver']
-        self.tester = GuiEC2(console_url="http://localhost:8888")
+
+        self.tester = GuiEC2(console_url=console_url, webdriver_url=webdriver_url)
 
     def keypair_ops_test(self):
 
