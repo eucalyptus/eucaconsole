@@ -229,7 +229,7 @@
                 </h6>
                 <div class="content" ng-show="expanded">
                     <div class="flex-space">
-                        <div class="flex-column" ng-show="serviceList">
+                        <div class="flex-column-1" ng-show="serviceList">
                             <h6 i18n:translate="">UNSUPPORTED SERVICES</h6>
                             <ul class="bullet-list">
                                 <li ng-repeat="item in serviceList" ng-cloak="true">
@@ -237,7 +237,7 @@
                                 </li>
                             </ul>
                         </div>
-                        <div class="flex-column" ng-show="resourceList">
+                        <div class="flex-column-1" ng-show="resourceList">
                             <h6 i18n:translate="">UNSUPPORTED RESOURCES</h6>
                             <ul class="bullet-list">
                                 <li ng-repeat="item in resourceList" ng-cloak="true">
@@ -268,7 +268,7 @@
                 </h6>
                 <div class="content" ng-show="expanded">
                     <div class="flex-space">
-                        <div class="flex-column" ng-show="parameterList">
+                        <div class="flex-column-1" ng-show="parameterList">
                             <h6 i18n:translate="">PARAMETERS TO CONVERT</h6>
                             <ul class="bullet-list">
                                 <li ng-repeat="item in parameterList" ng-cloak="true">
@@ -276,7 +276,7 @@
                                 </li>
                             </ul>
                         </div>
-                        <div class="flex-column" ng-show="propertyList">
+                        <div class="flex-column-1" ng-show="propertyList">
                             <h6 i18n:translate="">UNSUPPORTED PROPERTIES</h6>
                             <ul class="bullet-list">
                                 <li ng-repeat="item in propertyList" ng-cloak="true">

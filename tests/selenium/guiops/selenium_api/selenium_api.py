@@ -29,7 +29,7 @@ class SeleniumApi(object):
     timeout_to_determine_if_clickable_in_seconds = 20
     timeout_to_wait_for_text_in_seconds = 120
     implicit_wait_default_in_seconds = 30
-    timeout_to_check_for_visibility_in_seconds = 0
+    timeout_to_check_for_visibility_in_seconds = 3
 
     def set_implicit_wait(self, implicit_wait_time):
         """
@@ -391,7 +391,7 @@ class SeleniumApi(object):
         self.set_implicit_wait(self.implicit_wait_default_in_seconds)
 
 
-    def wait_for_text_present_by_css(self, css, text, timeout_in_seconds):
+    def wait_for_text_present_by_css(self, css, text, timeout_in_seconds=None):
         """
         Waits for text to be present.
         :param css:
@@ -551,7 +551,7 @@ class SeleniumApi(object):
 
     def select_by_name_and_value(self, name, value):
         """
-        Selects element with particular text on it.
+        Selects element by name and value.
         :param name:
         :param text:
         """
@@ -577,6 +577,17 @@ class SeleniumApi(object):
         :param attribute_name:
         """
         element = self.driver.find_element_by_id(element_id)
+        attribute = element.get_attribute(attribute_name)
+        print attribute
+        return attribute
+
+    def get_attrubute_by_xpath(self, xpath, attribute_name):
+        """
+        Finds element by xpath. Returns specified attribute.
+        :param xpath:
+        :param attribute_name:
+        """
+        element = self.driver.find_element_by_xpath(xpath)
         attribute = element.get_attribute(attribute_name)
         print attribute
         return attribute

@@ -1,23 +1,22 @@
 <!--! Select certificate modal dialog -->
-<div tal:omit-tag="" i18n:domain="eucaconsole">
+<div tal:omit-tag="" i18n:domain="eucaconsole" tal:condition="layout.cloud_type == 'euca'">
     <div id="select-certificate-modal" class="reveal-modal medium" data-reveal="" ng-cloak="">
-        <h3 i18n:translate="">Select certificate</h3>
+        <h3 i18n:translate="">Select certificate(s)</h3>
         <div ng-show="showsCertificateTabDiv">
-            <ul id="wizard-tabs" class="btn-group" ng-cloak="">
+            <ul class="btn-group" ng-cloak="">
                 <li>
-                    <a id="select-certificate-modal-tab-ssl" class="active"
-                       ng-click="selectCertificateTab($event, 'SSL')" i18n:translate="">SSL</a>
-                    <a id="select-certificate-modal-tab-backend"
-                       ng-click="selectCertificateTab($event, 'BACKEND')">Back end</a>
+                    <a id="select-certificate-modal-tab-ssl" class="active" ng-click="selectCertificateTab($event, 'SSL')"
+                       ng-class="{'active': certificateTab === 'SSL'}" i18n:translate="">SSL</a>
+                    <a id="select-certificate-modal-tab-backend" ng-click="selectCertificateTab($event, 'BACKEND')"
+                       ng-class="{'active': certificateTab === 'BACKEND'}" i18n:translate="">Back end</a>
                 </li>
             </ul>
         </div>
         <div>&nbsp;</div>
         <div ng-show="certificateTab === 'BACKEND'">
-            <p>
-                <span i18n:translate="">
-                    Including back-end certificates ensures that your instances accept only encrypted communication from trusted sources.  Back-end certificates are optional.
-                </span>
+            <p i18n:translate="">
+                Including back-end certificates ensures that your instances accept only encrypted communication
+                from trusted sources.  Back-end certificates are optional.
             </p>
             <form method="post" data-abide="abide" id="backend-certificate-form">
                 ${structure:backend_certificate_form['csrf_token']}
@@ -34,10 +33,14 @@
                     </div>
                 </div>
                 <div>
-                    <span class="section-label" ng-show="backendCertificateArray.length === 0" i18n:translate="">Add a certificate:</span>
-                    <span class="section-label" ng-show="backendCertificateArray.length > 0" i18n:translate="">Add another certificate:</span>
+                    <span class="section-label" ng-show="backendCertificateArray.length === 0" i18n:translate="">
+                        Add a certificate:
+                    </span>
+                    <span class="section-label" ng-show="backendCertificateArray.length > 0" i18n:translate="">
+                        Add another certificate:
+                    </span>
                     <div>
-                        ${panel('form_field', field=backend_certificate_form['backend_certificate_name'], ng_attrs={'model': 'backendCertificateName'}, leftcol_width=3, rightcol_width=9, pattern=layout.name_without_spaces_pattern)}
+                        ${panel('form_field', field=backend_certificate_form['backend_certificate_name'], ng_attrs={'model': 'backendCertificateName'}, stack_label=True, pattern=layout.name_without_spaces_pattern)}
                         <div class="row inline controls-wrapper" ng-show="classDuplicatedBackendCertificateDiv === 'error'">
                             <div class="small-3 columns">&nbsp;</div>
                             <div class="small-9 columns field">
@@ -46,19 +49,14 @@
                                 </div>
                             </div>
                         </div>
-                        ${panel('form_field', field=backend_certificate_form['backend_certificate_body'], ng_attrs={'model': 'backendCertificateBody'}, leftcol_width=3, rightcol_width=9)}
+                        ${panel('form_field', field=backend_certificate_form['backend_certificate_body'], ng_attrs={'model': 'backendCertificateBody'}, stack_label=True)}
                     </div>
-                    <div>
-                        <div class="row inline controls-wrapper" id="add-backend-certificate-button-div">
-                            <div class="large-2 small-3 columns">&nbsp;</div>
-                            <div class="large-10 small-9 columns field">
-                                <span id="button-add-backend-certificate" class="button round small" i18n:translate=""
-                                    ng-class="classAddBackendCertificateButton"
-                                    ng-click="addBackendCertificate($event)">
-                                    Add Certificate
-                                </span>
-                            </div>
-                        </div>
+                    <div id="add-backend-certificate-button-div" class="columns">
+                        <span id="button-add-backend-certificate" class="button round small" i18n:translate=""
+                            ng-class="classAddBackendCertificateButton"
+                            ng-click="addBackendCertificate($event)">
+                            Add Certificate
+                        </span>
                     </div>
                 </div>
             </form>
@@ -67,7 +65,7 @@
         <div ng-show="certificateTab === 'SSL'">
             <p>
                 <span i18n:translate="">
-                    SSL certificates are required for secure(HTTPS or SSL) listeners.
+                    SSL certificates are required for secure (HTTPS or SSL) listeners.
                 </span>
                 <span i18n:translate="" tal:condition="can_list_certificates">
                     Choose or upload a pem-encoded certificate below.
@@ -76,26 +74,33 @@
                     Upload a pem-encoded certificate below.
                 </span>
             </p>
-            <form method="post" data-abide="abide" id="select-certificate-form">
+            <form method="post" data-abide="abide" id="select-certificate-form" ng-cloak="">
                  ${structure:certificate_form['csrf_token']}
-                <div tal:condition="can_list_certificates">
+                <p ng-show="existingCertificateChoices.length === 1" i18n:translate="">
+                    No certificates are available. Please upload a new certificate instead.
+                </p>
+                <div tal:condition="can_list_certificates" ng-show="existingCertificateChoices.length != 1">
                     <div>
-                        <input type="radio" id="certificate-type-radio-existing" name="certificate_type_radio" value="existing" ng-model="certificateRadioButton" />
+                        <input type="radio" id="certificate-type-radio-existing" name="certificate_type_radio"
+                               value="existing" ng-model="certificateRadioButton" />
                         <label for="certificate-type-radio-existing" i18n:translate="">Choose an existing SSL certificate</label>
                     </div>
                     <div ng-show="certificateRadioButton === 'existing'">
-                        ${panel('form_field', field=certificate_form['certificates'], ng_attrs={'model': 'certificateARN'}, leftcol_width=3, rightcol_width=9)}
+                        ${panel('form_field', field=certificate_form['certificate_arn'], ng_attrs={'model': 'certificateARN'}, leftcol_width=3, rightcol_width=9)}
                     </div>
                 </div>
                 <div>
-                    <input type="radio" id="certificate-type-radio-new" name="certificate_type_radio" value="new" ng-model="certificateRadioButton" />
-                    <label for="certificate-type-radio-new" i18n:translate="">Upload a new SSL certificate</label>
+                    <input type="radio" id="certificate-type-radio-new" name="certificate_type_radio"
+                           value="new" ng-model="certificateRadioButton" ng-checked="existingCertificateChoices.length === 1" />
+                    <label id="certificate-type-radio-new-label" for="certificate-type-radio-new" i18n:translate="">
+                        Upload a new SSL certificate
+                    </label>
                 </div>
-                <div ng-show="certificateRadioButton === 'new'">
-                    ${panel('form_field', field=certificate_form['certificate_name'], ng_attrs={'model': 'newCertificateName'}, leftcol_width=3, rightcol_width=9, pattern=layout.name_without_spaces_pattern)}
-                    ${panel('form_field', field=certificate_form['private_key'], ng_attrs={'model': 'privateKey'}, leftcol_width=3, rightcol_width=9)}
-                    ${panel('form_field', field=certificate_form['public_key_certificate'], ng_attrs={'model': 'publicKeyCertificate'}, leftcol_width=3, rightcol_width=9)}
-                    ${panel('form_field', field=certificate_form['certificate_chain'], ng_attrs={'model': 'certificateChain'}, leftcol_width=3, rightcol_width=9)}
+                <div ng-show="certificateRadioButton === 'new' || existingCertificateChoices.length === 1" id="new-certificate-wrapper">
+                    ${panel('form_field', field=certificate_form['certificate_name'], ng_attrs={'model': 'newCertificateName'}, stack_label=True, pattern=layout.name_without_spaces_pattern)}
+                    ${panel('form_field', field=certificate_form['private_key'], ng_attrs={'model': 'privateKey'}, stack_label=True)}
+                    ${panel('form_field', field=certificate_form['public_key_certificate'], ng_attrs={'model': 'publicKeyCertificate'}, stack_label=True)}
+                    ${panel('form_field', field=certificate_form['certificate_chain'], ng_attrs={'model': 'certificateChain'}, stack_label=True)}
                 </div>
             </form>
             <a href="#" id="select-certificate-close-link-form-ssl" class="close-reveal-modal">&#215;</a>
@@ -104,10 +109,15 @@
         <div>
             <div class="row">
                 <div class="dialog-submit-button">
-                    <button type="submit" class="button expand" id="create-securitygroup-btn" i18n:translate=""
+                    <button type="submit" class="button expand" id="select-certificate-submit-btn"
                         ng-class="classUseThisCertificateButton"
                         ng-click="handleCertificateCreate($event, '${request.route_path('certificate_create')}')">
-                        Use This Certificate
+                        <span i18n:translate="" ng-show="!showsCertificateTabDiv || backendCertificateArray.length === 0">
+                            Use This Certificate
+                        </span>
+                        <span i18n:translate="" ng-show="showsCertificateTabDiv &amp;&amp; backendCertificateArray.length">
+                            Use These Certificates
+                        </span>
                     </button>
                 </div>
                 <div class="dialog-progress-display hide">

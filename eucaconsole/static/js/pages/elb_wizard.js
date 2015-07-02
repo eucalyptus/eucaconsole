@@ -2,9 +2,12 @@
  * @fileOverview Elastic Load Balancer Wizard JS
  * @requires AngularJS
  *
+ * Note: Specify dependencies array in base_elb_wizard.js
+ *
  */
 
-angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $http, $timeout, eucaHandleError, eucaUnescapeJson) {
+angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $http, $timeout, eucaHandleError,
+                                                                      eucaUnescapeJson, eucaFixHiddenTooltips) {
     $scope.elbForm = undefined;
     $scope.urlParams = undefined;
     $scope.isNotValid = true;
@@ -62,6 +65,8 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
         Object.getPrototypeOf(document.createComment('')).getAttribute = function() {};
     };
     $scope.setInitialValues = function (options) {
+        var certArnField = $('#certificate_arn');
+        $scope.existingCertificateChoices = options.existing_certificate_choices;
         $scope.elbForm = $('#elb-form');
         $scope.urlParams = $.url().param();
         $scope.isNotValid = true;
@@ -106,9 +111,9 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
         $scope.classAddBackendCertificateButton = 'disabled';
         $scope.classUseThisCertificateButton = 'disabled';
         // timeout is needed to wait for the elb listener directive to be initialized
-        if ($('#certificates').children('option').length > 0) {
-            $scope.certificateName = $('#certificates').children('option').first().text();
-            $scope.certificateARN = $('#certificates').children('option').first().val();
+        if (certArnField.children('option').length > 0) {
+            $scope.certificateName = certArnField.children('option').first().text();
+            $scope.certificateARN = certArnField.children('option').first().val();
         }
         $scope.canListCertificates = options.can_list_certificates;
         $scope.initChosenSelectors();
@@ -119,6 +124,11 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
         $('#zone').chosen({'width': '100%', search_contains: true});
     };
     $scope.setWatcher = function (){
+        eucaFixHiddenTooltips();
+        $(document).on('click', '#security-policy-dialog-submit-btn', function () {
+            $scope.isNotChanged = false;
+            $scope.$apply();
+        });
         // Handle the next step tab click event
         $scope.$on('eventClickVisitNextStep', function($event, thisStep, nextStep) {
             $scope.checkRequiredInput(thisStep);
@@ -144,13 +154,12 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
             } else {
                 $scope.showsCertificateTabDiv = false;
             }
-            var block = {
+            $scope.tempListenerBlock = {
                 'fromProtocol': fromProtocol,
                 'fromPort': fromPort,
                 'toProtocol': toProtocol,
-                'toPort': toPort,
+                'toPort': toPort
             };
-            $scope.tempListenerBlock = block;
             $scope.certificateTab = certificateTab;
             $scope.openSelectCertificateModal();
         });
@@ -225,13 +234,15 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
             $scope.setClassUseThisCertificateButton();
         });
         $scope.$watch('certificateARN', function(){
+            var certArnField = $('#certificate_arn');
+            var hiddenArnInput = $('#hidden_certificate_arn_input');
             // Find the certficate name when selected on the select certificate dialog
-            if ($('#certificates option:selected').length > 0) {
-                $scope.certificateName = $('#certificates option:selected').text();
+            if (certArnField.find('option:selected').length > 0) {
+                $scope.certificateName = certArnField.find('option:selected').text();
             }
             // Assign the certificate ARN value as hidden input
-            if ($('#hidden_certificate_arn_input').length > 0) {
-                $('#hidden_certificate_arn_input').val($scope.certificateARN);
+            if (hiddenArnInput.length > 0) {
+                hiddenArnInput.val($scope.certificateARN);
             }
             $scope.$broadcast('eventUpdateCertificateARN', $scope.certificateARN, $scope.tempListenerBlock);
         });
@@ -454,6 +465,7 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
     };
     $scope.openSelectCertificateModal = function () {
         var modal = $('#select-certificate-modal');
+        var certArnField = $('#certificate_arn');
         if (modal.length > 0) {
             modal.foundation('reveal', 'open');
             $scope.certificateRadioButton = $scope.canListCertificates ? 'existing' : 'new';
@@ -465,9 +477,9 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
                     $scope.certificateName = block.certificateName;
                 }
             });
-            $('#certificates').val($scope.certificateARN);
-            // Remove any empty options created by Angular model issue 
-            $('#certificates option').each(function () {
+            certArnField.val($scope.certificateARN);
+            // Remove any empty options created by Angular model issue
+            certArnField.find('option').each(function () {
                 if ($(this).text() === '') {
                     $(this).remove();
                 }
@@ -490,11 +502,10 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
         }
     };
     $scope.createBackendCertificateArrayBlock = function () {
-        var block = {
+        return {
             'name': $scope.backendCertificateName,
             'certificateBody': $scope.backendCertificateBody
         };
-        return block;
     };
     $scope.addBackendCertificate = function ($event) {
         $event.preventDefault();
@@ -605,13 +616,13 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
         }
     };
     $scope.createNewCertificate = function (url) {
-        var formData = $('#select-certificate-form').serialize();
-        $scope.certificateForm = $('#select-certificate-form');
+        var certForm = $('#select-certificate-form');
+        var formData = certForm.serialize();
+        $scope.certificateForm = certForm;
         $scope.certificateForm.trigger('validate');
-        if ($scope.certificateForm.find('[data-invalid]').length) {
+        if (!$scope.certificateARN && !$scope.newCertificateName) {
             return false;
         }
-        var newCertificateName = $scope.newCertificateName;
         $http({
             headers: {'Content-Type': 'application/x-www-form-urlencoded'},
             method: 'POST',
@@ -621,15 +632,15 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
             Notify.success(oData.message);
             if (oData.id) {
                 var newARN = oData.id;
-                $('#certificates').append($("<option></option>")
+                $('#certificate_arn').append($("<option></option>")
                     .attr("value", newARN)
-                    .text(newCertificateName));
+                    .text($scope.newCertificateName));
                 $scope.certificateARN = newARN;
                 // timeout is needed for the select element to be updated with the new option
                 $timeout(function () {
-                    $scope.certificateName = newCertificateName;
+                    $scope.certificateName = $scope.newCertificateName;
                     // inform elb listener editor about the new certificate
-                    $scope.$broadcast('eventUseThisCertificate', newARN, newCertificateName);
+                    $scope.$broadcast('eventUseThisCertificate', newARN, $scope.newCertificateName);
                 });
             }
         }).error(function (oData) {

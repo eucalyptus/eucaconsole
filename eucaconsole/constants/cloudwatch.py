@@ -101,7 +101,7 @@ METRIC_TITLE_MAPPING = {
     # ELB Metrics
     'RequestCount': _(u'Sum request count'),
     'Latency': _(u'Avg latency (ms)'),
-    'UnhealthyHostCount': _(u'Unhealthy hosts'),
+    'UnHealthyHostCount': _(u'Unhealthy hosts'),
     'HealthyHostCount': _(u'Healthy hosts'),
     'HTTPCode_ELB_4XX': _(u'Sum ELB 4xxs'),
     'HTTPCode_ELB_5XX': _(u'Sum ELB 5xxs'),

@@ -1,4 +1,3 @@
-from guitester.guitester import GuiTester
 from guitester.guiec2 import GuiEC2
 import time
 
@@ -13,7 +12,7 @@ class Keypair_operations_sequence(GuiEC2):
                   "tlZD0zbdV/tpADxDpnhW2cPVpXcjy4sRzUCc8AZW+OE3LQxXild alicehubenko@Alices-MacBook-Pro.local"
 
     def __init__(self):
-        self.tester = GuiEC2("http://10.111.80.147:4444/wd/hub", "https://10.111.5.145")
+        self.tester = GuiEC2("https://10.111.5.145")
 
     def keypair_ops_test(self):
 

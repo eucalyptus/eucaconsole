@@ -5,7 +5,7 @@ import string, random, time
 class Instance_operations_sequence(GuiEC2):
 
     def __init__(self):
-        self.tester = GuiEC2("http://10.111.80.147:4444/wd/hub", "https://10.111.5.145")
+        self.tester = GuiEC2("https://10.111.5.145","http://10.111.80.147:4444/wd/hub")
 
     def id_generator(self, size = 6, chars=string.ascii_uppercase + string.digits):
         return ''.join(random.choice(chars) for j in range(size))

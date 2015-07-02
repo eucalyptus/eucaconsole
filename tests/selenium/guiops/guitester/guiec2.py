@@ -9,21 +9,22 @@ from pages.volume.volume_view import VolumeView
 from pages.volume.volume_detail import VolumeDetailPage
 from pages.snapshot.snapshot_detail import SnapshotDetailPage
 from pages.snapshot.snapshot_view import SnapshotView
+from pages.snapshot.create_snapshot import CreateSnapshotPage
 from pages.instance.instancedetail import InstanceDetailPage
 from pages.image.image_view import ImageView
 from pages.security_group.security_group_view import SecurityGroupView
 from pages.security_group.security_group_detail import SecurityGroupDetailPage
 from dialogs.security_group_dialogs import CreateScurityGroupDialog, DeleteScurityGroupDialog
 from dialogs.keypair_dialogs import CreateKeypairDialog, DeleteKeypairModal, ImportKeypairDialog
-from dialogs.instance_dialogs import LaunchInstanceWidget, LaunchMoreLikeThisDialog, TerminateInstanceModal, TerminateAllInstancesModal
+from dialogs.instance_dialogs import LaunchInstanceWizard, LaunchMoreLikeThisDialog, TerminateInstanceModal, TerminateAllInstancesModal
 from dialogs.volume_dialogs import CreateVolumeDialog, DeleteVolumeModal
 from dialogs.snapshot_dialogs import CreateSnapshotModal, DeleteSnapshotModal
 
 
 class GuiEC2(GuiTester):
 
-    def __init__(self, webdriver_url, console_url, account="ui-test-acct-00", user="admin", password="mypassword0"):
-        super(GuiEC2, self).__init__(webdriver_url, console_url, account=account, user=user, password=password)
+    def __init__(self, console_url, webdriver_url = None, account="ui-test-acct-00", user="admin", password="mypassword0"):
+        super(GuiEC2, self).__init__(console_url, webdriver_url = webdriver_url, account=account, user=user, password=password)
 
     def set_implicit_wait(self, time_to_wait):
         """
@@ -209,7 +210,7 @@ class GuiEC2(GuiTester):
         """
         BasePage(self).goto_dashboard_via_menu()
         Dashboard(self).click_launch_instance_button_from_dashboard()
-        LaunchInstanceWidget(self).launch_instance(image, availability_zone, instance_type,
+        LaunchInstanceWizard(self).launch_instance(image, availability_zone, instance_type,
                                                           number_of_of_instances, instance_name, key_name,
                                                           security_group, user_data, monitoring, private_addressing)
         instance_id = InstanceView(self).get_id_of_newly_launched_instance()
@@ -236,7 +237,7 @@ class GuiEC2(GuiTester):
         """
         BasePage(self).goto_instances_via_menu()
         InstanceView(self).click_action_launch_instance_on_view_page()
-        LaunchInstanceWidget(self).launch_instance(image, availability_zone, instance_type,
+        LaunchInstanceWizard(self).launch_instance(image, availability_zone, instance_type,
                                                     number_of_of_instances, instance_name, key_name,
                                                     security_group, user_data, monitoring, private_addressing)
         instance_id = InstanceView(self).get_id_of_newly_launched_instance()
@@ -264,7 +265,7 @@ class GuiEC2(GuiTester):
 
         BasePage(self).goto_images_view_via_menu()
         ImageView(self).click_action_launch_instance(image_id_or_type)
-        LaunchInstanceWidget(self).launch_instance_step2(availability_zone, instance_type,
+        LaunchInstanceWizard(self).launch_instance_step2(availability_zone, instance_type,
                                                         number_of_of_instances, instance_name, key_name,
                                                         security_group, user_data, monitoring, private_addressing)
         instance_id = InstanceView(self).get_id_of_newly_launched_instance()
@@ -360,12 +361,28 @@ class GuiEC2(GuiTester):
         print volume
         return volume
 
-    def create_volume_from_dashboard(self):
-        NotImplementedError()
+    def create_volume_from_dashboard(self, volume_name=None, create_from_snapshot=False,snapshot_id=None, volume_size=None, availability_zone=None, timeout_in_seconds=240 ):
+        """
+        Navigates to dashboard and creates volume.
+        :param volume_name:
+        :param create_from_snapshot:
+        :param snapshot_id:
+        :param volume_size:
+        :param availability_zone:
+        :param timeout_in_seconds:
+        """
+        BasePage(self).goto_dashboard_via_menu()
+        Dashboard(self).click_create_volume_link()
+        CreateVolumeDialog(self).create_volume(volume_name=volume_name, create_from_snapshot=create_from_snapshot, snapshot_id=snapshot_id, volume_size=volume_size, availability_zone=None)
+        VolumeDetailPage(self).verify_volume_status_is_available(timeout_in_seconds=timeout_in_seconds)
+        volume = VolumeDetailPage(self).get_volume_name_and_id()
+        print volume
+        return volume
 
     def delete_volume_from_view_page(self, volume_id, timeout_in_seconds=240):
         """
         Navigates to volumes view page and deletes volume.
+        :param timeout_in_seconds:
         :param volume_id:
         """
         BasePage(self).goto_volumes_view_via_menu()
@@ -373,12 +390,25 @@ class GuiEC2(GuiTester):
         DeleteVolumeModal(self).delete_volume()
         VolumeView(self).verify_volume_status_is_deleted(volume_id, timeout_in_seconds)
 
-    def delete_volume_from_detail_page(self, volume_id):
-        NotImplementedError()
+    def delete_volume_from_detail_page(self, volume_id, volume_name=None):
+        """
+        Navigates to volume detail page and deletes volume. Waits for volume state to become 'deleted' on landing page.
+        :param volume_id:
+        :param volume_name:
+        """
+        BasePage(self).goto_volumes_view_via_menu()
+        VolumeView(self).goto_volume_detail_page_via_actions(volume_id)
+        VolumeDetailPage(self).verify_volume_detail_page_loaded(volume_id, volume_name)
+        VolumeDetailPage(self).click_action_delete_volume_on_detail_page()
+        DeleteVolumeModal(self).delete_volume()
+        VolumeView(self).verify_volume_status_is_deleted(volume_id, 240)
 
-    def create_snapshot_on_volumes_view_page(self, volume_id, snapshot_name, snapshot_description, timeout_in_seconds=240):
+    def create_snapshot_on_volumes_view_page(self, volume_id, snapshot_name=None, snapshot_description=None, timeout_in_seconds=240):
         """
         Navigates to volumes view page and creates a snapshot of a volume.
+        :param snapshot_name:
+        :param snapshot_description:
+        :param timeout_in_seconds:
         :param volume_id:
         """
         BasePage(self).goto_volumes_view_via_menu()
@@ -386,14 +416,15 @@ class GuiEC2(GuiTester):
         VolumeDetailPage(self).click_create_snapshot_from_volume_tile(volume_id)
         CreateSnapshotModal(self).create_snapshot(snapshot_name, snapshot_description)
         VolumeDetailPage(self).goto_detail_page_of_newly_created_snapshot(volume_id)
-        snapshot=SnapshotDetailPage(self).get_snapshot_name_and_id()
+        snapshot=SnapshotDetailPage(self).get_snapshot_name_and_id(snapshot_name)
         SnapshotDetailPage(self).verify_snapshot_status_is_completed(timeout_in_seconds)
         print snapshot
         return snapshot
 
-    def create_snapshot_on_volume_detail_page(self, volume_id, snapshot_name, snapshot_description, timeout_in_seconds=240):
+    def create_snapshot_on_volume_detail_page(self, volume_id, snapshot_name=None, snapshot_description=None, timeout_in_seconds=240):
         """
         Navigates to volume detail page and creates a snapshot.
+        :param timeout_in_seconds:
         :param volume_id:
         :param snapshot_name:
         :param snapshot_description:
@@ -403,28 +434,68 @@ class GuiEC2(GuiTester):
         VolumeDetailPage(self).click_create_snapshot_from_volume_tile(volume_id)
         CreateSnapshotModal(self).create_snapshot(snapshot_name, snapshot_description)
         VolumeDetailPage(self).goto_detail_page_of_newly_created_snapshot(volume_id)
-        snapshot=SnapshotDetailPage(self).get_snapshot_name_and_id()
+        snapshot=SnapshotDetailPage(self).get_snapshot_name_and_id(snapshot_name)
         SnapshotDetailPage(self).verify_snapshot_status_is_completed(timeout_in_seconds)
         print snapshot
         return snapshot
 
-    def create_snapshot_on_snapshot_view_page(self):
-        NotImplementedError()
+    def create_snapshot_on_snapshot_view_page(self, volume_id, snapshot_name=None, snapshot_description=None, timeout_in_seconds=240):
+        """
+        Navigates to snapshot landing page, creates snapshot.
+        :param volume_id:
+        :param snapshot_name:
+        :param snapshot_description:
+        :param timeout_in_seconds:
+        """
+        BasePage(self).goto_snapshots_view_via_menu()
+        SnapshotView(self).click_create_snapshot_btn_on_view_page()
+        CreateSnapshotPage(self).create_snapshot(volume_id=volume_id, snapshot_name=snapshot_name, snapshot_description=snapshot_description)
+        snapshot = SnapshotDetailPage(self).get_snapshot_name_and_id(snapshot_name)
+        SnapshotDetailPage(self).verify_snapshot_status_is_completed(timeout_in_seconds)
+        print snapshot
+        return snapshot
 
-    def create_snapshot_from_dashboard(self):
-        NotImplementedError()
+    def create_snapshot_from_dashboard(self, volume_id, snapshot_name=None, snapshot_description=None, timeout_in_seconds=240):
+        """
+        Navigates to snapshot landing page, creates snapshot.
+        :param volume_id:
+        :param snapshot_name:
+        :param snapshot_description:
+        :param timeout_in_seconds:
+        """
+        BasePage(self).goto_dashboard_via_menu()
+        Dashboard(self).click_create_snapshot_link()
+        CreateSnapshotPage(self).create_snapshot(volume_id=volume_id, snapshot_name=snapshot_name, snapshot_description=snapshot_description)
+        snapshot = SnapshotDetailPage(self).get_snapshot_name_and_id(snapshot_name)
+        SnapshotDetailPage(self).verify_snapshot_status_is_completed(timeout_in_seconds)
+        print snapshot
+        return snapshot
 
-    def delete_snapshot_from_view_page(self):
-        NotImplementedError()
-
-    def delete_snapshot_from_detail_page(self, snapshot_id, snapshot_name=None):
+    def delete_snapshot_from_landing_page(self, snapshot_id):
+        """
+        Navigates to landing page, deletes snapshot, verifies snapshot is gone from landing page.
+        :param snapshot_id:
+        """
         BasePage(self).goto_snapshots_view_via_menu()
         SnapshotView(self).click_action_delete_snapshot_on_view_page(snapshot_id)
+        DeleteSnapshotModal(self).delete_snapshot()
+        SnapshotView(self).verify_snapshot_not_present(snapshot_id)
+
+    def delete_snapshot_from_detail_page(self, snapshot_id):
+        """
+        Navigates to detail page, deletes snapshot, verifies snapshot is gone from landing page.
+        :param snapshot_id:
+        """
+        BasePage(self).goto_snapshots_view_via_menu()
+        SnapshotView(self).goto_snapshot_detail_page_via_link(snapshot_id)
+        SnapshotDetailPage(self).click_action_delete_snapshot_on_detail_page()
+        DeleteSnapshotModal(self).delete_snapshot()
+        SnapshotView(self).verify_snapshot_not_present(snapshot_id)
 
     def delete_snapshot_from_tab_on_volume_detail_page(self):
         NotImplementedError()
 
-    def register_snapshot_as_an_image_from_snapshot_view_page(self):
+    def register_snapshot_as_an_image_from_snapshot_landing_page(self):
         NotImplementedError()
 
 

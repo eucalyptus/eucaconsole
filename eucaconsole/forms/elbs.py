@@ -30,11 +30,16 @@ Forms for Elastic Load Balancer
 """
 import re
 import wtforms
+
 from wtforms import validators
 
 from ..i18n import _
-from . import BaseSecureForm, ChoicesManager, TextEscapedField, NAME_WITHOUT_SPACES_NOTICE
+from . import BaseSecureForm, ChoicesManager, TextEscapedField, NAME_WITHOUT_SPACES_NOTICE, BLANK_CHOICE
+from ..constants.elbs import SSL_CIPHERS
 from ..views import BaseView
+
+
+NO_CERTIFICATES_CHOICE = ('None', _(u'There are no certificates available'))
 
 
 class PingPathRequired(validators.Required):
@@ -46,6 +51,17 @@ class PingPathRequired(validators.Required):
     def __call__(self, form, field):
         if form.ping_protocol.data in ['HTTP', 'HTTPS']:
             super(PingPathRequired, self).__call__(form, field)
+
+
+class CertificateARNRequired(validators.Required):
+    """Custom validator to conditionally require certificate_arn when certificate_name is missing"""
+
+    def __init__(self, *args, **kwargs):
+        super(CertificateARNRequired, self).__init__(*args, **kwargs)
+
+    def __call__(self, form, field):
+        if not form.certificate_name.data:
+            super(CertificateARNRequired, self).__call__(form, field)
 
 
 class ELBForm(BaseSecureForm):
@@ -442,18 +458,23 @@ class ELBInstancesFiltersForm(BaseSecureForm):
 
 
 class CertificateForm(BaseSecureForm):
-    """Create SSL Certificate form"""
+    """ELB Certificate form (used on wizard and detail page)"""
     certificate_name_error_msg = NAME_WITHOUT_SPACES_NOTICE
     certificate_name = wtforms.TextField(
         label=_(u'Certificate name'),
         validators=[validators.InputRequired(message=certificate_name_error_msg)],
     )
     private_key_error_msg = _(u'Private key is required')
+    private_key_help_text = _(
+        u'Enter the contents of your private key file. Begins with Private-Key:')
     private_key = wtforms.TextAreaField(
         label=_(u'Private key'),
         validators=[validators.InputRequired(message=private_key_error_msg)],
     )
     public_key_certificate_error_msg = _(u'Public key certificate is required')
+    public_key_help_text = _(
+        u'Enter the contents of your public key certificate file. Begins with -----BEGIN CERTIFICATE-----'
+    )
     public_key_certificate = wtforms.TextAreaField(
         label=_(u'Public key certificate'),
         validators=[validators.InputRequired(message=public_key_certificate_error_msg)],
@@ -462,8 +483,9 @@ class CertificateForm(BaseSecureForm):
         label=_(u'Certificate chain'),
     )
     certificates_error_msg = _(u'Certificate is required')
-    certificates = wtforms.SelectField(
-        label=_(u'Certificate name'),
+    certificate_arn = wtforms.SelectField(
+        label=_(u'Certificate'),
+        validators=[CertificateARNRequired(message=certificates_error_msg)],
     )
 
     def __init__(self, request, conn=None, iam_conn=None, elb_conn=None, can_list_certificates=True, **kwargs):
@@ -473,6 +495,7 @@ class CertificateForm(BaseSecureForm):
         self.elb_conn = elb_conn
         self.can_list_certificates = can_list_certificates
         self.set_error_messages()
+        self.set_help_text()
         self.set_certificate_choices()
 
     def set_error_messages(self):
@@ -480,14 +503,17 @@ class CertificateForm(BaseSecureForm):
         self.private_key.error_msg = self.private_key_error_msg
         self.public_key_certificate.error_msg = self.public_key_certificate_error_msg
 
+    def set_help_text(self):
+        self.private_key.help_text = self.private_key_help_text
+        self.public_key_certificate.help_text = self.public_key_help_text
+
     def set_certificate_choices(self):
         if self.iam_conn and self.can_list_certificates:
-            self.certificates.choices = self.get_all_server_certs(iam_conn=self.iam_conn)
-            self.certificates.validators = [validators.InputRequired(message=self.certificates_error_msg)]
-            if len(self.certificates.choices) > 1:
-                self.certificates.data = self.certificates.choices[0][0]
+            self.certificate_arn.choices = self.get_all_server_certs(iam_conn=self.iam_conn)
+            if len(self.certificate_arn.choices) > 1:
+                self.certificate_arn.data = self.certificate_arn.choices[0][0]
         else:
-            self.certificates.choices = []
+            self.certificate_arn.choices = []
 
     def get_all_server_certs(self,  iam_conn=None, add_blank=True):
         choices = []
@@ -496,12 +522,14 @@ class CertificateForm(BaseSecureForm):
             for cert in certificates.list_server_certificates_result.server_certificate_metadata_list:
                 choices.append((cert.arn, cert.server_certificate_name))
         if len(choices) == 0:
-            choices.append(('None', _(u'')))
+            choices.append(NO_CERTIFICATES_CHOICE)
+        else:
+            choices.insert(0, BLANK_CHOICE)
         return sorted(set(choices))
 
 
 class BackendCertificateForm(BaseSecureForm):
-    """Create SSL Certificate form"""
+    """ELB Backend Certificate form (used on wizard and detail page)"""
     backend_certificate_name_error_msg = NAME_WITHOUT_SPACES_NOTICE
     backend_certificate_name = wtforms.TextField(
         label=_(u'Certificate name'),
@@ -519,7 +547,84 @@ class BackendCertificateForm(BaseSecureForm):
         self.iam_conn = iam_conn
         self.elb_conn = elb_conn
         self.set_error_messages()
+        self.backend_certificate_body.help_text = CertificateForm.public_key_help_text
 
     def set_error_messages(self):
         self.backend_certificate_name.error_msg = self.backend_certificate_name_error_msg
         self.backend_certificate_body.error_msg = self.backend_certificate_body_error_msg
+
+
+class PredefinedPolicyRequired(validators.Required):
+    """Custom validator to conditionally require predefined policy if custom policy isn't uploaded"""
+
+    def __init__(self, *args, **kwargs):
+        super(PredefinedPolicyRequired, self).__init__(*args, **kwargs)
+
+    def __call__(self, form, field):
+        conditions = [
+            form.ssl_protocols.data,
+            form.ssl_ciphers.data
+        ]
+        if not all(conditions):
+            super(PredefinedPolicyRequired, self).__call__(form, field)
+
+
+class SecurityPolicyForm(BaseSecureForm):
+    """ELB Security Policy form"""
+    predefined_policy_error_msg = _(u'Policy is required')
+    predefined_policy = wtforms.SelectField(
+        label=_(u'Policy name'),
+        validators=[PredefinedPolicyRequired(message=predefined_policy_error_msg)],
+    )
+    ssl_protocols_error_msg = _(u'At least one protocol is required.')
+    ssl_protocols = wtforms.SelectMultipleField(
+        label=_(u'SSL Protocols'),
+        validators=[validators.InputRequired(message=ssl_protocols_error_msg)],
+    )
+    ssl_ciphers_error_msg = _(u'At least one cipher is required.')
+    ssl_ciphers = wtforms.SelectMultipleField(
+        label=_(u'SSL Ciphers'),
+        validators=[validators.InputRequired(message=ssl_ciphers_error_msg)],
+    )
+    server_order_preference = wtforms.BooleanField(label=_(u'Server order preference'))  # Under SSL Options
+
+    def __init__(self, request, elb_conn=None, predefined_policy_choices=None, **kwargs):
+        super(SecurityPolicyForm, self).__init__(request, **kwargs)
+        self.elb_conn = elb_conn
+        self.predefined_policy_choices = predefined_policy_choices
+        self.set_error_messages()
+        self.set_choices()
+        self.set_initial_data()
+
+    def set_error_messages(self):
+        self.predefined_policy.error_msg = self.predefined_policy_error_msg
+        self.ssl_protocols.error_msg = self.ssl_protocols_error_msg
+        self.ssl_ciphers.error_msg = self.ssl_ciphers_error_msg
+
+    def set_choices(self):
+        self.ssl_protocols.choices = self.get_ssl_protocol_choices()
+        self.ssl_ciphers.choices = self.get_ssl_cipher_choices()
+        self.predefined_policy.choices = self.get_predefined_policy_choices()
+
+    def set_initial_data(self):
+        # Default to TLS 1, 1.1, and 1.2 for ssl_protocols
+        self.ssl_protocols.data = [val for val, label in self.get_ssl_protocol_choices()]
+
+    def get_predefined_policy_choices(self):
+        if self.predefined_policy_choices:
+            return self.predefined_policy_choices
+        if self.elb_conn is not None:
+            return ChoicesManager(conn=self.elb_conn).predefined_policy_choices(add_blank=False)
+        return []
+
+    @staticmethod
+    def get_ssl_protocol_choices():
+        return [
+            ('Protocol-TLSv1.2', u'TLSv1.2'),
+            ('Protocol-TLSv1.1', u'TLSv1.1'),
+            ('Protocol-TLSv1', u'TLSv1'),
+        ]
+
+    @staticmethod
+    def get_ssl_cipher_choices():
+        return [(val, val) for val in SSL_CIPHERS]
