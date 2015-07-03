@@ -20,7 +20,7 @@ class Volume_operations_sequence(GuiEC2):
     def volume_ops_test(self):
         self.tester.login("ui-test-acct-00", "admin", "mypassword0")
         volume1_name = self.id_generator()+"-volume"
-        volume1 = self.tester.create_volume_from_view_page(volume1_name, volume_size=2, availability_zone="two")
+        volume1 = self.tester.create_volume_from_view_page(volume1_name, volume_size=2, availability_zone="one")
         volume1_id = volume1.get("volume_id")
         self.tester.delete_volume_from_view_page(volume1_id)
         time.sleep(15)
