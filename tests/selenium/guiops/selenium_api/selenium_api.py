@@ -328,10 +328,11 @@ class SeleniumApi(object):
             self.close_browser()
             raise
         k = 1
+        time.sleep(2)
         is_visible = self.check_visibility_by_id(element_id)
         while is_visible and (k < 3):
             try:
-                print "Executing attempt" + str(k)
+                print "Executing attempt " + str(k)
                 self.driver.find_element_by_id(element_id).click()
             except Exception, e:
                 print str(k) + "-th attempt to click unsuccessful."
