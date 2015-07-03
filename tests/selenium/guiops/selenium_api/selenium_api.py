@@ -204,7 +204,7 @@ class SeleniumApi(object):
             print "Element by id = '{0}' was located in DOM and is visible.".format(element_id)
             return True
         except TimeoutException:
-            print "ERROR: Timed out: element by id = '{0}' not visible.".format(element_id)
+            print "Element by id = '{0}' not visible.".format(element_id)
             return False
 
     def check_visibility_by_css(self, css):
