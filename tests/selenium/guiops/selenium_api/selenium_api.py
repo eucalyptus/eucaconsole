@@ -328,7 +328,7 @@ class SeleniumApi(object):
             self.close_browser()
             raise
         k = 1
-        time.sleep(2)
+        time.sleep(5)
         is_visible = self.check_visibility_by_id(element_id)
         while is_visible and (k < 3):
             try:
