@@ -165,6 +165,7 @@ class LaunchConfigsJsonView(LandingPageView):
 
     def get_launchconfigs_image_mapping(self):
         launchconfigs_image_ids = [launchconfig.image_id for launchconfig in self.items]
+        launchconfigs_image_ids = list(set(launchconfigs_image_ids))
         launchconfigs_images = self.ec2_conn.get_all_images(image_ids=launchconfigs_image_ids) if self.ec2_conn else []
         launchconfigs_image_mapping = dict()
         for image in launchconfigs_images:
