@@ -21,7 +21,7 @@ class Instance_operations_sequence(GuiEC2):
     def instance_ops_test(self):
         self.tester.login("ui-test-acct-00", "admin", "mypassword0")
         s_group1_name = self.id_generator()+"-group"
-        s_group1=self.tester.create_security_group_from_view_page(s_group1_name, "Security group created by GUI test")
+        s_group1=self.tester.create_security_group_from_view_page(s_group1_name, "Security group created by instance test")
         s_group1_id = s_group1.get("s_group_id")
         keypair1_name = self.id_generator()+"-key-pair"
         self.tester.create_keypair_from_dashboard(keypair1_name)

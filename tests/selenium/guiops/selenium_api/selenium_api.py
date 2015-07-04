@@ -319,7 +319,7 @@ class SeleniumApi(object):
         :param element_id:
         """
         self.wait_for_visible_by_id(element_id)
-        print "Executing click_element_by_id('{0}')".format(element_id)
+        print "Executing click_element_by_id_robust ('{0}')".format(element_id)
         try:
             self.driver.find_element_by_id(element_id).click()
             print "Clicking on element by id = ('{0}')".format(element_id)
