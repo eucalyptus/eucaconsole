@@ -41,6 +41,7 @@
         // hide nav on login screen
         if ($('#login-wrapper').length > 0) {
             $('.left-nav').remove();
+            $('.inner-wrap').css('padding-left', '0');
         }
         else {
             // set active selection in nav

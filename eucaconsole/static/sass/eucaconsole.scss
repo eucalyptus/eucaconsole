@@ -1156,10 +1156,13 @@ $btn-group-radius: 10px;
     .left-nav {
         display: none;
     }
+    .inner-wrap {
+        padding-left: 0 !important;
+    }
 }
 
 div.left-nav {
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
     height: 100%;
@@ -1169,8 +1172,6 @@ div.left-nav {
     border-style: solid;
     border-width: 0 1px 0 0;
     border-color: $hp-gray-20;
-}
-div.inner-wrap {
 }
 
 // Off-canvas Nav adjustments
@@ -1182,12 +1183,16 @@ div.left-off-canvas-menu {
     border-color: $hp-gray-20;
  }
 
-$expanded-nav-width: 215px;
+$expanded-nav-width: 225px;
 
 .left-nav {
     width: $expanded-nav-width !important;
     overflow-y: scroll !important;
     transition: width 0.3s;
+}
+
+.inner-wrap {
+    padding-left: 50px;
 }
 
 .nav-collapsed.left-nav {
