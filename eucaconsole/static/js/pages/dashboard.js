@@ -24,6 +24,7 @@ angular.module('Dashboard', ['EucaConsoleUtils'])
             $scope.statusEndpoint = options.service_status_url;
             $scope.storedZoneKey = 'dashboard_availability_zone_' + options.cloud_type;
             $scope.accountName = options.account_display_name;
+            $scope.storageKey = options.storage_key + "shared_buckets";
             $scope.setInitialZone();
             $scope.setFocus();
             $scope.getItemCounts();
@@ -63,6 +64,13 @@ angular.module('Dashboard', ['EucaConsoleUtils'])
                 var results = oData ? oData : {};
                 $scope.itemsLoading = false;
                 $scope.totals = results;
+                if (Modernizr.localstorage) {
+                    var saved_names = localStorage.getItem($scope.storageKey);
+                    if (saved_names) {
+                        var names = saved_names.split(',');
+                        $scope.totals.buckets = $scope.totals.buckets + names.length;
+                    }
+                }
                 $scope.setServiceStatus(results.health.name, results.health.status);
             }).error(function (oData, status) {
                 var errorMsg = oData.message || null;

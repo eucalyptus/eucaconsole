@@ -454,6 +454,9 @@ $dropdown-border-color: $hp-gray-65;
     .f-dropdown {
         @include dropdown-shadow-mixin;
     }
+    #sorting-dropdown {
+        text-align: left;
+    }
 }
 
 #results-count {
@@ -465,8 +468,17 @@ $dropdown-border-color: $hp-gray-65;
 }
 
 .euca-split {
-    border-color: $euca-extralightgrey !important;
+    #border-color: $euca-extralightgrey !important;
     width: 2.0rem !important;
+}
+
+.secondary {
+    .euca-split {
+        border-color: $hp-gray-65 !important;
+        &:hover {
+            border-color: $hp-hover-blue !important;
+        }
+    }
 }
 
 .split.button {

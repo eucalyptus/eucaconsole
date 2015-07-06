@@ -470,6 +470,15 @@ textarea.policy-area {
     }
 }
 
+.flex-space {
+    @include flexbox-mixin;
+    .flex-column-0 {
+        @include flexgrow-mixin(0);
+    }
+    .flex-column-1 {
+        @include flexgrow-mixin(1);
+    }
+}
 
 /* -----------------------------------------
    Tag editor
@@ -657,6 +666,7 @@ form {
     }
     &[data-abide] .error small.error {
         background-color: white;
+        font-style: normal;
         color: darkred;
         &.inline {
             display: inline-block !important;
@@ -680,6 +690,9 @@ form {
         }
         &.nowrap {
             white-space: nowrap;
+        }
+        &.stack-label {
+            margin-bottom: 4px;
         }
     }
     label.reverse {
@@ -731,6 +744,13 @@ form {
         margin-bottom: 4px;
         label {
             right: -6px;
+        }
+    }
+    &.stacked {
+        .field {
+            select, textarea {
+                margin-top: 0;
+            }
         }
     }
 }
@@ -882,6 +902,9 @@ textarea.hidden {
 
 .reveal-modal {
     z-index: 9999995;
+    [data-tooltip] {
+        z-index: 99999999;
+    }
     h3 {
         font-weight: bold;
         &#about-cloud:hover {
@@ -1207,6 +1230,21 @@ ul.off-canvas-list {
             margin-bottom: 0;
         }
     }
+}
+
+ul.bullet-list {
+    list-style-type: none;
+    li:before {
+        font-family: 'FontAwesome';
+        font-size: 0.9rem;
+        content: '\f138';
+        margin: 0 5px 0 -15px;
+        color: $hp-accessible-blue;
+    }
+}
+
+.columns.subheading {
+    padding-left: 0.125rem;
 }
 
 /* Responsive tweaks for landing page title */

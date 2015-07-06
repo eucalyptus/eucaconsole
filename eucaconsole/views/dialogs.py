@@ -224,12 +224,11 @@ def scalinggroup_dialogs(context, request, scaling_group=None, landingpage=False
 
 
 @panel_config('elb_dialogs', renderer='../templates/dialogs/elb_dialogs.pt')
-def elb_dialogs(context, request, elb=None, in_use=False, landingpage=False, delete_form=None):
+def elb_dialogs(context, request, elb=None, landingpage=False, delete_form=None):
     """ Modal dialogs for load balancers landing and detail page."""
     return dict(
         elb=elb,
         elb_name=BaseView.escape_braces(elb.name) if elb else '',
-        in_use=in_use,
         landingpage=landingpage,
         delete_form=delete_form,
     )
@@ -313,13 +312,25 @@ def create_folder_dialog(context, request, bucket_name=None, create_folder_form=
 
 
 @panel_config('select_certificate_dialog', renderer='../templates/dialogs/select_certificate_dialog.pt')
-def select_certificate_dialog(context, request, certificate_form=None, backend_certificate_form=None):
+def select_certificate_dialog(context, request, can_list_certificates=True,
+                              certificate_form=None, backend_certificate_form=None):
     """ Modal dialog for selecting SSL certificate"""
     is_vpc_supported = BaseView.is_vpc_supported(request)
     return dict(
         certificate_form=certificate_form,
         backend_certificate_form=backend_certificate_form,
+        can_list_certificates=can_list_certificates,
         is_vpc_supported=is_vpc_supported,
+    )
+
+
+@panel_config('elb_security_policy_dialog', renderer='../templates/dialogs/elb_security_policy_dialog.pt')
+def elb_security_policy_dialog(context, request, security_policy_form=None, latest_predefined_policy=None):
+    """ Modal dialog for selecting SSL certificate"""
+    return dict(
+        security_policy_form=security_policy_form,
+        latest_predefined_policy=latest_predefined_policy,
+        chosen_placeholder_text=_(u'Select...'),
     )
 
 

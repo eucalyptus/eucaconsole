@@ -18,7 +18,7 @@
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
                 <a class="button" i18n:translate="" id="create-elb-btn"
-                   href="${request.route_path('elb_new')}">Create New Load Balancer</a>
+                   href="${request.route_path('elb_new')}">Create Load Balancer</a>
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
                 <a id="tile-item-dropdown_{{ item.name | escapeHTMLTagID }}" class="tiny secondary button dropdown right" data-dropdown="item-dropdown_{{ item.name | escapeHTMLTagID }}"><i class="grid-action"></i></a>
@@ -33,42 +33,32 @@
             </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
                 <div>
-                    <span class="label" title="Key pair" i18n:attributes="title" data-tooltip="">DN</span>
-                    {{ item.dns_name }}
+                    <span class="label" title="Avg Latency (ms)" i18n:attributes="title" data-tooltip="">LA</span>
+                    {{ item.latency | number: 2 }}
                 </div>
-                <div ng-show="item.security_groups">
-                    <span class="label" title="Security groups" i18n:attributes="title" data-tooltip="">SG</span>
-                    <span ng-repeat="security_group in item.security_groups">
-                        <i class="fi-alert" ng-show="security_group.rules_count == 0" data-tooltip="" i18n:attributes="title"
-                            title="Warning: No rules defined for security group. Instance may be unreachable."></i>
-                    </span>
-                    <a ng-href="${prefix}/{{ item.name | escapeURL }}">{{ item.security_groups.length }}</a>
+                <div>
+                    <span class="label" title="Unhealthy hosts" i18n:attributes="title" data-tooltip="">UH</span>
+                    {{ item.unhealthy_hosts }}
                 </div>
-                <div ng-show="item.created_time">
-                    <span class="label" title="Creation time" i18n:attributes="title" data-tooltip="">CT</span>
-                    {{ item.created_time | date:'${layout.angular_date_format}' }}
+                <div>
+                    <span class="label" title="Healthy hosts" i18n:attributes="title" data-tooltip="">HH</span>
+                    {{ item.healthy_hosts }}
                 </div>
             </div>
             <metal:block metal:fill-slot="tableview_headers">
                 <th i18n:translate="">Name</th>
-                <th i18n:translate="">DNS Name</th>
-                <th i18n:translate="">Security group</th>
-                <th i18n:translate="">Creation time</th>
+                <th i18n:translate="">Avg Latency (ms)</th>
+                <th i18n:translate="">Unhealthy Hosts</th>
+                <th i18n:translate="">Healthy Hosts</th>
                 <th i18n:translate="" class="actions">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
                 <td class="breakword">
                     <a ng-href="${prefix}/{{ item.id || item.name | escapeURL }}/monitoring">{{ item.name | ellipsis: 30 }}</a>
                 </td>
-                <td class="breakword">{{ item.dns_name | ellipsis: 60 }}</td>
-                <td class="breakword">
-                    <div ng-repeat="sgroup in item.security_groups">
-                        <i class="fi-alert" ng-show="sgroup.rules_count == 0" data-tooltip="" i18n:attributes="title"
-                            title="Warning: No rules defined for security group. Instance may be unreachable."></i>
-                        <a ng-href="/securitygroups/{{ sgroup.id | escapeURL }}">{{ sgroup.name | ellipsis: 30 }}</a>
-                    </div>
-                </td>
-                <td>{{ item.created_time | date:'${layout.angular_date_format}' }}</td>
+                <td>{{ item.latency | number: 2 }}</td>
+                <td>{{ item.unhealthy_hosts }}</td>
+                <td>{{ item.healthy_hosts }}</td>
                 <td>
                     <span class="actions">
                         <a id="table-item-dropdown_{{ item.name | escapeHTMLTagID }}" class="tiny secondary button dropdown right round" data-dropdown="item-dropdown_{{ item.name | escapeHTMLTagID }}"><i class="grid-action"></i></a>

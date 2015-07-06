@@ -35,15 +35,17 @@ import pylibmc
 import sys
 import os
 
+from defusedxml import ElementTree
+from markupsafe import escape
 from wtforms import StringField
 from wtforms.ext.csrf import SecureForm
 from wtforms.widgets import html_params, HTMLString, Select
-from markupsafe import escape
 
 from boto.exception import BotoServerError
 
 from ..caches import extra_long_term
 from ..caches import invalidate_cache
+from ..constants.elbs import ELB_PREDEFINED_SECURITY_POLICY_NAME_PREFIX
 from ..constants.instances import AWS_INSTANCE_TYPE_CHOICES
 from ..i18n import _
 
@@ -363,6 +365,27 @@ class ChoicesManager(object):
             else:
                 raise ex
         return sorted(choices)
+
+    def predefined_policy_choices(self, add_blank=True):
+        """Boto 2 doesn't offer a DescribeLoadBalancerPolicies API method, so we'll need to use a lower-level call"""
+        choices = []
+        if add_blank:
+            choices.append(BLANK_CHOICE)
+        if self.conn is not None:
+            xml_prefix = '{http://elasticloadbalancing.amazonaws.com/doc/2012-12-01/}'
+            resp = self.conn.make_request('DescribeLoadBalancerPolicies')
+            root = ElementTree.fromstring(resp.read())
+            policy_descriptions = root.find('.//{0}PolicyDescriptions'.format(xml_prefix))
+            policies = policy_descriptions.getchildren() if policy_descriptions is not None else []
+            for policy in policies:
+                policy_type = policy.find('.//{0}PolicyTypeName'.format(xml_prefix))
+                if policy_type is not None and policy_type.text == 'SSLNegotiationPolicyType':
+                    policy_name = policy.find('.//{0}PolicyName'.format(xml_prefix)).text
+                    if policy_name.startswith(ELB_PREDEFINED_SECURITY_POLICY_NAME_PREFIX):
+                        choices.append((policy_name, policy_name))
+        if choices:
+            choices = reversed(sorted(set(choices)))
+        return list(choices)
 
     # IAM options
 

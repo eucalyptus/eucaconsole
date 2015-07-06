@@ -87,6 +87,11 @@ def check_config(settings):
             logging.error(" Please correct this and restart eucaconsole.")
             logging.error("*****************************************************************")
             sys.exit(1)
+    if not settings.get('ufshost'):
+        logging.warn(
+            "'clchost' and 'clcport' are deprecated in Eucalyptus version 4.2.0 and "
+            "will be removed in version 4.3.0. Use 'ufshost' and 'ufsport' instead."
+        )
 
 
 def get_configurator(settings, enable_auth=True):

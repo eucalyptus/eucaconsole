@@ -36,5 +36,67 @@
     .security-section {
         margin-bottom: 1.5rem;
     }
+    .label.radius {
+        color: $hp-gray-65;
+        &.cert {
+            background-color: $hp-gray-20;
+        }
+        &.bcert {
+            background-color: $hp-gray-40;
+            margin-right: 6px;
+        }
+    }
+    table.table {
+        width: 100%;
+        tr.top-header {
+            border-bottom: 0;
+        }
+        th {
+            white-space: nowrap;
+            &.vertical-border-header {
+                border-collapse: collapse;
+                border-right: 1px solid #ddd;
+            }
+        }
+    }
 }
+
+#select-certificate-modal {
+    @include item-list;
+    .section-label {
+        margin-top: 1.5rem;
+        margin-bottom: 1rem;
+        color: $hp-gray-65;
+    }
+    #backend-certificates-display {
+        margin-bottom: 1rem;
+    }
+    #new-certificate-wrapper {
+        padding-left: 1rem;
+    }
+}
+
+#elb-security-policy-modal {
+    #new-policy-wrapper {
+        padding-left: 1rem;
+        h6, label {
+            text-transform: uppercase;
+            font-family: $euca-header-font-family;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        label[for='server_order_preference'] {
+            text-transform: none;
+        }
+        h6 {
+            position: relative;
+            left: 14px;
+        }
+        #ssl-options-header {
+            color: $euca-grey;
+            margin-bottom: 0;
+        }
+    }
+}
+
 

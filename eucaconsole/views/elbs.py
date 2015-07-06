@@ -28,14 +28,17 @@
 Pyramid views for Eucalyptus and AWS elbs
 
 """
-from urllib import quote
+import itertools
 import simplejson as json
 import time
+
+from urllib import quote
 
 import boto.utils
 
 from boto.ec2.elb import HealthCheck
 from boto.ec2.elb.attributes import ConnectionSettingAttribute
+from boto.exception import BotoServerError
 
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from pyramid.view import view_config
@@ -44,12 +47,19 @@ from ..constants.cloudwatch import (
     MONITORING_DURATION_CHOICES, GRANULARITY_CHOICES, DURATION_GRANULARITY_CHOICES_MAPPING,
     METRIC_TITLE_MAPPING,
     STATISTIC_CHOICES)
-from ..constants.elbs import ELB_MONITORING_CHARTS_LIST
+from ..constants.elbs import (
+    ELB_MONITORING_CHARTS_LIST, ELB_BACKEND_CERTIFICATE_NAME_PREFIX,
+    ELB_PREDEFINED_SECURITY_POLICY_NAME_PREFIX, ELB_CUSTOM_SECURITY_POLICY_NAME_PREFIX
+)
+from ..forms import ChoicesManager
+from ..forms.elbs import (
+    ELBForm, ELBDeleteForm, CreateELBForm, ELBHealthChecksForm, ELBsFiltersForm,
+    ELBInstancesForm, ELBInstancesFiltersForm, CertificateForm, BackendCertificateForm, SecurityPolicyForm,
+)
 from ..i18n import _
-from ..forms.elbs import (ELBForm, ELBDeleteForm, ELBsFiltersForm, CreateELBForm, ELBHealthChecksForm,
-                          ELBInstancesForm, ELBInstancesFiltersForm, CertificateForm, BackendCertificateForm)
 from ..models import Notification
 from ..views import LandingPageView, BaseView, TaggedItemView, JSONResponse
+from ..views.cloudwatchapi import CloudWatchAPIMixin
 from . import boto_error_handler
 
 
@@ -59,18 +69,19 @@ class ELBsView(LandingPageView):
         self.request = request
         self.ec2_conn = self.get_connection(conn_type="ec2")
         self.elb_conn = self.get_connection(conn_type="elb")
+        self.vpc_conn = self.get_connection(conn_type="vpc")
         self.initial_sort_key = 'name'
         self.prefix = '/elbs'
-        self.filter_keys = ['name', 'dns_name']
+        self.filter_keys = ['name']
         self.sort_keys = self.get_sort_keys()
         self.json_items_endpoint = self.get_json_endpoint('elbs_json')
         self.delete_form = ELBDeleteForm(self.request, formdata=self.request.params or None)
         self.filters_form = ELBsFiltersForm(
-            self.request, cloud_type=self.cloud_type, ec2_conn=self.ec2_conn, formdata=self.request.params or None)
-        search_facets = self.filters_form.facets
+            self.request, cloud_type=self.cloud_type, ec2_conn=self.ec2_conn, vpc_conn=self.vpc_conn,
+            is_vpc_supported=self.is_vpc_supported(self.request), formdata=self.request.params or None)
         self.render_dict = dict(
             filter_keys=self.filter_keys,
-            search_facets=BaseView.escape_json(json.dumps(search_facets)),
+            search_facets=BaseView.escape_json(json.dumps(self.filters_form.facets)),
             sort_keys=self.sort_keys,
             prefix=self.prefix,
             initial_sort_key=self.initial_sort_key,
@@ -107,24 +118,33 @@ class ELBsView(LandingPageView):
         return [
             dict(key='name', name=_(u'Name: A to Z')),
             dict(key='-name', name=_(u'Name: Z to A')),
-            dict(key='created_time', name=_(u'Creation time: Oldest to Newest')),
-            dict(key='-created_time', name=_(u'Creation time: Newest to Oldest')),
-            dict(key='image_name', name=_(u'Image Name: A to Z')),
-            dict(key='-image_name', name=_(u'Image Name: Z to A')),
-            dict(key='key_name', name=_(u'Key pair: A to Z')),
-            dict(key='-key_name', name=_(u'Key pair: Z to A')),
+            dict(key='latency', name=_(u'Avg latency (low to high)')),
+            dict(key='-latency', name=_(u'Avg latency (high to low)')),
+            dict(key='unhealthy_hosts', name=_(u'Unhealthy hosts (low to high)')),
+            dict(key='-unhealthy_hosts', name=_(u'Unhealthy hosts (high to low)')),
+            dict(key='healthy_hosts', name=_(u'Healthy hosts (low to high)')),
+            dict(key='-healthy_hosts', name=_(u'Healthy hosts (high to low)')),
         ]
 
 
-class ELBsJsonView(LandingPageView):
+class ELBsJsonView(LandingPageView, CloudWatchAPIMixin):
     """JSON response view for ELB landing page"""
-    def __init__(self, request):
-        super(ELBsJsonView, self).__init__(request)
-        self.ec2_conn = self.get_connection()
-        self.elb_conn = self.get_connection(conn_type='elb')
+    def __init__(self, request, elb_conn=None, cw_conn=None, **kwargs):
+        super(ELBsJsonView, self).__init__(request, **kwargs)
+        self.elb_conn = elb_conn or self.get_connection(conn_type='elb')
+        self.cw_conn = cw_conn or self.get_connection(conn_type='cloudwatch')
         with boto_error_handler(request):
             self.items = self.get_items()
-            self.securitygroups = self.get_all_security_groups()
+
+        # Filter items based on MSB params
+        if self.is_vpc_supported(self.request):
+            subnet = self.request.params.get('subnet')
+            if subnet:
+                self.items = self.filter_by_vpc_subnet(self.items, subnet=subnet)
+        else:
+            zone = self.request.params.get('availability_zone')
+            if zone:
+                self.items = self.filter_by_availability_zone(self.items, zone=zone)
 
     @view_config(route_name='elbs_json', renderer='json', request_method='POST')
     def elbs_json(self):
@@ -132,69 +152,49 @@ class ELBsJsonView(LandingPageView):
             return JSONResponse(status=400, message="missing CSRF token")
         with boto_error_handler(self.request):
             elbs_array = []
-            for elb in self.filter_items(self.items):
-                # boto doesn't convert elb created_time into dtobj like it does for others
-                elb.created_time = boto.utils.parse_ts(elb.created_time)
+            for elb in self.items:
                 name = elb.name
-                security_groups = self.get_security_groups(elb.security_groups)
-                security_groups_array = sorted({
-                    'name': group.name,
-                    'id': group.id,
-                    'rules_count': self.get_security_group_rules_count_by_id(group.id)
-                    } for group in security_groups)
+                health_counts = self.get_elb_health_counts(elb)
                 elbs_array.append(dict(
-                    created_time=self.dt_isoformat(elb.created_time),
-                    in_use=False,
                     dns_name=elb.dns_name,
                     name=name,
-                    security_groups=security_groups_array,
+                    healthy_hosts=health_counts.get('healthy'),
+                    unhealthy_hosts=health_counts.get('unhealthy'),
+                    latency=self.get_average_latency(elb),
                 ))
             return dict(results=elbs_array)
 
     def get_items(self):
         return self.elb_conn.get_all_load_balancers() if self.elb_conn else []
 
-    def get_all_security_groups(self):
-        if self.ec2_conn:
-            return self.ec2_conn.get_all_security_groups()
-        return []
+    @staticmethod
+    def filter_by_availability_zone(items, zone=None):
+        return [item for item in items if zone in item.availability_zones]
 
-    def get_security_groups(self, groupids):
-        security_groups = []
-        if groupids:
-            for sgid in groupids:
-                security_group = ''
-                # Due to the issue that AWS-Classic and AWS-VPC different values,
-                # name and id, for .securitygroup for launch config object
-                if sgid.startswith('sg-'):
-                    security_group = self.get_security_group_by_id(sgid)
-                else:
-                    security_group = self.get_security_group_by_name(sgid)
-                if security_group:
-                    security_groups.append(security_group)
-        return security_groups
+    @staticmethod
+    def filter_by_vpc_subnet(items, subnet=None):
+        return [item for item in items if subnet in item.subnets]
 
-    def get_security_group_by_id(self, sgid):
-        if self.securitygroups:
-            for sgroup in self.securitygroups:
-                if sgroup.id == sgid:
-                    return sgroup
-        return ''
+    def get_elb_health_counts(self, elb=None):
+        healthy_count = 0
+        unhealthy_count = 0
+        if elb:
+            instances = self.elb_conn.describe_instance_health(elb.name)
+            for instance in instances:
+                if instance.state == 'InService':
+                    healthy_count += 1
+                elif instance.state == 'OutOfService':
+                    unhealthy_count += 1
+        return dict(healthy=healthy_count, unhealthy=unhealthy_count)
 
-    def get_security_group_by_name(self, name):
-        if self.securitygroups:
-            for sgroup in self.securitygroups:
-                if sgroup.name == name:
-                    return sgroup
-        return ''
-
-    def get_security_group_rules_count_by_id(self, sgid):
-        if sgid.startswith('sg-'):
-            security_group = self.get_security_group_by_id(sgid)
-        else:
-            security_group = self.get_security_group_by_name(sgid)
-        if security_group:
-            return len(security_group.rules)
+    def get_average_latency(self, elb=None, duration=21600):
+        """Get average latency for a given duration in milliseconds"""
+        period = self.adjust_granularity(duration)
+        stats = self.get_cloudwatch_stats(
+            cw_conn=self.cw_conn, period=period, duration=duration, metric='Latency',
+            namespace='AWS/ELB', idtype='LoadBalancerName', ids=[elb.name])
+        if stats:
+            return sum(stat.get('Average') * 1000 for stat in stats)/len(stats)
         return None
 
 
@@ -242,6 +242,24 @@ class BaseELBView(TaggedItemView):
         self.autoscale_conn = self.get_connection(conn_type='autoscale')
         self.vpc_conn = self.get_connection(conn_type='vpc')
         self.is_vpc_supported = BaseView.is_vpc_supported(request)
+        self.predefined_policy_choices = ChoicesManager(conn=self.elb_conn).predefined_policy_choices(add_blank=False)
+        self.certificate_form = CertificateForm(
+            self.request, conn=self.ec2_conn, iam_conn=self.iam_conn, elb_conn=self.elb_conn,
+            formdata=self.request.params or None)
+        self.backend_certificate_form = BackendCertificateForm(
+            self.request, conn=self.ec2_conn, iam_conn=self.iam_conn, elb_conn=self.elb_conn,
+            formdata=self.request.params or None)
+        self.security_policy_form = SecurityPolicyForm(
+            self.request, elb_conn=self.elb_conn, predefined_policy_choices=self.predefined_policy_choices,
+            formdata=self.request.params or None
+        )
+        self.can_list_certificates = True
+        try:
+            if self.iam_conn:
+                self.iam_conn.get_all_server_certs()
+        except BotoServerError:
+            # IAM policy prevents listing certificates
+            self.can_list_certificates = False
 
     def get_elb(self):
         if self.elb_conn:
@@ -286,6 +304,97 @@ class BaseELBView(TaggedItemView):
         )
         self.elb_conn.configure_health_check(name, health_check)
 
+    def handle_backend_certificate_create(self, elb_name):
+        if self.cloud_type == 'aws':
+            return None  # Eucalyptus only
+        backend_certificates_json = self.request.params.get('backend_certificates')
+        backend_certificates = json.loads(backend_certificates_json) if backend_certificates_json else []
+        public_policy_attributes = dict()
+        public_policy_type = u'PublicKeyPolicyType'
+        backend_policy_type = u'BackendServerAuthenticationPolicyType'
+        random_string = self.generate_random_string(length=8)
+        backend_policy_name = u'BackendPolicy-{0}-{1}'.format(random_string, elb_name)
+        backend_policy_params = {'LoadBalancerName': elb_name,
+                                 'PolicyName': backend_policy_name,
+                                 'PolicyTypeName': backend_policy_type}
+        index = 1
+        for cert in backend_certificates:
+            public_policy_name = u'{0}-{1}'.format(ELB_BACKEND_CERTIFICATE_NAME_PREFIX, cert.get('name'))
+            public_policy_attributes['PublicKey'] = cert.get('certificateBody')
+            self.elb_conn.create_lb_policy(elb_name, public_policy_name, public_policy_type, public_policy_attributes)
+            backend_policy_params['PolicyAttributes.member.%d.AttributeName' % index] = 'PublicKeyPolicyName'
+            backend_policy_params['PolicyAttributes.member.%d.AttributeValue' % index] = public_policy_name
+            index += 1
+        self.elb_conn.get_status('CreateLoadBalancerPolicy', backend_policy_params)
+        # sleep is needed for the previous policy creation to complete
+        time.sleep(index)
+        instance_port = 443
+        self.elb_conn.set_lb_policies_of_backend_server(elb_name, instance_port, backend_policy_name)
+
+    def set_security_policy(self, elb_name, elb=None):
+        """
+        See http://docs.aws.amazon.com/ElasticLoadBalancing/latest/DeveloperGuide/ssl-config-update.html
+        """
+        if self.cloud_type == 'aws':
+            return None  # Eucalyptus only
+        req_params = self.request.params
+        flattened_listeners = [x for x in itertools.chain.from_iterable(self.get_listeners_args())]
+        has_https_listener = 443 in flattened_listeners
+        if not has_https_listener:
+            return None  # Don't set security policy unless an HTTPS listener is set
+        elb_security_policy_updated = req_params.get('elb_security_policy_updated') == 'on'
+        if not elb_security_policy_updated:
+            return None  # Don't set security policy unless Security Policy dialog submit button has been clicked
+        latest_predefined_policy = self.get_latest_predefined_policy()
+        if not latest_predefined_policy:
+            return None  # Policy will fail unless at least one predefined security policy is configured for the cloud
+        using_custom_policy = req_params.get('elb_ssl_using_custom_policy') == 'on'
+        selected_predefined_policy = req_params.get('elb_predefined_policy')
+        random_string = self.generate_random_string(length=8)
+        if self.elb_conn:
+            policy_type = 'SSLNegotiationPolicyType'
+            if using_custom_policy:
+                # Create custom security policy
+                elb_ssl_protocols = json.loads(req_params.get('elb_ssl_protocols', '[]'))
+                elb_ssl_ciphers = json.loads(req_params.get('elb_ssl_ciphers', '[]'))
+                using_server_order_pref = req_params.get('elb_ssl_server_order_pref') == 'on'
+                policy_name = '{0}-{1}'.format(ELB_CUSTOM_SECURITY_POLICY_NAME_PREFIX,  random_string)
+                policy_attributes = {'Reference-Security-Policy': latest_predefined_policy}
+                for protocol in elb_ssl_protocols:
+                    policy_attributes.update({protocol: True})
+                for cipher in elb_ssl_ciphers:
+                    policy_attributes.update({cipher: True})
+                if using_server_order_pref:
+                    policy_attributes.update({'Server-Defined-Cipher-Order': True})
+                self.elb_conn.create_lb_policy(elb_name, policy_name, policy_type, policy_attributes)
+                time.sleep(1)  # Give new policy time to persist before setting ELB security policy for HTTPS listener
+            else:
+                # Create predefined security policy
+                policy_name = '{0}-{1}'.format(selected_predefined_policy, random_string)
+                policy_attributes = {'Reference-Security-Policy': selected_predefined_policy}
+                self.elb_conn.create_lb_policy(elb_name, policy_name, policy_type, policy_attributes)
+                time.sleep(1)  # Give new policy time to persist before setting ELB security policy for HTTPS listener
+            # Set security policy for HTTPS listener in ELB
+            policies = [policy_name]
+            self.elb_conn.set_lb_policies_of_listener(elb_name, 443, policies)
+
+    def get_latest_predefined_policy(self):
+        if self.predefined_policy_choices:
+            return self.predefined_policy_choices[0][0]
+
+    def get_security_policy(self, elb=None):
+        """Get SSL security policy attached to an ELB"""
+        if self.cloud_type == 'aws':
+            return None  # Eucalyptus only
+        if elb:
+            if elb.policies:
+                for policy in elb.policies.other_policies:
+                    if policy.policy_name.startswith(ELB_PREDEFINED_SECURITY_POLICY_NAME_PREFIX):
+                        return policy.policy_name
+                    elif policy.policy_name.startswith(ELB_CUSTOM_SECURITY_POLICY_NAME_PREFIX):
+                        return policy.policy_name
+        return self.get_latest_predefined_policy()
+
     @staticmethod
     def get_instance_selector_text():
         instance_selector_text = {'name': _(u'NAME (ID)'), 'tags': _(u'TAGS'),
@@ -302,15 +411,21 @@ class BaseELBView(TaggedItemView):
         }
 
     def get_protocol_list(self):
-        if self.cloud_type == 'aws':
-            protocol_list = ({'name': 'HTTP', 'value': 'HTTP', 'port': '80'},
-                             {'name': 'TCP', 'value': 'TCP', 'port': '80'})
+        protocol_list = (
+            {'name': 'HTTP', 'value': 'HTTP', 'port': '80'},
+            {'name': 'HTTPS', 'value': 'HTTPS', 'port': '443'},
+            {'name': 'TCP', 'value': 'TCP', 'port': '80'},
+            {'name': 'SSL', 'value': 'SSL', 'port': '443'}
+        )
+        reduced_protocol_list = (
+            {'name': 'HTTP', 'value': 'HTTP', 'port': '80'},
+            {'name': 'TCP', 'value': 'TCP', 'port': '80'}
+        )
+        if self.cloud_type == 'euca' and self.can_list_certificates:
+            return protocol_list
         else:
-            protocol_list = ({'name': 'HTTP', 'value': 'HTTP', 'port': '80'},
-                             {'name': 'HTTPS', 'value': 'HTTPS', 'port': '443'},
-                             {'name': 'TCP', 'value': 'TCP', 'port': '80'},
-                             {'name': 'SSL', 'value': 'SSL', 'port': '443'})
-        return protocol_list
+            # AWS and Euca w/o IAM perms
+            return reduced_protocol_list
 
     def get_default_vpc_network(self):
         default_vpc = self.request.session.get('default_vpc', [])
@@ -408,8 +523,12 @@ class ELBView(BaseELBView):
             escaped_elb_name=quote(self.elb.name) if self.elb else '',
             elb_tags=TaggedItemView.get_tags_display(self.elb.tags) if self.elb.tags else '',
             elb_form=self.elb_form,
+            security_policy_form=self.security_policy_form,
+            latest_predefined_policy=self.get_latest_predefined_policy(),
+            elb_security_policy=self.get_security_policy(elb=self.elb),
             delete_form=self.delete_form,
-            in_use=False,
+            certificate_form=self.certificate_form,
+            backend_certificate_form=self.backend_certificate_form,
             protocol_list=self.get_protocol_list(),
             listener_list=self.get_listener_list(),
             is_vpc_supported=self.is_vpc_supported,
@@ -431,13 +550,17 @@ class ELBView(BaseELBView):
             location = self.request.route_path('elb_view', id=self.elb.name)
             prefix = _(u'Unable to update load balancer')
             template = u'{0} {1} - {2}'.format(prefix, self.elb.name, '{0}')
+            backend_certificates = self.request.params.get('backend_certificates') or None
             with boto_error_handler(self.request, location, template):
                 self.update_elb_idle_timeout(self.elb.name, idle_timeout)
-                self.update_listeners(self.elb.name, listeners_args)
+                self.update_listeners(listeners_args)
                 time.sleep(1)  # Delay is needed to avoid missing listeners post-update
                 self.update_elb_tags(self.elb.name)
+                self.set_security_policy(self.elb.name)
                 if self.is_vpc_supported and self.elb.security_groups != securitygroup:
                     self.elb_conn.apply_security_groups_to_lb(self.elb.name, securitygroup)
+                if backend_certificates is not None and backend_certificates != '[]':
+                    self.handle_backend_certificate_create(self.elb.name)
                 msg = _(u"Updating load balancer")
                 self.log_request(u"{0} {1}".format(msg, self.elb.name))
                 prefix = _(u'Successfully updated load balancer.')
@@ -474,6 +597,7 @@ class ELBView(BaseELBView):
             'elb_vpc_network': self.elb.vpc_id if self.elb else [],
             'elb_vpc_subnets': self.elb.subnets if self.elb else [],
             'securitygroups': self.elb.security_groups if self.elb else [],
+            'existing_certificate_choices': self.certificate_form.certificate_arn.choices,
         }))
 
     def update_elb_idle_timeout(self, elb_name, idle_timeout):
@@ -485,14 +609,30 @@ class ELBView(BaseELBView):
     def get_listener_list(self):
         listener_list = []
         if self.elb and self.elb.listeners:
-            for listener_obj in self.elb.listeners:
-                listener = listener_obj.get_tuple()
-                listener_list.append({'from_port': listener[0],
-                                      'to_port': listener[1],
-                                      'protocol': listener[2]})
+            for listener in self.elb.listeners:
+                listener_dict = {
+                    'from_port': listener.load_balancer_port,
+                    'to_port': listener.instance_port,
+                    'protocol': listener.protocol
+                }
+                if listener.ssl_certificate_id:
+                    certificate_id = listener.ssl_certificate_id.split('/')[-1]
+                    listener_dict.update({
+                        'certificate_id': certificate_id,
+                        'backend_policies': self.get_backend_policies(),
+                    })
+                listener_list.append(listener_dict)
         return listener_list
 
-    def update_listeners(self, name, listeners_args):
+    def get_backend_policies(self):
+        backend_certificates = []
+        if self.elb and self.cloud_type == 'euca':
+            for backend in self.elb.backends:
+                backend_certificates.extend(
+                    [policy.policy_name for policy in backend.policies if backend.instance_port == 443])
+        return backend_certificates
+
+    def update_listeners(self, listeners_args):
         if self.elb_conn and self.elb:
             # Convert strs in existing ELB listeners to unicode objects for add/remove comparisons
             normalized_elb_listeners = []
@@ -502,14 +642,44 @@ class ELBView(BaseELBView):
 
             listeners_to_add = [x for x in listeners_args if x not in normalized_elb_listeners]
             listeners_to_remove = [x[0] for x in normalized_elb_listeners if x not in listeners_args]
+            self.cleanup_security_policies(delete_stale_policies=True)
             if listeners_to_remove:
-                self.elb.delete_listeners(listeners_to_remove)
-                # sleep is needed for Eucalyptus to avoid not finding the elb error
-                time.sleep(1)
+                if 443 in listeners_to_remove:
+                    self.cleanup_backend_policies()  # Note: this must be before HTTPS listeners are removed
+                self.elb_conn.delete_load_balancer_listeners(self.elb.name, listeners_to_remove)
+                time.sleep(1)  # sleep is needed for Eucalyptus to avoid not finding the elb error
+
             if listeners_to_add:
                 self.elb_conn.create_load_balancer_listeners(self.elb.name, complex_listeners=listeners_to_add)
-                # sleep is needed for Eucalyptus to avoid not finding the elb error
-                time.sleep(1)
+                time.sleep(1)  # sleep is needed for Eucalyptus to avoid not finding the elb error
+
+    def cleanup_security_policies(self, delete_stale_policies=False):
+        """Empty security policies before setting them in ELB"""
+        if self.elb_conn and self.elb and self.cloud_type == 'euca':
+            elb_security_policy_updated = self.request.params.get('elb_security_policy_updated') == 'on'
+            if not elb_security_policy_updated:
+                return None  # Skip cleanup if security policy wasn't updated
+            elb_listener_ports = [x[0] for x in self.elb.listeners]
+            if 443 in elb_listener_ports:
+                self.elb_conn.set_lb_policies_of_listener(self.elb.name, 443, [])
+                if delete_stale_policies:
+                    self.delete_stale_policies()
+
+    def delete_stale_policies(self):
+        if self.elb and self.elb.policies and self.elb.policies.other_policies and self.cloud_type == 'euca':
+            for policy in self.elb.policies.other_policies:
+                policy_name_conditions = [
+                    policy.policy_name.startswith(ELB_PREDEFINED_SECURITY_POLICY_NAME_PREFIX),
+                    policy.policy_name.startswith(ELB_CUSTOM_SECURITY_POLICY_NAME_PREFIX),
+                ]
+                if any(policy_name_conditions):
+                    self.elb_conn.delete_lb_policy(self.elb.name, policy.policy_name)
+
+    def cleanup_backend_policies(self):
+        if self.elb_conn and self.elb and self.cloud_type == 'euca':
+            elb_listener_ports = [x[0] for x in self.elb.listeners]
+            if self.elb.backends and 443 in elb_listener_ports:
+                self.elb_conn.set_lb_policies_of_backend_server(self.elb.name, 443, [])
 
     @staticmethod
     def normalize_listener(listener):
@@ -575,7 +745,6 @@ class ELBInstancesView(BaseELBView):
         filter_keys = ['id', 'name', 'placement', 'state', 'tags', 'vpc_subnet_display', 'vpc_name']
         self.render_dict = dict(
             elb=self.elb,
-            in_use=False,
             elb_name=self.escape_braces(self.elb.name) if self.elb else '',
             escaped_elb_name=quote(self.elb.name) if self.elb else '',
             elb_vpc_network=self.get_vpc_network_name(self.elb),
@@ -772,7 +941,6 @@ class ELBHealthChecksView(BaseELBView):
             elb_form=self.elb_form,
             escaped_elb_name=quote(self.elb.name) if self.elb else '',
             delete_form=ELBDeleteForm(self.request, formdata=self.request.params or None),
-            in_use=False,
         )
 
     @view_config(route_name='elb_healthchecks', renderer=TEMPLATE)
@@ -836,12 +1004,12 @@ class CreateELBView(BaseELBView):
         super(CreateELBView, self).__init__(request)
         self.create_form = CreateELBForm(
             self.request, conn=self.ec2_conn, vpc_conn=self.vpc_conn, formdata=self.request.params or None)
-        self.certificate_form = CertificateForm(self.request, conn=self.ec2_conn,
-                                                iam_conn=self.iam_conn, elb_conn=self.elb_conn,
-                                                formdata=self.request.params or None)
-        self.backend_certificate_form = BackendCertificateForm(self.request, conn=self.ec2_conn,
-                                                               iam_conn=self.iam_conn, elb_conn=self.elb_conn,
-                                                               formdata=self.request.params or None)
+        self.certificate_form = CertificateForm(
+            self.request, conn=self.ec2_conn, iam_conn=self.iam_conn, elb_conn=self.elb_conn,
+            can_list_certificates=self.can_list_certificates, formdata=self.request.params or None)
+        self.backend_certificate_form = BackendCertificateForm(
+            self.request, conn=self.ec2_conn, iam_conn=self.iam_conn, elb_conn=self.elb_conn,
+            formdata=self.request.params or None)
         filter_keys = ['id', 'name', 'placement', 'state', 'security_groups', 'vpc_subnet_display', 'vpc_name']
         filters_form = ELBInstancesFiltersForm(
             self.request, ec2_conn=self.ec2_conn, autoscale_conn=self.autoscale_conn,
@@ -852,6 +1020,10 @@ class CreateELBView(BaseELBView):
             create_form=self.create_form,
             certificate_form=self.certificate_form,
             backend_certificate_form=self.backend_certificate_form,
+            can_list_certificates=self.can_list_certificates,
+            security_policy_form=self.security_policy_form,
+            latest_predefined_policy=self.get_latest_predefined_policy(),
+            elb_security_policy=self.get_security_policy(),
             protocol_list=self.get_protocol_list(),
             security_group_placeholder_text=_(u'Select...'),
             is_vpc_supported=self.is_vpc_supported,
@@ -871,12 +1043,14 @@ class CreateELBView(BaseELBView):
             'resource_name': 'elb',
             'wizard_tab_list': self.get_wizard_tab_list(),
             'is_vpc_supported': self.is_vpc_supported,
+            'can_list_certificates': self.can_list_certificates,
             'default_vpc_network': self.get_default_vpc_network(),
             'availability_zone_choices': self.get_availability_zones(),
             'vpc_subnet_choices': self.get_vpc_subnets(),
             'instance_selector_text': self.get_instance_selector_text(),
             'securitygroups_json_endpoint': self.request.route_path('securitygroups_json'),
             'instances_json_endpoint': self.request.route_path('instances_json'),
+            'existing_certificate_choices': self.certificate_form.certificate_arn.choices,
         }))
 
     def get_wizard_tab_list(self):
@@ -902,7 +1076,6 @@ class CreateELBView(BaseELBView):
             del self.create_form.securitygroup
         if self.create_form.validate():
             name = self.request.params.get('name')
-            certificate_arn = self.request.params.get('certificate_arn') or None
             listeners_args = self.get_listeners_args()
             vpc_subnet = self.request.params.getall('vpc_subnet') or None
             if vpc_subnet == 'None':
@@ -931,6 +1104,7 @@ class CreateELBView(BaseELBView):
                 if backend_certificates is not None and backend_certificates != '[]':
                     self.handle_backend_certificate_create(name)
                 self.add_elb_tags(name)
+                self.set_security_policy(name)
                 prefix = _(u'Successfully created elastic load balancer')
                 msg = u'{0} {1}'.format(prefix, name)
                 location = self.request.route_path('elbs')
@@ -940,44 +1114,22 @@ class CreateELBView(BaseELBView):
             self.request.error_messages = self.create_form.get_errors_list()
             return self.render_dict
 
-    @view_config(route_name='certificate_create', request_method='POST', renderer=TEMPLATE)
+    @view_config(route_name='certificate_create', request_method='POST', renderer='json')
     def certificate_create(self):
         if self.certificate_form.validate():
             certificate_name = self.request.params.get('certificate_name')
             private_key = self.request.params.get('private_key')
             public_key_certificate = self.request.params.get('public_key_certificate')
             certificate_chain = self.request.params.get('certificate_chain') or None
-            with boto_error_handler(self.request):
+            try:
                 certificate_result = self.iam_conn.upload_server_cert(
-                    certificate_name, public_key_certificate, private_key, cert_chain=certificate_chain, path=None)
+                    certificate_name, public_key_certificate, private_key, cert_chain=certificate_chain)
                 prefix = _(u'Successfully uploaded server certificate')
                 msg = u'{0} {1}'.format(prefix, certificate_name)
                 certificate_arn = certificate_result.upload_server_certificate_result.server_certificate_metadata.arn
                 return JSONResponse(status=200, message=msg, id=certificate_arn)
+            except BotoServerError as err:
+                return JSONResponse(status=400, message=err.message)  # Malformed certificate
         else:
             form_errors = ', '.join(self.certificate_form.get_errors_list())
             return JSONResponse(status=400, message=form_errors)  # Validation failure = bad request
-
-    def handle_backend_certificate_create(self, elb_name):
-        backend_certificates_json = self.request.params.get('backend_certificates')
-        backend_certificates = json.loads(backend_certificates_json) if backend_certificates_json else []
-        public_policy_attributes = dict()
-        public_policy_type = u'PublicKeyPolicyType'
-        backend_policy_type = u'BackendServerAuthenticationPolicyType'
-        backend_policy_name = u'BackendPolicy-{0}'.format(elb_name)
-        backend_policy_params = {'LoadBalancerName': elb_name,
-                                 'PolicyName': backend_policy_name,
-                                 'PolicyTypeName': backend_policy_type}
-        index = 1
-        for cert in backend_certificates:
-            public_policy_name = u'EucaConsole-PublicKeyPolicy-{0}'.format(cert.get('name'))
-            public_policy_attributes['PublicKey'] = cert.get('certificateBody')
-            self.elb_conn.create_lb_policy(elb_name, public_policy_name, public_policy_type, public_policy_attributes)
-            backend_policy_params['PolicyAttributes.member.%d.AttributeName' % index] = 'PublicKeyPolicyName'
-            backend_policy_params['PolicyAttributes.member.%d.AttributeValue' % index] = public_policy_name
-            index += 1
-        self.elb_conn.get_status('CreateLoadBalancerPolicy', backend_policy_params)
-        # sleep is needed for the previous policy creation to complete
-        time.sleep(1)
-        instance_port = 443
-        self.elb_conn.set_lb_policies_of_backend_server(elb_name, instance_port, backend_policy_name)

@@ -29,6 +29,9 @@ Eucalyptus and AWS ELB constants
 
 """
 
+ELB_BACKEND_CERTIFICATE_NAME_PREFIX = 'EucaConsole-BackendServerAuthPolicy'
+ELB_PREDEFINED_SECURITY_POLICY_NAME_PREFIX = 'ELBSecurityPolicy'
+ELB_CUSTOM_SECURITY_POLICY_NAME_PREFIX = 'ELB-CustomSecurityPolicy'
 
 ELB_MONITORING_CHARTS_LIST = [
     {
@@ -38,18 +41,18 @@ ELB_MONITORING_CHARTS_LIST = [
     },
     {
         'metric': 'Latency',
-        'unit': 'Milliseconds',
+        'unit': 'Seconds',
         'statistic': 'Average',
     },
     {
-        'metric': 'UnhealthyHostCount',
+        'metric': 'UnHealthyHostCount',
         'unit': 'Count',
-        'statistic': 'Average',
+        'statistic': 'Maximum',
     },
     {
         'metric': 'HealthyHostCount',
         'unit': 'Count',
-        'statistic': 'Average',
+        'statistic': 'Maximum',
     },
     {
         'metric': 'HTTPCode_ELB_4XX',
@@ -81,4 +84,72 @@ ELB_MONITORING_CHARTS_LIST = [
         'unit': 'Count',
         'statistic': 'Sum',
     },
+]
+
+
+SSL_CIPHERS = [
+    'ECDHE-ECDSA-AES128-GCM-SHA256',
+    'ECDHE-RSA-AES128-GCM-SHA256',
+    'ECDHE-ECDSA-AES128-SHA256',
+    'ECDHE-RSA-AES128-SHA256',
+    'ECDHE-ECDSA-AES128-SHA',
+    'ECDHE-RSA-AES128-SHA',
+    'DHE-RSA-AES128-SHA',
+    'ECDHE-ECDSA-AES256-GCM-SHA384',
+    'ECDHE-RSA-AES256-GCM-SHA384',
+    'ECDHE-ECDSA-AES256-SHA384',
+    'ECDHE-RSA-AES256-SHA384',
+    'ECDHE-RSA-AES256-SHA',
+    'ECDHE-ECDSA-AES256-SHA',
+    'AES128-GCM-SHA256',
+    'AES128-SHA256',
+    'AES128-SHA',
+    'AES256-GCM-SHA384',
+    'AES256-SHA256',
+    'AES256-SHA',
+    'DHE-DSS-AES128-SHA',
+    'CAMELLIA128-SHA',
+    'EDH-RSA-DES-CBC3-SHA',
+    'DES-CBC3-SHA',
+    'ECDHE-RSA-RC4-SHA',
+    'RC4-SHA',
+    'ECDHE-ECDSA-RC4-SHA',
+    'DHE-DSS-AES256-GCM-SHA384',
+    'DHE-RSA-AES256-GCM-SHA384',
+    'DHE-RSA-AES256-SHA256',
+    'DHE-DSS-AES256-SHA256',
+    'DHE-RSA-AES256-SHA',
+    'DHE-DSS-AES256-SHA',
+    'DHE-RSA-CAMELLIA256-SHA',
+    'DHE-DSS-CAMELLIA256-SHA',
+    'CAMELLIA256-SHA',
+    'EDH-DSS-DES-CBC3-SHA',
+    'DHE-DSS-AES128-GCM-SHA256',
+    'DHE-RSA-AES128-GCM-SHA256',
+    'DHE-RSA-AES128-SHA256',
+    'DHE-DSS-AES128-SHA256',
+    'DHE-RSA-CAMELLIA128-SHA',
+    'DHE-DSS-CAMELLIA128-SHA',
+    'ADH-AES128-GCM-SHA256',
+    'ADH-AES128-SHA',
+    'ADH-AES128-SHA256',
+    'ADH-AES256-GCM-SHA384',
+    'ADH-AES256-SHA',
+    'ADH-AES256-SHA256',
+    'ADH-CAMELLIA128-SHA',
+    'ADH-CAMELLIA256-SHA',
+    'ADH-DES-CBC3-SHA',
+    'ADH-DES-CBC-SHA',
+    'ADH-RC4-MD5',
+    'ADH-SEED-SHA',
+    'DES-CBC-SHA',
+    'DHE-DSS-SEED-SHA',
+    'DHE-RSA-SEED-SHA',
+    'EDH-DSS-DES-CBC-SHA',
+    'EDH-RSA-DES-CBC-SHA',
+    'IDEA-CBC-SHA',
+    'RC4-MD5',
+    'SEED-SHA',
+    'DES-CBC3-MD5',
+    'DES-CBC-MD5',
 ]

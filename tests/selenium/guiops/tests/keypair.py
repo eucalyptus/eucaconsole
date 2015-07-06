@@ -1,5 +1,5 @@
-from guitester.guitester import GuiTester
 from guitester.guiec2 import GuiEC2
+from option_parser import Option_parser
 import time
 
 
@@ -13,11 +13,17 @@ class Keypair_operations_sequence(GuiEC2):
                   "tlZD0zbdV/tpADxDpnhW2cPVpXcjy4sRzUCc8AZW+OE3LQxXild alicehubenko@Alices-MacBook-Pro.local"
 
     def __init__(self):
-        self.tester = GuiEC2("http://10.111.80.147:4444/wd/hub", "http://10.111.5.145:8888")
+        parser = Option_parser()
+        self.console_url = parser.parse_options()['console_url']
+        self.webdriver_url = parser.parse_options()['web_driver']
+        self.account = parser.parse_options()['account']
+        self.user = parser.parse_options()['user_name']
+        self.password = parser.parse_options()['password']
+        self.tester = GuiEC2(console_url=self.console_url, webdriver_url=self.webdriver_url)
 
     def keypair_ops_test(self):
 
-        self.tester.login("ui-test-acct-00", "admin", "mypassword0")
+        self.tester.login(self.account, self.user, self.password)
         self.tester.create_keypair_from_keypair_view_page(self.keypair_name)
         self.tester.delete_keypair_from_detail_page(self.keypair_name)
         self.tester.create_keypair_from_dashboard(self.keypair_name)

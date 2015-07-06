@@ -23,8 +23,16 @@
             <em>${elb_name}</em>
         </h3>
         <div class="large-12 columns">
-            <form method="post" action="${request.route_path('elb_update', id=elb.name)}" id="elb-view-form" data-abide="">
+            <form method="post" action="${request.route_path('elb_update', id=elb.name)}" id="elb-form" data-abide="">
                 ${structure:elb_form['csrf_token']}
+                <div id="elb-ssl-hidden-fields-wrapper" class="hide">
+                    <input type="text" name="elb_predefined_policy" id="predefined_policy_hidden_input" />
+                    <input type="text" name="elb_ssl_protocols" id="ssl_protocols_hidden_input" />
+                    <input type="text" name="elb_ssl_ciphers" id="ssl_ciphers_hidden_input" />
+                    <input type="checkbox" name="elb_security_policy_updated" id="security_policy_updated" />
+                    <input type="checkbox" name="elb_ssl_server_order_pref" id="ssl_server_order_pref_hidden_input" />
+                    <input type="checkbox" name="elb_ssl_using_custom_policy" id="ssl_using_custom_policy" />
+                </div>
                 <dl id="elb-view-tabs" class="tabs">
                     <dd class="active"><a i18n:translate="">General</a></dd>
                     <dd><a href="${request.route_path('elb_monitoring', id=elb.name)}" i18n:translate="">Monitoring</a></dd>
@@ -64,7 +72,13 @@
                     ${panel('form_field', field=elb_form['idle_timeout'], leftcol_width=3, rightcol_width=9, leftcol_width_large=3, rightcol_width_large=9)}
                     <hr />
                     <div>
-                        ${panel('elb_listener_editor', listener_list=listener_list, protocol_list=protocol_list)}
+                        ${panel('elb_listener_editor', listener_list=listener_list, protocol_list=protocol_list, elb_security_policy=elb_security_policy)}
+                        <div id="hidden_certificate_arn_input_div" class="hide">
+                            <input type="hidden" id="hidden_certificate_arn_input" name="certificate_arn" />
+                        </div>
+                        <div id="hidden_backend_certificates_input_div">
+                            <textarea id="hidden_backend_certificates" name="backend_certificates" class="hidden"></textarea>
+                        </div>
                     </div>
                     <hr />
                     <div>
@@ -100,13 +114,15 @@
             </div>
         </div>
         <!--! Modal dialogs -->
-        ${panel('elb_dialogs', elb=elb, in_use=in_use, delete_form=delete_form)}
+        ${panel('elb_dialogs', elb=elb, delete_form=delete_form)}
+        ${panel('select_certificate_dialog', certificate_form=certificate_form, backend_certificate_form=backend_certificate_form)}
+        ${panel('elb_security_policy_dialog', security_policy_form=security_policy_form, latest_predefined_policy=latest_predefined_policy)}
     </div>
 </div>
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/pages/elb.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/elb_view.js')}"></script>
 </div>
 
 </metal:block>

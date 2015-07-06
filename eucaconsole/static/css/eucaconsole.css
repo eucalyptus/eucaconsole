@@ -1702,6 +1702,10 @@ textarea.policy-area { width: 100%; min-height: 30rem; font-family: Courier, "co
 .action-icon { display: inline-block; font-size: 1.4rem; color: #5a5a5a; padding-right: 0.5rem; padding-left: 0.5rem; }
 .action-icon:hover { cursor: pointer; color: #007dba; }
 
+.flex-space { display: -ms-flexbox; display: -webkit-flex; display: flex; }
+.flex-space .flex-column-0 { -webkit-flex-grow: 0; flex-grow: 0; }
+.flex-space .flex-column-1 { -webkit-flex-grow: 1; flex-grow: 1; }
+
 /* ----------------------------------------- Tag editor
 ----------------------------------------- */
 #tag-editor small { font-size: 0.825rem; }
@@ -1763,7 +1767,7 @@ form .cancel-link { margin-left: 2rem; color: #6a737b; }
 form .cancel-link:hover { color: #006699; }
 form .controls_csrf_token { display: none; }
 form .server-validation span.error { display: block !important; background-color: white; color: darkred; padding-left: 0; }
-form[data-abide] .error small.error { background-color: white; color: darkred; }
+form[data-abide] .error small.error { background-color: white; font-style: normal; color: darkred; }
 form[data-abide] .error small.error.inline { display: inline-block !important; }
 form .error .chosen-container .chosen-single { border-color: darkred; background: #ffe9ec; }
 
@@ -1771,6 +1775,7 @@ form .error .chosen-container .chosen-single { border-color: darkred; background
 .row.controls-wrapper label { padding-top: 4px; font-weight: bold; text-align: right; line-height: 1rem; }
 .row.controls-wrapper label select, .row.controls-wrapper label input, .row.controls-wrapper label .chosen-container { text-align: left; }
 .row.controls-wrapper label.nowrap { white-space: nowrap; }
+.row.controls-wrapper label.stack-label { margin-bottom: 4px; }
 .row.controls-wrapper label.reverse { display: inline-block; text-align: left; position: relative; left: -1rem; }
 .row.controls-wrapper .helptext-icon.reverse { position: relative; left: 1.5rem; }
 .row.controls-wrapper .reverse .error { white-space: nowrap; }
@@ -1783,6 +1788,7 @@ form .error .chosen-container .chosen-single { border-color: darkred; background
 .row.controls-wrapper.readonly .value { padding-bottom: 6px; }
 .row.controls-wrapper.inline { margin-bottom: 4px; }
 .row.controls-wrapper.inline label { right: -6px; }
+.row.controls-wrapper.stacked .field select, .row.controls-wrapper.stacked .field textarea { margin-top: 0; }
 
 form .controls-wrapper > [class*='small-'] label { font-weight: bold; padding-top: 0.3rem; }
 form .controls-wrapper > [class*='small-'] label.right { position: relative; right: -1rem; }
@@ -1826,6 +1832,7 @@ textarea.hidden.debug { display: block; }
 .reveal-modal-bg { z-index: 9999990; }
 
 .reveal-modal { z-index: 9999995; }
+.reveal-modal [data-tooltip] { z-index: 99999999; }
 .reveal-modal h3 { font-weight: bold; }
 .reveal-modal h3#about-cloud:hover { color: #006699; }
 .reveal-modal form .row.controls-wrapper { margin-bottom: 1rem; }
@@ -1929,6 +1936,11 @@ ul.off-canvas-list li a label { background-color: white; color: #5a5a5a; padding
 ul.off-canvas-list li a:hover:not(.nolink) { background-color: #f2f2f2; color: #006699; }
 ul.off-canvas-list li a.nolink:hover { background-color: white; color: #5a5a5a; }
 ul.off-canvas-list li .dropdown { background-color: white; margin-bottom: 0; }
+
+ul.bullet-list { list-style-type: none; }
+ul.bullet-list li:before { font-family: 'FontAwesome'; font-size: 0.9rem; content: '\f138'; margin: 0 5px 0 -15px; color: #007dba; }
+
+.columns.subheading { padding-left: 0.125rem; }
 
 /* Responsive tweaks for landing page title */
 @media screen and (max-width: 65rem) { #pagetitle.landingpage { top: -0.5rem; }

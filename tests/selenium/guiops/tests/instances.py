@@ -1,11 +1,19 @@
 from guitester.guiec2 import GuiEC2
+from option_parser import Option_parser
 import string, random, time
+
 
 
 class Instance_operations_sequence(GuiEC2):
 
     def __init__(self):
-        self.tester = GuiEC2("http://10.111.80.147:4444/wd/hub", "https://10.111.5.145")
+        parser = Option_parser()
+        self.console_url = parser.parse_options()['console_url']
+        self.webdriver_url = parser.parse_options()['web_driver']
+        self.account = parser.parse_options()['account']
+        self.user = parser.parse_options()['user_name']
+        self.password = parser.parse_options()['password']
+        self.tester = GuiEC2(console_url=self.console_url, webdriver_url=self.webdriver_url)
 
     def id_generator(self, size = 6, chars=string.ascii_uppercase + string.digits):
         return ''.join(random.choice(chars) for j in range(size))
@@ -13,7 +21,7 @@ class Instance_operations_sequence(GuiEC2):
     def instance_ops_test(self):
         self.tester.login("ui-test-acct-00", "admin", "mypassword0")
         s_group1_name = self.id_generator()+"-group"
-        s_group1=self.tester.create_security_group_from_view_page(s_group1_name, "Security group created by GUI test")
+        s_group1=self.tester.create_security_group_from_view_page(s_group1_name, "Security group created by instance test")
         s_group1_id = s_group1.get("s_group_id")
         keypair1_name = self.id_generator()+"-key-pair"
         self.tester.create_keypair_from_dashboard(keypair1_name)
@@ -29,7 +37,7 @@ class Instance_operations_sequence(GuiEC2):
         self.tester.terminate_instance_from_detail_page(instance1_id)
         instance3_name = self.id_generator()+"-instance"
         self.tester.launch_instance_from_dashboard(image="centos", instance_name=instance3_name, availability_zone="one",
-                                                            instance_type= "m1.small")#,security_group=s_group1_name, key_name=keypair1_name)
+                                                            instance_type= "m1.small",security_group=s_group1_name, key_name=keypair1_name)
         self.tester.batch_terminate_all_instances()
         self.tester.delete_keypair_from_detail_page(keypair1_name)
         self.tester.delete_security_group_from_view_page(s_group1_name, s_group1_id)

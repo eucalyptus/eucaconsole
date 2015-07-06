@@ -29,6 +29,7 @@ class BasePage(SeleniumApi):
     _iam_users_menuitem_id = "resource-menuitem-groups"
     _iam_roles_menuitem_id = "resource-menuitem-roles"
     _notification_id="notifications"
+    _page_title_id = "pagetitle"
 
     def __init__(self, tester):
         self.tester = tester
@@ -43,11 +44,11 @@ class BasePage(SeleniumApi):
 
     def goto_keypair_view_page_via_menu(self):
         self.tester.click_element_by_css(self._hamburger_css)
-        self.tester.click_element_by_id(self._keypair_menuitem_id)
+        self.tester.click_element_by_id_robust(self._keypair_menuitem_id)
 
     def goto_images_view_via_menu(self):
         self.tester.click_element_by_css(self._hamburger_css)
-        self.tester.click_element_by_id(self._images_menuitem_id)
+        self.tester.click_element_by_id_robust(self._images_menuitem_id)
 
     def goto_instances_via_menu(self):
         self.tester.click_element_by_css(self._hamburger_css)
