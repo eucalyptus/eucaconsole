@@ -168,6 +168,9 @@ class GuiEC2(GuiTester):
         s_group_id = SecurityGroupDetailPage(self, s_group_name).get_s_group_id()
         return {'s_group_name': s_group_name, 's_group_id':s_group_id}
 
+    def create_sesecurity_group_with_rules(self, s_group_name, s_group_description):
+        pass
+
     def delete_security_group_from_view_page(self, sgroup_name, s_group_id):
         """
         Navigates to security group view page. Deletes security group from view page.
