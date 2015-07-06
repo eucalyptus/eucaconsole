@@ -1254,6 +1254,10 @@ ul.resources-nav {
             margin-top: 0.5rem;
             height: 2rem;
             width: 2rem;
+            transition: all .3s ease;
+        }
+        i.icon:hover {
+            transform: scale(2) translate(0.5em,0);
         }
         i.icon.accounts { background-image: url(../img/nav/Accounts.svg); }
         i.icon.accounts.active { background-image: url(../img/nav/Accounts_Active_40x40.svg); }
