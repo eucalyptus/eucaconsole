@@ -168,8 +168,12 @@ class GuiEC2(GuiTester):
         s_group_id = SecurityGroupDetailPage(self, s_group_name).get_s_group_id()
         return {'s_group_name': s_group_name, 's_group_id':s_group_id}
 
-    def create_sesecurity_group_with_rules(self, s_group_name, s_group_description):
-        pass
+    def create_sesecurity_group_with_rules(self, s_group_name, s_group_description, rule_open_to_all, rule_open_to_default_group, rule_open_to_default_group_port_begin, rule_open_to_default_group_port_end):
+        BasePage(self).goto_dashboard_via_menu()
+        Dashboard(self).click_create_s_group_link_from_dashboard()
+        CreateScurityGroupDialog(self).create_s_group_with_rules(s_group_name, s_group_description, rule_open_to_all, rule_open_to_default_group, rule_open_to_default_group_port_begin, rule_open_to_default_group_port_end)
+        s_group_id = SecurityGroupDetailPage(self, s_group_name).get_s_group_id()
+        return {'s_group_name': s_group_name, 's_group_id':s_group_id}
 
     def delete_security_group_from_view_page(self, sgroup_name, s_group_id):
         """
