@@ -3,14 +3,34 @@
     <li> 
         <i id="hp-logo"></i>
     </li>
+    <label id="recent-nav-label" i18n:translate="">MOST RECENT</label>
     <li> 
-        <a id="resource-menu-dashboard" href="${request.route_path('dashboard')}">
+        <a id="resource-menuitem-recent-1" href="">
+            <i class="icon"></i>
+            <span></span>
+        </a>
+    </li>
+    <li> 
+        <a id="resource-menuitem-recent-2" href="">
+            <i class="icon"></i>
+            <span></span>
+        </a>
+    </li>
+    <li> 
+        <a id="resource-menuitem-recent-3" href="">
+            <i class="icon"></i>
+            <span></span>
+        </a>
+    </li>
+    <hr id="recent-nav-hr" />
+    <li> 
+        <a id="resource-menuitem-dashboard" href="${request.route_path('dashboard')}">
             <i class="icon dashboard"></i>
             <span i18n:translate="">Dashboard</span>
         </a>
     </li>
     <li>
-        <a id="resource-menu-images" href="${request.route_path('images')}">
+        <a id="resource-menuitem-images" href="${request.route_path('images')}">
             <i class="icon images"></i>
             <span i18n:translate="">Images</span>
         </a>

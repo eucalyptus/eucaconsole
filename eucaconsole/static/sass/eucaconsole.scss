@@ -1201,6 +1201,9 @@ $expanded-nav-width: 225px;
     label {
         visibility: hidden;
     }
+    hr {
+        width: 15%;
+    }
 }
 
 #hp-logo {
@@ -1226,6 +1229,9 @@ ul.resources-nav {
         color: $hp-gray-65;
         padding-top: 1.0rem;
         border-top: 0;
+    }
+    hr {
+        width: 90%;
     }
     li {
         a {
