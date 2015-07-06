@@ -1942,8 +1942,7 @@ ul.resources-nav li a { background-color: transparent; color: #5a5a5a; padding: 
 ul.resources-nav li:hover { background-color: #f2f2f2; color: #006699; }
 ul.resources-nav li a:hover { color: #006699; }
 ul.resources-nav li span { white-space: nowrap; display: inline-block; vertical-align: middle; }
-ul.resources-nav li i.icon { position: absolute; left: 0.5rem; margin-top: 0.5rem; height: 2rem; width: 2rem; transition: all .3s ease; }
-ul.resources-nav li i.icon:hover { transform: scale(2) translate(0.5em, 0); }
+ul.resources-nav li i.icon { position: absolute; left: 0.5rem; margin-top: 0.5rem; height: 2rem; width: 2rem; }
 ul.resources-nav li i.icon.accounts { background-image: url(../img/nav/Accounts.svg); }
 ul.resources-nav li i.icon.accounts.active { background-image: url(../img/nav/Accounts_Active_40x40.svg); }
 ul.resources-nav li i.icon.accounts:hover { background-image: url(../img/nav/Accounts_Active_40x40.svg); }
