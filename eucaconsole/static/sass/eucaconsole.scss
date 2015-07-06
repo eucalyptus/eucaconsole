@@ -1231,7 +1231,7 @@ ul.resources-nav {
         a {
             background-color: transparent;
             color: $hp-gray-65;
-            padding-left: 2.6rem;
+            padding: 0.75rem 1rem 0.75rem 2.6rem;
             line-height: 1.5rem;
             border-bottom: 0;
             position: static;
@@ -1245,6 +1245,8 @@ ul.resources-nav {
         }
         span {
             white-space: nowrap;
+            display: inline-block;
+            vertical-align: middle;
         }
         i.icon {
             position: absolute;
