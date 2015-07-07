@@ -142,7 +142,11 @@ angular.module('BucketContentsPage', ['LandingPage', 'EucaConsoleUtils'])
             $scope.$broadcast('refresh');
         };
         $scope.deleteObject = function () {
-            var data = "csrf_token=" + $('#csrf_token').val() + "&keys=" + $scope.prefix + '/' + $scope.obj_key;
+            var key = $scope.obj_key;
+            if ($scope.prefix.length > 0) {
+                key = $scope.prefix + "/" + key;
+            }
+            var data = "csrf_token=" + $('#csrf_token').val() + "&keys=" + key;
             $http({method: 'POST', url: $scope.deleteKeysUrl, data: data,
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
                 success(function (oData) {
