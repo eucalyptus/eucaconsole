@@ -478,6 +478,9 @@ class GuiEC2(GuiTester):
         DetachVolumeModal(self).detach_volume(volume_id)
         VolumeView(self).verify_volume_status_is_available(volume_id, timeout_in_seconds)
 
+    def detach_volume_from_volume_detail_page(self):
+        NotImplementedError
+
     def detach_volume_from_instance_detail_page(self):
         NotImplementedError
 
