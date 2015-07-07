@@ -24,7 +24,7 @@ from dialogs.snapshot_dialogs import CreateSnapshotModal, DeleteSnapshotModal
 class GuiEC2(GuiTester):
 
     def __init__(self, console_url, webdriver_url = None, account="ui-test-acct-00", user="admin", password="mypassword0"):
-        super(GuiEC2, self).__init__(console_url, webdriver_url = webdriver_url, account=account, user=user, password=password)
+        super(GuiEC2, self).__init__(console_url, webdriver_url = webdriver_url)
 
     def set_implicit_wait(self, time_to_wait):
         """
@@ -165,6 +165,13 @@ class GuiEC2(GuiTester):
         BasePage(self).goto_security_groups_view_via_menu()
         SecurityGroupView(self).click_create_new_s_group_button()
         CreateScurityGroupDialog(self).create_s_group(s_group_name, s_group_description)
+        s_group_id = SecurityGroupDetailPage(self, s_group_name).get_s_group_id()
+        return {'s_group_name': s_group_name, 's_group_id':s_group_id}
+
+    def create_sesecurity_group_with_rules(self, s_group_name, s_group_description, rule_open_to_all, rule_open_to_default_group, rule_open_to_default_group_port_begin, rule_open_to_default_group_port_end):
+        BasePage(self).goto_dashboard_via_menu()
+        Dashboard(self).click_create_s_group_link_from_dashboard()
+        CreateScurityGroupDialog(self).create_s_group_with_rules(s_group_name, s_group_description, rule_open_to_all, rule_open_to_default_group, rule_open_to_default_group_port_begin, rule_open_to_default_group_port_end)
         s_group_id = SecurityGroupDetailPage(self, s_group_name).get_s_group_id()
         return {'s_group_name': s_group_name, 's_group_id':s_group_id}
 
@@ -309,7 +316,7 @@ class GuiEC2(GuiTester):
         InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_in_running_state()
         return {'instance_name': instance_name, 'instance_id':instance_id}
 
-    def terminate_instance_from_view_page(self, instance_name, instance_id):
+    def terminate_instance_from_view_page(self, instance_id, instance_name=None):
         """
         Navigates to view page, terminates instance.
         :param instance_name:

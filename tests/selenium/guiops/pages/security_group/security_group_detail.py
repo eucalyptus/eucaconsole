@@ -15,7 +15,7 @@ class SecurityGroupDetailPage(DetailPage):
     _add_rule_button_id = "button-add-rule"
     _save_changes_button_id = "save-securitygroup-btn"
     _security_group_radio_button_css = ".securitygroupname>input[type='radio']"
-    _groupname_selection_menu_css ="#groupname_select_chosen>a"
+    _groupname_selection_menu_css = "#groupname_select_chosen>a"
     _groupname_selection_search_css ="#groupname_select_chosen>div>div>input"
 
     def verify_s_group_detail_page_loaded(self):

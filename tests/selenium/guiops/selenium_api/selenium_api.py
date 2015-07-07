@@ -204,7 +204,7 @@ class SeleniumApi(object):
             print "Element by id = '{0}' was located in DOM and is visible.".format(element_id)
             return True
         except TimeoutException:
-            print "ERROR: Timed out: element by id = '{0}' not visible.".format(element_id)
+            print "Element by id = '{0}' not visible.".format(element_id)
             return False
 
     def check_visibility_by_css(self, css):
@@ -312,6 +312,33 @@ class SeleniumApi(object):
             self.close_browser()
             raise
 
+    def click_element_by_id_robust(self, element_id):
+        """
+        Waits for an element to be present and visible such that you can click it.
+        Clicks the element, 3 times  checks if element is still visible, clicks element if visible.
+        :param element_id:
+        """
+        self.wait_for_visible_by_id(element_id)
+        print "Executing click_element_by_id_robust ('{0}')".format(element_id)
+        try:
+            self.driver.find_element_by_id(element_id).click()
+            print "Clicking on element by id = ('{0}')".format(element_id)
+        except Exception, e:
+            print "ERROR: Could not perform click on element by id = ('{0}')".format(element_id)
+            self.close_browser()
+            raise
+        k = 1
+        time.sleep(5)
+        is_visible = self.check_visibility_by_id(element_id)
+        while is_visible and (k < 3):
+            try:
+                print "Executing attempt " + str(k)
+                self.driver.find_element_by_id(element_id).click()
+            except Exception, e:
+                print str(k) + "-th attempt to click unsuccessful."
+            is_visible = self.check_visibility_by_id(element_id)
+            k = k+1
+
     def wait_for_element_not_present_by_id(self, element_id):
         """
         Waits for element to NOT be present on the page for timeout_to_locate_element_in_seconds
@@ -389,7 +416,6 @@ class SeleniumApi(object):
         except TimeoutException, t:
             print "ERROR: Timed out. Could not verify presence of text = '{1}' in element by xpath = '{0}'".format(xpath, text)
         self.set_implicit_wait(self.implicit_wait_default_in_seconds)
-
 
     def wait_for_text_present_by_css(self, css, text, timeout_in_seconds=None):
         """
@@ -559,7 +585,7 @@ class SeleniumApi(object):
         print "Selecting element with value = {1} by name = {0}".format(name, value)
         Select(self.driver.find_element_by_name(name)).select_by_value(value)
 
-    def get_attrubute_by_css(self, css, attribute_name):
+    def get_attribute_by_css(self, css, attribute_name):
         """
         Finds element by css. Returns specified attribute.
         :param css:
@@ -570,7 +596,7 @@ class SeleniumApi(object):
         print attribute
         return attribute
 
-    def get_attrubute_by_id(self, element_id, attribute_name):
+    def get_attribute_by_id(self, element_id, attribute_name):
         """
         Finds element by id. Returns specified attribute.
         :param element_id:
@@ -581,7 +607,7 @@ class SeleniumApi(object):
         print attribute
         return attribute
 
-    def get_attrubute_by_xpath(self, xpath, attribute_name):
+    def get_attribute_by_xpath(self, xpath, attribute_name):
         """
         Finds element by xpath. Returns specified attribute.
         :param xpath:
