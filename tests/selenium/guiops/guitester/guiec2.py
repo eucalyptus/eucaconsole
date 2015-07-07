@@ -462,10 +462,8 @@ class GuiEC2(GuiTester):
         :param device:
         :param timeout_in_seconds:
         """
-
         BasePage(self).goto_instances_via_menu()
-        InstanceView(self).click
-        InstanceView(self).goto_instance_detail_page_via_link(instance_id)
+        InstanceView(self).click_action_manage_volumes_on_view_page(instance_id)
         InstanceDetailPage(self, instance_id, instance_name).click_action_attach_volume()
         AttachVolumeModalSelectVolume(self).attach_volume(volume_id, device)
         VolumeDetailPage(self).verify_volume_status_is_attached(volume_id, timeout_in_seconds)
