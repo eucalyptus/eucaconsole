@@ -464,6 +464,7 @@ class GuiEC2(GuiTester):
         """
 
         BasePage(self).goto_instances_via_menu()
+        InstanceView(self).click
         InstanceView(self).goto_instance_detail_page_via_link(instance_id)
         InstanceDetailPage(self, instance_id, instance_name).click_action_attach_volume()
         AttachVolumeModalSelectVolume(self).attach_volume(volume_id, device)
