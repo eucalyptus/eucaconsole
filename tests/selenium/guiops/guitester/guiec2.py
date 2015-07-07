@@ -17,7 +17,7 @@ from pages.security_group.security_group_detail import SecurityGroupDetailPage
 from dialogs.security_group_dialogs import CreateScurityGroupDialog, DeleteScurityGroupDialog
 from dialogs.keypair_dialogs import CreateKeypairDialog, DeleteKeypairModal, ImportKeypairDialog
 from dialogs.instance_dialogs import LaunchInstanceWizard, LaunchMoreLikeThisDialog, TerminateInstanceModal, TerminateAllInstancesModal
-from dialogs.volume_dialogs import CreateVolumeDialog, DeleteVolumeModal
+from dialogs.volume_dialogs import CreateVolumeDialog, DeleteVolumeModal, AttachVolumeModalSelectInstance, AttachVolumeModalSelectVolume, DetachVolumeModal
 from dialogs.snapshot_dialogs import CreateSnapshotModal, DeleteSnapshotModal
 
 
@@ -410,8 +410,16 @@ class GuiEC2(GuiTester):
         DeleteVolumeModal(self).delete_volume()
         VolumeView(self).verify_volume_status_is_deleted(volume_id, 240)
 
-    def attach_volume_from_volume_lp(self, instance_id, volume_id):
-        NotImplementedError
+    def attach_volume_from_volume_lp(self, instance_id, volume_id, device=None):
+        """
+        Navigates to volumes landing page, attaches a given volume to a given instance.
+        :param instance_id:
+        :param volume_id:
+        """
+        BasePage(self).goto_volumes_view_via_menu()
+        VolumeView(self).click_action_attach_to_instance(volume_id)
+        AttachVolumeModalSelectInstance(self).attach_volume(instance_id, device)
+        VolumeView(self).
 
     def attach_volume_from_volume_detail_page(self, instance_id):
         NotImplementedError
