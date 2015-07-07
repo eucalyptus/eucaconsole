@@ -10,6 +10,7 @@ class VolumeView(ViewPage):
     _create_volume_button_id = "create-volume-btn"
     _volume_action_menu_id = "table-item-dropdown_{0}"  #volume_id required
     _delete_volume_actions_menu_item_css = "#item-dropdown_{0}>li:nth-of-type(5)>a"  #volume_id required
+    _detach_volume_actions_menu_item_css = "#item-dropdown_{0}>li:nth-of-type(4)>a"  #volume_id required
     _view_details_actions_menu_item_css = "#item-dropdown_{0}>li>a"  #ivolume_id required
     _manage_snapshots_actions_menu_item_css = "#item-dropdown_{0}>li:nth-of-type(2)>a"  #volume_id required
     _attach_to_instance_actions_menu_item_css = "#item-dropdown_{0}>li:nth-of-type(3)>a"  #volume_id required
@@ -26,6 +27,10 @@ class VolumeView(ViewPage):
         self.tester.click_element_by_id(self._create_volume_button_id)
 
     def click_action_delete_volume_on_view_page(self, volume_id):
+        self.tester.click_element_by_id(self._volume_action_menu_id.format(volume_id))
+        self.tester.click_element_by_css(self._detach_volume_actions_menu_item_css.format(volume_id))
+
+    def click_action_detach_volume_on_view_page(self, volume_id):
         self.tester.click_element_by_id(self._volume_action_menu_id.format(volume_id))
         self.tester.click_element_by_css(self._delete_volume_actions_menu_item_css.format(volume_id))
 

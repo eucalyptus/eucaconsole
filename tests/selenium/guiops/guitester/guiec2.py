@@ -470,7 +470,13 @@ class GuiEC2(GuiTester):
 
 
     def detach_volume_from_volumes_lp(self, instance_id, volume_id):
-        NotImplementedError
+        """
+        Navigate to volumes landing page. Detach volume.
+        :param instance_id:
+        :param volume_id:
+        """
+        BasePage(self).goto_volumes_view_via_menu()
+        VolumeView(self).action
 
 
 
