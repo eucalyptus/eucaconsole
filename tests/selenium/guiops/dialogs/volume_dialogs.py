@@ -80,3 +80,10 @@ class DetachVolumeModal(BasePage):
         self.tester = tester
 
     _detach_volume_submit_button_id="detach_volume_submit_button"
+    _volume_id_in_the_nessage_css="b"
+
+    def detach_volume(self, volume_id):
+        self.tester.wait_for_text_present_by_css(self._volume_id_in_the_nessage_css, volume_id)
+        self.tester.click_element_by_id(self._detach_volume_submit_button_id)
+
+
