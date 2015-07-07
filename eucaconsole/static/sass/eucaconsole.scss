@@ -1247,14 +1247,14 @@ ul.resources-nav {
             background-color: $hp-gray-5;
             color: $hp-hover-blue;
         }
-        a:hover {
-            color: $hp-hover-blue;
-        }
         span {
             padding-left: 0.5rem;
             white-space: nowrap;
             display: inline-block;
             vertical-align: middle;
+        }
+        span.active {
+            color: $hp-hover-blue;
         }
         i.icon {
             position: absolute;

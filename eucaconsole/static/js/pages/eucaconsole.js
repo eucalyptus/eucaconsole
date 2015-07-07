@@ -100,7 +100,9 @@
                 $('#recent-nav-hr').remove();
             }
 
-            $('ul.resources-nav').find("."+screen).addClass('active');
+            var selected = $('ul.resources-nav').find("."+screen);
+            $(selected[1]).addClass('active');
+            $(selected[1]).next().addClass('active');
 
             // handlers for nav expand/collapse w/ mouse
             $('.left-nav').mouseenter(expand).mouseleave(collapse);
