@@ -33,6 +33,7 @@
 <body>
 <div class="off-canvas-wrap" data-offcanvas="">
 <div class="left-nav nav-collapsed">
+    <i id="hp-logo"></i>
     ${panel('top_nav', off_canvas=False)}
 </div>
 <div id="canvaswrap" class="inner-wrap">

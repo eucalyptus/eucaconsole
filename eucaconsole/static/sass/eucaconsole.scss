@@ -1202,42 +1202,43 @@ $expanded-nav-width: 225px;
         visibility: hidden;
     }
     hr {
-        width: 15%;
+        width: 7.5%;
     }
 }
 
 #hp-logo {
     position: relative;
     margin-top: 0.5rem;
-    bottom: 1px;
+    margin-right: 0.8rem;
+    margin-left: 0.5rem;
     display: inline-block;
     width: 36px;
     height: 36px;
     background: url(../img/hp-logo-36x36.png) no-repeat;
-    margin-right: 0.8rem;
 }
 
 ul.resources-nav {
-    width: $expanded-nav-width;
+    width: $expanded-nav-width*2;
     list-style-type: none;
-    padding-left: 0.5rem;
-    line-height: 2.5rem;
+    line-height: 3.0rem;
     margin-left: 0;
     left: 0;
     label {
+        padding-left: 0.5rem;
         background-color: white;
         color: $hp-gray-65;
-        padding-top: 1.0rem;
+        padding-top: 0.5rem;
         border-top: 0;
     }
     hr {
-        width: 90%;
+        width: 42.5%;
+        margin: 0 0.5rem 0 0.5rem;
     }
     li {
         a {
             background-color: transparent;
             color: $hp-gray-65;
-            padding: 0.75rem 1rem 0.75rem 2.6rem;
+            padding: 0.5rem 8rem 1.0rem 2.6rem;
             line-height: 1.5rem;
             border-bottom: 0;
             position: static;
@@ -1250,6 +1251,7 @@ ul.resources-nav {
             color: $hp-hover-blue;
         }
         span {
+            padding-left: 0.5rem;
             white-space: nowrap;
             display: inline-block;
             vertical-align: middle;
@@ -1309,9 +1311,9 @@ ul.resources-nav {
         i.icon.users { background-image: url(../img/nav/Users.svg); }
         i.icon.users.active { background-image: url(../img/nav/Users_Active.svg); }
         i.icon.users:hover { background-image: url(../img/nav/Users_Active.svg); }
-        i.icon.vmtypes { background-image: url(../img/nav/VM-Types.svg); }
-        i.icon.vmtypes.active { background-image: url(../img/nav/VM-Types_Active.svg); }
-        i.icon.vmtypes:hover { background-image: url(../img/nav/VM-Types_Active.svg); }
+        i.icon.instance-types { background-image: url(../img/nav/VM-Types.svg); }
+        i.icon.instance-types.active { background-image: url(../img/nav/VM-Types_Active.svg); }
+        i.icon.instance-types:hover { background-image: url(../img/nav/VM-Types_Active.svg); }
         i.icon.volumes { background-image: url(../img/nav/Volumes.svg); }
         i.icon.volumes.active { background-image: url(../img/nav/Volumes_Active.svg); }
         i.icon.volumes:hover { background-image: url(../img/nav/Volumes_Active.svg); }

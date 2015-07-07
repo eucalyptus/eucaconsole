@@ -44,7 +44,7 @@
             $('.inner-wrap').css('padding-left', '0');
         }
         else {
-            var recentKey = "recent-nav-items";
+            var recentKey = $('.username-label').text() + "recent-nav-items";
             var recentNav = [];
             if (Modernizr.localstorage) {
                 var tmp = localStorage.getItem(recentKey);
@@ -80,8 +80,6 @@
                     }
                 }
             }
-            $('ul.resources-nav').find("."+screen).addClass('active');
-
             // set up most recent
             for (i=0; i<3; i++) {
                 var recent = recentNav[i];
@@ -101,6 +99,8 @@
                 $('#recent-nav-label').remove();
                 $('#recent-nav-hr').remove();
             }
+
+            $('ul.resources-nav').find("."+screen).addClass('active');
 
             // handlers for nav expand/collapse w/ mouse
             $('.left-nav').mouseenter(expand).mouseleave(collapse);

@@ -1,8 +1,5 @@
 <!-- top nav links (reused in off-canvas menu) -->
 <ul class="resources-nav left-align ${'off-canvas-list' if off_canvas else ''}" i18n:domain="eucaconsole">
-    <li> 
-        <i id="hp-logo"></i>
-    </li>
     <label id="recent-nav-label" i18n:translate="">MOST RECENT</label>
     <li> 
         <a id="resource-menuitem-recent-1" href="">
@@ -43,7 +40,7 @@
     </li>
     <li tal:condition="layout.account_access">
         <a id="resource-menuitem-instance-types" href="${request.route_path('instance_types')}">
-            <i class="icon vmtypes"></i>
+            <i class="icon instance-types"></i>
             <span i18n:translate="">Instance types</span>
         </a>
     </li>
@@ -56,7 +53,7 @@
     </li>
     <label i18n:translate="">NETWORK &amp; SECURITY</label>
     <li>
-        <a id="resource-menuitem-eips" href="${request.route_path('ipaddresses')}">
+        <a id="resource-menuitem-ipaddresses" href="${request.route_path('ipaddresses')}">
             <i class="icon ipaddresses"></i>
             <span i18n:translate="">Elastic IP addresses</span>
         </a>
@@ -68,7 +65,7 @@
         </a>
     </li>
     <li>
-        <a id="resource-menuitem-elb" href="${request.route_path('elbs')}">
+        <a id="resource-menuitem-elbs" href="${request.route_path('elbs')}">
             <i class="icon elbs"></i>
             <span i18n:translate="">Load balancers</span>
         </a>
