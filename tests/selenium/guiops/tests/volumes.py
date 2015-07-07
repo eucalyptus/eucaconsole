@@ -18,7 +18,7 @@ class Volume_operations_sequence(GuiEC2):
         return ''.join(random.choice(chars) for j in range(size))
 
     def volume_ops_test(self):
-        self.tester.login("ui-test-acct-00", "admin", "mypassword0")
+        self.tester.login(self.account, self.user, self.password)
         volume1_name = self.id_generator()+"-volume"
         volume1 = self.tester.create_volume_from_view_page(volume1_name, volume_size=2, availability_zone="one")
         volume1_id = volume1.get("volume_id")
