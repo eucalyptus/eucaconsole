@@ -72,3 +72,11 @@ class AttachVolumeModalSelectVolume(BasePage):
         if device is not None:
             self.tester.send_keys_by_id(self._device_field_id, device)
         self.tester.click_element_by_css(self._attach_volume_submit_button_css)
+
+
+class DetachVolumeModal(BasePage):
+
+    def __init__(self, tester):
+        self.tester = tester
+
+    _detach_volume_submit_button_id="detach_volume_submit_button"
