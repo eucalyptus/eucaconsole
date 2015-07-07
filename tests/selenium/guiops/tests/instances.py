@@ -19,7 +19,7 @@ class Instance_operations_sequence(GuiEC2):
         return ''.join(random.choice(chars) for j in range(size))
 
     def instance_ops_test(self):
-        self.tester.login("ui-test-acct-00", "admin", "mypassword0")
+        self.tester.login(self.account, self.user, self.password)
         s_group1_name = self.id_generator()+"-group"
         s_group1=self.tester.create_security_group_from_view_page(s_group1_name, "Security group created by instance test")
         s_group1_id = s_group1.get("s_group_id")
