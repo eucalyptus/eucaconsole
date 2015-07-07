@@ -316,7 +316,7 @@ class GuiEC2(GuiTester):
         InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_in_running_state()
         return {'instance_name': instance_name, 'instance_id':instance_id}
 
-    def terminate_instance_from_view_page(self, instance_name, instance_id):
+    def terminate_instance_from_view_page(self, instance_id, instance_name=None):
         """
         Navigates to view page, terminates instance.
         :param instance_name:

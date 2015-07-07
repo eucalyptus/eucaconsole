@@ -32,7 +32,7 @@ class Instance_operations_sequence(GuiEC2):
         instance2_name = self.id_generator()+"-instance"
         instance2 = self.tester.launch_more_like_this_from_view_page(inatance_id=instance1_id, instance_name=instance2_name)
         instance2_id = instance2.get("instance_id")
-        self.tester.terminate_instance_from_view_page(instance2_name, instance2_id)
+        self.tester.terminate_instance_from_view_page(instance2_id, instance2_name)
         self.tester.launch_more_like_this_from_detail_page(instance2_id, monitoring=True, user_data="Test user data.")
         self.tester.terminate_instance_from_detail_page(instance1_id)
         instance3_name = self.id_generator()+"-instance"
@@ -41,6 +41,10 @@ class Instance_operations_sequence(GuiEC2):
         instance3_id = instance3.get("instance_id")
         self.tester.terminate_instance_from_detail_page(instance3_id)
         self.tester.batch_terminate_all_instances()
+        instance4 = self.tester.launch_instance_from_dashboard(image="centos", availability_zone="one",
+                                                            instance_type= "m1.large")
+        instance4_id = instance4.get("instance_id")
+        self.tester.terminate_instance_from_view_page(instance_id=instance4_id)
         self.tester.delete_keypair_from_detail_page(keypair1_name)
         self.tester.delete_security_group_from_view_page(s_group1_name, s_group1_id)
         self.tester.logout()
