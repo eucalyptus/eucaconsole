@@ -184,7 +184,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
             var options = {
                 'params': {
                     'ids': attrs.ids,
-                    'idType': attrs.idType,
+                    'idtype': attrs.idtype,
                     'metric': attrs.metric,
                     'namespace': attrs.namespace,
                     'duration': attrs.duration,
