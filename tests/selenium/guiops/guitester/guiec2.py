@@ -436,7 +436,7 @@ class GuiEC2(GuiTester):
         VolumeView(self).goto_volume_detail_page_via_link(volume_id)
         VolumeDetailPage(self).click_action_attach_volume_on_detail_page()
         AttachVolumeModalSelectInstance(self).attach_volume(instance_id, device)
-
+        VolumeDetailPage(self).verify_volume_status_is_attached(timeout_in_seconds)
 
     def attach_volume_from_instance_detail_page(self, volume_id):
         NotImplementedError
