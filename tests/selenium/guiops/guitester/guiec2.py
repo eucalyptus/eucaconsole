@@ -397,9 +397,10 @@ class GuiEC2(GuiTester):
         DeleteVolumeModal(self).delete_volume()
         VolumeView(self).verify_volume_status_is_deleted(volume_id, timeout_in_seconds)
 
-    def delete_volume_from_detail_page(self, volume_id, volume_name=None):
+    def delete_volume_from_detail_page(self, volume_id, volume_name=None, timeout_in_seconds=240):
         """
         Navigates to volume detail page and deletes volume. Waits for volume state to become 'deleted' on landing page.
+        :param timeout_in_seconds:
         :param volume_id:
         :param volume_name:
         """
@@ -408,21 +409,34 @@ class GuiEC2(GuiTester):
         VolumeDetailPage(self).verify_volume_detail_page_loaded(volume_id, volume_name)
         VolumeDetailPage(self).click_action_delete_volume_on_detail_page()
         DeleteVolumeModal(self).delete_volume()
-        VolumeView(self).verify_volume_status_is_deleted(volume_id, 240)
+        VolumeView(self).verify_volume_status_is_deleted(volume_id, timeout_in_seconds)
 
-    def attach_volume_from_volume_lp(self, instance_id, volume_id, device=None):
+    def attach_volume_from_volume_lp(self, instance_id, volume_id, device=None, timeout_in_seconds=240):
         """
         Navigates to volumes landing page, attaches a given volume to a given instance.
+        :param device:
+        :param timeout_in_seconds:
         :param instance_id:
         :param volume_id:
         """
         BasePage(self).goto_volumes_view_via_menu()
         VolumeView(self).click_action_attach_to_instance(volume_id)
         AttachVolumeModalSelectInstance(self).attach_volume(instance_id, device)
-        VolumeView(self).
+        VolumeView(self).verify_volume_status_is_attached(volume_id, timeout_in_seconds)
 
-    def attach_volume_from_volume_detail_page(self, instance_id):
-        NotImplementedError
+    def attach_volume_from_volume_detail_page(self, instance_id, volume_id, device=None, timeout_in_seconds=240):
+        """
+        Navigates to volume detail page, attaches volume to instance.
+        :param instance_id:
+        :param volume_id:
+        :param device:
+        :param timeout_in_seconds:
+        """
+        BasePage(self).goto_volumes_view_via_menu()
+        VolumeView(self).goto_volume_detail_page_via_link(volume_id)
+        VolumeDetailPage(self).click_action_attach_volume_on_detail_page()
+        AttachVolumeModalSelectInstance(self).attach_volume(instance_id, device)
+
 
     def attach_volume_from_instance_detail_page(self, volume_id):
         NotImplementedError
