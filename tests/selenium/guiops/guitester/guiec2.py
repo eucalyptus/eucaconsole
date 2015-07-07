@@ -410,6 +410,23 @@ class GuiEC2(GuiTester):
         DeleteVolumeModal(self).delete_volume()
         VolumeView(self).verify_volume_status_is_deleted(volume_id, 240)
 
+    def attach_volume_from_volume_lp(self, instance_id, volume_id):
+        NotImplementedError
+
+    def attach_volume_from_volume_detail_page(self, instance_id):
+        NotImplementedError
+
+    def attach_volume_from_instance_detail_page(self, volume_id):
+        NotImplementedError
+
+    def attach_volume_from_instance_lp(self, volume_id):
+        NotImplementedError
+
+    def detach_volume_from_volumes_lp(self, instance_id, volume_id):
+        NotImplementedError
+
+
+
     def create_snapshot_on_volumes_view_page(self, volume_id, snapshot_name=None, snapshot_description=None, timeout_in_seconds=240):
         """
         Navigates to volumes view page and creates a snapshot of a volume.
