@@ -452,7 +452,6 @@ class GuiEC2(GuiTester):
         AttachVolumeModalSelectVolume(self).attach_volume(volume_id, device)
         VolumeDetailPage(self).verify_volume_status_is_attached(volume_id, timeout_in_seconds)
 
-
     def attach_volume_from_instance_lp(self, volume_id, instance_id, instance_name=None, device=None, timeout_in_seconds=240):
         """
         Navigates to instance landing page. Attaches volume.
@@ -468,15 +467,22 @@ class GuiEC2(GuiTester):
         AttachVolumeModalSelectVolume(self).attach_volume(volume_id, device)
         VolumeDetailPage(self).verify_volume_status_is_attached(volume_id, timeout_in_seconds)
 
-
-    def detach_volume_from_volumes_lp(self, instance_id, volume_id):
+    def detach_volume_from_volumes_lp(self, volume_id, timeout_in_seconds=240):
         """
         Navigate to volumes landing page. Detach volume.
         :param instance_id:
         :param volume_id:
         """
         BasePage(self).goto_volumes_view_via_menu()
-        VolumeView(self).action
+        VolumeView(self).click_action_detach_volume_on_view_page(volume_id)
+        DetachVolumeModal(self).detach_volume(volume_id)
+        VolumeView(self).verify_volume_status_is_available(volume_id, timeout_in_seconds)
+
+    def detach_volume_from_instance_detail_page(self):
+        NotImplementedError
+
+    def detach_volume_from_instance_lp(self):
+        NotImplementedError
 
 
 
