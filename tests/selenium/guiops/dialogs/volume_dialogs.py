@@ -33,3 +33,42 @@ class DeleteVolumeModal(BasePage):
 
     def delete_volume(self):
         self.tester.click_element_by_id(self._delete_volume_submit_button_id)
+
+class AttachVolumeModalSelectInstance(BasePage):
+
+    def __init__(self, tester):
+        self.tester = tester
+
+    _instance_dropdown_css = ".chosen-single"
+    _search_field_css = ".chosen-search>input"
+    _active_result_css = ".active-result"
+    _device_field_id = "device"
+    _attach_volume_submit_button_id = "attach_volume_submit_button"
+
+    def attach_volume(self, instance_id, device=None):
+        self.tester.click_element_by_css(self._instance_dropdown_css)
+        self.send_keys_by_css(self._search_field_css, instance_id)
+        self.click_element_by_css(self._active_result_css)
+        if device is not None:
+            self.tester.send_keys_by_id(self._device_field_id, device)
+        self.tester.click_element_by_id(self._attach_volume_submit_button_id)
+
+class AttachVolumeModalSelectVolume(BasePage):
+
+    def __init__(self, tester):
+        self.tester = tester
+
+    _volume_dropdown_css = ".chosen-single"
+    _search_field_css = ".chosen-search>input"
+    _active_result_css = ".active-result"
+    _device_field_id = "device"
+    _attach_volume_submit_button_css = ".button expand"
+
+
+    def attach_volume(self, volume_id, device=None):
+        self.tester.click_element_by_css(self._volume_dropdown_css)
+        self.tester.send_keys_by_css(self._search_field_css, volume_id)
+        self.tester.click_element_by_css(self._active_result_css)
+        if device is not None:
+            self.tester.send_keys_by_id(self._device_field_id, device)
+        self.tester.click_element_by_css(self._attach_volume_submit_button_css)
