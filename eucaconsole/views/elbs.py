@@ -104,7 +104,7 @@ class ELBsView(LandingPageView):
             template = u'{0} {1} - {2}'.format(prefix, name, '{0}')
             with boto_error_handler(self.request, location, template):
                 self.elb_conn.delete_load_balancer(name)
-                prefix = _(u'Successfully deleted elb.')
+                prefix = _(u'Successfully deleted load balancer')
                 msg = u'{0} {1}'.format(prefix, name)
                 queue = Notification.SUCCESS
                 notification_msg = msg
@@ -1030,6 +1030,7 @@ class ELBHealthChecksView(BaseELBView):
     def get_controller_options_json(self):
         return BaseView.escape_json(json.dumps({
             'logging_enabled': self.access_logs.enabled if self.access_logs else False,
+            'bucket_choices': dict(self.elb_form.bucket_name.choices),
         }))
 
 
@@ -1075,6 +1076,7 @@ class CreateELBView(BaseELBView):
         self.create_form = CreateELBForm(
             self.request, conn=self.ec2_conn, vpc_conn=self.vpc_conn, s3_conn=self.s3_conn,
             formdata=self.request.params or None)
+        self.create_bucket_form = CreateBucketForm(self.request, formdata=self.request.params or None)
         self.certificate_form = CertificateForm(
             self.request, conn=self.ec2_conn, iam_conn=self.iam_conn, elb_conn=self.elb_conn,
             can_list_certificates=self.can_list_certificates, formdata=self.request.params or None)
@@ -1089,6 +1091,7 @@ class CreateELBView(BaseELBView):
         search_facets = filters_form.facets
         self.render_dict = dict(
             create_form=self.create_form,
+            create_bucket_form=self.create_bucket_form,
             certificate_form=self.certificate_form,
             backend_certificate_form=self.backend_certificate_form,
             can_list_certificates=self.can_list_certificates,
@@ -1122,6 +1125,7 @@ class CreateELBView(BaseELBView):
             'securitygroups_json_endpoint': self.request.route_path('securitygroups_json'),
             'instances_json_endpoint': self.request.route_path('instances_json'),
             'existing_certificate_choices': self.certificate_form.certificate_arn.choices,
+            'bucket_choices': dict(self.create_form.bucket_name.choices),
         }))
 
     def get_wizard_tab_list(self):

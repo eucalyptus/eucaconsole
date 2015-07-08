@@ -6,18 +6,23 @@
 
 angular.module('ELBHealthChecksPage', ['EucaConsoleUtils', 'CreateBucketDialog'])
     .controller('ELBHealthChecksPageCtrl', function ($scope, $timeout, eucaHandleUnsavedChanges, eucaUnescapeJson) {
+        $scope.elbForm = $('#elb-form');
         $scope.isNotChanged = true;
         $scope.pingPathRequired = false;
         $scope.loggingEnabled = false;
+        $scope.bucketName = '';
+        $scope.bucketNameField = $('#bucket_name');
+        $scope.bucketNameChoices = {};
         $scope.accessLoggingConfirmed = false;
         $scope.accessLogConfirmationDialog = $('#elb-bucket-access-log-dialog');
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.setInitialValues(options);
-            $scope.initChosenSelectors();
             $scope.setWatch();
         };
         $scope.setInitialValues = function (options) {
+            $scope.bucketName = $scope.bucketNameField.val();
+            $scope.bucketNameChoices = options.bucket_choices;
             $scope.pingProtocol = $('#ping_protocol').val();
             $scope.pingPort = parseInt($('#ping_port').val() || 80, 10);
             $scope.pingPath = $('#ping_path').val();
@@ -25,9 +30,6 @@ angular.module('ELBHealthChecksPage', ['EucaConsoleUtils', 'CreateBucketDialog']
                 $scope.pingPathRequired = true;
             }
             $scope.loggingEnabled = options.logging_enabled;
-        };
-        $scope.initChosenSelectors = function () {
-            $('#bucket_name').chosen({width: '12rem', search_contains: true});
         };
         $scope.setWatch = function () {
             eucaHandleUnsavedChanges($scope);

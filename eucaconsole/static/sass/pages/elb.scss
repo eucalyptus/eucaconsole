@@ -136,5 +136,9 @@ select[name="time_between_pings"] {
     }
     #controls_bucket_name.stacked.controls-wrapper {
         margin-bottom: 0;
+        small.error {
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
     }
 }

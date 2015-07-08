@@ -57,6 +57,9 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
     $scope.classAddBackendCertificateButton = 'disabled';
     $scope.classUseThisCertificateButton = 'disabled';
     $scope.loggingEnabled = false;
+    $scope.bucketName = '';
+    $scope.bucketNameField = $('#bucket_name');
+    $scope.bucketNameChoices = {};
     $scope.accessLoggingConfirmed = false;
     $scope.accessLogConfirmationDialog = $('#elb-bucket-access-log-dialog');
     $scope.initController = function (optionsJson) {
@@ -69,6 +72,7 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
     };
     $scope.setInitialValues = function (options) {
         var certArnField = $('#certificate_arn');
+        $scope.bucketNameChoices = options.bucket_choices;
         $scope.existingCertificateChoices = options.existing_certificate_choices;
         $scope.elbForm = $('#elb-form');
         $scope.urlParams = $.url().param();
@@ -125,17 +129,6 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
         $('#vpc_subnet').chosen({'width': '100%', search_contains: true});
         $('#securitygroup').chosen({'width': '100%', search_contains: true});
         $('#zone').chosen({'width': '100%', search_contains: true});
-        $('#bucket_name').chosen({
-            width: '12rem',
-            search_contains: true, create_option: function (bucketName) {
-                var chosen = this;
-                $timeout(function () {
-                    chosen.append_option({value: bucketName, text: bucketName});
-                });
-            },
-            create_with_enter: true,
-            create_option_text: 'Create bucket'
-        });
     };
     $scope.setWatcher = function (){
         eucaFixHiddenTooltips();

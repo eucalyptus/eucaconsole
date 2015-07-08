@@ -35,7 +35,7 @@
                         </li>
                     </metal:actions>
                 </metal:block>
-                <form method="post" action="${request.route_path('elb_healthchecks_update', id=elb.name)}" data-abide="">
+                <form method="post" action="${request.route_path('elb_healthchecks_update', id=elb.name)}" data-abide="" id="elb-form">
                     ${structure:elb_form['csrf_token']}
                     <div i18n:translate="">Your load balancer will monitor the health of its instances based on the following health check.</div>
                     <div i18n:translate="">Instances that fail the health check will be removed from the load balancer.</div>
@@ -66,7 +66,7 @@
                                 <p i18n:translate="">
                                     Specify where your logs should be stored in the cloud.
                                 </p>
-                                ${panel('form_field', field=elb_form['bucket_name'], stack_label=True)}
+                                ${panel('form_field', field=elb_form['bucket_name'], ng_attrs=dict(model='bucketName', options='k as v for (k, v) in bucketNameChoices'), stack_label=True)}
                                 <div id="create-bucket-link">
                                     <span i18n:translate="">OR:</span>
                                     <a i18n:translate="" data-reveal-id="create-bucket-modal">Create bucket</a>

@@ -4,7 +4,7 @@
  *
  */
 angular.module('CreateBucketDialog', [])
-    .controller('CreateBucketDialogCtrl', function ($scope, $http) {
+    .controller('CreateBucketDialogCtrl', function ($scope, $http, $timeout) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.bucketDialog = $('#create-bucket-modal');
         $scope.createBucketForm = $('#create-bucket-form');
@@ -25,7 +25,16 @@ angular.module('CreateBucketDialog', [])
                 url: postUrl,
                 data: formData
             }).success(function (oData) {
-                // TODO: Add new bucket to choices and set it as selected
+                var parentScope = $scope.$parent;
+                var newBucketChoice = {};
+                var parentForm = $('#elb-form');
+                newBucketChoice[$scope.bucketName] = $scope.bucketName;
+                parentScope.bucketName = $scope.bucketName;
+                parentScope.bucketNameChoices[$scope.bucketName] = $scope.bucketName;
+                parentScope.bucketNameField.val($scope.bucketName);
+                $timeout(function() {
+                    parentForm.trigger('validate.fndtn.abide');
+                }, 200);
                 $scope.isCreatingBucket = false;
                 $scope.bucketDialog.foundation('reveal', 'close');
             }).error(function (oData) {
