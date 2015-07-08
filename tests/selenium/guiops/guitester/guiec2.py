@@ -198,10 +198,9 @@ class GuiEC2(GuiTester):
         DeleteScurityGroupDialog(self).delete_s_group()
         SecurityGroupView(self).verify_s_group_not_present(sgroup_name)
 
-    def launch_instance_from_dashboard(self, image = "centos",availability_zone = None,
-                                       instance_type = "t1.micro: 1 CPUs, 256 memory (MB), 5 disk (GB,root device)",
-                                       number_of_of_instances = None, instance_name = None, key_name = "None (advanced option)",
-                                       security_group = "default", user_data=None, monitoring=False, private_addressing=False):
+    def launch_instance_from_dashboard(self, image="centos", availability_zone=None, instance_type="t1.micro",
+                                       number_of_of_instances=None, instance_name=None, key_name="None (advanced option)",
+                                       security_group="default", user_data=None, monitoring=False, private_addressing=False):
         """
         Navigates to dashboard via menu. Launches instance.
         :param image:
