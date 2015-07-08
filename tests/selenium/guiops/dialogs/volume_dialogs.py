@@ -80,9 +80,10 @@ class DetachVolumeModal(BasePage):
 
     _detach_volume_submit_button_id = "detach_volume_submit_button"
     _volume_id_in_the_message_css = "span>b"
+    _volume_id_in_the_message_xpath= '//div[@id="detach-volume-modal"]/p[2]/span[2]'
 
     def detach_volume(self, volume_id):
-        self.tester.wait_for_text_present_by_css(self._volume_id_in_the_nessage_css, volume_id)
+        self.tester.wait_for_text_present_by_xpath(self._volume_id_in_the_message_xpath, volume_id)
         self.tester.click_element_by_id(self._detach_volume_submit_button_id)
 
 
