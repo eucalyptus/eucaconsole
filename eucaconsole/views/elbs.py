@@ -52,6 +52,7 @@ from ..constants.elbs import (
     ELB_PREDEFINED_SECURITY_POLICY_NAME_PREFIX, ELB_CUSTOM_SECURITY_POLICY_NAME_PREFIX
 )
 from ..forms import ChoicesManager
+from ..forms.buckets import CreateBucketForm
 from ..forms.elbs import (
     ELBForm, ELBDeleteForm, CreateELBForm, ELBHealthChecksForm, ELBsFiltersForm,
     ELBInstancesForm, ELBInstancesFiltersForm, CertificateForm, BackendCertificateForm, SecurityPolicyForm,
@@ -990,12 +991,14 @@ class ELBHealthChecksView(BaseELBView):
             self.elb_form = ELBHealthChecksForm(
                 self.request, s3_conn=self.s3_conn, elb_conn=self.elb_conn, elb=self.elb,
                 formdata=self.request.params or None)
+            self.create_bucket_form = CreateBucketForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
             elb=self.elb,
             elb_name=self.escape_braces(self.elb.name) if self.elb else '',
             elb_form=self.elb_form,
             escaped_elb_name=quote(self.elb.name) if self.elb else '',
             delete_form=ELBDeleteForm(self.request, formdata=self.request.params or None),
+            create_bucket_form=self.create_bucket_form,
             controller_options_json=self.get_controller_options_json()
         )
 

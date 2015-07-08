@@ -4,7 +4,7 @@
  *
  */
 
-angular.module('ELBHealthChecksPage', ['EucaConsoleUtils'])
+angular.module('ELBHealthChecksPage', ['EucaConsoleUtils', 'CreateBucketDialog'])
     .controller('ELBHealthChecksPageCtrl', function ($scope, $timeout, eucaHandleUnsavedChanges, eucaUnescapeJson) {
         $scope.isNotChanged = true;
         $scope.pingPathRequired = false;
@@ -27,17 +27,7 @@ angular.module('ELBHealthChecksPage', ['EucaConsoleUtils'])
             $scope.loggingEnabled = options.logging_enabled;
         };
         $scope.initChosenSelectors = function () {
-            $('#bucket_name').chosen({
-                width: '12rem',
-                search_contains: true, create_option: function (bucketName) {
-                    var chosen = this;
-                    $timeout(function () {
-                        chosen.append_option({value: bucketName, text: bucketName});
-                    });
-                },
-                create_with_enter: true,
-                create_option_text: 'Create bucket'
-            });
+            $('#bucket_name').chosen({width: '12rem', search_contains: true});
         };
         $scope.setWatch = function () {
             eucaHandleUnsavedChanges($scope);
