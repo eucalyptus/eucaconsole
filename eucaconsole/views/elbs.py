@@ -39,6 +39,7 @@ import boto.utils
 from boto.ec2.elb import HealthCheck
 from boto.ec2.elb.attributes import ConnectionSettingAttribute, AccessLogAttribute
 from boto.exception import BotoServerError
+from boto.s3.acl import ACL, Grant, Policy
 
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from pyramid.view import view_config
@@ -49,8 +50,8 @@ from ..constants.cloudwatch import (
     STATISTIC_CHOICES)
 from ..constants.elbs import (
     ELB_MONITORING_CHARTS_LIST, ELB_BACKEND_CERTIFICATE_NAME_PREFIX, ELB_ACCESS_LOGS_BUCKET_PREFIX_NAME_PREFIX,
-    ELB_PREDEFINED_SECURITY_POLICY_NAME_PREFIX, ELB_CUSTOM_SECURITY_POLICY_NAME_PREFIX
-)
+    ELB_PREDEFINED_SECURITY_POLICY_NAME_PREFIX, ELB_CUSTOM_SECURITY_POLICY_NAME_PREFIX,
+    AWS_ELB_ACCOUNT_IDS)
 from ..forms import ChoicesManager
 from ..forms.buckets import CreateBucketForm
 from ..forms.elbs import (
@@ -352,6 +353,25 @@ class BaseELBView(TaggedItemView):
                 new_folder = bucket.new_key(bucket_prefix_key)
                 new_folder.set_contents_from_string('')
             # TODO: Set bucket ACL to allow ELB access logs to be captured
+            # self.configure_logging_bucket_acl()
+
+    def configure_logging_bucket_acl(self, bucket=None):
+        if self.cloud_type == 'aws':
+            # Get AWS ELB account ID based on region
+            grant_id = AWS_ELB_ACCOUNT_IDS.get(self.region)
+        else:
+            # TODO: Set canned ELB account id for Eucalyptus
+            grant_id = '123456789'
+        sharing_acl = ACL()
+        sharing_acl.add_grant(Grant(
+            permission='WRITE',
+            type='CanonicalUser',
+            id=grant_id,
+        ))
+        sharing_policy = Policy()
+        sharing_policy.acl = sharing_acl
+        sharing_policy.owner = bucket.get_acl().owner
+        bucket.set_acl(sharing_policy)
 
     @staticmethod
     def generate_bucket_prefix_name(elb_name):
