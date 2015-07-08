@@ -217,9 +217,9 @@ class GuiEC2(GuiTester):
         """
         BasePage(self).goto_dashboard_via_menu()
         Dashboard(self).click_launch_instance_button_from_dashboard()
-        LaunchInstanceWizard(self).launch_instance(image, availability_zone, instance_type,
-                                                          number_of_of_instances, instance_name, key_name,
-                                                          security_group, user_data, monitoring, private_addressing)
+        LaunchInstanceWizard(self).launch_instance(image=image, availability_zone=availability_zone, instance_type=instance_type,
+                                                          number_of_of_instances=number_of_of_instances, instance_name=instance_name, key_name=key_name,
+                                                          security_group=security_group, user_data=user_data, monitoring=monitoring, private_addressing=private_addressing)
         instance_id = InstanceView(self).get_id_of_newly_launched_instance()
         InstanceView(self).goto_instance_detail_page_via_link(instance_id)
         InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_in_running_state()
