@@ -31,10 +31,12 @@
                                 <span class="cir">1</span> <b>General</b>
                             </a>
                         </dd>
-                        <dd>
-                            <a id="tabStep2" href="#step2" ng-click="visitNextStep(2, $event)">
+                        <dd ng-class="{disabled: step1Invalid}">
+                            <a id="tabStep2" ng-click="visitNextStep(2, $event)"
+                               href="#step2" ng-cloak="" ng-if="!step1Invalid">
                                 <span class="cir">2</span> <b>Parameters</b>
                             </a>
+                            <span class="cir" ng-cloak="" ng-if="step1Invalid">2</span> <b ng-cloak="" ng-if="step1Invalid">Parameters</b>
                         </dd>
                     </dl>
                     <div class="tabs-content">
