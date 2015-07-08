@@ -36,7 +36,6 @@ class Volume_operations_sequence(GuiEC2):
         volume2=self.tester.create_volume_from_dashboard(volume_size=3)
         volume2_id=volume2.get("volume_id")
         self.tester.delete_volume_from_detail_page(volume2_id)
-        self.tester.delete_volume_from_view_page(volume1_id)
         self.tester.logout()
         self.tester.exit_browser()
 
