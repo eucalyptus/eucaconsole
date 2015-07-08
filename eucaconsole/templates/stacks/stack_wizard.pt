@@ -31,7 +31,7 @@
                                 <span class="cir">1</span> <b>General</b>
                             </a>
                         </dd>
-                        <dd>
+                        <dd ng-show="isNotValid || loading || parameters.length > 0">
                             <a id="tabStep2" href="#step2" ng-click="visitNextStep(2, $event)">
                                 <span class="cir">2</span> <b>Parameters</b>
                             </a>
@@ -96,10 +96,13 @@
                             <div class="row">
                                 <div class="small-3 columns">&nbsp;</div>
                                 <div class="small-9 columns field inline">
-                                    <a id="visit-step-2" class="button small round" ng-click="visitNextStep(2, $event)" ng-disabled="isNotValid">
+                                    <button type="submit" class="button" id="stack-wizard-btn-step2" ng-disabled="isNotValid" ng-show="!isNotValid && !loading && parameters.length === 0">
+                                        <span i18n:translate="">Create Stack</span>
+                                    </button>
+                                    <a id="visit-step-2" class="button small round" ng-click="visitNextStep(2, $event)" ng-show="isNotValid || loading || parameters.length > 0" ng-disabled="isNotValid || !parameters">
                                         <span i18n:translate="">Next</span>
-                                        <a class="cancel-link" href="${request.route_path('stacks')}">Cancel</a>
                                     </a>
+                                    <a class="cancel-link" href="${request.route_path('stacks')}">Cancel</a>
                                 </div>
                             </div>
                         </div>

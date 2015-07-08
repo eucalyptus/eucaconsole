@@ -403,7 +403,9 @@ class StackWizardView(BaseView):
                             parameter_list=parameter_list
                         )
                     )
-                params = self.generate_param_list(parsed)
+                params = []
+                if 'Parameters' in parsed.keys():
+                    params = self.generate_param_list(parsed)
                 return dict(
                     results=dict(
                         template_url=template_url,
@@ -439,7 +441,9 @@ class StackWizardView(BaseView):
             key.set_contents_from_string(template_body)
             template_url = key.generate_url(900)  # 15 minute URL, more than enough time, right?
 
-            params = self.generate_param_list(parsed)
+            params = []
+            if 'Parameters' in parsed.keys():
+                params = self.generate_param_list(parsed)
             return dict(
                 results=dict(
                     template_url=template_url,
@@ -572,10 +576,11 @@ class StackWizardView(BaseView):
             (template_url, template_name, parsed) = self.parse_store_template()
             capabilities = ['CAPABILITY_IAM']
             params = []
-            for name in parsed['Parameters']:
-                val = self.request.params.get(name)
-                if val:
-                    params.append((name, val))
+            if 'Parameters' in parsed.keys():
+                for name in parsed['Parameters']:
+                    val = self.request.params.get(name)
+                    if val:
+                        params.append((name, val))
             tags_json = self.request.params.get('tags')
             tags = None
             if tags_json:
