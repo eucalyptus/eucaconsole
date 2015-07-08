@@ -449,7 +449,7 @@ class GuiEC2(GuiTester):
         InstanceView(self).goto_instance_detail_page_via_link(instance_id)
         InstanceDetailPage(self, instance_id, instance_name).click_action_attach_volume()
         AttachVolumeModalSelectVolume(self).attach_volume(volume_id, device)
-        VolumeDetailPage(self).verify_volume_status_is_attached(volume_id, timeout_in_seconds)
+        InstanceDetailPage(self).verify_volume_is_attached(volume_id, timeout_in_seconds)
 
     def attach_volume_from_instance_lp(self, volume_id, instance_id, instance_name=None, device=None, timeout_in_seconds=240):
         """

@@ -62,8 +62,7 @@ class AttachVolumeModalSelectVolume(BasePage):
     _search_field_css = ".chosen-search>input"
     _active_result_css = ".active-result"
     _device_field_id = "device"
-    _attach_volume_submit_button_css = '[class="button expand"]'
-
+    _attach_volume_submit_button_css = '#attach-volume-modal>form>div>div>input[class="button expand"]'
 
     def attach_volume(self, volume_id, device=None):
         self.tester.click_element_by_css(self._volume_dropdown_css)
