@@ -47,8 +47,8 @@ class AttachVolumeModalSelectInstance(BasePage):
 
     def attach_volume(self, instance_id, device=None):
         self.tester.click_element_by_css(self._instance_dropdown_css)
-        self.send_keys_by_css(self._search_field_css, instance_id)
-        self.click_element_by_css(self._active_result_css)
+        self.tester.send_keys_by_css(self._search_field_css, instance_id)
+        self.tester.click_element_by_css(self._active_result_css)
         if device is not None:
             self.tester.send_keys_by_id(self._device_field_id, device)
         self.tester.click_element_by_id(self._attach_volume_submit_button_id)
@@ -78,8 +78,8 @@ class DetachVolumeModal(BasePage):
     def __init__(self, tester):
         self.tester = tester
 
-    _detach_volume_submit_button_id="detach_volume_submit_button"
-    _volume_id_in_the_nessage_css="b"
+    _detach_volume_submit_button_id = "detach_volume_submit_button"
+    _volume_id_in_the_message_css = "span>b"
 
     def detach_volume(self, volume_id):
         self.tester.wait_for_text_present_by_css(self._volume_id_in_the_nessage_css, volume_id)
