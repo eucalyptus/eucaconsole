@@ -109,7 +109,7 @@ angular.module('IAMPolicyWizard', ['EucaConsoleUtils'])
             if ($scope.codeEditor !== null){
                 $scope.codeEditor.on('change', function () {
                     $scope.$apply(function() {
-                        $scope.handEdited = $scope.codeEditor.getValue().trim() != $scope.policyText;
+                        $scope.handEdited = $scope.codeEditor.getValue().trim() !== $scope.policyText;
                     });
                 });
             }
@@ -254,7 +254,7 @@ angular.module('IAMPolicyWizard', ['EucaConsoleUtils'])
                 var file = evt.target.files[0],
                     reader = new FileReader();
                 reader.onloadend = function(evt) {
-                    if (evt.target.readyState == FileReader.DONE) {
+                    if (evt.target.readyState === FileReader.DONE) {
                         $scope.policyText = evt.target.result;
                         $scope.codeEditor.setValue(evt.target.result);
                         $scope.codeEditor.focus();
@@ -386,8 +386,8 @@ angular.module('IAMPolicyWizard', ['EucaConsoleUtils'])
             conditionValueField = actionRow.find('.condition-value');
             conditionValue = conditionValueField.val();
             // Handle Boolen/Null conditions
-            if (conditionOperator == 'Bool' || conditionOperator == 'Null') {
-                if ($scope.cloudType == 'aws') {
+            if (conditionOperator === 'Bool' || conditionOperator === 'Null') {
+                if ($scope.cloudType === 'aws') {
                     conditionValue = conditionValue === 'false' ? false : !!conditionValue;
                 } else {
                     conditionValue = conditionValueField.is(':checked');
