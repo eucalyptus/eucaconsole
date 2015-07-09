@@ -434,7 +434,7 @@ class GuiEC2(GuiTester):
         BasePage(self).goto_volumes_view_via_menu()
         VolumeView(self).goto_volume_detail_page_via_link(volume_id)
         VolumeDetailPage(self).click_action_attach_volume_on_detail_page()
-        AttachVolumeModalSelectInstance(self).attach_volume(instance_id, device)
+        AttachVolumeModalSelectInstance(self).attach_volume(instance_id, device=device)
         VolumeDetailPage(self).verify_volume_status_is_attached(timeout_in_seconds)
 
     def attach_volume_from_instance_detail_page(self, volume_id, instance_id, instance_name=None, device=None, timeout_in_seconds=240):
