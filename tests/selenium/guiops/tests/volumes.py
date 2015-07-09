@@ -28,7 +28,7 @@ class Volume_operations_sequence(GuiEC2):
         self.tester.detach_volume_from_volumes_lp(volume1_id,timeout_in_seconds=400)
         self.tester.attach_volume_from_instance_lp(volume1_id, instance1_id,timeout_in_seconds=400)
         self.tester.detach_volume_from_volumes_lp(volume1_id, timeout_in_seconds=400)
-        self.tester.attach_volume_from_volume_detail_page(instance1_id, volume1_id, timeout_in_seconds=400)
+        self.tester.attach_volume_from_volume_detail_page(instance1_id, volume1_id, device= "dev/vdd", timeout_in_seconds=400)
         self.tester.detach_volume_from_volumes_lp(volume1_id, timeout_in_seconds=400)
         self.tester.attach_volume_from_volume_lp(instance1_id, volume1_id, timeout_in_seconds=400)
         self.tester.terminate_instance_from_view_page(instance1_id)
