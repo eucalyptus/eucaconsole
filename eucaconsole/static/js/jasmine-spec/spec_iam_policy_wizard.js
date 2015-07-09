@@ -70,10 +70,5 @@ describe("IAMPolicyWizard", function() {
             expect(scope.cloudType).toEqual('aws');
         });
 
-        it("Should call initDateTimePickers() when initController() is called and cloudType is euca", function() {
-            spyOn(scope, 'initDateTimePickers');
-            scope.initController('{"cloudType": "euca", "policyActions": [{"actions": []}]}');
-            expect(scope.initDateTimePickers).toHaveBeenCalled();
-        });
     });
 });
