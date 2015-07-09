@@ -83,7 +83,7 @@
             // set up most recent
             for (i=0; i<3; i++) {
                 var recent = recentNav[i];
-                var recentLink = $("#resource-menuitem-recent-" + (i + 1));
+                var recentLink = $('.resources-nav').find("#resource-menuitem-recent-" + (i + 1));
                 if (recent !== undefined) {
                     recentLink.attr('href', $("#resource-menuitem-" + recent).attr('href'));
                     var recentIcon = recentLink.find("i");
