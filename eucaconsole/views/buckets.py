@@ -660,7 +660,7 @@ class BucketDetailsView(BaseView, BucketMixin):
         self.s3_conn = self.get_connection(conn_type='s3')
         self.bucket = bucket
         self.bucket_acl = bucket_acl
-        request.subpath = self.get_subpath(self.bucket.name)
+        request.subpath = self.get_subpath(self.bucket.name if self.bucket else '')
         with boto_error_handler(request):
             if self.s3_conn and self.bucket is None:
                 self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
