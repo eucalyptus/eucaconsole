@@ -28,15 +28,15 @@
                     <dl id="wizard-tabs" class="tabs" data-tab="">
                         <dd class="active">
                             <a id="tabStep1" href="#step1" ng-click="visitNextStep(1, $event)">
-                                <span class="cir">1</span> <b>General</b>
+                                <span class="cir">1</span> <b i18n:translate="">General</b>
                             </a>
                         </dd>
                         <dd ng-class="{disabled: step1Invalid}">
                             <a id="tabStep2" ng-click="visitNextStep(2, $event)"
                                href="#step2" ng-cloak="" ng-if="!step1Invalid">
-                                <span class="cir">2</span> <b>Parameters</b>
+                                <span class="cir">2</span> <b i18n:translate="">Parameters</b>
                             </a>
-                            <span class="cir" ng-cloak="" ng-if="step1Invalid">2</span> <b ng-cloak="" ng-if="step1Invalid">Parameters</b>
+                            <span class="cir" ng-cloak="" ng-if="step1Invalid">2</span> <b ng-cloak="" ng-if="step1Invalid" i18n:translate="">Parameters</b>
                         </dd>
                     </dl>
                     <div class="tabs-content">
