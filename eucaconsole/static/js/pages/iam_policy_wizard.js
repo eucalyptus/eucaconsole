@@ -49,11 +49,6 @@ angular.module('IAMPolicyWizard', ['EucaConsoleUtils'])
             $scope.initCodeMirror();
             $scope.handlePolicyFileUpload();
             $scope.setupListeners();
-            if ($scope.cloudType === 'euca') {
-                $scope.initChosenSelectors();
-                $scope.addResourceTypeListener();
-                $scope.initDateTimePickers();
-            }
         };
         $scope.initActionContainers = function () {
             $scope.policyActions.forEach(function (actionNS) {
@@ -89,7 +84,12 @@ angular.module('IAMPolicyWizard', ['EucaConsoleUtils'])
         };
         $scope.initToggleAdvancedListener = function () {
             $scope.policyGenerator.on('click', '.advanced-button', function () {
-                $(this).closest('tr').find('.advanced').toggleClass('hide');
+                var advancedBtn = $(this);
+                var advancedWrapper = advancedBtn.closest('td').find('.advanced');
+                advancedWrapper.toggleClass('hide');
+                $scope.initChosenSelectors(advancedWrapper);
+                $scope.addResourceTypeListener(advancedWrapper);
+                $scope.initDateTimePickers(advancedWrapper);
             });
         };
         $scope.initNameConflictWarningListener = function () {
@@ -188,9 +188,9 @@ angular.module('IAMPolicyWizard', ['EucaConsoleUtils'])
             });
             $('#' + lastSelectedTab).click();
         };
-        $scope.addResourceTypeListener = function () {
+        $scope.addResourceTypeListener = function (wrapper) {
             // Show/hide resource choices based on resource type selection
-            $scope.policyGenerator.on('change', 'select.resource-type', function(evt) {
+            wrapper.on('change', 'select.resource-type', function(evt) {
                 var resourceSelect = $(evt.target),
                     resourceType = resourceSelect.val(),
                     resourceSelector = '.resource.' + resourceType,
@@ -201,9 +201,9 @@ angular.module('IAMPolicyWizard', ['EucaConsoleUtils'])
                 resourceWrapper.find(resourceSelector).removeClass('hide');
             });
         };
-        $scope.initChosenSelectors = function () {
+        $scope.initChosenSelectors = function (wrapper) {
             $timeout(function () {
-                var resourceValueInputs = $scope.policyGenerator.find('.chosen');
+                var resourceValueInputs = wrapper.find('.chosen');
                 resourceValueInputs.chosen({'width': '44%', 'search_contains': true});
                 // Only display the resource field inputs for the relevant actions
                 resourceValueInputs.addClass('hide');
@@ -218,11 +218,9 @@ angular.module('IAMPolicyWizard', ['EucaConsoleUtils'])
                 });
             }, 100);
         };
-        $scope.initDateTimePickers = function () {
-            $(document).ready(function () {
-                $scope.policyGenerator.find('.datetimepicker').fdatepicker({
-                    'format': 'yyyy-mm-dd'
-                });
+        $scope.initDateTimePickers = function (wrapper) {
+            wrapper.find('.datetimepicker').fdatepicker({
+                'format': 'yyyy-mm-dd'
             });
         };
         $scope.initCodeMirror = function () {
