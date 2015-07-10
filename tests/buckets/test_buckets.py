@@ -72,8 +72,9 @@ class BucketMixinTestCase(BaseViewTestCase):
         request = testing.DummyRequest()
         request.environ = {'PATH_INFO': "some/path//with/extra/slash"}
         request.subpath = ('some', 'path', 'with', 'extra', 'slash')
+        request.matchdict['name'] = 'bucket'
         view = BucketXHRView(request)
-        new_subpath = view.get_subpath()
+        new_subpath = view.get_subpath('bucket')
         self.assertEqual(request.environ['PATH_INFO'], "/".join(new_subpath))
 
 
