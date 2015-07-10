@@ -46,6 +46,7 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
         $scope.resourceList = undefined;
         $scope.propertyList = undefined;
         $scope.parameterList = undefined;
+        $scope.isCreating = false;
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.stackTemplateEndpoint = options.stack_template_url;
