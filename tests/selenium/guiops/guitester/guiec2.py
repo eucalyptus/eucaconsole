@@ -477,16 +477,31 @@ class GuiEC2(GuiTester):
         DetachVolumeModal(self).detach_volume(volume_id)
         VolumeView(self).verify_volume_status_is_available(volume_id, timeout_in_seconds)
 
-    def detach_volume_from_volume_detail_page(self):
+    def detach_volume_from_volume_detail_page(self, volume_id, timeout_in_seconds):
+        """
+        Navigates to volume detail page. Detaches volume from instance. Verifies volume is in available state.
+        :param volume_id:
+        :param timeout_in_seconds:
+        """
         NotImplementedError
 
-    def detach_volume_from_instance_detail_page(self):
+    def detach_volume_from_instance_detail_page(self, volume_id, instance_id,  timeout_in_seconds):
+        """
+        Navigates to instance detail page. Detaches a given volume. Verifies volume is in available state.
+        :param volume_id:
+        :param instance_id:
+        :param timeout_in_seconds:
+        """
         NotImplementedError
 
-    def detach_volume_from_instance_lp(self):
+    def detach_volume_from_instance_lp(self, volume_id, instance_id,  timeout_in_seconds):
+        """
+        Navigates to instance landing page. Goes to volumes tab by "Manage Volumes" action. Detaches given volume. Verifies volume is in available state.
+        :param volume_id:
+        :param instance_id:
+        :param timeout_in_seconds:
+        """
         NotImplementedError
-
-
 
     def create_snapshot_on_volumes_view_page(self, volume_id, snapshot_name=None, snapshot_description=None, timeout_in_seconds=240):
         """
