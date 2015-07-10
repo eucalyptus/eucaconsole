@@ -9,6 +9,7 @@ class InstanceView(ViewPage):
     _instances_view_page_title = "Instances"
     _launch_instance_button_id = "launch-instance-btn"
     _instance_action_menu_id = "table-item-dropdown_{0}"  #instance_id required
+    _manage_volumes_actions_menu_item_css = "#item-dropdown_{0}>li:nth-of-type(7)>a"  #instance_id required
     _terminate_instance_actions_menu_item_css = "#item-dropdown_{0}>li:nth-of-type(13)>a"  #instance_id required
     _first_pending_instance_status_css = "status>span:contains('pending')"
     _first_instance_link_in_list_css = "#tableview>table>tbody>tr>td>a"
@@ -29,6 +30,10 @@ class InstanceView(ViewPage):
     def click_action_terminate_instance_on_view_page(self, instance_id):
         self.tester.click_element_by_id(self._instance_action_menu_id.format(instance_id))
         self.tester.click_element_by_css(self._terminate_instance_actions_menu_item_css.format(instance_id))
+
+    def click_action_manage_volumes_on_view_page(self, instance_id):
+        self.tester.click_element_by_id(self._instance_action_menu_id.format(instance_id))
+        self.tester.click_element_by_css(self._manage_volumes_actions_menu_item_css.format(instance_id))
 
     def get_id_of_newly_launched_instance(self, name=None):
         contains_id = self.tester.get_attribute_by_css(self._first_instance_link_in_list_css, "ng-href")
