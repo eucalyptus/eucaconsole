@@ -33,6 +33,8 @@ angular.module('IAMPolicyWizard', ['EucaConsoleUtils'])
         $scope.actionResources = {};
         $scope.actionConditions = {};
         $scope.actionParsedConditions = {};
+        $scope.conditionKeys = {};
+        $scope.conditionOperators = {};
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.policyJsonEndpoint = options.policyJsonEndpoint;
@@ -471,7 +473,7 @@ angular.module('IAMPolicyWizard', ['EucaConsoleUtils'])
         $scope.setOperators = function (conditionKey) {
             $scope[conditionKey.replace('ConditionKey', 'ConditionOperator')] = '';
             $timeout(function () {
-                $scope.selectedOperatorType = $scope.getConditionType($scope[conditionKey]);
+                $scope.selectedOperatorType = $scope.getConditionType($scope.conditionKeys[conditionKey]);
             }, 50);
         };
     })
