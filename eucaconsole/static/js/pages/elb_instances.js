@@ -24,6 +24,7 @@ angular.module('ELBInstancesPage', ['EucaConsoleUtils', 'MagicSearch'])
         $scope.isNotValid = false;
         $scope.isInitComplete = false;
         $scope.isCrossZoneEnabled = false;
+        $scope.instanceCounts = {};
         $scope.unsavedChangesWarningModalLeaveCallback = null;
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));

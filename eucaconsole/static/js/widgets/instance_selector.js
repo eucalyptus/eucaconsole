@@ -53,6 +53,7 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                 $scope.ELBInstanceHealthList = options.elb_instance_health;
                 $scope.healthStatusNames = options.health_status_names;
                 $scope.instanceHealthMapping = $scope.getInstanceHealthMapping();
+                $scope.allAvailabilityZones = options.availability_zone_choices;
                 if (options.hasOwnProperty('is_vpc_supported')) {
                     $scope.isVPCSupported = options.is_vpc_supported;
                 }
@@ -284,7 +285,7 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                         if (selectedInstance.id === instance.id) {
                             var existsZone = false;
                             angular.forEach($scope.availabilityZones, function (zone) {
-                                if (zone == instance.placement) {
+                                if (zone === instance.placement) {
                                     existsZone = true;
                                 }
                             });
@@ -292,6 +293,17 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                                 $scope.availabilityZones.push(instance.placement);
                             }
                         } 
+                    });
+                });
+                $scope.updateSelectedInstanceCounts();
+            };
+            $scope.updateSelectedInstanceCounts = function () {
+                angular.forEach($scope.allAvailabilityZones, function (zone) {
+                    $scope.$parent.instanceCounts[zone.name] = 0;
+                    angular.forEach($scope.selectedInstanceList, function (selectedInstance) {
+                        if (zone.name === selectedInstance.placement) {
+                            $scope.$parent.instanceCounts[zone.name] += 1;
+                        }
                     });
                 });
             };
@@ -302,7 +314,7 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                         if (selectedInstance.id === instance.id) {
                             var existsSubnet = false;
                             angular.forEach($scope.vpcSubnets, function (subnet) {
-                                if (subnet == instance.subnet_id) {
+                                if (subnet === instance.subnet_id) {
                                     existsSubnet = true;
                                 }
                             });
