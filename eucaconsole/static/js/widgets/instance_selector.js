@@ -54,6 +54,7 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                 $scope.healthStatusNames = options.health_status_names;
                 $scope.instanceHealthMapping = $scope.getInstanceHealthMapping();
                 $scope.allAvailabilityZones = options.availability_zone_choices;
+                $scope.allSubnets = options.vpc_subnet_choices;
                 if (options.hasOwnProperty('is_vpc_supported')) {
                     $scope.isVPCSupported = options.is_vpc_supported;
                 }
@@ -298,14 +299,25 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                 $scope.updateSelectedInstanceCounts();
             };
             $scope.updateSelectedInstanceCounts = function () {
-                angular.forEach($scope.allAvailabilityZones, function (zone) {
-                    $scope.$parent.instanceCounts[zone.name] = 0;
-                    angular.forEach($scope.selectedInstanceList, function (selectedInstance) {
-                        if (zone.name === selectedInstance.placement) {
-                            $scope.$parent.instanceCounts[zone.name] += 1;
-                        }
+                if ($scope.isVPCSupported) {
+                    angular.forEach($scope.allSubnets, function (subnet) {
+                        $scope.$parent.instanceCounts[subnet.id] = 0;
+                        angular.forEach($scope.selectedInstanceList, function (selectedInstance) {
+                            if (subnet.id === selectedInstance.subnet_id) {
+                                $scope.$parent.instanceCounts[subnet.id] += 1;
+                            }
+                        });
                     });
-                });
+                } else {
+                    angular.forEach($scope.allAvailabilityZones, function (zone) {
+                        $scope.$parent.instanceCounts[zone.name] = 0;
+                        angular.forEach($scope.selectedInstanceList, function (selectedInstance) {
+                            if (zone.name === selectedInstance.placement) {
+                                $scope.$parent.instanceCounts[zone.name] += 1;
+                            }
+                        });
+                    });
+                }
             };
             $scope.updateInstanceVPCSubnets = function () {
                 $scope.vpcSubnets = [];
@@ -324,6 +336,7 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                         } 
                     });
                 });
+                $scope.updateSelectedInstanceCounts();
             };
             /*  Filter items client side based on search criteria.
              *  @param {array} filterProps Array of properties to filter items on
