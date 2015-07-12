@@ -92,9 +92,9 @@ METRIC_DIMENSION_INPUTS = {
 METRIC_TITLE_MAPPING = {
     # EC2 Metrics
     'CPUUtilization': _(u'CPU utilization %'),
-    'DiskReadBytes': _(u'Disk read bytes'),
+    'DiskReadBytes': _(u'Disk read data'),
     'DiskReadOps': _(u'Disk read operations'),
-    'DiskWriteBytes': _(u'Disk write bytes'),
+    'DiskWriteBytes': _(u'Disk write data'),
     'DiskWriteOps': _(u'Disk write operations'),
     'NetworkIn': _(u'Network in KB'),
     'NetworkOut': _(u'Network out KB'),

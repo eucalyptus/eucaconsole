@@ -150,7 +150,7 @@ class CloudWatchAPIView(BaseView, CloudWatchAPIMixin):
         idtype = self.request.params.get('idtype') or 'InstanceId'
         tz_offset = int(self.request.params.get('tzoffset', 0))
         unit = self.request.params.get('unit')
-        convert_to_kilobytes = ['NetworkIn', 'NetworkOut']
+        convert_to_kilobytes = ['NetworkIn', 'NetworkOut', 'DiskReadBytes', 'DiskWriteBytes']
         json_stats = []
         multiplier = 1
         divider = 1
