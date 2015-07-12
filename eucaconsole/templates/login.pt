@@ -93,7 +93,6 @@
                                     <span i18n:translate="">Logging in</span>&nbsp;<i class="busy"></i>
                                 </div>
                             </div>
-                            <div>&nbsp;</div>
                             <div class="row">
                                 <div class="small-12 columns">
                                     <a target="_blank" href="${layout.support_url}" i18n:translate="">Forgot your password?</a>
@@ -139,7 +138,6 @@
                                     <span i18n:translate="">Logging in</span>&nbsp;<i class="busy"></i>
                                 </div>
                             </div>
-                            <div>&nbsp;</div>
                             <div class="row">
                                 <div class="small-12 columns">
                                     <span i18n:translate="">Need to access an IAM account?</span><br />
