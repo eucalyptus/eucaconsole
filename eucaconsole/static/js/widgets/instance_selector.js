@@ -41,7 +41,7 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                 Object.getPrototypeOf(document.createComment('')).getAttribute = function() {};
             };
             $scope.setInitialValues = function (options) {
-                var zoneList;
+                var zoneList, subnetList;
                 $scope.allInstanceList = [];
                 $scope.instanceList = [];
                 $scope.selectedInstanceList = [];
@@ -76,6 +76,14 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                 }
                 $scope.selectedZones = zoneList.map(function (zone) {
                     return zone.name;
+                });
+                if ($scope.$parent.selectedVPCSubnetList) {
+                    subnetList = $scope.$parent.selectedVPCSubnetList;
+                } else {
+                    subnetList = $scope.allSubnets;
+                }
+                $scope.selectedSubnets = subnetList.map(function (subnet) {
+                    return subnet.id;
                 });
             };
             $scope.getInstanceHealthMapping = function () {

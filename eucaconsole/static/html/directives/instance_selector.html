@@ -22,12 +22,15 @@
                 </td>
                 <td class="breakall">{{ instance.tags }}</td>
                 <td>
-                    <i ng-show="selectedZones.indexOf(instance.placement) === -1"
+                    <i ng-show="!isVPCSupported &amp;&amp; selectedZones.indexOf(instance.placement) === -1"
                        class="fi-alert" data-tooltip="" i18n:attributes="title"
                        title="Instances will not receive any traffic until you enable this zone"></i>
                     {{ instance.placement }}
                 </td>
                 <td ng-if="isVPCSupported">
+                    <i ng-show="selectedSubnets.indexOf(instance.subnet_id) === -1"
+                       class="fi-alert" data-tooltip="" i18n:attributes="title"
+                       title="Instances will not receive any traffic until you enable this subnet"></i>
                     <span ng-show="instance.vpc_name != ''">
                         {{ instance.vpc_subnet_display }} | {{ instance.vpc_name }}
                     </span>
