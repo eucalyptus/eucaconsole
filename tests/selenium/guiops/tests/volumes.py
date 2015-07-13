@@ -18,12 +18,24 @@ class Volume_operations_sequence(GuiEC2):
         return ''.join(random.choice(chars) for j in range(size))
 
     def volume_ops_test(self):
-        self.tester.login("ui-test-acct-00", "admin", "mypassword0")
+        self.tester.login(self.account, self.user, self.password)
         volume1_name = self.id_generator()+"-volume"
         volume1 = self.tester.create_volume_from_view_page(volume1_name, volume_size=2, availability_zone="one")
         volume1_id = volume1.get("volume_id")
+        instance1=self.tester.launch_instance_from_dashboard(availability_zone="one")
+        instance1_id=instance1.get("instance_id")
+        self.tester.attach_volume_from_instance_detail_page(volume1_id, instance1_id,timeout_in_seconds=400)
+        self.tester.detach_volume_from_volumes_lp(volume1_id,timeout_in_seconds=400)
+        self.tester.attach_volume_from_instance_lp(volume1_id, instance1_id,timeout_in_seconds=400)
+        self.tester.detach_volume_from_volumes_lp(volume1_id, timeout_in_seconds=400)
+        self.tester.attach_volume_from_volume_detail_page(instance1_id, volume1_id, device="/dev/vdd", timeout_in_seconds=400)
+        self.tester.detach_volume_from_volumes_lp(volume1_id, timeout_in_seconds=400)
+        self.tester.attach_volume_from_volume_lp(instance1_id, volume1_id, timeout_in_seconds=400)
+        self.tester.terminate_instance_from_view_page(instance1_id)
         self.tester.delete_volume_from_view_page(volume1_id)
-        time.sleep(15)
+        volume2=self.tester.create_volume_from_dashboard(volume_size=3, availability_zone="two")
+        volume2_id=volume2.get("volume_id")
+        self.tester.delete_volume_from_detail_page(volume2_id)
         self.tester.logout()
         self.tester.exit_browser()
 

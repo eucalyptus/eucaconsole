@@ -84,7 +84,7 @@ angular.module('BucketContentsPage', ['LandingPage', 'EucaConsoleUtils'])
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
                 success(function (oData) {
                     if (oData.errors !== undefined) {
-                        console.log('error deleting some keys ' + oData.errors);
+                        Notify.failure(oData.errors);
                     }
                     $scope.progress = $scope.progress + $scope.chunkSize;
                     if ($scope.progress > $scope.total) {
@@ -108,7 +108,9 @@ angular.module('BucketContentsPage', ['LandingPage', 'EucaConsoleUtils'])
                         $scope.index = $scope.index + 1;
                         if ($scope.index >= chunks) {
                             $scope.deletingAll = false;
-                            Notify.success(oData.message);
+                            if (oData.message) {
+                                Notify.success(oData.message);
+                            }
                             if ($scope.folder !== '') {
                                 $('#delete-folder-modal').foundation('reveal', 'close');
                                 for (var k = 0; k < $scope.items.length; k++) {
@@ -151,16 +153,18 @@ angular.module('BucketContentsPage', ['LandingPage', 'EucaConsoleUtils'])
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
                 success(function (oData) {
                     if (oData.errors !== undefined) {
-                        console.log('error deleting some keys ' + oData.errors);
+                        Notify.failure(oData.errors);
                     }
-                    for (var j = 0; j < $scope.items.length; j++) {
-                        var name = $scope.obj_key;
-                        if (name == $scope.items[j].name) {
-                            $scope.items.splice(j, 1);
+                    else {
+                        for (var j = 0; j < $scope.items.length; j++) {
+                            var name = $scope.obj_key;
+                            if (name == $scope.items[j].name) {
+                                $scope.items.splice(j, 1);
+                            }
                         }
+                        Notify.success(oData.message);
                     }
                     $('#delete-object-modal').foundation('reveal', 'close');
-                    Notify.success(oData.message);
                     $scope.obj_key = '';
                 }).
                 error(function (oData, status) {

@@ -332,7 +332,8 @@ class StackWizardView(BaseView):
         super(StackWizardView, self).__init__(request)
         self.request = request
         self.create_form = None
-        with boto_error_handler(self.request):
+        location = self.request.route_path('stacks')
+        with boto_error_handler(self.request, location):
             s3_bucket = self.get_template_samples_bucket()
             self.create_form = StacksCreateForm(request, s3_bucket)
         self.render_dict = dict(

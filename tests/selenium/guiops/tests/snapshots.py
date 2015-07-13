@@ -18,7 +18,7 @@ class Snapshot_operations_sequence(GuiEC2):
         return ''.join(random.choice(chars) for j in range(size))
 
     def snapshot_ops_test(self):
-        self.tester.login("ui-test-acct-00", "admin", "mypassword0")
+        self.tester.login(self.account, self.user, self.password)
         volume1_name = self.id_generator()+"-volume"
         volume1 = self.tester.create_volume_from_view_page(volume1_name, availability_zone="one")
         volume1_id = volume1.get("volume_id")
