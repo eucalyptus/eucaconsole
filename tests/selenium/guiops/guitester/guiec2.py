@@ -503,6 +503,9 @@ class GuiEC2(GuiTester):
         """
         NotImplementedError
 
+    def create_volume_from_snapshot(self):
+        NotImplementedError
+
     def create_snapshot_on_volumes_view_page(self, volume_id, snapshot_name=None, snapshot_description=None, timeout_in_seconds=240):
         """
         Navigates to volumes view page and creates a snapshot of a volume.
@@ -592,11 +595,40 @@ class GuiEC2(GuiTester):
         DeleteSnapshotModal(self).delete_snapshot()
         SnapshotView(self).verify_snapshot_not_present(snapshot_id)
 
+    def create_volume_from_snapshot_on_snapshot_lp(self, snapshot_id, volume_name=None, availability_zone=None, volume_size=None, timeout_in_seconds=240):
+        """
+        Navigates to snapshot landing page. Goes to "create volume from snapshot" in the actions menu. Creates volume from snapshot.
+        :param snapshot_id:
+        :param volume_name:
+        :param availability_zone:
+        :param volume_size:
+        :param timeout_in_seconds:
+        """
+        BasePage(self).goto_snapshots_view_via_menu()
+        SnapshotView(self).click_action_create_volume_from_snapshot(snapshot_id)
+        CreateVolumeDialog(self).create_volume(volume_name, volume_size=volume_size, availability_zone=availability_zone)
+        VolumeDetailPage(self).verify_volume_status_is_available(timeout_in_seconds=timeout_in_seconds)
+        volume = VolumeDetailPage(self).get_volume_name_and_id()
+        print volume
+        return volume
+
+    def create_volume_from_snapshot_on_snapshot_detail_page(self):
+        NotImplementedError
+
     def delete_snapshot_from_tab_on_volume_detail_page(self):
         NotImplementedError()
 
+    def delete_snapshot_from_lp(self):
+        NotImplementedError
+
     def register_snapshot_as_an_image_from_snapshot_landing_page(self):
         NotImplementedError()
+
+    def register_snapshot_as_an_image_from_snapshot_detail_page(self):
+        NotImplementedError()
+
+
+
 
 
 
