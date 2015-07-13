@@ -668,10 +668,10 @@ class BucketDetailsView(BaseView, BucketMixin):
         self.s3_conn = self.get_connection(conn_type='s3')
         self.bucket = bucket
         self.bucket_acl = bucket_acl
-        request.subpath = self.get_subpath(self.bucket.name if self.bucket else '')
         with boto_error_handler(request):
             if self.s3_conn and self.bucket is None:
                 self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
+            request.subpath = self.get_subpath(self.bucket.name)
             if self.bucket and self.bucket_acl is None:
                 self.bucket_acl = self.bucket.get_acl() if self.bucket else None
         self.details_form = BucketDetailsForm(request, formdata=self.request.params or None)
@@ -836,10 +836,10 @@ class BucketItemDetailsView(BaseView, BucketMixin):
         self.bucket = bucket
         self.bucket_item_acl = bucket_item_acl
         self.s3_conn = self.get_connection(conn_type='s3')
-        request.subpath = self.get_subpath(self.bucket.name)
         with boto_error_handler(request):
             if self.s3_conn and self.bucket is None:
                 self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
+            request.subpath = self.get_subpath(self.bucket.name)
             self.bucket_name = self.bucket.name
             self.bucket_item = self.get_bucket_item()
             if self.s3_conn and self.bucket_item_acl is None:
