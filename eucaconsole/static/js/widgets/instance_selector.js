@@ -28,6 +28,7 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
             $scope.filterKeys = [];
             $scope.tableText = {};
             $scope.instancesLoading = true;
+            $scope.selectedZones = [];
             $scope.initSelector = function () {
                 var options = JSON.parse(eucaUnescapeJson($scope.option_json));
                 $scope.setInitialValues(options);
@@ -40,6 +41,7 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                 Object.getPrototypeOf(document.createComment('')).getAttribute = function() {};
             };
             $scope.setInitialValues = function (options) {
+                var zoneList;
                 $scope.allInstanceList = [];
                 $scope.instanceList = [];
                 $scope.selectedInstanceList = [];
@@ -67,6 +69,14 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                 if (options.hasOwnProperty('all_instance_list')) {
                     $scope.allInstanceList = options.allInstance_list;
                 }
+                if ($scope.$parent.selectedZoneList) {
+                    zoneList = $scope.$parent.selectedZoneList;  // for ELB Detail page
+                } else {
+                    zoneList = $scope.allAvailabilityZones;  // for Create ELB Wizard
+                }
+                $scope.selectedZones = zoneList.map(function (zone) {
+                    return zone.name;
+                });
             };
             $scope.getInstanceHealthMapping = function () {
                 var mapping = {};
@@ -216,6 +226,8 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                 // timeout is needed for the table's display update to complete
                 $timeout(function() {
                     $scope.matchInstanceCheckboxes();
+                    // Ensure alert tooltips in instance display after instances are initialized
+                    $(document).foundation('tooltip', 'reflow');
                 });
             };
             // Only keep the selected instances that are in the current instanceList

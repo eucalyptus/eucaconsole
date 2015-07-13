@@ -25,3 +25,7 @@ $instance-status-color-terminating: lightgrey;
 // ELB instance status
 .status.InService {background-color: $instance-status-color-running; }
 .status.OutOfService { background-color: $instance-status-color-stopped; }
+
+
+// Other styles
+.fi-alert { color: darkred; }
