@@ -33,6 +33,8 @@ angular.module('IAMPolicyWizard', ['EucaConsoleUtils'])
         $scope.actionResources = {};
         $scope.actionConditions = {};
         $scope.actionParsedConditions = {};
+        $scope.conditionKeys = {};
+        $scope.conditionOperators = {};
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.policyJsonEndpoint = options.policyJsonEndpoint;
@@ -49,11 +51,6 @@ angular.module('IAMPolicyWizard', ['EucaConsoleUtils'])
             $scope.initCodeMirror();
             $scope.handlePolicyFileUpload();
             $scope.setupListeners();
-            if ($scope.cloudType === 'euca') {
-                $scope.initChosenSelectors();
-                $scope.addResourceTypeListener();
-                $scope.initDateTimePickers();
-            }
         };
         $scope.initActionContainers = function () {
             $scope.policyActions.forEach(function (actionNS) {
@@ -89,7 +86,12 @@ angular.module('IAMPolicyWizard', ['EucaConsoleUtils'])
         };
         $scope.initToggleAdvancedListener = function () {
             $scope.policyGenerator.on('click', '.advanced-button', function () {
-                $(this).closest('tr').find('.advanced').toggleClass('hide');
+                var advancedBtn = $(this);
+                var advancedWrapper = advancedBtn.closest('td').find('.advanced');
+                advancedWrapper.toggleClass('hide');
+                $scope.initChosenSelectors(advancedWrapper);
+                $scope.addResourceTypeListener(advancedWrapper);
+                $scope.initDateTimePickers(advancedWrapper);
             });
         };
         $scope.initNameConflictWarningListener = function () {
@@ -109,7 +111,7 @@ angular.module('IAMPolicyWizard', ['EucaConsoleUtils'])
             if ($scope.codeEditor !== null){
                 $scope.codeEditor.on('change', function () {
                     $scope.$apply(function() {
-                        $scope.handEdited = $scope.codeEditor.getValue().trim() != $scope.policyText;
+                        $scope.handEdited = $scope.codeEditor.getValue().trim() !== $scope.policyText;
                     });
                 });
             }
@@ -188,9 +190,9 @@ angular.module('IAMPolicyWizard', ['EucaConsoleUtils'])
             });
             $('#' + lastSelectedTab).click();
         };
-        $scope.addResourceTypeListener = function () {
+        $scope.addResourceTypeListener = function (wrapper) {
             // Show/hide resource choices based on resource type selection
-            $scope.policyGenerator.on('change', 'select.resource-type', function(evt) {
+            wrapper.on('change', 'select.resource-type', function(evt) {
                 var resourceSelect = $(evt.target),
                     resourceType = resourceSelect.val(),
                     resourceSelector = '.resource.' + resourceType,
@@ -201,9 +203,9 @@ angular.module('IAMPolicyWizard', ['EucaConsoleUtils'])
                 resourceWrapper.find(resourceSelector).removeClass('hide');
             });
         };
-        $scope.initChosenSelectors = function () {
+        $scope.initChosenSelectors = function (wrapper) {
             $timeout(function () {
-                var resourceValueInputs = $scope.policyGenerator.find('.chosen');
+                var resourceValueInputs = wrapper.find('.chosen');
                 resourceValueInputs.chosen({'width': '44%', 'search_contains': true});
                 // Only display the resource field inputs for the relevant actions
                 resourceValueInputs.addClass('hide');
@@ -218,11 +220,9 @@ angular.module('IAMPolicyWizard', ['EucaConsoleUtils'])
                 });
             }, 100);
         };
-        $scope.initDateTimePickers = function () {
-            $(document).ready(function () {
-                $scope.policyGenerator.find('.datetimepicker').fdatepicker({
-                    'format': 'yyyy-mm-dd'
-                });
+        $scope.initDateTimePickers = function (wrapper) {
+            wrapper.find('.datetimepicker').fdatepicker({
+                'format': 'yyyy-mm-dd'
             });
         };
         $scope.initCodeMirror = function () {
@@ -256,7 +256,7 @@ angular.module('IAMPolicyWizard', ['EucaConsoleUtils'])
                 var file = evt.target.files[0],
                     reader = new FileReader();
                 reader.onloadend = function(evt) {
-                    if (evt.target.readyState == FileReader.DONE) {
+                    if (evt.target.readyState === FileReader.DONE) {
                         $scope.policyText = evt.target.result;
                         $scope.codeEditor.setValue(evt.target.result);
                         $scope.codeEditor.focus();
@@ -388,8 +388,8 @@ angular.module('IAMPolicyWizard', ['EucaConsoleUtils'])
             conditionValueField = actionRow.find('.condition-value');
             conditionValue = conditionValueField.val();
             // Handle Boolen/Null conditions
-            if (conditionOperator == 'Bool' || conditionOperator == 'Null') {
-                if ($scope.cloudType == 'aws') {
+            if (conditionOperator === 'Bool' || conditionOperator === 'Null') {
+                if ($scope.cloudType === 'aws') {
                     conditionValue = conditionValue === 'false' ? false : !!conditionValue;
                 } else {
                     conditionValue = conditionValueField.is(':checked');
@@ -473,7 +473,7 @@ angular.module('IAMPolicyWizard', ['EucaConsoleUtils'])
         $scope.setOperators = function (conditionKey) {
             $scope[conditionKey.replace('ConditionKey', 'ConditionOperator')] = '';
             $timeout(function () {
-                $scope.selectedOperatorType = $scope.getConditionType($scope[conditionKey]);
+                $scope.selectedOperatorType = $scope.getConditionType($scope.conditionKeys[conditionKey]);
             }, 50);
         };
     })

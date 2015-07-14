@@ -69,6 +69,7 @@ class StacksView(LandingPageView):
             initial_sort_key=self.initial_sort_key,
             json_items_endpoint=self.json_items_endpoint,
             delete_form=self.delete_form,
+            delete_stack_url=self.request.route_path('stacks_delete'),
         )
 
     @view_config(route_name='stacks', renderer='../templates/stacks/stacks.pt')
@@ -76,24 +77,19 @@ class StacksView(LandingPageView):
         # sort_keys are passed to sorting drop-down
         return self.render_dict
 
-    @view_config(route_name='stacks_delete', request_method='POST')
+    @view_config(route_name='stacks_delete', request_method='POST', xhr=True)
     def stacks_delete(self):
         if self.delete_form.validate():
             name = self.request.params.get('name')
-            location = self.request.route_path('stacks')
             prefix = _(u'Unable to delete stack')
             template = u'{0} {1} - {2}'.format(prefix, name, '{0}')
-            with boto_error_handler(self.request, location, template):
+            with boto_error_handler(self.request, None, template):
                 self.cloudformation_conn.delete_stack(name)
                 prefix = _(u'Successfully deleted stack.')
                 msg = u'{0} {1}'.format(prefix, name)
-                queue = Notification.SUCCESS
-                notification_msg = msg
-                self.request.session.flash(notification_msg, queue=queue)
-            return HTTPFound(location=location)
-        else:
-            self.request.error_messages = self.delete_form.get_errors_list()
-        return self.render_dict
+                return JSONResponse(status=200, message=msg)
+        form_errors = ', '.join(self.delete_form.get_errors_list())
+        return JSONResponse(status=400, message=form_errors)  # Validation failure = bad request
 
     @staticmethod
     def get_sort_keys():
@@ -332,7 +328,8 @@ class StackWizardView(BaseView):
         super(StackWizardView, self).__init__(request)
         self.request = request
         self.create_form = None
-        with boto_error_handler(self.request):
+        location = self.request.route_path('stacks')
+        with boto_error_handler(self.request, location):
             s3_bucket = self.get_template_samples_bucket()
             self.create_form = StacksCreateForm(request, s3_bucket)
         self.render_dict = dict(

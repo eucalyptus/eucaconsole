@@ -32,15 +32,20 @@
 
 <body>
 <div class="off-canvas-wrap" data-offcanvas="">
+<div class="left-nav nav-collapsed">
+    <i id="hp-logo"></i>
+    ${panel('top_nav', off_canvas=False)}
+</div>
 <div id="canvaswrap" class="inner-wrap">
     <div id="logobar-wrapper">
         <nav id="logobar" class="row" metal:define-slot="logobar">
             <a class="left-off-canvas-toggle" id="offcanvas-icon"
                tal:condition="request.user.is_authenticated()">
                <i class="fi-list"></i>
+               <span id="hp-logo"></span>
             </a>
             <a href="${layout.home_url}" title="${layout.site_title}" metal:define-slot="logo">
-                <span id="hp-logo"></span><span class="product-name">Eucalyptus</span>
+                <span class="product-name">Eucalyptus</span>
             </a>
             <section tal:condition="request.user.is_authenticated()" id="user-dropdown-section">
                 <a href="#" data-dropdown="user-dropdown" class="small secondary dropdown">
@@ -78,11 +83,6 @@
     <!-- Off Canvas Menu: Left -->
     <div class="left-off-canvas-menu">
         ${panel('top_nav', off_canvas=True)}
-    </div>
-
-    <!-- Off Canvas Menu: Right-->
-    <div class="right-off-canvas-menu">
-        <metal:block metal:define-slot="offcanvas_right" />
     </div>
 
     <!-- Main Content -->

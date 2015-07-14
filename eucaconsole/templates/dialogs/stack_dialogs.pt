@@ -1,9 +1,6 @@
 <!--! Modal dialogs for cloudformations on landing and detail page -->
 <div tal:omit-tag="" i18n:domain="eucaconsole">
-    <div id="delete-stack-modal" class="reveal-modal small" data-reveal=""
-         tal:define="landingpage_action request.route_path('stacks_delete') + layout.querystring;
-                     detailpage_action request.route_path('stack_delete', name=stack.stack_name) if stack else '';
-                     action landingpage_action if landingpage else detailpage_action;">
+    <div id="delete-stack-modal" class="reveal-modal small" data-reveal="">
         <h3 i18n:translate="">Delete stack</h3>
         <p>
             <span i18n:translate="">Deleting a stack deletes all resources associated with that stack.</span>
@@ -14,14 +11,19 @@
             <span tal:condition="not stack" class="breakword"><b>{{ stackName }}</b></span>
             ?
         </p>
-        <form action="${action}" method="post">
+        <form action="" method="post" ng-submit="deleteStack($event)" tal:condition="landingpage">
             ${structure:delete_form['csrf_token']}
-            <div tal:condition="landingpage" tal:omit-tag="">
-                <input type="hidden" name="name" value="{{ stackName }}" />
+            <input type="hidden" name="name" value="{{ stackName }}" />
+            <div class="dialog-submit-button">
+                <button type="submit" id="delete_stack_submit_button" class="button expand" i18n:translate="">Yes, Delete Stack</button>
             </div>
-            <div tal:condition="not landingpage" tal:omit-tag="">
-                <input type="hidden" name="name" value="${stack_name}" />
+            <div class="dialog-progress-display hide">
+                <span i18n:translate="">Sending request </span>&nbsp;<i class="busy"></i>
             </div>
+        </form>
+        <form action="${request.route_path('stack_delete', name=stack.stack_name)}" method="post" tal:condition="not landingpage">
+            <input type="hidden" name="name" value="${stack_name}" />
+            ${structure:delete_form['csrf_token']}
             <div class="dialog-submit-button">
                 <button type="submit" id="delete_stack_submit_button" class="button expand" i18n:translate="">Yes, Delete Stack</button>
             </div>

@@ -21,7 +21,7 @@ class Security_group_operations_sequence(GuiEC2):
 
     def security_group_ops_test(self):
 
-        self.tester.login("ui-test-acct-00", "admin", "mypassword0")
+        self.tester.login(self.account, self.user, self.password)
         s_group_name_1 = self.id_generator() + "_test_group"
         group1 = self.tester.create_security_group_from_dashboard(s_group_name_1, self.s_group_description)
         s_group_id_1 = group1.get("s_group_id")

@@ -64,15 +64,17 @@ OBJECT_PATH_PATTERN = '^[a-z0-9-\.]+/.+$'
 class BucketMixin(object):
 
     @staticmethod
-    def real_path(request):
+    def real_path(request, bucket_name):
         if len(request.subpath) == 0:
             return ''
         path = request.environ['PATH_INFO'].decode('utf-8')
+        if request.subpath[0] in bucket_name:
+            path = path[path.index(bucket_name) + len(bucket_name):]
         path = path[path.index(request.subpath[0]):] if len(request.subpath) > 0 else ''
         return path
 
-    def get_subpath(self):
-        path = BucketMixin.real_path(self.request)
+    def get_subpath(self, bucket_name):
+        path = BucketMixin.real_path(self.request, bucket_name)
         subpath = []
         if path != '':
             if path.endswith('/'):  # and not path.endswith('//'):
@@ -206,7 +208,7 @@ class BucketXHRView(BaseView, BucketMixin):
         super(BucketXHRView, self).__init__(request)
         self.s3_conn = self.get_connection(conn_type='s3')
         self.bucket_name = request.matchdict.get('name')
-        request.subpath = self.get_subpath()
+        request.subpath = self.get_subpath(self.bucket_name)
 
     @view_config(route_name='bucket_delete_keys', renderer='json', request_method='POST', xhr=True)
     def bucket_delete_keys(self):
@@ -223,12 +225,20 @@ class BucketXHRView(BaseView, BucketMixin):
         deleted_keys = ', '.join(keys) if isinstance(keys, list) else keys
         self.log_request(u"Deleting keys from {0} : {1}".format(self.bucket_name, deleted_keys))
         with boto_error_handler(self.request):
-            bucket.delete_keys(keys.split(','))
-            success_msg = _(u"Successfully deleted key(s).")
-            if detailpage:
-                # Send notification via session on detail page since post-delete URL updates via window.location
-                self.request.session.flash(success_msg, queue=Notification.SUCCESS)
-            return dict(message=success_msg)
+            result = bucket.delete_keys(keys.split(','))
+            if result.errors:
+                msg = _(u"Some key(s) couldn't be deleted. ") + \
+                    ','.join([err.key + '(' + err.message + ')' for err in result.errors])
+                if detailpage:
+                    # Send notification via session on detail page since post-delete URL updates via window.location
+                    self.request.session.flash(msg, queue=Notification.ERROR)
+                return dict(errors=msg)
+            else:
+                msg = _(u"Successfully deleted key(s).")
+                if detailpage:
+                    # Send notification via session on detail page since post-delete URL updates via window.location
+                    self.request.session.flash(msg, queue=Notification.SUCCESS)
+                return dict(message=msg)
 
     @view_config(route_name='bucket_put_items', renderer='json', request_method='POST', xhr=True)
     def bucket_put_items(self):
@@ -314,9 +324,9 @@ class BucketContentsView(LandingPageView, BucketMixin):
     def __init__(self, request, bucket_name=None, **kwargs):
         super(BucketContentsView, self).__init__(request, **kwargs)
         self.s3_conn = self.get_connection(conn_type='s3')
-        request.subpath = self.get_subpath()
-        self.prefix = '/buckets'
         self.bucket_name = bucket_name or self.get_bucket_name(request)
+        request.subpath = self.get_subpath(self.bucket_name)
+        self.prefix = '/buckets'
         self.create_folder_form = CreateFolderForm(request, formdata=self.request.params or None)
         self.subpath = request.subpath
         self.key_prefix = '/'.join(self.subpath) if len(self.subpath) > 0 else ''
@@ -575,7 +585,7 @@ class BucketContentsJsonView(BaseView, BucketMixin):
             if self.s3_conn and self.bucket is None:
                 self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
         self.bucket_name = self.bucket.name
-        request.subpath = self.get_subpath()
+        request.subpath = self.get_subpath(self.bucket_name)
         self.subpath = request.subpath
 
     @view_config(route_name='bucket_contents', renderer='json', request_method='POST', xhr=True)
@@ -658,7 +668,7 @@ class BucketDetailsView(BaseView, BucketMixin):
         self.s3_conn = self.get_connection(conn_type='s3')
         self.bucket = bucket
         self.bucket_acl = bucket_acl
-        request.subpath = self.get_subpath()
+        request.subpath = self.get_subpath(self.bucket.name if self.bucket else '')
         with boto_error_handler(request):
             if self.s3_conn and self.bucket is None:
                 self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
@@ -826,7 +836,7 @@ class BucketItemDetailsView(BaseView, BucketMixin):
         self.bucket = bucket
         self.bucket_item_acl = bucket_item_acl
         self.s3_conn = self.get_connection(conn_type='s3')
-        request.subpath = self.get_subpath()
+        request.subpath = self.get_subpath(self.bucket.name)
         with boto_error_handler(request):
             if self.s3_conn and self.bucket is None:
                 self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
@@ -1019,7 +1029,7 @@ class BucketSharedItemView(BaseView, BucketMixin):
         super(BucketSharedItemView, self).__init__(request, **kwargs)
         self.bucket = bucket
         s3_conn = self.get_connection(conn_type='s3')
-        request.subpath = self.get_subpath()
+        request.subpath = self.get_subpath(self.bucket.name)
         if s3_conn and self.bucket is None:
             bucket_name = request.matchdict.get('name')
             self.bucket = s3_conn.get_bucket(bucket_name, validate=False)

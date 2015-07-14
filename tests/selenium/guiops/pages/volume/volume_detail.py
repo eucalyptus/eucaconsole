@@ -43,8 +43,12 @@ class VolumeDetailPage(DetailPage):
 
     def get_volume_name_and_id(self):
         name_and_id = str(self.tester.store_text_by_css(DetailPage(self)._resource_name_and_id_css))
-        volume_id = name_and_id[-13:-1]
-        volume_name = name_and_id[1:-15]
+        if len(name_and_id) > 12:
+            volume_id = name_and_id[-13:-1]
+            volume_name = name_and_id[1:-15]
+        else:
+            volume_name = None
+            volume_id = name_and_id
         return {'volume_name': volume_name, 'volume_id': volume_id}
 
     def goto_snapshots_tab(self, volume_id):

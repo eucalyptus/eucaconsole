@@ -17,7 +17,7 @@ from pages.security_group.security_group_detail import SecurityGroupDetailPage
 from dialogs.security_group_dialogs import CreateScurityGroupDialog, DeleteScurityGroupDialog
 from dialogs.keypair_dialogs import CreateKeypairDialog, DeleteKeypairModal, ImportKeypairDialog
 from dialogs.instance_dialogs import LaunchInstanceWizard, LaunchMoreLikeThisDialog, TerminateInstanceModal, TerminateAllInstancesModal
-from dialogs.volume_dialogs import CreateVolumeDialog, DeleteVolumeModal
+from dialogs.volume_dialogs import CreateVolumeDialog, DeleteVolumeModal, AttachVolumeModalSelectInstance, AttachVolumeModalSelectVolume, DetachVolumeModal
 from dialogs.snapshot_dialogs import CreateSnapshotModal, DeleteSnapshotModal
 
 
@@ -198,10 +198,9 @@ class GuiEC2(GuiTester):
         DeleteScurityGroupDialog(self).delete_s_group()
         SecurityGroupView(self).verify_s_group_not_present(sgroup_name)
 
-    def launch_instance_from_dashboard(self, image = "centos",availability_zone = None,
-                                       instance_type = "t1.micro: 1 CPUs, 256 memory (MB), 5 disk (GB,root device)",
-                                       number_of_of_instances = None, instance_name = None, key_name = "None (advanced option)",
-                                       security_group = "default", user_data=None, monitoring=False, private_addressing=False):
+    def launch_instance_from_dashboard(self, image="centos", availability_zone=None, instance_type="t1.micro",
+                                       number_of_of_instances=None, instance_name=None, key_name="None (advanced option)",
+                                       security_group="default", user_data=None, monitoring=False, private_addressing=False):
         """
         Navigates to dashboard via menu. Launches instance.
         :param image:
@@ -217,9 +216,9 @@ class GuiEC2(GuiTester):
         """
         BasePage(self).goto_dashboard_via_menu()
         Dashboard(self).click_launch_instance_button_from_dashboard()
-        LaunchInstanceWizard(self).launch_instance(image, availability_zone, instance_type,
-                                                          number_of_of_instances, instance_name, key_name,
-                                                          security_group, user_data, monitoring, private_addressing)
+        LaunchInstanceWizard(self).launch_instance(image=image, availability_zone=availability_zone, instance_type=instance_type,
+                                                          number_of_of_instances=number_of_of_instances, instance_name=instance_name, key_name=key_name,
+                                                          security_group=security_group, user_data=user_data, monitoring=monitoring, private_addressing=private_addressing)
         instance_id = InstanceView(self).get_id_of_newly_launched_instance()
         InstanceView(self).goto_instance_detail_page_via_link(instance_id)
         InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_in_running_state()
@@ -397,9 +396,10 @@ class GuiEC2(GuiTester):
         DeleteVolumeModal(self).delete_volume()
         VolumeView(self).verify_volume_status_is_deleted(volume_id, timeout_in_seconds)
 
-    def delete_volume_from_detail_page(self, volume_id, volume_name=None):
+    def delete_volume_from_detail_page(self, volume_id, volume_name=None, timeout_in_seconds=240):
         """
         Navigates to volume detail page and deletes volume. Waits for volume state to become 'deleted' on landing page.
+        :param timeout_in_seconds:
         :param volume_id:
         :param volume_name:
         """
@@ -408,7 +408,85 @@ class GuiEC2(GuiTester):
         VolumeDetailPage(self).verify_volume_detail_page_loaded(volume_id, volume_name)
         VolumeDetailPage(self).click_action_delete_volume_on_detail_page()
         DeleteVolumeModal(self).delete_volume()
-        VolumeView(self).verify_volume_status_is_deleted(volume_id, 240)
+        VolumeView(self).verify_volume_status_is_deleted(volume_id, timeout_in_seconds)
+
+    def attach_volume_from_volume_lp(self, instance_id, volume_id, device=None, timeout_in_seconds=240):
+        """
+        Navigates to volumes landing page, attaches a given volume to a given instance.
+        :param device:
+        :param timeout_in_seconds:
+        :param instance_id:
+        :param volume_id:
+        """
+        BasePage(self).goto_volumes_view_via_menu()
+        VolumeView(self).click_action_attach_to_instance(volume_id)
+        AttachVolumeModalSelectInstance(self).attach_volume(instance_id, device)
+        VolumeView(self).verify_volume_status_is_attached(volume_id, timeout_in_seconds)
+
+    def attach_volume_from_volume_detail_page(self, instance_id, volume_id, device=None, timeout_in_seconds=240):
+        """
+        Navigates to volume detail page, attaches volume to instance.
+        :param instance_id:
+        :param volume_id:
+        :param device:
+        :param timeout_in_seconds:
+        """
+        BasePage(self).goto_volumes_view_via_menu()
+        VolumeView(self).goto_volume_detail_page_via_link(volume_id)
+        VolumeDetailPage(self).click_action_attach_volume_on_detail_page()
+        AttachVolumeModalSelectInstance(self).attach_volume(instance_id, device=device)
+        VolumeDetailPage(self).verify_volume_status_is_attached(timeout_in_seconds)
+
+    def attach_volume_from_instance_detail_page(self, volume_id, instance_id, instance_name=None, device=None, timeout_in_seconds=240):
+        """
+        Navigates to instance detail page and attaches volume.
+        :param instance_id:
+        :param volume_id:
+        :param device:
+        :param timeout_in_seconds:
+        """
+        BasePage(self).goto_instances_via_menu()
+        InstanceView(self).goto_instance_detail_page_via_link(instance_id)
+        InstanceDetailPage(self, instance_id, instance_name).click_action_attach_volume()
+        AttachVolumeModalSelectVolume(self).attach_volume(volume_id, device)
+        InstanceDetailPage(self, instance_id).verify_volume_is_attached(volume_id, timeout_in_seconds)
+
+    def attach_volume_from_instance_lp(self, volume_id, instance_id, instance_name=None, device=None, timeout_in_seconds=240):
+        """
+        Navigates to instance landing page. Attaches volume.
+        :param volume_id:
+        :param instance_id:
+        :param instance_name:
+        :param device:
+        :param timeout_in_seconds:
+        """
+        BasePage(self).goto_instances_via_menu()
+        InstanceView(self).click_action_manage_volumes_on_view_page(instance_id)
+        InstanceDetailPage(self, instance_id, instance_name).click_action_attach_volume()
+        AttachVolumeModalSelectVolume(self).attach_volume(volume_id, device)
+        InstanceDetailPage(self, instance_id).verify_volume_is_attached(volume_id, timeout_in_seconds)
+
+    def detach_volume_from_volumes_lp(self, volume_id, timeout_in_seconds=240):
+        """
+        Navigate to volumes landing page. Detach volume.
+        :param instance_id:
+        :param volume_id:
+        """
+        BasePage(self).goto_volumes_view_via_menu()
+        VolumeView(self).click_action_detach_volume_on_view_page(volume_id)
+        DetachVolumeModal(self).detach_volume(volume_id)
+        VolumeView(self).verify_volume_status_is_available(volume_id, timeout_in_seconds)
+
+    def detach_volume_from_volume_detail_page(self):
+        NotImplementedError
+
+    def detach_volume_from_instance_detail_page(self):
+        NotImplementedError
+
+    def detach_volume_from_instance_lp(self):
+        NotImplementedError
+
+
 
     def create_snapshot_on_volumes_view_page(self, volume_id, snapshot_name=None, snapshot_description=None, timeout_in_seconds=240):
         """

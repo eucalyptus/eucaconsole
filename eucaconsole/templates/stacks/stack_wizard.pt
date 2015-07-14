@@ -21,20 +21,22 @@
         <div class="large-8 columns">
             <div class="wizard no-title">
                 <form action="${request.route_path('stack_create')}" id="stack-wizard-form"
-                      method="post" data-abide="abide" enctype="multipart/form-data">
+                      method="post" data-abide="abide" enctype="multipart/form-data" ng-submit="isCreating=true">
                     ${structure:create_form['csrf_token']}
                     <input id="s3-template-url" name="s3-template-url" type="hidden" value="{{ s3TemplateUrl }}"/>
                     <input id="s3-template-key" name="s3-template-key" type="hidden" value="{{ s3TemplateKey }}"/>
                     <dl id="wizard-tabs" class="tabs" data-tab="">
                         <dd class="active">
                             <a id="tabStep1" href="#step1" ng-click="visitNextStep(1, $event)">
-                                <span class="cir">1</span> <b>General</b>
+                                <span class="cir">1</span> <b i18n:translate="">General</b>
                             </a>
                         </dd>
-                        <dd>
-                            <a id="tabStep2" href="#step2" ng-click="visitNextStep(2, $event)">
-                                <span class="cir">2</span> <b>Parameters</b>
+                        <dd ng-class="{disabled: step1Invalid}">
+                            <a id="tabStep2" ng-click="visitNextStep(2, $event)"
+                               href="#step2" ng-cloak="" ng-if="!step1Invalid">
+                                <span class="cir">2</span> <b i18n:translate="">Parameters</b>
                             </a>
+                            <span class="cir" ng-cloak="" ng-if="step1Invalid">2</span> <b ng-cloak="" ng-if="step1Invalid" i18n:translate="">Parameters</b>
                         </dd>
                     </dl>
                     <div class="tabs-content">
@@ -154,11 +156,19 @@
                             <div class="row">
                                 <div class="small-3 columns">&nbsp;</div>
                                 <div class="small-9 columns field inline">
-                                    <button type="submit" class="button" id="stack-wizard-btn-step2" ng-disabled="isNotValid">
+                                    <button type="submit" class="button"
+                                            id="stack-wizard-btn-step2"
+                                            ng-disabled="isNotValid">
                                         <span i18n:translate="">Create Stack</span>
                                     </button>
                                     <a href="${request.route_path('stacks')}"
                                        class="cancel-link" i18n:translate="">Cancel</a>
+                                </div>
+                            </div>
+                            <div class="row" ng-show="isCreating">
+                                <div class="small-3 columns">&nbsp;</div>
+                                <div class="small-9 columns">
+                                    <span i18n:translate="">Creating stack</span>&nbsp;<i class="busy"></i>
                                 </div>
                             </div>
                         </div>

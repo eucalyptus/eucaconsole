@@ -29,7 +29,7 @@ class SeleniumApi(object):
     timeout_to_determine_if_clickable_in_seconds = 20
     timeout_to_wait_for_text_in_seconds = 120
     implicit_wait_default_in_seconds = 30
-    timeout_to_check_for_visibility_in_seconds = 3
+    timeout_to_check_for_visibility_in_seconds = 1
 
     def set_implicit_wait(self, implicit_wait_time):
         """
