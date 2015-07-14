@@ -270,10 +270,13 @@ class EucaAuthenticator(object):
     def authenticate(self, account, user, passwd, new_passwd=None, timeout=15, duration=3600):
         # try authentication with default of dns_enabled = True. Set to False if we fail
         # and if that also fails, let that error raise up
+        import logging
         try:
+            logging.info("auth call w/ dns enable "+str(self.dns_enabled))
             return self._authenticate_(account, user, passwd, new_passwd, timeout, duration)
         except urllib2.URLError:
             self.dns_enabled = False
+            logging.info("auth call w/ dns disabled for sure ")
             return self._authenticate_(account, user, passwd, new_passwd, timeout, duration)
 
     def _authenticate_(self, account, user, passwd, new_passwd=None, timeout=15, duration=3600):
