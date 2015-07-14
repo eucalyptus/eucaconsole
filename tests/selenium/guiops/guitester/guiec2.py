@@ -12,6 +12,7 @@ from pages.snapshot.snapshot_view import SnapshotView
 from pages.snapshot.create_snapshot import CreateSnapshotPage
 from pages.instance.instancedetail import InstanceDetailPage
 from pages.image.image_view import ImageView
+from pages.image.image_detail import ImageDetailPage
 from pages.security_group.security_group_view import SecurityGroupView
 from pages.security_group.security_group_detail import SecurityGroupDetailPage
 from dialogs.security_group_dialogs import CreateScurityGroupDialog, DeleteScurityGroupDialog
@@ -633,10 +634,14 @@ class GuiEC2(GuiTester):
     def delete_snapshot_from_lp(self):
         NotImplementedError
 
-    def register_snapshot_as_an_image_from_snapshot_landing_page(self, snapshot_id, name=None, description=None, delete_on_terminate=True, register_as_windows_image=False):
+    def register_snapshot_as_an_image_from_snapshot_landing_page(self, snapshot_id, image_name, description=None, delete_on_terminate=True, register_as_windows_image=False):
         BasePage(self).goto_snapshots_view_via_menu()
         SnapshotView(self).click_action_register_as_image(snapshot_id)
-        RegisterSnapshotAsImageModal(self).register_as_image(name=name, description=description, delete_on_terminate=delete_on_terminate, register_as_windows_image=register_as_windows_image)
+        RegisterSnapshotAsImageModal(self).register_as_image(name=image_name, description=description, delete_on_terminate=delete_on_terminate, register_as_windows_image=register_as_windows_image)
+        image_id = ImageDetailPage(self).get_image_id()
+        image = {'image_name': image_name, 'image_id': image_id}
+        print image
+        return image
 
 
 
