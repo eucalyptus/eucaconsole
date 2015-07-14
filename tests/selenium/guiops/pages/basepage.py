@@ -43,6 +43,7 @@ class BasePage(SeleniumApi):
         self.tester.click_element_by_id(self._dashboard_menuitem_id)
 
     def goto_keypair_view_page_via_menu(self):
+        self.tester.scroll_to_element_by_id(self._keypair_menuitem_id)
         self.tester.click_element_by_id_robust(self._keypair_menuitem_id)
 
     def goto_images_view_via_menu(self):
