@@ -79,6 +79,7 @@ class BasePage(SeleniumApi):
         self.tester.click_element_by_id(self._autoscaling_menuitem_id)
 
     def goto_launch_config_view_via_menu(self):
+        self.tester.scroll_to_element_by_id(self._launchconfigs_menuitem_id)
         self.tester.click_element_by_id(self._launchconfigs_menuitem_id)
 
     def goto_iam_users_view_via_menu(self):
