@@ -1,4 +1,5 @@
 from selenium import webdriver
+from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
 from selenium.common.exceptions import NoSuchElementException
@@ -633,3 +634,7 @@ class SeleniumApi(object):
         attribute = element.get_attribute(attribute_name)
         print attribute
         return attribute
+
+    def scroll_to_element_by_id(self, element_id):
+        element = self.driver.find_element_by_id(element_id)
+        self.driver.execute_script('arguments[0].scrollIntoView(true);', element)
