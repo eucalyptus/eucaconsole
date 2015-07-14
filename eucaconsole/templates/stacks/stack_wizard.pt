@@ -42,7 +42,7 @@
                     <div class="tabs-content">
                         <!--! Step 1: General tab content -->
                         <div class="content active" id="step1"
-                            tal:define="html_attrs_val {'pattern': '^[a-zA-Z0-9][a-zA-Z0-9-]{0,254}$', 'ng-model': 'stackName'};">
+                            tal:define="html_attrs_val {'pattern': '^[a-zA-Z][a-zA-Z0-9-]{0,254}$', 'ng-model': 'stackName'};">
                             <h6 i18n:translate="">General</h6>
                             <div class="row controls-wrapper">
                                 <div class="small-12 columns field">
