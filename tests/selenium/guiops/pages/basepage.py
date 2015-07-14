@@ -67,6 +67,7 @@ class BasePage(SeleniumApi):
         self.tester.click_element_by_id(self._volumes_meniuitem_id)
 
     def goto_snapshots_view_via_menu(self):
+        self.tester.scroll_to_element_by_id(self._snapshot_menuitem_id)
         self.tester.click_element_by_id_covert(self._snapshot_menuitem_id)
 
     def goto_buckets_view_via_menu(self):
