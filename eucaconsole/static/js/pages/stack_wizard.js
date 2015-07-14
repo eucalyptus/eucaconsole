@@ -339,6 +339,9 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
                         $scope.paramModels[param.name] = param.default;
                     });
                     $scope.checkRequiredInput();
+                    $timeout(function() {
+                        $(document).foundation('tooltip', 'reflow');
+                    }, 1000);
                 }
             }).
             error(function (oData, status) {
