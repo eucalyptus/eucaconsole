@@ -10,6 +10,7 @@ class ImageView(ViewPage):
     _image_action_menu_css = "[data-dropdown='item-dropdown_{0}']"  #image_id required
     _view_details_actions_menu_item_css ="#item-dropdown_{0}>li:nth-of-type(1)>a" #image_id required
     _launch_instance_actions_menu_item_css ="#item-dropdown_{0}>li:nth-of-type(4)>a" #image_id required
+    _remove_image_from_cloud_menu_ietm_css = "#item-dropdown_{0}>li:nth-of-type(6)>a" #image_id required
     _search_input_css = ".search-input"
     _action_menu_of_first_image_in_list_css = "[class='grid-action']"
     _launch_instance_actions_menu_item_for_first_in_list_css = "[class ='f-dropdown open f-open-dropdown']>li:nth-of-type(4)>a"
@@ -26,3 +27,7 @@ class ImageView(ViewPage):
             self.tester.send_keys_by_css(self._search_input_css, image_id_or_type)
             self.tester.click_element_by_css(self._action_menu_of_first_image_in_list_css)
             self.tester.click_element_by_css(self._launch_instance_actions_menu_item_for_first_in_list_css)
+
+    def click_action_remove_image_from_cloud(self, image_id):
+        self.tester.click_element_by_css(self._image_action_menu_css.format(image_id))
+        self.tester.click_element_by_css(self._remove_image_from_cloud_menu_ietm_css.format(image_id))

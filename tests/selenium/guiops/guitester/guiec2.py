@@ -644,6 +644,8 @@ class GuiEC2(GuiTester):
         return image
 
     def remove_image_from_cloud_on_images_lp(self):
+        BasePage(self).goto_images_view_via_menu()
+        ImageView(self).
 
 
 
