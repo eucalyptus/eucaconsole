@@ -61,6 +61,7 @@ class BasePage(SeleniumApi):
         self.tester.click_element_by_id(self._sec_group_menuitem_id)
 
     def goto_load_balancers_view_via_menu(self):
+        self.tester.scroll_to_element_by_id(self._load_balancers_menuitem_id)
         self.tester.click_element_by_id(self._load_balancers_menuitem_id)
 
     def goto_volumes_view_via_menu(self):
