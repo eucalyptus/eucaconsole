@@ -58,6 +58,7 @@ class BasePage(SeleniumApi):
         self.tester.click_element_by_id(self._elastic_ips_menuitem_id)
 
     def goto_security_groups_view_via_menu(self):
+        self.tester.scroll_to_element_by_id(self._sec_group_menuitem_id)
         self.tester.click_element_by_id(self._sec_group_menuitem_id)
 
     def goto_load_balancers_view_via_menu(self):
