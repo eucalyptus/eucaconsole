@@ -666,7 +666,7 @@ class BucketDetailsView(BaseView, BucketMixin):
         with boto_error_handler(request):
             if self.s3_conn and self.bucket is None:
                 self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
-            request.subpath = self.get_subpath(self.bucket.name)
+            request.subpath = self.get_subpath(self.bucket.name) if self.bucket else ''
             if self.bucket and self.bucket_acl is None:
                 self.bucket_acl = self.bucket.get_acl() if self.bucket else None
         self.details_form = BucketDetailsForm(request, formdata=self.request.params or None)
