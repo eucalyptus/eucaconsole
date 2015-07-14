@@ -49,6 +49,7 @@ class BasePage(SeleniumApi):
         self.tester.click_element_by_id_robust(self._images_menuitem_id)
 
     def goto_instances_via_menu(self):
+        self.tester.scroll_to_element_by_id(self._instances_menuitem_id)
         self.tester.click_element_by_id(self._instances_menuitem_id)
 
     def goto_stacks_view_via_menu(self):
