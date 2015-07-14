@@ -91,6 +91,7 @@ class BasePage(SeleniumApi):
         self.tester.click_element_by_id(self._iam_groups_menuitem_id)
 
     def goto_iam_roles_via_menu(self):
+        self.tester.scroll_to_element_by_id(self._iam_roles_menuitem_id)
         self.tester.click_element_by_id(self._iam_roles_menuitem_id)
 
     def get_notification(self):
