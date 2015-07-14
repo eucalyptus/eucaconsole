@@ -643,6 +643,8 @@ class GuiEC2(GuiTester):
         print image
         return image
 
+    def remove_image_from_cloud_on_images_lp(self):
+
 
 
 

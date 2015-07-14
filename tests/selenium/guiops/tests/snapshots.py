@@ -33,6 +33,8 @@ class Snapshot_operations_sequence(GuiEC2):
         snapshot3_name =self.id_generator()+"-snapshot"
         snapshot3 = self.tester.create_snapshot_on_snapshot_view_page(volume1_id, snapshot3_name,"Created by snapshot operations test")
         snapshot3_id = snapshot3.get("snapshot_id")
+        image1 = self.tester.register_snapshot_as_an_image_from_snapshot_landing_page("myimage")
+
         #volume2=self.tester.create_volume_from_snapshot_on_snapshot_lp(snapshot3_id, availability_zone="two")
         #volume2_id=volume2.get("volume_id")
         #self.tester.delete_volume_from_view_page(volume2_id)
