@@ -200,7 +200,7 @@ class GuiEC2(GuiTester):
 
     def launch_instance_from_dashboard(self, image="centos", availability_zone=None, instance_type="t1.micro",
                                        number_of_of_instances=None, instance_name=None, key_name="None (advanced option)",
-                                       security_group="default", user_data=None, monitoring=False, private_addressing=False):
+                                       security_group="default", user_data=None, monitoring=False, private_addressing=False, timeout_in_seconds=240):
         """
         Navigates to dashboard via menu. Launches instance.
         :param image:
@@ -221,13 +221,13 @@ class GuiEC2(GuiTester):
                                                           security_group=security_group, user_data=user_data, monitoring=monitoring, private_addressing=private_addressing)
         instance_id = InstanceView(self).get_id_of_newly_launched_instance()
         InstanceView(self).goto_instance_detail_page_via_link(instance_id)
-        InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_in_running_state()
+        InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_in_running_state(timeout_in_seconds=timeout_in_seconds)
         return {'instance_name': instance_name, 'instance_id':instance_id}
 
     def launch_instance_from_instance_view_page(self, image = "centos",availability_zone = None,
                                                instance_type = "t1.micro: 1 CPUs, 256 memory (MB), 5 disk (GB,root device)",
                                                number_of_of_instances = None, instance_name = None, key_name = "None (advanced option)",
-                                               security_group = "default", user_data=None, monitoring=False, private_addressing=False):
+                                               security_group = "default", user_data=None, monitoring=False, private_addressing=False, timeout_in_seconds=240):
         """
         Navigates to instance view page via menu. Launches instance.
         :param image:
@@ -248,13 +248,13 @@ class GuiEC2(GuiTester):
                                                     security_group, user_data, monitoring, private_addressing)
         instance_id = InstanceView(self).get_id_of_newly_launched_instance()
         InstanceView(self).goto_instance_detail_page_via_link(instance_id)
-        InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_in_running_state()
+        InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_in_running_state(timeout_in_seconds=timeout_in_seconds)
         return {'instance_name': instance_name, 'instance_id':instance_id}
 
     def launch_instance_from_image_view_page(self, image_id_or_type, availability_zone = None,
                                                instance_type = "t1.micro: 1 CPUs, 256 memory (MB), 5 disk (GB,root device)",
                                                number_of_of_instances = None, instance_name = None, key_name = "None (advanced option)",
-                                               security_group = "default", user_data=None, monitoring=False, private_addressing=False ):
+                                               security_group = "default", user_data=None, monitoring=False, private_addressing=False, timeout_in_seconds=240):
         """
         Navigates to image view page via menu. Launches instance from given image.
         :param image_id_or_type:
@@ -276,10 +276,10 @@ class GuiEC2(GuiTester):
                                                         security_group, user_data, monitoring, private_addressing)
         instance_id = InstanceView(self).get_id_of_newly_launched_instance()
         InstanceView(self).goto_instance_detail_page_via_link(instance_id)
-        InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_in_running_state()
+        InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_in_running_state(timeout_in_seconds=timeout_in_seconds)
         return {'instance_name': instance_name, 'instance_id':instance_id}
 
-    def launch_more_like_this_from_view_page(self, inatance_id, instance_name=None, user_data=None, monitoring=False, private_addressing=False):
+    def launch_more_like_this_from_view_page(self, inatance_id, instance_name=None, user_data=None, monitoring=False, private_addressing=False, timeout_in_seconds=240):
         """
         Navigates to instances view page. Launches an instance like given instance.
         :param inatance_id:
@@ -293,10 +293,10 @@ class GuiEC2(GuiTester):
         LaunchMoreLikeThisDialog(self).launch_more_like_this(instance_name, user_data, monitoring, private_addressing)
         instance_id = InstanceView(self).get_id_of_newly_launched_instance()
         InstanceView(self).goto_instance_detail_page_via_link(instance_id)
-        InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_in_running_state()
+        InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_in_running_state(timeout_in_seconds=timeout_in_seconds)
         return {'instance_name': instance_name, 'instance_id':instance_id}
 
-    def launch_more_like_this_from_detail_page(self, base_instance_id, instance_name=None, user_data=None, monitoring=False, private_addressing=False):
+    def launch_more_like_this_from_detail_page(self, base_instance_id, instance_name=None, user_data=None, monitoring=False, private_addressing=False, timeout_in_seconds=240):
         """
         Navigates to instance detail page. Launches an instance like given instance.
         :param inatance_id:
@@ -312,7 +312,7 @@ class GuiEC2(GuiTester):
         LaunchMoreLikeThisDialog(self).launch_more_like_this(instance_name, user_data, monitoring, private_addressing)
         instance_id = InstanceView(self).get_id_of_newly_launched_instance()
         InstanceView(self).goto_instance_detail_page_via_link(instance_id)
-        InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_in_running_state()
+        InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_in_running_state(timeout_in_seconds=timeout_in_seconds)
         return {'instance_name': instance_name, 'instance_id':instance_id}
 
     def terminate_instance_from_view_page(self, instance_id, instance_name=None):
@@ -628,13 +628,16 @@ class GuiEC2(GuiTester):
         return volume
 
     def delete_snapshot_from_tab_on_volume_detail_page(self):
-        NotImplementedError()
+        NotImplementedError
 
     def delete_snapshot_from_lp(self):
         NotImplementedError
 
-    def register_snapshot_as_an_image_from_snapshot_landing_page(self):
-        NotImplementedError()
+    def register_snapshot_as_an_image_from_snapshot_landing_page(self, snapshot_id):
+        BasePage(self).goto_snapshots_view_via_menu()
+        SnapshotView(self).click_action_register_as_image(snapshot_id)
+
+
 
     def register_snapshot_as_an_image_from_snapshot_detail_page(self):
         NotImplementedError()
