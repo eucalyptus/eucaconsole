@@ -18,7 +18,7 @@ from dialogs.security_group_dialogs import CreateScurityGroupDialog, DeleteScuri
 from dialogs.keypair_dialogs import CreateKeypairDialog, DeleteKeypairModal, ImportKeypairDialog
 from dialogs.instance_dialogs import LaunchInstanceWizard, LaunchMoreLikeThisDialog, TerminateInstanceModal, TerminateAllInstancesModal
 from dialogs.volume_dialogs import CreateVolumeDialog, DeleteVolumeModal, AttachVolumeModalSelectInstance, AttachVolumeModalSelectVolume, DetachVolumeModal
-from dialogs.snapshot_dialogs import CreateSnapshotModal, DeleteSnapshotModal
+from dialogs.snapshot_dialogs import CreateSnapshotModal, DeleteSnapshotModal, RegisterSnapshotAsImageModal
 
 
 class GuiEC2(GuiTester):
@@ -633,9 +633,11 @@ class GuiEC2(GuiTester):
     def delete_snapshot_from_lp(self):
         NotImplementedError
 
-    def register_snapshot_as_an_image_from_snapshot_landing_page(self, snapshot_id):
+    def register_snapshot_as_an_image_from_snapshot_landing_page(self, snapshot_id, name=None, description=None, delete_on_terminate=False, register_as_windows_image=False):
         BasePage(self).goto_snapshots_view_via_menu()
         SnapshotView(self).click_action_register_as_image(snapshot_id)
+        RegisterSnapshotAsImageModal(self).register_as_image(name=name, description=description, delete_on_terminate=delete_on_terminate, register_as_windows_image=register_as_windows_image)
+
 
 
 
