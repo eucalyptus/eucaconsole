@@ -636,5 +636,17 @@ class SeleniumApi(object):
         return attribute
 
     def scroll_to_element_by_id(self, element_id):
+        """
+        Finds the element and scrolls to it.
+        :param element_id:
+        """
         element = self.driver.find_element_by_id(element_id)
+        self.driver.execute_script('arguments[0].scrollIntoView(true);', element)
+
+    def scroll_to_element_by_css(self, css):
+        """
+        Finds the element and scrolls to it.
+        :param css:
+        """
+        element = self.driver.find_element_by_css_selector(css)
         self.driver.execute_script('arguments[0].scrollIntoView(true);', element)
