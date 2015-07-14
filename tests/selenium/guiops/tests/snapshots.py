@@ -33,14 +33,15 @@ class Snapshot_operations_sequence(GuiEC2):
         snapshot3_name =self.id_generator()+"-snapshot"
         snapshot3 = self.tester.create_snapshot_on_snapshot_view_page(volume1_id, snapshot3_name,"Created by snapshot operations test")
         snapshot3_id = snapshot3.get("snapshot_id")
-        image1 = self.tester.register_snapshot_as_an_image_from_snapshot_landing_page("myimage")
-
+        image1 = self.tester.register_snapshot_as_an_image_from_snapshot_landing_page(snapshot3_id, "myimage")
+        image1_id = image1.get("image_id")
+        self.tester.remove_image_from_cloud_on_images_lp(image1_id)
         #volume2=self.tester.create_volume_from_snapshot_on_snapshot_lp(snapshot3_id, availability_zone="two")
         #volume2_id=volume2.get("volume_id")
         #self.tester.delete_volume_from_view_page(volume2_id)
-        volume3_name = self.id_generator()+"-volume"
-        volume3=self.tester.create_volume_from_snapshot_on_snapshot_detail_page(snapshot3_id, volume_name=volume3_name, availability_zone="two")
-        volume3_id=volume3.get("volume_id")
+        #volume3_name = self.id_generator()+"-volume"
+        #volume3=self.tester.create_volume_from_snapshot_on_snapshot_detail_page(snapshot3_id, volume_name=volume3_name, availability_zone="two")
+        #volume3_id=volume3.get("volume_id")
         #self.tester.delete_volume_from_detail_page(volume3_id)
         #snapshot4 = self.tester.create_snapshot_on_volumes_view_page(volume1_id)
         #snapshot4_id = snapshot4.get("snapshot_id")

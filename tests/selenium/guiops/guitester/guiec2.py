@@ -20,6 +20,7 @@ from dialogs.keypair_dialogs import CreateKeypairDialog, DeleteKeypairModal, Imp
 from dialogs.instance_dialogs import LaunchInstanceWizard, LaunchMoreLikeThisDialog, TerminateInstanceModal, TerminateAllInstancesModal
 from dialogs.volume_dialogs import CreateVolumeDialog, DeleteVolumeModal, AttachVolumeModalSelectInstance, AttachVolumeModalSelectVolume, DetachVolumeModal
 from dialogs.snapshot_dialogs import CreateSnapshotModal, DeleteSnapshotModal, RegisterSnapshotAsImageModal
+from dialogs.image_dialogs import RemoveImageFromCloudDialog
 
 
 class GuiEC2(GuiTester):
@@ -643,11 +644,10 @@ class GuiEC2(GuiTester):
         print image
         return image
 
-    def remove_image_from_cloud_on_images_lp(self, image_id):
+    def remove_image_from_cloud_on_images_lp(self, image_id, delete_associated_snapshot=False):
         BasePage(self).goto_images_view_via_menu()
         ImageView(self).click_action_remove_image_from_cloud(image_id)
-
-
+        RemoveImageFromCloudDialog(self).remove_image(delete_associated_snapshot)
 
 
     def register_snapshot_as_an_image_from_snapshot_detail_page(self):
