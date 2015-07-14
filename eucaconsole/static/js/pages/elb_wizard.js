@@ -56,6 +56,7 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
     $scope.classDuplicatedBackendCertificateDiv = '';
     $scope.classAddBackendCertificateButton = 'disabled';
     $scope.classUseThisCertificateButton = 'disabled';
+    $scope.instanceCounts = {};
     $scope.initController = function (optionsJson) {
         var options = JSON.parse(eucaUnescapeJson(optionsJson));
         $scope.setInitialValues(options);

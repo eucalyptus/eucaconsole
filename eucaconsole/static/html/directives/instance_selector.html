@@ -17,12 +17,20 @@
                 </td>
                 <td>
                     <span id="instance-name-{{ instance.id }}" class="id breakword">
-                        <a ng-href="/instances/{{ instance.id }}">{{ instance.name }}</a>
+                        <a ng-href="/instances/{{ instance.id }}" target="_blank">{{ instance.name }}</a>
                     </span>
                 </td>
                 <td class="breakall">{{ instance.tags }}</td>
-                <td>{{ instance.placement }}</td>
+                <td>
+                    <i ng-show="!isVPCSupported &amp;&amp; selectedZones.indexOf(instance.placement) === -1"
+                       class="fi-alert" data-tooltip="" i18n:attributes="title"
+                       title="Instances will not receive any traffic until you enable this zone"></i>
+                    {{ instance.placement }}
+                </td>
                 <td ng-if="isVPCSupported">
+                    <i ng-show="selectedSubnets.indexOf(instance.subnet_id) === -1"
+                       class="fi-alert" data-tooltip="" i18n:attributes="title"
+                       title="Instances will not receive any traffic until you enable this subnet"></i>
                     <span ng-show="instance.vpc_name != ''">
                         {{ instance.vpc_subnet_display }} | {{ instance.vpc_name }}
                     </span>
