@@ -643,9 +643,9 @@ class GuiEC2(GuiTester):
         print image
         return image
 
-    def remove_image_from_cloud_on_images_lp(self):
+    def remove_image_from_cloud_on_images_lp(self, image_id):
         BasePage(self).goto_images_view_via_menu()
-        ImageView(self).
+        ImageView(self).click_action_remove_image_from_cloud(image_id)
 
 
 
