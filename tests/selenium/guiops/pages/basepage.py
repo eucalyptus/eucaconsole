@@ -71,9 +71,11 @@ class BasePage(SeleniumApi):
         self.tester.click_element_by_id_covert(self._snapshot_menuitem_id)
 
     def goto_buckets_view_via_menu(self):
+        self.tester.scroll_to_element_by_id(self._buckets_menuitem_id)
         self.tester.click_element_by_id(self._buckets_menuitem_id)
 
     def goto_asg_view_via_menu(self):
+        self.tester.scroll_to_element_by_id(self._autoscaling_menuitem_id)
         self.tester.click_element_by_id(self._autoscaling_menuitem_id)
 
     def goto_launch_config_view_via_menu(self):
