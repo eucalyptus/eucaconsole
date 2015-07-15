@@ -658,3 +658,5 @@ class SeleniumApi(object):
         """
         element = self.driver.find_element_by_xpath(xpath)
         self.driver.execute_script('arguments[0].scrollIntoView(true);', element)
+
+    def move_to_element_by_id(self, element_id):

@@ -3,7 +3,7 @@ import time
 
 class BasePage(SeleniumApi):
 
-    _hamburger_css="#offcanvas-icon"
+    _hp_logo_id = "hp-logo"
     _user_dropdown_css = 'section#user-dropdown-section>a>span'
     _user_help_link='//ul[@id="user-dropdown"]/li/a'
     _user_logout_id="logout"
