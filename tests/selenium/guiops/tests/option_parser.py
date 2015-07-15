@@ -9,5 +9,8 @@ class Option_parser(object):
         parser.add_argument('-u', '--user_name', type=str, help='User name')
         parser.add_argument('-a', '--account', type=str, help='Account')
         parser.add_argument('-p', '--password', type=str, help='Password')
+        parser.add_argument('--browser', type=str, help='Browser type for SuceLabs Testing, can be "ie", "chrome" or "firefox"')
+        parser.add_argument('-s', '--sauce', dest='sauce', action='store_true', help='Use SauceLabs webdriver')
+        parser.set_defaults(sauce=False)
         args = vars(parser.parse_args())
         return args

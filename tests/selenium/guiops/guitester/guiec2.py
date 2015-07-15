@@ -25,8 +25,8 @@ from dialogs.image_dialogs import RemoveImageFromCloudDialog
 
 class GuiEC2(GuiTester):
 
-    def __init__(self, console_url, webdriver_url = None, account="ui-test-acct-00", user="admin", password="mypassword0"):
-        super(GuiEC2, self).__init__(console_url, webdriver_url = webdriver_url)
+    def __init__(self, console_url, sauce=False, webdriver_url=None, browser=None):
+        super(GuiEC2, self).__init__(console_url, webdriver_url=webdriver_url, sauce=sauce, browser=browser)
 
     def set_implicit_wait(self, time_to_wait):
         """

@@ -20,7 +20,10 @@ class Keypair_operations_sequence(GuiEC2):
         self.account = parser.parse_options()['account']
         self.user = parser.parse_options()['user_name']
         self.password = parser.parse_options()['password']
-        self.tester = GuiEC2(console_url=self.console_url, webdriver_url=self.webdriver_url)
+        self.sauce = parser.parse_options()['sauce']
+        self.browser = parser.parse_options()['browser']
+        self.tester = GuiEC2(console_url=self.console_url, webdriver_url=self.webdriver_url, sauce=self.sauce, browser=self.browser)
+
 
     def keypair_ops_test(self):
 
