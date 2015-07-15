@@ -11,6 +11,7 @@ class Option_parser(object):
         parser.add_argument('-p', '--password', type=str, help='Password')
         parser.add_argument('--browser', type=str, help='Browser type for SuceLabs Testing, can be "ie", "chrome" or "firefox"')
         parser.add_argument('--version', type=str, help='Browser version for SuceLabs Testing, can be a number')
+        parser.add_argument('--platform', type=str, help='Platform for SuceLabs Testing, can be "Windows XP", "Windows 7", "Windows 8", "Windows 8.1", "Linux" etc.')
         parser.add_argument('-s', '--sauce', dest='sauce', action='store_true', help='Use SauceLabs webdriver')
         parser.set_defaults(sauce=False)
         args = vars(parser.parse_args())

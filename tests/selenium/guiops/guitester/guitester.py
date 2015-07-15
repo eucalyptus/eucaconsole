@@ -9,7 +9,7 @@ from dialogs.keypair_dialogs import CreateKeypairDialog, DeleteKeypairModal, Imp
 
 class GuiTester(SeleniumApi):
 
-    def __init__(self, console_url, webdriver_url=None, sauce=False, browser=None, version=None):
+    def __init__(self, console_url, webdriver_url=None, sauce=False, browser=None, version=None, platform=None):
         """
         Initiates a  tester object. Initiates a copy of the browser. Opens console_url.
         :param webdriver_url:
@@ -27,9 +27,9 @@ class GuiTester(SeleniumApi):
             else:
                 desired_capabilities = webdriver.DesiredCapabilities.FIREFOX
             desired_capabilities['version'] = version
-            desired_capabilities['platform'] = 'Windows 7'
-            desired_capabilities['name'] = 'Testing ' + browser + ' ' + version + ' on Windows 7'
-            self.driver = webdriver.Remote(webdriver_url, desired_capabilities = desired_capabilities)
+            desired_capabilities['platform'] = platform
+            desired_capabilities['name'] = 'Testing ' + browser + ' ' + version + ' on ' + platform
+            self.driver = webdriver.Remote(webdriver_url, desired_capabilities=desired_capabilities)
 
         if sauce is False:
             ffprofile = webdriver.FirefoxProfile()
