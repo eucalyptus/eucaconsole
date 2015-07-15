@@ -12,7 +12,11 @@ class Volume_operations_sequence(GuiEC2):
         self.account = parser.parse_options()['account']
         self.user = parser.parse_options()['user_name']
         self.password = parser.parse_options()['password']
-        self.tester = GuiEC2(console_url=self.console_url, webdriver_url=self.webdriver_url)
+        self.sauce = parser.parse_options()['sauce']
+        self.browser = parser.parse_options()['browser']
+        self.version = parser.parse_options()['version']
+        self.platform = parser.parse_options()['platform']
+        self.tester = GuiEC2(console_url=self.console_url, webdriver_url=self.webdriver_url, sauce=self.sauce, browser=self.browser, version=self.version, platform=self.platform)
 
     def id_generator(self, size = 6, chars=string.ascii_uppercase + string.digits):
         return ''.join(random.choice(chars) for j in range(size))
