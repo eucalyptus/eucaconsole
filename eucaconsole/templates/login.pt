@@ -65,7 +65,7 @@
                             <input type="hidden" name="came_from" value="${came_from}" />
                             <div class="row controls-wrapper controls_${field.name}" tal:repeat="field euca_login_form">
                                 <div class="small-12 columns field">
-                                    <label for="top-label" class="left stack-label">${field.label.text}<span class="req">*</span></label>
+                                    <label for="${field.id}" class="left stack-label">${field.label.text}<span class="req">*</span></label>
                                     <!--! Note: Don't remove non-bindable attr in this form -->
                                     <div tal:condition="field.name == 'password'">
                                         <div tal:condition="layout.browser_password_save == 'false'" ng-non-bindable="">
@@ -110,7 +110,7 @@
                             <input type="hidden" id="duration" name="duration" value="${duration}" />
                             <div class="row controls-wrapper controls_${field.name}" tal:repeat="field aws_login_form">
                                 <div class="small-12 columns field">
-                                    <label for="top-label" class="left stack-label">${field.label.text}<span class="req">*</span></label>
+                                    <label for="${field.id}" class="left stack-label">${field.label.text}<span class="req">*</span></label>
                                     <!--! Note: Don't remove non-bindable attr in this form -->
                                     <div tal:condition="field.name == 'secret_key'">
                                         <div tal:condition="layout.browser_password_save == 'false'" ng-non-bindable="">
