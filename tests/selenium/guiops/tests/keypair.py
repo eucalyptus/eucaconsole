@@ -22,7 +22,8 @@ class Keypair_operations_sequence(GuiEC2):
         self.password = parser.parse_options()['password']
         self.sauce = parser.parse_options()['sauce']
         self.browser = parser.parse_options()['browser']
-        self.tester = GuiEC2(console_url=self.console_url, webdriver_url=self.webdriver_url, sauce=self.sauce, browser=self.browser)
+        self.version = parser.parse_options()['version']
+        self.tester = GuiEC2(console_url=self.console_url, webdriver_url=self.webdriver_url, sauce=self.sauce, browser=self.browser, version=self.version)
 
 
     def keypair_ops_test(self):
