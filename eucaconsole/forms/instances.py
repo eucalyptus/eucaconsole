@@ -138,17 +138,28 @@ class LaunchInstanceForm(BaseSecureForm):
         self.cloud_type = request.session.get('cloud_type', 'euca')
         self.is_vpc_supported = BaseView.is_vpc_supported(request)
         self.set_error_messages()
-        self.monitoring_enabled.data = True
         self.choices_manager = ChoicesManager(conn=conn)
         self.vpc_choices_manager = ChoicesManager(conn=vpc_conn)
         self.set_help_text()
         self.set_choices(request)
+        self.set_monitoring_enabled_field()
         self.role.data = ''
 
         if image is not None:
             self.image_id.data = self.image.id
             self.kernel_id.data = image.kernel_id or ''
             self.ramdisk_id.data = image.ramdisk_id or ''
+
+    def set_monitoring_enabled_field(self):
+        if self.cloud_type == 'euca':
+            self.monitoring_enabled.data = True
+            self.monitoring_enabled.help_text = _(u'Gather CloudWatch metric data for this instance.')
+        elif self.cloud_type == 'aws':
+            self.monitoring_enabled.label.text = _(u'Enabled detailed monitoring')
+            self.monitoring_enabled.help_text = _(
+                u'Gather all CloudWatch metric data at a higher frequency, '
+                u'and enable data aggregation by AMI and instance type.'
+            )
 
     def set_help_text(self):
         self.number.help_text = self.number_helptext

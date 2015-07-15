@@ -34,6 +34,11 @@
             display: inline-block;
         }
     }
+    #controls_monitoring_enabled {
+        .helptext-icon {
+            margin-left: 0;
+        }
+    }
     #create-keypair-link, #create-securitygroup-link {
         position: relative;
         top: -6px;
