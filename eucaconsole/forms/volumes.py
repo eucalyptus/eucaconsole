@@ -218,7 +218,7 @@ class VolumesFiltersForm(BaseSecureForm):
         ]
 
     def get_availability_zone_choices(self, region):
-        return self.getOptionsFromChoices(self.choices_manager.availability_zones(region, add_blank=False))
+        return self.get_options_from_choices(self.choices_manager.availability_zones(region, add_blank=False))
 
     @staticmethod
     def get_status_choices():

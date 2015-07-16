@@ -413,32 +413,32 @@ class InstancesFiltersForm(BaseSecureForm):
             {'name': 'root_device_type', 'label': self.root_device_type.label.text,
                 'options': self.get_root_device_type_choices()},
             {'name': 'security_group', 'label': self.security_group.label.text,
-                'options': self.getOptionsFromChoices(self.ec2_choices_manager.security_groups(add_blank=False))},
+                'options': self.get_options_from_choices(self.ec2_choices_manager.security_groups(add_blank=False))},
             {'name': 'scaling_group', 'label': self.scaling_group.label.text,
-                'options': self.getOptionsFromChoices(self.autoscale_choices_manager.scaling_groups(add_blank=False))},
+                'options': self.get_options_from_choices(self.autoscale_choices_manager.scaling_groups(add_blank=False))},
         ]
         if cloud_type == 'euca':
             self.facets.append(
                 {'name': 'roles', 'label': self.roles.label.text,
-                    'options': self.getOptionsFromChoices(self.iam_choices_manager.roles(add_blank=False))},
+                    'options': self.get_options_from_choices(self.iam_choices_manager.roles(add_blank=False))},
             )
         if BaseView.is_vpc_supported(request):
             self.facets.append(
                 {'name': 'subnet_id', 'label': self.subnet_id.label.text,
-                    'options': self.getOptionsFromChoices(self.vpc_choices_manager.vpc_subnets(add_blank=False))}
+                    'options': self.get_options_from_choices(self.vpc_choices_manager.vpc_subnets(add_blank=False))}
             )
             vpc_choices = self.vpc_choices_manager.vpc_networks(add_blank=False)
             vpc_choices.append(('None', _(u'No VPC')))
             self.facets.append(
                 {'name': 'vpc_id', 'label': self.vpc_id.label.text,
-                    'options': self.getOptionsFromChoices(vpc_choices)},
+                    'options': self.get_options_from_choices(vpc_choices)},
             )
 
     def get_availability_zone_choices(self, region):
-        return self.getOptionsFromChoices(self.ec2_choices_manager.availability_zones(region, add_blank=False))
+        return self.get_options_from_choices(self.ec2_choices_manager.availability_zones(region, add_blank=False))
 
     def get_instance_type_choices(self):
-        return self.getOptionsFromChoices(self.ec2_choices_manager.instance_types(
+        return self.get_options_from_choices(self.ec2_choices_manager.instance_types(
             cloud_type=self.cloud_type, add_blank=False, add_description=False))
 
     @staticmethod

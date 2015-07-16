@@ -165,19 +165,19 @@ class LaunchConfigsFiltersForm(BaseSecureForm):
             {'name': 'availability_zone', 'label': self.availability_zone.label.text,
                 'options': self.get_availability_zone_choices(region)},
             {'name': 'instance_type', 'label': self.instance_type.label.text,
-                'options': self.getOptionsFromChoices(self.instance_type.choices)},
+                'options': self.get_options_from_choices(self.instance_type.choices)},
             {'name': 'root_device_type', 'label': self.root_device_type.label.text,
                 'options': self.get_root_device_type_choices()},
             {'name': 'key_name', 'label': self.key_name.label.text,
-                'options': self.getOptionsFromChoices(self.key_name.choices)},
+                'options': self.get_options_from_choices(self.key_name.choices)},
             {'name': 'security_group', 'label': self.security_groups.label.text,
-                'options': self.getOptionsFromChoices(self.security_groups.choices)},
+                'options': self.get_options_from_choices(self.security_groups.choices)},
             {'name': 'scaling_group', 'label': self.scaling_group.label.text,
-                'options': self.getOptionsFromChoices(self.autoscale_choices_manager.scaling_groups(add_blank=False))},
+                'options': self.get_options_from_choices(self.autoscale_choices_manager.scaling_groups(add_blank=False))},
         ]
 
     def get_availability_zone_choices(self, region):
-        return self.getOptionsFromChoices(self.ec2_choices_manager.availability_zones(region, add_blank=False))
+        return self.get_options_from_choices(self.ec2_choices_manager.availability_zones(region, add_blank=False))
 
     @staticmethod
     def get_root_device_type_choices():

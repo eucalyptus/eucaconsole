@@ -110,5 +110,5 @@ class SecurityGroupsFiltersForm(BaseSecureForm):
         if BaseView.is_vpc_supported(request):
             self.facets.append(
                 {'name': 'vpc_id', 'label': self.vpc_id.label.text,
-                    'options': self.getOptionsFromChoices(self.vpc_id.choices)}
+                    'options': self.get_options_from_choices(self.vpc_id.choices)}
             )
