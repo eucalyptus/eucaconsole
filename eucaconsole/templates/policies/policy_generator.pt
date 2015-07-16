@@ -34,7 +34,7 @@
                 </td>
             </tr>
             <tr class="action ${namespace} ${action}" tal:define="namespace actions_ns.name"
-                tal:repeat="action actions_ns.actions" ng-show="${namespace}Expanded">
+                tal:repeat="action actions_ns.actions" ng-if="${namespace}Expanded">
                 <div tal:define="namespace_condition namespace not in ['elasticloadbalancing', 'autoscaling']">
                     <td class="allow" tal:condition="resource_type != 'account'">
                         <a class="allow-deny-action">
@@ -50,7 +50,7 @@
                     </td>
                     <td>
                         <span class="action-name">${action}</span>
-                        <a class="button tiny round advanced-button">Advanced</a>
+                        <a class="button tiny round advanced-button" data-action="${action}">Advanced</a>
                         <div class="advanced hide">
                             <div class="resource-wrapper" tal:condition="namespace_condition">
                                 <div>&nbsp;</div>
@@ -166,7 +166,7 @@
                                 <h6 class="title" i18n:translate="">Conditions (optional)</h6>
                                 <div class="content">
                                     <div class="added-conditions" ng-cloak="">
-                                        <div class="condentry" ng-repeat="condition in ::actionParsedConditions['${action}']">
+                                        <div class="condentry" ng-repeat="condition in actionParsedConditions['${action}']">
                                             <a class="circle remove"
                                                ng-click="removeCondition('${action}', condition.operator, condition.key, $event)"
                                                title="Remove condition">
@@ -183,7 +183,7 @@
                                     </label>
                                     <div class="row">
                                         <div class="small-6 columns">
-                                            <select class="condition-keys" ng-model="${cond_key}"
+                                            <select class="condition-keys" ng-model="conditionKeys.${cond_key}"
                                                     ng-change="setOperators('${cond_key}')">
                                                 <option value="" i18n:translate="">Select key...</option>
                                                 <!--! EC2-specific condition keys -->
@@ -283,7 +283,7 @@
                                             </select>
                                         </div>
                                         <div class="small-6 columns">
-                                            <select class="condition-operators" ng-model="${cond_operator}">
+                                            <select class="condition-operators" ng-model="conditionOperators.${cond_operator}">
                                                 <option value="" i18n:translate="">select...</option>
                                                 <optgroup label="ARN Conditions" ng-if="selectedOperatorType == 'ARN'">
                                                     <option value="ArnEquals">ArnEquals</option>
@@ -336,42 +336,42 @@
                                             <span i18n:translate="">True</span>
                                         </div>
                                         <!--! AvailabilityZone choices -->
-                                        <div ng-if="${cond_key} == 'ec2:AvailabilityZone' &amp;&amp; ${cond_operator}">
+                                        <div ng-if="conditionKeys.${cond_key} == 'ec2:AvailabilityZone' &amp;&amp; conditionOperators.${cond_operator}">
                                             <select class="condition-value chosen"
-                                                    ng-if="${cond_operator}.indexOf('Like') === -1">
+                                                    ng-if="conditionOperators.${cond_operator}.indexOf('Like') === -1">
                                                 <metal:block tal:repeat="choice availability_zone_choices">
                                                     <option value="${choice[0].split('/')[1]}" ng-non-bindable=""
                                                             tal:condition="'zones' not in choice[1]">${choice[1]}</option>
                                                 </metal:block>
                                             </select>
                                             <input type="text" class="condition-value"
-                                                   ng-if="${cond_operator}.indexOf('Like') !== -1" />
+                                                   ng-if="conditionOperators.${cond_operator}.indexOf('Like') !== -1" />
                                         </div>
                                         <!--! ImageType choices -->
-                                        <div ng-if="${cond_key} == 'ec2:ImageType' &amp;&amp; ${cond_operator}">
-                                            <select class="condition-value chosen" ng-if="${cond_operator}.indexOf('Equals') !== -1">
+                                        <div ng-if="conditionKeys.${cond_key} == 'ec2:ImageType' &amp;&amp; conditionOperators.${cond_operator}">
+                                            <select class="condition-value chosen" ng-if="conditionOperators.${cond_operator}.indexOf('Equals') !== -1">
                                                 <option ng-repeat="choice in ::imageTypeChoices" value="{{ ::choice }}">
                                                     {{ ::choice.toUpperCase() }}
                                                 </option>
                                             </select>
-                                            <input type="text" class="condition-value" ng-if="${cond_operator}.indexOf('Like') !== -1" />
+                                            <input type="text" class="condition-value" ng-if="conditionOperators.${cond_operator}.indexOf('Like') !== -1" />
                                         </div>
                                         <!--! InstanceType choices -->
-                                        <div ng-if="${cond_key} == 'ec2:InstanceType' &amp;&amp; ${cond_operator}">
+                                        <div ng-if="conditionKeys.${cond_key} == 'ec2:InstanceType' &amp;&amp; conditionOperators.${cond_operator}">
                                             <select class="condition-value chosen"
-                                                    ng-if="${cond_operator}.indexOf('Like') === -1">
+                                                    ng-if="conditionOperators.${cond_operator}.indexOf('Like') === -1">
                                                 <metal:block tal:repeat="choice vm_type_choices">
                                                     <option value="${choice[0].split('/')[1]}" ng-non-bindable=""
                                                             tal:condition="'All' not in choice[1]">${choice[1]}</option>
                                                 </metal:block>
                                             </select>
                                             <input type="text" class="condition-value"
-                                                   ng-if="${cond_operator}.indexOf('Like') !== -1" />
+                                                   ng-if="conditionOperators.${cond_operator}.indexOf('Like') !== -1" />
                                         </div>
                                         <!--! ParentSnapshot choices (expects ARN)-->
-                                        <div ng-if="${cond_key} == 'ec2:ParentSnapshot' &amp;&amp; ${cond_operator}">
+                                        <div ng-if="conditionKeys.${cond_key} == 'ec2:ParentSnapshot' &amp;&amp; conditionOperators.${cond_operator}">
                                             <select class="condition-value chosen"
-                                                    ng-if="${cond_operator}.indexOf('Like') === -1">
+                                                    ng-if="conditionOperators.${cond_operator}.indexOf('Like') === -1">
                                                 <metal:block tal:repeat="choice snapshot_choices">
                                                     <option value="${choice[0]}" ng-non-bindable=""
                                                             tal:condition="'snapshots' not in choice[1]">${choice[1]}</option>
@@ -379,9 +379,9 @@
                                             </select>
                                         </div>
                                         <!--! ParentVolume choices (expects ARN) -->
-                                        <div ng-if="${cond_key} == 'ec2:ParentVolume' &amp;&amp; ${cond_operator}">
+                                        <div ng-if="conditionKeys.${cond_key} == 'ec2:ParentVolume' &amp;&amp; conditionOperators.${cond_operator}">
                                             <select class="condition-value chosen"
-                                                    ng-if="${cond_operator}.indexOf('Like') === -1">
+                                                    ng-if="conditionOperators.${cond_operator}.indexOf('Like') === -1">
                                                 <metal:block tal:repeat="choice volume_choices">
                                                     <option value="${choice[0]}" ng-non-bindable=""
                                                             tal:condition="'volumes' not in choice[1]">${choice[1]}</option>
@@ -389,64 +389,64 @@
                                             </select>
                                         </div>
                                         <!--! RootDeviceType choices -->
-                                        <div ng-if="${cond_key} == 'ec2:RootDeviceType' &amp;&amp; ${cond_operator}">
-                                            <select class="condition-value chosen" ng-if="${cond_operator}.indexOf('Equals') !== -1">
+                                        <div ng-if="conditionKeys.${cond_key} == 'ec2:RootDeviceType' &amp;&amp; conditionOperators.${cond_operator}">
+                                            <select class="condition-value chosen" ng-if="conditionOperators.${cond_operator}.indexOf('Equals') !== -1">
                                                 <option ng-repeat="choice in ::rootDeviceTypeChoices" value="{{ ::choice }}">
                                                     {{ ::choice.toUpperCase() }}
                                                 </option>
                                             </select>
-                                            <input type="text" class="condition-value" ng-if="${cond_operator}.indexOf('Equals') === -1" />
+                                            <input type="text" class="condition-value" ng-if="conditionOperators.${cond_operator}.indexOf('Equals') === -1" />
                                         </div>
                                         <!--! Tenancy choices -->
-                                        <div ng-if="${cond_key} == 'ec2:Tenancy' &amp;&amp; ${cond_operator}">
-                                            <select class="condition-value chosen" ng-if="${cond_operator}.indexOf('Equals') !== -1">
+                                        <div ng-if="conditionKeys.${cond_key} == 'ec2:Tenancy' &amp;&amp; conditionOperators.${cond_operator}">
+                                            <select class="condition-value chosen" ng-if="conditionOperators.${cond_operator}.indexOf('Equals') !== -1">
                                                 <option ng-repeat="choice in ::tenancyChoices" value="{{ ::choice }}">{{ ::choice }}</option>
                                             </select>
-                                            <input type="text" class="condition-value" ng-if="${cond_operator}.indexOf('Equals') === -1" />
+                                            <input type="text" class="condition-value" ng-if="conditionOperators.${cond_operator}.indexOf('Equals') === -1" />
                                         </div>
                                         <!--! VolumeType choices -->
-                                        <div ng-if="${cond_key} == 'ec2:VolumeType' &amp;&amp; ${cond_operator}">
-                                            <select class="condition-value chosen" ng-if="${cond_operator}.indexOf('Equals') !== -1">
+                                        <div ng-if="conditionKeys.${cond_key} == 'ec2:VolumeType' &amp;&amp; conditionOperators.${cond_operator}">
+                                            <select class="condition-value chosen" ng-if="conditionOperators.${cond_operator}.indexOf('Equals') !== -1">
                                                 <option ng-repeat="choice in ::volumeTypeChoices" value="{{ ::choice }}">{{ ::choice }}</option>
                                             </select>
-                                            <input type="text" class="condition-value" ng-if="${cond_operator}.indexOf('Equals') === -1" />
+                                            <input type="text" class="condition-value" ng-if="conditionOperators.${cond_operator}.indexOf('Equals') === -1" />
                                         </div>
                                         <!--! S3 CannedACL choices -->
-                                        <div ng-if="${cond_key} == 's3:x-amz-acl' &amp;&amp; ${cond_operator}">
-                                            <select class="condition-value chosen" ng-if="${cond_operator}.indexOf('Equals') !== -1">
+                                        <div ng-if="conditionKeys.${cond_key} == 's3:x-amz-acl' &amp;&amp; conditionOperators.${cond_operator}">
+                                            <select class="condition-value chosen" ng-if="conditionOperators.${cond_operator}.indexOf('Equals') !== -1">
                                                 <option ng-repeat="choice in ::cannedAclChoices" value="{{ ::choice }}">{{ ::choice }}</option>
                                             </select>
-                                            <input type="text" class="condition-value" ng-if="${cond_operator}.indexOf('Equals') === -1" />
+                                            <input type="text" class="condition-value" ng-if="conditionOperators.${cond_operator}.indexOf('Equals') === -1" />
                                         </div>
                                         <!--! S3 Location constraint (region) choices -->
-                                        <div ng-if="${cond_key} == 's3:LocationConstraint' &amp;&amp; ${cond_operator}">
-                                            <select class="condition-value chosen" ng-if="${cond_operator}.indexOf('Equals') !== -1">
+                                        <div ng-if="conditionKeys.${cond_key} == 's3:LocationConstraint' &amp;&amp; conditionOperators.${cond_operator}">
+                                            <select class="condition-value chosen" ng-if="conditionOperators.${cond_operator}.indexOf('Equals') !== -1">
                                                 <option ng-repeat="choice in ::awsRegions" value="{{ ::choice.name }}">{{ ::choice.label }}</option>
                                             </select>
-                                            <input type="text" class="condition-value" ng-if="${cond_operator}.indexOf('Equals') === -1" />
+                                            <input type="text" class="condition-value" ng-if="conditionOperators.${cond_operator}.indexOf('Equals') === -1" />
                                         </div>
                                         <!--! Input field for Arn*Like -->
                                         <input type="text" class="condition-value arnlike"
-                                               ng-if="${cond_operator} &amp;&amp; selectedOperatorType == 'ARN'
-                                                      &amp;&amp; (${cond_operator}.indexOf('Like') !== -1
-                                                      || ${cond_key}.indexOf('SourceArn') !== -1)" />
+                                               ng-if="conditionOperators.${cond_operator} &amp;&amp; selectedOperatorType == 'ARN'
+                                                      &amp;&amp; (conditionOperators.${cond_operator}.indexOf('Like') !== -1
+                                                      || conditionKeys.${cond_key}.indexOf('SourceArn') !== -1)" />
                                         <!--! Input field for Numeric inputs -->
                                         <input type="number" class="condition-value numeric"
-                                               ng-if="${cond_operator} &amp;&amp; selectedOperatorType == 'NUMERIC'" />
+                                               ng-if="conditionOperators.${cond_operator} &amp;&amp; selectedOperatorType == 'NUMERIC'" />
                                         <!--! Input field for User* and String* -->
                                         <input type="text" class="condition-value userstringlike"
-                                               ng-if="${cond_operator} &amp;&amp; ${cond_key}.toLowerCase().indexOf('user') !== -1
+                                               ng-if="conditionOperators.${cond_operator} &amp;&amp; conditionKeys.${cond_key}.toLowerCase().indexOf('user') !== -1
                                                &amp;&amp; selectedOperatorType == 'STRING'" />
                                         <!--! Input field for date/time operators -->
                                         <input type="text" class="condition-value datetimepicker"
-                                               ng-show="${cond_operator} &amp;&amp; selectedOperatorType == 'DATE'" />
+                                               ng-show="conditionOperators.${cond_operator} &amp;&amp; selectedOperatorType == 'DATE'" />
                                         <!--! Input field for IP operations -->
                                         <input type="text" class="condition-value"
-                                               ng-show="${cond_operator} &amp;&amp; selectedOperatorType == 'IP'" />
+                                               ng-show="conditionOperators.${cond_operator} &amp;&amp; selectedOperatorType == 'IP'" />
                                         <!--! Input field for s3 non-select string values -->
                                         <input type="text" class="condition-value"
-                                               ng-show="${cond_operator} &amp;&amp; ${cond_key}.indexOf('s3:') !== -1
-                                                        &amp;&amp; ['s3:x-amz-acl', 's3:LocationConstraint'].indexOf(${cond_key}) === -1" />
+                                               ng-show="conditionOperators.${cond_operator} &amp;&amp; conditionKeys.${cond_key}.indexOf('s3:') !== -1
+                                                        &amp;&amp; ['s3:x-amz-acl', 's3:LocationConstraint'].indexOf(conditionKeys.${cond_key}) === -1" />
                                     </div>
                                     <a class="button tiny round" i18n:translate=""
                                        ng-click="addCondition('${action}', $event)">

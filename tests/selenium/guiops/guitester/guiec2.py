@@ -12,13 +12,15 @@ from pages.snapshot.snapshot_view import SnapshotView
 from pages.snapshot.create_snapshot import CreateSnapshotPage
 from pages.instance.instancedetail import InstanceDetailPage
 from pages.image.image_view import ImageView
+from pages.image.image_detail import ImageDetailPage
 from pages.security_group.security_group_view import SecurityGroupView
 from pages.security_group.security_group_detail import SecurityGroupDetailPage
 from dialogs.security_group_dialogs import CreateScurityGroupDialog, DeleteScurityGroupDialog
 from dialogs.keypair_dialogs import CreateKeypairDialog, DeleteKeypairModal, ImportKeypairDialog
 from dialogs.instance_dialogs import LaunchInstanceWizard, LaunchMoreLikeThisDialog, TerminateInstanceModal, TerminateAllInstancesModal
 from dialogs.volume_dialogs import CreateVolumeDialog, DeleteVolumeModal, AttachVolumeModalSelectInstance, AttachVolumeModalSelectVolume, DetachVolumeModal
-from dialogs.snapshot_dialogs import CreateSnapshotModal, DeleteSnapshotModal
+from dialogs.snapshot_dialogs import CreateSnapshotModal, DeleteSnapshotModal, RegisterSnapshotAsImageModal
+from dialogs.image_dialogs import RemoveImageFromCloudDialog
 
 
 class GuiEC2(GuiTester):
@@ -200,7 +202,7 @@ class GuiEC2(GuiTester):
 
     def launch_instance_from_dashboard(self, image="centos", availability_zone=None, instance_type="t1.micro",
                                        number_of_of_instances=None, instance_name=None, key_name="None (advanced option)",
-                                       security_group="default", user_data=None, monitoring=False, private_addressing=False):
+                                       security_group="default", user_data=None, monitoring=False, private_addressing=False, timeout_in_seconds=240):
         """
         Navigates to dashboard via menu. Launches instance.
         :param image:
@@ -221,13 +223,13 @@ class GuiEC2(GuiTester):
                                                           security_group=security_group, user_data=user_data, monitoring=monitoring, private_addressing=private_addressing)
         instance_id = InstanceView(self).get_id_of_newly_launched_instance()
         InstanceView(self).goto_instance_detail_page_via_link(instance_id)
-        InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_in_running_state()
+        InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_in_running_state(timeout_in_seconds=timeout_in_seconds)
         return {'instance_name': instance_name, 'instance_id':instance_id}
 
     def launch_instance_from_instance_view_page(self, image = "centos",availability_zone = None,
                                                instance_type = "t1.micro: 1 CPUs, 256 memory (MB), 5 disk (GB,root device)",
                                                number_of_of_instances = None, instance_name = None, key_name = "None (advanced option)",
-                                               security_group = "default", user_data=None, monitoring=False, private_addressing=False):
+                                               security_group = "default", user_data=None, monitoring=False, private_addressing=False, timeout_in_seconds=240):
         """
         Navigates to instance view page via menu. Launches instance.
         :param image:
@@ -248,13 +250,13 @@ class GuiEC2(GuiTester):
                                                     security_group, user_data, monitoring, private_addressing)
         instance_id = InstanceView(self).get_id_of_newly_launched_instance()
         InstanceView(self).goto_instance_detail_page_via_link(instance_id)
-        InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_in_running_state()
+        InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_in_running_state(timeout_in_seconds=timeout_in_seconds)
         return {'instance_name': instance_name, 'instance_id':instance_id}
 
     def launch_instance_from_image_view_page(self, image_id_or_type, availability_zone = None,
                                                instance_type = "t1.micro: 1 CPUs, 256 memory (MB), 5 disk (GB,root device)",
                                                number_of_of_instances = None, instance_name = None, key_name = "None (advanced option)",
-                                               security_group = "default", user_data=None, monitoring=False, private_addressing=False ):
+                                               security_group = "default", user_data=None, monitoring=False, private_addressing=False, timeout_in_seconds=240):
         """
         Navigates to image view page via menu. Launches instance from given image.
         :param image_id_or_type:
@@ -276,10 +278,10 @@ class GuiEC2(GuiTester):
                                                         security_group, user_data, monitoring, private_addressing)
         instance_id = InstanceView(self).get_id_of_newly_launched_instance()
         InstanceView(self).goto_instance_detail_page_via_link(instance_id)
-        InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_in_running_state()
+        InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_in_running_state(timeout_in_seconds=timeout_in_seconds)
         return {'instance_name': instance_name, 'instance_id':instance_id}
 
-    def launch_more_like_this_from_view_page(self, inatance_id, instance_name=None, user_data=None, monitoring=False, private_addressing=False):
+    def launch_more_like_this_from_view_page(self, inatance_id, instance_name=None, user_data=None, monitoring=False, private_addressing=False, timeout_in_seconds=240):
         """
         Navigates to instances view page. Launches an instance like given instance.
         :param inatance_id:
@@ -293,10 +295,10 @@ class GuiEC2(GuiTester):
         LaunchMoreLikeThisDialog(self).launch_more_like_this(instance_name, user_data, monitoring, private_addressing)
         instance_id = InstanceView(self).get_id_of_newly_launched_instance()
         InstanceView(self).goto_instance_detail_page_via_link(instance_id)
-        InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_in_running_state()
+        InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_in_running_state(timeout_in_seconds=timeout_in_seconds)
         return {'instance_name': instance_name, 'instance_id':instance_id}
 
-    def launch_more_like_this_from_detail_page(self, base_instance_id, instance_name=None, user_data=None, monitoring=False, private_addressing=False):
+    def launch_more_like_this_from_detail_page(self, base_instance_id, instance_name=None, user_data=None, monitoring=False, private_addressing=False, timeout_in_seconds=240):
         """
         Navigates to instance detail page. Launches an instance like given instance.
         :param inatance_id:
@@ -312,7 +314,7 @@ class GuiEC2(GuiTester):
         LaunchMoreLikeThisDialog(self).launch_more_like_this(instance_name, user_data, monitoring, private_addressing)
         instance_id = InstanceView(self).get_id_of_newly_launched_instance()
         InstanceView(self).goto_instance_detail_page_via_link(instance_id)
-        InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_in_running_state()
+        InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_in_running_state(timeout_in_seconds=timeout_in_seconds)
         return {'instance_name': instance_name, 'instance_id':instance_id}
 
     def terminate_instance_from_view_page(self, instance_id, instance_name=None):
@@ -477,16 +479,31 @@ class GuiEC2(GuiTester):
         DetachVolumeModal(self).detach_volume(volume_id)
         VolumeView(self).verify_volume_status_is_available(volume_id, timeout_in_seconds)
 
-    def detach_volume_from_volume_detail_page(self):
+    def detach_volume_from_volume_detail_page(self, volume_id, timeout_in_seconds):
+        """
+        Navigates to volume detail page. Detaches volume from instance. Verifies volume is in available state.
+        :param volume_id:
+        :param timeout_in_seconds:
+        """
         NotImplementedError
 
-    def detach_volume_from_instance_detail_page(self):
+    def detach_volume_from_instance_detail_page(self, volume_id, instance_id,  timeout_in_seconds):
+        """
+        Navigates to instance detail page. Detaches a given volume. Verifies volume is in available state.
+        :param volume_id:
+        :param instance_id:
+        :param timeout_in_seconds:
+        """
         NotImplementedError
 
-    def detach_volume_from_instance_lp(self):
+    def detach_volume_from_instance_lp(self, volume_id, instance_id,  timeout_in_seconds):
+        """
+        Navigates to instance landing page. Goes to volumes tab by "Manage Volumes" action. Detaches given volume. Verifies volume is in available state.
+        :param volume_id:
+        :param instance_id:
+        :param timeout_in_seconds:
+        """
         NotImplementedError
-
-
 
     def create_snapshot_on_volumes_view_page(self, volume_id, snapshot_name=None, snapshot_description=None, timeout_in_seconds=240):
         """
@@ -577,11 +594,67 @@ class GuiEC2(GuiTester):
         DeleteSnapshotModal(self).delete_snapshot()
         SnapshotView(self).verify_snapshot_not_present(snapshot_id)
 
+    def create_volume_from_snapshot_on_snapshot_lp(self, snapshot_id, volume_name=None, availability_zone=None, volume_size=None, timeout_in_seconds=240):
+        """
+        Navigates to snapshot landing page. Goes to "create volume from snapshot" in the actions menu. Creates volume from snapshot.
+        :param snapshot_id:
+        :param volume_name:
+        :param availability_zone:
+        :param volume_size:
+        :param timeout_in_seconds:
+        """
+        BasePage(self).goto_snapshots_view_via_menu()
+        SnapshotView(self).click_action_create_volume_from_snapshot(snapshot_id)
+        CreateVolumeDialog(self).create_volume(volume_name, volume_size=volume_size, availability_zone=availability_zone)
+        VolumeDetailPage(self).verify_volume_status_is_available(timeout_in_seconds=timeout_in_seconds)
+        volume = VolumeDetailPage(self).get_volume_name_and_id()
+        print volume
+        return volume
+
+    def create_volume_from_snapshot_on_snapshot_detail_page(self, snapshot_id, volume_name=None, availability_zone=None, volume_size=None, timeout_in_seconds=240):
+        """
+        Navigates to snapshot detail page. Goes to "create volume from snapshot" in the actions menu. Creates volume from snapshot.
+        :param snapshot_id:
+        :param volume_name:
+        :param availability_zone:
+        :param volume_size:
+        :param timeout_in_seconds:
+        """
+        BasePage(self).goto_snapshots_view_via_menu()
+        SnapshotView(self).goto_snapshot_detail_page_via_link(snapshot_id)
+        SnapshotDetailPage(self).click_action_create_volume_from_snapshot_on_detail_page()
+        CreateVolumeDialog(self).create_volume(volume_name, volume_size=volume_size, availability_zone=availability_zone)
+        VolumeDetailPage(self).verify_volume_status_is_available(timeout_in_seconds=timeout_in_seconds)
+        volume = VolumeDetailPage(self).get_volume_name_and_id()
+        print volume
+        return volume
+
     def delete_snapshot_from_tab_on_volume_detail_page(self):
+        NotImplementedError
+
+    def delete_snapshot_from_lp(self):
+        NotImplementedError
+
+    def register_snapshot_as_an_image_from_snapshot_landing_page(self, snapshot_id, image_name, description=None, delete_on_terminate=True, register_as_windows_image=False):
+        BasePage(self).goto_snapshots_view_via_menu()
+        SnapshotView(self).click_action_register_as_image(snapshot_id)
+        RegisterSnapshotAsImageModal(self).register_as_image(name=image_name, description=description, delete_on_terminate=delete_on_terminate, register_as_windows_image=register_as_windows_image)
+        image_id = ImageDetailPage(self).get_image_id()
+        image = {'image_name': image_name, 'image_id': image_id}
+        print image
+        return image
+
+    def remove_image_from_cloud_on_images_lp(self, image_id, delete_associated_snapshot=False):
+        BasePage(self).goto_images_view_via_menu()
+        ImageView(self).click_action_remove_image_from_cloud(image_id)
+        RemoveImageFromCloudDialog(self).remove_image(delete_associated_snapshot)
+
+
+    def register_snapshot_as_an_image_from_snapshot_detail_page(self):
         NotImplementedError()
 
-    def register_snapshot_as_an_image_from_snapshot_landing_page(self):
-        NotImplementedError()
+
+
 
 
 

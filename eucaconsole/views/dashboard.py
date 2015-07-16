@@ -131,12 +131,7 @@ class DashboardView(BaseView):
         session = self.request.session
         if session['cloud_type'] == 'euca':
             services.append(dict(name=_(u'Identity & Access Mgmt'), status=''))
-        storage_key = "{0}{1}{2}{3}".format(
-            self.conn.host,
-            session['region'],
-            session['account' if self.cloud_type == 'euca' else 'access_id'],
-            session['username'] if self.cloud_type == 'euca' else '',
-        )
+        storage_key = self.get_shared_buckets_storage_key(self.conn.host)
         return BaseView.escape_json(json.dumps({
             'json_items_url': self.request.route_path('dashboard_json'),
             'services': services,

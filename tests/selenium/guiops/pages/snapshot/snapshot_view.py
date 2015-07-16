@@ -29,7 +29,11 @@ class SnapshotView(ViewPage):
         self.tester.click_element_by_id(ViewPage(self)._resource_action_menu_id.format(snapshot_id))
         self.tester.click_element_by_css(self._delete_snapshot_actions_menu_item_css.format(snapshot_id))
 
-    def get_id_of_newly_created_snapshot(self, name=None):
+    def click_action_create_volume_from_snapshot(self, snapshot_id):
+        self.tester.click_element_by_id(ViewPage(self)._resource_action_menu_id.format(snapshot_id))
+        self.tester.click_element_by_css(self._create_volume_from_snapshot_actions_menu_item_css)
+
+    def get_id_of_newly_created_snapshot(self):
         contains_id = self.tester.get_attribute_by_css(self._first_snapshot_link_in_list_css, "ng-href")
         snapshot_id = contains_id[-13:]
         print(snapshot_id)
