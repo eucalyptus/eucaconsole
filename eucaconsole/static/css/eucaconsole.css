@@ -1695,6 +1695,7 @@ textarea.policy-area { width: 100%; min-height: 30rem; font-family: Courier, "co
 .policy-row-item { vertical-align: middle; padding: 0.25rem; }
 
 .expando i { color: #007dba; }
+.expando i.helptext-icon { color: #6a737b; font-size: 1.2rem; }
 .expando .title { font-size: 1.1rem; }
 .expando .title a { color: #5a5a5a; }
 .expando .title a:hover { color: #007dba; border-bottom: 1px solid #007dba; }

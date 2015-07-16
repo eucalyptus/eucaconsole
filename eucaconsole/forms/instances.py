@@ -135,7 +135,6 @@ class LaunchInstanceForm(BaseSecureForm):
         self.iam_conn = iam_conn
         self.image = image
         self.securitygroups = securitygroups
-        self.cloud_type = request.session.get('cloud_type', 'euca')
         self.is_vpc_supported = BaseView.is_vpc_supported(request)
         self.set_error_messages()
         self.choices_manager = ChoicesManager(conn=conn)
@@ -208,9 +207,9 @@ class LaunchInstanceForm(BaseSecureForm):
         choices.extend(self.choices_manager.availability_zones(region, add_blank=False))
         return choices
 
-    def get_associate_public_ip_address_choices(self):
-        choices = [('None', _(u'Enabled (use subnet setting)')), ('true', _(u'Enabled')), ('false', _(u'Disabled'))]
-        return choices
+    @staticmethod
+    def get_associate_public_ip_address_choices():
+        return [('None', _(u'Enabled (use subnet setting)')), ('true', _(u'Enabled')), ('false', _(u'Disabled'))]
 
 
 class LaunchMoreInstancesForm(BaseSecureForm):
@@ -228,7 +227,7 @@ class LaunchMoreInstancesForm(BaseSecureForm):
     userdata_file = wtforms.FileField(label='')
     kernel_id = wtforms.SelectField(label=_(u'Kernel ID'))
     ramdisk_id = wtforms.SelectField(label=_(u'RAM disk ID (RAMFS)'))
-    monitoring_enabled = wtforms.BooleanField(label=_(u'Enable detailed monitoring'))
+    monitoring_enabled = wtforms.BooleanField(label=_(u'Enable monitoring'))
     private_addressing = wtforms.BooleanField(label=_(u'Use private addressing only'))
 
     def __init__(self, request, image=None, instance=None, conn=None, **kwargs):
@@ -241,6 +240,18 @@ class LaunchMoreInstancesForm(BaseSecureForm):
         self.set_help_text()
         self.set_choices()
         self.set_initial_data()
+        self.set_monitoring_enabled_field()
+
+    def set_monitoring_enabled_field(self):
+        if self.cloud_type == 'euca':
+            # Note: self.monitoring_enabled.data is set in set_initial_data() method
+            self.monitoring_enabled.help_text = _(u'Gather CloudWatch metric data for this instance.')
+        elif self.cloud_type == 'aws':
+            self.monitoring_enabled.label.text = _(u'Enabled detailed monitoring')
+            self.monitoring_enabled.help_text = _(
+                u'Gather all CloudWatch metric data at a higher frequency, '
+                u'and enable data aggregation by AMI and instance type.'
+            )
 
     def set_error_messages(self):
         self.number.error_msg = self.number_error_msg

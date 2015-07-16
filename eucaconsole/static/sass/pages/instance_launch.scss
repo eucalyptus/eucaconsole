@@ -35,9 +35,7 @@
         }
     }
     #controls_monitoring_enabled {
-        .helptext-icon {
-            margin-left: 0;
-        }
+        @include helptext-icon-position-mixin;
     }
     #create-keypair-link, #create-securitygroup-link {
         position: relative;
@@ -66,7 +64,7 @@
 }
 
 .userdatalabel {
-    right: 0px !important;
+    right: 0 !important;
 }
 
 #userdata {

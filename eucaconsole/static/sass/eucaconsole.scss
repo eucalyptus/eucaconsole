@@ -440,6 +440,10 @@ textarea.policy-area {
 .expando {
     i {
         color: $hp-accessible-blue;
+        &.helptext-icon {
+            color: $euca-grey;
+            font-size: 1.2rem;
+        }
     }
     .title {
         font-size: 1.1rem;
