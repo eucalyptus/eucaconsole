@@ -197,7 +197,7 @@ class BaseView(object):
         )
 
     @long_term.cache_on_arguments(namespace='images')
-    def _get_images_cached_(self, _owners, _executors, _ec2_region, acct):
+    def _get_images_cached_(self, _owners, _executors, _ec2_region, acct, ufshost):
         """
         This method is decorated and will cache the image set
         """
@@ -236,8 +236,9 @@ class BaseView(object):
             acct = self.request.session.get('access_id', '')
         if 'amazon' in owners or 'aws-marketplace' in owners:
             acct = ''
+        ufshost = self.get_connection().host
         try:
-            return self._get_images_cached_(owners, executors, ec2_region, acct)
+            return self._get_images_cached_(owners, executors, ec2_region, acct, ufshost)
         except pylibmc.Error:
             logging.warn('memcached not responding')
             return self._get_images_(owners, executors, ec2_region)
