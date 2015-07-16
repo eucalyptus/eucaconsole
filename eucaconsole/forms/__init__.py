@@ -71,7 +71,8 @@ class BaseSecureForm(SecureForm):
     def __init__(self, request, **kwargs):
         self.request = request
         super(BaseSecureForm, self).__init__(**kwargs)
-        self.cloud_type = request.session.get('cloud_type', 'euca')
+        if hasattr(request, 'session'):
+            self.cloud_type = request.session.get('cloud_type', 'euca')
 
     def generate_csrf_token(self, csrf_context):
         return self.request.session.get_csrf_token() if hasattr(self.request, 'session') else ''

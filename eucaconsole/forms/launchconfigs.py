@@ -90,9 +90,21 @@ class CreateLaunchConfigForm(BaseSecureForm):
         self.choices_manager = ChoicesManager(conn=conn)
         self.set_help_text()
         self.set_choices()
+        self.set_monitoring_enabled_field()
 
         if image is not None:
             self.image_id.data = self.image.id
+
+    def set_monitoring_enabled_field(self):
+        if self.cloud_type == 'euca':
+            self.monitoring_enabled.data = True
+            self.monitoring_enabled.help_text = _(u'Gather CloudWatch metric data for this instance.')
+        elif self.cloud_type == 'aws':
+            self.monitoring_enabled.label.text = _(u'Enabled detailed monitoring')
+            self.monitoring_enabled.help_text = _(
+                u'Gather all CloudWatch metric data at a higher frequency, '
+                u'and enable data aggregation by AMI and instance type.'
+            )
 
     def set_help_text(self):
         self.associate_public_ip_address.help_text = self.associate_public_ip_address_helptext
@@ -112,12 +124,12 @@ class CreateLaunchConfigForm(BaseSecureForm):
         if len(self.securitygroup.choices) > 1:
             self.securitygroup.data = [value for value, label in self.securitygroup.choices]
 
-    def get_associate_public_ip_address_choices(self):
-        choices = [
+    @staticmethod
+    def get_associate_public_ip_address_choices():
+        return [
             ('None', _(u'Only for instances in default VPC & subnet')),
             ('true', _(u'For all instances')), ('false', _(u'Never'))
         ]
-        return choices
 
     def set_error_messages(self):
         self.name.error_msg = self.name_error_msg
