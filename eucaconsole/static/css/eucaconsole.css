@@ -1925,7 +1925,9 @@ footer .copyright { font-size: 0.9em; }
   .inner-wrap { padding-left: 0 !important; } }
 div.left-nav { position: absolute; top: 0; left: 0; height: 100%; z-index: 999999 !important; background-color: white; overflow: hidden; border-style: solid; border-width: 0 1px 0 0; border-color: #cccccc; }
 
-div.left-off-canvas-menu { z-index: 999999 !important; background-color: white; border-style: solid; border-width: 0 1px 0 0; border-color: #cccccc; }
+div.left-off-canvas-menu { z-index: 999999 !important; background-color: white; border: 0 solid #cccccc; border-right-width: 1px; }
+
+.off-canvas-wrap { min-height: 100%; }
 
 .left-nav { width: 225px !important; overflow-y: scroll !important; transition: width 0.3s; }
 

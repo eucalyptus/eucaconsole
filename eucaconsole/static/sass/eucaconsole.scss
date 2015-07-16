@@ -1178,10 +1178,13 @@ div.left-nav {
 div.left-off-canvas-menu {
     z-index: 999999 !important;
     background-color: white;
-    border-style: solid;
-    border-width: 0 1px 0 0;
-    border-color: $hp-gray-20;
- }
+    border: 0 solid $hp-gray-20;
+    border-right-width: 1px;
+}
+
+.off-canvas-wrap {
+    min-height: 100%;
+}
 
 $expanded-nav-width: 225px;
 
