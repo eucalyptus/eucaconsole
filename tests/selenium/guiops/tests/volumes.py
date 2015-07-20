@@ -1,9 +1,9 @@
-from guitester.guiec2 import GuiEC2
+from guiops.guiops import GuiOps
 from option_parser import Option_parser
 import string, random, time
 
 
-class Volume_operations_sequence(GuiEC2):
+class Volume_operations_sequence(GuiOps):
 
     def __init__(self):
         parser = Option_parser()
