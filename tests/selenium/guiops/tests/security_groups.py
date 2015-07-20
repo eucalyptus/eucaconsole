@@ -1,9 +1,9 @@
-from guitester.guiec2 import GuiEC2
+from guiops.guiops import GuiOps
 from option_parser import Option_parser
 import string, random, time
 
 
-class Security_group_operations_sequence(GuiEC2):
+class Security_group_operations_sequence(GuiOps):
 
     s_group_description = "Security group created by security_group_sequence test"
 
