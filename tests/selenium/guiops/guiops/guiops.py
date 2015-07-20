@@ -2,6 +2,7 @@ from guitester.guiec2 import GuiEC2
 from guitester.guicf import GuiCF
 from guitester.guiiam import GuiIAM
 from guitester.guiasg import GuiASG
+from guitester.guielb import GuiELB
 
 
 class GuiOps(GuiEC2, GuiCF, GuiIAM, GuiASG):
