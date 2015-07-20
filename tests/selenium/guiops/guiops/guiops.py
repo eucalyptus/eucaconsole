@@ -5,7 +5,7 @@ from guitester.guiasg import GuiASG
 from guitester.guielb import GuiELB
 
 
-class GuiOps(GuiEC2, GuiCF, GuiIAM, GuiASG):
+class GuiOps(GuiEC2, GuiCF, GuiIAM, GuiASG, GuiELB):
     def __init__(self, console_url, sauce=False, webdriver_url=None, browser=None, version=None, platform=None):
         self.console_url = console_url
         self.sauce = sauce
