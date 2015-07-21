@@ -1,4 +1,4 @@
-from pages.viewpage import LandingPage
+from pages.landingpage import LandingPage
 
 class SecurityGroupLanding(LandingPage):
 
