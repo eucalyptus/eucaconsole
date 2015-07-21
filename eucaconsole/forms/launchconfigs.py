@@ -98,12 +98,14 @@ class CreateLaunchConfigForm(BaseSecureForm):
     def set_monitoring_enabled_field(self):
         if self.cloud_type == 'euca':
             self.monitoring_enabled.data = True
-            self.monitoring_enabled.help_text = _(u'Gather CloudWatch metric data for this instance.')
+            self.monitoring_enabled.help_text = _(u'Gather CloudWatch metric data for instances that use this launch configuration.')
         elif self.cloud_type == 'aws':
-            self.monitoring_enabled.label.text = _(u'Enabled detailed monitoring')
+            self.monitoring_enabled.label.text = _(u'Enable detailed monitoring')
             self.monitoring_enabled.help_text = _(
                 u'Gather all CloudWatch metric data at a higher frequency, '
-                u'and enable data aggregation by AMI and instance type.'
+                u'and enable data aggregation by AMI and instance type. '
+                u'If left unchecked, data will still be gathered, but less often '
+                u'and without aggregation. '
             )
 
     def set_help_text(self):
