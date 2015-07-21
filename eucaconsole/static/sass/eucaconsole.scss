@@ -290,7 +290,7 @@ $breadcrumb-border-color: darken($breadcrumb-background-color, 20%);
 
 @media screen and (min-width: $topbar-breakpoint) {
     #login-panel { margin-bottom: 5rem; }
-    #maincontent { min-height: 480px; }
+    #maincontent { min-height: 50rem; }
 }
 
 
