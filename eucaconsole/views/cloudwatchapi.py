@@ -151,6 +151,7 @@ class CloudWatchAPIView(BaseView, CloudWatchAPIMixin):
         tz_offset = int(self.request.params.get('tzoffset', 0))
         unit = self.request.params.get('unit')
         convert_to_kilobytes = ['NetworkIn', 'NetworkOut', 'DiskReadBytes', 'DiskWriteBytes']
+        collapse_to_megabytes = ['DiskReadBytes', 'DiskWriteBytes']
         json_stats = []
         multiplier = 1
         divider = 1
@@ -162,6 +163,13 @@ class CloudWatchAPIView(BaseView, CloudWatchAPIMixin):
         if metric in convert_to_kilobytes:
             divider = 1000
             unit = 'Kilobytes'
+
+        if metric in collapse_to_megabytes:
+            # Collapse to MB when appropriate
+            max_value = max(stat.get(statistic) for stat in stats)
+            if max_value > 10**7:
+                divider = 10**6
+                unit = 'Megabytes'
 
         if metric == 'Latency':
             multiplier = 1000
