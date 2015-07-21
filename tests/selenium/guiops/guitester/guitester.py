@@ -4,7 +4,7 @@ from pages.dashboard import Dashboard
 from pages.loginpage import LoginPage
 from pages.keypair.keypairdetail import KeypairDetailPage
 from selenium_api.selenium_api import SeleniumApi
-from pages.keypair.keypairview import KeypairView
+from pages.keypair.keypair_lp import KeypairLanding
 from dialogs.keypair_dialogs import CreateKeypairDialog, DeleteKeypairModal, ImportKeypairDialog
 
 class GuiTester(SeleniumApi):
