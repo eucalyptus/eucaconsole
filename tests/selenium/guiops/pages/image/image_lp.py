@@ -1,6 +1,6 @@
-from pages.viewpage import ViewPage
+from pages.landingpage import LandingPage
 
-class ImageView(ViewPage):
+class ImageLanding(LandingPage):
 
     def __init__(self, tester):
         self.tester = tester
@@ -16,8 +16,8 @@ class ImageView(ViewPage):
     _launch_instance_actions_menu_item_for_first_in_list_css = "[class ='f-dropdown open f-open-dropdown']>li:nth-of-type(4)>a"
 
     def verify_image_view_page_loaded(self):
-        self.tester.wait_for_text_present_by_id(ViewPage(self)._page_title_id, self._image_view_page_title)
-        self.tester.wait_for_visible_by_id(ViewPage(self)._refresh_button_id)
+        self.tester.wait_for_text_present_by_id(LandingPage(self)._page_title_id, self._image_view_page_title)
+        self.tester.wait_for_visible_by_id(LandingPage(self)._refresh_button_id)
 
     def click_action_launch_instance(self, image_id_or_type):
         if image_id_or_type[:4] == "emi-":
