@@ -82,10 +82,13 @@
                         <div class="content" ng-show="expanded">
                             ${panel('form_field', field=create_form['kernel_id'])}
                             ${panel('form_field', field=create_form['ramdisk_id'])}
-                            <div class="row">
+                            <div class="row inline controls-wrapper" id="controls_monitoring_enabled">
                                 <div class="large-10 small-8 columns right">
                                     ${structure:create_form['monitoring_enabled']}
                                     ${create_form['monitoring_enabled'].label}
+                                    <span data-tooltip="" title="${create_form.monitoring_enabled.help_text}">
+                                        <i class="helptext-icon"></i>
+                                    </span>
                                 </div>
                             </div>
                             <hr/>

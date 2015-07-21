@@ -58,13 +58,16 @@
 }
 
 .userdatalabel {
-    right: 0px !important;
+    right: 0 !important;
 }
 
 #userdata {
     margin: 0 0 0;
 }
 
+#controls_monitoring_enabled {
+    @include helptext-icon-position-mixin;
+}
 
 // big hack to allow more space for this one label so it doesn't wrap the help bubble
 div#controls_associate_public_ip_address {

@@ -19,8 +19,12 @@ form input.name {
     }
 }
 
+#controls_monitoring_enabled {
+    @include helptext-icon-position-mixin;
+}
+
 .userdatalabel {
-    right: 0px !important;
+    right: 0 !important;
 }
 
 #bdmapping-editor {
