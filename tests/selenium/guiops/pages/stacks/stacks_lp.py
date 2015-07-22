@@ -24,10 +24,10 @@ class StacksLandingPage(LandingPage):
     def click_create_stack_button_on_view_page(self):
         self.tester.click_element_by_id(self._create_stack_btn_id)
 
-    def click_stack_link_on_view_page(self, stack_name):
+    def click_stack_link_on_landing_page(self, stack_name):
         self.tester.click_element_by_css(self._stack_link_css.format(stack_name))
 
-    def verify_stack_present_on_view_page(self, stack_name):
+    def verify_stack_present_on_landing_page(self, stack_name):
         self.tester.wait_for_element_present_by_css(self._stack_link_css.format(stack_name))
 
     def verify_stack_not_present_on_view_page(self, stack_name):
