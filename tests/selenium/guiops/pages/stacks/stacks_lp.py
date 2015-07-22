@@ -21,7 +21,7 @@ class StacksLandingPage(LandingPage):
         self.tester.wait_for_visible_by_id(LandingPage._refresh_button_id)
         self.tester.wait_for_visible_by_id(self._create_stack_btn_id)
 
-    def click_create_stack_button_on_view_page(self):
+    def click_create_stack_button_on_landing_page(self):
         self.tester.click_element_by_id(self._create_stack_btn_id)
 
     def click_stack_link_on_landing_page(self, stack_name):
