@@ -22,6 +22,9 @@ class StacksLandingPage(LandingPage):
         self.tester.wait_for_visible_by_id(self._create_stack_btn_id)
 
     def click_create_stack_button_on_landing_page(self):
+        """
+        Clicks "Create Stacks" button on Stacks landing page.
+        """
         self.tester.click_element_by_id(self._create_stack_btn_id)
 
     def click_stack_link_on_landing_page(self, stack_name):
