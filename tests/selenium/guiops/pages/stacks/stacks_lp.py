@@ -33,6 +33,6 @@ class StacksLandingPage(LandingPage):
     def verify_stack_not_present_on_landing_page(self, stack_name):
         self.tester.wait_for_element_not_present_by_css(self._stack_link_css.format(stack_name))
 
-    def click_action_delete_stack_on_view_page(self, stack_name):
+    def click_action_delete_stack_on_landing_page(self, stack_name):
         self.tester.click_element_by_id(self._stack_actions_menu_id.format(stack_name))
         self.tester.click_element_by_css(self._delete_stack_actions_menuitem_css.format(stack_name))
