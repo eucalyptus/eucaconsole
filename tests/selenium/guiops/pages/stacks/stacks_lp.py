@@ -28,6 +28,10 @@ class StacksLandingPage(LandingPage):
         self.tester.click_element_by_id(self._create_stack_btn_id)
 
     def click_stack_link_on_landing_page(self, stack_name):
+        """
+        Clicks link of a given stack on Stacks landing page.
+        :param stack_name:
+        """
         self.tester.click_element_by_css(self._stack_link_css.format(stack_name))
 
     def verify_stack_present_on_landing_page(self, stack_name):
