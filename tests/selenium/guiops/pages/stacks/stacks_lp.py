@@ -35,9 +35,17 @@ class StacksLandingPage(LandingPage):
         self.tester.click_element_by_css(self._stack_link_css.format(stack_name))
 
     def verify_stack_present_on_landing_page(self, stack_name):
+        """
+        Verifies that stack link is present on Stacks landing page.
+        :param stack_name:
+        """
         self.tester.wait_for_element_present_by_css(self._stack_link_css.format(stack_name))
 
     def verify_stack_not_present_on_landing_page(self, stack_name):
+        """
+        Verifies that stack link is not present on Stacks landing page.
+        :param stack_name:
+        """
         self.tester.wait_for_element_not_present_by_css(self._stack_link_css.format(stack_name))
 
     def click_action_delete_stack_on_landing_page(self, stack_name):
