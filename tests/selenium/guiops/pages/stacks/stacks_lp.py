@@ -1,6 +1,6 @@
 from pages.landingpage import LandingPage
 
-class StacksView(LandingPage):
+class StacksLandingPage(LandingPage):
 
     def __init__(self, tester):
         self.tester = tester
