@@ -1,5 +1,6 @@
 from pages.landingpage import LandingPage
 
+
 class StacksLandingPage(LandingPage):
 
     def __init__(self, tester):
