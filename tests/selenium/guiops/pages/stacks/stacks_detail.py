@@ -2,10 +2,10 @@ from pages.detailpage import DetailPage
 
 class StackDetailPage(DetailPage):
 
-    def __init__(self, tester, stack_name):
+    def __init__(self, tester, stack_name=None):
         self.stack_name = stack_name
         self.tester = tester
-        self.verify_stack_detail_page_loaded()
+
 
     _stack_detail_page_title = "Details for stack: {0}"
     _delete_stack_action_menuitem_id = "delete-stack-action"
