@@ -4,7 +4,7 @@ class StacksLandingPage(LandingPage):
 
     def __init__(self, tester):
         self.tester = tester
-        self.verify_stacks_view_page_loaded()
+        self.verify_stacks_lp_loaded()
 
     _stacks_lp_title = "Stacks"
     _create_stack_btn_id = "create-stack-btn"
@@ -13,7 +13,7 @@ class StacksLandingPage(LandingPage):
     _view_details_stack_actions_menuitem_css ="#item-dropdown_{0}>li>a"
     _delete_stack_actions_menuitem_css ="#item-dropdown_{0}>li>a"
 
-    def verify_stacks_view_page_loaded(self):
+    def verify_stacks_lp_loaded(self):
         """
         Waits for page title to load; waits for refresh button to load; wait for 'Create Stack' button to load.
         """
@@ -30,7 +30,7 @@ class StacksLandingPage(LandingPage):
     def verify_stack_present_on_landing_page(self, stack_name):
         self.tester.wait_for_element_present_by_css(self._stack_link_css.format(stack_name))
 
-    def verify_stack_not_present_on_view_page(self, stack_name):
+    def verify_stack_not_present_on_landing_page(self, stack_name):
         self.tester.wait_for_element_not_present_by_css(self._stack_link_css.format(stack_name))
 
     def click_action_delete_stack_on_view_page(self, stack_name):
