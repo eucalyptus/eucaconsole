@@ -1650,7 +1650,7 @@ a { color: #007dba; }
 #contentwrap { position: relative; padding-bottom: 3rem; min-height: 30rem; }
 
 @media screen and (min-width: 1020px) { #login-panel { margin-bottom: 5rem; }
-  #maincontent { min-height: 50rem; } }
+  #maincontent { min-height: 65rem; } }
 /* ----------------------------------------- Misc
 ----------------------------------------- */
 #pagetitle, .pagetitle { font-size: 1.3rem; font-weight: bold; margin-left: 1rem; margin-bottom: 1rem; }
