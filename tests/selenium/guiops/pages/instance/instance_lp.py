@@ -24,7 +24,7 @@ class InstanceLanding(LandingPage):
         self.tester.wait_for_text_present_by_id(LandingPage(self)._page_title_id, self._instances_view_page_title)
         self.tester.wait_for_visible_by_id(LandingPage(self)._refresh_button_id)
 
-    def click_action_launch_instance_on_view_page(self):
+    def click_action_launch_instance_on_landing_page(self):
         self.tester.click_element_by_id(self._launch_instance_button_id)
 
     def click_action_terminate_instance_on_view_page(self, instance_id):
