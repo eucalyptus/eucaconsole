@@ -67,8 +67,11 @@ $tile-row-height: 24px;
                 position: absolute;
                 bottom: -40%; left: 0; right: 0;
                 text-align: center;
-                color: black;
+                color: $hp-accessible-blue;
                 font-style: normal;
+                i { // busy
+                    color: black;
+                }
             }
         }
         .footer {
