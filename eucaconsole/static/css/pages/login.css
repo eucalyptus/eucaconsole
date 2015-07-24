@@ -8,6 +8,8 @@
 #ssl-warning .fi-alert { color: darkred; }
 #ssl-warning p { line-height: 1.2rem; margin-top: 0.25rem; }
 
+#maincontent { min-height: 24rem; }
+
 #login-wrapper { position: relative; padding: 10px; }
 #login-wrapper label { font-weight: bold; color: #444; white-space: nowrap; }
 #login-wrapper input { background-color: #e6e7e8; height: 2.25rem; }
