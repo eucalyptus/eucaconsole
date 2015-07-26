@@ -23,7 +23,7 @@ class VolumeLanding(LandingPage):
         self.tester.wait_for_text_present_by_id(LandingPage(self)._page_title_id, self._volume_view_page_title)
         self.tester.wait_for_visible_by_id(LandingPage(self)._refresh_button_id)
 
-    def click_create_volume_btn_on_view_page(self):
+    def click_create_volume_btn_on_landing_page(self):
         self.tester.click_element_by_id(self._create_volume_button_id)
 
     def click_action_delete_volume_on_view_page(self, volume_id):

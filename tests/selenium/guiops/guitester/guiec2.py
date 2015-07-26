@@ -244,7 +244,7 @@ class GuiEC2(GuiTester):
         :param private_addressing:
         """
         BasePage(self).goto_instances_via_menu()
-        InstanceLanding(self).click_action_launch_instance_on_view_page()
+        InstanceLanding(self).click_action_launch_instance_on_landing_page()
         LaunchInstanceWizard(self).launch_instance(image, availability_zone, instance_type,
                                                     number_of_of_instances, instance_name, key_name,
                                                     security_group, user_data, monitoring, private_addressing)
@@ -362,7 +362,7 @@ class GuiEC2(GuiTester):
         :param availability_zone:
         """
         BasePage(self).goto_volumes_view_via_menu()
-        VolumeLanding(self).click_create_volume_btn_on_view_page()
+        VolumeLanding(self).click_create_volume_btn_on_landing_page()
         CreateVolumeDialog(self).create_volume(volume_name, create_from_snapshot, snapshot_id, volume_size, availability_zone)
         VolumeDetailPage(self).verify_volume_status_is_available(timeout_in_seconds=timeout_in_seconds)
         volume = VolumeDetailPage(self).get_volume_name_and_id()
