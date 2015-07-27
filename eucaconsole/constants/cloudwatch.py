@@ -96,8 +96,8 @@ METRIC_TITLE_MAPPING = {
     'DiskReadOps': _(u'Disk read operations'),
     'DiskWriteBytes': _(u'Disk write data'),
     'DiskWriteOps': _(u'Disk write operations'),
-    'NetworkIn': _(u'Network in KB'),
-    'NetworkOut': _(u'Network out KB'),
+    'NetworkIn': _(u'Network in'),
+    'NetworkOut': _(u'Network out'),
     # ELB Metrics
     'RequestCount': _(u'Sum request count'),
     'Latency': _(u'Avg latency (ms)'),

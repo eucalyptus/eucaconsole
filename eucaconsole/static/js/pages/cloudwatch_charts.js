@@ -162,7 +162,12 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
             if (forceZeroBaselineMetrics.indexOf(scope.metric) !== -1) {
                 chart.forceY([0, 10]);  // Anchor chart to zero baseline
             }
-            if (preciseFormatterMetrics.indexOf(scope.metric) !== -1 || unit === 'Megabytes') {
+            if (preciseFormatterMetrics.indexOf(scope.metric) !== -1) {
+                yformatter = '.2f';
+            }
+            if (unit === 'Kilobytes') {
+                yformatter = '.1f';
+            } else if (unit === 'Megabytes' || unit === 'Gigabytes') {
                 yformatter = '.2f';
             }
             chart.yAxis.axisLabel(unit).tickFormat(d3.format(yformatter));
