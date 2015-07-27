@@ -419,7 +419,6 @@ class StackWizardView(BaseView):
                     that either the object has public read permissions or that the 
                     URL is signed with authentication information.
                  """).format(http_err.reason), status=400)
-                
 
     @view_config(route_name='stack_template_convert', renderer='json', request_method='POST')
     def stack_template_convert(self):
