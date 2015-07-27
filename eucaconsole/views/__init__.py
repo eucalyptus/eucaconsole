@@ -236,7 +236,7 @@ class BaseView(object):
             acct = self.request.session.get('access_id', '')
         if 'amazon' in owners or 'aws-marketplace' in owners:
             acct = ''
-        ufshost = self.get_connection().host
+        ufshost = self.get_connection().host if self.cloud_type == 'euca' else ''
         try:
             return self._get_images_cached_(owners, executors, ec2_region, acct, ufshost)
         except pylibmc.Error:
