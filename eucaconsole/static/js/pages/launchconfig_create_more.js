@@ -7,7 +7,6 @@
 // Launchconfig create-more-like page includes the Block Device Mapping editor
 angular.module('LaunchconfigMore', ['BlockDeviceMappingEditor', 'EucaConsoleUtils'])
     .controller('LaunchconfigMoreCtrl', function ($scope, $timeout, eucaUnescapeJson) {
-        $scope.form = $('#launchconfig-more-form');
         $scope.expanded = false;
         $scope.toggleContent = function () {
             $scope.expanded = !$scope.expanded;
@@ -34,6 +33,12 @@ angular.module('LaunchconfigMore', ['BlockDeviceMappingEditor', 'EucaConsoleUtil
                     });
                 }
             });
+        };
+        $scope.isFormValid = function () {
+            if (!$scope.launchconfigName || $('#name.ng-invalid').length > 0) {
+                return false;
+            }
+            return true;
         };
     })
 ;

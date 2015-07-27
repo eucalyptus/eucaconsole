@@ -98,7 +98,9 @@
                     <div class="row">
                         <div class="large-2 small-4 columns">&nbsp;</div>
                         <div class="large-10 small-8 columns field inline">
-                            <button type="submit" class="button" id="save-changes-btn">
+                            <button type="submit" class="button"
+                                    id="save-changes-btn"
+                                    ng-disabled="!isFormValid()">
                                 <span i18n:translate="">Create Launch Configuration</span>
                             </button>
                             <a href="${request.route_path('launchconfig_view', id=launchconfig_name)}" id="cancel-link"
