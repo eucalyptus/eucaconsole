@@ -156,7 +156,8 @@
                         </span>
                         <ul id="actions-dropdown2" class="f-dropdown" data-dropdown-content="">
                             <li>
-                                <a i18n:translate="" ng-click="revealModal('delete', item)">Delete stack</a>
+                                <a id="delete-stack-action" data-reveal-id="delete-stack-modal"
+                                   i18n:translate="">Delete stack</a>
                             </li>
                         </ul>
                     </div>
@@ -187,9 +188,8 @@
                         </span>
                         <ul id="actions-dropdown3" class="f-dropdown" data-dropdown-content="">
                             <li>
-                                <a id="delete-user-action" i18n:translate="">
-                                    Delete stack
-                                </a>
+                                <a id="delete-stack-action" data-reveal-id="delete-stack-modal"
+                                   i18n:translate="">Delete stack</a>
                             </li>
                         </ul>
                     </div>
