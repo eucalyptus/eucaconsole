@@ -31,7 +31,7 @@
                                 <span class="cir">1</span> <b i18n:translate="">General</b>
                             </a>
                         </dd>
-                        <dd ng-class="{disabled: step1Invalid}">
+                        <dd ng-class="{disabled: step1Invalid}" ng-show="isNotValid || loading || parameters.length &gt; 0">
                             <a id="tabStep2" ng-click="visitNextStep(2, $event)"
                                href="#step2" ng-cloak="" ng-if="!step1Invalid">
                                 <span class="cir">2</span> <b i18n:translate="">Parameters</b>
@@ -98,10 +98,13 @@
                             <div class="row">
                                 <div class="small-3 columns">&nbsp;</div>
                                 <div class="small-9 columns field inline">
-                                    <a id="visit-step-2" class="button small round" ng-click="visitNextStep(2, $event)" ng-disabled="isNotValid">
+                                    <button type="submit" class="button" id="stack-wizard-btn-step2" ng-disabled="isNotValid" ng-show="!isNotValid &amp;&amp; !loading &amp;&amp; parameters.length === 0">
+                                        <span i18n:translate="">Create Stack</span>
+                                    </button>
+                                    <a id="visit-step-2" class="button small round" ng-click="visitNextStep(2, $event)" ng-show="isNotValid || loading || parameters.length > 0" ng-disabled="isNotValid || !parameters">
                                         <span i18n:translate="">Next</span>
-                                        <a class="cancel-link" href="${request.route_path('stacks')}">Cancel</a>
                                     </a>
+                                    <a class="cancel-link" href="${request.route_path('stacks')}" i18n:translate="">Cancel</a>
                                 </div>
                             </div>
                         </div>
@@ -134,16 +137,14 @@
                                             <select name="{{ item.name }}" id="{{ item.name }}" 
                                                 ng-if="item.chosen"
                                                 chosen="true" search-contains="true" width="100"
-                                                value="{{ item.default }}"
                                                 data-placeholder="Select an option"
                                                 i18n:attributes="data-placeholder"
                                                 ng-model="paramModels[item.name]" ng-change="checkRequiredInput()"
                                                 ng-options="option[1] for option in item.options track by option[0]">
-                                                <option ng-if="!item.default" value="" i18n:translate=""></option>
+                                                <option ng-if="!item.default" value=""></option>
                                             </select>
                                             <select name="{{ item.name }}" id="{{ item.name }}" 
                                                 ng-if="!item.chosen"
-                                                value="{{ item.default }}"
                                                 ng-model="paramModels[item.name]" ng-change="checkRequiredInput()"
                                                 ng-options="option[1] for option in item.options track by option[0]">
                                                 <option ng-if="!item.default" value="" i18n:translate="">Select an option</option>

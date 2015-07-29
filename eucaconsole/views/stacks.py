@@ -400,7 +400,9 @@ class StackWizardView(BaseView):
                             parameter_list=parameter_list
                         )
                     )
-                params = self.generate_param_list(parsed)
+                params = []
+                if 'Parameters' in parsed.keys():
+                    params = self.generate_param_list(parsed)
                 return dict(
                     results=dict(
                         template_url=template_url,
@@ -412,7 +414,11 @@ class StackWizardView(BaseView):
             except ValueError as json_err:
                 raise JSONError(message=_(u'Invalid JSON File ({0})').format(json_err.message), status=400)
             except HTTPError as http_err:
-                raise JSONError(message=_(u'Cannot read URL ({0})').format(http_err.reason), status=400)
+                raise JSONError(message=_(u"""
+                    Cannot read URL ({0}) If this URL is for an S3 object, be sure 
+                    that either the object has public read permissions or that the 
+                    URL is signed with authentication information.
+                 """).format(http_err.reason), status=400)
 
     @view_config(route_name='stack_template_convert', renderer='json', request_method='POST')
     def stack_template_convert(self):
@@ -436,7 +442,9 @@ class StackWizardView(BaseView):
             key.set_contents_from_string(template_body)
             template_url = key.generate_url(900)  # 15 minute URL, more than enough time, right?
 
-            params = self.generate_param_list(parsed)
+            params = []
+            if 'Parameters' in parsed.keys():
+                params = self.generate_param_list(parsed)
             return dict(
                 results=dict(
                     template_url=template_url,
@@ -569,10 +577,11 @@ class StackWizardView(BaseView):
             (template_url, template_name, parsed) = self.parse_store_template()
             capabilities = ['CAPABILITY_IAM']
             params = []
-            for name in parsed['Parameters']:
-                val = self.request.params.get(name)
-                if val:
-                    params.append((name, val))
+            if 'Parameters' in parsed.keys():
+                for name in parsed['Parameters']:
+                    val = self.request.params.get(name)
+                    if val:
+                        params.append((name, val))
             tags_json = self.request.params.get('tags')
             tags = None
             if tags_json:
