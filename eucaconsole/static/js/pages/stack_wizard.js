@@ -322,6 +322,7 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
                         $scope.templateUrl = undefined;
                         $scope.templateIdent = undefined;
                         $scope.description = '';
+                        $scope.isNotValid = true;
                         return;
                     }
                     if (results.parameter_list && results.parameter_list.length) {
