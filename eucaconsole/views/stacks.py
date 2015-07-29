@@ -367,7 +367,9 @@ class StackWizardView(BaseView):
                 (template_url, template_name, parsed) = self.parse_store_template()
                 if 'Resources' not in parsed:
                     raise JSONError(message=_(u'Invalid CloudFormation Template, Resources not found'), status=400)
-                exception_list = StackWizardView.identify_aws_template(parsed)
+                exception_list = []
+                if self.request.params.get('inputtype') != 'sample':
+                    exception_list = StackWizardView.identify_aws_template(parsed)
                 if len(exception_list) > 0:
                     # massage for the browser
                     service_list = []
@@ -748,6 +750,13 @@ class StackWizardView(BaseView):
             if type(item) is dict and 'ImageId' in item.keys():
                 img_item = item['ImageId']
                 if 'Ref' not in img_item.keys():
+                    # check for emi lookup in map
+                    if 'Fn::FindInMap' in img_item.keys():
+                        map_name = img_item['Fn::FindInMap'][0]
+                        if parsed['Mappings'] and parsed['Mappings'][map_name]:
+                            img_map = parsed['Mappings'][map_name]
+                            if json.dumps(img_map).find('emi-') > -1:
+                                return
                     ret.append({
                         'name': 'ImageId',
                         'type': 'Parameter',
