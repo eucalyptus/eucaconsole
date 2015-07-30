@@ -123,6 +123,7 @@ class ManageCredentialsView(BaseView, PermissionCheckMixin):
                     session['username'] = username
                     session['region'] = 'euca'
                     session['username_label'] = user_account
+                    session['dns_enabled'] = auth.dns_enabled  # this *must* be prior to line below
                     self.check_iam_perms(session, creds);
                     headers = remember(self.request, user_account)
                     msg = _(u'Successfully changed password.')
