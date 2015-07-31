@@ -736,7 +736,7 @@ class StackWizardView(BaseView):
             for props in unsupported_properties:
                 if resource['Type'].find(props['resource']) == 0:
                     for prop in props['properties']:
-                        if prop in resource['Properties'].keys():
+                        if 'Properties' in resource and prop in resource['Properties'].keys():
                             ret.append({
                                 'name': prop,
                                 'type': props['resource'],
