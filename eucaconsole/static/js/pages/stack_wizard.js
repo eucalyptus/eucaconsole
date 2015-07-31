@@ -27,7 +27,6 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
         $scope.expanded = false;
         $scope.stackForm = $('#stack-wizard-form');
         $scope.stackName = '';
-        $scope.s3TemplateUrl = undefined;
         $scope.s3TemplateKey = undefined;
         $scope.stackTemplateEndpoint = '';
         $scope.convertTemplateEndpoint = '';
@@ -277,9 +276,7 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
             }
             $scope.description = '';
             $scope.parameters = undefined;
-            $scope.s3TemplateUrl = undefined;
             $scope.s3TemplateKey = undefined;
-            $('#s3-template-url').val('');
             $('#s3-template-key').val('');
             $scope.serviceList = undefined;
             $scope.resourceList = undefined;
@@ -307,7 +304,6 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
                 var results = oData ? oData.results : '';
                 if (results) {
                     $scope.loading = false;
-                    $scope.s3TemplateUrl = results.template_url;
                     $scope.s3TemplateKey = results.template_key;
                     $scope.description = results.description;
                     if (results.service_list && results.service_list.length > 0) {
@@ -384,7 +380,6 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
                 if (results) {
                     $scope.loading = false;
                     $('#aws-warn-modal').foundation('reveal', 'close');
-                    $scope.s3TemplateUrl = results.template_url;
                     $scope.s3TemplateKey = results.template_key;
                     $scope.parameters = results.parameters;
                     angular.forEach($scope.parameters, function(param, idx) {
