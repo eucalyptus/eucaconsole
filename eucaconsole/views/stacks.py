@@ -31,7 +31,7 @@ Pyramid views for Eucalyptus and AWS CloudFormation stacks
 import simplejson as json
 import os
 import urllib2
-from urllib2 import HTTPError
+from urllib2 import HTTPError, URLError
 from boto.exception import BotoServerError
 
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
@@ -45,6 +45,12 @@ from ..models import Notification
 from ..models.auth import User
 from ..views import LandingPageView, BaseView, JSONResponse, JSONError
 from . import boto_error_handler
+
+URL_PROTOCOL_WHITELIST = [
+    'http',
+    'https',
+    'ftp'
+]
 
 
 class StacksView(LandingPageView):
@@ -626,7 +632,13 @@ class StackWizardView(BaseView):
                 template_body = files[0].file.read()
                 template_name = files[0].name
             elif template_url:  # read from url
-                template_body = urllib2.urlopen(template_url).read()
+                protocol = template_url[:template_url.find('://')]
+                if protocol not in URL_PROTOCOL_WHITELIST:
+                    raise JSONError(status=400, message=_(u'URL protocol not allowed: ') + protocol)
+                try:
+                    template_body = urllib2.urlopen(template_url).read()
+                except URLError:
+                    raise JSONError(status=400, message=_(u'Cannot read from url provided.'))
                 template_name = template_url[template_url.rindex('/') + 1:]
                 if len(template_body) > 460800:
                     raise JSONError(status=400, message=_(u'Template too large: ') + template_name)
