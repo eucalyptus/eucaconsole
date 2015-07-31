@@ -32,3 +32,4 @@ bower_components/
 node_modules/
 eucaconsole.backup/
 eucaconsole/static/js/minified/
+Gemfile.lock

@@ -188,8 +188,16 @@ class BaseView(object):
             userdata = userdata_file or userdata_input or None  # Look up file upload first
         return userdata
 
+    def get_shared_buckets_storage_key(self, host):
+        return "{0}{1}{2}{3}".format(
+            host,
+            self.region,
+            self.request.session['account' if self.cloud_type == 'euca' else 'access_id'],
+            self.request.session['username'] if self.cloud_type == 'euca' else '',
+        )
+
     @long_term.cache_on_arguments(namespace='images')
-    def _get_images_cached_(self, _owners, _executors, _ec2_region, acct):
+    def _get_images_cached_(self, _owners, _executors, _ec2_region, acct, ufshost):
         """
         This method is decorated and will cache the image set
         """
@@ -228,8 +236,9 @@ class BaseView(object):
             acct = self.request.session.get('access_id', '')
         if 'amazon' in owners or 'aws-marketplace' in owners:
             acct = ''
+        ufshost = self.get_connection().host if self.cloud_type == 'euca' else ''
         try:
-            return self._get_images_cached_(owners, executors, ec2_region, acct)
+            return self._get_images_cached_(owners, executors, ec2_region, acct, ufshost)
         except pylibmc.Error:
             logging.warn('memcached not responding')
             return self._get_images_(owners, executors, ec2_region)
