@@ -494,7 +494,9 @@ class CFSampleTemplateManager(object):
         euca_templates = []
         for dir_name, subdir_list, filelist in os.walk(self.template_dir):
             for file_item in filelist:
-                name = file_item[:file_item.index('.')]
+                name = file_item
+                if file_item.find('.') > -1:
+                    name = file_item[:file_item.find('.')]
                 euca_templates.append((name, file_item))
             if len(euca_templates) > 0:
                 templates.append((dir_name, dir_name[dir_name.rindex('/')+1:], euca_templates))
