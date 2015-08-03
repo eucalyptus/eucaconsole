@@ -52,6 +52,7 @@ URL_PROTOCOL_WHITELIST = [
     'ftp'
 ]
 
+TEMPLATE_BODY_LIMIT = 460800
 
 class StacksView(LandingPageView):
     def __init__(self, request):
@@ -631,7 +632,7 @@ class StackWizardView(BaseView):
 
             if len(files) > 0 and len(str(files[0])) > 0:  # read from file
                 files[0].file.seek(0, 2)  # seek to end
-                if files[0].file.tell() > 460800:
+                if files[0].file.tell() > TEMPLATE_BODY_LIMIT:
                     raise JSONError(status=400, message=_(u'File too large: ') + files[0].filename)
                 files[0].file.seek(0, 0)  # seek to start
                 template_body = files[0].file.read()
@@ -641,11 +642,11 @@ class StackWizardView(BaseView):
                 if protocol not in URL_PROTOCOL_WHITELIST:
                     raise JSONError(status=400, message=_(u'URL protocol not allowed: ') + protocol)
                 try:
-                    template_body = urllib2.urlopen(template_url).read()
+                    template_body = urllib2.urlopen(template_url).read(TEMPLATE_BODY_LIMIT)
                 except URLError:
                     raise JSONError(status=400, message=_(u'Cannot read from url provided.'))
                 template_name = template_url[template_url.rindex('/') + 1:]
-                if len(template_body) > 460800:
+                if len(template_body) > TEMPLATE_BODY_LIMIT:
                     raise JSONError(status=400, message=_(u'Template too large: ') + template_name)
             else:
                 s3_bucket = self.get_template_samples_bucket()
