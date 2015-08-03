@@ -421,12 +421,12 @@ class ScalingGroupsFiltersForm(BaseSecureForm):
         self.vpc_zone_identifier.choices = sorted(self.vpc_zone_identifier.choices)
         self.facets = [
             {'name': 'launch_config_name', 'label': self.launch_config_name.label.text,
-                'options': self.getOptionsFromChoices(self.launch_config_name.choices)},
+                'options': self.get_options_from_choices(self.launch_config_name.choices)},
             {'name': 'availability_zone', 'label': self.availability_zones.label.text,
-                'options': self.getOptionsFromChoices(self.availability_zones.choices)},
+                'options': self.get_options_from_choices(self.availability_zones.choices)},
         ]
         if BaseView.is_vpc_supported(request):
             self.facets.append(
                 {'name': 'vpc_zone', 'label': self.vpc_zone_identifier.label.text,
-                    'options': self.getOptionsFromChoices(self.vpc_zone_identifier.choices)}
+                    'options': self.get_options_from_choices(self.vpc_zone_identifier.choices)}
             )

@@ -49,6 +49,7 @@ class GuiTester(SeleniumApi):
                 print "Using remote webdriver " + webdriver_url
             print "Setting webdriver profile"
         self.driver.implicitly_wait(60)
-        self.driver.maximize_window()
+#        self.driver.maximize_window()
+        self.driver.set_window_size(1024, 768)
         self.driver.get(console_url)
 
