@@ -94,7 +94,7 @@ class ManageCredentialsView(BaseView, PermissionCheckMixin):
         changepassword_form = EucaChangePasswordForm(self.request, formdata=self.request.params)
         self.location = "{0}?{1}&{2}&{3}&{4}".format(
             self.request.route_path('managecredentials'),
-            'expired=' + self.request.params.get('expired').lower(),
+            'expired=' + self.request.params.get('expired'),
             'came_from=' + self.came_from,
             'account=' + account,
             'username=' + username,
@@ -133,12 +133,12 @@ class ManageCredentialsView(BaseView, PermissionCheckMixin):
                     # the logging here and below is really very useful when debugging login problems.
                     logging.info("http error "+str(vars(err)))
                     if err.msg == u'Unauthorized':
-                        msg = u'Invalid user/account name and/or password.'
+                        msg = _(u'Invalid user/account name and/or password.')
                         self.request.session.flash(msg, queue=Notification.ERROR)
                 except URLError, err:
                     logging.info("url error "+str(vars(err)))
                     if str(err.reason) == 'timed out':
                         host = self._get_ufs_host_setting_()
-                        msg = u'No response from host ' + host
+                        msg = _(u'No response from host ') + host
                         self.request.session.flash(msg, queue=Notification.ERROR)
         return HTTPFound(location=self.location)
