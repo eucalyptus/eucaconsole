@@ -54,6 +54,7 @@ URL_PROTOCOL_WHITELIST = [
 
 TEMPLATE_BODY_LIMIT = 460800
 
+
 class StacksView(LandingPageView):
     def __init__(self, request):
         super(StacksView, self).__init__(request)
@@ -461,7 +462,8 @@ class StackWizardView(BaseView):
         region = self.request.session.get('region')
         return s3_conn.create_bucket("cf-template-{acct}-{region}".format(acct=account_id, region=region))
 
-    def get_s3_template_url(self, key):
+    @staticmethod
+    def get_s3_template_url(key):
         template_url = key.generate_url(1)
         return template_url[:template_url.find('?')]
 
@@ -638,7 +640,7 @@ class StackWizardView(BaseView):
                 template_body = files[0].file.read()
                 template_name = files[0].name
             elif template_url:  # read from url
-                idx =  template_url.find('://')
+                idx = template_url.find('://')
                 if idx == -1:
                     raise JSONError(status=400, message=_(u'Invalid URL: ') + template_url)
                 protocol = template_url[:idx]
@@ -762,8 +764,8 @@ class StackWizardView(BaseView):
                             })
 
         # third pass, find refs to cloud-specific resources
-        def find_image_ref(name, item):
-            if name == 'Parameters':
+        def find_image_ref(_name, item):
+            if _name == 'Parameters':
                 return  # ignore refs already in params
             if type(item) is dict and 'ImageId' in item.keys():
                 img_item = item['ImageId']
