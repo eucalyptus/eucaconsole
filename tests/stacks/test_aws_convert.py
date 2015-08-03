@@ -31,7 +31,7 @@ from pyramid import testing
 from eucaconsole.routes import urls
 
 
-def _registerRoutes(config):
+def _register_routes(config):
     for route in urls:
         config.add_route(route.name, route.pattern)
 
@@ -45,7 +45,7 @@ class TestAWSConvert(unittest.TestCase):
 
     def test_url_for_resource(self):
         from eucaconsole.views.stacks import StackStateView
-        _registerRoutes(self.config)
+        _register_routes(self.config)
         request = testing.DummyRequest()
         
         url = StackStateView.get_url_for_resource(request, 'AWS::ElasticLoadBalancing::LoadBalancer', 'lb-1234')
