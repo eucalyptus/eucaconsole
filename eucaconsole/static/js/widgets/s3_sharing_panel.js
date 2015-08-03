@@ -71,6 +71,11 @@ angular.module('S3SharingPanel', ['EucaConsoleUtils'])
                     });
                 });
             });
+            $scope.$watch('propagateAcls', function (newVal, oldVal) {
+                if (newVal !== oldVal) {
+                    $scope.$emit('s3:sharingPanelAclUpdated');
+                }
+            });
         };
         $scope.syncGrants = function() {
             $scope.s3AclTextarea.val(JSON.stringify($scope.grantsArray));
@@ -98,8 +103,8 @@ angular.module('S3SharingPanel', ['EucaConsoleUtils'])
                     'grant_type': 'CanonicalUser'
                 };
                 angular.forEach($scope.grantsArray, function (grant) {
-                    var idPermMatches = grant.id == grantAccountVal && grant.permission == grantPermVal;
-                    var emailPermMatches = grant.email_address == grantAccountVal && grant.permission == grantPermVal;
+                    var idPermMatches = grant.id === grantAccountVal && grant.permission === grantPermVal;
+                    var emailPermMatches = grant.email_address === grantAccountVal && grant.permission === grantPermVal;
                     if (idPermMatches || emailPermMatches) {
                         existingGrantFound = true;
                     }

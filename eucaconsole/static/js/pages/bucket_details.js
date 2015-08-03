@@ -47,7 +47,7 @@ angular.module('BucketDetailsPage', ['S3SharingPanel', 'EucaConsoleUtils'])
                 $scope.hasChangesToBeSaved = true;
             });
             $scope.$watch('objectName', function (newVal, oldVal) {
-                if (newVal != oldVal) {
+                if (newVal !== oldVal) {
                     $scope.hasChangesToBeSaved = true;
                 }
             });
@@ -82,7 +82,7 @@ angular.module('BucketDetailsPage', ['S3SharingPanel', 'EucaConsoleUtils'])
         };
         // Receive postMessage from file upload window, refreshing list when file upload completes
         window.addEventListener('message', function (event) {
-            if (event.data == 's3:fileUploaded') {
+            if (event.data === 's3:fileUploaded') {
                 $scope.getBucketObjectsCount();
             }
         }, false);
