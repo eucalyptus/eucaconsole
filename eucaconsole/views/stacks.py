@@ -632,7 +632,10 @@ class StackWizardView(BaseView):
                 template_body = files[0].file.read()
                 template_name = files[0].name
             elif template_url:  # read from url
-                protocol = template_url[:template_url.find('://')]
+                idx =  template_url.find('://')
+                if idx == -1:
+                    raise JSONError(status=400, message=_(u'Invalid URL: ') + template_url)
+                protocol = template_url[:idx]
                 if protocol not in URL_PROTOCOL_WHITELIST:
                     raise JSONError(status=400, message=_(u'URL protocol not allowed: ') + protocol)
                 try:
