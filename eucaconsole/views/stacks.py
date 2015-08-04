@@ -28,7 +28,9 @@
 Pyramid views for Eucalyptus and AWS CloudFormation stacks
 
 """
+import base64
 import simplejson as json
+import hashlib
 import os
 import urllib2
 from urllib2 import HTTPError, URLError
@@ -459,7 +461,17 @@ class StackWizardView(BaseView):
         s3_conn = self.get_connection(conn_type="s3")
         account_id = User.get_account_id(ec2_conn=self.get_connection(), request=self.request)
         region = self.request.session.get('region')
-        return s3_conn.create_bucket("cf-template-{acct}-{region}".format(acct=account_id, region=region))
+        d = hashlib.md5()
+        d.update(account_id)
+        md5 = d.digest()
+        acct_hash=base64.urlsafe_b64encode(md5)
+        acct_hash=acct_hash[:acct_hash.find('=')]
+        bucket = s3_conn.create_bucket("cf-template-{acct_hash}-{region}".format(
+            acct_hash=acct_hash.lower(),
+            region=region
+        ))
+        acl = bucket.get_acl()
+        return bucket
 
     def get_s3_template_url(self, key):
         template_url = key.generate_url(1)
@@ -601,10 +613,13 @@ class StackWizardView(BaseView):
             with boto_error_handler(self.request, location):
                 cloudformation_conn = self.get_connection(conn_type='cloudformation')
                 self.log_request(u"Creating stack:{0}".format(stack_name))
-                cloudformation_conn.create_stack(
+                result = cloudformation_conn.create_stack(
                     stack_name, template_url=template_url, capabilities=capabilities,
                     parameters=params, tags=tags
                 )
+                stack_id = result[result.rfind('/'):]
+                # TODO: rename template in bucket
+                print "Stack id = " +stack_id
                 msg = _(u'Successfully sent create stack request. '
                         u'It may take a moment to create the stack.')
                 queue = Notification.SUCCESS
