@@ -36,6 +36,7 @@ from moto import mock_ec2
 from pyramid import testing
 from pyramid.httpexceptions import HTTPNotFound
 
+from eucaconsole.constants.instances import AWS_INSTANCE_TYPE_CHOICES
 from eucaconsole.forms import BaseSecureForm
 from eucaconsole.forms.instances import (
     StartInstanceForm, StopInstanceForm, RebootInstanceForm, TerminateInstanceForm,
@@ -319,3 +320,19 @@ class InstanceMonitoringViewTestCase(BaseViewTestCase, MockInstanceMixin):
         view = InstanceMonitoringView(request, instance=instance).instance_monitoring()
         monitoring_tab_title = view.get('monitoring_tab_title')
         self.assertEqual(monitoring_tab_title, u'Detailed Monitoring')
+
+
+class InstanceTypeChoicesTestCase(BaseViewTestCase):
+    def test_aws_instance_type_choices(self):
+        aws_instance_types = [name for name, desc in AWS_INSTANCE_TYPE_CHOICES]
+        expected_instance_types = [
+            't1.micro', 't2.micro', 't2.small', 't2.medium', 't2.large', 'm1.small', 'm1.medium', 'm1.large',
+            'm1.xlarge', 'm2.xlarge', 'm2.2xlarge', 'm2.4xlarge', 'm3.medium', 'm3.large', 'm3.xlarge', 'm3.2xlarge',
+            'm4.large', 'm4.xlarge', 'm4.2xlarge', 'm4.4xlarge', 'm4.10xlarge', 'c1.medium', 'c1.xlarge', 'cg1.4xlarge',
+            'cr1.8xlarge', 'cc2.8xlarge', 'c3.large', 'c3.xlarge', 'c3.2xlarge', 'c3.4xlarge', 'c3.8xlarge',
+            'c4.large', 'c4.xlarge', 'c4.2xlarge', 'c4.4xlarge', 'c4.8xlarge', 'g2.2xlarge', 'g2.4xlarge', 'r3.large',
+            'r3.xlarge', 'r3.2xlarge', 'r3.4xlarge', 'r3.8xlarge', 'hi1.4xlarge', 'hs1.8xlarge', 'i2.xlarge',
+            'i2.2xlarge', 'i2.4xlarge', 'i2.8xlarge', 'd2.xlarge', 'd2.2xlarge', 'd2.4xlarge', 'd2.8xlarge',
+        ]
+        for instance_type in expected_instance_types:
+            self.assertEqual(instance_type in aws_instance_types, True)

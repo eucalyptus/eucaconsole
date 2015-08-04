@@ -27,7 +27,6 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
         $scope.expanded = false;
         $scope.stackForm = $('#stack-wizard-form');
         $scope.stackName = '';
-        $scope.s3TemplateUrl = undefined;
         $scope.s3TemplateKey = undefined;
         $scope.stackTemplateEndpoint = '';
         $scope.convertTemplateEndpoint = '';
@@ -106,7 +105,7 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
             });
         };
         $scope.checkRequiredInput = function () {
-            if ($scope.currentStepIndex == 1) { 
+            if ($scope.currentStepIndex === 1) {
                 $scope.isNotValid = false;
                 $('#size-error').css('display', 'none');
                 var val;
@@ -140,7 +139,7 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
                     // Once invalid name has been entered, do not enable the button unless the name length is valid
                     $scope.isNotValid = true;
                 }
-            } else if ($scope.currentStepIndex == 2) {
+            } else if ($scope.currentStepIndex === 2) {
                 $scope.isNotValid = false;
                 angular.forEach($scope.parameters, function(param, idx) {
                     var val = $scope.paramModels[param.name];
@@ -192,13 +191,13 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
                  $scope.setWizardFocus($scope.currentStepIndex);
             });
             $scope.$watch('inputtype', function() {
-                if ($scope.inputtype == 'text') {
+                if ($scope.inputtype === 'text') {
                     $timeout(function() {
                         $('#sample-template').focus();
                     });
                 }
                 else {
-                    if ($scope.inputtype == 'url') {
+                    if ($scope.inputtype === 'url') {
                         $timeout(function() {
                             $('#template-url').focus();
                         });
@@ -239,7 +238,7 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
                 $('#unsaved-tag-warn-modal').foundation('reveal', 'open');
                 return false;
             }
-            if (nextStep == 2 && $scope.step1Invalid) { $scope.clearErrors(2); $scope.step1Invalid = false; }
+            if (nextStep === 2 && $scope.step1Invalid) { $scope.clearErrors(2); $scope.step1Invalid = false; }
             
             // since above lines affects DOM, need to let that take affect first
             $timeout(function() {
@@ -254,7 +253,7 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
                         var $container = $("#" + id);
                         $(this).removeClass("active");
                         $container.removeClass("active");
-                        if (id == hash || $container.find("#" + hash).length) {
+                        if (id === hash || $container.find("#" + hash).length) {
                             $(this).addClass("active");
                             $container.addClass("active");
                         }
@@ -277,9 +276,7 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
             }
             $scope.description = '';
             $scope.parameters = undefined;
-            $scope.s3TemplateUrl = undefined;
             $scope.s3TemplateKey = undefined;
-            $('#s3-template-url').val('');
             $('#s3-template-key').val('');
             $scope.serviceList = undefined;
             $scope.resourceList = undefined;
@@ -290,7 +287,7 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
                 this.append(value.name, value.value);
             }, fd);
             // Add file
-            if ($scope.inputtype == 'file') {
+            if ($scope.inputtype === 'file') {
                 var file = $scope.templateFiles[0];
                 // another check to ensure we don't upload something too large
                 if (file.size > 460800) {
@@ -307,7 +304,6 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
                 var results = oData ? oData.results : '';
                 if (results) {
                     $scope.loading = false;
-                    $scope.s3TemplateUrl = results.template_url;
                     $scope.s3TemplateKey = results.template_key;
                     $scope.description = results.description;
                     if (results.service_list && results.service_list.length > 0) {
@@ -339,6 +335,9 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
                         $scope.paramModels[param.name] = param.default;
                     });
                     $scope.checkRequiredInput();
+                    $timeout(function() {
+                        $(document).foundation('tooltip', 'reflow');
+                    }, 1000);
                 }
             }).
             error(function (oData, status) {
@@ -348,7 +347,7 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
         };
         $scope.showAWSWarn = function () {
             var thisKey = "do-not-show-aws-template-warning";
-            if (Modernizr.localstorage && localStorage.getItem(thisKey) != "true") {
+            if (Modernizr.localstorage && localStorage.getItem(thisKey) !== "true") {
                 var modal = $('#aws-warn-modal');
                 modal.foundation('reveal', 'open');
                 modal.on('click', '#convert_template_submit_button', function(){
@@ -381,7 +380,6 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
                 if (results) {
                     $scope.loading = false;
                     $('#aws-warn-modal').foundation('reveal', 'close');
-                    $scope.s3TemplateUrl = results.template_url;
                     $scope.s3TemplateKey = results.template_key;
                     $scope.parameters = results.parameters;
                     angular.forEach($scope.parameters, function(param, idx) {

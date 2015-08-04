@@ -31,7 +31,7 @@ Pyramid views for Eucalyptus and AWS CloudFormation stacks
 import simplejson as json
 import os
 import urllib2
-from urllib2 import HTTPError
+from urllib2 import HTTPError, URLError
 from boto.exception import BotoServerError
 
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
@@ -45,6 +45,14 @@ from ..models import Notification
 from ..models.auth import User
 from ..views import LandingPageView, BaseView, JSONResponse, JSONError
 from . import boto_error_handler
+
+URL_PROTOCOL_WHITELIST = [
+    'http',
+    'https',
+    'ftp'
+]
+
+TEMPLATE_BODY_LIMIT = 460800
 
 
 class StacksView(LandingPageView):
@@ -244,7 +252,11 @@ class StackStateView(BaseView):
                     'logical_id': resource.logical_resource_id,
                     'physical_id': resource.physical_resource_id,
                     'status': resource.resource_status.lower().capitalize().replace('_', '-'),
-                    'url': self.get_url_for_resource(resource.resource_type, resource.physical_resource_id),
+                    'url': StackStateView.get_url_for_resource(
+                        self.request,
+                        resource.resource_type,
+                        resource.physical_resource_id
+                    ),
                     'updated_timestamp': resource.LastUpdatedTimestamp})
             return dict(
                 results=dict(
@@ -283,40 +295,45 @@ class StackStateView(BaseView):
                         'type': event.resource_type,
                         'logical_id': event.logical_resource_id,
                         'physical_id': event.physical_resource_id,
-                        'url': self.get_url_for_resource(event.resource_type, event.physical_resource_id)
+                        'url': StackStateView.get_url_for_resource(
+                            self.request,
+                            event.resource_type,
+                            event.physical_resource_id
+                        )
                     })
             return dict(
                 results=dict(events=events)
             )
 
-    def get_url_for_resource(self, res_type, resource_id):
+    @staticmethod
+    def get_url_for_resource(request, res_type, resource_id):
         url = None
         if res_type == "AWS::ElasticLoadBalancing::LoadBalancer":
-            url = self.request.route_path('elb_view', id=resource_id)
+            url = request.route_path('elb_view', id=resource_id)
         elif "AWS::EC2::" in res_type:
             if "SecurityGroup" in res_type:
-                url = self.request.route_path('securitygroup_view', id=resource_id)
+                url = request.route_path('securitygroup_view', id=resource_id)
             elif "EIP" in res_type:
-                url = self.request.route_path('ipaddress_view', public_ip=resource_id)
+                url = request.route_path('ipaddress_view', public_ip=resource_id)
             elif "Instance" in res_type:
-                url = self.request.route_path('instance_view', id=resource_id)
+                url = request.route_path('instance_view', id=resource_id)
             elif "Volume" in res_type:
-                url = self.request.route_path('volume_view', id=resource_id)
+                url = request.route_path('volume_view', id=resource_id)
         elif "AWS::AutoScaling::" in res_type:
             if "LaunchConfiguration" in res_type:
-                url = self.request.route_path('launchconfig_view', id=resource_id)
+                url = request.route_path('launchconfig_view', id=resource_id)
             if "ScalingGroup" in res_type:
-                url = self.request.route_path('scalinggroup_view', id=resource_id)
+                url = request.route_path('scalinggroup_view', id=resource_id)
         elif "AWS::IAM::" in res_type:
             if "Group" in res_type:
-                url = self.request.route_path('group_view', id=resource_id)
+                url = request.route_path('group_view', name=resource_id)
             elif "Role" in res_type:
-                url = self.request.route_path('role_view', name=resource_id)
+                url = request.route_path('role_view', name=resource_id)
             elif "User" in res_type:
-                url = self.request.route_path('user_view', name=resource_id)
+                url = request.route_path('user_view', name=resource_id)
         elif "AWS::S3::" in res_type:
             if "Bucket" in res_type:
-                url = self.request.route_path('bucket_contents', name=resource_id)
+                url = request.route_path('bucket_contents', name=resource_id, subpath='')
         return url
 
 
@@ -367,7 +384,9 @@ class StackWizardView(BaseView):
                 (template_url, template_name, parsed) = self.parse_store_template()
                 if 'Resources' not in parsed:
                     raise JSONError(message=_(u'Invalid CloudFormation Template, Resources not found'), status=400)
-                exception_list = StackWizardView.identify_aws_template(parsed)
+                exception_list = []
+                if self.request.params.get('inputtype') != 'sample':
+                    exception_list = StackWizardView.identify_aws_template(parsed)
                 if len(exception_list) > 0:
                     # massage for the browser
                     service_list = []
@@ -391,7 +410,6 @@ class StackWizardView(BaseView):
                     property_list = list(set(property_list))
                     return dict(
                         results=dict(
-                            template_url=template_url,
                             template_key=template_name,
                             description=parsed['Description'] if 'Description' in parsed else '',
                             service_list=service_list,
@@ -400,10 +418,11 @@ class StackWizardView(BaseView):
                             parameter_list=parameter_list
                         )
                     )
-                params = self.generate_param_list(parsed)
+                params = []
+                if 'Parameters' in parsed.keys():
+                    params = self.generate_param_list(parsed)
                 return dict(
                     results=dict(
-                        template_url=template_url,
                         template_key=template_name,
                         description=parsed['Description'] if 'Description' in parsed else '',
                         parameters=params
@@ -412,7 +431,11 @@ class StackWizardView(BaseView):
             except ValueError as json_err:
                 raise JSONError(message=_(u'Invalid JSON File ({0})').format(json_err.message), status=400)
             except HTTPError as http_err:
-                raise JSONError(message=_(u'Cannot read URL ({0})').format(http_err.reason), status=400)
+                raise JSONError(message=_(u"""
+                    Cannot read URL ({0}) If this URL is for an S3 object, be sure 
+                    that either the object has public read permissions or that the 
+                    URL is signed with authentication information.
+                 """).format(http_err.reason), status=400)
 
     @view_config(route_name='stack_template_convert', renderer='json', request_method='POST')
     def stack_template_convert(self):
@@ -426,24 +449,32 @@ class StackWizardView(BaseView):
             template_body = json.dumps(parsed)
 
             # now, store it back in S3
-            s3_conn = self.get_connection(conn_type="s3")
-            account_id = User.get_account_id(ec2_conn=self.get_connection(), request=self.request)
-            region = self.request.session.get('region')
-            bucket = s3_conn.create_bucket("cf-template-{acct}-{region}".format(acct=account_id, region=region))
+            bucket = self.get_create_template_bucket()
             key = bucket.get_key(template_name)
             if key is None:
                 key = bucket.new_key(template_name)
             key.set_contents_from_string(template_body)
-            template_url = key.generate_url(900)  # 15 minute URL, more than enough time, right?
 
-            params = self.generate_param_list(parsed)
+            params = []
+            if 'Parameters' in parsed.keys():
+                params = self.generate_param_list(parsed)
             return dict(
                 results=dict(
-                    template_url=template_url,
                     template_key=template_name,
                     parameters=params
                 )
             )
+
+    def get_create_template_bucket(self):
+        s3_conn = self.get_connection(conn_type="s3")
+        account_id = User.get_account_id(ec2_conn=self.get_connection(), request=self.request)
+        region = self.request.session.get('region')
+        return s3_conn.create_bucket("cf-template-{acct}-{region}".format(acct=account_id, region=region))
+
+    @staticmethod
+    def get_s3_template_url(key):
+        template_url = key.generate_url(1)
+        return template_url[:template_url.find('?')]
 
     def generate_param_list(self, parsed):
         """
@@ -569,10 +600,11 @@ class StackWizardView(BaseView):
             (template_url, template_name, parsed) = self.parse_store_template()
             capabilities = ['CAPABILITY_IAM']
             params = []
-            for name in parsed['Parameters']:
-                val = self.request.params.get(name)
-                if val:
-                    params.append((name, val))
+            if 'Parameters' in parsed.keys():
+                for name in parsed['Parameters']:
+                    val = self.request.params.get(name)
+                    if val:
+                        params.append((name, val))
             tags_json = self.request.params.get('tags')
             tags = None
             if tags_json:
@@ -595,12 +627,14 @@ class StackWizardView(BaseView):
         return self.render_dict
 
     def parse_store_template(self):
-        s3_template_url = self.request.params.get('s3-template-url')
-        if s3_template_url:
+        s3_template_key = self.request.params.get('s3-template-key')
+        if s3_template_key:
             # pull previously uploaded...
-            template_url = s3_template_url
-            template_body = urllib2.urlopen(template_url).read()
-            template_name = self.request.params.get('s3-template-key')
+            bucket = self.get_create_template_bucket()
+            key = bucket.get_key(s3_template_key)
+            template_name = s3_template_key
+            template_body = key.get_contents_as_string()
+            template_url = self.get_s3_template_url(key)
         else:
             template_name = self.request.params.get('sample-template')
             template_url = self.request.params.get('template-url')
@@ -609,15 +643,24 @@ class StackWizardView(BaseView):
 
             if len(files) > 0 and len(str(files[0])) > 0:  # read from file
                 files[0].file.seek(0, 2)  # seek to end
-                if files[0].file.tell() > 460800:
+                if files[0].file.tell() > TEMPLATE_BODY_LIMIT:
                     raise JSONError(status=400, message=_(u'File too large: ') + files[0].filename)
                 files[0].file.seek(0, 0)  # seek to start
                 template_body = files[0].file.read()
                 template_name = files[0].name
             elif template_url:  # read from url
-                template_body = urllib2.urlopen(template_url).read()
+                idx = template_url.find('://')
+                if idx == -1:
+                    raise JSONError(status=400, message=_(u'Invalid URL: ') + template_url)
+                protocol = template_url[:idx]
+                if protocol not in URL_PROTOCOL_WHITELIST:
+                    raise JSONError(status=400, message=_(u'URL protocol not allowed: ') + protocol)
+                try:
+                    template_body = urllib2.urlopen(template_url).read(TEMPLATE_BODY_LIMIT)
+                except URLError:
+                    raise JSONError(status=400, message=_(u'Cannot read from url provided.'))
                 template_name = template_url[template_url.rindex('/') + 1:]
-                if len(template_body) > 460800:
+                if len(template_body) > TEMPLATE_BODY_LIMIT:
                     raise JSONError(status=400, message=_(u'Template too large: ') + template_name)
             else:
                 s3_bucket = self.get_template_samples_bucket()
@@ -633,15 +676,12 @@ class StackWizardView(BaseView):
                             template_body = fd.read()
 
             # now that we have it, store in S3
-            s3_conn = self.get_connection(conn_type="s3")
-            account_id = User.get_account_id(ec2_conn=self.get_connection(), request=self.request)
-            region = self.request.session.get('region')
-            bucket = s3_conn.create_bucket("cf-template-{acct}-{region}".format(acct=account_id, region=region))
+            bucket = self.get_create_template_bucket()
             key = bucket.get_key(template_name)
             if key is None:
                 key = bucket.new_key(template_name)
             key.set_contents_from_string(template_body)
-            template_url = key.generate_url(900)  # 15 minute URL, more than enough time, right?
+            template_url = self.get_s3_template_url(key)
 
         parsed = json.loads(template_body)
         return template_url, template_name, parsed
@@ -725,7 +765,7 @@ class StackWizardView(BaseView):
             for props in unsupported_properties:
                 if resource['Type'].find(props['resource']) == 0:
                     for prop in props['properties']:
-                        if prop in resource['Properties'].keys():
+                        if 'Properties' in resource and prop in resource['Properties'].keys():
                             ret.append({
                                 'name': prop,
                                 'type': props['resource'],
@@ -733,12 +773,19 @@ class StackWizardView(BaseView):
                             })
 
         # third pass, find refs to cloud-specific resources
-        def find_image_ref(name, item):
-            if name == 'Parameters':
+        def find_image_ref(_name, item):
+            if _name == 'Parameters':
                 return  # ignore refs already in params
             if type(item) is dict and 'ImageId' in item.keys():
                 img_item = item['ImageId']
                 if 'Ref' not in img_item.keys():
+                    # check for emi lookup in map
+                    if 'Fn::FindInMap' in img_item.keys():
+                        map_name = img_item['Fn::FindInMap'][0]
+                        if parsed['Mappings'] and parsed['Mappings'][map_name]:
+                            img_map = parsed['Mappings'][map_name]
+                            if json.dumps(img_map).find('emi-') > -1:
+                                return
                     ret.append({
                         'name': 'ImageId',
                         'type': 'Parameter',
