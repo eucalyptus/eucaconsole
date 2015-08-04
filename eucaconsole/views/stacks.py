@@ -56,6 +56,7 @@ URL_PROTOCOL_WHITELIST = [
 
 TEMPLATE_BODY_LIMIT = 460800
 
+
 class StacksView(LandingPageView):
     def __init__(self, request):
         super(StacksView, self).__init__(request)
@@ -461,17 +462,26 @@ class StackWizardView(BaseView):
         s3_conn = self.get_connection(conn_type="s3")
         account_id = User.get_account_id(ec2_conn=self.get_connection(), request=self.request)
         region = self.request.session.get('region')
-        d = hashlib.md5()
-        d.update(account_id)
-        md5 = d.digest()
-        acct_hash=base64.urlsafe_b64encode(md5)
-        acct_hash=acct_hash[:acct_hash.find('=')]
-        bucket = s3_conn.create_bucket("cf-template-{acct_hash}-{region}".format(
-            acct_hash=acct_hash.lower(),
-            region=region
+        for suffix in ['', 'a', 'b', 'c']:
+            d = hashlib.md5()
+            d.update(account_id)
+            d.update(suffix)
+            md5 = d.digest()
+            acct_hash = base64.b64encode(md5, '--')
+            acct_hash = acct_hash[:acct_hash.find('=')]
+            try:
+                bucket = s3_conn.create_bucket("cf-template-{acct_hash}-{region}".format(
+                    acct_hash=acct_hash.lower(),
+                    region=region
+                ))
+                return bucket
+            except BotoServerError as err:
+                if err.code != 'BucketAlreadyExists':
+                    raise err
+        raise JSONError(status=500, message=_(
+            u'Cannot create S3 bucket to store your cloud formation template. '
+            u'Contact your cloud admin for assistance.'
         ))
-        acl = bucket.get_acl()
-        return bucket
 
     def get_s3_template_url(self, key):
         template_url = key.generate_url(1)
@@ -617,9 +627,15 @@ class StackWizardView(BaseView):
                     stack_name, template_url=template_url, capabilities=capabilities,
                     parameters=params, tags=tags
                 )
-                stack_id = result[result.rfind('/'):]
-                # TODO: rename template in bucket
-                print "Stack id = " +stack_id
+                stack_id = result[result.rfind('/') + 1:]
+                bucket = self.get_create_template_bucket()
+                bucket.copy_key(
+                    new_key_name="{0}-{1}".format(stack_id, template_name),
+                    src_key_name=template_name,
+                    src_bucket_name=bucket.name
+                )
+                bucket.delete_key(template_name)
+
                 msg = _(u'Successfully sent create stack request. '
                         u'It may take a moment to create the stack.')
                 queue = Notification.SUCCESS
@@ -653,7 +669,7 @@ class StackWizardView(BaseView):
                 template_body = files[0].file.read()
                 template_name = files[0].name
             elif template_url:  # read from url
-                idx =  template_url.find('://')
+                idx = template_url.find('://')
                 if idx == -1:
                     raise JSONError(status=400, message=_(u'Invalid URL: ') + template_url)
                 protocol = template_url[:idx]
