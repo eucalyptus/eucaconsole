@@ -77,9 +77,10 @@ class CreateLaunchConfigForm(BaseSecureForm):
     monitoring_enabled = wtforms.BooleanField(label=_(u'Enable monitoring'))
     create_sg_from_lc = wtforms.BooleanField(label=_(u'Create scaling group using this launch configuration'))
 
-    def __init__(self, request, image=None, securitygroups=None, conn=None, iam_conn=None, **kwargs):
+    def __init__(self, request, image=None, securitygroups=None, keyname=None, conn=None, iam_conn=None, **kwargs):
         super(CreateLaunchConfigForm, self).__init__(request, **kwargs)
         self.image = image
+        self.keyname = keyname
         self.securitygroups = securitygroups
         self.conn = conn
         self.iam_conn = iam_conn
@@ -94,6 +95,8 @@ class CreateLaunchConfigForm(BaseSecureForm):
 
         if image is not None:
             self.image_id.data = self.image.id
+        if self.keyname is not None:
+            self.keypair.data = self.keyname
 
     def set_monitoring_enabled_field(self):
         if self.cloud_type == 'euca':
@@ -114,7 +117,10 @@ class CreateLaunchConfigForm(BaseSecureForm):
 
     def set_choices(self):
         self.instance_type.choices = self.choices_manager.instance_types(cloud_type=self.cloud_type)
-        self.keypair.choices = self.choices_manager.keypairs(add_blank=True, no_keypair_option=True)
+        empty_key_opt = True
+        if self.keyname is not None:
+            empty_key_opt = False
+        self.keypair.choices = self.choices_manager.keypairs(add_blank=empty_key_opt, no_keypair_option=True)
         self.securitygroup.choices = self.choices_manager.security_groups(
             securitygroups=self.securitygroups, use_id=True, add_blank=False)
         self.role.choices = ChoicesManager(self.iam_conn).roles(add_blank=True)
