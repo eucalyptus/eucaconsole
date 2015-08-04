@@ -479,8 +479,8 @@ class StackWizardView(BaseView):
                 if err.code != 'BucketAlreadyExists':
                     raise err
         raise JSONError(status=500, message=_(
-            u'Cannot create S3 bucket to store your cloud formation template. '
-            u'Contact your cloud admin for assistance.'
+            u'Cannot create S3 bucket to store your Cloudformation template due to namespace collision. '
+            u'Please contact your cloud administrator.'
         ))
 
     def get_s3_template_url(self, key):
