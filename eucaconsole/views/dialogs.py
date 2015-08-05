@@ -296,6 +296,13 @@ def bucket_dialogs(context, request, bucket=None, landingpage=False, versioning_
     )
 
 
+@panel_config('bucket_item_shared_url_dialog', renderer='../templates/dialogs/bucket_item_shared_url_dialog.pt')
+def bucket_item_shared_url_dialog(context, request, shared_url_form=None):
+    return dict(
+        shared_url_form=shared_url_form
+    )
+
+
 @panel_config('bucket_item_dialogs', renderer='../templates/dialogs/bucket_item_dialogs.pt')
 def bucket_item_dialogs(context, request):
     return dict()

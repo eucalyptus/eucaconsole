@@ -85,6 +85,25 @@ class BucketUploadForm(BaseSecureForm):
     pass
 
 
+class BucketItemSharedURLForm(BaseSecureForm):
+    """Form for generating a pre-signed shared URL with an expiration timestamp"""
+    expiration = wtforms.SelectField(label=_(u'URL expires in'))
+
+    def __init__(self, request, **kwargs):
+        super(BucketItemSharedURLForm, self).__init__(request, **kwargs)
+        self.expiration.choices = self.get_expiration_choices()
+
+    @staticmethod
+    def get_expiration_choices():
+        hour = 3600
+        return [
+            (300, _('5 minutes')),
+            (hour, _('1 hour')),
+            (hour * 24, _('1 day')),
+            (hour * 24 * 7, _('1 week')),
+        ]
+
+
 class SharingPanelForm(BaseSecureForm):
     """S3 Sharing Panel form for buckets/objects"""
     share_account_error_msg = _(

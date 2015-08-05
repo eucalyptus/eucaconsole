@@ -1,0 +1,15 @@
+<!--! Modal dialog for generating a pre-signed URL with a configurable expiration timestamp -->
+<div tal:omit-tag="" i18n:domain="eucaconsole">
+    <div id="shared-url-modal" class="reveal-modal small" data-reveal="">
+        <div>&nbsp;</div>
+        <form id="shared-url-form" method="post">
+            ${structure:shared_url_form['csrf_token']}
+            ${panel('form_field', field=shared_url_form.expiration, stack_label=True)}
+            <div class="columns">
+                <a i18n:translate="">Show shareable link</a><br />
+                <textarea name="shared_link" id="shared-link-textarea"></textarea>
+            </div>
+        </form>
+        <a href="#" id="shared_url_dialog_close_link" class="close-reveal-modal">&#215;</a>
+    </div>
+</div>

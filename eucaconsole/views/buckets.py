@@ -46,8 +46,8 @@ from pyramid.view import view_config
 
 from ..forms.buckets import (
     BucketDetailsForm, BucketItemDetailsForm, SharingPanelForm, BucketUpdateVersioningForm,
-    MetadataForm, CreateBucketForm, CreateFolderForm, BucketDeleteForm, BucketUploadForm
-)
+    MetadataForm, CreateBucketForm, CreateFolderForm, BucketDeleteForm, BucketUploadForm,
+    BucketItemSharedURLForm)
 from ..i18n import _
 from ..models import Notification
 from ..views import BaseView, LandingPageView, JSONResponse
@@ -854,11 +854,13 @@ class BucketItemDetailsView(BaseView, BucketMixin):
             formdata=self.request.params or None)
         self.versioning_form = BucketUpdateVersioningForm(request, formdata=self.request.params or None)
         self.metadata_form = MetadataForm(request, formdata=self.request.params or None)
+        self.shared_url_form = BucketItemSharedURLForm(request, formdata=self.request.params or None)
         self.render_dict = dict(
             sharing_form=self.sharing_form,
             details_form=self.details_form,
             versioning_form=self.versioning_form,
             metadata_form=self.metadata_form,
+            shared_url_form=self.shared_url_form,
             bucket=self.bucket,
             bucket_name=self.bucket.name,
             bucket_item=self.bucket_item,
