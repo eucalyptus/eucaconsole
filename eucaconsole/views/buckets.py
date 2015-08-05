@@ -865,7 +865,7 @@ class BucketItemDetailsView(BaseView, BucketMixin):
             last_modified=self.get_last_modified_time(self.bucket_item),
             key_name=self.bucket_item.name,
             item_name=unprefixed_name,
-            item_link=self.bucket_item.generate_url(expires_in=BUCKET_ITEM_URL_EXPIRES),
+            item_link=self.get_unsigned_url(),
             item_download_url=BucketContentsView.get_item_download_url(self.bucket_item),
             cancel_link_url=self.get_cancel_link_url(),
         )
@@ -920,6 +920,11 @@ class BucketItemDetailsView(BaseView, BucketMixin):
         if item is None:  # Folder requires the trailing slash, which request.subpath omits
             item = self.bucket.get_key(u'{0}/'.format(item_key_name))
         return item
+
+    def get_unsigned_url(self):
+        """Returns unsigned URL for object with query string removed"""
+        item_url = self.bucket_item.generate_url(expires_in=0, query_auth=False)
+        return item_url.split('?')[0]
 
     def update_metadata(self):
         """Update metadata and remove deleted metadata"""
