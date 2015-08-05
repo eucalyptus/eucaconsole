@@ -8,3 +8,5 @@
 .fa-lock, .fa-unlock { margin-right: 3px; color: #007dba; }
 
 .fa-lock { color: #5a5a5a; }
+
+#shared-url-modal textarea { height: 8rem; }

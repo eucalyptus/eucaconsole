@@ -880,6 +880,8 @@ class BucketItemDetailsView(BaseView, BucketMixin):
                 'bucket_contents', name=self.bucket_name, subpath=self.request.subpath[:-1]),
             'make_object_public_url': self.request.route_path(
                 'bucket_item_make_public', name=self.bucket_name, subpath='_subpath_'),
+            'bucket_item_generate_url_endpoint': self.request.route_path(
+                'bucket_item_generate_url', name=self.bucket_name, subpath=self.request.subpath),
             'bucket_item_key': self.bucket_item_name,
             'unprefixed_key': BucketContentsView.get_unprefixed_key_name(self.bucket_item.name)
         }))
@@ -915,6 +917,14 @@ class BucketItemDetailsView(BaseView, BucketMixin):
         else:
             self.request.error_messages = self.details_form.get_errors_list()
         return self.render_dict
+
+    @view_config(route_name='bucket_item_generate_url', renderer='json', request_method='POST')
+    def bucket_item_generate_url(self):
+        item = self.get_bucket_item()
+        expiration = int(self.request.params.get('expiration', 3600))
+        return dict(
+            shared_link=item.generate_url(expires_in=expiration)
+        )
 
     def get_bucket_item(self):
         subpath = self.request.subpath
@@ -1115,3 +1125,4 @@ class CreateBucketView(BaseView):
 
     def get_existing_bucket_names(self):
         return [bucket.name for bucket in self.s3_conn.get_all_buckets()]
+

@@ -4,10 +4,13 @@
         <div>&nbsp;</div>
         <form id="shared-url-form" method="post">
             ${structure:shared_url_form['csrf_token']}
-            ${panel('form_field', field=shared_url_form.expiration, stack_label=True)}
+            ${panel('form_field', field=shared_url_form.expiration, stack_label=True, ng_attrs=dict(model='expiration'))}
             <div class="columns">
-                <a i18n:translate="">Show shareable link</a><br />
-                <textarea name="shared_link" id="shared-link-textarea"></textarea>
+                <div>
+                    <a i18n:translate="" ng-click="generateSharedLink()">Show shareable link</a>
+                    <span class="busy" ng-show="sharedLinkGenerating"></span>
+                </div>
+                <textarea name="shared_link" id="shared-link-textarea" ng-model="sharedLink"></textarea>
             </div>
         </form>
         <a href="#" id="shared_url_dialog_close_link" class="close-reveal-modal">&#215;</a>

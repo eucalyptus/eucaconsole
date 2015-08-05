@@ -15,3 +15,9 @@
 .fa-lock {
     color: $hp-gray-65;
 }
+
+#shared-url-modal {
+    textarea {
+        height: 8rem;
+    }
+}
