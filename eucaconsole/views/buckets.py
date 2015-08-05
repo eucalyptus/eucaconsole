@@ -866,6 +866,7 @@ class BucketItemDetailsView(BaseView, BucketMixin):
             key_name=self.bucket_item.name,
             item_name=unprefixed_name,
             item_link=self.get_unsigned_url(),
+            item_is_public=self.get_public_status(grants=self.bucket_item_acl.acl.grants),
             item_download_url=BucketContentsView.get_item_download_url(self.bucket_item),
             cancel_link_url=self.get_cancel_link_url(),
         )
@@ -925,6 +926,22 @@ class BucketItemDetailsView(BaseView, BucketMixin):
         """Returns unsigned URL for object with query string removed"""
         item_url = self.bucket_item.generate_url(expires_in=0, query_auth=False)
         return item_url.split('?')[0]
+
+    @staticmethod
+    def get_public_status(grants=None):
+        """Determine whether an object is public based on its ACL grants
+        :type grants: list
+        :param grants: List of boto.s3.acl.Grant objects
+        :returns: True if object is public, else False
+        :rtype: bool
+
+        """
+        all_users_uri = 'http://acs.amazonaws.com/groups/global/AllUsers'
+        grants = grants or []
+        for grant in grants:
+            if grant.uri and grant.uri == all_users_uri:
+                return True
+        return False
 
     def update_metadata(self):
         """Update metadata and remove deleted metadata"""
