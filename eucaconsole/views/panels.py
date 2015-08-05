@@ -382,13 +382,13 @@ def s3_sharing_panel(context, request, bucket_object=None, sharing_form=None, sh
                 uri=grant.uri,
             ))
     grantee_choices = [
-        ('http://acs.amazonaws.com/groups/global/AllUsers', _(u'all users')),
-        ('http://acs.amazonaws.com/groups/global/AuthenticatedUsers', _(u'authenticated users')),
+        ('http://acs.amazonaws.com/groups/global/AllUsers', _(u'Anyone with the URL')),
+        ('http://acs.amazonaws.com/groups/global/AuthenticatedUsers', _(u'Authenticated users')),
     ]
     if isinstance(bucket_object, Key):
         bucket_owner_id = bucket_object.bucket.get_acl().owner.id
         grantee_choices.append(
-            (bucket_owner_id, _('bucket owner'))
+            (bucket_owner_id, _('Bucket owner'))
         )
     controller_options_json = BaseView.escape_json(json.dumps({
         'grants': grants_list,
