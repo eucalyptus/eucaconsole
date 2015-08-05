@@ -51,7 +51,7 @@ class ManageCredentialsView(BaseView, PermissionCheckMixin):
     def __init__(self, request):
         super(ManageCredentialsView, self).__init__(request)
         self.changepassword_form = EucaChangePasswordForm(self.request)
-        referrer = urlparse(self.request.url).path
+        referrer = urlparse(self.request.headers['REFERER']).path
         referrer_root = referrer.split('?')[0]
         changepassword_url = self.request.route_path('changepassword')
         if referrer_root in [changepassword_url]:
@@ -88,14 +88,19 @@ class ManageCredentialsView(BaseView, PermissionCheckMixin):
         """Handle login form post"""
         session = self.request.session
         duration = self.request.registry.settings.get('session.cookie_expires')
-        account = "huh?"
-        username = "what?"
+        account = self.request.params.get('account')
+        username = self.request.params.get('username')
         auth = self.get_euca_authenticator()
         changepassword_form = EucaChangePasswordForm(self.request, formdata=self.request.params)
+        self.location = "{0}?{1}&{2}&{3}&{4}".format(
+            self.request.route_path('managecredentials'),
+            'expired=' + self.request.params.get('expired'),
+            'came_from=' + self.came_from,
+            'account=' + account,
+            'username=' + username,
+        )
 
         if changepassword_form.validate():
-            account = self.request.params.get('account')
-            username = self.request.params.get('username')
             password = self.request.params.get('current_password')
             new_password = self.request.params.get('new_password')
             new_password2 = self.request.params.get('new_password2')
@@ -118,6 +123,7 @@ class ManageCredentialsView(BaseView, PermissionCheckMixin):
                     session['username'] = username
                     session['region'] = 'euca'
                     session['username_label'] = user_account
+                    session['dns_enabled'] = auth.dns_enabled  # this *must* be prior to line below
                     self.check_iam_perms(session, creds);
                     headers = remember(self.request, user_account)
                     msg = _(u'Successfully changed password.')
@@ -127,17 +133,12 @@ class ManageCredentialsView(BaseView, PermissionCheckMixin):
                     # the logging here and below is really very useful when debugging login problems.
                     logging.info("http error "+str(vars(err)))
                     if err.msg == u'Unauthorized':
-                        self.changepassword_form_errors.append(u'Invalid user/account name and/or password.')
+                        msg = _(u'Invalid user/account name and/or password.')
+                        self.request.session.flash(msg, queue=Notification.ERROR)
                 except URLError, err:
                     logging.info("url error "+str(vars(err)))
                     if str(err.reason) == 'timed out':
                         host = self._get_ufs_host_setting_()
-                        self.changepassword_form_errors.append(u'No response from host ' + host)
-        return dict(
-            changepassword_form=changepassword_form,
-            changepassword_form_errors=self.changepassword_form_errors,
-            password_expired=True if self.request.params.get('expired') == 'true' else False,
-            came_from=self.came_from,
-            account=account,
-            username=username
-        )
+                        msg = _(u'No response from host ') + host
+                        self.request.session.flash(msg, queue=Notification.ERROR)
+        return HTTPFound(location=self.location)
