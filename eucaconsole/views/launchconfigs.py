@@ -551,10 +551,10 @@ class CreateMoreLaunchConfigView(BlockDeviceMappingItemView):
 
         self.create_form = CreateLaunchConfigForm(
             self.request, image=self.image, conn=self.conn, iam_conn=self.iam_conn,
+            keyname=launch_config.key_name,
             formdata=self.request.params or None)
         self.create_form.image_id.data = launch_config.image_id
         self.create_form.instance_type.data = launch_config.instance_type
-        self.create_form.keypair.data = launch_config.key_name
         self.create_form.securitygroup.data = launch_config.security_groups
         self.filters_form = ImagesFiltersForm(
             self.request, cloud_type=self.cloud_type, formdata=self.request.params or None)
