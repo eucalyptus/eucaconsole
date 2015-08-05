@@ -57,6 +57,33 @@ URL_PROTOCOL_WHITELIST = [
 TEMPLATE_BODY_LIMIT = 460800
 
 
+class StackMixin(object):
+    def get_create_template_bucket(self):
+        s3_conn = self.get_connection(conn_type="s3")
+        account_id = User.get_account_id(ec2_conn=self.get_connection(), request=self.request)
+        region = self.request.session.get('region')
+        for suffix in ['', 'a', 'b', 'c']:
+            d = hashlib.md5()
+            d.update(account_id)
+            d.update(suffix)
+            md5 = d.digest()
+            acct_hash = base64.b64encode(md5, '--')
+            acct_hash = acct_hash[:acct_hash.find('=')]
+            try:
+                bucket = s3_conn.create_bucket("cf-template-{acct_hash}-{region}".format(
+                    acct_hash=acct_hash.lower(),
+                    region=region
+                ))
+                return bucket
+            except BotoServerError as err:
+                if err.code != 'BucketAlreadyExists':
+                    raise err
+        raise JSONError(status=500, message=_(
+            u'Cannot create S3 bucket to store your Cloudformation template due to namespace collision. '
+            u'Please contact your cloud administrator.'
+        ))
+
+
 class StacksView(LandingPageView):
     def __init__(self, request):
         super(StacksView, self).__init__(request)
@@ -143,7 +170,7 @@ class StacksJsonView(LandingPageView):
         return self.cloudformation_conn.describe_stacks() if self.cloudformation_conn else []
 
 
-class StackView(BaseView):
+class StackView(BaseView, StackMixin):
     """Views for single stack"""
     TEMPLATE = '../templates/stacks/stack_view.pt'
 
@@ -184,6 +211,17 @@ class StackView(BaseView):
     def stack_view(self):
         if self.stack is None and self.request.matchdict.get('id') != 'new':
             raise HTTPNotFound
+        bucket = self.get_create_template_bucket()
+        stack_id = self.stack.stack_id[self.stack.stack_id.rfind('/') + 1:]
+        keys = list(bucket.list(prefix=stack_id))
+        if len(keys) > 0:
+            key = keys[0].key
+            name = key[key.rfind('-') + 1:]
+            self.render_dict['template_bucket'] = bucket.name
+            self.render_dict['template_key'] = key
+            self.render_dict['template_name'] = name
+        else:
+            self.render_dict['template_name'] = None
         return self.render_dict
 
     @view_config(route_name='stack_delete', request_method='POST', renderer=TEMPLATE)
@@ -339,7 +377,7 @@ class StackStateView(BaseView):
         return url
 
 
-class StackWizardView(BaseView):
+class StackWizardView(BaseView, StackMixin):
     """View for Create Stack wizard"""
     TEMPLATE = '../templates/stacks/stack_wizard.pt'
 
@@ -373,6 +411,8 @@ class StackWizardView(BaseView):
     @view_config(route_name='stack_new', renderer=TEMPLATE, request_method='GET')
     def stack_new(self):
         """Displays the Stack wizard"""
+        bucket = self.get_create_template_bucket()
+        self.render_dict['template_bucket'] = bucket.name
         return self.render_dict
 
     @view_config(route_name='stack_template_parse', renderer='json', request_method='POST')
@@ -466,31 +506,6 @@ class StackWizardView(BaseView):
                     parameters=params
                 )
             )
-
-    def get_create_template_bucket(self):
-        s3_conn = self.get_connection(conn_type="s3")
-        account_id = User.get_account_id(ec2_conn=self.get_connection(), request=self.request)
-        region = self.request.session.get('region')
-        for suffix in ['', 'a', 'b', 'c']:
-            d = hashlib.md5()
-            d.update(account_id)
-            d.update(suffix)
-            md5 = d.digest()
-            acct_hash = base64.b64encode(md5, '--')
-            acct_hash = acct_hash[:acct_hash.find('=')]
-            try:
-                bucket = s3_conn.create_bucket("cf-template-{acct_hash}-{region}".format(
-                    acct_hash=acct_hash.lower(),
-                    region=region
-                ))
-                return bucket
-            except BotoServerError as err:
-                if err.code != 'BucketAlreadyExists':
-                    raise err
-        raise JSONError(status=500, message=_(
-            u'Cannot create S3 bucket to store your Cloudformation template due to namespace collision. '
-            u'Please contact your cloud administrator.'
-        ))
 
     @staticmethod
     def get_s3_template_url(key):
