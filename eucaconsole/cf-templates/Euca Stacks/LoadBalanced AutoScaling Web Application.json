@@ -22,12 +22,6 @@
       "ConstraintDescription" : "must be the name of an existing EC2 KeyPair."
     },
       
-    "SSLCertArn" : {
-      "Description" : "The ARN of the uploaded SSL cert to use for the ELB",
-      "Type" : "String",
-      "ConstraintDescription" : "Must be the ARN of an SSL cert uploaded to IAM."
-    },
-
     "SSHLocation" : {
       "Description" : "The IP address range that can be used to SSH to the EC2 instances",
       "Type": "String",
@@ -92,11 +86,10 @@
         "AvailabilityZones" : { "Fn::GetAZs" : "" },
         "CrossZone" : "true",
         "Listeners" : [ {
-          "LoadBalancerPort" : "443",
+          "LoadBalancerPort" : "80",
           "InstancePort" : "8888",
-          "Protocol" : "HTTPS",
-          "InstanceProtocol" : "HTTP",
-          "SSLCertificateId" : { "Ref" : "SSLCertArn" }
+          "Protocol" : "HTTP",
+          "InstanceProtocol" : "HTTP"
         } ],
         "HealthCheck" : {
           "Target" : "HTTP:8888/",
@@ -132,7 +125,7 @@
   "Outputs" : {
     "URL" : {
       "Description" : "The URL of the Eucalpytus Console",
-      "Value" :  { "Fn::Join" : [ "", [ "https://", { "Fn::GetAtt" : [ "ConsoleELB", "DNSName" ]}]]}
+      "Value" :  { "Fn::Join" : [ "", [ "http://", { "Fn::GetAtt" : [ "ConsoleELB", "DNSName" ]}]]}
     }
   }
 }
