@@ -1,7 +1,7 @@
-from pages.viewpage import ViewPage
+from pages.landingpage import LandingPage
 
 
-class VolumeView(ViewPage):
+class VolumeLanding(LandingPage):
     def __init__(self, tester):
         self.tester = tester
         self.verify_volume_view_page_loaded()
@@ -20,10 +20,10 @@ class VolumeView(ViewPage):
     _search_input_field_css = ".search-input"
 
     def verify_volume_view_page_loaded(self):
-        self.tester.wait_for_text_present_by_id(ViewPage(self)._page_title_id, self._volume_view_page_title)
-        self.tester.wait_for_visible_by_id(ViewPage(self)._refresh_button_id)
+        self.tester.wait_for_text_present_by_id(LandingPage(self)._page_title_id, self._volume_view_page_title)
+        self.tester.wait_for_visible_by_id(LandingPage(self)._refresh_button_id)
 
-    def click_create_volume_btn_on_view_page(self):
+    def click_create_volume_btn_on_landing_page(self):
         self.tester.click_element_by_id(self._create_volume_button_id)
 
     def click_action_delete_volume_on_view_page(self, volume_id):
@@ -73,4 +73,4 @@ class VolumeView(ViewPage):
 
     def verify_there_are_no_available_volumes(self, timeout_in_seconds):
         self.tester.send_keys_by_css(self._search_input_field_css, "available")
-        self.tester.wait_for_text_present_by_css(ViewPage(self)._item_count_css, "0", timeout_in_seconds)
+        self.tester.wait_for_text_present_by_css(LandingPage(self)._item_count_css, "0", timeout_in_seconds)

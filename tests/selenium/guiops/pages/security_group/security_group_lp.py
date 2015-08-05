@@ -1,6 +1,6 @@
-from pages.viewpage import ViewPage
+from pages.landingpage import LandingPage
 
-class SecurityGroupView(ViewPage):
+class SecurityGroupLanding(LandingPage):
 
     _s_group_view_page_title = "Security groups"
     _create_s_group_btn_id = "create-securitygroup-btn"

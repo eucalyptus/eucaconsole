@@ -77,9 +77,10 @@ class CreateLaunchConfigForm(BaseSecureForm):
     monitoring_enabled = wtforms.BooleanField(label=_(u'Enable monitoring'))
     create_sg_from_lc = wtforms.BooleanField(label=_(u'Create scaling group using this launch configuration'))
 
-    def __init__(self, request, image=None, securitygroups=None, conn=None, iam_conn=None, **kwargs):
+    def __init__(self, request, image=None, securitygroups=None, keyname=None, conn=None, iam_conn=None, **kwargs):
         super(CreateLaunchConfigForm, self).__init__(request, **kwargs)
         self.image = image
+        self.keyname = keyname
         self.securitygroups = securitygroups
         self.conn = conn
         self.iam_conn = iam_conn
@@ -90,9 +91,25 @@ class CreateLaunchConfigForm(BaseSecureForm):
         self.choices_manager = ChoicesManager(conn=conn)
         self.set_help_text()
         self.set_choices()
+        self.set_monitoring_enabled_field()
 
         if image is not None:
             self.image_id.data = self.image.id
+        if self.keyname is not None:
+            self.keypair.data = self.keyname
+
+    def set_monitoring_enabled_field(self):
+        if self.cloud_type == 'euca':
+            self.monitoring_enabled.data = True
+            self.monitoring_enabled.help_text = _(u'Gather CloudWatch metric data for instances that use this launch configuration.')
+        elif self.cloud_type == 'aws':
+            self.monitoring_enabled.label.text = _(u'Enable detailed monitoring')
+            self.monitoring_enabled.help_text = _(
+                u'Gather all CloudWatch metric data at a higher frequency, '
+                u'and enable data aggregation by AMI and instance type. '
+                u'If left unchecked, data will still be gathered, but less often '
+                u'and without aggregation. '
+            )
 
     def set_help_text(self):
         self.associate_public_ip_address.help_text = self.associate_public_ip_address_helptext
@@ -100,7 +117,10 @@ class CreateLaunchConfigForm(BaseSecureForm):
 
     def set_choices(self):
         self.instance_type.choices = self.choices_manager.instance_types(cloud_type=self.cloud_type)
-        self.keypair.choices = self.choices_manager.keypairs(add_blank=True, no_keypair_option=True)
+        empty_key_opt = True
+        if self.keyname is not None:
+            empty_key_opt = False
+        self.keypair.choices = self.choices_manager.keypairs(add_blank=empty_key_opt, no_keypair_option=True)
         self.securitygroup.choices = self.choices_manager.security_groups(
             securitygroups=self.securitygroups, use_id=True, add_blank=False)
         self.role.choices = ChoicesManager(self.iam_conn).roles(add_blank=True)
@@ -112,12 +132,12 @@ class CreateLaunchConfigForm(BaseSecureForm):
         if len(self.securitygroup.choices) > 1:
             self.securitygroup.data = [value for value, label in self.securitygroup.choices]
 
-    def get_associate_public_ip_address_choices(self):
-        choices = [
+    @staticmethod
+    def get_associate_public_ip_address_choices():
+        return [
             ('None', _(u'Only for instances in default VPC & subnet')),
             ('true', _(u'For all instances')), ('false', _(u'Never'))
         ]
-        return choices
 
     def set_error_messages(self):
         self.name.error_msg = self.name_error_msg
@@ -153,19 +173,19 @@ class LaunchConfigsFiltersForm(BaseSecureForm):
             {'name': 'availability_zone', 'label': self.availability_zone.label.text,
                 'options': self.get_availability_zone_choices(region)},
             {'name': 'instance_type', 'label': self.instance_type.label.text,
-                'options': self.getOptionsFromChoices(self.instance_type.choices)},
+                'options': self.get_options_from_choices(self.instance_type.choices)},
             {'name': 'root_device_type', 'label': self.root_device_type.label.text,
                 'options': self.get_root_device_type_choices()},
             {'name': 'key_name', 'label': self.key_name.label.text,
-                'options': self.getOptionsFromChoices(self.key_name.choices)},
+                'options': self.get_options_from_choices(self.key_name.choices)},
             {'name': 'security_group', 'label': self.security_groups.label.text,
-                'options': self.getOptionsFromChoices(self.security_groups.choices)},
+                'options': self.get_options_from_choices(self.security_groups.choices)},
             {'name': 'scaling_group', 'label': self.scaling_group.label.text,
-                'options': self.getOptionsFromChoices(self.autoscale_choices_manager.scaling_groups(add_blank=False))},
+                'options': self.get_options_from_choices(self.autoscale_choices_manager.scaling_groups(add_blank=False))},
         ]
 
     def get_availability_zone_choices(self, region):
-        return self.getOptionsFromChoices(self.ec2_choices_manager.availability_zones(region, add_blank=False))
+        return self.get_options_from_choices(self.ec2_choices_manager.availability_zones(region, add_blank=False))
 
     @staticmethod
     def get_root_device_type_choices():

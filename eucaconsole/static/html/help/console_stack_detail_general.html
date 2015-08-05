@@ -21,19 +21,21 @@
         <div class="body taskbody"><p class="shortdesc">The General tab displays a variety of information about the stack. All the information in this window is non-editable.</p>
 
             <ul class="ul steps-unordered"><li class="li step">
-                    <span class="ph cmd">The <strong class="ph b">Stack</strong> section shows the name of the stack, the ID associated with the stack, when it was created and its current status.</span>
+                    <span class="ph cmd">The <strong class="ph b">Stack</strong> section shows the name of the stack, the ID associated with the stack, when it was created, its current status, 
+                        and a reason why it is in its current state.</span>
                 </li>
 <li class="li step">
                     <span class="ph cmd">The <strong class="ph b">Tags</strong> section shows up to 10 user-defined tags to associate with this stack, represented by key/value pairs. 
                         Tags defined for the stack are propagated to EC2 resources that are created as part of the stack.</span>
                 </li>
 <li class="li step">
-                    <span class="ph cmd">The <strong class="ph b">Outputs</strong> section displays the values declared in response to <em class="ph i">describe-stack</em> calls that can be easily read in a string form. 
-                        These values are those in the stack that are not otherwise displayed, like resource attributes.</span>
+                    <span class="ph cmd">The <strong class="ph b">Outputs</strong> section displays the resulting values, or outputs from
+                        the template.</span>
                 </li>
 <li class="li step">
                     <span class="ph cmd">The <strong class="ph b">Resources</strong> section lists the various resources used in the stack, such as auto scaling groups, security groups, 
-                    load balancers, launch configurations, and so on.</span>
+                    load balancers, launch configurations, and so on. Each resource is identified by its logical and phycial ID, its current status 
+                    and how it got there.</span>
                 </li>
 </ul>
 
@@ -101,18 +103,21 @@
 
                 <ul class="ul steps-unordered"><li class="li step stepexpand">
                         <span class="ph cmd">Use the Magic search bar to filter the events you want to view.</span>
-                        <div class="itemgroup info">Status and Physical ID are examples of event criteria that can be specified. Additionally, you 
+                        <div class="itemgroup info">Status is an event criteria that can be specified. Additionally, you
                         can filter by typing in text similar to searching by keywords.</div>
                     </li>
 <li class="li step stepexpand">
                         <span class="ph cmd">The <strong class="ph b">Timestamp</strong> column shows the date and time in which the event associated with the status occured.</span>
                     </li>
 <li class="li step stepexpand">
+                        <span class="ph cmd">The <strong class="ph b">Status</strong> column shows the current state of a particular resource applied to the stack. 
+                            For example, the action associated with establishing a load balancer for the stack is identified as its own event.</span>
+                    </li>
+<li class="li step stepexpand">
                         <span class="ph cmd">The <strong class="ph b">Status Reason</strong> column shows any reason for an exception of an event to occur on a particular action made on the stack.</span>
                     </li>
 <li class="li step stepexpand">
-                        <span class="ph cmd">The <strong class="ph b">Status</strong> column shows the current state of a particular resource applied to the stack. 
-                            For example, the action associated with establighing a load balancer for the stack is identified as its own event.</span>
+                        <span class="ph cmd">The <strong class="ph b">Type (Logical ID)</strong> column shows the type of resource created that triggered the event.</span>
                     </li>
 <li class="li step stepexpand">
                         <span class="ph cmd">The <strong class="ph b">Physical ID</strong> column provides an active link (if available) to the resource created that triggered the event.</span>

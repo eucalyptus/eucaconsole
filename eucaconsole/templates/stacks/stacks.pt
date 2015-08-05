@@ -4,7 +4,8 @@
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/stacks.css')}" />
 </head>
 
-<div metal:fill-slot="main_content" ng-app="StacksPage" ng-controller="StacksPageCtrl">
+<div metal:fill-slot="main_content" ng-app="StacksPage" ng-controller="StacksPageCtrl"
+    ng-init="initController('${delete_stack_url}')">
     <div class="row" id="contentwrap" ng-controller="ItemsCtrl"
          ng-init="initController('stacks', '${initial_sort_key}', '${json_items_endpoint}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
@@ -71,12 +72,6 @@
         ${panel('stack_dialogs', delete_form=delete_form, landingpage=True)}
     </div>
 </div>
-
-<metal:block metal:fill-slot="offcanvas_right">
-    <div id="help-content-div" class="help-content">
-        <div id="help-html-console_stacks" ng-include="'${layout.help_path('console_stacks.html')}'"></div> 
-    </div>
-</metal:block>
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>

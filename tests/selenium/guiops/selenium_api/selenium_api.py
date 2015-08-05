@@ -1,4 +1,5 @@
 from selenium import webdriver
+from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
 from selenium.common.exceptions import NoSuchElementException
@@ -43,7 +44,6 @@ class SeleniumApi(object):
         Closes firefox.
         """
         self.driver.quit()
-
 
     def get_url(self):
         """
@@ -315,7 +315,7 @@ class SeleniumApi(object):
     def click_element_by_id_robust(self, element_id):
         """
         Waits for an element to be present and visible such that you can click it.
-        Clicks the element, 3 times  checks if element is still visible, clicks element if visible.
+        Clicks the element, checks if element is still visible, clicks element if visible up to 3 times.
         :param element_id:
         """
         self.wait_for_visible_by_id(element_id)
@@ -338,6 +338,22 @@ class SeleniumApi(object):
                 print str(k) + "-th attempt to click unsuccessful."
             is_visible = self.check_visibility_by_id(element_id)
             k = k+1
+
+    def click_element_by_id_covert(self, element_id):
+        """
+        Waits for an element to be present but possibly not visible.
+        Clicks the element.
+        :param element_id:
+        """
+        self.wait_for_element_present_by_id(element_id)
+        print "Executing click_element_by_id_covert ('{0}')".format(element_id)
+        try:
+            self.driver.find_element_by_id(element_id).click()
+            print "Clicking on element by id = ('{0}')".format(element_id)
+        except Exception, e:
+            print "ERROR: Could not perform click_on_element_covert by id = ('{0}')".format(element_id)
+            self.close_browser()
+            raise
 
     def wait_for_element_not_present_by_id(self, element_id):
         """
@@ -617,3 +633,27 @@ class SeleniumApi(object):
         attribute = element.get_attribute(attribute_name)
         print attribute
         return attribute
+
+    def scroll_to_element_by_id(self, element_id):
+        """
+        Finds the element and scrolls to it.
+        :param element_id:
+        """
+        element = self.driver.find_element_by_id(element_id)
+        self.driver.execute_script('arguments[0].scrollIntoView(true);', element)
+
+    def scroll_to_element_by_css(self, css):
+        """
+        Finds the element and scrolls to it.
+        :param css:
+        """
+        element = self.driver.find_element_by_css_selector(css)
+        self.driver.execute_script('arguments[0].scrollIntoView(true);', element)
+
+    def scroll_to_element_by_xpath(self, xpath):
+        """
+        Finds the element and scrolls to it.
+        :param xpath:
+        """
+        element = self.driver.find_element_by_xpath(xpath)
+        self.driver.execute_script('arguments[0].scrollIntoView(true);', element)

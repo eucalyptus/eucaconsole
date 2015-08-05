@@ -112,7 +112,7 @@
 #sorting-controls #sorting-dropdown { text-align: left; }
 
 #results-count { padding-top: 0.25rem; text-align: right; }
-#results-count .items-found { vertical-align: center; }
+#results-count .items-found { vertical-align: baseline; }
 
 .euca-split { #border-color: #e6e7e8 !important; width: 2.0rem !important; }
 
@@ -147,4 +147,4 @@
 
 .connect-center { text-align: center; }
 
-#maincontent { padding-bottom: 8rem; }
+#maincontent { padding-bottom: 9.0rem; }

@@ -23,7 +23,6 @@
                 <form action="${request.route_path('stack_create')}" id="stack-wizard-form"
                       method="post" data-abide="abide" enctype="multipart/form-data" ng-submit="isCreating=true">
                     ${structure:create_form['csrf_token']}
-                    <input id="s3-template-url" name="s3-template-url" type="hidden" value="{{ s3TemplateUrl }}"/>
                     <input id="s3-template-key" name="s3-template-key" type="hidden" value="{{ s3TemplateKey }}"/>
                     <dl id="wizard-tabs" class="tabs" data-tab="">
                         <dd class="active">
@@ -31,7 +30,7 @@
                                 <span class="cir">1</span> <b i18n:translate="">General</b>
                             </a>
                         </dd>
-                        <dd ng-class="{disabled: step1Invalid}">
+                        <dd ng-class="{disabled: step1Invalid}" ng-show="isNotValid || loading || parameters.length &gt; 0">
                             <a id="tabStep2" ng-click="visitNextStep(2, $event)"
                                href="#step2" ng-cloak="" ng-if="!step1Invalid">
                                 <span class="cir">2</span> <b i18n:translate="">Parameters</b>
@@ -42,7 +41,7 @@
                     <div class="tabs-content">
                         <!--! Step 1: General tab content -->
                         <div class="content active" id="step1"
-                            tal:define="html_attrs_val {'pattern': '^[^\/\\\]{1,255}$', 'ng-model': 'stackName'};">
+                            tal:define="html_attrs_val {'pattern': '^[a-zA-Z][a-zA-Z0-9-]{0,254}$', 'ng-model': 'stackName'};">
                             <h6 i18n:translate="">General</h6>
                             <div class="row controls-wrapper">
                                 <div class="small-12 columns field">
@@ -72,18 +71,20 @@
                                         </select>
                                     </div>
                                     <br ng-hide="inputtype=='sample'"/>
-                                    <input type="radio" id="inputtype" name="inputtype" value="file" ng-model="inputtype"/>
-                                    <label>
-                                        <span i18n:translate="">Upload template</span>
-                                        <span tal:condition="getattr(create_form.template_file, 'help_text', None)" class="helptext-icon"
-                                            data-tooltip="" title="${create_form.template_file.help_text}"></span>
-                                    </label>
-                                    <input id="template-file" type="file" data-file="template-files" ng-disabled="isNotStopped" name="template-file" ng-show="inputtype=='file'"/>
-                                    <small id="size-error" class="error" i18n:translate="">You cannot upload templates larger than 460,800 bytes.</small>
-                                    <br/>
-                                    <input type="radio" id="inputtype" name="inputtype" value="url" ng-model="inputtype"/>
-                                    <label i18n:translate="">Use template from URL</label>
-                                    <input type="text" id="template-url" name="template-url" ng-model="templateUrl" ng-show="inputtype=='url'"/>
+                                    <div tal:omit-tag="" tal:condition="layout.file_uploads_enabled">
+                                        <input type="radio" id="inputtype" name="inputtype" value="file" ng-model="inputtype"/>
+                                        <label>
+                                            <span i18n:translate="">Upload template</span>
+                                            <span tal:condition="getattr(create_form.template_file, 'help_text', None)" class="helptext-icon"
+                                                data-tooltip="" title="${create_form.template_file.help_text}"></span>
+                                        </label>
+                                        <input id="template-file" type="file" data-file="template-files" ng-disabled="isNotStopped" name="template-file" ng-show="inputtype=='file'"/>
+                                        <small id="size-error" class="error" i18n:translate="">You cannot upload templates larger than 460,800 bytes.</small>
+                                        <br/>
+                                        <input type="radio" id="inputtype" name="inputtype" value="url" ng-model="inputtype"/>
+                                        <label i18n:translate="">Use template from URL</label>
+                                        <input type="text" id="template-url" name="template-url" ng-model="templateUrl" ng-show="inputtype=='url'"/>
+                                    </div>
                                 </div>
                             </div>
                             <hr/>
@@ -98,10 +99,13 @@
                             <div class="row">
                                 <div class="small-3 columns">&nbsp;</div>
                                 <div class="small-9 columns field inline">
-                                    <a id="visit-step-2" class="button small round" ng-click="visitNextStep(2, $event)" ng-disabled="isNotValid">
+                                    <button type="submit" class="button" id="stack-wizard-btn-step2" ng-disabled="isNotValid" ng-show="!isNotValid &amp;&amp; !loading &amp;&amp; parameters.length === 0">
+                                        <span i18n:translate="">Create Stack</span>
+                                    </button>
+                                    <a id="visit-step-2" class="button small round" ng-click="visitNextStep(2, $event)" ng-show="isNotValid || loading || parameters.length > 0" ng-disabled="isNotValid || !parameters">
                                         <span i18n:translate="">Next</span>
-                                        <a class="cancel-link" href="${request.route_path('stacks')}">Cancel</a>
                                     </a>
+                                    <a class="cancel-link" href="${request.route_path('stacks')}" i18n:translate="">Cancel</a>
                                 </div>
                             </div>
                         </div>
@@ -119,7 +123,7 @@
                                             <!-- all the tips get the same selector(class). Trying to use data-options -->
                                             <!-- helps, but that's broken https://github.com/zurb/foundation/issues/6349 -->
                                             <span data-options="selector: param-tip{{$index}};"
-                                                ng-attr-title="{{item.description}}">
+                                                data-tooltip="" ng-attr-title="{{item.description}}">
                                                 <i class="helptext-icon"></i>
                                             </span>
                                         </label>
@@ -134,16 +138,14 @@
                                             <select name="{{ item.name }}" id="{{ item.name }}" 
                                                 ng-if="item.chosen"
                                                 chosen="true" search-contains="true" width="100"
-                                                value="{{ item.default }}"
                                                 data-placeholder="Select an option"
                                                 i18n:attributes="data-placeholder"
                                                 ng-model="paramModels[item.name]" ng-change="checkRequiredInput()"
                                                 ng-options="option[1] for option in item.options track by option[0]">
-                                                <option ng-if="!item.default" value="" i18n:translate=""></option>
+                                                <option ng-if="!item.default" value=""></option>
                                             </select>
                                             <select name="{{ item.name }}" id="{{ item.name }}" 
                                                 ng-if="!item.chosen"
-                                                value="{{ item.default }}"
                                                 ng-model="paramModels[item.name]" ng-change="checkRequiredInput()"
                                                 ng-options="option[1] for option in item.options track by option[0]">
                                                 <option ng-if="!item.default" value="" i18n:translate="">Select an option</option>

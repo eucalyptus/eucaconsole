@@ -1,6 +1,6 @@
-from pages.viewpage import ViewPage
+from pages.landingpage import LandingPage
 
-class KeypairView(ViewPage):
+class KeypairLanding(LandingPage):
 
     def __init__(self, tester):
         self.tester = tester
@@ -18,8 +18,8 @@ class KeypairView(ViewPage):
         """
         Waits for page title to load; waits for refresh button to load; wait for 'Create New Key Pair' button to load.
         """
-        self.tester.wait_for_text_present_by_id(ViewPage._page_title_id, self._keypair_view_page_title)
-        self.tester.wait_for_visible_by_id(ViewPage._refresh_button_id)
+        self.tester.wait_for_text_present_by_id(LandingPage._page_title_id, self._keypair_view_page_title)
+        self.tester.wait_for_visible_by_id(LandingPage._refresh_button_id)
         self.tester.wait_for_visible_by_id(self._create_keypair_btn_id)
 
     def click_create_keypair_button_on_view_page(self):

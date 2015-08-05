@@ -71,6 +71,8 @@ class BaseSecureForm(SecureForm):
     def __init__(self, request, **kwargs):
         self.request = request
         super(BaseSecureForm, self).__init__(**kwargs)
+        if hasattr(request, 'session'):
+            self.cloud_type = request.session.get('cloud_type', 'euca')
 
     def generate_csrf_token(self, csrf_context):
         return self.request.session.get_csrf_token() if hasattr(self.request, 'session') else ''
@@ -85,7 +87,8 @@ class BaseSecureForm(SecureForm):
             error_messages.append(msg)
         return error_messages
 
-    def getOptionsFromChoices(self, choices):
+    @staticmethod
+    def get_options_from_choices(choices):
         if choices is None:
             return []
         return [{'key': choice[0], 'label':choice[1]} for choice in choices]
@@ -491,7 +494,9 @@ class CFSampleTemplateManager(object):
         euca_templates = []
         for dir_name, subdir_list, filelist in os.walk(self.template_dir):
             for file_item in filelist:
-                name = file_item[:file_item.index('.')]
+                name = file_item
+                if file_item.find('.') > -1:
+                    name = file_item[:file_item.find('.')]
                 euca_templates.append((name, file_item))
             if len(euca_templates) > 0:
                 templates.append((dir_name, dir_name[dir_name.rindex('/')+1:], euca_templates))

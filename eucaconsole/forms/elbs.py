@@ -234,7 +234,7 @@ class ELBsFiltersForm(BaseSecureForm):
             self.facets.append(dict(
                 name='subnet',
                 label=self.subnets.label.text,
-                options=self.getOptionsFromChoices(self.subnets.choices)
+                options=self.get_options_from_choices(self.subnets.choices)
             ))
         else:
             ec2_choices_manager = ChoicesManager(conn=ec2_conn)
@@ -242,7 +242,7 @@ class ELBsFiltersForm(BaseSecureForm):
             self.facets.append(dict(
                 name='availability_zone',
                 label=self.availability_zones.label.text,
-                options=self.getOptionsFromChoices(self.availability_zones.choices)
+                options=self.get_options_from_choices(self.availability_zones.choices)
             ))
 
 
@@ -423,7 +423,7 @@ class ELBInstancesFiltersForm(BaseSecureForm):
                 {'name': 'availability_zone', 'label': self.availability_zone.label.text,
                     'options': self.get_availability_zone_choices(self.region)},
                 {'name': 'subnet_id', 'label': self.subnet_id.label.text,
-                    'options': self.getOptionsFromChoices(self.vpc_choices_manager.vpc_subnets(add_blank=False))},
+                    'options': self.get_options_from_choices(self.vpc_choices_manager.vpc_subnets(add_blank=False))},
             ]
             vpc_choices = self.vpc_choices_manager.vpc_networks(add_blank=False)
             vpc_choices.append(('None', _(u'No VPC')))
@@ -434,7 +434,7 @@ class ELBInstancesFiltersForm(BaseSecureForm):
             if self.is_vpc_supported:
                 self.facets.append(
                     {'name': 'subnet_id', 'label': self.subnet_id.label.text,
-                        'options': self.getOptionsFromChoices(self.vpc_choices_manager.vpc_subnets(add_blank=False))},
+                        'options': self.get_options_from_choices(self.vpc_choices_manager.vpc_subnets(add_blank=False))},
                 )
             else:
                 self.facets.append(
@@ -443,7 +443,7 @@ class ELBInstancesFiltersForm(BaseSecureForm):
                 )
 
     def get_availability_zone_choices(self, region):
-        return self.getOptionsFromChoices(self.ec2_choices_manager.availability_zones(region, add_blank=False))
+        return self.get_options_from_choices(self.ec2_choices_manager.availability_zones(region, add_blank=False))
 
     @staticmethod
     def get_status_choices():

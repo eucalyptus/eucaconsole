@@ -290,7 +290,7 @@ $breadcrumb-border-color: darken($breadcrumb-background-color, 20%);
 
 @media screen and (min-width: $topbar-breakpoint) {
     #login-panel { margin-bottom: 5rem; }
-    #maincontent { min-height: 480px; }
+    #maincontent { min-height: 65rem; }
 }
 
 
@@ -437,9 +437,18 @@ textarea.policy-area {
     padding: 0.25rem;
 }
 
+.helptext-icon {
+    color: $euca-grey;
+    font-size: 1.2rem;
+}
+
 .expando {
     i {
         color: $hp-accessible-blue;
+        &.helptext-icon {
+            color: $euca-grey;
+            font-size: 1.2rem;
+        }
     }
     .title {
         font-size: 1.1rem;
@@ -1178,10 +1187,13 @@ div.left-nav {
 div.left-off-canvas-menu {
     z-index: 999999 !important;
     background-color: white;
-    border-style: solid;
-    border-width: 0 1px 0 0;
-    border-color: $hp-gray-20;
- }
+    border: 0 solid $hp-gray-20;
+    border-right-width: 1px;
+}
+
+.off-canvas-wrap {
+    min-height: 100%;
+}
 
 $expanded-nav-width: 225px;
 

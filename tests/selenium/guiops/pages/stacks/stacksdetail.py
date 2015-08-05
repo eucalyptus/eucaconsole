@@ -1,8 +1,14 @@
 from pages.detailpage import DetailPage
 
+
 class StackDetailPage(DetailPage):
 
     def __init__(self, tester, stack_name):
+        """
+        Initiates Stack Detail page object.
+        :param tester:
+        :param stack_name:
+        """
         self.stack_name = stack_name
         self.tester = tester
         self.verify_stack_detail_page_loaded()
@@ -18,6 +24,9 @@ class StackDetailPage(DetailPage):
         self.tester.wait_for_visible_by_css(DetailPage._actions_menu_css)
 
     def click_action_delete_stack_on_detail_page(self):
+        """
+        Clicks "Actions" button on Stacks Detail page. Clicks "Delete Stack" action.
+        """
         self.tester.click_element_by_css(DetailPage._actions_menu_css)
         self.tester.click_element_by_id(self._delete_stack_action_menuitem_id)
 
