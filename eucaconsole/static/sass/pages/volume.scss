@@ -30,12 +30,13 @@ select#zone { width: 50%; }
 
 
 // Volume status
-.status { background-color: transparent; text-transform: capitalize; }
+.status { background-color: $hp-gray-40; text-transform: capitalize; }
 .status.creating { background-color: $volume-status-color-creating; }
 .status.available { background-color: $volume-status-color-available; }
 .status.in-use { background-color: $volume-status-color-attached; }
 .status.deleting { background-color: $volume-status-color-deleting; }
 .status.deleted { background-color: $volume-status-color-deleted; }
+.status.failed { background-color: $volume-status-color-error; }
 
 // Volume attach_data status styles
 .status.attaching { background-color: $volume-status-color-attaching; }
