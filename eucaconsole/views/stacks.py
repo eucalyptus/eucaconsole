@@ -30,6 +30,7 @@ Pyramid views for Eucalyptus and AWS CloudFormation stacks
 """
 import simplejson as json
 import os
+import re
 import urllib2
 from urllib2 import HTTPError, URLError
 from boto.exception import BotoServerError
@@ -45,12 +46,6 @@ from ..models import Notification
 from ..models.auth import User
 from ..views import LandingPageView, BaseView, JSONResponse, JSONError
 from . import boto_error_handler
-
-URL_PROTOCOL_WHITELIST = [
-    'http',
-    'https',
-    'ftp'
-]
 
 TEMPLATE_BODY_LIMIT = 460800
 
@@ -649,12 +644,18 @@ class StackWizardView(BaseView):
                 template_body = files[0].file.read()
                 template_name = files[0].name
             elif template_url:  # read from url
-                idx = template_url.find('://')
-                if idx == -1:
-                    raise JSONError(status=400, message=_(u'Invalid URL: ') + template_url)
-                protocol = template_url[:idx]
-                if protocol not in URL_PROTOCOL_WHITELIST:
-                    raise JSONError(status=400, message=_(u'URL protocol not allowed: ') + protocol)
+                whitelist = self.request.registry.settings.get('cloudformation.url.whitelist')
+                match = False
+                for regex in whitelist.split(','):
+                    matches = re.search(regex, template_url)
+                    if matches:
+                        match = True
+                if not match:
+                    raise JSONError(
+                        status=400,
+                        message=_(u'URL ({0}) is invalid. Valid URL formats include http://example.com/template').
+                        format(template_url)
+                    )
                 try:
                     template_body = urllib2.urlopen(template_url).read(TEMPLATE_BODY_LIMIT)
                 except URLError:
