@@ -135,20 +135,32 @@ class LaunchInstanceForm(BaseSecureForm):
         self.iam_conn = iam_conn
         self.image = image
         self.securitygroups = securitygroups
-        self.cloud_type = request.session.get('cloud_type', 'euca')
         self.is_vpc_supported = BaseView.is_vpc_supported(request)
         self.set_error_messages()
-        self.monitoring_enabled.data = True
         self.choices_manager = ChoicesManager(conn=conn)
         self.vpc_choices_manager = ChoicesManager(conn=vpc_conn)
         self.set_help_text()
         self.set_choices(request)
+        self.set_monitoring_enabled_field()
         self.role.data = ''
 
         if image is not None:
             self.image_id.data = self.image.id
             self.kernel_id.data = image.kernel_id or ''
             self.ramdisk_id.data = image.ramdisk_id or ''
+
+    def set_monitoring_enabled_field(self):
+        if self.cloud_type == 'euca':
+            self.monitoring_enabled.data = True
+            self.monitoring_enabled.help_text = _(u'Gather CloudWatch metric data for this instance.')
+        elif self.cloud_type == 'aws':
+            self.monitoring_enabled.label.text = _(u'Enable detailed monitoring')
+            self.monitoring_enabled.help_text = _(
+                u'Gather all CloudWatch metric data at a higher frequency, '
+                u'and enable data aggregation by AMI and instance type. '
+                u'If left unchecked, data will still be gathered, but less often '
+                u'and without aggregation. '
+            )
 
     def set_help_text(self):
         self.number.help_text = self.number_helptext
@@ -197,9 +209,9 @@ class LaunchInstanceForm(BaseSecureForm):
         choices.extend(self.choices_manager.availability_zones(region, add_blank=False))
         return choices
 
-    def get_associate_public_ip_address_choices(self):
-        choices = [('None', _(u'Enabled (use subnet setting)')), ('true', _(u'Enabled')), ('false', _(u'Disabled'))]
-        return choices
+    @staticmethod
+    def get_associate_public_ip_address_choices():
+        return [('None', _(u'Enabled (use subnet setting)')), ('true', _(u'Enabled')), ('false', _(u'Disabled'))]
 
 
 class LaunchMoreInstancesForm(BaseSecureForm):
@@ -217,7 +229,7 @@ class LaunchMoreInstancesForm(BaseSecureForm):
     userdata_file = wtforms.FileField(label='')
     kernel_id = wtforms.SelectField(label=_(u'Kernel ID'))
     ramdisk_id = wtforms.SelectField(label=_(u'RAM disk ID (RAMFS)'))
-    monitoring_enabled = wtforms.BooleanField(label=_(u'Enable detailed monitoring'))
+    monitoring_enabled = wtforms.BooleanField(label=_(u'Enable monitoring'))
     private_addressing = wtforms.BooleanField(label=_(u'Use private addressing only'))
 
     def __init__(self, request, image=None, instance=None, conn=None, **kwargs):
@@ -230,6 +242,18 @@ class LaunchMoreInstancesForm(BaseSecureForm):
         self.set_help_text()
         self.set_choices()
         self.set_initial_data()
+        self.set_monitoring_enabled_field()
+
+    def set_monitoring_enabled_field(self):
+        if self.cloud_type == 'euca':
+            # Note: self.monitoring_enabled.data is set in set_initial_data() method
+            self.monitoring_enabled.help_text = _(u'Gather CloudWatch metric data for this instance.')
+        elif self.cloud_type == 'aws':
+            self.monitoring_enabled.label.text = _(u'Enabled detailed monitoring')
+            self.monitoring_enabled.help_text = _(
+                u'Gather all CloudWatch metric data at a higher frequency, '
+                u'and enable data aggregation by AMI and instance type.'
+            )
 
     def set_error_messages(self):
         self.number.error_msg = self.number_error_msg
@@ -391,32 +415,32 @@ class InstancesFiltersForm(BaseSecureForm):
             {'name': 'root_device_type', 'label': self.root_device_type.label.text,
                 'options': self.get_root_device_type_choices()},
             {'name': 'security_group', 'label': self.security_group.label.text,
-                'options': self.getOptionsFromChoices(self.ec2_choices_manager.security_groups(add_blank=False))},
+                'options': self.get_options_from_choices(self.ec2_choices_manager.security_groups(add_blank=False))},
             {'name': 'scaling_group', 'label': self.scaling_group.label.text,
-                'options': self.getOptionsFromChoices(self.autoscale_choices_manager.scaling_groups(add_blank=False))},
+                'options': self.get_options_from_choices(self.autoscale_choices_manager.scaling_groups(add_blank=False))},
         ]
         if cloud_type == 'euca':
             self.facets.append(
                 {'name': 'roles', 'label': self.roles.label.text,
-                    'options': self.getOptionsFromChoices(self.iam_choices_manager.roles(add_blank=False))},
+                    'options': self.get_options_from_choices(self.iam_choices_manager.roles(add_blank=False))},
             )
         if BaseView.is_vpc_supported(request):
             self.facets.append(
                 {'name': 'subnet_id', 'label': self.subnet_id.label.text,
-                    'options': self.getOptionsFromChoices(self.vpc_choices_manager.vpc_subnets(add_blank=False))}
+                    'options': self.get_options_from_choices(self.vpc_choices_manager.vpc_subnets(add_blank=False))}
             )
             vpc_choices = self.vpc_choices_manager.vpc_networks(add_blank=False)
             vpc_choices.append(('None', _(u'No VPC')))
             self.facets.append(
                 {'name': 'vpc_id', 'label': self.vpc_id.label.text,
-                    'options': self.getOptionsFromChoices(vpc_choices)},
+                    'options': self.get_options_from_choices(vpc_choices)},
             )
 
     def get_availability_zone_choices(self, region):
-        return self.getOptionsFromChoices(self.ec2_choices_manager.availability_zones(region, add_blank=False))
+        return self.get_options_from_choices(self.ec2_choices_manager.availability_zones(region, add_blank=False))
 
     def get_instance_type_choices(self):
-        return self.getOptionsFromChoices(self.ec2_choices_manager.instance_types(
+        return self.get_options_from_choices(self.ec2_choices_manager.instance_types(
             cloud_type=self.cloud_type, add_blank=False, add_description=False))
 
     @staticmethod

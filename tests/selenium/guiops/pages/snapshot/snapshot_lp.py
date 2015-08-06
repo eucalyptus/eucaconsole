@@ -1,7 +1,7 @@
-from pages.viewpage import ViewPage
+from pages.landingpage import LandingPage
 
 
-class SnapshotView(ViewPage):
+class SnapshotLanding(LandingPage):
     def __init__(self, tester):
         self.tester = tester
         self.verify_snapshot_view_page_loaded()
@@ -19,18 +19,18 @@ class SnapshotView(ViewPage):
     _search_input_field_css = ".search-input"
 
     def verify_snapshot_view_page_loaded(self):
-        self.tester.wait_for_text_present_by_id(ViewPage(self)._page_title_id, self._snapshot_view_page_title)
-        self.tester.wait_for_visible_by_id(ViewPage(self)._refresh_button_id)
+        self.tester.wait_for_text_present_by_id(LandingPage(self)._page_title_id, self._snapshot_view_page_title)
+        self.tester.wait_for_visible_by_id(LandingPage(self)._refresh_button_id)
 
     def click_create_snapshot_btn_on_view_page(self):
         self.tester.click_element_by_id(self._create_snapshot_button_id)
 
     def click_action_delete_snapshot_on_view_page(self, snapshot_id):
-        self.tester.click_element_by_id(ViewPage(self)._resource_action_menu_id.format(snapshot_id))
+        self.tester.click_element_by_id(LandingPage(self)._resource_action_menu_id.format(snapshot_id))
         self.tester.click_element_by_css(self._delete_snapshot_actions_menu_item_css.format(snapshot_id))
 
     def click_action_create_volume_from_snapshot(self, snapshot_id):
-        self.tester.click_element_by_id(ViewPage(self)._resource_action_menu_id.format(snapshot_id))
+        self.tester.click_element_by_id(LandingPage(self)._resource_action_menu_id.format(snapshot_id))
         self.tester.click_element_by_css(self._create_volume_from_snapshot_actions_menu_item_css)
 
     def get_id_of_newly_created_snapshot(self):
@@ -46,11 +46,11 @@ class SnapshotView(ViewPage):
         self.tester.click_element_by_css(self._snapshot_link_css.format(snapshot_id))
 
     def goto_snapshot_detail_page_via_actions(self, snapshot_id):
-        self.tester.click_element_by_id(ViewPage(self)._resource_action_menu_id.format(snapshot_id))
+        self.tester.click_element_by_id(LandingPage(self)._resource_action_menu_id.format(snapshot_id))
         self.tester.click_element_by_css(self._view_details_actions_menu_item_css.format(snapshot_id))
 
     def click_action_create_volume_from_snapshot(self, snapshot_id):
-        self.tester.click_element_by_id(ViewPage(self)._resource_action_menu_id.format(snapshot_id))
+        self.tester.click_element_by_id(LandingPage(self)._resource_action_menu_id.format(snapshot_id))
         self.tester.click_element_by_css(self._create_volume_from_snapshot_actions_menu_item_css.format(snapshot_id))
 
     def get_snapshot_name(self, snapshot_id):
@@ -62,12 +62,12 @@ class SnapshotView(ViewPage):
         return snapshot_name
 
     def click_action_register_as_image(self, snapshot_id):
-        self.tester.click_element_by_id(ViewPage(self)._resource_action_menu_id.format(snapshot_id))
+        self.tester.click_element_by_id(LandingPage(self)._resource_action_menu_id.format(snapshot_id))
         self.tester.click_element_by_css(self._register_as_image_actions_menu_item_css.format(snapshot_id))
 
     def verify_there_are_no_completed_snapshots(self):
-        self.tester.send_keys_by_css(ViewPage(self)._search_input_field_css, "completed")
-        self.tester.wait_for_text_present_by_css(ViewPage(self)._item_count_css,"0")
+        self.tester.send_keys_by_css(LandingPage(self)._search_input_field_css, "completed")
+        self.tester.wait_for_text_present_by_css(LandingPage(self)._item_count_css,"0")
 
     def verify_snapshot_not_present(self, snapshot_id):
         self.tester.wait_for_element_not_present_by_id(self._snapshot_action_menu_id.format(snapshot_id))

@@ -3,7 +3,7 @@ import time
 
 class BasePage(SeleniumApi):
 
-    _hamburger_css="#offcanvas-icon"
+    _hp_logo_id = "hp-logo"
     _user_dropdown_css = 'section#user-dropdown-section>a>span'
     _user_help_link='//ul[@id="user-dropdown"]/li/a'
     _user_logout_id="logout"
@@ -45,7 +45,7 @@ class BasePage(SeleniumApi):
 
     def goto_keypair_view_page_via_menu(self):
         self.tester.scroll_to_element_by_id(self._keypair_menuitem_id)
-        self.tester.click_element_by_id_robust(self._keypair_menuitem_id)
+        self.tester.click_element_by_id(self._keypair_menuitem_id)
 
     def goto_images_view_via_menu(self):
         self.tester.scroll_to_element_by_id(self._images_menuitem_id)

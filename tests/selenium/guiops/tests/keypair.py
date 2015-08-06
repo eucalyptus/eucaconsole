@@ -1,9 +1,10 @@
 from guitester.guiec2 import GuiEC2
+from guiops.guiops import GuiOps
 from option_parser import Option_parser
 import string, random, time
 
 
-class Keypair_operations_sequence(GuiEC2):
+class Keypair_operations_sequence(GuiOps):
 
     keypair = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDI1x6tEjkBQCCP0ssF69vAgP2xg+N9ScoTrqRqyl5w4qEgsV/AppfHHYRKYr0N/tTyG4/" \
                   "z1XGNrB2SaslnRpgEOsvMZldlOnqsUujL2fgoEg+/gB92+1JhZgTjU8nL5j5BFkVTh93nSHtXHdzYl7SjlXrv26ZbyuDwJmI+s6bJQk5noJ4Q4g" \
@@ -20,7 +21,12 @@ class Keypair_operations_sequence(GuiEC2):
         self.account = parser.parse_options()['account']
         self.user = parser.parse_options()['user_name']
         self.password = parser.parse_options()['password']
-        self.tester = GuiEC2(console_url=self.console_url, webdriver_url=self.webdriver_url)
+        self.sauce = parser.parse_options()['sauce']
+        self.browser = parser.parse_options()['browser']
+        self.version = parser.parse_options()['version']
+        self.platform = parser.parse_options()['platform']
+        self.tester = GuiOps(console_url=self.console_url, webdriver_url=self.webdriver_url, sauce=self.sauce, browser=self.browser, version=self.version, platform=self.platform)
+
 
     def keypair_ops_test(self):
 

@@ -45,7 +45,6 @@ class SeleniumApi(object):
         """
         self.driver.quit()
 
-
     def get_url(self):
         """
         Returns currentv url.

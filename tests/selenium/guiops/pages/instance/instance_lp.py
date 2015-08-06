@@ -1,7 +1,7 @@
-from pages.viewpage import ViewPage
+from pages.landingpage import LandingPage
 
 
-class InstanceView(ViewPage):
+class InstanceLanding(LandingPage):
     def __init__(self, tester):
         self.tester = tester
         self.verify_instance_view_page_loaded()
@@ -21,10 +21,10 @@ class InstanceView(ViewPage):
     _search_input_field_css = ".search-input"
 
     def verify_instance_view_page_loaded(self):
-        self.tester.wait_for_text_present_by_id(ViewPage(self)._page_title_id, self._instances_view_page_title)
-        self.tester.wait_for_visible_by_id(ViewPage(self)._refresh_button_id)
+        self.tester.wait_for_text_present_by_id(LandingPage(self)._page_title_id, self._instances_view_page_title)
+        self.tester.wait_for_visible_by_id(LandingPage(self)._refresh_button_id)
 
-    def click_action_launch_instance_on_view_page(self):
+    def click_action_launch_instance_on_landing_page(self):
         self.tester.click_element_by_id(self._launch_instance_button_id)
 
     def click_action_terminate_instance_on_view_page(self, instance_id):
@@ -67,7 +67,7 @@ class InstanceView(ViewPage):
 
     def verify_there_are_no_running_instances(self):
         self.tester.send_keys_by_css(self._search_input_field_css, "running")
-        self.tester.wait_for_text_present_by_css(ViewPage(self)._item_count_css,"0")
+        self.tester.wait_for_text_present_by_css(LandingPage(self)._item_count_css,"0")
 
 
 

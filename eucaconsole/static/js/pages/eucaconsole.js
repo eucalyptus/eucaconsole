@@ -66,7 +66,7 @@
                 }
                 else {
                     // landing page, so save to most recent
-                    if (Modernizr.localstorage && screen !== 'dashboard') {
+                    if (Modernizr.localstorage && ['dashboard', 'managecredentials'].indexOf(screen) === -1) {
                         for (i=0; i<recentNav.length; i++) {
                             if (recentNav[i] === screen) {
                                 recentNav.splice(i, 1);
