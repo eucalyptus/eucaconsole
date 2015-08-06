@@ -22,11 +22,11 @@
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
                 <a id="tile-item-dropdown_{{ item.id }}" class="tiny secondary button dropdown right" data-dropdown="item-dropdown_{{ item.id }}"><i class="grid-action"></i></a>
-                <ul id="item-dropdown_{{ item.id }}" class="f-dropdown" data-dropdown-content="">
-                    <li ng-show="item.status !== 'deleted'">
+                <ul id="item-dropdown_{{ item.id }}" class="f-dropdown" data-dropdown-content="" ng-show="item.status !== 'deleting'">
+                    <li ng-show="item.status !== 'deleting'">
                         <a i18n:translate="" ng-href="${prefix}/{{ item.id }}">View details</a>
                     </li>
-                    <li ng-show="['deleted', 'failed'].indexOf(item.status) === -1">
+                    <li ng-show="item.status !== 'deleting'">
                         <a ng-href="${prefix}/{{ item.id }}/snapshots" i18n:translate="">Manage snapshots</a>
                     </li>
                     <li ng-show="item.status === 'available'">
@@ -36,7 +36,7 @@
                         <a ng-click="detachModal(item, '${request.route_path('instance_json', id='_id_')}')"
                                id="detach-volume-action" i18n:translate="">Detach from instance</a>
                     </li>
-                    <li ng-show="item.status === 'available'">
+                    <li ng-show="item.status === 'available' || item.status === 'failed'">
                         <a i18n:translate="" ng-click="revealModal('delete', item)">Delete volume</a>
                     </li>
                 </ul>
@@ -50,7 +50,7 @@
                     <span class="label" title="Size" i18n:attributes="title" data-tooltip="">GB</span>
                     {{ item.size }} GB
                 </div>
-                <div ng-show="['deleted', 'deleting', 'failed'].indexOf(item.status) === -1">
+                <div ng-show="item.status !== 'deleting'">
                     <span class="label" title="Snapshots" i18n:attributes="title" data-tooltip="">SS</span>
                     <a ng-href="${prefix}/{{ item.id }}/snapshots">{{ item.snapshots }} snapshot<span ng-show="item.snapshots != 1">s</span></a>
                 </div>
@@ -90,9 +90,9 @@
                 <th class="actions" i18n:translate="">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
-                <td class="breakword">
-                    <span ng-show="item.status === 'deleted'">{{ item.name || item.id | ellipsis: 30 }}</span>
-                    <a ng-show="item.status !== 'deleted'" ng-href="${prefix}/{{ item.id }}">{{ item.name || item.id | ellipsis: 30 }}</a>
+                <td class="breakword" id="table-id-column-{{item.id}}">
+                    <span ng-show="item.status === 'deleting'">{{ item.name || item.id | ellipsis: 30 }}</span>
+                    <a ng-show="item.status !== 'deleting'" ng-href="${prefix}/{{ item.id }}">{{ item.name || item.id | ellipsis: 30 }}</a>
                 </td>
                 <td class="status">
                     <span class="label radius item status {{ item.attach_status || item.status }}">
@@ -107,7 +107,7 @@
                     </a>
                 </td>
                 <td class="count">
-                    <a ng-href="${prefix}/{{ item.id }}/snapshots" ng-show="['deleted', 'failed'].indexOf(item.status) === -1">
+                    <a ng-href="${prefix}/{{ item.id }}/snapshots" ng-show="item.status !== 'deleting'">
                         {{ item.snapshots }}
                     </a>
                 </td>
@@ -115,13 +115,13 @@
                 <td class="tags breakword">{{ item.tags | ellipsis: 60 }}</td>
                 <td>{{ item.create_time | date:'${layout.angular_date_format}' }}</td>
                 <td>
-                    <span class="actions" ng-show="item.status !== 'deleted'">
+                    <span class="actions" ng-show="item.status !== 'deleting'">
                         <a id="table-item-dropdown_{{ item.id }}" class="tiny secondary button dropdown right round" data-dropdown="item-dropdown_{{ item.id }}"><i class="grid-action"></i></a>
                         <ul id="item-dropdown_{{ item.id }}" class="f-dropdown" data-dropdown-content="">
-                            <li ng-show="item.status !== 'deleted'">
+                            <li ng-show="item.status !== 'deleting'">
                                 <a i18n:translate="" ng-href="${prefix}/{{ item.id }}">View details</a>
                             </li>
-                            <li ng-show="['deleted', 'deleting', 'failed'].indexOf(item.status) === -1">
+                            <li ng-show="item.status !== 'deleting'">
                                 <a ng-href="${prefix}/{{ item.id }}/snapshots" i18n:translate="">Manage snapshots</a>
                             </li>
                             <li ng-show="item.status === 'available'">
@@ -131,7 +131,7 @@
                                 <a ng-click="detachModal(item, '${request.route_path('instance_json', id='_id_')}')"
                                    id="detach-volume-action" i18n:translate="">Detach from instance</a>
                             </li>
-                            <li ng-show="item.status === 'available'">
+                            <li ng-show="item.status === 'available' || item.status === 'failed'">
                                 <a i18n:translate="" ng-click="revealModal('delete', item)">Delete volume</a>
                             </li>
                         </ul>

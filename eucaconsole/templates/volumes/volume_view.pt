@@ -36,8 +36,7 @@
                 <dd><a href="${request.route_path('volume_snapshots', id=volume.id)}" i18n:translate="">Snapshots</a></dd>
             </dl>
             <div class="panel ${'has-actions' if volume else ''}">
-                <metal:block metal:use-macro="layout.global_macros['actions_menu']"
-                             tal:condition="volume and volume.status not in ['failed', 'deleted', 'deleting']">
+                <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="volume">
                     <metal:actions metal:fill-slot="actions">
                         <li ng-show="volumeStatus == 'available'">
                             <a href="#" id="attach-volume-action" i18n:translate="">Attach to instance</a>
@@ -46,7 +45,7 @@
                             <a ng-click="detachModal('${device_name}', '${request.route_path('instance_json', id=instance_id)}')"
                                id="detach-volume-action" i18n:translate="">Detach from instance</a>
                         </li>
-                        <li ng-show="volumeStatus == 'available'">
+                        <li ng-show="volumeStatus === 'available' || volumeStatus === 'failed'">
                             <a id="delete-volume-action" i18n:translate="">
                                 Delete volume
                             </a>
