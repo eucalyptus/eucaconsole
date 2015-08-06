@@ -869,6 +869,7 @@ class BucketItemDetailsView(BaseView, BucketMixin):
             item_name=unprefixed_name,
             item_link=self.get_unsigned_url(),
             item_is_public=self.get_public_status(grants=self.bucket_item_acl.acl.grants),
+            item_open_url=self.bucket_item.generate_url(expires_in=BUCKET_ITEM_URL_EXPIRES),
             item_download_url=BucketContentsView.get_item_download_url(self.bucket_item),
             cancel_link_url=self.get_cancel_link_url(),
         )

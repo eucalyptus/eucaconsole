@@ -36,6 +36,9 @@
                 <metal:block metal:use-macro="layout.global_macros['actions_menu']">
                     <metal:actions metal:fill-slot="actions">
                         <li>
+                            <a href="${item_open_url}" id="open-action" target="_blank" i18n:translate="">Open</a>
+                        </li>
+                        <li>
                             <a href="${item_download_url}" id="download-action" i18n:translate="">Download</a>
                         </li>
                         <li>
