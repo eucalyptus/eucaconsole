@@ -692,7 +692,7 @@ class StackWizardView(BaseView, StackMixin):
                     raise JSONError(status=400, message=_(u'File too large: ') + files[0].filename)
                 files[0].file.seek(0, 0)  # seek to start
                 template_body = files[0].file.read()
-                template_name = files[0].name
+                template_name = files[0].filename
             elif template_url:  # read from url
                 idx = template_url.find('://')
                 if idx == -1:
