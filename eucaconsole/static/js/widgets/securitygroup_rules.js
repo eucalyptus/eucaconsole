@@ -259,6 +259,7 @@ angular.module('SecurityGroupRules', ['CustomFilters', 'EucaConsoleUtils'])
         $scope.checkRulesForDeletedSecurityGroups = function () {
             var invalidRulesArray = [];
             var invalidRulesEgressArray = [];
+            var internalRegexp = new RegExp("^euca-internal-\\d{12}-\\S*\\w{12}$");
             // Check the ingress rules
             angular.forEach($scope.rulesArray, function (rule) {
                 if (rule.grants[0].group_id !== null) {
@@ -268,6 +269,9 @@ angular.module('SecurityGroupRules', ['CustomFilters', 'EucaConsoleUtils'])
                             exists = true;
                         } 
                     });
+                    if (internalRegexp.test(rule.grants[0].name)) {
+                        exists = true;
+                    }
                     if (!exists) {
                         invalidRulesArray.push(rule); 
                     }
