@@ -30,7 +30,7 @@ Pyramid views for Eucalyptus and AWS CloudFormation stacks
 """
 import simplejson as json
 import os
-import re
+import fnmatch
 import urllib2
 from urllib2 import HTTPError, URLError
 from boto.exception import BotoServerError
@@ -646,8 +646,8 @@ class StackWizardView(BaseView):
             elif template_url:  # read from url
                 whitelist = self.request.registry.settings.get('cloudformation.url.whitelist')
                 match = False
-                for regex in whitelist.split(','):
-                    matches = re.search(regex, template_url)
+                for pattern in whitelist.split(','):
+                    matches = fnmatch.fnmatch(template_url, pattern)
                     if matches:
                         match = True
                 if not match:
