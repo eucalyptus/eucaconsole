@@ -647,14 +647,18 @@ class StackWizardView(BaseView):
                 whitelist = self.request.registry.settings.get('cloudformation.url.whitelist')
                 match = False
                 for pattern in whitelist.split(','):
-                    matches = fnmatch.fnmatch(template_url, pattern)
+                    matches = fnmatch.fnmatch(template_url, pattern.strip())
                     if matches:
                         match = True
                 if not match:
+                    msg = _(u'The URL is invalid. Valid URLs can only include ')
+                    last_comma_idx = whitelist.rfind(',')
+                    if last_comma_idx != -1:
+                        whitelist = whitelist[:last_comma_idx] + _(u' or') + whitelist[last_comma_idx + 1:]
+                    msg = msg + whitelist
                     raise JSONError(
                         status=400,
-                        message=_(u'URL ({0}) is invalid. Valid URL formats include http://example.com/template').
-                        format(template_url)
+                        message=msg
                     )
                 try:
                     template_body = urllib2.urlopen(template_url).read(TEMPLATE_BODY_LIMIT)
