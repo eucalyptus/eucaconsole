@@ -110,7 +110,7 @@ class SharingPanelForm(BaseSecureForm):
         u'Account ID may contain alpha-numeric characters and is a 12-digit account ID or the 64-digit canonical ID.')
     share_account_helptext = _(
         u"'Authenticated users' requires login credentials and is a more secure option "
-        u"than 'All users,' which grants access to anyone with the URL. You may also "
+        u"than granting access to anyone with the URL. You may also "
         u"directly enter an account ID or a user's email address. If you enter an email "
         u"address, sharing will be extended to all users in their account. "
     )
