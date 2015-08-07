@@ -156,7 +156,7 @@
                         </span>
                         <ul id="actions-dropdown2" class="f-dropdown" data-dropdown-content="">
                             <li>
-                                <a id="delete-stack-action" data-reveal-id="delete-stack-modal"
+                                <a id="delete-stack-action-2" data-reveal-id="delete-stack-modal"
                                    i18n:translate="">Delete stack</a>
                             </li>
                         </ul>
@@ -188,7 +188,7 @@
                         </span>
                         <ul id="actions-dropdown3" class="f-dropdown" data-dropdown-content="">
                             <li>
-                                <a id="delete-stack-action" data-reveal-id="delete-stack-modal"
+                                <a id="delete-stack-action-3" data-reveal-id="delete-stack-modal"
                                    i18n:translate="">Delete stack</a>
                             </li>
                         </ul>
