@@ -655,7 +655,7 @@ class StackWizardView(BaseView):
                     last_comma_idx = whitelist.rfind(',')
                     if last_comma_idx != -1:
                         whitelist = whitelist[:last_comma_idx] + _(u' or') + whitelist[last_comma_idx + 1:]
-                    msg = msg + whitelist
+                    msg = msg + whitelist + _(u' Please change your URL.')
                     raise JSONError(
                         status=400,
                         message=msg
