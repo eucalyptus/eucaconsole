@@ -30,6 +30,7 @@ Pyramid views for Eucalyptus and AWS CloudFormation stacks
 """
 import simplejson as json
 import os
+import time
 import urllib2
 from urllib2 import HTTPError, URLError
 from boto.exception import BotoServerError
@@ -199,6 +200,7 @@ class StackView(BaseView):
                 prefix = _(u'Successfully deleted stack.')
                 msg = u'{0} {1}'.format(prefix, name)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
+                time.sleep(1)  # delay to allow server to update state before moving user on
             return HTTPFound(location=location)
         else:
             self.request.error_messages = self.delete_form.get_errors_list()
