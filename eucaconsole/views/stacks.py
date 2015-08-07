@@ -58,7 +58,7 @@ TEMPLATE_BODY_LIMIT = 460800
 
 
 class StackMixin(object):
-    def get_create_template_bucket(self):
+    def get_create_template_bucket(self, create=True):
         s3_conn = self.get_connection(conn_type="s3")
         account_id = User.get_account_id(ec2_conn=self.get_connection(), request=self.request)
         region = self.request.session.get('region')
@@ -70,13 +70,17 @@ class StackMixin(object):
             acct_hash = base64.b64encode(md5, '--')
             acct_hash = acct_hash[:acct_hash.find('=')]
             try:
-                bucket = s3_conn.create_bucket("cf-template-{acct_hash}-{region}".format(
+                bucket_name = "cf-template-{acct_hash}-{region}".format(
                     acct_hash=acct_hash.lower(),
                     region=region
-                ))
+                )
+                if create:
+                    bucket = s3_conn.create_bucket(bucket_name)
+                else:
+                    bucket = s3_conn.get_bucket(bucket_name)
                 return bucket
             except BotoServerError as err:
-                if err.code != 'BucketAlreadyExists':
+                if err.code != 'BucketAlreadyExists' and err.code != 'AccessDenied':
                     raise err
         raise JSONError(status=500, message=_(
             u'Cannot create S3 bucket to store your Cloudformation template due to namespace collision. '
@@ -211,7 +215,7 @@ class StackView(BaseView, StackMixin):
     def stack_view(self):
         if self.stack is None and self.request.matchdict.get('id') != 'new':
             raise HTTPNotFound
-        bucket = self.get_create_template_bucket()
+        bucket = self.get_create_template_bucket(create=False)
         stack_id = self.stack.stack_id[self.stack.stack_id.rfind('/') + 1:]
         keys = list(bucket.list(prefix=stack_id))
         if len(keys) > 0:
@@ -411,8 +415,6 @@ class StackWizardView(BaseView, StackMixin):
     @view_config(route_name='stack_new', renderer=TEMPLATE, request_method='GET')
     def stack_new(self):
         """Displays the Stack wizard"""
-        bucket = self.get_create_template_bucket()
-        self.render_dict['template_bucket'] = bucket.name
         return self.render_dict
 
     @view_config(route_name='stack_template_parse', renderer='json', request_method='POST')
@@ -467,7 +469,8 @@ class StackWizardView(BaseView, StackMixin):
                     results=dict(
                         template_key=template_name,
                         description=parsed['Description'] if 'Description' in parsed else '',
-                        parameters=params
+                        parameters=params,
+                        template_bucket=self.get_create_template_bucket(create=False).name
                     )
                 )
             except ValueError as json_err:

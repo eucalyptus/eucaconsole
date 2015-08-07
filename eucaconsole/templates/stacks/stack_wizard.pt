@@ -202,9 +202,9 @@
                         <label i18n:translate="">Name</label>
                         <div class="columns value">{{ stackName }}</div>
                     </div>
-                    <div class="row">
+                    <div class="row" ng-show="templateBucket">
                         <label i18n:translate="">Template bucket</label>
-                        <div class="columns value">${template_bucket}</div>
+                        <div class="columns value">{{ templateBucket }}</div>
                     </div>
                     <div class="row" ng-show="templateIdent">
                         <label i18n:translate="">Template</label>
