@@ -13,6 +13,7 @@ angular.module('BucketItemDetailsPage', ['S3SharingPanel', 'S3MetadataEditor', '
         $scope.hasChangesToBeSaved = false;
         $scope.objectName = '';
         $scope.expiration = '3600';
+        $scope.sharedLink = '';
         $scope.sharedLinkGenerating = false;
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
@@ -34,6 +35,11 @@ angular.module('BucketItemDetailsPage', ['S3SharingPanel', 'S3MetadataEditor', '
         $scope.setWatchers = function () {
             $('#shared-link-textarea').on('click', function () {
                 $(this).select();
+            });
+            $scope.$watch('expiration', function (newVal, oldVal) {
+                if (newVal !== oldVal) {
+                    $scope.sharedLink = '';  // Empty link when selecting new expiration timestamp
+                }
             });
         };
         $scope.handleUnsavedChanges = function () {

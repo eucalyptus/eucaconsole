@@ -10,7 +10,8 @@
                     <a i18n:translate="" ng-click="generateSharedLink()">Show shareable link</a>
                     <span class="busy" ng-show="sharedLinkGenerating"></span>
                 </div>
-                <textarea name="shared_link" id="shared-link-textarea" ng-model="sharedLink"></textarea>
+                <textarea name="shared_link" id="shared-link-textarea"
+                          ng-model="sharedLink" ng-show="sharedLink"></textarea>
             </div>
         </form>
         <a href="#" id="shared_url_dialog_close_link" class="close-reveal-modal">&#215;</a>

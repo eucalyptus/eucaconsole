@@ -98,6 +98,7 @@ class BucketItemSharedURLForm(BaseSecureForm):
         hour = 3600
         return [
             (300, _('5 minutes')),
+            (1800, _('30 minutes')),
             (hour, _('1 hour')),
             (hour * 24, _('1 day')),
             (hour * 24 * 7, _('1 week')),
