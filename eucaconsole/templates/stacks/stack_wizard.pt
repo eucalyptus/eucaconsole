@@ -201,7 +201,7 @@
                     </div>
                     <div class="row" ng-show="description || loading">
                         <label i18n:translate="">Description</label>
-                        <div class="columns value">
+                        <div class="columns value breakword">
                             <span ng-show="loading"><i class="busy"></i>
                                 <span i18n:translate="">Reading template</span>
                             </span>
