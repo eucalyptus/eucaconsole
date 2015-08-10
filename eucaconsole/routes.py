@@ -223,6 +223,7 @@ urls = [
     Route(name='bucket_create_folder', pattern='/buckets/{name}/createfolder/*subpath'),
     Route(name='bucket_upload', pattern='/buckets/{name}/upload/*subpath'),
     Route(name='bucket_sign_req', pattern='/buckets/{name}/signreq/*subpath'),
+    Route(name='bucket_item_url', pattern='/buckets/{name}/geturl/*subpath'),
 
 
     # Security Groups #####
@@ -354,6 +355,7 @@ urls = [
     Route(name='stack_new', pattern='/stacks/new'),
     Route(name='stack_create', pattern='/stacks/create'),
     Route(name='stack_template_parse', pattern='/stacks/templateparse'),
+    Route(name='stack_template_convert', pattern='/stacks/templateconvert'),
     Route(name='stack_view', pattern='/stacks/{name}'),
     Route(name='stack_delete', pattern='/stacks/{name}/delete'),
     Route(name='stack_state_json', pattern='/stacks/{name}/state/json'),

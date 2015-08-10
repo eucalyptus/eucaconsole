@@ -224,6 +224,14 @@ Secondary Components
 * WTForms (server-side forms and validation)
 
 
+Guitester - selenium testing framework for eucaconsole
+===============================
+* Location: tests/selenium/guiops
+* Requirements: python selenium module, an instance of selenium webdriver
+* Setup and intro: https://github.com/eucalyptus/eucaconsole/wiki/Guitester 
+* Contributing: https://github.com/eucalyptus/eucaconsole/wiki/Contributing-to-Guitester
+
+
 Grunt - JavaScript Task Manager
 ===============================
 

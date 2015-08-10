@@ -54,9 +54,11 @@
 
 #create-keypair-modal #keypair-material { height: 16rem; color: white; background-color: black; font-weight: bold; font-family: Courier, "courier New", monospace, sans-serif; }
 
-.userdatalabel { right: 0px !important; }
+.userdatalabel { right: 0 !important; }
 
 #userdata { margin: 0 0 0; }
+
+#controls_monitoring_enabled .helptext-icon { position: relative; left: -1rem; color: #6a737b; }
 
 div#controls_associate_public_ip_address .large-2.columns { padding-left: 0.25rem; }
 div#controls_associate_public_ip_address .large-3.columns { padding-left: 0.25rem; }

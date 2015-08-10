@@ -199,12 +199,20 @@ $tooltip-padding: rem-calc(5);
 }
 
 @mixin button-shadow-mixin {
-    box-shadow: 1px 1px 5px 0px lighten($euca-grey, 10%);
+    box-shadow: 1px 1px 5px 0 lighten($euca-grey, 10%);
 }
 
 @mixin dropdown-shadow-mixin {
     border-color: $hp-gray-20;
     box-shadow: 2px 2px 5px $euca-grey;
+}
+
+@mixin helptext-icon-position-mixin {
+    .helptext-icon {
+        position: relative;
+        left: -1rem;
+        color: $euca-grey;
+    }
 }
 
 @mixin validation-error-mixin {

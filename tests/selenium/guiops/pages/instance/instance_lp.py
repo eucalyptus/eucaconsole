@@ -1,7 +1,7 @@
-from pages.viewpage import ViewPage
+from pages.landingpage import LandingPage
 
 
-class InstanceView(ViewPage):
+class InstanceLanding(LandingPage):
     def __init__(self, tester):
         self.tester = tester
         self.verify_instance_view_page_loaded()
@@ -9,6 +9,7 @@ class InstanceView(ViewPage):
     _instances_view_page_title = "Instances"
     _launch_instance_button_id = "launch-instance-btn"
     _instance_action_menu_id = "table-item-dropdown_{0}"  #instance_id required
+    _manage_volumes_actions_menu_item_css = "#item-dropdown_{0}>li:nth-of-type(7)>a"  #instance_id required
     _terminate_instance_actions_menu_item_css = "#item-dropdown_{0}>li:nth-of-type(13)>a"  #instance_id required
     _first_pending_instance_status_css = "status>span:contains('pending')"
     _first_instance_link_in_list_css = "#tableview>table>tbody>tr>td>a"
@@ -20,18 +21,22 @@ class InstanceView(ViewPage):
     _search_input_field_css = ".search-input"
 
     def verify_instance_view_page_loaded(self):
-        self.tester.wait_for_text_present_by_id(ViewPage(self)._page_title_id, self._instances_view_page_title)
-        self.tester.wait_for_visible_by_id(ViewPage(self)._refresh_button_id)
+        self.tester.wait_for_text_present_by_id(LandingPage(self)._page_title_id, self._instances_view_page_title)
+        self.tester.wait_for_visible_by_id(LandingPage(self)._refresh_button_id)
 
-    def click_action_launch_instance_on_view_page(self):
+    def click_action_launch_instance_on_landing_page(self):
         self.tester.click_element_by_id(self._launch_instance_button_id)
 
     def click_action_terminate_instance_on_view_page(self, instance_id):
         self.tester.click_element_by_id(self._instance_action_menu_id.format(instance_id))
         self.tester.click_element_by_css(self._terminate_instance_actions_menu_item_css.format(instance_id))
 
+    def click_action_manage_volumes_on_view_page(self, instance_id):
+        self.tester.click_element_by_id(self._instance_action_menu_id.format(instance_id))
+        self.tester.click_element_by_css(self._manage_volumes_actions_menu_item_css.format(instance_id))
+
     def get_id_of_newly_launched_instance(self, name=None):
-        contains_id = self.tester.get_attrubute_by_css(self._first_instance_link_in_list_css, "ng-href")
+        contains_id = self.tester.get_attribute_by_css(self._first_instance_link_in_list_css, "ng-href")
         instance_id = contains_id[-10:]
         print(instance_id)
         return instance_id
@@ -62,7 +67,7 @@ class InstanceView(ViewPage):
 
     def verify_there_are_no_running_instances(self):
         self.tester.send_keys_by_css(self._search_input_field_css, "running")
-        self.tester.wait_for_text_present_by_css(ViewPage(self)._item_count_css,"0")
+        self.tester.wait_for_text_present_by_css(LandingPage(self)._item_count_css,"0")
 
 
 

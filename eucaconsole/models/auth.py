@@ -204,7 +204,9 @@ class ConnectionManager(object):
 
             if _dns_enabled:
                 _ufshost = "{0}.{1}".format(path.lower(), _ufshost)
-            path = '/services/{0}'.format(path)
+                path = '/'
+            else:
+                path = '/services/{0}'.format(path)
             region = RegionInfo(name='eucalyptus', endpoint=_ufshost)
             # IAM and S3 connections need host instead of region info
             if conn_type in ['iam', 's3']:
@@ -280,9 +282,11 @@ class EucaAuthenticator(object):
         if user == 'admin' and duration > 3600:  # admin cannot have more than 1 hour duration
             duration = 3600
         # because of the variability, we need to keep this here, not in __init__
-        auth_path = self.NON_DNS_QUERY_PATH + self.TEMPLATE.format(
-            dur=duration,
-        )
+        auth_path = self.TEMPLATE.format(dur=duration)
+        if not self.dns_enabled:
+            auth_path = self.NON_DNS_QUERY_PATH + auth_path
+        else:
+            auth_path = '/' + auth_path
         host = self.host
         if self.dns_enabled:
             host = 'tokens.{0}'.format(host)

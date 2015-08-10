@@ -137,18 +137,9 @@ a {
 }
 #logobar {
     padding: 6px 0 0 0;
-    margin-top: 20px;
+    margin-top: 8px;
     background-color: #fff;
     color: #333;
-    #hp-logo {
-        position: relative;
-        bottom: 1px;
-        display: inline-block;
-        width: 36px;
-        height: 36px;
-        background: url(../img/hp-logo-36x36.png) no-repeat;
-        margin-right: 0.8rem;
-    }
     a {
         font-size: 0.9rem;
         color: #333;
@@ -187,7 +178,8 @@ a {
     .product-name {
         font-size: 1.4rem;
         position: relative;
-        top: -12px;
+        top: -8px;
+        padding-left: 0.5rem;
     }
     #selected-region {
         position: relative;
@@ -208,6 +200,10 @@ a {
         i {
             font-size: 1.8rem;
         }
+    }
+    #user-dropdown-section {
+        position: relative;
+        left: -10px;
     }
 }
 
@@ -294,7 +290,7 @@ $breadcrumb-border-color: darken($breadcrumb-background-color, 20%);
 
 @media screen and (min-width: $topbar-breakpoint) {
     #login-panel { margin-bottom: 5rem; }
-    #maincontent { min-height: 480px; }
+    #maincontent { min-height: 65rem; }
 }
 
 
@@ -441,6 +437,11 @@ textarea.policy-area {
     padding: 0.25rem;
 }
 
+.helptext-icon {
+    color: $euca-grey;
+    font-size: 1.2rem;
+}
+
 .expando {
     i {
         color: $hp-accessible-blue;
@@ -473,6 +474,15 @@ textarea.policy-area {
     }
 }
 
+.flex-space {
+    @include flexbox-mixin;
+    .flex-column-0 {
+        @include flexgrow-mixin(0);
+    }
+    .flex-column-1 {
+        @include flexgrow-mixin(1);
+    }
+}
 
 /* -----------------------------------------
    Tag editor
@@ -660,6 +670,7 @@ form {
     }
     &[data-abide] .error small.error {
         background-color: white;
+        font-style: normal;
         color: darkred;
         &.inline {
             display: inline-block !important;
@@ -1139,91 +1150,204 @@ $btn-group-radius: 10px;
                 top: 8px; right: 0;
             }
         }
-    }
-}
-
-
-// Nav bar adjustments
-@media screen {
-    #logobar {
-        //border-bottom: 1px solid black;
-        margin-top: 8px;
-        .dropdown {
-            position: relative;
-            top: 4px;
+        .product-name {
+            display: none;
         }
         #offcanvas-icon {
             left: 0px;
             display: inline-block !important;
             margin-right: 12px;
-        }
-        #user-dropdown-section {
-            position: relative;
-            left: -10px;
+            i {
+                padding-right: 0.5rem;
+            }
         }
     }
-    #navbar {
+    .left-nav {
         display: none;
     }
-}
-
-// On-canvas Nav adjustments
-#nav-drop ul {
-    list-style-type: none;
-    .dropdown {
-        margin-bottom: 0.5rem;
-    }
-    li {
-        a {
-            padding: 0.125rem;
-        }
+    .inner-wrap {
+        padding-left: 0 !important;
     }
 }
 
-// Off-canvas Nav adjustments
-div.left-off-canvas-menu {
+div.left-nav {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
     z-index: 999999 !important;
-    color: white;
     background-color: white;
+    overflow: hidden;
     border-style: solid;
     border-width: 0 1px 0 0;
     border-color: $hp-gray-20;
 }
 
-ul.off-canvas-list {
-    padding-left: 0.5rem;
+// Off-canvas Nav adjustments
+div.left-off-canvas-menu {
+    z-index: 999999 !important;
+    background-color: white;
+    border: 0 solid $hp-gray-20;
+    border-right-width: 1px;
+}
+
+.off-canvas-wrap {
+    min-height: 100%;
+}
+
+$expanded-nav-width: 225px;
+
+.left-nav {
+    width: $expanded-nav-width !important;
+    overflow-y: scroll !important;
+    transition: width 0.3s;
+}
+
+.inner-wrap {
+    padding-left: 50px;
+}
+
+.nav-collapsed.left-nav {
+    width: 50px !important;
+    overflow-y: hidden !important;
+    label {
+        visibility: hidden;
+    }
+    hr {
+        width: 7.5%;
+    }
+}
+
+#hp-logo {
+    position: relative;
+    margin-top: 0.5rem;
+    margin-right: 0.8rem;
+    margin-left: 0.5rem;
+    display: inline-block;
+    width: 36px;
+    height: 36px;
+    background: url(../img/hp-logo-36x36.png) no-repeat;
+}
+
+ul.resources-nav {
+    width: $expanded-nav-width*2;
+    list-style-type: none;
+    line-height: 3.0rem;
+    margin-left: 0;
+    left: 0;
+    label {
+        padding-left: 0.5rem;
+        background-color: white;
+        color: $hp-gray-65;
+        padding-top: 0.5rem;
+        border-top: 0;
+    }
+    hr {
+        margin: 0 0.5rem 0 0.5rem;
+        width: 42.5%;
+    }
     li {
-        label {
-            background-color: white;
-            color: $hp-gray-65;
-            padding-left: 0.5rem;
-            border-top: 0;
-        }
         a {
-            background-color: white;
+            background-color: transparent;
             color: $hp-gray-65;
-            padding: 0.5rem;
+            padding: 0.5rem 8rem 1.0rem 2.6rem;
+            line-height: 1.5rem;
             border-bottom: 0;
-            label {
-                background-color: white;
-                color: $hp-gray-65;
-                padding-left: 0.5rem;
-                border-top: 0;
-            }
+            position: static;
         }
-        a:hover:not(.nolink) {
+        &:hover {
             background-color: $hp-gray-5;
             color: $hp-hover-blue;
         }
-        a.nolink:hover {
-            background-color: white;
-            color: $hp-gray-65;
+        span {
+            padding-left: 0.5rem;
+            white-space: nowrap;
+            display: inline-block;
+            vertical-align: middle;
         }
-        .dropdown {
-            background-color: white;
-            margin-bottom: 0;
+        span.active {
+            color: $hp-hover-blue;
+        }
+        i.icon {
+            position: absolute;
+            left: 0.5rem;
+            margin-top: 0.5rem;
+            height: 2rem;
+            width: 2rem;
+        }
+        i.icon.accounts { background-image: url(../img/nav/Accounts.svg); }
+        i.icon.accounts.active { background-image: url(../img/nav/Accounts_Active_40x40.svg); }
+        i.icon.buckets { background-image: url(../img/nav/Bucket.svg); }
+        i.icon.buckets.active { background-image: url(../img/nav/Bucket_Active.svg); }
+        i.icon.dashboard { background-image: url(../img/nav/Dashboard.svg); }
+        i.icon.dashboard.active { background-image: url(../img/nav/Dashboard_Active.svg); }
+        i.icon.ipaddresses { background-image: url(../img/nav/Elastic-IP.svg); }
+        i.icon.ipaddresses.active { background-image: url(../img/nav/Elastic-IP_Active.svg); }
+        i.icon.groups { background-image: url(../img/nav/Groups.svg); }
+        i.icon.groups.active { background-image: url(../img/nav/Groups_Active.svg); }
+        i.icon.images { background-image: url(../img/nav/Images.svg); }
+        i.icon.images.active { background-image: url(../img/nav/Images_Active.svg); }
+        i.icon.instances { background-image: url(../img/nav/Instances.svg); }
+        i.icon.instances.active { background-image: url(../img/nav/Instances_Active.svg); }
+        i.icon.keypairs { background-image: url(../img/nav/Key-Pairs.svg); }
+        i.icon.keypairs.active { background-image: url(../img/nav/Key-Pairs_Active.svg); }
+        i.icon.launchconfigs { background-image: url(../img/nav/Launch-configs.svg); }
+        i.icon.launchconfigs.active { background-image: url(../img/nav/Launch-configs_Active.svg); }
+        i.icon.elbs { background-image: url(../img/nav/Load-Balance.svg); }
+        i.icon.elbs.active { background-image: url(../img/nav/Load-Balance_Active.svg); }
+        i.icon.roles { background-image: url(../img/nav/Roles.svg); }
+        i.icon.roles.active { background-image: url(../img/nav/Roles_Active.svg); }
+        i.icon.scalinggroups { background-image: url(../img/nav/Auto-Scaling-Groups.svg); }
+        i.icon.scalinggroups.active { background-image: url(../img/nav/Auto-Scaling-Groups_Active.svg); }
+        i.icon.securitygroups { background-image: url(../img/nav/Security.svg); }
+        i.icon.securitygroups.active { background-image: url(../img/nav/Security_Active.svg); }
+        i.icon.snapshots { background-image: url(../img/nav/Snapshots.svg); }
+        i.icon.snapshots.active { background-image: url(../img/nav/Snapshots_Active.svg); }
+        i.icon.stacks { background-image: url(../img/nav/stacks.svg); }
+        i.icon.stacks.active { background-image: url(../img/nav/stacks_Active.svg); }
+        i.icon.users { background-image: url(../img/nav/Users.svg); }
+        i.icon.users.active { background-image: url(../img/nav/Users_Active.svg); }
+        i.icon.instance-types { background-image: url(../img/nav/VM-Types.svg); }
+        i.icon.instance-types.active { background-image: url(../img/nav/VM-Types_Active.svg); }
+        i.icon.volumes { background-image: url(../img/nav/Volumes.svg); }
+        i.icon.volumes.active { background-image: url(../img/nav/Volumes_Active.svg); }
+    }
+}
+
+/* IE 10+ specific adjustments */
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+    ul.resources-nav {
+        hr {
+            margin-left: -15rem;
+        }
+        li {
+            a {
+                i.icon {
+                    height: 2.2rem;
+                }
+            }
         }
     }
+    .nav-collapsed.left-nav {
+        hr {
+            margin-left: -24.5rem;
+        }
+    }
+}
+
+ul.bullet-list {
+    list-style-type: none;
+    li:before {
+        font-family: 'FontAwesome';
+        font-size: 0.9rem;
+        content: '\f138';
+        margin: 0 5px 0 -15px;
+        color: $hp-accessible-blue;
+    }
+}
+
+.columns.subheading {
+    padding-left: 0.125rem;
 }
 
 /* Responsive tweaks for landing page title */

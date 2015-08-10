@@ -62,6 +62,7 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
     $scope.bucketNameChoices = {};
     $scope.accessLoggingConfirmed = false;
     $scope.accessLogConfirmationDialog = $('#elb-bucket-access-log-dialog');
+    $scope.instanceCounts = {};
     $scope.initController = function (optionsJson) {
         var options = JSON.parse(eucaUnescapeJson(optionsJson));
         $scope.setInitialValues(options);

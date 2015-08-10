@@ -8,7 +8,7 @@ angular.module('StackPage', ['MagicSearch', 'EucaConsoleUtils'])
     .controller('StackPageCtrl', function ($scope, $http, $timeout, eucaUnescapeJson, eucaHandleError) {
         $scope.stackStatusEndpoint = '';
         $scope.stackTemplateEndpoint = '';
-        $scope.transitionalStates = ['Create-in-progress', 'Rollback-in-progress', 'Delete-in-progress'];
+        $scope.transitionalStates = ['Create-in-progress', 'Rollback-in-progress', 'Delete-in-progress', 'Create-failed'];
         $scope.stackStatus = '';
         $scope.templateLoading = true;
         $scope.eventsLoading = true;
@@ -115,6 +115,7 @@ angular.module('StackPage', ['MagicSearch', 'EucaConsoleUtils'])
                     } else {
                         $scope.isUpdating = false;
                         $scope.updateStatusReasons();
+                        $scope.getStackEvents();
                     }
                 }
             });
@@ -159,9 +160,6 @@ angular.module('StackPage', ['MagicSearch', 'EucaConsoleUtils'])
                 var results = oData ? oData.results : '';
                 $scope.eventsLoading = false;
                 if (results) {
-                    for (var i=0; i<results.events.length; i++) {
-                        results.events[i].status_reason = '';
-                    }
                     $scope.unfilteredEvents = results.events;
                     $scope.searchEvents();
                     $('#events-table').stickyTableHeaders();

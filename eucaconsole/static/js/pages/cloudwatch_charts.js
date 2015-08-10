@@ -165,6 +165,11 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
             if (preciseFormatterMetrics.indexOf(scope.metric) !== -1) {
                 yformatter = '.2f';
             }
+            if (unit === 'Kilobytes') {
+                yformatter = '.1f';
+            } else if (unit === 'Megabytes' || unit === 'Gigabytes') {
+                yformatter = '.2f';
+            }
             chart.yAxis.axisLabel(unit).tickFormat(d3.format(yformatter));
             d3.select('#' + chartElemId).datum(results).call(chart);
             nv.utils.windowResize(chart.update);
@@ -184,7 +189,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
             var options = {
                 'params': {
                     'ids': attrs.ids,
-                    'idType': attrs.idType,
+                    'idtype': attrs.idtype,
                     'metric': attrs.metric,
                     'namespace': attrs.namespace,
                     'duration': attrs.duration,

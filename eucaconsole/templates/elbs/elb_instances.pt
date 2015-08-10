@@ -92,7 +92,8 @@
                             <div class="content">
                                 <div>
                                     <span class="label" title="Instance Count" i18n:attributes="title" data-tooltip="">IC</span>
-                                    {{ zone.instanceCount }} <span i18n:translate="">instances</span>
+                                    {{ instanceCounts[zone.name] }}
+                                    <span i18n:translate="">instances</span>
                                 </div>
                             </div>
                             <div ng-show="zone.instanceCount !== 0">
@@ -165,7 +166,8 @@
                                 </div>
                                 <div>
                                     <span class="label" title="Instance Count" i18n:attributes="title" data-tooltip="">IC</span>
-                                    {{ subnet.instanceCount }} <span i18n:translate="">instances</span>
+                                    {{ instanceCounts[subnet.id] }}
+                                    <span i18n:translate="">instances</span>
                                 </div>
                             </div>
                             <div ng-show="subnet.instanceCount !== 0">

@@ -165,6 +165,7 @@ class LaunchConfigsJsonView(LandingPageView):
 
     def get_launchconfigs_image_mapping(self):
         launchconfigs_image_ids = [launchconfig.image_id for launchconfig in self.items]
+        launchconfigs_image_ids = list(set(launchconfigs_image_ids))
         launchconfigs_images = self.ec2_conn.get_all_images(image_ids=launchconfigs_image_ids) if self.ec2_conn else []
         launchconfigs_image_mapping = dict()
         for image in launchconfigs_images:
@@ -550,10 +551,10 @@ class CreateMoreLaunchConfigView(BlockDeviceMappingItemView):
 
         self.create_form = CreateLaunchConfigForm(
             self.request, image=self.image, conn=self.conn, iam_conn=self.iam_conn,
+            keyname=launch_config.key_name,
             formdata=self.request.params or None)
         self.create_form.image_id.data = launch_config.image_id
         self.create_form.instance_type.data = launch_config.instance_type
-        self.create_form.keypair.data = launch_config.key_name
         self.create_form.securitygroup.data = launch_config.security_groups
         self.filters_form = ImagesFiltersForm(
             self.request, cloud_type=self.cloud_type, formdata=self.request.params or None)

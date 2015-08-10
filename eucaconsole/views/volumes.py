@@ -220,21 +220,22 @@ class VolumesJsonView(LandingPageView):
                 if volume.attach_data is not None and volume.attach_data.instance_id is not None:
                     instance = [inst for inst in instances if inst.id == volume.attach_data.instance_id][0]
                     instance_name = TaggedItemView.get_display_name(instance, escapebraces=False)
-                volumes.append(dict(
-                    create_time=volume.create_time,
-                    id=volume.id,
-                    instance=volume.attach_data.instance_id,
-                    device=volume.attach_data.device,
-                    instance_name=instance_name,
-                    name=TaggedItemView.get_display_name(volume, escapebraces=False),
-                    snapshots=len([snap.id for snap in snapshots if snap.volume_id == volume.id]),
-                    size=volume.size,
-                    status=status,
-                    attach_status=attach_status,
-                    zone=volume.zone,
-                    tags=TaggedItemView.get_tags_display(volume.tags),
-                    transitional=status in transitional_states or attach_status in transitional_states,
-                ))
+                if status != 'deleted':
+                    volumes.append(dict(
+                        create_time=volume.create_time,
+                        id=volume.id,
+                        instance=volume.attach_data.instance_id,
+                        device=volume.attach_data.device,
+                        instance_name=instance_name,
+                        name=TaggedItemView.get_display_name(volume, escapebraces=False),
+                        snapshots=len([snap.id for snap in snapshots if snap.volume_id == volume.id]),
+                        size=volume.size,
+                        status=status,
+                        attach_status=attach_status,
+                        zone=volume.zone,
+                        tags=TaggedItemView.get_tags_display(volume.tags),
+                        transitional=status in transitional_states or attach_status in transitional_states,
+                    ))
             return dict(results=volumes)
 
     def get_items(self, filters=None):
@@ -290,7 +291,7 @@ class VolumeView(TaggedItemView, BaseVolumeView):
     @view_config(route_name='volume_view', renderer=VIEW_TEMPLATE, request_method='GET')
     def volume_view(self):
         if self.volume is None and self.request.matchdict.get('id') != 'new':
-            raise HTTPNotFound
+            raise HTTPNotFound()
         return self.render_dict
 
     def get_attachment_time(self):

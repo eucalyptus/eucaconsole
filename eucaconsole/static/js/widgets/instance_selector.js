@@ -28,6 +28,7 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
             $scope.filterKeys = [];
             $scope.tableText = {};
             $scope.instancesLoading = true;
+            $scope.selectedZones = [];
             $scope.initSelector = function () {
                 var options = JSON.parse(eucaUnescapeJson($scope.option_json));
                 $scope.setInitialValues(options);
@@ -40,6 +41,7 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                 Object.getPrototypeOf(document.createComment('')).getAttribute = function() {};
             };
             $scope.setInitialValues = function (options) {
+                var zoneList, subnetList;
                 $scope.allInstanceList = [];
                 $scope.instanceList = [];
                 $scope.selectedInstanceList = [];
@@ -53,6 +55,8 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                 $scope.ELBInstanceHealthList = options.elb_instance_health;
                 $scope.healthStatusNames = options.health_status_names;
                 $scope.instanceHealthMapping = $scope.getInstanceHealthMapping();
+                $scope.allAvailabilityZones = options.availability_zone_choices;
+                $scope.allSubnets = options.vpc_subnet_choices;
                 if (options.hasOwnProperty('is_vpc_supported')) {
                     $scope.isVPCSupported = options.is_vpc_supported;
                 }
@@ -65,6 +69,22 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                 if (options.hasOwnProperty('all_instance_list')) {
                     $scope.allInstanceList = options.allInstance_list;
                 }
+                if ($scope.$parent.selectedZoneList) {
+                    zoneList = $scope.$parent.selectedZoneList;  // for ELB Detail page
+                } else {
+                    zoneList = $scope.allAvailabilityZones;  // for Create ELB Wizard
+                }
+                $scope.selectedZones = zoneList.map(function (zone) {
+                    return zone.name;
+                });
+                if ($scope.$parent.selectedVPCSubnetList) {
+                    subnetList = $scope.$parent.selectedVPCSubnetList;
+                } else {
+                    subnetList = $scope.allSubnets;
+                }
+                $scope.selectedSubnets = subnetList.map(function (subnet) {
+                    return subnet.id;
+                });
             };
             $scope.getInstanceHealthMapping = function () {
                 var mapping = {};
@@ -74,6 +94,7 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                 return mapping;
             };
             $scope.setWatcher = function () {
+                var instanceSelector = $('#instance-selector');
                 $scope.$watch('allInstanceList', function () {
                     $scope.updateInstanceList();
                 }, true);
@@ -112,8 +133,9 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                         $scope.searchFilterItems(filterKeys);
                     });
                 });
-                $('#instance_selector').on('click', 'input:checkbox', function () {
+                instanceSelector.on('click', 'input:checkbox', function () {
                     var instanceID = $(this).val();
+                    var instanceSelector = $('#instance-selector');
                     if (instanceID === '_all') {
                         // Clicked all checkbox
                         if ($(this).prop("checked") === true){
@@ -121,10 +143,10 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                             angular.forEach($scope.instanceList, function(instance) {
                                 $scope.selectedInstanceList.push(instance);
                             });
-                            $('#instance_selector input:checkbox').not(this).prop('checked', true);
+                            instanceSelector.find('input:checkbox').not(this).prop('checked', true);
                         } else {
                             $scope.selectedInstanceList = [];
-                            $('#instance_selector input:checkbox').not(this).prop('checked', false);
+                            instanceSelector.find('input:checkbox').not(this).prop('checked', false);
                         }
                     } else {
                         // Click instance checkbox
@@ -212,6 +234,8 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                 // timeout is needed for the table's display update to complete
                 $timeout(function() {
                     $scope.matchInstanceCheckboxes();
+                    // Ensure alert tooltips in instance display after instances are initialized
+                    $(document).foundation('tooltip', 'reflow');
                 });
             };
             // Only keep the selected instances that are in the current instanceList
@@ -282,7 +306,7 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                         if (selectedInstance.id === instance.id) {
                             var existsZone = false;
                             angular.forEach($scope.availabilityZones, function (zone) {
-                                if (zone == instance.placement) {
+                                if (zone === instance.placement) {
                                     existsZone = true;
                                 }
                             });
@@ -292,6 +316,28 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                         } 
                     });
                 });
+                $scope.updateSelectedInstanceCounts();
+            };
+            $scope.updateSelectedInstanceCounts = function () {
+                if ($scope.isVPCSupported) {
+                    angular.forEach($scope.allSubnets, function (subnet) {
+                        $scope.$parent.instanceCounts[subnet.id] = 0;
+                        angular.forEach($scope.selectedInstanceList, function (selectedInstance) {
+                            if (subnet.id === selectedInstance.subnet_id) {
+                                $scope.$parent.instanceCounts[subnet.id] += 1;
+                            }
+                        });
+                    });
+                } else {
+                    angular.forEach($scope.allAvailabilityZones, function (zone) {
+                        $scope.$parent.instanceCounts[zone.name] = 0;
+                        angular.forEach($scope.selectedInstanceList, function (selectedInstance) {
+                            if (zone.name === selectedInstance.placement) {
+                                $scope.$parent.instanceCounts[zone.name] += 1;
+                            }
+                        });
+                    });
+                }
             };
             $scope.updateInstanceVPCSubnets = function () {
                 $scope.vpcSubnets = [];
@@ -300,7 +346,7 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                         if (selectedInstance.id === instance.id) {
                             var existsSubnet = false;
                             angular.forEach($scope.vpcSubnets, function (subnet) {
-                                if (subnet == instance.subnet_id) {
+                                if (subnet === instance.subnet_id) {
                                     existsSubnet = true;
                                 }
                             });
@@ -310,6 +356,7 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                         } 
                     });
                 });
+                $scope.updateSelectedInstanceCounts();
             };
             /*  Filter items client side based on search criteria.
              *  @param {array} filterProps Array of properties to filter items on

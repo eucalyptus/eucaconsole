@@ -361,6 +361,7 @@ class InstancesView(LandingPageView, BaseInstanceView):
         self.request.session.flash(msg, queue=Notification.ERROR)
         return HTTPFound(location=self.location)
 
+
 class InstancesJsonView(LandingPageView, BaseInstanceView):
     def __init__(self, request):
         super(InstancesJsonView, self).__init__(request)
@@ -592,7 +593,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
             arn = self.instance.instance_profile['arn']
             profile_name = arn[(arn.rindex('/')+1):]
             inst_profile = self.iam_conn.get_instance_profile(profile_name)
-            self.role = inst_profile.roles.member.role_name
+            self.role = inst_profile.roles.member.role_name if inst_profile.roles else None
         self.running_create = False
         if self.instance:
             self.running_create = True if self.instance.tags.get('ec_bundling') else False

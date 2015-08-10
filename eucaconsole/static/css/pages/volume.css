@@ -112,9 +112,12 @@
 #sorting-controls #sorting-dropdown { text-align: left; }
 
 #results-count { padding-top: 0.25rem; text-align: right; }
-#results-count .items-found { vertical-align: center; }
+#results-count .items-found { vertical-align: baseline; }
 
-.euca-split { border-color: #e6e7e8 !important; width: 2.0rem !important; }
+.euca-split { #border-color: #e6e7e8 !important; width: 2.0rem !important; }
+
+.secondary .euca-split { border-color: #5a5a5a !important; }
+.secondary .euca-split:hover { border-color: #006699 !important; }
 
 .split.button { padding-right: 3.0rem !important; }
 
@@ -131,7 +134,7 @@ input#name { width: 50%; }
 
 select#zone { width: 50%; }
 
-.status { background-color: transparent; text-transform: capitalize; }
+.status { background-color: #b3b3b3; text-transform: capitalize; }
 
 .status.creating { background-color: #9aa84b; }
 
@@ -142,6 +145,8 @@ select#zone { width: 50%; }
 .status.deleting { background-color: #ccc; }
 
 .status.deleted { background-color: #6a737b; }
+
+.status.failed { background-color: darkred; }
 
 .status.attaching { background-color: #0683c2; }
 

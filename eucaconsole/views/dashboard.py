@@ -71,7 +71,7 @@ class DashboardView(BaseView):
             region = self.request.session.get('region')
             availability_zones = ChoicesManager(self.conn).get_availability_zones(region)
         tiles = self.request.cookies.get(u"{0}_dash_order".format(
-            self.request.session['account' if self.request.session['cloud_type'] == 'euca' else 'access_id']))
+            self.request.session['account' if self.cloud_type == 'euca' else 'access_id']))
         if tiles is not None:
             tiles = tiles.replace('%2C', ',')
         else:
@@ -131,12 +131,14 @@ class DashboardView(BaseView):
         session = self.request.session
         if session['cloud_type'] == 'euca':
             services.append(dict(name=_(u'Identity & Access Mgmt'), status=''))
+        storage_key = self.get_shared_buckets_storage_key(self.conn.host)
         return BaseView.escape_json(json.dumps({
             'json_items_url': self.request.route_path('dashboard_json'),
             'services': services,
             'service_status_url': self.request.route_path('service_status_json'),
             'cloud_type': self.cloud_type,
             'account_display_name': self.get_account_display_name(),
+            'storage_key': storage_key
         }))
 
 
@@ -157,7 +159,7 @@ class DashboardJsonView(BaseView):
 
         # Get list of tiles so we can fetch only data for tiles the user is showing
         tiles = self.request.cookies.get(u"{0}_dash_order".format(
-            self.request.session['account' if self.request.session['cloud_type'] == 'euca' else 'access_id']))
+            self.request.session['account' if self.cloud_type == 'euca' else 'access_id']))
         if tiles is None:
             tiles = ','.join([tile for (tile, label) in TILE_MASTER_LIST])
         with boto_error_handler(self.request):

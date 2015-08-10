@@ -112,9 +112,12 @@
 #sorting-controls #sorting-dropdown { text-align: left; }
 
 #results-count { padding-top: 0.25rem; text-align: right; }
-#results-count .items-found { vertical-align: center; }
+#results-count .items-found { vertical-align: baseline; }
 
-.euca-split { border-color: #e6e7e8 !important; width: 2.0rem !important; }
+.euca-split { #border-color: #e6e7e8 !important; width: 2.0rem !important; }
+
+.secondary .euca-split { border-color: #5a5a5a !important; }
+.secondary .euca-split:hover { border-color: #006699 !important; }
 
 .split.button { padding-right: 3.0rem !important; }
 
@@ -143,3 +146,5 @@
 #terminate-instances-btn { margin-left: 1rem; }
 
 .connect-center { text-align: center; }
+
+#maincontent { padding-bottom: 9.0rem; }

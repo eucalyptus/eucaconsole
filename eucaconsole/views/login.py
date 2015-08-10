@@ -101,6 +101,7 @@ class LoginView(BaseView, PermissionCheckMixin):
         self.came_from = self.sanitize_url(self.request.params.get('came_from', referrer))
         self.login_form_errors = []
         self.duration = str(int(self.request.registry.settings.get('session.cookie_expires')) + 60)
+        self.login_refresh = str(int(self.request.registry.settings.get('session.timeout')) - 60)
         self.secure_session = asbool(self.request.registry.settings.get('session.secure', False))
         self.https_proxy = self.request.environ.get('HTTP_X_FORWARDED_PROTO') == 'https'
         self.https_scheme = self.request.scheme == 'https'
@@ -115,6 +116,7 @@ class LoginView(BaseView, PermissionCheckMixin):
             login_form_errors=self.login_form_errors,
             aws_enabled=self.aws_enabled,
             duration=self.duration,
+            login_refresh=self.login_refresh,
             came_from=self.came_from,
             controller_options_json=options_json,
         )
@@ -187,7 +189,7 @@ class LoginView(BaseView, PermissionCheckMixin):
                 logging.info("http error "+str(vars(err)))
                 if err.code == 403:  # password expired
                     changepwd_url = self.request.route_path('managecredentials')
-                    return HTTPFound(changepwd_url+("?expired=true&account=%s&username=%s" % (account, username)))
+                    return HTTPFound(changepwd_url+("?came_from=&expired=true&account=%s&username=%s" % (account, username)))
                 elif err.msg == u'Unauthorized':
                     msg = _(u'Invalid user/account name and/or password.')
                     self.login_form_errors.append(msg)

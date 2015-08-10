@@ -246,22 +246,14 @@ class BaseELBView(TaggedItemView):
         self.vpc_conn = self.get_connection(conn_type='vpc')
         self.is_vpc_supported = BaseView.is_vpc_supported(request)
         self.predefined_policy_choices = ChoicesManager(conn=self.elb_conn).predefined_policy_choices(add_blank=False)
-        self.certificate_form = CertificateForm(
-            self.request, conn=self.ec2_conn, iam_conn=self.iam_conn, elb_conn=self.elb_conn,
-            formdata=self.request.params or None)
-        self.backend_certificate_form = BackendCertificateForm(
-            self.request, conn=self.ec2_conn, iam_conn=self.iam_conn, elb_conn=self.elb_conn,
-            formdata=self.request.params or None)
-        self.security_policy_form = SecurityPolicyForm(
-            self.request, elb_conn=self.elb_conn, predefined_policy_choices=self.predefined_policy_choices,
-            formdata=self.request.params or None
-        )
         self.can_list_certificates = True
-        try:
-            if self.iam_conn:
+        if self.iam_conn:
+            try:
                 self.iam_conn.get_all_server_certs()
-        except BotoServerError:
-            # IAM policy prevents listing certificates
+            except BotoServerError:
+                # IAM policy prevents listing certificates
+                self.can_list_certificates = False
+        else:
             self.can_list_certificates = False
 
     def get_elb(self):
@@ -569,7 +561,7 @@ class BaseELBView(TaggedItemView):
 
 
 class ELBView(BaseELBView):
-    """Views for single ELB"""
+    """ELB detail page - General tab"""
     TEMPLATE = '../templates/elbs/elb_view.pt'
 
     def __init__(self, request, elb_conn=None, elb=None, elb_tags=None, **kwargs):
@@ -588,6 +580,16 @@ class ELBView(BaseELBView):
             self.request, conn=self.ec2_conn, vpc_conn=self.vpc_conn,
             elb=self.elb, securitygroups=self.get_security_groups(),
             formdata=self.request.params or None)
+        self.certificate_form = CertificateForm(
+            self.request, conn=self.ec2_conn, iam_conn=self.iam_conn, elb_conn=self.elb_conn,
+            can_list_certificates=self.can_list_certificates, formdata=self.request.params or None)
+        self.backend_certificate_form = BackendCertificateForm(
+            self.request, conn=self.ec2_conn, iam_conn=self.iam_conn, elb_conn=self.elb_conn,
+            formdata=self.request.params or None)
+        self.security_policy_form = SecurityPolicyForm(
+            self.request, elb_conn=self.elb_conn, predefined_policy_choices=self.predefined_policy_choices,
+            formdata=self.request.params or None
+        )
         self.delete_form = ELBDeleteForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
             elb=self.elb,
@@ -797,6 +799,7 @@ class ELBView(BaseELBView):
 
 
 class ELBInstancesView(BaseELBView):
+    """ELB detail page - Instances tab"""
     TEMPLATE = '../templates/elbs/elb_instances.pt'
 
     def __init__(self, request, elb=None, elb_attrs=None, **kwargs):
@@ -809,7 +812,6 @@ class ELBInstancesView(BaseELBView):
         self.elb_form = ELBInstancesForm(
             self.request, elb=self.elb, cross_zone_enabled=self.cross_zone_enabled,
             formdata=self.request.params or None)
-        self.delete_form = ELBDeleteForm(self.request, formdata=self.request.params or None)
         filters_form = ELBInstancesFiltersForm(
             self.request, ec2_conn=self.ec2_conn, autoscale_conn=self.autoscale_conn,
             iam_conn=None, vpc_conn=self.vpc_conn,
@@ -999,6 +1001,7 @@ class ELBInstancesView(BaseELBView):
 
 
 class ELBHealthChecksView(BaseELBView):
+    """ELB detail page - Health Checks tab"""
     TEMPLATE = '../templates/elbs/elb_healthchecks.pt'
 
     def __init__(self, request, elb=None, **kwargs):
@@ -1055,6 +1058,7 @@ class ELBHealthChecksView(BaseELBView):
 
 
 class ELBMonitoringView(BaseELBView):
+    """ELB detail page - Monitoring tab"""
     TEMPLATE = '../templates/elbs/elb_monitoring.pt'
 
     def __init__(self, request, elb=None, **kwargs):
@@ -1103,6 +1107,10 @@ class CreateELBView(BaseELBView):
         self.backend_certificate_form = BackendCertificateForm(
             self.request, conn=self.ec2_conn, iam_conn=self.iam_conn, elb_conn=self.elb_conn,
             formdata=self.request.params or None)
+        self.security_policy_form = SecurityPolicyForm(
+            self.request, elb_conn=self.elb_conn, predefined_policy_choices=self.predefined_policy_choices,
+            formdata=self.request.params or None
+        )
         filter_keys = ['id', 'name', 'placement', 'state', 'security_groups', 'vpc_subnet_display', 'vpc_name']
         filters_form = ELBInstancesFiltersForm(
             self.request, ec2_conn=self.ec2_conn, autoscale_conn=self.autoscale_conn,
@@ -1119,6 +1127,7 @@ class CreateELBView(BaseELBView):
             latest_predefined_policy=self.get_latest_predefined_policy(),
             elb_security_policy=self.get_security_policy(),
             protocol_list=self.get_protocol_list(),
+            listener_list=[{'from_port': 80, 'to_port': 80, 'protocol': 'HTTP'}],  # Set HTTP listener by default
             security_group_placeholder_text=_(u'Select...'),
             is_vpc_supported=self.is_vpc_supported,
             avail_zones_placeholder_text=_(u'Select availability zones'),
