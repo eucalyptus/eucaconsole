@@ -232,7 +232,7 @@ angular.module('VolumePage', ['TagEditor', 'EucaConsoleUtils'])
             $http.get(url).success(function(oData) {
                 var results = oData ? oData.results : '';
                 if (results) {
-                    if (results.root_device_name == device_name) {
+                    if (results.root_device_name === device_name) {
                         $scope.pendingModalID = warnModalID;
                     } else {
                         $scope.pendingModalID = detachModalID;

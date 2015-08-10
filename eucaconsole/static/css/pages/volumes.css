@@ -136,6 +136,8 @@
 
 .status.deleted { background-color: #525960; }
 
+.status.failed { background-color: darkred; }
+
 .status.attaching { background-color: #0683c2; }
 
 .status.attached { background-color: #03405f; }

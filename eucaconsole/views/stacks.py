@@ -117,13 +117,15 @@ class StacksJsonView(LandingPageView):
     def stacks_json(self):
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
-        transitional_states = ['CREATE_IN_PROGRESS', 'ROLLBACK_IN_PROGRESS', 'DELETE_IN_PROGRESS']
+        transitional_states = ['CREATE_IN_PROGRESS', 'ROLLBACK_IN_PROGRESS', 'DELETE_IN_PROGRESS', 'CREATE_FAILED']
         with boto_error_handler(self.request):
             stacks_array = []
             for stack in self.filter_items(self.items):
                 is_transitional = stack.stack_status in transitional_states
                 name = stack.stack_name
                 status = stack.stack_status
+                if status == 'DELETE_COMPLETE':
+                    continue
                 stacks_array.append(dict(
                     creation_time=self.dt_isoformat(stack.creation_time),
                     status=status.lower().capitalize().replace('_', '-'),
@@ -152,7 +154,6 @@ class StackView(BaseView):
                 {'key': 'create-complete', 'label': _("Create Complete")},
                 {'key': 'create-in-progress', 'label': _("Create In Progresss")},
                 {'key': 'create-failed', 'label': _("Create Failed")},
-                {'key': 'delete-complete', 'label': _("Delete Complete")},
                 {'key': 'delete-in-progress', 'label': _("Delete In Progresss")},
                 {'key': 'delete-failed', 'label': _("Delete Failed")},
                 {'key': 'rollback-complete', 'label': _("Rollback Complete")},
