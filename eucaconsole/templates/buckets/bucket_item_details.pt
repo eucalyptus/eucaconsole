@@ -91,7 +91,7 @@
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="large-10 small-8 columns value right">
-                            <button class="button small" data-reveal-id="shared-url-modal" i18n:translate="">
+                            <button class="button round small" data-reveal-id="shared-url-modal" i18n:translate="">
                                 Share Private Link
                             </button>
                         </div>

@@ -33,7 +33,7 @@
                 ${panel('form_field', field=metadata_form['metadata_content_type'], leftcol_width=2, rightcol_width=10, leftcol_width_large=1, rightcol_width_large=11, ng_attrs={'model': 'newMetadataContentType'})}
             </div>
             <div class="row">
-                <div class="small-10 columns right">
+                <div class="small-11 columns right">
                     <a href="#" ng-click="addMetadata($event)" class="button round tiny" id="add-metadata-btn"
                        ng-disabled="addMetadataBtnDisabled" title="Add metadata pair" i18n:translate="">
                         Add Metadata Pair
