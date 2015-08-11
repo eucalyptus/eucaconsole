@@ -89,7 +89,7 @@
                             <a href="${item_link}" class="breakword" target="_blank">${item_link}</a>
                         </div>
                     </div>
-                    <div class="row controls-wrapper readonly">
+                    <div class="row controls-wrapper readonly" tal:condition="not item_is_public">
                         <div class="large-10 small-8 columns value right">
                             <button class="button round small" data-reveal-id="shared-url-modal" i18n:translate="">
                                 Share Private Link
