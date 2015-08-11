@@ -44,7 +44,9 @@ class VolumeLanding(LandingPage):
         self.tester.wait_for_text_present_by_xpath(self._volume_status_xpath.format(volume_id), "available", timeout_in_seconds)
 
     def verify_volume_status_is_deleted(self, volume_id, timeout_in_seconds):
-        self.tester.wait_for_text_present_by_xpath(self._volume_status_xpath.format(volume_id), "deleted", timeout_in_seconds)
+        # Note: Deleted volumes are filtered out from the landing page as of the 4.2 release of the console
+        volume_selector = '#table-id-column-{0}'.format(volume_id)
+        self.tester.wait_for_element_not_present_by_css(volume_selector)
 
     def verify_volume_status_is_attached(self, volume_id, timeout_in_seconds):
         self.tester.wait_for_text_present_by_xpath(self._volume_status_xpath.format(volume_id), "attached", timeout_in_seconds)

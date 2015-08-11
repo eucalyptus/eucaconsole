@@ -1838,6 +1838,7 @@ textarea.hidden.debug { display: block; }
 .reveal-modal [data-tooltip] { z-index: 99999999; }
 .reveal-modal h3 { font-weight: bold; }
 .reveal-modal h3#about-cloud:hover { color: #006699; }
+.reveal-modal h3.pagetitle { margin-left: 0; }
 .reveal-modal form .row.controls-wrapper { margin-bottom: 1rem; }
 .reveal-modal .tabs-content { border: none; }
 .reveal-modal .button.expand { margin-bottom: 0; }
