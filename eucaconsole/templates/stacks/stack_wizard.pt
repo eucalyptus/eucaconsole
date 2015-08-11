@@ -84,7 +84,7 @@
                                         <input type="radio" id="inputtype" name="inputtype" value="url" ng-model="inputtype"/>
                                         <label i18n:translate="">Use template from URL</label>
                                         <input type="url" id="template-url" name="template-url" ng-model="templateUrl" ng-show="inputtype=='url'"/>
-                                        <small class="error" i18n:translate="">The URL is invalid. Valid URL formats include http://example.com, https://example.com. Please change your URL.</small>
+                                        <small class="error" i18n:translate="">The URL format is invalid. Valid URL formats include http://*, https://*. Please change your URL format.</small>
                                     </div>
                                 </div>
                             </div>
