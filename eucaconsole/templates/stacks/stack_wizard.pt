@@ -62,7 +62,7 @@
                             <div class="row">
                                 <div class="small-12 columns value">
                                     <p class="description" i18n:translate="">
-                                        Your Cloudformation template will be stored in an S3 bucket.
+                                        Your CloudFormation template will be stored in an S3 bucket.
                                     </p>
                                 </div>
                             </div>
