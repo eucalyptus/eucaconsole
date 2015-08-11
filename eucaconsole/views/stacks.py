@@ -30,6 +30,7 @@ Pyramid views for Eucalyptus and AWS CloudFormation stacks
 """
 import simplejson as json
 import os
+import fnmatch
 import time
 import urllib2
 from urllib2 import HTTPError, URLError
@@ -46,12 +47,6 @@ from ..models import Notification
 from ..models.auth import User
 from ..views import LandingPageView, BaseView, JSONResponse, JSONError
 from . import boto_error_handler
-
-URL_PROTOCOL_WHITELIST = [
-    'http',
-    'https',
-    'ftp'
-]
 
 TEMPLATE_BODY_LIMIT = 460800
 
@@ -652,12 +647,22 @@ class StackWizardView(BaseView):
                 template_body = files[0].file.read()
                 template_name = files[0].name
             elif template_url:  # read from url
-                idx = template_url.find('://')
-                if idx == -1:
-                    raise JSONError(status=400, message=_(u'Invalid URL: ') + template_url)
-                protocol = template_url[:idx]
-                if protocol not in URL_PROTOCOL_WHITELIST:
-                    raise JSONError(status=400, message=_(u'URL protocol not allowed: ') + protocol)
+                whitelist = self.request.registry.settings.get('cloudformation.url.whitelist')
+                match = False
+                for pattern in whitelist.split(','):
+                    matches = fnmatch.fnmatch(template_url, pattern.strip())
+                    if matches:
+                        match = True
+                if not match:
+                    msg = _(u'The URL is invalid. Valid URLs can only include ')
+                    last_comma_idx = whitelist.rfind(',')
+                    if last_comma_idx != -1:
+                        whitelist = whitelist[:last_comma_idx] + _(u' or') + whitelist[last_comma_idx + 1:]
+                    msg = msg + whitelist + _(u' Please change your URL.')
+                    raise JSONError(
+                        status=400,
+                        message=msg
+                    )
                 try:
                     template_body = urllib2.urlopen(template_url).read(TEMPLATE_BODY_LIMIT)
                 except URLError:

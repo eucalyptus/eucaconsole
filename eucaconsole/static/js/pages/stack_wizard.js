@@ -295,6 +295,9 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
                 }
                 fd.append('template-file', file);
             }
+            if ($scope.inputtype === 'url' && $scope.templateUrl === '') {
+                return;
+            }
             $scope.loading = true;
             $http.post($scope.stackTemplateEndpoint, fd, {
                     headers: {'Content-Type': undefined},
