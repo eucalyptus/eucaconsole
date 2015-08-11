@@ -58,7 +58,7 @@ TEMPLATE_BODY_LIMIT = 460800
 
 
 class StackMixin(object):
-    def get_create_template_bucket(self, create=True):
+    def get_create_template_bucket(self, create=False):
         s3_conn = self.get_connection(conn_type="s3")
         account_id = User.get_account_id(ec2_conn=self.get_connection(), request=self.request)
         region = self.request.session.get('region')
@@ -215,7 +215,7 @@ class StackView(BaseView, StackMixin):
     def stack_view(self):
         if self.stack is None and self.request.matchdict.get('id') != 'new':
             raise HTTPNotFound
-        bucket = self.get_create_template_bucket(create=False)
+        bucket = self.get_create_template_bucket()
         stack_id = self.stack.stack_id[self.stack.stack_id.rfind('/') + 1:]
         keys = list(bucket.list(prefix=stack_id))
         if len(keys) > 0:
@@ -470,7 +470,7 @@ class StackWizardView(BaseView, StackMixin):
                         template_key=template_name,
                         description=parsed['Description'] if 'Description' in parsed else '',
                         parameters=params,
-                        template_bucket=self.get_create_template_bucket(create=False).name
+                        template_bucket=self.get_create_template_bucket().name
                     )
                 )
             except ValueError as json_err:
@@ -494,7 +494,7 @@ class StackWizardView(BaseView, StackMixin):
             template_body = json.dumps(parsed)
 
             # now, store it back in S3
-            bucket = self.get_create_template_bucket()
+            bucket = self.get_create_template_bucket(create=True)
             key = bucket.get_key(template_name)
             if key is None:
                 key = bucket.new_key(template_name)
@@ -656,7 +656,7 @@ class StackWizardView(BaseView, StackMixin):
                     parameters=params, tags=tags
                 )
                 stack_id = result[result.rfind('/') + 1:]
-                bucket = self.get_create_template_bucket()
+                bucket = self.get_create_template_bucket(create=True)
                 bucket.copy_key(
                     new_key_name="{0}-{1}".format(stack_id, template_name),
                     src_key_name=template_name,
@@ -678,7 +678,7 @@ class StackWizardView(BaseView, StackMixin):
         s3_template_key = self.request.params.get('s3-template-key')
         if s3_template_key:
             # pull previously uploaded...
-            bucket = self.get_create_template_bucket()
+            bucket = self.get_create_template_bucket(create=True)
             key = bucket.get_key(s3_template_key)
             template_name = s3_template_key
             template_body = key.get_contents_as_string()
@@ -724,7 +724,7 @@ class StackWizardView(BaseView, StackMixin):
                             template_body = fd.read()
 
             # now that we have it, store in S3
-            bucket = self.get_create_template_bucket()
+            bucket = self.get_create_template_bucket(create=True)
             key = bucket.get_key(template_name)
             if key is None:
                 key = bucket.new_key(template_name)
