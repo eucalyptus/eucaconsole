@@ -248,9 +248,10 @@ class ELBsFiltersForm(BaseSecureForm):
 
 class CreateELBForm(BaseSecureForm):
     """Create Elastic Load Balancer form"""
-    ELB_NAME_PATTERN = '^[a-z0-9-\.]+$'
+    ELB_NAME_PATTERN = '^[a-zA-Z0-9-]{1,32}$'
     name_error_msg = _(
-        'Name is required and may only contain lowercase letters, numbers, hyphens, and/or dots')
+        'Name is required, and may only contain alphanumeric characters, hyphens, '
+        'and/or dots. Length may not exceed 32 characters.')
     name = wtforms.TextField(
         label=_(u'Name'),
         validators=[validators.InputRequired(message=name_error_msg)],
