@@ -124,35 +124,43 @@
                 <em tal:condition="landingpage">{{ instanceName }}</em>
             </h3>
             <div ng-show="!(platform == 'windows')">
-                <p>
-                    <span i18n:translate="">To connect to your instance, be sure</span>
-                    <span ng-if="securityGroups.length == 1" i18n:translate="">security group</span>
-                    <span ng-if="securityGroups.length &gt; 1" i18n:translate="">at least one of the security groups</span>
-                    <strong ng-repeat="secgroup in securityGroups">
-                        {{ secgroup.name }}<span ng-if="!$last">, </span>
-                    </strong>
-                    <span i18n:translate="">
-                        has TCP port 22 open to inbound traffic and then perform the following steps
-                        (these instructions do not apply if you did not select a key pair when you launched this instance):
-                    </span>
-                </p>
-                <ol>
-                    <li i18n:translate="">Open an SSH terminal window.</li>
-                    <li>
+                <div ng-show="keyName">
+                    <p>
+                        <span i18n:translate="">To connect to your instance, be sure</span>
+                        <span ng-if="securityGroups.length == 1" i18n:translate="">security group</span>
+                        <span ng-if="securityGroups.length &gt; 1" i18n:translate="">at least one of the security groups</span>
+                        <strong ng-repeat="secgroup in securityGroups">
+                            {{ secgroup.name }}<span ng-if="!$last">, </span>
+                        </strong>
                         <span i18n:translate="">
-                            Change your directory to the one where you stored your key file
+                            has TCP port 22 open to inbound traffic and then perform the following steps
+                            (these instructions do not apply if you did not select a key pair when you launched this instance):
                         </span>
-                        <strong>{{ keyName }}.pem</strong>
-                    </li>
-                    <li>
-                        <span i18n:translate="">Run the following command to set the correct permissions for your key file:</span><br/>
-                        <strong>chmod 400 {{ keyName }}.pem</strong>
-                    </li>
-                    <li>
-                        <span i18n:translate="">Connect to your instance via its public IP address by running the following command:</span><br/>
-                        <strong>ssh -i {{ keyName }}.pem root@{{ instancePublicIP }}</strong>
-                    </li>
-                </ol>
+                    </p>
+                    <ol>
+                        <li i18n:translate="">Open an SSH terminal window.</li>
+                        <li>
+                            <span i18n:translate="">
+                                Change your directory to the one where you stored your key file
+                            </span>
+                            <strong>{{ keyName }}.pem</strong>
+                        </li>
+                        <li>
+                            <span i18n:translate="">Run the following command to set the correct permissions for your key file:</span><br/>
+                            <strong>chmod 400 {{ keyName }}.pem</strong>
+                        </li>
+                        <li>
+                            <span i18n:translate="">Connect to your instance via its public IP address by running the following command:</span><br/>
+                            <strong>ssh -i {{ keyName }}.pem root@{{ instancePublicIP }}</strong>
+                        </li>
+                    </ol>
+                </div>
+                <div ng-show="!keyName">
+                    <p i18n:translate="">
+                        You cannot connect to this instance using Secure Shell (SSH) because it does not have
+                        a key pair.  Key pairs are assigned at instance launch.
+                    </p>
+                </div>
             </div>
             <div ng-show="platform == 'windows'">
                 <p>

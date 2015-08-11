@@ -915,6 +915,9 @@ textarea.hidden {
         &#about-cloud:hover {
             color: $hp-hover-blue;
         }
+        &.pagetitle {
+            margin-left: 0;
+        }
     }
     form .row.controls-wrapper {
         margin-bottom: 1rem;
