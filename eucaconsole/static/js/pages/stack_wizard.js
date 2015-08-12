@@ -309,6 +309,7 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
                     $scope.loading = false;
                     $scope.s3TemplateKey = results.template_key;
                     $scope.description = results.description;
+                    $scope.templateBucket = results.template_bucket;
                     if (results.service_list && results.service_list.length > 0) {
                         $scope.serviceList = results.service_list;
                     }

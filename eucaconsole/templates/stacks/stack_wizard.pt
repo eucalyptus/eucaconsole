@@ -61,6 +61,13 @@
                             <h6 i18n:translate="">Template</h6>
                             <div class="row">
                                 <div class="small-12 columns value">
+                                    <p class="description" i18n:translate="">
+                                        Your CloudFormation template will be stored in an S3 bucket.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="small-12 columns value">
                                     <input type="radio" id="inputtype" name="inputtype" value="sample" ng-model="inputtype"/>
                                     <label i18n:translate="">Use sample template</label>
                                     <div id="sample-template-div" ng-show="inputtype=='sample'">
@@ -195,6 +202,10 @@
                     <div class="row" ng-show="stackName">
                         <label i18n:translate="">Name</label>
                         <div class="columns value">{{ stackName }}</div>
+                    </div>
+                    <div class="row" ng-show="templateBucket">
+                        <label i18n:translate="">Template bucket</label>
+                        <div class="columns value">{{ templateBucket }}</div>
                     </div>
                     <div class="row" ng-show="templateIdent">
                         <label i18n:translate="">Template</label>

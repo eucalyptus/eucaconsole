@@ -28,7 +28,9 @@
 Pyramid views for Eucalyptus and AWS CloudFormation stacks
 
 """
+import base64
 import simplejson as json
+import hashlib
 import os
 import fnmatch
 import time
@@ -49,6 +51,37 @@ from ..views import LandingPageView, BaseView, JSONResponse, JSONError
 from . import boto_error_handler
 
 TEMPLATE_BODY_LIMIT = 460800
+
+
+class StackMixin(object):
+    def get_create_template_bucket(self, create=False):
+        s3_conn = self.get_connection(conn_type="s3")
+        account_id = User.get_account_id(ec2_conn=self.get_connection(), request=self.request)
+        region = self.request.session.get('region')
+        for suffix in ['', 'a', 'b', 'c']:
+            d = hashlib.md5()
+            d.update(account_id)
+            d.update(suffix)
+            md5 = d.digest()
+            acct_hash = base64.b64encode(md5, '--')
+            acct_hash = acct_hash[:acct_hash.find('=')]
+            try:
+                bucket_name = "cf-template-{acct_hash}-{region}".format(
+                    acct_hash=acct_hash.lower(),
+                    region=region
+                )
+                if create:
+                    bucket = s3_conn.create_bucket(bucket_name)
+                else:
+                    bucket = s3_conn.get_bucket(bucket_name)
+                return bucket
+            except BotoServerError as err:
+                if err.code != 'BucketAlreadyExists' and err.code != 'AccessDenied':
+                    raise err
+        raise JSONError(status=500, message=_(
+            u'Cannot create S3 bucket to store your CloudFormation template due to namespace collision. '
+            u'Please contact your cloud administrator.'
+        ))
 
 
 class StacksView(LandingPageView):
@@ -139,7 +172,7 @@ class StacksJsonView(LandingPageView):
         return self.cloudformation_conn.describe_stacks() if self.cloudformation_conn else []
 
 
-class StackView(BaseView):
+class StackView(BaseView, StackMixin):
     """Views for single stack"""
     TEMPLATE = '../templates/stacks/stack_view.pt'
 
@@ -179,6 +212,17 @@ class StackView(BaseView):
     def stack_view(self):
         if self.stack is None and self.request.matchdict.get('id') != 'new':
             raise HTTPNotFound
+        bucket = self.get_create_template_bucket()
+        stack_id = self.stack.stack_id[self.stack.stack_id.rfind('/') + 1:]
+        keys = list(bucket.list(prefix=stack_id))
+        if len(keys) > 0:
+            key = keys[0].key
+            name = key[key.rfind('-') + 1:]
+            self.render_dict['template_bucket'] = bucket.name
+            self.render_dict['template_key'] = key
+            self.render_dict['template_name'] = name
+        else:
+            self.render_dict['template_name'] = None
         return self.render_dict
 
     @view_config(route_name='stack_delete', request_method='POST', renderer=TEMPLATE)
@@ -335,7 +379,7 @@ class StackStateView(BaseView):
         return url
 
 
-class StackWizardView(BaseView):
+class StackWizardView(BaseView, StackMixin):
     """View for Create Stack wizard"""
     TEMPLATE = '../templates/stacks/stack_wizard.pt'
 
@@ -423,7 +467,8 @@ class StackWizardView(BaseView):
                     results=dict(
                         template_key=template_name,
                         description=parsed['Description'] if 'Description' in parsed else '',
-                        parameters=params
+                        parameters=params,
+                        template_bucket=self.get_create_template_bucket().name
                     )
                 )
             except ValueError as json_err:
@@ -447,7 +492,7 @@ class StackWizardView(BaseView):
             template_body = json.dumps(parsed)
 
             # now, store it back in S3
-            bucket = self.get_create_template_bucket()
+            bucket = self.get_create_template_bucket(create=True)
             key = bucket.get_key(template_name)
             if key is None:
                 key = bucket.new_key(template_name)
@@ -462,12 +507,6 @@ class StackWizardView(BaseView):
                     parameters=params
                 )
             )
-
-    def get_create_template_bucket(self):
-        s3_conn = self.get_connection(conn_type="s3")
-        account_id = User.get_account_id(ec2_conn=self.get_connection(), request=self.request)
-        region = self.request.session.get('region')
-        return s3_conn.create_bucket("cf-template-{acct}-{region}".format(acct=account_id, region=region))
 
     @staticmethod
     def get_s3_template_url(key):
@@ -610,10 +649,19 @@ class StackWizardView(BaseView):
             with boto_error_handler(self.request, location):
                 cloudformation_conn = self.get_connection(conn_type='cloudformation')
                 self.log_request(u"Creating stack:{0}".format(stack_name))
-                cloudformation_conn.create_stack(
+                result = cloudformation_conn.create_stack(
                     stack_name, template_url=template_url, capabilities=capabilities,
                     parameters=params, tags=tags
                 )
+                stack_id = result[result.rfind('/') + 1:]
+                bucket = self.get_create_template_bucket(create=True)
+                bucket.copy_key(
+                    new_key_name="{0}-{1}".format(stack_id, template_name),
+                    src_key_name=template_name,
+                    src_bucket_name=bucket.name
+                )
+                bucket.delete_key(template_name)
+
                 msg = _(u'Successfully sent create stack request. '
                         u'It may take a moment to create the stack.')
                 queue = Notification.SUCCESS
@@ -628,7 +676,7 @@ class StackWizardView(BaseView):
         s3_template_key = self.request.params.get('s3-template-key')
         if s3_template_key:
             # pull previously uploaded...
-            bucket = self.get_create_template_bucket()
+            bucket = self.get_create_template_bucket(create=True)
             key = bucket.get_key(s3_template_key)
             template_name = s3_template_key
             template_body = key.get_contents_as_string()
@@ -645,7 +693,7 @@ class StackWizardView(BaseView):
                     raise JSONError(status=400, message=_(u'File too large: ') + files[0].filename)
                 files[0].file.seek(0, 0)  # seek to start
                 template_body = files[0].file.read()
-                template_name = files[0].name
+                template_name = files[0].filename
             elif template_url:  # read from url
                 whitelist = self.request.registry.settings.get('cloudformation.url.whitelist')
                 match = False
@@ -684,7 +732,7 @@ class StackWizardView(BaseView):
                             template_body = fd.read()
 
             # now that we have it, store in S3
-            bucket = self.get_create_template_bucket()
+            bucket = self.get_create_template_bucket(create=True)
             key = bucket.get_key(template_name)
             if key is None:
                 key = bucket.new_key(template_name)
