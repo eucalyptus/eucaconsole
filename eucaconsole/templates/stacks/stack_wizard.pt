@@ -197,7 +197,7 @@
                     </div>
                     <div class="row" ng-show="templateIdent">
                         <label i18n:translate="">Template</label>
-                        <div class="columns value">{{ templateIdent }}</div>
+                        <div class="columns value breakword">{{ templateIdent }}</div>
                     </div>
                     <div class="row" ng-show="description || loading">
                         <label i18n:translate="">Description</label>
