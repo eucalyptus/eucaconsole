@@ -52,7 +52,7 @@
                             tal:define="html_attrs_val {'class': 'text-input'};">
                             <div ng-cloak="true">
                                 <h6 i18n:translate="">General</h6>
-                                ${panel('form_field', field=create_form['name'], leftcol_width=0, rightcol_width=12, leftcol_width_large=0, rightcol_width_large=12, stack_label=True, ng_attrs={'model': 'elbName'}, pattern=layout.name_without_spaces_pattern, **html_attrs_val)}
+                                ${panel('form_field', field=create_form['name'], stack_label=True, ng_attrs={'model': 'elbName'}, pattern=create_form.ELB_NAME_PATTERN, **html_attrs_val)}
                             </div>
                             <hr />
                             <div>
