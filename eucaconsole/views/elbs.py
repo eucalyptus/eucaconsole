@@ -29,6 +29,7 @@ Pyramid views for Eucalyptus and AWS elbs
 
 """
 import itertools
+import logging
 import simplejson as json
 import time
 
@@ -196,7 +197,7 @@ class ELBsJsonView(LandingPageView, CloudWatchAPIMixin):
             cw_conn=self.cw_conn, period=period, duration=duration, metric='Latency',
             namespace='AWS/ELB', idtype='LoadBalancerName', ids=[elb.name])
         if stats:
-            return sum(stat.get('Average') * 1000 for stat in stats)/len(stats)
+            return sum(stat.get('Average') * 1000 for stat in stats) / len(stats)
         return None
 
 
@@ -344,16 +345,19 @@ class BaseELBView(TaggedItemView):
                     bucket_prefix_key, bucket_name))
                 new_folder = bucket.new_key(bucket_prefix_key)
                 new_folder.set_contents_from_string('')
-            # TODO: Set bucket ACL to allow ELB access logs to be captured
-            # self.configure_logging_bucket_acl()
+            self.configure_logging_bucket_acl(bucket)
 
     def configure_logging_bucket_acl(self, bucket=None):
         if self.cloud_type == 'aws':
             # Get AWS ELB account ID based on region
             grant_id = AWS_ELB_ACCOUNT_IDS.get(self.region)
         else:
-            # TODO: Set canned ELB account id for Eucalyptus
-            grant_id = '123456789'
+            admin = self.get_connection(conn_type='admin')
+            elb_svc = admin.get_all_services(service_type='loadbalancing')
+            # log additional info for unexpected condition
+            if len(elb_svc) < 1 and len(elb_svc[0].accounts) < 1:
+                logging.error('ERROR: Eucalyptus end not returning account info with loadbalancing service!')
+            grant_id = elb_svc[0].accounts[0].account_number
         sharing_acl = ACL()
         sharing_acl.add_grant(Grant(
             permission='WRITE',
@@ -423,7 +427,7 @@ class BaseELBView(TaggedItemView):
                 elb_ssl_protocols = json.loads(req_params.get('elb_ssl_protocols', '[]'))
                 elb_ssl_ciphers = json.loads(req_params.get('elb_ssl_ciphers', '[]'))
                 using_server_order_pref = req_params.get('elb_ssl_server_order_pref') == 'on'
-                policy_name = '{0}-{1}'.format(ELB_CUSTOM_SECURITY_POLICY_NAME_PREFIX,  random_string)
+                policy_name = '{0}-{1}'.format(ELB_CUSTOM_SECURITY_POLICY_NAME_PREFIX, random_string)
                 policy_attributes = {'Reference-Security-Policy': latest_predefined_policy}
                 for protocol in elb_ssl_protocols:
                     policy_attributes.update({protocol: True})
