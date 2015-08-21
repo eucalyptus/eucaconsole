@@ -695,7 +695,7 @@ class StackWizardView(BaseView, StackMixin):
                 template_body = files[0].file.read()
                 template_name = files[0].filename
             elif template_url:  # read from url
-                whitelist = self.request.registry.settings.get('cloudformation.url.whitelist')
+                whitelist = self.request.registry.settings.get('cloudformation.url.whitelist', 'http://*, https://*')
                 match = False
                 for pattern in whitelist.split(','):
                     matches = fnmatch.fnmatch(template_url, pattern.strip())
