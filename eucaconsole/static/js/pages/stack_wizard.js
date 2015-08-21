@@ -280,6 +280,7 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
             $('#s3-template-key').val('');
             $scope.serviceList = undefined;
             $scope.resourceList = undefined;
+            $scope.parameterList = undefined;
             $scope.propertyList = undefined;
             var fd = new FormData();
             // fill from actual form
