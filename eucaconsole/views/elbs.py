@@ -356,7 +356,7 @@ class BaseELBView(TaggedItemView):
             elb_svc = admin.get_all_services(service_type='loadbalancing')
             # log additional info for unexpected condition
             if len(elb_svc) < 1 and len(elb_svc[0].accounts) < 1:
-                logging.error('ERROR: Eucalyptus end not returning account info with loadbalancing service!')
+                logging.error('ERROR: Eucalyptus not returning account info with loadbalancing service!')
             grant_id = elb_svc[0].accounts[0].account_number
         sharing_acl = ACL()
         sharing_acl.add_grant(Grant(
