@@ -295,6 +295,9 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
                 }
                 fd.append('template-file', file);
             }
+            if ($scope.inputtype === 'url' && $scope.templateUrl === '') {
+                return;
+            }
             $scope.loading = true;
             $http.post($scope.stackTemplateEndpoint, fd, {
                     headers: {'Content-Type': undefined},
@@ -306,6 +309,7 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
                     $scope.loading = false;
                     $scope.s3TemplateKey = results.template_key;
                     $scope.description = results.description;
+                    $scope.templateBucket = results.template_bucket;
                     if (results.service_list && results.service_list.length > 0) {
                         $scope.serviceList = results.service_list;
                     }

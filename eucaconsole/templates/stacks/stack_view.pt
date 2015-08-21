@@ -164,6 +164,12 @@
                     <div class="columns section">
                         &nbsp;
                         <h6 i18n:translate="">Template</h6>
+                        <div class="row controls-wrapper readonly" tal:condition="template_name">
+                            <div class="small-2 columns"><label i18n:translate="" class="right">Name</label></div>
+                            <div class="small-10 columns value">
+                                <a href="${request.route_path('bucket_item_details', name=template_bucket, subpath=template_key)}">${template_name}</a>
+                            </div>
+                        </div>
                         <div class="row controls-wrapper readonly">
                             <div class="small-2 columns"><label i18n:translate="" class="right">Description</label></div>
                             <div class="small-10 columns value">${stack_description}&nbsp;

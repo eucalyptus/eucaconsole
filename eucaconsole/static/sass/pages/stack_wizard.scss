@@ -57,6 +57,14 @@ $template-indent: 1.5rem;
     width: 90%;
 }
 
+small.error {
+    margin-left: $template-indent;
+}
+
+.error label {
+    color: $euca-grey;
+}
+
 #userdatalabel {
     right: 0;
 }

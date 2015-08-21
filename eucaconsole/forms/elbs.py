@@ -328,7 +328,10 @@ class ELBsFiltersForm(BaseSecureForm):
 
 class CreateELBForm(ELBHealthChecksForm):
     """Create Elastic Load Balancer form"""
-    name_error_msg = NAME_WITHOUT_SPACES_NOTICE
+    ELB_NAME_PATTERN = '^[a-zA-Z0-9-]{1,32}$'
+    name_error_msg = _(
+        'Name is required, and may only contain alphanumeric characters and/or hyphens. '
+        'Length may not exceed 32 characters.')
     name = wtforms.TextField(
         label=_(u'Name'),
         validators=[validators.InputRequired(message=name_error_msg)],
