@@ -255,8 +255,8 @@
                         <div class="columns value">{{ instanceZone || 'no preference' }}</div>
                     </div>
                     <div class="row">
-                        <label i18n:translate="">Names</label>
-                        <div class="columns value">
+                        <label i18n:translate="">Name(s)</label>
+                        <div class="columns value breakword">
                             <span ng-repeat="instanceName in instanceNames">
                                 {{ instanceName }}<span ng-show="!$last">, </span>
                             </span>
@@ -286,11 +286,11 @@
                     </div>
                     <div class="row">
                         <label i18n:translate="">Key</label>
-                        <div class="columns value">{{ keyPair }}</div>
+                        <div class="columns value breakword">{{ keyPair }}</div>
                     </div>
                     <div class="row">
                         <label i18n:translate="">Security group</label>
-                        <div class="columns value" ng-repeat="sgroup in securityGroups">
+                        <div class="columns value breakword" ng-repeat="sgroup in securityGroups">
                             {{ securityGroupChoices[sgroup] }}
                         </div>
                     </div>

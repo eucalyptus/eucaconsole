@@ -109,6 +109,10 @@
     .value {
         word-break: break-all;
         line-height: 1rem;
+        &.breakword {
+            word-break: normal;
+            word-wrap: break-word;
+        }
     }
     .row {
         margin-bottom: 5px;
