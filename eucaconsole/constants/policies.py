@@ -65,10 +65,12 @@ MONITOR_ACCESS_POLICY = {
             "Effect": "Allow",
             "Action": [
                 "autoscaling:Describe*",
+                "cloudformation:Describe*",
                 "cloudwatch:Describe*",
                 "cloudwatch:Get*",
                 "cloudwatch:List*",
                 "ec2:Describe*",
+                "elasticloadbalancing:Describe*",
                 "s3:Get*",
                 "s3:List*",
             ],
