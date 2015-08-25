@@ -682,6 +682,14 @@ class GuiEC2(GuiTester):
     def disassociate_eip_from_eip_detail_page(self):
         NotImplementedError
 
+    def disassociate_ip_from_instance_detail_page(self):
+        NotImplementedError
+
+    def disassociate_eip_from_instances_lp(self):
+        NotImplementedError
+
+
+
 
 
 
