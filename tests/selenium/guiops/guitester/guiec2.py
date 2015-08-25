@@ -664,6 +664,12 @@ class GuiEC2(GuiTester):
     def allocate_eip_from_dashboard(self):
         NotImplementedError
 
+    def release_eip_from_eip_lp(self):
+        NotImplementedError
+
+    def release_eip_from_eip_detail_page(self):
+        NotImplementedError
+
     def associate_eip_from_eip_lp(self):
         NotImplementedError
 
