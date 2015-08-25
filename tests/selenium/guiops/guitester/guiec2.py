@@ -670,6 +670,18 @@ class GuiEC2(GuiTester):
     def associate_eip_from_instances_lp(self):
         NotImplementedError
 
+    def associate_eip_from_instance_detail_page(self):
+        NotImplementedError
+
+    def associate_eip_from_eip_detail_page(self):
+        NotImplementedError
+
+    def disassociate_eip_from_eip_lp(self):
+        NotImplementedError
+
+    def disassociate_eip_from_eip_detail_page(self):
+        NotImplementedError
+
 
 
 
