@@ -23,6 +23,7 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+import logging
 import string
 
 from random import choice
@@ -34,6 +35,7 @@ def setup_tweens(config):
 
     config.add_tween('eucaconsole.tweens.https_tween_factory')
     config.add_tween('eucaconsole.tweens.request_id_tween_factory')
+    config.add_tween('eucaconsole.tweens.usage_log_tween_factory')
     config.add_tween('eucaconsole.tweens.CTHeadersTweenFactory')
 
 
@@ -50,6 +52,23 @@ def request_id_tween_factory(handler, registry):
     def tween(request):
         chars = string.letters + string.digits
         request.id = ''.join(choice(chars) for i in range(16))
+        response = handler(request)
+        return response
+    return tween
+
+def usage_log_tween_factory(handler, registry):
+    def tween(request):
+        method = request.environ['REQUEST_METHOD']
+        path = request.environ['PATH_INFO']
+        remote_addr = request.environ['REMOTE_ADDR']
+        content_type = request.environ['CONTENT_TYPE'] if request.environ.has_key('CONTENT_TYPE') else ''
+        if method == 'GET' and path.find('static') == -1:
+            is_xhr = request.environ.has_key('HTTP_X_REQUESTED_WITH')
+            if not is_xhr:
+                # assume this is a page root
+                logging.info('user-nav: {0} {1}'.format(remote_addr, path))
+        if method == 'POST' and (path.find('json') == -1 or content_type == 'application/x-www-form-urlencoded'):
+            logging.info('user-action: {0} {1}'.format(remote_addr, path))
         response = handler(request)
         return response
     return tween
