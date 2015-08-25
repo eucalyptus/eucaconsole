@@ -547,7 +547,6 @@ class SeleniumApi(object):
         print "Getting text by css = '{0}'".format(css)
         return self.driver.find_element_by_css_selector(css).text
 
-
     def store_text_by_xpath(self, xpath):
         """
         Stores visible text.

@@ -21,7 +21,13 @@ from dialogs.instance_dialogs import LaunchInstanceWizard, LaunchMoreLikeThisDia
 from dialogs.volume_dialogs import CreateVolumeDialog, DeleteVolumeModal, AttachVolumeModalSelectInstance, AttachVolumeModalSelectVolume, DetachVolumeModal
 from dialogs.snapshot_dialogs import CreateSnapshotModal, DeleteSnapshotModal, RegisterSnapshotAsImageModal
 from dialogs.image_dialogs import RemoveImageFromCloudDialog
+import logging
 
+logger = logging.getLogger('testlogger')
+hdlr = logging.FileHandler('/tmp/testlog.log')
+formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
+hdlr.setFormatter(formatter)
+logger.setLevel(logging.WARNING)
 
 class GuiEC2(GuiTester):
 
@@ -649,11 +655,20 @@ class GuiEC2(GuiTester):
         ImageLanding(self).click_action_remove_image_from_cloud(image_id)
         RemoveImageFromCloudDialog(self).remove_image(delete_associated_snapshot)
 
-
     def register_snapshot_as_an_image_from_snapshot_detail_page(self):
         NotImplementedError()
 
+    def allocate_ip_from_eip_lp(self):
+        NotImplementedError
 
+    def allocate_eip_from_dashboard(self):
+        NotImplementedError
+
+    def associate_eip_from_eip_lp(self):
+        NotImplementedError
+
+    def associate_eip_from_instances_lp(self):
+        NotImplementedError
 
 
 
