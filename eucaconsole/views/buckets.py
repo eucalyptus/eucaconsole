@@ -46,8 +46,8 @@ from pyramid.view import view_config
 
 from ..forms.buckets import (
     BucketDetailsForm, BucketItemDetailsForm, SharingPanelForm, BucketUpdateVersioningForm,
-    MetadataForm, CreateBucketForm, CreateFolderForm, BucketDeleteForm, BucketUploadForm
-)
+    MetadataForm, CreateBucketForm, CreateFolderForm, BucketDeleteForm, BucketUploadForm,
+    BucketItemSharedURLForm)
 from ..i18n import _
 from ..models import Notification
 from ..views import BaseView, LandingPageView, JSONResponse
@@ -854,18 +854,22 @@ class BucketItemDetailsView(BaseView, BucketMixin):
             formdata=self.request.params or None)
         self.versioning_form = BucketUpdateVersioningForm(request, formdata=self.request.params or None)
         self.metadata_form = MetadataForm(request, formdata=self.request.params or None)
+        self.shared_url_form = BucketItemSharedURLForm(request, formdata=self.request.params or None)
         self.render_dict = dict(
             sharing_form=self.sharing_form,
             details_form=self.details_form,
             versioning_form=self.versioning_form,
             metadata_form=self.metadata_form,
+            shared_url_form=self.shared_url_form,
             bucket=self.bucket,
             bucket_name=self.bucket.name,
             bucket_item=self.bucket_item,
             last_modified=self.get_last_modified_time(self.bucket_item),
             key_name=self.bucket_item.name,
             item_name=unprefixed_name,
-            item_link=self.bucket_item.generate_url(expires_in=BUCKET_ITEM_URL_EXPIRES),
+            item_link=self.get_unsigned_url(),
+            item_is_public=self.get_public_status(grants=self.bucket_item_acl.acl.grants),
+            item_open_url=self.bucket_item.generate_url(expires_in=BUCKET_ITEM_URL_EXPIRES),
             item_download_url=BucketContentsView.get_item_download_url(self.bucket_item),
             cancel_link_url=self.get_cancel_link_url(),
         )
@@ -877,6 +881,8 @@ class BucketItemDetailsView(BaseView, BucketMixin):
                 'bucket_contents', name=self.bucket_name, subpath=self.request.subpath[:-1]),
             'make_object_public_url': self.request.route_path(
                 'bucket_item_make_public', name=self.bucket_name, subpath='_subpath_'),
+            'bucket_item_generate_url_endpoint': self.request.route_path(
+                'bucket_item_generate_url', name=self.bucket_name, subpath=self.request.subpath),
             'bucket_item_key': self.bucket_item_name,
             'unprefixed_key': BucketContentsView.get_unprefixed_key_name(self.bucket_item.name)
         }))
@@ -913,6 +919,14 @@ class BucketItemDetailsView(BaseView, BucketMixin):
             self.request.error_messages = self.details_form.get_errors_list()
         return self.render_dict
 
+    @view_config(route_name='bucket_item_generate_url', renderer='json', request_method='POST')
+    def bucket_item_generate_url(self):
+        item = self.get_bucket_item()
+        expiration = int(self.request.params.get('expiration', 3600))
+        return dict(
+            shared_link=item.generate_url(expires_in=expiration)
+        )
+
     def get_bucket_item(self):
         subpath = self.request.subpath
         item_key_name = DELIMITER.join(subpath)
@@ -920,6 +934,27 @@ class BucketItemDetailsView(BaseView, BucketMixin):
         if item is None:  # Folder requires the trailing slash, which request.subpath omits
             item = self.bucket.get_key(u'{0}/'.format(item_key_name))
         return item
+
+    def get_unsigned_url(self):
+        """Returns unsigned URL for object with query string removed"""
+        item_url = self.bucket_item.generate_url(expires_in=0, query_auth=False)
+        return item_url.split('?')[0]
+
+    @staticmethod
+    def get_public_status(grants=None):
+        """Determine whether an object is public based on its ACL grants
+        :type grants: list
+        :param grants: List of boto.s3.acl.Grant objects
+        :returns: True if object is public, else False
+        :rtype: bool
+
+        """
+        all_users_uri = 'http://acs.amazonaws.com/groups/global/AllUsers'
+        grants = grants or []
+        for grant in grants:
+            if grant.uri and grant.uri == all_users_uri:
+                return True
+        return False
 
     def update_metadata(self):
         """Update metadata and remove deleted metadata"""
@@ -1091,3 +1126,4 @@ class CreateBucketView(BaseView):
 
     def get_existing_bucket_names(self):
         return [bucket.name for bucket in self.s3_conn.get_all_buckets()]
+

@@ -1,6 +1,7 @@
 <metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
 <head metal:fill-slot="head_css">
+    <meta http-equiv="refresh" content="300" /><!--! Reload page to refresh generated download URLs every 5 min -->
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/bucket_item_details.css')}" />
 </head>
 
@@ -34,6 +35,9 @@
             <div class="panel has-actions">
                 <metal:block metal:use-macro="layout.global_macros['actions_menu']">
                     <metal:actions metal:fill-slot="actions">
+                        <li>
+                            <a href="${item_open_url}" id="open-action" target="_blank" i18n:translate="">Open</a>
+                        </li>
                         <li>
                             <a href="${item_download_url}" id="download-action" i18n:translate="">Download</a>
                         </li>
@@ -75,7 +79,21 @@
                     <div class="row controls-wrapper readonly">
                         <div class="large-2 small-4 columns"><label i18n:translate="">Link</label></div>
                         <div class="large-10 small-8 columns value">
-                            <a href="${item_link}" class="breakword" target="_blank">${item_link.split('?')[0]}</a>
+                            <i class="fa fa-unlock" tal:condition="item_is_public" data-tooltip="" i18n:attributes="title"
+                               title="This is a public link. Anyone with the link can access it."
+                               ></i>
+                            <i class="fa fa-lock" tal:condition="not item_is_public" data-tooltip="" i18n:attributes="title"
+                               title="This is a private link. Use the actions menu to make it public,
+                                      or click the Share button to create a shareable private link"
+                               ></i>
+                            <a href="${item_link}" class="breakword" target="_blank">${item_link}</a>
+                        </div>
+                    </div>
+                    <div class="row controls-wrapper readonly" tal:condition="not item_is_public">
+                        <div class="large-10 small-8 columns value right">
+                            <button class="button round small" data-reveal-id="shared-url-modal" i18n:translate="">
+                                Share Private Link
+                            </button>
                         </div>
                     </div>
                     <hr />
@@ -103,7 +121,9 @@
                 </div> 
             </div>
         </div>
+        <!-- Modal dialogs -->
         ${panel('bucket_item_dialogs')}
+        ${panel('bucket_item_shared_url_dialog', shared_url_form=shared_url_form)}
     </div>
 </div>
 
