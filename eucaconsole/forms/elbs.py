@@ -75,7 +75,39 @@ class CertificateARNRequired(validators.Required):
             super(CertificateARNRequired, self).__call__(form, field)
 
 
-class ELBForm(BaseSecureForm):
+class ELBAccessLogsFormMixin(object):
+    logging_enabled = wtforms.BooleanField(label=_(u'Enable logging'))
+    bucket_name_error_msg = _(u'Bucket name is required')
+    bucket_name_help_text = _(u'Choose from your existing buckets, or enter a name to create a new bucket.')
+    bucket_name = wtforms.SelectField(
+        label=_(u'Bucket name'),
+        validators=[validators.InputRequired(message=bucket_name_error_msg)],
+    )
+    bucket_prefix_help_text = _(
+        u"The path to your log file within the bucket. "
+        u"If not specified, log will be created at the bucket's root level")
+    bucket_prefix = TextEscapedField(label=_(u'Prefix'))
+    collection_interval = wtforms.SelectField(
+        label=_(u'Collection interval'),
+    )
+
+    def set_access_logs_initial_data(self):
+        if not self.kwargs.get('formdata'):
+            access_logs = self.elb_conn.get_lb_attribute(self.elb.name, 'accessLog')
+            self.logging_enabled.data = access_logs.enabled
+            self.bucket_name.data = access_logs.s3_bucket_name
+            self.bucket_prefix.data = access_logs.s3_bucket_prefix
+            self.collection_interval.data = '5' if access_logs.emit_interval == 5 else '60'
+
+    @staticmethod
+    def get_collection_interval_choices():
+        return [
+            (u'60', _(u'60 minutes')),
+            (u'5', _(u'5 minutes')),
+        ]
+
+
+class ELBForm(BaseSecureForm, ELBAccessLogsFormMixin):
     """Elastic Load Balancer update form (General tab)"""
     idle_timeout = wtforms.IntegerField(
         label=_(u'Idle timeout (secs)'),
@@ -88,16 +120,23 @@ class ELBForm(BaseSecureForm):
         label=_(u'Security groups'),
     )
 
-    def __init__(self, request, conn=None, vpc_conn=None, elb=None, securitygroups=None, **kwargs):
+    def __init__(self, request, conn=None, vpc_conn=None, elb=None, elb_conn=None, s3_conn=None,
+                 securitygroups=None, **kwargs):
         super(ELBForm, self).__init__(request, **kwargs)
         self.conn = conn
         self.vpc_conn = vpc_conn
+        self.elb_conn = elb_conn
+        self.elb = elb
+        self.kwargs = kwargs
         self.cloud_type = request.session.get('cloud_type', 'euca')
         self.is_vpc_supported = BaseView.is_vpc_supported(request)
         self.security_groups = securitygroups or []
+        self.s3_choices_manager = ChoicesManager(conn=s3_conn)
         self.idle_timeout.help_text = self.idle_timeout_help_text
         self.set_error_messages()
         self.set_choices()
+        self.set_help_text()
+        self.set_access_logs_initial_data()
         if elb is not None:
             self.idle_timeout.data = self.get_idle_timeout(elb)
 
@@ -106,6 +145,12 @@ class ELBForm(BaseSecureForm):
 
     def set_choices(self):
         self.securitygroup.choices = self.set_security_group_choices()
+        self.bucket_name.choices = self.s3_choices_manager.buckets()
+        self.collection_interval.choices = self.get_collection_interval_choices()
+
+    def set_help_text(self):
+        self.bucket_name.help_text = self.bucket_name_help_text
+        self.bucket_prefix.help_text = self.bucket_prefix_help_text
 
     def set_security_group_choices(self):
         choices = []
@@ -127,7 +172,7 @@ class ELBForm(BaseSecureForm):
                 return elb_attrs.connecting_settings.idle_timeout
 
 
-class ELBHealthChecksForm(BaseSecureForm):
+class ELBHealthChecksForm(BaseSecureForm, ELBAccessLogsFormMixin):
     """ELB Health Checks form"""
     ping_protocol_error_msg = _(u'Ping protocol is required')
     ping_protocol = wtforms.SelectField(
@@ -169,21 +214,6 @@ class ELBHealthChecksForm(BaseSecureForm):
         label=_(u'Passes until healthy'),
         validators=[validators.InputRequired(message=passes_until_healthy_error_msg)],
     )
-    # Access logs fields
-    logging_enabled = wtforms.BooleanField(label=_(u'Enable logging'))
-    bucket_name_error_msg = _(u'Bucket name is required')
-    bucket_name_help_text = _(u'Choose from your existing buckets, or enter a name to create a new bucket.')
-    bucket_name = wtforms.SelectField(
-        label=_(u'Bucket name'),
-        validators=[validators.InputRequired(message=bucket_name_error_msg)],
-    )
-    bucket_prefix_help_text = _(
-        u"The path to your log file within the bucket. "
-        u"If not specified, log will be created at the bucket's root level")
-    bucket_prefix = TextEscapedField(label=_(u'Prefix'))
-    collection_interval = wtforms.SelectField(
-        label=_(u'Collection interval'),
-    )
 
     def __init__(self, request, s3_conn=None, elb_conn=None, elb=None, **kwargs):
         super(ELBHealthChecksForm, self).__init__(request, **kwargs)
@@ -210,14 +240,6 @@ class ELBHealthChecksForm(BaseSecureForm):
             self.passes_until_healthy.data = str(self.elb.health_check.healthy_threshold)
             self.set_access_logs_initial_data()
 
-    def set_access_logs_initial_data(self):
-        if not self.kwargs.get('formdata'):
-            access_logs = self.elb_conn.get_lb_attribute(self.elb.name, 'accessLog')
-            self.logging_enabled.data = access_logs.enabled
-            self.bucket_name.data = access_logs.s3_bucket_name
-            self.bucket_prefix.data = access_logs.s3_bucket_prefix
-            self.collection_interval.data = '5' if access_logs.emit_interval == 5 else '60'
-
     def set_health_check_error_messages(self):
         self.ping_path.error_msg = self.ping_path_error_msg
         self.bucket_name.error_msg = self.bucket_name_error_msg
@@ -227,7 +249,6 @@ class ELBHealthChecksForm(BaseSecureForm):
         self.time_between_pings.choices = self.get_time_between_pings_choices()
         self.failures_until_unhealthy.choices = self.get_failures_until_unhealthy_choices()
         self.passes_until_healthy.choices = self.get_passes_until_healthy_choices()
-        self.collection_interval.choices = self.get_collection_interval_choices()
         self.bucket_name.choices = self.s3_choices_manager.buckets()
 
     def set_health_check_help_text(self):
@@ -268,13 +289,6 @@ class ELBHealthChecksForm(BaseSecureForm):
     @staticmethod
     def get_passes_until_healthy_choices():
         return [(str(x), str(x)) for x in range(2, 11)]
-
-    @staticmethod
-    def get_collection_interval_choices():
-        return [
-            (u'60', _(u'60 minutes')),
-            (u'5', _(u'5 minutes')),
-        ]
 
 
 class ELBInstancesForm(BaseSecureForm):

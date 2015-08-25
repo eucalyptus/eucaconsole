@@ -84,6 +84,21 @@
                     <div>
                         ${panel('tag_editor',tags=elb_tags, show_name_tag=True)}
                     </div>
+                    <hr />
+                    <h6 class="section-label" i18n:translate="">Access logs</h6>
+                    ${panel('form_field', field=elb_form['logging_enabled'], reverse=True, ng_attrs=dict(model='loggingEnabled'))}
+                    <div ng-show="loggingEnabled" id="access-logs-wrapper">
+                        <p i18n:translate="">
+                            Specify where your logs should be stored in the cloud.
+                        </p>
+                        ${panel('form_field', field=elb_form['bucket_name'], ng_attrs=dict(model='bucketName', options='k as v for (k, v) in bucketNameChoices'), stack_label=True)}
+                        <div id="create-bucket-link">
+                            <span i18n:translate="">OR:</span>
+                            <a i18n:translate="" data-reveal-id="create-bucket-modal">Create bucket</a>
+                        </div>
+                        ${panel('form_field', field=elb_form['bucket_prefix'], stack_label=True)}
+                        ${panel('form_field', field=elb_form['collection_interval'], stack_label=True)}
+                    </div>
                     <div tal:condition="is_vpc_supported and elb_vpc_network is not 'None'"
                             tal:define="security_group_attrs {'data-placeholder': security_group_placeholder_text};">
                         <hr />
@@ -117,6 +132,8 @@
         ${panel('elb_dialogs', elb=elb, delete_form=delete_form)}
         ${panel('select_certificate_dialog', certificate_form=certificate_form, backend_certificate_form=backend_certificate_form)}
         ${panel('elb_security_policy_dialog', security_policy_form=security_policy_form, latest_predefined_policy=latest_predefined_policy)}
+        ${panel('create_bucket_dialog', create_bucket_form=create_bucket_form)}
+        ${panel('elb_bucket_access_log_dialog')}
     </div>
 </div>
 

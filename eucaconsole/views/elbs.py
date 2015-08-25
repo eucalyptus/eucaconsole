@@ -572,6 +572,8 @@ class ELBView(BaseELBView):
         super(ELBView, self).__init__(request, elb_conn=elb_conn, **kwargs)
         with boto_error_handler(request):
             self.elb = elb or self.get_elb()
+            self.access_logs = self.elb_conn.get_lb_attribute(
+                self.elb.name, 'accessLog') if self.elb_conn and self.elb else None
             if self.elb:
                 if self.elb.created_time:
                     # boto doesn't convert elb created_time into dtobj like it does for others
@@ -582,7 +584,7 @@ class ELBView(BaseELBView):
                 raise HTTPNotFound()
         self.elb_form = ELBForm(
             self.request, conn=self.ec2_conn, vpc_conn=self.vpc_conn,
-            elb=self.elb, securitygroups=self.get_security_groups(),
+            elb=self.elb, elb_conn=self.elb_conn, s3_conn=self.s3_conn, securitygroups=self.get_security_groups(),
             formdata=self.request.params or None)
         self.certificate_form = CertificateForm(
             self.request, conn=self.ec2_conn, iam_conn=self.iam_conn, elb_conn=self.elb_conn,
@@ -594,6 +596,7 @@ class ELBView(BaseELBView):
             self.request, elb_conn=self.elb_conn, predefined_policy_choices=self.predefined_policy_choices,
             formdata=self.request.params or None
         )
+        self.create_bucket_form = CreateBucketForm(self.request, formdata=self.request.params or None)
         self.delete_form = ELBDeleteForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
             elb=self.elb,
@@ -613,6 +616,7 @@ class ELBView(BaseELBView):
             is_vpc_supported=self.is_vpc_supported,
             elb_vpc_network=self.get_vpc_network_name(self.elb),
             security_group_placeholder_text=_(u'Select...'),
+            create_bucket_form=self.create_bucket_form,
             controller_options_json=self.get_controller_options_json(),
         )
 
@@ -636,6 +640,7 @@ class ELBView(BaseELBView):
                 time.sleep(1)  # Delay is needed to avoid missing listeners post-update
                 self.update_elb_tags(self.elb.name)
                 self.set_security_policy(self.elb.name)
+                self.configure_access_logs(elb=self.elb)
                 if self.is_vpc_supported and self.elb.security_groups != securitygroup:
                     self.elb_conn.apply_security_groups_to_lb(self.elb.name, securitygroup)
                 if backend_certificates is not None and backend_certificates != '[]':
@@ -677,6 +682,8 @@ class ELBView(BaseELBView):
             'elb_vpc_subnets': self.elb.subnets if self.elb else [],
             'securitygroups': self.elb.security_groups if self.elb else [],
             'existing_certificate_choices': self.certificate_form.certificate_arn.choices,
+            'logging_enabled': self.access_logs.enabled if self.access_logs else False,
+            'bucket_choices': dict(self.elb_form.bucket_name.choices),
         }))
 
     def update_elb_idle_timeout(self, elb_name, idle_timeout):
@@ -1012,21 +1019,17 @@ class ELBHealthChecksView(BaseELBView):
         super(ELBHealthChecksView, self).__init__(request, **kwargs)
         with boto_error_handler(request):
             self.elb = elb or self.get_elb()
-            self.access_logs = self.elb_conn.get_lb_attribute(self.elb.name, 'accessLog') if self.elb_conn else None
             if not self.elb:
                 raise HTTPNotFound()
             self.elb_form = ELBHealthChecksForm(
                 self.request, s3_conn=self.s3_conn, elb_conn=self.elb_conn, elb=self.elb,
                 formdata=self.request.params or None)
-            self.create_bucket_form = CreateBucketForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
             elb=self.elb,
             elb_name=self.escape_braces(self.elb.name) if self.elb else '',
             elb_form=self.elb_form,
             escaped_elb_name=quote(self.elb.name) if self.elb else '',
             delete_form=ELBDeleteForm(self.request, formdata=self.request.params or None),
-            create_bucket_form=self.create_bucket_form,
-            controller_options_json=self.get_controller_options_json()
         )
 
     @view_config(route_name='elb_healthchecks', renderer=TEMPLATE)
@@ -1045,7 +1048,6 @@ class ELBHealthChecksView(BaseELBView):
             template = u'{0} {1} - {2}'.format(prefix, self.elb.name, '{0}')
             with boto_error_handler(self.request, location, template):
                 self.configure_health_checks(self.elb.name)
-                self.configure_access_logs(elb=self.elb)
                 prefix = _(u'Successfully updated health checks for')
                 msg = u'{0} {1}'.format(prefix, self.elb.name)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
@@ -1053,12 +1055,6 @@ class ELBHealthChecksView(BaseELBView):
         else:
             self.request.error_messages = self.elb_form.get_errors_list()
         return self.render_dict
-
-    def get_controller_options_json(self):
-        return BaseView.escape_json(json.dumps({
-            'logging_enabled': self.access_logs.enabled if self.access_logs else False,
-            'bucket_choices': dict(self.elb_form.bucket_name.choices),
-        }))
 
 
 class ELBMonitoringView(BaseELBView):

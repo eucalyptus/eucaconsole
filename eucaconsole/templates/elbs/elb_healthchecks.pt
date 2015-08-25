@@ -5,7 +5,7 @@
 </head>
 
 <div metal:fill-slot="main_content" ng-app="ELBHealthChecksPage"
-     ng-controller="ELBHealthChecksPageCtrl" ng-init="initController('${controller_options_json}')">
+     ng-controller="ELBHealthChecksPageCtrl" ng-init="initController()">
     <div class="row" id="contentwrap">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
@@ -60,20 +60,6 @@
                             <h6 class="section-label" i18n:translate="">Health check instance thresholds</h6>
                             ${panel('form_field', field=elb_form['failures_until_unhealthy'], stack_label=True)}
                             ${panel('form_field', field=elb_form['passes_until_healthy'], stack_label=True)}
-                            <h6 class="section-label" i18n:translate="">Access logs</h6>
-                            ${panel('form_field', field=elb_form['logging_enabled'], reverse=True, ng_attrs=dict(model='loggingEnabled'))}
-                            <div ng-show="loggingEnabled" id="access-logs-wrapper">
-                                <p i18n:translate="">
-                                    Specify where your logs should be stored in the cloud.
-                                </p>
-                                ${panel('form_field', field=elb_form['bucket_name'], ng_attrs=dict(model='bucketName', options='k as v for (k, v) in bucketNameChoices'), stack_label=True)}
-                                <div id="create-bucket-link">
-                                    <span i18n:translate="">OR:</span>
-                                    <a i18n:translate="" data-reveal-id="create-bucket-modal">Create bucket</a>
-                                </div>
-                                ${panel('form_field', field=elb_form['bucket_prefix'], stack_label=True)}
-                                ${panel('form_field', field=elb_form['collection_interval'], stack_label=True)}
-                            </div>
                         </div>
                     </div>
                     <hr />
@@ -95,8 +81,6 @@
         </div>
         <!--! Modal dialogs -->
         ${panel('elb_dialogs', elb=elb, delete_form=delete_form)}
-        ${panel('elb_bucket_access_log_dialog')}
-        ${panel('create_bucket_dialog', create_bucket_form=create_bucket_form)}
     </div>
 </div>
 

@@ -77,15 +77,6 @@ class ELBLandingPageJsonViewTests(BaseViewTestCase, MockELBMixin):
 
 class ELBViewTests(BaseViewTestCase, MockELBMixin):
     """ELB detail page view - General tab"""
-    def test_elb_general_tab_view(self):
-        elb_conn, elb = self.make_elb()
-        request = self.create_request()
-        elb_tags = {'foo': 'bar'}
-        view = ELBView(request, elb_conn=elb_conn, elb=elb, elb_tags=elb_tags).elb_view()
-        self.assertEqual(view.get('elb_name'), 'test_elb')
-        self.assertEqual(view.get('elb_tags'), 'foo=bar')
-        self.assert_({'name': 'HTTP', 'port': '80', 'value': 'HTTP'} in view.get('protocol_list'))
-
     def test_normalize_listeners(self):
         listeners = [
             {'input': (80, 80, 'HTTP'), 'output': (80, 80, u'HTTP', u'HTTP')},

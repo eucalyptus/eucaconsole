@@ -4,27 +4,18 @@
  *
  */
 
-angular.module('ELBHealthChecksPage', ['EucaConsoleUtils', 'CreateBucketDialog'])
+angular.module('ELBHealthChecksPage', ['EucaConsoleUtils'])
     .controller('ELBHealthChecksPageCtrl', function ($scope, $timeout, eucaHandleUnsavedChanges, eucaUnescapeJson) {
         $scope.elbForm = $('#elb-form');
         $scope.isNotChanged = true;
         $scope.pingPathRequired = false;
-        $scope.loggingEnabled = false;
-        $scope.bucketName = '';
-        $scope.bucketNameField = $('#bucket_name');
-        $scope.bucketNameChoices = {};
-        $scope.accessLoggingConfirmed = false;
-        $scope.accessLogConfirmationDialog = $('#elb-bucket-access-log-dialog');
-        $scope.initController = function (optionsJson) {
-            var options = JSON.parse(eucaUnescapeJson(optionsJson));
-            $scope.setInitialValues(options);
+        $scope.initController = function () {
+            $scope.setInitialValues();
             $scope.setWatch();
         };
-        $scope.setInitialValues = function (options) {
+        $scope.setInitialValues = function () {
             var originalPingPort = parseInt($('#ping_port').val() || 80, 10);
             var originalProtocol = $('#ping_protocol').val();
-            $scope.bucketName = $scope.bucketNameField.val();
-            $scope.bucketNameChoices = options.bucket_choices;
             $scope.originalPingProtocol = originalProtocol;
             $scope.pingProtocol = originalProtocol;
             $scope.originalPingPort = originalPingPort;
@@ -33,31 +24,12 @@ angular.module('ELBHealthChecksPage', ['EucaConsoleUtils', 'CreateBucketDialog']
             if ($scope.pingProtocol === 'HTTP' || $scope.pingProtocol === 'HTTPS') {
                 $scope.pingPathRequired = true;
             }
-            $scope.loggingEnabled = options.logging_enabled;
         };
         $scope.setWatch = function () {
             eucaHandleUnsavedChanges($scope);
             $scope.$watch('pingProtocol', function (newVal) {
                 $scope.updatePingPort(newVal);
                 $scope.updatePingPath();
-            });
-            $scope.$watch('loggingEnabled', function (newVal, oldVal) {
-                if (newVal !== oldVal) {
-                    $scope.isNotChanged = false;
-                    if (newVal) {
-                        $scope.accessLogConfirmationDialog.foundation('reveal', 'open');
-                    }
-                }
-            });
-            $scope.accessLogConfirmationDialog.on('opened.fndtn.reveal', function () {
-                $scope.accessLoggingConfirmed = false;
-                $scope.$apply();
-            });
-            $scope.accessLogConfirmationDialog.on('close.fndtn.reveal', function () {
-                if (!$scope.accessLoggingConfirmed) {
-                    $scope.loggingEnabled = false;
-                    $scope.$apply();
-                }
             });
             $(document).on('input', 'input', function () {
                 $scope.isNotChanged = false;
@@ -108,10 +80,6 @@ angular.module('ELBHealthChecksPage', ['EucaConsoleUtils', 'CreateBucketDialog']
                     $scope.pingPath = 'index.html';
                 }
             }
-        };
-        $scope.confirmEnableAccessLogs = function () {
-            $scope.accessLoggingConfirmed = true;
-            $scope.accessLogConfirmationDialog.foundation('reveal', 'close');
         };
     })
 ;

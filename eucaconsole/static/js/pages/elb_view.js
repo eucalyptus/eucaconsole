@@ -4,7 +4,7 @@
  *
  */
 
-angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'ELBSecurityPolicyEditor', 'TagEditor'])
+angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'ELBSecurityPolicyEditor', 'TagEditor', 'CreateBucketDialog'])
     .controller('ELBPageCtrl', function ($scope, $http, $timeout, eucaUnescapeJson, eucaHandleUnsavedChanges,
                                          eucaHandleError, eucaFixHiddenTooltips) {
         $scope.elbForm = undefined;
@@ -30,6 +30,12 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'ELBSecurity
         $scope.vpcNetwork = 'None';
         $scope.isNotChanged = true;
         $scope.isInitComplete = false;
+        $scope.loggingEnabled = false;
+        $scope.bucketName = '';
+        $scope.bucketNameField = $('#bucket_name');
+        $scope.bucketNameChoices = {};
+        $scope.accessLoggingConfirmed = false;
+        $scope.accessLogConfirmationDialog = $('#elb-bucket-access-log-dialog');
         $scope.unsavedChangesWarningModalLeaveCallback = null;
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
@@ -45,6 +51,9 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'ELBSecurity
             if (elbForm.length > 0) {
                 $scope.elbForm = elbForm;
             }
+            $scope.bucketName = $scope.bucketNameField.val();
+            $scope.bucketNameChoices = options.bucket_choices;
+            $scope.loggingEnabled = options.logging_enabled;
             $scope.existingCertificateChoices = options.existing_certificate_choices;
             if (options.securitygroups instanceof Array && options.securitygroups.length > 0) {
                 $scope.securityGroups = options.securitygroups;
@@ -91,6 +100,24 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'ELBSecurity
             $(document).on('click', '#security-policy-dialog-submit-btn', function () {
                 $scope.isNotChanged = false;
                 $scope.$apply();
+            });
+            $scope.$watch('loggingEnabled', function (newVal, oldVal) {
+                if (newVal !== oldVal) {
+                    $scope.isNotChanged = false;
+                    if (newVal) {
+                        $scope.accessLogConfirmationDialog.foundation('reveal', 'open');
+                    }
+                }
+            });
+            $scope.accessLogConfirmationDialog.on('opened.fndtn.reveal', function () {
+                $scope.accessLoggingConfirmed = false;
+                $scope.$apply();
+            });
+            $scope.accessLogConfirmationDialog.on('close.fndtn.reveal', function () {
+                if (!$scope.accessLoggingConfirmed) {
+                    $scope.loggingEnabled = false;
+                    $scope.$apply();
+                }
             });
             $scope.$watch('securityGroups', function () {
                 if ($scope.isInitComplete === true) {
@@ -182,6 +209,10 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'ELBSecurity
                 $scope.isNotChanged = false;
             });
             $(document).on('input', 'input', function () {
+                $scope.isNotChanged = false;
+                $scope.$apply();
+            });
+            $(document).on('change', 'select', function () {
                 $scope.isNotChanged = false;
                 $scope.$apply();
             });
@@ -381,6 +412,10 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'ELBSecurity
             }).error(function (oData) {
                 eucaHandleError(oData, status);
             });
+        };
+        $scope.confirmEnableAccessLogs = function () {
+            $scope.accessLoggingConfirmed = true;
+            $scope.accessLogConfirmationDialog.foundation('reveal', 'close');
         };
     })
 ;
