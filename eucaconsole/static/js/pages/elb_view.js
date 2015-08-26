@@ -118,6 +118,7 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'ELBSecurity
                     $scope.loggingEnabled = false;
                     $scope.$apply();
                 }
+                $('#bucket_name').focus().closest('.columns').removeClass('error');
             });
             $scope.$watch('securityGroups', function () {
                 if ($scope.isInitComplete === true) {
