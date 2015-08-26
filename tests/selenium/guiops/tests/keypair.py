@@ -30,14 +30,9 @@ class Keypair_operations_sequence(GuiOps):
 
 
     def keypair_ops_test(self):
-        lger=logging.getLogger('AliceTest')
-        lger.setLevel(logging.DEBUG)
 
         keypair1_name=self.id_generator()+"-key"
         self.tester.login(self.account, self.user, self.password)
-        lger.debug('debug message')
-        lger.info('running ')
-        traceback.print_tb()
         self.tester.create_keypair_from_keypair_view_page(keypair1_name)
         self.tester.delete_keypair_from_detail_page(keypair1_name)
         keypair2_name=self.id_generator()+"-key"
