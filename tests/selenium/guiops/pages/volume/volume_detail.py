@@ -52,6 +52,9 @@ class VolumeDetailPage(DetailPage):
         return {'volume_name': volume_name, 'volume_id': volume_id}
 
     def goto_snapshots_tab(self, volume_id):
+        """
+        Checks if Snapshot tab is already open. Opens snapshot tab if not.
+        """
         tab = self.tester.store_text_by_css(self._active_tab_css)
         print "Found active tab {0}".format(tab)
         if tab == "General":
@@ -69,6 +72,8 @@ class VolumeDetailPage(DetailPage):
         self.goto_snapshots_tab(volume_id)
         self.tester.click_element_by_css(self._id_link_in_tile_of_newly_created_snapshot_css)
 
+    def verify_snapshot_tile_not_present(self):
+        NotImplementedError
 
 
 
