@@ -334,6 +334,12 @@
                         <label i18n:translate="">Path</label>
                         <div class="small-8 columns value">{{ pingPath }}</div>
                     </div>
+                    <div class="row logging-summary" ng-show="loggingEnabled">
+                        <div class="small-8 columns value">
+                            <i class="fi fi-check"></i>
+                            <span i18n:translate="">Access logs enabled</span>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div>

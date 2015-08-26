@@ -317,6 +317,7 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
         $scope.accessLogConfirmationDialog.on('close.fndtn.reveal', function () {
             if (!$scope.accessLoggingConfirmed) {
                 $scope.loggingEnabled = false;
+                $('#bucket_name').focus();
                 $scope.$apply();
             }
         });

@@ -399,7 +399,7 @@ class CreateELBForm(ELBHealthChecksForm):
         self.time_between_pings.choices = self.get_time_between_pings_choices()
         self.failures_until_unhealthy.choices = self.get_failures_until_unhealthy_choices()
         self.passes_until_healthy.choices = self.get_passes_until_healthy_choices()
-
+        self.collection_interval.choices = self.get_collection_interval_choices()
         self.cross_zone_enabled.data = True
         # Set default choices where applicable, defaulting to first non-blank choice
         if self.cloud_type == 'aws' and len(self.zone.choices) > 1:

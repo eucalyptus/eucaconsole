@@ -58,6 +58,7 @@
 #elb-form .checkbox-with-helptext-icon label { margin-right: 0; }
 
 .summary .multi-row div { padding-bottom: 0.25rem; }
+.summary .row.logging-summary { margin-top: 1rem; }
 
 #access-logs-wrapper { margin-left: 1.5rem; }
 #access-logs-wrapper #bucket_name, #access-logs-wrapper #bucket_prefix, #access-logs-wrapper #collection_interval { width: 12rem; }
