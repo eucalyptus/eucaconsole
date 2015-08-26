@@ -78,7 +78,7 @@ class CertificateARNRequired(validators.Required):
 class ELBAccessLogsFormMixin(object):
     logging_enabled = wtforms.BooleanField(label=_(u'Enable logging'))
     bucket_name_error_msg = _(u'Bucket name is required')
-    bucket_name_help_text = _(u'Choose from your existing buckets, or enter a name to create a new bucket.')
+    bucket_name_help_text = _(u'Choose from your existing buckets, or create a new bucket.')
     bucket_name = wtforms.SelectField(
         label=_(u'Bucket name'),
         validators=[validators.InputRequired(message=bucket_name_error_msg)],

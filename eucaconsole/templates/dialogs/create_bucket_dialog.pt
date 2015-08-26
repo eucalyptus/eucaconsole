@@ -6,7 +6,7 @@
               ng-submit="handleCreateBucket('${request.route_path('bucket_create_xhr')}', $event)">
             ${structure:create_bucket_form['csrf_token']}
             ${panel('form_field', field=create_bucket_form['bucket_name'], stack_label=True, ng_attrs=dict(model='bucketName'))}
-            <div>
+            <div class="columns">
                 <button type="submit" class="button expand" i18n:translate="" id="create-bucket-btn"
                         ng-show="!isCreatingBucket" ng-disabled="existingBucketConflict">
                     Create Bucket
