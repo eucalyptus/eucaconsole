@@ -15,7 +15,7 @@ class VolumeLanding(LandingPage):
     _manage_snapshots_actions_menu_item_css = "#item-dropdown_{0}>li:nth-of-type(2)>a"  #volume_id required
     _attach_to_instance_actions_menu_item_css = "#item-dropdown_{0}>li:nth-of-type(3)>a"  #volume_id required
     _first_volume_link_in_list_css = "#tableview>table>tbody>tr>td>a"
-    _volume_link_css = "#table-id-column-{0}"  #volume_id required;
+    _volume_link_css = "#table-id-column-{0}>a"  #volume_id required;
     _volume_status_xpath =  '//td/a[@href="/volumes/{0}"]/../../td[2]' #volume_id required;
     _search_input_field_css = ".search-input"
 
