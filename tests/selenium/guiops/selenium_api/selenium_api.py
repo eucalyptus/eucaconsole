@@ -374,7 +374,7 @@ class SeleniumApi(object):
             print "ERROR: Timed out. Element by id = '{0}' still found in the DOM.".format(element_id)
         self.set_implicit_wait(self.implicit_wait_default_in_seconds)
 
-    def wait_for_element_not_present_by_css(self, css):
+    def wait_for_element_not_present_by_css(self, css, timeout_in_seconds=None):
         """
         Waits for element to NOT be present on the page for timeout_to_locate_element_in_seconds
         Checks for presence every 500 milliseconds
@@ -383,8 +383,10 @@ class SeleniumApi(object):
         print "Executing wait_for_element_not_present_by_css('{0}')".format(css)
         print "Looking for element css = '{0}' in the DOM".format(css)
         self.set_implicit_wait(5)
+        if timeout_in_seconds is None:
+            timeout_in_seconds = self.timeout_to_locate_element_in_seconds
         try:
-            WebDriverWait(self.driver, self.timeout_to_locate_element_in_seconds).until_not(
+            WebDriverWait(self.driver, timeout_in_seconds).until_not(
                 EC.presence_of_element_located((By.CSS_SELECTOR, css)))
             print "Verified element by css = '{0}' not in the DOM".format(css)
         #except Exception, e:
