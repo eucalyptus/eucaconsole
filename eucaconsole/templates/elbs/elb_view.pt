@@ -98,6 +98,12 @@
                         </div>
                         ${panel('form_field', field=elb_form['bucket_prefix'], stack_label=True)}
                         ${panel('form_field', field=elb_form['collection_interval'], stack_label=True)}
+                        <div tal:condition="logs_url">
+                            <a href="${logs_url}" i18n:translate="" target="_blank">View latest logs</a>
+                        </div>
+                        <div tal:condition="bucket_url">
+                            <a href="${bucket_url}" i18n:translate="">View my bucket</a>
+                        </div>
                     </div>
                     <div tal:condition="is_vpc_supported and elb_vpc_network is not 'None'"
                             tal:define="security_group_attrs {'data-placeholder': security_group_placeholder_text};">

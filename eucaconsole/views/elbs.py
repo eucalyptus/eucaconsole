@@ -598,6 +598,14 @@ class ELBView(BaseELBView):
         )
         self.create_bucket_form = CreateBucketForm(self.request, formdata=self.request.params or None)
         self.delete_form = ELBDeleteForm(self.request, formdata=self.request.params or None)
+        bucket_name = self.access_logs.s3_bucket_name
+        logs_prefix = self.access_logs.s3_bucket_prefix
+        logs_subpath = logs_prefix.split('/') if logs_prefix else []
+        logs_url = None
+        bucket_url = None
+        if bucket_name:
+            logs_url = self.request.route_path('bucket_contents', name=bucket_name, subpath=logs_subpath)
+            bucket_url = self.request.route_path('bucket_contents', name=bucket_name, subpath=[])
         self.render_dict = dict(
             elb=self.elb,
             elb_name=self.escape_braces(self.elb.name) if self.elb else '',
@@ -618,6 +626,8 @@ class ELBView(BaseELBView):
             security_group_placeholder_text=_(u'Select...'),
             create_bucket_form=self.create_bucket_form,
             controller_options_json=self.get_controller_options_json(),
+            logs_url=logs_url,
+            bucket_url=bucket_url,
         )
 
     @view_config(route_name='elb_view', renderer=TEMPLATE)
