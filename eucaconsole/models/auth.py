@@ -274,7 +274,10 @@ class EucaAuthenticator(object):
         # and if that also fails, let that error raise up
         try:
             return self._authenticate_(account, user, passwd, new_passwd, timeout, duration)
-        except urllib2.URLError:
+        except urllib2.URLError as err:
+            # handle case where dns attempt was good, but user unauthorized
+            if err.msg == 'Unauthorized' or err.msg == 'Forbidden':
+                raise err
             self.dns_enabled = False
             return self._authenticate_(account, user, passwd, new_passwd, timeout, duration)
 
