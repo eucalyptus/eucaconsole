@@ -172,7 +172,7 @@ angular.module('ImagePage', ['BlockDeviceMappingEditor', 'TagEditor', 'EucaConso
                         $scope.isUpdating = true;
                         $timeout(function() {$scope.getImageState();}, 4000);  // Poll every 4 seconds
                     } else {
-                        if ($scope.isUpdating === true) {
+                        if ($scope.isUpdating === true && results.url) {
                             // force reload in case image ID got assigned
                             window.location = results.url;
                         }
