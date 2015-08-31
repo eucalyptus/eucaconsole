@@ -121,7 +121,9 @@
                         <div tal:condition="is_vpc_supported" class="small-6 columns value" i18n:translate="">VPC</div>
                     </div>
                 </div>
-                ${panel('form_field', field=allocate_form.ipcount, leftcol_width=6, rightcol_width=6, **html_attrs)}
+                ${panel('form_field', field=allocate_form.ipcount,
+                        leftcol_width=6, leftcol_width_large=6,
+                        rightcol_width=6, rightcol_width_large=6, **html_attrs)}
                 <div>
                     <label>
                         <span class="req">*</span>
