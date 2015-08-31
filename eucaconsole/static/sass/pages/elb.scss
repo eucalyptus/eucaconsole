@@ -72,6 +72,10 @@ p.error {
 
 table.table {
     width: 100%;
+
+    .status-descr {
+        width: 20%;
+    }
 }
 
 #controls_cross_zone_enabled {

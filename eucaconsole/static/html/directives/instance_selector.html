@@ -1,4 +1,4 @@
-<div id="instance-selector" ng-cloak="">
+<div id="instance-selector" ng-cloak="" xmlns:i18n="http://www.w3.org/1999/xhtml">
     <table class="table">
         <thead>
             <tr>
@@ -8,6 +8,7 @@
                 <th>{{ tableText.zone }}</th>
                 <th ng-if="isVPCSupported">{{ tableText.subnet }}</th>
                 <th>{{ tableText.status }}</th>
+                <th class="status-descr">{{ tableText.status_descr }}</th>
             </tr>
         </thead>
         <tbody>
@@ -37,10 +38,13 @@
                 </td>
                 <td class="status">
                     <span class="label radius status {{ instanceHealthMapping[instance.id].state || instance.status }}"
-                          title="{{ instanceHealthMapping[instance.id].description }}" data-tooltip="">
+                          data-tooltip="">
                         {{ healthStatusNames[instanceHealthMapping[instance.id].state] || instance.status }}
                     </span>
                     <span class="busy" ng-show="instance.transitional">&nbsp;</span>
+                </td>
+                <td>
+                    {{ instanceHealthMapping[instance.id].description }}
                 </td>
             </tr>
             <tr ng-show="instanceList.length === 0">

@@ -390,7 +390,8 @@ class BaseELBView(TaggedItemView):
     @staticmethod
     def get_instance_selector_text():
         instance_selector_text = {'name': _(u'NAME (ID)'), 'tags': _(u'TAGS'),
-                                  'zone': _(u'AVAILABILITY ZONE'), 'subnet': _(u'VPC SUBNET'), 'status': _(u'STATUS'),
+                                  'zone': _(u'AVAILABILITY ZONE'), 'subnet': _(u'VPC SUBNET'),
+                                  'status': _(u'STATUS'), 'status_descr': _(u'STATUS DESCRIPTION'),
                                   'no_matching_instance_error_msg': _(u'No matching instances')}
         return instance_selector_text
 
