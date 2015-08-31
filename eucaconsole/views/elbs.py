@@ -837,6 +837,7 @@ class ELBInstancesView(BaseELBView):
                 instance_health.append(dict(
                     instance_id=instance.instance_id,
                     state=instance.state,
+                    description=instance.description,
                 ))
         return instance_health
 

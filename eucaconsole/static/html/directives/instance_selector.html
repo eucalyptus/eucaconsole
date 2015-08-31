@@ -36,8 +36,9 @@
                     </span>
                 </td>
                 <td class="status">
-                    <span class="label radius status {{ instanceHealthMapping[instance.id] || instance.status }}">
-                        {{ healthStatusNames[instanceHealthMapping[instance.id]] || instance.status }}
+                    <span class="label radius status {{ instanceHealthMapping[instance.id].state || instance.status }}"
+                          title="{{ instanceHealthMapping[instance.id].description }}" data-tooltip="">
+                        {{ healthStatusNames[instanceHealthMapping[instance.id].state] || instance.status }}
                     </span>
                     <span class="busy" ng-show="instance.transitional">&nbsp;</span>
                 </td>
