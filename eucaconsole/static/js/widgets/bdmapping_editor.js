@@ -110,7 +110,8 @@ angular.module('BlockDeviceMappingEditor', ['EucaConsoleUtils'])
                 $("#bdm-size-reqd").css('display', 'block');
                 return false;
             }
-            var bdMapping = $scope.bdMapping;
+            var bdMappingText = $scope.bdmTextarea.val();
+            var bdMapping = JSON.parse(bdMappingText);
             if (newMappingEntry.val() in bdMapping) {
                 newMappingEntry.focus();
                 $("#bdm-dev-same").css('display', 'block');

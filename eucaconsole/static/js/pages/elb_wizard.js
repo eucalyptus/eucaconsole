@@ -105,7 +105,7 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
         $scope.responseTimeout = 5;
         $scope.timeBetweenPings = 30;
         $scope.failuresUntilUnhealthy = 2;
-        $scope.passesUntilHealthy = 10;
+        $scope.passesUntilHealthy = 2;
         $scope.showsCertificateTabDiv = false;
         $scope.certificateTab = 'SSL';
         $scope.certificateRadioButton = 'existing';
