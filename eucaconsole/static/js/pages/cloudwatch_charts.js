@@ -150,7 +150,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
             ];
             var preciseFormatterMetrics = ['Latency'];
             var chart = nv.models.lineChart()
-                .margin({left: 68})
+                .margin({left: 68, right: 38})
                 .useInteractiveGuideline(true)
                 .showYAxis(true)
                 .showXAxis(true)
