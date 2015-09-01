@@ -649,4 +649,14 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
         });
     };
 })
+    .directive('focusOnLoad', function ($timeout) {
+        return {
+            restrict: 'A',
+            link: function (scope, elem) {
+                $timeout(function () {
+                    elem[0].focus();
+                })
+            }
+        }
+    })
 ;
