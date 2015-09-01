@@ -121,7 +121,7 @@ class CloudWatchAPIView(BaseView, CloudWatchAPIMixin):
         self.request = request
         self.cw_conn = self.get_connection(conn_type='cloudwatch')
 
-    @view_config(route_name='cloudwatch_api', renderer='json')
+    @view_config(route_name='cloudwatch_api', renderer='json', request_method='GET')
     def cloudwatch_api(self):
         """
         REST API endpoint for fetching time-series cloudwatch data
