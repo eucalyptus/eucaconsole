@@ -370,6 +370,10 @@ angular.module('SecurityGroupRules', ['CustomFilters', 'EucaConsoleUtils'])
                 $scope.ipProtocol = 'icmp';
             } else if ($scope.selectedProtocol === 'udp') {
                 $scope.ipProtocol = 'udp';
+            } else if ($scope.selectedProtocol === 'sctp') {
+                $scope.ipProtocol = 'sctp';
+                $scope.fromPort = null;
+                $scope.toPort = null;
             } else if ($scope.selectedProtocol === '-1') {
                 $scope.ipProtocol = '-1';
                 $scope.fromPort = null;
@@ -432,7 +436,7 @@ angular.module('SecurityGroupRules', ['CustomFilters', 'EucaConsoleUtils'])
             // clear validation errors on hidden fields
             // TODO: retest without this code when foundation is upgraded beyond 5.0.3
             $('.error.ng-hide').removeClass('error');
-            if ($scope.ipProtocol == 'icmp') {
+            if ($scope.ipProtocol == 'icmp' || $scope.ipProtocol == 'sctp') {
                 $('.port').removeAttr('data-invalid');
             }
             if (form.find('[data-invalid]').length) {

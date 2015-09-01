@@ -229,10 +229,8 @@ def securitygroup_rules(context, request, rules=None, rules_egress=None, leftcol
     }))
     remote_addr = BaseView.get_remote_addr(request)
     protocol_choices = RULE_PROTOCOL_CHOICES
-    if request.session.get('cloud_type') != 'aws' or BaseView.is_vpc_supported(request):
-        protocol_choices = list(protocol_choices)
-        protocol_choices.append(('sctp', 'Custom SCTP'))
-        protocol_choices = tuple(protocol_choices)
+    if request.session.get('cloud_type') == 'aws' and not BaseView.is_vpc_supported(request):
+        protocol_choices = tuple([p for p in list(protocol_choices) if p[0] != 'sctp'])
 
     return dict(
         protocol_choices=protocol_choices,
