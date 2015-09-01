@@ -89,7 +89,10 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
             $scope.getInstanceHealthMapping = function () {
                 var mapping = {};
                 angular.forEach($scope.ELBInstanceHealthList, function (instance) {
-                    mapping[instance.instance_id] = instance.state;
+                    mapping[instance.instance_id] = {
+                        'state': instance.state,
+                        'description': instance.description
+                    };
                 });
                 return mapping;
             };
