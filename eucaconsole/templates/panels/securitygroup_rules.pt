@@ -175,6 +175,7 @@
     </div>
     <div id="hidden-text-div" class="hide">
         <span id="all-traffic-option-text" i18n:translate="">All traffic</span> 
+        <span id="sctp-protocol-option-text" i18n:translate="">SCTP</span> 
         <span id="custom-protocol-option-text" i18n:translate="">Custom protocol</span> 
     </div>
     <script src="${request.static_path('eucaconsole:static/js/widgets/securitygroup_rules.js')}"></script>

@@ -43,7 +43,6 @@ RULE_PROTOCOL_CHOICES = (
     ('tcp', 'Custom TCP'),
     ('udp', 'Custom UDP'),
     ('icmp', 'Custom ICMP'),
-    ('sctp', 'SCTP'),
 )
 
 

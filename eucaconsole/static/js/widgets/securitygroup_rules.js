@@ -409,7 +409,7 @@ angular.module('SecurityGroupRules', ['CustomFilters', 'EucaConsoleUtils'])
             return {
                 'from_port': $scope.fromPort,
                 'to_port': $scope.toPort,
-                // Warning: Ugly hack to properly set ip_protocol when 'udp' or 'icmp'
+                // Warning: Ugly hack to properly set ip_protocol when 'udp', 'icmp' or 'sctp'
                 'ip_protocol': $scope.ipProtocol,
                 'custom_protocol': $scope.getCustomProtocolName($scope.customProtocol),
                 'grants': [{
@@ -539,10 +539,12 @@ angular.module('SecurityGroupRules', ['CustomFilters', 'EucaConsoleUtils'])
         };
         $scope.adjustIPProtocolOptions = function () {
             $scope.removeAllTrafficRuleOption();
+            $scope.removeSCTPProtocolRuleOption();
             $scope.removeCustomProtocolRuleOption();
-            if ($scope.securityGroupVPC != 'None') {
+            if (['None', ''].indexOf($scope.securityGroupVPC) === -1) {
                 // Allow All Traffic and Custom Protocol options to be selectable for VPC
                 $scope.insertAllTrafficRuleOption();
+                $scope.insertSCTPProtocolRuleOption(); 
                 $scope.insertCustomProtocolRuleOption(); 
             }
             $('#ip-protocol-select').prop('selectedIndex', -1);
@@ -551,6 +553,10 @@ angular.module('SecurityGroupRules', ['CustomFilters', 'EucaConsoleUtils'])
         // Remove All Traffic rule, "-1 ()" from the option
         $scope.removeAllTrafficRuleOption  = function () {
             $('#ip-protocol-select').find("option[value='-1']").remove();
+        };
+        // Remove SCTP Protocol rule from the option
+        $scope.removeSCTPProtocolRuleOption  = function () {
+            $("#ip-protocol-select option[value='sctp']").remove();
         };
         // Remove Custom Protocol rule, "custom" from the option
         $scope.removeCustomProtocolRuleOption  = function () {
@@ -561,6 +567,12 @@ angular.module('SecurityGroupRules', ['CustomFilters', 'EucaConsoleUtils'])
             var key = "-1";
             var value = $('#all-traffic-option-text').text();
             $('#ip-protocol-select').prepend($("<option></option>").attr("value", key).text(value));  
+        };
+        // Allow SCTP protocol, to be selectable in many (but not all) cases
+        $scope.insertSCTPProtocolRuleOption  = function () {
+            var key = "sctp";
+            var value = $('#sctp-protocol-option-text').text();
+            $('#ip-protocol-select').append($("<option></option>").attr("value", key).text(value));  
         };
         // Allow Custom protocol, "custom", to be selectable for VPC
         $scope.insertCustomProtocolRuleOption  = function () {

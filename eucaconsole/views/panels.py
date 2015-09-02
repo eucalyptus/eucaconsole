@@ -228,12 +228,9 @@ def securitygroup_rules(context, request, rules=None, rules_egress=None, leftcol
         'protocols_json_endpoint': request.route_path('internet_protocols_json'),
     }))
     remote_addr = BaseView.get_remote_addr(request)
-    protocol_choices = RULE_PROTOCOL_CHOICES
-    if request.session.get('cloud_type') == 'aws' and not BaseView.is_vpc_supported(request):
-        protocol_choices = tuple([p for p in list(protocol_choices) if p[0] != 'sctp'])
 
     return dict(
-        protocol_choices=protocol_choices,
+        protocol_choices=RULE_PROTOCOL_CHOICES,
         icmp_choices=icmp_choices_sorted,
         controller_options_json=controller_options_json,
         remote_addr=remote_addr,
