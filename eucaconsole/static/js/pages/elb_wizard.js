@@ -655,8 +655,8 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
             link: function (scope, elem) {
                 $timeout(function () {
                     elem[0].focus();
-                })
+                });
             }
-        }
+        };
     })
 ;
