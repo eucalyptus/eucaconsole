@@ -95,7 +95,7 @@ def check_config(settings):
 
 
 def get_configurator(settings, enable_auth=True):
-    check_config(settings);
+    check_config(settings)
     connection_debug = asbool(settings.get('connection.debug'))
     boto.set_stream_logger('boto', level=(logging.DEBUG if connection_debug else logging.CRITICAL))
     ensure_session_keys(settings)

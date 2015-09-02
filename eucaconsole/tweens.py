@@ -30,6 +30,7 @@ from random import choice
 
 from pyramid.settings import asbool
 
+
 def setup_tweens(config, settings):
     """Since tweens order is important this function will
     take care of proper ordering"""
@@ -58,14 +59,15 @@ def request_id_tween_factory(handler, registry):
         return response
     return tween
 
+
 def usage_log_tween_factory(handler, registry):
     def tween(request):
         method = request.environ['REQUEST_METHOD']
         path = request.environ['PATH_INFO']
         remote_addr = request.environ['REMOTE_ADDR']
-        content_type = request.environ['CONTENT_TYPE'] if request.environ.has_key('CONTENT_TYPE') else ''
+        content_type = request.environ['CONTENT_TYPE'] if 'CONTENT_TYPE' in request.environ else ''
         if method == 'GET' and path.find('static') == -1:
-            is_xhr = request.environ.has_key('HTTP_X_REQUESTED_WITH')
+            is_xhr = 'HTTP_X_REQUESTED_WITH' in request.environ
             if not is_xhr:
                 # assume this is a page root
                 logging.info('user-nav: {0} {1}'.format(remote_addr, path))
