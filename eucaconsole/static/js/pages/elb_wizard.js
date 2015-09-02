@@ -62,6 +62,7 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
     $scope.bucketNameChoices = {};
     $scope.accessLoggingConfirmed = false;
     $scope.accessLogConfirmationDialog = $('#elb-bucket-access-log-dialog');
+    $scope.accessLogConfirmationDialogKey = 'doNotShowAccessLogConfirmationAgain';
     $scope.instanceCounts = {};
     $scope.initController = function (optionsJson) {
         var options = JSON.parse(eucaUnescapeJson(optionsJson));
@@ -306,7 +307,9 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
             if (newVal !== oldVal) {
                 $scope.isNotChanged = false;
                 if (newVal) {
-                    $scope.accessLogConfirmationDialog.foundation('reveal', 'open');
+                    if (Modernizr.localstorage && !localStorage.getItem($scope.accessLogConfirmationDialogKey)) {
+                        $scope.accessLogConfirmationDialog.foundation('reveal', 'open');
+                    }
                 }
             }
         });
@@ -675,6 +678,10 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
         });
     };
     $scope.confirmEnableAccessLogs = function () {
+        var modal = $('#elb-bucket-access-log-dialog');
+        if (modal.find('#dont-show-again').is(':checked') && Modernizr.localstorage) {
+            localStorage.setItem($scope.accessLogConfirmationDialogKey, true);
+        }
         $scope.accessLoggingConfirmed = true;
         $scope.accessLogConfirmationDialog.foundation('reveal', 'close');
     };
