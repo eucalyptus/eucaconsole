@@ -60,7 +60,8 @@ class TestSetup(unittest.TestCase):
 
         config = MockConfig()
         self.assertTrue(len(config.tweens) == 0)
-        setup_tweens(config)
+        settings = {'log.useractions': 'true'}
+        setup_tweens(config, settings)
         self.assertTrue(len(config.tweens) > 1)
 
 
