@@ -54,7 +54,7 @@
                             <svg cloudwatch-chart="" id="cwchart-{{ chart.metric }}" class="cwchart"
                                  ids="${elb_name}" idtype="LoadBalancerName" metric="{{ chart.metric }}"
                                  duration="{{ chartsCtrl.duration }}" unit="{{ chart.unit }}" namespace="ELB"
-                                 statistic="{{ chart.statistic || 'Average' }}">
+                                 statistic="{{ chart.statistic || 'Average' }}" empty="{{ chart.empty_msg }}">
                             </svg>
                         </li>
                     </ul>

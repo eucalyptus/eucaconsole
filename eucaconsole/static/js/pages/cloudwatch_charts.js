@@ -88,7 +88,8 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
             'namespace': '@namespace',
             'duration': '@duration',
             'unit': '@unit',
-            'statistic': '@statistic'
+            'statistic': '@statistic',
+            'empty': '@empty'
         },
         link: linkFunc,
         controller: ChartController
@@ -139,6 +140,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
                 $('#timed-out-modal').foundation('reveal', 'open');
             }
             var results = oData ? oData.results : '';
+            var emptyResultsCount = 0;
             var unit = oData.unit || scope.unit;
             var yformatter = '.0f';
             // Anchor chart to zero for the following metrics
@@ -149,12 +151,23 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
                 'HTTPCode_Backend_4XX', 'HTTPCode_Backend_5XX'
             ];
             var preciseFormatterMetrics = ['Latency'];
+            var leftMargin = 68;
+            var rightMargin = 38;
             var chart = nv.models.lineChart()
-                .margin({left: 68, right: 38})
+                .margin({left: leftMargin, right: rightMargin})
                 .useInteractiveGuideline(true)
                 .showYAxis(true)
                 .showXAxis(true)
             ;
+            results.forEach(function (resultSet) {
+                if (resultSet.values.length === 0) {
+                    emptyResultsCount += 1;
+                }
+            });
+            if (emptyResultsCount === results.length) {
+                chart.noData(scope.empty);
+                chart.margin({left: 0, right: 0});
+            }
             chart.xScale(d3.time.scale());
             chart.xAxis.tickFormat(function(d) {
                 return d3.time.format('%m/%d %H:%M')(new Date(d));

@@ -28,21 +28,27 @@
 Eucalyptus and AWS ELB constants
 
 """
+from ..i18n import _
+
 
 ELB_BACKEND_CERTIFICATE_NAME_PREFIX = 'EucaConsole-BackendServerAuthPolicy'
 ELB_PREDEFINED_SECURITY_POLICY_NAME_PREFIX = 'ELBSecurityPolicy'
 ELB_CUSTOM_SECURITY_POLICY_NAME_PREFIX = 'ELB-CustomSecurityPolicy'
+
+ELB_EMPTY_CHART_MESSAGE = _("ELB has not received traffic yet.")
 
 ELB_MONITORING_CHARTS_LIST = [
     {
         'metric': 'RequestCount',
         'unit': 'Count',
         'statistic': 'Sum',
+        'empty_msg': ELB_EMPTY_CHART_MESSAGE,
     },
     {
         'metric': 'Latency',
         'unit': 'Seconds',
         'statistic': 'Average',
+        'empty_msg': ELB_EMPTY_CHART_MESSAGE,
     },
     {
         'metric': 'UnHealthyHostCount',
@@ -58,31 +64,37 @@ ELB_MONITORING_CHARTS_LIST = [
         'metric': 'HTTPCode_ELB_4XX',
         'unit': 'Count',
         'statistic': 'Sum',
+        'empty_msg': ELB_EMPTY_CHART_MESSAGE,
     },
     {
         'metric': 'HTTPCode_ELB_5XX',
         'unit': 'Count',
         'statistic': 'Sum',
+        'empty_msg': ELB_EMPTY_CHART_MESSAGE,
     },
     {
         'metric': 'HTTPCode_Backend_2XX',
         'unit': 'Count',
         'statistic': 'Sum',
+        'empty_msg': ELB_EMPTY_CHART_MESSAGE,
     },
     {
         'metric': 'HTTPCode_Backend_3XX',
         'unit': 'Count',
         'statistic': 'Sum',
+        'empty_msg': ELB_EMPTY_CHART_MESSAGE,
     },
     {
         'metric': 'HTTPCode_Backend_4XX',
         'unit': 'Count',
         'statistic': 'Sum',
+        'empty_msg': ELB_EMPTY_CHART_MESSAGE,
     },
     {
         'metric': 'HTTPCode_Backend_5XX',
         'unit': 'Count',
         'statistic': 'Sum',
+        'empty_msg': ELB_EMPTY_CHART_MESSAGE,
     },
 ]
 
