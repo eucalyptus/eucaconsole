@@ -28,15 +28,17 @@ import string
 
 from random import choice
 
+from pyramid.settings import asbool
 
-def setup_tweens(config):
+def setup_tweens(config, settings):
     """Since tweens order is important this function will
     take care of proper ordering"""
 
     config.add_tween('eucaconsole.tweens.https_tween_factory')
     config.add_tween('eucaconsole.tweens.request_id_tween_factory')
-    config.add_tween('eucaconsole.tweens.usage_log_tween_factory')
     config.add_tween('eucaconsole.tweens.CTHeadersTweenFactory')
+    if asbool(settings.get('log.useractions', 'false')):
+        config.add_tween('eucaconsole.tweens.usage_log_tween_factory')
 
 
 def https_tween_factory(handler, registry):
