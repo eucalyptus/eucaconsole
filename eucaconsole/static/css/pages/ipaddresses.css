@@ -124,4 +124,6 @@
 @media screen and (max-width: 1020px) { .columns.datagrid { padding-left: 1rem; } }
 form #ipcount { width: 3rem; }
 
+#controls_domain label { right: auto; }
+
 .reveal-modal .button[type=submit] { display: block; margin: 0 auto 0 auto; }
