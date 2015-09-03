@@ -5,40 +5,34 @@
  */
 
 // Create Image page includes the Tag Editor 
-angular.module('InstanceCreateImage', ['TagEditor'])
-    .controller('InstanceCreateImageCtrl', function ($scope, $timeout) {
+angular.module('InstanceCreateImage', ['EucaConsoleUtils', 'TagEditor', 'CreateBucketDialog'])
+    .controller('InstanceCreateImageCtrl', function ($scope, $timeout, eucaUnescapeJson) {
         $scope.form = $('#create-image-form');
         $scope.expanded = false;
         $scope.name = '';
-        $scope.s3_bucket = '';
+        $scope.bucketName = '';
         $scope.s3_prefix = 'image';
         $scope.s3BucketError = false;
         $scope.s3PrefixError = false;
         $scope.isNotValid = true;
+        $scope.bucketNameField = $('#s3_bucket');
+        $scope.bucketNameChoices = {};
         $scope.toggleContent = function () {
             $scope.expanded = !$scope.expanded;
         };
-        $scope.initController = function () {
-            $('#s3_bucket').chosen({search_contains: true, create_option: function(term){
-                    var chosen = this;
-                    var bucket_name = term;
-                    $timeout(function() {
-                        chosen.append_option({
-                            value: bucket_name,
-                            text: bucket_name
-                        });
-                    });
-                },
-                create_with_enter: true,
-                create_option_text: 'Create Bucket'
-            });
+        $scope.initController = function (optionsJson) {
+            var options = JSON.parse(eucaUnescapeJson(optionsJson));
+            $scope.setInitialValues(options);
             $scope.setWatch();
+        };
+        $scope.setInitialValues = function (options) {
+            $scope.bucketNameChoices = options.bucket_choices;
         };
         $scope.checkRequiredInput = function () {
             $scope.isNotValid = false;
             $scope.validateS3BucketInput();
             $scope.validateS3PrefixInput();
-            if ($scope.name === '' || $scope.s3_bucket === '' || $scope.s3_prefix === '' ) {
+            if ($scope.name === '' || $scope.bucketName === '' || $scope.s3_prefix === '' ) {
                 $scope.isNotValid = true;
             } else if ($scope.s3BucketError || $scope.s3PrefixError) {
                 $scope.isNotValid = true;
@@ -46,7 +40,7 @@ angular.module('InstanceCreateImage', ['TagEditor'])
         };
         $scope.validateS3BucketInput = function () {
             var re = /^[a-z0-9-\.]+$/;
-            if ($scope.s3_bucket === '' || $scope.s3_bucket.match(re)) {
+            if ($scope.bucketName === '' || $scope.bucketName.match(re)) {
                 $scope.s3BucketError = false;
             } else { 
                 $scope.s3BucketError = true;

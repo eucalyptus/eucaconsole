@@ -49,6 +49,7 @@ from ..constants.cloudwatch import (
     DURATION_GRANULARITY_CHOICES_MAPPING
 )
 from ..constants.instances import INSTANCE_MONITORING_CHARTS_LIST
+from ..forms.buckets import CreateBucketForm
 from ..forms.images import ImagesFiltersForm
 from ..forms.instances import (
     InstanceForm, AttachVolumeForm, DetachVolumeForm, LaunchInstanceForm, LaunchMoreInstancesForm,
@@ -1414,12 +1415,19 @@ class InstanceCreateImageView(BaseInstanceView, BlockDeviceMappingItemView):
             image_id = self.image.id
         self.create_image_form.description.data = _(u"created from instance {0} running image {1}").format(
             self.instance_name, image_id)
+        self.create_bucket_form = CreateBucketForm(self.request, formdata=self.request.params or None)
+        controller_options_json = BaseView.escape_json(json.dumps({
+            'bucket_choices': dict(self.create_image_form.s3_bucket.choices),
+        }))
+
         self.render_dict = dict(
             instance=self.instance,
             instance_name=self.instance_name,
             image=self.image,
             snapshot_choices=self.get_snapshot_choices(),
             create_image_form=self.create_image_form,
+            create_bucket_form=self.create_bucket_form,
+            controller_options_json=controller_options_json,
         )
 
     @view_config(route_name='instance_create_image', renderer=TEMPLATE, request_method='GET')
@@ -1435,11 +1443,6 @@ class InstanceCreateImageView(BaseInstanceView, BlockDeviceMappingItemView):
             del self.create_image_form.s3_prefix
         else:
             del self.create_image_form.no_reboot
-            # add selected bucket in case it's a new one
-            s3_bucket = self.request.params.get('s3_bucket')
-            if s3_bucket:
-                s3_bucket = self.unescape_braces(s3_bucket)
-            self.create_image_form.s3_bucket.choices.append((s3_bucket, s3_bucket))
         if self.create_image_form.validate():
             instance_id = self.instance.id
             name = self.request.params.get('name')

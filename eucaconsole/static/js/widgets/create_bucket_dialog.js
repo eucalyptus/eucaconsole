@@ -27,7 +27,7 @@ angular.module('CreateBucketDialog', [])
             }).success(function (oData) {
                 var parentScope = $scope.$parent;
                 var newBucketChoice = {};
-                var parentForm = $('#elb-form');
+                var parentForm = parentScope.form || $('#elb-form');
                 newBucketChoice[$scope.bucketName] = $scope.bucketName;
                 parentScope.bucketName = $scope.bucketName;
                 parentScope.bucketNameChoices[$scope.bucketName] = $scope.bucketName;
@@ -37,6 +37,9 @@ angular.module('CreateBucketDialog', [])
                 }, 200);
                 $scope.isCreatingBucket = false;
                 $scope.bucketDialog.foundation('reveal', 'close');
+                if (parentScope.checkRequiredInput) {
+                    parentScope.checkRequiredInput();
+                }
             }).error(function (oData) {
                 if (oData.message) {
                     Notify.failure(oData.message);
