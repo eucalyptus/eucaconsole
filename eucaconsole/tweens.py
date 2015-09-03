@@ -67,8 +67,8 @@ class CTHeadersTweenFactory(object):
             'X-FRAME-OPTIONS': 'SAMEORIGIN',
             'CACHE-CONTROL': 'NO-CACHE',
             'PRAGMA': 'NO-CACHE',
-            'CONTENT-SECURITY-POLICY': "script-src 'self'",
-            'X-CONTENT-SECURITY-POLICY': "script-src 'self'",
+            'CONTENT-SECURITY-POLICY': "script-src 'self'; form-action 'self';",
+            'X-CONTENT-SECURITY-POLICY': "script-src 'self'; form-action 'self';",
         },
     }
 
