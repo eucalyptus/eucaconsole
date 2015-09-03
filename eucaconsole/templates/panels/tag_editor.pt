@@ -27,7 +27,7 @@
                 <div id="tag-name-input-div" class="small-4 columns">
                     <input id='tag-name-input' class="taginput key" placeholder="name..." ng-model="newTagKey" pattern="${layout.tag_pattern_key}" />
                     <div ng-show="!existsTagKey">
-                        <small class="error" i18n:translate="">Tag may not begin with "aws:" or its length cannot be longer than 128 chars</small>
+                        <small class="error" i18n:translate="">Tag may not begin with "aws:", "euca:" or its length cannot be longer than 128 chars</small>
                     </div>
                     <div ng-show="existsTagKey">
                         <small class="error" i18n:translate="">Key already in use, please use another key.</small>
