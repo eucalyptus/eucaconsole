@@ -137,7 +137,8 @@ angular.module('TagEditor', ['ngSanitize', 'EucaConsoleUtils'])
             if (tagKeyField.val() && tagValueField.val()) {
                 // disallow adding tags starting with aws: or euca:. abide handles
                 // alerting the user
-                if (["aws:", "euca:"].indexOf(tagKeyField.val()) > -1) {
+                if (tagKeyField.val().indexOf("aws:") === 0 ||
+                    tagKeyField.val().indexOf("euca:") === 0) {
                     return false;
                 }
                 // Avoid adding a new tag if the name duplicates an existing one.
