@@ -316,7 +316,7 @@ class ScalingGroupPolicyCreateForm(BaseSecureForm):
     cooldown_help_text = _(
         u'Time (in seconds) before Alarm related Scaling Activities can start after the previous Scaling Activity ends.'
     )
-    cooldown = wtforms.IntegerField(
+    cooldown = wtforms.TextField(
         label=_(u'Cooldown period (seconds)'),
         validators=[
             validators.InputRequired(message=cooldown_error_msg),
