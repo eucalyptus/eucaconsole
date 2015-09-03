@@ -333,12 +333,26 @@ def select_certificate_dialog(context, request, can_list_certificates=True,
 
 @panel_config('elb_security_policy_dialog', renderer='../templates/dialogs/elb_security_policy_dialog.pt')
 def elb_security_policy_dialog(context, request, security_policy_form=None, latest_predefined_policy=None):
-    """ Modal dialog for selecting SSL certificate"""
+    """ Modal dialog for configuring an SSL security policy"""
     return dict(
         security_policy_form=security_policy_form,
         latest_predefined_policy=latest_predefined_policy,
         chosen_placeholder_text=_(u'Select...'),
     )
+
+
+@panel_config('create_bucket_dialog', renderer='../templates/dialogs/create_bucket_dialog.pt')
+def create_bucket_dialog(context, request, create_bucket_form=None):
+    """ Modal dialog for creating a bucket on non-bucket pages (e.g. ELB Access Logs on Health Checks page"""
+    return dict(
+        create_bucket_form=create_bucket_form,
+    )
+
+
+@panel_config('elb_bucket_access_log_dialog', renderer='../templates/dialogs/elb_bucket_access_log_dialog.pt')
+def elb_bucket_access_log_dialog(context, request):
+    """ Modal confirmation when enabling access logs for an ELB"""
+    return dict()
 
 
 @panel_config('cloudwatch_chart_dialog', renderer='../templates/dialogs/cloudwatch_chart_dialog.pt')

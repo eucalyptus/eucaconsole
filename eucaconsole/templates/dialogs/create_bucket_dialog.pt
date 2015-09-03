@@ -1,0 +1,24 @@
+<!--! Create bucket dialog -->
+<div i18n:domain="eucaconsole">
+    <div id="create-bucket-modal" class="reveal-modal small" data-reveal="" ng-controller="CreateBucketDialogCtrl">
+        <h3 i18n:translate="">Create bucket</h3>
+        <form method="post" data-abide="" id="create-bucket-form"
+              ng-submit="handleCreateBucket('${request.route_path('bucket_create_xhr')}', $event)">
+            ${structure:create_bucket_form['csrf_token']}
+            ${panel('form_field', field=create_bucket_form['bucket_name'], stack_label=True, ng_attrs=dict(model='bucketName'))}
+            <div class="columns">
+                <button type="submit" class="button expand" i18n:translate="" id="create-bucket-btn"
+                        ng-show="!isCreatingBucket" ng-disabled="existingBucketConflict">
+                    Create Bucket
+                </button>
+                <div ng-show="isCreatingBucket">
+                    <span i18n:translate="">Creating bucket...</span>
+                    <span class="busy">&nbsp;</span>
+                </div>
+            </div>
+        </form>
+        <a href="#" id="create_bucket_close_link" class="close-reveal-modal">&#215;</a>
+        <br />
+        <script src="${request.static_path('eucaconsole:static/js/widgets/create_bucket_dialog.js')}"></script>
+    </div>
+</div>

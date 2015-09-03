@@ -206,6 +206,7 @@ urls = [
     # Contents/detail pages
     Route(name='bucket_new', pattern='/buckets/new'),
     Route(name='bucket_create', pattern='/buckets/create'),
+    Route(name='bucket_create_xhr', pattern='/buckets/create_xhr'),
     Route(name='bucket_details', pattern='/buckets/{name}/details'),
     Route(name='bucket_objects_count_versioning_json', pattern='/buckets/{name}/objectscount.json'),
     Route(name='bucket_update', pattern='/buckets/{name}/update'),

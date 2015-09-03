@@ -121,7 +121,7 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
                     }
                 });
             });
-            $scope.$watch('listenerArray', function (newVal) {
+            $scope.$watch('listenerArray', function () {
                 if ($scope.listenerArray.length > 0) {
                     $scope.classNoListenerWarningDiv = '';
                 }

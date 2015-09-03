@@ -446,8 +446,7 @@ textarea.policy-area {
     i {
         color: $hp-accessible-blue;
         &.helptext-icon {
-            color: $euca-grey;
-            font-size: 1.2rem;
+            color: $hp-gray-65;
         }
     }
     .title {
@@ -698,6 +697,7 @@ form {
         }
         &.stack-label {
             margin-bottom: 4px;
+            white-space: nowrap;
         }
     }
     label.reverse {

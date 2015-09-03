@@ -56,6 +56,13 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
     $scope.classDuplicatedBackendCertificateDiv = '';
     $scope.classAddBackendCertificateButton = 'disabled';
     $scope.classUseThisCertificateButton = 'disabled';
+    $scope.loggingEnabled = false;
+    $scope.bucketName = '';
+    $scope.bucketNameField = $('#bucket_name');
+    $scope.bucketNameChoices = {};
+    $scope.accessLoggingConfirmed = false;
+    $scope.accessLogConfirmationDialog = $('#elb-bucket-access-log-dialog');
+    $scope.accessLogConfirmationDialogKey = 'doNotShowAccessLogConfirmationAgain';
     $scope.instanceCounts = {};
     $scope.initController = function (optionsJson) {
         var options = JSON.parse(eucaUnescapeJson(optionsJson));
@@ -67,6 +74,7 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
     };
     $scope.setInitialValues = function (options) {
         var certArnField = $('#certificate_arn');
+        $scope.bucketNameChoices = options.bucket_choices;
         $scope.existingCertificateChoices = options.existing_certificate_choices;
         $scope.elbForm = $('#elb-form');
         $scope.urlParams = $.url().param();
@@ -294,6 +302,27 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
         $scope.$on('textSearch', function ($event, searchVal, filterKeys) {
             // Relay the text search update signal
             $scope.$broadcast('eventTextSearch', searchVal, filterKeys);
+        });
+        $scope.$watch('loggingEnabled', function (newVal, oldVal) {
+            if (newVal !== oldVal) {
+                $scope.isNotChanged = false;
+                if (newVal) {
+                    if (Modernizr.localstorage && !localStorage.getItem($scope.accessLogConfirmationDialogKey)) {
+                        $scope.accessLogConfirmationDialog.foundation('reveal', 'open');
+                    }
+                }
+            }
+        });
+        $scope.accessLogConfirmationDialog.on('opened.fndtn.reveal', function () {
+            $scope.accessLoggingConfirmed = false;
+            $scope.$apply();
+        });
+        $scope.accessLogConfirmationDialog.on('close.fndtn.reveal', function () {
+            if (!$scope.accessLoggingConfirmed) {
+                $scope.loggingEnabled = false;
+                $scope.$apply();
+            }
+            $('#bucket_name').focus().closest('.columns').removeClass('error');
         });
     };
     $scope.checkRequiredInput = function (step) {
@@ -647,6 +676,14 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
         }).error(function (oData) {
             eucaHandleError(oData, status);
         });
+    };
+    $scope.confirmEnableAccessLogs = function () {
+        var modal = $('#elb-bucket-access-log-dialog');
+        if (modal.find('#dont-show-again').is(':checked') && Modernizr.localstorage) {
+            localStorage.setItem($scope.accessLogConfirmationDialogKey, true);
+        }
+        $scope.accessLoggingConfirmed = true;
+        $scope.accessLogConfirmationDialog.foundation('reveal', 'close');
     };
 })
     .directive('focusOnLoad', function ($timeout) {
