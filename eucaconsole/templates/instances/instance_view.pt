@@ -260,15 +260,18 @@
                     <h6 i18n:translate="">Image</h6>
                     <div class="row controls-wrapper readonly">
                         <div class="large-2 small-4 columns"><label i18n:translate="">Image ID</label></div>
-                        <div tal:condition="image" class="large-10 small-8 columns value">
+                        <div tal:condition="image" class="large-10 small-8 columns value" tal:condition="image">
                             <a href="${request.route_path('image_view', id=image.id)}">${image.id}</a>
                         </div>
+                        <div tal:condition="image" class="large-10 small-8 columns value" tal:condition="not image">
+                            ${instance.image_id}
+                        </div>
                     </div>
-                    <div class="row controls-wrapper readonly">
+                    <div class="row controls-wrapper readonly" tal:condition="image">
                         <div class="large-2 small-4 columns"><label i18n:translate="">Image name</label></div>
                         <div tal:condition="image" class="large-10 small-8 columns value breakword" ng-non-bindable="">${image.name}</div>
                     </div>
-                    <div class="row controls-wrapper readonly">
+                    <div class="row controls-wrapper readonly" tal:condition="image">
                         <div class="large-2 small-4 columns"><label i18n:translate="">Image manifest</label></div>
                         <div tal:condition="image" class="large-10 small-8 columns value breakword">${image.location}</div>
                     </div>
