@@ -60,7 +60,7 @@
                                         data-tooltip="" title="${create_image_form.no_reboot.help_text}"></span>
                                 </label>
                             </div>
-                            ${panel('bdmapping_editor', image=image, snapshot_choices=snapshot_choices)}
+                            ${panel('bdmapping_editor', instance=instance, volumes=volumes, snapshot_choices=snapshot_choices)}
                         </div>
                     </div>
                     <hr/>
