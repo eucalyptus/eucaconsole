@@ -22,11 +22,8 @@ angular.module('InstanceCreateImage', ['EucaConsoleUtils', 'TagEditor', 'CreateB
         };
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
-            $scope.setInitialValues(options);
-            $scope.setWatch();
-        };
-        $scope.setInitialValues = function (options) {
             $scope.bucketNameChoices = options.bucket_choices;
+            $scope.setWatch();
         };
         $scope.checkRequiredInput = function () {
             $scope.isNotValid = false;
