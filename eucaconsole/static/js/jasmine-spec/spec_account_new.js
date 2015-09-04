@@ -4,7 +4,7 @@
  *
  */
 
-describe("AccountPage", function() {
+ddescribe("AccountPage", function() {
 
     beforeEach(angular.mock.module('AccountPage'));
 
@@ -31,6 +31,7 @@ describe("AccountPage", function() {
     describe("Initial Values Test", function() {
 
         it("Initial value of accountName is empty", function() {
+            console.log(scope);
             expect(scope.accountName).toEqual('');
         });
 
@@ -54,6 +55,24 @@ describe("AccountPage", function() {
             spyOn(scope, 'setWatch');
             scope.initController('a', 'b', 'c');
             expect(scope.setWatch).toHaveBeenCalled();
+        });
+    });
+
+    describe("Form Validation", function () {
+
+        describe("Account Name Field Test", function () {
+
+            it("Should be valid when given input within parameters", function (){
+                scope.accountName = "MyAccountName";
+                scope.$digest();
+                expect(scope.form.$valid).toBe(true);
+            });
+
+            it("Should be invalid when given input resembling account number", function () {
+                scope.accountName = "123456789012";
+                scope.$digest();
+                expect(scope.form.$valid).toBe(false);
+            });
         });
     });
 });

@@ -5,8 +5,8 @@
  */
 
 // New user page includes the User Editor editor
-angular.module('AccountPage', ['UserEditor', 'Quotas', 'EucaConsoleUtils'])
-    .controller('AccountPageCtrl', function ($scope, $http, $timeout, eucaHandleError) {
+angular.module('CreateAccountPage', ['UserEditor', 'Quotas', 'EucaConsoleUtils'])
+    .controller('CreateAccountPageCtrl', function ($scope, $http, $timeout, eucaHandleError) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.submitEndpoint = '';
         $scope.accountRedirect = '';
@@ -64,6 +64,31 @@ angular.module('AccountPage', ['UserEditor', 'Quotas', 'EucaConsoleUtils'])
                     $scope.isNotValid = false;
                 }
             });
+        };
+    })
+    .directive('accountAlias', function () {
+        var aliasPattern = /^[a-z0-9][a-z0-9\.@\-]{1,61}[a-z0-9]$/;
+        var iamAcctAntiPattern = /[0-9]{12}/;
+        return {
+            restrict: 'A',
+            require: 'ngModel',
+            link: function (scope, elem, attrs, ctrl) {
+                ctrl.$validators.accountAlias = function (modelVal, viewVal) {
+
+                    // Pass on match of alias pattern
+                    if(aliasPattern.test(viewVal)) {
+                        return true;
+                    }
+
+                    // Fail on match of iam account number
+                    if(iamAcctAntiPattern.test(viewVal)) {
+                        console.log('matches antipatern');
+                        return false;
+                    }
+
+                    return false;
+                }
+            }
         };
     })
 ;

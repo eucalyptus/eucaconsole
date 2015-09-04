@@ -133,6 +133,7 @@ module.exports = function(config) {
       'static/js/jasmine-spec/spec_user_editor.js',
       'static/js/jasmine-spec/spec_account.js',
       'static/js/jasmine-spec/spec_accounts.js',
+      'static/js/jasmine-spec/spec_account_new.js',
       'static/js/jasmine-spec/spec_buckets.js',
       'static/js/jasmine-spec/spec_bucket_new.js',
       'static/js/jasmine-spec/spec_bucket_contents.js',
