@@ -64,7 +64,7 @@ def usage_log_tween_factory(handler, registry):
     def tween(request):
         method = request.environ['REQUEST_METHOD']
         path = request.environ['PATH_INFO']
-        remote_addr = request.environ['REMOTE_ADDR']
+        remote_addr = request.environ.get('HTTP_X_FORWARDED_FOR', request.environ['REMOTE_ADDR'])
         content_type = request.environ.get('CONTENT_TYPE', '')
         if method == 'GET' and path.find('static') == -1:
             if 'HTTP_X_REQUESTED_WITH' not in request.environ:
