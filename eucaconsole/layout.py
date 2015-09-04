@@ -77,7 +77,7 @@ class MasterLayout(object):
         self.euca_logout_form = EucaLogoutForm(request=self.request)
         self.date_format = _(u'%I:%M:%S %p %b %d %Y')
         self.angular_date_format = _(u'hh:mm:ss a MMM d yyyy')
-        self.tag_pattern_key = '^(?!aws:).{0,128}$'
+        self.tag_pattern_key = '^(?!aws:)(?!euca:).{0,128}$'
         self.tag_pattern_value = '^(?!aws:).{0,256}$'
         self.integer_gt_zero_pattern = '^[1-9]\d*$'
         self.non_negative_pattern = '^[0-9]\d*$'
