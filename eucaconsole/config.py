@@ -95,7 +95,7 @@ def check_config(settings):
 
 
 def get_configurator(settings, enable_auth=True):
-    check_config(settings);
+    check_config(settings)
     connection_debug = asbool(settings.get('connection.debug'))
     boto.set_stream_logger('boto', level=(logging.DEBUG if connection_debug else logging.CRITICAL))
     ensure_session_keys(settings)
@@ -121,7 +121,7 @@ def get_configurator(settings, enable_auth=True):
     config.set_locale_negotiator(custom_locale_negotiator)
     for route in urls:
         config.add_route(route.name, route.pattern)
-    setup_tweens(config)
+    setup_tweens(config, settings)
     config.scan()
     if not boto.config.has_section('Boto'):
         boto.config.add_section('Boto')
