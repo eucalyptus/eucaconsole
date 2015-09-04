@@ -67,8 +67,7 @@ def usage_log_tween_factory(handler, registry):
         remote_addr = request.environ['REMOTE_ADDR']
         content_type = request.environ.get('CONTENT_TYPE', '')
         if method == 'GET' and path.find('static') == -1:
-            is_xhr = 'HTTP_X_REQUESTED_WITH' in request.environ
-            if not is_xhr:
+            if 'HTTP_X_REQUESTED_WITH' not in request.environ:
                 # assume this is a page root
                 logging.info('user-nav: {0} {1}'.format(remote_addr, path))
         if method == 'POST' and (path.find('json') == -1 or content_type == 'application/x-www-form-urlencoded'):
