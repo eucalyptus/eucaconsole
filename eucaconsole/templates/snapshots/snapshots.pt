@@ -63,11 +63,11 @@
                 </div>
                 <div ng-show="item.description">
                     <span class="label" title="Description" i18n:attributes="title" data-tooltip="">DE</span>
-                    {{ item.description | limitTo: 128 }}
+                    {{ item.description | ellipsis: 50 }}
                 </div>
                 <div ng-show="item.tags">
                     <span class="label" title="Tags" i18n:attributes="title" data-tooltip="">TA</span>
-                    {{ item.tags | limitTo: 128 }}
+                    <span title="{{ item.tags }}">{{ item.tags | ellipsis: 50}}</span>
                 </div>
             </div>
             <div metal:fill-slot="tile_footer" tal:omit-tag="">

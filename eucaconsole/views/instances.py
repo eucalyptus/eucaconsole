@@ -72,6 +72,7 @@ from ..layout import __version__ as curr_version
 
 class BaseInstanceView(BaseView):
     """Base class for instance-related views"""
+
     def __init__(self, request):
         super(BaseInstanceView, self).__init__(request)
         self.conn = self.get_connection()
@@ -99,7 +100,7 @@ class BaseInstanceView(BaseView):
                     if instance.instance_profile is not None and len(instance.instance_profile.keys()) > 0:
                         instance.instance_profile_id = instance.instance_profile.keys()[0]
                     return instance
-            except BotoServerError as err:
+            except BotoServerError:
                 pass
         return None
 
@@ -114,7 +115,7 @@ class BaseInstanceView(BaseView):
                     platform = ImageView.get_platform(image)
                     image.platform_name = ImageView.get_platform_name(platform)
                 return image
-            except BotoServerError as err:
+            except BotoServerError:
                 pass
         return None
 
@@ -144,12 +145,12 @@ class BaseInstanceView(BaseView):
             if vpc_subnet_list:
                 for vpc in vpc_subnet_list:
                     if vpc.id == subnet_id:
-                        cidr_block = vpc.cidr_block 
+                        cidr_block = vpc.cidr_block
             else:
                 with boto_error_handler(self.request):
-                     vpc_subnet = self.vpc_conn.get_all_subnets(subnet_ids=[subnet_id])
-                     if vpc_subnet and vpc_subnet[0].cidr_block:
-                         cidr_block = vpc_subnet[0].cidr_block
+                    vpc_subnet = self.vpc_conn.get_all_subnets(subnet_ids=[subnet_id])
+                    if vpc_subnet and vpc_subnet[0].cidr_block:
+                        cidr_block = vpc_subnet[0].cidr_block
             if cidr_block:
                 return u"{0} ({1})".format(cidr_block, subnet_id)
         return ''
@@ -375,7 +376,7 @@ class InstancesJsonView(LandingPageView, BaseInstanceView):
 
     @view_config(route_name='instances_json', renderer='json', request_method='POST')
     def instances_json(self):
-        if not(self.is_csrf_valid()):
+        if not (self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
         instances = []
         filters = {}
@@ -410,14 +411,13 @@ class InstancesJsonView(LandingPageView, BaseInstanceView):
         if not owner_alias and self.cloud_type == 'aws':
             # Set default alias to 'amazon' for AWS
             owner_alias = 'amazon'
-        region = self.request.session.get('region')
         for instance in filtered_items:
             is_transitional = instance.state in transitional_states
             security_groups_array = sorted({
                 'name': group.name,
                 'id': group.id,
                 'rules_count': self.get_security_group_rules_count_by_id(group.id)
-                } for group in instance.groups)
+            } for group in instance.groups)
             if instance.platform is None:
                 instance.platform = _(u"linux")
             has_elastic_ip = instance.ip_address in elastic_ips
@@ -439,9 +439,8 @@ class InstancesJsonView(LandingPageView, BaseInstanceView):
                 exists_key=exists_key,
                 vpc_name=instance.vpc_name,
                 subnet_id=instance.subnet_id if instance.subnet_id else None,
-                vpc_subnet_display=
-                    self.get_vpc_subnet_display(instance.subnet_id, vpc_subnet_list=self.vpc_subnets)
-                    if instance.subnet_id else None,
+                vpc_subnet_display=self.get_vpc_subnet_display(instance.subnet_id, vpc_subnet_list=self.vpc_subnets) if
+                instance.subnet_id else None,
                 status=instance.state,
                 tags=TaggedItemView.get_tags_display(instance.tags),
                 transitional=is_transitional,
@@ -529,7 +528,7 @@ class InstancesJsonView(LandingPageView, BaseInstanceView):
         profiles = []
         for role in self.request.params.getall('roles'):
             instance_profiles_list = iam_conn.list_instance_profiles(
-                path_prefix='/'+role).list_instance_profiles_response.list_instance_profiles_result.instance_profiles
+                path_prefix='/' + role).list_instance_profiles_response.list_instance_profiles_result.instance_profiles
             for profile in instance_profiles_list:
                 profiles.append(profile.instance_profile_id)
         for item in items:
@@ -547,14 +546,14 @@ class InstanceJsonView(BaseInstanceView):
         instance = self.get_instance()
         # Only included a few fields here. Feel free to include more as needed.
         return dict(results=dict(
-                    id=instance.id,
-                    instance_type=instance.instance_type,
-                    image_id=instance.image_id,
-                    platform=instance.platform,
-                    state_reason=instance.state_reason,
-                    ip_address=instance.ip_address,
-                    root_device_name=instance.root_device_name,
-                    root_device_type=instance.root_device_type))
+            id=instance.id,
+            instance_type=instance.instance_type,
+            image_id=instance.image_id,
+            platform=instance.platform,
+            state_reason=instance.state_reason,
+            ip_address=instance.ip_address,
+            root_device_name=instance.root_device_name,
+            root_device_type=instance.root_device_type))
 
 
 class InstanceView(TaggedItemView, BaseInstanceView):
@@ -592,7 +591,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
         self.role = None
         if BaseView.has_role_access(request) and self.instance and self.instance.instance_profile:
             arn = self.instance.instance_profile['arn']
-            profile_name = arn[(arn.rindex('/')+1):]
+            profile_name = arn[(arn.rindex('/') + 1):]
             inst_profile = self.iam_conn.get_instance_profile(profile_name)
             self.role = inst_profile.roles.member.role_name if inst_profile.roles else None
         self.running_create = False
@@ -735,7 +734,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
                 string_to_decrypt = base64.b64decode(passwd_data)
                 ret = user_priv_key.private_decrypt(string_to_decrypt, RSA.pkcs1_padding)
                 return dict(results=dict(instance=instance_id, password=ret))
-            except RSA.RSAError as err:  # likely, bad key
+            except RSA.RSAError:  # likely, bad key
                 return JSONResponse(status=400, message=_(
                     u"There was a problem with the key, please try again, verifying the correct private key is used."))
 
@@ -1285,7 +1284,7 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
                 self.associate_public_ip_address = 'Enabled'
         if BaseView.has_role_access(request) and self.instance.instance_profile:
             arn = self.instance.instance_profile['arn']
-            profile_name = arn[(arn.rindex('/')+1):]
+            profile_name = arn[(arn.rindex('/') + 1):]
             inst_profile = self.iam_conn.get_instance_profile(profile_name)
             self.role = inst_profile.roles.member.role_name
         self.render_dict = dict(
@@ -1410,19 +1409,27 @@ class InstanceCreateImageView(BaseInstanceView, BlockDeviceMappingItemView):
         self.create_image_form = InstanceCreateImageForm(
             self.request, instance=self.instance, ec2_conn=self.ec2_conn, s3_conn=self.s3_conn,
             formdata=self.request.params or None)
-        image_id = _(u"missing")
         if self.image is not None:
             image_id = self.image.id
+        else:
+            image_id = self.instance.image_id
         self.create_image_form.description.data = _(u"created from instance {0} running image {1}").format(
             self.instance_name, image_id)
         self.create_bucket_form = CreateBucketForm(self.request, formdata=self.request.params or None)
         controller_options_json = BaseView.escape_json(json.dumps({
             'bucket_choices': dict(self.create_image_form.s3_bucket.choices),
         }))
-
+        volumes = []
+        if self.instance.root_device_type == 'ebs':
+            bdm_map = self.instance.block_device_mapping or []
+            for device_name in bdm_map:
+                bdm = bdm_map[device_name]
+                volumes.append(bdm.volume_id)
+            volumes = self.ec2_conn.get_all_volumes(volumes)
         self.render_dict = dict(
             instance=self.instance,
             instance_name=self.instance_name,
+            volumes=volumes,
             image=self.image,
             snapshot_choices=self.get_snapshot_choices(),
             create_image_form=self.create_image_form,
@@ -1465,10 +1472,10 @@ class InstanceCreateImageView(BaseInstanceView, BlockDeviceMappingItemView):
                         creds = auth.authenticate(
                             account=account, user=username, passwd=password,
                             timeout=8, duration=86400)  # 24 hours
-                    except HTTPError, err:          # catch error in authentication
+                    except HTTPError, err:  # catch error in authentication
                         if err.msg == 'Unauthorized':
                             msg = _(u"The password you entered is incorrect.")
-                    except URLError, err:           # catch error in authentication
+                    except URLError, err:  # catch error in authentication
                         msg = err.msg
                     if msg is not None:
                         self.request.session.flash(msg, queue=Notification.ERROR)
@@ -1507,7 +1514,7 @@ class InstanceCreateImageView(BaseInstanceView, BlockDeviceMappingItemView):
                     k.set_contents_from_string(json.dumps(bundle_metadata))
                     msg = _(u'Successfully sent create image request.  It may take a few minutes to create the image.')
                     self.request.session.flash(msg, queue=Notification.SUCCESS)
-                    return HTTPFound(location=self.request.route_path('image_view', id='p'+instance_id))
+                    return HTTPFound(location=self.request.route_path('image_view', id='p' + instance_id))
             else:
                 no_reboot = self.request.params.get('no_reboot')
                 with boto_error_handler(self.request, self.location):
@@ -1529,7 +1536,6 @@ class InstanceCreateImageView(BaseInstanceView, BlockDeviceMappingItemView):
 
 
 class InstanceTypesView(LandingPageView, BaseInstanceView):
-
     def __init__(self, request):
         super(InstanceTypesView, self).__init__(request)
         self.request = request
@@ -1547,9 +1553,9 @@ class InstanceTypesView(LandingPageView, BaseInstanceView):
 
     @view_config(route_name='instance_types_json', renderer='json', request_method='POST')
     def instance_types_json(self):
-        if not(self.request.session['account_access']):
+        if not (self.request.session['account_access']):
             return JSONResponse(status=401, message=_(u"Unauthorized"))
-        if not(self.is_csrf_valid()):
+        if not (self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
         instance_types_results = []
         with boto_error_handler(self.request):
@@ -1565,7 +1571,7 @@ class InstanceTypesView(LandingPageView, BaseInstanceView):
 
     @view_config(route_name='instance_types_update', renderer='json', request_method='POST')
     def instance_types_update(self):
-        if not(self.is_csrf_valid()):
+        if not (self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
         # Extract the list of instance type updates
         update = {}

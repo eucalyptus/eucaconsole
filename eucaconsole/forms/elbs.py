@@ -81,7 +81,7 @@ class ELBAccessLogsFormMixin(object):
     bucket_name_help_text = _(u'Choose from your existing buckets, or create a new bucket.')
     bucket_name = wtforms.SelectField(
         label=_(u'Bucket name'),
-        validators=[validators.InputRequired(message=bucket_name_error_msg)],
+        validators=[BucketInfoRequired(message=bucket_name_error_msg)],
     )
     bucket_prefix_help_text = _(
         u"The path to your log file within the bucket. "
