@@ -87,7 +87,7 @@ angular.module('CreateAccountPage', ['UserEditor', 'Quotas', 'EucaConsoleUtils']
                     }
 
                     return false;
-                }
+                };
             }
         };
     })
