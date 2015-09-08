@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013-2014 Eucalyptus Systems, Inc.
+# Copyright 2013-2015 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -65,10 +65,12 @@ MONITOR_ACCESS_POLICY = {
             "Effect": "Allow",
             "Action": [
                 "autoscaling:Describe*",
+                "cloudformation:Describe*",
                 "cloudwatch:Describe*",
                 "cloudwatch:Get*",
                 "cloudwatch:List*",
                 "ec2:Describe*",
+                "elasticloadbalancing:Describe*",
                 "s3:Get*",
                 "s3:List*",
             ],

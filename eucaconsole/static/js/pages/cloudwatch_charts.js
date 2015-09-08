@@ -135,6 +135,9 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
             'params': params
         }).success(function(oData) {
             scope.chartLoading = false;
+            if (typeof oData === 'string' && oData.indexOf('<html') > -1) {
+                $('#timed-out-modal').foundation('reveal', 'open');
+            }
             var results = oData ? oData.results : '';
             var unit = oData.unit || scope.unit;
             var yformatter = '.0f';
@@ -147,7 +150,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
             ];
             var preciseFormatterMetrics = ['Latency'];
             var chart = nv.models.lineChart()
-                .margin({left: 68})
+                .margin({left: 68, right: 38})
                 .useInteractiveGuideline(true)
                 .showYAxis(true)
                 .showXAxis(true)

@@ -136,7 +136,7 @@
                 <div class="section step1">
                     <div class="row">
                         <label i18n:translate="">Name:</label>
-                        <div class="columns value">{{ scalingGroupName }}</div>
+                        <div class="columns value breakword">{{ scalingGroupName }}</div>
                     </div>
                     <div class="row">
                         <label i18n:translate="">Launch configuration:</label>

@@ -1,7 +1,7 @@
 This program is free software.  Where not otherwise indicated, you
 may redistribute it and/or modify it under the following terms:
 
-Copyright 2012-2015 Eucalyptus Systems, Inc.
+Copyright 2012-2015 Hewlett Packard Enterprise Development LP
 
 Redistribution and use of this software in source and binary forms,
 with or without modification, are permitted provided that the following
@@ -34,7 +34,7 @@ directory.
 --------------------
 
 Images that weren't provided by bundled libraries (exceptions below) are licensed under
-the CC-BY-SA license by Eucalyptus Systems (as follows).
+the CC-BY-SA license by Hewlett Packard Enterprise Development LP (as follows).
 
 THE WORK (AS DEFINED BELOW) IS PROVIDED UNDER THE TERMS OF THIS CREATIVE COMMONS PUBLIC LICENSE ("CCPL" OR "LICENSE"). THE WORK IS PROTECTED BY COPYRIGHT AND/OR OTHER APPLICABLE LAW. ANY USE OF THE WORK OTHER THAN AS AUTHORIZED UNDER THIS LICENSE OR COPYRIGHT LAW IS PROHIBITED.
 

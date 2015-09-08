@@ -1,4 +1,4 @@
-# Copyright 2013-2014 Eucalyptus Systems, Inc.
+# Copyright 2013-2015 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -296,6 +296,13 @@ def bucket_dialogs(context, request, bucket=None, landingpage=False, versioning_
     )
 
 
+@panel_config('bucket_item_shared_url_dialog', renderer='../templates/dialogs/bucket_item_shared_url_dialog.pt')
+def bucket_item_shared_url_dialog(context, request, shared_url_form=None):
+    return dict(
+        shared_url_form=shared_url_form
+    )
+
+
 @panel_config('bucket_item_dialogs', renderer='../templates/dialogs/bucket_item_dialogs.pt')
 def bucket_item_dialogs(context, request):
     return dict()
@@ -326,12 +333,26 @@ def select_certificate_dialog(context, request, can_list_certificates=True,
 
 @panel_config('elb_security_policy_dialog', renderer='../templates/dialogs/elb_security_policy_dialog.pt')
 def elb_security_policy_dialog(context, request, security_policy_form=None, latest_predefined_policy=None):
-    """ Modal dialog for selecting SSL certificate"""
+    """ Modal dialog for configuring an SSL security policy"""
     return dict(
         security_policy_form=security_policy_form,
         latest_predefined_policy=latest_predefined_policy,
         chosen_placeholder_text=_(u'Select...'),
     )
+
+
+@panel_config('create_bucket_dialog', renderer='../templates/dialogs/create_bucket_dialog.pt')
+def create_bucket_dialog(context, request, create_bucket_form=None):
+    """ Modal dialog for creating a bucket on non-bucket pages (e.g. ELB Access Logs on Health Checks page"""
+    return dict(
+        create_bucket_form=create_bucket_form,
+    )
+
+
+@panel_config('elb_bucket_access_log_dialog', renderer='../templates/dialogs/elb_bucket_access_log_dialog.pt')
+def elb_bucket_access_log_dialog(context, request):
+    """ Modal confirmation when enabling access logs for an ELB"""
+    return dict()
 
 
 @panel_config('cloudwatch_chart_dialog', renderer='../templates/dialogs/cloudwatch_chart_dialog.pt')

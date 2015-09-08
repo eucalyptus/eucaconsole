@@ -69,6 +69,9 @@ $tile-row-height: 24px;
                 text-align: center;
                 color: $hp-accessible-blue;
                 font-style: normal;
+                &:hover {
+                    text-decoration: underline;
+                }
                 i { // busy
                     color: black;
                 }

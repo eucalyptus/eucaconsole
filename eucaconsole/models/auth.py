@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013-2014 Eucalyptus Systems, Inc.
+# Copyright 2013-2015 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -54,6 +54,7 @@ from boto.handler import XmlHandler as BotoXmlHandler
 from boto.regioninfo import RegionInfo
 from boto.sts.credentials import Credentials
 from pyramid.security import Authenticated, authenticated_userid
+from .admin import EucalyptusAdmin
 
 
 class User(object):
@@ -146,7 +147,6 @@ class ConnectionManager(object):
     def euca_connection(ufshost, port, access_id, secret_key, token, conn_type,
                         dns_enabled=True, validate_certs=False, certs_file=None):
         """Return Eucalyptus connection object
-        Pulls from Beaker cache on subsequent calls to avoid connection overhead
 
         :type ufshost: string
         :param ufshost: FQDN or IP of Eucalyptus UFS host (for user facing services)
@@ -178,6 +178,10 @@ class ConnectionManager(object):
             path = 'compute'
             conn_class = EC2Connection
             api_version = '2012-12-01'
+
+            # special case since this is our own class, not boto's
+            if conn_type == 'admin':
+                return EucalyptusAdmin(_ufshost, _port, _access_id, _secret_key, _token, _dns_enabled)
 
             # Configure based on connection type
             if conn_type == 'autoscale':
@@ -274,7 +278,11 @@ class EucaAuthenticator(object):
         # and if that also fails, let that error raise up
         try:
             return self._authenticate_(account, user, passwd, new_passwd, timeout, duration)
-        except urllib2.URLError:
+        except urllib2.URLError as err:
+            # handle case where dns attempt was good, but user unauthorized
+            error_msg = getattr(err, 'msg', None)
+            if error_msg and error_msg == 'Unauthorized' or error_msg == 'Forbidden':
+                raise err
             self.dns_enabled = False
             return self._authenticate_(account, user, passwd, new_passwd, timeout, duration)
 

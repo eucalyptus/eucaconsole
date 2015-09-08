@@ -1835,14 +1835,14 @@ describe("SecurityGroupRules", function() {
 
         it("Should call insertAllTrafficRuleOption if securityGroupVPC is not None when adjustIPProtocolOptions is called", function() {
             spyOn(scope, 'insertAllTrafficRuleOption');
-            scope.securityGroupVPC = '';
+            scope.securityGroupVPC = 'blah';
             scope.adjustIPProtocolOptions(); 
             expect(scope.insertAllTrafficRuleOption).toHaveBeenCalled();
         });
 
         it("Should call insertCustomProtocolRuleOption if securityGroupVPC is not None when adjustIPProtocolOptions is called", function() {
             spyOn(scope, 'insertCustomProtocolRuleOption');
-            scope.securityGroupVPC = '';
+            scope.securityGroupVPC = 'blah';
             scope.adjustIPProtocolOptions(); 
             expect(scope.insertCustomProtocolRuleOption).toHaveBeenCalled();
         });

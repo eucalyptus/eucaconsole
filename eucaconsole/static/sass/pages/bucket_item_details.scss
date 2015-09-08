@@ -7,3 +7,17 @@
     width: 50%;
 }
 
+.fa-lock, .fa-unlock {
+    margin-right: 3px;
+    color: $hp-accessible-blue;
+}
+
+.fa-lock {
+    color: $hp-gold;
+}
+
+#shared-url-modal {
+    textarea {
+        height: 8rem;
+    }
+}

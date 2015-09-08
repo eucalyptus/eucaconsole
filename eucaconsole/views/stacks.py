@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013-2014 Eucalyptus Systems, Inc.
+# Copyright 2013-2015 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -695,7 +695,7 @@ class StackWizardView(BaseView, StackMixin):
                 template_body = files[0].file.read()
                 template_name = files[0].filename
             elif template_url:  # read from url
-                whitelist = self.request.registry.settings.get('cloudformation.url.whitelist')
+                whitelist = self.request.registry.settings.get('cloudformation.url.whitelist', 'http://*, https://*')
                 match = False
                 for pattern in whitelist.split(','):
                     matches = fnmatch.fnmatch(template_url, pattern.strip())

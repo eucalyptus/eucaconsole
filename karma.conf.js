@@ -62,6 +62,7 @@ module.exports = function(config) {
       'static/js/widgets/autoscale_tag_editor.js',
       'static/js/widgets/bdmapping_editor.js',
       'static/js/widgets/image_picker.js',
+      'static/js/widgets/create_bucket_dialog.js',
       'static/js/widgets/policy_list.js',
       'static/js/widgets/quotas.js',
       'static/js/widgets/s3_metadata_editor.js',

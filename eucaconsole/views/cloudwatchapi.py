@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013-2014 Eucalyptus Systems, Inc.
+# Copyright 2013-2015 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -121,7 +121,7 @@ class CloudWatchAPIView(BaseView, CloudWatchAPIMixin):
         self.request = request
         self.cw_conn = self.get_connection(conn_type='cloudwatch')
 
-    @view_config(route_name='cloudwatch_api', renderer='json')
+    @view_config(route_name='cloudwatch_api', renderer='json', request_method='GET')
     def cloudwatch_api(self):
         """
         REST API endpoint for fetching time-series cloudwatch data

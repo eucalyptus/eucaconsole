@@ -1,4 +1,4 @@
-# Copyright 2013-2014 Eucalyptus Systems, Inc.
+# Copyright 2013-2015 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -206,6 +206,7 @@ urls = [
     # Contents/detail pages
     Route(name='bucket_new', pattern='/buckets/new'),
     Route(name='bucket_create', pattern='/buckets/create'),
+    Route(name='bucket_create_xhr', pattern='/buckets/create_xhr'),
     Route(name='bucket_details', pattern='/buckets/{name}/details'),
     Route(name='bucket_objects_count_versioning_json', pattern='/buckets/{name}/objectscount.json'),
     Route(name='bucket_update', pattern='/buckets/{name}/update'),
@@ -216,6 +217,7 @@ urls = [
     Route(name='bucket_keys', pattern='/buckets/{name}/keys/*subpath'),
     Route(name='bucket_item_details', pattern='/buckets/{name}/itemdetails/*subpath'),
     Route(name='bucket_item_update', pattern='/buckets/{name}/itemupdate/*subpath'),
+    Route(name='bucket_item_generate_url', pattern='/buckets/{name}/generateurl/*subpath'),
     Route(name='bucket_item_make_public', pattern='/buckets/{name}/makepublic/*subpath'),
     Route(name='bucket_put_item', pattern='/buckets/{name}/putitem/*subpath'),
     Route(name='bucket_put_items', pattern='/buckets/{name}/putitems/*subpath'),

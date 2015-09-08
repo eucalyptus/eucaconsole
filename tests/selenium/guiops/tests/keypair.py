@@ -1,7 +1,7 @@
-from guitester.guiec2 import GuiEC2
 from guiops.guiops import GuiOps
 from option_parser import Option_parser
 import string, random, time
+import logging, traceback
 
 
 class Keypair_operations_sequence(GuiOps):
@@ -26,6 +26,7 @@ class Keypair_operations_sequence(GuiOps):
         self.version = parser.parse_options()['version']
         self.platform = parser.parse_options()['platform']
         self.tester = GuiOps(console_url=self.console_url, webdriver_url=self.webdriver_url, sauce=self.sauce, browser=self.browser, version=self.version, platform=self.platform)
+        logging.basicConfig(format='%(asctime)s %(message)s')
 
 
     def keypair_ops_test(self):

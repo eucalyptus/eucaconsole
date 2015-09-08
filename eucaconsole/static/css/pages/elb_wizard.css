@@ -28,6 +28,7 @@
 .summary { border: 1px solid #cccccc; background-color: white; position: relative; top: 2px; padding: 8px; padding-bottom: 2rem; margin-bottom: 1rem; }
 .summary label { position: relative; right: -1rem; color: #6a737b; font-weight: bold; margin-top: 4px; }
 .summary .value { word-break: break-all; line-height: 1rem; }
+.summary .value.breakword { word-break: normal; word-wrap: break-word; }
 .summary .row { margin-bottom: 5px; }
 .summary .title { font-weight: bold; border-bottom: 1px solid #5a5a5a; margin-top: 7px; margin-bottom: 0.25rem; }
 .summary .section { padding: 0.5rem 0; border-bottom: 1px solid #ccc; }
@@ -54,15 +55,14 @@
 #elb-form table.table { width: 100%; }
 #elb-form .section-label { margin-top: 1.5rem; margin-bottom: 1rem; color: #5a5a5a; }
 #elb-form .sub-section-label { color: black; }
-#elb-form .helptext-icon { color: #6a737b; font-size: 1.3rem; }
 #elb-form .section-label-with-helptext-icon { margin-bottom: 0.5rem; }
 #elb-form .checkbox-with-helptext-icon label { margin-right: 0; }
 
-table.elb-listener-table { width: 100%; }
-table.elb-listener-table tr.top-header { border-bottom: 0px; }
-table.elb-listener-table th.vertical-border-header { border-collapse: collapse; border-right-width: 1px; border-right-style: solid; border-right-color: #ddd; }
-table.elb-listener-table th.center { text-align: center; }
-
-table.instance-selector-table { width: 100%; }
-
 .summary .multi-row div { padding-bottom: 0.25rem; }
+.summary .row.logging-summary { margin-top: 1rem; }
+
+#access-logs-wrapper { margin-left: 1.5rem; }
+#access-logs-wrapper #bucket_name, #access-logs-wrapper #bucket_prefix, #access-logs-wrapper #collection_interval { width: 12rem; }
+#access-logs-wrapper p { margin-bottom: 0.5rem; }
+#access-logs-wrapper #controls_bucket_name.stacked.controls-wrapper { margin-bottom: 0; }
+#access-logs-wrapper #controls_bucket_name.stacked.controls-wrapper small.error { margin-bottom: 0; padding-bottom: 0; }

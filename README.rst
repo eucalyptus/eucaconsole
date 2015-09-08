@@ -49,8 +49,9 @@ Fedora:
 
 OS X:
 
-Install homebrew, then run `brew install libevent openssl swig libmagic memcached libmemcached`
+Install homebrew, then run
 
+    `brew install libevent openssl swig libmagic memcached libmemcached`
 
 Pyramid Setup
 -------------
@@ -114,6 +115,15 @@ Run the server with
 
 `launcher.sh` is provided as an alias for `pserve console.ini --reload`
 
+On OSX, you may encounter an M2Crypto error when running `launcher.sh`.  There is a known bug in the M2Crypto bindings
+and swig versions greater than 3.0.4.  Using Homebrew you may install swig 3.0.4...
+
+::
+
+    brew uninstall swig
+    brew install homebrew/versions/swig304
+    python setup.py develop
+    ./launcher.sh
 
 Running the server in development/debug mode
 --------------------------------------------
@@ -271,6 +281,7 @@ Grunt Commands
 ::
 
     grunt bowercopy
+
 * Karma:
 ::
 

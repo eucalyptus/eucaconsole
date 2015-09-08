@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013-2014 Eucalyptus Systems, Inc.
+# Copyright 2013-2015 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -32,6 +32,7 @@ Eucalyptus and AWS ELB constants
 ELB_BACKEND_CERTIFICATE_NAME_PREFIX = 'EucaConsole-BackendServerAuthPolicy'
 ELB_PREDEFINED_SECURITY_POLICY_NAME_PREFIX = 'ELBSecurityPolicy'
 ELB_CUSTOM_SECURITY_POLICY_NAME_PREFIX = 'ELB-CustomSecurityPolicy'
+ELB_ACCESS_LOGS_BUCKET_PREFIX_NAME_PREFIX = 'ELB-AccessLogs'
 
 ELB_MONITORING_CHARTS_LIST = [
     {
@@ -153,3 +154,19 @@ SSL_CIPHERS = [
     'DES-CBC3-MD5',
     'DES-CBC-MD5',
 ]
+
+# Mapping of ELB account ID by AWS region (used for setting ACLs on ELB access logs)
+# See http://docs.aws.amazon.com/ElasticLoadBalancing/latest/DeveloperGuide/enable-access-logs.html
+AWS_ELB_ACCOUNT_IDS = {
+    'us-east-1': '127311923021',
+    'us-west-1': '027434742980',
+    'us-west-2': '797873946194',
+    'eu-west-1': '156460612806',
+    'eu-central-1': '054676820928',
+    'ap-northeast-1': '582318560864',
+    'ap-southeast-1': '114774131450',
+    'ap-southeast-2': '783225319266',
+    'sa-east-1': '507241528517',
+    'us-gov-west-1': '048591011584',
+    'cn-north-1': '638102146993',
+}

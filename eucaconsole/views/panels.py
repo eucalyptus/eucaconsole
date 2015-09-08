@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013-2014 Eucalyptus Systems, Inc.
+# Copyright 2013-2015 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -253,8 +253,8 @@ def securitygroup_rules_preview(context, request, leftcol_width=3, rightcol_widt
 
 
 @panel_config('bdmapping_editor', renderer='../templates/panels/bdmapping_editor.pt')
-def bdmapping_editor(context, request, image=None, launch_config=None, snapshot_choices=None,
-                     read_only=False, disable_dot=False):
+def bdmapping_editor(context, request, image=None, instance=None, volumes=None,
+                     launch_config=None, snapshot_choices=None, read_only=False, disable_dot=False):
     """ Block device mapping editor (e.g. for Launch Instance page).
         Usage example (in Chameleon template): ${panel('bdmapping_editor', image=image, snapshot_choices=choices)}
     """
@@ -269,6 +269,20 @@ def bdmapping_editor(context, request, image=None, launch_config=None, snapshot_
                 snapshot_id=device.snapshot_id,
                 size=device.size,
                 delete_on_termination=device.delete_on_termination,
+            )
+    if instance is not None and volumes is not None:
+        bdm_map = instance.block_device_mapping or []
+        for device_name in bdm_map:
+            bdm = bdm_map[device_name]
+            if device_name in bdm_dict.keys():
+                continue
+            volume = [vol for vol in volumes if vol.id == bdm.volume_id][0]
+            bdm_dict[device_name] = dict(
+                is_root=True if instance.root_device_name == device_name else False,
+                virtual_name=bdm.ephemeral_name,
+                snapshot_id=getattr(volume, 'snapshot_id', None),
+                size=getattr(volume, 'size', None),
+                delete_on_termination=bdm.delete_on_termination,
             )
     if launch_config is not None:
         bdm_list = launch_config.block_device_mappings or []
@@ -382,13 +396,13 @@ def s3_sharing_panel(context, request, bucket_object=None, sharing_form=None, sh
                 uri=grant.uri,
             ))
     grantee_choices = [
-        ('http://acs.amazonaws.com/groups/global/AllUsers', _(u'all users')),
-        ('http://acs.amazonaws.com/groups/global/AuthenticatedUsers', _(u'authenticated users')),
+        ('http://acs.amazonaws.com/groups/global/AllUsers', _(u'Anyone with the URL')),
+        ('http://acs.amazonaws.com/groups/global/AuthenticatedUsers', _(u'Authenticated users')),
     ]
     if isinstance(bucket_object, Key):
         bucket_owner_id = bucket_object.bucket.get_acl().owner.id
         grantee_choices.append(
-            (bucket_owner_id, _('bucket owner'))
+            (bucket_owner_id, _('Bucket owner'))
         )
     controller_options_json = BaseView.escape_json(json.dumps({
         'grants': grants_list,

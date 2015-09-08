@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013-2014 Eucalyptus Systems, Inc.
+# Copyright 2013-2015 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -29,6 +29,7 @@ Pyramid views for Eucalyptus and AWS elbs
 
 """
 import itertools
+import logging
 import simplejson as json
 import time
 
@@ -37,8 +38,9 @@ from urllib import quote
 import boto.utils
 
 from boto.ec2.elb import HealthCheck
-from boto.ec2.elb.attributes import ConnectionSettingAttribute
+from boto.ec2.elb.attributes import ConnectionSettingAttribute, AccessLogAttribute
 from boto.exception import BotoServerError
+from boto.s3.acl import ACL, Grant, Policy
 
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from pyramid.view import view_config
@@ -48,10 +50,11 @@ from ..constants.cloudwatch import (
     METRIC_TITLE_MAPPING,
     STATISTIC_CHOICES)
 from ..constants.elbs import (
-    ELB_MONITORING_CHARTS_LIST, ELB_BACKEND_CERTIFICATE_NAME_PREFIX,
-    ELB_PREDEFINED_SECURITY_POLICY_NAME_PREFIX, ELB_CUSTOM_SECURITY_POLICY_NAME_PREFIX
-)
+    ELB_MONITORING_CHARTS_LIST, ELB_BACKEND_CERTIFICATE_NAME_PREFIX, ELB_ACCESS_LOGS_BUCKET_PREFIX_NAME_PREFIX,
+    ELB_PREDEFINED_SECURITY_POLICY_NAME_PREFIX, ELB_CUSTOM_SECURITY_POLICY_NAME_PREFIX,
+    AWS_ELB_ACCOUNT_IDS)
 from ..forms import ChoicesManager
+from ..forms.buckets import CreateBucketForm
 from ..forms.elbs import (
     ELBForm, ELBDeleteForm, CreateELBForm, ELBHealthChecksForm, ELBsFiltersForm,
     ELBInstancesForm, ELBInstancesFiltersForm, CertificateForm, BackendCertificateForm, SecurityPolicyForm,
@@ -103,7 +106,7 @@ class ELBsView(LandingPageView):
             template = u'{0} {1} - {2}'.format(prefix, name, '{0}')
             with boto_error_handler(self.request, location, template):
                 self.elb_conn.delete_load_balancer(name)
-                prefix = _(u'Successfully deleted elb.')
+                prefix = _(u'Successfully deleted load balancer')
                 msg = u'{0} {1}'.format(prefix, name)
                 queue = Notification.SUCCESS
                 notification_msg = msg
@@ -194,7 +197,7 @@ class ELBsJsonView(LandingPageView, CloudWatchAPIMixin):
             cw_conn=self.cw_conn, period=period, duration=duration, metric='Latency',
             namespace='AWS/ELB', idtype='LoadBalancerName', ids=[elb.name])
         if stats:
-            return sum(stat.get('Average') * 1000 for stat in stats)/len(stats)
+            return sum(stat.get('Average') * 1000 for stat in stats) / len(stats)
         return None
 
 
@@ -233,12 +236,13 @@ class LbTagSet(dict):
 class BaseELBView(TaggedItemView):
     """Base view for ELB detail page tabs/views"""
 
-    def __init__(self, request, elb_conn=None, **kwargs):
+    def __init__(self, request, elb_conn=None, s3_conn=None, **kwargs):
         super(BaseELBView, self).__init__(request, **kwargs)
         self.request = request
         self.ec2_conn = self.get_connection()
         self.iam_conn = self.get_connection(conn_type='iam')
         self.elb_conn = elb_conn or self.get_connection(conn_type='elb')
+        self.s3_conn = s3_conn or self.get_connection(conn_type='s3')
         self.autoscale_conn = self.get_connection(conn_type='autoscale')
         self.vpc_conn = self.get_connection(conn_type='vpc')
         self.is_vpc_supported = BaseView.is_vpc_supported(request)
@@ -296,6 +300,79 @@ class BaseELBView(TaggedItemView):
         )
         self.elb_conn.configure_health_check(name, health_check)
 
+    def configure_access_logs(self, elb_name=None, elb=None):
+        req_params = self.request.params
+        params_logging_enabled = req_params.get('logging_enabled') == 'y'
+        params_bucket_name = req_params.get('bucket_name')
+        params_bucket_prefix = req_params.get('bucket_prefix')
+        params_collection_interval = int(req_params.get('collection_interval', 60))
+        if elb is not None:
+            existing_access_log = self.elb_conn.get_lb_attribute(elb.name, 'accessLog')
+            unchanged_conditions = [
+                existing_access_log.enabled == params_logging_enabled,
+                existing_access_log.s3_bucket_name == params_bucket_name,
+                existing_access_log.s3_bucket_prefix == params_bucket_prefix,
+                existing_access_log.emit_interval == params_collection_interval,
+            ]
+            if all(unchanged_conditions):
+                return None  # Skip if nothing has changed in the ELB's access log config
+        # Set Access Logs
+        elb_name = elb.name if elb is not None else elb_name
+        bucket_prefix = params_bucket_prefix or self.generate_bucket_prefix_name(elb_name)
+        if params_logging_enabled:
+            self.configure_logging_bucket(bucket_name=params_bucket_name, bucket_prefix=bucket_prefix)
+        new_access_log_config = AccessLogAttribute()
+        new_access_log_config.enabled = params_logging_enabled
+        new_access_log_config.s3_bucket_name = params_bucket_name
+        new_access_log_config.s3_bucket_prefix = bucket_prefix
+        new_access_log_config.emit_interval = params_collection_interval
+        self.elb_conn.modify_lb_attribute(elb_name, 'accessLog', new_access_log_config)
+
+    def configure_logging_bucket(self, bucket_name=None, bucket_prefix=None):
+        if bucket_name and bucket_prefix and self.s3_conn:
+            existing_bucket_names = [bucket.name for bucket in self.s3_conn.get_all_buckets()]
+            if bucket_name in existing_bucket_names:
+                bucket = self.s3_conn.lookup(bucket_name, validate=False)
+            else:
+                self.log_request(u"Creating ELB access logs bucket {0}".format(bucket_name))
+                bucket = self.s3_conn.create_bucket(bucket_name)
+            # Create access logs folder
+            bucket_prefix_exists = bucket.get_key(u'{0}/'.format(bucket_prefix))
+            if not bucket_prefix_exists:
+                bucket_prefix = bucket_prefix.replace('/', '_')
+                bucket_prefix_key = u'{0}/'.format(bucket_prefix)
+                self.log_request(u"Creating ELB access logs folder {0} in bucket {1}".format(
+                    bucket_prefix_key, bucket_name))
+                new_folder = bucket.new_key(bucket_prefix_key)
+                new_folder.set_contents_from_string('')
+            self.configure_logging_bucket_acl(bucket)
+
+    def configure_logging_bucket_acl(self, bucket=None):
+        if self.cloud_type == 'aws':
+            # Get AWS ELB account ID based on region
+            grant_id = AWS_ELB_ACCOUNT_IDS.get(self.region)
+        else:
+            admin = self.get_connection(conn_type='admin')
+            elb_svc = admin.get_all_services(service_type='loadbalancing')
+            # log additional info for unexpected condition
+            if len(elb_svc) < 1 and len(elb_svc[0].accounts) < 1:
+                logging.error('ERROR: Eucalyptus not returning account info with loadbalancing service!')
+            grant_id = elb_svc[0].accounts[0].account_number
+        sharing_acl = ACL()
+        sharing_acl.add_grant(Grant(
+            permission='WRITE',
+            type='CanonicalUser',
+            id=grant_id,
+        ))
+        sharing_policy = Policy()
+        sharing_policy.acl = sharing_acl
+        sharing_policy.owner = bucket.get_acl().owner
+        bucket.set_acl(sharing_policy)
+
+    @staticmethod
+    def generate_bucket_prefix_name(elb_name):
+        return '{0}-{1}'.format(ELB_ACCESS_LOGS_BUCKET_PREFIX_NAME_PREFIX, elb_name)
+
     def handle_backend_certificate_create(self, elb_name):
         if self.cloud_type == 'aws':
             return None  # Eucalyptus only
@@ -350,7 +427,7 @@ class BaseELBView(TaggedItemView):
                 elb_ssl_protocols = json.loads(req_params.get('elb_ssl_protocols', '[]'))
                 elb_ssl_ciphers = json.loads(req_params.get('elb_ssl_ciphers', '[]'))
                 using_server_order_pref = req_params.get('elb_ssl_server_order_pref') == 'on'
-                policy_name = '{0}-{1}'.format(ELB_CUSTOM_SECURITY_POLICY_NAME_PREFIX,  random_string)
+                policy_name = '{0}-{1}'.format(ELB_CUSTOM_SECURITY_POLICY_NAME_PREFIX, random_string)
                 policy_attributes = {'Reference-Security-Policy': latest_predefined_policy}
                 for protocol in elb_ssl_protocols:
                     policy_attributes.update({protocol: True})
@@ -390,7 +467,8 @@ class BaseELBView(TaggedItemView):
     @staticmethod
     def get_instance_selector_text():
         instance_selector_text = {'name': _(u'NAME (ID)'), 'tags': _(u'TAGS'),
-                                  'zone': _(u'AVAILABILITY ZONE'), 'subnet': _(u'VPC SUBNET'), 'status': _(u'STATUS'),
+                                  'zone': _(u'AVAILABILITY ZONE'), 'subnet': _(u'VPC SUBNET'),
+                                  'status': _(u'STATUS'), 'status_descr': _(u'STATUS DESCRIPTION'),
                                   'no_matching_instance_error_msg': _(u'No matching instances')}
         return instance_selector_text
 
@@ -495,6 +573,8 @@ class ELBView(BaseELBView):
         super(ELBView, self).__init__(request, elb_conn=elb_conn, **kwargs)
         with boto_error_handler(request):
             self.elb = elb or self.get_elb()
+            self.access_logs = self.elb_conn.get_lb_attribute(
+                self.elb.name, 'accessLog') if self.elb_conn and self.elb else None
             if self.elb:
                 if self.elb.created_time:
                     # boto doesn't convert elb created_time into dtobj like it does for others
@@ -505,7 +585,7 @@ class ELBView(BaseELBView):
                 raise HTTPNotFound()
         self.elb_form = ELBForm(
             self.request, conn=self.ec2_conn, vpc_conn=self.vpc_conn,
-            elb=self.elb, securitygroups=self.get_security_groups(),
+            elb=self.elb, elb_conn=self.elb_conn, s3_conn=self.s3_conn, securitygroups=self.get_security_groups(),
             formdata=self.request.params or None)
         self.certificate_form = CertificateForm(
             self.request, conn=self.ec2_conn, iam_conn=self.iam_conn, elb_conn=self.elb_conn,
@@ -517,7 +597,16 @@ class ELBView(BaseELBView):
             self.request, elb_conn=self.elb_conn, predefined_policy_choices=self.predefined_policy_choices,
             formdata=self.request.params or None
         )
+        self.create_bucket_form = CreateBucketForm(self.request, formdata=self.request.params or None)
         self.delete_form = ELBDeleteForm(self.request, formdata=self.request.params or None)
+        bucket_name = self.access_logs.s3_bucket_name
+        logs_prefix = self.access_logs.s3_bucket_prefix
+        logs_subpath = logs_prefix.split('/') if logs_prefix else []
+        logs_url = None
+        bucket_url = None
+        if bucket_name:
+            logs_url = self.request.route_path('bucket_contents', name=bucket_name, subpath=logs_subpath)
+            bucket_url = self.request.route_path('bucket_contents', name=bucket_name, subpath=[])
         self.render_dict = dict(
             elb=self.elb,
             elb_name=self.escape_braces(self.elb.name) if self.elb else '',
@@ -536,7 +625,10 @@ class ELBView(BaseELBView):
             is_vpc_supported=self.is_vpc_supported,
             elb_vpc_network=self.get_vpc_network_name(self.elb),
             security_group_placeholder_text=_(u'Select...'),
+            create_bucket_form=self.create_bucket_form,
             controller_options_json=self.get_controller_options_json(),
+            logs_url=logs_url,
+            bucket_url=bucket_url,
         )
 
     @view_config(route_name='elb_view', renderer=TEMPLATE)
@@ -559,6 +651,7 @@ class ELBView(BaseELBView):
                 time.sleep(1)  # Delay is needed to avoid missing listeners post-update
                 self.update_elb_tags(self.elb.name)
                 self.set_security_policy(self.elb.name)
+                self.configure_access_logs(elb=self.elb)
                 if self.is_vpc_supported and self.elb.security_groups != securitygroup:
                     self.elb_conn.apply_security_groups_to_lb(self.elb.name, securitygroup)
                 if backend_certificates is not None and backend_certificates != '[]':
@@ -600,6 +693,8 @@ class ELBView(BaseELBView):
             'elb_vpc_subnets': self.elb.subnets if self.elb else [],
             'securitygroups': self.elb.security_groups if self.elb else [],
             'existing_certificate_choices': self.certificate_form.certificate_arn.choices,
+            'logging_enabled': self.access_logs.enabled if self.access_logs else False,
+            'bucket_choices': dict(self.elb_form.bucket_name.choices),
         }))
 
     def update_elb_idle_timeout(self, elb_name, idle_timeout):
@@ -837,6 +932,7 @@ class ELBInstancesView(BaseELBView):
                 instance_health.append(dict(
                     instance_id=instance.instance_id,
                     state=instance.state,
+                    description=instance.description,
                 ))
         return instance_health
 
@@ -937,7 +1033,9 @@ class ELBHealthChecksView(BaseELBView):
             self.elb = elb or self.get_elb()
             if not self.elb:
                 raise HTTPNotFound()
-            self.elb_form = ELBHealthChecksForm(self.request, elb=self.elb, formdata=self.request.params or None)
+            self.elb_form = ELBHealthChecksForm(
+                self.request, s3_conn=self.s3_conn, elb_conn=self.elb_conn, elb=self.elb,
+                formdata=self.request.params or None)
         self.render_dict = dict(
             elb=self.elb,
             elb_name=self.escape_braces(self.elb.name) if self.elb else '',
@@ -1006,8 +1104,11 @@ class CreateELBView(BaseELBView):
 
     def __init__(self, request):
         super(CreateELBView, self).__init__(request)
+        # Note: CreateELBForm contains (inherits from) ELBHealthChecksForm
         self.create_form = CreateELBForm(
-            self.request, conn=self.ec2_conn, vpc_conn=self.vpc_conn, formdata=self.request.params or None)
+            self.request, conn=self.ec2_conn, vpc_conn=self.vpc_conn, s3_conn=self.s3_conn,
+            formdata=self.request.params or None)
+        self.create_bucket_form = CreateBucketForm(self.request, formdata=self.request.params or None)
         self.certificate_form = CertificateForm(
             self.request, conn=self.ec2_conn, iam_conn=self.iam_conn, elb_conn=self.elb_conn,
             can_list_certificates=self.can_list_certificates, formdata=self.request.params or None)
@@ -1026,6 +1127,7 @@ class CreateELBView(BaseELBView):
         search_facets = filters_form.facets
         self.render_dict = dict(
             create_form=self.create_form,
+            create_bucket_form=self.create_bucket_form,
             certificate_form=self.certificate_form,
             backend_certificate_form=self.backend_certificate_form,
             can_list_certificates=self.can_list_certificates,
@@ -1060,6 +1162,7 @@ class CreateELBView(BaseELBView):
             'securitygroups_json_endpoint': self.request.route_path('securitygroups_json'),
             'instances_json_endpoint': self.request.route_path('instances_json'),
             'existing_certificate_choices': self.certificate_form.certificate_arn.choices,
+            'bucket_choices': dict(self.create_form.bucket_name.choices),
         }))
 
     def get_wizard_tab_list(self):
@@ -1083,6 +1186,10 @@ class CreateELBView(BaseELBView):
             vpc_network = None
         if vpc_network is None:
             del self.create_form.securitygroup
+        bucket_name = self.request.params.get('bucket_name')
+        if (bucket_name, bucket_name) not in self.create_form.bucket_name.choices:
+            # Bucket name is a chosen select widget that accepts an arbitrary value
+            self.create_form.bucket_name.choices.append((bucket_name, bucket_name))
         if self.create_form.validate():
             name = self.request.params.get('name')
             listeners_args = self.get_listeners_args()
@@ -1114,6 +1221,7 @@ class CreateELBView(BaseELBView):
                     self.handle_backend_certificate_create(name)
                 self.add_elb_tags(name)
                 self.set_security_policy(name)
+                self.configure_access_logs(elb_name=name)
                 prefix = _(u'Successfully created elastic load balancer')
                 msg = u'{0} {1}'.format(prefix, name)
                 location = self.request.route_path('elbs')

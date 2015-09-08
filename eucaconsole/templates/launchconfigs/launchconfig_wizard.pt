@@ -259,7 +259,7 @@
                 <div class="section step2 hide">
                     <div class="row">
                         <label i18n:translate="">Name</label>
-                        <div class="columns value">{{ launchconfigName }}</div>
+                        <div class="columns value breakword">{{ launchconfigName }}</div>
                     </div>
                     <div class="row">
                         <label i18n:translate="">Type</label>
@@ -275,7 +275,7 @@
                 <div class="section step3 hide">
                     <div class="row">
                         <label i18n:translate="">Key pair</label>
-                        <div class="columns value">{{ keyPair }}</div>
+                        <div class="columns value breakword">{{ keyPair }}</div>
                     </div>
                     <div class="row">
                         <label i18n:translate="">Security group</label>

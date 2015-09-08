@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013-2014 Eucalyptus Systems, Inc.
+# Copyright 2013-2015 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -240,8 +240,8 @@ class UserView(BaseView):
         self.generate_form = GeneratePasswordForm(self.request)
         self.delete_form = DeleteUserForm(self.request)
         self.quotas_form = QuotasForm(self.request, user=self.user, conn=self.conn)
-        self.already_member_text = _(u"User already a member of all groups")
-        self.no_groups_defined_text = _(u"There are no groups defined")
+        self.already_member_text = _(u"User is already a member of all groups.")
+        self.no_groups_defined_text = _(u"There are no groups defined.")
         self.render_dict = dict(
             user=self.user,
             user_name=self.user.user_name if self.user else '',

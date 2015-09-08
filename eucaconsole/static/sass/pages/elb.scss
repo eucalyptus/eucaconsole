@@ -72,6 +72,10 @@ p.error {
 
 table.table {
     width: 100%;
+
+    .status-descr {
+        width: 20%;
+    }
 }
 
 #controls_cross_zone_enabled {
@@ -124,4 +128,21 @@ select[name="time_between_pings"] {
 }
 #ping_port, #response_timeout, #failures_until_unhealthy, #passes_until_healthy {
     width: 4rem;
+}
+
+#access-logs-wrapper {
+    margin-left: 1.5rem;
+    #bucket_name, #bucket_prefix, #collection_interval {
+        width: 12rem;
+    }
+    p {
+        margin-bottom: 0.5rem;
+    }
+    #controls_bucket_name.stacked.controls-wrapper {
+        margin-bottom: 0;
+        small.error {
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+    }
 }

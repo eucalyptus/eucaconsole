@@ -56,6 +56,13 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
     $scope.classDuplicatedBackendCertificateDiv = '';
     $scope.classAddBackendCertificateButton = 'disabled';
     $scope.classUseThisCertificateButton = 'disabled';
+    $scope.loggingEnabled = false;
+    $scope.bucketName = '';
+    $scope.bucketNameField = $('#bucket_name');
+    $scope.bucketNameChoices = {};
+    $scope.accessLoggingConfirmed = false;
+    $scope.accessLogConfirmationDialog = $('#elb-bucket-access-log-dialog');
+    $scope.accessLogConfirmationDialogKey = 'doNotShowAccessLogConfirmationAgain';
     $scope.instanceCounts = {};
     $scope.initController = function (optionsJson) {
         var options = JSON.parse(eucaUnescapeJson(optionsJson));
@@ -67,6 +74,7 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
     };
     $scope.setInitialValues = function (options) {
         var certArnField = $('#certificate_arn');
+        $scope.bucketNameChoices = options.bucket_choices;
         $scope.existingCertificateChoices = options.existing_certificate_choices;
         $scope.elbForm = $('#elb-form');
         $scope.urlParams = $.url().param();
@@ -98,7 +106,7 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
         $scope.responseTimeout = 5;
         $scope.timeBetweenPings = 30;
         $scope.failuresUntilUnhealthy = 2;
-        $scope.passesUntilHealthy = 10;
+        $scope.passesUntilHealthy = 2;
         $scope.showsCertificateTabDiv = false;
         $scope.certificateTab = 'SSL';
         $scope.certificateRadioButton = 'existing';
@@ -295,6 +303,27 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
             // Relay the text search update signal
             $scope.$broadcast('eventTextSearch', searchVal, filterKeys);
         });
+        $scope.$watch('loggingEnabled', function (newVal, oldVal) {
+            if (newVal !== oldVal) {
+                $scope.isNotChanged = false;
+                if (newVal) {
+                    if (Modernizr.localstorage && !localStorage.getItem($scope.accessLogConfirmationDialogKey)) {
+                        $scope.accessLogConfirmationDialog.foundation('reveal', 'open');
+                    }
+                }
+            }
+        });
+        $scope.accessLogConfirmationDialog.on('opened.fndtn.reveal', function () {
+            $scope.accessLoggingConfirmed = false;
+            $scope.$apply();
+        });
+        $scope.accessLogConfirmationDialog.on('close.fndtn.reveal', function () {
+            if (!$scope.accessLoggingConfirmed) {
+                $scope.loggingEnabled = false;
+                $scope.$apply();
+            }
+            $('#bucket_name').focus().closest('.columns').removeClass('error');
+        });
     };
     $scope.checkRequiredInput = function (step) {
         $scope.isNotValid = false;
@@ -341,7 +370,7 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
                 $scope.isNotValid = true;
             } else if ($scope.responseTimeout <= 0 || $scope.responseTimeout === undefined) {
                 $scope.isNotValid = true;
-            } 
+            }
         }
         // Signal the parent wizard controller about the update of the validation error status
         $scope.$emit('updateValidationErrorStatus', $scope.isNotValid);
@@ -600,7 +629,7 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
         return;
     };
     $scope.compareBackendCertificates = function (block1, block2) {
-        return block1.name == block2.name;
+        return block1.name === block2.name;
     };
     $scope.handleCertificateCreate = function ($event, newCertURL) {
         $event.preventDefault();
@@ -648,5 +677,35 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
             eucaHandleError(oData, status);
         });
     };
+    $scope.confirmEnableAccessLogs = function () {
+        var modal = $('#elb-bucket-access-log-dialog');
+        if (modal.find('#dont-show-again').is(':checked') && Modernizr.localstorage) {
+            localStorage.setItem($scope.accessLogConfirmationDialogKey, true);
+        }
+        $scope.accessLoggingConfirmed = true;
+        $scope.accessLogConfirmationDialog.foundation('reveal', 'close');
+    };
+    $scope.createELB = function () {
+        var bucketNameField = $('#bucket_name');
+        if (!$scope.isNotValid && !$scope.isValidationError) {
+            // bucket name field requires special validation handling since it is conditionally required
+            if (!$scope.loggingEnabled) {
+                bucketNameField.removeAttr('required');
+            } else {
+                bucketNameField.attr('required');
+            }
+            $scope.thisForm.submit();
+        }
+    };
 })
+    .directive('focusOnLoad', function ($timeout) {
+        return {
+            restrict: 'A',
+            link: function (scope, elem) {
+                $timeout(function () {
+                    elem[0].focus();
+                });
+            }
+        };
+    })
 ;

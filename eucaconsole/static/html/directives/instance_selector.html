@@ -8,6 +8,7 @@
                 <th>{{ tableText.zone }}</th>
                 <th ng-if="isVPCSupported">{{ tableText.subnet }}</th>
                 <th>{{ tableText.status }}</th>
+                <th class="status-descr">{{ tableText.status_descr }}</th>
             </tr>
         </thead>
         <tbody>
@@ -36,10 +37,14 @@
                     </span>
                 </td>
                 <td class="status">
-                    <span class="label radius status {{ instanceHealthMapping[instance.id] || instance.status }}">
-                        {{ healthStatusNames[instanceHealthMapping[instance.id]] || instance.status }}
+                    <span class="label radius status {{ instanceHealthMapping[instance.id].state || instance.status }}"
+                          data-tooltip="">
+                        {{ healthStatusNames[instanceHealthMapping[instance.id].state] || instance.status }}
                     </span>
                     <span class="busy" ng-show="instance.transitional">&nbsp;</span>
+                </td>
+                <td>
+                    {{ instanceHealthMapping[instance.id].description }}
                 </td>
             </tr>
             <tr ng-show="instanceList.length === 0">

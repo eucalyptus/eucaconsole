@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013-2014 Eucalyptus Systems, Inc.
+# Copyright 2013-2015 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -316,7 +316,7 @@ class ScalingGroupPolicyCreateForm(BaseSecureForm):
     cooldown_help_text = _(
         u'Time (in seconds) before Alarm related Scaling Activities can start after the previous Scaling Activity ends.'
     )
-    cooldown = wtforms.IntegerField(
+    cooldown = wtforms.TextField(
         label=_(u'Cooldown period (seconds)'),
         validators=[
             validators.InputRequired(message=cooldown_error_msg),
