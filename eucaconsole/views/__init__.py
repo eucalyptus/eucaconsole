@@ -147,6 +147,19 @@ class BaseView(object):
 
         return conn
 
+    @staticmethod
+    def disable_ssl_cert_validation():
+        """See https://www.python.org/dev/peps/pep-0476/#opting-out"""
+        import ssl
+        try:
+            _create_unverified_https_context = ssl._create_unverified_context
+        except AttributeError:
+            # Legacy Python that doesn't verify HTTPS certificates by default
+            pass
+        else:
+            # Handle target environment that doesn't support HTTPS verification
+            ssl._create_default_https_context = _create_unverified_https_context
+
     def get_account_display_name(self):
         if self.cloud_type == 'euca':
             return self.request.session.get('account')
