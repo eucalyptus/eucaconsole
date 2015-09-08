@@ -140,6 +140,8 @@ class BaseView(object):
             host = self._get_ufs_host_setting_()
             port = self._get_ufs_port_setting_()
             dns_enabled = self.request.session.get('dns_enabled', True)
+            if not validate_certs:
+                self.disable_ssl_cert_validation()
             conn = ConnectionManager.euca_connection(
                 host, port, access_key, secret_key, security_token,
                 conn_type, dns_enabled, validate_certs, certs_file
@@ -272,6 +274,8 @@ class BaseView(object):
         host = self._get_ufs_host_setting_()
         port = self._get_ufs_port_setting_()
         validate_certs = asbool(self.request.registry.settings.get('connection.ssl.validation', False))
+        if not validate_certs:
+            self.disable_ssl_cert_validation()
         conn = AWSAuthConnection(None, aws_access_key_id='', aws_secret_access_key='')
         ca_certs_file = conn.ca_certificates_file
         conn = None
