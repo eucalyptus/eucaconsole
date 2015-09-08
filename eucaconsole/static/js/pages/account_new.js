@@ -75,15 +75,14 @@ angular.module('CreateAccountPage', ['UserEditor', 'Quotas', 'EucaConsoleUtils']
             link: function (scope, elem, attrs, ctrl) {
                 ctrl.$validators.accountAlias = function (modelVal, viewVal) {
 
+                    // Fail on match of iam account number
+                    if(iamAcctAntiPattern.test(viewVal)) {
+                        return false;
+                    }
+
                     // Pass on match of alias pattern
                     if(aliasPattern.test(viewVal)) {
                         return true;
-                    }
-
-                    // Fail on match of iam account number
-                    if(iamAcctAntiPattern.test(viewVal)) {
-                        console.log('matches antipatern');
-                        return false;
                     }
 
                     return false;
