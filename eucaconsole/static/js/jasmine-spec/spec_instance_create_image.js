@@ -38,8 +38,8 @@ describe("InstanceCreateImage", function() {
             expect(scope.name).toEqual('');
         });
 
-        it("Initial value of s3_bucket is empty", function() {
-            expect(scope.s3_bucket).toEqual('');
+        it("Initial value of bucketName is empty", function() {
+            expect(scope.bucketName).toEqual('');
         });
 
         it("Initial value of s3_prefix is image", function() {
@@ -79,8 +79,8 @@ describe("InstanceCreateImage", function() {
             expect(scope.isNotValid).toBeTruthy();
         });
 
-        it("Should invalid input if s3_bucket is empty", function() {
-            scope.s3_bucket = '';
+        it("Should invalid input if bucketName is empty", function() {
+            scope.bucketName = '';
             scope.checkRequiredInput();
             expect(scope.isNotValid).toBeTruthy();
         });

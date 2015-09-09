@@ -5,6 +5,10 @@ form #ipcount {
     width: 3rem;
 }
 
+#controls_domain label {
+    right: auto;
+}
+
 .reveal-modal {
     .button[type=submit] {
         display: block;

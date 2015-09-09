@@ -1,0 +1,16 @@
+<!--! ELB Bucket Acces Log confirmation dialog -->
+<div tal:omit-tag="" i18n:domain="eucaconsole">
+    <div id="elb-bucket-access-log-dialog" class="reveal-modal small" data-reveal="">
+        <h3 i18n:translate="">Enable Bucket Access for Logging</h3>
+        <p i18n:translate="">
+            By enabling access logging, the system will receive write access to the specified bucket.
+        </p>
+        <div>
+            <input id="dont-show-again" type="checkbox" />
+            <label for="dont-show-again" i18n:translate="">Do not show me this again</label>
+        </div>
+        <button class="button expand" id="bucket-access-log-dialog-submit-btn" i18n:translate=""
+                ng-click="confirmEnableAccessLogs()">I Understand, Enable Access Logging</button>
+        <a href="#" class="close-reveal-modal">&#215;</a>
+    </div>
+</div>

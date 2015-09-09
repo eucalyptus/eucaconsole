@@ -5,7 +5,8 @@
  */
 
 angular.module('ELBHealthChecksPage', ['EucaConsoleUtils'])
-    .controller('ELBHealthChecksPageCtrl', function ($scope, eucaHandleUnsavedChanges) {
+    .controller('ELBHealthChecksPageCtrl', function ($scope, $timeout, eucaHandleUnsavedChanges, eucaUnescapeJson) {
+        $scope.elbForm = $('#elb-form');
         $scope.isNotChanged = true;
         $scope.pingPathRequired = false;
         $scope.initController = function () {

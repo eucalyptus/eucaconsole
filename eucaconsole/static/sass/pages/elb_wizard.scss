@@ -49,10 +49,6 @@
     .sub-section-label {
         color: black;
     }
-    .helptext-icon {
-        color: $euca-grey;
-        font-size: 1.3rem;
-    }
     .section-label-with-helptext-icon {
         margin-bottom: 0.5rem;
     }
@@ -61,28 +57,30 @@
     }
 }
 
-table.elb-listener-table {
-    width: 100%;
-    tr.top-header {
-        border-bottom: 0px;
-    }
-    th.vertical-border-header {
-        border-collapse: collapse;
-        border-right-width: 1px;
-        border-right-style: solid;
-        border-right-color: #ddd;
-    } 
-    th.center {
-        text-align: center;
-    }
-}
-
-table.instance-selector-table {
-    width: 100%;
-}
-
+// Summary area
 .summary {
     .multi-row div {
         padding-bottom: 0.25rem;
+    }
+    .row.logging-summary {
+        margin-top: 1rem;
+    }
+}
+
+// Health checks tab
+#access-logs-wrapper {
+    margin-left: 1.5rem;
+    #bucket_name, #bucket_prefix, #collection_interval {
+        width: 12rem;
+    }
+    p {
+        margin-bottom: 0.5rem;
+    }
+    #controls_bucket_name.stacked.controls-wrapper {
+        margin-bottom: 0;
+        small.error {
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
     }
 }

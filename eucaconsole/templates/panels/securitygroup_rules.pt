@@ -87,7 +87,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row" ng-show="selectedProtocol &amp;&amp; selectedProtocol !== 'custom'">
+                    <div class="row" ng-show="selectedProtocol &amp;&amp; ['custom', 'sctp'].indexOf(selectedProtocol) === -1">
                         <div class="small-3 columns">
                             <label class="right" ng-show="selectedProtocol !== 'icmp' &amp;&amp; selectedProtocol !== '-1'" i18n:translate="">Port range</label>
                             <label class="right" ng-show="selectedProtocol == 'icmp'" i18n:translate="">Type</label>
@@ -175,6 +175,7 @@
     </div>
     <div id="hidden-text-div" class="hide">
         <span id="all-traffic-option-text" i18n:translate="">All traffic</span> 
+        <span id="sctp-protocol-option-text" i18n:translate="">SCTP</span> 
         <span id="custom-protocol-option-text" i18n:translate="">Custom protocol</span> 
     </div>
     <script src="${request.static_path('eucaconsole:static/js/widgets/securitygroup_rules.js')}"></script>

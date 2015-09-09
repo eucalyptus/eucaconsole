@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013-2014 Eucalyptus Systems, Inc.
+# Copyright 2013-2015 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -1127,3 +1127,33 @@ class CreateBucketView(BaseView):
     def get_existing_bucket_names(self):
         return [bucket.name for bucket in self.s3_conn.get_all_buckets()]
 
+
+class CreateBucketXHRView(BaseView):
+    """Views for creating a bucket via XHR from non-bucket pages (e.g. ELB detail page)"""
+
+    def __init__(self, request):
+        super(CreateBucketXHRView, self).__init__(request)
+        with boto_error_handler(request):
+            self.s3_conn = self.get_connection(conn_type='s3')
+        self.create_form = CreateBucketForm(request, formdata=self.request.params or None)
+
+    @view_config(route_name='bucket_create_xhr', renderer='json', request_method='POST')
+    def bucket_create_xhr(self):
+        if self.create_form.validate():
+            bucket_name = self.request.params.get('bucket_name').lower()
+            if bucket_name in [bucket.name for bucket in self.s3_conn.get_all_buckets()]:
+                conflict_message = _(
+                    u'The bucket name you have entered conflicts with an existing bucket in your account. '
+                    u'Please use a different name.')
+                return JSONResponse(status=409, message=conflict_message)
+            self.log_request(u"Creating bucket {0}".format(bucket_name))
+            try:
+                self.s3_conn.create_bucket(bucket_name)
+                msg = u'{0} {1}'.format(_(u'Successfully created'), bucket_name)
+                return JSONResponse(message=msg)
+            except StorageCreateError as err:
+                # Handle bucket name conflict
+                return JSONResponse(status=409, message=err.message)
+        else:
+            error_messages = ', '.join(self.create_form.get_errors_list())
+            return JSONResponse(status=400, message=error_messages)
