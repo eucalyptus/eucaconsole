@@ -68,7 +68,7 @@ angular.module('CreateAccountPage', ['UserEditor', 'Quotas', 'EucaConsoleUtils']
     })
     .directive('accountAlias', function () {
         var aliasPattern = /^[a-z0-9][a-z0-9\.@\-]{1,61}[a-z0-9]$/;
-        var iamAcctAntiPattern = /[0-9]{12}/;
+        var iamAcctAntiPattern = /^[0-9]{12}$/;
         return {
             restrict: 'A',
             require: 'ngModel',
