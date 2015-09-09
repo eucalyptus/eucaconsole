@@ -179,16 +179,17 @@ def get_configurator(settings, enable_auth=True):
             'password': password
         },
     )
-    """See https://www.python.org/dev/peps/pep-0476/#opting-out"""
-    import ssl
-    try:
-        _create_unverified_https_context = ssl._create_unverified_context
-    except AttributeError:
-        # Legacy Python that doesn't verify HTTPS certificates by default
-        pass
-    else:
-        # Handle target environment that doesn't support HTTPS verification
-        ssl._create_default_https_context = _create_unverified_https_context
+    if not asbool(settings.get('connection.ssl.validation', False)):
+        """See https://www.python.org/dev/peps/pep-0476/#opting-out"""
+        import ssl
+        try:
+            _create_unverified_https_context = ssl._create_unverified_context
+        except AttributeError:
+            # Legacy Python that doesn't verify HTTPS certificates by default
+            pass
+        else:
+            # Handle target environment that doesn't support HTTPS verification
+            ssl._create_default_https_context = _create_unverified_https_context
     return config
 
 
