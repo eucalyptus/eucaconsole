@@ -161,6 +161,10 @@ class LoginView(BaseView, PermissionCheckMixin):
             username = self.request.params.get('username')
             password = self.request.params.get('password')
             try:
+                # Opt out of PEP 476 based on config (Python 2.7.9 or later enables certificate validation by default)
+                validate_certs = asbool(self.request.registry.settings.get('connection.ssl.validation', False))
+                if not validate_certs:
+                    self.disable_ssl_cert_validation()
                 # TODO: also return dns enablement
                 creds = auth.authenticate(
                     account=account, user=username, passwd=password,
