@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en-us" lang="en-us">
+<head>
+<title>Load Balancer Details - Instances</title>
+</head>
+<body id="load_balancer_details_instances">
+
+
+    <h1 class="title topictitle1">Load Balancer Details - Instances</h1>
+
+    <p class="shortdesc">This tab displays instances tied to your load balancer.</p>
+
+    <div class="topic task nested1" id="load_balancer_delete">
+        <h2 class="title topictitle2">Actions menu</h2>
+
+        <p class="shortdesc">Clicking the down arrow from the <span class="ph uicontrol">Actions</span> menu allows you to delete the load balancer.</p>
+
+        <div class="topic task nested2" id="d141e16">
+            <h3 class="title topictitle3">Delete a load balancer</h3>
+
+            <div class="body taskbody">
+                <div class="section context">To delete a load balancer:</div>
+
+                <ol class="ol steps"><li class="li step">
+                        <span class="ph cmd">Click the<span class="ph uicontrol"> Actions</span> menu and select<span class="ph uicontrol"> Delete load balancer</span>.</span>
+                    </li>
+<li class="li step">
+                        <span class="ph cmd">When the confirmation dialog box displays, click the <span class="ph uicontrol">Yes, Delete Load Balancer</span> button
+                            to confirm the deletion. Otherwise, close the confirmation dialog box to cancel. </span>
+                    </li>
+</ol>
+
+            </div>
+
+        </div>
+
+    </div>
+
+        <div class="topic task nested1" id="load_balancer_details_az">
+            <h2 class="title topictitle2">Availability zones</h2>
+
+            
+            
+    <div class="body taskbody"><p class="shortdesc">This section allows you to view or disable the availability zones (or VPC subnets, if cloud is VPC) 
+                and add or remove instances from a load balancer. You can add instances to a load balancer without enabling the zone, 
+                but they will not receive traffic until the zone is enabled.
+            </p>
+
+        <ol class="ol steps"><li class="li step stepexpand">
+            <span class="ph cmd">The ability to select <span class="ph uicontrol">Enable cross-zone load balancing</span> is only present for a load balancer not on a VPC network. 
+                This option evenly distributes traffic across all instances in all availability zones.</span> 
+                 </li>
+<li class="li step stepexpand">
+                <span class="ph cmd">You can disable an availability zone (or a VPC subnet, if the cloud is VPC) from the <span class="ph uicontrol">(...)</span> icon 
+                    in the upper-right corner of the box that represents it.</span>
+            </li>
+<li class="li step stepexpand">
+                <span class="ph cmd">Select from the list of instances to specify between which instances to balance traffic.</span>
+                <div class="itemgroup info">You may use the Magic Search bar to narrow down the list of instances
+                    by specifying the availability zone (or VPC subnet), security group, or
+                    status.</div>
+                <div class="itemgroup info">Hover over the instances with <em class="ph i">out of service</em> status for additonal details about those instances.</div>
+                <div class="itemgroup info">If present, hover over the warning icons (⚠) in the availability zones or subnets for additonal details about those instances.</div>
+                    
+                <div class="itemgroup stepresult">Selecting an instance automatically adds that instance to the
+                    availability zone or VPC subnet field above and the number of instances selected
+                    is also reflected.</div>
+            </li>
+<li class="li step stepexpand">
+                <span class="ph cmd">Click <span class="ph uicontrol">Save Changes</span> to save your changes or <span class="ph uicontrol">Cancel</span> to abandon your changes.</span>
+                <div class="itemgroup stepresult">The message, <samp class="ph systemoutput">Successfully updated load balancer <var class="keyword varname">[name]</var></samp> 
+                    indicates changes saved successfully.</div>
+            </li>
+</ol>
+
+    </div>
+
+        </div>
+
+    
+</body>
+</html>
