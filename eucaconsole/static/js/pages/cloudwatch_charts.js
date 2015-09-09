@@ -16,6 +16,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
     vm.largeChartDuration = 3600;
     vm.largeChartGranularity = 300;
     vm.metricTitleMapping = {};
+    vm.emptyMessages = {};
     vm.chartsList = [];
     vm.granularityChoices = [];
     vm.originalDurationGranularitiesMapping = {};
@@ -141,6 +142,15 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
             }
             var results = oData ? oData.results : '';
             var emptyResultsCount = 0;
+            results.forEach(function (resultSet) {
+                if (resultSet.values.length === 0) {
+                    emptyResultsCount += 1;
+                }
+            });
+            if (emptyResultsCount === results.length) {
+                parentCtrl.emptyMessages[scope.metric] = scope.empty;
+                return true;
+            }
             var unit = oData.unit || scope.unit;
             var yformatter = '.0f';
             // Anchor chart to zero for the following metrics
@@ -159,15 +169,6 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
                 .showYAxis(true)
                 .showXAxis(true)
             ;
-            results.forEach(function (resultSet) {
-                if (resultSet.values.length === 0) {
-                    emptyResultsCount += 1;
-                }
-            });
-            if (emptyResultsCount === results.length) {
-                chart.noData(scope.empty);
-                chart.margin({left: 0, right: 0});
-            }
             chart.xScale(d3.time.scale());
             chart.xAxis.tickFormat(function(d) {
                 return d3.time.format('%m/%d %H:%M')(new Date(d));
