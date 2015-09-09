@@ -370,7 +370,7 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
                 $scope.isNotValid = true;
             } else if ($scope.responseTimeout <= 0 || $scope.responseTimeout === undefined) {
                 $scope.isNotValid = true;
-            } 
+            }
         }
         // Signal the parent wizard controller about the update of the validation error status
         $scope.$emit('updateValidationErrorStatus', $scope.isNotValid);
@@ -629,7 +629,7 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
         return;
     };
     $scope.compareBackendCertificates = function (block1, block2) {
-        return block1.name == block2.name;
+        return block1.name === block2.name;
     };
     $scope.handleCertificateCreate = function ($event, newCertURL) {
         $event.preventDefault();
@@ -684,6 +684,18 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
         }
         $scope.accessLoggingConfirmed = true;
         $scope.accessLogConfirmationDialog.foundation('reveal', 'close');
+    };
+    $scope.createELB = function () {
+        var bucketNameField = $('#bucket_name');
+        if (!$scope.isNotValid && !$scope.isValidationError) {
+            // bucket name field requires special validation handling since it is conditionally required
+            if (!$scope.loggingEnabled) {
+                bucketNameField.removeAttr('required');
+            } else {
+                bucketNameField.attr('required');
+            }
+            $scope.thisForm.submit();
+        }
     };
 })
     .directive('focusOnLoad', function ($timeout) {

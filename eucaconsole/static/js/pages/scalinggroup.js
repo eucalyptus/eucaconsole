@@ -14,6 +14,7 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor', 'EucaConsoleUtils'])
         $scope.terminationPoliciesOrder = [];
         $scope.vpcSubnets = [];
         $scope.vpcSubnetZonesMap = {};
+        $scope.isNotValid = false;
         $scope.isNotChanged = true;
         $scope.isSubmitted = false;
         $scope.pendingModalID = '';
@@ -99,19 +100,19 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor', 'EucaConsoleUtils'])
         };
         $scope.setWatch = function () {
             $scope.watchCapacityEntries();
-            $scope.$watch('terminationPoliciesUpdate', function (newVal) {
+            $scope.$watch('terminationPoliciesUpdate', function (newVal, oldVal) {
                 // timeout is needed to ensure the chosen widget to complete its update
                 $timeout(function (){
                     // When the termination policies chosen widget is updated, retreive the order the elements displayed
                     $scope.updateTerminationPoliciesOrder(); 
                     // Using the updated termination policies array to re-arrange the options in the select element
                     $scope.rearrangeTerminationPoliciesOptions($scope.terminationPoliciesOrder);
-                    $scope.isNotValid = !newVal || newVal.length === 0;
+                    $scope.isNotValid = !newVal || (newVal.length === 0 && oldVal.length > 0);
                 });
             }, true);
-            $scope.$watch('vpcSubnets', function (newVal) {
+            $scope.$watch('vpcSubnets', function (newVal, oldVal) {
                 $scope.disableVPCSubnetOptions();
-                $scope.isNotValid = !newVal || newVal.length === 0;
+                $scope.isNotValid = !newVal || (newVal.length === 0 && oldVal.length > 0);
             }, true);
             // Monitor the action menu click
             $(document).on('click', 'a[id$="action"]', function (event) {
