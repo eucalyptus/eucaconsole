@@ -140,27 +140,12 @@ class BaseView(object):
             host = self._get_ufs_host_setting_()
             port = self._get_ufs_port_setting_()
             dns_enabled = self.request.session.get('dns_enabled', True)
-            if not validate_certs:
-                self.disable_ssl_cert_validation()
             conn = ConnectionManager.euca_connection(
                 host, port, access_key, secret_key, security_token,
                 conn_type, dns_enabled, validate_certs, certs_file
             )
 
         return conn
-
-    @staticmethod
-    def disable_ssl_cert_validation():
-        """See https://www.python.org/dev/peps/pep-0476/#opting-out"""
-        import ssl
-        try:
-            _create_unverified_https_context = ssl._create_unverified_context
-        except AttributeError:
-            # Legacy Python that doesn't verify HTTPS certificates by default
-            pass
-        else:
-            # Handle target environment that doesn't support HTTPS verification
-            ssl._create_default_https_context = _create_unverified_https_context
 
     def get_account_display_name(self):
         if self.cloud_type == 'euca':
@@ -274,8 +259,6 @@ class BaseView(object):
         host = self._get_ufs_host_setting_()
         port = self._get_ufs_port_setting_()
         validate_certs = asbool(self.request.registry.settings.get('connection.ssl.validation', False))
-        if not validate_certs:
-            self.disable_ssl_cert_validation()
         conn = AWSAuthConnection(None, aws_access_key_id='', aws_secret_access_key='')
         ca_certs_file = conn.ca_certificates_file
         conn = None
