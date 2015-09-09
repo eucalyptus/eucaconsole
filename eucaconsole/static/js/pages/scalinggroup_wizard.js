@@ -104,7 +104,14 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor','EucaConsoleUtils'])
             $scope.$watch('launchConfig', function(){
                 $scope.checkRequiredInput();
             });
-            $scope.$watch('healthCheckPeriod', function(){
+            $scope.$watch('healthCheckPeriod', function (newVal) {
+                console.log('health check', newVal);
+                if(newVal) {
+                    $scope.healthCheckPeriod = eucaNumbersOnly(newVal);
+                    $scope.isNotValid = false;
+                } else {
+                    $scope.isNotValid = true;
+                }
                 $scope.checkRequiredInput();
             });
             $scope.$watch('availZones', function(){

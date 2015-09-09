@@ -92,7 +92,7 @@ class BaseScalingGroupForm(BaseSecureForm):
         u'Length of time in seconds after a new EC2 instance comes into service that '
         u'Auto Scaling starts checking its health'
     )
-    health_check_period = wtforms.IntegerField(
+    health_check_period = wtforms.TextField(
         label=_(u'Health check grace period (secs)'),
         validators=[
             validators.InputRequired(message=health_check_period_error_msg),
