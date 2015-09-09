@@ -161,16 +161,17 @@ class CloudWatchAPIView(BaseView, CloudWatchAPIMixin):
 
         if metric in collapse_to_kb_mb_gb:
             # Collapse to MB when appropriate
-            max_value = max(stat.get(statistic) for stat in stats)
-            if max_value > 10**4:
-                divider = 10**3
-                unit = 'Kilobytes'
-            if max_value > 10**7:
-                divider = 10**6
-                unit = 'Megabytes'
-                if max_value > 10**10:
-                    divider = 10**9
-                    unit = 'Gigabytes'
+            if stats:
+                max_value = max(stat.get(statistic) for stat in stats)
+                if max_value > 10**4:
+                    divider = 10**3
+                    unit = 'Kilobytes'
+                if max_value > 10**7:
+                    divider = 10**6
+                    unit = 'Megabytes'
+                    if max_value > 10**10:
+                        divider = 10**9
+                        unit = 'Gigabytes'
 
         if metric == 'Latency':
             multiplier = 1000
