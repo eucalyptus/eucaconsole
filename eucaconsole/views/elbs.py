@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013-2014 Eucalyptus Systems, Inc.
+# Copyright 2013-2015 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -1050,10 +1050,6 @@ class ELBHealthChecksView(BaseELBView):
 
     @view_config(route_name='elb_healthchecks_update', request_method='POST', renderer=TEMPLATE)
     def elb_healthchecks_update(self):
-        bucket_name = self.request.params.get('bucket_name')
-        if (bucket_name, bucket_name) not in self.elb_form.bucket_name.choices:
-            # Bucket name is a chosen select widget that accepts an arbitrary value
-            self.elb_form.bucket_name.choices.append((bucket_name, bucket_name))
         if self.elb_form.validate():
             location = self.request.route_path('elb_healthchecks', id=self.elb.name)
             prefix = _(u'Unable to update load balancer')
