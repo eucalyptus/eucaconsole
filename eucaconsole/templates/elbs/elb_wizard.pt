@@ -347,6 +347,18 @@
                 <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                     <!-- HELP CONTENT -->
                     <div id="help-html-console_create_elb" ng-include="'${layout.help_path('console_create_elb.html')}'"></div> 
+                    <div id="help-html-console_create_load_balancer_general"
+                        ng-include="'${layout.help_path('console_create_load_balancer_general.html')}'">
+                    </div> 
+                    <div id="help-html-console_create_load_balancer_network"
+                        ng-include="'${layout.help_path('console_create_load_balancer_network.html')}'">
+                    </div> 
+                    <div id="help-html-console_create_load_balancer_instances"
+                        ng-include="'${layout.help_path('console_create_load_balancer_instances.html')}'">
+                    </div> 
+                    <div id="help-html-console_create_load_balancer_health"
+                        ng-include="'${layout.help_path('console_create_load_balancer_health.html')}'">
+                    </div> 
                 </div>
             </div>
         </div>
