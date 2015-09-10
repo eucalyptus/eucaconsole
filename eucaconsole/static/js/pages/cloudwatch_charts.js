@@ -147,7 +147,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
                     emptyResultsCount += 1;
                 }
             });
-            if (emptyResultsCount === results.length) {
+            if (emptyResultsCount === results.length && scope.empty) {
                 parentCtrl.emptyMessages[scope.metric] = scope.empty;
                 return true;
             }
@@ -161,10 +161,8 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
                 'HTTPCode_Backend_4XX', 'HTTPCode_Backend_5XX'
             ];
             var preciseFormatterMetrics = ['Latency'];
-            var leftMargin = 68;
-            var rightMargin = 38;
             var chart = nv.models.lineChart()
-                .margin({left: leftMargin, right: rightMargin})
+                .margin({left: 68, right: 38})
                 .useInteractiveGuideline(true)
                 .showYAxis(true)
                 .showXAxis(true)

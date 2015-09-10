@@ -28,6 +28,8 @@
 Eucalyptus and AWS Instance constants
 
 """
+from ..i18n import _
+
 
 # TODO: Confirm we have the most recent list of choices here
 AWS_INSTANCE_TYPE_CHOICES = [
@@ -87,33 +89,42 @@ AWS_INSTANCE_TYPE_CHOICES = [
 ]
 
 
+INSTANCE_EMPTY_DATA_MESSAGE = _('No data available for this instance.')
+
 INSTANCE_MONITORING_CHARTS_LIST = [
     {
         'metric': 'CPUUtilization',
         'unit': 'Percent',
+        'empty_msg': INSTANCE_EMPTY_DATA_MESSAGE,
     },
     {
         'metric': 'DiskReadBytes',
         'unit': 'Bytes',
+        'empty_msg': INSTANCE_EMPTY_DATA_MESSAGE,
     },
     {
         'metric': 'DiskReadOps',
         'unit': 'Count',
+        'empty_msg': INSTANCE_EMPTY_DATA_MESSAGE,
     },
     {
         'metric': 'DiskWriteBytes',
         'unit': 'Bytes',
+        'empty_msg': INSTANCE_EMPTY_DATA_MESSAGE,
     },
     {
         'metric': 'DiskWriteOps',
         'unit': 'Count',
+        'empty_msg': INSTANCE_EMPTY_DATA_MESSAGE,
     },
     {
         'metric': 'NetworkIn',
         'unit': 'Bytes',
+        'empty_msg': INSTANCE_EMPTY_DATA_MESSAGE,
     },
     {
         'metric': 'NetworkOut',
         'unit': 'Bytes',
+        'empty_msg': INSTANCE_EMPTY_DATA_MESSAGE,
     },
 ]
