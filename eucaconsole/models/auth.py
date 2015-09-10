@@ -283,7 +283,7 @@ class EucaAuthenticator(object):
             error_msg = getattr(err, 'msg', None)
             if error_msg and error_msg == 'Unauthorized' or error_msg == 'Forbidden':
                 raise err
-            elif err.reason and err.reason.find('SSL') > -1:
+            elif getattr(err, 'reason', '').find('SSL') > -1:
                 raise err
             self.dns_enabled = False
             return self._authenticate_(account, user, passwd, new_passwd, timeout, duration)
