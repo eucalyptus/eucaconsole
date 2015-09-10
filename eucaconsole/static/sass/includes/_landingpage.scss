@@ -238,6 +238,13 @@ $dropdown-border-color: $hp-gray-65;
                 text-align: center;
             }
         }
+        .busy {
+            // Avoid wobble in loading indicator
+            font-size: 0.9rem;
+            width: 0.9rem;
+            height: 0.9rem;
+            margin-left: 0.2rem;
+        }
     }
 }
 

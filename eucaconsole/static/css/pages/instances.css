@@ -53,6 +53,7 @@
 .tile .footer .completed { padding: 4px 0 4px 10px; text-align: center; }
 .tile .footer .progress { position: relative; margin: 0 0 0 0; height: 24px; border: none; }
 .tile .footer .progress .meter { position: relative; top: -2px; left: -2px; padding: 4px 0 4px 8px; height: 24px; display: inline-block; white-space: nowrap; font-weight: bold; text-align: center; }
+.tile .footer .busy { font-size: 0.9rem; width: 0.9rem; height: 0.9rem; margin-left: 0.2rem; }
 
 .gridwrapper .table { border: none; width: 100%; }
 .gridwrapper .table thead tr { background-color: #f2f2f2; }
