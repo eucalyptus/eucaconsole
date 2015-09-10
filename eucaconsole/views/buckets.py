@@ -346,14 +346,17 @@ class BucketContentsView(LandingPageView, BucketMixin):
         ]
         # if shared bucket, we'd like to check permissions and send back to buckets page if none
         try:
-            bucket_items = self.s3_conn.get_bucket(self.bucket_name).list(prefix='notlikely')
+            self.s3_conn.get_bucket(self.bucket_name).list(prefix='notlikely')
         except BotoServerError as err:
             # 404: not found
             if err.status == 404:
                 msg = _(u'Bucket does not exist')
             # 403: forbidden
             if err.status == 403:
-                msg = _(u'You do not have the required permissions to perform this operation. Please contact your cloud administrator to request an updated access policy.')
+                msg = _(
+                    u'You do not have the required permissions to perform this operation. '
+                    u'Please contact your cloud administrator to request an updated access policy.'
+                )
             self.request.session.flash(msg, queue=Notification.ERROR)
             return HTTPFound(location=self.request.route_path('buckets'))
         json_route_path = self.request.route_path('bucket_contents', name=self.bucket_name, subpath=self.subpath)
