@@ -142,6 +142,7 @@ class ELBForm(BaseSecureForm, ELBAccessLogsFormMixin):
 
     def set_error_messages(self):
         self.securitygroup.error_msg = self.securitygroup_error_msg
+        self.bucket_name.error_msg = self.bucket_name_error_msg
 
     def set_choices(self):
         self.securitygroup.choices = self.set_security_group_choices()
@@ -172,7 +173,7 @@ class ELBForm(BaseSecureForm, ELBAccessLogsFormMixin):
                 return elb_attrs.connecting_settings.idle_timeout
 
 
-class ELBHealthChecksForm(BaseSecureForm, ELBAccessLogsFormMixin):
+class ELBHealthChecksForm(BaseSecureForm):
     """ELB Health Checks form"""
     ping_protocol_error_msg = _(u'Ping protocol is required')
     ping_protocol = wtforms.SelectField(
@@ -225,7 +226,6 @@ class ELBHealthChecksForm(BaseSecureForm, ELBAccessLogsFormMixin):
         self.set_health_check_initial_data()
         self.set_health_check_choices()
         self.set_health_check_error_messages()
-        self.set_health_check_help_text()
 
     def set_health_check_initial_data(self):
         if self.elb is not None:
@@ -238,22 +238,15 @@ class ELBHealthChecksForm(BaseSecureForm, ELBAccessLogsFormMixin):
             self.response_timeout.data = self.elb.health_check.timeout
             self.failures_until_unhealthy.data = str(self.elb.health_check.unhealthy_threshold)
             self.passes_until_healthy.data = str(self.elb.health_check.healthy_threshold)
-            self.set_access_logs_initial_data()
 
     def set_health_check_error_messages(self):
         self.ping_path.error_msg = self.ping_path_error_msg
-        self.bucket_name.error_msg = self.bucket_name_error_msg
 
     def set_health_check_choices(self):
         self.ping_protocol.choices = self.get_ping_protocol_choices()
         self.time_between_pings.choices = self.get_time_between_pings_choices()
         self.failures_until_unhealthy.choices = self.get_failures_until_unhealthy_choices()
         self.passes_until_healthy.choices = self.get_passes_until_healthy_choices()
-        self.bucket_name.choices = self.s3_choices_manager.buckets()
-
-    def set_health_check_help_text(self):
-        self.bucket_name.help_text = self.bucket_name_help_text
-        self.bucket_prefix.help_text = self.bucket_prefix_help_text
 
     def get_health_check_data(self):
         if self.elb is not None and self.elb.health_check.target is not None:
@@ -340,7 +333,7 @@ class ELBsFiltersForm(BaseSecureForm):
             ))
 
 
-class CreateELBForm(ELBHealthChecksForm):
+class CreateELBForm(ELBHealthChecksForm, ELBAccessLogsFormMixin):
     """Create Elastic Load Balancer form"""
     ELB_NAME_PATTERN = '^[a-zA-Z0-9-]{1,32}$'
     name_error_msg = _(
@@ -384,6 +377,8 @@ class CreateELBForm(ELBHealthChecksForm):
         self.vpc_choices_manager = ChoicesManager(conn=vpc_conn)
         self.set_choices(request)
         self.cross_zone_enabled.help_text = self.cross_zone_enabled_help_text
+        self.bucket_name.help_text = self.bucket_name_help_text
+        self.bucket_prefix.help_text = self.bucket_prefix_help_text
 
     def set_choices(self, request):
         if self.cloud_type == 'euca' and self.is_vpc_supported:
@@ -399,6 +394,7 @@ class CreateELBForm(ELBHealthChecksForm):
         self.time_between_pings.choices = self.get_time_between_pings_choices()
         self.failures_until_unhealthy.choices = self.get_failures_until_unhealthy_choices()
         self.passes_until_healthy.choices = self.get_passes_until_healthy_choices()
+        self.bucket_name.choices = self.s3_choices_manager.buckets()
         self.collection_interval.choices = self.get_collection_interval_choices()
         self.cross_zone_enabled.data = True
         # Set default choices where applicable, defaulting to first non-blank choice
@@ -410,6 +406,7 @@ class CreateELBForm(ELBHealthChecksForm):
 
     def set_error_messages(self):
         self.name.error_msg = self.name_error_msg
+        self.bucket_name.error_msg = self.bucket_name_error_msg
 
     def get_availability_zone_choices(self, region):
         return self.choices_manager.availability_zones(region, add_blank=False)

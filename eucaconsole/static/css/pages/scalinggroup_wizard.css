@@ -26,7 +26,7 @@
 .wizard .chosen-container-multi .chosen-choices li.search-field input.default { color: #333; font-size: 14px; font-family: Lato, Helvetica, Arial, sans-serif; margin-left: 3px; }
 
 .summary { border: 1px solid #cccccc; background-color: white; position: relative; top: 2px; padding: 8px; padding-bottom: 2rem; margin-bottom: 1rem; }
-.summary label { position: relative; right: -1rem; color: #6a737b; font-weight: bold; margin-top: 4px; }
+.summary label { position: relative; right: -1rem; color: #6a737b; font-weight: bold; margin-top: 4px; cursor: default; }
 .summary .value { word-break: break-all; line-height: 1rem; }
 .summary .value.breakword { word-break: normal; word-wrap: break-word; }
 .summary .row { margin-bottom: 5px; }
