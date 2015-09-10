@@ -161,7 +161,7 @@ class CloudWatchAPIView(BaseView, CloudWatchAPIMixin):
 
         if metric in collapse_to_kb_mb_gb:
             # Collapse to MB when appropriate
-            max_value = max(stat.get(statistic) for stat in stats)
+            max_value = max(stat.get(statistic) for stat in stats) if stats else 0
             if max_value > 10**4:
                 divider = 10**3
                 unit = 'Kilobytes'
