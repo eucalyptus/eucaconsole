@@ -1809,7 +1809,7 @@ textarea.hidden.debug { display: block; }
 /* ----------------------------------------- Chosen widget
 ----------------------------------------- */
 .chosen-container.chosen-container-multi { background: none; background-color: #f2f2f2 !important; }
-.chosen-container.chosen-container-multi .chosen-choices { background: none; background-color: #f2f2f2 !important; border: 1px solid #ccc; height: 37px !important; }
+.chosen-container.chosen-container-multi .chosen-choices { background: none; background-color: #f2f2f2 !important; border: 1px solid #ccc; }
 .chosen-container.chosen-container-multi .chosen-choices li.search-field input[type=text] { height: 34px; padding-left: 10px; }
 .chosen-container.chosen-container-multi .chosen-choices li.search-field .default { color: #999; }
 .chosen-container.chosen-container-multi .chosen-choices li.search-choice { background-image: none; background-color: #d1d3d4; border: none; font-size: 0.9rem; padding: 4px 20px 4px 8px; color: #555; }
