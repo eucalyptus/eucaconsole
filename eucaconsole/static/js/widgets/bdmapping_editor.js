@@ -110,8 +110,7 @@ angular.module('BlockDeviceMappingEditor', ['EucaConsoleUtils'])
                 $("#bdm-size-reqd").css('display', 'block');
                 return false;
             }
-            var bdMappingText = $scope.bdmTextarea.val();
-            var bdMapping = JSON.parse(bdMappingText);
+            var bdMapping = $scope.bdMapping;
             if (newMappingEntry.val() in bdMapping) {
                 newMappingEntry.focus();
                 $("#bdm-dev-same").css('display', 'block');
@@ -151,7 +150,9 @@ angular.module('BlockDeviceMappingEditor', ['EucaConsoleUtils'])
                 var bdMapping = JSON.parse(bdMappingText);
                 var rootDevice = bdMapping[key] || '';
                 if (rootDevice) {
-                    bdMapping[key].size = parseInt($($event.target).val(), 10);
+                    var size = parseInt($($event.target).val(), 10);
+                    bdMapping[key].size = size;
+                    $scope.bdMapping[key].size = size;
                     $scope.bdmTextarea.val(JSON.stringify(bdMapping));
                 }
             }

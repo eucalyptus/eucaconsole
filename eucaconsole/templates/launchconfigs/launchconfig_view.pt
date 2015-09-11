@@ -142,7 +142,7 @@
                         <strong style="color:red;" i18n:translate="">Image not found</strong>
                     </div>
                     <hr tal:condition="launch_config.block_device_mappings" />
-                    ${panel('bdmapping_editor', image=image, launch_config=launch_config, read_only=True)}
+                    ${panel('bdmapping_editor', launch_config=launch_config, read_only=True)}
                 </form>
                 <div>&nbsp;</div>
             </div>
