@@ -76,6 +76,7 @@
                 </div>
                 <ul class="small-block-grid-1 medium-block-grid-2 large-block-grid-3" tal:condition="monitoring_enabled">
                     <div ng-if="chartsCtrl.chartsList.length === chartsCtrl.emptyChartCount" ng-cloak=""
+                         tal:condition="instance.state in ['stopping', 'stopped']"
                          data-alert="alert" class="alert-box info">
                         <span i18n:translate="">
                             Data is not collected for stopped instances. Start your instance to resume data collection,
