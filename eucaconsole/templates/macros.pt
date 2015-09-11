@@ -215,9 +215,14 @@
 <!-- Notifications ===== -->
 <metal:notifications metal:define-macro="notifications">
     <div id="notifications">
-        <div tal:repeat="notification layout.get_notifications()">
+        <div tal:repeat="notification layout.get_notifications()" class="marked">
             <div data-alert="alert" class="alert-box ${notification.style}">
+                <div class="icon">
+                    <span></span>
+                </div>
+                <div class="message">
                 ${layout.escape_braces(notification.message)}
+                </div>
                 <a href="#" class="close">&times;</a>
             </div>
         </div>

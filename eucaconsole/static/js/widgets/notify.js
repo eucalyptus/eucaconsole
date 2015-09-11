@@ -2,29 +2,32 @@
  Notification package for client side events
 */
 var Notify = (function() {
-    var notify = {
+    var _displayNotification = function (message, type) {
+        $("#notifications").append($('<div class="marked">').append(
+            $('<div class="alert-box">')
+                .addClass(type)
+                .append($('<div class="icon">')
+                    .append($('<span>')))
+                .append($('<div class="message">')
+                    .text(message))
+                .append($('<a class="close" href="#">&times;</a>')
+                    .click(function () {
+                        Notify.clear();
+                    }))));
+    };
+
+    return {
         success: function(message) {
-            $("#notifications").append($("<div>").
-                append($("<div>").addClass("alert-box", '').addClass('success', '').
-                text(message).append($("<a>").addClass('close').attr("href", "#").text("x").
-                click( function(evt) {
-                    Notify.clear();
-                }))));
-            setTimeout(function(){ 
+            _displayNotification(message, 'success');
+            setTimeout(function(){
                 Notify.clear();
             }, 5000);
         },
         failure: function(message) {
-            $("#notifications").append($("<div>").
-                append($("<div>").addClass("alert-box", '').addClass('alert', '').
-                text(message).append($("<a>").addClass('close').attr("href", "#").text("x").
-                click( function(evt) {
-                    Notify.clear();
-                }))));
+            _displayNotification(message, 'alert');
         },
         clear: function() {
             $("#notifications").text("");
-        },
+        }
     };
-    return notify;
 }());
