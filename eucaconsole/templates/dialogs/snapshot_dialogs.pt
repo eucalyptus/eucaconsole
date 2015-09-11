@@ -45,10 +45,10 @@
         <form action="${action}" method="post" data-abide="">
             ${structure:delete_form['csrf_token']}
             <input type="hidden" name="snapshot_id" value="{{ snapshotID }}" />
-            ${panel('form_field', field=register_form['name'], **html_attrs)}
-            ${panel('form_field', field=register_form['description'])}
+            ${panel('form_field', field=register_form['name'], stack_label=True, **html_attrs)}
+            ${panel('form_field', field=register_form['description'], stack_label=True)}
             <div class="row">
-                <div class="large-8 columns right">
+                <div class="large-8 columns left">
                     ${panel('form_field', reverse=True, field=register_form['dot'], **dot_html_attrs)}
                     ${panel('form_field', reverse=True, field=register_form['reg_as_windows'])}
                 </div>
