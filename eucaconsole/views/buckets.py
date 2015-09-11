@@ -346,7 +346,8 @@ class BucketContentsView(LandingPageView, BucketMixin):
         ]
         # if shared bucket, we'd like to check permissions and send back to buckets page if none
         try:
-            self.s3_conn.get_bucket(self.bucket_name).list(prefix='notlikely')
+            if self.s3_conn:
+                self.s3_conn.get_bucket(self.bucket_name).list(prefix='notlikely')
         except BotoServerError as err:
             # 404: not found
             if err.status == 404:
@@ -846,10 +847,10 @@ class BucketItemDetailsView(BaseView, BucketMixin):
         self.bucket = bucket
         self.bucket_item_acl = bucket_item_acl
         self.s3_conn = self.get_connection(conn_type='s3')
-        self.s3_conn.suppress_consec_slashes = False
         with boto_error_handler(request):
             if self.s3_conn and self.bucket is None:
                 self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
+                self.s3_conn.suppress_consec_slashes = False
             request.subpath = self.get_subpath(self.bucket.name)
             self.bucket_name = self.bucket.name
             self.bucket_item = self.get_bucket_item()
