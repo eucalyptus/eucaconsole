@@ -60,7 +60,7 @@ angular.module('InstanceCreateImage', ['EucaConsoleUtils', 'TagEditor', 'CreateB
             $scope.$watch('name', function () {
                 $scope.checkRequiredInput();
             });
-            $scope.$watch('s3_bucket', function () {
+            $scope.$watch('bucketName', function () {
                 $scope.checkRequiredInput();
             });
             $scope.$watch('s3BucketError', function () {
