@@ -44,7 +44,7 @@
                <i class="fi-list"></i>
                <span id="hp-logo"></span>
             </a>
-            <a href="${layout.home_url}" title="${layout.site_title}" metal:define-slot="logo">
+            <a href="/" title="${layout.site_title}" metal:define-slot="logo">
                 <span class="product-name">Eucalyptus</span>
             </a>
             <section tal:condition="request.user.is_authenticated()" id="user-dropdown-section">
