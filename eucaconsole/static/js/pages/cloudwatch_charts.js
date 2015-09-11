@@ -149,10 +149,9 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
                     emptyResultsCount += 1;
                 }
             });
-            if (emptyResultsCount === results.length && scope.empty) {
+            if (emptyResultsCount === results.length && scope.empty && !largeChart) {
                 parentCtrl.emptyMessages[scope.metric] = scope.empty;
                 parentCtrl.emptyChartCount += 1;
-                parentCtrl.largeChartLoading = false;
                 return true;
             }
             var unit = oData.unit || scope.unit;
