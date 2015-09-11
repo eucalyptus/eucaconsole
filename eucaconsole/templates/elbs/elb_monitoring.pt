@@ -65,6 +65,9 @@
             <metal:block metal:use-macro="layout.global_macros['help_expando']" />
             <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                 <!--! Help goes here -->
+                <div id="help-html-console_load_balancer_detail_monitoring"
+                    ng-include="'${layout.help_path('console_load_balancer_detail_monitoring.html')}'">
+                </div> 
             </div>
         </div>
         <!--! Modal dialog for large chart -->
