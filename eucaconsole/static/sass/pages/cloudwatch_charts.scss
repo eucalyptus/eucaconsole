@@ -43,7 +43,6 @@
 }
 
 .chart-wrapper {
-    position: relative;
     h6 {
         color: $hp-gray-65;
         margin-bottom: 0;
@@ -57,9 +56,13 @@
             max-height: 1rem;
         }
     }
+    .empty-message-wrapper {
+        position: relative;
+    }
     .empty-message {
         position: absolute;
-        top: 40%; left: 20px; right: 10px;
+        margin-top: 6rem;
+        padding: 1rem;
         line-height: 1.2rem;
     }
     svg {
