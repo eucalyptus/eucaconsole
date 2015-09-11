@@ -122,8 +122,6 @@ class LoginView(BaseView, PermissionCheckMixin):
         )
 
     def show_https_warning(self):
-        if any([self.https_proxy, self.https_scheme]) and not self.secure_session:
-            return True
         if self.secure_session and not (any([self.https_proxy, self.https_scheme])):
             return True
         return False
