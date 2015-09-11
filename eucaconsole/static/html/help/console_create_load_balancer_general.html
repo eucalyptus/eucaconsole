@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en-us" lang="en-us">
+<head>
+<title>Create Load Balancer - General</title>
+</head>
+<body id="create_load_balancer_ui_help_context">
+
+
+    <h1 class="title topictitle1">Create Load Balancer - General</h1>
+
+    
+    <div class="body taskbody"><p class="shortdesc"> This wizard allows you to create a new load balancer. A load balancer allows you to
+        automatically balance incoming traffic among a predefined group of instances, ensuring that
+        requests are sent to an instance that has the capacity to serve them. For more information
+        on load balancers, please see <em class="ph i">Using Elastic Load Balancing</em> in the <em class="ph i">Eucalyptus User
+            Guide</em>.</p>
+</div>
+
+    <div class="topic task nested1" id="create_load_balancer_ui_help_steps_general">
+        <h2 class="title topictitle2">General</h2>
+
+        
+        <div class="body taskbody"><p class="shortdesc">This section is where you specify the basic configuration of your new load
+            balancer.</p>
+
+            <ol class="ol steps"><li class="li step stepexpand">
+                    <span class="ph cmd">Type the name of your load balancer in the <span class="ph uicontrol">Name</span> text
+                        box.</span>
+                </li>
+<li class="li step stepexpand">
+                    <span class="ph cmd">Define listener(s) for your load balancer.</span>
+                    <div class="itemgroup stepxmp">A listener checks the connection requests from the client 
+                        to the load balancer (client-side) and ports that the load balancer 
+                        uses to monitor and route incoming traffic to the load balancer's 
+                        registered instances (instance-side). A default listener is
+                        pre-defined with an HTTP protocol port 80 on the client and the instance
+                        side. You may delete a listener but you must define at least one listener 
+                        to properly configure a load balancer.</div>
+                    <div class="itemgroup info">To delete a listener, click the <span class="ph uicontrol">Remove listener</span> icon 
+                        (a minus sign in a circle) next to the one you want to remove.</div>
+                <ol type="a" class="ol substeps">
+                    <li class="li substep substepexpand">
+                        <span class="ph cmd">To add a listener, scroll past the table (if a listener is already defined) and select an 
+                            option from the <span class="ph uicontrol">Protocol</span> drop-down list box for the CLIENT SIDE.
+                            </span>
+                        <div class="itemgroup stepresult">The client-side port may be populated with a common default port for a chosen protocol 
+                            but you can change the port, if neccessary.</div>
+                    </li>
+
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd">If not already populated, or you want to change the client-side port, enter the port number in the
+                                    <span class="ph uicontrol">Port</span> text box.</span>
+                            <div class="itemgroup info">Ports assigned for the client-side must be either 25, 80, 443, 465, 587 or from 1024 to 65535 and 
+                                may not already be in use.</div>
+                        </li>
+
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd">On the INSTANCE SIDE, select the protocol from the <span class="ph uicontrol">Protocol</span> drop-down list box.</span>
+                        </li>
+
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd">If not already auto-populated, enter the number of the instance-side port into the
+                                    <span class="ph uicontrol">Port</span> text box.
+                            </span>
+                        </li>
+
+                </ol>
+
+                </li>
+</ol>
+
+        </div>
+
+        <div class="topic task nested2" id="create_load_balancer_ui_help_steps_general_security">
+            <h3 class="title topictitle3">Security Policy</h3>
+
+            
+        <div class="body taskbody"><p class="shortdesc">The ability to apply a security policy is only available if HTTPS or SSL is specified as the protocol.</p>
+
+            <ol class="ol steps"><li class="li step stepexpand">
+                    <span class="ph cmd">The latest existing security policy is displayed by default next to Policy in the Security area 
+                        but you may change it by clicking <span class="ph uicontrol">Change</span>.</span>
+                    <div class="itemgroup stepresult">The Select security policy window opens.</div>
+                </li>
+<li class="li step stepexpand">
+                    <span class="ph cmd">Select from the available security options:</span>
+                    <ul class="ul choices">
+                        <li class="li choice"><span class="ph uicontrol">Choose a predefined security policy</span>
+                            and select a policy from the <span class="ph uicontrol">Policy
+                                name</span> drop-down list box.</li>
+
+                    </ul>
+
+                    <div class="itemgroup info"><div class="note note"><span class="notetitle">Note:</span> For more information on pre-defined security policies, go to AWS
+                        <a class="xref" href="http://docs.aws.amazon.com/ElasticLoadBalancing/latest/DeveloperGuide/elb-security-policy-table.html" target="_blank">Predefined SSL Security Policies for Elastic Load Balancing</a>
+                    </div>
+ OR </div>
+                    <ul class="ul choices">
+                        <li class="li choice"><span class="ph uicontrol">Create a custom security policy</span>. Choosing this option opens the <span class="ph uicontrol">SSL
+                            PROTOCOLS</span> and the <span class="ph uicontrol">SSL CIPHERS</span>
+                            drop-down list box with values pre-populated.
+                        </li>
+
+                    </ul>
+
+                    <ol type="a" class="ol substeps">
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd">To delete any of the pre-populated values, click the
+                                <span class="ph uicontrol">x</span> next to the value(s) you do not
+                                want.</span>
+                        </li>
+
+                            <li class="li substep substepexpand">
+                                <span class="ph cmd">To add or select another protocol, click in the
+                                    <span class="ph uicontrol">SSL PROTOCOLS</span> field and select
+                                    one from the drop-down list box.</span>
+                            </li>
+
+                            <li class="li substep substepexpand">
+                                <span class="ph cmd">To add or select another encryption algorithm, click in the
+                                    <span class="ph uicontrol">SSL CIPHERS</span> field and select one
+                                    from the drop-down list box. </span>
+                                <div class="itemgroup info"><div class="note note"><span class="notetitle">Note:</span> You must specify at least
+                                    one protocol and one encryption algorithm.</div>
+</div>
+                            </li>
+
+                            <li class="li substep substepexpand">
+                                <span class="ph cmd">In the SSL OPTIONS, click to select <span class="ph uicontrol">Server order preference</span> if you want it 
+                                    for SSL negotiation.</span>
+                            </li>
+
+                            <li class="li substep substepexpand">
+                                <span class="ph cmd">Click the <span class="ph uicontrol">Use This Policy</span> button to select
+                                    the defined security policy.</span>
+                                <div class="itemgroup stepresult">The Select security policy window closes and the specified policy is displayed next to the Policy field. </div>
+                            </li>
+
+                    </ol>
+
+                </li>
+</ol>
+
+        </div>
+
+        
+       <div class="topic task nested3" id="Certificate">
+           <h4 class="title topictitle4">Certificate</h4>
+
+           
+           <div class="body taskbody"><p class="shortdesc">The ability to apply a security certificate is only available if HTTPS or SSL is specified as the protocol.</p>
+
+               <ol class="ol steps"><li class="li step stepexpand">
+                       <div class="note note"><span class="notetitle">Note:</span> Skip this step if you want to continue using a certificate that is already installed on your load balancer.</div>
+
+                       <span class="ph cmd">To select a certificate, if available, click <span class="ph uicontrol">Select</span> next to Certificates.</span>
+                   </li>
+<li class="li step stepexpand">
+                       <span class="ph cmd">If a certificate is already assigned and you want to change it, click <span class="ph uicontrol">Change</span> instead.</span>
+                   <div class="itemgroup stepresult">Choosing this option opens the Select certificate(s) window.
+                           <div class="note note"><span class="notetitle">Note:</span> Tabs display for SSL and Backend only if the instance side uses HTTPS or SSL protocol.</div>
+</div>
+                   </li>
+<li class="li step stepexpand">
+                       
+                   <span class="ph cmd">Select from the available options for assigning a certificate to your load balancer:</span>
+                       <ul class="ul choices">
+                           <li class="li choice"><span class="ph uicontrol">Choose an existing SSL certificate </span>from the <span class="ph uicontrol">Certificate Name</span> 
+                               drop down list, if available.
+                               <div class="note note"><span class="notetitle">Note:</span> If one is not available, upload a new certificate.</div>
+
+                           </li>
+
+                           <li class="li choice"><span class="ph uicontrol">Upload a new SSL certificate</span>. Choosing this option opens a form to upload a new certificate:</li>
+
+                       </ul>
+
+                           <ol type="a" class="ol substeps">
+                       <li class="li substep substepexpand">
+                               <span class="ph cmd">Type the name of the new certificate in the <span class="ph uicontrol">Certificate name</span> text field.</span>
+                           </li>
+
+                           <li class="li substep substepexpand">
+                               <span class="ph cmd">Paste the contents of your public key certificate file in the <span class="ph uicontrol">Public key certificate</span> text field. 
+                                   Refer to the bubble help <span class="ph uicontrol">(?)</span> for additional details.</span>
+                           </li>
+
+                           <li class="li substep substepexpand">
+                               <span class="ph cmd">Paste the contents of your private key certificate file in the <span class="ph uicontrol">Private key</span> text field. 
+                                   Refer to the bubble help <span class="ph uicontrol">(?)</span> for additional details.</span>
+                           </li>
+
+                           <li class="li substep substepexpand">
+                               <span class="ph cmd">Enter the contents of your certificate chain file in the <span class="ph uicontrol">Certificate chain</span> text field.</span>
+                           </li>
+
+                           <li class="li substep substepexpand">
+                               <span class="ph cmd">To specify certificates for the backend, click the <span class="ph uicontrol">Back end</span> tab. Otherwise, click the 
+                                   <span class="ph uicontrol">Use This Certificate</span> button.</span>
+                               <div class="itemgroup stepresult">Choosing to specify the backend certificate(s) opens another form that may already be populated with pre-loaded certificates.
+                                   <div class="note note"><span class="notetitle">Note:</span> Backend certificates are used to ensure added security measures between your load balancers and its communication with your server. 
+                                       Backend certificates are optional, but you may add multiple certificates on this form.</div>
+</div>
+                           </li>
+
+                           <li class="li substep substepexpand">
+                               <span class="ph cmd">To delete any of the pre-populated certificates, click the <span class="ph uicontrol">x</span> next to the 
+                                   cetificate(s) you do not want.</span>
+                           </li>
+
+                           <li class="li substep substepexpand">
+                               <span class="ph cmd">To add or select another certificate, click <span class="ph uicontrol">Add a certificate</span> or 
+                                   <span class="ph uicontrol">Add another certificate</span>, respectively.</span>
+                           </li>
+
+                           <li class="li substep substepexpand">
+                               <span class="ph cmd">Type the name of the new certificate in the <span class="ph uicontrol">Certificate name</span> text field.</span>
+                           </li>
+
+                           <li class="li substep substepexpand">
+                               <span class="ph cmd">Paste the contents of your certificate file in the <span class="ph uicontrol">Body (pem encoded)</span> text field.</span>
+                           </li>
+
+                           <li class="li substep substepexpand">
+                               <span class="ph cmd">Click the <span class="ph uicontrol">Add Certificate</span> button to add it.</span>
+                           </li>
+
+                           <li class="li substep substepexpand">
+                               <span class="ph cmd">Click the <span class="ph uicontrol">Use These Certificates</span> button to apply the certificates to your load balancer.</span>
+                               <div class="itemgroup stepresult">The Select certificate(s) window closes and the specified certificate(s) is displayed next to the Certificates field. </div>
+                           </li>
+
+                           <li class="li substep substepexpand">
+                               <span class="ph cmd">After listeners have been declared, click the <span class="ph uicontrol">Add Listener</span> button to continue.</span>
+                               <div class="itemgroup stepresult">The entries for your new load balancer is recorded in the Summary panel located on the 
+                                   right side of the screen.</div>
+                           </li>
+
+                           <li class="li substep substepexpand">
+                               <span class="ph cmd">To add more listeners, repeat the above steps.</span>
+                           </li>
+
+                           </ol>
+
+
+                   </li>
+<li class="li step stepexpand">
+                           <span class="ph cmd">To apply tags, proceed to the next section. Otherwise, click
+                               <span class="ph uicontrol">Next</span> to proceed to the Network &amp; Security tab.</span>
+                       </li>
+</ol>
+
+        </div>
+
+    </div>
+
+    <div class="topic task nested3" id="tags">
+    <h4 class="title topictitle4">Add tags </h4>
+
+    
+    <div class="body taskbody"><p class="shortdesc"> To help you manage your cloud's instances, images, and other Eucalyptus resources,
+        you can optionally assign your own metadata to resources in the form of tags. You can
+        use tags to create user-friendly names, make resource searching easier, and improve
+        coordination between multiple users. You can optionally add tags by performing the following
+        steps:</p>
+</div>
+
+    <div class="topic task nested4" id="d15e15">
+        <h5 class="title topictitle5"/>
+
+        
+        <div class="body taskbody"><p class="shortdesc"/>
+
+            <div class="section context">To add new tags:</div>
+
+            <ol class="ol steps"><li class="li step stepexpand">
+                    <span class="ph cmd">Type the key name for your tag into the <span class="ph uicontrol">name...</span> text
+                        box.</span>
+                    <div class="itemgroup info"><div class="note note"><span class="notetitle">Note:</span> Tags cannot start with "<samp class="ph codeph">euca:</samp>" or "<samp class="ph codeph">aws:</samp>".</div>
+</div>
+                </li>
+<li class="li step stepexpand">
+                    <span class="ph cmd">Type the value for your tag into the <span class="ph uicontrol">value...</span> text
+                        box.</span>
+                </li>
+<li class="li step stepexpand">
+                    <span class="ph cmd">Click the <span class="ph uicontrol">Add Tag</span> button.</span>
+                </li>
+<li class="li step stepexpand">
+                    <span class="ph cmd">If you wish to add additional tags, repeat the preceding steps.</span>
+                </li>
+</ol>
+
+        </div>
+
+    </div>
+
+    
+    <div class="topic task nested4" id="d15e77">
+        <h5 class="title topictitle5"/>
+
+        
+        <div class="body taskbody"><p class="shortdesc"/>
+
+            <div class="section context">To delete one or more tags:</div>
+
+            <div class="li step p">
+                    <span class="ph cmd">Move your mouse over the tag you wish to delete and click the
+                            <span class="ph uicontrol">X</span> button.</span>
+                </div>
+
+        </div>
+
+    </div>
+
+    
+</div>
+
+        </div>
+
+    </div>
+
+
+</body>
+</html>

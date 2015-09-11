@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en-us" lang="en-us">
+<head>
+<title>Load Balancer Details - Health check</title>
+</head>
+<body id="load_balancer_details_health_check">
+
+
+    <h1 class="title topictitle1">Load Balancer Details - Health check</h1>
+
+    <p class="shortdesc"> This page allows you to view and edit various health checks associated with monitoring a load balancer. 
+        Any instances that fail the health check will be automatically removed from the load balancer.</p>
+
+    <div class="topic task nested1" id="load_balancer_delete">
+        <h2 class="title topictitle2">Actions menu</h2>
+
+        <p class="shortdesc">Clicking the down arrow from the <span class="ph uicontrol">Actions</span> menu allows you to delete the load balancer.</p>
+
+        <div class="topic task nested2" id="d141e16">
+            <h3 class="title topictitle3">Delete a load balancer</h3>
+
+            <div class="body taskbody">
+                <div class="section context">To delete a load balancer:</div>
+
+                <ol class="ol steps"><li class="li step">
+                        <span class="ph cmd">Click the<span class="ph uicontrol"> Actions</span> menu and select<span class="ph uicontrol"> Delete load balancer</span>.</span>
+                    </li>
+<li class="li step">
+                        <span class="ph cmd">When the confirmation dialog box displays, click the <span class="ph uicontrol">Yes, Delete Load Balancer</span> button
+                            to confirm the deletion. Otherwise, close the confirmation dialog box to cancel. </span>
+                    </li>
+</ol>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    
+    <div class="topic task nested1" id="load_balancer_details_health_check_settings">
+        <h2 class="title topictitle2">Ping settings</h2>
+
+        <div class="body taskbody">
+    <ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">Change the settings for pinging your instances:</span>
+                <ol type="a" class="ol substeps">
+                    <li class="li substep substepexpand">
+                        <span class="ph cmd">Select a protocol from the <span class="ph uicontrol">Protocol</span> drop-down list.</span>
+                    </li>
+
+                    <li class="li substep substepexpand">
+                        <span class="ph cmd">Enter the port in the <span class="ph uicontrol">Port</span> text field.</span>
+                        <div class="itemgroup info">The port may be populated with a common default port for a chosen protocol 
+                            but you can change the port, if neccessary.</div>
+                    </li>
+
+                    <li class="li substep substepexpand">
+                        <span class="ph cmd">For http or https protocols, you may enter the path of the ping in the
+                            <span class="ph uicontrol">Path</span> text field.</span>
+                        <div class="itemgroup info">TCP and SSL protocols do not display this field.</div>
+                    </li>
+
+                </ol>
+
+            </li>
+<li class="li step stepexpand">
+                <span class="ph cmd">Optionally, you can click <span class="ph uicontrol">Advanced</span> to expand the health check timing options.</span> 
+            </li>
+<li class="li step stepexpand">
+                <span class="ph cmd">Enter the time in seconds in the <span class="ph uicontrol">Response timeout (secs)</span> text field to specify 
+                    how long to wait for a ping response before it times out.</span>
+            </li>
+<li class="li step stepexpand">
+                <span class="ph cmd">Select the desired ping interval from the <span class="ph uicontrol">Time between pings</span> drop-down list.</span>
+            </li>
+<li class="li step stepexpand">
+                <span class="ph cmd">Specify the thresholds for declaring the health of instances:</span>
+                <ol type="a" class="ol substeps">
+                    <li class="li substep">
+                        <span class="ph cmd">Select the number of failed attempts from the <span class="ph uicontrol">Failures until unhealthy</span> 
+                            drop-down list before declaring an instance unhealthy.</span>
+                    </li>
+
+                    <li class="li substep">
+                        <span class="ph cmd">Select the number of successful attempts from the <span class="ph uicontrol">Passes until healthy</span> 
+                            drop-down list before declaring an instance healthy.</span>
+                    </li>
+
+                </ol>
+
+            </li>
+<li class="li step stepexpand">
+                <span class="ph cmd">Click <span class="ph uicontrol">Save Changes</span> to save your changes or <span class="ph uicontrol">Cancel</span> to abandon your changes.</span>
+                <div class="itemgroup stepresult">The message, <samp class="ph systemoutput">Successfully updated health checks for <var class="keyword varname">[name]</var></samp> 
+                    indicates changes saved successfully.</div>
+            </li>
+</ol>
+
+    </div>
+
+</div>
+
+
+</body>
+</html>

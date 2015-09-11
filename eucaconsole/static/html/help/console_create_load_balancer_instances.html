@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en-us" lang="en-us">
+<head>
+<title>Create Load Balancer - Instances</title>
+</head>
+<body id="create_load_balancer_ui_help_instances">
+
+
+    <h1 class="title topictitle1">Create Load Balancer - Instances</h1>
+
+    
+        <div class="body taskbody"><p class="shortdesc"> This step allows you to associate availability zones (or VPC subnets, if cloud is VPC) 
+        and add instances to your new load balancer. Adding availability zones allows the load balancer 
+        to route traffic to instances in the selected zone(s). Similarly, if on a VPC network, adding a 
+        VPC subnet allows traffic to instances in the selected VPC subnet(s).</p>
+
+            <ol class="ol steps"><li class="li step stepexpand">
+                    <span class="ph cmd">Click the <span class="ph uicontrol">Add availability zones</span> or <span class="ph uicontrol">Add VPC subnets</span> text field to 
+                        search and select a zone or subnet from the drop-down list. Repeat to add more availability zones or subnets.</span>
+                </li>
+<li class="li step stepexpand">
+                    <span class="ph cmd">The ability to select <span class="ph uicontrol">Enable cross-zone load balancing</span> is only present for a load balancer not on a VPC network. 
+                        This option evenly distributes traffic across all instances in all availability zones.</span> 
+                </li>
+<li class="li step stepexpand">
+                        <span class="ph cmd">Select from the list of instances to specify between which instances to balance traffic.</span>
+                        <div class="itemgroup info">You may use the Magic Search bar to narrow down the list of instances
+                    by specifying the availability zone (or VPC subnet), security group, or
+                    status.</div>
+                        <div class="itemgroup stepresult">Selecting an instance automatically adds that instance to the
+                    availability zone or VPC subnet field above and the number of instances selected
+                    is reflected in the <strong class="ph b">Summary</strong> pane on the right side of the
+                    screen.</div>
+                    </li>
+<li class="li step stepexpand">
+                    <span class="ph cmd">Click <span class="ph uicontrol">Next</span> to proceed to the Health Check &amp; Advanced tab.</span>
+                       </li>
+</ol>
+
+        </div>
+
+
+</body>
+</html>
