@@ -44,6 +44,7 @@ class AccountForm(BaseSecureForm):
         label=_(u'Name'),
         validators=[
             validators.InputRequired(message=account_name_error_msg),
+            validators.Regexp('^[a-z0-9][a-z0-9\.@\-]{1,61}[a-z0-9]$', message=account_name_error_msg),
             validators.Regexp('[^0-9]{12}', message=account_name_error_msg)
         ]
     )
