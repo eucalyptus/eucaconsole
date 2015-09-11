@@ -152,6 +152,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
             if (emptyResultsCount === results.length && scope.empty) {
                 parentCtrl.emptyMessages[scope.metric] = scope.empty;
                 parentCtrl.emptyChartCount += 1;
+                parentCtrl.largeChartLoading = false;
                 return true;
             }
             var unit = oData.unit || scope.unit;

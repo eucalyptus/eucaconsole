@@ -83,8 +83,7 @@
                         </span>
                         <a href="#" class="close">&times;</a>
                     </div>
-                    <li class="chart-wrapper" ng-repeat="chart in chartsCtrl.chartsList"
-                        ng-click="chartsCtrl.displayLargeChart(chart, 'InstanceId', '${instance.id}')" ng-cloak="">
+                    <li class="chart-wrapper" ng-repeat="chart in chartsCtrl.chartsList" ng-cloak="">
                         <h6>{{ chartsCtrl.metricTitleMapping[chart.metric] }}<i class="busy"></i></h6>
                         <div ng-if="chartsCtrl.emptyMessages[chart.metric]" class="empty-message">
                             {{ chartsCtrl.emptyMessages[chart.metric] }}
