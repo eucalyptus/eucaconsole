@@ -105,7 +105,6 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor','EucaConsoleUtils'])
                 $scope.checkRequiredInput();
             });
             $scope.$watch('healthCheckPeriod', function (newVal) {
-                console.log('health check', newVal);
                 if(newVal) {
                     $scope.healthCheckPeriod = eucaNumbersOnly(newVal);
                     $scope.isNotValid = false;
