@@ -29,6 +29,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
     vm.submitMonitoringForm = submitMonitoringForm;
     vm.refreshCharts = refreshCharts;
     vm.refreshLargeChart = refreshLargeChart;
+    vm.emptyChartCount = 0;
 
     function initController(optionsJson) {
         var options = JSON.parse(eucaUnescapeJson(optionsJson));
@@ -63,6 +64,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
     }
 
     function refreshCharts() {
+        vm.emptyChartCount = 0;
         // Broadcast message to CW charts directive controller to refresh
         $scope.$broadcast('cloudwatch:refreshCharts');
     }
@@ -149,6 +151,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
             });
             if (emptyResultsCount === results.length && scope.empty) {
                 parentCtrl.emptyMessages[scope.metric] = scope.empty;
+                parentCtrl.emptyChartCount += 1;
                 return true;
             }
             var unit = oData.unit || scope.unit;
