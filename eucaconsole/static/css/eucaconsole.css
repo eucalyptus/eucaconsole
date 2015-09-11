@@ -1683,7 +1683,7 @@ a.circle { color: black; display: inline-block; }
 
 #notifications { margin-left: 1rem; margin-right: 1rem; margin-top: -1rem; font-weight: bold; }
 #notifications .marked { position: relative; }
-#notifications .alert-box { position: fixed; padding: 0 0; top: 10px; left: 50%; transform: translateX(-50%); z-index: 9999999; width: 33%; color: black; background-color: white; box-shadow: 6px 6px 10px rgba(0, 0, 0, 0.15); }
+#notifications .alert-box { position: fixed; padding: 0 0; top: 0px; left: 50%; transform: translateX(-50%); z-index: 9999999; width: 100%; color: black; background-color: white; box-shadow: 6px 6px 10px rgba(0, 0, 0, 0.15); }
 #notifications .alert-box.success { border: 2px solid #008424; }
 #notifications .alert-box.success .icon { background-color: #008424; }
 #notifications .alert-box.success .icon span:before { content: "✓"; }
@@ -1699,6 +1699,9 @@ a.circle { color: black; display: inline-block; }
 #notifications .alert-box .close { opacity: 1.0; }
 #notifications .alert-box .close:hover { font-weight: bold; }
 
+@media screen and (min-width: 480px) { #notifications .alert-box { top: 10px; width: 75%; } }
+@media screen and (min-width: 768px) { #notifications .alert-box { top: 10px; width: 50%; } }
+@media screen and (min-width: 1020px) { #notifications .alert-box { top: 10px; width: 33%; } }
 textarea.console-output { width: 100%; min-height: 30rem; background-color: black; color: white; font-family: Courier, "courier new", monospace; font-weight: bold; }
 
 textarea.policy-area { width: 100%; min-height: 30rem; font-family: Courier, "courier new", monospace; font-weight: bold; }

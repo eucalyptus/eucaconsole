@@ -392,11 +392,11 @@ a.circle {
     .alert-box {
         position: fixed;
         padding: 0 0;
-        top: 10px;
+        top: 0px;
         left: 50%;
         transform: translateX(-50%);
         z-index: 9999999;
-        width:33%;
+        width: 100%;
         color: black;
         background-color: white;
         box-shadow: 6px 6px 10px rgba(0, 0, 0, 0.15);
@@ -451,6 +451,33 @@ a.circle {
         .close:hover {
             font-weight: bold;
        }
+    }
+}
+
+@media screen and (min-width: $euca-extrasmall-breakpoint) {
+    #notifications {
+        .alert-box {
+            top: 10px;
+            width: 75%;
+        }
+    }
+}
+
+@media screen and (min-width: 768px) {
+    #notifications {
+        .alert-box {
+            top: 10px;
+            width: 50%;
+        }
+    }
+}
+
+@media screen and (min-width: $topbar-breakpoint) {
+    #notifications {
+        .alert-box {
+            top: 10px;
+            width: 33%;
+        }
     }
 }
 
