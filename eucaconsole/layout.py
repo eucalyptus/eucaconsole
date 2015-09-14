@@ -96,6 +96,7 @@ class MasterLayout(object):
         self.searchtext_remove = _(u'Remove facet')
         self.searchtext_cancel = _(u'Clear search')
         self.searchtext_prompt = _(u'Select facets for filter, or enter text to search')
+        self.searchtext_prompt2 = _(u'Enter text to search')
         self.searchtext_text_facet = _(u'Text')
 
     def get_notifications(self):
