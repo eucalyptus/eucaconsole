@@ -48,13 +48,15 @@
                         </div>
                     </div>
                     <ul class="small-block-grid-1 medium-block-grid-2 large-block-grid-3">
-                        <li class="chart-wrapper" ng-repeat="chart in chartsCtrl.chartsList"
-                            ng-click="chartsCtrl.displayLargeChart(chart, 'LoadBalancerName', '${elb_name}')" ng-cloak="">
+                        <li class="chart-wrapper" ng-repeat="chart in chartsCtrl.chartsList" ng-cloak="">
                             <h6>{{ chartsCtrl.metricTitleMapping[chart.metric] }}<i class="busy"></i></h6>
+                            <div ng-if="chartsCtrl.emptyMessages[chart.metric]" class="empty-message-wrapper">
+                                <div class="empty-message">{{ chartsCtrl.emptyMessages[chart.metric] }}</div>
+                            </div>
                             <svg cloudwatch-chart="" id="cwchart-{{ chart.metric }}" class="cwchart"
                                  ids="${elb_name}" idtype="LoadBalancerName" metric="{{ chart.metric }}"
                                  duration="{{ chartsCtrl.duration }}" unit="{{ chart.unit }}" namespace="ELB"
-                                 statistic="{{ chart.statistic || 'Average' }}">
+                                 statistic="{{ chart.statistic || 'Average' }}" empty="{{ chart.empty_msg }}">
                             </svg>
                         </li>
                     </ul>

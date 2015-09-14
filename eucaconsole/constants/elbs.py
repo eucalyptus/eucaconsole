@@ -28,62 +28,77 @@
 Eucalyptus and AWS ELB constants
 
 """
+from ..i18n import _
+
 
 ELB_BACKEND_CERTIFICATE_NAME_PREFIX = 'EucaConsole-BackendServerAuthPolicy'
 ELB_PREDEFINED_SECURITY_POLICY_NAME_PREFIX = 'ELBSecurityPolicy'
 ELB_CUSTOM_SECURITY_POLICY_NAME_PREFIX = 'ELB-CustomSecurityPolicy'
 ELB_ACCESS_LOGS_BUCKET_PREFIX_NAME_PREFIX = 'ELB-AccessLogs'
 
+ELB_EMPTY_DATA_MESSAGE = _("No data available until this load balancer receives traffic.")
+ELB_EMPTY_HOSTS_MESSAGE = _("No data available until instances are registered with this load balancer.")
+
 ELB_MONITORING_CHARTS_LIST = [
     {
         'metric': 'RequestCount',
         'unit': 'Count',
         'statistic': 'Sum',
+        'empty_msg': ELB_EMPTY_DATA_MESSAGE,
     },
     {
         'metric': 'Latency',
         'unit': 'Seconds',
         'statistic': 'Average',
+        'empty_msg': ELB_EMPTY_DATA_MESSAGE,
     },
     {
         'metric': 'UnHealthyHostCount',
         'unit': 'Count',
         'statistic': 'Maximum',
+        'empty_msg': ELB_EMPTY_HOSTS_MESSAGE,
     },
     {
         'metric': 'HealthyHostCount',
         'unit': 'Count',
         'statistic': 'Maximum',
+        'empty_msg': ELB_EMPTY_HOSTS_MESSAGE,
     },
     {
         'metric': 'HTTPCode_ELB_4XX',
         'unit': 'Count',
         'statistic': 'Sum',
+        'empty_msg': ELB_EMPTY_DATA_MESSAGE,
     },
     {
         'metric': 'HTTPCode_ELB_5XX',
         'unit': 'Count',
         'statistic': 'Sum',
+        'empty_msg': ELB_EMPTY_DATA_MESSAGE,
     },
     {
         'metric': 'HTTPCode_Backend_2XX',
         'unit': 'Count',
         'statistic': 'Sum',
+        'empty_msg': ELB_EMPTY_DATA_MESSAGE,
     },
     {
         'metric': 'HTTPCode_Backend_3XX',
         'unit': 'Count',
         'statistic': 'Sum',
+        'empty_msg': ELB_EMPTY_DATA_MESSAGE,
     },
     {
         'metric': 'HTTPCode_Backend_4XX',
         'unit': 'Count',
         'statistic': 'Sum',
+        'empty_msg': ELB_EMPTY_DATA_MESSAGE,
     },
     {
         'metric': 'HTTPCode_Backend_5XX',
         'unit': 'Count',
         'statistic': 'Sum',
+        'empty_msg': ELB_EMPTY_DATA_MESSAGE,
     },
 ]
 

@@ -75,12 +75,24 @@
                     </p>
                 </div>
                 <ul class="small-block-grid-1 medium-block-grid-2 large-block-grid-3" tal:condition="monitoring_enabled">
-                    <li class="chart-wrapper" ng-repeat="chart in chartsCtrl.chartsList"
-                        ng-click="chartsCtrl.displayLargeChart(chart, 'InstanceId', '${instance.id}')" ng-cloak="">
+                    <div ng-if="chartsCtrl.chartsList.length === chartsCtrl.emptyChartCount" ng-cloak=""
+                         tal:condition="instance.state in ['stopping', 'stopped']"
+                         data-alert="alert" class="alert-box info">
+                        <span i18n:translate="">
+                            Data is not collected for stopped instances. Start your instance to resume data collection,
+                            or try showing data for a longer time period to see data from before your instance was stopped.
+                        </span>
+                        <a href="#" class="close">&times;</a>
+                    </div>
+                    <li class="chart-wrapper" ng-repeat="chart in chartsCtrl.chartsList" ng-cloak="">
                         <h6>{{ chartsCtrl.metricTitleMapping[chart.metric] }}<i class="busy"></i></h6>
+                        <div ng-if="chartsCtrl.emptyMessages[chart.metric]" class="empty-message-wrapper">
+                            <div class="empty-message">{{ chartsCtrl.emptyMessages[chart.metric] }}</div>
+                        </div>
                         <svg cloudwatch-chart="" id="cwchart-{{ chart.metric }}" class="cwchart"
                              ids="${instance.id}" idtype="InstanceId" metric="{{ chart.metric }}"
-                             duration="{{ chartsCtrl.duration }}" unit="{{ chart.unit }}" statistic="Average">
+                             duration="{{ chartsCtrl.duration }}" unit="{{ chart.unit }}"
+                             statistic="Average" empty="{{ chart.empty_msg }}">
                         </svg>
                     </li>
                 </ul>

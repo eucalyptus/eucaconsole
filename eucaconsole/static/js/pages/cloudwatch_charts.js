@@ -16,6 +16,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
     vm.largeChartDuration = 3600;
     vm.largeChartGranularity = 300;
     vm.metricTitleMapping = {};
+    vm.emptyMessages = {};
     vm.chartsList = [];
     vm.granularityChoices = [];
     vm.originalDurationGranularitiesMapping = {};
@@ -28,6 +29,17 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
     vm.submitMonitoringForm = submitMonitoringForm;
     vm.refreshCharts = refreshCharts;
     vm.refreshLargeChart = refreshLargeChart;
+    vm.emptyChartCount = 0;
+    vm.forceZeroBaselineMetrics = [ // Anchor chart to zero for the following metrics
+        'NetworkIn', 'NetworkOut', 'DiskReadBytes', 'DiskReadOps',
+        'DiskWriteBytes', 'DiskWriteOps', 'RequestCount', 'Latency', 'HealthyHostCount', 'UnHealthyHostCount',
+        'HTTPCode_ELB_4XX', 'HTTPCode_ELB_5XX', 'HTTPCode_Backend_2XX', 'HTTPCode_Backend_3XX',
+        'HTTPCode_Backend_4XX', 'HTTPCode_Backend_5XX'
+    ];
+    vm.displayZeroChartMetrics = [  // Display a zero chart rather than an empty message for the following metrics
+        'HTTPCode_ELB_4XX', 'HTTPCode_ELB_5XX', 'HTTPCode_Backend_2XX', 'HTTPCode_Backend_3XX',
+        'HTTPCode_Backend_4XX', 'HTTPCode_Backend_5XX'
+    ];
 
     function initController(optionsJson) {
         var options = JSON.parse(eucaUnescapeJson(optionsJson));
@@ -62,6 +74,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
     }
 
     function refreshCharts() {
+        vm.emptyChartCount = 0;
         // Broadcast message to CW charts directive controller to refresh
         $scope.$broadcast('cloudwatch:refreshCharts');
     }
@@ -88,7 +101,8 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
             'namespace': '@namespace',
             'duration': '@duration',
             'unit': '@unit',
-            'statistic': '@statistic'
+            'statistic': '@statistic',
+            'empty': '@empty'
         },
         link: linkFunc,
         controller: ChartController
@@ -139,15 +153,20 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
                 $('#timed-out-modal').foundation('reveal', 'open');
             }
             var results = oData ? oData.results : '';
+            var displayZeroChart = parentCtrl.displayZeroChartMetrics.indexOf(scope.metric) !== -1;
+            var emptyResultsCount = 0;
+            results.forEach(function (resultSet) {
+                if (resultSet.values.length === 0) {
+                    emptyResultsCount += 1;
+                }
+            });
+            if (!displayZeroChart && emptyResultsCount === results.length && scope.empty && !largeChart) {
+                parentCtrl.emptyMessages[scope.metric] = scope.empty;
+                parentCtrl.emptyChartCount += 1;
+                return true;
+            }
             var unit = oData.unit || scope.unit;
             var yformatter = '.0f';
-            // Anchor chart to zero for the following metrics
-            var forceZeroBaselineMetrics = [
-                'NetworkIn', 'NetworkOut', 'DiskReadBytes', 'DiskReadOps',
-                'DiskWriteBytes', 'DiskWriteOps', 'RequestCount', 'Latency', 'HealthyHostCount', 'UnHealthyHostCount',
-                'HTTPCode_ELB_4XX', 'HTTPCode_ELB_5XX', 'HTTPCode_Backend_2XX', 'HTTPCode_Backend_3XX',
-                'HTTPCode_Backend_4XX', 'HTTPCode_Backend_5XX'
-            ];
             var preciseFormatterMetrics = ['Latency'];
             var chart = nv.models.lineChart()
                 .margin({left: 68, right: 38})
@@ -155,6 +174,13 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
                 .showYAxis(true)
                 .showXAxis(true)
             ;
+            if (displayZeroChart && results.length === 1 &&  results[0].values.length === 0) {
+                // Pad chart with zero data where appropriate
+                results = [{
+                    key: scope.metric,
+                    values: [{x: new Date().getTime(), y: 0}]
+                }];
+            }
             chart.xScale(d3.time.scale());
             chart.xAxis.tickFormat(function(d) {
                 return d3.time.format('%m/%d %H:%M')(new Date(d));
@@ -162,7 +188,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
             if (scope.unit === 'Percent') {
                 chart.forceY([0, 100]);  // Set proper y-axis range for percentage units
             }
-            if (forceZeroBaselineMetrics.indexOf(scope.metric) !== -1) {
+            if (parentCtrl.forceZeroBaselineMetrics.indexOf(scope.metric) !== -1) {
                 chart.forceY([0, 10]);  // Anchor chart to zero baseline
             }
             if (preciseFormatterMetrics.indexOf(scope.metric) !== -1) {

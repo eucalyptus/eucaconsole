@@ -36,6 +36,10 @@
             }
         }
     }
+    .alert-box {
+        margin-left: 0.7rem;
+        margin-right: 0.7rem;
+    }
 }
 
 .chart-wrapper {
@@ -51,6 +55,15 @@
             max-width: 1rem;
             max-height: 1rem;
         }
+    }
+    .empty-message-wrapper {
+        position: relative;
+    }
+    .empty-message {
+        position: absolute;
+        margin-top: 6rem;
+        padding: 1rem;
+        line-height: 1.2rem;
     }
     svg {
         width: 100%;
