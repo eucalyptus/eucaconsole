@@ -388,31 +388,96 @@ a.circle {
     margin-right: 1rem;
     margin-top: -1rem;
     font-weight: bold;
+    .marked { position: relative; }
     .alert-box {
-        background-color: $hp-green;
         position: fixed;
-        top: 10px;
-        left: 10px;
+        padding: 0 0;
+        top: 0px;
+        left: 50%;
+        transform: translateX(-50%);
         z-index: 9999999;
-        width:99%;
+        width: 100%;
+        color: black;
+        background-color: white;
+        box-shadow: 6px 6px 10px rgba(0, 0, 0, 0.15);
         &.success {
-            background-color: $hp-green;
+            border: 2px solid $hp-green;
+            .icon {
+                background-color: $hp-green;
+                span:before {
+                    content: "\2713"
+                }
+            }
         }
         &.warning {
             color: #333;
             background-color: lightyellow;
-            border-color: gray;
+            border: 2px solid gray;
+            .icon {
+                background-color: lightyellow;
+                span:before {
+                    content: "!"
+                }
+            }
         }
         &.alert {
-            background-color: darkred;
+            border: 2px solid darkred;
+            .icon {
+                background-color: darkred;
+                span:before {
+                    content: "!"
+                }
+            }
+        }
+        .icon {
+            width: 50px;
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            text-align: center;
+            span {
+                color: white;
+                font-size: 30px;
+                transform: translateX(50%) translateY(50%);
+            }
+        }
+        .message {
+            padding: 0.875rem 1.5rem 0.875rem 4.5rem;
         }
         .close {
-            color: white;
-            opacity: 1.0; 
+            opacity: 1.0;
         }
         .close:hover {
             font-weight: bold;
        }
+    }
+}
+
+@media screen and (min-width: $euca-extrasmall-breakpoint) {
+    #notifications {
+        .alert-box {
+            top: 10px;
+            width: 75%;
+        }
+    }
+}
+
+@media screen and (min-width: 768px) {
+    #notifications {
+        .alert-box {
+            top: 10px;
+            width: 50%;
+        }
+    }
+}
+
+@media screen and (min-width: $topbar-breakpoint) {
+    #notifications {
+        .alert-box {
+            top: 10px;
+            width: 33%;
+        }
     }
 }
 
