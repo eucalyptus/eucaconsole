@@ -55,7 +55,6 @@ class MasterLayout(object):
         self.context = context
         self.request = request
         self.version = __version__
-        self.home_url = request.application_url
         self.help_url = request.registry.settings.get('help.url')
         self.support_url = request.registry.settings.get('support.url') or "http://support.eucalyptus.com"
         self.aws_enabled = asbool(request.registry.settings.get('aws.enabled'))
