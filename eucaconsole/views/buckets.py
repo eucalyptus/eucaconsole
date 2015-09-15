@@ -680,7 +680,6 @@ class BucketDetailsView(BaseView, BucketMixin):
         with boto_error_handler(request):
             self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
             request.subpath = self.get_subpath(self.bucket.name) if self.bucket else ''
-            import pdb; pdb.set_trace()
             self.bucket_acl = self.bucket.get_acl() if self.bucket else None
         self.details_form = BucketDetailsForm(request, formdata=self.request.params or None)
         self.sharing_form = SharingPanelForm(
