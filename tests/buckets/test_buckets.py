@@ -125,11 +125,9 @@ class BucketContentsViewTestCase(BaseViewTestCase):
 class BucketDetailsViewTestCase(BaseViewTestCase):
 
     def test_versioning_update_action(self):
-        request = testing.DummyRequest()
-        view = BucketDetailsView(request)
-        self.assertEqual(view.get_versioning_update_action('Disabled'), 'enable')
-        self.assertEqual(view.get_versioning_update_action('Suspended'), 'enable')
-        self.assertEqual(view.get_versioning_update_action('Enabled'), 'disable')
+        self.assertEqual(BucketDetailsView.get_versioning_update_action('Disabled'), 'enable')
+        self.assertEqual(BucketDetailsView.get_versioning_update_action('Suspended'), 'enable')
+        self.assertEqual(BucketDetailsView.get_versioning_update_action('Enabled'), 'disable')
 
 
 class MockBucketDetailsViewTestCase(BaseViewTestCase, MockBucketMixin):
