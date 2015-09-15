@@ -1726,6 +1726,7 @@ textarea.policy-area { width: 100%; min-height: 30rem; font-family: Courier, "co
 #bdmapping-editor th { padding-left: 9px; }
 #bdmapping-editor .storage-label { text-align: left; }
 #bdmapping-editor #new-blockdevice-entry label { text-align: left; }
+#bdmapping-editor #new-blockdevice-entry .chosen-single { line-height: 34px; min-height: 37px; }
 #bdmapping-editor input.number { width: 2rem; }
 #bdmapping-editor .delete-on-terminate { text-align: center; }
 

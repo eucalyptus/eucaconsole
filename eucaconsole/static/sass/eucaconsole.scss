@@ -527,6 +527,12 @@ textarea.policy-area {
             text-align: left;
         }
     }
+    #new-blockdevice-entry {
+        .chosen-single {
+            line-height: 34px;
+            min-height: 37px;
+        }
+    }
     input.number {
         width: 2rem;
     }
