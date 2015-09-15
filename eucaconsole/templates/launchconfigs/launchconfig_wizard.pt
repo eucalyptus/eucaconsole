@@ -208,7 +208,7 @@
                                 </div>
                             </div>
                             <hr/>
-                            ${panel('bdmapping_editor', image=image, snapshot_choices=snapshot_choices, disable_dot=True)}
+                            ${panel('bdmapping_editor', image=image, snapshot_choices=snapshot_choices, disable_dot=True, add_hr=True)}
                             <div class="row">
                                 <div class="large-3 small-4 columns">&nbsp;</div>
                                 <div class="large-9 small-8 columns field inline">

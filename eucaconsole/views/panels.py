@@ -254,7 +254,7 @@ def securitygroup_rules_preview(context, request, leftcol_width=3, rightcol_widt
 
 @panel_config('bdmapping_editor', renderer='../templates/panels/bdmapping_editor.pt')
 def bdmapping_editor(context, request, image=None, instance=None, volumes=None,
-                     launch_config=None, snapshot_choices=None, read_only=False, disable_dot=False):
+                     launch_config=None, snapshot_choices=None, read_only=False, disable_dot=False, add_hr=False):
     """ Block device mapping editor (e.g. for Launch Instance page).
         Usage example (in Chameleon template): ${panel('bdmapping_editor', image=image, snapshot_choices=choices)}
     """
@@ -308,6 +308,7 @@ def bdmapping_editor(context, request, image=None, instance=None, volumes=None,
         controller_options_json=controller_options_json,
         read_only=read_only,
         disable_dot=disable_dot,
+        add_hr=add_hr
     )
 
 

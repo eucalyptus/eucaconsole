@@ -199,7 +199,7 @@
                                 ${launch_form['private_addressing'].label}
                             </div>
                             <hr/>
-                            ${panel('bdmapping_editor', image=image, snapshot_choices=snapshot_choices)}
+                            ${panel('bdmapping_editor', image=image, snapshot_choices=snapshot_choices, add_hr=True)}
                             <div class="row">
                                 <div class="large-3 small-4 columns">&nbsp;</div>
                                 <div class="large-9 small-8 columns field inline">

@@ -107,6 +107,7 @@
             </div>
         </div>
         <textarea id="bdmapping" name="block_device_mapping" class="hidden"></textarea>
+        <hr tal:condition="add_hr"/>
     </div>
     <script src="${request.static_path('eucaconsole:static/js/widgets/bdmapping_editor.js')}"></script>
 </div>
