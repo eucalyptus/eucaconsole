@@ -4,6 +4,35 @@
  *
  */
 
+var validateAccountAlias = (function () {
+    var aliasPattern = /^[a-z0-9][a-z0-9\.@\-]{1,61}[a-z0-9]$/;
+    var iamAcctAntiPattern = /^[0-9]{12}$/;
+
+    return function (alias) {
+        // Fail on match of iam account number
+        if(iamAcctAntiPattern.test(alias)) {
+            return false;
+        }
+
+        // Pass on match of alias pattern
+        if(aliasPattern.test(alias)) {
+            return true;
+        }
+
+        return false;
+    };
+})();
+
+$(document).foundation({
+    abide: {
+        validators: {
+            accountAlias: function (el) {
+                return validateAccountAlias(el.value);
+            }
+        }
+    }
+});
+
 // New user page includes the User Editor editor
 angular.module('CreateAccountPage', ['UserEditor', 'Quotas', 'EucaConsoleUtils'])
     .controller('CreateAccountPageCtrl', function ($scope, $http, $timeout, eucaHandleError) {
@@ -67,25 +96,12 @@ angular.module('CreateAccountPage', ['UserEditor', 'Quotas', 'EucaConsoleUtils']
         };
     })
     .directive('accountAlias', function () {
-        var aliasPattern = /^[a-z0-9][a-z0-9\.@\-]{1,61}[a-z0-9]$/;
-        var iamAcctAntiPattern = /^[0-9]{12}$/;
         return {
             restrict: 'A',
             require: 'ngModel',
             link: function (scope, elem, attrs, ctrl) {
                 ctrl.$validators.accountAlias = function (modelVal, viewVal) {
-
-                    // Fail on match of iam account number
-                    if(iamAcctAntiPattern.test(viewVal)) {
-                        return false;
-                    }
-
-                    // Pass on match of alias pattern
-                    if(aliasPattern.test(viewVal)) {
-                        return true;
-                    }
-
-                    return false;
+                    return validateAccountAlias(viewVal);
                 };
             }
         };
