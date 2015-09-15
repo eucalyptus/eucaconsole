@@ -103,6 +103,14 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'ELBSecurity
                 $scope.$apply();
             });
             $scope.$watch('loggingEnabled', function (newVal, oldVal) {
+               // The Access Logs bucket name field is required only if logging is enabled
+                var bucketNameField = $('#bucket_name');
+                if (newVal) {
+                    bucketNameField.attr('required', 'required');
+                } else {
+                    bucketNameField.removeAttr('required');
+                }
+                // Open Access Logs confirmation dialog when appropriate
                 if (newVal !== oldVal) {
                     $scope.isNotChanged = false;
                     if (newVal) {
