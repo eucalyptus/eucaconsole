@@ -52,7 +52,14 @@ from tests import BaseFormTestCase, BaseViewTestCase, BaseTestCase
 
 class MockBucketMixin(object):
     @staticmethod
-    @mock_s3
+    def setup_session(request):
+        request.session['region'] = 'eucalytpus'
+        request.session['access_id'] = 'moto'
+        request.session['secret_key'] = 'moto'
+        request.session['session_token'] = 'moto'
+        request.session['cloud_type'] = 'euca'
+
+    @staticmethod
     def make_bucket(name='test_bucket', policy=None, owner_id=None):
         s3_conn = boto.connect_s3()
         policy = policy or Policy()
@@ -130,8 +137,10 @@ class MockBucketDetailsViewTestCase(BaseViewTestCase, MockBucketMixin):
     @mock_s3
     def test_bucket_details_view_without_versioning(self):
         request = self.create_request()
-        bucket, bucket_acl = self.make_bucket()
-        view = BucketDetailsView(request, bucket=bucket, bucket_acl=bucket_acl).bucket_details()
+        self.setup_session(request)
+        request.matchdict['name'] = 'test_bucket'
+        self.make_bucket()
+        view = BucketDetailsView(request).bucket_details()
         self.assertEqual(view.get('bucket_name'), 'test_bucket')
         self.assertEqual(view.get('bucket_contents_url'), '/buckets/test_bucket/contents/')
         self.assertEqual(view.get('versioning_status'), 'Disabled')
@@ -140,9 +149,11 @@ class MockBucketDetailsViewTestCase(BaseViewTestCase, MockBucketMixin):
     @mock_s3
     def test_bucket_details_view_with_versioning(self):
         request = self.create_request()
+        self.setup_session(request)
+        request.matchdict['name'] = 'test_bucket'
         bucket, bucket_acl = self.make_bucket()
         bucket.configure_versioning(True)
-        view = BucketDetailsView(request, bucket=bucket, bucket_acl=bucket_acl).bucket_details()
+        view = BucketDetailsView(request).bucket_details()
         self.assertEqual(view.get('bucket_name'), 'test_bucket')
         self.assertEqual(view.get('bucket_contents_url'), '/buckets/test_bucket/contents/')
         self.assertEqual(view.get('versioning_status'), 'Enabled')

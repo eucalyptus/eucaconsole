@@ -674,17 +674,14 @@ class BucketDetailsView(BaseView, BucketMixin):
     """Views for Bucket details"""
     VIEW_TEMPLATE = '../templates/buckets/bucket_details.pt'
 
-    def __init__(self, request, bucket=None, bucket_acl=None, **kwargs):
+    def __init__(self, request, **kwargs):
         super(BucketDetailsView, self).__init__(request, **kwargs)
         self.s3_conn = self.get_connection(conn_type='s3')
-        self.bucket = bucket
-        self.bucket_acl = bucket_acl
         with boto_error_handler(request):
-            if self.s3_conn and self.bucket is None:
-                self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
+            self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
             request.subpath = self.get_subpath(self.bucket.name) if self.bucket else ''
-            if self.bucket and self.bucket_acl is None:
-                self.bucket_acl = self.bucket.get_acl() if self.bucket else None
+            import pdb; pdb.set_trace()
+            self.bucket_acl = self.bucket.get_acl() if self.bucket else None
         self.details_form = BucketDetailsForm(request, formdata=self.request.params or None)
         self.sharing_form = SharingPanelForm(
             request, bucket_object=self.bucket, sharing_acl=self.bucket_acl, formdata=self.request.params or None)
