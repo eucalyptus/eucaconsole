@@ -69,7 +69,7 @@ class CloudWatchAPIMixin(object):
 
     @staticmethod
     def get_cloudwatch_stats(cw_conn=None, period=60, duration=600, metric='CPUUtilization', namespace='AWS/EC2',
-                             statistic='Average', idtype='InstanceId', ids=None, unit=None):
+                             statistic='Average', idtype='InstanceId', ids=None, unit=None, dimensions=None):
         """
         Wrapper for time-series data for statistics of a given metric for one or more resources
 
@@ -98,15 +98,21 @@ class CloudWatchAPIMixin(object):
         :type unit: str
         :param unit: Valid values are Seconds, Kilobytes, Percent, Count, Kilobytes/Second, Count/Second, et. al.
 
+        :type dimensions: dict
+        :param dimensions: dict of dimension/value mapping (e.g. {'AvailabilityZone': 'us-west-2a'})
+
+
         """
         end_time = datetime.datetime.utcnow()
         start_time = end_time - datetime.timedelta(seconds=duration)
         statistics = [statistic]
-
+        base_dimensions = {idtype: ids}
+        if dimensions:
+            base_dimensions.update(dimensions)
         try:
             return cw_conn.get_metric_statistics(
                 period, start_time, end_time, metric, namespace, statistics,
-                dimensions={idtype: ids}, unit=unit
+                dimensions=base_dimensions, unit=unit
             )
         except NotImplementedError:
             # TODO: Remove try/except block when moto has implemented cw_conn.get_metric_statistics
@@ -134,7 +140,9 @@ class CloudWatchAPIView(BaseView, CloudWatchAPIMixin):
         ids = self.request.params.get('ids')
         if not ids:
             raise HTTPBadRequest()
-        ids = ids.split(',')  # Allow ids to be passed as a comma-separated list
+        # Allow ids and zones to be passed as a comma-separated list
+        ids = ids.split(',')
+        zones = self.request.params.get('zones', '').split(',')
 
         period = int(self.request.params.get('period', 300))
         if period % 60 != 0:
@@ -148,34 +156,49 @@ class CloudWatchAPIView(BaseView, CloudWatchAPIMixin):
         namespace = u'AWS/{0}'.format(self.request.params.get('namespace', 'EC2'))
         statistic = self.request.params.get('statistic') or 'Average'
         idtype = self.request.params.get('idtype') or 'InstanceId'
-        tz_offset = int(self.request.params.get('tzoffset', 0))
         unit = self.request.params.get('unit')
         collapse_to_kb_mb_gb = ['NetworkIn', 'NetworkOut', 'DiskReadBytes', 'DiskWriteBytes']
-        json_stats = []
         multiplier = 1
         divider = 1
+        stats_list = []
 
         with boto_error_handler(self.request):
             stats = self.get_cloudwatch_stats(
                 self.cw_conn, period, duration, metric, namespace, statistic, idtype, ids, unit)
 
         if metric in collapse_to_kb_mb_gb:
-            # Collapse to MB when appropriate
-            max_value = max(stat.get(statistic) for stat in stats) if stats else 0
-            if max_value > 10**4:
-                divider = 10**3
-                unit = 'Kilobytes'
-            if max_value > 10**7:
-                divider = 10**6
-                unit = 'Megabytes'
-                if max_value > 10**10:
-                    divider = 10**9
-                    unit = 'Gigabytes'
+            unit, divider = self.collapse_metrics(unit=unit, statistic=statistic, divider=divider, stats=stats)
 
         if metric == 'Latency':
-            multiplier = 1000
-            unit = 'Milliseconds'
+            multiplier, unit = 1000, 'Milliseconds'
 
+        json_stats = self.get_json_stats(stats, statistic, divider, multiplier)
+        stats_line = dict(key=metric, values=json_stats)
+        stats_list.append(stats_line)
+
+        return dict(
+            unit=unit,
+            results=stats_list,
+        )
+
+    @staticmethod
+    def collapse_metrics(unit, statistic, divider=1, stats=None):
+        # Collapse to MB when appropriate
+        max_value = max(stat.get(statistic) for stat in stats) if stats else 0
+        if max_value > 10**4:
+            divider = 10**3
+            unit = 'Kilobytes'
+        if max_value > 10**7:
+            divider = 10**6
+            unit = 'Megabytes'
+            if max_value > 10**10:
+                divider = 10**9
+                unit = 'Gigabytes'
+        return unit, divider
+
+    def get_json_stats(self, stats=None, statistic=None, divider=1, multiplier=1):
+        json_stats = []
+        tz_offset = int(self.request.params.get('tzoffset', 0))
         for stat in stats:
             amount = stat.get(statistic)
             if divider != 1:
@@ -190,12 +213,5 @@ class CloudWatchAPIView(BaseView, CloudWatchAPIMixin):
                 x=time.mktime(dt_object.timetuple()) * 1000,  # Milliseconds since Unix epoch
                 y=amount
             ))
-
         # Sort by timestamp to avoid chart anomalies
-        json_stats = sorted(json_stats, key=itemgetter('x'))
-
-        return dict(
-            unit=unit,
-            results=[dict(key=metric, values=json_stats)],
-        )
-
+        return sorted(json_stats, key=itemgetter('x'))
