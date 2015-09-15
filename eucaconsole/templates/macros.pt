@@ -44,9 +44,9 @@
             </div>
         </div>
         <div class="lp-header">
-            <div class="lp-search">
+            <div class="lp-search" tal:define="prompt layout.searchtext_prompt if len(search_facets) > 2 else layout.searchtext_prompt2">
                 <magic-search template="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.html')}"
-                    strings="{'remove':'${layout.searchtext_remove}', 'cancel':'${layout.searchtext_cancel}', 'prompt':'${layout.searchtext_prompt}', 'text':'${layout.searchtext_text_facet}'}"
+                    strings="{'remove':'${layout.searchtext_remove}', 'cancel':'${layout.searchtext_cancel}', 'prompt':'${prompt}', 'text':'${layout.searchtext_text_facet}'}"
                     facets="${search_facets}" filter-keys="${filter_keys}"></magic-search>
             </div>
             <div class="lp-reload" id="results-count" ng-cloak="cloak" metal:define-slot="results_count">
