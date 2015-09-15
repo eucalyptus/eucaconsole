@@ -33,7 +33,7 @@ class UserSession(object):
 
     def get_page_completely(self, url):
         start = datetime.now()
-        page = self.session.get(url)
+        page = self.session.get(url, verify=False)
         # now find img, link, script tags
         soup = BeautifulSoup(page.text, 'html.parser')
         images = [img['src'] for img in soup.findAll('img') if img.has_attr('src')]
@@ -41,11 +41,11 @@ class UserSession(object):
         links = [link['href'] for link in soup.findAll('link') if link.has_attr('href')]
         # fetch resources
         for i in images:
-            self.session.get(self.url + i)
+            self.session.get(self.url + i, verify=False)
         for s in scripts:
-            self.session.get(self.url + s)
+            self.session.get(self.url + s, verify=False)
         for l in links:
-            self.session.get(self.url + l)
+            self.session.get(self.url + l, verify=False)
         end = datetime.now()
         page.elapsed = end - start
         # print "cache size = "+str(len(self.session.adapters['http://'].cache.data))
