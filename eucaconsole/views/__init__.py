@@ -238,7 +238,10 @@ class BaseView(object):
             acct = ''
         ufshost = self.get_connection().host if self.cloud_type == 'euca' else ''
         try:
-            return self._get_images_cached_(owners, executors, ec2_region, acct, ufshost)
+            if self.cloud_type == 'euca' and asbool(self.request.registry.settings.get('cache.images.disable', False)):
+                return self._get_images_(owners, executors, ec2_region)
+            else:
+                return self._get_images_cached_(owners, executors, ec2_region, acct, ufshost)
         except pylibmc.Error:
             logging.warn('memcached not responding')
             return self._get_images_(owners, executors, ec2_region)
