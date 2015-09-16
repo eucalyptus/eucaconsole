@@ -56,22 +56,4 @@ describe("CreateAccountPage", function() {
             expect(scope.setWatch).toHaveBeenCalled();
         });
     });
-
-    xdescribe("Form Validation", function () {
-
-        describe("Account Name Field Test", function () {
-
-            it("Should be valid when given input within parameters", function (){
-                scope.accountName = "MyAccountName";
-                scope.$digest();
-                expect(scope.CreateAccountForm.$valid).toBe(true);
-            });
-
-            it("Should be invalid when given input resembling account number", function () {
-                scope.accountName = "123456789012";
-                scope.$digest();
-                expect(scope.form.$valid).toBe(false);
-            });
-        });
-    });
 });
