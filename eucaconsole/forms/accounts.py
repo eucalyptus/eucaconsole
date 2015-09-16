@@ -42,7 +42,11 @@ class AccountForm(BaseSecureForm):
     account_name = TextEscapedField(
         id=u'account-name',
         label=_(u'Name'),
-        validators=[validators.InputRequired(message=account_name_error_msg)],
+        validators=[
+            validators.InputRequired(message=account_name_error_msg),
+            validators.Regexp('^[a-z0-9][a-z0-9\.@\-]{1,61}[a-z0-9]$', message=account_name_error_msg),
+            validators.Regexp('[^0-9]{12}', message=account_name_error_msg)
+        ]
     )
 
     def __init__(self, request, account=None, **kwargs):
