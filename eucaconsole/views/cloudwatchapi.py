@@ -42,9 +42,9 @@ from ..views import BaseView, boto_error_handler
 
 class CloudWatchAPIMixin(object):
     @staticmethod
-    def adjust_granularity(duration):
+    def modify_granularity(duration):
         """
-        Adjust granularity based on duration to avoid exceeding 1440 data points
+        Modify granularity based on duration to avoid exceeding 1440 data points
 
         :type duration: integer
         :param duration:  Length, in seconds, spanning the returned datapoints.
@@ -64,8 +64,22 @@ class CloudWatchAPIMixin(object):
         for item in ranges:
             if (item.get('min') * hour) <= duration < (item.get('max') * hour):
                 return item.get('period')
-
         return 300  # Default to 5 minutes
+
+    @staticmethod
+    def collapse_metrics(unit, statistic, divider=1, stats=None):
+        # Collapse to MB when appropriate
+        max_value = max(stat.get(statistic) for stat in stats) if stats else 0
+        if max_value > 10**4:
+            divider = 10**3
+            unit = 'Kilobytes'
+        if max_value > 10**7:
+            divider = 10**6
+            unit = 'Megabytes'
+            if max_value > 10**10:
+                divider = 10**9
+                unit = 'Gigabytes'
+        return unit, divider
 
     @staticmethod
     def get_cloudwatch_stats(cw_conn=None, period=60, duration=600, metric='CPUUtilization', namespace='AWS/EC2',
@@ -126,6 +140,16 @@ class CloudWatchAPIView(BaseView, CloudWatchAPIMixin):
         super(CloudWatchAPIView, self).__init__(request)
         self.request = request
         self.cw_conn = self.get_connection(conn_type='cloudwatch')
+        self.metric = self.request.params.get('metric') or 'CPUUtilization'
+        self.namespace = u'AWS/{0}'.format(self.request.params.get('namespace', 'EC2'))
+        self.statistic = self.request.params.get('statistic') or 'Average'
+        self.zones = self.request.params.get('zones', '').split(',')
+        self.idtype = self.request.params.get('idtype') or 'InstanceId'
+        self.ids = self.request.params.get('ids')
+        self.unit = self.request.params.get('unit')
+        self.duration = int(self.request.params.get('duration', 3600))
+        self.tz_offset = int(self.request.params.get('tzoffset', 0))
+        self.collapse_to_kb_mb_gb = ['NetworkIn', 'NetworkOut', 'DiskReadBytes', 'DiskWriteBytes']
 
     @view_config(route_name='cloudwatch_api', renderer='json', request_method='GET')
     def cloudwatch_api(self):
@@ -137,43 +161,36 @@ class CloudWatchAPIView(BaseView, CloudWatchAPIMixin):
         /cloudwatch/api?ids=i-foo&idtype=InstanceId&metric=CPUUtilization&duration=3600&unit=Percent&statistic=Average
 
         """
-        ids = self.request.params.get('ids')
-        if not ids:
+        if not self.ids:
             raise HTTPBadRequest()
         # Allow ids and zones to be passed as a comma-separated list
-        ids = ids.split(',')
-        zones = self.request.params.get('zones', '').split(',')
+        ids = self.ids.split(',')
 
         period = int(self.request.params.get('period', 300))
         if period % 60 != 0:
             raise HTTPBadRequest()  # Period (granularity) must be a multiple of 60 seconds
 
-        duration = int(self.request.params.get('duration', 3600))
         adjust_granularity = int(self.request.params.get('adjustGranularity', 1))
         if adjust_granularity:
-            period = self.adjust_granularity(duration)
-        metric = self.request.params.get('metric') or 'CPUUtilization'
-        namespace = u'AWS/{0}'.format(self.request.params.get('namespace', 'EC2'))
-        statistic = self.request.params.get('statistic') or 'Average'
-        idtype = self.request.params.get('idtype') or 'InstanceId'
-        unit = self.request.params.get('unit')
-        collapse_to_kb_mb_gb = ['NetworkIn', 'NetworkOut', 'DiskReadBytes', 'DiskWriteBytes']
+            period = self.modify_granularity(self.duration)
         multiplier = 1
         divider = 1
         stats_list = []
+        unit = self.unit
 
         with boto_error_handler(self.request):
             stats = self.get_cloudwatch_stats(
-                self.cw_conn, period, duration, metric, namespace, statistic, idtype, ids, unit)
+                self.cw_conn, period, self.duration, self.metric, self.namespace,
+                self.statistic, self.idtype, ids, self.unit)
 
-        if metric in collapse_to_kb_mb_gb:
-            unit, divider = self.collapse_metrics(unit=unit, statistic=statistic, divider=divider, stats=stats)
+        if self.metric in self.collapse_to_kb_mb_gb:
+            unit, divider = self.collapse_metrics(self.unit, self.statistic, divider, stats)
 
-        if metric == 'Latency':
+        if self.metric == 'Latency':
             multiplier, unit = 1000, 'Milliseconds'
 
-        json_stats = self.get_json_stats(stats, statistic, divider, multiplier)
-        stats_line = dict(key=metric, values=json_stats)
+        json_stats = self.get_json_stats(self.statistic, stats, divider, multiplier)
+        stats_line = dict(key=self.metric, values=json_stats)
         stats_list.append(stats_line)
 
         return dict(
@@ -181,24 +198,8 @@ class CloudWatchAPIView(BaseView, CloudWatchAPIMixin):
             results=stats_list,
         )
 
-    @staticmethod
-    def collapse_metrics(unit, statistic, divider=1, stats=None):
-        # Collapse to MB when appropriate
-        max_value = max(stat.get(statistic) for stat in stats) if stats else 0
-        if max_value > 10**4:
-            divider = 10**3
-            unit = 'Kilobytes'
-        if max_value > 10**7:
-            divider = 10**6
-            unit = 'Megabytes'
-            if max_value > 10**10:
-                divider = 10**9
-                unit = 'Gigabytes'
-        return unit, divider
-
-    def get_json_stats(self, stats=None, statistic=None, divider=1, multiplier=1):
+    def get_json_stats(self, statistic=None, stats=None, divider=1, multiplier=1):
         json_stats = []
-        tz_offset = int(self.request.params.get('tzoffset', 0))
         for stat in stats:
             amount = stat.get(statistic)
             if divider != 1:
@@ -206,8 +207,8 @@ class CloudWatchAPIView(BaseView, CloudWatchAPIMixin):
             if multiplier != 1:
                 amount *= multiplier
             dt_object = stat.get('Timestamp')
-            if tz_offset:  # Convert to local time based on client offset
-                dt_object = dt_object - datetime.timedelta(minutes=tz_offset)
+            if self.tz_offset:  # Convert to local time based on client offset
+                dt_object = dt_object - datetime.timedelta(minutes=self.tz_offset)
             json_stats.append(dict(
                 # Note: time.mktime must be inline here to avoid chart tick formatting issues
                 x=time.mktime(dt_object.timetuple()) * 1000,  # Milliseconds since Unix epoch

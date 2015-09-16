@@ -50,7 +50,7 @@ class CloudWatchAPITestCase(BaseTestCase):
             (7 * day, 6 * hour),
             (14 * day, 6 * hour),
         ]
-        adjust_granularity = CloudWatchAPIMixin.adjust_granularity
+        adjust_granularity = CloudWatchAPIMixin.modify_granularity
         for duration, expected_granularity in test_durations:
             granularity = adjust_granularity(duration)
             self.assertEqual(granularity, expected_granularity)

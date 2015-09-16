@@ -192,7 +192,7 @@ class ELBsJsonView(LandingPageView, CloudWatchAPIMixin):
 
     def get_average_latency(self, elb=None, duration=21600):
         """Get average latency for a given duration in milliseconds"""
-        period = self.adjust_granularity(duration)
+        period = self.modify_granularity(duration)
         stats = self.get_cloudwatch_stats(
             cw_conn=self.cw_conn, period=period, duration=duration, metric='Latency',
             namespace='AWS/ELB', idtype='LoadBalancerName', ids=[elb.name])
