@@ -56,7 +56,8 @@ class CloudWatchAPIMixin(object):
         hour = 3600
         ranges = [  # min/max values are in hours
             dict(min=0, max=6, period=300),  # Set granularity to 5 minutes if duration < 6 hours
-            dict(min=6, max=24, period=600),
+            dict(min=6, max=12, period=600),
+            dict(min=12, max=24, period=1200),
             dict(min=24, max=3 * 24, period=1 * hour),
             dict(min=3 * 24, max=7 * 24, period=3 * hour),
             dict(min=7 * 24, max=30 * 24, period=6 * hour),
@@ -163,21 +164,31 @@ class CloudWatchAPIView(BaseView, CloudWatchAPIMixin):
         """
         if not self.ids:
             raise HTTPBadRequest()
-        # Allow ids and zones to be passed as a comma-separated list
-        ids = self.ids.split(',')
 
+        stats_list = []
+
+        unit, stats_series = self.get_stats_series()
+        stats_list.append(stats_series)
+
+        return dict(
+            unit=unit,
+            results=stats_list,
+        )
+
+    def get_stats_series(self):
+        multiplier = 1
+        divider = 1
+        unit = self.unit
         period = int(self.request.params.get('period', 300))
         if period % 60 != 0:
             raise HTTPBadRequest()  # Period (granularity) must be a multiple of 60 seconds
 
+        # Allow ids to be passed as a comma-separated list
+        ids = self.ids.split(',')
+
         adjust_granularity = int(self.request.params.get('adjustGranularity', 1))
         if adjust_granularity:
             period = self.modify_granularity(self.duration)
-        multiplier = 1
-        divider = 1
-        stats_list = []
-        unit = self.unit
-
         with boto_error_handler(self.request):
             stats = self.get_cloudwatch_stats(
                 self.cw_conn, period, self.duration, self.metric, self.namespace,
@@ -190,13 +201,8 @@ class CloudWatchAPIView(BaseView, CloudWatchAPIMixin):
             multiplier, unit = 1000, 'Milliseconds'
 
         json_stats = self.get_json_stats(self.statistic, stats, divider, multiplier)
-        stats_line = dict(key=self.metric, values=json_stats)
-        stats_list.append(stats_line)
-
-        return dict(
-            unit=unit,
-            results=stats_list,
-        )
+        series = dict(key=self.metric, values=json_stats)
+        return unit, series
 
     def get_json_stats(self, statistic=None, stats=None, divider=1, multiplier=1):
         json_stats = []

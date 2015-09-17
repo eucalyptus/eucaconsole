@@ -44,7 +44,7 @@ class CloudWatchAPITestCase(BaseTestCase):
             (3 * hour, 300),
             (6 * hour, 600),
             (9 * hour, 600),
-            (12 * hour, 600),
+            (12 * hour, 1200),
             (1 * day, 1 * hour),
             (3 * day, 3 * hour),
             (7 * day, 6 * hour),
