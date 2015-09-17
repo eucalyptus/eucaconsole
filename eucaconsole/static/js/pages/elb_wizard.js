@@ -449,9 +449,6 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
         }
         // Timeout is needed for chosen to react after Angular updates the options
         $timeout(function(){
-            if ($scope.vpcSubnets.length === 0) {
-                $scope.vpcSubnets.push(Object.keys($scope.vpcSubnetChoices)[0]);
-            }
             $('#vpc_subnet').trigger('chosen:updated');
         }, 500);
     };
