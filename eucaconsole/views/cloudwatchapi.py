@@ -169,7 +169,7 @@ class CloudWatchAPIView(BaseView, CloudWatchAPIMixin):
         stats_list = []
         unit = self.unit
 
-        if self.zones:
+        if self.zones and len(self.zones.split(',')) > 1:
             for zone in self.zones.split(','):
                 dimensions = {'AvailabilityZone': zone}
                 unit, stats_series = self.get_stats_series(dimensions)
