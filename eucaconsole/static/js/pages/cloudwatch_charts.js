@@ -40,11 +40,15 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
         'HTTPCode_ELB_4XX', 'HTTPCode_ELB_5XX', 'HTTPCode_Backend_2XX', 'HTTPCode_Backend_3XX',
         'HTTPCode_Backend_4XX', 'HTTPCode_Backend_5XX'
     ];
+    vm.specifyZonesMetrics = [  // Pass availability zones for certain metrics
+        'HealthyHostCount', 'UnHealthyHostCount'
+    ];
 
     function initController(optionsJson) {
         var options = JSON.parse(eucaUnescapeJson(optionsJson));
         vm.metricTitleMapping = options.metric_title_mapping;
         vm.chartsList = options.charts_list;
+        vm.availabilityZones = options.availability_zones || [];
         vm.originalDurationGranularitiesMapping = options.duration_granularities_mapping;
         vm.durationGranularitiesMapping = setDurationGranularitiesOptions(options.duration_granularities_mapping);
         vm.granularityChoices = vm.durationGranularitiesMapping[vm.largeChartDuration];
@@ -143,6 +147,9 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
             'statistic': scope.statistic
         };
         params.tzoffset = (new Date()).getTimezoneOffset();
+        if (parentCtrl.specifyZonesMetrics.indexOf(scope.metric) !== -1) {
+            params.zones = parentCtrl.availabilityZones.join(',');
+        }
         $http({
             'url': cloudwatchApiUrl,
             'method': 'GET',

@@ -144,7 +144,8 @@ class CloudWatchAPIView(BaseView, CloudWatchAPIMixin):
         self.metric = self.request.params.get('metric') or 'CPUUtilization'
         self.namespace = u'AWS/{0}'.format(self.request.params.get('namespace', 'EC2'))
         self.statistic = self.request.params.get('statistic') or 'Average'
-        self.zones = self.request.params.get('zones', '').split(',')
+        self.zones = self.request.params.get('zones')
+        self.split_zone_metrics = ['HealthyHostCount', 'UnHealthyHostCount']
         self.idtype = self.request.params.get('idtype') or 'InstanceId'
         self.ids = self.request.params.get('ids')
         self.unit = self.request.params.get('unit')
@@ -166,16 +167,24 @@ class CloudWatchAPIView(BaseView, CloudWatchAPIMixin):
             raise HTTPBadRequest()
 
         stats_list = []
+        unit = self.unit
 
-        unit, stats_series = self.get_stats_series()
-        stats_list.append(stats_series)
+        if self.zones:
+            for zone in self.zones.split(','):
+                dimensions = {'AvailabilityZone': zone}
+                unit, stats_series = self.get_stats_series(dimensions)
+                if stats_series.get('values'):
+                    stats_list.append(stats_series)
+        else:
+            unit, stats_series = self.get_stats_series()
+            stats_list.append(stats_series)
 
         return dict(
             unit=unit,
             results=stats_list,
         )
 
-    def get_stats_series(self):
+    def get_stats_series(self, dimensions=None):
         multiplier = 1
         divider = 1
         unit = self.unit
@@ -192,7 +201,7 @@ class CloudWatchAPIView(BaseView, CloudWatchAPIMixin):
         with boto_error_handler(self.request):
             stats = self.get_cloudwatch_stats(
                 self.cw_conn, period, self.duration, self.metric, self.namespace,
-                self.statistic, self.idtype, ids, self.unit)
+                self.statistic, self.idtype, ids, self.unit, dimensions)
 
         if self.metric in self.collapse_to_kb_mb_gb:
             unit, divider = self.collapse_metrics(self.unit, self.statistic, divider, stats)
@@ -201,7 +210,10 @@ class CloudWatchAPIView(BaseView, CloudWatchAPIMixin):
             multiplier, unit = 1000, 'Milliseconds'
 
         json_stats = self.get_json_stats(self.statistic, stats, divider, multiplier)
-        series = dict(key=self.metric, values=json_stats)
+        key = self.metric
+        if dimensions and dimensions.values():
+            key = dimensions.values()[0]
+        series = dict(key=key, values=json_stats)
         return unit, series
 
     def get_json_stats(self, statistic=None, stats=None, divider=1, multiplier=1):
