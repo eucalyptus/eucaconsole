@@ -40,6 +40,13 @@ from pyramid.view import view_config
 from ..views import BaseView, boto_error_handler
 
 
+CHART_COLORS = {
+    0: '#1f77b4',
+    1: 'green',
+    2: 'darkorange',
+}
+
+
 class CloudWatchAPIMixin(object):
     @staticmethod
     def modify_granularity(duration):
@@ -170,10 +177,13 @@ class CloudWatchAPIView(BaseView, CloudWatchAPIMixin):
         unit = self.unit
 
         if self.zones and len(self.zones.split(',')) > 1:
-            for zone in self.zones.split(','):
+            for idx, zone in enumerate(self.zones.split(',')):
                 dimensions = {'AvailabilityZone': zone}
                 unit, stats_series = self.get_stats_series(dimensions)
                 if stats_series.get('values'):
+                    if CHART_COLORS.get(idx):
+                        # Use custom line colors
+                        stats_series['color'] = CHART_COLORS.get(idx)
                     stats_list.append(stats_series)
         else:
             unit, stats_series = self.get_stats_series()
