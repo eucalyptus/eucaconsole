@@ -354,8 +354,14 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
             }
         } else if (step === 2) {
         } else if (step === 3) {
-            if ($scope.availabilityZones.length === 0 && $scope.vpcSubnets.length === 0) {
-                $scope.isNotValid = true;
+            if ($scope.vpcNetwork !== 'None') { 
+                if ($scope.vpcSubnets.length === 0) {
+                    $scope.isNotValid = true;
+                }
+            } else {
+                if ($scope.availabilityZones.length === 0 && $scope.vpcSubnets.length === 0) {
+                    $scope.isNotValid = true;
+                }
             }
         } else if (step === 4) {
             // elb name check is needed for the final tab validation
@@ -443,6 +449,9 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
         }
         // Timeout is needed for chosen to react after Angular updates the options
         $timeout(function(){
+            if ($scope.vpcSubnets.length === 0) {
+                $scope.vpcSubnets.push(Object.keys($scope.vpcSubnetChoices)[0]);
+            }
             $('#vpc_subnet').trigger('chosen:updated');
         }, 500);
     };
