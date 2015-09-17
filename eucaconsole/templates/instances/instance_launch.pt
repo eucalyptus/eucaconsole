@@ -310,6 +310,11 @@
                             <i class="fi-check"></i> Uses private addressing
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="columns value" ng-show="bdMapping">
+                            <i class="fi-check"></i> Block device mappings configured
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
