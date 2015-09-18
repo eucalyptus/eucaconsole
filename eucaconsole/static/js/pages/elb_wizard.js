@@ -209,15 +209,15 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
             $scope.updateSecurityGroupChoices();
         }, true);
         $scope.$watch('availabilityZones', function () {
-            $scope.checkRequiredInput(3);
             if ($scope.vpcNetwork === 'None') { 
+                $scope.checkRequiredInput(3);
                 $scope.$broadcast('eventWizardUpdateAvailabilityZones', $scope.availabilityZones);
             }
         }, true);
         $scope.$watch('vpcSubnets', function () {
             $scope.updateVPCSubnetNames();
-            $scope.checkRequiredInput(3);
             if ($scope.vpcNetwork !== 'None') { 
+                $scope.checkRequiredInput(3);
                 $scope.$broadcast('eventWizardUpdateVPCSubnets', $scope.vpcSubnets);
             }
         }, true);
