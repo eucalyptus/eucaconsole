@@ -351,15 +351,12 @@ class CreateELBForm(ELBHealthChecksForm, ELBAccessLogsFormMixin):
     vpc_subnet = wtforms.SelectMultipleField(
         label=_(u'VPC subnets'),
     )
-    securitygroup_error_msg = _(u'Security group is required')
     securitygroup = wtforms.SelectMultipleField(
         label=_(u'Security groups')
     )
     securitygroup_help_text = _(u'If you do not select a security group, the default group will be used.')
-    zone_error_msg = _(u'Availability zone is required')
     zone = wtforms.SelectMultipleField(
-        label=_(u'Availability zones'),
-        validators=[validators.InputRequired(message=zone_error_msg)],
+        label=_(u'Availability zones')
     )
     cross_zone_enabled_help_text = _(u'Distribute traffic evenly across all instances in all availability zones')
     cross_zone_enabled = wtforms.BooleanField(label=_(u'Enable cross-zone load balancing'))
