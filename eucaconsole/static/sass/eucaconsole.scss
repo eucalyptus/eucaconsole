@@ -603,6 +603,19 @@ textarea.policy-area {
     }
     .delete-on-terminate {
         text-align: center;
+        span.hide-for-small {
+            display: inline !important;
+        }
+    }
+}
+
+@media screen and (max-width: 40.063rem) {
+    #bdmapping-editor {
+        .delete-on-terminate {
+            span.hide-for-small {
+                display: none !important;
+            }
+        }
     }
 }
 

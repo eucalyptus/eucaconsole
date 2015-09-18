@@ -45,7 +45,7 @@
                                    ng-disabled="disableDOT"/>
                         </span>
                     </td>
-                    <td tal:condition="read_only">
+                    <td class="delete-on-terminate" tal:condition="read_only">
                         <span ng-if="!isEphemeral(val)"> {{ val.delete_on_termination }} </span>
                     </td>
                     <td tal:condition="not read_only">

@@ -1743,7 +1743,9 @@ textarea.policy-area { width: 100%; min-height: 30rem; font-family: Courier, "co
 #bdmapping-editor #new-blockdevice-entry .chosen-single { line-height: 34px; min-height: 37px; }
 #bdmapping-editor input.number { width: 2rem; }
 #bdmapping-editor .delete-on-terminate { text-align: center; }
+#bdmapping-editor .delete-on-terminate span.hide-for-small { display: inline !important; }
 
+@media screen and (max-width: 40.063rem) { #bdmapping-editor .delete-on-terminate span.hide-for-small { display: none !important; } }
 /* ----------------------------------------- Help content
 ----------------------------------------- */
 .right-off-canvas-menu { background-color: white; padding: 10px; }
