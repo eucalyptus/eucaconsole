@@ -1687,9 +1687,12 @@ a.circle { color: black; display: inline-block; }
 #notifications .alert-box.success { border: 2px solid #008424; }
 #notifications .alert-box.success .icon { background-color: #008424; }
 #notifications .alert-box.success .icon span:before { content: "✓"; }
-#notifications .alert-box.warning { border: 2px solid #007dba; }
-#notifications .alert-box.warning .icon { background-color: #007dba; }
-#notifications .alert-box.warning .icon span:before { content: "ⓘ"; }
+#notifications .alert-box.warning { border: 2px solid #e6a818; }
+#notifications .alert-box.warning .icon { background-color: #e6a818; }
+#notifications .alert-box.warning .icon span:before { content: "⚠"; }
+#notifications .alert-box.info { border: 2px solid #007dba; }
+#notifications .alert-box.info .icon { background-color: #007dba; }
+#notifications .alert-box.info .icon span:before { content: "ⓘ"; }
 #notifications .alert-box.alert { border: 2px solid darkred; }
 #notifications .alert-box.alert .icon { background-color: darkred; }
 #notifications .alert-box.alert .icon span:before { content: "!"; }

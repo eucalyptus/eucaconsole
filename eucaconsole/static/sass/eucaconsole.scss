@@ -410,6 +410,15 @@ a.circle {
             }
         }
         &.warning {
+            border: 2px solid $hp-gold;
+            .icon {
+                background-color: $hp-gold;
+                span:before {
+                    content: "\26A0"
+                }
+            }
+        }
+        &.info{
             border: 2px solid $hp-accessible-blue;
             .icon {
                 background-color: $hp-accessible-blue;
