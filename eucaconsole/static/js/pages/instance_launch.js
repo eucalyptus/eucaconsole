@@ -72,6 +72,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             $scope.preventFormSubmitOnEnter();
             $scope.initChosenSelectors();
             $scope.watchTags();
+            $scope.watchBdMapping();
             $scope.focusEnterImageID();
             $scope.setWatcher();
         };
@@ -160,7 +161,6 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         };
         $scope.watchBdMapping = function () {
             $scope.$on('bdMappingChange', function (evt) {
-                console.log(evt);
                 $scope.bdMapping = evt.targetScope.bdMapping;
             })
         }

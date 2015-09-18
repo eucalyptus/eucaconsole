@@ -4,7 +4,7 @@
  *
  */
 angular.module('BlockDeviceMappingEditor', ['EucaConsoleUtils'])
-    .controller('BlockDeviceMappingEditorCtrl', function ($scope, $rootScope, $http, $timeout, eucaUnescapeJson) {
+    .controller('BlockDeviceMappingEditorCtrl', function ($scope, $http, $timeout, eucaUnescapeJson) {
         $scope.bdmTextarea = $('#bdmapping');
         $scope.bdMapping = undefined;
         $scope.ephemeralCount = 0;
@@ -45,7 +45,7 @@ angular.module('BlockDeviceMappingEditor', ['EucaConsoleUtils'])
                 $scope.checkValidInput();
             });
             $scope.$watch('bdMapping', function () {
-                $rootScope.$broadcast('bdMappingChange');
+                $scope.$emit('bdMappingChange');
             });
         };
         $scope.checkValidInput = function () {
