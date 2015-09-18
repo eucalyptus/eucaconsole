@@ -209,15 +209,15 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
             $scope.updateSecurityGroupChoices();
         }, true);
         $scope.$watch('availabilityZones', function () {
-            $scope.checkRequiredInput(3);
             if ($scope.vpcNetwork === 'None') { 
+                $scope.checkRequiredInput(3);
                 $scope.$broadcast('eventWizardUpdateAvailabilityZones', $scope.availabilityZones);
             }
         }, true);
         $scope.$watch('vpcSubnets', function () {
             $scope.updateVPCSubnetNames();
-            $scope.checkRequiredInput(3);
             if ($scope.vpcNetwork !== 'None') { 
+                $scope.checkRequiredInput(3);
                 $scope.$broadcast('eventWizardUpdateVPCSubnets', $scope.vpcSubnets);
             }
         }, true);
@@ -353,14 +353,15 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
                 $scope.isNotValid = true;
             }
         } else if (step === 2) {
-            if ($scope.vpcNetwork !== 'None') {
-                if ($scope.securityGroups.length === 0) {
-                    $scope.isNotValid = true;
-                } 
-            }
         } else if (step === 3) {
-            if ($scope.availabilityZones.length === 0 && $scope.vpcSubnets.length === 0) {
-                $scope.isNotValid = true;
+            if ($scope.vpcNetwork !== 'None') { 
+                if ($scope.vpcSubnets.length === 0) {
+                    $scope.isNotValid = true;
+                }
+            } else {
+                if ($scope.availabilityZones.length === 0 && $scope.vpcSubnets.length === 0) {
+                    $scope.isNotValid = true;
+                }
             }
         } else if (step === 4) {
             // elb name check is needed for the final tab validation
@@ -420,6 +421,9 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
         });
         // Timeout is needed for chosen to react after Angular updates the options
         $timeout(function(){
+            if ($scope.availabilityZones.length === 0) {
+                $scope.availabilityZones.push(Object.keys($scope.availabilityZoneChoices)[0]);
+            }
             $('#zone').trigger('chosen:updated');
         }, 500);
     };

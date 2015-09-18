@@ -592,11 +592,30 @@ textarea.policy-area {
             text-align: left;
         }
     }
+    #new-blockdevice-entry {
+        .chosen-single {
+            line-height: 34px;
+            min-height: 37px;
+        }
+    }
     input.number {
         width: 2rem;
     }
     .delete-on-terminate {
         text-align: center;
+        span.hide-for-small {
+            display: inline !important;
+        }
+    }
+}
+
+@media screen and (max-width: 40.063rem) {
+    #bdmapping-editor {
+        .delete-on-terminate {
+            span.hide-for-small {
+                display: none !important;
+            }
+        }
     }
 }
 
@@ -872,10 +891,12 @@ textarea.hidden {
         .chosen-choices  {
             background: none;
             background-color: $hp-gray-5 !important;
+            border: 1px solid $euca-lightgrey;
             li {
                 &.search-field  {
                     input[type=text] {
-                        height: auto;
+                        height: 34px;
+                        padding-left: 10px;
                     }
                     .default {
                         color: #999;
@@ -889,7 +910,10 @@ textarea.hidden {
                     padding: 4px 20px 4px 8px;
                     color: #555;
                     .search-choice-close {
-                        top: 5px;
+                        top: 8px;
+                    }
+                    span {
+                        line-height: 20px;
                     }
                 }
             }

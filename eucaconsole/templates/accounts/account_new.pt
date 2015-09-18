@@ -10,7 +10,7 @@
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap"
-         ng-app="AccountPage" ng-controller="AccountPageCtrl" ng-init="initController(
+         ng-app="CreateAccountPage" ng-controller="CreateAccountPageCtrl" ng-init="initController(
                                     '${request.route_path('account_create')}',
                                     '${request.route_path('account_view', name='_name_')}',
                                     '${request.route_path('file_download')}')">
@@ -32,9 +32,9 @@
         <div class="large-12 columns">
             <div class="panel">
                 <!--! TODO: Move account name error_msg to view and mark for i18n -->
-                <div tal:define="html_attrs {'pattern': '^[a-z0-9]{1}[a-z0-9\.\@\-]{1,61}[a-z0-9]{1}$',
-                         'error_msg': account_name_validation_error_msg};">
-                    <form id="account-new-form" ng-submit="submit($event)" data-abide="abide">
+                <div tal:define="html_attrs {'account-alias': 'true', 'error_msg': account_name_validation_error_msg, 'data-abide-validator': 'accountAlias',
+                        'pattern': '^([a-z0-9][a-z0-9\.@\-]{1,61}[a-z0-9]\|[0-9]{12})$'};">
+                    <form id="account-new-form" name="account-new-form" ng-submit="submit($event)" data-abide="abide">
                         ${structure:account_form['csrf_token']}
                         <div class="section columns">
                             <div class="">

@@ -161,7 +161,11 @@ class AccountView(BaseView):
         self.delete_form = DeleteAccountForm(self.request, formdata=self.request.params)
         self.quotas_form = QuotasForm(self.request, account=self.account, conn=self.conn)
         self.account_name_validation_error_msg = _(
-            u"Account names must be between 3 and 63 characters long, and may contain lower case letters, numbers, \'.\'. \'@\' and \'-\', and cannot contain spaces.")
+            u'''
+            Account names must be between 3 and 63 characters long, and may contain lower case
+            letters, numbers, '.', '@' and '-', and cannot contain spaces. Account names must not
+            consist of exactly 12 digits.
+            ''')
         self.render_dict = dict(
             account=self.account,
             account_route_id=self.account_route_id,

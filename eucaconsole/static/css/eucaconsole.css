@@ -1740,9 +1740,12 @@ textarea.policy-area { width: 100%; min-height: 30rem; font-family: Courier, "co
 #bdmapping-editor th { padding-left: 9px; }
 #bdmapping-editor .storage-label { text-align: left; }
 #bdmapping-editor #new-blockdevice-entry label { text-align: left; }
+#bdmapping-editor #new-blockdevice-entry .chosen-single { line-height: 34px; min-height: 37px; }
 #bdmapping-editor input.number { width: 2rem; }
 #bdmapping-editor .delete-on-terminate { text-align: center; }
+#bdmapping-editor .delete-on-terminate span.hide-for-small { display: inline !important; }
 
+@media screen and (max-width: 40.063rem) { #bdmapping-editor .delete-on-terminate span.hide-for-small { display: none !important; } }
 /* ----------------------------------------- Help content
 ----------------------------------------- */
 .right-off-canvas-menu { background-color: white; padding: 10px; }
@@ -1823,11 +1826,12 @@ textarea.hidden.debug { display: block; }
 /* ----------------------------------------- Chosen widget
 ----------------------------------------- */
 .chosen-container.chosen-container-multi { background: none; background-color: #f2f2f2 !important; }
-.chosen-container.chosen-container-multi .chosen-choices { background: none; background-color: #f2f2f2 !important; }
-.chosen-container.chosen-container-multi .chosen-choices li.search-field input[type=text] { height: auto; }
+.chosen-container.chosen-container-multi .chosen-choices { background: none; background-color: #f2f2f2 !important; border: 1px solid #ccc; }
+.chosen-container.chosen-container-multi .chosen-choices li.search-field input[type=text] { height: 34px; padding-left: 10px; }
 .chosen-container.chosen-container-multi .chosen-choices li.search-field .default { color: #999; }
 .chosen-container.chosen-container-multi .chosen-choices li.search-choice { background-image: none; background-color: #d1d3d4; border: none; font-size: 0.9rem; padding: 4px 20px 4px 8px; color: #555; }
-.chosen-container.chosen-container-multi .chosen-choices li.search-choice .search-choice-close { top: 5px; }
+.chosen-container.chosen-container-multi .chosen-choices li.search-choice .search-choice-close { top: 8px; }
+.chosen-container.chosen-container-multi .chosen-choices li.search-choice span { line-height: 20px; }
 .chosen-container.chosen-container-single .chosen-single { background-image: none; background-color: #f2f2f2 !important; border-radius: 0; height: 2rem; line-height: 2rem; font-size: 0.875rem; }
 .chosen-container.chosen-container-single .chosen-single b { position: relative; top: 4px; }
 .chosen-container .chosen-drop .chosen-results { font-size: 0.875rem; }
