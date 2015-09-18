@@ -42,8 +42,8 @@ from ..views import BaseView, boto_error_handler
 
 CHART_COLORS = {
     0: '#1f77b4',
-    1: 'green',
-    2: 'darkorange',
+    1: '#822980',
+    2: '#e6a818',
 }
 
 
