@@ -171,13 +171,15 @@ class AttachVolumeDeviceEucalyptusTestCase(BaseFormTestCase):
     def test_initial_attach_device_on_eucalyptus(self):
         instance = Mock()
         instance.block_device_mapping = {}
-        device = self.form_class.suggest_next_device_name(self.request, instance)
+        cloud_type = self.request.session.get('cloud_type')
+        device = self.form_class.suggest_next_device_name(cloud_type, instance.block_device_mapping)
         self.assertEqual(device, '/dev/vdc')
 
     def test_next_attach_device_on_eucalyptus(self):
         instance = Mock()
         instance.block_device_mapping = {'/dev/vdc': 'foo'}
-        device = self.form_class.suggest_next_device_name(self.request, instance)
+        cloud_type = self.request.session.get('cloud_type')
+        device = self.form_class.suggest_next_device_name(cloud_type, instance.block_device_mapping)
         self.assertEqual(device, '/dev/vdd')
 
 
@@ -192,13 +194,15 @@ class AttachVolumeDeviceAWSTestCase(BaseFormTestCase):
     def test_initial_attach_device_on_aws(self):
         instance = Mock()
         instance.block_device_mapping = {}
-        device = self.form_class.suggest_next_device_name(self.request, instance)
+        cloud_type = self.request.session.get('cloud_type')
+        device = self.form_class.suggest_next_device_name(cloud_type, instance.block_device_mapping)
         self.assertEqual(device, '/dev/sdf')
 
     def test_next_attach_device_on_aws(self):
         instance = Mock()
         instance.block_device_mapping = {'/dev/sdf': 'foo'}
-        device = self.form_class.suggest_next_device_name(self.request, instance)
+        cloud_type = self.request.session.get('cloud_type')
+        device = self.form_class.suggest_next_device_name(cloud_type, instance.block_device_mapping)
         self.assertEqual(device, '/dev/sdg')
 
 
