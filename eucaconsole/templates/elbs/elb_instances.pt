@@ -101,7 +101,7 @@
                                     <span i18n:translate="">All healthy</span>
                                 </div>
                                 <div class="footer status unhealthy" ng-show="zone.unhealthyInstanceCount > 0">
-                                    {{ zone.unhealthyInstanceCount }} <span i18n:translate="">unhealthy</span>
+                                    {{ zone.unhealthyInstanceCount }} <span i18n:translate="">out of service</span>
                                 </div>
                             </div>
                         </div>
@@ -175,7 +175,7 @@
                                     <span i18n:translate="">All healthy</span>
                                 </div>
                                 <div class="footer status unhealthy" ng-show="subnet.unhealthyInstanceCount > 0">
-                                    {{ subnet.unhealthyInstanceCount }} <span i18n:translate="">unhealthy</span>
+                                    {{ subnet.unhealthyInstanceCount }} <span i18n:translate="">out of service</span>
                                 </div>
                             </div>
                         </div>
