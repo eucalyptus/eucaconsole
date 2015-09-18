@@ -410,13 +410,11 @@ a.circle {
             }
         }
         &.warning {
-            color: #333;
-            background-color: lightyellow;
-            border: 2px solid gray;
+            border: 2px solid $hp-accessible-blue;
             .icon {
-                background-color: lightyellow;
+                background-color: $hp-accessible-blue;
                 span:before {
-                    content: "!"
+                    content: "\24D8"
                 }
             }
         }

@@ -26,6 +26,9 @@ var Notify = (function() {
         failure: function(message) {
             _displayNotification(message, 'alert');
         },
+        warn: function (message) {
+            _displayNotification(message, 'warning');
+        },
         clear: function() {
             $("#notifications").text("");
         }
