@@ -162,8 +162,8 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.watchBdMapping = function () {
             $scope.$on('bdMappingChange', function (evt) {
                 $scope.bdMapping = evt.targetScope.bdMapping;
-            })
-        }
+            });
+        };
         $scope.checkRequiredInput = function () {
             if( $scope.currentStepIndex == 1 ){ 
                 if( $scope.isNotValid === false && $scope.imageID.length < 12 ){
