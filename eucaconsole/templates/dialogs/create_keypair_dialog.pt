@@ -14,7 +14,7 @@
             <hr />
             <button type="submit" class="button expand" id="create-keypair-btn"
                     i18n:translate="" ng-disabled="isLoadingKeyPair">
-                Create Key Pair
+                Create and Download
             </button>
         </form>
         <a href="#" id="create_keypair_close_link" class="close-reveal-modal">&#215;</a>
