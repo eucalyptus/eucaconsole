@@ -43,7 +43,7 @@ from wtforms.widgets import html_params, HTMLString, Select
 
 from boto.exception import BotoServerError
 
-from ..caches import extra_long_term
+from ..caches import extra_long_term, default_term
 from ..caches import invalidate_cache
 from ..constants.elbs import ELB_PREDEFINED_SECURITY_POLICY_NAME_PREFIX
 from ..constants.instances import AWS_INSTANCE_TYPE_CHOICES
@@ -115,6 +115,37 @@ class ChoicesManager(object):
         self.conn = conn
 
     # EC2 connection type choices
+
+    def regions(self, regions=None):
+        """Returns a list of region choices. Will fetch regions if not passed"""
+        choices = []
+        regions = regions or []
+        if not regions:
+            regions.extend(self.get_regions())
+        for region in regions:
+            choices.append(dict(
+                name=region.name,
+                label=region.name,
+                endpoints=dict(
+                    ec2=region.endpoint
+                )
+            ))
+        return sorted(choices)
+
+    def get_regions(self):
+        @default_term.cache_on_arguments(namespace='regions')
+        def _get_regions_cache_(self):
+            return _get_regions_(self)
+
+        def _get_regions_(self):
+            regions = []
+            if self.conn is not None:
+                regions = self.conn.get_all_regions()
+            return regions
+        try:
+            return _get_regions_cache_(self)
+        except pylibmc.Error:
+            return _get_regions_(self)
 
     def availability_zones(self, region, zones=None, add_blank=True):
         """Returns a list of availability zone choices. Will fetch zones if not passed"""

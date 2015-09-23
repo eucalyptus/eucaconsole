@@ -37,9 +37,11 @@ from pyramid.renderers import get_renderer
 from pyramid.settings import asbool
 
 from .constants import AWS_REGIONS
+from .forms import ChoicesManager
 from .forms.login import EucaLogoutForm
 from .i18n import _
 from .models import Notification
+from .models.auth import ConnectionManager
 from .views import BaseView
 
 try:
@@ -58,16 +60,35 @@ class MasterLayout(object):
         self.help_url = request.registry.settings.get('help.url')
         self.support_url = request.registry.settings.get('support.url') or "http://support.eucalyptus.com"
         self.aws_enabled = asbool(request.registry.settings.get('aws.enabled'))
-        self.aws_regions = AWS_REGIONS
-        self.default_region = request.registry.settings.get('aws.default.region', 'us-east-1')
         self.browser_password_save = 'true' if asbool(
             request.registry.settings.get('browser.password.save')) else 'false'
         self.cloud_type = request.session.get('cloud_type')
-        self.selected_region = self.request.session.get('region', self.default_region)
-        self.selected_region_label = self.get_selected_region_label(self.selected_region)
         self.username = self.request.session.get('username')
         self.account = self.request.session.get('account')
         self.access_id = self.request.session.get('access_id')
+        self.has_regions = True
+        self.default_region = ''
+        if self.cloud_type == 'aws':
+            self.regions = AWS_REGIONS
+            self.default_region = request.registry.settings.get('aws.default.region', 'us-east-1')
+        else:
+            if self.access_id:
+                host = self.request.registry.settings.get('ufshost')
+                port = self.request.registry.settings.get('ufsport')
+                secret_key = self.request.session.get('secret_key')
+                session_token = self.request.session.get('session_token')
+                conn = ConnectionManager.euca_connection(
+                    host, port, self.access_id, secret_key, session_token, 'ec2', True
+                )
+                self.regions = ChoicesManager(conn).regions()
+                if len(self.regions) == 1:
+                    self.has_regions = False
+                for region in self.regions:
+                    if region['endpoints']['ec2'].find(host) > -1:
+                        self.default_region = region['name']
+        if hasattr(self, 'regions'):
+            self.selected_region = self.request.session.get('region', self.default_region)
+            self.selected_region_label = self.get_selected_region_label(self.selected_region, self.regions)
         self.username_label = self.request.session.get('username_label')
         self.account_access = request.session.get('account_access') if self.cloud_type == 'euca' else False
         self.user_access = request.session.get('user_access') if self.cloud_type == 'euca' else False
@@ -128,9 +149,9 @@ class MasterLayout(object):
         return self.request.static_path(path)
 
     @staticmethod
-    def get_selected_region_label(region_name):
+    def get_selected_region_label(region_name, regions):
         """Get the label from the selected region"""
-        regions = [reg for reg in AWS_REGIONS if reg.get('name') == region_name]
+        regions = [reg for reg in regions if reg.get('name') == region_name]
         if regions:
             return regions[0].get('label')
         return ''

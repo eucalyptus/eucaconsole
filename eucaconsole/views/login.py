@@ -173,7 +173,7 @@ class LoginView(BaseView, PermissionCheckMixin):
                 session['session_token'] = creds.session_token
                 session['access_id'] = creds.access_key
                 session['secret_key'] = creds.secret_key
-                session['region'] = 'euca'
+                session['region'] = ''
                 session['username_label'] = user_account
                 session['dns_enabled'] = auth.dns_enabled  # this *must* be prior to line below
                 session['supported_platforms'] = self.get_account_attributes(['supported-platforms'])
