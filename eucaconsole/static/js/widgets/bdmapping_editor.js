@@ -41,8 +41,15 @@ angular.module('BlockDeviceMappingEditor', ['EucaConsoleUtils'])
                     Notify.failure(errorMsg);
                   });
             });
+
             $scope.$watch('newSize', function () {
                 $scope.checkValidInput();
+            });
+
+            $http.get("/instances/new/nextdevice/json").then(function (oData) {
+                if(oData.data && oData.data.results) {
+                    $scope.newMappingPath = oData.data.results;
+                }
             });
         };
         $scope.checkValidInput = function () {
