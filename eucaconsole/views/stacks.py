@@ -834,7 +834,7 @@ class StackWizardView(BaseView, StackMixin):
                 return  # ignore refs already in params
             if type(item) is dict and 'ImageId' in item.keys():
                 img_item = item['ImageId']
-                if 'Ref' not in img_item.keys():
+                if isinstance(img_item, dict) and 'Ref' not in img_item.keys():
                     # check for emi lookup in map
                     if 'Fn::FindInMap' in img_item.keys():
                         map_name = img_item['Fn::FindInMap'][0]
