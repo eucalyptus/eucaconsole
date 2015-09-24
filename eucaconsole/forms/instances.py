@@ -325,8 +325,11 @@ class AttachVolumeForm(BaseSecureForm):
         self.volume_id.error_msg = self.volume_error_msg
         self.device.error_msg = self.device_error_msg
         self.set_volume_choices()
+
         if self.instance is not None:
-            self.device.data = AttachVolumeForm.suggest_next_device_name(request, instance)
+            cloud_type = request.session.get('cloud_type')
+            mappings = instance.block_device_mapping
+            self.device.data = AttachVolumeForm.suggest_next_device_name(cloud_type, mappings)
 
     def set_volume_choices(self):
         """Populate volume field with volumes available to attach"""
