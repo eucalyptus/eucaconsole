@@ -12,6 +12,7 @@
     <div class="row" id="contentwrap" ng-app="UploadFilePage" ng-controller="UploadFilePageCtrl"
          ng-init="initController(
          '${request.route_path('bucket_upload', name=bucket_name, subpath=request.subpath)}',
+         '${request.route_path('bucket_sign_req', name=bucket_name, subpath=request.subpath)}',
          '${request.route_path('bucket_contents', name=bucket_name, subpath=request.subpath)}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">

@@ -27,8 +27,9 @@ angular.module('UploadFilePage', ['S3SharingPanel', 'S3MetadataEditor'])
         $scope.uploading = false;
         $scope.progress = 0;
         $scope.total = 0;
-        $scope.initController = function (uploadUrl, bucketUrl) {
+        $scope.initController = function (uploadUrl, signUrl, bucketUrl) {
             $scope.uploadUrl = uploadUrl;
+            $scope.signUrl = signUrl;
             $scope.bucketUrl = bucketUrl;
             $scope.handleUnsavedChanges();
             $scope.handleUnsavedSharingEntry($scope.createBucketForm);
@@ -87,32 +88,47 @@ angular.module('UploadFilePage', ['S3SharingPanel', 'S3MetadataEditor'])
         };
         $scope.uploadFile = function($event) {
             var file = $scope.files[$scope.progress];
-            var fd = new FormData();
-            // fill from actual form
-            angular.forEach($('form').serializeArray(), function(value, key) {
-                this.append(value.name, value.value);
-            }, fd);
-            // Add file: consider batching up lots of small files
-            fd.append('files', file);
-            var url = $scope.uploadUrl + '/' + file.name;
-            $http.post(url, fd, {
-                    headers: {'Content-Type': undefined},
-                    transformRequest: angular.identity
-                  }).
+            var url = $scope.signUrl + '/' + file.name;
+            var data = "csrf_token="+$('#csrf_token').val();
+            $http.post(url, data, {
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+                }).
                 success(function(oData) {
-                    $scope.progress = $scope.progress + 1;
-                    if ($scope.progress == $scope.total) {
-                        var parentWindow = window.opener;
-                        $('#upload-files-modal').foundation('reveal', 'close');
-                        $scope.hasChangesToBeSaved = false;
-                        if (parentWindow) {
-                            parentWindow.postMessage('s3:fileUploaded', '*');
-                        }
-                        $scope.cancel();
-                    }
-                    if ($scope.uploading === true) {
-                        $scope.uploadFile();
-                    }
+                    var results = oData ? oData.results : [];
+                    console.log("upload url = "+results.url);
+                    var fd = new FormData();
+                    // fill from actual form
+                    angular.forEach(results.fields, function(value, key) {
+                        this.append(key, value);
+                    }, fd);
+                    fd.append('Content-Type', file.type);
+                    // Add file: consider batching up lots of small files
+                    fd.append('files', file);
+                    $http.post(results.url, fd, {
+                            transformRequest: angular.identity,
+                            headers: {'Content-Type': file.type}
+                        }).
+                        success(function(oData) {
+                            $scope.progress = $scope.progress + 1;
+                            if ($scope.progress == $scope.total) {
+                                var parentWindow = window.opener;
+                                $('#upload-files-modal').foundation('reveal', 'close');
+                                $scope.hasChangesToBeSaved = false;
+                                if (parentWindow) {
+                                    parentWindow.postMessage('s3:fileUploaded', '*');
+                                }
+                                $scope.cancel();
+                            }
+                            if ($scope.uploading === true) {
+                                $scope.uploadFile();
+                            }
+                        }).
+                        error(function(oData, status) {
+                            $('#upload-files-modal').foundation('reveal', 'close');
+                            $scope.uploading = false;
+                            $scope.progress = 0;
+                            Notify.failure(oData.message);
+                        });
                 }).
                 error(function(oData, status) {
                     $('#upload-files-modal').foundation('reveal', 'close');
