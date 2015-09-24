@@ -30,6 +30,8 @@ Scaling Group tests
 See http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/testing.html
 
 """
+import simplejson as json
+
 from pyramid import testing
 from pyramid.httpexceptions import HTTPNotFound
 
@@ -38,6 +40,7 @@ from eucaconsole.forms.scalinggroups import (
     ScalingGroupPolicyCreateForm, ScalingGroupPolicyDeleteForm,
     ScalingGroupInstancesMarkUnhealthyForm, ScalingGroupInstancesTerminateForm)
 from eucaconsole.i18n import _
+from eucaconsole.views.dialogs import create_alarm_dialog
 from eucaconsole.views.panels import form_field_row
 from eucaconsole.views.scalinggroups import ScalingGroupsView, BaseScalingGroupView, ScalingGroupView
 
@@ -182,6 +185,16 @@ class ScalingGroupPolicyCreateFormTestCase(BaseFormTestCase):
         self.assertTrue(hasattr(self.form.name.flags, 'required'))
         self.assertTrue('required' in fieldrow.get('html_attrs').keys())
         self.assertTrue(fieldrow.get('html_attrs').get('maxlength') is None)
+
+
+class CreateAlarmDialogTestCase(BaseViewTestCase):
+    request = testing.DummyRequest()
+
+    def test_create_alarm_dialog(self):
+        metric_unit_mapping = {'Latency': 'seconds'}
+        dialog = create_alarm_dialog(None, self.request, metric_unit_mapping=metric_unit_mapping)
+        controller_options = json.loads(dialog.get('controller_options_json'))
+        self.assertEqual(controller_options.get('metric_unit_mapping'), metric_unit_mapping)
 
 
 class ScalingGroupPolicyDeleteFormTestCase(BaseFormTestCase):
