@@ -576,7 +576,7 @@ class ScalingGroupPolicyView(BaseScalingGroupView):
             policy_form=self.policy_form,
             alarm_form=self.alarm_form,
             create_alarm_redirect=self.request.route_path('scalinggroup_policy_new', id=self.scaling_group.name),
-            metric_unit_mapping=json.dumps(self.get_metric_unit_mapping()),
+            metric_unit_mapping=self.get_metric_unit_mapping(),
             scale_down_text=_(u'Scale down by'),
             scale_up_text=_(u'Scale up by'),
         )
