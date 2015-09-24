@@ -192,7 +192,7 @@ class ELBsJsonView(LandingPageView, CloudWatchAPIMixin):
 
     def get_average_latency(self, elb=None, duration=21600):
         """Get average latency for a given duration in milliseconds"""
-        period = self.adjust_granularity(duration)
+        period = self.modify_granularity(duration)
         stats = self.get_cloudwatch_stats(
             cw_conn=self.cw_conn, period=period, duration=duration, metric='Latency',
             namespace='AWS/ELB', idtype='LoadBalancerName', ids=[elb.name])
@@ -1075,6 +1075,7 @@ class ELBMonitoringView(BaseELBView):
             self.elb = elb or self.get_elb()
             if not self.elb:
                 raise HTTPNotFound()
+            self.availability_zones = [zone.get('id') for zone in self.get_availability_zones()]
         self.render_dict = dict(
             elb=self.elb,
             elb_name=self.escape_braces(self.elb.name) if self.elb else '',
@@ -1088,13 +1089,13 @@ class ELBMonitoringView(BaseELBView):
     def elb_monitoring(self):
         return self.render_dict
 
-    @staticmethod
-    def get_controller_options_json():
+    def get_controller_options_json(self):
         return BaseView.escape_json(json.dumps({
             'metric_title_mapping': METRIC_TITLE_MAPPING,
             'charts_list': ELB_MONITORING_CHARTS_LIST,
             'granularity_choices': GRANULARITY_CHOICES,
             'duration_granularities_mapping': DURATION_GRANULARITY_CHOICES_MAPPING,
+            'availability_zones': self.availability_zones,
         }))
 
 
