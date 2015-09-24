@@ -131,7 +131,7 @@
                                             <!-- all the tips get the same selector(class). Trying to use data-options -->
                                             <!-- helps, but that's broken https://github.com/zurb/foundation/issues/6349 -->
                                             <span data-options="selector: param-tip{{$index}};"
-                                                data-tooltip="" ng-attr-title="{{item.description}}">
+                                                ng-attr-title="{{item.description}}">
                                                 <i class="helptext-icon"></i>
                                             </span>
                                         </label>
