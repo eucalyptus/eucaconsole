@@ -11,6 +11,7 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch'])
         $scope.items = [];
         $scope.itemsLoading = true;
         $scope.runningSmartRefresh = false;
+        $scope.facetItems = [];
         $scope.unfilteredItems = [];
         $scope.filterKeys = [];
         $scope.sortBy = '';
@@ -168,6 +169,7 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch'])
                     // and re-open any action menus
                     $scope.clickOpenDropdown();
                 });
+                $scope.facetFilterItems();
             }).error(function (oData, status) {
                 if (oData === undefined && status === 0) {  // likely interrupted request
                     return;
@@ -186,22 +188,53 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch'])
                 
             });
         };
-        /*  Filter items client side based on search criteria.
-         *  @param {array} filterProps Array of properties to filter items on
+        /*  Apply facet filtering
+         *  to apply text filtering, call searchFilterItems instead
          */
-        $scope.searchFilterItems = function(filterProps) {
-            var filterText = ($scope.searchFilter || '').toLowerCase();
-            if (filterProps !== '' && filterProps !== undefined){
-                // Store the filterProps input for later use as well
-                $scope.filterKeys = filterProps;
+        $scope.facetFilterItems = function() {
+            var query = undefined;
+            var url = window.location.href;
+            if (url.indexOf("?") > -1) {
+                query = url.split("?")[1];
             }
+            if (query !== undefined && query.length !== 0) {
+                // prepare facets by grouping
+                var tmp = query.split('&').sort();
+                var facets = {};
+                for (var i=0; i<tmp.length; i++) {
+                    var facet = tmp[i].split('=');
+                    if (facets[facet[0]] === undefined) {
+                        facets[facet[0]] = [];
+                    }
+                    facets[facet[0]].push(facet[1]);
+                }
+                var results = $scope.unfilteredItems;
+                for (var key in facets) {
+                    results = results.filter(function(item) {
+                        var val = item.hasOwnProperty(key) && item[key];
+                        if (typeof val === 'string' && $.inArray(val.toLowerCase(), facets[key]) > -1) {
+                            return true;
+                        }
+                    });
+                }
+                $scope.facetItems = results;
+            }
+            else {
+                $scope.facetItems = $scope.unfilteredItems.slice();
+            }
+            $scope.searchFilterItems();
+        };
+        /*  Filter items client side based on search criteria.
+         */
+        $scope.searchFilterItems = function() {
+            var filterText = ($scope.searchFilter || '').toLowerCase();
             if (filterText === '') {
                 // If the search filter is empty, skip the filtering
-                $scope.items = $scope.unfilteredItems;
+                $scope.items = $scope.facetItems;
                 return;
             }
             // Leverage Array.prototype.filter (ECMAScript 5)
-            var filteredItems = $scope.unfilteredItems.filter(function(item) {
+            var filteredItems = $scope.facetItems.filter(function(item) {
                 for (var i=0; i < $scope.filterKeys.length; i++) {  // Can't use $.each or Array.prototype.forEach here
                     var propName = $scope.filterKeys[i];
                     var itemProp = item.hasOwnProperty(propName) && item[propName];
@@ -284,14 +317,13 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch'])
             if (query.length > 0) {
                 url = url + "?" + query;
             }
-            $scope.jsonEndpoint = url;
-            $scope.itemsLoading=true;
-            $scope.getItems();
+            $scope.facetFilterItems();
         });
         $scope.$on('textSearch', function($event, text, filter_keys) {
             $scope.searchFilter = text;
+            $scope.filterKeys = filter_keys;
             $timeout(function() {
-                $scope.searchFilterItems(filter_keys);
+                $scope.searchFilterItems();
             });
         });
     })
