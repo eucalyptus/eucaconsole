@@ -1187,10 +1187,6 @@ class CreateELBView(BaseELBView):
             vpc_network = None
         if vpc_network is None:
             del self.create_form.securitygroup
-        bucket_name = self.request.params.get('bucket_name')
-        if (bucket_name, bucket_name) not in self.create_form.bucket_name.choices:
-            # Bucket name is a chosen select widget that accepts an arbitrary value
-            self.create_form.bucket_name.choices.append((bucket_name, bucket_name))
         if self.create_form.validate():
             name = self.request.params.get('name')
             listeners_args = self.get_listeners_args()
@@ -1222,7 +1218,8 @@ class CreateELBView(BaseELBView):
                     self.handle_backend_certificate_create(name)
                 self.add_elb_tags(name)
                 self.set_security_policy(name)
-                self.configure_access_logs(elb_name=name)
+                if self.request.params.get('logging_enabled') == 'y':
+                    self.configure_access_logs(elb_name=name)
                 prefix = _(u'Successfully created elastic load balancer')
                 msg = u'{0} {1}'.format(prefix, name)
                 location = self.request.route_path('elbs')
