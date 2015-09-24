@@ -185,8 +185,14 @@
                         <h6 i18n:translate="">
                             Instances
                         </h6>
-                        <div i18n:translate="" class="description">
-                            Select instances to add to this load balancer. Unchecking instances will remove them from the load balancer.
+                        <div class="row">
+                            <div i18n:translate="" class="description large-11 columns">
+                                Select instances to add to this load balancer. Unchecking instances will remove them from the load balancer.
+                            </div>
+                            <div class="actions large-1 columns">
+                                <span id="refresh-instances-icon" class="action-icon" title="Refresh data" i18n:attributes="title"
+                                      ng-click="chartsCtrl.refreshCharts()"><i class="fa fa-refresh"></i></span>
+                            </div>
                         </div>
                         <magic-search
                             template="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.html')}"
