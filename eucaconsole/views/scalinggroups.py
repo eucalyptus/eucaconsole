@@ -70,7 +70,8 @@ class DeleteScalingGroupMixin(object):
                             if not str(instance._state).startswith('terminated'):
                                 is_all_shutdown = False
                         else:
-                            if not str(instance._state).startswith('terminated') and not str(instance._state).startswith('shutting-down'):
+                            if not str(instance._state).startswith('terminated') and \
+                               not str(instance._state).startswith('shutting-down'):
                                 is_all_shutdown = False
                     time.sleep(5)
                 count += 1
@@ -161,7 +162,7 @@ class ScalingGroupsJsonView(LandingPageView):
         scalinggroups = []
         with boto_error_handler(self.request):
             items = self.filter_items(
-                self.get_items(), ignore=['availability_zones', 'vpc_zone_identifier'],  autoscale=True)
+                self.get_items(), ignore=['availability_zones', 'vpc_zone_identifier'], autoscale=True)
             if self.request.params.getall('availability_zones'):
                 items = self.filter_by_availability_zones(items)
             if self.request.params.getall('vpc_zone_identifier'):
@@ -339,7 +340,10 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
 
     def update_tags(self):
         # cull tags that start with aws: or euca:
-        self.scaling_group.tags = [tag for tag in self.scaling_group.tags if tag.key.find('aws:') == -1 and tag.key.find('euca:') == -1]
+        self.scaling_group.tags = [
+            tag for tag in self.scaling_group.tags if 
+            tag.key.find('aws:') == -1 and tag.key.find('euca:') == -1
+        ]
         updated_tags_list = self.parse_tags_param(scaling_group_name=self.scaling_group.name)
         (del_tags, update_tags) = self.optimize_tag_update(self.scaling_group.tags, updated_tags_list)
         # Delete existing tags first
