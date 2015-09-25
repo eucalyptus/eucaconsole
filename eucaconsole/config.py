@@ -92,6 +92,12 @@ def check_config(settings):
             "'clchost' and 'clcport' are deprecated in Eucalyptus version 4.2.0 and "
             "will be removed in version 4.3.0. Use 'ufshost' and 'ufsport' instead."
         )
+    bad_hosts = ['localhost', '127.0.0.1']
+    if settings.get('ufshost') in bad_hosts or settings.get('clchost') in bad_hosts:
+        logging.warn(
+            "'ufshost' needs to be set to something externally resolvable."
+            "Stack creation and object download will not work properly until this is fixed."
+        )
 
 
 def get_configurator(settings, enable_auth=True):
