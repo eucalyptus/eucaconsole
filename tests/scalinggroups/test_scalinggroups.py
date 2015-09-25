@@ -273,7 +273,13 @@ class ScalingGroupTagSaveTestCase(BaseTestCase):
             Tag(key='tag3', value='value3', propagate_at_launch=True),
         ]
 
-    def test_autoscale_add_tags(self):
+    def test_autoscale_add_tags1(self):
+        new_tags = self.orig_tags[:]
+        (del_tags, update_tags) = ScalingGroupView.optimize_tag_update([], new_tags)
+        self.assertTrue(len(del_tags) == 0)
+        self.assertTrue(len(update_tags) == 3)
+
+    def test_autoscale_add_tags2(self):
         new_tags = self.orig_tags[:]
         new_tags.append(
             Tag(key='tag4', value='value4', propagate_at_launch=True),
