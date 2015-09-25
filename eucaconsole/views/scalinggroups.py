@@ -338,12 +338,39 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
         return self.render_dict
 
     def update_tags(self):
+        # cull tags that start with aws: or euca:
+        self.scaling_group.tags = [tag for tag in self.scaling_group.tags if tag.key.find('aws:') == -1 and tag.key.find('euca:') == -1]
         updated_tags_list = self.parse_tags_param(scaling_group_name=self.scaling_group.name)
+        (del_tags, update_tags) = self.optimize_tag_update(self.scaling_group.tags, updated_tags_list)
         # Delete existing tags first
-        if self.scaling_group.tags:
-            self.autoscale_conn.delete_tags(self.scaling_group.tags)
-        if updated_tags_list:
-            self.autoscale_conn.create_or_update_tags(updated_tags_list)
+        if del_tags:
+            self.autoscale_conn.delete_tags(del_tags)
+        if update_tags:
+            self.autoscale_conn.create_or_update_tags(update_tags)
+
+    @staticmethod
+    def optimize_tag_update(orig_tags, updated_tags):
+        # cull tags that haven't changed
+        if len(updated_tags) > 0:
+            del_tags = []
+            for tag in orig_tags:
+                # find tags where keys match
+                tag_key = [utag for utag in updated_tags if utag.key == tag.key]
+                if len(tag_key) > 0:
+                    # find tags where keys also match
+                    tag_value = [utag for utag in tag_key if utag.value == tag.value]
+                    if len(tag_value) > 0:
+                        # find tags where prop flag also matches
+                        tag_prop = [utag for utag in tag_value if utag.propagate_at_launch == tag.propagate_at_launch]
+                        if len(tag_prop) == 1:  # we should never have more than 1 match
+                            # save tag from original list to avoid modifying list we are iterating through
+                            del_tags.append(tag)
+                            # remove from updated list since that will make subsequent searches faster
+                            updated_tags.remove(tag_prop[0])
+            # finally, delete the tags we found form original list
+            for tag in del_tags:
+                orig_tags.remove(tag)
+        return (orig_tags, updated_tags)
 
     def update_properties(self):
         self.scaling_group.desired_capacity = self.request.params.get('desired_capacity', 1)
