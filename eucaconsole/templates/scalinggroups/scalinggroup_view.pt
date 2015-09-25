@@ -93,6 +93,18 @@
                     </div>
                     ${panel('form_field', field=edit_form['default_cooldown'], step='30', leftcol_width_large=3, rightcol_width_large=9)}
                     ${panel('form_field', field=edit_form['health_check_period'], step='30', leftcol_width_large=3, rightcol_width_large=9)}
+                    <div class="row controls-wrapper readonly" tal:condition="vpc_network">
+                        <div class="large-3 small-4 columns">
+                            <label class="right" i18n:translate="">Recent Ativity</label>&nbsp;
+                        </div>
+                        <div class="large-9 small-8 columns">
+                            <div tal:repeat="az scaling_group.availability_zones" class="value" ng-non-bindable="">
+                                ${activity_cause}<br/>
+                            </div>
+                            <input type="hidden" name="availability_zones" id="hidden_availability_zones_input" 
+                                value="${scaling_group.availability_zones}" />
+                        </div>
+                    </div>
                     <hr />
                     ${panel('autoscale_tag_editor', tags=scaling_group.tags)}
                     <hr />
