@@ -246,7 +246,7 @@
                             <div class="row">
                                 <div class="small-3 columns">&nbsp;</div>
                                 <div class="small-9 columns field inline">
-                                    <button type="submit" class="button" ng-click="createELB()" id="create-elb-btn-step4" ng-disabled="isValidationError">
+                                    <button type="submit" class="button" ng-click="createELB($event)" id="create-elb-btn-step4" ng-disabled="isValidationError">
                                         <span i18n:translate="">Create Load Balancer</span>
                                     </button>
                                     <a href="${request.route_path('elbs')}"
@@ -367,6 +367,7 @@
         ${panel('select_certificate_dialog', can_list_certificates=can_list_certificates, certificate_form=certificate_form, backend_certificate_form=backend_certificate_form)}
         ${panel('elb_security_policy_dialog', security_policy_form=security_policy_form, latest_predefined_policy=latest_predefined_policy)}
         ${panel('elb_bucket_access_log_dialog')}
+        ${panel('elb_security_group_warning_dialog', create=True)}
         ${panel('create_bucket_dialog', create_bucket_form=create_bucket_form)}
     </div>
 </div>

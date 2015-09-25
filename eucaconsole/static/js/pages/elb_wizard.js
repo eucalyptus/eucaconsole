@@ -64,6 +64,10 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
     $scope.accessLogConfirmationDialog = $('#elb-bucket-access-log-dialog');
     $scope.accessLogConfirmationDialogKey = 'doNotShowAccessLogConfirmationAgain';
     $scope.instanceCounts = {};
+    $scope.securityGroupInboundPorts = [];
+    $scope.securityGroupOutboundPorts = [];
+    $scope.loadBalancerInboundPorts = [];
+    $scope.loadBalancerOutboundPorts = [];
     $scope.initController = function (optionsJson) {
         var options = JSON.parse(eucaUnescapeJson(optionsJson));
         $scope.setInitialValues(options);
@@ -689,7 +693,8 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
         $scope.accessLoggingConfirmed = true;
         $scope.accessLogConfirmationDialog.foundation('reveal', 'close');
     };
-    $scope.createELB = function () {
+    $scope.createELB = function ($event, confirmed) {
+        confirmed = confirmed || false;
         var bucketNameField = $('#bucket_name');
         if (!$scope.isNotValid && !$scope.isValidationError) {
             // bucket name field requires special validation handling since it is conditionally required
@@ -698,6 +703,64 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
             } else {
                 bucketNameField.attr('required');
             }
+            $scope.checkSecurityGroupRules($event, confirmed);
+        }
+    };
+    $scope.checkSecurityGroupRules = function ($event, confirmed) {
+        var displayRulesWarning = false;
+        var modal = $('#elb-security-group-rules-warning-modal');
+        var selectedSecurityGroups;
+        if (!$scope.vpcNetwork) {  // Bypass rules check on non-VPC clouds
+            $scope.thisForm.submit();
+        }
+        selectedSecurityGroups = $scope.securityGroupCollection.map(function (group) {
+            if ($scope.securityGroupChoices[group.id]) {
+                return group;
+            }
+        });
+        // Collect inbound/outbound ports from security group rules
+        selectedSecurityGroups.forEach(function (sgroup) {
+            // Collect Inbound ports
+            sgroup.rules.forEach(function (rule) {
+                if (rule.from_port) {
+                    $scope.securityGroupInboundPorts.push(parseInt(rule.from_port, 10));
+                }
+                if (rule.to_port && rule.to_port !== rule.from_port) {
+                    $scope.securityGroupInboundPorts.push(parseInt(rule.to_port, 10));
+                }
+            });
+            // Outbound ports
+            sgroup.rules_egress.forEach(function (rule) {
+                if (rule.from_port) {
+                    $scope.securityGroupOutboundPorts.push(parseInt(rule.from_port, 10));
+                }
+                if (rule.to_port && rule.to_port !== rule.from_port) {
+                    $scope.securityGroupOutboundPorts.push(parseInt(rule.to_port, 10));
+                }
+            });
+        });
+        // Collect ports from configured listeners
+        $scope.listenerArray.forEach(function (listener) {
+            $scope.loadBalancerInboundPorts.push(listener.fromPort);
+            $scope.loadBalancerOutboundPorts.push(listener.toPort);
+        });
+        // Collect port from health check
+        $scope.loadBalancerOutboundPorts.push($scope.pingPort);
+        // Compare listener and health check ports with selected security groups
+        $scope.loadBalancerInboundPorts.forEach(function (port) {
+            if ($scope.securityGroupInboundPorts.indexOf(port) === -1) {
+                displayRulesWarning = true;
+            }
+        });
+        $scope.loadBalancerOutboundPorts.forEach(function (port) {
+            if ($scope.securityGroupOutboundPorts.indexOf(port) === -1) {
+                displayRulesWarning = true;
+            }
+        });
+        if (displayRulesWarning && !confirmed) {
+            modal.foundation('reveal', 'open');
+            $event.preventDefault();
+        } else {
             $scope.thisForm.submit();
         }
     };
