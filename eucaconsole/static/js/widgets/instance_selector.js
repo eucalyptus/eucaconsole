@@ -201,7 +201,6 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                     $scope.initSelectedInstances(newSelectedInstances);
                 });
                 $scope.$on('refreshELBInstances', function () {
-                    console.log('refresh in instance selector');
                     $scope.instanceList = [];
                     $scope.instancesLoading = true;
                     $timeout(function () {
