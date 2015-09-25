@@ -191,7 +191,7 @@
                             </div>
                             <div class="actions large-1 columns">
                                 <span id="refresh-instances-icon" class="action-icon" title="Refresh data" i18n:attributes="title"
-                                      ng-click="chartsCtrl.refreshCharts()"><i class="fa fa-refresh"></i></span>
+                                      ng-click="refreshInstances()"><i class="fa fa-refresh"></i></span>
                             </div>
                         </div>
                         <magic-search
