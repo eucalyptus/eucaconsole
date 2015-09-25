@@ -882,7 +882,7 @@ class InstanceStateView(BaseInstanceView):
         if self.instance is not None:
             mappings = self.instance.block_device_mapping
         else:
-            mappings = {}
+            mappings = {mapping: None for mapping in self.request.GET.getall('currentMappings')}
         return dict(results=AttachVolumeForm.suggest_next_device_name(cloud_type, mappings))
 
     @view_config(route_name='instance_console_output_json', renderer='json', request_method='GET')
