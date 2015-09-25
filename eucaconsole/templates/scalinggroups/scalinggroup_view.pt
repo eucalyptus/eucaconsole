@@ -95,7 +95,7 @@
                     ${panel('form_field', field=edit_form['health_check_period'], step='30', leftcol_width_large=3, rightcol_width_large=9)}
                     <div class="row controls-wrapper readonly" tal:condition="vpc_network">
                         <div class="large-3 small-4 columns">
-                            <label class="right" i18n:translate="">Recent Ativity</label>&nbsp;
+                            <label class="right" i18n:translate="">Recent Activity</label>&nbsp;
                         </div>
                         <div class="large-9 small-8 columns">
                             <div tal:repeat="az scaling_group.availability_zones" class="value" ng-non-bindable="">
