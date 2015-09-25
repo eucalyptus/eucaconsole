@@ -1113,7 +1113,8 @@ class CreateBucketView(BaseView):
     @view_config(route_name='bucket_create', renderer=VIEW_TEMPLATE, request_method='POST')
     def bucket_create(self):
         if self.create_form.validate():
-            bucket_name = self.request.params.get('bucket_name').lower()
+            bucket_name = self.request.params.get('bucket_name')
+            bucket_name = bucket_name.strip().lower()
             enable_versioning = self.request.params.get('enable_versioning') == 'y'
             location = self.request.route_path('bucket_details', name=bucket_name)
             with boto_error_handler(self.request, self.request.route_path('buckets')):

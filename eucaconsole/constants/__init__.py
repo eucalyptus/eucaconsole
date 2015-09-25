@@ -85,6 +85,6 @@ AWS_REGIONS = (
 # List of all landing page route names (used to limit redirect handling for AWS region selection)
 LANDINGPAGE_ROUTE_NAMES = [
     'buckets', 'groups', 'images', 'instances', 'ipaddresses', 'keypairs', 'launchconfigs',
-    'scalinggroups', 'securitygroups', 'snapshots', 'users', 'volumes',
+    'scalinggroups', 'securitygroups', 'snapshots', 'users', 'volumes', 'elbs', 'stacks',
 ]
 

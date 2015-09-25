@@ -160,8 +160,8 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             });
         };
         $scope.watchBdMapping = function () {
-            $scope.$on('bdMappingChange', function (evt) {
-                $scope.bdMapping = evt.targetScope.bdMapping;
+            $scope.$on('bdMappingChange', function (evt, args) {
+                $scope.additionalStorageConfigured = args;
             });
         };
         $scope.checkRequiredInput = function () {

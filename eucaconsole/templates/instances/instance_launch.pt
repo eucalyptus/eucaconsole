@@ -311,8 +311,8 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="columns value" ng-show="bdMapping">
-                            <i class="fi-check"></i> Block device mappings configured
+                        <div class="columns value" ng-show="additionalStorageConfigured">
+                            <i class="fi-check"></i> Additional storage configured
                         </div>
                     </div>
                 </div>

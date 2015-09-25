@@ -41,11 +41,19 @@ angular.module('BlockDeviceMappingEditor', ['EucaConsoleUtils'])
                     Notify.failure(errorMsg);
                   });
             });
+
             $scope.$watch('newSize', function () {
                 $scope.checkValidInput();
             });
-            $scope.$watch('bdMapping', function () {
-                $scope.$emit('bdMappingChange');
+
+            $scope.$watch('bdMapping', function (newMapping) {
+                $scope.$emit('bdMappingChange', (!angular.equals(newMapping,$scope.originalBdMapping)));
+            });
+
+            $http.get("/instances/new/nextdevice/json").then(function (oData) {
+                if(oData.data && oData.data.results) {
+                    $scope.newMappingPath = oData.data.results;
+                }
             });
         };
         $scope.checkValidInput = function () {
@@ -92,6 +100,7 @@ angular.module('BlockDeviceMappingEditor', ['EucaConsoleUtils'])
             } else {
                 $scope.bdMapping = bdm;
             }
+            $scope.originalBdMapping = angular.copy(bdm);
             $scope.bdmTextarea.val(JSON.stringify(bdm));
             $scope.setInitialNewValues();
             $scope.initChosenSelector();
@@ -135,14 +144,14 @@ angular.module('BlockDeviceMappingEditor', ['EucaConsoleUtils'])
                 'delete_on_termination': $scope.newDOT
             };
             $scope.bdmTextarea.val(JSON.stringify(bdMapping));
+
             $scope.setInitialNewValues();  // Reset values
             $scope.initChosenSelector();
             newMappingEntry.focus();
         };
         $scope.removeDevice = function (key) {
-            var bdMapping = $scope.bdMapping;
-            delete bdMapping[key];
-            $scope.bdmTextarea.val(JSON.stringify(bdMapping));
+            delete $scope.bdMapping[key];
+            $scope.bdmTextarea.val(JSON.stringify($scope.bdMapping));
         };
         $scope.isEphemeral = function(val) {
             return !!(val.virtual_name && val.virtual_name.indexOf('ephemeral') === 0);

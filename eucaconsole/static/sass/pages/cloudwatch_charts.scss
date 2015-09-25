@@ -57,6 +57,9 @@
         }
     }
     .empty-message-wrapper {
+        height: 300px;
+        border: 1px solid $euca-lightgrey;
+        border-top: none;
         position: relative;
     }
     .empty-message {

@@ -124,6 +124,7 @@
                                         <span i18n:translate="">
                                             Add availability zones
                                         </span>
+                                        <span class="req">*</span>
                                         <span class="helptext-icon" data-tooltip="" title="${create_form.add_availability_zones_help_text}"></span>
                                     </label>
                                 </div>
@@ -141,6 +142,7 @@
                                         <span i18n:translate="">
                                             Add VPC subnets
                                         </span>
+                                        <span class="req">*</span>
                                         <span class="helptext-icon" data-tooltip="" title="${create_form.add_vpc_subnets_help_text}"></span>
                                     </label>
                                 </div>

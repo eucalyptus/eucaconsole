@@ -878,7 +878,12 @@ class InstanceStateView(BaseInstanceView):
     @view_config(route_name='instance_nextdevice_json', renderer='json', request_method='GET')
     def instance_nextdevice_json(self):
         """Return current instance state"""
-        return dict(results=AttachVolumeForm.suggest_next_device_name(self.request, self.instance))
+        cloud_type = self.request.session.get('cloud_type')
+        if self.instance is not None:
+            mappings = self.instance.block_device_mapping
+        else:
+            mappings = {}
+        return dict(results=AttachVolumeForm.suggest_next_device_name(cloud_type, mappings))
 
     @view_config(route_name='instance_console_output_json', renderer='json', request_method='GET')
     def instance_console_output_json(self):
