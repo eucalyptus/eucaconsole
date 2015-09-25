@@ -590,9 +590,12 @@ class StackWizardView(BaseView, StackMixin):
     def get_image_options(self, img_type='machine'):
         conn = self.get_connection()
         region = self.request.session.get('region')
+        if self.request.session.get('cloud_type', 'euca') == 'aws':
+            owner_alias = 'amazon'
+        owners = [owner_alias] if owner_alias else []
         images = []
         if img_type == 'machine':
-            images = self.get_images(conn, [], [], region)
+            images = self.get_images(conn, owners, [], region)
         elif img_type == 'kernel':
             images = conn.get_all_kernels()
         elif img_type == 'ramdisk':
