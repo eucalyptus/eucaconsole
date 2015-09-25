@@ -7,7 +7,7 @@ angular.module('BlockDeviceMappingEditor', ['EucaConsoleUtils'])
     .controller('BlockDeviceMappingEditorCtrl', function ($scope, $http, $timeout, eucaUnescapeJson) {
         var bdmTextarea = $('#bdmapping');
 
-        $scope.bdMapping = undefined;
+        $scope.bdMapping = {};
         $scope.ephemeralCount = 0;
         $scope.isNotValid = true;
         $scope.snapshotJsonURL = '';
