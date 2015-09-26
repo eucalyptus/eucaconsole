@@ -850,7 +850,6 @@ class BucketItemDetailsView(BaseView, BucketMixin):
         with boto_error_handler(request):
             if self.s3_conn and self.bucket is None:
                 self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
-                self.s3_conn.suppress_consec_slashes = False
             request.subpath = self.get_subpath(self.bucket.name)
             self.bucket_name = self.bucket.name
             self.bucket_item = self.get_bucket_item()
