@@ -63,22 +63,20 @@ class ScalingGroupsViewTests(BaseViewTestCase):
         self.assertTrue('placement_group' in filter_keys)
 
 
-"""
- Commenting these tests out since they don't even form proper request and rely on special
- logic to make test pass withtout valid connection. We need to get these tests working properly
- once moto is utlized more fully (based on Austin Summit discussion
-
-class ScalingGroupViewTests(BaseViewTestCase):
-
-    def test_is_base_scaling_group_view(self):
-        request = testing.DummyRequest()
-        view = ScalingGroupView(request)
-        self.assertTrue(isinstance(view, BaseScalingGroupView))
-
-    def test_missing_scaling_group_returns_404(self):
-        request = testing.DummyRequest()
-        self.assertRaises(HTTPNotFound, ScalingGroupView(request).scalinggroup_view)
-"""
+# Commenting these tests out since they don't even form proper request and rely on special
+# logic to make test pass withtout valid connection. We need to get these tests working properly
+# once moto is utlized more fully (based on Austin Summit discussion
+#
+#class ScalingGroupViewTests(BaseViewTestCase):
+#
+#    def test_is_base_scaling_group_view(self):
+#        request = testing.DummyRequest()
+#        view = ScalingGroupView(request)
+#        self.assertTrue(isinstance(view, BaseScalingGroupView))
+#
+#    def test_missing_scaling_group_returns_404(self):
+#        request = testing.DummyRequest()
+#        self.assertRaises(HTTPNotFound, ScalingGroupView(request).scalinggroup_view)
 
 
 class BaseScalingGroupFormTestCase(BaseFormTestCase):
