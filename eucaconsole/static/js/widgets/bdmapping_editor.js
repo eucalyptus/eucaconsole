@@ -6,6 +6,9 @@
 angular.module('BlockDeviceMappingEditor', ['EucaConsoleUtils'])
     .controller('BlockDeviceMappingEditorCtrl', function ($scope, $http, $timeout, eucaUnescapeJson) {
         var bdmTextarea = $('#bdmapping');
+        var additionalStorageConfigured = function (mapping) {
+            return $scope.bdMapping && !angular.equals(mapping, $scope.originalBdMapping);
+        };
 
         $scope.bdMapping = {};
         $scope.ephemeralCount = 0;
@@ -48,7 +51,7 @@ angular.module('BlockDeviceMappingEditor', ['EucaConsoleUtils'])
             });
 
             $scope.$watch('bdMapping', function (newMapping) {
-                $scope.$emit('bdMappingChange', (!angular.equals(newMapping, $scope.originalBdMapping)));
+                $scope.$emit('bdMappingChange', additionalStorageConfigured(newMapping));
             });
 
             var devicesMappings = Object.keys($scope.bdMapping);
@@ -158,7 +161,7 @@ angular.module('BlockDeviceMappingEditor', ['EucaConsoleUtils'])
         $scope.removeDevice = function (key) {
             delete $scope.bdMapping[key];
             bdmTextarea.val(JSON.stringify($scope.bdMapping));
-            $scope.$emit('bdMappingChange', (!angular.equals($scope.bdMapping, $scope.originalBdMapping)));
+            $scope.$emit('bdMappingChange', additionalStorageConfigured($scope.bdMapping));
         };
         $scope.isEphemeral = function(val) {
             return !!(val.virtual_name && val.virtual_name.indexOf('ephemeral') === 0);
