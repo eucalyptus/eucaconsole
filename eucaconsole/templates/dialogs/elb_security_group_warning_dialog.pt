@@ -10,10 +10,10 @@
             Please update your selected security group(s) after your load balancer is created to
             add rules that open all traffic to the following ports.
         </p>
-        <div class="row" ng-repeat="(sgroupId, sgroupName) in securityGroupChoices">
+        <div class="row" ng-repeat="sgroup in selectedSecurityGroups track by $index">
             <div class="large-4 small-4 columns">
                 <div i18n:translate="">SECURITY GROUP</div>
-                {{ sgroupName }}
+                {{ sgroup.name }}
             </div>
             <div class="large-4 small-4 columns">
                 <div i18n:translate="">INBOUND PORTS</div>

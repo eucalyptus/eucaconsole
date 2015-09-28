@@ -20,10 +20,15 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
     $scope.vpcSubnetNames = [];
     $scope.vpcSubnetChoices = {};
     $scope.vpcSubnetList = [];
-    $scope.securityGroups = [];
-    $scope.securityGroupNames = [];
-    $scope.securityGroupChoices = [];
-    $scope.securityGroupCollection = []; 
+    $scope.securityGroups = [];  // Selected security group ids (e.g. ["sg-123456", ...])
+    $scope.securityGroupNames = [];  // Selected security group names (e.g. ["sgroup-one", ...])
+    $scope.securityGroupChoices = {};  // id/name mapping of security group choices (e.g. {"sg-123": 'foo', ...})
+    $scope.securityGroupCollection = [];  // Security group object choices
+    $scope.selectedSecurityGroups = [];  // Selected security group objects
+    $scope.securityGroupInboundPorts = [];  // List of selected security group inbound ports to compare with ELB ports
+    $scope.securityGroupOutboundPorts = [];  // List of selected security group outbound ports to compare with ELB ports
+    $scope.loadBalancerInboundPorts = [];
+    $scope.loadBalancerOutboundPorts = [];
     $scope.availabilityZones = [];
     $scope.availabilityZoneChoices = {};
     $scope.instanceList = [];
@@ -64,10 +69,6 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
     $scope.accessLogConfirmationDialog = $('#elb-bucket-access-log-dialog');
     $scope.accessLogConfirmationDialogKey = 'doNotShowAccessLogConfirmationAgain';
     $scope.instanceCounts = {};
-    $scope.securityGroupInboundPorts = [];
-    $scope.securityGroupOutboundPorts = [];
-    $scope.loadBalancerInboundPorts = [];
-    $scope.loadBalancerOutboundPorts = [];
     $scope.initController = function (optionsJson) {
         var options = JSON.parse(eucaUnescapeJson(optionsJson));
         $scope.setInitialValues(options);
@@ -707,19 +708,19 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
         }
     };
     $scope.checkSecurityGroupRules = function ($event, confirmed) {
-        var displayRulesWarning = false;
+        var inboundChecksPass = true;
+        var outboundChecksPass = true;
         var modal = $('#elb-security-group-rules-warning-modal');
-        var selectedSecurityGroups;
         if (!$scope.vpcNetwork) {  // Bypass rules check on non-VPC clouds
             $scope.thisForm.submit();
         }
-        selectedSecurityGroups = $scope.securityGroupCollection.map(function (group) {
-            if ($scope.securityGroupChoices[group.id]) {
+        $scope.selectedSecurityGroups = $scope.securityGroupCollection.filter(function (group) {
+            if ($scope.securityGroups.indexOf(group.id) !== -1) {
                 return group;
             }
         });
         // Collect inbound/outbound ports from security group rules
-        selectedSecurityGroups.forEach(function (sgroup) {
+        $scope.selectedSecurityGroups.forEach(function (sgroup) {
             // Collect Inbound ports
             sgroup.rules.forEach(function (rule) {
                 if (rule.from_port) {
@@ -727,6 +728,9 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
                 }
                 if (rule.to_port && rule.to_port !== rule.from_port) {
                     $scope.securityGroupInboundPorts.push(parseInt(rule.to_port, 10));
+                }
+                if (rule.ip_protocol === '-1' && $scope.securityGroupInboundPorts.indexOf(-1) === -1) {
+                    $scope.securityGroupInboundPorts.push(-1);  // Add "all traffic" inbound rule
                 }
             });
             // Outbound ports
@@ -737,27 +741,42 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
                 if (rule.to_port && rule.to_port !== rule.from_port) {
                     $scope.securityGroupOutboundPorts.push(parseInt(rule.to_port, 10));
                 }
+                if (rule.ip_protocol === '-1' && $scope.securityGroupOutboundPorts.indexOf(-1) === -1) {
+                    $scope.securityGroupOutboundPorts.push(-1);  // Add "all traffic" outbound rule
+                }
             });
         });
         // Collect ports from configured listeners
         $scope.listenerArray.forEach(function (listener) {
-            $scope.loadBalancerInboundPorts.push(listener.fromPort);
-            $scope.loadBalancerOutboundPorts.push(listener.toPort);
+            if ($scope.loadBalancerInboundPorts.indexOf(listener.fromPort) === -1) {
+                $scope.loadBalancerInboundPorts.push(listener.fromPort);
+            }
+            if ($scope.loadBalancerOutboundPorts.indexOf(listener.toPort) === -1) {
+                $scope.loadBalancerOutboundPorts.push(listener.toPort);
+            }
         });
         // Collect port from health check
-        $scope.loadBalancerOutboundPorts.push($scope.pingPort);
+        if ($scope.loadBalancerOutboundPorts.indexOf($scope.pingPort) === -1) {
+            $scope.loadBalancerOutboundPorts.push($scope.pingPort);
+        }
         // Compare listener and health check ports with selected security groups
         $scope.loadBalancerInboundPorts.forEach(function (port) {
             if ($scope.securityGroupInboundPorts.indexOf(port) === -1) {
-                displayRulesWarning = true;
+                inboundChecksPass = false;
             }
         });
         $scope.loadBalancerOutboundPorts.forEach(function (port) {
             if ($scope.securityGroupOutboundPorts.indexOf(port) === -1) {
-                displayRulesWarning = true;
+                outboundChecksPass = false;
             }
         });
-        if (displayRulesWarning && !confirmed) {
+        if ($scope.securityGroupInboundPorts.indexOf(-1) !== -1) {
+            inboundChecksPass = true;  // Pass inbound check if "all traffic" rule
+        }
+        if ($scope.securityGroupOutboundPorts.indexOf(-1) !== -1) {
+            outboundChecksPass = true;  // Pass outbound check if "all traffic" rule
+        }
+        if (!confirmed && (!inboundChecksPass || !outboundChecksPass)) {
             modal.foundation('reveal', 'open');
             $event.preventDefault();
         } else {
