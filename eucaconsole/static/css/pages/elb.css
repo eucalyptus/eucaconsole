@@ -167,6 +167,8 @@ table.table .status-descr { width: 20%; }
 .tile .footer.status.allhealthy { background-color: #03405f; }
 .tile .footer.status.unhealthy { background-color: darkred; }
 
+#instance-section .actions { text-align: right; }
+
 select[name="ping_protocol"] { width: 100px; }
 
 select[name="response_timeout"] { width: 120px; }
