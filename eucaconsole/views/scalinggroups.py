@@ -346,7 +346,7 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
                 tag.key.find('aws:') == -1 and tag.key.find('euca:') == -1
             ]
         updated_tags_list = self.parse_tags_param(scaling_group_name=self.scaling_group.name)
-        (del_tags, update_tags) = self.optimize_tag_update(self.scaling_group.tags, updated_tags_list)
+        (del_tags, update_tags) = self.optimize_tag_update(self.scaling_group.tags[:], updated_tags_list)
         # Delete existing tags first
         if del_tags:
             self.autoscale_conn.delete_tags(del_tags)
