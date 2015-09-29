@@ -210,7 +210,7 @@ class ConnectionManager(object):
                 _ufshost = "{0}.{1}".format(path.lower(), _ufshost)
                 path = '/'
             else:
-                path = '/services/{0}'.format(path)
+                path = '/services/{0}/'.format(path)
             region = RegionInfo(name='eucalyptus', endpoint=_ufshost)
             # IAM and S3 connections need host instead of region info
             if conn_type in ['iam', 's3']:
