@@ -712,14 +712,14 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
         var modal = $('#elb-security-group-rules-warning-modal');
         var inboundOutboundPortChecksPass;
         if (!$scope.vpcNetwork) {  // Bypass rules check on non-VPC clouds
-            $scope.thisForm.submit();
+            $scope.elbForm.submit();
         }
         inboundOutboundPortChecksPass = eucaCheckELBSecurityGroupRules($scope);
         if (!confirmed && !inboundOutboundPortChecksPass) {
             modal.foundation('reveal', 'open');
             $event.preventDefault();
         } else {
-            $scope.thisForm.submit();
+            $scope.elbForm.submit();
         }
     };
 })

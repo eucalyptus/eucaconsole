@@ -30,6 +30,7 @@ Pyramid views for Eucalyptus and AWS elbs
 """
 import itertools
 import logging
+import re
 import simplejson as json
 import time
 
@@ -465,6 +466,13 @@ class BaseELBView(TaggedItemView):
         return self.get_latest_predefined_policy()
 
     @staticmethod
+    def get_health_check_port(elb=None):
+        if elb and elb.health_check.target is not None:
+            match = re.search('^(\w+):(\d+)/?(.+)?', elb.health_check.target)
+            ping_port = match.group(2)
+            return ping_port
+
+    @staticmethod
     def get_instance_selector_text():
         instance_selector_text = {'name': _(u'NAME (ID)'), 'tags': _(u'TAGS'),
                                   'zone': _(u'AVAILABILITY ZONE'), 'subnet': _(u'VPC SUBNET'),
@@ -695,6 +703,8 @@ class ELBView(BaseELBView):
             'existing_certificate_choices': self.certificate_form.certificate_arn.choices,
             'logging_enabled': self.access_logs.enabled if self.access_logs else False,
             'bucket_choices': dict(self.elb_form.bucket_name.choices),
+            'securitygroups_json_endpoint': self.request.route_path('securitygroups_json'),
+            'ping_port': self.get_health_check_port(self.elb),
         }))
 
     def update_elb_idle_timeout(self, elb_name, idle_timeout):
