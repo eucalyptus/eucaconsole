@@ -15,8 +15,6 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'ELBSecurity
         $scope.securityGroupChoices = {};  // id/name mapping of security group choices (e.g. {"sg-123": 'foo', ...})
         $scope.securityGroupCollection = [];  // Security group object choices
         $scope.selectedSecurityGroups = [];  // Selected security group objects
-        $scope.securityGroupInboundPorts = [];  // List of selected security group inbound ports to compare with ELB ports
-        $scope.securityGroupOutboundPorts = [];  // List of selected security group outbound ports to compare with ELB ports
         $scope.loadBalancerInboundPorts = [];
         $scope.loadBalancerOutboundPorts = [];
         $scope.pingPort = '';
