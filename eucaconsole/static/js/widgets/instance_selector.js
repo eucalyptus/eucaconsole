@@ -206,7 +206,7 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                     $timeout(function () {
                         $scope.getAllInstanceList();
                         $scope.searchFilterItems('');
-                        $scope.instancesLoading = false;
+                        $scope.updateInstanceList();
                     }, 100);
                 });
             };
