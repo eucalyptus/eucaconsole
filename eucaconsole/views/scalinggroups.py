@@ -361,13 +361,13 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
             del_tags = []
             for tag in orig_tags:
                 # find tags where keys match
-                tag_key = [utag for utag in updated_tags if utag.key == tag.key]
-                if len(tag_key) > 0:
+                tag_keys = [utag for utag in updated_tags if utag.key == tag.key]
+                if tag_keys:
                     # find tags where keys also match
-                    tag_value = [utag for utag in tag_key if utag.value == tag.value]
-                    if len(tag_value) > 0:
+                    tag_values = [utag for utag in tag_keys if utag.value == tag.value]
+                    if tag_values:
                         # find tags where prop flag also matches
-                        tag_prop = [utag for utag in tag_value if utag.propagate_at_launch == tag.propagate_at_launch]
+                        tag_prop = [utag for utag in tag_values if utag.propagate_at_launch == tag.propagate_at_launch]
                         if len(tag_prop) == 1:  # we should never have more than 1 match
                             # save tag from original list to avoid modifying list we are iterating through
                             del_tags.append(tag)
