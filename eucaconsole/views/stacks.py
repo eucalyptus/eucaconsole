@@ -98,6 +98,7 @@ class StacksView(LandingPageView):
         self.filters_form = StacksFiltersForm(
             self.request, cloud_type=self.cloud_type, formdata=self.request.params or None)
         search_facets = self.filters_form.facets
+        ufshost = self.cloudformation_conn.host if self.cloud_type == 'euca' else ''
         self.render_dict = dict(
             filter_keys=self.filter_keys,
             search_facets=BaseView.escape_json(json.dumps(search_facets)),
@@ -107,6 +108,7 @@ class StacksView(LandingPageView):
             json_items_endpoint=self.json_items_endpoint,
             delete_form=self.delete_form,
             delete_stack_url=self.request.route_path('stacks_delete'),
+            ufshost_error=(ufshost in ['localhost', '127.0.0.01'])
         )
 
     @view_config(route_name='stacks', renderer='../templates/stacks/stacks.pt')

@@ -110,13 +110,14 @@ class DashboardView(BaseView):
                     pass
 
         tiles_are_default = (tiles == ','.join(tiles_default))
-
+        ufshost = self.conn.host if self.cloud_type == 'euca' else ''
         return dict(
             availability_zones=availability_zones,
             tiles=tiles.split(','),
             tiles_not_shown=[(tile, label) for (tile, label) in TILE_MASTER_LIST if tile in tiles_not_shown],
             tiles_are_default=tiles_are_default,
             controller_options_json=self.get_controller_options_json(),
+            ufshost_error=(ufshost in ['localhost', '127.0.0.01'])
         )
 
     def get_controller_options_json(self):
