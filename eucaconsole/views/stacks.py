@@ -236,7 +236,7 @@ class StackView(BaseView, StackMixin):
                 msg = _(u"Deleting stack")
                 self.log_request(u"{0} {1}".format(msg, name))
                 self.cloudformation_conn.delete_stack(name)
-                prefix = _(u'Successfully deleted stack.')
+                prefix = _(u'Successfully sent delete stack request. It may take a moment to delete ')
                 msg = u'{0} {1}'.format(prefix, name)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
                 time.sleep(1)  # delay to allow server to update state before moving user on
