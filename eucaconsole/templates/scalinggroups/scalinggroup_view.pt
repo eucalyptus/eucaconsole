@@ -98,7 +98,7 @@
                             <label class="right">
                                 <span i18n:translate="">Recent activity</span>
                                 <span class="helptext-icon" data-tooltip="" i18n:attributes="title"
-                                    title="The last action performed by the scaling group"></span>
+                                    title="The last few actions performed by the scaling group"></span>
                             </label>
                         </div>
                         <div class="large-9 small-8 columns">
