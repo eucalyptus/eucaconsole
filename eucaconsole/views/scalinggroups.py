@@ -339,14 +339,15 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
         return self.render_dict
 
     def update_tags(self):
-        if self.scaling_group.tags:
+        scaling_group_tags = self.scaling_group.tags
+        if scaling_group_tags:
             # cull tags that start with aws: or euca:
-            self.scaling_group.tags = [
+            scaling_group_tags = [
                 tag for tag in self.scaling_group.tags if 
                 tag.key.find('aws:') == -1 and tag.key.find('euca:') == -1
             ]
         updated_tags_list = self.parse_tags_param(scaling_group_name=self.scaling_group.name)
-        (del_tags, update_tags) = self.optimize_tag_update(self.scaling_group.tags[:], updated_tags_list)
+        (del_tags, update_tags) = self.optimize_tag_update(scaling_group_tags, updated_tags_list)
         # Delete existing tags first
         if del_tags:
             self.autoscale_conn.delete_tags(del_tags)
@@ -375,7 +376,7 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
             # finally, delete the tags we found form original list
             for tag in del_tags:
                 orig_tags.remove(tag)
-        return (orig_tags, updated_tags)
+        return orig_tags, updated_tags
 
     def update_properties(self):
         self.scaling_group.desired_capacity = self.request.params.get('desired_capacity', 1)
