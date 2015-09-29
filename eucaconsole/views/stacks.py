@@ -108,7 +108,7 @@ class StacksView(LandingPageView):
             json_items_endpoint=self.json_items_endpoint,
             delete_form=self.delete_form,
             delete_stack_url=self.request.route_path('stacks_delete'),
-            ufshost_error=(ufshost in ['localhost', '127.0.0.01'])
+            ufshost_error=(ufshost in ['localhost', '127.0.0.1'])
         )
 
     @view_config(route_name='stacks', renderer='../templates/stacks/stacks.pt')

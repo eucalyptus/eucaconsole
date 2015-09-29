@@ -872,6 +872,7 @@ class BucketItemDetailsView(BaseView, BucketMixin):
         self.versioning_form = BucketUpdateVersioningForm(request, formdata=self.request.params or None)
         self.metadata_form = MetadataForm(request, formdata=self.request.params or None)
         self.shared_url_form = BucketItemSharedURLForm(request, formdata=self.request.params or None)
+        ufshost = self.s3_conn.host if self.cloud_type == 'euca' else ''
         self.render_dict = dict(
             sharing_form=self.sharing_form,
             details_form=self.details_form,
@@ -889,6 +890,7 @@ class BucketItemDetailsView(BaseView, BucketMixin):
             item_open_url=self.bucket_item.generate_url(expires_in=BUCKET_ITEM_URL_EXPIRES),
             item_download_url=BucketContentsView.get_item_download_url(self.bucket_item),
             cancel_link_url=self.get_cancel_link_url(),
+            ufshost_error=(ufshost in ['localhost', '127.0.0.1'])
         )
 
     def get_controller_options_json(self):

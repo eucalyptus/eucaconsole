@@ -117,7 +117,7 @@ class DashboardView(BaseView):
             tiles_not_shown=[(tile, label) for (tile, label) in TILE_MASTER_LIST if tile in tiles_not_shown],
             tiles_are_default=tiles_are_default,
             controller_options_json=self.get_controller_options_json(),
-            ufshost_error=(ufshost in ['localhost', '127.0.0.01'])
+            ufshost_error=(ufshost in ['localhost', '127.0.0.1'])
         )
 
     def get_controller_options_json(self):
