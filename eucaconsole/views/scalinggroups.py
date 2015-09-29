@@ -28,6 +28,7 @@
 Pyramid views for Eucalyptus and AWS scaling groups
 
 """
+from dateutil import parser
 import simplejson as json
 import time
 
@@ -279,6 +280,14 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
         cause = None
         if len(self.activities) > 0 and hasattr(self.activities[0], 'cause'):
             cause = self.activities[0].cause
+            causes = cause.split('At')
+            causes = causes[1:]
+            cause = []
+            for c in causes:
+                idx = c.find('Z') + 1
+                date_string = c[:idx]
+                date_obj = parser.parse(date_string)
+                cause.append(dict(date=date_obj, msg=c[idx:]))
         self.render_dict = dict(
             scaling_group=self.scaling_group,
             scaling_group_name=self.escape_braces(self.scaling_group.name) if self.scaling_group else '',
