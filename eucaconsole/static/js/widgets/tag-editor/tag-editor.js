@@ -3,17 +3,19 @@ angular.module('TagEditorModule', ['EucaConsoleUtils'])
         return {
             scope: {
                 template: '@',
-                tags: '@',
                 showNameTag: '@'
             },
+            transclude: true,
             restrict: 'E',
             templateUrl: function (element, attributes) {
                 return attributes.template;
             },
             controller: ['$scope', function ($scope) {
-                console.log($scope);
             }],
-            link: function (scope, element, attrs) {
+            link: function (scope, element, attrs, ctrl, transclude) {
+                var content = transclude();
+                scope.tags = JSON.parse(content.text());
+
                 if(!attrs.showNameTag) {
                     attrs.showNameTag = true;
                 }

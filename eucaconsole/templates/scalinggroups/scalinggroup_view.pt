@@ -97,7 +97,7 @@
                     ${panel('autoscale_tag_editor', tags=scaling_group.tags)}
                     <tag-editor
                             template="${request.static_path('eucaconsole:static/js/widgets/tag-editor/tag-editor.html')}"
-                            tags="${scaling_group.tags}">
+                            tal:content="tags | structure">
                     </tag-editor>
                     <hr />
                     <div>

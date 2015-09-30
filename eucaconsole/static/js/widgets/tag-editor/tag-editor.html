@@ -2,7 +2,7 @@
     <div class="columns"><h6>Tags</h6></div>
     <div class="columns field" ng-cloak>
         <div class="item-list">
-            <span class="" ng-repeat="tag in tags">
+            <span class="" ng-repeat="tag in tags track by $index">
                 <span title="{{ tag | safe }}">
                     {{ tag.name | ellipsis: 20 }} <em>=</em> {{ tag.value | ellipsis: 40 }}
                 </span>

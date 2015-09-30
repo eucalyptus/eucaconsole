@@ -275,9 +275,18 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
             vpc_conn=self.vpc_conn, elb_conn=self.elb_conn, formdata=self.request.params or None)
         self.delete_form = ScalingGroupDeleteForm(self.request, formdata=self.request.params or None)
         self.is_vpc_supported = BaseView.is_vpc_supported(request)
+
+        tags = [{
+            'name': tag.key,
+            'value': tag.value,
+            'propagate_at_launch': tag.propagate_at_launch
+        } for tag in self.scaling_group.tags]
+        tags = BaseView.escape_json(json.dumps(tags))
+
         self.render_dict = dict(
             scaling_group=self.scaling_group,
             scaling_group_name=self.escape_braces(self.scaling_group.name) if self.scaling_group else '',
+            tags=tags,
             vpc_network=self.vpc_name,
             policies=self.policies,
             edit_form=self.edit_form,
