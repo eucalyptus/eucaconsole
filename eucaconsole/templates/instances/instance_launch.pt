@@ -301,17 +301,17 @@
                 </div>
                 <div class="section step4 hide">
                     <div class="row">
-                        <div class="columns value" ng-show="monitoringEnabled">
+                        <div class="columns value" ng-show="monitoringEnabled" i18n:translate="">
                             <i class="fi-check"></i> Monitoring enabled
                         </div>
                     </div>
                     <div class="row">
-                        <div class="columns value" ng-show="privateAddressing">
+                        <div class="columns value" ng-show="privateAddressing" i18n:translate="">
                             <i class="fi-check"></i> Uses private addressing
                         </div>
                     </div>
                     <div class="row">
-                        <div class="columns value" ng-show="additionalStorageConfigured">
+                        <div class="columns value" ng-show="additionalStorageConfigured" i18n:translate="">
                             <i class="fi-check"></i> Additional storage configured
                         </div>
                     </div>
