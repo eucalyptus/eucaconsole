@@ -72,6 +72,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             $scope.preventFormSubmitOnEnter();
             $scope.initChosenSelectors();
             $scope.watchTags();
+            $scope.watchBdMapping();
             $scope.focusEnterImageID();
             $scope.setWatcher();
         };
@@ -156,6 +157,11 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.watchTags = function () {
             $scope.$on('tagUpdate', function () {
                 $scope.updateTagsPreview();
+            });
+        };
+        $scope.watchBdMapping = function () {
+            $scope.$on('bdMappingChange', function (evt, args) {
+                $scope.additionalStorageConfigured = args;
             });
         };
         $scope.checkRequiredInput = function () {

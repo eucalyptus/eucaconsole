@@ -302,12 +302,17 @@
                 <div class="section step4 hide">
                     <div class="row">
                         <div class="columns value" ng-show="monitoringEnabled">
-                            <i class="fi-check"></i> Monitoring enabled
+                            <i class="fi-check"></i> <span i18n:translate="">Monitoring enabled</span>
                         </div>
                     </div>
                     <div class="row">
                         <div class="columns value" ng-show="privateAddressing">
-                            <i class="fi-check"></i> Uses private addressing
+                            <i class="fi-check"></i> <span i18n:translate="">Uses private addressing</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="columns value" ng-show="additionalStorageConfigured">
+                            <i class="fi-check"></i> <span i18n:translate="">Additional storage configured</span>
                         </div>
                     </div>
                 </div>
