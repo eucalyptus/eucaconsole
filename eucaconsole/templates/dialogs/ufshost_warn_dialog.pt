@@ -1,7 +1,7 @@
 <!--! Modal dialog to warn about ufshost configuration error -->
 <div tal:omit-tag="" i18n:domain="eucaconsole">
     <div id="ufshost-warn-dialog" class="reveal-modal small" data-reveal="">
-        <h3 class="warn-dialog" i18n:translate="">Cannot create stack</h3>
+        <h3 class="warn-dialog" i18n:translate="">WARNING: Cannot create stack</h3>
         <p i18n:translate="">
             You cannot create a stack because the ufshost setting includes localhost.
         </p>
