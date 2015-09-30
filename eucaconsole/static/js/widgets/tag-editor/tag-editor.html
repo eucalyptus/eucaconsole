@@ -1,1 +1,12 @@
-<p>{{ editor }}</p>
+<div class="tag-editor row controls-wrapper">
+    <div class="columns"><h6>Tags</h6></div>
+    <div class="columns field" ng-cloak>
+        <div class="item-list">
+            <span class="" ng-repeat="tag in tags">
+                <span title="{{ tag | safe }}">
+                    {{ tag.name | ellipsis: 20 }} <em>=</em> {{ tag.value | ellipsis: 40 }}
+                </span>
+            </span>
+        </div>
+    </div>
+</div>

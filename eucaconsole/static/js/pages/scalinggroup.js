@@ -5,7 +5,7 @@
  */
 
 // Scaling Group page includes the AutoScale tag editor, so pull in that module as well.
-angular.module('ScalingGroupPage', ['AutoScaleTagEditor', 'EucaConsoleUtils'])
+angular.module('ScalingGroupPage', ['AutoScaleTagEditor', 'EucaConsoleUtils', 'TagEditorModule'])
     .controller('ScalingGroupPageCtrl', function ($scope, $timeout, eucaUnescapeJson, eucaNumbersOnly) {
         $scope.minSize = 1;
         $scope.desiredCapacity = 1;

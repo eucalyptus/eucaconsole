@@ -95,6 +95,10 @@
                     ${panel('form_field', field=edit_form['health_check_period'], step='30', leftcol_width_large=3, rightcol_width_large=9)}
                     <hr />
                     ${panel('autoscale_tag_editor', tags=scaling_group.tags)}
+                    <tag-editor
+                            template="${request.static_path('eucaconsole:static/js/widgets/tag-editor/tag-editor.html')}"
+                            tags="${scaling_group.tags}">
+                    </tag-editor>
                     <hr />
                     <div>
                         <button type="submit" class="button" id="save-changes-btn" ng-disabled="isNotValid || isNotChanged">
@@ -134,6 +138,7 @@
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/scalinggroup.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/tag-editor/tag-editor.js')}"></script>
 </div>
 
 </metal:block>

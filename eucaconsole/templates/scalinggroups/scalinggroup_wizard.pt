@@ -73,7 +73,7 @@
                             </div>
                             <hr />
                             ${panel('autoscale_tag_editor', tags=[])}
-                            <fucking-tag-editor template="${request.static_path('eucaconsole:static/js/widgets/tag-editor/tag-editor.html')}"></fucking-tag-editor>
+                            <tag-editor template="${request.static_path('eucaconsole:static/js/widgets/tag-editor/tag-editor.html')}"></tag-editor>
                             <hr />
                             <div>
                                 <label>
