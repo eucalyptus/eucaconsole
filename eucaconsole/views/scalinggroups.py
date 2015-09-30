@@ -28,6 +28,7 @@
 Pyramid views for Eucalyptus and AWS scaling groups
 
 """
+from dateutil import parser
 import simplejson as json
 import time
 
@@ -271,14 +272,27 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
             self.policies = self.get_policies(self.scaling_group)
             self.vpc = self.get_vpc(self.scaling_group)
             self.vpc_name = TaggedItemView.get_display_name(self.vpc) if self.vpc else ''
+            self.activities = self.autoscale_conn.get_all_activities(self.scaling_group.name, max_records=1)
         self.edit_form = ScalingGroupEditForm(
             self.request, scaling_group=self.scaling_group, autoscale_conn=self.autoscale_conn, ec2_conn=self.ec2_conn,
             vpc_conn=self.vpc_conn, elb_conn=self.elb_conn, formdata=self.request.params or None)
         self.delete_form = ScalingGroupDeleteForm(self.request, formdata=self.request.params or None)
         self.is_vpc_supported = BaseView.is_vpc_supported(request)
+        cause = None
+        if len(self.activities) > 0 and hasattr(self.activities[0], 'cause'):
+            cause = self.activities[0].cause
+            causes = cause.split('At')
+            causes = causes[1:]
+            cause = []
+            for c in causes:
+                idx = c.find('Z') + 1
+                date_string = c[:idx]
+                date_obj = parser.parse(date_string)
+                cause.append(dict(date=date_obj, msg=c[idx:]))
         self.render_dict = dict(
             scaling_group=self.scaling_group,
             scaling_group_name=self.escape_braces(self.scaling_group.name) if self.scaling_group else '',
+            activity_cause=cause,
             vpc_network=self.vpc_name,
             policies=self.policies,
             edit_form=self.edit_form,

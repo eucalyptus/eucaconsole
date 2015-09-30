@@ -93,6 +93,20 @@
                     </div>
                     ${panel('form_field', field=edit_form['default_cooldown'], step='30', leftcol_width_large=3, rightcol_width_large=9)}
                     ${panel('form_field', field=edit_form['health_check_period'], step='30', leftcol_width_large=3, rightcol_width_large=9)}
+                    <div class="row controls-wrapper readonly" tal:condition="activity_cause">
+                        <div class="large-3 small-4 columns">
+                            <label class="right">
+                                <span i18n:translate="">Recent activity</span>
+                                <span class="helptext-icon" data-tooltip="" i18n:attributes="title"
+                                    title="The last few actions performed by the scaling group"></span>
+                            </label>
+                        </div>
+                        <div class="large-9 small-8 columns">
+                            <div class="value" tal:repeat="cause activity_cause" ng-non-bindable="">
+                                At ${cause.date.strftime(layout.date_format)}${cause.msg}
+                            </div>
+                        </div>
+                    </div>
                     <hr />
                     ${panel('autoscale_tag_editor', tags=scaling_group.tags)}
                     <hr />
