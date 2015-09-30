@@ -280,7 +280,7 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
             'name': tag.key,
             'value': tag.value,
             'propagate_at_launch': tag.propagate_at_launch
-        } for tag in self.scaling_group.tags]
+        } for tag in self.scaling_group.tags or []]
         tags = BaseView.escape_json(json.dumps(tags))
 
         self.render_dict = dict(

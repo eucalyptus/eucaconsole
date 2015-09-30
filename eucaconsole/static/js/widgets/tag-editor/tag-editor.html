@@ -1,12 +1,52 @@
 <div class="tag-editor row controls-wrapper">
     <div class="columns"><h6>Tags</h6></div>
     <div class="columns field" ng-cloak>
+
         <div class="item-list">
             <span class="" ng-repeat="tag in tags track by $index">
                 <span title="{{ tag | safe }}">
                     {{ tag.name | ellipsis: 20 }} <em>=</em> {{ tag.value | ellipsis: 40 }}
                 </span>
+                <span ng-show="tag.propagate_at_launch" class="propagates">(propagate)</span>
+                <a href="javascript:void(0);" class="remove" ng-click="removeTag($index, $event)"
+                   title="Remove tag"><i class="fi-x"></i></a>
             </span>
+        </div>
+
+        <div class="add-label" ng-switch="tags.length">
+            <span ng-switch-when="0">Add a tag:</span>
+            <span ng-switch-default>Add another tag:</span>
+        </div>
+
+        <div class="row tagentry controls-wrapper" ng-show="tags.length < 10">
+            <div class="tag-entry-fields">
+                <div id="propagate-wrapper" class="large-2 medium-3 small-3 columns">
+                    <input id="propagate-checkbox" class="tag-input propagate" type="checkbox"
+                           ng-model="newTagPropagate"/>
+                    <label for="propagate-checkbox">Propagate</label>
+                    <span class="helptext-icon" data-tooltop=""
+                          title="Propagate to instances launched by this scaling group"></span>
+                </div>
+                <div id="autoscale-tag-name-input-div" class="large-2 medium-2 small-4 columns">
+                    <input class="taginput key" placeholder="name..." ng-model="newTagKey">
+                    <span class="error">
+                        Tag must not begin with "aws:" and its length may not be longer than 128 chars
+                    </span>
+                </div>
+                <div id="autoscale-tag-value-input-div" class="large-8 medium-7 small-5 columns">
+                    <input class="taginput value" placeholder="value..." ng-model="newTagValue"/>
+                    <span class="error">
+                        Tag may not begin with "aws:" or its length be longer than 128 chars
+                    </span>
+                </div>
+            </div>
+            <div class="tag-entry-submit">
+                <div class="columns">
+                    <a href="javascript:void(0);" ng-click="addTag($event)" ng-disabled="isTagNotComplete"
+                       class="button round tiny" id="add-tag-btn"
+                       title="Add tag">Add Tag</a>
+                </div>
+            </div>
         </div>
     </div>
 </div>
