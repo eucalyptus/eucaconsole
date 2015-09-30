@@ -111,6 +111,11 @@ table.table {
     }
 }
 
+#instance-section {
+    .actions {
+        text-align: right;
+    }
+}
 
 // Health Checks tab ================
 select[name="ping_protocol"] {
