@@ -7,7 +7,7 @@
 </head>
 
 <div metal:fill-slot="main_content">
-    <div class="row" id="contentwrap" ng-app="TemplateDesigner" ng-controller="TemplateDesignerCtrl as designCtrl" ng-init="designCtrl.initController()"> 
+    <div class="row" id="contentwrap" ng-app="TemplateDesigner" ng-controller="TemplateDesignerCtrl as designCtrl" ng-init="designCtrl.initController('${json_opts}', 'blah')"> 
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('stacks')}" i18n:translate="">Stacks</a></li>
@@ -19,13 +19,24 @@
         <h3 id="pagetitle">
             <strong i18n:translate="">Tempate Designer:</strong>
         </h3>
-        <div class="large-12 columns">
+        <div class="large-2 columns">
+            <div ng-repeat="(name, svc) in designCtrl.resources">
+                <h6>{{ name }}</h6>
+                <div ng-repeat="res in svc">
+                    <a href="#">{{ res.name }}</a>
+                </div>
+            </div>
+        </div>
+        <div class="large-10 columns">
+            <div id="graph-area">
+            </div>
         </div>
     </div>
 </div>
 
 <div metal:fill-slot="tail_js">
-    <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/d3/d3.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/webcola/cola.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/template_designer.js')}"></script>
 </div>
 
