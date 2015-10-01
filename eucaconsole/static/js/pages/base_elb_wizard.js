@@ -4,7 +4,10 @@
  *
  */
 
-angular.module('BaseELBWizard', ['EucaConsoleUtils', 'CreateBucketDialog', 'MagicSearch', 'ELBSecurityPolicyEditor', 'TagEditor', 'ELBListenerEditor'])
+angular.module('BaseELBWizard', [
+    'EucaConsoleUtils', 'CreateBucketDialog', 'MagicSearch', 'ELBSecurityPolicyEditor',
+    'TagEditor', 'ELBListenerEditor', 'ELBSecurityGroupRulesWarning']
+)
     .controller('BaseELBWizardCtrl', function ($scope, $http, $timeout, eucaHandleError, eucaUnescapeJson) {
         $scope.thisForm = undefined;
         $scope.urlParams = undefined;

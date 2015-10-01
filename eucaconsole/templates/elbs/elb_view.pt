@@ -118,7 +118,7 @@
                     <hr />
                     <div class="save-changes-button">
                         <button type="submit" class="button" id="save-changes-btn-general"
-                            ng-click="submitSaveChanges($event, 'general-tab')"
+                            ng-click="updateELB($event)"
                             ng-disabled="isNotChanged || listenerArray.length === 0">
                             <span i18n:translate="">Save Changes</span>
                         </button>
@@ -143,6 +143,7 @@
         ${panel('elb_security_policy_dialog', security_policy_form=security_policy_form, latest_predefined_policy=latest_predefined_policy)}
         ${panel('create_bucket_dialog', create_bucket_form=create_bucket_form)}
         ${panel('elb_bucket_access_log_dialog')}
+        ${panel('elb_security_group_warning_dialog', create=False)}
     </div>
 </div>
 
