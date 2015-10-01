@@ -1,0 +1,34 @@
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
+
+<head metal:fill-slot="head_css">
+    <style type="text/css">
+        #contentwrap { padding-bottom: 10rem; }
+    </style>
+</head>
+
+<div metal:fill-slot="main_content">
+    <div class="row" id="contentwrap" ng-app="TemplateDesigner" ng-controller="TemplateDesignerCtrl as designCtrl" ng-init="designCtrl.initController()"> 
+        <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+            <metal:crumbs metal:fill-slot="crumbs">
+                <li><a href="${request.route_path('stacks')}" i18n:translate="">Stacks</a></li>
+                <li class="current"><a href="#" i18n:translate="">Template Designer</a></li>
+            </metal:crumbs>
+        </metal:breadcrumbs>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
+        <h3 id="pagetitle">
+            <strong i18n:translate="">Tempate Designer:</strong>
+        </h3>
+        <div class="large-12 columns">
+        </div>
+    </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/template_designer.js')}"></script>
+</div>
+
+</metal:block>
+
+

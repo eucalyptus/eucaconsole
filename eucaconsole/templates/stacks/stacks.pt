@@ -21,6 +21,19 @@
                 <a class="button" i18n:translate="" id="create-stack-btn"
                    href="${request.route_path('stack_new')}">Create Stack</a>
             </div>
+            <div metal:fill-slot="new_button">
+                <a class="button split" id="create-stack-btn"
+                   href="${request.route_path('stack_new')}">
+                    <span i18n:translate="" tal:omit-tag="">Create Stack</span>
+                    <span class="euca-split" data-dropdown="create-drop"></span>
+                </a>
+                <ul id="create-drop" class="f-dropdown" data-dropdown-content="">
+                    <li>
+                        <a id="stack-designer-btn" i18n:translate=""
+                            href="${request.route_path('template_designer')}">Design Template</a>
+                    </li>
+                </ul>
+            </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
                 <a id="tile-item-dropdown_{{ item.name | escapeHTMLTagID }}" class="tiny secondary button dropdown right" data-dropdown="item-dropdown_{{ item.name | escapeHTMLTagID }}"><i class="grid-action"></i></a>
                 <ul id="item-dropdown_{{ item.name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">

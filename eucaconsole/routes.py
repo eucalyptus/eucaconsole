@@ -362,4 +362,7 @@ urls = [
     Route(name='stack_state_json', pattern='/stacks/{name}/state/json'),
     Route(name='stack_template', pattern='/stacks/{name}/template'),
     Route(name='stack_events', pattern='/stacks/{name}/events'),
+
+    # Templates #####
+    Route(name='template_designer', pattern='/templates/design'),
 ]

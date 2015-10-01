@@ -90,6 +90,13 @@ module.exports = function(grunt) {
                   'nv.d3.min.css': 'nvd3/build/nv.d3.min.css'
               }
           },
+          webcola: {
+              options: {
+              },
+              files: {
+                'eucaconsole/static/js/thirdparty/webcola': 'webcola/WebCola/cola.*'
+              }
+          },
           angular_chosen: {
               options: {
               },
