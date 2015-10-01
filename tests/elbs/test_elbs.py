@@ -38,6 +38,7 @@ from boto.ec2.elb.attributes import LbAttributes, CrossZoneLoadBalancingAttribut
 from moto import mock_elb, mock_cloudwatch
 
 
+from eucaconsole.i18n import _
 from eucaconsole.constants.elbs import ELB_EMPTY_DATA_MESSAGE
 from eucaconsole.views.elbs import ELBsJsonView, ELBView, ELBMonitoringView, ELBInstancesView, ELBHealthChecksView
 
@@ -96,8 +97,12 @@ class ELBMonitoringViewTests(BaseViewTestCase, MockELBMixin):
         request = self.create_request()
         view = ELBMonitoringView(request, elb=elb).elb_monitoring()
         options_json = json.loads(view.get('controller_options_json'))
+        chart_help = _(
+            'The total number of completed requests that were received and routed to the registered instances. '
+            'Defaults to the sum statistic for the best output results.')
         chart_item = {
-            "metric": "RequestCount", "unit": "Count", "statistic": "Sum", "empty_msg": ELB_EMPTY_DATA_MESSAGE
+            "metric": "RequestCount", "unit": "Count", "statistic": "Sum", "empty_msg": ELB_EMPTY_DATA_MESSAGE,
+            "help": chart_help
         }
         self.assertEqual(view.get('elb_name'), 'test_elb')
         self.assert_(chart_item in options_json.get('charts_list'))

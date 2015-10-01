@@ -122,7 +122,7 @@ class StacksView(LandingPageView):
             template = u'{0} {1} - {2}'.format(prefix, name, '{0}')
             with boto_error_handler(self.request, None, template):
                 self.cloudformation_conn.delete_stack(name)
-                prefix = _(u'Successfully deleted stack.')
+                prefix = _(u'Successfully sent delete stack request. It may take a moment to delete ')
                 msg = u'{0} {1}'.format(prefix, name)
                 return JSONResponse(status=200, message=msg)
         form_errors = ', '.join(self.delete_form.get_errors_list())
@@ -236,7 +236,7 @@ class StackView(BaseView, StackMixin):
                 msg = _(u"Deleting stack")
                 self.log_request(u"{0} {1}".format(msg, name))
                 self.cloudformation_conn.delete_stack(name)
-                prefix = _(u'Successfully deleted stack.')
+                prefix = _(u'Successfully sent delete stack request. It may take a moment to delete ')
                 msg = u'{0} {1}'.format(prefix, name)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
                 time.sleep(1)  # delay to allow server to update state before moving user on
@@ -838,7 +838,7 @@ class StackWizardView(BaseView, StackMixin):
                 return  # ignore refs already in params
             if type(item) is dict and 'ImageId' in item.keys():
                 img_item = item['ImageId']
-                if 'Ref' not in img_item.keys():
+                if isinstance(img_item, dict) and 'Ref' not in img_item.keys():
                     # check for emi lookup in map
                     if 'Fn::FindInMap' in img_item.keys():
                         map_name = img_item['Fn::FindInMap'][0]

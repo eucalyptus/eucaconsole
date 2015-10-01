@@ -121,6 +121,7 @@ class VolumeManipulatorUser(UserSession):
             self.session.post(self.url + 'volumes/create', data=create_fields)
 
 if __name__ == "__main__":
+    requests.packages.urllib3.disable_warnings()
     url = URL
     num_users = NUM_USERS
     num_iterations = NUM_ITERATIONS
