@@ -27,4 +27,16 @@
     color: #5A5A5A;
     margin-bottom: 6px;
   }
+
+  &.ng-invalid {
+    .button {
+      background-color: #FFF;
+      border-color: #B3B3B3;
+      color: #B3B3B3;
+    }
+  }
+
+  input.ng-invalid.ng-touched ~ .error {
+    display: block;
+  }
 }

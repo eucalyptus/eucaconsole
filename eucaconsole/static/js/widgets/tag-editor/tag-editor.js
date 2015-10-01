@@ -13,18 +13,30 @@ angular.module('TagEditorModule', ['EucaConsoleUtils'])
             },
             controller: ['$scope', function ($scope) {
                 $scope.addTag = function () {
+                    if(!$scope.tagForm.$valid) {
+                        return
+                    }
+
                     $scope.tags.push({
                         name: $scope.newTagKey,
                         value: $scope.newTagValue,
                         propagate_at_launch: !!$scope.newTagPropagate
                     });
+
+                    $scope.newTagKey = '';
+                    $scope.newTagValue = '';
+                    $scope.tagForm.key.$setPristine();
+                    $scope.tagForm.key.$setUntouched();
+                    $scope.tagForm.value.$setPristine();
+                    $scope.tagForm.value.$setUntouched();
                 };
+
                 $scope.removeTag = function ($index) {
                     $scope.tags.splice($index, 1);
                 };
             }],
-            link: function (scope, element, attrs, ctrl, transclude) {
-                var content = transclude();
+            link: function (scope, element, attrs, ctrl, transcludeContents) {
+                var content = transcludeContents();
                 scope.tags = JSON.parse(content.text());
 
                 if(!attrs.showNameTag) {
@@ -33,6 +45,28 @@ angular.module('TagEditorModule', ['EucaConsoleUtils'])
             }
         };
     }])
+    .directive('tagName', function () {
+        var validPattern = /^(?!aws:)(?!euca:).{0,128}$/;
+        return {
+            require: 'ngModel',
+            link: function (scope, element, attrs, ctrl) {
+                ctrl.$validators.tagName = function (modelValue, viewValue) {
+                    return validPattern.test(viewValue);
+                };
+            }
+        };
+    })
+    .directive('tagValue', function () {
+        var validPattern = /^(?!aws:).{0,256}$/;
+        return {
+            require: 'ngModel',
+            link: function (scope, element, attrs, ctrl) {
+                ctrl.$validators.tagValue = function (modelValue, viewValue) {
+                    return validPattern.test(viewValue);
+                };
+            }
+        };
+    })
     .filter('ellipsis', function () {
         return function (line, num) {
             if (line.length <= num) {
