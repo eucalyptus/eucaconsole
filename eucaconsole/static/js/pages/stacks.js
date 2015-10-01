@@ -14,7 +14,7 @@ angular.module('StacksPage', ['LandingPage', 'EucaConsoleUtils'])
         };
         $scope.closeDialog = function (dialogId) {
             $('#' + dialogId).foundation('reveal', 'close');
-        }
+        };
         $scope.revealModal = function (action, stack) {
             $scope.stackName = stack.name;
             var modal = $('#' + action + '-stack-modal');

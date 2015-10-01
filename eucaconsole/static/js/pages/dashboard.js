@@ -146,6 +146,6 @@ angular.module('Dashboard', ['EucaConsoleUtils'])
         };
         $scope.closeDialog = function (dialogId) {
             $('#' + dialogId).foundation('reveal', 'close');
-        }
+        };
     })
 ;
