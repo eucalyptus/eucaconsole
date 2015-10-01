@@ -3,12 +3,12 @@
     <div class="columns field" ng-cloak>
 
         <div class="item-list">
-            <span class="" ng-repeat="tag in tags track by $index">
+            <span class="item" ng-repeat="tag in tags track by $index">
                 <span title="{{ tag | safe }}">
-                    {{ tag.name | ellipsis: 20 }} <em>=</em> {{ tag.value | ellipsis: 40 }}
+                    {{ tag.name | ellipsis: 20 }} = {{ tag.value | ellipsis: 40 }}
                 </span>
                 <span ng-show="tag.propagate_at_launch" class="propagates">(propagate)</span>
-                <a href="javascript:void(0);" class="remove" ng-click="removeTag($index, $event)"
+                <a href="javascript:void(0);" class="remove" ng-click="removeTag($index)"
                    title="Remove tag"><i class="fi-x"></i></a>
             </span>
         </div>
@@ -28,13 +28,13 @@
                           title="Propagate to instances launched by this scaling group"></span>
                 </div>
                 <div id="autoscale-tag-name-input-div" class="large-2 medium-2 small-4 columns">
-                    <input class="taginput key" placeholder="name..." ng-model="newTagKey">
+                    <input class="key" type="text" placeholder="name..." ng-model="newTagKey">
                     <span class="error">
                         Tag must not begin with "aws:" and its length may not be longer than 128 chars
                     </span>
                 </div>
                 <div id="autoscale-tag-value-input-div" class="large-8 medium-7 small-5 columns">
-                    <input class="taginput value" placeholder="value..." ng-model="newTagValue"/>
+                    <input class="value" type="text" placeholder="value..." ng-model="newTagValue"/>
                     <span class="error">
                         Tag may not begin with "aws:" or its length be longer than 128 chars
                     </span>
@@ -42,9 +42,8 @@
             </div>
             <div class="tag-entry-submit">
                 <div class="columns">
-                    <a href="javascript:void(0);" ng-click="addTag($event)" ng-disabled="isTagNotComplete"
-                       class="button round tiny" id="add-tag-btn"
-                       title="Add tag">Add Tag</a>
+                    <a href="javascript:void(0);" ng-click="addTag()" class="button round tiny"
+                       id="add-tag-btn" title="Add tag" disabled="true">Add Tag</a>
                 </div>
             </div>
         </div>

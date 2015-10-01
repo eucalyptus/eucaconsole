@@ -7,10 +7,21 @@ angular.module('TagEditorModule', ['EucaConsoleUtils'])
             },
             transclude: true,
             restrict: 'E',
+            require: 'ngModel',
             templateUrl: function (element, attributes) {
                 return attributes.template;
             },
             controller: ['$scope', function ($scope) {
+                $scope.addTag = function () {
+                    $scope.tags.push({
+                        name: $scope.newTagKey,
+                        value: $scope.newTagValue,
+                        propagate_at_launch: !!$scope.newTagPropagate
+                    });
+                };
+                $scope.removeTag = function ($index) {
+                    $scope.tags.splice($index, 1);
+                };
             }],
             link: function (scope, element, attrs, ctrl, transclude) {
                 var content = transclude();

@@ -2,6 +2,7 @@
 
 <head metal:fill-slot="head_css">
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/scalinggroup.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/tag-editor.css')}" />
 </head>
 
 <div metal:fill-slot="main_content">
@@ -108,8 +109,8 @@
                         </div>
                     </div>
                     <hr />
-                    ${panel('autoscale_tag_editor', tags=scaling_group.tags)}
                     <tag-editor
+                            ng-model="foo"
                             template="${request.static_path('eucaconsole:static/js/widgets/tag-editor/tag-editor.html')}"
                             tal:content="tags | structure">
                     </tag-editor>
