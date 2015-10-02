@@ -573,7 +573,12 @@ class StackWizardView(BaseView, StackMixin):
                 'options' in param_vals.keys() and len(param_vals['options']) > 9 \
                 else False
             if 'image' in name.lower():
-                param_vals['options'] = self.get_image_options()  # fetch image ids
+                if self.request.session.get('cloud_type', 'euca') == 'aws':
+                    # populate with amazon and user's images
+                    param_vals['options'] = self.get_image_options(owner_alias='self')
+                    param_vals['options'].extend(self.get_image_options(owner_alias='amazon'))
+                else:
+                    param_vals['options'] = self.get_image_options()  # fetch image ids
                 # force image param to use chosen
                 param_vals['chosen'] = True
             params.append(param_vals)
@@ -587,12 +592,9 @@ class StackWizardView(BaseView, StackMixin):
             ret.append((key.name, key.name))
         return ret
 
-    def get_image_options(self, img_type='machine'):
+    def get_image_options(self, img_type='machine', owner_alias=None):
         conn = self.get_connection()
         region = self.request.session.get('region')
-        owner_alias = None
-        if self.request.session.get('cloud_type', 'euca') == 'aws':
-            owner_alias = 'amazon'
         owners = [owner_alias] if owner_alias else []
         images = []
         if img_type == 'machine':
