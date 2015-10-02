@@ -52,6 +52,7 @@ from ..i18n import _
 from ..models import Notification
 from ..views import BaseView, LandingPageView, JSONResponse
 from . import boto_error_handler
+from .. import utils
 
 
 DELIMITER = '/'
@@ -889,6 +890,7 @@ class BucketItemDetailsView(BaseView, BucketMixin):
             item_open_url=self.bucket_item.generate_url(expires_in=BUCKET_ITEM_URL_EXPIRES),
             item_download_url=BucketContentsView.get_item_download_url(self.bucket_item),
             cancel_link_url=self.get_cancel_link_url(),
+            ufshost_error=utils.is_ufshost_error(self.s3_conn, self.cloud_type)
         )
 
     def get_controller_options_json(self):

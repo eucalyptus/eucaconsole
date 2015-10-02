@@ -372,3 +372,10 @@ def cloudwatch_chart_dialog(context, request, duration_choices=None, statistic_c
         duration_choices=duration_choices,
         statistic_choices=statistic_choices,
     )
+
+
+@panel_config('ufshost_warn_dialog', renderer='../templates/dialogs/ufshost_warn_dialog.pt')
+def ufshost_warn_dialog(context, request):
+    """ Modal warning when trying to create a stack, but ufshost set to localhost"""
+    return dict()
+

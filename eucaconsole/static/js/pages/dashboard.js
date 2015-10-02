@@ -144,5 +144,8 @@ angular.module('Dashboard', ['EucaConsoleUtils'])
             $.removeCookie($scope.accountName + "_dash_order");
             window.location.reload();
         };
+        $scope.closeDialog = function (dialogId) {
+            $('#' + dialogId).foundation('reveal', 'close');
+        };
     })
 ;

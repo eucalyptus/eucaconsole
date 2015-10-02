@@ -49,6 +49,7 @@ from ..models import Notification
 from ..models.auth import User
 from ..views import LandingPageView, BaseView, JSONResponse, JSONError
 from . import boto_error_handler
+from .. import utils
 
 TEMPLATE_BODY_LIMIT = 460800
 
@@ -107,6 +108,7 @@ class StacksView(LandingPageView):
             json_items_endpoint=self.json_items_endpoint,
             delete_form=self.delete_form,
             delete_stack_url=self.request.route_path('stacks_delete'),
+            ufshost_error=utils.is_ufshost_error(self.cloudformation_conn, self.cloud_type)
         )
 
     @view_config(route_name='stacks', renderer='../templates/stacks/stacks.pt')
