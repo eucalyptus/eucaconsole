@@ -214,7 +214,11 @@ class StackView(BaseView, StackMixin):
             raise HTTPNotFound
         bucket = self.get_create_template_bucket()
         stack_id = self.stack.stack_id[self.stack.stack_id.rfind('/') + 1:]
-        keys = list(bucket.list(prefix=stack_id))
+        d = hashlib.md5()
+        d.update(stack_id)
+        md5 = d.digest()
+        stack_hash = base64.b64encode(md5, '--').replace('=', '')
+        keys = list(bucket.list(prefix=stack_hash))
         if len(keys) > 0:
             key = keys[0].key
             name = key[key.rfind('-') + 1:]
@@ -658,9 +662,13 @@ class StackWizardView(BaseView, StackMixin):
                     parameters=params, tags=tags
                 )
                 stack_id = result[result.rfind('/') + 1:]
+                d = hashlib.md5()
+                d.update(stack_id)
+                md5 = d.digest()
+                stack_hash = base64.b64encode(md5, '--').replace('=', '')
                 bucket = self.get_create_template_bucket(create=True)
                 bucket.copy_key(
-                    new_key_name="{0}-{1}".format(stack_id, template_name),
+                    new_key_name="{0}-{1}".format(stack_hash, template_name),
                     src_key_name=template_name,
                     src_bucket_name=bucket.name
                 )
