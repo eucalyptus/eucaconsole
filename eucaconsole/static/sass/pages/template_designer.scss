@@ -1,0 +1,24 @@
+/* @fileOverview CloudFormation Template Designer page CSS */
+@import "../includes/eucavariables";
+
+// Import landing page styles for tile view display on Volume snapshots page
+@import "../includes/landingpage";
+
+
+#graph-area {
+    border-style: solid;
+    border-width: 1px;
+    color: $euca-darkgrey;
+}
+
+.link {
+    stroke: $euca-grey;
+    stroke-width: 3px;
+    stroke-opacity: 1;
+}
+
+.node {
+    stroke: white;
+    stroke-width: 1.5px;
+    cursor: move;
+}

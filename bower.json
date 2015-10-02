@@ -15,6 +15,7 @@
     "angular-magic-search": "~0.2.0",
     "angular-chosen-localytics": "~1.0.7",
     "StickyTableHeaders": "~0.1.15",
-    "webcola": "~3.1.0"
+    "webcola": "~3.1.0",
+    "ngDraggable": "0.1.8"
   }
 }

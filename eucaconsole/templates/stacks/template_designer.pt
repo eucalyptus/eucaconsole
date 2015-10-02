@@ -1,9 +1,7 @@
 <metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
 <head metal:fill-slot="head_css">
-    <style type="text/css">
-        #contentwrap { padding-bottom: 10rem; }
-    </style>
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/template_designer.css')}" />
 </head>
 
 <div metal:fill-slot="main_content">
@@ -23,12 +21,13 @@
             <div ng-repeat="(name, svc) in designCtrl.resources">
                 <h6>{{ name }}</h6>
                 <div ng-repeat="res in svc">
-                    <a href="#">{{ res.name }}</a>
+                    <a href="#" ng-drag="true" ng-drag-data="res" data-allow-transform="true" draggable="false">{{ res.name }}</a>
                 </div>
             </div>
         </div>
         <div class="large-10 columns">
-            <div id="graph-area">
+            <div id="graph-area" ng-drop="true" ng-drop-success="designCtrl.dropComplete($data, $event)">
+                <svg/>
             </div>
         </div>
     </div>
@@ -37,6 +36,7 @@
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/d3/d3.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/webcola/cola.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/ngDraggable.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/template_designer.js')}"></script>
 </div>
 

@@ -34,6 +34,5 @@ class TemplateDesign(BaseView):
         json_opts = dict(
             resources=self.RESOURCE_DEF,
         )
-        logging.info(BaseView.escape_json(json.dumps(json_opts)))
         self.render_dict['json_opts'] = BaseView.escape_json(json.dumps(json_opts))
         return self.render_dict
