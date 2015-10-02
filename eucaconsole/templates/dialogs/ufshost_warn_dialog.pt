@@ -9,7 +9,7 @@
             Please ask your administrator to change the ufshost setting to the fully qualified domain name or the IP address of the machine running User Facing Services.
         </p>
         <div>
-            <a ng-click="closeDialog('ufshost-warn-dialog')" id="close_button" class="button expand" i18n:translate="">Close</a>
+            <a ng-click="closeDialog('ufshost-warn-dialog')" id="ufshost_warn_close_button" class="button expand" i18n:translate="">Close</a>
         </div>
         <a href="#" id="ufshost_warn_close_link" class="close-reveal-modal">&#215;</a>
     </div>
