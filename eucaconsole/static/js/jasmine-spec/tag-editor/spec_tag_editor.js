@@ -3,7 +3,7 @@
  * @requires Jasmine, AngularJS mock
  */
 
-ddescribe('TagEditorModule', function () {
+describe('TagEditorModule', function () {
 
     beforeEach(angular.mock.module('TagEditorModule'));
 
