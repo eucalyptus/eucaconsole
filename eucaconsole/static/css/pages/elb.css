@@ -168,6 +168,7 @@ table.table .status-descr { width: 20%; }
 .tile .footer.status.unhealthy { background-color: darkred; }
 
 #instance-section .actions { text-align: right; }
+#instance-section #refresh-instances-icon { display: none; }
 
 select[name="ping_protocol"] { width: 100px; }
 
