@@ -18,6 +18,7 @@ angular.module('ScalingGroupPage', ['TagEditorModule', 'EucaConsoleUtils'])
         $scope.isNotChanged = true;
         $scope.isSubmitted = false;
         $scope.pendingModalID = '';
+
         $scope.initChosenSelectors = function () {
             $('#launch_config').chosen({'width': '80%', search_contains: true});
             // Remove the option if it has no vpc subnet ID associated

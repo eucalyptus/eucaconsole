@@ -25,10 +25,13 @@ angular.module('TagEditorModule', ['EucaConsoleUtils'])
 
                     $scope.newTagKey = '';
                     $scope.newTagValue = '';
+                    $scope.newTagPropagate= false;
                     $scope.tagForm.key.$setPristine();
                     $scope.tagForm.key.$setUntouched();
                     $scope.tagForm.value.$setPristine();
                     $scope.tagForm.value.$setUntouched();
+                    $scope.tagForm.$setPristine();
+                    $scope.tagForm.$setUntouched();
                 };
 
                 $scope.removeTag = function ($index) {
@@ -42,6 +45,11 @@ angular.module('TagEditorModule', ['EucaConsoleUtils'])
                 if(!attrs.showNameTag) {
                     attrs.showNameTag = true;
                 }
+
+                scope.updateViewValue = function () {
+                    ctrl.$setViewValue(scope.tags);
+                };
+                ctrl.$setViewValue(scope.tags);
             }
         };
     }])

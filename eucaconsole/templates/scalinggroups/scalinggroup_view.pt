@@ -36,7 +36,8 @@
                         </li>
                     </metal:actions>
                 </metal:block>
-                <form id="scalinggroup-detail-form" action="${request.route_path('scalinggroup_update', id=scaling_group.name)}" method="post" data-abide=""
+                <form id="scalinggroup-detail-form" action="${request.route_path('scalinggroup_update', id=scaling_group.name)}"
+                      method="post" data-abide="" name="scalingGroupDetailForm" novalidate
                       tal:define="avail_zone_html_attrs {'data-placeholder': avail_zone_placeholder_text};
                                   vpc_subnet_html_attrs {'data-placeholder': ' '};
                                   load_balancers_html_attrs {'data-placeholder': ' '};
@@ -110,13 +111,13 @@
                     </div>
                     <hr />
                     <tag-editor
-                            ng-model="foo"
+                            ng-model="tags"
                             template="${request.static_path('eucaconsole:static/js/widgets/tag-editor/tag-editor.html')}"
                             tal:content="tags | structure">
                     </tag-editor>
                     <hr />
                     <div>
-                        <button type="submit" class="button" id="save-changes-btn" ng-disabled="isNotValid || isNotChanged">
+                        <button type="submit" class="button" id="save-changes-btn" ng-disabled="scalingGroupDetailForm.$invalid">
                             <span tal:condition="scaling_group" i18n:translate="">Save Changes</span>
                         </button>
                         <a href="${request.route_path('scalinggroups')}"
