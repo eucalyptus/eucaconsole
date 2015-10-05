@@ -433,7 +433,8 @@ class StackWizardView(BaseView, StackMixin):
                 if 'Resources' not in parsed:
                     raise JSONError(message=_(u'Invalid CloudFormation Template, Resources not found'), status=400)
                 exception_list = []
-                if self.request.params.get('inputtype') != 'sample':
+                if self.request.params.get('inputtype') != 'sample' and \
+                   self.request.session.get('cloud_type', 'euca') == 'euca':
                     exception_list = StackWizardView.identify_aws_template(parsed)
                 if len(exception_list) > 0:
                     # massage for the browser
