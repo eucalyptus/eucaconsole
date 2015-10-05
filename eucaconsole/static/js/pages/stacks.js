@@ -12,6 +12,9 @@ angular.module('StacksPage', ['LandingPage', 'EucaConsoleUtils'])
         $scope.initController = function(delete_stack_url) {
             $scope.delete_stack_url = delete_stack_url;
         };
+        $scope.closeDialog = function (dialogId) {
+            $('#' + dialogId).foundation('reveal', 'close');
+        };
         $scope.revealModal = function (action, stack) {
             $scope.stackName = stack.name;
             var modal = $('#' + action + '-stack-modal');

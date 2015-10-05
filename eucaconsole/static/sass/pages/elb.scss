@@ -115,6 +115,9 @@ table.table {
     .actions {
         text-align: right;
     }
+    #refresh-instances-icon {
+        display: none;
+    }
 }
 
 // Health Checks tab ================

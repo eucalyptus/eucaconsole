@@ -49,6 +49,7 @@ from ..models import Notification
 from ..models.auth import User
 from ..views import LandingPageView, BaseView, JSONResponse, JSONError
 from . import boto_error_handler
+from .. import utils
 
 TEMPLATE_BODY_LIMIT = 460800
 
@@ -107,6 +108,7 @@ class StacksView(LandingPageView):
             json_items_endpoint=self.json_items_endpoint,
             delete_form=self.delete_form,
             delete_stack_url=self.request.route_path('stacks_delete'),
+            ufshost_error=utils.is_ufshost_error(self.cloudformation_conn, self.cloud_type)
         )
 
     @view_config(route_name='stacks', renderer='../templates/stacks/stacks.pt')
@@ -214,7 +216,11 @@ class StackView(BaseView, StackMixin):
             raise HTTPNotFound
         bucket = self.get_create_template_bucket()
         stack_id = self.stack.stack_id[self.stack.stack_id.rfind('/') + 1:]
-        keys = list(bucket.list(prefix=stack_id))
+        d = hashlib.md5()
+        d.update(stack_id)
+        md5 = d.digest()
+        stack_hash = base64.b64encode(md5, '--').replace('=', '')
+        keys = list(bucket.list(prefix=stack_hash))
         if len(keys) > 0:
             key = keys[0].key
             name = key[key.rfind('-') + 1:]
@@ -573,7 +579,12 @@ class StackWizardView(BaseView, StackMixin):
                 'options' in param_vals.keys() and len(param_vals['options']) > 9 \
                 else False
             if 'image' in name.lower():
-                param_vals['options'] = self.get_image_options()  # fetch image ids
+                if self.request.session.get('cloud_type', 'euca') == 'aws':
+                    # populate with amazon and user's images
+                    param_vals['options'] = self.get_image_options(owner_alias='self')
+                    param_vals['options'].extend(self.get_image_options(owner_alias='amazon'))
+                else:
+                    param_vals['options'] = self.get_image_options()  # fetch image ids
                 # force image param to use chosen
                 param_vals['chosen'] = True
             params.append(param_vals)
@@ -587,12 +598,9 @@ class StackWizardView(BaseView, StackMixin):
             ret.append((key.name, key.name))
         return ret
 
-    def get_image_options(self, img_type='machine'):
+    def get_image_options(self, img_type='machine', owner_alias=None):
         conn = self.get_connection()
         region = self.request.session.get('region')
-        owner_alias = None
-        if self.request.session.get('cloud_type', 'euca') == 'aws':
-            owner_alias = 'amazon'
         owners = [owner_alias] if owner_alias else []
         images = []
         if img_type == 'machine':
@@ -658,9 +666,13 @@ class StackWizardView(BaseView, StackMixin):
                     parameters=params, tags=tags
                 )
                 stack_id = result[result.rfind('/') + 1:]
+                d = hashlib.md5()
+                d.update(stack_id)
+                md5 = d.digest()
+                stack_hash = base64.b64encode(md5, '--').replace('=', '')
                 bucket = self.get_create_template_bucket(create=True)
                 bucket.copy_key(
-                    new_key_name="{0}-{1}".format(stack_id, template_name),
+                    new_key_name="{0}-{1}".format(stack_hash, template_name),
                     src_key_name=template_name,
                     src_bucket_name=bucket.name
                 )

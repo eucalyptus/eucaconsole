@@ -363,11 +363,11 @@ class BaseView(object):
                          u'operation. Please retry the operation, and contact your cloud '
                          u'administrator to request an updated access policy if the problem persists.')
         if request.is_xhr:
-            if 'AccessDenied' == err.code:
+            if err.code in ['AccessDenied', 'UnauthorizedOperation']:
                 message = perms_notice
             raise JSONError(message=message, status=status or 403)
         if status == 403 or 'token has expired' in message:  # S3 token expiration responses return a 400 status
-            if 'Access Denied' in message and location is not None:
+            if err.code in ['AccessDenied', 'UnauthorizedOperation'] and location is not None:
                 request.session.flash(perms_notice, queue=Notification.ERROR)
                 raise HTTPFound(location=location)
 
