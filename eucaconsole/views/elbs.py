@@ -1060,7 +1060,6 @@ class ELBHealthChecksView(BaseELBView):
 
     @view_config(route_name='elb_healthchecks_update', request_method='POST', renderer=TEMPLATE)
     def elb_healthchecks_update(self):
-        self.elb_form.ping_path.data = self.request.params.get('ping_path', 'index.html')
         if self.elb_form.validate():
             location = self.request.route_path('elb_healthchecks', id=self.elb.name)
             prefix = _(u'Unable to update load balancer')

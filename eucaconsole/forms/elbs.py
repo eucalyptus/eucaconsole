@@ -250,11 +250,11 @@ class ELBHealthChecksForm(BaseSecureForm):
 
     def get_health_check_data(self):
         if self.elb is not None and self.elb.health_check.target is not None:
-            match = re.search('^(\w+):(\d+)/?(.+)?', self.elb.health_check.target)
+            match = re.search('^(\w+):(\d+)(/)?(.+)?', self.elb.health_check.target)
             return dict(
                 ping_protocol=match.group(1),
                 ping_port=match.group(2),
-                ping_path=match.group(3),
+                ping_path=match.group(4) or match.group(3),
             )
         return {}
 
