@@ -101,6 +101,7 @@ angular.module('TemplateDesigner', ['ngDraggable', 'EucaConsoleUtils'])
             vm.undoStack.push({"nodes": vm.nodes.slice(0), "links": vm.links.slice(0)});
             vm.nodes.push({"name":$data.name, "width":100, "height":100, "x":x, "y":y, "fixed":true});
             vm.setData();
+            vm.generateTemplate();
         };
         vm.canUndo = function() {
             return (vm.undoStack.length > 0);
@@ -114,5 +115,16 @@ angular.module('TemplateDesigner', ['ngDraggable', 'EucaConsoleUtils'])
             }
         };
         vm.generateTemplate = function() {
+            template = {'AWSTemplateFormatVersion':'2010-09-09'};
+            resources = {};
+            for (idx in vm.nodes) {
+                var node = vm.nodes[idx];
+                var name = node.name + '-' + Math.random().toString(36).substring(5)
+                resources[name] = {
+                    "name":"blah"
+                }
+            }
+            template['Resources'] = resources;
+            console.log(JSON.stringify(template, undefined, 2));
         }
     })

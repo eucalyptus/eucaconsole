@@ -14,10 +14,23 @@ class TemplateDesign(BaseView):
     RESOURCE_DEF = dict(
         EC2=[
             dict(name='Instance',
+                properties=[
+                    dict(name='name', label=_(u'Name'), datatype='string', required=False),
+                    dict(name='image_id', label=_(u'Image ID'), datatype='string', required=True),
+                    dict(name='min', label=_(u'Min'), datatype='int', required=True),
+                    dict(name='max', label=_(u'Max'), datatype='int', required=True),
+                    dict(name='instance_type', label=_(u'Instance Type'), datatype='string', required=True),
+                    dict(name='keypair', label=_(u'Keypair'), datatype='string', required=False),
+                    dict(name='security_group', label=_(u'Security Group'), datatype='string', required=True),
+                    dict(name='userdata', label=_(u'User Data'), datatype='string', required=False),
+                ],
             ),
             dict(name='Volume',
                 properties=[
-                    dict(name='size', label=_(u'Size'), datatype='int', required=True)
+                    dict(name='size', label=_(u'Size'), datatype='int', required=True),
+                    dict(name='name', label=_(u'Name'), datatype='string', required=False),
+                    dict(name='snapshot_id', label=_(u'Snapshot ID'), datatype='string', required=False),
+                    dict(name='zone', label=_(u'Availability Zone'), datatype='string', required=True),
                 ],
             )
         ],
