@@ -24,12 +24,18 @@
                     <a href="#" ng-drag="true" ng-drag-data="res" data-allow-transform="true" draggable="false">{{ res.name }}</a>
                 </div>
             </div>
+            <hr/>
+            <a ng-click="designCtrl.undoLast()" ng-disabled="designCtrl.canUndo()">Undo</a>
         </div>
         <div class="large-10 columns">
             <div id="graph-area" ng-drop="true" ng-drop-success="designCtrl.dropComplete($data, $event)">
                 <svg/>
             </div>
         </div>
+        <ul id="designer-action-menu" class="f-dropdown" data-dropdown-content="">
+            <li><a i18n:translate="">Properties</a></li>
+            <li><a i18n:translate="">Copy</a></li>
+        </ul>
     </div>
 </div>
 

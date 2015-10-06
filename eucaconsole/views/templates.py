@@ -5,6 +5,7 @@ import simplejson as json
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.view import view_config
 
+from ..i18n import _
 from ..views import BaseView, JSONResponse, JSONError
 
 class TemplateDesign(BaseView):
@@ -15,6 +16,9 @@ class TemplateDesign(BaseView):
             dict(name='Instance',
             ),
             dict(name='Volume',
+                properties=[
+                    dict(name='size', label=_(u'Size'), datatype='int', required=True)
+                ],
             )
         ],
         AutoScaling=[

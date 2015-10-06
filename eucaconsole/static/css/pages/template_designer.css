@@ -131,4 +131,8 @@
 
 .link { stroke: #6a737b; stroke-width: 3px; stroke-opacity: 1; }
 
-.node { stroke: white; stroke-width: 1.5px; cursor: move; }
+.node { stroke: black; stroke-width: 1.5px; cursor: move; }
+
+.menu { cursor: pointer; }
+
+.f-dropdown { max-width: 120px; }

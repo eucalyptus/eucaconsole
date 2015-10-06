@@ -18,7 +18,15 @@
 }
 
 .node {
-    stroke: white;
+    stroke: black;
     stroke-width: 1.5px;
     cursor: move;
+}
+
+.menu {
+    cursor: pointer;
+}
+
+.f-dropdown {
+    max-width: 120px;
 }
