@@ -229,7 +229,7 @@ class LoginView(BaseView, PermissionCheckMixin):
                 session['supported_platforms'] = self.get_account_attributes(['supported-platforms'])
                 session['default_vpc'] = self.get_account_attributes(['default-vpc'])
                 conn = ConnectionManager.aws_connection(
-                    default_region, creds.access_key, creds.secret_key, creds.session_token, 'vpc')
+                    session['region'], creds.access_key, creds.secret_key, creds.session_token, 'vpc')
                 vpcs = conn.get_all_vpcs()
                 if not vpcs or len(vpcs) == 0:
                     # remove vpc from supported-platforms
