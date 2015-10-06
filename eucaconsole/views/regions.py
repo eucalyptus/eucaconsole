@@ -28,6 +28,7 @@
 Region selector view
 
 """
+import logging
 from boto.exception import BotoServerError
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config
@@ -62,6 +63,6 @@ class RegionSelectView(BaseView):
                 if 'VPC' in session.get('supported_platforms', []):
                     session.get('supported_platforms').remove('VPC')
         except BotoServerError as err:
-            pass
+            logging.error(err, "Could not properly verify VPC capabilities")
         return HTTPFound(location=return_to)
 

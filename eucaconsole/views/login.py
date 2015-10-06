@@ -184,15 +184,15 @@ class LoginView(BaseView, PermissionCheckMixin):
                 headers = remember(self.request, user_account)
                 return HTTPFound(location=self.came_from, headers=headers)
             except HTTPError, err:
-                logging.info("http error "+str(vars(err)))
+                logging.info("http error " + str(vars(err)))
                 if err.code == 403:  # password expired
                     changepwd_url = self.request.route_path('managecredentials')
-                    return HTTPFound(changepwd_url+("?came_from=&expired=true&account=%s&username=%s" % (account, username)))
+                    return HTTPFound(changepwd_url + ("?came_from=&expired=true&account=%s&username=%s" % (account, username)))
                 elif err.msg == u'Unauthorized':
                     msg = _(u'Invalid user/account name and/or password.')
                     self.login_form_errors.append(msg)
             except URLError, err:
-                logging.info("url error "+str(vars(err)))
+                logging.info("url error " + str(vars(err)))
                 # if str(err.reason) == 'timed out':
                 # opened this up since some other errors should be reported as well.
                 if err.reason.find('ssl') > -1:
