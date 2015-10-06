@@ -53,3 +53,24 @@ class GuiTester(SeleniumApi):
         self.driver.set_window_size(1024, 768)
         self.driver.get(console_url)
 
+    def login(self, account, username, password):
+        """
+        Logs in to eucaconsole with credentials specified in the GuiTester object, verifies dashboard is loaded.
+        :param account:
+        :param username:
+        :param password:
+        """
+        LoginPage(self).login(account, username, password)
+        Dashboard(self).verify_dashboard_loaded()
+
+    def logout(self):
+        """
+        Logs out the user.
+        """
+        BasePage(self).logout()
+
+    def exit_browser(self):
+        """
+        Closes browser.
+        """
+        self.driver.quit()
