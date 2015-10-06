@@ -228,9 +228,13 @@ class LoginView(BaseView, PermissionCheckMixin):
                 session['username_label'] = u'{user}...@AWS'.format(user=creds.access_key[:8])
                 session['supported_platforms'] = self.get_account_attributes(['supported-platforms'])
                 session['default_vpc'] = self.get_account_attributes(['default-vpc'])
-                # Save EC2 Connection object in cache
-                ConnectionManager.aws_connection(
-                    default_region, creds.access_key, creds.secret_key, creds.session_token, 'ec2')
+                conn = ConnectionManager.aws_connection(
+                    default_region, creds.access_key, creds.secret_key, creds.session_token, 'vpc')
+                vpcs = conn.get_all_vpcs()
+                if not vpcs or len(vpcs) == 0:
+                    # remove vpc from supported-platforms
+                    if 'VPC' in session.get('supported_platforms', []):
+                        session.get('supported_platforms').remove('VPC')
                 headers = remember(self.request, creds.access_key[:8])
                 return HTTPFound(location=self.came_from, headers=headers)
             except HTTPError, err:
