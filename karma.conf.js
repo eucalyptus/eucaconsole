@@ -40,6 +40,7 @@ module.exports = function(config) {
       'static/js/thirdparty/angular/angular.min.js',
       'static/js/thirdparty/angular/angular-sanitize.min.js',
       'static/js/thirdparty/angular/angular-mocks.js',
+      'static/js/thirdparty/angular/angular-smart-table.js',
       'static/js/thirdparty/jquery/jquery.generateFile.js',
       'static/js/thirdparty/jquery/jquery.base64.js',
       'static/js/thirdparty/jquery/jquery.cookie.js',
