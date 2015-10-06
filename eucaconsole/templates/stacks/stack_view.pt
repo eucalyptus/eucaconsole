@@ -102,7 +102,7 @@
                                         <th i18n:translate="">VALUE</th>
                                     </tr></thead>
                                     <tbody>
-                                        <tr ng-repeat="item in outputs | orderBy: sortBy:sortReverse" ng-cloak="true">
+                                        <tr ng-repeat="item in outputs | orderBy: sortBy" ng-cloak="true">
                                             <td>{{ item.key }}</td>
                                             <td>{{ item.description }}</td>
                                             <td>{{ item.value }}</td>
@@ -129,7 +129,7 @@
                                         <th i18n:translate="">STATUS REASON</th>
                                     </tr></thead>
                                     <tbody>
-                                        <tr ng-repeat="item in resources | orderBy: sortBy:sortReverse" ng-cloak="true">
+                                        <tr ng-repeat="item in resources | orderBy: sortBy" ng-cloak="true">
                                             <td>{{ item.type }} ({{ item.logical_id }})</td>
                                             <td ng-hide="item.url" class="breakall">
                                                 {{ item.physical_id }}
@@ -220,7 +220,7 @@
                                         <th i18n:translate="">PHYSICAL ID</th>
                                     </tr></thead>
                                     <tbody>
-                                        <tr ng-repeat="item in events | orderBy: sortBy:sortReverse" ng-cloak="true">
+                                        <tr ng-repeat="item in events | orderBy: sortBy" ng-cloak="true">
                                             <td>{{ item.timestamp | date:'${layout.angular_date_format}' }}</td>
                                             <td><span class="label radius status {{ item.status }}">{{ item.status.replace('-', ' ').replace('-', ' ') }}</span></td>
                                             <td>
