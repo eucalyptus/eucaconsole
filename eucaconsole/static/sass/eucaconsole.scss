@@ -1051,6 +1051,17 @@ table.table {
     td.breakall {
         word-break: break-all !important;
     }
+    &.smart-table {
+        th[st-sort]:hover {
+            cursor: pointer;
+        }
+        .st-sort-ascent:before {
+            content: '\25B2';
+        }
+        .st-sort-descent:before {
+            content: '\25BC';
+        }
+    }
 }
 
 

@@ -19,12 +19,13 @@
 <metal:datagrid_macro metal:define-macro="landing_page_datagrid">
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.css')}"/>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.js')}"></script>
-    <div class="large-12 columns datagrid" id="landing-page-items">
+    <div class="large-12 columns datagrid" id="landing-page-items"
+         tal:define="use_smart_table getattr(view, 'render_dict', None) and view.render_dict.get('enable_smart_table')">
         <div class="lp-header">
             <div class="lp-action-buttons" id="primary-buttons">
                 <metal:block metal:define-slot="new_button" />
             </div>
-            <div class="lp-sort" id="sorting-controls" ng-show="!itemsLoading">
+            <div class="lp-sort" id="sorting-controls" ng-show="!itemsLoading" tal:condition="not: use_smart_table">
                 <metal:block metal:define-slot="sorting_controls">
                     <strong>Sort by</strong>
                     <a href="#" data-dropdown="sorting-dropdown" ng-cloak="">
@@ -101,10 +102,11 @@
         </div>
         <div id="tableview" class="gridwrapper" ng-if="landingPageView == 'tableview'" ng-cloak="">
             <!-- Begin table view -->
-            <table class="table" ng-show="!itemsLoading" ng-cloak="true">
+            <table class="table ${'smart-table' if use_smart_table else ''}" ng-show="!itemsLoading" ng-cloak="true"
+                   st-safe-src="items" st-table="displayedCollection">
                 <thead><tr><metal:block metal:define-slot="tableview_headers" /></tr></thead>
                 <tbody>
-                    <tr ng-cloak="true" ng-repeat="item in items | orderBy: sortBy | limitTo:displayCount">
+                    <tr tal:attributes="ng-repeat layout.smart_table_repeat if use_smart_table else layout.standard_table_repeat">
                         <metal:block metal:define-slot="tableview_columns" />
                     </tr>
                     <tr ng-show="!itemsLoading"></tr>

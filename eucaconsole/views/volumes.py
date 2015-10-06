@@ -104,6 +104,7 @@ class VolumesView(LandingPageView, BaseVolumeView):
             detach_form=self.detach_form,
             delete_form=self.delete_form,
             instances_by_zone=BaseView.escape_json(json.dumps(self.get_instances_by_zone(self.instances))),
+            enable_smart_table=True,
         ))
         return self.render_dict
 
