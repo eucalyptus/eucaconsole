@@ -12,7 +12,7 @@ class Keypair_operations_sequence(GuiOps):
                   "tlZD0zbdV/tpADxDpnhW2cPVpXcjy4sRzUCc8AZW+OE3LQxXild alicehubenko@Alices-MacBook-Pro.local"
 
     def id_generator(self, size = 6, chars=string.ascii_uppercase + string.digits):
-        return ''.join(random.choice(chars) for j in range(size))
+        return ''.join(random.choice(chars) for _ in range(size))
 
     def __init__(self):
         parser = Option_parser()

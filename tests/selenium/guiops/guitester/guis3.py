@@ -1,8 +1,9 @@
 from guitester import GuiTester
 from pages.basepage import BasePage
 from pages.dashboard import Dashboard
+from pages.buckets.buckets_lp import BucketsLanding
 from pages.buckets.bucketdetail import BucketDetailPage
-from dialogs.bucket_dialogs import CreateBucketDialog
+from dialogs.bucket_dialogs import CreateBucketDialog, DeleteBucketModal
 
 
 logger = logging.getLogger('testlogger')
@@ -23,14 +24,31 @@ class GuiS3(GuiTester):
         CreateBucketDialog.create_bucket(bucket_name)
         BucketDetailPage(self, bucket_name)
 
-    def create_bucket_from_landing_page(self):
-        pass
+    def create_bucket_from_landing_page(self, bucket_name):
+        BasePage(self).goto_buckets_view_via_menu()
+        BucketsLanding(self).click_create_bucket_on_view_page()
+        CreateBucketDialog.create_bucket(bucket_name)
+        BucketDetailPage(self, bucket_name)
 
-    def bucket_verify_landing_page(self):
-        pass
+    def view_contents_from_action_menu(self, bucket_name):
+        BasePage(self).goto_buckets_view_via_menu()
+        BucketsLanding(self).click_action_view_contents_on_view_page(bucket_name)
+        BucketDetailPage(self, bucket_name)
 
-    def view_contents_from_action_menu(self):
-        pass
+    def view_details_from_action_menu(self, bucket_name):
+        BasePage(self).goto_buckets_view_via_menu()
+        BucketsLanding(self).click_action_view_details_on_view_page(bucket_name)
+        BucketDetailPage(self, bucket_name)
 
-    def view_details_from_action_menu(self):
-        pass
+    def delete_bucket_from_detail_page(self, bucket_name):
+        BasePage(self).goto_buckets_view_via_menu()
+        BucketsLanding(self).click_bucket_link_on_view_page(bucket_name)
+        BucketDetailPage(self).click_action_delete_bucket_on_detail_page(bucket_name)
+
+    def delete_bucket_from_view_page(self, bucket_name):
+        BasePage(self).goto_buckets_view_via_menu()
+        BucketsLanding(self).click_action_delete_bucket_on_view_page(bucket_name)
+        DeleteBucketModal(self).delete_bucket()
+        BasePage(self).goto_buckets_view_via_menu()
+        BucketsLanding(self).verify_bucket_not_present_on_landing_page(bucket_name)
+
