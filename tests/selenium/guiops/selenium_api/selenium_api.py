@@ -37,7 +37,7 @@ class SeleniumApi(object):
         Sets implicit wait for webdriver
         :param implicit_wait_time:
         """
-        self.driver.implicitly_wait(self, implicit_wait_time)
+        self.driver.implicitly_wait(implicit_wait_time)
 
     def close_browser(self):
         """

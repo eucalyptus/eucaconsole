@@ -4,6 +4,7 @@ from pages.dashboard import Dashboard
 from pages.buckets.buckets_lp import BucketsLanding
 from pages.buckets.bucketdetail import BucketDetailPage
 from dialogs.bucket_dialogs import CreateBucketDialog, DeleteBucketModal
+import logging
 
 
 logger = logging.getLogger('testlogger')
@@ -21,13 +22,13 @@ class GuiS3(GuiTester):
     def create_bucket_from_dashboard(self, bucket_name):
         BasePage(self).goto_dashboard_via_menu()
         Dashboard(self).click_create_bucket_link()
-        CreateBucketDialog.create_bucket(bucket_name)
+        CreateBucketDialog(self).create_bucket(bucket_name)
         BucketDetailPage(self, bucket_name)
 
     def create_bucket_from_landing_page(self, bucket_name):
         BasePage(self).goto_buckets_view_via_menu()
         BucketsLanding(self).click_create_bucket_on_view_page()
-        CreateBucketDialog.create_bucket(bucket_name)
+        CreateBucketDialog(self).create_bucket(bucket_name)
         BucketDetailPage(self, bucket_name)
 
     def view_contents_from_action_menu(self, bucket_name):
@@ -44,6 +45,7 @@ class GuiS3(GuiTester):
         BasePage(self).goto_buckets_view_via_menu()
         BucketsLanding(self).click_bucket_link_on_view_page(bucket_name)
         BucketDetailPage(self).click_action_delete_bucket_on_detail_page(bucket_name)
+        BucketDetailPage(self, bucket_name)
 
     def delete_bucket_from_view_page(self, bucket_name):
         BasePage(self).goto_buckets_view_via_menu()

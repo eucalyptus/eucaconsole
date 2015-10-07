@@ -7,7 +7,7 @@ class CreateBucketDialog(BasePage):
         super(CreateBucketDialog, self).__init__(tester)
 
     _bucket_name_field_id = 'bucket_name'
-    _create_bucket_id = 'create_bucket_submit_button'
+    _create_bucket_id = 'create-bucket-submit-button'
 
     def create_bucket(self, bucket_name=None):
         if bucket_name is not None:

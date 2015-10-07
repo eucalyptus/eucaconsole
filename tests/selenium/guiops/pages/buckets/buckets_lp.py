@@ -7,7 +7,7 @@ class BucketsLanding(LandingPage):
         super(BucketsLanding, self).__init__(tester)
         self.verify_buckets_view_page_loaded()
 
-    _page_title = 'Buckets'
+    _buckets_view_page_title = 'Buckets'
     _bucket_link_css = 'td>a[href="/buckets/{0}/contents/"]'
     _bucket_actions_menu_id = 'table-item-dropdown_{0}'
     _view_contents_bucket_actions_menuitem_css ='#item-dropdown_{0}>li>a[href="/buckets/{0}/contents/"]'
