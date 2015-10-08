@@ -19,7 +19,7 @@
 <metal:datagrid_macro metal:define-macro="landing_page_datagrid">
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.css')}"/>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.js')}"></script>
-    <div class="large-12 columns datagrid ${'has-smart-table' if use_smart_table else ''}" id="landing-page-items"
+    <div class="large-12 columns datagrid ${'has-smart-table' if use_smart_table else ''}" id="landing-page-items" ng-class="landingPageView"
          tal:define="use_smart_table hasattr(view, 'render_dict') and view.render_dict.get('enable_smart_table', False)">
         <div class="lp-header">
             <div class="lp-action-buttons" id="primary-buttons">
