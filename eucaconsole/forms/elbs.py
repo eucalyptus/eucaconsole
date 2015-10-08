@@ -188,7 +188,7 @@ class ELBHealthChecksForm(BaseSecureForm):
             validators.NumberRange(min=1, max=65535),
         ],
     )
-    ping_path_error_msg = _(u'Ping path is required')
+    ping_path_error_msg = _(u'Ping path is required and must start with a /')
     ping_path = TextEscapedField(
         id=u'ping-path',
         label=_(u'Path'),
