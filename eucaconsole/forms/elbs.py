@@ -192,7 +192,7 @@ class ELBHealthChecksForm(BaseSecureForm):
     ping_path = TextEscapedField(
         id=u'ping-path',
         label=_(u'Path'),
-        default="index.html",
+        default="/",
         validators=[PingPathRequired(message=ping_path_error_msg)],
     )
     response_timeout_error_msg = _(u'Response timeout is required')
