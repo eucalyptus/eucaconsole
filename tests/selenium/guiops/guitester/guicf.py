@@ -5,6 +5,7 @@ from pages.dashboard import Dashboard
 from dialogs.stack_dialogs import DeleteStackDialog
 from pages.stacks.create_stack import CreateStackWizard
 from pages.stacks.stacks_lp import StacksLandingPage
+from pages.stacks.stacksdetail import StackDetailPage
 
 class GuiCF(GuiTester):
 
@@ -26,8 +27,19 @@ class GuiCF(GuiTester):
         Dashboard(self).click_create_stack_link()
         CreateStackWizard(self).create_stack(name)
 
-    def delete_stack_from_dashboard(self, name):
-        BasePage(self).goto_dashboard_via_menu()
+    def create_stack_from_lp(self, name):
+        BasePage(self).goto_stacks_view_via_menu()
+        StacksLandingPage(self).click_create_stack_button_on_landing_page()
+        CreateStackWizard(self).create_stack(name)
+
+    def delete_stack_from_lp(self, name):
         BasePage(self).goto_stacks_view_via_menu()
         StacksLandingPage(self).click_action_delete_stack_on_landing_page(name)
+        DeleteStackDialog(self).delete_stack()
+
+    def delete_stack_from_detail_page(self, name):
+        BasePage(self).goto_stacks_view_via_menu()
+        StacksLandingPage(self).click_action_view_stack_details_on_landing_page(name)
+        StackDetailPage(self, name).verify_stack_detail_page_loaded()
+        StackDetailPage(self, name).click_action_delete_stack_on_detail_page()
         DeleteStackDialog(self).delete_stack()
