@@ -17,4 +17,6 @@ class GuiOps(GuiEC2, GuiCF, GuiIAM, GuiASG, GuiS3, GuiELB):
         self.version = version
         self.platform = platform
 
+    def id_generator(self, size = 6, chars=string.ascii_uppercase + string.digits):
+        return ''.join(random.choice(chars) for j in range(size))
 

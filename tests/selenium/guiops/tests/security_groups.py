@@ -20,9 +20,6 @@ class Security_group_operations_sequence(GuiOps):
         self.platform = parser.parse_options()['platform']
         self.tester = GuiOps(console_url=self.console_url, webdriver_url=self.webdriver_url, sauce=self.sauce, browser=self.browser, version=self.version, platform=self.platform)
 
-    def id_generator(self, size = 6, chars=string.ascii_uppercase + string.digits):
-        return ''.join(random.choice(chars) for j in range(size))
-
     def security_group_ops_test(self):
 
         self.tester.login(self.account, self.user, self.password)

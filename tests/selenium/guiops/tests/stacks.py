@@ -3,8 +3,7 @@ from option_parser import Option_parser
 import string, random, time
 
 
-
-class Resource_operations_sequence(GuiOps):
+class Stack_operations_sequence(GuiOps):
 
     def __init__(self):
         parser = Option_parser()
@@ -19,16 +18,17 @@ class Resource_operations_sequence(GuiOps):
         self.platform = parser.parse_options()['platform']
         self.tester = GuiOps(console_url=self.console_url, webdriver_url=self.webdriver_url, sauce=self.sauce, browser=self.browser, version=self.version, platform=self.platform)
 
-
-    def resource_ops_test(self):
+    def stack_ops_test(self):
         self.tester.login(self.account, self.user, self.password)
-        resource_name = self.id_generator()+"-resource"
-
-        # Add your tests here use existing tests like instances.py for reference
-
+        stack1_name = self.id_generator()+"-stack"
+        self.tester.create_stack_from_dashboard(stack1_name)
+        stack2_name = self.id_generator()+"-stack"
+        self.tester.create_stack_from_lp(stack2_name)
+        self.tester.delete_stack_from_lp(stack1_name)
+        self.tester.delete_stack_from_detail_page(stack2_name)
         self.tester.logout()
         self.tester.exit_browser()
 
 if __name__ == '__main__':
-        tester = Resource_operations_sequence()
-        Resource_operations_sequence.resource_ops_test(tester)
+        tester = Stack_operations_sequence()
+        Stack_operations_sequence.stack_ops_test(tester)
