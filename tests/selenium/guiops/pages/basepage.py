@@ -16,7 +16,7 @@ class BasePage(SeleniumApi):
     _launchconfigs_menuitem_id =  "resource-menuitem-launchconfigs"
     _volumes_meniuitem_id = "resource-menuitem-volumes"
     _snapshot_menuitem_id = "resource-menuitem-snapshots"
-    _buckets_menuitem_id = "esource-menuitem-buckets"
+    _buckets_menuitem_id = "resource-menuitem-buckets"
     _sec_group_menuitem_id = "resource-menuitem-securitygroups"
     _keypair_menuitem_id = "resource-menuitem-keypairs"
     _elastic_ips_menuitem_id = "resource-menuitem-ipaddresses"

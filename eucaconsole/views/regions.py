@@ -28,6 +28,8 @@
 Region selector view
 
 """
+import logging
+from boto.exception import BotoServerError
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config
 
@@ -49,6 +51,18 @@ class RegionSelectView(BaseView):
         region = self.request.params.get('region')
         # NOTE: We normally don't want a GET request to modify data,
         #       but we're only updating the selected region in the session here.
-        self.request.session['region'] = region
+        session = self.request.session
+        session['region'] = region
+        try:
+            session['supported_platforms'] = self.get_account_attributes(['supported-platforms'])
+            session['default_vpc'] = self.get_account_attributes(['default-vpc'])
+            conn = self.get_connection(conn_type='vpc')
+            vpcs = conn.get_all_vpcs()
+            if not vpcs or len(vpcs) == 0:
+                # remove vpc from supported-platforms
+                if 'VPC' in session.get('supported_platforms', []):
+                    session.get('supported_platforms').remove('VPC')
+        except BotoServerError as err:
+            logging.error(err, "Could not properly verify VPC capabilities")
         return HTTPFound(location=return_to)
 
