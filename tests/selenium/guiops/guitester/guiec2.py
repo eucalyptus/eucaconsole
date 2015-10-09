@@ -41,33 +41,11 @@ class GuiEC2(GuiTester):
         """
         self.driver.implicitly_wait(time_to_wait)
 
-    def login(self, account, username, password):
-        """
-        Logs in to eucaconsole with credentials specified in the GuiTester object, verifies dashboard is loaded.
-        :param account:
-        :param username:
-        :param password:
-        """
-        LoginPage(self).login(account, username, password)
-        Dashboard(self).verify_dashboard_loaded()
-
     def set_all_pages_to_list_view(self):
         pass
 
     def set_all_pages_to_tile_view(self):
         pass
-
-    def exit_browser(self):
-        """
-        Closes browser.
-        """
-        self.driver.quit()
-
-    def logout(self):
-        """
-        Logs out the user.
-        """
-        BasePage(self).logout()
 
     def create_keypair_from_dashboard(self, keypair_name):
         """

@@ -1,10 +1,12 @@
+import string
+import random
+
 from guitester.guiec2 import GuiEC2
 from guitester.guicf import GuiCF
 from guitester.guiiam import GuiIAM
 from guitester.guiasg import GuiASG
 from guitester.guielb import GuiELB
 from guitester.guis3 import GuiS3
-
 
 
 class GuiOps(GuiEC2, GuiCF, GuiIAM, GuiASG, GuiS3, GuiELB):
@@ -17,4 +19,5 @@ class GuiOps(GuiEC2, GuiCF, GuiIAM, GuiASG, GuiS3, GuiELB):
         self.version = version
         self.platform = platform
 
-
+    def id_generator(self, size=6, chars=string.ascii_uppercase + string.digits):
+        return ''.join(random.choice(chars) for _ in range(size))
