@@ -22,10 +22,10 @@ class GuiCF(GuiTester):
         LoginPage(self).login(account, username, password)
         Dashboard(self).verify_dashboard_loaded()
 
-    def create_stack_from_dashboard(self, name):
+    def create_stack_from_dashboard(self, name, template_url=None):
         BasePage(self).goto_dashboard_via_menu()
         Dashboard(self).click_create_stack_link()
-        CreateStackWizard(self).create_stack(name)
+        CreateStackWizard(self).create_stack(name, template_url)
 
     def create_stack_from_lp(self, name):
         BasePage(self).goto_stacks_view_via_menu()
