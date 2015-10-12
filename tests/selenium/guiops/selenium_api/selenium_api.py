@@ -491,7 +491,7 @@ class SeleniumApi(object):
             print "ERROR: Timed out. Could not verify text = '{1}' not present in element by css = '{0}'".format(css, text)
         self.set_implicit_wait(self.implicit_wait_default_in_seconds)
 
-    def send_keys_by_id(self, element_id, text):
+    def send_keys_by_id(self, element_id, text, clear_field=True):
         """
         Simulates user typing text input.
         :param element_id:
@@ -499,12 +499,13 @@ class SeleniumApi(object):
         """
         print "Executing send_keys_by_id id={0}, text={1}".format(element_id, text)
         self.wait_for_visible_by_id(element_id)
-        print "Clearing field by if = '{0}'".format(element_id)
-        self.driver.find_element_by_id(element_id).clear()
+        if clear_field:
+            print "Clearing field by if = '{0}'".format(element_id)
+            self.driver.find_element_by_id(element_id).clear()
         print "Typing text '{1}' into field by id = '{0}'".format(element_id, text)
         self.driver.find_element_by_id(element_id).send_keys(text)
 
-    def send_keys_by_css(self, css, text):
+    def send_keys_by_css(self, css, text, clear_field=True):
         """
         Simulates user typing text input.
         :param css:
@@ -512,12 +513,13 @@ class SeleniumApi(object):
         """
         print "Executing send_keys_by_css css={0}, text={1}".format(css, text)
         self.wait_for_visible_by_css(css)
-        print "Clearing field by css = '{0}'".format(css)
-        self.driver.find_element_by_css_selector(css).clear()
+        if clear_field:
+            print "Clearing field by css = '{0}'".format(css)
+            self.driver.find_element_by_css_selector(css).clear()
         print "Typing text '{1}' into field by css = '{0}'".format(css, text)
         self.driver.find_element_by_css_selector(css).send_keys(text)
 
-    def send_keys_by_xpath(self, xpath, text):
+    def send_keys_by_xpath(self, xpath, text, clear_field=True):
         """
         Simulates user typing text input.
         :param xpath:
@@ -525,8 +527,9 @@ class SeleniumApi(object):
         """
         print "Executing send_keys_by_xpath xpath={0}, text={1}".format(xpath, text)
         self.wait_for_visible_by_xpath(xpath)
-        print "Clearing field by xpath = '{0}'".format(xpath)
-        self.driver.find_element_by_xpath(xpath).clear()
+        if clear_field:
+            print "Clearing field by xpath = '{0}'".format(xpath)
+            self.driver.find_element_by_xpath(xpath).clear()
         print "Typing text '{1}' into field by xpath = '{0}'".format(xpath, text)
         self.driver.find_element_by_xpath(xpath).send_keys(text)
 

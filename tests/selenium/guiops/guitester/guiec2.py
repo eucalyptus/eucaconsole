@@ -47,6 +47,10 @@ class GuiEC2(GuiTester):
     def set_all_pages_to_tile_view(self):
         pass
 
+    def goto_images_page_via_nav(self):
+        BasePage(self).goto_images_view_via_menu()
+        ImageLanding(self)
+
     def create_keypair_from_dashboard(self, keypair_name):
         """
         Navigates to Dashboard via menu, creates keypair. Verifies keypair visible on Keypair View page.
