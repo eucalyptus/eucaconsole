@@ -229,7 +229,8 @@
                     <metal:block metal:use-macro="layout.global_macros['help_expando']" />
                     <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                         <!-- HELP CONTENT -->
-                        <div id="help-html-console_create_launch_config" ng-include="'${layout.help_path('console_create_launch_config.html')}'"></div> 
+                        <div id="help-html-console_create_launch_config" tal:condition="not preset" ng-include="'${layout.help_path('console_create_launch_config.html')}'"></div> 
+                        <div id="help-html-console_create_launch_config_from_instance" tal:condition="preset" ng-include="'${layout.help_path('console_create_launch_config_from_instance.html')}'"></div> 
                     </div>
                 </div>
             </div>
