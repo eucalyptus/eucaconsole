@@ -291,7 +291,9 @@ class BaseELBView(TaggedItemView):
         passes_until_healthy = self.request.params.get('passes_until_healthy')
         ping_target = u"{0}:{1}".format(ping_protocol, ping_port)
         if ping_protocol in ['HTTP', 'HTTPS']:
-            ping_target = u"{0}/{1}".format(ping_target, ping_path)
+            if not ping_path.startswith('/'):
+                ping_path = '/{0}'.format(ping_path)
+            ping_target = u"{0}{1}".format(ping_target, ping_path)
         health_check = HealthCheck(
             timeout=response_timeout,
             interval=time_between_pings,
