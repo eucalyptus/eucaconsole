@@ -9,6 +9,8 @@ class BasePage(SeleniumApi):
     _user_logout_id="logout"
     _dashboard_menuitem_id = "resource-menuitem-dashboard"
     _images_menuitem_id = "resource-menuitem-images"
+    _images_menuitem_css = "#resource-menuitem-images"
+    _images_parent_xpath = "//li/a[@id='resource-menuitem-images']"
     _instances_menuitem_id = "resource-menuitem-instances"
     _instance_types_menuitem_id = "resource-menuitem-instance_types"
     _stacks_menuitem_id = "resource-menuitem-stacks"
@@ -49,7 +51,11 @@ class BasePage(SeleniumApi):
 
     def goto_images_view_via_menu(self):
         self.tester.scroll_to_element_by_id(self._images_menuitem_id)
+        #self.tester.click_element_by_xpath(self._images_parent_xpath)
+        self.tester.click_element_by_css(self._images_menuitem_css)
         self.tester.send_keys_by_id(self._images_menuitem_id, "\n", clear_field=False)
+        self.tester.click_element_by_css(self._images_menuitem_css)
+        #self.tester.send_keys_by_id(self._images_menuitem_id, "\n", clear_field=False)
 
     def goto_instances_via_menu(self):
         self.tester.scroll_to_element_by_id(self._instances_menuitem_id)
