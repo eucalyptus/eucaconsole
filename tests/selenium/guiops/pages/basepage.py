@@ -52,7 +52,9 @@ class BasePage(SeleniumApi):
     def goto_images_view_via_menu(self):
         self.tester.scroll_to_element_by_id(self._images_menuitem_id)
         #self.tester.click_element_by_xpath(self._images_parent_xpath)
-        self.tester.click_element_by_css(self._images_menuitem_css)
+        #self.tester.click_element_by_css(self._images_menuitem_css)
+        self.tester.send_keys_by_id(self._images_menuitem_id, "\n", clear_field=False)
+        time.sleep(2)
         self.tester.send_keys_by_id(self._images_menuitem_id, "\n", clear_field=False)
         self.tester.click_element_by_css(self._images_menuitem_css)
         #self.tester.send_keys_by_id(self._images_menuitem_id, "\n", clear_field=False)
