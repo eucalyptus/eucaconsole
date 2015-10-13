@@ -16,7 +16,7 @@
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
         <h3 id="pagetitle">
-            <strong i18n:translate="">Create launch cofiguration like:</strong>
+            <strong i18n:translate="">Create launch configuration like:</strong>
             <em>${launchconfig_name}</em>
         </h3>
         <div class="large-12 columns">
@@ -113,7 +113,7 @@
         <div class="large-12 columns">
             <metal:block metal:use-macro="layout.global_macros['help_expando']" />
             <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
-                <div id="help-html-console_create_launch_config_more" ng-include="'${layout.help_path('console_launch_more_instances.html')}'"></div> 
+                <div id="help-html-console_create_launch_config_more" ng-include="'${layout.help_path('console_create_launch_config_like_this.html')}'"></div> 
             </div>
         </div>
     </div>
