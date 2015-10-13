@@ -332,10 +332,10 @@ class SeleniumApi(object):
         is_visible = self.check_visibility_by_id(element_id)
         while is_visible and (k < 3):
             try:
-                print "Executing attempt " + str(k)
-                self.driver.find_element_by_id(element_id).click()
+                print "Hitting enter. Executing attempt " + str(k)
+                self.send_keys_by_id(element_id,"\n",clear_field=False)
             except Exception, e:
-                print str(k) + "-th attempt to click unsuccessful."
+                print str(k) + "-th attempt to hit enter unsuccessful."
             is_visible = self.check_visibility_by_id(element_id)
             k = k+1
 
