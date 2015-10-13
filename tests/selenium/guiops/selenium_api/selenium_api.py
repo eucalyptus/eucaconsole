@@ -315,7 +315,7 @@ class SeleniumApi(object):
     def click_element_by_id_robust(self, element_id):
         """
         Waits for an element to be present and visible such that you can click it.
-        Clicks the element, checks if element is still visible, clicks element if visible up to 3 times.
+        Clicks the element, checks if element is still visible, hits enter on element if visible up to 2 times.
         :param element_id:
         """
         self.wait_for_visible_by_id(element_id)
