@@ -711,6 +711,7 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
         var inboundOutboundPortChecksPass;
         if ($scope.vpcNetwork === 'None') {  // Bypass rules check on non-VPC clouds
             $scope.elbForm.submit();
+            return;
         }
         inboundOutboundPortChecksPass = eucaCheckELBSecurityGroupRules($scope);
         if (!confirmed && !inboundOutboundPortChecksPass) {
