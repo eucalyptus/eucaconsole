@@ -188,11 +188,11 @@ class ELBHealthChecksForm(BaseSecureForm):
             validators.NumberRange(min=1, max=65535),
         ],
     )
-    ping_path_error_msg = _(u'Ping path is required')
+    ping_path_error_msg = _(u'Ping path is required and must start with a /')
     ping_path = TextEscapedField(
         id=u'ping-path',
         label=_(u'Path'),
-        default="index.html",
+        default="/",
         validators=[PingPathRequired(message=ping_path_error_msg)],
     )
     response_timeout_error_msg = _(u'Response timeout is required')
@@ -250,7 +250,7 @@ class ELBHealthChecksForm(BaseSecureForm):
 
     def get_health_check_data(self):
         if self.elb is not None and self.elb.health_check.target is not None:
-            match = re.search('^(\w+):(\d+)/?(.+)?', self.elb.health_check.target)
+            match = re.search('^(\w+):(\d+)(.+)?', self.elb.health_check.target)
             return dict(
                 ping_protocol=match.group(1),
                 ping_port=match.group(2),

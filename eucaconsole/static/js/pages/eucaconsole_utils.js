@@ -36,7 +36,7 @@ angular.module('EucaConsoleUtils', ['CustomFilters', 'ngSanitize'])
     return function(data, status) {
         var errorMsg = data.message || '';
         if (status === 403) {
-            if (errorMsg.indexOf('Not authorized') == -1) {
+            if (errorMsg.indexOf('permissions') == -1) {
                 $('#timed-out-modal').foundation('reveal', 'open');
             }
             // else, fallthrough and display message
@@ -51,7 +51,7 @@ angular.module('EucaConsoleUtils', ['CustomFilters', 'ngSanitize'])
     return function(data, status) {
         var errorMsg = data.message || '';
         if (status === 403) {
-            if (errorMsg.indexOf('Not authorized') == -1) {
+            if (errorMsg.indexOf('permissions') == -1) {
                 $('#timed-out-modal').foundation('reveal', 'open');
             }
         }
