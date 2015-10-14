@@ -12,14 +12,14 @@ class CreateVolumeDialog(BasePage):
     _availability_zone_selector_id ="zone"
     _create_volume_submit_button_id = "create_volume_submit_button"
 
-    def create_volume(self, volume_name=None, create_from_snapshot=False, snapshot_id = None, volume_size=None, availability_zone=None):
+    def create_volume(self, volume_name=None, create_from_snapshot=False, snapshot_id = None, volume_size=None, availability_zone=None, timeout_in_seconds=120):
         if volume_name is not None:
             self.tester.send_keys_by_id(self._volume_name_field_id, volume_name)
         if create_from_snapshot:
             self.tester.click_element_by_id(self._create_from_snapshot_id)
             self.tester.send_keys_by_css(self._create_from_snapshot_search_field_css, snapshot_id)
         if availability_zone is not None:
-            self.tester.select_by_id(self._availability_zone_selector_id, availability_zone)
+            self.tester.select_by_id(self._availability_zone_selector_id, availability_zone, timeout_in_seconds=timeout_in_seconds)
         if volume_size is not None:
             self.tester.send_keys_by_id(self._volume_size_field_id, volume_size)
         self.tester.click_element_by_id(self._create_volume_submit_button_id)
