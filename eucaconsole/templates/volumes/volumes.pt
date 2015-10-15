@@ -79,7 +79,7 @@
                 </div>
             </metal:block>
             <metal:block metal:fill-slot="tableview_headers">
-                <th i18n:translate="" st-sort="name">Name (ID)</th>
+                <th i18n:translate="" st-sort="name" st-sort-default="true">Name (ID)</th>
                 <th i18n:translate="" st-sort="status">Status</th>
                 <th i18n:translate="" st-sort="size">Size</th>
                 <th i18n:translate="" st-sort="instance_name">Instance</th>
