@@ -103,7 +103,8 @@
         <div id="tableview" class="gridwrapper" ng-if="landingPageView == 'tableview'" ng-cloak="">
             <!-- Begin table view -->
             <table class="table ${'smart-table' if use_smart_table else ''}" ng-show="!itemsLoading" ng-cloak="true"
-                   st-safe-src="items" st-table="displayedCollection">
+                   st-safe-src="items" st-table="displayedCollection"
+                   tal:attributes="st-persist '{0}{1}{2}'.format(layout.username_label, '-smart-table-saved-sort-', request.path) if use_smart_table else False">
                 <thead><tr><metal:block metal:define-slot="tableview_headers" /></tr></thead>
                 <tbody>
                     <tr tal:attributes="ng-repeat layout.smart_table_repeat if use_smart_table else layout.standard_table_repeat">

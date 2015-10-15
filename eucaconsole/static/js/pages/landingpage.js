@@ -49,6 +49,8 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch'])
             $scope.landingPageViewKey = $scope.pageResource + "-landingPageView";
         };
         $scope.setInitialSort = function (sortKey) {
+            // This applies to saving initial sort for tile view
+            // Table view sorting is persisted via angular-smart-table stPersist directive where configured
             var storedSort = Modernizr.sessionstorage && sessionStorage.getItem($scope.sortByKey),
                 storedLandingPageView = Modernizr.localstorage && localStorage.getItem($scope.landingPageViewKey) || "tableview";
             $scope.sortBy = storedSort || sortKey;
@@ -294,5 +296,27 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch'])
                 $scope.searchFilterItems(filter_keys);
             });
         });
+    }).directive('stPersist', function () {  // Save angular-smart-table sorting state on subsequent page loads
+        return {
+            require: '^stTable',
+            link: function (scope, element, attr, ctrl) {
+                var nameSpace = attr.stPersist;
+                //save the table state every time it changes
+                scope.$watch(function () {
+                    return ctrl.tableState();
+                }, function (newValue, oldValue) {
+                    if (newValue !== oldValue) {
+                        sessionStorage.setItem(nameSpace, JSON.stringify(newValue));
+                    }
+                }, true);
+                //fetch the table state when the directive is loaded
+                if (sessionStorage.getItem(nameSpace)) {
+                    var savedState = JSON.parse(sessionStorage.getItem(nameSpace));
+                    var tableState = ctrl.tableState();
+                    angular.extend(tableState, savedState);
+                    ctrl.pipe();
+                }
+            }
+        };
     })
 ;
