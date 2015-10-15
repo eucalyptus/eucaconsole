@@ -77,8 +77,8 @@ class StackMixin(object):
                     bucket = s3_conn.get_bucket(bucket_name)
                 return bucket
             except BotoServerError as err:
-                if err.code != 'BucketAlreadyExists' and err.code != 'AccessDenied':
-                    raise err
+                if err.code != 'BucketAlreadyExists':
+                    BaseView.handle_error(err=err, request=self.request)
         raise JSONError(status=500, message=_(
             u'Cannot create S3 bucket to store your CloudFormation template due to namespace collision. '
             u'Please contact your cloud administrator.'
@@ -433,7 +433,8 @@ class StackWizardView(BaseView, StackMixin):
                 if 'Resources' not in parsed:
                     raise JSONError(message=_(u'Invalid CloudFormation Template, Resources not found'), status=400)
                 exception_list = []
-                if self.request.params.get('inputtype') != 'sample':
+                if self.request.params.get('inputtype') != 'sample' and \
+                   self.request.session.get('cloud_type', 'euca') == 'euca':
                     exception_list = StackWizardView.identify_aws_template(parsed)
                 if len(exception_list) > 0:
                     # massage for the browser

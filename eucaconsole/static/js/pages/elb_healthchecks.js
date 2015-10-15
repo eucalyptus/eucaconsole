@@ -77,7 +77,7 @@ angular.module('ELBHealthChecksPage', ['EucaConsoleUtils'])
             } else if ($scope.pingProtocol === 'HTTP' || $scope.pingProtocol === 'HTTPS') {
                 $scope.pingPathRequired = true;
                 if ($scope.pingPath === 'None') {
-                    $scope.pingPath = 'index.html';
+                    $scope.pingPath = '/';
                 }
             }
         };

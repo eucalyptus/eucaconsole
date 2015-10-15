@@ -106,7 +106,7 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
         $scope.crossZoneEnabled = true;
         $scope.pingProtocol = 'HTTP';
         $scope.pingPort = 80;
-        $scope.pingPath = 'index.html';
+        $scope.pingPath = '/';
         $scope.responseTimeout = 5;
         $scope.timeBetweenPings = 30;
         $scope.failuresUntilUnhealthy = 2;
@@ -709,8 +709,9 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
     $scope.checkSecurityGroupRules = function ($event, confirmed) {
         var modal = $('#elb-security-group-rules-warning-modal');
         var inboundOutboundPortChecksPass;
-        if (!$scope.vpcNetwork) {  // Bypass rules check on non-VPC clouds
+        if ($scope.vpcNetwork === 'None') {  // Bypass rules check on non-VPC clouds
             $scope.elbForm.submit();
+            return;
         }
         inboundOutboundPortChecksPass = eucaCheckELBSecurityGroupRules($scope);
         if (!confirmed && !inboundOutboundPortChecksPass) {

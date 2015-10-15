@@ -37,7 +37,7 @@ class SeleniumApi(object):
         Sets implicit wait for webdriver
         :param implicit_wait_time:
         """
-        self.driver.implicitly_wait(self, implicit_wait_time)
+        self.driver.implicitly_wait(implicit_wait_time)
 
     def close_browser(self):
         """
@@ -315,7 +315,7 @@ class SeleniumApi(object):
     def click_element_by_id_robust(self, element_id):
         """
         Waits for an element to be present and visible such that you can click it.
-        Clicks the element, checks if element is still visible, clicks element if visible up to 3 times.
+        Clicks the element, checks if element is still visible, hits enter on element if visible up to 2 times.
         :param element_id:
         """
         self.wait_for_visible_by_id(element_id)
@@ -332,10 +332,10 @@ class SeleniumApi(object):
         is_visible = self.check_visibility_by_id(element_id)
         while is_visible and (k < 3):
             try:
-                print "Executing attempt " + str(k)
-                self.driver.find_element_by_id(element_id).click()
+                print "Hitting enter. Executing attempt " + str(k)
+                self.send_keys_by_id(element_id,"\n",clear_field=False)
             except Exception, e:
-                print str(k) + "-th attempt to click unsuccessful."
+                print str(k) + "-th attempt to hit enter unsuccessful."
             is_visible = self.check_visibility_by_id(element_id)
             k = k+1
 
@@ -490,7 +490,7 @@ class SeleniumApi(object):
             print "ERROR: Timed out. Could not verify text = '{1}' not present in element by css = '{0}'".format(css, text)
         self.set_implicit_wait(self.implicit_wait_default_in_seconds)
 
-    def send_keys_by_id(self, element_id, text):
+    def send_keys_by_id(self, element_id, text, clear_field=True):
         """
         Simulates user typing text input.
         :param element_id:
@@ -498,12 +498,13 @@ class SeleniumApi(object):
         """
         print "Executing send_keys_by_id id={0}, text={1}".format(element_id, text)
         self.wait_for_visible_by_id(element_id)
-        print "Clearing field by if = '{0}'".format(element_id)
-        self.driver.find_element_by_id(element_id).clear()
+        if clear_field:
+            print "Clearing field by if = '{0}'".format(element_id)
+            self.driver.find_element_by_id(element_id).clear()
         print "Typing text '{1}' into field by id = '{0}'".format(element_id, text)
         self.driver.find_element_by_id(element_id).send_keys(text)
 
-    def send_keys_by_css(self, css, text):
+    def send_keys_by_css(self, css, text, clear_field=True):
         """
         Simulates user typing text input.
         :param css:
@@ -511,12 +512,13 @@ class SeleniumApi(object):
         """
         print "Executing send_keys_by_css css={0}, text={1}".format(css, text)
         self.wait_for_visible_by_css(css)
-        print "Clearing field by css = '{0}'".format(css)
-        self.driver.find_element_by_css_selector(css).clear()
+        if clear_field:
+            print "Clearing field by css = '{0}'".format(css)
+            self.driver.find_element_by_css_selector(css).clear()
         print "Typing text '{1}' into field by css = '{0}'".format(css, text)
         self.driver.find_element_by_css_selector(css).send_keys(text)
 
-    def send_keys_by_xpath(self, xpath, text):
+    def send_keys_by_xpath(self, xpath, text, clear_field=True):
         """
         Simulates user typing text input.
         :param xpath:
@@ -524,8 +526,9 @@ class SeleniumApi(object):
         """
         print "Executing send_keys_by_xpath xpath={0}, text={1}".format(xpath, text)
         self.wait_for_visible_by_xpath(xpath)
-        print "Clearing field by xpath = '{0}'".format(xpath)
-        self.driver.find_element_by_xpath(xpath).clear()
+        if clear_field:
+            print "Clearing field by xpath = '{0}'".format(xpath)
+            self.driver.find_element_by_xpath(xpath).clear()
         print "Typing text '{1}' into field by xpath = '{0}'".format(xpath, text)
         self.driver.find_element_by_xpath(xpath).send_keys(text)
 
@@ -560,14 +563,14 @@ class SeleniumApi(object):
         return self.driver.find_element_by_xpath(xpath).text
 
 
-    def select_by_id(self, element_id, text):
+    def select_by_id(self, element_id, text, timeout_in_seconds=None):
         """
         Selects element with particular text on it.
         :param element_id:
         :param text:
         """
         print "Executing select_by_id id = {0}, text = {1}".format(element_id, text)
-        self.wait_for_text_present_by_id(element_id, text)
+        self.wait_for_text_present_by_id(element_id, text, timeout_in_seconds=timeout_in_seconds)
         print "Selecting element with text = {1} by id = {0}".format(element_id, text)
         Select(self.driver.find_element_by_id(element_id)).select_by_visible_text(text)
 

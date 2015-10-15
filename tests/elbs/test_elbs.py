@@ -136,9 +136,21 @@ class ELBHealthChecksViewTests(BaseViewTestCase, MockELBMixin):
         self.assertEqual(view.get('elb_name'), 'test_elb')
         self.assertEqual(form.ping_protocol.data, 'HTTP')
         self.assertEqual(form.ping_port.data, 80)
-        self.assertEqual(form.ping_path.data, 'index.html')
+        self.assertEqual(form.ping_path.data, '/index.html')
         self.assertEqual(form.passes_until_healthy.data, '3')
         self.assertEqual(form.failures_until_unhealthy.data, '5')
+
+    def test_elb_health_check_data_with_slash_ping_path(self):
+        elb_conn, elb = self.make_elb()
+        health_check = Mock(
+            target='HTTPS:443/', interval=300, timeout=15, healthy_threshold=3, unhealthy_threshold=5)
+        elb.health_check = health_check
+        request = self.create_request()
+        view = ELBHealthChecksView(request, elb=elb).elb_healthchecks()
+        form = view.get('elb_form')
+        self.assertEqual(form.ping_protocol.data, 'HTTPS')
+        self.assertEqual(form.ping_port.data, 443)
+        self.assertEqual(form.ping_path.data, '/')
 
 
 class ELBDetailPageFormTests(BaseFormTestCase, BaseViewTestCase, MockELBMixin):
@@ -171,7 +183,7 @@ class ELBHealthChecksFormTests(BaseFormTestCase, BaseViewTestCase, MockELBMixin)
         form = ELBHealthChecksForm(request, elb_conn=elb_conn, elb=elb)
         self.assertEqual(form.ping_protocol.data, 'HTTP')
         self.assertEqual(form.ping_port.data, 80)
-        self.assertEqual(form.ping_path.data, 'index.html')
+        self.assertEqual(form.ping_path.data, '/index.html')
         self.assertEqual(form.time_between_pings.data, '30')
         self.assertEqual(form.response_timeout.data, 30)
         self.assertEqual(form.failures_until_unhealthy.data, '2')

@@ -34,7 +34,7 @@
                         <ul class="ul">
                             <li class="li">Select an image from the list of images on the panel. <div class="note note"><span class="notetitle">Note:</span> You can
                                     filter the list of images by typing some filter text into the
-                                    search textbox, or by selected one or more fiters in the
+                                    search textbox, or by selected one or more filters in the
                                         <span class="ph uicontrol">Filter by</span> section to the left of the
                                     image list.</div>
 </li>
@@ -57,25 +57,22 @@
         <h2 class="title topictitle2">Details</h2>
 
         
-        <div class="body taskbody"><p class="shortdesc">This panel allows you to specify the names, tags, instance size, number of
-            instances, and the availability zone of your new instance(s).</p>
+        <div class="body taskbody"><p class="shortdesc">This panel allows you to specify details of your instance(s), such as the instance type, 
+            availability zone of your new instance(s), if applicable; tags, and user data.</p>
 
             <ol class="ol steps"><li class="li step stepexpand">
                     <span class="ph cmd"> Enter the number of new instances to create in the <span class="ph uicontrol">Number of
                             instances</span> text box. </span>
+                    <div class="itemgroup info"><div class="note note"><span class="notetitle">Note:</span> You may not launch more than 10 instances in a single security group.</div>
+</div>
                 </li>
 <li class="li step stepexpand">
                     <span class="ph cmd"> You can optionally enter one or more names for your new instance(s) in the
-                            <span class="ph uicontrol">Instance name(s)</span> text box(es). </span>
+                            <span class="ph uicontrol">Name(s)</span> text box(es). </span>
                 </li>
 <li class="li step stepexpand">
-                    <span class="ph cmd"> Select an instance size from the <span class="ph uicontrol">Instance size</span>
+                    <span class="ph cmd"> Select an instance type from the <span class="ph uicontrol">Instance type</span>
                         drop-down list box.</span>
-                    <div class="itemgroup info">
-                        <div class="note note"><span class="notetitle">Note:</span>  Information about the instance size is displayed when you click the
-                            instance size link. </div>
-
-                    </div>
                 </li>
 <li class="li step stepexpand">
                     <span class="ph cmd"> If you want to specify an availability zone other than the default, select
@@ -119,8 +116,14 @@
 
                 </li>
 <li class="li step stepexpand">
+                    <span class="ph cmd"> Specify custom user data by typing it into the <span class="ph uicontrol">User
+                        data</span> text box or by attaching a file by selecting Upload
+                        file then clicking the <span class="ph uicontrol">Choose File...</span> button to
+                        browse for the file.</span>
+                </li>
+<li class="li step stepexpand">
                     <span class="ph cmd"> Click the <span class="ph uicontrol">Next</span> button to proceed
-                        to the <span class="ph uicontrol">Security</span> panel. </span>
+                        to the <span class="ph uicontrol">Security</span> tab. </span>
                 </li>
 </ol>
 
@@ -160,19 +163,32 @@
 
                 </li>
 <li class="li step stepexpand">
-                    <span class="ph cmd"> Select a security group using the <span class="ph uicontrol">Security group</span>
-                        drop-down list box. </span>
-                    <div class="itemgroup info">
-                        <div class="note note"><span class="notetitle">Note:</span>  If you select the default security group, make sure that you've added
-                            rules to the default security group so that you can access your
-                            instances. </div>
+                    <span class="ph cmd"> You may keep the security group already specified in the <span class="ph uicontrol">Security group</span>
+                        field, add another one, or specify a different one.</span>
+                    <div class="itemgroup info"><ul class="ul">
+                        <li class="li">To specify a different security group, remove the one there by clicking on the <span class="ph uicontrol">x</span> 
+                            next to the security group's name and add a new one by clicking in the <span class="ph uicontrol">Security 
+                                Group</span> field and choose one from the list of previously-defined security groups.
+                            <div class="note note"><span class="notetitle">Note:</span> You can narrow down the list of security groups by typing text directly into the
+                                text box.</div>
+ </li>
 
-                        <div class="note note"><span class="notetitle">Note:</span>  You can also create a new security group by clicking the
-                                <span class="ph uicontrol">Create a security group</span> link. This opens the Create Security Group dialog box.</div>
+                        <li class="li"> If you select the default security group, make sure that you've added
+                            rules to the default security group so that you can access your
+                            instances. </li>
+
+                    </ul>
 
                     </div>
-                    <div class="itemgroup stepresult"> If one of the existing security groups is chosen, the rules associated with
-                    the security group display.</div>
+                </li>
+<li class="li step stepexpand">
+                    <span class="ph cmd">You can also create a new security group by clicking the <span class="ph uicontrol">Create security group</span> link. 
+                        This opens the Create Security Group dialog box.</span>
+              <div class="itemgroup info"> 
+                    <div class="note note"><span class="notetitle">Note:</span>  You may view the rules for the specified security group(s) by clicking 
+                        the <span class="ph uicontrol">+ Rules</span> control next to each security group to expand it.</div>
+
+                    </div>
                 </li>
 <li class="li step stepexpand">
                     <span class="ph cmd"> You can optionally specify an IAM role using the <span class="ph uicontrol">Role</span>
@@ -190,7 +206,7 @@
                         next section for further details. </span>
                 </li>
 <li class="li step stepexpand">
-                    <span class="ph cmd"> Click the <span class="ph uicontrol">Launch instance(s)</span> button. </span>
+                    <span class="ph cmd"> Otherwise, click the <span class="ph uicontrol">Launch instance(s)</span> button. </span>
                 </li>
 </ol>
 
@@ -202,17 +218,11 @@
         <h2 class="title topictitle2">Specify Advanced Options</h2>
 
         
-        <div class="body taskbody"><p class="shortdesc">This panel allows you to specify advanced options for your new instance(s). You
-            can add user data, override the kernel and RAM disk IDs, specify private networking, and
-            add additional storage.</p>
+        <div class="body taskbody"><p class="shortdesc">This panel allows you to specify advanced options for your new instance. 
+            You can override the kernel and RAM disk IDs, enable monitoring, and add additional storage, 
+            if applicable.</p>
 
             <ol class="ol steps"><li class="li step">
-                    <span class="ph cmd"> Specify custom user data by typing it into the <span class="ph uicontrol">User
-                            data</span> text box or by attaching a file by selecting Upload
-                        file then clicking the <span class="ph uicontrol">Choose File...</span> button to
-                        browse for the file.</span>
-                </li>
-<li class="li step">
                     <span class="ph cmd"> You can override the kernel ID in the selected image with the
                             <span class="ph uicontrol">Kernel ID</span> drop-down list box. </span>
                 </li>
@@ -224,12 +234,6 @@
                     <span class="ph cmd"> Click the <span class="ph uicontrol">Enable monitoring</span> check box to specify that
                         detailed CloudWatch metric gathering should be enabled for your new
                         instance(s).</span>
-                </li>
-<li class="li step">
-                    <span class="ph cmd"> Click the <span class="ph uicontrol">Use private addressing only</span> check box to specify that your
-                        new instance should use private addressing only. Private addresses cannot
-                        connect directly to the Internet and must go through a NAT (Network Address
-                        Translation) device or an elastic IP address mapped to the instance. </span>
                 </li>
 <li class="li step">
                     <span class="ph cmd"> The Storage section will only display if you have an EBS-backed image. If
@@ -259,7 +263,7 @@
                         </li>
 
                         <li class="li substep">
-                            <span class="ph cmd"> Select the <span class="ph uicontrol">Delete on termination</span> check box
+                            <span class="ph cmd"> Select the <span class="ph uicontrol">DELETE ON TERMINATE</span> check box
                                 if you would like the attached storage to be deleted when the
                                 instance is terminated. </span>
                         </li>
@@ -277,7 +281,7 @@
                 </li>
 <li class="li step">
                     <span class="ph cmd"> Click the <span class="ph uicontrol">Launch Instance</span> button to launch your
-                        new instance(s). </span>
+                        new instance(s) or click <span class="ph uicontrol">Cancel</span> to abandon your changes. </span>
                 </li>
 </ol>
 
