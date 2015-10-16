@@ -307,7 +307,7 @@ class BaseELBView(TaggedItemView):
         req_params = self.request.params
         params_logging_enabled = req_params.get('logging_enabled') == 'y'
         params_bucket_name = req_params.get('bucket_name')
-        params_bucket_prefix = req_params.get('bucket_prefix')
+        params_bucket_prefix = req_params.get('bucket_prefix', '')
         params_collection_interval = int(req_params.get('collection_interval', 60))
         if elb is not None:
             existing_access_log = self.elb_conn.get_lb_attribute(elb.name, 'accessLog')
@@ -321,7 +321,7 @@ class BaseELBView(TaggedItemView):
                 return None  # Skip if nothing has changed in the ELB's access log config
         # Set Access Logs
         elb_name = elb.name if elb is not None else elb_name
-        bucket_prefix = params_bucket_prefix or self.generate_bucket_prefix_name(elb_name)
+        bucket_prefix = params_bucket_prefix
         if params_logging_enabled:
             self.configure_logging_bucket(bucket_name=params_bucket_name, bucket_prefix=bucket_prefix)
         new_access_log_config = AccessLogAttribute()
@@ -371,10 +371,6 @@ class BaseELBView(TaggedItemView):
         sharing_policy.acl = sharing_acl
         sharing_policy.owner = bucket.get_acl().owner
         bucket.set_acl(sharing_policy)
-
-    @staticmethod
-    def generate_bucket_prefix_name(elb_name):
-        return '{0}-{1}'.format(ELB_ACCESS_LOGS_BUCKET_PREFIX_NAME_PREFIX, elb_name)
 
     def handle_backend_certificate_create(self, elb_name):
         if self.cloud_type == 'aws':
