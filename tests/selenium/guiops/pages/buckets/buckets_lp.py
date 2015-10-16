@@ -7,6 +7,7 @@ class BucketsLanding(LandingPage):
         super(BucketsLanding, self).__init__(tester)
         self.verify_buckets_view_page_loaded()
 
+    _create_bucket_btn_id = 'create-bucket-btn'
     _buckets_view_page_title = 'Buckets'
     _bucket_link_css = 'td>a[href="/buckets/{0}/contents/"]'
     _bucket_actions_menu_id = 'table-item-dropdown_{0}'
@@ -24,7 +25,7 @@ class BucketsLanding(LandingPage):
             self._bucket_link_css.format(bucket_name))
 
     def click_create_bucket_on_view_page(self):
-        pass
+        self.tester.click_element_by_id(self._create_bucket_btn_id)
 
     def click_bucket_link_on_view_page(self, bucket_name):
         self.tester.click_element_by_css(self._bucket_link_css.format(bucket_name))
