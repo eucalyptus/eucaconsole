@@ -321,7 +321,7 @@ class BaseELBView(TaggedItemView):
                 return None  # Skip if nothing has changed in the ELB's access log config
         # Set Access Logs
         elb_name = elb.name if elb is not None else elb_name
-        bucket_prefix = params_bucket_prefix
+        bucket_prefix = params_bucket_prefix.lower()  # Force prefix to be lowercase due to EUCA-11524
         if params_logging_enabled:
             self.configure_logging_bucket(bucket_name=params_bucket_name, bucket_prefix=bucket_prefix)
         new_access_log_config = AccessLogAttribute()
