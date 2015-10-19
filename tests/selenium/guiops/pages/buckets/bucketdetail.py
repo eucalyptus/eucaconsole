@@ -14,6 +14,7 @@ class BucketDetailPage(DetailPage):
     _create_folder_action_menuitem_id = 'create-folder-action'
     _upload_file_action_menuitem_id = 'upload-file-action'
     _propagate_permissions_checkbox_id = 'propagate_acls'
+    _object_count_selector = '#bucket-details-form .bucket-object-count'
 
     _share_account_chosen_id = 'share_account_chosen'
     _share_account_selectors = {
@@ -65,3 +66,6 @@ class BucketDetailPage(DetailPage):
         self.tester.click_element_by_id(self._share_permission_chosen_id)
         self.driver.find_element_by_css_selector(
             self._share_permission_selectors[permission]).click()
+
+    def click_object_count_on_detail_page(self):
+        self.tester.click_element_by_css(self._object_count_selector)

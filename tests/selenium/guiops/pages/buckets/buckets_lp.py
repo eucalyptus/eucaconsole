@@ -11,14 +11,17 @@ class BucketsLanding(LandingPage):
     _buckets_view_page_title = 'Buckets'
     _bucket_link_css = 'td>a[href="/buckets/{0}/contents/"]'
     _bucket_actions_menu_id = 'table-item-dropdown_{0}'
-    _view_contents_bucket_actions_menuitem_css ='#item-dropdown_{0}>li>a[href="/buckets/{0}/contents/"]'
-    _view_details_bucket_actions_menuitem_css = '#item-dropdown_{0}>li>a[href="/buckets/{0}/details/"]'
+    _view_contents_bucket_actions_menuitem_css ='#item-dropdown_{0}>li>a[href="/buckets/{0}/contents"]'
+    _view_details_bucket_actions_menuitem_css = '#item-dropdown_{0}>li>a[href="/buckets/{0}/details"]'
     _delete_bucket_actions_menuitem_css = '#item-dropdown_{0}>li>a[ng-click="revealModal(\'delete-bucket\', item)"]'
 
     def verify_buckets_view_page_loaded(self):
         self.tester.wait_for_text_present_by_id(
             LandingPage(self)._page_title_id, self._buckets_view_page_title)
         self.tester.wait_for_visible_by_id(LandingPage(self)._refresh_button_id)
+
+    def verify_bucket_present_on_landing_page(self, bucket_name):
+        self.tester.wait_for_element_present_by_link_text(bucket_name)
 
     def verify_bucket_not_present_on_landing_page(self, bucket_name):
         self.tester.wait_for_element_not_present_by_css(
