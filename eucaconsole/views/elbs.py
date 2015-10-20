@@ -51,7 +51,7 @@ from ..constants.cloudwatch import (
     METRIC_TITLE_MAPPING,
     STATISTIC_CHOICES)
 from ..constants.elbs import (
-    ELB_MONITORING_CHARTS_LIST, ELB_BACKEND_CERTIFICATE_NAME_PREFIX, ELB_ACCESS_LOGS_BUCKET_PREFIX_NAME_PREFIX,
+    ELB_MONITORING_CHARTS_LIST, ELB_BACKEND_CERTIFICATE_NAME_PREFIX,
     ELB_PREDEFINED_SECURITY_POLICY_NAME_PREFIX, ELB_CUSTOM_SECURITY_POLICY_NAME_PREFIX,
     AWS_ELB_ACCOUNT_IDS)
 from ..forms import ChoicesManager
@@ -321,7 +321,7 @@ class BaseELBView(TaggedItemView):
                 return None  # Skip if nothing has changed in the ELB's access log config
         # Set Access Logs
         elb_name = elb.name if elb is not None else elb_name
-        bucket_prefix = params_bucket_prefix.lower()  # Force prefix to be lowercase due to EUCA-11524
+        bucket_prefix = params_bucket_prefix
         if params_logging_enabled:
             self.configure_logging_bucket(bucket_name=params_bucket_name, bucket_prefix=bucket_prefix)
         new_access_log_config = AccessLogAttribute()
