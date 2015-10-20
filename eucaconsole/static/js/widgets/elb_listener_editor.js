@@ -214,9 +214,9 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
         $scope.setInitialListenerArray = function (listener_list) {
             angular.forEach(listener_list, function (listener) {
                 var block = {
-                    'fromProtocol': listener.protocol,
+                    'fromProtocol': listener.from_protocol,
                     'fromPort': listener.from_port,
-                    'toProtocol': listener.protocol,
+                    'toProtocol': listener.to_protocol,
                     'toPort': listener.to_port
                 };
                 if (!!listener.certificate_id) {

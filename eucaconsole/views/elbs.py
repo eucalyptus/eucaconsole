@@ -722,7 +722,8 @@ class ELBView(BaseELBView):
                 listener_dict = {
                     'from_port': listener.load_balancer_port,
                     'to_port': listener.instance_port,
-                    'protocol': listener.protocol
+                    'from_protocol': listener.protocol,
+                    'to_protocol': listener.instance_protocol
                 }
                 if listener.ssl_certificate_id:
                     certificate_id = listener.ssl_certificate_id.split('/')[-1]
@@ -1148,7 +1149,7 @@ class CreateELBView(BaseELBView):
             latest_predefined_policy=self.get_latest_predefined_policy(),
             elb_security_policy=self.get_security_policy(),
             protocol_list=self.get_protocol_list(),
-            listener_list=[{'from_port': 80, 'to_port': 80, 'protocol': 'HTTP'}],  # Set HTTP listener by default
+            listener_list=[{'from_port': 80, 'to_port': 80, 'from_protocol': 'HTTP', 'to_protocol': 'HTTP'}],  # Set HTTP listener by default
             security_group_placeholder_text=_(u'Select...'),
             is_vpc_supported=self.is_vpc_supported,
             avail_zones_placeholder_text=_(u'Select availability zones'),
