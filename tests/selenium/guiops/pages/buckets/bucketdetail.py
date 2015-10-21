@@ -34,6 +34,8 @@ class BucketDetailPage(DetailPage):
     _share_add_grantee_button_id = 'add-s3acl-button'
 
     def verify_bucket_detail_page_loaded(self):
+        self.tester.driver.switch_to.window(
+            self.tester.driver.window_handles[0])
         self.tester.wait_for_text_present_by_id(
             DetailPage._detail_page_title_id,
             self._bucket_detail_page_title.format(self.bucket_name))
