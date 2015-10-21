@@ -81,7 +81,20 @@ class GuiS3(GuiTester):
         return object_name
 
     def upload_object_from_contents_page(self, bucket_name):
-        pass
+        BasePage(self).goto_buckets_view_via_menu()
+        BucketsLanding(self).click_action_view_contents_on_view_page(bucket_name)
+        BucketContentsPage(self, bucket_name).click_upload_object_button()
+
+        upload_page = UploadObjectPage(self, bucket_name)
+        with tempfile.NamedTemporaryFile('w') as local_object:
+            local_object.write('This is a test file.')
+            path = local_object.name
+            object_name = os.path.basename(path)
+            upload_page.upload_object_by_path(path)
+
+        BucketContentsPage(self, bucket_name).verify_object_in_bucket(object_name)
+
+        return object_name
 
     def delete_object_from_contents_page(self, bucket_name, object_name):
         BasePage(self).goto_buckets_view_via_menu()
