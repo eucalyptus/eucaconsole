@@ -39,6 +39,17 @@ class DeleteObjectModal(BasePage):
         self.tester.click_element_by_id(self._delete_object_submit_button_id)
 
 
+class DeleteEverythingModal(BasePage):
+
+    def __init__(self, tester):
+        super(DeleteEverythingModal, self).__init__(tester)
+
+    _delete_everything_submit_button_id = 'delete-all-dialog-btn'
+
+    def delete_all(self):
+        self.tester.click_element_by_id(self._delete_everything_submit_button_id)
+
+
 class DownloadObjectModal(BasePage):
 
     def __init__(self, tester):

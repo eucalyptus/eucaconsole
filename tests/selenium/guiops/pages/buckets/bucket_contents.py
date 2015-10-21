@@ -10,6 +10,7 @@ class BucketContentsPage(BasePage):
 
     _bucket_contents_page_title_id = 'pagetitle'
     _bucket_contents_upload_button_id = 'upload-file-btn'
+    _bucket_contents_delete_all_button_id = 'delete-all-btn'
     _bucket_item_action_menu_id = '#table-item-dropdown_{0}_{1}'
     _delete_object_bucket_actions_menuitem_css = "#item-dropdown_{0}_{1} a.delete-object"
     _delete_folder_bucket_actions_menuitem_css = "#item-dropdown_{0}_{1} a.delete-folder"
@@ -32,4 +33,4 @@ class BucketContentsPage(BasePage):
                 self.bucket_name, object_name))
 
     def delete_all_objects_in_bucket(self):
-        pass
+        self.tester.click_element_by_id(self._bucket_contents_delete_all_button_id)

@@ -12,6 +12,7 @@ from pages.buckets.upload_object import UploadObjectPage
 from pages.buckets.create_bucket import CreateBucketPage
 from pages.buckets.bucket_dialogs import DeleteBucketModal
 from pages.buckets.bucket_dialogs import DeleteObjectModal
+from pages.buckets.bucket_dialogs import DeleteEverythingModal
 
 
 logger = logging.getLogger('testlogger')
@@ -103,4 +104,7 @@ class GuiS3(GuiTester):
         DeleteObjectModal(self).delete_object()
 
     def delete_all_objects_from_contents_page(self, bucket_name):
-        pass
+        BasePage(self).goto_buckets_view_via_menu()
+        BucketsLanding(self).click_action_view_contents_on_view_page(bucket_name)
+        BucketContentsPage(self, bucket_name).delete_all_objects_in_bucket()
+        DeleteEverythingModal(self).delete_all()

@@ -32,10 +32,11 @@ class Buckets_operations_sequence(GuiOps):
     def bucket_ops_test(self):
         self.tester.login(self.account, self.user, self.password)
 
-        #self._create_from_dashboard()
-        #self._create_from_landing_page()
-        #self._upload_object_detail_page()
+        self._create_from_dashboard()
+        self._create_from_landing_page()
+        self._upload_object_detail_page()
         self._upload_object_contents_page()
+        self._delete_all_objects_from_contents_page()
 
         self.tester.logout()
         self.tester.exit_browser()
@@ -62,6 +63,14 @@ class Buckets_operations_sequence(GuiOps):
         self.tester.create_bucket_from_landing_page(bucket_name)
         object_name = self.tester.upload_object_from_contents_page(bucket_name)
         self.tester.delete_object_from_contents_page(bucket_name, object_name)
+        self.tester.delete_bucket_from_detail_page(bucket_name)
+
+    def _delete_all_objects_from_contents_page(self):
+        bucket_name = self.get_bucket_name()
+        self.tester.create_bucket_from_landing_page(bucket_name)
+        for _ in xrange(3):
+            self.tester.upload_object_from_contents_page(bucket_name)
+        self.tester.delete_all_objects_from_contents_page(bucket_name)
         self.tester.delete_bucket_from_detail_page(bucket_name)
 
 
