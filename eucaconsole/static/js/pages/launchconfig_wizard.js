@@ -161,8 +161,6 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             if ($("#userdata").val().length > 0) {
                 $scope.inputtype = "text";
                 $scope.userData = $("#userdata").val();
-                // apply now so that the watch set afterwards doesn't get triggered post-init
-                $scope.$apply();
             }
         };
         $scope.restoreSecurityGroupsInitialValues = function () {
@@ -300,11 +298,13 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                     chosenSelect.trigger("chosen:updated");
                 }
             });
-            $scope.$watch('inputtype', function() {
-                if ($scope.inputtype == 'text') {
-                    $timeout(function() {
-                        $('#userdata').focus();
-                    });
+            $scope.$watch('inputtype', function(newValue, oldValue) {
+                if (newValue != oldValue) {
+                    if ($scope.inputtype == 'text') {
+                        $timeout(function() {
+                            $('#userdata').focus();
+                        });
+                    }
                 }
             });
         };

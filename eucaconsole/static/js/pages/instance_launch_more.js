@@ -17,17 +17,17 @@ angular.module('LaunchMoreInstances', ['BlockDeviceMappingEditor'])
             $('#number').val($scope.instanceNumber);
             if ($("#userdata").val().length > 0) {
                 $scope.inputtype = "text";
-                // apply now so that the watch set afterwards doesn't get triggered post-init
-                $scope.$apply();
             }
         };
         $scope.initController = function () {
             $scope.setInitialValues();
-            $scope.$watch('inputtype', function() {
-                if ($scope.inputtype == 'text') {
-                    $timeout(function() {
-                        $('#userdata').focus();
-                    });
+            $scope.$watch('inputtype', function(newValue, oldValue) {
+                if (newValue != oldValue) {
+                    if ($scope.inputtype == 'text') {
+                        $timeout(function() {
+                            $('#userdata').focus();
+                        });
+                    }
                 }
             });
         };
