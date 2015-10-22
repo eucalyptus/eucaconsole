@@ -15,6 +15,11 @@ angular.module('LaunchMoreInstances', ['BlockDeviceMappingEditor'])
         };
         $scope.setInitialValues = function () {
             $('#number').val($scope.instanceNumber);
+            if ($("#userdata").val().length > 0) {
+                $scope.inputtype = "text";
+                // apply now so that the watch set afterwards doesn't get triggered post-init
+                $scope.$apply();
+            }
         };
         $scope.initController = function () {
             $scope.setInitialValues();

@@ -158,6 +158,12 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                 $scope.loadImageInfo($scope.imageID);
             }
             $scope.isCreateSGChecked = $('#create_sg_from_lc').is(':checked');
+            if ($("#userdata").val().length > 0) {
+                $scope.inputtype = "text";
+                $scope.userData = $("#userdata").val();
+                // apply now so that the watch set afterwards doesn't get triggered post-init
+                $scope.$apply();
+            }
         };
         $scope.restoreSecurityGroupsInitialValues = function () {
             $scope.securityGroupSelected = $scope.urlParams.security_group || '';
