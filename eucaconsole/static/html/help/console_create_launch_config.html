@@ -42,29 +42,28 @@
 
     </div>
 
-    <div class="topic task nested1" id="create_launch_configuration__ui_type_steps">
+    <div class="topic task nested1" id="create_launch_configuration_ui_type_steps">
         <h2 class="title topictitle2">Details</h2>
 
         
-        <div class="body taskbody"><p class="shortdesc">This panel allows you to specify the instance size for new instance in your auto
-            scaling group.</p>
+        <div class="body taskbody"><p class="shortdesc">This panel allows you to specify the name, instance size, and user data associated with the launch configuration.</p>
 
-            <ol class="ol steps"><li class="li step stepexpand">
+            <ol class="ol steps"><li class="li step">
                     <span class="ph cmd"> Type the name of your launch configuration in the
                         <span class="ph uicontrol">Name</span> text box.</span>
                 </li>
-<li class="li step stepexpand">
+<li class="li step">
                     <span class="ph cmd"> Select an instance size/type from the <span class="ph uicontrol">Instance type</span>
                         drop-down list.</span>
-                    <div class="itemgroup info">
-                        <div class="note note"><span class="notetitle">Note:</span>  Information about the instance size is displayed when you click the
-                            instance size link. </div>
-
-                    </div>
                 </li>
-<li class="li step stepexpand">
+<li class="li step">
+                        <span class="ph cmd"> Specify custom user data by typing it into the <span class="ph uicontrol">User
+                            data</span> text box or by attaching a file by clicking the
+                            <span class="ph uicontrol">Choose file</span> button.</span>
+                    </li>
+<li class="li step">
                     <span class="ph cmd"> Click the <span class="ph uicontrol">Next</span> button to proceed to the
-                            <span class="ph uicontrol">Security</span> panel. </span>
+                            <span class="ph uicontrol">Security</span> tab. </span>
                 </li>
 </ol>
 
@@ -78,9 +77,9 @@
         
 
         <div class="body taskbody"><p class="shortdesc">This panel allows you to specify the VPC network settings, key pair and a security group that will be
-            used by the new instances in your auto scaling group. NOTE: if you create a key pair or
+            used by the new launch configuration. NOTE: if you create a key pair or
             security group in this section, they will automatically be selected for use in your new
-            instances. </p>
+            launch configuration. </p>
 
             <ol class="ol steps"><li class="li step stepexpand">
                     <span class="ph cmd"> If the launch configuration is used with a scaling group using a VPC network,
@@ -102,14 +101,14 @@
                     <div class="itemgroup info">
                         <div class="note note"><span class="notetitle">Note:</span>  If you select the default security group, make sure that you've added
                             rules to the default security group so that you can access your
-                            instances. </div>
+                            launch configurations. </div>
 
                         <div class="note note"><span class="notetitle">Note:</span>  You can also create a new security group by clicking the
                             <span class="ph uicontrol">Create a security group</span> link. This opens the Create Security Group dialog box.</div>
 
                     </div>
-                    <div class="itemgroup stepresult"> If one of the existing security groups is chosen, the rules associated with
-                        the security group display, along information about the VPC network in which it resides, if any.</div>
+                    <div class="itemgroup stepresult"> If one of the existing security groups is chosen, You may view the rules for the specified 
+                        security group by clicking the <span class="ph uicontrol">+ Rules</span> control to expand it.</div>
                 </li>
 <li class="li step stepexpand">
                     <span class="ph cmd"> You can optionally specify an IAM role using the <span class="ph uicontrol">Role</span>
@@ -117,7 +116,7 @@
                     <div class="itemgroup info">
                         <div class="note note"><span class="notetitle">Note:</span>  If you select a role, make sure that the correct permissions are
                             defined for that role so that the appropriate level of access is applied
-                            to your instance. </div>
+                            to your launch configurations. </div>
 
                     </div>
                 </li>
@@ -145,70 +144,75 @@
         <h2 class="title topictitle2">Specify Advanced Options</h2>
 
         
-        <div class="body taskbody"><p class="shortdesc">This panel allows you to specify advanced options for the new instance in your
-            auto scaling group. You can add user data, override the kernel and RAM disk IDs, specify
-            private networking, and add additional storage.</p>
+        <div class="body taskbody"><p class="shortdesc">This panel allows you to specify advanced options for your new instance. 
+            You can override the kernel and RAM disk IDs, enable monitoring, and add additional storage, 
+            if applicable.</p>
 
             <ol class="ol steps"><li class="li step">
-                    <span class="ph cmd"> Specify custom user data by typing it into the <span class="ph uicontrol">User
-                            data</span> text box or by attaching a file by clicking the
-                            <span class="ph uicontrol">Choose file</span> button.</span>
-                </li>
-<li class="li step">
                     <span class="ph cmd"> You can override the kernel ID in the selected image with the
                             <span class="ph uicontrol">Kernel ID</span> drop-down list box. </span>
                 </li>
 <li class="li step">
                     <span class="ph cmd"> You can override the RAM disk ID in the selected image with the
-                            <span class="ph uicontrol">RAM disk ID</span> drop-down list box. </span>
+                            <span class="ph uicontrol">RAM disk ID (RAMFS)</span> drop-down list box. </span>
+                </li>
+<li class="li step">
+                    <span class="ph cmd"> Click the <span class="ph uicontrol">Enable monitoring</span> check box to specify that
+                        detailed CloudWatch metric gathering should be enabled for your new
+                        launch configuration(s).</span>
                 </li>
 <li class="li step">
                     <span class="ph cmd">You can configure additional storage for your instance in the Storage
                         section:</span>
-                    <ol type="a" class="ol substeps" id="create_launch_configuration_ui_advanced_steps__create_launch_config_ui_advanced_storage_steps">
-                        <li class="li substep substepexpand">
-                            <span class="ph cmd"> Select a volume type using the <span class="ph uicontrol">Volume</span>
-                                drop-down list box. </span>
-                        </li>
+                    <ol type="a" class="ol substeps">
+                    <li class="li substep">
+                        <span class="ph cmd"> Select a volume type using the <span class="ph uicontrol">Volume</span>
+                            drop-down list box. </span>
+                    </li>
 
-                        <li class="li substep substepexpand">
-                            <span class="ph cmd">Type the desired mapping for the storage into the
-                                <span class="ph uicontrol">Mapping</span> text box (for example:<samp class="ph codeph">
-                                    /dev/sdb</samp>).</span>
-                        </li>
+                    <li class="li substep">
+                        <span class="ph cmd"> Type the desired mapping for the storage into the
+                            <span class="ph uicontrol">Mapping</span> text box (for example:<samp class="ph codeph">
+                                /dev/sdb</samp>).</span>
+                    </li>
 
-                        <li class="li substep substepexpand">
-                            <span class="ph cmd">If you want to create the storage from an existing snapshot,
-                                specify it in the <span class="ph uicontrol">Create from snapshot</span>
-                                drop-down list box.</span>
-                        </li>
+                    <li class="li substep">
+                        <span class="ph cmd"> If you want to create the storage from an existing snapshot,
+                            specify it in the <span class="ph uicontrol">Create from snapshot</span>
+                            drop-down list box.</span>
+                    </li>
 
-                        <li class="li substep substepexpand">
-                            <span class="ph cmd"> Type the size of the attached storage in gigabytes into the
-                                <span class="ph uicontrol">Size (GB) </span>text box. </span>
-                            <div class="itemgroup info">The attached storage will be deleted when the instance is terminated, 
-                                as indicated next to the <span class="ph uicontrol">Delete on termination</span> field.</div>
-                        </li>
+                    <li class="li substep">
+                        <span class="ph cmd"> Type the size of the attached storage in gigabytes into the
+                            <span class="ph uicontrol">Size (GB) </span>text box. </span>
+                    </li>
 
-                        <li class="li substep substepexpand">
-                            <span class="ph cmd">Click the <span class="ph uicontrol">Add device</span> button to add this storage.</span>
-                        </li>
+                    <li class="li substep">
+                        <span class="ph cmd"> Select the <span class="ph uicontrol">DELETE ON TERMINATE</span> check box
+                            if you would like the attached storage to be deleted when the
+                            instance is terminated. </span>
+                    </li>
 
-                        <li class="li substep substepexpand">
-                            <span class="ph cmd">You can delete storage you've already added by clicking the minus button on the right side of the storage list item.</span>
-                        </li>
+                    <li class="li substep">
+                        <span class="ph cmd"> Click the <span class="ph uicontrol">Add device</span> button to add this storage.</span>
+                    </li>
+
+                    <li class="li substep">
+                        <span class="ph cmd">You can delete storage you've already added by clicking the minus button on the right side of the storage list item.</span>
+                    </li>
 
                     </ol>
 
                 </li>
 <li class="li step">
-                    <span class="ph cmd"> Click the <span class="ph uicontrol">Create launch configuration</span> button.
-                    </span>
+                
+                <span class="ph cmd"> Click the <span class="ph uicontrol">Create Launch Configuration</span> button 
+                    or click <span class="ph uicontrol">Cancel</span> to abandon your changes.
+                </span>
                 </li>
 </ol>
 
-            <div class="section result">For more information on Auto Scaling, see the <em class="ph i">Eucalyptus User Guide</em>.</div>
-
+           
         </div>
 
     </div>

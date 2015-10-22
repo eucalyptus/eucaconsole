@@ -316,7 +316,7 @@ class SeleniumApi(object):
     def click_element_by_id_robust(self, element_id):
         """
         Waits for an element to be present and visible such that you can click it.
-        Clicks the element, checks if element is still visible, clicks element if visible up to 3 times.
+        Clicks the element, checks if element is still visible, hits enter on element if visible up to 2 times.
         :param element_id:
         """
         self.wait_for_visible_by_id(element_id)
@@ -333,10 +333,10 @@ class SeleniumApi(object):
         is_visible = self.check_visibility_by_id(element_id)
         while is_visible and (k < 3):
             try:
-                print "Executing attempt " + str(k)
-                self.driver.find_element_by_id(element_id).click()
+                print "Hitting enter. Executing attempt " + str(k)
+                self.send_keys_by_id(element_id,"\n",clear_field=False)
             except Exception, e:
-                print str(k) + "-th attempt to click unsuccessful."
+                print str(k) + "-th attempt to hit enter unsuccessful."
             is_visible = self.check_visibility_by_id(element_id)
             k = k+1
 
@@ -564,14 +564,14 @@ class SeleniumApi(object):
         return self.driver.find_element_by_xpath(xpath).text
 
 
-    def select_by_id(self, element_id, text='', index=-1):
+    def select_by_id(self, element_id, text, index=-1, timeout_in_seconds=None):
         """
         Selects element with particular text on it.
         :param element_id:
         :param text:
         """
         print "Executing select_by_id id = {0}, text = {1}".format(element_id, text)
-        self.wait_for_text_present_by_id(element_id, text)
+        self.wait_for_text_present_by_id(element_id, text, timeout_in_seconds=timeout_in_seconds)
         if index == -1:
             print "Selecting element with text = {1} by id = {0}".format(element_id, text)
             Select(self.driver.find_element_by_id(element_id)).select_by_visible_text(text)

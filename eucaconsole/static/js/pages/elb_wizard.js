@@ -709,8 +709,9 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
     $scope.checkSecurityGroupRules = function ($event, confirmed) {
         var modal = $('#elb-security-group-rules-warning-modal');
         var inboundOutboundPortChecksPass;
-        if (!$scope.vpcNetwork) {  // Bypass rules check on non-VPC clouds
+        if ($scope.vpcNetwork === 'None') {  // Bypass rules check on non-VPC clouds
             $scope.elbForm.submit();
+            return;
         }
         inboundOutboundPortChecksPass = eucaCheckELBSecurityGroupRules($scope);
         if (!confirmed && !inboundOutboundPortChecksPass) {
