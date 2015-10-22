@@ -3,9 +3,6 @@
 <div metal:fill-slot="head_css" tal:omit-tag="">
     <link rel="stylesheet" href="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/codemirror.css')}" />
     <link rel="stylesheet" href="${request.static_path('eucaconsole:static/css/pages/account.css')}" />
-    <style type="text/css">
-        input#account-name { width: 50%; }
-    </style>
 </div>
 
 <div metal:fill-slot="main_content">

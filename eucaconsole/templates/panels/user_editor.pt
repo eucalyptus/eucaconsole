@@ -1,6 +1,6 @@
 
 <!--! User editor -->
-<div id="user-editor" class="row controls-wrapper" i18n:domain="eucaconsole"
+<div id="user-editor" ng-form="userEditor" class="row controls-wrapper" i18n:domain="eucaconsole"
      ng-controller="UserEditorCtrl" ng-init="initUsers()">
     <div class="small-12 columns field">
         <div class="row userentry existing inline controls-wrapper"
@@ -24,20 +24,23 @@
         <div class="row userentry controls-wrapper">
             <div id="user-name-field-div" class="field columns">
                 <label class="left" for="user-name-field" i18n:translate="">Name</label>&nbsp;
-                <input class="userinput name" id="user-name-field"
-                       ng-model="newUserName" ng-keypress="keyListener($event)" pattern="^[a-zA-Z0-9\+\=\,\.\@\-]{1,64}$" />
+                <input class="userinput name" id="user-name-field" type="text"
+                       ng-model="newUserName" ng-keypress="keyListener($event)" pattern="^[a-zA-Z0-9\+\=\,\.\@\-]{1,64}$" user-name reserved="admin"/>
                 <small id="user-list-error" class="error" i18n:translate="">
                     Must have at least one user, and the names of users must be alphanumeric, including the following common characters: plus (+), equal (=), comma (,), period (.), at (@), and dash (-), and cannot contain spaces.
+                </small>
+                <small class="error reserved" i18n:translate="">
+                    An admin user will be created automatically for you.
                 </small>
             </div>
             <div>&nbsp;</div>
             <div class="columns">
-                <button ng-click="addUser($event)" ng-disabled="isDisabled" class="button round tiny" id="add-user-btn"
+                <button ng-click="addUser($event)" ng-disabled="isDisabled()" class="button round tiny" id="add-user-btn"
                    title="Add user" i18n:translate="">Add User</button>
             </div>
         </div>
         <!--! Add class="debug" to textarea to view users data posted by form -->
-        <textarea id="users" name="users" class="hidden"></textarea>
+        <textarea id="users" name="users" class="hidden" ></textarea>
     </div>
     <script src="${request.static_path('eucaconsole:static/js/widgets/user_editor.js')}"></script>
 </div>
