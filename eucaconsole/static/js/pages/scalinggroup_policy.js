@@ -41,10 +41,16 @@ angular.module('ScalingGroupPolicy', ['CreateAlarm', 'EucaConsoleUtils'])
             $scope.$watch('policyName', function () {
                 $scope.checkRequiredInput();
             });
-            $scope.$watch('adjustmentAmount', function () {
+            $scope.$watch('adjustmentAmount', function (newVal) {
+                if(newVal) {
+                    $scope.adjustmentAmount = eucaNumbersOnly(newVal);
+                    $scope.isNotValid = false;
+                } else {
+                    $scope.isNotValid = true;
+                }
                 $scope.checkRequiredInput();
             });
-            $scope.$watch('coolDown', function (newVal, oldVal) {
+            $scope.$watch('coolDown', function (newVal) {
                 if(newVal) {
                     $scope.coolDown = eucaNumbersOnly(newVal);
                     $scope.isNotValid = false;

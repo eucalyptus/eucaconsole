@@ -299,7 +299,7 @@ class ScalingGroupPolicyCreateForm(BaseSecureForm):
         ],
     )
     adjustment_amount_error_msg = _(u'Amount is required')
-    adjustment_amount = wtforms.IntegerField(
+    adjustment_amount = wtforms.TextField(
         label=_(u'Amount'),
         validators=[
             validators.InputRequired(message=adjustment_amount_error_msg),

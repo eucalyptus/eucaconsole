@@ -18,10 +18,6 @@ class Snapshot_operations_sequence(GuiOps):
         self.platform = parser.parse_options()['platform']
         self.tester = GuiOps(console_url=self.console_url, webdriver_url=self.webdriver_url, sauce=self.sauce, browser=self.browser, version=self.version, platform=self.platform)
 
-
-    def id_generator(self, size = 6, chars=string.ascii_uppercase + string.digits):
-        return ''.join(random.choice(chars) for j in range(size))
-
     def snapshot_ops_test(self):
         self.tester.login(self.account, self.user, self.password)
         volume1_name = self.id_generator()+"-volume"
@@ -38,7 +34,7 @@ class Snapshot_operations_sequence(GuiOps):
         snapshot3_name =self.id_generator()+"-snapshot"
         snapshot3 = self.tester.create_snapshot_on_snapshot_view_page(volume1_id, snapshot3_name,"Created by snapshot operations test")
         snapshot3_id = snapshot3.get("snapshot_id")
-        image1 = self.tester.register_snapshot_as_an_image_from_snapshot_landing_page(snapshot3_id, "myimage")
+        image1 = self.tester.register_snapshot_as_an_image_from_snapshot_landing_page(snapshot3_id, self.id_generator()+"-image")
         image1_id = image1.get("image_id")
         self.tester.remove_image_from_cloud_on_images_lp(image1_id)
         volume2=self.tester.create_volume_from_snapshot_on_snapshot_lp(snapshot3_id, availability_zone="two")

@@ -8,6 +8,8 @@ class Dashboard(BasePage):
         _create_keypair_link_css ='#item-dropdown_key-pairs+div+div>a'
         _create_volume_link_css = 'a[href="/volumes/new"]'
         _create_snapshot_link_css = 'a[href="/snapshots/new"]'
+        _create_stack_link_css = 'a[href="/stacks/new"]'
+        _create_bucket_link_css = 'a[href="/buckets/new"]'
         _availability_zone_menu_css = "#zone-selector>a"
         _availability_zone_dropdown_id = "zone-dropdown"
         _first_availability_zone_on_list_css = "ul#zone-dropdown>li:nth-of-type(2)>a"
@@ -38,6 +40,12 @@ class Dashboard(BasePage):
 
         def click_create_snapshot_link(self):
             self.tester.click_element_by_css(self._create_snapshot_link_css)
+
+        def click_create_stack_link(self):
+            self.tester.click_element_by_css(self._create_stack_link_css)
+
+        def click_create_bucket_link(self):
+            self.tester.click_element_by_css(self._create_bucket_link_css)
 
         def dashboard_click_keypair_tile(self, _keypairs_icon_css):
             """
