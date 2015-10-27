@@ -315,7 +315,11 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
                         $scope.accessLogConfirmationDialog.foundation('reveal', 'open');
                     }
                 }
+                $scope.isValidationError = newVal && !$scope.bucketName;
             }
+        });
+        $scope.$watch('bucketName', function (newVal, oldVal) {
+            $scope.isValidationError = $scope.loggingEnabled && !newVal;
         });
         $scope.accessLogConfirmationDialog.on('opened.fndtn.reveal', function () {
             $scope.accessLoggingConfirmed = false;
