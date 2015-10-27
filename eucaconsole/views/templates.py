@@ -23,14 +23,16 @@ class TemplateDesign(BaseView):
                     dict(name='keypair', label=_(u'Keypair'), datatype='string', required=False),
                     dict(name='security_group', label=_(u'Security Group'), datatype='string', required=True),
                     dict(name='userdata', label=_(u'User Data'), datatype='string', required=False),
+                    # tags...
                 ],
             ),
             dict(name='Volume',
                 properties=[
                     dict(name='size', label=_(u'Size'), datatype='int', required=True),
-                    dict(name='name', label=_(u'Name'), datatype='string', required=False),
                     dict(name='snapshot_id', label=_(u'Snapshot ID'), datatype='string', required=False),
                     dict(name='zone', label=_(u'Availability Zone'), datatype='string', required=True),
+                    dict(name='attachment', label=_(u'Attach to'), datatype='link', required=True)
+                    # tags...
                 ],
             )
         ],

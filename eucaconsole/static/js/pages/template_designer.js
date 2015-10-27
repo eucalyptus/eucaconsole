@@ -70,7 +70,6 @@ angular.module('TemplateDesigner', ['ngDraggable', 'EucaConsoleUtils'])
                     var idx = parseInt(elem.id.substring(9));
                     var node = vm.nodes[idx];
                     vm.selectedNode = node;
-                    console.log("menu selected "+node.name);
                 })
                 .call(vm.force.drag);
                 $('svg').foundation('dropdown', 'reflow');
@@ -99,7 +98,12 @@ angular.module('TemplateDesigner', ['ngDraggable', 'EucaConsoleUtils'])
             var y = $event.y - pos.top;
             // save data
             vm.undoStack.push({"nodes": vm.nodes.slice(0), "links": vm.links.slice(0)});
-            vm.nodes.push({"name":$data.name, "width":100, "height":100, "x":x, "y":y, "fixed":true});
+            var props = $data.properties.slice(0);
+            // make copy of each prop obj in array
+            angular.forEach(props, function(prop, idx) {
+                props[idx] = $.extend(true, {}, prop);
+            });
+            vm.nodes.push({"name":$data.name, "properties":props, "width":100, "height":100, "x":x, "y":y, "fixed":true});
             vm.setData();
             vm.generateTemplate();
         };
@@ -114,17 +118,31 @@ angular.module('TemplateDesigner', ['ngDraggable', 'EucaConsoleUtils'])
                 vm.setData();
             }
         };
+        vm.showPropertiesEditor = function() {
+            console.log("node props: "+JSON.stringify(vm.selectedNode.properties));
+            $('#property-editor-modal').foundation('reveal', 'open');
+        };
+        vm.saveProperties = function() {
+            angular.forEach(vm.selectedNode.properties, function(prop) {
+                prop.value = $("#res-prop-"+prop.name).val();
+            });
+            $('#property-editor-modal').foundation('reveal', 'close');
+        };
+        vm.showAddParam = function(property) {
+            $('add-parameter-modal').foundation('reveal', 'open');
+        };
         vm.generateTemplate = function() {
             template = {'AWSTemplateFormatVersion':'2010-09-09'};
             resources = {};
             for (idx in vm.nodes) {
                 var node = vm.nodes[idx];
                 var name = node.name + '-' + Math.random().toString(36).substring(5)
-                resources[name] = {
-                    "name":"blah"
-                }
+                resources[name] = {}
+                angular.forEach(node.properties, function(prop) {
+                    resources[name][prop.name] = prop.value;
+                });
             }
             template['Resources'] = resources;
-            console.log(JSON.stringify(template, undefined, 2));
+            vm.templateText = JSON.stringify(template, undefined, 2);
         }
     })

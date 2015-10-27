@@ -136,3 +136,5 @@
 .menu { cursor: pointer; }
 
 .f-dropdown { max-width: 120px; }
+
+.draggable { color: #007dba; cursor: pointer; }

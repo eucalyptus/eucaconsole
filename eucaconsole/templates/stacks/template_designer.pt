@@ -21,7 +21,7 @@
             <div ng-repeat="(name, svc) in designCtrl.resources">
                 <h6>{{ name }}</h6>
                 <div ng-repeat="res in svc">
-                    <a href="#" ng-drag="true" ng-drag-data="res" data-allow-transform="true" draggable="false">{{ res.name }}</a>
+                    <div class="draggable" ng-drag="true" ng-drag-data="res" data-allow-transform="true" draggable="false">{{ res.name }}</div>
                 </div>
             </div>
             <hr/>
@@ -31,11 +31,92 @@
             <div id="graph-area" ng-drop="true" ng-drop-success="designCtrl.dropComplete($data, $event)">
                 <svg/>
             </div>
+            <div id="template-text-area">
+                <textarea id="template-editor">
+                    {{ designCtrl.templateText }}
+                </textarea>
+            </div>
         </div>
         <ul id="designer-action-menu" class="f-dropdown" data-dropdown-content="">
-            <li><a i18n:translate="">Properties</a></li>
+            <li><a i18n:translate="" ng-click="designCtrl.showPropertiesEditor()">Properties</a></li>
             <li><a i18n:translate="">Copy</a></li>
         </ul>
+        <div id="property-editor-modal" class="reveal-modal medium" data-reveal="">
+            <h3 i18n:translate="">Resource properties</h3>
+            <p>
+                Set properties for this resource. Some properties will form links to other resources.
+            </p>
+            <div class="section">
+                <div class="row" ng-repeat="property in designCtrl.selectedNode.properties">
+                    <div class="columns small-3">
+                        <label class="right">{{ property.label }}
+                            <span ng-if="property.required" class="req">*</span>
+                        </label>
+                    </div>
+                    <div class="columns small-9">
+                        <input ng-attr-id="res-prop-{{property.name}}" ng-if="property.datatype == 'string'" width="90%" type="text"/ value="{{property.value}}">
+                        <input ng-attr-id="res-prop-{{property.name}}" ng-if="property.datatype == 'int'" width="10" type="integer"/ value="{{property.value}}">
+                        <select ng-attr-id="res-prop-{{property.name}}" ng-if="property.datatype == 'link'">
+                            <option>what</option>
+                        </select>
+                        <a ng-attr-id="use-param-{{property.name}}" ng-click="designCtrl.showUseParam(property)"
+                            i18n:attributes="title" title="Use existing parameter">
+                            <i class="template-param-icon"></i>
+                        </a>
+                        <a ng-attr-id="add-param-{{property.name}}" ng-click="designCtrl.showAddParam(property)"
+                            i18n:attributes="title" title="Add new parameter">
+                            <i class="template-param-add-icon"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="dialog-submit-button">
+                <button type="submit" id="save_properties_button" class="button expand"
+                    ng-click="designCtrl.saveProperties()" i18n:translate="">Save Properties</button>
+            </div>
+            <a href="#" id="attach_volume_close_link" class="close-reveal-modal">&#215;</a>
+        </div>
+        <div id="add-parameter-modal" class="reveal-modal small" data-reveal="">
+            <h3 i18n:translate="">Add parameter</h3>
+            <div class="section">
+                <div class="row">
+                    <div class="columns small-4">
+                        <label class="right" i18n:translate="">Name</label>
+                    </div>
+                    <div class="columns small-8">
+                        <input width="100%" type="text" name="name" id="param-name"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="columns small-4">
+                        <label class="right" i18n:translate="">Description</label>
+                    </div>
+                    <div class="columns small-8">
+                        <input width="100%" type="text" name="description" id="param-description"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="columns small-4">
+                        <label class="right" i18n:translate="">Type</label>
+                    </div>
+                    <div class="columns small-8">
+                        <input width="100%" type="text" name="type" id="param-type"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="columns small-4">
+                        <label class="right" i18n:translate="">Default</label>
+                    </div>
+                    <div class="columns small-8">
+                        <input width="100%" type="text" name="default" id="param-default"/>
+                    </div>
+                </div>
+            </div>
+            <div class="dialog-submit-button">
+                <button type="submit" id="add_parameter_button" class="button expand" i18n:translate="">Add Parameter</button>
+            </div>
+            <a href="#" id="attach_volume_close_link" class="close-reveal-modal">&#215;</a>
+        </div>
     </div>
 </div>
 
