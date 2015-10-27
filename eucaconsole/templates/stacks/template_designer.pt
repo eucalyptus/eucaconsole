@@ -25,6 +25,8 @@
                 </div>
             </div>
             <hr/>
+            <a data-reveal-id="add-parameter-modal">Add Parameter</a>
+            <hr/>
             <a ng-click="designCtrl.undoLast()" ng-disabled="designCtrl.canUndo()">Undo</a>
         </div>
         <div class="large-10 columns">
@@ -59,14 +61,6 @@
                         <select ng-attr-id="res-prop-{{property.name}}" ng-if="property.datatype == 'link'">
                             <option>what</option>
                         </select>
-                        <a ng-attr-id="use-param-{{property.name}}" ng-click="designCtrl.showUseParam(property)"
-                            i18n:attributes="title" title="Use existing parameter">
-                            <i class="template-param-icon"></i>
-                        </a>
-                        <a ng-attr-id="add-param-{{property.name}}" ng-click="designCtrl.showAddParam(property)"
-                            i18n:attributes="title" title="Add new parameter">
-                            <i class="template-param-add-icon"></i>
-                        </a>
                     </div>
                 </div>
             </div>
@@ -84,7 +78,7 @@
                         <label class="right" i18n:translate="">Name</label>
                     </div>
                     <div class="columns small-8">
-                        <input width="100%" type="text" name="name" id="param-name"/>
+                        <input width="100%" type="text" ng-model="designCtrl.newParam.name" id="param-name"/>
                     </div>
                 </div>
                 <div class="row">
@@ -92,7 +86,7 @@
                         <label class="right" i18n:translate="">Description</label>
                     </div>
                     <div class="columns small-8">
-                        <input width="100%" type="text" name="description" id="param-description"/>
+                        <input width="100%" type="text" ng-model="designCtrl.newParam.description" id="param-description"/>
                     </div>
                 </div>
                 <div class="row">
@@ -100,7 +94,7 @@
                         <label class="right" i18n:translate="">Type</label>
                     </div>
                     <div class="columns small-8">
-                        <input width="100%" type="text" name="type" id="param-type"/>
+                        <input width="100%" type="text" ng-model="designCtrl.newParam.datatype" id="param-type"/>
                     </div>
                 </div>
                 <div class="row">
@@ -108,12 +102,12 @@
                         <label class="right" i18n:translate="">Default</label>
                     </div>
                     <div class="columns small-8">
-                        <input width="100%" type="text" name="default" id="param-default"/>
+                        <input width="100%" type="text" ng-model="designCtrl.newParam.default" id="param-default"/>
                     </div>
                 </div>
             </div>
             <div class="dialog-submit-button">
-                <button type="submit" id="add_parameter_button" class="button expand" i18n:translate="">Add Parameter</button>
+                <button type="submit" ng-click="designCtrl.addParameter()" id="add_parameter_button" class="button expand" i18n:translate="">Add Parameter</button>
             </div>
             <a href="#" id="attach_volume_close_link" class="close-reveal-modal">&#215;</a>
         </div>

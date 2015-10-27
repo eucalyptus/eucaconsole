@@ -7,6 +7,7 @@ angular.module('TemplateDesigner', ['ngDraggable', 'EucaConsoleUtils'])
         vm.undoStack = [];
         vm.nodes = [];
         vm.links = [];
+        vm.newParam = {};
         vm.initController = function(json_opts, blah) {
             /* html escape */
             json_opts = $('<div/>').html(json_opts).text();
@@ -128,8 +129,20 @@ angular.module('TemplateDesigner', ['ngDraggable', 'EucaConsoleUtils'])
             });
             $('#property-editor-modal').foundation('reveal', 'close');
         };
-        vm.showAddParam = function(property) {
-            $('add-parameter-modal').foundation('reveal', 'open');
+        vm.addParameter = function() {
+            var paramCount = 0;
+            angular.forEach(vm.nodes, function(node) {
+                if (node.name == "Parameter") {
+                    paramCount = paramCount + 1;
+                }
+            });
+            var x = 60;
+            var y = (paramCount * 60) + 35;
+            vm.nodes.push({"name":"Parameter", "properties":vm.newParam, "width":100, "height":50, "x":x, "y":y, "fixed":true});
+            vm.setData();
+            vm.generateTemplate();
+            $('#add-parameter-modal').foundation('reveal', 'close');
+            vm.newParam = {};
         };
         vm.generateTemplate = function() {
             template = {'AWSTemplateFormatVersion':'2010-09-09'};
