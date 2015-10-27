@@ -224,7 +224,7 @@ def securitygroup_rules(context, request, rules=None, rules_egress=None, leftcol
     controller_options_json = BaseView.escape_json(json.dumps({
         'rules_array': rules_sorted,
         'rules_egress_array': rules_egress_sorted,
-        'json_endpoint': request.route_path('securitygroups_json'),
+        'json_endpoint': request.route_path('securitygroups_json') + "?incl_elb_groups=",
         'protocols_json_endpoint': request.route_path('internet_protocols_json'),
     }))
     remote_addr = BaseView.get_remote_addr(request)
