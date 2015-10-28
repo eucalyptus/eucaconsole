@@ -3,6 +3,7 @@
 <div metal:fill-slot="head_css" tal:omit-tag="">
     <link rel="stylesheet" href="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/codemirror.css')}" />
     <link rel="stylesheet" href="${request.static_path('eucaconsole:static/css/pages/account.css')}" />
+    <link rel="stylesheet" href="${request.static_path('eucaconsole:static/css/widgets/user_editor.css')}" />
 </div>
 
 <div metal:fill-slot="main_content">
