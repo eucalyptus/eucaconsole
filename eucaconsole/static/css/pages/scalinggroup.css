@@ -154,7 +154,7 @@ input[type="number"] { width: 3rem; }
 .tile.policy .header .title { cursor: default; color: black; }
 .tile.policy .header .title:hover { color: black; }
 
-.tile .footer.healthy { background-color: #007dba; }
+.tile .footer.healthy { background-color: #03405f; }
 .tile .footer.healthy.pending { background-color: #21b6ff; }
 
 #adjustment_amount { width: 4rem; }

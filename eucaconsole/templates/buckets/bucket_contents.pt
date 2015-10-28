@@ -32,12 +32,12 @@
            tal:condition="len(request.subpath) == 0" i18n:translate="">View details</a>
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
-                <a id="upload-file-btn" class="button split"
+                <a id="upload-file-btn" class="button split" tal:condition="layout.file_uploads_enabled"
                     href="${request.route_path('bucket_upload', name=bucket_name, subpath=request.subpath)}">
                     <span i18n:translate="" tal:omit-tag="">Upload Object(s)</span>
                     <span class="euca-split" data-dropdown="create-drop"></span>
                 </a>
-                <ul id="create-drop" class="f-dropdown" data-dropdown-content="" tal:condition="layout.file_uploads_enabled">
+                <ul id="create-drop" class="f-dropdown" data-dropdown-content="">
                     <li>
                         <a id="create-folder-btn" i18n:translate="" data-reveal-id="create-folder-modal">
                             Create Folder

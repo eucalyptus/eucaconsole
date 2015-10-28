@@ -96,7 +96,7 @@
                             <span i18n:translate="">OR:</span>
                             <a i18n:translate="" data-reveal-id="create-bucket-modal">Create bucket</a>
                         </div>
-                        ${panel('form_field', field=elb_form['bucket_prefix'], stack_label=True)}
+                        ${panel('form_field', field=elb_form['bucket_prefix'], pattern=elb_form.PREFIX_PATTERN, stack_label=True)}
                         ${panel('form_field', field=elb_form['collection_interval'], stack_label=True)}
                         <div tal:condition="logs_url">
                             <a href="${logs_url}" i18n:translate="" target="_blank">View latest logs</a>
