@@ -19,7 +19,7 @@ angular.module('UserEditor', [])
     })
     .controller('UserEditorCtrl', function ($scope) {
         $scope.isDisabled = function () {
-            return $scope.userEditor.$invalid;
+            return $scope.newUserName === '' || $scope.userEditor.$invalid;
         };
         $scope.usersTextarea = $('#user-editor').find('textarea#users');
         $scope.newUserName = '';
@@ -47,43 +47,25 @@ angular.module('UserEditor', [])
                 $scope.addUser($event);
             }
         };
-        $scope.addUser = function ($event) {
-            $event.preventDefault();
-            var userEntry = $($event.currentTarget).closest('.userentry'),
-                userNameField = userEntry.find('.name'),
-                usersArrayLength = $scope.usersArray.length,
-                existingUserFound = false,
-                form = $($event.currentTarget).closest('form'),
-                invalidFields = form.find('[data-invalid]');
-            if (userNameField.val()) {
-                // Trigger validation to avoid users that start with 'aws:'
-                form.trigger('validate');
-                if (invalidFields.length) {
-                    invalidFields.focus();
-                    return false;
-                }
-                // Avoid adding a new user if the name duplicates an existing one.
-                for (var i=0; i < usersArrayLength; i++) {
-                    if ($scope.usersArray[i].name === $scope.newUserName) {
-                        existingUserFound = true;
-                        break;
-                    }
-                }
-                if (existingUserFound) {
-                    userNameField.focus();
-                } else {
-                    $scope.usersArray.push({
-                        'name': $scope.newUserName,
-                        'fresh': 'new'
-                    });
-                    $scope.syncUsers();
-                    $scope.newUserName = '';
-                    userNameField.val('').focus();
-                    $scope.$emit('userAdded');
-                }
-            } else {
+        $scope.addUser = function () {
+            var userNameField = $('#user-name-field');
+
+            var existingUserFound = $scope.usersArray.some(function (user) {
+                return user.name === $scope.newUserName;
+            });
+            if(existingUserFound) {
                 userNameField.focus();
+                return;
             }
+
+            $scope.usersArray.push({
+                name: $scope.newUserName,
+                fresh: 'new'
+            });
+            $scope.syncUsers();
+            $scope.newUserName = '';
+            userNameField.focus();
+            $scope.$emit('userAdded');
         };
     })
 ;
