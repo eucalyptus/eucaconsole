@@ -12,7 +12,7 @@
             <li tal:condition="show_admin" class="default">
                 <a href="javascript:void(0);" class="circle">
                     <i class="fi-minus-circle"></i></a>
-                <span>Admin</span>
+                <span>admin</span>
             </li>
             <li ng-repeat="user in usersArray" ng-cloak="cloak">
                 <a href="#" class="circle remove has-tip" ng-click="removeUser($index, $event)"
@@ -22,9 +22,8 @@
         </ul>
         <div class="row">
             <div class="columns subheader" ng-cloak="">
-                <span class="subsection-label" ng-show="usersArray.length" i18n:translate="">Add another user</span>
-                <span class="subsection-label" ng-show="usersArray.length == 0" i18n:translate="">Add a user</span>
-                <span class="req">*</span>:
+                <span class="subsection-label" ng-show="usersArray.length" i18n:translate="">Add another user:</span>
+                <span class="subsection-label" ng-show="usersArray.length == 0" i18n:translate="">Add a user:</span>
             </div>
         </div>
         <div class="row userentry controls-wrapper">
