@@ -40,6 +40,7 @@ angular.module('TemplateDesigner', ['ngDraggable', 'EucaConsoleUtils'])
 
             var color = d3.scale.category20();
             var node = vm.svg.selectAll(".node")
+                .data(vm.nodes)
                 .enter().append("rect")
                 .attr("class", "node")
                 .attr("width", function (d) { return d.width; })
@@ -50,6 +51,7 @@ angular.module('TemplateDesigner', ['ngDraggable', 'EucaConsoleUtils'])
 
 
             var label = vm.svg.selectAll(".label")
+                .data(vm.nodes)
                 .enter().append("text")
                 .attr("class", "label")
                 .attr("text-anchor", "middle")
@@ -57,6 +59,7 @@ angular.module('TemplateDesigner', ['ngDraggable', 'EucaConsoleUtils'])
                 .call(vm.force.drag);
 
             var menu = vm.svg.selectAll(".menu")
+                .data(vm.nodes)
                 .enter().append("text")
                 .attr("id", function(d) { return "comp-menu"+d.index; })
                 .attr("class", "menu")
@@ -74,6 +77,7 @@ angular.module('TemplateDesigner', ['ngDraggable', 'EucaConsoleUtils'])
                 $('svg').foundation('dropdown', 'reflow');
 
             var param = vm.svg.selectAll(".param")
+                .data(vm.nodes)
                 .enter().append("text")
                 .attr("id", function(d) { return "comp-param"+d.index; })
                 .attr("class", "param")
@@ -89,6 +93,7 @@ angular.module('TemplateDesigner', ['ngDraggable', 'EucaConsoleUtils'])
                 $('svg').foundation('dropdown', 'reflow');
 
             var output = vm.svg.selectAll(".output")
+                .data(vm.nodes)
                 .enter().append("text")
                 .attr("id", function(d) { return "comp-output"+d.index; })
                 .attr("class", "output")
@@ -97,7 +102,7 @@ angular.module('TemplateDesigner', ['ngDraggable', 'EucaConsoleUtils'])
                 .text(function(d) { return '\uf138'; })
                 .on("click", function(evt) {
                     var elem = d3.select(this)[0][0];
-                    var idx = parseInt(elem.id.substring(9));
+                    var idx = parseInt(elem.id.substring(11));
                     var node = vm.nodes[idx];
                     // save data
                     vm.undoStack.push({"nodes": vm.nodes.slice(0), "links": vm.links.slice(0)});
@@ -124,11 +129,11 @@ angular.module('TemplateDesigner', ['ngDraggable', 'EucaConsoleUtils'])
                          return d.y + h/4;
                      });
                 menu.attr("x", function (d) { return d.x + 30; })
-                     .attr("y", function (d) { return d.y - 30; });
+                     .attr("y", function (d) { return d.y - ((d.height==100)?30:10); });
                 param.attr("x", function (d) { return d.x - 45; })
-                     .attr("y", function (d) { return d.y + 25; });
+                     .attr("y", function (d) { return d.y + ((d.height==100)?42:17); });
                 output.attr("x", function (d) { return d.x + 30; })
-                     .attr("y", function (d) { return d.y + 25; });
+                     .attr("y", function (d) { return d.y + ((d.height==100)?42:17); });
             });
         };
         vm.dropComplete = function($data, $event) {
