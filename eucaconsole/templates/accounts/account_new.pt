@@ -41,7 +41,7 @@
                         </div>
                         <hr />
                         <div class="section columns">
-                            ${panel('user_editor', help_text=account_form.help_text)}
+                            ${panel('user_editor', help_text=account_form.help_text, show_admin=True)}
                         </div>
                         <hr/>
                         <div class="expando" id="quotas-section">

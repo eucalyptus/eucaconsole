@@ -5,11 +5,11 @@
     <div class="small-12 columns field">
         <div class="row">
             <div class="columns subheader">
-                <span class="subsection-label">Users</span>
+                <span class="subsection-label" ng-show="usersArray.length || '${show_admin}' == 'True'">Users</span>
             </div>
         </div>
         <ul class="user-list">
-            <li class="default">
+            <li tal:condition="show_admin" class="default">
                 <a href="javascript:void(0);" class="circle">
                     <i class="fi-minus-circle"></i></a>
                 <span>Admin</span>
