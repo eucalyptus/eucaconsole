@@ -38,6 +38,9 @@ from . import BaseSecureForm, TextEscapedField
 class AccountForm(BaseSecureForm):
     """Account form
     """
+    random_password = wtforms.BooleanField(label=_(u"Create and download random password"))
+    access_keys = wtforms.BooleanField(label=_(u"Create and download access keys"))
+
     account_name_error_msg = 'Account name is required'
     account_name = TextEscapedField(
         id=u'account-name',
