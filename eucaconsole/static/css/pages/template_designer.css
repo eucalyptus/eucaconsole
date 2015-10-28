@@ -133,8 +133,10 @@
 
 .node { stroke: black; stroke-width: 1.5px; cursor: move; }
 
-.menu { cursor: pointer; }
+.menu, .param, .output { cursor: pointer; }
 
 .f-dropdown { max-width: 120px; }
 
 .draggable { color: #007dba; cursor: pointer; }
+
+#template-editor { height: 400px; }

@@ -23,7 +23,7 @@
     cursor: move;
 }
 
-.menu {
+.menu, .param, .output {
     cursor: pointer;
 }
 
@@ -34,4 +34,8 @@
 .draggable {
     color: $hp-accessible-blue;
     cursor: pointer;
+}
+
+#template-editor {
+    height: 400px;
 }

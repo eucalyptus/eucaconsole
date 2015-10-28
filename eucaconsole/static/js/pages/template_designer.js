@@ -23,9 +23,10 @@ angular.module('TemplateDesigner', ['ngDraggable', 'EucaConsoleUtils'])
                 .size([800, 600]);
             vm.svg = d3.select("svg")
                 .attr("width", 800)
-                .attr("height", 800);
+                .attr("height", 600);
         };
         vm.setData = function() {
+            // TODO: optimize.. don't remove all here.. leverage enter, update, exit states
             d3.selectAll("svg > *").remove();
             vm.force 
                 .nodes(vm.nodes)
@@ -39,7 +40,6 @@ angular.module('TemplateDesigner', ['ngDraggable', 'EucaConsoleUtils'])
 
             var color = d3.scale.category20();
             var node = vm.svg.selectAll(".node")
-                .data(vm.nodes)
                 .enter().append("rect")
                 .attr("class", "node")
                 .attr("width", function (d) { return d.width; })
@@ -50,7 +50,6 @@ angular.module('TemplateDesigner', ['ngDraggable', 'EucaConsoleUtils'])
 
 
             var label = vm.svg.selectAll(".label")
-                .data(vm.nodes)
                 .enter().append("text")
                 .attr("class", "label")
                 .attr("text-anchor", "middle")
@@ -58,7 +57,6 @@ angular.module('TemplateDesigner', ['ngDraggable', 'EucaConsoleUtils'])
                 .call(vm.force.drag);
 
             var menu = vm.svg.selectAll(".menu")
-                .data(vm.nodes)
                 .enter().append("text")
                 .attr("id", function(d) { return "comp-menu"+d.index; })
                 .attr("class", "menu")
@@ -71,6 +69,42 @@ angular.module('TemplateDesigner', ['ngDraggable', 'EucaConsoleUtils'])
                     var idx = parseInt(elem.id.substring(9));
                     var node = vm.nodes[idx];
                     vm.selectedNode = node;
+                })
+                .call(vm.force.drag);
+                $('svg').foundation('dropdown', 'reflow');
+
+            var param = vm.svg.selectAll(".param")
+                .enter().append("text")
+                .attr("id", function(d) { return "comp-param"+d.index; })
+                .attr("class", "param")
+                .attr("text-anchor", "right")
+                .attr("font-family", "FontAwesome")
+                .text(function(d) { return '\uf138'; })
+                .on("click", function(evt) {
+                    var elem = d3.select(this)[0][0];
+                    var idx = parseInt(elem.id.substring(9));
+                    var node = vm.nodes[idx];
+                })
+                .call(vm.force.drag);
+                $('svg').foundation('dropdown', 'reflow');
+
+            var output = vm.svg.selectAll(".output")
+                .enter().append("text")
+                .attr("id", function(d) { return "comp-output"+d.index; })
+                .attr("class", "output")
+                .attr("text-anchor", "right")
+                .attr("font-family", "FontAwesome")
+                .text(function(d) { return '\uf138'; })
+                .on("click", function(evt) {
+                    var elem = d3.select(this)[0][0];
+                    var idx = parseInt(elem.id.substring(9));
+                    var node = vm.nodes[idx];
+                    // save data
+                    vm.undoStack.push({"nodes": vm.nodes.slice(0), "links": vm.links.slice(0)});
+                    // create temp target for link... so it can be dragged around.
+                    vm.nodes.push({"name":"", "width":10, "height":10});
+                    vm.links.push({"source": idx, "target": vm.nodes.length-1});
+                    vm.setData();
                 })
                 .call(vm.force.drag);
                 $('svg').foundation('dropdown', 'reflow');
@@ -91,6 +125,10 @@ angular.module('TemplateDesigner', ['ngDraggable', 'EucaConsoleUtils'])
                      });
                 menu.attr("x", function (d) { return d.x + 30; })
                      .attr("y", function (d) { return d.y - 30; });
+                param.attr("x", function (d) { return d.x - 45; })
+                     .attr("y", function (d) { return d.y + 25; });
+                output.attr("x", function (d) { return d.x + 30; })
+                     .attr("y", function (d) { return d.y + 25; });
             });
         };
         vm.dropComplete = function($data, $event) {
