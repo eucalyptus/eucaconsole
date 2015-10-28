@@ -22,15 +22,23 @@
             </div>
         </div>
         <div class="row userentry controls-wrapper">
+            <div class="columns">
+                <label class="left stack-label" for="user-name-field" i18n:translate="">User name</label>&nbsp;
+                <span tal:condition="help_text"
+                        class="helptext-icon"
+                        data-tooltip="" title="${help_text}"></span>
+            </div>
             <div id="user-name-field-div" class="field columns">
-                <label class="left" for="user-name-field" i18n:translate="">Name</label>&nbsp;
                 <input class="userinput name" id="user-name-field" type="text"
-                       ng-model="newUserName" ng-keypress="keyListener($event)" pattern="^[a-zA-Z0-9\+\=\,\.\@\-]{1,64}$" user-name reserved="admin"/>
+                       ng-model="newUserName" ng-keypress="keyListener($event)"
+                       pattern="^[a-zA-Z0-9\+\=\,\.\@\-]{1,64}$" user-name reserved="admin"/>
                 <small id="user-list-error" class="error" i18n:translate="">
-                    Must have at least one user, and the names of users must be alphanumeric, including the following common characters: plus (+), equal (=), comma (,), period (.), at (@), and dash (-), and cannot contain spaces.
+                    Must have at least one user, and the names of users must be alphanumeric, including the following
+                    common characters: plus (+), equal (=), comma (,), period (.), at (@), and dash (-),
+                    and cannot contain spaces.
                 </small>
                 <small class="error reserved" i18n:translate="">
-                    An admin user will be created automatically for you.
+                    You cannot create user "admin" because it is created automatically.
                 </small>
             </div>
             <div>&nbsp;</div>

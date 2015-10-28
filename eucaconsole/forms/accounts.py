@@ -41,11 +41,15 @@ class AccountForm(BaseSecureForm):
     account_name_error_msg = 'Account name is required'
     account_name = TextEscapedField(
         id=u'account-name',
-        label=_(u'Name'),
+        label=_(u'Account name'),
         validators=[
             validators.InputRequired(message=account_name_error_msg)
         ]
     )
+    help_text = u'''
+    The admin user is created automatically.  When you create an account, credentials
+    for all users including the admin are automatically downloaded to you as a .csv file.
+    '''
 
     def __init__(self, request, account=None, **kwargs):
         super(AccountForm, self).__init__(request, **kwargs)
