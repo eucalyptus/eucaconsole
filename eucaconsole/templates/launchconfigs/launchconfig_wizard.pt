@@ -83,7 +83,7 @@
                                     <input type="radio" id="inputtype" name="inputtype" value="text" ng-model="inputtype"/>
                                     <label class="userdatalabel" i18n:translate="">Enter text</label>
                                     <textarea id="userdata" name="userdata" ng-model="userData"
-                                              ng-show="inputtype=='text'" maxlength="16384"></textarea>
+                                              ng-show="inputtype=='text'" maxlength="16384">${create_form.userdata.data}</textarea>
                                     <br/>
                                     <input type="radio" id="inputtype" name="inputtype" value="file" ng-model="inputtype"/>
                                     <label class="userdatalabel">

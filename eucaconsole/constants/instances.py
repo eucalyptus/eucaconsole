@@ -70,7 +70,7 @@ AWS_INSTANCE_TYPE_CHOICES = [
     ('c4.4xlarge', 'c4.4xlarge (16 vCPUs, 30 GiB memory, EBS Only)'),
     ('c4.8xlarge', 'c4.8xlarge (36 vCPUs, 60 GiB memory, EBS Only)'),
     ('g2.2xlarge', 'g2.2xlarge (8 vCPUs, 15 GiB memory, 1 x 60 GiB SSD Storage Capacity)'),
-    ('g2.4xlarge', 'g2.4xlarge (32 vCPUs, 60 GiB memory, 2 x 120 GiB SSD Storage Capacity)'),
+    ('g2.8xlarge', 'g2.8xlarge (32 vCPUs, 60 GiB memory, 2 x 120 GiB SSD Storage Capacity)'),
     ('r3.large', 'r3.large (2 vCPUs, 15.25 GiB memory, 1 x 32 GiB SSD Storage Capacity)'),
     ('r3.xlarge', 'r3.xlarge (4 vCPUs, 30.5 GiB memory, 1 x 80 GiB SSD Storage Capacity)'),
     ('r3.2xlarge', 'r3.2xlarge (8 vCPUs, 61 GiB memory, 1 x 160 GiB SSD Storage Capacity)'),
