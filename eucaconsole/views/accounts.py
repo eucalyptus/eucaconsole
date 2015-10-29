@@ -229,12 +229,10 @@ class AccountView(BaseView):
                 self.conn.get_response('CreateAccount',
                                        params={'AccountName': new_account_name})
 
-                admin_password, admin_creds = self._create_user(new_account_name, 'admin', None,
-                                                                create_password=random_password,
-                                                                create_access_keys=access_keys)
-                user_list.append([
-                    new_account_name, 'admin', admin_password,
-                    admin_creds.access_key.access_key_id, admin_creds.access_key.secret_access_key])
+                user = self._create_user(new_account_name, 'admin', None,
+                                         create_password=random_password,
+                                         create_access_keys=access_keys)
+                user_list.append(user)
 
                 quotas = Quotas()
                 quotas.create_quota_policy(self, account=new_account_name)
@@ -242,32 +240,45 @@ class AccountView(BaseView):
                 if users_json:
                     users = json.loads(users_json)
                     for (name, email) in users.items():
-                        password, creds = self._create_user(new_account_name, name, email,
-                                                            create_password=random_password,
-                                                            create_access_keys=access_keys)
-                        user_list.append([new_account_name, name, password, creds.access_key.access_key_id,
-                                          creds.access_key.secret_access_key])
+                        user = self._create_user(new_account_name, name, email,
+                                                 create_password=random_password,
+                                                 create_access_keys=access_keys)
+                        user_list.append(user)
 
                 # assemble file response
-                string_output = StringIO.StringIO()
-                csv_w = csv.writer(string_output)
-                header = [_(u'Account'), _(u'User Name'), _(u'Password'), _(u'Access Key'), _(u'Secret Key')]
-                csv_w.writerow(header)
-                for user in user_list:
-                    csv_w.writerow(user)
-                self._store_file_(u"{acct}-users.csv".format(acct=new_account_name),
-                                  'text/csv', string_output.getvalue())
+                has_file = 'n'
+                if access_keys or random_password:
+                    string_output = StringIO.StringIO()
+                    csv_w = csv.writer(string_output)
+                    header = [_(u'Account'), _(u'User Name')]
+                    if random_password:
+                        header.append(_(u'Password'))
+                    if access_keys:
+                        header.extend([_(u'Access Key'), _(u'Secret Key')])
+                    csv_w.writerow(header)
+                    for user in user_list:
+                        row = [user['account'], user['name']]
+                        if random_password:
+                            row.append(user['password'])
+                        if access_keys:
+                            row.extend([user['access_id'], user['secret_key']])
+                        csv_w.writerow(row)
+                    self._store_file_(u"{acct}-users.csv".format(acct=new_account_name),
+                                      'text/csv', string_output.getvalue())
+                    has_file = 'y'
 
                 return dict(
                     message=_(u"Successfully created account {account}").format(account=new_account_name),
-                    results=dict(hasFile='y')
+                    results=dict(hasFile=has_file)
                 )
 
         return self.render_dict
 
     def _create_user(self, account, name, email, path='/', create_password=True, create_access_keys=True):
-        password = None
-        creds = None
+        user = {
+            'account': account,
+            'name': name
+        }
 
         if name is not 'admin':
             self.log_request(_(u'Creating user {0}').format(name))
@@ -281,13 +292,17 @@ class AccountView(BaseView):
             self.conn.get_response('CreateLoginProfile',
                                        params={'UserName': name, 'Password': password,
                                                'DelegateAccount': account})
+            user['password'] = password
 
         if create_access_keys:
             self.log_request(_(u'Creating access keys for user {0}').format(name))
             creds = self.conn.get_response('CreateAccessKey',
                                            params={'UserName': name, 'DelegateAccount': account})
+            user['access_id'] = creds.access_key.access_key_id
+            user['secret_key'] = creds.access_key.secret_access_key
 
-        return password, creds
+        return user
+
 
     @view_config(route_name='account_update', request_method='POST', renderer=TEMPLATE)
     def account_update(self):
