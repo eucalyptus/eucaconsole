@@ -161,6 +161,16 @@ class SecurityGroupsJsonView(LandingPageView):
                     rules_egress=SecurityGroupsView.get_rules(securitygroup.rules_egress, rule_type='outbound'),
                     tags=TaggedItemView.get_tags_display(securitygroup.tags),
                 ))
+        incl_elb_groups = self.request.params.get('incl_elb_groups')
+        if incl_elb_groups is not None:
+            elb_conn = self.get_connection(conn_type='elb')
+            elbs = elb_conn.get_all_load_balancers()
+            for elb in elbs:
+                securitygroups.append(dict(
+                    id='',
+                    name=elb.source_security_group.name,
+                    owner_id=elb.source_security_group.owner_alias
+                ))
         return dict(results=securitygroups)
 
     @view_config(route_name='securitygroups_rules_json', renderer='json', request_method='POST')

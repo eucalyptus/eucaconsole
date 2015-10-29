@@ -651,7 +651,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
                     if self.instance.instance_type != instance_type:
                         self.conn.modify_instance_attribute(self.instance.id, 'instanceType', instance_type)
                     user_data = self.get_user_data()
-                    if user_data is not None:
+                    if user_data:
                         self.conn.modify_instance_attribute(self.instance.id, 'userData', base64.b64encode(user_data))
                     if kernel != '' and self.instance.kernel != kernel:
                         self.conn.modify_instance_attribute(self.instance.id, 'kernel', kernel)
