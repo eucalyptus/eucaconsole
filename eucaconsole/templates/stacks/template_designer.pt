@@ -94,7 +94,19 @@
                         <label class="right" i18n:translate="">Type</label>
                     </div>
                     <div class="columns small-8">
-                        <input width="100%" type="text" ng-model="designCtrl.newParam.datatype" id="param-type"/>
+                        <select width="100%" type="text" ng-model="designCtrl.newParam.datatype" id="param-type">
+                            <option>String</option>
+                            <option>Number</option>
+                            <option>AWS::EC2:AvailabilityZone</option>
+                            <option>AWS::EC2:Image::Id</option>
+                            <option>AWS::EC2:Instance::Id</option>
+                            <option>AWS::EC2:KeyPair::KeyName</option>
+                            <option>AWS::EC2:SecurityGroup::GroupName</option>
+                            <option>AWS::EC2:SecurityGroup::Id</option>
+                            <option>AWS::EC2:Subnet::Id</option>
+                            <option>AWS::EC2:Volume::Id</option>
+                            <option>AWS::EC2:VPC::Id</option>
+                        </select>
                     </div>
                 </div>
                 <div class="row">

@@ -131,7 +131,10 @@
 
 .link { stroke: #6a737b; stroke-width: 3px; stroke-opacity: 1; }
 
+.connecting { stroke: #6a737b; stroke-width: 1px; stroke-dasharray: "5 5"; stroke-opacity: 1; }
+
 .node { stroke: black; stroke-width: 1.5px; cursor: move; }
+.node.linking { stroke: #007dba; }
 
 .menu, .param, .output { cursor: pointer; }
 

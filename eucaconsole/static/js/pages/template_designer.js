@@ -15,6 +15,14 @@ angular.module('TemplateDesigner', ['ngDraggable', 'EucaConsoleUtils'])
             vm.resources = opts.resources;
             vm.setupGraph();
             vm.setData();
+            jQuery.fn.d3Click = function () {
+              this.each(function (i, e) {
+                var evt = document.createEvent("MouseEvents");
+                evt.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+
+                e.dispatchEvent(evt);
+              });
+            };
         };
         vm.setupGraph = function() {
             vm.force = cola.d3adaptor()
@@ -38,7 +46,6 @@ angular.module('TemplateDesigner', ['ngDraggable', 'EucaConsoleUtils'])
                 .enter().append("line")
                 .attr("class", "link");
 
-            var color = d3.scale.category20();
             var node = vm.svg.selectAll(".node")
                 .data(vm.nodes)
                 .enter().append("rect")
@@ -47,6 +54,15 @@ angular.module('TemplateDesigner', ['ngDraggable', 'EucaConsoleUtils'])
                 .attr("height", function (d) { return d.height; })
                 .attr("rx", 5).attr("ry", 5)
                 .style("fill", function (d) { return "#bbbbbb"; })
+                .on("click", function(node, idx) {
+                    if (vm.connectingFrom !== undefined) {
+                        vm.undoStack.push({"nodes": vm.nodes.slice(0), "links": vm.links.slice(0)});
+                        vm.links.push({"source":vm.connectingFrom, "target":idx});
+                        vm.connectingFrom = undefined;
+                        vm.setData();
+                        vm.generateTemplate();
+                    }
+                })
                 .call(vm.force.drag);
 
 
@@ -67,14 +83,10 @@ angular.module('TemplateDesigner', ['ngDraggable', 'EucaConsoleUtils'])
                 .attr("text-anchor", "right")
                 .attr("font-family", "FontAwesome")
                 .text(function(d) { return '\uf141'; })
-                .on("click", function(evt) {
-                    var elem = d3.select(this)[0][0];
-                    var idx = parseInt(elem.id.substring(9));
-                    var node = vm.nodes[idx];
+                .on("click", function(node) {
                     vm.selectedNode = node;
                 })
-                .call(vm.force.drag);
-                $('svg').foundation('dropdown', 'reflow');
+            $('svg').foundation('dropdown', 'reflow');
 
             var param = vm.svg.selectAll(".param")
                 .data(vm.nodes)
@@ -84,13 +96,8 @@ angular.module('TemplateDesigner', ['ngDraggable', 'EucaConsoleUtils'])
                 .attr("text-anchor", "right")
                 .attr("font-family", "FontAwesome")
                 .text(function(d) { return '\uf138'; })
-                .on("click", function(evt) {
-                    var elem = d3.select(this)[0][0];
-                    var idx = parseInt(elem.id.substring(9));
-                    var node = vm.nodes[idx];
+                .on("click", function(node) {
                 })
-                .call(vm.force.drag);
-                $('svg').foundation('dropdown', 'reflow');
 
             var output = vm.svg.selectAll(".output")
                 .data(vm.nodes)
@@ -100,19 +107,24 @@ angular.module('TemplateDesigner', ['ngDraggable', 'EucaConsoleUtils'])
                 .attr("text-anchor", "right")
                 .attr("font-family", "FontAwesome")
                 .text(function(d) { return '\uf138'; })
-                .on("click", function(evt) {
-                    var elem = d3.select(this)[0][0];
-                    var idx = parseInt(elem.id.substring(11));
-                    var node = vm.nodes[idx];
-                    // save data
-                    vm.undoStack.push({"nodes": vm.nodes.slice(0), "links": vm.links.slice(0)});
-                    // create temp target for link... so it can be dragged around.
-                    vm.nodes.push({"name":"", "width":10, "height":10});
-                    vm.links.push({"source": idx, "target": vm.nodes.length-1});
-                    vm.setData();
+                .on("mousedown", function(node, idx) {
+                    var x = node.x + 50;
+                    var y = node.y + 35;
+                    vm.svg.append("line")
+                    .attr("class", "connecting")
+                    .attr("stroke-dasharray", "5 5")
+                    .attr("x1", x)
+                    .attr("y1", y)
+                    .attr("x2", x+10)
+                    .attr("y2", y);
+                    vm.connectingFrom = idx;
                 })
-                .call(vm.force.drag);
-                $('svg').foundation('dropdown', 'reflow');
+            vm.svg.on("mousemove", function() {
+                if (vm.connectingFrom !== undefined) {
+                    var coords = d3.mouse(this);
+                    $('.connecting').attr('x2', coords[0]).attr('y2', coords[1]);
+                }
+            });
 
             vm.force.on("tick", function () {
                 link.attr("x1", function (d) { return d.source.x; })
@@ -147,7 +159,7 @@ angular.module('TemplateDesigner', ['ngDraggable', 'EucaConsoleUtils'])
             angular.forEach(props, function(prop, idx) {
                 props[idx] = $.extend(true, {}, prop);
             });
-            vm.nodes.push({"name":$data.name, "properties":props, "width":100, "height":100, "x":x, "y":y, "fixed":true});
+            vm.nodes.push({"name":$data.name, "properties":props, "width":100, "height":100, "x":x, "y":y, "fixed":false});
             vm.setData();
             vm.generateTemplate();
         };
@@ -163,7 +175,6 @@ angular.module('TemplateDesigner', ['ngDraggable', 'EucaConsoleUtils'])
             }
         };
         vm.showPropertiesEditor = function() {
-            console.log("node props: "+JSON.stringify(vm.selectedNode.properties));
             $('#property-editor-modal').foundation('reveal', 'open');
         };
         vm.saveProperties = function() {
@@ -171,6 +182,7 @@ angular.module('TemplateDesigner', ['ngDraggable', 'EucaConsoleUtils'])
                 prop.value = $("#res-prop-"+prop.name).val();
             });
             $('#property-editor-modal').foundation('reveal', 'close');
+            vm.generateTemplate();
         };
         vm.addParameter = function() {
             var paramCount = 0;
@@ -189,15 +201,27 @@ angular.module('TemplateDesigner', ['ngDraggable', 'EucaConsoleUtils'])
         };
         vm.generateTemplate = function() {
             template = {'AWSTemplateFormatVersion':'2010-09-09'};
+            properties = {};
             resources = {};
             for (idx in vm.nodes) {
                 var node = vm.nodes[idx];
-                var name = node.name + '-' + Math.random().toString(36).substring(5)
-                resources[name] = {}
-                angular.forEach(node.properties, function(prop) {
-                    resources[name][prop.name] = prop.value;
-                });
+                if (node.name == "Parameter") {
+                    var name = node.properties.name;
+                    properties[name] = {
+                        "Description":node.properties.description,
+                        "Type":node.properties.datatype,
+                        "Default":node.properties.default
+                    }
+                }
+                else {
+                    var name = node.name + '-' + Math.random().toString(36).substring(5)
+                    resources[name] = {}
+                    angular.forEach(node.properties, function(prop) {
+                        resources[name][prop.name] = prop.value;
+                    });
+                }
             }
+            template['Parameters'] = properties;
             template['Resources'] = resources;
             vm.templateText = JSON.stringify(template, undefined, 2);
         }

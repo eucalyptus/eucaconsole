@@ -17,10 +17,20 @@
     stroke-opacity: 1;
 }
 
+.connecting {
+    stroke: $euca-grey;
+    stroke-width: 3px;
+    stroke-dasharray: "5 5";
+    stroke-opacity: 1;
+}
+
 .node {
     stroke: black;
     stroke-width: 1.5px;
     cursor: move;
+    &.linking {
+        stroke: $hp-accessible-blue;
+    }
 }
 
 .menu, .param, .output {
