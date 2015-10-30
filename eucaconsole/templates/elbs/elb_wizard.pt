@@ -230,7 +230,7 @@
                                             <span i18n:translate="">OR:</span>
                                             <a i18n:translate="" data-reveal-id="create-bucket-modal">Create bucket</a>
                                         </div>
-                                        ${panel('form_field', field=create_form['bucket_prefix'], stack_label=True)}
+                                        ${panel('form_field', field=create_form['bucket_prefix'], pattern=create_form.PREFIX_PATTERN, stack_label=True)}
                                         ${panel('form_field', field=create_form['collection_interval'], stack_label=True)}
                                     </div>
                                 </div>

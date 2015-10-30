@@ -28,11 +28,12 @@
 Forms for Instances
 
 """
+import base64
 import wtforms
 from wtforms import validators
 
 from ..i18n import _
-from ..views import BaseView
+from ..views import BaseView, boto_error_handler
 from . import BaseSecureForm, ChoicesManager, TextEscapedField
 
 
@@ -269,6 +270,10 @@ class LaunchMoreInstancesForm(BaseSecureForm):
         self.monitoring_enabled.data = self.instance.monitored
         self.private_addressing.data = self.enable_private_addressing()
         self.number.data = 1
+        with boto_error_handler(self.request):
+            userdata = self.conn.get_instance_attribute(self.instance.id, 'userData')
+            userdata = userdata['userData']
+            self.userdata.data = base64.b64decode(userdata) if userdata is not None else ''
 
     def enable_private_addressing(self):
         if self.instance.private_ip_address == self.instance.ip_address:
