@@ -1,0 +1,143 @@
+{
+  "AWSTemplateFormatVersion" : "2010-09-09",
+
+  "Description" : "Deploy Eucalyptus Management Console with ELB, Autoscaling.",
+
+  "Parameters" : {
+    "ImageId" : {
+      "Description" : "The ID of the image to use for the console",
+      "Type" : "String",
+      "ConstraintDescription" : "Must be the ID of a CentOS 6 image on the cloud."
+    },
+    "InstanceType" : {
+      "Description" : "WebServer EC2 instance type",
+      "Type" : "String",
+      "Default" : "m1.small",
+      "ConstraintDescription" : "must be a valid EC2 instance type."
+    },
+
+    "KeyName" : {
+      "Description" : "The EC2 Key Pair to allow SSH access to the instances",
+      "Type" : "AWS::EC2::KeyPair::KeyName",
+      "ConstraintDescription" : "must be the name of an existing EC2 KeyPair."
+    },
+      
+    "SSHLocation" : {
+      "Description" : "The IP address range that can be used to SSH to the EC2 instances",
+      "Type": "String",
+      "MinLength": "9",
+      "MaxLength": "18",
+      "Default": "0.0.0.0/0",
+      "AllowedPattern": "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})",
+      "ConstraintDescription": "must be a valid IP CIDR range of the form x.x.x.x/x."
+    },
+    "CloudIP" : {
+      "Description" : "The IP or DNS name of the cloud front end",
+      "Type" : "String",
+      "Default": "10.111.5.150",
+      "ConstraintDescription" : "Must be either an IP address or DNS name resolvable and reachable from this cloud."
+    }
+  },
+
+  "Resources" : {
+    "ConsoleScalingGroup" : {
+      "Type" : "AWS::AutoScaling::AutoScalingGroup",
+      "Properties" : {
+        "AvailabilityZones" : { "Fn::GetAZs" : ""},
+        "LaunchConfigurationName" : { "Ref" : "ConsoleLaunchConfig" },
+        "MinSize" : "1",
+        "DesiredSize" : "1",
+        "MaxSize" : "3",
+        "LoadBalancerNames" : [ { "Ref" : "ConsoleELB" } ]
+      }
+    },
+
+    "ConsoleLaunchConfig" : {
+      "Type" : "AWS::AutoScaling::LaunchConfiguration",
+      "Metadata" : {
+        "Comment" : "Install a simple application"
+      },
+      "Properties" : {
+        "KeyName" : { "Ref" : "KeyName" },
+        "ImageId" : { "Ref" : "ImageId" },
+        "SecurityGroups" : [ { "Ref" : "ConsoleSecurityGroup" } ],
+        "InstanceType" : { "Ref" : "InstanceType" },
+        "UserData"       : { "Fn::Base64" : { "Fn::Join" : ["", [
+            "#cloud-config\n",
+            "# vim: syntax=yaml\n",
+            "#\n",
+            "# This config installs the eucalyptus and epel repos, then installs and\n",
+            "# configures the eucaconsole package\n",
+            "runcmd:\n",
+            " - [ yum, -y, install, 'http://packages.release.eucalyptus-systems.com/yum/tags/eucalyptus-devel/rhel/6/x86_64/eucalyptus-release-firehose-0-1.el6.noarch.rpm' ]\n",
+            " - [ yum, -y, install, eucaconsole ]\n",
+            " - [ sed, -i, 's/localhost/",
+            { "Ref" : "CloudIP" },
+            "/', /etc/eucaconsole/console.ini ]\n",
+            " - [ service, eucaconsole, restart ]\n",
+            "\n",
+            "write_files:\n",
+            "-   content: |\n",
+            "        [general]\n",
+            "        session.encrypt_key = TtJFSud9WFSG7oAEf3ToyOdgKpKN6Vjk\n",
+            "        session.validate_key = Shw8HOSI8NrBaBZvAxeX2reBO1aLTKmr\n",
+            "    path: /etc/eucaconsole/session-keys.ini\n"
+        ]]}}
+      }
+    },
+
+    "ConsoleELB" : {
+      "Type" : "AWS::ElasticLoadBalancing::LoadBalancer",
+      "Properties" : {
+        "AvailabilityZones" : { "Fn::GetAZs" : "" },
+        "CrossZone" : "true",
+        "Listeners" : [ {
+          "LoadBalancerPort" : "80",
+          "InstancePort" : "80",
+          "Protocol" : "HTTP",
+          "InstanceProtocol" : "HTTP"
+        }
+        ],
+        "HealthCheck" : {
+          "Target" : "HTTPS:443/",
+          "HealthyThreshold" : "2",
+          "UnhealthyThreshold" : "5",
+          "Interval" : "30",
+          "Timeout" : "5"
+        }
+      }
+    },
+
+    "ConsoleSecurityGroup" : {
+      "Type" : "AWS::EC2::SecurityGroup",
+      "Properties" : {
+        "GroupDescription" : "Enable SSH access and HTTP from the load balancer only",
+        "SecurityGroupIngress" : [ {
+          "IpProtocol" : "tcp",
+          "FromPort" : "22",
+          "ToPort" : "22",
+          "CidrIp" : { "Ref" : "SSHLocation"}
+        },
+        {
+          "IpProtocol" : "tcp",
+          "FromPort" : "80",
+          "ToPort" : "80",
+          "CidrIp" : "0.0.0.0/0"
+        },
+        {
+          "IpProtocol" : "tcp",
+          "FromPort" : "443",
+          "ToPort" : "443",
+          "CidrIp" : "0.0.0.0/0"
+        } ]
+      }
+    }
+  },
+
+  "Outputs" : {
+    "URL" : {
+      "Description" : "The URL of the Eucalpytus Console",
+      "Value" :  { "Fn::Join" : [ "", [ "http://", { "Fn::GetAtt" : [ "ConsoleELB", "DNSName" ]}]]}
+    }
+  }
+}

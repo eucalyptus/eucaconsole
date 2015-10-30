@@ -28,10 +28,12 @@
 Forms for Launch Config
 
 """
+import base64
 import wtforms
 from wtforms import validators
 
 from ..i18n import _
+from ..views import boto_error_handler
 from . import BaseSecureForm, ChoicesManager
 
 
@@ -97,6 +99,12 @@ class CreateLaunchConfigForm(BaseSecureForm):
             self.image_id.data = self.image.id
         if self.keyname is not None:
             self.keypair.data = self.keyname
+        instance_id = request.params.get('userdata_instanceid')
+        if instance_id is not None:
+            with boto_error_handler(self.request):
+                userdata = self.conn.get_instance_attribute(instance_id, 'userData')
+                userdata = userdata['userData']
+                self.userdata.data = base64.b64decode(userdata) if userdata is not None else ''
 
     def set_monitoring_enabled_field(self):
         if self.cloud_type == 'euca':
