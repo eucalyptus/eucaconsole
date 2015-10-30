@@ -564,7 +564,7 @@ class SeleniumApi(object):
         return self.driver.find_element_by_xpath(xpath).text
 
 
-    def select_by_id(self, element_id, text, index=-1, timeout_in_seconds=None):
+    def select_by_id(self, element_id, text='', index=-1, timeout_in_seconds=None):
         """
         Selects element with particular text on it.
         :param element_id:
