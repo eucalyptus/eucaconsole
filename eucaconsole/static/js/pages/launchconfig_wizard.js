@@ -158,6 +158,10 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                 $scope.loadImageInfo($scope.imageID);
             }
             $scope.isCreateSGChecked = $('#create_sg_from_lc').is(':checked');
+            if ($("#userdata").val().length > 0) {
+                $scope.inputtype = "text";
+                $scope.userData = $("#userdata").val();
+            }
         };
         $scope.restoreSecurityGroupsInitialValues = function () {
             $scope.securityGroupSelected = $scope.urlParams.security_group || '';
@@ -294,11 +298,13 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                     chosenSelect.trigger("chosen:updated");
                 }
             });
-            $scope.$watch('inputtype', function() {
-                if ($scope.inputtype == 'text') {
-                    $timeout(function() {
-                        $('#userdata').focus();
-                    });
+            $scope.$watch('inputtype', function(newValue, oldValue) {
+                if (newValue != oldValue) {
+                    if ($scope.inputtype == 'text') {
+                        $timeout(function() {
+                            $('#userdata').focus();
+                        });
+                    }
                 }
             });
         };

@@ -31,6 +31,7 @@ Pyramid views for Eucalyptus and AWS CloudFormation stacks
 import base64
 import simplejson as json
 import hashlib
+import logging
 import os
 import fnmatch
 import time
@@ -407,7 +408,11 @@ class StackWizardView(BaseView, StackMixin):
         if sample_bucket is None:
             return None
         s3_conn = self.get_connection(conn_type="s3")
-        return s3_conn.get_bucket(sample_bucket)
+        try:
+            return s3_conn.get_bucket(sample_bucket)
+        except BotoServerError as err:
+            logging.warn(_(u'Configuration error: cloudformation.samples.bucket is referencing bucket that is not visible to this user.'))
+            return None
 
     def get_controller_options_json(self):
         return BaseView.escape_json(json.dumps({

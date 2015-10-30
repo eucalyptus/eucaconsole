@@ -108,7 +108,7 @@
                         <div class="large-10 small-8 columns value">
                             <input type="radio" id="inputtype" name="inputtype" value="text" ng-model="inputtype"/>
                             <label class="userdatalabel" i18n:translate="">Enter text</label>
-                            <textarea id="userdata" name="userdata" ng-show="inputtype=='text'" maxlength="16384"></textarea>
+                            <textarea id="userdata" name="userdata" ng-show="inputtype=='text'" maxlength="16384">${launch_more_form.userdata.data}</textarea>
                             <br/>
                             <input type="radio" id="inputtype" name="inputtype" value="file" ng-model="inputtype"/>
                             <label class="userdatalabel">
