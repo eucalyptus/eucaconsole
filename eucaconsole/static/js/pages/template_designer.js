@@ -1,13 +1,13 @@
 
 angular.module('TemplateDesigner', ['ngDraggable', 'EucaConsoleUtils'])
-    .controller('TemplateDesignerCtrl', function($timeout, eucaUnescapeJson) {
+    .controller('TemplateDesignerCtrl', function($http, $timeout, eucaUnescapeJson) {
         var vm = this;
         //vm.nodes = [{"name":"one", "width":50, "height":50}, {"name":"two", "width":50, "height":50}];
         //vm.links = [{"source":0, "target":1}];
         vm.undoStack = [];
         vm.nodes = [];
         vm.links = [];
-        vm.newParam = {};
+        vm.newParam = {'datatype':'String'}; // sane default
         vm.initController = function(json_opts, blah) {
             /* html escape */
             json_opts = $('<div/>').html(json_opts).text();
@@ -159,7 +159,7 @@ angular.module('TemplateDesigner', ['ngDraggable', 'EucaConsoleUtils'])
             angular.forEach(props, function(prop, idx) {
                 props[idx] = $.extend(true, {}, prop);
             });
-            vm.nodes.push({"name":$data.name, cfn_type:$data.cfn_type, "properties":props, "width":100, "height":100, "x":x, "y":y, "fixed":false});
+            vm.nodes.push({"name":$data.name, cfn_type:$data.cfn_type, "properties":props, "width":100, "height":100, "x":x, "y":y, "fixed":true});
             vm.setData();
             vm.generateTemplate();
         };
@@ -175,7 +175,35 @@ angular.module('TemplateDesigner', ['ngDraggable', 'EucaConsoleUtils'])
             }
         };
         vm.showPropertiesEditor = function() {
+            // trigger fetch(es) to populate selects as needed
+            angular.forEach(vm.selectedNode.properties, function(prop) {
+                if (prop.data === undefined && prop.data_url !== undefined) {
+                    var data = "csrf_token="+$('#csrf_token').val();
+                    $http({method:'POST', url:prop.data_url, data:data,
+                        headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
+                    success(function(oData) {
+                        var results = oData ? oData.results : [];
+                        prop.data = vm.resultsToOptions(results);
+                    }).
+                    error(function (oData, status) {
+                        eucaHandleError(oData, status);
+                    });
+                }
+            });
+                
             $('#property-editor-modal').foundation('reveal', 'open');
+        };
+        vm.resultsToOptions = function(items) {
+            var ret = [];
+            var i;
+            angular.forEach(items, function(item) {
+                var name = item.id;
+                if (item.name !== undefined) {
+                    name = item.name;
+                }
+                this.push([item.id, name]); 
+            }, ret);
+            return ret;
         };
         vm.saveProperties = function() {
             angular.forEach(vm.selectedNode.properties, function(prop) {
@@ -197,7 +225,7 @@ angular.module('TemplateDesigner', ['ngDraggable', 'EucaConsoleUtils'])
             vm.setData();
             vm.generateTemplate();
             $('#add-parameter-modal').foundation('reveal', 'close');
-            vm.newParam = {};
+            vm.newParam = {'datatype':'String'}; // sane default
         };
         vm.generateTemplate = function() {
             template = {'AWSTemplateFormatVersion':'2010-09-09'};

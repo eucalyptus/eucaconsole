@@ -56,10 +56,10 @@
                         </label>
                     </div>
                     <div class="columns small-9">
-                        <input ng-attr-id="res-prop-{{property.name}}" ng-if="property.datatype == 'string'" width="90%" type="text"/ value="{{property.value}}">
-                        <input ng-attr-id="res-prop-{{property.name}}" ng-if="property.datatype == 'int'" width="10" type="integer"/ value="{{property.value}}">
-                        <select ng-attr-id="res-prop-{{property.name}}" ng-if="property.datatype == 'link'">
-                            <option>what</option>
+                        <input ng-attr-id="res-prop-{{property.name}}" ng-if="property.datatype == 'string' && !property.data_url" width="90%" type="text"/ value="{{property.value}}">
+                        <input ng-attr-id="res-prop-{{property.name}}" ng-if="property.datatype == 'int' && !property.data_url" width="10" type="integer"/ value="{{property.value}}">
+                        <select ng-attr-id="res-prop-{{property.name}}" ng-if="property.data_url">
+                            <option ng-repeat="data in property.data" ng-attr-value="{{data[0]}}">{{data[1]}}</option>
                         </select>
                     </div>
                 </div>

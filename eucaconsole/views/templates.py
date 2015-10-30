@@ -11,6 +11,13 @@ from ..views import BaseView, JSONResponse, JSONError
 class TemplateDesign(BaseView):
     TEMPLATE = '../templates/stacks/template_designer.pt'
 
+    # define some common properties for re-use
+    KEYPAIR_PROP = dict(
+        name='keypair',
+        label=_(u'Keypair'),
+        datatype='string',
+        required=False
+    )
     RESOURCE_DEF = dict(
         EC2=[
             dict(name='Instance',
@@ -21,7 +28,7 @@ class TemplateDesign(BaseView):
                     dict(name='min', label=_(u'Min'), datatype='int', required=True),
                     dict(name='max', label=_(u'Max'), datatype='int', required=True),
                     dict(name='instance_type', label=_(u'Instance Type'), datatype='string', required=True),
-                    dict(name='keypair', label=_(u'Keypair'), datatype='string', required=False),
+                    KEYPAIR_PROP,
                     dict(name='security_group', label=_(u'Security Group'), datatype='string', required=True),
                     dict(name='userdata', label=_(u'User Data'), datatype='string', required=False),
                     # tags...
@@ -36,12 +43,6 @@ class TemplateDesign(BaseView):
                     # tags...
                 ],
             )
-        ],
-        AutoScaling=[
-            dict(name='AutoScalingGroup',
-            ),
-            dict(name='LaunchConfiguration',
-            )
         ]
     )
 
@@ -51,8 +52,19 @@ class TemplateDesign(BaseView):
 
     @view_config(route_name='template_designer', renderer=TEMPLATE)
     def stack_view(self):
+        resources = self.RESOURCE_DEF
+        # populate data urls for values that can come from cloud
+        for service in resources:
+            for res in resources[service]:
+                for prop in res['properties']:
+                    if prop['name'] == 'SnapshotId':
+                        prop['data_url'] = self.request.route_path('snapshots_json')
+                    if prop['name'] == 'KeyPair':
+                        prop['data_url'] = self.request.route_path('keypairs_json')
+                    #if prop['name'] == 'AvailabilityZone':
+                    #    prop['data_url'] = self.request.route_path('zones_json')
         json_opts = dict(
-            resources=self.RESOURCE_DEF,
+            resources=resources,
         )
         self.render_dict['json_opts'] = BaseView.escape_json(json.dumps(json_opts))
         return self.render_dict
