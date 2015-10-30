@@ -27,7 +27,7 @@ class CreateStackWizard(BasePage):
         self.tester.wait_for_clickable_by_id(self._next_step_button_id)
         self.tester.click_element_by_id(self._next_step_button_id)
         # populate second step
-        self.tester.select_by_id(self._param_keyname_selector_id, index=1)
+        self.tester.select_by_id(self._param_keyname_selector_id, index=0)
         self.tester.click_element_by_id(self._param_imageid_selector_id)
         self.tester.send_keys_by_css(self._param_imageid_search_field_css, 'precise\n')
 

@@ -107,7 +107,7 @@
                             <div class="row">
                                 <div class="small-3 columns">&nbsp;</div>
                                 <div class="small-9 columns field inline">
-                                    <button type="submit" class="button" id="stack-wizard-btn-step2" ng-disabled="isNotValid" ng-show="!isNotValid &amp;&amp; !loading &amp;&amp; parameters.length === 0">
+                                    <button type="submit" class="button" id="stack-wizard-btn-step1" ng-disabled="isNotValid" ng-show="!isNotValid &amp;&amp; !loading &amp;&amp; parameters.length === 0">
                                         <span i18n:translate="">Create Stack</span>
                                     </button>
                                     <a id="visit-step-2" class="button small round" ng-click="visitNextStep(2, $event)" ng-show="isNotValid || loading || parameters.length > 0" ng-disabled="isNotValid || !parameters">
