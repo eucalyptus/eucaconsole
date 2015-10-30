@@ -14,6 +14,7 @@ class TemplateDesign(BaseView):
     RESOURCE_DEF = dict(
         EC2=[
             dict(name='Instance',
+                cfn_type='AWS::EC2::Instance',
                 properties=[
                     dict(name='name', label=_(u'Name'), datatype='string', required=False),
                     dict(name='image_id', label=_(u'Image ID'), datatype='string', required=True),
@@ -27,11 +28,11 @@ class TemplateDesign(BaseView):
                 ],
             ),
             dict(name='Volume',
+                cfn_type='AWS::EC2::Volume',
                 properties=[
-                    dict(name='size', label=_(u'Size'), datatype='int', required=True),
-                    dict(name='snapshot_id', label=_(u'Snapshot ID'), datatype='string', required=False),
-                    dict(name='zone', label=_(u'Availability Zone'), datatype='string', required=True),
-                    dict(name='attachment', label=_(u'Attach to'), datatype='link', required=True)
+                    dict(name='Size', label=_(u'Size'), datatype='int', required=True),
+                    dict(name='SnapshotId', label=_(u'Snapshot ID'), datatype='string', required=False),
+                    dict(name='AvailabilityZone', label=_(u'Availability Zone'), datatype='string', required=True),
                     # tags...
                 ],
             )

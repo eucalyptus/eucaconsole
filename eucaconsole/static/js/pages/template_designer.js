@@ -159,7 +159,7 @@ angular.module('TemplateDesigner', ['ngDraggable', 'EucaConsoleUtils'])
             angular.forEach(props, function(prop, idx) {
                 props[idx] = $.extend(true, {}, prop);
             });
-            vm.nodes.push({"name":$data.name, "properties":props, "width":100, "height":100, "x":x, "y":y, "fixed":false});
+            vm.nodes.push({"name":$data.name, cfn_type:$data.cfn_type, "properties":props, "width":100, "height":100, "x":x, "y":y, "fixed":false});
             vm.setData();
             vm.generateTemplate();
         };
@@ -214,14 +214,20 @@ angular.module('TemplateDesigner', ['ngDraggable', 'EucaConsoleUtils'])
                     }
                 }
                 else {
-                    var name = node.name + '-' + Math.random().toString(36).substring(5)
-                    resources[name] = {}
+                    var name = node.name + Math.random().toString(36).substring(5)
+                    props = {}
                     angular.forEach(node.properties, function(prop) {
-                        resources[name][prop.name] = prop.value;
+                        props[prop.name] = prop.value;
                     });
+                    resources[name] = {
+                        "Type": node.cfn_type,
+                        "Properties": props
+                    }
                 }
             }
-            template['Parameters'] = properties;
+            if (properties.len > 0) {
+                template['Parameters'] = properties;
+            }
             template['Resources'] = resources;
             vm.templateText = JSON.stringify(template, undefined, 2);
         }
