@@ -10,13 +10,13 @@
         </div>
         <ul class="user-list">
             <li tal:condition="show_admin" class="default">
-                <a href="javascript:void(0);" class="circle">
+                <a class="circle">
                     <i class="fi-minus-circle"></i></a>
                 <span>admin</span>
             </li>
             <li ng-repeat="user in usersArray" ng-cloak="cloak">
                 <a href="#" class="circle remove has-tip" ng-click="removeUser($index, $event)"
-                   title="Remove user"><i class="fi-minus-circle"></i></a>
+                   title="Remove user" i18n:attributes="title"><i class="fi-minus-circle"></i></a>
                 <span class="{{user.fresh}}">{{ user.name }}</span>
             </li>
         </ul>
