@@ -19,8 +19,9 @@ class UploadObjectPage(BasePage):
             BasePage(self)._page_title_id, self._upload_object_page_title)
 
     def expand_advanced_settings(self):
-        self.tester.click_element_by_css(self._advanced_settings_toggle_selector)
+        self.tester.click_element_by_css(
+            self._advanced_settings_toggle_selector)
 
     def upload_object_by_path(self, path):
-        self.tester.send_keys_by_id('files', path)
+        self.tester.send_keys_by_id('files', path, clear_field=False)
         self.tester.click_element_by_id(self._upload_object_submit_button_id)
