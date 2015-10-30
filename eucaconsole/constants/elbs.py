@@ -34,7 +34,6 @@ from ..i18n import _
 ELB_BACKEND_CERTIFICATE_NAME_PREFIX = 'EucaConsole-BackendServerAuthPolicy'
 ELB_PREDEFINED_SECURITY_POLICY_NAME_PREFIX = 'ELBSecurityPolicy'
 ELB_CUSTOM_SECURITY_POLICY_NAME_PREFIX = 'ELB-CustomSecurityPolicy'
-ELB_ACCESS_LOGS_BUCKET_PREFIX_NAME_PREFIX = 'ELB-AccessLogs'
 
 ELB_EMPTY_DATA_MESSAGE = _("No data available until this load balancer receives traffic.")
 ELB_EMPTY_HOSTS_MESSAGE = _("No data available until instances are registered with this load balancer.")

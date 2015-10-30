@@ -203,6 +203,8 @@ class BucketXHRView(BaseView, BucketMixin):
     def __init__(self, request):
         super(BucketXHRView, self).__init__(request)
         self.s3_conn = self.get_connection(conn_type='s3')
+        if self.s3_conn:
+            self.s3_conn.suppress_consec_slashes = False
         self.bucket_name = request.matchdict.get('name')
         request.subpath = self.get_subpath(self.bucket_name)
 
