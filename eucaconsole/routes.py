@@ -365,4 +365,6 @@ urls = [
 
     # Templates #####
     Route(name='template_designer', pattern='/templates/design'),
+    Route(name='zones_json', pattern='/zones/json'),
+    Route(name='instancetypes_json', pattern='/instancetypes/json'),
 ]

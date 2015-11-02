@@ -131,7 +131,7 @@
 
 .link { stroke: #6a737b; stroke-width: 3px; stroke-opacity: 1; }
 
-.connecting { stroke: #6a737b; stroke-width: 1px; stroke-dasharray: "5 5"; stroke-opacity: 1; }
+.connecting { stroke: #6a737b; stroke-width: 3px; stroke-dasharray: "5 5"; stroke-opacity: 1; }
 
 .node { stroke: black; stroke-width: 1.5px; cursor: move; }
 .node.linking { stroke: #007dba; }
@@ -143,3 +143,11 @@
 .draggable { color: #007dba; cursor: pointer; }
 
 #template-editor { height: 400px; }
+
+input { width: 90% !important; }
+
+select { width: 90%; }
+
+.use-param { position: relative; padding-left: .5rem; text-align: center; }
+
+.submit-button { padding: .25rem; }

@@ -5,6 +5,7 @@ import simplejson as json
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.view import view_config
 
+from ..forms import ChoicesManager
 from ..i18n import _
 from ..views import BaseView, JSONResponse, JSONError
 
@@ -13,24 +14,27 @@ class TemplateDesign(BaseView):
 
     # define some common properties for re-use
     KEYPAIR_PROP = dict(
-        name='keypair',
+        name='KeyName',
         label=_(u'Keypair'),
         datatype='string',
         required=False
+    )
+    ZONE_PROP = dict(
+        name='AvailabilityZone',
+        label=_(u'Availability Zone'),
+        datatype='string', required=True
     )
     RESOURCE_DEF = dict(
         EC2=[
             dict(name='Instance',
                 cfn_type='AWS::EC2::Instance',
                 properties=[
-                    dict(name='name', label=_(u'Name'), datatype='string', required=False),
-                    dict(name='image_id', label=_(u'Image ID'), datatype='string', required=True),
-                    dict(name='min', label=_(u'Min'), datatype='int', required=True),
-                    dict(name='max', label=_(u'Max'), datatype='int', required=True),
-                    dict(name='instance_type', label=_(u'Instance Type'), datatype='string', required=True),
+                    dict(name='ImageId', label=_(u'Image ID'), datatype='string', required=True),
+                    dict(name='InstanceType', label=_(u'Instance Type'), datatype='string', required=True),
                     KEYPAIR_PROP,
-                    dict(name='security_group', label=_(u'Security Group'), datatype='string', required=True),
-                    dict(name='userdata', label=_(u'User Data'), datatype='string', required=False),
+                    dict(name='SecurityGroup', label=_(u'Security Group'), datatype='string', required=True),
+                    dict(name='UserData', label=_(u'User Data'), datatype='string', required=False),
+                    ZONE_PROP,
                     # tags...
                 ],
             ),
@@ -39,8 +43,16 @@ class TemplateDesign(BaseView):
                 properties=[
                     dict(name='Size', label=_(u'Size'), datatype='int', required=True),
                     dict(name='SnapshotId', label=_(u'Snapshot ID'), datatype='string', required=False),
-                    dict(name='AvailabilityZone', label=_(u'Availability Zone'), datatype='string', required=True),
+                    ZONE_PROP,
                     # tags...
+                ],
+            )
+        ],
+        S3=[
+            dict(name='Bucket',
+                cfn_type='AWS::S3::Bucket',
+                properties=[
+                    dict(name='BucketName', label=_(u'Bucket Name'), datatype='string', required=True),
                 ],
             )
         ]
@@ -59,12 +71,37 @@ class TemplateDesign(BaseView):
                 for prop in res['properties']:
                     if prop['name'] == 'SnapshotId':
                         prop['data_url'] = self.request.route_path('snapshots_json')
-                    if prop['name'] == 'KeyPair':
+                    if prop['name'] == 'KeyName':
                         prop['data_url'] = self.request.route_path('keypairs_json')
-                    #if prop['name'] == 'AvailabilityZone':
-                    #    prop['data_url'] = self.request.route_path('zones_json')
+                    if prop['name'] == 'AvailabilityZone':
+                        prop['data_url'] = self.request.route_path('zones_json')
+                    if prop['name'] == 'InstanceType':
+                        prop['data_url'] = self.request.route_path('instancetypes_json')
         json_opts = dict(
             resources=resources,
         )
         self.render_dict['json_opts'] = BaseView.escape_json(json.dumps(json_opts))
         return self.render_dict
+
+    @view_config(route_name='instancetypes_json', renderer='json', request_method='POST')
+    def instancetypes_json(self):
+        conn = self.get_connection()
+        items = ChoicesManager(conn).instance_types()
+        types = []
+        for item in items:
+            types.append(dict(
+                name=item[1],
+                id=item[0]
+            ))
+        return dict(results=types)
+
+    @view_config(route_name='zones_json', renderer='json', request_method='POST')
+    def zones_json(self):
+        conn = self.get_connection()
+        items = ChoicesManager(conn).get_availability_zones(self.region)
+        zones = []
+        for item in items:
+            zones.append(dict(
+                name=item.name
+            ))
+        return dict(results=zones)

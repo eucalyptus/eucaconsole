@@ -44,23 +44,28 @@
             <li><a i18n:translate="">Copy</a></li>
         </ul>
         <div id="property-editor-modal" class="reveal-modal medium" data-reveal="">
-            <h3 i18n:translate="">Resource properties</h3>
+            <h3 i18n:translate="">{{ designCtrl.selectedNode.name }} properties</h3>
             <p>
                 Set properties for this resource. Some properties will form links to other resources.
             </p>
             <div class="section">
-                <div class="row" ng-repeat="property in designCtrl.selectedNode.properties">
+                <div class="row controls-wrapper" ng-repeat="property in designCtrl.selectedNode.properties">
                     <div class="columns small-3">
                         <label class="right">{{ property.label }}
                             <span ng-if="property.required" class="req">*</span>
                         </label>
                     </div>
-                    <div class="columns small-9">
+                    <div class="columns small-9" ng-if="!designCtrl.isPropertyARef(property)">
                         <input ng-attr-id="res-prop-{{property.name}}" ng-if="property.datatype == 'string' && !property.data_url" width="90%" type="text"/ value="{{property.value}}">
                         <input ng-attr-id="res-prop-{{property.name}}" ng-if="property.datatype == 'int' && !property.data_url" width="10" type="integer"/ value="{{property.value}}">
                         <select ng-attr-id="res-prop-{{property.name}}" ng-if="property.data_url">
+                            <option ng-if="!property.required"></option>
                             <option ng-repeat="data in property.data" ng-attr-value="{{data[0]}}">{{data[1]}}</option>
                         </select>
+                        <i class="use-param fa fa-chevron-circle-left"></i>
+                    </div>
+                    <div class="columns small-9" ng-if="designCtrl.isPropertyARef(property)">
+                        <span>{{property.value}}</span>
                     </div>
                 </div>
             </div>
@@ -73,7 +78,7 @@
         <div id="add-parameter-modal" class="reveal-modal small" data-reveal="">
             <h3 i18n:translate="">Add parameter</h3>
             <div class="section">
-                <div class="row">
+                <div class="row controls-wrapper">
                     <div class="columns small-4">
                         <label class="right" i18n:translate="">Name</label>
                     </div>
@@ -81,7 +86,7 @@
                         <input width="100%" type="text" ng-model="designCtrl.newParam.name" id="param-name"/>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row controls-wrapper">
                     <div class="columns small-4">
                         <label class="right" i18n:translate="">Description</label>
                     </div>
@@ -89,7 +94,7 @@
                         <input width="100%" type="text" ng-model="designCtrl.newParam.description" id="param-description"/>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row controls-wrapper">
                     <div class="columns small-4">
                         <label class="right" i18n:translate="">Type</label>
                     </div>
@@ -109,7 +114,7 @@
                         </select>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row controls-wrapper">
                     <div class="columns small-4">
                         <label class="right" i18n:translate="">Default</label>
                     </div>
@@ -120,6 +125,16 @@
             </div>
             <div class="dialog-submit-button">
                 <button type="submit" ng-click="designCtrl.addParameter()" id="add_parameter_button" class="button expand" i18n:translate="">Add Parameter</button>
+            </div>
+            <a href="#" id="attach_volume_close_link" class="close-reveal-modal">&#215;</a>
+        </div>
+        <div id="param-connect-modal" class="reveal-modal small" data-reveal="">
+            <h3 i18n:translate="">Link parameter</h3>
+            <p>
+                Select a property to link to {{ designCtrl.nodes[designCtrl.connectingFrom].properties.name }}.
+            </p>
+            <div ng-attr-id="link-prop-{{prop.name}}" class="submit-button" ng-repeat="prop in designCtrl.nodes[designCtrl.connectTo].properties" ng-if="!designCtrl.isPropertyARef(prop)">
+                <button type="submit" ng-click="designCtrl.linkParameter(prop)" id="add_parameter_button" class="button expand" i18n:translate="">Link to {{ prop.name }}</button>
             </div>
             <a href="#" id="attach_volume_close_link" class="close-reveal-modal">&#215;</a>
         </div>

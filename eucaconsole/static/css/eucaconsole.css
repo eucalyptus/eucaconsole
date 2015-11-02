@@ -1698,7 +1698,7 @@ a.circle { color: black; display: inline-block; }
 #notifications .alert-box.alert .icon span:before { content: "!"; }
 #notifications .alert-box .icon { width: 50px; position: absolute; left: 0; top: 0; bottom: 0; text-align: center; }
 #notifications .alert-box .icon span { color: white; font-size: 30px; transform: translateX(50%) translateY(50%); }
-#notifications .alert-box .message { padding: 0.875rem 1.5rem 0.875rem 4.5rem; }
+#notifications .alert-box .message { padding: 0.875rem 2rem 0.875rem 4.5rem; }
 #notifications .alert-box .close { opacity: 1.0; }
 #notifications .alert-box .close:hover { font-weight: bold; }
 

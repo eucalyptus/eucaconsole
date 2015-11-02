@@ -49,3 +49,21 @@
 #template-editor {
     height: 400px;
 }
+
+input {
+    width: 90% !important;
+}
+
+select {
+    width: 90%;
+}
+
+.use-param {
+    position: relative;
+    padding-left: .5rem;
+    text-align: center;
+}
+
+.submit-button {
+    padding: .25rem;
+}
