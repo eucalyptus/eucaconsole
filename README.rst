@@ -131,7 +131,7 @@ Using Homebrew you may install swig 3.0.4...
     ./launcher.sh
 
 If there are issues with M2Crypto locating the OpenSSL libraries (which could happen after an XCode update),
-re-install the XCode Command Line Tools  via `xcode-select --install`
+reinstall the XCode Command Line Tools  via `xcode-select --install`
 
 If gevent has trouble compiling, use `CFLAGS='-std=c99' pip install gevent` as a workaround
 
