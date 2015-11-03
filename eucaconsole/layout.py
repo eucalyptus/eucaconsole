@@ -30,7 +30,8 @@ See http://docs.pylonsproject.org/projects/pyramid_layout/en/latest/layouts.html
 
 """
 from collections import namedtuple
-from urllib import urlencode
+from urllib import unquote, urlencode
+from urlparse import urlparse
 
 from pyramid.decorator import reify
 from pyramid.renderers import get_renderer
@@ -97,6 +98,32 @@ class MasterLayout(object):
         self.searchtext_prompt = _(u'Select facets for filter, or enter text to search')
         self.searchtext_prompt2 = _(u'Enter text to search')
         self.searchtext_text_facet = _(u'Text')
+
+    def get_title_suffix(self, request):
+        path = urlparse(self.request.url).path
+        path = unquote(path[1:])
+        if len(path) == 0:
+            return ''
+        idx = path.find('/')
+        if idx > 0:
+            resource = path[:idx] if (idx>0) else path
+            if resource == 'buckets':  # special case
+                bucket = path[idx+1:]
+                cont_idx = bucket.find('/contents/')
+                key = ''
+                if cont_idx > -1:
+                    key = bucket[cont_idx+len('/contents/'):]
+                    bucket = bucket[:cont_idx]
+                det_idx = bucket.find('/itemdetails/')
+                if det_idx > -1:
+                    key = bucket[det_idx+len('/itemdetails/'):]
+                    bucket = bucket[:det_idx]
+                return ' : {0} : {1}/{2}'.format(resource, bucket, key)
+            else:
+                res_id = path[idx+1:]
+                return ' : {0} : {1}'.format(resource, res_id)
+        else:
+            return ' : {0}'.format(path)
 
     def get_notifications(self):
         """Get notifications, categorized by message type ('info', 'success', 'warning', or 'error')
