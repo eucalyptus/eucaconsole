@@ -106,21 +106,21 @@ class MasterLayout(object):
             return ''
         idx = path.find('/')
         if idx > 0:
-            resource = path[:idx] if (idx>0) else path
+            resource = path[:idx] if (idx > 0) else path
             if resource == 'buckets':  # special case
-                bucket = path[idx+1:]
+                bucket = path[idx + 1:]
                 cont_idx = bucket.find('/contents/')
                 key = ''
                 if cont_idx > -1:
-                    key = bucket[cont_idx+len('/contents/'):]
+                    key = bucket[cont_idx + len('/contents/'):]
                     bucket = bucket[:cont_idx]
                 det_idx = bucket.find('/itemdetails/')
                 if det_idx > -1:
-                    key = bucket[det_idx+len('/itemdetails/'):]
+                    key = bucket[det_idx + len('/itemdetails/'):]
                     bucket = bucket[:det_idx]
                 return ' : {0} : {1}/{2}'.format(resource, bucket, key)
             else:
-                res_id = path[idx+1:]
+                res_id = path[idx + 1:]
                 return ' : {0} : {1}'.format(resource, res_id)
         else:
             return ' : {0}'.format(path)
