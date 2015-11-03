@@ -1,13 +1,12 @@
 
-import logging
 import simplejson as json
 
-from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.view import view_config
 
 from ..forms import ChoicesManager
 from ..i18n import _
-from ..views import BaseView, JSONResponse, JSONError
+from ..views import BaseView
+
 
 class TemplateDesign(BaseView):
     TEMPLATE = '../templates/stacks/template_designer.pt'
@@ -26,7 +25,8 @@ class TemplateDesign(BaseView):
     )
     RESOURCE_DEF = dict(
         EC2=[
-            dict(name='Instance',
+            dict(
+                name='Instance',
                 cfn_type='AWS::EC2::Instance',
                 properties=[
                     dict(name='ImageId', label=_(u'Image ID'), datatype='string', required=True),
@@ -38,7 +38,8 @@ class TemplateDesign(BaseView):
                     # tags...
                 ],
             ),
-            dict(name='Volume',
+            dict(
+                name='Volume',
                 cfn_type='AWS::EC2::Volume',
                 properties=[
                     dict(name='Size', label=_(u'Size'), datatype='int', required=True),
@@ -49,7 +50,8 @@ class TemplateDesign(BaseView):
             )
         ],
         S3=[
-            dict(name='Bucket',
+            dict(
+                name='Bucket',
                 cfn_type='AWS::S3::Bucket',
                 properties=[
                     dict(name='BucketName', label=_(u'Bucket Name'), datatype='string', required=True),

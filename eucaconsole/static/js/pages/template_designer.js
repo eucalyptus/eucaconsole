@@ -2,8 +2,6 @@
 angular.module('TemplateDesigner', ['ngDraggable', 'EucaConsoleUtils'])
     .controller('TemplateDesignerCtrl', function($http, $timeout, eucaUnescapeJson, eucaHandleError) {
         var vm = this;
-        //vm.nodes = [{"name":"one", "width":50, "height":50}, {"name":"two", "width":50, "height":50}];
-        //vm.links = [{"source":0, "target":1}];
         vm.undoStack = [];
         vm.nodes = [];
         vm.links = [];
@@ -21,7 +19,7 @@ angular.module('TemplateDesigner', ['ngDraggable', 'EucaConsoleUtils'])
             var x = 60;
             var y = 35;
             vm.nodes.push({"name":"Parameter", "properties":{"name":"ImageID", "datatype":"AWS::EC2::Image::Id"}, "width":100, "height":50, "x":x, "y":y, "fixed":true});
-            var y = 95;
+            y = 95;
             vm.nodes.push({"name":"Parameter", "properties":{"name":"KeyName", "datatype":"AWS::EC2::KeyPair::KeyName"}, "width":100, "height":50, "x":x, "y":y, "fixed":true});
             vm.setData();
             jQuery.fn.d3Click = function () {
@@ -65,11 +63,14 @@ angular.module('TemplateDesigner', ['ngDraggable', 'EucaConsoleUtils'])
                 .style("fill", function (d) { return "#bbbbbb"; })
                 .on("click", function(node, idx) {
                     if (vm.connectingFrom !== undefined) {
-                        // prompt for property to set
-                        $('#param-connect-modal').foundation('reveal', 'open');
-                        $timeout(function() {
-                            vm.connectTo = idx;
-                        });
+                        if (vm.nodes[vm.connectingFrom].name === "Parameter") {
+                            // prompt for property to set
+                            $('#param-connect-modal').foundation('reveal', 'open');
+                            $timeout(function() {
+                                vm.connectTo = idx;
+                            });
+                        }
+                        // else it's another node, so case-by-case basis
                     }
                 })
                 .call(vm.force.drag);
@@ -99,7 +100,7 @@ angular.module('TemplateDesigner', ['ngDraggable', 'EucaConsoleUtils'])
                 .text(function(d) { return '\uf141'; })
                 .on("click", function(node) {
                     vm.selectedNode = node;
-                })
+                });
             $('svg').foundation('dropdown', 'reflow');
 
             var output = vm.svg.selectAll(".output")
@@ -121,7 +122,7 @@ angular.module('TemplateDesigner', ['ngDraggable', 'EucaConsoleUtils'])
                     .attr("x2", x+10)
                     .attr("y2", y);
                     vm.connectingFrom = idx;
-                })
+                });
 
             vm.force.on("tick", function () {
                 link.attr("x1", function (d) { return d.source.x; })
@@ -255,19 +256,20 @@ angular.module('TemplateDesigner', ['ngDraggable', 'EucaConsoleUtils'])
             template = {'AWSTemplateFormatVersion':'2010-09-09'};
             properties = {};
             resources = {};
-            for (idx in vm.nodes) {
+            for (var idx in vm.nodes) {
                 var node = vm.nodes[idx];
+                var name;
                 if (node.name == "Parameter") {
-                    var name = node.properties.name;
+                    name = node.properties.name;
                     properties[name] = {
                         "Description":node.properties.description,
                         "Type":node.properties.datatype,
                         "Default":node.properties.default
-                    }
+                    };
                 }
                 else {
-                    var name = node.name + Math.random().toString(36).substring(5)
-                    props = {}
+                    name = node.name + Math.random().toString(36).substring(5);
+                    props = {};
                     angular.forEach(node.properties, function(prop) {
                         if (prop.required === true || (prop.value !== undefined && prop.value !== '')) {
                             props[prop.name] = prop.value;
@@ -276,13 +278,13 @@ angular.module('TemplateDesigner', ['ngDraggable', 'EucaConsoleUtils'])
                     resources[name] = {
                         "Type": node.cfn_type,
                         "Properties": props
-                    }
+                    };
                 }
             }
             if (Object.keys(properties).length > 0) {
-                template['Parameters'] = properties;
+                template.Parameters = properties;
             }
-            template['Resources'] = resources;
+            template.Resources = resources;
             vm.templateText = JSON.stringify(template, undefined, 2);
-        }
-    })
+        };
+    });
