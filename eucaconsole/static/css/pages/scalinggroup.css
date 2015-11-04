@@ -168,3 +168,5 @@ input[type="number"] { width: 3rem; }
 .unit-label { position: relative; top: 6px; }
 
 .dialog-option { text-align: left; }
+
+#refresh-history { margin-left: 1.0rem; margin-bottom: 0.25rem; }
