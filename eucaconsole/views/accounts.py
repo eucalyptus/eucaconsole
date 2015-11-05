@@ -52,6 +52,7 @@ class AccountsView(LandingPageView):
 
     def __init__(self, request):
         super(AccountsView, self).__init__(request)
+        self.title_parts = [_(u'Accounts')]
         self.conn = self.get_connection(conn_type="iam")
         self.initial_sort_key = 'account_name'
         self.prefix = '/accounts'
@@ -115,7 +116,7 @@ class AccountsJsonView(BaseView):
                     'ListAccountPolicies',
                     params={'AccountName': account.account_name}, list_marker='PolicyNames')
                 policies = policies.policy_names
-            except BotoServerError as exc:
+            except BotoServerError:
                 pass
             accounts.append(dict(
                 account_name=account.account_name,
@@ -152,6 +153,7 @@ class AccountView(BaseView):
 
     def __init__(self, request):
         super(AccountView, self).__init__(request)
+        self.title_parts = [_(u'Account'), request.matchdict.get('name') or _(u'Create')]
         self.conn = self.get_connection(conn_type="iam")
         self.account = self.get_account()
         self.account_route_id = self.request.matchdict.get('name')
@@ -186,7 +188,7 @@ class AccountView(BaseView):
         try:
             accounts = self.conn.get_response('ListAccounts', params={}, list_marker='Accounts').accounts
             account = [account for account in accounts if account.account_name == account_param][0]
-        except BotoServerError as err:
+        except BotoServerError:
             pass
         return account
 
@@ -222,7 +224,7 @@ class AccountView(BaseView):
                 self.conn.get_response('CreateAccount', params={'AccountName': new_account_name})
                 admin_password = PasswordGeneration.generate_password()
                 params = {'UserName': 'admin', 'Password': admin_password, 'DelegateAccount': new_account_name}
-                result = self.conn.get_response('CreateLoginProfile', params=params, verb='POST')
+                self.conn.get_response('CreateLoginProfile', params=params, verb='POST')
                 params = {'UserName': 'admin', 'DelegateAccount': new_account_name}
                 creds = self.conn.get_response('CreateAccessKey', params=params, verb='POST')
                 access_id = creds.access_key.access_key_id
