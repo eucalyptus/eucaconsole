@@ -238,7 +238,7 @@ class ImagesJsonView(LandingPageView, ImageBundlingMixin):
                 name=image.name,
                 state=image.state,
                 transitional=transitional,
-                progress=0,  # this is valid for transitional images till we get something better
+                progress=image.progress if hasattr(image, 'progress') else 0,  # this is valid for transitional images till we get something better
                 location=image.location,
                 tagged_name=TaggedItemView.get_display_name(image, escapebraces=False),
                 name_id=ImageView.get_image_name_id(image),
@@ -311,8 +311,9 @@ class ImagesJsonView(LandingPageView, ImageBundlingMixin):
                 image = self.conn.get_image(image_id)
             """Return current image status"""
             image_status = image.state if image else 'deleted'
+            image_progress = image.progress if image and hasattr(image, 'progress') else 0
             return dict(
-                results=dict(image_status=image_status, progress=0, url=url)
+                results=dict(image_status=image_status, progress=image_progress, url=url)
             )
 
     def get_items(self):
