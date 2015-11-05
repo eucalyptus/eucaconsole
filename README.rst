@@ -115,8 +115,13 @@ Run the server with
 
 `launcher.sh` is provided as an alias for `pserve console.ini --reload`
 
-On OSX, you may encounter an M2Crypto error when running `launcher.sh`.  There is a known bug in the M2Crypto bindings
-and swig versions greater than 3.0.4.  Using Homebrew you may install swig 3.0.4...
+
+Compilation Issues on OS X
+--------------------------
+On OS X (Yosemite and El Capitan), you may encounter issues installing M2Crypto and/or gevent.
+
+There is a known bug in the M2Crypto bindings and swig versions greater than 3.0.4.
+Using Homebrew you may install swig 3.0.4...
 
 ::
 
@@ -124,6 +129,13 @@ and swig versions greater than 3.0.4.  Using Homebrew you may install swig 3.0.4
     brew install homebrew/versions/swig304
     python setup.py develop
     ./launcher.sh
+
+If there are issues with M2Crypto locating the OpenSSL libraries (which could happen after an XCode update),
+reinstall the XCode Command Line Tools  via `xcode-select --install`
+
+If gevent has trouble compiling, use `CFLAGS='-std=c99' pip install gevent` as a workaround
+
+
 
 Running the server in development/debug mode
 --------------------------------------------
@@ -235,7 +247,7 @@ Secondary Components
 
 
 Guitester - selenium testing framework for eucaconsole
-===============================
+======================================================
 * Location: tests/selenium/guiops
 * Requirements: python selenium module, an instance of selenium webdriver
 * Setup and intro: https://github.com/eucalyptus/eucaconsole/wiki/Guitester 
@@ -265,7 +277,7 @@ to install npm packages listed in the file `package.json`
 to allow grunt cli to run
 
 Grunt Task File
-------------------------
+---------------
 ::
 
     Gruntfile.js

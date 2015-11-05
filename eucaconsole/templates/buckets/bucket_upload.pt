@@ -40,7 +40,7 @@
                     ${structure:upload_form['csrf_token']}
                     <h6 class='subheading-label' i18n:translate=''>Select file(s)</h6>
                     <label class="left" i18n:translate="">Upload file to</label>&nbsp;<span class="req">*</span>
-                    <p tal:condition="bucket_name != '__shared__'" ng-non-bindable="">
+                    <p tal:condition="bucket_name != '__shared__'" ng-non-bindable="" class="bucket-path">
                         <span i18n:translate="">S3://</span>${bucket_name}/${'/'.join(request.subpath)}
                     </p>
                     <div class="flex-space" tal:condition="bucket_name == '__shared__'">

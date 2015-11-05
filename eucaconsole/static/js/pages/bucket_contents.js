@@ -33,7 +33,7 @@ angular.module('BucketContentsPage', ['LandingPage', 'EucaConsoleUtils'])
             $scope.makeObjectPublicUrl = options.make_object_public_url;
             // set upload button target based on media query
             if (Foundation.utils.is_medium_up()) {
-                $('#upload-file-btn').attr('target', '_blank');
+                $('#upload-file-btn').attr('target', 'upload-file');
             }
             $scope.updatePasteValues();
             $scope.addListeners();
