@@ -301,12 +301,22 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch'])
             require: '^stTable',
             link: function (scope, element, attr, ctrl) {
                 var nameSpace = attr.stPersist;
-                //save the table state every time it changes
+                var defaultSortColumn;
                 scope.$watch(function () {
                     return ctrl.tableState();
                 }, function (newValue, oldValue) {
                     if (newValue !== oldValue) {
-                        sessionStorage.setItem(nameSpace, JSON.stringify(newValue));
+                        if (newValue.sort.predicate) {
+                            // Save selected sort in browser sessionStorage
+                            sessionStorage.setItem(nameSpace, JSON.stringify(newValue));
+                        } else {
+                            // Display sorting indicator for default sorted column on third ("unsorted") column click
+                            // TODO: Remove when smart-table has a config option to remove the "default sort" click
+                            defaultSortColumn = element.find('[st-sort-default="true"]');
+                            if (defaultSortColumn) {
+                                defaultSortColumn.addClass('st-sort-ascent');
+                            }
+                        }
                     }
                 }, true);
                 //fetch the table state when the directive is loaded

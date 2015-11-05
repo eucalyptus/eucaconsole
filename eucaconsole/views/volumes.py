@@ -29,6 +29,7 @@ Pyramid views for Eucalyptus and AWS volumes
 
 """
 from dateutil import parser
+from operator import itemgetter
 import simplejson as json
 
 from boto.exception import BotoServerError
@@ -237,7 +238,8 @@ class VolumesJsonView(LandingPageView):
                         tags=TaggedItemView.get_tags_display(volume.tags),
                         transitional=status in transitional_states or attach_status in transitional_states,
                     ))
-            return dict(results=volumes)
+            sorted_volumes = sorted(volumes, key=itemgetter('name'))  # Set default sort
+            return dict(results=sorted_volumes)
 
     def get_items(self, filters=None):
         items = self.conn.get_all_volumes(filters=filters) if self.conn else []
