@@ -5,9 +5,9 @@
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       i18n:domain="eucaconsole" ng-csp="">
 <head>
-    <title tal:define="title_parts view.title_parts if hasattr(view, 'title_parts') else []">
+    <title tal:define="title_parts getattr(view, 'title_parts', [])">
+        <span tal:omit-tag="" tal:repeat="part reversed(title_parts)">${part} |</span>
         <span tal:omit-tag="" i18n:translate="">Eucalyptus Management Console</span>
-        <span tal:omit-tag="" tal:repeat="part title_parts">: ${part}</span>
     </title>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
