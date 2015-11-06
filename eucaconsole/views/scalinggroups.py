@@ -581,12 +581,41 @@ class ScalingGroupHistoryView(BaseScalingGroupView):
         activities = []
         for activity in items:
             activities.append(dict(
+                activity_id=activity.activity_id,
                 status=activity.status_code,
                 description=activity.description,
                 start_time=activity.start_time.isoformat(),
                 end_time=activity.end_time.isoformat(),
             ))
         return dict(results=activities)
+
+    @view_config(route_name='scalinggroup_history_details_json', renderer='json', request_method='GET')
+    def scalinggroup_history_details_json(self):
+        with boto_error_handler(self.request):
+            activity_id = self.request.matchdict.get('activity')
+            items = self.autoscale_conn.get_all_activities(self.scaling_group.name, [activity_id])
+        if len(items) > 0:
+            activity = items[0]
+            cause = None
+            if hasattr(activity, 'cause'):
+                cause = activity.cause
+                causes = cause.split('At')
+                causes = causes[1:]
+                cause = []
+                for c in causes:
+                    idx = c.find('Z') + 1
+                    date_string = c[:idx]
+                    #date_obj = parser.parse(date_string)
+                    cause.append(dict(date=date_string, msg=c[idx:]))
+            details = dict(
+                activity_id=activity.activity_id,
+                status=activity.status_code,
+                description=activity.description,
+                cause=cause
+            )
+            return dict(results=details)
+        else:
+            raise JSONError(message=_(u'Activity ID not found ')+activity_id, status=401)
 
     @staticmethod
     def get_sort_keys():

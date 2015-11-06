@@ -7,10 +7,12 @@
 angular.module('ScalingGroupHistory', ['MagicSearch', 'EucaConsoleUtils'])
     .controller('ScalingGroupHistoryCtrl', function ($scope, $http, $timeout, eucaUnescapeJson, eucaHandleError) {
         $scope.historyLoading = true;
+        $scope.expandoLoading = undefined;
         $scope.resources = [];
         $scope.codeEditor = null;
-        $scope.initPage = function (historyUrl) {
+        $scope.initPage = function (historyUrl, historyActivityUrl) {
             $scope.scalinggroupHistoryUrl = historyUrl;
+            $scope.scalinggroupHistoryActivityUrl = historyActivityUrl;
             if ($scope.scalinggroupHistoryUrl) {
                 $scope.getScalinggroupHistory();
             }
@@ -59,6 +61,28 @@ angular.module('ScalingGroupHistory', ['MagicSearch', 'EucaConsoleUtils'])
                     $('#history-table').stickyTableHeaders();
                 }
             });
+        };
+        $scope.expand = function (index, item) {
+            // clear previous expanded rows
+            angular.forEach($scope.history, function(item) {
+                item.expandoData = undefined;
+            });
+            $scope.expandoLoading = index;
+            var url = $scope.scalinggroupHistoryActivityUrl.replace('__id__', item.activity_id);
+            $http.get(url).success(function(oData) {
+                var results = oData ? oData.results : '';
+                $scope.expandoLoading = undefined;
+                if (results) {
+                    $timeout(function() {
+                        item.expandoData = results;
+                    });
+                }
+            }).error(function() {
+                $scope.expandoLoading = undefined;
+            });
+        };
+        $scope.collapse = function (index, item) {
+            item.expandoData = undefined;
         };
         $scope.searchHistory = function() {
             var filterText = ($scope.searchFilter || '').toLowerCase();

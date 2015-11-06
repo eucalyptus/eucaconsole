@@ -7,7 +7,8 @@
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="ScalingGroupHistory" ng-controller="ScalingGroupHistoryCtrl"
-         ng-init="initPage('${request.route_path('scalinggroup_history_json', id=scaling_group.name)}')">
+         ng-init="initPage('${request.route_path('scalinggroup_history_json', id=scaling_group.name)}',
+            '${request.route_path('scalinggroup_history_details_json', id=scaling_group.name, activity='__id__')}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('scalinggroups')}" i18n:translate="">Scaling groups</a></li>
@@ -56,18 +57,23 @@
                             facets="${search_facets}" filter-keys="${filter_keys}"></magic-search>
                     </div>
                     <div class="datagrid" id="datagrid-items">
-                        <div ng-show="historyLoading"><span class="busy"></span></div>
+                        <div class="loading" ng-show="historyLoading"><span class="busy"></span></div>
                         <div id="tableview" class="gridwrapper" ng-show="!historyLoading">
                             <!-- Begin table view -->
                             <table id="history-table" class="table" ng-show="!historyLoading" ng-cloak="true">
                                 <thead class="header"><tr>
+                                    <th></th>
                                     <th i18n:translate="">STATUS</th>
                                     <th i18n:translate="">DESCRIPTION</th>
                                     <th i18n:translate="">START TIME</th>
                                     <th i18n:translate="">END TIME</th>
                                 </tr></thead>
                                 <tbody>
-                                    <tr ng-repeat="item in history | orderBy: sortBy:sortReverse" ng-cloak="true">
+                                    <tr ng-repeat-start="item in history | orderBy: sortBy:sortReverse" ng-cloak="true"> 
+                                        <td>
+                                            <a ng-show="!item.expandoData" ng-click="expand($index, item)"><i class="table-expando-closed"></i></a>
+                                            <a ng-show="item.expandoData" ng-click="collapse($index, item)"><i class="table-expando-open"></i></a>
+                                        </td>
                                         <td>
                                             <span class="label radius status {{ item.status }}">
                                                 {{ item.status }}
@@ -79,7 +85,29 @@
                                         <td>{{ item.start_time | date:'${layout.angular_date_format}' }}</td>
                                         <td>{{ item.end_time | date:'${layout.angular_date_format}' }}</td>
                                     </tr>
-                                    <tr ng-show="!historyLoading"></tr>
+                                    <tr ng-repeat-end="">
+                                        <td ng-show="!item.expandoData && expandoLoading == $index" colspan="5"><i class="busy"></i></td>
+                                        <td class="expando" colspan="5" ng-show="item.expandoData">
+                                            <div class="row controls-wrapper readonly">
+                                                <div class="small-2 columns">
+                                                    <label class="right" i18n:translate="">Status reason</label>
+                                                </div>
+                                                <div class="small-10 columns">
+                                                    {{ item.expandoData.description }}
+                                                </div>
+                                            </div>
+                                            <div class="row controls-wrapper readonly">
+                                                <div class="small-2 columns">
+                                                    <label class="right" i18n:translate="">Cause</label>
+                                                </div>
+                                                <div class="small-10 columns">
+                                                    <div ng-repeat="cause in item.expandoData.cause">
+                                                        At {{ cause.date | date:'${layout.angular_date_format}' }} {{ cause.msg }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
