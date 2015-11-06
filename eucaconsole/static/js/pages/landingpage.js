@@ -306,17 +306,7 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch'])
                     return ctrl.tableState();
                 }, function (newValue, oldValue) {
                     if (newValue !== oldValue) {
-                        if (newValue.sort.predicate) {
-                            // Save selected sort in browser sessionStorage
-                            sessionStorage.setItem(nameSpace, JSON.stringify(newValue));
-                        } else {
-                            // Display sorting indicator for default sorted column on third ("unsorted") column click
-                            // TODO: Remove when smart-table has a config option to remove the "default sort" click
-                            defaultSortColumn = element.find('[st-sort-default="true"]');
-                            if (defaultSortColumn) {
-                                defaultSortColumn.addClass('st-sort-ascent');
-                            }
-                        }
+                        sessionStorage.setItem(nameSpace, JSON.stringify(newValue));
                     }
                 }, true);
                 //fetch the table state when the directive is loaded
