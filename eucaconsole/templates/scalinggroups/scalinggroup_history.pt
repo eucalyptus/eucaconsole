@@ -69,11 +69,13 @@
                                     <th i18n:translate="">END TIME</th>
                                 </tr></thead>
                                 <tbody expando="" ng-repeat="item in history | orderBy: sortBy:sortReverse"
-                                    url="'${request.route_path('scalinggroup_history_details_json', id=scaling_group.name, activity='__id__')}'">
+                                    url="${request.route_path('scalinggroup_history_details_json', id=scaling_group.name, activity='__id__')}"
+                                    activity_id="{{item.activity_id}}">
                                     <tr ng-cloak="true"> 
                                         <td>
-                                            <a ng-show="!data" ng-click="toggle(item.activity_id)"><i class="table-expando-closed"></i></a>
-                                            <a ng-show="data" ng-click="toggle(item.activity_id)"><i class="table-expando-open"></i></a>
+                                            <a ng-show="!item.expandoData" ng-click="toggle()"><i class="table-expando-closed"></i></a>
+                                            <a ng-show="item.expandoData" ng-click="toggle()"><i class="table-expando-open"></i></a>
+                                            {{ $id }}
                                         </td>
                                         <td>
                                             <span class="label radius status {{ item.status }}">
@@ -87,14 +89,14 @@
                                         <td>{{ item.end_time | date:'${layout.angular_date_format}' }}</td>
                                     </tr>
                                     <tr>
-                                        <td ng-show="!data && loading == $index" colspan="5"><i class="busy"></i></td>
-                                        <td ng-show="data" colspan="5">
+                                        <td ng-show="!item.expandoData && item.expandoLoading == true" colspan="5"><i class="busy"></i></td>
+                                        <td ng-show="item.expandoData" colspan="5">
                                             <div class="row controls-wrapper readonly">
                                                 <div class="small-2 columns">
                                                     <label class="right" i18n:translate="">Status reason</label>
                                                 </div>
                                                 <div class="small-10 columns">
-                                                    {{ data.description }}
+                                                    {{ item.expandoData.description }}
                                                 </div>
                                             </div>
                                             <div class="row controls-wrapper readonly">
@@ -102,7 +104,7 @@
                                                     <label class="right" i18n:translate="">Cause</label>
                                                 </div>
                                                 <div class="small-10 columns">
-                                                    <div ng-repeat="cause in data.cause">
+                                                    <div ng-repeat="cause in item.expandoData.cause">
                                                         At {{ cause.date | date:'${layout.angular_date_format}' }} {{ cause.msg }}
                                                     </div>
                                                 </div>

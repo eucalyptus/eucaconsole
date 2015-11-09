@@ -7,38 +7,38 @@
 angular.module('ScalingGroupHistory', ['MagicSearch', 'EucaConsoleUtils'])
     .directive('expando', function () {
         return {
-            restrict:'A',
-            scope: {
-                url: '@',
-            },
-            controller: ['$scope', function($scope) {
-                $scope.loading = true;
-                $scope.data = undefined;
-                $scope.toggle = function (id) {
-                    if ($scope.data !== undefined) {
-                        $scope.data = undefined;
+            restrict: 'A',
+            controller: ['$scope', '$http', '$timeout', function($scope, $http, $timeout) {
+                $scope.expandoLoading = false;
+                $scope.expandoData = undefined;
+                $scope.toggle = function () {
+                    if ($scope.expandoData !== undefined) {
+                        $scope.expandoData = undefined;
                         return;
                     }
-                    $scope.loading = true;
-                    var url = $scope.url.replace('__id__', id);
-                    $http.get(url).success(function(oData) {
+                    $scope.expandoLoading = true;
+                    $http.get($scope.url).success(function(oData) {
                         var results = oData ? oData.results : '';
-                        $scope.loading = false;
+                        $scope.expandoLoading = false;
                         if (results) {
                             $timeout(function() {
-                                $scope.data = results;
+                                $scope.expandoData = results;
                             });
                         }
                     }).error(function() {
-                        $scope.loading = false;
+                        $scope.expandoLoading = false;
                     });
                 };
-            }]
+            }],
+            link: function (scope, element, attrs, ctrl) {
+                if(attrs.url && attrs.activityId) {
+                    scope.url = attrs.url.replace("__id__", attrs.activityId);
+                }
+            }
         };
     })
     .controller('ScalingGroupHistoryCtrl', function ($scope, $http, $timeout, eucaUnescapeJson, eucaHandleError) {
         $scope.historyLoading = true;
-        $scope.expandoLoading = undefined;
         $scope.resources = [];
         $scope.codeEditor = null;
         $scope.initPage = function (historyUrl, historyActivityUrl) {
