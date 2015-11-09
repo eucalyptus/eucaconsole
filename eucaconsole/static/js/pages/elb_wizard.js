@@ -7,7 +7,8 @@
  */
 
 angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $http, $timeout, eucaHandleError,
-                                                                      eucaUnescapeJson, eucaFixHiddenTooltips) {
+                                                                      eucaUnescapeJson, eucaFixHiddenTooltips,
+                                                                      eucaCheckELBSecurityGroupRules) {
     $scope.elbForm = undefined;
     $scope.urlParams = undefined;
     $scope.isNotValid = true;
@@ -20,10 +21,13 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
     $scope.vpcSubnetNames = [];
     $scope.vpcSubnetChoices = {};
     $scope.vpcSubnetList = [];
-    $scope.securityGroups = [];
-    $scope.securityGroupNames = [];
-    $scope.securityGroupChoices = [];
-    $scope.securityGroupCollection = []; 
+    $scope.securityGroups = [];  // Selected security group ids (e.g. ["sg-123456", ...])
+    $scope.securityGroupNames = [];  // Selected security group names (e.g. ["sgroup-one", ...])
+    $scope.securityGroupChoices = {};  // id/name mapping of security group choices (e.g. {"sg-123": 'foo', ...})
+    $scope.securityGroupCollection = [];  // Security group object choices
+    $scope.selectedSecurityGroups = [];  // Selected security group objects
+    $scope.loadBalancerInboundPorts = [];
+    $scope.loadBalancerOutboundPorts = [];
     $scope.availabilityZones = [];
     $scope.availabilityZoneChoices = {};
     $scope.instanceList = [];
@@ -102,7 +106,7 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
         $scope.crossZoneEnabled = true;
         $scope.pingProtocol = 'HTTP';
         $scope.pingPort = 80;
-        $scope.pingPath = 'index.html';
+        $scope.pingPath = '/';
         $scope.responseTimeout = 5;
         $scope.timeBetweenPings = 30;
         $scope.failuresUntilUnhealthy = 2;
@@ -311,7 +315,11 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
                         $scope.accessLogConfirmationDialog.foundation('reveal', 'open');
                     }
                 }
+                $scope.isValidationError = newVal && !$scope.bucketName;
             }
+        });
+        $scope.$watch('bucketName', function (newVal, oldVal) {
+            $scope.isValidationError = $scope.loggingEnabled && !newVal;
         });
         $scope.accessLogConfirmationDialog.on('opened.fndtn.reveal', function () {
             $scope.accessLoggingConfirmed = false;
@@ -689,7 +697,8 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
         $scope.accessLoggingConfirmed = true;
         $scope.accessLogConfirmationDialog.foundation('reveal', 'close');
     };
-    $scope.createELB = function () {
+    $scope.createELB = function ($event, confirmed) {
+        confirmed = confirmed || false;
         var bucketNameField = $('#bucket_name');
         if (!$scope.isNotValid && !$scope.isValidationError) {
             // bucket name field requires special validation handling since it is conditionally required
@@ -698,7 +707,22 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
             } else {
                 bucketNameField.attr('required');
             }
-            $scope.thisForm.submit();
+            $scope.checkSecurityGroupRules($event, confirmed);
+        }
+    };
+    $scope.checkSecurityGroupRules = function ($event, confirmed) {
+        var modal = $('#elb-security-group-rules-warning-modal');
+        var inboundOutboundPortChecksPass;
+        if ($scope.vpcNetwork === 'None') {  // Bypass rules check on non-VPC clouds
+            $scope.elbForm.submit();
+            return;
+        }
+        inboundOutboundPortChecksPass = eucaCheckELBSecurityGroupRules($scope);
+        if (!confirmed && !inboundOutboundPortChecksPass) {
+            modal.foundation('reveal', 'open');
+            $event.preventDefault();
+        } else {
+            $scope.elbForm.submit();
         }
     };
 })

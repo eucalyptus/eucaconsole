@@ -41,33 +41,15 @@ class GuiEC2(GuiTester):
         """
         self.driver.implicitly_wait(time_to_wait)
 
-    def login(self, account, username, password):
-        """
-        Logs in to eucaconsole with credentials specified in the GuiTester object, verifies dashboard is loaded.
-        :param account:
-        :param username:
-        :param password:
-        """
-        LoginPage(self).login(account, username, password)
-        Dashboard(self).verify_dashboard_loaded()
-
     def set_all_pages_to_list_view(self):
         pass
 
     def set_all_pages_to_tile_view(self):
         pass
 
-    def exit_browser(self):
-        """
-        Closes browser.
-        """
-        self.driver.quit()
-
-    def logout(self):
-        """
-        Logs out the user.
-        """
-        BasePage(self).logout()
+    def goto_images_page_via_nav(self):
+        BasePage(self).goto_images_view_via_menu()
+        ImageLanding(self)
 
     def create_keypair_from_dashboard(self, keypair_name):
         """
@@ -611,7 +593,7 @@ class GuiEC2(GuiTester):
         """
         BasePage(self).goto_snapshots_view_via_menu()
         SnapshotLanding(self).click_action_create_volume_from_snapshot(snapshot_id)
-        CreateVolumeDialog(self).create_volume(volume_name, volume_size=volume_size, availability_zone=availability_zone)
+        CreateVolumeDialog(self).create_volume(volume_name, volume_size=volume_size, availability_zone=availability_zone, timeout_in_seconds=timeout_in_seconds)
         VolumeDetailPage(self).verify_volume_status_is_available(timeout_in_seconds=timeout_in_seconds)
         volume = VolumeDetailPage(self).get_volume_name_and_id()
         print volume
@@ -629,7 +611,7 @@ class GuiEC2(GuiTester):
         BasePage(self).goto_snapshots_view_via_menu()
         SnapshotLanding(self).goto_snapshot_detail_page_via_link(snapshot_id)
         SnapshotDetailPage(self).click_action_create_volume_from_snapshot_on_detail_page()
-        CreateVolumeDialog(self).create_volume(volume_name, volume_size=volume_size, availability_zone=availability_zone)
+        CreateVolumeDialog(self).create_volume(volume_name, volume_size=volume_size, availability_zone=availability_zone, timeout_in_seconds=timeout_in_seconds)
         VolumeDetailPage(self).verify_volume_status_is_available(timeout_in_seconds=timeout_in_seconds)
         volume = VolumeDetailPage(self).get_volume_name_and_id()
         print volume

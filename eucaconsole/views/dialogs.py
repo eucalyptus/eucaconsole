@@ -355,6 +355,14 @@ def elb_bucket_access_log_dialog(context, request):
     return dict()
 
 
+@panel_config('elb_security_group_warning_dialog', renderer='../templates/dialogs/elb_security_group_warning_dialog.pt')
+def elb_security_group_warning_dialog(context, request, create=False):
+    """ Modal confirmation when the security group rules for an ELB don't cover the listener and health check ports"""
+    return dict(
+        create=create
+    )
+
+
 @panel_config('cloudwatch_chart_dialog', renderer='../templates/dialogs/cloudwatch_chart_dialog.pt')
 def cloudwatch_chart_dialog(context, request, duration_choices=None, statistic_choices=None):
     """ Modal dialog for large CloudWatch chart"""
@@ -364,3 +372,10 @@ def cloudwatch_chart_dialog(context, request, duration_choices=None, statistic_c
         duration_choices=duration_choices,
         statistic_choices=statistic_choices,
     )
+
+
+@panel_config('ufshost_warn_dialog', renderer='../templates/dialogs/ufshost_warn_dialog.pt')
+def ufshost_warn_dialog(context, request):
+    """ Modal warning when trying to create a stack, but ufshost set to localhost"""
+    return dict()
+

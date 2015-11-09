@@ -52,6 +52,7 @@ from ..i18n import _
 from ..models import Notification
 from ..views import BaseView, LandingPageView, JSONResponse
 from . import boto_error_handler
+from .. import utils
 
 
 DELIMITER = '/'
@@ -202,6 +203,8 @@ class BucketXHRView(BaseView, BucketMixin):
     def __init__(self, request):
         super(BucketXHRView, self).__init__(request)
         self.s3_conn = self.get_connection(conn_type='s3')
+        if self.s3_conn:
+            self.s3_conn.suppress_consec_slashes = False
         self.bucket_name = request.matchdict.get('name')
         request.subpath = self.get_subpath(self.bucket_name)
 
@@ -889,6 +892,7 @@ class BucketItemDetailsView(BaseView, BucketMixin):
             item_open_url=self.bucket_item.generate_url(expires_in=BUCKET_ITEM_URL_EXPIRES),
             item_download_url=BucketContentsView.get_item_download_url(self.bucket_item),
             cancel_link_url=self.get_cancel_link_url(),
+            ufshost_error=utils.is_ufshost_error(self.s3_conn, self.cloud_type)
         )
 
     def get_controller_options_json(self):

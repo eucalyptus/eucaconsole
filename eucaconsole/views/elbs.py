@@ -30,6 +30,7 @@ Pyramid views for Eucalyptus and AWS elbs
 """
 import itertools
 import logging
+import re
 import simplejson as json
 import time
 
@@ -50,7 +51,7 @@ from ..constants.cloudwatch import (
     METRIC_TITLE_MAPPING,
     STATISTIC_CHOICES)
 from ..constants.elbs import (
-    ELB_MONITORING_CHARTS_LIST, ELB_BACKEND_CERTIFICATE_NAME_PREFIX, ELB_ACCESS_LOGS_BUCKET_PREFIX_NAME_PREFIX,
+    ELB_MONITORING_CHARTS_LIST, ELB_BACKEND_CERTIFICATE_NAME_PREFIX,
     ELB_PREDEFINED_SECURITY_POLICY_NAME_PREFIX, ELB_CUSTOM_SECURITY_POLICY_NAME_PREFIX,
     AWS_ELB_ACCOUNT_IDS)
 from ..forms import ChoicesManager
@@ -290,7 +291,9 @@ class BaseELBView(TaggedItemView):
         passes_until_healthy = self.request.params.get('passes_until_healthy')
         ping_target = u"{0}:{1}".format(ping_protocol, ping_port)
         if ping_protocol in ['HTTP', 'HTTPS']:
-            ping_target = u"{0}/{1}".format(ping_target, ping_path)
+            if not ping_path.startswith('/'):
+                ping_path = '/{0}'.format(ping_path)
+            ping_target = u"{0}{1}".format(ping_target, ping_path)
         health_check = HealthCheck(
             timeout=response_timeout,
             interval=time_between_pings,
@@ -304,7 +307,7 @@ class BaseELBView(TaggedItemView):
         req_params = self.request.params
         params_logging_enabled = req_params.get('logging_enabled') == 'y'
         params_bucket_name = req_params.get('bucket_name')
-        params_bucket_prefix = req_params.get('bucket_prefix')
+        params_bucket_prefix = req_params.get('bucket_prefix', '')
         params_collection_interval = int(req_params.get('collection_interval', 60))
         if elb is not None:
             existing_access_log = self.elb_conn.get_lb_attribute(elb.name, 'accessLog')
@@ -318,7 +321,7 @@ class BaseELBView(TaggedItemView):
                 return None  # Skip if nothing has changed in the ELB's access log config
         # Set Access Logs
         elb_name = elb.name if elb is not None else elb_name
-        bucket_prefix = params_bucket_prefix or self.generate_bucket_prefix_name(elb_name)
+        bucket_prefix = params_bucket_prefix
         if params_logging_enabled:
             self.configure_logging_bucket(bucket_name=params_bucket_name, bucket_prefix=bucket_prefix)
         new_access_log_config = AccessLogAttribute()
@@ -368,10 +371,6 @@ class BaseELBView(TaggedItemView):
         sharing_policy.acl = sharing_acl
         sharing_policy.owner = bucket.get_acl().owner
         bucket.set_acl(sharing_policy)
-
-    @staticmethod
-    def generate_bucket_prefix_name(elb_name):
-        return '{0}-{1}'.format(ELB_ACCESS_LOGS_BUCKET_PREFIX_NAME_PREFIX, elb_name)
 
     def handle_backend_certificate_create(self, elb_name):
         if self.cloud_type == 'aws':
@@ -463,6 +462,13 @@ class BaseELBView(TaggedItemView):
                     elif policy.policy_name.startswith(ELB_CUSTOM_SECURITY_POLICY_NAME_PREFIX):
                         return policy.policy_name
         return self.get_latest_predefined_policy()
+
+    @staticmethod
+    def get_health_check_port(elb=None):
+        if elb and elb.health_check.target is not None:
+            match = re.search('^(\w+):(\d+)/?(.+)?', elb.health_check.target)
+            ping_port = match.group(2)
+            return ping_port
 
     @staticmethod
     def get_instance_selector_text():
@@ -695,6 +701,8 @@ class ELBView(BaseELBView):
             'existing_certificate_choices': self.certificate_form.certificate_arn.choices,
             'logging_enabled': self.access_logs.enabled if self.access_logs else False,
             'bucket_choices': dict(self.elb_form.bucket_name.choices),
+            'securitygroups_json_endpoint': self.request.route_path('securitygroups_json'),
+            'ping_port': self.get_health_check_port(self.elb),
         }))
 
     def update_elb_idle_timeout(self, elb_name, idle_timeout):
@@ -710,7 +718,8 @@ class ELBView(BaseELBView):
                 listener_dict = {
                     'from_port': listener.load_balancer_port,
                     'to_port': listener.instance_port,
-                    'protocol': listener.protocol
+                    'from_protocol': listener.protocol,
+                    'to_protocol': listener.instance_protocol
                 }
                 if listener.ssl_certificate_id:
                     certificate_id = listener.ssl_certificate_id.split('/')[-1]
@@ -1136,7 +1145,7 @@ class CreateELBView(BaseELBView):
             latest_predefined_policy=self.get_latest_predefined_policy(),
             elb_security_policy=self.get_security_policy(),
             protocol_list=self.get_protocol_list(),
-            listener_list=[{'from_port': 80, 'to_port': 80, 'protocol': 'HTTP'}],  # Set HTTP listener by default
+            listener_list=[{'from_port': 80, 'to_port': 80, 'from_protocol': 'HTTP', 'to_protocol': 'HTTP'}],  # Set HTTP listener by default
             security_group_placeholder_text=_(u'Select...'),
             is_vpc_supported=self.is_vpc_supported,
             avail_zones_placeholder_text=_(u'Select availability zones'),
