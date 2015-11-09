@@ -70,7 +70,7 @@
                                 </tr></thead>
                                 <tbody expando="" ng-repeat="item in history | orderBy: sortBy:sortReverse"
                                     url="${request.route_path('scalinggroup_history_details_json', id=scaling_group.name, activity='__id__')}"
-                                    activity_id="{{item.activity_id}}">
+                                    item_id="{{item.activity_id}}">
                                     <tr ng-class="{'history-tr-even': $odd}" ng-cloak="true"> 
                                         <td>
                                             <a ng-click="toggle()"><i ng-class="{'table-expando-closed': !expando.data, 'table-expando-open': expando.data || expando.loading }"></i></a>
@@ -148,6 +148,7 @@
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/jquery.stickytableheaders.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/expando.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/scalinggroup_history.js')}"></script>
 </div>
 
