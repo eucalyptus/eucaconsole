@@ -87,7 +87,7 @@
                                         <td>{{ item.end_time | date:'${layout.angular_date_format}' }}</td>
                                     </tr>
                                     <tr ng-class="{'history-tr-even': $odd}"> 
-                                        <td ng-show="!expando.data && expando.loading == true" colspan="5"><i class="busy"></i></td>
+                                        <td ng-show="!expando.data &amp;&amp; expando.loading == true" colspan="5"><i class="busy"></i></td>
                                         <td ng-show="expando.data" colspan="5">
                                             <div class="row controls-wrapper readonly">
                                                 <div class="small-2 columns">
