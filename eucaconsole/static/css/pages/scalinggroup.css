@@ -170,3 +170,7 @@ input[type="number"] { width: 3rem; }
 .dialog-option { text-align: left; }
 
 #refresh-history { margin-left: 1.0rem; margin-bottom: 0.25rem; }
+
+.history-tr-even { background: #f5f5f5 !important; }
+
+table tr.even, table tr.alt, table tr:nth-of-type(even) { background: white; }

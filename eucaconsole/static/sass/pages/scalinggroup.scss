@@ -120,3 +120,15 @@ input[type="number"] {
     margin-left: 1.0rem;
     margin-bottom: 0.25rem;
 }
+
+.history-tr-even {
+    background: $table-even-row-bg !important;
+}
+
+table {
+  tr {
+    &.even,
+    &.alt,
+    &:nth-of-type(even) { background: white; }
+  }
+}

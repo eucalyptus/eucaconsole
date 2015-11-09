@@ -9,24 +9,25 @@ angular.module('ScalingGroupHistory', ['MagicSearch', 'EucaConsoleUtils'])
         return {
             restrict: 'A',
             controller: ['$scope', '$http', '$timeout', function($scope, $http, $timeout) {
-                $scope.expandoLoading = false;
-                $scope.expandoData = undefined;
+                $scope.expando = {};
+                $scope.expando.loading = false;
+                $scope.expando.data = undefined;
                 $scope.toggle = function () {
-                    if ($scope.expandoData !== undefined) {
-                        $scope.expandoData = undefined;
+                    if ($scope.expando.data !== undefined) {
+                        $scope.expando.data = undefined;
                         return;
                     }
-                    $scope.expandoLoading = true;
+                    $scope.expando.loading = true;
                     $http.get($scope.url).success(function(oData) {
                         var results = oData ? oData.results : '';
-                        $scope.expandoLoading = false;
+                        $scope.expando.loading = false;
                         if (results) {
                             $timeout(function() {
-                                $scope.expandoData = results;
+                                $scope.expando.data = results;
                             });
                         }
                     }).error(function() {
-                        $scope.expandoLoading = false;
+                        $scope.expando.loading = false;
                     });
                 };
             }],
