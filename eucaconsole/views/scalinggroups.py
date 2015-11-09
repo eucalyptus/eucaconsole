@@ -610,7 +610,7 @@ class ScalingGroupHistoryView(BaseScalingGroupView):
             details = dict(
                 activity_id=activity.activity_id,
                 status=activity.status_code,
-                description=activity.description,
+                description=activity.status_message,
                 cause=cause
             )
             return dict(results=details)

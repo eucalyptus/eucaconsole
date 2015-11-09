@@ -4,8 +4,8 @@
  *
  */
 
-angular.module('Expando', [])
-    .directive('expando', function () {
+angular.module('Expando', ['EucaConsoleUtils'])
+    .directive('expando', function (eucaHandleError) {
         return {
             restrict: 'A',
             controller: ['$scope', '$http', '$timeout', function($scope, $http, $timeout) {
@@ -18,22 +18,23 @@ angular.module('Expando', [])
                         return;
                     }
                     $scope.expando.loading = true;
-                    $http.get($scope.url).success(function(oData) {
-                        var results = oData ? oData.results : '';
+                    $http.get($scope.url).then(function(response) {
+                        var results = response.data ? response.data.results : '';
                         $scope.expando.loading = false;
                         if (results) {
                             $timeout(function() {
                                 $scope.expando.data = results;
                             });
                         }
-                    }).error(function() {
+                    },function(response) {
                         $scope.expando.loading = false;
+                        eucaHandleError(response.statusText, response.status);
                     });
                 };
             }],
             link: function (scope, element, attrs, ctrl) {
-                if(attrs.url && attrs.activityId) {
-                    scope.url = attrs.url.replace("__id__", attrs.activityId);
+                if(attrs.url && attrs.itemId) {
+                    scope.url = attrs.url.replace("__id__", attrs.itemId);
                 }
             }
         };
