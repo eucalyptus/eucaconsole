@@ -5,6 +5,37 @@
  */
 
 angular.module('ScalingGroupHistory', ['MagicSearch', 'EucaConsoleUtils'])
+    .directive('expando', function () {
+        return {
+            restrict:'A',
+            scope: {
+                url: '@',
+            },
+            controller: ['$scope', function($scope) {
+                $scope.loading = true;
+                $scope.data = undefined;
+                $scope.toggle = function (id) {
+                    if ($scope.data !== undefined) {
+                        $scope.data = undefined;
+                        return;
+                    }
+                    $scope.loading = true;
+                    var url = $scope.url.replace('__id__', id);
+                    $http.get(url).success(function(oData) {
+                        var results = oData ? oData.results : '';
+                        $scope.loading = false;
+                        if (results) {
+                            $timeout(function() {
+                                $scope.data = results;
+                            });
+                        }
+                    }).error(function() {
+                        $scope.loading = false;
+                    });
+                };
+            }]
+        };
+    })
     .controller('ScalingGroupHistoryCtrl', function ($scope, $http, $timeout, eucaUnescapeJson, eucaHandleError) {
         $scope.historyLoading = true;
         $scope.expandoLoading = undefined;
@@ -62,27 +93,8 @@ angular.module('ScalingGroupHistory', ['MagicSearch', 'EucaConsoleUtils'])
                 }
             });
         };
-        $scope.expand = function (index, item) {
-            // clear previous expanded rows
-            angular.forEach($scope.history, function(item) {
-                item.expandoData = undefined;
-            });
-            $scope.expandoLoading = index;
-            var url = $scope.scalinggroupHistoryActivityUrl.replace('__id__', item.activity_id);
-            $http.get(url).success(function(oData) {
-                var results = oData ? oData.results : '';
-                $scope.expandoLoading = undefined;
-                if (results) {
-                    $timeout(function() {
-                        item.expandoData = results;
-                    });
-                }
-            }).error(function() {
-                $scope.expandoLoading = undefined;
-            });
-        };
-        $scope.collapse = function (index, item) {
-            item.expandoData = undefined;
+        $scope.toggle = function (index, item) {
+            console.log("Called the page scope toggle() function");
         };
         $scope.searchHistory = function() {
             var filterText = ($scope.searchFilter || '').toLowerCase();
