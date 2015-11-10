@@ -8,7 +8,7 @@
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="ScalingGroupHistory" ng-controller="ScalingGroupHistoryCtrl"
          ng-init="initPage('${request.route_path('scalinggroup_history_json', id=scaling_group.name)}',
-            '${request.route_path('scalinggroup_history_details_json', id=scaling_group.name, activity='__id__')}')">
+            '${request.route_path('scalinggroup_history_details_json', id=scaling_group.name, activity='__id__')}', '${initial_sort_key}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('scalinggroups')}" i18n:translate="">Scaling groups</a></li>
@@ -33,7 +33,7 @@
                     <div class="flex-space">
                         <div class="flex-column-1">
                         </div>
-                        <div id="sort-by" class="flex-column-0">
+                        <div id="sorting-controls" class="flex-column-0">
                             <strong>Sort by</strong>
                             <a href="#" data-dropdown="sorting-dropdown" ng-cloak="">
                                 <span tal:repeat="sort sort_keys" ng-show="sortBy == '${sort.key}'">${sort.name}</span>
@@ -89,19 +89,19 @@
                                     <tr ng-class="{'history-tr-even': $odd}"> 
                                         <td ng-show="!expando.data &amp;&amp; expando.loading == true" colspan="5"><i class="busy"></i></td>
                                         <td ng-show="expando.data" colspan="5">
-                                            <div class="row controls-wrapper readonly">
-                                                <div class="small-2 columns">
-                                                    <label class="right" i18n:translate="">Status reason</label>
+                                            <div class="row inline stacked controls-wrapper">
+                                                <div class="columns">
+                                                    <label class="left" i18n:translate="">Status reason</label>
                                                 </div>
-                                                <div class="small-10 columns">
-                                                    {{ expando.data.description }}
+                                                <div class="small-12 columns field">
+                                                    {{ expando.data.description?expando.data.description:item.status }}
                                                 </div>
                                             </div>
-                                            <div class="row controls-wrapper readonly">
-                                                <div class="small-2 columns">
-                                                    <label class="right" i18n:translate="">Cause</label>
+                                            <div class="row inline stacked controls-wrapper">
+                                                <div class="columns">
+                                                    <label class="left" i18n:translate="">Cause</label>
                                                 </div>
-                                                <div class="small-10 columns">
+                                                <div class="small-12 columns field">
                                                     <div ng-repeat="cause in expando.data.cause">
                                                         At {{ cause.date | date:'${layout.angular_date_format}' }} {{ cause.msg }}
                                                     </div>

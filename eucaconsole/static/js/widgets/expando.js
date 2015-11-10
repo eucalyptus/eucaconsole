@@ -14,7 +14,12 @@ angular.module('Expando', ['EucaConsoleUtils'])
                 $scope.expando.data = undefined;
                 $scope.toggle = function () {
                     if ($scope.expando.data !== undefined) {
+                        $scope.expando.save = $scope.expando.data;
                         $scope.expando.data = undefined;
+                        return;
+                    }
+                    if ($scope.expando.save !== undefined) {
+                        $scope.expando.data = $scope.expando.save;
                         return;
                     }
                     $scope.expando.loading = true;

@@ -567,6 +567,7 @@ class ScalingGroupHistoryView(BaseScalingGroupView):
             filter_keys=self.filter_keys,
             search_facets=BaseView.escape_json(json.dumps(search_facets)),
             sort_keys=self.sort_keys,
+            initial_sort_key='-end_time',
             delete_form=self.delete_form,
         )
 
@@ -620,8 +621,8 @@ class ScalingGroupHistoryView(BaseScalingGroupView):
     @staticmethod
     def get_sort_keys():
         return [
-            dict(key='start_time', name=_(u'Start time: most recent')),
-            dict(key='end_time', name=_(u'End time: most recent')),
+            dict(key='-start_time', name=_(u'Start time: most recent')),
+            dict(key='-end_time', name=_(u'End time: most recent')),
             dict(key='status', name=_(u'Status: A to Z')),
             dict(key='-status', name=_(u'Status: Z to A')),
             dict(key='description', name=_(u'Description: A to Z')),

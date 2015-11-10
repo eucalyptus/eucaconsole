@@ -174,3 +174,19 @@ input[type="number"] { width: 3rem; }
 .history-tr-even { background: #f5f5f5 !important; }
 
 table tr.even, table tr.alt, table tr:nth-of-type(even) { background: white; }
+
+#sorting-controls { padding-top: 0.1rem; }
+
+.status.Successfull { background-color: #008424; }
+
+.status.In-progress { background-color: #007dba; }
+
+.status.Failed { background-color: #ff0000; }
+
+.status.Not-yet-in-service { background-color: #6a737b; }
+
+.status.Canceled { background-color: #6a737b; }
+
+.status.Waiting-for-launch { background-color: #6a737b; }
+
+.status.Waiting-for-terminate { background-color: #6a737b; }
