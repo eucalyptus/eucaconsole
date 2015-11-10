@@ -72,7 +72,7 @@ angular.module('ScalingGroupHistory', ['MagicSearch', 'EucaConsoleUtils', 'Expan
          *  to apply text filtering, call searchHistory instead
          */
         $scope.facetFilterHistory = function() {
-            var query = undefined;
+            var query;
             var url = window.location.href;
             if (url.indexOf("?") > -1) {
                 query = url.split("?")[1];
@@ -89,13 +89,14 @@ angular.module('ScalingGroupHistory', ['MagicSearch', 'EucaConsoleUtils', 'Expan
                     facets[facet[0]].push(facet[1]);
                 }
                 var results = $scope.unfilteredHistory;
+                var filterFunc = function(item) {
+                    var val = item.hasOwnProperty(key) && item[key];
+                    if (typeof val === 'string' && $.inArray(val.toLowerCase(), facets[key]) > -1) {
+                        return true;
+                    }
+                };
                 for (var key in facets) {
-                    results = results.filter(function(item) {
-                        var val = item.hasOwnProperty(key) && item[key];
-                        if (typeof val === 'string' && $.inArray(val.toLowerCase(), facets[key]) > -1) {
-                            return true;
-                        }
-                    });
+                    results = results.filter(filterFunc);
                 }
                 $scope.facetHistory = results;
             }

@@ -51,7 +51,7 @@ from ..forms.scalinggroups import (
     ScalingGroupPolicyDeleteForm, ScalingGroupsFiltersForm)
 from ..i18n import _
 from ..models import Notification
-from ..views import LandingPageView, BaseView, TaggedItemView, JSONResponse
+from ..views import LandingPageView, BaseView, TaggedItemView, JSONResponse, JSONError
 from . import boto_error_handler
 
 
@@ -616,7 +616,7 @@ class ScalingGroupHistoryView(BaseScalingGroupView):
             )
             return dict(results=details)
         else:
-            raise JSONError(message=_(u'Activity ID not found ')+activity_id, status=401)
+            raise JSONError(message=_(u'Activity ID not found ') + activity_id, status=401)
 
     @staticmethod
     def get_sort_keys():
@@ -628,6 +628,7 @@ class ScalingGroupHistoryView(BaseScalingGroupView):
             dict(key='description', name=_(u'Description: A to Z')),
             dict(key='-description', name=_(u'Description: Z to A')),
         ]
+
 
 class ScalingGroupPoliciesView(BaseScalingGroupView):
     """View for Scaling Group Policies page"""
