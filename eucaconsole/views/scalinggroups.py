@@ -606,8 +606,8 @@ class ScalingGroupHistoryView(BaseScalingGroupView):
                 for c in causes:
                     idx = c.find('Z') + 1
                     date_string = c[:idx]
-                    #date_obj = parser.parse(date_string)
-                    cause.append(dict(date=date_string, msg=c[idx:]))
+                    date_obj = parser.parse(date_string)
+                    cause.append(dict(date=date_obj.isoformat(), msg=c[idx:]))
             details = dict(
                 activity_id=activity.activity_id,
                 status=activity.status_code,
