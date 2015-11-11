@@ -1,38 +1,55 @@
 
 <!--! User editor -->
-<div id="user-editor" class="row controls-wrapper" i18n:domain="eucaconsole"
+<div id="user-editor" ng-form="userEditor" class="row controls-wrapper" i18n:domain="eucaconsole"
      ng-controller="UserEditorCtrl" ng-init="initUsers()">
     <div class="small-12 columns field">
-        <div class="row userentry existing inline controls-wrapper"
-             ng-repeat="user in usersArray" ng-cloak="cloak">
-            <div class="small-1 columns">
-                <a href="#" class="circle remove has-tip" ng-click="removeUser($index, $event)"
-                   title="Remove user"><i class="fi-minus-circle"></i></a>
-            </div>
-            <div class="small-11 columns">
-                <strong i18n:translate="">User</strong>:
-                <span class="{{user.fresh}}">{{ user.name }} <!--<em>=</em> {{ user.email }}--></span>
+        <div class="row">
+            <div class="columns subheader">
+                <span class="subsection-label" i18n:translate=""
+                      ng-show="usersArray.length || '${show_admin}' == 'True'">Users</span>
             </div>
         </div>
+        <ul class="user-list">
+            <li tal:condition="show_admin" class="default">
+                <a class="circle">
+                    <i class="fi-minus-circle"></i></a>
+                <span>admin</span>
+            </li>
+            <li ng-repeat="user in usersArray" ng-cloak="cloak">
+                <a href="#" class="circle remove has-tip" ng-click="removeUser($index, $event)"
+                   title="Remove user" i18n:attributes="title"><i class="fi-minus-circle"></i></a>
+                <span class="{{user.fresh}}">{{ user.name }}</span>
+            </li>
+        </ul>
         <div class="row">
             <div class="columns subheader" ng-cloak="">
-                <span class="subsection-label" ng-show="usersArray.length" i18n:translate="">Add another user</span>
-                <span class="subsection-label" ng-show="usersArray.length == 0" i18n:translate="">Add a user</span>
-                <span class="req">*</span>:
+                <span class="subsection-label" ng-show="usersArray.length" i18n:translate="">Add another user:</span>
+                <span class="subsection-label" ng-show="usersArray.length == 0" i18n:translate="">Add a user:</span>
             </div>
         </div>
         <div class="row userentry controls-wrapper">
+            <div class="columns">
+                <label class="left stack-label" for="user-name-field" i18n:translate="">User name</label>&nbsp;
+                <span tal:condition="help_text"
+                        class="helptext-icon"
+                        data-tooltip="" title="${help_text}"></span>
+            </div>
             <div id="user-name-field-div" class="field columns">
-                <label class="left" for="user-name-field" i18n:translate="">Name</label>&nbsp;
-                <input class="userinput name" id="user-name-field"
-                       ng-model="newUserName" ng-keypress="keyListener($event)" pattern="^[a-zA-Z0-9\+\=\,\.\@\-]{1,64}$" />
+                <input class="userinput name" id="user-name-field" type="text"
+                       ng-model="newUserName" ng-keypress="keyListener($event)"
+                       pattern="^[a-zA-Z0-9\+\=\,\.\@\-]{1,64}$" user-name reserved="admin"/>
                 <small id="user-list-error" class="error" i18n:translate="">
-                    Must have at least one user, and the names of users must be alphanumeric, including the following common characters: plus (+), equal (=), comma (,), period (.), at (@), and dash (-), and cannot contain spaces.
+                    Must have at least one user, and the names of users must be alphanumeric, including the following
+                    common characters: plus (+), equal (=), comma (,), period (.), at (@), and dash (-),
+                    and cannot contain spaces.
+                </small>
+                <small class="error reserved" i18n:translate="">
+                    You cannot create user "admin" because it is created automatically.
                 </small>
             </div>
             <div>&nbsp;</div>
             <div class="columns">
-                <button ng-click="addUser($event)" ng-disabled="isDisabled" class="button round tiny" id="add-user-btn"
+                <button ng-click="addUser($event)" ng-disabled="isDisabled()" class="button round tiny" id="add-user-btn"
                    title="Add user" i18n:translate="">Add User</button>
             </div>
         </div>

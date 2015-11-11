@@ -75,8 +75,8 @@
                             <div class="row controls-wrapper readonly">
                                 <div class="large-2 small-4 columns"><label i18n:translate="">Status</label></div>
                                 <div class="large-10 small-8 columns value" ng-cloak="">
-                                    <div class="progress" ng-show="isTransitional(imageState)"><span
-                                            class="meter" style="width: {{ imageProgress }}">{{ imageProgress }}% ({{ imageState }})</span>
+                                    <div class="progress round" ng-show="isTransitional(imageState)"><span
+                                            class="meter" style="width: {{ imageProgress }}%">{{ imageProgress }}% ({{ imageState }})</span>
                                     </div>
                                     <span ng-show="!isTransitional(imageState)">
                                         <span class="label radius state {{imageState}}"> {{ imageState }} </span>
