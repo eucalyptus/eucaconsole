@@ -18,8 +18,9 @@
         <h3 id="pagetitle"><strong i18n:translate="">Stacks</strong></h3>
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
-                <a class="button" i18n:translate="" id="create-stack-btn"
+                <a tal:condition="not: ufshost_error" class="button" i18n:translate="" id="create-stack-btn"
                    href="${request.route_path('stack_new')}">Create Stack</a>
+                <a tal:condition="ufshost_error" class="button" data-reveal-id="ufshost-warn-dialog" i18n:translate="">Create Stack</a>
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
                 <a id="tile-item-dropdown_{{ item.name | escapeHTMLTagID }}" class="tiny secondary button dropdown right" data-dropdown="item-dropdown_{{ item.name | escapeHTMLTagID }}"><i class="grid-action"></i></a>
@@ -70,6 +71,7 @@
         </div>
         <!--! Modal dialogs -->
         ${panel('stack_dialogs', delete_form=delete_form, landingpage=True)}
+        ${panel('ufshost_warn_dialog')}
     </div>
 </div>
 

@@ -145,7 +145,7 @@ class LaunchConfigsJsonView(LandingPageView):
                     'name': group.name,
                     'id': group.id,
                     'rules_count': self.get_security_group_rules_count_by_id(group.id)
-                    } for group in security_groups)
+                } for group in security_groups)
                 image_id = launchconfig.image_id
                 name = launchconfig.name
                 launchconfigs_array.append(dict(
@@ -240,7 +240,7 @@ class LaunchConfigView(BaseView):
         if self.launch_config and self.launch_config.instance_profile_name:
             arn = self.launch_config.instance_profile_name
             try:
-                profile_name = arn[(arn.rindex('/')+1):]
+                profile_name = arn[(arn.rindex('/') + 1):]
             except ValueError:
                 profile_name = arn
             inst_profile = self.iam_conn.get_instance_profile(profile_name)

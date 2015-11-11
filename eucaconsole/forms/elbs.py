@@ -76,6 +76,7 @@ class CertificateARNRequired(validators.Required):
 
 
 class ELBAccessLogsFormMixin(object):
+    PREFIX_PATTERN = '^[^A-Z]*$'
     logging_enabled = wtforms.BooleanField(label=_(u'Enable logging'))
     bucket_name_error_msg = _(u'Bucket name is required')
     bucket_name_help_text = _(u'Choose from your existing buckets, or create a new bucket.')
@@ -84,9 +85,10 @@ class ELBAccessLogsFormMixin(object):
         validators=[BucketInfoRequired(message=bucket_name_error_msg)],
     )
     bucket_prefix_help_text = _(
-        u"The path to your log file within the bucket. "
-        u"If not specified, log will be created at the bucket's root level")
+        u"The path where log files will be stored within the bucket. "
+        u"If not specified, logs will be created at the bucket's root level")
     bucket_prefix = TextEscapedField(label=_(u'Prefix'))
+    bucket_prefix_error_msg = _(u'Prefix may not contain uppercase letters')
     collection_interval = wtforms.SelectField(
         label=_(u'Collection interval'),
     )
@@ -143,6 +145,7 @@ class ELBForm(BaseSecureForm, ELBAccessLogsFormMixin):
     def set_error_messages(self):
         self.securitygroup.error_msg = self.securitygroup_error_msg
         self.bucket_name.error_msg = self.bucket_name_error_msg
+        self.bucket_prefix.error_msg = self.bucket_prefix_error_msg
 
     def set_choices(self):
         self.securitygroup.choices = self.set_security_group_choices()
@@ -188,11 +191,11 @@ class ELBHealthChecksForm(BaseSecureForm):
             validators.NumberRange(min=1, max=65535),
         ],
     )
-    ping_path_error_msg = _(u'Ping path is required')
+    ping_path_error_msg = _(u'Ping path is required and must start with a /')
     ping_path = TextEscapedField(
         id=u'ping-path',
         label=_(u'Path'),
-        default="index.html",
+        default="/",
         validators=[PingPathRequired(message=ping_path_error_msg)],
     )
     response_timeout_error_msg = _(u'Response timeout is required')
@@ -250,7 +253,7 @@ class ELBHealthChecksForm(BaseSecureForm):
 
     def get_health_check_data(self):
         if self.elb is not None and self.elb.health_check.target is not None:
-            match = re.search('^(\w+):(\d+)/?(.+)?', self.elb.health_check.target)
+            match = re.search('^(\w+):(\d+)(.+)?', self.elb.health_check.target)
             return dict(
                 ping_protocol=match.group(1),
                 ping_port=match.group(2),
@@ -407,6 +410,7 @@ class CreateELBForm(ELBHealthChecksForm, ELBAccessLogsFormMixin):
     def set_error_messages(self):
         self.name.error_msg = self.name_error_msg
         self.bucket_name.error_msg = self.bucket_name_error_msg
+        self.bucket_prefix.error_msg = self.bucket_prefix_error_msg
 
     def get_availability_zone_choices(self, region):
         return self.choices_manager.availability_zones(region, add_blank=False)

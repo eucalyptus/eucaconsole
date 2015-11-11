@@ -71,7 +71,7 @@
                         <div class="large-2 small-4 columns"><label i18n:translate="">Objects</label></div>
                         <div class="large-10 small-8 columns value" ng-cloak="">
                             <span class="busy" ng-show="objectsCountLoading"></span>
-                            <a ng-show="!objectsCountLoading" href="${bucket_contents_url}">
+                            <a ng-show="!objectsCountLoading" href="${bucket_contents_url}" class="bucket-object-count">
                                 <strong>{{ bucketCount }}</strong>
                             </a>
                         </div>

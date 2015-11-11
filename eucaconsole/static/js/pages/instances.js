@@ -149,6 +149,7 @@ angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils'])
                 "&amp;instance_type=" + item.instance_type +
                 "&amp;keypair=" + item.key_name +
                 "&amp;security_group=" + securityGroupsList +
+                "&amp;userdata_instanceid=" + item.id +
                 "&amp;preset=true";
             return launchConfigPath;
         };

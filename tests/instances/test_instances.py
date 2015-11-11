@@ -1,4 +1,4 @@
-# Copyright 2013-2014 Eucalyptus Systems, Inc.
+# Copyright 2013-2015 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -171,13 +171,15 @@ class AttachVolumeDeviceEucalyptusTestCase(BaseFormTestCase):
     def test_initial_attach_device_on_eucalyptus(self):
         instance = Mock()
         instance.block_device_mapping = {}
-        device = self.form_class.suggest_next_device_name(self.request, instance)
+        cloud_type = self.request.session.get('cloud_type')
+        device = self.form_class.suggest_next_device_name(cloud_type, instance.block_device_mapping)
         self.assertEqual(device, '/dev/vdc')
 
     def test_next_attach_device_on_eucalyptus(self):
         instance = Mock()
         instance.block_device_mapping = {'/dev/vdc': 'foo'}
-        device = self.form_class.suggest_next_device_name(self.request, instance)
+        cloud_type = self.request.session.get('cloud_type')
+        device = self.form_class.suggest_next_device_name(cloud_type, instance.block_device_mapping)
         self.assertEqual(device, '/dev/vdd')
 
 
@@ -192,13 +194,15 @@ class AttachVolumeDeviceAWSTestCase(BaseFormTestCase):
     def test_initial_attach_device_on_aws(self):
         instance = Mock()
         instance.block_device_mapping = {}
-        device = self.form_class.suggest_next_device_name(self.request, instance)
+        cloud_type = self.request.session.get('cloud_type')
+        device = self.form_class.suggest_next_device_name(cloud_type, instance.block_device_mapping)
         self.assertEqual(device, '/dev/sdf')
 
     def test_next_attach_device_on_aws(self):
         instance = Mock()
         instance.block_device_mapping = {'/dev/sdf': 'foo'}
-        device = self.form_class.suggest_next_device_name(self.request, instance)
+        cloud_type = self.request.session.get('cloud_type')
+        device = self.form_class.suggest_next_device_name(cloud_type, instance.block_device_mapping)
         self.assertEqual(device, '/dev/sdg')
 
 
@@ -330,7 +334,7 @@ class InstanceTypeChoicesTestCase(BaseViewTestCase):
             'm1.xlarge', 'm2.xlarge', 'm2.2xlarge', 'm2.4xlarge', 'm3.medium', 'm3.large', 'm3.xlarge', 'm3.2xlarge',
             'm4.large', 'm4.xlarge', 'm4.2xlarge', 'm4.4xlarge', 'm4.10xlarge', 'c1.medium', 'c1.xlarge', 'cg1.4xlarge',
             'cr1.8xlarge', 'cc2.8xlarge', 'c3.large', 'c3.xlarge', 'c3.2xlarge', 'c3.4xlarge', 'c3.8xlarge',
-            'c4.large', 'c4.xlarge', 'c4.2xlarge', 'c4.4xlarge', 'c4.8xlarge', 'g2.2xlarge', 'g2.4xlarge', 'r3.large',
+            'c4.large', 'c4.xlarge', 'c4.2xlarge', 'c4.4xlarge', 'c4.8xlarge', 'g2.2xlarge', 'g2.8xlarge', 'r3.large',
             'r3.xlarge', 'r3.2xlarge', 'r3.4xlarge', 'r3.8xlarge', 'hi1.4xlarge', 'hs1.8xlarge', 'i2.xlarge',
             'i2.2xlarge', 'i2.4xlarge', 'i2.8xlarge', 'd2.xlarge', 'd2.2xlarge', 'd2.4xlarge', 'd2.8xlarge',
         ]

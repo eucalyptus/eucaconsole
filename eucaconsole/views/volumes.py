@@ -209,8 +209,11 @@ class VolumesJsonView(LandingPageView):
                 filtered_items = self.get_items()
             instance_ids = list(set([
                 vol.attach_data.instance_id for vol in filtered_items if vol.attach_data.instance_id is not None]))
-            volume_ids = [volume.id for volume in filtered_items]
-            snapshots = self.conn.get_all_snapshots(filters={'volume-id': volume_ids}) if self.conn else []
+            if len(filtered_items) < 1000:
+                volume_ids = [volume.id for volume in filtered_items]
+                snapshots = self.conn.get_all_snapshots(filters={'volume-id': volume_ids}) if self.conn else []
+            else:
+                snapshots = self.conn.get_all_snapshots() if self.conn else []
             instances = self.conn.get_only_instances(instance_ids=instance_ids) if self.conn else []
 
             for volume in filtered_items:

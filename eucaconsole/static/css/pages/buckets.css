@@ -129,7 +129,7 @@
 @media screen and (max-width: 1020px) { .columns.datagrid { padding-left: 1rem; } }
 .gridwrapper .has-bucket-icon { padding-left: 20px; background: url(../../img/svg/bucket_solo_green.svg) no-repeat; }
 .gridwrapper .has-shared-icon { padding-left: 20px; background: url(../../img/svg/bucket_shared.svg) no-repeat; }
-.gridwrapper .tile .header a.has-bucket-icon { padding-left: 20px; }
+.gridwrapper .tile .header a.has-bucket-icon { padding-left: 26px; background-size: 11px; background-position: 8px 6px; }
 .gridwrapper .tile .header a.has-shared-icon { padding-left: 20px; }
 
 .button.cancel { background-color: #990000; }

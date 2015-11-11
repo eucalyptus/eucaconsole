@@ -28,6 +28,7 @@
 Pyramid views for Eucalyptus and AWS scaling groups
 
 """
+from dateutil import parser
 import simplejson as json
 import time
 
@@ -70,7 +71,8 @@ class DeleteScalingGroupMixin(object):
                             if not str(instance._state).startswith('terminated'):
                                 is_all_shutdown = False
                         else:
-                            if not str(instance._state).startswith('terminated') and not str(instance._state).startswith('shutting-down'):
+                            if not str(instance._state).startswith('terminated') and \
+                               not str(instance._state).startswith('shutting-down'):
                                 is_all_shutdown = False
                     time.sleep(5)
                 count += 1
@@ -161,7 +163,7 @@ class ScalingGroupsJsonView(LandingPageView):
         scalinggroups = []
         with boto_error_handler(self.request):
             items = self.filter_items(
-                self.get_items(), ignore=['availability_zones', 'vpc_zone_identifier'],  autoscale=True)
+                self.get_items(), ignore=['availability_zones', 'vpc_zone_identifier'], autoscale=True)
             if self.request.params.getall('availability_zones'):
                 items = self.filter_by_availability_zones(items)
             if self.request.params.getall('vpc_zone_identifier'):
@@ -270,14 +272,27 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
             self.policies = self.get_policies(self.scaling_group)
             self.vpc = self.get_vpc(self.scaling_group)
             self.vpc_name = TaggedItemView.get_display_name(self.vpc) if self.vpc else ''
+            self.activities = self.autoscale_conn.get_all_activities(self.scaling_group.name, max_records=1)
         self.edit_form = ScalingGroupEditForm(
             self.request, scaling_group=self.scaling_group, autoscale_conn=self.autoscale_conn, ec2_conn=self.ec2_conn,
             vpc_conn=self.vpc_conn, elb_conn=self.elb_conn, formdata=self.request.params or None)
         self.delete_form = ScalingGroupDeleteForm(self.request, formdata=self.request.params or None)
         self.is_vpc_supported = BaseView.is_vpc_supported(request)
+        cause = None
+        if len(self.activities) > 0 and hasattr(self.activities[0], 'cause'):
+            cause = self.activities[0].cause
+            causes = cause.split('At')
+            causes = causes[1:]
+            cause = []
+            for c in causes:
+                idx = c.find('Z') + 1
+                date_string = c[:idx]
+                date_obj = parser.parse(date_string)
+                cause.append(dict(date=date_obj, msg=c[idx:]))
         self.render_dict = dict(
             scaling_group=self.scaling_group,
             scaling_group_name=self.escape_braces(self.scaling_group.name) if self.scaling_group else '',
+            activity_cause=cause,
             vpc_network=self.vpc_name,
             policies=self.policies,
             edit_form=self.edit_form,
@@ -338,12 +353,44 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
         return self.render_dict
 
     def update_tags(self):
+        scaling_group_tags = self.scaling_group.tags
+        if scaling_group_tags:
+            # cull tags that start with aws: or euca:
+            scaling_group_tags = [
+                tag for tag in self.scaling_group.tags if 
+                tag.key.find('aws:') == -1 and tag.key.find('euca:') == -1
+            ]
         updated_tags_list = self.parse_tags_param(scaling_group_name=self.scaling_group.name)
+        (del_tags, update_tags) = self.optimize_tag_update(scaling_group_tags, updated_tags_list)
         # Delete existing tags first
-        if self.scaling_group.tags:
-            self.autoscale_conn.delete_tags(self.scaling_group.tags)
-        if updated_tags_list:
-            self.autoscale_conn.create_or_update_tags(updated_tags_list)
+        if del_tags:
+            self.autoscale_conn.delete_tags(del_tags)
+        if update_tags:
+            self.autoscale_conn.create_or_update_tags(update_tags)
+
+    @staticmethod
+    def optimize_tag_update(orig_tags, updated_tags):
+        # cull tags that haven't changed
+        if orig_tags and len(updated_tags) > 0:
+            del_tags = []
+            for tag in orig_tags:
+                # find tags where keys match
+                tag_keys = [utag for utag in updated_tags if utag.key == tag.key]
+                if tag_keys:
+                    # find tags where keys also match
+                    tag_values = [utag for utag in tag_keys if utag.value == tag.value]
+                    if tag_values:
+                        # find tags where prop flag also matches
+                        tag_prop = [utag for utag in tag_values if utag.propagate_at_launch == tag.propagate_at_launch]
+                        if len(tag_prop) == 1:  # we should never have more than 1 match
+                            # save tag from original list to avoid modifying list we are iterating through
+                            del_tags.append(tag)
+                            # remove from updated list since that will make subsequent searches faster
+                            updated_tags.remove(tag_prop[0])
+            # finally, delete the tags we found form original list
+            for tag in del_tags:
+                orig_tags.remove(tag)
+        return orig_tags, updated_tags
 
     def update_properties(self):
         self.scaling_group.desired_capacity = self.request.params.get('desired_capacity', 1)
@@ -576,7 +623,7 @@ class ScalingGroupPolicyView(BaseScalingGroupView):
             policy_form=self.policy_form,
             alarm_form=self.alarm_form,
             create_alarm_redirect=self.request.route_path('scalinggroup_policy_new', id=self.scaling_group.name),
-            metric_unit_mapping=json.dumps(self.get_metric_unit_mapping()),
+            metric_unit_mapping=self.get_metric_unit_mapping(),
             scale_down_text=_(u'Scale down by'),
             scale_up_text=_(u'Scale up by'),
         )
@@ -611,7 +658,8 @@ class ScalingGroupPolicyView(BaseScalingGroupView):
                 # Attach policy to alarm
                 alarm_name = self.request.params.get('alarm')
                 alarm = self.cloudwatch_conn.describe_alarms(alarm_names=[alarm_name])[0]
-                alarm.dimensions.update({"AutoScalingGroupName": self.scaling_group.name})
+                if 'EC2' in alarm.namespace:
+                    alarm.dimensions.update({"AutoScalingGroupName": self.scaling_group.name})
                 alarm.comparison = alarm._cmp_map.get(alarm.comparison)  # See https://github.com/boto/boto/issues/1311
                 # TODO: Detect if an alarm has 5 scaling policies attached to it and abort accordingly
                 if created_scaling_policy.policy_arn not in alarm.alarm_actions:

@@ -651,7 +651,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
                     if self.instance.instance_type != instance_type:
                         self.conn.modify_instance_attribute(self.instance.id, 'instanceType', instance_type)
                     user_data = self.get_user_data()
-                    if user_data is not None:
+                    if user_data:
                         self.conn.modify_instance_attribute(self.instance.id, 'userData', base64.b64encode(user_data))
                     if kernel != '' and self.instance.kernel != kernel:
                         self.conn.modify_instance_attribute(self.instance.id, 'kernel', kernel)
@@ -878,7 +878,15 @@ class InstanceStateView(BaseInstanceView):
     @view_config(route_name='instance_nextdevice_json', renderer='json', request_method='GET')
     def instance_nextdevice_json(self):
         """Return current instance state"""
-        return dict(results=AttachVolumeForm.suggest_next_device_name(self.request, self.instance))
+        cloud_type = self.request.session.get('cloud_type')
+        if self.instance is not None:
+            mappings = self.instance.block_device_mapping
+        else:
+            current_mappings = self.request.GET.getall('currentMappings')
+            mappings = {}
+            for mapping in current_mappings:
+                mappings[mapping] = None
+        return dict(results=AttachVolumeForm.suggest_next_device_name(cloud_type, mappings))
 
     @view_config(route_name='instance_console_output_json', renderer='json', request_method='GET')
     def instance_console_output_json(self):
