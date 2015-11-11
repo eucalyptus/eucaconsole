@@ -50,7 +50,7 @@ class ManageCredentialsView(BaseView, PermissionCheckMixin):
 
     def __init__(self, request):
         super(ManageCredentialsView, self).__init__(request)
-        self.title_parts = [_(u'ManageCredentials')]
+        self.title_parts = [_(u'Manage Credentials')]
         self.changepassword_form = EucaChangePasswordForm(self.request)
         referrer = urlparse(self.request.headers['REFERER']).path
         referrer_root = referrer.split('?')[0]

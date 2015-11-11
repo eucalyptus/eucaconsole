@@ -45,7 +45,7 @@ from . import boto_error_handler
 class KeyPairsView(LandingPageView):
     def __init__(self, request):
         super(KeyPairsView, self).__init__(request)
-        self.title_parts = [_(u'KeyPairs')]
+        self.title_parts = [_(u'Key Pairs')]
         self.initial_sort_key = 'name'
         self.prefix = '/keypairs'
         self.delete_form = KeyPairDeleteForm(self.request, formdata=self.request.params or None)
@@ -108,7 +108,7 @@ class KeyPairView(BaseView):
             keyname = _(u'Create')
         if keyname == 'new2':
             keyname = _(u'Import')
-        self.title_parts = [_(u'KeyPair'), keyname]
+        self.title_parts = [_(u'Key Pair'), keyname]
         self.conn = self.get_connection()
         self.keypair = self.get_keypair()
         self.keypair_route_id = '/'.join(self.request.subpath)

@@ -47,7 +47,7 @@ class SecurityGroupsView(LandingPageView):
 
     def __init__(self, request):
         super(SecurityGroupsView, self).__init__(request)
-        self.title_parts = [_(u'SecurityGroups')]
+        self.title_parts = [_(u'Security Groups')]
         self.conn = self.get_connection()
         self.vpc_conn = self.get_connection(conn_type='vpc')
         self.initial_sort_key = 'name'
@@ -216,7 +216,7 @@ class SecurityGroupView(TaggedItemView):
 
     def __init__(self, request):
         super(SecurityGroupView, self).__init__(request)
-        self.title_parts = [_(u'SecurityGroup')]
+        self.title_parts = [_(u'Security Group')]
         self.conn = self.get_connection()
         self.vpc_conn = self.get_connection(conn_type='vpc')
         self.security_group = self.get_security_group()

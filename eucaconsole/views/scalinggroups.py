@@ -84,7 +84,7 @@ class ScalingGroupsView(LandingPageView, DeleteScalingGroupMixin):
 
     def __init__(self, request):
         super(ScalingGroupsView, self).__init__(request)
-        self.title_parts = [_(u'ScalingGroups')]
+        self.title_parts = [_(u'Scaling Groups')]
         self.initial_sort_key = 'name'
         self.prefix = '/scalinggroups'
         self.delete_form = ScalingGroupDeleteForm(self.request, formdata=self.request.params or None)
@@ -268,7 +268,7 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
 
     def __init__(self, request):
         super(ScalingGroupView, self).__init__(request)
-        self.title_parts = [_(u'ScalingGroup'), request.matchdict.get('id'), _(u'General')]
+        self.title_parts = [_(u'Scaling Group'), request.matchdict.get('id'), _(u'General')]
         with boto_error_handler(request):
             self.scaling_group = self.get_scaling_group()
             self.policies = self.get_policies(self.scaling_group)
@@ -448,7 +448,7 @@ class ScalingGroupInstancesView(BaseScalingGroupView):
 
     def __init__(self, request):
         super(ScalingGroupInstancesView, self).__init__(request)
-        self.title_parts = [_(u'ScalingGroup'), request.matchdict.get('id'), _(u'Instances')]
+        self.title_parts = [_(u'Scaling Group'), request.matchdict.get('id'), _(u'Instances')]
         self.scaling_group = self.get_scaling_group()
         self.policies = self.get_policies(self.scaling_group)
         self.markunhealthy_form = ScalingGroupInstancesMarkUnhealthyForm(
@@ -561,7 +561,7 @@ class ScalingGroupPoliciesView(BaseScalingGroupView):
 
     def __init__(self, request):
         super(ScalingGroupPoliciesView, self).__init__(request)
-        self.title_parts = [_(u'ScalingGroup'), request.matchdict.get('id'), _(u'Policies')]
+        self.title_parts = [_(u'Scaling Group'), request.matchdict.get('id'), _(u'Policies')]
         policy_ids = {}
         with boto_error_handler(request):
             self.scaling_group = self.get_scaling_group()
@@ -691,7 +691,7 @@ class ScalingGroupWizardView(BaseScalingGroupView):
 
     def __init__(self, request):
         super(ScalingGroupWizardView, self).__init__(request)
-        self.title_parts = [_(u'ScalingGroup'), _(u'Create')]
+        self.title_parts = [_(u'Scaling Group'), _(u'Create')]
         with boto_error_handler(self.request):
             self.create_form = ScalingGroupCreateForm(
                 self.request, autoscale_conn=self.autoscale_conn, ec2_conn=self.ec2_conn,

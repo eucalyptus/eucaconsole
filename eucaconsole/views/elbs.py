@@ -70,7 +70,7 @@ from . import boto_error_handler
 class ELBsView(LandingPageView):
     def __init__(self, request):
         super(ELBsView, self).__init__(request)
-        self.title_parts = [_(u'LoadBalancers')]
+        self.title_parts = [_(u'Load Balancers')]
         self.ec2_conn = self.get_connection(conn_type="ec2")
         self.elb_conn = self.get_connection(conn_type="elb")
         self.vpc_conn = self.get_connection(conn_type="vpc")
@@ -239,7 +239,7 @@ class BaseELBView(TaggedItemView):
 
     def __init__(self, request, elb_conn=None, s3_conn=None, **kwargs):
         super(BaseELBView, self).__init__(request, **kwargs)
-        self.title_parts = [_(u'LoadBalancer'), request.matchdict.get('id') or _(u'Create')]
+        self.title_parts = [_(u'Load Balancer'), request.matchdict.get('id') or _(u'Create')]
         self.ec2_conn = self.get_connection()
         self.iam_conn = self.get_connection(conn_type='iam')
         self.elb_conn = elb_conn or self.get_connection(conn_type='elb')
@@ -1040,7 +1040,7 @@ class ELBHealthChecksView(BaseELBView):
 
     def __init__(self, request, elb=None, **kwargs):
         super(ELBHealthChecksView, self).__init__(request, **kwargs)
-        self.title_parts.append(_(u'HealthChecks'))
+        self.title_parts.append(_(u'Health Checks'))
         with boto_error_handler(request):
             self.elb = elb or self.get_elb()
             if not self.elb:
@@ -1118,7 +1118,7 @@ class CreateELBView(BaseELBView):
 
     def __init__(self, request):
         super(CreateELBView, self).__init__(request)
-        self.title_parts = [_(u'LoadBalancer'), _(u'Create')]
+        self.title_parts = [_(u'Load Balancer'), _(u'Create')]
         # Note: CreateELBForm contains (inherits from) ELBHealthChecksForm
         self.create_form = CreateELBForm(
             self.request, conn=self.ec2_conn, vpc_conn=self.vpc_conn, s3_conn=self.s3_conn,
