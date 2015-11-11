@@ -146,11 +146,11 @@ def tag_editor(context, request, tags=None, leftcol_width=4, rightcol_width=8, s
 
 
 @panel_config('user_editor', renderer='../templates/panels/user_editor.pt')
-def user_editor(context, request, leftcol_width=4, rightcol_width=8):
+def user_editor(context, request, leftcol_width=4, rightcol_width=8, help_text=None, show_admin=False):
     """ User editor panel.
         Usage example (in Chameleon template): ${panel('user_editor')}
     """
-    return dict(leftcol_width=leftcol_width, rightcol_width=rightcol_width)
+    return dict(leftcol_width=leftcol_width, rightcol_width=rightcol_width, help_text=help_text, show_admin=show_admin)
 
 
 @panel_config('policy_list', renderer='../templates/panels/policy_list.pt')

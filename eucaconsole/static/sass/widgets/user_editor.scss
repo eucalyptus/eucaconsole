@@ -1,0 +1,32 @@
+@charset "UTF-8";
+@import "../includes/eucavariables";
+
+/* @fileOverview User Editor Panel CSS */
+
+.user-list {
+  margin: 0 0 15px;
+
+  li {
+    list-style: none;
+    line-height: 1.25;
+
+    &.default {
+      a.circle {
+        color: $hp-gray-20;
+        i.fi-minus-circle:hover {
+          color: $hp-gray-20;
+          cursor: auto;
+        }
+      }
+    }
+
+    a {
+      &.circle {
+        position: static;
+        vertical-align: middle;
+        margin-right: 5px;
+        display: inline;
+      }
+    }
+  }
+}
