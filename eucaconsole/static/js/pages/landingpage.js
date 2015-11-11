@@ -309,14 +309,6 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch'])
                 url = url + "?" + query;
             }
             window.history.pushState(query, "", url);
-            // update json endpont and refresh table
-            url = $scope.jsonEndpoint;
-            if (url.indexOf("?") > -1) {
-                url = url.split("?")[0];
-            }
-            if (query.length > 0) {
-                url = url + "?" + query;
-            }
             $scope.facetFilterItems();
         });
         $scope.$on('textSearch', function($event, text, filter_keys) {
