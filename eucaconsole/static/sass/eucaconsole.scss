@@ -1055,10 +1055,10 @@ table.table {
         th[st-sort]:hover {
             cursor: pointer;
         }
-        .st-sort-ascent:before {
+        .st-sort-ascent:after {
             content: '\25B2';
         }
-        .st-sort-descent:before {
+        .st-sort-descent:after {
             content: '\25BC';
         }
     }
