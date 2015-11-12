@@ -26,7 +26,6 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch'])
         $scope.displayCount = $scope.limitCount;
         $scope.transitionalRefresh = true;
         $scope.initController = function (pageResource, sortKey, jsonItemsEndpoint) {
-            $scope.initChosenFilters();
             pageResource = pageResource || window.location.pathname.split('/')[0];
             $scope.jsonEndpoint = jsonItemsEndpoint;
             $scope.initLocalStorageKeys(pageResource);
@@ -36,13 +35,6 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch'])
             $scope.setFocus();
             $scope.enableInfiniteScroll();
             $scope.storeAWSRegion();
-        };
-        $scope.initChosenFilters = function () {
-            if ($(document).chosen) {
-                $('#filters').find('select').chosen({
-                    'width': '100%', 'search_contains': true, 'placeholder_text_multiple': 'select...'
-                });
-            }
         };
         $scope.initLocalStorageKeys = function (pageResource){
             $scope.pageResource = pageResource;
