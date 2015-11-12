@@ -47,7 +47,9 @@ angular.module('UserEditor', [])
                 $scope.addUser($event);
             }
         };
-        $scope.addUser = function () {
+        $scope.addUser = function (clickEvent) {
+            clickEvent.preventDefault();
+
             var userNameField = $('#user-name-field');
 
             var existingUserFound = $scope.usersArray.some(function (user) {
