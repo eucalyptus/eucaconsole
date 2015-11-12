@@ -152,6 +152,7 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
                 // Wait until the rendering of the new tab page is complete
                 $('#zone').trigger("chosen:updated");
                 $('#vpc_subnet').trigger('chosen:updated');
+                $scope.isHelpExpanded = false;
             });
         });
         $scope.$on('currentStepIndexUpdate', function($event, thisStepIndex) {
