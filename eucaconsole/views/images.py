@@ -244,6 +244,7 @@ class ImagesJsonView(LandingPageView, ImageBundlingMixin):
                 name_id=ImageView.get_image_name_id(image),
                 owner_id=image.owner_id,
                 owner_alias=image.owner_alias,
+                platform='windows' if image.platform == 'windows' else 'linux',
                 platform_name=ImageView.get_platform_name(platform),
                 platform_key=ImageView.get_platform_key(platform),  # Used in image picker widget
                 root_device_type=image.root_device_type,

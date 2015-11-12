@@ -184,7 +184,7 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch'])
          *  to apply text filtering, call searchFilterItems instead
          */
         $scope.facetFilterItems = function() {
-            var query = undefined;
+            var query;
             var url = window.location.href;
             if (url.indexOf("?") > -1) {
                 query = url.split("?")[1];
@@ -201,13 +201,35 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch'])
                     facets[facet[0]].push(facet[1]);
                 }
                 var results = $scope.unfilteredItems;
-                for (var key in facets) {
-                    results = results.filter(function(item) {
-                        var val = item.hasOwnProperty(key) && item[key];
-                        if (typeof val === 'string' && $.inArray(val.toLowerCase(), facets[key]) > -1) {
+                // filter results
+                var matchFunc = function(val) {
+                    if (typeof val === 'string') {
+                        if ($.inArray(val, facets[key]) > -1 ||
+                            $.inArray(val.toLowerCase(), facets[key]) > -1) {
                             return true;
                         }
-                    });
+                    }
+                    if (typeof val === 'object') {
+                        // if object, assume it has valid id or name attribute
+                        if ($.inArray(val.id, facets[key]) > -1 ||
+                            $.inArray(val.name, facets[key]) > -1) {
+                            return true;
+                        }
+                    }
+                };
+                var filterFunc = function(item) {
+                    var val = item.hasOwnProperty(key) && item[key];
+                    if (Array.isArray(val)) {
+                        for (var i=0; i<val.length; i++) {
+                            return matchFunc(val[i]);
+                        }
+                    }
+                    else {
+                        return matchFunc(val);
+                    }
+                };
+                for (var key in facets) {
+                    results = results.filter(filterFunc);
                 }
                 $scope.facetItems = results;
             }

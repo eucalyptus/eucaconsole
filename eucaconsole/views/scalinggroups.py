@@ -175,7 +175,7 @@ class ScalingGroupsJsonView(LandingPageView):
                 availability_zones=', '.join(sorted(group.availability_zones)),
                 load_balancers=', '.join(sorted(group.load_balancers)),
                 desired_capacity=group.desired_capacity,
-                launch_config=group.launch_config_name,
+                launch_config_name=group.launch_config_name,
                 max_size=group.max_size,
                 min_size=group.min_size,
                 name=group.name,

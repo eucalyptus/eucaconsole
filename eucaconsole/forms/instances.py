@@ -412,14 +412,14 @@ class InstancesFiltersForm(BaseSecureForm):
         self.vpc_id.choices = sorted(self.vpc_id.choices)
         self.subnet_id.choices = self.vpc_choices_manager.vpc_subnets(add_blank=False)
         self.facets = [
-            {'name': 'state', 'label': self.state.label.text, 'options': self.get_status_choices()},
+            {'name': 'status', 'label': self.state.label.text, 'options': self.get_status_choices()},
             {'name': 'availability_zone', 'label': self.availability_zone.label.text,
                 'options': self.get_availability_zone_choices(region)},
             {'name': 'instance_type', 'label': self.instance_type.label.text,
                 'options': self.get_instance_type_choices()},
             {'name': 'root_device_type', 'label': self.root_device_type.label.text,
                 'options': self.get_root_device_type_choices()},
-            {'name': 'security_group', 'label': self.security_group.label.text,
+            {'name': 'security_groups', 'label': self.security_group.label.text,
                 'options': self.get_options_from_choices(self.ec2_choices_manager.security_groups(add_blank=False))},
             {'name': 'scaling_group', 'label': self.scaling_group.label.text,
                 'options': self.get_options_from_choices(self.autoscale_choices_manager.scaling_groups(add_blank=False))},

@@ -152,10 +152,12 @@ class LaunchConfigsJsonView(LandingPageView):
                     created_time=self.dt_isoformat(launchconfig.created_time),
                     image_id=image_id,
                     image_name=launchconfigs_image_mapping.get(image_id),
+                    instance_type=launchconfig.instance_type,
                     instance_monitoring=launchconfig.instance_monitoring.enabled == 'true',
                     key_name=launchconfig.key_name,
                     name=name,
                     security_groups=security_groups_array,
+                    root_device_type='',
                     in_use=name in scalinggroup_launchconfig_names,
                 ))
             return dict(results=launchconfigs_array)

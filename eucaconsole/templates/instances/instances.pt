@@ -64,10 +64,10 @@
                             Disassociate IP address
                         </a>
                    </li>
-                    <li ng-show="item.status !== 'running' &amp;&amp; !item.transitional &amp;&amp; item.status !== 'terminated' &amp;&amp; item.root_device === 'ebs'">
+                    <li ng-show="item.status !== 'running' &amp;&amp; !item.transitional &amp;&amp; item.status !== 'terminated' &amp;&amp; item.root_device_type === 'ebs'">
                         <a i18n:translate="" ng-click="revealModal('start', item)">Start</a>
                     </li>
-                    <li ng-show="item.root_device === 'ebs' &amp;&amp; item.status === 'running'">
+                    <li ng-show="item.root_device_type === 'ebs' &amp;&amp; item.status === 'running'">
                         <a i18n:translate="" ng-click="revealModal('stop', item)">Stop</a>
                     </li>
                     <li ng-show="item.status == 'running'">
@@ -106,7 +106,7 @@
                 </div>
                 <div>
                     <span class="label" title="Root device" i18n:attributes="title" data-tooltip="">RD</span>
-                    {{ item.root_device }}
+                    {{ item.root_device_type }}
                 </div>
                 <div>
                     <span class="label" title="Key name" i18n:attributes="title" data-tooltip="">KN</span>
@@ -217,10 +217,10 @@
                                     Disassociate IP address
                                 </a>
                             </li>
-                            <li ng-show="item.status !== 'running' &amp;&amp; !item.transitional &amp;&amp; item.status !== 'terminated' &amp;&amp; item.root_device === 'ebs'">
+                            <li ng-show="item.status !== 'running' &amp;&amp; !item.transitional &amp;&amp; item.status !== 'terminated' &amp;&amp; item.root_device_type === 'ebs'">
                                 <a i18n:translate="" ng-click="revealModal('start', item)">Start</a>
                             </li>
-                            <li ng-show="item.root_device === 'ebs' &amp;&amp; item.status === 'running'">
+                            <li ng-show="item.root_device_type === 'ebs' &amp;&amp; item.status === 'running'">
                                 <a i18n:translate="" ng-click="revealModal('stop', item)">Stop</a>
                             </li>
                             <li ng-show="item.status == 'running'">
