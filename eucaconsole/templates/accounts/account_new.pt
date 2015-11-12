@@ -3,9 +3,7 @@
 <div metal:fill-slot="head_css" tal:omit-tag="">
     <link rel="stylesheet" href="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/codemirror.css')}" />
     <link rel="stylesheet" href="${request.static_path('eucaconsole:static/css/pages/account.css')}" />
-    <style type="text/css">
-        input#account-name { width: 50%; }
-    </style>
+    <link rel="stylesheet" href="${request.static_path('eucaconsole:static/css/widgets/user_editor.css')}" />
 </div>
 
 <div metal:fill-slot="main_content">
@@ -38,12 +36,14 @@
                         ${structure:account_form['csrf_token']}
                         <div class="section columns">
                             <div class="">
-                                ${panel('form_field', field=account_form.account_name, leftcol_width=1, rightcol_width=11, leftcol_width_large=1, rightcol_width_large=11, autofocus='', ng_attrs={'model': 'accountName'}, **html_attrs)}
+                                ${panel('form_field', field=account_form.account_name, leftcol_width=1, rightcol_width=11, leftcol_width_large=1, rightcol_width_large=11, autofocus='', ng_attrs={'model': 'accountName'}, stack_label=True, **html_attrs)}
                             </div>
                         </div>
                         <hr />
-                        <div class="section">
-                            ${panel('user_editor')}
+                        <div class="section columns">
+                            ${panel('user_editor', help_text=account_form.help_text, show_admin=True)}
+                            <div>${structure:account_form['random_password']}&nbsp;${account_form.random_password.label}</div>
+                            <div>${structure:account_form['access_keys']}&nbsp;${account_form.access_keys.label}</div>
                         </div>
                         <hr/>
                         <div class="expando" id="quotas-section">

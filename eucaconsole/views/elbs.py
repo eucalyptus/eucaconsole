@@ -332,7 +332,7 @@ class BaseELBView(TaggedItemView):
         self.elb_conn.modify_lb_attribute(elb_name, 'accessLog', new_access_log_config)
 
     def configure_logging_bucket(self, bucket_name=None, bucket_prefix=None):
-        if bucket_name and bucket_prefix and self.s3_conn:
+        if bucket_name and bucket_prefix is not None and self.s3_conn:
             existing_bucket_names = [bucket.name for bucket in self.s3_conn.get_all_buckets()]
             if bucket_name in existing_bucket_names:
                 bucket = self.s3_conn.lookup(bucket_name, validate=False)
