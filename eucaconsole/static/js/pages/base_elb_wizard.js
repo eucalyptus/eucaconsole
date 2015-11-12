@@ -177,6 +177,7 @@ angular.module('BaseELBWizard', [
                     // Broadcast signal to trigger input field check on the currentStepIndex page 
                     $scope.$broadcast('currentStepIndexUpdate', $scope.currentStepIndex);
                 });
+                $scope.isHelpExpanded = false;
             }
         };
         $scope.updateStep = function(step) {
