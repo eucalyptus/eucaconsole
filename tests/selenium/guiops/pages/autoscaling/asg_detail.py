@@ -15,6 +15,7 @@ class ASGDetailPage(DetailPage):
     _active_tab_css ="dd.active"
     _delete_asg_action_menuitem_id = "delete-scalinggroup-action"
     _save_changes_button_id = "save-changes-btn"
+    _min_capacity_field_id = "min_size"
 
 
 
