@@ -16,7 +16,8 @@ class ASGDetailPage(DetailPage):
     _delete_asg_action_menuitem_id = "delete-scalinggroup-action"
     _save_changes_button_id = "save-changes-btn"
     _min_capacity_field_id = "min_size"
-
+    _desired_capacity_field_id = "desired_capacity"
+    _max_capacity_field_id = "max_size"
 
 
     def verify_asg_detail_page_loaded(self, asg_name):
