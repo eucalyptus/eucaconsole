@@ -8,15 +8,15 @@ class LaunchConfigLanding(LandingPage):
 
     _lc_landing_page_title = "Launch configurations"
     _create_lc_button_id = "create-launchconfig-btn"
+    _lc_action_menu_id = "table-item-dropdown_{0}" #lc_name_required
+    _view_details_actionmenu_item_css = "#item-dropdown_{0}>li>a"  #lc_name required
+    _create_lc_like_this_actions_menu_item_css = "#item-dropdown_{0}>li:nth-of-type(2)>a"  #lc_name required
+    _create_asg_actions_menu_item_css = "#item-dropdown_{0}>li:nth-of-type(3)>a"  #lc_name required
+    _delete_lc_actions_menu_item_css = "#item-dropdown_{0}>li:nth-of-type(4)>a"  #lc_name required
+    _lc_link_css = 'a[ng-href="/launchconfigs/{0}"]' #lc_name required
 
-    _asg_action_menu_id = "table-item-dropdown_{0}" #asg_name_required
-    _view_details_actionmenu_item_css = "#item-dropdown_{0}>li>a"  #asg_name required
-    _manage_instances_actions_menu_item_css = "#item-dropdown_{0}>li:nth-of-type(2)>a"  #asg_name required
-    _manage_policies_actions_menu_item_css = "#item-dropdown_{0}>li:nth-of-type(3)>a"  #asg_name required
-    _delete_asg_actions_menu_item_css = "#item-dropdown_{0}>li:nth-of-type(4)>a"  #asg_name required
-    _asg_link_css = 'a[ng-href="/scalinggroups/{0}"]' #asg_name required
-    _launch_config_link_xpath = 'xpath=//a[@ng-href="/scalinggroups/{0}"]/../../td[2]/a' #asg_name required
-    _instances_xpath =_launch_config_link_xpath = 'xpath=//a[@ng-href="/scalinggroups/{0}"]/../../td[3]/a' #asg_name required
+    _launch_config_link_xpath = 'xpath=//a[@ng-href="/scalinggroups/{0}"]/../../td[2]/a' #lc_name required
+    _instances_xpath =_launch_config_link_xpath = 'xpath=//a[@ng-href="/scalinggroups/{0}"]/../../td[3]/a' #lc_name required
     _availability_zones_xpath = 'xpath=//a[@ng-href="/scalinggroups/{0}"]/../../td[4]' #asg_name required
     _capacity_xpath = 'xpath=//a[@ng-href="/scalinggroups/{0}"]/../../td[5]' #asg_name required
     _status_xpath = 'xpath=//a[@ng-href="/scalinggroups/{0}"]/../../td[6]' #asg_name required
