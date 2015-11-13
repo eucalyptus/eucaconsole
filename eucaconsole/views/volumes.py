@@ -69,6 +69,7 @@ class VolumesView(LandingPageView, BaseVolumeView):
 
     def __init__(self, request):
         super(VolumesView, self).__init__(request)
+        self.title_parts = [_(u'Volumes')]
         self.conn = self.get_connection()
         self.initial_sort_key = '-create_time'
         self.prefix = '/volumes'
@@ -255,9 +256,12 @@ class VolumeView(TaggedItemView, BaseVolumeView):
 
     def __init__(self, request, ec2_conn=None, **kwargs):
         super(VolumeView, self).__init__(request, **kwargs)
-        self.request = request
+        name = request.matchdict.get('id')
+        if name == 'new':
+            name = _(u'Create')
+        self.title_parts = [_(u'Volume'), name, _(u'General')]
         self.conn = ec2_conn or self.get_connection()
-        self.location = self.request.route_path('volume_view', id=self.request.matchdict.get('id'))
+        self.location = request.route_path('volume_view', id=request.matchdict.get('id'))
         with boto_error_handler(request, self.location):
             self.volume = self.get_volume()
             snapshots = self.conn.get_all_snapshots(owner='self') if self.conn else []
@@ -452,7 +456,10 @@ class VolumeSnapshotsView(BaseVolumeView):
 
     def __init__(self, request, ec2_conn=None, **kwargs):
         super(VolumeSnapshotsView, self).__init__(request, **kwargs)
-        self.request = request
+        name = request.matchdict.get('id')
+        if name == 'new':
+            name = _(u'Create')
+        self.title_parts = [_(u'Volume'), name, _(u'Snapshots')]
         self.conn = ec2_conn or self.get_connection()
         self.location = self.request.route_path('volume_snapshots', id=self.request.matchdict.get('id'))
         with boto_error_handler(request, self.location):

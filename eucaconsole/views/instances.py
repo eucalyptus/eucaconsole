@@ -171,6 +171,7 @@ class BaseInstanceView(BaseView):
 class InstancesView(LandingPageView, BaseInstanceView):
     def __init__(self, request):
         super(InstancesView, self).__init__(request)
+        self.title_parts = [_(u'Instances')]
         self.initial_sort_key = '-launch_time'
         self.prefix = '/instances'
         self.json_items_endpoint = self.get_json_endpoint('instances_json')
@@ -561,7 +562,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
 
     def __init__(self, request, instance=None, **kwargs):
         super(InstanceView, self).__init__(request, **kwargs)
-        self.request = request
+        self.title_parts = [_(u'Instance'), request.matchdict.get('id'), _(u'General')]
         self.conn = self.get_connection()
         self.iam_conn = None
         if BaseView.has_role_access(request):
@@ -910,6 +911,7 @@ class InstanceVolumesView(BaseInstanceView):
 
     def __init__(self, request):
         super(InstanceVolumesView, self).__init__(request)
+        self.title_parts = [_(u'Instance'), request.matchdict.get('id'), _(u'Volumes')]
         self.request = request
         self.conn = self.get_connection()
         # fetching all volumes all the time is inefficient. should re-factor in the future
@@ -1014,7 +1016,7 @@ class InstanceMonitoringView(BaseInstanceView):
 
     def __init__(self, request, instance=None):
         super(InstanceMonitoringView, self).__init__(request)
-        self.request = request
+        self.title_parts = [_(u'Instance'), request.matchdict.get('id'), _(u'Monitoring')]
         self.cw_conn = self.get_connection(conn_type='cloudwatch')
         self.instance_id = self.request.matchdict.get('id')
         self.location = self.request.route_path('instance_monitoring', id=self.instance_id)

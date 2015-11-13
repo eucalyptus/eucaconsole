@@ -78,14 +78,14 @@ class CloudWatchAPIMixin(object):
     def collapse_metrics(unit, statistic, divider=1, stats=None):
         # Collapse to MB when appropriate
         max_value = max(stat.get(statistic) for stat in stats) if stats else 0
-        if max_value > 10**4:
-            divider = 10**3
+        if max_value > 10 ** 4:
+            divider = 10 ** 3
             unit = 'Kilobytes'
-        if max_value > 10**7:
-            divider = 10**6
+        if max_value > 10 ** 7:
+            divider = 10 ** 6
             unit = 'Megabytes'
-            if max_value > 10**10:
-                divider = 10**9
+            if max_value > 10 ** 10:
+                divider = 10 ** 9
                 unit = 'Gigabytes'
         return unit, divider
 

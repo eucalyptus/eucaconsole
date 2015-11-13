@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en-us" lang="en-us">
+<head>
+<title>Launch a New Instance</title>
+</head>
+<body id="launch_instances_ui_context">
+
+
+    <h1 class="title topictitle1">Launch a New Instance</h1>
+
+    
+    <div class="topic task nested1" id="launch_instances_ui_security_steps">
+        <h2 class="title topictitle2">Security</h2>
+
+        
+
+        <div class="body taskbody"><p class="shortdesc">This panel allows you to specify a Virtual Private Cloud (VPC) network, key pair and security group that will be
+            used by your new instance(s). NOTE: if you create a key pair or security group in this
+            section, they will automatically be selected for use in your new instance. </p>
+
+            <ol class="ol steps"><li class="li step stepexpand">
+                    <span class="ph cmd"> Select a VPC network from the drop-down list box.</span>
+                    <div class="itemgroup stepresult">If a VPC network is selected, the <span class="ph uicontrol">VPC subnet</span>
+                        and the <span class="ph uicontrol">Auto-assign public IP</span> drop-down list boxes display.</div>
+                </li>
+<li class="li step stepexpand">
+                    <span class="ph cmd"> Select a CIDR range from the <span class="ph uicontrol">VPC subnet</span> drop-down list box.</span>
+                </li>
+<li class="li step stepexpand">
+                    <span class="ph cmd"> Select whether to enable or disable public IP auto assignment from the
+                        <span class="ph uicontrol">Auto-assign public IP</span> drop-down list box.</span>
+                </li>
+<li class="li step stepexpand">
+                    <span class="ph cmd"> Select a key pair using the <span class="ph uicontrol">Key name</span> drop-down list
+                        box. </span>
+                    <div class="itemgroup info">
+                        <div class="note note"><span class="notetitle">Note:</span>  You can also create a new key pair by clicking the <span class="ph uicontrol">Create
+                                a key pair</span> link.</div>
+</div>
+
+                </li>
+<li class="li step stepexpand">
+                    <span class="ph cmd"> You may keep the security group already specified in the <span class="ph uicontrol">Security group</span>
+                        field, add another one, or specify a different one.</span>
+                    <div class="itemgroup info"><ul class="ul">
+                        <li class="li">To specify a different security group, remove the one there by clicking on the <span class="ph uicontrol">x</span> 
+                            next to the security group's name and add a new one by clicking in the <span class="ph uicontrol">Security 
+                                Group</span> field and choose one from the list of previously-defined security groups.
+                            <div class="note note"><span class="notetitle">Note:</span> You can narrow down the list of security groups by typing text directly into the
+                                text box.</div>
+ </li>
+
+                        <li class="li"> If you select the default security group, make sure that you've added
+                            rules to the default security group so that you can access your
+                            instances. </li>
+
+                    </ul>
+
+                    </div>
+                </li>
+<li class="li step stepexpand">
+                    <span class="ph cmd">You can also create a new security group by clicking the <span class="ph uicontrol">Create security group</span> link. 
+                        This opens the Create Security Group dialog box.</span>
+              <div class="itemgroup info"> 
+                    <div class="note note"><span class="notetitle">Note:</span>  You may view the rules for the specified security group(s) by clicking 
+                        the <span class="ph uicontrol">+ Rules</span> control next to each security group to expand it.</div>
+
+                    </div>
+                </li>
+<li class="li step stepexpand">
+                    <span class="ph cmd"> You can optionally specify an IAM role using the <span class="ph uicontrol">Role</span>
+                        drop-down list box.</span>
+                    <div class="itemgroup info">
+                        <div class="note note"><span class="notetitle">Note:</span>  If you select a role, make sure that the correct permissions are
+                            defined for that role so that the appropriate level of access is applied
+                            to your instance. </div>
+
+                    </div>
+                </li>
+<li class="li step stepexpand">
+                    <span class="ph cmd"> You can optionally specify advanced options by clicking the
+                            <span class="ph uicontrol">Select advanced options</span> link and refer to the
+                        next section for further details. </span>
+                </li>
+<li class="li step stepexpand">
+                    <span class="ph cmd"> Otherwise, click the <span class="ph uicontrol">Launch instance(s)</span> button. </span>
+                </li>
+</ol>
+
+        </div>
+
+    </div>
+
+</body>
+</html>

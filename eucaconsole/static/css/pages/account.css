@@ -23,3 +23,8 @@
 .panel { overflow: hidden; }
 
 .top-section { padding-bottom: 0.5rem; }
+
+form[name="account-new-form"] #account-name, form[name="account-new-form"] .userinput.name { width: 50%; }
+form[name="account-new-form"].ng-invalid-reserved small.error.reserved { display: block; }
+form[name="account-new-form"].ng-invalid-reserved .userinput.name { border-color: darkred; background-color: #ffe9ec; }
+form[name="account-new-form"].ng-valid-reserved small.error.reserved { display: none; }

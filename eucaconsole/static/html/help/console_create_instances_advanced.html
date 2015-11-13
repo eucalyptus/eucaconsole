@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en-us" lang="en-us">
+<head>
+<title>Launch a New Instance</title>
+</head>
+<body id="launch_instances_ui_context">
+
+
+    <h1 class="title topictitle1">Launch a New Instance</h1>
+
+    
+    <div class="topic task nested1" id="launch_instances_ui_advanced_steps">
+        <h2 class="title topictitle2">Specify Advanced Options</h2>
+
+        
+        <div class="body taskbody"><p class="shortdesc">This panel allows you to specify advanced options for your new instance. 
+            You can override the kernel and RAM disk IDs, enable monitoring, and add additional storage, 
+            if applicable.</p>
+
+            <ol class="ol steps"><li class="li step">
+                    <span class="ph cmd"> You can override the kernel ID in the selected image with the
+                            <span class="ph uicontrol">Kernel ID</span> drop-down list box. </span>
+                </li>
+<li class="li step">
+                    <span class="ph cmd"> You can override the RAM disk ID in the selected image with the
+                            <span class="ph uicontrol">RAM disk ID (RAMFS)</span> drop-down list box. </span>
+                </li>
+<li class="li step">
+                    <span class="ph cmd"> Click the <span class="ph uicontrol">Enable monitoring</span> check box to specify that
+                        detailed CloudWatch metric gathering should be enabled for your new
+                        instance(s).</span>
+                </li>
+<li class="li step">
+                    <span class="ph cmd"> The Storage section will only display if you have an EBS-backed image. If
+                        this is the case, you can configure additional storage for your
+                        instance:</span>
+                    <ol type="a" class="ol substeps" id="launch_instances_ui_advanced_steps__launch_instances_ui_advanced_storage_steps">
+                        <li class="li substep">
+                            <span class="ph cmd"> Select a volume type using the <span class="ph uicontrol">Volume</span>
+                                drop-down list box. </span>
+                        </li>
+
+                        <li class="li substep">
+                            <span class="ph cmd"> Type the desired mapping for the storage into the
+                                <span class="ph uicontrol">Mapping</span> text box (for example:<samp class="ph codeph">
+                                    /dev/sdb</samp>).</span>
+                        </li>
+
+                        <li class="li substep">
+                            <span class="ph cmd"> If you want to create the storage from an existing snapshot,
+                                specify it in the <span class="ph uicontrol">Create from snapshot</span>
+                                drop-down list box.</span>
+                        </li>
+
+                        <li class="li substep">
+                            <span class="ph cmd"> Type the size of the attached storage in gigabytes into the
+                                <span class="ph uicontrol">Size (GB) </span>text box. </span>
+                        </li>
+
+                        <li class="li substep">
+                            <span class="ph cmd"> Select the <span class="ph uicontrol">DELETE ON TERMINATE</span> check box
+                                if you would like the attached storage to be deleted when the
+                                instance is terminated. </span>
+                        </li>
+
+                        <li class="li substep">
+                            <span class="ph cmd"> Click the <span class="ph uicontrol">Add device</span> button to add this storage.</span>
+                        </li>
+
+                        <li class="li substep">
+                            <span class="ph cmd">You can delete storage you've already added by clicking the minus button on the right side of the storage list item.</span>
+                        </li>
+
+                    </ol>
+
+                </li>
+<li class="li step">
+                    <span class="ph cmd"> Click the <span class="ph uicontrol">Launch Instance</span> button to launch your
+                        new instance(s) or click <span class="ph uicontrol">Cancel</span> to abandon your changes. </span>
+                </li>
+</ol>
+
+        </div>
+
+    </div>
+
+
+</body>
+</html>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en-us" lang="en-us">
+<head>
+<title>Create Launch Configuration from Instance</title>
+</head>
+<body id="console_create_launch_configuration">
+
+
+    <h1 class="title topictitle1">Create Launch Configuration from Instance</h1>
+
+    <div class="topic task nested1" id="launch_config_from_instance_ui_security_steps">
+        <h2 class="title topictitle2">Specify Security Options</h2>
+
+        
+        <div class="body taskbody"><p class="shortdesc">This panel allows you to specify network and security options for your new launch configuration.</p>
+
+            <ol class="ol steps"><li class="li step stepexpand">
+                    <span class="ph cmd">If using this launch configuration with a scaling group using a VPC network, 
+                        select how the VPC IP assignment is to be applied by selecting an option from the drop-down list box.</span>
+                </li>
+<li class="li step stepexpand">
+                    <span class="ph cmd"> The security group is automatically chosen based on the instance from which you created 
+                        this launch configuration. You may view the rules for the specified security group by clicking 
+                        the <span class="ph uicontrol">+ Rules</span> control to expand it.</span>
+                </li>
+<li class="li step stepexpand">
+                    <span class="ph cmd"> You can optionally specify an IAM role using the <span class="ph uicontrol">Role</span>
+                        drop-down list box.</span>
+                    <div class="itemgroup info">
+                        <div class="note note"><span class="notetitle">Note:</span>  If you select a role, make sure that the correct permissions are
+                            defined for that role so that the appropriate level of access is applied
+                            to your launch configuration. </div>
+
+                    </div>
+                </li>
+<li class="li step stepexpand">
+                    <span class="ph cmd"> The <span class="ph uicontrol">Create scaling group using this launch configuration</span>
+                        checkbox is checked by default, allowing you to create a new auto scaling
+                        group based on this launch configuration. When this is selected,
+                        the <span class="ph uicontrol">New Scaling Group</span> dialog will display after
+                        you've clicked the <span class="ph uicontrol">Create Launch Configuration</span>
+                        button, with the Launch configuration field pre-populated with the name of
+                        your new launch configuration. </span>
+                </li>
+<li class="li step stepexpand">
+                    <span class="ph cmd"> You can optionally specify advanced options by clicking the <span class="ph uicontrol">Select advanced options</span> 
+                        link and refer to the next section for further details. Otherwise, click <span class="ph uicontrol">Create Launch 
+                            Configuration</span> to begin creating the launch configuration.</span>
+                </li>
+</ol>
+
+        </div>
+
+    </div>
+
+</body>
+</html>
