@@ -30,6 +30,12 @@ class ASGLanding(LandingPage):
         self.tester.click_element_by_id(self._asg_action_menu_id.format(asg_name))
         self.tester.click_element_by_css(self._manage_instances_actions_menu_item_css.format(asg_name))
 
+    def click_action_view_details_on_lp(self, asg_name):
+        self.tester.click_element_by_id(self._asg_action_menu_id.format(asg_name))
+        self.tester.click_element_by_css(self._view_details_actionmenu_item_css.format(asg_name))
+
+
+
 
 
 
