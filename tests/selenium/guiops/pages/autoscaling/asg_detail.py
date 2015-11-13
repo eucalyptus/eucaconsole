@@ -12,6 +12,7 @@ class ASGDetailPage(DetailPage):
     _close_modal_x_css = "#nextstep-scalinggroup-modal>a.close-reveal-modal"
     _scaling_policies_tab_css = "[href='/scalinggroups/{0}/policies']" #asg name required
     _instances_tab_css = "[href='/scalinggroups/{0}/instances']" #asg name required
+    _general_tab_css = '[href="/scalinggroups/{0}"]' #asg name required
     _active_tab_css ="dd.active"
     _delete_asg_action_menuitem_id = "delete-scalinggroup-action"
     _save_changes_button_id = "save-changes-btn"
@@ -45,6 +46,19 @@ class ASGDetailPage(DetailPage):
         else:
             print "ERROR: tab {0} not among recognized tab names.".format(tab)
 
+    def goto_general_tab(self, asg_name):
+        """
+        Checks if General tab is already open. Opens snapshot tab if not.
+        """
+        tab = self.tester.store_text_by_css(self._active_tab_css)
+        print "Found active tab {0}".format(tab)
+        if tab == "Instances" or tab == "Scaling Policies":
+            self.tester.click_element_by_css(self._general_tab_css.format(asg_name))
+        elif tab == "General":
+            pass
+        else:
+            print "ERROR: tab {0} not among recognized tab names.".format(tab)
+
     def goto_scaling_policies_tab(self, asg_name):
         """
         Checks if Scaling Policies tab is already open. Opens snapshot tab if not.
@@ -71,7 +85,8 @@ class ASGDetailPage(DetailPage):
             self.tester.send_keys_by_id(self._desired_capacity_field_id, desired)
         self.tester.click_element_by_id(self._save_changes_button_id)
 
-    def change_launch_configuration_on_detail_page
+    def change_launch_configuration_on_detail_page(self, launch_config_name):
+        self.test
 
 
 
