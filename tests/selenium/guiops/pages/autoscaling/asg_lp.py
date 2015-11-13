@@ -15,7 +15,8 @@ class ASGLanding(LandingPage):
     _delete_asg_actions_menu_item_css = "#item-dropdown_{0}>li:nth-of-type(4)>a"  #asg_name required
     _asg_link_css = 'a[ng-href="/scalinggroups/{0}"]' #asg_name required
     _launch_config_link_xpath = 'xpath=//a[@ng-href="/scalinggroups/{0}"]/../../td[2]/a' #asg_name required
-    _instances_xpath=_launch_config_link_xpath = 'xpath=//a[@ng-href="/scalinggroups/{0}"]/../../td[3]/a' #asg_name required
+    _instances_xpath =_launch_config_link_xpath = 'xpath=//a[@ng-href="/scalinggroups/{0}"]/../../td[3]/a' #asg_name required
+    _availability_zones_xpath = 'xpath=//a[@ng-href="/scalinggroups/{0}"]/../../td[4]' #asg_name required
     _search_input_field_css = ".search-input"
 
     def verify_asg_lp_loaded(self):
@@ -47,7 +48,10 @@ class ASGLanding(LandingPage):
     def goto_launch_config_detail_page_via_link(self, asg_name):
         self.tester.click_element_by_xpath(self._launch_config_link_xpath.format(asg_name))
 
-    def verify_there_are_no_running_instances(self):
-        self.tester.send_keys_by_css(self._search_input_field_css, "running")
-        self.tester.wait_for_text_present_by_css(LandingPage(self)._item_count_css,"0")
+    def goto_instances_via_link(self, asg_name):
+        self.tester.click_element_by_xpath(self._instances_xpath.format(asg_name))
+
+    def get_availability_zones(self, asg_name):
+        self.tester.store_text_by_xpath(self._availability_zones_xpath.format(asg_name))
+
 
