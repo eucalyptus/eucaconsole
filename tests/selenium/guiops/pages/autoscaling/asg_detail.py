@@ -60,7 +60,11 @@ class ASGDetailPage(DetailPage):
         self.tester.click_element_by_id(self._delete_asg_action_menuitem_id)
 
 
-    def change_capacity_on_detail_page(self, min, desired, max):
+    def change_capacity_on_detail_page(self, min=None, desired=None, max=None):
+        if min is not None:
+            self.tester.send_keys_by_id(self._min_capacity_field_id, min)
+        if min is not None:
+            self.tester.send_keys_by_id(self._min_capacity_field_id, min)
         self.tester.click_element_by_css(DetailPage._actions_menu_css)
         self.tester.click_element_by_id(self._attach_volume_action_menuitem_id)
 
