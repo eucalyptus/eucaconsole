@@ -7,9 +7,9 @@ class ASGDetailPage(DetailPage):
         self.tester = tester
 
     _asg_detail_page_title = "Details for scaling group: {0}" #asg name required
-    _next_step_modal_id="nextstep-scalinggroup-modal"
-    _do_notshow_again_checkbox_id="check-do-not-show-me-again"
-    _close_modal_x_css="#nextstep-scalinggroup-modal>a.close-reveal-modal"
+    _next_step_modal_id = "nextstep-scalinggroup-modal"
+    _do_notshow_again_checkbox_id = "check-do-not-show-me-again"
+    _close_modal_x_css = "#nextstep-scalinggroup-modal>a.close-reveal-modal"
 
 
     _delete_volume_action_menuitem_id = "delete-volume-action"
@@ -23,13 +23,11 @@ class ASGDetailPage(DetailPage):
 
     def verify_asg_detail_page_loaded(self, asg_name):
         """
-        Waits for the asg detail page title to appear; waits for actions menu to become visible. Closes the next step
+        Waits for the asg detail page title to appear; waits for actions menu to become visible. Closes the next step modal.
         """
         if self.tester.check_visibility_by_id(self._next_step_modal_id):
-            volume_name_full = volume_id
-        else:
-            volume_name_full = volume_name + " (" + volume_id + ")"
-        self.tester.wait_for_text_present_by_id(DetailPage(self)._detail_page_title_id, volume_name_full)
+            self.tester.click_element_by_css(self._close_modal_x_css)
+        self.tester.wait_for_text_present_by_id(DetailPage(self)._detail_page_title_id, self._asg_detail_page_title.format(asg_name))
         self.tester.wait_for_element_present_by_css(DetailPage(self)._actions_menu_css)
 
     def click_action_delete_volume_on_detail_page(self):
