@@ -12,6 +12,7 @@ class CreateASGPage(BasePage):
     _min_capacity_field_id = "min_size"
     _desired_capacity_field_id = "desired_capacity"
     _max_capacity_field_id = "max_size"
+    _next_button_id = "visit-step-2"
 
     _volume_selector_search_window_css = '.chosen-search>input'
     _highlighted_search_result_css = '.active-result'
@@ -31,4 +32,5 @@ class CreateASGPage(BasePage):
             self.tester.send_keys_by_id(self._desired_capacity_field_id, desired_capacity)
         if max_capacity is not None:
             self.tester.send_keys_by_id(self._max_capacity_field_id, max_capacity)
+        self.tester.click_element_by_id(self._next_button_id)
 
