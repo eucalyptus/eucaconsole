@@ -32,7 +32,18 @@ class ASGDetailPage(DetailPage):
         self.tester.wait_for_text_present_by_id(DetailPage(self)._detail_page_title_id, self._asg_detail_page_title.format(asg_name))
         self.tester.wait_for_element_present_by_css(DetailPage(self)._actions_menu_css)
 
-
+    def goto_instances_tab(self, asg_name):
+        """
+        Checks if Instancest tab is already open. Opens snapshot tab if not.
+        """
+        tab = self.tester.store_text_by_css(self._active_tab_css)
+        print "Found active tab {0}".format(tab)
+        if tab == "General":
+            self.tester.click_element_by_css(self._instances_tab_css.format(asg_name))
+        elif tab == "Instances":
+            pass
+        else:
+            print "ERROR: tab {0} not among recognized tab names.".format(tab)
 
 
     def click_action_delete_volume_on_detail_page(self):
