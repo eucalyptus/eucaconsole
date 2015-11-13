@@ -55,4 +55,7 @@ class ASGLanding(LandingPage):
     def get_availability_zones(self, asg_name):
         self.tester.store_text_by_xpath(self._availability_zones_xpath.format(asg_name))
 
+    def get_asg_capacity(self, asg_name):
+        self.tester.store_text_by_xpath(self._capacity_xpath.format(asg_name))
+
 
