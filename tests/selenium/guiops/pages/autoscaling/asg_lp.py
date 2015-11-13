@@ -26,15 +26,16 @@ class ASGLanding(LandingPage):
         self.tester.click_element_by_id(self._asg_action_menu_id.format(asg_name))
         self.tester.click_element_by_css(self._delete_asg_actions_menu_item_css.format(asg_name))
 
-    def click_action_manage_volumes_on_view_page(self, instance_id):
-        self.tester.click_element_by_id(self._instance_action_menu_id.format(instance_id))
-        self.tester.click_element_by_css(self._manage_volumes_actions_menu_item_css.format(instance_id))
+    def click_action_manage_instances_on_lp(self, asg_name):
+        self.tester.click_element_by_id(self._asg_action_menu_id.format(asg_name))
+        self.tester.click_element_by_css(self._manage_instances_actions_menu_item_css.format(asg_name))
 
-    def get_id_of_newly_launched_instance(self, name=None):
-        contains_id = self.tester.get_attribute_by_css(self._first_instance_link_in_list_css, "ng-href")
-        instance_id = contains_id[-10:]
-        print(instance_id)
-        return instance_id
+
+
+
+
+
+
 
     def verify_instance_status_is_running(self, instance_id):
         NotImplementedError
