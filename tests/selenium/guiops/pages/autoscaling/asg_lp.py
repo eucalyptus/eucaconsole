@@ -13,6 +13,7 @@ class ASGLanding(LandingPage):
     _manage_instances_actions_menu_item_css = "#item-dropdown_{0}>li:nth-of-type(2)>a"  #asg_name required
     _manage_policies_actions_menu_item_css = "#item-dropdown_{0}>li:nth-of-type(3)>a"  #asg_name required
     _delete_asg_actions_menu_item_css = "#item-dropdown_{0}>li:nth-of-type(4)>a"  #asg_name required
+    _asg_link_css = 'a[ng-href="/scalinggroups/{0}"]' #asg_name required
     _search_input_field_css = ".search-input"
 
     def verify_asg_lp_loaded(self):
@@ -38,20 +39,8 @@ class ASGLanding(LandingPage):
         self.tester.click_element_by_id(self._asg_action_menu_id.format(asg_name))
         self.tester.click_element_by_css(self._manage_policies_actions_menu_item_css.format(asg_name))
 
-
-
-
-
-
-
-
-
-
-    def verify_instance_status_is_running(self, instance_id):
-        NotImplementedError
-
-    def goto_instance_detail_page_via_link(self, instance_id):
-        self.tester.click_element_by_css(self._instance_link_css.format(instance_id))
+    def goto_asg_detail_page_via_link(self, asg_name):
+        self.tester.click_element_by_css(self._asg_link_css.format(asg_name))
 
     def goto_instance_detail_page_via_actions(self, instance_id):
         self.tester.click_element_by_id(self._instance_action_menu_id.format(instance_id))
