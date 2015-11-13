@@ -7,6 +7,10 @@ class ASGDetailPage(DetailPage):
         self.tester = tester
 
     _asg_detail_page_title = "Details for scaling group: {0}" #asg name required
+    _next_step_modal_id="nextstep-scalinggroup-modal"
+    _do_notshow_again_checkbox_id="check-do-not-show-me-again"
+
+
     _delete_volume_action_menuitem_id = "delete-volume-action"
     _attach_volume_action_menuitem_id = "attach-volume-action"
     _volume_status_css = "[class='label radius status {0}']"  # volume status is required
