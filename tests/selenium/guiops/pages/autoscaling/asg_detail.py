@@ -21,11 +21,11 @@ class ASGDetailPage(DetailPage):
     _active_tab_css ="dd.active"
     _id_link_in_tile_of_newly_created_snapshot_css='[class="ng-binding"]'
 
-    def verify_volume_detail_page_loaded(self, volume_id, volume_name):
+    def verify_asg_detail_page_loaded(self, asg_name):
         """
-        Waits for the volume detail page title to appear; waits for actions menu to become visible.
+        Waits for the asg detail page title to appear; waits for actions menu to become visible. Closes the next step
         """
-        if volume_name is None:
+        if self.tester.check_visibility_by_id(self._next_step_modal_id):
             volume_name_full = volume_id
         else:
             volume_name_full = volume_name + " (" + volume_id + ")"
