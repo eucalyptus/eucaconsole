@@ -19,12 +19,12 @@ class ASGLanding(LandingPage):
         self.tester.wait_for_text_present_by_id(LandingPage(self)._page_title_id, self._asg_landing_page_title)
         self.tester.wait_for_visible_by_id(LandingPage(self)._refresh_button_id)
 
-    def click_action_launch_instance_on_landing_page(self):
-        self.tester.click_element_by_id(self._launch_instance_button_id)
+    def click_action_create_asg_on_landing_page(self):
+        self.tester.click_element_by_id(self._create_asg_button_id)
 
-    def click_action_terminate_instance_on_view_page(self, instance_id):
-        self.tester.click_element_by_id(self._instance_action_menu_id.format(instance_id))
-        self.tester.click_element_by_css(self._terminate_instance_actions_menu_item_css.format(instance_id))
+    def click_action_delete_asg_on_lp(self, asg_name):
+        self.tester.click_element_by_id(self._asg_action_menu_id.format(asg_name))
+        self.tester.click_element_by_css(self._delete_asg_actions_menu_item_css.format(asg_name))
 
     def click_action_manage_volumes_on_view_page(self, instance_id):
         self.tester.click_element_by_id(self._instance_action_menu_id.format(instance_id))
