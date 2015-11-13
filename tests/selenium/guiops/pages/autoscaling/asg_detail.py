@@ -47,13 +47,13 @@ class ASGDetailPage(DetailPage):
 
     def goto_scaling_policies_tab(self, asg_name):
         """
-        Checks if Scaling policies tab is already open. Opens snapshot tab if not.
+        Checks if Scaling Policies tab is already open. Opens snapshot tab if not.
         """
         tab = self.tester.store_text_by_css(self._active_tab_css)
         print "Found active tab {0}".format(tab)
-        if tab == "General":
-            self.tester.click_element_by_css(self._instances_tab_css.format(asg_name))
-        elif tab == "Instances":
+        if tab == "General" or tab == "Instances":
+            self.tester.click_element_by_css(self._scaling_policies_tab_css.format(asg_name))
+        elif tab == "Scaling Policies":
             pass
         else:
             print "ERROR: tab {0} not among recognized tab names.".format(tab)
