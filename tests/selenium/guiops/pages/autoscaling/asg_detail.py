@@ -12,7 +12,7 @@ class ASGDetailPage(DetailPage):
     _close_modal_x_css = "#nextstep-scalinggroup-modal>a.close-reveal-modal"
     _scaling_policies_tab_css = "[href='/scalinggroups/{0}/policies']" #asg name required
     _instances_tab_css = "[href='/scalinggroups/{0}/instances']" #asg name required
-
+    _active_tab_css ="dd.active"
 
     _delete_volume_action_menuitem_id = "delete-volume-action"
     _attach_volume_action_menuitem_id = "attach-volume-action"
