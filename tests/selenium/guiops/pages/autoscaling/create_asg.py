@@ -22,7 +22,7 @@ class CreateASGPage(BasePage):
         self.tester.wait_for_text_present_by_id(BasePage(self)._page_title_id, self._page_title)
         self.tester.wait_for_element_present_by_id(self._name_input_field_id)
 
-    def create_asg(self, asg_name, launch_config_name, availabilityzones = None, min_cpapacity=None, desired_capacity=None, max_capacity=None, grace_period=None, loadbalancers=None ):
+    def create_asg(self, asg_name, launch_config_name, availabilityzones = None, min_cpapacity=None, desired_capacity=None, max_capacity=None, grace_period=None, loadbalancers=None):
         self.tester.send_keys_by_id(self._name_input_field_id, asg_name)
         self.select_by_id(self._launch_configuration_selector_id, launch_config_name)
         if min_cpapacity is not None:
