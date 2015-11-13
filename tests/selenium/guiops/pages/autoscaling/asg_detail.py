@@ -14,6 +14,7 @@ class ASGDetailPage(DetailPage):
     _instances_tab_css = "[href='/scalinggroups/{0}/instances']" #asg name required
     _active_tab_css ="dd.active"
     _delete_asg_action_menuitem_id = "delete-scalinggroup-action"
+    _save_changes_button_id = "save-changes-btn"
 
 
 
@@ -57,10 +58,11 @@ class ASGDetailPage(DetailPage):
         self.tester.click_element_by_id(self._delete_asg_action_menuitem_id)
 
 
-
-    def click_action_attach_volume_on_detail_page(self):
+    def change_capacity_on_detail_page(self, min, desired, max):
         self.tester.click_element_by_css(DetailPage._actions_menu_css)
         self.tester.click_element_by_id(self._attach_volume_action_menuitem_id)
+
+
 
     def verify_volume_status_is_available(self, timeout_in_seconds):
         self.tester.wait_for_visible_by_css(self._volume_status_css.format("available"), timeout_in_seconds)
