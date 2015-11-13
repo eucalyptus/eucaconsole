@@ -13,11 +13,7 @@ class CreateASGPage(BasePage):
     _desired_capacity_field_id = "desired_capacity"
     _max_capacity_field_id = "max_size"
     _next_button_id = "visit-step-2"
-
-    _volume_selector_search_window_css = '.chosen-search>input'
-    _highlighted_search_result_css = '.active-result'
-    _description_field_id = 'description'
-    _create_snapshot_submit_button_id = "create_snapshot_submit_button"
+    _health_check_grace_period_field_id = "health_check_period"
 
     def verify_create_asg_page_loaded(self):
         self.tester.wait_for_text_present_by_id(BasePage(self)._page_title_id, self._page_title)
