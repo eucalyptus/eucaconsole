@@ -52,12 +52,11 @@ class ASGDetailPage(DetailPage):
         else:
             print "ERROR: tab {0} not among recognized tab names.".format(tab)
 
-
-
-
-    def click_action_delete_volume_on_detail_page(self):
+    def click_action_delete_asg_on_detail_page(self):
         self.tester.click_element_by_css(DetailPage._actions_menu_css)
-        self.tester.click_element_by_id(self._delete_volume_action_menuitem_id)
+        self.tester.click_element_by_id(self._delete_asg_action_menuitem_id)
+
+
 
     def click_action_attach_volume_on_detail_page(self):
         self.tester.click_element_by_css(DetailPage._actions_menu_css)
