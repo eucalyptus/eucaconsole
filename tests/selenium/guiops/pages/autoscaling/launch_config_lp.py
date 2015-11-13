@@ -1,7 +1,7 @@
 from pages.landingpage import LandingPage
 
 
-class ASGLanding(LandingPage):
+class LaunchConfigLanding(LandingPage):
     def __init__(self, tester):
         self.tester = tester
         self.verify_asg_lp_loaded()
