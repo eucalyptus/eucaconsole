@@ -151,13 +151,13 @@ class LaunchConfigsJsonView(LandingPageView):
                 launchconfigs_array.append(dict(
                     created_time=self.dt_isoformat(launchconfig.created_time),
                     image_id=image_id,
-                    image_name=launchconfigs_image_mapping.get(image_id),
+                    image_name=launchconfigs_image_mapping.get(image_id).get('name'),
                     instance_type=launchconfig.instance_type,
                     instance_monitoring=launchconfig.instance_monitoring.enabled == 'true',
                     key_name=launchconfig.key_name,
                     name=name,
                     security_groups=security_groups_array,
-                    root_device_type='',
+                    root_device_type=launchconfigs_image_mapping.get(image_id).get('root_device_type'),
                     in_use=name in scalinggroup_launchconfig_names,
                 ))
             return dict(results=launchconfigs_array)
@@ -171,7 +171,10 @@ class LaunchConfigsJsonView(LandingPageView):
         launchconfigs_images = self.ec2_conn.get_all_images(image_ids=launchconfigs_image_ids) if self.ec2_conn else []
         launchconfigs_image_mapping = dict()
         for image in launchconfigs_images:
-            launchconfigs_image_mapping[image.id] = image.name or image.id
+            launchconfigs_image_mapping[image.id] = dict(
+                name=image.name or image.id,
+                root_device_type=image.root_device_type
+            )
         return launchconfigs_image_mapping
 
     def get_scalinggroups_launchconfig_names(self):
