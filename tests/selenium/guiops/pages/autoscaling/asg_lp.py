@@ -17,6 +17,7 @@ class ASGLanding(LandingPage):
     _launch_config_link_xpath = 'xpath=//a[@ng-href="/scalinggroups/{0}"]/../../td[2]/a' #asg_name required
     _instances_xpath =_launch_config_link_xpath = 'xpath=//a[@ng-href="/scalinggroups/{0}"]/../../td[3]/a' #asg_name required
     _availability_zones_xpath = 'xpath=//a[@ng-href="/scalinggroups/{0}"]/../../td[4]' #asg_name required
+    _capacity_xpath = 'xpath=//a[@ng-href="/scalinggroups/{0}"]/../../td[5]' #asg_name required
     _search_input_field_css = ".search-input"
 
     def verify_asg_lp_loaded(self):
