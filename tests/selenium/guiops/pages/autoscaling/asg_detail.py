@@ -10,6 +10,8 @@ class ASGDetailPage(DetailPage):
     _next_step_modal_id = "nextstep-scalinggroup-modal"
     _do_notshow_again_checkbox_id = "check-do-not-show-me-again"
     _close_modal_x_css = "#nextstep-scalinggroup-modal>a.close-reveal-modal"
+    _scaling_policies_tab_css = "[href='/scalinggroups/{0}/policies']" #asg name required
+    _instances_tab_css = "[href='/scalinggroups/{0}/instances']" #asg name required
 
 
     _delete_volume_action_menuitem_id = "delete-volume-action"
@@ -29,6 +31,9 @@ class ASGDetailPage(DetailPage):
             self.tester.click_element_by_css(self._close_modal_x_css)
         self.tester.wait_for_text_present_by_id(DetailPage(self)._detail_page_title_id, self._asg_detail_page_title.format(asg_name))
         self.tester.wait_for_element_present_by_css(DetailPage(self)._actions_menu_css)
+
+
+
 
     def click_action_delete_volume_on_detail_page(self):
         self.tester.click_element_by_css(DetailPage._actions_menu_css)
