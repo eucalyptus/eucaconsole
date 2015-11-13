@@ -29,6 +29,7 @@ class ASGDetailPage(DetailPage):
         Waits for the asg detail page title to appear; waits for actions menu to become visible. Closes the next step modal.
         """
         if self.tester.check_visibility_by_id(self._next_step_modal_id):
+            self.tester.click_element_by_id(self._do_notshow_again_checkbox_id)
             self.tester.click_element_by_css(self._close_modal_x_css)
         self.tester.wait_for_text_present_by_id(DetailPage(self)._detail_page_title_id, self._asg_detail_page_title.format(asg_name))
         self.tester.wait_for_element_present_by_css(DetailPage(self)._actions_menu_css)
@@ -85,8 +86,9 @@ class ASGDetailPage(DetailPage):
             self.tester.send_keys_by_id(self._desired_capacity_field_id, desired)
         self.tester.click_element_by_id(self._save_changes_button_id)
 
-    def change_launch_configuration_on_detail_page(self, launch_config_name):
-        self.test
+    def change_launch_configuration_on_detail_page(self, asg_name, launch_config_name):
+        self.goto_general_tab(asg_name)
+        self.
 
 
 
