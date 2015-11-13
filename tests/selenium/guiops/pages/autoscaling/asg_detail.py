@@ -37,7 +37,7 @@ class ASGDetailPage(DetailPage):
 
     def goto_instances_tab(self, asg_name):
         """
-        Checks if Instances tab is already open. Opens snapshot tab if not.
+        Checks if Instances tab is already open. Opens Instances tab if not.
         """
         tab = self.tester.store_text_by_css(self._active_tab_css)
         print "Found active tab {0}".format(tab)
@@ -50,7 +50,7 @@ class ASGDetailPage(DetailPage):
 
     def goto_general_tab(self, asg_name):
         """
-        Checks if General tab is already open. Opens snapshot tab if not.
+        Checks if General tab is already open. Opens general tab if not.
         """
         tab = self.tester.store_text_by_css(self._active_tab_css)
         print "Found active tab {0}".format(tab)
@@ -63,7 +63,7 @@ class ASGDetailPage(DetailPage):
 
     def goto_scaling_policies_tab(self, asg_name):
         """
-        Checks if Scaling Policies tab is already open. Opens snapshot tab if not.
+        Checks if Scaling Policies tab is already open. Opens Scaling Policies tab if not.
         """
         tab = self.tester.store_text_by_css(self._active_tab_css)
         print "Found active tab {0}".format(tab)
