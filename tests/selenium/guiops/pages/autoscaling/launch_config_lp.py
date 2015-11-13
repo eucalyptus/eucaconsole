@@ -14,10 +14,10 @@ class LaunchConfigLanding(LandingPage):
     _create_asg_actions_menu_item_css = "#item-dropdown_{0}>li:nth-of-type(3)>a"  #lc_name required
     _delete_lc_actions_menu_item_css = "#item-dropdown_{0}>li:nth-of-type(4)>a"  #lc_name required
     _lc_link_css = 'a[ng-href="/launchconfigs/{0}"]' #lc_name required
+    _image_link_xpath = 'xpath=//a[@ng-href="/launchconfigs/{0}"]/../../td[2]/a' #lc_name required
+    _key_xpath = 'xpath=//a[@ng-href="/scalinggroups/{0}"]/../../td[3]/a' #lc_name required
+    _security_group_xpath = 'xpath=//a[@ng-href="/scalinggroups/{0}"]/../../td[4]/div/a' #lc_name required
 
-    _launch_config_link_xpath = 'xpath=//a[@ng-href="/scalinggroups/{0}"]/../../td[2]/a' #lc_name required
-    _instances_xpath =_launch_config_link_xpath = 'xpath=//a[@ng-href="/scalinggroups/{0}"]/../../td[3]/a' #lc_name required
-    _availability_zones_xpath = 'xpath=//a[@ng-href="/scalinggroups/{0}"]/../../td[4]' #lc_name required
     _capacity_xpath = 'xpath=//a[@ng-href="/scalinggroups/{0}"]/../../td[5]' #lc_name required
     _status_xpath = 'xpath=//a[@ng-href="/scalinggroups/{0}"]/../../td[6]' #lc_name required
     _search_input_field_css = ".search-input"
