@@ -21,6 +21,7 @@ class ASGDetailPage(DetailPage):
     _max_capacity_field_id = "max_size"
     _launch_config_dropdown_css = "#launch_config_chosen>a"
     _launch_config_search_field_css = "#launch_config_chosen>div>div>input"
+    _launch_config_search_active_result_css = "li.active-result.result-selected"
 
 
 
@@ -88,7 +89,10 @@ class ASGDetailPage(DetailPage):
 
     def change_launch_configuration_on_detail_page(self, asg_name, launch_config_name):
         self.goto_general_tab(asg_name)
-        self.
+        self.tester.click_element_by_css(self._launch_config_dropdown_css)
+        self.tester.send_keys_by_css(self._launch_config_search_field_css,launch_config_name)
+        self.tester.click_element_by_css(self._launch_config_search_active_result_css)
+        self.tester.click_element_by_id(self._save_changes_button_id)
 
 
 
