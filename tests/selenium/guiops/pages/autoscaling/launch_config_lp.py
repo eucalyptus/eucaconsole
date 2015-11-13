@@ -6,8 +6,9 @@ class LaunchConfigLanding(LandingPage):
         self.tester = tester
         self.verify_asg_lp_loaded()
 
-    _asg_landing_page_title = "Scaling groups"
-    _create_asg_button_id = "create-scalinggroup-btn"
+    _lc_landing_page_title = "Launch configurations"
+    _create_lc_button_id = "create-launchconfig-btn"
+
     _asg_action_menu_id = "table-item-dropdown_{0}" #asg_name_required
     _view_details_actionmenu_item_css = "#item-dropdown_{0}>li>a"  #asg_name required
     _manage_instances_actions_menu_item_css = "#item-dropdown_{0}>li:nth-of-type(2)>a"  #asg_name required
