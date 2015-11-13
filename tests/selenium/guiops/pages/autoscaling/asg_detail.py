@@ -13,15 +13,9 @@ class ASGDetailPage(DetailPage):
     _scaling_policies_tab_css = "[href='/scalinggroups/{0}/policies']" #asg name required
     _instances_tab_css = "[href='/scalinggroups/{0}/instances']" #asg name required
     _active_tab_css ="dd.active"
+    _delete_asg_action_menuitem_id = "delete-scalinggroup-action"
 
-    _delete_volume_action_menuitem_id = "delete-volume-action"
-    _attach_volume_action_menuitem_id = "attach-volume-action"
-    _volume_status_css = "[class='label radius status {0}']"  # volume status is required
-    _create_snapshot_tile_css = "#create-snapshot>a"
-    _snapshots_tab_css = "[href='/volumes/{0}/snapshots']"  # volume_id is required
-    _general_tab_css = '[href="/volumes/{0}/snapshots"]'  # volume_id is required
-    _active_tab_css ="dd.active"
-    _id_link_in_tile_of_newly_created_snapshot_css='[class="ng-binding"]'
+
 
     def verify_asg_detail_page_loaded(self, asg_name):
         """
@@ -57,6 +51,8 @@ class ASGDetailPage(DetailPage):
             pass
         else:
             print "ERROR: tab {0} not among recognized tab names.".format(tab)
+
+
 
 
     def click_action_delete_volume_on_detail_page(self):
