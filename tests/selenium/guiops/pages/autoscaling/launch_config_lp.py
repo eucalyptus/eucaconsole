@@ -20,7 +20,7 @@ class LaunchConfigLanding(LandingPage):
     _search_input_field_css = ".search-input"
 
     def verify_asg_lp_loaded(self):
-        self.tester.wait_for_text_present_by_id(LandingPage(self)._page_title_id, self._asg_landing_page_title)
+        self.tester.wait_for_text_present_by_id(LandingPage(self)._page_title_id, self._lc_landing_page_title)
         self.tester.wait_for_visible_by_id(LandingPage(self)._refresh_button_id)
 
     def click_action_create_asg_on_landing_page(self):
