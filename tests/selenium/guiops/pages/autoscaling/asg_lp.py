@@ -59,4 +59,7 @@ class ASGLanding(LandingPage):
     def get_asg_capacity(self, asg_name):
         self.tester.store_text_by_xpath(self._capacity_xpath.format(asg_name))
 
+    def get_asg_status(self, asg_name):
+        self.tester.store_text_by_xpath(self._status_xpath.format(asg_name))
+
 
