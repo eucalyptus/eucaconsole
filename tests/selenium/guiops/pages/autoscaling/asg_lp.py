@@ -4,7 +4,7 @@ from pages.landingpage import LandingPage
 class ASGLanding(LandingPage):
     def __init__(self, tester):
         self.tester = tester
-        self.verify_instance_view_page_loaded()
+        self.verify_asg_lp_loaded()
 
     _asg_landing_page_title = "Scaling groups"
     _create_asg_button_id = "create-scalinggroup-btn"
@@ -61,15 +61,6 @@ class ASGLanding(LandingPage):
         self.tester.click_element_by_id(self._instance_action_menu_id.format(instance_id))
         self.tester.click_element_by_css(self._launch_more_like_this_actionmenu_item_css.format(instance_id))
 
-    def get_instance_name(self, instance_id):
-        full_name = self.tester.store_text_by_css(self._instance_link_css.format(instance_id))
-        instance_name=None
-        if len(full_name)>11:
-            instance_name = full_name[:-13]
-        return instance_name
-
-    def click_terminate_all_instances_button(self):
-        self.tester.click_element_by_id(self._terminate_all_instances_btn_id)
 
     def verify_there_are_no_running_instances(self):
         self.tester.send_keys_by_css(self._search_input_field_css, "running")
