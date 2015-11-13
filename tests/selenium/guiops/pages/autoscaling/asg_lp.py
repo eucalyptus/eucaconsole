@@ -14,6 +14,8 @@ class ASGLanding(LandingPage):
     _manage_policies_actions_menu_item_css = "#item-dropdown_{0}>li:nth-of-type(3)>a"  #asg_name required
     _delete_asg_actions_menu_item_css = "#item-dropdown_{0}>li:nth-of-type(4)>a"  #asg_name required
     _asg_link_css = 'a[ng-href="/scalinggroups/{0}"]' #asg_name required
+    _launch_config_link_xpath = 'xpath=//a[@ng-href="/scalinggroups/{0}"]/../../td[2]/a' #asg_name required
+    _instances_xpath=_launch_config_link_xpath = 'xpath=//a[@ng-href="/scalinggroups/{0}"]/../../td[3]/a' #asg_name required
     _search_input_field_css = ".search-input"
 
     def verify_asg_lp_loaded(self):
@@ -31,7 +33,7 @@ class ASGLanding(LandingPage):
         self.tester.click_element_by_id(self._asg_action_menu_id.format(asg_name))
         self.tester.click_element_by_css(self._manage_instances_actions_menu_item_css.format(asg_name))
 
-    def click_action_view_details_on_lp(self, asg_name):
+    def goto_asg_detail_page_via_actions_menu(self, asg_name):
         self.tester.click_element_by_id(self._asg_action_menu_id.format(asg_name))
         self.tester.click_element_by_css(self._view_details_actionmenu_item_css.format(asg_name))
 
@@ -42,14 +44,8 @@ class ASGLanding(LandingPage):
     def goto_asg_detail_page_via_link(self, asg_name):
         self.tester.click_element_by_css(self._asg_link_css.format(asg_name))
 
-    def goto_instance_detail_page_via_actions(self, instance_id):
-        self.tester.click_element_by_id(self._instance_action_menu_id.format(instance_id))
-        self.tester.click_element_by_css(self._view_details_actionmenu_item_css.format(instance_id))
-
-    def click_action_launch_more_like_this(self, instance_id):
-        self.tester.click_element_by_id(self._instance_action_menu_id.format(instance_id))
-        self.tester.click_element_by_css(self._launch_more_like_this_actionmenu_item_css.format(instance_id))
-
+    def goto_launch_config_detail_page_via_link(self, asg_name):
+        self.tester.click_element_by_xpath(self._launch_config_link_xpath.format(asg_name))
 
     def verify_there_are_no_running_instances(self):
         self.tester.send_keys_by_css(self._search_input_field_css, "running")
