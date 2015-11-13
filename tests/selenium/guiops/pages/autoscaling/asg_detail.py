@@ -18,6 +18,9 @@ class ASGDetailPage(DetailPage):
     _min_capacity_field_id = "min_size"
     _desired_capacity_field_id = "desired_capacity"
     _max_capacity_field_id = "max_size"
+    _launch_config_dropdown_css = "#launch_config_chosen>a"
+    _launch_config_search_field_css = "#launch_config_chosen>div>div>input"
+
 
 
     def verify_asg_detail_page_loaded(self, asg_name):
@@ -68,48 +71,11 @@ class ASGDetailPage(DetailPage):
             self.tester.send_keys_by_id(self._desired_capacity_field_id, desired)
         self.tester.click_element_by_id(self._save_changes_button_id)
 
+    def change_launch_configuration_on_detail_page
 
 
 
-    def verify_volume_status_is_available(self, timeout_in_seconds):
-        self.tester.wait_for_visible_by_css(self._volume_status_css.format("available"), timeout_in_seconds)
 
-    def verify_volume_status_is_attached(self, timeout_in_seconds):
-        self.tester.wait_for_visible_by_css(self._volume_status_css.format("attached"), timeout_in_seconds)
-
-    def get_volume_name_and_id(self):
-        name_and_id = str(self.tester.store_text_by_css(DetailPage(self)._resource_name_and_id_css))
-        if len(name_and_id) > 12:
-            volume_id = name_and_id[-13:-1]
-            volume_name = name_and_id[1:-15]
-        else:
-            volume_name = None
-            volume_id = name_and_id
-        return {'volume_name': volume_name, 'volume_id': volume_id}
-
-    def goto_snapshots_tab(self, volume_id):
-        """
-        Checks if Snapshot tab is already open. Opens snapshot tab if not.
-        """
-        tab = self.tester.store_text_by_css(self._active_tab_css)
-        print "Found active tab {0}".format(tab)
-        if tab == "General":
-            self.tester.click_element_by_css(self._snapshots_tab_css.format(volume_id))
-        elif tab == "Snapshots":
-            pass
-        else:
-            print "ERROR: tab {0} not among recognized tab names.".format(tab)
-
-    def click_create_snapshot_from_volume_tile(self, volume_id):
-        self.goto_snapshots_tab(volume_id)
-        self.tester.click_element_by_css(self._create_snapshot_tile_css)
-
-    def goto_detail_page_of_newly_created_snapshot(self, volume_id):
-        self.goto_snapshots_tab(volume_id)
-        self.tester.click_element_by_css(self._id_link_in_tile_of_newly_created_snapshot_css)
-
-    def verify_snapshot_tile_not_present(self):
-        NotImplementedError
 
 
 
