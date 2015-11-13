@@ -10,24 +10,14 @@ class ASGLanding(LandingPage):
     _create_asg_button_id = "create-scalinggroup-btn"
     _asg_action_menu_id = "table-item-dropdown_{0}" #asg_name_required
     _view_details_actionmenu_item_css = "#item-dropdown_{0}>li>a"  #asg_name required
-    _manage_instances_actions_menu_item_css = "#item-dropdown_{0}>li:nth-of-type(13)>a"  #asg_name required
-
-    _terminate_instance_actions_menu_item_css = "#item-dropdown_{0}>li:nth-of-type(13)>a"  #instance_id required
-    _first_pending_instance_status_css = "status>span:contains('pending')"
-    _first_instance_link_in_list_css = "#tableview>table>tbody>tr>td>a"
-    _first_instance_status_css = "td:contains('{0}')~td>span"  #instance_id required; webdriver does not accept it
-    _instance_link_css = 'a[ng-href="/instances/{0}"]'  #instance_id required;
-
-    _launch_more_like_this_actionmenu_item_css = "#item-dropdown_{0}>li:nth-of-type(3)>a"  #instance_id required
-    _terminate_all_instances_btn_id = "terminate-instances-btn"
+    _manage_instances_actions_menu_item_css = "#item-dropdown_{0}>li:nth-of-type(2)>a"  #asg_name required
+    _manage_policies_actions_menu_item_css = "#item-dropdown_{0}>li:nth-of-type(3)>a"  #asg_name required
+    _delete_asg_actions_menu_item_css = "#item-dropdown_{0}>li:nth-of-type(4)>a"  #asg_name required
     _search_input_field_css = ".search-input"
 
     def verify_asg_lp_loaded(self):
         self.tester.wait_for_text_present_by_id(LandingPage(self)._page_title_id, self._asg_landing_page_title)
         self.tester.wait_for_visible_by_id(LandingPage(self)._refresh_button_id)
-
-
-
 
     def click_action_launch_instance_on_landing_page(self):
         self.tester.click_element_by_id(self._launch_instance_button_id)
