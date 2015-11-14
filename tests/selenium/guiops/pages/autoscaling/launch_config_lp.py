@@ -45,7 +45,7 @@ class LaunchConfigLanding(LandingPage):
     def goto_lc_detail_page_via_link(self, lc_name):
         self.tester.click_element_by_css(self._lc_link_css.format(lc_name))
 
-    def goto_launch_config_detail_page_via_link(self, asg_name):
+    def goto_image_detail_page_via_link(self, lc_name):
         self.tester.click_element_by_xpath(self._launch_config_link_xpath.format(asg_name))
 
     def goto_instances_via_link(self, asg_name):
