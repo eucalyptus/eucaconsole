@@ -39,11 +39,11 @@ class LaunchConfigLanding(LandingPage):
         self.tester.click_element_by_css(self._view_details_actionmenu_item_css.format(lc_name))
 
     def click_action_create_asg_on_lp(self, lc_name):
-        self.tester.click_element_by_id(self._asg_action_menu_id.format(lc_name))
-        self.tester.click_element_by_css(self._manage_policies_actions_menu_item_css.format(lc_name))
+        self.tester.click_element_by_id(self._lc_action_menu_id.format(lc_name))
+        self.tester.click_element_by_css(self._create_asg_actions_menu_item_css.format(lc_name))
 
-    def goto_asg_detail_page_via_link(self, asg_name):
-        self.tester.click_element_by_css(self._asg_link_css.format(asg_name))
+    def goto_lc_detail_page_via_link(self, lc_name):
+        self.tester.click_element_by_css(self._lc_link_css.format(lc_name))
 
     def goto_launch_config_detail_page_via_link(self, asg_name):
         self.tester.click_element_by_xpath(self._launch_config_link_xpath.format(asg_name))
