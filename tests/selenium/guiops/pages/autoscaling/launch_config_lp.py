@@ -31,8 +31,8 @@ class LaunchConfigLanding(LandingPage):
         self.tester.click_element_by_css(self._delete_lc_actions_menu_item_css.format(lc_name))
 
     def click_action_create_lc_like_this_on_lp(self, lc_name):
+        self.tester.click_element_by_id(self._lc_action_menu_id.format(lc_name))
         self.tester.click_element_by_css(self._create_lc_like_this_actions_menu_item_css.format(lc_name))
-        self.tester.click_element_by_css(self._manage_instances_actions_menu_item_css.format(asg_name))
 
     def goto_asg_detail_page_via_actions_menu(self, asg_name):
         self.tester.click_element_by_id(self._asg_action_menu_id.format(asg_name))
