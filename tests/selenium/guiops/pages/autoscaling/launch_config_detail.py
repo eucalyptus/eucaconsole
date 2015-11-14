@@ -7,6 +7,7 @@ class LaunchConfigDetailPage(DetailPage):
         self.tester = tester
 
     _lc_detail_page_title = "Details for launch configuration: {0}" #lc name required
+
     _next_step_modal_id = "nextstep-scalinggroup-modal"
     _do_notshow_again_checkbox_id = "check-do-not-show-me-again"
     _close_modal_x_css = "#nextstep-scalinggroup-modal>a.close-reveal-modal"
@@ -25,14 +26,11 @@ class LaunchConfigDetailPage(DetailPage):
 
 
 
-    def verify_asg_detail_page_loaded(self, asg_name):
+    def verify_lc_detail_page_loaded(self, lc_name):
         """
-        Waits for the asg detail page title to appear; waits for actions menu to become visible. Closes the next step modal.
+        Waits for the lc detail page title to appear; waits for actions menu to become visible.
         """
-        if self.tester.check_visibility_by_id(self._next_step_modal_id):
-            self.tester.click_element_by_id(self._do_notshow_again_checkbox_id)
-            self.tester.click_element_by_css(self._close_modal_x_css)
-        self.tester.wait_for_text_present_by_id(DetailPage(self)._detail_page_title_id, self._asg_detail_page_title.format(asg_name))
+        self.tester.wait_for_text_present_by_id(DetailPage(self)._detail_page_title_id, self._lc_detail_page_title.format(lc_name))
         self.tester.wait_for_element_present_by_css(DetailPage(self)._actions_menu_css)
 
     def goto_instances_tab(self, asg_name):
