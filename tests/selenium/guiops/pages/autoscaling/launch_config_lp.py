@@ -4,7 +4,7 @@ from pages.landingpage import LandingPage
 class LaunchConfigLanding(LandingPage):
     def __init__(self, tester):
         self.tester = tester
-        self.verify_asg_lp_loaded()
+        self.verify_lc_lp_loaded()
 
     _lc_landing_page_title = "Launch configurations"
     _create_lc_button_id = "create-launchconfig-btn"
@@ -19,11 +19,11 @@ class LaunchConfigLanding(LandingPage):
     _security_group_xpath = 'xpath=//a[@ng-href="/scalinggroups/{0}"]/../../td[4]/div/a' #lc_name required
     _search_input_field_css = ".search-input"
 
-    def verify_asg_lp_loaded(self):
+    def verify_lc_lp_loaded(self):
         self.tester.wait_for_text_present_by_id(LandingPage(self)._page_title_id, self._lc_landing_page_title)
         self.tester.wait_for_visible_by_id(LandingPage(self)._refresh_button_id)
 
-    def click_action_create_asg_on_landing_page(self):
+    def click_action_create_lc_on_landing_page(self):
         self.tester.click_element_by_id(self._create_asg_button_id)
 
     def click_action_delete_asg_on_lp(self, asg_name):
