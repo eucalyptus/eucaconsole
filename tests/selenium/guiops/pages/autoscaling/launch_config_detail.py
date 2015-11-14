@@ -6,7 +6,7 @@ class LaunchConfigDetailPage(DetailPage):
     def __init__(self, tester):
         self.tester = tester
 
-    _asg_detail_page_title = "Details for scaling group: {0}" #asg name required
+    _lc_detail_page_title = "Details for launch configuration: {0}" #lc name required
     _next_step_modal_id = "nextstep-scalinggroup-modal"
     _do_notshow_again_checkbox_id = "check-do-not-show-me-again"
     _close_modal_x_css = "#nextstep-scalinggroup-modal>a.close-reveal-modal"
