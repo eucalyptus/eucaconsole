@@ -18,9 +18,16 @@
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
                 <a class="button" id="allocate-ipaddresses-btn"
-                   data-reveal-id="allocate-ip-modal" i18n:translate="">
-                    Allocate Elastic IP Addresses
+                   ng-class="{'split': landingPageView === 'tableview'}"
+                   data-reveal-id="allocate-ip-modal">
+                    <span i18n:translate="" tal:omit-tag="">Allocate Elastic IP Addresses</span>
+                    <span class="euca-split" data-dropdown="split-dropdown" ng-if="landingPageView === 'tableview'"></span>
                 </a>
+                <ul id="split-dropdown" class="f-dropdown" data-dropdown-content="">
+                    <li>
+                        <a i18n:translate="" ng-click="revealReleaseIPsModal()">Release to cloud</a>
+                    </li>
+                </ul>
             </div>
             <div metal:fill-slot="tile_header">
                 <a ng-href="${prefix}/{{ item.public_ip }}">{{ item.public_ip }}</a>
@@ -62,12 +69,17 @@
                 </ul>
             </div>
             <metal:block metal:fill-slot="tableview_headers">
+                <th><input type="checkbox" ng-model="allCheckboxes" /></th>
                 <th i18n:translate="">Public IP address</th>
                 <th i18n:translate="">Scope</th>
                 <th i18n:translate="">Assigned to instance</th>
                 <th i18n:translate="" class="actions">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
+                <td>
+                    <input type="checkbox" class="row-checkbox" ng-model="checkedItems[item.id]"
+                           ng-checked="allCheckboxes" />
+                </td>
                 <td><a ng-href="${prefix}/{{ item.public_ip }}">{{ item.public_ip }}</a></td>
                 <td tal:condition="is_vpc_supported">
                     <span ng-show="item.domain == 'vpc'" i18n:translate="">VPC</span>
