@@ -11,7 +11,6 @@ angular.module('ElasticIPsPage', ['LandingPage'])
         $scope.allocationID = '';
         $scope.instanceID = '';
         $scope.isNotValid = true;
-        $scope.allCheckboxes = false;
         $scope.urlParams = $.url().param();
         $scope.initChosenSelectors = function () {
             $('#instance_id').chosen({'width': '80%', 'search_contains': true});
@@ -48,13 +47,9 @@ angular.module('ElasticIPsPage', ['LandingPage'])
             $scope.allocationID = eip.allocation_id;
             modal.foundation('reveal', 'open');
         };
-        $scope.revealReleaseIPsModal = function () {
+        $scope.revealReleaseIPsModal = function (checkedItems) {
             var modal = $('#release-ip-modal');
-            // TODO: build list of checked item ids
-            //var publicIPs = items.filter(function (item) {
-            //    return item.isChecked;
-            //});
-            //$scope.publicIP = publicIPs.join(', ');
+            $scope.publicIP = checkedItems.join(', ');
             modal.foundation('reveal', 'open');
         };
     });

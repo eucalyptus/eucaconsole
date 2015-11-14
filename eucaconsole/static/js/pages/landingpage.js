@@ -10,6 +10,8 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch'])
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.items = [];
         $scope.itemsLoading = true;
+        $scope.allCheckboxes = false;
+        $scope.checkedItems = [];
         $scope.runningSmartRefresh = false;
         $scope.unfilteredItems = [];
         $scope.filterKeys = [];
@@ -264,7 +266,28 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch'])
                     $scope.openDropdownID = $(this).prev('.dropdown').attr('id'); 
                 }
             });
-            
+        };
+        $scope.handleItemSelection = function (item) {
+            var itemId = item.id || item.name || item.public_ip;
+            var itemIdx;
+            if (item.isChecked) {
+                if ($scope.checkedItems.indexOf(itemId) === -1) {
+                    $scope.checkedItems.push(itemId);
+                }
+            } else {
+                itemIdx = $scope.checkedItems.indexOf(itemId);
+                if (itemIdx !== -1) {
+                    $scope.checkedItems.splice(itemIdx, 1);
+                }
+            }
+        };
+        $scope.selectAllCheckboxes = function (itemIdentifier) {
+            $scope.checkedItems = [];
+            if ($scope.allCheckboxes) {
+                angular.forEach($scope.items, function (item) {
+                    $scope.checkedItems.push(item[itemIdentifier]);
+                });
+            }
         };
         $scope.$on('searchUpdated', function($event, query) {
             // update url

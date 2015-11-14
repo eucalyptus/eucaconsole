@@ -25,7 +25,7 @@
                 </a>
                 <ul id="split-dropdown" class="f-dropdown" data-dropdown-content="">
                     <li>
-                        <a i18n:translate="" ng-click="revealReleaseIPsModal()">Release to cloud</a>
+                        <a i18n:translate="" ng-click="revealReleaseIPsModal(checkedItems)">Release to cloud</a>
                     </li>
                 </ul>
             </div>
@@ -69,7 +69,10 @@
                 </ul>
             </div>
             <metal:block metal:fill-slot="tableview_headers">
-                <th><input type="checkbox" ng-model="allCheckboxes" /></th>
+                <th>
+                    <input type="checkbox" ng-model="allCheckboxes"
+                           ng-change="selectAllCheckboxes('public_ip')" />
+                </th>
                 <th i18n:translate="">Public IP address</th>
                 <th i18n:translate="">Scope</th>
                 <th i18n:translate="">Assigned to instance</th>
@@ -77,8 +80,8 @@
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
                 <td>
-                    <input type="checkbox" class="row-checkbox" ng-model="checkedItems[item.id]"
-                           ng-checked="allCheckboxes" />
+                    <input type="checkbox" class="row-checkbox" ng-model="item.isChecked"
+                           ng-checked="allCheckboxes" ng-change="handleItemSelection(item)" />
                 </td>
                 <td><a ng-href="${prefix}/{{ item.public_ip }}">{{ item.public_ip }}</a></td>
                 <td tal:condition="is_vpc_supported">
