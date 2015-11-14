@@ -7,22 +7,7 @@ class LaunchConfigDetailPage(DetailPage):
         self.tester = tester
 
     _lc_detail_page_title = "Details for launch configuration: {0}" #lc name required
-
-    _next_step_modal_id = "nextstep-scalinggroup-modal"
-    _do_notshow_again_checkbox_id = "check-do-not-show-me-again"
-    _close_modal_x_css = "#nextstep-scalinggroup-modal>a.close-reveal-modal"
-    _scaling_policies_tab_css = "[href='/scalinggroups/{0}/policies']" #asg name required
-    _instances_tab_css = "[href='/scalinggroups/{0}/instances']" #asg name required
-    _general_tab_css = '[href="/scalinggroups/{0}"]' #asg name required
-    _active_tab_css ="dd.active"
-    _delete_asg_action_menuitem_id = "delete-scalinggroup-action"
-    _save_changes_button_id = "save-changes-btn"
-    _min_capacity_field_id = "min_size"
-    _desired_capacity_field_id = "desired_capacity"
-    _max_capacity_field_id = "max_size"
-    _launch_config_dropdown_css = "#launch_config_chosen>a"
-    _launch_config_search_field_css = "#launch_config_chosen>div>div>input"
-    _launch_config_search_active_result_css = "li.active-result.result-selected"
+    _delete_lc_action_menuitem_id = "delete-launchconfig-action"
 
 
 
