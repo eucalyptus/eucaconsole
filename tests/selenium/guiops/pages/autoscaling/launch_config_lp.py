@@ -24,11 +24,11 @@ class LaunchConfigLanding(LandingPage):
         self.tester.wait_for_visible_by_id(LandingPage(self)._refresh_button_id)
 
     def click_action_create_lc_on_landing_page(self):
-        self.tester.click_element_by_id(self._create_asg_button_id)
+        self.tester.click_element_by_id(self._create_lc_button_id)
 
-    def click_action_delete_asg_on_lp(self, asg_name):
-        self.tester.click_element_by_id(self._asg_action_menu_id.format(asg_name))
-        self.tester.click_element_by_css(self._delete_asg_actions_menu_item_css.format(asg_name))
+    def click_action_delete_lc_on_lp(self, lc_name):
+        self.tester.click_element_by_id(self._lc_action_menu_id.format(lc_name))
+        self.tester.click_element_by_css(self._delete_lc_actions_menu_item_css.format(lc_name))
 
     def click_action_manage_instances_on_lp(self, asg_name):
         self.tester.click_element_by_id(self._asg_action_menu_id.format(asg_name))
