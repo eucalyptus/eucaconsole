@@ -48,16 +48,5 @@ class LaunchConfigLanding(LandingPage):
     def goto_image_detail_page_via_link(self, lc_name):
         self.tester.click_element_by_xpath(self._image_link_xpath.format(lc_name))
 
-    def goto_instances_via_link(self, asg_name):
-        self.tester.click_element_by_xpath(self._instances_xpath.format(asg_name))
-
-    def get_availability_zones(self, asg_name):
-        self.tester.store_text_by_xpath(self._availability_zones_xpath.format(asg_name))
-
-    def get_asg_capacity(self, asg_name):
-        self.tester.store_text_by_xpath(self._capacity_xpath.format(asg_name))
-
-    def get_asg_status(self, asg_name):
-        self.tester.store_text_by_xpath(self._status_xpath.format(asg_name))
 
 
