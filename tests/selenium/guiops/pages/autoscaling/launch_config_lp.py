@@ -6,17 +6,8 @@ class LaunchConfigLanding(LandingPage):
         self.tester = tester
         self.verify_lc_lp_loaded()
 
-    _lc_landing_page_title = "Launch configurations"
-    _create_lc_button_id = "create-launchconfig-btn"
-    _lc_action_menu_id = "table-item-dropdown_{0}" #lc_name_required
-    _view_details_actionmenu_item_css = "#item-dropdown_{0}>li>a"  #lc_name required
-    _create_lc_like_this_actions_menu_item_css = "#item-dropdown_{0}>li:nth-of-type(2)>a"  #lc_name required
-    _create_asg_actions_menu_item_css = "#item-dropdown_{0}>li:nth-of-type(3)>a"  #lc_name required
-    _delete_lc_actions_menu_item_css = "#item-dropdown_{0}>li:nth-of-type(4)>a"  #lc_name required
-    _lc_link_css = 'a[ng-href="/launchconfigs/{0}"]' #lc_name required
-    _image_link_xpath = 'xpath=//a[@ng-href="/launchconfigs/{0}"]/../../td[2]/a' #lc_name required
-    _key_xpath = 'xpath=//a[@ng-href="/scalinggroups/{0}"]/../../td[3]/a' #lc_name required
-    _security_group_xpath = 'xpath=//a[@ng-href="/scalinggroups/{0}"]/../../td[4]/div/a' #lc_name required
+    _lcreate_lc_page_title = "Create new launch configuration"
+
     _search_input_field_css = ".search-input"
 
     def verify_lc_lp_loaded(self):
