@@ -27,6 +27,9 @@ class LaunchConfigDetailPage(DetailPage):
         self.tester.click_element_by_css(DetailPage._actions_menu_css)
         self.tester.click_element_by_id(self._create_lc_like_this_action_menuitem_id)
 
+    def create_asg_on_lc_detail_page(self):
+        self.tester.click_element_by_css(DetailPage._actions_menu_css)
+        self.tester.click_element_by_id(self._create_asg_action_menuitem_id)
 
 
 
