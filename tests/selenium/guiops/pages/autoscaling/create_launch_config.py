@@ -4,7 +4,7 @@ class CreateLaunchConfigPage(BasePage):
 
     def __init__(self, tester):
         self.tester = tester
-        self.verify_create_asg_page_loaded()
+        self.verify_create_lc_page_loaded()
 
     _page_title = "Create new launch configuration"
     _image_search_field_css = "input.search-input"
