@@ -30,7 +30,7 @@ class CreateLaunchConfigPage(BasePage):
         self.tester.send_keys_by_css(self._image_search_field_css, image)
         self.tester.click_element_by_css(self._first_image_button_css)
 
-        self.tester.send_keys_by_id(self._name_input_field_id, asg_name)
+        self.tester.send_keys_by_id(self._name_input_field_id, lc_name)
         self.select_by_id(self._launch_configuration_selector_id, launch_config_name)
         if min_cpapacity is not None:
             self.tester.send_keys_by_id(self._min_capacity_field_id, min_cpapacity)
