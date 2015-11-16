@@ -281,9 +281,9 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch'])
                 }
             }
         };
-        $scope.selectAllCheckboxes = function (itemIdentifier) {
+        $scope.selectAllCheckboxes = function (allCheckboxes, itemIdentifier) {
             $scope.checkedItems = [];
-            if ($scope.allCheckboxes) {
+            if (allCheckboxes) {
                 angular.forEach($scope.items, function (item) {
                     $scope.checkedItems.push(item[itemIdentifier]);
                 });

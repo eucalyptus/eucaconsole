@@ -71,7 +71,7 @@
             <metal:block metal:fill-slot="tableview_headers">
                 <th>
                     <input type="checkbox" ng-model="allCheckboxes"
-                           ng-change="selectAllCheckboxes('public_ip')" />
+                           ng-change="selectAllCheckboxes(allCheckboxes, 'public_ip')" />
                 </th>
                 <th i18n:translate="">Public IP address</th>
                 <th i18n:translate="">Scope</th>
