@@ -107,7 +107,7 @@ class ImageBundlingMixin(BlockDeviceMappingItemView):
             # add this into image list
             fakeimage = Image()
             fakeimage.id = _(u'Pending')
-            fakeimage.fake_id = 'p'+instance.id
+            fakeimage.fake_id = 'p' + instance.id
             fakeimage.location = "%s/%s.manifest.xml" % (bucket, metadata['prefix'])
             fakeimage.owner_id = ''  # do we need this?
             fakeimage.state = tasks[0].state
@@ -145,6 +145,7 @@ class ImagesView(LandingPageView):
 
     def __init__(self, request):
         super(ImagesView, self).__init__(request)
+        self.title_parts = [_(u'Images')]
         self.initial_sort_key = 'name'
         self.prefix = '/images'
         self.json_items_endpoint = self.get_json_endpoint('images_json')
@@ -238,7 +239,7 @@ class ImagesJsonView(LandingPageView, ImageBundlingMixin):
                 name=image.name,
                 state=image.state,
                 transitional=transitional,
-                progress=0,  # this is valid for transitional images till we get something better
+                progress=image.progress if hasattr(image, 'progress') else 0,  # this is valid for transitional images till we get something better
                 location=image.location,
                 tagged_name=TaggedItemView.get_display_name(image, escapebraces=False),
                 name_id=ImageView.get_image_name_id(image),
@@ -303,7 +304,7 @@ class ImagesJsonView(LandingPageView, ImageBundlingMixin):
                     if image.state == 'available':
                         url = self.request.route_path('image_view', id=image.id)
                 else:
-                    msg = _(u'Bundle instance failed for ')+instances[0].id
+                    msg = _(u'Bundle instance failed for ') + instances[0].id
                     self.request.session.flash(msg, queue=Notification.ERROR)
                     url = self.request.route_path('images')
                     return dict(results=dict(image_status='failed', progress=0, url=url))
@@ -311,8 +312,9 @@ class ImagesJsonView(LandingPageView, ImageBundlingMixin):
                 image = self.conn.get_image(image_id)
             """Return current image status"""
             image_status = image.state if image else 'deleted'
+            image_progress = image.progress if image and hasattr(image, 'progress') else 0
             return dict(
-                results=dict(image_status=image_status, progress=0, url=url)
+                results=dict(image_status=image_status, progress=image_progress, url=url)
             )
 
     def get_items(self):
@@ -345,6 +347,7 @@ class ImageView(TaggedItemView, ImageBundlingMixin):
 
     def __init__(self, request):
         super(ImageView, self).__init__(request)
+        self.title_parts = [_(u'Image'), request.matchdict.get('id')]
         self.conn = self.get_connection()
         self.account_id = User.get_account_id(ec2_conn=self.conn, request=self.request)
         self.image = self.get_image()

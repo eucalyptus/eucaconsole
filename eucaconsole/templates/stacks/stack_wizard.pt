@@ -68,7 +68,7 @@
                             </div>
                             <div class="row">
                                 <div class="small-12 columns value">
-                                    <input type="radio" id="inputtype" name="inputtype" value="sample" ng-model="inputtype"/>
+                                    <input type="radio" id="inputtype-sample" name="inputtype" value="sample" ng-model="inputtype"/>
                                     <label i18n:translate="">Use sample template</label>
                                     <div id="sample-template-div" ng-show="inputtype=='sample'">
                                         <select id="sample-template" name="sample-template"
@@ -79,7 +79,7 @@
                                     </div>
                                     <br ng-hide="inputtype=='sample'"/>
                                     <div tal:omit-tag="" tal:condition="layout.file_uploads_enabled">
-                                        <input type="radio" id="inputtype" name="inputtype" value="file" ng-model="inputtype"/>
+                                        <input type="radio" id="inputtype-file" name="inputtype" value="file" ng-model="inputtype"/>
                                         <label>
                                             <span i18n:translate="">Upload template</span>
                                             <span tal:condition="getattr(create_form.template_file, 'help_text', None)" class="helptext-icon"
@@ -88,7 +88,7 @@
                                         <input id="template-file" type="file" data-file="template-files" ng-disabled="isNotStopped" name="template-file" ng-show="inputtype=='file'"/>
                                         <small id="size-error" class="error" i18n:translate="">You cannot upload templates larger than 460,800 bytes.</small>
                                         <br/>
-                                        <input type="radio" id="inputtype" name="inputtype" value="url" ng-model="inputtype"/>
+                                        <input type="radio" id="inputtype-url" name="inputtype" value="url" ng-model="inputtype"/>
                                         <label i18n:translate="">Use template from URL</label>
                                         <input type="url" id="template-url" name="template-url" ng-model="templateUrl" ng-show="inputtype=='url'"/>
                                         <small class="error" i18n:translate="">The URL format is invalid. Valid URL formats include http://*, https://*. Please change your URL format.</small>
@@ -107,7 +107,7 @@
                             <div class="row">
                                 <div class="small-3 columns">&nbsp;</div>
                                 <div class="small-9 columns field inline">
-                                    <button type="submit" class="button" id="stack-wizard-btn-step2" ng-disabled="isNotValid" ng-show="!isNotValid &amp;&amp; !loading &amp;&amp; parameters.length === 0">
+                                    <button type="submit" class="button" id="stack-wizard-btn-step1" ng-disabled="isNotValid" ng-show="!isNotValid &amp;&amp; !loading &amp;&amp; parameters.length === 0">
                                         <span i18n:translate="">Create Stack</span>
                                     </button>
                                     <a id="visit-step-2" class="button small round" ng-click="visitNextStep(2, $event)" ng-show="isNotValid || loading || parameters.length > 0" ng-disabled="isNotValid || !parameters">
@@ -189,7 +189,12 @@
                     <metal:block metal:use-macro="layout.global_macros['help_expando']" />
                     <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                         <!-- HELP CONTENT -->
-                        <div id="help-html-console_create_stack" ng-include="'${layout.help_path('console_create_stack.html')}'"></div> 
+                        <div id="help-html-console_create_stack_general" ng-show="currentStepIndex == 1"
+                            ng-include="'${layout.help_path('console_create_stack_general.html')}'">
+                        </div> 
+                        <div id="help-html-console_create_stack_parameters" ng-show="currentStepIndex == 2"
+                            ng-include="'${layout.help_path('console_create_stack_parameters.html')}'">
+                        </div> 
                     </div>
                 </div>
             </div>

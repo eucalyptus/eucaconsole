@@ -47,7 +47,7 @@ class IPAddressesView(LandingPageView):
 
     def __init__(self, request):
         super(IPAddressesView, self).__init__(request)
-        # self.items = self.get_items()  # Only need this when filters are displayed on the landing page
+        self.title_parts = [_(u'IP Addresses')]
         self.prefix = '/ipaddresses'
         self.conn = self.get_connection()
         self.allocate_form = AllocateIPsForm(self.request, formdata=self.request.params or None)
@@ -88,7 +88,7 @@ class IPAddressesView(LandingPageView):
                     msg = u'{prefix} {ips}'.format(prefix=prefix, ips=ips)
                     self.request.session.flash(msg, queue=Notification.SUCCESS)
                 return HTTPFound(location=self.location)
-        filters_form=IPAddressesFiltersForm(self.request, conn=self.conn, formdata=self.request.params or None)
+        filters_form = IPAddressesFiltersForm(self.request, conn=self.conn, formdata=self.request.params or None)
         if self.cloud_type == 'euca':
             del filters_form.domain
         search_facets = filters_form.facets
@@ -225,6 +225,7 @@ class IPAddressView(BaseView):
 
     def __init__(self, request):
         super(IPAddressView, self).__init__(request)
+        self.title_parts = [_(u'IP Addresses'), request.matchdict.get('public_ip')]
         self.conn = self.get_connection()
         self.elastic_ip = self.get_elastic_ip()
         self.instance = self.get_instance()

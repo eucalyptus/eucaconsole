@@ -247,8 +247,14 @@
             <metal:block metal:use-macro="layout.global_macros['help_expando']" />
             <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                 <!--! Help goes here -->
-                <div id="help-html-console_edit_launch_config"
+                <div id="help-html-console_stack_detail_general" ng-show="currentTab == 'general-tab'"
                     ng-include="'${layout.help_path('console_stack_detail_general.html')}'">
+                </div> 
+                <div id="help-html-console_stack_detail_template" ng-show="currentTab == 'template-tab'"
+                    ng-include="'${layout.help_path('console_stack_detail_template.html')}'">
+                </div> 
+                <div id="help-html-console_stack_detail_events" ng-show="currentTab == 'events-tab'"
+                    ng-include="'${layout.help_path('console_stack_detail_events.html')}'">
                 </div> 
             </div>
         </div>

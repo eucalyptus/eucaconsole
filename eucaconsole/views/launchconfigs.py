@@ -54,7 +54,7 @@ from . import guess_mimetype_from_buffer
 class LaunchConfigsView(LandingPageView):
     def __init__(self, request):
         super(LaunchConfigsView, self).__init__(request)
-        self.request = request
+        self.title_parts = [_(u'Launch Configs')]
         self.ec2_conn = self.get_connection()
         self.autoscale_conn = self.get_connection(conn_type='autoscale')
         self.iam_conn = self.get_connection(conn_type="iam")
@@ -227,6 +227,7 @@ class LaunchConfigView(BaseView):
 
     def __init__(self, request):
         super(LaunchConfigView, self).__init__(request)
+        self.title_parts = [_(u'Launch Config'), request.matchdict.get('id')]
         self.ec2_conn = self.get_connection()
         self.iam_conn = self.get_connection(conn_type="iam")
         self.autoscale_conn = self.get_connection(conn_type='autoscale')
@@ -388,7 +389,7 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
 
     def __init__(self, request):
         super(CreateLaunchConfigView, self).__init__(request)
-        self.request = request
+        self.title_parts = [_(u'Launch Config'), _(u'Create')]
         self.image = self.get_image()
         with boto_error_handler(request):
             self.securitygroups = self.get_security_groups()
