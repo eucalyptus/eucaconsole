@@ -56,13 +56,12 @@ class CreateLaunchConfigPage(BasePage):
         self.tester.wait_for_text_present_by_id(BasePage(self)._page_title_id, self._page_title)
 
 
-    def create_new_launch_config(self, lc_name, instance_type="t1.micro: 1 CPUs, 256 memory (MB), 5 disk (GB,root device)", image="centos", key_name="None (advanced option)",
+    def create_new_launch_config(self, lc_name, instance_type=None, image="centos", key_name="None (advanced option)",
                                security_group="default", user_data_text=None, user_data_file_path=None, role=None, create_asg=True, kernel_id=None, ramdisk_id=None,
                                enable_monitoring=True):
 
         self.tester.send_keys_by_css(self._image_search_field_css, image)
         self.tester.click_element_by_css(self._first_image_button_css)
-        self.tester.click_element_by_id(self._next_button_step1_id)
         self.tester.send_keys_by_id(self._name_input_field_id, lc_name)
         if instance_type is not None:
             self.tester.select_by_id(self._instance_type_selector_id, self.instance_types.get(instance_type))
