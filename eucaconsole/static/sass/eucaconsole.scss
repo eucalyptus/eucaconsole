@@ -1052,8 +1052,14 @@ table.table {
         word-break: break-all !important;
     }
     &.smart-table {
-        th[st-sort]:hover {
-            cursor: pointer;
+        th[st-sort] {
+            padding-right: 14px;
+            &:hover {
+                cursor: pointer;
+            }
+        }
+        .st-sort-ascent, .st-sort-descent {
+            padding-right: 0 !important;
         }
         .st-sort-ascent:after {
             content: '\25B2';
