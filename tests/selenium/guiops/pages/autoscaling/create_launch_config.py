@@ -25,6 +25,9 @@ class CreateLaunchConfigPage(BasePage):
     _security_group_choice_close_css = ".search-choice-close"
     _role_selector_id = "role"
     _create_asg_from_lc_chckbox_id = "create_sg_from_lc"
+    _advanced_options_link_id = "visit-step-4"
+    _kernel_selector_id = "kernel_id"
+    _ramdisk_selector_id = "ramdisk_id"
 
     instance_types = {"m1.small": "m1.small: 1 CPUs, 256 memory (MB), 5 disk (GB,root device)",
                        "t1.micro": "t1.micro: 1 CPUs, 256 memory (MB), 5 disk (GB,root device)",
@@ -51,7 +54,8 @@ class CreateLaunchConfigPage(BasePage):
 
 
     def create_new_launch_config(self, lc_name, instance_type="t1.micro: 1 CPUs, 256 memory (MB), 5 disk (GB,root device)", image="centos", key_name="None (advanced option)",
-                               security_group="default", user_data_text=None, user_data_file_path=None, role=None, create_asg=True):
+                               security_group="default", user_data_text=None, user_data_file_path=None, role=None, create_asg=True, kernel_id=None, ramdisk_id=None,
+                               enable_monitoring=True):
 
         self.tester.send_keys_by_css(self._image_search_field_css, image)
         self.tester.click_element_by_css(self._first_image_button_css)
@@ -76,6 +80,14 @@ class CreateLaunchConfigPage(BasePage):
             self.tester.select_by_id(self._role_selector_id, role)
         if not create_asg:
             self.tester.click_element_by_id(self._create_asg_from_lc_chckbox_id)
+        if (kernel_id is not None) or (ramdisk_id is not None) or (enable_monitoring is not True):
+            self.tester.click_element_by_id(self._advanced_options_link_id)
+            if kernel_id is not None:
+                self.tester.select_by_id(self._kernel_selector_id, kernel_id)
+            if ramdisk_id is not None:
+                self.tester.select_by_id(self._ramdisk_selector_id, ramdisk_id)
+
+
 
 
 
