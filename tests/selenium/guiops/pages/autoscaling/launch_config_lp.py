@@ -8,6 +8,7 @@ class LaunchConfigLanding(LandingPage):
 
     _lc_landing_page_title = "Launch configurations"
     _create_lc_button_id = "create-launchconfig-btn"
+    _lc_action_menu_id = "table-item-dropdown_{0}" #lc_name_required
 
     _search_input_field_css = ".search-input"
 
