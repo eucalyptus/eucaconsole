@@ -15,9 +15,9 @@ angular.module('ManageCredentialsView', [])
                 $scope.strengthLabel = function () {
                     var score = $scope.score;
                     if (score === 0) word = 'weak';
-                    if (score == 1 || score == 2) word = 'medium';
-                    if (score == 3 || score == 4) word = 'strong';
-                    if (score == undefined) word = 'none';
+                    if (score === 1 || score === 2) word = 'medium';
+                    if (score === 3 || score === 4) word = 'strong';
+                    if (score === undefined) word = 'none';
                     return 'password-' + word;
                 };
             }]
@@ -43,13 +43,29 @@ angular.module('ManageCredentialsView', [])
             restrict: 'A',
             require: 'ngModel',
             link: function (scope, element, attrs, ctrl) {
-                var name = attrs['name'];
-                var mustMatch = attrs['match'];
-
-                console.log(scope);
+                var target = attrs.match;
 
                 ctrl.$validators.match = function (modelValue) {
-                    return true;
+                    if(ctrl.$isEmpty(modelValue)) {
+                        return true;
+                    }
+                    return modelValue === scope[target];
+                };
+            }
+        };
+    })
+    .directive('nomatch', function () {
+        return {
+            restrict: 'A',
+            require: 'ngModel',
+            link: function (scope, element, attrs, ctrl) {
+                var target = attrs.nomatch;
+
+                ctrl.$validators.nomatch = function (modelValue) {
+                    if(ctrl.$isEmpty(modelValue)) {
+                        return true;
+                    }
+                    return modelValue !== scope[target];
                 };
             }
         };
@@ -59,21 +75,6 @@ angular.module('ManageCredentialsView', [])
 
         $scope.isDisabled = function () {
             return $scope.eucaChangePassword.$invalid;
-        };
-
-        $scope.changePassword = function () {
-            $('.error').css('display', 'none');
-            var pass = $(this).find('#current_password').val();
-            var newpass = $(this).find('#new_password').val();
-            var newpass2 = $(this).find('#new_password2').val();
-            if (pass == newpass) {
-                $('#password-different').css('display', 'block');
-                return false;
-            }
-            if (newpass != newpass2) {
-                $('#passwords-match').css('display', 'block');
-                return false;
-            }
         };
 
         $scope.generateKeys = function(url) {
