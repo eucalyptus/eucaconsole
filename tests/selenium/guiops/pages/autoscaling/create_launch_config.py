@@ -57,7 +57,7 @@ class CreateLaunchConfigPage(BasePage):
 
 
     def create_new_launch_config(self, lc_name, instance_type=None, image="centos", key_name="None (advanced option)",
-                               security_group="default", user_data_text=None, user_data_file_path=None, role=None, create_asg=True, kernel_id=None, ramdisk_id=None,
+                               security_group="default", user_data_text=None, user_data_file_path=None, role=None, create_asg=False, kernel_id=None, ramdisk_id=None,
                                enable_monitoring=True):
 
         self.tester.send_keys_by_css(self._image_search_field_css, image)
@@ -80,7 +80,9 @@ class CreateLaunchConfigPage(BasePage):
         self.tester.click_element_by_css(self._highlighted_security_group_css)
         if role is not None:
             self.tester.select_by_id(self._role_selector_id, role)
-        if not create_asg:
+        if create_asg is not False:
+            pass
+        else:
             self.tester.click_element_by_id(self._create_asg_from_lc_chckbox_id)
         if (kernel_id is not None) or (ramdisk_id is not None) or (enable_monitoring is not True):
             self.tester.click_element_by_id(self._advanced_options_link_id)
