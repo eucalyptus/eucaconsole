@@ -93,7 +93,7 @@ class CreateLaunchConfigPage(BasePage):
                 self.tester.click_element_by_id(self._enable_monitoring_chckbox_id)
             self.tester.click_element_by_id(self._create_lc_submit_step4_btn_id)
         else:
-            self.tester.click_element_by_id(self._)
+            self.tester.click_element_by_id(self._create_lc_submit_step3_btn_id)
 
 
 
