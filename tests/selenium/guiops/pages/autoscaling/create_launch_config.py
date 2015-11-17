@@ -15,12 +15,14 @@ class CreateLaunchConfigPage(BasePage):
     _user_data_text_input_field_id = "userdata"
     _user_data_file_radio_bttn_css = "#inputtype[value = 'file']"
     _user_data_file_upload_id = "userdata_file"
+    _next_button_step2_id = "visit-step-3"
+    _next_button_step1_id = "visit-step-2"
 
     _launch_configuration_selector_id = 'launch_config'
     _min_capacity_field_id = "min_size"
     _desired_capacity_field_id = "desired_capacity"
     _max_capacity_field_id = "max_size"
-    _next_button_id = "visit-step-2"
+
     _health_check_grace_period_field_id = "health_check_period"
     _availability_zones_field_css = "#availability_zones_chosen>ul"
     _chosen_availability_zone_close_x_css = 'a[class="search-choice-close"]'
@@ -54,7 +56,7 @@ class CreateLaunchConfigPage(BasePage):
 
         self.tester.send_keys_by_css(self._image_search_field_css, image)
         self.tester.click_element_by_css(self._first_image_button_css)
-
+        self.tester.click_element_by_id(self._next_button_step1_id)
         self.tester.send_keys_by_id(self._name_input_field_id, lc_name)
         if instance_type is not None:
             self.tester.select_by_id(self._instance_type_selector_id, self.instance_types.get(instance_type))
