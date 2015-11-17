@@ -51,7 +51,7 @@ class CreateLaunchConfigPage(BasePage):
 
 
     def create_new_launch_config(self, lc_name, instance_type="t1.micro: 1 CPUs, 256 memory (MB), 5 disk (GB,root device)", image="centos", key_name="None (advanced option)",
-                               security_group="default", user_data_text=None, user_data_file_path=None):
+                               security_group="default", user_data_text=None, user_data_file_path=None, role=None):
 
         self.tester.send_keys_by_css(self._image_search_field_css, image)
         self.tester.click_element_by_css(self._first_image_button_css)
@@ -72,6 +72,9 @@ class CreateLaunchConfigPage(BasePage):
         self.tester.click_element_by_id(self._security_group_selector_id)
         self.tester.send_keys_by_css(self._security_group_search_field_css, security_group)
         self.tester.click_element_by_css(self._highlighted_security_group_css)
+        if role is not None:
+            self.tester.select_by_id(self._keypair_selector_id, key_name)
+
 
 
 
