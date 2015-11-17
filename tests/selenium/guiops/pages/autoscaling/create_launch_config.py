@@ -29,8 +29,8 @@ class CreateLaunchConfigPage(BasePage):
     _kernel_selector_id = "kernel_id"
     _ramdisk_selector_id = "ramdisk_id"
     _enable_monitoring_chckbox_id = "monitoring_enabled"
-    _create_lc_submit_step4_btn_id="create-launchconfig-btn-step4"
-    "create-launchconfig-btn-step3"
+    _create_lc_submit_step4_btn_id = "create-launchconfig-btn-step4"
+    _create_lc_submit_step3_btn_id = "create-launchconfig-btn-step3"
 
     instance_types = {"m1.small": "m1.small: 1 CPUs, 256 memory (MB), 5 disk (GB,root device)",
                        "t1.micro": "t1.micro: 1 CPUs, 256 memory (MB), 5 disk (GB,root device)",
