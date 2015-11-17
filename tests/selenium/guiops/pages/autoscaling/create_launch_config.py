@@ -28,6 +28,9 @@ class CreateLaunchConfigPage(BasePage):
     _advanced_options_link_id = "visit-step-4"
     _kernel_selector_id = "kernel_id"
     _ramdisk_selector_id = "ramdisk_id"
+    _enable_monitoring_chckbox_id = "monitoring_enabled"
+    _create_lc_submit_step4_btn_id="create-launchconfig-btn-step4"
+    "create-launchconfig-btn-step3"
 
     instance_types = {"m1.small": "m1.small: 1 CPUs, 256 memory (MB), 5 disk (GB,root device)",
                        "t1.micro": "t1.micro: 1 CPUs, 256 memory (MB), 5 disk (GB,root device)",
@@ -86,7 +89,11 @@ class CreateLaunchConfigPage(BasePage):
                 self.tester.select_by_id(self._kernel_selector_id, kernel_id)
             if ramdisk_id is not None:
                 self.tester.select_by_id(self._ramdisk_selector_id, ramdisk_id)
-
+            if enable_monitoring is not True:
+                self.tester.click_element_by_id(self._enable_monitoring_chckbox_id)
+            self.tester.click_element_by_id(self._create_lc_submit_step4_btn_id)
+        else:
+            self.tester.click_element_by_id(self._)
 
 
 
