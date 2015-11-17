@@ -17,16 +17,14 @@ class CreateLaunchConfigPage(BasePage):
     _user_data_file_upload_id = "userdata_file"
     _next_button_step2_id = "visit-step-3"
     _next_button_step1_id = "visit-step-2"
+    _keypair_selector_id = "keypair"
+    _security_group_selector_id = "securitygroup_chosen"
+    _security_group_choices_css = "ul.chosen-choices"
+    _security_group_search_field_css = "ul.chosen-choices>li.search-field>input"
+    _highlighted_security_group_css = "[class = 'active-result highlighted']"
+    _security_group_choice_close_css=".search-choice-close"
 
-    _launch_configuration_selector_id = 'launch_config'
-    _min_capacity_field_id = "min_size"
-    _desired_capacity_field_id = "desired_capacity"
-    _max_capacity_field_id = "max_size"
 
-    _health_check_grace_period_field_id = "health_check_period"
-    _availability_zones_field_css = "#availability_zones_chosen>ul"
-    _chosen_availability_zone_close_x_css = 'a[class="search-choice-close"]'
-    _create_scaling_group_button_id = "create-scalinggroup-btn"
 
     instance_types = {"m1.small": "m1.small: 1 CPUs, 256 memory (MB), 5 disk (GB,root device)",
                        "t1.micro": "t1.micro: 1 CPUs, 256 memory (MB), 5 disk (GB,root device)",
@@ -68,6 +66,12 @@ class CreateLaunchConfigPage(BasePage):
             self.tester.click_element_by_css(self._user_data_file_radio_bttn_css)
             pass
         self.tester.click_element_by_id(self._next_button_step2_id)
+        self.tester.select_by_id(self._keypair_selector_id, key_name)
+        while self.tester.check_visibility_by_css(self._security_group_choice_close_css):
+            self.tester.click_element_by_css(self._security_group_choice_close_css)
+        self.tester.click_element_by_id(self._security_group_selector_id)
+        self.tester.send_keys_by_css(self._security_group_search_field_css, security_group)
+        self.tester.click_element_by_css(self._highlighted_security_group_css)
 
 
 
