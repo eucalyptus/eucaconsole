@@ -24,8 +24,7 @@ class CreateLaunchConfigPage(BasePage):
     _highlighted_security_group_css = "[class = 'active-result highlighted']"
     _security_group_choice_close_css = ".search-choice-close"
     _role_selector_id = "role"
-
-
+    _create_asg_from_lc_chckbox_id = "create_sg_from_lc"
 
     instance_types = {"m1.small": "m1.small: 1 CPUs, 256 memory (MB), 5 disk (GB,root device)",
                        "t1.micro": "t1.micro: 1 CPUs, 256 memory (MB), 5 disk (GB,root device)",
@@ -75,6 +74,7 @@ class CreateLaunchConfigPage(BasePage):
         self.tester.click_element_by_css(self._highlighted_security_group_css)
         if role is not None:
             self.tester.select_by_id(self._role_selector_id, role)
+
 
 
 
