@@ -52,7 +52,8 @@ class CreateLaunchConfigPage(BasePage):
         self.tester.wait_for_text_present_by_id(BasePage(self)._page_title_id, self._page_title)
 
 
-    def create_new_launch_config(self, lc_name, instance_type="t1.micro: 1 CPUs, 256 memory (MB), 5 disk (GB,root device)", image="centos", availabilityzones = None, min_cpapacity=None, desired_capacity=None, max_capacity=None, grace_period=None, loadbalancers=None, user_data_text=None, user_data_file_path=None):
+    def create_new_launch_config(self, lc_name, instance_type="t1.micro: 1 CPUs, 256 memory (MB), 5 disk (GB,root device)", image="centos", key_name="None (advanced option)",
+                               security_group="default", user_data_text=None, user_data_file_path=None):
 
         self.tester.send_keys_by_css(self._image_search_field_css, image)
         self.tester.click_element_by_css(self._first_image_button_css)
@@ -72,20 +73,6 @@ class CreateLaunchConfigPage(BasePage):
 
 
 
-        if min_cpapacity is not None:
-            self.tester.send_keys_by_id(self._min_capacity_field_id, min_cpapacity)
-        if desired_capacity is not None:
-            self.tester.send_keys_by_id(self._desired_capacity_field_id, desired_capacity)
-        if max_capacity is not None:
-            self.tester.send_keys_by_id(self._max_capacity_field_id, max_capacity)
-        self.tester.click_element_by_id(self._next_button_id)
-        if grace_period is not None:
-            self.tester.send_keys_by_id(self._health_check_grace_period_field_id, grace_period)
-        if availabilityzones is not None:
-            pass
-        if loadbalancers is not None:
-            pass
-        self.tester.click_element_by_id(self._create_scaling_group_button_id)
 
 
 
