@@ -102,7 +102,7 @@ class CreateLaunchConfigPage(BasePage):
                                enable_monitoring=True, availabilityzones = None, min_cpapacity=None, desired_capacity=None, max_capacity=None, grace_period=None, loadbalancers=None):
         self.create_new_launch_config(lc_name, instance_type, image, key_name,
                                security_group, user_data_text, user_data_file_path, role, create_asg, kernel_id, ramdisk_id, enable_monitoring)
-        CreateASGPage(self).create_asg(asg_name, availabilityzones, min_cpapacity, desired_capacity,
+        CreateASGPage(self.tester).create_asg(asg_name, availabilityzones, min_cpapacity, desired_capacity,
                                       max_capacity, grace_period, loadbalancers)
 
 
