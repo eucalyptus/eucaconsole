@@ -66,6 +66,7 @@ class CreateLaunchConfigPage(BasePage):
         if user_data_file_path is not None:
             self.tester.click_element_by_css(self._user_data_file_radio_bttn_css)
             pass
+        self.tester.click_element_by_id(self._next_button_step2_id)
 
 
 
