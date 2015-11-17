@@ -14,3 +14,7 @@ class GuiASG(GuiTester):
         LaunchConfigLanding(self).click_create_lc_button_on_landing_page()
         CreateLaunchConfigPage(self).create_new_launch_config(lc_name)
 
+    def create_launch_config_and_asg_from_lc_lp(self, lc_name, asg_name):
+        BasePage(self).goto_launch_config_view_via_menu()
+        LaunchConfigLanding(self).click_create_lc_button_on_landing_page()
+        CreateLaunchConfigPage(self).create_new_launch_config_and_asg(lc_name, asg_name)

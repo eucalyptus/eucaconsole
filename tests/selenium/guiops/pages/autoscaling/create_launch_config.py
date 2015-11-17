@@ -1,4 +1,5 @@
 from pages.basepage import BasePage
+from pages.autoscaling.create_asg import CreateASGPage
 
 class CreateLaunchConfigPage(BasePage):
 
@@ -95,6 +96,14 @@ class CreateLaunchConfigPage(BasePage):
             self.tester.click_element_by_id(self._create_lc_submit_step4_btn_id)
         else:
             self.tester.click_element_by_id(self._create_lc_submit_step3_btn_id)
+
+    def create_new_launch_config_and_asg(self, lc_name, asg_name, instance_type=None, image="centos", key_name="None (advanced option)",
+                               security_group="default", user_data_text=None, user_data_file_path=None, role=None, create_asg=True, kernel_id=None, ramdisk_id=None,
+                               enable_monitoring=True, availabilityzones = None, min_cpapacity=None, desired_capacity=None, max_capacity=None, grace_period=None, loadbalancers=None):
+        self.create_new_launch_config(lc_name, instance_type, image, key_name,
+                               security_group, user_data_text, user_data_file_path, role, create_asg, kernel_id, ramdisk_id, enable_monitoring)
+        CreateASGPage(self).create_asg(asg_name, availabilityzones, min_cpapacity, desired_capacity,
+                                      max_capacity, grace_period, loadbalancers)
 
 
 

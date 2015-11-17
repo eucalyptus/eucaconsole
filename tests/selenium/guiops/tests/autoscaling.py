@@ -24,7 +24,7 @@ class ASG_operations_sequence(GuiOps):
 
     def asg_ops_test(self):
         self.tester.login(self.account, self.user, self.password)
-        self.tester.create_launch_config_from_lc_lp("Alice-test-lc")
+        self.tester.create_launch_config_and_asg_from_lc_lp("Alice-test-lc", "Alice-test-ASG")
         self.tester.logout()
         self.tester.exit_browser()
 
