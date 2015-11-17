@@ -6,7 +6,8 @@ class LaunchConfigLanding(LandingPage):
         self.tester = tester
         self.verify_lc_lp_loaded()
 
-    _lcreate_lc_page_title = "Create new launch configuration"
+    _lc_landing_page_title = "Launch configurations"
+    _create_lc_button_id = "create-launchconfig-btn"
 
     _search_input_field_css = ".search-input"
 
