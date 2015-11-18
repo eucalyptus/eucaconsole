@@ -54,7 +54,22 @@ angular.module('ElasticIPsPage', ['LandingPage'])
                 return item.public_ip;
             });
             $scope.publicIP = checkedIPs.join(', ');
-            $scope.multipleItemsSelected = checkedItems.length > 1;
+            $scope.multipleItemsSelected = checkedIPs.length > 1;
+            modal.foundation('reveal', 'open');
+        };
+        $scope.revealDisassociateIPsModal = function (checkedItems) {
+            var modal = $('#disassociate-ip-modal');
+            var checkedIPs = [];
+            var instanceIDs = [];
+            checkedItems.forEach(function (item) {
+                if (item.instance_id) {
+                    checkedIPs.push(item.public_ip);
+                    instanceIDs.push(item.instance_id);
+                }
+            });
+            $scope.publicIP = checkedIPs.join(', ');
+            $scope.instanceID = instanceIDs.join(', ');
+            $scope.multipleItemsSelected = checkedIPs.length > 1;
             modal.foundation('reveal', 'open');
         };
     });

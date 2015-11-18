@@ -122,14 +122,19 @@ class IPAddressesView(LandingPageView):
     @view_config(route_name='ipaddresses_disassociate', request_method="POST")
     def ipaddresses_disassociate(self):
         if self.disassociate_form.validate():
-            public_ip = self.request.params.get('public_ip')
+            public_ip_param = self.request.params.get('public_ip')
+            public_ips = public_ip_param.split(', ')
+            instance_id_param = self.request.params.get('instance_id')
+            instance_ids = instance_id_param.split(', ')
             with boto_error_handler(self.request, self.location):
-                self.log_request(_(u"Disassociating Elastic IP {0}").format(public_ip))
-                elastic_ip = self.get_elastic_ip(public_ip)
-                elastic_ip.disassociate()
-                template = _(u'Successfully disassociated IP {ip} from instance')
-                msg = template.format(ip=public_ip)
-                self.request.session.flash(msg, queue=Notification.SUCCESS)
+                for idx, public_ip in enumerate(public_ips):
+                    self.log_request(_(u"Disassociating Elastic IP {0} from instance {1}").format(
+                        public_ip, instance_ids[idx]))
+                    elastic_ip = self.get_elastic_ip(public_ip)
+                    elastic_ip.disassociate()
+                    template = _(u'Successfully disassociated IP {ip} from instance {instance}')
+                    msg = template.format(ip=public_ip_param, instance=instance_id_param)
+                    self.request.session.flash(msg, queue=Notification.SUCCESS)
         else:
             msg = _(u'Unable to disassociate IP from instance')
             self.request.session.flash(msg, queue=Notification.ERROR)
