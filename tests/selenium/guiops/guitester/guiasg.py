@@ -3,6 +3,7 @@ from pages.basepage import BasePage
 from pages.dashboard import Dashboard
 from pages.autoscaling.launch_config_lp import LaunchConfigLanding
 from pages.autoscaling.create_launch_config import CreateLaunchConfigPage
+from pages.autoscaling.create_asg import CreateASGPage
 
 class GuiASG(GuiTester):
 
@@ -22,6 +23,9 @@ class GuiASG(GuiTester):
         LaunchConfigLanding(self).click_create_lc_button_on_landing_page()
         CreateLaunchConfigPage(self).create_new_launch_config_and_asg(lc_name, asg_name)
 
-    def create_asg_from_dashboard(self, asg_name):
+    def create_asg_from_dashboard(self, asg_name, launch_config_name, availabilityzones = None, min_cpapacity=None, desired_capacity=None, max_capacity=None, grace_period=None, loadbalancers=None):
         BasePage(self).goto_dashboard_via_menu()
-        Dashboard(self)
+        Dashboard(self).click_create_asg_link_from_dashboard()
+        CreateASGPage(self).create_asg(asg_name, launch_config_name, availabilityzones, min_cpapacity, desired_capacity,
+                                      max_capacity, grace_period, loadbalancers)
+
