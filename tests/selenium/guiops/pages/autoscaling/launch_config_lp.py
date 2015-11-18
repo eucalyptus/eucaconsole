@@ -13,7 +13,7 @@ class LaunchConfigLanding(LandingPage):
     _delete_lc_actions_menu_item_css = "#item-dropdown_{0}>li:nth-of-type(4)>a"  #lc_name required
     _create_lc_like_this_actions_menu_item_css = "#item-dropdown_{0}>li:nth-of-type(2)>a"  #lc_name required
     _view_details_actionmenu_item_css = "#item-dropdown_{0}>li>a"  #lc_name required
-    _create_asg_actions_menu_item_css =  "#item-dropdown_{0}>li:nth-of-type(2)>a"  #lc_name required
+    _create_asg_actions_menu_item_css = "#item-dropdown_{0}>li:nth-of-type(3)>a"  #lc_name required
 
     _search_input_field_css = ".search-input"
 
