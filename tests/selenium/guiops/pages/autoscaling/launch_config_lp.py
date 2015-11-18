@@ -9,6 +9,7 @@ class LaunchConfigLanding(LandingPage):
     _lc_landing_page_title = "Launch configurations"
     _create_lc_button_id = "create-launchconfig-btn"
     _lc_action_menu_id = "table-item-dropdown_{0}" #lc_name_required
+    _lc_link_css = 'a[href="/launchconfigs/{0}"]' #lc_name_required
 
     _search_input_field_css = ".search-input"
 
@@ -40,6 +41,9 @@ class LaunchConfigLanding(LandingPage):
 
     def goto_image_detail_page_via_link(self, lc_name):
         self.tester.click_element_by_xpath(self._image_link_xpath.format(lc_name))
+
+    def verify_launch_config_is_present(self, lc_name):
+        self.tester.wait_for_element_present_by_css(self._lc_link_css.format(lc_name))
 
 
 
