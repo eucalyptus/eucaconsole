@@ -30,7 +30,7 @@
         <div class="row tagentry controls-wrapper" ng-class="tagKeyClass" ng-show="tagCount &lt; 10">
             <div>
                 <div id="tag-name-input-div" class="small-4 columns">
-                    <input id='tag-name-input' name="tagNameInput" class="taginput key" placeholder="name..." ng-model="newTagKey" pattern="${layout.tag_pattern_key}" reserved="name"/>
+                    <input id='tag-name-input' name="tagNameInput" class="taginput key" placeholder="name..." ng-model="newTagKey" pattern="${layout.tag_pattern_key}" reserved="Name"/>
                     <div ng-show="!existsTagKey">
                         <small class="error" i18n:translate="">Tag may not begin with "aws:", "euca:" or its length cannot be longer than 128 chars</small>
                     </div>
@@ -38,7 +38,7 @@
                         <small class="error" i18n:translate="">Key already in use, please use another key.</small>
                     </div>
                     <div class="name-reserved-error" ng-show="tagEditorForm.tagNameInput.$error.reserved">
-                        <small class="error" i18n:translate="">"name" is a reserved word, please use another key.</small>
+                        <small class="error" i18n:translate="">"Name" is a reserved word, please use another key.</small>
                     </div>
                 </div>
                 <div id="tag-value-input-div" class="small-8 columns">
