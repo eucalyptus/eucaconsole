@@ -56,7 +56,7 @@ class GuiASG(GuiTester):
     def delete_launch_config_from_lp(self, lc_name):
         BasePage(self).goto_launch_config_view_via_menu()
         LaunchConfigLanding(self).click_action_delete_lc_on_lp(lc_name)
-        DeleteLaunchConfigModal(self).
+        DeleteLaunchConfigModal(self).delete_launch_config()
 
 
 
