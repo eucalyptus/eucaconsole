@@ -64,6 +64,6 @@ class ASGLanding(LandingPage):
         self.tester.store_text_by_xpath(self._status_xpath.format(asg_name))
 
     def verify_asg_present(self, asg_name):
-        self.tester.wait_for_element_present_by_css()
+        self.tester.wait_for_element_present_by_css(self._asg_link_css.format(asg_name))
 
 
