@@ -28,6 +28,7 @@ class GuiASG(GuiTester):
         BasePage(self).goto_asg_lp_via_menu()
         ASGLanding(self).verify_asg_present(asg_name)
 
+
     def create_asg_from_dashboard(self, asg_name, launch_config_name, availabilityzones = None, min_cpapacity=None, desired_capacity=None, max_capacity=None, grace_period=None, loadbalancers=None):
         BasePage(self).goto_dashboard_via_menu()
         Dashboard(self).click_create_asg_link_from_dashboard()
