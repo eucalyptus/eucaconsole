@@ -24,8 +24,19 @@ class ASG_operations_sequence(GuiOps):
 
     def asg_ops_test(self):
         self.tester.login(self.account, self.user, self.password)
-        self.tester.create_asg_from_asg_lp(launch_config_name="Alice-test-lc", asg_name="Alice-test-ASG")
-        self.tester.delete_asg_from_lp("Alice-test-ASG")
+        LaunchConfig1_name = self.id_generator()+"-launch-config"
+        ASG1_name = self.id_generator()+"-auto-scaling-group"
+        self.tester.create_launch_config_and_asg_from_lc_lp(lc_name=LaunchConfig1_name, asg_name=ASG1_name)
+        self.tester.delete_asg_from_lp(ASG1_name)
+        ASG2_name = self.id_generator()+"-auto-scaling-group"
+        self.tester.create_asg_from_asg_lp(launch_config_name=LaunchConfig1_name, asg_name=ASG2_name)
+        self.tester.delete_asg_from_lp(ASG2_name)
+        self.tester.delete_launch_config_from_lp(LaunchConfig1_name)
+        LaunchConfig2_name = self.id_generator()+"-launch-config"
+        self.tester.create_launch_config_from_lc_lp(LaunchConfig2_name)
+        self.tester.create_asg_from_dashboard(launch_config_name=LaunchConfig2_name, asg_name=ASG2_name)
+        self.tester.delete_launch_config_from_lp(LaunchConfig2_name)
+        self.tester.delete_asg_from_lp(ASG2_name)
         self.tester.logout()
         self.tester.exit_browser()
 
