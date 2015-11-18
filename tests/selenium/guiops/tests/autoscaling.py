@@ -35,8 +35,8 @@ class ASG_operations_sequence(GuiOps):
         LaunchConfig2_name = self.id_generator()+"-launch-config"
         self.tester.create_launch_config_from_lc_lp(LaunchConfig2_name)
         self.tester.create_asg_from_dashboard(launch_config_name=LaunchConfig2_name, asg_name=ASG2_name)
-        self.tester.delete_launch_config_from_lp(LaunchConfig2_name)
         self.tester.delete_asg_from_lp(ASG2_name)
+        self.tester.delete_launch_config_from_lp(LaunchConfig2_name)
         self.tester.logout()
         self.tester.exit_browser()
 
