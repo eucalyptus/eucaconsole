@@ -99,6 +99,13 @@
                 </ul>
             </div>
         </div>
+        <div class="large-12 columns">
+            <metal:block metal:use-macro="layout.global_macros['help_expando']" />
+            <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
+                <!--! HELP CONTENT HERE -->
+                <div id="help-html-console_instance_detail_monitoring" ng-include="'${layout.help_path('console_instance_detail_monitoring.html')}'"></div> 
+            </div>
+        </div>
         <form method="post" id="monitoring-form" action="${request.route_path('instance_monitoring_update', id=instance.id)}">
             ${structure:monitoring_form['csrf_token']}
         </form>

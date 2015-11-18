@@ -48,6 +48,7 @@ class GroupsView(LandingPageView):
 
     def __init__(self, request):
         super(GroupsView, self).__init__(request)
+        self.title_parts = [_(u'Groups')]
         self.conn = self.get_connection(conn_type="iam")
         self.initial_sort_key = 'group_name'
         self.prefix = '/groups'
@@ -58,7 +59,6 @@ class GroupsView(LandingPageView):
         json_items_endpoint = self.request.route_path('groups_json')
         if self.request.GET:
             json_items_endpoint += u'?{params}'.format(params=urlencode(self.request.GET))
-        user_choices = []  # sorted(set(item.user_name for item in conn.get_all_users().users))
         # filter_keys are passed to client-side filtering in search box
         self.filter_keys = ['path', 'group_name', 'group_id', 'arn']
         # sort_keys are passed to sorting drop-down
@@ -112,13 +112,13 @@ class GroupsJsonView(BaseView):
             try:
                 policies = self.conn.get_all_group_policies(group_name=group.group_name)
                 policies = policies.policy_names
-            except BotoServerError as exc:
+            except BotoServerError:
                 pass
             user_count = 0
             try:
                 group = self.conn.get_group(group_name=group.group_name)
                 user_count = len(group.users) if hasattr(group, 'users') else 0
-            except BotoServerError as exc:
+            except BotoServerError:
                 pass
             groups.append(dict(
                 path=group.path,
@@ -140,6 +140,7 @@ class GroupView(BaseView):
 
     def __init__(self, request):
         super(GroupView, self).__init__(request)
+        self.title_parts = [_(u'Group'), request.matchdict.get('name') or _(u'Create')]
         self.conn = self.get_connection(conn_type="iam")
         self.group = self.get_group()
         self.group_route_id = self.request.matchdict.get('name')
@@ -175,7 +176,7 @@ class GroupView(BaseView):
         group = None
         try:
             group = self.conn.get_group(group_name=group_param)
-        except BotoServerError as err:
+        except BotoServerError:
             pass
         return group
 
@@ -226,7 +227,7 @@ class GroupView(BaseView):
             new_path = path_param if self.group.path != path_param else None
             this_group_name = new_group_name if new_group_name is not None else self.group.group_name
             if new_users is not None:
-                self.group_update_users( self.group.group_name, new_users)
+                self.group_update_users(self.group.group_name, new_users)
             location = self.request.route_path('group_view', name=this_group_name)
             if new_group_name is not None or new_path is not None:
                 with boto_error_handler(self.request, location):

@@ -1,3 +1,5 @@
+import time
+
 from selenium import webdriver
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
@@ -7,7 +9,6 @@ from selenium.common.exceptions import TimeoutException
 from selenium.common.exceptions import ElementNotVisibleException
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import time
 
 
 class UICheckException(Exception):
@@ -564,7 +565,7 @@ class SeleniumApi(object):
         return self.driver.find_element_by_xpath(xpath).text
 
 
-    def select_by_id(self, element_id, text, index=-1, timeout_in_seconds=None):
+    def select_by_id(self, element_id, text='', index=-1, timeout_in_seconds=None):
         """
         Selects element with particular text on it.
         :param element_id:
