@@ -67,6 +67,8 @@ angular.module('CreateAccountPage', ['UserEditor', 'Quotas', 'EucaConsoleUtils']
               success(function(oData) {
                 var results = oData ? oData.results : [];
                 Notify.success(oData.message);
+
+                var redirectTimeout = 0;
                 if (results.hasFile == 'y') {
                     $.generateFile({
                         csrf_token: csrf_token,
@@ -74,12 +76,13 @@ angular.module('CreateAccountPage', ['UserEditor', 'Quotas', 'EucaConsoleUtils']
                         content: 'none',
                         script: $scope.getFileEndpoint
                     });
-                    // this is clearly a hack. We'd need to bake callbacks into the generateFile
-                    // stuff to do this properly.
-                    setTimeout(function() {
-                        window.location = $scope.accountRedirect.replace('_name_', $scope.accountName);
-                    }, 3000);
+                    redirectTimeout = 3000;
                 }
+                // this is clearly a hack. We'd need to bake callbacks into the generateFile
+                // stuff to do this properly.
+                setTimeout(function() {
+                    window.location = $scope.accountRedirect.replace('_name_', $scope.accountName);
+                }, redirectTimeout);
               }).
               error(function(oData, status) {
                 eucaHandleError(oData, status);

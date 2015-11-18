@@ -288,6 +288,7 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor','EucaConsoleUtils', '
                         }
                     }
                 });
+                $scope.isHelpExpanded = false;
             });
             $scope.currentStepIndex = nextStep;
             $scope.checkRequiredInput();

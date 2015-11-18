@@ -1,6 +1,7 @@
 <metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
 <head metal:fill-slot="head_css">
+    <link rel="stylesheet" href="${request.static_path('eucaconsole:static/css/widgets/user_editor.css')}" />
 </head>
 
 <div metal:fill-slot="main_content">

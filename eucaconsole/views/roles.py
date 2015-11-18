@@ -49,6 +49,7 @@ class RolesView(LandingPageView):
 
     def __init__(self, request):
         super(RolesView, self).__init__(request)
+        self.title_parts = [_(u'Roles')]
         self.conn = self.get_connection(conn_type="iam")
         self.initial_sort_key = 'role_name'
         self.prefix = '/roles'
@@ -117,7 +118,7 @@ class RolesJsonView(BaseView):
                 try:
                     policies = self.conn.list_role_policies(role_name=role.role_name)
                     policies = policies.policy_names
-                except BotoServerError as exc:
+                except BotoServerError:
                     pass
                 instances = []
                 try:
@@ -125,7 +126,7 @@ class RolesJsonView(BaseView):
                                     profile.roles and profile.roles.member.role_name == role.role_name]
                     instances = self.get_connection().get_only_instances(
                         filters={'iam-instance-profile.arn': profile_arns})
-                except BotoServerError as exc:
+                except BotoServerError:
                     pass
                 """
                 user_count = 0
@@ -155,6 +156,7 @@ class RoleView(BaseView):
 
     def __init__(self, request):
         super(RoleView, self).__init__(request)
+        self.title_parts = [_(u'Role'), request.matchdict.get('name') or _(u'Create')]
         self.conn = self.get_connection(conn_type="iam")
         self.role = self.get_role()
         self.role_route_id = self.request.matchdict.get('name')
@@ -185,7 +187,7 @@ class RoleView(BaseView):
         try:
             role = self.conn.get_role(role_name=role_param)
             role = role.get_role_response.get_role_result.role
-        except BotoServerError as err:
+        except BotoServerError:
             pass
         return role
 

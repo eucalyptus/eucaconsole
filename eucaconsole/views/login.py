@@ -90,6 +90,7 @@ class LoginView(BaseView, PermissionCheckMixin):
 
     def __init__(self, request):
         super(LoginView, self).__init__(request)
+        self.title_parts = [_(u'Login')]
         self.euca_login_form = EucaLoginForm(self.request, formdata=self.request.params or None)
         self.aws_login_form = AWSLoginForm(self.request, formdata=self.request.params or None)
         self.aws_enabled = asbool(request.registry.settings.get('enable.aws'))

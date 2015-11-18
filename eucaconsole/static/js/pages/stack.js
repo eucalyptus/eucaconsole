@@ -15,6 +15,7 @@ angular.module('StackPage', ['MagicSearch', 'EucaConsoleUtils'])
         $scope.resources = [];
         $scope.codeEditor = null;
         $scope.stackTemplate = '';
+        $scope.currentTab = 'general-tab';
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.stack_name = optionsJson.stack_name;
@@ -54,6 +55,7 @@ angular.module('StackPage', ['MagicSearch', 'EucaConsoleUtils'])
                     $scope.$broadcast('updatedTab', $scope.currentTab);
                 }
              });
+             $scope.isHelpExpanded = false;
         };
         $scope.clickTab = function ($event, tab){
             $event.preventDefault();
