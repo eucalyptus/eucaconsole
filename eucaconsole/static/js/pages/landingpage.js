@@ -25,7 +25,8 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch'])
         $scope.limitCount = 100;  // Beyond this number a "show ___ more" button will appear.
         $scope.displayCount = $scope.limitCount;
         $scope.transitionalRefresh = true;
-        $scope.initController = function (pageResource, sortKey, jsonItemsEndpoint) {
+        $scope.server_filter = false;
+        $scope.initController = function (pageResource, sortKey, jsonItemsEndpoint, cloud_type) {
             pageResource = pageResource || window.location.pathname.split('/')[0];
             $scope.jsonEndpoint = jsonItemsEndpoint;
             $scope.initLocalStorageKeys(pageResource);
@@ -35,6 +36,9 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch'])
             $scope.setFocus();
             $scope.enableInfiniteScroll();
             $scope.storeAWSRegion();
+            if (cloud_type !== undefined && cloud_type === "aws") {
+                $scope.server_filter = true;
+            }
         };
         $scope.initLocalStorageKeys = function (pageResource){
             $scope.pageResource = pageResource;
@@ -161,7 +165,12 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch'])
                     // and re-open any action menus
                     $scope.clickOpenDropdown();
                 });
-                $scope.facetFilterItems();
+                if ($scope.server_filter === false) {
+                    $scope.facetFilterItems();
+                }
+                else {
+                    $scope.facetItems = $scope.unfilteredItems;
+                }
             }).error(function (oData, status) {
                 if (oData === undefined && status === 0) {  // likely interrupted request
                     return;
@@ -203,6 +212,9 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch'])
                 var results = $scope.unfilteredItems;
                 // filter results
                 var matchFunc = function(val) {
+                    if (val === null) {
+                        console.log("val is null");
+                    }
                     if (typeof val === 'string') {
                         if ($.inArray(val, facets[key]) > -1 ||
                             $.inArray(val.toLowerCase(), facets[key]) > -1) {
@@ -219,6 +231,9 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch'])
                 };
                 var filterFunc = function(item) {
                     var val = item.hasOwnProperty(key) && item[key];
+                    if (val === undefined || val === null) {
+                        return false;
+                    }
                     if (Array.isArray(val)) {
                         for (var i=0; i<val.length; i++) {
                             return matchFunc(val[i]);
@@ -323,7 +338,21 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch'])
                 url = url + "?" + query;
             }
             window.history.pushState(query, "", url);
-            $scope.facetFilterItems();
+            if ($scope.server_filter === true) {
+                url = $scope.jsonEndpoint;
+                if (url.indexOf("?") > -1) {
+                    url = url.split("?")[0];
+                }
+                if (query.length > 0) {
+                    url = url + "?" + query;
+                }
+                $scope.jsonEndpoint = url;
+                $scope.itemsLoading=true;
+                $scope.getItems();
+            }
+            else {
+                $scope.facetFilterItems();
+            }
         });
         $scope.$on('textSearch', function($event, text, filter_keys) {
             $scope.searchFilter = text;
