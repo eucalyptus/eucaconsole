@@ -5,6 +5,7 @@ from pages.autoscaling.launch_config_lp import LaunchConfigLanding
 from pages.autoscaling.create_launch_config import CreateLaunchConfigPage
 from pages.autoscaling.create_asg import CreateASGPage
 from pages.autoscaling.asg_lp import ASGLanding
+from dialogs.asg_dialogs import DeleteASGModal
 
 class GuiASG(GuiTester):
 
@@ -35,4 +36,10 @@ class GuiASG(GuiTester):
         ASGLanding(self).click_action_create_asg_on_landing_page()
         CreateASGPage(self).create_asg(asg_name, launch_config_name, availabilityzones, min_cpapacity, desired_capacity,
                                       max_capacity, grace_period, loadbalancers)
+
+    def delete_asg_from_lp(self, asg_name):
+        BasePage(self).goto_asg_lp_via_menu()
+        ASGLanding(self).click_action_delete_asg_on_lp(asg_name)
+        DeleteASGModal(self).delete_asg()
+
 
