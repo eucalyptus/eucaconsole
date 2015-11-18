@@ -62,7 +62,8 @@
         <a href="#" id="disassociate_ip_close_link" class="close-reveal-modal">&#215;</a>
     </div>
     <div id="release-ip-modal" class="reveal-modal small" data-reveal="">
-        <h3 i18n:translate="">Release IP address to cloud</h3>
+        <h3 i18n:translate="" ng-if="!multipleItemsSelected">Release IP address to cloud</h3>
+        <h3 i18n:translate="" ng-if="multipleItemsSelected">Release IP addresses to cloud</h3>
         <p i18n:translate="">If you release an elastic IP address to the cloud, you can no longer associate
             that IP address with any of your instances.
             If the elastic IP address is currently associated with an instance when you release it to the cloud,
@@ -78,7 +79,10 @@
             <input type="hidden" name="public_ip" value="{{ publicIP }}" />
             <input type="hidden" name="allocation_id" value="{{ allocationID }}" />
             <div class="dialog-submit-button">
-                <button type="submit" id="release_ip_submit_button" class="button expand" i18n:translate="">Yes, Release Address to Cloud</button>
+                <button type="submit" id="release_ip_submit_button" class="button expand">
+                    <span i18n:translate="" ng-if="!multipleItemsSelected">Yes, Release Address to Cloud</span>
+                    <span i18n:translate="" ng-if="multipleItemsSelected">Yes, Release Addresses to Cloud</span>
+                </button>
             </div>
             <div class="dialog-progress-display hide">
                 <span i18n:translate="">Sending request </span>&nbsp;<i class="busy"></i>

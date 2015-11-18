@@ -12,6 +12,7 @@ angular.module('ElasticIPsPage', ['LandingPage'])
         $scope.instanceID = '';
         $scope.isNotValid = true;
         $scope.urlParams = $.url().param();
+        $scope.multipleItemsSelected = false;
         $scope.initChosenSelectors = function () {
             $('#instance_id').chosen({'width': '80%', 'search_contains': true});
         };
@@ -50,6 +51,7 @@ angular.module('ElasticIPsPage', ['LandingPage'])
         $scope.revealReleaseIPsModal = function (checkedItems) {
             var modal = $('#release-ip-modal');
             $scope.publicIP = checkedItems.join(', ');
+            $scope.multipleItemsSelected = checkedItems.length > 1;
             modal.foundation('reveal', 'open');
         };
     });
