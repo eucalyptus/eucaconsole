@@ -247,6 +247,9 @@ $tooltip-padding: rem-calc(5);
             &.count {
                 text-align: center;
             }
+            &.checkbox-header {
+                width: 2rem;
+            }
         }
     }
     tr {

@@ -1875,6 +1875,7 @@ table.table thead tr { background-color: #f2f2f2; }
 table.table thead tr th { padding-top: 0.5rem; padding-bottom: 0.5rem; padding-left: 6px; padding-right: 6px; vertical-align: top; color: #444; text-transform: uppercase; }
 table.table thead tr th.actions { text-align: right; }
 table.table thead tr th.count { text-align: center; }
+table.table thead tr th.checkbox-header { width: 2rem; }
 table.table tr td.count { text-align: center; }
 table.table tr td { vertical-align: top; }
 table.table td.breakall { word-break: break-all !important; }

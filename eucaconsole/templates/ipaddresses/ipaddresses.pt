@@ -68,7 +68,7 @@
                 </ul>
             </div>
             <metal:block metal:fill-slot="tableview_headers">
-                <th>
+                <th class="checkbox-header">
                     <input type="checkbox" ng-model="allCheckboxes"
                            ng-change="selectAllCheckboxes(allCheckboxes, 'public_ip')" />
                 </th>
