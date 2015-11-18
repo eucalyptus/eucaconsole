@@ -14,7 +14,7 @@ class Dashboard(BasePage):
         _availability_zone_dropdown_id = "zone-dropdown"
         _first_availability_zone_on_list_css = "ul#zone-dropdown>li:nth-of-type(2)>a"
         _create_s_group_link_css = 'a[href="/securitygroups/new"]'
-        _create_asg_link_css = 'a[href="/scalinggroups/new]"]'
+        _create_asg_link_css = 'a[href="/scalinggroups/new"]'
 
 
         def __init__(self, tester):
