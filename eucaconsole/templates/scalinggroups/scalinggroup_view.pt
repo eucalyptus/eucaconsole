@@ -37,7 +37,7 @@
                     </metal:actions>
                 </metal:block>
                 <form id="scalinggroup-detail-form" action="${request.route_path('scalinggroup_update', id=scaling_group.name)}"
-                      method="post" data-abide="" name="scalingGroupDetailForm" novalidate
+                      method="post" data-abide="" name="scalingGroupDetailForm" novalidate=""
                       tal:define="avail_zone_html_attrs {'data-placeholder': avail_zone_placeholder_text};
                                   vpc_subnet_html_attrs {'data-placeholder': ' '};
                                   load_balancers_html_attrs {'data-placeholder': ' '};
@@ -112,7 +112,7 @@
                     <hr />
                     <tag-editor
                             ng-model="tags"
-                            template="${request.static_path('eucaconsole:static/js/widgets/tag-editor/tag-editor.html')}"
+                            template="${request.route_path('tag_editor_template')}"
                             tal:content="tags | structure">
                     </tag-editor>
                     <hr />

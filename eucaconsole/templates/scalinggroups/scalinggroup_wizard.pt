@@ -73,7 +73,7 @@
                             </div>
                             <hr />
                             ${panel('autoscale_tag_editor', tags=[])}
-                            <tag-editor template="${request.static_path('eucaconsole:static/js/widgets/tag-editor/tag-editor.html')}"></tag-editor>
+                            <tag-editor ng-model="tags" template="${request.route_path('tag_editor_template')}"></tag-editor>
                             <hr />
                             <div>
                                 <label>
