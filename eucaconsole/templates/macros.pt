@@ -198,6 +198,16 @@
     </div>
 </metal:plaintableview_macro>
 
+<!-- "More actions" menu item for multi-select operations on landing pages -->
+<metal:moreactions_macro metal:define-macro="more_actions">
+    <a class="button dropdown more-actions" id="more-actions-btn"
+       ng-if="landingPageView === 'tableview' &amp;&amp; checkedItems.length"
+       data-dropdown="more-actions-dropdown" i18n:translate="">More Actions</a>
+    <ul id="more-actions-dropdown" class="f-dropdown" data-dropdown-content="">
+        <metal:block metal:define-slot="menu_items" />
+    </ul>
+</metal:moreactions_macro>
+
 <!-- Breadcrumbs ===== -->
 <metal:breadcrumbs metal:define-macro="breadcrumbs">
     <div id="breadcrumbs">

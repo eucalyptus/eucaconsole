@@ -20,14 +20,13 @@
                 <a class="button" id="allocate-ipaddresses-btn" data-reveal-id="allocate-ip-modal" i18n:translate="">
                     Allocate Elastic IP Addresses
                 </a>
-                <a class="button dropdown more-actions" id="more-actions-btn"
-                   ng-if="landingPageView === 'tableview' &amp;&amp; checkedItems.length"
-                   data-dropdown="more-actions-dropdown" i18n:translate="">More Actions</a>
-                <ul id="more-actions-dropdown" class="f-dropdown" data-dropdown-content="">
-                    <li>
-                        <a i18n:translate="" ng-click="revealReleaseIPsModal(checkedItems)">Release to cloud</a>
-                    </li>
-                </ul>
+                <metal:block metal:use-macro="layout.global_macros['more_actions']">
+                    <div metal:fill-slot="menu_items" tal:omit-tag="">
+                        <li>
+                            <a i18n:translate="" ng-click="revealReleaseIPsModal(checkedItems)">Release to cloud</a>
+                        </li>
+                    </div>
+                </metal:block>
             </div>
             <div metal:fill-slot="tile_header">
                 <a ng-href="${prefix}/{{ item.public_ip }}">{{ item.public_ip }}</a>
