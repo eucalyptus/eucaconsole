@@ -17,13 +17,13 @@
         <h3 id="pagetitle"><strong i18n:translate="">Elastic IPs</strong></h3>
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
-                <a class="button" id="allocate-ipaddresses-btn"
-                   ng-class="{'split': landingPageView === 'tableview'}"
-                   data-reveal-id="allocate-ip-modal">
-                    <span i18n:translate="" tal:omit-tag="">Allocate Elastic IP Addresses</span>
-                    <span class="euca-split" data-dropdown="split-dropdown" ng-if="landingPageView === 'tableview'"></span>
+                <a class="button" id="allocate-ipaddresses-btn" data-reveal-id="allocate-ip-modal" i18n:translate="">
+                    Allocate Elastic IP Addresses
                 </a>
-                <ul id="split-dropdown" class="f-dropdown" data-dropdown-content="">
+                <a class="button dropdown more-actions" id="more-actions-btn"
+                   ng-if="landingPageView === 'tableview' &amp;&amp; checkedItems.length"
+                   data-dropdown="more-actions-dropdown" i18n:translate="">More Actions</a>
+                <ul id="more-actions-dropdown" class="f-dropdown" data-dropdown-content="">
                     <li>
                         <a i18n:translate="" ng-click="revealReleaseIPsModal(checkedItems)">Release to cloud</a>
                     </li>
