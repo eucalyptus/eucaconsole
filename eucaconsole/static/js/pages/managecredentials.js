@@ -30,8 +30,8 @@ angular.module('ManageCredentialsView', [])
             link: function (scope, element, attrs, ctrl) {
                 var passwordCtrl = ctrl[1];
 
-                element.bind('keyup', function (event) {
-                    value = element.val();
+                element.bind('keyup', function () {
+                    var value = element.val();
                     scope.score = zxcvbn(value).score;
                     passwordCtrl.update(scope.score);
                 });
@@ -70,7 +70,7 @@ angular.module('ManageCredentialsView', [])
             }
         };
     })
-    .controller('ManageCredentialsViewCtrl', function ($scope, $http) {
+    .controller('ManageCredentialsViewCtrl', ['$scope', '$http', function ($scope, $http) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
         $scope.isDisabled = function () {
@@ -116,5 +116,5 @@ angular.module('ManageCredentialsView', [])
         $scope.cancelManageCredentialsUpdate = function () {
             window.history.back();
         };
-    })
+    }])
 ; 
