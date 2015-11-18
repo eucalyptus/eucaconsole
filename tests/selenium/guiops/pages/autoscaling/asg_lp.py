@@ -7,6 +7,7 @@ class ASGLanding(LandingPage):
         self.verify_asg_lp_loaded()
 
     _asg_landing_page_title = "Scaling groups"
+    _asg_link_css = 'a[ng-href="/scalinggroups/{0}"]'#asg_name_required
     _create_asg_button_id = "create-scalinggroup-btn"
     _asg_action_menu_id = "table-item-dropdown_{0}" #asg_name_required
     _view_details_actionmenu_item_css = "#item-dropdown_{0}>li>a"  #asg_name required
@@ -61,5 +62,8 @@ class ASGLanding(LandingPage):
 
     def get_asg_status(self, asg_name):
         self.tester.store_text_by_xpath(self._status_xpath.format(asg_name))
+
+    def verify_asg_present(self, asg_name):
+        self.tester.wait_for_element_present_by_css()
 
 
