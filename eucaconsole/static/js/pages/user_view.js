@@ -49,6 +49,7 @@ angular.module('UserView', ['PolicyList', 'Quotas', 'EucaConsoleUtils'])
                     $scope.$broadcast('updatedTab', $scope.currentTab);
                 }
              });
+             $scope.isHelpExpanded = false;
         };
         $scope.clickTab = function ($event, tab){
             $event.preventDefault();

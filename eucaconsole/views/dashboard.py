@@ -63,7 +63,7 @@ class DashboardView(BaseView):
 
     def __init__(self, request):
         super(DashboardView, self).__init__(request)
-        self.request = request
+        self.title_parts = [_(u'Dashboard')]
         self.conn = self.get_connection()
 
     @view_config(route_name='dashboard', request_method='GET', renderer='../templates/dashboard.pt')

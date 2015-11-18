@@ -48,6 +48,7 @@ class IAMPolicyWizardView(BaseView):
 
     def __init__(self, request):
         super(IAMPolicyWizardView, self).__init__(request)
+        self.title_parts = [_(u'IAM Policy Wizard')]
         self.request = request
         self.ec2_conn = self.get_connection()
         self.iam_conn = self.get_connection(conn_type='iam')

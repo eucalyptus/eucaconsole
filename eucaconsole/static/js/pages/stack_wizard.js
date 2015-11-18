@@ -263,6 +263,7 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
                 $scope.summarySection.find('.step' + nextStep).removeClass('hide');
                 $scope.currentStepIndex = nextStep;
                 $scope.checkRequiredInput();
+                $scope.isHelpExpanded = false;
             },50);
             if (nextStep === 2) {
                 $scope.updateChosenIds();

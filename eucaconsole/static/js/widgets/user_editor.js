@@ -4,11 +4,24 @@
  *
  */
 angular.module('UserEditor', [])
-    .controller('UserEditorCtrl', function ($scope, $timeout) {
-        $scope.userEditor = $('#user-editor');
-        $scope.userInputs = $scope.userEditor.find('.userinput');
-        $scope.usersTextarea = $scope.userEditor.find('textarea#users');
-        $scope.isDisabled = true;
+    .directive('reserved', function () {
+        return {
+            restrict: 'A',
+            require: 'ngModel',
+            link: function (scope, element, attrs, ctrl) {
+                var reserved = attrs.reserved.split(/\s+/);
+                ctrl.$validators.reserved = function (modelValue) {
+                    var isValid = reserved.indexOf(modelValue) === -1;
+                    return isValid;
+                };
+            }
+        };
+    })
+    .controller('UserEditorCtrl', function ($scope) {
+        $scope.isDisabled = function () {
+            return $scope.newUserName === '' || $scope.userEditor.$invalid;
+        };
+        $scope.usersTextarea = $('#user-editor').find('textarea#users');
         $scope.newUserName = '';
         $scope.usersArray = [];
         $scope.syncUsers = function () {
@@ -20,12 +33,6 @@ angular.module('UserEditor', [])
         };
         $scope.initUsers = function() {
             $scope.syncUsers();
-            $scope.setWatch();
-        };
-        $scope.setWatch = function () {
-            $scope.$watch('newUserName', function () {
-                $scope.validateUsername();
-            });
         };
         $scope.removeUser = function (index, $event) {
             $event.preventDefault();
@@ -40,58 +47,25 @@ angular.module('UserEditor', [])
                 $scope.addUser($event);
             }
         };
-        $scope.validateUsername = function ($event) {
-           if( $scope.newUserName.match(/^[a-zA-Z0-9\+\=\,\.\@\-]{1,64}$/) ){
-               $scope.isDisabled = false;
-           }else {
-               $scope.isDisabled = true;
-           }
-        };
-        $scope.addUser = function ($event) {
-            $event.preventDefault();
-            $scope.validateUsername();
-            if( $scope.isDisabled ){
-                return false;
-            }
-            var userEntry = $($event.currentTarget).closest('.userentry'),
-                userNameField = userEntry.find('.name'),
-                usersArrayLength = $scope.usersArray.length,
-                existingUserFound = false,
-                form = $($event.currentTarget).closest('form'),
-                invalidFields = form.find('[data-invalid]');
-            if (userNameField.val()) {
-                // Trigger validation to avoid users that start with 'aws:'
-                form.trigger('validate');
-                if (invalidFields.length) {
-                    invalidFields.focus();
-                    $scope.isDisabled = true;
-                    return false;
-                }
-                // Avoid adding a new user if the name duplicates an existing one.
-                for (var i=0; i < usersArrayLength; i++) {
-                    if ($scope.usersArray[i].name === $scope.newUserName) {
-                        existingUserFound = true;
-                        break;
-                    }
-                }
-                if (existingUserFound) {
-                    userNameField.focus();
-                    $scope.isDisabled = true;
-                } else {
-                    $scope.usersArray.push({
-                        'name': $scope.newUserName,
-                        'fresh': 'new'
-                    });
-                    $scope.syncUsers();
-                    $scope.newUserName = '';
-                    userNameField.val('').focus();
-                    $scope.isDisabled = true;
-                    $scope.$emit('userAdded');
-                }
-            } else {
+        $scope.addUser = function () {
+            var userNameField = $('#user-name-field');
+
+            var existingUserFound = $scope.usersArray.some(function (user) {
+                return user.name === $scope.newUserName;
+            });
+            if(existingUserFound) {
                 userNameField.focus();
-                $scope.isDisabled = true;
+                return;
             }
+
+            $scope.usersArray.push({
+                name: $scope.newUserName,
+                fresh: 'new'
+            });
+            $scope.syncUsers();
+            $scope.newUserName = '';
+            userNameField.focus();
+            $scope.$emit('userAdded');
         };
     })
 ;

@@ -40,3 +40,24 @@
 .top-section {
     padding-bottom: 0.5rem;
 }
+
+form[name="account-new-form"] {
+  #account-name,
+  .userinput.name {
+    width: 50%;
+  }
+  &.ng-invalid-reserved {
+    small.error.reserved {
+      display: block;
+    }
+    .userinput.name {
+      border-color: $euca-validation-error-color;
+      background-color: $euca-validation-input-bgcolor;
+    }
+  }
+  &.ng-valid-reserved {
+    small.error.reserved {
+      display: none;
+    }
+  }
+}
