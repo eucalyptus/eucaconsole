@@ -25,7 +25,7 @@ class CreateASGPage(BasePage):
     def create_asg(self, asg_name, launch_config_name=None, availabilityzones = None, min_cpapacity=None, desired_capacity=None, max_capacity=None, grace_period=None, loadbalancers=None):
         self.tester.send_keys_by_id(self._name_input_field_id, asg_name)
         if launch_config_name is not None:
-            self.select_by_id(self._launch_configuration_selector_id, launch_config_name)
+            self.tester.select_by_id(self._launch_configuration_selector_id, launch_config_name)
         if min_cpapacity is not None:
             self.tester.send_keys_by_id(self._min_capacity_field_id, min_cpapacity)
         if desired_capacity is not None:
