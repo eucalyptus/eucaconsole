@@ -6,6 +6,7 @@ from pages.autoscaling.create_launch_config import CreateLaunchConfigPage
 from pages.autoscaling.create_asg import CreateASGPage
 from pages.autoscaling.asg_lp import ASGLanding
 from dialogs.asg_dialogs import DeleteASGModal
+from dialogs.launch_config_dialogs import DeleteLaunchConfigModal
 
 class GuiASG(GuiTester):
 
@@ -51,5 +52,11 @@ class GuiASG(GuiTester):
         BasePage(self).goto_asg_lp_via_menu()
         ASGLanding(self).click_action_delete_asg_on_lp(asg_name)
         DeleteASGModal(self).delete_asg()
+
+    def delete_launch_config_from_lp(self, lc_name):
+        BasePage(self).goto_launch_config_view_via_menu()
+        LaunchConfigLanding(self).click_action_delete_lc_on_lp(lc_name)
+
+
 
 
