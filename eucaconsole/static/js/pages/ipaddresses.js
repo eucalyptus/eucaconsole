@@ -50,7 +50,10 @@ angular.module('ElasticIPsPage', ['LandingPage'])
         };
         $scope.revealReleaseIPsModal = function (checkedItems) {
             var modal = $('#release-ip-modal');
-            $scope.publicIP = checkedItems.join(', ');
+            var checkedIPs = checkedItems.map(function (item) {
+                return item.public_ip;
+            });
+            $scope.publicIP = checkedIPs.join(', ');
             $scope.multipleItemsSelected = checkedItems.length > 1;
             modal.foundation('reveal', 'open');
         };

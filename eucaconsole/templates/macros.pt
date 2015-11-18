@@ -260,7 +260,7 @@
 
 <!-- Detail page actions menu ===== -->
 <metal:actionsmenu metal:define-macro="actions_menu">
-    <div class="actions-menu">
+    <div class="actions-menu" ng-cloak="">
         <span class="button dropdown" data-dropdown="actions-dropdown">
             <a href="" i18n:translate="">Actions</a>
         </span>

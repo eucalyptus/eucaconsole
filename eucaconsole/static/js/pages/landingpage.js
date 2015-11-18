@@ -267,26 +267,23 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch'])
                 }
             });
         };
-        $scope.handleItemSelection = function (item) {
-            var itemId = item.id || item.name || item.public_ip;
+        $scope.handleItemSelection = function (isChecked, item) {
             var itemIdx;
-            if (item.isChecked) {
-                if ($scope.checkedItems.indexOf(itemId) === -1) {
-                    $scope.checkedItems.push(itemId);
+            if (isChecked) {
+                if ($scope.checkedItems.indexOf(item) === -1) {
+                    $scope.checkedItems.push(item);
                 }
             } else {
-                itemIdx = $scope.checkedItems.indexOf(itemId);
+                itemIdx = $scope.checkedItems.indexOf(item);
                 if (itemIdx !== -1) {
                     $scope.checkedItems.splice(itemIdx, 1);
                 }
             }
         };
-        $scope.selectAllCheckboxes = function (allCheckboxes, itemIdentifier) {
+        $scope.selectAllCheckboxes = function (allCheckboxes) {
             $scope.checkedItems = [];
             if (allCheckboxes) {
-                angular.forEach($scope.items, function (item) {
-                    $scope.checkedItems.push(item[itemIdentifier]);
-                });
+                $scope.checkedItems = $scope.items;
             }
         };
         $scope.$on('searchUpdated', function($event, query) {

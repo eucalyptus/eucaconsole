@@ -70,7 +70,7 @@
             <metal:block metal:fill-slot="tableview_headers">
                 <th class="checkbox-header">
                     <input type="checkbox" ng-model="allCheckboxes"
-                           ng-change="selectAllCheckboxes(allCheckboxes, 'public_ip')" />
+                           ng-change="selectAllCheckboxes(allCheckboxes)" />
                 </th>
                 <th i18n:translate="">Public IP address</th>
                 <th i18n:translate="">Scope</th>
@@ -80,7 +80,7 @@
             <metal:block metal:fill-slot="tableview_columns">
                 <td>
                     <input type="checkbox" class="row-checkbox" ng-model="item.isChecked"
-                           ng-checked="allCheckboxes" ng-change="handleItemSelection(item)" />
+                           ng-checked="allCheckboxes" ng-change="handleItemSelection(item.isChecked, item)" />
                 </td>
                 <td><a ng-href="${prefix}/{{ item.public_ip }}">{{ item.public_ip }}</a></td>
                 <td tal:condition="is_vpc_supported">
