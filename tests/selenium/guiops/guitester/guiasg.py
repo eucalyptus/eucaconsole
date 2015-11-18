@@ -4,6 +4,7 @@ from pages.dashboard import Dashboard
 from pages.autoscaling.launch_config_lp import LaunchConfigLanding
 from pages.autoscaling.create_launch_config import CreateLaunchConfigPage
 from pages.autoscaling.create_asg import CreateASGPage
+from pages.autoscaling.asg_lp import ASGLanding
 
 class GuiASG(GuiTester):
 
@@ -26,6 +27,12 @@ class GuiASG(GuiTester):
     def create_asg_from_dashboard(self, asg_name, launch_config_name, availabilityzones = None, min_cpapacity=None, desired_capacity=None, max_capacity=None, grace_period=None, loadbalancers=None):
         BasePage(self).goto_dashboard_via_menu()
         Dashboard(self).click_create_asg_link_from_dashboard()
+        CreateASGPage(self).create_asg(asg_name, launch_config_name, availabilityzones, min_cpapacity, desired_capacity,
+                                      max_capacity, grace_period, loadbalancers)
+
+    def create_asg_from_asg_lp(self, asg_name, launch_config_name, availabilityzones = None, min_cpapacity=None, desired_capacity=None, max_capacity=None, grace_period=None, loadbalancers=None):
+        BasePage(self).goto_asg_lp_via_menu()
+        ASGLanding(self).click_action_create_asg_on_landing_page()
         CreateASGPage(self).create_asg(asg_name, launch_config_name, availabilityzones, min_cpapacity, desired_capacity,
                                       max_capacity, grace_period, loadbalancers)
 
