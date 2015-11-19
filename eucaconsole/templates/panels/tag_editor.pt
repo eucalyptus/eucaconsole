@@ -38,7 +38,7 @@
                         <small class="error" i18n:translate="">Key already in use, please use another key.</small>
                     </div>
                     <div class="name-reserved-error" ng-show="tagEditorForm.tagNameInput.$error.reserved">
-                        <small class="error" i18n:translate="">"Name" is a reserved word, please use another key.</small>
+                        <small class="error" i18n:translate="">"Name" is a reserved word, please use the "Name" field at the top of this page to define a name for this resource.</small>
                     </div>
                 </div>
                 <div id="tag-value-input-div" class="small-8 columns">
