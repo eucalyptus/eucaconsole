@@ -138,7 +138,9 @@ class LaunchConfigsJsonView(LandingPageView):
         with boto_error_handler(self.request):
             launchconfigs_array = []
             launchconfigs_image_mapping = self.get_launchconfigs_image_mapping()
+            self.scaling_groups = self.autoscale_conn.get_all_groups()
             scalinggroup_launchconfig_names = self.get_scalinggroups_launchconfig_names()
+            launchconfig_sg_mapping = self.get_launchconfigs_sg_mapping()
             for launchconfig in self.filter_items(self.items):
                 security_groups = self.get_security_groups(launchconfig.security_groups)
                 security_groups_array = sorted({
@@ -159,6 +161,7 @@ class LaunchConfigsJsonView(LandingPageView):
                     security_groups=security_groups_array,
                     root_device_type=launchconfigs_image_mapping.get(image_id).get('root_device_type'),
                     in_use=name in scalinggroup_launchconfig_names,
+                    scaling_group=launchconfig_sg_mapping.get(name)
                 ))
             return dict(results=launchconfigs_array)
 
@@ -178,9 +181,13 @@ class LaunchConfigsJsonView(LandingPageView):
         return launchconfigs_image_mapping
 
     def get_scalinggroups_launchconfig_names(self):
-        if self.autoscale_conn:
-            return [group.launch_config_name for group in self.autoscale_conn.get_all_groups()]
-        return []
+        return [group.launch_config_name for group in self.scaling_groups]
+
+    def get_launchconfigs_sg_mapping(self):
+        ret = dict()
+        for sg in self.scaling_groups:
+            ret[sg.launch_config_name] = sg.name
+        return ret
 
     def get_all_security_groups(self):
         if self.ec2_conn:

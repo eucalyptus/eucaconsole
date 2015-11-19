@@ -329,6 +329,11 @@ class ImagesJsonView(LandingPageView, ImageBundlingMixin):
         # This is to included shared images in the owned images list per GUI-374
         if owner_alias == 'self':
             items.extend(self.get_images(self.conn, [], ['self'], region))
+        # This adjustment is for client-side filtering
+        account_id = User.get_account_id(self.conn, self.request)
+        for img in items:
+            if img.owner_id == account_id:
+                img.owner_alias = 'self'
         return items
 
     def filter_by_platform(self, items):

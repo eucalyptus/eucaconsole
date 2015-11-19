@@ -446,6 +446,7 @@ class InstancesJsonView(LandingPageView, BaseInstanceView):
                 tags=TaggedItemView.get_tags_display(instance.tags),
                 transitional=is_transitional,
                 running_create=True if instance.tags.get('ec_bundling') else False,
+                scaling_group=instance.tags.get('aws:autoscaling:groupName')
             ))
         image_ids = [i['image_id'] for i in instances]
         images = self.conn.get_all_images(filters={'image-id': image_ids})

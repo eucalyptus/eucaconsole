@@ -212,9 +212,6 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch'])
                 var results = $scope.unfilteredItems;
                 // filter results
                 var matchFunc = function(val) {
-                    if (val === null) {
-                        console.log("val is null");
-                    }
                     if (typeof val === 'string') {
                         if ($.inArray(val, facets[key]) > -1 ||
                             $.inArray(val.toLowerCase(), facets[key]) > -1) {
@@ -230,6 +227,10 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch'])
                     }
                 };
                 var filterFunc = function(item) {
+                    // handle special case of empty facet value, match all
+                    if (facets[key].indexOf("") > -1) {
+                        return true;
+                    }
                     var val = item.hasOwnProperty(key) && item[key];
                     if (val === undefined || val === null) {
                         return false;
