@@ -283,7 +283,7 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch'])
         $scope.selectAllCheckboxes = function (allCheckboxes) {
             $scope.checkedItems = [];
             if (allCheckboxes) {
-                $scope.checkedItems = $scope.items;
+                $scope.checkedItems = $scope.items.slice();
             }
         };
         $scope.$on('searchUpdated', function($event, query) {
