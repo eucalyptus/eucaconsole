@@ -34,7 +34,7 @@
                         <div class="flex-column-1">
                         </div>
                         <div id="sorting-controls" class="flex-column-0">
-                            <strong>Sort by</strong>
+                            <strong i18n:translate="">Sort by</strong>
                             <a href="#" data-dropdown="sorting-dropdown" ng-cloak="">
                                 <span tal:repeat="sort sort_keys" ng-show="sortBy == '${sort.key}'">${sort.name}</span>
                                 <span class="down-caret"></span>
