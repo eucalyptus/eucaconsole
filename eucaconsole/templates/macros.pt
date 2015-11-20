@@ -103,6 +103,16 @@
             <!-- Begin table view -->
             <table class="table" ng-show="!itemsLoading" ng-cloak="true" tal:define="using_expando using_expando | nothing">
                 <thead><tr><metal:block metal:define-slot="tableview_headers" /></tr></thead>
+                <tbody tal:condition="using_expando" expando="" ng-repeat="item in items | orderBy: sortBy:sortReverse"
+                    url="${expando_data_url}" item_id="${expando_data_id}">
+                    <tr ng-class="{'expando-tr-even': $odd}" ng-cloak="true"> 
+                        <metal:block metal:define-slot="tableview_expando_row" />
+                    </tr>
+                    <tr ng-class="{'expando-tr-even': $odd}" ng-cloak="true"> 
+                        <td ng-show="!expando.data &amp;&amp; expando.loading == true" colspan="10"><i class="busy"></i></td>
+                        <metal:block metal:define-slot="tableview_expando_content" />
+                    </tr>
+                </tbody>
                 <metal:block metal:define-slot="tableview_with_expando" />
                 <tbody tal:condition="not:using_expando">
                     <tr ng-cloak="true" ng-repeat="item in items | orderBy: sortBy | limitTo:displayCount">
