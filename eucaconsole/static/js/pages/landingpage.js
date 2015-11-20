@@ -267,9 +267,9 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch'])
                 }
             });
         };
-        $scope.handleItemSelection = function (isChecked, item) {
+        $scope.handleItemSelection = function (item) {
             var itemIdx;
-            if (isChecked) {
+            if (item.isChecked) {
                 if ($scope.checkedItems.indexOf(item) === -1) {
                     $scope.checkedItems.push(item);
                 }
@@ -278,6 +278,9 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch'])
                 if (itemIdx !== -1) {
                     $scope.checkedItems.splice(itemIdx, 1);
                 }
+            }
+            if ($scope.checkedItems.length === $scope.items.length) {
+                $scope.allCheckboxes = true;
             }
         };
         $scope.selectAllCheckboxes = function (allCheckboxes) {
@@ -292,6 +295,10 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch'])
             if ($scope.allCheckboxes) {
                 checkAllElement = document.getElementById('check-all-items-tableview');
                 checkAllElement.indeterminate = newVal.length !== $scope.items.length;
+                if (newVal.length === 0) {
+                    checkAllElement.indeterminate = false;
+                    $scope.allCheckboxes = false;
+                }
             }
         }, true);
         $scope.$on('searchUpdated', function($event, query) {
