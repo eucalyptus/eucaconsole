@@ -225,14 +225,25 @@ class VolumesJsonView(LandingPageView):
                     instance = [inst for inst in instances if inst.id == volume.attach_data.instance_id][0]
                     instance_name = TaggedItemView.get_display_name(instance, escapebraces=False)
                 if status != 'deleted':
+                    snapshot_name = [snap.tags.get('Name') for snap in snapshots if snap.id == volume.snapshot_id]
+                    if len(snapshot_name) == 0:
+                        snapshot_name = ''
+                    elif snapshot_name[0] is None:
+                        snapshot_name = ''
+                    else:
+                        snapshot_name = snapshot_name[0]
                     volumes.append(dict(
                         create_time=volume.create_time,
                         id=volume.id,
                         instance=volume.attach_data.instance_id,
                         device=volume.attach_data.device,
                         instance_name=instance_name,
+                        instance_tag_name=instance.tags.get('Name') if instance_name else '',
                         name=TaggedItemView.get_display_name(volume, escapebraces=False),
+                        volume_tag_name=volume.tags.get('Name'),
                         snapshots=len([snap.id for snap in snapshots if snap.volume_id == volume.id]),
+                        snapshot_id=volume.snapshot_id,
+                        snapshot_name=snapshot_name,
                         size=volume.size,
                         status=status,
                         attach_status=attach_status,
@@ -449,6 +460,10 @@ class VolumeStateView(BaseVolumeView):
                          attach_time=attach_time,
                          attach_instance=attach_instance)
         )
+
+    @view_config(route_name='volumes_expando_details', renderer='json', request_method='GET')
+    def volume_expando_details(self):
+        return self.volume_state_json()
 
 
 class VolumeSnapshotsView(BaseVolumeView):

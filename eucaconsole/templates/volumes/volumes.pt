@@ -4,7 +4,7 @@
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/volumes.css')}" />
 </head>
 
-<div metal:fill-slot="main_content" ng-app="VolumesPage" ng-controller="VolumesCtrl" ng-init="initPage('${instances_by_zone}')">
+<div metal:fill-slot="main_content" ng-app="VolumesPage" ng-controller="VolumesCtrl" ng-init="initPage('${instances_by_zone}')" tal:define="using_expando True">
     <div class="row" id="contentwrap" ng-controller="ItemsCtrl"
              ng-init="initController('volumes', '${initial_sort_key}', '${json_items_endpoint}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
@@ -79,6 +79,7 @@
                 </div>
             </metal:block>
             <metal:block metal:fill-slot="tableview_headers">
+                <th></th>
                 <th i18n:translate="">Name (ID)</th>
                 <th i18n:translate="">Status</th>
                 <th i18n:translate="">Size</th>
@@ -89,54 +90,161 @@
                 <th i18n:translate="">Creation Time</th>
                 <th class="actions" i18n:translate="">Actions</th>
             </metal:block>
-            <metal:block metal:fill-slot="tableview_columns">
-                <td class="breakword" id="table-id-column-{{item.id}}">
-                    <span ng-show="item.status === 'deleting'">{{ item.name || item.id | ellipsis: 30 }}</span>
-                    <a ng-show="item.status !== 'deleting'" ng-href="${prefix}/{{ item.id }}">{{ item.name || item.id | ellipsis: 30 }}</a>
-                </td>
-                <td class="status">
-                    <span class="label radius item status {{ item.attach_status || item.status }}">
-                        {{ item.attach_status || item.status }}
-                    </span>
-                    <span class="busy" ng-show="item.transitional"></span>
-                </td>
-                <td>{{ item.size }}&nbsp;GB</td>
-                <td class="breakword">
-                    <a ng-show="item.instance" ng-href="/instances/{{ item.instance }}">
-                        {{ item.instance_name || item.instance | ellipsis: 30 }}
-                    </a>
-                </td>
-                <td class="count">
-                    <a ng-href="${prefix}/{{ item.id }}/snapshots" ng-show="item.status !== 'deleting'">
-                        {{ item.snapshots }}
-                    </a>
-                </td>
-                <td>{{ item.zone }}</td>
-                <td class="tags breakword">{{ item.tags | ellipsis: 60 }}</td>
-                <td>{{ item.create_time | date:'${layout.angular_date_format}' }}</td>
-                <td>
-                    <span class="actions" ng-show="item.status !== 'deleting'">
-                        <a id="table-item-dropdown_{{ item.id }}" class="tiny secondary button dropdown right round" data-dropdown="item-dropdown_{{ item.id }}"><i class="grid-action"></i></a>
-                        <ul id="item-dropdown_{{ item.id }}" class="f-dropdown" data-dropdown-content="">
-                            <li ng-show="item.status !== 'deleting'">
-                                <a i18n:translate="" ng-href="${prefix}/{{ item.id }}">View details</a>
-                            </li>
-                            <li ng-show="item.status !== 'deleting'">
-                                <a ng-href="${prefix}/{{ item.id }}/snapshots" i18n:translate="">Manage snapshots</a>
-                            </li>
-                            <li ng-show="item.status === 'available'">
-                                <a i18n:translate="" ng-click="revealModal('attach', item)">Attach to instance</a>
-                            </li>
-                            <li ng-show="item.attach_status === 'attached' &amp;&amp; item.attach_status !== 'detaching'">
-                                <a ng-click="detachModal(item, '${request.route_path('instance_json', id='_id_')}')"
-                                   id="detach-volume-action" i18n:translate="">Detach from instance</a>
-                            </li>
-                            <li ng-show="item.status === 'available' || item.status === 'failed'">
-                                <a i18n:translate="" ng-click="revealModal('delete', item)">Delete volume</a>
-                            </li>
-                        </ul>
-                    </span>
-                </td>
+            <metal:block metal:fill-slot="tableview_with_expando">
+                <tbody expando="" ng-repeat="item in items | orderBy: sortBy:sortReverse"
+                    url="${request.route_path('volumes_expando_details', id='__id__')}"
+                    item_id="{{item.id}}">
+                    <tr ng-class="{'expando-tr-even': $odd}" ng-cloak="true"> 
+                        
+                        <td>
+                            <a ng-click="toggle()"><i ng-class="{'table-expando-closed': !expando.data, 'table-expando-open': expando.data || expando.loading }"></i></a>
+                        </td>
+                        <td class="breakword" id="table-id-column-{{item.id}}">
+                            <span ng-show="item.status === 'deleting'">{{ item.name || item.id | ellipsis: 30 }}</span>
+                            <a ng-show="item.status !== 'deleting'" ng-href="${prefix}/{{ item.id }}">{{ item.name || item.id | ellipsis: 30 }}</a>
+                        </td>
+                        <td class="status">
+                            <span class="label radius item status {{ item.attach_status || item.status }}">
+                                {{ item.attach_status || item.status }}
+                            </span>
+                            <span class="busy" ng-show="item.transitional"></span>
+                        </td>
+                        <td>{{ item.size }}&nbsp;GB</td>
+                        <td class="breakword">
+                            <a ng-show="item.instance" ng-href="/instances/{{ item.instance }}">
+                                {{ item.instance_name || item.instance | ellipsis: 30 }}
+                            </a>
+                        </td>
+                        <td class="count">
+                            <a ng-href="${prefix}/{{ item.id }}/snapshots" ng-show="item.status !== 'deleting'">
+                                {{ item.snapshots }}
+                            </a>
+                        </td>
+                        <td>{{ item.zone }}</td>
+                        <td class="tags breakword">{{ item.tags | ellipsis: 60 }}</td>
+                        <td>{{ item.create_time | date:'${layout.angular_date_format}' }}</td>
+                        <td>
+                            <span class="actions" ng-show="item.status !== 'deleting'">
+                                <a id="table-item-dropdown_{{ item.id }}" class="tiny secondary button dropdown right round" data-dropdown="item-dropdown_{{ item.id }}"><i class="grid-action"></i></a>
+                                <ul id="item-dropdown_{{ item.id }}" class="f-dropdown" data-dropdown-content="">
+                                    <li ng-show="item.status !== 'deleting'">
+                                        <a i18n:translate="" ng-href="${prefix}/{{ item.id }}">View details</a>
+                                    </li>
+                                    <li ng-show="item.status !== 'deleting'">
+                                        <a ng-href="${prefix}/{{ item.id }}/snapshots" i18n:translate="">Manage snapshots</a>
+                                    </li>
+                                    <li ng-show="item.status === 'available'">
+                                        <a i18n:translate="" ng-click="revealModal('attach', item)">Attach to instance</a>
+                                    </li>
+                                    <li ng-show="item.attach_status === 'attached' &amp;&amp; item.attach_status !== 'detaching'">
+                                        <a ng-click="detachModal(item, '${request.route_path('instance_json', id='_id_')}')"
+                                           id="detach-volume-action" i18n:translate="">Detach from instance</a>
+                                    </li>
+                                    <li ng-show="item.status === 'available' || item.status === 'failed'">
+                                        <a i18n:translate="" ng-click="revealModal('delete', item)">Delete volume</a>
+                                    </li>
+                                </ul>
+                            </span>
+                        </td>
+                    </tr>
+                    <tr ng-class="{'expando-tr-even': $odd}"> 
+                        <td ng-show="!expando.data &amp;&amp; expando.loading == true" colspan="10"><i class="busy"></i></td>
+                        <td ng-show="expando.data" colspan="10">
+                            <dl class="tabs" data-tab="">
+                                <dd class="active"><a href="#general">General</a></dd>
+                                <dd><a href="#tags">Tags</a></dd>
+                            </dl>
+                            <div class="tabs-content">
+                                <div class="content active" id="general">
+                                    <ul class="expando-tiles small-block-grid-2 medium-block-grid-3 large-block-grid-4">
+                                        <li>
+                                            <div>
+                                                <label class="left" i18n:translate="">VOLUME NAME</label>
+                                            </div>
+                                            <div>
+                                                {{ item.volume_tag_name }}
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div>
+                                                <label class="left" i18n:translate="">VOLUME ID</label>
+                                            </div>
+                                            <div>
+                                                {{ item.id }}
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div>
+                                                <label class="left" i18n:translate="">STATUS</label>
+                                            </div>
+                                            <div>
+                                                {{ expando.data.volume_status }}
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div>
+                                                <label class="left" i18n:translate="">CREATION TIME</label>
+                                            </div>
+                                            <div>
+                                                {{ item.create_time | date:'${layout.angular_date_format}' }}
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div>
+                                                <label class="left" i18n:translate="">ATTACHED TO INSTANCE (NAME)</label>
+                                            </div>
+                                            <div>
+                                                {{ item.instance_tag_name }}
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div>
+                                                <label class="left" i18n:translate="">ATTACHED TO INSTANCE (ID)</label>
+                                            </div>
+                                            <div>
+                                                {{ item.instance }}
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div>
+                                                <label class="left" i18n:translate="">SIZE (GB)</label>
+                                            </div>
+                                            <div>
+                                                {{ item.size }}
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div>
+                                                <label class="left" i18n:translate="">AVAILABILITY ZONE</label>
+                                            </div>
+                                            <div>
+                                                {{ item.zone }}
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div>
+                                                <label class="left" i18n:translate="">SNAPSHOT NAME</label>
+                                            </div>
+                                            <div>
+                                                {{ item.snapshot_name }}
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div>
+                                                <label class="left" i18n:translate="">SNAPSHOT ID</label>
+                                            </div>
+                                            <div>
+                                                {{ item.snapshot_id }}
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="content" id="tags">
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
             </metal:block>
         </div>
         <!--! Modal dialogs reused across landing and detail page -->
@@ -152,6 +260,7 @@
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/expando.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/landingpage.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/volumes.js')}"></script>
 </div>

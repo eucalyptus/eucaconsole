@@ -101,9 +101,10 @@
         </div>
         <div id="tableview" class="gridwrapper" ng-if="landingPageView == 'tableview'" ng-cloak="">
             <!-- Begin table view -->
-            <table class="table" ng-show="!itemsLoading" ng-cloak="true">
+            <table class="table" ng-show="!itemsLoading" ng-cloak="true" tal:define="using_expando using_expando | nothing">
                 <thead><tr><metal:block metal:define-slot="tableview_headers" /></tr></thead>
-                <tbody>
+                <metal:block metal:define-slot="tableview_with_expando" />
+                <tbody tal:condition="not:using_expando">
                     <tr ng-cloak="true" ng-repeat="item in items | orderBy: sortBy | limitTo:displayCount">
                         <metal:block metal:define-slot="tableview_columns" />
                     </tr>

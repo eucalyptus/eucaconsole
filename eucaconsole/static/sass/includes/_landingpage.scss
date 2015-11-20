@@ -509,3 +509,29 @@ $dropdown-border-color: $hp-gray-65;
     }
 }
 
+/* expando stuff */
+
+.expando-tr-even {
+    background: $table-even-row-bg !important;
+}
+
+// override for scaling group history table
+table {
+  tr {
+    &.even,
+    &.alt,
+    &:nth-of-type(even) { background: white; }
+  }
+}
+
+.expando-tiles {
+    li {
+        font-size: 0.875rem;
+        div:nth-of-type(1) {
+            float: left;
+        }
+        div:nth-of-type(2) {
+            clear: both;
+        }
+    }
+}
