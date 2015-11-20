@@ -281,11 +281,19 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch'])
             }
         };
         $scope.selectAllCheckboxes = function (allCheckboxes) {
+            $scope.allCheckboxes = allCheckboxes;
             $scope.checkedItems = [];
             if (allCheckboxes) {
                 $scope.checkedItems = $scope.items.slice();
             }
         };
+        $scope.$watch('checkedItems', function (newVal, oldVal) {
+            var checkAllElement;
+            if ($scope.allCheckboxes) {
+                checkAllElement = document.getElementById('check-all-items-tableview');
+                checkAllElement.indeterminate = newVal.length !== $scope.items.length;
+            }
+        }, true);
         $scope.$on('searchUpdated', function($event, query) {
             // update url
             var url = window.location.href;

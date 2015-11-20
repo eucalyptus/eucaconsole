@@ -69,7 +69,7 @@
             </div>
             <metal:block metal:fill-slot="tableview_headers">
                 <th class="checkbox-header">
-                    <input type="checkbox" ng-model="allCheckboxes"
+                    <input type="checkbox" ng-model="allCheckboxes" id="check-all-items-tableview"
                            ng-change="selectAllCheckboxes(allCheckboxes)" />
                 </th>
                 <th i18n:translate="">Public IP address</th>
