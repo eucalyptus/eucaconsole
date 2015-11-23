@@ -151,84 +151,44 @@
                         <div class="content active" id="general">
                             <ul class="expando-tiles small-block-grid-2 medium-block-grid-3 large-block-grid-4">
                                 <li>
-                                    <div>
-                                        <label class="left" i18n:translate="">VOLUME NAME</label>
-                                    </div>
-                                    <div>
-                                        {{ item.volume_tag_name }}
-                                    </div>
+                                    <div><label class="left" i18n:translate="">VOLUME NAME</label></div>
+                                    <div>{{ item.volume_tag_name }}</div>
                                 </li>
                                 <li>
-                                    <div>
-                                        <label class="left" i18n:translate="">VOLUME ID</label>
-                                    </div>
-                                    <div>
-                                        {{ item.id }}
-                                    </div>
+                                    <div><label class="left" i18n:translate="">VOLUME ID</label></div>
+                                    <div>{{ item.id }}</div>
                                 </li>
                                 <li>
-                                    <div>
-                                        <label class="left" i18n:translate="">STATUS</label>
-                                    </div>
-                                    <div>
-                                        {{ expando.data.volume_status }}
-                                    </div>
+                                    <div><label class="left" i18n:translate="">STATUS</label></div>
+                                    <div>{{ expando.data.volume_status }}</div>
                                 </li>
                                 <li>
-                                    <div>
-                                        <label class="left" i18n:translate="">CREATION TIME</label>
-                                    </div>
-                                    <div>
-                                        {{ item.create_time | date:'${layout.angular_date_format}' }}
-                                    </div>
+                                    <div><label class="left" i18n:translate="">CREATION TIME</label></div>
+                                    <div>{{ item.create_time | date:'${layout.angular_date_format}' }}</div>
                                 </li>
                                 <li>
-                                    <div>
-                                        <label class="left" i18n:translate="">ATTACHED TO INSTANCE (NAME)</label>
-                                    </div>
-                                    <div>
-                                        {{ item.instance_tag_name }}
-                                    </div>
+                                    <div><label class="left" i18n:translate="">ATTACHED TO INSTANCE (NAME)</label></div>
+                                    <div>{{ item.instance_tag_name }}</div>
                                 </li>
                                 <li>
-                                    <div>
-                                        <label class="left" i18n:translate="">ATTACHED TO INSTANCE (ID)</label>
-                                    </div>
-                                    <div>
-                                        {{ item.instance }}
-                                    </div>
+                                    <div><label class="left" i18n:translate="">ATTACHED TO INSTANCE (ID)</label></div>
+                                    <div>{{ item.instance }}</div>
                                 </li>
                                 <li>
-                                    <div>
-                                        <label class="left" i18n:translate="">SIZE (GB)</label>
-                                    </div>
-                                    <div>
-                                        {{ item.size }}
-                                    </div>
+                                    <div><label class="left" i18n:translate="">SIZE (GB)</label></div>
+                                    <div>{{ item.size }}</div>
                                 </li>
                                 <li>
-                                    <div>
-                                        <label class="left" i18n:translate="">AVAILABILITY ZONE</label>
-                                    </div>
-                                    <div>
-                                        {{ item.zone }}
-                                    </div>
+                                    <div><label class="left" i18n:translate="">AVAILABILITY ZONE</label></div>
+                                    <div>{{ item.zone }}</div>
                                 </li>
                                 <li>
-                                    <div>
-                                        <label class="left" i18n:translate="">SNAPSHOT NAME</label>
-                                    </div>
-                                    <div>
-                                        {{ item.snapshot_name }}
-                                    </div>
+                                    <div><label class="left" i18n:translate="">SNAPSHOT NAME</label></div>
+                                    <div>{{ item.snapshot_name }}</div>
                                 </li>
                                 <li>
-                                    <div>
-                                        <label class="left" i18n:translate="">SNAPSHOT ID</label>
-                                    </div>
-                                    <div>
-                                        {{ item.snapshot_id }}
-                                    </div>
+                                    <div><label class="left" i18n:translate="">SNAPSHOT ID</label></div>
+                                    <div>{{ item.snapshot_id }}</div>
                                 </li>
                             </ul>
                         </div>
