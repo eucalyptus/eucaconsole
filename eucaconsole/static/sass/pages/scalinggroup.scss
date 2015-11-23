@@ -148,7 +148,7 @@ $scaling-status-color-waiting-for-launch: $euca-grey;
 $scaling-status-color-waiting-for-terminate: $euca-grey;
 
 // Scaling group history status
-.status.Successfull { background-color: $scaling-status-color-successful; }
+.status.Successful { background-color: $scaling-status-color-successful; }
 .status.In-progress { background-color: $scaling-status-color-in-progress; }
 .status.Failed { background-color: $scaling-status-color-failed; }
 .status.Not-yet-in-service { background-color: $scaling-status-color-not-yet-in-service; }
