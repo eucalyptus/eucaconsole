@@ -4,7 +4,10 @@
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/volumes.css')}" />
 </head>
 
-<div metal:fill-slot="main_content" ng-app="VolumesPage" ng-controller="VolumesCtrl" ng-init="initPage('${instances_by_zone}')" tal:define="using_expando True">
+<div metal:fill-slot="main_content" ng-app="VolumesPage" ng-controller="VolumesCtrl" ng-init="initPage('${instances_by_zone}')"
+    tal:define="using_expando True;
+                expando_data_url request.route_path('volumes_expando_details', id='__id__');
+                expando_data_id '{{item.id}}'">
     <div class="row" id="contentwrap" ng-controller="ItemsCtrl"
              ng-init="initController('volumes', '${initial_sort_key}', '${json_items_endpoint}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
@@ -15,9 +18,7 @@
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
         <h3 id="pagetitle"><strong i18n:translate="">Volumes</strong></h3>
-        <div metal:use-macro="layout.global_macros['landing_page_datagrid']"
-            tal:define="expando_data_url request.route_path('volumes_expando_details', id='__id__');
-                        expando_data_id '{{item.id}}'">
+        <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
                 <a class="button" i18n:translate="" id="create-volume-btn"
                    href="${request.route_path('volume_view', id='new')}">Create New Volume</a>
