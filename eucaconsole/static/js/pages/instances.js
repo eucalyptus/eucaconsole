@@ -26,9 +26,8 @@ angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils'])
         };
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
-            if (options.hasOwnProperty('addresses_json_items_endpoint')) {
-                $scope.addressesEndpoint = options.addresses_json_items_endpoint;
-            } 
+            $scope.addressesEndpoint = options.addresses_json_items_endpoint;
+            $scope.rolesEndpoint = options.roles_json_items_endpoint;
             $scope.getIPAddresses(); 
             $scope.initChosenSelectors();
             $('#file').on('change', $scope.getPassword);
@@ -186,5 +185,18 @@ angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils'])
                 }); 
             }
         };
+        $scope.$on('itemsLoaded', function($event, items) {
+            var theItems = items;
+            $http.get($scope.rolesEndpoint).success(function(oData) {
+                var results = oData ? oData.results : [];
+                for (var k=0; k<theItems.length; k++) {
+                    if (results[theItems[k].id] !== undefined) {
+                        theItems[k].roles = results[theItems[k].id];
+                    }
+                }
+            }).error(function (oData, status) {
+                // ignore
+            });
+        });
     })
 ;

@@ -186,6 +186,7 @@ class InstancesView(LandingPageView, BaseInstanceView):
         self.disassociate_ip_form = DisassociateIpFromInstanceForm(self.request, formdata=self.request.params or None)
         controller_options_json = BaseView.escape_json(json.dumps({
             'addresses_json_items_endpoint': self.request.route_path('ipaddresses_json'),
+            'roles_json_items_endpoint': self.request.route_path('instances_roles_json'),
         }))
         self.render_dict = dict(
             prefix=self.prefix,
@@ -370,15 +371,15 @@ class InstancesJsonView(LandingPageView, BaseInstanceView):
         super(InstancesJsonView, self).__init__(request)
         self.conn = self.get_connection()
         self.vpc_conn = self.get_connection(conn_type='vpc')
-        self.vpcs = self.get_all_vpcs()
-        self.vpc_subnets = self.vpc_conn.get_all_subnets()
-        self.keypairs = self.get_all_keypairs()
-        self.security_groups = self.get_all_security_groups()
 
     @view_config(route_name='instances_json', renderer='json', request_method='POST')
     def instances_json(self):
         if not (self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
+        self.vpcs = self.get_all_vpcs()
+        self.vpc_subnets = self.vpc_conn.get_all_subnets()
+        self.keypairs = self.get_all_keypairs()
+        self.security_groups = self.get_all_security_groups()
         instances = []
         filters = {}
         availability_zone_param = self.request.params.getall('availability_zone')
@@ -459,6 +460,22 @@ class InstancesJsonView(LandingPageView, BaseInstanceView):
                     u' ({0})'.format(image.id) if image.name else ''
                 )
             instance['image_name'] = image_name
+        return dict(results=instances)
+
+    @view_config(route_name='instances_roles_json', renderer='json', request_method='GET')
+    def instances_roles_json(self):
+        instances = {}
+        iam_conn = self.get_connection(conn_type='iam')
+        result = iam_conn.list_instance_profiles()
+        instance_profiles_list = result.list_instance_profiles_response.list_instance_profiles_result.instance_profiles
+        for item in self.get_items():
+            if item.instance_profile:
+                arn = item.instance_profile['arn']
+                profile_name = arn[(arn.rindex('/') + 1):]
+                # look up profile in list
+                for profile in instance_profiles_list:
+                    if profile.instance_profile_name == profile_name:
+                        instances[item.id] = profile.roles.role_name
         return dict(results=instances)
 
     def get_items(self, filters=None):

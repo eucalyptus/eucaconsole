@@ -358,7 +358,7 @@ class AttachVolumeForm(BaseSecureForm):
             start_char = 102
 
         for i in range(0, 10):   # Test names with char 'f' to 'p'
-            dev_name = dev_root+str(unichr(start_char+i))
+            dev_name = dev_root + str(unichr(start_char + i))
             if dev_name not in mappings:
                 return dev_name
         return 'error'
@@ -422,13 +422,16 @@ class InstancesFiltersForm(BaseSecureForm):
             {'name': 'security_groups', 'label': self.security_group.label.text,
                 'options': self.get_options_from_choices(self.ec2_choices_manager.security_groups(add_blank=False))},
             {'name': 'scaling_group', 'label': self.scaling_group.label.text,
-                'options': self.get_options_from_choices(self.autoscale_choices_manager.scaling_groups(add_blank=False))},
+                'options':
+                    self.get_options_from_choices(self.autoscale_choices_manager.scaling_groups(add_blank=False))},
         ]
         if cloud_type == 'euca':
-            self.facets.append(
-                {'name': 'roles', 'label': self.roles.label.text,
-                    'options': self.get_options_from_choices(self.iam_choices_manager.roles(add_blank=False))},
-            )
+            roles = self.iam_choices_manager.roles(add_blank=False)
+            if roles and len(roles) > 0:
+                self.facets.append(
+                    {'name': 'roles', 'label': self.roles.label.text,
+                        'options': self.get_options_from_choices(roles)},
+                )
         if BaseView.is_vpc_supported(request):
             self.facets.append(
                 {'name': 'subnet_id', 'label': self.subnet_id.label.text,
