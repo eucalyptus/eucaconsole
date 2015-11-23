@@ -35,6 +35,20 @@ from ..i18n import _
 from . import BaseSecureForm
 
 
+class NGInput(widgets.Input):
+    def __call__(self, field, **kwargs):
+        for key in list(kwargs):
+            if key.startswith('ng'):
+                kwargs['ng-' + key[2:]] = kwargs.pop(key)
+        return super(NGInput, self).__call__(field, **kwargs)
+
+
+class NGPasswordInput(widgets.PasswordInput, NGInput):
+
+    def __init__(self, *args, **kwargs):
+        super(NGPasswordInput, self).__init__(*args, **kwargs)
+
+
 class EucaLoginForm(BaseSecureForm):
     account = wtforms.TextField(
         _(u'Account Name'), validators=[validators.InputRequired(message=_(u'Account name is required'))])
@@ -52,21 +66,23 @@ class AWSLoginForm(BaseSecureForm):
 class EucaChangePasswordForm(BaseSecureForm):
     current_password = wtforms.PasswordField(
         _(u'Current password'), validators=[validators.InputRequired(message=_(u'Password is required'))],
-        widget=widgets.PasswordInput())
+        widget=NGPasswordInput())
+
     new_password = wtforms.PasswordField(
         _(u'New password'),
         validators=[
             validators.InputRequired(message=_(u'New Password is required')),
             validators.Length(min=6, message=_(u'Password must be more than 6 characters'))
         ],
-        widget=widgets.PasswordInput())
+        widget=NGPasswordInput())
+
     new_password2 = wtforms.PasswordField(
         _(u'Confirm new password'),
         validators=[
             validators.InputRequired(message=_(u'New Password is required')),
             validators.Length(min=6, message=_(u'Password must be more than 6 characters'))
         ],
-        widget=widgets.PasswordInput())
+        widget=NGPasswordInput())
 
 
 class EucaLogoutForm(BaseSecureForm):
