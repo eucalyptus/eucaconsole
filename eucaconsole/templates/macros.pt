@@ -102,10 +102,18 @@
         <div id="tableview" class="gridwrapper" ng-if="landingPageView == 'tableview'" ng-cloak="">
             <!-- Begin table view -->
             <table class="table" ng-show="!itemsLoading" ng-cloak="true" tal:define="using_expando using_expando | nothing">
-                <thead><tr><metal:block metal:define-slot="tableview_headers" /></tr></thead>
+                <thead>
+                    <tr>
+                        <th tal:condition="using_expando"></th>
+                        <metal:block metal:define-slot="tableview_headers" />
+                    </tr>
+                </thead>
                 <tbody tal:condition="using_expando" expando="" ng-repeat="item in items | orderBy: sortBy:sortReverse"
                     url="${expando_data_url}" item_id="${expando_data_id}">
                     <tr ng-class="{'expando-tr-even': $odd}" ng-cloak="true"> 
+                        <td>
+                            <a ng-click="toggle()"><i ng-class="{'table-expando-closed': !expando.data, 'table-expando-open': expando.data || expando.loading }"></i></a>
+                        </td>
                         <metal:block metal:define-slot="tableview_expando_row" />
                     </tr>
                     <tr ng-class="{'expando-tr-even': $odd}" ng-cloak="true"> 

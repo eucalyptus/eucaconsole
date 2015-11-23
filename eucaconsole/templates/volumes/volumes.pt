@@ -81,7 +81,6 @@
                 </div>
             </metal:block>
             <metal:block metal:fill-slot="tableview_headers">
-                <th></th>
                 <th i18n:translate="">Name (ID)</th>
                 <th i18n:translate="">Status</th>
                 <th i18n:translate="">Size</th>
@@ -93,9 +92,6 @@
                 <th class="actions" i18n:translate="">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_expando_row">
-                <td>
-                    <a ng-click="toggle()"><i ng-class="{'table-expando-closed': !expando.data, 'table-expando-open': expando.data || expando.loading }"></i></a>
-                </td>
                 <td class="breakword" id="table-id-column-{{item.id}}">
                     <span ng-show="item.status === 'deleting'">{{ item.name || item.id | ellipsis: 30 }}</span>
                     <a ng-show="item.status !== 'deleting'" ng-href="${prefix}/{{ item.id }}">{{ item.name || item.id | ellipsis: 30 }}</a>
