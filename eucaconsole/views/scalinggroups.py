@@ -274,6 +274,7 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
             self.policies = self.get_policies(self.scaling_group)
             self.vpc = self.get_vpc(self.scaling_group)
             self.vpc_name = TaggedItemView.get_display_name(self.vpc) if self.vpc else ''
+            self.activities = self.autoscale_conn.get_all_activities(self.scaling_group.name, max_records=1)
         self.edit_form = ScalingGroupEditForm(
             self.request, scaling_group=self.scaling_group, autoscale_conn=self.autoscale_conn, ec2_conn=self.ec2_conn,
             vpc_conn=self.vpc_conn, elb_conn=self.elb_conn, formdata=self.request.params or None)
