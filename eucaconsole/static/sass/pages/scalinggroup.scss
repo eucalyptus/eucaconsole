@@ -115,3 +115,43 @@ input[type="number"] {
 .dialog-option {
     text-align: left;
 }
+
+#refresh-history {
+    margin-left: 1.0rem;
+    margin-bottom: 0.25rem;
+}
+
+.history-tr-even {
+    background: $table-even-row-bg !important;
+}
+
+// override for scaling group history table
+table {
+  tr {
+    &.even,
+    &.alt,
+    &:nth-of-type(even) { background: white; }
+  }
+}
+
+#sorting-controls {
+    padding-top: 0.1rem;
+}
+
+// Status colors
+$scaling-status-color-successful: $hp-green;
+$scaling-status-color-in-progress: $hp-accessible-blue;
+$scaling-status-color-failed: $hp-red;
+$scaling-status-color-not-yet-in-service: $euca-grey;
+$scaling-status-color-canceled: $euca-grey;
+$scaling-status-color-waiting-for-launch: $euca-grey;
+$scaling-status-color-waiting-for-terminate: $euca-grey;
+
+// Scaling group history status
+.status.Successful { background-color: $scaling-status-color-successful; }
+.status.In-progress { background-color: $scaling-status-color-in-progress; }
+.status.Failed { background-color: $scaling-status-color-failed; }
+.status.Not-yet-in-service { background-color: $scaling-status-color-not-yet-in-service; }
+.status.Canceled { background-color: $scaling-status-color-canceled; }
+.status.Waiting-for-launch { background-color: $scaling-status-color-waiting-for-launch; }
+.status.Waiting-for-terminate { background-color: $scaling-status-color-waiting-for-terminate; }

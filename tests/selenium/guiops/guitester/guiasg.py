@@ -5,6 +5,7 @@ from pages.autoscaling.launch_config_lp import LaunchConfigLanding
 from pages.autoscaling.create_launch_config import CreateLaunchConfigPage
 from pages.autoscaling.create_asg import CreateASGPage
 from pages.autoscaling.asg_lp import ASGLanding
+from pages.autoscaling.asg_detail import ASGDetailPage
 from dialogs.asg_dialogs import DeleteASGModal
 from dialogs.launch_config_dialogs import DeleteLaunchConfigModal
 
@@ -32,18 +33,18 @@ class GuiASG(GuiTester):
         BasePage(self).goto_launch_config_view_via_menu()
         LaunchConfigLanding(self).verify_launch_config_is_present(lc_name)
 
-    def create_asg_from_dashboard(self, asg_name, launch_config_name, availabilityzones = None, min_cpapacity=None, desired_capacity=None, max_capacity=None, grace_period=None, loadbalancers=None):
+    def create_asg_from_dashboard(self, asg_name, launch_config_name, availabilityzones = None, min_capacity=None, desired_capacity=None, max_capacity=None, grace_period=None, loadbalancers=None):
         BasePage(self).goto_dashboard_via_menu()
         Dashboard(self).click_create_asg_link_from_dashboard()
-        CreateASGPage(self).create_asg(asg_name, launch_config_name, availabilityzones, min_cpapacity, desired_capacity,
+        CreateASGPage(self).create_asg(asg_name, launch_config_name, availabilityzones, min_capacity, desired_capacity,
                                       max_capacity, grace_period, loadbalancers)
         BasePage(self).goto_asg_lp_via_menu()
         ASGLanding(self).verify_asg_present(asg_name)
 
-    def create_asg_from_asg_lp(self, asg_name, launch_config_name, availabilityzones = None, min_cpapacity=None, desired_capacity=None, max_capacity=None, grace_period=None, loadbalancers=None):
+    def create_asg_from_asg_lp(self, asg_name, launch_config_name, availabilityzones = None, min_capacity=None, desired_capacity=None, max_capacity=None, grace_period=None, loadbalancers=None):
         BasePage(self).goto_asg_lp_via_menu()
         ASGLanding(self).click_action_create_asg_on_landing_page()
-        CreateASGPage(self).create_asg(asg_name, launch_config_name, availabilityzones, min_cpapacity, desired_capacity,
+        CreateASGPage(self).create_asg(asg_name, launch_config_name, availabilityzones, min_capacity, desired_capacity,
                                       max_capacity, grace_period, loadbalancers)
         BasePage(self).goto_asg_lp_via_menu()
         ASGLanding(self).verify_asg_present(asg_name)
@@ -58,6 +59,18 @@ class GuiASG(GuiTester):
         LaunchConfigLanding(self).click_action_delete_lc_on_lp(lc_name)
         DeleteLaunchConfigModal(self).delete_launch_config()
 
+    def verify_scaling_history(self, asg_name):
+        """
+        Must have scaling group created and should have some history, like if you create
+        with min/desired/max = 1
+        """
+        BasePage(self).goto_asg_lp_via_menu()
+        ASGLanding(self).goto_asg_detail_page_via_link(asg_name)
+        ASGDetailPage(self).verify_scaling_history(asg_name)
 
-
-
+    def set_scaling_group_capacity(self, asg_name, min_capacity=None, desired_capacity=None, max_capacity=None):
+        BasePage(self).goto_asg_lp_via_menu()
+        ASGLanding(self).goto_asg_detail_page_via_link(asg_name)
+        ASGDetailPage(self).goto_general_tab(asg_name)
+        ASGDetailPage(self).change_capacity_on_detail_page(min_capacity, desired_capacity, max_capacity)
+        

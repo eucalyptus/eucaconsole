@@ -34,7 +34,9 @@ class ASG_operations_sequence(GuiOps):
         self.tester.delete_launch_config_from_lp(LaunchConfig1_name)
         LaunchConfig2_name = self.id_generator()+"-launch-config"
         self.tester.create_launch_config_from_lc_lp(LaunchConfig2_name)
-        self.tester.create_asg_from_dashboard(launch_config_name=LaunchConfig2_name, asg_name=ASG2_name)
+        self.tester.create_asg_from_dashboard(launch_config_name=LaunchConfig2_name, asg_name=ASG2_name, min_capacity=1, desired_capacity=1, max_capacity=1)
+        self.tester.verify_scaling_history(ASG2_name)
+        self.tester.set_scaling_group_capacity(ASG2_name, 0, 0, 1)
         self.tester.delete_asg_from_lp(ASG2_name)
         self.tester.delete_launch_config_from_lp(LaunchConfig2_name)
         self.tester.logout()
