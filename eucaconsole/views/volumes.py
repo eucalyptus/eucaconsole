@@ -249,6 +249,7 @@ class VolumesJsonView(LandingPageView):
                         attach_status=attach_status,
                         zone=volume.zone,
                         tags=TaggedItemView.get_tags_display(volume.tags),
+                        real_tags=volume.tags,
                         transitional=status in transitional_states or attach_status in transitional_states,
                     ))
             return dict(results=volumes)

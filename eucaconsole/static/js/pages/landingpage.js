@@ -167,6 +167,7 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch', 'Ex
                     $scope.$emit('itemsLoaded', $scope.items);
                     // and re-open any action menus
                     $scope.clickOpenDropdown();
+                    $(document).foundation('tab', 'reflow');
                 });
             }).error(function (oData, status) {
                 if (oData === undefined && status === 0) {  // likely interrupted request
