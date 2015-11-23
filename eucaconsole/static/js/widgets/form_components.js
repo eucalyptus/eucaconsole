@@ -12,15 +12,22 @@ angular.module('FormComponents', [])
          *
          * Usage: Add as an attribute to a form input field with a space-separated list
          * of words that must not be accepted by this input.
+         *
+         * If a 'case-insensitive' attribute is present on the input field, a case-insensitive match
+         * is made.
          **/
         return {
             restrict: 'A',
             require: 'ngModel',
             link: function (scope, element, attrs, ctrl) {
-                var reserved = attrs.reserved.split(/\s+/);
+                var reserved = attrs.reserved.split(/\s+/),
+                    flags = ('caseInsensitive' in attrs) ? 'i' : '';
+
                 ctrl.$validators.reserved = function (modelValue) {
-                    var isValid = reserved.indexOf(modelValue) === -1;
-                    return isValid;
+                    return !reserved.some(function (term) {
+                        var re = new RegExp(term, flags);
+                        return re.test(modelValue);
+                    });
                 };
             }
         };

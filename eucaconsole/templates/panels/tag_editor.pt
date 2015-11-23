@@ -30,7 +30,13 @@
         <div class="row tagentry controls-wrapper" ng-class="tagKeyClass" ng-show="tagCount &lt; 10">
             <div>
                 <div id="tag-name-input-div" class="small-4 columns">
-                    <input id='tag-name-input' name="tagNameInput" class="taginput key" placeholder="name..." ng-model="newTagKey" pattern="${layout.tag_pattern_key}" reserved="Name"/>
+                    <input id='tag-name-input'
+                           name="tagNameInput"
+                           class="taginput key"
+                           placeholder="name..."
+                           ng-model="newTagKey"
+                           pattern="${layout.tag_pattern_key}"
+                           reserved="Name" case-insensitive=""/>
                     <div ng-show="!existsTagKey">
                         <small class="error" i18n:translate="">Tag may not begin with "aws:", "euca:" or its length cannot be longer than 128 chars</small>
                     </div>
