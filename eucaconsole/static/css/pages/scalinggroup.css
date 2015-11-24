@@ -127,6 +127,15 @@
 @media screen and (max-width: 1024px) { #filters { margin-top: 1rem; } }
 /* Small screen */
 @media screen and (max-width: 1020px) { .columns.datagrid { padding-left: 1rem; } }
+/* expando stuff */
+.expando-tr-even { background: #f5f5f5 !important; }
+
+table.expando tr.even, table.expando tr.alt, table.expando tr:nth-of-type(even) { background: white; }
+
+.expando-tiles li { font-size: 0.875rem; }
+.expando-tiles li div:nth-of-type(1) { float: left; }
+.expando-tiles li div:nth-of-type(2) { clear: both; }
+
 .panel.has-actions { padding-top: 60px; }
 
 #breadcrumbs .icon-block { display: none; }
@@ -177,7 +186,7 @@ table tr.even, table tr.alt, table tr:nth-of-type(even) { background: white; }
 
 #sorting-controls { padding-top: 0.1rem; }
 
-.status.Successfull { background-color: #008424; }
+.status.Successful { background-color: #008424; }
 
 .status.In-progress { background-color: #007dba; }
 

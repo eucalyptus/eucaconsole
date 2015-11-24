@@ -54,7 +54,7 @@ angular.module('BlockDeviceMappingEditor', ['EucaConsoleUtils'])
                 $scope.$emit('bdMappingChange', additionalStorageConfigured(newMapping));
             });
 
-            var devicesMappings = Object.keys($scope.bdMapping);
+            var devicesMappings = Object.keys($scope.bdMapping || {});
             $http.get("/instances/new/nextdevice/json", {
                 params: {
                     currentMappings: devicesMappings
