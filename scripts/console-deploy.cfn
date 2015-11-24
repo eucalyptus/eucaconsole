@@ -69,7 +69,7 @@
             "# This config installs the eucalyptus and epel repos, then installs and\n",
             "# configures the eucaconsole package\n",
             "runcmd:\n",
-            " - [ yum, -y, install, 'http://packages.release.eucalyptus-systems.com/yum/tags/eucalyptus-devel/rhel/6/x86_64/eucalyptus-release-firehose-0-1.el6.noarch.rpm' ]\n",
+            " - [ yum, -y, install, 'http://downloads.eucalyptus.com/software/eucalyptus/4.2/centos/6/x86_64/eucalyptus-release-4.2-1.el6.noarch.rpm' ]\n",
             " - [ yum, -y, install, eucaconsole ]\n",
             " - [ sed, -i, 's/localhost/",
             { "Ref" : "CloudIP" },

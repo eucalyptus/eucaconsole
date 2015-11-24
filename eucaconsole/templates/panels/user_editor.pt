@@ -50,7 +50,7 @@
             <div>&nbsp;</div>
             <div class="columns">
                 <button ng-click="addUser($event)" ng-disabled="isDisabled()" class="button round tiny" id="add-user-btn"
-                   title="Add user" i18n:translate="">Add User</button>
+                   type="button" title="Add user" i18n:translate="">Add User</button>
             </div>
         </div>
         <!--! Add class="debug" to textarea to view users data posted by form -->
