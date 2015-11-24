@@ -516,7 +516,7 @@ $dropdown-border-color: $hp-gray-65;
 }
 
 // override for scaling group history table
-table {
+table.expando {
   tr {
     &.even,
     &.alt,
