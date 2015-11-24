@@ -130,6 +130,7 @@ class LaunchConfigsJsonView(LandingPageView):
         with boto_error_handler(request):
             self.items = self.get_items()
             self.securitygroups = self.get_all_security_groups()
+            self.scaling_groups = self.autoscale_conn.get_all_groups()
 
     @view_config(route_name='launchconfigs_json', renderer='json', request_method='POST')
     def launchconfigs_json(self):
@@ -138,7 +139,6 @@ class LaunchConfigsJsonView(LandingPageView):
         with boto_error_handler(self.request):
             launchconfigs_array = []
             launchconfigs_image_mapping = self.get_launchconfigs_image_mapping()
-            self.scaling_groups = self.autoscale_conn.get_all_groups()
             scalinggroup_launchconfig_names = self.get_scalinggroups_launchconfig_names()
             launchconfig_sg_mapping = self.get_launchconfigs_sg_mapping()
             for launchconfig in self.filter_items(self.items):

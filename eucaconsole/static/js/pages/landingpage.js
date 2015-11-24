@@ -25,7 +25,7 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch'])
         $scope.limitCount = 100;  // Beyond this number a "show ___ more" button will appear.
         $scope.displayCount = $scope.limitCount;
         $scope.transitionalRefresh = true;
-        $scope.server_filter = false;
+        $scope.serverFilter = false;
         $scope.initController = function (pageResource, sortKey, jsonItemsEndpoint, cloud_type) {
             pageResource = pageResource || window.location.pathname.split('/')[0];
             $scope.jsonEndpoint = jsonItemsEndpoint;
@@ -37,7 +37,7 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch'])
             $scope.enableInfiniteScroll();
             $scope.storeAWSRegion();
             if (cloud_type !== undefined && cloud_type === "aws") {
-                $scope.server_filter = true;
+                $scope.serverFilter = true;
             }
         };
         $scope.initLocalStorageKeys = function (pageResource){
@@ -165,7 +165,7 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch'])
                     // and re-open any action menus
                     $scope.clickOpenDropdown();
                 });
-                if ($scope.server_filter === false) {
+                if ($scope.serverFilter === false) {
                     $scope.facetFilterItems();
                 }
                 else {
@@ -202,13 +202,13 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch'])
                 // prepare facets by grouping
                 var tmp = query.split('&').sort();
                 var facets = {};
-                for (var i=0; i<tmp.length; i++) {
-                    var facet = tmp[i].split('=');
-                    if (facets[facet[0]] === undefined) {
-                        facets[facet[0]] = [];
+                angular.forEach(tmp, function(item) {
+                    var facet = item.split('=');
+                    if (this[facet[0]] === undefined) {
+                        this[facet[0]] = [];
                     }
-                    facets[facet[0]].push(facet[1]);
-                }
+                    this[facet[0]].push(facet[1]);
+                }, facets);
                 var results = $scope.unfilteredItems;
                 // filter results
                 var matchFunc = function(val) {
@@ -339,7 +339,7 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch'])
                 url = url + "?" + query;
             }
             window.history.pushState(query, "", url);
-            if ($scope.server_filter === true) {
+            if ($scope.serverFilter === true) {
                 url = $scope.jsonEndpoint;
                 if (url.indexOf("?") > -1) {
                     url = url.split("?")[0];

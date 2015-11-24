@@ -427,7 +427,7 @@ class InstancesFiltersForm(BaseSecureForm):
         ]
         if cloud_type == 'euca':
             roles = self.iam_choices_manager.roles(add_blank=False)
-            if roles and len(roles) > 0:
+            if roles:
                 self.facets.append(
                     {'name': 'roles', 'label': self.roles.label.text,
                         'options': self.get_options_from_choices(roles)},

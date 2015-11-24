@@ -371,15 +371,15 @@ class InstancesJsonView(LandingPageView, BaseInstanceView):
         super(InstancesJsonView, self).__init__(request)
         self.conn = self.get_connection()
         self.vpc_conn = self.get_connection(conn_type='vpc')
+        self.vpcs = self.get_all_vpcs()
 
     @view_config(route_name='instances_json', renderer='json', request_method='POST')
     def instances_json(self):
         if not (self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
-        self.vpcs = self.get_all_vpcs()
-        self.vpc_subnets = self.vpc_conn.get_all_subnets()
-        self.keypairs = self.get_all_keypairs()
-        self.security_groups = self.get_all_security_groups()
+        vpc_subnets = self.vpc_conn.get_all_subnets()
+        keypairs = self.get_all_keypairs()
+        security_groups = self.get_all_security_groups()
         instances = []
         filters = {}
         availability_zone_param = self.request.params.getall('availability_zone')
@@ -418,12 +418,12 @@ class InstancesJsonView(LandingPageView, BaseInstanceView):
             security_groups_array = sorted({
                 'name': group.name,
                 'id': group.id,
-                'rules_count': self.get_security_group_rules_count_by_id(group.id)
+                'rules_count': self.get_security_group_rules_count_by_id(security_groups, group.id)
             } for group in instance.groups)
             if instance.platform is None:
                 instance.platform = _(u"linux")
             has_elastic_ip = instance.ip_address in elastic_ips
-            exists_key = True if self.get_keypair_by_name(instance.key_name) else False
+            exists_key = True if self.get_keypair_by_name(keypairs, instance.key_name) else False
             instances.append(dict(
                 id=instance.id,
                 name=TaggedItemView.get_display_name(instance, escapebraces=False),
@@ -441,7 +441,7 @@ class InstancesJsonView(LandingPageView, BaseInstanceView):
                 exists_key=exists_key,
                 vpc_name=instance.vpc_name,
                 subnet_id=instance.subnet_id if instance.subnet_id else None,
-                vpc_subnet_display=self.get_vpc_subnet_display(instance.subnet_id, vpc_subnet_list=self.vpc_subnets) if
+                vpc_subnet_display=self.get_vpc_subnet_display(instance.subnet_id, vpc_subnet_list=vpc_subnets) if
                 instance.subnet_id else None,
                 status=instance.state,
                 tags=TaggedItemView.get_tags_display(instance.tags),
@@ -504,21 +504,21 @@ class InstancesJsonView(LandingPageView, BaseInstanceView):
     def get_all_keypairs(self):
         return self.conn.get_all_key_pairs() if self.conn else []
 
-    def get_keypair_by_name(self, keypair_name):
-        for keypair in self.keypairs:
+    def get_keypair_by_name(self, keypairs, keypair_name):
+        for keypair in keypairs:
             if keypair_name == keypair.name:
                 return keypair
 
     def get_all_security_groups(self):
         return self.conn.get_all_security_groups() if self.conn else []
 
-    def get_security_group_by_id(self, id):
-        for sgroup in self.security_groups:
+    def get_security_group_by_id(self, security_groups, id):
+        for sgroup in security_groups:
             if sgroup.id == id:
                 return sgroup
 
-    def get_security_group_rules_count_by_id(self, id):
-        sgroup = self.get_security_group_by_id(id)
+    def get_security_group_rules_count_by_id(self, security_groups, id):
+        sgroup = self.get_security_group_by_id(security_groups, id)
         if sgroup:
             return len(sgroup.rules)
         return None
