@@ -178,15 +178,13 @@ class LaunchConfigsFiltersForm(BaseSecureForm):
         self.security_groups.choices = self.ec2_choices_manager.security_groups(use_id=True, add_blank=False)
         self.scaling_group.choices = self.autoscale_choices_manager.scaling_groups(add_blank=False)
         self.facets = [
-            {'name': 'availability_zone', 'label': self.availability_zone.label.text,
-                'options': self.get_availability_zone_choices(region)},
             {'name': 'instance_type', 'label': self.instance_type.label.text,
                 'options': self.get_options_from_choices(self.instance_type.choices)},
             {'name': 'root_device_type', 'label': self.root_device_type.label.text,
                 'options': self.get_root_device_type_choices()},
             {'name': 'key_name', 'label': self.key_name.label.text,
                 'options': self.get_options_from_choices(self.key_name.choices)},
-            {'name': 'security_group', 'label': self.security_groups.label.text,
+            {'name': 'security_groups', 'label': self.security_groups.label.text,
                 'options': self.get_options_from_choices(self.security_groups.choices)},
             {'name': 'scaling_group', 'label': self.scaling_group.label.text,
                 'options': self.get_options_from_choices(self.autoscale_choices_manager.scaling_groups(add_blank=False))},

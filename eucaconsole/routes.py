@@ -72,6 +72,7 @@ urls = [
     # Landing page
     Route(name='instances', pattern='/instances'),
     Route(name='instances_json', pattern='/instances/json'),
+    Route(name='instances_roles_json', pattern='/instances/roles/json'),
     Route(name='instances_start', pattern='/instances/start'),
     Route(name='instances_stop', pattern='/instances/stop'),
     Route(name='instances_reboot', pattern='/instances/reboot'),
