@@ -37,6 +37,7 @@ from ..forms import ChoicesManager
 from . import BaseView
 from ..i18n import _
 from . import boto_error_handler
+from .. import utils
 
 TILE_MASTER_LIST = [
     ('instances-running', 'Running instances'),
@@ -62,7 +63,7 @@ class DashboardView(BaseView):
 
     def __init__(self, request):
         super(DashboardView, self).__init__(request)
-        self.request = request
+        self.title_parts = [_(u'Dashboard')]
         self.conn = self.get_connection()
 
     @view_config(route_name='dashboard', request_method='GET', renderer='../templates/dashboard.pt')
@@ -110,13 +111,13 @@ class DashboardView(BaseView):
                     pass
 
         tiles_are_default = (tiles == ','.join(tiles_default))
-
         return dict(
             availability_zones=availability_zones,
             tiles=tiles.split(','),
             tiles_not_shown=[(tile, label) for (tile, label) in TILE_MASTER_LIST if tile in tiles_not_shown],
             tiles_are_default=tiles_are_default,
             controller_options_json=self.get_controller_options_json(),
+            ufshost_error=utils.is_ufshost_error(self.conn, self.cloud_type)
         )
 
     def get_controller_options_json(self):

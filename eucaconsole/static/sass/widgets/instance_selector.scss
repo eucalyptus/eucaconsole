@@ -17,7 +17,7 @@ $instance-status-color-terminating: lightgrey;
 // Tile/table view
 .status.running { background-color: $instance-status-color-running; }
 .status.pending { background-color: $instance-status-color-pending; }
-.status.stopped { background-color: $instance-status-color-stopped; }
+.status.stopped, .status.Error { background-color: $instance-status-color-stopped; }
 .status.stopping { background-color: $instance-status-color-stopping; }
 .status.terminated { background-color: $instance-status-color-terminated; }
 .status.shutting-down { background-color: $instance-status-color-terminating; }

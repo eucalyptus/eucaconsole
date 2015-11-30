@@ -197,6 +197,7 @@ class MetadataForm(BaseSecureForm):
 
 class CreateBucketForm(BaseSecureForm):
     """S3 Create Bucket form"""
+    BUCKET_NAME_PATTERN = '^[a-z0-9-\.]+$'
     bucket_name_error_msg = _(
         'Name is required and may only contain lowercase letters, numbers, hyphens, and/or dots')
     bucket_name = TextEscapedField(

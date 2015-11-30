@@ -38,16 +38,23 @@ from . import BaseSecureForm, TextEscapedField
 class AccountForm(BaseSecureForm):
     """Account form
     """
+    random_password = wtforms.BooleanField(
+        label=_(u"Create and download random password"), default='checked')
+    access_keys = wtforms.BooleanField(
+        label=_(u"Create and download access keys"), default='checked')
+
     account_name_error_msg = 'Account name is required'
     account_name = TextEscapedField(
         id=u'account-name',
-        label=_(u'Name'),
+        label=_(u'Account name'),
         validators=[
-            validators.InputRequired(message=account_name_error_msg),
-            validators.Regexp('^[a-z0-9][a-z0-9\.@\-]{1,61}[a-z0-9]$', message=account_name_error_msg),
-            validators.Regexp('[^0-9]{12}', message=account_name_error_msg)
+            validators.InputRequired(message=account_name_error_msg)
         ]
     )
+    help_text = _(u'''
+    The admin user is created automatically.  When you create an account, credentials
+    for all users including the admin are automatically downloaded to you as a .csv file.
+    ''')
 
     def __init__(self, request, account=None, **kwargs):
         super(AccountForm, self).__init__(request, **kwargs)

@@ -51,9 +51,9 @@
                     <span i18n:translate="">Desired:</span> <b>{{ item.desired_capacity }}</b>,
                     <span i18n:translate="">Max:</span> <b>{{ item.max_size }}</b>
                 </div>
-                <div ng-show="item.launch_config">
+                <div ng-show="item.launch_config_name">
                     <span class="label" title="Launch configuration" i18n:attributes="title" data-tooltip="">LC</span>
-                    <a ng-href="/launchconfigs/{{ item.launch_config | escapeURL }}">{{ item.launch_config }}</a>
+                    <a ng-href="/launchconfigs/{{ item.launch_config_name | escapeURL }}">{{ item.launch_config_name }}</a>
                 </div>
                 <div ng-show="item.availability_zones">
                     <span class="label" title="Availability zones" i18n:attributes="title" data-tooltip="">AZ</span>
@@ -79,7 +79,7 @@
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
                 <td class="breakword"><a ng-href="${prefix}/{{ item.name | escapeURL }}">{{ item.name | ellipsis: 30 }}</a></td>
-                <td class="breakword"><a ng-href="/launchconfigs/{{ item.launch_config | escapeURL }}">{{ item.launch_config | ellipsis: 30 }}</a></td>
+                <td class="breakword"><a ng-href="/launchconfigs/{{ item.launch_config_name | escapeURL }}">{{ item.launch_config_name | ellipsis: 30 }}</a></td>
                 <td class="count">
                     <a ng-href="${prefix}/{{ item.name | escapeURL }}/instances">
                         &nbsp;{{ item.current_instances_count }}&nbsp;
@@ -132,6 +132,7 @@
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/expando.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/landingpage.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/scalinggroups.js')}"></script>
 

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en-us" lang="en-us">
+<head>
+<title>Create a Scaling Group</title>
+</head>
+<body id="create_scaling_group_ui_help_context">
+
+
+    <h1 class="title topictitle1">Create a Scaling Group</h1>
+
+    <div class="topic task nested1" id="create_scaling_group_ui_help_steps_membership">
+        <h2 class="title topictitle2">Membership</h2>
+
+        
+        <div class="body taskbody"><p class="shortdesc">In this tab, you can specify availability zones and health checks for the
+            instances that run in your auto scaling group. </p>
+
+            <ol class="ol steps"><li class="li step stepexpand">
+                    <span class="ph cmd">If present, select one or more availability zones for your new scaling
+                        group from the <span class="ph uicontrol">Availability zones</span> drop-down list
+                        box.</span>
+                    <div class="itemgroup info"><div class="note note"><span class="notetitle">Note:</span> Availability zones are not applicable if a VPC network is selected.</div>
+</div>
+                    <div class="itemgroup info">You can remove a selected availability zone by clicking on the
+                            <span class="ph uicontrol">x</span> next to the availability zone's name in the
+                            <span class="ph uicontrol">Availability Zones</span> field.</div>
+                </li>
+<li class="li step stepexpand">
+                    <span class="ph cmd">Select one or more load balancers for you new scaling group from the
+                            <span class="ph uicontrol">Load balancers</span> drop-down list box.</span>
+                    <div class="itemgroup info">You can add another load balancer to the new auto scaling group by
+                        clicking the <strong class="ph b">+</strong> button next to the drop-down list box.</div>
+                    <div class="itemgroup info">The auto scaling health check uses EC2 instance status checks to determine
+                        the health state of each instance in your auto scaling group. If your auto
+                        scaling group is using a load balancer, auto scaling will use both EC2
+                        instance status checks and load balancing instance health checks.</div>
+                </li>
+<li class="li step stepexpand">
+                    
+                    <span class="ph cmd">Type the amount of grace period, in seconds, into the <span class="ph uicontrol">Health
+                            check grace period</span> text box or use the scroll bars to
+                        incrementally adjust the values. This is the amount of time after a new
+                        instance is launched in your auto scaling group before health checks start
+                        for the instance. </span>
+                </li>
+</ol>
+
+        </div>
+
+    </div>
+
+    
+    <div class="topic task nested1" id="create_scaling_group_ui_help_steps_finishing">
+        <h2 class="title topictitle2">Saving the Scaling Group</h2>
+
+        
+        <div class="body taskbody"><p class="shortdesc"/>
+
+            <ol class="ol steps"><li class="li step stepexpand">
+                    <span class="ph cmd">Once you are satisfied with the properties you defined for your scaling
+                        group, click the <span class="ph uicontrol">Create Scaling Group</span> button to
+                        create your scaling group.</span>
+                    <div class="itemgroup stepresult">The Next Step dialog box opens prompting you to add scaling policies for this scaling group.</div>
+                </li>
+<li class="li step stepexpand">
+                    <span class="ph cmd">You may choose not to show this message again by checking the <span class="ph uicontrol">Do not show me this again</span> checkbox.</span>
+                </li>
+<li class="li step stepexpand">
+                    <span class="ph cmd">Click <span class="ph uicontrol">add scaling policies</span> to continue. Refer to the help page of the Create scaling policy window to complete the required information. </span>
+                </li>
+</ol>
+
+            <div class="section result"/>
+
+            
+        </div>
+
+    </div>
+
+
+</body>
+</html>

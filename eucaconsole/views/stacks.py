@@ -31,6 +31,7 @@ Pyramid views for Eucalyptus and AWS CloudFormation stacks
 import base64
 import simplejson as json
 import hashlib
+import logging
 import os
 import fnmatch
 import time
@@ -49,6 +50,7 @@ from ..models import Notification
 from ..models.auth import User
 from ..views import LandingPageView, BaseView, JSONResponse, JSONError
 from . import boto_error_handler
+from .. import utils
 
 TEMPLATE_BODY_LIMIT = 460800
 
@@ -76,8 +78,8 @@ class StackMixin(object):
                     bucket = s3_conn.get_bucket(bucket_name)
                 return bucket
             except BotoServerError as err:
-                if err.code != 'BucketAlreadyExists' and err.code != 'AccessDenied':
-                    raise err
+                if err.code != 'BucketAlreadyExists':
+                    BaseView.handle_error(err=err, request=self.request)
         raise JSONError(status=500, message=_(
             u'Cannot create S3 bucket to store your CloudFormation template due to namespace collision. '
             u'Please contact your cloud administrator.'
@@ -87,16 +89,16 @@ class StackMixin(object):
 class StacksView(LandingPageView):
     def __init__(self, request):
         super(StacksView, self).__init__(request)
-        self.request = request
+        self.title_parts = [_(u'Stacks')]
         self.cloudformation_conn = self.get_connection(conn_type="cloudformation")
         self.initial_sort_key = 'name'
         self.prefix = '/stacks'
         self.filter_keys = ['name', 'create-time']
         self.sort_keys = self.get_sort_keys()
         self.json_items_endpoint = self.get_json_endpoint('stacks_json')
-        self.delete_form = StacksDeleteForm(self.request, formdata=self.request.params or None)
+        self.delete_form = StacksDeleteForm(request, formdata=request.params or None)
         self.filters_form = StacksFiltersForm(
-            self.request, cloud_type=self.cloud_type, formdata=self.request.params or None)
+            request, cloud_type=self.cloud_type, formdata=request.params or None)
         search_facets = self.filters_form.facets
         self.render_dict = dict(
             filter_keys=self.filter_keys,
@@ -106,7 +108,8 @@ class StacksView(LandingPageView):
             initial_sort_key=self.initial_sort_key,
             json_items_endpoint=self.json_items_endpoint,
             delete_form=self.delete_form,
-            delete_stack_url=self.request.route_path('stacks_delete'),
+            delete_stack_url=request.route_path('stacks_delete'),
+            ufshost_error=utils.is_ufshost_error(self.cloudformation_conn, self.cloud_type)
         )
 
     @view_config(route_name='stacks', renderer='../templates/stacks/stacks.pt')
@@ -122,7 +125,7 @@ class StacksView(LandingPageView):
             template = u'{0} {1} - {2}'.format(prefix, name, '{0}')
             with boto_error_handler(self.request, None, template):
                 self.cloudformation_conn.delete_stack(name)
-                prefix = _(u'Successfully deleted stack.')
+                prefix = _(u'Successfully sent delete stack request. It may take a moment to delete ')
                 msg = u'{0} {1}'.format(prefix, name)
                 return JSONResponse(status=200, message=msg)
         form_errors = ', '.join(self.delete_form.get_errors_list())
@@ -178,6 +181,7 @@ class StackView(BaseView, StackMixin):
 
     def __init__(self, request):
         super(StackView, self).__init__(request)
+        self.title_parts = [_(u'Stack'), request.matchdict.get('name')]
         self.cloudformation_conn = self.get_connection(conn_type='cloudformation')
         with boto_error_handler(request):
             self.stack = self.get_stack()
@@ -210,11 +214,15 @@ class StackView(BaseView, StackMixin):
 
     @view_config(route_name='stack_view', renderer=TEMPLATE)
     def stack_view(self):
-        if self.stack is None and self.request.matchdict.get('id') != 'new':
+        if self.stack is None and self.request.matchdict.get('name') != 'new':
             raise HTTPNotFound
         bucket = self.get_create_template_bucket()
         stack_id = self.stack.stack_id[self.stack.stack_id.rfind('/') + 1:]
-        keys = list(bucket.list(prefix=stack_id))
+        d = hashlib.md5()
+        d.update(stack_id)
+        md5 = d.digest()
+        stack_hash = base64.b64encode(md5, '--').replace('=', '')
+        keys = list(bucket.list(prefix=stack_hash))
         if len(keys) > 0:
             key = keys[0].key
             name = key[key.rfind('-') + 1:]
@@ -236,7 +244,7 @@ class StackView(BaseView, StackMixin):
                 msg = _(u"Deleting stack")
                 self.log_request(u"{0} {1}".format(msg, name))
                 self.cloudformation_conn.delete_stack(name)
-                prefix = _(u'Successfully deleted stack.')
+                prefix = _(u'Successfully sent delete stack request. It may take a moment to delete ')
                 msg = u'{0} {1}'.format(prefix, name)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
                 time.sleep(1)  # delay to allow server to update state before moving user on
@@ -385,7 +393,7 @@ class StackWizardView(BaseView, StackMixin):
 
     def __init__(self, request):
         super(StackWizardView, self).__init__(request)
-        self.request = request
+        self.title_parts = [_(u'Stack'), _(u'Create')]
         self.create_form = None
         location = self.request.route_path('stacks')
         with boto_error_handler(self.request, location):
@@ -401,7 +409,11 @@ class StackWizardView(BaseView, StackMixin):
         if sample_bucket is None:
             return None
         s3_conn = self.get_connection(conn_type="s3")
-        return s3_conn.get_bucket(sample_bucket)
+        try:
+            return s3_conn.get_bucket(sample_bucket)
+        except BotoServerError:
+            logging.warn(_(u'Configuration error: cloudformation.samples.bucket is referencing bucket that is not visible to this user.'))
+            return None
 
     def get_controller_options_json(self):
         return BaseView.escape_json(json.dumps({
@@ -427,7 +439,8 @@ class StackWizardView(BaseView, StackMixin):
                 if 'Resources' not in parsed:
                     raise JSONError(message=_(u'Invalid CloudFormation Template, Resources not found'), status=400)
                 exception_list = []
-                if self.request.params.get('inputtype') != 'sample':
+                if self.request.params.get('inputtype') != 'sample' and \
+                   self.request.session.get('cloud_type', 'euca') == 'euca':
                     exception_list = StackWizardView.identify_aws_template(parsed)
                 if len(exception_list) > 0:
                     # massage for the browser
@@ -573,7 +586,12 @@ class StackWizardView(BaseView, StackMixin):
                 'options' in param_vals.keys() and len(param_vals['options']) > 9 \
                 else False
             if 'image' in name.lower():
-                param_vals['options'] = self.get_image_options()  # fetch image ids
+                if self.request.session.get('cloud_type', 'euca') == 'aws':
+                    # populate with amazon and user's images
+                    param_vals['options'] = self.get_image_options(owner_alias='self')
+                    param_vals['options'].extend(self.get_image_options(owner_alias='amazon'))
+                else:
+                    param_vals['options'] = self.get_image_options()  # fetch image ids
                 # force image param to use chosen
                 param_vals['chosen'] = True
             params.append(param_vals)
@@ -587,12 +605,13 @@ class StackWizardView(BaseView, StackMixin):
             ret.append((key.name, key.name))
         return ret
 
-    def get_image_options(self, img_type='machine'):
+    def get_image_options(self, img_type='machine', owner_alias=None):
         conn = self.get_connection()
         region = self.request.session.get('region')
+        owners = [owner_alias] if owner_alias else []
         images = []
         if img_type == 'machine':
-            images = self.get_images(conn, [], [], region)
+            images = self.get_images(conn, owners, [], region)
         elif img_type == 'kernel':
             images = conn.get_all_kernels()
         elif img_type == 'ramdisk':
@@ -654,9 +673,13 @@ class StackWizardView(BaseView, StackMixin):
                     parameters=params, tags=tags
                 )
                 stack_id = result[result.rfind('/') + 1:]
+                d = hashlib.md5()
+                d.update(stack_id)
+                md5 = d.digest()
+                stack_hash = base64.b64encode(md5, '--').replace('=', '')
                 bucket = self.get_create_template_bucket(create=True)
                 bucket.copy_key(
-                    new_key_name="{0}-{1}".format(stack_id, template_name),
+                    new_key_name="{0}-{1}".format(stack_hash, template_name),
                     src_key_name=template_name,
                     src_bucket_name=bucket.name
                 )
@@ -834,7 +857,7 @@ class StackWizardView(BaseView, StackMixin):
                 return  # ignore refs already in params
             if type(item) is dict and 'ImageId' in item.keys():
                 img_item = item['ImageId']
-                if 'Ref' not in img_item.keys():
+                if isinstance(img_item, dict) and 'Ref' not in img_item.keys():
                     # check for emi lookup in map
                     if 'Fn::FindInMap' in img_item.keys():
                         map_name = img_item['Fn::FindInMap'][0]

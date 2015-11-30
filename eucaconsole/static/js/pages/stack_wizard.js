@@ -263,7 +263,20 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
                 $scope.summarySection.find('.step' + nextStep).removeClass('hide');
                 $scope.currentStepIndex = nextStep;
                 $scope.checkRequiredInput();
+                $scope.isHelpExpanded = false;
             },50);
+            if (nextStep === 2) {
+                $scope.updateChosenIds();
+            }
+        };
+        $scope.updateChosenIds = function() {
+            $timeout(function() {
+                // hack to update chosen divs to match selects (fixing directive ordering)
+                var elems = $('select[chosen]');
+                angular.forEach($('select[chosen]'), function(value, key) {
+                    value.nextSibling.id = value.id + "_chosen";
+                });
+            }, 1000);
         };
         $scope.clearErrors = function(step) {
             $('#step'+step).find('div.error').each(function(idx, val) {
@@ -344,6 +357,7 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
                     $timeout(function() {
                         $(document).foundation('tooltip', 'reflow');
                     }, 1000);
+                    $scope.updateChosenIds();
                 }
             }).
             error(function (oData, status) {

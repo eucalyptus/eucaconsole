@@ -49,7 +49,9 @@
                     </div>
                     <ul class="small-block-grid-1 medium-block-grid-2 large-block-grid-3">
                         <li class="chart-wrapper" ng-repeat="chart in chartsCtrl.chartsList" ng-cloak="">
-                            <h6>{{ chartsCtrl.metricTitleMapping[chart.metric] }}<i class="busy"></i></h6>
+                            <h6 ng-attr-title="{{ chart.help }}">
+                                {{ chartsCtrl.metricTitleMapping[chart.metric] }}<i class="busy"></i>
+                            </h6>
                             <div ng-show="chartsCtrl.emptyMessages[chart.metric]" class="empty-message-wrapper">
                                 <div class="empty-message">{{ chartsCtrl.emptyMessages[chart.metric] }}</div>
                             </div>

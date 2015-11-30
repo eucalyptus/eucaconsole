@@ -115,7 +115,7 @@
 #results-count { padding-top: 0.25rem; text-align: right; }
 #results-count .items-found { vertical-align: baseline; }
 
-.euca-split { #border-color: #e6e7e8 !important; width: 2.0rem !important; }
+.euca-split { border-color: #e6e7e8 !important; width: 2.0rem !important; }
 
 .secondary .euca-split { border-color: #5a5a5a !important; }
 .secondary .euca-split:hover { border-color: #006699 !important; }
@@ -127,6 +127,15 @@
 @media screen and (max-width: 1024px) { #filters { margin-top: 1rem; } }
 /* Small screen */
 @media screen and (max-width: 1020px) { .columns.datagrid { padding-left: 1rem; } }
+/* expando stuff */
+.expando-tr-even { background: #f5f5f5 !important; }
+
+table.expando tr.even, table.expando tr.alt, table.expando tr:nth-of-type(even) { background: white; }
+
+.expando-tiles li { font-size: 0.875rem; }
+.expando-tiles li div:nth-of-type(1) { float: left; }
+.expando-tiles li div:nth-of-type(2) { clear: both; }
+
 .status { background-color: transparent; }
 
 .status.Inactive { background-color: #6a737b; }

@@ -13,8 +13,10 @@ class StackDetailPage(DetailPage):
         self.tester = tester
         self.verify_stack_detail_page_loaded()
 
-    _stack_detail_page_title = "Details for stack: {0}"
-    _delete_stack_action_menuitem_id = "delete-stack-action"
+    _stack_detail_page_title = 'Details for stack: {0}'
+    _delete_stack_action_menuitem_id = 'delete-stack-action'
+    _template_tab_css ='.tabs>dd:nth-of-type(2)>a'
+    _events_tab_css ='.tabs>dd:nth-of-type(3)>a'
 
     def verify_stack_detail_page_loaded(self):
         """
@@ -30,3 +32,14 @@ class StackDetailPage(DetailPage):
         self.tester.click_element_by_css(DetailPage._actions_menu_css)
         self.tester.click_element_by_id(self._delete_stack_action_menuitem_id)
 
+    def click_tab_template_on_detail_page(self):
+        """
+        Clicks "Template" tab on Stacks Detail page.
+        """
+        self.tester.click_element_by_css(self._template_tab_css)
+
+    def click_tab_events_on_detail_page(self):
+        """
+        Clicks "Events" tab on Stacks Detail page.
+        """
+        self.tester.click_element_by_css(self._events_tab_css)

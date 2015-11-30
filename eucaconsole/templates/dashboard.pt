@@ -94,7 +94,8 @@
                                 </a>
                             </div>
                             <div class="footer">
-                                <a href="${request.route_path('stack_new')}" i18n:translate="">Create stack</a>
+                                <a tal:condition="not: ufshost_error" href="${request.route_path('stack_new')}" i18n:translate="">Create stack</a>
+                                <a tal:condition="ufshost_error" data-reveal-id="ufshost-warn-dialog" i18n:translate="">Create stack</a>
                             </div>
                         </div>
                     </li>
@@ -322,6 +323,7 @@
             </a>
             <a href="#" id="add_tile_close_link" class="close-reveal-modal">&#215;</a>
         </div>
+        ${panel('ufshost_warn_dialog')}
     </div>
 </div>
 

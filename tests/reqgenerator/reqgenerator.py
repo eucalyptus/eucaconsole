@@ -20,6 +20,8 @@ class UserSession(object):
     """
     Class representing a user session. Meant to be extended for actual user behavior
     """
+    session_active = False
+
     def __init__(self, url, session, name='', iterations=10):
         self.url = url
         self.session = session
@@ -34,18 +36,24 @@ class UserSession(object):
     def get_page_completely(self, url):
         start = datetime.now()
         page = self.session.get(url, verify=False)
+        if self.session_active and page.text.find("login-form") > -1:
+            self.session_active = False
+            self.login('ui-test-acct-00', 'admin', 'mypassword0')
         # now find img, link, script tags
         soup = BeautifulSoup(page.text, 'html.parser')
         images = [img['src'] for img in soup.findAll('img') if img.has_attr('src')]
         scripts = [script['src'] for script in soup.findAll('script') if script.has_attr('src')]
         links = [link['href'] for link in soup.findAll('link') if link.has_attr('href')]
         # fetch resources
+        url = self.url
+        if url.endswith('/'):
+            url = url[:len(url)-1]
         for i in images:
-            self.session.get(self.url + i, verify=False)
+            self.session.get(url + i, verify=False)
         for s in scripts:
-            self.session.get(self.url + s, verify=False)
+            self.session.get(url + s, verify=False)
         for l in links:
-            self.session.get(self.url + l, verify=False)
+            self.session.get(url + l, verify=False)
         end = datetime.now()
         page.elapsed = end - start
         # print "cache size = "+str(len(self.session.adapters['http://'].cache.data))
@@ -64,6 +72,7 @@ class UserSession(object):
         login_fields['csrf_token'] = csrf_token
         self.session.post(self.url + 'login?login_type=Eucalyptus', data=login_fields)
         # TODO: return login status
+        self.session_active = True
 
     def logout(self):
         pass
@@ -112,6 +121,7 @@ class VolumeManipulatorUser(UserSession):
             self.session.post(self.url + 'volumes/create', data=create_fields)
 
 if __name__ == "__main__":
+    requests.packages.urllib3.disable_warnings()
     url = URL
     num_users = NUM_USERS
     num_iterations = NUM_ITERATIONS

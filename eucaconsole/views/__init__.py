@@ -369,11 +369,11 @@ class BaseView(object):
                          u'operation. Please retry the operation, and contact your cloud '
                          u'administrator to request an updated access policy if the problem persists.')
         if request.is_xhr:
-            if 'AccessDenied' == err.code:
+            if err.code in ['AccessDenied', 'UnauthorizedOperation']:
                 message = perms_notice
             raise JSONError(message=message, status=status or 403)
         if status == 403 or 'token has expired' in message:  # S3 token expiration responses return a 400 status
-            if 'Access Denied' in message and location is not None:
+            if err.code in ['AccessDenied', 'UnauthorizedOperation'] and location is not None:
                 request.session.flash(perms_notice, queue=Notification.ERROR)
                 raise HTTPFound(location=location)
 
@@ -669,11 +669,7 @@ class LandingPageView(BaseView):
         return False
 
     def get_json_endpoint(self, route, path=False):
-        encoded_params = self.encode_unicode_dict(self.request.params)
-        return u'{0}{1}'.format(
-            self.request.route_path(route) if path is False else route,
-            u'?{0}'.format(urlencode(encoded_params)) if self.request.params else ''
-        )
+        return self.request.route_path(route) if path is False else route
 
     def get_redirect_location(self, route):
         location = u'{0}'.format(self.request.route_path(route))

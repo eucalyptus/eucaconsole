@@ -52,6 +52,7 @@ from ..i18n import _
 from ..models import Notification
 from ..views import BaseView, LandingPageView, JSONResponse
 from . import boto_error_handler
+from .. import utils
 
 
 DELIMITER = '/'
@@ -89,7 +90,7 @@ class BucketsView(LandingPageView):
 
     def __init__(self, request):
         super(BucketsView, self).__init__(request)
-        # self.items = self.get_items()  # Only need this when filters are displayed on the landing page
+        self.title_parts = [_(u'Buckets')]
         self.prefix = '/buckets'
         self.location = self.get_redirect_location('buckets')
         self.sort_keys = [
@@ -202,6 +203,8 @@ class BucketXHRView(BaseView, BucketMixin):
     def __init__(self, request):
         super(BucketXHRView, self).__init__(request)
         self.s3_conn = self.get_connection(conn_type='s3')
+        if self.s3_conn:
+            self.s3_conn.suppress_consec_slashes = False
         self.bucket_name = request.matchdict.get('name')
         request.subpath = self.get_subpath(self.bucket_name)
 
@@ -318,6 +321,7 @@ class BucketContentsView(LandingPageView, BucketMixin):
 
     def __init__(self, request, bucket_name=None, **kwargs):
         super(BucketContentsView, self).__init__(request, **kwargs)
+        self.title_parts = [_(u'Bucket'), request.matchdict.get('name')]
         self.s3_conn = self.get_connection(conn_type='s3')
         self.bucket_name = bucket_name or self.get_bucket_name(request)
         request.subpath = self.get_subpath(self.bucket_name)
@@ -325,6 +329,7 @@ class BucketContentsView(LandingPageView, BucketMixin):
         self.create_folder_form = CreateFolderForm(request, formdata=self.request.params or None)
         self.subpath = request.subpath
         self.key_prefix = '/'.join(self.subpath) if len(self.subpath) > 0 else ''
+        self.title_parts.append(self.key_prefix)
         self.file_uploads_enabled = asbool(self.request.registry.settings.get('file.uploads.enabled', True))
         self.render_dict = dict(
             bucket_name=self.bucket_name,
@@ -378,6 +383,7 @@ class BucketContentsView(LandingPageView, BucketMixin):
 
     @view_config(route_name='bucket_upload', renderer='../templates/buckets/bucket_upload.pt', request_method='GET')
     def bucket_upload(self):
+        self.title_parts.append(_(u'Upload'))
         if not self.file_uploads_enabled:
             raise HTTPNotFound()  # Return 404 if file uploads are disabled
         with boto_error_handler(self.request):
@@ -676,6 +682,7 @@ class BucketDetailsView(BaseView, BucketMixin):
 
     def __init__(self, request, bucket=None, bucket_acl=None, **kwargs):
         super(BucketDetailsView, self).__init__(request, **kwargs)
+        self.title_parts = [_(u'Bucket'), request.matchdict.get('name'), _(u'Details')]
         self.s3_conn = self.get_connection(conn_type='s3')
         self.bucket = bucket
         self.bucket_acl = bucket_acl
@@ -844,6 +851,7 @@ class BucketItemDetailsView(BaseView, BucketMixin):
 
     def __init__(self, request, bucket=None, bucket_item_acl=None, **kwargs):
         super(BucketItemDetailsView, self).__init__(request, **kwargs)
+        self.title_parts = [_(u'Bucket'), request.matchdict.get('name')]
         self.bucket = bucket
         self.bucket_item_acl = bucket_item_acl
         self.s3_conn = self.get_connection(conn_type='s3')
@@ -862,6 +870,7 @@ class BucketItemDetailsView(BaseView, BucketMixin):
         self.friendly_name_param = self.request.params.get('friendly_name')
         self.name_updated = True if self.friendly_name_param and self.friendly_name_param != unprefixed_name else False
         self.bucket_item_name = self.bucket_item.name
+        self.title_parts.append(self.bucket_item_name)
         self.details_form = BucketItemDetailsForm(
             request, bucket_object=self.bucket_item, unprefixed_name=unprefixed_name,
             formdata=self.request.params or None
@@ -889,6 +898,7 @@ class BucketItemDetailsView(BaseView, BucketMixin):
             item_open_url=self.bucket_item.generate_url(expires_in=BUCKET_ITEM_URL_EXPIRES),
             item_download_url=BucketContentsView.get_item_download_url(self.bucket_item),
             cancel_link_url=self.get_cancel_link_url(),
+            ufshost_error=utils.is_ufshost_error(self.s3_conn, self.cloud_type)
         )
 
     def get_controller_options_json(self):

@@ -47,6 +47,7 @@ class SecurityGroupsView(LandingPageView):
 
     def __init__(self, request):
         super(SecurityGroupsView, self).__init__(request)
+        self.title_parts = [_(u'Security Groups')]
         self.conn = self.get_connection()
         self.vpc_conn = self.get_connection(conn_type='vpc')
         self.initial_sort_key = 'name'
@@ -161,6 +162,16 @@ class SecurityGroupsJsonView(LandingPageView):
                     rules_egress=SecurityGroupsView.get_rules(securitygroup.rules_egress, rule_type='outbound'),
                     tags=TaggedItemView.get_tags_display(securitygroup.tags),
                 ))
+        incl_elb_groups = self.request.params.get('incl_elb_groups')
+        if incl_elb_groups is not None:
+            elb_conn = self.get_connection(conn_type='elb')
+            elbs = elb_conn.get_all_load_balancers()
+            for elb in elbs:
+                securitygroups.append(dict(
+                    id='',
+                    name=elb.source_security_group.name,
+                    owner_id=elb.source_security_group.owner_alias
+                ))
         return dict(results=securitygroups)
 
     @view_config(route_name='securitygroups_rules_json', renderer='json', request_method='POST')
@@ -205,9 +216,11 @@ class SecurityGroupView(TaggedItemView):
 
     def __init__(self, request):
         super(SecurityGroupView, self).__init__(request)
+        self.title_parts = [_(u'Security Group')]
         self.conn = self.get_connection()
         self.vpc_conn = self.get_connection(conn_type='vpc')
         self.security_group = self.get_security_group()
+        self.title_parts.append(self.security_group.name if self.security_group else _(u'Create'))
         self.security_group_vpc = ''
         if self.security_group and self.security_group.vpc_id:
             self.vpc = self.vpc_conn.get_all_vpcs(vpc_ids=self.security_group.vpc_id)[0]

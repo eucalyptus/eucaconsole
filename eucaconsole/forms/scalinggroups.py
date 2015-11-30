@@ -299,7 +299,7 @@ class ScalingGroupPolicyCreateForm(BaseSecureForm):
         ],
     )
     adjustment_amount_error_msg = _(u'Amount is required')
-    adjustment_amount = wtforms.IntegerField(
+    adjustment_amount = wtforms.TextField(
         label=_(u'Amount'),
         validators=[
             validators.InputRequired(message=adjustment_amount_error_msg),
@@ -422,7 +422,7 @@ class ScalingGroupsFiltersForm(BaseSecureForm):
         self.facets = [
             {'name': 'launch_config_name', 'label': self.launch_config_name.label.text,
                 'options': self.get_options_from_choices(self.launch_config_name.choices)},
-            {'name': 'availability_zone', 'label': self.availability_zones.label.text,
+            {'name': 'availability_zones', 'label': self.availability_zones.label.text,
                 'options': self.get_options_from_choices(self.availability_zones.choices)},
         ]
         if BaseView.is_vpc_supported(request):

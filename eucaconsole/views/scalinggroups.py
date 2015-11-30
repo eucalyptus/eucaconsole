@@ -28,6 +28,7 @@
 Pyramid views for Eucalyptus and AWS scaling groups
 
 """
+from dateutil import parser
 import simplejson as json
 import time
 
@@ -50,7 +51,7 @@ from ..forms.scalinggroups import (
     ScalingGroupPolicyDeleteForm, ScalingGroupsFiltersForm)
 from ..i18n import _
 from ..models import Notification
-from ..views import LandingPageView, BaseView, TaggedItemView, JSONResponse
+from ..views import LandingPageView, BaseView, TaggedItemView, JSONResponse, JSONError
 from . import boto_error_handler
 
 
@@ -70,7 +71,8 @@ class DeleteScalingGroupMixin(object):
                             if not str(instance._state).startswith('terminated'):
                                 is_all_shutdown = False
                         else:
-                            if not str(instance._state).startswith('terminated') and not str(instance._state).startswith('shutting-down'):
+                            if not str(instance._state).startswith('terminated') and \
+                               not str(instance._state).startswith('shutting-down'):
                                 is_all_shutdown = False
                     time.sleep(5)
                 count += 1
@@ -82,6 +84,7 @@ class ScalingGroupsView(LandingPageView, DeleteScalingGroupMixin):
 
     def __init__(self, request):
         super(ScalingGroupsView, self).__init__(request)
+        self.title_parts = [_(u'Scaling Groups')]
         self.initial_sort_key = 'name'
         self.prefix = '/scalinggroups'
         self.delete_form = ScalingGroupDeleteForm(self.request, formdata=self.request.params or None)
@@ -161,7 +164,7 @@ class ScalingGroupsJsonView(LandingPageView):
         scalinggroups = []
         with boto_error_handler(self.request):
             items = self.filter_items(
-                self.get_items(), ignore=['availability_zones', 'vpc_zone_identifier'],  autoscale=True)
+                self.get_items(), ignore=['availability_zones', 'vpc_zone_identifier'], autoscale=True)
             if self.request.params.getall('availability_zones'):
                 items = self.filter_by_availability_zones(items)
             if self.request.params.getall('vpc_zone_identifier'):
@@ -173,7 +176,7 @@ class ScalingGroupsJsonView(LandingPageView):
                 availability_zones=', '.join(sorted(group.availability_zones)),
                 load_balancers=', '.join(sorted(group.load_balancers)),
                 desired_capacity=group.desired_capacity,
-                launch_config=group.launch_config_name,
+                launch_config_name=group.launch_config_name,
                 max_size=group.max_size,
                 min_size=group.min_size,
                 name=group.name,
@@ -265,6 +268,7 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
 
     def __init__(self, request):
         super(ScalingGroupView, self).__init__(request)
+        self.title_parts = [_(u'Scaling Group'), request.matchdict.get('id'), _(u'General')]
         with boto_error_handler(request):
             self.scaling_group = self.get_scaling_group()
             self.policies = self.get_policies(self.scaling_group)
@@ -338,12 +342,44 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
         return self.render_dict
 
     def update_tags(self):
+        scaling_group_tags = self.scaling_group.tags
+        if scaling_group_tags:
+            # cull tags that start with aws: or euca:
+            scaling_group_tags = [
+                tag for tag in self.scaling_group.tags if 
+                tag.key.find('aws:') == -1 and tag.key.find('euca:') == -1
+            ]
         updated_tags_list = self.parse_tags_param(scaling_group_name=self.scaling_group.name)
+        (del_tags, update_tags) = self.optimize_tag_update(scaling_group_tags, updated_tags_list)
         # Delete existing tags first
-        if self.scaling_group.tags:
-            self.autoscale_conn.delete_tags(self.scaling_group.tags)
-        if updated_tags_list:
-            self.autoscale_conn.create_or_update_tags(updated_tags_list)
+        if del_tags:
+            self.autoscale_conn.delete_tags(del_tags)
+        if update_tags:
+            self.autoscale_conn.create_or_update_tags(update_tags)
+
+    @staticmethod
+    def optimize_tag_update(orig_tags, updated_tags):
+        # cull tags that haven't changed
+        if orig_tags and len(updated_tags) > 0:
+            del_tags = []
+            for tag in orig_tags:
+                # find tags where keys match
+                tag_keys = [utag for utag in updated_tags if utag.key == tag.key]
+                if tag_keys:
+                    # find tags where keys also match
+                    tag_values = [utag for utag in tag_keys if utag.value == tag.value]
+                    if tag_values:
+                        # find tags where prop flag also matches
+                        tag_prop = [utag for utag in tag_values if utag.propagate_at_launch == tag.propagate_at_launch]
+                        if len(tag_prop) == 1:  # we should never have more than 1 match
+                            # save tag from original list to avoid modifying list we are iterating through
+                            del_tags.append(tag)
+                            # remove from updated list since that will make subsequent searches faster
+                            updated_tags.remove(tag_prop[0])
+            # finally, delete the tags we found form original list
+            for tag in del_tags:
+                orig_tags.remove(tag)
+        return orig_tags, updated_tags
 
     def update_properties(self):
         self.scaling_group.desired_capacity = self.request.params.get('desired_capacity', 1)
@@ -399,6 +435,7 @@ class ScalingGroupInstancesView(BaseScalingGroupView):
 
     def __init__(self, request):
         super(ScalingGroupInstancesView, self).__init__(request)
+        self.title_parts = [_(u'Scaling Group'), request.matchdict.get('id'), _(u'Instances')]
         self.scaling_group = self.get_scaling_group()
         self.policies = self.get_policies(self.scaling_group)
         self.markunhealthy_form = ScalingGroupInstancesMarkUnhealthyForm(
@@ -505,12 +542,104 @@ class ScalingGroupInstancesJsonView(BaseScalingGroupView):
         return TaggedItemView.get_display_name(instance)
 
 
+class ScalingGroupHistoryView(BaseScalingGroupView):
+    """View for Scaling Group History page"""
+    TEMPLATE = '../templates/scalinggroups/scalinggroup_history.pt'
+
+    def __init__(self, request):
+        super(ScalingGroupHistoryView, self).__init__(request)
+        with boto_error_handler(request):
+            self.scaling_group = self.get_scaling_group()
+        self.filter_keys = ['status', 'description']
+        self.sort_keys = self.get_sort_keys()
+        search_facets = [
+            {'name': 'status', 'label': _(u"Status"), 'options': [
+                {'key': 'successful', 'label': _("Successful")},
+                {'key': 'in-progress', 'label': _("In progress")},
+                {'key': 'failed', 'label': _("Failed")},
+                {'key': 'not-yet-in-service', 'label': _("Not yet in service")},
+                {'key': 'canceled', 'label': _("Canceled")},
+                {'key': 'waiting-for-launch', 'label': _("Waiting for launch")},
+                {'key': 'waiting-for-terminate', 'label': _("Waiting for terminate")}
+            ]}
+        ]
+        self.delete_form = ScalingGroupPolicyDeleteForm(self.request, formdata=self.request.params or None)
+        self.render_dict = dict(
+            scaling_group=self.scaling_group,
+            scaling_group_name=self.escape_braces(self.scaling_group.name),
+            filter_keys=self.filter_keys,
+            search_facets=BaseView.escape_json(json.dumps(search_facets)),
+            sort_keys=self.sort_keys,
+            initial_sort_key='-end_time',
+            delete_form=self.delete_form,
+        )
+
+    @view_config(route_name='scalinggroup_history', renderer=TEMPLATE, request_method='GET')
+    def scalinggroup_history(self):
+        return self.render_dict
+
+    @view_config(route_name='scalinggroup_history_json', renderer='json', request_method='GET')
+    def scalinggroup_history_json(self):
+        with boto_error_handler(self.request):
+            items = self.autoscale_conn.get_all_activities(self.scaling_group.name)
+        activities = []
+        for activity in items:
+            activities.append(dict(
+                activity_id=activity.activity_id,
+                status=activity.status_code,
+                description=activity.description,
+                start_time=activity.start_time.isoformat(),
+                end_time=activity.end_time.isoformat(),
+            ))
+        return dict(results=activities)
+
+    @view_config(route_name='scalinggroup_history_details_json', renderer='json', request_method='GET')
+    def scalinggroup_history_details_json(self):
+        with boto_error_handler(self.request):
+            activity_id = self.request.matchdict.get('activity')
+            items = self.autoscale_conn.get_all_activities(self.scaling_group.name, [activity_id])
+        if len(items) > 0:
+            activity = items[0]
+            cause = None
+            if hasattr(activity, 'cause'):
+                cause = activity.cause
+                causes = cause.split('At')
+                causes = causes[1:]
+                cause = []
+                for c in causes:
+                    idx = c.find('Z') + 1
+                    date_string = c[:idx]
+                    date_obj = parser.parse(date_string)
+                    cause.append(dict(date=date_obj.isoformat(), msg=c[idx:]))
+            details = dict(
+                activity_id=activity.activity_id,
+                status=activity.status_code,
+                description=activity.status_message,
+                cause=cause
+            )
+            return dict(results=details)
+        else:
+            raise JSONError(message=_(u'Activity ID not found ') + activity_id, status=401)
+
+    @staticmethod
+    def get_sort_keys():
+        return [
+            dict(key='-start_time', name=_(u'Start time: most recent')),
+            dict(key='-end_time', name=_(u'End time: most recent')),
+            dict(key='status', name=_(u'Status: A to Z')),
+            dict(key='-status', name=_(u'Status: Z to A')),
+            dict(key='description', name=_(u'Description: A to Z')),
+            dict(key='-description', name=_(u'Description: Z to A')),
+        ]
+
+
 class ScalingGroupPoliciesView(BaseScalingGroupView):
     """View for Scaling Group Policies page"""
     TEMPLATE = '../templates/scalinggroups/scalinggroup_policies.pt'
 
     def __init__(self, request):
         super(ScalingGroupPoliciesView, self).__init__(request)
+        self.title_parts = [_(u'Scaling Group'), request.matchdict.get('id'), _(u'Policies')]
         policy_ids = {}
         with boto_error_handler(request):
             self.scaling_group = self.get_scaling_group()
@@ -576,7 +705,7 @@ class ScalingGroupPolicyView(BaseScalingGroupView):
             policy_form=self.policy_form,
             alarm_form=self.alarm_form,
             create_alarm_redirect=self.request.route_path('scalinggroup_policy_new', id=self.scaling_group.name),
-            metric_unit_mapping=json.dumps(self.get_metric_unit_mapping()),
+            metric_unit_mapping=self.get_metric_unit_mapping(),
             scale_down_text=_(u'Scale down by'),
             scale_up_text=_(u'Scale up by'),
         )
@@ -611,7 +740,8 @@ class ScalingGroupPolicyView(BaseScalingGroupView):
                 # Attach policy to alarm
                 alarm_name = self.request.params.get('alarm')
                 alarm = self.cloudwatch_conn.describe_alarms(alarm_names=[alarm_name])[0]
-                alarm.dimensions.update({"AutoScalingGroupName": self.scaling_group.name})
+                if 'EC2' in alarm.namespace:
+                    alarm.dimensions.update({"AutoScalingGroupName": self.scaling_group.name})
                 alarm.comparison = alarm._cmp_map.get(alarm.comparison)  # See https://github.com/boto/boto/issues/1311
                 # TODO: Detect if an alarm has 5 scaling policies attached to it and abort accordingly
                 if created_scaling_policy.policy_arn not in alarm.alarm_actions:
@@ -639,7 +769,7 @@ class ScalingGroupWizardView(BaseScalingGroupView):
 
     def __init__(self, request):
         super(ScalingGroupWizardView, self).__init__(request)
-        self.request = request
+        self.title_parts = [_(u'Scaling Group'), _(u'Create')]
         with boto_error_handler(self.request):
             self.create_form = ScalingGroupCreateForm(
                 self.request, autoscale_conn=self.autoscale_conn, ec2_conn=self.ec2_conn,

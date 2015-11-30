@@ -200,6 +200,15 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                 $scope.$on('eventInitSelectedInstances', function ($event, newSelectedInstances) {
                     $scope.initSelectedInstances(newSelectedInstances);
                 });
+                $scope.$on('refreshELBInstances', function () {
+                    $scope.instanceList = [];
+                    $scope.instancesLoading = true;
+                    $timeout(function () {
+                        $scope.getAllInstanceList();
+                        $scope.searchFilterItems('');
+                        $scope.updateInstanceList();
+                    }, 100);
+                });
             };
             $scope.getAllInstanceList = function () {
                 var csrf_token = $('#csrf_token').val();

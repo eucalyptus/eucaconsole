@@ -7,7 +7,7 @@
 
 .status.pending { background-color: #822980; }
 
-.status.stopped { background-color: #990000; }
+.status.stopped, .status.Error { background-color: #990000; }
 
 .status.stopping { background-color: #ff6666; }
 

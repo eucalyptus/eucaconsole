@@ -146,11 +146,11 @@ def tag_editor(context, request, tags=None, leftcol_width=4, rightcol_width=8, s
 
 
 @panel_config('user_editor', renderer='../templates/panels/user_editor.pt')
-def user_editor(context, request, leftcol_width=4, rightcol_width=8):
+def user_editor(context, request, leftcol_width=4, rightcol_width=8, help_text=None, show_admin=False):
     """ User editor panel.
         Usage example (in Chameleon template): ${panel('user_editor')}
     """
-    return dict(leftcol_width=leftcol_width, rightcol_width=rightcol_width)
+    return dict(leftcol_width=leftcol_width, rightcol_width=rightcol_width, help_text=help_text, show_admin=show_admin)
 
 
 @panel_config('policy_list', renderer='../templates/panels/policy_list.pt')
@@ -224,7 +224,7 @@ def securitygroup_rules(context, request, rules=None, rules_egress=None, leftcol
     controller_options_json = BaseView.escape_json(json.dumps({
         'rules_array': rules_sorted,
         'rules_egress_array': rules_egress_sorted,
-        'json_endpoint': request.route_path('securitygroups_json'),
+        'json_endpoint': request.route_path('securitygroups_json') + "?incl_elb_groups=",
         'protocols_json_endpoint': request.route_path('internet_protocols_json'),
     }))
     remote_addr = BaseView.get_remote_addr(request)

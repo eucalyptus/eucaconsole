@@ -101,7 +101,7 @@
                                     <span i18n:translate="">All healthy</span>
                                 </div>
                                 <div class="footer status unhealthy" ng-show="zone.unhealthyInstanceCount > 0">
-                                    {{ zone.unhealthyInstanceCount }} <span i18n:translate="">unhealthy</span>
+                                    {{ zone.unhealthyInstanceCount }} <span i18n:translate="">out of service</span>
                                 </div>
                             </div>
                         </div>
@@ -175,7 +175,7 @@
                                     <span i18n:translate="">All healthy</span>
                                 </div>
                                 <div class="footer status unhealthy" ng-show="subnet.unhealthyInstanceCount > 0">
-                                    {{ subnet.unhealthyInstanceCount }} <span i18n:translate="">unhealthy</span>
+                                    {{ subnet.unhealthyInstanceCount }} <span i18n:translate="">out of service</span>
                                 </div>
                             </div>
                         </div>
@@ -185,8 +185,14 @@
                         <h6 i18n:translate="">
                             Instances
                         </h6>
-                        <div i18n:translate="" class="description">
-                            Select instances to add to this load balancer. Unchecking instances will remove them from the load balancer.
+                        <div class="row">
+                            <div i18n:translate="" class="description large-11 medium-11 small-11 columns">
+                                Select instances to add to this load balancer. Unchecking instances will remove them from the load balancer.
+                            </div>
+                            <div class="actions large-1 medium-1 small-1 columns">
+                                <span id="refresh-instances-icon" class="action-icon" title="Refresh data" i18n:attributes="title"
+                                      ng-click="refreshInstances()"><i class="fa fa-refresh"></i></span>
+                            </div>
                         </div>
                         <magic-search
                             template="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.html')}"
