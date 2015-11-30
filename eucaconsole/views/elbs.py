@@ -162,6 +162,7 @@ class ELBsJsonView(LandingPageView, CloudWatchAPIMixin):
                 elbs_array.append(dict(
                     dns_name=elb.dns_name,
                     name=name,
+                    availability_zones=', '.join(sorted(elb.availability_zones)),
                     healthy_hosts=health_counts.get('healthy'),
                     unhealthy_hosts=health_counts.get('unhealthy'),
                     latency=self.get_average_latency(elb),

@@ -72,6 +72,7 @@ urls = [
     # Landing page
     Route(name='instances', pattern='/instances'),
     Route(name='instances_json', pattern='/instances/json'),
+    Route(name='instances_roles_json', pattern='/instances/roles/json'),
     Route(name='instances_start', pattern='/instances/start'),
     Route(name='instances_stop', pattern='/instances/stop'),
     Route(name='instances_reboot', pattern='/instances/reboot'),
@@ -173,6 +174,7 @@ urls = [
     Route(name='volumes_delete', pattern='/volumes/delete'),
     Route(name='volumes_attach', pattern='/volumes/attach'),
     Route(name='volumes_detach', pattern='/volumes/detach'),
+    Route(name='volumes_expando_details', pattern='/volumes/{id}/expando'),
     # Detail page
     Route(name='volume_create', pattern='/volumes/create'),
     Route(name='volume_view', pattern='/volumes/{id}'),  # Pass id='new' to render Add Volume page

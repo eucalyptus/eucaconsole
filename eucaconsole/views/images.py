@@ -245,6 +245,7 @@ class ImagesJsonView(LandingPageView, ImageBundlingMixin):
                 name_id=ImageView.get_image_name_id(image),
                 owner_id=image.owner_id,
                 owner_alias=image.owner_alias,
+                platform='windows' if image.platform == 'windows' else 'linux',
                 platform_name=ImageView.get_platform_name(platform),
                 platform_key=ImageView.get_platform_key(platform),  # Used in image picker widget
                 root_device_type=image.root_device_type,
@@ -328,6 +329,11 @@ class ImagesJsonView(LandingPageView, ImageBundlingMixin):
         # This is to included shared images in the owned images list per GUI-374
         if owner_alias == 'self':
             items.extend(self.get_images(self.conn, [], ['self'], region))
+        # This adjustment is for client-side filtering
+        account_id = User.get_account_id(self.conn, self.request)
+        for img in items:
+            if img.owner_id == account_id:
+                img.owner_alias = 'self'
         return items
 
     def filter_by_platform(self, items):

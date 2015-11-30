@@ -7,7 +7,7 @@
 <div metal:fill-slot="main_content" ng-app="ImagesPage" ng-controller="ImagesCtrl"
      ng-init="initController('${controller_options_json}')">
     <div class="row" id="contentwrap" ng-controller="ItemsCtrl"
-         ng-init="initController('images', '${initial_sort_key}', '${json_items_endpoint}')">
+         ng-init="initController('images', '${initial_sort_key}', '${json_items_endpoint}', '${layout.cloud_type}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li class="current"><a href="#" i18n:translate="">Images</a></li>
@@ -159,6 +159,9 @@
         </div>
         <!--! Modal dialogs reused across landing and detail page -->
         ${panel('image_dialogs', deregister_form=deregister_form, landingpage=True)}
+        <form>
+            <input type="hidden" id="account_id" name="account_id" value="${account_id}"/>
+        </form>
     </div>
 </div>
 
@@ -171,6 +174,7 @@
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/expando.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/landingpage.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/images.js')}"></script>
 </div>
