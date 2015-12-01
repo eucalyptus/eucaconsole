@@ -68,7 +68,7 @@
                 </ul>
             </section>
             <section tal:condition="request.user.is_authenticated() and layout.has_regions == True">
-                <a id="selected-region" data-dropdown="region-dropdown" class="small secondary dropdown">
+                <a id="selected-region" data-dropdown="region-dropdown" class="small secondary dropdown ${layout.cloud_type}">
                     <span>${layout.selected_region_label}</span>
                     <span class="down-caret"></span>
                 </a>
