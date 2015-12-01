@@ -22,7 +22,7 @@ class CreateVolumeDialog(BasePage):
             self.tester.select_by_id(self._availability_zone_selector_id, availability_zone, timeout_in_seconds=timeout_in_seconds)
         if volume_size is not None:
             self.tester.send_keys_by_id(self._volume_size_field_id, volume_size)
-        self.tester.click_element_by_id(self._create_volume_submit_button_id)
+        self.tester.click_element_by_id_robust(self._create_volume_submit_button_id)
 
 class DeleteVolumeModal(BasePage):
 

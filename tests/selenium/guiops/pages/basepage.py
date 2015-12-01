@@ -91,7 +91,7 @@ class BasePage(SeleniumApi):
         self.tester.scroll_to_element_by_id(self._buckets_menuitem_id)
         self.tester.send_keys_by_id(self._buckets_menuitem_id, "\n", clear_field=False)
 
-    def goto_asg_view_via_menu(self):
+    def goto_asg_lp_via_menu(self):
         self.tester.scroll_to_element_by_id(self._autoscaling_menuitem_id)
         self.tester.send_keys_by_id(self._autoscaling_menuitem_id, "\n", clear_field=False)
 

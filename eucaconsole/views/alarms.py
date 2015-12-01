@@ -49,6 +49,7 @@ class CloudWatchAlarmsView(LandingPageView):
 
     def __init__(self, request):
         super(CloudWatchAlarmsView, self).__init__(request)
+        self.title_parts = [_(u'Alarms')]
         self.initial_sort_key = 'name'
         self.prefix = '/cloudwatch/alarms'
         self.cloudwatch_conn = self.get_connection(conn_type='cloudwatch')

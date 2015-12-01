@@ -28,10 +28,12 @@
 Forms for Launch Config
 
 """
+import base64
 import wtforms
 from wtforms import validators
 
 from ..i18n import _
+from ..views import boto_error_handler
 from . import BaseSecureForm, ChoicesManager
 
 
@@ -97,6 +99,12 @@ class CreateLaunchConfigForm(BaseSecureForm):
             self.image_id.data = self.image.id
         if self.keyname is not None:
             self.keypair.data = self.keyname
+        instance_id = request.params.get('userdata_instanceid')
+        if instance_id is not None:
+            with boto_error_handler(self.request):
+                userdata = self.conn.get_instance_attribute(instance_id, 'userData')
+                userdata = userdata['userData']
+                self.userdata.data = base64.b64decode(userdata) if userdata is not None else ''
 
     def set_monitoring_enabled_field(self):
         if self.cloud_type == 'euca':
@@ -170,15 +178,13 @@ class LaunchConfigsFiltersForm(BaseSecureForm):
         self.security_groups.choices = self.ec2_choices_manager.security_groups(use_id=True, add_blank=False)
         self.scaling_group.choices = self.autoscale_choices_manager.scaling_groups(add_blank=False)
         self.facets = [
-            {'name': 'availability_zone', 'label': self.availability_zone.label.text,
-                'options': self.get_availability_zone_choices(region)},
             {'name': 'instance_type', 'label': self.instance_type.label.text,
                 'options': self.get_options_from_choices(self.instance_type.choices)},
             {'name': 'root_device_type', 'label': self.root_device_type.label.text,
                 'options': self.get_root_device_type_choices()},
             {'name': 'key_name', 'label': self.key_name.label.text,
                 'options': self.get_options_from_choices(self.key_name.choices)},
-            {'name': 'security_group', 'label': self.security_groups.label.text,
+            {'name': 'security_groups', 'label': self.security_groups.label.text,
                 'options': self.get_options_from_choices(self.security_groups.choices)},
             {'name': 'scaling_group', 'label': self.scaling_group.label.text,
                 'options': self.get_options_from_choices(self.autoscale_choices_manager.scaling_groups(add_blank=False))},

@@ -23,7 +23,7 @@
             <strong>{{ obj_key }}</strong>
             <span i18n:translate="">public?</span>
         </p>
-        <a class="button expand" id="delete-object-btn" i18n:translate="" ng-click="makeObjectPublic()">
+        <a class="button expand" id="make-object-public-btn" i18n:translate="" ng-click="makeObjectPublic()">
             Yes, Make Object Public
         </a>
         <a href="#" id="make-object-public-close-link" class="close-reveal-modal">&#215;</a>

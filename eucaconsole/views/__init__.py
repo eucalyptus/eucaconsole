@@ -663,11 +663,7 @@ class LandingPageView(BaseView):
         return False
 
     def get_json_endpoint(self, route, path=False):
-        encoded_params = self.encode_unicode_dict(self.request.params)
-        return u'{0}{1}'.format(
-            self.request.route_path(route) if path is False else route,
-            u'?{0}'.format(urlencode(encoded_params)) if self.request.params else ''
-        )
+        return self.request.route_path(route) if path is False else route
 
     def get_redirect_location(self, route):
         location = u'{0}'.format(self.request.route_path(route))

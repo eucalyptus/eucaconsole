@@ -1,3 +1,5 @@
+import time
+
 from selenium import webdriver
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
@@ -7,7 +9,6 @@ from selenium.common.exceptions import TimeoutException
 from selenium.common.exceptions import ElementNotVisibleException
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import time
 
 
 class UICheckException(Exception):
@@ -296,13 +297,14 @@ class SeleniumApi(object):
             self.close_browser()
             raise
 
-    def click_element_by_css(self, css):
+    def click_element_by_css(self, css, wait=True):
         """
         Waits for an element to be present and visible such that you can click it.
         Clicks the element.
         :param css:
         """
-        self.wait_for_visible_by_css(css)
+        if wait:
+            self.wait_for_visible_by_css(css)
         print "Executing click_element_by_css('{0}')".format(css)
         try:
             self.driver.find_element_by_css_selector(css).click()
@@ -401,7 +403,7 @@ class SeleniumApi(object):
         :param element_id:
         :param text:
         """
-        self.set_implicit_wait(0)
+        #self.set_implicit_wait(0)
         if timeout_in_seconds is None:
             timeout_in_seconds = self.timeout_to_wait_for_text_in_seconds
 
@@ -563,7 +565,7 @@ class SeleniumApi(object):
         return self.driver.find_element_by_xpath(xpath).text
 
 
-    def select_by_id(self, element_id, text, timeout_in_seconds=None):
+    def select_by_id(self, element_id, text='', index=-1, timeout_in_seconds=None):
         """
         Selects element with particular text on it.
         :param element_id:
@@ -571,10 +573,14 @@ class SeleniumApi(object):
         """
         print "Executing select_by_id id = {0}, text = {1}".format(element_id, text)
         self.wait_for_text_present_by_id(element_id, text, timeout_in_seconds=timeout_in_seconds)
-        print "Selecting element with text = {1} by id = {0}".format(element_id, text)
-        Select(self.driver.find_element_by_id(element_id)).select_by_visible_text(text)
+        if index == -1:
+            print "Selecting element with text = {1} by id = {0}".format(element_id, text)
+            Select(self.driver.find_element_by_id(element_id)).select_by_visible_text(text)
+        else:
+            print "Selecting element with index = {1} by id = {0}".format(element_id, index)
+            Select(self.driver.find_element_by_id(element_id)).select_by_index(index)
 
-    def select_by_css(self, css, text):
+    def select_by_css(self, css, text='', index=-1):
         """
         Selects element with particular text on it.
         :param css:
@@ -582,18 +588,26 @@ class SeleniumApi(object):
         """
         print "Executing select_by_id css = {0}, text = {1}".format(css, text)
         self.wait_for_text_present_by_css(css, text)
-        print "Selecting element with text = {1} by css = {0}".format(css, text)
-        Select(self.driver.find_element_by_css_selector(css)).select_by_visible_text(text)
+        if index == -1:
+            print "Selecting element with text = {1} by css = {0}".format(css, text)
+            Select(self.driver.find_element_by_css_selector(css)).select_by_visible_text(text)
+        else:
+            print "Selecting element with index = {1} by css = {0}".format(css, index)
+            Select(self.driver.find_element_by_css_selector(css)).select_by_index(index)
 
-    def select_by_link_text(self, link_text, text):
+    def select_by_link_text(self, link_text, text='', index=-1):
         """
         Selects element with particular text on it.
         :param link_text:
         :param text:
         """
         self.wait_for_element_present_by_link_text(text)
-        print "Selecting element with text = {1} by link_text = {0}".format(link_text, text)
-        Select(self.driver.find_element_by_link_text(link_text)).select_by_visible_text(text)
+        if index == -1:
+            print "Selecting element with text = {1} by link_text = {0}".format(link_text, text)
+            Select(self.driver.find_element_by_link_text(link_text)).select_by_visible_text(text)
+        else:
+            print "Selecting element with index = {1} by link_text = {0}".format(link_text, index)
+            Select(self.driver.find_element_by_link_text(link_text)).select_by_index(index)
 
     def select_by_name_and_value(self, name, value):
         """

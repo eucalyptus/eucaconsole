@@ -152,6 +152,7 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
                 // Wait until the rendering of the new tab page is complete
                 $('#zone').trigger("chosen:updated");
                 $('#vpc_subnet').trigger('chosen:updated');
+                $scope.isHelpExpanded = false;
             });
         });
         $scope.$on('currentStepIndexUpdate', function($event, thisStepIndex) {
@@ -233,9 +234,15 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
                 $scope.updateAvailabilityZoneChoices();
             }
         }, true);
-        $scope.$watch('pingProtocol', function (){
-            $scope.updateDefaultPingProtocol();
-        });
+        $scope.$watch('listenerArray', function (newVal, oldVal) {
+            if (newVal.length) {
+                $scope.pingProtocol = newVal[0].toProtocol;
+                $scope.pingPort = newVal[0].toPort;
+            } else {
+                $scope.pingProtocol = 'HTTP';
+                $scope.pingPort = 80;
+            }
+        }, true);
         $scope.$watch('pingPort', function (){
             $scope.checkRequiredInput(4);
         });
@@ -315,7 +322,11 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
                         $scope.accessLogConfirmationDialog.foundation('reveal', 'open');
                     }
                 }
+                $scope.isValidationError = newVal && !$scope.bucketName;
             }
+        });
+        $scope.$watch('bucketName', function (newVal, oldVal) {
+            $scope.isValidationError = $scope.loggingEnabled && !newVal;
         });
         $scope.accessLogConfirmationDialog.on('opened.fndtn.reveal', function () {
             $scope.accessLoggingConfirmed = false;
@@ -482,13 +493,6 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
                 }
             });
         });
-    };
-    $scope.updateDefaultPingProtocol = function () {
-        if ($scope.pingProtocol === 'HTTP' || $scope.pingProtocol === 'TCP') {
-           $scope.pingPort = 80;
-        } else if ($scope.pingProtocol === 'HTTPS' || $scope.pingProtocol === 'SSL' ) {
-           $scope.pingPort = 443;
-        }
     };
     $scope.getInstanceCount = function (type, group) {
         var count = 0;

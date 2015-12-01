@@ -31,6 +31,7 @@ Pyramid views for Eucalyptus and AWS CloudFormation stacks
 import base64
 import simplejson as json
 import hashlib
+import logging
 import os
 import fnmatch
 import time
@@ -88,16 +89,16 @@ class StackMixin(object):
 class StacksView(LandingPageView):
     def __init__(self, request):
         super(StacksView, self).__init__(request)
-        self.request = request
+        self.title_parts = [_(u'Stacks')]
         self.cloudformation_conn = self.get_connection(conn_type="cloudformation")
         self.initial_sort_key = 'name'
         self.prefix = '/stacks'
         self.filter_keys = ['name', 'create-time']
         self.sort_keys = self.get_sort_keys()
         self.json_items_endpoint = self.get_json_endpoint('stacks_json')
-        self.delete_form = StacksDeleteForm(self.request, formdata=self.request.params or None)
+        self.delete_form = StacksDeleteForm(request, formdata=request.params or None)
         self.filters_form = StacksFiltersForm(
-            self.request, cloud_type=self.cloud_type, formdata=self.request.params or None)
+            request, cloud_type=self.cloud_type, formdata=request.params or None)
         search_facets = self.filters_form.facets
         self.render_dict = dict(
             filter_keys=self.filter_keys,
@@ -107,7 +108,7 @@ class StacksView(LandingPageView):
             initial_sort_key=self.initial_sort_key,
             json_items_endpoint=self.json_items_endpoint,
             delete_form=self.delete_form,
-            delete_stack_url=self.request.route_path('stacks_delete'),
+            delete_stack_url=request.route_path('stacks_delete'),
             ufshost_error=utils.is_ufshost_error(self.cloudformation_conn, self.cloud_type)
         )
 
@@ -180,6 +181,7 @@ class StackView(BaseView, StackMixin):
 
     def __init__(self, request):
         super(StackView, self).__init__(request)
+        self.title_parts = [_(u'Stack'), request.matchdict.get('name')]
         self.cloudformation_conn = self.get_connection(conn_type='cloudformation')
         with boto_error_handler(request):
             self.stack = self.get_stack()
@@ -212,7 +214,7 @@ class StackView(BaseView, StackMixin):
 
     @view_config(route_name='stack_view', renderer=TEMPLATE)
     def stack_view(self):
-        if self.stack is None and self.request.matchdict.get('id') != 'new':
+        if self.stack is None and self.request.matchdict.get('name') != 'new':
             raise HTTPNotFound
         bucket = self.get_create_template_bucket()
         stack_id = self.stack.stack_id[self.stack.stack_id.rfind('/') + 1:]
@@ -391,7 +393,7 @@ class StackWizardView(BaseView, StackMixin):
 
     def __init__(self, request):
         super(StackWizardView, self).__init__(request)
-        self.request = request
+        self.title_parts = [_(u'Stack'), _(u'Create')]
         self.create_form = None
         location = self.request.route_path('stacks')
         with boto_error_handler(self.request, location):
@@ -407,7 +409,11 @@ class StackWizardView(BaseView, StackMixin):
         if sample_bucket is None:
             return None
         s3_conn = self.get_connection(conn_type="s3")
-        return s3_conn.get_bucket(sample_bucket)
+        try:
+            return s3_conn.get_bucket(sample_bucket)
+        except BotoServerError:
+            logging.warn(_(u'Configuration error: cloudformation.samples.bucket is referencing bucket that is not visible to this user.'))
+            return None
 
     def get_controller_options_json(self):
         return BaseView.escape_json(json.dumps({

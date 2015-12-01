@@ -69,6 +69,7 @@ class VolumesView(LandingPageView, BaseVolumeView):
 
     def __init__(self, request):
         super(VolumesView, self).__init__(request)
+        self.title_parts = [_(u'Volumes')]
         self.conn = self.get_connection()
         self.initial_sort_key = '-create_time'
         self.prefix = '/volumes'
@@ -210,8 +211,11 @@ class VolumesJsonView(LandingPageView):
                 filtered_items = self.get_items()
             instance_ids = list(set([
                 vol.attach_data.instance_id for vol in filtered_items if vol.attach_data.instance_id is not None]))
-            volume_ids = [volume.id for volume in filtered_items]
-            snapshots = self.conn.get_all_snapshots(filters={'volume-id': volume_ids}) if self.conn else []
+            if len(filtered_items) < 1000:
+                volume_ids = [volume.id for volume in filtered_items]
+                snapshots = self.conn.get_all_snapshots(filters={'volume-id': volume_ids}) if self.conn else []
+            else:
+                snapshots = self.conn.get_all_snapshots() if self.conn else []
             instances = self.conn.get_only_instances(instance_ids=instance_ids) if self.conn else []
 
             for volume in filtered_items:
@@ -222,19 +226,31 @@ class VolumesJsonView(LandingPageView):
                     instance = [inst for inst in instances if inst.id == volume.attach_data.instance_id][0]
                     instance_name = TaggedItemView.get_display_name(instance, escapebraces=False)
                 if status != 'deleted':
+                    snapshot_name = [snap.tags.get('Name') for snap in snapshots if snap.id == volume.snapshot_id]
+                    if len(snapshot_name) == 0:
+                        snapshot_name = ''
+                    elif snapshot_name[0] is None:
+                        snapshot_name = ''
+                    else:
+                        snapshot_name = snapshot_name[0]
                     volumes.append(dict(
                         create_time=volume.create_time,
                         id=volume.id,
                         instance=volume.attach_data.instance_id,
                         device=volume.attach_data.device,
                         instance_name=instance_name,
+                        instance_tag_name=instance.tags.get('Name') if instance_name else '',
                         name=TaggedItemView.get_display_name(volume, escapebraces=False),
+                        volume_tag_name=volume.tags.get('Name'),
                         snapshots=len([snap.id for snap in snapshots if snap.volume_id == volume.id]),
+                        snapshot_id=volume.snapshot_id,
+                        snapshot_name=snapshot_name,
                         size=volume.size,
                         status=status,
                         attach_status=attach_status,
                         zone=volume.zone,
                         tags=TaggedItemView.get_tags_display(volume.tags),
+                        real_tags=volume.tags,
                         transitional=status in transitional_states or attach_status in transitional_states,
                     ))
             return dict(results=volumes)
@@ -253,9 +269,12 @@ class VolumeView(TaggedItemView, BaseVolumeView):
 
     def __init__(self, request, ec2_conn=None, **kwargs):
         super(VolumeView, self).__init__(request, **kwargs)
-        self.request = request
+        name = request.matchdict.get('id')
+        if name == 'new':
+            name = _(u'Create')
+        self.title_parts = [_(u'Volume'), name, _(u'General')]
         self.conn = ec2_conn or self.get_connection()
-        self.location = self.request.route_path('volume_view', id=self.request.matchdict.get('id'))
+        self.location = request.route_path('volume_view', id=request.matchdict.get('id'))
         with boto_error_handler(request, self.location):
             self.volume = self.get_volume()
             snapshots = self.conn.get_all_snapshots(owner='self') if self.conn else []
@@ -444,13 +463,20 @@ class VolumeStateView(BaseVolumeView):
                          attach_instance=attach_instance)
         )
 
+    @view_config(route_name='volumes_expando_details', renderer='json', request_method='GET')
+    def volume_expando_details(self):
+        return self.volume_state_json()
+
 
 class VolumeSnapshotsView(BaseVolumeView):
     VIEW_TEMPLATE = '../templates/volumes/volume_snapshots.pt'
 
     def __init__(self, request, ec2_conn=None, **kwargs):
         super(VolumeSnapshotsView, self).__init__(request, **kwargs)
-        self.request = request
+        name = request.matchdict.get('id')
+        if name == 'new':
+            name = _(u'Create')
+        self.title_parts = [_(u'Volume'), name, _(u'Snapshots')]
         self.conn = ec2_conn or self.get_connection()
         self.location = self.request.route_path('volume_snapshots', id=self.request.matchdict.get('id'))
         with boto_error_handler(request, self.location):

@@ -49,7 +49,7 @@ class SnapshotsView(LandingPageView):
 
     def __init__(self, request):
         super(SnapshotsView, self).__init__(request)
-        self.request = request
+        self.title_parts = [_(u'Snapshots')]
         self.conn = self.get_connection()
         self.prefix = '/snapshots'
         self.initial_sort_key = '-start_time'
@@ -64,7 +64,7 @@ class SnapshotsView(LandingPageView):
     @view_config(route_name='snapshots', renderer=VIEW_TEMPLATE)
     def snapshots_landing(self):
         filter_keys = ['id', 'name', 'volume_size', 'start_time', 'tags', 'volume_id', 'volume_name', 'status']
-        filters_form=SnapshotsFiltersForm(self.request, formdata=self.request.params or None)
+        filters_form = SnapshotsFiltersForm(self.request, formdata=self.request.params or None)
         search_facets = filters_form.facets
 
         self.render_dict.update(dict(
@@ -242,6 +242,10 @@ class SnapshotView(TaggedItemView):
 
     def __init__(self, request, ec2_conn=None, **kwargs):
         super(SnapshotView, self).__init__(request, **kwargs)
+        name = request.matchdict.get('id')
+        if name == 'new':
+            name = _(u'Create')
+        self.title_parts = [_(u'Snapshot'), name]
         self.request = request
         self.conn = ec2_conn or self.get_connection()
         self.location = self.request.route_path('snapshot_view', id=self.request.matchdict.get('id'))
@@ -408,7 +412,7 @@ class SnapshotView(TaggedItemView):
         volumes_list = []
         try:
             volumes_list = self.conn.get_all_volumes(volume_ids=[volume_id])
-        except BotoServerError as err:
+        except BotoServerError:
             return None
         return volumes_list[0] if volumes_list else None
 

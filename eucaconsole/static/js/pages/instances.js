@@ -26,9 +26,8 @@ angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils'])
         };
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
-            if (options.hasOwnProperty('addresses_json_items_endpoint')) {
-                $scope.addressesEndpoint = options.addresses_json_items_endpoint;
-            } 
+            $scope.addressesEndpoint = options.addresses_json_items_endpoint;
+            $scope.rolesEndpoint = options.roles_json_items_endpoint;
             $scope.getIPAddresses(); 
             $scope.initChosenSelectors();
             $('#file').on('change', $scope.getPassword);
@@ -149,6 +148,7 @@ angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils'])
                 "&amp;instance_type=" + item.instance_type +
                 "&amp;keypair=" + item.key_name +
                 "&amp;security_group=" + securityGroupsList +
+                "&amp;userdata_instanceid=" + item.id +
                 "&amp;preset=true";
             return launchConfigPath;
         };
@@ -185,5 +185,18 @@ angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils'])
                 }); 
             }
         };
+        $scope.$on('itemsLoaded', function($event, items) {
+            var theItems = items;
+            $http.get($scope.rolesEndpoint).success(function(oData) {
+                var results = oData ? oData.results : [];
+                for (var k=0; k<theItems.length; k++) {
+                    if (results[theItems[k].id] !== undefined) {
+                        theItems[k].roles = results[theItems[k].id];
+                    }
+                }
+            }).error(function (oData, status) {
+                // ignore
+            });
+        });
     })
 ;

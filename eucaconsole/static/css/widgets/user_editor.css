@@ -1,0 +1,10 @@
+/* Dropdown elements */
+/* Set the link colors and styles for top-level nav */
+/* ----------------------------------------- Item list
+----------------------------------------- */
+/* @fileOverview User Editor Panel CSS */
+.user-list { margin: 0 0 15px; }
+.user-list li { list-style: none; line-height: 1.25; }
+.user-list li.default a.circle { color: #cccccc; }
+.user-list li.default a.circle i.fi-minus-circle:hover { color: #cccccc; cursor: auto; }
+.user-list li a.circle { position: static; vertical-align: middle; margin-right: 5px; display: inline; }

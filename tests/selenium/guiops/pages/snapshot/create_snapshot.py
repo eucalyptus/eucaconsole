@@ -1,5 +1,4 @@
 from pages.detailpage import BasePage
-from string import split
 
 class CreateSnapshotPage(BasePage):
 

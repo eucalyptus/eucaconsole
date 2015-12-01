@@ -15,7 +15,9 @@
     }
     .tile .header a {
         &.has-bucket-icon {
-            padding-left: 20px;
+            padding-left: 26px;
+            background-size: 11px;
+            background-position: 8px 6px;
         }
         &.has-shared-icon {
             padding-left: 20px;
