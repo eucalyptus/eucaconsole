@@ -37,11 +37,10 @@ from pyramid.renderers import get_renderer
 from pyramid.settings import asbool
 
 from .constants import AWS_REGIONS
-from .forms import ChoicesManager
 from .forms.login import EucaLogoutForm
 from .i18n import _
 from .models import Notification
-from .models.auth import ConnectionManager
+from .models.auth import ConnectionManager, RegionCache
 from .views import BaseView
 
 try:
@@ -78,9 +77,9 @@ class MasterLayout(object):
                 secret_key = self.request.session.get('secret_key')
                 session_token = self.request.session.get('session_token')
                 conn = ConnectionManager.euca_connection(
-                    host, port, self.access_id, secret_key, session_token, 'ec2', True
+                    host, port, 'euca', self.access_id, secret_key, session_token, 'ec2', True
                 )
-                self.regions = ChoicesManager(conn).regions()
+                self.regions = RegionCache(conn).regions()
                 if len(self.regions) == 1:
                     self.has_regions = False
                 for region in self.regions:

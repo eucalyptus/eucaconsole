@@ -32,6 +32,8 @@ angular.module('LoginPage', ['EucaConsoleUtils'])
             if (Modernizr.sessionstorage) {
                 sessionStorage.removeItem('copy-object-buffer');
             }
+            var storedRegion = Modernizr.localstorage && localStorage.getItem('euca-region') || '';
+            $("#euca-region").val(storedRegion);
         };
         $scope.setFocus = function () {
             var inputs = [];
