@@ -1,6 +1,7 @@
-from guiops.guiops import GuiOps
 from option_parser import Option_parser
-import string, random, time
+import sys
+sys.path.append('../guiops')
+from guiops.guiops import GuiOps
 
 
 class Volume_operations_sequence(GuiOps):
