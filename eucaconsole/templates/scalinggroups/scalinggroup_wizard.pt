@@ -73,6 +73,7 @@
                             </div>
                             <hr />
                             ${panel('autoscale_tag_editor', tags=[])}
+                            <tag-editor ng-model="tags" template="${request.route_path('tag_editor_template')}"></tag-editor>
                             <hr />
                             <div>
                                 <label>
@@ -201,6 +202,7 @@
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/utils/purl.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/scalinggroup_wizard.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/tag-editor/tag-editor.js')}"></script>
 </div>
 
 </metal:block>

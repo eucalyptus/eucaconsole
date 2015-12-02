@@ -2,6 +2,7 @@
 
 <head metal:fill-slot="head_css">
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/scalinggroup.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/tag-editor.css')}" />
 </head>
 
 <div metal:fill-slot="main_content">
@@ -36,7 +37,8 @@
                         </li>
                     </metal:actions>
                 </metal:block>
-                <form id="scalinggroup-detail-form" action="${request.route_path('scalinggroup_update', id=scaling_group.name)}" method="post" data-abide=""
+                <form id="scalinggroup-detail-form" action="${request.route_path('scalinggroup_update', id=scaling_group.name)}"
+                      method="post" data-abide="" name="scalingGroupDetailForm" novalidate=""
                       tal:define="avail_zone_html_attrs {'data-placeholder': avail_zone_placeholder_text};
                                   vpc_subnet_html_attrs {'data-placeholder': ' '};
                                   load_balancers_html_attrs {'data-placeholder': ' '};
@@ -95,10 +97,14 @@
                     ${panel('form_field', field=edit_form['default_cooldown'], step='30', leftcol_width_large=3, rightcol_width_large=9)}
                     ${panel('form_field', field=edit_form['health_check_period'], step='30', leftcol_width_large=3, rightcol_width_large=9)}
                     <hr />
-                    ${panel('autoscale_tag_editor', tags=scaling_group.tags)}
+                    <tag-editor
+                            ng-model="tags"
+                            template="${request.route_path('tag_editor_template')}"
+                            tal:content="tags | structure">
+                    </tag-editor>
                     <hr />
                     <div>
-                        <button type="submit" class="button" id="save-changes-btn" ng-disabled="isNotValid || isNotChanged">
+                        <button type="submit" class="button" id="save-changes-btn" ng-disabled="scalingGroupDetailForm.$invalid">
                             <span tal:condition="scaling_group" i18n:translate="">Save Changes</span>
                         </button>
                         <a href="${request.route_path('scalinggroups')}"
@@ -135,6 +141,7 @@
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/scalinggroup.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/tag-editor/tag-editor.js')}"></script>
 </div>
 
 </metal:block>

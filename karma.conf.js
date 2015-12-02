@@ -71,6 +71,7 @@ module.exports = function(config) {
       'static/js/widgets/securitygroup_rules.js',
       'static/js/widgets/tag_editor.js',
       'static/js/widgets/user_editor.js',
+      'static/js/widgets/tag-editor/tag-editor.js',
       'static/js/widgets/expando.js',
       'static/js/pages/landingpage.js',
       'static/js/pages/account.js',
@@ -190,7 +191,8 @@ module.exports = function(config) {
       'static/js/jasmine-spec/spec_user_view_quotas.js',
       'static/js/jasmine-spec/spec_volume.js',
       'static/js/jasmine-spec/spec_volumes.js',
-      'static/js/jasmine-spec/spec_volume_snapshots.js'
+      'static/js/jasmine-spec/spec_volume_snapshots.js',
+      'static/js/jasmine-spec/tag-editor/spec_tag_editor.js'
     ],
 
 
