@@ -1,0 +1,130 @@
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
+
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/metrics.css')}" />
+</head>
+
+<div metal:fill-slot="main_content" ng-app="MetricsPage" ng-controller="MetricsCtrl" ng-init="initPage()"
+    tal:define="using_expando True;
+                expando_data_url nothing;
+                expando_data_id nothing">
+    <div class="row" id="contentwrap" ng-controller="ItemsCtrl"
+             ng-init="initController('metrics', '${initial_sort_key}', '${json_items_endpoint}')">
+        <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+            <metal:crumbs metal:fill-slot="crumbs">
+                <li class="current"><a href="#" i18n:translate="">Metrics</a></li>
+            </metal:crumbs>
+        </metal:breadcrumbs>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
+        <h3 id="pagetitle"><strong i18n:translate="">Metrics</strong></h3>
+        <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
+            <div metal:fill-slot="new_button">
+                <a class="button" i18n:translate="" id="create-metric-btn"
+                   href="#">Create Metric</a>
+            </div>
+            <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
+                <a id="tile-item-dropdown_{{ item.id }}" class="tiny secondary button dropdown right" data-dropdown="item-dropdown_{{ item.id }}"><i class="grid-action"></i></a>
+                <ul id="item-dropdown_{{ item.id }}" class="f-dropdown" data-dropdown-content="" ng-show="item.status !== 'deleting'">
+                    <li>
+                        <a i18n:translate="" ng-href="${prefix}/{{ item.id }}">Create alarm</a>
+                    </li>
+                </ul>
+            </div>
+            <div metal:fill-slot="tile_content" tal:omit-tag="">
+                <div>
+                    <span class="label" title="Volume ID" i18n:attributes="title" data-tooltip="">ID</span>
+                    {{ item.id }}
+                </div>
+                <div>
+                    <span class="label" title="Size" i18n:attributes="title" data-tooltip="">GB</span>
+                    {{ item.size }} GB
+                </div>
+                <div ng-show="item.status !== 'deleting'">
+                    <span class="label" title="Snapshots" i18n:attributes="title" data-tooltip="">SS</span>
+                    <a ng-href="${prefix}/{{ item.id }}/snapshots">{{ item.snapshots }} snapshot<span ng-show="item.snapshots != 1">s</span></a>
+                </div>
+                <div>
+                    <span class="label" title="Availability zone" i18n:attributes="title" data-tooltip="">AZ</span>
+                    {{ item.zone }}
+                </div>
+                <div>
+                    <span class="label" title="Creation time" i18n:attributes="title" data-tooltip="">CT</span>
+                    {{ item.create_time | date:'${layout.angular_date_format}' }}
+                </div>
+                <div ng-show="item.instance">
+                    <span class="label" title="Attached to instance" i18n:attributes="title" data-tooltip="">IN</span>
+                    <a ng-href="/instances/{{ item.instance }}">{{ item.instance_name || item.instance }}</a>
+                </div>
+                <div ng-show="item.tags">
+                    <span class="label" title="Tags" i18n:attributes="title" data-tooltip="">TA</span>
+                    {{ item.tags | ellipsis: 60 }}
+                </div>
+            </div>
+            <metal:block metal:fill-slot="tile_footer">
+                <div ng-show="item.status || item.attach_status"
+                     class="footer status {{ item.attach_status || item.status }}">
+                    {{ item.attach_status || item.status }}
+                    <span class="busy" ng-show="item.transitional"></span>
+                </div>
+            </metal:block>
+            <metal:block metal:fill-slot="tableview_headers">
+                <th i18n:translate=""></th>
+            </metal:block>
+            <metal:block metal:fill-slot="tableview_columns">
+                <td>{{ item.label }} ({{ item.metrics.length }})</td>
+            </metal:block>
+            <metal:block metal:fill-slot="tableview_expando_content">
+                <td ng-show="expando.data" colspan="10">
+                    <div class="datagrid" id="datagrid-items">
+                        <div ng-show="itemsLoading"><span class="busy"></span></div>
+                        <div id="tableview" class="gridwrapper" ng-show="!itemsLoading">
+                            <!-- Begin table view -->
+                            <table class="table" ng-show="!itemsLoading" ng-cloak="true">
+                                <thead><tr>
+                                    <th i18n:translate="">INSTANCE NAME(ID)</th>
+                                    <th i18n:translate="">METRIC NAME</th>
+                                    <th i18n:translate="">ACTIONS</th>
+                                </tr></thead>
+                                <tbody>
+                                    <tr ng-repeat="metric in item.metrics" ng-cloak="true">
+                                        <td>{{ metric.dimensions }}</td>
+                                        <td>{{ metric.name }}</td>
+                                        <td>
+                                            <span class="actions">
+                                                <a id="table-item-dropdown_{{ item.name | escapeHTMLTagID }}" class="tiny secondary button dropdown right round" data-dropdown="item-dropdown_{{ item.name | escapeHTMLTagID }}"><i class="grid-action"></i></a>
+                                                <ul id="item-dropdown_{{ item.name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
+                                                    <li><a i18n:translate="" ng-href="${prefix}/{{ item.name | escapeURL }}">View details</a></li>
+                                                    <li ng-show="item.status !== 'delete-complete' &amp;&amp; !item.transitional">
+                                                        <a i18n:translate="" ng-click="revealModal('delete', item)">Delete stack</a>
+                                                    </li>
+                                                </ul>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr ng-show="!itemsLoading"></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </td>
+            </metal:block>
+        </div>
+    </div>
+</div>
+
+<metal:block metal:fill-slot="offcanvas_right">
+    <div id="help-content-div" class="help-content">
+        <div id="help-html-console_metrics" ng-include="'${layout.help_path('console_volumes.html')}'"></div> 
+    </div>
+</metal:block>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/expando.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/landingpage.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/metrics.js')}"></script>
+</div>
+
+</metal:block>
+

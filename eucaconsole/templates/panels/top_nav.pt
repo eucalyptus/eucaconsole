@@ -51,6 +51,19 @@
             <span i18n:translate="">Stacks</span>
         </a>
     </li>
+    <label i18n:translate="">CLOUDWATCH</label>
+    <li>
+        <a id="resource-menuitem-alarms" href="${request.route_path('cloudwatch_alarms')}">
+            <i class="icon alarms"></i>
+            <span i18n:translate="">Alarms</span>
+        </a>
+    </li>
+    <li>
+        <a id="resource-menuitem-metrics" href="${request.route_path('cloudwatch_metrics')}">
+            <i class="icon metrics"></i>
+            <span i18n:translate="">Metrics</span>
+        </a>
+    </li>
     <label i18n:translate="">NETWORK &amp; SECURITY</label>
     <li>
         <a id="resource-menuitem-ipaddresses" href="${request.route_path('ipaddresses')}">
