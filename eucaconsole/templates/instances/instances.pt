@@ -102,7 +102,7 @@
                 </div>
                 <div>
                     <span class="label" title="Availability zone" i18n:attributes="title" data-tooltip="">AZ</span>
-                    {{ item.placement }}
+                    {{ item.availability_zone }}
                 </div>
                 <div>
                     <span class="label" title="Root device" i18n:attributes="title" data-tooltip="">RD</span>
@@ -154,7 +154,7 @@
                     <span class="busy" ng-show="item.transitional"></span>
                 </td>
                 <td><a ng-href="/images/{{ item.image_id }}">{{ item.image_id }}</a></td>
-                <td>{{ item.placement }}</td>
+                <td>{{ item.availability_zone }}</td>
                 <td tal:condition="is_vpc_supported">{{ item.vpc_name }}</td>
                 <td>
                     <a ng-href="/ipaddresses/{{ item.ip_address }}" ng-show="item.has_elastic_ip">{{ item.ip_address }}</a>
