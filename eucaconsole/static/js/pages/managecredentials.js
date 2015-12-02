@@ -5,51 +5,78 @@
  */
 
 angular.module('ManageCredentialsView', [])
-    .controller('ManageCredentialsViewCtrl', function ($scope, $http) {
-        $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-        $scope.initController = function() {
-            var newPasswordForm = $('#new_password');
-            // add password strength meter to first new password field
-            newPasswordForm.after("<hr id='password-strength'/><span id='password-word'></span>");
-            $('#password-strength').attr('class', "password_none");
-            $('#password-word').text('');
-            newPasswordForm.on('keypress', function (evt) {
-                var val = $(this).val();
-                var key = evt.keyCode || evt.charCode;
-                if (key == 8 || key == 46) {
-                    val = val.substring(0, val.length-1);
-                } else {
-                    if (key != 13 && key != 9) {
-                        val = val + String.fromCharCode(key);
-                    }
-                }
-                var score = zxcvbn(val).score;
-                console.log("scoring "+val+" :"+score);
-                $('#password-strength').attr('class', "password_" + score);
-                $('#password-word').attr('class', "password_" + score);
-                var word = '';
-                if (score === 0) word = 'weak';
-                if (score == 1 || score == 2) word = 'medium';
-                if (score == 3 || score == 4) word = 'strong';
-                $('#password-word').text(word);
-            });
-
-            var form = $('#euca-changepassword-form');
-            form.on('submit', function () {
-                $('.error').css('display', 'none');
-                var pass = $(this).find('#current_password').val();
-                var newpass = $(this).find('#new_password').val();
-                var newpass2 = $(this).find('#new_password2').val();
-                if (pass == newpass) {
-                    $('#password-different').css('display', 'block');
-                    return false;
-                }
-                if (newpass != newpass2) {
-                    $('#passwords-match').css('display', 'block');
-                    return false;
-                }
-            });
+    .directive('passwordStrength', function () {
+        return {
+            restrict: 'A',
+            controller: ['$scope', function ($scope) {
+                this.update = function (score) {
+                    $scope.score = score;
+                };
+                $scope.strengthLabel = function () {
+                    var score = $scope.score;
+                    if (score === 0) word = 'weak';
+                    if (score === 1 || score === 2) word = 'medium';
+                    if (score === 3 || score === 4) word = 'strong';
+                    if (score === undefined) word = 'none';
+                    return 'password-' + word;
+                };
+            }]
         };
+    })
+    .directive('strength', function () {
+        return {
+            restrict: 'A',
+            require: ['ngModel', '^passwordStrength'],
+            link: function (scope, element, attrs, ctrl) {
+                var passwordCtrl = ctrl[1];
+
+                element.bind('keyup', function () {
+                    var value = element.val();
+                    scope.score = zxcvbn(value).score;
+                    passwordCtrl.update(scope.score);
+                });
+            }
+        };
+    })
+    .directive('match', function () {
+        return {
+            restrict: 'A',
+            require: 'ngModel',
+            link: function (scope, element, attrs, ctrl) {
+                var target = attrs.match;
+
+                ctrl.$validators.match = function (modelValue) {
+                    if(ctrl.$isEmpty(modelValue)) {
+                        return true;
+                    }
+                    return modelValue === scope[target];
+                };
+            }
+        };
+    })
+    .directive('nomatch', function () {
+        return {
+            restrict: 'A',
+            require: 'ngModel',
+            link: function (scope, element, attrs, ctrl) {
+                var target = attrs.nomatch;
+
+                ctrl.$validators.nomatch = function (modelValue) {
+                    if(ctrl.$isEmpty(modelValue)) {
+                        return true;
+                    }
+                    return modelValue !== scope[target];
+                };
+            }
+        };
+    })
+    .controller('ManageCredentialsViewCtrl', ['$scope', '$http', function ($scope, $http) {
+        $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+
+        $scope.isDisabled = function () {
+            return $scope.eucaChangePassword.$invalid;
+        };
+
         $scope.generateKeys = function(url) {
             var csrf_token = $('input[name="csrf_token"]').val();
             var data = "csrf_token="+csrf_token;
@@ -74,7 +101,8 @@ angular.module('ManageCredentialsView', [])
                 }
             });
             return false;
-          };
+        };
+
         $scope.downloadKeys = function(url) {
             var csrf_token = $('input[name="csrf_token"]').val();
             $.generateFile({
@@ -84,8 +112,9 @@ angular.module('ManageCredentialsView', [])
                 script: url
             });
         };
+
         $scope.cancelManageCredentialsUpdate = function () {
             window.history.back();
         };
-    })
+    }])
 ; 

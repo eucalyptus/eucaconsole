@@ -51,7 +51,7 @@ from ..forms.scalinggroups import (
     ScalingGroupPolicyDeleteForm, ScalingGroupsFiltersForm)
 from ..i18n import _
 from ..models import Notification
-from ..views import LandingPageView, BaseView, TaggedItemView, JSONResponse
+from ..views import LandingPageView, BaseView, TaggedItemView, JSONResponse, JSONError
 from . import boto_error_handler
 
 
@@ -84,6 +84,7 @@ class ScalingGroupsView(LandingPageView, DeleteScalingGroupMixin):
 
     def __init__(self, request):
         super(ScalingGroupsView, self).__init__(request)
+        self.title_parts = [_(u'Scaling Groups')]
         self.initial_sort_key = 'name'
         self.prefix = '/scalinggroups'
         self.delete_form = ScalingGroupDeleteForm(self.request, formdata=self.request.params or None)
@@ -175,7 +176,7 @@ class ScalingGroupsJsonView(LandingPageView):
                 availability_zones=', '.join(sorted(group.availability_zones)),
                 load_balancers=', '.join(sorted(group.load_balancers)),
                 desired_capacity=group.desired_capacity,
-                launch_config=group.launch_config_name,
+                launch_config_name=group.launch_config_name,
                 max_size=group.max_size,
                 min_size=group.min_size,
                 name=group.name,
@@ -267,6 +268,7 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
 
     def __init__(self, request):
         super(ScalingGroupView, self).__init__(request)
+        self.title_parts = [_(u'Scaling Group'), request.matchdict.get('id'), _(u'General')]
         with boto_error_handler(request):
             self.scaling_group = self.get_scaling_group()
             self.policies = self.get_policies(self.scaling_group)
@@ -278,6 +280,14 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
             vpc_conn=self.vpc_conn, elb_conn=self.elb_conn, formdata=self.request.params or None)
         self.delete_form = ScalingGroupDeleteForm(self.request, formdata=self.request.params or None)
         self.is_vpc_supported = BaseView.is_vpc_supported(request)
+
+        tags = [{
+            'name': tag.key,
+            'value': tag.value,
+            'propagate_at_launch': tag.propagate_at_launch
+        } for tag in self.scaling_group.tags or []]
+        tags = BaseView.escape_json(json.dumps(tags))
+
         cause = None
         if len(self.activities) > 0 and hasattr(self.activities[0], 'cause'):
             cause = self.activities[0].cause
@@ -289,9 +299,11 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
                 date_string = c[:idx]
                 date_obj = parser.parse(date_string)
                 cause.append(dict(date=date_obj, msg=c[idx:]))
+
         self.render_dict = dict(
             scaling_group=self.scaling_group,
             scaling_group_name=self.escape_braces(self.scaling_group.name) if self.scaling_group else '',
+            tags=tags,
             activity_cause=cause,
             vpc_network=self.vpc_name,
             policies=self.policies,
@@ -446,6 +458,7 @@ class ScalingGroupInstancesView(BaseScalingGroupView):
 
     def __init__(self, request):
         super(ScalingGroupInstancesView, self).__init__(request)
+        self.title_parts = [_(u'Scaling Group'), request.matchdict.get('id'), _(u'Instances')]
         self.scaling_group = self.get_scaling_group()
         self.policies = self.get_policies(self.scaling_group)
         self.markunhealthy_form = ScalingGroupInstancesMarkUnhealthyForm(
@@ -552,12 +565,104 @@ class ScalingGroupInstancesJsonView(BaseScalingGroupView):
         return TaggedItemView.get_display_name(instance)
 
 
+class ScalingGroupHistoryView(BaseScalingGroupView):
+    """View for Scaling Group History page"""
+    TEMPLATE = '../templates/scalinggroups/scalinggroup_history.pt'
+
+    def __init__(self, request):
+        super(ScalingGroupHistoryView, self).__init__(request)
+        with boto_error_handler(request):
+            self.scaling_group = self.get_scaling_group()
+        self.filter_keys = ['status', 'description']
+        self.sort_keys = self.get_sort_keys()
+        search_facets = [
+            {'name': 'status', 'label': _(u"Status"), 'options': [
+                {'key': 'successful', 'label': _("Successful")},
+                {'key': 'in-progress', 'label': _("In progress")},
+                {'key': 'failed', 'label': _("Failed")},
+                {'key': 'not-yet-in-service', 'label': _("Not yet in service")},
+                {'key': 'canceled', 'label': _("Canceled")},
+                {'key': 'waiting-for-launch', 'label': _("Waiting for launch")},
+                {'key': 'waiting-for-terminate', 'label': _("Waiting for terminate")}
+            ]}
+        ]
+        self.delete_form = ScalingGroupPolicyDeleteForm(self.request, formdata=self.request.params or None)
+        self.render_dict = dict(
+            scaling_group=self.scaling_group,
+            scaling_group_name=self.escape_braces(self.scaling_group.name),
+            filter_keys=self.filter_keys,
+            search_facets=BaseView.escape_json(json.dumps(search_facets)),
+            sort_keys=self.sort_keys,
+            initial_sort_key='-end_time',
+            delete_form=self.delete_form,
+        )
+
+    @view_config(route_name='scalinggroup_history', renderer=TEMPLATE, request_method='GET')
+    def scalinggroup_history(self):
+        return self.render_dict
+
+    @view_config(route_name='scalinggroup_history_json', renderer='json', request_method='GET')
+    def scalinggroup_history_json(self):
+        with boto_error_handler(self.request):
+            items = self.autoscale_conn.get_all_activities(self.scaling_group.name)
+        activities = []
+        for activity in items:
+            activities.append(dict(
+                activity_id=activity.activity_id,
+                status=activity.status_code,
+                description=activity.description,
+                start_time=activity.start_time.isoformat(),
+                end_time=activity.end_time.isoformat(),
+            ))
+        return dict(results=activities)
+
+    @view_config(route_name='scalinggroup_history_details_json', renderer='json', request_method='GET')
+    def scalinggroup_history_details_json(self):
+        with boto_error_handler(self.request):
+            activity_id = self.request.matchdict.get('activity')
+            items = self.autoscale_conn.get_all_activities(self.scaling_group.name, [activity_id])
+        if len(items) > 0:
+            activity = items[0]
+            cause = None
+            if hasattr(activity, 'cause'):
+                cause = activity.cause
+                causes = cause.split('At')
+                causes = causes[1:]
+                cause = []
+                for c in causes:
+                    idx = c.find('Z') + 1
+                    date_string = c[:idx]
+                    date_obj = parser.parse(date_string)
+                    cause.append(dict(date=date_obj.isoformat(), msg=c[idx:]))
+            details = dict(
+                activity_id=activity.activity_id,
+                status=activity.status_code,
+                description=activity.status_message,
+                cause=cause
+            )
+            return dict(results=details)
+        else:
+            raise JSONError(message=_(u'Activity ID not found ') + activity_id, status=401)
+
+    @staticmethod
+    def get_sort_keys():
+        return [
+            dict(key='-start_time', name=_(u'Start time: most recent')),
+            dict(key='-end_time', name=_(u'End time: most recent')),
+            dict(key='status', name=_(u'Status: A to Z')),
+            dict(key='-status', name=_(u'Status: Z to A')),
+            dict(key='description', name=_(u'Description: A to Z')),
+            dict(key='-description', name=_(u'Description: Z to A')),
+        ]
+
+
 class ScalingGroupPoliciesView(BaseScalingGroupView):
     """View for Scaling Group Policies page"""
     TEMPLATE = '../templates/scalinggroups/scalinggroup_policies.pt'
 
     def __init__(self, request):
         super(ScalingGroupPoliciesView, self).__init__(request)
+        self.title_parts = [_(u'Scaling Group'), request.matchdict.get('id'), _(u'Policies')]
         policy_ids = {}
         with boto_error_handler(request):
             self.scaling_group = self.get_scaling_group()
@@ -687,7 +792,7 @@ class ScalingGroupWizardView(BaseScalingGroupView):
 
     def __init__(self, request):
         super(ScalingGroupWizardView, self).__init__(request)
-        self.request = request
+        self.title_parts = [_(u'Scaling Group'), _(u'Create')]
         with boto_error_handler(self.request):
             self.create_form = ScalingGroupCreateForm(
                 self.request, autoscale_conn=self.autoscale_conn, ec2_conn=self.ec2_conn,

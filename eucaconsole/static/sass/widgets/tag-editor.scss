@@ -1,0 +1,42 @@
+.tag-editor {
+  .item-list {
+    margin-bottom: 6px;
+
+    .item {
+      color: #333;
+      background-color: #E6E7E8;
+      margin-right: 8px;
+      padding: 0.25rem 0.5rem;
+      font-size: 0.6875rem;
+      border-radius: 3px;
+      white-space: nowrap;
+      line-height: 1;
+
+      .propagates {
+        color: #777;
+      }
+
+      a.remove {
+        color: #FFF;
+        margin-left: 5px;
+      }
+    }
+  }
+
+  .add-label {
+    color: #5A5A5A;
+    margin-bottom: 6px;
+  }
+
+  &.ng-invalid {
+    .button {
+      background-color: #FFF;
+      border-color: #B3B3B3;
+      color: #B3B3B3;
+    }
+  }
+
+  input.ng-invalid.ng-touched ~ .error {
+    display: block;
+  }
+}

@@ -69,6 +69,7 @@ class UsersView(LandingPageView):
 
     def __init__(self, request):
         super(UsersView, self).__init__(request)
+        self.title_parts = [_(u'Users')]
         self.initial_sort_key = 'user_name'
         self.prefix = '/users'
         self.conn = self.get_connection(conn_type="iam")
@@ -224,6 +225,7 @@ class UserView(BaseView):
 
     def __init__(self, request):
         super(UserView, self).__init__(request)
+        self.title_parts = [_(u'User'), request.matchdict.get('name') or _(u'Create')]
         self.conn = self.get_connection(conn_type="iam")
         self.user = None
         try:

@@ -403,6 +403,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                 $scope.summarySection.find('.step' + nextStep).removeClass('hide');
                 $scope.currentStepIndex = nextStep;
                 $scope.checkRequiredInput();
+                $scope.isHelpExpanded = false;
             },50);
         };
         $scope.clearErrors = function(step) {

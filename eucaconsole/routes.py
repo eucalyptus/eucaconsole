@@ -72,6 +72,7 @@ urls = [
     # Landing page
     Route(name='instances', pattern='/instances'),
     Route(name='instances_json', pattern='/instances/json'),
+    Route(name='instances_roles_json', pattern='/instances/roles/json'),
     Route(name='instances_start', pattern='/instances/start'),
     Route(name='instances_stop', pattern='/instances/stop'),
     Route(name='instances_reboot', pattern='/instances/reboot'),
@@ -127,6 +128,9 @@ urls = [
     Route(name='scalinggroup_instances_json', pattern='/scalinggroups/{id}/instances/json'),
     Route(name='scalinggroup_instances_markunhealthy', pattern='/scalinggroups/{id}/instances/markunhealthy'),
     Route(name='scalinggroup_instances_terminate', pattern='/scalinggroups/{id}/instances/terminate'),
+    Route(name='scalinggroup_history', pattern='/scalinggroups/{id}/history'),
+    Route(name='scalinggroup_history_json', pattern='/scalinggroups/{id}/history/json'),
+    Route(name='scalinggroup_history_details_json', pattern='/scalinggroups/{id}/history/{activity}/json'),
     Route(name='scalinggroup_policies', pattern='/scalinggroups/{id}/policies'),
     Route(name='scalinggroup_policy_new', pattern='/scalinggroups/{id}/policies/new'),
     Route(name='scalinggroup_policy_create', pattern='/scalinggroups/{id}/policies/create'),
@@ -170,6 +174,7 @@ urls = [
     Route(name='volumes_delete', pattern='/volumes/delete'),
     Route(name='volumes_attach', pattern='/volumes/attach'),
     Route(name='volumes_detach', pattern='/volumes/detach'),
+    Route(name='volumes_expando_details', pattern='/volumes/{id}/expando'),
     # Detail page
     Route(name='volume_create', pattern='/volumes/create'),
     Route(name='volume_view', pattern='/volumes/{id}'),  # Pass id='new' to render Add Volume page
@@ -362,4 +367,8 @@ urls = [
     Route(name='stack_state_json', pattern='/stacks/{name}/state/json'),
     Route(name='stack_template', pattern='/stacks/{name}/template'),
     Route(name='stack_events', pattern='/stacks/{name}/events'),
+
+    # Tag Editor #####
+    # Directive Template
+    Route(name='tag_editor_template', pattern='/templates/tag-editor'),
 ]

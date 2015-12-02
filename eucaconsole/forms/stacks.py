@@ -71,15 +71,15 @@ class StacksFiltersForm(BaseSecureForm):
     def __init__(self, request, **kwargs):
         super(StacksFiltersForm, self).__init__(request, **kwargs)
         self.facets = [
-            {'name': 'stack_status', 'label': _(u'Status'), 'options': [
-                {'key': 'CREATE_IN_PROGRESS', 'label': _(u'Create in progress')},
-                {'key': 'CREATE_COMPLETE', 'label': _(u'Create complete')},
-                {'key': 'CREATE_FAILED', 'label': _(u'Create failed')},
-                {'key': 'ROLLBACK_IN_PROGRESS', 'label': _(u'Rollback in progress')},
-                {'key': 'ROLLBACK_COMPLETE', 'label': _(u'Rollback complete')},
-                {'key': 'ROLLBACK_FAILED', 'label': _(u'Rollback failed')},
-                {'key': 'DELETE_IN_PROGRESS', 'label': _(u'Delete in progress')},
-                {'key': 'DELETE_COMPLETE', 'label': _(u'Delete complete')},
-                {'key': 'DELETE_FAILED', 'label': _(u'Delete failed')},
+            {'name': 'status', 'label': _(u'Status'), 'options': [
+                {'key': 'create-in-progress', 'label': _(u'Create in progress')},
+                {'key': 'create-complete', 'label': _(u'Create complete')},
+                {'key': 'create-failed', 'label': _(u'Create failed')},
+                {'key': 'rollback-in-progress', 'label': _(u'Rollback in progress')},
+                {'key': 'rollback-complete', 'label': _(u'Rollback complete')},
+                {'key': 'rollback-failed', 'label': _(u'Rollback failed')},
+                {'key': 'delete-in-progress', 'label': _(u'Delete in progress')},
+                {'key': 'delete-complete', 'label': _(u'Delete complete')},
+                {'key': 'delete-failed', 'label': _(u'Delete failed')},
             ]}
         ]

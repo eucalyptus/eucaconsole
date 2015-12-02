@@ -54,7 +54,7 @@ from . import guess_mimetype_from_buffer
 class LaunchConfigsView(LandingPageView):
     def __init__(self, request):
         super(LaunchConfigsView, self).__init__(request)
-        self.request = request
+        self.title_parts = [_(u'Launch Configs')]
         self.ec2_conn = self.get_connection()
         self.autoscale_conn = self.get_connection(conn_type='autoscale')
         self.iam_conn = self.get_connection(conn_type="iam")
@@ -130,6 +130,7 @@ class LaunchConfigsJsonView(LandingPageView):
         with boto_error_handler(request):
             self.items = self.get_items()
             self.securitygroups = self.get_all_security_groups()
+            self.scaling_groups = self.autoscale_conn.get_all_groups()
 
     @view_config(route_name='launchconfigs_json', renderer='json', request_method='POST')
     def launchconfigs_json(self):
@@ -139,6 +140,7 @@ class LaunchConfigsJsonView(LandingPageView):
             launchconfigs_array = []
             launchconfigs_image_mapping = self.get_launchconfigs_image_mapping()
             scalinggroup_launchconfig_names = self.get_scalinggroups_launchconfig_names()
+            launchconfig_sg_mapping = self.get_launchconfigs_sg_mapping()
             for launchconfig in self.filter_items(self.items):
                 security_groups = self.get_security_groups(launchconfig.security_groups)
                 security_groups_array = sorted({
@@ -151,12 +153,15 @@ class LaunchConfigsJsonView(LandingPageView):
                 launchconfigs_array.append(dict(
                     created_time=self.dt_isoformat(launchconfig.created_time),
                     image_id=image_id,
-                    image_name=launchconfigs_image_mapping.get(image_id),
+                    image_name=launchconfigs_image_mapping.get(image_id).get('name'),
+                    instance_type=launchconfig.instance_type,
                     instance_monitoring=launchconfig.instance_monitoring.enabled == 'true',
                     key_name=launchconfig.key_name,
                     name=name,
                     security_groups=security_groups_array,
+                    root_device_type=launchconfigs_image_mapping.get(image_id).get('root_device_type'),
                     in_use=name in scalinggroup_launchconfig_names,
+                    scaling_group=launchconfig_sg_mapping.get(name)
                 ))
             return dict(results=launchconfigs_array)
 
@@ -169,13 +174,20 @@ class LaunchConfigsJsonView(LandingPageView):
         launchconfigs_images = self.ec2_conn.get_all_images(image_ids=launchconfigs_image_ids) if self.ec2_conn else []
         launchconfigs_image_mapping = dict()
         for image in launchconfigs_images:
-            launchconfigs_image_mapping[image.id] = image.name or image.id
+            launchconfigs_image_mapping[image.id] = dict(
+                name=image.name or image.id,
+                root_device_type=image.root_device_type
+            )
         return launchconfigs_image_mapping
 
     def get_scalinggroups_launchconfig_names(self):
-        if self.autoscale_conn:
-            return [group.launch_config_name for group in self.autoscale_conn.get_all_groups()]
-        return []
+        return [group.launch_config_name for group in self.scaling_groups]
+
+    def get_launchconfigs_sg_mapping(self):
+        ret = dict()
+        for sg in self.scaling_groups:
+            ret[sg.launch_config_name] = sg.name
+        return ret
 
     def get_all_security_groups(self):
         if self.ec2_conn:
@@ -227,6 +239,7 @@ class LaunchConfigView(BaseView):
 
     def __init__(self, request):
         super(LaunchConfigView, self).__init__(request)
+        self.title_parts = [_(u'Launch Config'), request.matchdict.get('id')]
         self.ec2_conn = self.get_connection()
         self.iam_conn = self.get_connection(conn_type="iam")
         self.autoscale_conn = self.get_connection(conn_type='autoscale')
@@ -388,7 +401,7 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
 
     def __init__(self, request):
         super(CreateLaunchConfigView, self).__init__(request)
-        self.request = request
+        self.title_parts = [_(u'Launch Config'), _(u'Create')]
         self.image = self.get_image()
         with boto_error_handler(request):
             self.securitygroups = self.get_security_groups()

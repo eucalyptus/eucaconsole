@@ -330,7 +330,7 @@ class ELBsFiltersForm(BaseSecureForm):
             ec2_choices_manager = ChoicesManager(conn=ec2_conn)
             self.availability_zones.choices = ec2_choices_manager.availability_zones(region, add_blank=False)
             self.facets.append(dict(
-                name='availability_zone',
+                name='availability_zones',
                 label=self.availability_zones.label.text,
                 options=self.get_options_from_choices(self.availability_zones.choices)
             ))

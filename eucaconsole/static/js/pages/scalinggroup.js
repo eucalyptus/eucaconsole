@@ -5,7 +5,7 @@
  */
 
 // Scaling Group page includes the AutoScale tag editor, so pull in that module as well.
-angular.module('ScalingGroupPage', ['AutoScaleTagEditor', 'EucaConsoleUtils'])
+angular.module('ScalingGroupPage', ['TagEditorModule', 'EucaConsoleUtils'])
     .controller('ScalingGroupPageCtrl', function ($scope, $timeout, eucaUnescapeJson, eucaNumbersOnly) {
         $scope.minSize = 1;
         $scope.desiredCapacity = 1;
@@ -18,6 +18,7 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor', 'EucaConsoleUtils'])
         $scope.isNotChanged = true;
         $scope.isSubmitted = false;
         $scope.pendingModalID = '';
+
         $scope.initChosenSelectors = function () {
             $('#launch_config').chosen({'width': '80%', search_contains: true});
             // Remove the option if it has no vpc subnet ID associated

@@ -171,6 +171,7 @@ class BaseInstanceView(BaseView):
 class InstancesView(LandingPageView, BaseInstanceView):
     def __init__(self, request):
         super(InstancesView, self).__init__(request)
+        self.title_parts = [_(u'Instances')]
         self.initial_sort_key = '-launch_time'
         self.prefix = '/instances'
         self.json_items_endpoint = self.get_json_endpoint('instances_json')
@@ -185,6 +186,7 @@ class InstancesView(LandingPageView, BaseInstanceView):
         self.disassociate_ip_form = DisassociateIpFromInstanceForm(self.request, formdata=self.request.params or None)
         controller_options_json = BaseView.escape_json(json.dumps({
             'addresses_json_items_endpoint': self.request.route_path('ipaddresses_json'),
+            'roles_json_items_endpoint': self.request.route_path('instances_roles_json'),
         }))
         self.render_dict = dict(
             prefix=self.prefix,
@@ -370,14 +372,14 @@ class InstancesJsonView(LandingPageView, BaseInstanceView):
         self.conn = self.get_connection()
         self.vpc_conn = self.get_connection(conn_type='vpc')
         self.vpcs = self.get_all_vpcs()
-        self.vpc_subnets = self.vpc_conn.get_all_subnets()
-        self.keypairs = self.get_all_keypairs()
-        self.security_groups = self.get_all_security_groups()
 
     @view_config(route_name='instances_json', renderer='json', request_method='POST')
     def instances_json(self):
         if not (self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
+        vpc_subnets = self.vpc_conn.get_all_subnets()
+        keypairs = self.get_all_keypairs()
+        security_groups = self.get_all_security_groups()
         instances = []
         filters = {}
         availability_zone_param = self.request.params.getall('availability_zone')
@@ -416,12 +418,12 @@ class InstancesJsonView(LandingPageView, BaseInstanceView):
             security_groups_array = sorted({
                 'name': group.name,
                 'id': group.id,
-                'rules_count': self.get_security_group_rules_count_by_id(group.id)
+                'rules_count': self.get_security_group_rules_count_by_id(security_groups, group.id)
             } for group in instance.groups)
             if instance.platform is None:
                 instance.platform = _(u"linux")
             has_elastic_ip = instance.ip_address in elastic_ips
-            exists_key = True if self.get_keypair_by_name(instance.key_name) else False
+            exists_key = True if self.get_keypair_by_name(keypairs, instance.key_name) else False
             instances.append(dict(
                 id=instance.id,
                 name=TaggedItemView.get_display_name(instance, escapebraces=False),
@@ -431,20 +433,21 @@ class InstancesJsonView(LandingPageView, BaseInstanceView):
                 has_elastic_ip=has_elastic_ip,
                 public_dns_name=instance.public_dns_name,
                 launch_time=instance.launch_time,
-                placement=instance.placement,
+                availability_zone=instance.placement,
                 platform=instance.platform,
-                root_device=instance.root_device_type,
+                root_device_type=instance.root_device_type,
                 security_groups=security_groups_array,
                 key_name=instance.key_name,
                 exists_key=exists_key,
                 vpc_name=instance.vpc_name,
                 subnet_id=instance.subnet_id if instance.subnet_id else None,
-                vpc_subnet_display=self.get_vpc_subnet_display(instance.subnet_id, vpc_subnet_list=self.vpc_subnets) if
+                vpc_subnet_display=self.get_vpc_subnet_display(instance.subnet_id, vpc_subnet_list=vpc_subnets) if
                 instance.subnet_id else None,
                 status=instance.state,
                 tags=TaggedItemView.get_tags_display(instance.tags),
                 transitional=is_transitional,
                 running_create=True if instance.tags.get('ec_bundling') else False,
+                scaling_group=instance.tags.get('aws:autoscaling:groupName')
             ))
         image_ids = [i['image_id'] for i in instances]
         images = self.conn.get_all_images(filters={'image-id': image_ids})
@@ -457,6 +460,22 @@ class InstancesJsonView(LandingPageView, BaseInstanceView):
                     u' ({0})'.format(image.id) if image.name else ''
                 )
             instance['image_name'] = image_name
+        return dict(results=instances)
+
+    @view_config(route_name='instances_roles_json', renderer='json', request_method='GET')
+    def instances_roles_json(self):
+        instances = {}
+        iam_conn = self.get_connection(conn_type='iam')
+        result = iam_conn.list_instance_profiles()
+        instance_profiles_list = result.list_instance_profiles_response.list_instance_profiles_result.instance_profiles
+        for item in self.get_items():
+            if item.instance_profile:
+                arn = item.instance_profile['arn']
+                profile_name = arn[(arn.rindex('/') + 1):]
+                # look up profile in list
+                for profile in instance_profiles_list:
+                    if profile.instance_profile_name == profile_name:
+                        instances[item.id] = profile.roles.role_name
         return dict(results=instances)
 
     def get_items(self, filters=None):
@@ -485,21 +504,21 @@ class InstancesJsonView(LandingPageView, BaseInstanceView):
     def get_all_keypairs(self):
         return self.conn.get_all_key_pairs() if self.conn else []
 
-    def get_keypair_by_name(self, keypair_name):
-        for keypair in self.keypairs:
+    def get_keypair_by_name(self, keypairs, keypair_name):
+        for keypair in keypairs:
             if keypair_name == keypair.name:
                 return keypair
 
     def get_all_security_groups(self):
         return self.conn.get_all_security_groups() if self.conn else []
 
-    def get_security_group_by_id(self, id):
-        for sgroup in self.security_groups:
+    def get_security_group_by_id(self, security_groups, id):
+        for sgroup in security_groups:
             if sgroup.id == id:
                 return sgroup
 
-    def get_security_group_rules_count_by_id(self, id):
-        sgroup = self.get_security_group_by_id(id)
+    def get_security_group_rules_count_by_id(self, security_groups, id):
+        sgroup = self.get_security_group_by_id(security_groups, id)
         if sgroup:
             return len(sgroup.rules)
         return None
@@ -561,7 +580,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
 
     def __init__(self, request, instance=None, **kwargs):
         super(InstanceView, self).__init__(request, **kwargs)
-        self.request = request
+        self.title_parts = [_(u'Instance'), request.matchdict.get('id'), _(u'General')]
         self.conn = self.get_connection()
         self.iam_conn = None
         if BaseView.has_role_access(request):
@@ -910,6 +929,7 @@ class InstanceVolumesView(BaseInstanceView):
 
     def __init__(self, request):
         super(InstanceVolumesView, self).__init__(request)
+        self.title_parts = [_(u'Instance'), request.matchdict.get('id'), _(u'Volumes')]
         self.request = request
         self.conn = self.get_connection()
         # fetching all volumes all the time is inefficient. should re-factor in the future
@@ -1014,7 +1034,7 @@ class InstanceMonitoringView(BaseInstanceView):
 
     def __init__(self, request, instance=None):
         super(InstanceMonitoringView, self).__init__(request)
-        self.request = request
+        self.title_parts = [_(u'Instance'), request.matchdict.get('id'), _(u'Monitoring')]
         self.cw_conn = self.get_connection(conn_type='cloudwatch')
         self.instance_id = self.request.matchdict.get('id')
         self.location = self.request.route_path('instance_monitoring', id=self.instance_id)

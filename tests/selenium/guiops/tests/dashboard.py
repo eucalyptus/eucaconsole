@@ -1,4 +1,3 @@
-import unittest
 from selenium_api.selenium_api import SeleniumApi
 from pages.dashboard import Dashboard
 

@@ -5,7 +5,7 @@
  */
 
 
-angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch'])
+angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch', 'Expando'])
     .controller('ItemsCtrl', function ($scope, $http, $timeout, $sanitize) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.items = [];
@@ -13,6 +13,7 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch'])
         $scope.allCheckboxes = false;
         $scope.checkedItems = [];
         $scope.runningSmartRefresh = false;
+        $scope.facetItems = [];
         $scope.unfilteredItems = [];
         $scope.filterKeys = [];
         $scope.sortBy = '';
@@ -26,8 +27,8 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch'])
         $scope.limitCount = 100;  // Beyond this number a "show ___ more" button will appear.
         $scope.displayCount = $scope.limitCount;
         $scope.transitionalRefresh = true;
-        $scope.initController = function (pageResource, sortKey, jsonItemsEndpoint) {
-            $scope.initChosenFilters();
+        $scope.serverFilter = false;
+        $scope.initController = function (pageResource, sortKey, jsonItemsEndpoint, cloud_type) {
             pageResource = pageResource || window.location.pathname.split('/')[0];
             $scope.jsonEndpoint = jsonItemsEndpoint;
             $scope.initLocalStorageKeys(pageResource);
@@ -37,12 +38,8 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch'])
             $scope.setFocus();
             $scope.enableInfiniteScroll();
             $scope.storeAWSRegion();
-        };
-        $scope.initChosenFilters = function () {
-            if ($(document).chosen) {
-                $('#filters').find('select').chosen({
-                    'width': '100%', 'search_contains': true, 'placeholder_text_multiple': 'select...'
-                });
+            if (cloud_type !== undefined && cloud_type === "aws") {
+                $scope.serverFilter = true;
             }
         };
         $scope.initLocalStorageKeys = function (pageResource){
@@ -169,7 +166,14 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch'])
                     $scope.$emit('itemsLoaded', $scope.items);
                     // and re-open any action menus
                     $scope.clickOpenDropdown();
+                    $(document).foundation('tab', 'reflow');
                 });
+                if ($scope.serverFilter === false) {
+                    $scope.facetFilterItems();
+                }
+                else {
+                    $scope.facetItems = $scope.unfilteredItems;
+                }
             }).error(function (oData, status) {
                 if (oData === undefined && status === 0) {  // likely interrupted request
                     return;
@@ -188,22 +192,82 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch'])
                 
             });
         };
-        /*  Filter items client side based on search criteria.
-         *  @param {array} filterProps Array of properties to filter items on
+        /*  Apply facet filtering
+         *  to apply text filtering, call searchFilterItems instead
          */
-        $scope.searchFilterItems = function(filterProps) {
-            var filterText = ($scope.searchFilter || '').toLowerCase();
-            if (filterProps !== '' && filterProps !== undefined){
-                // Store the filterProps input for later use as well
-                $scope.filterKeys = filterProps;
+        $scope.facetFilterItems = function() {
+            var query;
+            var url = window.location.href;
+            if (url.indexOf("?") > -1) {
+                query = url.split("?")[1];
             }
+            if (query !== undefined && query.length !== 0) {
+                // prepare facets by grouping
+                var tmp = query.split('&').sort();
+                var facets = {};
+                angular.forEach(tmp, function(item) {
+                    var facet = item.split('=');
+                    if (this[facet[0]] === undefined) {
+                        this[facet[0]] = [];
+                    }
+                    this[facet[0]].push(facet[1]);
+                }, facets);
+                var results = $scope.unfilteredItems;
+                // filter results
+                var matchFunc = function(val) {
+                    if (typeof val === 'string') {
+                        if ($.inArray(val, facets[key]) > -1 ||
+                            $.inArray(val.toLowerCase(), facets[key]) > -1) {
+                            return true;
+                        }
+                    }
+                    if (typeof val === 'object') {
+                        // if object, assume it has valid id or name attribute
+                        if ($.inArray(val.id, facets[key]) > -1 ||
+                            $.inArray(val.name, facets[key]) > -1) {
+                            return true;
+                        }
+                    }
+                };
+                var filterFunc = function(item) {
+                    // handle special case of empty facet value, match all
+                    if (facets[key].indexOf("") > -1) {
+                        return true;
+                    }
+                    var val = item.hasOwnProperty(key) && item[key];
+                    if (val === undefined || val === null) {
+                        return false;
+                    }
+                    if (Array.isArray(val)) {
+                        for (var i=0; i<val.length; i++) {
+                            return matchFunc(val[i]);
+                        }
+                    }
+                    else {
+                        return matchFunc(val);
+                    }
+                };
+                for (var key in facets) {
+                    results = results.filter(filterFunc);
+                }
+                $scope.facetItems = results;
+            }
+            else {
+                $scope.facetItems = $scope.unfilteredItems.slice();
+            }
+            $scope.searchFilterItems();
+        };
+        /*  Filter items client side based on search criteria.
+         */
+        $scope.searchFilterItems = function() {
+            var filterText = ($scope.searchFilter || '').toLowerCase();
             if (filterText === '') {
                 // If the search filter is empty, skip the filtering
-                $scope.items = $scope.unfilteredItems;
+                $scope.items = $scope.facetItems;
                 return;
             }
             // Leverage Array.prototype.filter (ECMAScript 5)
-            var filteredItems = $scope.unfilteredItems.filter(function(item) {
+            var filteredItems = $scope.facetItems.filter(function(item) {
                 for (var i=0; i < $scope.filterKeys.length; i++) {  // Can't use $.each or Array.prototype.forEach here
                     var propName = $scope.filterKeys[i];
                     var itemProp = item.hasOwnProperty(propName) && item[propName];
@@ -311,22 +375,27 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch'])
                 url = url + "?" + query;
             }
             window.history.pushState(query, "", url);
-            // update json endpont and refresh table
-            url = $scope.jsonEndpoint;
-            if (url.indexOf("?") > -1) {
-                url = url.split("?")[0];
+            if ($scope.serverFilter === true) {
+                url = $scope.jsonEndpoint;
+                if (url.indexOf("?") > -1) {
+                    url = url.split("?")[0];
+                }
+                if (query.length > 0) {
+                    url = url + "?" + query;
+                }
+                $scope.jsonEndpoint = url;
+                $scope.itemsLoading=true;
+                $scope.getItems();
             }
-            if (query.length > 0) {
-                url = url + "?" + query;
+            else {
+                $scope.facetFilterItems();
             }
-            $scope.jsonEndpoint = url;
-            $scope.itemsLoading=true;
-            $scope.getItems();
         });
         $scope.$on('textSearch', function($event, text, filter_keys) {
             $scope.searchFilter = text;
+            $scope.filterKeys = filter_keys;
             $timeout(function() {
-                $scope.searchFilterItems(filter_keys);
+                $scope.searchFilterItems();
             });
         });
     })
