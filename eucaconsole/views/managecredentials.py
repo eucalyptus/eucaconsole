@@ -92,7 +92,8 @@ class ManageCredentialsView(BaseView, PermissionCheckMixin):
         username = self.request.params.get('username')
         auth = self.get_euca_authenticator()
         changepassword_form = EucaChangePasswordForm(self.request, formdata=self.request.params)
-        self.location = "{0}?{1}&{2}&{3}&{4}".format(
+        error_location = self.request.route_path('managecredentials')
+        location = "{0}?{1}&{2}&{3}&{4}".format(
             self.request.route_path('managecredentials'),
             'expired=' + self.request.params.get('expired'),
             'came_from=' + self.came_from,
@@ -124,7 +125,7 @@ class ManageCredentialsView(BaseView, PermissionCheckMixin):
                     session['region'] = 'euca'
                     session['username_label'] = user_account
                     session['dns_enabled'] = auth.dns_enabled  # this *must* be prior to line below
-                    self.check_iam_perms(session, creds);
+                    self.check_iam_perms(session, creds)
                     headers = remember(self.request, user_account)
                     msg = _(u'Successfully changed password.')
                     self.request.session.flash(msg, queue=Notification.SUCCESS)
@@ -135,10 +136,17 @@ class ManageCredentialsView(BaseView, PermissionCheckMixin):
                     if err.msg == u'Unauthorized':
                         msg = _(u'Invalid user/account name and/or password.')
                         self.request.session.flash(msg, queue=Notification.ERROR)
+                    return HTTPFound(location=error_location)
                 except URLError, err:
                     logging.info("url error "+str(vars(err)))
                     if str(err.reason) == 'timed out':
                         host = self._get_ufs_host_setting_()
                         msg = _(u'No response from host ') + host
                         self.request.session.flash(msg, queue=Notification.ERROR)
-        return HTTPFound(location=self.location)
+                    return HTTPFound(location=error_location)
+        else:
+            error_messages = changepassword_form.get_errors_list()
+            self.request.session.flash(', '.join(error_messages), queue=Notification.ERROR)
+            return HTTPFound(location=error_location)
+
+        return HTTPFound(location=location)
