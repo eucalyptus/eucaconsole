@@ -19,7 +19,7 @@ class VolumeLanding(LandingPage):
     _volume_status_css = '#tableview [item_id="{0}"] td.status'  # volume_id required;
     _search_input_field_css = ".search-input"
     _sortable_column_header_css = '#tableview .table thead th[st-sort="{0}"]'
-    _sortable_row_by_nth_child_css = '#tableview .table tbody:{0}'
+    _sortable_row_by_position_xpath = '//div[@id="tableview"]/table/tbody[{0}]'
 
     def verify_volume_view_page_loaded(self):
         self.tester.wait_for_text_present_by_id(LandingPage(self)._page_title_id, self._volume_view_page_title)
@@ -81,12 +81,12 @@ class VolumeLanding(LandingPage):
     def click_sortable_column_header(self, column_name='name'):
         self.tester.click_element_by_css(self._sortable_column_header_css.format(column_name))
 
-    def verify_volume_id_by_sort_position(self, volume_id, position='first'):
+    def verify_volume_id_by_sort_position(self, volume_id, position=1):
         """
         :param volume_id:
-        :param position: sorting position. Note: not zero-based (e.g. use 2 for second row)
-        :type position: str
+        :param position: sorting position. Note: not zero-based (e.g. use 1 for first row)
+        :type position: int
         """
-        selector = self._sortable_row_by_nth_child_css.format(position)
-        self.tester.wait_for_element_present_by_css(selector)
-        assert volume_id == self.tester.get_attribute_by_css(selector, 'item_id')
+        selector = self._sortable_row_by_position_xpath.format(position)
+        self.tester.wait_for_visible_by_xpath(selector)
+        assert volume_id == self.tester.get_attribute_by_xpath(selector, 'item_id')

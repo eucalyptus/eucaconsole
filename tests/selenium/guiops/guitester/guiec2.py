@@ -502,11 +502,11 @@ class GuiEC2(GuiTester):
         BasePage(self).goto_volumes_view_via_menu()
         VolumeLanding(self).click_sortable_column_header(column_name=column_name)
 
-    def verify_sort_position_for_volume(self, volume_id, position='first'):
+    def verify_sort_position_for_volume(self, volume_id, position=1):
         """
         :param volume_id:
-        :param position: table row position (accepted values are 'first', 'last')
-        :type position: str
+        :param position: sorting position. Note: not zero-based (e.g. use 1 for first row)
+        :type position: int
         """
         VolumeLanding(self).verify_volume_id_by_sort_position(volume_id, position=position)
 
