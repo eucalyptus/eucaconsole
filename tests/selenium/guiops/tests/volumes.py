@@ -38,11 +38,11 @@ class VolumeOperationsSequence(GuiOps):
         volume2 = self.tester.create_volume_from_dashboard(volume_size=3, availability_zone="two")
         volume2_id = volume2.get("volume_id")
         self.tester.delete_volume_from_detail_page(volume2_id)
+        self.sortable_volumes_tables_test()
         self.tester.logout()
         self.tester.exit_browser()
 
     def sortable_volumes_tables_test(self):
-        self.tester.login(self.account, self.user, self.password)
         volume1_name = "aaaa-volume"
         volume1 = self.tester.create_volume_from_view_page(volume1_name, volume_size=1, availability_zone="one")
         volume1_id = volume1.get("volume_id")
@@ -58,11 +58,8 @@ class VolumeOperationsSequence(GuiOps):
         # Cleanup volumes
         self.tester.delete_volume_from_view_page(volume1_id)
         self.tester.delete_volume_from_view_page(volume2_id)
-        self.tester.logout()
-        self.tester.exit_browser()
 
 
 if __name__ == '__main__':
         tester = VolumeOperationsSequence()
-        VolumeOperationsSequence.sortable_volumes_tables_test(tester)
         VolumeOperationsSequence.volume_ops_test(tester)
