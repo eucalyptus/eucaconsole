@@ -93,7 +93,6 @@ class ManageCredentialsView(BaseView, PermissionCheckMixin):
         username = self.request.params.get('username')
         auth = self.get_euca_authenticator()
         changepassword_form = EucaChangePasswordForm(self.request, formdata=self.request.params)
-        error_location = self.request.route_path('managecredentials')
         location = "{0}?{1}&{2}&{3}&{4}".format(
             self.request.route_path('managecredentials'),
             'expired=' + self.request.params.get('expired'),
