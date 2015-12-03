@@ -43,10 +43,10 @@ class VolumeOperationsSequence(GuiOps):
         self.tester.exit_browser()
 
     def sortable_volumes_tables_test(self):
-        volume1_name = "aaaa-volume"
+        volume1_name = "!!!!-volume"
         volume1 = self.tester.create_volume_from_view_page(volume1_name, volume_size=1, availability_zone="one")
         volume1_id = volume1.get("volume_id")
-        volume2_name = "zzzz-volume"
+        volume2_name = "~~zzz-volume"
         volume2 = self.tester.create_volume_from_dashboard(volume2_name, volume_size=1, availability_zone="one")
         volume2_id = volume2.get("volume_id")
         # Test ascending sort by name column
