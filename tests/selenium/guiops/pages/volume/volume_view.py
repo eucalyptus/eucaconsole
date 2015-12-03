@@ -18,8 +18,8 @@ class VolumeLanding(LandingPage):
     _volume_link_css = "#table-id-column-{0}>a"  #volume_id required;
     _volume_status_css = '#tableview [item_id="{0}"] td.status'  # volume_id required;
     _search_input_field_css = ".search-input"
-    _sortable_column_header_css = '#tableview .table thead th[st-sort="{0}"]'
-    _sortable_row_by_position_xpath = '//div[@id="tableview"]/table/tbody[{0}]'
+    _sortable_column_header_css = '#tableview .table thead th[st-sort="{0}"]' #requires column name;
+    _sortable_row_by_position_xpath = '//div[@id="tableview"]/table/tbody[{0}]'#requires position (as number of row in the table)
 
     def verify_volume_view_page_loaded(self):
         self.tester.wait_for_text_present_by_id(LandingPage(self)._page_title_id, self._volume_view_page_title)
