@@ -333,7 +333,7 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch', 'Ex
         };
         $scope.handleItemSelection = function (item) {
             var itemIdx;
-            if (item.isChecked) {
+            if (item.selected) {
                 if ($scope.checkedItems.indexOf(item) === -1) {
                     $scope.checkedItems.push(item);
                 }

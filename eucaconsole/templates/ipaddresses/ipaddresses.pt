@@ -79,7 +79,7 @@
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
                 <td>
-                    <input type="checkbox" class="row-checkbox" ng-model="item.isChecked"
+                    <input type="checkbox" class="row-checkbox" ng-model="item.selected"
                            ng-checked="allCheckboxes" ng-change="handleItemSelection(item)" />
                 </td>
                 <td><a ng-href="${prefix}/{{ item.public_ip }}">{{ item.public_ip }}</a></td>
