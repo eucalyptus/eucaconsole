@@ -18,6 +18,8 @@ class VolumeLanding(LandingPage):
     _volume_link_css = "#table-id-column-{0}>a"  #volume_id required;
     _volume_status_css = '#tableview [item_id="{0}"] td.status'  # volume_id required;
     _search_input_field_css = ".search-input"
+    _sortable_column_header_css = '#tableview .table thead th[st-sort="{0}"]'
+    _sortable_row_by_nth_child_css = '#tableview .table tbody:{0}'
 
     def verify_volume_view_page_loaded(self):
         self.tester.wait_for_text_present_by_id(LandingPage(self)._page_title_id, self._volume_view_page_title)
@@ -75,3 +77,16 @@ class VolumeLanding(LandingPage):
     def verify_there_are_no_available_volumes(self, timeout_in_seconds):
         self.tester.send_keys_by_css(self._search_input_field_css, "available")
         self.tester.wait_for_text_present_by_css(LandingPage(self)._item_count_css, "0", timeout_in_seconds)
+
+    def click_sortable_column_header(self, column_name='name'):
+        self.tester.click_element_by_css(self._sortable_column_header_css.format(column_name))
+
+    def verify_volume_id_by_sort_position(self, volume_id, position='first'):
+        """
+        :param volume_id:
+        :param position: sorting position. Note: not zero-based (e.g. use 2 for second row)
+        :type position: str
+        """
+        selector = self._sortable_row_by_nth_child_css.format(position)
+        self.tester.wait_for_element_present_by_css(selector)
+        assert volume_id == self.tester.get_attribute_by_css(selector, 'item_id')

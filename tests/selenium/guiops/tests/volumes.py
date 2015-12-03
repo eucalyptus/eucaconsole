@@ -41,7 +41,28 @@ class VolumeOperationsSequence(GuiOps):
         self.tester.logout()
         self.tester.exit_browser()
 
+    def sortable_volumes_tables_test(self):
+        self.tester.login(self.account, self.user, self.password)
+        volume1_name = "aaaa-volume"
+        volume1 = self.tester.create_volume_from_view_page(volume1_name, volume_size=1, availability_zone="one")
+        volume1_id = volume1.get("volume_id")
+        volume2_name = "zzzz-volume"
+        volume2 = self.tester.create_volume_from_dashboard(volume2_name, volume_size=1, availability_zone="one")
+        volume2_id = volume2.get("volume_id")
+        # Test ascending sort by name column
+        self.tester.click_sortable_column_header_on_volumes_landing_page(column_name='name')
+        self.tester.verify_sort_position_for_volume(volume1_id, position='first')
+        # Test descending sort by name column (second click sorts descending)
+        self.tester.click_sortable_column_header_on_volumes_landing_page(column_name='name')
+        self.tester.verify_sort_position_for_volume(volume2_id, position='first')
+        # Cleanup volumes
+        self.tester.delete_volume_from_view_page(volume1_id)
+        self.tester.delete_volume_from_view_page(volume2_id)
+        self.tester.logout()
+        self.tester.exit_browser()
+
 
 if __name__ == '__main__':
         tester = VolumeOperationsSequence()
+        VolumeOperationsSequence.sortable_volumes_tables_test(tester)
         VolumeOperationsSequence.volume_ops_test(tester)
