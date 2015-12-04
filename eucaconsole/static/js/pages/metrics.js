@@ -4,7 +4,7 @@
  *
  */
 
-angular.module('MetricsPage', ['LandingPage'])
+angular.module('MetricsPage', ['LandingPage', 'ui.layout', 'CloudWatchCharts'])
     .controller('MetricsCtrl', function ($scope) {
         var vm = this;
         vm.initPage = function() {

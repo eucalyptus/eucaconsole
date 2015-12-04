@@ -33,6 +33,10 @@ import simplejson as json
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config
 
+from ..constants.cloudwatch import (
+    MONITORING_DURATION_CHOICES, METRIC_TITLE_MAPPING, STATISTIC_CHOICES, GRANULARITY_CHOICES,
+    DURATION_GRANULARITY_CHOICES_MAPPING
+)
 from ..constants.cloudwatch import METRIC_DIMENSION_NAMES, METRIC_DIMENSION_INPUTS
 from ..i18n import _
 from ..models import Notification
@@ -62,11 +66,19 @@ class CloudWatchMetricsView(LandingPageView):
             prefix=self.prefix,
             initial_sort_key=self.initial_sort_key,
             json_items_endpoint=self.request.route_path('cloudwatch_metrics_json'),
+            chart_options_json=self.get_chart_options_json()
         )
 
     @view_config(route_name='cloudwatch_metrics', renderer=TEMPLATE, request_method='GET')
     def metrics_landing(self):
         return self.render_dict
+
+    def get_chart_options_json(self):
+        return BaseView.escape_json(json.dumps({
+            'metric_title_mapping': METRIC_TITLE_MAPPING,
+            'granularity_choices': GRANULARITY_CHOICES,
+            'duration_granularities_mapping': DURATION_GRANULARITY_CHOICES_MAPPING,
+        }))
 
 class CloudWatchMetricsJsonView(BaseView):
     """JSON response for CloudWatch Metrics landing page et. al."""
@@ -98,7 +110,19 @@ class CloudWatchMetricsJsonView(BaseView):
             items = self.get_items()
             for cat in categories:
                 namespace = cat['namespace']
-                cat['metrics'] = [{'name':item.name, 'namespace':item.namespace, 'dimensions':item.dimensions} for item in items if item.namespace == namespace and item.dimensions]
+                tmp = [{'name':item.name, 'namespace':item.namespace, 'dimensions':item.dimensions} for item in items if item.namespace == namespace and item.dimensions]
+                tmp = [(met['dimensions'].items(), met['name']) for met in tmp]
+                metrics = []
+                for dim in tmp:
+                    resource_id = dim[0][0][1][0]
+                    resource_type = dim[0][0][0]
+                    metrics.append(dict(
+                        resource_id=resource_id,
+                        resource_url=self.get_url_for_resource(self.request, resource_type, resource_id),
+                        resource_type=resource_type,
+                        metric=dim[1]
+                    ))
+                cat['metrics'] = metrics
 
             #cats = set(map(lambda x:x.namespace, items))
             #metrics = [[{'name':item.name, 'namespace':item.namespace, 'dimensions':item.dimensions} for item in items if item.namespace==x and item.dimensions] for x in cats]
@@ -107,4 +131,19 @@ class CloudWatchMetricsJsonView(BaseView):
     def get_items(self):
         conn = self.get_connection(conn_type='cloudwatch')
         return conn.list_metrics() if conn else []
+
+    @staticmethod
+    def get_url_for_resource(request, resource_type, resource_id):
+        url = None
+        if "LoadBalancerName" == resource_type:
+            url = request.route_path('elb_view', id=resource_id)
+        elif "VolumeId" == resource_type:
+            url = request.route_path('volume_view', id=resource_id)
+        elif "AutoScalingGroupName" == resource_type:
+            url = request.route_path('scalinggroup_view', id=resource_id)
+        elif "InstanceId" == resource_type:
+            url = request.route_path('instance_view', id=resource_id)
+        elif "ImageId" == resource_type:
+            url = request.route_path('image_view', id=resource_id)
+        return url
 

@@ -1,10 +1,13 @@
 <metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
 <head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular-ui-layout.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/nvd3/nv.d3.min.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/cloudwatch_charts.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/metrics.css')}" />
 </head>
 
-<div metal:fill-slot="main_content" ng-app="MetricsPage" ng-controller="MetricsCtrl" ng-init="initPage()"
+<div metal:fill-slot="main_content" ng-app="MetricsPage" ng-controller="MetricsCtrl as metricsCtrl" ng-init="initPage()"
     tal:define="using_expando True;
                 expando_data_url nothing;
                 expando_data_id nothing">
@@ -18,97 +21,139 @@
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
         <h3 id="pagetitle"><strong i18n:translate="">Metrics</strong></h3>
-        <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
-            <div metal:fill-slot="new_button">
-                <a class="button" i18n:translate="" id="create-metric-btn"
-                   href="#">Create Metric</a>
-            </div>
-            <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
-                <a id="tile-item-dropdown_{{ item.id }}" class="tiny secondary button dropdown right" data-dropdown="item-dropdown_{{ item.id }}"><i class="grid-action"></i></a>
-                <ul id="item-dropdown_{{ item.id }}" class="f-dropdown" data-dropdown-content="" ng-show="item.status !== 'deleting'">
-                    <li>
-                        <a i18n:translate="" ng-href="${prefix}/{{ item.id }}">Create alarm</a>
-                    </li>
-                </ul>
-            </div>
-            <div metal:fill-slot="tile_content" tal:omit-tag="">
-                <div>
-                    <span class="label" title="Volume ID" i18n:attributes="title" data-tooltip="">ID</span>
-                    {{ item.id }}
+        <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.css')}"/>
+        <script src="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.js')}"></script>
+        <div class="large-12 columns datagrid" id="landing-page-items">
+            <div class="lp-header">
+                <div class="lp-sort" id="sorting-controls" ng-show="!itemsLoading">
+                    <metal:block metal:define-slot="sorting_controls">
+                        <strong>Sort by</strong>
+                        <a href="#" data-dropdown="sorting-dropdown" ng-cloak="">
+                            <span tal:repeat="sort sort_keys" ng-show="sortBy == '${sort.key}'">${sort.name}</span>
+                            <span class="down-caret"></span>
+                        </a>
+                        <ul id="sorting-dropdown" class="f-dropdown" data-dropdown-content="" tal:condition="len(sort_keys) > 1">
+                            <li tal:repeat="sort sort_keys" ng-show="sortBy != '${sort.key}'">
+                                <a ng-click="sortBy = '${sort.key}'">${sort.name}</a>
+                            </li>
+                        </ul>
+                    </metal:block>
                 </div>
-                <div>
-                    <span class="label" title="Size" i18n:attributes="title" data-tooltip="">GB</span>
-                    {{ item.size }} GB
-                </div>
-                <div ng-show="item.status !== 'deleting'">
-                    <span class="label" title="Snapshots" i18n:attributes="title" data-tooltip="">SS</span>
-                    <a ng-href="${prefix}/{{ item.id }}/snapshots">{{ item.snapshots }} snapshot<span ng-show="item.snapshots != 1">s</span></a>
-                </div>
-                <div>
-                    <span class="label" title="Availability zone" i18n:attributes="title" data-tooltip="">AZ</span>
-                    {{ item.zone }}
-                </div>
-                <div>
-                    <span class="label" title="Creation time" i18n:attributes="title" data-tooltip="">CT</span>
-                    {{ item.create_time | date:'${layout.angular_date_format}' }}
-                </div>
-                <div ng-show="item.instance">
-                    <span class="label" title="Attached to instance" i18n:attributes="title" data-tooltip="">IN</span>
-                    <a ng-href="/instances/{{ item.instance }}">{{ item.instance_name || item.instance }}</a>
-                </div>
-                <div ng-show="item.tags">
-                    <span class="label" title="Tags" i18n:attributes="title" data-tooltip="">TA</span>
-                    {{ item.tags | ellipsis: 60 }}
+                <div class="lp-view-buttons displayicons" ng-cloak="">
+                    <a id="gridview-button" class="gridview" title="Grid view" ng-click="switchView('gridview')"><i class="fi-thumbnails"></i></a>
+                    <a id="tableview-button" class="tableview" title="Table view" ng-click="switchView('tableview')"><i class="fi-list-thumbnails"></i></a>
                 </div>
             </div>
-            <metal:block metal:fill-slot="tile_footer">
-                <div ng-show="item.status || item.attach_status"
-                     class="footer status {{ item.attach_status || item.status }}">
-                    {{ item.attach_status || item.status }}
-                    <span class="busy" ng-show="item.transitional"></span>
+            <div class="lp-header">
+                <div class="lp-search" tal:define="prompt layout.searchtext_prompt if len(search_facets) > 2 else layout.searchtext_prompt2">
+                    <magic-search template="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.html')}"
+                        strings="{'remove':'${layout.searchtext_remove}', 'cancel':'${layout.searchtext_cancel}', 'prompt':'${prompt}', 'text':'${layout.searchtext_text_facet}'}"
+                        facets="${search_facets}" filter-keys="${filter_keys}"></magic-search>
                 </div>
-            </metal:block>
-            <metal:block metal:fill-slot="tableview_headers">
-                <th i18n:translate=""></th>
-            </metal:block>
-            <metal:block metal:fill-slot="tableview_columns">
-                <td>{{ item.label }} ({{ item.metrics.length }})</td>
-            </metal:block>
-            <metal:block metal:fill-slot="tableview_expando_content">
-                <td ng-show="expando.data" colspan="10">
-                    <div class="datagrid" id="datagrid-items">
-                        <div ng-show="itemsLoading"><span class="busy"></span></div>
-                        <div id="tableview" class="gridwrapper" ng-show="!itemsLoading">
-                            <!-- Begin table view -->
-                            <table class="table" ng-show="!itemsLoading" ng-cloak="true">
-                                <thead><tr>
-                                    <th i18n:translate="">INSTANCE NAME(ID)</th>
-                                    <th i18n:translate="">METRIC NAME</th>
-                                    <th i18n:translate="">ACTIONS</th>
-                                </tr></thead>
-                                <tbody>
-                                    <tr ng-repeat="metric in item.metrics" ng-cloak="true">
-                                        <td>{{ metric.dimensions }}</td>
-                                        <td>{{ metric.name }}</td>
-                                        <td>
-                                            <span class="actions">
-                                                <a id="table-item-dropdown_{{ item.name | escapeHTMLTagID }}" class="tiny secondary button dropdown right round" data-dropdown="item-dropdown_{{ item.name | escapeHTMLTagID }}"><i class="grid-action"></i></a>
-                                                <ul id="item-dropdown_{{ item.name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
-                                                    <li><a i18n:translate="" ng-href="${prefix}/{{ item.name | escapeURL }}">View details</a></li>
-                                                    <li ng-show="item.status !== 'delete-complete' &amp;&amp; !item.transitional">
-                                                        <a i18n:translate="" ng-click="revealModal('delete', item)">Delete stack</a>
-                                                    </li>
-                                                </ul>
-                                            </span>
-                                        </td>
-                                    </tr>
-                                    <tr ng-show="!itemsLoading"></tr>
-                                </tbody>
-                            </table>
+                <div class="lp-reload" id="results-count" ng-cloak="cloak" metal:define-slot="results_count">
+                    <a id="refresh-btn" ng-show="!itemsLoading" ng-cloak="" ng-click="itemsLoading=true; getItems()">
+                        <i class="fa fa-refresh fa-lg"></i>
+                    </a>
+                    &nbsp;
+                    <span ng-show="!itemsLoading" class="items-found">
+                        <strong>{{ items.length }}</strong>
+                        <span i18n:translate="">found</span>
+                    </span>
+                </div>
+            </div>
+                    <div class="loading" ng-show="itemsLoading"><i class="busy"></i></div>
+                    <div id="tableview" class="gridwrapper" ng-if="landingPageView == 'tableview'" ng-cloak="">
+                        <!-- Begin table view -->
+                        <table class="table" ng-show="!itemsLoading" ng-cloak="true" tal:define="using_expando using_expando | nothing" tal:attributes="class 'table expando' if using_expando else 'table'">
+                            <thead>
+                                <tr>
+                                    <th tal:condition="using_expando"></th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody tal:condition="using_expando" expando="" ng-repeat="item in items | orderBy: sortBy:sortReverse"
+                                url="${expando_data_url}" item_id="${expando_data_id}">
+                                <tr ng-class="{'expando-tr-even': $odd}" ng-cloak="true"> 
+                                    <td>
+                                        <a ng-click="toggle()"><i ng-class="{'table-expando-closed': !expando.data, 'table-expando-open': expando.data || expando.loading }"></i></a>
+                                    </td>
+                                    <td>{{ item.label }} ({{ item.metrics.length }})</td>
+                                </tr>
+                                <tr ng-class="{'expando-tr-even': $odd}" ng-cloak="true"> 
+                                    <td ng-show="!expando.data &amp;&amp; expando.loading == true" colspan="10"><i class="busy"></i></td>
+                                    <td ng-show="expando.data" colspan="10">
+                                        <div class="datagrid" id="datagrid-items">
+                                            <div ng-show="itemsLoading"><span class="busy"></span></div>
+                                            <div id="tableview" class="gridwrapper" ng-show="!itemsLoading">
+                                                <!-- Begin table view -->
+                                                <table class="table" ng-show="!itemsLoading" ng-cloak="true">
+                                                    <thead><tr>
+                                                        <th></th>
+                                                        <th i18n:translate="">INSTANCE NAME(ID)</th>
+                                                        <th i18n:translate="">METRIC NAME</th>
+                                                        <th i18n:translate="">ACTIONS</th>
+                                                    </tr></thead>
+                                                    <tbody>
+                                                        <tr ng-repeat="metric in item.metrics" ng-cloak="true">
+                                                            <td><input type="checkbox" ng-model="metric.selected"/></td>
+                                                            <td>
+                                                                <a ng-if="metric.resource_url" ng-href="{{ metric.resource_url }}">{{ metric.resource_id }}</a>
+                                                                <span ng-if="metric.resource_url==null">{{ metric.resource_id }}</span>
+                                                            </td>
+                                                            <td>{{ metric.metric }} :{{ metric.selected }}</td>
+                                                            <td>
+                                                                <span class="actions">
+                                                                    <a id="table-item-dropdown_{{ item.name | escapeHTMLTagID }}" class="tiny secondary button dropdown right round" data-dropdown="item-dropdown_{{ item.name | escapeHTMLTagID }}"><i class="grid-action"></i></a>
+                                                                    <ul id="item-dropdown_{{ item.name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
+                                                                        <li><a i18n:translate="" ng-href="${prefix}/{{ item.name | escapeURL }}">View details</a></li>
+                                                                        <li ng-show="item.status !== 'delete-complete' &amp;&amp; !item.transitional">
+                                                                            <a i18n:translate="" ng-click="revealModal('delete', item)">Delete stack</a>
+                                                                        </li>
+                                                                    </ul>
+                                                                </span>
+                                                            </td>
+                                                        </tr>
+                                                        <tr ng-show="!itemsLoading"></tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div ng-if="!itemsLoading">
+                            <div data-alert="alert" class="alert-box secondary" ng-if="items.length == 0" ng-cloak="">
+                                <span i18n:translate="">No items were found</span>
+                                <a href="#" class="close">&times;</a>
+                            </div>
                         </div>
                     </div>
-                </td>
-            </metal:block>
+                    <div ng-controller="CloudWatchChartsCtrl as chartsCtrl"
+                        ng-init="chartsCtrl.initController('${chart_options_json}')">
+                        <ul class="small-block-grid-1 medium-block-grid-2 large-block-grid-3">
+                            <div ng-repeat="item in items" ng-cloak="true">
+                                <li class="chart-wrapper" ng-repeat="chart in item.metrics | filter:{ selected: true }">
+                                    <h6>{{ chartsCtrl.metricTitleMapping[chart.metric] }}<i class="busy"></i></h6>
+                                    <div ng-show="chartsCtrl.emptyMessages[chart.metric]" class="empty-message-wrapper">
+                                        <div class="empty-message">{{ chartsCtrl.emptyMessages[chart.metric] }}</div>
+                                    </div>
+                                    <svg ng-show="!chartsCtrl.emptyMessages[chart.metric]"
+                                         cloudwatch-chart="" id="cwchart-{{ chart.metric }}" class="cwchart"
+                                         ids="{{ chart.resource_id }}" idtype="{{ chart.resource_type }}" metric="{{ chart.metric }}"
+                                         duration="{{ chartsCtrl.duration }}" unit="Count"
+                                         statistic="Sum" empty="No Data">
+                                    </svg>
+                                </li>
+                            </div>
+                        </ul>
+                    </div>
+            <!--div ui-layout="{flow: 'row', disableToggle: true}">
+                <div ui-layout-container="" min-size="200px" max-size="400px">
+                </div>
+                <div ui-layout-container="" max-size="100%" id="graph-area">
+                </div>
+            </div-->
         </div>
     </div>
 </div>
@@ -120,7 +165,10 @@
 </metal:block>
 
 <div metal:fill-slot="tail_js">
-    <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/d3/d3.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/nvd3/nv.d3.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/cloudwatch_charts.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular-ui-layout.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/expando.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/landingpage.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/metrics.js')}"></script>

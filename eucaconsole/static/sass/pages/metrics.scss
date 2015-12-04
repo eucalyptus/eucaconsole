@@ -4,5 +4,14 @@
 @import "../includes/landingpage";
 
 
+table.expando td:nth-of-type(1) {
+    width: 1rem;
+}
 
+table td input[type="checkbox"] {
+    margin: 0 0 0;
+}
 
+#graph-area {
+    position: relative;
+}
