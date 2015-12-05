@@ -22,8 +22,18 @@
                 </a>
                 <metal:block metal:use-macro="layout.global_macros['more_actions']">
                     <div metal:fill-slot="menu_items" tal:omit-tag="">
-                        <li><a i18n:translate="" ng-click="revealReleaseIPsModal(checkedItems)">Release to cloud</a></li>
-                        <li><a i18n:translate="" ng-click="revealDisassociateIPsModal(checkedItems)">Disassociate from instance</a></li>
+                        <li>
+                            <a i18n:translate="" ng-click="revealReleaseIPsModal(checkedItems)"
+                               class="more-actions-release">
+                                Release to cloud
+                            </a>
+                        </li>
+                        <li>
+                            <a i18n:translate="" ng-click="revealDisassociateIPsModal(checkedItems)"
+                               class="more-actions-disassociate">
+                                Disassociate from instance
+                            </a>
+                        </li>
                     </div>
                 </metal:block>
             </div>
@@ -104,7 +114,7 @@
                                 <a i18n:translate=""
                                    ng-click="revealModal('associate', item)">Associate with instance</a>
                             </li>
-                            <li ng-show="!item.instance_id"><a i18n:translate=""
+                            <li ng-show="!item.instance_id"><a i18n:translate="" class="action-release"
                                    ng-click="revealModal('release', item)">Release to cloud</a>
                             </li>
                         </ul>

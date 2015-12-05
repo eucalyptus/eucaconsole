@@ -109,7 +109,7 @@
                     </tr>
                 </thead>
                 <tbody tal:condition="using_expando" expando="" ng-repeat="item in items | orderBy: sortBy:sortReverse"
-                    url="${expando_data_url}" item_id="${expando_data_id}">
+                    url="${expando_data_url}" item_id="${expando_data_id}" data-item-id="{{ item.id || item.name || item.public_ip }}">
                     <tr ng-class="{'expando-tr-even': $odd}" ng-cloak="true"> 
                         <td>
                             <a ng-click="toggle()"><i ng-class="{'table-expando-closed': !expando.data, 'table-expando-open': expando.data || expando.loading }"></i></a>
@@ -123,7 +123,8 @@
                 </tbody>
                 <metal:block metal:define-slot="tableview_with_expando" />
                 <tbody tal:condition="not:using_expando">
-                    <tr ng-cloak="true" ng-repeat="item in items | orderBy: sortBy | limitTo:displayCount">
+                    <tr ng-cloak="true" ng-repeat="item in items | orderBy: sortBy | limitTo:displayCount"
+                        data-item-id="{{ item.id || item.name || item.public_ip }}">
                         <metal:block metal:define-slot="tableview_columns" />
                     </tr>
                     <tr ng-show="!itemsLoading"></tr>

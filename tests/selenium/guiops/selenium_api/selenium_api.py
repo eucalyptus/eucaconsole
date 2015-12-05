@@ -129,7 +129,8 @@ class SeleniumApi(object):
         if timeout_in_seconds is None:
             timeout_in_seconds = self.timeout_to_determine_visibility_in_seconds
 
-        print "Executing wait_for_visible_by_id('{0}'), timeout_in_seconds isb set to {1}".format(element_id, timeout_in_seconds)
+        print "Executing wait_for_visible_by_id('{0}'), timeout_in_seconds is set to {1}".format(
+            element_id, timeout_in_seconds)
         try:
             WebDriverWait(self.driver, timeout_in_seconds).until(EC.visibility_of_element_located((By.ID, element_id)))
             print "Element by id = '{0}' was located in DOM and is visible.".format(element_id)
