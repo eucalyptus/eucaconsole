@@ -19,7 +19,8 @@
 <metal:datagrid_macro metal:define-macro="landing_page_datagrid">
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.css')}"/>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.js')}"></script>
-    <div class="large-12 columns datagrid" id="landing-page-items">
+    <div class="large-12 columns datagrid ${'has-smart-table' if use_smart_table else ''}" id="landing-page-items" ng-class="landingPageView"
+         tal:define="use_smart_table getattr(view, 'enable_smart_table', False)">
         <div class="lp-header">
             <div class="lp-action-buttons" id="primary-buttons">
                 <metal:block metal:define-slot="new_button" />
@@ -70,7 +71,7 @@
             </div>
             <!-- Begin grid view -->
             <div class="tile item" ng-cloak="true"
-                 ng-repeat="item in items | orderBy: sortBy:sortReverse | limitTo:displayCount">
+                 ng-repeat="item in items | orderBy: sortBy | limitTo:displayCount">
                 <div class="header">
                     <strong>
                         <metal:block metal:define-slot="tile_header">
@@ -101,7 +102,10 @@
         </div>
         <div id="tableview" class="gridwrapper" ng-if="landingPageView == 'tableview'" ng-cloak="">
             <!-- Begin table view -->
-            <table class="table" ng-show="!itemsLoading" ng-cloak="true" tal:define="using_expando using_expando | nothing" tal:attributes="class 'table expando' if using_expando else 'table'">
+            <table class="table ${'smart-table' if use_smart_table else ''} ${'expando' if using_expando else ''}"
+                   ng-show="!itemsLoading" ng-cloak="true" tal:define="using_expando using_expando | nothing"
+                   st-safe-src="items" st-table="displayedCollection"
+                   tal:attributes="st-persist '{0}{1}{2}'.format(layout.username_label, '-smart-table-saved-sort-', request.path) if use_smart_table else False">
                 <thead>
                     <tr>
                         <th tal:condition="using_expando"></th>
@@ -109,8 +113,9 @@
                     </tr>
                 </thead>
                 <tbody tal:condition="using_expando" expando="" ng-repeat="item in items | orderBy: sortBy:sortReverse"
-                    url="${expando_data_url}" item_id="${expando_data_id}">
-                    <tr ng-class="{'expando-tr-even': $odd}" ng-cloak="true"> 
+                       tal:attributes="ng-repeat layout.smart_table_repeat if use_smart_table else layout.standard_table_repeat"
+                       url="${expando_data_url}" item_id="${expando_data_id}">
+                    <tr ng-class="{'expando-tr-even': $odd}" ng-cloak="true">
                         <td>
                             <a ng-click="toggle()"><i ng-class="{'table-expando-closed': !expando.data, 'table-expando-open': expando.data || expando.loading }"></i></a>
                         </td>
@@ -161,7 +166,7 @@
             </div>
             -->
             <!-- Begin grid view -->
-            <div class="tile item" ng-repeat="item in items | orderBy: sortBy:sortReverse" ng-cloak="true">
+            <div class="tile item" ng-repeat="item in items | orderBy: sortBy" ng-cloak="true">
                 <div class="header">
                     <strong>
                         <metal:block metal:define-slot="tile_header">
@@ -199,7 +204,7 @@
             <table class="table" ng-show="!itemsLoading" ng-cloak="true">
                 <thead><tr><metal:block metal:define-slot="tableview_headers"></metal:block></tr></thead>
                 <tbody>
-                    <tr ng-repeat="item in items | orderBy: sortBy:sortReverse" ng-cloak="true">
+                    <tr ng-repeat="item in items | orderBy: sortBy" ng-cloak="true">
                         <metal:block metal:define-slot="tableview_columns"></metal:block>
                     </tr>
                     <tr ng-show="!itemsLoading"></tr>

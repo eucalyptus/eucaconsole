@@ -82,14 +82,14 @@
                 </div>
             </metal:block>
             <metal:block metal:fill-slot="tableview_headers">
-                <th i18n:translate="">Name (ID)</th>
-                <th i18n:translate="">Status</th>
-                <th i18n:translate="">Size</th>
-                <th i18n:translate="">Instance</th>
-                <th i18n:translate="">Snapshots</th>
-                <th i18n:translate="">Avail Zone</th>
-                <th i18n:translate="">Tags</th>
-                <th i18n:translate="">Creation Time</th>
+                <th i18n:translate="" st-skip-natural="true" st-sort="name">Name (ID)</th>
+                <th i18n:translate="" st-skip-natural="true" st-sort="status">Status</th>
+                <th i18n:translate="" st-skip-natural="true" st-sort="size">Size</th>
+                <th i18n:translate="" st-skip-natural="true" st-sort="instance_name">Instance</th>
+                <th i18n:translate="" st-skip-natural="true" st-sort="snapshots">Snapshots</th>
+                <th i18n:translate="" st-skip-natural="true" st-sort="zone">Avail Zone</th>
+                <th i18n:translate="" st-skip-natural="true" st-sort="tags">Tags</th>
+                <th i18n:translate="" st-skip-natural="true" st-sort="create_time" st-sort-default="reverse">Creation Time</th>
                 <th class="actions" i18n:translate="">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
@@ -230,6 +230,7 @@
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/expando.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/landingpage.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular-smart-table.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/volumes.js')}"></script>
 </div>
 

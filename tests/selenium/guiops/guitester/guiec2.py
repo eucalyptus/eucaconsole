@@ -493,6 +493,23 @@ class GuiEC2(GuiTester):
         """
         NotImplementedError
 
+    def click_sortable_column_header_on_volumes_landing_page(self, column_name='name'):
+        """
+        Sort volumes table by a given column (see <th> element's st-sort attr for possible column_name values)
+        :param column_name: header column name
+        :type column_name: str
+        """
+        BasePage(self).goto_volumes_view_via_menu()
+        VolumeLanding(self).click_sortable_column_header(column_name=column_name)
+
+    def verify_sort_position_for_volume(self, volume_id, position=1):
+        """
+        :param volume_id:
+        :param position: sorting position. Note: not zero-based (e.g. use 1 for first row)
+        :type position: int
+        """
+        VolumeLanding(self).verify_volume_id_by_sort_position(volume_id, position=position)
+
     def create_snapshot_on_volumes_view_page(self, volume_id, snapshot_name=None, snapshot_description=None, timeout_in_seconds=240):
         """
         Navigates to volumes view page and creates a snapshot of a volume.

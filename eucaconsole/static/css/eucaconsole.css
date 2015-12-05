@@ -1878,6 +1878,11 @@ table.table thead tr th.count { text-align: center; }
 table.table tr td.count { text-align: center; }
 table.table tr td { vertical-align: top; }
 table.table td.breakall { word-break: break-all !important; }
+table.table.smart-table th[st-sort] { padding-right: 14px; }
+table.table.smart-table th[st-sort]:hover { cursor: pointer; }
+table.table.smart-table .st-sort-ascent, table.table.smart-table .st-sort-descent { padding-right: 0 !important; }
+table.table.smart-table .st-sort-ascent:after { content: '\25B2'; }
+table.table.smart-table .st-sort-descent:after { content: '\25BC'; }
 
 /* ----------------------------------------- Footer
 ----------------------------------------- */

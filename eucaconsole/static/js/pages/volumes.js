@@ -4,7 +4,7 @@
  *
  */
 
-angular.module('VolumesPage', ['LandingPage', 'EucaConsoleUtils'])
+angular.module('VolumesPage', ['LandingPage', 'EucaConsoleUtils', 'smart-table'])
     .controller('VolumesCtrl', function ($scope, $http, $timeout, eucaUnescapeJson) {
         $scope.volumeID = '';
         $scope.volumeName = '';
