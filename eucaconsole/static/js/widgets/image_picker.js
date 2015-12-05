@@ -93,6 +93,7 @@ angular.module('ImagePicker', ['EucaConsoleUtils', 'MagicSearch'])
                 }
                 else {
                     facetItems = unfilteredItems;
+                    $scope.facetFilterItems();
                 }
             });
         };
