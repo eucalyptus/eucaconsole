@@ -87,12 +87,12 @@ angular.module('ImagePicker', ['EucaConsoleUtils', 'MagicSearch'])
               success(function(oData) {
                 var results = oData ? oData.results : [];
                 $scope.itemsLoading = false;
-                $scope.unfilteredItems = results;
+                unfilteredItems = results;
                 if ($scope.serverFilter === false) {
                     $scope.facetFilterItems();
                 }
                 else {
-                    $scope.facetItems = $scope.unfilteredItems;
+                    facetItems = unfilteredItems;
                 }
             });
         };
@@ -111,7 +111,7 @@ angular.module('ImagePicker', ['EucaConsoleUtils', 'MagicSearch'])
                     }
                     this[facet[0]].push(facet[1]);
                 }, facets);
-                var results = $scope.unfilteredItems;
+                var results = unfilteredItems;
                 // filter results
                 var matchFunc = function(val) {
                     if (typeof val === 'string') {
@@ -149,10 +149,10 @@ angular.module('ImagePicker', ['EucaConsoleUtils', 'MagicSearch'])
                 for (var key in facets) {
                     results = results.filter(filterFunc);
                 }
-                $scope.facetItems = results;
+                facetItems = results;
             }
             else {
-                $scope.facetItems = $scope.unfilteredItems.slice();
+                facetItems = unfilteredItems.slice();
             }
             $scope.searchImages();
         };
@@ -160,11 +160,11 @@ angular.module('ImagePicker', ['EucaConsoleUtils', 'MagicSearch'])
             var filterText = ($scope.searchFilter || '').toLowerCase();
             if (filterText === '') {
                 // If the search filter is empty, skip the filtering
-                $scope.items = $scope.facetItems;
+                $scope.items = facetItems;
                 return;
             }
             // Leverage Array.prototype.filter (ECMAScript 5)
-            var filteredItems = $scope.facetItems.filter(function(item) {
+            var filteredItems = facetItems.filter(function(item) {
                 for (var i=0; i < $scope.filterProps.length; i++) {  // Can't use $.each or Array.prototype.forEach here
                     var propName = $scope.filterProps[i];
                     var itemProp = item.hasOwnProperty(propName) && item[propName];
