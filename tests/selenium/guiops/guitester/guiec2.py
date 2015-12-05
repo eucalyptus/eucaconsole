@@ -26,7 +26,7 @@ from dialogs.volume_dialogs import (
     AttachVolumeModalSelectVolume, DetachVolumeModal)
 from dialogs.snapshot_dialogs import CreateSnapshotModal, DeleteSnapshotModal, RegisterSnapshotAsImageModal
 from dialogs.image_dialogs import RemoveImageFromCloudDialog
-from dialogs.eip_dialogs import AllocateEipDialog
+from dialogs.eip_dialogs import AllocateEipDialog, ReleaseEipDialog
 
 
 logger = logging.getLogger('testlogger')
@@ -664,6 +664,7 @@ class GuiEC2(GuiTester):
         BasePage(self).goto_elestic_ip_view_via_menu()
         EipLanding(self).click_elastic_ips_checkboxes(elastic_ips)
         EipLanding(self).select_release_ips_more_actions_item()
+        return ReleaseEipDialog(self).release_elastic_ips()
 
     def release_eip_from_eip_detail_page(self):
         NotImplementedError
