@@ -6,6 +6,36 @@
 
 // Scaling Group page includes the AutoScale tag editor, so pull in that module as well.
 angular.module('ScalingGroupPage', ['TagEditorModule', 'EucaConsoleUtils'])
+    .directive('chosen', function () {
+        return {
+            restrict: 'A',
+            link: function (scope, element, attrs, ctrl) {
+                var chosenAttrs = JSON.parse(attrs.chosen || '{}');
+                for(var key in attrs) {
+                    if(/^chosen-.*/.test(key)) {
+                        chosenAttrs[key] = attrs[key];
+                    }
+                }
+                element.chosen(chosenAttrs);
+
+                element.on('change', function () {
+                    scope.validateField(this);
+                });
+                scope.validateField(element);
+            },
+            controller: ['$scope', function ($scope) {
+                $scope.validateField = function (element) {
+                    var isValid = element[0].selectedIndex > -1,
+                        form = this.form && this.form.name,
+                        field = this.name;
+
+                    if(form && field) {
+                        $scope[form][field].$setValidity('required', isValid);
+                    }
+                };
+            }]
+        };
+    })
     .controller('ScalingGroupPageCtrl', function ($scope, $timeout, eucaUnescapeJson, eucaNumbersOnly) {
         $scope.minSize = 1;
         $scope.desiredCapacity = 1;
@@ -19,6 +49,10 @@ angular.module('ScalingGroupPage', ['TagEditorModule', 'EucaConsoleUtils'])
         $scope.isSubmitted = false;
         $scope.pendingModalID = '';
 
+        $scope.isInvalid = function () {
+            return $scope.scalingGroupDetailForm.$invalid;
+        };
+
         $scope.initChosenSelectors = function () {
             $('#launch_config').chosen({'width': '80%', search_contains: true});
             // Remove the option if it has no vpc subnet ID associated
@@ -30,8 +64,8 @@ angular.module('ScalingGroupPage', ['TagEditorModule', 'EucaConsoleUtils'])
                 } 
             }
             $('#vpc_subnet').chosen({'width': '80%', search_contains: true});
-            $('#availability_zones').chosen({'width': '80%', search_contains: true});
-            $('#termination_policies').chosen({'width': '70%', search_contains: true});
+            //$('#availability_zones').chosen({'width': '80%', search_contains: true});
+            //$('#termination_policies').chosen({'width': '70%', search_contains: true});
         };
         $scope.setInitialValues = function () {
             $scope.minSize = parseInt($('#min_size').val(), 10);
