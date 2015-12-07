@@ -6,7 +6,7 @@
 
 
 angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch', 'Expando'])
-    .controller('ItemsCtrl', function ($scope, $http, $timeout, $sanitize) {
+    .controller('ItemsCtrl', function ($scope, $http, $timeout, $sanitize, $location) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.items = [];
         $scope.itemsLoading = true;
@@ -190,6 +190,39 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch', 'Ex
                 
             });
         };
+        var matchByFacet = function(facet, val) {
+            if (typeof val === 'string') {
+                if ($.inArray(val, facet) > -1 ||
+                    $.inArray(val.toLowerCase(), facet) > -1) {
+                    return true;
+                }
+            }
+            if (typeof val === 'object') {
+                // if object, assume it has valid id or name attribute
+                if ($.inArray(val.id, facet) > -1 ||
+                    $.inArray(val.name, facet) > -1) {
+                    return true;
+                }
+            }
+        };
+        var filterByFacet = function(item) {
+            // handle special case of empty facet value, match all
+            if (this.facet.indexOf("") > -1) {
+                return true;
+            }
+            var val = item[this.key];
+            if (val === undefined || val === null) {
+                return false;
+            }
+            if (Array.isArray(val)) {
+                for (var i=0; i<val.length; i++) {
+                    return matchByFacet(this.facet, val[i]);
+                }
+            }
+            else {
+                return matchByFacet(this.facet, val);
+            }
+        };
         /*  Apply facet filtering
          *  to apply text filtering, call searchFilterItems instead
          */
@@ -212,41 +245,8 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch', 'Ex
                 }, facets);
                 var results = $scope.unfilteredItems;
                 // filter results
-                var matchFunc = function(val) {
-                    if (typeof val === 'string') {
-                        if ($.inArray(val, facets[key]) > -1 ||
-                            $.inArray(val.toLowerCase(), facets[key]) > -1) {
-                            return true;
-                        }
-                    }
-                    if (typeof val === 'object') {
-                        // if object, assume it has valid id or name attribute
-                        if ($.inArray(val.id, facets[key]) > -1 ||
-                            $.inArray(val.name, facets[key]) > -1) {
-                            return true;
-                        }
-                    }
-                };
-                var filterFunc = function(item) {
-                    // handle special case of empty facet value, match all
-                    if (facets[key].indexOf("") > -1) {
-                        return true;
-                    }
-                    var val = item.hasOwnProperty(key) && item[key];
-                    if (val === undefined || val === null) {
-                        return false;
-                    }
-                    if (Array.isArray(val)) {
-                        for (var i=0; i<val.length; i++) {
-                            return matchFunc(val[i]);
-                        }
-                    }
-                    else {
-                        return matchFunc(val);
-                    }
-                };
                 for (var key in facets) {
-                    results = results.filter(filterFunc);
+                    results = results.filter(filterByFacet, {'facet': facets[key], 'key':key});
                 }
                 $scope.facetItems = results;
             }
@@ -340,6 +340,9 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch', 'Ex
                 url = url + "?" + query;
             }
             window.history.pushState(query, "", url);
+            // preferred code (to above), but adds extra hash between path and search
+            //$location.search(query);
+            //window.history.pushState(null, "", $location.absUrl());
             if ($scope.serverFilter === true) {
                 url = $scope.jsonEndpoint;
                 if (url.indexOf("?") > -1) {
