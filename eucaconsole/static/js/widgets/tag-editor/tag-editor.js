@@ -3,7 +3,8 @@ angular.module('TagEditorModule', ['EucaConsoleUtils'])
         return {
             scope: {
                 template: '@',
-                showNameTag: '@'
+                showNameTag: '@',
+                autoscale: '@'
             },
             transclude: true,
             restrict: 'E',
@@ -11,9 +12,9 @@ angular.module('TagEditorModule', ['EucaConsoleUtils'])
             templateUrl: function (element, attributes) {
                 return attributes.template;
             },
-            controller: ['$scope', function ($scope) {
+            controller: ['$scope', '$window', function ($scope, $window) {
                 $scope.addTag = function () {
-                    if(!$scope.tagForm.$valid) {
+                    if($scope.tagForm.$pristine) {
                         return
                     }
 
@@ -42,9 +43,8 @@ angular.module('TagEditorModule', ['EucaConsoleUtils'])
                 var content = transcludeContents();
                 scope.tags = JSON.parse(content.text() || '{}');
 
-                if(!attrs.showNameTag) {
-                    attrs.showNameTag = true;
-                }
+                attrs.showNameTag = !attrs.showNameTag; // default to true
+                attrs.autoscale = !!attrs.autoscale;    // default to false
 
                 scope.updateViewValue = function () {
                     ctrl.$setViewValue(scope.tags);

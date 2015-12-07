@@ -99,6 +99,7 @@
                     <hr />
                     <tag-editor
                             ng-model="tags"
+                            autoscale="1"
                             template="${request.route_path('tag_editor_template')}"
                             tal:content="tags | structure">
                     </tag-editor>

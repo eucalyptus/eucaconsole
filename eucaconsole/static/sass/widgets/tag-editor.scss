@@ -28,7 +28,11 @@
     margin-bottom: 6px;
   }
 
-  &.ng-invalid {
+  .tag-entry-result {
+    display: none;
+  }
+
+  &.ng-pristine {
     .button {
       background-color: #FFF;
       border-color: #B3B3B3;
