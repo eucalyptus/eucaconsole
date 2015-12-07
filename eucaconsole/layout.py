@@ -31,6 +31,7 @@ See http://docs.pylonsproject.org/projects/pyramid_layout/en/latest/layouts.html
 """
 from collections import namedtuple
 from urllib import urlencode
+from boto.exception import BotoServerError
 
 from pyramid.decorator import reify
 from pyramid.renderers import get_renderer
@@ -79,12 +80,15 @@ class MasterLayout(object):
                 conn = ConnectionManager.euca_connection(
                     host, port, 'euca', self.access_id, secret_key, session_token, 'ec2', True
                 )
-                self.regions = RegionCache(conn).regions()
-                if len(self.regions) == 1:
+                try:
+                    self.regions = RegionCache(conn).regions()
+                    if len(self.regions) == 1:
+                        self.has_regions = False
+                    for region in self.regions:
+                        if region['endpoints']['ec2'].find(host) > -1:
+                            self.default_region = region['name']
+                except BotoServerError:
                     self.has_regions = False
-                for region in self.regions:
-                    if region['endpoints']['ec2'].find(host) > -1:
-                        self.default_region = region['name']
         if hasattr(self, 'regions'):
             self.selected_region = self.request.session.get('region', self.default_region)
             self.selected_region_label = self.get_selected_region_label(self.selected_region, self.regions)
