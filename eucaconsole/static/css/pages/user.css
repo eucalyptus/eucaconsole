@@ -9,6 +9,7 @@
 ----------------------------------------- */
 /* @section Landing pages styles */
 .columns.datagrid { padding-left: 0; padding-right: 1rem; padding-bottom: 2rem; }
+.columns.datagrid.has-smart-table.tableview #sorting-controls { display: none; }
 
 .large-12.columns.datagrid { padding-left: 1rem; }
 

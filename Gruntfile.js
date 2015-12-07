@@ -69,6 +69,15 @@ module.exports = function(grunt) {
                 'eucaconsole/static/js/thirdparty/magic-search': 'angular-magic-search/magic_search.*'
               }
           },
+          angular_smart_table: {
+              options: {
+                  destPrefix: 'eucaconsole/static/js/thirdparty/angular'
+              },
+              files: {
+                'angular-smart-table.js': 'angular-smart-table/dist/smart-table.js',
+                'angular-smart-table.min.js': 'angular-smart-table/dist/smart-table.min.js'
+              }
+          },
           d3: {
               options: {
                   destPrefix: 'eucaconsole/static/js/thirdparty/d3'
