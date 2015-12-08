@@ -53,17 +53,25 @@ from . import boto_error_handler
 VOLUME_METRIC_TITLE_MAPPING = {
     'VolumeReadBytes': _(u'Volume Read Bytes'),
     'VolumeWriteBytes': _(u'Volume Write Bytes'),
+    'VolumeReadOps': _(u'Volume Read Ops'),
+    'VolumeWriteOps': _(u'Volume Write Ops'),
+    'VolumeTotalReadTime': _(u'Volume Total Read Time'),
+    'VolumeTotalWriteTime': _(u'Volume Total Write Time'),
+    'VolumeIdleTime': _(u'Volume Idle Time'),
+    'VolumeQueueLength': _(u'Volume Queue Length'),
 }
 
 
 VOLUME_EMPTY_DATA_MESSAGE = _('No data available for this volume.')
 VOLUME_MONITORING_CHARTS_LIST = [
-    # Read/write bandwidth (KiB/sec)
     {'metric': 'VolumeReadBytes', 'unit': 'Bytes', 'statistic': 'Sum', 'empty_msg': VOLUME_EMPTY_DATA_MESSAGE},
     {'metric': 'VolumeWriteBytes', 'unit': 'Bytes', 'statistic': 'Sum', 'empty_msg': VOLUME_EMPTY_DATA_MESSAGE},
-    # Avg read/write size (KiB/op)
-    {'metric': 'VolumeReadBytes', 'unit': 'Bytes', 'statistic': 'Average', 'empty_msg': VOLUME_EMPTY_DATA_MESSAGE},
-    {'metric': 'VolumeWriteBytes', 'unit': 'Bytes', 'statistic': 'Average', 'empty_msg': VOLUME_EMPTY_DATA_MESSAGE},
+    {'metric': 'VolumeReadOps', 'unit': 'Count', 'statistic': 'Sum', 'empty_msg': VOLUME_EMPTY_DATA_MESSAGE},
+    {'metric': 'VolumeWriteOps', 'unit': 'Count', 'statistic': 'Sum', 'empty_msg': VOLUME_EMPTY_DATA_MESSAGE},
+    {'metric': 'VolumeTotalReadTime', 'unit': 'Seconds', 'statistic': 'Sum', 'empty_msg': VOLUME_EMPTY_DATA_MESSAGE},
+    {'metric': 'VolumeTotalWriteTime', 'unit': 'Seconds', 'statistic': 'Sum', 'empty_msg': VOLUME_EMPTY_DATA_MESSAGE},
+    {'metric': 'VolumeIdleTime', 'unit': 'Seconds', 'statistic': 'Sum', 'empty_msg': VOLUME_EMPTY_DATA_MESSAGE},
+    {'metric': 'VolumeQueueLength', 'unit': 'Count', 'statistic': 'Sum', 'empty_msg': VOLUME_EMPTY_DATA_MESSAGE},
 ]
 
 

@@ -34,7 +34,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
         'NetworkIn', 'NetworkOut', 'DiskReadBytes', 'DiskReadOps',
         'DiskWriteBytes', 'DiskWriteOps', 'RequestCount', 'Latency', 'HealthyHostCount', 'UnHealthyHostCount',
         'HTTPCode_ELB_4XX', 'HTTPCode_ELB_5XX', 'HTTPCode_Backend_2XX', 'HTTPCode_Backend_3XX',
-        'HTTPCode_Backend_4XX', 'HTTPCode_Backend_5XX'
+        'HTTPCode_Backend_4XX', 'HTTPCode_Backend_5XX', 'VolumeQueueLength'
     ];
     vm.displayZeroChartMetrics = [  // Display a zero chart rather than an empty message for the following metrics
         'HTTPCode_ELB_4XX', 'HTTPCode_ELB_5XX', 'HTTPCode_Backend_2XX', 'HTTPCode_Backend_3XX',

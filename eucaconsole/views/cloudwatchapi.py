@@ -158,7 +158,10 @@ class CloudWatchAPIView(BaseView, CloudWatchAPIMixin):
         self.unit = self.request.params.get('unit')
         self.duration = int(self.request.params.get('duration', 3600))
         self.tz_offset = int(self.request.params.get('tzoffset', 0))
-        self.collapse_to_kb_mb_gb = ['NetworkIn', 'NetworkOut', 'DiskReadBytes', 'DiskWriteBytes']
+        self.collapse_to_kb_mb_gb = [
+            'NetworkIn', 'NetworkOut', 'DiskReadBytes', 'DiskWriteBytes', 'VolumeReadBytes', 'VolumeWriteBytes'
+        ]
+        self.expand_to_ms = ['Latency', 'VolumeTotalReadTime']
 
     @view_config(route_name='cloudwatch_api', renderer='json', request_method='GET')
     def cloudwatch_api(self):
@@ -216,7 +219,7 @@ class CloudWatchAPIView(BaseView, CloudWatchAPIMixin):
         if self.metric in self.collapse_to_kb_mb_gb:
             unit, divider = self.collapse_metrics(self.unit, self.statistic, divider, stats)
 
-        if self.metric == 'Latency':
+        if self.metric in self.expand_to_ms:
             multiplier, unit = 1000, 'Milliseconds'
 
         json_stats = self.get_json_stats(self.statistic, stats, divider, multiplier)

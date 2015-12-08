@@ -53,7 +53,7 @@
                         <svg ng-show="!chartsCtrl.emptyMessages[chart.metric]"
                              cloudwatch-chart="" id="cwchart-{{ chart.metric }}" class="cwchart"
                              ids="${volume.id}" idtype="VolumeId" metric="{{ chart.metric }}"
-                             duration="{{ chartsCtrl.duration }}" unit="{{ chart.unit }}"
+                             duration="{{ chartsCtrl.duration }}" unit="{{ chart.unit }}" namespace="EBS"
                              statistic="{{ chart.statistic }}" empty="{{ chart.empty_msg }}">
                         </svg>
                     </li>
