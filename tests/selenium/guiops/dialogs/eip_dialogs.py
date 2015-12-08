@@ -12,7 +12,6 @@ class AllocateEipDialog(BasePage):
         :param number: how many IPs to allocate
         :return: allocated IPs as a sorted list of strings
         """
-        self.tester.wait_for_element_present_by_id(self._allocate_elastic_ips_button_id)
         self.tester.send_keys_by_css(self._allocate_elastic_ips_number_input_css, str(number))
         self.tester.click_element_by_id(self._allocate_elastic_ips_button_id)
         notification = self.tester.store_text_by_css(self._notification_css)
@@ -28,7 +27,6 @@ class ReleaseEipDialog(BasePage):
         """
         :return: released IPs as a sorted list of strings
         """
-        self.tester.wait_for_element_present_by_id(self._release_elastic_ips_button_id)
         self.tester.click_element_by_id(self._release_elastic_ips_button_id)
         notification = self.tester.store_text_by_css(self._notification_css)
         notification = notification.replace('Successfully released', '')

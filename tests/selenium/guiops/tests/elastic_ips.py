@@ -20,12 +20,19 @@ class ElasticIPsOperationsSequence(GuiOps):
 
     def elastic_ip_ops_test(self):
         self.tester.login(self.account, self.user, self.password)
-        # Allocate multiple IPs, then batch-release
+        self.elastic_ip_single_allocate_release_test_from_lp()
+        self.elastic_ips_multi_allocate_release_test_from_dashboard()
+        self.tester.logout()
+        self.tester.exit_browser()
+
+    def elastic_ip_single_allocate_release_test_from_lp(self):
+        elastic_ips = self.tester.allocate_eip_from_lp(1)
+        self.tester.release_eip_from_eip_lp(elastic_ips[0])
+
+    def elastic_ips_multi_allocate_release_test_from_dashboard(self):
         elastic_ips = self.tester.allocate_eip_from_dashboard(2)
         released_ips = self.tester.release_eips_from_eip_lp(elastic_ips)
         assert elastic_ips == released_ips
-        self.tester.logout()
-        self.tester.exit_browser()
 
 
 if __name__ == '__main__':

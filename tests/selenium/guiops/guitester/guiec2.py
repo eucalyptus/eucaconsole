@@ -665,8 +665,14 @@ class GuiEC2(GuiTester):
     def register_snapshot_as_an_image_from_snapshot_detail_page(self):
         NotImplementedError()
 
-    def allocate_ip_from_eip_lp(self):
-        NotImplementedError
+    def allocate_eip_from_lp(self, number=1):
+        """
+        :param number: how many IPs to allocate
+        :return: allocated IPs as a list of strings
+        """
+        BasePage(self).goto_elestic_ip_view_via_menu()
+        EipLanding(self).click_allocate_elastic_ips_button()
+        return AllocateEipDialog(self).allocate_elastic_ips(number=number)
 
     def allocate_eip_from_dashboard(self, number=1):
         """
@@ -677,47 +683,50 @@ class GuiEC2(GuiTester):
         Dashboard(self).click_allocate_elastic_ips_link()
         return AllocateEipDialog(self).allocate_elastic_ips(number=number)
 
+    def release_eip_from_eip_lp(self, elastic_ip):
+        """
+        Release a single Elastic IP via the item row's actions menu
+        :param elastic_ip: IP address to release
+        """
+        BasePage(self).goto_elestic_ip_view_via_menu()
+        EipLanding(self).select_release_ip_actions_menu_item(elastic_ip)
+        ReleaseEipDialog(self).release_elastic_ips()
+        EipLanding(self).verify_elastic_ip_is_released(elastic_ip)
+
     def release_eips_from_eip_lp(self, elastic_ips):
+        """
+        Batch-release Elastic IPs from landing page via More Actions button
+        :param elastic_ips: List of Elastic IPs to be released
+        :return: released Elastic IPs as a list of strings
+        """
         BasePage(self).goto_elestic_ip_view_via_menu()
         EipLanding(self).click_elastic_ips_checkboxes(elastic_ips)
         EipLanding(self).select_release_ips_more_actions_item()
         return ReleaseEipDialog(self).release_elastic_ips()
 
     def release_eip_from_eip_detail_page(self):
-        NotImplementedError
+        raise NotImplementedError
 
     def associate_eip_from_eip_lp(self):
-        NotImplementedError
+        raise NotImplementedError
 
     def associate_eip_from_instances_lp(self):
-        NotImplementedError
+        raise NotImplementedError
 
     def associate_eip_from_instance_detail_page(self):
-        NotImplementedError
+        raise NotImplementedError
 
     def associate_eip_from_eip_detail_page(self):
-        NotImplementedError
+        raise NotImplementedError
 
     def disassociate_eip_from_eip_lp(self):
-        NotImplementedError
+        raise NotImplementedError
 
     def disassociate_eip_from_eip_detail_page(self):
-        NotImplementedError
+        raise NotImplementedError
 
     def disassociate_ip_from_instance_detail_page(self):
-        NotImplementedError
+        raise NotImplementedError
 
     def disassociate_eip_from_instances_lp(self):
-        NotImplementedError
-
-
-
-
-
-
-
-
-
-
-
-
+        raise NotImplementedError
