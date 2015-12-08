@@ -25,6 +25,7 @@
             <dl class="tabs" id="volume-subnav">
                 <dd><a href="${request.route_path('volume_view', id=volume.id)}" i18n:translate="">General</a></dd>
                 <dd class="active"><a href="#" i18n:translate="">Snapshots</a></dd>
+                <dd><a href="${request.route_path('volume_monitoring', id=volume.id)}" i18n:translate="">Monitoring</a></dd>
             </dl>
             <div class="panel gridwrapper no-title">
                 <div class="tile add" id="create-snapshot" tal:condition="volume.status != 'failed'">

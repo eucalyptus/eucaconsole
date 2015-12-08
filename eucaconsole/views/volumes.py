@@ -37,6 +37,10 @@ from boto.ec2.snapshot import Snapshot
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.view import view_config
 
+from ..constants.cloudwatch import (
+    MONITORING_DURATION_CHOICES, METRIC_TITLE_MAPPING, STATISTIC_CHOICES, GRANULARITY_CHOICES,
+    DURATION_GRANULARITY_CHOICES_MAPPING
+)
 from ..forms import ChoicesManager
 from ..forms.volumes import (
     VolumeForm, DeleteVolumeForm, CreateSnapshotForm, DeleteSnapshotForm,
@@ -45,6 +49,22 @@ from ..i18n import _
 from ..models import Notification
 from ..views import LandingPageView, TaggedItemView, BaseView, JSONResponse
 from . import boto_error_handler
+
+VOLUME_METRIC_TITLE_MAPPING = {
+    'VolumeReadBytes': _(u'Volume Read Bytes'),
+    'VolumeWriteBytes': _(u'Volume Write Bytes'),
+}
+
+
+VOLUME_EMPTY_DATA_MESSAGE = _('No data available for this volume.')
+VOLUME_MONITORING_CHARTS_LIST = [
+    # Read/write bandwidth (KiB/sec)
+    {'metric': 'VolumeReadBytes', 'unit': 'Bytes', 'statistic': 'Sum', 'empty_msg': VOLUME_EMPTY_DATA_MESSAGE},
+    {'metric': 'VolumeWriteBytes', 'unit': 'Bytes', 'statistic': 'Sum', 'empty_msg': VOLUME_EMPTY_DATA_MESSAGE},
+    # Avg read/write size (KiB/op)
+    {'metric': 'VolumeReadBytes', 'unit': 'Bytes', 'statistic': 'Average', 'empty_msg': VOLUME_EMPTY_DATA_MESSAGE},
+    {'metric': 'VolumeWriteBytes', 'unit': 'Bytes', 'statistic': 'Average', 'empty_msg': VOLUME_EMPTY_DATA_MESSAGE},
+]
 
 
 class BaseVolumeView(BaseView):
@@ -573,3 +593,39 @@ class VolumeSnapshotsView(BaseVolumeView):
         if snapshot.status.lower() == 'completed':
             return False
         return int(snapshot.progress.replace('%', '')) < 100
+
+
+class VolumeMonitoringView(BaseVolumeView):
+    VIEW_TEMPLATE = '../templates/volumes/volume_monitoring.pt'
+
+    def __init__(self, request):
+        super(VolumeMonitoringView, self).__init__(request)
+        self.title_parts = [_(u'Volume'), request.matchdict.get('id'), _(u'Monitoring')]
+        self.cw_conn = self.get_connection(conn_type='cloudwatch')
+        with boto_error_handler(self.request):
+            self.volume = self.get_volume()
+        self.volume_name = TaggedItemView.get_display_name(self.volume)
+        self.render_dict = dict(
+            volume=self.volume,
+            volume_name=self.volume_name,
+            metric_title=METRIC_TITLE_MAPPING,
+            duration_choices=MONITORING_DURATION_CHOICES,
+            statistic_choices=STATISTIC_CHOICES,
+            controller_options_json=self.get_controller_options_json()
+        )
+
+    @view_config(route_name='volume_monitoring', renderer=VIEW_TEMPLATE, request_method='GET')
+    def volume_monitoring(self):
+        if self.volume is None:
+            raise HTTPNotFound()
+        return self.render_dict
+
+    def get_controller_options_json(self):
+        if not self.volume:
+            return ''
+        return BaseView.escape_json(json.dumps({
+            'metric_title_mapping': VOLUME_METRIC_TITLE_MAPPING,
+            'charts_list': VOLUME_MONITORING_CHARTS_LIST,
+            'granularity_choices': GRANULARITY_CHOICES,
+            'duration_granularities_mapping': DURATION_GRANULARITY_CHOICES_MAPPING,
+        }))
