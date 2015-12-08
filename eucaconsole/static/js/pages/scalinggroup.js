@@ -71,8 +71,6 @@ angular.module('ScalingGroupPage', ['TagEditorModule', 'EucaConsoleUtils'])
                 } 
             }
             $('#vpc_subnet').chosen({'width': '80%', search_contains: true});
-            //$('#availability_zones').chosen({'width': '80%', search_contains: true});
-            //$('#termination_policies').chosen({'width': '70%', search_contains: true});
         };
         $scope.setInitialValues = function () {
             $scope.minSize = parseInt($('#min_size').val(), 10);
