@@ -80,6 +80,7 @@ class VolumesView(LandingPageView, BaseVolumeView):
         self.delete_form = DeleteVolumeForm(self.request, formdata=self.request.params or None)
         self.attach_form = AttachForm(self.request, instances=self.instances, formdata=self.request.params or None)
         self.detach_form = DetachForm(self.request, formdata=self.request.params or None)
+        self.enable_smart_table = True
         self.render_dict = dict(
             prefix=self.prefix,
             initial_sort_key=self.initial_sort_key,

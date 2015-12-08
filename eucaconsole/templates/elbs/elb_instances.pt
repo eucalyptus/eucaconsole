@@ -78,7 +78,7 @@
                             You must select at least one availability zone.
                         </p>
                         <div class="tile item" ng-cloak=""
-                            ng-repeat="zone in selectedZoneList | orderBy: sortBy:sortReverse">
+                            ng-repeat="zone in selectedZoneList | orderBy: sortBy">
                             <div class="header">
                                 <a class="nolink">{{ zone.name }}</a>
                                 <span id="tile-item-dropdown_{{ zone.id }}" class="tiny secondary button dropdown"
@@ -144,7 +144,7 @@
                             You must select at least one subnet.
                         </p>
                         <div class="tile item" ng-cloak=""
-                            ng-repeat="subnet in selectedVPCSubnetList | orderBy: sortBy:sortReverse">
+                            ng-repeat="subnet in selectedVPCSubnetList | orderBy: sortBy">
                             <div class="header">
                                 <a class="nolink">{{ subnet.id }}</a>
                                 <span id="tile-item-dropdown_{{ subnet.id }}" class="tiny secondary button dropdown"
