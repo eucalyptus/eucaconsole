@@ -30,12 +30,6 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
     vm.refreshCharts = refreshCharts;
     vm.refreshLargeChart = refreshLargeChart;
     vm.emptyChartCount = 0;
-    vm.forceZeroBaselineMetrics = [ // Anchor chart to zero for the following metrics
-        'NetworkIn', 'NetworkOut', 'DiskReadBytes', 'DiskReadOps',
-        'DiskWriteBytes', 'DiskWriteOps', 'RequestCount', 'Latency', 'HealthyHostCount', 'UnHealthyHostCount',
-        'HTTPCode_ELB_4XX', 'HTTPCode_ELB_5XX', 'HTTPCode_Backend_2XX', 'HTTPCode_Backend_3XX',
-        'HTTPCode_Backend_4XX', 'HTTPCode_Backend_5XX', 'VolumeQueueLength'
-    ];
     vm.displayZeroChartMetrics = [  // Display a zero chart rather than an empty message for the following metrics
         'HTTPCode_ELB_4XX', 'HTTPCode_ELB_5XX', 'HTTPCode_Backend_2XX', 'HTTPCode_Backend_3XX',
         'HTTPCode_Backend_4XX', 'HTTPCode_Backend_5XX'
@@ -197,11 +191,9 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
             chart.xAxis.tickFormat(function(d) {
                 return d3.time.format('%m/%d %H:%M')(new Date(d));
             });
+            chart.forceY([0, 10]);  // Anchor chart to zero baseline
             if (scope.unit === 'Percent') {
                 chart.forceY([0, 100]);  // Set proper y-axis range for percentage units
-            }
-            if (parentCtrl.forceZeroBaselineMetrics.indexOf(scope.metric) !== -1) {
-                chart.forceY([0, 10]);  // Anchor chart to zero baseline
             }
             if (preciseFormatterMetrics.indexOf(scope.metric) !== -1) {
                 yformatter = '.2f';
