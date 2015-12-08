@@ -448,6 +448,7 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
         return BaseView.escape_json(json.dumps({
             'scaling_group_name': self.scaling_group.name,
             'policies_count': len(self.policies),
+            'availability_zones': self.scaling_group.availability_zones,
             'termination_policies': self.scaling_group.termination_policies,
         }))
 

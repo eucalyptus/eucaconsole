@@ -8,7 +8,11 @@
 angular.module('ScalingGroupPage', ['TagEditorModule', 'EucaConsoleUtils'])
     .directive('chosen', function () {
         return {
+            scope: {
+                model: '=ngModel'
+            },
             restrict: 'A',
+            require: 'ngModel',
             link: function (scope, element, attrs, ctrl) {
                 var chosenAttrs = JSON.parse(attrs.chosen || '{}');
                 for(var key in attrs) {
@@ -21,9 +25,8 @@ angular.module('ScalingGroupPage', ['TagEditorModule', 'EucaConsoleUtils'])
                 element.on('change', function () {
                     scope.validateField(this);
                 });
-                scope.validateField(element);
             },
-            controller: ['$scope', function ($scope) {
+            controller: ['$scope', '$element', function ($scope, $element) {
                 $scope.validateField = function (element) {
                     var isValid = element[0].selectedIndex > -1,
                         form = this.form && this.form.name,
@@ -33,6 +36,10 @@ angular.module('ScalingGroupPage', ['TagEditorModule', 'EucaConsoleUtils'])
                         $scope[form][field].$setValidity('required', isValid);
                     }
                 };
+
+                $scope.$watch('model', function () {
+                    $scope.validateField($element);
+                });
             }]
         };
     })
@@ -82,7 +89,9 @@ angular.module('ScalingGroupPage', ['TagEditorModule', 'EucaConsoleUtils'])
             // scalingGroupName, policiesCount
             $scope.scalingGroupName = options.scaling_group_name;
             $scope.policiesCount = options.policies_count;
+            $scope.terminationPoliciesUpdate = options.termination_policies;
             $scope.terminationPoliciesOrder = options.termination_policies;
+            $scope.availabilityZones = options.availability_zones;
             $scope.setInitialValues();
             $scope.initChosenSelectors();
             $scope.setWatch();
@@ -172,9 +181,6 @@ angular.module('ScalingGroupPage', ['TagEditorModule', 'EucaConsoleUtils'])
             // Stay button is clicked on the warning unsaved changes modal
             $(document).on('click', '#unsaved-changes-warning-modal-leave-link', function () {
                 $scope.openModalById($scope.pendingModalID);
-            });
-            $scope.$on('tagUpdate', function($event) {
-                $scope.isNotChanged = false;
             });
             $(document).on('submit', '[data-reveal] form', function () {
                 $(this).find('.dialog-submit-button').css('display', 'none');                

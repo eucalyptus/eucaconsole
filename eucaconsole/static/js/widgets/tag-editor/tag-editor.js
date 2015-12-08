@@ -14,10 +14,6 @@ angular.module('TagEditorModule', ['EucaConsoleUtils'])
             },
             controller: ['$scope', '$window', function ($scope, $window) {
                 $scope.addTag = function () {
-                    if($scope.tagForm.$pristine) {
-                        return
-                    }
-
                     $scope.tags.push({
                         name: $scope.newTagKey,
                         value: $scope.newTagValue,

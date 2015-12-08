@@ -72,7 +72,7 @@
                     </div>
                     <div tal:condition="not vpc_network">
                         <input type="hidden" name="vpc_subnet" value="None" />
-                        ${panel('form_field', field=edit_form['availability_zones'], leftcol_width_large=3, rightcol_width_large=9, **avail_zone_html_attrs)}
+                        ${panel('form_field', field=edit_form['availability_zones'], ng_attrs={'model': 'availabilityZones'}, leftcol_width_large=3, rightcol_width_large=9, **avail_zone_html_attrs)}
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="vpc_network">
                         <div class="large-3 small-4 columns">
