@@ -77,8 +77,9 @@ class MasterLayout(object):
                 port = self.request.registry.settings.get('ufsport')
                 secret_key = self.request.session.get('secret_key')
                 session_token = self.request.session.get('session_token')
+                dns_enabled = self.request.session.get('dns_enabled')
                 conn = ConnectionManager.euca_connection(
-                    host, port, 'euca', self.access_id, secret_key, session_token, 'ec2', True
+                    host, port, 'euca', self.access_id, secret_key, session_token, 'ec2', dns_enabled
                 )
                 try:
                     self.regions = RegionCache(conn).regions()
