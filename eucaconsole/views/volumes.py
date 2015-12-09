@@ -67,7 +67,7 @@ VOLUME_MONITORING_CHARTS_LIST = [
     },
     {
         'metric': 'VolumeWriteOps', 'unit': 'Count', 'statistic': 'Sum',
-        'empty_msg': VOLUME_EMPTY_DATA_MESSAGE, 'title': _(u'Write bandwidth (KiB/sec)'),
+        'empty_msg': VOLUME_EMPTY_DATA_MESSAGE, 'title': _(u'Write throughput (Ops/sec)'),
     },
     {
         'metric': 'VolumeQueueLength', 'unit': 'Count', 'statistic': 'Average',
