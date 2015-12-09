@@ -38,7 +38,7 @@ from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.view import view_config
 
 from ..constants.cloudwatch import (
-    MONITORING_DURATION_CHOICES, METRIC_TITLE_MAPPING, STATISTIC_CHOICES, GRANULARITY_CHOICES,
+    MONITORING_DURATION_CHOICES, STATISTIC_CHOICES, GRANULARITY_CHOICES,
     DURATION_GRANULARITY_CHOICES_MAPPING
 )
 from ..forms import ChoicesManager
@@ -50,28 +50,49 @@ from ..models import Notification
 from ..views import LandingPageView, TaggedItemView, BaseView, JSONResponse
 from . import boto_error_handler
 
-VOLUME_METRIC_TITLE_MAPPING = {
-    'VolumeReadBytes': _(u'Volume Read Bytes'),
-    'VolumeWriteBytes': _(u'Volume Write Bytes'),
-    'VolumeReadOps': _(u'Volume Read Ops'),
-    'VolumeWriteOps': _(u'Volume Write Ops'),
-    'VolumeTotalReadTime': _(u'Volume Total Read Time'),
-    'VolumeTotalWriteTime': _(u'Volume Total Write Time'),
-    'VolumeIdleTime': _(u'Volume Idle Time'),
-    'VolumeQueueLength': _(u'Volume Queue Length'),
-}
-
 
 VOLUME_EMPTY_DATA_MESSAGE = _('No data available for this volume.')
 VOLUME_MONITORING_CHARTS_LIST = [
-    {'metric': 'VolumeReadBytes', 'unit': 'Bytes', 'statistic': 'Sum', 'empty_msg': VOLUME_EMPTY_DATA_MESSAGE},
-    {'metric': 'VolumeWriteBytes', 'unit': 'Bytes', 'statistic': 'Sum', 'empty_msg': VOLUME_EMPTY_DATA_MESSAGE},
-    {'metric': 'VolumeReadOps', 'unit': 'Count', 'statistic': 'Sum', 'empty_msg': VOLUME_EMPTY_DATA_MESSAGE},
-    {'metric': 'VolumeWriteOps', 'unit': 'Count', 'statistic': 'Sum', 'empty_msg': VOLUME_EMPTY_DATA_MESSAGE},
-    {'metric': 'VolumeTotalReadTime', 'unit': 'Seconds', 'statistic': 'Sum', 'empty_msg': VOLUME_EMPTY_DATA_MESSAGE},
-    {'metric': 'VolumeTotalWriteTime', 'unit': 'Seconds', 'statistic': 'Sum', 'empty_msg': VOLUME_EMPTY_DATA_MESSAGE},
-    {'metric': 'VolumeIdleTime', 'unit': 'Seconds', 'statistic': 'Sum', 'empty_msg': VOLUME_EMPTY_DATA_MESSAGE},
-    {'metric': 'VolumeQueueLength', 'unit': 'Count', 'statistic': 'Sum', 'empty_msg': VOLUME_EMPTY_DATA_MESSAGE},
+    {
+        'metric': 'VolumeReadBytes', 'unit': 'Bytes', 'statistic': 'Sum',
+        'empty_msg': VOLUME_EMPTY_DATA_MESSAGE, 'title': _(u'Read bandwidth (KiB/sec)'),
+    },
+    {
+        'metric': 'VolumeWriteBytes', 'unit': 'Bytes', 'statistic': 'Sum',
+        'empty_msg': VOLUME_EMPTY_DATA_MESSAGE, 'title': _(u'Write bandwidth (KiB/sec)'),
+    },
+    {
+        'metric': 'VolumeReadOps', 'unit': 'Count', 'statistic': 'Sum',
+        'empty_msg': VOLUME_EMPTY_DATA_MESSAGE, 'title': _(u'Read throughput (Ops/sec)'),
+    },
+    {
+        'metric': 'VolumeWriteOps', 'unit': 'Count', 'statistic': 'Sum',
+        'empty_msg': VOLUME_EMPTY_DATA_MESSAGE, 'title': _(u'Write bandwidth (KiB/sec)'),
+    },
+    {
+        'metric': 'VolumeQueueLength', 'unit': 'Count', 'statistic': 'Average',
+        'empty_msg': VOLUME_EMPTY_DATA_MESSAGE, 'title': _(u'Average queue length (ops)'),
+    },
+    {
+        'metric': 'VolumeIdleTime', 'unit': 'Seconds', 'statistic': 'Sum',
+        'empty_msg': VOLUME_EMPTY_DATA_MESSAGE, 'title': _(u'Percent time spent idle'),
+    },
+    {
+        'metric': 'VolumeReadBytes', 'unit': 'Bytes', 'statistic': 'Average',
+        'empty_msg': VOLUME_EMPTY_DATA_MESSAGE, 'title': _(u'Average read size (KiB/op)'),
+    },
+    {
+        'metric': 'VolumeWriteBytes', 'unit': 'Bytes', 'statistic': 'Average',
+        'empty_msg': VOLUME_EMPTY_DATA_MESSAGE, 'title': _(u'Average write size (KiB/op)'),
+    },
+    {
+        'metric': 'VolumeTotalReadTime', 'unit': 'Seconds', 'statistic': 'Average',
+        'empty_msg': VOLUME_EMPTY_DATA_MESSAGE, 'title': _(u'Average read latency (ms/op)'),
+    },
+    {
+        'metric': 'VolumeTotalWriteTime', 'unit': 'Seconds', 'statistic': 'Average',
+        'empty_msg': VOLUME_EMPTY_DATA_MESSAGE, 'title': _(u'Average write latency (ms/op)'),
+    },
 ]
 
 
@@ -616,7 +637,6 @@ class VolumeMonitoringView(BaseVolumeView):
         self.render_dict = dict(
             volume=self.volume,
             volume_name=self.volume_name,
-            metric_title=METRIC_TITLE_MAPPING,
             duration_choices=MONITORING_DURATION_CHOICES,
             statistic_choices=STATISTIC_CHOICES,
             controller_options_json=self.get_controller_options_json()
@@ -632,7 +652,7 @@ class VolumeMonitoringView(BaseVolumeView):
         if not self.volume:
             return ''
         return BaseView.escape_json(json.dumps({
-            'metric_title_mapping': VOLUME_METRIC_TITLE_MAPPING,
+            'metric_title_mapping': {},
             'charts_list': VOLUME_MONITORING_CHARTS_LIST,
             'granularity_choices': GRANULARITY_CHOICES,
             'duration_granularities_mapping': DURATION_GRANULARITY_CHOICES_MAPPING,

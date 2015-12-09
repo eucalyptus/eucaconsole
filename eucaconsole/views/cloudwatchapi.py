@@ -90,6 +90,26 @@ class CloudWatchAPIMixin(object):
         return unit, divider
 
     @staticmethod
+    def get_volume_metric_modifier(metric, statistic, period, default_unit=None):
+        """
+        :param metric:
+        :param period: granularity
+        :return: unit, divider, multiplier
+        """
+        if metric in ['VolumeReadBytes', 'VolumeWriteBytes']:
+            if statistic == 'Sum':  # Read/write bandwidth
+                return 'KiB/sec', period / 1024, 1
+            if statistic == 'Average':  # Avg read/write size
+                return 'KiB/op', 1024, 1
+        if metric in ['VolumeReadOps', 'VolumeWriteOps']:  # Read/write throughput
+            return 'Ops/sec', period, 1
+        if metric == 'VolumeIdleTime':  # Percent time spent idle
+            return 'Percent', period * 100, 1
+        if metric in ['VolumeTotalReadTime', 'VolumeTotalWriteTime']:  # Avg read/write latency
+            return 'ms/op', 1, 1000
+        return default_unit, 1, 1
+
+    @staticmethod
     def get_cloudwatch_stats(cw_conn=None, period=60, duration=600, metric='CPUUtilization', namespace='AWS/EC2',
                              statistic='Average', idtype='InstanceId', ids=None, unit=None, dimensions=None):
         """
@@ -221,6 +241,9 @@ class CloudWatchAPIView(BaseView, CloudWatchAPIMixin):
 
         if self.metric in self.expand_to_ms:
             multiplier, unit = 1000, 'Milliseconds'
+
+        if self.metric.startswith('Volume'):
+            unit, divider, multiplier = self.get_volume_metric_modifier(self.metric, self.statistic, period, unit)
 
         json_stats = self.get_json_stats(self.statistic, stats, divider, multiplier)
         key = self.metric

@@ -46,13 +46,13 @@
                 </div>
                 <ul class="small-block-grid-1 medium-block-grid-2 large-block-grid-3">
                     <li class="chart-wrapper" ng-repeat="chart in chartsCtrl.chartsList" ng-cloak="">
-                        <h6>{{ chartsCtrl.metricTitleMapping[chart.metric] }}<i class="busy"></i></h6>
+                        <h6>{{ chart.title }}<i class="busy"></i></h6>
                         <div ng-show="chartsCtrl.emptyMessages[chart.metric]" class="empty-message-wrapper">
                             <div class="empty-message">{{ chartsCtrl.emptyMessages[chart.metric] }}</div>
                         </div>
                         <svg ng-show="!chartsCtrl.emptyMessages[chart.metric]"
                              cloudwatch-chart="" id="cwchart-{{ chart.metric }}" class="cwchart"
-                             ids="${volume.id}" idtype="VolumeId" metric="{{ chart.metric }}"
+                             ids="${volume.id}" idtype="VolumeId" metric="{{ chart.metric }}" title="{{ chart.title }}"
                              duration="{{ chartsCtrl.duration }}" unit="{{ chart.unit }}" namespace="EBS"
                              statistic="{{ chart.statistic }}" empty="{{ chart.empty_msg }}">
                         </svg>

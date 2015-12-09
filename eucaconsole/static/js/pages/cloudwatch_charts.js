@@ -101,6 +101,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
             'duration': '@duration',
             'unit': '@unit',
             'statistic': '@statistic',
+            'title': '@title',
             'empty': '@empty'
         },
         link: linkFunc,
@@ -192,7 +193,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
                 return d3.time.format('%m/%d %H:%M')(new Date(d));
             });
             chart.forceY([0, 10]);  // Anchor chart to zero baseline
-            if (scope.unit === 'Percent') {
+            if (scope.unit === 'Percent' || scope.metric === 'VolumeIdleTime') {
                 chart.forceY([0, 100]);  // Set proper y-axis range for percentage units
             }
             if (preciseFormatterMetrics.indexOf(scope.metric) !== -1) {
@@ -232,7 +233,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
                 'largeChart': true
             };
             parentCtrl.largeChartMetric = attrs.metric;
-            parentCtrl.selectedChartTitle = parentCtrl.metricTitleMapping[attrs.metric];
+            parentCtrl.selectedChartTitle = scope.title || parentCtrl.metricTitleMapping[attrs.metric];
             parentCtrl.largeChartDuration = parentCtrl.duration;
             parentCtrl.largeChartStatistic = attrs.statistic || 'Average';
             chartModal.foundation('reveal', 'open');
