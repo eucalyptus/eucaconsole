@@ -654,8 +654,20 @@ class GuiEC2(GuiTester):
         ImageLanding(self).click_action_remove_image_from_cloud(image_id)
         RemoveImageFromCloudDialog(self).remove_image(delete_associated_snapshot)
 
-    def register_snapshot_as_an_image_from_snapshot_detail_page(self):
-        NotImplementedError()
+    def register_snapshot_as_an_image_from_snapshot_detail_page(self, snapshot_id, image_name, description=None,
+                                                                delete_on_terminate=True,
+                                                                register_as_windows_image=False
+                                                                ):
+        BasePage(self).goto_snapshots_view_via_menu()
+        SnapshotLanding(self).goto_snapshot_detail_page_via_link(snapshot_id)
+        SnapshotDetailPage(self).click_action_register_as_image_on_detail_page()
+        RegisterSnapshotAsImageModal(self).register_as_image(name=image_name, description=description,
+                                                             delete_on_terminate=delete_on_terminate,
+                                                             register_as_windows_image=register_as_windows_image)
+        image_id = ImageDetailPage(self).get_image_id()
+        image = {'image_name': image_name, 'image_id': image_id}
+        print image
+        return image
 
     def allocate_ip_from_eip_lp(self):
         NotImplementedError
