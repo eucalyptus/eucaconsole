@@ -90,7 +90,7 @@
                             <div class="empty-message">{{ chartsCtrl.emptyMessages[chart.metric] }}</div>
                         </div>
                         <svg ng-show="!chartsCtrl.emptyMessages[chart.metric]"
-                             cloudwatch-chart="" id="cwchart-{{ chart.metric }}" class="cwchart"
+                             cloudwatch-chart="" id="cwchart-{{ chart.metric }}-{{ chart.statistic }}" class="cwchart"
                              ids="${instance.id}" idtype="InstanceId" metric="{{ chart.metric }}"
                              duration="{{ chartsCtrl.duration }}" unit="{{ chart.unit }}"
                              statistic="Average" empty="{{ chart.empty_msg }}">
