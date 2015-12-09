@@ -253,10 +253,15 @@ class BaseScalingGroupView(BaseView):
         tags_list = json.loads(tags_json) if tags_json else []
         tags = []
         for tag in tags_list:
+
+            value = tag.get('value')
+            if value is not None:
+                value = self.unescape_braces(value.strip())
+
             tags.append(Tag(
                 resource_id=scaling_group_name,
                 key=self.unescape_braces(tag.get('name', '').strip()),
-                value=self.unescape_braces(tag.get('value', '').strip()),
+                value=value,
                 propagate_at_launch=tag.get('propagate_at_launch', False),
             ))
         return tags
