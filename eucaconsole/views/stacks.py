@@ -319,11 +319,11 @@ class StackStateView(BaseView):
     def stack_template(self):
         """Return stack template"""
         with boto_error_handler(self.request):
-            template = self.cloudformation_conn.get_template(self.stack_name)
-            parsed = json.loads(template['GetTemplateResponse']['GetTemplateResult']['TemplateBody'])
+            response = self.cloudformation_conn.get_template(self.stack_name)
+            template = response['GetTemplateResponse']['GetTemplateResult']['TemplateBody']
             
             return dict(
-                results=BaseView.escape_json(json.dumps(parsed, indent=2))
+                results=BaseView.escape_json(template)
             )
 
     @view_config(route_name='stack_events', renderer='json', request_method='GET')
