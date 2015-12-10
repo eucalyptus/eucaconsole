@@ -599,6 +599,14 @@ class GuiEC2(GuiTester):
         DeleteSnapshotModal(self).delete_snapshot()
         SnapshotLanding(self).verify_snapshot_not_present(snapshot_id)
 
+    def verify_snapshot_not_present_on_lp(self, snapshot_id):
+        """
+        Navigates to snapshot landing page. Verifies snapshot not on landing page
+        :param snapshot_id:
+        """
+        BasePage(self).goto_snapshots_view_via_menu()
+        SnapshotLanding(self).verify_snapshot_not_present(snapshot_id)
+
     def create_volume_from_snapshot_on_snapshot_lp(self, snapshot_id, volume_name=None, availability_zone=None, volume_size=None, timeout_in_seconds=240):
         """
         Navigates to snapshot landing page. Goes to "create volume from snapshot" in the actions menu. Creates volume from snapshot.
