@@ -664,8 +664,13 @@ class GuiEC2(GuiTester):
         RegisterSnapshotAsImageModal(self).register_as_image(name=image_name, description=description,
                                                              delete_on_terminate=delete_on_terminate,
                                                              register_as_windows_image=register_as_windows_image)
-        image_id = ImageDetailPage(self).get_image_id()
-        image = {'image_name': image_name, 'image_id': image_id}
+        if ImageDetailPage(self).is_image_detail_page_loaded():
+            image_id = ImageDetailPage(self).get_image_id()
+            image = {'image_name': image_name, 'image_id': image_id}
+        else:
+            BasePage(self).goto_images_view_via_menu()
+            image_id = ImageLanding(self).get_image_id_by_name(image_name)
+            image = {'image_name': image_name, 'image_id': image_id}
         print image
         return image
 
