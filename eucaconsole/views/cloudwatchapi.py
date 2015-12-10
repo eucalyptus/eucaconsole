@@ -78,27 +78,37 @@ class CloudWatchAPIMixin(object):
     def collapse_metrics(unit, statistic, divider=1, stats=None):
         # Collapse to MB when appropriate
         max_value = max(stat.get(statistic) for stat in stats) if stats else 0
+        kb = 1024
         if max_value > 10 ** 4:
-            divider = 10 ** 3
+            divider = kb
             unit = 'Kilobytes'
         if max_value > 10 ** 7:
-            divider = 10 ** 6
+            divider = kb ** 2
             unit = 'Megabytes'
             if max_value > 10 ** 10:
-                divider = 10 ** 9
+                divider = kb ** 3
                 unit = 'Gigabytes'
         return unit, divider
 
-    @staticmethod
-    def get_volume_metric_modifier(metric, statistic, period, default_unit=None):
+    def get_volume_metric_modifier(self, metric, statistic, period, default_unit=None, stats=None):
         """
-        :param metric:
-        :param period: granularity
+        :param metric: e.g. 'VolumeReadBytes'
+        :param statistic: e.g. 'Average'
+        :param period: granularity (in seconds)
+        :param default_unit:
+        :param stats:
         :return: unit, divider, multiplier
+        :rtype: tuple
         """
+        unit_mapping = {
+            'Kilobytes': 'KiB/sec',
+            'Megabytes': 'MB/sec',
+            'Gigabytes': 'GiB/sec',
+        }
         if metric in ['VolumeReadBytes', 'VolumeWriteBytes']:
             if statistic == 'Sum':  # Read/write bandwidth
-                return 'KiB/sec', period / 1024, 1
+                unit, divider = self.collapse_metrics('Bytes', statistic, stats=stats)
+                return unit_mapping[unit], divider / period, 1
             if statistic == 'Average':  # Avg read/write size
                 return 'KiB/op', 1024, 1
         if metric in ['VolumeReadOps', 'VolumeWriteOps']:  # Read/write throughput
@@ -114,6 +124,8 @@ class CloudWatchAPIMixin(object):
                              statistic='Average', idtype='InstanceId', ids=None, unit=None, dimensions=None):
         """
         Wrapper for time-series data for statistics of a given metric for one or more resources
+
+        :param cw_conn: Boto CloudWatch connection object
 
         :type period: integer
         :param period: The granularity, in seconds, of the returned datapoints; must be a multiple of 60
@@ -142,7 +154,6 @@ class CloudWatchAPIMixin(object):
 
         :type dimensions: dict
         :param dimensions: dict of dimension/value mapping (e.g. {'AvailabilityZone': 'us-west-2a'})
-
 
         """
         end_time = datetime.datetime.utcnow()
@@ -243,7 +254,8 @@ class CloudWatchAPIView(BaseView, CloudWatchAPIMixin):
             multiplier, unit = 1000, 'Milliseconds'
 
         if self.metric.startswith('Volume'):
-            unit, divider, multiplier = self.get_volume_metric_modifier(self.metric, self.statistic, period, unit)
+            unit, divider, multiplier = self.get_volume_metric_modifier(
+                self.metric, self.statistic, period, unit, stats)
 
         json_stats = self.get_json_stats(self.statistic, stats, divider, multiplier)
         key = self.metric
