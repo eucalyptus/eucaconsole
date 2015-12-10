@@ -31,3 +31,7 @@ class ImageLanding(LandingPage):
     def click_action_remove_image_from_cloud(self, image_id):
         self.tester.click_element_by_css(self._image_action_menu_css.format(image_id))
         self.tester.click_element_by_css(self._remove_image_from_cloud_menu_ietm_css.format(image_id))
+
+    def click_action_remove_image_from_cloud(self, image_id):
+        self.tester.click_element_by_css(self._image_action_menu_css.format(image_id))
+        self.tester.click_element_by_css(self._remove_image_from_cloud_menu_ietm_css.format(image_id))
