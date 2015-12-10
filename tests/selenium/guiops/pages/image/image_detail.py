@@ -10,7 +10,7 @@ class ImageDetailPage(DetailPage):
 
 
     def is_image_detail_page_loaded(self):
-        title = str(self.tester.store_text_by_css(DetailPage(self)._detail_page_title_id))
+        title = str(self.tester.store_text_by_id(DetailPage(self)._detail_page_title_id))
         if title.startswith(self._image_detail_page_title):
             return True
         else:
