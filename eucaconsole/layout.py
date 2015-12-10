@@ -85,13 +85,17 @@ class MasterLayout(object):
                     self.regions = RegionCache(conn).regions()
                     if len(self.regions) == 1:
                         self.has_regions = False
-                    for region in self.regions:
-                        if region['endpoints']['ec2'].find(host) > -1:
-                            self.default_region = region['name']
+                    self.default_region = request.registry.settings.get('default.region', None)
+                    if self.default_region is None:
+                        for region in self.regions:
+                            if region['endpoints']['ec2'].find(host) > -1:
+                                self.default_region = region['name']
                 except BotoServerError:
                     self.has_regions = False
         if hasattr(self, 'regions'):
             self.selected_region = self.request.session.get('region', self.default_region)
+            if self.selected_region == '':
+                self.selected_region = self.default_region
             self.selected_region_label = self.get_selected_region_label(self.selected_region, self.regions)
         self.username_label = self.request.session.get('username_label')
         self.account_access = request.session.get('account_access') if self.cloud_type == 'euca' else False
