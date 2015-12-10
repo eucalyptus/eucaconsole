@@ -108,7 +108,7 @@
                     <div>
                         ${panel('form_field', field=instance_form.name, pattern=layout.tag_pattern_value)}
                     </div>
-                    <div tal:condition="image and image.root_device_type != 'ebs'" tal:omit-tag="">
+                    <div tal:omit-tag="">
                         <div class="row controls-wrapper readonly">
                             <div class="large-2 small-4 columns"><label i18n:translate="">Instance type</label></div>
                             <div class="large-10 small-8 columns value">${instance.instance_type}</div>
