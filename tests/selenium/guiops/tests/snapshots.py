@@ -48,9 +48,8 @@ class Snapshot_operations_sequence(GuiOps):
         snapshot4_id = snapshot4.get("snapshot_id")
         image2 = self.tester.register_snapshot_as_an_image_from_snapshot_detail_page(snapshot4_id, self.id_generator()+"-image", description="Created by guitester automated snapshot test", register_as_windows_image=True)
         image2_id = image2.get("image_id")
+        self.tester.ve
         self.tester.remove_image_from_cloud_on_images_lp(image2_id, delete_associated_snapshot=True)
-        self.tester.remove_image_from_cloud_on_images_lp(image1_id)
-        #self.tester.delete_snapshot_from_landing_page(snapshot4_id)
         self.tester.delete_snapshot_from_detail_page(snapshot1_id)
         self.tester.delete_snapshot_from_landing_page(snapshot2_id)
         self.tester.delete_snapshot_from_landing_page(snapshot3_id)
