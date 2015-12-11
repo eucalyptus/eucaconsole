@@ -32,7 +32,8 @@ class GuiOps(GuiEC2, GuiCF, GuiIAM, GuiASG, GuiS3, GuiELB):
     def id_generator(self, size=6, chars=_default_chars):
         return ''.join(random.choice(chars) for _ in range(size))
 
-    def create_logger(self,
+    @classmethod
+    def create_logger(
                  parent_logger_name = 'guitester',
                  identifier="guilogger",
                  stdout_level="debug",
@@ -43,7 +44,8 @@ class GuiOps(GuiEC2, GuiCF, GuiIAM, GuiASG, GuiS3, GuiELB):
                  use_global_log_files=True,
                  file_format = None,
                  clear_file = False):
-        default_format = logging.Formatter('[%(asctime)s][%(levelname)s]%(message)s')
+        #default_format = logging.Formatter('[%(asctime)s][%(levelname)s]%(message)s')
+        default_format = logging.Formatter("[%(filename)s:%(lineno)s - %(funcName)20s() ] %(message)s")
         logger = logging.Logger(parent_logger_name)
         stdout_level = getattr(logging, stdout_level.upper(), logging.DEBUG)
         logfile_level = getattr(logging, logfile_level.upper(), logging.DEBUG)

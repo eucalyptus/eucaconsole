@@ -25,11 +25,16 @@ class Keypair_operations_sequence(GuiOps):
         self.tester = GuiOps(console_url=self.console_url, webdriver_url=self.webdriver_url, sauce=self.sauce, browser=self.browser, version=self.version, platform=self.platform)
         logging.basicConfig(format='%(asctime)s %(message)s')
 
+    def ltest(self, method, args, **kwargs):
+        self.logger.critical("{0}({1},{2})".format(method.__name__, ", ".join(str(x) for x in (args or [])),", ".join("{0}={1}".fomrat(y,z) for y,z in kwargs.iteritems() or {})))
 
     def keypair_ops_test(self):
 
         keypair1_name=self.id_generator()+"-key"
+        self.tester.logger.debug("Added keypair name")
+
         self.tester.login(self.account, self.user, self.password)
+        #self.logger.debug(self.ltest())
         self.tester.create_keypair_from_keypair_view_page(keypair1_name)
         self.tester.delete_keypair_from_detail_page(keypair1_name)
         keypair2_name=self.id_generator()+"-key"
