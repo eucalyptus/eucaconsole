@@ -90,7 +90,8 @@ class CloudWatchAPIMixin(object):
                 unit = 'Gigabytes'
         return unit, divider
 
-    def get_volume_metric_modifier(self, metric, statistic, period, default_unit=None, stats=None):
+    @staticmethod
+    def get_volume_metric_modifier(metric, statistic, period, default_unit=None, stats=None):
         """
         :param metric: e.g. 'VolumeReadBytes'
         :param statistic: e.g. 'Average'
@@ -99,24 +100,35 @@ class CloudWatchAPIMixin(object):
         :param stats:
         :return: unit, divider, multiplier
         :rtype: tuple
+
+        NOTES
+        - The divider values don't exactly match the divider/multiplier approach documented at
+          http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/monitoring-volume-status.html
+          since the order of operations are a bit different here
+          (e.g. Read/write bandwidth divider is 1024 * period rather than 1024 / period)
+        - For the average latency and average size graphs, the average is calculated over the total
+          number of operations that completed during the period.
+
         """
-        unit_mapping = {
-            'Kilobytes': 'KiB/sec',
-            'Megabytes': 'MB/sec',
-            'Gigabytes': 'GiB/sec',
-        }
         if metric in ['VolumeReadBytes', 'VolumeWriteBytes']:
             if statistic == 'Sum':  # Read/write bandwidth
-                unit, divider = self.collapse_metrics('Bytes', statistic, stats=stats)
-                return unit_mapping[unit], divider / period, 1
-            if statistic == 'Average':  # Avg read/write size
-                return 'KiB/op', 1024, 1
+                return 'KiB/sec', 1024 * period, 1
+            elif statistic == 'Average':  # Avg read/write size
+                num_data_points = len(stats)
+                divider = 1024
+                if num_data_points:
+                    divider = 1024 * num_data_points
+                return 'KiB/op', divider, 1
         if metric in ['VolumeReadOps', 'VolumeWriteOps']:  # Read/write throughput
             return 'Ops/sec', period, 1
         if metric == 'VolumeIdleTime':  # Percent time spent idle
-            return 'Percent', period * 100, 1
+            return 'Percent', period / 100, 1
         if metric in ['VolumeTotalReadTime', 'VolumeTotalWriteTime']:  # Avg read/write latency
-            return 'ms/op', 1, 1000
+            num_data_points = len(stats)
+            divider = 1
+            if num_data_points:
+                divider = num_data_points
+            return 'ms/op', divider, 1000
         return default_unit, 1, 1
 
     @staticmethod
@@ -255,7 +267,7 @@ class CloudWatchAPIView(BaseView, CloudWatchAPIMixin):
 
         if self.metric.startswith('Volume'):
             unit, divider, multiplier = self.get_volume_metric_modifier(
-                self.metric, self.statistic, period, unit, stats)
+                self.metric, self.statistic, period, unit, stats=stats)
 
         json_stats = self.get_json_stats(self.statistic, stats, divider, multiplier)
         key = self.metric
