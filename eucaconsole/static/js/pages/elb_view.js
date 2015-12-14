@@ -4,7 +4,7 @@
  *
  */
 
-angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'ELBSecurityPolicyEditor', 'TagEditor',
+angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'ELBSecurityPolicyEditor', 'TagEditorModule',
                            'CreateBucketDialog', 'ELBSecurityGroupRulesWarning'])
     .controller('ELBPageCtrl', function ($scope, $http, $timeout, eucaUnescapeJson, eucaHandleUnsavedChanges,
                                          eucaHandleError, eucaFixHiddenTooltips, eucaCheckELBSecurityGroupRules) {
