@@ -91,13 +91,12 @@ class CloudWatchAPIMixin(object):
         return unit, divider
 
     @staticmethod
-    def get_volume_metric_modifier(metric, statistic, period, default_unit=None, stats=None):
+    def get_volume_metric_modifier(metric, statistic, period, default_unit=None):
         """
         :param metric: e.g. 'VolumeReadBytes'
         :param statistic: e.g. 'Average'
         :param period: granularity (in seconds)
         :param default_unit:
-        :param stats:
         :return: unit, divider, multiplier
         :rtype: tuple
 
@@ -114,21 +113,14 @@ class CloudWatchAPIMixin(object):
             if statistic == 'Sum':  # Read/write bandwidth
                 return 'KiB/sec', 1024 * period, 1
             elif statistic == 'Average':  # Avg read/write size
-                num_data_points = len(stats)
                 divider = 1024
-                if num_data_points:
-                    divider = 1024 * num_data_points
                 return 'KiB/op', divider, 1
         if metric in ['VolumeReadOps', 'VolumeWriteOps']:  # Read/write throughput
             return 'Ops/sec', period, 1
         if metric == 'VolumeIdleTime':  # Percent time spent idle
             return 'Percent', period / 100, 1
         if metric in ['VolumeTotalReadTime', 'VolumeTotalWriteTime']:  # Avg read/write latency
-            num_data_points = len(stats)
-            divider = 1
-            if num_data_points:
-                divider = num_data_points
-            return 'ms/op', divider, 1000
+            return 'ms/op', 1, 1000
         return default_unit, 1, 1
 
     @staticmethod
@@ -221,23 +213,25 @@ class CloudWatchAPIView(BaseView, CloudWatchAPIMixin):
 
         stats_list = []
         unit = self.unit
+        max_value = 0
 
         if self.zones and len(self.zones.split(',')) > 1:
             for idx, zone in enumerate(self.zones.split(',')):
                 dimensions = {'AvailabilityZone': zone}
-                unit, stats_series = self.get_stats_series(dimensions)
+                unit, stats_series, max_value = self.get_stats_series(dimensions)
                 if stats_series.get('values'):
                     if CHART_COLORS.get(idx):
                         # Use custom line colors
                         stats_series['color'] = CHART_COLORS.get(idx)
                     stats_list.append(stats_series)
         else:
-            unit, stats_series = self.get_stats_series()
+            unit, stats_series, max_value = self.get_stats_series()
             stats_list.append(stats_series)
 
         return dict(
             unit=unit,
             results=stats_list,
+            max_value=max_value,
         )
 
     def get_stats_series(self, dimensions=None):
@@ -267,14 +261,15 @@ class CloudWatchAPIView(BaseView, CloudWatchAPIMixin):
 
         if self.metric.startswith('Volume'):
             unit, divider, multiplier = self.get_volume_metric_modifier(
-                self.metric, self.statistic, period, unit, stats=stats)
+                self.metric, self.statistic, period, unit)
 
         json_stats = self.get_json_stats(self.statistic, stats, divider, multiplier)
+        max_value = max(val.get('y') for val in json_stats)
         key = self.metric
         if dimensions and dimensions.values():
             key = dimensions.values()[0]
         series = dict(key=key, values=json_stats)
-        return unit, series
+        return unit, series, max_value
 
     def get_json_stats(self, statistic=None, stats=None, divider=1, multiplier=1):
         json_stats = []

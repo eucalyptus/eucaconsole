@@ -156,6 +156,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
                 $('#timed-out-modal').foundation('reveal', 'open');
             }
             var results = oData ? oData.results : '';
+            var maxValue = oData ? oData.max_value : 0;
             var displayZeroChart = parentCtrl.displayZeroChartMetrics.indexOf(scope.metric) !== -1;
             var emptyResultsCount = 0;
             results.forEach(function (resultSet) {
@@ -192,15 +193,23 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
             chart.xAxis.tickFormat(function(d) {
                 return d3.time.format('%m/%d %H:%M')(new Date(d));
             });
+            // Adjust range
             chart.forceY([0, 10]);  // Anchor chart to zero baseline
             if (scope.unit === 'Percent' || scope.metric === 'VolumeIdleTime') {
                 chart.forceY([0, 100]);  // Set proper y-axis range for percentage units
             }
+            if (maxValue < 10) {
+                chart.forceY([0, maxValue]);
+            }
+            // Adjust precision
             if (preciseFormatterMetrics.indexOf(scope.metric) !== -1) {
                 yformatter = '.2f';
             }
-            if (['VolumeReadBytes', 'VolumeWriteBytes'].indexOf(scope.metric) !== -1) {
+            if (['VolumeReadBytes', 'VolumeWriteBytes', 'VolumeReadOps', 'VolumeWriteOps'].indexOf(scope.metric) !== -1) {
                 yformatter = '.1f';
+                if (maxValue && maxValue < 5) {
+                    yformatter = '.4f';
+                }
             }
             if (unit === 'Kilobytes') {
                 yformatter = '.1f';
