@@ -29,10 +29,13 @@ angular.module('TagEditorModule', ['EucaConsoleUtils'])
                     $scope.tagForm.value.$setUntouched();
                     $scope.tagForm.$setPristine();
                     $scope.tagForm.$setUntouched();
+
+                    $scope.$emit('tagUpdate');
                 };
 
                 $scope.removeTag = function ($index) {
                     $scope.tags.splice($index, 1);
+                    $scope.$emit('tagUpdate');
                 };
             }],
             link: function (scope, element, attrs, ctrl, transcludeContents) {
