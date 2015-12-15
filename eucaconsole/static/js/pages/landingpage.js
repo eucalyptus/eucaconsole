@@ -357,12 +357,8 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch', 'Ex
             }
         };
         $scope.$watch('checkedItems', function (newVal, oldVal) {
-            var checkAllElement;
             if ($scope.allCheckboxes) {
-                checkAllElement = document.getElementById('check-all-items-tableview');
-                checkAllElement.indeterminate = newVal.length !== $scope.items.length;
                 if (newVal.length === 0) {
-                    checkAllElement.indeterminate = false;
                     $scope.allCheckboxes = false;
                 }
             }
