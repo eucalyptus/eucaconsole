@@ -35,12 +35,13 @@ class DeleteSnapshotModal(BasePage):
     def delete_snapshot(self):
         self.tester.click_element_by_id(self._delete_snapshot_submit_button_id)
 
+
 class RegisterSnapshotAsImageModal(BasePage):
 
     def __init__(self, tester):
         self.tester = tester
 
-    _name_field_id = "name"
+    _name_field_css = "#register-snapshot-modal #controls_name #name"
     _description_field_id = "description"
     _delete_on_terminate_checkbox_id = "dot"
     _register_as_windows_image_checkbox_id = "reg_as_windows"
@@ -48,7 +49,7 @@ class RegisterSnapshotAsImageModal(BasePage):
 
     def register_as_image(self, name, description=None, delete_on_terminate=True, register_as_windows_image=False):
 
-        self.tester.send_keys_by_id(self._name_field_id, name)
+        self.tester.send_keys_by_css(self._name_field_css, name)
         if description is not None:
             self.tester.send_keys_by_id(self._description_field_id, description)
         if delete_on_terminate is False:
