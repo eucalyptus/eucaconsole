@@ -27,11 +27,8 @@ angular.module('TagEditorModule', ['EucaConsoleUtils'])
                         tag.propagate_at_launch = !!scope.newTagPropagate;
                     }
 
-                    $scope.tags.push({
-                        name: $scope.newTagKey,
-                        value: $scope.newTagValue,
-                        propagate_at_launch: !!$scope.newTagPropagate
-                    });
+                    $scope.tags.push(tag);
+
                     resetForm();
                     $scope.$emit('tagUpdate');
                 };
