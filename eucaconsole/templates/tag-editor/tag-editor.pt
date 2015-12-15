@@ -31,9 +31,12 @@
                 <div id="autoscale-tag-name-input-div" class="small-4 columns"
                     ng-class="{'large-2 medium-2': autoscale, 'large-4 medium-4': !autoscale }">
                     <input class="key" type="text" placeholder="name..."
-                           ng-model="newTagKey" name="key" tag-name=""/>
+                           ng-model="newTagKey" name="key" tag-name="" prevent-duplicates=""/>
                     <span class="error" ng-show="tagForm.key.$error.tagName" i18n:translate="">
                         Tag must not begin with "aws:" and its length may not be longer than 128 chars
+                    </span>
+                    <span class="error" ng-show="tagForm.key.$error.preventDuplicates" i18n:translate="">
+                        Tag names must be unique
                     </span>
                 </div>
                 <div id="autoscale-tag-value-input-div" class="large-8 medium-7 small-5 columns">
