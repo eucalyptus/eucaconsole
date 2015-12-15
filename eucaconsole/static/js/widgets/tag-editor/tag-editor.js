@@ -14,12 +14,37 @@ angular.module('TagEditorModule', ['EucaConsoleUtils'])
             },
             controller: ['$scope', '$window', function ($scope, $window) {
                 $scope.addTag = function () {
-                    $scope.tags.push({
+                    if($scope.tagForm.$invalid) {
+                        return;
+                    }
+
+                    var tag = {
                         name: $scope.newTagKey,
                         value: $scope.newTagValue,
-                        propagate_at_launch: !!$scope.newTagPropagate
-                    });
+                    };
 
+                    if($scope.autoscale) {
+                        tag.propagate_at_launch = !!scope.newTagPropagate;
+                    }
+
+                    $scope.tags.push(tag);
+
+                    resetForm();
+                    $scope.$emit('tagUpdate');
+                };
+
+                $scope.removeTag = function ($index) {
+                    $scope.tags.splice($index, 1);
+                    $scope.$emit('tagUpdate');
+                };
+
+                var containsKey = function (collection, key) {
+                    return collection.some(function (current) {
+                        return current.name === key;
+                    });
+                };
+
+                var resetForm = function () {
                     $scope.newTagKey = '';
                     $scope.newTagValue = '';
                     $scope.newTagPropagate= false;
@@ -29,13 +54,6 @@ angular.module('TagEditorModule', ['EucaConsoleUtils'])
                     $scope.tagForm.value.$setUntouched();
                     $scope.tagForm.$setPristine();
                     $scope.tagForm.$setUntouched();
-
-                    $scope.$emit('tagUpdate');
-                };
-
-                $scope.removeTag = function ($index) {
-                    $scope.tags.splice($index, 1);
-                    $scope.$emit('tagUpdate');
                 };
             }],
             link: function (scope, element, attrs, ctrl, transcludeContents) {
@@ -70,6 +88,19 @@ angular.module('TagEditorModule', ['EucaConsoleUtils'])
             link: function (scope, element, attrs, ctrl) {
                 ctrl.$validators.tagValue = function (modelValue, viewValue) {
                     return validPattern.test(viewValue);
+                };
+            }
+        };
+    })
+    .directive('preventDuplicates', function () {
+        return {
+            require: 'ngModel',
+            restrict: 'A',
+            link: function (scope, element, attrs, ctrl) {
+                ctrl.$validators.preventDuplicates = function (modelValue, viewValue) {
+                    return !scope.tags.some(function (current) {
+                        return viewValue === current.name;
+                    });
                 };
             }
         };
