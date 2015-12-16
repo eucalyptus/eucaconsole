@@ -124,6 +124,13 @@ class BaseVolumeView(BaseView):
                 return None
         return None
 
+    def get_instance(self, instance_id):
+        reservations_list = self.conn.get_all_reservations(instance_ids=[instance_id])
+        reservation = reservations_list[0] if reservations_list else None
+        if reservation:
+            return reservation.instances[0]
+        return None
+
 
 class VolumesView(LandingPageView, BaseVolumeView):
     VIEW_TEMPLATE = '../templates/volumes/volumes.pt'
@@ -646,9 +653,17 @@ class VolumeMonitoringView(BaseVolumeView):
         with boto_error_handler(self.request):
             self.volume = self.get_volume()
         self.volume_name = TaggedItemView.get_display_name(self.volume)
+        instance_id = self.volume.attach_data.instance_id
+        monitoring_enabled = False
+        if instance_id:
+            instance = self.get_instance(instance_id)
+            if instance:
+                monitoring_enabled = instance.monitoring_state == 'enabled'
         self.render_dict = dict(
             volume=self.volume,
             volume_name=self.volume_name,
+            monitoring_enabled=monitoring_enabled,
+            is_attached=instance_id is not None,
             duration_choices=MONITORING_DURATION_CHOICES,
             statistic_choices=STATISTIC_CHOICES,
             controller_options_json=self.get_controller_options_json()

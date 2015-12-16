@@ -29,7 +29,7 @@
             <div class="panel no-title cloudwatch-charts">
                 <div class="toprow">
                     <div class="blurb">
-                        <div class="duration-wrapper">
+                        <div class="duration-wrapper" tal:condition="monitoring_enabled">
                             <label for="monitoring-duration" class="left" i18n:translate="">Show data for</label>
                             <select name="monitoring_duration" id="monitoring-duration" ng-model="chartsCtrl.duration"
                                     ng-change="chartsCtrl.refreshCharts()" class="duration-input">
@@ -44,7 +44,27 @@
                               ng-click="chartsCtrl.refreshCharts()"><i class="fa fa-refresh"></i></span>
                     </div>
                 </div>
-                <ul class="small-block-grid-1 medium-block-grid-2 large-block-grid-3">
+                <div tal:condition="not monitoring_enabled">
+                    <p>
+                        <span i18n:translate="">
+                            Metrics are collected only for volumes that are attached to an instance with
+                        </span>
+                        <span i18n:translate="" tal:condition="layout.cloud_type == 'euca'">monitoring enabled.</span>
+                        <span i18n:translate="" tal:condition="layout.cloud_type == 'aws'">detailed monitoring enabled.</span>
+                    </p>
+                    <p tal:condition="not is_attached" i18n:translate="">
+                        Attach this volume to an instance in order to collect and view metrics for the volume.
+                    </p>
+                    <p tal:condition="is_attached">
+                        <a href="" ng-click="chartsCtrl.submitMonitoringForm()">
+                            <span i18n:translate="" tal:condition="layout.cloud_type == 'euca'">Turn on monitoring</span>
+                            <span i18n:translate="" tal:condition="layout.cloud_type == 'aws'">Turn on detailed monitoring</span>
+                            for this volume's instance
+                        </a>
+                        <span i18n:translate="">to view metric data.</span>
+                    </p>
+                </div>
+                <ul class="small-block-grid-1 medium-block-grid-2 large-block-grid-3" tal:condition="monitoring_enabled">
                     <li class="chart-wrapper" ng-repeat="chart in chartsCtrl.chartsList" ng-cloak="">
                         <h6 ng-attr-title="{{ chart.help }}">{{ chart.title }}<i class="busy"></i></h6>
                         <div ng-show="chartsCtrl.emptyMessages[chart.metric]" class="empty-message-wrapper">
