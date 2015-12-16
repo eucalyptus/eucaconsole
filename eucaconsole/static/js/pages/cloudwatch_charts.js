@@ -10,6 +10,33 @@
  */
 
 angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
+.directive('Monitoring', function () {
+    return {
+        restrict: 'A',
+        controller: ['$scope', 'eucaUnescapeJson', 'eucaOptionsArray', function ($scope, eucaUnescapeJson, eucaOptionsArray) {
+        }],
+        link: function (scope, element, attrs) {
+        }
+    };
+})
+.factory('CloudwatchAPI', ['$http', function ($http) {
+    // Fine to hard-code this here since it won't likely change
+    var cloudwatchApiUrl = '/cloudwatch/api';
+    return {
+        getChartData: function (params) {
+            return $http({
+                url: cloudwatchApiUrl,
+                method: 'GET',
+                params: params
+            }).then(function (oData) {
+                if (typeof oData === 'string' && oData.indexOf('<html') > -1) {
+                    $('#timed-out-modal').foundation('reveal', 'open');
+                }
+                return oData.data;
+            });
+        }
+    };
+}])
 .controller('CloudWatchChartsCtrl', function ($scope, eucaUnescapeJson, eucaOptionsArray) {
     var vm = this;
     vm.duration = 3600;  // Default duration value is one hour
@@ -95,7 +122,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
         });
     }
 })
-.directive('cloudwatchChart', function($http, $timeout, eucaHandleError) {
+.directive('cloudwatchChart', function($http, $timeout, CloudwatchAPI, eucaHandleError) {
     return {
         restrict: 'A',  // Restrict to attribute since container element must be <svg>
         scope: {
@@ -126,7 +153,6 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
         options = options || {};
         scope.chartLoading = !options.largeChart;
         var parentCtrl = scope.$parent.chartsCtrl;
-        var cloudwatchApiUrl = '/cloudwatch/api';  // Fine to hard-code this here since it won't likely change
         var largeChart = options.largeChart || false;
         var chartElemId = largeChart ? 'large-chart' : scope.elemId;
         if (largeChart) {
@@ -147,19 +173,14 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
             'unit': scope.unit,
             'statistic': scope.statistic
         };
+
         params.tzoffset = (new Date()).getTimezoneOffset();
         if (parentCtrl.specifyZonesMetrics.indexOf(scope.metric) !== -1) {
             params.zones = parentCtrl.availabilityZones.join(',');
         }
-        $http({
-            'url': cloudwatchApiUrl,
-            'method': 'GET',
-            'params': params
-        }).success(function(oData) {
+
+        CloudwatchAPI.getChartData(params).then(function(oData) {
             scope.chartLoading = false;
-            if (typeof oData === 'string' && oData.indexOf('<html') > -1) {
-                $('#timed-out-modal').foundation('reveal', 'open');
-            }
             var results = oData ? oData.results : '';
             var displayZeroChart = parentCtrl.displayZeroChartMetrics.indexOf(scope.metric) !== -1;
             var emptyResultsCount = 0;
@@ -215,7 +236,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
             d3.select('#' + chartElemId).datum(results).call(chart);
             nv.utils.windowResize(chart.update);
             parentCtrl.largeChartLoading = false;
-        }).error(function (oData, status) {
+        }, function (oData, status) {
             eucaHandleError(oData, status);
         });
     }
