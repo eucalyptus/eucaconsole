@@ -37,7 +37,7 @@
                             <h5 class="subheader" i18n:translate="">Running instances</h5>
                             <metal:block metal:use-macro="layout.global_macros['dashaction']" />
                             <div class="content">
-                                <a href="${request.route_path('instances')}?state=running">
+                                <a href="${request.route_path('instances')}?status=running">
                                     <i class="icon"><em><i ng-show="itemsLoading" class="busy" ></i>
                                         <span ng-show="!itemsLoading" id="running-instances-count" ng-cloak="">{{ totals.instances_running }}</span></em>
                                     </i>
@@ -53,7 +53,7 @@
                             <h5 class="subheader" i18n:translate="">Stopped instances</h5>
                             <metal:block metal:use-macro="layout.global_macros['dashaction']" />
                             <div class="content">
-                                <a href="${request.route_path('instances')}?state=stopped">
+                                <a href="${request.route_path('instances')}?status=stopped">
                                     <i class="icon"><em><i ng-show="itemsLoading" class="busy" ></i>
                                         <span ng-show="!itemsLoading" id="stopped-instances-count" ng-cloak="">{{ totals.instances_stopped }}</span></em>
                                     </i>

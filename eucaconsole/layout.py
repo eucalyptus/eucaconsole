@@ -97,6 +97,8 @@ class MasterLayout(object):
         self.searchtext_prompt = _(u'Select facets for filter, or enter text to search')
         self.searchtext_prompt2 = _(u'Enter text to search')
         self.searchtext_text_facet = _(u'Text')
+        self.standard_table_repeat = 'item in items | orderBy: sortBy | limitTo:displayCount'
+        self.smart_table_repeat = 'item in displayedCollection | limitTo:displayCount'
 
     def get_notifications(self):
         """Get notifications, categorized by message type ('info', 'success', 'warning', or 'error')

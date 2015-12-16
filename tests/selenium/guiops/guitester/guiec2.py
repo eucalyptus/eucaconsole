@@ -493,6 +493,23 @@ class GuiEC2(GuiTester):
         """
         NotImplementedError
 
+    def click_sortable_column_header_on_volumes_landing_page(self, column_name='name'):
+        """
+        Sort volumes table by a given column (see <th> element's st-sort attr for possible column_name values)
+        :param column_name: header column name
+        :type column_name: str
+        """
+        BasePage(self).goto_volumes_view_via_menu()
+        VolumeLanding(self).click_sortable_column_header(column_name=column_name)
+
+    def verify_sort_position_for_volume(self, volume_id, position=1):
+        """
+        :param volume_id:
+        :param position: sorting position. Note: not zero-based (e.g. use 1 for first row)
+        :type position: int
+        """
+        VolumeLanding(self).verify_volume_id_by_sort_position(volume_id, position=position)
+
     def create_snapshot_on_volumes_view_page(self, volume_id, snapshot_name=None, snapshot_description=None, timeout_in_seconds=240):
         """
         Navigates to volumes view page and creates a snapshot of a volume.
@@ -582,6 +599,14 @@ class GuiEC2(GuiTester):
         DeleteSnapshotModal(self).delete_snapshot()
         SnapshotLanding(self).verify_snapshot_not_present(snapshot_id)
 
+    def verify_snapshot_not_present_on_lp(self, snapshot_id):
+        """
+        Navigates to snapshot landing page. Verifies snapshot not on landing page
+        :param snapshot_id:
+        """
+        BasePage(self).goto_snapshots_view_via_menu()
+        SnapshotLanding(self).verify_snapshot_not_present(snapshot_id)
+
     def create_volume_from_snapshot_on_snapshot_lp(self, snapshot_id, volume_name=None, availability_zone=None, volume_size=None, timeout_in_seconds=240):
         """
         Navigates to snapshot landing page. Goes to "create volume from snapshot" in the actions menu. Creates volume from snapshot.
@@ -637,8 +662,25 @@ class GuiEC2(GuiTester):
         ImageLanding(self).click_action_remove_image_from_cloud(image_id)
         RemoveImageFromCloudDialog(self).remove_image(delete_associated_snapshot)
 
-    def register_snapshot_as_an_image_from_snapshot_detail_page(self):
-        NotImplementedError()
+    def register_snapshot_as_an_image_from_snapshot_detail_page(self, snapshot_id, image_name, description=None,
+                                                                delete_on_terminate=True,
+                                                                register_as_windows_image=False
+                                                                ):
+        BasePage(self).goto_snapshots_view_via_menu()
+        SnapshotLanding(self).goto_snapshot_detail_page_via_link(snapshot_id)
+        SnapshotDetailPage(self).click_action_register_as_image_on_detail_page()
+        RegisterSnapshotAsImageModal(self).register_as_image(name=image_name, description=description,
+                                                             delete_on_terminate=delete_on_terminate,
+                                                             register_as_windows_image=register_as_windows_image)
+        if ImageDetailPage(self).is_image_detail_page_loaded():
+            image_id = ImageDetailPage(self).get_image_id()
+            image = {'image_name': image_name, 'image_id': image_id}
+        else:
+            BasePage(self).goto_images_view_via_menu()
+            image_id = ImageLanding(self).get_image_id_by_name(image_name)
+            image = {'image_name': image_name, 'image_id': image_id}
+        print image
+        return image
 
     def allocate_ip_from_eip_lp(self):
         NotImplementedError
