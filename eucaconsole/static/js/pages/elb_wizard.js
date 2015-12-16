@@ -142,7 +142,6 @@ angular.module('ELBWizard', [
             $scope.updateVPCSubnetChoices();
         }
         $scope.listenerArray = [];
-        $scope.instanceList = [];
         $scope.crossZoneEnabled = true;
         $scope.pingProtocol = 'HTTP';
         $scope.pingPort = 80;
@@ -289,7 +288,9 @@ angular.module('ELBWizard', [
         $scope.$watch('availabilityZones', function (newVal, oldVal) {
             if (newVal !== oldVal) {
                 if ($scope.vpcNetwork === 'None') { 
-                    $scope.checkRequiredInput(3);
+                    if ($scope.currentStepIndex === 3) {
+                        $scope.checkRequiredInput(3);
+                    }
                     $scope.$broadcast('eventWizardUpdateAvailabilityZones', $scope.availabilityZones);
                 }
             }
@@ -302,7 +303,9 @@ angular.module('ELBWizard', [
             }
         }, true);
         $scope.$watch('instanceList', function (newValue, oldValue) {
-            $scope.checkRequiredInput(3);
+            if ($scope.currentStepIndex === 3) {
+                $scope.checkRequiredInput(3);
+            }
             if ($scope.vpcNetwork !== 'None') { 
                 $scope.updateVPCSubnetChoices();
             } else {
