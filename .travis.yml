@@ -1,12 +1,10 @@
 language: python
 python:
   - "2.7"
-  - "2.6"
 # command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
 install:
     - sudo apt-get -y update
     - sudo apt-get -y install openssl python-dev swig
-    - pip install pbr linecache2
     - python setup.py develop
     - pip install Babel lingua pylibmc moto
     - sudo apt-get -y install npm
