@@ -3,5 +3,6 @@
 .tag-editor .item-list .item .propagates { color: #777; }
 .tag-editor .item-list .item a.remove { color: #FFF; margin-left: 5px; }
 .tag-editor .add-label { color: #5A5A5A; margin-bottom: 6px; }
-.tag-editor.ng-invalid .button { background-color: #FFF; border-color: #B3B3B3; color: #B3B3B3; }
+.tag-editor .tag-entry-result { display: none; }
+.tag-editor.ng-pristine .button { background-color: #FFF; border-color: #B3B3B3; color: #B3B3B3; }
 .tag-editor input.ng-invalid.ng-touched ~ .error { display: block; }
