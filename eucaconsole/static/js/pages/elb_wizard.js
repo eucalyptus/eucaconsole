@@ -172,7 +172,7 @@ angular.module('ELBWizard', [
         $scope.initChosenSelectors();
     };
     $scope.setWatcher = function (){
-        $scope.$watch('currentStepIndex', function(){
+        $scope.$watch('currentStepIndex', function(newVal, oldVal){
             if( $scope.currentStepIndex !== 0 ){
                 $scope.setWizardFocus($scope.currentStepIndex);
             }
@@ -255,40 +255,46 @@ angular.module('ELBWizard', [
         $scope.$on('eventUpdateVPCSubnets', function ($event, vpcSubnets) {
             $scope.vpcSubnets = vpcSubnets;
         });
-        $scope.$watch('elbName', function (){
+        $scope.$watch('elbName', function (newVal, oldVal){
             $scope.checkRequiredInput(1);
         });
-        $scope.$watch('vpcNetwork', function () {
-            $scope.availabilityZones = [];
-            $scope.vpcSubnets = [];
-            $scope.securityGroups = [];
-            $scope.updateVPCNetworkName();
-            $scope.getAllSecurityGroups($scope.vpcNetwork);
-            $scope.updateVPCSubnetChoices();
-            $scope.checkRequiredInput(2);
-            $scope.$broadcast('eventWizardUpdateVPCNetwork', $scope.vpcNetwork);
-            $timeout(function(){
-                if ($('#securitygroup_chosen').length === 0) {
-                    $('#securitygroup').chosen({'width': '100%', search_contains: true});
-                }
-            });
-        }, true);
-        $scope.$watch('securityGroups', function () {
-            $scope.updateSecurityGroupNames();
-            $scope.checkRequiredInput(2);
-            // Update the VPC network on the instance selector when security group is updated
-            $scope.$broadcast('eventWizardUpdateVPCNetwork', $scope.vpcNetwork);
-        }, true);
-        $scope.$watch('securityGroupCollection', function () {
-            $scope.updateSecurityGroupChoices();
-        }, true);
-        $scope.$watch('availabilityZones', function () {
-            if ($scope.vpcNetwork === 'None') { 
-                $scope.checkRequiredInput(3);
-                $scope.$broadcast('eventWizardUpdateAvailabilityZones', $scope.availabilityZones);
+        $scope.$watch('vpcNetwork', function (newVal, oldVal) {
+            if (newVal !== oldVal) {
+                $scope.availabilityZones = [];
+                $scope.vpcSubnets = [];
+                $scope.securityGroups = [];
+                $scope.updateVPCNetworkName();
+                $scope.getAllSecurityGroups($scope.vpcNetwork);
+                $scope.updateVPCSubnetChoices();
+                $scope.checkRequiredInput(2);
+                $scope.$broadcast('eventWizardUpdateVPCNetwork', $scope.vpcNetwork);
+                $timeout(function(){
+                    if ($('#securitygroup_chosen').length === 0) {
+                        $('#securitygroup').chosen({'width': '100%', search_contains: true});
+                    }
+                });
             }
         }, true);
-        $scope.$watch('vpcSubnets', function () {
+        $scope.$watch('securityGroups', function (newVal, oldVal) {
+            if (newVal !== oldVal) {
+                $scope.updateSecurityGroupNames();
+                $scope.checkRequiredInput(2);
+                // Update the VPC network on the instance selector when security group is updated
+                $scope.$broadcast('eventWizardUpdateVPCNetwork', $scope.vpcNetwork);
+            }
+        }, true);
+        $scope.$watch('securityGroupCollection', function (newVal, oldVal) {
+            $scope.updateSecurityGroupChoices();
+        }, true);
+        $scope.$watch('availabilityZones', function (newVal, oldVal) {
+            if (newVal !== oldVal) {
+                if ($scope.vpcNetwork === 'None') { 
+                    $scope.checkRequiredInput(3);
+                    $scope.$broadcast('eventWizardUpdateAvailabilityZones', $scope.availabilityZones);
+                }
+            }
+        }, true);
+        $scope.$watch('vpcSubnets', function (newVal, oldVal) {
             $scope.updateVPCSubnetNames();
             if ($scope.vpcNetwork !== 'None') { 
                 $scope.checkRequiredInput(3);
@@ -312,17 +318,17 @@ angular.module('ELBWizard', [
                 $scope.pingPort = 80;
             }
         }, true);
-        $scope.$watch('pingPort', function (){
+        $scope.$watch('pingPort', function (newVal, oldVal){
             $scope.checkRequiredInput(4);
         });
-        $scope.$watch('responseTimeout', function (){
+        $scope.$watch('responseTimeout', function (newVal, oldVal){
             $scope.checkRequiredInput(4);
         });
-        $scope.$watch('certificateTab', function () {
+        $scope.$watch('certificateTab', function (newVal, oldVal) {
             $scope.adjustSelectCertificateModalTabDisplay();
             $scope.setClassUseThisCertificateButton();
         });
-        $scope.$watch('certificateARN', function(){
+        $scope.$watch('certificateARN', function(newVal, oldVal){
             var certArnField = $('#certificate_arn');
             var hiddenArnInput = $('#hidden_certificate_arn_input');
             // Find the certficate name when selected on the select certificate dialog
@@ -335,37 +341,37 @@ angular.module('ELBWizard', [
             }
             $scope.$broadcast('eventUpdateCertificateARN', $scope.certificateARN, $scope.tempListenerBlock);
         });
-        $scope.$watch('certificateName', function(){
+        $scope.$watch('certificateName', function(newVal, oldVal){
             // Broadcast the certificate name change to the elb listener directive
             $scope.$broadcast('eventUpdateCertificateName', $scope.certificateName);
         });
-        $scope.$watch('certificateRadioButton', function(){
+        $scope.$watch('certificateRadioButton', function(newVal, oldVal){
             $scope.setClassUseThisCertificateButton();
         });
-        $scope.$watch('newCertificateName', function(){
+        $scope.$watch('newCertificateName', function(newVal, oldVal){
             $scope.setClassUseThisCertificateButton();
         });
-        $scope.$watch('privateKey', function(){
+        $scope.$watch('privateKey', function(newVal, oldVal){
             $scope.setClassUseThisCertificateButton();
         });
-        $scope.$watch('publicKeyCertificate', function(){
+        $scope.$watch('publicKeyCertificate', function(newVal, oldVal){
             $scope.setClassUseThisCertificateButton();
         });
-        $scope.$watch('backendCertificateName', function () {
+        $scope.$watch('backendCertificateName', function (newVal, oldVal) {
             $scope.checkAddBackendCertificateButtonCondition(); 
         });
-        $scope.$watch('backendCertificateBody', function () {
+        $scope.$watch('backendCertificateBody', function (newVal, oldVal) {
             $scope.checkAddBackendCertificateButtonCondition(); 
         });
-        $scope.$watch('backendCertificateArray', function () {
+        $scope.$watch('backendCertificateArray', function (newVal, oldVal) {
             $scope.syncBackendCertificates();
             $scope.checkAddBackendCertificateButtonCondition(); 
             $scope.setClassUseThisCertificateButton();
         }, true);
-        $scope.$watch('isBackendCertificateNotComplete', function () {
+        $scope.$watch('isBackendCertificateNotComplete', function (newVal, oldVal) {
             $scope.setClassAddBackendCertificateButton();
         });
-        $scope.$watch('hasDuplicatedBackendCertificate', function () {
+        $scope.$watch('hasDuplicatedBackendCertificate', function (newVal, oldVal) {
             $scope.setClassAddBackendCertificateButton();
             $scope.classDuplicatedBackendCertificateDiv = '';
             // timeout is needed for the DOM update to complete
@@ -391,11 +397,17 @@ angular.module('ELBWizard', [
                         $scope.accessLogConfirmationDialog.foundation('reveal', 'open');
                     }
                 }
+                // TODO: ensure this doesn't clear existing validation error
                 $scope.isValidationError = newVal && !$scope.bucketName;
             }
         });
+        $scope.$watch('isValidationError', function (newVal, oldVal) {
+            console.log("validation error : "+newVal);
+        });
         $scope.$watch('bucketName', function (newVal, oldVal) {
-            $scope.isValidationError = $scope.loggingEnabled && !newVal;
+            if (newVal !== oldVal) {
+                $scope.isValidationError = $scope.loggingEnabled && !newVal;
+            }
         });
         $scope.accessLogConfirmationDialog.on('opened.fndtn.reveal', function () {
             $scope.accessLoggingConfirmed = false;
