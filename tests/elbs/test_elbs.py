@@ -64,20 +64,6 @@ class MockELBMixin(object):
         return boto.connect_cloudwatch()
 
 
-class ELBLandingPageJsonViewTests(BaseViewTestCase, MockELBMixin):
-    @mock_elb
-    def test_elb_landing_page_json_view(self):
-        elb_conn, elb = self.make_elb()
-        cw_conn = self.make_cw_conn()
-        request = self.create_request()
-        view = ELBsJsonView(request, elb_conn=elb_conn, cw_conn=cw_conn, elb=elb).elbs_json()
-        results = view.get('results')
-        elb = results[0]
-        self.assertEqual(len(results), 1)
-        self.assertEqual(elb.get('healthy_hosts'), 0)
-        self.assertEqual(elb.get('unhealthy_hosts'), 0)
-
-
 class ELBViewTests(BaseViewTestCase, MockELBMixin):
     """ELB detail page view - General tab"""
     def test_normalize_listeners(self):
