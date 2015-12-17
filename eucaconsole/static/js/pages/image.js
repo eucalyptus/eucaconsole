@@ -4,7 +4,7 @@
  *
  */
 
-angular.module('ImagePage', ['BlockDeviceMappingEditor', 'TagEditor', 'EucaConsoleUtils'])
+angular.module('ImagePage', ['BlockDeviceMappingEditor', 'TagEditorModule', 'EucaConsoleUtils'])
     .controller('ImagePageCtrl', function ($scope, $http, $timeout, eucaUnescapeJson, eucaHandleError) {
         $scope.imageState = '';
         $scope.imageProgess = 0;
