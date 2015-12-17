@@ -1,7 +1,6 @@
 from guitester import GuiTester
 from pages.basepage import BasePage
 from pages.dashboard import Dashboard
-from pages.regions import Regions
 from pages.loginpage import LoginPage
 from pages.keypair.keypairdetail import KeypairDetailPage
 from pages.keypair.keypair_lp import KeypairLanding
@@ -52,14 +51,17 @@ class GuiEC2(GuiTester):
         BasePage(self).goto_images_view_via_menu()
         ImageLanding(self)
 
-    def change_region(self):
+    def get_region_list(self):
+        return BasePage(self).get_region_list()
+
+    def change_region(self, region=None):
         """
-        Since tests don't always know what the regions are named, this method simply selects
-        the first region in the list and since the list doesn't display the current region,
-        this effectively switches region.
+        If region is passed, change to that region, otherwise select 1st from menu.
         """
-        reg = Regions(self)
-        reg.select_region(reg.get_region_list()[0])
+        if region:
+            BasePage(self).select_region(region)
+        else:
+            BasePage(self).select_region(reg.get_region_list()[0])
 
     def create_keypair_from_dashboard(self, keypair_name):
         """

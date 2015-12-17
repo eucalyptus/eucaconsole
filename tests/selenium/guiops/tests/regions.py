@@ -20,19 +20,20 @@ class RegionOperationsSequence(GuiOps):
 
     def region_ops_test(self):
         self.tester.login(self.account, self.user, self.password)
-        self.tester.change_region()
+        regions = self.tester.get_region_list()
+        self.tester.change_region(regions[0])
         volume1_name = self.id_generator()+"-volume"
         volume1 = self.tester.create_volume_from_view_page(volume1_name, volume_size=1, availability_zone="one")
         volume1_id = volume1.get("volume_id")
 
-        self.tester.change_region()
+        self.tester.change_region(regions[1])
         volume2 = self.tester.create_volume_from_dashboard(volume_size=1, availability_zone="two")
         volume2_id = volume2.get("volume_id")
 
-        self.tester.change_region()
+        self.tester.change_region(regions[0])
         self.tester.delete_volume_from_view_page(volume1_id)
 
-        self.tester.change_region()
+        self.tester.change_region(regions[1])
         self.tester.delete_volume_from_detail_page(volume2_id)
         self.tester.logout()
         self.tester.exit_browser()

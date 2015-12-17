@@ -7,6 +7,8 @@ class BasePage(SeleniumApi):
     _user_dropdown_css = 'section#user-dropdown-section>a>span'
     _user_help_link='//ul[@id="user-dropdown"]/li/a'
     _user_logout_id="logout"
+    _region_selector_id = "selected-region"
+    _region_dropdown_id = "region-dropdown"
     _dashboard_menuitem_id = "resource-menuitem-dashboard"
     _images_menuitem_id = "resource-menuitem-images"
     _images_menuitem_css = "#resource-menuitem-images"
@@ -40,6 +42,22 @@ class BasePage(SeleniumApi):
     def logout(self):
         self.tester.click_element_by_css(self._user_dropdown_css)
         self.tester.click_element_by_id(self._user_logout_id)
+
+    def select_region(self, region):
+        if self.tester.check_visibility_by_id(self._region_selector_id):
+            self.tester.click_element_by_id(self._region_selector_id)
+        self.tester.click_element_by_id(region)
+
+    def get_region_list(self):
+        """
+        Gets availability zone list.
+        """
+        self.tester.click_element_by_id(self._region_selector_id)
+        list = self.tester.store_text_by_id(self._region_dropdown_id)
+        self.tester.click_element_by_id(self._region_selector_id)
+        list = str(list)
+        az_list = list.split()
+        return az_list
 
     def goto_dashboard_via_menu(self):
         self.tester.scroll_to_element_by_id(self._dashboard_menuitem_id)
