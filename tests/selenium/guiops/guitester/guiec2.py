@@ -58,10 +58,9 @@ class GuiEC2(GuiTester):
         """
         If region is passed, change to that region, otherwise select 1st from menu.
         """
-        if region:
-            BasePage(self).select_region(region)
-        else:
-            BasePage(self).select_region(reg.get_region_list()[0])
+        if region is None:
+            region = BasePage(self).get_region_list()[0]
+        BasePage(self).select_region(region)
 
     def create_keypair_from_dashboard(self, keypair_name):
         """
