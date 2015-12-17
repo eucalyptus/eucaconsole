@@ -9,9 +9,6 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts'])
         var vm = this;
         vm.initPage = function() {
         };
-        vm.updateGraphs = function() {
-            $('#graph-area').foundation('reflow');
-        };
     })
 ;
 

@@ -13,14 +13,17 @@ table td input[type="checkbox"] {
 }
 
 #graph-area {
-    position: relative;
+}
+
+.chart-wrapper {
+    background: #ffffff;
 }
 
 .split-container {
 }
 
 .split-top {
-    height: 200px;
+    height: 250px;
     overflow: auto;
 }
 

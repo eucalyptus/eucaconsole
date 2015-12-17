@@ -141,8 +141,8 @@ table.expando td:nth-of-type(1) { width: 1rem; }
 
 table td input[type="checkbox"] { margin: 0 0 0; }
 
-#graph-area { position: relative; }
+.chart-wrapper { background: #ffffff; }
 
-.split-top { height: 200px; overflow: auto; }
+.split-top { height: 250px; overflow: auto; }
 
 .split-bottom { position: relative; }

@@ -35,7 +35,7 @@ from pyramid.view import view_config
 
 from ..constants.cloudwatch import (
     MONITORING_DURATION_CHOICES, METRIC_TITLE_MAPPING, STATISTIC_CHOICES, GRANULARITY_CHOICES,
-    DURATION_GRANULARITY_CHOICES_MAPPING
+    DURATION_GRANULARITY_CHOICES_MAPPING, METRIC_TYPES
 )
 from ..constants.cloudwatch import METRIC_DIMENSION_NAMES, METRIC_DIMENSION_INPUTS
 from ..i18n import _
@@ -78,6 +78,7 @@ class CloudWatchMetricsView(LandingPageView):
             'metric_title_mapping': METRIC_TITLE_MAPPING,
             'granularity_choices': GRANULARITY_CHOICES,
             'duration_granularities_mapping': DURATION_GRANULARITY_CHOICES_MAPPING,
+            'largeChart': True
         }))
 
 class CloudWatchMetricsJsonView(BaseView):
@@ -116,11 +117,15 @@ class CloudWatchMetricsJsonView(BaseView):
                 for dim in tmp:
                     resource_id = dim[0][0][1][0]
                     resource_type = dim[0][0][0]
+                    metric = dim[1]
+                    unit = [mt['unit'] for mt in METRIC_TYPES if mt['name'] == metric]
                     metrics.append(dict(
                         resource_id=resource_id,
                         resource_url=self.get_url_for_resource(self.request, resource_type, resource_id),
                         resource_type=resource_type,
-                        metric=dim[1]
+                        unit=unit[0] if unit else '',
+                        statistic='',
+                        metric=metric
                     ))
                 cat['metrics'] = metrics
 
