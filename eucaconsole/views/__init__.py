@@ -458,8 +458,8 @@ class TaggedItemView(BaseView):
 
     def add_tags(self):
         if self.conn:
-            tags_json = self.request.params.get('tags')
-            tags_dict = json.loads(tags_json) if tags_json else {}
+            tags_json = self.request.params.get('tags', '{}')
+            tags_dict = self._normalize_tags(json.loads(tags_json))
             tags = {}
             for key, value in tags_dict.items():
                 key = self.unescape_braces(key.strip())
@@ -489,6 +489,27 @@ class TaggedItemView(BaseView):
                 if value and not value.startswith('aws:'):
                     tag_value = self.unescape_braces(value)
                     self.tagged_obj.add_tag('Name', tag_value)
+
+    def _normalize_tags(self, tags):
+        if type(tags) is dict:
+            return tags
+
+        new_tags = {}
+        for tag in tags:
+            name, value = tag['name'], tag['value']
+            new_tags[name] = value
+        return new_tags
+
+    @staticmethod
+    def serialize_tags(tags):
+        if tags is not None:
+            serialized_tags = [{
+                'name': key,
+                'value': value
+            } for key, value in tags.iteritems()]
+        else:
+            serialized_tags = []
+        return BaseView.escape_json(json.dumps(serialized_tags))
 
     @staticmethod
     def get_display_name(resource, escapebraces=True):

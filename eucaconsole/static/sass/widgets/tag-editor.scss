@@ -28,6 +28,11 @@
     margin-bottom: 6px;
   }
 
+  .tag-entry-result {
+    display: none;
+  }
+
+  &.ng-pristine,
   &.ng-invalid {
     .button {
       background-color: #FFF;
