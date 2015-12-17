@@ -1,7 +1,6 @@
 <metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
 <head metal:fill-slot="head_css">
-    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular-ui-layout.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/nvd3/nv.d3.min.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/cloudwatch_charts.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/metrics.css')}" />
@@ -61,6 +60,8 @@
                     </span>
                 </div>
             </div>
+            <div class="split-wrapper">
+                <div class="split-top">
                     <div class="loading" ng-show="itemsLoading"><i class="busy"></i></div>
                     <div id="tableview" class="gridwrapper" ng-if="landingPageView == 'tableview'" ng-cloak="">
                         <!-- Begin table view -->
@@ -95,7 +96,7 @@
                                                     </tr></thead>
                                                     <tbody>
                                                         <tr ng-repeat="metric in item.metrics" ng-cloak="true">
-                                                            <td><input type="checkbox" ng-model="metric.selected"/></td>
+                                                            <td><input type="checkbox" ng-model="metric.selected"/ ng-click="metricsCtrl.updateGraphs()"></td>
                                                             <td>
                                                                 <a ng-if="metric.resource_url" ng-href="{{ metric.resource_url }}">{{ metric.resource_id }}</a>
                                                                 <span ng-if="metric.resource_url==null">{{ metric.resource_id }}</span>
@@ -129,6 +130,8 @@
                             </div>
                         </div>
                     </div>
+                </div>
+                <div class="split-bottom" id="graph-area">
                     <div ng-controller="CloudWatchChartsCtrl as chartsCtrl"
                         ng-init="chartsCtrl.initController('${chart_options_json}')">
                         <ul class="small-block-grid-1 medium-block-grid-2 large-block-grid-3">
@@ -148,12 +151,8 @@
                             </div>
                         </ul>
                     </div>
-            <!--div ui-layout="{flow: 'row', disableToggle: true}">
-                <div ui-layout-container="" min-size="200px" max-size="400px">
                 </div>
-                <div ui-layout-container="" max-size="100%" id="graph-area">
-                </div>
-            </div-->
+            </div>
         </div>
     </div>
 </div>
@@ -168,7 +167,6 @@
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/d3/d3.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/nvd3/nv.d3.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/cloudwatch_charts.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular-ui-layout.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/expando.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/landingpage.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/metrics.js')}"></script>

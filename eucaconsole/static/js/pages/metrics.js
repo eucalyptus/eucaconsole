@@ -4,10 +4,13 @@
  *
  */
 
-angular.module('MetricsPage', ['LandingPage', 'ui.layout', 'CloudWatchCharts'])
+angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts'])
     .controller('MetricsCtrl', function ($scope) {
         var vm = this;
         vm.initPage = function() {
+        };
+        vm.updateGraphs = function() {
+            $('#graph-area').foundation('reflow');
         };
     })
 ;

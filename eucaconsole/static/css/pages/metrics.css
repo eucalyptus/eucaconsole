@@ -9,6 +9,7 @@
 ----------------------------------------- */
 /* @section Landing pages styles */
 .columns.datagrid { padding-left: 0; padding-right: 1rem; padding-bottom: 2rem; }
+.columns.datagrid.has-smart-table.tableview #sorting-controls { display: none; }
 
 .large-12.columns.datagrid { padding-left: 1rem; }
 
@@ -141,3 +142,7 @@ table.expando td:nth-of-type(1) { width: 1rem; }
 table td input[type="checkbox"] { margin: 0 0 0; }
 
 #graph-area { position: relative; }
+
+.split-top { height: 200px; overflow: auto; }
+
+.split-bottom { position: relative; }

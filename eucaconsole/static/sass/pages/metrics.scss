@@ -15,3 +15,15 @@ table td input[type="checkbox"] {
 #graph-area {
     position: relative;
 }
+
+.split-container {
+}
+
+.split-top {
+    height: 200px;
+    overflow: auto;
+}
+
+.split-bottom {
+    position: relative;
+}
