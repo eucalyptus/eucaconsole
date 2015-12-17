@@ -20,7 +20,6 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
     };
 })
 .factory('CloudwatchAPI', ['$http', function ($http) {
-    // Fine to hard-code this here since it won't likely change
     return {
         getChartData: function (params) {
             return $http({
@@ -50,6 +49,64 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
         }
     };
 }])
+.factory('ChartService', function () {
+    var margin = {
+        left: 68,
+        right: 38
+    };
+    var timeFormat = '%m/%d %H:%M';
+
+    return {
+        renderChart: function (target, results, params) {
+            var yFormat = '.0f';
+            params = params || {};
+
+            var chart = nv.models.lineChart()
+                .margin(margin)
+                .useInteractiveGuideline(true)
+                .showYAxis(true)
+                .showXAxis(true);
+
+            chart.xScale(d3.time.scale());
+            chart.xAxis.tickFormat(function (d) {
+                return d3.time.format(timeFormat)(new Date(d));
+            });
+
+            if(params.unit === 'Percent') {
+                chart.forceY([0, 100]);
+            }
+
+            if(params.baseZero) {
+                chart.forceY([0, 10]);
+            }
+
+            if(params.preciseMetrics) {
+                yFormat = '.2f';
+            }
+
+            if(params.unit === 'Kilobytes') {
+                yFormat = '.1f';
+            } else if (params.unit === 'Megabytes' || params.unit === 'Gigabytes') {
+                yFormat = '.2f';
+            }
+
+            chart.yAxis.axisLabel(params.unit)
+                .tickFormat(d3.format(yFormat));
+
+            d3.select(target)
+                .datum(results)
+                .call(chart);
+
+            return chart;
+        },
+
+        resetChart: function (target) {
+            d3.select(target)
+                .selectAll('svg > *')
+                .remove();
+        }
+    };
+})
 .controller('CloudWatchChartsCtrl', function ($scope, eucaUnescapeJson, eucaOptionsArray) {
     var vm = this;
     vm.duration = 3600;  // Default duration value is one hour
@@ -135,7 +192,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
         });
     }
 })
-.directive('cloudwatchChart', function($http, $timeout, CloudwatchAPI, eucaHandleError) {
+.directive('cloudwatchChart', function($http, $timeout, CloudwatchAPI, ChartService, eucaHandleError) {
     return {
         restrict: 'A',  // Restrict to attribute since container element must be <svg>
         scope: {
@@ -170,7 +227,8 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
         if (largeChart) {
             parentCtrl.largeChartLoading = true;
             if (scope.metric !== parentCtrl.largeChartMetric) {
-                // Workaround refreshLargeChart event firing multiple times to avoid multi-chart display in dialog
+                // Workaround refreshLargeChart event firing multiple
+                // times to avoid multi-chart display in dialog
                 return false;
             }
             // Granularity is user-selectable in large chart, so don't auto-adjust on the server
@@ -205,6 +263,8 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
             var results = oData ? oData.results : '';
             var displayZeroChart = parentCtrl.displayZeroChartMetrics.indexOf(scope.metric) !== -1;
             var emptyResultsCount = 0;
+            var target = largeChart ? $('#large-chart').get(0) : scope.target;
+
             results.forEach(function (resultSet) {
                 if (resultSet.values.length === 0) {
                     emptyResultsCount += 1;
@@ -218,20 +278,9 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
             if (largeChart && emptyResultsCount === results.length) {
                 // Remove existing chart when there are no results in large
                 // chart modal to avoid lingering empty msg
-                d3.select(scope.target)
-                    .selectAll("svg > *")
-                    .remove();
+                ChartService.resetChart(target);
             }
-            var unit = oData.unit || scope.unit;
-            var yformatter = '.0f';
             var preciseFormatterMetrics = ['Latency'];
-
-            var chart = nv.models.lineChart()
-                .margin({left: 68, right: 38})
-                .useInteractiveGuideline(true)
-                .showYAxis(true)
-                .showXAxis(true);
-
             if (displayZeroChart && results.length === 1 &&  results[0].values.length === 0) {
                 // Pad chart with zero data where appropriate
                 results = [{
@@ -239,29 +288,12 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
                     values: [{x: new Date().getTime(), y: 0}]
                 }];
             }
-            chart.xScale(d3.time.scale());
-            chart.xAxis.tickFormat(function(d) {
-                return d3.time.format('%m/%d %H:%M')(new Date(d));
-            });
-            if (scope.unit === 'Percent') {
-                chart.forceY([0, 100]);  // Set proper y-axis range for percentage units
-            }
-            if (parentCtrl.forceZeroBaselineMetrics.indexOf(scope.metric) !== -1) {
-                chart.forceY([0, 10]);  // Anchor chart to zero baseline
-            }
-            if (preciseFormatterMetrics.indexOf(scope.metric) !== -1) {
-                yformatter = '.2f';
-            }
-            if (unit === 'Kilobytes') {
-                yformatter = '.1f';
-            } else if (unit === 'Megabytes' || unit === 'Gigabytes') {
-                yformatter = '.2f';
-            }
-            chart.yAxis.axisLabel(unit).tickFormat(d3.format(yformatter));
 
-            d3.select(scope.target)
-                .datum(results)
-                .call(chart);
+            var chart = ChartService.renderChart(target, results, {
+                unit: oData.unit || scope.unit,
+                baseZero: parentCtrl.forceZeroBaselineMetrics.indexOf(scope.metric) !== -1,
+                preciseMetrics: preciseFormatterMetrics.indexOf(scope.metric) !== -1
+            });
 
             nv.utils.windowResize(chart.update);
             parentCtrl.largeChartLoading = false;
