@@ -50,14 +50,14 @@ class BasePage(SeleniumApi):
 
     def get_region_list(self):
         """
-        Gets availability zone list.
+        Gets regions list.
         """
         self.tester.click_element_by_id(self._region_selector_id)
         list = self.tester.store_text_by_id(self._region_dropdown_id)
         self.tester.click_element_by_id(self._region_selector_id)
         list = str(list)
-        az_list = list.split()
-        return az_list
+        region_list = list.split()
+        return region_list
 
     def goto_dashboard_via_menu(self):
         self.tester.scroll_to_element_by_id(self._dashboard_menuitem_id)
