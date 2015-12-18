@@ -6,21 +6,20 @@
 
 angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts'])
     .directive('splitbar', function () {
+        var pageElement = angular.element(document.body.parentElement);
         return {
             restrict: 'A',
             link: function (scope, element, attrs, ctrl) {
                 var topContainer = element.parent().children().first();
                 element.on('mousedown', function(e) {
-                    element.on('mousemove', function(event) {
-                        // element.Y - clientY = difference.
-                        var diff = element.getBoundingClientRect().top - event.clientY;
-                        // subtract difference from topContainer.Y
-                        //topContainer.y = topContainer.y - 
-                        console.log(diff);
+                    pageElement.on('mousemove', function(event) {
+                        var diff = element[0].getBoundingClientRect().top - event.clientY;
+                        var rect = topContainer[0].getBoundingClientRect();
+                        topContainer.height(rect.height - diff);
                     });
                 });
-                element.on('mouseup', function(e) {
-                    element.off('mousemove');
+                pageElement.on('mouseup', function(e) {
+                    pageElement.off('mousemove');
                 });
             }
         };
