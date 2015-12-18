@@ -194,8 +194,20 @@ class CloudWatchAlarmsJsonView(BaseView):
             statistic = self.request.params.get('statistic')
             period = self.request.params.get('period')
 
-            alarms = self.get_alarms_for_metric(metric_name, namespace,
-                                                statistic, period)
+            items = self.get_alarms_for_metric(metric_name, namespace,
+                                               statistic, period)
+            alarms = []
+            for alarm in items:
+                alarms.append(dict(
+                    name=alarm.name,
+                    statistic=alarm.statistic,
+                    metric=alarm.metric,
+                    period=alarm.period,
+                    comparison=alarm.comparison,
+                    threshold=alarm.threshold,
+                    unit=alarm.unit,
+                ))
+
             return dict(results=alarms)
 
     def get_items(self):

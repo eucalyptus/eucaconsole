@@ -27,7 +27,6 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
                 method: 'GET',
                 params: params
             }).then(function (oData) {
-                console.log('chart data', oData);
                 if (typeof oData === 'string' && oData.indexOf('<html') > -1) {
                     $('#timed-out-modal').foundation('reveal', 'open');
                 }
@@ -41,8 +40,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
                 method: 'POST',
                 params: params
             }).then(function (oData) {
-                console.log('chart alarms', oData);
-                return oData.data;
+                return oData.data.results;
             }, function (oData) {
                 console.log('error', oData);
             });
@@ -93,9 +91,28 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
             chart.yAxis.axisLabel(params.unit)
                 .tickFormat(d3.format(yFormat));
 
-            d3.select(target)
+            var s = d3.select(target)
                 .datum(results)
                 .call(chart);
+
+            s.call(function (selection) {
+                var xScale = chart.xScale,
+                    xDomain = chart.xDomain,
+                    yScale = chart.yScale;
+
+                var alarmGroup = selection.append('g')
+                    .attr('class', 'alarms');
+
+                params.alarms.forEach(function (alarm) {
+                    console.log(alarm);
+                    alarmGroup.append('line')
+                        .attr('x1', 0)
+                        .attr('y1', 0)
+                        .attr('x2', 1)
+                        .attr('y2', 1);
+                });
+            });
+
 
             return chart;
         },
@@ -249,15 +266,6 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
             params.zones = parentCtrl.availabilityZones.join(',');
         }
 
-        CloudwatchAPI.getAlarmsForMetric(scope.metric, {
-            metric_name: scope.metric,
-            namespace: scope.namespace,
-            period: scope.duration,
-            statistic: scope.statistic
-        }).then(function (oData) {
-            // pass
-        });
-
         CloudwatchAPI.getChartData(params).then(function(oData) {
             scope.chartLoading = false;
             var results = oData ? oData.results : '';
@@ -289,13 +297,22 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
                 }];
             }
 
-            var chart = ChartService.renderChart(target, results, {
-                unit: oData.unit || scope.unit,
-                baseZero: parentCtrl.forceZeroBaselineMetrics.indexOf(scope.metric) !== -1,
-                preciseMetrics: preciseFormatterMetrics.indexOf(scope.metric) !== -1
+
+            CloudwatchAPI.getAlarmsForMetric(scope.metric, {
+                metric_name: scope.metric,
+                namespace: scope.namespace,
+                period: scope.duration,
+                statistic: scope.statistic
+            }).then(function (alarms) {
+                var chart = ChartService.renderChart(target, results, {
+                    unit: oData.unit || scope.unit,
+                    baseZero: parentCtrl.forceZeroBaselineMetrics.indexOf(scope.metric) !== -1,
+                    preciseMetrics: preciseFormatterMetrics.indexOf(scope.metric) !== -1,
+                    alarms: alarms
+                });
+                nv.utils.windowResize(chart.update);
             });
 
-            nv.utils.windowResize(chart.update);
             parentCtrl.largeChartLoading = false;
         }, function (oData, status) {
             eucaHandleError(oData, status);
@@ -308,6 +325,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
 
         var chartModal = $('#large-chart-modal');
         var chartWrapper = element.closest('.chart-wrapper');
+
         // Display large chart on small chart click
         chartWrapper.on('click', function () {
             var parentCtrl = scope.$parent.chartsCtrl;
