@@ -70,7 +70,7 @@ from ..forms.login import EucaLogoutForm
 from ..models.auth import EucaAuthenticator
 from ..i18n import _
 from ..models import Notification
-from ..models.auth import ConnectionManager
+from ..models.auth import ConnectionManager, RegionCache
 
 
 def escape_braces(event):
@@ -140,8 +140,13 @@ class BaseView(object):
             host = self._get_ufs_host_setting_()
             port = self._get_ufs_port_setting_()
             dns_enabled = self.request.session.get('dns_enabled', True)
+            regions = RegionCache(None).regions()
+            if len(regions) > 0:
+                for region in regions:
+                    if region['endpoints']['ec2'].find(host) > -1:
+                        self.default_region = region['name']
             conn = ConnectionManager.euca_connection(
-                host, port, access_key, secret_key, security_token,
+                host, port, region, access_key, secret_key, security_token,
                 conn_type, dns_enabled, validate_certs, certs_file
             )
 
