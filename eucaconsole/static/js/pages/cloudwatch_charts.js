@@ -175,7 +175,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
             }
             var unit = oData.unit || scope.unit;
             var yformatter = '.0f';
-            var preciseFormatterMetrics = ['Latency', 'VolumeTotalReadTime', 'VolumeTotalWriteTime'];
+            var preciseFormatterMetrics = ['Latency'];
             var chart = nv.models.lineChart()
                 .margin({left: 68, right: 38})
                 .useInteractiveGuideline(true)
@@ -209,7 +209,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
             if (['VolumeReadBytes', 'VolumeWriteBytes', 'VolumeReadOps', 'VolumeWriteOps'].indexOf(scope.metric) !== -1) {
                 yformatter = '.1f';
                 if (maxValue && maxValue < 5) {
-                    yformatter = '.4f';
+                    yformatter = '.3f';
                 }
             }
             if (unit === 'Kilobytes') {
