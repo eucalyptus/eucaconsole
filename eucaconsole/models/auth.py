@@ -30,8 +30,10 @@ Authentication and Authorization models
 """
 import base64
 import httplib
+import pylibmc
 import socket
 import urllib2
+from urlparse import urlparse
 
 from defusedxml.sax import parseString
 from ssl import SSLError
@@ -55,6 +57,7 @@ from boto.regioninfo import RegionInfo
 from boto.sts.credentials import Credentials
 from pyramid.security import Authenticated, authenticated_userid
 from .admin import EucalyptusAdmin
+from ..caches import default_term
 
 
 class User(object):
@@ -87,6 +90,45 @@ class User(object):
                     account_id = security_group.owner_id
         return account_id
                     
+
+class RegionCache(object):
+    """ Returns cached list of regions for current cloud"""
+    def __init__(self, conn=None):
+        self.conn = conn
+
+    # TODO: provide cache invalidating method?
+
+    def regions(self, regions=None):
+        """Returns a list of region choices. Will fetch regions if not passed"""
+        choices = []
+        regions = regions or []
+        if not regions:
+            regions.extend(self.get_regions(self.conn.host if self.conn else None))
+        for region in regions:
+            choices.append(dict(
+                name=region.name,
+                label=region.name,
+                endpoints=dict(
+                    ec2=region.endpoint
+                )
+            ))
+        return sorted(choices)
+
+    def get_regions(self, host):
+        @default_term.cache_on_arguments(namespace='regions')
+        def _get_regions_cache_(self, host):
+            return _get_regions_(self)
+
+        def _get_regions_(self):
+            regions = []
+            if self.conn is not None:
+                regions = self.conn.get_all_regions()
+            return regions
+        try:
+            return _get_regions_cache_(self, host)
+        except pylibmc.Error:
+            return _get_regions_(self)
+
 
 class ConnectionManager(object):
     """Returns connection objects, pulling from Beaker cache when available"""
@@ -144,7 +186,7 @@ class ConnectionManager(object):
         return _aws_connection(region, access_key, secret_key, token, conn_type)
 
     @staticmethod
-    def euca_connection(ufshost, port, access_id, secret_key, token, conn_type,
+    def euca_connection(ufshost, port, region, access_id, secret_key, token, conn_type,
                         dns_enabled=True, validate_certs=False, certs_file=None):
         """Return Eucalyptus connection object
 
@@ -174,36 +216,48 @@ class ConnectionManager(object):
         :param certs_file: indicates the location of the certificates file, if otherthan standard
 
         """
-        def _euca_connection(_ufshost, _port, _access_id, _secret_key, _token, _conn_type, _dns_enabled):
+        def _euca_connection(_ufshost, _port, _region, _access_id, _secret_key, _token, _conn_type, _dns_enabled):
             path = 'compute'
             conn_class = EC2Connection
             api_version = '2012-12-01'
+            if _region != 'euca':
+                # look up region endpoint
+                conn = _euca_connection(
+                    _ufshost, _port, 'euca', _access_id, _secret_key, _token, 'ec2', _dns_enabled
+                )
+                regions = RegionCache(conn).get_regions(_ufshost)
+                region = [region.endpoint for region in regions if region.name == _region]
+                if region:
+                    endpoint = region[0]
+                    parsed = urlparse(endpoint)
+                    _ufshost = parsed.hostname[4:]  # remove 'ec2.' prefix
+                    _port = parsed.port
 
             # special case since this is our own class, not boto's
-            if conn_type == 'admin':
+            if _conn_type == 'admin':
                 return EucalyptusAdmin(_ufshost, _port, _access_id, _secret_key, _token, _dns_enabled)
 
             # Configure based on connection type
-            if conn_type == 'autoscale':
+            if _conn_type == 'autoscale':
                 api_version = '2011-01-01'
                 conn_class = boto.ec2.autoscale.AutoScaleConnection
                 path = 'AutoScaling'
-            elif conn_type == 'cloudwatch':
+            elif _conn_type == 'cloudwatch':
                 path = 'CloudWatch'
                 conn_class = boto.ec2.cloudwatch.CloudWatchConnection
-            elif conn_type == 'cloudformation':
+            elif _conn_type == 'cloudformation':
                 path = 'CloudFormation'
                 conn_class = boto.cloudformation.CloudFormationConnection
-            elif conn_type == 'elb':
+            elif _conn_type == 'elb':
                 path = 'LoadBalancing'
                 conn_class = boto.ec2.elb.ELBConnection
-            elif conn_type == 'iam':
+            elif _conn_type == 'iam':
                 path = 'Euare'
                 conn_class = boto.iam.IAMConnection
-            elif conn_type == 's3':
+            elif _conn_type == 's3':
                 path = 'objectstorage'
                 conn_class = S3Connection
-            elif conn_type == 'vpc':
+            elif _conn_type == 'vpc':
                 conn_class = boto.vpc.VPCConnection
 
             if _dns_enabled:
@@ -213,7 +267,7 @@ class ConnectionManager(object):
                 path = '/services/{0}/'.format(path)
             region = RegionInfo(name='eucalyptus', endpoint=_ufshost)
             # IAM and S3 connections need host instead of region info
-            if conn_type in ['iam', 's3']:
+            if _conn_type in ['iam', 's3']:
                 conn = conn_class(
                     _access_id, _secret_key, host=_ufshost, port=_port, path=path, is_secure=True, security_token=_token
                 )
@@ -221,11 +275,11 @@ class ConnectionManager(object):
                 conn = conn_class(
                     _access_id, _secret_key, region=region, port=_port, path=path, is_secure=True, security_token=_token
                 )
-            if conn_type == 's3':
+            if _conn_type == 's3':
                 conn.calling_format = OrdinaryCallingFormat()
 
             # AutoScaling service needs additional auth info
-            if conn_type == 'autoscale':
+            if _conn_type == 'autoscale':
                 conn.auth_region_name = 'Eucalyptus'
 
             setattr(conn, 'APIVersion', api_version)
@@ -238,7 +292,7 @@ class ConnectionManager(object):
             # conn.set_request_hook(RequestLogger())
             return conn
 
-        return _euca_connection(ufshost, port, access_id, secret_key, token, conn_type, dns_enabled)
+        return _euca_connection(ufshost, port, region, access_id, secret_key, token, conn_type, dns_enabled)
 
 
 def groupfinder(user_id, request):

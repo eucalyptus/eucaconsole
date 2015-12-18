@@ -59,6 +59,17 @@ class GuiEC2(GuiTester):
         BasePage(self).goto_images_view_via_menu()
         ImageLanding(self)
 
+    def get_region_list(self):
+        return BasePage(self).get_region_list()
+
+    def change_region(self, region=None):
+        """
+        If region is passed, change to that region, otherwise select 1st from menu.
+        """
+        if region is None:
+            region = BasePage(self).get_region_list()[0]
+        BasePage(self).select_region(region)
+
     def create_keypair_from_dashboard(self, keypair_name):
         """
         Navigates to Dashboard via menu, creates keypair. Verifies keypair visible on Keypair View page.
@@ -607,6 +618,14 @@ class GuiEC2(GuiTester):
         DeleteSnapshotModal(self).delete_snapshot()
         SnapshotLanding(self).verify_snapshot_not_present(snapshot_id)
 
+    def verify_snapshot_not_present_on_lp(self, snapshot_id):
+        """
+        Navigates to snapshot landing page. Verifies snapshot not on landing page
+        :param snapshot_id:
+        """
+        BasePage(self).goto_snapshots_view_via_menu()
+        SnapshotLanding(self).verify_snapshot_not_present(snapshot_id)
+
     def create_volume_from_snapshot_on_snapshot_lp(self, snapshot_id, volume_name=None, availability_zone=None, volume_size=None, timeout_in_seconds=240):
         """
         Navigates to snapshot landing page. Goes to "create volume from snapshot" in the actions menu. Creates volume from snapshot.
@@ -662,8 +681,25 @@ class GuiEC2(GuiTester):
         ImageLanding(self).click_action_remove_image_from_cloud(image_id)
         RemoveImageFromCloudDialog(self).remove_image(delete_associated_snapshot)
 
-    def register_snapshot_as_an_image_from_snapshot_detail_page(self):
-        NotImplementedError()
+    def register_snapshot_as_an_image_from_snapshot_detail_page(self, snapshot_id, image_name, description=None,
+                                                                delete_on_terminate=True,
+                                                                register_as_windows_image=False
+                                                                ):
+        BasePage(self).goto_snapshots_view_via_menu()
+        SnapshotLanding(self).goto_snapshot_detail_page_via_link(snapshot_id)
+        SnapshotDetailPage(self).click_action_register_as_image_on_detail_page()
+        RegisterSnapshotAsImageModal(self).register_as_image(name=image_name, description=description,
+                                                             delete_on_terminate=delete_on_terminate,
+                                                             register_as_windows_image=register_as_windows_image)
+        if ImageDetailPage(self).is_image_detail_page_loaded():
+            image_id = ImageDetailPage(self).get_image_id()
+            image = {'image_name': image_name, 'image_id': image_id}
+        else:
+            BasePage(self).goto_images_view_via_menu()
+            image_id = ImageLanding(self).get_image_id_by_name(image_name)
+            image = {'image_name': image_name, 'image_id': image_id}
+        print image
+        return image
 
     def allocate_eip_from_lp(self, number=1):
         """

@@ -21,21 +21,22 @@
 
         <div class="row tagentry controls-wrapper" ng-show="tags.length &lt; 10">
             <div class="tag-entry-fields">
-                <div id="propagate-wrapper" class="large-2 medium-3 small-3 columns">
+                <div id="propagate-wrapper" class="large-2 medium-3 small-3 columns" ng-show="autoscale">
                     <input id="propagate-checkbox" class="tag-input propagate" type="checkbox"
                            ng-model="newTagPropagate"/>
                     <label for="propagate-checkbox" i18n:translate="">Propagate</label>
                     <span class="helptext-icon" data-tooltop="" i18n:attributes="title"
                           title="Propagate to instances launched by this scaling group"></span>
                 </div>
-                <div id="autoscale-tag-name-input-div" class="large-2 medium-2 small-4 columns">
+                <div id="autoscale-tag-name-input-div" class="small-4 columns"
+                    ng-class="{'large-2 medium-2': autoscale, 'large-4 medium-4': !autoscale }">
                     <input class="key" type="text" placeholder="name..."
-                           ng-model="newTagKey" name="key" tag-name="" required=""/>
-                    <span class="error" ng-show="tagForm.key.$error.required" i18n:translate="">
-                        Tag name is required
-                    </span>
+                           ng-model="newTagKey" name="key" tag-name="" prevent-duplicates=""/>
                     <span class="error" ng-show="tagForm.key.$error.tagName" i18n:translate="">
                         Tag must not begin with "aws:" and its length may not be longer than 128 chars
+                    </span>
+                    <span class="error" ng-show="tagForm.key.$error.preventDuplicates" i18n:translate="">
+                        Tag names must be unique
                     </span>
                 </div>
                 <div id="autoscale-tag-value-input-div" class="large-8 medium-7 small-5 columns">
@@ -52,7 +53,7 @@
                        id="add-tag-btn" title="Add tag" i18n:translate="">Add Tag</a>
                 </div>
             </div>
-            <div style="clear: both;">
+            <div class="tag-entry-result">
                 <textarea id="tags" name="tags" class="">{{ tags }}</textarea>
             </div>
         </div>
