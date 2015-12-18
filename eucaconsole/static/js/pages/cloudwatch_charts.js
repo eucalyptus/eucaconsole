@@ -198,8 +198,9 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
             if (scope.unit === 'Percent' || scope.metric === 'VolumeIdleTime') {
                 chart.forceY([0, 100]);  // Set proper y-axis range for percentage units
             }
-            if (maxValue < 10) {
+            if (maxValue && maxValue < 10) {
                 chart.forceY([0, maxValue]);
+                yformatter = '0.2f';
             }
             // Adjust precision
             if (preciseFormatterMetrics.indexOf(scope.metric) !== -1) {
