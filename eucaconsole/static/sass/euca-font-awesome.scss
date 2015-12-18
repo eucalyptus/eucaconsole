@@ -92,3 +92,8 @@ h3.warn-dialog:before {
     margin-left: 1px;
     text-align: center;
 }
+
+.split-bar {
+    @extend .fa;
+    @extend .fa-ellipsis-h;
+}

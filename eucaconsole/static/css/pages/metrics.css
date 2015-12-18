@@ -145,4 +145,8 @@ table td input[type="checkbox"] { margin: 0 0 0; }
 
 .split-top { height: 250px; overflow: auto; }
 
+.split-bar { height: 0.6rem; width: 100%; color: grey; background: #ffffff; cursor: row-resize; text-align: center; overflow-y: hidden; }
+
 .split-bottom { position: relative; }
+
+select { width: 20rem; }

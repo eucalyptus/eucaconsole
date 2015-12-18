@@ -66,6 +66,8 @@ class CloudWatchMetricsView(LandingPageView):
             prefix=self.prefix,
             initial_sort_key=self.initial_sort_key,
             json_items_endpoint=self.request.route_path('cloudwatch_metrics_json'),
+            statistic_choices=STATISTIC_CHOICES,
+            duration_choices=MONITORING_DURATION_CHOICES,
             chart_options_json=self.get_chart_options_json()
         )
 
@@ -114,18 +116,20 @@ class CloudWatchMetricsJsonView(BaseView):
                 tmp = [{'name':item.name, 'namespace':item.namespace, 'dimensions':item.dimensions} for item in items if item.namespace == namespace and item.dimensions]
                 tmp = [(met['dimensions'].items(), met['name']) for met in tmp]
                 metrics = []
-                for dim in tmp:
-                    resource_id = dim[0][0][1][0]
-                    resource_type = dim[0][0][0]
-                    metric = dim[1]
-                    unit = [mt['unit'] for mt in METRIC_TYPES if mt['name'] == metric]
+                for metric in tmp:
+                    metric_dims = metric[0]
+                    resource_id   = [dim[1][0] for dim in metric_dims]
+                    resource_type = [dim[0] for dim in metric_dims]
+                    unit = [mt['unit'] for mt in METRIC_TYPES if mt['name'] == metric[1]]
                     metrics.append(dict(
-                        resource_id=resource_id,
-                        resource_url=self.get_url_for_resource(self.request, resource_type, resource_id),
-                        resource_type=resource_type,
+                        resources=[dict(
+                                res_id=dim[1][0],
+                                res_type=dim[0],
+                                res_url=self.get_url_for_resource(self.request, dim[0], dim[1][0])
+                            ) for dim in metric_dims
+                        ],
                         unit=unit[0] if unit else '',
-                        statistic='',
-                        metric=metric
+                        metric_name=metric[1]
                     ))
                 cat['metrics'] = metrics
 

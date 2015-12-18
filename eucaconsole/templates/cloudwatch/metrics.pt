@@ -83,6 +83,19 @@
                                 <tr ng-class="{'expando-tr-even': $odd}" ng-cloak="true"> 
                                     <td ng-show="!expando.data &amp;&amp; expando.loading == true" colspan="10"><i class="busy"></i></td>
                                     <td ng-show="expando.data" colspan="10">
+                                        <h6 i18n:translate="" ng-show="item.name=='ebs'">Metrics by volume</h6>
+                                        <select ng-show="item.name=='ec2'" ng-model="metricsCtrl.ec2SubMetric">
+                                            <option value="instance" i18n:translate="">Metrics per-instance</option>
+                                            <option value="image" i18n:translate="">Metrics per image ID</option>
+                                            <option value="instancetype" i18n:translate="">Metrics aggregated by instance type</option>
+                                            <option value="allinstances" i18n:translate="">Metrics across all instances</option>
+                                        </select>
+                                        <h6 i18n:translate="" ng-show="item.name=='scalinggroup'">Auto scaling group metrics</h6>
+                                        <select ng-show="item.name=='elb'" ng-model="metricsCtrl.elbSubMetric">
+                                            <option value="elb" i18n:translate="">Metrics by elastic load balancer</option>
+                                            <option value="elbzone" i18n:translate="">Metrics by elastic load balancer and availability zone</option>
+                                            <option value="zone" i18n:translate="">Metrics by availability zone</option>
+                                        </select>
                                         <div class="datagrid" id="datagrid-items">
                                             <div ng-show="itemsLoading"><span class="busy"></span></div>
                                             <div id="tableview" class="gridwrapper" ng-show="!itemsLoading">
@@ -95,13 +108,16 @@
                                                         <th i18n:translate="">ACTIONS</th>
                                                     </tr></thead>
                                                     <tbody>
-                                                        <tr ng-repeat="metric in item.metrics" ng-cloak="true">
+                                                        <tr ng-repeat="metric in metricsCtrl.filterMetrics(item)" ng-cloak="true">
                                                             <td><input type="checkbox" ng-model="metric.selected"/></td>
                                                             <td>
-                                                                <a ng-if="metric.resource_url" ng-href="{{ metric.resource_url }}">{{ metric.resource_id }}</a>
-                                                                <span ng-if="metric.resource_url==null">{{ metric.resource_id }}</span>
+                                                                <span ng-repeat="res in metric.resources">
+                                                                    <a ng-if="res.res_url" ng-href="{{ res.res_url }}">{{ res.res_id }}</a>
+                                                                    <span ng-if="res.res_url==null">{{ res.res_id }}</span>
+                                                                    <span ng-hide="$last">,</span> 
+                                                                </span>
                                                             </td>
-                                                            <td>{{ metric.metric }}</td>
+                                                            <td>{{ metric.metric_name }}</td>
                                                             <td>
                                                                 <span class="actions">
                                                                     <a id="table-item-dropdown_{{ item.name | escapeHTMLTagID }}" class="tiny secondary button dropdown right round" data-dropdown="item-dropdown_{{ item.name | escapeHTMLTagID }}"><i class="grid-action"></i></a>
@@ -131,20 +147,17 @@
                         </div>
                     </div>
                 </div>
+                <div splitbar="" class="split-bar"></div>
                 <div class="split-bottom" id="graph-area">
                     <div ng-controller="CloudWatchChartsCtrl as chartsCtrl"
                         ng-init="chartsCtrl.initController('${chart_options_json}')">
                         <div ng-repeat="item in items" ng-cloak="true">
                             <div class="chart-wrapper" ng-repeat="chart in item.metrics | filter:{ selected: true }">
-                                <h6>{{ chartsCtrl.metricTitleMapping[chart.metric] }}<i class="busy"></i></h6>
-                                <div ng-show="chartsCtrl.emptyMessages[chart.metric]" class="empty-message-wrapper">
-                                    <div class="empty-message">{{ chartsCtrl.emptyMessages[chart.metric] }}</div>
-                                </div>
-                                <svg ng-show="!chartsCtrl.emptyMessages[chart.metric]"
-                                     cloudwatch-chart="" id="cwchart-{{ chart.metric }}" class="cwchart"
-                                     ids="{{ chart.resource_id }}" idtype="{{ chart.resource_type }}" metric="{{ chart.metric }}"
+                                <h6>{{ chart.metric_name }}<i class="busy"></i></h6>
+                                <svg cloudwatch-chart="" id="cwchart-{{ chart.metric_name }}" class="cwchart"
+                                     ids="{{ chart.resources[0].res_id }}" idtype="{{ chart.resources[0].res_type }}" metric="{{ chart.metric_name }}"
                                      duration="{{ chartsCtrl.duration }}" unit="{{ chart.unit }}"
-                                     statistic="Sum" empty="No Data" largechart="true">
+                                     statistic="Sum" empty="No Data">
                                 </svg>
                             </div>
                         </div>
