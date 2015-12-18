@@ -32,6 +32,9 @@
                     <li ng-show="item.status !== 'deleting'">
                         <a ng-href="${prefix}/{{ item.id }}/snapshots" i18n:translate="">Manage snapshots</a>
                     </li>
+                    <li ng-show="item.status === 'attached'">
+                        <a ng-href="${prefix}/{{ item.id }}/monitoring" i18n:translate="">Monitor</a>
+                    </li>
                     <li ng-show="item.status === 'available'">
                         <a i18n:translate="" ng-click="revealModal('attach', item)">Attach to instance</a>
                     </li>
@@ -126,6 +129,9 @@
                             </li>
                             <li ng-show="item.status !== 'deleting'">
                                 <a ng-href="${prefix}/{{ item.id }}/snapshots" i18n:translate="">Manage snapshots</a>
+                            </li>
+                            <li ng-show="item.status === 'attached'">
+                                <a i18n:translate="" ng-href="${prefix}/{{ item.id }}/monitoring">Monitor</a>
                             </li>
                             <li ng-show="item.status === 'available'">
                                 <a i18n:translate="" ng-click="revealModal('attach', item)">Attach to instance</a>
