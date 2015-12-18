@@ -226,7 +226,7 @@
 <!-- "More actions" menu item for multi-select operations on landing pages -->
 <metal:moreactions_macro metal:define-macro="more_actions">
     <a class="button dropdown more-actions" id="more-actions-btn" ng-cloak=""
-       ng-if="landingPageView === 'tableview' &amp;&amp; checkedItems.length"
+       ng-if="landingPageView === 'tableview'" ng-disabled="!checkedItems.length"
        data-dropdown="more-actions-dropdown" i18n:translate="">More Actions</a>
     <ul id="more-actions-dropdown" class="f-dropdown" data-dropdown-content="">
         <metal:block metal:define-slot="menu_items" />
