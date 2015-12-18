@@ -297,6 +297,9 @@ $dropdown-border-color: $hp-gray-65;
                     text-decoration: none;
                 }
             }
+            input[type="checkbox"] {
+                margin-bottom: 0;
+            }
         }
     }
     .dropdown.button.tiny {
