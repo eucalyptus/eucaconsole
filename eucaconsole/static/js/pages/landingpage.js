@@ -342,7 +342,7 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch', 'Ex
             if (anyChecked === false) {
                 $scope.state.allSelected = false;
             }
-        }
+        };
         $scope.setAllState = function() {
             $timeout(function() {
                 angular.forEach($scope.items, function(item) {
