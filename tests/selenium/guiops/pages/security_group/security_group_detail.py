@@ -1,4 +1,5 @@
 from pages.detailpage import DetailPage
+import time
 
 class SecurityGroupDetailPage(DetailPage):
 
@@ -69,6 +70,7 @@ class SecurityGroupDetailPage(DetailPage):
         self.tester.send_keys_by_css("[class='port from ng-pristine ng-untouched ng-valid ng-valid-pattern']", port_begin)
         self.tester.send_keys_by_css("[class='port to ng-pristine ng-untouched ng-valid ng-valid-pattern']", port_end)
         self.tester.click_element_by_css(self._security_group_radio_button_css)
+        time.sleep(2)
         self.tester.click_element_by_css(self._groupname_selection_menu_css)
         self.tester.send_keys_by_css(self._groupname_selection_search_css, "default")
         self.tester.click_element_by_css('[class="active-result ng-binding ng-scope highlighted"]')
