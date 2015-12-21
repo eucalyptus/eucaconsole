@@ -10,8 +10,7 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch', 'Ex
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.items = [];
         $scope.itemsLoading = true;
-        $scope.allCheckboxes = false;
-        $scope.checkedItems = [];
+        $scope.state = {'allSelected': false};
         $scope.runningSmartRefresh = false;
         $scope.facetItems = [];
         $scope.unfilteredItems = [];
@@ -335,36 +334,22 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch', 'Ex
                 }
             });
         };
-        $scope.handleItemSelection = function (item) {
-            var itemIdx;
-            if (item.selected) {
-                if ($scope.checkedItems.indexOf(item) === -1) {
-                    $scope.checkedItems.push(item);
-                }
-            } else {
-                itemIdx = $scope.checkedItems.indexOf(item);
-                if (itemIdx !== -1) {
-                    $scope.checkedItems.splice(itemIdx, 1);
-                }
+        $scope.handleItemSelection = function() {
+            // set all checkbox state based on state of items.selected
+            var anyChecked = $scope.items.some(function(item) {
+                return item.selected;
+            });
+            if (anyChecked === false) {
+                $scope.state.allSelected = false;
             }
-            if ($scope.checkedItems.length === $scope.items.length) {
-                $scope.allCheckboxes = true;
-            }
+        }
+        $scope.setAllState = function() {
+            $timeout(function() {
+                angular.forEach($scope.items, function(item) {
+                    item.selected = $scope.state.allSelected;
+                });
+            });
         };
-        $scope.selectAllCheckboxes = function (allCheckboxes) {
-            $scope.allCheckboxes = allCheckboxes;
-            $scope.checkedItems = [];
-            if (allCheckboxes) {
-                $scope.checkedItems = $scope.items.slice();
-            }
-        };
-        $scope.$watch('checkedItems', function (newVal, oldVal) {
-            if ($scope.allCheckboxes) {
-                if (newVal.length === 0) {
-                    $scope.allCheckboxes = false;
-                }
-            }
-        }, true);
         $scope.$on('searchUpdated', function($event, query) {
             // update url
             var url = window.location.href;

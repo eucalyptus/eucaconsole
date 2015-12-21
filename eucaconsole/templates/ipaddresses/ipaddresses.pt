@@ -23,13 +23,13 @@
                 <metal:block metal:use-macro="layout.global_macros['more_actions']">
                     <div metal:fill-slot="menu_items" tal:omit-tag="">
                         <li>
-                            <a i18n:translate="" ng-click="revealReleaseIPsModal(checkedItems)"
+                            <a i18n:translate="" ng-click="revealReleaseIPsModal((items | filter:{ selected: true }))"
                                class="more-actions-release">
                                 Release to cloud
                             </a>
                         </li>
                         <li>
-                            <a i18n:translate="" ng-click="revealDisassociateIPsModal(checkedItems)"
+                            <a i18n:translate="" ng-click="revealDisassociateIPsModal((items | filter:{ selected: true }))"
                                class="more-actions-disassociate">
                                 Disassociate from instance
                             </a>
@@ -79,8 +79,8 @@
             </div>
             <metal:block metal:fill-slot="tableview_headers">
                 <th class="checkbox-header">
-                    <input type="checkbox" ng-model="allCheckboxes" id="check-all-items-tableview"
-                           ng-change="selectAllCheckboxes(allCheckboxes)" />
+                    <input type="checkbox" id="check-all-items-tableview"
+                           ng-model="state.allSelected" ng-click="setAllState()" />
                 </th>
                 <th i18n:translate="">Public IP address</th>
                 <th i18n:translate="">Scope</th>
@@ -90,7 +90,7 @@
             <metal:block metal:fill-slot="tableview_columns">
                 <td>
                     <input type="checkbox" class="row-checkbox" ng-model="item.selected"
-                           ng-checked="allCheckboxes" ng-change="handleItemSelection(item)" />
+                           ng-change="handleItemSelection()" />
                 </td>
                 <td><a ng-href="${prefix}/{{ item.public_ip }}">{{ item.public_ip }}</a></td>
                 <td tal:condition="is_vpc_supported">
