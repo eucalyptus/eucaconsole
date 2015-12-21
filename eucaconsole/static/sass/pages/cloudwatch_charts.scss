@@ -80,6 +80,16 @@
     }
 }
 
+svg {
+    g.euca-alarmLines {
+        line.alarm {
+            stroke: red;
+            stroke-width: 1px;
+            stroke-dasharray: 3 3;
+        }
+    }
+}
+
 .large-chart-wrapper {
     svg {
         width: 100%;

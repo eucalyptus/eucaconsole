@@ -95,6 +95,29 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
                 .datum(results)
                 .call(chart);
 
+            var alarmLines = s.select('.nv-lineChart > g')
+                .append('g').attr('class', 'euca-alarmLines')
+                .datum(function () {
+                    return params.alarms.map(function (current) {
+                        return current.threshold;
+                    });
+                })
+                .call(function (selection) {
+                    this.datum().forEach(function (threshold) {
+                        var y = chart.yScale()(threshold * 100),
+                            xDomain = chart.xScale().domain(),
+                            xEnd = chart.xScale()(xDomain[1]);
+
+                        selection.append('line')
+                            .attr('class', 'alarm')
+                            .attr('threshold', threshold)
+                            .attr('x1', 0)
+                            .attr('y1', y)
+                            .attr('x2', xEnd)
+                            .attr('y2', y);
+                    });
+                });
+
             return chart;
         },
 
