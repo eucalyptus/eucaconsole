@@ -269,6 +269,9 @@ $dropdown-border-color: $hp-gray-65;
     tr {
         position: relative;
         width: $gridwrapper-table-width;
+        input[type="checkbox"] {
+            margin-bottom: 0;
+        }
         td {
             position: relative;
             padding: 8px 4px 8px 6px;
@@ -296,9 +299,6 @@ $dropdown-border-color: $hp-gray-65;
                 &:hover {
                     text-decoration: none;
                 }
-            }
-            input[type="checkbox"] {
-                margin-bottom: 0;
             }
         }
     }

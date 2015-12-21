@@ -78,20 +78,14 @@
                 </ul>
             </div>
             <metal:block metal:fill-slot="tableview_headers">
-                <th class="checkbox-header">
-                    <input type="checkbox" id="check-all-items-tableview"
-                           ng-model="state.allSelected" ng-click="setAllState()" />
-                </th>
+                <th metal:use-macro="layout.global_macros['selectall_header_checkbox']"></th>
                 <th i18n:translate="">Public IP address</th>
                 <th i18n:translate="">Scope</th>
                 <th i18n:translate="">Assigned to instance</th>
                 <th i18n:translate="" class="actions">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
-                <td>
-                    <input type="checkbox" class="row-checkbox" ng-model="item.selected"
-                           ng-change="handleItemSelection()" />
-                </td>
+                <td metal:use-macro="layout.global_macros['select_item_checkbox']"></td>
                 <td><a ng-href="${prefix}/{{ item.public_ip }}">{{ item.public_ip }}</a></td>
                 <td tal:condition="is_vpc_supported">
                     <span ng-show="item.domain == 'vpc'" i18n:translate="">VPC</span>

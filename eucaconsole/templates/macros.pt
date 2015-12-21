@@ -223,6 +223,20 @@
     </div>
 </metal:plaintableview_macro>
 
+<!-- "Select all" checkbo table header -->
+<metal:selectall_header_checkbox metal:define-macro="selectall_header_checkbox">
+    <th class="checkbox-header">
+        <input type="checkbox" id="check-all-items-tableview" ng-model="state.allSelected" ng-click="setAllState()" />
+    </th>
+</metal:selectall_header_checkbox>
+
+<!-- checkbox macro for a table cell in a table with multi-select rows -->
+<metal:select_item_checkbox metal:define-macro="select_item_checkbox">
+    <td>
+        <input type="checkbox" class="row-checkbox" ng-model="item.selected" ng-change="handleItemSelection()" />
+    </td>
+</metal:select_item_checkbox>
+
 <!-- "More actions" menu item for multi-select operations on landing pages -->
 <metal:moreactions_macro metal:define-macro="more_actions">
     <a class="button secondary dropdown more-actions" id="more-actions-btn" ng-cloak=""

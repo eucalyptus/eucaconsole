@@ -62,6 +62,7 @@
 .gridwrapper .table tr td.count { text-align: center; }
 .gridwrapper .table th { white-space: nowrap; }
 .gridwrapper .table tr { position: relative; width: 100%; }
+.gridwrapper .table tr input[type="checkbox"] { margin-bottom: 0; }
 .gridwrapper .table tr td { position: relative; padding: 8px 4px 8px 6px; vertical-align: top; }
 .gridwrapper .table tr td a { color: #007dba; }
 .gridwrapper .table tr td a:hover { text-decoration: underline; }
@@ -70,7 +71,6 @@
 .gridwrapper .table tr td.tags { max-width: 20rem; word-break: break-all; }
 .gridwrapper .table tr td .f-dropdown a { color: #444; }
 .gridwrapper .table tr td .f-dropdown a:hover { text-decoration: none; }
-.gridwrapper .table tr td input[type="checkbox"] { margin-bottom: 0; }
 .gridwrapper .table .dropdown.button.tiny { z-index: 0; top: 8px; right: 20px; padding-left: 10px; padding-right: 24px; }
 .gridwrapper .table .dropdown.button.tiny i { font-size: 1.2rem; top: 0; }
 .gridwrapper .table .fi-alert { color: darkred; }
