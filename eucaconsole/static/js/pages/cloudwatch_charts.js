@@ -10,15 +10,6 @@
  */
 
 angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
-.directive('monitoring', function () {
-    return {
-        restrict: 'A',
-        controller: ['$scope', 'eucaUnescapeJson', 'eucaOptionsArray', function ($scope, eucaUnescapeJson, eucaOptionsArray) {
-        }],
-        link: function (scope, element, attrs) {
-        }
-    };
-})
 .factory('CloudwatchAPI', ['$http', function ($http) {
     return {
         getChartData: function (params) {
