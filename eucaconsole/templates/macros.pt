@@ -228,7 +228,7 @@
     <a class="button secondary dropdown more-actions" id="more-actions-btn" ng-cloak=""
        ng-if="landingPageView === 'tableview'" ng-disabled="(items | filter:{ selected: true}).length === 0"
        data-dropdown="more-actions-dropdown" i18n:translate="">More Actions</a>
-    <ul id="more-actions-dropdown" class="f-dropdown" data-dropdown-content="" ng-if="(items | filter:{ selecte: true}). length === 0">
+    <ul id="more-actions-dropdown" class="f-dropdown" data-dropdown-content="" ng-if="(items | filter:{ selected: true}).length">
         <metal:block metal:define-slot="menu_items" />
     </ul>
 </metal:moreactions_macro>
