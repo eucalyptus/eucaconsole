@@ -71,7 +71,7 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts'])
                 });
             }
             return metricGroup.metrics;
-        }
+        };
     })
 ;
 

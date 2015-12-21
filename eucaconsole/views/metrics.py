@@ -30,17 +30,14 @@ Pyramid views for Eucalyptus and AWS CloudWatch metrics
 """
 import simplejson as json
 
-from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config
 
 from ..constants.cloudwatch import (
     MONITORING_DURATION_CHOICES, METRIC_TITLE_MAPPING, STATISTIC_CHOICES, GRANULARITY_CHOICES,
     DURATION_GRANULARITY_CHOICES_MAPPING, METRIC_TYPES
 )
-from ..constants.cloudwatch import METRIC_DIMENSION_NAMES, METRIC_DIMENSION_INPUTS
 from ..i18n import _
-from ..models import Notification
-from ..views import LandingPageView, BaseView, JSONResponse
+from ..views import LandingPageView, BaseView
 from . import boto_error_handler
 
 
@@ -83,6 +80,7 @@ class CloudWatchMetricsView(LandingPageView):
             'largeChart': True
         }))
 
+
 class CloudWatchMetricsJsonView(BaseView):
     """JSON response for CloudWatch Metrics landing page et. al."""
     @view_config(route_name='cloudwatch_metrics_json', renderer='json', request_method='POST')
@@ -113,28 +111,27 @@ class CloudWatchMetricsJsonView(BaseView):
             items = self.get_items()
             for cat in categories:
                 namespace = cat['namespace']
-                tmp = [{'name':item.name, 'namespace':item.namespace, 'dimensions':item.dimensions} for item in items if item.namespace == namespace and item.dimensions]
+                tmp = [{
+                    'name': item.name,
+                    'namespace': item.namespace,
+                    'dimensions': item.dimensions
+                } for item in items if item.namespace == namespace and item.dimensions]
                 tmp = [(met['dimensions'].items(), met['name']) for met in tmp]
                 metrics = []
                 for metric in tmp:
                     metric_dims = metric[0]
-                    resource_id   = [dim[1][0] for dim in metric_dims]
-                    resource_type = [dim[0] for dim in metric_dims]
                     unit = [mt['unit'] for mt in METRIC_TYPES if mt['name'] == metric[1]]
                     metrics.append(dict(
                         resources=[dict(
-                                res_id=dim[1][0],
-                                res_type=dim[0],
-                                res_url=self.get_url_for_resource(self.request, dim[0], dim[1][0])
-                            ) for dim in metric_dims
-                        ],
+                            res_id=dim[1][0],
+                            res_type=dim[0],
+                            res_url=self.get_url_for_resource(self.request, dim[0], dim[1][0])
+                        ) for dim in metric_dims],
                         unit=unit[0] if unit else '',
                         metric_name=metric[1]
                     ))
                 cat['metrics'] = metrics
 
-            #cats = set(map(lambda x:x.namespace, items))
-            #metrics = [[{'name':item.name, 'namespace':item.namespace, 'dimensions':item.dimensions} for item in items if item.namespace==x and item.dimensions] for x in cats]
             return dict(results=categories)
 
     def get_items(self):
