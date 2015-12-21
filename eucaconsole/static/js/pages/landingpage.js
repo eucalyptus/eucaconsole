@@ -337,18 +337,15 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch', 'Ex
         $scope.handleItemSelection = function() {
             // set all checkbox state based on state of items.selected
             var allItemsCheckbox = document.getElementById('select-all-items-tableview');
-            var anyChecked = $scope.items.some(function(item) {
+            var checkedIems = $scope.items.filter(function (item) {
                 return item.selected;
             });
-            var allChecked = $scope.items.every(function(item) {
-                return item.selected;
-            });
-            if (anyChecked === false) {
+            if (!checkedIems.length) {
                 $scope.state.allSelected = false;
             }
             // Set indeterminate state on select-all checkbox when checked and at least one item is unselected
-            allItemsCheckbox.indeterminate = !!($scope.state.allSelected && anyChecked && !allChecked);
-            if (!$scope.state.allSelected && allChecked) {
+            allItemsCheckbox.indeterminate = !!($scope.state.allSelected && checkedIems.length < $scope.items.length);
+            if (!$scope.state.allSelected && checkedIems.length === $scope.items.length) {
                 $scope.state.allSelected = true;
             }
         };
