@@ -226,7 +226,7 @@
 <!-- "Select all" checkbo table header -->
 <metal:selectall_header_checkbox metal:define-macro="selectall_header_checkbox">
     <th class="checkbox-header">
-        <input type="checkbox" id="check-all-items-tableview" ng-model="state.allSelected" ng-click="setAllState()" />
+        <input type="checkbox" id="select-all-items-tableview" ng-model="state.allSelected" ng-click="setAllState()" />
     </th>
 </metal:selectall_header_checkbox>
 
