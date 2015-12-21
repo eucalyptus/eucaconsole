@@ -186,7 +186,7 @@ class CloudWatchAlarmsJsonView(BaseView):
 
     @view_config(route_name="cloudwatch_alarms_for_metric_json",
                  renderer='json',
-                 request_method='POST')
+                 request_method='GET')
     def cloudwatch_alarm_for_metric_json(self):
         with boto_error_handler(self.request):
             metric_name = self.request.params.get('metric_name')

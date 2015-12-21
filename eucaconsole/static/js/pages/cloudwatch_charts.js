@@ -37,7 +37,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
         getAlarmsForMetric: function (metricName, params) {
             return $http({
                 url: '/cloudwatch/alarms/json/' + metricName,
-                method: 'POST',
+                method: 'GET',
                 params: params
             }).then(function (oData) {
                 return oData.data.results;
@@ -94,25 +94,6 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
             var s = d3.select(target)
                 .datum(results)
                 .call(chart);
-
-            s.call(function (selection) {
-                var xScale = chart.xScale,
-                    xDomain = chart.xDomain,
-                    yScale = chart.yScale;
-
-                var alarmGroup = selection.append('g')
-                    .attr('class', 'alarms');
-
-                params.alarms.forEach(function (alarm) {
-                    console.log(alarm);
-                    alarmGroup.append('line')
-                        .attr('x1', 0)
-                        .attr('y1', 0)
-                        .attr('x2', 1)
-                        .attr('y2', 1);
-                });
-            });
-
 
             return chart;
         },

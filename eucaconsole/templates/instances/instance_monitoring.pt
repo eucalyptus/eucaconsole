@@ -92,7 +92,7 @@
                         <svg ng-show="!chartsCtrl.emptyMessages[chart.metric]"
                              cloudwatch-chart="" id="cwchart-{{ chart.metric }}" class="cwchart"
                              ids="${instance.id}" idtype="InstanceId" metric="{{ chart.metric }}"
-                             duration="{{ chartsCtrl.duration }}" unit="{{ chart.unit }}"
+                             duration="{{ chartsCtrl.duration }}" unit="{{ chart.unit }}" namespace="EC2"
                              statistic="Average" empty="{{ chart.empty_msg }}">
                         </svg>
                     </li>
