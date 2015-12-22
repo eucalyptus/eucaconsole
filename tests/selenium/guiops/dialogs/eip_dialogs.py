@@ -32,3 +32,21 @@ class ReleaseEipDialog(BasePage):
         notification = notification.replace('Successfully released', '')
         notification = notification.replace('to the cloud', '')
         return sorted([ip.strip() for ip in notification.split(',')])
+
+class AssociateEipDialog(BasePage):
+
+    _associate_elastic_ips_button_id = 'associate_ip_submit_button'
+    _select_instance_css = '#instance_id_chosen a.chosen-single'
+    _instance_input_css = '.chosen-search>input'
+    _highlighted_search_result_css = '.active-result'
+    _notification_css = '#notifications .message'
+
+    def associate_eip_with_instance(self, instance_id):
+        self.tester.click_element_by_css(self._select_instance_css)
+        self.tester.send_keys_by_css(self._instance_input_css, instance_id)
+        self.tester.click_element_by_css(self._highlighted_search_result_css)
+        self.tester.click_element_by_id(self._associate_elastic_ips_button_id)
+        notification = self.tester.store_text_by_css(self._notification_css)
+        notification = notification.replace('Successfully associated IP', '')
+        notification = notification.replace('with instance', '')
+        return [data.strip() for data in notification.split(',')]

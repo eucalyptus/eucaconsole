@@ -26,7 +26,7 @@ from dialogs.volume_dialogs import (
     AttachVolumeModalSelectVolume, DetachVolumeModal)
 from dialogs.snapshot_dialogs import CreateSnapshotModal, DeleteSnapshotModal, RegisterSnapshotAsImageModal
 from dialogs.image_dialogs import RemoveImageFromCloudDialog
-from dialogs.eip_dialogs import AllocateEipDialog, ReleaseEipDialog
+from dialogs.eip_dialogs import AllocateEipDialog, ReleaseEipDialog, AssociateEipDialog
 
 
 logger = logging.getLogger('testlogger')
@@ -670,7 +670,7 @@ class GuiEC2(GuiTester):
         :param number: how many IPs to allocate
         :return: allocated IPs as a list of strings
         """
-        BasePage(self).goto_elestic_ip_view_via_menu()
+        BasePage(self).goto_elastic_ip_view_via_menu()
         EipLanding(self).click_allocate_elastic_ips_button()
         return AllocateEipDialog(self).allocate_elastic_ips(number=number)
 
@@ -688,7 +688,7 @@ class GuiEC2(GuiTester):
         Release a single Elastic IP via the item row's actions menu
         :param elastic_ip: IP address to release
         """
-        BasePage(self).goto_elestic_ip_view_via_menu()
+        BasePage(self).goto_elastic_ip_view_via_menu()
         EipLanding(self).select_release_ip_actions_menu_item(elastic_ip)
         ReleaseEipDialog(self).release_elastic_ips()
         EipLanding(self).verify_elastic_ip_is_released(elastic_ip)
@@ -699,7 +699,7 @@ class GuiEC2(GuiTester):
         :param elastic_ips: List of Elastic IPs to be released
         :return: released Elastic IPs as a list of strings
         """
-        BasePage(self).goto_elestic_ip_view_via_menu()
+        BasePage(self).goto_elastic_ip_view_via_menu()
         EipLanding(self).click_elastic_ips_checkboxes(elastic_ips)
         EipLanding(self).select_release_ips_more_actions_item()
         return ReleaseEipDialog(self).release_elastic_ips()
@@ -707,8 +707,12 @@ class GuiEC2(GuiTester):
     def release_eip_from_eip_detail_page(self):
         raise NotImplementedError
 
-    def associate_eip_from_eip_lp(self):
-        raise NotImplementedError
+    def associate_eip_from_eip_lp(self, elastic_ip):
+        launch_instance = self.launch_instance_from_dashboard()
+        BasePage(self).goto_elastic_ip_view_via_menu()
+        EipLanding(self).associate_with_instance_actions_menu_item(elastic_ip)
+        AssociateEipDialog(self).associate_eip_with_instance(launch_instance['instance_id'])
+        EipLanding(self).verify_elastic_ip_associate_instance(launch_instance['instance_id'], elastic_ip)
 
     def associate_eip_from_instances_lp(self):
         raise NotImplementedError
