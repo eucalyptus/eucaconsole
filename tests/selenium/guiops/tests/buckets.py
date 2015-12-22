@@ -44,6 +44,3 @@ class Buckets_operations_sequence(GuiOps):
         self.tester.exit_browser()
 
 
-if __name__ == '__main__':
-    tester = Buckets_operations_sequence()
-    tester.keypair_ops_test()
