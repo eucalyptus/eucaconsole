@@ -24,7 +24,7 @@ angular.module('TagEditorModule', ['EucaConsoleUtils'])
                     };
 
                     if($scope.autoscale) {
-                        tag.propagate_at_launch = !!scope.newTagPropagate;
+                        tag.propagate_at_launch = !!$scope.newTagPropagate;
                     }
 
                     $scope.tags.push(tag);
@@ -58,7 +58,11 @@ angular.module('TagEditorModule', ['EucaConsoleUtils'])
             }],
             link: function (scope, element, attrs, ctrl, transcludeContents) {
                 var content = transcludeContents();
-                scope.tags = JSON.parse(content.text() || '{}');
+                var tags = JSON.parse(content.text() || '{}');
+                scope.tags = tags.filter(function (current) {
+                    return !current.name.match(/^aws:.*/) &&
+                        !current.name.match(/^euca:.*/);
+                });
 
                 attrs.showNameTag = !attrs.showNameTag; // default to true
                 attrs.autoscale = !!attrs.autoscale;    // default to false
