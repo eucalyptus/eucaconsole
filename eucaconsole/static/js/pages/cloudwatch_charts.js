@@ -95,7 +95,10 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
                 })
                 .call(function (selection) {
                     this.datum().forEach(function (threshold) {
-                        var y = chart.yScale()(threshold * 100),
+                        if(params.unit === 'Percent') {
+                            threshold = threshold * 100;
+                        }
+                        var y = chart.yScale()(threshold),
                             xDomain = chart.xScale().domain(),
                             xEnd = chart.xScale()(xDomain[1]);
 
