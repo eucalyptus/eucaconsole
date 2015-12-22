@@ -4,7 +4,7 @@
  *
  */
 
-angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts'])
+angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUtils'])
     .directive('splitbar', function () {
         var pageElement = angular.element(document.body.parentElement);
         return {
@@ -24,11 +24,13 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts'])
             }
         };
     })
-    .controller('MetricsCtrl', function ($scope) {
+    .controller('MetricsCtrl', function ($scope, eucaUnescapeJson) {
         var vm = this;
         vm.ec2SubMetric = 'instance';
         vm.elbSubMetric = 'elb';
-        vm.initPage = function() {
+        var emptyFacets = [];
+        vm.initPage = function(facets) {
+            emptyFacets = JSON.parse(eucaUnescapeJson(facets));
         };
         vm.filterMetrics = function(metricGroup) {
             if (metricGroup.name === 'ebs') {
@@ -72,6 +74,51 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts'])
             }
             return metricGroup.metrics;
         };
+        $scope.$on('itemsLoaded', function($event, items) {
+            var metrics = [];
+            items.forEach(function(val) {
+                val.metrics.forEach(function(metric) {
+                    if (this.indexOf(metric.metric_name) === -1) {
+                        this.push(metric.metric_name);
+                    }
+                }, this);
+            }, metrics);
+            console.log("metrics = "+metrics.length);
+            var resources = [];
+            items.forEach(function(val) {
+                val.metrics.forEach(function(metric) {
+                    metric.resources.forEach(function(res) {
+                        if (this.indexOf(res.res_id) === -1) {
+                            this.push(res.res_id);
+                        }
+                    }, this);
+                }, this);
+            }, resources);
+            console.log("resources = "+resources.length);
+            var resource_types = [];
+            items.forEach(function(val) {
+                val.metrics.forEach(function(metric) {
+                    metric.resources.forEach(function(res) {
+                        if (this.indexOf(res.res_type) === -1) {
+                            this.push(res.res_type);
+                        }
+                    }, this);
+                }, this);
+            }, resource_types);
+            console.log("resource_types = "+resource_types.length);
+            //var facets = emptyFacets.clone();
+            $scope.$broadcast("facets_updated", emptyFacets);
+            /*
+            search_facets = [
+                {'name': 'metric', 'label': _(u"Metric name"), 'options': [
+                    {'key': 'tbd', 'label': _("TBD")},
+                ]},
+                {'name': 'resource', 'label': _(u"Resource type"), 'options': [
+                    {'key': 'tbd', 'label': _("TBD")},
+                ]}
+            ]
+            */
+        });
     })
 ;
 

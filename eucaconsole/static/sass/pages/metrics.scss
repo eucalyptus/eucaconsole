@@ -44,3 +44,16 @@ table td input[type="checkbox"] {
 select {
     width: 20rem;
 }
+
+.tile {
+    input[type="checkbox"] {
+        position: relative;
+        float: left;
+        top: 9px;
+        left: 5px;
+    }
+    .dropdown.button.tiny {
+        top: 5px !important;
+        right: 2px !important;
+    }
+}

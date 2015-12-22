@@ -56,9 +56,20 @@ class CloudWatchMetricsView(LandingPageView):
         self.sort_keys = [
             dict(key='name', name=_(u'Name')),
         ]
+        search_facets = [
+            {'name': 'metric', 'label': _(u"Metric name"), 'options': [
+                {'key': 'tbd', 'label': _("TBD")},
+            ]},
+            {'name': 'resource', 'label': _(u"Resource ID"), 'options': [
+                {'key': 'tbd', 'label': _("TBD")},
+            ]},
+            {'name': 'resource_type', 'label': _(u"Resource type"), 'options': [
+                {'key': 'tbd', 'label': _("TBD")},
+            ]}
+        ]
         self.render_dict = dict(
             filter_keys=self.filter_keys,
-            search_facets=[],
+            search_facets=BaseView.escape_json(json.dumps(search_facets)),
             sort_keys=self.sort_keys,
             prefix=self.prefix,
             initial_sort_key=self.initial_sort_key,

@@ -6,7 +6,7 @@
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/metrics.css')}" />
 </head>
 
-<div metal:fill-slot="main_content" ng-app="MetricsPage" ng-controller="MetricsCtrl as metricsCtrl" ng-init="initPage()"
+<div metal:fill-slot="main_content" ng-app="MetricsPage" ng-controller="MetricsCtrl as metricsCtrl" ng-init="initPage('${search_facets}')"
     tal:define="using_expando True;
                 expando_data_url nothing;
                 expando_data_id nothing">
@@ -47,7 +47,7 @@
                 <div class="lp-search" tal:define="prompt layout.searchtext_prompt if len(search_facets) > 2 else layout.searchtext_prompt2">
                     <magic-search template="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.html')}"
                         strings="{'remove':'${layout.searchtext_remove}', 'cancel':'${layout.searchtext_cancel}', 'prompt':'${prompt}', 'text':'${layout.searchtext_text_facet}'}"
-                        facets="${search_facets}" filter-keys="${filter_keys}"></magic-search>
+                        facets="[]" filter-keys="${filter_keys}"></magic-search>
                 </div>
                 <div class="lp-reload" id="results-count" ng-cloak="cloak" metal:define-slot="results_count">
                     <a id="refresh-btn" ng-show="!itemsLoading" ng-cloak="" ng-click="itemsLoading=true; getItems()">
@@ -63,7 +63,7 @@
             <div class="split-wrapper">
                 <div class="split-top">
                     <div class="loading" ng-show="itemsLoading"><i class="busy"></i></div>
-                    <div id="tableview" class="gridwrapper" ng-if="landingPageView == 'tableview'" ng-cloak="">
+                    <div id="tableview" class="gridwrapper">
                         <!-- Begin table view -->
                         <table class="table" ng-show="!itemsLoading" ng-cloak="true" tal:define="using_expando using_expando | nothing" tal:attributes="class 'table expando' if using_expando else 'table'">
                             <thead>
@@ -98,7 +98,7 @@
                                         </select>
                                         <div class="datagrid" id="datagrid-items">
                                             <div ng-show="itemsLoading"><span class="busy"></span></div>
-                                            <div id="tableview" class="gridwrapper" ng-show="!itemsLoading">
+                                            <div id="tableview" class="gridwrapper" ng-show="!itemsLoading" ng-if="landingPageView == 'tableview'">
                                                 <!-- Begin table view -->
                                                 <table class="table" ng-show="!itemsLoading" ng-cloak="true">
                                                     <thead><tr>
@@ -133,6 +133,34 @@
                                                         <tr ng-show="!itemsLoading"></tr>
                                                     </tbody>
                                                 </table>
+                                            </div>
+                                            <div id="gridview" class="gridwrapper" ng-show="!itemsLoading" ng-if="landingPageView == 'gridview'">
+                                                <div class="tile item" ng-cloak="true"
+                                                     ng-repeat="metric in metricsCtrl.filterMetrics(item)">
+                                                    <div class="header">
+                                                        <input type="checkbox" ng-model="metric.selected"/>
+                                                        <strong>
+                                                            <span ng-repeat="res in metric.resources">
+                                                                <a ng-if="res.res_url" ng-href="{{ res.res_url }}">{{ res.res_id }}</a>
+                                                                <span ng-if="res.res_url==null">{{ res.res_id }}</span>
+                                                                <span ng-hide="$last">,</span> 
+                                                            </span>
+                                                        </strong>
+                                                        <a href="#" class="tiny secondary button dropdown right"
+                                                              data-dropdown="item-dropdown_{{ $index }}"><i class="grid-action"></i></a>
+                                                        <ul id="item-dropdown_{{ $index }}" class="f-dropdown">
+                                                            <li><a href="#">This is a link</a></li>
+                                                            <li><a href="#">This is another</a></li>
+                                                            <li><a href="#">Yet another</a></li>
+                                                        </ul>
+                                                    </div>
+                                                    <div class="content">
+                                                        <div>
+                                                            <span class="label" title="Metric name" i18n:attributes="title" data-tooltip="">MN</span>
+                                                            <a ng-href="/instances/{{item.instance_id}}">{{ metric.metric_name }}</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </td>
