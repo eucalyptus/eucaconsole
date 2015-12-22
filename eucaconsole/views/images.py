@@ -366,8 +366,16 @@ class ImageView(TaggedItemView, ImageBundlingMixin):
         self.is_owned_by_user = self.check_if_image_owned_by_user()
         self.image_launch_permissions = self.get_image_launch_permissions_array()
         image_id = self.image.id if self.image is not None else ''
+
         if self.image is not None and self.image.state != 'available':
             image_id = self.request.matchdict.get('id').encode('ascii', 'ignore')
+
+        if self.image is not None:
+            tags = self.serialize_tags(self.image.tags)
+        else:
+            tags = '{}'
+        #tags = BaseView.escape_json(json.dumps(tags))
+
         self.render_dict = dict(
             image=self.image,
             image_id=image_id,
@@ -382,6 +390,7 @@ class ImageView(TaggedItemView, ImageBundlingMixin):
             account_id=self.account_id,
             snapshot_images_registered=self.get_images_registered_from_snapshot_count(),
             controller_options_json=self.get_controller_options_json(),
+            tags=tags,
         )
 
     def check_if_image_owned_by_user(self):

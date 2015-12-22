@@ -51,6 +51,17 @@ class GuiEC2(GuiTester):
         BasePage(self).goto_images_view_via_menu()
         ImageLanding(self)
 
+    def get_region_list(self):
+        return BasePage(self).get_region_list()
+
+    def change_region(self, region=None):
+        """
+        If region is passed, change to that region, otherwise select 1st from menu.
+        """
+        if region is None:
+            region = BasePage(self).get_region_list()[0]
+        BasePage(self).select_region(region)
+
     def create_keypair_from_dashboard(self, keypair_name):
         """
         Navigates to Dashboard via menu, creates keypair. Verifies keypair visible on Keypair View page.

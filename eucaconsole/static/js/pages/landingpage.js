@@ -35,7 +35,8 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch', 'Ex
             $scope.setWatch();
             $scope.setFocus();
             $scope.enableInfiniteScroll();
-            $scope.storeAWSRegion();
+            $scope.storeRegion();
+            $scope.cloudType = cloud_type;
             if (cloud_type !== undefined && cloud_type === "aws") {
                 $scope.serverFilter = true;
             }
@@ -130,10 +131,11 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch', 'Ex
                 $(this).find('.dialog-progress-display').css('display', 'block');                
             });
         };
-        $scope.storeAWSRegion = function () {
+        $scope.storeRegion = function () {
+            var regionKey = ($scope.cloudType == 'aws')?"aws-region":"euca-region";
             if ($('#region-dropdown').length > 0 && Modernizr.localstorage) {
                 localStorage.setItem(
-                    'aws-region', $('#region-dropdown').children('li[data-selected="True"]').children('a').attr('id'));
+                    regionKey, $('#region-dropdown').children('li[data-selected="True"]').children('a').attr('id'));
             }
         };
         $scope.getItems = function (okToRefresh) {
