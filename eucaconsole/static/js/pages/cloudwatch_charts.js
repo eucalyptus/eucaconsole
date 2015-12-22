@@ -10,18 +10,22 @@
  */
 
 angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
-.factory('CloudwatchAPI', ['$http', function ($http) {
+.factory('CloudwatchAPI', ['$http', 'eucaHandleError', function ($http, eucaHandleError) {
     return {
         getChartData: function (params) {
             return $http({
                 url: '/cloudwatch/api',
                 method: 'GET',
                 params: params
-            }).then(function (oData) {
+            }).then(function success (oData) {
                 if (typeof oData === 'string' && oData.indexOf('<html') > -1) {
                     $('#timed-out-modal').foundation('reveal', 'open');
                 }
                 return oData.data;
+            }, function error (errorResponse) {
+                eucaHandleError(
+                    errorResponse.statusText,
+                    errorResponse.statuse);
             });
         },
 
@@ -30,10 +34,12 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
                 url: '/cloudwatch/alarms/json/' + metricName,
                 method: 'GET',
                 params: params
-            }).then(function (oData) {
+            }).then(function success (oData) {
                 return oData.data.results;
-            }, function (oData) {
-                console.log('error', oData);
+            }, function error (eucaHandleError) {
+                eucaHandleError(
+                    errorResponse.statusText,
+                    errorResponse.statuse);
             });
         }
     };
