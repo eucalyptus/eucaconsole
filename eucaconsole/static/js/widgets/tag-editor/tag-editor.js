@@ -58,7 +58,7 @@ angular.module('TagEditorModule', ['EucaConsoleUtils'])
             }],
             link: function (scope, element, attrs, ctrl, transcludeContents) {
                 var content = transcludeContents();
-                scope.tags = JSON.parse(content.text() || '{}');
+                scope.tags = JSON.parse(content.text() || '[]');
 
                 attrs.showNameTag = !attrs.showNameTag; // default to true
                 attrs.autoscale = !!attrs.autoscale;    // default to false

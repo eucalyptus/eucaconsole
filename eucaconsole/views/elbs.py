@@ -1153,12 +1153,6 @@ class CreateELBView(BaseELBView):
             cloud_type=self.cloud_type, formdata=self.request.params or None)
         search_facets = filters_form.facets
 
-        if self.elb is not None:
-            tags = self.serialize_tags(self.elb.tags)
-        else:
-            tags = '{}'
-
-
         self.render_dict = dict(
             create_form=self.create_form,
             create_bucket_form=self.create_bucket_form,
@@ -1178,7 +1172,7 @@ class CreateELBView(BaseELBView):
             filter_keys=filter_keys,
             search_facets=BaseView.escape_json(json.dumps(search_facets)),
             controller_options_json=self.get_controller_options_json(),
-            tags=tags,
+            tags=[]
         )
 
     @view_config(route_name='elb_new', renderer=TEMPLATE)

@@ -8,7 +8,7 @@
 
 angular.module('ELBWizard', [
     'EucaConsoleUtils', 'CreateBucketDialog', 'MagicSearch', 'ELBSecurityPolicyEditor',
-    'TagEditor', 'ELBListenerEditor', 'ELBSecurityGroupRulesWarning']
+    'TagEditorModule', 'ELBListenerEditor', 'ELBSecurityGroupRulesWarning']
 ).controller('ELBWizardCtrl', function ($scope, $http, $timeout, eucaHandleError,
                                         eucaUnescapeJson, eucaFixHiddenTooltips,
                                         eucaCheckELBSecurityGroupRules) {
@@ -561,17 +561,6 @@ angular.module('ELBWizard', [
             // Handle the unsaved listener issue
             if( $('#from-port-input').val() !== '' ){
                 $('#unsaved-listener-warn-modal').foundation('reveal', 'open');
-                $scope.isNotValid = true;
-            }
-            // Handle the unsaved tag issue
-            var existsUnsavedTag = false;
-            $('input.taginput').each(function(){
-                if($(this).val() !== ''){
-                    existsUnsavedTag = true;
-                }
-            });
-            if( existsUnsavedTag ){
-                $('#unsaved-tag-warn-modal').foundation('reveal', 'open');
                 $scope.isNotValid = true;
             }
         } else if (step === 2) {
