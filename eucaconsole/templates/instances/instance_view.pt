@@ -72,7 +72,7 @@
                             <a href="#" id="start-instance-action"
                                i18n:translate="">Start</a>
                         </li>
-                        <li tal:condition="image and image.root_device_type == 'ebs'" ng-show="instanceState == 'running'">
+                        <li tal:condition="instance.root_device_type == 'ebs'" ng-show="instanceState == 'running'">
                             <a href="#" id="stop-instance-action"
                                i18n:translate="">Stop</a>
                         </li>
@@ -87,7 +87,7 @@
                         </li>
                     </metal:actions>
                 </metal:block>
-                <p tal:condition="image and image.root_device_type == 'ebs'" class="note">
+                <p tal:condition="instance.root_device_type == 'ebs'" class="note">
                     Instance type, user data, kernel ID and RAM disk ID (ramfs) may only be updated for instances with an EBS root device.
                     To update any of these attributes, stop the instance first.
                 </p>
@@ -108,13 +108,13 @@
                     <div>
                         ${panel('form_field', field=instance_form.name, pattern=layout.tag_pattern_value)}
                     </div>
-                    <div tal:condition="image and image.root_device_type != 'ebs'" tal:omit-tag="">
+                    <div tal:omit-tag="">
                         <div class="row controls-wrapper readonly">
                             <div class="large-2 small-4 columns"><label i18n:translate="">Instance type</label></div>
                             <div class="large-10 small-8 columns value">${instance.instance_type}</div>
                         </div>
                     </div>
-                    <div tal:condition="image and image.root_device_type == 'ebs'" tal:omit-tag="">
+                    <div tal:condition="instance.root_device_type == 'ebs'" tal:omit-tag="">
                         <div class="row controls-wrapper readonly" ng-if="instanceState != 'stopped'">
                             <div class="large-2 small-4 columns"><label i18n:translate="">Instance type</label></div>
                             <div class="large-10 small-8 columns value">${instance.instance_type}</div>
@@ -275,7 +275,7 @@
                         <div class="large-2 small-4 columns"><label i18n:translate="">Image manifest</label></div>
                         <div tal:condition="image" class="large-10 small-8 columns value breakword">${image.location}</div>
                     </div>
-                    <div tal:condition="image and image.root_device_type != 'ebs'" tal:omit-tag="">
+                    <div tal:condition="instance.root_device_type != 'ebs'" tal:omit-tag="">
                         <div class="row controls-wrapper readonly">
                             <div class="large-2 small-4 columns"><label i18n:translate="">Kernel ID</label></div>
                             <div tal:condition="image" class="large-10 small-8 columns value">${image.kernel_id}</div>
@@ -285,7 +285,7 @@
                             <div tal:condition="image" class="large-10 small-8 columns value">${image.ramdisk_id}</div>
                         </div>
                     </div>
-                    <div tal:condition="image and image.root_device_type == 'ebs'" tal:omit-tag="">
+                    <div tal:condition="instance.root_device_type == 'ebs'" tal:omit-tag="">
                         <div class="row controls-wrapper readonly" ng-if="instanceState != 'stopped'">
                             <div class="large-2 small-4 columns"><label i18n:translate="">Kernel ID</label></div>
                             <div tal:condition="instance" class="large-10 small-8 columns value">${instance.kernel}</div>
