@@ -75,39 +75,32 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
             return metricGroup.metrics;
         };
         $scope.$on('itemsLoaded', function($event, items) {
-            var metrics = [];
+            var facets = emptyFacets;
+            var metric_facet = facets.find(function(elem) {
+                return elem.name == 'metric';
+            });
+            var resource_facet = facets.find(function(elem) {
+                return elem.name == 'resource';
+            });
+            var resource_type_facet = facets.find(function(elem) {
+                return elem.name == 'resource_type';
+            });
             items.forEach(function(val) {
                 val.metrics.forEach(function(metric) {
-                    if (this.indexOf(metric.metric_name) === -1) {
-                        this.push(metric.metric_name);
+                    if (metric_facet.options.indexOf(metric.metric_name) === -1) {
+                        metric_facet.options.push(metric.metric_name);
                     }
-                }, this);
-            }, metrics);
-            console.log("metrics = "+metrics.length);
-            var resources = [];
-            items.forEach(function(val) {
-                val.metrics.forEach(function(metric) {
                     metric.resources.forEach(function(res) {
-                        if (this.indexOf(res.res_id) === -1) {
-                            this.push(res.res_id);
+                        if (resource_facet.options.indexOf(res.res_id) === -1) {
+                            resource_facet.options.push(res.res_id);
                         }
-                    }, this);
-                }, this);
-            }, resources);
-            console.log("resources = "+resources.length);
-            var resource_types = [];
-            items.forEach(function(val) {
-                val.metrics.forEach(function(metric) {
-                    metric.resources.forEach(function(res) {
-                        if (this.indexOf(res.res_type) === -1) {
-                            this.push(res.res_type);
+                        if (resource_type_facet.options.indexOf(res.res_type) === -1) {
+                            resource_type_facet.options.push(res.res_type);
                         }
-                    }, this);
-                }, this);
-            }, resource_types);
-            console.log("resource_types = "+resource_types.length);
-            //var facets = emptyFacets.clone();
-            $scope.$broadcast("facets_updated", emptyFacets);
+                    });
+                });
+            });
+            $scope.$broadcast("facets_updated", facets);
             /*
             search_facets = [
                 {'name': 'metric', 'label': _(u"Metric name"), 'options': [

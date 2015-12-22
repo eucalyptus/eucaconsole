@@ -57,15 +57,9 @@ class CloudWatchMetricsView(LandingPageView):
             dict(key='name', name=_(u'Name')),
         ]
         search_facets = [
-            {'name': 'metric', 'label': _(u"Metric name"), 'options': [
-                {'key': 'tbd', 'label': _("TBD")},
-            ]},
-            {'name': 'resource', 'label': _(u"Resource ID"), 'options': [
-                {'key': 'tbd', 'label': _("TBD")},
-            ]},
-            {'name': 'resource_type', 'label': _(u"Resource type"), 'options': [
-                {'key': 'tbd', 'label': _("TBD")},
-            ]}
+            {'name': 'metric', 'label': _(u"Metric name"), 'options': [ ]},
+            {'name': 'resource', 'label': _(u"Resource ID"), 'options': [ ]},
+            {'name': 'resource_type', 'label': _(u"Resource type"), 'options': [ ]}
         ]
         self.render_dict = dict(
             filter_keys=self.filter_keys,
