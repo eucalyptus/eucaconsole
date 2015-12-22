@@ -38,6 +38,14 @@ DATA_DIR = '/usr/share/'
 py_version = sys.version_info[:2]
 
 
+if py_version < (2, 7):
+    # Workaround for https://bugs.python.org/issue15881
+    try:
+        import multiprocessing
+    except ImportError:
+        pass
+
+
 def get_data_files(path, regex):
     data_files = []
     for root, _, filenames in os.walk(path, followlinks=True):
