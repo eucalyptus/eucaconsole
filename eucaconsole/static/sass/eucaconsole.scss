@@ -1099,18 +1099,14 @@ footer {
                 background-color: white;
                 border-color: $hp-hover-blue;
                 color: $hp-hover-blue;
-            } 
+            }
         color: $hp-gray-65;
+        &.disabled, &[disabled] {
+            @include disabled-button-mixin;
+        }
     }
     &.disabled, &[disabled] {
-        background-color: white;
-        border-color: $hp-gray-40;
-            &:hover {
-                background-color: $white;
-                border-color: $hp-gray-40;
-                color: $hp-gray-40;
-            }
-        color: $hp-gray-40;           
+        @include disabled-button-mixin;
     }
     &:hover {
         background-color: $hp-hover-blue;

@@ -1,7 +1,9 @@
+import logging
+
 from guitester import GuiTester
 from pages.basepage import BasePage
 from pages.dashboard import Dashboard
-from pages.loginpage import LoginPage
+from pages.elastic_ip.elastic_ip_lp import EipLanding
 from pages.keypair.keypairdetail import KeypairDetailPage
 from pages.keypair.keypair_lp import KeypairLanding
 from pages.instance.instance_lp import InstanceLanding
@@ -17,11 +19,15 @@ from pages.security_group.security_group_lp import SecurityGroupLanding
 from pages.security_group.security_group_detail import SecurityGroupDetailPage
 from dialogs.security_group_dialogs import CreateScurityGroupDialog, DeleteScurityGroupDialog
 from dialogs.keypair_dialogs import CreateKeypairDialog, DeleteKeypairModal, ImportKeypairDialog
-from dialogs.instance_dialogs import LaunchInstanceWizard, LaunchMoreLikeThisDialog, TerminateInstanceModal, TerminateAllInstancesModal
-from dialogs.volume_dialogs import CreateVolumeDialog, DeleteVolumeModal, AttachVolumeModalSelectInstance, AttachVolumeModalSelectVolume, DetachVolumeModal
+from dialogs.instance_dialogs import (
+    LaunchInstanceWizard, LaunchMoreLikeThisDialog, TerminateInstanceModal, TerminateAllInstancesModal)
+from dialogs.volume_dialogs import (
+    CreateVolumeDialog, DeleteVolumeModal, AttachVolumeModalSelectInstance,
+    AttachVolumeModalSelectVolume, DetachVolumeModal)
 from dialogs.snapshot_dialogs import CreateSnapshotModal, DeleteSnapshotModal, RegisterSnapshotAsImageModal
 from dialogs.image_dialogs import RemoveImageFromCloudDialog
-import logging
+from dialogs.eip_dialogs import AllocateEipDialog, ReleaseEipDialog
+
 
 logger = logging.getLogger('testlogger')
 hdlr = logging.FileHandler('/tmp/testlog.log')
@@ -29,10 +35,12 @@ formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
 hdlr.setFormatter(formatter)
 logger.setLevel(logging.WARNING)
 
+
 class GuiEC2(GuiTester):
 
     def __init__(self, console_url, sauce=False, webdriver_url=None, browser=None, version=None, platform=None):
-        super(GuiEC2, self).__init__(console_url, webdriver_url=webdriver_url, sauce=sauce, browser=browser, version=version, platform=platform)
+        super(GuiEC2, self).__init__(console_url, webdriver_url=webdriver_url, sauce=sauce,
+                                     browser=browser, version=version, platform=platform)
 
     def set_implicit_wait(self, time_to_wait):
         """
@@ -693,50 +701,68 @@ class GuiEC2(GuiTester):
         print image
         return image
 
-    def allocate_ip_from_eip_lp(self):
-        NotImplementedError
+    def allocate_eip_from_lp(self, number=1):
+        """
+        :param number: how many IPs to allocate
+        :return: allocated IPs as a list of strings
+        """
+        BasePage(self).goto_elestic_ip_view_via_menu()
+        EipLanding(self).click_allocate_elastic_ips_button()
+        return AllocateEipDialog(self).allocate_elastic_ips(number=number)
 
-    def allocate_eip_from_dashboard(self):
-        NotImplementedError
+    def allocate_eip_from_dashboard(self, number=1):
+        """
+        :param number: how many IPs to allocate
+        :return: allocated IPs as a list of strings
+        """
+        BasePage(self).goto_dashboard_via_menu()
+        Dashboard(self).click_allocate_elastic_ips_link()
+        return AllocateEipDialog(self).allocate_elastic_ips(number=number)
 
-    def release_eip_from_eip_lp(self):
-        NotImplementedError
+    def release_eip_from_eip_lp(self, elastic_ip):
+        """
+        Release a single Elastic IP via the item row's actions menu
+        :param elastic_ip: IP address to release
+        """
+        BasePage(self).goto_elestic_ip_view_via_menu()
+        EipLanding(self).select_release_ip_actions_menu_item(elastic_ip)
+        ReleaseEipDialog(self).release_elastic_ips()
+        EipLanding(self).verify_elastic_ip_is_released(elastic_ip)
+
+    def release_eips_from_eip_lp(self, elastic_ips):
+        """
+        Batch-release Elastic IPs from landing page via More Actions button
+        :param elastic_ips: List of Elastic IPs to be released
+        :return: released Elastic IPs as a list of strings
+        """
+        BasePage(self).goto_elestic_ip_view_via_menu()
+        EipLanding(self).click_elastic_ips_checkboxes(elastic_ips)
+        EipLanding(self).select_release_ips_more_actions_item()
+        return ReleaseEipDialog(self).release_elastic_ips()
 
     def release_eip_from_eip_detail_page(self):
-        NotImplementedError
+        raise NotImplementedError
 
     def associate_eip_from_eip_lp(self):
-        NotImplementedError
+        raise NotImplementedError
 
     def associate_eip_from_instances_lp(self):
-        NotImplementedError
+        raise NotImplementedError
 
     def associate_eip_from_instance_detail_page(self):
-        NotImplementedError
+        raise NotImplementedError
 
     def associate_eip_from_eip_detail_page(self):
-        NotImplementedError
+        raise NotImplementedError
 
     def disassociate_eip_from_eip_lp(self):
-        NotImplementedError
+        raise NotImplementedError
 
     def disassociate_eip_from_eip_detail_page(self):
-        NotImplementedError
+        raise NotImplementedError
 
     def disassociate_ip_from_instance_detail_page(self):
-        NotImplementedError
+        raise NotImplementedError
 
     def disassociate_eip_from_instances_lp(self):
-        NotImplementedError
-
-
-
-
-
-
-
-
-
-
-
-
+        raise NotImplementedError
