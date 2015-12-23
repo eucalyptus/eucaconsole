@@ -114,8 +114,8 @@
                 </thead>
                 <tbody tal:condition="using_expando" expando="" ng-repeat="item in items | orderBy: sortBy:sortReverse"
                        tal:attributes="ng-repeat layout.smart_table_repeat if use_smart_table else layout.standard_table_repeat"
-                       url="${expando_data_url}" item_id="${expando_data_id}">
-                    <tr ng-class="{'expando-tr-even': $odd}" ng-cloak="true">
+                       url="${expando_data_url}" item_id="${expando_data_id}" data-item-id="{{ item.id || item.name || item.public_ip }}">
+                    <tr ng-class="{'expando-tr-even': $odd}" ng-cloak="true"> 
                         <td>
                             <a ng-click="toggle()"><i ng-class="{'table-expando-closed': !expando.data, 'table-expando-open': expando.data || expando.loading }"></i></a>
                         </td>
@@ -128,7 +128,8 @@
                 </tbody>
                 <metal:block metal:define-slot="tableview_with_expando" />
                 <tbody tal:condition="not:using_expando">
-                    <tr ng-cloak="true" ng-repeat="item in items | orderBy: sortBy | limitTo:displayCount">
+                    <tr ng-cloak="true" ng-repeat="item in items | orderBy: sortBy | limitTo:displayCount"
+                        data-item-id="{{ item.id || item.name || item.public_ip }}">
                         <metal:block metal:define-slot="tableview_columns" />
                     </tr>
                     <tr ng-show="!itemsLoading"></tr>
@@ -222,6 +223,30 @@
     </div>
 </metal:plaintableview_macro>
 
+<!-- "Select all" checkbo table header -->
+<metal:selectall_header_checkbox metal:define-macro="selectall_header_checkbox">
+    <th class="checkbox-header">
+        <input type="checkbox" id="select-all-items-tableview" ng-model="state.allSelected" ng-click="setAllState()" />
+    </th>
+</metal:selectall_header_checkbox>
+
+<!-- checkbox macro for a table cell in a table with multi-select rows -->
+<metal:select_item_checkbox metal:define-macro="select_item_checkbox">
+    <td>
+        <input type="checkbox" class="row-checkbox" ng-model="item.selected" ng-change="handleItemSelection()" />
+    </td>
+</metal:select_item_checkbox>
+
+<!-- "More actions" menu item for multi-select operations on landing pages -->
+<metal:moreactions_macro metal:define-macro="more_actions">
+    <a class="button secondary dropdown more-actions" id="more-actions-btn" ng-cloak=""
+       ng-if="landingPageView === 'tableview'" ng-disabled="(items | filter:{ selected: true}).length === 0"
+       data-dropdown="more-actions-dropdown" i18n:translate="">More Actions</a>
+    <ul id="more-actions-dropdown" class="f-dropdown" data-dropdown-content="" ng-if="(items | filter:{ selected: true}).length">
+        <metal:block metal:define-slot="menu_items" />
+    </ul>
+</metal:moreactions_macro>
+
 <!-- Breadcrumbs ===== -->
 <metal:breadcrumbs metal:define-macro="breadcrumbs">
     <div id="breadcrumbs">
@@ -274,7 +299,7 @@
 
 <!-- Detail page actions menu ===== -->
 <metal:actionsmenu metal:define-macro="actions_menu">
-    <div class="actions-menu">
+    <div class="actions-menu" ng-cloak="">
         <span class="button dropdown" data-dropdown="actions-dropdown">
             <a href="" i18n:translate="">Actions</a>
         </span>

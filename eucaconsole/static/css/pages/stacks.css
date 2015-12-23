@@ -15,6 +15,7 @@
 #breadcrumbs .icon-block { display: none; }
 
 #primary-buttons .button { padding: 8px 1rem; }
+#primary-buttons .button.more-actions { margin-left: 1rem; padding-right: 3rem; }
 
 .gridwrapper { margin-top: 0.5rem; }
 
@@ -57,9 +58,11 @@
 .gridwrapper .table thead tr th { padding-top: 0.5rem; padding-bottom: 0.5rem; padding-left: 6px; padding-right: 6px; vertical-align: top; color: #444; text-transform: uppercase; }
 .gridwrapper .table thead tr th.actions { text-align: right; }
 .gridwrapper .table thead tr th.count { text-align: center; }
+.gridwrapper .table thead tr th.checkbox-header { width: 2rem; }
 .gridwrapper .table tr td.count { text-align: center; }
 .gridwrapper .table th { white-space: nowrap; }
 .gridwrapper .table tr { position: relative; width: 100%; }
+.gridwrapper .table tr input[type="checkbox"] { margin-bottom: 0; }
 .gridwrapper .table tr td { position: relative; padding: 8px 4px 8px 6px; vertical-align: top; }
 .gridwrapper .table tr td a { color: #007dba; }
 .gridwrapper .table tr td a:hover { text-decoration: underline; }

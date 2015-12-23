@@ -205,6 +205,17 @@ $tooltip-padding: rem-calc(5);
     box-shadow: 1px 1px 5px 0 lighten($euca-grey, 10%);
 }
 
+@mixin disabled-button-mixin {
+    background-color: white;
+    border-color: $hp-gray-40;
+        &:hover {
+            background-color: white;
+            border-color: $hp-gray-40;
+            color: $hp-gray-40;
+        }
+    color: $hp-gray-40;
+}
+
 @mixin dropdown-shadow-mixin {
     border-color: $hp-gray-20;
     box-shadow: 2px 2px 5px $euca-grey;
@@ -246,6 +257,9 @@ $tooltip-padding: rem-calc(5);
             }
             &.count {
                 text-align: center;
+            }
+            &.checkbox-header {
+                width: 2rem;
             }
         }
     }

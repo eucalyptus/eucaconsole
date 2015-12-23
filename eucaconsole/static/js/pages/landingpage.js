@@ -10,6 +10,7 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch', 'Ex
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.items = [];
         $scope.itemsLoading = true;
+        $scope.state = {'allSelected': false};
         $scope.runningSmartRefresh = false;
         $scope.facetItems = [];
         $scope.unfilteredItems = [];
@@ -332,7 +333,28 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch', 'Ex
                     $scope.openDropdownID = $(this).prev('.dropdown').attr('id'); 
                 }
             });
-            
+        };
+        $scope.handleItemSelection = function() {
+            // set all checkbox state based on state of items.selected
+            var allItemsCheckbox = document.getElementById('select-all-items-tableview');
+            var checkedIems = $scope.items.filter(function (item) {
+                return item.selected;
+            });
+            if (!checkedIems.length) {
+                $scope.state.allSelected = false;
+            }
+            // Set indeterminate state on select-all checkbox when checked and at least one item is unselected
+            allItemsCheckbox.indeterminate = !!($scope.state.allSelected && checkedIems.length < $scope.items.length);
+            if (!$scope.state.allSelected && checkedIems.length === $scope.items.length) {
+                $scope.state.allSelected = true;
+            }
+        };
+        $scope.setAllState = function() {
+            $timeout(function() {
+                angular.forEach($scope.items, function(item) {
+                    item.selected = $scope.state.allSelected;
+                });
+            });
         };
         $scope.$on('searchUpdated', function($event, query) {
             // update url
