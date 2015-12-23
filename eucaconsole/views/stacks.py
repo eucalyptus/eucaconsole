@@ -78,7 +78,7 @@ class StackMixin(object):
                     bucket = s3_conn.get_bucket(bucket_name)
                 return bucket
             except BotoServerError as err:
-                if err.code != 'BucketAlreadyExists':
+                if err.code != 'BucketAlreadyExists' and create:
                     BaseView.handle_error(err=err, request=self.request)
         raise JSONError(status=500, message=_(
             u'Cannot create S3 bucket to store your CloudFormation template due to namespace collision. '
@@ -216,21 +216,25 @@ class StackView(BaseView, StackMixin):
     def stack_view(self):
         if self.stack is None and self.request.matchdict.get('name') != 'new':
             raise HTTPNotFound
-        bucket = self.get_create_template_bucket()
+        bucket = None
+        try:
+            bucket = self.get_create_template_bucket()
+        except:
+            pass
         stack_id = self.stack.stack_id[self.stack.stack_id.rfind('/') + 1:]
         d = hashlib.md5()
         d.update(stack_id)
         md5 = d.digest()
         stack_hash = base64.b64encode(md5, '--').replace('=', '')
-        keys = list(bucket.list(prefix=stack_hash))
-        if len(keys) > 0:
-            key = keys[0].key
-            name = key[key.rfind('-') + 1:]
-            self.render_dict['template_bucket'] = bucket.name
-            self.render_dict['template_key'] = key
-            self.render_dict['template_name'] = name
-        else:
-            self.render_dict['template_name'] = None
+        self.render_dict['template_name'] = None
+        if bucket is not None:
+            keys = list(bucket.list(prefix=stack_hash))
+            if len(keys) > 0:
+                key = keys[0].key
+                name = key[key.rfind('-') + 1:]
+                self.render_dict['template_bucket'] = bucket.name
+                self.render_dict['template_key'] = key
+                self.render_dict['template_name'] = name
         return self.render_dict
 
     @view_config(route_name='stack_delete', request_method='POST', renderer=TEMPLATE)
@@ -320,11 +324,11 @@ class StackStateView(BaseView):
     def stack_template(self):
         """Return stack template"""
         with boto_error_handler(self.request):
-            template = self.cloudformation_conn.get_template(self.stack_name)
-            parsed = json.loads(template['GetTemplateResponse']['GetTemplateResult']['TemplateBody'])
+            response = self.cloudformation_conn.get_template(self.stack_name)
+            template = response['GetTemplateResponse']['GetTemplateResult']['TemplateBody']
             
             return dict(
-                results=BaseView.escape_json(json.dumps(parsed, indent=2))
+                results=BaseView.escape_json(template)
             )
 
     @view_config(route_name='stack_events', renderer='json', request_method='GET')

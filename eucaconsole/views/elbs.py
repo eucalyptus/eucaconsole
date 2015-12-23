@@ -1146,11 +1146,13 @@ class CreateELBView(BaseELBView):
             formdata=self.request.params or None
         )
         filter_keys = ['id', 'name', 'placement', 'state', 'security_groups', 'vpc_subnet_display', 'vpc_name']
+
         filters_form = ELBInstancesFiltersForm(
             self.request, ec2_conn=self.ec2_conn, autoscale_conn=self.autoscale_conn,
             iam_conn=None, vpc_conn=self.vpc_conn,
             cloud_type=self.cloud_type, formdata=self.request.params or None)
         search_facets = filters_form.facets
+
         self.render_dict = dict(
             create_form=self.create_form,
             create_bucket_form=self.create_bucket_form,
@@ -1170,6 +1172,7 @@ class CreateELBView(BaseELBView):
             filter_keys=filter_keys,
             search_facets=BaseView.escape_json(json.dumps(search_facets)),
             controller_options_json=self.get_controller_options_json(),
+            tags=[]
         )
 
     @view_config(route_name='elb_new', renderer=TEMPLATE)

@@ -92,7 +92,8 @@ class CloudWatchAlarmsView(LandingPageView):
                 statistic = self.request.params.get('statistic')
                 comparison = self.request.params.get('comparison')
                 threshold = self.request.params.get('threshold')
-                period = int(self.request.params.get('period', 5)) * 60  # Convert to seconds
+                # Convert to seconds
+                period = int(self.request.params.get('period', 5)) * 60
                 evaluation_periods = self.request.params.get('evaluation_periods')
                 unit = self.request.params.get('unit')
                 description = self.request.params.get('description', '')
@@ -167,7 +168,38 @@ class CloudWatchAlarmsJsonView(BaseView):
                 ))
             return dict(results=alarms)
 
+    @view_config(route_name="cloudwatch_alarms_for_metric_json",
+                 renderer='json',
+                 request_method='GET')
+    def cloudwatch_alarm_for_metric_json(self):
+        with boto_error_handler(self.request):
+            metric_name = self.request.params.get('metric_name')
+            namespace = self.request.params.get('namespace')
+            statistic = self.request.params.get('statistic')
+            period = self.request.params.get('period')
+
+            items = self.get_alarms_for_metric(metric_name, namespace,
+                                               statistic, period)
+            alarms = []
+            for alarm in items:
+                alarms.append(dict(
+                    name=alarm.name,
+                    statistic=alarm.statistic,
+                    metric=alarm.metric,
+                    period=alarm.period,
+                    comparison=alarm.comparison,
+                    threshold=alarm.threshold,
+                    unit=alarm.unit,
+                ))
+
+            return dict(results=alarms)
+
     def get_items(self):
         conn = self.get_connection(conn_type='cloudwatch')
         return conn.describe_alarms() if conn else []
 
+    def get_alarms_for_metric(self, metric_name, namespace, statistic, period):
+        conn = self.get_connection(conn_type='cloudwatch')
+        return conn.describe_alarms_for_metric(
+            metric_name, namespace,
+            period=period, statistic=statistic) if conn else []
