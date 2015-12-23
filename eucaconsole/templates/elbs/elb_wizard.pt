@@ -4,6 +4,7 @@
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/elb_wizard.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.css')}"/>
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/instance_selector.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/tag-editor.css')}" />
 </head>
 
 <div metal:fill-slot="main_content" ng-app="ELBWizard" ng-controller="ELBWizardCtrl" ng-init="initController('${controller_options_json}')">
@@ -66,7 +67,11 @@
                             </div>
                             <hr />
                             <div>
-                                ${panel('tag_editor', show_name_tag=True)}
+                                <tag-editor
+                                        ng-model="tags"
+                                        template="${request.route_path('tag_editor_template')}"
+                                        tal:content="tags | structure">
+                                </tag-editor>
                             </div>
                             <hr />
                             <div>
@@ -378,6 +383,7 @@
     <script src="${request.static_path('eucaconsole:static/js/pages/elb_wizard.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/instance_selector.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/tag-editor/tag-editor.js')}"></script>
 </div>
 
 </metal:block>
