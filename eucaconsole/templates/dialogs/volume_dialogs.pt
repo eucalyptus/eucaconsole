@@ -18,8 +18,8 @@
             <div tal:condition="landingpage" tal:omit-tag="">
                 <input type="hidden" name="volume_id" value="{{ volumeID }}" />
             </div>
-            ${panel('form_field', field=attach_form.instance_id, ng_attrs=ng_attrs, **html_attrs)}
-            ${panel('form_field', field=attach_form.device)}
+            ${panel('form_field', field=attach_form.instance_id, ng_attrs=ng_attrs, stack_label=True, **html_attrs)}
+            ${panel('form_field', field=attach_form.device, stack_label=True)}
             <div>
                 <label>
                     <span class="req">*</span>
