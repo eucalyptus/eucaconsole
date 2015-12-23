@@ -65,7 +65,7 @@
                         </ul>
                     </div>
                 </div>
-                <div tal:condition="not monitoring_enabled">
+                <div tal:condition="not monitoring_enabled" id="monitoring-disabled-notice">
                     <p>
                         <span i18n:translate="">
                             Metrics are collected only for volumes that are attached to a running instance with
@@ -73,7 +73,7 @@
                         <span i18n:translate="" tal:condition="layout.cloud_type == 'euca'">monitoring enabled.</span>
                         <span i18n:translate="" tal:condition="layout.cloud_type == 'aws'">detailed monitoring enabled.</span>
                     </p>
-                    <p tal:condition="not is_attached">
+                    <p tal:condition="not is_attached" id="volume-unattached-notice">
                         <a href="${request.route_path('volume_view', id=volume.id)}?attachmodal=1" i18n:translate="">
                             Attach this volume to an instance
                         </a>
@@ -88,7 +88,8 @@
                         <span i18n:translate="">to view metric data.</span>
                     </p>
                 </div>
-                <ul class="small-block-grid-1 medium-block-grid-2 large-block-grid-3" tal:condition="monitoring_enabled">
+                <ul class="small-block-grid-1 medium-block-grid-2 large-block-grid-3" tal:condition="monitoring_enabled"
+                    id="charts-container">
                     <li class="chart-wrapper" ng-repeat="chart in chartsCtrl.chartsList" ng-cloak="">
                         <h6 ng-attr-title="{{ chart.help }}">{{ chart.title }}<i class="busy"></i></h6>
                         <div ng-show="chartsCtrl.emptyMessages[chart.metric]" class="empty-message-wrapper">
