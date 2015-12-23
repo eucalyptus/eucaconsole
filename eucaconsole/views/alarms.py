@@ -35,8 +35,7 @@ from boto.ec2.cloudwatch import MetricAlarm
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config
 
-from ..constants.cloudwatch import METRIC_DIMENSION_NAMES
-from ..constants.cloudwatch import METRIC_DIMENSION_INPUTS
+from ..constants.cloudwatch import METRIC_DIMENSION_NAMES, METRIC_DIMENSION_INPUTS
 from ..forms.alarms import CloudWatchAlarmCreateForm, CloudWatchAlarmDeleteForm
 from ..i18n import _
 from ..models import Notification
@@ -59,11 +58,9 @@ class CloudWatchAlarmsView(LandingPageView):
         self.autoscale_conn = self.get_connection(conn_type='autoscale')
         # TODO: not likely to fail, but if session creds expire?
         self.create_form = CloudWatchAlarmCreateForm(
-            self.request, ec2_conn=self.ec2_conn, elb_conn=self.elb_conn,
-            autoscale_conn=self.autoscale_conn,
+            self.request, ec2_conn=self.ec2_conn, elb_conn=self.elb_conn, autoscale_conn=self.autoscale_conn,
             formdata=self.request.params or None)
-        self.delete_form = CloudWatchAlarmDeleteForm(
-            self.request, formdata=self.request.params or None)
+        self.delete_form = CloudWatchAlarmDeleteForm(self.request, formdata=self.request.params or None)
         self.filter_keys = ['name']
         # sort_keys are passed to sorting drop-down
         self.sort_keys = [
@@ -74,19 +71,14 @@ class CloudWatchAlarmsView(LandingPageView):
             sort_keys=self.sort_keys,
             prefix=self.prefix,
             initial_sort_key=self.initial_sort_key,
-            json_items_endpoint=self.request.route_path(
-                'cloudwatch_alarms_json'),
+            json_items_endpoint=self.request.route_path('cloudwatch_alarms_json'),
         )
 
-    @view_config(route_name='cloudwatch_alarms',
-                 renderer=TEMPLATE,
-                 request_method='GET')
+    @view_config(route_name='cloudwatch_alarms', renderer=TEMPLATE, request_method='GET')
     def alarms_landing(self):
         return self.render_dict
 
-    @view_config(route_name='cloudwatch_alarms_create',
-                 renderer=TEMPLATE,
-                 request_method='POST')
+    @view_config(route_name='cloudwatch_alarms_create', renderer=TEMPLATE, request_method='POST')
     def cloudwatch_alarms_create(self):
         location = self.request.route_path('cloudwatch_alarms')
         redirect_location = self.request.params.get('redirect_location')
@@ -102,8 +94,7 @@ class CloudWatchAlarmsView(LandingPageView):
                 threshold = self.request.params.get('threshold')
                 # Convert to seconds
                 period = int(self.request.params.get('period', 5)) * 60
-                evaluation_periods = self.request.params.get(
-                    'evaluation_periods')
+                evaluation_periods = self.request.params.get('evaluation_periods')
                 unit = self.request.params.get('unit')
                 description = self.request.params.get('description', '')
                 dimension_param = self.request.params.get('dimension')
@@ -112,10 +103,8 @@ class CloudWatchAlarmsView(LandingPageView):
                 dimensions = {dimension: dimension_value}
                 self.log_request(_(u"Creating alarm {0}").format(name))
                 alarm = MetricAlarm(
-                    name=name, metric=metric, namespace=namespace,
-                    statistic=statistic, comparison=comparison,
-                    threshold=threshold, period=period,
-                    evaluation_periods=evaluation_periods, unit=unit,
+                    name=name, metric=metric, namespace=namespace, statistic=statistic, comparison=comparison,
+                    threshold=threshold, period=period, evaluation_periods=evaluation_periods, unit=unit,
                     description=description, dimensions=dimensions
                 )
                 self.cloudwatch_conn.put_metric_alarm(alarm)
@@ -131,14 +120,11 @@ class CloudWatchAlarmsView(LandingPageView):
         else:
             error_msg_list = self.create_form.get_errors_list()
             if self.request.is_xhr:
-                return JSONResponse(status=400,
-                                    message=', '.join(error_msg_list))
+                return JSONResponse(status=400, message=', '.join(error_msg_list))
             self.request.error_messages = error_msg_list
         return self.render_dict
 
-    @view_config(route_name='cloudwatch_alarms_delete',
-                 renderer=TEMPLATE,
-                 request_method='POST')
+    @view_config(route_name='cloudwatch_alarms_delete', renderer=TEMPLATE, request_method='POST')
     def cloudwatch_alarms_delete(self):
         if self.delete_form.validate():
             location = self.request.route_path('cloudwatch_alarms')
@@ -165,9 +151,7 @@ class CloudWatchAlarmsView(LandingPageView):
 
 class CloudWatchAlarmsJsonView(BaseView):
     """JSON response for CloudWatch Alarms landing page et. al."""
-    @view_config(route_name='cloudwatch_alarms_json',
-                 renderer='json',
-                 request_method='POST')
+    @view_config(route_name='cloudwatch_alarms_json', renderer='json', request_method='POST')
     def cloudwatch_alarms_json(self):
         with boto_error_handler(self.request):
             items = self.get_items()
