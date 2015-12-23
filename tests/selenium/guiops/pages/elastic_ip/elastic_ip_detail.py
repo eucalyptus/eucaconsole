@@ -9,6 +9,7 @@ class EipDetailPage(DetailPage):
 
     _elastic_ips_detail_page_title = "Details for IP address: {0}"
     _release_ip_address_menuitem_id = "release-ip-action"
+    _instance_link_css = 'a[href="/instances/{0}"]'
 
     def verify_eip_detail_page_loaded(self):
         self.tester.wait_for_text_present_by_id(DetailPage._detail_page_title_id, self._elastic_ips_detail_page_title.
@@ -18,3 +19,6 @@ class EipDetailPage(DetailPage):
     def click_action_release_ip_address_on_detail_page(self):
         self.tester.click_element_by_css(DetailPage._actions_menu_css)
         self.tester.click_element_by_id(self._release_ip_address_menuitem_id)
+
+    def verify_instance_id_on_detail_page(self, instance_id):
+        self.tester.wait_for_visible_by_css(self._instance_link_css.format(instance_id))
