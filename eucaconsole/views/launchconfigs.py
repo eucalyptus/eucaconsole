@@ -31,6 +31,7 @@ Pyramid views for Eucalyptus and AWS launch configurations
 import simplejson as json
 from urllib import quote, urlencode
 
+from boto.exception import BotoServerError
 from boto.ec2.autoscale.launchconfig import LaunchConfiguration
 
 from pyramid.httpexceptions import HTTPFound
@@ -171,7 +172,10 @@ class LaunchConfigsJsonView(LandingPageView):
     def get_launchconfigs_image_mapping(self):
         launchconfigs_image_ids = [launchconfig.image_id for launchconfig in self.items]
         launchconfigs_image_ids = list(set(launchconfigs_image_ids))
-        launchconfigs_images = self.ec2_conn.get_all_images(image_ids=launchconfigs_image_ids) if self.ec2_conn else []
+        try:
+            launchconfigs_images = self.ec2_conn.get_all_images(image_ids=launchconfigs_image_ids) if self.ec2_conn else []
+        except BotoServerError:
+            return dict()
         launchconfigs_image_mapping = dict()
         for image in launchconfigs_images:
             launchconfigs_image_mapping[image.id] = dict(
@@ -321,7 +325,10 @@ class LaunchConfigView(BaseView):
 
     def get_image(self):
         if self.ec2_conn:
-            images = self.ec2_conn.get_all_images(image_ids=[self.launch_config.image_id])
+            try:
+                images = self.ec2_conn.get_all_images(image_ids=[self.launch_config.image_id])
+            except BotoServerError:
+                return None
             image = images[0] if images else None
             if image is None:
                 return None
