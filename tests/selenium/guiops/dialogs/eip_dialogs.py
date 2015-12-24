@@ -53,7 +53,7 @@ class AssociateEipDialog(BasePage):
         notification = notification.replace('with instance', '')
         return [data.strip() for data in notification.split(',')]
 
-    def associate_eip_from_instance_lp(self, elastic_ip):
+    def associate_eip_from_instance(self, elastic_ip):
         self.tester.click_element_by_css(self._select_eip_address_css)
         self.tester.send_keys_by_css(self._instance_input_css, elastic_ip)
         self.tester.click_element_by_css(self._highlighted_search_result_css)

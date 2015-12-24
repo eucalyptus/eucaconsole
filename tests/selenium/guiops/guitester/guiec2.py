@@ -729,12 +729,17 @@ class GuiEC2(GuiTester):
         launch_instance = self.launch_instance_from_dashboard()
         BasePage(self).goto_instances_via_menu()
         InstanceLanding(self).click_action_associate_ip_address_from_landing_page(launch_instance['instance_id'])
-        AssociateEipDialog(self).associate_eip_from_instance_lp(elastic_ip)
+        AssociateEipDialog(self).associate_eip_from_instance(elastic_ip)
         InstanceLanding(self).verify_elastic_ip_address_on_instance_lp(elastic_ip)
         self.terminate_instance_from_detail_page(launch_instance['instance_id'])
 
-    def associate_eip_from_instance_detail_page(self):
-        raise NotImplementedError
+    def associate_eip_from_instance_detail_page(self, elastic_ip):
+        launch_instance = self.launch_instance_from_dashboard()
+        BasePage(self).goto_instances_via_menu()
+        InstanceLanding(self).goto_instance_detail_page_via_link(launch_instance['instance_id'])
+        InstanceDetailPage(self, launch_instance['instance_id']).click_action_associate_ip_address()
+        AssociateEipDialog(self).associate_eip_from_instance(elastic_ip)
+        InstanceDetailPage(self, launch_instance['instance_id']).verify_eip_address_associated_to_instance(elastic_ip)
 
     def associate_eip_from_eip_detail_page(self):
         raise NotImplementedError

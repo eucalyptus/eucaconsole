@@ -13,7 +13,9 @@ class InstanceDetailPage(DetailPage):
     _attach_volume_tile_css = ".plus"
     _instance_status_css = "[class='label radius status {0}']"  #instance status is required
     _launch_more_like_this_action_menuitem_id = "launchmore-instance-action"
+    _associate_ip_address_action_menuitem_id = "associate-ip-to-instance-action"
     _attached_volume_status_xpath = '//a[@href="/volumes/{0}"]/../../../div[@class="footer status attached"]'  #requires volume id
+    _elastic_ip_link_css = 'a[href="/ipaddresses/{0}"]'
 
     def verify_instance_detail_page_loaded(self):
         if self.instance_name == None:
@@ -47,6 +49,9 @@ class InstanceDetailPage(DetailPage):
         self.tester.click_element_by_css(self._volumes_tab_css)
         self.tester.wait_for_visible_by_xpath(self._attached_volume_status_xpath.format(volume_id), timeout_in_seconds)
 
+    def click_action_associate_ip_address(self):
+        self.tester.click_element_by_css(DetailPage(self)._actions_menu_css)
+        self.tester.click_element_by_id(self._associate_ip_address_action_menuitem_id)
 
-
-
+    def verify_eip_address_associated_to_instance(self, elastic_ip):
+        self.tester.wait_for_element_present_by_css(self._elastic_ip_link_css.format(elastic_ip))
