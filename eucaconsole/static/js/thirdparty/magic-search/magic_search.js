@@ -83,6 +83,7 @@ angular.module('MagicSearch')
                 };
                 $scope.$on('facets_updated', function($event, newVal) {
                     $scope.facetsObj = newVal;
+                    $scope.facetsSave = $scope.copyFacets($scope.facetsObj);
                     $scope.initFacets();
                 });
                 $scope.addFacets = function(facets) {

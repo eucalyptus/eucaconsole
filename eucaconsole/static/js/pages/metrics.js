@@ -75,6 +75,13 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
             return metricGroup.metrics;
         };
         $scope.$on('itemsLoaded', function($event, items) {
+            vm.items = items;
+            // clear previous filters
+            vm.items.forEach(function(val) {
+                val.metrics.forEach(function(metric) {
+                    metric._hide = false;
+                });
+            });
             var facets = emptyFacets;
             var metric_facet = facets.find(function(elem) {
                 return elem.name == 'metric';
@@ -85,32 +92,103 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
             var resource_type_facet = facets.find(function(elem) {
                 return elem.name == 'resource_type';
             });
+            // create temp lists for simpler tests within loop
+            metric_facet.opt_list = [];
+            resource_facet.opt_list = [];
+            resource_type_facet.opt_list = [];
             items.forEach(function(val) {
                 val.metrics.forEach(function(metric) {
-                    if (metric_facet.options.indexOf(metric.metric_name) === -1) {
-                        metric_facet.options.push(metric.metric_name);
+                    if (metric_facet.opt_list.indexOf(metric.metric_name) === -1) {
+                        metric_facet.opt_list.push(metric.metric_name);
+                        metric_facet.options.push({'key':metric.metric_name, 'label':metric.metric_name});
                     }
                     metric.resources.forEach(function(res) {
-                        if (resource_facet.options.indexOf(res.res_id) === -1) {
-                            resource_facet.options.push(res.res_id);
+                        if (resource_facet.opt_list.indexOf(res.res_id) === -1) {
+                            resource_facet.opt_list.push(res.res_id);
+                            resource_facet.options.push({'key':res.res_id, 'label':res.res_id});
                         }
-                        if (resource_type_facet.options.indexOf(res.res_type) === -1) {
-                            resource_type_facet.options.push(res.res_type);
+                        if (resource_type_facet.opt_list.indexOf(res.res_type) === -1) {
+                            resource_type_facet.opt_list.push(res.res_type);
+                            resource_type_facet.options.push({'key':res.res_type, 'label':res.res_type});
                         }
                     });
                 });
             });
+            // prune those lists since we have facet options now
+            metric_facet.opt_list = undefined
+            resource_facet.opt_list = undefined;
+            resource_type_facet.opt_list = undefined;
             $scope.$broadcast("facets_updated", facets);
-            /*
-            search_facets = [
-                {'name': 'metric', 'label': _(u"Metric name"), 'options': [
-                    {'key': 'tbd', 'label': _("TBD")},
-                ]},
-                {'name': 'resource', 'label': _(u"Resource type"), 'options': [
-                    {'key': 'tbd', 'label': _("TBD")},
-                ]}
-            ]
-            */
+        });
+        /*  Apply facet filtering
+         *  to apply text filtering, call searchFilterItems instead
+         */
+        var matchByFacet = function(facet, val) {
+            if (typeof val === 'string') {
+                if ($.inArray(val, facet) > -1 ||
+                    $.inArray(val.toLowerCase(), facet) > -1) {
+                    return true;
+                }
+            }
+            if (typeof val === 'object') {
+                // if object, assume it has valid id or name attribute
+                if ($.inArray(val.id, facet) > -1 ||
+                    $.inArray(val.name, facet) > -1) {
+                    return true;
+                }
+            }
+        };
+        var filterByFacet = function(item, facet, key) {
+            // handle special case of empty facet value, match all
+            if (facet.indexOf("") > -1) {
+                return true;
+            }
+            var val = item[key];
+            if (val === undefined || val === null) {
+                return false;
+            }
+            if (Array.isArray(val)) {
+                for (var i=0; i<val.length; i++) {
+                    return matchByFacet(facet, val[i]);
+                }
+            }
+            else {
+                return matchByFacet(facet, val);
+            }
+        };
+        $scope.facetFilterItems = function(query) {
+            var url = window.location.href;
+            // clear previous filters
+            vm.items.forEach(function(val) {
+                val._hide = true;
+            });
+            if (query !== undefined && query.length !== 0) {
+                // prepare facets by grouping
+                var tmp = query.split('&').sort();
+                var facets = {};
+                angular.forEach(tmp, function(item) {
+                    var facet = item.split('=');
+                    if (this[facet[0]] === undefined) {
+                        this[facet[0]] = [];
+                    }
+                    this[facet[0]].push(facet[1]);
+                }, facets);
+                // filter results
+                for (var key in facets) {
+                    vm.items.forEach(function(val) {
+                        val.metrics.forEach(function(metric) {
+                            if (filterByFacet(val, facets[key], key) === true)
+                                val._hide = false;
+                        });
+                    });
+                }
+            }
+            //$scope.searchFilterItems();
+        };
+        $scope.$on('searchUpdated', function($event, query) {
+            $scope.facetFilterItems(query);
+        });
+        $scope.$on('textSearch', function($event, text, filter_keys) {
         });
     })
 ;

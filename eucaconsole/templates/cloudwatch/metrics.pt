@@ -72,7 +72,7 @@
                                     <th></th>
                                 </tr>
                             </thead>
-                            <tbody tal:condition="using_expando" expando="" ng-repeat="item in items | orderBy: sortBy:sortReverse"
+                            <tbody tal:condition="using_expando" expando="" ng-repeat="item in unfilteredItems | orderBy: sortBy:sortReverse"
                                 url="${expando_data_url}" item_id="${expando_data_id}">
                                 <tr ng-class="{'expando-tr-even': $odd}" ng-cloak="true"> 
                                     <td>
@@ -108,8 +108,8 @@
                                                         <th i18n:translate="">ACTIONS</th>
                                                     </tr></thead>
                                                     <tbody>
-                                                        <tr ng-repeat="metric in metricsCtrl.filterMetrics(item)" ng-cloak="true">
-                                                            <td><input type="checkbox" ng-model="metric.selected"/></td>
+                                                        <tr ng-repeat="metric in metricsCtrl.filterMetrics(item) | filter:{ _hide: false }" ng-cloak="true">
+                                                            <td><input type="checkbox" ng-model="metric._selected"/></td>
                                                             <td>
                                                                 <span ng-repeat="res in metric.resources">
                                                                     <a ng-if="res.res_url" ng-href="{{ res.res_url }}">{{ res.res_id }}</a>
@@ -138,7 +138,7 @@
                                                 <div class="tile item" ng-cloak="true"
                                                      ng-repeat="metric in metricsCtrl.filterMetrics(item)">
                                                     <div class="header">
-                                                        <input type="checkbox" ng-model="metric.selected"/>
+                                                        <input type="checkbox" ng-model="metric._selected"/>
                                                         <strong>
                                                             <span ng-repeat="res in metric.resources">
                                                                 <a ng-if="res.res_url" ng-href="{{ res.res_url }}">{{ res.res_id }}</a>
@@ -168,7 +168,7 @@
                             </tbody>
                         </table>
                         <div ng-if="!itemsLoading">
-                            <div data-alert="alert" class="alert-box secondary" ng-if="items.length == 0" ng-cloak="">
+                            <div data-alert="alert" class="alert-box secondary" ng-if="unfilteredItems.length == 0" ng-cloak="">
                                 <span i18n:translate="">No items were found</span>
                                 <a href="#" class="close">&times;</a>
                             </div>
@@ -180,7 +180,7 @@
                     <div ng-controller="CloudWatchChartsCtrl as chartsCtrl"
                         ng-init="chartsCtrl.initController('${chart_options_json}')">
                         <div ng-repeat="item in items" ng-cloak="true">
-                            <div class="chart-wrapper" ng-repeat="chart in item.metrics | filter:{ selected: true }">
+                            <div class="chart-wrapper" ng-repeat="chart in item.metrics | filter:{ _selected: true }">
                                 <h6>{{ chart.metric_name }}<i class="busy"></i></h6>
                                 <svg cloudwatch-chart="" id="cwchart-{{ chart.metric_name }}" class="cwchart"
                                      ids="{{ chart.resources[0].res_id }}" idtype="{{ chart.resources[0].res_type }}" metric="{{ chart.metric_name }}"
