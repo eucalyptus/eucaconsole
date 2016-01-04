@@ -188,7 +188,6 @@ urls = [
     Route(name='volume_snapshot_create', pattern='/volumes/{id}/snapshots/create'),
     Route(name='volume_snapshot_delete', pattern='/volumes/{id}/snapshots/{snapshot_id}/delete'),
     Route(name='volume_monitoring', pattern='/volumes/{id}/monitoring'),
-    Route(name='volume_monitoring_update', pattern='/volumes/{id}/monitoring/update'),
 
     # Snapshots #####
     # Landing page

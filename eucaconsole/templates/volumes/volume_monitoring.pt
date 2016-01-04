@@ -42,27 +42,6 @@
                     <div class="actions">
                         <span id="refresh-charts-icon" class="action-icon" title="Refresh data" i18n:attributes="title"
                               ng-click="chartsCtrl.refreshCharts()"><i class="fa fa-refresh"></i></span>
-                        <span id="enable-monitoring-icon" class="action-icon dropdown"
-                              data-dropdown="enable-monitoring-dropdown"><i class="fa fa-ellipsis-v"></i></span>
-                        <ul id="enable-monitoring-dropdown" class="f-dropdown" data-dropdown-content="">
-                            <li>
-                                <a href="" ng-click="chartsCtrl.submitMonitoringForm()">
-                                    <div tal:condition="layout.cloud_type == 'euca'" tal:omit-tag="">
-                                        <span i18n:translate="">Turn monitoring</span>
-                                        <span i18n:translate="" tal:condition="monitoring_enabled">off</span>
-                                        <span i18n:translate="" tal:condition="not monitoring_enabled">on</span>
-                                    </div>
-                                    <div tal:condition="layout.cloud_type == 'aws'" tal:omit-tag="">
-                                        <span i18n:translate="" tal:condition="detailed_monitoring_enabled">
-                                            Disable detailed monitoring
-                                        </span>
-                                        <span i18n:translate="" tal:condition="not detailed_monitoring_enabled">
-                                            Enable detailed monitoring
-                                        </span>
-                                    </div>
-                                </a>
-                            </li>
-                        </ul>
                     </div>
                 </div>
                 <div tal:condition="not monitoring_enabled" id="monitoring-disabled-notice">
@@ -80,12 +59,11 @@
                         <span i18n:translate="">in order to collect and view metrics for the volume.</span>
                     </p>
                     <p tal:condition="is_attached">
-                        <a href="" ng-click="chartsCtrl.submitMonitoringForm()">
-                            <span i18n:translate="" tal:condition="layout.cloud_type == 'euca'">Turn on monitoring</span>
-                            <span i18n:translate="" tal:condition="layout.cloud_type == 'aws'">Turn on detailed monitoring</span>
-                            for this volume's instance
+                        <a href="${request.route_path('instance_monitoring', id=attached_instance_id)}">
+                            <span i18n:translate="" tal:condition="layout.cloud_type == 'euca'">Enable monitoring</span>
+                            <span i18n:translate="" tal:condition="layout.cloud_type == 'aws'">Enable detailed monitoring</span>
+                            <span i18n:translate="">for instance</span> ${attached_instance_id}
                         </a>
-                        <span i18n:translate="">to view metric data.</span>
                     </p>
                 </div>
                 <ul class="small-block-grid-1 medium-block-grid-2 large-block-grid-3" tal:condition="monitoring_enabled"
@@ -111,10 +89,6 @@
                 <!--! HELP CONTENT HERE -->
             </div>
         </div>
-        <form method="post" id="monitoring-form" tal:condition="is_attached"
-              action="${request.route_path('volume_monitoring_update', id=volume.id)}">
-            ${structure:monitoring_form['csrf_token']}
-        </form>
         <!--! Modal dialog for large chart -->
         ${panel('cloudwatch_chart_dialog', duration_choices=duration_choices, statistic_choices=statistic_choices)}
     </div>

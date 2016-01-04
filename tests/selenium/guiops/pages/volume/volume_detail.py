@@ -1,5 +1,5 @@
 from pages.detailpage import DetailPage
-from eucaconsole.views.volumes import VOLUME_MONITORING_CHARTS_LIST
+from eucaconsole.constants.volumes import VOLUME_MONITORING_CHARTS_LIST
 
 
 class VolumeDetailPage(DetailPage):

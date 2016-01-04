@@ -41,8 +41,8 @@ from ..constants.cloudwatch import (
     MONITORING_DURATION_CHOICES, STATISTIC_CHOICES, GRANULARITY_CHOICES,
     DURATION_GRANULARITY_CHOICES_MAPPING
 )
+from ..constants.volumes import VOLUME_MONITORING_CHARTS_LIST
 from ..forms import ChoicesManager
-from ..forms.instances import InstanceMonitoringForm
 from ..forms.volumes import (
     VolumeForm, DeleteVolumeForm, CreateSnapshotForm, DeleteSnapshotForm,
     RegisterSnapshotForm, AttachForm, DetachForm, VolumesFiltersForm)
@@ -50,63 +50,6 @@ from ..i18n import _
 from ..models import Notification
 from ..views import LandingPageView, TaggedItemView, BaseView, JSONResponse
 from . import boto_error_handler
-
-
-VOLUME_EMPTY_DATA_MESSAGE = _('No data available for this volume.')
-VOLUME_MONITORING_CHARTS_LIST = [
-    {
-        'metric': 'VolumeReadBytes', 'unit': 'Bytes', 'statistic': 'Sum',
-        'empty_msg': VOLUME_EMPTY_DATA_MESSAGE, 'title': _(u'Read bandwidth'),
-        'help': _('Read bandwith, computed using the following: Sum(VolumeReadBytes) / Period'),
-    },
-    {
-        'metric': 'VolumeWriteBytes', 'unit': 'Bytes', 'statistic': 'Sum',
-        'empty_msg': VOLUME_EMPTY_DATA_MESSAGE, 'title': _(u'Write bandwidth'),
-        'help': _('Write bandwith, computed using the following: Sum(VolumeWriteBytes) / Period'),
-    },
-    {
-        'metric': 'VolumeReadOps', 'unit': 'Count', 'statistic': 'Sum',
-        'empty_msg': VOLUME_EMPTY_DATA_MESSAGE, 'title': _(u'Read throughput (Ops/sec)'),
-        'help': _('Read operations per second, computed using the following: Sum(VolumeReadOps) / Period'),
-    },
-    {
-        'metric': 'VolumeWriteOps', 'unit': 'Count', 'statistic': 'Sum',
-        'empty_msg': VOLUME_EMPTY_DATA_MESSAGE, 'title': _(u'Write throughput (Ops/sec)'),
-        'help': _('Write operations per second, computed using the following: Sum(VolumeWriteOps) / Period'),
-    },
-    {
-        'metric': 'VolumeQueueLength', 'unit': 'Count', 'statistic': 'Average',
-        'empty_msg': VOLUME_EMPTY_DATA_MESSAGE, 'title': _(u'Average queue length (ops)'),
-        'help': _('Average number of read and write operation requests waiting to be completed '
-                  'in a specified period time.  Computed using the following: Avg(VolumeQueueLength)'),
-    },
-    {
-        'metric': 'VolumeIdleTime', 'unit': 'Seconds', 'statistic': 'Sum',
-        'empty_msg': VOLUME_EMPTY_DATA_MESSAGE, 'title': _(u'Percent time spent idle'),
-        'help': _('Percentage of time in a specified period when no read or write operations were submitted.'
-                  'Computed using the following: Sum(VolumeIdleTime) / Period * 100'),
-    },
-    {
-        'metric': 'VolumeReadBytes', 'unit': 'Bytes', 'statistic': 'Average',
-        'empty_msg': VOLUME_EMPTY_DATA_MESSAGE, 'title': _(u'Average read size (KiB/op)'),
-        'help': _('Average read size in kilobytes, computed using the following: Avg(VolumeReadBytes) / 1024'),
-    },
-    {
-        'metric': 'VolumeWriteBytes', 'unit': 'Bytes', 'statistic': 'Average',
-        'empty_msg': VOLUME_EMPTY_DATA_MESSAGE, 'title': _(u'Average write size (KiB/op)'),
-        'help': _('Average write size in kilobytes, computed using the following: Avg(VolumeWriteBytes) / 1024'),
-    },
-    {
-        'metric': 'VolumeTotalReadTime', 'unit': 'Seconds', 'statistic': 'Average',
-        'empty_msg': VOLUME_EMPTY_DATA_MESSAGE, 'title': _(u'Average read latency (ms/op)'),
-        'help': _('Average read time in milliseconds, computed using the following: Avg(VolumeTotalReadTime) * 1000'),
-    },
-    {
-        'metric': 'VolumeTotalWriteTime', 'unit': 'Seconds', 'statistic': 'Average',
-        'empty_msg': VOLUME_EMPTY_DATA_MESSAGE, 'title': _(u'Average write latency (ms/op)'),
-        'help': _('Average write time in milliseonds, computed using the following: Avg(VolumeTotalWriteTime) * 1000'),
-    },
-]
 
 
 class BaseVolumeView(BaseView):
@@ -654,7 +597,6 @@ class VolumeMonitoringView(BaseVolumeView):
         with boto_error_handler(self.request):
             self.volume = self.get_volume()
         self.volume_name = TaggedItemView.get_display_name(self.volume)
-        self.monitoring_form = InstanceMonitoringForm(self.request, formdata=self.request.params or None)
         self.instance = None
         instance_id = self.volume.attach_data.instance_id
         monitoring_enabled = False
@@ -665,8 +607,8 @@ class VolumeMonitoringView(BaseVolumeView):
         self.render_dict = dict(
             volume=self.volume,
             volume_name=self.volume_name,
+            attached_instance_id=instance_id,
             monitoring_enabled=monitoring_enabled,
-            monitoring_form=self.monitoring_form,
             is_attached=instance_id is not None,
             duration_choices=MONITORING_DURATION_CHOICES,
             statistic_choices=STATISTIC_CHOICES,
@@ -678,25 +620,6 @@ class VolumeMonitoringView(BaseVolumeView):
         if self.volume is None:
             raise HTTPNotFound()
         return self.render_dict
-
-    @view_config(route_name='volume_monitoring_update', renderer=VIEW_TEMPLATE, request_method='POST')
-    def volume_monitoring_update(self):
-        """Update monitoring state for the volume's instance"""
-        if self.monitoring_form.validate():
-            if self.instance:
-                location = self.request.route_path('volume_monitoring', id=self.volume.id)
-                with boto_error_handler(self.request, location):
-                    monitoring_state = self.instance.monitoring_state
-                    action = 'disabled' if monitoring_state == 'enabled' else 'enabled'
-                    self.log_request(_(u"Monitoring for instance {0} {1}").format(self.instance.id, action))
-                    if monitoring_state == 'disabled':
-                        self.conn.monitor_instances([self.instance.id])
-                    else:
-                        self.conn.unmonitor_instances([self.instance.id])
-                    msg = _(
-                        u'Request successfully submitted.  It may take a moment for the monitoring status to update')
-                    self.request.session.flash(msg, queue=Notification.SUCCESS)
-                return HTTPFound(location=location)
 
     def get_controller_options_json(self):
         if not self.volume:
