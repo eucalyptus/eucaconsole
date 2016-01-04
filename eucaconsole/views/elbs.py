@@ -548,8 +548,8 @@ class BaseELBView(TaggedItemView):
         return availability_zones
 
     def add_elb_tags(self, elb_name):
-        tags_json = self.request.params.get('tags')
-        tags_dict = json.loads(tags_json) if tags_json else {}
+        tags_json = self.request.params.get('tags', '{}')
+        tags_dict = self._normalize_tags(json.loads(tags_json))
         add_tags_params = {'LoadBalancerNames.member.1': elb_name}
         index = 1
         for key, value in tags_dict.items():
@@ -591,6 +591,7 @@ class ELBView(BaseELBView):
                 self.elb.tags = elb_tags or self.elb_conn.get_object('DescribeTags', tags_params, LbTagSet)
             else:
                 raise HTTPNotFound()
+
         self.elb_form = ELBForm(
             self.request, conn=self.ec2_conn, vpc_conn=self.vpc_conn,
             elb=self.elb, elb_conn=self.elb_conn, s3_conn=self.s3_conn, securitygroups=self.get_security_groups(),
@@ -605,6 +606,7 @@ class ELBView(BaseELBView):
             self.request, elb_conn=self.elb_conn, predefined_policy_choices=self.predefined_policy_choices,
             formdata=self.request.params or None
         )
+
         self.create_bucket_form = CreateBucketForm(self.request, formdata=self.request.params or None)
         self.delete_form = ELBDeleteForm(self.request, formdata=self.request.params or None)
         bucket_name = self.access_logs.s3_bucket_name
@@ -612,9 +614,16 @@ class ELBView(BaseELBView):
         logs_subpath = logs_prefix.split('/') if logs_prefix else []
         logs_url = None
         bucket_url = None
+
+        if self.elb is not None:
+            tags = self.serialize_tags(self.elb.tags)
+        else:
+            tags = '{}'
+
         if bucket_name:
             logs_url = self.request.route_path('bucket_contents', name=bucket_name, subpath=logs_subpath)
             bucket_url = self.request.route_path('bucket_contents', name=bucket_name, subpath=[])
+
         self.render_dict = dict(
             elb=self.elb,
             elb_name=self.escape_braces(self.elb.name) if self.elb else '',
@@ -637,6 +646,7 @@ class ELBView(BaseELBView):
             controller_options_json=self.get_controller_options_json(),
             logs_url=logs_url,
             bucket_url=bucket_url,
+            tags=tags,
         )
 
     @view_config(route_name='elb_view', renderer=TEMPLATE)
@@ -1136,11 +1146,13 @@ class CreateELBView(BaseELBView):
             formdata=self.request.params or None
         )
         filter_keys = ['id', 'name', 'placement', 'state', 'security_groups', 'vpc_subnet_display', 'vpc_name']
+
         filters_form = ELBInstancesFiltersForm(
             self.request, ec2_conn=self.ec2_conn, autoscale_conn=self.autoscale_conn,
             iam_conn=None, vpc_conn=self.vpc_conn,
             cloud_type=self.cloud_type, formdata=self.request.params or None)
         search_facets = filters_form.facets
+
         self.render_dict = dict(
             create_form=self.create_form,
             create_bucket_form=self.create_bucket_form,
@@ -1160,6 +1172,7 @@ class CreateELBView(BaseELBView):
             filter_keys=filter_keys,
             search_facets=BaseView.escape_json(json.dumps(search_facets)),
             controller_options_json=self.get_controller_options_json(),
+            tags=[]
         )
 
     @view_config(route_name='elb_new', renderer=TEMPLATE)

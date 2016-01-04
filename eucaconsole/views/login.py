@@ -159,6 +159,7 @@ class LoginView(BaseView, PermissionCheckMixin):
             account = self.request.params.get('account')
             username = self.request.params.get('username')
             password = self.request.params.get('password')
+            euca_region = self.request.params.get('euca-region')
             try:
                 # TODO: also return dns enablement
                 creds = auth.authenticate(
@@ -166,6 +167,7 @@ class LoginView(BaseView, PermissionCheckMixin):
                     new_passwd=new_passwd, timeout=8, duration=self.duration)
                 logging.info(u"Authenticated Eucalyptus user: {acct}/{user} from {ip}".format(
                     acct=account, user=username, ip=BaseView.get_remote_addr(self.request)))
+                default_region = self.request.registry.settings.get('default.region', None)
                 user_account = u'{user}@{account}'.format(user=username, account=account)
                 session.invalidate()  # Refresh session
                 session['cloud_type'] = 'euca'
@@ -174,7 +176,7 @@ class LoginView(BaseView, PermissionCheckMixin):
                 session['session_token'] = creds.session_token
                 session['access_id'] = creds.access_key
                 session['secret_key'] = creds.secret_key
-                session['region'] = 'euca'
+                session['region'] = euca_region if euca_region != '' else default_region
                 session['username_label'] = user_account
                 session['dns_enabled'] = auth.dns_enabled  # this *must* be prior to line below
                 session['supported_platforms'] = self.get_account_attributes(['supported-platforms'])
@@ -188,7 +190,9 @@ class LoginView(BaseView, PermissionCheckMixin):
                 logging.info("http error " + str(vars(err)))
                 if err.code == 403:  # password expired
                     changepwd_url = self.request.route_path('managecredentials')
-                    return HTTPFound(changepwd_url + ("?came_from=&expired=true&account=%s&username=%s" % (account, username)))
+                    return HTTPFound(
+                        changepwd_url + ("?came_from=&expired=true&account=%s&username=%s" % (account, username))
+                    )
                 elif err.msg == u'Unauthorized':
                     msg = _(u'Invalid user/account name and/or password.')
                     self.login_form_errors.append(msg)

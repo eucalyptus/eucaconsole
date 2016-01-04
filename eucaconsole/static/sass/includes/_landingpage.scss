@@ -75,6 +75,10 @@ $dropdown-border-color: $hp-gray-65;
 #primary-buttons {
     .button {
         padding: 8px 1rem;
+        &.more-actions {
+            margin-left: 1rem;
+            padding-right: 3rem;
+        }
     }
 }
 
@@ -265,6 +269,9 @@ $dropdown-border-color: $hp-gray-65;
     tr {
         position: relative;
         width: $gridwrapper-table-width;
+        input[type="checkbox"] {
+            margin-bottom: 0;
+        }
         td {
             position: relative;
             padding: 8px 4px 8px 6px;

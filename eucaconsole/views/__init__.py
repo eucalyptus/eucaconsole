@@ -70,7 +70,7 @@ from ..forms.login import EucaLogoutForm
 from ..models.auth import EucaAuthenticator
 from ..i18n import _
 from ..models import Notification
-from ..models.auth import ConnectionManager
+from ..models.auth import ConnectionManager, RegionCache
 
 
 def escape_braces(event):
@@ -140,8 +140,13 @@ class BaseView(object):
             host = self._get_ufs_host_setting_()
             port = self._get_ufs_port_setting_()
             dns_enabled = self.request.session.get('dns_enabled', True)
+            regions = RegionCache(None).regions()
+            if len(regions) > 0:
+                for region in regions:
+                    if region['endpoints']['ec2'].find(host) > -1:
+                        self.default_region = region['name']
             conn = ConnectionManager.euca_connection(
-                host, port, access_key, secret_key, security_token,
+                host, port, region, access_key, secret_key, security_token,
                 conn_type, dns_enabled, validate_certs, certs_file
             )
 
@@ -458,8 +463,8 @@ class TaggedItemView(BaseView):
 
     def add_tags(self):
         if self.conn:
-            tags_json = self.request.params.get('tags')
-            tags_dict = json.loads(tags_json) if tags_json else {}
+            tags_json = self.request.params.get('tags', '{}')
+            tags_dict = self._normalize_tags(json.loads(tags_json))
             tags = {}
             for key, value in tags_dict.items():
                 key = self.unescape_braces(key.strip())
@@ -489,6 +494,27 @@ class TaggedItemView(BaseView):
                 if value and not value.startswith('aws:'):
                     tag_value = self.unescape_braces(value)
                     self.tagged_obj.add_tag('Name', tag_value)
+
+    def _normalize_tags(self, tags):
+        if type(tags) is dict:
+            return tags
+
+        new_tags = {}
+        for tag in tags:
+            name, value = tag['name'], tag['value']
+            new_tags[name] = value
+        return new_tags
+
+    @staticmethod
+    def serialize_tags(tags):
+        if tags is not None:
+            serialized_tags = [{
+                'name': key,
+                'value': value
+            } for key, value in tags.iteritems()]
+        else:
+            serialized_tags = []
+        return BaseView.escape_json(json.dumps(serialized_tags))
 
     @staticmethod
     def get_display_name(resource, escapebraces=True):
@@ -676,6 +702,7 @@ class LandingPageView(BaseView):
 @notfound_view_config(renderer='../templates/notfound.pt')
 def notfound_view(request):
     """404 Not Found view"""
+    request.response.status = 404
     return dict()
 
 

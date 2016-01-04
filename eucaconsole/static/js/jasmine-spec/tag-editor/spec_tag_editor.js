@@ -41,6 +41,7 @@ describe('TagEditorModule', function () {
 
         scope = element.isolateScope();
         scope.tagForm.$valid = true;
+        scope.tagForm.$invalid = false;
         spyOn(scope.tagForm.key, '$setPristine').and.callThrough();
         spyOn(scope.tagForm.key, '$setUntouched').and.callThrough();
         spyOn(scope.tagForm.value, '$setPristine').and.callThrough();
