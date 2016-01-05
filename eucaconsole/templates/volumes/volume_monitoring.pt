@@ -59,11 +59,11 @@
                         <span i18n:translate="">to collect and view metrics for the volume.</span>
                     </p>
                     <p tal:condition="is_attached">
-                        <a href="" ng-click="chartsCtrl.submitMonitoringForm()">
+                        <button ng-click="chartsCtrl.submitMonitoringForm()">
                             <span i18n:translate="" tal:condition="layout.cloud_type == 'euca'">Enable monitoring</span>
                             <span i18n:translate="" tal:condition="layout.cloud_type == 'aws'">Enable detailed monitoring</span>
                             <span i18n:translate="">for instance</span> ${attached_instance_id}
-                        </a>
+                        </button>
                     </p>
                 </div>
                 <ul class="small-block-grid-1 medium-block-grid-2 large-block-grid-3" tal:condition="monitoring_enabled"

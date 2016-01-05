@@ -68,10 +68,9 @@
                 <div tal:condition="layout.cloud_type == 'euca' and not monitoring_enabled">
                     <p i18n:translate="">Monitoring is currently turned off for this instance.</p>
                     <p>
-                        <a href="" ng-click="chartsCtrl.submitMonitoringForm()" i18n:translate="">
-                            Turn on monitoring
-                        </a>
-                        <span i18n:translate="">to view metric data.</span>
+                        <button ng-click="chartsCtrl.submitMonitoringForm()" i18n:translate="">
+                            Enable monitoring for this instance
+                        </button>
                     </p>
                 </div>
                 <ul class="small-block-grid-1 medium-block-grid-2 large-block-grid-3" tal:condition="monitoring_enabled">
