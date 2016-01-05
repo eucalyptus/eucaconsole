@@ -24,7 +24,7 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
             }
         };
     })
-    .controller('MetricsCtrl', function ($scope, eucaUnescapeJson) {
+    .controller('MetricsCtrl', function ($scope, $timeout, eucaUnescapeJson) {
         var vm = this;
         vm.ec2SubMetric = 'instance';
         vm.elbSubMetric = 'elb';
@@ -77,11 +77,7 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
         $scope.$on('itemsLoaded', function($event, items) {
             vm.items = items;
             // clear previous filters
-            vm.items.forEach(function(val) {
-                val.metrics.forEach(function(metric) {
-                    metric._hide = false;
-                });
-            });
+            vm.clearFacetFilters();
             var facets = emptyFacets;
             var metric_facet = facets.find(function(elem) {
                 return elem.name == 'metric';
@@ -96,8 +92,8 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
             metric_facet.opt_list = [];
             resource_facet.opt_list = [];
             resource_type_facet.opt_list = [];
-            items.forEach(function(val) {
-                val.metrics.forEach(function(metric) {
+            items.forEach(function(category) {
+                category.metrics.forEach(function(metric) {
                     if (metric_facet.opt_list.indexOf(metric.metric_name) === -1) {
                         metric_facet.opt_list.push(metric.metric_name);
                         metric_facet.options.push({'key':metric.metric_name, 'label':metric.metric_name});
@@ -120,30 +116,36 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
             resource_type_facet.opt_list = undefined;
             $scope.$broadcast("facets_updated", facets);
         });
+        vm.clearFacetFilters = function() {
+            vm.items.forEach(function(category) {
+                category.metrics.forEach(function(metric) {
+                    metric._hide = false;
+                });
+            });
+        };
         /*  Apply facet filtering
          *  to apply text filtering, call searchFilterItems instead
          */
         var matchByFacet = function(facet, val) {
-            if (typeof val === 'string') {
-                if ($.inArray(val, facet) > -1 ||
-                    $.inArray(val.toLowerCase(), facet) > -1) {
+            if (typeof val === "string") {
+                if (facet.indexOf(val) > -1 ||
+                    facet.indexOf(val.toLowerCase()) > -1) {
                     return true;
                 }
             }
-            if (typeof val === 'object') {
-                // if object, assume it has valid id or name attribute
-                if ($.inArray(val.id, facet) > -1 ||
-                    $.inArray(val.name, facet) > -1) {
-                    return true;
-                }
-            }
+            return false;
         };
         var filterByFacet = function(item, facet, key) {
             // handle special case of empty facet value, match all
             if (facet.indexOf("") > -1) {
                 return true;
             }
-            var val = item[key];
+            if (key == "metric")
+                val = item.metric_name;
+            if (key == "resource")
+                val = item.resources[0].res_id;
+            if (key == "resource_type")
+                val = item.resources[0].res_type;
             if (val === undefined || val === null) {
                 return false;
             }
@@ -160,7 +162,9 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
             var url = window.location.href;
             // clear previous filters
             vm.items.forEach(function(val) {
-                val._hide = true;
+                val.metrics.forEach(function(metric) {
+                    metric._hide = true;
+                });
             });
             if (query !== undefined && query.length !== 0) {
                 // prepare facets by grouping
@@ -174,14 +178,30 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
                     this[facet[0]].push(facet[1]);
                 }, facets);
                 // filter results
+                var expandSections = [];
                 for (var key in facets) {
-                    vm.items.forEach(function(val) {
-                        val.metrics.forEach(function(metric) {
-                            if (filterByFacet(val, facets[key], key) === true)
-                                val._hide = false;
+                    vm.items.forEach(function(category) {
+                        category.metrics.forEach(function(metric) {
+                            if (filterByFacet(metric, facets[key], key)) {
+                                metric._hide = false;
+                                var linkIdSelector = "a[id='" + category.name + "']";
+                                if (expandSections.indexOf(linkIdSelector) === -1) {
+                                    expandSections.push(linkIdSelector);
+                                }
+                            }
                         });
                     });
                 }
+                // close open expandos
+                $timeout(function() {
+                    $("i[class='table-expando-open']").trigger("click");
+                    expandSections.forEach(function(selector) {
+                        $(selector).trigger("click");
+                    });
+                });
+            }
+            else {
+                vm.clearFacetFilters();
             }
             //$scope.searchFilterItems();
         };

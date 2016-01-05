@@ -76,7 +76,7 @@
                                 url="${expando_data_url}" item_id="${expando_data_id}">
                                 <tr ng-class="{'expando-tr-even': $odd}" ng-cloak="true"> 
                                     <td>
-                                        <a ng-click="toggle()"><i ng-class="{'table-expando-closed': !expando.data, 'table-expando-open': expando.data || expando.loading }"></i></a>
+                                        <a ng-attr-id="{{item.name}}" ng-click="toggle()"><i ng-class="{'table-expando-closed': !expando.data, 'table-expando-open': expando.data || expando.loading }"></i></a>
                                     </td>
                                     <td>{{ item.label }} ({{ item.metrics.length }})</td>
                                 </tr>
@@ -136,7 +136,7 @@
                                             </div>
                                             <div id="gridview" class="gridwrapper" ng-show="!itemsLoading" ng-if="landingPageView == 'gridview'">
                                                 <div class="tile item" ng-cloak="true"
-                                                     ng-repeat="metric in metricsCtrl.filterMetrics(item)">
+                                                     ng-repeat="metric in metricsCtrl.filterMetrics(item) | filter:{ _hide: false }">
                                                     <div class="header">
                                                         <input type="checkbox" ng-model="metric._selected"/>
                                                         <strong>
@@ -179,7 +179,7 @@
                 <div class="split-bottom" id="graph-area">
                     <div ng-controller="CloudWatchChartsCtrl as chartsCtrl"
                         ng-init="chartsCtrl.initController('${chart_options_json}')">
-                        <div ng-repeat="item in items" ng-cloak="true">
+                        <div ng-repeat="item in metricsCtrl.items" ng-cloak="true">
                             <div class="chart-wrapper" ng-repeat="chart in item.metrics | filter:{ _selected: true }">
                                 <h6>{{ chart.metric_name }}<i class="busy"></i></h6>
                                 <svg cloudwatch-chart="" id="cwchart-{{ chart.metric_name }}" class="cwchart"
