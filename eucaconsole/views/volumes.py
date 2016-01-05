@@ -43,6 +43,7 @@ from ..constants.cloudwatch import (
 )
 from ..constants.volumes import VOLUME_MONITORING_CHARTS_LIST
 from ..forms import ChoicesManager
+from ..forms.instances import InstanceMonitoringForm
 from ..forms.volumes import (
     VolumeForm, DeleteVolumeForm, CreateSnapshotForm, DeleteSnapshotForm,
     RegisterSnapshotForm, AttachForm, DetachForm, VolumesFiltersForm)
@@ -597,6 +598,7 @@ class VolumeMonitoringView(BaseVolumeView):
         with boto_error_handler(self.request):
             self.volume = self.get_volume()
         self.volume_name = TaggedItemView.get_display_name(self.volume)
+        self.monitoring_form = InstanceMonitoringForm(self.request, formdata=self.request.params or None)
         self.instance = None
         instance_id = self.volume.attach_data.instance_id
         monitoring_enabled = False
@@ -609,6 +611,7 @@ class VolumeMonitoringView(BaseVolumeView):
             volume_name=self.volume_name,
             attached_instance_id=instance_id,
             monitoring_enabled=monitoring_enabled,
+            monitoring_form=self.monitoring_form,
             is_attached=instance_id is not None,
             duration_choices=MONITORING_DURATION_CHOICES,
             statistic_choices=STATISTIC_CHOICES,
@@ -620,6 +623,25 @@ class VolumeMonitoringView(BaseVolumeView):
         if self.volume is None:
             raise HTTPNotFound()
         return self.render_dict
+
+    @view_config(route_name='volume_monitoring_update', renderer=VIEW_TEMPLATE, request_method='POST')
+    def volume_monitoring_update(self):
+        """Update monitoring state for the volume's instance"""
+        if self.monitoring_form.validate():
+            if self.instance:
+                location = self.request.route_path('volume_monitoring', id=self.volume.id)
+                with boto_error_handler(self.request, location):
+                    monitoring_state = self.instance.monitoring_state
+                    action = 'disabled' if monitoring_state == 'enabled' else 'enabled'
+                    self.log_request(_(u"Monitoring for instance {0} {1}").format(self.instance.id, action))
+                    if monitoring_state == 'disabled':
+                        self.conn.monitor_instances([self.instance.id])
+                    else:
+                        self.conn.unmonitor_instances([self.instance.id])
+                    msg = _(
+                        u'Request successfully submitted.  It may take a moment for the monitoring status to update.')
+                    self.request.session.flash(msg, queue=Notification.SUCCESS)
+                return HTTPFound(location=location)
 
     def get_controller_options_json(self):
         if not self.volume:
