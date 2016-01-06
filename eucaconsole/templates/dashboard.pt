@@ -99,6 +99,21 @@
                             </div>
                         </div>
                     </li>
+                    <li class="panel" id="alarms" tal:case="'alarms'">
+                        <div class="tile">
+                            <h5 class="subheader">
+                                <span i18n:translate="">CloudWatch alarms</span>
+                            </h5>
+                            <metal:block metal:use-macro="layout.global_macros['dashaction']" />
+                            <div class="content">
+                                <a href="${request.route_path('cloudwatch_alarms')}">
+                                    <i class="icon"><em>
+                                        <span id="alarms-count" ng-cloak="">${alarms_triggered}</span></em>
+                                    </i>
+                                </a>
+                            </div>
+                        </div>
+                    </li>
                     <li class="panel" id="elastic-ips" tal:case="'elastic-ips'">
                         <div class="tile">
                             <h5 class="subheader" i18n:translate="">Elastic IPs</h5>

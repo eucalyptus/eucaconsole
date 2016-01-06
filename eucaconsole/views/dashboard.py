@@ -40,22 +40,23 @@ from . import boto_error_handler
 from .. import utils
 
 TILE_MASTER_LIST = [
-    ('instances-running', 'Running instances'),
-    ('instances-stopped', 'Stopped instances'),
-    ('stacks', 'Stacks'),
-    ('scaling-groups', 'Instances in scaling groups'),
-    ('elastic-ips', 'Elastic IPs'),
-    ('security-groups', 'Security groups'),
-    ('key-pairs', 'Key pairs'),
-    ('load-balancers', 'Load balancers'),
-    ('health', 'Service status'),
-    ('volumes', 'Volumes'),
-    ('snapshots', 'Snapshots'),
-    ('buckets', 'Buckets (S3)'),
-    ('accounts', 'Accounts'),
-    ('users', 'Users'),
-    ('groups', 'Groups'),
-    ('roles', 'Roles')
+    ('instances-running', _(u'Running instances')),
+    ('instances-stopped', _(u'Stopped instances')),
+    ('stacks', _(u'Stacks')),
+    ('alarms', _(u'CloudWatch alarms')),
+    ('scaling-groups', _(u'Instances in scaling groups')),
+    ('elastic-ips', _(u'Elastic IPs')),
+    ('security-groups', _(u'Security groups')),
+    ('key-pairs', _(u'Key pairs')),
+    ('load-balancers', _(u'Load balancers')),
+    ('health', _(u'Service status')),
+    ('volumes', _(u'Volumes')),
+    ('snapshots', _(u'Snapshots')),
+    ('buckets', _(u'Buckets (S3)')),
+    ('accounts', _(u'Accounts')),
+    ('users', _(u'Users')),
+    ('groups', _(u'Groups')),
+    ('roles', _(u'Roles'))
 ]
 
 
@@ -71,6 +72,7 @@ class DashboardView(BaseView):
         with boto_error_handler(self.request):
             region = self.request.session.get('region')
             availability_zones = ChoicesManager(self.conn).get_availability_zones(region)
+            alarms_triggered = self.get_connection(conn_type='cloudwatch').describe_alarms(state_value="ALARM")
         tiles = self.request.cookies.get(u"{0}_dash_order".format(
             self.request.session['account' if self.cloud_type == 'euca' else 'access_id']))
         if tiles is not None:
@@ -117,7 +119,8 @@ class DashboardView(BaseView):
             tiles_not_shown=[(tile, label) for (tile, label) in TILE_MASTER_LIST if tile in tiles_not_shown],
             tiles_are_default=tiles_are_default,
             controller_options_json=self.get_controller_options_json(),
-            ufshost_error=utils.is_ufshost_error(self.conn, self.cloud_type)
+            ufshost_error=utils.is_ufshost_error(self.conn, self.cloud_type),
+            alarms_triggered=len(alarms_triggered)
         )
 
     def get_controller_options_json(self):
