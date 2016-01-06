@@ -75,6 +75,7 @@
 .gridwrapper .table tr td.tags { max-width: 20rem; word-break: break-all; }
 .gridwrapper .table tr td .f-dropdown a { color: #444; }
 .gridwrapper .table tr td .f-dropdown a:hover { text-decoration: none; }
+.gridwrapper .table tr td .busy { font-size: 0.9rem; width: 0.9rem; height: 0.9rem; margin-left: 0.2rem; }
 .gridwrapper .table .dropdown.button.tiny { z-index: 0; top: 8px; right: 20px; padding-left: 10px; padding-right: 24px; }
 .gridwrapper .table .dropdown.button.tiny i { font-size: 1.2rem; top: 0; }
 .gridwrapper .table .fi-alert { color: darkred; }
