@@ -600,19 +600,20 @@ class VolumeMonitoringView(BaseVolumeView):
         self.volume_name = TaggedItemView.get_display_name(self.volume)
         self.monitoring_form = InstanceMonitoringForm(self.request, formdata=self.request.params or None)
         self.instance = None
-        instance_id = self.volume.attach_data.instance_id
+        attached_instance_id = self.volume.attach_data.instance_id
         monitoring_enabled = False
-        if instance_id:
-            self.instance = self.get_instance(instance_id)
+        if attached_instance_id:
+            self.instance = self.get_instance(attached_instance_id)
             if self.instance:
+                attached_instance_id = TaggedItemView.get_display_name(self.instance)
                 monitoring_enabled = self.instance.monitoring_state == 'enabled'
         self.render_dict = dict(
             volume=self.volume,
             volume_name=self.volume_name,
-            attached_instance_id=instance_id,
+            attached_instance_id=attached_instance_id,
             monitoring_enabled=monitoring_enabled,
             monitoring_form=self.monitoring_form,
-            is_attached=instance_id is not None,
+            is_attached=attached_instance_id is not None,
             duration_choices=MONITORING_DURATION_CHOICES,
             statistic_choices=STATISTIC_CHOICES,
             controller_options_json=self.get_controller_options_json()

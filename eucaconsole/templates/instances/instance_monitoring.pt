@@ -69,7 +69,7 @@
                     <p i18n:translate="">Monitoring is currently turned off for this instance.</p>
                     <p>
                         <button ng-click="chartsCtrl.submitMonitoringForm()" i18n:translate="">
-                            Enable monitoring for this instance
+                            Enable Monitoring for this Instance
                         </button>
                     </p>
                 </div>
