@@ -139,7 +139,7 @@ class CloudWatchMetricsJsonView(BaseView):
                     ))
                 cat['metrics'] = metrics
 
-            #import logging; logging.info(json.dumps(categories, indent=2))
+            # import logging; logging.info(json.dumps(categories, indent=2))
             return dict(results=categories)
 
     def get_items(self):

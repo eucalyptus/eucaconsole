@@ -72,7 +72,7 @@
                     </a>
                     &nbsp;
                     <span ng-show="!itemsLoading" class="items-found">
-                        <strong>{{ items.length }}</strong>
+                        <strong>{{ metricsCtrl.numberFound() }}</strong>
                         <span i18n:translate="">found</span>
                     </span>
                 </div>
@@ -89,7 +89,7 @@
                                     <td>
                                         <a ng-attr-id="{{item.name}}" ng-click="toggle()"><i ng-class="{'table-expando-closed': !expando.data, 'table-expando-open': expando.data || expando.loading }"></i></a>
                                     </td>
-                                    <td>{{ item.label }} ({{ item.metrics.length }})</td>
+                                    <td>{{ item.label }} ({{(item.metrics | filter:{_selected:true}).length}} of {{ item.metrics.length }})</td>
                                 </tr>
                                 <tr ng-class="{'expando-tr-even': $odd}" ng-cloak="true"> 
                                     <td ng-show="!expando.data &amp;&amp; expando.loading == true" colspan="10"><i class="busy"></i></td>

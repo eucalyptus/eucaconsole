@@ -111,7 +111,7 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
                 });
             });
             // prune those lists since we have facet options now
-            metric_facet.opt_list = undefined
+            metric_facet.opt_list = undefined;
             resource_facet.opt_list = undefined;
             resource_type_facet.opt_list = undefined;
             $scope.$broadcast("facets_updated", facets);
@@ -142,6 +142,16 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
             }
             if (!ret) $scope.selection = undefined;
             return ret;
+        };
+        vm.numberFound = function() {
+            if (vm.items) {
+                return vm.items.reduce(function(prevVal, currVal) {
+                    return prevVal + currVal.metrics.filter(function(val) { return !val._hide; }).length;
+                }, 0);
+            }
+            else {
+                return 0;
+            }
         };
         vm.clearFacetFilters = function() {
             vm.items.forEach(function(category) {
@@ -205,19 +215,21 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
                     this[facet[0]].push(facet[1]);
                 }, facets);
                 // filter results
+                var metricsFunc = function(metric) {
+                    if (filterByFacet(metric, facets[key], key)) {
+                        metric._hide = false;
+                        var linkIdSelector = "a[id='" + this.name + "']";
+                        if (expandSections.indexOf(linkIdSelector) === -1) {
+                            expandSections.push(linkIdSelector);
+                        }
+                    }
+                };
+                var categoryFunc = function(category) {
+                    category.metrics.forEach(metricsFunc, category);
+                };
                 var expandSections = [];
                 for (var key in facets) {
-                    vm.items.forEach(function(category) {
-                        category.metrics.forEach(function(metric) {
-                            if (filterByFacet(metric, facets[key], key)) {
-                                metric._hide = false;
-                                var linkIdSelector = "a[id='" + category.name + "']";
-                                if (expandSections.indexOf(linkIdSelector) === -1) {
-                                    expandSections.push(linkIdSelector);
-                                }
-                            }
-                        });
-                    });
+                    vm.items.forEach(categoryFunc);
                 }
                 // close open expandos
                 $timeout(function() {
