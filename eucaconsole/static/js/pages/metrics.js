@@ -116,6 +116,33 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
             resource_type_facet.opt_list = undefined;
             $scope.$broadcast("facets_updated", facets);
         });
+        /*  Returns true if only 1 item selected
+         */
+        vm.singleSelection = function() {
+            var ret = false;
+            var done = false;
+            if (vm.items) {
+                vm.items.some(function(category) {
+                    category.metrics.some(function(metric) {
+                        if (metric._selected === true) {
+                            if (ret === true) {
+                                // fail fast if 2nd item selected
+                                ret = false;
+                                done = true;
+                            }
+                            else {
+                                ret = true;
+                                $scope.selection = metric;
+                            }
+                        }
+                        return done;
+                    });
+                    return done;
+                });
+            }
+            if (!ret) $scope.selection = undefined;
+            return ret;
+        };
         vm.clearFacetFilters = function() {
             vm.items.forEach(function(category) {
                 category.metrics.forEach(function(metric) {

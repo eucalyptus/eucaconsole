@@ -24,6 +24,23 @@
         <script src="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.js')}"></script>
         <div class="large-12 columns datagrid" id="landing-page-items">
             <div class="lp-header">
+                <div class="lp-action-buttons" id="primary-buttons">
+                    <a class="button secondary dropdown more-actions" id="more-actions-btn" ng-cloak=""
+                       ng-if="landingPageView === 'tableview'" ng-disabled="!metricsCtrl.singleSelection()"
+                       data-dropdown="more-actions-dropdown" i18n:translate="">More Actions</a>
+                    <ul id="more-actions-dropdown" class="f-dropdown" data-dropdown-content="" ng-if="metricsCtrl.singleSelection()">
+                        <li>
+                            <a i18n:translate="" ng-href="${request.route_path('cloudwatch_alarms_create')}?metric={{selection.metric_name}}&resource={{ selection.res_ids | escapeURL }}" class="more-actions-create-alarm">
+                                Create alarm
+                            </a>
+                        </li>
+                        <li>
+                            <a i18n:translate="" ng-click="" class="more-actions-copy-graph-url">
+                                Copy graph URL
+                            </a>
+                        </li>
+                    </ul>
+                </div>
                 <div class="lp-sort" id="sorting-controls" ng-show="!itemsLoading">
                     <metal:block metal:define-slot="sorting_controls">
                         <strong>Sort by</strong>
@@ -66,12 +83,6 @@
                     <div id="tableview" class="gridwrapper">
                         <!-- Begin table view -->
                         <table class="table" ng-show="!itemsLoading" ng-cloak="true" tal:define="using_expando using_expando | nothing" tal:attributes="class 'table expando' if using_expando else 'table'">
-                            <thead>
-                                <tr>
-                                    <th tal:condition="using_expando"></th>
-                                    <th></th>
-                                </tr>
-                            </thead>
                             <tbody tal:condition="using_expando" expando="" ng-repeat="item in unfilteredItems | orderBy: sortBy:sortReverse"
                                 url="${expando_data_url}" item_id="${expando_data_id}">
                                 <tr ng-class="{'expando-tr-even': $odd}" ng-cloak="true"> 
@@ -103,9 +114,12 @@
                                                 <table class="table" ng-show="!itemsLoading" ng-cloak="true">
                                                     <thead><tr>
                                                         <th></th>
-                                                        <th i18n:translate="">INSTANCE NAME(ID)</th>
-                                                        <th i18n:translate="">METRIC NAME</th>
-                                                        <th i18n:translate="">ACTIONS</th>
+                                                        <th i18n:translate="" ng-show="item.name=='ebs'">Volume Name(ID)</th>
+                                                        <th i18n:translate="" ng-show="item.name=='ec2'">Instance Name(ID)</th>
+                                                        <th i18n:translate="" ng-show="item.name=='scalinggroup'">Auto Scaling Group</th>
+                                                        <th i18n:translate="" ng-show="item.name=='elb'">Load Balancer/Zone</th>
+                                                        <th i18n:translate="">Metric Name</th>
+                                                        <th i18n:translate="" class="metric-action">Actions</th>
                                                     </tr></thead>
                                                     <tbody>
                                                         <tr ng-repeat="metric in metricsCtrl.filterMetrics(item) | filter:{ _hide: false }" ng-cloak="true">
@@ -120,11 +134,11 @@
                                                             <td>{{ metric.metric_name }}</td>
                                                             <td>
                                                                 <span class="actions">
-                                                                    <a id="table-item-dropdown_{{ item.name | escapeHTMLTagID }}" class="tiny secondary button dropdown right round" data-dropdown="item-dropdown_{{ item.name | escapeHTMLTagID }}"><i class="grid-action"></i></a>
-                                                                    <ul id="item-dropdown_{{ item.name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
-                                                                        <li><a i18n:translate="" ng-href="${prefix}/{{ item.name | escapeURL }}">View details</a></li>
+                                                                    <a id="table-item-dropdown_{{ metric.unique_id }}" class="tiny secondary button dropdown right round" data-dropdown="item-dropdown_{{ metric.unique_id }}"><i class="grid-action"></i></a>
+                                                                    <ul id="item-dropdown_{{ metric.unique_id }}" class="f-dropdown" data-dropdown-content="">
+                                                                        <li><a i18n:translate="" ng-href="${request.route_path('cloudwatch_alarms_create')}?metric={{metric.metric_name}}&resource={{ metric.res_ids | escapeURL }}">Create alarm</a></li>
                                                                         <li ng-show="item.status !== 'delete-complete' &amp;&amp; !item.transitional">
-                                                                            <a i18n:translate="" ng-click="revealModal('delete', item)">Delete stack</a>
+                                                                            <a i18n:translate="" ng-click="revealModal('delete', item)">Copy graph URL</a>
                                                                         </li>
                                                                     </ul>
                                                                 </span>
@@ -147,11 +161,10 @@
                                                             </span>
                                                         </strong>
                                                         <a href="#" class="tiny secondary button dropdown right"
-                                                              data-dropdown="item-dropdown_{{ $index }}"><i class="grid-action"></i></a>
-                                                        <ul id="item-dropdown_{{ $index }}" class="f-dropdown">
-                                                            <li><a href="#">This is a link</a></li>
-                                                            <li><a href="#">This is another</a></li>
-                                                            <li><a href="#">Yet another</a></li>
+                                                              data-dropdown="item-dropdown_{{ metric.unique_id }}"><i class="grid-action"></i></a>
+                                                        <ul id="item-dropdown_{{ metric.unique_id }}" class="f-dropdown">
+                                                            <li><a i18n:translate="" ng-href="${request.route_path('cloudwatch_alarms_create')}?metric={{metric.metric_name}}&resource={{ metric.res_ids | escapeURL }}">Create alarm</a></li>
+                                                            <li><a href="#" i18n:translate="">Copy graph URL</a></li>
                                                         </ul>
                                                     </div>
                                                     <div class="content">
@@ -182,7 +195,7 @@
                         <div ng-repeat="item in metricsCtrl.items" ng-cloak="true">
                             <div class="chart-wrapper" ng-repeat="chart in item.metrics | filter:{ _selected: true }">
                                 <h6>{{ chart.metric_name }}<i class="busy"></i></h6>
-                                <svg cloudwatch-chart="" id="cwchart-{{ chart.metric_name }}" class="cwchart"
+                                <svg cloudwatch-chart="" id="cwchart-{{ chart.unique_id }}" class="cwchart"
                                      ids="{{ chart.resources[0].res_id }}" idtype="{{ chart.resources[0].res_type }}" metric="{{ chart.metric_name }}"
                                      duration="{{ chartsCtrl.duration }}" unit="{{ chart.unit }}"
                                      statistic="Sum" empty="No Data">

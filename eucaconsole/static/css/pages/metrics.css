@@ -156,3 +156,7 @@ select { width: 20rem; }
 
 .tile input[type="checkbox"] { position: relative; float: left; top: 9px; left: 5px; }
 .tile .dropdown.button.tiny { top: 5px !important; right: 2px !important; }
+
+#primary-buttons .button.more-actions { margin-left: 0px !important; }
+
+th.metric-action { text-align: right !important; }

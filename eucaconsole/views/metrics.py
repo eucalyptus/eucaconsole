@@ -127,16 +127,19 @@ class CloudWatchMetricsJsonView(BaseView):
                     metric_dims = metric[0]
                     unit = [mt['unit'] for mt in METRIC_TYPES if mt['name'] == metric[1]]
                     metrics.append(dict(
+                        unique_id=metric[1] + '-' + '-'.join([dim[1][0] for dim in metric_dims]),
                         resources=[dict(
                             res_id=dim[1][0],
                             res_type=dim[0],
                             res_url=self.get_url_for_resource(self.request, dim[0], dim[1][0])
                         ) for dim in metric_dims],
+                        res_ids=[dim[1][0] for dim in metric_dims],
                         unit=unit[0] if unit else '',
                         metric_name=metric[1]
                     ))
                 cat['metrics'] = metrics
 
+            #import logging; logging.info(json.dumps(categories, indent=2))
             return dict(results=categories)
 
     def get_items(self):
