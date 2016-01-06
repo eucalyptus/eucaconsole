@@ -467,21 +467,32 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'ELBSecurity
         };
         $scope.updateELB = function ($event, confirmed) {
             confirmed = confirmed || false;
-            $scope.checkSecurityGroupRules($event, confirmed);
+            $event.preventDefault();
+            if ($scope.checkRequiredInput() && $scope.checkSecurityGroupRules(confirmed)) {
+                $scope.elbForm.submit();
+            }
         };
-        $scope.checkSecurityGroupRules = function ($event, confirmed) {
+        $scope.checkRequiredInput = function () {
+            // Handle the unsaved listener issue
+            if ($('#from-port-input').val() !== '') {
+                $('#unsaved-listener-warn-modal').foundation('reveal', 'open');
+                $scope.isNotValid = true;
+                return false;
+            }
+            return true;
+        };
+        $scope.checkSecurityGroupRules = function (confirmed) {
             var modal = $('#elb-security-group-rules-warning-modal');
             var inboundOutboundPortChecksPass;
             if ($scope.vpcNetwork === 'None') {  // Bypass rules check on non-VPC clouds
-                $scope.elbForm.submit();
-                return;
+                return true;
             }
             inboundOutboundPortChecksPass = eucaCheckELBSecurityGroupRules($scope);
             if (!confirmed && !inboundOutboundPortChecksPass) {
                 modal.foundation('reveal', 'open');
-                $event.preventDefault();
+                return false;
             } else {
-                $scope.elbForm.submit();
+                return true;
             }
         };
     })
