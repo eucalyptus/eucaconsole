@@ -43,7 +43,22 @@
                     </div>
                     <div class="actions">
                         <span id="refresh-charts-icon" class="action-icon" title="Refresh data" i18n:attributes="title"
-                              ng-click="chartsCtrl.refreshCharts()"><i class="fa fa-refresh"></i></span>
+                              ng-click="chartsCtrl.refreshCharts()"
+                              tal:condition="metrics_collection_enabled"><i class="fa fa-refresh"></i></span>
+                        <span id="enable-monitoring-icon" class="action-icon dropdown"
+                              data-dropdown="enable-monitoring-dropdown"><i class="fa fa-ellipsis-v"></i></span>
+                        <ul id="enable-monitoring-dropdown" class="f-dropdown" data-dropdown-content="">
+                            <li>
+                                <a href="" ng-click="chartsCtrl.submitMonitoringForm()">
+                                    <div tal:condition="not metrics_collection_enabled" tal:omit-tag="">
+                                        <span i18n:translate="">Enable metrics collection</span>
+                                    </div>
+                                    <div tal:condition="metrics_collection_enabled" tal:omit-tag="">
+                                        <span i18n:translate="">Disable metrics collection</span>
+                                    </div>
+                                </a>
+                            </li>
+                        </ul>
                     </div>
                 </div>
                 <div tal:condition="not metrics_collection_enabled" id="metrics-collection-disabled-notice">

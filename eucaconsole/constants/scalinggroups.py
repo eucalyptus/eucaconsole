@@ -68,10 +68,11 @@ SCALING_GROUP_MONITORING_CHARTS_LIST = [
         'help': _('The number of instances that are in the process of terminating. '
                   'This metric does not include instances that are in service or pending.'),
     },
-    {
-        'metric': 'GroupTerminatingInstances', 'unit': 'Count', 'statistic': 'Maximum',
-        'empty_msg': SCALING_GROUP_EMPTY_DATA_MESSAGE, 'title': _(u'Terminating instances'),
-        'help': _('The number of instances that are in the process of terminating. '
-                  'This metric does not include instances that are in service or pending.'),
-    },
+    # TODO: Uncomment when Eucalyptus supports Standby Instances
+    # {
+    #     'metric': 'GroupStandbyInstances', 'unit': 'Count', 'statistic': 'Maximum',
+    #     'empty_msg': SCALING_GROUP_EMPTY_DATA_MESSAGE, 'title': _(u'Standby instances'),
+    #     'help': _('The number of instances that are in a Standby state. '
+    #               'Instances in this state are still running but are not actively in service.'),
+    # },
 ]

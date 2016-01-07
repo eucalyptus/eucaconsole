@@ -958,6 +958,8 @@ class ScalingGroupMonitoringView(BaseScalingGroupView):
                     if enabled_metrics:
                         self.autoscale_conn.disable_metrics_collection(self.scaling_group.name)
                     else:
+                        # TODO: The GroupStandbyInstances metric is not included by default, so include it here
+                        #       when Eucalyptus supports Standby instances
                         self.autoscale_conn.enable_metrics_collection(self.scaling_group.name, '1Minute')
                     msg = _(
                         u'Request successfully submitted.  It may take a moment for metrics collection to update.')
