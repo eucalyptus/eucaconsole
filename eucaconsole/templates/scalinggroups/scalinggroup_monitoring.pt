@@ -31,7 +31,7 @@
             <div class="panel no-title cloudwatch-charts">
                 <div class="toprow">
                     <div class="blurb">
-                        <div class="duration-wrapper" tal:condition="monitoring_enabled">
+                        <div class="duration-wrapper" tal:condition="metrics_collection_enabled">
                             <label for="monitoring-duration" class="left" i18n:translate="">Show data for</label>
                             <select name="monitoring_duration" id="monitoring-duration" ng-model="chartsCtrl.duration"
                                     ng-change="chartsCtrl.refreshCharts()" class="duration-input">
@@ -46,18 +46,16 @@
                               ng-click="chartsCtrl.refreshCharts()"><i class="fa fa-refresh"></i></span>
                     </div>
                 </div>
-                <div tal:condition="not monitoring_enabled" id="monitoring-disabled-notice">
-                    <p>
-                        <span i18n:translate="">
-                            Metrics are collected only for scaling groups that have a launch configuration with
-                        </span>
-                        <span i18n:translate="" tal:condition="layout.cloud_type == 'euca'">monitoring enabled.</span>
-                        <span i18n:translate="" tal:condition="layout.cloud_type == 'aws'">detailed monitoring enabled.</span>
-                        <span i18n:translate="">and have metrics collection enabled.</span>
+                <div tal:condition="not metrics_collection_enabled" id="metrics-collection-disabled-notice">
+                    <p i18n:translate="">
+                        Metrics collection is currently disabled for this scaling group.
                     </p>
+                    <button ng-click="chartsCtrl.submitMonitoringForm()">
+                        <span i18n:translate="">Enable Metrics Collection for this Scaling Group</span>
+                    </button>
                 </div>
                 <ul class="small-block-grid-1 medium-block-grid-2 large-block-grid-3" id="charts-container"
-                        tal:condition="monitoring_enabled">
+                        tal:condition="metrics_collection_enabled">
                     <li class="chart-wrapper" ng-repeat="chart in chartsCtrl.chartsList" ng-cloak="">
                         <h6 ng-attr-title="{{ chart.help }}">{{ chart.title }}<i class="busy"></i></h6>
                         <div ng-show="chartsCtrl.emptyMessages[chart.metric]" class="empty-message-wrapper">
@@ -79,6 +77,10 @@
                 <!--! HELP CONTENT HERE -->
             </div>
         </div>
+        <form method="post" id="monitoring-form"
+              action="${request.route_path('scalinggroup_monitoring_update', id=scaling_group.name)}">
+            ${structure:monitoring_form['csrf_token']}
+        </form>
         <!--! Modal dialog for large chart -->
         ${panel('cloudwatch_chart_dialog', duration_choices=duration_choices, statistic_choices=statistic_choices)}
     </div>

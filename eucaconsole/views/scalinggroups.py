@@ -48,7 +48,7 @@ from ..constants.cloudwatch import (
 from ..constants.scalinggroups import SCALING_GROUP_MONITORING_CHARTS_LIST
 from ..forms.alarms import CloudWatchAlarmCreateForm
 from ..forms.scalinggroups import (
-    ScalingGroupDeleteForm, ScalingGroupEditForm,
+    ScalingGroupDeleteForm, ScalingGroupEditForm, ScalingGroupMonitoringForm,
     ScalingGroupCreateForm, ScalingGroupInstancesMarkUnhealthyForm,
     ScalingGroupInstancesTerminateForm, ScalingGroupPolicyCreateForm,
     ScalingGroupPolicyDeleteForm, ScalingGroupsFiltersForm)
@@ -923,18 +923,16 @@ class ScalingGroupMonitoringView(BaseScalingGroupView):
         super(ScalingGroupMonitoringView, self).__init__(request)
         self.title_parts = [_(u'Scaling group'), request.matchdict.get('id'), _(u'Monitoring')]
         self.cw_conn = self.get_connection(conn_type='cloudwatch')
+        self.monitoring_form = ScalingGroupMonitoringForm(self.request, formdata=self.request.params or None)
         with boto_error_handler(self.request):
             self.scaling_group = self.get_scaling_group()
             self.launch_configuration = self.get_launch_configuration(self.scaling_group.launch_config_name)
-        monitoring_enabled_conditions = [
-            self.launch_configuration.instance_monitoring.enabled == 'true',
-            self.scaling_group.enabled_metrics,
-        ]
-        monitoring_enabled = True if all(monitoring_enabled_conditions) else False
+        metrics_collection_enabled = True if self.scaling_group.enabled_metrics else False
         self.render_dict = dict(
             scaling_group=self.scaling_group,
             scaling_group_name=self.scaling_group.name,
-            monitoring_enabled=monitoring_enabled,
+            monitoring_form=self.monitoring_form,
+            metrics_collection_enabled=metrics_collection_enabled,
             duration_choices=MONITORING_DURATION_CHOICES,
             statistic_choices=STATISTIC_CHOICES,
             controller_options_json=self.get_controller_options_json()
@@ -945,6 +943,26 @@ class ScalingGroupMonitoringView(BaseScalingGroupView):
         if self.scaling_group is None:
             raise HTTPNotFound()
         return self.render_dict
+
+    @view_config(route_name='scalinggroup_monitoring_update', renderer=VIEW_TEMPLATE, request_method='POST')
+    def scalinggroup_monitoring_update(self):
+        """Update monitoring state for the volume's instance"""
+        if self.monitoring_form.validate():
+            if self.scaling_group:
+                enabled_metrics = self.scaling_group.enabled_metrics
+                action = 'disabled' if enabled_metrics else 'enabled'
+                location = self.request.route_path('scalinggroup_monitoring', id=self.scaling_group.name)
+                with boto_error_handler(self.request, location):
+                    self.log_request(_(u"Metrics collection for scaling group {0} {1}").format(
+                            self.scaling_group.name, action))
+                    if enabled_metrics:
+                        self.autoscale_conn.disable_metrics_collection(self.scaling_group.name)
+                    else:
+                        self.autoscale_conn.enable_metrics_collection(self.scaling_group.name, '1Minute')
+                    msg = _(
+                        u'Request successfully submitted.  It may take a moment for metrics collection to update.')
+                    self.request.session.flash(msg, queue=Notification.SUCCESS)
+                return HTTPFound(location=location)
 
     def get_controller_options_json(self):
         if not self.scaling_group:
