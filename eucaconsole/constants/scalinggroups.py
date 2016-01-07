@@ -41,4 +41,37 @@ SCALING_GROUP_MONITORING_CHARTS_LIST = [
         'help': _('The number of instances that are running as part of the Auto Scaling group.  '
                   'Does not include instances that are pending or terminating.'),
     },
+    {
+        'metric': 'GroupMinSize', 'unit': 'Count', 'statistic': 'Maximum',
+        'empty_msg': SCALING_GROUP_EMPTY_DATA_MESSAGE, 'title': _(u'Group min size'),
+        'help': _('The minimum size of the Auto Scaling group.'),
+    },
+    {
+        'metric': 'GroupMaxSize', 'unit': 'Count', 'statistic': 'Maximum',
+        'empty_msg': SCALING_GROUP_EMPTY_DATA_MESSAGE, 'title': _(u'Group max size'),
+        'help': _('The maximum size of the Auto Scaling group.'),
+    },
+    {
+        'metric': 'GroupDesiredCapacity', 'unit': 'Count', 'statistic': 'Maximum',
+        'empty_msg': SCALING_GROUP_EMPTY_DATA_MESSAGE, 'title': _(u'Group desired capacity'),
+        'help': _('The number of instances that the Auto Scaling group attempts to maintain.'),
+    },
+    {
+        'metric': 'GroupPendingInstances', 'unit': 'Count', 'statistic': 'Maximum',
+        'empty_msg': SCALING_GROUP_EMPTY_DATA_MESSAGE, 'title': _(u'Pending instances'),
+        'help': _('The number of instances that are pending. A pending instance is not yet in service. '
+                  'This metric does not include instances that are in service or terminating.'),
+    },
+    {
+        'metric': 'GroupTerminatingInstances', 'unit': 'Count', 'statistic': 'Maximum',
+        'empty_msg': SCALING_GROUP_EMPTY_DATA_MESSAGE, 'title': _(u'Terminating instances'),
+        'help': _('The number of instances that are in the process of terminating. '
+                  'This metric does not include instances that are in service or pending.'),
+    },
+    {
+        'metric': 'GroupTerminatingInstances', 'unit': 'Count', 'statistic': 'Maximum',
+        'empty_msg': SCALING_GROUP_EMPTY_DATA_MESSAGE, 'title': _(u'Terminating instances'),
+        'help': _('The number of instances that are in the process of terminating. '
+                  'This metric does not include instances that are in service or pending.'),
+    },
 ]

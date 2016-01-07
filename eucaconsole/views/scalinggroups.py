@@ -926,14 +926,15 @@ class ScalingGroupMonitoringView(BaseScalingGroupView):
         with boto_error_handler(self.request):
             self.scaling_group = self.get_scaling_group()
             self.launch_configuration = self.get_launch_configuration(self.scaling_group.launch_config_name)
-        monitoring_enabled = False
-        if self.launch_configuration and self.launch_configuration.instance_monitoring.enabled == 'true':
-            monitoring_enabled = True
+        monitoring_enabled_conditions = [
+            self.launch_configuration.instance_monitoring.enabled == 'true',
+            self.scaling_group.enabled_metrics,
+        ]
+        monitoring_enabled = True if all(monitoring_enabled_conditions) else False
         self.render_dict = dict(
             scaling_group=self.scaling_group,
             scaling_group_name=self.scaling_group.name,
             monitoring_enabled=monitoring_enabled,
-            enabled_metrics=self.scaling_group.enabled_metrics,
             duration_choices=MONITORING_DURATION_CHOICES,
             statistic_choices=STATISTIC_CHOICES,
             controller_options_json=self.get_controller_options_json()

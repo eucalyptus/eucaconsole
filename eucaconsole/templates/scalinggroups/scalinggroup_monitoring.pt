@@ -31,7 +31,7 @@
             <div class="panel no-title cloudwatch-charts">
                 <div class="toprow">
                     <div class="blurb">
-                        <div class="duration-wrapper" tal:condition="monitoring_enabled and enabled_metrics">
+                        <div class="duration-wrapper" tal:condition="monitoring_enabled">
                             <label for="monitoring-duration" class="left" i18n:translate="">Show data for</label>
                             <select name="monitoring_duration" id="monitoring-duration" ng-model="chartsCtrl.duration"
                                     ng-change="chartsCtrl.refreshCharts()" class="duration-input">
@@ -53,15 +53,11 @@
                         </span>
                         <span i18n:translate="" tal:condition="layout.cloud_type == 'euca'">monitoring enabled.</span>
                         <span i18n:translate="" tal:condition="layout.cloud_type == 'aws'">detailed monitoring enabled.</span>
-                    </p>
-                </div>
-                <div tal:condition="not enabled_metrics" id="disabled-metrics-collection-notice">
-                    <p i18n:translate="">
-                        This scaling group does not have metrics collection enabled.
+                        <span i18n:translate="">and have metrics collection enabled.</span>
                     </p>
                 </div>
                 <ul class="small-block-grid-1 medium-block-grid-2 large-block-grid-3" id="charts-container"
-                        tal:condition="monitoring_enabled and enabled_metrics">
+                        tal:condition="monitoring_enabled">
                     <li class="chart-wrapper" ng-repeat="chart in chartsCtrl.chartsList" ng-cloak="">
                         <h6 ng-attr-title="{{ chart.help }}">{{ chart.title }}<i class="busy"></i></h6>
                         <div ng-show="chartsCtrl.emptyMessages[chart.metric]" class="empty-message-wrapper">
