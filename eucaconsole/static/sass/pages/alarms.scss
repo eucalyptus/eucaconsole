@@ -1,8 +1,14 @@
 /* @fileOverview CloudWatch Alarms landing page CSS */
 @import "../includes/eucavariables";
-
 @import "../includes/landingpage";
 
-
-
-
+.tile {
+    &.item {
+        dl {
+            font-size: 0.9em;
+            display: inline-block;
+            vertical-align: top;
+            margin-bottom: 0;
+        }
+    }
+}

@@ -34,32 +34,47 @@
             </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
                 <div>
-                    <span class="label" title="Trigger" i18n:translate="">TR</span>
-                    <span i18n:translate="">When the</span>
+                    <span class="label" title="State" i18n:translate="">SA</span>
+                </div>
+                <div>
+                    <span class="label" title="Dimensions" i18n:translate="">DM</span>
+                    <dl dimensions="{{ item.dimensions }}"></dl>
+                </div>
+                <div>
+                    <span class="label" title="Threshold" i18n:translate="">TH</span>
                     {{ item.statistic }}
                     {{ item.metric }}
-                    <span i18n:translate="">is</span>
                     {{ item.comparison }}
                     {{ item.threshold }}
                     {{ item.unit !== 'None' ? item.unit : '' }}
                 </div>
+                <div>
+                    <span class="label" title="Alarm Actions" i18n:translate="">AA</span>
+                    {{ item.alarm_actions.length }}
+                </div>
             </div>
             <metal:block metal:fill-slot="tableview_headers">
-                <th i18n:translate="">ID</th>
-                <th i18n:translate="">Triggered</th>
+                <th i18n:translate="">State</th>
+                <th i18n:translate="">Alarm Name</th>
+                <th i18n:translate="">Dimensions</th>
+                <th i18n:translate="">Threshold</th>
+                <th i18n:translate="">Alarm Actions</th>
+                <th i18n:translate="">Actions</th>
                 <!--! <th i18n:translate="" class="actions">Actions</th> -->
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
+                <td>Eh?</td>
                 <td class="id">{{ item.name || item.id }}</td>
+                <td dimensions="{{ item.dimensions }}"></td>
                 <td>
-                    <span i18n:translate="">When the</span>
                     {{ item.statistic }}
                     {{ item.metric }}
-                    <span i18n:translate="">is</span>
                     {{ item.comparison }}
                     {{ item.threshold }}
                     {{ item.unit !== 'None' ? item.unit : '' }}
                 </td>
+                <td>{{ item.alarm_actions.length }}</td>
+                <td>...</td>
                 <!--!
                 <td>
                    <span class="actions">

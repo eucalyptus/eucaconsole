@@ -139,3 +139,5 @@ table.expando tr.even, table.expando tr.alt, table.expando tr:nth-of-type(even) 
 .expando-tiles li { font-size: 0.875rem; }
 .expando-tiles li div:nth-of-type(1) { float: left; }
 .expando-tiles li div:nth-of-type(2) { clear: both; }
+
+.tile.item dl { font-size: 0.9em; display: inline-block; vertical-align: top; margin-bottom: 0; }
