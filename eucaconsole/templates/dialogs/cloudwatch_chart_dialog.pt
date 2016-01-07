@@ -4,7 +4,8 @@
         <h3>{{ chartsCtrl.selectedChartTitle || '&nbsp;' }}</h3>
         <div class="toprow">
             <div class="blurb">
-                <div class="field-wrapper">
+                <div class="field-wrapper"
+                     ng-show="['VolumeReadBytes', 'VolumeWriteBytes'].indexOf(chartsCtrl.largeChartMetric) === -1">
                     <label for="large-chart-statistic" class="left" i18n:translate="">Statistic</label>
                     <select name="large_chart_statistic" id="large-chart-statistic" class="duration-input"
                             ng-model="chartsCtrl.largeChartStatistic" ng-change="chartsCtrl.refreshLargeChart()">

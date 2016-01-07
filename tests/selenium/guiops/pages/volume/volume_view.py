@@ -8,18 +8,18 @@ class VolumeLanding(LandingPage):
 
     _volume_view_page_title = "Volumes"
     _create_volume_button_id = "create-volume-btn"
-    _volume_action_menu_id = "table-item-dropdown_{0}"  #volume_id required
-    _delete_volume_actions_menu_item_css = "#item-dropdown_{0}>li:nth-of-type(5)>a"  #volume_id required
-    _detach_volume_actions_menu_item_css = "#item-dropdown_{0}>li:nth-of-type(4)>a"  #volume_id required
-    _view_details_actions_menu_item_css = "#item-dropdown_{0}>li>a"  #ivolume_id required
-    _manage_snapshots_actions_menu_item_css = "#item-dropdown_{0}>li:nth-of-type(2)>a"  #volume_id required
-    _attach_to_instance_actions_menu_item_css = "#item-dropdown_{0}>li:nth-of-type(3)>a"  #volume_id required
+    _volume_action_menu_id = "table-item-dropdown_{0}"  # volume_id required
+    _delete_volume_actions_menu_item_css = "#item-dropdown_{0} .delete-volume-action"  # volume_id required
+    _detach_volume_actions_menu_item_css = "#item-dropdown_{0} .detach-volume-action"  # volume_id required
+    _view_details_actions_menu_item_css = "#item-dropdown_{0}>li>a"  # volume_id required
+    _manage_snapshots_actions_menu_item_css = "#item-dropdown_{0}>li:nth-of-type(2)>a"  # volume_id required
+    _attach_to_instance_actions_menu_item_css = "#item-dropdown_{0} .attach-volume-action"  # volume_id required
     _first_volume_link_in_list_css = "#tableview>table>tbody>tr>td>a"
-    _volume_link_css = "#table-id-column-{0}>a"  #volume_id required;
+    _volume_link_css = "#table-id-column-{0}>a"  # volume_id required;
     _volume_status_css = '#tableview [item_id="{0}"] td.status'  # volume_id required;
     _search_input_field_css = ".search-input"
-    _sortable_column_header_css = '#tableview .table thead th[st-sort="{0}"]' #requires column name;
-    _sortable_row_by_position_xpath = '//div[@id="tableview"]/table/tbody[{0}]'#requires position (as number of row in the table)
+    _sortable_column_header_css = '#tableview .table thead th[st-sort="{0}"]'  # requires column name;
+    _sortable_row_by_position_xpath = '//div[@id="tableview"]/table/tbody[{0}]'  # requires position (as number of row in the table)
 
     def verify_volume_view_page_loaded(self):
         self.tester.wait_for_text_present_by_id(LandingPage(self)._page_title_id, self._volume_view_page_title)
