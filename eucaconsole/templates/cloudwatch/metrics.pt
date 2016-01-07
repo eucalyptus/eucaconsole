@@ -25,6 +25,7 @@
         <div class="large-12 columns datagrid" id="landing-page-items">
             <div class="lp-header">
                 <div class="lp-action-buttons" id="primary-buttons">
+                    <!--
                     <a class="button secondary dropdown more-actions" id="more-actions-btn" ng-cloak=""
                        ng-if="landingPageView === 'tableview'" ng-disabled="!metricsCtrl.singleSelection()"
                        data-dropdown="more-actions-dropdown" i18n:translate="">More Actions</a>
@@ -40,6 +41,7 @@
                             </a>
                         </li>
                     </ul>
+                    -->
                 </div>
                 <div class="lp-sort" id="sorting-controls" ng-show="!itemsLoading">
                     <metal:block metal:define-slot="sorting_controls">
@@ -188,7 +190,7 @@
                         </div>
                     </div>
                 </div>
-                <div splitbar="" class="split-bar"></div>
+                <div splitbar="" class="split-bar"><hr width="99%"/></div>
                 <div class="split-bottom" id="graph-area">
                     <div ng-controller="CloudWatchChartsCtrl as chartsCtrl"
                         ng-init="chartsCtrl.initController('${chart_options_json}')">

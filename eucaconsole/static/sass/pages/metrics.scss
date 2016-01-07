@@ -34,6 +34,9 @@ table td input[type="checkbox"] {
     background: #ffffff;
     cursor: row-resize;
     overflow-y: hidden;
+    hr {
+        margin: 4px 4px 4px 4px;
+    }
 }
 
 .split-bottom {
