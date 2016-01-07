@@ -6,10 +6,7 @@
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/metrics.css')}" />
 </head>
 
-<div metal:fill-slot="main_content" ng-app="MetricsPage" ng-controller="MetricsCtrl as metricsCtrl" ng-init="metricsCtrl.initPage('${search_facets}')"
-    tal:define="using_expando True;
-                expando_data_url nothing;
-                expando_data_id nothing">
+<div metal:fill-slot="main_content" ng-app="MetricsPage" ng-controller="MetricsCtrl as metricsCtrl" ng-init="metricsCtrl.initPage('${search_facets}')">
     <div class="row" id="contentwrap" ng-controller="ItemsCtrl"
              ng-init="initController('metrics', '${initial_sort_key}', '${json_items_endpoint}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
@@ -22,26 +19,12 @@
         <h3 id="pagetitle"><strong i18n:translate="">Metrics</strong></h3>
         <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.css')}"/>
         <script src="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.js')}"></script>
-        <div class="large-12 columns datagrid" id="landing-page-items">
+        <div class="large-12 columns datagrid ${'has-smart-table' if use_smart_table else ''}" id="landing-page-items" ng-class="landingPageView"
+             tal:define="use_smart_table getattr(view, 'enable_smart_table', False)">
             <div class="lp-header">
                 <div class="lp-action-buttons" id="primary-buttons">
-                    <!--
-                    <a class="button secondary dropdown more-actions" id="more-actions-btn" ng-cloak=""
-                       ng-if="landingPageView === 'tableview'" ng-disabled="!metricsCtrl.singleSelection()"
-                       data-dropdown="more-actions-dropdown" i18n:translate="">More Actions</a>
-                    <ul id="more-actions-dropdown" class="f-dropdown" data-dropdown-content="" ng-if="metricsCtrl.singleSelection()">
-                        <li>
-                            <a i18n:translate="" ng-href="${request.route_path('cloudwatch_alarms_create')}?metric={{selection.metric_name}}&resource={{ selection.res_ids | escapeURL }}" class="more-actions-create-alarm">
-                                Create alarm
-                            </a>
-                        </li>
-                        <li>
-                            <a i18n:translate="" ng-click="" class="more-actions-copy-graph-url">
-                                Copy graph URL
-                            </a>
-                        </li>
-                    </ul>
-                    -->
+                    {{ (items | filter:{ _selected:true }).length }} selected
+                    <a ng-click="metricsCtrl.clearSelections()" i18n:translate="">Reset Selections</a>
                 </div>
                 <div class="lp-sort" id="sorting-controls" ng-show="!itemsLoading">
                     <metal:block metal:define-slot="sorting_controls">
@@ -66,7 +49,7 @@
                 <div class="lp-search" tal:define="prompt layout.searchtext_prompt if len(search_facets) > 2 else layout.searchtext_prompt2">
                     <magic-search template="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.html')}"
                         strings="{'remove':'${layout.searchtext_remove}', 'cancel':'${layout.searchtext_cancel}', 'prompt':'${prompt}', 'text':'${layout.searchtext_text_facet}'}"
-                        facets="[]" filter-keys="${filter_keys}"></magic-search>
+                        facets="${search_facets}" filter-keys="${filter_keys}"></magic-search>
                 </div>
                 <div class="lp-reload" id="results-count" ng-cloak="cloak" metal:define-slot="results_count">
                     <a id="refresh-btn" ng-show="!itemsLoading" ng-cloak="" ng-click="itemsLoading=true; getItems()">
@@ -74,7 +57,7 @@
                     </a>
                     &nbsp;
                     <span ng-show="!itemsLoading" class="items-found">
-                        <strong>{{ metricsCtrl.numberFound() }}</strong>
+                        <strong>{{ items.length }}</strong>
                         <span i18n:translate="">found</span>
                     </span>
                 </div>
@@ -82,127 +65,122 @@
             <div class="split-wrapper">
                 <div class="split-top">
                     <div class="loading" ng-show="itemsLoading"><i class="busy"></i></div>
-                    <div id="tableview" class="gridwrapper">
+                    <div id="gridview" class="gridwrapper" ng-if="landingPageView == 'gridview' &amp;&amp; !itemsLoading" ng-cloak="">
+                        <div ng-show="!itemsLoading">
+                            <div data-alert="alert" class="alert-box secondary" ng-show="items.length == 0" ng-cloak="1" i18n:translate="">
+                                No items were found
+                                <a href="#" class="close">&times;</a>
+                            </div>
+                        </div>
+                        <!-- Begin grid view -->
+                        <div class="tile item" ng-cloak="true"
+                             ng-repeat="item in items | orderBy: sortBy | limitTo:displayCount">
+                            <div class="header">
+                                <strong>
+                                    <input type="checkbox" ng-model="item._selected"/>
+                                
+                                    <metal:block metal:define-slot="tile_header">
+                                        <strong>
+                                            <span>{{ item.metric_name }}</span>
+                                        </strong>
+                                         
+                                    </metal:block>
+                                </strong>
+                                <metal:block metal:define-slot="tile_dropdown_button">
+                                    <a id="tile-item-dropdown_{{ item.unique_id }}" class="tiny secondary button dropdown right" data-dropdown="item-dropdown_{{ item.unique_id }}"><i class="grid-action"></i></a>
+                                    <ul id="item-dropdown_{{ item.unique_id }}" class="f-dropdown">
+                                        <li><a i18n:translate="" ng-href="${request.route_path('cloudwatch_alarms_create')}?item={{item.metric_name}}&resource={{ item.res_ids | escapeURL }}">Create alarm</a></li>
+                                        <li><a href="#" i18n:translate="">Copy graph URL</a></li>
+                                    </ul>
+                                </metal:block>
+                            </div>
+                            <div class="content">
+                                <div>
+                                    <span ng-repeat="res in item.resources">
+                                        <a ng-if="res.res_url" ng-href="{{ res.res_url }}">{{ res.res_id }}</a>
+                                        <span ng-if="res.res_url==null">{{ res.res_id }}</span>
+                                        <span ng-hide="$last">,</span> 
+                                    </span>
+                                </div>
+                                <div>
+                                    <span>{{ item.cat_label }}</span>
+                                </div>
+                            </div>
+                            <metal:block metal:define-slot="tile_footer">
+                                <div ng-show="item.status" class="footer status {{ item.status.replace(' ', '').toLowerCase() }}">
+                                    {{ item.status.replace('-', ' ') }}
+                                </div>
+                            </metal:block>
+                        </div>
+                    </div>
+                    <div id="tableview" class="gridwrapper" ng-if="landingPageView == 'tableview'" ng-cloak="">
                         <!-- Begin table view -->
-                        <table class="table" ng-show="!itemsLoading" ng-cloak="true" tal:define="using_expando using_expando | nothing" tal:attributes="class 'table expando' if using_expando else 'table'">
-                            <tbody tal:condition="using_expando" expando="" ng-repeat="item in unfilteredItems | orderBy: sortBy:sortReverse"
-                                url="${expando_data_url}" item_id="${expando_data_id}">
-                                <tr ng-class="{'expando-tr-even': $odd}" ng-cloak="true"> 
+                        <table class="table ${'smart-table' if use_smart_table else ''} ${'expando' if using_expando else ''}"
+                               ng-show="!itemsLoading" ng-cloak="true" tal:define="using_expando using_expando | nothing"
+                               st-safe-src="items" st-table="displayedCollection"
+                               tal:attributes="st-persist '{0}{1}{2}'.format(layout.username_label, '-smart-table-saved-sort-', request.path) if use_smart_table else False">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th i18n:translate="" st-skip-natural="true" st-sort="name">Service</th>
+                                    <th i18n:translate="" st-skip-natural="true" st-sort="status">Resource(s)</th>
+                                    <th i18n:translate="" st-skip-natural="true" st-sort="size">Metric Name</th>
+                                    <th class="actions" i18n:translate="">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-cloak="true" ng-repeat="item in items | orderBy: sortBy | limitTo:displayCount"
+                                    data-item-id="{{ item.id || item.name || item.public_ip }}">
+                                    <td><input type="checkbox" ng-model="item._selected"/></td>
+                                    <td>{{ item.cat_label }}</td>
                                     <td>
-                                        <a ng-attr-id="{{item.name}}" ng-click="toggle()"><i ng-class="{'table-expando-closed': !expando.data, 'table-expando-open': expando.data || expando.loading }"></i></a>
+                                        <span ng-repeat="res in item.resources">
+                                            <a ng-if="res.res_url" ng-href="{{ res.res_url }}">{{ res.res_id }}</a>
+                                            <span ng-if="res.res_url==null">{{ res.res_id }}</span>
+                                            <span ng-hide="$last">,</span> 
+                                        </span>
                                     </td>
-                                    <td>{{ item.label }} ({{(item.metrics | filter:{_selected:true}).length}} of {{ item.metrics.length }})</td>
-                                </tr>
-                                <tr ng-class="{'expando-tr-even': $odd}" ng-cloak="true"> 
-                                    <td ng-show="!expando.data &amp;&amp; expando.loading == true" colspan="10"><i class="busy"></i></td>
-                                    <td ng-show="expando.data" colspan="10">
-                                        <h6 i18n:translate="" ng-show="item.name=='ebs'">Metrics by volume</h6>
-                                        <select ng-show="item.name=='ec2'" ng-model="metricsCtrl.ec2SubMetric">
-                                            <option value="instance" i18n:translate="">Metrics per-instance</option>
-                                            <option value="image" i18n:translate="">Metrics per image ID</option>
-                                            <option value="instancetype" i18n:translate="">Metrics aggregated by instance type</option>
-                                            <option value="allinstances" i18n:translate="">Metrics across all instances</option>
-                                        </select>
-                                        <h6 i18n:translate="" ng-show="item.name=='scalinggroup'">Auto scaling group metrics</h6>
-                                        <select ng-show="item.name=='elb'" ng-model="metricsCtrl.elbSubMetric">
-                                            <option value="elb" i18n:translate="">Metrics by elastic load balancer</option>
-                                            <option value="elbzone" i18n:translate="">Metrics by elastic load balancer and availability zone</option>
-                                            <option value="zone" i18n:translate="">Metrics by availability zone</option>
-                                        </select>
-                                        <div class="datagrid" id="datagrid-items">
-                                            <div ng-show="itemsLoading"><span class="busy"></span></div>
-                                            <div id="tableview" class="gridwrapper" ng-show="!itemsLoading" ng-if="landingPageView == 'tableview'">
-                                                <!-- Begin table view -->
-                                                <table class="table" ng-show="!itemsLoading" ng-cloak="true">
-                                                    <thead><tr>
-                                                        <th></th>
-                                                        <th i18n:translate="" ng-show="item.name=='ebs'">Volume Name(ID)</th>
-                                                        <th i18n:translate="" ng-show="item.name=='ec2'">Instance Name(ID)</th>
-                                                        <th i18n:translate="" ng-show="item.name=='scalinggroup'">Auto Scaling Group</th>
-                                                        <th i18n:translate="" ng-show="item.name=='elb'">Load Balancer/Zone</th>
-                                                        <th i18n:translate="">Metric Name</th>
-                                                        <th i18n:translate="" class="metric-action">Actions</th>
-                                                    </tr></thead>
-                                                    <tbody>
-                                                        <tr ng-repeat="metric in metricsCtrl.filterMetrics(item) | filter:{ _hide: false }" ng-cloak="true">
-                                                            <td><input type="checkbox" ng-model="metric._selected"/></td>
-                                                            <td>
-                                                                <span ng-repeat="res in metric.resources">
-                                                                    <a ng-if="res.res_url" ng-href="{{ res.res_url }}">{{ res.res_id }}</a>
-                                                                    <span ng-if="res.res_url==null">{{ res.res_id }}</span>
-                                                                    <span ng-hide="$last">,</span> 
-                                                                </span>
-                                                            </td>
-                                                            <td>{{ metric.metric_name }}</td>
-                                                            <td>
-                                                                <span class="actions">
-                                                                    <a id="table-item-dropdown_{{ metric.unique_id }}" class="tiny secondary button dropdown right round" data-dropdown="item-dropdown_{{ metric.unique_id }}"><i class="grid-action"></i></a>
-                                                                    <ul id="item-dropdown_{{ metric.unique_id }}" class="f-dropdown" data-dropdown-content="">
-                                                                        <li><a i18n:translate="" ng-href="${request.route_path('cloudwatch_alarms_create')}?metric={{metric.metric_name}}&resource={{ metric.res_ids | escapeURL }}">Create alarm</a></li>
-                                                                        <li ng-show="item.status !== 'delete-complete' &amp;&amp; !item.transitional">
-                                                                            <a i18n:translate="" ng-click="revealModal('delete', item)">Copy graph URL</a>
-                                                                        </li>
-                                                                    </ul>
-                                                                </span>
-                                                            </td>
-                                                        </tr>
-                                                        <tr ng-show="!itemsLoading"></tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                            <div id="gridview" class="gridwrapper" ng-show="!itemsLoading" ng-if="landingPageView == 'gridview'">
-                                                <div class="tile item" ng-cloak="true"
-                                                     ng-repeat="metric in metricsCtrl.filterMetrics(item) | filter:{ _hide: false }">
-                                                    <div class="header">
-                                                        <input type="checkbox" ng-model="metric._selected"/>
-                                                        <strong>
-                                                            <span ng-repeat="res in metric.resources">
-                                                                <a ng-if="res.res_url" ng-href="{{ res.res_url }}">{{ res.res_id }}</a>
-                                                                <span ng-if="res.res_url==null">{{ res.res_id }}</span>
-                                                                <span ng-hide="$last">,</span> 
-                                                            </span>
-                                                        </strong>
-                                                        <a href="#" class="tiny secondary button dropdown right"
-                                                              data-dropdown="item-dropdown_{{ metric.unique_id }}"><i class="grid-action"></i></a>
-                                                        <ul id="item-dropdown_{{ metric.unique_id }}" class="f-dropdown">
-                                                            <li><a i18n:translate="" ng-href="${request.route_path('cloudwatch_alarms_create')}?metric={{metric.metric_name}}&resource={{ metric.res_ids | escapeURL }}">Create alarm</a></li>
-                                                            <li><a href="#" i18n:translate="">Copy graph URL</a></li>
-                                                        </ul>
-                                                    </div>
-                                                    <div class="content">
-                                                        <div>
-                                                            <span class="label" title="Metric name" i18n:attributes="title" data-tooltip="">MN</span>
-                                                            <a ng-href="/instances/{{item.instance_id}}">{{ metric.metric_name }}</a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                    <td>{{ item.metric_name }}</td>
+                                    <td>
+                                        <span class="actions" ng-show="item.status !== 'deleting'">
+                                            <a id="table-item-dropdown_{{ item.unique_id }}" class="tiny secondary button dropdown right round" data-dropdown="item-dropdown_{{ item.unique_id }}"><i class="grid-action"></i></a>
+                                            <ul id="item-dropdown_{{ item.unique_id }}" class="f-dropdown" data-dropdown-content="">
+                                                <li><a i18n:translate="" ng-href="${request.route_path('cloudwatch_alarms_create')}?metric={{item.metric_name}}&resource={{ item.res_ids | escapeURL }}">Create alarm</a></li>
+                                                <li><a href="#" i18n:translate="">Copy graph URL</a></li>
+                                            </ul>
+                                        </span>
                                     </td>
                                 </tr>
+                                <tr ng-show="!itemsLoading"></tr>
                             </tbody>
                         </table>
                         <div ng-if="!itemsLoading">
-                            <div data-alert="alert" class="alert-box secondary" ng-if="unfilteredItems.length == 0" ng-cloak="">
+                            <div data-alert="alert" class="alert-box secondary" ng-if="items.length == 0" ng-cloak="">
                                 <span i18n:translate="">No items were found</span>
                                 <a href="#" class="close">&times;</a>
                             </div>
                         </div>
+                    </div>
+                    <div>&nbsp;</div>
+                    <div ng-cloak="" ng-if="items.length > displayCount" id="show-more-btn">
+                        <span i18n:translate="">Displaying</span>
+                        <strong>{{ displayCount }}</strong>
+                        <span i18n:translate="">of</span>
+                        <strong>{{ items.length }}</strong>
+                        <span i18n:translate="">items</span>
                     </div>
                 </div>
                 <div splitbar="" class="split-bar"><hr width="99%"/></div>
                 <div class="split-bottom" id="graph-area">
                     <div ng-controller="CloudWatchChartsCtrl as chartsCtrl"
                         ng-init="chartsCtrl.initController('${chart_options_json}')">
-                        <div ng-repeat="item in metricsCtrl.items" ng-cloak="true">
-                            <div class="chart-wrapper" ng-repeat="chart in item.metrics | filter:{ _selected: true }">
-                                <h6>{{ chart.metric_name }}<i class="busy"></i></h6>
-                                <svg cloudwatch-chart="" id="cwchart-{{ chart.unique_id }}" class="cwchart"
-                                     ids="{{ chart.resources[0].res_id }}" idtype="{{ chart.resources[0].res_type }}" metric="{{ chart.metric_name }}"
-                                     duration="{{ chartsCtrl.duration }}" unit="{{ chart.unit }}"
-                                     statistic="Sum" empty="No Data">
-                                </svg>
-                            </div>
+                        <div class="chart-wrapper" ng-repeat="chart in items | filter:{ _selected: true }" ng-cloak="true">
+                            <h6>{{ chart.resources[0].res_id }} - {{ chart.metric_name }}<i class="busy"></i></h6>
+                            <svg cloudwatch-chart="" id="cwchart-{{ chart.unique_id }}" class="cwchart"
+                                 ids="{{ chart.resources[0].res_id }}" idtype="{{ chart.resources[0].res_type }}" metric="{{ chart.metric_name }}"
+                                 duration="{{ chartsCtrl.duration }}" unit="{{ chart.unit }}"
+                                 statistic="Sum" empty="No Data">
+                            </svg>
                         </div>
                     </div>
                 </div>

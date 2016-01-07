@@ -57,9 +57,9 @@ class CloudWatchMetricsView(LandingPageView):
             dict(key='name', name=_(u'Name')),
         ]
         search_facets = [
-            {'name': 'metric', 'label': _(u"Metric name"), 'options': []},
-            {'name': 'resource', 'label': _(u"Resource ID"), 'options': []},
-            {'name': 'resource_type', 'label': _(u"Resource type"), 'options': []}
+            {'name': 'metric_name', 'label': _(u"Metric name"), 'options': []},
+            {'name': 'res_ids', 'label': _(u"Resource"), 'options': []},
+            {'name': 'res_types', 'label': _(u"Resource type"), 'options': []}
         ]
         self.render_dict = dict(
             filter_keys=self.filter_keys,
@@ -114,6 +114,7 @@ class CloudWatchMetricsJsonView(BaseView):
         ]
         with boto_error_handler(self.request):
             items = self.get_items()
+            metrics = []
             for cat in categories:
                 namespace = cat['namespace']
                 tmp = [{
@@ -122,11 +123,14 @@ class CloudWatchMetricsJsonView(BaseView):
                     'dimensions': item.dimensions
                 } for item in items if item.namespace == namespace and item.dimensions]
                 tmp = [(met['dimensions'].items(), met['name']) for met in tmp]
-                metrics = []
+                cat_metrics = []
                 for metric in tmp:
                     metric_dims = metric[0]
                     unit = [mt['unit'] for mt in METRIC_TYPES if mt['name'] == metric[1]]
-                    metrics.append(dict(
+                    cat_metrics.append(dict(
+                        cat_name=cat['name'],
+                        cat_label=cat['label'],
+                        namespace=cat['namespace'],
                         unique_id=metric[1] + '-' + '-'.join([dim[1][0] for dim in metric_dims]),
                         resources=[dict(
                             res_id=dim[1][0],
@@ -134,13 +138,14 @@ class CloudWatchMetricsJsonView(BaseView):
                             res_url=self.get_url_for_resource(self.request, dim[0], dim[1][0])
                         ) for dim in metric_dims],
                         res_ids=[dim[1][0] for dim in metric_dims],
+                        res_types=[dim[0] for dim in metric_dims],
                         unit=unit[0] if unit else '',
                         metric_name=metric[1]
                     ))
-                cat['metrics'] = metrics
+                metrics.extend(cat_metrics)
 
-            # import logging; logging.info(json.dumps(categories, indent=2))
-            return dict(results=categories)
+            # import logging; logging.info(json.dumps(metrics, indent=2))
+            return dict(results=metrics)
 
     def get_items(self):
         conn = self.get_connection(conn_type='cloudwatch')
