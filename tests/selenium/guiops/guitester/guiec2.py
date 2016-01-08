@@ -717,23 +717,27 @@ class GuiEC2(GuiTester):
         ReleaseEipDialog(self).release_elastic_ips()
         EipLanding(self).verify_elastic_ip_is_released(elastic_ip)
 
-    def associate_eip_from_eip_lp(self, elastic_ip):
+    def associate_eip_from_eip_lp(self):
+        elastic_ip = self.allocate_eip_from_dashboard(number=1)
+        elastic_ip = str(elastic_ip[0])
         launch_instance = self.launch_instance_from_dashboard()
         BasePage(self).goto_elastic_ip_view_via_menu()
         EipLanding(self).associate_with_instance_actions_menu_item(elastic_ip)
         AssociateEipDialog(self).associate_eip_with_instance(launch_instance['instance_id'])
         EipLanding(self).verify_elastic_ip_associate_instance(launch_instance['instance_id'], elastic_ip)
-        self.terminate_instance_from_detail_page(launch_instance['instance_id'])
 
-    def associate_eip_from_instances_lp(self, elastic_ip):
+    def associate_eip_from_instances_lp(self):
+        elastic_ip = self.allocate_eip_from_dashboard(number=1)
+        elastic_ip = str(elastic_ip[0])
         launch_instance = self.launch_instance_from_dashboard()
         BasePage(self).goto_instances_via_menu()
         InstanceLanding(self).click_action_associate_ip_address_from_landing_page(launch_instance['instance_id'])
         AssociateEipDialog(self).associate_eip_from_instance(elastic_ip)
         InstanceLanding(self).verify_elastic_ip_address_on_instance_lp(elastic_ip)
-        self.terminate_instance_from_detail_page(launch_instance['instance_id'])
 
-    def associate_eip_from_instance_detail_page(self, elastic_ip):
+    def associate_eip_from_instance_detail_page(self):
+        elastic_ip = self.allocate_eip_from_dashboard(number=1)
+        elastic_ip = str(elastic_ip[0])
         launch_instance = self.launch_instance_from_dashboard()
         BasePage(self).goto_instances_via_menu()
         InstanceLanding(self).goto_instance_detail_page_via_link(launch_instance['instance_id'])
@@ -742,7 +746,16 @@ class GuiEC2(GuiTester):
         InstanceDetailPage(self, launch_instance['instance_id']).verify_eip_address_associated_to_instance(elastic_ip)
 
     def associate_eip_from_eip_detail_page(self):
-        raise NotImplementedError
+        elastic_ip = self.allocate_eip_from_dashboard(number=1)
+        elastic_ip = str(elastic_ip[0])
+        launch_instance = self.launch_instance_from_dashboard()
+        BasePage(self).goto_elastic_ip_view_via_menu()
+        EipLanding(self).click_elastic_ip(elastic_ip)
+        EipDetailPage(self, elastic_ip)
+        EipDetailPage(self, elastic_ip).click_action_associate_ip_address_on_detail_page()
+        AssociateEipDialog(self).associate_eip_with_instance(launch_instance['instance_id'])
+        EipLanding(self).click_elastic_ip(elastic_ip)
+        EipDetailPage(self, elastic_ip).verify_instance_id_on_detail_page(launch_instance['instance_id'])
 
     def disassociate_eip_from_eip_lp(self):
         raise NotImplementedError
