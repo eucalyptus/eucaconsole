@@ -44,6 +44,7 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
             var resource_type_facet = facets.find(function(elem) {
                 return elem.name == 'res_types';
             });
+            resource_type_facet.filter = 'res_ids';
             // create temp lists for simpler tests within loop
             metric_facet.opt_list = [];
             resource_facet.opt_list = [];
@@ -56,7 +57,7 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
                 metric.resources.forEach(function(res) {
                     if (resource_facet.opt_list.indexOf(res.res_id) === -1) {
                         resource_facet.opt_list.push(res.res_id);
-                        resource_facet.options.push({'key':res.res_id, 'label':res.res_id});
+                        resource_facet.options.push({'key':res.res_id, 'label':res.res_id, 'res_types':res.res_type});
                     }
                     if (resource_type_facet.opt_list.indexOf(res.res_type) === -1) {
                         resource_type_facet.opt_list.push(res.res_type);
