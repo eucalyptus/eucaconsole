@@ -46,22 +46,41 @@
                               ng-click="chartsCtrl.refreshCharts()"
                               tal:condition="metrics_collection_enabled"><i class="fa fa-refresh"></i></span>
                         <span id="enable-monitoring-icon" class="action-icon dropdown"
+                              tal:condition="launchconfig_monitoring_enabled"
                               data-dropdown="enable-monitoring-dropdown"><i class="fa fa-ellipsis-v"></i></span>
                         <ul id="enable-monitoring-dropdown" class="f-dropdown" data-dropdown-content="">
                             <li>
                                 <a href="" ng-click="chartsCtrl.submitMonitoringForm()">
                                     <div tal:condition="not metrics_collection_enabled" tal:omit-tag="">
-                                        <span i18n:translate="">Enable metrics collection</span>
+                                        <span i18n:translate="">Turn monitoring on</span>
                                     </div>
                                     <div tal:condition="metrics_collection_enabled" tal:omit-tag="">
-                                        <span i18n:translate="">Disable metrics collection</span>
+                                        <span i18n:translate="">Turn monitoring off</span>
                                     </div>
                                 </a>
                             </li>
                         </ul>
                     </div>
                 </div>
-                <div tal:condition="not metrics_collection_enabled" id="metrics-collection-disabled-notice">
+                <div tal:condition="not launchconfig_monitoring_enabled">
+                    <div>&nbsp;</div>
+                    <p>
+                        <span i18n:translate="" tal:condition="layout.cloud_type == 'euca'">Instance monitoring</span>
+                        <span i18n:translate="" tal:condition="layout.cloud_type == 'aws'">Detailed instance monitoring</span>
+                        <span i18n:translate="">is not enabled for this scaling group's launch configuration,</span>
+                        ${launch_config_name}
+                    </p>
+                    <p>
+                        <span i18n:translate="">
+                            To view CloudWatch metrics for this scaling group, change the scaling group's
+                            launch configuration using the control on the General tab to one with
+                        </span>
+                        <span tal:condition="layout.cloud_type == 'euca'">instance monitoring enabled.</span>
+                        <span tal:condition="layout.cloud_type == 'aws'">detailed instance monitoring enabled.</span>
+                    </p>
+                </div>
+                <div tal:condition="launchconfig_monitoring_enabled and not metrics_collection_enabled"
+                     id="metrics-collection-disabled-notice">
                     <p i18n:translate="">
                         Metrics collection is currently disabled for this scaling group.
                     </p>

@@ -928,11 +928,16 @@ class ScalingGroupMonitoringView(BaseScalingGroupView):
             self.scaling_group = self.get_scaling_group()
             self.launch_configuration = self.get_launch_configuration(self.scaling_group.launch_config_name)
         metrics_collection_enabled = True if self.scaling_group.enabled_metrics else False
+        launchconfig_monitoring_enabled = False
+        if self.launch_configuration.instance_monitoring.enabled == 'true':
+            launchconfig_monitoring_enabled = True
         self.render_dict = dict(
             scaling_group=self.scaling_group,
             scaling_group_name=self.scaling_group.name,
+            launch_config_name=self.launch_configuration.name,
             monitoring_form=self.monitoring_form,
             metrics_collection_enabled=metrics_collection_enabled,
+            launchconfig_monitoring_enabled=launchconfig_monitoring_enabled,
             duration_choices=MONITORING_DURATION_CHOICES,
             statistic_choices=STATISTIC_CHOICES,
             controller_options_json=self.get_controller_options_json()
@@ -946,7 +951,7 @@ class ScalingGroupMonitoringView(BaseScalingGroupView):
 
     @view_config(route_name='scalinggroup_monitoring_update', renderer=VIEW_TEMPLATE, request_method='POST')
     def scalinggroup_monitoring_update(self):
-        """Update monitoring state for the volume's instance"""
+        """Enable or disable metrics collection for the scaling group"""
         if self.monitoring_form.validate():
             if self.scaling_group:
                 enabled_metrics = self.scaling_group.enabled_metrics
