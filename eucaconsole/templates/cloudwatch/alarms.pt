@@ -34,9 +34,6 @@
             </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
                 <div>
-                    <span class="label" title="State" i18n:translate="">SA</span>
-                </div>
-                <div>
                     <span class="label" title="Dimensions" i18n:translate="">DM</span>
                     <dl dimensions="{{ item.dimensions }}"></dl>
                 </div>
@@ -53,6 +50,11 @@
                     {{ item.alarm_actions.length }}
                 </div>
             </div>
+            <metal:block metal:fill-slot="tile_footer">
+            <div class="footer status" ng-class="{'alarm': item.state == 'ALARM'}">
+                {{ item.state.replace('_', ' ').toLowerCase() }}
+            </div>
+            </metal:block>
             <metal:block metal:fill-slot="tableview_headers">
                 <th i18n:translate="">State</th>
                 <th i18n:translate="">Alarm Name</th>
@@ -63,9 +65,12 @@
                 <!--! <th i18n:translate="" class="actions">Actions</th> -->
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
-                <td>Eh?</td>
-                <td class="id">{{ item.name || item.id }}</td>
-                <td dimensions="{{ item.dimensions }}"></td>
+                <td alarm-state="{{ item.state }}"></td>
+                <td class="id">
+                    <a ng-href="${prefix}/{{ item.id || item.name | escapeURL }}">
+                        {{ item.name || item.id }}</a>
+                </td>
+                <td  class="dimensions" dimensions="{{ item.dimensions }}"></td>
                 <td>
                     {{ item.statistic }}
                     {{ item.metric }}
@@ -73,9 +78,7 @@
                     {{ item.threshold }}
                     {{ item.unit !== 'None' ? item.unit : '' }}
                 </td>
-                <td>{{ item.alarm_actions.length }}</td>
-                <td>...</td>
-                <!--!
+                <td class="alarm-actions">{{ item.alarm_actions.length }}</td>
                 <td>
                    <span class="actions">
                         <span class="tiny secondary button dropdown round" data-dropdown="item-dropdown_{{ item.name }}"><i class="grid-action"></i></span>
@@ -86,7 +89,6 @@
                         </ul>
                    </span>
                 </td>
-                -->
             </metal:block>
         </div>
         <!--! Modal dialogs -->

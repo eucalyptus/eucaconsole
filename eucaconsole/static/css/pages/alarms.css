@@ -140,4 +140,12 @@ table.expando tr.even, table.expando tr.alt, table.expando tr:nth-of-type(even) 
 .expando-tiles li div:nth-of-type(1) { float: left; }
 .expando-tiles li div:nth-of-type(2) { clear: both; }
 
+.gridwrapper .table tr td.id { max-width: none; }
+.gridwrapper .table tr td.dimensions { font-size: 0.6875rem; }
+.gridwrapper .table tr td.dimensions dt { font-weight: bold; }
+.gridwrapper .table tr td.alarm-actions { text-align: center; }
+
 .tile.item dl { font-size: 0.9em; display: inline-block; vertical-align: top; margin-bottom: 0; }
+.tile .footer { text-transform: capitalize; }
+.tile .footer.alarm { background-color: #F04124; }
+.tile .footer.ok { background-color: #008424; }

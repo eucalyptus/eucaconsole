@@ -2,6 +2,27 @@
 @import "../includes/eucavariables";
 @import "../includes/landingpage";
 
+.gridwrapper {
+    .table {
+        tr {
+            td {
+                &.id {
+                    max-width: none;
+                }
+                &.dimensions {
+                    font-size: 0.6875rem;
+                    dt {
+                        font-weight: bold;
+                    }
+                }
+                &.alarm-actions {
+                    text-align: center;
+                }
+            }
+        }
+    }
+}
+
 .tile {
     &.item {
         dl {
@@ -9,6 +30,16 @@
             display: inline-block;
             vertical-align: top;
             margin-bottom: 0;
+        }
+    }
+    
+    .footer {
+        text-transform: capitalize;
+        &.alarm {
+            background-color: #F04124;
+        }
+        &.ok {
+            background-color: #008424;
         }
     }
 }

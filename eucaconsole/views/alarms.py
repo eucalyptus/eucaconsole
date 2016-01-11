@@ -171,6 +171,7 @@ class CloudWatchAlarmsJsonView(BaseView):
                     comparison=alarm.comparison,
                     threshold=alarm.threshold,
                     unit=alarm.unit,
+                    state=alarm.state_value,
                 ))
             return dict(results=alarms)
 
