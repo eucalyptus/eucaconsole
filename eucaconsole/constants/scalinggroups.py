@@ -30,47 +30,47 @@ from ..i18n import _
 SCALING_GROUP_EMPTY_DATA_MESSAGE = _('No data available for this scaling group.')
 SCALING_GROUP_MONITORING_CHARTS_LIST = [
     {
-        'metric': 'GroupTotalInstances', 'unit': 'Count', 'statistic': 'Maximum',
+        'metric': 'GroupTotalInstances', 'unit': 'None', 'statistic': 'Maximum',
         'empty_msg': SCALING_GROUP_EMPTY_DATA_MESSAGE, 'title': _(u'Total instances'),
         'help': _('The total number of instances in the Auto Scaling group.  Identifies the number of instances '
                   'that are in service, pending, and terminating.'),
     },
     {
-        'metric': 'GroupInServiceInstances', 'unit': 'Count', 'statistic': 'Maximum',
+        'metric': 'GroupInServiceInstances', 'unit': 'None', 'statistic': 'Maximum',
         'empty_msg': SCALING_GROUP_EMPTY_DATA_MESSAGE, 'title': _(u'In service instances'),
         'help': _('The number of instances that are running as part of the Auto Scaling group.  '
                   'Does not include instances that are pending or terminating.'),
     },
     {
-        'metric': 'GroupMinSize', 'unit': 'Count', 'statistic': 'Maximum',
+        'metric': 'GroupMinSize', 'unit': 'None', 'statistic': 'Maximum',
         'empty_msg': SCALING_GROUP_EMPTY_DATA_MESSAGE, 'title': _(u'Group min size'),
         'help': _('The minimum size of the Auto Scaling group.'),
     },
     {
-        'metric': 'GroupMaxSize', 'unit': 'Count', 'statistic': 'Maximum',
+        'metric': 'GroupMaxSize', 'unit': 'None', 'statistic': 'Maximum',
         'empty_msg': SCALING_GROUP_EMPTY_DATA_MESSAGE, 'title': _(u'Group max size'),
         'help': _('The maximum size of the Auto Scaling group.'),
     },
     {
-        'metric': 'GroupDesiredCapacity', 'unit': 'Count', 'statistic': 'Maximum',
+        'metric': 'GroupDesiredCapacity', 'unit': 'None', 'statistic': 'Maximum',
         'empty_msg': SCALING_GROUP_EMPTY_DATA_MESSAGE, 'title': _(u'Group desired capacity'),
         'help': _('The number of instances that the Auto Scaling group attempts to maintain.'),
     },
     {
-        'metric': 'GroupPendingInstances', 'unit': 'Count', 'statistic': 'Maximum',
+        'metric': 'GroupPendingInstances', 'unit': 'None', 'statistic': 'Maximum',
         'empty_msg': SCALING_GROUP_EMPTY_DATA_MESSAGE, 'title': _(u'Pending instances'),
         'help': _('The number of instances that are pending. A pending instance is not yet in service. '
                   'This metric does not include instances that are in service or terminating.'),
     },
     {
-        'metric': 'GroupTerminatingInstances', 'unit': 'Count', 'statistic': 'Maximum',
+        'metric': 'GroupTerminatingInstances', 'unit': 'None', 'statistic': 'Maximum',
         'empty_msg': SCALING_GROUP_EMPTY_DATA_MESSAGE, 'title': _(u'Terminating instances'),
         'help': _('The number of instances that are in the process of terminating. '
                   'This metric does not include instances that are in service or pending.'),
     },
     # TODO: Uncomment when Eucalyptus supports Standby Instances
     # {
-    #     'metric': 'GroupStandbyInstances', 'unit': 'Count', 'statistic': 'Maximum',
+    #     'metric': 'GroupStandbyInstances', 'unit': 'None', 'statistic': 'Maximum',
     #     'empty_msg': SCALING_GROUP_EMPTY_DATA_MESSAGE, 'title': _(u'Standby instances'),
     #     'help': _('The number of instances that are in a Standby state. '
     #               'Instances in this state are still running but are not actively in service.'),
