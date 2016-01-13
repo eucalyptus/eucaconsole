@@ -9,7 +9,7 @@ class CreateLaunchConfigPage(BasePage):
 
     _page_title = "Create new launch configuration"
     _image_search_field_css = "input.search-input"
-    _first_image_button_css = ".button.tiny.round"
+    _first_image_button_css = ".rowitem-image .button.tiny.round"
     _name_input_field_id = "name"
     _instance_type_selector_id = "instance_type"
     _user_data_text_radio_bttn_css = "#inputtype[value = 'text']"
@@ -70,7 +70,6 @@ class CreateLaunchConfigPage(BasePage):
             self.send_keys_by_id(self._user_data_text_input_field_id, user_data_text)
         if user_data_file_path is not None:
             self.tester.click_element_by_css(self._user_data_file_radio_bttn_css)
-            pass
         self.tester.click_element_by_id(self._next_button_step2_id)
         self.tester.select_by_id(self._keypair_selector_id, key_name)
         while self.tester.check_visibility_by_css(self._security_group_choice_close_css):
