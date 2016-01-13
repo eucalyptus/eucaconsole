@@ -253,11 +253,6 @@ class SeleniumApi(object):
             print "Element by id = '{0}' not enabled.".format(element_id)
             return False
 
-
-
-
-
-
     def wait_for_clickable_by_css(self, css):
         """
         Waits for an element to be present, visible and enabled such that you can click it.
