@@ -151,16 +151,22 @@ class LaunchConfigsJsonView(LandingPageView):
                 } for group in security_groups)
                 image_id = launchconfig.image_id
                 name = launchconfig.name
+                image_name = ''
+                root_device_type = ''
+                image = launchconfigs_image_mapping.get(image_id)
+                if image:
+                    image_name = image.get('name')
+                    root_device_type = image.get('root_device_type')
                 launchconfigs_array.append(dict(
                     created_time=self.dt_isoformat(launchconfig.created_time),
                     image_id=image_id,
-                    image_name=launchconfigs_image_mapping.get(image_id).get('name'),
+                    image_name=image_name,
                     instance_type=launchconfig.instance_type,
                     instance_monitoring=launchconfig.instance_monitoring.enabled == 'true',
                     key_name=launchconfig.key_name,
                     name=name,
                     security_groups=security_groups_array,
-                    root_device_type=launchconfigs_image_mapping.get(image_id).get('root_device_type'),
+                    root_device_type=root_device_type,
                     in_use=name in scalinggroup_launchconfig_names,
                     scaling_group=launchconfig_sg_mapping.get(name)
                 ))
