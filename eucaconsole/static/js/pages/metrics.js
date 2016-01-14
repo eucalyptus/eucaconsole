@@ -36,8 +36,8 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
         };
         function enableInfiniteScroll() {
             var splitTop = $(".split-top");
-            $(splitTop).scroll(function() {
-                if ($(splitTop).scrollTop() + $(splitTop).innerHeight() >= $(splitTop)[0].scrollHeight) {
+            splitTop.scroll(function() {
+                if (splitTop.scrollTop() + splitTop.innerHeight() >= splitTop[0].scrollHeight) {
                     $scope.$broadcast("showMore");
                 }
             });
