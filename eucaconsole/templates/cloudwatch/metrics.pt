@@ -22,8 +22,10 @@
         <div class="large-12 columns datagrid" id="landing-page-items" ng-class="landingPageView">
             <div class="lp-header">
                 <div class="lp-action-buttons" id="primary-buttons" ng-cloak="">
-                    {{ (items | filter:{ _selected:true }).length }} selected
-                    <a ng-if="(items | filter:{ _selected:true }).length > 0" ng-click="metricsCtrl.clearSelections()" i18n:translate="">Clear all</a>
+                    <div class="metrics-selected">
+                        {{ (items | filter:{ _selected:true }).length }} selected
+                        <a ng-if="(items | filter:{ _selected:true }).length > 0" ng-click="metricsCtrl.clearSelections()" i18n:translate="">Clear all</a>
+                    </div>
                 </div>
                 <div class="lp-sort" id="sorting-controls" ng-show="!itemsLoading">
                 </div>
