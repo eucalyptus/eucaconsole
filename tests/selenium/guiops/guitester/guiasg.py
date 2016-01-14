@@ -28,10 +28,22 @@ class GuiASG(GuiTester):
         BasePage(self).goto_launch_config_view_via_menu()
         LaunchConfigLanding(self).verify_launch_config_is_present(lc_name)
 
-    def create_launch_config_and_asg_from_lc_lp(self, lc_name, asg_name):
+    def create_launch_config_and_asg_from_lc_lp(self, lc_name, asg_name, instance_type=None, image="centos",
+                                         key_name="None (advanced option)",
+                                         security_group="default", user_data_text=None, user_data_file_path=None,
+                                         role=None, create_asg=True, kernel_id=None, ramdisk_id=None,
+                                         enable_monitoring=True, availabilityzones=None, min_cpapacity=None,
+                                         desired_capacity=None, max_capacity=None, grace_period=None,
+                                         loadbalancers=None):
         BasePage(self).goto_launch_config_view_via_menu()
         LaunchConfigLanding(self).click_create_lc_button_on_landing_page()
-        CreateLaunchConfigPage(self).create_new_launch_config_and_asg(lc_name, asg_name)
+        CreateLaunchConfigPage(self).create_new_launch_config_and_asg(lc_name, asg_name,instance_type=instance_type, image=image,
+                                         key_name=key_name,
+                                         security_group=security_group, user_data_text=user_data_text, user_data_file_path=user_data_file_path,
+                                         role=role, create_asg=create_asg, kernel_id=kernel_id, ramdisk_id=ramdisk_id,
+                                         enable_monitoring=enable_monitoring, availabilityzones=availabilityzones, min_cpapacity=min_cpapacity,
+                                         desired_capacity=desired_capacity, max_capacity=max_capacity, grace_period=grace_period,
+                                         loadbalancers=loadbalancers)
         BasePage(self).goto_asg_lp_via_menu()
         ASGLanding(self).verify_asg_present(asg_name)
         BasePage(self).goto_launch_config_view_via_menu()
