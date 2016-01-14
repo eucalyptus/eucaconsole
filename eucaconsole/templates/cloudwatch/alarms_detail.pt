@@ -1,0 +1,129 @@
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
+    <div metal:fill-slot="main_content">
+        <div class="row" id="contentwrap" ng-app="AlarmDetailPage" alarm-detail="">
+            <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+                <metal:crumbs metal:fill-slot="crumbs">
+                    <li><a href="${request.route_path('cloudwatch_alarms')}" i18n:translate="">
+                            CloudwatchAlarms</a></li>
+                    <li class="current"><a href="#">${alarm_id}</a></li>
+                </metal:crumbs>
+            </metal:breadcrumbs>
+            <metal:block metal:use-macro="layout.global_macros['notifications']" />
+            <h3 id="pagetitle">
+                <strong i18n:translate="">Details for instance:</strong>
+                <em>${alarm_id}</em>
+            </h3>
+            <div class="large-12 columns">
+                <dl class="tabs" id="alarm-subnav">
+                    <dd class="active"><a href="#" i18n:translate="">General</a><dd>
+                    <dd>
+                        <a href="${request.route_path('cloudwatch_alarm_history', alarm_id=alarm_id)}">
+                            History</a>
+                    </dd>
+                </dl>
+                <div class="panel">
+                    <form action="" method="post">
+                        ${structure:alarm_form['csrf_token']}
+                        <h4>State</h4>
+                        <div class="row controls-wrapper">
+                            <div class="large-2 small-4 columns">
+                                <label i18n:translate="">State</label>
+                            </div>
+                            <div class="large-10 small-8 columns value" alarm-state="${alarm.state_value}"></div>
+                        </div>
+                        <div class="row controls-wrapper">
+                            <div class="large-2 small-4 columns">
+                                <label i18n:translate="">State details</label>
+                            </div>
+                            <div class="large-10 small-8 columns value">...</div>
+                        </div>
+                        <hr/>
+                        <h4>Alarm</h4>
+                        <div class="row controls-wrapper">
+                            <div class="large-2 small-4 columns">
+                                <label i18n:translate="">Description</label>
+                            </div>
+                            <div class="large-10 small-8 columns value">
+                                <textarea>${alarm.description}</textarea>
+                            </div>
+                        </div>
+                        <div class="row controls-wrapper">
+                            <div class="large-2 small-4 columns">
+                                <label i18n:translate="">Dimensions</label>
+                            </div>
+                            <div class="large-10 small-8 columns value" tal:repeat="dimension alarm.dimensions">
+                                <div tal:repeat="val alarm.dimensions[dimension]">
+                                    <span tal:content="dimension"/> = <span tal:content="val"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row controls-wrapper">
+                            <div class="large-3 small-4 columns">
+                                <label i18n:translate="">Trigger alarm when the</label>
+                            </div>
+                            <div class="large-3 small-4 columns value">
+                                <select>
+                                    <option>Average</option>
+                                    <option>Minimum</option>
+                                    <option>Maximum</option>
+                                    <option>Sum</option>
+                                    <option>Sample Count</option>
+                                </select>
+                            </div>
+                            <div class="large-6 small-4 columns">
+                                ${alarm.metric}
+                            </div>
+                        </div>
+                        <div class="row controls-wrapper">
+                            <div class="large-3 columns">
+                                <label i18n:translate="">is</label>
+                            </div>
+                            <div class="large-3 columns value">
+                                <select>
+                                    <option>&gt;</option>
+                                    <option>&gt;&#61;</option>
+                                    <option>&lt;</option>
+                                    <option>&lt;&#61;</option>
+                                </select>
+                            </div>
+                            <div class="large-3 columns value">
+                                <input type="text" value="${alarm.threshold}"/>
+                            </div>
+                            <div class="large-3 columns value">
+                                ${alarm.unit}
+                            </div>
+                        </div>
+                        <div class="row controls-wrapper">
+                            <div class="large-3 columns">
+                                <label>for at least</label>
+                            </div>
+                            <div class="large-3 columns">
+                                <input type="text" value="${alarm.evaluation_periods}"/>
+                            </div>
+                            <div class="large-3 columns">
+                                consecutive periods of
+                            </div>
+                            <div class="large-3 columns">
+                                <select>
+                                    <option>1 minute</option>
+                                    <option>5 minutes</option>
+                                    <option>15 minutes</option>
+                                    <option>1 hour</option>
+                                    <option>6 hours</option>
+                                    <option>1 day</option>
+                                </select>
+                            </div>
+                        </div>
+                        <hr/>
+                        <h4>Actions</h4>
+                        <hr/>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div metal:fill-slot="tail_js">
+        <script src="${request.static_path('eucaconsole:static/js/pages/alarms/components.js')}"></script>
+        <script src="${request.static_path('eucaconsole:static/js/pages/alarms/alarm_detail.js')}"></script>
+    </div>
+</metal:block>

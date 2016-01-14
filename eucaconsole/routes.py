@@ -272,6 +272,8 @@ urls = [
     # Alarms Landing page
     Route(name='cloudwatch_alarms', pattern='/cloudwatch/alarms'),
     Route(name='cloudwatch_alarms_json', pattern='/cloudwatch/alarms/json'),
+    Route(name='cloudwatch_alarm_view', pattern='/cloudwatch/alarms/{alarm_id}'),
+    Route(name='cloudwatch_alarm_history', pattern='/cloudwatch/alarms/{alarm_id}/history'),
     Route(name='cloudwatch_alarms_create', pattern='/cloudwatch/alarms/create'),
     Route(name='cloudwatch_alarms_delete', pattern='/cloudwatch/alarms/delete'),
     Route(name='cloudwatch_alarms_for_metric_json', pattern='/cloudwatch/alarms/json/{metric}'),

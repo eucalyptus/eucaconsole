@@ -210,3 +210,40 @@ class CloudWatchAlarmsJsonView(BaseView):
         return conn.describe_alarms_for_metric(
             metric_name, namespace,
             period=period, statistic=statistic) if conn else []
+
+
+class CloudWatchAlarmDetailView(BaseView):
+    '''
+    CloudWatch Alarm detail page view.
+    '''
+    TEMPLATE = '../templates/cloudwatch/alarms_detail.pt'
+
+    def __init__(self, request, **kwargs):
+        super(CloudWatchAlarmDetailView, self).__init__(request, **kwargs)
+
+        alarm_id = self.request.matchdict.get('alarm_id')
+        self.alarm = self.get_alarm(alarm_id)
+        self.alarm_form = CloudWatchAlarmCreateForm(
+            request)
+
+        self.render_dict = dict(
+            alarm=self.alarm,
+            alarm_id=alarm_id,
+            alarm_form=self.alarm_form,
+            search_facets=[]
+        )
+
+    @view_config(route_name='cloudwatch_alarm_view',
+                 renderer=TEMPLATE,
+                 request_method='GET')
+    def cloudwatch_alarm_view(self):
+        return self.render_dict
+
+    def get_alarm(self, alarm_id):
+        alarm = None
+        conn = self.get_connection(conn_type='cloudwatch')
+        with boto_error_handler(self.request):
+            alarms = conn.describe_alarms(alarm_names=[alarm_id])
+            if len(alarms) > 0:
+                alarm = alarms[0]
+        return alarm
