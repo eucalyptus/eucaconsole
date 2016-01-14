@@ -67,12 +67,20 @@ class AssociateEipDialog(BasePage):
 
 
 class DisassociateEipDialog(BasePage):
-    _disassociate_elastic_ips_button_id = 'disassociate_ip_submit_button'
+    _disassociate_elastic_ip_button_id = 'disassociate_ip_submit_button'
+    _disassociate_elastic_ip_to_instance_button_css = 'button#disassociate_ip_to_instance_submit_button'
     _notification_css = '#notifications .message'
 
     def disassociate_eip(self):
-        self.tester.click_element_by_id(self._disassociate_elastic_ips_button_id)
+        self.tester.click_element_by_id(self._disassociate_elastic_ip_button_id)
         notification = self.tester.store_text_by_css(self._notification_css)
         notification = notification.replace('Successfully disassociated IP', '')
         notification = notification.replace('from instance', '')
+        return sorted([ip.strip() for ip in notification.split(',')])
+
+    def disassociate_eip_from_instance(self):
+        self.tester.click_element_by_css(self._disassociate_elastic_ip_to_instance_button_css)
+        notification = self.tester.store_text_by_css(self._notification_css)
+        notification = notification.replace('Successfully disassociated the IP', '')
+        notification = notification.replace('from the instance', '')
         return sorted([ip.strip() for ip in notification.split(',')])

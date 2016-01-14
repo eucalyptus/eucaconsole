@@ -759,8 +759,11 @@ class GuiEC2(GuiTester):
         EipLanding(self).click_elastic_ip(elastic_ip)
         EipDetailPage(self, elastic_ip).verify_instance_id_off_detail_page(instance_id)
 
-    def disassociate_eip_from_instances_lp(self):
-        raise NotImplementedError
+    def disassociate_eip_from_instances_lp(self, elastic_ip, instance_id):
+        BasePage(self).goto_instances_via_menu()
+        InstanceLanding(self).click_action_disassociate_ip_address_from_landing_page(instance_id)
+        DisassociateEipDialog(self).disassociate_eip_from_instance()
+        InstanceLanding(self).verify_elastic_ip_address_off_instance_lp(elastic_ip)
 
     def disassociate_ip_from_instance_detail_page(self):
         raise NotImplementedError
