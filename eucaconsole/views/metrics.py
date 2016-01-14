@@ -183,18 +183,18 @@ class CloudWatchMetricsJsonView(BaseView):
                 cat_metrics = []
                 for metric in tmp:
                     if cat['name'] == 'ec2allinstances':
-                        metric_name=metric
+                        metric_name = metric
                         metric_dims = []
                         res_ids = []
                         res_types = []
                         unit = [mt['unit'] for mt in METRIC_TYPES if mt['name'] == metric]
                     else:
-                        metric_name=metric[1]
+                        metric_name = metric[1]
                         metric_dims = metric[0]
-                        res_ids=[dim[1][0] for dim in metric_dims]
-                        res_types=[dim[0] for dim in metric_dims]
+                        res_ids = [dim[1][0] for dim in metric_dims]
+                        res_types = [dim[0] for dim in metric_dims]
                         if cat['resource'] and cat['resource'] != res_types:
-                            continue;
+                            continue
                         unit = [mt['unit'] for mt in METRIC_TYPES if mt['name'] == metric[1]]
                         if cat['name'] == 'custom':
                             unit = "Count"
