@@ -13,6 +13,7 @@ class CreateASGPage(BasePage):
     _desired_capacity_field_id = "desired_capacity"
     _max_capacity_field_id = "max_size"
     _next_button_id = "visit-step-2"
+    _next_tab_id = "tabStep2"
     _health_check_grace_period_field_id = "health_check_period"
     _availability_zones_field_css = "#availability_zones_chosen>ul"
     _chosen_availability_zone_close_x_css = 'a[class="search-choice-close"]'
@@ -33,7 +34,7 @@ class CreateASGPage(BasePage):
             self.tester.send_keys_by_id(self._desired_capacity_field_id, desired_capacity)
         if max_capacity is not None:
             self.tester.send_keys_by_id(self._max_capacity_field_id, max_capacity)
-        self.tester.click_element_by_id(self._next_button_id)
+        self.tester.click_element_by_id(self._next_tab_id)
         if grace_period is not None:
             self.tester.send_keys_by_id(self._health_check_grace_period_field_id, grace_period)
         if availabilityzones is not None:
