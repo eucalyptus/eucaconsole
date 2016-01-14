@@ -41,7 +41,7 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
                     $scope.$broadcast("showMore");
                 }
             });
-        };
+        }
         $scope.$on('itemsLoaded', function($event, items) {
             vm.items = items;
             // clear previous filters
