@@ -4,7 +4,7 @@
  *
  */
 
-angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUtils'])
+angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUtils', 'smart-table'])
     .directive('splitbar', function () {
         var pageElement = angular.element(document.body.parentElement);
         return {
@@ -27,6 +27,9 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
     .controller('MetricsCtrl', function ($scope, $timeout, eucaUnescapeJson) {
         var vm = this;
         var emptyFacets = [];
+        var categoryIndex = {};
+        var headResources;
+        var headMetricName;
         vm.initPage = function(facets) {
             emptyFacets = JSON.parse(eucaUnescapeJson(facets));
         };
@@ -44,12 +47,17 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
             var resource_type_facet = facets.find(function(elem) {
                 return elem.name == 'res_types';
             });
-            resource_type_facet.filter = 'res_ids';
             // create temp lists for simpler tests within loop
             metric_facet.opt_list = [];
             resource_facet.opt_list = [];
             resource_type_facet.opt_list = [];
-            items.forEach(function(metric) {
+            categoryIndex = {};
+            items.forEach(function(metric, idx) {
+                if (metric.heading == true) {
+                    // record category indexes to help with sort
+                    categoryIndex[metric.cat_name] = Object.keys(categoryIndex).length;
+                    return;
+                }
                 if (metric_facet.opt_list.indexOf(metric.metric_name) === -1) {
                     metric_facet.opt_list.push(metric.metric_name);
                     metric_facet.options.push({'key':metric.metric_name, 'label':metric.metric_name});
@@ -70,7 +78,8 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
             resource_facet.opt_list = undefined;
             resource_type_facet.opt_list = undefined;
             $scope.$broadcast("facets_updated", facets);
-            console.log("facets = "+JSON.stringify(facets));
+            // set sticky table headers
+            $('table.table').stickyTableHeaders({scrollableArea: $(".split-top")});
         });
         vm.clearSelections = function() {
             vm.items.forEach(function(metric) {
@@ -82,6 +91,55 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
                 metric._hide = false;
             });
         };
+        vm.sortGetters = {
+            resources: function(value) {
+                if (headResources === undefined) {
+                    headResources = $("tr>th:nth-of-type(2)");
+                }
+                var decending = headResources.hasClass("st-sort-ascent");
+                var idx = ""+categoryIndex[value.cat_name];
+                if (decending) {
+                    idx = Object.keys(categoryIndex).length - idx;
+                }
+                idx = " ".repeat(3-(""+idx).length) + idx;
+                if (value.heading == true && value.res_ids === undefined || value.res_ids.length === 0) {
+                    if (decending) {
+                        return idx + "z".repeat(200);
+                    }
+                    else {
+                        return idx + " ".repeat(200);
+                    }
+                }
+                else {
+                    //console.log(idx + value.res_ids[0] + " ".repeat(200 - value.res_ids[0].length));
+                    return idx + value.res_ids[0] + " ".repeat(200 - value.res_ids[0].length);
+                }
+            },
+            metric_name: function(value) {
+                if (headMetricName === undefined) {
+                    headMetricName = $("tr>th:nth-of-type(3)");
+                }
+                var decending = headMetricName.hasClass("st-sort-ascent");
+                var idx = ""+categoryIndex[value.cat_name];
+                if (decending) {
+                    idx = Object.keys(categoryIndex).length - idx;
+                }
+                idx = " ".repeat(3-(""+idx).length) + idx;
+                if (value.heading == true && value.res_ids === undefined || value.res_ids.length === 0) {
+                    if (decending) {
+                        return idx + "z".repeat(200);
+                    }
+                    else {
+                        return idx + " ".repeat(200);
+                    }
+                }
+                else {
+                    //console.log(idx + value.metric_name + " ".repeat(30 - value.metric_name.length));
+                    return idx + value.metric_name + " ".repeat(30 - value.metric_name.length);
+                }
+                return value;
+            }
+        }
     })
 ;
 

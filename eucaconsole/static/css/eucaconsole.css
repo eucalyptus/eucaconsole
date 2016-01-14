@@ -1982,6 +1982,8 @@ ul.resources-nav li span.active { color: #006699; }
 ul.resources-nav li i.icon { position: absolute; left: 0.5rem; margin-top: 0.5rem; height: 2rem; width: 2rem; }
 ul.resources-nav li i.icon.accounts { background-image: url(../img/nav/Accounts.svg); }
 ul.resources-nav li i.icon.accounts.active { background-image: url(../img/nav/Accounts_Active_40x40.svg); }
+ul.resources-nav li i.icon.alarms { background-image: url(../img/nav/Elastic-IP.svg); }
+ul.resources-nav li i.icon.alarms.active { background-image: url(../img/nav/Elastic-IP_Active.svg); }
 ul.resources-nav li i.icon.buckets { background-image: url(../img/nav/Bucket.svg); }
 ul.resources-nav li i.icon.buckets.active { background-image: url(../img/nav/Bucket_Active.svg); }
 ul.resources-nav li i.icon.dashboard { background-image: url(../img/nav/Dashboard.svg); }
@@ -2000,6 +2002,8 @@ ul.resources-nav li i.icon.launchconfigs { background-image: url(../img/nav/Laun
 ul.resources-nav li i.icon.launchconfigs.active { background-image: url(../img/nav/Launch-configs_Active.svg); }
 ul.resources-nav li i.icon.elbs { background-image: url(../img/nav/Load-Balance.svg); }
 ul.resources-nav li i.icon.elbs.active { background-image: url(../img/nav/Load-Balance_Active.svg); }
+ul.resources-nav li i.icon.metrics { background-image: url(../img/nav/Launch-configs.svg); }
+ul.resources-nav li i.icon.metrics.active { background-image: url(../img/nav/Launch-configs_Active.svg); }
 ul.resources-nav li i.icon.roles { background-image: url(../img/nav/Roles.svg); }
 ul.resources-nav li i.icon.roles.active { background-image: url(../img/nav/Roles_Active.svg); }
 ul.resources-nav li i.icon.scalinggroups { background-image: url(../img/nav/Auto-Scaling-Groups.svg); }

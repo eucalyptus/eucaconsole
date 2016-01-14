@@ -92,44 +92,114 @@ class CloudWatchMetricsJsonView(BaseView):
     def cloudwatch_metrics_json(self):
         categories = [
             dict(
-                name='scalinggroup',
-                label=_(u'Auto scaling groups'),
+                name='scalinggroupmetrics',
+                label=_(u'Auto scaling group - Group metrics'),
                 namespace='AWS/AutoScaling',
+                resource=['AutoScalingGroupName'],
+            ),
+            dict(
+                name='scalinggroupinstancemetrics',
+                label=_(u'Auto scaling group - EC2 metrics by scaling group'),
+                namespace='AWS/EC2',
+                resource=['AutoScalingGroupName'],
             ),
             dict(
                 name='ebs',
-                label=_(u'Elastic Block Storage'),
+                label=_(u'EBS - Per volume'),
                 namespace='AWS/EBS',
+                resource=None,
             ),
             dict(
-                name='ec2',
-                label=_(u'Elastic Compute Cloud'),
+                name='ec2instance',
+                label=_(u'EC2 - Per-instance'),
                 namespace='AWS/EC2',
+                resource=['InstanceId'],
+            ),
+            dict(
+                name='ec2instancetype',
+                label=_(u'EC2 - Per instance type (requires detailed monitoring on AWS)'),
+                namespace='AWS/EC2',
+                resource=['InstanceType'],
+            ),
+            dict(
+                name='ec2image',
+                label=_(u'EC2 - Per image (requires detailed monitoring on AWS)'),
+                namespace='AWS/EC2',
+                resource=['ImageId'],
+            ),
+            dict(
+                name='ec2allinstances',
+                label=_(u'EC2 - Across all instances'),
+                namespace='AWS/EC2',
+                resource=['InstanceId'],
             ),
             dict(
                 name='elb',
-                label=_(u'Elastic Load Balancing'),
+                label=_(u'ELB - Per LB'),
                 namespace='AWS/ELB',
+                resource=['LoadBalancerName'],
+            ),
+            dict(
+                name='elbzone',
+                label=_(u'ELB - Per Zone'),
+                namespace='AWS/ELB',
+                resource=['AvailabilityZone'],
+            ),
+            dict(
+                name='elbandzone',
+                label=_(u'ELB - Per LB / Per Zone'),
+                namespace='AWS/ELB',
+                resource=['AvailabilityZone', 'LoadBalancerName'],
+            ),
+            dict(
+                name='custom',
+                label=_(u'Custom Metrics'),
+                namespace=None,
+                resource=None,
             ),
         ]
+        STD_NAMESPACES = ['AWS/EC2', 'AWS/EBS', 'AWS/ELB', 'AWS/AutoScaling']
         with boto_error_handler(self.request):
             items = self.get_items()
             metrics = []
             for cat in categories:
                 namespace = cat['namespace']
-                tmp = [{
-                    'name': item.name,
-                    'namespace': item.namespace,
-                    'dimensions': item.dimensions
-                } for item in items if item.namespace == namespace and item.dimensions]
-                tmp = [(met['dimensions'].items(), met['name']) for met in tmp]
+                if namespace:
+                    tmp = [{
+                        'name': item.name,
+                        'namespace': item.namespace,
+                        'dimensions': item.dimensions
+                    } for item in items if item.namespace == namespace and item.dimensions]
+                else:
+                    tmp = [{
+                        'name': item.name,
+                        'namespace': item.namespace,
+                        'dimensions': item.dimensions
+                    } for item in items if item.namespace not in STD_NAMESPACES and item.dimensions]
+                if cat['name'] == 'ec2allinstances':
+                    tmp = set([met['name'] for met in tmp])
+                else:
+                    tmp = [(met['dimensions'].items(), met['name']) for met in tmp]
                 cat_metrics = []
                 for metric in tmp:
-                    metric_dims = metric[0]
-                    unit = [mt['unit'] for mt in METRIC_TYPES if mt['name'] == metric[1]]
+                    if cat['name'] == 'ec2allinstances':
+                        metric_name=metric
+                        metric_dims = []
+                        res_ids = []
+                        res_types = []
+                        unit = [mt['unit'] for mt in METRIC_TYPES if mt['name'] == metric]
+                    else:
+                        metric_name=metric[1]
+                        metric_dims = metric[0]
+                        res_ids=[dim[1][0] for dim in metric_dims]
+                        res_types=[dim[0] for dim in metric_dims]
+                        if cat['resource'] and cat['resource'] != res_types:
+                            continue;
+                        unit = [mt['unit'] for mt in METRIC_TYPES if mt['name'] == metric[1]]
+                        if cat['name'] == 'custom':
+                            unit = "Count"
                     cat_metrics.append(dict(
                         cat_name=cat['name'],
-                        cat_label=cat['label'],
                         namespace=cat['namespace'],
                         unique_id=metric[1] + '-' + '-'.join([dim[1][0] for dim in metric_dims]),
                         resources=[dict(
@@ -137,11 +207,17 @@ class CloudWatchMetricsJsonView(BaseView):
                             res_type=dim[0],
                             res_url=self.get_url_for_resource(self.request, dim[0], dim[1][0])
                         ) for dim in metric_dims],
-                        res_ids=[dim[1][0] for dim in metric_dims],
-                        res_types=[dim[0] for dim in metric_dims],
+                        res_ids=res_ids,
+                        res_types=res_types,
                         unit=unit[0] if unit else '',
-                        metric_name=metric[1]
+                        metric_name=metric_name
                     ))
+                metrics.append(dict(
+                    heading=True,
+                    cat_name=cat['name'],
+                    cat_label=cat['label'],
+                    cat_total=len(cat_metrics)
+                ))
                 metrics.extend(cat_metrics)
 
             # import logging; logging.info(json.dumps(metrics, indent=2))
