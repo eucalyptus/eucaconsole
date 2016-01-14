@@ -14,29 +14,46 @@
         </metal:breadcrumbs>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
-
-        <div class="large-2 columns" id="landing-page-filters">
-            <!--! Filters go here -->
-        </div>
+        <h3 id="pagetitle"><strong i18n:translate="">Alarms</strong></h3>
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
-                <!--! <a class="button" i18n:translate="">Create alarm</a> -->
+                <a class="button" i18n:translate="">Create alarm</a>
+                <metal:block metal:use-macro="layout.global_macros['more_actions']">
+                    <div metal:fill-slot="menu_items" tal:omit-tag="">
+                        <li>
+                            <a i18n:translate="" class="more-actions-view">
+                                View details
+                            </a>
+                        </li>
+                        <li>
+                            <a i18n:translate="" class="more-actions-create-like-this">
+                                Create alarm like this one
+                            </a>
+                        </li>
+                        <li>
+                            <a i18n:translate="" class="more-actions-delete">
+                                Delete
+                            </a>
+                        </li>
+                    </div>
+                </metal:block>
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
-                <!--!
                 <span class="tiny secondary button dropdown" data-dropdown="item-dropdown_{{ item.name }}"><i class="grid-action"></i></span>
                 <ul id="item-dropdown_{{ item.name }}" class="f-dropdown" data-dropdown-content="">
                     <li>
-                        <a ng-click="revealModal('delete', item)" i18n:translate="">Delete alarm</a>
+                        <a i18n:translate="" ng-href="${prefix}/{{ item.id || item.name | escapeURL }}">
+                            View/edit details</a>
+                    </li>
+                    <li>
+                        <a i18n:translate="">Create alarm like this</a>
+                    </li>
+                    <li>
+                        <a ng-click="revealModal('delete', item)" i18n:translate="">Delete</a>
                     </li>
                 </ul>
-                -->
             </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
-                <div>
-                    <span class="label" title="Dimensions" i18n:translate="">DM</span>
-                    <dl dimensions="{{ item.dimensions }}"></dl>
-                </div>
                 <div>
                     <span class="label" title="Threshold" i18n:translate="">TH</span>
                     {{ item.statistic }}
@@ -56,21 +73,21 @@
             </div>
             </metal:block>
             <metal:block metal:fill-slot="tableview_headers">
+                <th metal:use-macro="layout.global_macros['selectall_header_checkbox']"></th>
                 <th i18n:translate="">State</th>
                 <th i18n:translate="">Alarm Name</th>
-                <th i18n:translate="">Dimensions</th>
                 <th i18n:translate="">Threshold</th>
                 <th i18n:translate="">Alarm Actions</th>
                 <th i18n:translate="">Actions</th>
                 <!--! <th i18n:translate="" class="actions">Actions</th> -->
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
+                <td metal:use-macro="layout.global_macros['select_item_checkbox']"></td>
                 <td alarm-state="{{ item.state }}"></td>
                 <td class="id">
                     <a ng-href="${prefix}/{{ item.id || item.name | escapeURL }}">
                         {{ item.name || item.id }}</a>
                 </td>
-                <td  class="dimensions" dimensions="{{ item.dimensions }}"></td>
                 <td>
                     {{ item.statistic }}
                     {{ item.metric }}
@@ -84,7 +101,14 @@
                         <span class="tiny secondary button dropdown round" data-dropdown="item-dropdown_{{ item.name }}"><i class="grid-action"></i></span>
                         <ul id="item-dropdown_{{ item.name }}" class="f-dropdown" data-dropdown-content="">
                             <li>
-                                <a ng-click="revealModal('delete', item)" i18n:translate="">Delete alarm</a>
+                                <a i18n:translate="" ng-href="${prefix}/{{ item.id || item.name | escapeURL }}">
+                                    View/edit details</a>
+                            </li>
+                            <li>
+                                <a i18n:translate="">Create alarm like this</a>
+                            </li>
+                            <li>
+                                <a ng-click="revealModal('delete', item)" i18n:translate="">Delete</a>
                             </li>
                         </ul>
                    </span>
