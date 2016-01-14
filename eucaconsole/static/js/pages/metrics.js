@@ -53,7 +53,7 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
             resource_type_facet.opt_list = [];
             categoryIndex = {};
             items.forEach(function(metric, idx) {
-                if (metric.heading == true) {
+                if (metric.heading === true) {
                     // record category indexes to help with sort
                     categoryIndex[metric.cat_name] = Object.keys(categoryIndex).length;
                     return;
@@ -102,7 +102,7 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
                     idx = Object.keys(categoryIndex).length - idx;
                 }
                 idx = " ".repeat(3-(""+idx).length) + idx;
-                if (value.heading == true && value.res_ids === undefined || value.res_ids.length === 0) {
+                if (value.heading === true && value.res_ids === undefined || value.res_ids.length === 0) {
                     if (decending) {
                         return idx + "z".repeat(200);
                     }
@@ -125,7 +125,7 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
                     idx = Object.keys(categoryIndex).length - idx;
                 }
                 idx = " ".repeat(3-(""+idx).length) + idx;
-                if (value.heading == true && value.res_ids === undefined || value.res_ids.length === 0) {
+                if (value.heading === true && value.res_ids === undefined || value.res_ids.length === 0) {
                     if (decending) {
                         return idx + "z".repeat(200);
                     }
@@ -139,7 +139,7 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
                 }
                 return value;
             }
-        }
+        };
     })
 ;
 
