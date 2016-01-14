@@ -20,8 +20,8 @@ class ElasticIPsOperationsSequence(GuiOps):
 
     def elastic_ip_ops_test(self):
         self.tester.login(self.account, self.user, self.password)
-#        self.elastic_ip_single_allocate_release_test_from_lp()
-#        self.elastic_ips_multi_allocate_release_test_from_dashboard()
+        self.elastic_ip_single_allocate_release_test_from_lp()
+        self.elastic_ips_multi_allocate_release_test_from_dashboard()
         self.elastic_ips_associate_disassociate_ip()
         self.tester.logout()
         self.tester.exit_browser()
