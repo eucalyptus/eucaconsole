@@ -32,6 +32,15 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
         var headMetricName;
         vm.initPage = function(facets) {
             emptyFacets = JSON.parse(eucaUnescapeJson(facets));
+            enableInfiniteScroll();
+        };
+        function enableInfiniteScroll() {
+            var splitTop = $(".split-top");
+            $(splitTop).scroll(function() {
+                if ($(splitTop).scrollTop() + $(splitTop).innerHeight() >= $(splitTop)[0].scrollHeight) {
+                    $scope.$broadcast("showMore");
+                }
+            });
         };
         $scope.$on('itemsLoaded', function($event, items) {
             vm.items = items;
