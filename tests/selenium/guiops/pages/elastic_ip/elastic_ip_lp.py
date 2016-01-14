@@ -1,4 +1,5 @@
 from pages.landingpage import LandingPage
+from dialogs.eip_dialogs import DisassociateEipDialog
 
 
 class EipLanding(LandingPage):
@@ -10,6 +11,7 @@ class EipLanding(LandingPage):
     _more_actions_button_id = 'more-actions-btn'
     _more_actions_release_ip_css = '#more-actions-dropdown a.more-actions-release'
     _more_actions_associate_ip_css = '#item-dropdown_{0}>li>a[ng-click="revealModal(\'associate\', item)"]'
+    _more_actions_disassociate_ip_css = '#item-dropdown_{0}>li>a[ng-click="revealModal(\'disassociate\', item)"]'
     _elastic_ip_link_css = 'td>a[href="/ipaddresses/{0}"]'
     _instance_id_link_css = 'td>a[href="/instances/{0}"]'
 
@@ -53,3 +55,11 @@ class EipLanding(LandingPage):
         self.tester.wait_for_element_present_by_css(self._instance_id_link_css.format(instance_id))
         self.tester.click_element_by_css(self._instance_id_link_css.format(instance_id))
         self.tester.wait_for_element_present_by_link_text(elastic_ip)
+
+    def disassociate_with_instance_actions_menu_item(self, elastic_ip, instance_id):
+        self.tester.click_element_by_css(self._elastic_ip_actions_menu_css.format(elastic_ip))
+        elastic_ip = str(elastic_ip.replace(".", "_"))
+        self.tester.click_element_by_css(self._more_actions_disassociate_ip_css.format(elastic_ip))
+
+    def verify_disassociate_eip_from_lp(self, instance_id):
+        self.tester.wait_for_element_not_present_by_css(self._instance_id_link_css.format(instance_id))
