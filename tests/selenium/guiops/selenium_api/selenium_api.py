@@ -253,6 +253,26 @@ class SeleniumApi(object):
             print "Element by id = '{0}' not enabled.".format(element_id)
             return False
 
+    def wait_for_clickable_by_id(self, element_id):
+        """
+        Waits for an element to be present, visible and enabled such that you can click it.
+        :param element_id:
+        """
+        print "Executing wait_for_clickable_by_id('{0}')".format(element_id)
+
+        try:
+            WebDriverWait(self.driver, self.timeout_to_locate_element_in_seconds).until(EC.element_to_be_clickable((By.ID, element_id)))
+            print "Found clickable element by id = '{0}'".format(element_id)
+        except TimeoutException, tout:
+            print "ERROR: Did not find clickable element by id = '{0}'".format(element_id)
+            print "Checking whether element by id = '{0}' present in the DOM.".format(element_id)
+            try:
+                self.driver.find_element_by_css_selector(element_id)
+                print "Element by id = '{0}' is present in the DOM but not clickable.".format(element_id)
+            except NoSuchElementException:
+                print "ERROR: Element by id = '{0}' not found in the DOM.".format(element_id)
+
+
     def wait_for_clickable_by_css(self, css):
         """
         Waits for an element to be present, visible and enabled such that you can click it.
