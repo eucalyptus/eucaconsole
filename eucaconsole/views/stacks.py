@@ -580,21 +580,24 @@ class StackWizardView(BaseView, StackMixin):
             if 'AllowedValues' in param:
                 param_vals['options'] = [(val, val) for val in param['AllowedValues']]
             # guess at more options
-            if 'key' in name.lower() or param_type == 'AWS::EC2::KeyPair::KeyName':
+            name_l = name.lower()
+            if 'key' in name_l or param_type == 'AWS::EC2::KeyPair::KeyName':
                 param_vals['options'] = self.get_key_options()  # fetch keypair names
-            if 'kernel' in name.lower():
+            if 'security' in name_l and 'group' in name_l or param_type == 'AWS::EC2::SecurityGroup::GroupName':
+                param_vals['options'] = self.get_group_options()  # fetch security group names
+            if 'kernel' in name_l:
                 param_vals['options'] = self.get_image_options(img_type='kernel')  # fetch kernel ids
-            if 'ramdisk' in name.lower():
+            if 'ramdisk' in name_l:
                 param_vals['options'] = self.get_image_options(img_type='ramdisk')  # fetch ramdisk ids
-            if 'cert' in name.lower():
+            if 'cert' in name_l:
                 param_vals['options'] = self.get_cert_options()  # fetch server cert names
-            if 'instance' in name.lower() and 'profile' in name.lower():
+            if 'instance' in name_l and 'profile' in name_l:
                 param_vals['options'] = self.get_instance_profile_options()
-            if 'instance' in name.lower() or param_type == 'AWS::EC2::Instance::Id':
+            if 'instance' in name_l or param_type == 'AWS::EC2::Instance::Id':
                 param_vals['options'] = self.get_instance_options()  # fetch instances
-            if 'volume' in name.lower() or param_type == 'AWS::EC2::Volume::Id':
+            if 'volume' in name_l or param_type == 'AWS::EC2::Volume::Id':
                 param_vals['options'] = self.get_volume_options()  # fetch volumes
-            if ('vmtype' in name.lower() or 'instancetype' in name.lower()) and \
+            if ('vmtype' in name_l or 'instancetype' in name_l) and \
                     'options' not in param_vals.keys():
                 param_vals['options'] = self.get_vmtype_options()
             # if no default, and options are a single value, set that as default
@@ -604,7 +607,7 @@ class StackWizardView(BaseView, StackMixin):
             param_vals['chosen'] = True if \
                 'options' in param_vals.keys() and len(param_vals['options']) > 9 \
                 else False
-            if 'image' in name.lower() or param_type == 'AWS::EC2::Image::Id':
+            if 'image' in name_l or param_type == 'AWS::EC2::Image::Id':
                 if self.request.session.get('cloud_type', 'euca') == 'aws':
                     # populate with amazon and user's images
                     param_vals['options'] = self.get_image_options(owner_alias='self')
@@ -622,6 +625,14 @@ class StackWizardView(BaseView, StackMixin):
         ret = []
         for key in keys:
             ret.append((key.name, key.name))
+        return ret
+
+    def get_group_options(self):
+        conn = self.get_connection()
+        groups = conn.get_all_security_groups()
+        ret = []
+        for group in groups:
+            ret.append((group.name, group.name))
         return ret
 
     def get_instance_options(self):
