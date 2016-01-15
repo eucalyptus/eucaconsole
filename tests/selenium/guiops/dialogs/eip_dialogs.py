@@ -45,9 +45,9 @@ class AssociateEipDialog(BasePage):
     _highlighted_search_result_css = '.active-result'
     _notification_css = '#notifications .message'
 
-    def associate_eip_with_instance(self, instance_id):
+    def associate_eip_with_instance(self, instance_name):
         self.tester.click_element_by_css(self._select_instance_css)
-        self.tester.send_keys_by_css(self._instance_input_css, instance_id)
+        self.tester.send_keys_by_css(self._instance_input_css, instance_name)
         self.tester.click_element_by_css(self._highlighted_search_result_css)
         self.tester.click_element_by_id(self._associate_elastic_ips_button_id)
         notification = self.tester.store_text_by_css(self._notification_css)

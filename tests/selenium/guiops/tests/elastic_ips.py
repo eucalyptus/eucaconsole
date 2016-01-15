@@ -1,5 +1,8 @@
 from guiops.guiops import GuiOps
 from option_parser import Option_parser
+import string
+import random
+
 
 
 class ElasticIPsOperationsSequence(GuiOps):
@@ -38,7 +41,7 @@ class ElasticIPsOperationsSequence(GuiOps):
     def elastic_ips_associate_disassociate_ip(self):
         elastic_ip = self.tester.allocate_eip_from_dashboard(1)
         elastic_ip = str(elastic_ip[0])
-        launch_instance = self.tester.launch_instance_from_dashboard()
+        launch_instance = self.tester.launch_instance_from_dashboard(instance_type="m1.medium")
         instance_id = launch_instance['instance_id']
         self.tester.associate_eip_from_eip_lp(elastic_ip, instance_id)
         self.tester.disassociate_eip_from_eip_lp(elastic_ip, instance_id)
@@ -46,6 +49,8 @@ class ElasticIPsOperationsSequence(GuiOps):
         self.tester.disassociate_eip_from_eip_detail_page(elastic_ip, instance_id)
         self.tester.associate_eip_from_instances_lp(elastic_ip, instance_id)
         self.tester.disassociate_eip_from_instances_lp(elastic_ip, instance_id)
+        self.tester.associate_eip_from_instance_detail_page(elastic_ip, instance_id)
+        self.tester.disassociate_eip_from_instance_detail_page(elastic_ip, instance_id)
         self.tester.terminate_instance_from_view_page(instance_id)
         self.tester.release_eip_from_eip_lp(elastic_ip)
 
