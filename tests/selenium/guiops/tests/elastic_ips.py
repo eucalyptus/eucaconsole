@@ -1,8 +1,5 @@
 from guiops.guiops import GuiOps
 from option_parser import Option_parser
-import string
-import random
-
 
 
 class ElasticIPsOperationsSequence(GuiOps):
