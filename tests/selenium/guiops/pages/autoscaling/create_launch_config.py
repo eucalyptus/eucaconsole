@@ -9,7 +9,7 @@ class CreateLaunchConfigPage(BasePage):
 
     _page_title = "Create new launch configuration"
     _image_search_field_css = "input.search-input"
-    _first_image_button_css = ".button.tiny.round"
+    _first_image_button_css = ".rowitem-image .button.tiny.round"
     _name_input_field_id = "name"
     _instance_type_selector_id = "instance_type"
     _user_data_text_radio_bttn_css = "#inputtype[value = 'text']"
