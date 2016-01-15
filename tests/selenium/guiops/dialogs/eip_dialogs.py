@@ -1,6 +1,4 @@
 from pages.basepage import BasePage
-from selenium_api.selenium_api import SeleniumApi
-import time
 
 
 class AllocateEipDialog(BasePage):
