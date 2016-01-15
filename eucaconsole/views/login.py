@@ -167,7 +167,7 @@ class LoginView(BaseView, PermissionCheckMixin):
                     new_passwd=new_passwd, timeout=8, duration=self.duration)
                 logging.info(u"Authenticated Eucalyptus user: {acct}/{user} from {ip}".format(
                     acct=account, user=username, ip=BaseView.get_remote_addr(self.request)))
-                default_region = self.request.registry.settings.get('default.region', None)
+                default_region = self.request.registry.settings.get('default.region', 'euca')
                 user_account = u'{user}@{account}'.format(user=username, account=account)
                 session.invalidate()  # Refresh session
                 session['cloud_type'] = 'euca'

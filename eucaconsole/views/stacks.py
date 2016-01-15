@@ -48,7 +48,7 @@ from ..forms import ChoicesManager, CFSampleTemplateManager
 from ..forms.stacks import StacksDeleteForm, StacksFiltersForm, StacksCreateForm 
 from ..models import Notification
 from ..models.auth import User
-from ..views import LandingPageView, BaseView, JSONResponse, JSONError
+from ..views import LandingPageView, BaseView, TaggedItemView, JSONResponse, JSONError
 from . import boto_error_handler
 from .. import utils
 
@@ -536,25 +536,36 @@ class StackWizardView(BaseView, StackMixin):
             String,
             Number,
             CommaDelimitedList,
+            AWS::EC2::AvailabilityZone::Name,
+            AWS::EC2::Image::Id,
+            AWS::EC2::Instance::Id,
             AWS::EC2::KeyPair::KeyName,
+            AWS::EC2::SecurityGroup::GroupName,
             AWS::EC2::SecurityGroup::Id,
             AWS::EC2::Subnet::Id,
+            AWS::EC2::Volume::Id,
             AWS::EC2::VPC::Id,
             List<String>,
             List<Number>,
+            List<AWS::EC2::AvailabilityZone::Name>,
+            List<AWS::EC2::Image::Id>,
+            List<AWS::EC2::Instance::Id>,
             List<AWS::EC2::KeyPair::KeyName>,
+            List<AWS::EC2::SecurityGroup::GroupName>,
             List<AWS::EC2::SecurityGroup::Id>,
             List<AWS::EC2::Subnet::Id>,
+            List<AWS::EC2::Volume::Id>,
             List<AWS::EC2::VPC::Id>
         ]
         """
         params = []
         for name in parsed['Parameters']:
             param = parsed['Parameters'][name]
+            param_type = param['Type']
             param_vals = {
                 'name': name,
                 'description': param['Description'] if 'Description' in param else '',
-                'type': param['Type']
+                'type': param_type
             }
             if 'Default' in param:
                 param_vals['default'] = param['Default']
@@ -569,7 +580,7 @@ class StackWizardView(BaseView, StackMixin):
             if 'AllowedValues' in param:
                 param_vals['options'] = [(val, val) for val in param['AllowedValues']]
             # guess at more options
-            if 'key' in name.lower():
+            if 'key' in name.lower() or param_type == 'AWS::EC2::KeyPair::KeyName':
                 param_vals['options'] = self.get_key_options()  # fetch keypair names
             if 'kernel' in name.lower():
                 param_vals['options'] = self.get_image_options(img_type='kernel')  # fetch kernel ids
@@ -579,6 +590,10 @@ class StackWizardView(BaseView, StackMixin):
                 param_vals['options'] = self.get_cert_options()  # fetch server cert names
             if 'instance' in name.lower() and 'profile' in name.lower():
                 param_vals['options'] = self.get_instance_profile_options()
+            if 'instance' in name.lower() or param_type == 'AWS::EC2::Instance::Id':
+                param_vals['options'] = self.get_instance_options()  # fetch instances
+            if 'volume' in name.lower() or param_type == 'AWS::EC2::Volume::Id':
+                param_vals['options'] = self.get_volume_options()  # fetch volumes
             if ('vmtype' in name.lower() or 'instancetype' in name.lower()) and \
                     'options' not in param_vals.keys():
                 param_vals['options'] = self.get_vmtype_options()
@@ -589,7 +604,7 @@ class StackWizardView(BaseView, StackMixin):
             param_vals['chosen'] = True if \
                 'options' in param_vals.keys() and len(param_vals['options']) > 9 \
                 else False
-            if 'image' in name.lower():
+            if 'image' in name.lower() or param_type == 'AWS::EC2::Image::Id':
                 if self.request.session.get('cloud_type', 'euca') == 'aws':
                     # populate with amazon and user's images
                     param_vals['options'] = self.get_image_options(owner_alias='self')
@@ -607,6 +622,22 @@ class StackWizardView(BaseView, StackMixin):
         ret = []
         for key in keys:
             ret.append((key.name, key.name))
+        return ret
+
+    def get_instance_options(self):
+        conn = self.get_connection()
+        instances = conn.get_only_instances()
+        ret = []
+        for instance in instances:
+            ret.append((instance.id, TaggedItemView.get_display_name(instance)))
+        return ret
+
+    def get_volume_options(self):
+        conn = self.get_connection()
+        volumes = conn.get_all_volumes()
+        ret = []
+        for volume in volumes:
+            ret.append((volume.id, TaggedItemView.get_display_name(volume)))
         return ret
 
     def get_image_options(self, img_type='machine', owner_alias=None):
