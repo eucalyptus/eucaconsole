@@ -102,11 +102,13 @@
                     <li class="panel" id="alarms" tal:case="'alarms'">
                         <div class="tile">
                             <h5 class="subheader">
-                                <span i18n:translate="">CloudWatch alarms</span>
+                                <span i18n:translate="">Alarms in alarm state</span>
                             </h5>
                             <metal:block metal:use-macro="layout.global_macros['dashaction']" />
                             <div class="content">
                                 <a href="${request.route_path('cloudwatch_alarms')}">
+                                    <i tal:condition="alarms_triggered == 0" class="dash-no-alarms fa fa-bell-o fa-5x"></i>
+                                    <i tal:condition="alarms_triggered > 0" class="dasn-alarms fa fa-bell-o fa-5x"></i>
                                     <i class="icon"><em>
                                         <span id="alarms-count" ng-cloak="">${alarms_triggered}</span></em>
                                     </i>

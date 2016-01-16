@@ -52,6 +52,12 @@ $tile-row-height: 24px;
             font-weight: 500;
             margin: 0 0 0 0;
         }
+        i.dash-no-alarms {
+            color: $euca-darkblue !important;
+        }
+        i.dash-alarms {
+            color: red;
+        }
         .icon {  // Font icons
             position: absolute;
             top: 20%; left: 50%; margin-left: -($dashboard-panel-icon-size/2);
@@ -138,6 +144,16 @@ $tile-row-height: 24px;
                 font-size: 5rem;
                 margin-bottom: 0.5rem;
             }
+        }
+    }
+}
+
+li#alarms {
+    .tile {
+        .content {
+            padding-top: 3rem;
+            width: 100%;
+            text-align: center;
         }
     }
 }
