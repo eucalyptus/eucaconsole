@@ -1,8 +1,19 @@
 from pages.detailpage import DetailPage
-from eucaconsole.constants.volumes import VOLUME_MONITORING_CHARTS_LIST
 
 
 class VolumeDetailPage(DetailPage):
+    VOLUME_MONITORING_CHARTS_LIST = [
+        {'metric': 'VolumeReadBytes', 'statistic': 'Sum'},
+        {'metric': 'VolumeWriteBytes', 'statistic': 'Sum'},
+        {'metric': 'VolumeReadOps', 'statistic': 'Sum'},
+        {'metric': 'VolumeWriteOps', 'statistic': 'Sum'},
+        {'metric': 'VolumeQueueLength', 'statistic': 'Average'},
+        {'metric': 'VolumeIdleTime', 'statistic': 'Sum'},
+        {'metric': 'VolumeReadBytes', 'statistic': 'Average'},
+        {'metric': 'VolumeWriteBytes', 'statistic': 'Average'},
+        {'metric': 'VolumeTotalReadTime', 'statistic': 'Average'},
+        {'metric': 'VolumeTotalWriteTime', 'statistic': 'Average'},
+    ]
 
     def __init__(self, tester):
         self.tester = tester
@@ -75,7 +86,7 @@ class VolumeDetailPage(DetailPage):
 
     def verify_charts_on_volume_monitoring_page(self, volume_id):
         self.tester.wait_for_element_present_by_id(self._charts_container_id)
-        for chart in VOLUME_MONITORING_CHARTS_LIST:
+        for chart in self.VOLUME_MONITORING_CHARTS_LIST:
             chart_id = 'cwchart-{0}-{1}'.format(chart.get('metric'), chart.get('statistic'))
             self.tester.wait_for_element_present_by_id(chart_id)
 
