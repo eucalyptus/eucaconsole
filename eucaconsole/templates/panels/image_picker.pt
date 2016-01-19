@@ -31,7 +31,7 @@
                             <span i18n:translate="">No images were found matching the criteria.</span>
                         </td>
                     </tr>
-                    <tr ng-show="!itemsLoading" ng-repeat="item in items"
+                    <tr ng-show="!itemsLoading" ng-repeat="item in items" class="rowitem-image"
                         ng-class="{'selected': item.id == selectedImageParam || item.id == imageID}">
                         <td class="icon">
                             <span class="image {{ item.platform_key }}"></span>
