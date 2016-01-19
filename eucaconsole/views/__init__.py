@@ -256,9 +256,10 @@ class BaseView(object):
         acct = self.request.session.get('account', '')
         if acct == '':
             acct = self.request.session.get('access_id', '')
-        invalidate_cache(long_term, 'images', None, [], [], region, acct)
-        invalidate_cache(long_term, 'images', None, [u'self'], [], region, acct)
-        invalidate_cache(long_term, 'images', None, [], [u'self'], region, acct)
+        ufshost = self.get_connection().host if self.cloud_type == 'euca' else ''
+        invalidate_cache(long_term, 'images', None, [], [], region, acct, ufshost)
+        invalidate_cache(long_term, 'images', None, [u'self'], [], region, acct, ufshost)
+        invalidate_cache(long_term, 'images', None, [], [u'self'], region, acct, ufshost)
 
     def get_euca_authenticator(self):
         """
