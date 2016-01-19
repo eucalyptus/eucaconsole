@@ -98,12 +98,6 @@ class CloudWatchMetricsJsonView(BaseView):
                 resource=['AutoScalingGroupName'],
             ),
             dict(
-                name='scalinggroupinstancemetrics',
-                label=_(u'Auto scaling group - EC2 metrics by scaling group'),
-                namespace='AWS/EC2',
-                resource=['AutoScalingGroupName'],
-            ),
-            dict(
                 name='ebs',
                 label=_(u'EBS - Per volume'),
                 namespace='AWS/EBS',
@@ -116,6 +110,18 @@ class CloudWatchMetricsJsonView(BaseView):
                 resource=['InstanceId'],
             ),
             dict(
+                name='ec2allinstances',
+                label=_(u'EC2 - Across all instances'),
+                namespace='AWS/EC2',
+                resource=['InstanceId'],
+            ),
+            dict(
+                name='scalinggroupinstancemetrics',
+                label=_(u'EC2 - Instance metrics by scaling group'),
+                namespace='AWS/EC2',
+                resource=['AutoScalingGroupName'],
+            ),
+            dict(
                 name='ec2instancetype',
                 label=_(u'EC2 - Per instance type'),
                 namespace='AWS/EC2',
@@ -126,12 +132,6 @@ class CloudWatchMetricsJsonView(BaseView):
                 label=_(u'EC2 - Per image (requires detailed monitoring on AWS)'),
                 namespace='AWS/EC2',
                 resource=['ImageId'],
-            ),
-            dict(
-                name='ec2allinstances',
-                label=_(u'EC2 - Across all instances'),
-                namespace='AWS/EC2',
-                resource=['InstanceId'],
             ),
             dict(
                 name='elb',
