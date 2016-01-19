@@ -1,9 +1,9 @@
 angular.module('AlarmsComponents', [])
     .directive('alarmState', function () {
         var stateValues = {
-            'OK': 'ok',
-            'ALARM': 'alarm',
-            'INSUFFICIENT_DATA': 'insufficient data'
+            'OK': 'Ok',
+            'ALARM': 'Alarm',
+            'INSUFFICIENT_DATA': 'Insufficient data'
         };
         var stateClasses = {
             'OK': 'success',
@@ -47,5 +47,13 @@ angular.module('AlarmsComponents', [])
                     });
                 });
             }
+        };
+    })
+    .filter('titleCase', function () {
+        return function (input) {
+            input = input.replace('_', ' ').toLowerCase();
+            return input.replace(/^(\w)/, function (substr) {
+                return substr.toUpperCase();
+            });
         };
     });

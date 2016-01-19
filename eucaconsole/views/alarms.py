@@ -64,7 +64,9 @@ class CloudWatchAlarmsView(LandingPageView):
         self.filter_keys = ['name']
         # sort_keys are passed to sorting drop-down
         self.sort_keys = [
+            dict(key='state', name=_(u'State')),
             dict(key='name', name=_(u'Name')),
+            dict(key='metric', name=_(u'Metric')),
         ]
         self.render_dict = dict(
             filter_keys=self.filter_keys,

@@ -5,6 +5,11 @@
 .gridwrapper {
     .table {
         tr {
+            th {
+                &.alarm-actions {
+                    text-align: center;
+                }
+            }
             td {
                 &.id {
                     max-width: none;
@@ -34,12 +39,17 @@
     }
     
     .footer {
-        text-transform: capitalize;
-        &.alarm {
-            background-color: #F04124;
+        &.ok,
+        &.alarm,
+        &.insufficient-data {
+            text-transform: none;
         }
+
         &.ok {
             background-color: #008424;
+        }
+        &.alarm {
+            background-color: #F04124;
         }
     }
 }

@@ -68,8 +68,8 @@
                 </div>
             </div>
             <metal:block metal:fill-slot="tile_footer">
-            <div class="footer status" ng-class="{'alarm': item.state == 'ALARM'}">
-                {{ item.state.replace('_', ' ').toLowerCase() }}
+            <div class="footer status" ng-class="{'alarm': item.state == 'ALARM', 'insufficient-data': item.state == 'INSUFFICIENT_DATA', 'ok': item.state == 'OK'}">
+                {{ item.state | titleCase }}
             </div>
             </metal:block>
             <metal:block metal:fill-slot="tableview_headers">
@@ -77,8 +77,8 @@
                 <th i18n:translate="">State</th>
                 <th i18n:translate="">Alarm Name</th>
                 <th i18n:translate="">Threshold</th>
-                <th i18n:translate="">Alarm Actions</th>
-                <th i18n:translate="">Actions</th>
+                <th i18n:translate="" class="alarm-actions">Alarm Actions</th>
+                <th i18n:translate="" class="actions">Actions</th>
                 <!--! <th i18n:translate="" class="actions">Actions</th> -->
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
