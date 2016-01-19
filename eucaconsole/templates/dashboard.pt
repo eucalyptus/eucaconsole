@@ -107,8 +107,11 @@
                             <metal:block metal:use-macro="layout.global_macros['dashaction']" />
                             <div class="content">
                                 <a href="${request.route_path('cloudwatch_alarms')}">
-                                    <i tal:condition="alarms_triggered == 0" class="dash-no-alarms fa fa-bell-o fa-5x"></i>
-                                    <i tal:condition="alarms_triggered > 0" class="dasn-alarms fa fa-bell-o fa-5x"></i>
+                                    <span class="fa-stack fa-4x">
+                                        <i tal:condition="alarms_triggered == 0" class="dash-no-alarms fa fa-circle fa-stack-2x"></i>
+                                        <i tal:condition="alarms_triggered > 0" class="dash-alarms fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-bell fa-stack-1x fa-inverse"></i>
+                                    </span>
                                     <i class="icon"><em>
                                         <span id="alarms-count" ng-cloak="">${alarms_triggered}</span></em>
                                     </i>

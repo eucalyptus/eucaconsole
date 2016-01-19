@@ -52,11 +52,14 @@ $tile-row-height: 24px;
             font-weight: 500;
             margin: 0 0 0 0;
         }
+        i.fa-bell {
+            color: white !important;
+        }
         i.dash-no-alarms {
-            color: $euca-darkblue !important;
+            color: $hp-gray-65 !important;
         }
         i.dash-alarms {
-            color: red;
+            color: red !important;
         }
         .icon {  // Font icons
             position: absolute;
@@ -151,7 +154,7 @@ $tile-row-height: 24px;
 li#alarms {
     .tile {
         .content {
-            padding-top: 3rem;
+            padding-top: 1.6rem;
             width: 100%;
             text-align: center;
         }
