@@ -117,7 +117,7 @@ class CloudWatchMetricsJsonView(BaseView):
             ),
             dict(
                 name='ec2instancetype',
-                label=_(u'EC2 - Per instance type (requires detailed monitoring on AWS)'),
+                label=_(u'EC2 - Per instance type'),
                 namespace='AWS/EC2',
                 resource=['InstanceType'],
             ),
@@ -163,6 +163,8 @@ class CloudWatchMetricsJsonView(BaseView):
             items = self.get_items()
             metrics = []
             for cat in categories:
+                if cat['name'] == 'ec2instancetype' and self.request.session['cloud_type'] == 'aws':
+                    cat['label'] = cat['label'] + _(u'(requires detailed monitoring on AWS)')
                 namespace = cat['namespace']
                 if namespace:
                     tmp = [{
