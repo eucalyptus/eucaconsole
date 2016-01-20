@@ -169,7 +169,7 @@ class LaunchConfigsFiltersForm(BaseSecureForm):
         self.ec2_conn = ec2_conn
         self.ec2_choices_manager = ChoicesManager(conn=ec2_conn)
         self.autoscale_choices_manager = ChoicesManager(conn=autoscale_conn)
-        self.availability_zone.choices = self.get_availability_zone_choices(self.region)
+        self.availability_zone.choices = self.get_availability_zone_choices()
         self.instance_type.choices = self.ec2_choices_manager.instance_types(
             add_blank=False, cloud_type=self.cloud_type, add_description=False)
         self.root_device_type.choices = self.get_root_device_type_choices()
@@ -189,8 +189,8 @@ class LaunchConfigsFiltersForm(BaseSecureForm):
                 'options': self.get_options_from_choices(self.autoscale_choices_manager.scaling_groups(add_blank=False))},
         ]
 
-    def get_availability_zone_choices(self, region):
-        return self.get_options_from_choices(self.ec2_choices_manager.availability_zones(region, add_blank=False))
+    def get_availability_zone_choices(self):
+        return self.get_options_from_choices(self.ec2_choices_manager.availability_zones(self.region, add_blank=False))
 
     @staticmethod
     def get_root_device_type_choices():
