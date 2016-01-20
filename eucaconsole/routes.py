@@ -282,7 +282,7 @@ urls = [
     # Metrics Landing page
     Route(name='cloudwatch_metrics', pattern='/metrics'),
     Route(name='cloudwatch_metrics_json', pattern='/cloudwatch/metrics/json'),
-    Route(name='cloudwatch_metrics_expando_details', pattern='/cloudwatch/metrics/{id}/json'),
+    Route(name='cloudwatch_resource_names_json', pattern='/cloudwatch/resourcenames/json'),
 
     # Accounts #####
     Route(name='accounts', pattern='/accounts'),

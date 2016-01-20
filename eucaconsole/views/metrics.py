@@ -158,7 +158,7 @@ class CloudWatchMetricsJsonView(BaseView):
                 resource=None,
             ),
         ]
-        STD_NAMESPACES = ['AWS/EC2', 'AWS/EBS', 'AWS/ELB', 'AWS/AutoScaling']
+        STD_NAMESPACES = ['AWS/EC2', 'AWS/EBS', 'AWS/ELB', 'AWS/AutoScaling', 'AWS/S3']
         with boto_error_handler(self.request):
             items = self.get_items()
             metrics = []
@@ -224,6 +224,25 @@ class CloudWatchMetricsJsonView(BaseView):
 
             # import logging; logging.info(json.dumps(metrics, indent=2))
             return dict(results=metrics)
+
+    @view_config(route_name='cloudwatch_resource_names_json', renderer='json', request_method='POST')
+    def cloudwatch_metrics_json(self):
+        ids = self.request.params.getall('id')
+        res_type - self.request.param.get('restype')
+        names = {}
+        if res_type == 'instance':
+            instances = self.get_connection().get_only_instances()
+            for instance in instances:
+                names[instance.id] = TaggedItemView.get_display_name(instance)
+        elif res_type == 'image':
+            images = self.get_connection().get_all_images()
+            for image in images:
+                names[image.id] = TaggedItemView.get_display_name(image)
+        elif res_type == 'volume':
+            volumes = self.get_connection().get_all_volumes()
+            for volume in volumes:
+                names[volume.id] = TaggedItemView.get_display_name(volume)
+        return dict(results=names)
 
     def get_items(self):
         conn = self.get_connection(conn_type='cloudwatch')
