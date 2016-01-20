@@ -122,8 +122,7 @@ class CloudWatchAlarmCreateForm(BaseSecureForm):
         self.elb_choices_manager = ChoicesManager(conn=elb_conn)
         self.set_initial_data()
         self.set_error_messages()
-        region = request.session.get('region')
-        self.set_choices(region)
+        self.set_choices(self.region)
         self.set_help_text()
 
     def set_initial_data(self):
