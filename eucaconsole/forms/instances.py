@@ -392,7 +392,7 @@ class InstancesFiltersForm(BaseSecureForm):
         self.autoscale_choices_manager = ChoicesManager(conn=autoscale_conn)
         self.iam_choices_manager = ChoicesManager(conn=iam_conn)
         self.vpc_choices_manager = ChoicesManager(conn=vpc_conn)
-        self.availability_zone.choices = self.get_availability_zone_choices(self.region)
+        self.availability_zone.choices = self.get_availability_zone_choices()
         self.state.choices = self.get_status_choices()
         self.instance_type.choices = self.get_instance_type_choices()
         self.root_device_type.choices = self.get_root_device_type_choices()
@@ -412,7 +412,7 @@ class InstancesFiltersForm(BaseSecureForm):
         self.facets = [
             {'name': 'status', 'label': self.state.label.text, 'options': self.get_status_choices()},
             {'name': 'availability_zone', 'label': self.availability_zone.label.text,
-                'options': self.get_availability_zone_choices(region)},
+                'options': self.get_availability_zone_choices()},
             {'name': 'instance_type', 'label': self.instance_type.label.text,
                 'options': self.get_instance_type_choices()},
             {'name': 'root_device_type', 'label': self.root_device_type.label.text,
@@ -442,8 +442,8 @@ class InstancesFiltersForm(BaseSecureForm):
                     'options': self.get_options_from_choices(vpc_choices)},
             )
 
-    def get_availability_zone_choices(self, region):
-        return self.get_options_from_choices(self.ec2_choices_manager.availability_zones(region, add_blank=False))
+    def get_availability_zone_choices(self):
+        return self.get_options_from_choices(self.ec2_choices_manager.availability_zones(self.region, add_blank=False))
 
     def get_instance_type_choices(self):
         return self.get_options_from_choices(self.ec2_choices_manager.instance_types(
