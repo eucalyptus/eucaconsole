@@ -6,7 +6,7 @@
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/metrics.css')}" />
 </head>
 
-<div metal:fill-slot="main_content" ng-app="MetricsPage" ng-controller="MetricsCtrl as metricsCtrl" ng-init="metricsCtrl.initPage('${search_facets}')">
+<div metal:fill-slot="main_content" ng-app="MetricsPage" ng-controller="MetricsCtrl as metricsCtrl" ng-init="metricsCtrl.initPage('${search_facets}', '${json_item_names_endpoint}')">
     <div class="row" id="contentwrap" ng-controller="ItemsCtrl"
              ng-init="initController('metrics', '${initial_sort_key}', '${json_items_endpoint}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
@@ -86,8 +86,8 @@
                             <div class="content">
                                 <div>
                                     <span ng-repeat="res in item.resources">
-                                        <a ng-if="res.res_url" ng-href="{{ res.res_url }}">{{ res.res_id }}</a>
-                                        <span ng-if="res.res_url==null">{{ res.res_id }}</span>
+                                        <a ng-if="res.res_url" ng-href="{{ res.res_url }}">{{ res.res_name }}</a>
+                                        <span ng-if="res.res_url==null">{{ res.res_name }}</span>
                                         <span ng-hide="$last">,</span> 
                                     </span>
                                 </div>
@@ -125,8 +125,8 @@
                                     <td ng-if="item.heading != true">
                                         <div ng-repeat="res in item.resources">
                                             {{ res.res_type }}:&nbsp;
-                                            <a ng-if="res.res_url" ng-href="{{ res.res_url }}">{{ res.res_id }}</a>
-                                            <span ng-if="res.res_url==null">{{ res.res_id }}</span>
+                                            <a ng-if="res.res_url" ng-href="{{ res.res_url }}">{{ res.res_name }}</a>
+                                            <span ng-if="res.res_url==null">{{ res.res_name }}</span>
                                         </div>
                                         <span ng-if="item.resources.length == 0" i18n:translate="">
                                             All instances

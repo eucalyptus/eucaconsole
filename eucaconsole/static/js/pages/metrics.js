@@ -24,14 +24,16 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
             }
         };
     })
-    .controller('MetricsCtrl', function ($scope, $timeout, eucaUnescapeJson) {
+    .controller('MetricsCtrl', function ($scope, $http, $timeout, eucaUnescapeJson) {
         var vm = this;
         var emptyFacets = [];
         var categoryIndex = {};
         var headResources;
         var headMetricName;
-        vm.initPage = function(facets) {
+        var itemNamesUrl;
+        vm.initPage = function(facets, itemNamesEndpoint) {
             emptyFacets = JSON.parse(eucaUnescapeJson(facets));
+            itemNamesUrl = itemNamesEndpoint;
             enableInfiniteScroll();
         };
         function enableInfiniteScroll() {
@@ -42,6 +44,28 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
                 }
             });
         }
+        function fetchResNames(ids, res_type) {
+            var data = "csrf_token="+$('#csrf_token').val()+"&restype="+res_type;
+            ids.forEach(function(id) {
+                data = data + "&id="+id;
+            });
+            $http({method:'POST', url:itemNamesUrl, data:data,
+                   headers: {'Content-Type': 'application/x-www-form-urlencoded'}}
+            ).then( function success(oData) {
+                var results = oData.data ? oData.data.results : [];
+                vm.items.forEach(function(item) {
+                    if (item.resources !== undefined) {
+                        item.resources.forEach(function(res) {
+                            if (results[res.res_id] !== undefined) {
+                                res.res_name = results[res.res_id];
+                            }
+                        });
+                    }
+                });
+            }, function error(errData) {
+                eucaErrorHandler(errData.statusText, errData.status);
+            });
+        };
         $scope.$on('itemsLoaded', function($event, items) {
             vm.items = items;
             // clear previous filters
@@ -82,6 +106,24 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
                     }
                 });
             });
+            instances = resource_facet.opt_list.filter(function(res) {
+                return res.substring(0, 2) == "i-";
+            });
+            if (instances.length > 0) {
+                fetchResNames(instances, 'instance');
+            }
+            images = resource_facet.opt_list.filter(function(res) {
+                return res.substring(0, 4) == "emi-";
+            });
+            if (images.length > 0) {
+                fetchResNames(images, 'image');
+            }
+            volumes = resource_facet.opt_list.filter(function(res) {
+                return res.substring(0, 4) == "vol-";
+            });
+            if (volumes.length > 0) {
+                fetchResNames(volumes, 'volume');
+            }
             // prune those lists since we have facet options now
             metric_facet.opt_list = undefined;
             resource_facet.opt_list = undefined;

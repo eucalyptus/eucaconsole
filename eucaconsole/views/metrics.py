@@ -37,7 +37,7 @@ from ..constants.cloudwatch import (
     DURATION_GRANULARITY_CHOICES_MAPPING, METRIC_TYPES
 )
 from ..i18n import _
-from ..views import LandingPageView, BaseView
+from ..views import LandingPageView, BaseView, TaggedItemView
 from . import boto_error_handler
 
 
@@ -68,6 +68,7 @@ class CloudWatchMetricsView(LandingPageView):
             prefix=self.prefix,
             initial_sort_key=self.initial_sort_key,
             json_items_endpoint=self.request.route_path('cloudwatch_metrics_json'),
+            json_item_names_endpoint=self.request.route_path('cloudwatch_resource_names_json'),
             statistic_choices=STATISTIC_CHOICES,
             duration_choices=MONITORING_DURATION_CHOICES,
             chart_options_json=self.get_chart_options_json()
@@ -206,6 +207,7 @@ class CloudWatchMetricsJsonView(BaseView):
                         unique_id=metric[1] + '-' + '-'.join([dim[1][0] for dim in metric_dims]),
                         resources=[dict(
                             res_id=dim[1][0],
+                            res_name=dim[1][0],
                             res_type=dim[0],
                             res_url=self.get_url_for_resource(self.request, dim[0], dim[1][0])
                         ) for dim in metric_dims],
@@ -226,20 +228,21 @@ class CloudWatchMetricsJsonView(BaseView):
             return dict(results=metrics)
 
     @view_config(route_name='cloudwatch_resource_names_json', renderer='json', request_method='POST')
-    def cloudwatch_metrics_json(self):
+    def cloudwatch_resource_names_json(self):
         ids = self.request.params.getall('id')
-        res_type - self.request.param.get('restype')
+        res_type = self.request.params.get('restype')
         names = {}
         if res_type == 'instance':
-            instances = self.get_connection().get_only_instances()
+            instances = self.get_connection().get_only_instances(ids)
             for instance in instances:
                 names[instance.id] = TaggedItemView.get_display_name(instance)
         elif res_type == 'image':
-            images = self.get_connection().get_all_images()
+            region = self.request.session.get('region')
+            images = self.get_images(self.get_connection(), [], [], region)
             for image in images:
-                names[image.id] = TaggedItemView.get_display_name(image)
+                names[image.id] = image.name
         elif res_type == 'volume':
-            volumes = self.get_connection().get_all_volumes()
+            volumes = self.get_connection().get_all_volumes(ids)
             for volume in volumes:
                 names[volume.id] = TaggedItemView.get_display_name(volume)
         return dict(results=names)
