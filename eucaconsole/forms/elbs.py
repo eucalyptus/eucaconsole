@@ -316,7 +316,6 @@ class ELBsFiltersForm(BaseSecureForm):
         self.request = request
         self.cloud_type = cloud_type
         self.vpc_conn = vpc_conn
-        region = request.session.get('region')
         self.facets = []
         if is_vpc_supported:
             vpc_choices_manager = ChoicesManager(conn=self.vpc_conn)
@@ -328,7 +327,7 @@ class ELBsFiltersForm(BaseSecureForm):
             ))
         else:
             ec2_choices_manager = ChoicesManager(conn=ec2_conn)
-            self.availability_zones.choices = ec2_choices_manager.availability_zones(region, add_blank=False)
+            self.availability_zones.choices = ec2_choices_manager.availability_zones(self.region, add_blank=False)
             self.facets.append(dict(
                 name='availability_zones',
                 label=self.availability_zones.label.text,
