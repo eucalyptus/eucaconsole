@@ -148,7 +148,7 @@ i18n_extras = [
 
 dev_extras = [
     'gevent',
-    'moto',
+    'moto==0.4.19',
     'pylibmc',
     'pyramid_debugtoolbar',
     'waitress',
