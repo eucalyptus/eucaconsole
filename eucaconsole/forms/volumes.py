@@ -71,8 +71,7 @@ class VolumeForm(BaseSecureForm):
         self.size.error_msg = self.size_error_msg
         self.zone.error_msg = self.zone_error_msg
         self.choices_manager = ChoicesManager(conn=conn)
-        region = request.session.get('region')
-        self.set_choices(region)
+        self.set_choices(self.region)
 
         if volume is not None:
             self.name.data = volume.tags.get('Name', '')
@@ -209,11 +208,10 @@ class VolumesFiltersForm(BaseSecureForm):
         super(VolumesFiltersForm, self).__init__(request, **kwargs)
         self.request = request
         self.choices_manager = ChoicesManager(conn=conn)
-        region = request.session.get('region')
-        self.zone.choices = self.get_availability_zone_choices(region)
+        self.zone.choices = self.get_availability_zone_choices(self.region)
         self.status.choices = self.get_status_choices()
         self.facets = [
-            {'name': 'zone', 'label': self.zone.label.text, 'options': self.get_availability_zone_choices(region)},
+            {'name': 'zone', 'label': self.zone.label.text, 'options': self.get_availability_zone_choices(self.region)},
             {'name': 'status', 'label': self.status.label.text, 'options': self.get_status_choices()},
         ]
 
