@@ -171,8 +171,7 @@ class LaunchInstanceForm(BaseSecureForm):
 
     def set_choices(self, request):
         self.instance_type.choices = self.choices_manager.instance_types(cloud_type=self.cloud_type, add_blank=False)
-        region = request.session.get('region')
-        self.zone.choices = self.get_availability_zone_choices(region)
+        self.zone.choices = self.get_availability_zone_choices(self.region)
         if self.cloud_type == 'euca' and self.is_vpc_supported:
             self.vpc_network.choices = self.vpc_choices_manager.vpc_networks(add_blank=False)
         else:
