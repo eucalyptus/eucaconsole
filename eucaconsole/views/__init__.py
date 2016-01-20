@@ -107,7 +107,7 @@ class BaseView(object):
     """Base class for all views"""
     def __init__(self, request, **kwargs):
         self.request = request
-        self.region = request.session.get('region') or 'euca'
+        self.region = request.session.get('region')
         self.access_key = request.session.get('access_id')
         self.secret_key = request.session.get('secret_key')
         self.cloud_type = request.session.get('cloud_type')

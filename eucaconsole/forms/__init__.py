@@ -70,7 +70,7 @@ class NgNonBindableOptionSelect(Select):
 class BaseSecureForm(SecureForm):
     def __init__(self, request, **kwargs):
         self.request = request
-        self.region = request.session.get('region') or 'euca'
+        self.region = request.session.get('region')
         super(BaseSecureForm, self).__init__(**kwargs)
         if hasattr(request, 'session'):
             self.cloud_type = request.session.get('cloud_type', 'euca')
