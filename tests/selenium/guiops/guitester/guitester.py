@@ -9,7 +9,7 @@ from dialogs.keypair_dialogs import CreateKeypairDialog, DeleteKeypairModal, Imp
 
 class GuiTester(SeleniumApi):
 
-    def __init__(self, console_url, webdriver_url=None, sauce=False, browser=None, version=None, platform=None):
+    def __init__(self, console_url, webdriver_url=None, chrome=True, sauce=False, firefox=False, browser=None, version=None, platform=None):
         """
         Initiates a  tester object. Initiates a copy of the browser. Opens console_url.
         :param webdriver_url:
@@ -31,7 +31,7 @@ class GuiTester(SeleniumApi):
             desired_capabilities['name'] = 'Testing ' + browser + ' ' + version + ' on ' + platform
             self.driver = webdriver.Remote(webdriver_url, desired_capabilities=desired_capabilities)
 
-        if sauce is False:
+        if firefox is True:
             ffprofile = webdriver.FirefoxProfile()
             ffprofile.set_preference("browser.download.folderList",2)
             ffprofile.set_preference("browser.download.manager.showWhenStarting", False)
@@ -48,10 +48,18 @@ class GuiTester(SeleniumApi):
                 self.driver = webdriver.Remote(webdriver_url, webdriver.DesiredCapabilities.FIREFOX, browser_profile=ffprofile)
                 print "Using remote webdriver " + webdriver_url
             print "Setting webdriver profile"
-        self.driver.implicitly_wait(60)
-#        self.driver.maximize_window()
-        self.driver.set_window_size(1024, 768)
-        self.driver.get(console_url)
+            self.driver.implicitly_wait(60)
+    #        self.driver.maximize_window()
+            self.driver.set_window_size(1024, 768)
+            self.driver.get(console_url)
+
+        if chrome is True:
+
+            chrome_capabilities = webdriver.DesiredCapabilities.CHROME
+            chrome_profile = webdriver.Chrome
+
+            self.driver = webdriver.Remote(webdriver_url, desired_capabilities=chrome_capabilities, browser_profile=chrome_profile)
+
 
     def login(self, account, username, password):
         """

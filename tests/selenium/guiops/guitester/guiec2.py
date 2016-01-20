@@ -38,8 +38,8 @@ logger.setLevel(logging.WARNING)
 
 class GuiEC2(GuiTester):
 
-    def __init__(self, console_url, sauce=False, webdriver_url=None, browser=None, version=None, platform=None):
-        super(GuiEC2, self).__init__(console_url, webdriver_url=webdriver_url, sauce=sauce,
+    def __init__(self, console_url, chrome =True, firefox=False, sauce=False, webdriver_url=None, browser=None, version=None, platform=None):
+        super(GuiEC2, self).__init__(console_url, webdriver_url=webdriver_url, chrome=chrome, firefox=firefox, sauce=sauce,
                                      browser=browser, version=version, platform=platform)
 
     def set_implicit_wait(self, time_to_wait):

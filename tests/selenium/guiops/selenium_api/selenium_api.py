@@ -22,7 +22,7 @@ class SeleniumApi(object):
 
         :param driver: webdriver
         """
-        assert isinstance(driver, webdriver.Firefox)
+        assert isinstance(driver, webdriver)
         self.driver = driver
 
     retry = 2

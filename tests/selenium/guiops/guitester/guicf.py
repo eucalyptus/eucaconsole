@@ -9,8 +9,8 @@ from pages.stacks.stacksdetail import StackDetailPage
 
 class GuiCF(GuiTester):
 
-    def __init__(self, console_url, sauce=False, webdriver_url=None, browser=None, version=None, platform=None):
-        super(GuiCF, self).__init__(console_url, webdriver_url=webdriver_url, sauce=sauce, browser=browser, version=version, platform=platform)
+    def __init__(self, console_url,  chrome =True, firefox=False, sauce=False, webdriver_url=None, browser=None, version=None, platform=None):
+        super(GuiCF, self).__init__(console_url, webdriver_url=webdriver_url, chrome=chrome, firefox=firefox, sauce=sauce, browser=browser, version=version, platform=platform)
 
     def login(self, account, username, password):
         """

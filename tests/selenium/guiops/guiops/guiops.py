@@ -13,9 +13,9 @@ class GuiOps(GuiEC2, GuiCF, GuiIAM, GuiASG, GuiS3, GuiELB):
 
     _default_chars = string.ascii_lowercase + string.digits
 
-    def __init__(self, console_url, sauce=False, webdriver_url=None,
+    def __init__(self, console_url, sauce=False, chrome=True, firefox=False, webdriver_url=None,
                  browser=None, version=None, platform=None):
-        super(GuiOps, self).__init__(console_url, webdriver_url=webdriver_url,
+        super(GuiOps, self).__init__(console_url, webdriver_url=webdriver_url, chrome=chrome, firefox=firefox,
                                      sauce=sauce, browser=browser,
                                      version=version, platform=platform)
         self.console_url = console_url
