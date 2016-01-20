@@ -169,8 +169,7 @@ class LaunchConfigsFiltersForm(BaseSecureForm):
         self.ec2_conn = ec2_conn
         self.ec2_choices_manager = ChoicesManager(conn=ec2_conn)
         self.autoscale_choices_manager = ChoicesManager(conn=autoscale_conn)
-        region = request.session.get('region')
-        self.availability_zone.choices = self.get_availability_zone_choices(region)
+        self.availability_zone.choices = self.get_availability_zone_choices(self.region)
         self.instance_type.choices = self.ec2_choices_manager.instance_types(
             add_blank=False, cloud_type=self.cloud_type, add_description=False)
         self.root_device_type.choices = self.get_root_device_type_choices()

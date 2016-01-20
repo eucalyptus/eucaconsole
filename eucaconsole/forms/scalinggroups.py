@@ -412,8 +412,7 @@ class ScalingGroupsFiltersForm(BaseSecureForm):
         self.autoscale_choices_manager = ChoicesManager(conn=autoscale_conn)
         self.vpc_choices_manager = ChoicesManager(conn=vpc_conn)
         self.launch_config_name.choices = self.autoscale_choices_manager.launch_configs(add_blank=False)
-        region = request.session.get('region')
-        self.availability_zones.choices = self.ec2_choices_manager.availability_zones(region, add_blank=False)
+        self.availability_zones.choices = self.ec2_choices_manager.availability_zones(self.region, add_blank=False)
         self.vpc_zone_identifier.choices = self.vpc_choices_manager.vpc_subnets(add_blank=False)
         self.cloud_type = request.session.get('cloud_type', 'euca')
         if self.cloud_type == 'aws':
