@@ -19,7 +19,7 @@ class GuiTester(SeleniumApi):
         :param password:
         """
 
-        if sauce is True:
+        if sauce:
             if browser == "ie":
                 desired_capabilities = webdriver.DesiredCapabilities.INTERNETEXPLORER
             elif browser == "chrome":
@@ -31,7 +31,7 @@ class GuiTester(SeleniumApi):
             desired_capabilities['name'] = 'Testing ' + browser + ' ' + version + ' on ' + platform
             self.driver = webdriver.Remote(webdriver_url, desired_capabilities=desired_capabilities)
 
-        if firefox is True:
+        if firefox:
             ffprofile = webdriver.FirefoxProfile()
             ffprofile.set_preference("browser.download.folderList",2)
             ffprofile.set_preference("browser.download.manager.showWhenStarting", False)
@@ -49,7 +49,7 @@ class GuiTester(SeleniumApi):
                 print "Using remote webdriver " + webdriver_url
             print "Setting webdriver profile"
 
-        if chrome is True:
+        if chrome:
 
             chrome_capabilities = webdriver.DesiredCapabilities.CHROME
 

@@ -6,6 +6,8 @@ import logging, traceback
 
 class Keypair_operations_sequence(GuiOps):
 
+    #keypair = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDI1zUCc8AZW+OE3LQxXild alicehubenko@Alices-MacBook-Pro.local"
+
     keypair = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDI1x6tEjkBQCCP0ssF69vAgP2xg+N9ScoTrqRqyl5w4qEgsV/AppfHHYRKYr0N/tTyG4/" \
                   "z1XGNrB2SaslnRpgEOsvMZldlOnqsUujL2fgoEg+/gB92+1JhZgTjU8nL5j5BFkVTh93nSHtXHdzYl7SjlXrv26ZbyuDwJmI+s6bJQk5noJ4Q4g" \
                   "7N/0y9pHRvezyhgxkyX7PQoA9WJm8SqlakyhMYa0j/baMhb/ehSI0VvwNodmcaWaS6Z2F4rZS4C2DmCUDXYy/1+0tiRTjHjlPbqRKCVKam8ImWy" \
@@ -22,19 +24,21 @@ class Keypair_operations_sequence(GuiOps):
         self.browser = parser.parse_options()['browser']
         self.version = parser.parse_options()['version']
         self.platform = parser.parse_options()['platform']
-        self.tester = GuiOps(console_url=self.console_url,  chrome =True, webdriver_url=self.webdriver_url, sauce=self.sauce, browser=self.browser, version=self.version, platform=self.platform)
+        self.firefox = parser.parse_options()['firefox']
+        self.chrome = parser.parse_options()['chrome']
+        self.tester = GuiOps(console_url=self.console_url, chrome =True, firefox=False, webdriver_url=self.webdriver_url, sauce=self.sauce, browser=self.browser, version=self.version, platform=self.platform)
         logging.basicConfig(format='%(asctime)s %(message)s')
 
 
     def keypair_ops_test(self):
 
-        keypair1_name=self.id_generator()+"-key"
+        #keypair1_name=self.id_generator()+"-key"
         self.tester.login(self.account, self.user, self.password)
-        self.tester.create_keypair_from_keypair_view_page(keypair1_name)
-        self.tester.delete_keypair_from_detail_page(keypair1_name)
-        keypair2_name=self.id_generator()+"-key"
-        self.tester.create_keypair_from_dashboard(keypair2_name)
-        self.tester.delete_keypair_from_view_page(keypair2_name)
+        #self.tester.create_keypair_from_keypair_view_page(keypair1_name)
+        #self.tester.delete_keypair_from_detail_page(keypair1_name)
+        #keypair2_name=self.id_generator()+"-key"
+        #self.tester.create_keypair_from_dashboard(keypair2_name)
+        #self.tester.delete_keypair_from_view_page(keypair2_name)
         keypair3_name=self.id_generator()+"-key"
         self.tester.import_keypair(self.keypair, keypair3_name)
         self.tester.delete_keypair_from_detail_page(keypair3_name)

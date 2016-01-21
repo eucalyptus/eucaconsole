@@ -13,6 +13,8 @@ class Option_parser(object):
         parser.add_argument('--version', type=str, help='Browser version for SuceLabs Testing, can be a number')
         parser.add_argument('--platform', type=str, help='Platform for SuceLabs Testing, can be "Windows XP", "Windows 7", "Windows 8", "Windows 8.1", "Linux" etc.')
         parser.add_argument('-s', '--sauce', dest='sauce', action='store_true', help='Use SauceLabs webdriver')
+        parser.add_argument('-k', '--chrome', dest='chrome', action='store_true', help='Use this to test with chrome remote webdriver')
+        parser.add_argument('-f', '--firefox',  dest='firefox', action='store_true', help='Use this to test with firefox remote webdriver')
         parser.set_defaults(sauce=False)
         args = vars(parser.parse_args())
         return args

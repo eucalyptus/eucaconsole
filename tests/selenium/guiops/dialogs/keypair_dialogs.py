@@ -1,4 +1,5 @@
 from pages.basepage import BasePage
+import time
 
 class CreateKeypairDialog(BasePage):
 
@@ -25,6 +26,7 @@ class ImportKeypairDialog(BasePage):
     def import_keypair(self, keypair, keypair_name):
         self.tester.send_keys_by_id(self._keypair_name_field_id, keypair_name)
         self.tester.send_keys_by_id(self._ssh_key_contents_field_id, keypair)
+        time.sleep(30)
         self.tester.wait_for_clickable_by_css(self._import_keypair_submit_button_css)
         self.tester.click_element_by_css(self._import_keypair_submit_button_css)
 
