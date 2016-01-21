@@ -68,10 +68,9 @@
                 <div tal:condition="layout.cloud_type == 'euca' and not monitoring_enabled">
                     <p i18n:translate="">Monitoring is currently turned off for this instance.</p>
                     <p>
-                        <a href="" ng-click="chartsCtrl.submitMonitoringForm()" i18n:translate="">
-                            Turn on monitoring
-                        </a>
-                        <span i18n:translate="">to view metric data.</span>
+                        <button ng-click="chartsCtrl.submitMonitoringForm()" i18n:translate="">
+                            Enable Monitoring for this Instance
+                        </button>
                     </p>
                 </div>
                 <ul class="small-block-grid-1 medium-block-grid-2 large-block-grid-3" tal:condition="monitoring_enabled">
@@ -90,7 +89,7 @@
                             <div class="empty-message">{{ chartsCtrl.emptyMessages[chart.metric] }}</div>
                         </div>
                         <svg ng-show="!chartsCtrl.emptyMessages[chart.metric]"
-                             cloudwatch-chart="" id="cwchart-{{ chart.metric }}" class="cwchart"
+                             cloudwatch-chart="" id="cwchart-{{ chart.metric }}-{{ chart.statistic }}" class="cwchart"
                              ids="${instance.id}" idtype="InstanceId" metric="{{ chart.metric }}"
                              duration="{{ chartsCtrl.duration }}" unit="{{ chart.unit }}" namespace="EC2"
                              statistic="Average" empty="{{ chart.empty_msg }}">

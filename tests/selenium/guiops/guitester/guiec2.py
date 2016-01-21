@@ -529,6 +529,26 @@ class GuiEC2(GuiTester):
         """
         VolumeLanding(self).verify_volume_id_by_sort_position(volume_id, position=position)
 
+    def verify_charts_on_volume_monitoring_page(self, volume_id):
+        """
+        Volume Monitoring page should display charts when attached to an instance
+        :param volume_id:
+        """
+        BasePage(self).goto_volumes_view_via_menu()
+        VolumeLanding(self).goto_volume_detail_page_via_actions(volume_id)
+        VolumeDetailPage(self).goto_monitoring_tab(volume_id)
+        VolumeDetailPage(self).verify_charts_on_volume_monitoring_page(volume_id)
+
+    def verify_attach_notice_on_volume_monitoring_page(self, volume_id):
+        """
+        Volume Monitoring page should display notice to attach volume to instance when unattached
+        :param volume_id:
+        """
+        BasePage(self).goto_volumes_view_via_menu()
+        VolumeLanding(self).goto_volume_detail_page_via_actions(volume_id)
+        VolumeDetailPage(self).goto_monitoring_tab(volume_id)
+        VolumeDetailPage(self).verify_attach_notice_on_volume_monitoring_page(volume_id)
+
     def create_snapshot_on_volumes_view_page(self, volume_id, snapshot_name=None, snapshot_description=None, timeout_in_seconds=240):
         """
         Navigates to volumes view page and creates a snapshot of a volume.

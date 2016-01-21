@@ -67,6 +67,12 @@ angular.module('VolumePage', ['TagEditor', 'EucaConsoleUtils'])
             $('#attach-volume-modal').on('open.fndtn.reveal', function() {
                 $('#instance_id').chosen({'width': '75%', search_contains: true});
             });
+            // Open attach modal based on URL params
+            if ($scope.urlParams.attachmodal) {
+                $timeout(function() {
+                    $scope.openModalById('attach-volume-modal');
+                }, 300 );
+            }
         };
         $scope.initAvailZoneChoice = function () {
             var availZoneParam = $scope.urlParams.avail_zone;

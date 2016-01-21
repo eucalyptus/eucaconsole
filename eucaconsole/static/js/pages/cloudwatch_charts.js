@@ -25,7 +25,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
             }, function error (errorResponse) {
                 eucaHandleError(
                     errorResponse.statusText,
-                    errorResponse.statuse);
+                    errorResponse.status);
             });
         },
 
@@ -36,10 +36,10 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
                 params: params
             }).then(function success (oData) {
                 return oData.data.results;
-            }, function error (eucaHandleError) {
+            }, function error (errorResponse) {
                 eucaHandleError(
                     errorResponse.statusText,
-                    errorResponse.statuse);
+                    errorResponse.status);
             });
         }
     };
@@ -67,12 +67,18 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
                 return d3.time.format(timeFormat)(new Date(d));
             });
 
-            if(params.unit === 'Percent') {
+            // Always use zero baseline
+            chart.forceY([0, 10]);
+
+            if(params.unit === 'Percent' || params.metric === 'VolumeIdleTime') {
                 chart.forceY([0, 100]);
             }
 
-            if(params.baseZero) {
-                chart.forceY([0, 10]);
+            // Adjust precision
+            if (params.unit === 'Kilobytes') {
+                yFormat = '.1f';
+            } else if (params.unit === 'Megabytes' || params.unit === 'Gigabytes') {
+                yFormat = '.2f';
             }
 
             if(params.preciseMetrics) {
@@ -85,8 +91,18 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
                 yFormat = '.2f';
             }
 
-            chart.yAxis.axisLabel(params.unit)
-                .tickFormat(d3.format(yFormat));
+            if (params.maxValue && params.maxValue < 10) {
+                chart.forceY([0, params.maxValue]);
+                yFormat = '0.2f';
+            }
+            if (['VolumeReadBytes', 'VolumeWriteBytes', 'VolumeReadOps', 'VolumeWriteOps'].indexOf(params.metric) !== -1) {
+                yFormat = '.1f';
+                if (params.maxValue && params.maxValue < 5) {
+                    yFormat = '.3f';
+                }
+            }
+
+            chart.yAxis.axisLabel(params.unit).tickFormat(d3.format(yFormat));
 
             var s = d3.select(target)
                 .datum(results)
@@ -122,9 +138,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
         },
 
         resetChart: function (target) {
-            d3.select(target)
-                .selectAll('svg > *')
-                .remove();
+            d3.select(target).selectAll('svg > *').remove();
         }
     };
 })
@@ -148,12 +162,6 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
     vm.refreshCharts = refreshCharts;
     vm.refreshLargeChart = refreshLargeChart;
     vm.emptyChartCount = 0;
-    vm.forceZeroBaselineMetrics = [ // Anchor chart to zero for the following metrics
-        'NetworkIn', 'NetworkOut', 'DiskReadBytes', 'DiskReadOps',
-        'DiskWriteBytes', 'DiskWriteOps', 'RequestCount', 'Latency', 'HealthyHostCount', 'UnHealthyHostCount',
-        'HTTPCode_ELB_4XX', 'HTTPCode_ELB_5XX', 'HTTPCode_Backend_2XX', 'HTTPCode_Backend_3XX',
-        'HTTPCode_Backend_4XX', 'HTTPCode_Backend_5XX'
-    ];
     vm.displayZeroChartMetrics = [  // Display a zero chart rather than an empty message for the following metrics
         'HTTPCode_ELB_4XX', 'HTTPCode_ELB_5XX', 'HTTPCode_Backend_2XX', 'HTTPCode_Backend_3XX',
         'HTTPCode_Backend_4XX', 'HTTPCode_Backend_5XX'
@@ -225,6 +233,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
             'duration': '@duration',
             'unit': '@unit',
             'statistic': '@statistic',
+            'title': '@title',
             'empty': '@empty'
         },
         link: linkFunc,
@@ -273,6 +282,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
         CloudwatchAPI.getChartData(params).then(function(oData) {
             scope.chartLoading = false;
             var results = oData ? oData.results : '';
+            var maxValue = oData ? oData.max_value : 0;
             var displayZeroChart = parentCtrl.displayZeroChartMetrics.indexOf(scope.metric) !== -1;
             var emptyResultsCount = 0;
             var target = largeChart ? $('#large-chart').get(0) : scope.target;
@@ -301,7 +311,6 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
                 }];
             }
 
-
             CloudwatchAPI.getAlarmsForMetric(scope.metric, {
                 metric_name: scope.metric,
                 namespace: scope.namespace,
@@ -310,13 +319,12 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
             }).then(function (alarms) {
                 var chart = ChartService.renderChart(target, results, {
                     unit: oData.unit || scope.unit,
-                    baseZero: parentCtrl.forceZeroBaselineMetrics.indexOf(scope.metric) !== -1,
                     preciseMetrics: preciseFormatterMetrics.indexOf(scope.metric) !== -1,
+                    maxValue: maxValue,
                     alarms: alarms
                 });
                 nv.utils.windowResize(chart.update);
             });
-
             parentCtrl.largeChartLoading = false;
         }, function (oData, status) {
             eucaHandleError(oData, status);
@@ -347,7 +355,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
                 'largeChart': true
             };
             parentCtrl.largeChartMetric = attrs.metric;
-            parentCtrl.selectedChartTitle = parentCtrl.metricTitleMapping[attrs.metric];
+            parentCtrl.selectedChartTitle = scope.title || parentCtrl.metricTitleMapping[attrs.metric];
             parentCtrl.largeChartDuration = parentCtrl.duration;
             parentCtrl.largeChartStatistic = attrs.statistic || 'Average';
 
