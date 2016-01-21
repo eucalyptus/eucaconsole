@@ -87,20 +87,23 @@ class CloudWatchMetricsView(LandingPageView):
         }))
 
 
+RESOURCE_LABELS = {
+    'AutoScalingGroupName': _(u'Auto scaling group'),
+    'InstanceId': _(u'Instance'),
+    'InstanceType': _(u'Instance type'),
+    'ImageId': _(u'Image'),
+    'VolumeId': _(u'Volume'),
+    'LoadBalancerName': _(u'Load balancer'),
+    'AvailabilityZone': _(u'Availability zone'),
+}
+
+STD_NAMESPACES = ['AWS/EC2', 'AWS/EBS', 'AWS/ELB', 'AWS/AutoScaling', 'AWS/S3']
+
+
 class CloudWatchMetricsJsonView(BaseView):
     """JSON response for CloudWatch Metrics landing page et. al."""
     @view_config(route_name='cloudwatch_metrics_json', renderer='json', request_method='POST')
     def cloudwatch_metrics_json(self):
-        RESOURCE_LABELS = {
-            'AutoScalingGroupName': _(u'Auto scaling group'),
-            'InstanceId': _(u'Instance'),
-            'InstanceType': _(u'Instance type'),
-            'ImageId': _(u'Image'),
-            'VolumeId': _(u'Volume'),
-            'LoadBalancerName': _(u'Load balancer'),
-            'AvailabilityZone': _(u'Availability zone'),
-        }
-        STD_NAMESPACES = ['AWS/EC2', 'AWS/EBS', 'AWS/ELB', 'AWS/AutoScaling', 'AWS/S3']
         categories = [
             dict(
                 name='scalinggroupmetrics',
@@ -234,7 +237,6 @@ class CloudWatchMetricsJsonView(BaseView):
                 ))
                 metrics.extend(cat_metrics)
 
-            # import logging; logging.info(json.dumps(metrics, indent=2))
             return dict(results=metrics)
 
     @view_config(route_name='cloudwatch_resource_names_json', renderer='json', request_method='POST')
