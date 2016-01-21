@@ -6,6 +6,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import StaleElementReferenceException
 from selenium.common.exceptions import ElementNotVisibleException
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -225,6 +226,27 @@ class SeleniumApi(object):
             print "Element by css = '{0}' not visible.".format(css)
             return False
 
+    def verify_enabled_by_id(self, element_id):
+        """
+        Waits for an element to become enabled.
+        :param element_id:
+        """
+        print "Checking if element by_id('{0}') is enabled".format(element_id)
+
+        try:
+            for i in range(1, 30):
+                element = self.driver.find_element_by_id(element_id)
+                if element.is_enabled():
+                    print "Element by id = " + element_id + " is enabled "
+                    time.sleep(1)
+                    break
+                else:
+                    print "Waiting for element by id = " + element_id + " to become enabled "
+        except TimeoutException:
+            print "Element by id = '{0}' not enabled.".format(element_id)
+            return False
+
+
     def wait_for_clickable_by_id(self, element_id):
         """
         Waits for an element to be present, visible and enabled such that you can click it.
@@ -321,8 +343,9 @@ class SeleniumApi(object):
         Clicks the element, checks if element is still visible, hits enter on element if visible up to 2 times.
         :param element_id:
         """
-        self.wait_for_visible_by_id(element_id)
         print "Executing click_element_by_id_robust ('{0}')".format(element_id)
+        self.wait_for_visible_by_id(element_id)
+
         try:
             self.driver.find_element_by_id(element_id).click()
             print "Clicking on element by id = ('{0}')".format(element_id)
@@ -341,6 +364,28 @@ class SeleniumApi(object):
                 print str(k) + "-th attempt to hit enter unsuccessful."
             is_visible = self.check_visibility_by_id(element_id)
             k = k+1
+
+    def click_element_by_id_resilient(self, element_id):
+        """
+        Method will verify that element is enabled and try performing a click. If element is stale, then perform click again.
+        """
+        print "Executing click_element_by_id_resilient ('{0}')".format(element_id)
+        self.verify_enabled_by_id(element_id)
+        element = self.driver.find_element_by_id(element_id)
+        try:
+            element.click()
+            print "Clicking on element by id = ('{0}')".format(element_id)
+        except StaleElementReferenceException:
+            print "WARNING: Stale elemnt by id = ('{0}') detected".format(element_id)
+            time.sleep(1)
+            element = self.driver.find_element_by_id(element_id)
+            element.click()
+        except Exception, e:
+            print "ERROR: Could not perform click on element by id = ('{0}')".format(element_id)
+            self.close_browser()
+            raise
+
+
 
     def click_element_by_id_covert(self, element_id):
         """
