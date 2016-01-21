@@ -33,5 +33,12 @@ angular.module('CustomFilters', [])
             number = Math.floor(Math.log(bytes) / Math.log(1024));
         return (bytes / Math.pow(1024, Math.floor(number))).toFixed(precision) +  ' ' + units[number];
     };
+})
+.filter('titleCase', function () {
+    return function (input) {
+        input = input.replace('_', ' ').toLowerCase();
+        return input.replace(/^(\w)/, function (substr) {
+            return substr.toUpperCase();
+        });
+    };
 });
-

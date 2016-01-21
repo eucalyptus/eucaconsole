@@ -62,12 +62,4 @@ angular.module('AlarmsPage', ['LandingPage'])
                 });
             }
         };
-    })
-    .filter('titleCase', function () {
-        return function (input) {
-            input = input.replace('_', ' ').toLowerCase();
-            return input.replace(/^(\w)/, function (substr) {
-                return substr.toUpperCase();
-            });
-        };
     });

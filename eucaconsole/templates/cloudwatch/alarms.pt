@@ -55,7 +55,7 @@
             </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
                 <div>
-                    <span class="label" title="Threshold" i18n:translate="">TH</span>
+                    <span class="label" title="Threshold" i18n:attributes="title">TH</span>
                     {{ item.statistic }}
                     {{ item.metric }}
                     {{ item.comparison }}
@@ -63,7 +63,7 @@
                     {{ item.unit !== 'None' ? item.unit : '' }}
                 </div>
                 <div>
-                    <span class="label" title="Alarm Actions" i18n:translate="">AA</span>
+                    <span class="label" title="Alarm Actions" i18n:attributes="title">AA</span>
                     {{ item.alarm_actions.length }}
                 </div>
             </div>
