@@ -20,7 +20,9 @@ class LoginPage(BasePage):
         self.tester.send_keys_by_id(self._eucalyptus_account_field_id, account)
         self.tester.send_keys_by_id(self._eucalyptus_username_field_id, username)
         self.tester.send_keys_by_id(self._eucalyptus_password_field_id, password)
-        self.tester.click_element_by_id(self._eucalyptus_login_button_id)
+        self.tester.wait_for_clickable_by_id(self._eucalyptus_login_button_id)
+        self.tester.send_keys_by_id(self._eucalyptus_login_button_id, "\n", clear_field=False)
+        #self.tester.click_element_by_id(self._eucalyptus_login_button_id)
 
 
 

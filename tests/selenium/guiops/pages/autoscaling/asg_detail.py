@@ -24,7 +24,7 @@ class ASGDetailPage(DetailPage):
     _launch_config_dropdown_css = "#launch_config_chosen>a"
     _launch_config_search_field_css = "#launch_config_chosen>div>div>input"
     _launch_config_search_active_result_css = "li.active-result.result-selected"
-    _scaling_history_row_expando_css = "i.table-expando-closed:nth-of-type(1)"
+    _scaling_history_first_row_expando_css = "i.table-expando-closed:nth-of-type(1)"
     _scaling_history_first_cause_css = "tbody:nth-of-type(1)>tr:nth-of-type(2)>td:nth-of-type(2)>div:nth-of-type(2)>div:nth-of-type(2)>div:nth-of-type(1)"
 
     def verify_asg_detail_page_loaded(self, asg_name):
@@ -45,6 +45,8 @@ class ASGDetailPage(DetailPage):
         tab = self.tester.store_text_by_css(self._active_tab_css)
         print "Found active tab {0}".format(tab)
         if tab != "Scaling history":
+            self.tester.wait_for_clickable_by_css(self._scaling_history_tab_css.format(asg_name))
+            time.sleep(1)
             self.tester.click_element_by_css(self._scaling_history_tab_css.format(asg_name))
         else:
             pass
@@ -108,7 +110,8 @@ class ASGDetailPage(DetailPage):
             self.tester.click_element_by_css(self._close_modal_x_css)
             time.sleep(2)
         self.goto_scaling_history_tab(asg_name)
-        self.tester.click_element_by_css(self._scaling_history_row_expando_css)
+        self.tester.wait_for_clickable_by_css(self._scaling_history_first_row_expando_css)
+        self.tester.click_element_by_css(self._scaling_history_first_row_expando_css)
         text = self.tester.store_text_by_css(self._scaling_history_first_cause_css)
         if text.find('an instance was started') > 0:
             print 'Found expected cause {0}'.format(text)
