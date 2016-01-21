@@ -65,7 +65,7 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
             }, function error(errData) {
                 eucaErrorHandler(errData.statusText, errData.status);
             });
-        };
+        }
         $scope.$on('itemsLoaded', function($event, items) {
             vm.items = items;
             // clear previous filters

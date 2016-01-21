@@ -91,6 +91,16 @@ class CloudWatchMetricsJsonView(BaseView):
     """JSON response for CloudWatch Metrics landing page et. al."""
     @view_config(route_name='cloudwatch_metrics_json', renderer='json', request_method='POST')
     def cloudwatch_metrics_json(self):
+        RESOURCE_LABELS = {
+            'AutoScalingGroupName': _(u'Auto scaling group'),
+            'InstanceId': _(u'Instance'),
+            'InstanceType': _(u'Instance type'),
+            'ImageId': _(u'Image'),
+            'VolumeId': _(u'Volume'),
+            'LoadBalancerName': _(u'Load balancer'),
+            'AvailabilityZone': _(u'Availability zone'),
+        }
+        STD_NAMESPACES = ['AWS/EC2', 'AWS/EBS', 'AWS/ELB', 'AWS/AutoScaling', 'AWS/S3']
         categories = [
             dict(
                 name='scalinggroupmetrics',
@@ -159,7 +169,6 @@ class CloudWatchMetricsJsonView(BaseView):
                 resource=None,
             ),
         ]
-        STD_NAMESPACES = ['AWS/EC2', 'AWS/EBS', 'AWS/ELB', 'AWS/AutoScaling', 'AWS/S3']
         with boto_error_handler(self.request):
             items = self.get_items()
             metrics = []
@@ -209,6 +218,7 @@ class CloudWatchMetricsJsonView(BaseView):
                             res_id=dim[1][0],
                             res_name=dim[1][0],
                             res_type=dim[0],
+                            res_type_label=RESOURCE_LABELS[dim[0]] if dim[0] in RESOURCE_LABELS else dim[0],
                             res_url=self.get_url_for_resource(self.request, dim[0], dim[1][0])
                         ) for dim in metric_dims],
                         res_ids=res_ids,

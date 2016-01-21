@@ -124,7 +124,7 @@
                                     <td ng-if="item.heading != true"><input type="checkbox" ng-model="item._selected"/></td>
                                     <td ng-if="item.heading != true">
                                         <div ng-repeat="res in item.resources">
-                                            {{ res.res_type }}:&nbsp;
+                                            {{ res.res_type_label }}:&nbsp;
                                             <a ng-if="res.res_url" ng-href="{{ res.res_url }}">{{ res.res_name }}</a>
                                             <span ng-if="res.res_url==null">{{ res.res_name }}</span>
                                         </div>
