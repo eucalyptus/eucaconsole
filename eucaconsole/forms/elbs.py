@@ -390,8 +390,7 @@ class CreateELBForm(ELBHealthChecksForm, ELBAccessLogsFormMixin):
         self.vpc_subnet.choices = self.vpc_choices_manager.vpc_subnets()
         self.securitygroup.choices = self.choices_manager.security_groups(
             securitygroups=None, use_id=True, add_blank=False)
-        region = request.session.get('region')
-        self.zone.choices = self.get_availability_zone_choices(region)
+        self.zone.choices = self.get_availability_zone_choices()
         self.ping_protocol.choices = self.get_ping_protocol_choices()
         self.time_between_pings.choices = self.get_time_between_pings_choices()
         self.failures_until_unhealthy.choices = self.get_failures_until_unhealthy_choices()
@@ -411,8 +410,8 @@ class CreateELBForm(ELBHealthChecksForm, ELBAccessLogsFormMixin):
         self.bucket_name.error_msg = self.bucket_name_error_msg
         self.bucket_prefix.error_msg = self.bucket_prefix_error_msg
 
-    def get_availability_zone_choices(self, region):
-        return self.choices_manager.availability_zones(region, add_blank=False)
+    def get_availability_zone_choices(self):
+        return self.choices_manager.availability_zones(self.region, add_blank=False)
 
 
 class ELBInstancesFiltersForm(BaseSecureForm):

@@ -208,15 +208,15 @@ class VolumesFiltersForm(BaseSecureForm):
         super(VolumesFiltersForm, self).__init__(request, **kwargs)
         self.request = request
         self.choices_manager = ChoicesManager(conn=conn)
-        self.zone.choices = self.get_availability_zone_choices(self.region)
+        self.zone.choices = self.get_availability_zone_choices()
         self.status.choices = self.get_status_choices()
         self.facets = [
-            {'name': 'zone', 'label': self.zone.label.text, 'options': self.get_availability_zone_choices(self.region)},
+            {'name': 'zone', 'label': self.zone.label.text, 'options': self.get_availability_zone_choices()},
             {'name': 'status', 'label': self.status.label.text, 'options': self.get_status_choices()},
         ]
 
-    def get_availability_zone_choices(self, region):
-        return self.get_options_from_choices(self.choices_manager.availability_zones(region, add_blank=False))
+    def get_availability_zone_choices(self):
+        return self.get_options_from_choices(self.choices_manager.availability_zones(self.region, add_blank=False))
 
     @staticmethod
     def get_status_choices():

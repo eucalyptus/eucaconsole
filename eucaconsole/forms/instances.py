@@ -171,7 +171,7 @@ class LaunchInstanceForm(BaseSecureForm):
 
     def set_choices(self, request):
         self.instance_type.choices = self.choices_manager.instance_types(cloud_type=self.cloud_type, add_blank=False)
-        self.zone.choices = self.get_availability_zone_choices(self.region)
+        self.zone.choices = self.get_availability_zone_choices()
         if self.cloud_type == 'euca' and self.is_vpc_supported:
             self.vpc_network.choices = self.vpc_choices_manager.vpc_networks(add_blank=False)
         else:
@@ -204,9 +204,9 @@ class LaunchInstanceForm(BaseSecureForm):
         choices = self.choices_manager.keypairs(add_blank=True, no_keypair_option=True)
         return choices
 
-    def get_availability_zone_choices(self, region):
+    def get_availability_zone_choices(self):
         choices = [('', _(u'No preference'))]
-        choices.extend(self.choices_manager.availability_zones(region, add_blank=False))
+        choices.extend(self.choices_manager.availability_zones(self.region, add_blank=False))
         return choices
 
     @staticmethod
