@@ -48,17 +48,17 @@ class GuiTester(SeleniumApi):
                 self.driver = webdriver.Remote(webdriver_url, webdriver.DesiredCapabilities.FIREFOX, browser_profile=ffprofile)
                 print "Using remote webdriver " + webdriver_url
             print "Setting webdriver profile"
-            self.driver.implicitly_wait(60)
-    #        self.driver.maximize_window()
-            self.driver.set_window_size(1024, 768)
-            self.driver.get(console_url)
 
         if chrome is True:
 
             chrome_capabilities = webdriver.DesiredCapabilities.CHROME
-            chrome_profile = webdriver.Chrome
 
-            self.driver = webdriver.Remote(webdriver_url, desired_capabilities=chrome_capabilities, browser_profile=chrome_profile)
+            self.driver = webdriver.Remote(webdriver_url, desired_capabilities=chrome_capabilities)
+        self.driver.implicitly_wait(60)
+    #        self.driver.maximize_window()
+        self.driver.set_window_size(1024, 768)
+        self.driver.get(console_url)
+
 
 
     def login(self, account, username, password):
