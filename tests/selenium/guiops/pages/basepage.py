@@ -64,6 +64,7 @@ class BasePage(SeleniumApi):
         self.tester.send_keys_by_id(self._dashboard_menuitem_id, "\n", clear_field=False)
 
     def goto_keypair_view_page_via_menu(self):
+        time.sleep(2)
         self.tester.scroll_to_element_by_id(self._keypair_menuitem_id)
         self.tester.send_keys_by_id(self._keypair_menuitem_id, "\n", clear_field=False)
 
