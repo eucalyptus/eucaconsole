@@ -36,7 +36,7 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config
 
 from ..constants.cloudwatch import METRIC_DIMENSION_NAMES, METRIC_DIMENSION_INPUTS
-from ..forms.alarms import CloudWatchAlarmCreateForm, CloudWatchAlarmDeleteForm
+from ..forms.alarms import CloudWatchAlarmCreateForm, CloudWatchAlarmDeleteForm, CloudWatchAlarmUpdateForm
 from ..i18n import _
 from ..models import Notification
 from ..views import LandingPageView, BaseView, JSONResponse
@@ -126,6 +126,10 @@ class CloudWatchAlarmsView(LandingPageView):
                 return JSONResponse(status=400, message=', '.join(error_msg_list))
             self.request.error_messages = error_msg_list
         return self.render_dict
+
+    @view_config(route_name='cloudwatch_alarms', request_method='PUT')
+    def cloudwatch_alarms_update(self):
+        pass
 
     @view_config(route_name='cloudwatch_alarms_delete', renderer=TEMPLATE, request_method='POST')
     def cloudwatch_alarms_delete(self):
@@ -225,7 +229,7 @@ class CloudWatchAlarmDetailView(BaseView):
 
         alarm_id = self.request.matchdict.get('alarm_id')
         self.alarm = self.get_alarm(alarm_id)
-        self.alarm_form = CloudWatchAlarmCreateForm(
+        self.alarm_form = CloudWatchAlarmUpdateForm(
             request)
 
         self.render_dict = dict(
