@@ -35,7 +35,7 @@ from boto.ec2.cloudwatch import MetricAlarm
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config
 
-from ..constants.cloudwatch import METRIC_DIMENSION_NAMES, METRIC_DIMENSION_INPUTS
+from ..constants.cloudwatch import METRIC_DIMENSION_NAMES, METRIC_DIMENSION_INPUTS, METRIC_TYPES
 from ..forms.alarms import CloudWatchAlarmCreateForm, CloudWatchAlarmDeleteForm
 from ..i18n import _
 from ..models import Notification
@@ -75,6 +75,9 @@ class CloudWatchAlarmsView(LandingPageView):
             initial_sort_key=self.initial_sort_key,
             json_items_endpoint=self.request.route_path('cloudwatch_alarms_json'),
             search_facets=[],
+            alarm_form=self.create_form,
+            metric_unit_mapping=self.get_metric_unit_mapping(),
+            create_alarm_redirect=self.request.route_path('cloudwatch_alarms'),
         )
 
     @view_config(route_name='cloudwatch_alarms', renderer=TEMPLATE, request_method='GET')
@@ -146,6 +149,13 @@ class CloudWatchAlarmsView(LandingPageView):
     def get_dimension_value(self, key=None):
         input_field = METRIC_DIMENSION_INPUTS.get(key)
         return [self.request.params.get(input_field)]
+
+    @staticmethod
+    def get_metric_unit_mapping():
+        metric_units = {}
+        for mtype in METRIC_TYPES:
+            metric_units[mtype.get('name')] = mtype.get('unit')
+        return metric_units
 
     @staticmethod
     def get_dimension_name(key=None):

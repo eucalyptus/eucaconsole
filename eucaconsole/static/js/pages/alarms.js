@@ -4,15 +4,34 @@
  *
  */
 
-angular.module('AlarmsPage', ['LandingPage'])
-    .controller('AlarmsCtrl', function ($scope) {
+angular.module('AlarmsPage', ['LandingPage', 'CreateAlarm'])
+    .controller('AlarmsCtrl', ['$scope', '$timeout', function ($scope, $timeout) {
         $scope.alarmID = '';
         $scope.revealModal = function (action, item) {
             var modal = $('#' + action + '-alarm-modal');
-            $scope.alarmID = item.id;
+            if(item) {
+                $scope.alarmID = item.id;
+            }
             modal.foundation('reveal', 'open');
         };
-    })
+
+        $scope.$on('alarm_created', function ($event, promise) {
+            promise.then(function success (result) {
+                //
+                //  NEVER DO THIS!!  THIS IS TERRIBLE!!!
+                //  The proper solution, which will be implemented soon,
+                //  is to have this and the parent controllers attached
+                //  to directives, thus enabling cross-controller communication
+                //  via ng-require.
+                //
+                //  But, this will do for now.
+                //
+                $timeout(function () {
+                    $('#refresh-btn').click();
+                });
+            });
+        });
+    }])
     .directive('alarmState', function () {
         var stateValues = {
             'OK': 'Ok',

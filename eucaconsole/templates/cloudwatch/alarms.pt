@@ -17,7 +17,7 @@
         <h3 id="pagetitle"><strong i18n:translate="">Alarms</strong></h3>
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
-                <a class="button" i18n:translate="">Create alarm</a>
+                <a class="button" ng-click="revealModal('create')" i18n:translate="">Create alarm</a>
                 <metal:block metal:use-macro="layout.global_macros['more_actions']">
                     <div metal:fill-slot="menu_items" tal:omit-tag="">
                         <li>
@@ -116,6 +116,9 @@
             </metal:block>
         </div>
         <!--! Modal dialogs -->
+        <!--! Create Alarm modal dialog -->
+        ${panel('create_alarm_dialog', alarm_form=alarm_form, redirect_location=create_alarm_redirect, metric_unit_mapping=metric_unit_mapping)}
+        <!--! /end modal dialogs -->
     </div>
 </div>
 
