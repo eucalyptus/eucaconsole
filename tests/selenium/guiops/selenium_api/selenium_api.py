@@ -337,33 +337,27 @@ class SeleniumApi(object):
             self.close_browser()
             raise
 
-    def click_element_by_id_robust(self, element_id):
+    def click_element_by_id_robust(self, element_id, element_id_on_next_page):
         """
-        Waits for an element to be present and visible such that you can click it.
-        Clicks the element, checks if element is still visible, hits enter on element if visible up to 2 times.
+        Waits for an element to be enabled such that you can click it.
+        Clicks the element, checks if element is still visible, hits enter on element if visible up to 5 times.
         :param element_id:
         """
         print "Executing click_element_by_id_robust ('{0}')".format(element_id)
-        self.wait_for_visible_by_id(element_id)
+        self.verify_enabled_by_id(element_id)
+        self.click_element_by_id(element_id)
 
-        try:
-            self.driver.find_element_by_id(element_id).click()
-            print "Clicking on element by id = ('{0}')".format(element_id)
-        except Exception, e:
-            print "ERROR: Could not perform click on element by id = ('{0}')".format(element_id)
-            self.close_browser()
-            raise
-        k = 1
-        time.sleep(5)
-        is_visible = self.check_visibility_by_id(element_id)
-        while is_visible and (k < 3):
-            try:
-                print "Hitting enter. Executing attempt " + str(k)
-                self.send_keys_by_id(element_id,"\n",clear_field=False)
-            except Exception, e:
-                print str(k) + "-th attempt to hit enter unsuccessful."
-            is_visible = self.check_visibility_by_id(element_id)
-            k = k+1
+        is_visible = self.check_visibility_by_id(element_id_on_next_page)
+        k=1
+        while not is_visible and (k < 6):
+                try:
+                    time.sleep(1)
+                    print "Hitting enter. Executing attempt " + str(k)
+                    self.send_keys_by_id(element_id, "\n", clear_field=False)
+                except Exception, e:
+                    print str(k) + "-th attempt to hit enter unsuccessful."
+                is_visible = self.check_visibility_by_id(element_id_on_next_page)
+                k=k+1
 
     def click_element_by_id_resilient(self, element_id):
         """
