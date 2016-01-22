@@ -246,7 +246,7 @@ class SeleniumApi(object):
 
         try:
             for i in range(1, 30):
-                element = self.driver.find_element_by_id(element_id)
+                element = self.driver.find_elements_by_id(element_id)
                 if element.is_enabled():
                     print "Element by id = " + element_id + " is enabled "
                     time.sleep(1)
@@ -285,8 +285,10 @@ class SeleniumApi(object):
         print "Executing wait_for_clickable_by_id('{0}')".format(element_id)
 
         try:
+            self.set_implicit_wait(0)
             WebDriverWait(self.driver, self.timeout_to_locate_element_in_seconds).until(
                 EC.element_to_be_clickable((By.ID, element_id)))
+            self.set_implicit_wait(self.implicit_wait_default_in_seconds)
             print "Found clickable element by id = '{0}'".format(element_id)
         except TimeoutException, tout:
             print "ERROR: Did not find clickable element by id = '{0}'".format(element_id)
@@ -305,8 +307,10 @@ class SeleniumApi(object):
         print "Executing wait_for_clickable_by_css('{0}')".format(css)
 
         try:
+            self.set_implicit_wait(0)
             WebDriverWait(self.driver, self.timeout_to_locate_element_in_seconds).until(
                 EC.element_to_be_clickable((By.CSS_SELECTOR, css)))
+            self.set_implicit_wait(self.implicit_wait_default_in_seconds)
             print "Found clickable element by css = '{0}'".format(css)
         except TimeoutException, tout:
             print "ERROR: Did not find clickable element by css = '{0}'".format(css)
@@ -377,7 +381,7 @@ class SeleniumApi(object):
         :param element_id:
         """
         print "Executing click_element_by_id_robust ('{0}')".format(element_id)
-        self.verify_enabled_by_id(element_id)
+        self.wait_for_clickable_by_id(element_id)
         self.click_element_by_id(element_id)
 
         is_visible = self.check_visibility_by_id(element_id_on_next_page)
@@ -399,7 +403,8 @@ class SeleniumApi(object):
         :param element_id:
         """
         print "Executing click_element_by_css_robust ('{0}')".format(css)
-        self.verify_enabled_by_css(css)
+        self.wait_for_clickable_by_css(css)
+        #self.verify_enabled_by_css(css)
         self.click_element_by_css(css)
 
         is_visible = self.check_visibility_by_css(element_css_on_next_page)
@@ -440,7 +445,8 @@ class SeleniumApi(object):
         Method will verify that element is enabled and try performing a click and hit enter until given element disappears.
         """
         print "Executing click_element_by_id_resilient ('{0}')".format(element_id)
-        self.verify_enabled_by_id(element_id)
+        #self.verify_enabled_by_id(element_id)
+        self.wait_for_clickable_by_id(element_id)
         element = self.driver.find_element_by_id(element_id)
         element.click()
         is_visible = self.check_visibility_by_id(element_to_disappear_id)
