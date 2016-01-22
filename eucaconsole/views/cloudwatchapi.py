@@ -163,8 +163,8 @@ class CloudWatchAPIMixin(object):
         end_time = datetime.datetime.utcnow()
         start_time = end_time - datetime.timedelta(seconds=duration)
         statistics = [statistic]
-        base_dimensions = {idtype: ids}
-        if dimensions:
+        base_dimensions = {idtype: ids} if idtype and ids else None
+        if dimensions and base_dimensions:
             base_dimensions.update(dimensions)
         try:
             return cw_conn.get_metric_statistics(
@@ -188,7 +188,7 @@ class CloudWatchAPIView(BaseView, CloudWatchAPIMixin):
         self.statistic = self.request.params.get('statistic') or 'Average'
         self.zones = self.request.params.get('zones')
         self.split_zone_metrics = ['HealthyHostCount', 'UnHealthyHostCount']
-        self.idtype = self.request.params.get('idtype') or 'InstanceId'
+        self.idtype = self.request.params.get('idtype')
         self.ids = self.request.params.get('ids')
         self.unit = self.request.params.get('unit')
         self.duration = int(self.request.params.get('duration', 3600))
@@ -208,9 +208,6 @@ class CloudWatchAPIView(BaseView, CloudWatchAPIMixin):
         /cloudwatch/api?ids=i-foo&idtype=InstanceId&metric=CPUUtilization&duration=3600&unit=Percent&statistic=Average
 
         """
-        if not self.ids:
-            raise HTTPBadRequest()
-
         stats_list = []
         unit = self.unit
         max_value = 0

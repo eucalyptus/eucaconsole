@@ -17,7 +17,7 @@ module.exports = function(grunt) {
                 'angular.js': 'angular/angular.js',
                 'angular.min.js': 'angular/angular.min.js',
                 'angular-sanitize.min.js': 'angular-sanitize/angular-sanitize.min.js',
-                'angular-mocks.js': 'angular-mocks/angular-mocks.js'
+                'angular-mocks.js': 'angular-mocks/angular-mocks.js',
               }
           },
           jquery: {

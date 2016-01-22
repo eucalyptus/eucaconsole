@@ -85,7 +85,7 @@ class MasterLayout(object):
                     self.regions = RegionCache(conn).regions()
                     if len(self.regions) == 1:
                         self.has_regions = False
-                    self.default_region = request.registry.settings.get('default.region', None)
+                    self.default_region = request.registry.settings.get('default.region', 'euca')
                     if self.default_region is None:
                         for region in self.regions:
                             if region['endpoints']['ec2'].find(host) > -1:

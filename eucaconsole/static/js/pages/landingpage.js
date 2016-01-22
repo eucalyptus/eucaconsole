@@ -306,6 +306,10 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch', 'Ex
                 $scope.displayCount += $scope.limitCount;
             }
         };
+        // listen for showMore to allow specialized screens to use this
+        $scope.$on('showMore', function($event) {
+            $timeout(function () { $scope.showMore(); }, 50);
+        });
         $scope.enableInfiniteScroll = function () {
             $(window).scroll(function() {
                 if ($(window).scrollTop() == $(document).height() - $(window).height()) {
