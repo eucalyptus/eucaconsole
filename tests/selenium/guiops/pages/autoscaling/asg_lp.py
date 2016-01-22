@@ -4,6 +4,7 @@ from pages.landingpage import LandingPage
 class ASGLanding(LandingPage):
     def __init__(self, tester):
         self.tester = tester
+        self.print_test_context()
         self.verify_asg_lp_loaded()
 
     _asg_landing_page_title = "Scaling groups"

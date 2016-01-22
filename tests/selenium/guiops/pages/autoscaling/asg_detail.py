@@ -1,11 +1,10 @@
-import time
-
 from pages.detailpage import DetailPage
 
 
 class ASGDetailPage(DetailPage):
     def __init__(self, tester):
         self.tester = tester
+        self.print_test_context()
 
     _asg_detail_page_title = "Details for scaling group: {0}"  # asg name required
     _next_step_modal_id = "nextstep-scalinggroup-modal"

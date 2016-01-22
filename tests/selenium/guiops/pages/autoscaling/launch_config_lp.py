@@ -4,6 +4,7 @@ from pages.landingpage import LandingPage
 class LaunchConfigLanding(LandingPage):
     def __init__(self, tester):
         self.tester = tester
+        self.print_test_context()
         self.verify_lc_lp_loaded()
 
     _lc_landing_page_title = "Launch configurations"

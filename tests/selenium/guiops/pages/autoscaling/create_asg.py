@@ -4,6 +4,7 @@ from pages.basepage import BasePage
 class CreateASGPage(BasePage):
     def __init__(self, tester):
         self.tester = tester
+        self.print_test_context()
         self.verify_create_asg_page_loaded()
 
     _page_title = "Create new scaling group"
