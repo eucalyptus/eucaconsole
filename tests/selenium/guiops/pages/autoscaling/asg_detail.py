@@ -105,7 +105,7 @@ class ASGDetailPage(DetailPage):
 
     def verify_scaling_history(self, asg_name):
         if self.tester.check_visibility_by_id(self._next_step_modal_id):
-            self.tester.click_element_by_id(self._do_notshow_again_checkbox_id)
+            self.tester.click_element_by_id_resilient(self._do_notshow_again_checkbox_id, self._do_notshow_again_checkbox_id)
             self.tester.click_element_by_css(self._close_modal_x_css)
         self.goto_scaling_history_tab(asg_name)
         self.tester.wait_for_clickable_by_css(self._scaling_history_first_row_expando_css)

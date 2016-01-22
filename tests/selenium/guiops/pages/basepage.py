@@ -111,7 +111,7 @@ class BasePage(SeleniumApi):
 
     def goto_asg_lp_via_menu(self):
         self.tester.scroll_to_element_by_id(self._autoscaling_menuitem_id)
-        self.tester.send_keys_by_id(self._autoscaling_menuitem_id, "\n", clear_field=False)
+        self.tester.click_element_by_id_robust(self._autoscaling_menuitem_id, self._refresh_button_from_lp_id)
 
     def goto_launch_config_view_via_menu(self):
         self.tester.scroll_to_element_by_id(self._launchconfigs_menuitem_id)
