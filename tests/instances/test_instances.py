@@ -235,8 +235,12 @@ class InstanceLaunchFormTestCase(BaseFormTestCase):
         self.assert_required('securitygroup')
 
 
-class InstanceCreateImageFormTestCase(BaseFormTestCase):
+class InstanceCreateImageFormTestCase(BaseFormTestCase, BaseViewTestCase):
     form_class = InstanceCreateImageForm
+    request = testing.DummyRequest()
+    request.session.update({
+        'region': 'euca',
+    })
 
     def setUp(self):
         self.form = self.form_class(self.request)
