@@ -29,6 +29,7 @@ Pyramid views for Eucalyptus and AWS CloudWatch metrics
 
 """
 import copy
+import re
 import simplejson as json
 
 from pyramid.view import view_config
@@ -105,19 +106,19 @@ METRIC_CATEGORIES = [
     ),
     dict(
         name='elbzone',
-        label=_(u'ELB - Per Zone'),
+        label=_(u'ELB - Per zone'),
         namespace='AWS/ELB',
         resource=['AvailabilityZone'],
     ),
     dict(
         name='elbandzone',
-        label=_(u'ELB - Per LB / Per Zone'),
+        label=_(u'ELB - Per LB / Per zone'),
         namespace='AWS/ELB',
         resource=['AvailabilityZone', 'LoadBalancerName'],
     ),
     dict(
         name='custom',
-        label=_(u'Custom Metrics'),
+        label=_(u'Custom metrics'),
         namespace=None,
         resource=None,
     ),
@@ -164,6 +165,38 @@ METRICS_FOR_VOLUME = [
     'VolumeWriteOps'
 ]
 
+METRIC_LABEL = {
+    'GroupDesiredCapacity': 'Group Desired Capacity',
+    'GroupInServiceInstances': 'Group In Service Instances',
+    'GroupMaxSize': 'Group Max Size',
+    'GroupMinSize': 'Group Min Size',
+    'GroupPendingInstances': 'Group Pending Instances',
+    'GroupTerminatingInstances': 'Group Terminating Instances',
+    'GroupTotalInstances': 'Group Total Instances',
+    'CPUUtilization': 'CPU Utilization',
+    'DiskReadBytes': 'Disk Read Bytes',
+    'DiskReadOps': 'Disk Read Ops',
+    'DiskWriteBytes': 'Disk Write Bytes',
+    'DiskWriteOps': 'Disk Write Ops',
+    'NetworkIn': 'Network In',
+    'NetworkOut': 'Network Out',
+    'StatusCheckFailed': 'Status Check Failed',
+    'StatusCheckFailed_Instance': 'Status Check Failed Instance',
+    'StatusCheckFailed_System': 'Status Check Failed System',
+    'HealthyHostCount': 'Healthy Host Count',
+    'UnHealthyHostCount': 'UnHealthy Host Count',
+    'VolumeConsumedReadWriteOps': 'Volume Consumed Read Write Ops',
+    'VolumeIdleTime': 'Volume Idle Time',
+    'VolumeQueueLength': 'Volume Queue Length',
+    'VolumeReadBytes': 'Volume Read Bytes',
+    'VolumeReadOps': 'Volume Read Ops',
+    'VolumeThroughputPercentage': 'Volume Throughput Percentage',
+    'VolumeTotalReadTime': 'Volume Total Read Time',
+    'VolumeTotalWriteTime': 'Volume Total Write Time',
+    'VolumeWriteBytes': 'Volume Write Bytes',
+    'VolumeWriteOps': 'Volume Write Ops'
+}
+
 
 class CloudWatchMetricsView(LandingPageView):
     """CloudWatch Metrics landing page view"""
@@ -185,16 +218,16 @@ class CloudWatchMetricsView(LandingPageView):
                 {'key': cat['name'], 'label': cat['label']} for cat in METRIC_CATEGORIES
             ]},
             {'name': 'metric_name', 'label': _(u'Scaling group metric'), 'options': [
-                {'key': metric, 'label': metric} for metric in METRICS_FOR_ASG
+                {'key': metric, 'label': METRIC_LABEL[metric]} for metric in METRICS_FOR_ASG
             ]},
             {'name': 'metric_name', 'label': _(u'Instance metric'), 'options': [
-                {'key': metric, 'label': metric} for metric in METRICS_FOR_INSTANCE
+                {'key': metric, 'label': METRIC_LABEL[metric]} for metric in METRICS_FOR_INSTANCE
             ]},
             {'name': 'metric_name', 'label': _(u'Load balancer metric'), 'options': [
-                {'key': metric, 'label': metric} for metric in METRICS_FOR_ELB
+                {'key': metric, 'label': METRIC_LABEL[metric]} for metric in METRICS_FOR_ELB
             ]},
             {'name': 'metric_name', 'label': _(u'Volume metric'), 'options': [
-                {'key': metric, 'label': metric} for metric in METRICS_FOR_VOLUME
+                {'key': metric, 'label': METRIC_LABEL[metric]} for metric in METRICS_FOR_VOLUME
             ]}
         ]
         self.render_dict = dict(
@@ -283,7 +316,8 @@ class CloudWatchMetricsJsonView(BaseView):
                         res_ids=res_ids,
                         res_types=res_types,
                         unit=unit[0] if unit else '',
-                        metric_name=metric_name
+                        metric_name=metric_name,
+                        metric_label=METRIC_LABEL[metric_name] if metric_name in METRIC_LABEL else metric_name
                     ))
                 metrics.append(dict(
                     heading=True,
