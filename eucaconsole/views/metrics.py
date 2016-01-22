@@ -182,19 +182,19 @@ class CloudWatchMetricsView(LandingPageView):
         ]
         search_facets = [
             {'name': 'cat_name', 'label': _(u'Resource type'), 'options': [
-                {'key':cat['name'], 'label':cat['label']} for cat in METRIC_CATEGORIES
+                {'key': cat['name'], 'label': cat['label']} for cat in METRIC_CATEGORIES
             ]},
             {'name': 'metric_name', 'label': _(u'Scaling group metric'), 'options': [
-                {'key':metric, 'label':metric} for metric in METRICS_FOR_ASG
+                {'key': metric, 'label': metric} for metric in METRICS_FOR_ASG
             ]},
             {'name': 'metric_name', 'label': _(u'Instance metric'), 'options': [
-                {'key':metric, 'label':metric} for metric in METRICS_FOR_INSTANCE
+                {'key': metric, 'label': metric} for metric in METRICS_FOR_INSTANCE
             ]},
             {'name': 'metric_name', 'label': _(u'Load balancer metric'), 'options': [
-                {'key':metric, 'label':metric} for metric in METRICS_FOR_ELB
+                {'key': metric, 'label': metric} for metric in METRICS_FOR_ELB
             ]},
             {'name': 'metric_name', 'label': _(u'Volume metric'), 'options': [
-                {'key':metric, 'label':metric} for metric in METRICS_FOR_VOLUME
+                {'key': metric, 'label': metric} for metric in METRICS_FOR_VOLUME
             ]}
         ]
         self.render_dict = dict(
