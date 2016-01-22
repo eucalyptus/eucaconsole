@@ -28,6 +28,7 @@
 Pyramid views for Eucalyptus and AWS CloudWatch metrics
 
 """
+import copy
 import simplejson as json
 
 from pyramid.view import view_config
@@ -39,6 +40,88 @@ from ..constants.cloudwatch import (
 from ..i18n import _
 from ..views import LandingPageView, BaseView, TaggedItemView
 from . import boto_error_handler
+
+
+RESOURCE_LABELS = {
+    'AutoScalingGroupName': _(u'Auto scaling group'),
+    'InstanceId': _(u'Instance'),
+    'InstanceType': _(u'Instance type'),
+    'ImageId': _(u'Image'),
+    'VolumeId': _(u'Volume'),
+    'LoadBalancerName': _(u'Load balancer'),
+    'AvailabilityZone': _(u'Availability zone'),
+}
+
+STD_NAMESPACES = ['AWS/EC2', 'AWS/EBS', 'AWS/ELB', 'AWS/AutoScaling', 'AWS/S3']
+
+METRIC_CATEGORIES = [
+    dict(
+        name='scalinggroupmetrics',
+        label=_(u'Auto scaling group - Group metrics'),
+        namespace='AWS/AutoScaling',
+        resource=['AutoScalingGroupName'],
+    ),
+    dict(
+        name='ebs',
+        label=_(u'EBS - Per volume'),
+        namespace='AWS/EBS',
+        resource=None,
+    ),
+    dict(
+        name='ec2instance',
+        label=_(u'EC2 - Per-instance'),
+        namespace='AWS/EC2',
+        resource=['InstanceId'],
+    ),
+    dict(
+        name='ec2allinstances',
+        label=_(u'EC2 - Across all instances'),
+        namespace='AWS/EC2',
+        resource=['InstanceId'],
+    ),
+    dict(
+        name='scalinggroupinstancemetrics',
+        label=_(u'EC2 - Instance metrics by scaling group'),
+        namespace='AWS/EC2',
+        resource=['AutoScalingGroupName'],
+    ),
+    dict(
+        name='ec2instancetype',
+        label=_(u'EC2 - Per instance type'),
+        namespace='AWS/EC2',
+        resource=['InstanceType'],
+    ),
+    dict(
+        name='ec2image',
+        label=_(u'EC2 - Per image'),
+        namespace='AWS/EC2',
+        resource=['ImageId'],
+    ),
+    dict(
+        name='elb',
+        label=_(u'ELB - Per LB'),
+        namespace='AWS/ELB',
+        resource=['LoadBalancerName'],
+    ),
+    dict(
+        name='elbzone',
+        label=_(u'ELB - Per Zone'),
+        namespace='AWS/ELB',
+        resource=['AvailabilityZone'],
+    ),
+    dict(
+        name='elbandzone',
+        label=_(u'ELB - Per LB / Per Zone'),
+        namespace='AWS/ELB',
+        resource=['AvailabilityZone', 'LoadBalancerName'],
+    ),
+    dict(
+        name='custom',
+        label=_(u'Custom Metrics'),
+        namespace=None,
+        resource=None,
+    ),
+]
 
 
 class CloudWatchMetricsView(LandingPageView):
@@ -57,9 +140,9 @@ class CloudWatchMetricsView(LandingPageView):
             dict(key='name', name=_(u'Name')),
         ]
         search_facets = [
-            {'name': 'metric_name', 'label': _(u"Metric name"), 'options': []},
-            {'name': 'res_ids', 'label': _(u"Resource"), 'options': []},
-            {'name': 'res_types', 'label': _(u"Resource type"), 'options': []}
+            {'name': 'cat_name', 'label': _(u"Resource type"), 'options': [
+                {'key':cat['name'], 'label':cat['label']} for cat in METRIC_CATEGORIES
+            ]}
         ]
         self.render_dict = dict(
             filter_keys=self.filter_keys,
@@ -87,97 +170,17 @@ class CloudWatchMetricsView(LandingPageView):
         }))
 
 
-RESOURCE_LABELS = {
-    'AutoScalingGroupName': _(u'Auto scaling group'),
-    'InstanceId': _(u'Instance'),
-    'InstanceType': _(u'Instance type'),
-    'ImageId': _(u'Image'),
-    'VolumeId': _(u'Volume'),
-    'LoadBalancerName': _(u'Load balancer'),
-    'AvailabilityZone': _(u'Availability zone'),
-}
-
-STD_NAMESPACES = ['AWS/EC2', 'AWS/EBS', 'AWS/ELB', 'AWS/AutoScaling', 'AWS/S3']
-
-
 class CloudWatchMetricsJsonView(BaseView):
     """JSON response for CloudWatch Metrics landing page et. al."""
     @view_config(route_name='cloudwatch_metrics_json', renderer='json', request_method='POST')
     def cloudwatch_metrics_json(self):
-        categories = [
-            dict(
-                name='scalinggroupmetrics',
-                label=_(u'Auto scaling group - Group metrics'),
-                namespace='AWS/AutoScaling',
-                resource=['AutoScalingGroupName'],
-            ),
-            dict(
-                name='ebs',
-                label=_(u'EBS - Per volume'),
-                namespace='AWS/EBS',
-                resource=None,
-            ),
-            dict(
-                name='ec2instance',
-                label=_(u'EC2 - Per-instance'),
-                namespace='AWS/EC2',
-                resource=['InstanceId'],
-            ),
-            dict(
-                name='ec2allinstances',
-                label=_(u'EC2 - Across all instances'),
-                namespace='AWS/EC2',
-                resource=['InstanceId'],
-            ),
-            dict(
-                name='scalinggroupinstancemetrics',
-                label=_(u'EC2 - Instance metrics by scaling group'),
-                namespace='AWS/EC2',
-                resource=['AutoScalingGroupName'],
-            ),
-            dict(
-                name='ec2instancetype',
-                label=_(u'EC2 - Per instance type'),
-                namespace='AWS/EC2',
-                resource=['InstanceType'],
-            ),
-            dict(
-                name='ec2image',
-                label=_(u'EC2 - Per image (requires detailed monitoring on AWS)'),
-                namespace='AWS/EC2',
-                resource=['ImageId'],
-            ),
-            dict(
-                name='elb',
-                label=_(u'ELB - Per LB'),
-                namespace='AWS/ELB',
-                resource=['LoadBalancerName'],
-            ),
-            dict(
-                name='elbzone',
-                label=_(u'ELB - Per Zone'),
-                namespace='AWS/ELB',
-                resource=['AvailabilityZone'],
-            ),
-            dict(
-                name='elbandzone',
-                label=_(u'ELB - Per LB / Per Zone'),
-                namespace='AWS/ELB',
-                resource=['AvailabilityZone', 'LoadBalancerName'],
-            ),
-            dict(
-                name='custom',
-                label=_(u'Custom Metrics'),
-                namespace=None,
-                resource=None,
-            ),
-        ]
+        categories = copy.deepcopy(METRIC_CATEGORIES)
         with boto_error_handler(self.request):
             items = self.get_items()
             metrics = []
             for cat in categories:
-                if cat['name'] == 'ec2instancetype' and self.request.session['cloud_type'] == 'aws':
-                    cat['label'] = cat['label'] + _(u'(requires detailed monitoring on AWS)')
+                if cat['name'] in ['ec2instancetype', 'ec2image'] and self.request.session['cloud_type'] == 'aws':
+                    cat['label'] = cat['label'] + _(u' (requires detailed monitoring on AWS)')
                 namespace = cat['namespace']
                 if namespace:
                     tmp = [{

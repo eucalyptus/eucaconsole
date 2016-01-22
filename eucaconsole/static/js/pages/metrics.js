@@ -26,13 +26,13 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
     })
     .controller('MetricsCtrl', function ($scope, $http, $timeout, eucaUnescapeJson) {
         var vm = this;
-        var emptyFacets = [];
+        var initialFacets = [];
         var categoryIndex = {};
         var headResources;
         var headMetricName;
         var itemNamesUrl;
         vm.initPage = function(facets, itemNamesEndpoint) {
-            emptyFacets = JSON.parse(eucaUnescapeJson(facets));
+            initialFacets = JSON.parse(eucaUnescapeJson(facets));
             itemNamesUrl = itemNamesEndpoint;
             enableInfiniteScroll();
         };
@@ -69,18 +69,83 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
         $scope.$on('itemsLoaded', function($event, items) {
             vm.items = items;
             // clear previous filters
-            vm.clearFacetFilters();
-            var facets = emptyFacets;
-            var metric_facet = facets.find(function(elem) {
-                return elem.name == 'metric_name';
+            clearFacetFilters();
+            resource_list = [];
+            items.forEach(function(metric, idx) {
+                if (metric.heading === true) {
+                    // record category indexes to help with sort
+                    categoryIndex[metric.cat_name] = Object.keys(categoryIndex).length;
+                    return;
+                }
+                metric.resources.forEach(function(res) {
+                    if (resource_list.indexOf(res.res_id) === -1) {
+                        resource_list.push(res.res_id);
+                    }
+                });
             });
-            var resource_facet = facets.find(function(elem) {
-                return elem.name == 'res_ids';
+            instances = resource_list.filter(function(res) {
+                return res.substring(0, 2) == "i-";
             });
-            var resource_type_facet = facets.find(function(elem) {
-                return elem.name == 'res_types';
+            if (instances.length > 0) {
+                fetchResNames(instances, 'instance');
+            }
+            images = resource_list.filter(function(res) {
+                return res.substring(0, 4) == "emi-";
             });
+            if (images.length > 0) {
+                fetchResNames(images, 'image');
+            }
+            volumes = resource_list.filter(function(res) {
+                return res.substring(0, 4) == "vol-";
+            });
+            if (volumes.length > 0) {
+                fetchResNames(volumes, 'volume');
+            }
+            // set sticky table headers
+            $('table.table').stickyTableHeaders({scrollableArea: $(".split-top")});
+        });
+        $scope.$on('searchUpdated', function($event, query) {
+            var facetStrings = query.split('&').sort();
+            // group facets
+            var facets = {};
+            angular.forEach(facetStrings, function(item) {
+                var facet = item.split('=');
+                if (this[facet[0]] === undefined) {
+                    this[facet[0]] = [];
+                }
+                this[facet[0]].push(facet[1]);
+            }, facets);
+            // setup extra facets based on category facet selection
+            if ("cat_name".indexOf(Object.keys(facets)) > -1) {
+                var categories = facets["cat_name"];
+                var metrics = {}
+                vm.items.forEach(function(metric, idx) {
+                    if (metric.heading === true) {
+                        return;
+                    }
+                    if (metric.cat_name.indexOf(categories) > -1) {
+                        if (Object.keys(metrics).indexOf(metric.cat_name) === -1) {
+                            metrics[metric.cat_name] = []
+                        }
+                        if (metrics[metric.cat_name].indexOf(metric.metric_name) === -1) {
+                            metrics[metric.cat_name].push(metric.metric_name);
+                        }
+                    }
+                });
+                if (Object.keys(metrics).length > 0) {
+                    var newFacets = initialFacets;
+                    Object.keys(metrics).forEach(function(category) {
+                        var options = [];
+                        metrics[category].forEach(function(metric) {
+                            options.push({'key':metric, 'label':metric});
+                        });
+                        newFacets.push({'name': 'metric_name', 'label': category+" metrics", options:options});
+                    });
+                    $scope.$broadcast("facets_updated", newFacets);
+                }
+            }
             // create temp lists for simpler tests within loop
+            /*
             metric_facet.opt_list = [];
             resource_facet.opt_list = [];
             resource_type_facet.opt_list = [];
@@ -106,38 +171,18 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
                     }
                 });
             });
-            instances = resource_facet.opt_list.filter(function(res) {
-                return res.substring(0, 2) == "i-";
-            });
-            if (instances.length > 0) {
-                fetchResNames(instances, 'instance');
-            }
-            images = resource_facet.opt_list.filter(function(res) {
-                return res.substring(0, 4) == "emi-";
-            });
-            if (images.length > 0) {
-                fetchResNames(images, 'image');
-            }
-            volumes = resource_facet.opt_list.filter(function(res) {
-                return res.substring(0, 4) == "vol-";
-            });
-            if (volumes.length > 0) {
-                fetchResNames(volumes, 'volume');
-            }
             // prune those lists since we have facet options now
             metric_facet.opt_list = undefined;
             resource_facet.opt_list = undefined;
             resource_type_facet.opt_list = undefined;
-            $scope.$broadcast("facets_updated", facets);
-            // set sticky table headers
-            $('table.table').stickyTableHeaders({scrollableArea: $(".split-top")});
+            */
         });
         vm.clearSelections = function() {
             vm.items.forEach(function(metric) {
                 metric._selected = false;
             });
         };
-        vm.clearFacetFilters = function() {
+        function clearFacetFilters() {
             vm.items.forEach(function(metric) {
                 metric._hide = false;
             });
