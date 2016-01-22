@@ -433,19 +433,32 @@ class SeleniumApi(object):
         k=1
         while is_visible and (k<4):
             print "Repeated click. Executing attempt " + str(k)
-            element.click()
+            try:
+                element.click()
+            except Exception, e:
+                print str(k) + "-th attempt to click unsuccessful."
+                self.close_browser()
+                raise
             time.sleep(1)
             is_visible = self.check_visibility_by_id(element_to_disappear_id)
             k=k+1
-
         while is_visible and (k<7):
             print "Hitting enter. Executing attempt " + str(k)
-            self.send_keys_by_id(element_id, "\n", clear_field=False)
+            try:
+                self.send_keys_by_id(element_id, "\n", clear_field=False)
+            except Exception, e:
+                print str(k) + "-th attempt to hit enter unsuccessful."
+                self.close_browser()
+                raise
             time.sleep(1)
             is_visible = self.check_visibility_by_id(element_to_disappear_id)
             k=k+1
-
-
+        try:
+            is_visible
+        except Exception, e:
+            print "ERROR: click_by_id_resilient on element by id={0} has failed.".format(element_id)
+            self.close_browser()
+            raise
 
 
     def click_element_by_id_covert(self, element_id):
