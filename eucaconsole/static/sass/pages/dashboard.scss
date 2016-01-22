@@ -154,11 +154,16 @@ $tile-row-height: 24px;
 li#alarms {
     .tile {
         .content {
-            padding-top: 1.6rem;
+            padding-top: 0.8rem;
             width: 100%;
             text-align: center;
         }
     }
+}
+
+// replace fa-4x or fa-5x
+.euca-dash-size {
+    font-size: 4.43em;
 }
 
 // SVG icons
