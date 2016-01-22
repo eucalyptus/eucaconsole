@@ -16,7 +16,7 @@ angular.module('ElasticIPPage', [])
             $scope.setFocus();
         };
         $scope.activateWidget = function () {
-            $('#instance_id').chosen({'width': '80%'});
+            $('#instance_id').chosen({'width': '80%', search_contains: true});
         };
         $scope.setWatch = function () {
             $(document).on('submit', '[data-reveal] form', function () {
