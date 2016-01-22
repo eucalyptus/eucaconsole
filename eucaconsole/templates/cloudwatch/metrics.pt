@@ -6,7 +6,7 @@
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/metrics.css')}" />
 </head>
 
-<div metal:fill-slot="main_content" ng-app="MetricsPage" ng-controller="MetricsCtrl as metricsCtrl" ng-init="metricsCtrl.initPage('${search_facets}', '${json_item_names_endpoint}')">
+<div metal:fill-slot="main_content" ng-app="MetricsPage" ng-controller="MetricsCtrl as metricsCtrl" ng-init="metricsCtrl.initPage('${json_item_names_endpoint}')">
     <div class="row" id="contentwrap" ng-controller="ItemsCtrl"
              ng-init="initController('metrics', '${initial_sort_key}', '${json_items_endpoint}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">

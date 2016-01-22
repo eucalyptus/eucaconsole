@@ -123,6 +123,47 @@ METRIC_CATEGORIES = [
     ),
 ]
 
+METRICS_FOR_ASG = [
+    'GroupDesiredCapacity',
+    'GroupInServiceInstances',
+    'GroupMaxSize',
+    'GroupMinSize',
+    'GroupPendingInstances',
+    'GroupTerminatingInstances',
+    'GroupTotalInstances'
+]
+
+METRICS_FOR_INSTANCE = [
+    'CPUUtilization',
+    'DiskReadBytes',
+    'DiskReadOps',
+    'DiskWriteBytes',
+    'DiskWriteOps',
+    'NetworkIn',
+    'NetworkOut',
+    'StatusCheckFailed',
+    'StatusCheckFailed_Instance',
+    'StatusCheckFailed_System'
+]
+
+METRICS_FOR_ELB = [
+    'HealthyHostCount',
+    'UnHealthyHostCount'
+]
+
+METRICS_FOR_VOLUME = [
+    'VolumeConsumedReadWriteOps',
+    'VolumeIdleTime',
+    'VolumeQueueLength',
+    'VolumeReadBytes',
+    'VolumeReadOps',
+    'VolumeThroughputPercentage',
+    'VolumeTotalReadTime',
+    'VolumeTotalWriteTime',
+    'VolumeWriteBytes',
+    'VolumeWriteOps'
+]
+
 
 class CloudWatchMetricsView(LandingPageView):
     """CloudWatch Metrics landing page view"""
@@ -140,8 +181,20 @@ class CloudWatchMetricsView(LandingPageView):
             dict(key='name', name=_(u'Name')),
         ]
         search_facets = [
-            {'name': 'cat_name', 'label': _(u"Resource type"), 'options': [
+            {'name': 'cat_name', 'label': _(u'Resource type'), 'options': [
                 {'key':cat['name'], 'label':cat['label']} for cat in METRIC_CATEGORIES
+            ]},
+            {'name': 'metric_name', 'label': _(u'Scaling group metric'), 'options': [
+                {'key':metric, 'label':metric} for metric in METRICS_FOR_ASG
+            ]},
+            {'name': 'metric_name', 'label': _(u'Instance metric'), 'options': [
+                {'key':metric, 'label':metric} for metric in METRICS_FOR_INSTANCE
+            ]},
+            {'name': 'metric_name', 'label': _(u'Load balancer metric'), 'options': [
+                {'key':metric, 'label':metric} for metric in METRICS_FOR_ELB
+            ]},
+            {'name': 'metric_name', 'label': _(u'Volume metric'), 'options': [
+                {'key':metric, 'label':metric} for metric in METRICS_FOR_VOLUME
             ]}
         ]
         self.render_dict = dict(
