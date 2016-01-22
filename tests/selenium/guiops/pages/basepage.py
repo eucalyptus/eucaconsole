@@ -66,17 +66,15 @@ class BasePage(SeleniumApi):
 
     def goto_keypair_view_page_via_menu(self):
         self.tester.scroll_to_element_by_id(self._keypair_menuitem_id)
-        #self.tester.send_keys_by_id(self._keypair_menuitem_id, "\n", clear_field=False)
         self.tester.click_element_by_id_robust(self._keypair_menuitem_id, "create-keypair-btn")
 
     def goto_images_view_via_menu(self):
         self.tester.scroll_to_element_by_id(self._images_menuitem_id)
-        self.tester.click_element_by_id_robust(self._images_menuitem_id, "li.current>a:contains('Images')")
+        self.tester.click_element_by_css_robust(self._images_menuitem_css, "li.current>a:contains('Images')")
 
     def goto_instances_via_menu(self):
         self.tester.scroll_to_element_by_id(self._instances_menuitem_id)
-        #self.tester.send_keys_by_id(self._instances_menuitem_id, "\n", clear_field=False)
-        self.tester.click_element_by_id_robust(self._instances_menuitem_id, self._refresh_button_from_lp_id)
+        self.tester.click_element_by_id_robust(self._instances_menuitem_id, "terminate-instances-btn")
 
     def goto_stacks_view_via_menu(self):
         self.tester.scroll_to_element_by_id(self._stacks_menuitem_id)
@@ -88,7 +86,7 @@ class BasePage(SeleniumApi):
 
     def goto_security_groups_view_via_menu(self):
         self.tester.scroll_to_element_by_id(self._sec_group_menuitem_id)
-        self.tester.send_keys_by_id(self._sec_group_menuitem_id, "\n", clear_field=False)
+        self.tester.click_element_by_id_robust(self._sec_group_menuitem_id, "create-securitygroup-btn")
 
     def goto_load_balancers_view_via_menu(self):
         self.tester.scroll_to_element_by_id(self._load_balancers_menuitem_id)
@@ -108,11 +106,11 @@ class BasePage(SeleniumApi):
 
     def goto_asg_lp_via_menu(self):
         self.tester.scroll_to_element_by_id(self._autoscaling_menuitem_id)
-        self.tester.click_element_by_id_robust(self._autoscaling_menuitem_id, self._refresh_button_from_lp_id)
+        self.tester.click_element_by_id_robust(self._autoscaling_menuitem_id, "create-scalinggroup-btn")
 
     def goto_launch_config_view_via_menu(self):
         self.tester.scroll_to_element_by_id(self._launchconfigs_menuitem_id)
-        self.tester.send_keys_by_id(self._launchconfigs_menuitem_id, "\n", clear_field=False)
+        self.tester.click_element_by_id_robust(self._launchconfigs_menuitem_id, "create-launchconfig-btn")
 
     def goto_iam_users_view_via_menu(self):
         self.tester.scroll_to_element_by_id(self._iam_users_menuitem_id)
