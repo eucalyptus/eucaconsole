@@ -24,7 +24,7 @@ class AutoScalingOperationsSequence(GuiOps):
         self.tester.login(self.account, self.user, self.password)
         launchconfig1_name = self.id_generator() + "-launch-config"
         scalinggroup1_name = self.id_generator() + "-auto-scaling-group"
-        self.tester.create_launch_config_and_asg_from_lc_lp(lc_name=launchconfig1_name, asg_name=scalinggroup1_name)
+        self.tester.create_launch_config_and_asg_from_lc_lp(lc_name=launchconfig1_name, asg_name=scalinggroup1_name,max_capacity=2,desired_capacity=1,min_cpapacity=0)
         self.tester.delete_asg_from_lp(scalinggroup1_name)
         scalinggroup2_name = self.id_generator() + "-auto-scaling-group"
         self.tester.create_asg_from_asg_lp(launch_config_name=launchconfig1_name, asg_name=scalinggroup2_name)
