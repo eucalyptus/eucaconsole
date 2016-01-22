@@ -108,6 +108,19 @@
             <span i18n:translate="">Launch configurations</span>
         </a>
     </li>
+    <label i18n:translate="">CLOUDWATCH</label>
+    <li>
+        <a id="resource-menuitem-alarms" href="${request.route_path('cloudwatch_alarms')}">
+            <i class="icon alarms"></i>
+            <span i18n:translate="">Alarms</span>
+        </a>
+    </li>
+    <li>
+        <a id="resource-menuitem-metrics" href="${request.route_path('cloudwatch_metrics')}">
+            <i class="icon metrics"></i>
+            <span i18n:translate="">Metrics</span>
+        </a>
+    </li>
     <div tal:condition="layout.user_access or layout.group_access or layout.role_access" tal:omit-tag="">
         <label i18n:translate="">IDENTITY &amp; ACCESS</label>
         <li tal:condition="layout.account_access">
