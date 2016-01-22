@@ -64,7 +64,9 @@ class CloudWatchAlarmsView(LandingPageView):
         self.filter_keys = ['name']
         # sort_keys are passed to sorting drop-down
         self.sort_keys = [
+            dict(key='state', name=_(u'State')),
             dict(key='name', name=_(u'Name')),
+            dict(key='metric', name=_(u'Metric')),
         ]
         self.render_dict = dict(
             filter_keys=self.filter_keys,
@@ -72,6 +74,7 @@ class CloudWatchAlarmsView(LandingPageView):
             prefix=self.prefix,
             initial_sort_key=self.initial_sort_key,
             json_items_endpoint=self.request.route_path('cloudwatch_alarms_json'),
+            search_facets=[],
         )
 
     @view_config(route_name='cloudwatch_alarms', renderer=TEMPLATE, request_method='GET')
@@ -159,12 +162,18 @@ class CloudWatchAlarmsJsonView(BaseView):
             for alarm in items:
                 alarms.append(dict(
                     name=alarm.name,
+                    description=alarm.description,
+                    ok_actions=alarm.ok_actions,
+                    alarm_actions=alarm.alarm_actions,
+                    insufficient_data_actions=alarm.insufficient_data_actions,
+                    dimensions=alarm.dimensions,
                     statistic=alarm.statistic,
                     metric=alarm.metric,
                     period=alarm.period,
                     comparison=alarm.comparison,
                     threshold=alarm.threshold,
                     unit=alarm.unit,
+                    state=alarm.state_value,
                 ))
             return dict(results=alarms)
 

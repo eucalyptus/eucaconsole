@@ -70,8 +70,7 @@ class DashboardView(BaseView):
     @view_config(route_name='dashboard', request_method='GET', renderer='../templates/dashboard.pt')
     def dashboard_home(self):
         with boto_error_handler(self.request):
-            region = self.request.session.get('region')
-            availability_zones = ChoicesManager(self.conn).get_availability_zones(region)
+            availability_zones = ChoicesManager(self.conn).get_availability_zones(self.region)
             alarms_triggered = self.get_connection(conn_type='cloudwatch').describe_alarms(state_value="ALARM")
         tiles = self.request.cookies.get(u"{0}_dash_order".format(
             self.request.session['account' if self.cloud_type == 'euca' else 'access_id']))

@@ -1,4 +1,4 @@
-/* @fileOverview CloudWatch Alarms landing page CSS */
+/* @fileOverview CloudWatch Metrics landing page CSS */
 /* Dropdown elements */
 /* Set the link colors and styles for top-level nav */
 /* ----------------------------------------- Item list
@@ -141,13 +141,26 @@ table.expando tr.even, table.expando tr.alt, table.expando tr:nth-of-type(even) 
 .expando-tiles li div:nth-of-type(1) { float: left; }
 .expando-tiles li div:nth-of-type(2) { clear: both; }
 
-.gridwrapper .table tr th.alarm-actions { text-align: center; }
-.gridwrapper .table tr td.id { max-width: none; }
-.gridwrapper .table tr td.dimensions { font-size: 0.6875rem; }
-.gridwrapper .table tr td.dimensions dt { font-weight: bold; }
-.gridwrapper .table tr td.alarm-actions { text-align: center; }
+table.expando td:nth-of-type(1) { width: 1rem; }
 
-.tile.item dl { font-size: 0.9em; display: inline-block; vertical-align: top; margin-bottom: 0; }
-.tile .footer.ok, .tile .footer.alarm, .tile .footer.insufficient-data { text-transform: none; }
-.tile .footer.ok { background-color: #008424; }
-.tile .footer.alarm { background-color: #F04124; }
+table td input[type="checkbox"] { margin: 0 0 0; }
+
+.chart-wrapper { background: #ffffff; }
+
+.split-top { height: 250px; overflow: auto; }
+
+.split-bar { height: 0.6rem; width: 100%; color: grey; background: #ffffff; cursor: row-resize; overflow-y: hidden; }
+.split-bar hr { margin: 4px 4px 4px 4px; }
+
+.split-bottom { position: relative; }
+
+select { width: 20rem; }
+
+.tile input[type="checkbox"] { position: relative; float: left; top: 9px; left: 5px; }
+.tile .dropdown.button.tiny { top: 5px !important; right: 2px !important; }
+
+#primary-buttons .button.more-actions { margin-left: 0px !important; }
+
+th.metric-action { text-align: right !important; }
+
+.metrics-selected { padding-top: 1.5rem; padding-left: 0.25rem; }
