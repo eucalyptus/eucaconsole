@@ -35,7 +35,7 @@ class BasePage(SeleniumApi):
     _iam_roles_menuitem_id = "resource-menuitem-roles"
     _notification_id="notifications"
     _page_title_id = "pagetitle"
-    _refresh_button_id = "refresh-btn"
+    _refresh_button_from_lp_id = "refresh-btn"
 
     def __init__(self, tester):
         self.tester = tester
@@ -67,19 +67,19 @@ class BasePage(SeleniumApi):
     def goto_keypair_view_page_via_menu(self):
         self.tester.scroll_to_element_by_id(self._keypair_menuitem_id)
         #self.tester.send_keys_by_id(self._keypair_menuitem_id, "\n", clear_field=False)
-        self.tester.click_element_by_id_robust(self._keypair_menuitem_id, self._refresh_button_id)
+        self.tester.click_element_by_id_robust(self._keypair_menuitem_id, self._refresh_button_from_lp_id)
 
     def goto_images_view_via_menu(self):
         self.tester.scroll_to_element_by_id(self._images_menuitem_id)
         #self.tester.click_element_by_xpath(self._images_parent_xpath)
         #self.tester.click_element_by_css(self._images_menuitem_css)
-        self.tester.click_element_by_id_robust(self._images_menuitem_id, self._refresh_button_id)
+        self.tester.click_element_by_id_robust(self._images_menuitem_id, self._refresh_button_from_lp_id)
         #self.tester.send_keys_by_id(self._images_menuitem_id, "\n", clear_field=False)
 
     def goto_instances_via_menu(self):
         self.tester.scroll_to_element_by_id(self._instances_menuitem_id)
         #self.tester.send_keys_by_id(self._instances_menuitem_id, "\n", clear_field=False)
-        self.tester.click_element_by_id_robust(self._instances_menuitem_id, self._refresh_button_id)
+        self.tester.click_element_by_id_robust(self._instances_menuitem_id, self._refresh_button_from_lp_id)
 
     def goto_stacks_view_via_menu(self):
         self.tester.scroll_to_element_by_id(self._stacks_menuitem_id)

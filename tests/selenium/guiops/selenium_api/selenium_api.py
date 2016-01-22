@@ -246,6 +246,25 @@ class SeleniumApi(object):
             print "Element by id = '{0}' not enabled.".format(element_id)
             return False
 
+    def verify_enabled_by_css(self, css):
+        """
+        Waits for an element to become enabled.
+        :param css:
+        """
+        print "Checking if element by_css ('{0}') is enabled".format(css)
+
+        try:
+            for i in range(1, 30):
+                element = self.driver.find_element_by_css_selector(css)
+                if element.is_enabled():
+                    print "Element by css = " + css + " is enabled "
+                    time.sleep(1)
+                    break
+                else:
+                    print "Waiting for element by css = " + css + " to become enabled "
+        except TimeoutException:
+            print "Element by icss = '{0}' not enabled.".format(css)
+            return False
 
     def wait_for_clickable_by_id(self, element_id):
         """
@@ -358,6 +377,42 @@ class SeleniumApi(object):
                     print str(k) + "-th attempt to hit enter unsuccessful."
                 is_visible = self.check_visibility_by_id(element_id_on_next_page)
                 k=k+1
+
+    def click_element_by_css_robust(self, css, element_css_on_next_page):
+        """
+        Waits for an element to be enabled such that you can click it.
+        Clicks the element, checks if element is still visible, hits enter on element if visible up to 5 times.
+        :param element_id:
+        """
+        print "Executing click_element_by_css_robust ('{0}')".format(css)
+        self.verify_enabled_by_css(css)
+        self.click_element_by_css(css)
+
+        is_visible = self.check_visibility_by_css(element_css_on_next_page)
+        k=1
+        while not is_visible and (k < 4):
+                try:
+                    time.sleep(1)
+                    print "Repeated click. Executing attempt " + str(k)
+                    self.click_element_by_css(css)
+                except Exception, e:
+                    print str(k) + "-th attempt to click unsuccessful."
+                is_visible = self.check_visibility_by_css(element_css_on_next_page)
+                k=k+1
+
+        while not is_visible and (k < 7):
+                try:
+                    time.sleep(1)
+                    print "Hitting enter. Executing attempt " + str(k)
+                    self.send_keys_by_css(css, "\n", clear_field=False)
+                except Exception, e:
+                    print str(k) + "-th attempt to hit enter unsuccessful."
+                is_visible = self.check_visibility_by_css(element_css_on_next_page)
+                k=k+1
+
+        if not is_visible:
+            print "ERROR: click_robust_by_css on element by css={0} has failed.".format(css)
+
 
     def click_element_by_id_resilient(self, element_id):
         """

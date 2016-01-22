@@ -42,12 +42,11 @@ class ASGDetailPage(DetailPage):
         """
         Checks if Scaling History tab is already open. Opens Scaling History tab if not.
         """
+        _refresh_button_css_in_history_tab = "#refresh-btn"
         tab = self.tester.store_text_by_css(self._active_tab_css)
         print "Found active tab {0}".format(tab)
         if tab != "Scaling history":
-            self.tester.wait_for_clickable_by_css(self._scaling_history_tab_css.format(asg_name))
-            time.sleep(1)
-            self.tester.click_element_by_css(self._scaling_history_tab_css.format(asg_name))
+            self.tester.click_element_by_css_robust(self._scaling_history_tab_css.format(asg_name), _refresh_button_css_in_history_tab)
         else:
             pass
 
@@ -108,7 +107,6 @@ class ASGDetailPage(DetailPage):
         if self.tester.check_visibility_by_id(self._next_step_modal_id):
             self.tester.click_element_by_id(self._do_notshow_again_checkbox_id)
             self.tester.click_element_by_css(self._close_modal_x_css)
-            time.sleep(2)
         self.goto_scaling_history_tab(asg_name)
         self.tester.wait_for_clickable_by_css(self._scaling_history_first_row_expando_css)
         self.tester.click_element_by_css(self._scaling_history_first_row_expando_css)
