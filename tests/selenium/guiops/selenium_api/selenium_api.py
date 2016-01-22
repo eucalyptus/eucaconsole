@@ -397,42 +397,54 @@ class SeleniumApi(object):
                     self.click_element_by_css(css)
                 except Exception, e:
                     print str(k) + "-th attempt to click unsuccessful."
+                    self.close_browser()
+                    raise
                 is_visible = self.check_visibility_by_css(element_css_on_next_page)
                 k=k+1
 
         while not is_visible and (k < 7):
-                try:
-                    time.sleep(1)
-                    print "Hitting enter. Executing attempt " + str(k)
-                    self.send_keys_by_css(css, "\n", clear_field=False)
-                except Exception, e:
-                    print str(k) + "-th attempt to hit enter unsuccessful."
-                is_visible = self.check_visibility_by_css(element_css_on_next_page)
-                k=k+1
+            try:
+                time.sleep(1)
+                print "Hitting enter. Executing attempt " + str(k)
+                self.send_keys_by_css(css, "\n", clear_field=False)
+            except Exception, e:
+                print str(k) + "-th attempt to hit enter unsuccessful."
+                self.close_browser()
+                raise
+            is_visible = self.check_visibility_by_css(element_css_on_next_page)
+            k=k+1
+            try:
+                is_visible
+            except Exception, e:
+                print "ERROR: click_robust_by_css on element by css={0} has failed.".format(css)
+                self.close_browser()
+                raise
 
-        if not is_visible:
-            print "ERROR: click_robust_by_css on element by css={0} has failed.".format(css)
 
-
-    def click_element_by_id_resilient(self, element_id):
+    def click_element_by_id_resilient(self, element_id, element_to_disappear_id):
         """
-        Method will verify that element is enabled and try performing a click. If element is stale, then perform click again.
+        Method will verify that element is enabled and try performing a click and hit enter until given element disappears.
         """
         print "Executing click_element_by_id_resilient ('{0}')".format(element_id)
         self.verify_enabled_by_id(element_id)
         element = self.driver.find_element_by_id(element_id)
-        try:
+        element.click()
+        is_visible = self.check_visibility_by_id(element_to_disappear_id)
+        k=1
+        while is_visible and (k<4):
+            print "Repeated click. Executing attempt " + str(k)
             element.click()
-            print "Clicking on element by id = ('{0}')".format(element_id)
-        except StaleElementReferenceException:
-            print "WARNING: Stale elemnt by id = ('{0}') detected".format(element_id)
             time.sleep(1)
-            element = self.driver.find_element_by_id(element_id)
-            element.click()
-        except Exception, e:
-            print "ERROR: Could not perform click on element by id = ('{0}')".format(element_id)
-            self.close_browser()
-            raise
+            is_visible = self.check_visibility_by_id(element_to_disappear_id)
+            k=k+1
+
+        while is_visible and (k<7):
+            print "Hitting enter. Executing attempt " + str(k)
+            self.send_keys_by_id(element_id, "\n", clear_field=False)
+            time.sleep(1)
+            is_visible = self.check_visibility_by_id(element_to_disappear_id)
+            k=k+1
+
 
 
 
