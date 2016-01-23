@@ -98,6 +98,15 @@ class ASGDetailPage(DetailPage):
             self.tester.click_element_by_id(self._desired_capacity_field_id)  # Validation error workaround
         self.tester.click_element_by_id(self._save_changes_button_id)
 
+    def verify_capacity_entries(self, min_capacity=0, desired_capacity=0, max_capacity=0):
+        min_field_value = self.tester.driver.find_element_by_id(self._min_capacity_field_id).get_attribute('value')
+        desired_field_value = self.tester.driver.find_element_by_id(
+                self._desired_capacity_field_id).get_attribute('value')
+        max_field_value = self.tester.driver.find_element_by_id(self._max_capacity_field_id).get_attribute('value')
+        assert min_capacity == int(min_field_value)
+        assert desired_capacity == int(desired_field_value)
+        assert max_capacity == int(max_field_value)
+
     def change_launch_configuration_on_detail_page(self, asg_name, launch_config_name):
         self.goto_general_tab(asg_name)
         self.tester.click_element_by_css(self._launch_config_dropdown_css)
