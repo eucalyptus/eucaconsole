@@ -86,13 +86,16 @@ class ASGDetailPage(DetailPage):
         self.tester.click_element_by_css(DetailPage._actions_menu_css)
         self.tester.click_element_by_id(self._delete_asg_action_menuitem_id)
 
-    def change_capacity_on_detail_page(self, min=None, desired=None, max=None):
-        if min is not None:
-            self.tester.send_keys_by_id(self._min_capacity_field_id, min)
-        if max is not None:
-            self.tester.send_keys_by_id(self._max_capacity_field_id, max)
-        if desired is not None:
-            self.tester.send_keys_by_id(self._desired_capacity_field_id, desired)
+    def change_capacity_on_detail_page(self, min_capacity=None, desired_capacity=None, max_capacity=None):
+        if min_capacity is not None:
+            self.tester.send_keys_by_id(self._min_capacity_field_id, min_capacity)
+            self.tester.click_element_by_id(self._min_capacity_field_id)  # Validation error workaround
+        if max_capacity is not None:
+            self.tester.send_keys_by_id(self._max_capacity_field_id, max_capacity)
+            self.tester.click_element_by_id(self._max_capacity_field_id)  # Validation error workaround
+        if desired_capacity is not None:
+            self.tester.send_keys_by_id(self._desired_capacity_field_id, desired_capacity)
+            self.tester.click_element_by_id(self._desired_capacity_field_id)  # Validation error workaround
         self.tester.click_element_by_id(self._save_changes_button_id)
 
     def change_launch_configuration_on_detail_page(self, asg_name, launch_config_name):

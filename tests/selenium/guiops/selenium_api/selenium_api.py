@@ -378,6 +378,7 @@ class SeleniumApi(object):
         """
         Waits for an element to be enabled such that you can click it.
         Clicks the element, checks if element is still visible, hits enter on element if visible up to 5 times.
+        :param element_id_on_next_page:
         :param element_id:
         """
         print "Executing click_element_by_id_robust ('{0}')".format(element_id)
