@@ -164,3 +164,5 @@ select { width: 20rem; }
 th.metric-action { text-align: right !important; }
 
 .metrics-selected { padding-top: 1.5rem; padding-left: 0.25rem; }
+
+magic-search .f-dropdown { min-width: 15rem; }

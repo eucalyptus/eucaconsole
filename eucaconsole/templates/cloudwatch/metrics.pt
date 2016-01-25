@@ -6,7 +6,7 @@
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/metrics.css')}" />
 </head>
 
-<div metal:fill-slot="main_content" ng-app="MetricsPage" ng-controller="MetricsCtrl as metricsCtrl" ng-init="metricsCtrl.initPage('${search_facets}', '${json_item_names_endpoint}')">
+<div metal:fill-slot="main_content" ng-app="MetricsPage" ng-controller="MetricsCtrl as metricsCtrl" ng-init="metricsCtrl.initPage('${json_item_names_endpoint}')">
     <div class="row" id="contentwrap" ng-controller="ItemsCtrl"
              ng-init="initController('metrics', '${initial_sort_key}', '${json_items_endpoint}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
@@ -70,7 +70,7 @@
                                 
                                     <metal:block metal:define-slot="tile_header">
                                         <strong>
-                                            <span>{{ item.metric_name }}</span>
+                                            <span>{{ item.metric_label }}</span>
                                         </strong>
                                          
                                     </metal:block>
@@ -132,7 +132,7 @@
                                             All instances
                                         </span>
                                     </td>
-                                    <td ng-if="item.heading != true">{{ item.metric_name }}</td>
+                                    <td ng-if="item.heading != true">{{ item.metric_label }}</td>
                                     <td ng-if="item.heading != true">
                                         <span class="actions" ng-show="item.status !== 'deleting'">
                                             <a id="table-item-dropdown_{{ item.unique_id }}" class="tiny secondary button dropdown right round" data-dropdown="item-dropdown_{{ item.unique_id }}"><i class="grid-action"></i></a>
@@ -167,7 +167,7 @@
                     <div ng-controller="CloudWatchChartsCtrl as chartsCtrl"
                         ng-init="chartsCtrl.initController('${chart_options_json}')">
                         <div class="chart-wrapper" ng-repeat="chart in items | filter:{ _selected: true }" ng-cloak="true">
-                            <h6>{{ chart.resources[0].res_id }} - {{ chart.metric_name }}<i class="busy"></i></h6>
+                            <h6>{{ chart.resources[0].res_id }} - {{ chart.metric_label }}<i class="busy"></i></h6>
                             <svg cloudwatch-chart="" id="cwchart-{{ chart.unique_id }}" class="cwchart"
                                  ids="{{ chart.resources[0].res_id }}" idtype="{{ chart.resources[0].res_type }}" metric="{{ chart.metric_name }}"
                                  duration="{{ chartsCtrl.duration }}" unit="{{ chart.unit }}"
