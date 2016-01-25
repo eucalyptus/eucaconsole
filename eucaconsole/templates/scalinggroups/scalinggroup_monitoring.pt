@@ -82,10 +82,10 @@
                 <div tal:condition="launchconfig_monitoring_enabled and not metrics_collection_enabled"
                      id="metrics-collection-disabled-notice">
                     <p i18n:translate="">
-                        Metrics collection is currently disabled for this scaling group.
+                        Auto scaling metrics are not collected for this scaling group until monitoring is turned on.
                     </p>
                     <button ng-click="chartsCtrl.submitMonitoringForm()">
-                        <span i18n:translate="">Enable Metrics Collection for this Scaling Group</span>
+                        <span i18n:translate="">Turn Monitoring On for this Scaling Group</span>
                     </button>
                 </div>
                 <ul class="small-block-grid-1 medium-block-grid-2 large-block-grid-3" id="charts-container"
