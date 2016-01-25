@@ -29,7 +29,6 @@ Pyramid views for Eucalyptus and AWS CloudWatch metrics
 
 """
 import copy
-import re
 import simplejson as json
 
 from pyramid.view import view_config
@@ -317,7 +316,7 @@ class CloudWatchMetricsJsonView(BaseView):
                         res_types=res_types,
                         unit=unit[0] if unit else '',
                         metric_name=metric_name,
-                        metric_label=METRIC_LABEL[metric_name] if metric_name in METRIC_LABEL else metric_name
+                        metric_label=METRIC_LABEL.get(metric_name) or metric_name
                     ))
                 metrics.append(dict(
                     heading=True,
