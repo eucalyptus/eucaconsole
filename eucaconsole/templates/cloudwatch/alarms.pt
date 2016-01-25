@@ -116,6 +116,14 @@
             </metal:block>
         </div>
         <!--! Modal dialogs -->
+
+        <!--! Create Alarm modal dialog -->
+        ${panel('create_alarm_dialog', alarm_form=alarm_form, redirect_location=create_alarm_redirect, metric_unit_mapping=metric_unit_mapping)}
+        <!--! /end modal dialogs -->
+
+        <!--! Delete Alarm modal dialog -->
+        ${panel('delete_alarm_dialog')} <!--, alarm_form=alarm_form, redirect_location=create_alarm_redirect, metric_unit_mapping=metric_unit_mapping)}-->
+        <!--! /end modal dialogs -->
     </div>
 </div>
 
