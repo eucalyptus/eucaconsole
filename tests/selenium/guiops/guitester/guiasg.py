@@ -91,3 +91,4 @@ class GuiASG(GuiTester):
         ASGLanding(self).goto_asg_detail_page_via_link(asg_name)
         ASGDetailPage(self).goto_general_tab(asg_name)
         ASGDetailPage(self).change_capacity_on_detail_page(min_capacity, desired_capacity, max_capacity)
+        ASGDetailPage(self).verify_capacity_entries(min_capacity, desired_capacity, max_capacity)

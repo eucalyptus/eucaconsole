@@ -91,7 +91,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
                 yFormat = '.2f';
             }
 
-            if (params.maxValue && params.maxValue < 10) {
+            if (params.maxValue && params.maxValue < 10 && params.unit !== 'Count') {
                 chart.forceY([0, params.maxValue]);
                 yFormat = '0.2f';
             }

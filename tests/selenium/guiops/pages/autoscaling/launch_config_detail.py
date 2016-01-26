@@ -5,12 +5,12 @@ class LaunchConfigDetailPage(DetailPage):
 
     def __init__(self, tester):
         self.tester = tester
+        self.print_test_context()
 
-    _lc_detail_page_title = "Details for launch configuration: {0}" #lc name required
+    _lc_detail_page_title = "Details for launch configuration: {0}"  # lc name required
     _delete_lc_action_menuitem_id = "delete-launchconfig-action"
     _create_lc_like_this_action_menuitem_id = "create-another-launchconfig-action"
     _create_asg_action_menuitem_id = "create-scalinggroup-action"
-
 
     def verify_lc_detail_page_loaded(self, lc_name):
         """

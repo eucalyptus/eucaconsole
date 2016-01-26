@@ -1,11 +1,10 @@
-import time
-
 from pages.detailpage import DetailPage
 
 
 class ASGDetailPage(DetailPage):
     def __init__(self, tester):
         self.tester = tester
+        self.print_test_context()
 
     _asg_detail_page_title = "Details for scaling group: {0}"  # asg name required
     _next_step_modal_id = "nextstep-scalinggroup-modal"
@@ -87,14 +86,26 @@ class ASGDetailPage(DetailPage):
         self.tester.click_element_by_css(DetailPage._actions_menu_css)
         self.tester.click_element_by_id(self._delete_asg_action_menuitem_id)
 
-    def change_capacity_on_detail_page(self, min=None, desired=None, max=None):
-        if min is not None:
-            self.tester.send_keys_by_id(self._min_capacity_field_id, min)
-        if max is not None:
-            self.tester.send_keys_by_id(self._max_capacity_field_id, max)
-        if desired is not None:
-            self.tester.send_keys_by_id(self._desired_capacity_field_id, desired)
+    def change_capacity_on_detail_page(self, min_capacity=None, desired_capacity=None, max_capacity=None):
+        if min_capacity is not None:
+            self.tester.send_keys_by_id(self._min_capacity_field_id, min_capacity)
+            self.tester.click_element_by_id(self._min_capacity_field_id)  # Validation error workaround
+        if max_capacity is not None:
+            self.tester.send_keys_by_id(self._max_capacity_field_id, max_capacity)
+            self.tester.click_element_by_id(self._max_capacity_field_id)  # Validation error workaround
+        if desired_capacity is not None:
+            self.tester.send_keys_by_id(self._desired_capacity_field_id, desired_capacity)
+            self.tester.click_element_by_id(self._desired_capacity_field_id)  # Validation error workaround
         self.tester.click_element_by_id(self._save_changes_button_id)
+
+    def verify_capacity_entries(self, min_capacity=0, desired_capacity=0, max_capacity=0):
+        min_field_value = self.tester.driver.find_element_by_id(self._min_capacity_field_id).get_attribute('value')
+        desired_field_value = self.tester.driver.find_element_by_id(
+                self._desired_capacity_field_id).get_attribute('value')
+        max_field_value = self.tester.driver.find_element_by_id(self._max_capacity_field_id).get_attribute('value')
+        assert min_capacity == int(min_field_value)
+        assert desired_capacity == int(desired_field_value)
+        assert max_capacity == int(max_field_value)
 
     def change_launch_configuration_on_detail_page(self, asg_name, launch_config_name):
         self.goto_general_tab(asg_name)

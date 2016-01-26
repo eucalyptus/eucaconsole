@@ -5,6 +5,7 @@ from pages.basepage import BasePage
 class CreateLaunchConfigPage(BasePage):
     def __init__(self, tester):
         self.tester = tester
+        self.print_test_context()
         self.verify_create_lc_page_loaded()
 
     _page_title = "Create new launch configuration"
