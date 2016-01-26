@@ -52,6 +52,15 @@ $tile-row-height: 24px;
             font-weight: 500;
             margin: 0 0 0 0;
         }
+        i.fa-bell {
+            color: white !important;
+        }
+        i.dash-no-alarms {
+            color: $hp-gray-65 !important;
+        }
+        i.dash-alarms {
+            color: red !important;
+        }
         .icon {  // Font icons
             position: absolute;
             top: 20%; left: 50%; margin-left: -($dashboard-panel-icon-size/2);
@@ -140,6 +149,21 @@ $tile-row-height: 24px;
             }
         }
     }
+}
+
+li#alarms {
+    .tile {
+        .content {
+            padding-top: 0.8rem;
+            width: 100%;
+            text-align: center;
+        }
+    }
+}
+
+// replace fa-4x or fa-5x
+.euca-dash-size {
+    font-size: 4.43em;
 }
 
 // SVG icons
