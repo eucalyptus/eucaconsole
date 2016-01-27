@@ -45,7 +45,8 @@ from pyramid.view import view_config
 from ..constants.cloudwatch import (
     METRIC_TYPES, MONITORING_DURATION_CHOICES, STATISTIC_CHOICES, GRANULARITY_CHOICES,
     DURATION_GRANULARITY_CHOICES_MAPPING)
-from ..constants.scalinggroups import SCALING_GROUP_MONITORING_CHARTS_LIST
+from ..constants.scalinggroups import (
+    SCALING_GROUP_MONITORING_CHARTS_LIST, SCALING_GROUP_INSTANCE_MONITORING_CHARTS_LIST)
 from ..forms.alarms import CloudWatchAlarmCreateForm
 from ..forms.scalinggroups import (
     ScalingGroupDeleteForm, ScalingGroupEditForm, ScalingGroupMonitoringForm,
@@ -972,11 +973,13 @@ class ScalingGroupMonitoringView(BaseScalingGroupView):
                 return HTTPFound(location=location)
 
     def get_controller_options_json(self):
+        charts_list = SCALING_GROUP_MONITORING_CHARTS_LIST
+        charts_list.extend(SCALING_GROUP_INSTANCE_MONITORING_CHARTS_LIST)
         if not self.scaling_group:
             return ''
         return BaseView.escape_json(json.dumps({
             'metric_title_mapping': {},
-            'charts_list': SCALING_GROUP_MONITORING_CHARTS_LIST,
+            'charts_list': charts_list,
             'granularity_choices': GRANULARITY_CHOICES,
             'duration_granularities_mapping': DURATION_GRANULARITY_CHOICES_MAPPING,
         }))
