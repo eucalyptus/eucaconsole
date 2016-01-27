@@ -81,30 +81,30 @@ INSTANCE_EMPTY_DATA_MESSAGE = _('No data available for instances in the scaling 
 SCALING_GROUP_INSTANCE_MONITORING_CHARTS_LIST = [
     {
         'metric': 'CPUUtilization', 'unit': 'Percent', 'statistic': 'Average', 'namespace': 'EC2',
-        'empty_msg': INSTANCE_EMPTY_DATA_MESSAGE,
+        'title': _(u'CPU utilization %'), 'empty_msg': INSTANCE_EMPTY_DATA_MESSAGE,
     },
     {
         'metric': 'DiskReadBytes', 'unit': 'Bytes', 'statistic': 'Average', 'namespace': 'EC2',
-        'empty_msg': INSTANCE_EMPTY_DATA_MESSAGE,
+        'title': _(u'Disk read data'), 'empty_msg': INSTANCE_EMPTY_DATA_MESSAGE,
     },
     {
         'metric': 'DiskReadOps', 'unit': 'Count', 'statistic': 'Average', 'namespace': 'EC2',
-        'empty_msg': INSTANCE_EMPTY_DATA_MESSAGE,
+        'title': _(u'Disk read operations'), 'empty_msg': INSTANCE_EMPTY_DATA_MESSAGE,
     },
     {
         'metric': 'DiskWriteBytes', 'unit': 'Bytes', 'statistic': 'Average', 'namespace': 'EC2',
-        'empty_msg': INSTANCE_EMPTY_DATA_MESSAGE,
+        'title': _(u'Disk write data'), 'empty_msg': INSTANCE_EMPTY_DATA_MESSAGE,
     },
     {
         'metric': 'DiskWriteOps', 'unit': 'Count', 'statistic': 'Average', 'namespace': 'EC2',
-        'empty_msg': INSTANCE_EMPTY_DATA_MESSAGE,
+        'title': _(u'Disk write operations'), 'empty_msg': INSTANCE_EMPTY_DATA_MESSAGE,
     },
     {
         'metric': 'NetworkIn', 'unit': 'Bytes', 'statistic': 'Average', 'namespace': 'EC2',
-        'empty_msg': INSTANCE_EMPTY_DATA_MESSAGE,
+        'title': _(u'Network in'), 'empty_msg': INSTANCE_EMPTY_DATA_MESSAGE,
     },
     {
         'metric': 'NetworkOut', 'unit': 'Bytes', 'statistic': 'Average', 'namespace': 'EC2',
-        'empty_msg': INSTANCE_EMPTY_DATA_MESSAGE,
+        'title': _(u'Network out'), 'empty_msg': INSTANCE_EMPTY_DATA_MESSAGE,
     },
 ]
