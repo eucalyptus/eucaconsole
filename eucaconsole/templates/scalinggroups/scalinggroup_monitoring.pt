@@ -35,7 +35,7 @@
                         <div class="duration-wrapper" tal:condition="launchconfig_monitoring_enabled">
                             <label for="monitoring-duration" class="left" i18n:translate="">Show data for</label>
                             <select name="monitoring_duration" id="monitoring-duration" ng-model="chartsCtrl.duration"
-                                    ng-change="chartsCtrl.refreshCharts()" class="duration-input">
+                                    ng-change="chartsCtrl.refreshCharts({'namespace': 'EC2'})" class="duration-input">
                                 <option tal:repeat="duration duration_choices" value="${duration[0]}">
                                     ${duration[1]}
                                 </option>
@@ -44,7 +44,7 @@
                     </div>
                     <div class="actions">
                         <span id="refresh-charts-icon" class="action-icon" title="Refresh data" i18n:attributes="title"
-                              ng-click="chartsCtrl.refreshCharts()"
+                              ng-click="chartsCtrl.refreshCharts({'namespace': 'EC2'})"
                               tal:condition="launchconfig_monitoring_enabled"><i class="fa fa-refresh"></i></span>
                     </div>
                 </div>
@@ -87,7 +87,7 @@
                         <div class="duration-wrapper" tal:condition="metrics_collection_enabled">
                             <label for="monitoring-duration" class="left" i18n:translate="">Show data for</label>
                             <select name="monitoring_duration" id="monitoring-duration" ng-model="chartsCtrl.duration"
-                                    ng-change="chartsCtrl.refreshCharts()" class="duration-input">
+                                    ng-change="chartsCtrl.refreshCharts({'namespace': 'AutoScaling'})" class="duration-input">
                                 <option tal:repeat="duration duration_choices" value="${duration[0]}">
                                     ${duration[1]}
                                 </option>
@@ -96,7 +96,7 @@
                     </div>
                     <div class="actions">
                         <span id="refresh-charts-icon" class="action-icon" title="Refresh data" i18n:attributes="title"
-                              ng-click="chartsCtrl.refreshCharts()"
+                              ng-click="chartsCtrl.refreshCharts({'namespace': 'AutoScaling'})"
                               tal:condition="metrics_collection_enabled"><i class="fa fa-refresh"></i></span>
                         <span id="enable-monitoring-icon" class="action-icon dropdown"
                               tal:condition="launchconfig_monitoring_enabled"
