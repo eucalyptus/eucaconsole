@@ -28,7 +28,7 @@
                 <dd><a href="${request.route_path('scalinggroup_instances', id=scaling_group.name)}">Instances</a></dd>
                 <dd class="active"><a href="#">Monitoring</a></dd>
             </dl>
-            <div class="panel no-title cloudwatch-charts" id="ec2-metrics">
+            <div class="panel no-title cloudwatch-charts">
                 <h4 i18n:translate="">Instance metrics</h4>
                 <div class="toprow">
                     <div class="blurb">
@@ -65,9 +65,9 @@
                         <span tal:condition="layout.cloud_type == 'aws'">detailed instance monitoring enabled.</span>
                     </p>
                 </div>
-                <ul class="small-block-grid-1 medium-block-grid-2 large-block-grid-3" id="charts-container"
+                <ul class="small-block-grid-1 medium-block-grid-2 large-block-grid-3" id="charts-container-ec2"
                         tal:condition="launchconfig_monitoring_enabled">
-                    <li class="chart-wrapper" ng-repeat="chart in chartsCtrl.chartsList | filter: {namespace: 'EC2'}" ng-cloak="">
+                    <li class="chart-wrapper" ng-repeat="chart in chartsCtrl.chartsList | filter: {namespace: 'EC2'} track by $index" ng-cloak="">
                         <h6 ng-attr-title="{{ chart.help }}">{{ chart.title }}<i class="busy"></i></h6>
                         <div ng-show="chartsCtrl.emptyMessages[chart.metric]" class="empty-message-wrapper">
                             <div class="empty-message">{{ chartsCtrl.emptyMessages[chart.metric] }}</div>
@@ -80,8 +80,7 @@
                         </svg>
                     </li>
                 </ul>
-            </div>
-            <div class="panel no-title cloudwatch-charts" id="autoscaling-metrics">
+                <hr />
                 <h4 i18n:translate="">Scaling group metrics</h4>
                 <div class="toprow">
                     <div class="blurb">
@@ -142,9 +141,9 @@
                         <span i18n:translate="">Turn Monitoring On for this Scaling Group</span>
                     </button>
                 </div>
-                <ul class="small-block-grid-1 medium-block-grid-2 large-block-grid-3" id="charts-container"
+                <ul class="small-block-grid-1 medium-block-grid-2 large-block-grid-3" id="charts-container-autoscaling"
                         tal:condition="metrics_collection_enabled">
-                    <li class="chart-wrapper" ng-repeat="chart in chartsCtrl.chartsList | filter: {namespace: 'AutoScaling'}" ng-cloak="">
+                    <li class="chart-wrapper" ng-repeat="chart in chartsCtrl.chartsList | filter: {namespace: 'AutoScaling'} track by $index" ng-cloak="">
                         <h6 ng-attr-title="{{ chart.help }}">{{ chart.title }}<i class="busy"></i></h6>
                         <div ng-show="chartsCtrl.emptyMessages[chart.metric]" class="empty-message-wrapper">
                             <div class="empty-message">{{ chartsCtrl.emptyMessages[chart.metric] }}</div>

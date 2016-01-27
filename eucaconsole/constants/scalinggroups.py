@@ -81,30 +81,37 @@ INSTANCE_EMPTY_DATA_MESSAGE = _('No data available for instances in the scaling 
 SCALING_GROUP_INSTANCE_MONITORING_CHARTS_LIST = [
     {
         'metric': 'CPUUtilization', 'unit': 'Percent', 'statistic': 'Average', 'namespace': 'EC2',
-        'title': _(u'CPU utilization %'), 'empty_msg': INSTANCE_EMPTY_DATA_MESSAGE,
+        'empty_msg': INSTANCE_EMPTY_DATA_MESSAGE, 'title': _(u'CPU utilization %'),
+        'help': _('The average CPU utilization % for instances in the scaling group.'),
     },
     {
         'metric': 'DiskReadBytes', 'unit': 'Bytes', 'statistic': 'Average', 'namespace': 'EC2',
-        'title': _(u'Disk read data'), 'empty_msg': INSTANCE_EMPTY_DATA_MESSAGE,
+        'empty_msg': INSTANCE_EMPTY_DATA_MESSAGE, 'title': _(u'Disk read data'),
+        'help': _('The average disk read data for instances in the scaling group.'),
     },
     {
         'metric': 'DiskReadOps', 'unit': 'Count', 'statistic': 'Average', 'namespace': 'EC2',
-        'title': _(u'Disk read operations'), 'empty_msg': INSTANCE_EMPTY_DATA_MESSAGE,
+        'empty_msg': INSTANCE_EMPTY_DATA_MESSAGE, 'title': _(u'Disk read operations'),
+        'help': _('The average disk read operations for instances in the scaling group.'),
     },
     {
         'metric': 'DiskWriteBytes', 'unit': 'Bytes', 'statistic': 'Average', 'namespace': 'EC2',
-        'title': _(u'Disk write data'), 'empty_msg': INSTANCE_EMPTY_DATA_MESSAGE,
+        'empty_msg': INSTANCE_EMPTY_DATA_MESSAGE, 'title': _(u'Disk write data'),
+        'help': _('The average disk write data for instances in the scaling group.'),
     },
     {
         'metric': 'DiskWriteOps', 'unit': 'Count', 'statistic': 'Average', 'namespace': 'EC2',
-        'title': _(u'Disk write operations'), 'empty_msg': INSTANCE_EMPTY_DATA_MESSAGE,
+        'empty_msg': INSTANCE_EMPTY_DATA_MESSAGE, 'title': _(u'Disk write operations'),
+        'help': _('The average disk write operations for instances in the scaling group.'),
     },
     {
         'metric': 'NetworkIn', 'unit': 'Bytes', 'statistic': 'Average', 'namespace': 'EC2',
-        'title': _(u'Network in'), 'empty_msg': INSTANCE_EMPTY_DATA_MESSAGE,
+        'empty_msg': INSTANCE_EMPTY_DATA_MESSAGE, 'title': _(u'Network in'),
+        'help': _('The average incoming network bandwidth for instances in the scaling group.'),
     },
     {
         'metric': 'NetworkOut', 'unit': 'Bytes', 'statistic': 'Average', 'namespace': 'EC2',
-        'title': _(u'Network out'), 'empty_msg': INSTANCE_EMPTY_DATA_MESSAGE,
+        'empty_msg': INSTANCE_EMPTY_DATA_MESSAGE, 'title': _(u'Network out'),
+        'help': _('The average outgoing network bandwidth for instances in the scaling group.'),
     },
 ]
