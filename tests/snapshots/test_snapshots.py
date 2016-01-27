@@ -129,25 +129,6 @@ class SnapshotDeleteFormTestCase(BaseFormTestCase):
         self.assertTrue(issubclass(self.form_class, BaseSecureForm))
 
 
-class MockSnapshotsJsonViewTestCase(BaseViewTestCase, MockSnapshotMixin):
-
-    @mock_ec2
-    def test_snapshots_json_view(self):
-        request = self.create_request()
-        request.path = '/snapshots/json'
-        request.params['csrf_token'] = request.session.get_csrf_token()
-        snapshot, conn = self.make_snapshot()
-        snapshot.add_tag('Name', 'snapshot_one')
-        view = SnapshotsJsonView(request, conn=conn, enable_filters=False).snapshots_json()
-        results = view.get('results')
-        self.assertEqual(len(results), 1)
-        snapshot = results[0]
-        self.assertEqual(snapshot.get('name'), u'{0} ({1})'.format('snapshot_one', snapshot.get('id')))
-        self.assertEqual(snapshot.get('description'), u'test snapshot description')
-        self.assertEqual(snapshot.get('exists_volume'), True)
-        self.assertEqual(snapshot.get('volume_size'), 1)
-
-
 class MockSnapshotViewTestCase(BaseViewTestCase, MockSnapshotMixin):
 
     @mock_ec2
