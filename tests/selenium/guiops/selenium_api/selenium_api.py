@@ -237,6 +237,15 @@ class SeleniumApi(object):
             print "Element by css = '{0}' not visible.".format(css)
             return False
 
+    def verify_selected_by_id(self, element_id):
+        """
+        Checks if element is selected.
+        :param element_id:
+        """
+        is_selected = self.driver.find_element_by_id(element_id).get_attribute()
+        return is_selected
+
+
     def verify_enabled_by_id(self, element_id):
         """
         Waits for an element to become enabled.
