@@ -973,8 +973,7 @@ class ScalingGroupMonitoringView(BaseScalingGroupView):
                 return HTTPFound(location=location)
 
     def get_controller_options_json(self):
-        charts_list = SCALING_GROUP_MONITORING_CHARTS_LIST
-        charts_list.extend(SCALING_GROUP_INSTANCE_MONITORING_CHARTS_LIST)
+        charts_list = SCALING_GROUP_INSTANCE_MONITORING_CHARTS_LIST + SCALING_GROUP_MONITORING_CHARTS_LIST
         if not self.scaling_group:
             return ''
         return BaseView.escape_json(json.dumps({
