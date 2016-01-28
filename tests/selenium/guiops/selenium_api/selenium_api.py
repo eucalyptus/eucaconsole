@@ -206,7 +206,7 @@ class SeleniumApi(object):
         print "Executing check_visibility_by_id('{0}')".format(element_id)
 
         try:
-            self.set_implicit_wait(0)
+            self.set_implicit_wait(1)
             WebDriverWait(self.driver, self.timeout_to_check_for_visibility_in_seconds).until(
                 EC.visibility_of_element_located((By.ID, element_id)))
             self.set_implicit_wait(self.implicit_wait_default_in_seconds)
@@ -388,7 +388,10 @@ class SeleniumApi(object):
         k = 1
         while not is_visible and (k < 6):
             try:
-                time.sleep(1)
+                time.sleep(2)
+                is_visible = self.check_visibility_by_id(element_id_on_next_page)
+                if is_visible:
+                    break
                 print "Hitting enter. Executing attempt " + str(k)
                 self.send_keys_by_id(element_id, "\n", clear_field=False)
             except Exception, e:
@@ -411,6 +414,10 @@ class SeleniumApi(object):
         k = 1
         while not is_visible and (k < 4):
             try:
+                time.sleep(2)
+                is_visible = self.check_visibility_by_css(css)
+                if is_visible:
+                    break
                 time.sleep(1)
                 print "Repeated click. Executing attempt " + str(k)
                 self.click_element_by_css(css)
@@ -423,7 +430,10 @@ class SeleniumApi(object):
 
         while not is_visible and (k < 7):
             try:
-                time.sleep(1)
+                time.sleep(2)
+                is_visible = self.check_visibility_by_css(css)
+                if is_visible:
+                    break
                 print "Hitting enter. Executing attempt " + str(k)
                 self.send_keys_by_css(css, "\n", clear_field=False)
             except Exception, e:
