@@ -74,6 +74,7 @@ angular.module('CreateAlarm', ['EucaConsoleUtils'])
             }).success(function (oData) {
                 var modal = $scope.alarmDialog;
                 modal.foundation('reveal', 'close');
+                $scope.isCreatingAlarm = false;
             }).error(function (oData) {
                 if (oData.message) {
                     Notify.failure(oData.message);

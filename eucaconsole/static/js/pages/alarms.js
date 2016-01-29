@@ -4,7 +4,7 @@
  *
  */
 
-angular.module('AlarmsPage', ['LandingPage'])
+angular.module('AlarmsPage', ['LandingPage', 'CustomFilters'])
     .controller('AlarmsCtrl', ['$scope', '$timeout', '$compile', 'AlarmService',
     function ($scope, $timeout, $compile, AlarmService) {
         $scope.alarmID = '';
@@ -18,25 +18,34 @@ angular.module('AlarmsPage', ['LandingPage'])
 
         $scope.deleteAlarm = function (event) {
             var servicePath = event.target.dataset.servicePath;
-            AlarmService.deleteAlarm($scope.alarmID, servicePath).then(function (response) {
-                console.log(response);
+            $('#delete-alarm-modal').foundation('reveal', 'close');
+
+            AlarmService.deleteAlarm($scope.alarmID, servicePath).then(function success (response) {
+                Notify.success(response.data.message);
+                $scope.refreshList();
+            }, function error (response) {
+                Notify.error(response.data.message);
+            }); 
+        };
+
+        $scope.refreshList = function () {
+            //
+            //  NEVER DO THIS!!  THIS IS TERRIBLE!!!
+            //  The proper solution, which will be implemented soon,
+            //  is to have this and the parent controllers attached
+            //  to directives, thus enabling cross-controller communication
+            //  via ng-require.
+            //
+            //  But, this will do for now.
+            //
+            $timeout(function () {
+                $('#refresh-btn').click();
             });
         };
 
         $scope.$on('alarm_created', function ($event, promise) {
             promise.then(function success (result) {
-                //
-                //  NEVER DO THIS!!  THIS IS TERRIBLE!!!
-                //  The proper solution, which will be implemented soon,
-                //  is to have this and the parent controllers attached
-                //  to directives, thus enabling cross-controller communication
-                //  via ng-require.
-                //
-                //  But, this will do for now.
-                //
-                $timeout(function () {
-                    $('#refresh-btn').click();
-                });
+                $scope.refreshList();
             });
         });
     }])
@@ -50,10 +59,6 @@ angular.module('AlarmsPage', ['LandingPage'])
                     data: {
                         alarms: alarms
                     }
-                }).then(function success(response) {
-                    return response;
-                }, function error(response) {
-                    return response;
                 });
             }
         };

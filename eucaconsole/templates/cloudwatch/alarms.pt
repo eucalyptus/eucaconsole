@@ -98,8 +98,8 @@
                 <td class="alarm-actions">{{ item.alarm_actions.length }}</td>
                 <td>
                    <span class="actions">
-                        <span class="tiny secondary button dropdown round" data-dropdown="item-dropdown_{{ item.name }}"><i class="grid-action"></i></span>
-                        <ul id="item-dropdown_{{ item.name }}" class="f-dropdown" data-dropdown-content="">
+                        <span class="tiny secondary button dropdown round" data-dropdown="item-dropdown_{{ item.name | urlSafe }}"><i class="grid-action"></i></span>
+                        <ul id="item-dropdown_{{ item.name | urlSafe }}" class="f-dropdown" data-dropdown-content="">
                             <li>
                                 <a i18n:translate="" ng-href="${prefix}/{{ item.id || item.name | escapeURL }}">
                                     View/edit details</a>
