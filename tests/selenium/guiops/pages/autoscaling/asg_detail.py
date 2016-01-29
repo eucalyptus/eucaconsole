@@ -33,6 +33,18 @@ class ASGDetailPage(DetailPage):
         """
         if self.tester.check_visibility_by_id(self._next_step_modal_id):
             self.tester.click_element_by_id(self._do_notshow_again_checkbox_id)
+            is_selected = self.verify_selected_by_id(self._do_notshow_again_checkbox_id)
+            i=1
+            while (i<3) and not is_selected:
+                try:
+                    time.sleep(1)
+                    is_selected = self.verify_selected_by_id(self._do_notshow_again_checkbox_id)
+                    if is_selected:
+                        break
+                    self.tester.click_element_by_id(self._do_notshow_again_checkbox_id)
+                except Exception,e:
+                    print "Click on Do not show again dialog checkbox failed"
+                is_selected = self.verify_selected_by_id(self._do_notshow_again_checkbox_id)
             self.tester.click_element_by_css_resilisnt(self._close_modal_x_css, self._close_modal_x_css)
         self.tester.wait_for_text_present_by_id(DetailPage(self)._detail_page_title_id,
                                                 self._asg_detail_page_title.format(asg_name))
