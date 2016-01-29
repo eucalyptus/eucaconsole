@@ -218,7 +218,7 @@ class SeleniumApi(object):
 
 
 
-    def check_visibility_by_css(self, css):
+    def check_visibility_by_css(self, css, timeout=timeout_to_check_for_visibility_in_seconds):
         """
         Checks if the element is visible.
         :param css:

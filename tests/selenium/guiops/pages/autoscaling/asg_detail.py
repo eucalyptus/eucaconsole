@@ -38,13 +38,13 @@ class ASGDetailPage(DetailPage):
             while (i<3) and not is_selected:
                 try:
                     time.sleep(1)
-                    is_selected = self.verify_selected_by_id(self._do_notshow_again_checkbox_id)
+                    is_selected = self.tester.verify_selected_by_id(self._do_notshow_again_checkbox_id)
                     if is_selected:
                         break
                     self.tester.click_element_by_id(self._do_notshow_again_checkbox_id)
                 except Exception,e:
                     print "Click on Do not show again dialog checkbox failed"
-                is_selected = self.verify_selected_by_id(self._do_notshow_again_checkbox_id)
+                is_selected = self.tester.verify_selected_by_id(self._do_notshow_again_checkbox_id)
             self.tester.click_element_by_css_resilisnt(self._close_modal_x_css, self._close_modal_x_css)
         self.tester.wait_for_text_present_by_id(DetailPage(self)._detail_page_title_id,
                                                 self._asg_detail_page_title.format(asg_name))
@@ -107,7 +107,15 @@ class ASGDetailPage(DetailPage):
         if desired is not None:
             self.tester.send_keys_by_id(self._desired_capacity_field_id, desired)
         time.sleep(1)
-        self.tester.click_element_by_id(self._save_changes_button_id)
+        try:
+            self.tester.click_element_by_id(self._save_changes_button_id)
+            is_visible = self.tester.check_visibility_by_css(DetailPage(self)._notification_css)
+            if not is_visible:
+                print "Hitting enter on Save Changes button"
+                self.tester.send_keys_by_id(self._save_changes_button_id,"\n", clear_field=False)
+        except Exception,e:
+            print "ERROR: Could not Save Changes"
+            raise
 
     def change_launch_configuration_on_detail_page(self, asg_name, launch_config_name):
         self.goto_general_tab(asg_name)
@@ -121,8 +129,7 @@ class ASGDetailPage(DetailPage):
             self.tester.click_element_by_id_resilient(self._do_notshow_again_checkbox_id, self._do_notshow_again_checkbox_id)
             self.tester.click_element_by_css(self._close_modal_x_css)
         self.goto_scaling_history_tab(asg_name)
-        self.tester.wait_for_clickable_by_css(self._scaling_history_first_row_expando_css)
-        self.tester.click_element_by_css(self._scaling_history_first_row_expando_css)
+        self.tester.click_element_by_css_robust(self._scaling_history_first_row_expando_css, self._scaling_history_first_cause_css)
         text = self.tester.store_text_by_css(self._scaling_history_first_cause_css)
         if text.find('an instance was started') > 0:
             print 'Found expected cause {0}'.format(text)
