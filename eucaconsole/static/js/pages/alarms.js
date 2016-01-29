@@ -7,12 +7,12 @@
 angular.module('AlarmsPage', ['LandingPage', 'CustomFilters'])
     .controller('AlarmsCtrl', ['$scope', '$timeout', '$compile', 'AlarmService',
     function ($scope, $timeout, $compile, AlarmService) {
-        $scope.alarmID = '';
+        $scope.alarms = [];
+
         $scope.revealModal = function (action, item) {
+            $scope.alarms = [].concat(item);
+
             var modal = $('#' + action + '-alarm-modal');
-            if(item) {
-                $scope.alarmID = item.name;
-            }
             modal.foundation('reveal', 'open');
         };
 
@@ -20,11 +20,11 @@ angular.module('AlarmsPage', ['LandingPage', 'CustomFilters'])
             var servicePath = event.target.dataset.servicePath;
             $('#delete-alarm-modal').foundation('reveal', 'close');
 
-            AlarmService.deleteAlarm($scope.alarmID, servicePath).then(function success (response) {
+            AlarmService.deleteAlarms($scope.alarms, servicePath).then(function success (response) {
                 Notify.success(response.data.message);
                 $scope.refreshList();
             }, function error (response) {
-                Notify.error(response.data.message);
+                Notify.failure(response.data.message);
             }); 
         };
 
@@ -51,13 +51,16 @@ angular.module('AlarmsPage', ['LandingPage', 'CustomFilters'])
     }])
     .factory('AlarmService', ['$http', function ($http) {
         return {
-            deleteAlarm: function (alarm, path) {
-                var alarms = [].concat(alarm);
+            deleteAlarms: function (alarms, path) {
+                var alarmNames = alarms.map(function (current) {
+                    return current.name;
+                });
+
                 return $http({
                     method: 'DELETE',
                     url: path,
                     data: {
-                        alarms: alarms
+                        alarms: alarmNames
                     }
                 });
             }

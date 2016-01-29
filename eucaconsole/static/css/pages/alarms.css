@@ -159,3 +159,7 @@ table.expando tr.even, table.expando tr.alt, table.expando tr:nth-of-type(even) 
 .tile .footer.ok, .tile .footer.alarm, .tile .footer.insufficient-data { text-transform: none; }
 .tile .footer.ok { background-color: #008424; }
 .tile .footer.alarm { background-color: #F04124; }
+
+#delete-alarm-modal p { margin: 0 0 7px; }
+#delete-alarm-modal .header { color: #444; text-transform: uppercase; font-size: 0.875rem; font-weight: bold; }
+#delete-alarm-modal .alarm-dimensions { margin: 0 0 20px; }
