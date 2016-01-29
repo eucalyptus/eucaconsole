@@ -137,7 +137,7 @@
                     <p i18n:translate="">
                         Auto scaling metrics are not collected for this scaling group until monitoring is turned on.
                     </p>
-                    <button ng-click="chartsCtrl.submitMonitoringForm()">
+                    <button ng-click="chartsCtrl.submitMonitoringForm()" id="enable-metrics-collection-btn">
                         <span i18n:translate="">Turn Monitoring On for this Scaling Group</span>
                     </button>
                 </div>

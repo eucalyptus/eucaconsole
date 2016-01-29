@@ -92,3 +92,20 @@ class GuiASG(GuiTester):
         ASGDetailPage(self).goto_general_tab(asg_name)
         ASGDetailPage(self).change_capacity_on_detail_page(min_capacity, desired_capacity, max_capacity)
         ASGDetailPage(self).verify_capacity_entries(min_capacity, desired_capacity, max_capacity)
+
+    def enable_metrics_collection_for_auto_scaling_group(self, asg_name):
+        BasePage(self).goto_asg_lp_via_menu()
+        ASGLanding(self).goto_asg_detail_page_via_actions_menu(asg_name)
+        ASGDetailPage(self).goto_monitoring_tab(asg_name)
+        ASGDetailPage(self).enable_metrics_collection(asg_name)
+
+    def verify_charts_on_scaling_group_monitoring_page(self, asg_name):
+        """
+        Scaling Group Monitoring page should display charts when scaling group has metrics collection enabled
+        and launch configuration has monitoring enabled
+        :param asg_name:
+        """
+        BasePage(self).goto_asg_lp_via_menu()
+        ASGLanding(self).goto_asg_detail_page_via_actions_menu(asg_name)
+        ASGDetailPage(self).goto_monitoring_tab(asg_name)
+        ASGDetailPage(self).verify_charts_on_monitoring_page(asg_name)
