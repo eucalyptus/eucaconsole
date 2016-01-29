@@ -28,7 +28,7 @@ from ..i18n import _
 
 
 SCALING_GROUP_EMPTY_DATA_MESSAGE = _('No data available for this scaling group.')
-SCALING_GROUP_MONITORING_CHARTS_LIST = [
+SCALING_GROUP_MONITORING_CHARTS_LIST = (
     {
         'metric': 'GroupTotalInstances', 'unit': 'None', 'statistic': 'Maximum', 'namespace': 'AutoScaling',
         'empty_msg': SCALING_GROUP_EMPTY_DATA_MESSAGE, 'title': _(u'Total instances'),
@@ -75,10 +75,10 @@ SCALING_GROUP_MONITORING_CHARTS_LIST = [
     #     'help': _('The number of instances that are in a Standby state. '
     #               'Instances in this state are still running but are not actively in service.'),
     # },
-]
+)
 
 INSTANCE_EMPTY_DATA_MESSAGE = _('No data available for instances in the scaling group.')
-SCALING_GROUP_INSTANCE_MONITORING_CHARTS_LIST = [
+SCALING_GROUP_INSTANCE_MONITORING_CHARTS_LIST = (
     {
         'metric': 'CPUUtilization', 'unit': 'Percent', 'statistic': 'Average', 'namespace': 'EC2',
         'empty_msg': INSTANCE_EMPTY_DATA_MESSAGE, 'title': _(u'CPU utilization %'),
@@ -114,4 +114,4 @@ SCALING_GROUP_INSTANCE_MONITORING_CHARTS_LIST = [
         'empty_msg': INSTANCE_EMPTY_DATA_MESSAGE, 'title': _(u'Network out'),
         'help': _('The average outgoing network bandwidth for instances in the scaling group.'),
     },
-]
+)
