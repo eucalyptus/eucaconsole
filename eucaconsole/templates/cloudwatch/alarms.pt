@@ -117,11 +117,28 @@
         </div>
         <!--! Modal dialogs -->
         <!--! Create Alarm modal dialog -->
-        ${panel('create_alarm_dialog', alarm_form=alarm_form, redirect_location=create_alarm_redirect, metric_unit_mapping=metric_unit_mapping)}
-        <!--! /end modal dialogs -->
+
+        <!--! Create Alarm Interstitial Dialog -->
+        <div id="create-alarm-wrapper">
+            <div id="create-alarm-modal" class="reveal-modal small" data-reveal="">
+                <a class="close-reveal-modal" href="#">&#215;</a>
+                <div class="row">
+                    <p i18n:translate="">A metric must be seledted before you can create an alarm.</p>
+                    <p i18n:translate="">Choose action "Create Alarm" when viewing a metric from
+                    the monitoring tab on any resource's detail page, or from the
+                    metrics landing page.</p>
+                </div>
+                <div class="row">
+                    <button id="create-alarm-btn" class="button expand" type="submit" i18n:translate="">
+                        Take Me to the Metrics Landing Page
+                    </button>
+                </div>
+            </div>
+        </div>
+
 
         <!--! Delete Alarm modal dialog -->
-        ${panel('delete_alarm_dialog')} <!--, alarm_form=alarm_form, redirect_location=create_alarm_redirect, metric_unit_mapping=metric_unit_mapping)}-->
+        ${panel('delete_alarm_dialog', modal_size='small', service_path=request.route_path('cloudwatch_alarms_delete'))} <!--, alarm_form=alarm_form, redirect_location=create_alarm_redirect, metric_unit_mapping=metric_unit_mapping)}-->
         <!--! /end modal dialogs -->
     </div>
 </div>

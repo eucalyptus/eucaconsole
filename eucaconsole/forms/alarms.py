@@ -193,11 +193,6 @@ class CloudWatchAlarmCreateForm(BaseSecureForm):
         return choices
 
 
-class CloudWatchAlarmDeleteForm(BaseSecureForm):
-    """CloudWatch Alarm deletion form"""
-    pass
-
-
 class CloudWatchAlarmFilterForm(BaseSecureForm):
 
     def __init__(self):

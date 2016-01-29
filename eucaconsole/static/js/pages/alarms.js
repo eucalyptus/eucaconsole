@@ -4,15 +4,23 @@
  *
  */
 
-angular.module('AlarmsPage', ['LandingPage', 'CreateAlarm'])
-    .controller('AlarmsCtrl', ['$scope', '$timeout', function ($scope, $timeout) {
+angular.module('AlarmsPage', ['LandingPage'])
+    .controller('AlarmsCtrl', ['$scope', '$timeout', '$compile', 'AlarmService',
+    function ($scope, $timeout, $compile, AlarmService) {
         $scope.alarmID = '';
         $scope.revealModal = function (action, item) {
             var modal = $('#' + action + '-alarm-modal');
             if(item) {
-                $scope.alarmID = item.id;
+                $scope.alarmID = item.name;
             }
             modal.foundation('reveal', 'open');
+        };
+
+        $scope.deleteAlarm = function (event) {
+            var servicePath = event.target.dataset.servicePath;
+            AlarmService.deleteAlarm($scope.alarmID, servicePath).then(function (response) {
+                console.log(response);
+            });
         };
 
         $scope.$on('alarm_created', function ($event, promise) {
@@ -31,6 +39,24 @@ angular.module('AlarmsPage', ['LandingPage', 'CreateAlarm'])
                 });
             });
         });
+    }])
+    .factory('AlarmService', ['$http', function ($http) {
+        return {
+            deleteAlarm: function (alarm, path) {
+                var alarms = [].concat(alarm);
+                return $http({
+                    method: 'DELETE',
+                    url: path,
+                    data: {
+                        alarms: alarms
+                    }
+                }).then(function success(response) {
+                    return response;
+                }, function error(response) {
+                    return response;
+                });
+            }
+        };
     }])
     .directive('alarmState', function () {
         var stateValues = {

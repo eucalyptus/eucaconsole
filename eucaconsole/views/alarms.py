@@ -36,7 +36,7 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config
 
 from ..constants.cloudwatch import METRIC_DIMENSION_NAMES, METRIC_DIMENSION_INPUTS, METRIC_TYPES
-from ..forms.alarms import CloudWatchAlarmCreateForm, CloudWatchAlarmDeleteForm
+from ..forms.alarms import CloudWatchAlarmCreateForm
 from ..i18n import _
 from ..models import Notification
 from ..views import LandingPageView, BaseView, JSONResponse
@@ -60,7 +60,6 @@ class CloudWatchAlarmsView(LandingPageView):
         self.create_form = CloudWatchAlarmCreateForm(
             self.request, ec2_conn=self.ec2_conn, elb_conn=self.elb_conn, autoscale_conn=self.autoscale_conn,
             formdata=self.request.params or None)
-        self.delete_form = CloudWatchAlarmDeleteForm(self.request, formdata=self.request.params or None)
         self.filter_keys = ['name']
         # sort_keys are passed to sorting drop-down
         self.sort_keys = [
@@ -130,21 +129,27 @@ class CloudWatchAlarmsView(LandingPageView):
             self.request.error_messages = error_msg_list
         return self.render_dict
 
-    @view_config(route_name='cloudwatch_alarms_delete', renderer=TEMPLATE, request_method='POST')
+    @view_config(
+        route_name='cloudwatch_alarms_delete',
+        renderer='json',
+        request_method='DELETE')
     def cloudwatch_alarms_delete(self):
-        if self.delete_form.validate():
-            location = self.request.route_path('cloudwatch_alarms')
-            alarm_name = self.request.params.get('name')
-            with boto_error_handler(self.request, location):
-                self.log_request(_(u"Deleting alarm {0}").format(alarm_name))
-                self.cloudwatch_conn.delete_alarm(alarm_name)
-                prefix = _(u'Successfully deleted alarm')
-                msg = u'{0} {1}'.format(prefix, alarm_name)
-                self.request.session.flash(msg, queue=Notification.SUCCESS)
-            return HTTPFound(location=location)
-        else:
-            self.request.error_messages = self.delete_form.get_errors_list()
-        return self.render_dict
+
+        message = json.loads(self.request.body)
+        alarms = message.get('alarms', [])
+
+        with boto_error_handler(self.request):
+            self.log_request(_(u"Deleting alarm(s) {0}").format(alarms))
+            action = self.cloudwatch_conn.delete_alarms(alarms)
+
+            if action:
+                prefix = _(u'Successfully deleted alarm(s)')
+            else:
+                prefix = _(u'There was a problem deleting alarm(s)')
+
+            msg = u'{0} {1}'.format(prefix, ', '.join(alarms))
+
+        return dict(success=action, message=msg)
 
     def get_dimension_value(self, key=None):
         input_field = METRIC_DIMENSION_INPUTS.get(key)

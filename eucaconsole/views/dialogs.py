@@ -181,12 +181,13 @@ def create_alarm_dialog(context, request, alarm_form=None, alarm_choices=None, r
 
 
 @panel_config('delete_alarm_dialog', renderer='../templates/dialogs/delete_alarm_dialog.pt')
-def delete_alarm_dialog(context, request, modal_size='medium'):
+def delete_alarm_dialog(context, request, modal_size='medium', service_path=None):
     '''
     Delete alarm dialog page.
     '''
     return dict(
-        modal_size=modal_size
+        modal_size=modal_size,
+        service_path=service_path
     )
 
 
