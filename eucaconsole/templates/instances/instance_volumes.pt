@@ -45,6 +45,9 @@
                                 <a ng-click="detachModal(volume.id, volume.device, '${request.route_path('instance_json', id=instance.id)}', volume.detach_form_action)"
                                     i18n:translate="">Detach volume</a>
                             </li>
+                            <li>
+                                <a ng-href="/volumes/{{ volume.id }}/monitoring" i18n:translate="">Monitor</a>
+                            </li>
                         </ul>
                     </div>
                     <div class="content">

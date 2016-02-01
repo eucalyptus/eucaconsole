@@ -1,4 +1,8 @@
-/* @fileOverview Cloud Formations landing page CSS */
+/* @fileOverview CloudWatch Metrics landing page CSS */
+/* Dropdown elements */
+/* Set the link colors and styles for top-level nav */
+/* ----------------------------------------- Item list
+----------------------------------------- */
 /* Dropdown elements */
 /* Set the link colors and styles for top-level nav */
 /* ----------------------------------------- Item list
@@ -137,11 +141,28 @@ table.expando tr.even, table.expando tr.alt, table.expando tr:nth-of-type(even) 
 .expando-tiles li div:nth-of-type(1) { float: left; }
 .expando-tiles li div:nth-of-type(2) { clear: both; }
 
-.content { width: 100%; padding-left: 10px; padding-right: 10px; }
+table.expando td:nth-of-type(1) { width: 1rem; }
 
-.panel { overflow: hidden; min-height: 400px; }
+table td input[type="checkbox"] { margin: 0 0 0; }
 
-label { font-weight: bold; color: #6a737b; }
+.chart-wrapper { background: #ffffff; }
 
-/* override for height of template view dialog */
-.CodeMirror { height: 450px; }
+.split-top { height: 250px; overflow: auto; }
+
+.split-bar { height: 0.6rem; width: 100%; color: grey; background: #ffffff; cursor: row-resize; overflow-y: hidden; }
+.split-bar hr { margin: 4px 4px 4px 4px; }
+
+.split-bottom { position: relative; }
+
+select { width: 20rem; }
+
+.tile input[type="checkbox"] { position: relative; float: left; top: 9px; left: 5px; }
+.tile .dropdown.button.tiny { top: 5px !important; right: 2px !important; }
+
+#primary-buttons .button.more-actions { margin-left: 0px !important; }
+
+th.metric-action { text-align: right !important; }
+
+.metrics-selected { padding-top: 1.5rem; padding-left: 0.25rem; }
+
+magic-search .f-dropdown { min-width: 15rem; }

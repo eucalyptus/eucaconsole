@@ -78,22 +78,58 @@ class CloudWatchAPIMixin(object):
     def collapse_metrics(unit, statistic, divider=1, stats=None):
         # Collapse to MB when appropriate
         max_value = max(stat.get(statistic) for stat in stats) if stats else 0
+        kb = 1024
         if max_value > 10 ** 4:
-            divider = 10 ** 3
+            divider = kb
             unit = 'Kilobytes'
         if max_value > 10 ** 7:
-            divider = 10 ** 6
+            divider = kb ** 2
             unit = 'Megabytes'
             if max_value > 10 ** 10:
-                divider = 10 ** 9
+                divider = kb ** 3
                 unit = 'Gigabytes'
         return unit, divider
+
+    @staticmethod
+    def get_volume_metric_modifier(metric, statistic, period, default_unit=None):
+        """
+        :param metric: e.g. 'VolumeReadBytes'
+        :param statistic: e.g. 'Average'
+        :param period: granularity (in seconds)
+        :param default_unit:
+        :return: unit, divider, multiplier
+        :rtype: tuple
+
+        NOTES
+        - The divider values don't exactly match the divider/multiplier approach documented at
+          http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/monitoring-volume-status.html
+          since the order of operations are a bit different here
+          (e.g. Read/write bandwidth divider is 1024 * period rather than 1024 / period)
+        - For the average latency and average size graphs, the average is calculated over the total
+          number of operations that completed during the period.
+
+        """
+        if metric in ['VolumeReadBytes', 'VolumeWriteBytes']:
+            if statistic == 'Sum':  # Read/write bandwidth
+                return 'KiB/sec', 1024 * period, 1
+            elif statistic == 'Average':  # Avg read/write size
+                divider = 1024
+                return 'KiB/op', divider, 1
+        if metric in ['VolumeReadOps', 'VolumeWriteOps']:  # Read/write throughput
+            return 'Ops/sec', period, 1
+        if metric == 'VolumeIdleTime':  # Percent time spent idle
+            return 'Percent', period / 100, 1
+        if metric in ['VolumeTotalReadTime', 'VolumeTotalWriteTime']:  # Avg read/write latency
+            return 'ms/op', 1, 1000
+        return default_unit, 1, 1
 
     @staticmethod
     def get_cloudwatch_stats(cw_conn=None, period=60, duration=600, metric='CPUUtilization', namespace='AWS/EC2',
                              statistic='Average', idtype='InstanceId', ids=None, unit=None, dimensions=None):
         """
         Wrapper for time-series data for statistics of a given metric for one or more resources
+
+        :param cw_conn: Boto CloudWatch connection object
 
         :type period: integer
         :param period: The granularity, in seconds, of the returned datapoints; must be a multiple of 60
@@ -123,13 +159,12 @@ class CloudWatchAPIMixin(object):
         :type dimensions: dict
         :param dimensions: dict of dimension/value mapping (e.g. {'AvailabilityZone': 'us-west-2a'})
 
-
         """
         end_time = datetime.datetime.utcnow()
         start_time = end_time - datetime.timedelta(seconds=duration)
         statistics = [statistic]
-        base_dimensions = {idtype: ids}
-        if dimensions:
+        base_dimensions = {idtype: ids} if idtype and ids else None
+        if dimensions and base_dimensions:
             base_dimensions.update(dimensions)
         try:
             return cw_conn.get_metric_statistics(
@@ -153,12 +188,15 @@ class CloudWatchAPIView(BaseView, CloudWatchAPIMixin):
         self.statistic = self.request.params.get('statistic') or 'Average'
         self.zones = self.request.params.get('zones')
         self.split_zone_metrics = ['HealthyHostCount', 'UnHealthyHostCount']
-        self.idtype = self.request.params.get('idtype') or 'InstanceId'
+        self.idtype = self.request.params.get('idtype')
         self.ids = self.request.params.get('ids')
         self.unit = self.request.params.get('unit')
         self.duration = int(self.request.params.get('duration', 3600))
         self.tz_offset = int(self.request.params.get('tzoffset', 0))
-        self.collapse_to_kb_mb_gb = ['NetworkIn', 'NetworkOut', 'DiskReadBytes', 'DiskWriteBytes']
+        self.collapse_to_kb_mb_gb = [
+            'NetworkIn', 'NetworkOut', 'DiskReadBytes', 'DiskWriteBytes', 'VolumeReadBytes', 'VolumeWriteBytes'
+        ]
+        self.expand_to_ms = ['Latency', 'VolumeTotalReadTime']
 
     @view_config(route_name='cloudwatch_api', renderer='json', request_method='GET')
     def cloudwatch_api(self):
@@ -170,28 +208,27 @@ class CloudWatchAPIView(BaseView, CloudWatchAPIMixin):
         /cloudwatch/api?ids=i-foo&idtype=InstanceId&metric=CPUUtilization&duration=3600&unit=Percent&statistic=Average
 
         """
-        if not self.ids:
-            raise HTTPBadRequest()
-
         stats_list = []
         unit = self.unit
+        max_value = 0
 
         if self.zones and len(self.zones.split(',')) > 1:
             for idx, zone in enumerate(self.zones.split(',')):
                 dimensions = {'AvailabilityZone': zone}
-                unit, stats_series = self.get_stats_series(dimensions)
+                unit, stats_series, max_value = self.get_stats_series(dimensions)
                 if stats_series.get('values'):
                     if CHART_COLORS.get(idx):
                         # Use custom line colors
                         stats_series['color'] = CHART_COLORS.get(idx)
                     stats_list.append(stats_series)
         else:
-            unit, stats_series = self.get_stats_series()
+            unit, stats_series, max_value = self.get_stats_series()
             stats_list.append(stats_series)
 
         return dict(
             unit=unit,
             results=stats_list,
+            max_value=max_value,
         )
 
     def get_stats_series(self, dimensions=None):
@@ -216,15 +253,24 @@ class CloudWatchAPIView(BaseView, CloudWatchAPIMixin):
         if self.metric in self.collapse_to_kb_mb_gb:
             unit, divider = self.collapse_metrics(self.unit, self.statistic, divider, stats)
 
-        if self.metric == 'Latency':
+        if self.metric in self.expand_to_ms:
             multiplier, unit = 1000, 'Milliseconds'
 
+        if self.metric.startswith('Volume'):
+            unit, divider, multiplier = self.get_volume_metric_modifier(
+                self.metric, self.statistic, period, unit)
+
+        # Display 'Count' rather than 'None' as unit for Auto Scaling metrics
+        if unit == 'None' and self.namespace == 'AWS/AutoScaling':
+            unit = 'Count'
+
         json_stats = self.get_json_stats(self.statistic, stats, divider, multiplier)
+        max_value = max(val.get('y') for val in json_stats) if json_stats else 0
         key = self.metric
         if dimensions and dimensions.values():
             key = dimensions.values()[0]
         series = dict(key=key, values=json_stats)
-        return unit, series
+        return unit, series, max_value
 
     def get_json_stats(self, statistic=None, stats=None, divider=1, multiplier=1):
         json_stats = []

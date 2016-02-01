@@ -109,14 +109,6 @@ angular.module('TagEditorModule', ['EucaConsoleUtils'])
             }
         };
     })
-    .filter('ellipsis', function () {
-        return function (line, num) {
-            if (line.length <= num) {
-                return line;
-            }
-            return line.substring(0, num) + "...";
-        };
-    })
     .filter('safe', ['$sanitize', function ($sanitize) {
         return function (tag) {
             return $sanitize(tag.name + ' = ' + tag.value);

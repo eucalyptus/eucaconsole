@@ -37,7 +37,13 @@ from boto.ec2.snapshot import Snapshot
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.view import view_config
 
+from ..constants.cloudwatch import (
+    MONITORING_DURATION_CHOICES, STATISTIC_CHOICES, GRANULARITY_CHOICES,
+    DURATION_GRANULARITY_CHOICES_MAPPING
+)
+from ..constants.volumes import VOLUME_MONITORING_CHARTS_LIST
 from ..forms import ChoicesManager
+from ..forms.instances import InstanceMonitoringForm
 from ..forms.volumes import (
     VolumeForm, DeleteVolumeForm, CreateSnapshotForm, DeleteSnapshotForm,
     RegisterSnapshotForm, AttachForm, DetachForm, VolumesFiltersForm)
@@ -61,6 +67,13 @@ class BaseVolumeView(BaseView):
                 return volumes_list[0] if volumes_list else None
             except BotoServerError:
                 return None
+        return None
+
+    def get_instance(self, instance_id):
+        reservations_list = self.conn.get_all_reservations(instance_ids=[instance_id])
+        reservation = reservations_list[0] if reservations_list else None
+        if reservation:
+            return reservation.instances[0]
         return None
 
 
@@ -278,8 +291,7 @@ class VolumeView(TaggedItemView, BaseVolumeView):
         with boto_error_handler(request, self.location):
             self.volume = self.get_volume()
             snapshots = self.conn.get_all_snapshots(owner='self') if self.conn else []
-            region = self.request.session.get('region')
-            zones = ChoicesManager(self.conn).get_availability_zones(region)
+            zones = ChoicesManager(self.conn).get_availability_zones(self.region)
             instances = self.conn.get_only_instances() if self.conn else []
         self.volume_form = VolumeForm(
             self.request, conn=self.conn, volume=self.volume, snapshots=snapshots,
@@ -573,3 +585,70 @@ class VolumeSnapshotsView(BaseVolumeView):
         if snapshot.status.lower() == 'completed':
             return False
         return int(snapshot.progress.replace('%', '')) < 100
+
+
+class VolumeMonitoringView(BaseVolumeView):
+    VIEW_TEMPLATE = '../templates/volumes/volume_monitoring.pt'
+
+    def __init__(self, request):
+        super(VolumeMonitoringView, self).__init__(request)
+        self.title_parts = [_(u'Volume'), request.matchdict.get('id'), _(u'Monitoring')]
+        self.cw_conn = self.get_connection(conn_type='cloudwatch')
+        with boto_error_handler(self.request):
+            self.volume = self.get_volume()
+        self.volume_name = TaggedItemView.get_display_name(self.volume)
+        self.monitoring_form = InstanceMonitoringForm(self.request, formdata=self.request.params or None)
+        self.instance = None
+        attached_instance_id = self.volume.attach_data.instance_id
+        monitoring_enabled = False
+        if attached_instance_id:
+            self.instance = self.get_instance(attached_instance_id)
+            if self.instance:
+                attached_instance_id = TaggedItemView.get_display_name(self.instance)
+                monitoring_enabled = self.instance.monitoring_state == 'enabled'
+        self.render_dict = dict(
+            volume=self.volume,
+            volume_name=self.volume_name,
+            attached_instance_id=attached_instance_id,
+            monitoring_enabled=monitoring_enabled,
+            monitoring_form=self.monitoring_form,
+            is_attached=attached_instance_id is not None,
+            duration_choices=MONITORING_DURATION_CHOICES,
+            statistic_choices=STATISTIC_CHOICES,
+            controller_options_json=self.get_controller_options_json()
+        )
+
+    @view_config(route_name='volume_monitoring', renderer=VIEW_TEMPLATE, request_method='GET')
+    def volume_monitoring(self):
+        if self.volume is None:
+            raise HTTPNotFound()
+        return self.render_dict
+
+    @view_config(route_name='volume_monitoring_update', renderer=VIEW_TEMPLATE, request_method='POST')
+    def volume_monitoring_update(self):
+        """Update monitoring state for the volume's instance"""
+        if self.monitoring_form.validate():
+            if self.instance:
+                location = self.request.route_path('volume_monitoring', id=self.volume.id)
+                with boto_error_handler(self.request, location):
+                    monitoring_state = self.instance.monitoring_state
+                    action = 'disabled' if monitoring_state == 'enabled' else 'enabled'
+                    self.log_request(_(u"Monitoring for instance {0} {1}").format(self.instance.id, action))
+                    if monitoring_state == 'disabled':
+                        self.conn.monitor_instances([self.instance.id])
+                    else:
+                        self.conn.unmonitor_instances([self.instance.id])
+                    msg = _(
+                        u'Request successfully submitted.  It may take a moment for the monitoring status to update.')
+                    self.request.session.flash(msg, queue=Notification.SUCCESS)
+                return HTTPFound(location=location)
+
+    def get_controller_options_json(self):
+        if not self.volume:
+            return ''
+        return BaseView.escape_json(json.dumps({
+            'metric_title_mapping': {},
+            'charts_list': VOLUME_MONITORING_CHARTS_LIST,
+            'granularity_choices': GRANULARITY_CHOICES,
+            'duration_granularities_mapping': DURATION_GRANULARITY_CHOICES_MAPPING,
+        }))

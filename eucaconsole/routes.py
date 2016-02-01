@@ -135,6 +135,8 @@ urls = [
     Route(name='scalinggroup_policy_new', pattern='/scalinggroups/{id}/policies/new'),
     Route(name='scalinggroup_policy_create', pattern='/scalinggroups/{id}/policies/create'),
     Route(name='scalinggroup_policy_delete', pattern='/scalinggroups/{id}/policies/delete'),
+    Route(name='scalinggroup_monitoring', pattern='/scalinggroups/{id}/monitoring'),
+    Route(name='scalinggroup_monitoring_update', pattern='/scalinggroups/{id}/monitoring/update'),
 
     # Launch Configurations #####
     # Landing page
@@ -187,6 +189,8 @@ urls = [
     Route(name='volume_snapshots_json', pattern='/volumes/{id}/snapshots/json'),
     Route(name='volume_snapshot_create', pattern='/volumes/{id}/snapshots/create'),
     Route(name='volume_snapshot_delete', pattern='/volumes/{id}/snapshots/{snapshot_id}/delete'),
+    Route(name='volume_monitoring', pattern='/volumes/{id}/monitoring'),
+    Route(name='volume_monitoring_update', pattern='/volumes/{id}/monitoring/update'),
 
     # Snapshots #####
     # Landing page
@@ -270,7 +274,7 @@ urls = [
 
     # CloudWatch #####
     # Alarms Landing page
-    Route(name='cloudwatch_alarms', pattern='/cloudwatch/alarms'),
+    Route(name='cloudwatch_alarms', pattern='/alarms'),
     Route(name='cloudwatch_alarms_json', pattern='/cloudwatch/alarms/json'),
     Route(name='cloudwatch_alarm_view', pattern='/cloudwatch/alarms/{alarm_id}'),
     Route(name='cloudwatch_alarm_history', pattern='/cloudwatch/alarms/{alarm_id}/history'),
@@ -279,6 +283,10 @@ urls = [
     Route(name='cloudwatch_alarms_for_metric_json', pattern='/cloudwatch/alarms/json/{metric}'),
     # REST API
     Route(name='cloudwatch_api', pattern='/cloudwatch/api'),
+    # Metrics Landing page
+    Route(name='cloudwatch_metrics', pattern='/metrics'),
+    Route(name='cloudwatch_metrics_json', pattern='/cloudwatch/metrics/json'),
+    Route(name='cloudwatch_resource_names_json', pattern='/cloudwatch/resourcenames/json'),
 
     # Accounts #####
     Route(name='accounts', pattern='/accounts'),

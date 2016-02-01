@@ -202,6 +202,7 @@ class SnapshotsJsonView(LandingPageView):
         else:
             filtered_snapshots = self.get_items()
         volume_ids = list(set([snapshot.volume_id for snapshot in filtered_snapshots]))
+        # NOTE: Do not pass volume_ids directly to conn.get_all_volumes(), see GUI-2415
         volumes = self.conn.get_all_volumes(filters={'volume_id': volume_ids}) if self.conn else []
         for snapshot in filtered_snapshots:
             volume = [volume for volume in volumes if volume.id == snapshot.volume_id]

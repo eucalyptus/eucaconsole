@@ -32,15 +32,22 @@
                     <li ng-show="item.status !== 'deleting'">
                         <a ng-href="${prefix}/{{ item.id }}/snapshots" i18n:translate="">Manage snapshots</a>
                     </li>
+                    <li ng-show="item.status === 'attached'">
+                        <a ng-href="${prefix}/{{ item.id }}/monitoring" i18n:translate="">Monitor</a>
+                    </li>
                     <li ng-show="item.status === 'available'">
-                        <a i18n:translate="" ng-click="revealModal('attach', item)">Attach to instance</a>
+                        <a i18n:translate="" ng-click="revealModal('attach', item)" class="attach-volume-action">
+                            Attach to instance
+                        </a>
                     </li>
                     <li ng-show="item.attach_status === 'attached' &amp;&amp; item.attach_status !== 'detaching'">
                         <a ng-click="detachModal(item, '${request.route_path('instance_json', id='_id_')}')"
-                               id="detach-volume-action" i18n:translate="">Detach from instance</a>
+                               class="detach-volume-action" i18n:translate="">Detach from instance</a>
                     </li>
                     <li ng-show="item.status === 'available' || item.status === 'failed'">
-                        <a i18n:translate="" ng-click="revealModal('delete', item)">Delete volume</a>
+                        <a i18n:translate="" ng-click="revealModal('delete', item)" class="delete-volume-action">
+                            Delete volume
+                        </a>
                     </li>
                 </ul>
             </div>
@@ -127,15 +134,22 @@
                             <li ng-show="item.status !== 'deleting'">
                                 <a ng-href="${prefix}/{{ item.id }}/snapshots" i18n:translate="">Manage snapshots</a>
                             </li>
+                            <li ng-show="item.status === 'attached'">
+                                <a i18n:translate="" ng-href="${prefix}/{{ item.id }}/monitoring">Monitor</a>
+                            </li>
                             <li ng-show="item.status === 'available'">
-                                <a i18n:translate="" ng-click="revealModal('attach', item)">Attach to instance</a>
+                                <a i18n:translate="" ng-click="revealModal('attach', item)" class="attach-volume-action">
+                                    Attach to instance
+                                </a>
                             </li>
                             <li ng-show="item.attach_status === 'attached' &amp;&amp; item.attach_status !== 'detaching'">
                                 <a ng-click="detachModal(item, '${request.route_path('instance_json', id='_id_')}')"
-                                   id="detach-volume-action" i18n:translate="">Detach from instance</a>
+                                   class="detach-volume-action" i18n:translate="">Detach from instance</a>
                             </li>
                             <li ng-show="item.status === 'available' || item.status === 'failed'">
-                                <a i18n:translate="" ng-click="revealModal('delete', item)">Delete volume</a>
+                                <a i18n:translate="" ng-click="revealModal('delete', item)" class="delete-volume-action">
+                                    Delete volume
+                                </a>
                             </li>
                         </ul>
                     </span>

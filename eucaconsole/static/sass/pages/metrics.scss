@@ -1,0 +1,78 @@
+/* @fileOverview CloudWatch Metrics landing page CSS */
+@import "../includes/eucavariables";
+
+@import "../includes/landingpage";
+
+
+table.expando td:nth-of-type(1) {
+    width: 1rem;
+}
+
+table td input[type="checkbox"] {
+    margin: 0 0 0;
+}
+
+#graph-area {
+}
+
+.chart-wrapper {
+    background: #ffffff;
+}
+
+.split-container {
+}
+
+.split-top {
+    height: 250px;
+    overflow: auto;
+}
+
+.split-bar {
+    height: 0.6rem;
+    width: 100%;
+    color: grey;
+    background: #ffffff;
+    cursor: row-resize;
+    overflow-y: hidden;
+    hr {
+        margin: 4px 4px 4px 4px;
+    }
+}
+
+.split-bottom {
+    position: relative;
+}
+
+select {
+    width: 20rem;
+}
+
+.tile {
+    input[type="checkbox"] {
+        position: relative;
+        float: left;
+        top: 9px;
+        left: 5px;
+    }
+    .dropdown.button.tiny {
+        top: 5px !important;
+        right: 2px !important;
+    }
+}
+
+#primary-buttons .button.more-actions {
+    margin-left: 0px !important;
+}
+
+th.metric-action {
+    text-align: right !important;
+}
+
+.metrics-selected {
+    padding-top: 1.5rem;
+    padding-left: 0.25rem;
+}
+
+magic-search .f-dropdown {
+    min-width: 15rem;
+}

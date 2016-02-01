@@ -1,7 +1,19 @@
 from pages.detailpage import DetailPage
-from string import split
+
 
 class VolumeDetailPage(DetailPage):
+    VOLUME_MONITORING_CHARTS_LIST = [
+        {'metric': 'VolumeReadBytes', 'statistic': 'Sum'},
+        {'metric': 'VolumeWriteBytes', 'statistic': 'Sum'},
+        {'metric': 'VolumeReadOps', 'statistic': 'Sum'},
+        {'metric': 'VolumeWriteOps', 'statistic': 'Sum'},
+        {'metric': 'VolumeQueueLength', 'statistic': 'Average'},
+        {'metric': 'VolumeIdleTime', 'statistic': 'Sum'},
+        {'metric': 'VolumeReadBytes', 'statistic': 'Average'},
+        {'metric': 'VolumeWriteBytes', 'statistic': 'Average'},
+        {'metric': 'VolumeTotalReadTime', 'statistic': 'Average'},
+        {'metric': 'VolumeTotalWriteTime', 'statistic': 'Average'},
+    ]
 
     def __init__(self, tester):
         self.tester = tester
@@ -9,12 +21,15 @@ class VolumeDetailPage(DetailPage):
     _volume_detail_page_title = "Details for volume: {0}"
     _delete_volume_action_menuitem_id = "delete-volume-action"
     _attach_volume_action_menuitem_id = "attach-volume-action"
+    _unattached_notice_id = 'volume-unattached-notice'
+    _charts_container_id = 'charts-container'
     _volume_status_css = "[class='label radius status {0}']"  # volume status is required
     _create_snapshot_tile_css = "#create-snapshot>a"
+    _general_tab_css = '[href="/volumes/{0}"]'  # volume_id is required
     _snapshots_tab_css = "[href='/volumes/{0}/snapshots']"  # volume_id is required
-    _general_tab_css = '[href="/volumes/{0}/snapshots"]'  # volume_id is required
-    _active_tab_css ="dd.active"
-    _id_link_in_tile_of_newly_created_snapshot_css='[class="ng-binding"]'
+    _monitoring_tab_css = "[href='/volumes/{0}/monitoring']"  # volume_id is required
+    _active_tab_css = "dd.active"
+    _id_link_in_tile_of_newly_created_snapshot_css = '[class="ng-binding"]'
 
     def verify_volume_detail_page_loaded(self, volume_id, volume_name):
         """
@@ -57,12 +72,23 @@ class VolumeDetailPage(DetailPage):
         """
         tab = self.tester.store_text_by_css(self._active_tab_css)
         print "Found active tab {0}".format(tab)
-        if tab == "General":
+        if tab != "Snapshots":
             self.tester.click_element_by_css(self._snapshots_tab_css.format(volume_id))
-        elif tab == "Snapshots":
-            pass
-        else:
-            print "ERROR: tab {0} not among recognized tab names.".format(tab)
+
+    def goto_monitoring_tab(self, volume_id):
+        tab = self.tester.store_text_by_css(self._active_tab_css)
+        print "Found active tab {0}".format(tab)
+        if tab != "Monitoring":
+            self.tester.click_element_by_css(self._monitoring_tab_css.format(volume_id))
+
+    def verify_attach_notice_on_volume_monitoring_page(self, volume_id):
+        self.tester.wait_for_element_present_by_id(self._unattached_notice_id)
+
+    def verify_charts_on_volume_monitoring_page(self, volume_id):
+        self.tester.wait_for_element_present_by_id(self._charts_container_id)
+        for chart in self.VOLUME_MONITORING_CHARTS_LIST:
+            chart_id = 'cwchart-{0}-{1}'.format(chart.get('metric'), chart.get('statistic'))
+            self.tester.wait_for_element_present_by_id(chart_id)
 
     def click_create_snapshot_from_volume_tile(self, volume_id):
         self.goto_snapshots_tab(volume_id)
@@ -73,8 +99,4 @@ class VolumeDetailPage(DetailPage):
         self.tester.click_element_by_css(self._id_link_in_tile_of_newly_created_snapshot_css)
 
     def verify_snapshot_tile_not_present(self):
-        NotImplementedError
-
-
-
-
+        raise NotImplementedError
