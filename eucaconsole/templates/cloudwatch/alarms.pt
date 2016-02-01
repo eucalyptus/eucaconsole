@@ -123,15 +123,15 @@
             <div id="create-alarm-modal" class="reveal-modal small" data-reveal="">
                 <a class="close-reveal-modal" href="#">&#215;</a>
                 <div class="row">
-                    <p i18n:translate="">A metric must be seledted before you can create an alarm.</p>
+                    <p i18n:translate="">A metric must be selected before you can create an alarm.</p>
                     <p i18n:translate="">Choose action "Create Alarm" when viewing a metric from
                     the monitoring tab on any resource's detail page, or from the
                     metrics landing page.</p>
                 </div>
                 <div class="row">
-                    <button id="create-alarm-btn" class="button expand" type="submit" i18n:translate="">
+                    <a class="button expand" href="${request.route_path('cloudwatch_metrics')}">
                         Take Me to the Metrics Landing Page
-                    </button>
+                    </a>
                 </div>
             </div>
         </div>
