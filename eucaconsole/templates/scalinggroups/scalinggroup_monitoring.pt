@@ -33,7 +33,10 @@
                 <div class="toprow">
                     <div class="blurb">
                         <div class="duration-wrapper" tal:condition="launchconfig_monitoring_enabled">
-                            <label for="monitoring-duration" class="left" i18n:translate="">Show data for</label>
+                            <label for="monitoring-duration" class="left">
+                                <span i18n:translate="">Show data for</span>
+                                <span data-tooltip="" title="${duration_help_text}"><i class="helptext-icon"></i></span>
+                            </label>
                             <select name="monitoring_duration" id="monitoring-duration-ec2" ng-model="chartsCtrl.duration"
                                     ng-change="chartsCtrl.refreshCharts()" class="duration-input">
                                 <option tal:repeat="duration duration_choices" value="${duration[0]}">
@@ -85,7 +88,10 @@
                 <div class="toprow">
                     <div class="blurb">
                         <div class="duration-wrapper" tal:condition="metrics_collection_enabled">
-                            <label for="monitoring-duration" class="left" i18n:translate="">Show data for</label>
+                            <label for="monitoring-duration" class="left">
+                                <span i18n:translate="">Show data for</span>
+                                <span data-tooltip="" title="${duration_help_text}"><i class="helptext-icon"></i></span>
+                            </label>
                             <select name="monitoring_duration" id="monitoring-duration-autoscaling" ng-model="chartsCtrl.duration"
                                     ng-change="chartsCtrl.refreshCharts()" class="duration-input">
                                 <option tal:repeat="duration duration_choices" value="${duration[0]}">

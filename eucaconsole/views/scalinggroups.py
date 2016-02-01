@@ -932,6 +932,7 @@ class ScalingGroupMonitoringView(BaseScalingGroupView):
         launchconfig_monitoring_enabled = False
         if self.launch_configuration.instance_monitoring.enabled == 'true':
             launchconfig_monitoring_enabled = True
+        duration_help_text = _(u'Changing the time will update charts for both instance and scaling group metrics.')
         self.render_dict = dict(
             scaling_group=self.scaling_group,
             scaling_group_name=self.scaling_group.name,
@@ -939,6 +940,7 @@ class ScalingGroupMonitoringView(BaseScalingGroupView):
             monitoring_form=self.monitoring_form,
             metrics_collection_enabled=metrics_collection_enabled,
             launchconfig_monitoring_enabled=launchconfig_monitoring_enabled,
+            duration_help_text=duration_help_text,
             duration_choices=MONITORING_DURATION_CHOICES,
             statistic_choices=STATISTIC_CHOICES,
             controller_options_json=self.get_controller_options_json()
