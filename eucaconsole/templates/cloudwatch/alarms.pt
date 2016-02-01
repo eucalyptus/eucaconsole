@@ -31,7 +31,7 @@
                             </a>
                         </li>
                         <li>
-                            <a i18n:translate="" class="more-actions-delete">
+                            <a i18n:translate="" class="more-actions-delete" ng-click="revealModal('delete', (items | filter:{selected: true}))">
                                 Delete
                             </a>
                         </li>

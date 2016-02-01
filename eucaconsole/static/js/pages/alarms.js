@@ -9,8 +9,10 @@ angular.module('AlarmsPage', ['LandingPage', 'CustomFilters'])
     function ($scope, $timeout, $compile, AlarmService) {
         $scope.alarms = [];
 
+
         $scope.revealModal = function (action, item) {
             $scope.alarms = [].concat(item);
+            $scope.deleteAlarmsExpanded = false;
 
             var modal = $('#' + action + '-alarm-modal');
             modal.foundation('reveal', 'open');
@@ -41,6 +43,10 @@ angular.module('AlarmsPage', ['LandingPage', 'CustomFilters'])
             $timeout(function () {
                 $('#refresh-btn').click();
             });
+        };
+
+        $scope.toggleAlarmsDisplay = function () {
+            $scope.deleteAlarmsExpanded = !$scope.deleteAlarmsExpanded;
         };
 
         $scope.$on('alarm_created', function ($event, promise) {

@@ -84,4 +84,24 @@
     .alarm-dimensions {
         margin: 0 0 20px;
     }
+    .row.control {
+        margin: 0 0 15px;
+    }
+    .show-dimensions {
+        .fa-plus-circle {
+            display: inline-block;
+        }
+        .fa-minus-circle {
+            display: none;
+        }
+        
+        &.open {
+            .fa-minus-circle {
+                display: inline-block;
+            }
+            .fa-plus-circle {
+                display: none;
+            }
+        }
+    }
 }
