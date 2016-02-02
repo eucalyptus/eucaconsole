@@ -247,7 +247,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
             var doRefresh = false;
             // Conditionally refresh charts based on passed options
             if (refreshOptions) {
-                if (refreshOptions.namespace && refreshOptions.namespace === $scope.namespace) {
+                if (refreshOptions.namespace === $scope.namespace) {
                     doRefresh = true;
                 }
             } else {
