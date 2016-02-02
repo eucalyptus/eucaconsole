@@ -45,8 +45,8 @@ angular.module('AlarmsPage', ['LandingPage', 'CustomFilters'])
             });
         };
 
-        $scope.toggleAlarmsDisplay = function () {
-            $scope.deleteAlarmsExpanded = !$scope.deleteAlarmsExpanded;
+        $scope.toggleContent = function () {
+            $scope.expanded = !$scope.expanded;
         };
 
         $scope.$on('alarm_created', function ($event, promise) {

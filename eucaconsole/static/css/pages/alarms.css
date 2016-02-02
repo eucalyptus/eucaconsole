@@ -162,9 +162,7 @@ table.expando tr.even, table.expando tr.alt, table.expando tr:nth-of-type(even) 
 
 #delete-alarm-modal p { margin: 0 0 7px; }
 #delete-alarm-modal .header { color: #444; text-transform: uppercase; font-size: 0.875rem; font-weight: bold; }
+#delete-alarm-modal .header .columns { padding: 0; }
 #delete-alarm-modal .alarm-dimensions { margin: 0 0 20px; }
+#delete-alarm-modal .alarm-dimensions .columns { padding: 0; }
 #delete-alarm-modal .row.control { margin: 0 0 15px; }
-#delete-alarm-modal .show-dimensions .fa-plus-circle { display: inline-block; }
-#delete-alarm-modal .show-dimensions .fa-minus-circle { display: none; }
-#delete-alarm-modal .show-dimensions.open .fa-minus-circle { display: inline-block; }
-#delete-alarm-modal .show-dimensions.open .fa-plus-circle { display: none; }
