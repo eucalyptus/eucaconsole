@@ -3,8 +3,8 @@
     <div id="delete-alarm-modal" class="reveal-modal ${modal_size}" data-reveal="">
         <a class="close-reveal-modal" href="#">&#215;</a>
 
-        <h3 ng-if="alarms.length == 1" i18n:translate="">Delete Alarm</h3>
-        <h3 ng-if="alarms.length > 1" i18n:translate="">Delete Alarms</h3>
+        <h3 ng-if="alarms.length == 1" i18n:translate="">Delete alarm</h3>
+        <h3 ng-if="alarms.length > 1" i18n:translate="">Delete alarms</h3>
 
         <p ng-if="alarms.length == 1" i18n:translate="">Are you sure you want to delete the following alarm?</p>
         <p ng-if="alarms.length > 1" i18n:translate="">Are you sure you want to delete the following alarms?</p>
