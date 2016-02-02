@@ -17,7 +17,7 @@
         <h3 id="pagetitle"><strong i18n:translate="">Alarms</strong></h3>
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
-                <a class="button" ng-click="revealModal('create')" i18n:translate="">Create alarm</a>
+                <a class="button" ng-click="revealModal('create')" i18n:translate="">Create Alarm</a>
                 <metal:block metal:use-macro="layout.global_macros['more_actions']">
                     <div metal:fill-slot="menu_items" tal:omit-tag="">
                         <li>
@@ -124,7 +124,7 @@
                 <a class="close-reveal-modal" href="#">&#215;</a>
                 <div class="row">
                     <p i18n:translate="">A metric must be selected before you can create an alarm.</p>
-                    <p i18n:translate="">Choose action "Create Alarm" when viewing a metric from
+                    <p i18n:translate="">Choose the action "Create Alarm" when viewing a metric from
                     the monitoring tab on any resource's detail page, or from the
                     metrics landing page.</p>
                 </div>

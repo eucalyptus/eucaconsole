@@ -74,7 +74,7 @@ angular.module('AlarmsPage', ['LandingPage', 'CustomFilters'])
     }])
     .directive('alarmState', function () {
         var stateValues = {
-            'OK': 'Ok',
+            'OK': 'OK',
             'ALARM': 'Alarm',
             'INSUFFICIENT_DATA': 'Insufficient data'
         };
