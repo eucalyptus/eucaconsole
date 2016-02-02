@@ -243,6 +243,22 @@ class CloudWatchAlarmDetailView(BaseView):
                  renderer=TEMPLATE,
                  request_method='GET')
     def cloudwatch_alarm_view(self):
+        dimensions = self.get_available_dimensions(self.alarm.metric)
+        options = []
+        print self.alarm.dimensions
+        for d in dimensions:
+            for name, value in d.items():
+                option = {
+                    'label': '{0} = {1}'.format(name, ', '.join(value)),
+                    'value': d,
+                    'selected': False
+                }
+                options.append(option)
+
+        self.render_dict.update(
+            dimensions=dimensions,
+            options=options
+        )
         return self.render_dict
 
     def get_alarm(self, alarm_id):
@@ -253,3 +269,13 @@ class CloudWatchAlarmDetailView(BaseView):
             if len(alarms) > 0:
                 alarm = alarms[0]
         return alarm
+
+    def get_available_dimensions(self, metric):
+        dimensions = []
+        conn = self.get_connection(conn_type='cloudwatch')
+        with boto_error_handler(self.request):
+            metrics = conn.list_metrics(metric_name=metric)
+            for m in metrics:
+                dimensions.append(m.dimensions)
+
+        return dimensions

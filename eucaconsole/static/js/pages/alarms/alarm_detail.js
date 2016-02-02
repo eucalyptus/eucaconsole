@@ -1,4 +1,4 @@
-angular.module('AlarmDetailPage', ['AlarmsComponents'])
+angular.module('AlarmDetailPage', ['AlarmsComponents', 'EucaChosenModule'])
 .directive('alarmDetail', function () {
     return {
         restrict: 'A',

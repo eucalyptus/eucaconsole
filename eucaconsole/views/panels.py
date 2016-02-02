@@ -446,3 +446,8 @@ def elb_listener_editor(context, request, listener_list=None, protocol_list=None
         controller_options_json=controller_options_json,
         elb_security_policy=elb_security_policy,
     )
+
+
+@panel_config('alarm_dimensions_selector', renderer='../templates/panels/alarm_dimensions_selector.pt')
+def alarm_dimensions_selector(context, request, metric=None, alarm=None):
+    pass
