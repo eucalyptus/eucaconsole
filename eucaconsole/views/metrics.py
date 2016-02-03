@@ -248,7 +248,6 @@ class CloudWatchMetricsView(LandingPageView):
         return self.render_dict
 
     def get_chart_options_json(self):
-        now = datetime.datetime.utcnow()
         return BaseView.escape_json(json.dumps({
             'metric_title_mapping': METRIC_TITLE_MAPPING,
             'granularity_choices': GRANULARITY_CHOICES,

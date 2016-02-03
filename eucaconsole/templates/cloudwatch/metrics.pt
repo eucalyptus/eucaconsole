@@ -167,7 +167,7 @@
                 <div class="split-bottom cloudwatch-charts" id="graph-area">
                     <div ng-controller="CloudWatchChartsCtrl as chartsCtrl"
                         ng-init="chartsCtrl.initController('${chart_options_json}')">
-                        <div class="toprow" ng-show="(items | filter:{ _selected: true }).length > 0" ng-cloak="true">
+                        <div class="toprow" ng-show="(items | filter:{ _selected: true }).length > 0" ng-cloak="">
                             <div class="blurb">
                                 <div class="field-wrapper">
                                     <div>

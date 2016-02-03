@@ -30,14 +30,14 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
             restrict: 'A',
             scope: { format: "=" },
             link: function(scope, element, attrs, ngModel){
-                if(typeof(scope.format) == "undefined"){ scope.format = "yyyy/mm/dd hh:ii" }
+                if(typeof(scope.format) == "undefined"){ scope.format = "yyyy/mm/dd hh:ii"; }
                 $(element).fdatepicker({format: scope.format, pickTime: true}).on('changeDate', function(ev){
                     scope.$apply(function(){
                         ngModel.$setViewValue(ev.date);
                     }); 
-                })
+                });
             }
-        } 
+        }; 
     })
     .controller('MetricsCtrl', function ($scope, $http, $timeout, eucaUnescapeJson) {
         var vm = this;

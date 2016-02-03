@@ -235,7 +235,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
             vm.largeChartGranularity = vm.granularityChoices[last-1].value;
         }
         vm.refreshLargeChart();
-    }
+    };
 
     function submitMonitoringForm() {
         document.getElementById('monitoring-form').submit();
@@ -250,7 +250,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
 
     vm.refreshLargeChart = function() {
         $scope.$broadcast('cloudwatch:refreshLargeChart');
-    }
+    };
 
     function emptyLargeChartDialogOnOpen() {
         var chartModal = $('#large-chart-modal');
@@ -335,7 +335,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
             }
             // Granularity is user-selectable in large chart, so don't auto-adjust on the server
         }
-        var largeChart = options.largeChart || scope.large;
+        largeChart = options.largeChart || scope.large;
         var params = options.params || {
             'ids': scope.ids,
             'idtype': scope.idtype,
