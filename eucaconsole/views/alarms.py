@@ -134,9 +134,11 @@ class CloudWatchAlarmsView(LandingPageView):
 
         message = json.loads(self.request.body)
         alarms = message.get('alarms', [])
+        token = message.get('csrf_token')
 
-        if self.is_csrf_valid():
+        if not self.is_csrf_valid(token):
             return JSONResponse(status=400, message="missing CSRF token")
+
         with boto_error_handler(self.request):
             self.log_request(_(u"Deleting alarm(s) {0}").format(alarms))
             action = self.cloudwatch_conn.delete_alarms(alarms)
